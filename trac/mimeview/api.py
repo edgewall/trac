@@ -268,16 +268,31 @@ class IHTMLPreviewAnnotator(Interface):
     representation of file contents with additional information."""
 
     def get_annotation_type():
-        """Return a (type, label, description) tuple that defines the type of
-        annotation and provides human readable names. The `type` element should
-        be unique to the annotator. The `label` element is used as column
-        heading for the table, while `description` is used as a display name to
-        let the user toggle the appearance of the annotation type.
+        """Return a (type, label, description, annotations) tuple
+        that defines the type of annotation and provides human readable names.
+        The `type` element should be unique to the annotator.
+        The `label` element is used as column heading for the table,
+        while `description` is used as a display name to let the user
+        toggle the appearance of the annotation type.
+        """
+        
+    def get_annotation_data(context):
+        """Return some metadata to be used by the `annotate_row` method below.
+
+        This will be called only once, before lines are processed.
+        If this raises an error, that annotator won't be used.
         """
 
-    def annotate_row(number, content):
+    def annotate_row(context, row, number, line, annotations):
         """Return the XHTML markup for the table cell that contains the
-        annotation data."""
+        annotation data.
+
+        `context` is the context corresponding to the content being annotated,
+        `row` is the tr Element being built, `number` is the line number being
+        processed and `line` is the line's actual content.
+        `annotations` is whatever additional data the `get_annotation_data`
+        method decided to provide.
+        """
 
 
 class IContentConverter(Interface):
@@ -403,7 +418,7 @@ class Mimeview(Component):
             yield annotator.get_annotation_type()
 
     def render(self, context, mimetype, content, filename=None, url=None,
-               annotations=None):
+               annotations=None, force_source=False):
         """Render an XHTML preview of the given `content`.
 
         `content` is the same as an `IHTMLPreviewRenderer.render`'s
@@ -441,10 +456,15 @@ class Mimeview(Component):
         # First candidate which renders successfully wins.
         # Also, we don't want to expand tabs more than once.
         expanded_content = None
+        errors = []
         for qr, renderer in candidates:
+            if force_source and not getattr(renderer, 'returns_source', False):
+                continue # skip non-source renderers in force_source mode
             try:
-                self.log.debug('Trying to render HTML preview using %s'
-                               % renderer.__class__.__name__)
+                ann_names = annotations and ', '.join(annotations) or \
+                           'No annotations'
+                self.log.debug('Trying to render HTML preview using %s [%s]'
+                               % (renderer.__class__.__name__, ann_names))
 
                 # check if we need to perform a tab expansion
                 rendered_content = content
@@ -460,7 +480,8 @@ class Mimeview(Component):
                 if not result:
                     continue
 
-                if not getattr(renderer, 'returns_source', False):
+                if not (force_source or getattr(renderer, 'returns_source',
+                                                False)):
                     if isinstance(result, basestring):
                         if not isinstance(result, unicode):
                             result = to_unicode(result)
@@ -472,28 +493,45 @@ class Mimeview(Component):
 
                 if annotations:
                     m = context.req and context.req.args.get('marks') or None
-                    return self._annotate(result, annotations, m and Ranges(m))
+                    return self._annotate(context, result, annotations,
+                                          m and Ranges(m))
                 else:
                     return tag.div(class_='code')(tag.pre(result)).generate()
 
             except Exception, e:
-                self.log.warning('HTML preview using %s failed (%s)'
-                                 % (renderer, e), exc_info=True)
+                self.log.warning('HTML preview using %s failed (%s)' %
+                                 (renderer, e), exc_info=True)
+                errors.append((renderer, e))
+        return errors
 
-    def _annotate(self, stream, annotations, marks=None):
-        annotators, annotypes = [], []
+    def _annotate(self, context, stream, annotations, marks=None):
+        annotators, labels, titles = {}, {}, {}
         for annotator in self.annotators:
-            atype, alabel, _ = annotator.get_annotation_type()
+            atype, alabel, atitle = annotator.get_annotation_type()
             if atype in annotations:
-                annotypes.append((atype, alabel))
-                annotators.append(annotator)
+                labels[atype] = alabel
+                titles[atype] = atitle
+                annotators[atype] = annotator
 
         if isinstance(stream, list):
             stream = HTMLParser(StringIO('\n'.join(stream)))
 
+        annotator_datas = []
+        for a in annotations:
+            annotator = annotators[a]
+            try:
+                data = (annotator, annotator.get_annotation_data(context))
+            except TracError, e:
+                msg = ("Can't use annotator '%s': %s" % (a, to_unicode(e)))
+                self.log.warning(msg)
+                titles[a] = msg
+                data = (None, None)
+            annotator_datas.append(data)
+
         def _head_row():
             return tag.tr(
-                [tag.th(alabel, class_=atype) for atype, alabel in annotypes] +
+                [tag.th(labels[a], class_=a, title=titles[a])
+                 for a in annotations] +
                 [tag.th(u'\xa0', class_='content')]
             )
 
@@ -502,8 +540,11 @@ class Mimeview(Component):
                 row = tag.tr()
                 if marks and idx + 1 in marks:
                     row(class_='hilite')
-                for annotator in annotators:
-                    annotator.annotate_row(row, idx + 1, line)
+                for annotator, data in annotator_datas:
+                    if annotator:
+                        annotator.annotate_row(context, row, idx+1, line, data)
+                    else:
+                        row.append(tag.td())
                 row.append(tag.td(line))
                 yield row
 
@@ -594,19 +635,25 @@ class Mimeview(Component):
         return types
     
     def preview_data(self, context, content, length, mimetype, filename,
-                     url=None, annotations=None):
+                     url=None, annotations=None, force_source=False):
         """Prepares a rendered preview of the given `content`.
 
         Note: `content` will usually be an object with a `read` method.
         """        
+        data = {'raw_href': url,
+                'max_file_size': self.max_preview_size,
+                'max_file_size_reached': False,
+                }
         if length >= self.max_preview_size:
-            return {'max_file_size_reached': True,
-                    'max_file_size': self.max_preview_size,
-                    'raw_href': url}
+            data['max_file_size_reached'] = True
         else:
-            return {'rendered': self.render(context, mimetype, content,
-                                            filename, url, annotations),
-                    'raw_href': url}
+            result = self.render(context, mimetype, content, filename, url,
+                                 annotations, force_source=force_source)
+            if isinstance(result, list):
+                data['errors'] = result
+            else:
+                data['rendered'] = result
+        return data
 
     def send_converted(self, req, in_type, content, selector, filename='file'):
         """Helper method for converting `content` and sending it directly.
@@ -692,7 +739,10 @@ class LineNumberAnnotator(Component):
     def get_annotation_type(self):
         return 'lineno', 'Line', 'Line numbers'
 
-    def annotate_row(self, row, lineno, content):
+    def get_annotation_data(self, context):
+        return None
+
+    def annotate_row(self, context, row, lineno, line, data):
         row.append(tag.th(id='L%s' % lineno)(
             tag.a(lineno, href='#L%s' % lineno)
         ))

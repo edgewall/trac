@@ -138,14 +138,21 @@
   <py:def function="preview_file(preview)">
     ${preview.rendered}
     <py:choose>
-      <py:when test="preview.max_file_size_reached">
+      <p py:when="preview.max_file_size_reached">
         <strong>HTML preview not available</strong>,
         since the file size exceeds $preview.max_file_size bytes.
         Try <a href="$preview.raw_href">downloading</a> the file instead.
-      </py:when>
-      <py:when test="not preview.rendered">
-        <strong>HTML preview not available</strong>.
-        To view, <a href="$preview.raw_href">download</a> the file.
+      </p>
+      <py:when test="preview.errors">
+        <p>
+          <strong>HTML preview not available</strong>.
+          To view, <a href="$preview.raw_href">download</a> the file.
+        </p>
+        <p>${plural(len(preview.errors), 'issue')} found:</p>
+        <div py:for="renderer, err in preview.errors" class="system-message">
+          <strong>${renderer.__class__.__name__}</strong>
+          <pre>$err</pre>
+        </div>
       </py:when>
     </py:choose>
   </py:def>

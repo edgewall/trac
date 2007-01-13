@@ -43,7 +43,7 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.web_ui.util import render_node_property
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            INavigationContributor
+                            INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, Context, Formatter
 
 
@@ -145,6 +145,8 @@ class ChangesetModule(Component):
         old_path = req.args.get('old_path')
         old = req.args.get('old')
 
+        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
+
         if old and '@' in old:
             old_path, old = unescape(old).split('@')
         if new and '@' in new:
@@ -210,7 +212,7 @@ class ChangesetModule(Component):
             req.check_modified(chgset.date, [
                 style, ''.join(options), repos.name,
                 repos.rev_older_than(new, repos.youngest_rev),
-                chgset.message,
+                chgset.message, xhr,
                 pretty_timedelta(chgset.date, None, 3600)])
 
         format = req.args.get('format')
@@ -239,7 +241,7 @@ class ChangesetModule(Component):
                 self._render_zip(req, filename, repos, data)
 
         # -- HTML format
-        self._render_html(req, repos, chgset, restricted, data)
+        self._render_html(req, repos, chgset, restricted, xhr, data)
         
         if chgset:
             diff_params = 'new=%s' % new
@@ -260,7 +262,7 @@ class ChangesetModule(Component):
 
     # Internal methods
 
-    def _render_html(self, req, repos, chgset, restricted, data):
+    def _render_html(self, req, repos, chgset, restricted, xhr, data):
         """HTML version"""
         data['chgset'] = chgset and True
         data['restricted'] = restricted
@@ -352,12 +354,13 @@ class ChangesetModule(Component):
         if 'BROWSER_VIEW' not in req.perm:
             return
 
-        def node_info(node):
+        def node_info(node, annotated):
             return {'path': node.path,
                     'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
                     'href': req.href.browser(node.created_path,
-                                             rev=node.created_rev),
+                                             rev=node.created_rev,
+                                             annotate=annotated and 1 or None),
                     'title': ('Show revision %s of this file in browser' %
                               node.rev)}
         # Reminder: node.path may not exist at node.rev
@@ -451,31 +454,40 @@ class ChangesetModule(Component):
         else:
             show_diffs = False
 
+        # XHR is used for blame support: display the changeset view without
+        # the navigation and with the changes concerning the annotated file
+        annotated = False
+        if xhr:
+            show_diffs = False
+            annotated = repos.normalize_path(req.args.get('annotate'))
+
         has_diffs = False
         changes = []
         for old_node, new_node, kind, change in get_changes():
             props = []
             diffs = []
             show_entry = change != Changeset.EDIT
+            show_diff = show_diffs or (new_node and new_node.path == annotated)
+
             if change in Changeset.DIFF_CHANGES and 'FILE_VIEW' in req.perm:
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
                 if props:
                     show_entry = True
-                if kind == Node.FILE and show_diffs:
+                if kind == Node.FILE and show_diff:
                     diffs = _content_changes(old_node, new_node)
                     if diffs != []:
                         if diffs:
                             has_diffs = True
                         # elif None (means: manually compare to (previous))
                         show_entry = True
-            if show_entry or not show_diffs:
+            if show_entry or not show_diff:
                 info = {'change': change,
-                        'old': old_node and node_info(old_node),
-                        'new': new_node and node_info(new_node),
+                        'old': old_node and node_info(old_node, annotated),
+                        'new': new_node and node_info(new_node, annotated),
                         'props': props,
                         'diffs': diffs}
-                if change in Changeset.DIFF_CHANGES and not show_diffs:
+                if change in Changeset.DIFF_CHANGES and not show_diff:
                     if chgset:
                         diff_href = req.href.changeset(new_node.rev,
                                                        new_node.path)
@@ -489,8 +501,16 @@ class ChangesetModule(Component):
                 info = None
             changes.append(info) # the sequence should be immutable
 
-        data.update({'has_diffs': has_diffs, 'changes': changes,
+        data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
                      'longcol': 'Revision', 'shortcol': 'r'})
+
+        if xhr: # render and return the content only
+            stream = Chrome(self.env).render_template(req, 'changeset.html',
+                                                      data, fragment=True)
+            content = stream.select('//div[@id="content"]')
+            req.write(content.render('xhtml'))
+            raise RequestDone
+        
         return data
 
     def _render_diff(self, req, filename, repos, data):

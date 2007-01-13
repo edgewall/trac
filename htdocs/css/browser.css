@@ -22,6 +22,18 @@ h1 .sep { color: #666; padding: 0 .1em }
 #jumploc div.buttons { margin: 0;}
 #jumploc { margin-right: 2em;}
 
+/* Browser file annotations */
+table.code th.blame { width: 5em; }
+table.code th.blame a { color: #ddd; }
+
+div.message { 
+  background: #ccf;
+  border: 2px ridge #999;
+  margin: 0;
+  padding: 8px; 
+  /* Note: border width and padding must be compensated for in the placement */
+}
+
 /* Styles for the directory entries table
    (extends the styles for "table.listing") */
 #dirlist { margin-top: 0 }
@@ -42,6 +54,11 @@ h1 .sep { color: #666; padding: 0 .1em }
  text-align: right;
  vertical-align: middle;
  font-size: 70%;
+}
+#dirlist td.age {
+ border-width: 0 0 2px 0;
+ border-style: solid;
+ font-size: 85%;
 }
 #dirlist td.name { width: 100% }
 #dirlist td.name a, #dirlist td.name span {

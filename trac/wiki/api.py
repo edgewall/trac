@@ -122,6 +122,10 @@ class Context(object):
     embedded in a wiki page, the context will be:
     
     `Context(env, req)('wiki', 'CurrentStatus')('query')('ticket', '12')`
+
+    Further details can be attached to the context, like the `version`
+    of the resource which is being viewed. If not specified or `-1`,
+    this will be the latest version.
     
     The context also encapsulates the "access context" of a Wiki content,
     i.e. how the resource is accessed (`req`), so that links in the rendered
@@ -134,7 +138,7 @@ class Context(object):
     """
 
     def __init__(self, env, req, realm=None, id=None, parent=None,
-                 abs_urls=False, db=None):
+                 version=None, abs_urls=False, db=None):
         if not env:
             raise TracError("Environment not specified for Context")
         self.env = env
@@ -142,6 +146,7 @@ class Context(object):
         self.realm = realm
         self.id = id
         self.parent = parent
+        self.version = version
         self.abs_urls = abs_urls
         self._db = db
 
@@ -156,7 +161,7 @@ class Context(object):
                (self.req, ', '.join(reversed(resource_path)),
                 self.abs_urls and ' [abs]' or '')
     
-    def __call__(self, realm=None, id=None, abs_urls=None):
+    def __call__(self, realm=None, id=None, version=None, abs_urls=None):
         """Create a new Context, child of this Context.
 
         >>> from trac.test import EnvironmentStub
@@ -182,6 +187,7 @@ class Context(object):
         copy = not realm and not id
         return Context(self.env, self.req, copy and self.realm or realm,
                        copy and self.id or id, [self, self.parent][copy],
+                       version=[version, version or self.version][copy],
                        abs_urls=[abs_urls, self.abs_urls][abs_urls is None])
 
     def _get_db(self):

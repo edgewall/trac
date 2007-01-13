@@ -8,12 +8,17 @@
   <xi:include href="macros.html" />
   <head>
     <title>$path</title>
+    <meta py:if="file and file.annotate" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <meta py:if="dir" name="ROBOTS" content="NOINDEX" />
     <script type="text/javascript">
       $(document).ready(function() {
         $("#jumploc input").hide();
         $("#jumploc select").change(function () {
           this.parentNode.parentNode.submit();
         })
+        <py:if test="file and file.annotate">
+          enableBlame("${href.changeset()}/", "${path}");
+        </py:if>
       });
     </script>
   </head>
@@ -22,6 +27,12 @@
     <div id="ctxtnav" class="nav">
       <ul>
         <li class="first"><a href="${href.changeset(rev, created_path)}">Last Change</a></li>
+        <li py:if="file">
+          <a href="${href.browser(created_path, rev=rev, annotate=not file.annotate or None)}"
+             title="Annotate each line with the last changed revision. This can be time consuming...">
+            ${['Annotate', 'Normal'][bool(file.annotate)]}
+          </a>
+        </li>
         <li class="last"><a href="${href.log(path, rev=rev)}">Revision Log</a></li>
       </ul>
     </div>
@@ -88,15 +99,19 @@
                 <tr class="${idx % 2 and 'even' or 'odd'}">
                   <td class="name">
                     <a class="${entry.kind}"
-                      title="${entry.kind == 'dir' and 'Browse Directory' or 'View File'}"
+                      title="${entry.isdir and 'Browse Directory' or 'View File'}"
                       href="${href.browser(entry.path, rev=stickyrev, order=dir.order, desc=dir.desc)}">$entry.name</a>
                   </td>
-                  <td class="size">${sizeinfo(entry.size)}</td>
+                  <td class="size">${sizeinfo(entry.content_length)}</td>
                   <td class="rev">
                     <a title="View Revision Log"
                       href="${href.log(entry.path, rev=rev)}">$entry.rev</a>
                   </td>
-                  <td class="age">${dateinfo(change.date)}</td>
+                  <td class="age" style="${dir.timerange and 'color: rgb(%s)' %
+                       ', '.join([str(color) for color in
+                                  dir.colorize_age(dir.timerange.relative(change.date))]) or ''}">
+                    ${dateinfo(change.date)}
+                  </td>
                   <td class="change">
                     <span class="author">${authorinfo(change.author)}:</span>
                     <span class="change" py:choose="">

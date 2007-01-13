@@ -42,7 +42,9 @@
             <py:if test="prop.new"> to <em><tt>$prop.new</tt></em></py:if>
           </li>
         </ul>
-        <table py:if="item.diffs" class="$diff.style" summary="Differences" cellspacing="0">
+        <table py:if="item.diffs" class="$diff.style" summary="Differences" cellspacing="0"
+          py:with="fromline = item.diffs[0][0].base.offset+1;
+                   toline = item.diffs[0][0].changed.offset+1">
           <py:choose test="diff.style">
             <py:when test="'sidebyside'">
               <colgroup class="l"><col class="lineno" /><col class="content" /></colgroup>
@@ -50,10 +52,10 @@
               <thead>
                 <tr>
                   <th colspan="2">
-                    <a title="$item.old.title" href="$item.old.href">$longcol $item.old.rev</a>
+                    <a title="$item.old.title" href="$item.old.href#L$fromline">$longcol $item.old.rev</a>
                   </th>
                   <th colspan="2">
-                    <a title="$item.new.title" href="$item.new.href">$longcol $item.new.rev</a>
+                    <a title="$item.new.title" href="$item.new.href#L$toline">$longcol $item.new.rev</a>
                   </th>
                 </tr>
               </thead>
@@ -63,18 +65,20 @@
               <thead>
                 <tr>
                   <th title="$longcol $item.old.rev">
-                    <a title="$item.old.title" href="$item.old.href">$shortcol$item.old.shortrev</a>
+                    <a title="$item.old.title" href="$item.old.href#L$fromline">
+                      $shortcol$item.old.shortrev</a>
                   </th>
                   <th title="$longcol $item.new.rev">
-                    <a title="$item.new.title" href="$item.new.href">$shortcol$item.new.shortrev</a>
+                    <a title="$item.new.title" href="$item.new.href#L$toline">
+                      $shortcol$item.new.shortrev</a>
                   </th>
                   <th>&nbsp;</th>
                 </tr>
               </thead>
             </py:when>
           </py:choose>
-          <py:for each="idx, diffs in enumerate(item.diffs)">
-            <tbody py:for="block in diffs" class="$block.type">
+          <py:for each="idx, blocks in enumerate(item.diffs)">
+            <tbody py:for="block in blocks" class="$block.type">
               <py:choose test="block.type">
 
                 <py:when test="'unmod'"> <!--! Show identical lines on both "sides" -->
@@ -171,13 +175,17 @@
               </py:choose>
             </tbody>
             <py:if test="idx &lt; len(item.diffs) - 1">
-              <tbody class="skipped" py:choose="diff.style">
+              <tbody class="skipped" py:choose="diff.style"
+                py:with="fromline = item.diffs[idx+1][0].base.offset+1;
+                         toline = item.diffs[idx+1][0].changed.offset+1">
                 <tr py:when="'sidebyside'">
-                  <th>&hellip;</th><td>&nbsp;</td>
-                  <th>&hellip;</th><td>&nbsp;</td>
+                  <th><a href="$item.old.href#L$fromline">&hellip;</a></th><td>&nbsp;</td>
+                  <th><a href="$item.new.href#L$toline">&hellip;</a></th><td>&nbsp;</td>
                 </tr>
                 <tr py:when="'inline'">
-                  <th>&hellip;</th><th>&hellip;</th><td>&nbsp;</td>
+                  <th><a href="$item.old.href#L$fromline">&hellip;</a></th>
+                  <th><a href="$item.new.href#L$toline">&hellip;</a></th>
+                  <td>&nbsp;</td>
                 </tr>
               </tbody>
             </py:if>

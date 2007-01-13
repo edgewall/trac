@@ -137,6 +137,22 @@ def _is_path_within_scope(scope, fullpath):
     scope = scope.strip('/')
     return (fullpath + '/').startswith(scope + '/')
 
+# svn_opt_revision_t helpers
+
+def _svn_rev(num):
+    value = core.svn_opt_revision_value_t()
+    value.number = num
+    revision = core.svn_opt_revision_t()
+    revision.kind = core.svn_opt_revision_number
+    revision.value = value
+    return revision
+
+def _svn_head():
+    revision = core.svn_opt_revision_t()
+    revision.kind = core.svn_opt_revision_head
+    return revision
+
+# apr_pool_t helpers
 
 def _mark_weakpool_invalid(weakpool):
     if weakpool():
@@ -407,8 +423,7 @@ class SubversionRepository(Repository):
 
         rev = self.normalize_rev(rev) or self.youngest_rev
 
-        return SubversionNode(path, rev, self.authz, self.scope, self.fs_ptr,
-                              self.pool)
+        return SubversionNode(path, rev, self, self.pool)
 
     def _history(self, path, start, end, limit=None, pool=None):
         return _get_history(_to_svn(self.scope, path), self.authz, self.fs_ptr,
@@ -577,15 +592,16 @@ class SubversionRepository(Repository):
 
 class SubversionNode(Node):
 
-    def __init__(self, path, rev, authz, scope, fs_ptr, pool=None):
-        self.authz = authz
-        self.scope = scope
-        self._scoped_svn_path = _to_svn(scope, path)
-        self.fs_ptr = fs_ptr
+    def __init__(self, path, rev, repos, pool=None):
+        self.repos = repos
+        self.fs_ptr = repos.fs_ptr
+        self.authz = repos.authz
+        self.scope = repos.scope
+        self._scoped_svn_path = _to_svn(self.scope, path)
         self.pool = Pool(pool)
         self._requested_rev = rev
 
-        self.root = fs.revision_root(fs_ptr, rev, self.pool())
+        self.root = fs.revision_root(self.fs_ptr, rev, self.pool())
         node_type = fs.check_path(self.root, self._scoped_svn_path,
                                   self.pool())
         if not node_type in _kindmap:
@@ -627,8 +643,8 @@ class SubversionNode(Node):
             path = posixpath.join(self.path, _from_svn(item))
             if not self.authz.has_permission(path):
                 continue
-            yield SubversionNode(path, self._requested_rev, self.authz,
-                                 self.scope, self.fs_ptr, self.pool)
+            yield SubversionNode(path, self._requested_rev, self.repos,
+                                 self.pool)
 
     def get_history(self,limit=None):
         newer = None # 'newer' is the previously seen history tuple
@@ -648,6 +664,24 @@ class SubversionNode(Node):
                 newer = older
         if newer:
             yield newer
+
+    def get_annotations(self):
+        annotations = []
+        if self.isfile:
+            def blame_receiver(line_no, revision, author, date, line, pool):
+                annotations.append(revision)
+            rev = _svn_rev(self.rev)
+            start = _svn_rev(0)
+            repo_url = 'file:///%s%s' % (self.repos.path,
+                                         self._scoped_svn_path)
+            self.repos.log.info('opening ra_local session to' + repo_url)
+            from svn import client
+            try:
+                client.blame2(repo_url, rev, start, rev, blame_receiver,
+                              client.create_context())
+            except core.SubversionException, e: # svn thinks file is a binary
+                raise TracError('svn blame failed: '+to_unicode(e))
+        return annotations
 
 #    def get_previous(self):
 #        # FIXME: redo it with fs.node_history

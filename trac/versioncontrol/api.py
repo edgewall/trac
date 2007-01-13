@@ -76,7 +76,6 @@ class RepositoryManager(Component):
     def post_process_request(self, req, template, content_type):
         return (template, content_type)
 
-
     # Public API methods
 
     def get_repository(self, authname):
@@ -329,6 +328,15 @@ class Node(object):
                 skip = False
             else:
                 return p
+
+    def get_annotations(self):
+        """Provide detailed backward history for the content of this Node.
+
+        Retrieve an array of short `rev` numbers, one entry for each line in
+        the content for that node.
+        Only expected to work on FILE nodes, of course.
+        """
+        raise NotImplementedError
 
     def get_properties(self):
         """Returns the properties (meta-data) of the node, as a dictionary.
