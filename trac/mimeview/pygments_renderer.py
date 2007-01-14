@@ -191,7 +191,7 @@ class PygmentsRenderer(Component):
             )
 
     def _generate(self, language, content):
-        lexer = get_lexer_by_name(language)
+        lexer = get_lexer_by_name(language, stripnl=False)
         return GenshiHtmlFormatter().generate(lexer.get_tokens(content))
 
 

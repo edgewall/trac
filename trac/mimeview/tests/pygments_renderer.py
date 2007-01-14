@@ -15,7 +15,7 @@ import os
 import re
 import unittest
 
-from genshi.core import Stream
+from genshi.core import Stream, TEXT
 from genshi.input import HTMLParser, XML
 
 from trac.test import EnvironmentStub, Mock
@@ -81,6 +81,17 @@ def hello():
         result = self.pygments.render(self.context, 'text/x-python', '')
         self.assertTrue(result)
         self._test('empty_content', result)
+
+    def test_newline_content(self):
+        """
+        stripnl defaults to True in Pygments!
+
+        Even without it set, files still end up one line shorter.
+        """
+        result = self.pygments.render(self.context, 'text/x-python', '\n\n\n\n')
+        self.assertTrue(result)
+        t = "".join(r[1] for r in result if r[0] is TEXT)
+        self.assertEqual("\n\n\n", t)
 
 
 def suite():

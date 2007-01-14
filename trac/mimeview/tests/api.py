@@ -100,6 +100,7 @@ class MimeviewTestCase(unittest.TestCase):
 class GroupLinesTestCase(unittest.TestCase):
 
     def test_empty_stream(self):
+        # FIXME: this currently fails
         lines = list(_group_lines([]))
         self.assertEqual(len(lines), 0)
 
@@ -109,6 +110,13 @@ class GroupLinesTestCase(unittest.TestCase):
         self.assertEquals(len(lines), 1)
         self.assertTrue(isinstance(lines[0], Stream))
         self.assertEquals(lines[0].events, input)
+
+    def test_text_only_stream2(self):
+        input = [(TEXT, "test\n", (None, -1, -1))]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), 1)
+        self.assertTrue(isinstance(lines[0], Stream))
+        self.assertEquals(lines[0].events, [(TEXT, "test", (None, -1, -1))])
 
     def test_simplespan(self):
         input = HTMLParser(StringIO("<span>test</span>"))
@@ -124,9 +132,17 @@ class GroupLinesTestCase(unittest.TestCase):
         """
         input = [(TEXT, "", (None, -1, -1))]
         lines = list(_group_lines(input))
+        self.assertEquals(len(lines), 0)
+
+    def test_newline_stream(self):
+        input = [(TEXT, "\n", (None, -1, -1))]
+        lines = list(_group_lines(input))
         self.assertEquals(len(lines), 1)
-        self.assertTrue(isinstance(lines[0], Stream))
-        self.assertEquals(lines[0].events, input)
+
+    def test_newline_stream2(self):
+        input = [(TEXT, "\n\n\n", (None, -1, -1))]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), 3)
 
     def test_empty_text_in_span(self):
         """
@@ -153,7 +169,21 @@ class GroupLinesTestCase(unittest.TestCase):
         lines = list(_group_lines(input))
         self.assertEquals(len(lines), len(expected))
         for a, b in zip(lines, expected):
-            self.assertEquals(a.render('xml'), b)
+            self.assertEquals(a.render('html'), b)
+
+    def test_newline2(self):
+        """
+        Same as test_newline above, but make sure it behaves properly wrt
+        the trailing \\n, especially given it's inside an element.
+        """
+        input = HTMLParser(StringIO('<span class="c">a\nb\n</span>'))
+        expected = ['<span class="c">a</span>',
+                    '<span class="c">b</span>',
+                   ]
+        lines = list(_group_lines(input))
+        self.assertEquals(len(lines), len(expected))
+        for a, b in zip(lines, expected):
+            self.assertEquals(a.render('html'), b)
 
     def test_multinewline(self):
         """
@@ -168,7 +198,7 @@ class GroupLinesTestCase(unittest.TestCase):
         lines = list(_group_lines(input))
         self.assertEquals(len(lines), len(expected))
         for a, b in zip(lines, expected):
-            self.assertEquals(a.render('xml'), b)
+            self.assertEquals(a.render('html'), b)
 
 
 def suite():

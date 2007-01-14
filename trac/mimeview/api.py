@@ -716,6 +716,18 @@ def _group_lines(stream):
                     yield kind, data, pos
 
     buf = []
+    
+    # Fix the \n at EOF.
+    if not isinstance(stream, list):
+        stream = list(stream)
+    for i in range(len(stream)-1, -1, -1):
+        if stream[i][0] is TEXT:
+            e = stream[i]
+            # One chance to strip a \n
+            if e[1].endswith('\n'):
+                stream[i] = (e[0], e[1][:-1], e[2])
+            break
+
     for kind, data, pos in _generate():
         if kind is TEXT and data == '\n':
             yield Stream(buf[:])
