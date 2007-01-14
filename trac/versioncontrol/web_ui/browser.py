@@ -496,10 +496,8 @@ class BlameAnnotator(object):
                                   chgset.message))
             anchor = tag.a('[%s]' % str(rev),
                            title=title, href=chgset_href)
-            color = 'rgb(%d, %d, %d)' % \
-                    self.colorize_age(self.timerange.relative(chgset.date))
-            style = 'background-color: %s; border-bottom-color: %s' % \
-                    (color, color)
+            color = self.colorize_age(self.timerange.relative(chgset.date))
+            style = 'background-color: rgb(%d, %d, %d);' % color
             self.chgset_data[rev] = (anchor, style)
         else:
             anchor, style = self.chgset_data[rev]
@@ -510,8 +508,10 @@ class BlameAnnotator(object):
         if not path or path == self.context.id:
             path = ''
         # -- produce blame column, eventually with an anchor
-        blame_col = tag.th(style=self.prev_style,
-                           class_='blame r%s %s' % (rev, path))
+        style = self.prev_style
+        if lineno < len(self.changesets) and self.changesets[lineno] == chgset:
+            style += ' border-bottom: none;'
+        blame_col = tag.th(style=style, class_='blame r%s %s' % (rev, path))
         if self.prev_chgset != chgset:
             blame_col.append(anchor)
             self.prev_chgset = chgset
