@@ -511,7 +511,7 @@ class BlameAnnotator(object):
         style = self.prev_style
         if lineno < len(self.changesets) and self.changesets[lineno] == chgset:
             style += ' border-bottom: none;'
-        blame_col = tag.th(style=style, class_='blame r%s %s' % (rev, path))
+        blame_col = tag.th(style=style, class_='blame r%s' % rev)
         if self.prev_chgset != chgset:
             blame_col.append(anchor)
             self.prev_chgset = chgset

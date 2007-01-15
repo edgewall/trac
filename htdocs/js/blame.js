@@ -13,11 +13,21 @@ function enableBlame(url, original_path) {
     return offset;
   }
 
-  /* for each blame column... */
-  $("table.code th.blame").each(function () {
-    var classes = $(this).attr("class").split(" "); // "blame r123 [path]"
-    var rev = classes[1];
-    var path = classes[2] || original_path; // [path] only present if != orig.
+  /* for each blame cell containing a changeset link... */
+  var rev_paths = {};
+  $("table.code th.blame a").each(function() {
+    href = $(this).attr("href");
+    rev_href = href.substr(href.indexOf("changeset/") + 10);
+    elts = rev_href.split("/");
+    var path = elts.slice(1).join("/");
+    if (path != original_path)
+      rev_paths["r"+elts[0]] = path;
+  });
+
+  /* for each blame cell... */
+  $("table.code th.blame").each(function() {
+    var rev = $(this).attr("class").split(" ")[1]; // "blame r123"
+    var path = rev_paths[rev] || original_path; // only found if != orig
 
     if (!rev)
       return;
