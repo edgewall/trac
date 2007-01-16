@@ -116,6 +116,8 @@ class PostgreSQLConnection(ConnectionWrapper):
             except ImportError:
                 from pyPgSQL import PgSQL
                 from pyPgSQL.libpq import OperationalError as PGSchemaError
+        if 'host' in params:
+            host = params['host']
         if psycopg:
             dsn = []
             if path:
