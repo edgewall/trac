@@ -481,15 +481,15 @@ class TracGuideTocMacro(WikiMacroBase):
           ]
 
     def render_macro(self, formatter, name, args):
-	curpage = formatter.context.id
+        curpage = formatter.context.id
 
         # Provision for multilingual TOC (e.g. TranslateRu/TracGuide ...)
-	lang = ''
+        lang = ''
         idx = curpage.find('/')
         if idx > 0:
             lang = curpage[:idx+1]
             
-	return tag.div(tag.h4('Table of Contents'),
+        return tag.div(tag.h4('Table of Contents'),
                        tag.ul([tag.li(tag.a(title,
                                             href=formatter.href.wiki(lang+ref)),
                                       class_=(ref == curpage and "active"))
