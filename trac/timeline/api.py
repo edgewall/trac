@@ -17,6 +17,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+from urlparse import urljoin
+
 from trac.core import *
 from trac.util.datefmt import to_timestamp
 from trac.web.href import Href
@@ -61,7 +63,7 @@ class TimelineEvent(object):
         req = self.context.req
         if self.href.startswith('/'):
             # Convert from a relative `href` 
-            return Href(req.abs_href.base[:-len(req.href.base)])() + self.href
+            return urljoin(req.abs_href.base, self.href)
         else:
             return self.href
     abs_href = property(fget=_get_abs_href)

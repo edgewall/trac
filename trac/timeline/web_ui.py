@@ -21,6 +21,7 @@ from datetime import datetime, timedelta
 from heapq import heappush, heappop
 import re
 import time
+from urlparse import urlparse
 
 from trac.config import IntOption
 from trac.core import *
@@ -165,9 +166,8 @@ class TimelineModule(Component):
         kind, href, title, date, author, markup = event
         if not isinstance(date, datetime):
             date = datetime.fromtimestamp(date, utc)
-        base = req.abs_href.base[:-len(req.href.base)]
-        if href and href.startswith(base):
-            href = href[len(base):]
+        if href and href.startswith(req.abs_href.base):
+            href = urlparse(href)[2]
         event = TimelineEvent(kind, title, href, markup)
         event.set_changeinfo(date, author)
         event.set_context(Context(self.env, None), '')
