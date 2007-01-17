@@ -1,7 +1,3 @@
-function escapeHTML(text) {
-  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 function convertDiff(name, table) {
   var ths = table.tHead.rows[0].cells;
   var lines = [
@@ -34,13 +30,13 @@ function convertDiff(name, table) {
       var newLineNo = parseInt($(cells[1]).text());
       var line = $(cells[2]).text();
       if (isNaN(oldLineNo)) {
-        lines.push("+ " + escapeHTML(line));
+        lines.push("+ " + line);
         newLength += 1;
       } else if (isNaN(newLineNo)) {
-        lines.push("- " + escapeHTML(line));
+        lines.push("- " + line);
         oldLength += 1;
       } else {
-        lines.push("  " + escapeHTML(line));
+        lines.push("  " + line);
         oldLength += 1;
         newLength += 1;
         if (!oldOffset) oldOffset = oldLineNo;
@@ -55,7 +51,7 @@ function convertDiff(name, table) {
     .replace("{1}", oldOffset).replace("{2}", oldLength)
     .replace("{3}", newOffset).replace("{4}", newLength);
 
-  return lines.join("<br />");
+  return lines.join("\n");
 }
 
 $(document).ready(function() {
@@ -72,7 +68,7 @@ $(document).ready(function() {
     }).addClass("active").appendTo(switcher);
     $("<span>Unified</span>").click(function() {
       $(table).hide();
-      if (!pre.get(0).firstChild) pre.html(convertDiff(name, table));
+      if (!pre.get(0).firstChild) pre.text(convertDiff(name, table));
       $(pre).fadeIn("fast")
       $(this).addClass("active").siblings("span").removeClass("active");
       return false;

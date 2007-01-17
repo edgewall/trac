@@ -2,7 +2,7 @@ $.fn.addAnchor = function(title) {
   title = title || "Link here";
   return this.filter("*[@id]").each(function() {
     $("<a class='anchor'> \u00B6</a>").attr("href", "#" + this.id)
-      .title(title).appendTo(this);
+      .attr("title", title).appendTo(this);
   });
 }
 
@@ -21,7 +21,7 @@ $.fn.enable = function(enabled) {
   if (enabled == undefined) enabled = true;
   return this.each(function() {
     this.disabled = !enabled;
-    var label = $(this).ancestors("label");
+    var label = $(this).parents("label");
     if (!label.length && this.id) {
       label = $("label[@for='" + this.id + "']");
     }
@@ -67,5 +67,5 @@ function enableControl(id, enabled) {
   $("#" + id).enable(enabled);
 }
 function getAncestorByTagName(elem, tagName) {
-  return $(elem).ancestors(tagName).get(0);
+  return $(elem).parents(tagName).get(0);
 }
