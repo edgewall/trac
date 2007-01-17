@@ -23,7 +23,7 @@ recursive-include htdocs/css *.css
 recursive-include htdocs/js *.js
 recursive-include doc *trac_logo.* *README
 recursive-include wiki-default *
-recursive-include wiki-macros *.py
+recursive-include sample-plugins *.py
 recursive-include templates *.cs *README
 recursive-include contrib *
 global-exclude *~

@@ -423,7 +423,7 @@ def default_dir(name):
     except ImportError:
         # This is not a regular install with a generated siteconfig.py file,
         # so try to figure out the directory based on common setups
-        special_dirs = {'wiki': 'wiki-default', 'macros': 'wiki-macros'}
+        special_dirs = {'wiki': 'wiki-default'}
         dirname = special_dirs.get(name, name)
 
         # First assume we're being executing directly form the source directory

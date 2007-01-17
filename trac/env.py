@@ -61,7 +61,7 @@ class Environment(Component, ComponentManager):
     things:
      * a configuration file.
      * an SQLite database (stores tickets, wiki pages...)
-     * Project specific templates and wiki macros.
+     * Project specific templates and plugins.
      * wiki and ticket attachments.
     """   
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
@@ -244,7 +244,6 @@ class Environment(Component, ComponentManager):
         os.mkdir(self.get_log_dir())
         os.mkdir(self.get_htdocs_dir())
         os.mkdir(os.path.join(self.path, 'plugins'))
-        os.mkdir(os.path.join(self.path, 'wiki-macros'))
 
         # Create a few files
         _create_file(os.path.join(self.path, 'VERSION'),

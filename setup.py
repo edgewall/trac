@@ -39,7 +39,6 @@ class my_install (install):
          templates_dir = os.path.join(path, 'share', 'trac', 'templates')
          htdocs_dir = os.path.join(path, 'share', 'trac', 'htdocs')
          wiki_dir = os.path.join(path, 'share', 'trac', 'wiki-default')
-         macros_dir = os.path.join(path, 'share', 'trac', 'wiki-macros')
          plugins_dir = os.path.join(path, 'share', 'trac', 'plugins')
          f = open(_p('trac/siteconfig.py'), 'w')
          f.write("""
@@ -50,12 +49,11 @@ __default_conf_dir__ = %(conf)r
 __default_templates_dir__ = %(templates)r
 __default_htdocs_dir__ = %(htdocs)r
 __default_wiki_dir__ = %(wiki)r
-__default_macros_dir__ = %(macros)r
 __default_plugins_dir__ = %(plugins)r
 
 """ % {'trac': PACKAGE, 'ver': VERSION, 'conf': _p(conf_dir),
        'templates': _p(templates_dir), 'htdocs': _p(htdocs_dir),
-       'wiki': _p(wiki_dir), 'macros': _p(macros_dir),
+       'wiki': _p(wiki_dir),
        'plugins': _p(plugins_dir)})
          f.close()
 
@@ -235,7 +233,7 @@ facilities.
                   (_p('share/trac/htdocs/js'), glob(_p('htdocs/js/*'))),
                   (_p('share/man/man1'), glob(_p('scripts/*.1'))),
                   (_p('share/trac/wiki-default'), glob(_p('wiki-default/[A-Z]*'))),
-                  (_p('share/trac/wiki-macros'), glob(_p('wiki-macros/*.py')))],
+                  ],
       scripts=[_p('scripts/trac-admin'),
                _p('scripts/trac-postinstall.py'),
                _p('scripts/tracd'),

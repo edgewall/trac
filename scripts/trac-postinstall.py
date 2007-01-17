@@ -18,7 +18,6 @@ def install():
     htdocs_dir = os.path.join(prefix, 'share', 'trac', 'htdocs')
     plugins_dir = os.path.join(prefix, 'share', 'trac', 'plugins')
     wiki_dir = os.path.join(prefix, 'share', 'trac', 'wiki-default')
-    macros_dir = os.path.join(prefix, 'share', 'trac', 'wiki-macros')
 
     siteconfig = os.path.join(site_packages, 'trac', 'siteconfig.py')
     fd = open(siteconfig, 'w')
@@ -30,12 +29,11 @@ __default_conf_dir__ = %(conf)r
 __default_templates_dir__ = %(templates)r
 __default_htdocs_dir__ = %(htdocs)r
 __default_wiki_dir__ = %(wiki)r
-__default_macros_dir__ = %(macros)r
 __default_plugins_dir__ = %(plugins)r
 
 """ % {'version': trac.__version__, 'conf': conf_dir,
        'templates': templates_dir, 'htdocs': htdocs_dir, 'wiki': wiki_dir,
-       'macros': macros_dir, 'plugins': plugins_dir})
+       'plugins': plugins_dir})
     fd.close()
 
     file_created(siteconfig)

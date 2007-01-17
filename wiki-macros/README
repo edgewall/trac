@@ -1,0 +1,34 @@
+Support for HDF-based macros has been dropped starting with Trac 0.11
+as with the switch to the Genshi templating engine, the `hdf` data
+prepared for the Clearsilver engine used upto Trac 0.10 has simply
+disappeared.
+
+This means that the old-style macros installed in the `wiki-macros` folder,
+i.e. the Python source files containing the simple function:
+
+  def execute(hdf, txt, env):
+    ...
+
+must be rewritten into new-style macros,
+i.e. plugins implementing the IWikiMacroProvider interface.
+
+This is not necessarily a complex task, given that:
+ - the plugin can be a "single file plugin" which doesn't need to be
+   configured to use setuptools. Creating a single .py source file
+   and dropping it at the right place (the `plugins` folder next to 
+   the old `wiki-macros` folder) also works;
+ - instead of implementing the IWikiMacroProvider directly, 
+   inheriting from the WikiMacroBase class also works well and is
+   a bit more convenient.
+
+Note that not only is this not more complex, but it's also much more
+powerful, as the macro can now access the Wiki `formatter` object,
+and through it, all the other objects that are meaningful in the
+context of the Wiki text containing the macro call.
+
+You can see how the examples for the old-style macros have been 
+converted to the new-style macros (single file plugins), in the
+`sample-plugins/HelloWorld.py` and `sample-plugins/Timestamp.py` files.
+
+Note that the TracGuideToc macro has been integrated in the main
+source code base (in `trac/wiki/macros.py`).
