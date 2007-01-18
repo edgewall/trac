@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from trac.util.html import escape, Markup
+from trac.util.text import expandtabs
 
 from difflib import SequenceMatcher
 import re
@@ -183,14 +184,14 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
             else:
                 if tag in ('replace', 'delete'):
                     for line in fromlines[i1:i2]:
-                        line = line.expandtabs(tabwidth)
+                        line = expandtabs(line, tabwidth, '\0\1')
                         line = escape(line, quotes=False) \
                                .replace('\0', '<del>').replace('\1', '</del>')
                         blocks[-1]['base']['lines'].append(
                             Markup(space_re.sub(htmlify, unicode(line))))
                 if tag in ('replace', 'insert'):
                     for line in tolines[j1:j2]:
-                        line = line.expandtabs(tabwidth)
+                        line = expandtabs(line, tabwidth, '\0\1')
                         line = escape(line, quotes=False) \
                                .replace('\0', '<ins>').replace('\1', '</ins>')
                         blocks[-1]['changed']['lines'].append(

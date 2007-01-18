@@ -3,7 +3,7 @@
 import doctest
 import unittest
 
-from trac.util.text import to_unicode
+from trac.util.text import to_unicode, expandtabs
 
 class ToUnicodeTestCase(unittest.TestCase):
 
@@ -45,10 +45,21 @@ class ToUnicodeTestCase(unittest.TestCase):
         except PermissionError, e:
             self.assertEquals(u'acc\xe8s interdit', to_unicode(e))
 
+class ExpandtabsTestCase(unittest.TestCase):
+    def test_empty(self):
+        x = expandtabs('', ignoring='\0')
+        self.assertEquals('', x)
+    def test_ingoring(self):
+        x = expandtabs('\0\t', ignoring='\0')
+        self.assertEquals('\0        ', x)
+    def test_tabstops(self):
+        self.assertEquals('        ', expandtabs('       \t'))
+        self.assertEquals('                ', expandtabs('\t\t'))
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ExpandtabsTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
