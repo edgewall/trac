@@ -482,6 +482,7 @@ class Mimeview(Component):
 
                 if not (force_source or getattr(renderer, 'returns_source',
                                                 False)):
+                    # Direct rendering of content
                     if isinstance(result, basestring):
                         if not isinstance(result, unicode):
                             result = to_unicode(result)
@@ -491,11 +492,14 @@ class Mimeview(Component):
                     else:
                         return result
 
+                # Render content as source code
                 if annotations:
                     m = context.req and context.req.args.get('marks') or None
-                    return self._annotate(context, result, annotations,
-                                          m and Ranges(m))
+                    return self._render_source(context, result, annotations,
+                                               m and Ranges(m))
                 else:
+                    if isinstance(result, list):
+                        result = Markup('\n').join(result)
                     return tag.div(class_='code')(tag.pre(result)).generate()
 
             except Exception, e:
@@ -504,7 +508,7 @@ class Mimeview(Component):
                 errors.append((renderer, e))
         return errors
 
-    def _annotate(self, context, stream, annotations, marks=None):
+    def _render_source(self, context, stream, annotations, marks=None):
         annotators, labels, titles = {}, {}, {}
         for annotator in self.annotators:
             atype, alabel, atitle = annotator.get_annotation_type()

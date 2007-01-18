@@ -22,6 +22,8 @@ Get it at: http://silvercity.sourceforge.net/
 import re
 from StringIO import StringIO
 
+from genshi.core import Markup
+
 from trac.core import *
 from trac.config import ListOption
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
@@ -147,4 +149,5 @@ class SilverCityRenderer(Component):
 
         # SilverCity generates _way_ too many non-breaking spaces...
         # We don't need them anyway, so replace them by normal spaces
-        return html.replace('&nbsp;', ' ').splitlines()
+        return [Markup(line)
+                for line in html.replace('&nbsp;', ' ').splitlines()]

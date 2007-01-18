@@ -19,6 +19,8 @@
 import os
 import re
 
+from genshi.core import Markup
+
 from trac.core import *
 from trac.config import Option
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
@@ -107,5 +109,5 @@ class PHPRenderer(Component):
 
         # PHP generates _way_ too many non-breaking spaces...
         # We don't need them anyway, so replace them by normal spaces
-        return [line.replace('&nbsp;', ' ') for line in html.split('<br />')]
-
+        return [Markup(line.replace('&nbsp;', ' '))
+                for line in html.split('<br />')]

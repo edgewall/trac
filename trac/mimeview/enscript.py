@@ -15,6 +15,8 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
+from genshi.core import Markup
+
 from trac.config import Option, ListOption
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
@@ -150,4 +152,4 @@ class EnscriptRenderer(Component):
         end = i > 0 and i or len(odata)
 
         odata = EnscriptDeuglifier().format(odata[beg:end].decode('utf-8'))
-        return odata.splitlines()
+        return [Markup(line) for line in odata.splitlines()]
