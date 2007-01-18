@@ -1,27 +1,18 @@
-/* About config */
-#content.about_config table {
- border-collapse: collapse;
- margin: 2em 0;
-}
-#content.about_config th {
- background: #f7f7f0;
- font-weight: bold;
- text-align: left;
- vertical-align: top;
-}
-#content.about_config th.section {
- text-align: right;
-}
-#content.about_config th, #content.about_config td {
- border: 1px solid #ddd;
- padding: 3px;
-}
-#content.about_config td.name { background:#f9f9f0; }
-#content.about_config td.value { background:#f9f9f0; font-weight: bold; }
-#content.about_config td.defaultvalue { font-family: monospace;
-  background: #f9f9f0;
-}
-#content.about_config td.doc { padding: 3px 1em 3px 1em; }
+/* About page */
+#content.about p.copyright { color: #999; font-size: 90%; }
+#content.about h2 { margin-top: 2em; }
+#content.about table { margin-top: 0; width: auto; }
+#content.about table th, #content.about table td { font-size: 90%; }
 
-#content.about_systeminfo #systeminfo { margin: 1em; width: auto; }
-#content.about_systeminfo #systeminfo th { font-weight: bold; text-align: right; }
+#content.about th { background: #f7f7f0; font-weight: bold; text-align: right;
+  vertical-align: top;
+}
+
+#content.about #config th { text-align: left; }
+#content.about #config th.section { text-align: right; }
+#content.about #config th, #content.about #config td { border: 1px solid #ddd;
+  padding: 3px;
+}
+#content.about #config td.value { font-family: monospace; }
+#content.about #config tr.modified td.value { font-weight: bold; }
+#content.about #config td.doc { padding: 3px 1em; }

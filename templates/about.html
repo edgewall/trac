@@ -11,27 +11,51 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <h2>About Navigation</h2>
-      <ul>
-        <li class="first${'CONFIG_VIEW' not in perm and ' last' or ''}">
-          <a href="${href.about()}">Overview</a>
-        </li>
-        <li py:if="'CONFIG_VIEW' in perm">
-          <a href="${href.about('systeminfo')}">System Information</a>
-        </li>
-        <li class="last" py:if="'CONFIG_VIEW' in perm">
-          <a href="${href.about('config')}">Configuration</a>
-        </li>
-      </ul>
-    </div>
+    <div id="ctxtnav" class="nav"></div>
 
-    <div id="content" class="${about.page and 'about_%s' % about.page or 'about'}"
-         py:choose="about.page">
+    <div id="content" class="about">
 
-      <div py:when="'config'" py:strip="">
-        <h1>Configuration</h1>
-        <table>
+      <a href="http://trac.edgewall.org/"
+        style="border: none; float: right; margin-left: 2em">
+        <img style="display: block" src="${href.chrome('common/trac_banner.png')}"
+          alt="Trac: Integrated SCM &amp; Project Management"/>
+      </a>
+      <h1>About Trac</h1>
+      <p>Trac is a web-based software project management and bug/issue
+        tracking system emphasizing ease of use and low ceremony.
+        It provides an integrated Wiki, an interface to version control
+        systems, and a number convenient ways to stay on top of events
+        and changes within a project.
+      </p>
+      <p>Trac is distributed under the modified BSD License.<br />
+        The complete text of the license can be found
+        <a href="http://trac.edgewall.org/wiki/TracLicense">online</a>
+        as well as in the <tt>COPYING</tt> file included in the distribution.</p>
+      <a href="http://www.python.org/" style="border: none; float: right">
+        <img style="display: block" src="${chrome.htdocs_location}python.png"
+          alt="python powered" width="140" height="56" />
+      </a>
+      <p>Please visit the Trac open source project:
+        <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
+      <p class="copyright">Copyright &copy; 2003-2007
+        <a href="http://www.edgewall.org/">Edgewall Software</a>
+      </p>
+
+      <hr py:strip="not (about.systeminfo or about.config)" />
+
+      <div py:if="about.systeminfo" id="systeminfo">
+        <h2>System Information</h2>
+        <table class="listing">
+          <tr py:for="name, value in about.systeminfo">
+            <th>$name:</th>
+            <td>$value</td>
+          </tr>
+        </table>
+      </div>
+
+      <div py:if="about.config" id="config">
+        <h2>Configuration</h2>
+        <table class="listing">
           <thead>
             <tr>
               <th class="section">Section</th>
@@ -41,58 +65,18 @@
           </thead>
           <tbody>
             <div py:for="section in about.config" py:strip="">
-              <tr py:for="idx,option in enumerate(section.options)">
+              <tr py:for="idx,option in enumerate(section.options)"
+                  class="${option.modified and 'modified' or None}">
                 <th py:if="idx == 0" class="section"
-                  rowspan="${len(section.options)}">
-                  ${section.name}</th>
+                    rowspan="${len(section.options)}">${section.name}</th>
                 <td class="name">${option.name}</td>
-                <td class="${option.valueclass}">${option.value}</td>
+                <td class="value">${option.value}</td>
               </tr>
             </div>
           </tbody>
         </table>
-        <div id="help">
-          See <a href="${href.wiki('TracIni')}">TracIni</a> for information about
-          the configuration.
-        </div>
       </div>
 
-      <div py:when="'systeminfo'" py:strip="">
-        <h1>System Information</h1>
-        <table class="listing" id="systeminfo">
-          <tr py:for="name, value in trac.systeminfo">
-            <th>$name:</th>
-            <td>$value</td>
-          </tr>
-        </table>
-      </div>
-
-      <div py:otherwise="" py:strip="">
-        <a href="http://trac.edgewall.org/"
-          style="border: none; float: right; margin-left: 2em">
-          <img style="display: block" src="${href.chrome('common/trac_banner.png')}"
-            alt="Trac: Integrated SCM &amp; Project Management"/>
-        </a>
-        <h1>About Trac ${trac.version}</h1>
-        <p>Trac is a web-based software project management and bug/issue
-          tracking system emphasizing ease of use and low ceremony.
-          It provides an integrated Wiki, an interface to version control
-          systems, and a number convenient ways to stay on top of events
-          and changes within a project.
-        </p>
-        <p>Trac is distributed under the modified BSD License.<br />
-          The complete text of the license can be found
-          <a href="http://trac.edgewall.org/wiki/TracLicense">online</a>
-          as well as in the <tt>COPYING</tt> file included in the distribution.</p>
-        <a href="http://www.python.org/" style="border: none; float: right">
-          <img style="display: block" src="${chrome.htdocs_location}python.png"
-            alt="python powered" width="140" height="56" />
-        </a>
-        <p>Please visit the Trac open source project:
-          <a href="http://trac.edgewall.org/">http://trac.edgewall.org/</a></p>
-        <p>Copyright &copy; 2003-2006
-          <a href="http://www.edgewall.org/">Edgewall Software</a></p>
-      </div>
     </div>
   </body>
 </html>

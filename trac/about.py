@@ -50,46 +50,29 @@ class AboutModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/about(?:_trac)?(?:/(.*))?$', req.path_info)
-        if match:
-            if match.group(1):
-                req.args['page'] = match.group(1)
-            return True
+        return re.match(r'/about(?:_trac)?(?:/.*)?$', req.path_info)
 
     def process_request(self, req):
-        page = req.args.get('page', 'default')
-        if page == 'config':
-            data = self._render_config(req)
-        elif page == 'systeminfo':
-            data = self._render_systeminfo(req)
-        else:
-            data = {}
+        data = {}
+
+        if 'CONFIG_VIEW' in req.perm:
+            # Collect system information
+            data['systeminfo'] = self.env.systeminfo
+
+            # Collect config information
+            sections = []
+            for section in self.config.sections():
+                options = []
+                default_options = self.config.defaults().get(section)
+                for name,value in self.config.options(section):
+                    default = default_options and default_options.get(name) or ''
+                    options.append({
+                        'name': name, 'value': value,
+                        'modified': unicode(value) == unicode(default)
+                    })
+                options.sort(lambda x,y: cmp(x['name'], y['name']))
+                sections.append({'name': section, 'options': options})
+            sections.sort(lambda x,y: cmp(x['name'], y['name']))
+            data['config'] = sections
 
         return 'about.html', {'about': data}, None
-
-    # Internal methods
-
-    def _render_config(self, req):
-        req.perm.assert_permission('CONFIG_VIEW')
-        data = {'page': 'config'}
-        
-        sections = []
-        for section in self.config.sections():
-            options = []
-            default_options = self.config.defaults().get(section)
-            for name,value in self.config.options(section):
-                default = default_options and default_options.get(name) or ''
-                options.append({
-                    'name': name, 'value': value,
-                    'valueclass': (unicode(value) == unicode(default) 
-                                   and 'defaultvalue' or 'value')})
-            options.sort(lambda x,y: cmp(x['name'], y['name']))
-            sections.append({'name': section, 'options': options})
-        sections.sort(lambda x,y: cmp(x['name'], y['name']))
-        data['config'] = sections
-        return data
-
-    def _render_systeminfo(self, req):
-        req.perm.assert_permission('CONFIG_VIEW')
-        data = {'page': 'systeminfo', 'systeminfo': self.env.systeminfo}
-        return data
