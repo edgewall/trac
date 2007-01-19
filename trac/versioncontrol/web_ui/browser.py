@@ -448,7 +448,7 @@ class BlameAnnotator(object):
         self.reset()
 
     def reset(self):
-        rev = [self.context.version, None][self.context.version == -1]
+        rev = self.context.version
         node = self.repos.get_node(self.context.id, rev)
         # -- get revision numbers for each line
         self.annotations = node.get_annotations()
@@ -491,9 +491,8 @@ class BlameAnnotator(object):
         # -- compute anchor and style once per revision
         if rev not in self.chgset_data:
             chgset_href = self.context.href.changeset(rev, path)
-            title = shorten_line('%s: %s' %
-                                 (chgset.author.split(' ', 1)[0],
-                                  chgset.message))
+            short_author = chgset.author.split(' ', 1)[0]
+            title = shorten_line('%s: %s' % (short_author, chgset.message))
             anchor = tag.a('[%s]' % str(rev),
                            title=title, href=chgset_href)
             color = self.colorize_age(self.timerange.relative(chgset.date))

@@ -329,8 +329,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def test_changeset_repos_creation(self):
         chgset = self.repos.get_changeset(0)
         self.assertEqual(0, chgset.rev)
-        self.assertEqual(None, chgset.message)
-        self.assertEqual(None, chgset.author)
+        self.assertEqual('', chgset.message)
+        self.assertEqual('', chgset.author)
         self.assertEqual(datetime(2005,4,1,9,57,41,0,utc), chgset.date)
         self.assertRaises(StopIteration, chgset.get_changes().next)
 
@@ -599,8 +599,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
     def test_changeset_repos_creation(self):
         chgset = self.repos.get_changeset(0)
         self.assertEqual(0, chgset.rev)
-        self.assertEqual(None, chgset.message)
-        self.assertEqual(None, chgset.author)
+        self.assertEqual('', chgset.message)
+        self.assertEqual('', chgset.author)
         self.assertEqual(datetime(2005,4,1,9,57,41,0,utc), chgset.date)
         self.assertRaises(StopIteration, chgset.get_changes().next)
 

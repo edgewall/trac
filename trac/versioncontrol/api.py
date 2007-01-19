@@ -387,8 +387,8 @@ class Changeset(object):
 
     def __init__(self, rev, message, author, date):
         self.rev = rev
-        self.message = message
-        self.author = author
+        self.message = message or ''
+        self.author = author or ''
         self.date = date
 
     def get_properties(self):
