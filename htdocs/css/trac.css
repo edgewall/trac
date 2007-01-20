@@ -339,7 +339,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
  border: solid #d7d7d7;
  border-width: 1px 1px 1px 0;
  height: 18px;
- width: 208px;
+ width: 234px;
 }
 .wikitoolbar :link, .wikitoolbar :visited {
  background: transparent url(../edit_toolbar.png) no-repeat;
@@ -363,6 +363,7 @@ table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 .wikitoolbar a#hr { background-position: 0 -80px }
 .wikitoolbar a#np { background-position: 0 -96px }
 .wikitoolbar a#br { background-position: 0 -112px }
+.wikitoolbar a#img { background-position: 0 -128px }
 
 /* Styles for the form for adding attachments. */
 #attachment .field { margin-top: 1.3em }
