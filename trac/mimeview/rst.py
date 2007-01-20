@@ -31,7 +31,7 @@ from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Markup
 from trac.web.href import Href
-from trac.wiki.formatter import WikiProcessor
+from trac.wiki.formatter import WikiProcessor, Formatter
 from trac.wiki import WikiSystem
 
 class ReStructuredTextRenderer(Component):
@@ -142,7 +142,7 @@ class ReStructuredTextRenderer(Component):
 
         # The code_block could is taken from the leo plugin rst2
         def code_formatter(language, text):
-            processor = WikiProcessor(formatter, language)
+            processor = WikiProcessor(Formatter(context), language)
             html = processor.process(text)
             raw = nodes.raw('', html, format='html')
             return raw
