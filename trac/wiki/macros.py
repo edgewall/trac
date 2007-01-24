@@ -54,7 +54,16 @@ class WikiMacroBase(Component):
         """Return the subclass's docstring."""
         return inspect.getdoc(self.__class__)
 
-    def render_macro(self, formatter, name, content):
+    def parse_macro(self, parser, name, content):
+        raise NotImplementedError
+
+    def expand_macro(self, formatter, name, content):
+        # -- TODO: remove in 0.12
+        if hasattr(self, 'render_macro'):
+            self.log.warning('Executing pre-0.11 Wiki macro %s by provider %s'
+                             % (name, self.__class__))            
+            return self.render_macro(formatter.req, name, content)
+        # -- 
         raise NotImplementedError
 
 
@@ -73,7 +82,7 @@ class TitleIndexMacro(WikiMacroBase):
 
     SPLIT_RE = re.compile(r"( |/|[0-9])")
 
-    def render_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
         prefix = args and args[0] or None
         format = kw.get('format', '')
@@ -130,7 +139,7 @@ class RecentChangesMacro(WikiMacroBase):
     recently changed pages to be included in the list.
     """
 
-    def render_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content):
         prefix = limit = None
         if content:
             argv = [arg.strip() for arg in content.split(',')]
@@ -203,7 +212,7 @@ class PageOutlineMacro(WikiMacroBase):
        the right side of the other content.
     """
 
-    def render_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content):
         min_depth, max_depth = 1, 6
         title = None
         inline = 0
@@ -282,7 +291,7 @@ class ImageMacro(WikiMacroBase):
     <gotoh@taiyo.co.jp>''
     """
 
-    def render_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content):
         # args will be null if the macro is called without parenthesis.
         if not content:
             return ''
@@ -396,7 +405,7 @@ class MacroListMacro(WikiMacroBase):
     macros if the `PythonOptimize` option is enabled for mod_python!
     """
 
-    def render_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content):
         from trac.wiki.formatter import system_message
 
         wikimacros = formatter.context('wiki', 'WikiMacros')
@@ -429,7 +438,7 @@ class TracIniMacro(WikiMacroBase):
     options whose section and name start with the filters are output.
     """
 
-    def render_macro(self, formatter, name, filter):
+    def expand_macro(self, formatter, name, filter):
         from trac.config import Option
         filter = filter or ''
 
@@ -480,7 +489,7 @@ class TracGuideTocMacro(WikiMacroBase):
            ('TracNotification',             'Notification'),
           ]
 
-    def render_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, args):
         curpage = formatter.context.id
 
         # Provision for multilingual TOC (e.g. TranslateRu/TracGuide ...)

@@ -81,10 +81,13 @@ class IWikiMacroProvider(Interface):
         """Return a plain text description of the macro with the specified name.
         """
 
-    def render_macro(formatter, name, content):
-        """Return the HTML output of the macro.
+    def render_macro(req, name, content):
+        """Return the HTML output of the macro (deprecated)"""
 
-        Since 0.11: first argument is a Formatter instead of a Request.
+    def expand_macro(formatter, name, content):
+        """Called by the formatter when rendering the parsed wiki text.
+
+        (since 0.11)
         """
 
 

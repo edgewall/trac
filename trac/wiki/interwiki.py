@@ -133,7 +133,7 @@ class InterWikiMap(Component):
     def get_macro_description(self, name): 
         return "Provide a description list for the known InterWiki prefixes."
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         from trac.util import sorted
         from trac.util.html import html as _
         interwikis = []

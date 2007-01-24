@@ -17,31 +17,31 @@ from trac.util.text import to_unicode
 class HelloWorldMacro(WikiMacroBase):
     """A dummy macro used by the unit test."""
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         return 'Hello World, args = ' + content
 
 class DivHelloWorldMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         return '<div>Hello World, args = %s</div>' % content
 
 class DivCodeMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         return '<div class="code">Hello World, args = %s</div>' % content
 
 class DivCodeElementMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         return html.DIV('Hello World, args = ', content, class_="code")
 
 class NoneMacro(WikiMacroBase):
     """A dummy macro returning `None`, used by the unit test."""
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         return None
 
 class SampleResolver(Component):

@@ -1115,7 +1115,7 @@ class TracAdminHelpMacro(WikiMacroBase):
     }}}
     """
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         if content:
             try:
                 arg = content.split(' ', 1)[0]

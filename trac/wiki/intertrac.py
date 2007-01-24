@@ -57,7 +57,7 @@ class InterTracDispatcher(Component):
     def get_macro_description(self, name): 
         return "Provide a list of known InterTrac prefixes."
 
-    def render_macro(self, req, name, content):
+    def expand_macro(self, formatter, name, content):
         intertracs = {}
         for key, value in self.config.options('intertrac'):
             idx = key.rfind('.') # rsplit only in 2.4

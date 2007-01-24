@@ -61,7 +61,10 @@ class WikiProcessor(object):
             for macro_provider in formatter.wiki.macro_providers:
                 for macro_name in macro_provider.get_macros():
                     if self.name == macro_name:
-                        self.processor = self._macro_processor
+                        if hasattr(macro_provider, 'expand_macro'):
+                            self.processor = self._macro_processor
+                        else:
+                            self.processor = self._legacy_macro_processor
                         self.macro_provider = macro_provider
                         break
         if not self.processor:
@@ -99,10 +102,17 @@ class WikiProcessor(object):
 
     # generic processors
 
+    def _legacy_macro_processor(self, text): # TODO: remove in 0.12
+        self.env.log.warning('Executing pre-0.11 Wiki macro %s by provider %s'
+                             % (self.name, self.macro_provider))
+        return self.macro_provider.render_macro(self.formatter.req, self.name,
+                                                text)
+
     def _macro_processor(self, text):
         self.env.log.debug('Executing Wiki macro %s by provider %s'
                            % (self.name, self.macro_provider))
-        return self.macro_provider.render_macro(self.formatter, self.name, text)
+        return self.macro_provider.expand_macro(self.formatter, self.name,
+                                                text)
 
     def _mimeview_processor(self, text):
         return Mimeview(self.env).render(self.formatter.context,
