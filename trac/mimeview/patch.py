@@ -207,13 +207,17 @@ class PatchRenderer(Component):
                             _markup_intraline_change(f, t)
                     for i in xrange(len(f)):
                         line = f[i].expandtabs(tabwidth)
-                        line = escape(line).replace('\0', '<del>') \
-                                           .replace('\1', '</del>')
-                        f[i] = Markup(space_re.sub(htmlify, line))
+                        line = escape(line)
+                        line = '<del>'.join([space_re.sub(htmlify, seg)
+                                             for seg in line.split('\0')])
+                        line = line.replace('\1', '</del>')
+                        f[i] = Markup(line)
                     for i in xrange(len(t)):
                         line = t[i].expandtabs(tabwidth)
-                        line = escape(line).replace('\0', '<ins>') \
-                                           .replace('\1', '</ins>')
-                        t[i] = Markup(space_re.sub(htmlify, line))
+                        line = escape(line)
+                        line = '<ins>'.join([space_re.sub(htmlify, seg)
+                                             for seg in line.split('\0')])
+                        line = line.replace('\1', '</ins>')
+                        t[i] = Markup(line)
 
         return changes

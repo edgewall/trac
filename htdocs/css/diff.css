@@ -150,12 +150,10 @@
 .diff table.inline tbody.mod td del { 
  background: #e99; 
  color: #000;
- white-space: pre;
 }
 .diff table.inline tbody.mod td ins { 
  background: #9e9; 
  color: #000;
- white-space: pre;
 }
 
 /* Styles for the side-by-side diff */
