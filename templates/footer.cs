@@ -1,5 +1,4 @@
-<script type="text/javascript">searchHighlight()</script><?cs
-if:len(chrome.links.alternate) ?>
+<?cs if:len(chrome.links.alternate) ?>
 <div id="altlinks"><h3>Download in other formats:</h3><ul><?cs
  each:link = chrome.links.alternate ?><?cs
   set:isfirst = name(link) == 0 ?><?cs
