@@ -927,15 +927,15 @@ class OneLinerFormatter(Formatter):
             result = shorten_line(result)
 
         result = re.sub(self.wiki.rules, self.replace, result)
-        result = result.replace('[...]', '[&hellip;]')
+        result = result.replace('[...]', u'[\u2026]')
         if result.endswith('...'):
-            result = result[:-3] + '&hellip;'
+            result = result[:-3] + u'\u2026'
 
         # Close all open 'one line'-tags
         result += self.close_tag(None)
         # Flush unterminated code blocks
         if in_code_block > 0:
-            result += '[&hellip;]'
+            result += u'[\u2026]'
         out.write(result)
 
 

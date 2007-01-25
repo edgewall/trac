@@ -651,7 +651,7 @@ class ChangesetModule(Component):
                     files = []
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
-                            files.append(html.LI(Markup('&hellip;')))
+                            files.append(html.LI(u'\u2026'))
                             break
                         files.append(html.LI(html.DIV(class_=chg[2]),
                                              chg[0] or '/'))
