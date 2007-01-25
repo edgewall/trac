@@ -21,6 +21,7 @@ import shutil
 import sys
 
 import pkg_resources
+from genshi import HTML
 from genshi.builder import tag
 
 from trac import __version__ as TRAC_VERSION
@@ -28,10 +29,15 @@ from trac.admin.api import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util import get_pkginfo, get_module_path
-from trac.util.compat import partial, sorted
+from trac.util.compat import partial
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_script, add_stylesheet, Chrome, \
                             INavigationContributor
+
+try:
+    from webadmin import IAdminPageProvider
+except ImportError:
+    IAdminPageProvider = None
 
 
 class AdminModule(Component):
@@ -40,6 +46,10 @@ class AdminModule(Component):
     implements(INavigationContributor, IRequestHandler)
 
     panel_providers = ExtensionPoint(IAdminPanelProvider)
+    if IAdminPageProvider:
+        old_providers = ExtensionPoint(IAdminPageProvider)
+    else:
+        old_providers = None
 
     # INavigationContributor methods
 
@@ -70,6 +80,7 @@ class AdminModule(Component):
         if not panels:
             raise HTTPNotFound('No administration panels available')
 
+        panels.sort()
         cat_id = req.args.get('cat_id') or panels[0][0]
         panel_id = req.args.get('panel_id')
         path_info = req.args.get('path_info')
@@ -80,15 +91,34 @@ class AdminModule(Component):
         if not provider:
             raise HTTPNotFound('Unknown administration panel')
 
-        template, data = provider.render_admin_panel(req, cat_id, panel_id,
-                                                     path_info)
+        if hasattr(provider, 'render_admin_panel'):
+            template, data = provider.render_admin_panel(req, cat_id, panel_id,
+                                                         path_info)
+
+        else: # support for legacy WebAdmin panels
+            data = {}
+            cstmpl, _ = provider.process_admin_request(req, cat_id, panel_id,
+                                                       path_info)
+            if isinstance(cstmpl, basestring):
+                output = req.hdf.render(cstmpl)
+            else:
+                output = cstmpl.render()
+
+            title = 'Untitled'
+            for panel in panels:
+                if (panel[0], panel[2]) == (cat_id, panel_id):
+                    title = panel[3]
+
+            data.update({'page_title': title, 'page_body': HTML(output)})
+            template = 'admin_legacy.html'
+
         data.update({
             'active_cat': cat_id, 'active_panel': panel_id,
             'panel_href': partial(req.href, 'admin', cat_id, panel_id),
             'panels': [{
                 'category': {'id': panel[0], 'label': panel[1]},
                 'panel': {'id': panel[2], 'label': panel[3]}
-            } for panel in sorted(panels)]
+            } for panel in panels]
         })
 
         add_stylesheet(req, 'common/css/admin.css')
@@ -100,11 +130,21 @@ class AdminModule(Component):
         """Return a list of available admin panels."""
         panels = []
         providers = {}
+
         for provider in self.panel_providers:
             p = list(provider.get_admin_panels(req))
             for panel in p:
                 providers[(panel[0], panel[2])] = provider
             panels += p
+
+        # Add panels contributed by legacy WebAdmin plugins
+        if IAdminPageProvider:
+            for provider in self.old_providers:
+                p = list(provider.get_admin_pages(req))
+                for page in p:
+                    providers[(page[0], page[2])] = provider
+                panels += p
+
         return panels, providers
 
 
