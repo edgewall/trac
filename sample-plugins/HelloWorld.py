@@ -45,7 +45,7 @@ class HelloWorldMacro(WikiMacroBase):
     the !MacroList macro (usually used in the WikiMacros page).
     """
 
-    def render_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, args):
         """Return some output that will be displayed in the Wiki content.
 
         `name` is the actual name of the macro (no surprise, here it'll be

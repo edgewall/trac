@@ -29,7 +29,7 @@ from trac.wiki.macros import WikiMacroBase
 class TimestampMacro(WikiMacroBase):
     """Inserts the current time (in seconds) into the wiki page."""
 
-    def render_macro(self, formatter, name, args):
+    def expand_macro(self, formatter, name, args):
         t = time.localtime()
         return tag.b(time.strftime('%c', t))
 # --
