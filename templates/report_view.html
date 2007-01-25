@@ -1,148 +1,174 @@
-<div xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:py="http://genshi.edgewall.org/"
-     id="content" class="report">
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <head>
+    <title>$title</title>
+  </head>
 
-  <h1>$report.title
-    <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
-  </h1>
+  <body>
+    <div id="ctxtnav" class="nav">
+      <h2>Report Navigation</h2>
+      <ul>
+        <li class="first">
+          <a py:strip="not chrome.links.up" href="${chrome.links.up[0].href}">Available Reports</a>
+        </li>
+        <li py:if="query_href" class="last"><a href="$query_href">Custom Query</a></li>
+      </ul>
+    </div>
 
-  <div py:if="report.description" id="description">${context.wiki_to_html(report.description)}</div>
+    <div id="content" class="report">
 
-  <div py:if="report.id != -1 and (report.can.create or report.can.modify or report.can.delete)" class="buttons">
-    <form py:if="report.can.modify" action="" method="get">
-      <div>
-        <input type="hidden" name="action" value="edit" />
-        <input type="submit" value="Edit report" accesskey="e" />
+      <h1>$report.title
+        <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
+      </h1>
+
+      <div py:if="report.description" id="description">${context.wiki_to_html(report.description)}</div>
+
+      <div py:if="report.id != -1 and (report.can.create or report.can.modify or report.can.delete)" class="buttons">
+        <form py:if="report.can.modify" action="" method="get">
+          <div>
+            <input type="hidden" name="action" value="edit" />
+            <input type="submit" value="Edit report" accesskey="e" />
+          </div>
+        </form>
+        <form py:if="report.can.create" action="" method="get">
+          <div>
+            <input type="hidden" name="action" value="copy" />
+            <input type="submit" value="Copy report" />
+          </div>
+        </form>
+        <form py:if="report.can.delete" action="" method="get">
+          <div>
+            <input type="hidden" name="action" value="delete" />
+            <input type="submit" value="Delete report" />
+          </div>
+        </form>
       </div>
-    </form>
-    <form py:if="report.can.create" action="" method="get">
-      <div>
-        <input type="hidden" name="action" value="copy" />
-        <input type="submit" value="Copy report" />
-      </div>
-    </form>
-    <form py:if="report.can.delete" action="" method="get">
-      <div>
-        <input type="hidden" name="action" value="delete" />
-        <input type="submit" value="Delete report" />
-      </div>
-    </form>
-  </div>
 
-  <py:for each="value_for_group, row_group in row_groups">
-    <h2 py:if="value_for_group">$value_for_group
-    <span class="numrows" py:with="cnt = len(row_group)">(${cnt or 'No'} match${cnt != 1 and 'es' or ''})</span></h2>
-    <table class="listing ${report.id == -1 and 'reports' or 'tickets'}">
-      <thead>
-        <tr py:for="header_group in header_groups">
-          <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
-            colspan="${fullrow and '100' or None}">
-            <a py:strip="not sorting_enabled"
-               py:with="args = dict([(k,v) for k,v in report.args.items() if k not in ('sort', 'asc')])"
-              href="${href.report(report.id, sort=header.col, asc=not header.asc and '1' or '0', **args)}">
-              $header.title
-            </a>
-          </th>
-        </tr>
-      </thead>
+      <py:for each="value_for_group, row_group in row_groups">
+        <h2 py:if="value_for_group">$value_for_group
+        <span class="numrows" py:with="cnt = len(row_group)">(${cnt or 'No'} match${cnt != 1 and 'es' or ''})</span></h2>
+        <table class="listing ${report.id == -1 and 'reports' or 'tickets'}">
+          <thead>
+            <tr py:for="header_group in header_groups">
+              <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
+                colspan="${fullrow and '100' or None}">
+                <a py:strip="not sorting_enabled"
+                   py:with="args = dict([(k,v) for k,v in report.args.items() if k not in ('sort', 'asc')])"
+                  href="${href.report(report.id, sort=header.col, asc=not header.asc and '1' or '0', **args)}">
+                  $header.title
+                </a>
+              </th>
+            </tr>
+          </thead>
 
-      <tbody>
-        <py:for each="row in row_group">
-          <tr py:for="cell_group in row.cell_groups"
-            py:with="fullrow = len(cell_group) == 1;
-                     td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
-            class="${row.__color__ and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
-            style="${row.__bgcolor__ and 'background: '+row.__bgcolor__+';'
-            }${row.__fgcolor__ and 'color: '+row.__fgcolor__+';'
-            }${row.__style__ and row.__style__+';'
-            }${fullrow and ';border: none; padding: 0;' or ''}">
+          <tbody>
+            <py:for each="row in row_group">
+              <tr py:for="cell_group in row.cell_groups"
+                py:with="fullrow = len(cell_group) == 1;
+                         td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
+                class="${row.__color__ and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
+                style="${row.__bgcolor__ and 'background: '+row.__bgcolor__+';'
+                }${row.__fgcolor__ and 'color: '+row.__fgcolor__+';'
+                }${row.__style__ and row.__style__+';'
+                }${fullrow and ';border: none; padding: 0;' or ''}">
 
-            <py:for each="cell in cell_group">
-              <py:if test="not cell.header.hidden">
-                <py:with vars="col = cell.header.col.strip('_')">
-                  <py:choose>
+                <py:for each="cell in cell_group">
+                  <py:if test="not cell.header.hidden">
+                    <py:with vars="col = cell.header.col.strip('_')">
+                      <py:choose>
 
-                    <!--! for the report listing -->
-                    <py:when test="col == 'report'">
-                      <td class="$col" py:attrs="td_attrs">
-                        <a title="View report" href="${href.report(cell.value)}">{$cell.value}</a>
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <!--! for the report listing -->
+                        <py:when test="col == 'report'">
+                          <td class="$col" py:attrs="td_attrs">
+                            <a title="View report" href="${href.report(cell.value)}">{$cell.value}</a>
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <py:when test="col == 'title' and report.id == -1">
-                      <td class="$col" py:attrs="td_attrs">
-                        <a title="View report" href="${href.report(row.id)}">$cell.value</a>
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <py:when test="col == 'title' and report.id == -1">
+                          <td class="$col" py:attrs="td_attrs">
+                            <a title="View report" href="${href.report(row.id)}">$cell.value</a>
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <!--! for the ticket listing -->
-                    <py:when test="col in ('ticket', 'id')">
-                      <td class="ticket" py:attrs="td_attrs">
-                        <a title="View ticket" href="${row.context.self_href()}">#$cell.value</a>
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <!--! for the ticket listing -->
+                        <py:when test="col in ('ticket', 'id')">
+                          <td class="ticket" py:attrs="td_attrs">
+                            <a title="View ticket" href="${row.context.self_href()}">#$cell.value</a>
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <py:when test="col == 'summary' and row.id">
-                      <td class="$col" py:attrs="td_attrs">
-                        <a title="View ticket" href="${row.context.self_href()}">$cell.value</a>
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <py:when test="col == 'summary' and row.id">
+                          <td class="$col" py:attrs="td_attrs">
+                            <a title="View ticket" href="${row.context.self_href()}">$cell.value</a>
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <!--! generic fields -->
-                    <py:when test="col == 'time'">
-                      <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_time(int(cell.value)) or '--'}
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <!--! generic fields -->
+                        <py:when test="col == 'time'">
+                          <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_time(int(cell.value)) or '--'}
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <py:when test="col in ('date', 'created', 'modified')">
-                      <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_date(int(cell.value)) or '--'}
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <py:when test="col in ('date', 'created', 'modified')">
+                          <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_date(int(cell.value)) or '--'}
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <py:when test="col == 'datetime'">
-                      <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_datetime(int(cell.value)) or '--'}
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <py:when test="col == 'datetime'">
+                          <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_datetime(int(cell.value)) or '--'}
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <py:when test="col == 'description'">
-                      <td class="$col" py:attrs="td_attrs">${row.context.wiki_to_html(cell.value)}
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:when>
+                        <py:when test="col == 'description'">
+                          <td class="$col" py:attrs="td_attrs">${row.context.wiki_to_html(cell.value)}
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
 
-                    <py:otherwise>
-                      <td class="$col" py:attrs="td_attrs">$cell.value
-                        <hr py:if="fullrow"/>
-                      </td>
-                    </py:otherwise>
+                        <py:otherwise>
+                          <td class="$col" py:attrs="td_attrs">$cell.value
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:otherwise>
 
-                  </py:choose>
-                </py:with>
-              </py:if>
+                      </py:choose>
+                    </py:with>
+                  </py:if>
+                </py:for>
+              </tr>
             </py:for>
-          </tr>
-        </py:for>
-      </tbody>
-    </table>
-  </py:for>
+          </tbody>
+        </table>
+      </py:for>
 
-  <div py:if="report.id == -1 and report.can.create" class="buttons">
-    <form action="" method="get">
-      <div>
-        <input type="hidden" name="action" value="new" />
-        <input type="submit" value="Create new report" />
+      <div py:if="report.id == -1 and report.can.create" class="buttons">
+        <form action="" method="get">
+          <div>
+            <input type="hidden" name="action" value="new" />
+            <input type="submit" value="Create new report" />
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
 
+      <div py:if="report.message" class="system-message">$report.message</div>
+      <div py:if="numrows == 0" id="report-notfound">No matches found.</div>
+    </div>
 
-  <div py:if="report.message" class="system-message">$report.message</div>
-  <div py:if="numrows == 0" id="report-notfound">No matches found.</div>
-</div>
+    <div id="help">
+      <strong>Note:</strong>
+      See <a href="${href.wiki('TracReports')}">TracReports</a> for help on using and creating reports.
+    </div>
+  </body>
+</html>

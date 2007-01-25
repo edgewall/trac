@@ -20,11 +20,9 @@
       </ul>
     </div>
 
-    <xi:include href="report_${action == 'new' and 'edit' or action}.html">
-      <xi:fallback>
-        <!--! action=='delete', confirm deletion -->
-        <h1>$report.title</h1>
-        <form action="${href.report()}" method="post">
+    <div id="content" class="report">
+      <h1>$report.title</h1>
+      <form action="${href.report()}" method="post">
         <input type="hidden" name="id" value="$report.id"/>
         <input type="hidden" name="action" value="delete" />
         <p><strong>Are you sure you want to delete this report?</strong></p>
@@ -33,8 +31,7 @@
           <input type="submit" value="Delete report"/>
         </div>
       </form>
-      </xi:fallback>
-    </xi:include>
+    </div>
 
     <div id="help">
       <strong>Note:</strong>

@@ -79,8 +79,10 @@ class ReportModule(Component):
             elif action == 'edit':
                 self._do_save(req, db, id)
         elif action in ('copy', 'edit', 'new'):
+            template = 'report_edit.html'
             data = self._render_editor(req, db, id, action=='copy')
         elif action == 'delete':
+            template = 'report_delete.html'
             data = self._render_confirm_delete(req, db, id)
         else:
             template, data, content_type = self._render_view(req, db, id)
@@ -104,7 +106,7 @@ class ReportModule(Component):
             data['query_href'] = req.href.query()
 
         add_stylesheet(req, 'common/css/report.css')
-        return 'report.html', data, None
+        return template, data, None
 
     # Internal methods
 
@@ -239,7 +241,7 @@ class ReportModule(Component):
             cols, results = self.execute_report(req, db, id, sql, args)
         except Exception, e:
             data['message'] = 'Report execution failed: ' + to_unicode(e)
-            return 'report.html', data, None
+            return 'report_view.html', data, None
 
         sort_col = ''
         if req.args.has_key('sort'):
@@ -349,7 +351,7 @@ class ReportModule(Component):
                            mimetype='text/tab-separated-values',
                            filename=filename)
         else:
-            return 'report.html', data, None
+            return 'report_view.html', data, None
 
     def add_alternate_links(self, req, args):
         params = args
