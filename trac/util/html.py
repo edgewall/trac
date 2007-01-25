@@ -13,9 +13,9 @@
 
 import re
 
-from genshi.core import Markup, escape, unescape
+from genshi import Markup, escape, unescape
+from genshi.core import stripentities, striptags
 from genshi.builder import Element, ElementFactory, Fragment
-from genshi.path import Path
 
 __all__ = ['escape', 'unescape', 'html', 'plaintext']
 
@@ -52,13 +52,13 @@ class TransposingElementFactory(ElementFactory):
         return ElementFactory.__getattr__(self, self.func(name))
 
 
-TEXT_XPATH = Path('text()')
-
 def plaintext(text, keeplinebreaks=True):
     if isinstance(text, Fragment):
-        return TEXT_XPATH.select(text)
+        text = text.generate().render('text')
     else:
-        from genshi import core
-        return core.plaintext(text)
-    
+        text = stripentities(striptags(text))
+    if not keeplinebreaks:
+        text = text.replace(u'\n', u' ')
+    return text
+
 html = TransposingElementFactory(str.lower)
