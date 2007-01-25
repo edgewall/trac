@@ -20,6 +20,7 @@
 
 from trac.config import ExtensionOption
 from trac.core import *
+from trac.util.compat import set
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
            'IPermissionGroupProvider', 'PermissionError', 'PermissionSystem']
@@ -59,6 +60,12 @@ class IPermissionStore(Interface):
         The permissions are returned as a dictionary where the key is the name
         of the permission, and the value is either `True` for granted
         permissions or `False` for explicitly denied permissions."""
+
+    def get_users_with_permissions(self, permissions):
+        """Retrieve a list of users that have any of the specified permissions.
+
+        Users are returned as a list of usernames.
+        """
 
     def get_all_permissions():
         """Return all permissions for all users.
@@ -125,6 +132,35 @@ class DefaultPermissionStore(Component):
             if num_users == len(subjects) and num_actions == len(actions):
                 break
         return [action for action in actions if not action.islower()]
+
+    def get_users_with_permissions(self, permissions):
+        """Retrieve a list of users that have any of the specified permissions
+        
+        Users are returned as a list of usernames.
+        """
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        groups = permissions
+        users = set([u[0] for u in self.env.get_known_users()])
+        result = set()
+
+        # First iteration finds all users and groups that have any of the
+        # needed permissions. Subsequent iterations expand groups recursively
+        # and merge the results
+        while len(groups):
+            cursor.execute("SELECT p.username, COUNT(m.username) "
+                           "FROM permission AS p "
+                           "LEFT JOIN permission AS m ON m.action = p.username "
+                           "WHERE p.action IN (%s) GROUP BY p.username"
+                           % (', '.join(['%s'] * len(groups))), groups)
+            groups = []
+            for username, nummembers in cursor:
+                if username in users:
+                    result.add(username)
+                elif nummembers:
+                    groups.append(username)
+
+        return list(result)
 
     def get_all_permissions(self):
         """Return all permissions for all users.
@@ -242,6 +278,29 @@ class PermissionSystem(Component):
         The permissions are returned as a list of (subject, action)
         formatted tuples."""
         return self.store.get_all_permissions()
+
+    def get_users_with_permission(self, permission):
+        """Return all users that have the specified permission.
+        
+        Users are returned as a list of user names.
+        """
+        # this should probably be cached
+        parent_map = {}
+        for requestor in self.requestors:
+            for action in requestor.get_permission_actions():
+                for child in action[1]:
+                    parent_map.setdefault(child, []).append(action[0])
+
+        satisfying_perms = {}
+        def _append_with_parents(action):
+            if action in satisfying_perms:
+                return # avoid unneccesary work and infinite loops
+            satisfying_perms[action] = True
+            if action in parent_map:
+                map(_append_with_parents, parent_map[action])
+        _append_with_parents(permission)
+
+        return self.store.get_users_with_permissions(satisfying_perms.keys())
 
     # IPermissionRequestor methods
 

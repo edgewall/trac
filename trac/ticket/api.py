@@ -103,11 +103,7 @@ class TicketSystem(Component):
         if self.restrict_owner:
             field['type'] = 'select'
             perm = PermissionSystem(self.env)
-            def valid_owner(username):
-                return perm.get_user_permissions(username).get('TICKET_MODIFY')
-            field['options'] = [username for username, name, email
-                                in self.env.get_known_users()
-                                if valid_owner(username)]
+            field['options'] = perm.get_users_with_permission('TICKET_MODIFY')
             field['optional'] = True
         else:
             field['type'] = 'text'
