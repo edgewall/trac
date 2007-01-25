@@ -466,7 +466,6 @@ class PluginAdminPanel(Component):
         addons.sort()
         plugin_list += [plugins[category] for category in addons]
 
-        add_script(req, 'common/js/folding.js')
         data = {
             'plugins': plugin_list,
             'readonly': not os.access(plugins_dir, os.F_OK + os.W_OK)
