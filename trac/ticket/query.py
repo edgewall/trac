@@ -756,7 +756,7 @@ class TicketQueryMacro(WikiMacroBase):
     Also, using "&" as a field separator still works but is deprecated.
     """
 
-    def render_macro(self, formatter, name, content):
+    def expand_macro(self, formatter, name, content):
         req = formatter.req
         query_string = ''
         argv, kwargs = parse_args(content)
