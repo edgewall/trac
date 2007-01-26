@@ -38,17 +38,22 @@
            value="${'dev' in trac.version and 'devel' or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
     <textarea name="description">
-==== How to Reproduce ====
-While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
+Please edit the pre-filled description as you see fit
+(in particular, remove those first two lines!)
 
-<py:if test="req.method.lower() == 'post'">
+==== How to Reproduce ====
+
+While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
+<py:if test="req.args">
+Request parameters:
+{{{
 ${pprint(req.args)}
+}}}
 </py:if>
 
 ==== System Information ====
 <py:for each="k, v in trac.systeminfo">
-|| '''$k''' || ${'`%s`' % (v and v.replace('\n', '`[[br]]\n`'))} ||
-</py:for>
+|| '''$k''' || ${'`%s`' % (v and v.replace('\n', '`[[br]]\n`'))} ||</py:for>
 
 ==== Python Traceback ====
 {{{
