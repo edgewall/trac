@@ -519,6 +519,12 @@ class Mimeview(Component):
 
         if isinstance(stream, list):
             stream = HTMLParser(StringIO('\n'.join(stream)))
+        elif isinstance(stream, unicode):
+            text = stream
+            def linesplitter():
+                for line in text.splitlines(True):
+                    yield TEXT, line, (None, -1, -1)
+            stream = linesplitter()
 
         annotator_datas = []
         errors = []
@@ -796,13 +802,11 @@ class PlainTextRenderer(Component):
 
     def render(self, context, mimetype, content, filename=None, url=None):
         if is_binary(content):
-            self.env.log.debug("Binary data; no preview available")
+            self.log.debug("Binary data; no preview available")
             return
 
-        self.env.log.debug("Using default plain text mimeviewer")
-        content = content_to_unicode(self.env, content, mimetype)
-        for line in content.splitlines(True):
-            yield TEXT, line, (None, -1, -1)
+        self.log.debug("Using default plain text mimeviewer")
+        return content_to_unicode(self.env, content, mimetype)
 
 
 class ImageRenderer(Component):
