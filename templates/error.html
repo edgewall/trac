@@ -53,7 +53,7 @@ ${pprint(req.args)}
 
 ==== System Information ====
 <py:for each="k, v in trac.systeminfo">
-|| '''$k''' || ${'`%s`' % (v and v.replace('\n', '`[[br]]\n`'))} ||</py:for>
+|| '''$k''' || ${'`%s`' % (v and v.replace('\n', '` [[br]] `'))} ||</py:for>
 
 ==== Python Traceback ====
 {{{
