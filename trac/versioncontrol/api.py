@@ -412,6 +412,10 @@ class Changeset(object):
         where `change` can be one of Changeset.ADD, Changeset.COPY,
         Changeset.DELETE, Changeset.EDIT or Changeset.MOVE,
         and `kind` is one of Node.FILE or Node.DIRECTORY.
+        The `path` is the targeted path for the `change` (which is
+        the ''deleted'' path  for a DELETE change).
+        The `base_path` and `base_rev` are the source path and rev for the
+        action (`None` and `-1` in the case of an ADD change).
         """
         raise NotImplementedError
 
