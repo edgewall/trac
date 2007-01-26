@@ -493,7 +493,7 @@ class BlameAnnotator(object):
             chgset_href = self.context.href.changeset(rev, path)
             short_author = chgset.author.split(' ', 1)[0]
             title = shorten_line('%s: %s' % (short_author, chgset.message))
-            anchor = tag.a('[%s]' % str(rev),
+            anchor = tag.a('[%s]' % self.repos.short_rev(rev), # shortname
                            title=title, href=chgset_href)
             color = self.colorize_age(self.timerange.relative(chgset.date))
             style = 'background-color: rgb(%d, %d, %d);' % color

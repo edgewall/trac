@@ -332,9 +332,9 @@ class Node(object):
     def get_annotations(self):
         """Provide detailed backward history for the content of this Node.
 
-        Retrieve an array of short `rev` numbers, one entry for each line in
-        the content for that node.
-        Only expected to work on FILE nodes, of course.
+        Retrieve an array of revisions, one `rev` for each line of content
+        for that node.
+        Only expected to work on (text) FILE nodes, of course.
         """
         raise NotImplementedError
 
