@@ -473,6 +473,10 @@ class Chrome(Component):
         tzinfo = None
         if req:
             tzinfo = req.tz
+            
+        def dateinfo(date):
+            return tag.span(pretty_timedelta(date),
+                            title=format_datetime(date))
 
         d.update({
             'req': req,
@@ -484,6 +488,7 @@ class Chrome(Component):
             'format_author': partial(self._format_author, req),
 
             # Date/time formatting
+            'dateinfo': dateinfo,
             'format_datetime': partial(format_datetime, tzinfo=tzinfo),
             'format_date': partial(format_date, tzinfo=tzinfo),
             'format_time': partial(format_time, tzinfo=tzinfo),

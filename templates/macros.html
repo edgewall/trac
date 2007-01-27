@@ -34,16 +34,6 @@
       author and format_author(author) or 'anonymous'
   }</py:with></py:when><py:otherwise>anonymous</py:otherwise></py:choose></py:def>
 
-  <!--!  Display how many time elapsed since the given date.
-  -
-  -      Typically used in sentences like "changed ${dateinfo(date)} ago"
-  -
-  -      We take care to not insert any extra space.
-  -->
-  <py:def function="dateinfo(date)"><span title="${format_datetime(date)}">${
-      pretty_timedelta(date)
-  }</span></py:def>
-
   <!--!  Display a sequence of path components.
   -
   -      Each component is a link to the corresponding location in the browser.
