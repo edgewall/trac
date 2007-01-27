@@ -29,9 +29,10 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
-from trac.util.datefmt import format_date, parse_date, to_timestamp, utc
+from trac.util.datefmt import format_date, parse_date, to_timestamp, utc, \
+                              pretty_timedelta
 from trac.util.text import to_unicode
-from trac.web import IRequestHandler
+from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
 from trac.wiki.api import IWikiSyntaxProvider
@@ -40,7 +41,7 @@ from trac.wiki.api import IWikiSyntaxProvider
 class TimelineModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               IWikiSyntaxProvider)
+               IRequestFilter, IWikiSyntaxProvider)
 
     event_providers = ExtensionPoint(ITimelineEventProvider)
 
@@ -208,6 +209,18 @@ class TimelineModule(Component):
                             tag.p('You may want to see the other kind of '
                                   'events from the ',
                                   tag.a('Timeline', href=href))))
+
+    # IRequestFilter methods
+
+    def pre_process_request(self, req, handler):
+        return handler
+    
+    def post_process_request(self, req, template, data, content_type):
+        def dateinfo(date):
+            return self.get_timeline_link(req, date, pretty_timedelta(date),
+                                          precision='second')
+        data['dateinfo'] = dateinfo
+        return template, data, content_type
 
     # IWikiSyntaxProvider methods
 

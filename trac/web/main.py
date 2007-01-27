@@ -222,7 +222,8 @@ class RequestDispatcher(Component):
                         req.display(template, content_type or 'text/html')
                     else: # Genshi
                         # FIXME: postprocess API need to be adapted...
-                        template, data, content_type = resp
+                        template, data, content_type = \
+                                  self._post_process_request(req, *resp)
                         output = chrome.render_template(req, template, data,
                                                         content_type)
                         # Give the session a chance to persist changes
@@ -289,11 +290,18 @@ class RequestDispatcher(Component):
             chosen_handler = filter_.pre_process_request(req, chosen_handler)
         return chosen_handler
 
-    def _post_process_request(self, req, template=None, content_type=None):
+    def _post_process_request(self, req, *args):
+        nbargs = len(args)
+        resp = args
         for f in reversed(self.filters):
-            template, content_type = f.post_process_request(req, template,
-                                                            content_type)
-        return template, content_type
+            arity = f.post_process_request.func_code.co_argcount
+            print repr(f), arity
+            if nbargs:
+                if arity - 2 == nbargs:
+                    resp = f.post_process_request(req, *resp)
+            else:
+                resp = f.post_process_request(req, *(None,)*arity)
+        return resp
 
 
 def dispatch_request(environ, start_response):

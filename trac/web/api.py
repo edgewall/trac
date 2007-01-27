@@ -528,10 +528,27 @@ class IRequestFilter(Interface):
         Always returns the request handler, even if unchanged.
         """
 
+    # for ClearSilver templates
     def post_process_request(req, template, content_type):
         """Do any post-processing the request might need; typically adding
         values to req.hdf, or changing template or mime type.
         
         Always returns a tuple of (template, content_type), even if
         unchanged.
+
+        (for 0.10 compatibility; only used together with ClearSilver templates)
+        """
+
+    # for Genshi templates
+    def post_process_request(req, template, data, content_type):
+        """Do any post-processing the request might need; typically adding
+        values to the template `data` dictionary, or changing template or
+        mime type.
+        
+        `data` may be update in place.
+
+        Always returns a tuple of (template, content_type), even if
+        unchanged.
+
+        (Since 0.11 - not yet stabilized)
         """
