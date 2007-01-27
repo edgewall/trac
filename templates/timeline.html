@@ -36,11 +36,13 @@
       <py:for each="day, events in groupby(events, key=lambda e: format_date(e.date))">
         <h2>${day}:</h2>
         <dl>
-          <py:for each="event in events">
-            <dt class="${event.kind}"><a href="${event.href}">
-              <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
-                <py:if test="event.author">by ${authorinfo(event.author)}</py:if>
-            </a></dt>
+          <py:for each="event in events" py:with="highlight = precisedate and abs(event.date - precisedate) &lt; precision">
+            <dt class="${event.kind}${highlight and ' highlight' or ''}">
+              <a href="${event.href}">
+                <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
+                <py:if test="event.author">by ${event.author}</py:if>
+              </a>
+            </dt>
             <dd class="${event.kind}" py:with="wikify = event.use_oneliner and partial(event.context.wiki_to_oneliner, shorten=event.shorten_oneliner) or event.context.wiki_to_html">
               ${event.markup}
               <py:if test="event.wikitext">${wikify(event.wikitext)}</py:if>

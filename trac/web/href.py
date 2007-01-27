@@ -76,6 +76,12 @@ class Href(object):
     >>> href('timeline', {'from': '02/24/05', 'daysback': 30})
     '/trac/timeline?daysback=30&from=02%2F24%2F05'
 
+    The usual way of quoting arguments that would otherwise be interpreted
+    as Python keywords is supported too:
+
+    >>> href('timeline', from_='02/24/05', daysback=30)
+    '/trac/timeline?from=02%2F24%2F05&daysback=30'
+
     If the order of query string parameters should be preserved, you may also
     pass a sequence of (name, value) tuples as last positional argument:
 
@@ -145,7 +151,7 @@ class Href(object):
 
         # assemble the query string
         for k,v in kw.items():
-            add_param(k, v)
+            add_param(k.endswith('_') and k[:-1] or k, v)
 
         if params:
             href += '?' + unicode_urlencode(params)

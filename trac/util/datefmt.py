@@ -104,9 +104,9 @@ def http_date(t=None):
         weekdays[t.weekday()], t.day, months[t.month - 1], t.year,
         t.hour, t.minute, t.second)
 
-_ISO_8601_RE = re.compile(r'(\d\d\d\d)-?(\d\d)-?(\d\d)?'      # date
-                          r'(?:T(\d\d):?(\d\d):?(\d\d)?)?'    # time
-                          r'(Z(?:([-+])?(\d\d):?(\d\d)?)?)?$' # timezone
+_ISO_8601_RE = re.compile(r'(\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?'   # date
+                          r'(?:T(\d\d)(?::?(\d\d)(?::?(\d\d))?)?)?' # time
+                          r'(Z(?:([-+])?(\d\d):?(\d\d)?)?)?$'       # timezone
                           )
 
 def parse_date(text, tzinfo=None):
@@ -120,7 +120,8 @@ def parse_date(text, tzinfo=None):
     if match:
         try:
             g = match.groups()
-            years, months = g[0:2]
+            years = g[0]
+            months = g[1] or '01'
             days = g[2] or '01'
             hours, minutes, seconds = [x or '00' for x in g[3:6]]
             z, tzsign, tzhours, tzminutes = g[6:10]

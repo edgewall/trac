@@ -23,22 +23,24 @@ import re
 import time
 from urlparse import urlparse
 
+from genshi.builder import tag
+
 from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util.datefmt import format_date, parse_date, to_timestamp, utc
-from trac.util.html import html, Markup
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
-
+from trac.wiki.api import IWikiSyntaxProvider
 
 
 class TimelineModule(Component):
 
-    implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
+    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
+               IWikiSyntaxProvider)
 
     event_providers = ExtensionPoint(ITimelineEventProvider)
 
@@ -54,7 +56,7 @@ class TimelineModule(Component):
     def get_navigation_items(self, req):
         if 'TIMELINE_VIEW' in req.perm:
             yield ('mainnav', 'timeline',
-                   html.A('Timeline', href=req.href.timeline(), accesskey=2))
+                   tag.a('Timeline', href=req.href.timeline(), accesskey=2))
 
     # IPermissionRequestor methods
 
@@ -76,11 +78,19 @@ class TimelineModule(Component):
         # Parse the from date and adjust the timestamp to the last second of
         # the day
         t = datetime.now(utc)
+        precisedate = precision = None
         if 'from' in req.args:
             try:
-                t =  parse_date(req.args.get('from'), req.tz)
-            except:
-                pass
+                precisedate = t = parse_date(req.args.get('from'), req.tz)
+                precision = req.args.get('precision', '')
+                if precision.startswith('second'):
+                    precision = timedelta(seconds=1)
+                elif precision.startswith('minutes'):
+                    precision = timedelta(minutes=1)
+                else:
+                    precision = timedelta(hours=1)
+            except ValueError, e:
+                self.log.debug("Invalid date requested %s", to_unicode(e))
         fromdate = t.replace(hour=23, minute=59, second=59)
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
@@ -88,6 +98,7 @@ class TimelineModule(Component):
             daysback = self.default_daysback
 
         data = {'fromdate': fromdate, 'daysback': daysback,
+                'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': []}
 
         available_filters = []
@@ -190,9 +201,46 @@ class TimelineModule(Component):
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args+[(f, 'on') for f in other_filters])
-        raise TracError(Markup(
-            '%s  event provider (<tt>%s</tt>) failed:<br /><br />'
-            '%s: %s'
-            '<p>You may want to see the other kind of events from the '
-            '<a href="%s">Timeline</a></p>', 
-            ", ".join(guilty_kinds), ep_name, exc_name, to_unicode(exc), href))
+        raise TracError(tag(', '.join(guilty_kinds),
+                            ' event provider (',
+                            tag.tt(ep_name), ') failed:', tag.br(), tag.br(),
+                            exc_name, ': ', to_unicode(exc),
+                            tag.p('You may want to see the other kind of '
+                                  'events from the ',
+                                  tag.a('Timeline', href=href))))
+
+    # IWikiSyntaxProvider methods
+
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        def link_resolver(formatter, ns, target, label):
+            precision = None
+            time = target.split("T", 1)
+            if len(time) > 1:
+                time = time[1]
+                if len(time) >= 6:
+                    precision = 'seconds'
+                elif len(time) >= 4:
+                    precision = 'minutes'
+                elif len(time) >= 2:
+                    precision = 'hours'
+            try:
+                return self.get_timeline_link(formatter.context,
+                                              parse_date(target, utc),
+                                              label, precision)
+            except ValueError, e:
+                return tag.a(label, title=to_unicode(e),
+                             class_='timeline missing')
+        yield ('timeline', link_resolver)
+
+    # Public methods
+
+    def get_timeline_link(self, context, date, label=None, precision='hours'):
+        utc_date = format_date(date, format='%Y-%m-%dT%H:%M:%SZ',
+                               tzinfo=utc)
+        return tag.a(label or utc_date, class_='timeline',
+                     title="%s in Timeline" % utc_date,
+                     href=context.href.timeline(from_=utc_date,
+                                                precision=precision))
