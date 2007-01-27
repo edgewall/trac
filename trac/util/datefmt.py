@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import locale
+import re
 import sys
 import time
 from datetime import tzinfo, timedelta, datetime
@@ -57,6 +58,8 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
         t = datetime.now(utc)
     if isinstance(t, int):
         t = datetime.fromtimestamp(t, tzinfo)
+    if format.lower() == 'iso8601':
+        format = '%Y-%m-%dT%H:%M:%SZ%z'
     t = t.astimezone(tzinfo)
     text = t.strftime(format)
     encoding = locale.getpreferredencoding()
@@ -66,9 +69,13 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
     return unicode(text, encoding, 'replace')
 
 def format_date(t=None, format='%x', tzinfo=None):
+    if format == 'iso8601':
+        format = '%Y-%m-%d'
     return format_datetime(t, format, tzinfo=tzinfo)
 
 def format_time(t=None, format='%X', tzinfo=None):
+    if format == 'iso8601':
+        format = '%H:%M:%SZ%z'
     return format_datetime(t, format, tzinfo=tzinfo)
 
 def get_date_format_hint():
@@ -97,19 +104,48 @@ def http_date(t=None):
         weekdays[t.weekday()], t.day, months[t.month - 1], t.year,
         t.hour, t.minute, t.second)
 
+_ISO_8601_RE = re.compile(r'(\d\d\d\d)-?(\d\d)-?(\d\d)?'      # date
+                          r'(?:T(\d\d):?(\d\d):?(\d\d)?)?'    # time
+                          r'(Z(?:([-+])?(\d\d):?(\d\d)?)?)?$' # timezone
+                          )
+
 def parse_date(text, tzinfo=None):
     tzinfo = tzinfo or localtz
-    if text == 'now':
+    if text == 'now': # TODO: today, yesterday, etc.
         return datetime.now(utc)
     tm = None
     text = text.strip()
-    for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
-                   '%b %d, %Y', '%Y-%m-%d']:
+    # normalize ISO time
+    match = _ISO_8601_RE.match(text)
+    if match:
         try:
-            tm = time.strptime(text, format)
-            break
+            g = match.groups()
+            years, months = g[0:2]
+            days = g[2] or '01'
+            hours, minutes, seconds = [x or '00' for x in g[3:6]]
+            z, tzsign, tzhours, tzminutes = g[6:10]
+            if z:
+                tz = timedelta(hours=int(tzhours or '0'),
+                               minutes=int(tzminutes or '0')).seconds / 60
+                if tz == 0:
+                    tzinfo = utc
+                else:
+                    tzinfo = FixedOffset(tzsign == '-' and -tz or tz,
+                                         '%s%s:%s' %
+                                         (tzsign, tzhours, tzminutes))
+            tm = time.strptime('%s ' * 6 % (years, months, days,
+                                            hours, minutes, seconds),
+                               '%Y %m %d %H %M %S ')
         except ValueError:
-            continue
+            pass
+    else:
+        for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
+                   '%b %d, %Y']:
+            try:
+                tm = time.strptime(text, format)
+                break
+            except ValueError:
+                continue
     if tm == None:
         raise ValueError('%s is invalid or not a known date format' % text)
     return datetime(*(tm[0:6] + (0, tzinfo)))
@@ -129,6 +165,12 @@ class FixedOffset(tzinfo):
     def __init__(self, offset, name):
         self._offset = timedelta(minutes=offset)
         self._name = name
+
+    def __str__(self):
+        return self._name
+
+    def __repr__(self):
+        return '<FixedOffset "%s" %s>' % (self._name, self._offset)
 
     def utcoffset(self, dt):
         return self._offset
@@ -151,7 +193,7 @@ DSTDIFF = DSTOFFSET - STDOFFSET
 
 class LocalTimezone(tzinfo):
     """A 'local' time zone implementation"""
-    
+
     def utcoffset(self, dt):
         if self._isdst(dt):
             return DSTOFFSET
@@ -187,31 +229,52 @@ _zero = timedelta(0)
 
 localtz = LocalTimezone()
 
+# Use a makeshift timezone implementation if pytz is not available.
+# This implementation only supports fixed offset time zones.
+#
+_timezones = [
+    FixedOffset(0, 'UTC'),
+    FixedOffset(-720, 'GMT -12:00'), FixedOffset(-660, 'GMT -11:00'),
+    FixedOffset(-600, 'GMT -10:00'), FixedOffset(-540, 'GMT -9:00'),
+    FixedOffset(-480, 'GMT -8:00'),  FixedOffset(-420, 'GMT -7:00'),
+    FixedOffset(-360, 'GMT -6:00'),  FixedOffset(-300, 'GMT -5:00'),
+    FixedOffset(-240, 'GMT -4:00'),  FixedOffset(-180, 'GMT -3:00'),
+    FixedOffset(-120, 'GMT -2:00'),  FixedOffset(-60, 'GMT -1:00'),
+    FixedOffset(0, 'GMT'),           FixedOffset(60, 'GMT +1:00'),
+    FixedOffset(120, 'GMT +2:00'),   FixedOffset(180, 'GMT +3:00'),
+    FixedOffset(240, 'GMT +4:00'),   FixedOffset(300, 'GMT +5:00'),
+    FixedOffset(360, 'GMT +6:00'),   FixedOffset(420, 'GMT +7:00'),
+    FixedOffset(480, 'GMT +8:00'),   FixedOffset(540, 'GMT +9:00'),
+    FixedOffset(600, 'GMT +10:00'),  FixedOffset(660, 'GMT +11:00'),
+    FixedOffset(720, 'GMT +12:00'),  FixedOffset(780, 'GMT +13:00')]
+_tzmap = dict([(z._name, z) for z in _timezones])
+
+
 try:
     from pytz import all_timezones, timezone
-except ImportError:
-    # Use a makeshift timezone implementation if pytz is not available.
-    # This implementation only supports fixed offset time zones.
-    #
-    _timezones = [
-        FixedOffset(840, 'Etc/GMT-14'), FixedOffset(780, 'Etc/GMT-13'),
-        FixedOffset(720, 'Etc/GMT-12'), FixedOffset(660, 'Etc/GMT-11'),
-        FixedOffset(600, 'Etc/GMT-10'), FixedOffset(540, 'Etc/GMT-9'),
-        FixedOffset(480, 'Etc/GMT-8'),  FixedOffset(420, 'Etc/GMT-7'),
-        FixedOffset(360, 'Etc/GMT-6'),  FixedOffset(300, 'Etc/GMT-5'),
-        FixedOffset(240, 'Etc/GMT-4'),  FixedOffset(180, 'Etc/GMT-3'),
-        FixedOffset(120, 'Etc/GMT-2'),  FixedOffset(60, 'Etc/GMT-1'),
-        FixedOffset(0, 'Etc/GMT-0'),    FixedOffset(0, 'Etc/GMT'),
-        FixedOffset(0, 'Etc/GMT+0'),    FixedOffset(-60, 'Etc/GMT+1'),
-        FixedOffset(-120, 'Etc/GMT+2'), FixedOffset(-180, 'Etc/GMT+3'),
-        FixedOffset(-240, 'Etc/GMT+4'), FixedOffset(-300, 'Etc/GMT+5'),
-        FixedOffset(-360, 'Etc/GMT+6'), FixedOffset(-420, 'Etc/GMT+7'),
-        FixedOffset(-480, 'Etc/GMT+8'), FixedOffset(-540, 'Etc/GMT+9'),
-        FixedOffset(-600, 'Etc/GMT+10'), FixedOffset(-660, 'Etc/GMT+11'),
-        FixedOffset(-720, 'Etc/GMT+12')]
-    all_timezones = [z._name for z in _timezones]
-    _tzmap = dict([(z._name, z) for z in _timezones])
 
-    def timezone(zone):
+    def get_timezone(tzname):
+        """Fetch timezone instance by name or return `None`"""
+        try:
+            return timezone(tzname)
+        except KeyError:
+            fixedzone = _tzmap.get(tzname)
+            if fixedzone:
+                offset = fixedzone.utcoffset(None)
+                for tz in [timezone(tzname) for tzname in all_timezones
+                           if tzname.startswith('Etc/')]:
+                    if tz.utcoffset(None) == offset:
+                        return tz
+            return None
+    
+except ImportError:
+    all_timezones = [z._name for z in _timezones]
+
+    def timezone(tzname):
         """Fetch timezone instance by name or raise `KeyError`"""
-        return _tzmap[zone]
+        return _tzmap[tzname]
+
+    def get_timezone(tzname):
+        """Fetch timezone instance by name or return `None`"""
+        return _tzmap.get(tzname)
+
