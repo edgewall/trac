@@ -221,7 +221,6 @@ class RequestDispatcher(Component):
                             req.session.save()
                         req.display(template, content_type or 'text/html')
                     else: # Genshi
-                        # FIXME: postprocess API need to be adapted...
                         template, data, content_type = \
                                   self._post_process_request(req, *resp)
                         output = chrome.render_template(req, template, data,
@@ -295,7 +294,6 @@ class RequestDispatcher(Component):
         resp = args
         for f in reversed(self.filters):
             arity = f.post_process_request.func_code.co_argcount
-            print repr(f), arity
             if nbargs:
                 if arity - 2 == nbargs:
                     resp = f.post_process_request(req, *resp)
