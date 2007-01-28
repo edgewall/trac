@@ -128,7 +128,7 @@
         </table>
       </py:if>
 
-      <table py:if="props or file" id="info" summary="Revision info">
+      <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
           <th scope="col">
             Revision <a href="${href.changeset(rev)}">$rev</a>, ${sizeinfo(file.size)}
@@ -143,11 +143,22 @@
             <py:otherwise>${file.changeset.message}</py:otherwise>
           </td>
         </tr>
-        <tr py:if="props">
+        <tr py:if="properties">
           <td colspan="2">
             <ul class="props">
-              <li py:for="prop in props">
-                Property <strong>$prop.name</strong> set to <em><code>$prop.value</code></em>
+              <li py:for="prop in properties" py:choose="">
+                <py:when test="prop.rendered">
+                   <span py:if="prop.rendered.name"
+                         py:attrs="prop.rendered.name_attributes" py:content="prop.rendered.name" />
+                   <div py:attrs="prop.rendered.content_attributes" py:content="prop.rendered.content" />
+                </py:when>
+                <py:otherwise>
+                  Property <strong>$prop.name</strong> set to
+                  <py:choose>
+                    <em py:when="istext(prop.value)"><code>$prop.value</code></em>
+                    <py:otherwise>$prop.value</py:otherwise>
+                  </py:choose>
+                </py:otherwise>
               </li>
             </ul>
           </td>

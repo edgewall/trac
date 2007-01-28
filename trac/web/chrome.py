@@ -212,6 +212,7 @@ class Chrome(Component):
         'group': presentation.group,
         'groupby': compat.groupby,
         'http_date': http_date,
+        'istext': presentation.istext,
         'itemgetter': compat.itemgetter,
         'paginate': presentation.paginate,
         'partial': partial,

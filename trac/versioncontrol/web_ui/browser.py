@@ -43,6 +43,104 @@ from trac.versioncontrol.web_ui.util import *
 CHUNK_SIZE = 4096
 
 
+class IPropertyRenderer(Interface):
+    """Render node properties in TracBrowser and TracChangeset views."""
+
+    def match_property(name, mode):
+        """Indicate whether this renderer can treat the given property
+
+        `mode` is the current rendering context, which can be one of:
+         - 'browser' rendered in the browser view
+         - 'changeset' rendered in the changeset view as a node property
+         - 'revprop' rendered in the changeset view as a revision property
+
+        Returns a quality number, ranging from 0 (unsupported) to 9
+        (''perfect'' match).
+        """
+
+    def render_property(name, mode, context, props):
+        """Render the given property.
+
+        `name` is the property name as given to `match()`,
+        `mode` is the same as for `match_property`,
+        `context` is the context for the node being render
+        (useful when the rendering depends on the node kind) and
+        `props` is the collection of the corresponding properties
+        (i.e. the `node.get_properties()`).
+
+        The rendered result can be one of the following:
+        - `None`: the property will be skipped
+        - an `unicode` value: the property will be displayed as text
+        - a `RenderedProperty` instance: the property will only be displayed
+          using the instance's `content` attribute, and the other attributes
+          will also be used in some display contexts (like `revprop`)
+        - `Markup` or other Genshi content: the property will be displayed
+          normally, using that content as a block-level markup
+        """
+
+class RenderedProperty(object):
+    def __init__(self, name=None, name_attributes=None,
+                 content=None, content_attributes=None):
+        self.name = name
+        self.name_attributes = name_attributes
+        self.content = content
+        self.content_attributes = content_attributes
+
+
+class DefaultPropertyRenderer(Component):
+    """Implement default (pre-0.11) behavior for rendering properties."""
+
+    implements(IPropertyRenderer)
+
+    hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
+        doc="""Comma-separated list of version control properties to hide from
+        the repository browser.
+
+        (''since 0.9'')""")
+
+    def match_property(self, name, mode):
+        # Support everything but hidden properties.
+        return name not in self.hidden_properties and 1 or 0
+
+    def render_property(self, name, mode, context, props):
+        # No special treatment besides respecting newlines in values.
+        value = props[name]
+        if value and '\n' in value:
+            value = Markup(''.join(['<br />%s' % escape(v)
+                                    for v in value.split('\n')]))
+        return value
+
+
+class WikiPropertyRenderer(Component):
+    """Render properties as wiki text."""
+
+    implements(IPropertyRenderer)
+
+    wiki_properties = ListOption('browser', 'wiki_properties',
+                                 'trac:description',
+        doc="""Comma-separated list of version control properties to render
+        as wiki content in the repository browser.
+
+        (''since 0.11'')""")
+
+    oneliner_properties = ListOption('browser', 'oneliner_properties',
+                                 'trac:summary',
+        doc="""Comma-separated list of version control properties to render
+        as oneliner wiki content in the repository browser.
+
+        (''since 0.11'')""")
+
+    def match_property(self, name, mode):
+        return (name in self.wiki_properties or \
+                name in self.oneliner_properties) and 4 or 0
+
+    def render_property(self, name, mode, context, props):
+        if name in self.wiki_properties:
+            return context.wiki_to_html(props[name])
+        else:
+            return context.wiki_to_oneliner(props[name])
+
+
 class TimeRange(object):
     def __init__(self, base):
         self.oldest = self.newest = base
@@ -70,11 +168,7 @@ class BrowserModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider, IHTMLPreviewAnnotator)
 
-    hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
-        doc="""Comma-separated list of subversion properties to hide from the
-        repository browser.
-
-        (''since 0.9'')""")
+    property_renderers = ExtensionPoint(IPropertyRenderer)
 
     downloadable_paths = ListOption('browser', 'downloadable_paths',
                                     '/trunk, /branches/*, /tags/*',
@@ -216,25 +310,20 @@ class BrowserModule(Component):
         rev_or_latest = rev or repos.youngest_rev
         node = get_existing_node(req, repos, path, rev_or_latest)
 
-        # Rendered list of node properties
-        hidden_properties = self.hidden_properties
-        properties = []
-        for name, value in node.get_properties().items():
-            if not name in hidden_properties:
-                rendered = render_node_property(self.env, name, value)
-                properties.append({'name': name, 'value': rendered})
+        context = Context(self.env, req, 'source', path,
+                          version=node.created_rev) # resource=node
 
         path_links = get_path_links(req.href, path, rev, order, desc)
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
 
-        context = Context(self.env, req, 'source', path, version=rev)
         data = {
             'context': context,
             'path': path, 'rev': node.rev, 'stickyrev': rev,
             'created_path': node.created_path,
             'created_rev': node.created_rev,
-            'props': properties,
+            'properties': self.render_properties('browser', context,
+                                                 node.get_properties()),
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
             'file': node.isfile and self._render_file(context, repos,
@@ -372,6 +461,29 @@ class BrowserModule(Component):
                 'annotate': force_source,
                 }
 
+    # public methods
+    
+    def render_properties(self, mode, context, props):
+        """Prepare rendering of a collection of properties."""
+        return filter(None, [self.render_property(name, mode, context, props)
+                             for name in props])
+
+    def render_property(self, name, mode, context, props):
+        """Renders a node property to HTML."""
+        candidates = []
+        for renderer in self.property_renderers:
+            quality = renderer.match_property(name, mode)
+            if quality > 0:
+                candidates.append((quality, renderer))
+        if candidates:
+            renderer = sorted(candidates, reverse=True)[0][1]
+            rendered = renderer.render_property(name, mode, context, props)
+            if rendered:
+                prop = {'name': name, 'value': rendered}
+                if isinstance(rendered, RenderedProperty):
+                    prop['rendered'] = rendered
+                    prop['value'] = rendered.content
+                return prop
 
     # IWikiSyntaxProvider methods
 

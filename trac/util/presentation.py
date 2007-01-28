@@ -19,7 +19,7 @@ tasks such as grouping or pagination.
 from math import ceil
 from itertools import izip, chain, repeat
 
-__all__ = ['first_last', 'group', 'paginate', 'Paginator']
+__all__ = ['first_last', 'group', 'istext', 'paginate', 'Paginator']
 
 
 def first_last(idx, seq):
@@ -75,6 +75,11 @@ def group(iterable, num, predicate=None):
     if buf:
         buf += [None] * (num - len(buf))
         yield tuple(buf)
+
+
+def istext(text):
+    from genshi.core import Markup
+    return isinstance(text, unicode) and not isinstance(text, Markup)
 
 
 def paginate(items, page=0, max_per_page=10):
