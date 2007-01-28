@@ -34,7 +34,10 @@ class CachedRepository(Repository):
         Repository.__init__(self, repos.name, authz, log)
         self.db = db
         self.repos = repos
-        self.sync()
+        try:
+            self.sync()
+        except Exception, e: # most probably 2 concurrent resync attempts
+            log.warning('Error during sync(): %s' % e) 
 
     def close(self):
         self.repos.close()
