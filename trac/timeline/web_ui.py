@@ -216,10 +216,12 @@ class TimelineModule(Component):
         return handler
     
     def post_process_request(self, req, template, data, content_type):
-        def dateinfo(date):
-            return self.get_timeline_link(req, date, pretty_timedelta(date),
-                                          precision='second')
-        data['dateinfo'] = dateinfo
+        if data:
+            def dateinfo(date):
+                return self.get_timeline_link(req, date,
+                                              pretty_timedelta(date),
+                                              precision='second')
+            data['dateinfo'] = dateinfo
         return template, data, content_type
 
     # IWikiSyntaxProvider methods

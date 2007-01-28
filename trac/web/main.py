@@ -293,9 +293,9 @@ class RequestDispatcher(Component):
         nbargs = len(args)
         resp = args
         for f in reversed(self.filters):
-            arity = f.post_process_request.func_code.co_argcount
+            arity = f.post_process_request.func_code.co_argcount - 2
             if nbargs:
-                if arity - 2 == nbargs:
+                if arity == nbargs:
                     resp = f.post_process_request(req, *resp)
             else:
                 resp = f.post_process_request(req, *(None,)*arity)
