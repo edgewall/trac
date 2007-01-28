@@ -118,23 +118,22 @@ class MilestoneAdminPage(Component):
             if req.method == 'POST':
                 if req.args.get('save'):
                     mil.name = req.args.get('name')
+                    mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
-                    try:
-                        mil.due = due and datefmt.parse_date(due) or 0
-                    except ValueError, e:
-                        raise TracError(e, 'Invalid Date Format')
-                    if 'completed' in req.args:
-                        completed = req.args.get('completeddate', '')
+                    if due:
                         try:
-                            mil.completed = completed and \
-                                            datefmt.parse_date(completed) or 0
+                            mil.due = datefmt.parse_date(due)
+                        except ValueError, e:
+                            raise TracError(e, 'Invalid Date Format')
+                    completed = req.args.get('completeddate', '')
+                    if completed:
+                        try:
+                            mil.completed = datefmt.parse_date(completed)
                         except ValueError, e:
                             raise TracError(e, 'Invalid Date Format')
                         if mil.completed > datetime.now(utc):
                             raise TracError('Completion date may not be in the '
                                             'future', 'Invalid Completion Date')
-                    else:
-                        mil.completed = 0
                     mil.description = req.args.get('description', '')
                     mil.update()
                     req.redirect(req.href.admin(cat, page))

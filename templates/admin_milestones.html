@@ -41,9 +41,11 @@
             </label>
             <script type="text/javascript">
               $(document).ready(function() {
-                $("#completed").click(function() {
-                  $("#completeddate").enable(this.checked);
-                }).click();
+                function updateCompletedDate() {
+                  $("#completeddate").enable($("#completed").checked());
+                }
+                $("#completed").click(updateCompletedDate);
+                updateCompletedDate();
               });
             </script>
           </div>
