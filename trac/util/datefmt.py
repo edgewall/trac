@@ -56,7 +56,7 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
         tzinfo = localtz
     if t is None:
         t = datetime.now(utc)
-    if isinstance(t, int):
+    if isinstance(t, (int,long)):
         t = datetime.fromtimestamp(t, tzinfo)
     if format.lower() == 'iso8601':
         format = '%Y-%m-%dT%H:%M:%SZ%z'
