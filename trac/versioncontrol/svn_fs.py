@@ -45,6 +45,8 @@ import weakref
 import posixpath
 from datetime import datetime
 
+from genshi.builder import tag
+
 from trac.config import ListOption
 from trac.core import *
 from trac.versioncontrol import Changeset, Node, Repository, \
@@ -52,7 +54,8 @@ from trac.versioncontrol import Changeset, Node, Repository, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
-from trac.util import sorted, embedded_numbers
+from trac.versioncontrol.web_ui.browser import IPropertyRenderer
+from trac.util import sorted, embedded_numbers, reversed
 from trac.util.text import to_unicode
 from trac.util.datefmt import utc
 
@@ -311,6 +314,69 @@ class SubversionConnector(Component):
             raise TracError("Subversion >= 1.0 required: Found " +
                             version_string)
         return version_string
+
+
+class SubversionPropertyRenderer(Component):
+    implements(IPropertyRenderer)
+
+    def __init__(self):
+        self._externals_map = {}
+
+    # IPropertyRenderer methods
+
+    def match_property(self, name, mode):
+        return name in ('svn:externals', 'svn:needs-lock') and 4 or 0
+    
+    def render_property(self, name, mode, context, props):
+        if name == 'svn:externals':
+            return self._render_externals(props[name])
+        elif name == 'svn:needs-lock':
+            return self._render_needslock(context)
+
+    def _render_externals(self, prop):
+        if not self._externals_map:
+            for key, value in self.config.options('svn:externals'):
+                # ConfigParser splits at ':', i.e. key='http', value='//...'
+                value = value.split()
+                key, value = key+':'+value[0], ' '.join(value[1:])
+                self._externals_map[key] = value.replace('$path', '%(path)s') \
+                                           .replace('$rev', '%(rev)s')
+        externals = []
+        for external in prop.splitlines():
+            elements = external.split()
+            localpath, rev, url = elements[0], None, elements[-1]
+            if len(elements) == 3:
+                rev = elements[1]
+                rev = rev.replace('-r', '')
+            # retrieve a matching entry in the externals map
+            prefix = []
+            base_url = url
+            while base_url:
+                if base_url in self._externals_map:
+                    break
+                base_url, pref = posixpath.split(base_url)
+                prefix.append(pref)
+            href = self._externals_map.get(base_url)
+            revstr = rev and 'at revision '+rev or ''
+            if not href and url.startswith('http://'):
+                href = url
+            if href:
+                remotepath = posixpath.join(*reversed(prefix))
+                externals.append((localpath, revstr, base_url, remotepath,
+                                  href % {'path': remotepath, 'rev': rev}))
+            else:
+                externals.append((localpath, revstr, url, None, None))
+        return tag.ul([tag.li(tag.a(localpath + (not href and ' %s in %s' %
+                                                 (rev, url) or ''),
+                                    href=href,
+                                    title=href and ('%s%s in %s repository' %
+                                                    (remotepath, rev, url)) or
+                                    'No svn:externals configured in trac.ini'))
+                       for localpath, rev, url, remotepath, href in externals])
+
+    def _render_needslock(self, context):
+        return tag.img(src=context.href.chrome('common/lock-locked.png'),
+                       alt="needs lock", title="needs lock")
 
 
 class SubversionRepository(Repository):
