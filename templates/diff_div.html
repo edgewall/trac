@@ -8,8 +8,10 @@
                        .href         - link to the full file (optional)
                      .props        - a list of property changes
                        .name         - name of the property
+                       .diff         - rendered difference
                        .old          - old value of the property
                        .new          - new value for the property
+                       (both .old and .new have .name, .value and .rendered properties)
                      .diffs        - a sequence of diff blocks, each block being a dict:
                        .type         - one of 'unmod', 'add', 'rem' or 'mod'
                        .base and .changed - informations about lines from old and new content
@@ -22,6 +24,7 @@
 
        longcol  - "long" column header; e.g. 'Revision' or 'File' or '' (for 'sidebyside')
        shortcol - "short" column header: e.g. 'r' or '' (for 'inline')
+       no_id    - skip generation of id attributes in h2 headings
 
 -->
 <div xmlns="http://www.w3.org/1999/xhtml"
@@ -32,15 +35,31 @@
   <ul class="entries">
     <py:for each="idx, item in enumerate(changes)">
       <li py:if="item.diffs or item.props" class="entry">
-        <h2 id="file$idx">
-          <a title="$item.new.title" href="$item.new.href">$item.new.path</a>
+        <h2 id="${not no_id and 'file%s' % idx or None}" py:choose="">
+          <a py:when="item.new.path" title="$item.new.title" href="$item.new.href">$item.new.path</a>
+          <py:otherwise>&nbsp;</py:otherwise>
         </h2>
         <ul py:if="item.props" class="props">
-          <li py:for="prop in item.props">Property <strong>$prop.name</strong>
-            ${prop.old and prop.new and 'changed from ' or not prop.old and 'set' or 'deleted'}
-            <py:if test="prop.old and prop.new"><em><tt>$prop.old</tt></em></py:if>
-            <py:if test="prop.new"> to <em><tt>$prop.new</tt></em></py:if>
-          </li>
+          <py:for each="prop in item.props" py:choose="">
+            <py:with vars="one = prop.old or prop.new;
+                           both = prop.old and prop.new;
+                           action = both and 'changed from ' or not prop.old and 'set' or 'deleted'">
+              <li py:when="one">
+                Property <strong py:attrs="one.rendered and one.rendered.name_attributes">
+                  ${one.rendered and one.rendered.name or prop.name}</strong> $action
+                <py:def function="render_property(prop)">
+                  <py:choose>
+                    <py:when test="prop.rendered">$prop.rendered.content</py:when>
+                    <em py:when="istext(prop.value)"><tt>$prop.value</tt></em>
+                    <py:otherwise>$prop.value</py:otherwise>
+                  </py:choose>
+                </py:def>
+                <py:if test="prop.old and prop.new">${render_property(prop.old)}</py:if>
+                <py:if test="prop.new"> to ${render_property(prop.new)}</py:if>
+              </li>
+            </py:with>
+            <py:when test="prop.diff">$prop.diff</py:when>
+          </py:for>
         </ul>
         <table py:if="item.diffs" class="$diff.style" summary="Differences" cellspacing="0"
           py:with="fromline = item.diffs[0][0].base.offset+1;

@@ -10,7 +10,7 @@
     <title>$title</title>
     <script type="text/javascript">
       $(document).ready(function() {
-        $("#content").find("li.entry h2").addAnchor("Link to this diff");
+        $("#content").find("li.entry h2 a").parent().addAnchor("Link to this diff");
       });
     </script>
   </head>
@@ -18,16 +18,16 @@
   <body>
     <div id="ctxtnav" class="nav">
       <h2>Navigation</h2>
-      <ul py:choose="">
+      <py:choose>
         <py:when test="changeset">
           ${prevnext_nav(changeset and restricted and 'Change' or 'Changeset')}
         </py:when>
-        <py:otherwise>
+        <ul py:otherwise="">
           <li class="last">
             <a href="${href.changeset(old_rev, old_path, old=new_rev, old_path=new_path)}">Reverse Diff</a>
           </li>
-        </py:otherwise>
-      </ul>
+        </ul>
+      </py:choose>
     </div>
 
     <div id="content" class="changeset">
@@ -104,12 +104,17 @@
           <dd class="time">${format_datetime(changeset.date)} (${pretty_timedelta(changeset.date, None, 3600) or 'less than one hour'} ago)</dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>
-          <py:for each="prop in changeset_properties">
-            <dt class="property $prop.htmlclass">$prop.name:</dt>
-            <dd class="$prop.htmlclass" py:choose="">
-              <py:when test="prop.wikiflag">${context.wiki_to_html(prop.value)}</py:when>
-              <py:otherwise>$prop.value</py:otherwise>
-            </dd>
+          <py:for each="prop in properties" py:choose="">
+            <py:when test="prop.rendered">
+              <dt py:attrs="prop.rendered.name_attributes"
+                  py:content="prop.rendered.name" />
+              <dd py:attrs="prop.rendered.content_attributes"
+                  py:content="prop.rendered.content" />
+            </py:when>
+            <py:otherwise>
+              <dt class="property">$prop.name:</dt>
+              <dd>$prop.value</dd>
+            </py:otherwise>
           </py:for>
           <dt class="property message">Message:</dt>
           <dd class="message searchable" py:choose="">

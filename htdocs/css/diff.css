@@ -52,7 +52,7 @@
 
 /* Styles for the list of diffs */
 .diff ul.entries { clear: both; margin: 0; padding: 0 }
-.diff ul.entries ul.props li { overflow: auto; }
+
 .diff li.entry {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;

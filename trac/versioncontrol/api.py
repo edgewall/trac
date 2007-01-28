@@ -392,17 +392,13 @@ class Changeset(object):
         self.date = date
 
     def get_properties(self):
-        """Generator that provide additional metadata for this changeset.
+        """Returns the properties (meta-data) of the node, as a dictionary.
 
-        Each additional property is a 4 element tuple:
-         * `name` is the name of the property,
-         * `text` its value
-         * `wikiflag` indicates whether the `text` should be interpreted as
-            wiki text or not
-         * `htmlclass` enables to attach special formatting to the displayed
-            property, e.g. `'author'`, `'time'`, `'message'` or `'changeset'`.
+        The set of properties depends on the version control system.
 
-        Warning: API will be improved (see #1601 and #2545).
+        Warning: this used to yield 4-elements tuple (besides `name` and
+        `text`, there were `wikiflag` and `htmlclass` values).
+        This is now replaced by the usage of IPropertyRenderer (see #1601).
         """
         
     def get_changes(self):

@@ -40,11 +40,67 @@ from trac.util.html import html, escape, unescape, Markup
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
-from trac.versioncontrol.web_ui.util import render_node_property
+from trac.versioncontrol.web_ui.browser import BrowserModule, \
+                                               DefaultPropertyRenderer
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, Context, Formatter
+
+
+class IPropertyDiffRenderer(Interface):
+    """Render node properties in TracBrowser and TracChangeset views."""
+
+    def match_property_diff(name):
+        """Indicate whether this renderer can treat the given property diffs
+
+        Returns a quality number, ranging from 0 (unsupported) to 9
+        (''perfect'' match).
+        """
+
+    def render_property_diff(name, old_context, old_props,
+                             new_context, new_props, options):
+        """Render the given diff of property to HTML.
+
+        `name` is the property name as given to `match_property_diff()`,
+        `old_context` corresponds to the old node being render
+        (useful when the rendering depends on the node kind)
+        and `old_props` is the corresponding collection of all properties.
+        Same for `new_node` and `new_props`.
+        `options` are the current diffs options.
+
+        The rendered result can be one of the following:
+        - `None`: the property change will be shown the normal way
+          (''changed from `old` to `new`'')
+        - an `unicode` value: the change will be shown as textual content
+        - `Markup` or other Genshi content: the change will shown as block
+          markup
+        """
+
+
+class DefaultPropertyDiffRenderer(Component):
+    """Implement default behavior for rendering property differences."""
+
+    implements(IPropertyDiffRenderer)
+
+    def match_property_diff(self, name):
+        # Support everything but hidden properties.
+        hidden_properties = DefaultPropertyRenderer(self.env).hidden_properties
+        return name not in hidden_properties and 1 or 0
+
+
+    def render_property_diff(self, name, old_context, old_props,
+                             new_context, new_props, options):
+        old, new = old_props[name], new_props[name]
+        # Render as diff only if multiline (see #3002)
+        if '\n' not in old and '\n' not in new:
+            return None
+        unidiff = '--- \n+++ \n' + \
+                  '\n'.join(unified_diff(old.splitlines(), new.splitlines(),
+                                         options.get('contextlines', 3)))
+        return tag.li('Property ', tag.strong(name),
+                      Mimeview(self.env).render(old_context, 'text/x-diff',
+                                                unidiff))
 
 
 class ChangesetModule(Component):
@@ -65,6 +121,8 @@ class ChangesetModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                ITimelineEventProvider, IWikiSyntaxProvider, ISearchSource)
 
+    property_diff_renderers = ExtensionPoint(IPropertyDiffRenderer)
+    
     timeline_show_files = IntOption('timeline', 'changeset_show_files', 0,
         """Number of files to show (`-1` for unlimited, `0` to disable).""")
 
@@ -267,6 +325,7 @@ class ChangesetModule(Component):
         data['chgset'] = chgset and True
         data['restricted'] = restricted
         context = Context(self.env, req)
+        browser = BrowserModule(self.env)
 
         if chgset: # Changeset Mode (possibly restricted on a path)
             path, rev = data['new_path'], data['new_rev']
@@ -293,15 +352,13 @@ class ChangesetModule(Component):
                 else:
                     return 'Changeset %s' % rev
 
-            title = _changeset_title(rev)
-            properties = []
-            for name, value, wikiflag, htmlclass in chgset.get_properties():
-                properties.append({'name': name, 'value': value,
-                                   'htmlclass': htmlclass,
-                                   'wikiflag': wikiflag})
-
             data['changeset'] = chgset
-            data['changeset_properties'] = properties
+            title = _changeset_title(rev)
+
+            # Support for revision properties (#2545)
+            revprops = chgset.get_properties()
+            data['properties'] = browser.render_properties('revprop', context,
+                                                           revprops)
             oldest_rev = repos.oldest_rev
             if chgset.rev != oldest_rev:
                 if restricted:
@@ -368,33 +425,37 @@ class ChangesetModule(Component):
         #           ... and data['old_rev'] may have nothing to do
         #           with _that_ node specific history...
 
-        hidden_properties = self.config.getlist('browser', 'hide_properties')
+        options = data['diff']['options']
 
         def _prop_changes(old_node, new_node):
+            old_ctx = context('source', old_node.created_path,
+                                  version=old_node.created_rev)
+            new_ctx = context('source', new_node.created_path,
+                                  version=new_node.created_rev)
             old_props = old_node.get_properties()
             new_props = new_node.get_properties()
-            changed_props = {}
+            changed_properties = []
             if old_props != new_props:
                 for k,v in old_props.items():
+                    new = old = diff = None
                     if not k in new_props:
-                        changed_props[k] = {
-                            'old': render_node_property(self.env, k, v)}
+                        old = v # won't be displayed, no need to render it
                     elif v != new_props[k]:
-                        changed_props[k] = {
-                            'old': render_node_property(self.env, k, v),
-                            'new': render_node_property(self.env, k,
-                                                        new_props[k])}
+                        diff = self.render_property_diff(
+                            k, old_ctx, old_props, new_ctx, new_props, options)
+                        if not diff:
+                            old = browser.render_property(k, 'changeset',
+                                                          old_ctx, old_props)
+                            new = browser.render_property(k, 'changeset',
+                                                          new_ctx, new_props)
+                    if new or old or diff:
+                        changed_properties.append({'name': k, 'old': old,
+                                                   'new': new, 'diff': diff})
                 for k,v in new_props.items():
                     if not k in old_props:
-                        changed_props[k] = {
-                            'new': render_node_property(self.env, k, v)}
-                for k in hidden_properties:
-                    if k in changed_props:
-                        del changed_props[k]
-            changed_properties = []
-            for name, props in changed_props.iteritems():
-                props.update({'name': name})
-                changed_properties.append(props)
+                        new = browser.render_property(k, 'changeset',
+                                                      new_ctx, new_props)
+                        changed_properties.append({'name': k, 'new': new})
             return changed_properties
 
         def _estimate_changes(old_node, new_node):
@@ -421,7 +482,6 @@ class ChangesetModule(Component):
             new_content = mview.to_unicode(new_content, new_node.content_type)
 
             if old_content != new_content:
-                options = data['diff']['options']
                 context = options.get('contextlines', 3)
                 if context < 0:
                     context = None
@@ -621,6 +681,21 @@ class ChangesetModule(Component):
             return 'Diff from %s@%s to %s@%s' \
                    % (data['old_path'] or '/', data['old_rev'] or 'latest',
                       data['new_path'] or '/', data['new_rev'] or 'latest')
+
+    def render_property_diff(self, name, old_node, old_props,
+                             new_node, new_props, options):
+        """Renders diffs of a node property to HTML."""
+        candidates = []
+        for renderer in self.property_diff_renderers:
+            quality = renderer.match_property_diff(name)
+            if quality > 0:
+                candidates.append((quality, renderer))
+        if candidates:
+            renderer = sorted(candidates, reverse=True)[0][1]
+            return renderer.render_property_diff(name, old_node, old_props,
+                                                 new_node, new_props, options)
+        else:
+            return None
 
     # ITimelineEventProvider methods
 

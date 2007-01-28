@@ -21,12 +21,11 @@ import urllib
 
 from trac.core import TracError
 from trac.util.datefmt import pretty_timedelta
-from trac.util.html import escape, html, Markup
+from trac.util.html import Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 
-__all__ = ['get_changes', 'get_path_links', 
-           'get_existing_node', 'render_node_property']
+__all__ = ['get_changes', 'get_path_links', 'get_existing_node']
 
 def get_changes(repos, revs):
     changes = {}
@@ -60,13 +59,3 @@ def get_existing_node(req, repos, path, rev):
                                'existed but was later removed.</p>', e.message,
                                req.href.log(path, rev=rev,
                                             mode='path_history')))
-
-def render_node_property(env, name, value):
-    """Renders a node property value to HTML.
-
-    Currently only handle multi-line properties. See also #1601.
-    """
-    if value and '\n' in value:
-        value = Markup(''.join(['<br />%s' % escape(v)
-                                for v in value.split('\n')]))
-    return value

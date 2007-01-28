@@ -51,7 +51,7 @@ class PatchRenderer(Component):
                                     Mimeview(self.env).tab_width)
         if not changes:
             raise TracError, 'Invalid unified diff content'
-        data = {'diff': {'style': 'inline'},
+        data = {'diff': {'style': 'inline'}, 'no_id': True,
                 'changes': changes, 'longcol': 'File'}
 
         add_script(req, 'common/js/diff.js')
@@ -92,7 +92,6 @@ class PatchRenderer(Component):
             return div * '&nbsp; ' + mod * '&nbsp;'
 
         changes = []
-        filename, groups = None, None
         lines = iter(difflines)
         try:
             line = lines.next()
@@ -101,10 +100,14 @@ class PatchRenderer(Component):
                     line = lines.next()
                     continue
 
+                oldpath = oldrev = newpath = newrev = ''
+
                 # Base filename/version
                 oldinfo = line.split(None, 2)
-                oldpath = oldinfo[1]
-                groups, blocks = None, None
+                if len(oldinfo) > 1:
+                    oldpath = oldinfo[1]
+                    if len(oldinfo) > 2:
+                        oldrev = oldinfo[2]
 
                 # Changed filename/version
                 line = lines.next()
@@ -112,24 +115,32 @@ class PatchRenderer(Component):
                     return None
 
                 newinfo = line.split(None, 2)
-                newpath = newinfo[1]
-                sep = re.compile(r'([/.])')
-                commonprefix = ''.join(os.path.commonprefix(
-                    [sep.split(newpath), sep.split(oldpath)]))
-                commonsuffix = ''.join(os.path.commonprefix(
-                    [sep.split(newpath)[::-1], sep.split(oldpath)[::-1]])[::-1])
+                if len(newinfo) > 1:
+                    newpath = newinfo[1]
+                    if len(newinfo) > 2:
+                        newrev = newinfo[2]
+
                 shortrev = ('old', 'new')
-                if len(commonprefix) > len(commonsuffix):
-                    common = commonprefix
-                elif commonsuffix:
-                    common = commonsuffix.lstrip('/')
-                    a = oldpath[:-len(commonsuffix)]
-                    b = newpath[:-len(commonsuffix)]
-                    if len(a) < 4 and len(b) < 4:
-                        shortrev = (a, b)
+                if oldpath or newpath:
+                    sep = re.compile(r'([/.])')
+                    commonprefix = ''.join(os.path.commonprefix(
+                        [sep.split(newpath), sep.split(oldpath)]))
+                    commonsuffix = ''.join(os.path.commonprefix(
+                        [sep.split(newpath)[::-1], sep.split(oldpath)[::-1]])[::-1])
+                    if len(commonprefix) > len(commonsuffix):
+                        common = commonprefix
+                    elif commonsuffix:
+                        common = commonsuffix.lstrip('/')
+                        a = oldpath[:-len(commonsuffix)]
+                        b = newpath[:-len(commonsuffix)]
+                        if len(a) < 4 and len(b) < 4:
+                            shortrev = (a, b)
+                    else:
+                        common = '(a) %s vs. (b) %s' % (oldpath, newpath)
+                        shortrev = ('a', 'b')
                 else:
-                    common = '(a) %s vs. (b) %s' % (oldpath, newpath)
-                    shortrev = ('a', 'b')
+                    common = ''
+
                 groups = []
                 changes.append({'change': 'edit', 'props': [],
                                 'diffs': groups,

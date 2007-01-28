@@ -176,5 +176,4 @@ class CachedChangeset(Changeset):
             yield path, kind, change, base_path, base_rev
 
     def get_properties(self):
-        for prop in self.repos.get_changeset(self.rev).get_properties():
-            yield prop
+        return self.repos.get_changeset(self.rev).get_properties()
