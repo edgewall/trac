@@ -37,7 +37,7 @@ from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
-                              format_time, http_date
+                              format_time, http_date, utc
 from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
@@ -228,6 +228,7 @@ class Chrome(Component):
         'time': datetime.time,
         'timedelta': datetime.timedelta,
         'to_unicode': to_unicode,
+        'utc': utc,
     }
 
     def __init__(self):

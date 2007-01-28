@@ -101,7 +101,8 @@
       <dl id="overview">
         <py:if test="changeset">
           <dt class="property time">Timestamp:</dt>
-          <dd class="time">${format_datetime(changeset.date)} (${pretty_timedelta(changeset.date, None, 3600) or 'less than one hour'} ago)</dd>
+          <dd class="time">${format_datetime(changeset.date)} (${(datetime.now(utc) - changeset.date) &lt; timedelta(0, 3600) and \
+                                                                 'less than one hour' or dateinfo(changeset.date)} ago)</dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>
           <py:for each="prop in properties" py:choose="">
