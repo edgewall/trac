@@ -205,6 +205,7 @@ class Chrome(Component):
         'all': compat.all,
         'any': compat.any,
         'attrgetter': compat.attrgetter,
+        'classes': presentation.classes,
         'date': datetime.date,
         'datetime': datetime.datetime,
         'first_last': presentation.first_last,
@@ -475,7 +476,7 @@ class Chrome(Component):
         tzinfo = None
         if req:
             tzinfo = req.tz
-            
+
         def dateinfo(date):
             return tag.span(pretty_timedelta(date),
                             title=format_datetime(date))

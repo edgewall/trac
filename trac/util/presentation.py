@@ -19,14 +19,39 @@ tasks such as grouping or pagination.
 from math import ceil
 from itertools import izip, chain, repeat
 
-__all__ = ['first_last', 'group', 'istext', 'paginate', 'Paginator']
+__all__ = ['classes', 'first_last', 'group', 'istext', 'paginate', 'Paginator']
 
+
+def classes(*args, **kwargs):
+    """Helper function for dynamically assembling a list of CSS class names
+    in templates.
+    
+    Any positional arguments are added to the list of class names. All
+    positional arguments must be strings:
+    
+    >>> classes('foo', 'bar')
+    u'foo bar'
+    
+    In addition, the names of any supplied keyword arguments are added if they
+    have a truth value:
+    
+    >>> classes('foo', bar=True)
+    u'foo bar'
+    >>> classes('foo', bar=False)
+    u'foo'
+    
+    If none of the arguments are added to the list, this function returns
+    `None`:
+    
+    >>> classes(bar=False)
+    """
+    classes = list(filter(None, args)) + [k for k, v in kwargs.items() if v]
+    if not classes:
+        return None
+    return u' '.join(classes)
 
 def first_last(idx, seq):
-    return ' '.join(filter(None, [
-        (idx == 0) and 'first',
-        (idx == len(seq) - 1) and 'last'
-    ]))
+    return classes(first=idx == 0, last=idx == len(seq) - 1)
 
 
 def group(iterable, num, predicate=None):

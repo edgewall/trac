@@ -37,13 +37,14 @@
         <h2>${day}:</h2>
         <dl>
           <py:for each="event in events" py:with="highlight = precisedate and abs(event.date - precisedate) &lt; precision">
-            <dt class="${event.kind}${highlight and ' highlight' or ''}">
+            <dt class="${classes(event.kind, highlight=highlight)}">
               <a href="${event.href}">
                 <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
                 <py:if test="event.author">by ${event.author}</py:if>
               </a>
             </dt>
-            <dd class="${event.kind}" py:with="wikify = event.use_oneliner and partial(event.context.wiki_to_oneliner, shorten=event.shorten_oneliner) or event.context.wiki_to_html">
+            <dd class="${classes(event.kind, highlight=highlight)}"
+                py:with="wikify = event.use_oneliner and partial(event.context.wiki_to_oneliner, shorten=event.shorten_oneliner) or event.context.wiki_to_html">
               ${event.markup}
               <py:if test="event.wikitext">${wikify(event.wikitext)}</py:if>
             </dd>
