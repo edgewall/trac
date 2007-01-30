@@ -130,6 +130,16 @@
         </py:if>
         <dt class="property files">${filter(None, changes) and 'Files:' or '(No files)'}</dt>
         <dd class="files">
+          <div class="legend" id="file-legend" py:if="filestats">
+            <dl>
+              <py:if test="filestats['add']"><dt class="add"></dt><dd>${filestats['add']} added</dd></py:if>
+              <py:if test="filestats['delete']"><dt class="rem"></dt><dd>${filestats['delete']} removed</dd></py:if>
+              <py:if test="filestats['edit']"><dt class="mod"></dt><dd>${filestats['edit']} modified</dd></py:if>
+              <py:if test="filestats['copy']"><dt class="cp"></dt><dd>${filestats['copy']} copied</dd></py:if>
+              <py:if test="filestats['move']"><dt class="mv"></dt><dd>${filestats['move']} moved</dd></py:if>
+            </dl>
+          </div>
+          <br />
           <ul>
             <li py:for="idx,item in enumerate(changes)" py:choose="item.change">
               <py:when test="'add'">${node_change(idx, item, 'add', 'added')}</py:when>
@@ -143,16 +153,16 @@
         </dd>
       </dl>
 
-      <div class="diff">
-        <div id="legend">
+      <div class="diff" py:if="has_diffs">
+        <div class="legend" id="diff-legend">
           <h3>Legend:</h3>
           <dl>
             <dt class="unmod"></dt><dd>Unmodified</dd>
             <dt class="add"></dt><dd>Added</dd>
             <dt class="rem"></dt><dd>Removed</dd>
-            <dt class="mod"></dt><dd>Modified</dd>
-            <dt class="cp"></dt><dd>Copied</dd>
-            <dt class="mv"></dt><dd>Moved</dd>
+            <py:if test="diff.style != 'inline'">
+              <dt class="mod"></dt><dd>Modified</dd>
+            </py:if>
           </dl>
         </div>
 

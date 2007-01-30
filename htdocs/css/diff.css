@@ -18,37 +18,49 @@
 #overview dd.message pre { margin-bottom: 1em; margin-top: 0; }
 
 /* Colors for change types */
-#chglist .edit, #overview .mod, .diff #legend .mod { background: #fd8 }
-#chglist .delete, #overview .rem, .diff #legend .rem { background: #f88 }
-#chglist .add, #overview .add, .diff #legend .add { background: #bfb }
-#chglist .copy, #overview .cp, .diff #legend .cp { background: #88f }
-#chglist .move, #overview .mv, .diff #legend .mv { background: #ccc }
+#chglist .edit, #overview .mod, .diff .legend .mod { background: #fd8 }
+#chglist .delete, #overview .rem, .diff .legend .rem { background: #f88 }
+#chglist .add, #overview .add, .diff .legend .add { background: #bfb }
+#chglist .copy, #overview .cp, .diff .legend .cp { background: #88f }
+#chglist .move, #overview .mv, .diff .legend .mv { background: #ccc }
 #chglist .unknown { background: #fff }
 
-/* Legend for diff colors */
-.diff #legend {
- float: left;
+/* Legend for diff and file colors */
+.legend {
  font-size: 9px;
  line-height: 1em;
- margin: 1em 0;
- padding: .5em;
+ padding: .5em 0;
 }
-.diff #legend h3 { display: none; }
-.diff #legend dt {
+.legend h3 { display: none; }
+.legend dt {
  background: #fff;
  border: 1px solid #999;
  float: left;
- margin: .1em .5em .1em 2em;
+ margin: .1em .5em .1em 0;
  overflow: hidden;
  width: .8em; height: .8em;
 }
-.diff #legend dl, .diff #legend dd {
+.legend dl {
  display: inline;
- float: left;
  padding: 0;
  margin: 0;
  margin-right: .5em;
 }
+.legend dd {
+ display: inline;
+ float: left;
+ padding: 0;
+ margin: 0;
+ margin-right: 2em;
+}
+
+#diff-legend {
+ float: left;
+ clear: right;
+ margin: 1em .5em;
+}
+
+#file-legend dd { margin-left: 0; }
 
 /* Styles for the list of diffs */
 .diff ul.entries { clear: both; margin: 0; padding: 0 }

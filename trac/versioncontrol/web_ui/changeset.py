@@ -521,6 +521,9 @@ class ChangesetModule(Component):
             show_diffs = False
             annotated = repos.normalize_path(req.args.get('annotate'))
 
+        filestats = {}
+        for chg in 'add delete edit copy move'.split():
+            filestats[chg] = 0
         has_diffs = False
         changes = []
         for old_node, new_node, kind, change in get_changes():
@@ -547,6 +550,7 @@ class ChangesetModule(Component):
                         'new': new_node and node_info(new_node, annotated),
                         'props': props,
                         'diffs': diffs}
+                filestats[change] = filestats[change] + 1
                 if change in Changeset.DIFF_CHANGES and not show_diff:
                     if chgset:
                         diff_href = req.href.changeset(new_node.rev,
@@ -562,6 +566,7 @@ class ChangesetModule(Component):
             changes.append(info) # the sequence should be immutable
 
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
+                     'filestats': filestats,
                      'longcol': 'Revision', 'shortcol': 'r'})
 
         if xhr: # render and return the content only
