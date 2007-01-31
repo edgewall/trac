@@ -36,6 +36,8 @@ class CachedRepository(Repository):
         self.repos = repos
         try:
             self.sync()
+        except TracError:
+            raise
         except Exception, e: # most probably 2 concurrent resync attempts
             log.warning('Error during sync(): %s' % e) 
 
