@@ -87,8 +87,10 @@ class RepositoryManager(Component):
                         continue
                     heappush(candidates, (-prio, connector))
             if not candidates:
-                raise TracError('Unsupported version control system "%s"'
-                                % self.repository_type)
+                raise TracError('Unsupported version control system "%s". '
+                                'Check that the Python bindings for "%s" are '
+                                'correctly installed.' %
+                                ((self.repository_type,)*2))
             self._connector = heappop(candidates)[1]
         try:
             self._lock.acquire()
