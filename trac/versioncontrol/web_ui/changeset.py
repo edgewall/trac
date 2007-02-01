@@ -37,7 +37,7 @@ from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted
 from trac.util.datefmt import pretty_timedelta, utc
-from trac.util.html import html, escape, unescape, Markup
+from trac.util.html import html
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
@@ -202,6 +202,8 @@ class ChangesetModule(Component):
         """
         req.perm.require('CHANGESET_VIEW')
 
+        repos = self.env.get_repository(req.authname)
+
         # -- retrieve arguments
         new_path = req.args.get('new_path')
         new = req.args.get('new')
@@ -210,13 +212,14 @@ class ChangesetModule(Component):
 
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
+        # -- support for the revision log ''View changes'' form,
+        #    where we need to give the path and revision at the same time
         if old and '@' in old:
-            old_path, old = unescape(old).split('@')
+            old, old_path = old.split('@', 1)
         if new and '@' in new:
-            new_path, new = unescape(new).split('@')
+            new, new_path = new.split('@', 1)
 
         # -- normalize and check for special case
-        repos = self.env.get_repository(req.authname)
         new_path = repos.normalize_path(new_path)
         new = repos.normalize_rev(new)
 
@@ -742,7 +745,7 @@ class ChangesetModule(Component):
             context = Context(self.env, req)
             
             for chgset in repos.get_changesets(start, stop):
-                title = html('Changeset ', html.em('[%s]' % chgset.rev))
+                title = tag('Changeset ', tag.em('[%s]' % chgset.rev))
                 if wiki_format:
                     message = chgset.message
                     markup = ''
@@ -756,14 +759,14 @@ class ChangesetModule(Component):
                     filestats = self._prepare_filestats()
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
-                            files.append(html.LI(u'\u2026'))
+                            files.append(tag.LI(u'\u2026'))
                             break
                         if show_location:
                             filestats[chg[2]] += 1
                             files.append(chg[0])
                         else:
-                            files.append(html.LI(html.DIV(class_=chg[2]),
-                                             chg[0] or '/'))
+                            files.append(tag.li(tag.div(class_=chg[2]),
+                                                chg[0] or '/'))
                     if show_location:
                         markup = tag.ul(tag.li(
                             [(tag.div(class_=kind),
@@ -775,7 +778,7 @@ class ChangesetModule(Component):
                             'in ', tag.strong(self._get_location(files))),
                             markup, class_="changes")
                     else:
-                        markup = html(html.UL(files, class_="changes"), markup)
+                        markup = tag(tag.ul(files, class_="changes"), markup)
 
                 event = TimelineEvent('changeset', title,
                                       req.href.changeset(chgset.rev), markup)
@@ -820,14 +823,14 @@ class ChangesetModule(Component):
             rev, path = chgset, None
         try:
             changeset = self.env.get_repository().get_changeset(rev)
-            return html.A(label, class_="changeset",
-                          title=shorten_line(changeset.message),
-                          href=(formatter.href.changeset(rev, path) +
-                                params + fragment))
+            return tag.a(label, class_="changeset",
+                         title=shorten_line(changeset.message),
+                         href=(formatter.href.changeset(rev, path) +
+                               params + fragment))
         except NoSuchChangeset:
-            return html.A(label, class_="missing changeset",
-                          href=formatter.href.changeset(rev, path),
-                          rel="nofollow")
+            return tag.a(label, class_="missing changeset",
+                         href=formatter.href.changeset(rev, path),
+                         rel="nofollow")
 
     def _format_diff_link(self, formatter, ns, target, label):
         params, query, fragment = formatter.split_link(target)
@@ -857,7 +860,7 @@ class ChangesetModule(Component):
                                             new=data['new_rev'],
                                             old_path=data['old_path'] or None,
                                             old=data['old_rev']) + query
-        return html.A(label, class_="changeset", title=title, href=href)
+        return tag.a(label, class_="changeset", title=title, href=href)
 
     # ISearchSource methods
 

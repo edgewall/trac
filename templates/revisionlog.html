@@ -111,9 +111,9 @@
 
                 <tr class="$odd_even">
                   <td class="diff">
-                    <input type="radio" name="old" value="${item.path}@${item.rev}"
+                    <input type="radio" name="old" value="${item.rev}@${item.path}"
                            checked="${idx == (len(items) - 1) or None}" />
-                    <input type="radio" name="new" value="${item.path}@${item.rev}"
+                    <input type="radio" name="new" value="${item.rev}@${item.path}"
                            checked="${idx == 0 or None}" />
                   </td>
                   <td class="change" style="padding-left: ${item.depth}em">
