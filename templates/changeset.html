@@ -66,13 +66,16 @@
 
       <py:def function="node_change(idx,item,cl,kind)">
         <py:with vars="ndiffs = item.diffs is not None and len(item.diffs) or 0;
-                       nprops = len(item.props)">
+                       nprops = len(item.props);
+                       is_removal = cl == 'rem';
+                       path = is_removal and item.old.path or item.new.path;
+                       path = len(files) == 1 and path or path[len(location):].strip('/')">
           <div class="$cl"> </div>
           <py:choose test="">
-            <a py:when="cl == 'rem'" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
-              $item.old.path</a>
+            <a py:when="is_removal" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
+              $path</a>
             <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
-              ${item.new.path or '(root)'}</a>
+              ${path or (location and '.') or '(root)'}</a>
           </py:choose>
           <span class="comment">($kind)</span>
           <py:if test="item.old.path and item.change == 'copy' or item.change == 'move'">
@@ -128,7 +131,11 @@
             <py:otherwise>${changeset.message}</py:otherwise>
           </dd>
         </py:if>
-        <dt class="property files">${filter(None, changes) and 'Files:' or '(No files)'}</dt>
+        <py:if test="location and len(files) &gt; 1">
+          <dt class="property location">Location:</dt>
+          <dd class="searchable"><a href="${req.href.browser(location, rev=new_rev)}">$location</a></dd>
+        </py:if>
+        <dt class="property files">${files and 'Files:' or '(No files)'}</dt>
         <dd class="files">
           <div class="legend" id="file-legend" py:if="filestats">
             <dl>

@@ -19,6 +19,7 @@
 #         Christian Boos <cboos@neuf.fr>
 
 from datetime import datetime
+import os
 import posixpath
 import re
 from StringIO import StringIO
@@ -526,6 +527,7 @@ class ChangesetModule(Component):
             filestats[chg] = 0
         has_diffs = False
         changes = []
+        files = []
         for old_node, new_node, kind, change in get_changes():
             props = []
             diffs = []
@@ -550,6 +552,9 @@ class ChangesetModule(Component):
                         'new': new_node and node_info(new_node, annotated),
                         'props': props,
                         'diffs': diffs}
+                path = new_node and new_node.path or old_node and old_node.path
+                if path:
+                    files.append(path)
                 filestats[change] = filestats[change] + 1
                 if change in Changeset.DIFF_CHANGES and not show_diff:
                     if chgset:
@@ -565,8 +570,12 @@ class ChangesetModule(Component):
                 info = None
             changes.append(info) # the sequence should be immutable
 
+        location = '/'.join(os.path.commonprefix([f.split('/')
+                                                  for f in files]))
+        
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
                      'filestats': filestats,
+                     'files': files, 'location': location,
                      'longcol': 'Revision', 'shortcol': 'r'})
 
         if xhr: # render and return the content only
