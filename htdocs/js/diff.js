@@ -3,8 +3,8 @@ function convertDiff(name, table) {
   var lines = [
     "Index: " + name,
     "===================================================================",
-    "--- " + ths[0].title.substr(5),
-    "+++ " + ths[1].title.substr(5),
+    "--- " + ths[0].title,
+    "+++ " + ths[1].title,
   ];
   var sepIndex = 0;
   var oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
