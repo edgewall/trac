@@ -28,7 +28,7 @@ import time
 from genshi.builder import tag
 
 from trac import util
-from trac.config import BoolOption, IntOption
+from trac.config import Option, BoolOption, IntOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
@@ -124,8 +124,12 @@ class ChangesetModule(Component):
 
     property_diff_renderers = ExtensionPoint(IPropertyDiffRenderer)
     
-    timeline_show_files = IntOption('timeline', 'changeset_show_files', 0,
-        """Number of files to show (`-1` for unlimited, `0` to disable).""")
+    timeline_show_files = Option('timeline', 'changeset_show_files', '0',
+        """Number of files to show (`-1` for unlimited, `0` to disable).
+
+        This can also be `location`, for showing the common prefix for the
+        changed files. (since 0.11).
+        """)
 
     timeline_long_messages = BoolOption('timeline', 'changeset_long_messages',
                                         'false',
@@ -522,10 +526,8 @@ class ChangesetModule(Component):
             show_diffs = False
             annotated = repos.normalize_path(req.args.get('annotate'))
 
-        filestats = {}
-        for chg in 'add delete edit copy move'.split():
-            filestats[chg] = 0
         has_diffs = False
+        filestats = self._prepare_filestats()
         changes = []
         files = []
         for old_node, new_node, kind, change in get_changes():
@@ -555,7 +557,7 @@ class ChangesetModule(Component):
                 path = new_node and new_node.path or old_node and old_node.path
                 if path:
                     files.append(path)
-                filestats[change] = filestats[change] + 1
+                filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES and not show_diff:
                     if chgset:
                         diff_href = req.href.changeset(new_node.rev,
@@ -570,12 +572,9 @@ class ChangesetModule(Component):
                 info = None
             changes.append(info) # the sequence should be immutable
 
-        location = '/'.join(os.path.commonprefix([f.split('/')
-                                                  for f in files]))
-        
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
                      'filestats': filestats,
-                     'files': files, 'location': location,
+                     'files': files, 'location': self._get_location(files),
                      'longcol': 'Revision', 'shortcol': 'r'})
 
         if xhr: # render and return the content only
@@ -711,6 +710,15 @@ class ChangesetModule(Component):
         else:
             return None
 
+    def _get_location(self, files):
+        return '/'.join(os.path.commonprefix([f.split('/') for f in files]))
+
+    def _prepare_filestats(self):
+        filestats = {}
+        for chg in Changeset.ALL_CHANGES:
+            filestats[chg] = 0
+        return filestats
+
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
@@ -720,6 +728,13 @@ class ChangesetModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
             show_files = self.timeline_show_files
+            show_location = show_files == 'location'
+            if show_files in ('-1', 'unlimited'):
+                show_files = -1
+            elif show_files.isdigit():
+                show_files = int(show_files)
+            else:
+                show_files = 0 # disabled
             wiki_format = self.wiki_format_messages
             long_messages = self.timeline_long_messages
             
@@ -736,15 +751,31 @@ class ChangesetModule(Component):
                     markup = long_messages and chgset.message or \
                              shorten_line(chgset.message or '')
 
-                if show_files and 'BROWSER_VIEW' in req.perm:
+                if show_files or show_location and 'BROWSER_VIEW' in req.perm:
                     files = []
+                    filestats = self._prepare_filestats()
                     for chg in chgset.get_changes():
                         if show_files > 0 and len(files) >= show_files:
                             files.append(html.LI(u'\u2026'))
                             break
-                        files.append(html.LI(html.DIV(class_=chg[2]),
+                        if show_location:
+                            filestats[chg[2]] += 1
+                            files.append(chg[0])
+                        else:
+                            files.append(html.LI(html.DIV(class_=chg[2]),
                                              chg[0] or '/'))
-                    markup = html(html.UL(files, class_="changes"), markup)
+                    if show_location:
+                        markup = tag.ul(tag.li(
+                            [(tag.div(class_=kind),
+                              tag.span(count, ' ', kind,
+                                       count > 1 and 's ' or ' '))
+                             for kind in Changeset.ALL_CHANGES
+                             for count in (filestats[kind],)
+                             if count],
+                            'in ', tag.strong(self._get_location(files))),
+                            markup, class_="changes")
+                    else:
+                        markup = html(html.UL(files, class_="changes"), markup)
 
                 event = TimelineEvent('changeset', title,
                                       req.href.changeset(chgset.rev), markup)
