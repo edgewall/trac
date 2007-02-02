@@ -27,7 +27,6 @@ import time
 
 from genshi.builder import tag
 
-from trac import util
 from trac.config import Option, BoolOption, IntOption
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
@@ -37,7 +36,6 @@ from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted
 from trac.util.datefmt import pretty_timedelta, utc
-from trac.util.html import html
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
@@ -754,30 +752,30 @@ class ChangesetModule(Component):
                     markup = long_messages and chgset.message or \
                              shorten_line(chgset.message or '')
 
-                if show_files or show_location and 'BROWSER_VIEW' in req.perm:
+                if 'BROWSER_VIEW' in req.perm:
                     files = []
-                    filestats = self._prepare_filestats()
-                    for chg in chgset.get_changes():
-                        if show_files > 0 and len(files) >= show_files:
-                            files.append(tag.LI(u'\u2026'))
-                            break
-                        if show_location:
+                    if show_location:
+                        filestats = self._prepare_filestats()
+                        for chg in chgset.get_changes():
                             filestats[chg[2]] += 1
                             files.append(chg[0])
-                        else:
-                            files.append(tag.li(tag.div(class_=chg[2]),
-                                                chg[0] or '/'))
-                    if show_location:
                         markup = tag.ul(tag.li(
                             [(tag.div(class_=kind),
-                              tag.span(count, ' ', kind,
-                                       count > 1 and 's ' or ' '))
+                              tag.span(count, ' ',
+                                       count > 1 and (kind == 'copy' and
+                                                      'copies' or kind + 's') or
+                                       kind))
                              for kind in Changeset.ALL_CHANGES
-                             for count in (filestats[kind],)
-                             if count],
+                             for count in (filestats[kind],) if count],
                             'in ', tag.strong(self._get_location(files))),
                             markup, class_="changes")
-                    else:
+                    elif show_files:
+                        for chg in chgset.get_changes():
+                            if show_files > 0 and len(files) >= show_files:
+                                files.append(tag.li(u'\u2026'))
+                                break
+                            files.append(tag.li(tag.div(class_=chg[2]),
+                                                chg[0] or '/'))
                         markup = tag(tag.ul(files, class_="changes"), markup)
 
                 event = TimelineEvent('changeset', title,
