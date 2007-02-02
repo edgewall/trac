@@ -75,10 +75,7 @@ class ConnectionPool(object):
 
     def get_cnx(self, timeout=None):
         start = time.time()
-        tid = threading._get_ident()
-        print tid, 'wanting to acquire'
         self._available.acquire()
-        print tid, 'ok'
         try:
             tid = threading._get_ident()
             if tid in self._active:
@@ -107,17 +104,10 @@ class ConnectionPool(object):
                 else:
                     if timeout:
                         if (time.time() - start) >= timeout:
-                            print tid, 'timeout reached!'
                             raise TimeoutError('Unable to get database '
                                                'connection within %d seconds'
                                                 % timeout)
-                        print tid, 'waiting on timeout'
-                        self._available.wait(timeout / 10)
-                        self._available.release()
-                        print tid, 'sleeping...'
-                        time.sleep(1)
-                        print tid, 'reacquiring...'
-                        self._available.acquire()
+                        self._available.wait(timeout)
                     else: # Warning: without timeout, Trac *might* hang
                         self._available.wait()
             self._active[tid] = [1, cnx]
@@ -136,7 +126,7 @@ class ConnectionPool(object):
                     else:
                         self._cleanup(tid)
                 # otherwise, cnx was already cleaned up during a shutdown(tid),
-                # and in the meantime,  has been reused (#3504)
+                # and in the meantime, `tid` has been reused (#3504)
         finally:
             self._available.release()
 
