@@ -78,11 +78,12 @@ class TimelineModule(Component):
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
-        t = datetime.now(utc)
+        fromdate = today = datetime.now(utc)
         precisedate = precision = None
         if 'from' in req.args:
             try:
-                precisedate = t = parse_date(req.args.get('from'), req.tz)
+                precisedate = parse_date(req.args.get('from'), req.tz)
+                fromdate = precisedate
                 precision = req.args.get('precision', '')
                 if precision.startswith('second'):
                     precision = timedelta(seconds=1)
@@ -92,13 +93,15 @@ class TimelineModule(Component):
                     precision = timedelta(hours=1)
             except ValueError, e:
                 self.log.debug("Invalid date requested %s", to_unicode(e))
-        fromdate = t.replace(hour=23, minute=59, second=59)
+        fromdate = fromdate.replace(hour=23, minute=59, second=59)
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
         except ValueError:
             daysback = self.default_daysback
 
         data = {'fromdate': fromdate, 'daysback': daysback,
+                'today': format_date(today),
+                'yesterday': format_date(today - timedelta(days=1)),
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': []}
 
@@ -170,6 +173,17 @@ class TimelineModule(Component):
             data['filters'].append({'name': filter_[0], 'label': filter_[1],
                                     'enabled': filter_[0] in filters})
 
+        # Navigation to the previous/next period of 'daysback' days
+        previous_start = format_date(fromdate - timedelta(days=daysback),
+                                     format='%Y-%m-%d', tzinfo=req.tz)
+        add_link(req, 'prev', req.href.timeline(from_=previous_start),
+                 'Previous period')
+        if today - fromdate > timedelta(days=1):
+            next_start = format_date(fromdate + timedelta(days=daysback),
+                                     format='%Y-%m-%d', tzinfo=req.tz)
+            add_link(req, 'next', req.href.timeline(from_=next_start),
+                     'Next period')
+        
         return 'timeline.html', data, None
 
     def _event_from_tuple(self, req, event):

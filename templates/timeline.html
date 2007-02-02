@@ -11,7 +11,10 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav"/>
+    <div id="ctxtnav" class="nav">
+      <h2>Navigation</h2>
+      ${prevnext_nav('Period')}
+    </div>
 
     <div id="content" class="timeline">
 
@@ -19,8 +22,8 @@
 
       <form id="prefs" method="get" action="">
        <div>
-        <label>View changes from <input type="text" size="10" name="from" value="${format_date(fromdate)}" /></label> and
-        <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label>.
+        <label>View changes from <input type="text" size="10" name="from" value="${format_date(fromdate)}" /></label> <br />
+        and <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label>.
        </div>
        <fieldset>
         <label py:for="filter in filters">
@@ -34,7 +37,7 @@
       </form>
 
       <py:for each="day, events in groupby(events, key=lambda e: format_date(e.date))">
-        <h2>${day}:</h2>
+        <h2>${day}: ${day == today and 'Today' or day == yesterday and 'Yesterday' or None}</h2>
         <dl>
           <py:for each="event in events" py:with="highlight = precisedate and abs(event.date - precisedate) &lt; precision">
             <dt class="${classes(event.kind, highlight=highlight)}">
