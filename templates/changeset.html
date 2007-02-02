@@ -85,8 +85,8 @@
               </em></small>
           </py:if>
           <py:choose>
-            <py:when test="item.diff_href">
-              (<a title="Show differences" href="$item.diff_href">view diffs</a>)
+            <py:when test="item.hide_diff">
+              (<a title="Show differences" href="$item.href">view diffs</a>)
             </py:when>
             <py:when test="ndiffs + nprops &gt; 0">
               (<a title="Show differences" href="#file$idx">${
