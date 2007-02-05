@@ -47,7 +47,7 @@
                 <a href="${href.wiki(page.name, version=item.version)}" title="View this version">$item.version</a>
               </td>
               <td class="date">${format_datetime(item.date)}</td>
-              <td class="author" title="${item.ipnr and 'IP-Address: ' + item.ipnr or None">${authorinfo(item.author)}</td>
+              <td class="author" title="${item.ipnr and 'IP-Address: ' + item.ipnr or None}">${authorinfo(item.author)}</td>
               <td class="comment">${context.wiki_to_oneliner(item.comment, shorten=True)}</td>
             </tr>
           </tbody>
