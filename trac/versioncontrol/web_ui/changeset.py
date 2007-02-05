@@ -559,19 +559,20 @@ class ChangesetModule(Component):
                 if path:
                     files.append(path)
                 filestats[change] += 1
-                if chgset:
-                    href = req.href.changeset(new_node.rev, new_node.path)
-                    title = 'Show the changeset %s restricted to %s' \
-                            % (new_node.rev, new_node.path)
-                else:
-                    href = req.href.changeset(new_node.created_rev,
-                                              new_node.created_path,
-                                              old=old_node.created_rev,
-                                              old_path=old_node.created_path)
-                    title = 'Show the r%s:%s differences restricted to %s' \
-                            % (old_node.rev, new_node.rev, new_node.path)
-                info['href'] = href
-                info['title'] = title
+                if change in Changeset.DIFF_CHANGES:
+                    if chgset:
+                        href = req.href.changeset(new_node.rev, new_node.path)
+                        title = 'Show the changeset %s restricted to %s' % \
+                                (new_node.rev, new_node.path)
+                    else:
+                        href = req.href.changeset(
+                            new_node.created_rev, new_node.created_path,
+                            old=old_node.created_rev,
+                            old_path=old_node.created_path)
+                        title = 'Show the r%s:%s differences restricted to ' \
+                                % (old_node.rev, new_node.rev) + new_node.path
+                    info['href'] = href
+                    info['title'] = old_node and title
                 if change in Changeset.DIFF_CHANGES and not show_diff:
                     info['hide_diff'] = True
             else:
