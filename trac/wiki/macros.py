@@ -31,7 +31,7 @@ from trac.config import default_dir
 from trac.core import *
 from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any
-from trac.util.html import escape, html, Markup
+from trac.util.html import escape
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet
@@ -180,23 +180,22 @@ class RecentChangesMacro(WikiMacroBase):
             if date != prevdate:
                 prevdate = date
                 entries_per_date.append((date, []))
-            entries_per_date[-1][1].append((name, int(version)))
+            version = int(version)
+            if version > 1:
+                href = formatter.href.wiki(name, action='diff',
+                                           version=version)
+            page_name = formatter.wiki.format_page_name(name)
+            entries_per_date[-1][1].append((page_name, name, version, href))
 
-        return html.DIV(
-            [html.H3(date) +
-             html.UL([html.LI(
-            html.A(formatter.wiki.format_page_name(name),
-                   href=formatter.href.wiki(name)),
-            ' ',
-            version > 1 and 
-            html.SMALL('(',
-                       html.A('diff',
-                              href=formatter.href.wiki(name, action='diff',
-                                                       version=version)),
-                       ')') \
-            or None)
-                      for name, version in entries])
-             for date, entries in entries_per_date])
+        return tag.div([tag.h3(date) +
+                        tag.ul([tag.li(tag.a(page_name,
+                                             href=formatter.href.wiki(name)),
+                                       ' ',
+                                       version > 1 and 
+                                       tag.small('(', tag.a('diff', href=href),
+                                                 ')') or None)
+                                for page_name, name, version, href in entries])
+                        for date, entries in entries_per_date])
 
 
 class PageOutlineMacro(WikiMacroBase):
@@ -396,9 +395,9 @@ class ImageMacro(WikiMacroBase):
         if style:
             attr['style'] = '; '.join(['%s:%s' % (k, escape(v))
                                        for k, v in style.iteritems()])
-        result = html.IMG(src=raw_url, **attr)
+        result = tag.img(src=raw_url, **attr)
         if not nolink:
-            result = html.A(result, href=url, style='padding:0; border:none')
+            result = tag.a(result, href=url, style='padding:0; border:none')
         return result
 
 
@@ -426,15 +425,14 @@ class MacroListMacro(WikiMacroBase):
                         descr = macro_provider.get_macro_description(macro_name)
                         descr = wikimacros.wiki_to_html(descr or '')
                     except Exception, e:
-                        descr = Markup(system_message(
-                            "Error: Can't get description for macro %s" \
-                            % macro_name, e))
+                        descr = system_message("Error: Can't get description "
+                                               "for macro %s" % macro_name, e)
                     yield (macro_name, descr)
 
-        return html.DL([(html.DT(html.CODE('[[',macro_name,']]'),
-                                 id='%s-macro' % macro_name),
-                         html.DD(description))
-                        for macro_name, description in get_macro_descr()])
+        return tag.dl([(tag.dt(tag.code('[[',macro_name,']]'),
+                               id='%s-macro' % macro_name),
+                        tag.dd(description))
+                       for macro_name, description in get_macro_descr()])
 
 
 class TracIniMacro(WikiMacroBase):
@@ -454,15 +452,14 @@ class TracIniMacro(WikiMacroBase):
                         if section.startswith(filter)])
 
         tracini = formatter.context('wiki', 'TracIni')
-        return html.DIV(class_='tracini')(
-            [(html.H2('[%s]' % section, id='%s-section' % section),
-              html.TABLE(class_='wiki')(
-                  html.TBODY([html.TR(html.TD(html.TT(option.name)),
-                                      html.TD(tracini.wiki_to_oneliner(option.\
-                                                                    __doc__)))
-                              for option in sorted(Option.registry.values(),
-                                                   key=lambda o: o.name)
-                              if option.section == section])))
+        return tag.div(class_='tracini')(
+            [(tag.h2('[%s]' % section, id='%s-section' % section),
+              tag.table(class_='wiki')(
+            tag.tbody([tag.tr(tag.td(tag.tt(option.name)),
+                              tag.td(tracini.wiki_to_oneliner(option.__doc__)))
+                       for option in sorted(Option.registry.values(),
+                                            key=lambda o: o.name)
+                       if option.section == section])))
              for section in sorted(sections)])
 
 
