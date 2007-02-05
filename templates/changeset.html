@@ -69,7 +69,7 @@
                        nprops = len(item.props);
                        is_removal = cl == 'rem';
                        path = is_removal and item.old.path or item.new.path;
-                       path = len(files) == 1 and path or ''.join([path[c] for c in range(len(location), len(path))]).strip('/')"><!--! FIXME: revert r4686 once 0.4 becomes the required Genshi version. See #4647. -->
+                       path = len(files) == 1 and path or path.__getitem__(slice(len(location), None)).strip('/')"><!--! FIXME: revert r4686 once 0.4 becomes the required Genshi version. See #4647. -->
           <div class="$cl"> </div>
           <py:choose test="">
             <a py:when="is_removal" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
