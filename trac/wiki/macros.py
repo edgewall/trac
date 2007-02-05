@@ -74,10 +74,14 @@ class TitleIndexMacro(WikiMacroBase):
     that start with the prefix are included in the resulting list. If this
     parameter is omitted, all pages are listed.
 
-    Alternate `format` can be specified:
+    Alternate `format` and `depth` can be specified:
      - `format=group`: The list of page will be structured in groups
        according to common prefix. This format also supports a `min=n`
        argument, where `n` is the minimal number of pages for a group.
+     - `depth=n`: limit the depth of the pages to list. If set to 0,
+       only toplevel pages will be shown, if set to 1, only immediate
+       children pages will be shown, etc. If not set, or set to -1,
+       all pages in the hierarchy will be shown.
     """
 
     SPLIT_RE = re.compile(r"( |/|[0-9])")
@@ -87,18 +91,22 @@ class TitleIndexMacro(WikiMacroBase):
         prefix = args and args[0] or None
         format = kw.get('format', '')
         minsize = max(int(kw.get('min', 2)), 2)
+        depth = int(kw.get('depth', -1))
+        start = prefix and prefix.count('/') or 0
 
         wiki = formatter.wiki
         pages = sorted(wiki.get_pages(prefix))
 
         if format != 'group':
-            return html.UL([html.LI(html.A(wiki.format_page_name(page),
-                                           href=formatter.href.wiki(page)))
-                            for page in pages])
+            return tag.ul([tag.li(tag.a(wiki.format_page_name(page),
+                                        href=formatter.href.wiki(page)))
+                           for page in pages
+                           if depth < 0 or depth >= page.count('/') - start])
         
         # Group by Wiki word and/or Wiki hierarchy
         pages = [(self.SPLIT_RE.split(wiki.format_page_name(page, split=True)),
-                  page) for page in pages]
+                  page) for page in pages
+                 if depth < 0 or depth >= page.count('/') - start]
         def split_in_groups(group):
             """Return list of pagename or (key, sublist) elements"""
             groups = []
@@ -117,11 +125,11 @@ class TitleIndexMacro(WikiMacroBase):
             return groups
 
         def render_groups(groups):
-            return html.UL(
-                [html.LI(isinstance(elt, tuple) and 
-                         html(html.STRONG(elt[0]), render_groups(elt[1])) or
-                         html.A(wiki.format_page_name(elt),
-                                href=formatter.href.wiki(elt)))
+            return tag.ul(
+                [tag.li(isinstance(elt, tuple) and 
+                        tag(tag.strong(elt[0]), render_groups(elt[1])) or
+                        tag.a(wiki.format_page_name(elt),
+                              href=formatter.href.wiki(elt)))
                  for elt in groups])
         return render_groups(split_in_groups(pages))
             
