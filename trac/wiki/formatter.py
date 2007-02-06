@@ -186,9 +186,9 @@ class Formatter(object):
 
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
-    SHREF_TARGET_FIRST = r"[a-zA-Z0-9/?!#@]" # we don't want "_"
+    SHREF_TARGET_FIRST = r"[\w/?!#@](?<!_)" # we don't want "_"
     SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
-    SHREF_TARGET_LAST = r"[a-zA-Z0-9/=]" # we don't want "_"
+    SHREF_TARGET_LAST = r"[\w/=](?<!_)" # we don't want "_"
 
     LHREF_RELATIVE_TARGET = r"[/.#][^\s[\]]*"
 

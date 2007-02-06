@@ -443,7 +443,7 @@ class WikiSystem(Component):
             helper_re = re.compile(r'\?P<([a-z\d_]+)>')
             for rule in syntax:
                 helpers += helper_re.findall(rule)[1:]
-            rules = re.compile('(?:' + '|'.join(syntax) + ')')
+            rules = re.compile('(?:' + '|'.join(syntax) + ')', re.UNICODE)
             self._external_handlers = handlers
             self._helper_patterns = helpers
             self._compiled_rules = rules
@@ -488,11 +488,14 @@ class WikiSystem(Component):
         if split or self.split_page_names:
             return self.PAGE_SPLIT_RE.sub(r"\1 \2", page)
         return page
-    
+
     def get_wiki_syntax(self):
         from trac.wiki.formatter import Formatter
+        lower = r'(?<![A-Z0-9_])' # No Upper case when looking behind
+        upper = r'(?<![a-z0-9_])' # No Lower case when looking behind
         wiki_page_name = (
-            r"[A-Z][a-z]+(?:[A-Z][a-z]*[a-z/])+" # wiki words
+            r"\w%s(?:\w%s)+(?:\w%s(?:\w%s)*[\w/]%s)+" % # wiki words
+            (upper, lower, upper, lower, lower) +
             r"(?:@\d+)?" # optional version
             r"(?:#%s)?" % self.XML_NAME + # optional fragment id
             r"(?=:(?:\Z|\s)|[^:a-zA-Z]|\s|\Z)" # what should follow it
