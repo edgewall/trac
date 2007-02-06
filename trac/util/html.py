@@ -54,7 +54,7 @@ class TransposingElementFactory(ElementFactory):
 
 def plaintext(text, keeplinebreaks=True):
     if isinstance(text, Fragment):
-        text = text.generate().render('text')
+        text = text.generate().render('text', encoding=None)
     else:
         text = stripentities(striptags(text))
     if not keeplinebreaks:
