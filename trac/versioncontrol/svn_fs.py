@@ -344,6 +344,8 @@ class SubversionPropertyRenderer(Component):
         externals = []
         for external in prop.splitlines():
             elements = external.split()
+            if not elements:
+                continue
             localpath, rev, url = elements[0], None, elements[-1]
             if len(elements) == 3:
                 rev = elements[1]
