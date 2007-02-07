@@ -181,20 +181,25 @@ class RecentChangesMacro(WikiMacroBase):
                 prevdate = date
                 entries_per_date.append((date, []))
             version = int(version)
+            diff_href = None
             if version > 1:
-                href = formatter.href.wiki(name, action='diff',
-                                           version=version)
+                diff_href = formatter.href.wiki(name, action='diff',
+                                                version=version)
             page_name = formatter.wiki.format_page_name(name)
-            entries_per_date[-1][1].append((page_name, name, version, href))
+            entries_per_date[-1][1].append((page_name, name, version,
+                                            diff_href))
 
         return tag.div([tag.h3(date) +
                         tag.ul([tag.li(tag.a(page_name,
                                              href=formatter.href.wiki(name)),
                                        ' ',
-                                       version > 1 and 
-                                       tag.small('(', tag.a('diff', href=href),
-                                                 ')') or None)
-                                for page_name, name, version, href in entries])
+                                       diff_href and 
+                                       tag.small('(', tag.a('diff',
+                                                            href=diff_href),
+                                                 ')') or
+                                       None)
+                                for page_name, name, version, diff_href
+                                in entries])
                         for date, entries in entries_per_date])
 
 
