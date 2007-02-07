@@ -458,7 +458,7 @@ class MilestoneModule(Component):
                                       None
             except ValueError, e:
                 raise TracError(to_unicode(e), 'Invalid Date Format')
-            if milestone.completed > datetime.now(utc):
+            if milestone.completed and milestone.completed > datetime.now(utc):
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')
             retarget_to = req.args.get('target')
