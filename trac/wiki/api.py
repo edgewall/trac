@@ -500,9 +500,23 @@ class WikiSystem(Component):
             r"(?:#%s)?" % self.XML_NAME + # optional fragment id
             r"(?=:(?:\Z|\s)|[^:a-zA-Z]|\s|\Z)" # what should follow it
             )
+
+        def check_unicode_camelcase(pagename):
+            if pagename[0].isupper():
+                if pagename[1].islower():
+                    i, n = 2, len(pagename)
+                    while i < n:
+                        if pagename[i].isupper():
+                            i += 1
+                            if i < n:
+                                return pagename[i].islower()
+                        i += 1
+            return False
         
         # Regular WikiPageNames
         def wikipagename_link(formatter, match, fullmatch):
+            if not check_unicode_camelcase(match):
+                return match
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
                                      self.ignore_missing_pages)
@@ -512,6 +526,8 @@ class WikiSystem(Component):
 
         # [WikiPageNames with label]
         def wikipagename_with_label_link(formatter, match, fullmatch):
+            if not check_unicode_camelcase(match):
+                return match
             page, label = match[1:-1].split(' ', 1)
             return self._format_link(formatter, 'wiki', page, label.strip(),
                                      self.ignore_missing_pages)
