@@ -308,6 +308,14 @@ def dispatch_request(environ, start_response):
     @param environ: the WSGI environment dict
     @param start_response: the WSGI callback for starting the response
     """
+
+    # SCRIPT_URL is an Apache var containing the URL before URL rewriting
+    # has been applied, so we can use it to reconstruct logical SCRIPT_NAME
+    script_url = environ.get('SCRIPT_URL')
+    path_info = environ.get('PATH_INFO', '')
+    if script_url is not None and script_url.endswith(path_info):
+        environ['SCRIPT_NAME'] = script_url[:-len(path_info)]
+
     if 'mod_python.options' in environ:
         options = environ['mod_python.options']
         environ.setdefault('trac.env_path', options.get('TracEnv'))
