@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
 import unittest
 
@@ -46,6 +48,13 @@ CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/CamelCase" rel="nofollow">CamelCase?</a> AlabamA ABc AlaBamA <a class="missing wiki" href="/wiki/FooBar" rel="nofollow">FooBar?</a>
+</p>
+------------------------------
+============================== WikiPageNames conformance (unicode)
+SmÅogstore should produce a link
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/Sm%C3%85ogstore" rel="nofollow">SmÅogstore?</a> should produce a link
 </p>
 ------------------------------
 ============================== More WikiPageNames conformance
@@ -149,6 +158,17 @@ anotherWikiPageName
 ------------------------------
 8FjBpOmy
 anotherWikiPageName
+============================== WikiPageNames counter examples (unicode)
+Småbokstaver should not produce a link
+neither should AbAbÅ nor AbAbÅÅb
+------------------------------
+<p>
+Småbokstaver should not produce a link
+neither should AbAbÅ nor AbAbÅÅb
+</p>
+------------------------------
+Småbokstaver should not produce a link
+neither should AbAbÅ nor AbAbÅÅb
 ============================== MoinMoin style forced links
 This is a ["Wiki"] page link.
 ------------------------------

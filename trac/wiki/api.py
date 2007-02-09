@@ -505,12 +505,17 @@ class WikiSystem(Component):
             if pagename[0].isupper():
                 if pagename[1].islower():
                     i, n = 2, len(pagename)
-                    while i < n:
+                    second_upper = False
+                    while i < n - 2:
                         if pagename[i].isupper():
+                            second_upper = True
                             i += 1
-                            if i < n:
-                                return pagename[i].islower()
+                            if not pagename[i].islower():
+                                return False
+                        elif pagename[i] in '@#':
+                            return second_upper and pagename[i-1].islower()
                         i += 1
+                    return second_upper and pagename[n-1].islower()
             return False
         
         # Regular WikiPageNames
@@ -526,9 +531,9 @@ class WikiSystem(Component):
 
         # [WikiPageNames with label]
         def wikipagename_with_label_link(formatter, match, fullmatch):
-            if not check_unicode_camelcase(match):
-                return match
             page, label = match[1:-1].split(' ', 1)
+            if not check_unicode_camelcase(page):
+                return label
             return self._format_link(formatter, 'wiki', page, label.strip(),
                                      self.ignore_missing_pages)
         yield (r"!?\[%s\s+(?:%s|[^\]]+)\]" % (wiki_page_name,
