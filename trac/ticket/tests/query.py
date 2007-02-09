@@ -312,6 +312,15 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(Mock(href=self.env.href))
 
+    def test_csv_escape(self):
+        query = Mock(get_columns=lambda: ['col1'],
+                     execute=lambda r,c: [{'col1': 'value, needs escaped'}])
+        content, mimetype = QueryModule(self.env).export_csv(
+                                Mock(href=self.env.href), query)
+        self.assertEqual('col1\r\n"value, needs escaped"\r\n',
+                         content)
+
+
 class QueryLinksTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)

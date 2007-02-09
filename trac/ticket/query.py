@@ -15,6 +15,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import csv
 from datetime import datetime, timedelta
 import re
 from StringIO import StringIO
@@ -670,14 +671,12 @@ class QueryModule(Component):
     def export_csv(self, req, query, sep=',', mimetype='text/plain'):
         content = StringIO()
         cols = query.get_columns()
-        content.write(sep.join([col for col in cols]) + CRLF)
+        writer = csv.writer(content, delimiter=sep)
+        writer.writerow(cols)
 
         results = query.execute(req, self.env.get_db_cnx())
         for result in results:
-            content.write(sep.join([unicode(result[col]).replace(sep, '_')
-                                                        .replace('\n', ' ')
-                                                        .replace('\r', ' ')
-                                    for col in cols]) + CRLF)
+            writer.writerow([unicode(result[col]) for col in cols])
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, query):

@@ -16,6 +16,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import csv
 import re
 from StringIO import StringIO
 
@@ -451,11 +452,10 @@ class ReportModule(Component):
             req.send_header('Content-Disposition', 'filename=' + filename)
         req.end_headers()
 
-        req.write(sep.join(cols) + '\r\n')
-        for row in rows:
-            req.write(sep.join(
-                [unicode(c).replace(sep,"_")
-                 .replace('\n',' ').replace('\r',' ') for c in row]) + '\r\n')
+        writer = csv.writer(req, delimiter=sep)
+        writer.writerow(cols)
+        writer.writerows(rows) # FIXME unicode encoding?
+
         raise RequestDone
 
     def _send_sql(self, req, id, title, description, sql):
