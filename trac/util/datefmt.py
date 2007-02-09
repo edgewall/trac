@@ -62,7 +62,7 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
         format = '%Y-%m-%dT%H:%M:%SZ%z'
     t = t.astimezone(tzinfo)
     text = t.strftime(format)
-    encoding = locale.getpreferredencoding()
+    encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
     if sys.platform != 'win32':
         encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
         # the above is broken on win32, e.g. we'd get '437' instead of 'cp437'
