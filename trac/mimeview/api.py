@@ -268,7 +268,7 @@ class IHTMLPreviewAnnotator(Interface):
     representation of file contents with additional information."""
 
     def get_annotation_type():
-        """Return a (type, label, description, annotations) tuple
+        """Return a (type, label, description) tuple
         that defines the type of annotation and provides human readable names.
         The `type` element should be unique to the annotator.
         The `label` element is used as column heading for the table,
@@ -283,7 +283,7 @@ class IHTMLPreviewAnnotator(Interface):
         If this raises an error, that annotator won't be used.
         """
 
-    def annotate_row(context, row, number, line, annotations):
+    def annotate_row(context, row, number, line, data):
         """Return the XHTML markup for the table cell that contains the
         annotation data.
 
