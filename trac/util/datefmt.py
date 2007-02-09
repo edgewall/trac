@@ -58,7 +58,7 @@ def format_datetime(t=None, format='%x %X', gmt=False):
             t = time.localtime(float(t))
 
     text = time.strftime(format, t)
-    encoding = locale.getpreferredencoding()
+    encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
     if sys.platform != 'win32':
         encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
         # the above is broken on win32, e.g. we'd get '437' instead of 'cp437'
