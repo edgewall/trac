@@ -112,12 +112,16 @@ class LogModule(Component):
                             rev = repos.normalize_rev(b)
                             node = get_existing_node(req, repos, prevpath, rev)
                             node_history = list(node.get_history(2))
-                            rev = node_history[0][1]
+                            p, rev, chg = node_history[0]
                             if rev < a:
+                                yield (p, rev, None) # separator
                                 break
                             yield node_history[0]
                             prevpath = node_history[-1][0] # follow copy
                             b = rev-1
+                            if b < a and len(node_history) > 1:
+                                p, rev, chg = node_history[1]
+                                yield (p, rev, None)
 
         # -- retrieve history, asking for limit+1 results
         info = []
@@ -173,8 +177,8 @@ class LogModule(Component):
             add_link(req, 'next', make_log_href(next_path, rev=next_rev),
                      'Revision Log (restarting at %s, rev. %s)'
                      % (next_path, next_rev))
-            # now, only show 'limit' results
-            del info[-1]
+            # only show fully 'limit' results, use `change == None` as a marker
+            info[-1]['change'] = None
         
         revs = [i['rev'] for i in info]
         changes = get_changes(repos, revs)

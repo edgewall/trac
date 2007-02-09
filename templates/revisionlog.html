@@ -102,49 +102,52 @@
                              change_context = context('changeset', change.rev);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
-                <tr py:if="item.copyfrom_path" class="$odd_even">
+                <tr py:if="item.change and item.copyfrom_path" class="$odd_even">
                   <td />
                   <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
                     copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
                   </td>
                 </tr>
 
-                <tr class="$odd_even">
+                <tr class="$odd_even" py:choose="">
                   <td class="diff">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
                            checked="${idx == (len(items) - 1) or None}" />
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
                            checked="${idx == 0 or None}" />
                   </td>
-                  <td class="change" style="padding-left: ${item.depth}em">
-                    <a title="View log starting at this revision" href="${href.log(item.path, rev=item.rev)}">
-                      <span class="$item.change"></span>
-                      <span class="comment">($item.change)</span>
-                    </a>
-                  </td>
-                  <td class="rev">
-                    <a title="Browse at revision $item.rev" href="${href.browser(item.path, rev=item.existing_rev)}">
-                      @$item.existing_rev</a>
-                  </td>
-                  <td class="chgset">
-                    <a title="View changeset [$item.rev]" href="${href.changeset(item.rev)}">
-                      [$item.rev]</a>
-                  </td>
-                  <td class="date" py:content="format_datetime(change.date)"/>
-                  <td class="author">${authorinfo(change.author)}</td>
-                  <td class="summary" py:choose="">
-                    <py:when test="verbose"></py:when>
-                    <py:when test="wiki_format_messages">
-                      ${change_context.wiki_to_oneliner(change.message)}
+                  <py:when test="item.change">
+                    <td class="change" style="padding-left: ${item.depth}em">
+                      <a title="View log starting at this revision" href="${href.log(item.path, rev=item.rev)}">
+                        <span class="$item.change"></span>
+                        <span class="comment">($item.change)</span>
+                      </a>
+                    </td>
+                    <td class="rev">
+                      <a title="Browse at revision $item.rev" href="${href.browser(item.path, rev=item.existing_rev)}">
+                        @$item.existing_rev</a>
+                    </td>
+                    <td class="chgset">
+                      <a title="View changeset [$item.rev]" href="${href.changeset(item.rev)}">
+                        [$item.rev]</a>
+                    </td>
+                    <td class="date" py:content="format_datetime(change.date)"/>
+                    <td class="author">${authorinfo(change.author)}</td>
+                    <td class="summary" py:choose="">
+                      <py:when test="verbose"></py:when>
+                      <py:when test="wiki_format_messages">
+                        ${change_context.wiki_to_oneliner(change.message)}
+                      </py:when>
+                      <py:otherwise>shorten_line(change.message)</py:otherwise>
+                    </td>
                     </py:when>
-                    <py:otherwise>shorten_line(change.message)</py:otherwise>
-                  </td>
-                </tr>
+                    <td colspan="6" py:otherwise="" />
+                  </tr>
 
-                <tr py:if="verbose">
-                  <td class="summary" colspan="7" py:choose="">
-                    <py:when test="wiki_format_messages">
-                      ${change_context.wiki_to_html(change.message, escape_newlines=True)}
+                  <tr py:if="verbose">
+                    <td class="summary" colspan="7" py:choose="">
+                      <py:when test="wiki_format_messages">
+                        ${change_context.wiki_to_html(change.message, escape_newlines=True)}
                     </py:when>
                     <py:otherwise><pre>${change.message}</pre></py:otherwise>
                   </td>
