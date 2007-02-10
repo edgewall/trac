@@ -25,6 +25,7 @@ import sys
 import time
 import tempfile
 from urllib import quote, unquote, urlencode
+from itertools import tee, izip
 
 # Imports for backward compatibility
 from trac.core import TracError
@@ -467,3 +468,12 @@ def content_disposition(type, filename=None):
     if isinstance(filename, unicode):
         filename = filename.encode('utf-8')
     return type +'; filename*=' + encode_rfc2231(filename, 'utf-8')
+
+def pairwise(iterable):
+    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    a, b = tee(iterable)
+    try:
+        b.next()
+    except StopIteration:
+        pass
+    return izip(a, b)

@@ -29,7 +29,7 @@ from genshi.core import Markup
 
 from trac.config import BoolOption
 from trac.core import *
-from trac.util import reversed
+from trac.util import reversed, pairwise
 from trac.util.html import html
 
 
@@ -502,21 +502,19 @@ class WikiSystem(Component):
             )
 
         def check_unicode_camelcase(pagename):
-            if pagename[0].isupper():
-                if pagename[1].islower():
-                    i, n = 2, len(pagename)
-                    second_upper = False
-                    while i < n - 2:
-                        if pagename[i].isupper():
-                            second_upper = True
-                            i += 1
-                            if not pagename[i].islower():
-                                return False
-                        elif pagename[i] in '@#':
-                            return second_upper and pagename[i-1].islower()
-                        i += 1
-                    return second_upper and pagename[n-1].islower()
-            return False
+            if not pagename[0].isupper():
+                return False
+            pagename = pagename.split('@', 1)[0].split('#', 1)[0]
+            if not pagename[-1].islower():
+                return False
+            humps = 0
+            for a, b in pairwise(pagename):
+                if a.isupper():
+                    if b.islower():
+                        humps += 1
+                    else:
+                        return False
+            return humps > 1
         
         # Regular WikiPageNames
         def wikipagename_link(formatter, match, fullmatch):
