@@ -68,6 +68,7 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
     if pidfile:
         # Create/update the pid file, and register a hook to remove it when the
         # process exits
+        print pidfile
         fileobj = open(pidfile, 'w')
         try:
             fileobj.write(str(os.getpid()))

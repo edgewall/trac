@@ -175,9 +175,13 @@ def main():
     if not args and not options.env_parent_dir:
         parser.error('either the --env-parent-dir option or at least one '
                      'environment must be specified')
-    if options.single_env and len(args) > 1:
-        parser.error('the --single-env option cannot be used with more '
-                     'than one enviroment')
+    if options.single_env:
+        if options.env_parent_dir:
+            parser.error('the --single-env option cannot be used with '
+                         '--env-parent-dir')
+        elif len(args) > 1:
+            parser.error('the --single-env option cannot be used with '
+                         'more than one enviroment')
 
     if options.port is None:
         options.port = {
@@ -187,10 +191,21 @@ def main():
         }[options.protocol]
     server_address = (options.hostname, options.port)
 
+    # autoreload doesn't work when daemonized and using relative paths
+    if options.daemonize and options.autoreload:
+        for path in args + [options.env_parent_dir, options.pidfile]:
+            if not os.path.isabs(path):
+                parser.error('"%s" is not an absolute path.\n\n'
+                             'when using both --auto-reload and --daemonize '
+                             'all path arguments must be absolute'
+                             % path)
+
     # relative paths don't work when daemonized
     args = [os.path.abspath(a) for a in args]
     if options.env_parent_dir:
         options.env_parent_dir = os.path.abspath(options.env_parent_dir)
+    if options.pidfile:
+        options.pidfile = os.path.abspath(options.pidfile)
 
     wsgi_app = TracEnvironMiddleware(dispatch_request,
                                      options.env_parent_dir, args,

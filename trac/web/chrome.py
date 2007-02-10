@@ -482,6 +482,7 @@ class Chrome(Component):
                             title=format_datetime(date))
 
         d.update({
+            'Markup': Markup,
             'req': req,
             'abs_href': req and req.abs_href or self.env.abs_href,
             'href': req and req.href,
