@@ -187,12 +187,15 @@ def main():
         }[options.protocol]
     server_address = (options.hostname, options.port)
 
+    # relative paths don't work when daemonized
+    args = [os.path.abspath(a) for a in args]
+
     wsgi_app = TracEnvironMiddleware(dispatch_request,
                                      options.env_parent_dir, args,
                                      options.single_env)
     if auths:
         if options.single_env:
-            project_name = os.path.basename(os.path.normpath(args[0]))
+            project_name = os.path.basename(args[0])
             wsgi_app = AuthenticationMiddleware(wsgi_app, auths, project_name)
         else:
             wsgi_app = AuthenticationMiddleware(wsgi_app, auths)
