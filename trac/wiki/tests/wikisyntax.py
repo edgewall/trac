@@ -52,9 +52,11 @@ CamelCase AlabamA ABc AlaBamA FooBar
 ------------------------------
 ============================== WikiPageNames conformance (unicode)
 SmÅogstore should produce a link
+and so should wiki:ÜberflüssigkeitsTheorie
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/Sm%C3%85ogstore" rel="nofollow">SmÅogstore?</a> should produce a link
+and so should <a class="missing wiki" href="/wiki/%C3%9Cberfl%C3%BCssigkeitsTheorie" rel="nofollow">wiki:ÜberflüssigkeitsTheorie?</a>
 </p>
 ------------------------------
 ============================== More WikiPageNames conformance
