@@ -166,7 +166,7 @@ link:1
 This ticket is the first one
 link:123>
 link:123&
-see link:ü.
+see link:xü.
 ------------------------------
 <p>
 Add-on to <a class="odd resolver" href="/thing/123">link:123</a>:
@@ -175,7 +175,7 @@ Some change.
 This ticket is the first one
 <a class="odd resolver" href="/thing/123">link:123</a>&gt;
 <a class="odd resolver" href="/thing/123">link:123</a>&amp;
-see <a class="text resolver" href="/stuff/%C3%BC">link:ü</a>.
+see <a class="text resolver" href="/stuff/x%C3%BC">link:xü</a>.
 </p>
 ------------------------------
 Add-on to <a class="odd resolver" href="/thing/123">link:123</a>:
@@ -184,7 +184,7 @@ Some change.
 This ticket is the first one
 <a class="odd resolver" href="/thing/123">link:123</a>&gt;
 <a class="odd resolver" href="/thing/123">link:123</a>&amp;
-see <a class="text resolver" href="/stuff/%C3%BC">link:ü</a>.
+see <a class="text resolver" href="/stuff/x%C3%BC">link:xü</a>.
 ============================== Link resolver SHREF_TARGET_FIRST
 <bug>http://localhost/bugzilla/show_bug.cgi?id=1284</bug> 804
 __Summary:__
