@@ -120,7 +120,7 @@ def main():
             print >>sys.stderr, 'Ignoring duplicate authentication option for ' \
                                 'project: %s' % env_name
         else:
-            auths[env_name] = cls(filename, realm)
+            auths[env_name] = cls(os.path.abspath(filename), realm)
 
     def _validate_callback(option, opt_str, value, parser, valid_values):
         if value not in valid_values:
@@ -189,6 +189,8 @@ def main():
 
     # relative paths don't work when daemonized
     args = [os.path.abspath(a) for a in args]
+    if options.env_parent_dir:
+        options.env_parent_dir = os.path.abspath(options.env_parent_dir)
 
     wsgi_app = TracEnvironMiddleware(dispatch_request,
                                      options.env_parent_dir, args,
