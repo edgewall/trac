@@ -156,12 +156,12 @@
         <hr />
       </form>
 
-      <script type="text/javascript">/*${Markup('&lt;![CDATA[')}*/
+      <script type="text/javascript">
         var properties={
         <py:for each="sep, (field_name, field) in separated(fields.iteritems())">
           $field_name: { type: "$field.type", label: "$field.label"
           <py:if test="field.options">, options: [
-            <py:for each="sep, option in separated(field.options)">"${Markup(option)}"$sep
+            <py:for each="sep, option in separated(field.options)">"$option"$sep
             </py:for>]
           </py:if>}$sep
         </py:for>
@@ -176,7 +176,7 @@
         </py:for>
         };
         initializeFilters();
-      /*${Markup(']]&gt;')}*/</script>
+      </script>
 
       <xi:include href="query_div.html" />
 
