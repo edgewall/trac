@@ -6,7 +6,7 @@ import unittest
 from trac.attachment import Attachment
 from trac.context import Context
 from trac.search.web_ui import SearchModule
-from trac.test import Mock
+from trac.test import Mock, EnvironmentStub
 from trac.web.href import Href
 from trac.wiki.tests import formatter
 
@@ -107,6 +107,8 @@ attachment:file.txt?format=raw
 """ # "
 
 def attachment_setup(tc):
+    import trac.ticket.api
+    import trac.wiki.api
     tc.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
     os.mkdir(tc.env.path)
     attachment = Attachment(tc.env, 'wiki', 'WikiStart')
@@ -123,8 +125,8 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
-                                  context=Context(Mock(), None,
-                                                  'wiki', 'WikiStart'),
+                                  context=(Context(EnvironmentStub(), None) \
+                                           ('wiki', 'WikiStart')),
                                   setup=attachment_setup,
                                   teardown=attachment_teardown))
     return suite

@@ -1,6 +1,6 @@
 import unittest
 
-from trac.ticket.model import Ticket
+from trac.ticket.model import Ticket, Status
 from trac.ticket.roadmap import Milestone
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
@@ -15,7 +15,7 @@ ticket:abc
 <p>
 <a class="new ticket" href="/ticket/1" title="This is the summary (new)">ticket:1</a>
 <a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:12</a>
-<a class="missing ticket" rel="nofollow">ticket:abc</a>
+<a class="missing ticket">ticket:abc</a>
 </p>
 ------------------------------
 ============================== ticket: link resolver + arguments
@@ -78,12 +78,14 @@ trac:#2041
 """ # " 
 
 def ticket_setup(tc):
+    new = Status(tc.env)
+    new.name = 'new'
+    new.insert()
     ticket = Ticket(tc.env)
-    ticket['reporter'] = 'santa'
-    ticket['summary'] = 'This is the summary'
+    ticket.values.update({'reporter': 'santa',
+                          'summary': 'This is the summary',
+                          'status': 'new'})
     ticket.insert()
-    ticket['status'] = 'new'
-    ticket.save_changes('claus', 'set status', 0)
 
 
 
@@ -204,9 +206,9 @@ comment:ticket:123:2 (deprecated)
 [comment:ticket:123:description see descr] (deprecated)
 ------------------------------
 <p>
-<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">comment:ticket:123:2</a> (deprecated)
-<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">see above</a> (deprecated)
-<a href="/ticket/123#comment:description" title="Comment description for ticket:123">see descr</a> (deprecated)
+<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">comment:ticket:123:2</a> (deprecated)
+<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">see above</a> (deprecated)
+<a href="/ticket/123#comment:description" title="Comment description for Ticket #123">see descr</a> (deprecated)
 </p>
 ------------------------------
 ============================== comment: link resolver
@@ -215,9 +217,9 @@ comment:2:ticket:123
 [comment:description:ticket:123 see descr]
 ------------------------------
 <p>
-<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">comment:2:ticket:123</a>
-<a href="/ticket/123#comment:2" title="Comment 2 for ticket:123">see above</a>
-<a href="/ticket/123#comment:description" title="Comment description for ticket:123">see descr</a>
+<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">comment:2:ticket:123</a>
+<a href="/ticket/123#comment:2" title="Comment 2 for Ticket #123">see above</a>
+<a href="/ticket/123#comment:description" title="Comment description for Ticket #123">see descr</a>
 </p>
 ------------------------------
 """ # "

@@ -17,11 +17,13 @@
 import re
 from datetime import datetime
 
+from genshi.builder import tag
+
 from trac.config import *
+from trac.context import IContextProvider, Context
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.util import Ranges
-from trac.util.html import html
 from trac.util.text import shorten_line
 from trac.util.datefmt import utc
 from trac.wiki import IWikiSyntaxProvider, Formatter
@@ -60,8 +62,33 @@ class ITicketManipulator(Interface):
         ticket. Therefore, a return value of `[]` means everything is OK."""
 
 
+class TicketContext(Context):
+    """Context used for describing Ticket resources."""
+
+    realm = 'ticket'
+
+    # methods reimplemented from Context
+
+    def get_resource(self):
+        from trac.ticket.model import Ticket
+        return Ticket(self.env, self.id and int(self.id) or None, self.db)
+
+    def name(self):
+        return 'Ticket ' + self.shortname()
+
+    def shortname(self):
+        return '#%s' % self.id
+
+    def summary(self):
+        summary = self.resource['summary']
+        status = self.resource['status']
+        if status == 'closed':
+            status += ':' + self.resource['resolution']
+        return "%s (%s)" % (shorten_line(summary), status)        
+
+
 class TicketSystem(Component):
-    implements(IPermissionRequestor, IWikiSyntaxProvider)
+    implements(IPermissionRequestor, IWikiSyntaxProvider, IContextProvider)
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
 
@@ -212,46 +239,47 @@ class TicketSystem(Component):
             link, params, fragment = formatter.split_link(target)
             r = Ranges(link)
             if len(r) == 1:
-                cursor = formatter.db.cursor()
-                cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
-                               (str(r.a),))
-                for summary, status in cursor:
-                    return html.A(label, class_='%s ticket' % status,
-                                  title=shorten_line(summary)+' (%s)' % status,
-                                  href=(formatter.href.ticket(link) + \
-                                        params + fragment))
-                else:
-                    return html.A(label, class_='missing ticket', 
-                                  href=formatter.href.ticket(link),
-                                  rel="nofollow")
+                ctx = formatter.context('ticket', r.a)
+                try:
+                    status = ctx.resource['status']
+                    return tag.a(label, class_=('%s ticket' % status),
+                                 title=ctx.summary(),
+                                 href=ctx.resource_href() + params + fragment)
+                except TracError:
+                    pass
+                return tag.a(label, class_='missing ticket', 
+                             href=ctx.resource_href(), rel="nofollow")
             else:
                 ranges = str(r)
                 if params:
                     params = '&' + params[1:]
-                return html.A(label, title='Tickets '+ranges,
-                              href=formatter.href.query(id=ranges) + params)
+                return tag.a(label, title='Tickets '+ranges,
+                             href=formatter.href.query(id=ranges) + params)
         except ValueError:
             pass
-        return html.A(label, class_='missing ticket', rel='nofollow')
+        return tag.a(label, class_='missing ticket')
 
     def _format_comment_link(self, formatter, ns, target, label):
         context = None
         if ':' in target:
             elts = target.split(':')
             if len(elts) == 3:
-                cnum, resource, id = elts
+                cnum, realm, id = elts
                 if cnum != 'description' and cnum and not cnum[0].isdigit():
-                    resource, id, cnum = elts # support old comment: style
-                context = formatter.context(resource, id)
+                    realm, id, cnum = elts # support old comment: style
+                context = formatter.context(realm, id)
         else:
             context = formatter.context
             cnum = target
 
         if context:
-            return html.A(label, href="%s#comment:%s" % \
-                          (context.resource_href(), cnum),
-                          title="Comment %s for %s:%s" % \
-                          (cnum, context.realm, context.id))
+            return tag.a(label, href=("%s#comment:%s" %
+                                      (context.resource_href(), cnum)),
+                         title="Comment %s for %s" % (cnum, context.name()))
         else:
             return label
  
+    # IContextProvider methods
+
+    def get_context_classes(self):
+        yield TicketContext

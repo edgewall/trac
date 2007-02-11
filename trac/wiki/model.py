@@ -27,9 +27,11 @@ from trac.wiki.api import WikiSystem
 class WikiPage(object):
     """Represents a wiki page (new or existing)."""
 
+    realm = 'wiki'
+
     def __init__(self, env, name=None, version=None, db=None):
         self.env = env
-        self.name = name
+        self.id = self.name = name
         if name:
             self._fetch(name, version, db)
         else:
@@ -160,5 +162,3 @@ class WikiPage(object):
         for version,ts,author,comment,ipnr in cursor:
             time = datetime.fromtimestamp(ts, utc)
             yield version,time,author,comment,ipnr
-
-

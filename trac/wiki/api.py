@@ -28,6 +28,7 @@ from StringIO import StringIO
 from genshi.core import Markup
 
 from trac.config import BoolOption
+from trac.context import IContextProvider, Context
 from trac.core import *
 from trac.util import reversed, pairwise
 from trac.util.html import html
@@ -111,206 +112,6 @@ class IWikiSyntaxProvider(Interface):
         The `label` is already HTML escaped, whereas the `target` is not.
         """
 
-class Context(object):
-    """Base class for Wiki rendering contexts.
-
-    This encapsulates the "referential context" of a Wiki content,
-    and is therefore attached to a specific resource of type `realm`,
-    identified by its `id`.
-    
-    A resource can also be parented in another resource, which means we are
-    talking about this resource in the context of another resource (and so on).
-
-    For example, when rendering a ticket description within a Custom Query
-    embedded in a wiki page, the context will be:
-    
-    `Context(env, req)('wiki', 'CurrentStatus')('query')('ticket', '12')`
-
-    Further details can be attached to the context, like the `version`
-    of the resource which is being viewed. If not specified or `-1`,
-    this will be the latest version.
-    
-    The context also encapsulates the "access context" of a Wiki content,
-    i.e. how the resource is accessed (`req`), so that links in the rendered
-    content will use the base URL.
-    If the request is not present in the context, the canonical base URLs
-    as configured in the environment will be used.
-
-    Finally, the context should also know about the formatting context,
-    and more specifically about the expected output MIME type (TODO)
-    """
-
-    def __init__(self, env, req, realm=None, id=None, parent=None,
-                 version=None, abs_urls=False, db=None):
-        if not env:
-            raise TracError("Environment not specified for Context")
-        self.env = env
-        self.req = req
-        self.realm = realm
-        self.id = id
-        self.parent = parent
-        self.version = version
-        self.abs_urls = abs_urls
-        self._db = db
-
-    def __repr__(self):
-        resource_path = []
-        current = self
-        while current:
-            resource_path.append('%s:%s' % (current.realm or '',
-                                            current.id or ''))
-            current = current.parent 
-        return '<Context %r (%s)%s>' % \
-               (self.req, ', '.join(reversed(resource_path)),
-                self.abs_urls and ' [abs]' or '')
-    
-    def __call__(self, realm=None, id=None, version=None, abs_urls=None):
-        """Create a new Context, child of this Context.
-
-        >>> from trac.test import EnvironmentStub
-        >>> c = Context(EnvironmentStub(), None)
-
-        >>> c1 = c('wiki', 'CurrentStatus')
-        >>> c1
-        <Context None (:, wiki:CurrentStatus)>
-
-        If both `realm` and `id` are `None`, then the new context will
-        actually be a copy of the current context, instead of a child context.
-
-        >>> c2 = c1()
-        >>> c2
-        <Context None (:, wiki:CurrentStatus)>
-        
-        >>> (c1.parent == c2.parent, c1.parent == c)
-        (True, True)
-
-        >>> c(abs_urls=True)('query')('ticket', '12')
-        <Context None (:, query:, ticket:12) [abs]>
-        """
-        copy = not realm and not id
-        return Context(self.env, self.req, copy and self.realm or realm,
-                       copy and self.id or id, [self, self.parent][copy],
-                       version=[version, version or self.version][copy],
-                       abs_urls=[abs_urls, self.abs_urls][abs_urls is None])
-
-    def _get_db(self):
-        if not self._db:
-            self._db = self.env.get_db_cnx()
-        return self._db
-    db = property(fget=_get_db)
-
-    def _get_href(self):
-        """Return an Href instance, adapted to the context."""
-        base = self.req or self.env
-        if self.abs_urls:
-            return base.abs_href
-        else:
-            return base.href
-    href = property(fget=_get_href)
-
-    def resource_href(self, rel=None, **kwargs):
-        """Return a reference relative to the resource itself.
-
-        >>> from trac.test import EnvironmentStub
-        >>> c = Context(EnvironmentStub(), None)
-
-        >>> c.resource_href()
-        '/trac.cgi'
-
-        >>> c(abs_urls=True).resource_href()
-        'http://example.org/trac.cgi'
-
-        >>> c('wiki', 'Main').resource_href()
-        '/trac.cgi/wiki/Main'
-
-        Relative references start at the current id:
-
-        >>> c('wiki', 'Main').resource_href('#anchor')
-        '/trac.cgi/wiki/Main#anchor'
-
-        >>> c('wiki', 'Main').resource_href('./Sub')
-        '/trac.cgi/wiki/Main/Sub'
-
-        >>> c('wiki', 'Main/Sub').resource_href('..')
-        '/trac.cgi/wiki/Main'
-
-        >>> c('wiki', 'Main').resource_href('../Other')
-        '/trac.cgi/wiki/Other'
-
-        References always stay within the current resource realm:
-
-        >>> main_sub = c('wiki', 'Main/Sub')
-        >>> main_sub.resource_href('../..')
-        '/trac.cgi/wiki'
-
-        >>> main_sub.resource_href('../../..')
-        '/trac.cgi/wiki'
-
-        References with anchors also work
-
-        >>> main_sub.resource_href('#Check')
-        '/trac.cgi/wiki/Main/Sub#Check'
-
-        """
-        if rel and rel[0] == '/': # absolute reference, start at project base
-            return self.href(rel.lstrip('/'), **kwargs)
-        base = unicode(self.id or '').split('/')
-        for comp in (rel or '').split('/'):
-            if comp in ('.', ''):
-                continue
-            elif comp == '..':
-                if base:
-                    base.pop()
-            elif '#' in comp:
-                rel, anchor = comp.split('#')
-                if rel == '..':
-                    base.pop()
-                elif rel not in ('.', ''):
-                    base.append(rel)
-                return self.href(self.realm, *base, **kwargs) + '#' + anchor
-            else:
-                base.append(comp)
-        return self.href(self.realm, *base, **kwargs)
-
-    def local_url(self):
-        """Return the local URL, either the configured `[project] url`
-        or the one that can be infered from the request or the Environment.
-        """
-        return (self.env.config.get('project', 'url') or
-                (self.req or self.env).abs_href.base)
-
-    # -- wiki rendering methods
-
-    def wiki_to_html(self, wikitext, escape_newlines=False):
-        from trac.wiki.formatter import Formatter
-        if not wikitext:
-            return Markup()
-        out = StringIO()
-        Formatter(self).format(wikitext, out, escape_newlines)
-        return Markup(out.getvalue())
-
-    def wiki_to_oneliner(self, wikitext, shorten=False):
-        from trac.wiki.formatter import OneLinerFormatter
-        if not wikitext:
-            return Markup()
-        out = StringIO()
-        OneLinerFormatter(self).format(wikitext, out, shorten)
-        return Markup(out.getvalue())
-
-    def wiki_to_outline(self, wikitext, max_depth=None, min_depth=None):
-        from trac.wiki.formatter import OutlineFormatter
-        if not wikitext:
-            return Markup()
-        out = StringIO()
-        OutlineFormatter(self).format(wikitext, out, max_depth, min_depth)
-        return Markup(out.getvalue())
-
-    def wiki_to_link(self, wikitext):
-        from trac.wiki.formatter import LinkFormatter
-        if not wikitext:
-            return ''
-        return LinkFormatter(self).match(wikitext)
-
 
 def parse_args(args):
     """Utility for parsing macro "content" and splitting them into arguments.
@@ -340,10 +141,45 @@ def parse_args(args):
     return largs, kwargs
 
 
+class WikiContext(Context):
+    """Wiki Context."""
+
+    realm = 'wiki'
+
+    # methods reimplemented from Context
+
+    def set_resource(self, resource):
+        if resource:
+            self.version = resource.version
+        self._resource = resource
+
+    def get_resource(self):
+        from trac.wiki.model import WikiPage
+        return WikiPage(self.env, self.id, self.version, self.db)
+
+    def resource_href(self, path=None, **kwargs):
+        """
+        >>> from trac.test import EnvironmentStub
+        >>> c = Context(EnvironmentStub(), None)
+
+        >>> c('wiki', 'Main', version=3).resource_href()
+        '/trac.cgi/wiki/Main?version=3'
+
+        >>> c('wiki', 'Main', version=3).resource_href(action='diff')
+        '/trac.cgi/wiki/Main?action=diff&version=3'
+        """
+        if self.version is not None and 'version' not in kwargs:
+            kwargs['version'] = self.version
+        return Context.resource_href(self, path, **kwargs)
+
+    def name(self):
+        return WikiSystem(self.env).format_page_name(self.id)
+
+
 class WikiSystem(Component):
     """Represents the wiki system."""
 
-    implements(IWikiChangeListener, IWikiSyntaxProvider)
+    implements(IWikiChangeListener, IWikiSyntaxProvider, IContextProvider)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
@@ -563,3 +399,8 @@ class WikiSystem(Component):
                           rel='nofollow')
         else:
             return html.A(label, href=href, class_='wiki', version=version)
+
+    # IContextProvider methods
+
+    def get_context_classes(self):
+        yield WikiContext
