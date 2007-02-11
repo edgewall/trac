@@ -75,7 +75,7 @@
                 <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
                   <a title="Sort by $class_${order == class_ and not desc and
                                              ' (descending)' or ''}"
-                    href="${href.browser(path, rev=stickyrev, order=class_,
+                    href="${href.browser(path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
                     desc=(class_ == order and not desc and 1 or None))}">$title</a>
                 </th>
               </py:def>
@@ -100,7 +100,7 @@
                   <td class="name">
                     <a class="${entry.kind}"
                       title="${entry.isdir and 'Browse Directory' or 'View File'}"
-                      href="${href.browser(entry.path, rev=stickyrev, order=dir.order, desc=dir.desc)}">$entry.name</a>
+                      href="${href.browser(entry.path, rev=stickyrev, order=(dir.order != 'name' and dir.order or None), desc=dir.desc)}">$entry.name</a>
                   </td>
                   <td class="size">${sizeinfo(entry.content_length)}</td>
                   <td class="rev">
