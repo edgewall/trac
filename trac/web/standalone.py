@@ -194,7 +194,7 @@ def main():
     # autoreload doesn't work when daemonized and using relative paths
     if options.daemonize and options.autoreload:
         for path in args + [options.env_parent_dir, options.pidfile]:
-            if not os.path.isabs(path):
+            if path and not os.path.isabs(path):
                 parser.error('"%s" is not an absolute path.\n\n'
                              'when using both --auto-reload and --daemonize '
                              'all path arguments must be absolute'
@@ -204,7 +204,7 @@ def main():
     args = [os.path.abspath(a) for a in args]
     if options.env_parent_dir:
         options.env_parent_dir = os.path.abspath(options.env_parent_dir)
-    if options.daemonize and options.pidfile:
+    if options.pidfile:
         options.pidfile = os.path.abspath(options.pidfile)
 
     wsgi_app = TracEnvironMiddleware(dispatch_request,
