@@ -32,7 +32,7 @@ from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, WikiParser 
 
 LOG_LIMIT = 100
 
@@ -243,7 +243,7 @@ class LogModule(Component):
     def get_wiki_syntax(self):
         yield (
             # [...] form, starts with optional intertrac: [T... or [trac ...
-            r"!?\[(?P<it_log>%s\s*)" % Formatter.INTERTRAC_SCHEME +
+            r"!?\[(?P<it_log>%s\s*)" % WikiParser.INTERTRAC_SCHEME +
             # <from>:<to> + optional path restriction
             r"(?P<log_revs>%s)(?P<log_path>[/?][^\]]*)?\]" % self.REV_RANGE,
             lambda x, y, z: self._format_link(x, 'log1', y[1:-1], y, z))

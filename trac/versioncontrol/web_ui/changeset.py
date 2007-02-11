@@ -45,7 +45,7 @@ from trac.versioncontrol.web_ui.browser import BrowserModule, \
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
 class IPropertyDiffRenderer(Interface):
@@ -799,7 +799,7 @@ class ChangesetModule(Component):
     def get_wiki_syntax(self):
         yield (
             # [...] form: start with optional intertrac: [T... or [trac ...
-            r"!?\[(?P<it_changeset>%s\s*)" % Formatter.INTERTRAC_SCHEME +
+            r"!?\[(?P<it_changeset>%s\s*)" % WikiParser.INTERTRAC_SCHEME +
             # hex digits + optional /path for the restricted changeset
             # + optional query and fragment
             r"%s(?:/[^\]]*)?(?:\?[^\]]*)?(?:#[^\]]*)?\]|" % self.CHANGESET_ID +

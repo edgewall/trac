@@ -28,6 +28,7 @@ from trac.context import Context
 from trac.core import *
 from trac.mimeview import *
 from trac.wiki.api import WikiSystem
+from trac.wiki.parser import WikiParser
 from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
@@ -60,7 +61,7 @@ class WikiProcessor(object):
         self.processor = builtin_processors.get(name)
         if not self.processor:
             # Find a matching wiki macro
-            for macro_provider in formatter.wiki.macro_providers:
+            for macro_provider in WikiSystem(self.env).macro_providers:
                 for macro_name in macro_provider.get_macros():
                     if self.name == macro_name:
                         if hasattr(macro_provider, 'expand_macro'):
@@ -168,87 +169,10 @@ class Formatter(object):
     
     flavor = 'default'
 
-    # Some constants used for clarifying the Wiki regexps:
-
-    BOLDITALIC_TOKEN = "'''''"
-    BOLD_TOKEN = "'''"
-    ITALIC_TOKEN = "''"
-    UNDERLINE_TOKEN = "__"
-    STRIKE_TOKEN = "~~"
-    SUBSCRIPT_TOKEN = ",,"
-    SUPERSCRIPT_TOKEN = r"\^"
-    INLINE_TOKEN = "`"
-    STARTBLOCK_TOKEN = r"\{\{\{"
-    STARTBLOCK = "{{{"
-    ENDBLOCK_TOKEN = r"\}\}\}"
-    ENDBLOCK = "}}}"
-    
-    LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
-    INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (support for shorthand links)
-
-    QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
-
-    SHREF_TARGET_FIRST = r"[\w/?!#@](?<!_)" # we don't want "_"
-    SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
-    SHREF_TARGET_LAST = r"[\w/=](?<!_)" # we don't want "_"
-
-    LHREF_RELATIVE_TARGET = r"[/.#][^\s[\]]*"
-
-    XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
-
-    # Sequence of regexps used by the engine
-
-    _pre_rules = [
-        # Font styles
-        r"(?P<bolditalic>!?%s)" % BOLDITALIC_TOKEN,
-        r"(?P<bold>!?%s)" % BOLD_TOKEN,
-        r"(?P<italic>!?%s)" % ITALIC_TOKEN,
-        r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
-        r"(?P<strike>!?%s)" % STRIKE_TOKEN,
-        r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
-        r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
-        r"(?P<inlinecode>!?%s(?P<inline>.*?)%s)" \
-        % (STARTBLOCK_TOKEN, ENDBLOCK_TOKEN),
-        r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
-        % (INLINE_TOKEN, INLINE_TOKEN)]
-
-    # Rules provided by IWikiSyntaxProviders will be inserted here
-
-    _post_rules = [
-        # > ...
-        r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
-        # &, < and > to &amp;, &lt; and &gt;
-        r"(?P<htmlescape>[&<>])",
-        # wiki:TracLinks
-        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
-        % (LINK_SCHEME, QUOTED_STRING,
-           SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
-        # [wiki:TracLinks with optional label] or [/relative label]
-        (r"(?P<lhref>!?\[(?:"
-         r"(?P<rel>%s)|" % LHREF_RELATIVE_TARGET + # ./... or /...
-         r"(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*))" % \
-         (LINK_SCHEME, QUOTED_STRING) + # wiki:TracLinks or wiki:"trac links"
-         r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # optional label
-        # [[macro]] call
-        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
-         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
-        # == heading == #hanchor
-        r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*"
-        r"(?P<hanchor>#%s)?$)" % XML_NAME,
-        #  * list
-        r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
-        # definition:: 
-        r"(?P<definition>^\s+((?:%s[^%s]*%s|%s.*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
-        % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
-           STARTBLOCK_TOKEN, ENDBLOCK_TOKEN, INLINE_TOKEN, STARTBLOCK[0]),
-        # (leading space)
-        r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
-        # || table ||
-        r"(?P<last_table_cell>\|\|\s*$)",
-        r"(?P<table_cell>\|\|)"]
-
-    _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
-    _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
+    # 0.10 compatibility
+    INTERTRAC_SCHEME = WikiParser.INTERTRAC_SCHEME
+    QUOTED_STRING = WikiParser.QUOTED_STRING
+    LINK_SCHEME = WikiParser.LINK_SCHEME
 
     def __init__(self, context):
         """Since 0.11: only takes a single Context argument."""
@@ -259,6 +183,7 @@ class Formatter(object):
         self.db = context.db
         self.href = context.href
         self.wiki = WikiSystem(context.env)
+        self.wikiparser = WikiParser(context.env)
         self._anchors = {}
         self._open_tags = []
 
@@ -389,8 +314,8 @@ class Formatter(object):
     def _make_link(self, ns, target, match, label):
         # first check for an alias defined in trac.ini
         ns = self.env.config['intertrac'].get(ns, ns)
-        if ns in self.wiki.link_resolvers:
-            return self.wiki.link_resolvers[ns](self, ns, target,
+        if ns in self.wikiparser.link_resolvers:
+            return self.wikiparser.link_resolvers[ns](self, ns, target,
                                                 escape(label, False))
         elif target.startswith('//') or ns == "mailto":
             return self._make_ext_link(ns+':'+target, label)
@@ -477,7 +402,7 @@ class Formatter(object):
             anchor = anchor[1:]
         else:
             sans_markup = plaintext(heading, keeplinebreaks=False)
-            anchor = self._anchor_re.sub('', sans_markup)
+            anchor = WikiParser._anchor_re.sub('', sans_markup)
             if not anchor or anchor[0].isdigit() or anchor[0] in '.-':
                 # an ID must start with a Name-start character in XHTML
                 anchor = 'a' + anchor # keeping 'a' for backward compat
@@ -733,7 +658,7 @@ class Formatter(object):
     # Code blocks
     
     def handle_code_block(self, line):
-        if line.strip() == Formatter.STARTBLOCK:
+        if line.strip() == WikiParser.STARTBLOCK:
             self.in_code_block += 1
             if self.in_code_block == 1:
                 self.code_processor = None
@@ -742,7 +667,7 @@ class Formatter(object):
                 self.code_text += line + os.linesep
                 if not self.code_processor:
                     self.code_processor = WikiProcessor(self, 'default')
-        elif line.strip() == Formatter.ENDBLOCK:
+        elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
                 self.close_table()
@@ -753,7 +678,7 @@ class Formatter(object):
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
-            match = Formatter._processor_re.search(line)
+            match = WikiParser._processor_re.search(line)
             if match:
                 name = match.group(1)
                 self.code_processor = WikiProcessor(self, name)
@@ -765,18 +690,18 @@ class Formatter(object):
 
     def close_code_blocks(self):
         while self.in_code_block > 0:
-            self.handle_code_block(Formatter.ENDBLOCK)
+            self.handle_code_block(WikiParser.ENDBLOCK)
 
     # -- Wiki engine
     
     def handle_match(self, fullmatch):
         for itype, match in fullmatch.groupdict().items():
-            if match and not itype in self.wiki.helper_patterns:
+            if match and not itype in self.wikiparser.helper_patterns:
                 # Check for preceding escape character '!'
                 if match[0] == '!':
                     return escape(match[1:])
-                if itype in self.wiki.external_handlers:
-                    external_handler = self.wiki.external_handlers[itype]
+                if itype in self.wikiparser.external_handlers:
+                    external_handler = self.wikiparser.external_handlers[itype]
                     return external_handler(self, match, fullmatch)
                 else:
                     internal_handler = getattr(self, '_%s_formatter' % itype)
@@ -811,7 +736,7 @@ class Formatter(object):
         self.reset(text, out)
         for line in text.splitlines():
             # Handle code block
-            if self.in_code_block or line.strip() == Formatter.STARTBLOCK:
+            if self.in_code_block or line.strip() == WikiParser.STARTBLOCK:
                 self.handle_code_block(line)
                 continue
             # Handle Horizontal ruler
@@ -841,7 +766,7 @@ class Formatter(object):
             self.in_list_item = False
             self.in_quote = False
             # Throw a bunch of regexps on the problem
-            result = re.sub(self.wiki.rules, self.replace, line)
+            result = re.sub(self.wikiparser.rules, self.replace, line)
 
             if not self.in_list_item:
                 self.close_list()
@@ -912,9 +837,9 @@ class OneLinerFormatter(Formatter):
         processor = None
         buf = StringIO()
         for line in text.strip().splitlines():
-            if line.strip() == Formatter.STARTBLOCK:
+            if line.strip() == WikiParser.STARTBLOCK:
                 in_code_block += 1
-            elif line.strip() == Formatter.ENDBLOCK:
+            elif line.strip() == WikiParser.ENDBLOCK:
                 if in_code_block:
                     in_code_block -= 1
                     if in_code_block == 0:
@@ -932,7 +857,7 @@ class OneLinerFormatter(Formatter):
         if shorten:
             result = shorten_line(result)
 
-        result = re.sub(self.wiki.rules, self.replace, result)
+        result = re.sub(self.wikiparser.rules, self.replace, result)
         result = result.replace('[...]', u'[\u2026]')
         if result.endswith('...'):
             result = result[:-3] + u'\u2026'
@@ -958,9 +883,9 @@ class OutlineFormatter(Formatter):
         return ''
 
     def handle_code_block(self, line):
-        if line.strip() == Formatter.STARTBLOCK:
+        if line.strip() == WikiParser.STARTBLOCK:
             self.in_code_block += 1
-        elif line.strip() == Formatter.ENDBLOCK:
+        elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1
 
     def format(self, text, out, max_depth=6, min_depth=1):
@@ -1005,7 +930,7 @@ class LinkFormatter(OutlineFormatter):
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""
         self.reset(wikitext)        
-        match = re.match(self.wiki.rules, wikitext)
+        match = re.match(self.wikiparser.rules, wikitext)
         if match:
             return self.handle_match(match)
 
@@ -1017,6 +942,8 @@ class HtmlFormatter(object):
     
     def __init__(self, context, wikidom):
         self.context = context
+        if isinstance(wikidom, basestring):
+            wikidom = WikiParser(context.env).parse(wikidom)
         self.wikidom = wikidom
 
     def generate(self, escape_newlines=False):
@@ -1038,6 +965,8 @@ class InlineHtmlFormatter(object):
     
     def __init__(self, context, wikidom):
         self.context = context
+        if isinstance(wikidom, basestring):
+            wikidom = WikiParser(context.env).parse(wikidom)
         self.wikidom = wikidom
 
     def generate(self, shorten=False):

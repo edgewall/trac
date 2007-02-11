@@ -26,7 +26,7 @@ from trac.perm import IPermissionRequestor, PermissionSystem
 from trac.util import Ranges
 from trac.util.text import shorten_line
 from trac.util.datefmt import utc
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
 class ITicketChangeListener(Interface):
@@ -226,7 +226,7 @@ class TicketSystem(Component):
             # matches #... but not &#... (HTML entity)
             r"!?(?<!&)#"
             # optional intertrac shorthand #T... + digits
-            r"(?P<it_ticket>%s)%s" % (Formatter.INTERTRAC_SCHEME,
+            r"(?P<it_ticket>%s)%s" % (WikiParser.INTERTRAC_SCHEME,
                                       Ranges.RE_STR),
             lambda x, y, z: self._format_link(x, 'ticket', y[1:], y, z))
 

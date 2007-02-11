@@ -30,7 +30,7 @@ from trac.util.html import html
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
-from trac.wiki import IWikiSyntaxProvider, Formatter
+from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 class ReportModule(Component):
 
@@ -480,7 +480,7 @@ class ReportModule(Component):
         yield ('report', self._format_link)
 
     def get_wiki_syntax(self):
-        yield (r"!?\{(?P<it_report>%s\s*)\d+\}" % Formatter.INTERTRAC_SCHEME,
+        yield (r"!?\{(?P<it_report>%s\s*)\d+\}" % WikiParser.INTERTRAC_SCHEME,
                lambda x, y, z: self._format_link(x, 'report', y[1:-1], y, z))
 
     def _format_link(self, formatter, ns, target, label, fullmatch=None):
