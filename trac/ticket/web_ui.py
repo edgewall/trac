@@ -22,6 +22,7 @@ import time
 
 from trac.attachment import Attachment, AttachmentModule
 from trac.config import BoolOption, Option
+from trac.context import Context
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.search import ISearchSource, search_to_sql, shorten_result
@@ -37,7 +38,6 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
-from trac.wiki.api import Context
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""

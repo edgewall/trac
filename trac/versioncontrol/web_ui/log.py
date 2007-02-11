@@ -19,6 +19,7 @@
 import re
 import urllib
 
+from trac.context import Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import Ranges
@@ -31,7 +32,7 @@ from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
-from trac.wiki import IWikiSyntaxProvider, Context, Formatter
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 LOG_LIMIT = 100
 

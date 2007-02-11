@@ -18,13 +18,12 @@ import unittest
 from genshi.core import Stream, TEXT
 from genshi.input import HTMLParser, XML
 
-from trac.test import EnvironmentStub, Mock
-
+from trac.context import Context
 from trac.mimeview.api import Mimeview
 from trac.mimeview.pygments_renderer import PygmentsRenderer
+from trac.test import EnvironmentStub, Mock
 from trac.web.chrome import Chrome
 from trac.web.href import Href
-from trac.wiki.api import Context
 
 
 class PygmentsRendererTestCase(unittest.TestCase):

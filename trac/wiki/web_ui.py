@@ -22,6 +22,7 @@ import re
 import StringIO
 
 from trac.attachment import Attachment, AttachmentModule
+from trac.context import Context
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
@@ -35,7 +36,7 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.wiki.api import IWikiPageManipulator, WikiSystem, Context
+from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.model import WikiPage
 
 

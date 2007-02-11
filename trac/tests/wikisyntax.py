@@ -4,10 +4,10 @@ import tempfile
 import unittest
 
 from trac.attachment import Attachment
+from trac.context import Context
 from trac.search.web_ui import SearchModule
 from trac.test import Mock
 from trac.web.href import Href
-from trac.wiki.api import Context
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""

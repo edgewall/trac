@@ -24,9 +24,10 @@ import urllib
 
 from StringIO import StringIO
 
+from trac.context import Context
 from trac.core import *
 from trac.mimeview import *
-from trac.wiki.api import WikiSystem, Context
+from trac.wiki.api import WikiSystem
 from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
@@ -377,7 +378,9 @@ class Formatter(object):
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')
             else:
-                path = self.context.self_href(path)
+                path = self.context.resource_href(path)
+                if '?' in path:
+                    query = '&' + query.lstrip('?')
             return html.A(label or rel, href=path + query + fragment)
         else:
             return self._make_link(ns, target, match, label)
@@ -436,7 +439,9 @@ class Formatter(object):
             return None
 
     def _make_ext_link(self, url, text, title=''):
-        if not url.startswith(self.context.local_url()):
+        local_url = self.env.config.get('project', 'url') or \
+                    (self.req or self.env).abs_href.base
+        if not url.startswith(local_url):
             return html.A(html.SPAN(text, class_="icon"),
                           class_="ext-link", href=url, title=title or None)
         else:

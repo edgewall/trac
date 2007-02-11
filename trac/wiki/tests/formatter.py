@@ -3,8 +3,9 @@ import inspect
 import StringIO
 import unittest
 
+from trac.context import Context
 from trac.core import *
-from trac.wiki.api import IWikiSyntaxProvider, Context
+from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import Formatter, OneLinerFormatter
 from trac.wiki.macros import WikiMacroBase
 from trac.test import Mock, EnvironmentStub

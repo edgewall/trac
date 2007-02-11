@@ -24,6 +24,7 @@ import urllib
 from genshi.builder import tag
 
 from trac.config import ListOption, BoolOption, Option
+from trac.context import Context
 from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
                               IHTMLPreviewAnnotator
@@ -35,7 +36,7 @@ from trac.util.text import shorten_line
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
-from trac.wiki.api import IWikiSyntaxProvider, Context
+from trac.wiki.api import IWikiSyntaxProvider
 from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 

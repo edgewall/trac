@@ -28,6 +28,7 @@ import time
 from genshi.builder import tag
 
 from trac.config import Option, BoolOption, IntOption
+from trac.context import Context
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
@@ -44,7 +45,7 @@ from trac.versioncontrol.web_ui.browser import BrowserModule, \
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
-from trac.wiki import IWikiSyntaxProvider, Context, Formatter
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 
 class IPropertyDiffRenderer(Interface):

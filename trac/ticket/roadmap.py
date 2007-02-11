@@ -20,6 +20,7 @@ import re
 from time import localtime, strftime, time
 
 from trac import __version__
+from trac.context import Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
@@ -32,7 +33,7 @@ from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki.api import IWikiSyntaxProvider, Context
+from trac.wiki.api import IWikiSyntaxProvider
 from trac.config import ExtensionOption
 
 class ITicketGroupStatsProvider(Interface):

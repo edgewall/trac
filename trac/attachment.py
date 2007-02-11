@@ -25,6 +25,7 @@ import unicodedata
 
 from trac import perm, util
 from trac.config import BoolOption, IntOption
+from trac.context import Context
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
@@ -35,7 +36,7 @@ from trac.util.html import Markup, html
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki.api import IWikiSyntaxProvider, Context
+from trac.wiki.api import IWikiSyntaxProvider
 
 
 class InvalidAttachment(TracError):
@@ -380,7 +381,7 @@ class AttachmentModule(Component):
         elif action == 'new':
             data = self._render_form(req, attachment)
         else:
-            add_link(req, 'up', parent_context.self_href(), pname)
+            add_link(req, 'up', parent_context.resource_href(), pname)
             data = self._render_view(context, attachment)
 
         data['context'] = context

@@ -20,6 +20,7 @@ from datetime import datetime, timedelta
 import re
 from StringIO import StringIO
 
+from trac.context import Context
 from trac.core import *
 from trac.db import get_column_names
 from trac.mimeview.api import Mimeview, IContentConverter
@@ -33,7 +34,7 @@ from trac.util.text import shorten_line, CRLF
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
-from trac.wiki.api import IWikiSyntaxProvider, parse_args, Context
+from trac.wiki.api import IWikiSyntaxProvider, parse_args
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
 

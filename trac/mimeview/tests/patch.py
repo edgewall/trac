@@ -19,13 +19,12 @@ import unittest
 from genshi.core import Stream
 from genshi.input import HTMLParser, XML
 
-from trac.test import EnvironmentStub, Mock
-
+from trac.context import Context
 from trac.mimeview.api import Mimeview
 from trac.mimeview.patch import PatchRenderer
+from trac.test import EnvironmentStub, Mock
 from trac.web.chrome import Chrome
 from trac.web.href import Href
-from trac.wiki.api import Context
 
 
 class PatchRendererTestCase(unittest.TestCase):

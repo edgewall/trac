@@ -16,7 +16,7 @@
     <div py:choose="mode" id="content" class="attachment">
       <!--! TODO: parent.name -> context.parent.name -->
       <py:when test="'new'">
-        <h1>Add Attachment to <a href="${context.parent.self_href()}">$parent.name</a></h1>
+        <h1>Add Attachment to <a href="${context.parent.resource_href()}">$parent.name</a></h1>
         <form id="attachment" method="post" enctype="multipart/form-data" action="">
           <div class="field">
             <label>File:<br /><input type="file" name="attachment" /></label>
@@ -52,7 +52,7 @@
       </py:when>
 
       <py:when test="'delete'">
-        <h1><a href="${context.parent.self_href()}">$parent.name</a>: $attachment.filename</h1>
+        <h1><a href="${context.parent.resource_href()}">$parent.name</a>: $attachment.filename</h1>
         <p><strong>Are you sure you want to delete this attachment?</strong><br />
           This is an irreversible operation.</p>
         <div class="buttons">
@@ -67,12 +67,12 @@
       </py:when>
 
       <py:when test="'list'">
-        <h1><a href="${context.parent.self_href()}">$parent.name</a></h1>
+        <h1><a href="${context.parent.resource_href()}">$parent.name</a></h1>
         ${list_of_attachments(context.parent, attachments, href.attachment(context.parent.realm, context.parent.id))}
       </py:when>
 
       <py:otherwise> <!--! 'render' mode -->
-        <h1><a href="${context.parent.self_href()}">$parent.name</a>: $attachment.filename</h1>
+        <h1><a href="${context.parent.resource_href()}">$parent.name</a>: $attachment.filename</h1>
         <table id="info" summary="Description">
           <tbody>
             <tr>

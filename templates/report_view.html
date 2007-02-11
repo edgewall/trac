@@ -100,14 +100,14 @@
                         <!--! for the ticket listing -->
                         <py:when test="col in ('ticket', 'id')">
                           <td class="ticket" py:attrs="td_attrs">
-                            <a title="View ticket" href="${row.context.self_href()}">#$cell.value</a>
+                            <a title="View ticket" href="${row.context.resource_href()}">#$cell.value</a>
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
                         <py:when test="col == 'summary' and row.id">
                           <td class="$col" py:attrs="td_attrs">
-                            <a title="View ticket" href="${row.context.self_href()}">$cell.value</a>
+                            <a title="View ticket" href="${row.context.resource_href()}">$cell.value</a>
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>

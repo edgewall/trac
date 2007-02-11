@@ -208,47 +208,47 @@ class Context(object):
             return base.href
     href = property(fget=_get_href)
 
-    def self_href(self, rel=None, **kwargs):
+    def resource_href(self, rel=None, **kwargs):
         """Return a reference relative to the resource itself.
 
         >>> from trac.test import EnvironmentStub
         >>> c = Context(EnvironmentStub(), None)
 
-        >>> c.self_href()
+        >>> c.resource_href()
         '/trac.cgi'
 
-        >>> c(abs_urls=True).self_href()
+        >>> c(abs_urls=True).resource_href()
         'http://example.org/trac.cgi'
 
-        >>> c('wiki', 'Main').self_href()
+        >>> c('wiki', 'Main').resource_href()
         '/trac.cgi/wiki/Main'
 
         Relative references start at the current id:
 
-        >>> c('wiki', 'Main').self_href('#anchor')
+        >>> c('wiki', 'Main').resource_href('#anchor')
         '/trac.cgi/wiki/Main#anchor'
 
-        >>> c('wiki', 'Main').self_href('./Sub')
+        >>> c('wiki', 'Main').resource_href('./Sub')
         '/trac.cgi/wiki/Main/Sub'
 
-        >>> c('wiki', 'Main/Sub').self_href('..')
+        >>> c('wiki', 'Main/Sub').resource_href('..')
         '/trac.cgi/wiki/Main'
 
-        >>> c('wiki', 'Main').self_href('../Other')
+        >>> c('wiki', 'Main').resource_href('../Other')
         '/trac.cgi/wiki/Other'
 
         References always stay within the current resource realm:
 
         >>> main_sub = c('wiki', 'Main/Sub')
-        >>> main_sub.self_href('../..')
+        >>> main_sub.resource_href('../..')
         '/trac.cgi/wiki'
 
-        >>> main_sub.self_href('../../..')
+        >>> main_sub.resource_href('../../..')
         '/trac.cgi/wiki'
 
         References with anchors also work
 
-        >>> main_sub.self_href('#Check')
+        >>> main_sub.resource_href('#Check')
         '/trac.cgi/wiki/Main/Sub#Check'
 
         """

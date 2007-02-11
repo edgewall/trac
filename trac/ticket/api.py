@@ -249,7 +249,7 @@ class TicketSystem(Component):
 
         if context:
             return html.A(label, href="%s#comment:%s" % \
-                          (context.self_href(), cnum),
+                          (context.resource_href(), cnum),
                           title="Comment %s for %s:%s" % \
                           (cnum, context.realm, context.id))
         else:

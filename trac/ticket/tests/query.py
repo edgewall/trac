@@ -1,7 +1,7 @@
+from trac.context import Context
 from trac.log import logger_factory
 from trac.test import Mock, EnvironmentStub
 from trac.ticket.query import Query, QueryModule
-from trac.wiki.api import Context
 from trac.wiki.formatter import LinkFormatter
 
 import unittest

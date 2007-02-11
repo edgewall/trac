@@ -20,6 +20,7 @@ import csv
 import re
 from StringIO import StringIO
 
+from trac.context import Context
 from trac.core import *
 from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
@@ -29,7 +30,7 @@ from trac.util.html import html
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
-from trac.wiki import IWikiSyntaxProvider, Context, Formatter
+from trac.wiki import IWikiSyntaxProvider, Formatter
 
 class ReportModule(Component):
 

@@ -3,10 +3,11 @@
 from datetime import datetime
 import unittest
 
+from trac.context import Context
 from trac.test import Mock
 from trac.util.datefmt import utc
 from trac.web.href import Href
-from trac.wiki.api import WikiSystem, Context
+from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 

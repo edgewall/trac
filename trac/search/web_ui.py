@@ -20,6 +20,7 @@ import time
 from genshi.builder import tag, Element
 
 from trac.config import IntOption
+from trac.context import Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
@@ -27,7 +28,7 @@ from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
-from trac.wiki.api import IWikiSyntaxProvider, Context
+from trac.wiki.api import IWikiSyntaxProvider
 
 
 class SearchModule(Component):

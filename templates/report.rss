@@ -35,8 +35,8 @@
           </py:choose>
         </py:with>
       </py:for>
-      <link py:if="row.id">${row.context.self_href()}</link>
-      <guid isPermaLink="false" py:if="row.id">${row.context.self_href()}</guid>
+      <link py:if="row.id">${row.context.resource_href()}</link>
+      <guid isPermaLink="false" py:if="row.id">${row.context.resource_href()}</guid>
       <category>Report</category>
     </item>
 

@@ -16,11 +16,12 @@
 
 import re
 
+from trac.context import Context
 from trac.core import *
 from trac.util import sorted
 from trac.util.html import Element, html
 from trac.web import IRequestHandler
-from trac.wiki.api import IWikiMacroProvider, Context
+from trac.wiki.api import IWikiMacroProvider
 
 
 class InterTracDispatcher(Component):
