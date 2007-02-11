@@ -204,7 +204,7 @@ def main():
     args = [os.path.abspath(a) for a in args]
     if options.env_parent_dir:
         options.env_parent_dir = os.path.abspath(options.env_parent_dir)
-    if options.pidfile:
+    if options.daemonize and options.pidfile:
         options.pidfile = os.path.abspath(options.pidfile)
 
     wsgi_app = TracEnvironMiddleware(dispatch_request,
