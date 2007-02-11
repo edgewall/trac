@@ -20,6 +20,9 @@ import re
 from StringIO import StringIO
 import time
 
+from genshi.core import Markup
+from genshi.builder import tag
+
 from trac.attachment import Attachment, AttachmentModule
 from trac.config import BoolOption, Option
 from trac.context import Context
@@ -32,7 +35,6 @@ from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
-from trac.util.html import html, Markup
 from trac.util.text import CRLF, shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
@@ -98,7 +100,7 @@ class TicketModule(Component):
     def get_navigation_items(self, req):
         if 'TICKET_CREATE' in req.perm:
             yield ('mainnav', 'newticket', 
-                   html.A('New Ticket', href=req.href.newticket(), accesskey=7))
+                   tag.a('New Ticket', href=req.href.newticket(), accesskey=7))
 
     # IRequestHandler methods
 
@@ -116,22 +118,26 @@ class TicketModule(Component):
         return self.process_newticket_request(req)
 
     def process_newticket_request(self, req):
+        context = Context(self.env, req)('ticket')
         req.perm.require('TICKET_CREATE')
-        data = {}
-        db = self.env.get_db_cnx()
 
         if req.method == 'POST' and 'field_owner' in req.args and \
                'TICKET_MODIFY' not in req.perm:
             del req.args['field_owner']
 
         if req.method == 'POST' and 'preview' not in req.args:
-            self._do_create(req, db)
+            self._do_create(context) # ...redirected
 
-        ticket = Ticket(self.env, db=db)
+        # Preview a new ticket
+        ticket = Ticket(self.env, db=context.db)
+        context = context('ticket', ticket.id, resource=ticket)
+        
         self._populate(req, ticket)
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
+
+        data = {}
         data['ticket'] = ticket
-        data['context'] = Context(self.env, req, 'ticket', ticket.id, db=db)
+        data['context'] = context
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -158,7 +164,8 @@ class TicketModule(Component):
             elif name == 'milestone':
                 # Don't make completed milestones available for selection
                 options = [opt for opt in field['options'] if not
-                           Milestone(self.env, opt, db=db).is_completed]
+                           Milestone(self.env, opt, db=context.db).is_completed]
+                # TODO:    context('milestone', opt).resource.is_completed
                 field['options'] = options
             data['fields'].append(field)
 
@@ -171,17 +178,17 @@ class TicketModule(Component):
 
     def process_ticket_request(self, req):
         req.perm.require('TICKET_VIEW')
-        data = {}
-
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
-
-        db = self.env.get_db_cnx()
         id = int(req.args.get('id'))
-
-        ticket = Ticket(self.env, id, db=db)
+        
+        context = Context(self.env, req)('ticket', id)
+        
+        ticket = context.resource
+        
+        data = {}
         data['ticket'] = ticket
-        data['context'] = Context(self.env, req, 'ticket', ticket.id, db=db)
+        data['context'] = context
         
         if action in ('history', 'diff'):
             field = req.args.get('field')
@@ -192,12 +199,12 @@ class TicketModule(Component):
                                TicketSystem(self.env).get_ticket_fields() if
                                field['type'] == 'textarea']
             if action == 'history':
-                return self._render_history(req, db, ticket, data, text_fields)
+                return self._render_history(context, data, text_fields)
             elif action == 'diff':
-                return self._render_diff(req, db, ticket, data, text_fields)
+                return self._render_diff(context, data, text_fields)
         elif req.method == 'POST':
             if 'preview' not in req.args:
-                self._do_save(req, db, ticket)
+                self._do_save(context)
             else:
                 # Use user supplied values
                 self._populate(req, ticket)
@@ -216,14 +223,17 @@ class TicketModule(Component):
             # Store a timestamp in order to detect "mid air collisions"
             data['timestamp'] = str(ticket.time_changed)
 
-        self._insert_ticket_data(req, db, ticket, data,
-                                 get_reporter_id(req, 'author'))
+        self._insert_ticket_data(context, data, get_reporter_id(req, 'author'))
 
         mime = Mimeview(self.env)
         format = req.args.get('format')
         if format:
             mime.send_converted(req, 'trac.ticket.Ticket', ticket, format,
                                 'ticket_%d' % ticket.id)
+
+        def add_ticket_link(css_class, id):
+            ctx = context('ticket', id)
+            add_link(req, css_class, ctx.resource_href(), ctx.name())
 
         # If the ticket is being shown in the context of a query, add
         # links to help navigate in the query result set
@@ -232,15 +242,11 @@ class TicketModule(Component):
             if str(id) in tickets:
                 idx = tickets.index(str(ticket.id))
                 if idx > 0:
-                    add_link(req, 'first', req.href.ticket(tickets[0]),
-                             'Ticket #%s' % tickets[0])
-                    add_link(req, 'prev', req.href.ticket(tickets[idx - 1]),
-                             'Ticket #%s' % tickets[idx - 1])
+                    add_ticket_link('first', tickets[0])
+                    add_ticket_link('prev', tickets[idx - 1])
                 if idx < len(tickets) - 1:
-                    add_link(req, 'next', req.href.ticket(tickets[idx + 1]),
-                             'Ticket #%s' % tickets[idx + 1])
-                    add_link(req, 'last', req.href.ticket(tickets[-1]),
-                             'Ticket #%s' % tickets[-1])
+                    add_ticket_link('next', tickets[idx + 1])
+                    add_ticket_link('last', tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
 
         add_stylesheet(req, 'common/css/ticket.css')
@@ -257,21 +263,23 @@ class TicketModule(Component):
         ticket.populate(dict([(k[6:],v) for k,v in req.args.iteritems()
                               if k.startswith('field_')]))
 
-    def _get_history(self, ticket, db):
+    def _get_history(self, context):
+        ticket = context.resource
         history = []
-        for change in self.grouped_changelog_entries(ticket, db):
+        for change in self.grouped_changelog_entries(ticket, context.db):
             if change['permanent']:
                 change['version'] = change['cnum']
                 history.append(change)
         return history
         
-    def _render_history(self, req, db, ticket, data, text_fields):
-        """Extract the history for a ticket description.
-
-        """
+    def _render_history(self, context, data, text_fields):
+        """Extract the history for a ticket description."""
+        
+        req = context.req
+        ticket = context.resource
         req.perm.require('TICKET_VIEW')
 
-        history = self._get_history(ticket, db)
+        history = self._get_history(context)
         history.reverse()
         history = [c for c in history if any([f in text_fields
                                               for f in c['fields']])]
@@ -285,12 +293,14 @@ class TicketModule(Component):
         
         return 'ticket_history.html', data, None
 
-    def _render_diff(self, req, db, ticket, data, text_fields):
+    def _render_diff(self, context, data, text_fields):
         """Show differences between two versions of a ticket description.
 
         `text_fields` is optionally a list of fields of interest, that are
         considered for jumping to the next change.
         """
+        req = context.req
+        ticket = context.resource
         req.perm.require('TICKET_VIEW')
 
         new_version = int(req.args.get('version', 1))
@@ -299,7 +309,7 @@ class TicketModule(Component):
             old_version, new_version = new_version, old_version
 
         # get the list of versions having a description change
-        history = self._get_history(ticket, db)
+        history = self._get_history(context)
         changes = {}
         descriptions = []
         old_idx = new_idx = -1 # indexes in descriptions
@@ -354,15 +364,16 @@ class TicketModule(Component):
         changes = []
 
         def version_info(v, field=None):
-            path = 'Ticket #%d' % ticket.id
+            path = context.name()
+            # TODO: field info should probably be part of the Context as well
             if field:
-                path += Markup(' &ndash; %s', field)
+                path = tag(path, Markup(' &ndash; '), field)
             if v:
                 rev, shortrev = 'Version %d' % v, 'v%d' % v
             else:
                 rev, shortrev = 'Initial Version', 'initial'
             return {'path':  path, 'rev': rev, 'shortrev': shortrev,
-                    'href': req.href.ticket(ticket.id, version=v)}
+                    'href': context.resource_href(version=v)}
 
         # -- prop changes
         props = []
@@ -378,20 +389,20 @@ class TicketModule(Component):
 
         # -- text diffs
         diff_style, diff_options, diff_data = get_diff_options(req)
-        context = 3
+        diff_context = 3
         for option in diff_options:
             if option.startswith('-U'):
-                context = int(option[2:])
+                diff_context = int(option[2:])
                 break
-        if context < 0:
-            context = None
+        if diff_context < 0:
+            diff_context = None
 
         for field in text_fields:
             old_text = old_ticket.get(field)
             old_text = old_text and old_text.splitlines() or []
             new_text = new_ticket.get(field)
             new_text = new_text and new_text.splitlines() or []
-            diffs = diff_blocks(old_text, new_text, context=context,
+            diffs = diff_blocks(old_text, new_text, context=diff_context,
                                 ignore_blank_lines='-B' in diff_options,
                                 ignore_case='-i' in diff_options,
                                 ignore_space_changes='-b' in diff_options)
@@ -434,7 +445,8 @@ class TicketModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'ticket' in filters:
             return
-        db = self.env.get_db_cnx()
+        context = Context(self.env, req)
+        db = context.db
         sql, args = search_to_sql(db, ['b.newvalue'], terms)
         sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
                                          'reporter', 'cc', 'id'], terms)
@@ -445,12 +457,11 @@ class TicketModule(Component):
                        "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
                        args + args2)
         for summary, desc, author, keywords, tid, ts, status in cursor:
-            ticket = '#%d: ' % tid
+            ctx = context('ticket', tid)
+            ticket = ctx.shortname() + ': '
             if status == 'closed':
-                ticket = Markup('<span style="text-decoration: line-through">'
-                                '#%s</span>: ', tid)
-            yield (req.href.ticket(tid),
-                   ticket + shorten_line(summary),
+                ticket = tag.span(ticket, style="text-decoration: line-through")
+            yield (ctx.resource_href(), ticket + ctx.summary(),
                    datetime.fromtimestamp(ts, utc), author,
                    shorten_result(desc, terms))
 
@@ -474,13 +485,14 @@ class TicketModule(Component):
 
         def produce((id, ts, author, type, summary), status, fields,
                     comment, cid):
+            ctx = context('ticket', id)
             info = ''
             if status == 'edit':
                 if 'ticket_details' in filters:
                     if len(fields) > 0:
                         keys = fields.keys()
-                        info = html([[html.i(f), ', '] for f in keys[:-1]],
-                                    html.i(keys[-1]), ' changed', html.br())
+                        info = tag([[tag.i(f), ', '] for f in keys[:-1]],
+                                   tag.i(keys[-1]), ' changed', tag.br())
                 else:
                     return None
             elif 'ticket' in filters:
@@ -491,9 +503,9 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = html('Ticket ', html.em('#', id, title=summary),
-                         (type and ' (%s) ' % type) or '', verb)
-            ticket_href = req.href.ticket(id)
+            title = tag('Ticket ', tag.em(ctx.shortname(), title=ctx.summary()),
+                        (type and ' (%s) ' % type) or '', verb)
+            ticket_href = ctx.resource_href()
             if cid:
                 ticket_href += '#comment:' + cid
             markup = message = None
@@ -505,13 +517,12 @@ class TicketModule(Component):
             t = datetime.fromtimestamp(ts, utc)
             event = TimelineEvent(kind, title, ticket_href, markup)
             event.set_changeinfo(t, author)
-            event.set_context(context('ticket', id), message)
+            event.set_context(ctx, message)
             return event
 
         # Ticket changes
         if 'ticket' in filters or 'ticket_details' in filters:
-            db = self.env.get_db_cnx()
-            cursor = db.cursor()
+            cursor = context.db.cursor()
 
             cursor.execute("SELECT t.id,tc.time,tc.author,t.type,t.summary, "
                            "       tc.field,tc.oldvalue,tc.newvalue "
@@ -628,17 +639,20 @@ class TicketModule(Component):
                 else:
                     raise InvalidTicket("Invalid ticket: %s" % message)
 
-    def _do_create(self, req, db):
+    def _do_create(self, context):
+        req = context.req
+        ticket = context.resource
+
         if 'field_summary' not in req.args:
             raise TracError('Tickets must contain a summary.')
 
-        ticket = Ticket(self.env, db=db)
         self._populate(req, ticket)
         ticket.values['reporter'] = get_reporter_id(req, 'reporter')
         self._validate_ticket(req, ticket)
 
-        ticket.insert(db=db)
-        db.commit()
+        ticket.insert(db=context.db)
+        context.db.commit()
+        context.id = ticket.id
 
         # Notify
         try:
@@ -648,13 +662,16 @@ class TicketModule(Component):
             self.log.exception("Failure sending notification on creation of "
                                "ticket #%s: %s" % (ticket.id, e))
 
-        # Redirect the user to the newly created ticket
+        # Redirect the user to the newly created ticket or add attachment
         if 'attachment' in req.args:
             req.redirect(req.href.attachment('ticket', ticket.id, action='new'))
 
         req.redirect(req.href.ticket(ticket.id))
 
-    def _do_save(self, req, db, ticket):
+    def _do_save(self, context):
+        req = context.req
+        ticket = context.resource
+        
         if 'TICKET_CHGPROP' in req.perm:
             # TICKET_CHGPROP gives permission to edit the ticket
             if not req.args.get('field_summary'):
@@ -702,9 +719,9 @@ class TicketModule(Component):
         if cnum and replyto: # record parent.child relationship
             internal_cnum = '%s.%s' % (replyto, cnum)
         if ticket.save_changes(get_reporter_id(req, 'author'),
-                               req.args.get('comment'), when=now, db=db,
-                               cnum=internal_cnum):
-            db.commit()
+                               req.args.get('comment'), when=now,
+                               db=context.db, cnum=internal_cnum):
+            context.db.commit()
 
             try:
                 tn = TicketNotifyEmail(self.env)
@@ -716,8 +733,11 @@ class TicketModule(Component):
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
 
-    def _insert_ticket_data(self, req, db, ticket, data, reporter_id):
+    def _insert_ticket_data(self, context, data, reporter_id):
         """Insert ticket data into the hdf"""
+        req = context.req
+        ticket = context.resource
+
         replyto = req.args.get('replyto')
         version = req.args.get('version', None)
         
@@ -741,7 +761,9 @@ class TicketModule(Component):
                 options = field['options']
                 if name == 'milestone' and 'TICKET_ADMIN' not in req.perm:
                     options = [opt for opt in options if not
-                               Milestone(self.env, opt, db=db).is_completed]
+                               Milestone(self.env, opt,
+                                         db=context.db).is_completed]
+                    # FIXME: ... un air de "deja vu" ;)
                 if value and not value in options:
                     # Current ticket value must be visible even if its not in the
                     # possible values
@@ -775,7 +797,7 @@ class TicketModule(Component):
         changes = []
         cnum = 0
         skip = False
-        for change in self.grouped_changelog_entries(ticket, db):
+        for change in self.grouped_changelog_entries(ticket, context.db):
             if change['permanent']:
                 cnum = change['cnum']
                 if version is not None and cnum > version:
@@ -810,8 +832,8 @@ class TicketModule(Component):
             'replies': replies, 'cnum': cnum + 1,
             'attachments': list(Attachment.select(self.env, 'ticket',
                                                   ticket.id)),
-            'attach_href': 'TICKET_APPEND' in req.perm and \
-            req.href.attachment('ticket', ticket.id),
+            'attach_href': ('TICKET_APPEND' in req.perm and \
+                            req.href.attachment('ticket', ticket.id)),
             'actions': TicketSystem(self.env).get_available_actions(ticket,
                                                                     req.perm)
             })
