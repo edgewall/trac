@@ -552,13 +552,8 @@ class TicketModule(Component):
 
             # Attachments
             if 'ticket_details' in filters:
-                def display(id):
-                    return html('ticket ',
-                                html.em('#', id,
-                                        title=Ticket(self.env, id)['summary']))
-                att = AttachmentModule(self.env)
-                for event in att.get_timeline_events(context('ticket'),
-                                                     start, stop, display):
+                for event in AttachmentModule(self.env) \
+                        .get_timeline_events(context('ticket'), start, stop):
                     yield event
 
     # Internal methods

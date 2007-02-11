@@ -483,9 +483,8 @@ class WikiModule(Component):
                 yield event
 
             # Attachments
-            att = AttachmentModule(self.env)
-            for event in att.get_timeline_events(context('wiki'), start, stop,
-                                                 lambda id: html.em(id)):
+            for event in AttachmentModule(self.env) \
+                    .get_timeline_events(context('wiki'), start, stop):
                 yield event
 
     # ISearchSource methods

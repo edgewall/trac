@@ -313,6 +313,8 @@ class ImageMacro(WikiMacroBase):
         if len(args) == 0:
             raise Exception("No argument.")
         filespec = args[0]
+
+        # style information
         size_re = re.compile('[0-9]+%?$')
         attr_re = re.compile('(align|border|width|height|alt'
                              '|title|longdesc|class|id|usemap)=(.+)')
@@ -345,14 +347,15 @@ class ImageMacro(WikiMacroBase):
                 else:
                     attr[str(key)] = val # will be used as a __call__ keyword
 
-        # parse filespec argument to get module and id if contained.
+        # parse filespec argument to get realm and id if contained.
         parts = filespec.split(':')
         url = None
-        if len(parts) == 3:                 # module:id:attachment
-            if parts[0] in ['wiki', 'ticket']:
-                module, id, file = parts
-            else:
-                raise Exception("%s module can't have attachments" % parts[0])
+        context = None
+        if len(parts) == 3:                 # realm:id:attachment-filename
+            # TODO: consider using attachment-filename:realm:id?
+            realm, id, filename = parts
+            context = formatter.context(realm, id) \
+                      ('attachment', filename)
         elif len(parts) == 2:
             from trac.versioncontrol.web_ui import BrowserModule
             try:
@@ -361,41 +364,41 @@ class ImageMacro(WikiMacroBase):
             except Exception:
                 browser_links = []
             if parts[0] in browser_links:   # source:path
-                module, file = parts
+                # TODO: use context here as well
+                realm, filename = parts
                 rev = None
-                if '@' in file:
-                    file, rev = file.split('@')
-                url = formatter.href.browser(file, rev=rev)
-                raw_url = formatter.href.browser(file, rev=rev, format='raw')
+                if '@' in filename:
+                    filename, rev = filename.split('@')
+                url = formatter.href.browser(filename, rev=rev)
+                raw_url = formatter.href.browser(filename, rev=rev, format='raw')
                 desc = filespec
             else: # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
-                id, file = parts
+                realm = None
+                id, filename = parts
                 if id and id[0] == '#':
-                    module = 'ticket'
+                    realm = 'ticket'
                     id = id[1:]
                 elif id == 'htdocs':
-                    raw_url = url = formatter.href.chrome('site', file)
-                    desc = os.path.basename(file)
+                    raw_url = url = formatter.href.chrome('site', filename)
+                    desc = os.path.basename(filename)
                 elif id in ('http', 'https', 'ftp'): # external URLs
-                    raw_url = url = desc = id+':'+file
+                    raw_url = url = desc = id+':'+filename
                 else:
-                    module = 'wiki'
+                    realm = 'wiki'
+                if realm:
+                    context = formatter.context(realm, id) \
+                              ('attachment', filename)
         elif len(parts) == 1:               # attachment
-            file = filespec
-            module, id = formatter.context.realm, formatter.context.id
-            if module not in ['wiki', 'ticket']: # FIXME: shouldn't be needed
-                raise Exception('Cannot reference local attachment from here')
+            context = formatter.context('attachment', filespec)
         else:
             raise Exception('No filespec given')
-        if not url: # this is an attachment
-            from trac.attachment import Attachment
-            attachment = Attachment(self.env, module, id, file)
-            url = attachment.href(formatter.req)
-            raw_url = attachment.href(formatter.req, format='raw')
-            desc = attachment.description
-        for key in ['title', 'alt']:
-            if desc and not attr.has_key(key):
+        if context: # this is an attachment
+            url = context.resource_href()
+            raw_url = context.resource_href(format='raw')
+            desc = context.summary()
+        for key in ('title', 'alt'):
+            if desc and not key in attr:
                 attr[key] = desc
         if style:
             attr['style'] = '; '.join(['%s:%s' % (k, escape(v))

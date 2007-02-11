@@ -158,34 +158,36 @@
   -
   -     'attachments' is a list of attachment data
   -     'attach_href' is a url for adding a new attachment
-  -
+  -     'compact' is used to switch between a compact list of attachments (e.g. as used for
+  -       the wiki view) and an expanded list (e.g. as used for the ticket view)
   -->
   <py:def function="list_of_attachments(context, attachments, attach_href, compact=False)">
     <py:def function="show_one_attachment(attachment)">
       <a href="${context.href('attachment', context.realm, context.id, attachment.filename)}"
          title="View attachment">$attachment.filename</a>
-       (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
-        ${dateinfo(attachment.date)} ago.
+      (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
+      ${dateinfo(attachment.date)} ago.
     </py:def>
     <py:choose test="">
       <py:when test="compact and attachments">
         <h3>Attachments</h3>
         <ul>
-          <li py:for="attachment in attachments">
-            ${show_one_attachment(attachment)}
-            <q py:if="compact and attachment.description">${context('attachment', attachment.filename).wiki_to_oneliner(attachment.description)}</q>
-          </li>
+          <py:for each="attachment in attachments" py:with="ctx = context('attachment', attachment.filename)">
+            <li>
+              ${show_one_attachment(attachment)}
+              <q py:if="compact and attachment.description">${ctx.wiki_to_oneliner(attachment.description)}</q>
+            </li>
+          </py:for>
         </ul>
       </py:when>
       <py:when test="not compact">
         <h2>Attachments</h2>
         <div py:if="attachments or attach_href" id="attachments">
           <dl py:if="attachments" class="attachments">
-            <py:for each="attachment in attachments">
+            <py:for each="attachment in attachments"
+              py:with="ctx = context('attachment', attachment.filename)">
               <dt>${show_one_attachment(attachment)}</dt>
-              <dd py:if="attachment.description">
-                ${context('attachment', attachment.filename).wiki_to_oneliner(attachment.description)}
-              </dd>
+              <dd py:if="attachment.description">${ctx.wiki_to_oneliner(attachment.description)}</dd>
             </py:for>
           </dl>
           <form py:if="attach_href" method="get" action="$attach_href">
