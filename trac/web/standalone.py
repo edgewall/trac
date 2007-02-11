@@ -195,7 +195,7 @@ def main():
     # autoreload doesn't work when daemonized and using relative paths
     if options.daemonize and options.autoreload:
         for path in args + [options.env_parent_dir, options.pidfile]:
-            if not os.path.isabs(path):
+            if path and not os.path.isabs(path):
                 parser.error('"%s" is not an absolute path.\n\n'
                              'when using both --auto-reload and --daemonize '
                              'all path arguments must be absolute'
