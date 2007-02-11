@@ -26,6 +26,7 @@ except NameError:
 from StringIO import StringIO
 
 from genshi.builder import tag
+from genshi.core import Markup
 
 from trac.config import default_dir
 from trac.core import *
@@ -33,6 +34,8 @@ from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any
 from trac.util.html import escape
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
+from trac.wiki.formatter import format_to_html, format_to_oneliner, \
+                                OutlineFormatter
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet
 
@@ -241,9 +244,13 @@ class PageOutlineMacro(WikiMacroBase):
                     if len(argv) > 2:
                         inline = argv[2].strip().lower() == 'inline'
 
-        outline = formatter.context.wiki_to_outline(formatter.source,
-                                                    max_depth=max_depth,
-                                                    min_depth=min_depth)
+        # TODO: - integrate the rest of the OutlineFormatter directly here
+        #       - use formatter.wikidom instead of formatter.source
+        out = StringIO()
+        OutlineFormatter(formatter.context).format(formatter.source, out,
+                                                   max_depth, min_depth)
+        outline = Markup(out.getvalue())
+
         if title:
             outline = tag.h4(title) + outline
         if not inline:
@@ -431,7 +438,7 @@ class MacroListMacro(WikiMacroBase):
                         continue
                     try:
                         descr = macro_provider.get_macro_description(macro_name)
-                        descr = wikimacros.wiki_to_html(descr or '')
+                        descr = format_to_html(wikimacros, descr or '')
                     except Exception, e:
                         descr = system_message("Error: Can't get description "
                                                "for macro %s" % macro_name, e)
@@ -464,7 +471,8 @@ class TracIniMacro(WikiMacroBase):
             [(tag.h2('[%s]' % section, id='%s-section' % section),
               tag.table(class_='wiki')(
             tag.tbody([tag.tr(tag.td(tag.tt(option.name)),
-                              tag.td(tracini.wiki_to_oneliner(option.__doc__)))
+                              tag.td(format_to_oneliner(tracini,
+                                                        option.__doc__)))
                        for option in sorted(Option.registry.values(),
                                             key=lambda o: o.name)
                        if option.section == section])))

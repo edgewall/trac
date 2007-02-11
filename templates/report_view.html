@@ -26,7 +26,7 @@
         <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
       </h1>
 
-      <div py:if="report.description" id="description">${context.wiki_to_html(report.description)}</div>
+      <div py:if="report.description" id="description">${wiki_to_html(context, report.description)}</div>
 
       <div py:if="report.id != -1 and (report.can.create or report.can.modify or report.can.delete)" class="buttons">
         <form py:if="report.can.modify" action="" method="get">
@@ -132,7 +132,7 @@
                         </py:when>
 
                         <py:when test="col == 'description'">
-                          <td class="$col" py:attrs="td_attrs">${row.context.wiki_to_html(cell.value)}
+                          <td class="$col" py:attrs="td_attrs">${wiki_to_html(row.context, cell.value)}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>

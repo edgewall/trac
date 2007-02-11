@@ -22,8 +22,8 @@
       <link>${abs_href.changeset(rev, path)}</link>
       <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>
       <description py:with="m = change.message">${
-        unicode(wiki_format_messages and (verbose and item_context.wiki_to_html(m) \
-                                                   or item_context.wiki_to_oneliner(m)) \
+        unicode(wiki_format_messages and (verbose and wiki_to_html(item_context, m) \
+                                                   or wiki_to_oneliner(item_context, m)) \
                                        or m)
         }</description>
       <category>Log</category>

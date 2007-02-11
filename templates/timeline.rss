@@ -23,7 +23,7 @@
       <guid isPermaLink="false">${event.abs_href}/${event.dateuid()}</guid>
       <description>${
         unicode(event.markup)
-      }<py:if test="event.wikitext">${unicode(event.context(abs_urls=True).wiki_to_html(event.wikitext))}</py:if></description>
+      }<py:if test="event.wikitext">${unicode(wiki_to_html(event.context(abs_urls=True), event.wikitext))}</py:if></description>
     </item>
 
    </channel>

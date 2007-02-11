@@ -834,6 +834,7 @@ class WikiTextRenderer(Component):
         return 0
 
     def render(self, context, mimetype, content, filename=None, url=None):
-        return context.wiki_to_html(content_to_unicode(self.env, content,
-                                                       mimetype))
+        from trac.wiki.formatter import format_to_html
+        return format_to_html(context, content_to_unicode(self.env, content,
+                                                          mimetype))
 

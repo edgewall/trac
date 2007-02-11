@@ -57,7 +57,7 @@
             <py:if test="mstats.stats.count">${progress_bar(mstats.stats, mstats.interval_hrefs, stats_href=mstats.stats_href)}</py:if>
           </div>
 
-          <div class="description">${context('milestone', milestone.name).wiki_to_html(milestone.description)}</div>
+          <div class="description">${wiki_to_html(context('milestone', milestone.name), milestone.description)}</div>
 
         </li>
       </ul>

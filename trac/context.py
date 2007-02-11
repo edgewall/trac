@@ -300,38 +300,6 @@ class Context(object):
                 base.append(comp)
         return self.href(self.realm, *base, **kwargs)
 
-    # -- wiki rendering methods
-
-    def wiki_to_html(self, wikitext, escape_newlines=False):
-        from trac.wiki.formatter import Formatter
-        if not wikitext:
-            return Markup()
-        out = StringIO()
-        Formatter(self).format(wikitext, out, escape_newlines)
-        return Markup(out.getvalue())
-
-    def wiki_to_oneliner(self, wikitext, shorten=False):
-        from trac.wiki.formatter import OneLinerFormatter
-        if not wikitext:
-            return Markup()
-        out = StringIO()
-        OneLinerFormatter(self).format(wikitext, out, shorten)
-        return Markup(out.getvalue())
-
-    def wiki_to_outline(self, wikitext, max_depth=None, min_depth=None):
-        from trac.wiki.formatter import OutlineFormatter
-        if not wikitext:
-            return Markup()
-        out = StringIO()
-        OutlineFormatter(self).format(wikitext, out, max_depth, min_depth)
-        return Markup(out.getvalue())
-
-    def wiki_to_link(self, wikitext):
-        from trac.wiki.formatter import LinkFormatter
-        if not wikitext:
-            return ''
-        return LinkFormatter(self).match(wikitext)
-
     # -- resource descriptors methods
 
     def permid(self):

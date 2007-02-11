@@ -43,12 +43,12 @@
           <table id="info" summary="Revision info">
             <tbody>
               <tr><th scope="col">Preview of future version ${page.version+1} (modified by $author)</th></tr>
-              <tr><td class="message">${context.wiki_to_html(comment)}</td></tr>
+              <tr><td class="message">${wiki_to_html(context, comment)}</td></tr>
             </tbody>
           </table>
           <fieldset id="preview">
             <legend>Preview (<a href="#edit">skip</a>)</legend>
-            <div class="wikipage">${context.wiki_to_html(page.text)}</div>
+            <div class="wikipage">${wiki_to_html(context, page.text)}</div>
           </fieldset>
         </py:when>
         <py:when test="'collision'">

@@ -30,7 +30,7 @@
               <title>#$row.id: $cell.value</title>
             </py:when>
             <py:when test="col == 'description'">
-              <description>${unicode(row.context.wiki_to_html(cell.value))}</description>
+              <description>${unicode(wiki_to_html(row.context, cell.value))}</description>
             </py:when>
           </py:choose>
         </py:with>

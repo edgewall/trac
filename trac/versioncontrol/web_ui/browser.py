@@ -37,6 +37,7 @@ from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import format_to_html, format_to_oneliner
 from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 
@@ -137,9 +138,9 @@ class WikiPropertyRenderer(Component):
 
     def render_property(self, name, mode, context, props):
         if name in self.wiki_properties:
-            return context.wiki_to_html(props[name])
+            return format_to_html(context, props[name])
         else:
-            return context.wiki_to_oneliner(props[name])
+            return format_to_oneliner(context, props[name])
 
 
 class TimeRange(object):

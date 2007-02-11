@@ -136,7 +136,7 @@
                     <td class="summary" py:choose="">
                       <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
-                        ${change_context.wiki_to_oneliner(change.message)}
+                        ${wiki_to_oneliner(change_context, change.message)}
                       </py:when>
                       <py:otherwise>shorten_line(change.message)</py:otherwise>
                     </td>
@@ -147,7 +147,7 @@
                   <tr py:if="verbose">
                     <td class="summary" colspan="7" py:choose="">
                       <py:when test="wiki_format_messages">
-                        ${change_context.wiki_to_html(change.message, escape_newlines=True)}
+                        ${wiki_to_html(change_context, change.message, escape_newlines=True)}
                     </py:when>
                     <py:otherwise><pre>${change.message}</pre></py:otherwise>
                   </td>

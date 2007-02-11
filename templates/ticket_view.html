@@ -92,7 +92,7 @@
               </span>
             </h3>
             <div class="searchable">
-              ${context.wiki_to_html(ticket.description)}
+              ${wiki_to_html(context, ticket.description)}
             </div>
           </div>
         </form>
@@ -161,7 +161,7 @@
                 </li>
               </ul>
               <div py:if="change.comment" class="comment searchable">
-                ${context.wiki_to_html(change.comment)}
+                ${wiki_to_html(context, change.comment)}
               </div>
             </div>
           </form>
@@ -188,7 +188,7 @@ ${comment}</textarea></p>
           </fieldset>
           <fieldset py:if="comment" id="preview">
             <legend>Comment Preview</legend>
-            ${context.wiki_to_html(comment)}
+            ${wiki_to_html(context, comment)}
           </fieldset>
         </div>
 

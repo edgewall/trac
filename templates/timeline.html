@@ -46,10 +46,18 @@
                 <py:if test="event.author">by ${event.author}</py:if>
               </a>
             </dt>
-            <dd class="${classes(event.kind, highlight=highlight)}"
-                py:with="wikify = event.use_oneliner and partial(event.context.wiki_to_oneliner, shorten=event.shorten_oneliner) or event.context.wiki_to_html">
+            <dd class="${classes(event.kind, highlight=highlight)}">
               ${event.markup}
-              <py:if test="event.wikitext">${wikify(event.wikitext)}</py:if>
+              <py:if test="event.wikitext">
+                <py:choose>
+                  <py:when test="event.use_oneliner">
+                    ${wiki_to_oneliner(event.context, event.wikitext, shorten=event.shorten_oneliner)}
+                  </py:when>
+                  <py:otherwise>
+                    ${wiki_to_html(event.context, event.wikitext)}
+                  </py:otherwise>
+                </py:choose>
+              </py:if>
             </dd>
           </py:for>
         </dl>

@@ -31,8 +31,8 @@ from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Markup
 from trac.web.href import Href
-from trac.wiki.formatter import WikiProcessor, Formatter
-from trac.wiki import WikiSystem
+from trac.wiki.api import WikiSystem
+from trac.wiki.formatter import WikiProcessor, Formatter, extract_link
 
 class ReStructuredTextRenderer(Component):
     """
@@ -59,7 +59,7 @@ class ReStructuredTextRenderer(Component):
 
         def trac_get_reference(rawtext, target, text):
             fulltext = text and target+' '+text or target
-            link = context.wiki_to_link(fulltext)
+            link = extract_link(context, fulltext)
             uri = None
             missing = False
             if isinstance(link, Element):

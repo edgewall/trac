@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2006 Edgewall Software
-# Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2005 Jonas BorgstrÃ¶m <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -14,7 +14,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 #
-# Author: Jonas Borgström <jonas@edgewall.com>
+# Author: Jonas BorgstrÃ¶m <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
@@ -32,7 +32,8 @@ from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
-           'wiki_to_link', 'Formatter']
+           'wiki_to_link', 'Formatter',
+           'format_to_html', 'format_to_oneliner', 'extract_link']
 
 def system_message(msg, text=None):
     return html.DIV(html.STRONG(msg), text and html.PRE(text),
@@ -471,7 +472,7 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         anchor = fullmatch.group('hanchor') or ''
         heading_text = match[depth+1:-depth-1-len(anchor)]
-        heading = self.context.wiki_to_oneliner(heading_text, False)
+        heading = format_to_oneliner(self.context, heading_text, False)
         if anchor:
             anchor = anchor[1:]
         else:
@@ -487,7 +488,7 @@ class Formatter(object):
             i += 1
         self._anchors[anchor] = True
         if shorten:
-            heading = self.context.wiki_to_oneliner(heading_text, True)
+            heading = format_to_oneliner(self.context, heading_text, True)
         return (depth, heading, anchor)
 
     def _heading_formatter(self, match, fullmatch):
@@ -588,7 +589,7 @@ class Formatter(object):
     def _definition_formatter(self, match, fullmatch):
         tmp = self.in_def_list and '</dd>' or '<dl>'
         definition = match[:match.find('::')]
-        tmp += '<dt>%s</dt><dd>' % self.context.wiki_to_oneliner(definition)
+        tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.context, definition)
         self.in_def_list = True
         return tmp
 
@@ -1009,21 +1010,91 @@ class LinkFormatter(OutlineFormatter):
             return self.handle_match(match)
 
 
+# Pure Wiki Formatter
+
+class HtmlFormatter(object):
+    """Format parsed wiki text to HTML"""
+    
+    def __init__(self, context, wikidom):
+        self.context = context
+        self.wikidom = wikidom
+
+    def generate(self, escape_newlines=False):
+        """Generate HTML elements.
+
+        newlines in the wikidom will be preserved if `escape_newlines` is set.
+        """
+        # FIXME: compatibility code only for now
+        out = StringIO()
+        Formatter(self.context).format(self.wikidom, out, escape_newlines)
+        return Markup(out.getvalue())
+
+
+class InlineHtmlFormatter(object):
+    """Format parsed wiki text to inline elements HTML.
+
+    Block level content will be disguarded or compacted.
+    """
+    
+    def __init__(self, context, wikidom):
+        self.context = context
+        self.wikidom = wikidom
+
+    def generate(self, shorten=False):
+        """Generate HTML inline elements.
+
+        If `shorten` is set, the generation will stop once enough characters
+        have been emitted.
+        """
+        # FIXME: compatibility code only for now
+        out = StringIO()
+        OneLinerFormatter(self.context).format(self.wikidom, out, shorten)
+        return Markup(out.getvalue())
+
+
+def format_to_html(ctx, wikidom, escape_newlines=False):
+    return HtmlFormatter(ctx, wikidom).generate(escape_newlines)
+
+def format_to_oneliner(ctx, wikidom, shorten=False):
+    return InlineHtmlFormatter(ctx, wikidom).generate(shorten)
+
+def extract_link(ctx, wikidom):
+    if not wikidom:
+        return ''
+    return LinkFormatter(ctx).match(wikidom)
+
+
+# pre-0.11 wiki text to Markup compatibility methods
+
 def wiki_to_html(wikitext, env, req, db=None,
                  absurls=False, escape_newlines=False):
     ctx = Context(env, req, db=db, abs_urls=absurls)
-    return ctx.wiki_to_html(wikitext, escape_newlines)
+    if not wikitext:
+        return Markup()
+    out = StringIO()
+    Formatter(ctx).format(wikitext, out, escape_newlines)
+    return Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
                      req=None):
     ctx = Context(env, req, db=db, abs_urls=absurls)
-    return ctx.wiki_to_oneliner(wikitext, shorten)
+    if not wikitext:
+        return Markup()
+    out = StringIO()
+    OneLinerFormatter(ctx).format(wikitext, out, shorten)
+    return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,
                     absurls=False, max_depth=None, min_depth=None):
     ctx = Context(env, req, db=db, abs_urls=absurls)
-    return ctx.wiki_to_outline(wikitext, max_depth, min_depth)
+    if not wikitext:
+        return Markup()
+    out = StringIO()
+    OutlineFormatter(ctx).format(wikitext, out, max_depth, min_depth)
+    return Markup(out.getvalue())
 
 def wiki_to_link(wikitext, env, req):
     ctx = Context(env, req)
-    return Context(env, req).wiki_to_link(wikitext)
+    if not wikitext:
+        return ''
+    return LinkFormatter(ctx).match(wikitext)

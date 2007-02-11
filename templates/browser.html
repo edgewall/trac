@@ -116,7 +116,7 @@
                     <span class="author">${authorinfo(change.author)}:</span>
                     <span class="change" py:choose="">
                       <py:when test="wiki_format_messages">
-                        ${context('changeset', change.rev).wiki_to_oneliner(change.message, shorten=True)}
+                        ${wiki_to_oneliner(context('changeset', change.rev), change.message, shorten=True)}
                       </py:when>
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </span>
@@ -138,7 +138,7 @@
         <tr py:if="file">
           <td class="message searchable" py:choose="">
             <py:when test="wiki_format_messages">
-              ${context('changeset', file.changeset.rev).wiki_to_html(file.changeset.message, escape_newlines=True)}
+              ${wiki_to_html(context('changeset', file.changeset.rev), file.changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise>${file.changeset.message}</py:otherwise>
           </td>

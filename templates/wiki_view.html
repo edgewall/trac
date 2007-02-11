@@ -44,7 +44,7 @@
                 Version $page.version (modified by ${authorinfo(page.author)}, ${dateinfo(page.time)} ago)
             </th></tr>
             <tr><td class="message">
-              ${context.wiki_to_html(page.comment or '--')}
+              ${wiki_to_html(context, page.comment or '--')}
             </td></tr>
           </tbody>
         </table>
@@ -52,7 +52,7 @@
 
       <div class="wikipage searchable" py:choose="">
         <py:when test="page.exists">
-          ${context.wiki_to_html(page.text)}
+          ${wiki_to_html(context, page.text)}
         </py:when>
         <py:otherwise>
           Describe ${page.name} here.

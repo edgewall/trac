@@ -61,7 +61,7 @@
             <td colspan="${len(headers)}">
               <p class="meta">Reported by <strong>${result.reporter}</strong>,
                 ${dateinfo(result.time)} ago<py:if test="result.description">:</py:if></p>
-              <p py:if="result.description">${context('ticket', result.id).wiki_to_html(result.description)}</p>
+              <p py:if="result.description">${wiki_to_html(context('ticket', result.id), result.description)}</p>
             </td>
           </tr>
 

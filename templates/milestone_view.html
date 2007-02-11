@@ -69,7 +69,7 @@
         </fieldset>
       </form>
 
-      <div class="description">${context.wiki_to_html(milestone.description)}</div>
+      <div class="description">${wiki_to_html(context, milestone.description)}</div>
 
       <div py:if="'MILESTONE_MODIFY' in perm or 'MILESTONE_DELETE' in perm"
            class="buttons">
