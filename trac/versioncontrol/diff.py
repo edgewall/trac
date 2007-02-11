@@ -133,9 +133,9 @@ def hdf_diff(*args, **kwargs):
 
 def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                 ignore_blank_lines=0, ignore_case=0, ignore_space_changes=0):
-    """
-    Return an array that is adequate for adding the the HDF data set for HTML
-    rendering of the differences.
+    """Return an array that is adequate for adding to the data dictionary
+
+    See the diff_div.html template.
     """
 
     type_map = {'replace': 'mod', 'delete': 'rem', 'insert': 'add',
@@ -264,5 +264,4 @@ def get_diff_options(req):
         options.append('-b')
     options_data['ignorewhitespace'] = arg
 
-    req.hdf['diff'] = data
     return (style, options, data)

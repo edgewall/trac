@@ -316,7 +316,7 @@ class Request(object):
     def send_error(self, exc_info, template='error.html',
                    content_type='text/html', status=500, env=None, data={}):
         try:
-            if self.hdf and template.endswith('.cs'): # FIXME: remove this
+            if template.endswith('.cs') and self.hdf: # FIXME: remove this
                 if self.args.has_key('hdfdump'):
                     content_type = 'text/plain'
                     data = str(self.hdf)
