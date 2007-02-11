@@ -6,7 +6,7 @@ import unittest
 from trac.context import Context
 from trac.core import *
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import Formatter, OneLinerFormatter
+from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
 from trac.wiki.macros import WikiMacroBase
 from trac.test import Mock, EnvironmentStub
 from trac.util.html import html
@@ -118,10 +118,8 @@ class WikiTestCase(unittest.TestCase):
 
     def test(self):
         """Testing WikiFormatter"""
-        out = StringIO.StringIO()
         formatter = self.formatter()
-        formatter.format(self.input, out)
-        v = out.getvalue().replace('\r','')
+        v = unicode(formatter.generate()).replace('\r','')
         try:
             self.assertEquals(self.correct, v)
         except AssertionError, e:
@@ -142,7 +140,7 @@ class WikiTestCase(unittest.TestCase):
                 % (msg, self.file, self.line, self.title, formatter.flavor))
 
     def formatter(self):
-        return Formatter(self.context)
+        return HtmlFormatter(self.context, self.input)
 
     def shortDescription(self):
         return 'Test ' + self.title
@@ -150,7 +148,7 @@ class WikiTestCase(unittest.TestCase):
 
 class OneLinerTestCase(WikiTestCase):
     def formatter(self):
-        return OneLinerFormatter(self.context)
+        return InlineHtmlFormatter(self.context, self.input)
 
 
 def suite(data=None, setup=None, file=__file__, teardown=None, context=None):

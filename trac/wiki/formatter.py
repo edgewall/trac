@@ -939,6 +939,8 @@ class LinkFormatter(OutlineFormatter):
 
 class HtmlFormatter(object):
     """Format parsed wiki text to HTML"""
+
+    flavor = 'default'
     
     def __init__(self, context, wikidom):
         self.context = context
@@ -963,6 +965,8 @@ class InlineHtmlFormatter(object):
     Block level content will be disguarded or compacted.
     """
     
+    flavor = 'oneliner'
+
     def __init__(self, context, wikidom):
         self.context = context
         if isinstance(wikidom, basestring):
