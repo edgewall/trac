@@ -290,7 +290,7 @@ class ReportModule(Component):
             col_idx = 0
             cell_groups = []
             row = {'cell_groups': cell_groups}
-            resource = 'ticket'
+            realm = 'ticket'
             for header_group in header_groups:
                 cell_group = []
                 for header in header_group:
@@ -313,11 +313,11 @@ class ReportModule(Component):
                     col = col.strip('_')
                     if col == 'reporter':
                         cell['author'] = value
-                    elif col == 'resource':
-                        resource = value
+                    elif col == 'realm':
+                        realm = value
                     cell_group.append(cell)
                 cell_groups.append(cell_group)
-            row['context'] = context(resource, row.get('id'))
+            row['context'] = context(realm, row.get('id'))
             if row_groups:
                 row_group = row_groups[-1][1]
             else:
