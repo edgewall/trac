@@ -105,6 +105,8 @@ class WikiModule(Component):
             raise TracError('No version "%s" for Wiki page "%s"' %
                             (version, pagename))
 
+        context = Context.from_resource(req, page)
+
         add_stylesheet(req, 'common/css/wiki.css')
 
         if req.method == 'POST':
@@ -112,47 +114,52 @@ class WikiModule(Component):
                 if req.args.has_key('cancel'):
                     req.redirect(req.href.wiki(page.name))
                 elif int(version) != latest_page.version:
-                    return self._render_editor(req, db, page, 'collision')
+                    return self._render_editor(context, 'collision')
                 elif req.args.has_key('preview'):
-                    return self._render_editor(req, db, page, 'preview')
+                    return self._render_editor(context, 'preview')
                 else:
-                    self._do_save(req, db, page)
+                    self._do_save(context)
             elif action == 'delete':
-                self._do_delete(req, db, page)
+                self._do_delete(context)
             elif action == 'diff':
                 get_diff_options(req)
                 req.redirect(req.href.wiki(
                     page.name, version=page.version,
                     old_version=req.args.get('old_version'), action='diff'))
         elif action == 'delete':
-            return self._render_confirm(req, db, page)
+            return self._render_confirm(context)
         elif action == 'edit':
-            return self._render_editor(req, db, page)
+            return self._render_editor(context)
         elif action == 'diff':
-            return self._render_diff(req, db, page)
+            return self._render_diff(context)
         elif action == 'history':
-            return self._render_history(req, db, page)
+            return self._render_history(context)
         else:
             req.perm.require('WIKI_VIEW')            
             format = req.args.get('format')
             if format:
                 Mimeview(self.env).send_converted(req, 'text/x-trac-wiki',
                                                   page.text, format, page.name)
-            return self._render_view(req, db, page)
+            return self._render_view(context)
 
-    def page_data(self, req, page, action=''):
-        title = page_name = WikiSystem(self.env).format_page_name(page.name)
+    def page_data(self, context, action=''):
+        page_name = context.name()
+        title = context.summary()
         if action:
             title += ' (%s)' % action
-        return {'page': page,
-                'context': Context(self.env, req, 'wiki', page.name),
+        return {'page': context.resource,
+                'context': context,
                 'action': action,
                 'page_name': page_name,
                 'title': title}
 
     # Internal methods
 
-    def _do_delete(self, req, db, page):
+    def _do_delete(self, context):
+        page = context.resource
+        req = context.req
+        db = context.db
+
         if page.readonly:
             req.perm.require('WIKI_ADMIN')
         else:
@@ -178,7 +185,11 @@ class WikiModule(Component):
         else:
             req.redirect(req.href.wiki(page.name))
 
-    def _do_save(self, req, db, page):
+    def _do_save(self, context):
+        page = context.resource
+        req = context.req
+        db = context.db
+
         if page.readonly:
             req.perm.require('WIKI_ADMIN')
         elif not page.exists:
@@ -205,7 +216,11 @@ class WikiModule(Component):
                   req.remote_addr)
         req.redirect(req.href.wiki(page.name))
 
-    def _render_confirm(self, req, db, page):
+    def _render_confirm(self, context):
+        page = context.resource
+        req = context.req
+        db = context.db
+
         if page.readonly:
             req.perm.require('WIKI_ADMIN')
         else:
@@ -216,7 +231,7 @@ class WikiModule(Component):
             version = int(req.args.get('version', 0))
         old_version = int(req.args.get('old_version') or 0) or version
 
-        data = self.page_data(req, page, 'delete')
+        data = self.page_data(context, 'delete')
         if version is not None:
             num_versions = 0
             for v,t,author,comment,ipnr in page.get_history():
@@ -228,8 +243,14 @@ class WikiModule(Component):
                          'num_versions': num_versions})
         return 'wiki_delete.html', data, None
 
-    def _render_diff(self, req, db, page):
+    def _render_diff(self, context):
+        page = context.resource
+        req = context.req
+        db = context.db
+
         req.perm.require('WIKI_VIEW')
+
+        data = self.page_data(context, 'diff')
 
         if not page.exists:
             raise TracError("Version %s of page %s does not exist" %
@@ -276,14 +297,14 @@ class WikiModule(Component):
 
         oldtext = old_page and old_page.text.splitlines() or []
         newtext = page.text.splitlines()
-        context = 3
+        diff_context = 3
         for option in diff_options:
             if option.startswith('-U'):
                 context = int(option[2:])
                 break
-        if context < 0:
-            context = None
-        diffs = diff_blocks(oldtext, newtext, context=context,
+        if diff_context < 0:
+            diff_context = None
+        diffs = diff_blocks(oldtext, newtext, context=diff_context,
                             ignore_blank_lines='-B' in diff_options,
                             ignore_case='-i' in diff_options,
                             ignore_space_changes='-b' in diff_options)
@@ -303,8 +324,6 @@ class WikiModule(Component):
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
         
-        data = self.page_data(req, page, 'diff')
-
         def version_info(v):
             return {'path': data['page_name'], 'rev': v, 'shortrev': v,
                     'href': req.href.wiki(page.name, version=v)}
@@ -325,9 +344,12 @@ class WikiModule(Component):
         })
         return 'wiki_diff.html', data, None
 
-    def _render_editor(self, req, db, page, action='edit'):
-        req.perm.require('WIKI_MODIFY')
+    def _render_editor(self, context, action='edit'):
+        page = context.resource
+        req = context.req
+        db = context.db
 
+        req.perm.require('WIKI_MODIFY')
         if 'text' in req.args:
             page.text = req.args.get('text')
         elif 'template' in req.args:
@@ -349,7 +371,7 @@ class WikiModule(Component):
         else:
             editrows = req.session.get('wiki_editrows', '20')
 
-        data = self.page_data(req, page, action)
+        data = self.page_data(context, action)
         data.update({
             'author': author,
             'comment': comment,
@@ -358,18 +380,22 @@ class WikiModule(Component):
         })
         return 'wiki_edit.html', data, None
 
-    def _render_history(self, req, db, page):
+    def _render_history(self, context):
         """Extract the complete history for a given page.
 
         This information is used to present a changelog/history for a given
         page.
         """
+        page = context.resource
+        req = context.req
+        db = context.db
+
         req.perm.require('WIKI_VIEW')
 
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
 
-        data = self.page_data(req, page, 'history')
+        data = self.page_data(context, 'history')
 
         history = []
         for version, date, author, comment, ipnr in page.get_history():
@@ -383,7 +409,11 @@ class WikiModule(Component):
         data['history'] = history
         return 'wiki_history.html', data, None
 
-    def _render_view(self, req, db, page):
+    def _render_view(self, context):
+        page = context.resource
+        req = context.req
+        db = context.db
+
         version = req.args.get('version')
 
         # Add registered converters
@@ -394,7 +424,7 @@ class WikiModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
 
-        data = self.page_data(req, page)
+        data = self.page_data(context)
         if page.name == 'WikiStart':
             data['title'] = ''
 
@@ -420,8 +450,7 @@ class WikiModule(Component):
             except ValueError:
                 version = None
             
-        # Show attachments
-        attachments = list(Attachment.select(self.env, 'wiki', page.name))
+        # Enable attachments
         attach_href = None
         if 'WIKI_MODIFY' in req.perm:
             attach_href = req.href.attachment('wiki', page.name)
@@ -444,7 +473,7 @@ class WikiModule(Component):
 
         data.update({
             'latest_version': latest_page.version,
-            'attachments': attachments,
+            'attachments': list(Attachment.select(self.env, 'wiki', page.name)),
             'attach_href': attach_href,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
@@ -461,25 +490,22 @@ class WikiModule(Component):
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
             start, stop = to_timestamp(start), to_timestamp(stop)
-            wiki = WikiSystem(self.env)
             context = Context(self.env, req)
             cursor = context.db.cursor()
             cursor.execute("SELECT time,name,comment,author,ipnr,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for ts,name,comment,author,ipnr,version in cursor:
-                title = html(html.em(wiki.format_page_name(name)),
+                ctx = context('wiki', name, version=version)
+                title = html(html.em(ctx.name()),
                              version > 1 and ' edited' or ' created')
                 markup = None
                 if version > 1:
-                    markup = html.a('(diff)', href=req.href.wiki(
-                        name, action='diff', version=version))
+                    markup = html.a('(diff)', href=ctx.resource_href(action='diff'))
                 t = datetime.fromtimestamp(ts, utc)
-                event = TimelineEvent('wiki', title,
-                                      req.href.wiki(name, version=version),
-                                      markup)
+                event = TimelineEvent('wiki', title, ctx.resource_href(), markup)
                 event.set_changeinfo(t, author, ipnr=ipnr)
-                event.set_context(context('wiki', name), comment)
+                event.set_context(ctx, comment)
                 yield event
 
             # Attachments
