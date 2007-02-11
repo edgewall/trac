@@ -130,20 +130,20 @@ class Context(object):
 
         >>> c1 = c('wiki', 'CurrentStatus')
         >>> c1
-        <Context None (:, wiki:CurrentStatus)>
+        <Context [root], wiki:CurrentStatus>
 
         If both `realm` and `id` are `None`, then the new context will
         actually be a copy of the current context, instead of a child context.
         
         >>> c2 = c1()
         >>> c2 
-        <Context None (:, wiki:CurrentStatus)>
+        <Context [root], wiki:CurrentStatus>
        
         >>> (c1.parent == c2.parent, c1.parent == c)
         (True, True)
 
         >>> c(abs_urls=True)('query')('ticket', '12')
-        <Context None (:, query, ticket:12) [abs]>
+        <Context [root], query, ticket:12 [abs]>
 
         In the case of a copy, if `version` is not specified or `False`,
         the current version will be kept. Setting `version` explicitely
@@ -151,17 +151,17 @@ class Context(object):
 
         >>> c3 = c1(version=3)
         >>> c3
-        <Context None (:, wiki:CurrentStatus@3)>
+        <Context [root], wiki:CurrentStatus@3>
 
         >>> c4 = c3()
         >>> c3
-        <Context None (:, wiki:CurrentStatus@3)>
+        <Context [root], wiki:CurrentStatus@3>
 
         Only changing the `id` results in another resource in the same realm.
 
         >>> c5 = c4(id='AnotherOne')
         >>> c5
-        <Context None (:, wiki:CurrentStatus@3, wiki:AnotherOne)>
+        <Context [root], wiki:CurrentStatus@3, wiki:AnotherOne>
         
         """
         abs_urls = [abs_urls, self.abs_urls][abs_urls is None]
