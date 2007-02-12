@@ -39,7 +39,8 @@
       <py:for each="day, events in groupby(events, key=lambda e: format_date(e.date))">
         <h2>${day}: ${day == today and 'Today' or day == yesterday and 'Yesterday' or None}</h2>
         <dl>
-          <py:for each="event in events" py:with="highlight = precisedate and abs(event.date - precisedate) &lt; precision">
+          <py:for each="event in events" 
+            py:with="highlight = precision and precisedate and timedelta(0) &lt;= (event.date - precisedate) &lt; precision">
             <dt class="${classes(event.kind, highlight=highlight)}">
               <a href="${event.href}">
                 <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}

@@ -89,8 +89,10 @@ class TimelineModule(Component):
                     precision = timedelta(seconds=1)
                 elif precision.startswith('minutes'):
                     precision = timedelta(minutes=1)
-                else:
+                elif precision.startswith('hours'):
                     precision = timedelta(hours=1)
+                else:
+                    precision = None
             except ValueError, e:
                 self.log.debug("Invalid date requested %s", to_unicode(e))
         fromdate = fromdate.replace(hour=23, minute=59, second=59)
