@@ -133,6 +133,10 @@ class PostgreSQLConnection(ConnectionWrapper):
             cnx = psycopg.connect(' '.join(dsn))
             cnx.set_client_encoding('UNICODE')
         else:
+            # Don't use chatty, inefficient server-side cursors.
+            # http://pypgsql.sourceforge.net/pypgsql-faq.html#id2787367
+            PgSQL.fetchReturnsList = 1
+            PgSQL.noPostgresCursor = 1
             cnx = PgSQL.connect('', user, password, host, path, port, 
                                 client_encoding='utf-8', unicode_results=True)
         try:
