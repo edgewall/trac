@@ -77,11 +77,11 @@ class MySQLConnector(Component):
             table_col = filter((lambda x: x.name == c), table.columns)
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
                 if name == '`rev`':
-                    name += '(%s)' % 20
+                    name += '(20)'
                 elif name == '`path`':
-                    name += '(%s)' % 255
+                    name += '(255)'
                 elif name == '`change_type`':
-                    name += '(%s)' % 2
+                    name += '(2)'
                 else:
                     name += '(%s)' % limit
             # For non-text columns, we simply throw away the extra bytes.
