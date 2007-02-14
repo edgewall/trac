@@ -69,14 +69,21 @@ class MySQLConnector(Component):
         a max of 255 bytes per column.
         """
         cols = []
-        limit = 500 / len(columns)
+        limit = 333 / len(columns)
         if limit > 255:
             limit = 255
         for c in columns:
             name = '`%s`' % c
             table_col = filter((lambda x: x.name == c), table.columns)
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
-                name += '(%s)' % limit
+                if name == '`rev`':
+                    name += '(%s)' % 20
+                elif name == '`path`':
+                    name += '(%s)' % 255
+                elif name == '`change_type`':
+                    name += '(%s)' % 2
+                else:
+                    name += '(%s)' % limit
             # For non-text columns, we simply throw away the extra bytes.
             # That could certainly be optimized better, but for now let's KISS.
             cols.append(name)
