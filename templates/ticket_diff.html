@@ -22,17 +22,17 @@
     <div id="content" class="ticket">
       <h1 py:choose="">Changes
         <py:when test="old_version">between
-          <a href="${href.ticket(ticket.id,version=old_version)}">Version $old_version</a> and
+          <a href="${context.resource_href(version=old_version)}">Version $old_version</a> and
         </py:when>
         <py:when test="old_version == 0">between
-          <a href="${href.ticket(ticket.id,version=0)}">Initial Version</a> and
+          <a href="${context.resource_href(version=0)}">Initial Version</a> and
         </py:when>
         <py:otherwise>from</py:otherwise>
-        <a href="${href.ticket(ticket.id,version=new_version)}">Version $new_version</a> of
-        <a href="${href.ticket(ticket.id)}">Ticket #$ticket.id</a>
+        <a href="${context.resource_href(version=new_version)}">Version $new_version</a> of
+        <a href="${context.resource_href()}">${context.name()}</a>
       </h1>
       <form method="post" id="prefs"
-            action="${href.ticket(ticket.id,action='diff',old_version=old_version,version=new_version)}">
+            action="${context.resource_href(action='diff', old_version=old_version, version=new_version)}">
         <div>
           <input type="hidden" name="action" value="diff" />
           <input type="hidden" name="version" value="$new_version" />

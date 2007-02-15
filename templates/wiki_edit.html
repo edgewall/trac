@@ -29,7 +29,7 @@
         <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
         <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
         <li class="last">
-          <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
+          <a href="${context.resource_href(action='diff')}">Last Change</a>
         </li>
       </ul>
       <hr />
@@ -58,7 +58,7 @@
           </div>
         </py:when>
       </py:choose>
-      <form id="edit" action="${href.wiki(page.name)}" method="post">
+      <form id="edit" action="${context.resource_href()}" method="post">
         <fieldset class="iefix">
           <input type="hidden" name="action" value="edit" />
           <input type="hidden" name="version" value="$page.version" />
