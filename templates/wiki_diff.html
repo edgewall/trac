@@ -13,16 +13,19 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <h2>Wiki Navigation</h2>
-      ${prevnext_nav('Change', 'Page History')}
+    <div id="ctxtnav" class="nav" py:with="realm = context.realm.capitalize()">
+      <h2>$realm Navigation</h2>
+      ${prevnext_nav('Change', realm + ' History')}
       <hr />
     </div>
 
-    <div id="content" class="wiki">
+    <div id="content" class="${context.realm}">
       <h1 py:choose="">Changes
         <py:when test="old_version">between
           <a href="${context.resource_href(version=old_version)}">Version $old_version</a> and
+        </py:when>
+        <py:when test="old_version == 0">between
+          <a href="${context.resource_href(version=0)}">Initial Version</a> and
         </py:when>
         <py:otherwise>from</py:otherwise>
         <a href="${context.resource_href(version=new_version)}">Version $new_version</a> of
