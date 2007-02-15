@@ -3,72 +3,9 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
-  <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
-  <head>
-    <title>$title</title>
-    <link rel="stylesheet" type="text/css" href="${chrome.htdocs_location}css/diff.css" />
-    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-  </head>
-
-  <body>
-    <div id="ctxtnav" class="nav" py:with="realm = context.realm.capitalize()">
-      <h2>$realm Navigation</h2>
-      ${prevnext_nav('Change', realm + ' History')}
-      <hr />
-    </div>
-
-    <div id="content" class="${context.realm}">
-      <h1 py:choose="">Changes
-        <py:when test="old_version">between
-          <a href="${context.resource_href(version=old_version)}">Version $old_version</a> and
-        </py:when>
-        <py:when test="old_version == 0">between
-          <a href="${context.resource_href(version=0)}">Initial Version</a> and
-        </py:when>
-        <py:otherwise>from</py:otherwise>
-        <a href="${context.resource_href(version=new_version)}">Version $new_version</a> of
-        <a href="${context.resource_href()}">${context.name()}</a>
-      </h1>
-      <form method="post" id="prefs" action="${context.resource_href()}">
-        <div>
-          <input type="hidden" name="action" value="diff" />
-          <input type="hidden" name="version" value="$new_version" />
-          <input type="hidden" name="old_version" value="$old_version" />
-          ${diff_options_fields(diff)}
-        </div>
-      </form>
-      <dl id="overview" py:with="multi = num_changes &gt; 1">
-        <dt class="property time">Timestamp:</dt>
-        <dd class="time" py:choose="">
-          <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:when test="change.date">${format_datetime(change.date)} (${pretty_timedelta(change.date)} ago)</py:when>
-          <py:otherwise>--</py:otherwise>
-        </dd>
-        <dt class="property author">Author:</dt>
-        <dd class="author" py:choose="">
-          <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>${authorinfo(change.author)} <span py:if="change.ipnr" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
-        </dd>
-        <dt class="property message">Comment:</dt>
-        <dd class="message" py:choose="">
-          <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>${wiki_to_html(context, change.comment)}</py:otherwise>
-        </dd>
-      </dl>
-      <div class="diff">
-        <div class="legend" id="diff-legend">
-          <h3>Legend:</h3>
-          <dl>
-            <dt class="unmod"></dt><dd>Unmodified</dd>
-            <dt class="add"></dt><dd>Added</dd>
-            <dt class="rem"></dt><dd>Removed</dd>
-            <dt class="mod"></dt><dd>Modified</dd>
-          </dl>
-        </div>
-
-        <xi:include href="diff_div.html"/>
+      xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
+  <div py:match="div[@id='content']" py:attrs="select('@*')">
+      ${select('*|text()')}
 
         <form py:if="'WIKI_DELETE' in perm and (not changes[0].diffs or new_version == latest_version)"
           method="get" action="${context.resource_href()}">
@@ -79,7 +16,6 @@
             new_version - old_version &gt; 1 and 'version %d to ' % (old_version+1) or ''
             }version $new_version" />
         </form>
-      </div>
-    </div>
-  </body>
+  </div>
+  <xi:include href="diff_view.html" />
 </html>

@@ -434,7 +434,7 @@ class TicketModule(Component):
             'old_ticket': old_ticket, 'new_ticket': new_ticket
             })
         
-        return 'ticket_diff.html', data, None
+        return 'diff_view.html', data, None
 
     # ISearchSource methods
 
