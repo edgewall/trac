@@ -99,7 +99,7 @@ class Context(object):
         self.abs_urls = abs_urls
         self._db = db
         self._perm = None
-        self.set_resource(resource)
+        self.resource = resource
 
     def __repr__(self):
         path = []
@@ -188,7 +188,7 @@ class Context(object):
                 version = self.version
             copy.version = version
             copy.abs_urls = abs_urls
-            copy.set_resource(resource or self._resource)
+            copy.resource = resource or self._resource
             return copy
 
     def from_resource(cls, req, resource, *args, **kwargs):
@@ -198,10 +198,19 @@ class Context(object):
         which are deduced from the `resource` itself.
         """
         kwargs['resource'] = resource
-        return ResourceSystem(resource.env).create_context(req, resource.realm,
-                                                           resource.id, *args,
-                                                           **kwargs)
+        res = ResourceSystem(resource.env)
+        return res.create_context(req, resource.realm, resource.id,
+                                  *args, **kwargs)
     from_resource = classmethod(from_resource)
+
+    def get_resource(self):
+        """Return the actual resource this context refers to.
+
+        This should be overridden by subclasses in order to return
+        the data model object corresponding to resource specified by
+        the context.
+        """
+        return None
 
     def set_resource(self, resource):
         """Attach the given resource to this context.
@@ -211,7 +220,7 @@ class Context(object):
         the state of the `resource` itself (for the `version` property, for
         example).
         """
-        self._resource = resource
+        pass
 
     def _get_db(self):
         if not self._db:
@@ -228,18 +237,17 @@ class Context(object):
             return base.href
     href = property(fget=_get_href)
 
-    def get_resource(self):
-        """Return the actual resource this context refers to.
-
-        This should be overridden by subclasses in order to return
-        the data model object corresponding to resource specified by
-        the context.
-        """
+    def _get_resource(self):
         if not self._resource:
-            raise InvalidResourceSelector("Can't retrieve resource %s:%s" %
-                                          (self.realm, self.id))
+            self._resource = self.get_resource()
+            if not self._resource:
+                raise InvalidResourceSelector("Can't retrieve resource %s:%s" %
+                                              (self.realm, self.id))
         return self._resource
-    resource = property(lambda self: self.get_resource())
+    def _set_resource(self, resource):
+        self.set_resource(resource)
+        self._resource = resource
+    resource = property(_get_resource, _set_resource)
 
     def _get_perm(self):
         """Permissions specific to this context."""

@@ -152,7 +152,6 @@ class WikiContext(Context):
     def set_resource(self, resource):
         if resource:
             self.version = resource.version
-        self._resource = resource
 
     def get_resource(self):
         from trac.wiki.model import WikiPage
