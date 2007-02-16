@@ -43,7 +43,7 @@
         <dt class="property time">Timestamp:</dt>
         <dd class="time" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:when test="change.date">${format_datetime(change.date)} (${pretty_timedelta(change.date)} ago)</py:when>
+          <py:when test="change.date">${format_datetime(change.date)} (${dateinfo(change.date)} ago)</py:when>
           <py:otherwise>--</py:otherwise>
         </dd>
         <dt class="property author">Author:</dt>

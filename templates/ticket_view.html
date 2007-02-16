@@ -129,7 +129,7 @@
                   </py:if>
                   &nbsp;
                 </span>
-                ${change.date} changed by ${authorinfo(change.author)}
+                Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
               </h3>
               <ul py:if="change.fields" class="changes">
                 <li py:for="field_name, field in change.fields.items()"

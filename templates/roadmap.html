@@ -39,15 +39,15 @@
             </a></h2>
             <py:choose>
               <p py:when="milestone.completed" class="date">
-                Completed ${pretty_timedelta(milestone.completed)} ago
+                Completed ${dateinfo(milestone.completed)} ago
                 (${format_date(milestone.completed)})
               </p>
               <p py:when="milestone.is_late" class="date">
-                <strong>${pretty_timedelta(milestone.due)} late</strong>
+                <strong>${dateinfo(milestone.due)} late</strong>
                 (${format_date(milestone.due)})
               </p>
               <p py:when="milestone.due" class="date">
-                Due in ${pretty_timedelta(milestone.due)}
+                Due in ${dateinfo(milestone.due)}
                 (${format_date(milestone.due)})
               </p>
               <p py:otherwise="" class="date">

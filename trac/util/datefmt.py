@@ -141,7 +141,7 @@ def parse_date(text, tzinfo=None):
             pass
     else:
         for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
-                   '%b %d, %Y']:
+                       '%b %d, %Y']:
             try:
                 tm = time.strptime(text, format)
                 break

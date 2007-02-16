@@ -29,8 +29,8 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
-from trac.util.datefmt import format_date, parse_date, to_timestamp, utc, \
-                              pretty_timedelta
+from trac.util.datefmt import format_date, format_datetime, parse_date, \
+                              to_timestamp, utc, pretty_timedelta
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
@@ -252,7 +252,7 @@ class TimelineModule(Component):
             precision = None
             time = target.split("T", 1)
             if len(time) > 1:
-                time = time[1]
+                time = time[1].split("Z")[0]
                 if len(time) >= 6:
                     precision = 'seconds'
                 elif len(time) >= 4:
@@ -260,7 +260,7 @@ class TimelineModule(Component):
                 elif len(time) >= 2:
                     precision = 'hours'
             try:
-                return self.get_timeline_link(formatter.context,
+                return self.get_timeline_link(formatter.req,
                                               parse_date(target, utc),
                                               label, precision)
             except ValueError, e:
@@ -270,10 +270,12 @@ class TimelineModule(Component):
 
     # Public methods
 
-    def get_timeline_link(self, context, date, label=None, precision='hours'):
-        utc_date = format_date(date, format='%Y-%m-%dT%H:%M:%SZ',
-                               tzinfo=utc)
+    def get_timeline_link(self, req, date, label=None, precision='hours'):
+        iso_date = display_date = format_datetime(date, 'iso8601', req.tz)
+        fmt = req.session.get('datefmt')
+        if fmt and fmt != 'iso8601':
+            display_date = format_datetime(date, fmt, req.tz)
         return tag.a(label or utc_date, class_='timeline',
-                     title="%s in Timeline" % utc_date,
-                     href=context.href.timeline(from_=utc_date,
-                                                precision=precision))
+                     title="%s in Timeline" % display_date,
+                     href=req.href.timeline(from_=iso_date,
+                                            precision=precision))
