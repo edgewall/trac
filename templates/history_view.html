@@ -11,17 +11,15 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav" py:with="links = chrome.links">
-      <h2>Ticket Navigation</h2>
+    <div id="ctxtnav" class="nav" py:with="realm = context.realm.capitalize()">
+      <h2>$realm Navigation</h2>
       <ul>
-        <li class="last"><a py:with="link = links.up[0]" href="${link.href}"
-            title="${link.title}">Back to Ticket #${ticket.id}</a>
-        </li>
+        <li class="last"><a href="${context.resource_href()}">Back to ${context.name()}</a></li>
       </ul>
     </div>
 
     <div id="content" class="ticket">
-      <h1>Change History for Ticket #${ticket.id}</h1>
+      <h1>Change History for <a href="${context.resource_href()}">${context.name()}</a></h1>
 
       <form py:if="history" class="printableform" method="get" action="">
         <input type="hidden" name="action" value="diff" />
@@ -47,10 +45,10 @@
                        checked="${idx == 0 or None}" />
               </td>
               <td class="version">
-                <a href="${href.ticket(ticket.id, version=item.version)}" title="View this version">$item.version</a>
+                <a href="${context.resource_href(version=item.version)}" title="View this version">$item.version</a>
               </td>
               <td class="date">${dateinfo(item.date)}</td>
-              <td class="author" title="${item.ipnr and 'IP-Address: ' + item.ipnr or None}">$item.author</td>
+              <td class="author" title="${item.ipnr and 'IP-Address: ' + item.ipnr or None}">${authorinfo(item.author)}</td>
               <td class="comment">${wiki_to_oneliner(context, item.comment, shorten=True)}</td>
             </tr>
           </tbody>

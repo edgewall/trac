@@ -289,9 +289,7 @@ class TicketModule(Component):
                         })
         data.update({'title': 'Ticket History', 'history': history})
 
-        add_link(req, 'up', req.href.ticket(ticket.id))
-        
-        return 'ticket_history.html', data, None
+        return 'history_view.html', data, None
 
     def _render_diff(self, context, data, text_fields):
         """Show differences between two versions of a ticket description.

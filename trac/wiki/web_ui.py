@@ -407,7 +407,7 @@ class WikiModule(Component):
                 'ipnr': ipnr
             })
         data['history'] = history
-        return 'wiki_history.html', data, None
+        return 'history_view.html', data, None
 
     def _render_view(self, context):
         page = context.resource
