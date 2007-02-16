@@ -456,10 +456,9 @@ class TicketModule(Component):
                        args + args2)
         for summary, desc, author, keywords, tid, ts, status in cursor:
             ctx = context('ticket', tid)
-            ticket = ctx.shortname() + ': '
-            if status == 'closed':
-                ticket = tag.span(ticket, style="text-decoration: line-through")
-            yield (ctx.resource_href(), ticket + ctx.summary(),
+            yield (ctx.resource_href(),
+                   tag(tag.span(ctx.shortname(), class_=status), ': ',
+                       ctx.format_summary(summary, status)),
                    datetime.fromtimestamp(ts, utc), author,
                    shorten_result(desc, terms))
 
@@ -485,6 +484,7 @@ class TicketModule(Component):
                     comment, cid):
             ctx = context('ticket', id)
             info = ''
+            resolution = fields.get('resolution')
             if status == 'edit':
                 if 'ticket_details' in filters:
                     if len(fields) > 0:
@@ -494,14 +494,15 @@ class TicketModule(Component):
                 else:
                     return None
             elif 'ticket' in filters:
-                if status == 'closed' and fields.has_key('resolution'):
-                    info = fields['resolution']
+                if status == 'closed' and resolution:
+                    info = resolution
                     if info and comment:
                         info += ': '
             else:
                 return None
             kind, verb = status_map[status]
-            title = tag('Ticket ', tag.em(ctx.shortname(), title=ctx.summary()),
+            title = ctx.format_summary(summary, status, resolution)
+            title = tag('Ticket ', tag.em(ctx.shortname(), title=summary),
                         (type and ' (%s) ' % type) or '', verb)
             ticket_href = ctx.resource_href()
             if cid:
@@ -550,7 +551,7 @@ class TicketModule(Component):
                 ev = produce(previous_update, status, fields, comment, cid)
                 if ev:
                     yield ev
-            
+
             # New tickets
             if 'ticket' in filters:
                 cursor.execute("SELECT id,time,reporter,type,summary"

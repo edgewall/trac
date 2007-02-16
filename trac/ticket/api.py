@@ -80,11 +80,19 @@ class TicketContext(Context):
         return '#%s' % self.id
 
     def summary(self):
-        summary = self.resource['summary']
-        status = self.resource['status']
-        if status == 'closed':
-            status += ':' + self.resource['resolution']
-        return "%s (%s)" % (shorten_line(summary), status)        
+        return self.format_summary(self.resource['summary'],
+                                   self.resource['status'],
+                                   self.resource['resolution'])
+
+    def format_summary(self, summary, status=None, resolution=None):
+        summary = shorten_line(summary)
+        if status:
+            if status == 'closed' and resolution:
+                status += ': ' + resolution
+            return "%s (%s)" % (summary, status)
+        else:
+            return summary
+        
 
 
 class TicketSystem(Component):
@@ -240,15 +248,18 @@ class TicketSystem(Component):
             r = Ranges(link)
             if len(r) == 1:
                 ctx = formatter.context('ticket', r.a)
-                try:
-                    status = ctx.resource['status']
-                    return tag.a(label, class_=('%s ticket' % status),
-                                 title=ctx.summary(),
+                # status = ctx.resource['status']  -> currently expensive
+                cursor = formatter.db.cursor() 
+                cursor.execute("SELECT summary,status,resolution "
+                               "FROM ticket WHERE id=%s", (str(r.a),)) 
+                for summary, status, resolution in cursor:
+                    title = ctx.format_summary(summary, status, resolution)
+                    return tag.a(label, class_='%s ticket' % status, 
+                                 title=title,
                                  href=ctx.resource_href() + params + fragment)
-                except TracError:
-                    pass
-                return tag.a(label, class_='missing ticket', 
-                             href=ctx.resource_href(), rel="nofollow")
+                else: 
+                    return tag.a(label, class_='missing ticket',  
+                                 href=ctx.resource_href(), rel="nofollow")
             else:
                 ranges = str(r)
                 if params:
