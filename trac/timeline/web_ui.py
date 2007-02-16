@@ -78,7 +78,7 @@ class TimelineModule(Component):
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
-        fromdate = today = datetime.now(utc)
+        fromdate = today = datetime.now(req.tz)
         precisedate = precision = None
         if 'from' in req.args:
             try:
@@ -176,14 +176,16 @@ class TimelineModule(Component):
                                     'enabled': filter_[0] in filters})
 
         # Navigation to the previous/next period of 'daysback' days
-        previous_start = format_date(fromdate - timedelta(days=daysback),
+        previous_start = format_date(fromdate - timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
-        add_link(req, 'prev', req.href.timeline(from_=previous_start),
+        add_link(req, 'prev', req.href.timeline(from_=previous_start,
+                                                daysback=daysback),
                  'Previous period')
-        if today - fromdate > timedelta(days=1):
-            next_start = format_date(fromdate + timedelta(days=daysback),
+        if today - fromdate > timedelta(days=0):
+            next_start = format_date(fromdate + timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
-            add_link(req, 'next', req.href.timeline(from_=next_start),
+            add_link(req, 'next', req.href.timeline(from_=next_start,
+                                                    daysback=daysback),
                      'Next period')
         
         return 'timeline.html', data, None
