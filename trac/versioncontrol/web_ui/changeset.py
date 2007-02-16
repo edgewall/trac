@@ -35,7 +35,7 @@ from trac.perm import IPermissionRequestor
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers, content_disposition
-from trac.util.compat import any, sorted
+from trac.util.compat import any, sorted, groupby
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
@@ -748,9 +748,18 @@ class ChangesetModule(Component):
             
             repos = self.env.get_repository(req.authname)
             context = Context(self.env, req)
-            
-            for chgset in repos.get_changesets(start, stop):
-                title = tag('Changeset ', tag.em('[%s]' % chgset.rev))
+
+            for _, changesets in groupby(repos.get_changesets(start, stop),
+                                         key=lambda c: (c.author, c.message)):
+                changesets = list(changesets)
+                chgset = changesets[-1]
+                if len(changesets) > 1:
+                    revs = '%s-%s' % (changesets[0].rev, changesets[-1].rev)
+                    title = tag('Changesets ', tag.em('[', revs, ']'))
+                    href = req.href.log(revs=revs)
+                else:
+                    title = tag('Changeset ', tag.em('[%s]' % chgset.rev))
+                    href = req.href.changeset(chgset.rev)
                 if wiki_format:
                     message = chgset.message
                     markup = ''
@@ -763,9 +772,10 @@ class ChangesetModule(Component):
                     files = []
                     if show_location:
                         filestats = self._prepare_filestats()
-                        for chg in chgset.get_changes():
-                            filestats[chg[2]] += 1
-                            files.append(chg[0])
+                        for c in changesets:
+                            for chg in c.get_changes():
+                                filestats[chg[2]] += 1
+                                files.append(chg[0])
                         markup = tag.ul(tag.li(
                             [(tag.div(class_=kind),
                               tag.span(count, ' ',
@@ -777,16 +787,16 @@ class ChangesetModule(Component):
                             'in ', tag.strong(self._get_location(files))),
                             markup, class_="changes")
                     elif show_files:
-                        for chg in chgset.get_changes():
-                            if show_files > 0 and len(files) >= show_files:
-                                files.append(tag.li(u'\u2026'))
-                                break
-                            files.append(tag.li(tag.div(class_=chg[2]),
-                                                chg[0] or '/'))
+                        for c in changesets:
+                            for chg in c.get_changes():
+                                if show_files > 0 and len(files) >= show_files:
+                                    files.append(tag.li(u'\u2026'))
+                                    break
+                                files.append(tag.li(tag.div(class_=chg[2]),
+                                                    chg[0] or '/'))
                         markup = tag(tag.ul(files, class_="changes"), markup)
 
-                event = TimelineEvent('changeset', title,
-                                      req.href.changeset(chgset.rev), markup)
+                event = TimelineEvent('changeset', title, href, markup)
                 event.set_changeinfo(chgset.date, chgset.author, True)
                 event.set_context(context('changeset', chgset.rev), message)
                 event.use_oneliner = not long_messages
