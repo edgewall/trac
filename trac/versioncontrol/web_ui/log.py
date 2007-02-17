@@ -223,8 +223,8 @@ class LogModule(Component):
         elif req.args.get('format') == 'rss':
             return 'revisionlog.rss', data, 'application/rss+xml'
 
-        add_stylesheet(req, 'common/css/browser.css')
         add_stylesheet(req, 'common/css/diff.css')
+        add_stylesheet(req, 'common/css/browser.css')
 
         rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',

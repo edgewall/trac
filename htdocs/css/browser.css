@@ -1,10 +1,15 @@
-#prefs { margin-top: -1.6em }
+#prefs { margin-top: -0.6em }
 * html #prefs { width: 34em } /* Set width only for IE */
+#prefs fieldset { margin: 0; }
 #prefs fieldset label { display: block }
-#prefs .buttons { margin-top: -1.6em }
-#prefs .choice { margin-top: -0.6em }
+#prefs .buttons { margin-top: -0.3em }
+#prefs .choice { 
+ float: left; 
+ margin: 0 .6em 0 .3em;
+ border-right: 1px dotted #d7d7d7;
+}
 
-#file-legend { clear: right; }
+#file-legend { margin-top: 3em; }
 
 /* Browser */
 h1 { margin: 0; padding: 0 0 .5em }
@@ -86,7 +91,6 @@ div.message {
 /* Log */
 tr.diff input { padding: 0 1em; margin: 0 }
 
-div.log div.buttons { clear: left }
 @media print { 
  th.diff, td.diff { display: none }
 }

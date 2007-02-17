@@ -31,12 +31,9 @@
       <form id="prefs" action="" method="get">
         <div>
           <input type="hidden" name="action" value="$mode" />
-          <label>View log starting at <input type="text" id="rev" name="rev" value="${items[0].rev}" size="5" /></label>
-          <label>and back to <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" /></label>
-          <br />
           <div class="choice">
             <fieldset>
-              <legend>Mode:</legend>
+              <legend>Revision Log Mode:</legend>
               <label>
                 <input type="radio" id="stop_on_copy" name="mode"
                        value="stop_on_copy"
@@ -53,11 +50,14 @@
                 <input type="radio" id="path_history" name="mode"
                        value="path_history"
                        checked="${mode == 'path_history' or None}" />
-                Show only adds, moves and deletes
+                Show only adds and deletes
               </label>
             </fieldset>
           </div>
-          <label><input type="checkbox" name="verbose" checked="${verbose and 'checked' or None}" />
+          <label>View log starting at <input type="text" id="rev" name="rev" value="${items[0].rev}" size="5" /></label>
+          <label>and back to <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" /></label>
+          <br />
+          <label><input type="checkbox" id="verbose" name="verbose" checked="${verbose and 'checked' or None}" />
             Show full log messages</label>
         </div>
         <div class="buttons">
