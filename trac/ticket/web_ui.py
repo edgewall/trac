@@ -450,15 +450,16 @@ class TicketModule(Component):
                                          'reporter', 'cc', 'id'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
-                       "a.keywords,a.id,a.time,a.status FROM ticket a "
+                       "a.type,a.id,a.time,a.status,a.resolution "
+                       "FROM ticket a "
                        "LEFT JOIN ticket_change b ON a.id = b.ticket "
                        "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
                        args + args2)
-        for summary, desc, author, keywords, tid, ts, status in cursor:
+        for summary, desc, author, type, tid, ts, status, resolution in cursor:
             ctx = context('ticket', tid)
             yield (ctx.resource_href(),
                    tag(tag.span(ctx.shortname(), class_=status), ': ',
-                       ctx.format_summary(summary, status)),
+                       ctx.format_summary(summary, status, resolution, type)),
                    datetime.fromtimestamp(ts, utc), author,
                    shorten_result(desc, terms))
 
@@ -501,9 +502,9 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = ctx.format_summary(summary, status, resolution)
-            title = tag('Ticket ', tag.em(ctx.shortname(), title=summary),
-                        (type and ' (%s) ' % type) or '', verb)
+            title = ctx.format_summary(summary, status, resolution, type)
+            title = tag('Ticket ', tag.em(ctx.shortname(), title=title),
+                        ' (', shorten_line(summary), ') ', verb)
             ticket_href = ctx.resource_href()
             if cid:
                 ticket_href += '#comment:' + cid

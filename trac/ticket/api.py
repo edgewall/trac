@@ -80,12 +80,14 @@ class TicketContext(Context):
         return '#%s' % self.id
 
     def summary(self):
-        return self.format_summary(self.resource['summary'],
-                                   self.resource['status'],
-                                   self.resource['resolution'])
+        args = [self.resource[f] for f in ('summary', 'status',
+                                           'resolution', 'type')]
+        return self.format_summary(*args)
 
-    def format_summary(self, summary, status=None, resolution=None):
+    def format_summary(self, summary, status=None, resolution=None, type=None):
         summary = shorten_line(summary)
+        if type:
+            summary = type + ': ' + summary
         if status:
             if status == 'closed' and resolution:
                 status += ': ' + resolution
@@ -250,10 +252,11 @@ class TicketSystem(Component):
                 ctx = formatter.context('ticket', r.a)
                 # status = ctx.resource['status']  -> currently expensive
                 cursor = formatter.db.cursor() 
-                cursor.execute("SELECT summary,status,resolution "
+                cursor.execute("SELECT type,summary,status,resolution "
                                "FROM ticket WHERE id=%s", (str(r.a),)) 
-                for summary, status, resolution in cursor:
-                    title = ctx.format_summary(summary, status, resolution)
+                for type, summary, status, resolution in cursor:
+                    title = ctx.format_summary(summary, status, resolution,
+                                               type)
                     return tag.a(label, class_='%s ticket' % status, 
                                  title=title,
                                  href=ctx.resource_href() + params + fragment)
