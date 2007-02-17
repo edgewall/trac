@@ -378,7 +378,7 @@ class ExtensionOption(Option):
                 return impl
         raise AttributeError('Cannot find an implementation of the "%s" '
                              'interface named "%s".  Please update the option '
-                             '%s.%s in trac.ini.'
+                             '%s.%s or enable this component in trac.ini'
                              % (self.xtnpt.interface.__name__, value,
                                 self.section, self.name))
 
