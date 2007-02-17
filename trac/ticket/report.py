@@ -353,14 +353,14 @@ class ReportModule(Component):
                     req.session['query_tickets'] = \
                         ' '.join([str(int(row['id']))
                                   for rg in row_groups for row in rg[1]])
-                except ValueError:
+                    req.session['query_href'] = req.href.report(id)
+                    # Kludge: we have to clear the other query session
+                    # variables, but only if the above succeeded 
+                    for var in ('query_constraints', 'query_time'):
+                        if var in req.session:
+                            del req.session[var]
+                except (ValueError, KeyError):
                     pass
-                req.session['query_href'] = req.href.report(id)
-                # Kludge: we have to clear the other query session variables,
-                # but only if the above succeeded 
-                for var in ('query_constraints', 'query_time'):
-                    if var in req.session:
-                        del req.session[var]
             return 'report_view.html', data, None
 
     def add_alternate_links(self, req, args):

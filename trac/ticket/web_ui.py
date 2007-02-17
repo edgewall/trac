@@ -235,6 +235,7 @@ class TicketModule(Component):
             ctx = context('ticket', id)
             add_link(req, css_class, ctx.resource_href(), ctx.name())
 
+        global_sequence = True
         # If the ticket is being shown in the context of a query, add
         # links to help navigate in the query result set
         if 'query_tickets' in req.session:
@@ -248,7 +249,8 @@ class TicketModule(Component):
                     add_ticket_link('next', tickets[idx + 1])
                     add_ticket_link('last', tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
-        else:
+                global_sequence = False
+        if global_sequence:
             db = self.env.get_db_cnx()
             cursor = db.cursor()
             cursor.execute("SELECT max(id) FROM ticket")
