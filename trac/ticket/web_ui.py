@@ -248,6 +248,18 @@ class TicketModule(Component):
                     add_ticket_link('next', tickets[idx + 1])
                     add_ticket_link('last', tickets[-1])
                 add_link(req, 'up', req.session['query_href'])
+        else:
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
+            cursor.execute("SELECT max(id) FROM ticket")
+            for max_id, in cursor:
+                max_id = int(max_id)
+                if ticket.id > 1:
+                    add_ticket_link('first', 1)
+                    add_ticket_link('prev', ticket.id - 1)
+                if ticket.id < max_id:
+                    add_ticket_link('next', ticket.id + 1)
+                    add_ticket_link('last', max_id)
 
         add_stylesheet(req, 'common/css/ticket.css')
 

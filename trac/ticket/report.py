@@ -94,12 +94,6 @@ class ReportModule(Component):
         if id != -1 or action == 'new':
             add_link(req, 'up', req.href.report(), 'Available Reports')
 
-            # Kludge: Reset session vars created by query module so that the
-            # query navigation links on the ticket page don't confuse the user
-            for var in ('query_constraints', 'query_time', 'query_tickets'):
-                if req.session.has_key(var):
-                    del req.session[var]
-
         # Kludge: only show link to custom query if the query module is actually
         # enabled
         from trac.ticket.query import QueryModule
@@ -196,10 +190,8 @@ class ReportModule(Component):
         return data
 
     def _render_view(self, req, db, id):
-        """
-        uses a user specified sql query to extract some information
-        from the database and presents it as a html table.
-        """
+        """Retrieve the report results and pre-process them for rendering."""
+
         actions = {'create': 'REPORT_CREATE', 'delete': 'REPORT_DELETE',
                    'modify': 'REPORT_MODIFY'}
         perms = {}
@@ -353,6 +345,22 @@ class ReportModule(Component):
                            mimetype='text/tab-separated-values',
                            filename=filename)
         else:
+            if id != -1:
+                # reuse the session vars of the query module so that
+                # the query navigation links on the ticket can be used to 
+                # navigate report results as well
+                try:
+                    req.session['query_tickets'] = \
+                        ' '.join([str(int(row['id']))
+                                  for rg in row_groups for row in rg[1]])
+                except ValueError:
+                    pass
+                req.session['query_href'] = req.href.report(id)
+                # Kludge: we have to clear the other query session variables,
+                # but only if the above succeeded 
+                for var in ('query_constraints', 'query_time'):
+                    if var in req.session:
+                        del req.session[var]
             return 'report_view.html', data, None
 
     def add_alternate_links(self, req, args):
