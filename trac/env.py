@@ -191,6 +191,12 @@ class Environment(Component, ComponentManager):
                  for name, value in self.config.options('components')]
         rules.sort(lambda a, b: -cmp(len(a[0]), len(b[0])))
 
+        # warn if the pre-0.11 WebAdmin plugin gets loaded
+        if component_name.startswith('webadmin.'):
+            self.log.warning("TracWebAdmin plugin was used instead of Trac's "
+                             "builtin admin module. Disable the webadmin.* "
+                             "components or uninstall the 0.10 plugin.")
+
         for pattern, enabled in rules:
             if component_name == pattern or pattern.endswith('*') \
                     and component_name.startswith(pattern[:-1]):
