@@ -25,11 +25,11 @@ import sys
 import time
 import tempfile
 from urllib import quote, unquote, urlencode
-from itertools import tee, izip
+from itertools import izip
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.compat import reversed, sorted
+from trac.util.compat import reversed, sorted, tee
 from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size

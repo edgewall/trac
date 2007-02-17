@@ -90,6 +90,21 @@ except ImportError:
                 self.currkey = self.keyfunc(self.currvalue)
 
 try:
+    from itertools import tee
+except ImportError:
+    def tee(iterable):
+        def gen(next, data={}, cnt=[0]):
+            for i in count():
+                if i == cnt[0]:
+                    item = data[i] = next()
+                    cnt[0] += 1
+                else:
+                    item = data.pop(i)
+                yield item
+        it = iter(iterable)
+        return (gen(it.next), gen(it.next))
+
+try:
     all = all
     any = any
 except NameError:
