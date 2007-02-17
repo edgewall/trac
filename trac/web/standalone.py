@@ -224,6 +224,13 @@ def main():
         def serve():
             httpd = TracHTTPServer(server_address, wsgi_app,
                                    options.env_parent_dir, args)
+            print 'Server starting in PID %i.' % os.getpid()
+            addr, port = server_address
+            if not addr or addr == '0.0.0.0':
+                print 'Serving on 0.0.0.0:%s view at http://127.0.0.1:%s/%s' \
+                       % (port, port, base_path)
+            else:
+                print 'Serving on http://%s:%s/%s' % (addr, port, base_path)
             httpd.serve_forever()
     elif options.protocol in ('scgi', 'ajp'):
         def serve():
