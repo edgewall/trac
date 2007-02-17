@@ -83,6 +83,7 @@ KNOWN_MIME_TYPES = {
     'application/x-sh':       ['sh'],
     'application/x-csh':      ['csh'],
     'application/x-troff':    ['nroff', 'roff', 'troff'],
+    'application/x-yaml':     ['yml', 'yaml'],
     
     'application/rss+xml':    ['rss'],
     

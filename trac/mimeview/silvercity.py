@@ -44,6 +44,8 @@ types = {
     'application/xml':          ('XML', 3),
     'application/xhtml+xml':    ('HyperText', 3, {'asp.default.language':1}),
     'application/rss+xml':      ('HyperText', 3, {'asp.default.language':1}),
+    'application/x-yaml':       ('YAML', 3),
+    'text/x-yaml':              ('YAML', 3),
     'application/x-javascript': ('CPP', 3), # Kludgy.
     'text/x-asp':               ('HyperText', 3, {'asp.default.language':2}),
     'text/x-c++hdr':            ('CPP', 3),
@@ -55,11 +57,13 @@ types = {
     'application/x-httpd-php':  ('HyperText', 3, {'asp.default.language': 4}),
     'application/x-httpd-php4': ('HyperText', 3, {'asp.default.language': 4}),
     'application/x-httpd-php3': ('HyperText', 3, {'asp.default.language': 4}),
+    'text/x-java':              ('Java', 3),
     'text/x-javascript':        ('CPP', 3), # Kludgy.
     'text/x-psp':               ('HyperText', 3, {'asp.default.language': 3}),
     'text/x-python':            ('Python', 3),
     'text/x-ruby':              ('Ruby', 3),
     'text/x-sql':               ('SQL', 3),
+    'text/x-verilog':           ('Verilog', 3),
     'text/xml':                 ('XML', 3),
     'text/xslt':                ('XSLT', 3),
     'image/svg+xml':            ('XML', 3)
