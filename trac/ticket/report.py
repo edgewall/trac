@@ -493,8 +493,9 @@ class ReportModule(Component):
         req.end_headers()
 
         writer = csv.writer(req, delimiter=sep)
-        writer.writerow(cols)
-        writer.writerows(rows) # FIXME unicode encoding?
+        writer.writerow([unicode(c).encode('utf-8') for c in cols])
+        for row in rows:
+            writer.writerow([unicode(c).encode('utf-8') for c in row])
 
         raise RequestDone
 

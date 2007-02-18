@@ -715,11 +715,12 @@ class QueryModule(Component):
         content = StringIO()
         cols = query.get_columns()
         writer = csv.writer(content, delimiter=sep)
-        writer.writerow(cols)
+        writer.writerow([unicode(c).encode('utf-8') for c in cols])
 
         results = query.execute(req, self.env.get_db_cnx())
         for result in results:
-            writer.writerow([unicode(result[col]) for col in cols])
+            writer.writerow([unicode(result[col]).encode('utf-8')
+                             for col in cols])
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, query):
