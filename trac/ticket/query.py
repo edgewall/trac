@@ -44,9 +44,8 @@ class QuerySyntaxError(Exception):
 
 class Query(object):
 
-    def __init__(self, env, report=None, constraints=None,
-                 order=None, desc=0, group=None,
-                 groupdesc = 0, verbose=0):
+    def __init__(self, env, report=None, constraints=None, cols=None,
+                 order=None, desc=0, group=None, groupdesc=0, verbose=0):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -56,10 +55,11 @@ class Query(object):
         self.groupdesc = groupdesc
         self.verbose = verbose
         self.fields = TicketSystem(self.env).get_ticket_fields()
+        field_names = [f['name'] for f in self.fields]
+        self.explicit_cols = [c for c in cols or [] if c in field_names]
         self.cols = [] # lazily initialized
 
-        if self.order != 'id' \
-                and self.order not in [f['name'] for f in self.fields]:
+        if self.order != 'id' and self.order not in field_names:
             # TODO: fix after adding time/changetime to the api.py
             if order == 'created':
                 order = 'time'
@@ -70,7 +70,7 @@ class Query(object):
             else:
                 self.order = 'priority'
 
-        if self.group not in [f['name'] for f in self.fields]:
+        if self.group not in field_names:
             self.group = None
 
     def from_string(cls, env, req, string, **kw):
@@ -78,6 +78,7 @@ class Query(object):
         kw_strs = ['order', 'group']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         constraints = {}
+        cols = []
         for filter_ in filters:
             filter_ = filter_.split('=')
             if len(filter_) != 2:
@@ -106,21 +107,22 @@ class Query(object):
                     kw[field] = processed_values[0]
                 elif field in kw_bools:
                     kw[field] = True
+                elif field == 'col':
+                    cols.extend(processed_values)
                 else:
                     constraints[field] = processed_values
             except UnicodeError:
                 pass # field must be a str, see `get_href()`
         report = constraints.pop('report', None)
         report = kw.pop('report', report)
-        return cls(env, report, constraints, **kw)
+        return cls(env, report, constraints=constraints, cols=cols, **kw)
     from_string = classmethod(from_string)
 
     def get_columns(self):
         if self.cols:
             return self.cols
 
-        # FIXME: the user should be able to configure which columns should
-        # be displayed
+        # Prepare the default list of columns
         cols = ['id']
         cols += [f['name'] for f in self.fields if f['type'] != 'textarea']
         for col in ('reporter', 'keywords', 'cc'):
@@ -143,6 +145,11 @@ class Query(object):
         if self.group in cols:
             cols.remove(self.group)
 
+        # Now add columns explicitly specified in the query
+        for col in self.explicit_cols:
+            if col not in cols:
+                cols.append(col)
+            
         def sort_columns(col1, col2):
             constrained_fields = self.constraints.keys()
             # Ticket ID is always the first column
@@ -157,12 +164,16 @@ class Query(object):
             return 0
         cols.sort(sort_columns)
 
-        # Only display the first eight columns by default
-        # FIXME: Make this configurable on a per-user and/or per-query basis
+        # Only display the first seven columns by default
         self.cols = cols[:7]
+        # Make sure the explicitly given columns are visible as well
+        for col in cols[7:]:
+            if col in self.explicit_cols and col not in self.cols:
+                self.cols.append(col)
+                
+        # Make sure the column we order by is visible, if it isn't also
+        # the column we group by
         if not self.order in self.cols and not self.order == self.group:
-            # Make sure the column we order by is visible, if it isn't also
-            # the column we group by
             self.cols[-1] = self.order
 
         return self.cols
@@ -548,8 +559,11 @@ class QueryModule(Component):
                 if email or name:
                     constraints['cc'] = ('~%s' % (email or name),)
 
+        cols = req.args.get('col')
+        if isinstance(cols,basestring):
+            cols = [cols]
         query = Query(self.env, req.args.get('report'),
-                      constraints, req.args.get('order'),
+                      constraints, cols, req.args.get('order'),
                       req.args.has_key('desc'), req.args.get('group'),
                       req.args.has_key('groupdesc'),
                       req.args.has_key('verbose'))
