@@ -1,10 +1,11 @@
 function convertDiff(name, table) {
+  var inline = table.className == 'inline';
   var ths = table.tHead.rows[0].cells;
   var lines = [
     "Index: " + name,
     "===================================================================",
-    "--- " + ths[0].title,
-    "+++ " + ths[1].title,
+    "--- " + (inline ? ths[0].title : $(ths[0]).find('a').text()),
+    "+++ " + (inline ? ths[1].title : $(ths[1]).find('a').text()),
   ];
   var sepIndex = 0;
   var oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
@@ -24,24 +25,38 @@ function convertDiff(name, table) {
       oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
       if (tBody.className == "skipped") continue;
     }
+    var tmpLines = [];
     for (var j = 0; j < tBody.rows.length; j++) {
       var cells = tBody.rows[j].cells;
       var oldLineNo = parseInt($(cells[0]).text());
-      var newLineNo = parseInt($(cells[1]).text());
-      var line = $(cells[2]).text();
-      if (isNaN(oldLineNo)) {
-        lines.push("+ " + line);
-        newLength += 1;
-      } else if (isNaN(newLineNo)) {
-        lines.push("- " + line);
-        oldLength += 1;
-      } else {
-        lines.push("  " + line);
+      var newLineNo = parseInt($(cells[inline ? 1 : 2]).text());
+      if (tBody.className == 'unmod') {
+        lines.push("  " + $(cells[inline ? 2 : 1]).text());
         oldLength += 1;
         newLength += 1;
         if (!oldOffset) oldOffset = oldLineNo;
         if (!newOffset) newOffset = newLineNo;
+      } else {
+        var oldLine;
+        var newLine;
+        if (inline) {
+          oldLine = newLine = $(cells[2]).text();
+        } else {
+          oldLine = $(cells[1]).text();
+          newLine = $(cells[3]).text();
+        }
+        if (!isNaN(oldLineNo)) {
+          lines.push("- " + oldLine);
+          oldLength += 1;
+        }
+        if (!isNaN(newLineNo)) {
+          tmpLines.push("+ " + newLine);
+          newLength += 1;
+        }
       }
+    }
+    if (tmpLines.length > 0) {
+      lines = lines.concat(tmpLines);
     }
   }
 
