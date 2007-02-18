@@ -138,7 +138,7 @@
                     <td class="summary" py:choose="">
                       <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
-                        ${wiki_to_oneliner(change_context, change.message)}
+                        ${wiki_to_oneliner(change_context, change.message, shorten=True)}
                       </py:when>
                       <py:otherwise>shorten_line(change.message)</py:otherwise>
                     </td>
