@@ -231,12 +231,9 @@ class ReportModule(Component):
         if query and (query[0] == '?' or query.startswith('query:?')):
             query = query[0] == '?' and query or query[6:]
             report_id = 'report=%s' % id
-            print query, 
-            print 'report=' in query
-            print not report_id in query
             if 'report=' in query:
                 if not report_id in query:
-                    err = 'If specified, report number should be "%s".' % id
+                    err = 'When specified, report number should be "%s".' % id
                     req.redirect(req.href.report(id, action='edit', error=err))
             else:
                 if query[-1] != '?':
