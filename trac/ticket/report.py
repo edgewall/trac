@@ -20,6 +20,8 @@ import csv
 import re
 from StringIO import StringIO
 
+from genshi.builder import tag
+
 from trac.config import IntOption
 from trac.context import Context
 from trac.core import *
@@ -27,7 +29,6 @@ from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
 from trac.util.text import to_unicode, unicode_urlencode
-from trac.util.html import html
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
@@ -50,8 +51,8 @@ class ReportModule(Component):
 
     def get_navigation_items(self, req):
         if 'REPORT_VIEW' in req.perm:
-            yield ('mainnav', 'tickets',
-                   html.A('View Tickets', href=req.href.report()))
+            yield ('mainnav', 'tickets', tag.a('View Tickets',
+                                               href=req.href.report()))
 
     # IPermissionRequestor methods  
 
@@ -115,7 +116,7 @@ class ReportModule(Component):
     def _do_create(self, req, db):
         req.perm.require('REPORT_CREATE')
 
-        if req.args.has_key('cancel'):
+        if 'cancel' in req.args:
             req.redirect(req.href.report())
 
         title = req.args.get('title', '')
@@ -274,9 +275,7 @@ class ReportModule(Component):
             data['message'] = 'Report execution failed: ' + to_unicode(e)
             return 'report_view.html', data, None
 
-        sort_col = ''
-        if req.args.has_key('sort'):
-            sort_col = req.args.get('sort')
+        sort_col = req.args.get('sort', '')
         asc = req.args.get('asc', 1)
         asc = bool(int(asc)) # string '0' or '1' to int/boolean
 
@@ -402,9 +401,9 @@ class ReportModule(Component):
 
     def add_alternate_links(self, req, args):
         params = args
-        if req.args.has_key('sort'):
+        if 'sort' in req.args:
             params['sort'] = req.args['sort']
-        if req.args.has_key('asc'):
+        if 'asc' in req.args:
             params['asc'] = req.args['asc']
         href = ''
         if params:
@@ -444,7 +443,7 @@ class ReportModule(Component):
             report_args[arg] = req.args.get(arg)
 
         # Set some default dynamic variables
-        if not report_args.has_key('USER'):
+        if 'USER' not in report_args:
             report_args['USER'] = req.authname
 
         return report_args
@@ -535,5 +534,5 @@ class ReportModule(Component):
         if intertrac:
             return intertrac
         report, args, fragment = formatter.split_link(target)
-        return html.A(label, href=formatter.href.report(report) + args,
-                      class_='report')
+        return tag.a(label, href=formatter.href.report(report) + args,
+                     class_='report')
