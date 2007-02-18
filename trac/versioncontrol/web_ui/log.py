@@ -211,7 +211,7 @@ class LogModule(Component):
             'context': Context(self.env, req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
-            'path_links': path_links,
+            'path_links': path_links, 'limit' : limit,
             'items': info, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
