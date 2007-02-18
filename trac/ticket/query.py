@@ -695,7 +695,7 @@ class QueryModule(Component):
         from trac.ticket.report import ReportModule
         if 'REPORT_VIEW' in req.perm and \
                self.env.is_component_enabled(ReportModule):
-            data['report_href'] = req.href.report()
+            data['report_href'] = req.href.report(-1)
             if query.id:
                 cursor = db.cursor()
                 cursor.execute("SELECT title,description FROM report "
