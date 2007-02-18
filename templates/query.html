@@ -31,6 +31,10 @@
     <div id="content" class="query">
       <h1>$title ${num_matches(len(tickets))}</h1>
 
+      <div py:if="description" id="description">
+        ${wiki_to_html(report, description)}
+      </div>
+
       <form id="query" method="post" action="${href.query()}">
         <input py:if="'id' in query.constraints" type="hidden" name="id" value="${query.constraints['id']}" />
         <fieldset id="filters">
@@ -149,6 +153,7 @@
         </p>
 
         <div class="buttons">
+          <input py:if="report" type="hidden" name="report" value="$report.id" />
           <input type="hidden" name="order" value="$query.order" />
           <input py:if="desc" type="hidden" name="desc" value="1" />
           <input type="submit" name="update" value="Update" />
@@ -179,6 +184,22 @@
       </script>
 
       <xi:include href="query_div.html" />
+
+      <div class="buttons" py:with="edit = report and 'REPORT_MODIFY' in req.perm;
+                     new = 'REPORT_CREATE' in req.perm">
+        <form py:if="edit" method="get" action="${report.resource_href()}">
+          <input type="hidden" name="action" value="edit" />
+          <input type="submit" title="Edit the report {$report.id} corresponding to this query"
+                 value="Edit Query" />
+        </form>
+        <form py:if="new or edit" method="get" action="${edit and report.resource_href() or req.href.report()}">
+          <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
+          <input type="hidden" name="query" value="${query.to_string(req)}" />
+          <input type="submit" value="Save Query..."
+                 title="${edit and ('Save updated query in report {%s}' % report.id) or
+                          'Create a new report from current query'}" />
+        </form>
+      </div>
 
       <div id="help">
         <strong>Note:</strong> See <a href="${href.wiki('TracQuery')}">TracQuery</a>

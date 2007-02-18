@@ -44,9 +44,11 @@ class QuerySyntaxError(Exception):
 
 class Query(object):
 
-    def __init__(self, env, constraints=None, order=None, desc=0, group=None,
+    def __init__(self, env, report=None, constraints=None,
+                 order=None, desc=0, group=None,
                  groupdesc = 0, verbose=0):
         self.env = env
+        self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
         self.order = order
         self.desc = desc
@@ -108,7 +110,9 @@ class Query(object):
                     constraints[field] = processed_values
             except UnicodeError:
                 pass # field must be a str, see `get_href()`
-        return cls(env, constraints, **kw)
+        report = constraints.pop('report', None)
+        report = kw.pop('report', report)
+        return cls(env, report, constraints, **kw)
     from_string = classmethod(from_string)
 
     def get_columns(self):
@@ -203,17 +207,31 @@ class Query(object):
         cursor.close()
         return results
 
-    def get_href(self, context, order=None, desc=None, format=None):
-        """Since 0.11: first argument is a Context instead of a Request."""
+    def get_href(self, context, id=None, order=None, desc=None, format=None):
+        """Note: this could become the resource_href of the QueryContext"""
+        if id is None:
+            id = self.id
         if desc is None:
             desc = self.desc
         if order is None:
             order = self.order
-        return context.href.query(order=order, desc=desc and 1 or None,
+        return context.href.query(report=id,
+                                  order=order, desc=desc and 1 or None,
                                   group=self.group or None,
                                   groupdesc=self.groupdesc and 1 or None,
                                   verbose=self.verbose and 1 or None,
                                   format=format, **self.constraints)
+
+    def to_string(self, context):
+        """Return a user readable and editable representation of the query.
+
+        Note: for now this is an "exploded" query href, but ideally should be
+        expressed in TracQuery language.
+        """
+        query_string = self.get_href(context)
+        if query_string and '?' in query_string:
+            query_string = query_string.split('?', 1)[1]
+        return 'query:?' + query_string.replace('&', '\n&\n')
 
     def get_sql(self):
         """Return a (sql, params) tuple for the query."""
@@ -530,7 +548,8 @@ class QueryModule(Component):
                 if email or name:
                     constraints['cc'] = ('~%s' % (email or name),)
 
-        query = Query(self.env, constraints, req.args.get('order'),
+        query = Query(self.env, req.args.get('report'),
+                      constraints, req.args.get('order'),
                       req.args.has_key('desc'), req.args.get('group'),
                       req.args.has_key('groupdesc'),
                       req.args.has_key('verbose'))
@@ -651,18 +670,27 @@ class QueryModule(Component):
 
         req.session['query_href'] = query.get_href(context)
         req.session['query_time'] = to_timestamp(orig_time)
-        req.session['query_tickets'] = ' '.join([str(t['id']) for t in tickets])
+        req.session['query_tickets'] = ' '.join([str(t['id'])
+                                                 for t in tickets])
+        title = 'Custom Query'
 
-        # Kludge: only show link to available reports if the report module is
-        # actually enabled
+        # Only interact with the report module if it is actually enabled.
+        #
+        # Note that with saved custom queries, there will be some convergence
+        # between the report module and the query module.
         from trac.ticket.report import ReportModule
-        report_href = None
         if 'REPORT_VIEW' in req.perm and \
                self.env.is_component_enabled(ReportModule):
-            report_href = req.href.report()
-        data['report_href'] = report_href
+            data['report_href'] = req.href.report()
+            if query.id:
+                cursor = db.cursor()
+                cursor.execute("SELECT title,description FROM report "
+                               "WHERE id=%s", (query.id,))
+                for title, description in cursor:
+                    data['report'] = context('report', query.id)
+                    data['description'] = description
 
-        data['title'] = 'Custom Query',
+        data['title'] = title
 
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')

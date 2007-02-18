@@ -174,6 +174,8 @@ class ReportModule(Component):
         else:
             req.perm.require('REPORT_CREATE')
             title = description = query = ''
+        # an explicitly given 'query' parameter will override the saved query
+        query = req.args.get('query', query)
 
         if copy:
             title += ' (copy)'
@@ -183,7 +185,7 @@ class ReportModule(Component):
                     'action': 'new'}
         else:
             data = {'title': 'Edit Report {%d} %s' % (id, title),
-                    'action': 'edit'}
+                    'action': 'edit', 'error': req.args.get('error')}
 
         data['report'] = {'id': id, 'title': title,
                           'sql': query, 'description': description}
@@ -217,6 +219,38 @@ class ReportModule(Component):
             else:
                 raise TracError('Report %d does not exist.' % id,
                                 'Invalid Report Number')
+
+        # If this is a saved custom query. redirect to the query module
+        #
+        # A saved query is either an URL query (?... or query:?...),
+        # or a query language expression (query:...).
+        #
+        # It may eventually contain newlines, for increased clarity.
+        #
+        query = ''.join([line.strip() for line in sql.splitlines()])
+        if query and (query[0] == '?' or query.startswith('query:?')):
+            query = query[0] == '?' and query or query[6:]
+            report_id = 'report=%s' % id
+            print query, 
+            print 'report=' in query
+            print not report_id in query
+            if 'report=' in query:
+                if not report_id in query:
+                    err = 'If specified, report number should be "%s".' % id
+                    req.redirect(req.href.report(id, action='edit', error=err))
+            else:
+                if query[-1] != '?':
+                    query += '&'
+                query += report_id
+            req.redirect(req.href.query() + query)
+        elif query.startswith('query:'):
+            try:
+                from trac.ticket.query import Query, QuerySyntaxError
+                query = Query.from_string(self.env, req, query[6:], report=id)
+                req.redirect(query.get_href(req))
+            except QuerySyntaxError, e:
+                req.redirect(req.href.report(id, action='edit',
+                                             error=to_unicode(e)))
 
         format = req.args.get('format')
         if format == 'sql':

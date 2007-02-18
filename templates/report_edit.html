@@ -27,19 +27,22 @@
         <div>
           <input type="hidden" name="action" value="$action" />
           <div class="field">
-            <label for="title">Report Title:</label><br/>
-            <input type="text" id="title" name="title" value="$report.title" size="50"/><br/>
+            <label for="title">Report Title:</label><br />
+            <input type="text" id="title" name="title" value="$report.title" size="50"/><br />
           </div>
           <div class="field">
             <label for="description">
               Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
             </label>
-            <br/>
+            <br />
             <textarea id="description" name="description" class="wikitext" rows="10" cols="78">
 $report.description</textarea>
           </div>
           <div class="field">
-            <label for="query">SQL Query for Report:</label><br/>
+            <div class="system-message" py:if="error">
+              <strong>Error:</strong> $error
+            </div>
+            <label for="query">Query for Report: (can be either SQL or, if starting with <tt>query:</tt>, a <a tabindex="42" href="${href.wiki('TracQuery') + '#QueryLanguage'}">TracQuery</a> expression)</label><br />
             <textarea id="query" name="query" cols="85" rows="20">
 $report.sql</textarea>
           </div>
