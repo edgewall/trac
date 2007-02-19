@@ -73,7 +73,7 @@ class LogModule(Component):
         revs = req.args.get('revs', rev)
         format = req.args.get('format')
         verbose = req.args.get('verbose')
-        limit = int(req.args.get('limit', LOG_LIMIT))
+        limit = int(req.args.get('limit') or LOG_LIMIT)
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
