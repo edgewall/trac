@@ -123,7 +123,8 @@ class DefaultTicketGroupStatsProvider(Component):
         closed_cnt = total_cnt - active_cnt
 
         stat = TicketGroupStats('ticket status', 'ticket')
-        stat.add_interval('closed', closed_cnt, {'status': 'closed'},
+        stat.add_interval('closed', closed_cnt,
+                          {'status': 'closed', 'group': 'resolution'},
                           'closed', True)
         stat.add_interval('active', active_cnt,
                           {'status': ['new', 'assigned', 'reopened']},
