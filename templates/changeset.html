@@ -128,7 +128,7 @@
             <py:when test="wiki_format_messages">
               ${wiki_to_html(context, changeset.message, escape_newlines=True)}
             </py:when>
-            <py:otherwise>${changeset.message}</py:otherwise>
+            <py:otherwise><pre>${changeset.message}</pre></py:otherwise>
           </dd>
         </py:if>
         <py:if test="location and len(files) &gt; 1">
