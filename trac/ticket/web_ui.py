@@ -393,7 +393,9 @@ class TicketModule(Component):
             if k not in text_fields:
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
-                    props.append({'name': k, 'old': old, 'new': new})
+                    props.append({'name': k,
+                                  'old': {'name': k, 'value': old},
+                                  'new': {'name': k, 'value': new}})
         changes.append({'props': props,
                         'new': version_info(new_version),
                         'old': version_info(old_version)})
