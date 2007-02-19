@@ -280,7 +280,10 @@ class ImageMacro(WikiMacroBase):
        for the image
      * `right`, `left`, `top` or `bottom` are interpreted as the alignment for
        the image
-     * `nolink` means without link to image source.
+     * `link=some TracLinks...` replaces the link to the image source by the
+       one specified using a TracLinks. If no value is specified, the link is
+       simply removed.
+     * `nolink` means without link to image source (deprecated, use `link=`)
      * `key=value` style are interpreted as HTML attributes or CSS style
        indications for the image. Valid keys are:
         * align, border, width, height, alt, title, longdesc, class, id
@@ -328,8 +331,7 @@ class ImageMacro(WikiMacroBase):
         quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
         style = {}
-        nolink = False
-        link = None
+        link = ''
         for arg in args[1:]:
             arg = arg.strip()
             if size_re.match(arg):
@@ -337,18 +339,15 @@ class ImageMacro(WikiMacroBase):
                 attr['width'] = arg
                 continue
             if arg == 'nolink':
-                nolink = True
+                link = None
                 continue
             if arg.startswith('link='):
                 val = arg.split('=', 1)[1]
-                if val == 'no':
-                    nolink = True
+                elt = extract_link(formatter.context, val.strip())
+                if isinstance(elt, Element):
+                    link = elt.attrib.get('href')
                 else:
-                    link = extract_link(formatter.context, val.strip())
-                    if isinstance(link, Element):
-                        link = link.attrib.get('href')
-                    else:
-                        link = None
+                    link = None
                 continue
             if arg in ('left', 'right', 'top', 'bottom'):
                 style['float'] = arg
@@ -423,7 +422,7 @@ class ImageMacro(WikiMacroBase):
             attr['style'] = '; '.join(['%s:%s' % (k, escape(v))
                                        for k, v in style.iteritems()])
         result = tag.img(src=raw_url, **attr)
-        if not nolink:
+        if link is not None:
             result = tag.a(result, href=link or url,
                            style='padding:0; border:none')
         return result
