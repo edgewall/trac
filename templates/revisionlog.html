@@ -140,7 +140,7 @@
                       <py:when test="wiki_format_messages">
                         ${wiki_to_oneliner(change_context, change.message, shorten=True)}
                       </py:when>
-                      <py:otherwise>shorten_line(change.message)</py:otherwise>
+                      <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </td>
                     </py:when>
                     <td colspan="6" py:otherwise="" />
