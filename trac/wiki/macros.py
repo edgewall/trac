@@ -25,7 +25,7 @@ except NameError:
     from sets import Set as set
 from StringIO import StringIO
 
-from genshi.builder import tag
+from genshi.builder import Element, tag
 from genshi.core import Markup
 
 from trac.config import default_dir
@@ -35,7 +35,7 @@ from trac.util.compat import sorted, groupby, any
 from trac.util.html import escape
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
-                                OutlineFormatter
+                                extract_link, OutlineFormatter
 from trac.wiki.model import WikiPage
 from trac.web.chrome import add_stylesheet
 
@@ -329,6 +329,7 @@ class ImageMacro(WikiMacroBase):
         attr = {}
         style = {}
         nolink = False
+        link = None
         for arg in args[1:]:
             arg = arg.strip()
             if size_re.match(arg):
@@ -337,6 +338,17 @@ class ImageMacro(WikiMacroBase):
                 continue
             if arg == 'nolink':
                 nolink = True
+                continue
+            if arg.startswith('link='):
+                val = arg.split('=', 1)[1]
+                if val == 'no':
+                    nolink = True
+                else:
+                    link = extract_link(formatter.context, val.strip())
+                    if isinstance(link, Element):
+                        link = link.attrib.get('href')
+                    else:
+                        link = None
                 continue
             if arg in ('left', 'right', 'top', 'bottom'):
                 style['float'] = arg
@@ -366,7 +378,7 @@ class ImageMacro(WikiMacroBase):
         elif len(parts) == 2:
             from trac.versioncontrol.web_ui import BrowserModule
             try:
-                browser_links = [link for link,_ in 
+                browser_links = [res[0] for res in
                                  BrowserModule(self.env).get_link_resolvers()]
             except Exception:
                 browser_links = []
@@ -412,7 +424,8 @@ class ImageMacro(WikiMacroBase):
                                        for k, v in style.iteritems()])
         result = tag.img(src=raw_url, **attr)
         if not nolink:
-            result = tag.a(result, href=url, style='padding:0; border:none')
+            result = tag.a(result, href=link or url,
+                           style='padding:0; border:none')
         return result
 
 
