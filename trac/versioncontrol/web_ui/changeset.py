@@ -784,7 +784,7 @@ class ChangesetModule(Component):
                                        kind))
                              for kind in Changeset.ALL_CHANGES
                              for count in (filestats[kind],) if count],
-                            'in ', tag.strong(self._get_location(files))),
+                            ' in ', tag.strong(self._get_location(files))),
                             markup, class_="changes")
                     elif show_files:
                         for c in changesets:
