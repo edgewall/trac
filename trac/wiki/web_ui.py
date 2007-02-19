@@ -240,9 +240,14 @@ class WikiModule(Component):
                 else:
                     raise InvalidWikiPage("Invalid Wiki page: %s" % message)
 
-        page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
-                  req.remote_addr)
-        req.redirect(req.href.wiki(page.name))
+        try:
+            page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
+                      req.remote_addr)
+            not_modified = False
+        except TracError:
+            not_modified = True
+        req.redirect(context.resource_href(version=not_modified and \
+                                           page.version or None))
 
     def _render_confirm(self, context):
         page = context.resource
