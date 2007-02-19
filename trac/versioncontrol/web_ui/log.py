@@ -19,6 +19,7 @@
 import re
 import urllib
 
+from trac.config import IntOption
 from trac.context import Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
@@ -34,12 +35,14 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser 
 
-LOG_LIMIT = 100
-
 class LogModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
+
+    default_log_limit = IntOption('revisionlog', 'default_log_limit', 100,
+        """Default value for the limit argument in the TracRevisionLog
+        (''since 0.11'').""")
 
     # INavigationContributor methods
 
@@ -73,7 +76,7 @@ class LogModule(Component):
         revs = req.args.get('revs', rev)
         format = req.args.get('format')
         verbose = req.args.get('verbose')
-        limit = int(req.args.get('limit') or LOG_LIMIT)
+        limit = int(req.args.get('limit') or self.default_log_limit)
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
