@@ -111,12 +111,14 @@ class WikiModule(Component):
 
         if req.method == 'POST':
             if action == 'edit':
-                if req.args.has_key('cancel'):
+                if 'cancel' in req.args:
                     req.redirect(req.href.wiki(page.name))
                 elif int(version) != latest_page.version:
                     return self._render_editor(context, 'collision')
-                elif req.args.has_key('preview'):
+                elif 'preview' in req.args:
                     return self._render_editor(context, 'preview')
+                elif 'diff' in req.args:
+                    return self._render_editor(context, 'diff')
                 else:
                     self._do_save(context)
             elif action == 'delete':
@@ -155,6 +157,32 @@ class WikiModule(Component):
 
     # Internal methods
 
+    def _prepare_diff(self, context, old_text, new_text,
+                      old_version, new_version):
+        req, page = context.req, context.resource
+        diff_style, diff_options, diff_data = get_diff_options(req)
+        diff_context = 3
+        for option in diff_options:
+            if option.startswith('-U'):
+                diff_context = int(option[2:])
+                break
+        if diff_context < 0:
+            diff_context = None
+        diffs = diff_blocks(old_text, new_text, context=diff_context,
+                            ignore_blank_lines='-B' in diff_options,
+                            ignore_case='-i' in diff_options,
+                            ignore_space_changes='-b' in diff_options)
+        def version_info(v):
+            return {'path': context.name(), 'rev': v, 'shortrev': v,
+                    'href': v and context.resource_href(version=v) or None}
+        changes = [{'diffs': diffs, 'props': [],
+                    'new': version_info(new_version),
+                    'old': version_info(old_version)}]
+
+        add_stylesheet(req, 'common/css/diff.css')
+        add_script(req, 'common/js/diff.js')
+        return diff_data, changes
+
     def _do_delete(self, context):
         page = context.resource
         req = context.req
@@ -165,7 +193,7 @@ class WikiModule(Component):
         else:
             req.perm.require('WIKI_DELETE')
 
-        if req.args.has_key('cancel'):
+        if 'cancel' in req.args:
             req.redirect(req.href.wiki(page.name))
 
         version = int(req.args.get('version', 0)) or None
@@ -201,7 +229,7 @@ class WikiModule(Component):
         if 'WIKI_ADMIN' in req.perm:
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
-            page.readonly = int(req.args.has_key('readonly'))
+            page.readonly = int('readonly' in req.args)
 
         # Give the manipulators a pass at post-processing the page
         for manipulator in self.page_manipulators:
@@ -293,21 +321,10 @@ class WikiModule(Component):
             old_version = 0
 
         # -- text diffs
-        diff_style, diff_options, diff_data = get_diff_options(req)
-
-        oldtext = old_page and old_page.text.splitlines() or []
-        newtext = page.text.splitlines()
-        diff_context = 3
-        for option in diff_options:
-            if option.startswith('-U'):
-                context = int(option[2:])
-                break
-        if diff_context < 0:
-            diff_context = None
-        diffs = diff_blocks(oldtext, newtext, context=diff_context,
-                            ignore_blank_lines='-B' in diff_options,
-                            ignore_case='-i' in diff_options,
-                            ignore_space_changes='-b' in diff_options)
+        old_text = old_page and old_page.text.splitlines() or []
+        new_text = page.text.splitlines()
+        diff_data, changes = self._prepare_diff(context, old_text, new_text,
+                                                old_version, new_version)
 
         # -- prev/up/next links
         if prev_version:
@@ -320,17 +337,6 @@ class WikiModule(Component):
             add_link(req, 'next', req.href.wiki(page.name, action='diff',
                                                 version=next_version),
                      'Version %d' % next_version)
-
-        add_stylesheet(req, 'common/css/diff.css')
-        add_script(req, 'common/js/diff.js')
-        
-        def version_info(v):
-            return {'path': data['page_name'], 'rev': v, 'shortrev': v,
-                    'href': req.href.wiki(page.name, version=v)}
-                    
-        changes = [{'diffs': diffs, 'props': [],
-                    'new': version_info(new_version),
-                    'old': version_info(old_version)}]
 
         data.update({ 
             'change': {'date': date, 'author': author, 'ipnr': ipnr,
@@ -345,16 +351,16 @@ class WikiModule(Component):
         return 'wiki_diff.html', data, None
 
     def _render_editor(self, context, action='edit'):
-        page = context.resource
-        req = context.req
-        db = context.db
+        page, req = context.resource, context.req
+        context.version = None # use implicit ''latest'' in links
 
         req.perm.require('WIKI_MODIFY')
+        original_text = page.text
         if 'text' in req.args:
             page.text = req.args.get('text')
         elif 'template' in req.args:
             template = self.PAGE_TEMPLATES_PREFIX + req.args.get('template')
-            template_page = WikiPage(self.env, template, db=db)
+            template_page = WikiPage(self.env, template)
             if template_page.exists:
                 page.text = template_page.text
         if action == 'preview':
@@ -378,6 +384,14 @@ class WikiModule(Component):
             'edit_rows': editrows,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', '')
         })
+        if action == 'diff':
+            old_text = original_text and original_text.splitlines() or []
+            new_text = page.text and page.text.splitlines() or []
+            diff_data, changes = self._prepare_diff(
+                context, old_text, new_text, page.version, '')
+            data.update({'diff': diff_data, 'changes': changes,
+                         'action': 'preview'})
+
         return 'wiki_edit.html', data, None
 
     def _render_history(self, context):
@@ -412,7 +426,6 @@ class WikiModule(Component):
     def _render_view(self, context):
         page = context.resource
         req = context.req
-        db = context.db
 
         version = req.args.get('version')
 

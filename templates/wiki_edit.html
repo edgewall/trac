@@ -34,7 +34,6 @@
       </ul>
       <hr />
     </div>
-    <!--! if wiki.action == "edit" || wiki.action == "preview" || wiki.action == "collision" -->
     <div id="content" class="wiki">
 
       <h1>Editing $page_name</h1>
@@ -42,13 +41,16 @@
         <py:when test="'preview'">
           <table id="info" summary="Revision info">
             <tbody>
-              <tr><th scope="col">Preview of future version ${page.version+1} (modified by $author)</th></tr>
+              <tr><th scope="col">Change information for future version ${page.version+1} (modified by $author):</th></tr>
               <tr><td class="message">${wiki_to_html(context, comment)}</td></tr>
             </tbody>
           </table>
-          <fieldset id="preview">
-            <legend>Preview (<a href="#edit">skip</a>)</legend>
-            <div class="wikipage">${wiki_to_html(context, page.text)}</div>
+          <fieldset id="preview" py:choose="">
+            <legend>${diff and 'Review Changes' or 'Preview'} (<a href="#edit">skip</a>)</legend>
+            <div py:when="diff" class="diff">
+              <xi:include href="diff_div.html"/>
+            </div>
+            <div py:otherwise="" class="wikipage">${wiki_to_html(context, page.text)}</div>
           </fieldset>
         </py:when>
         <py:when test="'collision'">
@@ -110,8 +112,9 @@ $page.text</textarea>
             <input type="submit" name="save" value="Submit changes" disabled="disabled" />&nbsp;
           </py:when>
           <py:otherwise>
-            <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
-            <input type="submit" name="save" value="Submit changes" />&nbsp;
+            <input type="submit" name="preview" value="Preview Page" accesskey="r" />&nbsp;
+            <input type="submit" name="diff" value="Review Changes" accesskey="r" />&nbsp;
+            <input type="submit" id="save" name="save" value="Submit changes" />&nbsp;
           </py:otherwise>
           <input type="submit" name="cancel" value="Cancel" />
         </div>
