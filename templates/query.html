@@ -196,8 +196,9 @@
           <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
           <input type="hidden" name="query" value="${query.to_string(req)}" />
           <input type="submit" value="Save Query..."
-                 title="${edit and ('Save updated query in report {%s}' % report.id) or
+                 title="${edit and ('Save updated query in report:%s' % report.id) or
                           'Create a new report from current query'}" />
+          <!--! FIXME: Genshi 0.4:  'Save updated query in report {%s}' -->
         </form>
       </div>
 
