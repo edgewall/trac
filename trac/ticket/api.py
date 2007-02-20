@@ -15,6 +15,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
+import sys
 
 from trac.config import *
 from trac.core import *
@@ -209,14 +210,17 @@ class TicketSystem(Component):
         if intertrac:
             return intertrac
         try:
-            cursor = formatter.db.cursor()
-            cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
-                           (str(int(target)),))
-            row = cursor.fetchone()
-            if row:
-                return html.A(label, class_='%s ticket' % row[1],
-                              title=shorten_line(row[0]) + ' (%s)' % row[1],
-                              href=formatter.href.ticket(target))
+            num = int(target)
+            if 0 < num <= sys.maxint:
+                cursor = formatter.db.cursor()
+                cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
+                               (str(num),))
+                row = cursor.fetchone()
+                if row:
+                    return html.A(label, class_='%s ticket' % row[1],
+                                  title=(shorten_line(row[0]) + \
+                                         ' (%s)' % row[1]),
+                                  href=formatter.href.ticket(target))
         except ValueError:
             pass
         return html.A(label, class_='missing ticket', rel='nofollow',
