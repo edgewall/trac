@@ -92,6 +92,7 @@ except ImportError:
 try:
     from itertools import tee
 except ImportError:
+    from itertools import count
     def tee(iterable):
         def gen(next, data={}, cnt=[0]):
             for i in count():
