@@ -15,6 +15,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
+import sys
 from datetime import datetime
 
 from genshi.builder import tag
@@ -249,20 +250,23 @@ class TicketSystem(Component):
             link, params, fragment = formatter.split_link(target)
             r = Ranges(link)
             if len(r) == 1:
-                ctx = formatter.context('ticket', r.a)
-                # status = ctx.resource['status']  -> currently expensive
-                cursor = formatter.db.cursor() 
-                cursor.execute("SELECT type,summary,status,resolution "
-                               "FROM ticket WHERE id=%s", (str(r.a),)) 
-                for type, summary, status, resolution in cursor:
-                    title = ctx.format_summary(summary, status, resolution,
-                                               type)
-                    return tag.a(label, class_='%s ticket' % status, 
-                                 title=title,
-                                 href=ctx.resource_href() + params + fragment)
-                else: 
-                    return tag.a(label, class_='missing ticket',  
-                                 href=ctx.resource_href(), rel="nofollow")
+                num = r.a
+                ctx = formatter.context('ticket', num)
+                if 0 < num <= sys.maxint:
+                    # status = ctx.resource['status']  -> currently expensive
+                    cursor = formatter.db.cursor() 
+                    cursor.execute("SELECT type,summary,status,resolution "
+                                   "FROM ticket WHERE id=%s", (str(num),)) 
+                    for type, summary, status, resolution in cursor:
+                        title = ctx.format_summary(summary, status, resolution,
+                                                   type)
+                        return tag.a(label, class_='%s ticket' % status, 
+                                     title=title,
+                                     href=(ctx.resource_href() + params +
+                                           fragment))
+                    else: 
+                        return tag.a(label, class_='missing ticket',  
+                                     href=ctx.resource_href(), rel="nofollow")
             else:
                 ranges = str(r)
                 if params:
