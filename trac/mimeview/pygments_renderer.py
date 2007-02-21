@@ -226,7 +226,9 @@ if have_pygments:
                 lattrs = None
 
                 for ttype, value in tokens:
-                    attrs = Attrs([('class', self._get_css_class(ttype))])
+                    attrs = Attrs([
+                        (QName('class'), self._get_css_class(ttype))
+                    ])
 
                     if attrs == lattrs:
                         yield TEXT, value, pos
