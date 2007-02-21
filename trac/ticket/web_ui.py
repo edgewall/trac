@@ -758,12 +758,12 @@ class TicketModule(Component):
         version = req.args.get('version', None)
         
         data['replyto'] = replyto
-        if version:
+        if version is not None:
             try:
                 version = int(version)
-                data['version'] = version
             except ValueError:
                 version = None
+        data['version'] = version
 
         # -- Ticket fields
         types = {}
