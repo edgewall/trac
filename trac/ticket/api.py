@@ -15,7 +15,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import re
-import sys
 
 from trac.config import *
 from trac.core import *
@@ -211,7 +210,7 @@ class TicketSystem(Component):
             return intertrac
         try:
             num = int(target)
-            if 0 < num <= sys.maxint:
+            if 0 < num <= 2 << 30:
                 cursor = formatter.db.cursor()
                 cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
                                (str(num),))
