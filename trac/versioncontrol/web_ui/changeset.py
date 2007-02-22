@@ -556,9 +556,10 @@ class ChangesetModule(Component):
                         'new': new_node and node_info(new_node, annotated),
                         'props': props,
                         'diffs': diffs}
-                path = new_node and new_node.path or old_node and old_node.path
-                if path:
-                    files.append(path)
+                # Note: don't use `path` as a local (used in get_changes())
+                p = new_node and new_node.path or old_node and old_node.path
+                if p:
+                    files.append(p)
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
