@@ -519,7 +519,7 @@ class AttachmentModule(Component):
         attachment.insert(filename, upload.file, size)
 
         # Redirect the user to list of attachments (must add a trailing '/')
-        req.redirect(context.resource_href('../') + '/')
+        req.redirect(context.resource_href('..') + '/')
 
     def _do_delete(self, context):
         req, attachment = context.req, context.resource
