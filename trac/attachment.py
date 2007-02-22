@@ -94,15 +94,14 @@ class AttachmentContext(Context):
 
         A `format` keyword argument equal to `'raw'` will be converted
         to the raw-attachment prefix.
-        `path` is ignored for now.
         """
         format = kwargs.get('format')
         prefix = 'attachment'
         if format == 'raw':
             kwargs.pop('format')
             prefix = 'raw-attachment'
-        return self.href(prefix, self.parent.realm, self.parent.id, self.id,
-                         **kwargs)
+        p = ['..', self.parent.realm, self.parent.id, self.id, path]
+        return Context.resource_href(self, '/'.join(filter(None, p)), **kwargs)
 
     def permid(self):
         return self.parent.permid() + (self.realm, self.id)
@@ -375,15 +374,12 @@ class AttachmentModule(Component):
         else:
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
-            last_segment = segments[-1]
-            if len(segments) == 1:
-                # No specific attachment specified, show the list
-                return self._render_list(context(parent_realm, last_segment) \
+            filename = len(segments) > 1 and segments[-1]
+            if not filename: # if there's a trailing '/', show the list
+                return self._render_list(context(parent_realm, parent_id) \
                                          ('attachment'))
-            if not last_segment:
-                raise HTTPBadRequest('Bad request')
             attachment = Attachment(self.env, parent_realm, parent_id,
-                                    last_segment)
+                                    filename)
 
         ctx = context(attachment.parent_realm, attachment.parent_id) \
               ('attachment', attachment.filename, resource=attachment)
@@ -491,6 +487,8 @@ class AttachmentModule(Component):
         filename = os.path.basename(filename)
         if not filename:
             raise TracError('No file uploaded')
+        # Now the filename is known, update the attachment context
+        context.id = filename
 
         attachment.description = req.args.get('description', '')
         attachment.author = get_reporter_id(req, 'author')
@@ -520,8 +518,8 @@ class AttachmentModule(Component):
             attachment.filename = None
         attachment.insert(filename, upload.file, size)
 
-        # Redirect the user to the newly created attachment
-        req.redirect(context.resource_href())
+        # Redirect the user to list of attachments (must add a trailing '/')
+        req.redirect(context.resource_href('../') + '/')
 
     def _do_delete(self, context):
         req, attachment = context.req, context.resource
