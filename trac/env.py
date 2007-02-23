@@ -18,6 +18,8 @@ import os
 import sys
 from urlparse import urlsplit
 
+import setuptools
+
 from trac import db_default
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
@@ -149,7 +151,8 @@ class Environment(Component, ComponentManager):
         from trac import core, __version__ as VERSION
         self.systeminfo = [
             ('Trac', get_pkginfo(core).get('version', VERSION)),
-            ('Python', sys.version)
+            ('Python', sys.version),
+            ('setuptools', setuptools.__version__),
             ]
         self._href = self._abs_href = None
 
