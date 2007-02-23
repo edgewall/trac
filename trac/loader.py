@@ -99,7 +99,7 @@ def load_py_files():
                                   (plugin_name, plugin_file))
                     module = imp.load_source(plugin_name, plugin_file)
                     if path == auto_enable:
-                        enable_plugin(env, plugin_name)
+                        _enable_plugin(env, plugin_name)
                 except Exception, e:
                     env.log.error('Failed to load plugin from %s', plugin_file,
                                   exc_info=True)
