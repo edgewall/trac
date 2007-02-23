@@ -19,6 +19,7 @@
 
 from datetime import datetime, timedelta
 from heapq import heappush, heappop
+import pkg_resources
 import re
 import time
 from urlparse import urlparse
@@ -33,15 +34,16 @@ from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
 from trac.util.text import to_unicode
 from trac.web import IRequestHandler, IRequestFilter
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
-                            Chrome
+from trac.web.chrome import add_link, add_stylesheet, Chrome, \
+                            INavigationContributor, ITemplateProvider
+                            
 from trac.wiki.api import IWikiSyntaxProvider
 
 
 class TimelineModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               IRequestFilter, IWikiSyntaxProvider)
+               IRequestFilter, ITemplateProvider, IWikiSyntaxProvider)
 
     event_providers = ExtensionPoint(ITimelineEventProvider)
 
@@ -190,43 +192,13 @@ class TimelineModule(Component):
         
         return 'timeline.html', data, None
 
-    def _event_from_tuple(self, req, event):
-        """Build a TimelineEvent from a pre-0.11 ITimelineEventProvider tuple
-        """
-        kind, href, title, date, author, markup = event
-        if not isinstance(date, datetime):
-            date = datetime.fromtimestamp(date, utc)
-        if href and href.startswith(req.abs_href.base):
-            href = urlparse(href)[2]
-        event = TimelineEvent(kind, title, href, markup)
-        event.set_changeinfo(date, author)
-        event.set_context(Context(self.env, None), '')
-        return event
+    # ITemplateProvider methods
 
-    def _provider_failure(self, exc, req, ep, current_filters, all_filters):
-        """Raise a TracError exception explaining the failure of a provider.
+    def get_htdocs_dirs(self):
+        return []
 
-        At the same time, the message will contain a link to the timeline
-        without the filters corresponding to the guilty event provider `ep`.
-        """
-        ep_name, exc_name = [i.__class__.__name__ for i in (ep, exc)]
-        self.log.exception('Timeline event provider %s failed', ep_name)
-
-        guilty_filters = [f[0] for f in ep.get_timeline_filters(req)]
-        guilty_kinds = [f[1] for f in ep.get_timeline_filters(req)]
-        other_filters = [f for f in current_filters if not f in guilty_filters]
-        if not other_filters:
-            other_filters = [f for f in all_filters if not f in guilty_filters]
-        args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
-                                               'daysback')]
-        href = req.href.timeline(args+[(f, 'on') for f in other_filters])
-        raise TracError(tag(', '.join(guilty_kinds),
-                            ' event provider (',
-                            tag.tt(ep_name), ') failed:', tag.br(), tag.br(),
-                            exc_name, ': ', to_unicode(exc),
-                            tag.p('You may want to see the other kind of '
-                                  'events from the ',
-                                  tag.a('Timeline', href=href))))
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.timeline', 'templates')]
 
     # IRequestFilter methods
 
@@ -279,3 +251,43 @@ class TimelineModule(Component):
                      title="%s in Timeline" % display_date,
                      href=req.href.timeline(from_=iso_date,
                                             precision=precision))
+
+    # Internal methods
+
+    def _event_from_tuple(self, req, event):
+        """Build a TimelineEvent from a pre-0.11 ITimelineEventProvider tuple
+        """
+        kind, href, title, date, author, markup = event
+        if not isinstance(date, datetime):
+            date = datetime.fromtimestamp(date, utc)
+        if href and href.startswith(req.abs_href.base):
+            href = urlparse(href)[2]
+        event = TimelineEvent(kind, title, href, markup)
+        event.set_changeinfo(date, author)
+        event.set_context(Context(self.env, None), '')
+        return event
+
+    def _provider_failure(self, exc, req, ep, current_filters, all_filters):
+        """Raise a TracError exception explaining the failure of a provider.
+
+        At the same time, the message will contain a link to the timeline
+        without the filters corresponding to the guilty event provider `ep`.
+        """
+        ep_name, exc_name = [i.__class__.__name__ for i in (ep, exc)]
+        self.log.exception('Timeline event provider %s failed', ep_name)
+
+        guilty_filters = [f[0] for f in ep.get_timeline_filters(req)]
+        guilty_kinds = [f[1] for f in ep.get_timeline_filters(req)]
+        other_filters = [f for f in current_filters if not f in guilty_filters]
+        if not other_filters:
+            other_filters = [f for f in all_filters if not f in guilty_filters]
+        args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
+                                               'daysback')]
+        href = req.href.timeline(args+[(f, 'on') for f in other_filters])
+        raise TracError(tag(', '.join(guilty_kinds),
+                            ' event provider (',
+                            tag.tt(ep_name), ') failed:', tag.br(), tag.br(),
+                            exc_name, ': ', to_unicode(exc),
+                            tag.p('You may want to see the other kind of '
+                                  'events from the ',
+                                  tag.a('Timeline', href=href))))

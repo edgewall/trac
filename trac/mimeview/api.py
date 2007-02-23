@@ -362,7 +362,7 @@ class Mimeview(Component):
 
     def __init__(self):
         self._mime_map = None
-        
+
     # Public API
 
     def get_supported_conversions(self, mimetype):

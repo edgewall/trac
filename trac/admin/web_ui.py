@@ -16,11 +16,11 @@
 
 import inspect
 import os
+import pkg_resources
 import re
 import shutil
 import sys
 
-import pkg_resources
 from genshi import HTML
 from genshi.builder import tag
 
@@ -32,7 +32,7 @@ from trac.util import get_pkginfo, get_module_path
 from trac.util.compat import partial
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_script, add_stylesheet, Chrome, \
-                            INavigationContributor
+                            INavigationContributor, ITemplateProvider
 
 try:
     from webadmin import IAdminPageProvider
@@ -43,7 +43,7 @@ except ImportError:
 class AdminModule(Component):
     """Web administration interface."""
 
-    implements(INavigationContributor, IRequestHandler)
+    implements(INavigationContributor, IRequestHandler, ITemplateProvider)
 
     panel_providers = ExtensionPoint(IAdminPanelProvider)
     if IAdminPageProvider:
@@ -123,6 +123,14 @@ class AdminModule(Component):
 
         add_stylesheet(req, 'common/css/admin.css')
         return template, data, None
+
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.admin', 'templates')]
 
     # Internal methods
 

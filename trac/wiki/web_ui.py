@@ -18,6 +18,7 @@
 
 from datetime import datetime
 import os
+import pkg_resources
 import re
 import StringIO
 
@@ -34,7 +35,7 @@ from trac.util.html import html, Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            INavigationContributor
+                            INavigationContributor, ITemplateProvider
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.model import WikiPage
@@ -46,8 +47,9 @@ class InvalidWikiPage(TracError):
 
 class WikiModule(Component):
 
-    implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, ISearchSource, IContentConverter)
+    implements(IContentConverter, INavigationContributor, IPermissionRequestor,
+               IRequestHandler, ITimelineEventProvider, ISearchSource,
+               ITemplateProvider)
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
 
@@ -144,7 +146,17 @@ class WikiModule(Component):
                                                   page.text, format, page.name)
             return self._render_view(context)
 
-    def page_data(self, context, action=''):
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.wiki', 'templates')]
+
+    # Internal methods
+
+    def _page_data(self, context, action=''):
         page_name = context.name()
         title = context.summary()
         if action:
@@ -154,8 +166,6 @@ class WikiModule(Component):
                 'action': action,
                 'page_name': page_name,
                 'title': title}
-
-    # Internal methods
 
     def _prepare_diff(self, context, old_text, new_text,
                       old_version, new_version):
@@ -264,7 +274,7 @@ class WikiModule(Component):
             version = int(req.args.get('version', 0))
         old_version = int(req.args.get('old_version') or 0) or version
 
-        data = self.page_data(context, 'delete')
+        data = self._page_data(context, 'delete')
         if version is not None:
             num_versions = 0
             for v,t,author,comment,ipnr in page.get_history():
@@ -283,7 +293,7 @@ class WikiModule(Component):
 
         req.perm.require('WIKI_VIEW')
 
-        data = self.page_data(context, 'diff')
+        data = self._page_data(context, 'diff')
 
         if not page.exists:
             raise TracError("Version %s of page %s does not exist" %
@@ -382,7 +392,7 @@ class WikiModule(Component):
         else:
             editrows = req.session.get('wiki_editrows', '20')
 
-        data = self.page_data(context, action)
+        data = self._page_data(context, action)
         data.update({
             'author': author,
             'comment': comment,
@@ -414,7 +424,7 @@ class WikiModule(Component):
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
 
-        data = self.page_data(context, 'history')
+        data = self._page_data(context, 'history')
 
         history = []
         for version, date, author, comment, ipnr in page.get_history():
@@ -442,7 +452,7 @@ class WikiModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
 
-        data = self.page_data(context)
+        data = self._page_data(context)
         if page.name == 'WikiStart':
             data['title'] = ''
 

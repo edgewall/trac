@@ -15,6 +15,7 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 
 from datetime import datetime
+import pkg_resources
 import re
 
 from genshi.builder import tag
@@ -23,7 +24,8 @@ from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
 from trac.util.datefmt import all_timezones, get_timezone
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.web.chrome import add_stylesheet, INavigationContributor
+from trac.web.chrome import add_stylesheet, INavigationContributor, \
+                            ITemplateProvider
 
 
 class PreferencesModule(Component):
@@ -31,7 +33,7 @@ class PreferencesModule(Component):
     panel_providers = ExtensionPoint(IPreferencePanelProvider)
 
     implements(INavigationContributor, IPreferencePanelProvider,
-               IRequestHandler)
+               IRequestHandler, ITemplateProvider)
 
     _form_fields = ['newsid','name', 'email', 'tz', 'accesskeys']
 
@@ -94,6 +96,14 @@ class PreferencesModule(Component):
             'settings': {'session': req.session, 'session_id': req.session.sid},
             'timezones': all_timezones, 'timezone': get_timezone
         }
+
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.prefs', 'templates')]
 
     # Internal methods
 

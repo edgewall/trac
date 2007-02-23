@@ -16,6 +16,7 @@
 
 from datetime import datetime
 import os
+import pkg_resources
 import re
 from StringIO import StringIO
 import time
@@ -38,8 +39,8 @@ from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import CRLF, shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            INavigationContributor, Chrome
+from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
+                            INavigationContributor, ITemplateProvider
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
@@ -48,7 +49,7 @@ class InvalidTicket(TracError):
 class TicketModule(Component):
 
     implements(IContentConverter, INavigationContributor, IRequestHandler,
-               ISearchSource, ITimelineEventProvider)
+               ISearchSource, ITemplateProvider, ITimelineEventProvider)
 
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
@@ -114,10 +115,153 @@ class TicketModule(Component):
 
     def process_request(self, req):
         if 'id' in req.args:
-            return self.process_ticket_request(req)
-        return self.process_newticket_request(req)
+            return self._process_ticket_request(req)
+        return self._process_newticket_request(req)
 
-    def process_newticket_request(self, req):
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.ticket', 'templates')]
+
+    # ISearchSource methods
+
+    def get_search_filters(self, req):
+        if 'TICKET_VIEW' in req.perm:
+            yield ('ticket', 'Tickets')
+
+    def get_search_results(self, req, terms, filters):
+        if not 'ticket' in filters:
+            return
+        context = Context(self.env, req)
+        db = context.db
+        sql, args = search_to_sql(db, ['b.newvalue'], terms)
+        sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
+                                         'reporter', 'cc', 'id'], terms)
+        cursor = db.cursor()
+        cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
+                       "a.type,a.id,a.time,a.status,a.resolution "
+                       "FROM ticket a "
+                       "LEFT JOIN ticket_change b ON a.id = b.ticket "
+                       "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
+                       args + args2)
+        for summary, desc, author, type, tid, ts, status, resolution in cursor:
+            ctx = context('ticket', tid)
+            yield (ctx.resource_href(),
+                   tag(tag.span(ctx.shortname(), class_=status), ': ',
+                       ctx.format_summary(summary, status, resolution, type)),
+                   datetime.fromtimestamp(ts, utc), author,
+                   shorten_result(desc, terms))
+
+    # ITimelineEventProvider methods
+
+    def get_timeline_filters(self, req):
+        if 'TICKET_VIEW' in req.perm:
+            yield ('ticket', 'Ticket changes')
+            if self.timeline_details:
+                yield ('ticket_details', 'Ticket details', False)
+
+    def get_timeline_events(self, req, start, stop, filters):
+        start = to_timestamp(start)
+        stop = to_timestamp(stop)
+
+        status_map = {'new': ('newticket', 'created'),
+                      'reopened': ('newticket', 'reopened'),
+                      'closed': ('closedticket', 'closed'),
+                      'edit': ('editedticket', 'updated')}
+        context = Context(self.env, req)
+
+        def produce((id, ts, author, type, summary), status, fields,
+                    comment, cid):
+            ctx = context('ticket', id)
+            info = ''
+            resolution = fields.get('resolution')
+            if status == 'edit':
+                if 'ticket_details' in filters:
+                    if len(fields) > 0:
+                        keys = fields.keys()
+                        info = tag([[tag.i(f), ', '] for f in keys[:-1]],
+                                   tag.i(keys[-1]), ' changed', tag.br())
+                else:
+                    return None
+            elif 'ticket' in filters:
+                if status == 'closed' and resolution:
+                    info = resolution
+                    if info and comment:
+                        info += ': '
+            else:
+                return None
+            kind, verb = status_map[status]
+            title = ctx.format_summary(summary, status, resolution, type)
+            title = tag('Ticket ', tag.em(ctx.shortname(), title=title),
+                        ' (', shorten_line(summary), ') ', verb)
+            ticket_href = ctx.resource_href()
+            if cid:
+                ticket_href += '#comment:' + cid
+            markup = message = None
+            if status == 'new':
+                markup = summary
+            else:
+                markup = info
+                message = comment
+            t = datetime.fromtimestamp(ts, utc)
+            event = TimelineEvent(kind, title, ticket_href, markup)
+            event.set_changeinfo(t, author)
+            event.set_context(ctx, message)
+            return event
+
+        # Ticket changes
+        if 'ticket' in filters or 'ticket_details' in filters:
+            cursor = context.db.cursor()
+
+            cursor.execute("SELECT t.id,tc.time,tc.author,t.type,t.summary, "
+                           "       tc.field,tc.oldvalue,tc.newvalue "
+                           "  FROM ticket_change tc "
+                           "    INNER JOIN ticket t ON t.id = tc.ticket "
+                           "      AND tc.time>=%s AND tc.time<=%s "
+                           "ORDER BY tc.time"
+                           % (start, stop))
+            previous_update = None
+            for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
+                if not previous_update or (id,t,author) != previous_update[:3]:
+                    if previous_update:
+                        ev = produce(previous_update, status, fields,
+                                     comment, cid)
+                        if ev:
+                            yield ev
+                    status, fields, comment, cid = 'edit', {}, '', None
+                    previous_update = (id, t, author, type, summary)
+                if field == 'comment':
+                    comment = newvalue
+                    cid = oldvalue and oldvalue.split('.')[-1]
+                elif field == 'status' and newvalue in ('reopened', 'closed'):
+                    status = newvalue
+                else:
+                    fields[field] = newvalue
+            if previous_update:
+                ev = produce(previous_update, status, fields, comment, cid)
+                if ev:
+                    yield ev
+
+            # New tickets
+            if 'ticket' in filters:
+                cursor.execute("SELECT id,time,reporter,type,summary"
+                               "  FROM ticket WHERE time>=%s AND time<=%s",
+                               (start, stop))
+                for row in cursor:
+                    yield produce(row, 'new', {}, None, None)
+
+            # Attachments
+            if 'ticket_details' in filters:
+                for event in AttachmentModule(self.env) \
+                        .get_timeline_events(context('ticket'), start, stop):
+                    yield event
+
+    # Internal methods
+
+    def _process_newticket_request(self, req):
         context = Context(self.env, req)('ticket')
         req.perm.require('TICKET_CREATE')
 
@@ -176,7 +320,7 @@ class TicketModule(Component):
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket_new.html', data, None
 
-    def process_ticket_request(self, req):
+    def _process_ticket_request(self, req):
         req.perm.require('TICKET_VIEW')
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
@@ -447,143 +591,8 @@ class TicketModule(Component):
             'num_changes': num_changes, 'change': new_change,
             'old_ticket': old_ticket, 'new_ticket': new_ticket
             })
-        
+
         return 'diff_view.html', data, None
-
-    # ISearchSource methods
-
-    def get_search_filters(self, req):
-        if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', 'Tickets')
-
-    def get_search_results(self, req, terms, filters):
-        if not 'ticket' in filters:
-            return
-        context = Context(self.env, req)
-        db = context.db
-        sql, args = search_to_sql(db, ['b.newvalue'], terms)
-        sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
-                                         'reporter', 'cc', 'id'], terms)
-        cursor = db.cursor()
-        cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
-                       "a.type,a.id,a.time,a.status,a.resolution "
-                       "FROM ticket a "
-                       "LEFT JOIN ticket_change b ON a.id = b.ticket "
-                       "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
-                       args + args2)
-        for summary, desc, author, type, tid, ts, status, resolution in cursor:
-            ctx = context('ticket', tid)
-            yield (ctx.resource_href(),
-                   tag(tag.span(ctx.shortname(), class_=status), ': ',
-                       ctx.format_summary(summary, status, resolution, type)),
-                   datetime.fromtimestamp(ts, utc), author,
-                   shorten_result(desc, terms))
-
-    # ITimelineEventProvider methods
-
-    def get_timeline_filters(self, req):
-        if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', 'Ticket changes')
-            if self.timeline_details:
-                yield ('ticket_details', 'Ticket details', False)
-
-    def get_timeline_events(self, req, start, stop, filters):
-        start = to_timestamp(start)
-        stop = to_timestamp(stop)
-
-        status_map = {'new': ('newticket', 'created'),
-                      'reopened': ('newticket', 'reopened'),
-                      'closed': ('closedticket', 'closed'),
-                      'edit': ('editedticket', 'updated')}
-        context = Context(self.env, req)
-
-        def produce((id, ts, author, type, summary), status, fields,
-                    comment, cid):
-            ctx = context('ticket', id)
-            info = ''
-            resolution = fields.get('resolution')
-            if status == 'edit':
-                if 'ticket_details' in filters:
-                    if len(fields) > 0:
-                        keys = fields.keys()
-                        info = tag([[tag.i(f), ', '] for f in keys[:-1]],
-                                   tag.i(keys[-1]), ' changed', tag.br())
-                else:
-                    return None
-            elif 'ticket' in filters:
-                if status == 'closed' and resolution:
-                    info = resolution
-                    if info and comment:
-                        info += ': '
-            else:
-                return None
-            kind, verb = status_map[status]
-            title = ctx.format_summary(summary, status, resolution, type)
-            title = tag('Ticket ', tag.em(ctx.shortname(), title=title),
-                        ' (', shorten_line(summary), ') ', verb)
-            ticket_href = ctx.resource_href()
-            if cid:
-                ticket_href += '#comment:' + cid
-            markup = message = None
-            if status == 'new':
-                markup = summary
-            else:
-                markup = info
-                message = comment
-            t = datetime.fromtimestamp(ts, utc)
-            event = TimelineEvent(kind, title, ticket_href, markup)
-            event.set_changeinfo(t, author)
-            event.set_context(ctx, message)
-            return event
-
-        # Ticket changes
-        if 'ticket' in filters or 'ticket_details' in filters:
-            cursor = context.db.cursor()
-
-            cursor.execute("SELECT t.id,tc.time,tc.author,t.type,t.summary, "
-                           "       tc.field,tc.oldvalue,tc.newvalue "
-                           "  FROM ticket_change tc "
-                           "    INNER JOIN ticket t ON t.id = tc.ticket "
-                           "      AND tc.time>=%s AND tc.time<=%s "
-                           "ORDER BY tc.time"
-                           % (start, stop))
-            previous_update = None
-            for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
-                if not previous_update or (id,t,author) != previous_update[:3]:
-                    if previous_update:
-                        ev = produce(previous_update, status, fields,
-                                     comment, cid)
-                        if ev:
-                            yield ev
-                    status, fields, comment, cid = 'edit', {}, '', None
-                    previous_update = (id, t, author, type, summary)
-                if field == 'comment':
-                    comment = newvalue
-                    cid = oldvalue and oldvalue.split('.')[-1]
-                elif field == 'status' and newvalue in ('reopened', 'closed'):
-                    status = newvalue
-                else:
-                    fields[field] = newvalue
-            if previous_update:
-                ev = produce(previous_update, status, fields, comment, cid)
-                if ev:
-                    yield ev
-
-            # New tickets
-            if 'ticket' in filters:
-                cursor.execute("SELECT id,time,reporter,type,summary"
-                               "  FROM ticket WHERE time>=%s AND time<=%s",
-                               (start, stop))
-                for row in cursor:
-                    yield produce(row, 'new', {}, None, None)
-
-            # Attachments
-            if 'ticket_details' in filters:
-                for event in AttachmentModule(self.env) \
-                        .get_timeline_events(context('ticket'), start, stop):
-                    yield event
-
-    # Internal methods
 
     def export_csv(self, ticket, sep=',', mimetype='text/plain'):
         content = StringIO()

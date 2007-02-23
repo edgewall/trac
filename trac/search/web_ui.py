@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import pkg_resources
 import re
 import time
 
@@ -27,7 +28,8 @@ from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
+                            ITemplateProvider
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import extract_link
 
@@ -35,7 +37,7 @@ from trac.wiki.formatter import extract_link
 class SearchModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               IWikiSyntaxProvider)
+               ITemplateProvider, IWikiSyntaxProvider)
 
     search_sources = ExtensionPoint(ISearchSource)
     
@@ -85,7 +87,7 @@ class SearchModule(Component):
         query = req.args.get('q')
         if query:
             data['query'] = query
-            data['quickjump'] = self.check_quickjump(req, query)
+            data['quickjump'] = self._check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]
             terms = self._get_search_terms(query)
@@ -128,7 +130,33 @@ class SearchModule(Component):
         add_stylesheet(req, 'common/css/search.css')
         return 'search.html', data, None
 
-    def check_quickjump(self, req, kwd):
+    # ITemplateProvider methods
+
+    def get_htdocs_dirs(self):
+        return []
+
+    def get_templates_dirs(self):
+        return [pkg_resources.resource_filename('trac.search', 'templates')]
+
+    # IWikiSyntaxProvider methods
+
+    def get_wiki_syntax(self):
+        return []
+
+    def get_link_resolvers(self):
+        yield ('search', self._format_link)
+
+    def _format_link(self, formatter, ns, target, label):
+        path, query, fragment = formatter.split_link(target)
+        if query:
+            href = formatter.href.search() + query.replace(' ', '+')
+        else:
+            href = formatter.href.search(q=path)
+        return tag.a(label, class_='search', href=href)
+
+    # Internal methods
+
+    def _check_quickjump(self, req, kwd):
         noquickjump = int(req.args.get('noquickjump', '0'))
         # Source quickjump
         quickjump_href = None
@@ -148,24 +176,6 @@ class SearchModule(Component):
                         'description': description}
             else:
                 req.redirect(quickjump_href)
-
-    # IWikiSyntaxProvider methods
-
-    def get_wiki_syntax(self):
-        return []
-
-    def get_link_resolvers(self):
-        yield ('search', self._format_link)
-
-    def _format_link(self, formatter, ns, target, label):
-        path, query, fragment = formatter.split_link(target)
-        if query:
-            href = formatter.href.search() + query.replace(' ', '+')
-        else:
-            href = formatter.href.search(q=path)
-        return tag.a(label, class_='search', href=href)
-
-    # Internal methods
 
     def _get_search_terms(self, query):
         """Break apart a search query into its various search terms.
