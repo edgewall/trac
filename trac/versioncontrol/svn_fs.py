@@ -284,7 +284,7 @@ class SubversionConnector(Component):
 
     def _get_version(self):
         version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
-        version_string = '%d.%d.%d' % version
+        version_string = '%d.%d.%d' % version + core.SVN_VER_TAG
         if version[0] < 1:
             raise TracError("Subversion >= 1.0 required: Found " +
                             version_string)
