@@ -16,6 +16,7 @@
 
 import datetime
 import os
+import pkg_resources
 import pprint
 import re
 
@@ -53,14 +54,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     if linkid in linkset:
         return # Already added that link
 
-    link = {'href': href}
-    if title:
-        link['title'] = title
-    if mimetype:
-        link['type'] = mimetype
-    if classname:
-        link['class'] = classname
-
+    link = {'href': href, 'title': title, 'type': mimetype, 'class': classname}
     links = req.chrome.setdefault('links', {})
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
@@ -163,8 +157,13 @@ class Chrome(Component):
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
 
-    templates_dir = Option('trac', 'templates_dir', default_dir('templates'),
-        """Path to the template files.""")
+    shared_templates_dir = PathOption('inherit', 'templates_dir',
+        """Path to the shared templates directory.
+        
+        Templates in that directory are loaded in addition to those in the
+        environments `templates` directory, but the latter take precedence.
+        
+        (''since 0.11'')""")
 
     auto_reload = Option('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
@@ -259,7 +258,6 @@ class Chrome(Component):
             finally:
                 fileobj.close()
 
-
     def environment_needs_upgrade(self, db):
         return False
 
@@ -296,12 +294,15 @@ class Chrome(Component):
     # ITemplateProvider methods
 
     def get_htdocs_dirs(self):
-        from trac.config import default_dir
-        return [('common', default_dir('htdocs')),
+        return [('common', pkg_resources.resource_filename('trac', 'htdocs')),
                 ('site', self.env.get_htdocs_dir())]
 
     def get_templates_dirs(self):
-        return [self.env.get_templates_dir(), self.templates_dir]
+        return filter(None, [
+            self.env.get_templates_dir(),
+            pkg_resources.resource_filename('trac', 'templates'),
+            self.shared_templates_dir
+        ])
 
     # IWikiSyntaxProvider methods
     

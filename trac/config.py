@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2006 Edgewall Software
-# Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2007 Edgewall Software
+# Copyright (C) 2005-2007 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -11,8 +11,6 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-#
-# Author: Christopher Lenz <cmlenz@gmx.de>
 
 from ConfigParser import ConfigParser
 import os
@@ -25,10 +23,11 @@ import sys
 from trac.core import ExtensionPoint, TracError
 from trac.util import sorted
 from trac.util.text import to_unicode, CRLF
+from trac.util.compat import set, sorted
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
-           'ExtensionOption', 'OrderedExtensionsOption', 'ConfigurationError',
-           'default_dir']
+           'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
+           'ConfigurationError']
 
 _TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
 
@@ -45,13 +44,11 @@ class Configuration(object):
     when the file has changed.
     """
     def __init__(self, filename):
-        self._sections = {}
         self.filename = filename
         self.parser = ConfigParser()
+        self.parent = None
         self._lastmtime = 0
-        self.site_filename = os.path.join(default_dir('conf'), 'trac.ini')
-        self.site_parser = ConfigParser()
-        self._lastsitemtime = 0
+        self._sections = {}
         self.parse_if_needed()
 
     def __contains__(self, name):
@@ -65,6 +62,9 @@ class Configuration(object):
         if name not in self._sections:
             self._sections[name] = Section(self, name)
         return self._sections[name]
+
+    def __repr__(self):
+        return '<%s %r>' % (self.__class__.__name__, self.filename)
 
     def get(self, section, name, default=None):
         """Return the value of the specified option."""
@@ -135,7 +135,12 @@ class Configuration(object):
 
     def sections(self):
         """Return a list of section names."""
-        return sorted(set(self.site_parser.sections() + self.parser.sections()))
+        sections = set(self.parser.sections())
+        parent = self.parent
+        while parent:
+            sections |= set(parent.parser.sections())
+            parent = parent.parent
+        return sorted(sections)
 
     def save(self):
         """Write the configuration options to the primary file."""
@@ -147,8 +152,9 @@ class Configuration(object):
         for section in self.sections():
             options = []
             for option in self[section]:
-                default = self.site_parser.has_option(section, option) and \
-                          self.site_parser.get(section, option)
+                default = None
+                if self.parent:
+                    default = self.parent.get(section, option)
                 current = self.parser.has_option(section, option) and \
                           self.parser.get(section, option)
                 if current is not False and current != default:
@@ -175,12 +181,6 @@ class Configuration(object):
 
     def parse_if_needed(self):
         # Load global configuration
-        if os.path.isfile(self.site_filename):
-            modtime = os.path.getmtime(self.site_filename)
-            if modtime > self._lastsitemtime:
-                self.site_parser.read(self.site_filename)
-                self._lastsitemtime = modtime
-
         if not self.filename or not os.path.isfile(self.filename):
             return
         modtime = os.path.getmtime(self.filename)
@@ -188,8 +188,17 @@ class Configuration(object):
             self.parser.read(self.filename)
             self._lastmtime = modtime
 
-    def has_site_option(self, section, name):
-        return self.site_parser.has_option(section, name)
+        if self.parser.has_option('inherit', 'file'):
+            filename = self.parser.get('inherit', 'file')
+            if not os.path.isabs(filename):
+                filename = os.path.join(os.path.dirname(self.filename),
+                                        filename)
+            if not self.parent or self.parent.filename != filename:
+                self.parent = Configuration(filename)
+            else:
+                self.parent.parse_if_needed()
+        elif self.parent:
+            self.parent = None
 
 
 class Section(object):
@@ -205,17 +214,20 @@ class Section(object):
         self.overridden = {}
 
     def __contains__(self, name):
-        return self.config.parser.has_option(self.name, name) or \
-               self.config.site_parser.has_option(self.name, name) 
+        if self.config.parser.has_option(self.name, name):
+            return True
+        if self.config.parent:
+            return name in self.config.parent[self.name]
+        return False
 
     def __iter__(self):
-        options = []
+        options = set()
         if self.config.parser.has_section(self.name):
             for option in self.config.parser.options(self.name):
-                options.append(option.lower())
+                options.add(option.lower())
                 yield option
-        if self.config.site_parser.has_section(self.name):
-            for option in self.config.site_parser.options(self.name):
+        if self.config.parent:
+            for option in self.config.parent[self.name]:
                 if option.lower() not in options:
                     yield option
 
@@ -226,8 +238,8 @@ class Section(object):
         """Return the value of the specified option."""
         if self.config.parser.has_option(self.name, name):
             value = self.config.parser.get(self.name, name)
-        elif self.config.site_parser.has_option(self.name, name):
-            value = self.config.site_parser.get(self.name, name)
+        elif self.config.parent:
+            value = self.config.parent[self.name].get(name, default)
         else:
             option = Option.registry.get((self.name, name))
             if option:
@@ -279,6 +291,20 @@ class Section(object):
         if not keep_empty:
             items = filter(None, items)
         return items
+
+    def getpath(self, name, default=None):
+        """Return the value of the specified option as a path name, relative to
+        the location of the configuration file the option is defined in.
+        """
+        if self.config.parser.has_option(self.name, name):
+            path = self.config.parser.get(self.name, name)
+            if path and not os.path.isabs(path):
+                path = os.path.join(os.path.dirname(self.filename), path)
+            return os.path.normcase(os.path.realpath(path))
+        elif self.config.parent:
+            return self.config.parent[self.name].getpath(name, default)
+        else:
+            return default
 
     def options(self):
         """Return `(name, value)` tuples for every option in the section."""
@@ -362,6 +388,10 @@ class ListOption(Option):
     def accessor(self, section, name, default):
         return section.getlist(name, default, self.sep, self.keep_empty)
 
+class PathOption(Option):
+    """Descriptor for file system path configuration options."""
+    accessor = Section.getpath
+
 
 class ExtensionOption(Option):
 
@@ -378,7 +408,7 @@ class ExtensionOption(Option):
                 return impl
         raise AttributeError('Cannot find an implementation of the "%s" '
                              'interface named "%s".  Please update the option '
-                             '%s.%s or enable this component in trac.ini'
+                             '%s.%s in trac.ini.'
                              % (self.xtnpt.interface.__name__, value,
                                 self.section, self.name))
 
@@ -414,25 +444,3 @@ class OrderedExtensionsOption(ListOption):
             return cmp(order.index(x), order.index(y))
         components.sort(compare)
         return components
-
-
-def default_dir(name):
-    try:
-        from trac import siteconfig
-        return getattr(siteconfig, '__default_%s_dir__' % name)
-    except ImportError:
-        # This is not a regular install with a generated siteconfig.py file,
-        # so try to figure out the directory based on common setups
-        special_dirs = {'wiki': 'wiki-default'}
-        dirname = special_dirs.get(name, name)
-
-        # First assume we're being executing directly form the source directory
-        import trac
-        path = os.path.join(os.path.split(os.path.dirname(trac.__file__))[0],
-                            dirname)
-        if not os.path.isdir(path):
-            # Not being executed from the source directory, so assume the
-            # default installation prefix
-            path = os.path.join(sys.prefix, 'share', 'trac', dirname)
-
-        return path

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005 Edgewall Software
-# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2007 Edgewall Software
+# Copyright (C) 2005-2007 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -11,17 +11,15 @@
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
-#
-# Author: Christopher Lenz <cmlenz@gmx.de>
-
-from trac.config import *
-from trac.test import TestConfiguration
 
 import os
 from StringIO import StringIO
 import tempfile
 import time
 import unittest
+
+from trac.config import *
+from trac.test import Configuration
 
 
 class ConfigurationTestCase(unittest.TestCase):
@@ -37,7 +35,7 @@ class ConfigurationTestCase(unittest.TestCase):
         os.remove(self.filename)
 
     def _read(self):
-        return TestConfiguration(self.filename)
+        return Configuration(self.filename)
 
     def _write(self, lines):
         fileobj = open(self.filename, 'w')
@@ -120,13 +118,13 @@ class ConfigurationTestCase(unittest.TestCase):
         config = self._read()
         config.set('b', 'option0', 'y')
         config.set('a', 'option0', 'x')
-        config.set('a', 'option2', "Voilà l'été")  # UTF-8
-        config.set('a', 'option1', u"Voilà l'été") # unicode
+        config.set('a', 'option2', "VoilÃ  l'Ã©tÃ©")  # UTF-8
+        config.set('a', 'option1', u"VoilÃ  l'Ã©tÃ©") # unicode
         # Note: the following would depend on the locale.getpreferredencoding()
         # config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
         self.assertEquals('x', config.get('a', 'option0'))
-        self.assertEquals(u"Voilà l'été", config.get('a', 'option1'))
-        self.assertEquals(u"Voilà l'été", config.get('a', 'option2'))
+        self.assertEquals(u"VoilÃ  l'Ã©tÃ©", config.get('a', 'option1'))
+        self.assertEquals(u"VoilÃ  l'Ã©tÃ©", config.get('a', 'option2'))
         config.save()
 
         configfile = open(self.filename, 'r')
@@ -134,9 +132,9 @@ class ConfigurationTestCase(unittest.TestCase):
                            '\n',
                            '[a]\n',
                            'option0 = x\n', 
-                           "option1 = Voilà l'été\n", 
-                           "option2 = Voilà l'été\n", 
-                           # "option3 = Voilà l'été\n", 
+                           "option1 = VoilÃ  l'Ã©tÃ©\n", 
+                           "option2 = VoilÃ  l'Ã©tÃ©\n", 
+                           # "option3 = VoilÃ  l'Ã©tÃ©\n", 
                            '\n',
                            '[b]\n',
                            'option0 = y\n', 
@@ -145,16 +143,14 @@ class ConfigurationTestCase(unittest.TestCase):
         configfile.close()
         config2 = Configuration(self.filename)
         self.assertEquals('x', config2.get('a', 'option0'))
-        self.assertEquals(u"Voilà l'été", config2.get('a', 'option1'))
-        self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
-        # self.assertEquals(u"Voilà l'été", config2.get('a', 'option3'))
+        self.assertEquals(u"VoilÃ  l'Ã©tÃ©", config2.get('a', 'option1'))
+        self.assertEquals(u"VoilÃ  l'Ã©tÃ©", config2.get('a', 'option2'))
+        # self.assertEquals(u"VoilÃ  l'Ã©tÃ©", config2.get('a', 'option3'))
 
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
         self.assertEquals(['a', 'b'], config.sections())
-        config.site_parser.add_section('c')
-        self.assertEquals(['a', 'b', 'c'], config.sections())
 
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
@@ -172,6 +168,25 @@ class ConfigurationTestCase(unittest.TestCase):
         self._write(['[a]', 'option = y'])
         config.parse_if_needed()
         self.assertEquals('y', config.get('a', 'option'))
+
+    def test_inherit_one_level(self):
+        sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')
+        sitefile = open(sitename, 'w')
+        try:
+            try:
+                sitefile.write('[a]\noption = x\n')
+            finally:
+                sitefile.close()
+
+            self._write(['[inherit]', 'file = trac-site.ini'])
+            config = self._read()
+            self.assertEqual('x', config.get('a', 'option'))
+            self.assertEqual(['a', 'inherit'], config.sections())
+            config.remove('a', 'option') # Should *not* remove option in parent
+            self.assertEqual('x', config.get('a', 'option'))
+            self.assertEqual([('option', 'x')], list(config.options('a')))
+        finally:
+            os.remove(sitename)
 
 
 def suite():

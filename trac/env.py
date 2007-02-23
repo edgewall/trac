@@ -68,6 +68,14 @@ class Environment(Component, ComponentManager):
     """   
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
+    shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
+        """Path of the directory containing additional plugins.
+        
+        Plugins in that directory are loaded in addition to those in the
+        environments `plugins` directory, but the latter take precedence.
+        
+        (''since 0.11'')""")
+
     base_url = Option('trac', 'base_url', '',
         """Base URL of the Trac deployment.
         
@@ -244,7 +252,8 @@ class Environment(Component, ComponentManager):
         the database and populate the configuration file with default values."""
         def _create_file(fname, data=None):
             fd = open(fname, 'w')
-            if data: fd.write(data)
+            if data:
+                fd.write(data)
             fd.close()
 
         # Create the directory structure
@@ -285,9 +294,9 @@ class Environment(Component, ComponentManager):
         """Load the configuration file."""
         self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
         if load_defaults:
-            for section, default_options in self.config.defaults().iteritems():
-                for name, value in default_options.iteritems():
-                    if self.config.has_site_option(section, name):
+            for section, default_options in self.config.defaults().items():
+                for name, value in default_options.items():
+                    if self.config.parent and name in self.config.parent[section]:
                         value = None
                     self.config.set(section, name, value)
 

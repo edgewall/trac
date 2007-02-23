@@ -120,14 +120,6 @@ class InMemoryDatabase(SQLiteConnection):
         self.cnx.commit()
 
 
-class TestConfiguration(Configuration):
-    def __init__(self, filename):
-        Configuration.__init__(self, filename)
-        # insulate us from "real" global trac.ini (ref. #3700)
-        from ConfigParser import ConfigParser
-        self.site_parser = ConfigParser()
-
-
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
@@ -145,7 +137,7 @@ class EnvironmentStub(Environment):
         if not os.path.isabs(self.path):
             self.path = os.path.join(os.getcwd(), self.path)
 
-        self.config = TestConfiguration(None)
+        self.config = Configuration(None)
 
         from trac.log import logger_factory
         self.log = logger_factory('test')

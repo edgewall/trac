@@ -20,6 +20,7 @@ import cgi
 import dircache
 import locale
 import os
+import pkg_resources
 import sys
 import urllib
 
@@ -469,17 +470,16 @@ def dispatch_request(environ, start_response):
 
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
-    from trac.config import default_dir
-
     req = Request(environ, start_response)
 
-    loadpaths = [default_dir('templates')]
+    loadpaths = [pkg_resources.resource_filename('trac', 'templates')]
     if req.environ.get('trac.env_index_template'):
         tmpl_path, template = os.path.split(req.environ['trac.env_index_template'])
         loadpaths.insert(0, tmpl_path)
+        if template.endswith('.cs'):
+            req.hdf = HDFWrapper(loadpaths) # keep that for custom .cs templates
     else:
         template = 'index.html'
-    req.hdf = HDFWrapper(loadpaths) # keep that for custom .cs templates
 
     data = {}
     if req.environ.get('trac.template_vars'):
@@ -513,11 +513,12 @@ def send_project_index(environ, start_response, parent_dir=None,
         data['projects'] = projects
         if template.endswith('.cs'): # assume Clearsilver
             req.display(template)
-        else:
-            markuptemplate = TemplateLoader(loadpaths).load(template)
-            stream = markuptemplate.generate(**data)
-            output = stream.render('xhtml', doctype=DocType.XHTML_STRICT)
-            req.send(output, 'text/html')
+
+        markuptemplate = TemplateLoader(loadpaths).load(template)
+        stream = markuptemplate.generate(**data)
+        output = stream.render('xhtml', doctype=DocType.XHTML_STRICT)
+        req.send(output, 'text/html')
+
     except RequestDone:
         pass
 

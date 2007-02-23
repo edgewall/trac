@@ -1,12 +1,9 @@
 ===== test_help_ok =====
-trac-admin - The Trac Administration Console 0.11dev
+trac-admin - The Trac Administration Console %(version)s
 
 Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
 
 Invoking trac-admin without command starts interactive mode.
-about
-	-- Shows information about trac-admin
-
 help
 	-- Show documentation
 
@@ -24,6 +21,15 @@ resync
 
 upgrade
 	-- Upgrade database to current version
+
+permission list [user]
+	-- List permission rules
+
+permission add <user> <action> [action] [...]
+	-- Add a new permission rule
+
+permission remove <user> <action> [action] [...]
+	-- Remove permission rule
 
 wiki list
 	-- List wiki pages
@@ -45,30 +51,6 @@ wiki load <directory>
 
 wiki upgrade
 	-- Upgrade default wiki pages to current version
-
-permission list [user]
-	-- List permission rules
-
-permission add <user> <action> [action] [...]
-	-- Add a new permission rule
-
-permission remove <user> <action> [action] [...]
-	-- Remove permission rule
-
-component list
-	-- Show available components
-
-component add <name> <owner>
-	-- Add a new component
-
-component rename <name> <newname>
-	-- Rename a component
-
-component remove <name>
-	-- Remove/uninstall component
-
-component chown <name> <owner>
-	-- Change component ownership
 
 ticket remove <number>
 	-- Remove ticket
@@ -117,6 +99,21 @@ severity remove <value>
 
 severity order <value> up|down
 	-- Move a severity value up or down in the list
+
+component list
+	-- Show available components
+
+component add <name> <owner>
+	-- Add a new component
+
+component rename <name> <newname>
+	-- Rename a component
+
+component remove <name>
+	-- Remove/uninstall component
+
+component chown <name> <owner>
+	-- Change component ownership
 
 version list
 	-- Show versions

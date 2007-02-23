@@ -22,9 +22,10 @@ import time
 import unittest
 from StringIO import StringIO
 
+from trac.config import Configuration
 from trac.env import Environment
 from trac.admin import console
-from trac.test import InMemoryDatabase, TestConfiguration
+from trac.test import InMemoryDatabase
 from trac.util.datefmt import get_date_format_hint
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
@@ -76,8 +77,8 @@ class InMemoryEnvironment(Environment):
                cls.__module__.find('.tests.') == -1
 
     def setup_config(self, load_defaults=None):
-        self.config = TestConfiguration(None)
-            
+        self.config = Configuration(None)
+
     def save_config(self):
         pass
 
@@ -126,26 +127,6 @@ class TracadminTestCase(unittest.TestCase):
         finally:
             sys.stderr = _err
             sys.stdout = _out
-
-    # About test
-
-    def test_about(self):
-        """
-        Tests the 'about' command in trac-admin.  Since the 'about' command
-        has no command arguments, it is hard to call it incorrectly.  As
-        a result, there is only this one test.
-        """
-
-        from trac import __version__, __license_long__
-
-        expected_results = """
-Trac Admin Console %s
-=================================================================
-%s
-""" % (__version__, __license_long__)
-        rv, output = self._execute('about', strip_trailing_space=False)
-        self.assertEqual(0, rv)
-        self.assertEqual(expected_results, output)
 
     # Help test
 

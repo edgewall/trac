@@ -14,7 +14,9 @@
 import cmd
 from datetime import datetime
 import getpass
+import locale
 import os
+import pkg_resources
 import shlex
 import shutil
 import StringIO
@@ -22,11 +24,9 @@ import sys
 import time
 import traceback
 import urllib
-import locale
 
 import trac
 from trac import perm, util, db_default
-from trac.config import default_dir
 from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
@@ -37,6 +37,8 @@ from trac.util.html import html
 from trac.util.text import print_table, to_unicode, wrap
 from trac.wiki import WikiPage
 from trac.wiki.macros import WikiMacroBase
+
+TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 
 def copytree(src, dst, symlinks=False, skip=[]):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
@@ -69,10 +71,9 @@ def copytree(src, dst, symlinks=False, skip=[]):
 
 class TracAdmin(cmd.Cmd):
     intro = ''
-    license = trac.__license_long__
-    doc_header = 'Trac Admin Console %(ver)s\n' \
+    doc_header = 'Trac Admin Console %(version)s\n' \
                  'Available Commands:\n' \
-                 % {'ver':trac.__version__ }
+                 % {'version': TRAC_VERSION}
     ruler = ''
     prompt = "Trac> "
     __env = None
@@ -111,7 +112,7 @@ class TracAdmin(cmd.Cmd):
               'Interactive Trac administration console.\n'       \
               'Copyright (c) 2003-2006 Edgewall Software\n\n'                                    \
               "Type:  '?' or 'help' for help on commands.\n" %  \
-              {'ver':trac.__version__}
+              {'version': TRAC_VERSION}
         self.cmdloop()
 
     ##
@@ -248,15 +249,12 @@ class TracAdmin(cmd.Cmd):
     _help_help = [('help', 'Show documentation')]
 
     def all_docs(cls):
-        return (cls._help_about + cls._help_help +
-                cls._help_initenv + cls._help_hotcopy +
+        return (cls._help_help + cls._help_initenv + cls._help_hotcopy +
                 cls._help_resync + cls._help_upgrade +
-                cls._help_wiki +
-#               cls._help_config + cls._help_wiki +
-                cls._help_permission + cls._help_component +
-                cls._help_ticket +
-                cls._help_ticket_type + cls._help_priority +
-                cls._help_severity +  cls._help_version +
+                cls._help_permission + cls._help_wiki +
+                cls._help_ticket + cls._help_ticket_type + 
+                cls._help_priority + cls._help_severity +
+                cls._help_component + cls._help_version +
                 cls._help_milestone)
     all_docs = classmethod(all_docs)
 
@@ -270,23 +268,13 @@ class TracAdmin(cmd.Cmd):
                 print "No documentation found for '%s'" % arg[0]
         else:
             print 'trac-admin - The Trac Administration Console %s' \
-                  % trac.__version__
+                  % TRAC_VERSION
             if not self.interactive:
                 print
                 print "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
                 print "Invoking trac-admin without command starts "\
                       "interactive mode."
             self.print_doc(self.all_docs())
-
-    
-    ## About / Version
-    _help_about = [('about', 'Shows information about trac-admin')]
-
-    def do_about(self, line):
-        print
-        print 'Trac Admin Console %s' % trac.__version__
-        print '================================================================='
-        print self.license
 
 
     ## Quit / EOF
@@ -504,13 +492,6 @@ class TracAdmin(cmd.Cmd):
         prompt = 'Path to repository [/path/to/repos]> '
         returnvals.append(raw_input(prompt).strip())
         print
-        print ' Please enter location of Trac page templates.'
-        print ' Default is the location of the site-wide templates installed with Trac.'
-        print
-        dt = default_dir('templates')
-        prompt = 'Templates directory [%s]> ' % dt
-        returnvals.append(raw_input(prompt).strip() or dt)
-        print
         return returnvals
 
     def do_initenv(self, line):
@@ -528,23 +509,14 @@ class TracAdmin(cmd.Cmd):
         project_name = None
         db_str = None
         repository_dir = None
-        templates_dir = None
         if len(arg) == 1 and not arg[0]:
             returnvals = self.get_initenv_args()
-            project_name, db_str, repository_type, repository_dir, \
-                          templates_dir = returnvals
-        elif len(arg) != 5:
+            project_name, db_str, repository_type, repository_dir = returnvals
+        elif len(arg) != 4:
             print 'Wrong number of arguments to initenv: %d' % len(arg)
             return 2
         else:
-            project_name, db_str, repository_type, repository_dir, \
-                          templates_dir = arg[:5]
-
-        if not os.access(os.path.join(templates_dir, 'header.cs'), os.F_OK):
-            print templates_dir, "doesn't look like a Trac templates directory"
-            return 2
-        if templates_dir == default_dir('templates'):
-            templates_dir = None # let the runtime default_dir() take over
+            project_name, db_str, repository_type, repository_dir = arg[:4]
 
         try:
             print 'Creating and Initializing Project'
@@ -552,7 +524,6 @@ class TracAdmin(cmd.Cmd):
                 ('trac', 'database', db_str),
                 ('trac', 'repository_type', repository_type),
                 ('trac', 'repository_dir', repository_dir),
-                ('trac', 'templates_dir', templates_dir),
                 ('project', 'name', project_name),
             ]
             try:
@@ -567,7 +538,9 @@ class TracAdmin(cmd.Cmd):
             print ' Installing default wiki pages'
             cnx = self.__env.get_db_cnx()
             cursor = cnx.cursor()
-            self._do_wiki_load(default_dir('wiki'), cursor)
+            pages_dir = pkg_resources.resource_filename('trac.wiki', 
+                                                        'default-pages') 
+            self._do_wiki_load(pages_dir, cursor)
             cnx.commit()
 
             if repository_dir:
@@ -685,10 +658,11 @@ Congratulations!
             dir = (len(arg) == 2 and arg[1]) or ''
             self._do_wiki_load(dir)
         elif arg[0] == 'upgrade' and len(arg) == 1:
-            self._do_wiki_load(default_dir('wiki'),
+            self._do_wiki_load(pkg_resources.resource_filename('trac.wiki', 
+                                                               'default-pages'),
                                ignore=['WikiStart', 'checkwiki.py'],
                                create_only=['InterMapTxt'])
-        else:    
+        else:
             self.do_help ('wiki')
 
     def _do_wiki_list(self):
@@ -1134,14 +1108,14 @@ class TracAdminHelpMacro(WikiMacroBase):
         return html.PRE(buf.getvalue(), class_='wiki')
 
 
-def run(args):
+def run(args=sys.argv[1:]):
     """Main entry point."""
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
-            return admin.onecmd("help")
-        elif args[0] in ('-v','--version','about'):
-            return admin.onecmd("about")
+            return admin.onecmd('help')
+        elif args[0] in ('-v','--version'):
+            print '%s %s' % (os.path.basename(args[0]), TRAC_VERSION)
         else:
             admin.env_set(os.path.abspath(args[0]))
             if len(args) > 1:
@@ -1156,4 +1130,4 @@ def run(args):
 
 
 if __name__ == '__main__':
-    run(sys.argv[1:])
+    run()

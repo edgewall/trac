@@ -28,7 +28,6 @@ from StringIO import StringIO
 from genshi.builder import Element, tag
 from genshi.core import Markup
 
-from trac.config import default_dir
 from trac.core import *
 from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any
