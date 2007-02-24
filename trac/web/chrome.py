@@ -157,7 +157,7 @@ class Chrome(Component):
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
 
-    shared_templates_dir = PathOption('inherit', 'templates_dir',
+    shared_templates_dir = PathOption('inherit', 'templates_dir', '',
         """Path to the shared templates directory.
         
         Templates in that directory are loaded in addition to those in the

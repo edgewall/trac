@@ -299,7 +299,8 @@ class Section(object):
         if self.config.parser.has_option(self.name, name):
             path = self.config.parser.get(self.name, name)
             if path and not os.path.isabs(path):
-                path = os.path.join(os.path.dirname(self.filename), path)
+                path = os.path.join(os.path.dirname(self.config.filename),
+                                    path)
             return os.path.normcase(os.path.realpath(path))
         elif self.config.parent:
             return self.config.parent[self.name].getpath(name, default)
