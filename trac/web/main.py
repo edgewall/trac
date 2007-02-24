@@ -473,10 +473,12 @@ def send_project_index(environ, start_response, parent_dir=None,
     req = Request(environ, start_response)
 
     loadpaths = [pkg_resources.resource_filename('trac', 'templates')]
+    use_clearsilver = False
     if req.environ.get('trac.env_index_template'):
         tmpl_path, template = os.path.split(req.environ['trac.env_index_template'])
         loadpaths.insert(0, tmpl_path)
-        if template.endswith('.cs'):
+        use_clearsilver = template.endswith('.cs') # assume Clearsilver
+        if use_clearsilver:
             req.hdf = HDFWrapper(loadpaths) # keep that for custom .cs templates
     else:
         template = 'index.html'
@@ -485,8 +487,9 @@ def send_project_index(environ, start_response, parent_dir=None,
     if req.environ.get('trac.template_vars'):
         for pair in req.environ['trac.template_vars'].split(','):
             key, val = pair.split('=')
-            req.hdf[key] = val
             data[key] = val
+            if use_clearsilver:
+                req.hdf[key] = val
 
     if parent_dir and not env_paths:
         env_paths = dict([(filename, os.path.join(parent_dir, filename))
@@ -509,9 +512,9 @@ def send_project_index(environ, start_response, parent_dir=None,
             projects.append(proj)
         projects.sort(lambda x, y: cmp(x['name'].lower(), y['name'].lower()))
 
-        req.hdf['projects'] = projects
         data['projects'] = projects
-        if template.endswith('.cs'): # assume Clearsilver
+        if use_clearsilver:
+            req.hdf['projects'] = projects
             req.display(template)
 
         markuptemplate = TemplateLoader(loadpaths).load(template)
