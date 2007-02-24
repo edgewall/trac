@@ -22,6 +22,8 @@ import pkg_resources
 import re
 import StringIO
 
+from genshi.builder import tag
+
 from trac.attachment import Attachment, AttachmentModule
 from trac.context import Context
 from trac.core import *
@@ -31,7 +33,6 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
-from trac.util.html import html, Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -71,10 +72,10 @@ class WikiModule(Component):
     def get_navigation_items(self, req):
         if 'WIKI_VIEW' in req.perm:
             yield ('mainnav', 'wiki',
-                   html.A('Wiki', href=req.href.wiki(), accesskey=1))
+                   tag.a('Wiki', href=req.href.wiki(), accesskey=1))
             yield ('metanav', 'help',
-                   html.A('Help/Guide', href=req.href.wiki('TracGuide'),
-                          accesskey=6))
+                   tag.a('Help/Guide', href=req.href.wiki('TracGuide'),
+                         accesskey=6))
 
     # IPermissionRequestor methods
 
@@ -107,7 +108,7 @@ class WikiModule(Component):
             raise TracError('No version "%s" for Wiki page "%s"' %
                             (version, pagename))
 
-        context = Context.from_resource(req, page)
+        context = Context(self.env, req)('wiki', pagename, resource=page)
 
         add_stylesheet(req, 'common/css/wiki.css')
 
@@ -525,13 +526,15 @@ class WikiModule(Component):
                            (start, stop))
             for ts,name,comment,author,ipnr,version in cursor:
                 ctx = context('wiki', name, version=version)
-                title = html(html.em(ctx.name()),
-                             version > 1 and ' edited' or ' created')
+                title = tag(tag.em(ctx.name()),
+                            version > 1 and ' edited' or ' created')
                 markup = None
                 if version > 1:
-                    markup = html.a('(diff)', href=ctx.resource_href(action='diff'))
+                    markup = tag.a('(diff)',
+                                   href=ctx.resource_href(action='diff'))
                 t = datetime.fromtimestamp(ts, utc)
-                event = TimelineEvent('wiki', title, ctx.resource_href(), markup)
+                event = TimelineEvent('wiki', title, ctx.resource_href(),
+                                      markup)
                 event.set_changeinfo(t, author, ipnr=ipnr)
                 event.set_context(ctx, comment)
                 yield event
