@@ -103,8 +103,8 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.assertEquals('closed', closed['css_class'], 'closed class incorrect')
         self.assertEquals(True, closed['countsToProg'],
                           'closed not count to prog')
-        self.assertEquals({'status': 'closed'}, closed['qry_args'],
-                          'qry_args incorrect')
+        self.assertEquals({'status': 'closed', 'group': 'resolution'},
+                          closed['qry_args'], 'qry_args incorrect')
         self.assertEquals(1, closed['count'], 'closed count incorrect')
         self.assertEquals(33, closed['percent'], 'closed percent incorrect')
 
