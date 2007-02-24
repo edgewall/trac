@@ -223,25 +223,22 @@ if have_pygments:
             span = QName('span')
 
             def _generate():
-                lattrs = None
+                attrs = lc = None
 
                 for ttype, value in tokens:
-                    attrs = Attrs([
-                        (QName('class'), self._get_css_class(ttype))
-                    ])
-
-                    if attrs == lattrs:
+                    c = self._get_css_class(ttype)
+                    if c == lc:
                         yield TEXT, value, pos
 
                     elif value: # if no value, leave old span open
-                        if lattrs:
-                            yield END, span, pos
-                        lattrs = attrs
                         if attrs:
-                            yield START, (span, attrs), pos
+                            yield END, span, pos
+                        attrs = Attrs([(QName('class'), c)])
+                        lc = c
+                        yield START, (span, attrs), pos
                         yield TEXT, value, pos
 
-                if lattrs:
+                if attrs:
                     yield END, span, pos
 
             return Stream(_generate())
