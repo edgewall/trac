@@ -7,7 +7,7 @@
      if:isfirst ?>first<?cs /if ?><?cs
      if:isfirst && islast ?> <?cs /if ?><?cs
      if:islast ?>last<?cs /if ?>"<?cs
-    /if ?>><a href="<?cs var:link.href ?>"<?cs if:link.class ?> class="<?cs
+    /if ?>><a rel="nofollow" href="<?cs var:link.href ?>"<?cs if:link.class ?> class="<?cs
     var:link.class ?>"<?cs /if ?>><?cs var:link.title ?></a></li><?cs
  /each ?></ul></div><?cs
 /if ?>

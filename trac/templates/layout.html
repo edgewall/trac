@@ -68,7 +68,7 @@
         <ul>
           <li py:for="idx, link in enumerate(chrome.links.alternate)"
             class="${first_last(idx, chrome.links.alternate)}">
-            <a href="${link.href}" class="${link['class']}" py:content="link.title" />
+            <a rel="nofollow" href="${link.href}" class="${link['class']}" py:content="link.title" />
           </li>
         </ul>
       </div>
