@@ -382,7 +382,7 @@ def dispatch_request(environ, start_response):
             # the environment name to the `SCRIPT_NAME` variable, and keep only
             # the remaining path in the `PATH_INFO` variable.
             environ['SCRIPT_NAME'] = Href(environ['SCRIPT_NAME'])(env_name)
-            environ['PATH_INFO'] = '/'.join([''] + path_info)
+            environ['PATH_INFO'] = '/' + '/'.join(path_info)
 
             if env_parent_dir:
                 env_path = os.path.join(env_parent_dir, env_name)
