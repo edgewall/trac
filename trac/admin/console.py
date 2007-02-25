@@ -108,11 +108,12 @@ class TracAdmin(cmd.Cmd):
 
     def run(self):
         self.interactive = True
-        print 'Welcome to trac-admin %(ver)s\n'                \
-              'Interactive Trac administration console.\n'       \
-              'Copyright (c) 2003-2006 Edgewall Software\n\n'                                    \
-              "Type:  '?' or 'help' for help on commands.\n" %  \
-              {'version': TRAC_VERSION}
+        print """Welcome to trac-admin %(version)s
+Interactive Trac administration console.
+Copyright (c) 2003-2007 Edgewall Software
+
+Type:  '?' or 'help' for help on commands.
+        """ % {'version': TRAC_VERSION}
         self.cmdloop()
 
     ##
