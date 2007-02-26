@@ -17,6 +17,8 @@
 from glob import glob
 import imp
 import pkg_resources
+from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
+                          UnknownExtra
 import os
 import sys
 
@@ -33,55 +35,40 @@ def _enable_plugin(env, module):
 def load_eggs(entry_point_name):
     """Loader that loads any eggs on the search path and `sys.path`."""
     def _load_eggs(env, search_path, auto_enable=None):
-        working_set = pkg_resources.working_set
-        for path in search_path:
-            working_set.add_entry(path)
+        distributions, errors = working_set.find_plugins(
+            pkg_resources.Environment(search_path)
+        )
+        for dist in distributions:
+            env.log.debug('Adding plugin %s from %s', dist, dist.location)
+            working_set.add(dist)
 
-        memo = set()
-        def flatten(dists):
-             for dist in dists:
-                 if dist in memo:
-                     continue
-                 memo.add(dist)
-                 try:
-                     predecessors = working_set.resolve([dist.as_requirement()])
-                     for predecessor in flatten(predecessors):
-                         yield predecessor
-                     yield dist
-                 except pkg_resources.DistributionNotFound, e:
-                     env.log.error('Skipping "%s" ("%s" not found)', dist, e)
-                 except pkg_resources.VersionConflict, e:
-                     env.log.error('Skipping "%s" (version conflict: "%s")',
-                                   dist, e)
+        def _log_error(item, e):
+            if isinstance(e, DistributionNotFound):
+                env.log.error('Skipping "%s": ("%s" not found)', item, e)
+            elif isinstance(e, VersionConflict):
+                env.log.error('Skipping "%s": (version conflict "%s")',
+                              item, e)
+            elif isinstance(e, UnknownExtra):
+                env.log.error('Skipping "%s": (unknown extra "%s")', item, e)
+            elif isinstance(e, ImportError):
+                env.log.error('Skipping "%s": (can\'t import "%s")', item, e)
+            else:
+                env.log.error('Skipping "%s": (error "%s")', item, e)
 
-        pkg_env = pkg_resources.Environment(search_path + sys.path)
-        for egg in flatten([pkg_env[name][0] for name in pkg_env]):
-            modules = []
+        for dist, e in errors.iteritems():
+            _log_error(dist, e)
 
-            for name in egg.get_entry_map(entry_point_name):
-                # Load plugins declared via a specific entry point.
-                env.log.debug('Loading egg plugin %s from %s', name,
-                              egg.location)
-                egg.activate()
-                try:
-                    entry_point = egg.get_entry_info('trac.plugins', name)
-                    try:
-                        entry_point.load()
-                    except pkg_resources.DistributionNotFound, e:
-                        env.log.warning('Cannot load plugin %s because it '
-                                        'requires "%s"', name, e)
-                        modules.append(entry_point.module_name)
-                except ImportError, e:
-                    env.log.error('Failed to load plugin %s from %s', name,
-                                  egg.location, exc_info=True)
-
-            if modules:
-                # Automatically enable any components provided by plugins
-                # loaded from the environment plugins directory.
-                if os.path.dirname(egg.location) == auto_enable:
-                    for module in modules:
-                        _enable_plugin(env, module)
-
+        for entry in working_set.iter_entry_points(entry_point_name):
+            env.log.debug('Loading %s from %s', entry.name,
+                          entry.dist.location)
+            try:
+                entry.load(require=True)
+            except (ImportError, DistributionNotFound, VersionConflict,
+                    UnknownExtra), e:
+                _log_error(entry, e)
+            else:
+                if os.path.dirname(entry.dist.location) == auto_enable:
+                    _enable_plugin(env, entry.module_name)
     return _load_eggs
 
 def load_py_files():
