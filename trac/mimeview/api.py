@@ -739,13 +739,19 @@ def _group_lines(stream):
     # Fix the \n at EOF.
     if not isinstance(stream, list):
         stream = list(stream)
+    found_text = False
+    
     for i in range(len(stream)-1, -1, -1):
         if stream[i][0] is TEXT:
             e = stream[i]
             # One chance to strip a \n
-            if e[1].endswith('\n'):
+            if not found_text and e[1].endswith('\n'):
                 stream[i] = (e[0], e[1][:-1], e[2])
-            break
+            if len(e[1]):
+                found_text = True
+                break
+    if not found_text:
+        raise StopIteration
 
     for kind, data, pos in _generate():
         if kind is TEXT and data == '\n':

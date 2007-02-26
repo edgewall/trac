@@ -155,8 +155,7 @@ class GroupLinesTestCase(unittest.TestCase):
                  (END, ns.span, (None, -1, -1)),
                 ]
         lines = list(_group_lines(input))
-        self.assertEqual(len(lines), 1)
-        self.assertEqual(lines[0].render('html'), "<span></span>")
+        self.assertEqual(len(lines), 0)
                  
     def test_newline(self):
         """
