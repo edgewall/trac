@@ -229,7 +229,14 @@ class RequestDispatcher(Component):
                         # Give the session a chance to persist changes
                         if req.session:
                             req.session.save()
-                        req.send(output, content_type or 'text/html')
+
+                        if 'hdfdump' in req.args:
+                            from pprint import pprint
+                            out = StringIO()
+                            pprint(data, out)
+                            req.send(out.getvalue(), 'text/plain')
+                        else:
+                            req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)
             except RequestDone:
