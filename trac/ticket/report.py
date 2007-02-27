@@ -19,6 +19,7 @@
 import csv
 import re
 from StringIO import StringIO
+from itertools import izip
 
 from genshi.builder import tag
 
@@ -28,6 +29,7 @@ from trac.core import *
 from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
+from trac.util.datefmt import format_datetime, format_time
 from trac.util.text import to_unicode, unicode_urlencode
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
@@ -497,10 +499,28 @@ class ReportModule(Component):
             req.send_header('Content-Disposition', 'filename=' + filename)
         req.end_headers()
 
+        def iso_time(t):
+            return format_time(t, 'iso8601')
+
+        def iso_datetime(dt):
+            return format_datetime(dt, 'iso8601')
+
+        col_conversions = {
+            'time': iso_time,
+            'datetime': iso_datetime,
+            'changetime': iso_datetime,
+            'date': iso_datetime,
+            'created': iso_datetime,
+            'modified': iso_datetime,
+        }
+
+        converters = [col_conversions.get(c.strip('_'), unicode) for c in cols]
+
         writer = csv.writer(req, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
         for row in rows:
-            writer.writerow([unicode(c).encode('utf-8') for c in row])
+            writer.writerow([f(v).encode('utf-8') for f,v
+                             in izip(converters, row)])
 
         raise RequestDone
 
