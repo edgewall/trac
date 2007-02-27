@@ -165,7 +165,8 @@ class Environment(Component, ComponentManager):
         self._href = self._abs_href = None
 
         from trac.loader import load_components
-        load_components(self)
+        plugins_dir = self.config.get('inherit', 'plugins_dir')
+        load_components(self, plugins_dir and (plugins_dir,))
 
         if create:
             self.create(options)
