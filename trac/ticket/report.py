@@ -18,7 +18,6 @@
 
 import re
 from StringIO import StringIO
-import urllib
 
 from trac import util
 from trac.core import *
@@ -28,6 +27,7 @@ from trac.util import sorted
 from trac.util.datefmt import format_date, format_time, format_datetime, \
                                http_date
 from trac.util.html import html
+from trac.util.text import unicode_urlencode
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki import wiki_to_html, IWikiSyntaxProvider, Formatter
@@ -380,7 +380,7 @@ class ReportModule(Component):
             params['asc'] = req.args['asc']
         href = ''
         if params:
-            href = '&' + urllib.urlencode(params)
+            href = '&' + unicode_urlencode(params)
         add_link(req, 'alternate', '?format=rss' + href, 'RSS Feed',
                  'application/rss+xml', 'rss')
         add_link(req, 'alternate', '?format=csv' + href,
