@@ -790,11 +790,12 @@ class ChangesetModule(Component):
                     elif show_files:
                         for c in changesets:
                             for chg in c.get_changes():
-                                if show_files > 0 and len(files) >= show_files:
-                                    files.append(tag.li(u'\u2026'))
+                                if show_files > 0 and len(files) > show_files:
                                     break
                                 files.append(tag.li(tag.div(class_=chg[2]),
                                                     chg[0] or '/'))
+                        if show_files > 0 and len(files) > show_files:
+                            files = files[:show_files] + [tag.li(u'\u2026')]
                         markup = tag(tag.ul(files, class_="changes"), markup)
 
                 event = TimelineEvent('changeset', title, href, markup)
