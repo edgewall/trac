@@ -92,6 +92,7 @@ class RepositoryManager(Component):
                                 'correctly installed.' %
                                 ((self.repository_type,)*2))
             self._connector = heappop(candidates)[1]
+        db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
             tid = threading._get_ident()
