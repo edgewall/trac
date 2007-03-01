@@ -1109,8 +1109,10 @@ class TracAdminHelpMacro(WikiMacroBase):
         return html.PRE(buf.getvalue(), class_='wiki')
 
 
-def run(args=sys.argv[1:]):
+def run(args=None):
     """Main entry point."""
+    if args is None:
+        args = sys.argv[1:]
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
