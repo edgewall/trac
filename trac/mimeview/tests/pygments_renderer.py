@@ -89,7 +89,7 @@ def hello():
         """
         result = self.pygments.render(self.context, 'text/x-python', '\n\n\n\n')
         self.assertTrue(result)
-        t = "".join(r[1] for r in result if r[0] is TEXT)
+        t = "".join([r[1] for r in result if r[0] is TEXT])
         self.assertEqual("\n\n\n", t)
 
 
