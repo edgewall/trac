@@ -836,9 +836,8 @@ class TicketModule(Component):
                     if 'replyto' in change:
                         replies.setdefault(change['replyto'], []).append(cnum)
                     # eventually cite the replied to comment
-                    comment = ''
                     if replyto == str(cnum):
-                        quote_original(change['author'], comment,
+                        quote_original(change['author'], change['comment'],
                                        'comment:%s' % replyto)
                     if version:
                         # Override ticket value by current changes
