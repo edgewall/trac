@@ -17,8 +17,10 @@
 #         Matthew Good <trac@matt-good.net>
 
 import os
+import pkg_resources
 import sys
 
+from trac import __version__ as VERSION
 from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIGateway
 
@@ -48,6 +50,8 @@ class CGIGateway(WSGIGateway):
 
 
 def run():
+    pkg_resources.require('Trac==%s' % VERSION)
+
     try: # Make FreeBSD use blocking I/O like other platforms
         import fcntl
         for stream in [sys.stdin, sys.stdout]:

@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import pkg_resources
 import os
 import sys
 from SocketServer import ThreadingMixIn
@@ -257,4 +258,5 @@ def main():
         pass
 
 if __name__ == '__main__':
+    pkg_resources.require('Trac==%s' % VERSION)
     main()

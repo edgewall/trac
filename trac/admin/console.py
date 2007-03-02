@@ -25,7 +25,7 @@ import time
 import traceback
 import urllib
 
-import trac
+from trac import __version__ as VERSION
 from trac import perm, util, db_default
 from trac.core import TracError
 from trac.env import Environment
@@ -1133,4 +1133,5 @@ def run(args=None):
 
 
 if __name__ == '__main__':
+    pkg_resources.require('Trac==%s' % VERSION)
     run()
