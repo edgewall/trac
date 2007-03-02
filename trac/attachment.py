@@ -100,8 +100,8 @@ class AttachmentContext(Context):
         if format == 'raw':
             kwargs.pop('format')
             prefix = 'raw-attachment'
-        path = filter(None, [prefix, self.parent.realm, self.parent.id,
-                             self.id, path])
+        path = [unicode(p) for p in [prefix, self.parent.realm, self.parent.id,
+                                     self.id, path] if p]
         return Context.resource_href(self, '/' + '/'.join(path), **kwargs)
 
     def permid(self):
