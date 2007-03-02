@@ -66,7 +66,7 @@ function convertDiff(name, table) {
     .replace("{1}", oldOffset).replace("{2}", oldLength)
     .replace("{3}", newOffset).replace("{4}", newLength);
 
-  return lines.join("\n");
+  return lines.join("\r\n");
 }
 
 $(document).ready(function() {
