@@ -678,7 +678,7 @@ class ChangesetModule(Component):
             if kind == Node.FILE and change != Changeset.DELETE:
                 assert new_node
                 zipinfo = ZipInfo()
-                zipinfo.filename = new_node.path.encode('utf-8')
+                zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 # Note: unicode filenames are not supported by zipfile.
                 # UTF-8 is not supported by all Zip tools either,
                 # but as some does, I think UTF-8 is the best option here.
