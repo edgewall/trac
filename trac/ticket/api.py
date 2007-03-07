@@ -251,7 +251,7 @@ class TicketSystem(Component):
             if len(r) == 1:
                 num = r.a
                 ctx = formatter.context('ticket', num)
-                if 0 < num <= 2 << 30: # TODO: implement ctx.exists()
+                if 0 < num <= 1L << 31: # TODO: implement ctx.exists()
                     # status = ctx.resource['status']  -> currently expensive
                     cursor = formatter.db.cursor() 
                     cursor.execute("SELECT type,summary,status,resolution "
