@@ -315,10 +315,10 @@ class AttachmentModule(Component):
 
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
                                        'false',
-        """Whether non-binary attachments should be rendered in the browser, or
+        """Whether attachments should be rendered in the browser, or
         only made downloadable.
 
-        Pretty much any text file may be interpreted as HTML by the browser,
+        Pretty much any file may be interpreted as HTML by the browser,
         which allows a malicious user to attach a file containing cross-site
         scripting attacks.
 
@@ -586,29 +586,28 @@ class AttachmentModule(Component):
             str_data = fd.read(1000)
             fd.seek(0)
             
-            binary = is_binary(str_data)
             mime_type = mimeview.get_mimetype(attachment.filename, str_data)
 
             # Eventually send the file directly
             format = req.args.get('format')
             if format in ('raw', 'txt'):
-                if not self.render_unsafe_content and not binary:
-                    # Force browser to download HTML/SVG/etc pages that may
-                    # contain malicious code enabling XSS attacks
-                    req.send_header('Content-Disposition',
-                                    content_disposition('attachment',
-                                                        attachment.filename))
-                if not mime_type or (self.render_unsafe_content and \
-                                     not binary and format == 'txt'):
-                    mime_type = 'text/plain'
+                if not self.render_unsafe_content:
+                    # Force browser to download files instead of rendering
+                    # them, since they might contain malicious code enabling 
+                    # XSS attacks
+                    req.send_header('Content-Disposition', 'attachment')
+                if format == 'txt':
+                      mime_type = 'text/plain'
+                elif not mime_type:
+                    mime_type = 'application/octet-stream'
                 if 'charset=' not in mime_type:
                     charset = mimeview.get_charset(str_data, mime_type)
                     mime_type = mime_type + '; charset=' + charset
                 req.send_file(attachment.path, mime_type)
 
             # add ''Plain Text'' alternate link if needed
-            if self.render_unsafe_content and not binary and \
-               mime_type and not mime_type.startswith('text/plain'):
+            if (self.render_unsafe_content and 
+                mime_type and not mime_type.startswith('text/plain')):
                 plaintext_href = context.resource_href(format='txt')
                 add_link(req, 'alternate', plaintext_href, 'Plain Text',
                          mime_type)
