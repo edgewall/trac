@@ -21,7 +21,7 @@ import os.path
 from fnmatch import fnmatchcase
 
 from trac import util
-from trac.config import ListOption, Option
+from trac.config import ListOption, BoolOption, Option
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary, get_mimetype
 from trac.perm import IPermissionRequestor
@@ -57,6 +57,18 @@ class BrowserModule(Component):
         glob patterns, i.e. "*" can be used as a wild card)
         (''since 0.10'')""")
 
+    render_unsafe_content = BoolOption('browser', 'render_unsafe_content',
+                                        'false',
+        """Whether attachments should be rendered in the browser, or
+        only made downloadable.
+ 
+        Pretty much any file may be interpreted as HTML by the browser,
+        which allows a malicious user to attach a file containing cross-site
+        scripting attacks.
+        
+        For public sites where anonymous users can create attachments it is
+        recommended to leave this option disabled (which is the default).""")
+ 
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -216,6 +228,11 @@ class BrowserModule(Component):
                             format == 'txt' and 'text/plain' or mime_type)
             req.send_header('Content-Length', node.content_length)
             req.send_header('Last-Modified', http_date(node.last_modified))
+            if not self.render_unsafe_content:
+                # Force browser to download files instead of rendering
+                # them, since they might contain malicious code enabling 
+                # XSS attacks
+                req.send_header('Content-Disposition', 'attachment')
             req.end_headers()
 
             while 1:
