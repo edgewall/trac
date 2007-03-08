@@ -598,7 +598,7 @@ class ChangesetModule(Component):
     def _render_diff(self, req, filename, repos, data):
         """Raw Unified Diff version"""
         req.send_response(200)
-        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.send_header('Content-Type', 'text/x-patch;charset=utf-8')
         req.send_header('Content-Disposition',
                         content_disposition('inline;', filename + '.diff'))
         req.end_headers()
