@@ -24,6 +24,7 @@ except ImportError:
 from trac.config import Option
 from trac.core import *
 from trac.perm import PermissionError
+from trac.util.text import to_unicode
 from trac.web.api import IRequestFilter
 
 
@@ -288,7 +289,7 @@ class Node(object):
     def __init__(self, path, rev, kind):
         assert kind in (Node.DIRECTORY, Node.FILE), \
                "Unknown node kind %s" % kind
-        self.path = unicode(path)
+        self.path = to_unicode(path)
         self.rev = rev
         self.kind = kind
 
