@@ -115,7 +115,7 @@ def check_links (data):
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "ds")
+        opts, args = getopt.getopt(sys.argv[1:], "d")
     except getopt.GetoptError:
         # print help information and exit:
         print "%s [-d]" % sys.argv[0]
