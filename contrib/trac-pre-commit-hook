@@ -30,8 +30,8 @@ def main():
     log = sys.argv[2]
 
     tickets = []
-    for tmp in re.findall('(?:closes|fixes|addresses|references|refs|re)'
-                          '.?(#[0-9]+(?:(?:[, &]+| *and *)#[0-9]+)*)', log):
+    for tmp in re.findall('(?:close|closed|closes|fix|fixed|fixes|addresses|references|refs|re|see)'
+                          '.?(#[0-9]+(?:(?:[, &]+| *and *)#[0-9]+)*)', log.lower()):
         tickets += re.findall('#([0-9]+)', tmp)
     
     # At least one ticket has to be mentioned in the log message
