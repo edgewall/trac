@@ -40,6 +40,15 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
         self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
                           self.store.get_user_permissions('john'))
 
+    def test_mixed_case_group(self):
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.executemany("INSERT INTO permission VALUES (%s,%s)", [
+                           ('Dev', 'WIKI_MODIFY'), ('Dev', 'REPORT_ADMIN'),
+                           ('Admin', 'Dev'), ('john', 'Admin')])
+        self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
+                          self.store.get_user_permissions('john'))
+
     def test_builtin_groups(self):
         db = self.env.get_db_cnx()
         cursor = db.cursor()

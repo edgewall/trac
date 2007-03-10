@@ -123,15 +123,15 @@ class DefaultPermissionStore(Component):
             num_actions = len(actions)
             for user, action in rows:
                 if user in subjects:
-                    if not action.islower() and action not in actions:
+                    if action.isupper() and action not in actions:
                         actions.append(action)
-                    if action.islower() and action not in subjects:
+                    if not action.isupper() and action not in subjects:
                         # action is actually the name of the permission group
                         # here
                         subjects.append(action)
             if num_users == len(subjects) and num_actions == len(actions):
                 break
-        return [action for action in actions if not action.islower()]
+        return [action for action in actions if action.isupper()]
 
     def get_users_with_permissions(self, permissions):
         """Retrieve a list of users that have any of the specified permissions
