@@ -109,11 +109,11 @@ class DefaultPermissionStore(Component):
         the action column: such a record represents a group and not an actual
         permission, and declares that the user is part of that group.
         """
-        subjects = [username]
+        subjects = set([username])
         for provider in self.group_providers:
-            subjects += list(provider.get_permission_groups(username))
+            subjects.update(provider.get_permission_groups(username))
 
-        actions = []
+        actions = set([])
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT username,action FROM permission")
@@ -124,14 +124,14 @@ class DefaultPermissionStore(Component):
             for user, action in rows:
                 if user in subjects:
                     if action.isupper() and action not in actions:
-                        actions.append(action)
+                        actions.add(action)
                     if not action.isupper() and action not in subjects:
                         # action is actually the name of the permission group
                         # here
-                        subjects.append(action)
+                        subjects.add(action)
             if num_users == len(subjects) and num_actions == len(actions):
                 break
-        return [action for action in actions if action.isupper()]
+        return list(actions)
 
     def get_users_with_permissions(self, permissions):
         """Retrieve a list of users that have any of the specified permissions

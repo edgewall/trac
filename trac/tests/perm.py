@@ -1,6 +1,7 @@
 from trac import perm
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.util.compat import sorted
 
 import unittest
 
@@ -18,8 +19,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
         cursor.executemany("INSERT INTO permission VALUES (%s,%s)", [
                            ('john', 'WIKI_MODIFY'), ('john', 'REPORT_ADMIN'),
                            ('kate', 'TICKET_CREATE')])
-        self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_user_permissions('john'))
+        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                          sorted(self.store.get_user_permissions('john')))
         self.assertEquals(['TICKET_CREATE'], self.store.get_user_permissions('kate'))
 
     def test_simple_group(self):
@@ -28,8 +29,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
         cursor.executemany("INSERT INTO permission VALUES (%s,%s)", [
                            ('dev', 'WIKI_MODIFY'), ('dev', 'REPORT_ADMIN'),
                            ('john', 'dev')])
-        self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_user_permissions('john'))
+        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                          sorted(self.store.get_user_permissions('john')))
 
     def test_nested_groups(self):
         db = self.env.get_db_cnx()
@@ -37,8 +38,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
         cursor.executemany("INSERT INTO permission VALUES (%s,%s)", [
                            ('dev', 'WIKI_MODIFY'), ('dev', 'REPORT_ADMIN'),
                            ('admin', 'dev'), ('john', 'admin')])
-        self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_user_permissions('john'))
+        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                          sorted(self.store.get_user_permissions('john')))
 
     def test_mixed_case_group(self):
         db = self.env.get_db_cnx()
@@ -46,8 +47,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
         cursor.executemany("INSERT INTO permission VALUES (%s,%s)", [
                            ('Dev', 'WIKI_MODIFY'), ('Dev', 'REPORT_ADMIN'),
                            ('Admin', 'Dev'), ('john', 'Admin')])
-        self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN'],
-                          self.store.get_user_permissions('john'))
+        self.assertEquals(['REPORT_ADMIN', 'WIKI_MODIFY'],
+                          sorted(self.store.get_user_permissions('john')))
 
     def test_builtin_groups(self):
         db = self.env.get_db_cnx()
@@ -56,8 +57,8 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                            ('authenticated', 'WIKI_MODIFY'),
                            ('authenticated', 'REPORT_ADMIN'),
                            ('anonymous', 'TICKET_CREATE')])
-        self.assertEquals(['WIKI_MODIFY', 'REPORT_ADMIN', 'TICKET_CREATE'],
-                          self.store.get_user_permissions('john'))
+        self.assertEquals(['REPORT_ADMIN', 'TICKET_CREATE', 'WIKI_MODIFY'],
+                          sorted(self.store.get_user_permissions('john')))
         self.assertEquals(['TICKET_CREATE'],
                           self.store.get_user_permissions('anonymous'))
 
