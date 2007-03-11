@@ -181,14 +181,17 @@ class RequestDispatcher(Component):
 
         # Select the component that should handle the request
         chosen_handler = None
-        if not req.path_info or req.path_info == '/':
-            chosen_handler = self.default_handler
-        else:
-            for handler in self.handlers:
-                if handler.match_request(req):
-                    chosen_handler = handler
-                    break
-        chosen_handler = self._pre_process_request(req, chosen_handler)
+        try:
+            if not req.path_info or req.path_info == '/':
+                chosen_handler = self.default_handler
+            else:
+                for handler in self.handlers:
+                    if handler.match_request(req):
+                        chosen_handler = handler
+                        break
+            chosen_handler = self._pre_process_request(req, chosen_handler)
+        except TracError, e:
+            chosen_handler = None
         if not chosen_handler:
             raise HTTPNotFound('No handler matched request to %s',
                                req.path_info)
@@ -407,13 +410,19 @@ def dispatch_request(environ, start_response):
                                'missing. Trac requires one of these options '
                                'to locate the Trac environment(s).')
     run_once = environ['wsgi.run_once']
-    env = _open_environment(env_path, run_once=run_once)
 
-    if env.base_url:
-        environ['trac.base_url'] = env.base_url
+    env = env_error = None
+    try:
+        env = _open_environment(env_path, run_once=run_once)
+        if env.base_url:
+            environ['trac.base_url'] = env.base_url
+    except TracError, e:
+        env_error = e
 
     req = Request(environ, start_response)
     try:
+        if not env and env_error:
+            raise HTTPInternalError(env_error.message)
         try:
             try:
                 dispatcher = RequestDispatcher(env)
@@ -426,7 +435,8 @@ def dispatch_request(environ, start_response):
                 env.shutdown(threading._get_ident())
 
     except HTTPException, e:
-        env.log.warn(e)
+        if env:
+            env.log.warn(e)
         title = e.reason or 'Error'
         data = {'title': title, 'type': 'TracError', 'message': e.message}
         try:

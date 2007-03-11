@@ -324,9 +324,15 @@ class Request(object):
                     data = self.hdf.render(template)
 
             if template.endswith('.html'):
-                from trac.web.chrome import Chrome
-                data = Chrome(env).render_template(self, template, data,
-                                                   'text/html')
+                if env:
+                    from trac.web.chrome import Chrome
+                    data = Chrome(env).render_template(self, template, data,
+                                                       'text/html')
+                else:
+                    content_type = 'text/plain'
+                    data = '%s\n\n%s: %s' % (data.get('title'),
+                                             data.get('type'),
+                                             data.get('message'))
         except: # failed to render
             data = get_last_traceback()
             content_type = 'text/plain'
