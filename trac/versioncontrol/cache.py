@@ -27,6 +27,11 @@ _actionmap = {'A': Changeset.ADD, 'C': Changeset.COPY,
               'D': Changeset.DELETE, 'E': Changeset.EDIT,
               'M': Changeset.MOVE}
 
+CACHE_REPOSITORY_DIR = 'repository_dir'
+CACHE_YOUNGEST_REV = 'youngest_rev'
+
+CACHE_METADATA_KEYS = (CACHE_REPOSITORY_DIR, CACHE_YOUNGEST_REV)
+
 
 class CachedRepository(Repository):
 
@@ -34,12 +39,7 @@ class CachedRepository(Repository):
         Repository.__init__(self, repos.name, authz, log)
         self.db = db
         self.repos = repos
-        try:
-            self.sync()
-        except TracError:
-            raise
-        except Exception, e: # most probably 2 concurrent resync attempts
-            log.warning('Error during sync(): %s' % e) 
+        self.sync()
 
     def close(self):
         self.repos.close()
@@ -55,66 +55,141 @@ class CachedRepository(Repository):
     def get_changesets(self, start, stop):
         cursor = self.db.cursor()
         cursor.execute("SELECT rev FROM revision "
-                       "WHERE time >= %s AND time < %s "
-                       "ORDER BY time", (to_timestamp(start), to_timestamp(stop)))
+                       "WHERE time >= %s AND time < %s ORDER BY time",
+                       (to_timestamp(start), to_timestamp(stop)))
         for rev, in cursor:
-            if self.authz.has_permission_for_changeset(rev):
-                yield self.get_changeset(rev)
+            try:
+                if self.authz.has_permission_for_changeset(rev):
+                    yield self.get_changeset(rev)
+            except NoSuchChangeset:
+                pass # skip changesets currently being resync'ed
 
     def sync(self):
         cursor = self.db.cursor()
 
-        # -- repository used for populating the cache
-        cursor.execute("SELECT value FROM system WHERE name='repository_dir'")
-        for previous_repository_dir, in cursor:
-            if previous_repository_dir != self.name:
+        cursor.execute("SELECT name, value FROM system WHERE name IN (%s)" %
+                       ','.join(["'%s'" % key for key in CACHE_METADATA_KEYS]))
+        metadata = {}
+        for name, value in cursor:
+            metadata[name] = value
+        
+        # -- check that we're populating the cache for the correct repository
+        repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
+        if repository_dir:
+            if repository_dir != self.name:
                 raise TracError("The 'repository_dir' has changed, "
                                 "a 'trac-admin resync' operation is needed.")
-            break
-        else: # no 'repository_dir' stored yet, assume everything's OK
-            cursor.execute("INSERT INTO system (name,value) "
-                           "VALUES ('repository_dir',%s)", (self.name,))
+        elif repository_dir is None: # no 'repository_dir' stored yet
+            cursor.execute("INSERT INTO system (name,value) VALUES (%s,%s)",
+                           (CACHE_REPOSITORY_DIR, self.name,))
+        else: # 'repository_dir' cleared by a resync
+            cursor.execute("UPDATE system SET value=%s WHERE name=%s",
+                           (self.name,CACHE_REPOSITORY_DIR))
 
+        # -- retrieve the youngest revision cached so far
+        if CACHE_YOUNGEST_REV not in metadata:
+            # ''upgrade'' using the legacy `get_youngest_rev_in_cache` method
+            self.youngest = self.repos.get_youngest_rev_in_cache(self.db) or ''
+            cursor.execute("INSERT INTO system (name, value) VALUES (%s, %s)",
+                           (CACHE_YOUNGEST_REV, self.youngest))
+            self.log.info('Upgraded cache metadata (youngest_rev=%s)' %
+                          self.youngest_rev)
+        else:
+            self.youngest = metadata[CACHE_YOUNGEST_REV]
+
+        if self.youngest:
+            self.youngest = self.repos.normalize_rev(self.youngest)
+        else:
+            self.youngest = None
+
+        # -- retrieve the youngest revision in the repository
         self.repos.clear()
-        youngest_stored = self.repos.get_youngest_rev_in_cache(self.db)
+        repos_youngest = self.repos.youngest_rev
 
-        if youngest_stored != str(self.repos.youngest_rev):
+        # -- compare them and try to resync if different
+        self.log.info("Check for sync [%s] vs. cached [%s]" %
+                      (self. youngest, repos_youngest))
+        if self.youngest != repos_youngest:
+            if self.youngest:
+                next_youngest = self.repos.next_rev(self.youngest)
+            else:
+                next_youngest = None
+                try:
+                    next_youngest = self.repos.oldest_rev
+                    next_youngest = self.repos.normalize_rev(next_youngest)
+                except TracError:
+                    pass
+
+            if next_youngest is None: # nothing to cache yet
+                return
+
+            # 0. first check if there's no (obvious) resync in progress
+            cursor.execute("SELECT rev FROM revision WHERE rev=%s",
+                           (str(next_youngest),))
+            for rev, in cursor:
+                # already there, but in progress, so keep ''previous''
+                # notion of 'youngest'
+                self.repos.clear(youngest_rev=self.youngest)
+                return
+
+            # 1. prepare for resyncing
+            #    (there still might be a race condition at this point)
+
             authz = self.repos.authz
             self.repos.authz = Authorizer() # remove permission checking
 
             kindmap = dict(zip(_kindmap.values(), _kindmap.keys()))
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
-            self.log.info("Syncing with repository (%s to %s)"
-                          % (youngest_stored, self.repos.youngest_rev))
-            if youngest_stored:
-                current_rev = self.repos.next_rev(youngest_stored)
-            else:
-                try:
-                    current_rev = self.repos.oldest_rev
-                    current_rev = self.repos.normalize_rev(current_rev)
-                except TracError:
-                    current_rev = None
-            while current_rev is not None:
-                changeset = self.repos.get_changeset(current_rev)
-                cursor.execute("INSERT INTO revision (rev,time,author,message) "
-                               "VALUES (%s,%s,%s,%s)", (str(current_rev),
-                                                        to_timestamp(changeset.date),
-                                                        changeset.author,
-                                                        changeset.message))
-                for path,kind,action,base_path,base_rev in changeset.get_changes():
-                    self.log.debug("Caching node change in [%s]: %s"
-                                   % (current_rev, (path, kind, action,
-                                      base_path, base_rev)))
-                    kind = kindmap[kind]
-                    action = actionmap[action]
-                    cursor.execute("INSERT INTO node_change (rev,path,"
-                                   "node_type,change_type,base_path,base_rev) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s)",
-                                   (str(current_rev), path, kind, action,
-                                   base_path, base_rev))
-                current_rev = self.repos.next_rev(current_rev)
-            self.db.commit()
-            self.repos.authz = authz # restore permission checking
+
+            try:
+                while next_youngest is not None:
+                    
+                    # 1.1 Attempt to resync the 'revision' table
+                    self.log.info("Trying to sync revision [%s]" %
+                                  next_youngest)
+                    cset = self.repos.get_changeset(next_youngest)
+                    try:
+                        cursor.execute("INSERT INTO revision "
+                                       " (rev,time,author,message) "
+                                       "VALUES (%s,%s,%s,%s)",
+                                       (str(next_youngest),
+                                        to_timestamp(cset.date),
+                                        cset.author, cset.message))
+                    except Exception, e: # *another* 1.1. resync attempt won 
+                        self.log.warning('Revision %s already cached: %s' %
+                                         (next_youngest, e))
+                        # also potentially in progress, so keep ''previous''
+                        # notion of 'youngest'
+                        self.repos.clear(youngest_rev=self.youngest)
+                        return
+
+                    # 1.2. now *only* one process was able to get there
+                    #      (i.e. there *shouldn't* be any race condition here)
+
+                    for path,kind,action,bpath,brev in cset.get_changes():
+                        self.log.debug("Caching node change in [%s]: %s"
+                                       % (next_youngest,
+                                          (path,kind,action,bpath,brev)))
+                        kind = kindmap[kind]
+                        action = actionmap[action]
+                        cursor.execute("INSERT INTO node_change "
+                                       " (rev,path,node_type,change_type, "
+                                       "  base_path,base_rev) "
+                                       "VALUES (%s,%s,%s,%s,%s,%s)",
+                                       (str(next_youngest),
+                                        path, kind, action, bpath, brev))
+
+                    # 1.3. iterate (1.1 should always succeed now)
+                    self.youngest = next_youngest                    
+                    next_youngest = self.repos.next_rev(next_youngest)
+
+                    # 1.4. update 'youngest_rev' metadata (minimize failures at 0.)
+                    cursor.execute("UPDATE system SET value=%s WHERE name=%s",
+                                   (str(self.youngest), CACHE_YOUNGEST_REV))
+                    self.db.commit()
+            finally:
+                # 3. restore permission checking (after 1.)
+                self.repos.authz = authz
 
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, rev)
@@ -126,7 +201,7 @@ class CachedRepository(Repository):
         return self.repos.oldest_rev
 
     def get_youngest_rev(self):
-        return self.repos.get_youngest_rev_in_cache(self.db)
+        return self.youngest
 
     def previous_rev(self, rev):
         return self.repos.previous_rev(rev)

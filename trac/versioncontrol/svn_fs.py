@@ -392,8 +392,10 @@ class SubversionRepository(Repository):
         assert self.scope[0] == '/'
         self.clear()
 
-    def clear(self):
+    def clear(self, youngest_rev=None):
         self.youngest = None
+        if youngest_rev is not None:
+            self.youngest = self.normalize_rev(youngest_rev)
         self.oldest = None
 
     def __del__(self):

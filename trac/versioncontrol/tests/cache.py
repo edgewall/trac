@@ -31,6 +31,9 @@ class CacheTestCase(unittest.TestCase):
     def setUp(self):
         self.db = InMemoryDatabase()
         self.log = logger_factory('test')
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO system (name, value) VALUES (%s,%s)",
+                       ('youngest_rev', ''))
 
     def test_initial_sync_with_empty_repos(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -96,6 +99,7 @@ class CacheTestCase(unittest.TestCase):
                            "VALUES ('1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
+        cursor.execute("UPDATE system SET value='1' WHERE name='youngest_rev'")
 
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
         changeset = Mock(Changeset, 2, 'Update', 'joe', t3,
@@ -103,7 +107,9 @@ class CacheTestCase(unittest.TestCase):
         repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: changeset,
                      get_youngest_rev=lambda: 2,
-                     next_rev=lambda x: int(x) == 1 and 2 or None)
+                     get_oldest_rev=lambda: 0,
+                     normalize_rev=lambda x: x,                    
+                     next_rev=lambda x: x and int(x) == 1 and 2 or None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
 
@@ -130,11 +136,14 @@ class CacheTestCase(unittest.TestCase):
                            "VALUES ('1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
+        cursor.execute("UPDATE system SET value='1' WHERE name='youngest_rev'")
 
         repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: None,
                      get_youngest_rev=lambda: 1,
-                     next_rev=lambda x: None, normalize_rev=lambda rev: rev)
+                     get_oldest_rev=lambda: 0,
+                     next_rev=lambda x: None,
+                     normalize_rev=lambda rev: rev)
         cache = CachedRepository(self.db, repos, None, self.log)
         self.assertEqual('1', cache.youngest_rev)
         changeset = cache.get_changeset(1)

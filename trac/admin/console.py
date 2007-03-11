@@ -594,13 +594,22 @@ Congratulations!
 
     ## Resync
     def do_resync(self, line):
-        print 'Resyncing repository history...'
+        from trac.versioncontrol.cache import CACHE_METADATA_KEYS
+        print 'Resyncing repository history... '
+        print '(this will take a time proportional to the number of your ' \
+              'changesets)'
         cnx = self.db_open()
         cursor = cnx.cursor()
         cursor.execute("DELETE FROM revision")
         cursor.execute("DELETE FROM node_change")
-        cursor.execute("DELETE FROM system WHERE name='repository_dir'")
+        cursor.executemany("DELETE FROM system WHERE name=%s",
+                           [(k,) for k in CACHE_METADATA_KEYS])
+        cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
+                           [(k, '') for k in CACHE_METADATA_KEYS])
         repos = self.__env.get_repository() # this will do the sync()
+        cursor.execute("SELECT count(rev) FROM revision")
+        for cnt, in cursor:
+            print cnt, 'revisions cached.',
         print 'Done.'
 
     ## Wiki

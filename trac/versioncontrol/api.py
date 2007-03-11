@@ -138,8 +138,12 @@ class Repository(object):
         """Close the connection to the repository."""
         raise NotImplementedError
 
-    def clear(self):
-        """Clear any data that may have been cached in instance properties."""
+    def clear(self, youngest_rev=None):
+        """Clear any data that may have been cached in instance properties.
+
+        `youngest_rev` can be specified as a way to force the value
+        of the `youngest_rev` property (''will change in 0.12'').
+        """
         pass
 
     def get_quickjump_entries(self, rev):
@@ -223,6 +227,8 @@ class Repository(object):
         The way revisions are sequenced is version control specific.
         By default, one assumes that the revisions are sequenced in time
         (... which is ''not'' correct for most VCS, including Subversion).
+
+        (Deprecated, will not be used anymore in Trac 0.12)
         """
         cursor = db.cursor()
         cursor.execute("SELECT rev FROM revision ORDER BY time DESC LIMIT 1")
