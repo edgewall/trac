@@ -150,6 +150,7 @@ class MySQLConnection(ConnectionWrapper):
                                   host=host, port=port, use_unicode=True)
             self._set_character_set(cnx, 'utf8')
         ConnectionWrapper.__init__(self, cnx)
+        self._is_closed = False
 
     def cast(self, column, type):
         if type == 'int':
@@ -169,5 +170,12 @@ class MySQLConnection(ConnectionWrapper):
         return self.cnx.insert_id()
 
     def rollback(self):
-        self.cnx.rollback()
-        self.cnx.ping()
+        if self.cnx.ping():
+            self.cnx.rollback()
+        else:
+            self._is_closed = True
+
+    def close(self):
+        if not self._is_closed:
+            self.cnx.close()
+            self._is_closed = True
