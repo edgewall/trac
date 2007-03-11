@@ -453,7 +453,12 @@ def dispatch_request(environ, start_response):
             traceback = get_last_traceback()
 
             frames = []
-            if 'TRAC_ADMIN' in req.perm:
+            has_admin = False
+            try:
+                has_admin = 'TRAC_ADMIN' in req.perm
+            except Exception, e:
+                pass
+            if has_admin:
                 tb = exc_info[2]
                 while tb:
                     if not tb.tb_frame.f_locals.get('__traceback_hide__'):
