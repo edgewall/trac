@@ -17,12 +17,12 @@
       </py:for>
     </py:if>
     <py:if test="'SEARCH_VIEW' in perm" id="search">
-      <link type="application/opensearchdescription+xml" rel="search" 
+      <link type="application/opensearchdescription+xml" rel="search"
             href="${href.search('opensearch')}" title="Search $project.name"/>
     </py:if>
     <script py:for="script in chrome.scripts"
             type="${script.type}" src="${script.href}"></script>
-    ${Markup('&lt;!--[if IE lt 7]&gt;')}
+    ${Markup('&lt;!--[if lt IE 7]&gt;')}
     <script type="text/javascript" src="${href.chrome('common/js/ie_pre7_hacks.js')}"></script>
     ${Markup('&lt;![endif]--&gt;')}
     ${select("*[local-name() != 'title']")}
