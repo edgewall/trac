@@ -31,7 +31,15 @@ facilities.
     download_url = 'http://trac.edgewall.org/wiki/TracDownload',
 
     packages = find_packages(exclude=['*.tests']),
-    include_package_data = True,
+    package_data = {
+        '': ['templates/*.html', 'templates/*.txt', 'templates/*.xml',
+             'templates/*.rss', 'templates/*.cs',
+             'templates/README'],
+        'trac': ['htdocs/*.png', 'htdocs/*.ico', 'htdocs/*.gif',
+                 'htdocs/js/*.js', 'htdocs/css/*.css',
+                 'htdocs/README'],
+        'trac.wiki': ['default-pages/*'],
+    },
 
     test_suite = 'trac.test.suite',
     zip_safe = False,
