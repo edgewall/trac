@@ -277,7 +277,7 @@ class TicketModule(Component):
         context = context('ticket', ticket.id, resource=ticket)
         
         self._populate(req, ticket)
-        ticket.values['reporter'] = get_reporter_id(req, 'reporter')
+        ticket.values['reporter'] = get_reporter_id(req, 'field_reporter')
 
         data = {}
         data['ticket'] = ticket
@@ -672,7 +672,7 @@ class TicketModule(Component):
             raise TracError('Tickets must contain a summary.')
 
         self._populate(req, ticket)
-        ticket.values['reporter'] = get_reporter_id(req, 'reporter')
+        ticket.values['reporter'] = get_reporter_id(req, 'field_reporter')
         self._validate_ticket(req, ticket)
 
         ticket.insert(db=context.db)
