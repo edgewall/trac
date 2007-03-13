@@ -194,7 +194,7 @@ class CachedRepository(Repository):
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, rev)
 
-    def has_node(self, path, rev):
+    def has_node(self, path, rev=None):
         return self.repos.has_node(path, rev)
 
     def get_oldest_rev(self):

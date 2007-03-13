@@ -401,9 +401,10 @@ class SubversionRepository(Repository):
     def __del__(self):
         self.close()
 
-    def has_node(self, path, rev, pool=None):
+    def has_node(self, path, rev=None, pool=None):
         if not pool:
             pool = self.pool
+        rev = self.normalize_rev(rev)
         rev_root = fs.revision_root(self.fs_ptr, rev, pool())
         node_type = fs.check_path(rev_root, _to_svn(self.scope, path), pool())
         return node_type in _kindmap

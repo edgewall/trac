@@ -134,6 +134,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def test_has_node(self):
         self.assertEqual(False, self.repos.has_node('/trunk/dir1', 3))
         self.assertEqual(True, self.repos.has_node('/trunk/dir1', 4))
+        self.assertEqual(True, self.repos.has_node('/trunk/dir1'))
         
     def test_get_node(self):
         node = self.repos.get_node('/trunk')
