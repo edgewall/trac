@@ -29,6 +29,7 @@
     <guid isPermaLink="false"><?cs var:event.href ?>/<?cs 
      var:event.dateuid ?></guid>
     <description><?cs var:event.message ?></description>
+    <category><?cs var:event.kind ?></category>
    </item><?cs
   /each ?>
  </channel>
