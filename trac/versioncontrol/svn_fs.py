@@ -798,7 +798,10 @@ class SubversionChangeset(Changeset):
         self.scope = scope
         self.fs_ptr = fs_ptr
         self.pool = Pool(pool)
-        message = self._get_prop(core.SVN_PROP_REVISION_LOG)
+        try:
+            message = self._get_prop(core.SVN_PROP_REVISION_LOG)
+        except core.SubversionException:
+            raise NoSuchChangeset(rev)
         author = self._get_prop(core.SVN_PROP_REVISION_AUTHOR)
         # we _hope_ it's UTF-8, but can't be 100% sure (#4321)
         message = message and to_unicode(message, 'utf-8')

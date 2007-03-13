@@ -107,8 +107,8 @@ class CachedRepository(Repository):
         repos_youngest = self.repos.youngest_rev
 
         # -- compare them and try to resync if different
-        self.log.info("Check for sync [%s] vs. cached [%s]" %
-                      (self. youngest, repos_youngest))
+        self.log.info("Compare repos rev [%s] vs. cached rev [%s]" %
+                      (repos_youngest, self.youngest))
         if self.youngest != repos_youngest:
             if self.youngest:
                 next_youngest = self.repos.next_rev(self.youngest)
@@ -118,7 +118,7 @@ class CachedRepository(Repository):
                     next_youngest = self.repos.oldest_rev
                     next_youngest = self.repos.normalize_rev(next_youngest)
                 except TracError:
-                    pass
+                    return # can't normalize oldest_rev: repository was empty
 
             if next_youngest is None: # nothing to cache yet
                 return
