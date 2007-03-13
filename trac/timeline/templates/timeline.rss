@@ -11,7 +11,8 @@
     <generator>Trac ${trac.version}</generator>
     <image py:if="chrome.logo.src">
       <title>${project.name}</title>
-      <url>${chrome.logo.src}</url>
+      <url>${chrome.logo.src_abs and chrome.logo.src \
+                                 or abs_href(chrome.logo.src)}</url>
       <link>${abs_href.timeline()}</link>
     </image>
 
