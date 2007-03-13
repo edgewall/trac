@@ -16,7 +16,7 @@
 
 from trac.log import logger_factory
 from trac.test import Mock, InMemoryDatabase
-from trac.versioncontrol import Repository, Changeset, Node
+from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository
 
 import time
@@ -33,20 +33,21 @@ class CacheTestCase(unittest.TestCase):
                        ('youngest_rev', ''))
 
     def test_initial_sync_with_empty_repos(self):
-        changeset = Mock(Changeset, 0, '', '', 42000,
-                         get_changes=lambda: [])
+        def no_changeset(rev):
+            raise NoSuchChangeset(rev)
+
         repos = Mock(Repository, 'test-repos', None, self.log,
-                     get_changeset=lambda x: changeset,
-                     get_oldest_rev=lambda: 0,
+                     get_changeset=no_changeset,
+                     get_oldest_rev=lambda: 1,
                      get_youngest_rev=lambda: 0,
-                     normalize_rev=lambda x: x,
+                     normalize_rev=no_changeset,
                      next_rev=lambda x: None)
         cache = CachedRepository(self.db, repos, None, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
         cursor.execute("SELECT rev,time,author,message FROM revision")
-        self.assertEquals(('0', 42000, '', ''), cursor.fetchone())
+        self.assertEquals(None, cursor.fetchone())
         cursor.execute("SELECT COUNT(*) FROM node_change")
         self.assertEquals(0, cursor.fetchone()[0])
 
