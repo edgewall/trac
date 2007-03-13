@@ -25,6 +25,7 @@
       <description>${
         unicode(event.markup)
       }<py:if test="event.wikitext">${unicode(wiki_to_html(event.context(abs_urls=True), event.wikitext))}</py:if></description>
+       <category>$event.kind</category>
     </item>
 
    </channel>
