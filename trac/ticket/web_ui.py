@@ -271,8 +271,9 @@ class TicketModule(Component):
 
         ticket = context.resource
         self._populate(req, ticket)
-        ticket.values['reporter'] = req.args.get('field_reporter') or \
-                                    get_reporter_id(req)
+        reporter_id = req.args.get('field_reporter') or \
+                      get_reporter_id(req, 'author')
+        ticket.values['reporter'] = reporter_id
 
         if req.method == 'POST' and 'preview' not in req.args:
             self._do_create(context) # ...redirected
@@ -281,6 +282,8 @@ class TicketModule(Component):
         data = {}
         data['ticket'] = ticket
         data['context'] = context
+
+        data['author_id'] = reporter_id
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -755,7 +758,7 @@ class TicketModule(Component):
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
 
-    def _insert_ticket_data(self, context, data, reporter_id):
+    def _insert_ticket_data(self, context, data, author_id):
         """Insert ticket data into the hdf"""
         req = context.req
         ticket = context.resource
@@ -796,7 +799,7 @@ class TicketModule(Component):
                 field['skip'] = True
             fields.append(field)
 
-        data['reporter_id'] = reporter_id
+        data['author_id'] = author_id
 
         # FIXME: get rid of this once datetime branch is merged
         data['opened'] = ticket.time_created
@@ -856,7 +859,7 @@ class TicketModule(Component):
                                             'new': ticket[field]}
             change = {
                 'date': datetime.now(utc),
-                'author': reporter_id,
+                'author': author_id,
                 'fields': field_changes,
                 'preview': True,
             }
