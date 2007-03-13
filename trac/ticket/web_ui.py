@@ -318,7 +318,7 @@ class TicketModule(Component):
             data['attachment'] = req.args.get('attachment')
 
         add_stylesheet(req, 'common/css/ticket.css')
-        return 'ticket_new.html', data, None
+        return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
         req.perm.require('TICKET_VIEW')
@@ -415,7 +415,7 @@ class TicketModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[3])
 
-        return 'ticket_view.html', data, None
+        return 'ticket.html', data, None
 
     def _populate(self, req, ticket):
         ticket.populate(dict([(k[6:],v) for k,v in req.args.iteritems()
@@ -668,7 +668,7 @@ class TicketModule(Component):
         req = context.req
         ticket = context.resource
 
-        if 'field_summary' not in req.args:
+        if not req.args.get('field_summary'):
             raise TracError('Tickets must contain a summary.')
 
         self._populate(req, ticket)
@@ -846,6 +846,30 @@ class TicketModule(Component):
                     if 'description' in change['fields']:
                         data['description_change'] = change
             if not skip:
+                changes.append(change)
+
+        # Insert change preview
+        if req.method == 'POST':
+            field_changes = {}
+            for field, value in ticket._old.iteritems():
+                if not ticket[field]:
+                    field_changes[field] = ''
+                else:
+                    field_changes[field] = {'old': value,
+                                            'new': ticket[field]}
+            change = {
+                'date': datetime.now(utc),
+                'author': reporter_id,
+                'fields': field_changes,
+                'preview': True,
+            }
+            comment = req.args.get('comment')
+            if comment:
+                change['comment'] = comment
+            replyto = req.args.get('replyto')
+            if replyto:
+                change['replyto'] = replyto
+            if field_changes or comment:
                 changes.append(change)
 
         if version is not None:

@@ -12,6 +12,14 @@
  padding: .5em 1em;
  position: relative;
 }
+
+div#ticket.ticketdraft {
+ background: #f4f4f4 url(../draft.png);
+}
+.ticketdraft {
+ background: #f4f4f4 url(../draft.png);
+}
+
 h1 .status { color: #444; text-transform: lowercase; }
 #ticket h2.summary { margin: 0 0 .8em 0 }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
