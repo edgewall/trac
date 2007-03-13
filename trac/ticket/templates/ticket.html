@@ -237,11 +237,10 @@
             <table>
               <tr>
                 <th>
-                  <label py:attrs="{'for': ticket.id and 'author' or 'field-reporter'}">Your email or username:</label><br />
+                  <label for="author">Your email or username:</label><br />
                 </th>
                 <td>
-                  <input py:if="ticket.id" type="text" id="author" name="author" size="40" value="${reporter_id}" />
-                  <input py:if="not ticket.id" type="text" id="field-reporter" name="field_reporter" size="40" value="${ticket.reporter}" />
+                  <input type="text" id="author" name="author" size="40" value="${ticket.reporter}" />
                   <br />
                 </td>
               </tr>

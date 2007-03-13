@@ -269,16 +269,15 @@ class TicketModule(Component):
                'TICKET_MODIFY' not in req.perm:
             del req.args['field_owner']
 
+        ticket = context.resource
+        self._populate(req, ticket)
+        ticket.values['reporter'] = req.args.get('field_reporter') or \
+                                    get_reporter_id(req)
+
         if req.method == 'POST' and 'preview' not in req.args:
             self._do_create(context) # ...redirected
 
         # Preview a new ticket
-        ticket = Ticket(self.env, db=context.db)
-        context = context('ticket', ticket.id, resource=ticket)
-        
-        self._populate(req, ticket)
-        ticket.values['reporter'] = get_reporter_id(req, 'field_reporter')
-
         data = {}
         data['ticket'] = ticket
         data['context'] = context
@@ -671,8 +670,6 @@ class TicketModule(Component):
         if not req.args.get('field_summary'):
             raise TracError('Tickets must contain a summary.')
 
-        self._populate(req, ticket)
-        ticket.values['reporter'] = get_reporter_id(req, 'field_reporter')
         self._validate_ticket(req, ticket)
 
         ticket.insert(db=context.db)
