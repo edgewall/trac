@@ -29,15 +29,9 @@ from trac.web.chrome import add_stylesheet
 from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
 
-try:
-    from pygments.lexers import get_lexer_by_name
-    from pygments.formatters.html import HtmlFormatter
-    from pygments.styles import get_style_by_name
-    have_pygments = True
-except ImportError, e:
-    have_pygments = False
-else:
-    have_pygments = True
+from pygments.lexers import get_lexer_by_name
+from pygments.formatters.html import HtmlFormatter
+from pygments.styles import get_style_by_name
 
 __all__ = ['PygmentsRenderer']
 
@@ -83,14 +77,12 @@ class PygmentsRenderer(Component):
 </html>"""
 
     def __init__(self):
-        self.log.debug("Pygments installed? %r", have_pygments)
-        if have_pygments:
-            import pygments
-            version = get_pkginfo(pygments).get('version')
-            # if installed from source, fallback to the hardcoded version info
-            if not version and hasattr(pygments, '__version__'):
-                version = pygments.__version__
-            self.env.systeminfo.append(('Pygments',version))
+        import pygments
+        version = get_pkginfo(pygments).get('version')
+        # if installed from source, fallback to the hardcoded version info
+        if not version and hasattr(pygments, '__version__'):
+            version = pygments.__version__
+        self.env.systeminfo.append(('Pygments',version))
                                         
         self._types = None
 
@@ -122,8 +114,7 @@ class PygmentsRenderer(Component):
     # IPreferencePanelProvider implementation
 
     def get_preference_panels(self, req):
-        if have_pygments:
-            yield ('pygments', 'Pygments Theme')
+        yield ('pygments', 'Pygments Theme')
 
     def render_preference_panel(self, req, panel):
         styles = list(get_all_styles())
@@ -144,11 +135,10 @@ class PygmentsRenderer(Component):
     # IRequestHandler implementation
 
     def match_request(self, req):
-        if have_pygments:
-            match = re.match(r'/pygments/(\w+)\.css', req.path_info)
-            if match:
-                req.args['style'] = match.group(1)
-                return True
+        match = re.match(r'/pygments/(\w+)\.css', req.path_info)
+        if match:
+            req.args['style'] = match.group(1)
+            return True
 
     def process_request(self, req):
         style = req.args['style']
@@ -182,13 +172,12 @@ class PygmentsRenderer(Component):
 
     def _init_types(self):
         self._types = {}
-        if have_pygments:
-            for _, aliases, _, mimetypes in get_all_lexers():
-                for mimetype in mimetypes:
-                    self._types[mimetype] = (aliases[0], self.QUALITY_RATIO)
-            self._types.update(
-                Mimeview(self.env).configured_modes_mapping('pygments')
-            )
+        for _, aliases, _, mimetypes in get_all_lexers():
+            for mimetype in mimetypes:
+                self._types[mimetype] = (aliases[0], self.QUALITY_RATIO)
+        self._types.update(
+            Mimeview(self.env).configured_modes_mapping('pygments')
+        )
 
     def _generate(self, language, content):
         lexer = get_lexer_by_name(language, stripnl=False)
@@ -211,34 +200,32 @@ def get_all_styles():
     for name, _ in find_plugin_styles():
         yield name
 
-if have_pygments:
+class GenshiHtmlFormatter(HtmlFormatter):
+    """A Pygments formatter subclass that generates a Python stream instead
+    of writing markup as strings to an output file.
+    """
 
-    class GenshiHtmlFormatter(HtmlFormatter):
-        """A Pygments formatter subclass that generates a Python stream instead
-        of writing markup as strings to an output file.
-        """
+    def generate(self, tokens):
+        pos = (None, -1, -1)
+        span = QName('span')
 
-        def generate(self, tokens):
-            pos = (None, -1, -1)
-            span = QName('span')
+        def _generate():
+            attrs = lc = None
 
-            def _generate():
-                attrs = lc = None
+            for ttype, value in tokens:
+                c = self._get_css_class(ttype)
+                if c == lc:
+                    yield TEXT, value, pos
 
-                for ttype, value in tokens:
-                    c = self._get_css_class(ttype)
-                    if c == lc:
-                        yield TEXT, value, pos
+                elif value: # if no value, leave old span open
+                    if attrs:
+                        yield END, span, pos
+                    attrs = Attrs([(QName('class'), c)])
+                    lc = c
+                    yield START, (span, attrs), pos
+                    yield TEXT, value, pos
 
-                    elif value: # if no value, leave old span open
-                        if attrs:
-                            yield END, span, pos
-                        attrs = Attrs([(QName('class'), c)])
-                        lc = c
-                        yield START, (span, attrs), pos
-                        yield TEXT, value, pos
+            if attrs:
+                yield END, span, pos
 
-                if attrs:
-                    yield END, span, pos
-
-            return Stream(_generate())
+        return Stream(_generate())
