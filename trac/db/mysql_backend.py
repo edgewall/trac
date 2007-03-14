@@ -182,6 +182,7 @@ class MySQLConnection(ConnectionWrapper):
 
     def rollback(self):
         if self.cnx.ping():
+            self._set_character_set(self.cnx, 'utf8')
             self.cnx.rollback()
         else:
             self._is_closed = True
