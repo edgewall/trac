@@ -161,6 +161,7 @@ class CachedRepository(Repository):
                         # also potentially in progress, so keep ''previous''
                         # notion of 'youngest'
                         self.repos.clear(youngest_rev=self.youngest)
+                        self.db.rollback()
                         return
 
                     # 1.2. now *only* one process was able to get there
