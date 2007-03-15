@@ -738,6 +738,8 @@ def suite():
             'test', suiteClass=SubversionRepositoryTestSetup))
         suite.addTest(unittest.makeSuite(AnotherNonSelfContainedScopedTestCase,
             'test', suiteClass=SubversionRepositoryTestSetup))
+    else:
+        print "SKIP: versioncontrol/tests/svn_fs.py (no svn bindings)"
     return suite
 
 if __name__ == '__main__':
