@@ -191,7 +191,7 @@ class RequestDispatcher(Component):
                         break
             chosen_handler = self._pre_process_request(req, chosen_handler)
         except TracError, e:
-            chosen_handler = None
+            raise HTTPInternalError(e.message)
         if not chosen_handler:
             raise HTTPNotFound('No handler matched request to %s',
                                req.path_info)
