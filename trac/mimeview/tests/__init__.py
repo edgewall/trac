@@ -7,11 +7,7 @@ def suite():
     suite.addTest(api.suite())
     suite.addTest(patch.suite())
     suite.addTest(php.suite())
-    try:
-        import pygments
-        suite.addTest(pygments_renderer.suite())
-    except ImportError, e:
-        pass
+    suite.addTest(pygments_renderer.suite())
     return suite
 
 if __name__ == '__main__':
