@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2006 Edgewall Software
+# Copyright (C) 2005-2007 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
-# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -24,10 +24,10 @@ Note about Unicode:
   All paths manipulated by Trac are `unicode` objects.
 
   Therefore:
-   * before being handed out to SVN, the Trac paths have to be encoded to UTF-8,
-     using `_to_svn()`
-   * before being handed out to Trac, a SVN path has to be decoded from UTF-8,
-     using `_from_svn()`
+   * before being handed out to SVN, the Trac paths have to be encoded to
+     UTF-8, using `_to_svn()`
+   * before being handed out to Trac, a SVN path has to be decoded from
+     UTF-8, using `_from_svn()`
 
   Warning: `SubversionNode.get_content` returns an object from which one
            can read a stream of bytes.
@@ -82,14 +82,16 @@ application_pool = None
 
 def _to_svn(*args):
     """Expect a list of `unicode` path components.
+    
     Returns an UTF-8 encoded string suitable for the Subversion python bindings
     (the returned path never starts with a leading "/")
     """
-    return '/'.join([p for p in [p.strip('/') for p in args] if p])\
+    return '/'.join([p for p in [p.strip('/') for p in args] if p]) \
            .encode('utf-8')
 
 def _from_svn(path):
-    """Expect an UTF-8 encoded string and transform it to an `unicode` object"""
+    """Expect an UTF-8 encoded string and transform it to an `unicode` object
+    """
     return path and path.decode('utf-8')
     
 def _normalize_path(path):
@@ -247,13 +249,13 @@ class SubversionConnector(Component):
     branches = ListOption('svn', 'branches', 'trunk,branches/*', doc=
         """List of paths categorized as ''branches''.
         If a path ends with '*', then all the directory entries found
-        below that path will be returned.
+        below that path will be included.
         """)
 
     tags = ListOption('svn', 'tags', 'tags/*', doc=
         """List of paths categorized as ''tags''.
         If a path ends with '*', then all the directory entries found
-        below that path will be returned.
+        below that path will be included.
         """)
 
     def __init__(self):
@@ -357,9 +359,7 @@ class SubversionPropertyRenderer(Component):
 
 
 class SubversionRepository(Repository):
-    """
-    Repository implementation based on the svn.fs API.
-    """
+    """Repository implementation based on the svn.fs API."""
 
     def __init__(self, path, authz, log, options={}):
         self.log = log
@@ -372,8 +372,8 @@ class SubversionRepository(Repository):
         path = os.path.normpath(path).replace('\\', '/')
         self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
-            raise TracError("%s does not appear to be a Subversion repository." \
-                            % path)
+            raise TracError("%s does not appear to be a Subversion "
+                            "repository." % path)
 
         self.repos = repos.svn_repos_open(self.path, self.pool())
         self.fs_ptr = repos.svn_repos_fs(self.repos)
@@ -449,7 +449,8 @@ class SubversionRepository(Repository):
 
     def get_quickjump_entries(self, rev):
         """Retrieve known branches, as (name, id) pairs.
-        Purposedly ignores `rev` and takes always last revision.
+        
+        Purposedly ignores `rev` and always takes the last revision.
         """
         for n in self._get_tags_or_branches('branches'):
             yield 'branches', n.path, n.path, None
@@ -550,6 +551,9 @@ class SubversionRepository(Repository):
     def get_youngest_rev_in_cache(self, db):
         """Get the latest stored revision by sorting the revision strings
         numerically
+
+        (deprecated, only used for transparent migration to the new caching
+        scheme).
         """
         cursor = db.cursor()
         cursor.execute("SELECT rev FROM revision "
@@ -611,7 +615,8 @@ class SubversionRepository(Repository):
         if self.has_node(new_path, new_rev):
             new_node = self.get_node(new_path, new_rev)
         else:
-            raise NoSuchNode(new_path, new_rev, 'The Target for Diff is invalid')
+            raise NoSuchNode(new_path, new_rev,
+                             'The Target for Diff is invalid')
         if new_node.kind != old_node.kind:
             raise TracError('Diff mismatch: Base is a %s (%s in revision %s) '
                             'and Target is a %s (%s in revision %s).' \
@@ -670,14 +675,14 @@ class SubversionNode(Node):
         self._scoped_svn_path = _to_svn(self.scope, path)
         self.pool = Pool(pool)
         self._requested_rev = rev
+        pool = self.pool()
 
-        self.root = fs.revision_root(self.fs_ptr, rev, self.pool())
-        node_type = fs.check_path(self.root, self._scoped_svn_path,
-                                  self.pool())
+        self.root = fs.revision_root(self.fs_ptr, rev, pool)
+        node_type = fs.check_path(self.root, self._scoped_svn_path, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
-        cr = fs.node_created_rev(self.root, self._scoped_svn_path, self.pool())
-        cp = fs.node_created_path(self.root, self._scoped_svn_path, self.pool())
+        cr = fs.node_created_rev(self.root, self._scoped_svn_path, pool)
+        cp = fs.node_created_path(self.root, self._scoped_svn_path, pool)
         # Note: `cp` differs from `path` if the last change was a copy,
         #        In that case, `path` doesn't even exist at `cr`.
         #        The only guarantees are:
@@ -788,7 +793,8 @@ class SubversionNode(Node):
         return datetime.fromtimestamp(ts, utc)
 
     def _get_prop(self, name):
-        return fs.node_prop(self.root, self._scoped_svn_path, name, self.pool())
+        return fs.node_prop(self.root, self._scoped_svn_path, name,
+                            self.pool())
 
 
 class SubversionChangeset(Changeset):
