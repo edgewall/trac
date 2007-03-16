@@ -12,7 +12,7 @@
 
   <body>
     <div id="ctxtnav" class="nav">
-      <ul py:with="prev = chrome.links.prev; next = chrome.links.next">
+      <ul py:with="prev = chrome.links.get('prev'); next = chrome.links.get('next')">
         <li class="first${not (prev or next) and ' last' or ''}">
           <a href="${href.browser(path)}">View Latest Revision</a>
         </li>
@@ -104,7 +104,7 @@
                              change_context = context('changeset', change.rev);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
-                <tr py:if="item.change and item.copyfrom_path" class="$odd_even">
+                <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
                   <td />
                   <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
                     copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
@@ -166,7 +166,7 @@
       </form>
 
       <div id="help">
-        <strong>Note:</strong> See <a href="${href.wiki(TracRevisionLog)}">TracRevisionLog</a>
+        <strong>Note:</strong> See <a href="${href.wiki('TracRevisionLog')}">TracRevisionLog</a>
         for help on using the revision log.
       </div>
 

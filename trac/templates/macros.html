@@ -60,9 +60,9 @@
   -     Assume the 'chrome' datastructure to be available from the context.
   -->
   <ul py:def="prevnext_nav(label, uplabel=None)" py:with="links = chrome.links"
-      py:if="chrome.links.up or chrome.links.prev or chrome.links.next">
+      py:if="'up' in chrome.links or 'prev' in chrome.links or 'next' in chrome.links">
     <li class="first" py:choose="">
-      &larr; <a py:when="links.prev" py:with="link = links.prev[0]"
+      &larr; <a py:when="'prev' in links" py:with="link = links.prev[0]"
                 class="prev" href="${link.href}"
                 title="${link.title}">Previous $label</a>
       <span py:otherwise="" class="missing">Previous $label</span>
@@ -72,7 +72,7 @@
          title="${link.title}">$uplabel</a>
     </li>
     <li class="last" py:choose="">
-      <a py:when="links.next"  py:with="link = links.next[0]"
+      <a py:when="'next' in links"  py:with="link = links.next[0]"
          class="next" href="${link.href}"
          title="${link.title}">Next $label</a>
       <span py:otherwise="" class="missing">Next $label</span> &rarr;
@@ -140,7 +140,7 @@
         </py:choose>
         Try <a href="$preview.raw_href">downloading</a> the file instead.
       </p>
-      <py:when test="preview.errors">
+      <py:when test="'errors' in preview">
         <p>
           <strong>HTML preview not available</strong>.
           To view, <a href="$preview.raw_href">download</a> the file.

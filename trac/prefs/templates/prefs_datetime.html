@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <div class="field" py:with="session_tzname = settings.session.tz;
+    <div class="field" py:with="session_tzname = settings.session.get('tz');
                                 default_tzname = timezones[len(timezones)/2];
                                 selected_tz = timezone(session_tzname or default_tzname) or timezone(default_tzname) or utc;
                                 selected_tzname = '%s' % selected_tz">
@@ -22,20 +22,23 @@
                             selected_tz == timezone(tzname) or
                             selected_tzname == tzname or None}">$tzname</option>
       </select></label>
-      <p class="hint">Configuring your time zone will result in all
-      dates and times displayed on this site to use your time zone
-      instead of that of the server.</p>
+      <p class="hint">
+        Configuring your time zone will result in all
+        dates and times displayed on this site to use your time zone
+        instead of that of the server.
+      </p>
 
       <p class="hint" py:with="now = datetime.now(utc)">
-        Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
-        <br />
-        In ${session_tzname and 'your' or ''} time zone ${selected_tz.tzname(None)}, this would be displayed as
+        Example: The current time is
+        <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).<br />
+        In time zone ${selected_tz.tzname(None)}, this would be displayed as
         <strong>${format_time(now, 'iso8601', tzinfo=selected_tz)}</strong>.
       </p>
 
       <p class="hint">
-        Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT). <br />
-        A positive offset is used to indicate a timezone at the east of Greenwhich, i.e. ahead of Universal Time.
+        Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean
+        Time (GMT). A positive offset is used to indicate a timezone at the east
+        of Greenwhich, i.e. ahead of Universal Time.
       </p>
 
     </div>

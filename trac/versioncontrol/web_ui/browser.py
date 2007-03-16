@@ -341,7 +341,7 @@ class BrowserModule(Component):
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
             'file': node.isfile and self._render_file(context, repos,
-                                                      node, rev),
+                                                      node, rev) or {},
             'quickjump_entries': list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')

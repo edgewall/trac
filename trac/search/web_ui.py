@@ -85,8 +85,8 @@ class SearchModule(Component):
                             for f in available_filters]}
 
         query = req.args.get('q')
+        data['query'] = query
         if query:
-            data['query'] = query
             data['quickjump'] = self._check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]
@@ -126,6 +126,8 @@ class SearchModule(Component):
             data['page_href'] = req.href.search(
                 zip(filters, ['on'] * len(filters)), q=req.args.get('q'),
                 noquickjump=1)
+        else:
+            data.update({'results': [], 'quickjump': {}})
 
         add_stylesheet(req, 'common/css/search.css')
         return 'search.html', data, None
@@ -172,7 +174,7 @@ class SearchModule(Component):
                 description = link.attrib.get('title', '')
         if quickjump_href:
             if noquickjump:
-                return {'href': quickjump_href, 'name': tag.EM(name),
+                return {'href': quickjump_href, 'name': tag.em(name),
                         'description': description}
             else:
                 req.redirect(quickjump_href)

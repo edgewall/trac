@@ -29,7 +29,7 @@
     </py:def>
 
     <py:choose>
-      <form py:when="component" class="mod" id="modcomp" method="post">
+      <form py:when="defined('component')" class="mod" id="modcomp" method="post">
         <fieldset>
           <legend>Modify Component:</legend>
           <div class="field">

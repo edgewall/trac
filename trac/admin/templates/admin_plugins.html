@@ -49,26 +49,29 @@
           <input type="submit" name="uninstall" value="Uninstall"
                  disabled="${plugin.readonly or None}" />
         </div>
-        <p class="summary">$plugin.info.summary</p>
-        <dl py:if="plugin.info.home_page or plugin.info.author or plugin.info.author_email"
+        <p class="summary" py:if="'summary' in plugin.info">
+          ${plugin.info.summary}
+        </p>
+        <dl py:if="'home_page' in plugin.info or 'author' in plugin.info or
+                   'author_email' in plugin.info"
             class="info">
-          <py:if test="plugin.info.author or plugin.info.author_email">
+          <py:if test="'author' in plugin.info or 'author_email' in plugin.info">
             <dt>Author:</dt>
             <dd>
-              <a py:strip="not plugin.info.author_email"
+              <a py:strip="'author_email' not in plugin.info"
                  href="mailto:${plugin.info.author_email}">
-                ${plugin.info.author_email or plugin.info.author}
+                ${plugin.info.get('author_email') or plugin.info.get('author')}
               </a>
             </dd>
           </py:if>
-          <py:if test="plugin.info.home_page">
+          <py:if test="'home_page' in plugin.info">
             <dt>Home page:</dt>
             <dd>
               <a onclick="window.open(this.href); return false"
                  href="${plugin.info.home_page}">${plugin.info.home_page}</a>
             </dd>
           </py:if>
-          <py:if test="plugin.info.license">
+          <py:if test="'license' in plugin.info">
             <dt>License:</dt>
             <dd>${plugin.info.license}</dd>
           </py:if>

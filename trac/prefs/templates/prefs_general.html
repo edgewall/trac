@@ -14,12 +14,12 @@
       <tr class="field">
         <th><label for="name">Full name:</label></th>
         <td><input type="text" id="name" name="name" size="30"
-            value="${settings.session.name}" /></td>
+            value="${settings.session.get('name')}" /></td>
       </tr>
       <tr class="field">
         <th><label for="email">Email address:</label></th>
         <td><input type="text" id="email" name="email" size="30"
-            value="${settings.session.email}" /></td>
+            value="${settings.session.get('email')}" /></td>
       </tr>
     </table>
     <p py:choose="" class="hint">
