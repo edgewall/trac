@@ -18,6 +18,8 @@ div#ticket.ticketdraft {
 }
 .ticketdraft {
  background: #f4f4f4 url(../draft.png);
+ border: 1px outset #996;
+ padding: 0 .2em;
 }
 
 h1 .status { color: #444; text-transform: lowercase; }
