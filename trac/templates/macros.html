@@ -67,7 +67,7 @@
                 title="${link.title}">Previous $label</a>
       <span py:otherwise="" class="missing">Previous $label</span>
     </li>
-    <li py:if="links.up and uplabel">
+    <li py:if="'up' in links and uplabel">
       <a py:with="link = links.up[0]" href="${link.href}"
          title="${link.title}">$uplabel</a>
     </li>
