@@ -62,17 +62,17 @@ h2 {
 .tickets tr.color6-odd  { background: #f0f0f0; border-color: #ddd; color: #888 }
 .tickets tr.color6-even { background: #f7f7f7; border-color: #ddd; color: #888 }
 .tickets tr.color6-odd a, .color6-even a { color: #b66 }
-.tickets tbody td.fullrow {
+.tickets tbody tr.fullrow td, .tickets tbody td.fullrow {
  border: none;
  color: #333;
  background: transparent;
  padding: 0 1em 2em 2em !important;
  font-size: 85%;
 }
-.tickets tbody td.fullrow:hover { background: transparent !important }
-.tickets td.fullrow :link, .tickets td.fullrow :visited { display: inline }
-.tickets td.fullrow .meta { color: #999; margin-bottom: -.5em; margin-left: -1em }
-.tickets td.fullrow hr { display: none }
+.tickets tbody tr.fullrow:hover { background: transparent !important }
+.tickets .fullrow :link, .tickets .fullrow :visited { display: inline }
+.tickets .fullrow .meta { color: #999; margin-bottom: -.5em; margin-left: -1em }
+.tickets .fullrow hr { display: none }
 
 /* Query results table */
 table.tickets tbody tr.added td { font-weight: bold }

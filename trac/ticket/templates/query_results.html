@@ -41,9 +41,9 @@
         <py:for each="idx, result in enumerate(results)">
 
           <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${
-            result.get('added') and ' added' or ''}${
-            result.get('changed') and ' changed' or ''}${
-            result.get('removed') and ' removed' or ''}">
+            result.added and ' added' or ''}${
+            result.changed and ' changed' or ''}${
+            result.removed and ' removed' or ''}">
             <py:for each="idx, header in enumerate(headers)" py:choose="">
               <py:with vars="name = header.name; value = result[name]">
                 <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
@@ -57,8 +57,8 @@
             </py:for>
           </tr>
 
-          <tr py:if="query.verbose">
-            <td colspan="${len(headers)}" class="fullrow">
+          <tr py:if="query.verbose" class="fullrow">
+            <td colspan="${len(headers)}">
               <p class="meta">Reported by <strong>${result.reporter}</strong>,
                 ${dateinfo(result.time)} ago<py:if test="result.description">:</py:if></p>
               <p py:if="result.description">${wiki_to_html(context('ticket', result.id), result.description)}</p>

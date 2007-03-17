@@ -46,7 +46,7 @@
       <div id="jumprev">
         <form action="" method="get">
           <div>
-            <label for="rev" title="${defined('sticky_rev') and 'Hint: clear the field to view latest revision' or None}">
+            <label for="rev" title="${sticky_rev and 'Hint: clear the field to view latest revision' or None}">
               View revision:</label>
             <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
           </div>
@@ -89,7 +89,7 @@
             </tr>
           </thead>
           <tbody>
-            <py:if test="'up' in chrome.links">
+            <py:if test="chrome.links.up">
               <tr class="even">
                 <td class="name" colspan="5">
                   <a class="parent" title="Parent Directory" href="${chrome.links.up[0].href}">../</a>
@@ -149,7 +149,7 @@
           <td colspan="2">
             <ul class="props">
               <li py:for="prop in properties" py:choose="">
-                <py:when test="prop.get('rendered')">
+                <py:when test="prop.rendered">
                    <span py:if="prop.rendered.name"
                          py:attrs="prop.rendered.name_attributes" py:content="prop.rendered.name" />
                    <div py:attrs="prop.rendered.content_attributes" py:content="prop.rendered.content" />
@@ -167,7 +167,7 @@
         </tr>
       </table>
 
-      <div py:if="file.get('preview')" id="preview" class="searchable">
+      <div py:if="file.preview" id="preview" class="searchable">
         ${preview_file(file.preview)}
       </div>
 

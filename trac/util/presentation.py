@@ -217,7 +217,6 @@ class Paginator(object):
         return self.page > 0
     has_previous_page = property(has_previous_page)
 
-
 def separated(items, sep=','):
     items = iter(items)
     last = items.next()

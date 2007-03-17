@@ -77,6 +77,9 @@
               <dd>
                 <span class="author">By ${authorinfo(result.author)}</span> &mdash;
                 <span class="date">${result.date}</span>
+                <py:if test="result.keywords">
+                  &mdash; <span class="keywords">Keywords: <em class="searchable">${result.keywords}</em></span>
+                </py:if>
               </dd>
             </py:for>
           </dl>

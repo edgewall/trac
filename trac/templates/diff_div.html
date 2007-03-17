@@ -37,9 +37,9 @@
   <ul class="entries">
     <py:for each="idx, item in enumerate(changes)">
       <li py:if="item.diffs or item.props" class="entry">
-        <h2 id="${not defined('no_id') and 'file%s' % idx or None}" py:choose="">
-          <a py:when="item.new.path" title="${item.get('title') or item.new.get('title')}"
-             href="${item.get('href') or item.new.get('href')}">$item.new.path</a>
+        <h2 id="${not no_id and 'file%s' % idx or None}" py:choose="">
+          <a py:when="item.new.path" title="${item.title or item.new.title}"
+             href="${item.href or item.new.href}">$item.new.path</a>
           <py:otherwise>&nbsp;</py:otherwise>
         </h2>
         <ul py:if="item.props" class="props">
@@ -74,10 +74,10 @@
               <thead>
                 <tr>
                   <th colspan="2">
-                    <a title="$item.old.get('title')" href="${item.old.get('href')}#L${fromline}">$longcol $item.old.rev</a>
+                    <a title="$item.old.title" href="$item.old.href#L$fromline">$longcol $item.old.rev</a>
                   </th>
                   <th colspan="2">
-                    <a title="$item.new.get('title')" href="${item.new.get('href')}#L${toline}">$longcol $item.new.rev</a>
+                    <a title="$item.new.title" href="$item.new.href#L$toline">$longcol $item.new.rev</a>
                   </th>
                 </tr>
               </thead>
@@ -87,12 +87,12 @@
               <thead>
                 <tr>
                   <th title="$longcol $item.old.rev">
-                    <a title="$item.old.get('title')" href="${item.old.get('href')}#L${fromline}">
-                      ${value_of('shortcol')}${item.old.shortrev}</a>
+                    <a title="$item.old.title" href="$item.old.href#L$fromline">
+                      $shortcol$item.old.shortrev</a>
                   </th>
                   <th title="$longcol $item.new.rev">
-                    <a title="$item.new.get('title')" href="${item.new.get('href')}#L${toline}">
-                      ${value_of('shortcol')}${item.new.shortrev}</a>
+                    <a title="$item.new.title" href="$item.new.href#L$toline">
+                      $shortcol$item.new.shortrev</a>
                   </th>
                   <th>&nbsp;</th>
                 </tr>
@@ -201,12 +201,12 @@
                 py:with="fromline = item.diffs[idx+1][0].base.offset+1;
                          toline = item.diffs[idx+1][0].changed.offset+1">
                 <tr py:when="'sidebyside'">
-                  <th><a href="${item.old.get('href')}#L${fromline}">&hellip;</a></th><td>&nbsp;</td>
-                  <th><a href="${item.new.get('href')}#L${toline}">&hellip;</a></th><td>&nbsp;</td>
+                  <th><a href="$item.old.href#L$fromline">&hellip;</a></th><td>&nbsp;</td>
+                  <th><a href="$item.new.href#L$toline">&hellip;</a></th><td>&nbsp;</td>
                 </tr>
                 <tr py:when="'inline'">
-                  <th><a href="${item.old.get('href')}#L${fromline}">&hellip;</a></th>
-                  <th><a href="${item.new.get('href')}#L${toline}">&hellip;</a></th>
+                  <th><a href="$item.old.href#L$fromline">&hellip;</a></th>
+                  <th><a href="$item.new.href#L$toline">&hellip;</a></th>
                   <td>&nbsp;</td>
                 </tr>
               </tbody>

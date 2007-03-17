@@ -103,7 +103,7 @@ class Ticket(object):
                 self.values[name] = value
 
     def __getitem__(self, name):
-        return self.values.get(name)
+        return self.values[name]
 
     def __setitem__(self, name, value):
         """Log ticket modifications so the table ticket_change can be updated"""

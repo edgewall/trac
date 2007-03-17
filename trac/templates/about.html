@@ -41,9 +41,9 @@
         <a href="http://www.edgewall.org/">Edgewall Software</a>
       </p>
 
-      <hr py:strip="not ('systeminfo' in about or 'config' in about)" />
+      <hr py:strip="not (about.systeminfo or about.config)" />
 
-      <div py:if="'systeminfo' in about" id="systeminfo">
+      <div py:if="about.systeminfo" id="systeminfo">
         <h2>System Information</h2>
         <table class="listing">
           <tr py:for="name, value in about.systeminfo">
@@ -53,7 +53,7 @@
         </table>
       </div>
 
-      <div py:if="'config' in about" id="config">
+      <div py:if="about.config" id="config">
         <h2>Configuration</h2>
         <table class="listing">
           <thead>

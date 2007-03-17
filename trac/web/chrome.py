@@ -390,11 +390,9 @@ class Chrome(Component):
 
             nav[category] = []
             for name, label in items:
-                nav[category].append({
-                    'name': name,
-                    'label': label,
-                    'active': name == active
-                })
+                nav[category].append({'name': name, 'label': label})
+                if name == active:
+                    nav[category][-1]['active'] = True
 
         chrome['nav'] = nav
 

@@ -198,6 +198,8 @@ class RoadmapModule(Component):
         data = {}
 
         showall = req.args.get('show') == 'all'
+        data['showall'] = showall
+
         db = self.env.get_db_cnx()
         milestones = list(Milestone.select(self.env, showall, db))
         stats = []
@@ -226,8 +228,7 @@ class RoadmapModule(Component):
             'context': Context(self.env, req),
             'milestones': milestones,
             'milestone_stats': stats,
-            'queries': queries,
-            'showall': showall
+            'queries': queries
         }
         return 'roadmap.html', data, None
 

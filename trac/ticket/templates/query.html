@@ -31,7 +31,7 @@
     <div id="content" class="query">
       <h1>$title ${num_matches(len(tickets))}</h1>
 
-      <div py:if="defined('description')" id="description">
+      <div py:if="description" id="description">
         ${wiki_to_html(report, description)}
       </div>
 
@@ -46,7 +46,7 @@
             <py:for each="field_name, field in fields.items()">
               <py:for each="constraint_name, constraint in constraints.items()">
                 <tbody py:if="field_name == constraint_name"
-                       py:with="multiline = field.type in ('select', 'text')">
+                  py:with="multiline = field.type in ('select', 'text')">
                   <py:for each="constraint_idx, constraint_value in enumerate(constraint['values'])">
                     <tr class="${field_name}" py:if="multiline or constraint_idx == 0">
                       <py:choose test="constraint_idx">
@@ -102,7 +102,7 @@
 
                       </td>
                       <td class="actions"
-                          py:with="rm_idx = multiline and constraint_idx or len(constraint['values']) - 1"><input
+                          py:with="rm_idx = multiline and idx or len(constraint['values']) - 1"><input
                           type="submit" name="rm_filter_${field_name}${field.type != 'radio' and '_%d' % rm_idx or ''}"
                           value="-" /></td>
                     </tr>
@@ -120,9 +120,8 @@
                     <option py:for="field_name, field in fields.items()"
                             value="$field_name"
                             disabled="${(field.type == 'radio' and
-                                         constraints.get(field_name) and
-                                         len(constraints.get(field_name))) or
-                                         None}">
+                                         constraints[field_name] and
+                                         len(constraints[field_name])) or None}">
                       ${field.label}
                     </option>
                   </select>
@@ -154,9 +153,9 @@
         </p>
 
         <div class="buttons">
-          <input py:if="defined('report')" type="hidden" name="report" value="$report.id" />
+          <input py:if="report" type="hidden" name="report" value="$report.id" />
           <input type="hidden" name="order" value="$query.order" />
-          <input py:if="defined('desc')" type="hidden" name="desc" value="1" />
+          <input py:if="desc" type="hidden" name="desc" value="1" />
           <input type="submit" name="update" value="Update" />
         </div>
         <hr />
@@ -166,7 +165,7 @@
         var properties={
         <py:for each="sep, (field_name, field) in separated(fields.iteritems())">
           $field_name: { type: "$field.type", label: "$field.label"
-          <py:if test="field.get('options')">, options: [
+          <py:if test="field.options">, options: [
             <py:for each="sep, option in separated(field.options)">"$option"$sep
             </py:for>]
           </py:if>}$sep
@@ -186,7 +185,7 @@
 
       <xi:include href="query_results.html" />
 
-      <div class="buttons" py:with="edit = defined('report') and 'REPORT_MODIFY' in req.perm;
+      <div class="buttons" py:with="edit = report and 'REPORT_MODIFY' in req.perm;
                      new = 'REPORT_CREATE' in req.perm">
         <form py:if="edit" method="get" action="${report.resource_href()}">
           <input type="hidden" name="action" value="edit" />

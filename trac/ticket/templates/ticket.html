@@ -62,7 +62,8 @@
               test="ticket.type">${ticket.type}</py:if><py:if
               test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
           <py:choose test="">
-            <py:when test="not defined('version') or version is None" />
+            <py:when test="type(version) is Undefined" />
+            <py:when test="version is None" />
             <py:when test="version == 0">
               &mdash; at <a href="#comment:description">Initial Version</a>
             </py:when>
@@ -81,9 +82,9 @@
         <!-- Ticket (pre)view -->
         <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.id)) and {'class':'ticketdraft'} or {}">
           <div class="date">
-            <p py:if="defined('opened')">Opened ${dateinfo(opened)} ago</p>
-            <p py:if="defined('lastmod')">Last modified ${dateinfo(lastmod)} ago</p>
-            <p py:if="not defined('opened')"><i>(future ticket)</i></p>
+            <p py:if="opened">Opened ${dateinfo(opened)} ago</p>
+            <p py:if="lastmod">Last modified ${dateinfo(lastmod)} ago</p>
+            <p py:if="not opened"><i>(future ticket)</i></p>
           </div>
           <!-- use a placeholder if it's a new ticket -->
           <h2 class="summary searchable">
@@ -98,7 +99,7 @@
           </h2>
 
           <table class="properties"
-                 py:with="fields = [f for f in fields if not f.get('skip')]">
+                 py:with="fields = [f for f in fields if not f.skip]">
             <tr>
               <th id="h_reporter">Reported by:</th>
               <td headers="h_reporter" class="searchable">${authorinfo(ticket.reporter)}</td>
@@ -108,13 +109,13 @@
               </td>
             </tr>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
-                py:with="fullrow = len(row) == 1">
+              py:with="fullrow = len(row) == 1">
               <py:for each="idx, field in enumerate(row)">
                 <th py:if="idx == 0 or not fullrow">
                   <py:if test="field">${field.label or field.name}:</py:if>
                 </th>
                 <td py:if="idx == 0 or not fullrow"
-                    class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
+                    class="${field.name in ('cc', 'keywords') and 'searchable' or None}"
                     colspan="${fullrow and 3 or None}">
                   <py:if test="field">${ticket[field.name]}</py:if>
                 </td>
@@ -131,8 +132,8 @@
                   <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
                 </span>
                 Description
-                <span py:if="defined('description_change')" class="lastmod"
-                      title="$description_change.date">
+                <span py:if="description_change" class="lastmod"
+                  title="$description_change.date">
                   (last modified by ${authorinfo(description_change.author)})
                   (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
                 </span>
@@ -226,7 +227,7 @@
       <!-- End of the section we don't show on initial new tickets -->
       </py:if>
 
-      <form py:if="value_of('version') != 0 and ('TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm or ('TICKET_CREATE' in perm and not ticket.id))"
+      <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm or ('TICKET_CREATE' in perm and not ticket.id))"
             action="#preview" method="post">
         <h3 py:if="ticket.id"><a name="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} (${ticket.summary})</a></h3>
@@ -253,12 +254,12 @@
               here):
             </label><br />
             <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
-${value_of('comment')}</textarea></p>
+${comment}</textarea></p>
           </fieldset>
         </div>
 
         <fieldset id="properties" py:if="'TICKET_CHGPROP' in req.perm or ('TICKET_CREATE' in req.perm and not ticket.id)"
-                  py:with="fields = [f for f in fields if not f.get('skip')]">
+                  py:with="fields = [f for f in fields if not f.skip]">
           <legend>${ticket.id and 'Change' or 'Set'} Properties</legend>
           <table>
             <tr>
@@ -297,7 +298,7 @@ ${value_of('comment')}</textarea></p>
                     py:attrs="{'colspan': fullrow and 3 or None}">
                   <py:choose test="field.type" py:if="field">
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
-                      <option py:if="field.get('optional')"></option>
+                      <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
                               selected="${ticket[field.name] == option or None}"
                               py:content="option"></option>
@@ -326,19 +327,19 @@ ${value_of('comment')}</textarea></p>
 
         </fieldset>
 
-        <py:choose test="not value_of('actions') or actions == ['leave']">
+        <py:choose test="not actions or actions == ['leave']">
 
           <input py:when="True" type="hidden" name="action" value="leave" />
 
-          <fieldset py:otherwise="" id="action" py:with="action = value_of('action', 'leave')">
+          <fieldset py:otherwise="" id="action" py:with="action = action or 'leave'">
             <legend>Action</legend>
             <py:for each="button in filter(None, [
               ('leave', 'leave as ' + ticket.status),
               ('accept' in actions and ('accept', 'accept ticket') or None),
               ('reopen' in actions and ('reopen', 'reopen ticket') or None),
-              ('resolve' in actions and ('resolve', '', 'as', value_of('resolve_resolution'),
+              ('resolve' in actions and ('resolve', '', 'as', resolve_resolution,
                 [f for f in fields if f.name == 'resolution'][0].options) or None),
-              ('reassign' in actions and ('reassign', '', 'to', value_of('reassign_owner'),
+              ('reassign' in actions and ('reassign', '', 'to', reassign_owner,
                 [f for f in fields if f.name == 'owner'][0].options) or None)
             ])" py:with="name = button[0]; label = button[1] or button[0]">
               <input type="radio" id="$name" name="action" value="$name"
@@ -362,7 +363,7 @@ ${value_of('comment')}</textarea></p>
           </fieldset>
         </py:choose>
 
-        <p py:if="value_of('can_attach')">
+        <p py:if="can_attach">
           <label>
             <input type="checkbox" name="attachment" checked="${attachment or None}" />
             I have files to attach to this ticket
@@ -370,9 +371,9 @@ ${value_of('comment')}</textarea></p>
         </p>
         <div class="buttons">
           <input py:if="not ticket.id" type="hidden" name="field_status" value="new" />
-          <input type="hidden" py:if="defined('timestamp')" name="ts" value="${timestamp}" />
-          <input type="hidden" py:if="defined('replyto')" name="replyto" value="${replyto}" />
-          <input type="hidden" py:if="defined('cnum')" name="cnum" value="${cnum}" />
+          <input type="hidden" name="ts" value="${timestamp}" />
+          <input type="hidden" name="replyto" value="${replyto}" />
+          <input type="hidden" name="cnum" value="${cnum}" />
           <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
           <input type="submit" py:attrs="ticket.id and {'value':'Submit changes'} or {'value':'Create ticket'}" />
         </div>

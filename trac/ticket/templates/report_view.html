@@ -14,7 +14,7 @@
       <h2>Report Navigation</h2>
       <ul>
         <li class="first">
-          <a py:strip="'up' not in chrome.links" href="${chrome.links.up[0].href}">Available Reports</a>
+          <a py:strip="not chrome.links.up" href="${chrome.links.up[0].href}">Available Reports</a>
         </li>
         <li py:if="query_href" class="last"><a href="$query_href">Custom Query</a></li>
       </ul>
@@ -55,11 +55,11 @@
         <table class="listing ${report.id == -1 and 'reports' or 'tickets'}">
           <thead>
             <tr py:for="header_group in header_groups">
-              <th py:for="header in header_group" py:if="'hidden' not in header" py:with="fullrow = header is header_group[-1]"
+              <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
                 colspan="${fullrow and '100' or None}">
                 <a py:strip="not sorting_enabled"
                    py:with="args = dict([(k,v) for k,v in report.args.items() if k not in ('sort', 'asc')])"
-                  href="${href.report(report.id, sort=header.col, asc='asc' not in header and '1' or '0', **args)}">
+                  href="${href.report(report.id, sort=header.col, asc=not header.asc and '1' or '0', **args)}">
                   $header.title
                 </a>
               </th>
@@ -71,14 +71,14 @@
               <tr py:for="cell_group in row.cell_groups"
                 py:with="fullrow = len(cell_group) == 1;
                          td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
-                class="${row.get('__color__') and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
-                style="${row.get('__bgcolor__') and 'background: '+row.__bgcolor__+';'
-                }${row.get('__fgcolor__') and 'color: '+row.__fgcolor__+';'
-                }${row.get('__style__') and row.__style__+';'
+                class="${row.__color__ and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
+                style="${row.__bgcolor__ and 'background: '+row.__bgcolor__+';'
+                }${row.__fgcolor__ and 'color: '+row.__fgcolor__+';'
+                }${row.__style__ and row.__style__+';'
                 }${fullrow and ';border: none; padding: 0;' or ''}">
 
                 <py:for each="cell in cell_group">
-                  <py:if test="'hidden' not in cell.header">
+                  <py:if test="not cell.header.hidden">
                     <py:with vars="col = cell.header.col.strip('_')">
                       <py:choose>
 
@@ -162,7 +162,7 @@
         </form>
       </div>
 
-      <div py:if="'message' in report" class="system-message">$report.message</div>
+      <div py:if="report.message" class="system-message">$report.message</div>
       <div py:if="numrows == 0" id="report-notfound">No matches found.</div>
     </div>
 

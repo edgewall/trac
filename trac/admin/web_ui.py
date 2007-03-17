@@ -200,11 +200,9 @@ class LoggingAdminPanel(Component):
         log_dir = os.path.join(self.env.path, 'log')
 
         log_types = [
-            dict(name='', label='None', selected=False, disabled=False),
-            dict(name='stderr', label='Console', selected=log_type == 'stderr',
-                 disabled=False),
-            dict(name='file', label='File', selected=log_type == 'file',
-                 disabled=False),
+            dict(name='', label='None'),
+            dict(name='stderr', label='Console', selected=log_type == 'stderr'),
+            dict(name='file', label='File', selected=log_type == 'file'),
             dict(name='syslog', label='Syslog', disabled=os.name != 'posix',
                  selected=log_type in ('unix', 'syslog')),
             dict(name='eventlog', label='Windows event log',
