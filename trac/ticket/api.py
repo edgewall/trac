@@ -210,7 +210,7 @@ class TicketSystem(Component):
             return intertrac
         try:
             num = int(target)
-            if 0 < num <= 2 << 30:
+            if 0 < num <= 1L << 31:
                 cursor = formatter.db.cursor()
                 cursor.execute("SELECT summary,status FROM ticket WHERE id=%s",
                                (str(num),))
