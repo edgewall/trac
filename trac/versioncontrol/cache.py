@@ -79,27 +79,32 @@ class CachedRepository(Repository):
             if repository_dir != self.name:
                 raise TracError("The 'repository_dir' has changed, "
                                 "a 'trac-admin resync' operation is needed.")
-        elif repository_dir is None: # no 'repository_dir' stored yet
+        elif repository_dir is None: # 
+            self.log.info('Storing initial "repository_dir": %s' % self.name)
             cursor.execute("INSERT INTO system (name,value) VALUES (%s,%s)",
                            (CACHE_REPOSITORY_DIR, self.name,))
         else: # 'repository_dir' cleared by a resync
+            self.log.info('Resetting "repository_dir": %s' % self.name)
             cursor.execute("UPDATE system SET value=%s WHERE name=%s",
-                           (self.name,CACHE_REPOSITORY_DIR))
+                           (self.name, CACHE_REPOSITORY_DIR))
 
         # -- retrieve the youngest revision cached so far
         if CACHE_YOUNGEST_REV not in metadata:
-            # ''upgrade'' using the legacy `get_youngest_rev_in_cache` method
+            self.log.info('Initialize "youngest_rev" in cache metadata ...')
             self.youngest = self.repos.get_youngest_rev_in_cache(self.db) or ''
             cursor.execute("INSERT INTO system (name, value) VALUES (%s, %s)",
                            (CACHE_YOUNGEST_REV, self.youngest))
-            self.log.info('Upgraded cache metadata (youngest_rev=%s)' %
-                          self.youngest_rev)
         else:
             self.youngest = metadata[CACHE_YOUNGEST_REV]
 
         if self.youngest:
             self.youngest = self.repos.normalize_rev(self.youngest)
+            if not self.youngest:
+                self.log.debug('normalize_rev failed (youngest_rev=%r)' %
+                               self.youngest_rev)
         else:
+            self.log.debug('cache metadata undefined (youngest_rev=%r)' %
+                           self.youngest_rev)
             self.youngest = None
 
         # -- retrieve the youngest revision in the repository
@@ -107,9 +112,9 @@ class CachedRepository(Repository):
         repos_youngest = self.repos.youngest_rev
 
         # -- compare them and try to resync if different
-        self.log.info("Compare repos rev [%s] vs. cached rev [%s]" %
-                      (repos_youngest, self.youngest))
         if self.youngest != repos_youngest:
+            self.log.info("repos rev [%s] != cached rev [%s]" %
+                          (repos_youngest, self.youngest))
             if self.youngest:
                 next_youngest = self.repos.next_rev(self.youngest)
             else:
