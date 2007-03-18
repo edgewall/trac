@@ -15,12 +15,15 @@
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">/*<![CDATA[*/
       $(document).ready(function() {
-        $("#completed").click(function() {
-          $("#completeddate").enable(this.checked);
+        function updateCompletedDate() {
+          var checked = $("#completed").checked();
+          $("#completeddate").enable(checked);
           var retarget = $("#retarget");
-          retarget.enable(this.checked);
-          $("#target").enable(this.checked && retarget.checked());
-        }).click();
+          retarget.enable(checked);
+          $("#target").enable(checked && retarget.checked());
+        }
+        $("#completed").click(updateCompletedDate);
+        updateCompletedDate();
         $("#retarget").click(function(){ $("#target").enable(this.checked) });
         $("#name").get(0).focus()
       });
