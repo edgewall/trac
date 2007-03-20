@@ -118,7 +118,7 @@ def _parse_db_str(db_str):
             raise TracError, 'Database connection string %s must start with ' \
                              'scheme:/' % db_str
     else:
-        if rest.startswith('/') and not rest.startswith('//'):
+        if not rest.startswith('//'):
             host = None
             rest = rest[1:]
         elif rest.startswith('///'):
@@ -126,22 +126,22 @@ def _parse_db_str(db_str):
             rest = rest[3:]
         else:
             rest = rest[2:]
-            if rest.find('/') == -1:
+            if '/' not in rest:
                 host = rest
                 rest = ''
             else:
                 host, rest = rest.split('/', 1)
         path = None
 
-    if host and host.find('@') != -1:
+    if host and '@' in host:
         user, host = host.split('@', 1)
-        if user.find(':') != -1:
+        if ':' in user:
             user, password = user.split(':', 1)
         else:
             password = None
     else:
         user = password = None
-    if host and host.find(':') != -1:
+    if host and ':' in host:
         host, port = host.split(':')
         port = int(port)
     else:
@@ -155,7 +155,7 @@ def _parse_db_str(db_str):
             path = "%s:%s" % (rest[0], rest[2:])
 
     params = {}
-    if path.find('?') != -1:
+    if '?' in path:
         path, qs = path.split('?', 1)
         qs = qs.split('&')
         for param in qs:
