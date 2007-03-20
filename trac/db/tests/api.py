@@ -51,6 +51,11 @@ class ParseConnectionStringTestCase(unittest.TestCase):
                                        'path': '/trac'}),
                          _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
 
+    def test_postgres_with_quoted_password(self):
+        self.assertEqual(('postgres', {'user': 'john', 'password': ':@/',
+                                       'host': 'localhost', 'path': '/trac'}),
+                         _parse_db_str('postgres://john:%3a%40%2f@localhost/trac'))
+
     def test_mysql_simple(self):
         self.assertEqual(('mysql', {'host': 'localhost', 'path': '/trac'}),
                          _parse_db_str('mysql://localhost/trac'))

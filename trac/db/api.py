@@ -139,6 +139,10 @@ def _parse_db_str(db_str):
             user, password = user.split(':', 1)
         else:
             password = None
+        if user:
+            user = urllib.unquote(user)
+        if password:
+            password = urllib.unquote(password)
     else:
         user = password = None
     if host and ':' in host:
