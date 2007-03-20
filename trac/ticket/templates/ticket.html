@@ -28,7 +28,7 @@
           $("#resolve_choice").enable($("#resolve").checked());
           $("#reassign_choice").enable($("#reassign").checked());
         }
-        $("#action input[@name='action']").click(updateActionFields);
+        $("//fieldset[@id='action']/input[@name='action']").click(updateActionFields);
         updateActionFields();
       </py:when>
       <py:otherwise>
