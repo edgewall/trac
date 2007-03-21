@@ -227,7 +227,7 @@ SELECT p.value AS __color__,
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status IN ('new', 'assigned', 'reopened') 
   ORDER BY (milestone IS NULL),milestone, p.value, t.type, time
-""" % (db.concat('milestone', "' Release'"), owner)),
+""" % (db.concat("'Milestone '", 'milestone'), owner)),
 #----------------------------------------------------------------------------
 ('Assigned, Active Tickets by Owner',
 """
