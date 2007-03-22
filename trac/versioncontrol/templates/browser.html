@@ -28,10 +28,10 @@
       <ul>
         <li class="first"><a href="${href.changeset(rev, created_path)}">Last Change</a></li>
         <li py:if="file" py:choose="">
-          <a py:when="file.annotate" href="${href.browser(created_path, rev=rev)}" 
+          <a py:when="file.annotate" href="${href.browser(created_path, rev=rev)}"
              title="View file without annotations">
             Normal</a>
-          <a py:otherwise="" href="${href.browser(created_path, rev=rev, annotate=file.annotate)}"
+          <a py:otherwise="" href="${href.browser(created_path, rev=rev, annotate=1)}"
              title="Annotate each line with the last changed revision (this can be time consuming...)">
             Annotate</a>
         </li>

@@ -758,7 +758,7 @@ class SubversionNode(Node):
             from svn import client
             try:
                 client.blame2(repo_url, rev, start, rev, blame_receiver,
-                              client.create_context())
+                              client.create_context(), self.pool())
             except core.SubversionException, e: # svn thinks file is a binary
                 raise TracError('svn blame failed: '+to_unicode(e))
         return annotations
