@@ -510,7 +510,7 @@ def open_environment(env_path=None):
                         'Trac environment.')
 
     env = Environment(env_path)
-    need_upgrade = False
+    needs_upgrade = False
     try:
         needs_upgrade = env.needs_upgrade()
     except Exception, e: # e.g. no database connection
