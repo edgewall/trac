@@ -39,7 +39,6 @@ class CachedRepository(Repository):
         Repository.__init__(self, repos.name, authz, log)
         self.db = db
         self.repos = repos
-        self.sync()
 
     def close(self):
         self.repos.close()
@@ -90,12 +89,9 @@ class CachedRepository(Repository):
 
         # -- retrieve the youngest revision cached so far
         if CACHE_YOUNGEST_REV not in metadata:
-            self.log.info('Initialize "youngest_rev" in cache metadata ...')
-            self.youngest = self.repos.get_youngest_rev_in_cache(self.db) or ''
-            cursor.execute("INSERT INTO system (name, value) VALUES (%s, %s)",
-                           (CACHE_YOUNGEST_REV, self.youngest))
-        else:
-            self.youngest = metadata[CACHE_YOUNGEST_REV]
+            raise TracError('Missing "youngest_rev" in cache metadata')
+        
+        self.youngest = metadata[CACHE_YOUNGEST_REV]
 
         if self.youngest:
             self.youngest = self.repos.normalize_rev(self.youngest)
@@ -207,6 +203,8 @@ class CachedRepository(Repository):
         return self.repos.oldest_rev
 
     def get_youngest_rev(self):
+        if not hasattr(self, 'youngest'):
+            self.sync()
         return self.youngest
 
     def previous_rev(self, rev):
