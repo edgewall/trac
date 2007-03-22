@@ -510,11 +510,13 @@ def open_environment(env_path=None):
                         'Trac environment.')
 
     env = Environment(env_path)
+    need_upgrade = False
     try:
-        if env.needs_upgrade():
-            raise TracError('The Trac Environment needs to be upgraded. '
-                            'Run trac-admin %s upgrade"' % env_path)
+        needs_upgrade = env.needs_upgrade()
     except Exception, e: # e.g. no database connection
         raise TracError("The Trac Environment couldn't check for upgrade. "
                         + str(e))
+    if needs_upgrade:
+        raise TracError('The Trac Environment needs to be upgraded.\n\n'
+                        'Run "trac-admin %s upgrade"' % env_path)
     return env
