@@ -385,13 +385,21 @@ def dispatch_request(environ, start_response):
                                'missing. Trac requires one of these options '
                                'to locate the Trac environment(s).')
     run_once = environ['wsgi.run_once']
-    env = _open_environment(env_path, run_once=run_once)
 
-    if env.base_url:
-        environ['trac.base_url'] = env.base_url
+    env = env_error = None
+    try:
+        env = _open_environment(env_path, run_once=run_once)
+        if env.base_url:
+            environ['trac.base_url'] = env.base_url
+    except TracError, e:
+        env_error = e
 
     req = Request(environ, start_response)
     try:
+        if not env and env_error:
+            from trac.config import default_dir            
+            req.hdf = HDFWrapper([default_dir('templates')])
+            raise HTTPInternalError(env_error.message)
         try:
             try:
                 dispatcher = RequestDispatcher(env)
@@ -404,7 +412,8 @@ def dispatch_request(environ, start_response):
                 env.shutdown(threading._get_ident())
 
     except HTTPException, e:
-        env.log.warn(e)
+        if env:
+            env.log.warn(e)
         if req.hdf:
             req.hdf['title'] = e.reason or 'Error'
             req.hdf['error'] = {
