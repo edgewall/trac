@@ -22,6 +22,7 @@ from trac.util import sorted
 from trac.util.html import Element, html
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
+from trac.wiki.formatter import extract_link
 
 
 class InterTracDispatcher(Component):
@@ -42,7 +43,7 @@ class InterTracDispatcher(Component):
         link = req.args.get('link', '')
         if not link:
             raise TracError('No TracLinks given')
-        link_elt = Context(self.env, req).wiki_to_link(link)
+        link_elt = extract_link(Context(self.env, req), link)
         if isinstance(link_elt, Element):
             href = link_elt.attrib.get('href')
             if href:
