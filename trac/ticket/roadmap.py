@@ -526,7 +526,7 @@ class MilestoneModule(Component):
         # collect fields that can be used for grouping
         for field in ticket_fields:
             if field['type'] == 'select' and field['name'] != 'milestone' \
-                    or field['name'] == 'owner':
+                    or field['name'] in ('owner', 'reporter'):
                 available_groups.append({'name': field['name'],
                                          'label': field['label']})
                 if field['name'] == 'component':
