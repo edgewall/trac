@@ -240,16 +240,13 @@ class Environment(Component, ComponentManager):
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
 
-    def get_repository(self, authname=None, sync=True):
+    def get_repository(self, authname=None):
         """Return the version control repository configured for this
         environment.
         
         @param authname: user name for authorization
         """
-        repos = RepositoryManager(self).get_repository(authname)
-        if sync:
-            repos.sync()
-        return repos
+        return RepositoryManager(self).get_repository(authname)
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize

@@ -71,7 +71,7 @@ class RepositoryManager(Component):
     def pre_process_request(self, req, handler):
         from trac.web.chrome import Chrome        
         if handler is not Chrome(self.env):
-            self.get_repository(req.authname) # triggers a sync if applicable
+            self.get_repository(req.authname).sync()
         return handler
 
     def post_process_request(self, req, template, content_type):
@@ -145,6 +145,9 @@ class Repository(object):
         of the `youngest_rev` property (''will change in 0.12'').
         """
         pass
+
+    def sync(self):
+        """Perform a sync of the repository cache, if relevant."""
 
     def get_quickjump_entries(self, rev):
         """Generate a list of interesting places in the repository.
