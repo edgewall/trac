@@ -30,6 +30,12 @@ else:
             self.assertEqual(datetime.timedelta(hours=3),
                              tz.utcoffset(None))
 
+        def test_posix_conversion(self):
+            tz = get_timezone('Etc/GMT-4')
+            self.assertEqual(datetime.timedelta(hours=4),
+                             tz.utcoffset(None))
+            self.assertEqual('GMT +4:00', tz.zone)
+
 
 def suite():
     suite = unittest.TestSuite()

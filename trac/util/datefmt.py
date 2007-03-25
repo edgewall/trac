@@ -165,19 +165,19 @@ class FixedOffset(tzinfo):
 
     def __init__(self, offset, name):
         self._offset = timedelta(minutes=offset)
-        self._name = name
+        self.zone = name
 
     def __str__(self):
-        return self._name
+        return self.zone
 
     def __repr__(self):
-        return '<FixedOffset "%s" %s>' % (self._name, self._offset)
+        return '<FixedOffset "%s" %s>' % (self.zone, self._offset)
 
     def utcoffset(self, dt):
         return self._offset
 
     def tzname(self, dt):
-        return self._name
+        return self.zone
 
     def dst(self, dt):
         return _zero
@@ -248,28 +248,43 @@ _timezones = [
     FixedOffset(480, 'GMT +8:00'),   FixedOffset(540, 'GMT +9:00'),
     FixedOffset(600, 'GMT +10:00'),  FixedOffset(660, 'GMT +11:00'),
     FixedOffset(720, 'GMT +12:00'),  FixedOffset(780, 'GMT +13:00')]
-_tzmap = dict([(z._name, z) for z in _timezones])
+_tzmap = dict([(z.zone, z) for z in _timezones])
 
+all_timezones = [z.zone for z in _timezones]
 
 try:
-    from pytz import all_timezones, timezone
+    import pytz
+
+    _tzoffsetmap = dict([(tz.utcoffset(None), tz) for tz in _timezones
+                         if tz.zone != 'UTC'])
+
+    def timezone(tzname):
+        tz = get_timezone(tzname)
+        if not tz:
+            raise KeyError(tzname)
+        return tz
 
     def get_timezone(tzname):
         """Fetch timezone instance by name or return `None`"""
         try:
-            return timezone(tzname)
+            tz = pytz.timezone(tzname)
         except (KeyError, IOError):
-            fixedzone = _tzmap.get(tzname)
-            if fixedzone:
-                offset = fixedzone.utcoffset(None)
-                for tz in [timezone(tzname) for tzname in all_timezones
-                           if tzname.startswith('Etc/')]:
-                    if tz.utcoffset(None) == offset:
-                        return tz
-            return None
-    
+            tz = _tzmap.get(tzname)
+        if tz and tzname.startswith('Etc/'):
+            tz = _tzoffsetmap.get(tz.utcoffset(None))
+        return tz
+
+    _pytz_zones = [tzname for tzname in pytz.all_timezones
+                   if not tzname.startswith('Etc/') and
+                      not tzname.startswith('GMT')]
+    # insert just the GMT timezones into the pytz zones at the right location
+    # the pytz zones already include UTC so skip it
+    from bisect import bisect
+    _gmt_index = bisect(_pytz_zones, 'GMT')
+    all_timezones = _pytz_zones[:_gmt_index] + all_timezones[1:] + \
+                    _pytz_zones[_gmt_index:]
+ 
 except ImportError:
-    all_timezones = [z._name for z in _timezones]
 
     def timezone(tzname):
         """Fetch timezone instance by name or raise `KeyError`"""
