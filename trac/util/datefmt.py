@@ -254,11 +254,19 @@ _tzmap = dict([(z._name, z) for z in _timezones])
 try:
     from pytz import all_timezones, timezone
 
+    # monkey-patch a bug in pytz that inverted the +2 and -2 offsets
+    plus_two = timezone('Etc/GMT+2')
+    minus_two = timezone('Etc/GMT-2')
+    if plus_two._utcoffset < minus_two._utcoffset:
+        plus_two._utcoffset, minus_two._utcoffset = \
+               minus_two._utcoffset, plus_two._utcoffset
+    del plus_two, minus_two
+
     def get_timezone(tzname):
         """Fetch timezone instance by name or return `None`"""
         try:
             return timezone(tzname)
-        except KeyError:
+        except (KeyError, IOError):
             fixedzone = _tzmap.get(tzname)
             if fixedzone:
                 offset = fixedzone.utcoffset(None)
