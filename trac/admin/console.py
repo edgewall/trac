@@ -606,7 +606,7 @@ Congratulations!
                            [(k,) for k in CACHE_METADATA_KEYS])
         cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
                            [(k, '') for k in CACHE_METADATA_KEYS])
-        repos = self.__env.get_repository() # this will do the sync()
+        repos = self.__env.get_repository().sync()
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             print cnt, 'revisions cached.',
