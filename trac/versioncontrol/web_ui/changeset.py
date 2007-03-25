@@ -138,6 +138,13 @@ class ChangesetModule(Component):
         is set to true, changeset messages will be single line only, losing
         some formatting (bullet points, etc).""")
 
+    timeline_collapse = BoolOption('timeline', 'changeset_collapse_events',
+                                   'true',
+        """Whether consecutive changesets from the same author having 
+        exactly the same message should be presented as one event.
+        That event will link to the range of changesets in the log view.
+        (''since 0.11'')""")
+
     max_diff_files = IntOption('changeset', 'max_diff_files', 0,
         """Maximum number of modified files for which the changeset view will
         attempt to show the diffs inlined (''since 0.10'').""")
@@ -750,8 +757,13 @@ class ChangesetModule(Component):
             repos = self.env.get_repository(req.authname)
             context = Context(self.env, req)
 
+            if self.timeline_collapse:
+                collapse_changesets = lambda c: (c.author, c.message)
+            else:
+                collapse_changesets = lambda c: c.rev
+                
             for _, changesets in groupby(repos.get_changesets(start, stop),
-                                         key=lambda c: (c.author, c.message)):
+                                         key=collapse_changesets):
                 changesets = list(changesets)
                 chgset = changesets[-1]
                 if len(changesets) > 1:
