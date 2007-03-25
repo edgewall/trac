@@ -30,14 +30,6 @@ else:
             self.assertEqual(datetime.timedelta(hours=3),
                              tz.utcoffset(None))
 
-        def test_pytz_two_offset_inversion(self):
-            tz = get_timezone('Etc/GMT+2')
-            self.assertEqual(datetime.timedelta(hours=2),
-                             tz.utcoffset(None))
-            tz = get_timezone('Etc/GMT-2')
-            self.assertEqual(datetime.timedelta(hours=-2),
-                             tz.utcoffset(None))
-
 
 def suite():
     suite = unittest.TestSuite()
