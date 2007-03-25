@@ -46,7 +46,11 @@ class MySQLConnector(Component):
             import MySQLdb
             self._version = get_pkginfo(MySQLdb).get('version',
                                                      MySQLdb.__version__)
-            self.env.systeminfo.extend([('MySQL', cnx.cnx.get_server_info()),
+            mysql_info = 'server: "%s", client: "%s", thread-safe: %s' % \
+                         (cnx.cnx.get_server_info(),
+                          MySQLdb.get_client_info(),
+                          MySQLdb.thread_safe())
+            self.env.systeminfo.extend([('MySQL', mysql_info),
                                         ('MySQLdb', self._version)])
         return cnx
     
