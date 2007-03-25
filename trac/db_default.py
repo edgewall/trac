@@ -386,7 +386,8 @@ def get_data(db):
                 ('anonymous', 'MILESTONE_VIEW'))),
            ('system',
              ('name', 'value'),
-               (('database_version', str(db_version)),)),
+               (('database_version', str(db_version)),
+                ('youngest_rev', ''))),
            ('report',
              ('author', 'title', 'query', 'description'),
                __mkreports(get_reports(db))))
