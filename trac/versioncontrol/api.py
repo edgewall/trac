@@ -146,8 +146,12 @@ class Repository(object):
         """
         pass
 
-    def sync(self):
-        """Perform a sync of the repository cache, if relevant."""
+    def sync(self, feedback=None):
+        """Perform a sync of the repository cache, if relevant.
+        
+        If specified, `feedback` must be a callback taking a `rev` parameter,
+        and will be called after that `rev` has been synced.
+        """
 
     def get_quickjump_entries(self, rev):
         """Generate a list of interesting places in the repository.

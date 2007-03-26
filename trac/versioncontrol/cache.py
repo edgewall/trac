@@ -63,7 +63,7 @@ class CachedRepository(Repository):
             except NoSuchChangeset:
                 pass # skip changesets currently being resync'ed
 
-    def sync(self):
+    def sync(self, feedback=None):
         cursor = self.db.cursor()
 
         cursor.execute("SELECT name, value FROM system WHERE name IN (%s)" %
@@ -189,6 +189,10 @@ class CachedRepository(Repository):
                     cursor.execute("UPDATE system SET value=%s WHERE name=%s",
                                    (str(self.youngest), CACHE_YOUNGEST_REV))
                     self.db.commit()
+
+                    # 1.5. provide some feedback
+                    if feedback:
+                        feedback(self.youngest)
             finally:
                 # 3. restore permission checking (after 1.)
                 self.repos.authz = authz
