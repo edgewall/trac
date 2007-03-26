@@ -628,7 +628,7 @@ class TracAdmin(cmd.Cmd):
                     repos = self.__env.get_repository()
                     if repos:
                         print ' Indexing repository'
-                        repos.sync(self._resync_feedback)
+                        self._resync(repos)
                 except TracError, e:
                     print>>sys.stderr, "\nWarning:\n"
                     if repository_type == "svn":
@@ -672,8 +672,14 @@ Congratulations!
     _help_resync = [('resync', 'Re-synchronize trac with the repository'),
                     ('resync <rev>', 'Re-synchronize only the given <rev>')]
 
-    def _resync_feedback(self, rev):
-        print ' [%s]\r' % rev,
+    def _resync(self, repos):
+        if hasattr(repos, 'sync'): # introduced "officially" in 0.10.4
+            if repos.sync.func_code.co_argcount == 2:
+                def _feedback(rev):
+                    print ' [%s]\r' % rev,
+                repos.sync(_feedback)
+            else: # cope with plugins already implementing the old interface
+                repos.sync() 
         
     ## Resync
     def do_resync(self, line):
@@ -696,7 +702,7 @@ Congratulations!
         cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
                            [(k, '') for k in CACHE_METADATA_KEYS])
         cnx.commit()
-        repos = env.get_repository().sync(self._resync_feedback)
+        repos = self._resync(env.get_repository())
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             print cnt, 'revisions cached.',
