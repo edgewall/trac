@@ -146,8 +146,12 @@ class Repository(object):
         """
         pass
 
-    def sync(self):
-        """Perform a sync of the repository cache, if relevant."""
+    def sync(self, feedback=None):
+        """Perform a sync of the repository cache, if relevant.
+        
+        If specified, `feedback` must be a callback taking a `rev` parameter,
+        and will be called after that `rev` has been synced.
+        """
 
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the  given revision `rev`."""

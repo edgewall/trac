@@ -628,7 +628,7 @@ class TracAdmin(cmd.Cmd):
                     repos = self.__env.get_repository()
                     if repos:
                         print ' Indexing repository'
-                        repos.sync()
+                        repos.sync(self._resync_feedback)
                 except TracError, e:
                     print>>sys.stderr, "\nWarning:\n"
                     if repository_type == "svn":
@@ -671,12 +671,13 @@ Congratulations!
 
     _help_resync = [('resync', 'Re-synchronize trac with the repository')]
 
+    def _resync_feedback(self, rev):
+        print ' [%s]\r' % rev,
+        
     ## Resync
     def do_resync(self, line):
         from trac.versioncontrol.cache import CACHE_METADATA_KEYS
         print 'Resyncing repository history... '
-        print '(this will take a time proportional to the number of your ' \
-              'changesets)'
         cnx = self.db_open()
         cursor = cnx.cursor()
         cursor.execute("DELETE FROM revision")
@@ -685,7 +686,8 @@ Congratulations!
                            [(k,) for k in CACHE_METADATA_KEYS])
         cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
                            [(k, '') for k in CACHE_METADATA_KEYS])
-        repos = self.__env.get_repository().sync()
+        cnx.commit()
+        repos = self.__env.get_repository().sync(self._resync_feedback)
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             print cnt, 'revisions cached.',
