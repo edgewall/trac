@@ -153,6 +153,9 @@ class Repository(object):
         and will be called after that `rev` has been synced.
         """
 
+    def sync_changeset(self, rev):
+        """Resync the repository cache for the given `rev`, if relevant."""
+
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the  given revision `rev`."""
         raise NotImplementedError

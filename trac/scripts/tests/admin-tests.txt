@@ -22,6 +22,9 @@ hotcopy <backupdir>
 resync
 	-- Re-synchronize trac with the repository
 
+resync <rev>
+	-- Re-synchronize only the given <rev>
+
 upgrade
 	-- Upgrade database to current version
 

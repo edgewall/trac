@@ -318,7 +318,8 @@ class SubversionRepository(Repository):
         self.pool = None
 
     def get_changeset(self, rev):
-        return SubversionChangeset(int(rev), self.authz, self.scope,
+        rev = self.normalize_rev(rev)
+        return SubversionChangeset(rev, self.authz, self.scope,
                                    self.fs_ptr, self.pool)
 
     def get_node(self, path, rev=None):
