@@ -63,6 +63,15 @@ class CachedRepository(Repository):
             except NoSuchChangeset:
                 pass # skip changesets currently being resync'ed
 
+    def sync_changeset(self, rev):
+        cset = self.repos.get_changeset(rev)
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE revision SET time=%s, author=%s, message=%s "
+                       "WHERE rev=%s", (to_timestamp(cset.date),
+                                        cset.author, cset.message,
+                                        (str(cset.rev))))
+        self.db.commit()
+        
     def sync(self, feedback=None):
         cursor = self.db.cursor()
 

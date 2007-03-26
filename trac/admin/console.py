@@ -590,13 +590,22 @@ Congratulations!
            project_dir=os.path.basename(self.envname),
            config_path=os.path.join(self.envname, 'conf', 'trac.ini'))
 
-    _help_resync = [('resync', 'Re-synchronize trac with the repository')]
+    _help_resync = [('resync', 'Re-synchronize trac with the repository'),
+                    ('resync <rev>', 'Re-synchronize only the given <rev>')]
 
     def _resync_feedback(self, rev):
         print ' [%s]\r' % rev,
         
     ## Resync
     def do_resync(self, line):
+        env = self.env_open()
+        argv = self.arg_tokenize(line)
+        if argv:
+            rev = argv[0]
+            if rev:
+                env.get_repository().sync_changeset(rev)
+                print '%s resynced.' % rev
+                return
         from trac.versioncontrol.cache import CACHE_METADATA_KEYS
         print 'Resyncing repository history... '
         cnx = self.db_open()
@@ -608,7 +617,7 @@ Congratulations!
         cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
                            [(k, '') for k in CACHE_METADATA_KEYS])
         cnx.commit()
-        repos = self.__env.get_repository().sync(self._resync_feedback)
+        repos = env.get_repository().sync(self._resync_feedback)
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             print cnt, 'revisions cached.',

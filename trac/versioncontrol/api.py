@@ -153,6 +153,9 @@ class Repository(object):
         and will be called after that `rev` has been synced.
         """
 
+    def sync_changeset(self, rev):
+        """Resync the repository cache for the given `rev`, if relevant."""
+
     def get_quickjump_entries(self, rev):
         """Generate a list of interesting places in the repository.
 
