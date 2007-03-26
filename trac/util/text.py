@@ -105,6 +105,12 @@ def to_utf8(text, charset='iso-8859-15'):
         return u.encode('utf-8')
 
 
+class unicode_passwd(unicode):
+    """Conceal the actual content of the string when `repr` is called."""
+    def __repr__(self):
+        return '*******'
+
+
 # -- Plain text formatting
 
 def print_table(data, headers=None, sep='  ', out=None):
