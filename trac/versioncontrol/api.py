@@ -149,8 +149,10 @@ class Repository(object):
     def sync(self, feedback=None):
         """Perform a sync of the repository cache, if relevant.
         
-        If specified, `feedback` must be a callback taking a `rev` parameter,
-        and will be called after that `rev` has been synced.
+        If given, `feedback` must be a callback taking a `rev` parameter.
+        The backend will call this function for each `rev` it decided to
+        synchronize, once the synchronization changes are committed to the 
+        cache.
         """
 
     def sync_changeset(self, rev):
