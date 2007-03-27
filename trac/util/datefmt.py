@@ -22,6 +22,7 @@ import re
 import sys
 import time
 from datetime import tzinfo, timedelta, datetime
+from trac.util.text import to_unicode
 
 # Date/time utilities
 
@@ -267,7 +268,9 @@ try:
     def get_timezone(tzname):
         """Fetch timezone instance by name or return `None`"""
         try:
-            tz = pytz.timezone(tzname)
+            # if given unicode parameter, pytz.timezone fails with:
+            # "type() argument 1 must be string, not unicode"
+            tz = pytz.timezone(to_unicode(tzname).encode('ascii', 'replace'))
         except (KeyError, IOError):
             tz = _tzmap.get(tzname)
         if tz and tzname.startswith('Etc/'):

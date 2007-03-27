@@ -36,11 +36,18 @@ else:
                              tz.utcoffset(None))
             self.assertEqual('GMT +4:00', tz.zone)
 
+        def test_unicode_input(self):
+            tz = get_timezone(u'Etc/GMT-4')
+            self.assertEqual(datetime.timedelta(hours=4),
+                             tz.utcoffset(None))
+            self.assertEqual('GMT +4:00', tz.zone)
 
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
         suite.addTest(unittest.makeSuite(PytzTestCase, 'test'))
+    else:
+        print "SKIP: utils/tests/datefmt.py (no pytz installed)"
     return suite
 
 if __name__ == '__main__':
