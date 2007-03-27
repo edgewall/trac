@@ -112,7 +112,9 @@ class RepositoryManager(Component):
             assert tid == threading._get_ident()
             try:
                 self._lock.acquire()
-                self._cache.pop(tid, None)
+                repos = self._cache.pop(tid, None)
+                if repos:
+                    repos.close()
             finally:
                 self._lock.release()
 
