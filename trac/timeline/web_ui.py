@@ -18,7 +18,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from datetime import datetime, timedelta
-from heapq import heappush, heappop
 import pkg_resources
 import re
 import time
@@ -30,6 +29,7 @@ from trac.config import IntOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
+from trac.util.compat import sorted
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
 from trac.util.text import to_unicode
@@ -144,18 +144,18 @@ class TimelineModule(Component):
                     # compatibility with 0.10 providers
                     if isinstance(event, tuple):
                         event = self._event_from_tuple(req, event)
-                    heappush(events, (-to_timestamp(event.date), event))
+                    events.append(event)
             except Exception, e: # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
 
+        events = sorted(events, key=lambda e: to_timestamp(e.date), reverse=True)
+
         # prepare sorted global list
-        data_events = data['events']
-        while events:
-            _, event = heappop(events)
-            data_events.append(event)
-            if maxrows and len(data_events) > maxrows:
-                break
+        if maxrows:
+            data['events'] = events[:maxrows]
+        else:
+            data['events'] = events
 
         if format == 'rss':
             # Get the email addresses of all known users

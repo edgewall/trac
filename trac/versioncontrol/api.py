@@ -14,7 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from heapq import heappop, heappush
 try:
     import threading
 except ImportError:
@@ -81,18 +80,19 @@ class RepositoryManager(Component):
 
     def get_repository(self, authname):
         if not self._connector:
-            candidates = []
-            for connector in self.connectors:
-                for repos_type_, prio in connector.get_supported_types():
-                    if self.repository_type != repos_type_:
-                        continue
-                    heappush(candidates, (-prio, connector))
-            if not candidates:
+            candidates = [
+                (prio, connector)
+                for connector in self.connectors
+                for repos_type, prio in connector.get_supported_types()
+                if repos_type == self.repository_type
+            ]
+            if candidates:
+                self._connector = max(candidates)[1]
+            else:
                 raise TracError('Unsupported version control system "%s". '
                                 'Check that the Python bindings for "%s" are '
                                 'correctly installed.' %
                                 ((self.repository_type,)*2))
-            self._connector = heappop(candidates)[1]
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
