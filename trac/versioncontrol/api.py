@@ -148,17 +148,19 @@ class Repository(object):
         """
         pass
 
-    def sync(self, feedback=None):
+    def sync(self, rev_callback=None):
         """Perform a sync of the repository cache, if relevant.
         
-        If given, `feedback` must be a callback taking a `rev` parameter.
+        If given, `rev_callback` must be a callable taking a `rev` parameter.
         The backend will call this function for each `rev` it decided to
         synchronize, once the synchronization changes are committed to the 
         cache.
         """
+        pass
 
     def sync_changeset(self, rev):
         """Resync the repository cache for the given `rev`, if relevant."""
+        raise NotImplementedError
 
     def get_quickjump_entries(self, rev):
         """Generate a list of interesting places in the repository.
