@@ -47,7 +47,8 @@ class QuerySyntaxError(Exception):
 class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
-                 order=None, desc=0, group=None, groupdesc=0, verbose=0, limit=None):
+                 order=None, desc=0, group=None, groupdesc=0, verbose=0,
+                 limit=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -576,7 +577,8 @@ class QueryModule(Component):
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
                       'desc' in req.args, req.args.get('group'),
-                      'groupdesc' in req.args, 'verbose' in req.args, req.args.get('limit'))
+                      'groupdesc' in req.args, 'verbose' in req.args,
+                      req.args.get('limit'))
 
         context = Context(self.env, req)
         if 'update' in req.args:
