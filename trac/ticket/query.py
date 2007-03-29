@@ -47,7 +47,7 @@ class QuerySyntaxError(Exception):
 class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
-                 order=None, desc=0, group=None, groupdesc=0, verbose=0):
+                 order=None, desc=0, group=None, groupdesc=0, verbose=0, limit=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -55,6 +55,7 @@ class Query(object):
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
+        self.limit = limit
         self.verbose = verbose
         self.fields = TicketSystem(self.env).get_ticket_fields()
         field_names = [f['name'] for f in self.fields]
@@ -77,7 +78,7 @@ class Query(object):
 
     def from_string(cls, env, req, string, **kw):
         filters = string.split('&')
-        kw_strs = ['order', 'group']
+        kw_strs = ['order', 'group', 'limit']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         constraints = {}
         cols = []
@@ -426,6 +427,11 @@ class Query(object):
                 sql.append(",")
         if self.order != 'id':
             sql.append(",t.id")
+            
+        # Limit number of records
+        if self.limit:
+            sql.append("\nLIMIT %s")
+            args.append(self.limit)       
 
         return "".join(sql), args
 
@@ -570,7 +576,7 @@ class QueryModule(Component):
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
                       'desc' in req.args, req.args.get('group'),
-                      'groupdesc' in req.args, 'verbose' in req.args)
+                      'groupdesc' in req.args, 'verbose' in req.args, req.args.get('limit'))
 
         context = Context(self.env, req)
         if 'update' in req.args:
