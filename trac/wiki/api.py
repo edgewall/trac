@@ -54,7 +54,7 @@ class IWikiChangeListener(Interface):
 
 
 class IWikiPageManipulator(Interface):
-    """Extension point interface for components that need to to specific
+    """Extension point interface for components that need to do specific
     pre and post processing of wiki page changes.
     
     Unlike change listeners, a manipulator can reject changes being committed

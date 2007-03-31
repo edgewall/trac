@@ -512,11 +512,15 @@ class IRequestHandler(Interface):
         """Return whether the handler wants to process the given request."""
 
     def process_request(req):
-        """Process the request. Should return a (template_name, content_type)
-        tuple, where `template` is the ClearSilver template to use (either
-        a `neo_cs.CS` object, or the file name of the template), and
-        `content_type` is the MIME type of the content. If `content_type` is
-        `None`, "text/html" is assumed.
+        """Process the request. For ClearSilver, return a (template_name,
+        content_type) tuple, where `template` is the ClearSilver template to use
+        (either a `neo_cs.CS` object, or the file name of the template), and
+        `content_type` is the MIME type of the content. For Genshi, return a
+        (template_name, data, content_type) tuple, where `data` is a dictionary
+        of substitutions for the template.
+
+        For both templating systems, "text/html" is assumed if `content_type` is
+        `None`.
 
         Note that if template processing should not occur, this method can
         simply send the response itself and not return anything.
@@ -553,7 +557,7 @@ class IRequestFilter(Interface):
         
         `data` may be update in place.
 
-        Always returns a tuple of (template, content_type), even if
+        Always returns a tuple of (template, data, content_type), even if
         unchanged.
 
         (Since 0.11 - not yet stabilized)
