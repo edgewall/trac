@@ -137,7 +137,8 @@ class CommitHook:
     def __init__(self, project=options.project, author=options.user,
                  rev=options.rev, url=options.url):
         self.env = open_environment(project)
-        repos = self.env.get_repository() # will do a `sync` if needed
+        repos = self.env.get_repository()
+        repos.sync()
         
         # Instead of bothering with the encoding, we'll use unicode data
         # as provided by the Trac versioncontrol API (#1310).
