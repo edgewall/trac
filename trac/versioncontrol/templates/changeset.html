@@ -68,24 +68,26 @@
         <py:with vars="ndiffs = item.diffs is not None and len(item.diffs) or 0;
                        nprops = len(item.props);
                        is_removal = cl == 'rem';
-                       path = is_removal and item.old.path or item.new.path;
-                       path = len(files) == 1 and path or path.__getitem__(slice(len(location), None)).strip('/')"><!--! FIXME: revert r4686 once 0.4 becomes the required Genshi version. See #4647. -->
+                       path = is_removal and item.old.get('path') or item.new.get('path');
+                       path = len(files) == 1 and path or (path and path[len(location):].strip('/'))">
           <div class="$cl"> </div>
           <py:choose>
             <a py:when="is_removal" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
-              $path</a>
+              $path
+            </a>
             <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
-              ${path or (location and '.') or '(root)'}</a>
+              ${path or (location and '.') or '(root)'}
+            </a>
           </py:choose>
           <span class="comment">($kind)</span>
-          <py:if test="item.old.path and item.change == 'copy' or item.change == 'move'">
+          <py:if test="item.old and item.old.get('path') and item.change == 'copy' or item.change == 'move'">
             <small><em>
-                ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.href">
-                  $item.old.path</a>)
-              </em></small>
+              ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.href">
+               $item.old.path</a>)
+            </em></small>
           </py:if>
           <py:choose>
-            <py:when test="item.hide_diff">
+            <py:when test="'hide_diff' in item">
               (<a title="Show differences" href="$item.href">view diffs</a>)
             </py:when>
             <py:when test="ndiffs + nprops &gt; 0">

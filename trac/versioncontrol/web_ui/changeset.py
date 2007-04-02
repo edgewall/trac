@@ -277,7 +277,7 @@ class ChangesetModule(Component):
                     'new_path': new_path, 'new_rev': new}
         data['diff'] = diff_data
         data['wiki_format_messages'] = self.wiki_format_messages
-        
+
         if chgset:
             chgset = repos.get_changeset(new)
             # TODO: find a cheaper way to reimplement r2636
@@ -336,7 +336,6 @@ class ChangesetModule(Component):
 
     def _render_html(self, req, repos, chgset, restricted, xhr, data):
         """HTML version"""
-        data['chgset'] = chgset and True
         data['restricted'] = restricted
         context = Context(self.env, req)
         browser = BrowserModule(self.env)
@@ -418,7 +417,8 @@ class ChangesetModule(Component):
                     old_path=data['old_path'], old_rev=data['old_rev']):
                     yield d
             title = self.title_for_diff(data)
-            
+            data['changeset'] = False
+
         data['title'] = title
         data['context'] = context
 

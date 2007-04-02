@@ -12,7 +12,7 @@
 
   <body>
     <div id="ctxtnav" class="nav">
-      <ul py:with="prev = chrome.links.prev; next = chrome.links.next">
+      <ul py:with="prev = chrome.links.get('prev'); next = chrome.links.get('next')">
         <li class="first${not (prev or next) and ' last' or ''}">
           <a href="${href.browser(path)}">View Latest Revision</a>
         </li>
@@ -54,13 +54,25 @@
               </label>
             </fieldset>
           </div>
-          <label>View log starting at <input type="text" id="rev" name="rev" value="$rev" size="5" /></label>
-          <label>and back to <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" /></label>
+          <label>
+            View log starting at
+            <input type="text" id="rev" name="rev" value="$rev" size="5" />
+          </label>
+          <label>
+            and back to
+            <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" />
+          </label>
           <br />
-          <label>Show at most <input type="text" id="limit" name="limit" value="$limit" size="2" maxlength="3" /></label> revisions per page.
+          <label>
+            Show at most
+            <input type="text" id="limit" name="limit" value="$limit" size="3" maxlength="3" />
+            revisions per page.
+          </label>
           <br />
-          <label><input type="checkbox" id="verbose" name="verbose" checked="${verbose and 'checked' or None}" />
-            Show full log messages</label>
+          <label>
+            <input type="checkbox" id="verbose" name="verbose" checked="${verbose and 'checked' or None}" />
+            Show full log messages
+          </label>
         </div>
         <div class="buttons">
           <input type="submit" value="Update" />
@@ -104,7 +116,7 @@
                              change_context = context('changeset', change.rev);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
-                <tr py:if="item.change and item.copyfrom_path" class="$odd_even">
+                <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
                   <td />
                   <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
                     copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
@@ -166,7 +178,7 @@
       </form>
 
       <div id="help">
-        <strong>Note:</strong> See <a href="${href.wiki(TracRevisionLog)}">TracRevisionLog</a>
+        <strong>Note:</strong> See <a href="${href.wiki('TracRevisionLog')}">TracRevisionLog</a>
         for help on using the revision log.
       </div>
 

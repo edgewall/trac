@@ -438,7 +438,8 @@ def dispatch_request(environ, start_response):
         if env:
             env.log.warn(e)
         title = e.reason or 'Error'
-        data = {'title': title, 'type': 'TracError', 'message': e.message}
+        data = {'title': title, 'type': 'TracError', 'message': e.message,
+                'frames': [], 'traceback': None}
         try:
             req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
         except RequestDone:
