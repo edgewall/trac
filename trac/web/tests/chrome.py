@@ -139,7 +139,8 @@ class ChromeTestCase(unittest.TestCase):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
                    href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi')
         nav = Chrome(self.env).prepare_request(req)['nav']
-        self.assertEqual({'name': 'test', 'label': 'Test'}, nav['metanav'][0])
+        self.assertEqual({'name': 'test', 'label': 'Test', 'active': False},
+                         nav['metanav'][0])
 
     def test_nav_contributor_active(self):
         class TestNavigationContributor(Component):

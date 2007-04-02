@@ -52,7 +52,7 @@ class PatchRenderer(Component):
         if not changes:
             raise TracError, 'Invalid unified diff content'
         data = {'diff': {'style': 'inline'}, 'no_id': True,
-                'changes': changes, 'longcol': 'File'}
+                'changes': changes, 'longcol': 'File', 'shortcol': ''}
 
         add_script(req, 'common/js/diff.js')
         add_stylesheet(req, 'common/css/diff.css')

@@ -66,12 +66,13 @@
       <script py:for="script in chrome.late_scripts"
               type="${script.type}" src="${script.href}"></script>
 
-      <div id="altlinks" py:if="chrome.links.alternate">
+      <div id="altlinks" py:if="'alternate' in chrome.links">
         <h3>Download in other formats:</h3>
         <ul>
           <li py:for="idx, link in enumerate(chrome.links.alternate)"
-            class="${first_last(idx, chrome.links.alternate)}">
-            <a rel="nofollow" href="${link.href}" class="${link['class']}" py:content="link.title" />
+              class="${first_last(idx, chrome.links.alternate)}">
+            <a rel="nofollow" href="${link.href}" class="${link['class']}"
+               py:content="link.title" />
           </li>
         </ul>
       </div>

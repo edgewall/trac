@@ -279,11 +279,13 @@ class TicketModule(Component):
             self._do_create(context) # ...redirected
 
         # Preview a new ticket
-        data = {}
-        data['ticket'] = ticket
-        data['context'] = context
-
-        data['author_id'] = reporter_id
+        data = {
+            'ticket': ticket,
+            'context': context,
+            'author_id': reporter_id,
+            'actions': [],
+            'version': None
+        }
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -313,11 +315,16 @@ class TicketModule(Component):
                            Milestone(self.env, opt, db=context.db).is_completed]
                 # TODO:    context('milestone', opt).resource.is_completed
                 field['options'] = options
+            field.setdefault('optional', False)
+            field.setdefault('options', [])
+            field.setdefault('skip', False)
             data['fields'].append(field)
 
         if 'TICKET_APPEND' in req.perm:
             data['can_attach'] = True
             data['attachment'] = req.args.get('attachment')
+        else:
+            data['can_attach'] = False
 
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket.html', data, None
@@ -327,15 +334,11 @@ class TicketModule(Component):
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
         id = int(req.args.get('id'))
-        
         context = Context(self.env, req)('ticket', id)
-        
         ticket = context.resource
-        
-        data = {}
-        data['ticket'] = ticket
-        data['context'] = context
-        
+
+        data = {'ticket': ticket, 'context': context, 'comment': None}
+
         if action in ('history', 'diff'):
             field = req.args.get('field')
             if field:
@@ -361,11 +364,11 @@ class TicketModule(Component):
                 data['reassign_owner'] = req.args.get('reassign_choice') \
                                          or req.authname
                 data['resolve_resolution'] = req.args.get('resolve_choice')
-                comment = req.args.get('comment')
-                if comment:
-                    data['comment'] = comment
+                data['comment'] = req.args.get('comment')
         else:
+            data['action'] = None
             data['reassign_owner'] = req.authname
+            data['resolve_resolution'] = None
             # Store a timestamp in order to detect "mid air collisions"
             data['timestamp'] = str(ticket.time_changed)
 
@@ -431,7 +434,7 @@ class TicketModule(Component):
                 change['version'] = change['cnum']
                 history.append(change)
         return history
-        
+
     def _render_history(self, context, data, text_fields):
         """Extract the history for a ticket description."""
         
@@ -542,10 +545,9 @@ class TicketModule(Component):
                     props.append({'name': k,
                                   'old': {'name': k, 'value': old},
                                   'new': {'name': k, 'value': new}})
-        changes.append({'props': props,
+        changes.append({'props': props, 'diffs': [],
                         'new': version_info(new_version),
                         'old': version_info(old_version)})
-
 
         # -- text diffs
         diff_style, diff_options, diff_data = get_diff_options(req)
@@ -567,7 +569,7 @@ class TicketModule(Component):
                                 ignore_case='-i' in diff_options,
                                 ignore_space_changes='-b' in diff_options)
 
-            changes.append({'diffs': diffs,
+            changes.append({'diffs': diffs, 'props': [],
                             'new': version_info(new_version, field),
                             'old': version_info(old_version, field)})
 
@@ -585,14 +587,15 @@ class TicketModule(Component):
 
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
-        
+
         data.update({
             'title': 'Ticket Diff',
             'old_version': old_version, 'new_version': new_version,
             'changes': changes, 'diff': diff_data,
             'num_changes': num_changes, 'change': new_change,
-            'old_ticket': old_ticket, 'new_ticket': new_ticket
-            })
+            'old_ticket': old_ticket, 'new_ticket': new_ticket,
+            'longcol': '', 'shortcol': ''
+        })
 
         return 'diff_view.html', data, None
 
@@ -765,7 +768,7 @@ class TicketModule(Component):
 
         replyto = req.args.get('replyto')
         version = req.args.get('version', None)
-        
+
         data['replyto'] = replyto
         if version is not None:
             try:
@@ -773,6 +776,7 @@ class TicketModule(Component):
             except ValueError:
                 version = None
         data['version'] = version
+        data['description_change'] = None
 
         # -- Ticket fields
         types = {}
@@ -794,17 +798,13 @@ class TicketModule(Component):
                     # possible values
                     options.append(value)
                 field['options'] = options
-            if name in ('summary', 'reporter', 'description', 'status',
-                        'resolution', 'owner'):
-                field['skip'] = True
+            field.setdefault('optional', False)
+            field.setdefault('options', [])
+            field['skip'] = name in ('summary', 'reporter', 'description',
+                                     'status', 'resolution', 'owner')
             fields.append(field)
 
         data['author_id'] = author_id
-
-        # FIXME: get rid of this once datetime branch is merged
-        data['opened'] = ticket.time_created
-        if ticket.time_changed != ticket.time_created:
-            data['lastmod'] = ticket.time_changed
 
         # -- Ticket Change History
 
@@ -874,7 +874,7 @@ class TicketModule(Component):
 
         if version is not None:
             ticket.values.update(values)
-            
+
         data.update({
             'fields': fields, 'changes': changes, 'field_types': types,
             'replies': replies, 'cnum': cnum + 1,
@@ -884,7 +884,7 @@ class TicketModule(Component):
                             req.href.attachment('ticket', ticket.id)),
             'actions': TicketSystem(self.env).get_available_actions(ticket,
                                                                     req.perm)
-            })
+        })
 
     def grouped_changelog_entries(self, ticket, db, when=None):
         """Iterate on changelog entries, consolidating related changes

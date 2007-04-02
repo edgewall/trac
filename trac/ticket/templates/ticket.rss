@@ -4,11 +4,11 @@
                    xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.rss" />
   <channel py:with="abs_context = context(abs_urls=True)">
-    <title>${project.name}: Ticket $title</title>
+    <title>${project.name}: Ticket #${ticket.id}</title>
     <link>${abs_href.ticket(ticket.id)}</link>
     <description>${unicode(wiki_to_html(abs_context, ticket.description))}</description>
     <language>en-us</language>
-    <image py:if="chrome.logo.src">
+    <image py:if="'src' in chrome.logo">
       <title>$project.name</title>
       <url>$chrome.logo.src</url>
       <link>${abs_href.ticket(ticket.id)}</link>

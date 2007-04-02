@@ -10,7 +10,7 @@
   <head>
     <title>
       <py:choose>
-        <py:when test="ticket.id">
+        <py:when test="ticket.exists">
           #${ticket.id} (${ticket.summary})
         </py:when>
         <py:otherwise>
@@ -57,12 +57,11 @@
           </py:otherwise>
         </py:choose>
 
-        <py:if test="ticket.status">
+        <py:if test="ticket.exists">
           <span class="status">(${ticket.status} <py:if
               test="ticket.type">${ticket.type}</py:if><py:if
               test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
           <py:choose test="">
-            <py:when test="type(version) is Undefined" />
             <py:when test="version is None" />
             <py:when test="version == 0">
               &mdash; at <a href="#comment:description">Initial Version</a>
@@ -77,14 +76,14 @@
       <!-- Do not show the ticket preview when the user first comes to the "New
            Ticket" page.  Wait until they hit preview.  ticket.status is defined if the
            ticket exists, or we are previewing a new ticket -->
-      <py:if test="ticket.status">
+      <py:if test="ticket.exists">
         <!-- Ticket number, summary, etc heading -->
         <!-- Ticket (pre)view -->
         <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.id)) and {'class':'ticketdraft'} or {}">
           <div class="date">
-            <p py:if="opened">Opened ${dateinfo(opened)} ago</p>
-            <p py:if="lastmod">Last modified ${dateinfo(lastmod)} ago</p>
-            <p py:if="not opened"><i>(future ticket)</i></p>
+            <p py:if="ticket.exists">Opened ${dateinfo(ticket.time_created)} ago</p>
+            <p py:if="ticket.time_changed != ticket.time_created">Last modified ${dateinfo(ticket.time_changed)} ago</p>
+            <p py:if="not ticket.exists"><i>(future ticket)</i></p>
           </div>
           <!-- use a placeholder if it's a new ticket -->
           <h2 class="summary searchable">
@@ -115,7 +114,7 @@
                   <py:if test="field">${field.label or field.name}:</py:if>
                 </th>
                 <td py:if="idx == 0 or not fullrow"
-                    class="${field.name in ('cc', 'keywords') and 'searchable' or None}"
+                    class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
                     colspan="${fullrow and 3 or None}">
                   <py:if test="field">${ticket[field.name]}</py:if>
                 </td>
@@ -133,7 +132,7 @@
                 </span>
                 Description
                 <span py:if="description_change" class="lastmod"
-                  title="$description_change.date">
+                      title="$description_change.date">
                   (last modified by ${authorinfo(description_change.author)})
                   (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
                 </span>
@@ -157,13 +156,14 @@
           <div id="changelog">
             <form py:for="change in changes" method="get" action="#comment"
                   class="printableform">
-              <div py:attrs="change.preview and {'class':'ticketdraft', 'id':'preview'} or {'class':'change'}">
-                <h3 class="change" id="${change.cnum and 'comment:%d' % change.cnum or ''}">
-                  <span py:if="change.cnum and 'TICKET_APPEND' in perm" class="inlinebuttons">
+              <div py:attrs="'preview' in change and {'class':'ticketdraft', 'id':'preview'} or {'class':'change'}">
+                <h3 class="change" id="${'cnum' in change and 'comment:%d' % change.cnum or None}">
+                  <span py:if="'cnum' in change and 'TICKET_APPEND' in perm" class="inlinebuttons">
                     <input type="hidden" name="replyto" value="${change.cnum}" />
                     <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                   </span>
-                  <span class="threading" py:with="change_replies = replies[str(change.cnum)]">
+                  <span class="threading" py:if="replies and 'cnum' in change"
+                        py:with="change_replies = replies[str(change.cnum)]">
                     <py:def function="commentref(prefix, cnum)">
                       <a href="#comment:$cnum"><small>$prefix$cnum</small></a>
                     </py:def>
@@ -180,7 +180,7 @@
                     &nbsp;
                   </span>
                 <py:choose>
-                  <py:when test="change.preview">
+                  <py:when test="'preview' in change">
                     Preview of change by ${authorinfo(change.author)}
                   </py:when>
                   <py:otherwise>
@@ -200,7 +200,7 @@
                         changed
                         <py:choose>
                           <py:when test="field_types[field_name] == 'textarea'">
-                            (<a py:strip="not change.cnum" href="${href.ticket(ticket.id, action='diff', version=change.cnum)}">diff</a>)
+                            (<a py:strip="'cnum' not in change" href="${href.ticket(ticket.id, action='diff', version=change.cnum)}">diff</a>)
                           </py:when>
                           <py:otherwise>
                             from <em>${field.old}</em> to <em>${field.new}</em>
@@ -258,15 +258,16 @@ ${comment}</textarea></p>
           </fieldset>
         </div>
 
-        <fieldset id="properties" py:if="'TICKET_CHGPROP' in req.perm or ('TICKET_CREATE' in req.perm and not ticket.id)"
+        <fieldset id="properties"
+                  py:if="'TICKET_CHGPROP' in req.perm or (not ticket.exists and 'TICKET_CREATE' in req.perm)"
                   py:with="fields = [f for f in fields if not f.skip]">
-          <legend>${ticket.id and 'Change' or 'Set'} Properties</legend>
+          <legend>${ticket.exists and 'Change ' or ''}Properties</legend>
           <table>
             <tr>
               <th><label for="field-summary">Summary:</label></th>
               <td class="fullrow" colspan="3">
-                <input type="text" id="field-summary" name="field_summary" value="${ticket.summary}"
-                  size="70" />
+                <input type="text" id="field-summary" name="field_summary"
+                       value="${ticket.exists and ticket.summary or None}" size="70" />
               </td>
             </tr>
             <py:if test="'TICKET_ADMIN' in perm">
@@ -274,7 +275,7 @@ ${comment}</textarea></p>
                 <th><label for="field-reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">
                   <input type="text" id="field-reporter" name="field_reporter"
-                    value="${ticket.reporter}" size="70" />
+                         value="${ticket.exists and ticket.reporter or author_id}" size="70" />
                 </td>
               </tr>
             </py:if>
@@ -282,8 +283,9 @@ ${comment}</textarea></p>
               <tr>
                 <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">
-                  <textarea id="field-description" name="field_description" class="wikitext"
-                    rows="10" cols="68" py:content="ticket.description"></textarea>
+                  <textarea id="field-description" name="field_description"
+                            class="wikitext" rows="10" cols="68"
+                            py:content="ticket.exists and ticket.description or None"></textarea>
                 </td>
               </tr>
             </py:if>
@@ -300,7 +302,7 @@ ${comment}</textarea></p>
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
-                              selected="${ticket[field.name] == option or None}"
+                              selected="${(ticket.exists and ticket[field.name] == option) or None}"
                               py:content="option"></option>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
@@ -308,17 +310,17 @@ ${comment}</textarea></p>
                               py:content="ticket[field.name]"></textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                             checked="${ticket[field.name] == '1' and 'checked' or None}" value="1" />
+                             checked="${(ticket.exists and ticket[field.name] == '1' and 'checked') or None}" value="1" />
                       <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                     </span>
                     <label py:when="'radio'"
                            py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="field_${field.name}" value="${option}"
-                             checked="${ticket[field.name] == option or None}" />
+                             checked="${(ticket.exists and ticket[field.name] == option) or None}" />
                       ${option}
                     </label>
                     <input py:otherwise="" type="text" id="field-${field.name}"
-                           name="field_${field.name}" value="${ticket[field.name]}" />
+                           name="field_${field.name}" value="${ticket.exists and ticket[field.name] or None}" />
                   </py:choose>
                 </td>
               </py:for>
@@ -363,7 +365,7 @@ ${comment}</textarea></p>
           </fieldset>
         </py:choose>
 
-        <p py:if="can_attach">
+        <p py:if="not ticket.exists and can_attach">
           <label>
             <input type="checkbox" name="attachment" checked="${attachment or None}" />
             I have files to attach to this ticket
@@ -371,11 +373,13 @@ ${comment}</textarea></p>
         </p>
         <div class="buttons">
           <input py:if="not ticket.id" type="hidden" name="field_status" value="new" />
-          <input type="hidden" name="ts" value="${timestamp}" />
-          <input type="hidden" name="replyto" value="${replyto}" />
-          <input type="hidden" name="cnum" value="${cnum}" />
+          <py:if test="ticket.exists">
+            <input type="hidden" name="ts" value="${timestamp}" />
+            <input type="hidden" name="replyto" value="${replyto}" />
+            <input type="hidden" name="cnum" value="${cnum}" />
+          </py:if>
           <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
-          <input type="submit" py:attrs="ticket.id and {'value':'Submit changes'} or {'value':'Create ticket'}" />
+          <input type="submit" py:attrs="ticket.exists and {'value':'Submit changes'} or {'value':'Create ticket'}" />
         </div>
 
       </form>

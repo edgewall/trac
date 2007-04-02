@@ -36,6 +36,7 @@ from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
+
 class ReportModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
@@ -286,7 +287,12 @@ class ReportModule(Component):
         #  * col_ means finish the current group and start a new one
         header_groups = [[]]
         for idx, col in enumerate(cols):
-            header = {'col': col, 'title': col.strip('_').capitalize()}
+            header = {
+                'col': col,
+                'title': col.strip('_').capitalize(),
+                'hidden': False,
+                'asc': False
+            }
 
             if col == sort_col:
                 header['asc'] = asc
@@ -298,7 +304,7 @@ class ReportModule(Component):
                 results = sorted(results, key=sortkey, reverse=(not asc))
 
             header_group = header_groups[-1]
-            
+
             if col.startswith('__') and col.endswith('__'): # __col__
                 header['hidden'] = True
             elif col[0] == '_' and col[-1] == '_':          # _col_

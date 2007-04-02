@@ -25,8 +25,8 @@
               $("#traceback ul").fadeIn("fast");
             });
           }
+          return false;
         });
-        return false;
       });
     /*]]>*/</script>
   </head>
@@ -116,13 +116,6 @@ ${traceback}
                 the Trac project site, where you can describe the problem and
                 explain how to reproduce it.</p>
               </form>
-              <h2>System Information:</h2>
-              <table class="listing" id="systeminfo">
-                <tr py:for="name, value in trac.systeminfo">
-                  <th>$name:</th>
-                  <td>$value</td>
-                </tr>
-              </table>
               <py:if test="frames">
                 <h2>Python Traceback</h2>
                 <div id="traceback">
@@ -136,7 +129,7 @@ ${traceback}
                       </a>
                       <div py:if="frame.line" class="source" style="display: none">
                         <h3>Code fragment:</h3>
-                        <ol start="${frame.lineno - len(frame.lines_before)}">
+                        <ol start="${frame.lineno + 1 - len(frame.lines_before)}">
                           <li py:for="line in frame.lines_before"><code>${line or u'\xa0'}</code></li>
                           <li class="current"><code>${frame.line or u'\xa0'}</code></li>
                           <li py:for="line in frame.lines_after"><code>${line or u'\xa0'}</code></li>
@@ -157,12 +150,19 @@ ${traceback}
                       </div>
                     </li>
                   </ul>
-                  <pre style="display: none"><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno}, in ${frame.function}<py:if test="frame.line">
+                  <pre style="display: none"><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}<py:if test="frame.line">
   ${frame.line.lstrip()}
 </py:if></py:for></pre>
                   <p><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
                 </div>
               </py:if>
+              <h2>System Information:</h2>
+              <table class="listing" id="systeminfo">
+                <tr py:for="name, value in trac.systeminfo">
+                  <th>$name:</th>
+                  <td>$value</td>
+                </tr>
+              </table>
             </py:otherwise>
           </py:choose>
         </py:when>

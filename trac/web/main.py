@@ -461,7 +461,11 @@ def dispatch_request(environ, start_response):
             if has_admin:
                 tb = exc_info[2]
                 while tb:
-                    if not tb.tb_frame.f_locals.get('__traceback_hide__'):
+                    tb_hide = tb.tb_frame.f_locals.get('__traceback_hide__')
+                    if tb_hide in ('before', 'before_and_this'):
+                        del frames[:]
+                        tb_hide = tb_hide[6:]
+                    if not tb_hide:
                         filename = tb.tb_frame.f_code.co_filename
                         lineno = tb.tb_lineno - 1
                         before, line, after = get_lines_from_file(filename,

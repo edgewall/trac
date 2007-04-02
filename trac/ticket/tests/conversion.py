@@ -20,7 +20,7 @@ class TicketConversionTestCase(unittest.TestCase):
         self.ticket_module = TicketModule(self.env)
         self.mimeview = Mimeview(self.env)
         self.req = Mock(base_path='/trac.cgi', path_info='',
-                        href=Href('/trac.cgi'), chrome={'logo': None},
+                        href=Href('/trac.cgi'), chrome={'logo': {}},
                         abs_href=Href('http://example.org/trac.cgi'),
                         environ={}, perm=[], authname='-', args={}, tz=None,
                         session=None, form_token=None)
@@ -32,6 +32,7 @@ class TicketConversionTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket['description'] = 'Bar'
         ticket['foo'] = 'This is a custom field'
+        ticket.insert()
         return ticket
 
     def test_conversions(self):
@@ -54,7 +55,7 @@ class TicketConversionTestCase(unittest.TestCase):
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'csv')
         self.assertEqual((u'id,summary,reporter,owner,description,keywords,cc'
-                          '\r\nNone,Foo,santa,,Bar,,\r\n',
+                          '\r\n1,Foo,santa,,Bar,,\r\n',
                           'text/csv;charset=utf-8', 'csv'), csv)
 
 
@@ -63,7 +64,7 @@ class TicketConversionTestCase(unittest.TestCase):
         csv = self.mimeview.convert_content(self.req, 'trac.ticket.Ticket',
                                             ticket, 'tab')
         self.assertEqual((u'id\tsummary\treporter\towner\tdescription\tkeywords'
-                          '\tcc\r\nNone\tFoo\tsanta\t\tBar\t\t\r\n',
+                          '\tcc\r\n1\tFoo\tsanta\t\tBar\t\t\r\n',
                           'text/tab-separated-values;charset=utf-8', 'tsv'),
                          csv)
 
@@ -75,8 +76,8 @@ class TicketConversionTestCase(unittest.TestCase):
   
 
   <channel>
-    <title>My Project: Ticket </title>
-    <link>http://example.org/trac.cgi/ticket</link>
+    <title>My Project: Ticket #1</title>
+    <link>http://example.org/trac.cgi/ticket/1</link>
     <description>&lt;p&gt;
 Bar
 &lt;/p&gt;

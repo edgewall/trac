@@ -276,6 +276,8 @@ class WikiModule(Component):
         old_version = int(req.args.get('old_version') or 0) or version
 
         data = self._page_data(context, 'delete')
+        data.update({'new_version': None, 'old_version': None,
+                     'num_versions': 0})
         if version is not None:
             num_versions = 0
             for v,t,author,comment,ipnr in page.get_history():

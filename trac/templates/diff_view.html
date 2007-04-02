@@ -49,7 +49,7 @@
         <dt class="property author">Author:</dt>
         <dd class="author" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>${authorinfo(change.author)} <span py:if="change.ipnr" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
+          <py:otherwise>${authorinfo(change.author)} <span py:if="'ipnr' in change" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
         </dd>
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="">
@@ -68,7 +68,7 @@
           </dl>
         </div>
 
-        <xi:include href="diff_div.html"/>
+        <xi:include href="diff_div.html" py:with="no_id=False"/>
 
       </div>
     </div>

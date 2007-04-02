@@ -195,10 +195,8 @@ class RoadmapModule(Component):
 
     def process_request(self, req):
         req.perm.require('ROADMAP_VIEW')
-        data = {}
 
         showall = req.args.get('show') == 'all'
-        data['showall'] = showall
 
         db = self.env.get_db_cnx()
         milestones = list(Milestone.select(self.env, showall, db))
@@ -228,7 +226,8 @@ class RoadmapModule(Component):
             'context': Context(self.env, req),
             'milestones': milestones,
             'milestone_stats': stats,
-            'queries': queries
+            'queries': queries,
+            'showall': showall,
         }
         return 'roadmap.html', data, None
 

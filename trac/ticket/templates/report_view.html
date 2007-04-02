@@ -14,7 +14,7 @@
       <h2>Report Navigation</h2>
       <ul>
         <li class="first">
-          <a py:strip="not chrome.links.up" href="${chrome.links.up[0].href}">Available Reports</a>
+          <a py:strip="'up' not in chrome.links" href="${chrome.links.up[0].href}">Available Reports</a>
         </li>
         <li py:if="query_href" class="last"><a href="$query_href">Custom Query</a></li>
       </ul>
@@ -71,10 +71,10 @@
               <tr py:for="cell_group in row.cell_groups"
                 py:with="fullrow = len(cell_group) == 1;
                          td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
-                class="${row.__color__ and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
-                style="${row.__bgcolor__ and 'background: '+row.__bgcolor__+';'
-                }${row.__fgcolor__ and 'color: '+row.__fgcolor__+';'
-                }${row.__style__ and row.__style__+';'
+                class="${'__color__' in row and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
+                style="${'__bgcolor__' in row and 'background: '+row.__bgcolor__+';'
+                }${'__fgcolor__' in row and 'color: '+row.__fgcolor__+';'
+                }${'__style__' in row and row.__style__+';'
                 }${fullrow and ';border: none; padding: 0;' or ''}">
 
                 <py:for each="cell in cell_group">
@@ -162,7 +162,7 @@
         </form>
       </div>
 
-      <div py:if="report.message" class="system-message">$report.message</div>
+      <div py:if="'message' in report" class="system-message">$report.message</div>
       <div py:if="numrows == 0" id="report-notfound">No matches found.</div>
     </div>
 
