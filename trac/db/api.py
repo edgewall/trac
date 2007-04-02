@@ -20,7 +20,7 @@ import urllib
 from trac.config import Option, IntOption
 from trac.core import *
 from trac.db.pool import ConnectionPool
-from trac.util.text import unicode_unquote, unicode_passwd
+from trac.util.text import unicode_passwd
 
 
 def get_column_names(cursor):
@@ -141,9 +141,9 @@ def _parse_db_str(db_str):
         else:
             password = None
         if user:
-            user = unicode_unquote(user)
+            user = urllib.unquote(user)
         if password:
-            password = unicode_passwd(unicode_unquote(password))
+            password = unicode_passwd(urllib.unquote(password))
     else:
         user = password = None
     if host and ':' in host:
@@ -165,7 +165,7 @@ def _parse_db_str(db_str):
         qs = qs.split('&')
         for param in qs:
             name, value = param.split('=', 1)
-            value = unicode_unquote(value)
+            value = urllib.unquote(value)
             params[name] = value
 
     args = zip(('user', 'password', 'host', 'port', 'path', 'params'),
