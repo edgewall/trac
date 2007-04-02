@@ -102,7 +102,7 @@
 
                       </td>
                       <td class="actions"
-                          py:with="rm_idx = multiline and idx or len(constraint['values']) - 1"><input
+                          py:with="rm_idx = multiline and constraint_idx or len(constraint['values']) - 1"><input
                           type="submit" name="rm_filter_${field_name}${field.type != 'radio' and '_%d' % rm_idx or ''}"
                           value="-" /></td>
                     </tr>
@@ -120,7 +120,7 @@
                     <option py:for="field_name, field in fields.items()"
                             value="$field_name"
                             disabled="${(field.type == 'radio' and
-                                         constraints[field_name] and
+                                         field_name in constraints and
                                          len(constraints[field_name])) or None}">
                       ${field.label}
                     </option>
@@ -155,7 +155,7 @@
         <div class="buttons">
           <input py:if="report" type="hidden" name="report" value="$report.id" />
           <input type="hidden" name="order" value="$query.order" />
-          <input py:if="desc" type="hidden" name="desc" value="1" />
+          <input py:if="query.desc" type="hidden" name="desc" value="1" />
           <input type="submit" name="update" value="Update" />
         </div>
         <hr />
@@ -165,7 +165,7 @@
         var properties={
         <py:for each="sep, (field_name, field) in separated(fields.iteritems())">
           $field_name: { type: "$field.type", label: "$field.label"
-          <py:if test="field.options">, options: [
+          <py:if test="'options' in field">, options: [
             <py:for each="sep, option in separated(field.options)">"$option"$sep
             </py:for>]
           </py:if>}$sep
@@ -195,7 +195,7 @@
         <form py:if="new or edit" method="get" action="${edit and report.resource_href() or req.href.report()}">
           <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
           <input type="hidden" name="query" value="${query.to_string(req)}" />
-          <input type="submit" value="Save Query..."
+          <input type="submit" value="Save query..."
                  title="${edit and ('Save updated query in report:%s' % report.id) or
                           'Create a new report from current query'}" />
           <!--! FIXME: Genshi 0.4:  'Save updated query in report {%s}' -->

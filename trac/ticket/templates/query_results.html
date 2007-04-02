@@ -41,9 +41,9 @@
         <py:for each="idx, result in enumerate(results)">
 
           <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${
-            result.added and ' added' or ''}${
-            result.changed and ' changed' or ''}${
-            result.removed and ' removed' or ''}">
+            'added' in result and ' added' or ''}${
+            'changed' in result and ' changed' or ''}${
+            'removed' in result and ' removed' or ''}">
             <py:for each="idx, header in enumerate(headers)" py:choose="">
               <py:with vars="name = header.name; value = result[name]">
                 <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>

@@ -715,7 +715,8 @@ class QueryModule(Component):
                 for title, description in cursor:
                     data['report'] = context('report', query.id)
                     data['description'] = description
-
+        data.setdefault('report', None)
+        data.setdefault('description', None)
         data['title'] = title
 
         add_stylesheet(req, 'common/css/report.css')
@@ -749,7 +750,7 @@ class QueryModule(Component):
             'context': Context(self.env, req),
             'results': results,
             'query_href': query_href
-            }
+        }
         output = Chrome(self.env).render_template(req, 'query.rss', data,
                                                   'application/rss+xml')
         return output, 'application/rss+xml'

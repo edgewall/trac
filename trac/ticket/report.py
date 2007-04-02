@@ -184,6 +184,7 @@ class ReportModule(Component):
         else:
             req.perm.require('REPORT_CREATE')
             title = description = query = ''
+
         # an explicitly given 'query' parameter will override the saved query
         query = req.args.get('query', query)
 
@@ -192,10 +193,12 @@ class ReportModule(Component):
 
         if copy or id == -1:
             data = {'title': 'Create New Report',
-                    'action': 'new'}
+                    'action': 'new',
+                    'error': None}
         else:
             data = {'title': 'Edit Report {%d} %s' % (id, title),
-                    'action': 'edit', 'error': req.args.get('error')}
+                    'action': 'edit',
+                    'error': req.args.get('error')}
 
         data['report'] = {'id': id, 'title': title,
                           'sql': query, 'description': description}

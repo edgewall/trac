@@ -302,25 +302,26 @@ ${comment}</textarea></p>
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
-                              selected="${(ticket.exists and ticket[field.name] == option) or None}"
+                              selected="${(ticket.exists and ticket[field.name] == option) or field.get('value')}"
                               py:content="option"></option>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
-                              py:content="ticket[field.name]"></textarea>
+                              py:content="ticket.exists and ticket[field.name] or field.get('value')"></textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                             checked="${(ticket.exists and ticket[field.name] == '1' and 'checked') or None}" value="1" />
+                             checked="${(ticket.exists and ticket[field.name] or
+                                         field.get('value')) == '1' and 'checked' or None}" value="1" />
                       <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                     </span>
                     <label py:when="'radio'"
                            py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="field_${field.name}" value="${option}"
-                             checked="${(ticket.exists and ticket[field.name] == option) or None}" />
+                             checked="${(ticket.exists and ticket[field.name] or field.get('value')) == option or None}" />
                       ${option}
                     </label>
                     <input py:otherwise="" type="text" id="field-${field.name}"
-                           name="field_${field.name}" value="${ticket.exists and ticket[field.name] or None}" />
+                           name="field_${field.name}" value="${ticket.exists and ticket[field.name] or field.get('value')}" />
                   </py:choose>
                 </td>
               </py:for>
