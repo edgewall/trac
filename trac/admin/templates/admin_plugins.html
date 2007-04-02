@@ -49,30 +49,34 @@
           <input type="submit" name="uninstall" value="Uninstall"
                  disabled="${plugin.readonly or None}" />
         </div>
-        <p class="summary">$plugin.info.summary</p>
-        <dl py:if="plugin.info.home_page or plugin.info.author or plugin.info.author_email"
-            class="info">
-          <py:if test="plugin.info.author or plugin.info.author_email">
-            <dt>Author:</dt>
-            <dd>
-              <a py:strip="not plugin.info.author_email"
-                 href="mailto:${plugin.info.author_email}">
-                ${plugin.info.author_email or plugin.info.author}
-              </a>
-            </dd>
-          </py:if>
-          <py:if test="plugin.info.home_page">
-            <dt>Home page:</dt>
-            <dd>
-              <a onclick="window.open(this.href); return false"
-                 href="${plugin.info.home_page}">${plugin.info.home_page}</a>
-            </dd>
-          </py:if>
-          <py:if test="plugin.info.license">
-            <dt>License:</dt>
-            <dd>${plugin.info.license}</dd>
-          </py:if>
-        </dl>
+        <py:if test="plugin.info">
+          <p class="summary">$plugin.info.get('summary')</p>
+          <dl py:if="'home_page' in plugin.info or
+                     'author' in plugin.info or
+                     'author_email' in plugin.info"
+              class="info">
+            <py:if test="'author' in plugin.info or 'author_email' in plugin.info">
+              <dt>Author:</dt>
+              <dd>
+                <a py:strip="not plugin.info.get('author_email')"
+                   href="mailto:${plugin.info.author_email}">
+                  ${plugin.info.author_email or plugin.info.author}
+                </a>
+              </dd>
+            </py:if>
+            <py:if test="plugin.info.get('home_page')">
+              <dt>Home page:</dt>
+              <dd>
+                <a onclick="window.open(this.href); return false"
+                   href="${plugin.info.home_page}">${plugin.info.home_page}</a>
+              </dd>
+            </py:if>
+            <py:if test="plugin.info.get('license')">
+              <dt>License:</dt>
+              <dd>${plugin.info.license}</dd>
+            </py:if>
+          </dl>
+        </py:if>
         <table class="listing">
           <thead>
             <tr><th>Component</th><th class="sel">Enabled</th></tr>

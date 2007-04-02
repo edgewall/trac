@@ -75,4 +75,4 @@ class AboutModule(Component):
             sections.sort(lambda x,y: cmp(x['name'], y['name']))
             data['config'] = sections
 
-        return 'about.html', {'about': data}, None
+        return 'about.html', data, None

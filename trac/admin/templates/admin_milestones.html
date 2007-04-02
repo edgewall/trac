@@ -12,8 +12,8 @@
   <body>
     <h2>Manage Milestones</h2>
 
-    <py:choose>
-      <form py:when="milestone" class="mod" id="modmil" method="post">
+    <py:choose test="view">
+      <form py:when="'detail'" class="mod" id="modmil" method="post">
         <fieldset>
           <legend>Modify Milestone:</legend>
           <div class="field">

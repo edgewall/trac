@@ -82,11 +82,13 @@ class SearchModule(Component):
                        if len(f) < 3 or len(f) > 2 and f[2]]
         data = {'filters': [{'name': f[0], 'label': f[1],
                              'active': f[0] in filters}
-                            for f in available_filters]}
+                            for f in available_filters],
+                'quickjump': None,
+                'results': []}
 
         query = req.args.get('q')
+        data['query'] = query
         if query:
-            data['query'] = query
             data['quickjump'] = self._check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]

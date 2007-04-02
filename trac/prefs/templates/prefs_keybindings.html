@@ -13,7 +13,7 @@
     <div class="field">
       <label>
         <input type="checkbox" name="accesskeys" value="1"
-               checked="${settings.session.accesskeys or None}" />
+               checked="${settings.session.get('accesskeys') or None}" />
         Enable access keys
       </label>
       <p class="hint">This site provides keyboard shortcuts for faster

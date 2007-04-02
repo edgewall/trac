@@ -12,8 +12,8 @@
   <body>
     <h2>Manage Versions</h2>
 
-    <py:choose>
-      <form py:when="version" class="mod" id="modver" method="post">
+    <py:choose test="view">
+      <form py:when="'detail'" class="mod" id="modver" method="post">
         <fieldset>
           <legend>Modify Version:</legend>
           <div class="field">

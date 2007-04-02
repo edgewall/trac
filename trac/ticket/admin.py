@@ -49,7 +49,7 @@ class ComponentAdminPage(Component):
                     req.redirect(req.href.admin(cat, page))
 
             add_script(req, 'common/js/wikitoolbar.js')
-            data = {'component': comp}
+            data = {'view': 'detail', 'component': comp}
 
         else:
             if req.method == 'POST':
@@ -85,7 +85,8 @@ class ComponentAdminPage(Component):
                         req.redirect(req.href.admin(cat, page))
 
             default = self.config.get('ticket', 'default_component')
-            data = {'components': model.Component.select(self.env),
+            data = {'view': 'list',
+                    'components': model.Component.select(self.env),
                     'default': default}
 
         if self.config.getbool('ticket', 'restrict_owner'):
@@ -95,6 +96,8 @@ class ComponentAdminPage(Component):
             data['owners'] = [username for username, name, email
                               in self.env.get_known_users()
                               if valid_owner(username)]
+        else:
+            data['owners'] = None
 
         return 'admin_components.html', data
 
@@ -141,7 +144,7 @@ class MilestoneAdminPage(Component):
                     req.redirect(req.href.admin(cat, page))
 
             add_script(req, 'common/js/wikitoolbar.js')
-            data = {'milestone': mil}
+            data = {'view': 'detail', 'milestone': mil}
 
         else:
             if req.method == 'POST':
@@ -177,6 +180,7 @@ class MilestoneAdminPage(Component):
                         req.redirect(req.href.admin(cat, page))
 
             data = {
+                'view': 'list',
                 'milestones': model.Milestone.select(self.env),
                 'default': self.config.get('ticket', 'default_milestone'),
             }
@@ -216,7 +220,7 @@ class VersionAdminPage(Component):
                     req.redirect(req.href.admin(cat, page))
 
             add_script(req, 'common/js/wikitoolbar.js')
-            data = {'version': ver}
+            data = {'view': 'detail', 'version': ver}
 
         else:
             if req.method == 'POST':
@@ -252,6 +256,7 @@ class VersionAdminPage(Component):
                         req.redirect(req.href.admin(cat, page))
 
             data = {
+                'view': 'list',
                 'versions': model.Version.select(self.env),
                 'default': self.config.get('ticket', 'default_version'),
             }
@@ -291,7 +296,7 @@ class AbstractEnumAdminPage(Component):
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
-            data['enum'] = enum
+            data.update({'view': 'detail', 'enum': enum})
 
         else:
             default = self.config.get('ticket', 'default_%s' % self._type)
@@ -347,7 +352,7 @@ class AbstractEnumAdminPage(Component):
                     req.redirect(req.href.admin(cat, page))
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
-                             default=default))
+                             default=default, view='list'))
         return 'admin_enums.html', data
 
 

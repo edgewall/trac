@@ -28,8 +28,8 @@
       </div>
     </py:def>
 
-    <py:choose>
-      <form py:when="component" class="mod" id="modcomp" method="post">
+    <py:choose test="view">
+      <form py:when="'detail'" class="mod" id="modcomp" method="post">
         <fieldset>
           <legend>Modify Component:</legend>
           <div class="field">

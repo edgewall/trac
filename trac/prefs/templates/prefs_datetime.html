@@ -10,7 +10,7 @@
   </head>
   <body>
 
-    <div class="field" py:with="session_tzname = settings.session.tz;
+    <div class="field" py:with="session_tzname = settings.session.get('tz');
                                 default_tzname = timezones[len(timezones)/2];
                                 selected_tz = timezone(session_tzname or default_tzname) or timezone(default_tzname) or utc;
                                 selected_tzname = '%s' % selected_tz">

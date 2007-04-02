@@ -12,8 +12,8 @@
   <body>
     <h2>Manage $label_plural</h2>
 
-    <py:choose>
-      <form py:when="enum" class="mod" id="modenum" method="post">
+    <py:choose test="view">
+      <form py:when="'detail'" class="mod" id="modenum" method="post">
         <fieldset>
           <legend>Modify $label_singular</legend>
           <div class="field">

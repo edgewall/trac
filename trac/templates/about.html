@@ -41,41 +41,43 @@
         <a href="http://www.edgewall.org/">Edgewall Software</a>
       </p>
 
-      <hr py:strip="not (about.systeminfo or about.config)" />
+      <py:if test="'CONFIG_VIEW' in perm">
+        <hr />
 
-      <div py:if="about.systeminfo" id="systeminfo">
-        <h2>System Information</h2>
-        <table class="listing">
-          <tr py:for="name, value in about.systeminfo">
-            <th>$name:</th>
-            <td>$value</td>
-          </tr>
-        </table>
-      </div>
-
-      <div py:if="about.config" id="config">
-        <h2>Configuration</h2>
-        <table class="listing">
-          <thead>
-            <tr>
-              <th class="section">Section</th>
-              <th class="name">Name</th>
-              <th class="value">Value</th>
+        <div id="systeminfo">
+          <h2>System Information</h2>
+          <table class="listing">
+            <tr py:for="name, value in systeminfo">
+              <th>$name:</th>
+              <td>$value</td>
             </tr>
-          </thead>
-          <tbody>
-            <div py:for="section in about.config" py:strip="">
-              <tr py:for="idx,option in enumerate(section.options)"
-                  class="${option.modified and 'modified' or None}">
-                <th py:if="idx == 0" class="section"
-                    rowspan="${len(section.options)}">${section.name}</th>
-                <td class="name">${option.name}</td>
-                <td class="value">${option.value}</td>
+          </table>
+        </div>
+
+        <div id="config">
+          <h2>Configuration</h2>
+          <table class="listing">
+            <thead>
+              <tr>
+                <th class="section">Section</th>
+                <th class="name">Name</th>
+                <th class="value">Value</th>
               </tr>
-            </div>
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              <div py:for="section in config" py:strip="">
+                <tr py:for="idx,option in enumerate(section.options)"
+                    class="${option.modified and 'modified' or None}">
+                  <th py:if="idx == 0" class="section"
+                      rowspan="${len(section.options)}">${section.name}</th>
+                  <td class="name">${option.name}</td>
+                  <td class="value">${option.value}</td>
+                </tr>
+              </div>
+            </tbody>
+          </table>
+        </div>
+      </py:if>
 
     </div>
   </body>
