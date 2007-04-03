@@ -76,7 +76,7 @@
       <!-- Do not show the ticket preview when the user first comes to the "New
            Ticket" page.  Wait until they hit preview.  ticket.status is defined if the
            ticket exists, or we are previewing a new ticket -->
-      <py:if test="ticket.exists">
+      <py:if test="ticket.exists or 'preview' in req.args">
         <!-- Ticket number, summary, etc heading -->
         <!-- Ticket (pre)view -->
         <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.exists)) and {'class':'ticketdraft'} or {}">
@@ -150,7 +150,7 @@
           ${list_of_attachments(context, attachments, attach_href)}
         </py:if>
 
-        <py:if test="changes">
+        <py:if test="ticket.exists and changes">
           <h2>Change History</h2>
           <div id="changelog">
             <form py:for="change in changes" method="get" action="#comment"
@@ -266,7 +266,7 @@ ${comment}</textarea></p>
               <th><label for="field-summary">Summary:</label></th>
               <td class="fullrow" colspan="3">
                 <input type="text" id="field-summary" name="field_summary"
-                       value="${ticket.exists and ticket.summary or None}" size="70" />
+                       value="${ticket.summary}" size="70" />
               </td>
             </tr>
             <py:if test="'TICKET_ADMIN' in perm">
@@ -274,7 +274,7 @@ ${comment}</textarea></p>
                 <th><label for="field-reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">
                   <input type="text" id="field-reporter" name="field_reporter"
-                         value="${ticket.exists and ticket.reporter or author_id}" size="70" />
+                         value="${ticket.reporter}" size="70" />
                 </td>
               </tr>
             </py:if>
@@ -284,7 +284,7 @@ ${comment}</textarea></p>
                 <td class="fullrow" colspan="3">
                   <textarea id="field-description" name="field_description"
                             class="wikitext" rows="10" cols="68"
-                            py:content="ticket.exists and ticket.description or None"></textarea>
+                            py:content="ticket.description"></textarea>
                 </td>
               </tr>
             </py:if>
@@ -319,7 +319,7 @@ ${comment}</textarea></p>
                       ${option}
                     </label>
                     <input py:otherwise="" type="text" id="field-${field.name}"
-                           name="field_${field.name}" value="${ticket.exists and ticket[field.name] or field.get('value')}" />
+                           name="field_${field.name}" value="${ticket[field.name]}" />
                   </py:choose>
                 </td>
               </py:for>

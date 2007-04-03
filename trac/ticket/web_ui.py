@@ -284,7 +284,8 @@ class TicketModule(Component):
             'context': context,
             'author_id': reporter_id,
             'actions': [],
-            'version': None
+            'version': None,
+            'description_change': None
         }
 
         field_names = [field['name'] for field in ticket.fields
