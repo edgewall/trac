@@ -28,20 +28,20 @@
 
       <div py:if="report.description" id="description">${wiki_to_html(context, report.description)}</div>
 
-      <div py:if="report.id != -1 and (report.can.create or report.can.modify or report.can.delete)" class="buttons">
-        <form py:if="report.can.modify" action="" method="get">
+      <div py:if="report.id != -1 and report.perms" class="buttons">
+        <form py:if="'MODIFY' in report.perms" action="" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
             <input type="submit" value="Edit report" accesskey="e" />
           </div>
         </form>
-        <form py:if="report.can.create" action="" method="get">
+        <form py:if="'CREATE' in report.perms" action="" method="get">
           <div>
             <input type="hidden" name="action" value="copy" />
             <input type="submit" value="Copy report" />
           </div>
         </form>
-        <form py:if="report.can.delete" action="" method="get">
+        <form py:if="'DELETE' in report.perms" action="" method="get">
           <div>
             <input type="hidden" name="action" value="delete" />
             <input type="submit" value="Delete report" />
@@ -153,7 +153,7 @@
         </table>
       </py:for>
 
-      <div py:if="report.id == -1 and report.can.create" class="buttons">
+      <div py:if="report.id == -1 and 'CREATE' in report.perms" class="buttons">
         <form action="" method="get">
           <div>
             <input type="hidden" name="action" value="new" />

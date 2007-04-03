@@ -207,8 +207,8 @@ class ReportModule(Component):
     def _render_view(self, req, db, id):
         """Retrieve the report results and pre-process them for rendering."""
 
-        actions = {'create': 'REPORT_CREATE', 'delete': 'REPORT_DELETE',
-                   'modify': 'REPORT_MODIFY'}
+        actions = {'CREATE': 'REPORT_CREATE', 'DELETE': 'REPORT_DELETE',
+                   'MODIFY': 'REPORT_MODIFY'}
         perms = {}
         for action in [k for k,v in actions.items() if v in req.perm]:
             perms[action] = True
@@ -274,7 +274,7 @@ class ReportModule(Component):
                 'context': context,
                 'report': {'id': id, 'title': title,
                            'description': description,
-                           'can': perms, 'args': args}}
+                           'perms': perms, 'args': args}}
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
         except Exception, e:
