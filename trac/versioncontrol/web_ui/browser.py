@@ -498,7 +498,7 @@ class BrowserModule(Component):
             renderer = sorted(candidates, reverse=True)[0][1]
             rendered = renderer.render_property(name, mode, context, props)
             if rendered:
-                prop = {'name': name, 'value': rendered}
+                prop = {'name': name, 'value': rendered, 'rendered': None}
                 if isinstance(rendered, RenderedProperty):
                     prop['rendered'] = rendered
                     prop['value'] = rendered.content
