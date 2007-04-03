@@ -318,6 +318,7 @@ class TicketModule(Component):
             field.setdefault('optional', False)
             field.setdefault('options', [])
             field.setdefault('skip', False)
+            ticket.values.setdefault(name, field.get('value'))
             data['fields'].append(field)
 
         if 'TICKET_APPEND' in req.perm:

@@ -22,7 +22,7 @@
     <script type="text/javascript" py:choose="">
       $(document).ready(function() {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
-      <py:when test="ticket.id">
+      <py:when test="ticket.exists">
         $("#changelog h3.change").addAnchor("Link to this change");
         function updateActionFields() {
           $("#resolve_choice").enable($("#resolve").checked());
@@ -47,7 +47,7 @@
     <div id="content" class="ticket">
       <h1>
         <py:choose>
-          <py:when test="ticket.id">
+          <py:when test="ticket.exists">
             <a py:strip="not version and version != 0" href="${href.ticket(ticket.id)}">
               Ticket #${ticket.id}
             </a>
@@ -79,7 +79,7 @@
       <py:if test="ticket.exists">
         <!-- Ticket number, summary, etc heading -->
         <!-- Ticket (pre)view -->
-        <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.id)) and {'class':'ticketdraft'} or {}">
+        <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.exists)) and {'class':'ticketdraft'} or {}">
           <div class="date">
             <p py:if="ticket.exists">Opened ${dateinfo(ticket.time_created)} ago</p>
             <p py:if="ticket.time_changed != ticket.time_created">Last modified ${dateinfo(ticket.time_changed)} ago</p>
@@ -125,8 +125,7 @@
                 class="printableform">
             <div class="description">
               <h3 id="comment:description">
-                <!-- check ticket.id; you can't reply to a ticket that does not yet exist. -->
-                <span py:if="'TICKET_APPEND' in perm and ticket.id" class="inlinebuttons">
+                <span py:if="ticket.exists and 'TICKET_APPEND' in perm" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
                   <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
                 </span>
@@ -147,7 +146,7 @@
 
         <!-- do not show attachments for old versions of this ticket or for new
           tickets -->
-        <py:if test="not version and version != 0 and ticket.id">
+        <py:if test="not version and version != 0 and ticket.exists">
           ${list_of_attachments(context, attachments, attach_href)}
         </py:if>
 
@@ -229,11 +228,11 @@
 
       <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm or ('TICKET_CREATE' in perm and not ticket.id))"
             action="#preview" method="post">
-        <h3 py:if="ticket.id"><a name="edit" onfocus="$('#comment').get(0).focus()">
+        <h3 py:if="ticket.exists"><a name="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} (${ticket.summary})</a></h3>
         <div py:if="authname == 'anonymous'" class="field">
           <fieldset>
-            <legend>${ticket.id and 'Author' or 'Reporter'}</legend>
+            <legend>${ticket.exists and 'Author' or 'Reporter'}</legend>
             <table>
               <tr>
                 <th>
@@ -247,7 +246,7 @@
             </table>
           </fieldset>
         </div>
-        <div py:if="ticket.id" class="field">
+        <div py:if="ticket.exists" class="field">
           <fieldset class="iefix">
             <label for="comment">Comment (you may use
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
@@ -279,7 +278,7 @@ ${comment}</textarea></p>
                 </td>
               </tr>
             </py:if>
-            <py:if test="'TICKET_ADMIN' in perm or not ticket.id">
+            <py:if test="'TICKET_ADMIN' in perm or not ticket.exists">
               <tr>
                 <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">
@@ -302,22 +301,21 @@ ${comment}</textarea></p>
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
-                              selected="${(ticket.exists and ticket[field.name] == option) or field.get('value')}"
+                              selected="${ticket[field.name] == option or None}"
                               py:content="option"></option>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
-                              py:content="ticket.exists and ticket[field.name] or field.get('value')"></textarea>
+                              py:content="ticket[field.name]"></textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                             checked="${(ticket.exists and ticket[field.name] or
-                                         field.get('value')) == '1' and 'checked' or None}" value="1" />
+                             checked="${ticket[field.name] == '1' and 'checked' or None}" value="1" />
                       <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                     </span>
                     <label py:when="'radio'"
                            py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="field_${field.name}" value="${option}"
-                             checked="${(ticket.exists and ticket[field.name] or field.get('value')) == option or None}" />
+                             checked="${ticket[field.name] == option or None}" />
                       ${option}
                     </label>
                     <input py:otherwise="" type="text" id="field-${field.name}"
@@ -373,7 +371,7 @@ ${comment}</textarea></p>
           </label>
         </p>
         <div class="buttons">
-          <input py:if="not ticket.id" type="hidden" name="field_status" value="new" />
+          <input py:if="not ticket.exists" type="hidden" name="field_status" value="new" />
           <py:if test="ticket.exists">
             <input type="hidden" name="ts" value="${timestamp}" />
             <input type="hidden" name="replyto" value="${replyto}" />
