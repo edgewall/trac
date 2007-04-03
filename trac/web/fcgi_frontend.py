@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005 Edgewall Software
@@ -22,5 +23,8 @@ from trac.web.main import dispatch_request
 import _fcgi
 
 def run():
-    pkg_resources.require('Trac==%s' % VERSION)
     _fcgi.WSGIServer(dispatch_request).run()
+
+if __name__ == '__main__':
+    pkg_resources.require('Trac==%s' % VERSION)
+    run()

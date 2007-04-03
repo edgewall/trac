@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005 Edgewall Software
@@ -50,8 +51,6 @@ class CGIGateway(WSGIGateway):
 
 
 def run():
-    pkg_resources.require('Trac==%s' % VERSION)
-
     try: # Make FreeBSD use blocking I/O like other platforms
         import fcntl
         for stream in [sys.stdin, sys.stdout]:
@@ -70,3 +69,7 @@ def run():
 
     gateway = CGIGateway()
     gateway.run(dispatch_request)
+
+if __name__ == '__main__':
+    pkg_resources.require('Trac==%s' % VERSION)
+    run()
