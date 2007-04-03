@@ -110,6 +110,8 @@ class ReportModule(Component):
         if 'TICKET_VIEW' in req.perm and \
                 self.env.is_component_enabled(QueryModule):
             data['query_href'] = req.href.query()
+        else:
+            data['query_href'] = None
 
         add_stylesheet(req, 'common/css/report.css')
         return template, data, None

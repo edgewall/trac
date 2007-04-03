@@ -715,6 +715,8 @@ class QueryModule(Component):
                 for title, description in cursor:
                     data['report'] = context('report', query.id)
                     data['description'] = description
+        else:
+            data['report_href'] = None
         data.setdefault('report', None)
         data.setdefault('description', None)
         data['title'] = title
