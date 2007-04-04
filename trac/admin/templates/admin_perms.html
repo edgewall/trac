@@ -58,14 +58,20 @@
     <form method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm">
       <table class="listing" id="permlist">
         <thead>
-          <tr><th class="sel" py:if="revoke_perm">&nbsp;</th><th>Subject</th><th>Action</th></tr>
+          <tr><th>Subject</th><th>Action</th></tr>
         </thead>
         <tbody>
-          <tr py:for="idx, (subject, action) in enumerate(sorted(perms))"
+          <tr py:for="idx, (subject, permGroup) in enumerate( groupby(sorted(perms), key=lambda tmp: tmp[0]))"
               class="${idx % 2 and 'odd' or 'even'}">
-            <td py:if="revoke_perm"><input type="checkbox" name="sel" value="$subject:$action" /></td>
             <td>$subject</td>
-            <td>$action</td>
+            <td>
+              <py:for each="(subject,action) in permGroup">
+                <div style="width:155px;float:left;">
+                  <input py:if="revoke_perm" type="checkbox" name="sel" value="$subject:$action" />
+                  <label for="$subject:$action">$action</label>
+                </div>
+              </py:for>
+            </td>
           </tr>
         </tbody>
       </table>
