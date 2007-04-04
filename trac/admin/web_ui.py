@@ -283,10 +283,15 @@ class PermissionAdminPanel(Component):
         perm = PermissionSystem(self.env)
 
         if req.method == 'POST':
-            subject = req.args.get('subject')
+            subject = req.args.get('subject', '')
             action = req.args.get('action')
-            group = req.args.get('group')
+            group = req.args.get('group', '')
 
+            if subject and subject == subject.upper() or \
+                   group and group == group.upper():
+                raise TracError("All upper-cased tokens are reserved for "
+                                "permission names")
+            
             # Grant permission to subject
             if req.args.get('add') and subject and action:
                 req.perm.require('PERMISSION_GRANT')
