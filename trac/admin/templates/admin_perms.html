@@ -13,19 +13,23 @@
     <h2>Manage Permissions</h2>
 
     <py:if test="'PERMISSION_GRANT' in perm">
-    <form id="addperm" class="addnew" method="post">
+    <form id="addperm" class="addnew" method="post" action="">
       <fieldset>
         <legend>Grant Permission:</legend>
-        <div class="field">
-          <label>Subject: <input type="text" name="subject" /></label>
-        </div>
-        <div class="field">
-          <label>Action:
-            <select id="action" name="action">
-              <option py:for="action in sorted(actions)">$action</option>
-            </select>
-          </label>
-        </div>
+        <table>
+          <tr>
+            <td><label for="gp_subject">Subject:</label></td>
+            <td><input id="gp_subject" type="text" name="subject" /></td>
+          </tr>
+          <tr>
+            <td><label for="action">Action:</label></td>
+            <td>
+              <select id="action" name="action">
+                <option py:for="action in sorted(actions)">$action</option>
+              </select>
+            </td>
+          </tr>
+        </table>
         <p class="help">
           Grant permission for an action to a subject, which can be either a user
           or a group.
@@ -36,15 +40,19 @@
       </fieldset>
     </form>
 
-    <form id="addsubj" class="addnew" method="post">
+    <form id="addsubj" class="addnew" method="post" action="">
       <fieldset>
         <legend>Add Subject to Group:</legend>
-        <div class="field">
-          <label>Subject: <input type="text" name="subject" /></label>
-        </div>
-        <div class="field">
-          <label>Group: <input type="text" name="group" /></label>
-        </div>
+        <table>
+          <tr>
+            <td><label for="sg_subject">Subject:</label></td>
+            <td><input id="sg_subject" type="text" name="subject" /></td>
+          </tr>
+          <tr>
+            <td><label for="sg_group">Group:</label></td>
+            <td><input id="sg_group" type="text" name="group" /></td>
+          </tr>
+        </table>
         <p class="help">
           Add a user or group to an existing permission group.
         </p>
@@ -55,7 +63,7 @@
     </form>
     </py:if>
 
-    <form method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm">
+    <form method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm" action="">
       <table class="listing" id="permlist">
         <thead>
           <tr><th>Subject</th><th>Action</th></tr>
@@ -67,7 +75,7 @@
             <td>
               <py:for each="(subject,action) in perm_group">
                 <div>
-                  <input py:if="revoke_perm" type="checkbox" name="sel" value="$subject:$action" />
+                  <input py:if="revoke_perm" type="checkbox" id="$subject:$action" name="sel" value="$subject:$action" />
                   <label for="$subject:$action">$action</label>
                 </div>
               </py:for>
