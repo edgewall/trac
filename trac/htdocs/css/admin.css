@@ -56,3 +56,6 @@ form#addplug { width: 35% }
 .collapsed .info, .collapsed .listing, .collapsed .update { display: none }
 .plugin .listing td { background: #fff }
 .plugin .listing .name p { color: #999; font-size: 80%; margin: 0 }
+
+/* Perm Panel */
+#permlist div { width: 155px; float: left; }
