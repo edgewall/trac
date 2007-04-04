@@ -23,12 +23,12 @@
       <fieldset>
         <legend>Grant Permission:</legend>
         <table>
-          <tr>
-            <td><label for="gp_subject">Subject:</label></td>
+          <tr class="field">
+            <th><label for="gp_subject">Subject:</label></th>
             <td><input id="gp_subject" type="text" name="subject" /></td>
           </tr>
-          <tr>
-            <td><label for="action">Action:</label></td>
+          <tr class="field">
+            <th><label for="action">Action:</label></th>
             <td>
               <select id="action" name="action">
                 <option py:for="action in sorted(actions)">$action</option>
@@ -50,12 +50,12 @@
       <fieldset>
         <legend>Add Subject to Group:</legend>
         <table>
-          <tr>
-            <td><label for="sg_subject">Subject:</label></td>
+          <tr class="field">
+            <th><label for="sg_subject">Subject:</label></th>
             <td><input id="sg_subject" type="text" name="subject" /></td>
           </tr>
-          <tr>
-            <td><label for="sg_group">Group:</label></td>
+          <tr class="field">
+            <th><label for="sg_group">Group:</label></th>
             <td><input id="sg_group" type="text" name="group" /></td>
           </tr>
         </table>
