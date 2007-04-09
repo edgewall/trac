@@ -22,6 +22,8 @@ import re
 import sys
 import time
 from datetime import tzinfo, timedelta, datetime
+
+from trac.core import TracError
 from trac.util.text import to_unicode
 
 # Date/time utilities
@@ -149,7 +151,10 @@ def parse_date(text, tzinfo=None):
             except ValueError:
                 continue
     if tm == None:
-        raise ValueError('%s is invalid or not a known date format' % text)
+        hint = get_date_format_hint()        
+        raise TracError('"%s" is an invalid date, or the date format '
+                        'is not known. Try "%s" instead.' % (text, hint),
+                        'Invalid Date')
     return datetime(*(tm[0:6] + (0, tzinfo)))
 
 def to_timestamp(dt):

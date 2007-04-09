@@ -12,13 +12,13 @@
 # history and logs, available at http://projects.edgewall.com/trac/.
 
 from datetime import datetime
-from trac.util.datefmt import utc
 
 from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem
 from trac.ticket import model
-from trac.util import datefmt
+from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
+                              get_datetime_format_hint
 from trac.web.chrome import add_link, add_script
 
 
@@ -124,16 +124,10 @@ class MilestoneAdminPage(Component):
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
                     if due:
-                        try:
-                            mil.due = datefmt.parse_date(due)
-                        except ValueError, e:
-                            raise TracError(e, 'Invalid Date Format')
+                        mil.due = parse_date(due)
                     completed = req.args.get('completeddate', '')
                     if completed:
-                        try:
-                            mil.completed = datefmt.parse_date(completed)
-                        except ValueError, e:
-                            raise TracError(e, 'Invalid Date Format')
+                        mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):
                             raise TracError('Completion date may not be in the '
                                             'future', 'Invalid Completion Date')
@@ -153,7 +147,7 @@ class MilestoneAdminPage(Component):
                     mil = model.Milestone(self.env)
                     mil.name = req.args.get('name')
                     if req.args.get('duedate'):
-                        mil.due = datefmt.parse_date(req.args.get('duedate'))
+                        mil.due = parse_date(req.args.get('duedate'))
                     mil.insert()
                     req.redirect(req.href.admin(cat, page))
 
@@ -186,8 +180,8 @@ class MilestoneAdminPage(Component):
             }
 
         data.update({
-            'date_hint': datefmt.get_date_format_hint(),
-            'datetime_hint': datefmt.get_datetime_format_hint()
+            'date_hint': get_date_format_hint(),
+            'datetime_hint': get_datetime_format_hint()
         })
         return 'admin_milestones.html', data
 
@@ -212,7 +206,7 @@ class VersionAdminPage(Component):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time =  datefmt.parse_date(req.args.get('time'))
+                        ver.time =  parse_date(req.args.get('time'))
                     ver.description = req.args.get('description')
                     ver.update()
                     req.redirect(req.href.admin(cat, page))
@@ -229,7 +223,7 @@ class VersionAdminPage(Component):
                     ver = model.Version(self.env)
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time = datefmt.parse_date(req.args.get('time'))
+                        ver.time = parse_date(req.args.get('time'))
                     ver.insert()
                     req.redirect(req.href.admin(cat, page))
                          
@@ -262,7 +256,7 @@ class VersionAdminPage(Component):
             }
 
         data.update({
-            'datetime_hint': datefmt.get_datetime_format_hint()
+            'datetime_hint': get_datetime_format_hint()
         })
         return 'admin_versions.html', data
 

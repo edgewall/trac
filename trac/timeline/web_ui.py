@@ -83,20 +83,17 @@ class TimelineModule(Component):
         fromdate = today = datetime.now(req.tz)
         precisedate = precision = None
         if 'from' in req.args:
-            try:
-                precisedate = parse_date(req.args.get('from'), req.tz)
-                fromdate = precisedate
-                precision = req.args.get('precision', '')
-                if precision.startswith('second'):
-                    precision = timedelta(seconds=1)
-                elif precision.startswith('minutes'):
-                    precision = timedelta(minutes=1)
-                elif precision.startswith('hours'):
-                    precision = timedelta(hours=1)
-                else:
-                    precision = None
-            except ValueError, e:
-                self.log.debug("Invalid date requested %s", to_unicode(e))
+            precisedate = parse_date(req.args.get('from'), req.tz)
+            fromdate = precisedate
+            precision = req.args.get('precision', '')
+            if precision.startswith('second'):
+                precision = timedelta(seconds=1)
+            elif precision.startswith('minutes'):
+                precision = timedelta(minutes=1)
+            elif precision.startswith('hours'):
+                precision = timedelta(hours=1)
+            else:
+                precision = None
         fromdate = fromdate.replace(hour=23, minute=59, second=59)
         try:
             daysback = max(0, int(req.args.get('daysback', '')))
@@ -235,8 +232,8 @@ class TimelineModule(Component):
                 return self.get_timeline_link(formatter.req,
                                               parse_date(target, utc),
                                               label, precision)
-            except ValueError, e:
-                return tag.a(label, title=to_unicode(e),
+            except TracError, e:
+                return tag.a(label, title=to_unicode(e.message),
                              class_='timeline missing')
         yield ('timeline', link_resolver)
 

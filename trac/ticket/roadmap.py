@@ -448,17 +448,11 @@ class MilestoneModule(Component):
                             'Required Field Missing')
 
         due = req.args.get('duedate', '')
-        try:
-            milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
-        except ValueError, e:
-            raise TracError(to_unicode(e), 'Invalid Date Format')
+        milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
         if req.args.has_key('completed'):
             completed = req.args.get('completeddate', '')
-            try:
-                milestone.completed = completed and parse_date(completed) or \
-                                      None
-            except ValueError, e:
-                raise TracError(to_unicode(e), 'Invalid Date Format')
+            milestone.completed = completed and parse_date(completed) or \
+                                  None
             if milestone.completed and milestone.completed > datetime.now(utc):
                 raise TracError('Completion date may not be in the future',
                                 'Invalid Completion Date')
