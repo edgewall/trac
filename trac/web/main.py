@@ -191,7 +191,7 @@ class RequestDispatcher(Component):
                         break
             chosen_handler = self._pre_process_request(req, chosen_handler)
         except TracError, e:
-            raise HTTPInternalError(e.message)
+            raise HTTPInternalError(e)
         if not chosen_handler:
             raise HTTPNotFound('No handler matched request to %s',
                                req.path_info)
@@ -254,7 +254,7 @@ class RequestDispatcher(Component):
         except PermissionError, e:
             raise HTTPForbidden(to_unicode(e))
         except TracError, e:
-            raise HTTPInternalError(e.message)
+            raise HTTPInternalError(e)
 
     # Internal methods
 
@@ -422,7 +422,7 @@ def dispatch_request(environ, start_response):
     req = Request(environ, start_response)
     try:
         if not env and env_error:
-            raise HTTPInternalError(env_error.message)
+            raise HTTPInternalError(env_error)
         try:
             try:
                 dispatcher = RequestDispatcher(env)
@@ -437,7 +437,10 @@ def dispatch_request(environ, start_response):
     except HTTPException, e:
         if env:
             env.log.warn(e)
-        title = e.reason or 'Error'
+        if e.reason and 'error' in e.reason.lower():
+            title = e.reason
+        else:
+            title = 'Error: %s' % e.reason
         data = {'title': title, 'type': 'TracError', 'message': e.message,
                 'frames': [], 'traceback': None}
         try:

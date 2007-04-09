@@ -24,7 +24,7 @@ from StringIO import StringIO
 import sys
 import urlparse
 
-from trac.core import Interface
+from trac.core import Interface, TracError
 from trac.util import get_last_traceback
 from trac.util.datefmt import http_date, localtz
 from trac.web.href import Href
@@ -42,7 +42,11 @@ class HTTPException(Exception):
         self.__doc__ = 'Exception for HTTP %d %s' % (self.code, self.reason)
 
     def __call__(self, message, *args):
-        self.message = message
+        if isinstance(message, TracError):
+            self.message = message.message
+            self.reason = message.title
+        else:
+            self.message = message
         if args:
             self.message = self.message % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
