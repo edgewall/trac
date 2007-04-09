@@ -281,6 +281,7 @@ class PermissionAdminPanel(Component):
 
     def render_admin_panel(self, req, cat, page, path_info):
         perm = PermissionSystem(self.env)
+        all_permissions = perm.get_all_permissions()
 
         if req.method == 'POST':
             subject = req.args.get('subject', '')
@@ -291,14 +292,16 @@ class PermissionAdminPanel(Component):
                    group and group == group.upper():
                 raise TracError("All upper-cased tokens are reserved for "
                                 "permission names")
-            
+
             # Grant permission to subject
             if req.args.get('add') and subject and action:
                 req.perm.require('PERMISSION_GRANT')
                 if action not in perm.get_actions():
                     raise TracError('Unknown action')
                 req.perm.require(action)
-                perm.grant_permission(subject, action)
+                if (subject, action) not in all_permissions:
+                    perm.grant_permission(subject, action)
+                # TODO: else: req.warning('...')
                 req.redirect(req.href.admin(cat, page))
 
             # Add subject to group
@@ -306,7 +309,9 @@ class PermissionAdminPanel(Component):
                 req.perm.require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
                     req.perm.require(action)
-                perm.grant_permission(subject, group)
+                if (subject,group) not in all_permissions:
+                    perm.grant_permission(subject, group)
+                # TODO: else: req.warning('...')
                 req.redirect(req.href.admin(cat, page))
 
             # Remove permissions action
@@ -322,7 +327,7 @@ class PermissionAdminPanel(Component):
 
         return 'admin_perms.html', {
             'actions': req.perm.permissions(),
-            'perms': perm.get_all_permissions()
+            'perms': all_permissions
         }
 
 
