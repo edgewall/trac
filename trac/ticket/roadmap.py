@@ -497,7 +497,8 @@ class MilestoneModule(Component):
             'context': Context(self.env, req, 'milestone', milestone.name,
                                db=db),
             'date_hint': get_date_format_hint(),
-            'datetime_hint': get_datetime_format_hint()
+            'datetime_hint': get_datetime_format_hint(),
+            'milestones': [],
         }
 
         if milestone.exists:

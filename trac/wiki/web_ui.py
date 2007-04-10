@@ -400,7 +400,8 @@ class WikiModule(Component):
             'author': author,
             'comment': comment,
             'edit_rows': editrows,
-            'scroll_bar_pos': req.args.get('scroll_bar_pos', '')
+            'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
+            'diff': None,
         })
         if action == 'diff':
             old_text = original_text and original_text.splitlines() or []

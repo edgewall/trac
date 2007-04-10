@@ -662,6 +662,7 @@ class Mimeview(Component):
         data = {'raw_href': url,
                 'max_file_size': self.max_preview_size,
                 'max_file_size_reached': False,
+                'rendered': None,
                 }
         if length >= self.max_preview_size:
             data['max_file_size_reached'] = True
