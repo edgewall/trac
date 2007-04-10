@@ -498,10 +498,13 @@ class BrowserModule(Component):
             renderer = sorted(candidates, reverse=True)[0][1]
             rendered = renderer.render_property(name, mode, context, props)
             if rendered:
-                prop = {'name': name, 'value': rendered, 'rendered': None}
                 if isinstance(rendered, RenderedProperty):
-                    prop['rendered'] = rendered
-                    prop['value'] = rendered.content
+                    value = rendered.content
+                    rendered = rendered
+                else:
+                    value = rendered
+                    rendered = RenderedProperty()
+                prop = {'name': name, 'value': value, 'rendered': rendered}
                 return prop
 
     # IWikiSyntaxProvider methods

@@ -408,7 +408,8 @@ class WikiModule(Component):
             diff_data, changes = self._prepare_diff(
                 context, old_text, new_text, page.version, '')
             data.update({'diff': diff_data, 'changes': changes,
-                         'action': 'preview'})
+                         'action': 'preview',
+                         'longcol': 'Version', 'shortcol': 'v'})
 
         return 'wiki_edit.html', data, None
 

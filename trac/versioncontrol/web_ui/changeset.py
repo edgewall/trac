@@ -469,7 +469,8 @@ class ChangesetModule(Component):
                     if not k in old_props:
                         new = browser.render_property(k, 'changeset',
                                                       new_ctx, new_props)
-                        changed_properties.append({'name': k, 'new': new})
+                        changed_properties.append({'name': k, 'new': new,
+                                                   'old': None})
             return changed_properties
 
         def _estimate_changes(old_node, new_node):
