@@ -481,7 +481,8 @@ def dispatch_request(environ, start_response):
                                     'vars': tb.tb_frame.f_locals}]
                     tb = tb.tb_next
 
-            data = {'type': 'internal', 'message': message,
+            data = {'title': 'Internal Error',
+                    'type': 'internal', 'message': message,
                     'traceback': traceback, 'frames': frames,
                     'shorten_line': shorten_line}
 
