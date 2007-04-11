@@ -186,19 +186,24 @@
       <xi:include href="query_results.html" />
 
       <div class="buttons" py:with="edit = report and 'REPORT_MODIFY' in req.perm;
-                     new = 'REPORT_CREATE' in req.perm">
+                     new = 'REPORT_CREATE' in req.perm;
+                     delete = report and 'REPORT_DELETE' in req.perm">
         <form py:if="edit" method="get" action="${report.resource_href()}">
           <input type="hidden" name="action" value="edit" />
-          <input type="submit" title="Edit the report {$report.id} corresponding to this query"
-                 value="Edit Query" />
+          <input type="submit" title="Edit report {$report.id} corresponding to this query"
+                 value="Edit query" />
         </form>
         <form py:if="new or edit" method="get" action="${edit and report.resource_href() or req.href.report()}">
           <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
           <input type="hidden" name="query" value="${query.to_string(req)}" />
-          <input type="submit" value="Save query..."
-                 title="${edit and ('Save updated query in report:%s' % report.id) or
-                          'Create a new report from current query'}" />
-          <!--! FIXME: Genshi 0.4:  'Save updated query in report {%s}' -->
+          <input type="submit" value="Save query"
+                 title="${edit and ('Save updated query in report {%s}' % report.id) or
+                          'Create new report from current query'}" />
+        </form>
+        <form py:if="delete" method="get" action="${report.resource_href()}">
+          <input type="hidden" name="action" value="delete" />
+          <input type="submit" title="Delete report {$report.id} corresponding to this query"
+                 value="Delete query" />
         </form>
       </div>
 
