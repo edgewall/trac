@@ -162,12 +162,12 @@
                     <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                   </span>
                   <span class="threading" py:if="replies and 'cnum' in change"
-                        py:with="change_replies = replies[str(change.cnum)]">
+                        py:with="change_replies = replies.get(str(change.cnum), [])">
                     <py:def function="commentref(prefix, cnum)">
                       <a href="#comment:$cnum"><small>$prefix$cnum</small></a>
                     </py:def>
-                    <py:if test="change_replies or change.replyto">
-                      <py:if test="change.replyto">
+                    <py:if test="change_replies or 'replyto' in change">
+                      <py:if test="'replyto' in change">
                         in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
                         <py:if test="change_replies">; </py:if>
                       </py:if>
@@ -216,7 +216,7 @@
                     </py:choose>
                   </li>
                 </ul>
-                <div py:if="change.comment" class="comment searchable">
+                <div py:if="'comment' in change" class="comment searchable">
                   ${wiki_to_html(context, change.comment)}
                 </div>
               </div>
