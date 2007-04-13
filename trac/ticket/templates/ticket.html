@@ -189,7 +189,7 @@
                 </h3>
                 <ul py:if="change.fields" class="changes">
                   <li py:for="field_name, field in change.fields.items()"
-                      py:with="filed_type = field_types[field_name]">
+                      py:with="field_type = field_types.get('field_name')">
                     <strong>${field_name}</strong>
                     <py:choose>
                       <py:when test="field_name == 'attachment'">
@@ -198,7 +198,7 @@
                       <py:when test="field.old and field.new">
                         changed
                         <py:choose>
-                          <py:when test="field_types[field_name] == 'textarea'">
+                          <py:when test="field_type == 'textarea'">
                             (<a py:strip="'cnum' not in change" href="${href.ticket(ticket.id, action='diff', version=change.cnum)}">diff</a>)
                           </py:when>
                           <py:otherwise>
@@ -208,7 +208,7 @@
                       </py:when>
                       <py:when test="not field.old and field.new">
                         set
-                        <py:if test="field_types[field_name] != 'textarea'">
+                        <py:if test="field_type != 'textarea'">
                           to <em>${field.new}</em>
                         </py:if>
                       </py:when>
