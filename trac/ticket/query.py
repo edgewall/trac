@@ -101,8 +101,6 @@ class Query(object):
                 field = field[:-1]
             processed_values = []
             for val in values.split('|'):
-                if req:
-                    val = val.replace('$USER', req.authname)
                 val = neg + mode + val # add mode of comparison
                 processed_values.append(val)
             try:
@@ -186,7 +184,7 @@ class Query(object):
         if not self.cols:
             self.get_columns()
 
-        sql, args = self.get_sql()
+        sql, args = self.get_sql(req)
         self.env.log.debug("Query SQL: "+sql % tuple([repr(a) for a in args]))
 
         if not db:
@@ -248,7 +246,7 @@ class Query(object):
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
-    def get_sql(self):
+    def get_sql(self, req):
         """Return a (sql, params) tuple for the query."""
         if not self.cols:
             self.get_columns()
@@ -321,6 +319,8 @@ class Query(object):
         clauses = []
         args = []
         for k, v in self.constraints.items():
+            if req:
+                v = [val.replace('$USER', req.authname) for val in v]
             # Determine the match mode of the constraint (contains,
             # starts-with, negation, etc.)
             neg = v[0].startswith('!')
