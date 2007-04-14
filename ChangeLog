@@ -21,7 +21,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.10.3
  * Subversion repository resync broken. (#4204).
 
  The complete list of closed tickets can be found here:
-   http://trac.edgewall.org/query?status=closed&milestone=0.10.2
+   http://trac.edgewall.org/query?status=closed&milestone=0.10.3
 
 Trac 0.10.3rc1 (Dec 7, 2006)
 http://svn.edgewall.org/repos/trac/tags/trac-0.10.3rc1
@@ -32,9 +32,6 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.10.3rc1
  * Timeline fail to load with a "NoSuchChangeset" error message (#4132).
  * Timed out MySQL connections not handled properly (#3645).
  * Subversion repository resync broken. (#4204).
-
- The complete list of closed tickets can be found here:
-   http://trac.edgewall.org/query?status=closed&milestone=0.10.2
 
 Trac 0.10.2 (Nov 13, 2006)
 http://svn.edgewall.org/repos/trac/tags/trac-0.10.2
@@ -110,6 +107,8 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.10b1
  The complete list of closed tickets can be found here:
    http://trac.edgewall.org/query?status=closed&milestone=0.10
 
+----
+
 Trac 0.9.6  (Jul 6, 2006)
 http://svn.edgewall.org/repos/trac/tags/trac-0.9.6
 
@@ -164,7 +163,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.9.1
    #2318, #2329, #2366, #2369, #2373, #2383, #2416, #2457
 
 
-Trac 0.9  (Oct 31, 2005)
+Trac 0.9 'Vodun' (Oct 31, 2005)
 http://svn.edgewall.org/repos/trac/tags/trac-0.9
 
  * Support for a global trac.ini configuration file.
@@ -221,6 +220,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.9b1
  The complete list of closed tickets can be found here:
    http://trac.edgewall.org/query?status=closed&milestone=0.9
 
+----
 
 Trac 0.8.3  (Jun 15, 2005)
 http://svn.edgewall.org/repos/trac/tags/trac-0.8.3
@@ -297,6 +297,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.8
    #885, #888, #889, #892, #901, #903, #907, #912, 
    #916, #923, #929, #931, #932, #935
 
+----
 
 Trac 0.7.1 'Argento'  (Jun, 2004)
 http://svn.edgewall.org/repos/trac/tags/trac-0.7.1
@@ -346,8 +347,9 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.7
    #371, #372, #376, #377, #378, #381, #384, #385, #386, #387, #388,
    #392, #394, #396, #397, #398, #399, #402, #403, #410
 
+----
 
-Trac 0.6.1 '245 Trioxin (April 12, 2004)
+Trac 0.6.1 '245 Trioxin' (April 12, 2004)
 http://svn.edgewall.org/repos/trac/tags/trac-0.6.1
 
  * RSS now escapes entities in summary.
@@ -381,6 +383,7 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.6
    #135, #136, #138, #142, #145, #147, #151, #155, #170, #173,
    #174, #175, #177, #179
 
+----
 
 Trac 0.5.2 'Nameless' (March 2, 2004)
 http://svn.edgewall.org/repos/trac/tags/trac-0.5.2
