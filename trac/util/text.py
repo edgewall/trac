@@ -116,7 +116,7 @@ class unicode_passwd(unicode):
 def print_table(data, headers=None, sep='  ', out=None):
     if out is None:
         out = sys.stdout
-    charset = getattr(out, 'encoding', 'utf-8')
+    charset = getattr(out, 'encoding', None) or 'utf-8'
     data = list(data)
     if headers:
         data.insert(0, headers)
