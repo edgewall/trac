@@ -146,7 +146,7 @@ class TimelineModule(Component):
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
 
-        events = sorted(events, key=lambda e: to_timestamp(e.date), reverse=True)
+        events = sorted(events, key=lambda e: e.date, reverse=True)
 
         # prepare sorted global list
         if maxrows:
