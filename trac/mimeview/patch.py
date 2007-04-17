@@ -144,10 +144,10 @@ class PatchRenderer(Component):
                 groups = []
                 changes.append({'change': 'edit', 'props': [],
                                 'diffs': groups,
-                                'old': {'path': common,
+                                'old': {'path': common, 'href': None,
                                         'rev': ' '.join(oldinfo[1:]),
                                         'shortrev': shortrev[0]},
-                                'new': {'path': common,
+                                'new': {'path': common, 'href': None,
                                         'rev': ' '.join(newinfo[1:]),
                                         'shortrev': shortrev[1]}})
                 line = lines.next()
