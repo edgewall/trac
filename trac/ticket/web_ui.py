@@ -61,6 +61,13 @@ class TicketModuleBase(Component):
                                             'the %s field.' % (value, name))
                 elif not field.get('optional', False):
                     raise InvalidTicket('field %s must be set' % name)
+
+        # comment index must be a number
+        try:
+            int(req.args.get('cnum') or 0)
+        except ValueError:
+            raise InvalidTicket('Invalid comment number')
+
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
