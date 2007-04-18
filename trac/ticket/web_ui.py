@@ -44,6 +44,7 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
+    title = 'Invalid Ticket'
 
 
 class TicketModule(Component):
@@ -662,6 +663,12 @@ class TicketModule(Component):
                 elif not field.get('optional', False):
                     raise InvalidTicket('field %s must be set' % name)
 
+        # comment index must be a number
+        try:
+            int(req.args.get('cnum') or 0)
+        except ValueError:
+            raise InvalidTicket('Invalid comment number')
+
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
@@ -743,7 +750,7 @@ class TicketModule(Component):
         now = datetime.now(utc)
         self._validate_ticket(req, ticket)
 
-        cnum = req.args.get('cnum')        
+        cnum = req.args.get('cnum')
         replyto = req.args.get('replyto')
         internal_cnum = cnum
         if cnum and replyto: # record parent.child relationship
