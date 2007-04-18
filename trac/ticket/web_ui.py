@@ -902,7 +902,7 @@ class TicketModule(Component):
                     yield current
                 last_uid = uid
                 current = {'date': date, 'author': author, 'fields': {},
-                           'permanent': permanent}
+                           'permanent': permanent, 'comment': ''}
                 if permanent and not when:
                     autonum += 1
                     current['cnum'] = autonum
