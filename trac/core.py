@@ -23,10 +23,13 @@ __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
 class TracError(Exception):
     """Exception base class for errors in Trac."""
 
+    title = 'Trac Error'
+    
     def __init__(self, message, title=None, show_traceback=False):
         Exception.__init__(self, message)
         self.message = message
-        self.title = title
+        if title:
+            self.title = title
         self.show_traceback = show_traceback
 
 
@@ -104,11 +107,12 @@ class ComponentMeta(type):
             return new_class
 
         ComponentMeta._components.append(new_class)
+        registry = ComponentMeta._registry
         for interface in d.get('_implements', []):
-            ComponentMeta._registry.setdefault(interface, []).append(new_class)
+            registry.setdefault(interface, []).append(new_class)
         for base in [base for base in bases if hasattr(base, '_implements')]:
             for interface in base._implements:
-                ComponentMeta._registry.setdefault(interface, []).append(new_class)
+                registry.setdefault(interface, []).append(new_class)
 
         return new_class
 
@@ -174,12 +178,12 @@ class ComponentManager(object):
         component = self.components.get(cls)
         if not component:
             if cls not in ComponentMeta._components:
-                raise TracError, 'Component "%s" not registered' % cls.__name__
+                raise TracError('Component "%s" not registered' % cls.__name__)
             try:
                 component = cls(self)
             except TypeError, e:
-                raise TracError, 'Unable to instantiate component %r (%s)' \
-                                 % (cls, e)
+                raise TracError('Unable to instantiate component %r (%s)' %
+                                (cls, e))
         return component
 
     def component_activated(self, component):
