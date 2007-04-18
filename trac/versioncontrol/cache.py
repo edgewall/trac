@@ -96,6 +96,8 @@ class CachedRepository(Repository):
             cursor.execute("UPDATE system SET value=%s WHERE name=%s",
                            (self.name, CACHE_REPOSITORY_DIR))
 
+        self.db.commit() # save metadata changes made up to now
+
         # -- retrieve the youngest revision cached so far
         if CACHE_YOUNGEST_REV not in metadata:
             raise TracError('Missing "youngest_rev" in cache metadata')
