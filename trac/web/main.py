@@ -437,10 +437,12 @@ def dispatch_request(environ, start_response):
     except HTTPException, e:
         if env:
             env.log.warn(e)
-        if e.reason and 'error' in e.reason.lower():
-            title = e.reason
-        else:
-            title = 'Error: %s' % e.reason
+        title = 'Error'
+        if e.reason:
+            if 'error' in e.reason.lower():
+                title = e.reason
+            else:
+                title = 'Error: %s' % e.reason
         data = {'title': title, 'type': 'TracError', 'message': e.message,
                 'frames': [], 'traceback': None}
         try:
