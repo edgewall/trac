@@ -77,7 +77,7 @@ class Query(object):
         if self.group not in field_names:
             self.group = None
 
-    def from_string(cls, env, req, string, **kw):
+    def from_string(cls, env, string, **kw):
         filters = string.split('&')
         kw_strs = ['order', 'group', 'limit']
         kw_bools = ['desc', 'groupdesc', 'verbose']
@@ -246,7 +246,7 @@ class Query(object):
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
-    def get_sql(self, req):
+    def get_sql(self, req=None):
         """Return a (sql, params) tuple for the query."""
         if not self.cols:
             self.get_columns()
@@ -771,7 +771,7 @@ class QueryModule(Component):
                          href=formatter.href.query() + query.replace(' ', '+'))
         else:
             try:
-                query = Query.from_string(self.env, formatter.req, query)
+                query = Query.from_string(self.env, query)
                 return tag.a(label, href=query.get_href(formatter.context),
                              class_='query')
             except QuerySyntaxError, e:
@@ -827,7 +827,7 @@ class TicketQueryMacro(WikiMacroBase):
         query_string = '&'.join(['%s=%s' % item
                                  for item in kwargs.iteritems()])
 
-        query = Query.from_string(self.env, req, query_string)
+        query = Query.from_string(self.env, query_string)
         tickets = query.execute(req)
 
         if format == 'count':
