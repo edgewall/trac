@@ -54,6 +54,14 @@
       ${navigation('metanav')}
     </div>
     ${navigation('mainnav')}
+    <div id="warning" py:if="req and req.warnings" class="system-message">
+      <py:choose test="len(req.warnings)">
+        <py:when test="1">
+          <strong>Warning:</strong> $req.warnings[0]
+        </py:when>
+        <ul py:otherwise=""><li py:for="w in req.warnings">$w</li></ul>
+      </py:choose>
+    </div>
 
     <div id="main">
       ${select('*|text()')}

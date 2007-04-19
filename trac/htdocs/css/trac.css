@@ -466,6 +466,9 @@ table.listing tbody tr:hover { background: #eed !important }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
+#warning.system-message { background: #def; border: 2px solid #00d; }
+#warning.system-message li { list-style-type: square; }
+
 #content.error #newticket form { display: inline; }
 #content.error #newticket textarea { display: none; }
 
