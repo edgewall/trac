@@ -276,7 +276,8 @@ class TicketModule(Component):
                       get_reporter_id(req, 'author')
         ticket.values['reporter'] = reporter_id
 
-        if req.method == 'POST' and 'preview' not in req.args:
+        preview = 'preview' in req.args
+        if req.method == 'POST' and not preview:
             self._do_create(context) # ...redirected
 
         # Preview a new ticket
@@ -288,6 +289,9 @@ class TicketModule(Component):
             'version': None,
             'description_change': None
         }
+
+        if preview and not ticket['summary']:
+            req.warning('Ticket needs a summary')
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]

@@ -86,16 +86,7 @@
             <p py:if="not ticket.exists"><i>(future ticket)</i></p>
           </div>
           <!-- use a placeholder if it's a new ticket -->
-          <h2 class="summary searchable">
-            <py:choose>
-              <py:when test="ticket.summary">
-                ${ticket.summary}
-              </py:when>
-              <py:otherwise>
-                <div class="system-message">ticket summary missing</div>
-              </py:otherwise>
-            </py:choose>
-          </h2>
+          <h2 class="summary searchable">${ticket.summary}</h2>
 
           <table class="properties"
                  py:with="fields = [f for f in fields if not f.skip]">
