@@ -57,9 +57,12 @@
     <div id="warning" py:if="req and req.warnings" class="system-message">
       <py:choose test="len(req.warnings)">
         <py:when test="1">
-          <strong>Warning:</strong> $req.warnings[0]
+          <strong>Warning:</strong> ${req.warnings[0]}
         </py:when>
-        <ul py:otherwise=""><li py:for="w in req.warnings">$w</li></ul>
+        <py:otherwise>
+          <strong>Warnings:</strong>
+          <ul><li py:for="w in req.warnings">$w</li></ul>
+        </py:otherwise>
       </py:choose>
     </div>
 
