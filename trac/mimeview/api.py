@@ -528,15 +528,16 @@ class Mimeview(Component):
             stream = linesplitter()
 
         annotator_datas = []
-        errors = []
         for a in annotations:
             annotator = annotators[a]
             try:
                 data = (annotator, annotator.get_annotation_data(context))
             except TracError, e:
-                msg = to_unicode(e)
-                self.log.warning("Can't use annotator '%s': %s" % (a, msg))
-                errors.append((a, msg))
+                self.log.warning("Can't use annotator '%s': %s" %
+                                 (a, e.message))
+                context.req.warning(tag.strong("Can't use ", tag.em(a),
+                                               " annotator:") +
+                                    tag.pre(e.message))
                 data = (None, None)
             annotator_datas.append(data)
 
@@ -561,14 +562,7 @@ class Mimeview(Component):
                 yield row
 
         return tag.table(class_='code')(
-            tag.thead(_head_row(),
-                      # one row for each annotator failure
-                      [tag.tr(tag.td(tag.div(tag.strong("Can't use ", tag.em(a),
-                                                        " annotator:"),
-                                             tag.pre(msg),
-                                             class_="system-message"),
-                                     colspan="0"))
-                       for a, msg in errors]),
+            tag.thead(_head_row()),
             tag.tbody(_body_rows())
         )
 
