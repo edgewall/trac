@@ -36,6 +36,7 @@ from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import print_table, to_unicode, wrap
 from trac.wiki import WikiPage
+from trac.wiki.api import WikiSystem
 from trac.wiki.macros import WikiMacroBase
 
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
@@ -625,7 +626,7 @@ Congratulations!
 
     ## Wiki
     _help_wiki = [('wiki list', 'List wiki pages'),
-                  ('wiki remove <name>', 'Remove wiki page'),
+                  ('wiki remove <page>', 'Remove wiki page'),
                   ('wiki export <page> [file]',
                    'Export wiki page to file or stdout'),
                   ('wiki import <page> [file]',
@@ -694,8 +695,17 @@ Congratulations!
                     for r in rows], ['Title', 'Edits', 'Modified'])
 
     def _do_wiki_remove(self, name):
-        page = WikiPage(self.env_open(), name)
-        page.delete()
+        if name.endswith('*'):
+            env = self.env_open()
+            pages = [(p,) for p in WikiSystem(env).get_pages(name.rstrip('*') \
+                        or None)]
+            for p in pages:
+                page = WikiPage(env, p[0])
+                page.delete()
+            print_table(pages, ['Deleted pages'])
+        else:
+            page = WikiPage(self.env_open(), name)
+            page.delete()
 
     def _do_wiki_import(self, filename, title, cursor=None,
                         create_only=[]):
