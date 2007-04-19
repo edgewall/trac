@@ -301,8 +301,10 @@ class PermissionAdminPanel(Component):
                 req.perm.require(action)
                 if (subject, action) not in all_permissions:
                     perm.grant_permission(subject, action)
-                # TODO: else: req.warning('...')
-                req.redirect(req.href.admin(cat, page))
+                    req.redirect(req.href.admin(cat, page))
+                else:
+                    req.warning('Permission "%s" was already granted to '
+                                '"%s"' % (action, subject))
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
@@ -311,8 +313,10 @@ class PermissionAdminPanel(Component):
                     req.perm.require(action)
                 if (subject,group) not in all_permissions:
                     perm.grant_permission(subject, group)
-                # TODO: else: req.warning('...')
-                req.redirect(req.href.admin(cat, page))
+                    req.redirect(req.href.admin(cat, page))
+                else:
+                    req.warning('"%s" was already added to group "%s"' %
+                                (subject, group))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
