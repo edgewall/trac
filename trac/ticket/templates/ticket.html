@@ -195,15 +195,6 @@
                       <py:when test="field_name == 'attachment'">
                         <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a> added
                       </py:when>
-                      <py:when test="field_name == 'cc'">
-                        <py:with vars='newcc=map(lambda s: s.strip(), field.new.split(","));
-                                       oldcc=map(lambda s: s.strip(), field.old.split(","));
-                                       added=", ".join([format_author(x) for x in newcc if x and x not in oldcc]);
-                                       removed=", ".join([format_author(x) for x in oldcc if x and x not in newcc])'>
-                          <py:if test='added'>added: <em>${added}</em></py:if><py:if test='added and removed'>;</py:if>
-                          <py:if test='removed'>removed: <em>${removed}</em></py:if>
-                        </py:with>
-                      </py:when>
                       <py:when test="field.old and field.new">
                         changed
                         <py:choose>

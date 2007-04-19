@@ -227,7 +227,7 @@
       </py:for>
       <py:if test="stats_href">
         <dt>Total ${stats.unit}s:</dt>
-        <dd><a href="${stats_href}">${reduce(lambda x, y: x.count + y.count, stats.intervals or [0])}</a></dd>
+        <dd><a href="${stats_href}">${sum([x.count for x in stats.intervals], 0)}</a></dd>
       </py:if>
     </dl>
 </py:def>
