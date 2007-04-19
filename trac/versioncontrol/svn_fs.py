@@ -751,16 +751,17 @@ class SubversionNode(Node):
         if self.isfile:
             def blame_receiver(line_no, revision, author, date, line, pool):
                 annotations.append(revision)
-            rev = _svn_rev(self.rev)
-            start = _svn_rev(0)
-            repo_url = 'file:///%s/%s' % (self.repos.path.lstrip('/'),
-                                          self._scoped_svn_path)
-            self.repos.log.info('opening ra_local session to ' + repo_url)
-            from svn import client
             try:
+                rev = _svn_rev(self.rev)
+                start = _svn_rev(0)
+                repo_url = 'file:///%s/%s' % (self.repos.path.lstrip('/'),
+                                              self._scoped_svn_path)
+                self.repos.log.info('opening ra_local session to ' + repo_url)
+                from svn import client
                 client.blame2(repo_url, rev, start, rev, blame_receiver,
                               client.create_context(), self.pool())
-            except core.SubversionException, e: # svn thinks file is a binary
+            except (core.SubversionException, AttributeError), e:
+                # svn thinks file is a binary or blame not supported
                 raise TracError('svn blame failed: '+to_unicode(e))
         return annotations
 
