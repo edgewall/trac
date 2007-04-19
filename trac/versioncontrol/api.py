@@ -70,7 +70,11 @@ class RepositoryManager(Component):
     def pre_process_request(self, req, handler):
         from trac.web.chrome import Chrome        
         if handler is not Chrome(self.env):
-            self.get_repository(req.authname).sync()
+            try:
+                self.get_repository(req.authname).sync()
+            except TracError, e:
+                req.warning("Can't synchronize with the repository (%s)" %
+                            e.message)
         return handler
 
     def post_process_request(self, req, template, content_type):
