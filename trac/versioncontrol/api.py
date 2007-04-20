@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import os.path
+
 try:
     import threading
 except ImportError:
@@ -58,7 +60,8 @@ class RepositoryManager(Component):
     repository_type = Option('trac', 'repository_type', 'svn',
         """Repository connector type. (''since 0.10'')""")
     repository_dir = Option('trac', 'repository_dir', '',
-        """Path to local repository""")
+        """Path to local repository. This can also be a relative path
+        (''since 0.11'').""")
 
     def __init__(self):
         self._cache = {}
@@ -105,6 +108,8 @@ class RepositoryManager(Component):
                 repos = self._cache[tid]
             else:
                 rtype, rdir = self.repository_type, self.repository_dir
+                if not os.path.isabs(rdir):
+                    rdir = os.path.join(self.env.path, rdir)
                 repos = self._connector.get_repository(rtype, rdir, authname)
                 self._cache[tid] = repos
             return repos
