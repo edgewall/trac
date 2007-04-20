@@ -102,6 +102,7 @@ KNOWN_MIME_TYPES = {
     'text/x-chdr':            ['h'],
     'text/x-c++src':          ['cc', 'CC', 'cpp', 'C'],
     'text/x-c++hdr':          ['hh', 'HH', 'hpp', 'H'],
+    'text/x-csharp':          ['cs'],
     'text/x-diff':            ['diff', 'patch'],
     'text/x-eiffel':          ['e'],
     'text/x-elisp':           ['el'],
