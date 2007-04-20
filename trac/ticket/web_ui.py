@@ -25,7 +25,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import Attachment, AttachmentModule
-from trac.config import BoolOption, Option
+from trac.config import BoolOption, Option, IntOption
 from trac.context import Context
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
@@ -72,6 +72,10 @@ class TicketModule(Component):
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline
         (''since 0.9'').""")
+
+    max_description_size = IntOption('ticket', 'max_description_size', 262144,
+        """Don't accept tickets with a too big description.
+        (''since 0.11'').""")
 
     # IContentConverter methods
 
@@ -666,6 +670,10 @@ class TicketModule(Component):
                                             'the %s field.' % (value, name))
                 elif not field.get('optional', False):
                     raise InvalidTicket('field %s must be set' % name)
+
+        if len(ticket['description']) > self.max_description_size:
+            raise TracError('Ticket description is too big (must be less than'
+                            ' %s bytes)' % self.max_description_size)
 
         try:
             # comment index must be a number
