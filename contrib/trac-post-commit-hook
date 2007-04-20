@@ -50,14 +50,22 @@
 #   command #1 & #2 
 #   command #1 and #2
 #
+# Instead of the short-hand syntax "#1" also "ticket:1" can be used, e.g.:
+#   command ticket:1
+#   command ticket:1, ticket:2
+#   command ticket:1 & ticket:2 
+#   command ticket:1 and ticket:2
+# In addition, he ':' character can be omitted and issue or bug can be used
+# instead of ticket.
+#
 # You can have more then one command in a message. The following commands
 # are supported. There is more then one spelling for each command, to make
 # this as user-friendly as possible.
 #
-#   closes, fixes
+#   close, closed, closes, fix, fixed, fixes
 #     The specified issue numbers are closed with the contents of this
 #     commit message being added to it. 
-#   references, refs, addresses, re 
+#   references, refs, addresses, re, see 
 #     The specified issue numbers are left in their current status, but 
 #     the contents of this commit message are added to their notes. 
 #
@@ -118,8 +126,12 @@ else:
     leftEnv = ''
     rghtEnv = ''
 
-commandPattern = re.compile(leftEnv + r'(?P<action>[A-Za-z]*).?(?P<ticket>#[0-9]+(?:(?:[, &]*|[ ]?and[ ]?)#[0-9]+)*)' + rghtEnv)
-ticketPattern = re.compile(r'#([0-9]*)')
+ticket_prefix = '(?:#|(?:ticket|issue|bug)[: ]?)'
+ticket_reference = ticket_prefix + '[0-9]+'
+commandPattern = re.compile(leftEnv + r'(?P<action>[A-Za-z]*).?' +
+                            '(?P<ticket>%s(?:(?:[, &]*|[ ]?and[ ]?)%s)*)' %
+                            (ticket_reference, ticket_reference) + rghtEnv)
+ticketPattern = re.compile(ticket_prefix + '([0-9]+)')
 
 class CommitHook:
     _supported_cmds = {'close':      '_cmdClose',
