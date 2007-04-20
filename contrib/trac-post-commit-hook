@@ -32,17 +32,11 @@
 #
 # REPOS="$1"
 # REV="$2"
-# LOG=`/usr/bin/svnlook log -r $REV $REPOS`
-# AUTHOR=`/usr/bin/svnlook author -r $REV $REPOS`
-# TRAC_ENV='/somewhere/trac/project/'
-# TRAC_URL='http://trac.mysite.com/project/'
 #
 # /usr/bin/python /usr/local/src/trac/contrib/trac-post-commit-hook \
-#  -p "$TRAC_ENV"  \
-#  -r "$REV"       \
-#  -u "$AUTHOR"    \
-#  -m "$LOG"       \
-#  -s "$TRAC_URL"
+#  -p "$TRAC_ENV" -r "$REV"
+#
+# (all the other arguments are now deprecated and not needed anymore)
 #
 # It searches commit messages for text in the form of:
 #   command #1
@@ -50,12 +44,13 @@
 #   command #1 & #2 
 #   command #1 and #2
 #
-# Instead of the short-hand syntax "#1" also "ticket:1" can be used, e.g.:
+# Instead of the short-hand syntax "#1", "ticket:1" can be used as well, e.g.:
 #   command ticket:1
 #   command ticket:1, ticket:2
 #   command ticket:1 & ticket:2 
 #   command ticket:1 and ticket:2
-# In addition, he ':' character can be omitted and issue or bug can be used
+#
+# In addition, the ':' character can be omitted and issue or bug can be used
 # instead of ticket.
 #
 # You can have more then one command in a message. The following commands
@@ -89,17 +84,11 @@ from trac.ticket.web_ui import TicketModule
 from trac.util.text import to_unicode
 from trac.util.datefmt import utc
 
-try:
-    from optparse import OptionParser
-except ImportError:
-    try:
-        from optik import OptionParser
-    except ImportError:
-        raise ImportError, 'Requires Python 2.3 or the Optik option parsing library.'
+from optparse import OptionParser
 
 parser = OptionParser()
 depr = '(not used anymore)'
-parser.add_option('-e', '--require-envelope', dest='env', default='',
+parser.add_option('-e', '--require-envelope', dest='envelope', default='',
                   help="""
 Require commands to be enclosed in an envelope.
 If -e[], then commands must be in the form of [closes #4].
@@ -119,19 +108,19 @@ parser.add_option('-s', '--siteurl', dest='url',
 
 (options, args) = parser.parse_args(sys.argv[1:])
 
-if options.env:
-    leftEnv = '\\' + options.env[0]
-    rghtEnv = '\\' + options.env[1]
-else:
-    leftEnv = ''
-    rghtEnv = ''
 
 ticket_prefix = '(?:#|(?:ticket|issue|bug)[: ]?)'
 ticket_reference = ticket_prefix + '[0-9]+'
-commandPattern = re.compile(leftEnv + r'(?P<action>[A-Za-z]*).?' +
-                            '(?P<ticket>%s(?:(?:[, &]*|[ ]?and[ ]?)%s)*)' %
-                            (ticket_reference, ticket_reference) + rghtEnv)
-ticketPattern = re.compile(ticket_prefix + '([0-9]+)')
+ticket_command =  (r'(?P<action>[A-Za-z]*).?'
+                   '(?P<ticket>%s(?:(?:[, &]*|[ ]?and[ ]?)%s)*)' %
+                   (ticket_reference, ticket_reference))
+
+if options.envelope:
+    ticket_command = r'\%s%s\%s' % (options.envelope[0], ticket_command,
+                                    options.envelope[1])
+    
+command_re = re.compile(ticket_command)
+ticket_re = re.compile(ticket_prefix + '([0-9]+)')
 
 class CommitHook:
     _supported_cmds = {'close':      '_cmdClose',
@@ -160,13 +149,13 @@ class CommitHook:
         self.msg = "(In [%s]) %s" % (rev, chgset.message)
         self.now = datetime.now(utc)
 
-        cmdGroups = commandPattern.findall(self.msg)
+        cmd_groups = command_re.findall(self.msg)
 
         tickets = {}
-        for cmd, tkts in cmdGroups:
+        for cmd, tkts in cmd_groups:
             funcname = CommitHook._supported_cmds.get(cmd.lower(), '')
             if funcname:
-                for tkt_id in ticketPattern.findall(tkts):
+                for tkt_id in ticket_re.findall(tkts):
                     func = getattr(self, funcname)
                     tickets.setdefault(tkt_id, []).append(func)
 
