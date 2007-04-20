@@ -22,19 +22,35 @@ from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
 from trac.web.chrome import add_link, add_script
 
 
-class ComponentAdminPage(Component):
+class TicketAdminPage(Component):
 
     implements(IAdminPanelProvider)
+
+    abstract = True
 
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
         if 'TICKET_ADMIN' in req.perm:
-            yield ('ticket', 'Ticket System', 'components', 'Components')
+            yield ('ticket', 'Ticket System', self._type, self._label[1])
 
-    def render_admin_panel(self, req, cat, page, component):
+    def render_admin_panel(self, req, cat, page, version):
         req.perm.require('TICKET_ADMIN')
+        # Trap AssertionErrors and convert them to TracErrors
+        try:
+            return self._render_admin_panel(req, cat, page, version)
+        except AssertionError, e:
+            raise TracError(e)
 
+
+class ComponentAdminPage(TicketAdminPage):
+
+    _type = 'components'
+    _label = ('Component', 'Components')
+
+    # TicketAdminPage methods
+
+    def _render_admin_panel(self, req, cat, page, component):
         # Detail view?
         if component:
             comp = model.Component(self.env, component)
@@ -67,7 +83,7 @@ class ComponentAdminPage(Component):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError, 'No component selected'
+                        raise TracError('No component selected')
                     db = self.env.get_db_cnx()
                     for name in sel:
                         comp = model.Component(self.env, name, db=db)
@@ -102,17 +118,14 @@ class ComponentAdminPage(Component):
         return 'admin_components.html', data
 
 
-class MilestoneAdminPage(Component):
+class MilestoneAdminPage(TicketAdminPage):
 
-    implements(IAdminPanelProvider)
+    _type = 'milestones'
+    _label = ('Milestone', 'Milestones')
 
-    # IAdminPanelProvider methods
+    # TicketAdminPage methods
 
-    def get_admin_panels(self, req):
-        if 'TICKET_ADMIN' in req.perm:
-            yield ('ticket', 'Ticket System', 'milestones', 'Milestones')
-
-    def render_admin_panel(self, req, cat, page, milestone):
+    def _render_admin_panel(self, req, cat, page, milestone):
         req.perm.require('TICKET_ADMIN')
 
         # Detail view?
@@ -129,8 +142,9 @@ class MilestoneAdminPage(Component):
                     if completed:
                         mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):
-                            raise TracError('Completion date may not be in the '
-                                            'future', 'Invalid Completion Date')
+                            raise TracError('Completion date may not be in '
+                                            'the future',
+                                            'Invalid Completion Date')
                     mil.description = req.args.get('description', '')
                     mil.update()
                     req.redirect(req.href.admin(cat, page))
@@ -156,7 +170,7 @@ class MilestoneAdminPage(Component):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError, 'No milestone selected'
+                        raise TracError('No milestone selected')
                     db = self.env.get_db_cnx()
                     for name in sel:
                         mil = model.Milestone(self.env, name, db=db)
@@ -186,19 +200,14 @@ class MilestoneAdminPage(Component):
         return 'admin_milestones.html', data
 
 
-class VersionAdminPage(Component):
+class VersionAdminPage(TicketAdminPage):
 
-    implements(IAdminPanelProvider)
+    _type = 'versions'
+    _label = ('Version', 'Versions')
 
-    # IAdminPanelProvider methods
+    # TicketAdminPage methods
 
-    def get_admin_panels(self, req):
-        if 'TICKET_ADMIN' in req.perm:
-            yield ('ticket', 'Ticket System', 'versions', 'Versions')
-
-    def render_admin_panel(self, req, cat, page, version):
-        req.perm.require('TICKET_ADMIN')
-
+    def _render_admin_panel(self, req, cat, page, version):
         # Detail view?
         if version:
             ver = model.Version(self.env, version)
@@ -224,7 +233,7 @@ class VersionAdminPage(Component):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
                         ver.time = parse_date(req.args.get('time'))
-                    ver.insert()
+                        ver.insert()
                     req.redirect(req.href.admin(cat, page))
                          
                 # Remove versions
@@ -232,7 +241,7 @@ class VersionAdminPage(Component):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError, 'No version selected'
+                        raise TracError('No version selected')
                     db = self.env.get_db_cnx()
                     for name in sel:
                         ver = model.Version(self.env, name, db=db)
@@ -261,7 +270,7 @@ class VersionAdminPage(Component):
         return 'admin_versions.html', data
 
 
-class AbstractEnumAdminPage(Component):
+class AbstractEnumAdminPage(TicketAdminPage):
     implements(IAdminPanelProvider)
     abstract = True
 
@@ -269,13 +278,9 @@ class AbstractEnumAdminPage(Component):
     _enum_cls = None
     _label = ('(Undefined)', '(Undefined)')
 
-    # IAdminPanelProvider methods
+    # TicketAdminPage methods
 
-    def get_admin_panels(self, req):
-        if 'TICKET_ADMIN' in req.perm:
-            yield ('ticket', 'Ticket System', self._type, self._label[1])
-
-    def render_admin_panel(self, req, cat, page, path_info):
+    def _render_admin_panel(self, req, cat, page, path_info):
         req.perm.require('TICKET_ADMIN')
         data = {'label_singular': self._label[0],
                 'label_plural': self._label[1]}
@@ -308,7 +313,7 @@ class AbstractEnumAdminPage(Component):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError, 'No enum selected'
+                        raise TracError('No enum selected')
                     db = self.env.get_db_cnx()
                     for name in sel:
                         enum = self._enum_cls(self.env, name, db=db)
@@ -334,7 +339,7 @@ class AbstractEnumAdminPage(Component):
                                   if key.startswith('value_')])
                     values = dict([(val, True) for val in order.values()])
                     if len(order) != len(values):
-                        raise TracError, 'Order numbers must be unique'
+                        raise TracError('Order numbers must be unique')
                     db = self.env.get_db_cnx()
                     for enum in self._enum_cls.select(self.env, db=db):
                         new_value = order[enum.value]
