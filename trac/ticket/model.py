@@ -319,6 +319,11 @@ class Ticket(object):
             listener.ticket_deleted(self)
 
 
+def simplify_whitespace(name):
+    """Strip spaces and remove duplicate spaces within names"""
+    return ' '.join(name.split())
+        
+
 class AbstractEnum(object):
     type = None
     ticket_col = None
@@ -328,6 +333,8 @@ class AbstractEnum(object):
             self.ticket_col = self.type
         self.env = env
         if name:
+            name = simplify_whitespace(name)
+        if name:
             if not db:
                 db = self.env.get_db_cnx()
             cursor = db.cursor()
@@ -335,7 +342,7 @@ class AbstractEnum(object):
                            (self.type, name))
             row = cursor.fetchone()
             if not row:
-                raise TracError, '%s %s does not exist.' % (self.type, name)
+                raise TracError('%s %s does not exist.' % (self.type, name))
             self.value = self._old_value = row[0]
             self.name = self._old_name = name
         else:
@@ -364,8 +371,8 @@ class AbstractEnum(object):
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing %s' % self.type
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot create %s with no name' % self.type
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -389,8 +396,8 @@ class AbstractEnum(object):
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent %s' % self.type
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot update %s with no name' % self.type
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -454,6 +461,8 @@ class Component(object):
     def __init__(self, env, name=None, db=None):
         self.env = env
         if name:
+            name = simplify_whitespace(name)
+        if name:
             if not db:
                 db = self.env.get_db_cnx()
             cursor = db.cursor()
@@ -461,7 +470,7 @@ class Component(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError, 'Component %s does not exist.' % name
+                raise TracError('Component %s does not exist.' % name)
             self.name = self._old_name = name
             self.owner = row[0] or None
             self.description = row[1] or ''
@@ -491,8 +500,8 @@ class Component(object):
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing component'
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot create component with no name'
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -510,8 +519,8 @@ class Component(object):
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent component'
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot update component with no name'
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -605,8 +614,8 @@ class Milestone(object):
             db.commit()
 
     def insert(self, db=None):
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot create milestone with no name'
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -624,8 +633,8 @@ class Milestone(object):
             db.commit()
 
     def update(self, db=None):
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot update milestone with no name'
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -687,7 +696,7 @@ class Version(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError, 'Version %s does not exist.' % name
+                raise TracError('Version %s does not exist.' % name)
             self.name = self._old_name = name
             self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) or None
             self.description = row[1] or ''
@@ -717,8 +726,8 @@ class Version(object):
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing version'
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot create version with no name'
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -736,8 +745,8 @@ class Version(object):
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent version'
+        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot update version with no name'
-        self.name = self.name.strip()
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
