@@ -29,7 +29,7 @@ __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
            'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
            'ConfigurationError']
 
-_TRUE_VALUES = ('yes', 'true', 'on', 'aye', '1', 1, True)
+_TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
 
 class ConfigurationError(TracError):
@@ -73,10 +73,10 @@ class Configuration(object):
     def getbool(self, section, name, default=None):
         """Return the specified option as boolean value.
         
-        If the value of the option is one of "yes", "true",  "on", or "1", this
-        method wll return `True`, otherwise `False`.
+        If the value of the option is one of "yes", "true", "enabled", "on",
+        or "1", this method wll return `True`, otherwise `False`.
         
-        (since Trac 0.9.3)
+        (since Trac 0.9.3, "enabled" added in 0.11)
         """
         return self[section].getbool(name, default)
 
@@ -254,7 +254,7 @@ class Section(object):
         """Return the value of the specified option as boolean.
         
         This method returns `True` if the option value is one of "yes", "true",
-        "on", or "1", ignoring case. Otherwise `False` is returned.
+        "enabled", "on", or "1", ignoring case. Otherwise `False` is returned.
         """
         value = self.get(name, default)
         if isinstance(value, basestring):
