@@ -14,6 +14,8 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import posixpath
+
 from trac.core import TracError
 from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
                                 NoSuchChangeset
@@ -41,8 +43,8 @@ class CachedRepository(Repository):
         self.repos.close()
 
     def get_changeset(self, rev):
-        return CachedChangeset(self.repos.normalize_rev(rev), self.db,
-                               self.authz)
+        return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
+                               self.db, self.authz)
 
     def get_changesets(self, start, stop):
         cursor = self.db.cursor()
@@ -239,7 +241,7 @@ class CachedRepository(Repository):
 
 class CachedChangeset(Changeset):
 
-    def __init__(self, rev, db, authz):
+    def __init__(self, repos, rev, db, authz):
         self.db = db
         self.authz = authz
         cursor = self.db.cursor()
@@ -251,6 +253,7 @@ class CachedChangeset(Changeset):
             Changeset.__init__(self, rev, message, author, int(date))
         else:
             raise NoSuchChangeset(rev)
+        self.scope = getattr(repos, 'scope', '')
 
     def get_changes(self):
         cursor = self.db.cursor()
@@ -258,7 +261,8 @@ class CachedChangeset(Changeset):
                        "FROM node_change WHERE rev=%s "
                        "ORDER BY path", (self.rev,))
         for path, kind, change, base_path, base_rev in cursor:
-            if not self.authz.has_permission(path):
+            if not self.authz.has_permission(posixpath.join(self.scope,
+                                                            path.strip('/'))):
                 # FIXME: what about the base_path?
                 continue
             kind = _kindmap[kind]

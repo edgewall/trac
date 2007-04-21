@@ -16,6 +16,8 @@
 # Author: Francois Harvey <fharvey@securiweb.net>
 #         Matthew Good <trac@matt-good.net>
 
+import os.path
+
 from trac.config import Option
 from trac.core import *
 from trac.versioncontrol import Authorizer
@@ -36,6 +38,10 @@ def SubversionAuthorizer(env, repos, authname):
     authz_file = env.config.get('trac', 'authz_file')
     if not authz_file:
         return Authorizer()
+    if not os.path.isabs(authz_file):
+        authz_file = os.path.join(env.path, authz_file)
+    if not os.path.exists(authz_file):
+        env.log.error('[trac] authz_file (%s) does not exist.' % authz_file)
 
     module_name = env.config.get('trac', 'authz_module_name')
     return RealSubversionAuthorizer(repos, authname, module_name, authz_file)
@@ -94,9 +100,10 @@ class RealSubversionAuthorizer(Authorizer):
 
     def has_permission_for_changeset(self, rev):
         changeset = self.repos.get_changeset(rev)
-        for path,_,_,_,_ in changeset.get_changes():
-            if self.has_permission(path):
-                return 1
+        for change in changeset.get_changes():
+            # the repository checks permissions for each change, so just check
+            # if any changes can be accessed
+            return 1
         return 0
 
     # Internal API
