@@ -23,7 +23,6 @@ from itertools import izip
 
 from genshi.builder import tag
 
-from trac.config import IntOption
 from trac.context import Context
 from trac.core import *
 from trac.db import get_column_names
@@ -41,11 +40,6 @@ class ReportModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
-
-    default_report = IntOption('ticket', 'default_report', -1,
-        """Report number to show when selecting ''View Tickets''.
-        Defaults to `-1`, the list of available reports.
-        (Since 0.11)""")
 
     # INavigationContributor methods
 
@@ -67,7 +61,7 @@ class ReportModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/report(?:/(-?[0-9]+))?', req.path_info)
+        match = re.match(r'/report(?:/([0-9]+))?', req.path_info)
         if match:
             if match.group(1):
                 req.args['id'] = match.group(1)
@@ -77,7 +71,7 @@ class ReportModule(Component):
         req.perm.require('REPORT_VIEW')
 
         # did the user ask for any special report?
-        id = int(req.args.get('id', self.default_report))
+        id = int(req.args.get('id', -1))
         action = req.args.get('action', 'view')
 
         db = self.env.get_db_cnx()
@@ -102,7 +96,7 @@ class ReportModule(Component):
                return template, data, content_type
 
         if id != -1 or action == 'new':
-            add_link(req, 'up', req.href.report(-1), 'Available Reports')
+            add_link(req, 'up', req.href.report(), 'Available Reports')
 
         # Kludge: only show link to custom query if the query module is actually
         # enabled
