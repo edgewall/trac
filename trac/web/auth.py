@@ -29,12 +29,13 @@ import sys
 import time
 import urllib2
 
+from genshi.builder import tag
+
 from trac.config import BoolOption
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
-from trac.util.html import escape, html
 
 
 class LoginModule(Component):
@@ -85,10 +86,10 @@ class LoginModule(Component):
         if req.authname and req.authname != 'anonymous':
             yield ('metanav', 'login', 'logged in as %s' % req.authname)
             yield ('metanav', 'logout',
-                   html.A('Logout', href=req.href.logout()))
+                   tag.a('Logout', href=req.href.logout()))
         else:
             yield ('metanav', 'login',
-                   html.A('Login', href=req.href.login()))
+                   tag.a('Login', href=req.href.login()))
 
     # IRequestHandler methods
 
@@ -119,12 +120,12 @@ class LoginModule(Component):
         case sensitive regarding user names and domain names
         """
         if not req.remote_user:
-            raise TracError(html("Authentication information not available. "
-                                 "Please refer to the ",
-                                 html.a('installation documentation',
-                                        title="Configuring Authentication",
-                                        href=req.href.wiki('TracInstall') +
-                                        "#ConfiguringAuthentication"), "."))
+            raise TracError(tag("Authentication information not available. "
+                                "Please refer to the ",
+                                tag.a('installation documentation',
+                                      title="Configuring Authentication",
+                                      href=req.href.wiki('TracInstall') +
+                                      "#ConfiguringAuthentication"), "."))
         remote_user = req.remote_user
         if self.ignore_case:
             remote_user = remote_user.lower()
