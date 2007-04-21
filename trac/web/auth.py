@@ -162,6 +162,11 @@ class LoginModule(Component):
                        (req.authname, int(time.time()) - 86400 * 10))
         db.commit()
         self._expire_cookie(req)
+        custom_redirect = self.config['metanav'].get('logout.redirect')
+        if custom_redirect:
+            if custom_redirect.startswith('/'):
+                custom_redirect = req.href(custom_redirect)
+            req.redirect(custom_redirect)
 
     def _expire_cookie(self, req):
         """Instruct the user agent to drop the auth cookie by setting the
