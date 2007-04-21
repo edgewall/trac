@@ -100,9 +100,10 @@ class RealSubversionAuthorizer(Authorizer):
 
     def has_permission_for_changeset(self, rev):
         changeset = self.repos.get_changeset(rev)
-        for path,_,_,_,_ in changeset.get_changes():
-            if self.has_permission(path):
-                return 1
+        for change in changeset.get_changes():
+            # the repository checks permissions for each change, so just check
+            # if any changes can be accessed
+            return 1
         return 0
 
     # Internal API

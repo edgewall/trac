@@ -464,7 +464,8 @@ class SubversionRepository(Repository):
 
     def get_node(self, path, rev=None):
         path = path or ''
-        self.authz.assert_permission(posixpath.join(self.scope, path))
+        self.authz.assert_permission(posixpath.join(self.scope,
+                                                    path.strip('/')))
         if path and path[-1] == '/':
             path = path[:-1]
 
@@ -717,7 +718,8 @@ class SubversionNode(Node):
         entries = fs.dir_entries(self.root, self._scoped_svn_path, pool())
         for item in entries.keys():
             path = posixpath.join(self.path, _from_svn(item))
-            if not self.authz.has_permission(path):
+            if not self.authz.has_permission(posixpath.join(self.scope,
+                                                            path.strip('/'))):
                 continue
             yield SubversionNode(path, self._requested_rev, self.repos,
                                  self.pool)

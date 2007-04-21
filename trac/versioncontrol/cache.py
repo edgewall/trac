@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import posixpath
 from datetime import datetime
 
 from trac.core import TracError
@@ -260,6 +261,7 @@ class CachedChangeset(Changeset):
             Changeset.__init__(self, rev, message, author, date)
         else:
             raise NoSuchChangeset(rev)
+        self.scope = getattr(repos, 'scope', '')
 
     def get_changes(self):
         cursor = self.db.cursor()
@@ -267,7 +269,8 @@ class CachedChangeset(Changeset):
                        "FROM node_change WHERE rev=%s "
                        "ORDER BY path", (self.rev,))
         for path, kind, change, base_path, base_rev in cursor:
-            if not self.authz.has_permission(path):
+            if not self.authz.has_permission(posixpath.join(self.scope,
+                                                            path.strip('/'))):
                 # FIXME: what about the base_path?
                 continue
             kind = _kindmap[kind]
