@@ -21,7 +21,7 @@ import pprint
 import re
 
 from genshi import Markup
-from genshi.builder import tag
+from genshi.builder import tag, Element
 from genshi.core import Attrs, START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
@@ -371,7 +371,27 @@ class Chrome(Component):
         active = None
         for contributor in self.navigation_contributors:
             for category, name, text in contributor.get_navigation_items(req):
-                allitems.setdefault(category, {})[name] = text
+                category_section = self.config[category]
+                if category_section.getbool(name, True):
+                    # the navigation item is enabled (this is the default)
+                    item = None
+                    if isinstance(text, Element) and text.tag.localname == 'a':
+                        item = text
+                    label = category_section.get(name + '.label')
+                    href = category_section.get(name + '.href')
+                    if href:
+                        if href.startswith('/'):
+                            href = req.href(href)
+                        if label:
+                            item = tag.a(label) # create new label
+                        elif not item:
+                            item = tag.a(text) # wrap old text
+                        item = item(href=href) # use new href
+                    elif label and item: # create new label, use old href
+                        item = tag.a(label, href=item.attrib.get('href'))
+                    elif not item: # use old text
+                        item = text
+                    allitems.setdefault(category, {})[name] = item
             if contributor is handler:
                 active = contributor.get_active_navigation_item(req)
 
