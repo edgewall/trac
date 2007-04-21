@@ -112,10 +112,8 @@
           <dd class="author">${authorinfo(changeset.author)}</dd>
           <py:for each="prop in properties" py:choose="">
             <py:when test="prop.rendered">
-              <dt py:attrs="prop.rendered.name_attributes"
-                  py:content="prop.rendered.name" />
-              <dd py:attrs="prop.rendered.content_attributes"
-                  py:content="prop.rendered.content" />
+              <dt py:attrs="prop.rendered.name_attributes" py:content="prop.rendered.name" />
+              <dd py:attrs="prop.rendered.content_attributes" py:content="prop.rendered.content" />
             </py:when>
             <py:otherwise>
               <dt class="property">$prop.name:</dt>

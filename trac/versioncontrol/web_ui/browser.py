@@ -51,10 +51,12 @@ class IPropertyRenderer(Interface):
     def match_property(name, mode):
         """Indicate whether this renderer can treat the given property
 
-        `mode` is the current rendering context, which can be one of:
+        `mode` is the current rendering context, which can be:
          - 'browser' rendered in the browser view
          - 'changeset' rendered in the changeset view as a node property
          - 'revprop' rendered in the changeset view as a revision property
+        Other identifiers might be used by plugins, so it's advised to simply
+        ignore unknown modes.
 
         Returns a quality number, ranging from 0 (unsupported) to 9
         (''perfect'' match).
@@ -503,7 +505,7 @@ class BrowserModule(Component):
                     rendered = rendered
                 else:
                     value = rendered
-                    rendered = RenderedProperty()
+                    rendered = None
                 prop = {'name': name, 'value': value, 'rendered': rendered}
                 return prop
 

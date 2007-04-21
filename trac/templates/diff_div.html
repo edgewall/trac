@@ -48,11 +48,11 @@
                            both = prop.old and prop.new;
                            action = both and 'changed from ' or not prop.old and 'set' or 'deleted'">
               <li py:when="one">
-                Property <strong py:attrs="'rendered' in one and one.rendered.name_attributes">
-                  ${'rendered' in one and one.rendered.name or prop.name}</strong> $action
+                Property <strong py:attrs="one.rendered and one.rendered.name_attributes">
+                  ${one.rendered and one.rendered.name or prop.name}</strong> $action
                 <py:def function="render_property(prop)">
                   <py:choose>
-                    <py:when test="'rendered' in prop">$prop.rendered.content</py:when>
+                    <py:when test="prop.rendered">$prop.rendered.content</py:when>
                     <em py:when="istext(prop.value)"><tt>$prop.value</tt></em>
                     <py:otherwise>$prop.value</py:otherwise>
                   </py:choose>
