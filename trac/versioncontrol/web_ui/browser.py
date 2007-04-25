@@ -35,7 +35,7 @@ from trac.util.html import escape, html, Markup
 from trac.util.text import shorten_line
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            INavigationContributor
+                            INavigationContributor, Chrome
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 from trac.versioncontrol.api import NoSuchChangeset
@@ -348,6 +348,12 @@ class BrowserModule(Component):
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }
+
+        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
+        if xhr: # render and return the content only
+            data['xhr'] = True
+            return 'dir_entries.html', data, None
+        
         add_stylesheet(req, 'common/css/browser.css')
         return 'browser.html', data, None
 
@@ -403,6 +409,8 @@ class BrowserModule(Component):
                                           old=rev, old_path='/', format='zip')
             add_link(req, 'alternate', zip_href, 'Zip Archive',
                      'application/zip', 'zip')
+
+        add_script(req, 'common/js/expand_dir.js')
 
         return {'order': order, 'desc': desc and 1 or None,
                 'entries': entries, 'changes': changes,
