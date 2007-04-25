@@ -679,7 +679,7 @@ class Mimeview(Component):
                                                          content, selector)
         req.send_response(200)
         req.send_header('Content-Type', output_type)
-        req.send_header('Content-Disposition', 'attachment; filename=%s.%s' % 
+        req.send_header('Content-Disposition', 'filename=%s.%s' % 
                         (filename, ext))
         req.end_headers()
         req.write(content)
