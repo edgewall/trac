@@ -44,7 +44,7 @@
         <input type="hidden" name="action" value="edit" />
         <div class="field">
           <label>Name of the milestone:<br />
-            <input type="text" id="name" name="name" size="32" value="${milestone.name}" />
+            <input type="text" id="name" name="name" size="32" value="${milestone.name or req.args.get('name')}" />
           </label>
         </div>
         <fieldset>
@@ -70,9 +70,9 @@
               <br/>
               <input type="checkbox" id="retarget" name="retarget" checked="checked" />
               <label>Retarget associated open tickets to milestone:
-                <select id="target" name="target">
+                <select id="target" name="target" py:with="t = req.args.get('target')">
                   <option value="">None</option>
-                  <option py:for="m in milestones">${m.name}</option>
+                  <option py:for="m in milestones" selected="${m.name == t or None}">${m.name}</option>
                 </select>
               </label>
             </py:if>

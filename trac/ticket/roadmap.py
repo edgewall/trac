@@ -412,7 +412,7 @@ class MilestoneModule(Component):
                 else:
                     req.redirect(req.href.roadmap())
             elif action == 'edit':
-                self._do_save(req, db, milestone)
+                return self._do_save(req, db, milestone)
             elif action == 'delete':
                 self._do_delete(req, db, milestone)
         elif action in ('new', 'edit'):
@@ -443,37 +443,64 @@ class MilestoneModule(Component):
         else:
             req.perm.require('MILESTONE_CREATE')
 
-        if not req.args.has_key('name'):
-            raise TracError('You must provide a name for the milestone.',
-                            'Required Field Missing')
+        old_name = milestone.name
 
-        due = req.args.get('duedate', '')
-        milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
-        if req.args.has_key('completed'):
-            completed = req.args.get('completeddate', '')
-            milestone.completed = completed and parse_date(completed) or \
-                                  None
-            if milestone.completed and milestone.completed > datetime.now(utc):
-                raise TracError('Completion date may not be in the future',
-                                'Invalid Completion Date')
-            retarget_to = req.args.get('target')
-            if req.args.has_key('retarget'):
-                cursor = db.cursor()
-                cursor.execute("UPDATE ticket SET milestone=%s WHERE "
-                               "milestone=%s and status != 'closed'",
-                                (retarget_to, milestone.name))
-                self.env.log.info('Tickets associated with milestone %s '
-                                  'retargeted to %s' % 
-                                  (milestone.name, retarget_to))
-        else:
-            milestone.completed = 0
-
-        # don't update the milestone name until after retargetting open tickets
         milestone.name = req.args.get('name')
         milestone.description = req.args.get('description', '')
 
+        due = req.args.get('duedate', '')
+        milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
+
+        completed = req.args.get('completeddate', '')
+        retarget_to = req.args.get('target')
+
+        # Instead of raising one single error, check all the constraints and
+        # let the user fix them by going back to edit mode showing the warnings
+        warnings = []
+        def warn(msg):
+            req.warning(msg)
+            warnings.append(msg)
+
+        # -- check the name
+        if milestone.name:
+            # check that the milestone doesn't already exists
+            # FIXME: the whole .exists business needs to be clarified (#4130)
+            try:
+                test_milestone = Milestone(self.env, milestone.name, db)
+                if not milestone.exists:
+                    # then an exception should have been raised
+                    warn('Milestone "%s" already exists, '
+                         'please choose another name' % milestone.name)
+            except TracError:
+                pass
+        else:
+            warn('You must provide a name for the milestone.')
+
+        # -- check completed date
+        if 'completed' in req.args:
+            milestone.completed = completed and parse_date(completed) or \
+                                  None
+            if milestone.completed and milestone.completed > datetime.now(utc):
+                warn('Completion date may not be in the future')
+        else:
+            milestone.completed = None
+
+        if warnings:
+            if not milestone.exists:
+                milestone.name = None
+            return self._render_editor(req, db, milestone)
+        
+        # -- actually save changes
         if milestone.exists:
             milestone.update()
+            # eventually retarget opened tickets associated with the milestone
+            if 'retarget' in req.args:
+                cursor = db.cursor()
+                cursor.execute("UPDATE ticket SET milestone=%s WHERE "
+                               "milestone=%s and status != 'closed'",
+                                (retarget_to, old_name))
+                self.env.log.info('Tickets associated with milestone %s '
+                                  'retargeted to %s' % (old_name, retarget_to))
         else:
             milestone.insert()
         db.commit()
