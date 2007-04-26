@@ -4,8 +4,6 @@ var counter = 0;
 
 function enableExpandDir(elem) {
   elem.find("span.direxpand").click(toggleDir);
-
-  // alert( "queryDir added to " + elem.find("span.direxpand").length + " elements");
 }
 
 function toggleDir() {
@@ -24,21 +22,26 @@ function expandDir(td) {
   var a = td.children("a");
   var href = a.attr("href");
   var depth = parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) + 20;
-  // insert "Loading ..." row
-  tr.after('<tr><td class="name" colspan="5"><span class="loading">Loading ' +
-	   a.text() + "...</span></td></tr>");
-  tr.next().children("td.name").css("padding-left", depth);
 
-  // prepare the class that will be used by foldDir to remove the folder's entries
+  // insert "Loading ..." row
+  tr.after('<tr><td class="name" colspan="5" style="padding-left: ' +
+	   depth + 'px"><span class="loading">Loading ' + a.text() +
+	   '...</span></td></tr>');
+
+  // prepare the class that will be used by foldDir to identify all the 
+  // rows to be removed when collapsing that folder
   var folderid = "f" + counter++;
   td.addClass(folderid);
+  var ancestor_folderids = $.grep(tr.attr("class").split(" "), 
+				  function(c) { return c.match(/^f\d+$/)});
+  ancestor_folderids.push(folderid);
 
   $.get(href, {action: "inplace"}, function(data) {
     // remove "Loading ..." row
     tr.next().remove();
     // insert folder content rows
     var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
-    rows.addClass(folderid);
+    rows.addClass(ancestor_folderids.join(" "));
     rows.children("td.name").css("padding-left", depth);
     enableExpandDir(rows);
     tr.after(rows);
