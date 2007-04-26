@@ -27,6 +27,7 @@ from StringIO import StringIO
 from trac.context import Context
 from trac.core import *
 from trac.mimeview import *
+from trac.util.compat import set
 from trac.wiki.api import WikiSystem
 from trac.wiki.parser import WikiParser
 from trac.util.html import escape, plaintext, Markup, Element, html
@@ -96,8 +97,11 @@ class WikiProcessor(object):
         from genshi.input import HTMLParser, ParseError
         from genshi.filters import HTMLSanitizer
         try:
-            stream = Stream(HTMLSanitizer()(HTMLParser(StringIO(text))))
-            return stream.render('xhtml', encoding=None)
+            stream = Stream(HTMLParser(StringIO(text)))
+            sanitizer = HTMLSanitizer(
+                safe_attrs=HTMLSanitizer.SAFE_ATTRS | set(['style'])
+            )
+            return (stream | sanitizer).render('xhtml', encoding=None)
         except ParseError, e:
             self.env.log.warn(e)
             return system_message('HTML parsing error: %s' % escape(e.msg),

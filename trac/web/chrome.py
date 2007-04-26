@@ -46,7 +46,7 @@ from trac.wiki.formatter import format_to_html, format_to_oneliner
 
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
-    """Add a link to the HDF data set that will be inserted as <link> element in
+    """Add a link to the chrome info that will be inserted as <link> element in
     the <head> of the generated HTML
     """
     linkid = '%s:%s' % (rel, href)
@@ -60,7 +60,7 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     linkset.add(linkid)
 
 def add_stylesheet(req, filename, mimetype='text/css'):
-    """Add a link to a style sheet to the HDF data set so that it gets included
+    """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
     
     If the filename is absolute (i.e. starts with a slash), the generated link
