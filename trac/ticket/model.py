@@ -614,7 +614,6 @@ class Milestone(object):
             db.commit()
 
     def insert(self, db=None):
-        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot create milestone with no name'
         if not db:
             db = self.env.get_db_cnx()
@@ -622,6 +621,7 @@ class Milestone(object):
         else:
             handle_ta = False
 
+        self.name = simplify_whitespace(self.name)
         cursor = db.cursor()
         self.env.log.debug("Creating new milestone '%s'" % self.name)
         cursor.execute("INSERT INTO milestone (name,due,completed,description) "
@@ -633,7 +633,6 @@ class Milestone(object):
             db.commit()
 
     def update(self, db=None):
-        self.name = simplify_whitespace(self.name)
         assert self.name, 'Cannot update milestone with no name'
         if not db:
             db = self.env.get_db_cnx()
@@ -641,6 +640,7 @@ class Milestone(object):
         else:
             handle_ta = False
 
+        self.name = simplify_whitespace(self.name)
         cursor = db.cursor()
         self.env.log.info('Updating milestone "%s"' % self.name)
         cursor.execute("UPDATE milestone SET name=%s,due=%s,"

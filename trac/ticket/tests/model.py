@@ -201,7 +201,7 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('john', ticket['reporter'])
 
         # An unknown field
-        self.assertRaises(KeyError, ticket.__getitem__, 'bar')
+        assert ticket['bar'] is None
 
         # Custom field
         self.assertEqual('bar', ticket['foo'])
