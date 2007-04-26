@@ -19,10 +19,6 @@ import imp
 import inspect
 import os
 import re
-try:
-    set
-except NameError:
-    from sets import Set as set
 from StringIO import StringIO
 
 from genshi.builder import Element, tag
@@ -30,7 +26,7 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.util.datefmt import format_date, utc
-from trac.util.compat import sorted, groupby, any
+from trac.util.compat import sorted, groupby, any, set
 from trac.util.html import escape
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
