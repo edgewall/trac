@@ -3,7 +3,7 @@
 var counter = 0;
 
 function enableExpandDir(elem) {
-  elem.find("span.direxpand").click(toggleDir);
+  elem.find("span.direxpand").css("cursor", "pointer").click(toggleDir);
 }
 
 function toggleDir() {
