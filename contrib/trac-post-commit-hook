@@ -83,6 +83,7 @@ from trac.ticket.web_ui import TicketModule
 # TODO: move grouped_changelog_entries to model.py
 from trac.util.text import to_unicode
 from trac.util.datefmt import utc
+from trac.versioncontrol.api import NoSuchChangeset
 
 from optparse import OptionParser
 
@@ -143,7 +144,10 @@ class CommitHook:
         
         # Instead of bothering with the encoding, we'll use unicode data
         # as provided by the Trac versioncontrol API (#1310).
-        chgset = repos.get_changeset(rev)
+        try:
+            chgset = repos.get_changeset(rev)
+        except NoSuchChangeset:
+            return # out of scope changesets are not cached
         self.author = chgset.author
         self.rev = rev
         self.msg = "(In [%s]) %s" % (rev, chgset.message)
