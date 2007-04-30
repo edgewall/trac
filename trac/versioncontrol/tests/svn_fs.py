@@ -39,7 +39,7 @@ from trac.versioncontrol.svn_fs import SubversionRepository
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 
-HEAD = 20
+HEAD = 21
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -142,7 +142,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('/trunk', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
         self.assertEqual(HEAD, node.rev)
-        self.assertEqual(datetime(2006, 12, 4, 10, 47, 24,0,utc),
+        self.assertEqual(datetime(2007,4,30,17,45,26,0,utc),
                          node.last_modified)
         node = self.repos.get_node('/trunk/README.txt')
         self.assertEqual('README.txt', node.name)
@@ -168,10 +168,11 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def test_get_dir_entries(self):
         node = self.repos.get_node('/trunk')
         entries = node.get_entries()
-        self.assertEqual('mpp_proc', entries.next().name)
-        self.assertEqual(u'R\xe9sum\xe9.txt', entries.next().name)
         self.assertEqual('dir1', entries.next().name)
+        self.assertEqual('mpp_proc', entries.next().name)
+        self.assertEqual('v2', entries.next().name)
         self.assertEqual('README3.txt', entries.next().name)
+        self.assertEqual(u'R\xe9sum\xe9.txt', entries.next().name)
         self.assertEqual('README.txt', entries.next().name)
         self.assertRaises(StopIteration, entries.next)
 
@@ -524,10 +525,11 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
     def test_get_dir_entries(self):
         node = self.repos.get_node('/')
         entries = node.get_entries()
-        self.assertEqual('mpp_proc', entries.next().name)
-        self.assertEqual(u'R\xe9sum\xe9.txt', entries.next().name)
         self.assertEqual('dir1', entries.next().name)
+        self.assertEqual('mpp_proc', entries.next().name)
+        self.assertEqual('v2', entries.next().name)
         self.assertEqual('README3.txt', entries.next().name)
+        self.assertEqual(u'R\xe9sum\xe9.txt', entries.next().name)
         self.assertEqual('README.txt', entries.next().name)
         self.assertRaises(StopIteration, entries.next)
 
@@ -666,6 +668,16 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
                          chgset.message)
         changes = chgset.get_changes()
         self.assertEqual(('/', Node.DIRECTORY, Changeset.EDIT, '/', 6),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
+
+    def test_changeset_copy_from_outside_and_delete(self):
+        chgset = self.repos.get_changeset(21)
+        self.assertEqual(21, chgset.rev)
+        self.assertEqual('copy from outside of the scope + delete',
+                         chgset.message)
+        changes = chgset.get_changes()
+        self.assertEqual(('v2', 'dir', Changeset.ADD, None, -1),
                          changes.next())
         self.assertRaises(StopIteration, changes.next)
 

@@ -872,7 +872,7 @@ class SubversionChangeset(Changeset):
                         continue # duplicates on base_path are possible (#3778)
                     action = Changeset.DELETE
                     deletions[base_path] = idx
-                elif self.scope:        # root property change
+                elif self.scope == '/': # root property change
                     action = Changeset.EDIT
                 else:                   # deletion outside of scope, ignore
                     continue

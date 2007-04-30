@@ -664,3 +664,36 @@ Content-length: 25
 En résumé ... ça marche.
 
 
+Revision-number: 21
+Prop-content-length: 139
+Content-length: 139
+
+K 7
+svn:log
+V 39
+copy from outside of the scope + delete
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2007-04-30T17:45:26.234375Z
+PROPS-END
+
+Node-path: trunk/v2
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 20
+Node-copyfrom-path: branches/v2
+
+
+Node-path: trunk/v2/README2.txt
+Node-action: delete
+
+
+Node-path: trunk/v2/dir1
+Node-action: delete
+
+
