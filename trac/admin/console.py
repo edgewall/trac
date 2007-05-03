@@ -1066,7 +1066,7 @@ Congratulations!
 
         try:
             self.__env.upgrade(backup=do_backup)
-        except EnvironmentError, e:
+        except TracError, e:
             msg = unicode(e)
             if 'backup' in msg:
                 raise TracError("Backup failed '%s'.\nUse `--no-backup' to "
