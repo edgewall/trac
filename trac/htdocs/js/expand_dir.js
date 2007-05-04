@@ -19,6 +19,13 @@ function toggleDir() {
 
 function expandDir(td) {
   var tr = td.parent();
+  var folderid_match = /f\d+/.exec(td.attr("class"));
+
+  if (folderid_match) { // then simply re-expand collapsed folder
+    tr.siblings("tr."+folderid_match[0]).toggle();
+    return;
+  }
+
   var a = td.children("a");
   var href = a.attr("href");
   var depth = parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) + 20;
@@ -50,6 +57,5 @@ function expandDir(td) {
 
 function foldDir(td) {
   var folderid = /f\d+/.exec(td.attr("class"))[0];
-  td.removeClass(folderid);
-  td.parent().parent().children("tr."+folderid).remove();
+  td.parent().siblings("tr."+folderid).toggle();
 }
