@@ -10,12 +10,9 @@
   <py:for each="idx, entry in enumerate(dir.entries)">
     <py:with vars="change = dir.changes[entry.rev]">
       <tr class="${idx % 2 and 'even' or 'odd'}">
-        <td class="name" py:choose="entry.kind" py:with="href=href.browser(entry.path, rev=stickyrev, order=(dir.order != 'name' and dir.order or None), desc=dir.desc)">
-          <py:when test="'dir'">
-            <span class="direxpand" title="Expand Directory">&#x200b;</span>
-            <a class="dir" title="Browse Directory" href="$href">$entry.name</a>
-          </py:when>
-          <a py:otherwise="" class="$entry.kind" title="View ${entry.kind.capitalize()}" href="$href">$entry.name</a>
+        <td class="name">
+          <span py:if="entry.kind == 'dir'" class="direxpand" title="Expand Directory">&#x200b;</span>
+          <a class="$entry.kind" title="View ${entry.kind.capitalize()}" href="${href.browser(entry.path, rev=stickyrev, order=(dir.order != 'name' and dir.order or None), desc=dir.desc)}">$entry.name</a>
         </td>
         <td class="size">${sizeinfo(entry.content_length)}</td>
         <td class="rev">

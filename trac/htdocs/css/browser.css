@@ -73,9 +73,9 @@ div.message {
  padding-left: 20px;
 }
 #dirlist td.name a.parent { background-image: url(../parent.png) }
-#dirlist td.name span.direxpand { background-image: url(../folder.png) }
-#dirlist td.name span.dirfold { background-image: url(../expanded.png) }
-#dirlist td.name a.dir { padding-left: 0 }
+#dirlist td.name span.direxpand { background-image: url(../collapsed.png); padding-left: 16px; }
+#dirlist td.name span.dirfold { background-image: url(../expanded.png); padding-left: 16px; }
+#dirlist td.name a.dir { background-image: url(../folder.png) }
 #dirlist td.name a.file { background-image: url(../file.png); display: block }
 #dirlist td.name a, #dirlist td.rev a { border-bottom: none }
 #dirlist td.rev { text-align: right }
