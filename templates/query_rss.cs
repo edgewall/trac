@@ -6,11 +6,9 @@
   else ?>
    <title>Ticket Query</title><?cs
   /if ?>
-  <link><?cs var:query.href ?></link><?cs
-  if:project.descr ?>
-   <description><?cs var:project.descr ?></description><?cs
-  /if ?>
-  <language>en-us</language>
+  <link><?cs var:query.href ?></link>
+  <description><?cs var:project.descr ?></description>
+  <language>en-US</language>
   <generator>Trac v<?cs var:trac.version ?></generator><?cs
   if:chrome.logo.src ?>
    <image>
