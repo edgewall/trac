@@ -6,7 +6,7 @@
   <channel>
     <title>$project.name: Ticket Query</title>
     <link>$query_href</link>
-    <description>Trac Ticket Query</description>
+    <description>$project.descr</description>
     <language>en-US</language>
     <image py:if="chrome.logo.src">
       <title>$project.name</title>
