@@ -27,6 +27,18 @@
           }
           return false;
         });
+
+       var descr = $("#description").text();
+       descr = descr.replace(/==== System Information ====\s+/m,
+         "User Agent was: `" + navigator.userAgent + "`\n\n$&"
+       );
+       descr = descr.replace(/\|\|\s+==== Python Traceback ====/m,
+         "||\n|| '''jQuery:''' || `" + $().jquery + "` $&"
+       );
+       $("#description").text(descr);
+
+       $("#systeminfo").append("<tr><th>jQuery:</th><td>"+$().jquery+"</td></tr>");
+       $("#systeminfo").before("<p>User Agent: <tt>"+navigator.userAgent+"</tt></p>");
       });
     /*]]>*/</script>
   </head>
@@ -37,7 +49,7 @@
     <input py:if="teo" type="hidden" name="version"
            value="${'dev' in trac.version and 'devel' or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
-    <textarea name="description" rows="3" cols="10">
+    <textarea id="description" rows="3" cols="10">
 ==== How to Reproduce ====
 
 While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
