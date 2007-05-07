@@ -18,7 +18,7 @@
         })
 
         <py:if test="dir">
-          enableExpandDir("", $("#dirlist tr"));
+          enableExpandDir(null, $("#dirlist tr"));
         </py:if>
         <py:if test="file and file.annotate">
           enableBlame("${href.changeset()}/", "${path}");

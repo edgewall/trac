@@ -2,24 +2,33 @@
 
 var counter = 0;
 
-// enableExpandDir expect a `rows` jQuery object matching rows that will
-// acquire the capability to be expanded and folded. 
-// Those rows correspond to the entries of the parent folder whose 
-// row has an id of `parentid`.
+// enableExpandDir adds the capability to folder rows to be expanded and folded
+// It also teach the rows about their ancestors. It expects:
+//  - `parent_tr`, the logical parent row
+//  - a `rows` jQuery object matching the newly created entry rows
 
-function enableExpandDir(parentid, rows) {
+function enableExpandDir(parent_tr, rows) {
   var entries = [];
+  var ancestor_folderids = [];
+  // the ancestors folder ids are present in the parent_tr class attribute
+  if (parent_tr)
+    ancestor_folderids = $.grep(parent_tr.attr("class").split(" "), 
+				function(c) { return c.match(/^f\d+$/)});
   rows.each(function () {
     var folderid = "f" + counter++;
-    entries.push("#"+folderid);
     this.id = folderid;
+    if (parent_tr) {
+      entries.push("#"+folderid);
+      $(this).addClass(ancestor_folderids.join(" "));
+    }
+    $(this).addClass(folderid);
   }).find("span.direxpand").css("cursor", "pointer").click(toggleDir);
   
-  var parent = document.getElementById(parentid);
-  if ( parent )
-    parent._entries = entries;
+  if (parent_tr)
+    parent_tr.get(0)._entries = entries;
 }
 
+// handler for click event on the expander icons
 function toggleDir() {
   var td = $(this).parent();
   if ( $(this).attr("class") == "direxpand" ) {
@@ -31,6 +40,8 @@ function toggleDir() {
   }
 }
 
+// expand action, which either queries the entries or show again the already
+// available but hidden entries
 function expandDir(td) {
   var tr = td.parent();
   var folderid = tr.get(0).id;
@@ -51,29 +62,19 @@ function expandDir(td) {
 	   depth + 'px"><span class="loading">Loading ' + a.text() +
 	   '...</span></td></tr>');
 
-  // prepare the class that will be used by foldDir to identify all the 
-  // rows to be removed when collapsing that folder
-  td.addClass("expanded");
-  tr.attr("id", folderid).addClass(folderid);
-  var ancestor_folderids = $.grep(tr.attr("class").split(" "), 
-				  function(c) { return c.match(/^f\d+$/)});
-  ancestor_folderids.push(folderid);
-
   $.get(href, {action: "inplace"}, function(data) {
     var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
     if (rows.length) {
       // remove "Loading ..." row
       tr.next().remove();
       // insert rows corresponding to the folder entries
-      rows.addClass(ancestor_folderids.join(" "));
       rows.children("td.name").css("padding-left", depth);
-      enableExpandDir(folderid, rows);
+      enableExpandDir(tr, rows);
       tr.after(rows);
     } else {
-      tr.next().addClass(ancestor_folderids.join(" "))
-        .find("span.loading").text("").append("<i>(empty)</i>")
-          .removeClass("loading");
-      enableExpandDir(folderid, tr.next());
+      tr.next().find("span.loading").text("").append("<i>(empty)</i>")
+        .removeClass("loading");
+      enableExpandDir(tr, tr.next());
     }
   });
 }
