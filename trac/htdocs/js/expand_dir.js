@@ -22,7 +22,7 @@ function expandDir(td) {
   var folderid_match = /f\d+/.exec(td.attr("class"));
 
   if (folderid_match) { // then simply re-expand collapsed folder
-    tr.siblings("tr."+folderid_match[0]).toggle();
+    tr.siblings("tr."+folderid_match[0]).show();
     return;
   }
 
@@ -38,7 +38,7 @@ function expandDir(td) {
   // prepare the class that will be used by foldDir to identify all the 
   // rows to be removed when collapsing that folder
   var folderid = "f" + counter++;
-  td.addClass(folderid);
+  td.addClass(folderid).addClass("expanded");
   var ancestor_folderids = $.grep(tr.attr("class").split(" "), 
 				  function(c) { return c.match(/^f\d+$/)});
   ancestor_folderids.push(folderid);
@@ -57,5 +57,8 @@ function expandDir(td) {
 
 function foldDir(td) {
   var folderid = /f\d+/.exec(td.attr("class"))[0];
-  td.parent().siblings("tr."+folderid).toggle();
+  td.parent().siblings("tr."+folderid).hide()
+    .find("td.expanded span.direxpand").each(function () { 
+      $(this).attr("class", "dirfold").attr("title", "Fold directory");
+    });
 }
