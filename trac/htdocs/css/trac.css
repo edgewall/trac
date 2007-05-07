@@ -461,7 +461,7 @@ table.listing tbody tr:hover { background: #eed !important }
 }
 #content.error pre, div.system-message pre {
   margin-left: 1em;
-  overflow: auto;
+  overflow: hidden;
 }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
@@ -469,8 +469,8 @@ div.system-message p.system-message-title { font-weight: bold; }
 #warning.system-message { background: #def; border: 2px solid #00d; }
 #warning.system-message li { list-style-type: square; }
 
-#content.error #newticket form { display: inline; }
-#content.error #newticket textarea { display: none; }
+#content.error form.newticket { display: inline; }
+#content.error form.newticket textarea { display: none; }
 
 #content.error #systeminfo { margin: 1em; width: auto; }
 #content.error #systeminfo th { font-weight: bold; text-align: right; }

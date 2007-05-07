@@ -37,7 +37,7 @@
     <input py:if="teo" type="hidden" name="version"
            value="${'dev' in trac.version and 'devel' or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
-    <textarea name="description">
+    <textarea name="description" rows="3" cols="10">
 ==== How to Reproduce ====
 
 While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
@@ -89,7 +89,7 @@ ${traceback}
               reproduce the issue.
               </p>
               <py:if test="not project.admin">
-                <form id="newticket" method="get" action="${href.newticket()}">
+                <form class="newticket" method="get" action="${href.newticket()}#">
                   <p>To that end, you could ${create_ticket()} a ticket at this
                   site.</p>
                 </form>
@@ -111,7 +111,7 @@ ${traceback}
                 <a href="${trac.homepage}/wiki/MailingList">mailing list</a>
                 instead of filing a ticket.
               </p>
-              <form id="newticket" method="get" action="${trac.homepage}/newticket">
+              <form class="newticket" method="get" action="${trac.homepage}/newticket">
                 <p>Otherwise, please ${create_ticket(True)} a new ticket at
                 the Trac project site, where you can describe the problem and
                 explain how to reproduce it.</p>
@@ -122,7 +122,7 @@ ${traceback}
                   Most recent call last:
                   <ul>
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
-                      <a href="#frame${idx}" id="#frame${idx}">
+                      <a href="#frame${idx}" id="frame${idx}">
                         <span class="file">File "${frame.filename}",
                         line ${frame.lineno + 1}, in</span>
                         <var>${frame.function}</var>
