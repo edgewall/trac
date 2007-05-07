@@ -11,6 +11,9 @@ Changes (by $change.author):
 $changes_body
     #end
     #if changes_descr
+      #if not changes_body and not change.comment and change.author
+Description changed by $change.author:
+      #end
 $changes_descr
 --
     #end
