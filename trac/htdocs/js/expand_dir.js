@@ -60,14 +60,21 @@ function expandDir(td) {
   ancestor_folderids.push(folderid);
 
   $.get(href, {action: "inplace"}, function(data) {
-    // remove "Loading ..." row
-    tr.next().remove();
-    // insert folder content rows
     var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
-    rows.addClass(ancestor_folderids.join(" "));
-    rows.children("td.name").css("padding-left", depth);
-    enableExpandDir(folderid, rows);
-    tr.after(rows);
+    if (rows.length) {
+      // remove "Loading ..." row
+      tr.next().remove();
+      // insert rows corresponding to the folder entries
+      rows.addClass(ancestor_folderids.join(" "));
+      rows.children("td.name").css("padding-left", depth);
+      enableExpandDir(folderid, rows);
+      tr.after(rows);
+    } else {
+      tr.next().addClass(ancestor_folderids.join(" "))
+        .find("span.loading").text("").append("<i>(empty)</i>")
+          .removeClass("loading");
+      enableExpandDir(folderid, tr.next());
+    }
   });
 }
 
@@ -79,11 +86,11 @@ function foldDir(tr) {
 function restoreEntries(tr) {
   var entries = tr.get(0)._entries;
   if (entries)
-  $.each(entries, function (i, entry) {
-    var entry_tr = $(entry);
-    if (entry_tr.find("span.direxpand").length)
-      foldDir(entry_tr);
-    else
-      restoreEntries(entry_tr);
-  });
+    $.each(entries, function (i, entry) {
+      var entry_tr = $(entry);
+      if (entry_tr.find("span.direxpand").length)
+        foldDir(entry_tr);
+      else
+        restoreEntries(entry_tr);
+    });
 }
