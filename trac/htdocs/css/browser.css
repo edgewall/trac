@@ -73,8 +73,8 @@ div.message {
  padding-left: 20px;
 }
 #dirlist td.name a.parent { background-image: url(../parent.png) }
-#dirlist td.name span.direxpand { background-image: url(../expander_normal.png); padding-left: 16px; }
-#dirlist td.name span.direxpand:hover { background-image: url(../expander_normal_hover.png); padding-left: 16px; }
+#dirlist td.name span.direxpand { background-image: url(../expander_normal.png); padding-left: 12px; margin-left: 4px; }
+#dirlist td.name span.direxpand:hover { background-image: url(../expander_normal_hover.png); padding-left: 12px; margin-left: 4px; }
 #dirlist td.name span.dirfold { background-image: url(../expander_open.png); padding-left: 16px; }
 #dirlist td.name span.dirfold:hover { background-image: url(../expander_open_hover.png); padding-left: 16px; }
 #dirlist td.name a.dir { background-image: url(../folder.png) }
