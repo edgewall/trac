@@ -25,7 +25,7 @@ function enableExpandDir(parent_tr, rows) {
 
       // add the expander icon
       a.wrap('<div></div>');
-      var expander = a.before('<span class="expander"></span>').prev();
+      var expander = a.before('<span class="expander">&#x200b;</span>').prev();
       expander.css("cursor", "pointer")
         .attr("title", "Expand sub-directory in place").click(toggleDir);
     }
