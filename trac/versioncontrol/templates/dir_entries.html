@@ -1,3 +1,4 @@
+<!--! Template for generating rows corresponding to directory entries -->
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -11,17 +12,15 @@
     <py:with vars="change = dir.changes[entry.rev]">
       <tr class="${idx % 2 and 'even' or 'odd'}">
         <td class="name">
-          <span py:if="entry.kind == 'dir'" class="direxpand" title="Expand Directory">&#x200b;</span>
-          <a class="$entry.kind" title="View ${entry.kind.capitalize()}" href="${href.browser(entry.path, rev=stickyrev, order=(dir.order != 'name' and dir.order or None), desc=dir.desc)}">$entry.name</a>
+          <a class="$entry.kind" title="View ${entry.kind.capitalize()}"
+             href="${href.browser(entry.path, rev=stickyrev, order=(dir.order != 'name' and dir.order or None), desc=dir.desc)}">$entry.name</a>
         </td>
         <td class="size">${sizeinfo(entry.content_length)}</td>
         <td class="rev">
-          <a title="View Revision Log"
-            href="${href.log(entry.path, rev=rev)}">$entry.rev</a>
+          <a title="View Revision Log" href="${href.log(entry.path, rev=rev)}">$entry.rev</a>
         </td>
-        <td class="age" style="${dir.timerange and 'color: rgb(%s)' %
-          ', '.join([str(color) for color in
-          dir.colorize_age(dir.timerange.relative(change.date))]) or ''}">
+        <td class="age" style="${dir.timerange and 'border-color: rgb(%s,%s,%s)' %
+          dir.colorize_age(dir.timerange.relative(change.date)) or None}">
           ${dateinfo(change.date)}
         </td>
         <td class="change">
