@@ -50,7 +50,7 @@ class HTTPException(Exception):
         if args:
             self.message = self.message % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
-                                                 message))
+                                                 self.message))
         return self
 
     def __str__(self):
