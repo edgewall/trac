@@ -24,8 +24,8 @@ function enableExpandDir(parent_tr, rows) {
       $(this).addClass(folderid);
 
       // add the expander icon
-      a.wrap('<span class="expander"></span>');
-      var expander = a.parent();
+      a.wrap('<div></div>');
+      var expander = a.before('<span class="expander"></span>').prev();
       expander.css("cursor", "pointer")
         .attr("title", "Expand sub-directory in place").click(toggleDir);
     }
@@ -57,9 +57,9 @@ function toggleDir() {
       $(this).siblings("tr."+this.id).hide();
     });
   } else {                                // then *fetch*
-    var td = $(this).parent();
+    var td = $(this).parents("td");
     var td_class = td.attr("class");
-    var a = $(this).children("a");
+    var a = $(this).next("a");
     var depth = 
       parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) + 
       SUBFOLDER_INDENT;
