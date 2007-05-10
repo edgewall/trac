@@ -462,6 +462,7 @@ table.listing tbody tr:hover { background: #eed !important }
 #content.error pre, div.system-message pre {
   margin-left: 1em;
   overflow: hidden;
+  white-space: normal;
 }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
