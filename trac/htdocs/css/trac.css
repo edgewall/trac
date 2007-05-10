@@ -414,7 +414,7 @@ table.listing th.asc a { background-image: url(../asc.png) }
 table.listing th.desc a { background-image: url(../desc.png) }
 table.listing tbody td, table.listing tbody th {
  border: 1px dotted #ddd;
- padding: .33em .5em;
+ padding: .3em .5em;
  vertical-align: top;
 }
 table.listing tbody td a:hover, table.listing tbody th a:hover {

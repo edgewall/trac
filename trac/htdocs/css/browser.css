@@ -62,7 +62,7 @@ div.message {
  font-size: 70%;
 }
 #dirlist td.age {
- border-width: 0 0 2px 0;
+ border-width: 0 2px 0 0;
  border-style: solid;
  font-size: 85%;
 }
@@ -155,15 +155,14 @@ tr.diff input { padding: 0 1em; margin: 0 }
  vertical-align: middle; 
  white-space: nowrap 
 }
-#chglist .verbose td.summary {
+#chglist tr.summary {
  border: none;
  color: #333;
  padding: .5em 1em 1em 2em;
- font-size: 90%; 
  white-space: normal 
 }
 
-#chglist td.summary * { margin-top: 0; margin-bottom: 0 }
+#chglist td.summary * { margin-top: 0 }
 
 #paging { margin: 1em 0 }
 

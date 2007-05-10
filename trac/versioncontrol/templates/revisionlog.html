@@ -145,8 +145,8 @@
                       <a title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, item.path)}">
                         [$item.rev]</a>
                     </td>
-                    <td class="date" py:content="format_datetime(change.date)"/>
-                    <td class="author">${authorinfo(change.author)}</td>
+                    <td class="date" py:content="dateinfo(change.date)" />
+                    <td class="author" py:content="authorinfo(change.author)" />
                     <td class="summary" py:choose="">
                       <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
@@ -158,8 +158,9 @@
                     <td colspan="6" py:otherwise="" />
                   </tr>
 
-                  <tr py:if="verbose">
-                    <td class="summary" colspan="7" py:choose="">
+                  <tr py:if="verbose" class="summary $odd_even">
+                    <td />
+                    <td class="summary" colspan="6" py:choose="">
                       <py:when test="wiki_format_messages">
                         ${wiki_to_html(change_context, change.message, escape_newlines=True)}
                     </py:when>
