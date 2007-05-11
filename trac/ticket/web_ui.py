@@ -31,6 +31,7 @@ from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
+from trac.ticket import ITicketActionController
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
@@ -661,6 +662,8 @@ class TicketModule(Component):
         for field in ticket.fields:
             if 'options' not in field:
                 continue
+            if field['name'] == 'status':
+                continue
             name = field['name']
             if name in ticket.values and name in ticket._old:
                 value = ticket[name]
@@ -745,23 +748,15 @@ class TicketModule(Component):
 
         # Do any action on the ticket?
         action = req.args.get('action')
-        actions = TicketSystem(self.env).get_available_actions(ticket, req.perm)
+
+        actions = TicketSystem(self.env).get_available_actions(req, ticket)
         if action not in actions:
             raise TracError('Invalid action "%s"' % action)
 
-        # TODO: this should not be hard-coded like this
-        if action == 'accept':
-            ticket['status'] =  'assigned'
-            ticket['owner'] = req.authname
-        if action == 'resolve':
-            ticket['status'] = 'closed'
-            ticket['resolution'] = req.args.get('resolve_choice')
-        elif action == 'reassign':
-            ticket['owner'] = req.args.get('reassign_choice')
-            ticket['status'] = 'new'
-        elif action == 'reopen':
-            ticket['status'] = 'reopened'
-            ticket['resolution'] = ''
+        field_changes, side_effects = self.get_ticket_changes(req, ticket,
+                                                              action)
+        for key in field_changes:
+            ticket[key] = field_changes[key]['new']
 
         now = datetime.now(utc)
         self._validate_ticket(req, ticket)
@@ -783,8 +778,65 @@ class TicketModule(Component):
                 self.log.exception("Failure sending notification on change to "
                                    "ticket #%s: %s" % (ticket.id, e))
 
+        for controller in TicketSystem(self.env).action_controllers:
+            controller.apply_action_side_effects(req, ticket, action)
+
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
+
+    def get_ticket_changes(self, req, ticket, selected_action):
+        """Returns a dictionary of field changes and a list of side-effect
+        descriptions.
+        The field changes are represented as:
+        `{field: {'old': oldvalue, 'new': newvalue, 'by': what}, ...}`
+        
+        The side-effect descriptions are represented as a list of strings.
+        """
+        field_changes = {}
+        side_effect_descs = []
+        for field, value in ticket._old.iteritems():
+            field_changes[field] = {'old': value,
+                                    'new': ticket[field],
+                                    'by': 'user'}
+        for controller in TicketSystem(self.env).action_controllers:
+            cname = controller.__class__.__name__
+            action_changes, description = controller.get_ticket_changes(
+                req, ticket, selected_action)
+            
+            # Build up a list of side effect descriptions for the preview
+            if description:
+                side_effect_descs.append(description)
+                
+            for key in action_changes.keys():
+                old = ticket[key]
+                new = action_changes[key]
+                # Check for conflicting changes but allow the actions to
+                # override the user
+                if key in field_changes and \
+                   field_changes[key]['new'] != new and \
+                   field_changes[key]['by'] != 'user':
+                    problem = ('%s changed "%s" to "%s", but %s changed it '
+                               'to "%s".' % (cname, key, new,
+                                             field_changes[key]['by'],
+                                             field_changes[key]['new']))
+                    # The error message goes inside the red box, the help text
+                    # goes after the red box.  The first <p> will push the rest
+                    # of the text outside of the red box.
+                    help = tag.p(['Please review your configuration, probably '
+                                  'starting with',
+                                  tag.pre('[trac]\nworkflow = ...\n'),
+                                  'in your ', tag.tt('trac.ini'), '.'])
+                    message = tag([problem, help])
+                    raise TracError(message,
+                                    'Incompatible ITicketActionController '
+                                    'configuration')
+                field_changes[key] = {'old': old, 'new': new, 'by': cname}
+
+        # Detect non-changes
+        for key, item in field_changes.items():
+            if item['old'] == item['new']:
+                del field_changes[key]
+        return field_changes, side_effect_descs
 
     def _insert_ticket_data(self, context, data, author_id):
         """Insert ticket data into the hdf"""
@@ -848,6 +900,8 @@ class TicketModule(Component):
         cnum = 0
         skip = False
         for change in self.grouped_changelog_entries(ticket, context.db):
+            # change['permanent'] is false for attachment changes; true for
+            # other changes.
             if change['permanent']:
                 cnum = change['cnum']
                 if version is not None and cnum > version:
@@ -873,15 +927,46 @@ class TicketModule(Component):
             if not skip:
                 changes.append(change)
 
+        if version is not None:
+            ticket.values.update(values)
+
+        # action_controls is an ordered list of (action, renders) tuples, where
+        # renders is a list of the rendered controls
+        all_actions = TicketSystem(self.env).get_available_actions(req, ticket)
+        # Determine what actions each controller handles outside of the action
+        # loop.
+        per_controller_actions = [
+            (controller,
+             [x[1] for x in controller.get_ticket_actions(req, ticket)])
+            for controller in TicketSystem(self.env).action_controllers]
+        # Now build the list of (action, label, render) for the UI
+        action_controls = []
+        for action in all_actions:
+            controls = []
+            for controller, controller_actions in per_controller_actions:
+                # Only ask the controller to render actions it claims to be
+                # providing.
+                if action in controller_actions:
+                    controls.append(controller.render_ticket_action_control(req,
+                        ticket, action))
+            label = controls[0][0]
+            widgets = tag(*[widget for label, widget in controls])
+            action_render = (action, label, widgets)
+            action_controls.append(action_render)
+
+        # The default action is the first in the action_controls list.
+        selected_action = req.args.get('action')
+        if not selected_action:
+            if action_controls:
+                selected_action = action_controls[0][0]
+
+        side_effects = []
+
         # Insert change preview
         if req.method == 'POST':
-            field_changes = {}
-            for field, value in ticket._old.iteritems():
-                if not ticket[field]:
-                    field_changes[field] = ''
-                else:
-                    field_changes[field] = {'old': value,
-                                            'new': ticket[field]}
+            field_changes, side_effects = self.get_ticket_changes(req, ticket,
+                selected_action)
+
             change = {
                 'date': datetime.now(utc),
                 'author': author_id,
@@ -896,9 +981,16 @@ class TicketModule(Component):
                 change['replyto'] = replyto
             if field_changes or comment:
                 changes.append(change)
+                # And we need to update the values in the ticket, it seems
+                values = {}
+                for item, value in field_changes.items():
+                    values[item] = value['new']
+                ticket.values.update(values)
 
         if version is not None:
             ticket.values.update(values)
+        for side_effect in side_effects:
+            req.warning(side_effect)
 
         data.update({
             'fields': fields, 'changes': changes, 'field_types': types,
@@ -907,8 +999,9 @@ class TicketModule(Component):
                                                   ticket.id)),
             'attach_href': ('TICKET_APPEND' in req.perm and \
                             req.href.attachment('ticket', ticket.id)),
-            'actions': TicketSystem(self.env).get_available_actions(ticket,
-                                                                    req.perm)
+
+            'action_controls': action_controls,
+            'action': selected_action
         })
 
     def grouped_changelog_entries(self, ticket, db, when=None):

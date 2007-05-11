@@ -440,8 +440,15 @@ class Type(AbstractEnum):
     ticket_col = 'type'
 
 
-class Status(AbstractEnum):
-    type = 'status'
+class Status(object):
+    def __init__(self, env):
+        self.env = env
+    def select(cls, env, db=None):
+        for state in TicketSystem(env).get_all_states():
+            status = cls(env)
+            status.name = state
+            yield status
+    select = classmethod(select)
 
 
 class Resolution(AbstractEnum):

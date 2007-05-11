@@ -10,6 +10,7 @@ class TicketSystemTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
         self.ticket_system = TicketSystem(self.env)
+        self.req = Mock()
 
     def test_custom_field_text(self):
         self.env.config.set('ticket-custom', 'test', 'text')
@@ -65,52 +66,65 @@ class TicketSystemTestCase(unittest.TestCase):
 
     def test_available_actions_full_perms(self):
         ts = TicketSystem(self.env)
-        perm = PermissionCache({'TICKET_CREATE': True, 'TICKET_MODIFY': True})
+        self.req.perm = PermissionCache({'TICKET_CREATE': True,
+                                         'TICKET_MODIFY': True})
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
-                         ts.get_available_actions({'status': 'new'}, perm))
+                         ts.get_available_actions(self.req, {'status': 'new'}))
         self.assertEqual(['leave', 'resolve', 'reassign'],
-                         ts.get_available_actions({'status': 'assigned'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'assigned'}))
         self.assertEqual(['leave', 'resolve', 'reassign'],
-                         ts.get_available_actions({'status': 'reopened'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'reopened'}))
         self.assertEqual(['leave', 'reopen'],
-                         ts.get_available_actions({'status': 'closed'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'closed'}))
 
     def test_available_actions_no_perms(self):
         ts = TicketSystem(self.env)
-        perm = PermissionCache()
+        self.req.perm = PermissionCache()
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'new'}, perm))
+                         ts.get_available_actions(self.req, {'status': 'new'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'assigned'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'assigned'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'reopened'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'reopened'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'closed'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'closed'}))
 
     def test_available_actions_create_only(self):
         ts = TicketSystem(self.env)
-        perm = PermissionCache({'TICKET_CREATE': True})
+        self.req.perm = PermissionCache({'TICKET_CREATE': True})
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'new'}, perm))
+                         ts.get_available_actions(self.req, {'status': 'new'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'assigned'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'assigned'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'reopened'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'reopened'}))
         self.assertEqual(['leave', 'reopen'],
-                         ts.get_available_actions({'status': 'closed'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'closed'}))
 
     def test_available_actions_chgprop_only(self):
         # CHGPROP is not enough for changing a ticket's state (#3289)
         ts = TicketSystem(self.env)
-        perm = PermissionCache({'TICKET_CHGPROP': True})
+        self.req.perm = PermissionCache({'TICKET_CHGPROP': True})
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'new'}, perm))
+                         ts.get_available_actions(self.req, {'status': 'new'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'assigned'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'assigned'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'reopened'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'reopened'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions({'status': 'closed'}, perm))
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'closed'}))
 
 
 def suite():

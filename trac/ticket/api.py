@@ -22,16 +22,294 @@ from genshi.builder import tag
 from trac.config import *
 from trac.context import IContextProvider, Context
 from trac.core import *
-from trac.perm import IPermissionRequestor, PermissionSystem
+from trac.perm import IPermissionRequestor, PermissionSystem, PermissionError
 from trac.util import Ranges
 from trac.util.text import shorten_line
 from trac.util.datefmt import utc
+from trac.util.compat import set
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
+class ITicketActionController(Interface):
+    """Extension point interface for components to obtain and perform state
+    transitions with. Initially taken from api.py rev 3378"""
+
+    def get_ticket_actions(req, ticket):
+        """Return an iterable of (weight, action) tuples that are available
+        given the current state of the ticket and the request object provided.
+        The actions will be presented on the page in descending order of the
+        integer weight. When in doubt, use a weight of 0."""
+
+    def get_all_states():
+        """Returns an iterable of all states this action controller knows
+        about. This will be used to populate the query options and the
+        like."""
+
+    def render_ticket_action_control(req, ticket, action):
+        """Return a tuple in the form of (label, control), where
+        control is the html for the action control.
+        This method will only be called if the controller claimed to handle the
+        action in the call to get_ticket_actions.
+        """
+
+    def get_ticket_changes(req, ticket, action):
+        """Return a tuple of (changes, description), where "changes" is a
+        dictionary with all the changes, including any state change, that
+        should happen with this action.  And "description" is a description of
+        any side-effects.
+
+        This function must not have any side-effects because it is called on
+        preview."""
+
+    def apply_action_side_effects(req, ticket, action):
+        """The changes returned by get_ticket_changes have been made, any
+        changes outside of the ticket fields should be done here."""
+
+def parse_workflow_config(rawactions):
+    """Given a list of options from [ticket-workflow]"""
+    actions = {}
+    for option, value in rawactions:
+        parts = option.split('.')
+        action = parts[0]
+        if action not in actions:
+            actions[action] = {}
+        if len(parts) == 1:
+            # Base name, of the syntax: old,states,here -> newstate
+            try:
+                oldstates, newstate = [x.strip() for x in value.split('->')]
+            except ValueError:
+                raise Exception('Bad option "%s"' % (option, ))
+            actions[action]['newstate'] = newstate
+            actions[action]['oldstates'] = oldstates
+        else:
+            action, attribute = option.split('.')
+            actions[action][attribute] = value
+    # Fill in the defaults for every action, and normalize them to the desired
+    # types
+    for action, attributes in actions.items():
+        # Default the 'name' attribute to the name used in the ini file
+        if 'name' not in attributes:
+            attributes['name'] = action
+        # If not specified, an action is not the default.
+        if 'default' not in attributes:
+            attributes['default'] = 0
+        else:
+            attributes['default'] = int(attributes['default'])
+        # If operations are not specified, that means no operations
+        if 'operations' not in attributes:
+            attributes['operations'] = []
+        else:
+            attributes['operations'] = attributes['operations'].split(',')
+        # If no permissions are specified, then no permissions are needed
+        if 'permissions' not in attributes:
+            attributes['permissions'] = []
+        else:
+            attributes['permissions'] = attributes['permissions'].split(',')
+        # Normalize the oldstates
+        attributes['oldstates'] = [x.strip() for x in
+                                   attributes['oldstates'].split(',')]
+    return actions
+
+def get_workflow_config(config):
+    """Usually passed self.config, this will return the parsed ticket-workflow
+    section.
+    """
+    # This is the default workflow used if there is no ticket-workflow section
+    # in the ini.  This is the workflow Trac has historically had, warts and
+    # all.
+    default_workflow = [
+        ('leave', '* -> *'),
+        ('leave.default', '1'),
+        ('leave.operations', 'leave_status'),
+
+        ('accept', 'new -> assigned'),
+        ('accept.permissions', 'TICKET_MODIFY'),
+        ('accept.operations', 'set_owner_to_self'),
+
+        ('resolve', 'new,assigned,reopened -> closed'),
+        ('resolve.permissions', 'TICKET_MODIFY'),
+        ('resolve.operations', 'set_resolution'),
+
+        ('reassign', 'new,assigned,reopened -> new'),
+        ('reassign.permissions', 'TICKET_MODIFY'),
+        ('reassign.operations', 'set_owner'),
+
+        ('reopen', 'closed -> reopened'),
+        ('reopen.permissions', 'TICKET_CREATE'),
+        ('reopen.operations', 'del_resolution'),
+    ]
+    raw_actions = list(config.options('ticket-workflow'))
+    if not raw_actions:
+        # Fallback to the default
+        raw_actions = default_workflow
+    actions = parse_workflow_config(raw_actions)
+    return actions
+
+class DefaultTicketActionController(Component):
+    """Default ticket action controller that loads workflow actions from
+    config."""
+    def __init__(self, *args, **kwargs):
+        Component.__init__(self, *args, **kwargs)
+        self.actions = get_workflow_config(self.config)
+        self.log.debug('%s\n' % str(self.actions))
+
+    implements(ITicketActionController)
+
+    # ITicketActionController methods
+
+    def get_ticket_actions(self, req, ticket):
+        """Returns a list of (weight, action) tuples that are valid for this
+        request and this ticket."""
+        # Get the list of actions that can be performed
+
+        status = ticket['status'] or 'new'
+
+        allowed_actions = []
+        for action_name, action_info in self.actions.items():
+            if 'hidden' in action_info['operations']:
+                continue
+            oldstates = action_info['oldstates']
+            if oldstates == ['*'] or status in oldstates:
+                # This action is valid in this state.  Check permissions.
+                allowed = 0
+                required_perms = action_info['permissions']
+                if required_perms:
+                    for permission in required_perms:
+                        if permission in req.perm:
+                            allowed = 1
+                            break
+                else:
+                    allowed = 1
+                if allowed:
+                    allowed_actions.append((action_info['default'],
+                                            action_name))
+        return allowed_actions
+
+    def get_all_states(self):
+        """Return a list of all states described by the configuration."""
+        all_states = set()
+        for action_name, action_info in self.actions.items():
+            all_states.update(action_info['oldstates'])
+            all_states.add(action_info['newstate'])
+        all_states.discard('*')
+        return all_states
+        
+    def render_ticket_action_control(self, req, ticket, action):
+        from trac.ticket import model
+
+        self.log.debug('render_ticket_action_control: action "%s"' % action)
+
+        this_action = self.actions[action]
+        operations = this_action['operations']
+
+        control = [] # default to nothing
+        if 'set_owner' in operations:
+            id = action + '_reassign_owner'
+            selected_owner = req.args.get(id, req.authname)
+            if self.config.getbool('ticket', 'restrict_owner'):
+                perm = PermissionSystem(self.env)
+                options = perm.get_users_with_permission('TICKET_MODIFY')
+                control.append(tag.select(
+                    [tag.option(x, selected=(x == selected_owner or None))
+                     for x in options],
+                    id=id, name=id))
+            else:
+                control.append(tag.input(type='text', id=id, name=id,
+                    value=req.args.get(id, req.authname)))
+        if 'set_resolution' in operations:
+            options = [val.name for val in model.Resolution.select(self.env)]
+            id = action + '_resolve_resolution'
+            selected_option = req.args.get(id, 'fixed')
+            control.append(tag(['as:', tag.select(
+                [tag.option(x, selected=(x == selected_option or None))
+                 for x in options],
+                id=id, name=id)]))
+        if 'leave_status' in operations:
+            control.append('as ' + ticket['status'])
+        return (this_action['name'], tag(*control))
+
+    def get_ticket_changes(self, req, ticket, action):
+        # Any action we don't recognize, we ignore.
+        try:
+            this_action = self.actions[action]
+        except KeyError:
+            # Not one of our actions, ignore it.
+            return {}, ''
+
+        # Enforce permissions
+        if not self._has_perms_for_action(req, this_action):
+            # The user does not have any of the listed permissions, so we won't
+            # do anything.
+            return {}, ''
+
+        updated = {}
+        # Status changes
+        status = this_action['newstate']
+        if status != '*':
+            updated['status'] = status
+
+        for operation in this_action['operations']:
+            if operation == 'del_owner':
+                updated['owner'] = ''
+            elif operation == 'set_owner':
+                newowner = req.args.get(action + '_reassign_owner')
+                # If there was already an owner, we get a list, [new, old],
+                # but if there wasn't we just get new.
+                if type(newowner) == list:
+                    newowner = newowner[0]
+                updated['owner'] = newowner
+            elif operation == 'set_owner_to_self':
+                updated['owner'] = req.authname
+
+            if operation == 'del_resolution':
+                updated['resolution'] = ''
+            elif operation == 'set_resolution':
+                newresolution = req.args.get(action + '_resolve_resolution')
+                updated['resolution'] = newresolution
+
+            # leave_status and hidden are just no-ops here, so we don't look
+            # for them.
+        return updated, ''
+
+    def apply_action_side_effects(self, req, ticket, action):
+        pass
+
+    def _has_perms_for_action(self, req, action):
+        required_perms = action['permissions']
+        if required_perms:
+            for permission in required_perms:
+                if permission in req.perm:
+                    break
+            else:
+                # The user does not have any of the listed permissions
+                return False
+        return True
+
+    # Public interface to support other ITicketActionControllers that want to
+    # use our config file and provide an operation for an action.
+    # What we want here are 2 different things: a list of all actions with a
+    # given operation for use in the controller's get_all_states(), and a list of all actions with a given operation that
+    # are valid in the given state for the controller's get_ticket_actions().
+    # If state='*' (the default), all actions with the given operation are
+    # returned (including those that are 'hidden').
+    def get_actions_by_operation(self, operation):
+        actions = [(info['default'], action) for action, info
+                   in self.actions.items()
+                   if operation in info['operations']]
+        return actions
+    def get_actions_by_operation_for_req(self, req, ticket, operation):
+        actions = [(info['default'], action) for action, info
+                   in self.actions.items()
+                   if operation in info['operations'] and
+                      ('*' in info['oldstates'] or
+                       ticket['status'] in info['oldstates']) and
+                      self._has_perms_for_action(req, info)
+                  ]
+        return actions
+
 class ITicketChangeListener(Interface):
-    """Extension point interface for components that require notification when
-    tickets are created, modified, or deleted."""
+    """Extension point interface for components that require notification
+    when tickets are created, modified, or deleted."""
 
     def ticket_created(ticket):
         """Called when a ticket is created."""
@@ -101,6 +379,11 @@ class TicketSystem(Component):
     implements(IPermissionRequestor, IWikiSyntaxProvider, IContextProvider)
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
+    action_controllers = OrderedExtensionsOption('ticket', 'workflow',
+        ITicketActionController, default='DefaultTicketActionController',
+        include_missing=False,
+        doc="""Ordered list of workflow controllers to use for ticket actions
+            (''since 0.11'').""")
 
     restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
         """Make the owner field of tickets use a drop-down menu. See
@@ -109,19 +392,29 @@ class TicketSystem(Component):
 
     # Public API
 
-    def get_available_actions(self, ticket, perm_):
-        """Returns the actions that can be performed on the ticket."""
-        actions = {
-            'new':      ['leave', 'resolve', 'reassign', 'accept'],
-            'assigned': ['leave', 'resolve', 'reassign'          ],
-            'reopened': ['leave', 'resolve', 'reassign'          ],
-            'closed':   ['leave',                        'reopen']
-        }
-        perms = {'resolve': 'TICKET_MODIFY', 'reassign': 'TICKET_MODIFY',
-                 'accept': 'TICKET_MODIFY', 'reopen': 'TICKET_CREATE'}
-        return [action for action in actions.get(ticket['status'] or 'new',
-                                                 ['leave'])
-                if action not in perms or perm_.has_permission(perms[action])]
+    def get_available_actions(self, req, ticket):
+        """Returns a sorted list of available actions"""
+        # The list should not have duplicates.
+        actions = {}
+        self.log.debug('action controllers: %s' % (self.action_controllers,))
+        for controller in self.action_controllers:
+            weighted_actions = controller.get_ticket_actions(req, ticket)
+            for weight, action in weighted_actions:
+                if action in actions:
+                    actions[action] = max(actions[action], weight)
+                else:
+                    actions[action] = weight
+        all_weighted_actions = [(weight, action) for action, weight in
+                                actions.items()]
+        return [x[1] for x in sorted(all_weighted_actions, reverse=True)]
+
+    def get_all_states(self):
+        """Returns a sorted list of all the states all of the action
+        controllers know about."""
+        valid_states = set()
+        for controller in self.action_controllers:
+            valid_states.update(controller.get_all_states())
+        return sorted(valid_states)
 
     def get_ticket_fields(self):
         """Returns the list of fields available for tickets."""

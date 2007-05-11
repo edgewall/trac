@@ -1,0 +1,66 @@
+= The Trac Ticket Workflow System =
+[[TracGuideToc]]
+
+The Trac issue database provides a configurable workflow.
+
+== The Default Ticket Workflow ==
+If you do not configure a custom workflow, the default workflow is described in `contrib/workflow/original-workflow.ini` '''FIXME'''.
+
+[[Image(htdocs:../common/original-workflow.png)]]
+
+You will probably want to look at the additional ticket workflows available, and `contrib/workflow/simple.ini` in particular.
+
+== Additional Ticket Workflows ==
+
+There are several example workflows provided in the Trac source tree; look in `contrib/workflow` for `.ini` config sections.  One of those may be a good match for what you want.
+
+== Basic Ticket Workflow Customization ==
+
+Create a `[ticket-workflow]` section in `trac.ini`.
+Within this section, each entry is an action that may be taken on a ticket. 
+For example, consider the `accept` action from `simple-workflow.ini`:
+{{{
+accept = new,accepted -> accepted
+accept.permissions = TICKET_MODIFY
+accept.operations = set_owner_to_self
+}}}
+The first line in this example defines the `accept` action, along with the states the action is valid in (`new` and `accepted`), and the new state of the ticket when the action is taken (`accepted`).
+The `accept.permissions` line specifies what permissions the user must have to use this action.
+The `accept.operations` line specifies changes that will be made to the ticket in addition to the status change when this action is taken.  In this case, when a user clicks on `accept`, the ticket owner field is updated to the logged in user.  Multiple operations may be specified in a comma separated list.
+
+The available operations are:
+ - del_owner -- Clear the owner field.
+ - set_owner -- Sets the owner to the selected or entered owner.
+ - set_owner_to_self -- Sets the owner to the logged in user.
+ - del_resolution -- Clears the resolution field
+ - set_resolution -- Sets the resolution to the selected value.
+ - leave_status -- Displays "leave as <current status>" and makes no change to the ticket.
+'''Note:''' Specifying conflicting operations (such as `set_owner` and `del_owner`) has unspecified results.
+
+{{{
+resolve_accepted = accepted -> closed
+resolve_accepted.name = resolve
+resolve_accepted.permissions = TICKET_MODIFY
+resolve_accepted.operations = set_resolution
+}}}
+
+In this example, we see the `.name` attribute used.  The action here is `resolve_accepted`, but it will be presented to the user as `resolve`.
+
+For actions that should be available in all states, `*` may be used in place of the state.  The obvious example is the `leave` action:
+{{{
+leave = * -> *
+leave.operations = leave_status
+leave.default = 1
+}}}
+This also shows the use of the `.default` attribute.  This value is expected to be an integer, and the order in which the actions are displayed is determined by this value.  The action with the highest `.default` value is listed first, and is selected by default.  The rest of the actions are listed in order of decreasing `.default` values.
+If not specified for an action, `.default` is 0.  The value may be negative.
+
+There are a couple of hard-coded constraints to the workflow.  In particular, tickets are created with status `new`, and tickets are expected to have a `closed` state.  Further, the default reports/queries treat any state other than `closed` as an open state.
+
+While creating or modifying a ticket workfow, `contrib/workflow/workflow_parser.py` may be useful.  It can create `.dot` files that GraphViz understands to provide a visual description of the workflow.
+
+== Advanced Ticket Workflow Customization ==
+
+If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build).  Look at `sample-plugins/workflow` for a few simple examples to get started.
+
+But if even that is not enough, you can disable DefaultTicketActionController, and create a plugin that completely replaces it.

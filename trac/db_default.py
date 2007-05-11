@@ -181,7 +181,7 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status IN ('new', 'assigned', 'reopened') 
+  WHERE status <> 'closed'
   ORDER BY p.value, milestone, t.type, time
 """ % owner),
 #----------------------------------------------------------------------------
@@ -203,7 +203,7 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status IN ('new', 'assigned', 'reopened') 
+  WHERE status <> 'closed'
   ORDER BY (version IS NULL),version, p.value, t.type, time
 """ % owner),
 #----------------------------------------------------------------------------
@@ -225,7 +225,7 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status IN ('new', 'assigned', 'reopened') 
+  WHERE status <> 'closed' 
   ORDER BY (milestone IS NULL),milestone, p.value, t.type, time
 """ % (db.concat("'Milestone '", 'milestone'), owner)),
 #----------------------------------------------------------------------------
@@ -300,7 +300,7 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE t.status IN ('new', 'assigned', 'reopened') AND owner = $USER
+  WHERE t.status <> 'closed' AND owner = $USER
   ORDER BY (status = 'assigned') DESC, p.value, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -322,7 +322,7 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status IN ('new', 'assigned', 'reopened') 
+  WHERE status <> 'closed' 
   ORDER BY (owner = $USER) DESC, p.value, milestone, t.type, time
 """ % owner))
 
@@ -349,11 +349,7 @@ def get_data(db):
                 ('2.0', 0))),
            ('enum',
              ('type', 'name', 'value'),
-               (('status', 'new', 1),
-                ('status', 'assigned', 2),
-                ('status', 'reopened', 3),
-                ('status', 'closed', 4),
-                ('resolution', 'fixed', 1),
+               (('resolution', 'fixed', 1),
                 ('resolution', 'invalid', 2),
                 ('resolution', 'wontfix', 3),
                 ('resolution', 'duplicate', 4),

@@ -1,6 +1,6 @@
 import unittest
 
-from trac.ticket.model import Ticket, Status
+from trac.ticket.model import Ticket
 from trac.ticket.roadmap import Milestone
 from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
@@ -78,9 +78,6 @@ trac:#2041
 """ # " 
 
 def ticket_setup(tc):
-    new = Status(tc.env)
-    new.name = 'new'
-    new.insert()
     ticket = Ticket(tc.env)
     ticket.values.update({'reporter': 'santa',
                           'summary': 'This is the summary',

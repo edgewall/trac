@@ -1,0 +1,27 @@
+#!/bin/bash -x
+
+options=""
+while [ $# -gt 1 ]; do
+    options="$options $1"
+    shift
+done
+config="$1"
+if [ ! -e "$config" ]; then
+    echo "Syntax error: requires a .ini file to work with." >&2
+    exit 1
+fi
+
+dot=`echo "$config" | sed 's/\.ini$/.dot/g'`
+ps=`echo "$config" | sed 's/\.ini$/.ps/g'`
+pdf=`echo "$config" | sed 's/\.ini$/.pdf/g'`
+png=`echo "$config" | sed 's/\.ini$/.png/g'`
+
+./workflow_parser.py $options "$config" > "$dot"
+if [ $? -ne 0 ]; then
+    echo "Failed to parse \"$config\", exiting." >&2
+    exit 1
+fi
+
+dot -T ps -o "$ps" "$dot" && ps2pdf "$ps" "$pdf" || exit 1
+dot -T png -o "$png" "$dot"
+kpdf "$pdf"

@@ -510,6 +510,7 @@ class TracGuideTocMacro(WikiMacroBase):
            ('TracRevisionLog',              'Revision Log'),
            ('TracChangeset',                'Changesets'),
            ('TracTickets',                  'Tickets'),
+           ('TracWorkflow',                 'Workflow'),
            ('TracRoadmap',                  'Roadmap'),
            ('TracQuery',                    'Ticket Queries'),
            ('TracReports',                  'Reports'),

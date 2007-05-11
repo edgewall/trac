@@ -18,6 +18,7 @@ Currently available documentation:
    * TracBrowser -- Browsing source code with Trac.
    * TracChangeset -- Viewing changes to source code.
    * TracTickets -- Using the issue tracker.
+   * TracWorkflow -- Workflow and ticket status.
    * TracReports -- Writing and using reports.
    * TracQuery -- Executing custom ticket queries.
    * TracRoadmap -- The roadmap helps tracking project progress.

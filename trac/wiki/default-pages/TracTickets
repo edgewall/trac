@@ -27,7 +27,7 @@ A  ticket contains the following information attributes:
  * '''Cc''' - A list of other associated people. ''Note that this does not imply responsiblity or any other policy.''
  
  * '''Resolution''' - Reason for why a ticket was closed. One of {{{fixed}}}, {{{invalid}}}, {{{wontfix}}}, {{{duplicate}}}, {{{worksforme}}}.
- * '''Status''' - What is the current status? One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.
+ * '''Status''' - What is the current status?  See TracWorkflow
  * '''Summary''' - A brief description summarizing the problem or issue.
  * '''Description''' - The body of the ticket. A good description should be specific, descriptive and to the point.
 
@@ -53,10 +53,6 @@ other issues, changesets or files to make your ticket more specific and easier
 to understand.
 
 '''Note:''' See TracNotification for how to configure email notifications of ticket changes.
-
-=== State Diagram ===
-[[Image(http://projects.edgewall.com/trac/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020060603DF.png?format=raw)]]
-
 
 == Default Values for Drop-Down Fields ==
 

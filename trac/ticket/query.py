@@ -251,6 +251,7 @@ class Query(object):
         if not self.cols:
             self.get_columns()
 
+        enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
         cols = self.cols[:]
         def add_cols(*args):
@@ -280,7 +281,7 @@ class Query(object):
                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
 
         # Join with the enum table for proper sorting
-        for col in [c for c in ('status', 'resolution', 'priority', 'severity')
+        for col in [c for c in enum_columns
                     if c == self.order or c == self.group or c == 'priority']:
             sql.append("\n  LEFT OUTER JOIN enum AS %s ON "
                        "(%s.type='%s' AND %s.name=%s)"
@@ -403,7 +404,7 @@ class Query(object):
                     sql.append("COALESCE(%s,'')='' DESC," % col)
                 else:
                     sql.append("COALESCE(%s,'')=''," % col)
-            if name in ('status', 'resolution', 'priority', 'severity'):
+            if name in enum_columns:
                 if desc:
                     sql.append("%s.value DESC" % name)
                 else:
@@ -562,7 +563,9 @@ class QueryModule(Component):
             # avoid displaying all tickets when the query module is invoked
             # with no parameters. Instead show only open tickets, possibly
             # associated with the user
-            constraints = {'status': ('new', 'assigned', 'reopened')}
+            all_states = TicketSystem(self.env).get_all_states()
+            all_states.remove('closed')
+            constraints = {'status': tuple(all_states)}
             if req.authname and req.authname != 'anonymous':
                 constraints['owner'] = (req.authname,)
             else:
