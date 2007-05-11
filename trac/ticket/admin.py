@@ -361,6 +361,12 @@ class PriorityAdminPage(AbstractEnumAdminPage):
     _label = ('Priority', 'Priorities')
 
 
+class ResolutionAdminPage(AbstractEnumAdminPage):
+    _type = 'resolution'
+    _enum_cls = model.Resolution
+    _label = ('Resolution', 'Resolutions')
+
+
 class SeverityAdminPage(AbstractEnumAdminPage):
     _type = 'severity'
     _enum_cls = model.Severity
