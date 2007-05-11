@@ -110,6 +110,7 @@ KNOWN_MIME_TYPES = {
     'text/x-haskell':         ['hs'],
     'text/x-javascript':      ['js'],
     'text/x-objc':            ['m', 'mm'],
+    'text/x-ocaml':           ['ml', 'mli'],
     'text/x-makefile':        ['make', 'mk',
                                'Makefile', 'makefile', 'GNUMakefile'],
     'text/x-pascal':          ['pas'],
