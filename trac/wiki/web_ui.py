@@ -255,10 +255,9 @@ class WikiModule(Component):
         if version is not None:
             num_versions = 0
             for v,t,author,comment,ipnr in page.get_history():
-                if v >= old_version:
-                    num_versions += 1;
-                    if num_versions > 1:
-                        break
+                num_versions += 1;
+                if num_versions > 1:
+                    break
             req.hdf['wiki'] = {'version': version, 'old_version': old_version,
                                'only_version': num_versions == 1}
 
