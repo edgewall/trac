@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2007 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
-# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -19,9 +19,10 @@
 import re
 import urllib
 
+from genshi.builder import tag
+
 from trac.core import TracError
 from trac.util.datefmt import pretty_timedelta
-from trac.util.html import Markup
 from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 
@@ -54,8 +55,10 @@ def get_existing_node(req, repos, path, rev):
     try: 
         return repos.get_node(path, rev) 
     except NoSuchNode, e:
-        raise TracError(Markup('%s<br><p>You can <a href="%s">search</a> ' 
-                               'in the repository history to see if that path '
-                               'existed but was later removed.</p>', e.message,
-                               req.href.log(path, rev=rev,
-                                            mode='path_history')))
+        raise TracError(tag(
+            tag.p(e.message, class_="message"), 
+            tag.p("You can ",
+                  tag.a("search",
+                        href=req.href.log(path, rev=rev, mode='path_history')),
+                  " in the repository history to see if that path existed but"
+                  " was later removed")))

@@ -17,7 +17,7 @@ import time
 import smtplib
 import re
 
-from genshi.core import Markup
+from genshi.builder import tag
 
 from trac import __version__
 from trac.config import BoolOption, IntOption, Option
@@ -203,10 +203,11 @@ class NotifyEmail(Notify):
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError(Markup('Unable to send email due to identity '
-                                   'crisis.<p>Neither <b>notification.from</b> '
-                                   'nor <b>notification.reply_to</b> are '
-                                   'specified in the configuration.</p>'),
+            raise TracError(tag(tag.p('Unable to send email due to identity '
+                                      'crisis.'),
+                                tag.p('Neither ', tag.b('notification.from'),
+                                      ' nor ', tag.b('notification.reply_to'),
+                                      'are specified in the configuration.')),
                             'SMTP Notification Error')
 
         # Authentication info (optional)

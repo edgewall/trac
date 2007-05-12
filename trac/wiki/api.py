@@ -25,8 +25,6 @@ import urllib
 import re
 from StringIO import StringIO
 
-from genshi.core import Markup
-
 from trac.config import BoolOption
 from trac.context import IContextProvider, Context
 from trac.core import *

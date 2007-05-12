@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2007 Edgewall Software
 # Copyright (C) 2003-2007 Christian Boos <cboos@neuf.fr>
 # Copyright (C) 2003-2007 Alec Thomas <alec@swapoff.org>
 # All rights reserved.
@@ -18,7 +18,7 @@
 
 from StringIO import StringIO
 
-from trac.util.html import html, Markup
+from trac.util.html import html
 from trac.core import *
 from trac.util import reversed
 

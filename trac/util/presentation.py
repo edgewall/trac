@@ -104,7 +104,7 @@ def group(iterable, num, predicate=None):
 
 def istext(text):
     from genshi.core import Markup
-    return isinstance(text, unicode) and not isinstance(text, Markup)
+    return isinstance(text, basestring) and not isinstance(text, Markup)
 
 
 def paginate(items, page=0, max_per_page=10):

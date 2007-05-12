@@ -64,7 +64,7 @@ class WikiParser(Component):
         r"(?P<strike>!?%s)" % STRIKE_TOKEN,
         r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
         r"(?P<superscript>!?%s)" % SUPERSCRIPT_TOKEN,
-        r"(?P<inlinecode>!?%s(?P<inline>.*?)%s)" \
+        r"(?P<inlinecode>!?%s(?P<inline>.*?)%s(?P<spanclasses>(?:\.\w+)*))" \
         % (STARTBLOCK_TOKEN, ENDBLOCK_TOKEN),
         r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
         % (INLINE_TOKEN, INLINE_TOKEN)]

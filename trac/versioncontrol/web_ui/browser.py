@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2007 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
-# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -31,7 +31,7 @@ from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
 from trac.perm import IPermissionRequestor
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import http_date
-from trac.util.html import escape, html, Markup
+from trac.util.html import escape, Markup
 from trac.util.text import shorten_line
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -281,7 +281,7 @@ class BrowserModule(Component):
     def get_navigation_items(self, req):
         if 'BROWSER_VIEW' in req.perm:
             yield ('mainnav', 'browser',
-                   html.A('Browse Source', href=req.href.browser()))
+                   tag.a('Browse Source', href=req.href.browser()))
 
     # IPermissionRequestor methods
 
@@ -547,8 +547,8 @@ class BrowserModule(Component):
             path, rev = export.split('@', 1)
         else:
             rev, path = self.env.get_repository().youngest_rev, export
-        return html.A(label, class_='source',
-                      href=formatter.href.export(rev, path) + fragment)
+        return tag.a(label, class_='source',
+                     href=formatter.href.export(rev, path) + fragment)
 
     def _format_browser_link(self, formatter, ns, path, label):
         path, query, fragment = formatter.split_link(path)
@@ -556,9 +556,9 @@ class BrowserModule(Component):
         match = self.PATH_LINK_RE.match(path)
         if match:
             path, rev, marks = match.groups()
-        return html.A(label, class_='source',
-                      href=(formatter.href.browser(path, rev=rev, marks=marks)+
-                            query + fragment))
+        return tag.a(label, class_='source',
+                     href=(formatter.href.browser(path, rev=rev, marks=marks) +
+                           query + fragment))
 
     PATH_LINK_RE = re.compile(r"([^@#:]*)"     # path
                               r"[@:]([^#:]+)?" # rev

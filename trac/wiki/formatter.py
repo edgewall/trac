@@ -24,6 +24,8 @@ import urllib
 
 from StringIO import StringIO
 
+from genshi.builder import tag
+
 from trac.context import Context
 from trac.core import *
 from trac.mimeview import *
@@ -128,8 +130,8 @@ class WikiProcessor(object):
 
     def process(self, text, in_paragraph=False):
         if self.error:
-            text = system_message(Markup('Error: Failed to load processor '
-                                         '<code>%s</code>', self.name),
+            text = system_message(tag('Error: Failed to load processor ',
+                                      tag.code(self.name)),
                                   self.error)
         else:
             text = self.processor(text)

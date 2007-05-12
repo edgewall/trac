@@ -35,7 +35,6 @@ from trac.perm import PermissionCache, PermissionError, PermissionSystem
 from trac.util import get_lines_from_file, get_last_traceback, hex_entropy
 from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
-from trac.util.html import Markup
 from trac.util.text import shorten_line, to_unicode
 from trac.web.api import *
 from trac.web.chrome import Chrome

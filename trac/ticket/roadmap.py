@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2006 Edgewall Software
+# Copyright (C) 2004-2007 Edgewall Software
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
-# Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2006-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -19,6 +19,8 @@ from datetime import datetime
 import re
 from time import localtime, strftime, time
 
+from genshi.builder import tag
+
 from trac import __version__
 from trac.context import Context
 from trac.core import *
@@ -26,7 +28,6 @@ from trac.perm import IPermissionRequestor
 from trac.util import sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, \
                               get_date_format_hint, get_datetime_format_hint
-from trac.util.html import html, unescape, Markup
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.query import Query
@@ -181,7 +182,7 @@ class RoadmapModule(Component):
     def get_navigation_items(self, req):
         if 'ROADMAP_VIEW' in req.perm:
             yield ('mainnav', 'roadmap',
-                   html.a('Roadmap', href=req.href.roadmap(), accesskey=3))
+                   tag.a('Roadmap', href=req.href.roadmap(), accesskey=3))
 
     # IPermissionRequestor methods
 
@@ -378,7 +379,7 @@ class MilestoneModule(Component):
                            (to_timestamp(start), to_timestamp(stop)))
             for ts, name, description in cursor:
                 completed = datetime.fromtimestamp(ts, utc)
-                title = Markup('Milestone <em>%s</em> completed', name)
+                title = tag('Milestone ', tag.em(name), ' completed')
                 event = TimelineEvent('milestone', title,
                                       req.href.milestone(name))
                 event.set_changeinfo(completed, '') # FIXME: store the author
@@ -621,4 +622,4 @@ class MilestoneModule(Component):
     def _format_link(self, formatter, ns, name, label):
         name, query, fragment = formatter.split_link(name)
         href = formatter.href.milestone(name) + query + fragment
-        return html.A(label, href=href, class_='milestone')
+        return tag.a(label, href=href, class_='milestone')

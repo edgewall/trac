@@ -19,7 +19,6 @@
 
 import re
 
-from genshi import Markup
 from genshi.builder import tag
 
 from trac.core import *

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2006 Edgewall Software
+# Copyright (C) 2004-2007 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
-# Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2006-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -59,7 +59,7 @@ an object that can be `read()`.
 import re
 from StringIO import StringIO
 
-from genshi import escape, Markup, Stream
+from genshi import Markup, Stream
 from genshi.core import TEXT, START, END, START_NS, END_NS
 from genshi.builder import Fragment, tag
 from genshi.input import HTMLParser
