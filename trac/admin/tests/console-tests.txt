@@ -151,6 +151,21 @@ milestone completed <name> <completed>
 milestone remove <name>
 	-- Remove milestone
 
+resolution list
+	-- Show possible ticket resolutions
+
+resolution add <value>
+	-- Add a resolution value option
+
+resolution change <value> <newvalue>
+	-- Change a resolution value
+
+resolution remove <value>
+	-- Remove resolution value
+
+resolution order <value> up|down
+	-- Move a resolution value up or down in the list
+
 ===== test_permission_list_ok =====
 
 User           Action

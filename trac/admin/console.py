@@ -257,7 +257,7 @@ Type:  '?' or 'help' for help on commands.
                 cls._help_ticket + cls._help_ticket_type + 
                 cls._help_priority + cls._help_severity +
                 cls._help_component + cls._help_version +
-                cls._help_milestone)
+                cls._help_milestone + cls._help_resolution)
     all_docs = classmethod(all_docs)
 
     def do_help(self, line=None):
@@ -805,9 +805,9 @@ Congratulations!
                           'Move a ticket type up or down in the list')]
 
     def complete_ticket_type (self, text, line, begidx, endidx):
-        if begidx == 16:
+        if begidx == 19:
             comp = self.get_enum_list ('ticket_type')
-        elif begidx < 15:
+        elif begidx < 18:
             comp = ['list', 'add', 'change', 'remove', 'order']
         return self.word_complete(text, comp)
  
@@ -852,10 +852,33 @@ Congratulations!
     def do_severity(self, line):
         self._do_enum('severity', line)
 
-    # Type, priority, severity share the same datastructure and methods:
+    ## (Ticket) Resolution
+    _help_resolution = [('resolution list', 'Show possible ticket resolutions'),
+                        ('resolution add <value>',
+                         'Add a resolution value option'),
+                        ('resolution change <value> <newvalue>',
+                         'Change a resolution value'),
+                        ('resolution remove <value>',
+                         'Remove resolution value'),
+                        ('resolution order <value> up|down',
+                         'Move a resolution value up or down in the list')]
+
+    def complete_resolution (self, text, line, begidx, endidx):
+        print begidx
+        if begidx == 18:
+            comp = self.get_enum_list ('resolution')
+        elif begidx < 17:
+            comp = ['list', 'add', 'change', 'remove', 'order']
+        return self.word_complete(text, comp)
+
+    def do_resolution(self, line):
+        self._do_enum('resolution', line)
+
+    # Type, priority, severity and resolution share the same datastructure
+    # and methods:
 
     _enum_map = {'ticket_type': Type, 'priority': Priority,
-                 'severity': Severity}
+                 'severity': Severity, 'resolution': Resolution}
 
     def _do_enum(self, type, line):
         arg = self.arg_tokenize(line)
