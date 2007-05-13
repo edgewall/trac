@@ -472,20 +472,13 @@ class EnvironmentSetup(Component):
     # Internal methods
 
     def _update_sample_config(self):
-        from ConfigParser import ConfigParser
-        config = ConfigParser()
-        for section, options in self.config.defaults().items():
-            config.add_section(section)
-            for name, value in options.items():
-                config.set(section, name, value)
         filename = os.path.join(self.env.path, 'conf', 'trac.ini.sample')
+        config = Configuration(filename)
+        for section, default_options in config.defaults().iteritems():
+            for name, value in default_options.iteritems():
+                config.set(section, name, value)
         try:
-            fileobj = file(filename, 'w')
-            try:
-                config.write(fileobj)
-                fileobj.close()
-            finally:
-                fileobj.close()
+            config.save()
             self.log.info('Wrote sample configuration file with the new '
                           'settings and their default values: %s',
                           filename)
