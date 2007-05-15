@@ -577,6 +577,7 @@ class Chrome(Component):
             if not req.session or not int(req.session.get('accesskeys', 0)):
                 stream |= self._strip_accesskeys
 
+        links = req.chrome['links']
         req.chrome['links'] = {}
         req.chrome['scripts'] = []
         data.setdefault('chrome', {}).update({
@@ -584,7 +585,12 @@ class Chrome(Component):
             'late_scripts': req.chrome['scripts'],
         })
 
-        return stream.render(method, doctype=doctype)
+        try:
+            return stream.render(method, doctype=doctype)
+        except:
+            # restore what may be needed by the error template
+            req.chrome['links'] = links
+            raise
 
     # Helpers
 
