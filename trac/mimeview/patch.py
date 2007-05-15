@@ -91,12 +91,15 @@ class PatchRenderer(Component):
             div, mod = divmod(len(match.group(0)), 2)
             return div * '&nbsp; ' + mod * '&nbsp;'
 
+        comments = []
         changes = []
         lines = iter(difflines)
         try:
             line = lines.next()
             while True:
                 if not line.startswith('--- '):
+                    if not line.startswith('Index: ') and line != '='*67:
+                        comments.append(line)
                     line = lines.next()
                     continue
 
@@ -126,7 +129,8 @@ class PatchRenderer(Component):
                     commonprefix = ''.join(os.path.commonprefix(
                         [sep.split(newpath), sep.split(oldpath)]))
                     commonsuffix = ''.join(os.path.commonprefix(
-                        [sep.split(newpath)[::-1], sep.split(oldpath)[::-1]])[::-1])
+                        [sep.split(newpath)[::-1],
+                         sep.split(oldpath)[::-1]])[::-1])
                     if len(commonprefix) > len(commonsuffix):
                         common = commonprefix
                     elif commonsuffix:
@@ -143,6 +147,7 @@ class PatchRenderer(Component):
 
                 groups = []
                 changes.append({'change': 'edit', 'props': [],
+                                'comments': '\n'.join(comments),
                                 'diffs': groups,
                                 'old': {'path': common,
                                         'rev': ' '.join(oldinfo[1:]),
@@ -150,10 +155,12 @@ class PatchRenderer(Component):
                                 'new': {'path': common,
                                         'rev': ' '.join(newinfo[1:]),
                                         'shortrev': shortrev[1]}})
+                comments = []
                 line = lines.next()
                 while line:
                     # "@@ -333,10 +329,8 @@" or "@@ -1 +1 @@"
-                    r = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@', line)
+                    r = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@',
+                                 line)
                     if not r:
                         break
                     blocks = []

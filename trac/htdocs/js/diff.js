@@ -73,7 +73,7 @@ $(document).ready(function() {
   $("div.diff h2").each(function() {
     var switcher = $("<span class='switch'></span>").prependTo(this);
     var name = $.trim($(this).text());
-    var table = $(this).next().get(0);
+    var table = $(this).siblings("table").get(0);
     var pre = $("<pre></pre>").hide().insertAfter(table);
     $("<span>Tabular</span>").click(function() {
       $(pre).hide();

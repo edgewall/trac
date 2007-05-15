@@ -3,6 +3,7 @@
                    changes for one file:
                      .href         - link for the title (optional)
                      .title        - tooltip for the title link (optional)
+                     .comments     - annotation for the change (optional)
                      .new and .old - information about the files being diffed
                        .path         - path of the file
                        .rev          - rev of the file (for 'sidebyside')
@@ -42,6 +43,7 @@
              href="${item.get('href', item.new.get('href'))}">$item.new.path</a>
           <py:otherwise>&nbsp;</py:otherwise>
         </h2>
+        <pre py:if="'comments' in item">$item.comments</pre>
         <ul py:if="item.props" class="props">
           <py:for each="prop in item.props" py:choose="">
             <py:with vars="one = prop.old or prop.new;
