@@ -855,10 +855,10 @@ class ChangesetModule(Component):
                          title=shorten_line(changeset.message),
                          href=(formatter.href.changeset(rev, path) +
                                params + fragment))
-        except NoSuchChangeset:
+        except TracError, e:
             return tag.a(label, class_="missing changeset",
                          href=formatter.href.changeset(rev, path),
-                         rel="nofollow")
+                         title=unicode(e), rel="nofollow")
 
     def _format_diff_link(self, formatter, ns, target, label):
         params, query, fragment = formatter.split_link(target)
