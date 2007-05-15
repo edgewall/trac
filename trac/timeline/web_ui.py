@@ -281,10 +281,9 @@ class TimelineModule(Component):
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args+[(f, 'on') for f in other_filters])
-        raise TracError(tag(', '.join(guilty_kinds),
-                            ' event provider (',
-                            tag.tt(ep_name), ') failed:', tag.br(), tag.br(),
-                            exc_name, ': ', to_unicode(exc),
-                            tag.p('You may want to see the other kind of '
-                                  'events from the ',
-                                  tag.a('Timeline', href=href))))
+        raise TracError(tag(
+            tag.p(', '.join(guilty_kinds),
+                  ' event provider (', tag.tt(ep_name), ') failed:', tag.br(),
+                  exc_name, ': ', to_unicode(exc), class_='message'),
+            tag.p('You may want to see the other kind of events from the ',
+                  tag.a('Timeline', href=href))))
