@@ -442,7 +442,7 @@ def dispatch_request(environ, start_response):
                 title = e.reason
             else:
                 title = 'Error: %s' % e.reason
-        data = {'title': title, 'type': 'TracError', 'message': e.message,
+        data = {'title': title, 'type': 'TracError', 'message': e.detail,
                 'frames': [], 'traceback': None}
         try:
             req.send_error(sys.exc_info(), status=e.code, env=env, data=data)

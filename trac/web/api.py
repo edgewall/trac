@@ -41,20 +41,17 @@ class HTTPException(Exception):
         self.reason = HTTP_STATUS.get(self.code, 'Unknown')
         self.__doc__ = 'Exception for HTTP %d %s' % (self.code, self.reason)
 
-    def __call__(self, message, *args):
-        if isinstance(message, TracError):
-            self.message = message.message
-            self.reason = message.title
+    def __call__(self, detail, *args):
+        if isinstance(detail, TracError):
+            self.detail = detail.message
+            self.reason = detail.title
         else:
-            self.message = message
+            self.detail = detail
         if args:
-            self.message = self.message % args
+            self.detail = self.detail % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
-                                                 self.message))
+                                                 self.detail))
         return self
-
-    def __str__(self):
-        return '%s %s (%s)' % (self.code, self.reason, self.message)
 
 
 for code in [code for code in HTTP_STATUS if code >= 400]:
