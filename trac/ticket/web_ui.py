@@ -430,7 +430,7 @@ class TicketModule(Component):
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):
             conversion_href = req.href.ticket(ticket.id, format=conversion[0])
             add_link(req, 'alternate', conversion_href, conversion[1],
-                     conversion[3])
+                     conversion[4], conversion[0])
 
         return 'ticket.html', data, None
 

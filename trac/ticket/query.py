@@ -596,7 +596,7 @@ class QueryModule(Component):
                                              'trac.ticket.Query'):
             add_link(req, 'alternate',
                      query.get_href(context, format=conversion[0]),
-                     conversion[1], conversion[3])
+                     conversion[1], conversion[4], conversion[0])
 
         format = req.args.get('format')
         if format:
