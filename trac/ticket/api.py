@@ -26,7 +26,7 @@ from trac.perm import IPermissionRequestor, PermissionSystem, PermissionError
 from trac.util import Ranges
 from trac.util.text import shorten_line
 from trac.util.datefmt import utc
-from trac.util.compat import set
+from trac.util.compat import set, sorted
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
