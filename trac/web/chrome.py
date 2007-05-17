@@ -577,7 +577,7 @@ class Chrome(Component):
             if not req.session or not int(req.session.get('accesskeys', 0)):
                 stream |= self._strip_accesskeys
 
-        links = req.chrome['links']
+        links = req.chrome.get('links')
         req.chrome['links'] = {}
         req.chrome['scripts'] = []
         data.setdefault('chrome', {}).update({
