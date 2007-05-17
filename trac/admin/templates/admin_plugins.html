@@ -50,7 +50,7 @@
                  disabled="${plugin.readonly or None}" />
         </div>
         <py:if test="plugin.info">
-          <p class="summary">$plugin.info.get('summary')</p>
+          <p class="summary">${plugin.info.get('summary')}</p>
           <dl py:if="'home_page' in plugin.info or
                      'author' in plugin.info or
                      'author_email' in plugin.info"
