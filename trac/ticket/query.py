@@ -48,7 +48,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 limit=None):
+                 rows=[], limit=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -57,11 +57,12 @@ class Query(object):
         self.group = group
         self.groupdesc = groupdesc
         self.limit = limit
-        self.verbose = verbose
+        if verbose and 'description' not in rows: # 0.10 compatibility
+            rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
         field_names = [f['name'] for f in self.fields]
-        self.explicit_cols = [c for c in cols or [] if c in field_names]
-        self.cols = [] # lazily initialized
+        self.cols = [c for c in cols or [] if c in field_names or c == 'id']
+        self.rows = [c for c in rows if c in field_names]
 
         if self.order != 'id' and self.order not in field_names:
             # TODO: fix after adding time/changetime to the api.py
@@ -121,9 +122,14 @@ class Query(object):
     from_string = classmethod(from_string)
 
     def get_columns(self):
-        if self.cols:
-            return self.cols
+        if not self.cols:
+            self.cols = self.get_default_columns()
+        return self.cols
 
+    def get_all_textareas(self):
+        return [f['name'] for f in self.fields if f['type'] == 'textarea']
+
+    def get_all_columns(self):
         # Prepare the default list of columns
         cols = ['id']
         cols += [f['name'] for f in self.fields if f['type'] != 'textarea']
@@ -147,11 +153,6 @@ class Query(object):
         if self.group in cols:
             cols.remove(self.group)
 
-        # Now add columns explicitly specified in the query
-        for col in self.explicit_cols:
-            if col not in cols:
-                cols.append(col)
-            
         def sort_columns(col1, col2):
             constrained_fields = self.constraints.keys()
             # Ticket ID is always the first column
@@ -165,20 +166,17 @@ class Query(object):
                 return col1 in constrained_fields and -1 or 1
             return 0
         cols.sort(sort_columns)
+        return cols
 
+    def get_default_columns(self):
+        all_cols = self.get_all_columns()
         # Only display the first seven columns by default
-        self.cols = cols[:7]
-        # Make sure the explicitly given columns are visible as well
-        for col in cols[7:]:
-            if col in self.explicit_cols and col not in self.cols:
-                self.cols.append(col)
-                
+        cols = all_cols[:7]
         # Make sure the column we order by is visible, if it isn't also
         # the column we group by
-        if not self.order in self.cols and not self.order == self.group:
-            self.cols[-1] = self.order
-
-        return self.cols
+        if not self.order in cols and not self.order == self.group:
+            cols[-1] = self.order
+        return cols
 
     def execute(self, req, db=None):
         if not self.cols:
@@ -232,7 +230,8 @@ class Query(object):
                                   order=order, desc=desc and 1 or None,
                                   group=self.group or None,
                                   groupdesc=self.groupdesc and 1 or None,
-                                  verbose=self.verbose and 1 or None,
+                                  col=self.get_columns(),
+                                  row=self.rows,
                                   format=format, **self.constraints)
 
     def to_string(self, context):
@@ -260,8 +259,8 @@ class Query(object):
                     cols.append(col)
         if self.group and not self.group in cols:
             add_cols(self.group)
-        if self.verbose:
-            add_cols('reporter', 'description')
+        if self.rows:
+            add_cols('reporter', *self.rows)
         add_cols('priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
@@ -577,10 +576,16 @@ class QueryModule(Component):
         cols = req.args.get('col')
         if isinstance(cols,basestring):
             cols = [cols]
+        if cols and 'id' not in cols: # Since we don't show 'id' as an option to the user, we need to re-insert it here.
+            cols.insert(0, 'id')
+        rows = req.args.get('row', [])
+        if isinstance(rows,basestring):
+            rows = [rows]
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
+                      rows,
                       req.args.get('limit'))
 
         context = Context(self.env, req)
@@ -724,6 +729,12 @@ class QueryModule(Component):
         data.setdefault('description', None)
         data['title'] = title
 
+        data['all_columns'] = query.get_all_columns()
+        data['all_columns'].remove('id') # Don't allow the user to remove the id column
+        data['all_textareas'] = query.get_all_textareas()
+        data['col'] = query.get_columns()
+        data['row'] = query.rows
+
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')
 
@@ -742,13 +753,14 @@ class QueryModule(Component):
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, query):
-        query.verbose = True
+        if 'description' not in query.rows:
+            query.rows.append('description')
         db = self.env.get_db_cnx()
         results = query.execute(req, db)
         query_href = req.abs_href.query(group=query.group,
                                         groupdesc=(query.groupdesc and 1
                                                    or None),
-                                        verbose=query.verbose and 1 or None,
+                                        row=self.rows, 
                                         **query.constraints)
 
         data = {
@@ -813,6 +825,7 @@ class TicketQueryMacro(WikiMacroBase):
 
     The optional `verbose` parameter can be set to a true value in order to
     get the description for the listed tickets. For '''table''' format only.
+    ''deprecated in favor of the row parameter''.
 
     For compatibility with Trac 0.10, if there's a second positional parameter
     given to the macro, it will be used to specify the `format`.

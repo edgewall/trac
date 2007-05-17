@@ -66,15 +66,27 @@ h2 {
  border: none;
  color: #333;
  background: transparent;
- padding: 0 1em 2em 2em !important;
+ padding: 0 1em !important;  /* Opera 9 is *very* sensitive with this */
  font-size: 85%;
 }
 .tickets tbody tr.fullrow:hover { background: transparent !important }
 .tickets .fullrow :link, .tickets .fullrow :visited { display: inline }
-.tickets .fullrow .meta { color: #999; margin-bottom: -.5em; margin-left: -1em }
+.tickets .fullrow .meta { color: #999; }
 .tickets .fullrow hr { display: none }
 
 /* Query results table */
+fieldset legend a { 
+ background: url(../expander_open.png) 0 50% no-repeat;
+ padding-left: 16px;
+ margin-left: 0px; 
+}
+fieldset.collapsed legend a { 
+ background-image: url(../expander_normal.png);  
+ padding-left: 12px;
+ margin-left: 4px; 
+}
+fieldset.collapsed table, fieldset.collapsed div { display: none }
+
 table.tickets tbody tr.added td { font-weight: bold }
 table.tickets tbody tr.changed td { font-style: italic }
 table.tickets tbody tr.removed td { color: #999 }
@@ -90,3 +102,9 @@ table.tickets tbody tr.prio5 { background: #e7eeff; border-color: #cde }
 table.tickets tbody tr.even.prio5 { background: #dde7ff }
 table.tickets tbody tr.prio6 { background: #f0f0f0; border-color: #ddd }
 table.tickets tbody tr.even.prio6 { background: #f7f7f7 }
+table.tickets tbody tr.fullrow th { 
+  border: none;
+  vertical-align: middle;
+  text-align: center;
+  font-size: 85%;
+}

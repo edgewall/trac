@@ -7,11 +7,16 @@
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
+        $("fieldset legend").enableFolding(false);
+        /* Hide the columns by default. */
+        $(document.getElementById("columns")).toggleClass("collapsed");
+        /* Note that Opera has some trouble with $("#columns") as it's a fieldset, see #4911. */
       });
     </script>
   </head>
@@ -132,6 +137,20 @@
           </table>
         </fieldset>
 
+        <!--! Allow the user to decide what columns to include in the output of the query -->
+        <fieldset id="columns">
+          <legend>Columns</legend>
+          <div>
+            <py:for each="column in all_columns">
+              <input type="checkbox" id="column_$column" name="col"
+                value="$column"
+                checked="${any([(value == column)
+                                for value in col]) and 'checked' or None}" />
+              <label for="column_$column">${column or 'none'}</label>
+            </py:for>
+          </div>
+        </fieldset>
+
         <p class="option">
           <label for="group">Group results by</label>
           <select name="group" id="group">
@@ -147,9 +166,15 @@
         </p>
 
         <p class="option">
-          <input type="checkbox" name="verbose" id="verbose"
-                 checked="${query.verbose or None}" />
-          <label for="verbose">Show full description under each result</label>
+          <!--! Allow the user to decide what columns to include in the output of the query -->
+          Show
+          <py:for each="column in all_textareas">
+            <input type="checkbox" id="row_$column" name="row"
+              value="$column"
+              checked="${any([(value == column)
+                              for value in row]) and 'checked' or None}" />
+            <label for="row_$column">${column or 'none'}</label>
+          </py:for> under each result
         </p>
 
         <div class="buttons">
