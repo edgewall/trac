@@ -230,7 +230,8 @@ class Query(object):
             order = self.order
         cols = self.get_columns()
         # don't specify the columns in the href if they correspond to
-        # the default columns, in the same order.
+        # the default columns, in the same order.  That keeps the query url
+        # shorter in the common case where we just want the default columns.
         if cols == self.get_default_columns():
             cols = None
         return context.href.query(report=id,
