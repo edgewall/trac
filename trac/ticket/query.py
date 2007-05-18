@@ -229,6 +229,8 @@ class Query(object):
         if order is None:
             order = self.order
         cols = self.get_columns()
+        # don't specify the columns in the href if they correspond to
+        # the default columns, in the same order.
         if cols == self.get_default_columns():
             cols = None
         return context.href.query(report=id,
