@@ -48,7 +48,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=[], limit=None):
+                 rows=None, limit=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -57,6 +57,8 @@ class Query(object):
         self.group = group
         self.groupdesc = groupdesc
         self.limit = limit
+        if rows == None:
+            rows = []
         if verbose and 'description' not in rows: # 0.10 compatibility
             rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
