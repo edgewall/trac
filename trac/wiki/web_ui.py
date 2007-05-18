@@ -376,7 +376,10 @@ class WikiModule(Component):
         page, req = context.resource, context.req
         context.version = None # use implicit ''latest'' in links
 
-        req.perm.require('WIKI_MODIFY')
+         if page.readonly:
+             req.perm.require('WIKI_ADMIN')
+         else:
+             req.perm.require('WIKI_MODIFY')
         original_text = page.text
         if 'text' in req.args:
             page.text = req.args.get('text')
