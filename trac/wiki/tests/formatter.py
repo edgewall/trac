@@ -2,6 +2,7 @@ import os
 import inspect
 import StringIO
 import unittest
+import difflib
 
 from trac.context import Context
 from trac.core import *
@@ -128,13 +129,15 @@ class WikiTestCase(unittest.TestCase):
             match = re.match(r"u?'(.*)' != u?'(.*)'", msg)
             if match:
                 sep = '-' * 15
-                msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s\n' \
-                      % (sep, match.group(1), sep, match.group(2), sep)
+                g1 = ["%s\n" % x for x in match.group(1).split(r'\n')]
+                g2 = ["%s\n" % x for x in match.group(2).split(r'\n')]
+                diff = ''.join(list(difflib.unified_diff(g1, g2)))
+                msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s\ndiff:\n%s' \
+                      % (sep, ''.join(g1), sep, ''.join(g2), sep, diff)
 # Tip: sometimes, 'expected' and 'actual' differ only by whitespace,
 #      then replace the above line by those two:
 #                      % (sep, match.group(1).replace(' ', '.'),
 #                         sep, match.group(2).replace(' ', '.'), sep)
-                msg = msg.replace(r'\n', '\n')
             raise AssertionError( # See below for details
                 '%s\n\n%s:%s: "%s" (%s flavor)' \
                 % (msg, self.file, self.line, self.title, formatter.flavor))
