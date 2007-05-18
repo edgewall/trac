@@ -228,11 +228,14 @@ class Query(object):
             desc = self.desc
         if order is None:
             order = self.order
+        cols = self.get_columns()
+        if cols == self.get_default_columns():
+            cols = None
         return context.href.query(report=id,
                                   order=order, desc=desc and 1 or None,
                                   group=self.group or None,
                                   groupdesc=self.groupdesc and 1 or None,
-                                  col=self.get_columns(),
+                                  col=cols,
                                   row=self.rows,
                                   format=format, **self.constraints)
 
@@ -576,12 +579,14 @@ class QueryModule(Component):
                     constraints['cc'] = ('~%s' % (email or name),)
 
         cols = req.args.get('col')
-        if isinstance(cols,basestring):
+        if isinstance(cols, basestring):
             cols = [cols]
-        if cols and 'id' not in cols: # Since we don't show 'id' as an option to the user, we need to re-insert it here.
+        # Since we don't show 'id' as an option to the user,
+        # we need to re-insert it here.            
+        if cols and 'id' not in cols: 
             cols.insert(0, 'id')
         rows = req.args.get('row', [])
-        if isinstance(rows,basestring):
+        if isinstance(rows, basestring):
             rows = [rows]
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
@@ -732,7 +737,8 @@ class QueryModule(Component):
         data['title'] = title
 
         data['all_columns'] = query.get_all_columns()
-        data['all_columns'].remove('id') # Don't allow the user to remove the id column
+        # Don't allow the user to remove the id column        
+        data['all_columns'].remove('id')
         data['all_textareas'] = query.get_all_textareas()
         data['col'] = query.get_columns()
         data['row'] = query.rows

@@ -182,16 +182,16 @@ query:verbose=1
 <a class="query" href="/query?status=new&amp;status=reopened&amp;order=priority">query:status=new|reopened</a>
 </p>
 <p>
-<a class="query" href="/query?milestone=%21&amp;order=priority">query:milestone!=</a>
+<a class="query" href="/query?order=priority&amp;milestone=%21">query:milestone!=</a>
 </p>
 <p>
-<a class="query" href="/query?milestone=1.0&amp;milestone=2.0&amp;owner=me&amp;order=priority">query:milestone=1.0|2.0&amp;owner=me</a>
+<a class="query" href="/query?order=priority&amp;milestone=1.0&amp;milestone=2.0&amp;owner=me">query:milestone=1.0|2.0&amp;owner=me</a>
 </p>
 <p>
 <a class="query" href="/query?group=owner&amp;order=priority">query:group=owner</a>
 </p>
 <p>
-<a class="query" href="/query?verbose=1&amp;order=priority">query:verbose=1</a>
+<a class="query" href="/query?order=priority&amp;row=description">query:verbose=1</a>
 </p>
 ------------------------------
 """
