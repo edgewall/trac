@@ -270,7 +270,8 @@ class TicketModule(Component):
     def _get_action_controllers(self, req, ticket, action):
         """Generator yielding the controllers handling the given `action`"""
         for controller in TicketSystem(self.env).action_controllers:
-            if action in controller.get_ticket_actions(req, ticket):
+            actions = [a for w,a in controller.get_ticket_actions(req, ticket)]
+            if action in actions:
                 yield controller
 
     def _process_newticket_request(self, req):
