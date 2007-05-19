@@ -1,7 +1,7 @@
 from genshi.builder import tag
 
 from trac.core import implements,Component
-from trac.ticket.api import ITicketActionController, DefaultTicketActionController
+from trac.ticket.api import ITicketActionController, ConfigurableTicketWorkflow
 from trac.ticket.model import Priority, Ticket
 #from trac.perm import IPermissionRequestor # (TODO)
 
@@ -14,14 +14,14 @@ class VoteOperation(Component):
     Don't forget to add `VoteOperation` to the workflow option in [ticket].
     If there is no workflow option, the line will look like this:
 
-    workflow = DefaultTicketActionController,VoteOperation
+    workflow = ConfigurableTicketWorkflow,VoteOperation
     """
     
 
     implements(ITicketActionController)
 
     def get_ticket_actions(self, req, ticket):
-        controller = DefaultTicketActionController(self.env)
+        controller = ConfigurableTicketWorkflow(self.env)
         return controller.get_actions_by_operation_for_req(req, ticket, 'vote')
 
     def get_all_status(self):

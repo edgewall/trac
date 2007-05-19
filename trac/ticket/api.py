@@ -167,7 +167,7 @@ class TicketSystem(Component):
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
     action_controllers = OrderedExtensionsOption('ticket', 'workflow',
-        ITicketActionController, default='DefaultTicketActionController',
+        ITicketActionController, default='ConfigurableTicketWorkflow',
         include_missing=False,
         doc="""Ordered list of workflow controllers to use for ticket actions
             (''since 0.11'').""")

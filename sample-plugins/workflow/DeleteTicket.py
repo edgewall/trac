@@ -13,7 +13,7 @@ class DeleteTicketActionController(Component):
     option in [ticket].
     If there is no workflow option, the line will look like this:
 
-    workflow = DefaultTicketActionController,DeleteTicketActionController
+    workflow = ConfigurableTicketWorkflow,DeleteTicketActionController
     """
 
     implements(ITicketActionController, IPermissionRequestor)

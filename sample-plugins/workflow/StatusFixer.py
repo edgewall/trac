@@ -15,7 +15,7 @@ class StatusFixerActionController(Component):
     option in [ticket].
     If there is no workflow option, the line will look like this:
 
-    workflow = DefaultTicketActionController,StatusFixerActionController
+    workflow = ConfigurableTicketWorkflow,StatusFixerActionController
     """
 
     implements(ITicketActionController, IPermissionRequestor)

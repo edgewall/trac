@@ -24,7 +24,7 @@ from trac.ticket.api import ITicketActionController
 from trac.util.compat import set
 
 
-# -- Utilities for the DefaultTicketActionController
+# -- Utilities for the ConfigurableTicketWorkflow
 
 def parse_workflow_config(rawactions):
     """Given a list of options from [ticket-workflow]"""
@@ -107,7 +107,7 @@ def get_workflow_config(config):
     return actions
 
 
-class DefaultTicketActionController(Component):
+class ConfigurableTicketWorkflow(Component):
     """Default ticket action controller that loads workflow actions from
     config."""
     def __init__(self, *args, **kwargs):

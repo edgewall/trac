@@ -1,7 +1,7 @@
 from genshi.builder import tag
 
 from trac.core import implements,Component
-from trac.ticket.api import ITicketActionController, DefaultTicketActionController
+from trac.ticket.api import ITicketActionController, ConfigurableTicketWorkflow
 from trac.perm import IPermissionRequestor
 from trac.config import Option, ListOption
 from trac.util.compat import set
@@ -27,7 +27,7 @@ class CodeReviewActionController(Component):
     option in [ticket].
     If there is no workflow option, the line will look like this:
 
-    workflow = DefaultTicketActionController,CodeReviewActionController
+    workflow = ConfigurableTicketWorkflow,CodeReviewActionController
     """
 
     implements(ITicketActionController, IPermissionRequestor)
@@ -46,7 +46,7 @@ class CodeReviewActionController(Component):
         # own work!).
         actions_we_handle = []
         if req.authname != ticket['owner'] and 'TICKET_REVIEW' in req.perm:
-            controller = DefaultTicketActionController(self.env)
+            controller = ConfigurableTicketWorkflow(self.env)
             actions_we_handle = controller.get_actions_by_operation_for_req(req,
                                     ticket, 'code_review')
         self.log.debug('code review handles actions: %r' % actions_we_handle)
@@ -54,7 +54,7 @@ class CodeReviewActionController(Component):
 
     def get_all_status(self):
         all_states = set()
-        controller = DefaultTicketActionController(self.env)
+        controller = ConfigurableTicketWorkflow(self.env)
         ouractions = controller.get_actions_by_operation('code_review')
         for weight, action in ouractions:
             raw_options = [x.strip() for x in
@@ -74,7 +74,7 @@ class CodeReviewActionController(Component):
 
         selected_value = req.args.get(id, options[0])
 
-        actions = DefaultTicketActionController(self.env).actions
+        actions = ConfigurableTicketWorkflow(self.env).actions
         label = actions[action]['name']
         control = (label, tag(["as: ", tag.select(
             [tag.option(x, selected=(x == selected_value or None))
