@@ -1,7 +1,8 @@
 from genshi.builder import tag
 
 from trac.core import implements,Component
-from trac.ticket.api import ITicketActionController, ConfigurableTicketWorkflow
+from trac.ticket.api import ITicketActionController
+from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Priority, Ticket
 #from trac.perm import IPermissionRequestor # (TODO)
 
