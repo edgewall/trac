@@ -44,25 +44,18 @@ class StatusFixerActionController(Component):
         return all_states
 
     def render_ticket_action_control(self, req, ticket, action):
-        control = None
-        if action == 'force_status':
-            # Need to use the list of all states so you can't manually set
-            # something to an invalid state.
-            selected_value = req.args.get('force_status_value', 'new')
-            all_states = TicketSystem(self.env).get_all_status()
-            render_control = tag.select(
-                [tag.option(x, selected=(x == selected_value and 'selected' or
-                                         None)) for x in all_states],
-                id='force_status_value', name='force_status_value')
-            control = ('force status to:', render_control) 
-        return control
+        # Need to use the list of all states so you can't manually set
+        # something to an invalid state.
+        selected_value = req.args.get('force_status_value', 'new')
+        all_states = TicketSystem(self.env).get_all_status()
+        render_control = tag.select(
+            [tag.option(x, selected=(x == selected_value and 'selected' or
+                                     None)) for x in all_states],
+            id='force_status_value', name='force_status_value')
+        return ('force status to:', render_control) 
 
     def get_ticket_changes(self, req, ticket, action):
-        updated = {}
-        if action == 'force_status':
-            newstatus = req.args.get('force_status_value')
-            updated['status'] = newstatus
-        return updated, ''
+        return {'status': req.args.get('force_status_value')}
 
     def apply_action_side_effects(self, req, ticket, action):
         pass

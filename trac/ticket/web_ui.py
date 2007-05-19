@@ -267,6 +267,12 @@ class TicketModule(Component):
 
     # Internal methods
 
+    def _get_action_controllers(self, req, ticket, action):
+        """Generator yielding the controllers handling the given `action`"""
+        for controller in TicketSystem(self.env).action_controllers:
+            if action in controller.get_ticket_actions(req, ticket):
+                yield controller
+
     def _process_newticket_request(self, req):
         context = Context(self.env, req)('ticket')
         req.perm.require('TICKET_CREATE')
@@ -778,7 +784,7 @@ class TicketModule(Component):
                 self.log.exception("Failure sending notification on change to "
                                    "ticket #%s: %s" % (ticket.id, e))
 
-        for controller in TicketSystem(self.env).action_controllers:
+        for controller in self._get_action_controllers(req, ticket, action):
             controller.apply_action_side_effects(req, ticket, action)
 
         fragment = cnum and '#comment:'+cnum or ''
@@ -798,7 +804,8 @@ class TicketModule(Component):
             field_changes[field] = {'old': value,
                                     'new': ticket[field],
                                     'by': 'user'}
-        for controller in TicketSystem(self.env).action_controllers:
+        for controller in self._get_action_controllers(req, ticket,
+                                                       selected_action):
             cname = controller.__class__.__name__
             action_changes, description = controller.get_ticket_changes(
                 req, ticket, selected_action)

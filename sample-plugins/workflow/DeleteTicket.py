@@ -35,17 +35,13 @@ class DeleteTicketActionController(Component):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):
-        control = None
-        if action == 'delete':
-            control = ('delete ticket', '') 
-        return control
+        return ('delete ticket', '', 'This ticket will be deleted.')
 
     def get_ticket_changes(self, req, ticket, action):
-        description = ''
-        if action == 'delete':
-            description = tag.p('This ticket will be deleted.')
-        return {}, description
+        return {}
 
     def apply_action_side_effects(self, req, ticket, action):
-        if action == 'delete':
+        # Be paranoid here, as this should only be called when
+        # action is delete...
+        if action == 'delete': 
             ticket.delete()

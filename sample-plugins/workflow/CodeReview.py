@@ -66,44 +66,40 @@ class CodeReviewActionController(Component):
 
     def render_ticket_action_control(self, req, ticket, action):
         control = None
-        if action in [name for weight, name in
-                      self.get_ticket_actions(req, ticket)]:
-            id = action + '_code_review_result'
-            raw_options = [x.strip() for x in
-                           self.config.getlist('ticket-workflow',
-                                               action + '.code_review')]
-            options = [x.split('->')[0].strip() for x in raw_options]
+        id = action + '_code_review_result'
+        raw_options = [x.strip() for x in
+                       self.config.getlist('ticket-workflow',
+                                           action + '.code_review')]
+        options = [x.split('->')[0].strip() for x in raw_options]
 
-            selected_value = req.args.get(id, options[0])
+        selected_value = req.args.get(id, options[0])
 
-            actions = DefaultTicketActionController(self.env).actions
-            label = actions[action]['name']
-            control = (label, tag(["as: ", tag.select(
-                [tag.option(x, selected=(x == selected_value or None))
-                 for x in options],
-                name=id, id=id)]))
+        actions = DefaultTicketActionController(self.env).actions
+        label = actions[action]['name']
+        control = (label, tag(["as: ", tag.select(
+            [tag.option(x, selected=(x == selected_value or None))
+             for x in options],
+            name=id, id=id)]))
         return control
 
     def get_ticket_changes(self, req, ticket, action):
         updated = {}
-        if action in [name for weight, name in
-                      self.get_ticket_actions(req, ticket)]:
-            grade = req.args.get(action + '_code_review_result')
+        grade = req.args.get(action + '_code_review_result')
 
-            new_states = {}
-            raw_options = [x.strip() for x in
-                           self.config.getlist('ticket-workflow',
-                                               action + '.code_review')]
-            for raw_option in raw_options:
-                option, state = [x.strip() for x in raw_option.split('->')]
-                new_states[option] = state
+        new_states = {}
+        raw_options = [x.strip() for x in
+                       self.config.getlist('ticket-workflow',
+                                           action + '.code_review')]
+        for raw_option in raw_options:
+            option, state = [x.strip() for x in raw_option.split('->')]
+            new_states[option] = state
 
-            try:
-                new_state = new_states[grade]
-                updated['status'] = new_state
-            except KeyError:
-                pass # FIXME: should probably throw an error of some sort.
-        return updated, ''
+        try:
+            new_state = new_states[grade]
+            updated['status'] = new_state
+        except KeyError:
+            pass # FIXME: should probably throw an error of some sort.
+        return updated
 
     def apply_action_side_effects(self, req, ticket, action):
         pass

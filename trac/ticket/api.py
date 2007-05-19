@@ -61,10 +61,8 @@ class ITicketActionController(Interface):
     def render_ticket_action_control(req, ticket, action):
         """Return a tuple in the form of `(label, control)`
 
-        `control` is the markup for the action control and `label` is a
-        short text used to present that action.
-        If given, `hint` should explain what will happen if this action is
-        taken.
+        `label` is a short text used to present that action,
+        `control` is the markup for the action control.
         
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.
@@ -78,14 +76,22 @@ class ITicketActionController(Interface):
         `description` is a description of any side-effects that are triggered
         by this change.
 
-        This function must not have any side-effects because it is also
-        called on preview."""
+        This method must not have any side-effects because it will also
+        be called in preview mode.
+
+        This method will only be called if the controller claimed to handle
+        the given `action` in the call to `get_ticket_actions`.
+        """
 
     def apply_action_side_effects(req, ticket, action):
         """The changes returned by `get_ticket_changes` have been made, any
         changes outside of the ticket fields should be done here.
 
-        This is never called in preview."""
+        This method will not be called in preview mode.
+
+        This method will only be called if the controller claimed to handle
+        the given `action` in the call to `get_ticket_actions`.
+        """
 
 
 # -- Utilities for the DefaultTicketActionController
