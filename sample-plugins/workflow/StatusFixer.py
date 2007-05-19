@@ -33,7 +33,7 @@ class StatusFixerActionController(Component):
             actions.append((0, 'force_status'))
         return actions
 
-    def get_all_states(self):
+    def get_all_status(self):
         """We return all the states that are used in the database so that the
         user can query for used, but invalid, states."""
         db = self.env.get_db_cnx()
@@ -49,7 +49,7 @@ class StatusFixerActionController(Component):
             # Need to use the list of all states so you can't manually set
             # something to an invalid state.
             selected_value = req.args.get('force_status_value', 'new')
-            all_states = TicketSystem(self.env).get_all_states()
+            all_states = TicketSystem(self.env).get_all_status()
             render_control = tag.select(
                 [tag.option(x, selected=(x == selected_value and 'selected' or
                                          None)) for x in all_states],

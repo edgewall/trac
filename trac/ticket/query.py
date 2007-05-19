@@ -570,9 +570,9 @@ class QueryModule(Component):
             # avoid displaying all tickets when the query module is invoked
             # with no parameters. Instead show only open tickets, possibly
             # associated with the user
-            all_states = TicketSystem(self.env).get_all_states()
-            all_states.remove('closed')
-            constraints = {'status': tuple(all_states)}
+            all_status = TicketSystem(self.env).get_all_status()
+            all_status.remove('closed')
+            constraints = {'status': tuple(all_status)}
             if req.authname and req.authname != 'anonymous':
                 constraints['owner'] = (req.authname,)
             else:

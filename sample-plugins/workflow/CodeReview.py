@@ -52,7 +52,7 @@ class CodeReviewActionController(Component):
         self.log.debug('code review handles actions: %r' % actions_we_handle)
         return actions_we_handle
 
-    def get_all_states(self):
+    def get_all_status(self):
         all_states = set()
         controller = DefaultTicketActionController(self.env)
         ouractions = controller.get_actions_by_operation('code_review')

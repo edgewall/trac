@@ -31,39 +31,64 @@ from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
 class ITicketActionController(Interface):
-    """Extension point interface for components to obtain and perform state
-    transitions with. Initially taken from api.py rev 3378"""
+    """Extension point interface for components willing to participate
+    in ticket the workflow.
+
+    This is mainly about controlling the changes to the ticket ''status'',
+    though not restricted to it.
+    """
 
     def get_ticket_actions(req, ticket):
-        """Return an iterable of (weight, action) tuples that are available
-        given the current state of the ticket and the request object provided.
+        """Return an iterable of `(weight, action)` tuples corresponding to
+        the actions that are contributed by this component.
+        That list may vary given the current state of the ticket and the
+        actual request parameter.
+
+        `action` is a key used to identify that particular action.
+        
         The actions will be presented on the page in descending order of the
         integer weight. When in doubt, use a weight of 0."""
 
-    def get_all_states():
-        """Returns an iterable of all states this action controller knows
-        about. This will be used to populate the query options and the
-        like."""
+    def get_all_status():
+        """Returns an iterable of all the possible values for the ''status''
+        field this action controller knows about.
+
+        This will be used to populate the query options and the like.
+        It is assumed that the initial status of a ticket is 'new' and
+        the terminal status of a ticket is 'closed'.
+        """
 
     def render_ticket_action_control(req, ticket, action):
-        """Return a tuple in the form of (label, control), where
-        control is the html for the action control.
-        This method will only be called if the controller claimed to handle the
-        action in the call to get_ticket_actions.
+        """Return a tuple in the form of `(label, control)`
+
+        `control` is the markup for the action control and `label` is a
+        short text used to present that action.
+        If given, `hint` should explain what will happen if this action is
+        taken.
+        
+        This method will only be called if the controller claimed to handle
+        the given `action` in the call to `get_ticket_actions`.
         """
 
     def get_ticket_changes(req, ticket, action):
-        """Return a tuple of (changes, description), where "changes" is a
-        dictionary with all the changes, including any state change, that
-        should happen with this action.  And "description" is a description of
-        any side-effects.
+        """Return a tuple of `(changes, description)`
 
-        This function must not have any side-effects because it is called on
-        preview."""
+        `changes` is a dictionary with all the changes to the ticket's fields
+        that should happen with this action.
+        `description` is a description of any side-effects that are triggered
+        by this change.
+
+        This function must not have any side-effects because it is also
+        called on preview."""
 
     def apply_action_side_effects(req, ticket, action):
-        """The changes returned by get_ticket_changes have been made, any
-        changes outside of the ticket fields should be done here."""
+        """The changes returned by `get_ticket_changes` have been made, any
+        changes outside of the ticket fields should be done here.
+
+        This is never called in preview."""
+
+
+# -- Utilities for the DefaultTicketActionController
 
 def parse_workflow_config(rawactions):
     """Given a list of options from [ticket-workflow]"""
@@ -145,6 +170,7 @@ def get_workflow_config(config):
     actions = parse_workflow_config(raw_actions)
     return actions
 
+
 class DefaultTicketActionController(Component):
     """Default ticket action controller that loads workflow actions from
     config."""
@@ -185,14 +211,16 @@ class DefaultTicketActionController(Component):
                                             action_name))
         return allowed_actions
 
-    def get_all_states(self):
-        """Return a list of all states described by the configuration."""
-        all_states = set()
+    def get_all_status(self):
+        """Return a list of all states described by the configuration.
+
+        """
+        all_status = set()
         for action_name, action_info in self.actions.items():
-            all_states.update(action_info['oldstates'])
-            all_states.add(action_info['newstate'])
-        all_states.discard('*')
-        return all_states
+            all_status.update(action_info['oldstates'])
+            all_status.add(action_info['newstate'])
+        all_status.discard('*')
+        return all_status
         
     def render_ticket_action_control(self, req, ticket, action):
         from trac.ticket import model
@@ -285,27 +313,33 @@ class DefaultTicketActionController(Component):
                 return False
         return True
 
-    # Public interface to support other ITicketActionControllers that want to
-    # use our config file and provide an operation for an action.
-    # What we want here are 2 different things: a list of all actions with a
-    # given operation for use in the controller's get_all_states(), and a list of all actions with a given operation that
-    # are valid in the given state for the controller's get_ticket_actions().
-    # If state='*' (the default), all actions with the given operation are
-    # returned (including those that are 'hidden').
+    # Public methods (for other ITicketActionControllers that want to use
+    #                 our config file and provide an operation for an action)
+    
     def get_actions_by_operation(self, operation):
+        """Return a list of all actions with a given operation
+        (for use in the controller's get_all_status())
+        """
         actions = [(info['default'], action) for action, info
                    in self.actions.items()
                    if operation in info['operations']]
         return actions
+
     def get_actions_by_operation_for_req(self, req, ticket, operation):
+        """Return list of all actions with a given operation that are valid
+        in the given state for the controller's get_ticket_actions().
+
+        If state='*' (the default), all actions with the given operation are
+        returned (including those that are 'hidden').
+        """
         actions = [(info['default'], action) for action, info
                    in self.actions.items()
                    if operation in info['operations'] and
                       ('*' in info['oldstates'] or
                        ticket['status'] in info['oldstates']) and
-                      self._has_perms_for_action(req, info)
-                  ]
+                      self._has_perms_for_action(req, info)]
         return actions
+
 
 class ITicketChangeListener(Interface):
     """Extension point interface for components that require notification
@@ -408,12 +442,12 @@ class TicketSystem(Component):
                                 actions.items()]
         return [x[1] for x in sorted(all_weighted_actions, reverse=True)]
 
-    def get_all_states(self):
+    def get_all_status(self):
         """Returns a sorted list of all the states all of the action
         controllers know about."""
         valid_states = set()
         for controller in self.action_controllers:
-            valid_states.update(controller.get_all_states())
+            valid_states.update(controller.get_all_status())
         return sorted(valid_states)
 
     def get_ticket_fields(self):
@@ -444,10 +478,14 @@ class TicketSystem(Component):
                        'label': 'Description'})
 
         # Default select and radio fields
-        selects = [('type', model.Type), ('status', model.Status),
-                   ('priority', model.Priority), ('milestone', model.Milestone),
-                   ('component', model.Component), ('version', model.Version),
-                   ('severity', model.Severity), ('resolution', model.Resolution)]
+        selects = [('type', model.Type),
+                   ('status', model.Status),
+                   ('priority', model.Priority),
+                   ('milestone', model.Milestone),
+                   ('component', model.Component),
+                   ('version', model.Version),
+                   ('severity', model.Severity),
+                   ('resolution', model.Resolution)]
         for name, cls in selects:
             options = [val.name for val in cls.select(self.env, db=db)]
             if not options:

@@ -31,7 +31,7 @@ class DeleteTicketActionController(Component):
             actions.append((0,'delete'))
         return actions
 
-    def get_all_states(self):
+    def get_all_status(self):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):

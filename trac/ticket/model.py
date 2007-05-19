@@ -448,7 +448,7 @@ class Status(object):
     def __init__(self, env):
         self.env = env
     def select(cls, env, db=None):
-        for state in TicketSystem(env).get_all_states():
+        for state in TicketSystem(env).get_all_status():
             status = cls(env)
             status.name = state
             yield status

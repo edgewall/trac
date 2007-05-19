@@ -24,7 +24,7 @@ class VoteOperation(Component):
         controller = DefaultTicketActionController(self.env)
         return controller.get_actions_by_operation_for_req(req, ticket, 'vote')
 
-    def get_all_states(self):
+    def get_all_status(self):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):
