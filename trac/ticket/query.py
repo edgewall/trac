@@ -771,7 +771,7 @@ class QueryModule(Component):
         query_href = req.abs_href.query(group=query.group,
                                         groupdesc=(query.groupdesc and 1
                                                    or None),
-                                        row=self.rows, 
+                                        row=query.rows, 
                                         **query.constraints)
 
         data = {
