@@ -156,8 +156,15 @@ class Ticket(object):
         # Insert ticket record
         created = to_timestamp(self.time_created)
         changed = to_timestamp(self.time_changed)
-        std_fields = [f['name'] for f in self.fields if not f.get('custom')
-                      and self.values.has_key(f['name'])]
+        std_fields = []
+        custom_fields = []
+        for f in self.fields:
+            fname = f['name']
+            if fname in self.values:
+                if f.get('custom'):
+                    custom_fields.append(fname)
+                else:
+                    std_fields.append(fname)
         cursor.execute("INSERT INTO ticket (%s,time,changetime) VALUES (%s)"
                        % (','.join(std_fields),
                           ','.join(['%s'] * (len(std_fields) + 2))),
@@ -165,13 +172,10 @@ class Ticket(object):
         tkt_id = db.get_last_id(cursor, 'ticket')
 
         # Insert custom fields
-        custom_fields = [f['name'] for f in self.fields if f.get('custom')
-                         and self.values.has_key(f['name'])]
         if custom_fields:
             cursor.executemany("INSERT INTO ticket_custom (ticket,name,value) "
                                "VALUES (%s,%s,%s)", [(tkt_id, name, self[name])
                                                      for name in custom_fields])
-
         if handle_ta:
             db.commit()
 
