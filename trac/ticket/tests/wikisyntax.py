@@ -138,10 +138,12 @@ MILESTONE_TEST_CASES="""
 ============================== milestone: link resolver
 milestone:foo
 [milestone:boo Milestone Boo]
+[milestone:roo Milestone Roo]
 ------------------------------
 <p>
-<a class="milestone" href="/milestone/foo">milestone:foo</a>
+<a class="missing milestone" href="/milestone/foo" rel="nofollow">milestone:foo</a>
 <a class="milestone" href="/milestone/boo">Milestone Boo</a>
+<a class="closed milestone" href="/milestone/roo">Milestone Roo</a>
 </p>
 ------------------------------
 ============================== milestone: link resolver + arguments
@@ -149,11 +151,24 @@ milestone:?action=new
 [milestone:1.0#KnownIssues Known Issues for 1.0]
 ------------------------------
 <p>
-<a class="milestone" href="/milestone/?action=new">milestone:?action=new</a>
-<a class="milestone" href="/milestone/1.0#KnownIssues">Known Issues for 1.0</a>
+<a class="missing milestone" href="/milestone/?action=new" rel="nofollow">milestone:?action=new</a>
+<a class="missing milestone" href="/milestone/1.0#KnownIssues" rel="nofollow">Known Issues for 1.0</a>
 </p>
 ------------------------------
-"""
+""" #"
+
+def milestone_setup(tc):
+    from datetime import datetime
+    from trac.util.datefmt import utc
+    boo = Milestone(tc.env)
+    boo.name = 'boo'
+    boo.completed = boo.due = None
+    boo.insert()
+    roo = Milestone(tc.env)
+    roo.name = 'roo'
+    roo.completed = datetime.now(utc)
+    roo.due = None
+    roo.insert()
 
 
 QUERY_TEST_CASES="""
@@ -234,7 +249,8 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TICKET_TEST_CASES, ticket_setup, __file__))
     suite.addTest(formatter.suite(REPORT_TEST_CASES, report_setup, __file__))
-    suite.addTest(formatter.suite(MILESTONE_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(MILESTONE_TEST_CASES, milestone_setup,
+                                  __file__))
     suite.addTest(formatter.suite(QUERY_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(COMMENT_TEST_CASES, file=__file__))
     return suite
