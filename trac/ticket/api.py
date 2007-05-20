@@ -45,6 +45,8 @@ class ITicketActionController(Interface):
         actual request parameter.
 
         `action` is a key used to identify that particular action.
+        (note that 'history' and 'diff' are reserved and should not be used
+        by plugins)
         
         The actions will be presented on the page in descending order of the
         integer weight. When in doubt, use a weight of 0."""
