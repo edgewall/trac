@@ -10,12 +10,19 @@
     <title>Attachment</title>
   </head>
 
-  <body>
-    <div id="ctxtnav" class="nav"></div>
+  <body py:with="parent_name = context.parent.name();
+                 parent_href = context.parent.resource_href()">
 
-    <div py:choose="mode" id="content" class="attachment"
-         py:with="parent_name = context.parent.name();
-                  parent_href = context.parent.resource_href()">
+    <div id="ctxtnav" class="nav">
+      <h2>Attachment Navigation</h2>
+      <ul>
+        <li class="first">
+          <a href="${chrome.links.up[0].href}">Back to $parent_name</a>
+        </li>
+      </ul>
+    </div>
+
+    <div py:choose="mode" id="content" class="attachment">
       <py:when test="'new'">
         <h1>Add Attachment to <a href="$parent_href">$parent_name</a></h1>
         <form id="attachment" method="post" enctype="multipart/form-data" action="">

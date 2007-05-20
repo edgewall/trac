@@ -562,6 +562,10 @@ class AttachmentModule(Component):
             'attachments': Attachment.select(self.env, context.parent.realm,
                                              context.parent.id),
             }
+
+        add_link(req, 'up', context.parent.resource_href(),
+                 context.parent.name())
+        
         return 'attachment.html', data, None
 
     def _render_view(self, context):
