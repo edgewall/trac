@@ -45,8 +45,12 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
-    title = 'Invalid Ticket'
+    title = "Invalid Ticket"
 
+class ConflictingChange(TracError):
+    """Exception raised to signal conflicting change betwee action controllers
+    """
+    title = "Conflicting Change"
 
 class TicketModule(Component):
 
@@ -795,14 +799,13 @@ class TicketModule(Component):
         
         The field changes are represented as:
         `{field: {'old': oldvalue, 'new': newvalue, 'by': what}, ...}`
-        
-        The side-effect descriptions are represented as a list of strings.
         """
+        # Start with user changes
         field_changes = {}
         for field, value in ticket._old.iteritems():
-            field_changes[field] = {'old': value,
-                                    'new': ticket[field],
-                                    'by': 'user'}
+            field_changes[field] = {'old': value, 'new': ticket[field]}
+
+        # Apply controller changes corresponding to the selected action
         for controller in self._get_action_controllers(req, ticket,
                                                        selected_action):
             cname = controller.__class__.__name__
@@ -811,26 +814,15 @@ class TicketModule(Component):
             for key in action_changes.keys():
                 old = ticket[key]
                 new = action_changes[key]
-                # Check for conflicting changes but allow the actions to
-                # override the user
-                if key in field_changes and \
-                   field_changes[key]['new'] != new and \
-                   field_changes[key]['by'] != 'user':
-                    problem = ('%s changed "%s" to "%s", but %s changed it '
-                               'to "%s".' % (cname, key, new,
-                                             field_changes[key]['by'],
-                                             field_changes[key]['new']))
-                    # The error message goes inside the red box, the help text
-                    # goes after the red box.  The first <p> will push the rest
-                    # of the text outside of the red box.
-                    help = tag.p(['Please review your configuration, probably '
-                                  'starting with',
-                                  tag.pre('[trac]\nworkflow = ...\n'),
-                                  'in your ', tag.tt('trac.ini'), '.'])
-                    message = tag([problem, help])
-                    raise TracError(message,
-                                    'Incompatible ITicketActionController '
-                                    'configuration')
+                # Check for conflicting changes between controllers
+                if key in field_changes:
+                    last_new = field_changes[key]['new']
+                    last_cname = field_changes[key]['by'] 
+                    if last_new != new and last_cname:
+                        problem = ('%s changed "%s" to "%s", '
+                                   'but %s changed it to "%s".' %
+                                   (cname, key, new, last_cname, last_new))
+                        raise ConflictingChange(problem)
                 field_changes[key] = {'old': old, 'new': new, 'by': cname}
 
         # Detect non-changes
