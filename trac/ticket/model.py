@@ -107,9 +107,9 @@ class Ticket(object):
 
     def __setitem__(self, name, value):
         """Log ticket modifications so the table ticket_change can be updated"""
-        if self.values.has_key(name) and self.values[name] == value:
+        if name in self.values and self.values[name] == value:
             return
-        if not self._old.has_key(name): # Changed field
+        if name not in self._old: # Changed field
             self._old[name] = self.values.get(name)
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
@@ -128,7 +128,7 @@ class Ticket(object):
         # We have to do an extra trick to catch unchecked checkboxes
         for name in [name for name in values.keys() if name[9:] in field_names
                      and name.startswith('checkbox_')]:
-            if not values.has_key(name[9:]):
+            if name[9:] not in values:
                 self[name[9:]] = '0'
 
     def insert(self, when=None, db=None):
@@ -204,12 +204,12 @@ class Ticket(object):
             when = datetime.now(utc)
         when_ts = to_timestamp(when)
 
-        if self.values.has_key('component'):
+        if 'component' in self.values:
             # If the component is changed on a 'new' ticket then owner field
             # is updated accordingly. (#623).
             if self.values.get('status') == 'new' \
-                    and self._old.has_key('component') \
-                    and not self._old.has_key('owner'):
+                    and 'component' in self._old \
+                    and 'owner' not in self._old:
                 try:
                     old_comp = Component(self.env, self._old['component'], db)
                     old_owner = old_comp.owner or ''
@@ -223,7 +223,7 @@ class Ticket(object):
                     pass
 
         # Fix up cc list separators and remove duplicates
-        if self.values.has_key('cc'):
+        if 'cc' in self.values:
             cclist = []
             for cc in re.split(r'[;,\s]+', self.values['cc']):
                 if cc not in cclist:
