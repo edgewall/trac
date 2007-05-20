@@ -120,17 +120,17 @@
       </h1>
 
       <!-- Do not show the ticket (pre)view when the user first comes to the "New Ticket" page.
-           Wait until they hit preview.
-           ticket.status is defined if the ticket exists, or we are previewing a new ticket -->
-      <py:if test="ticket.exists or 'preview' in req.args">
+           Wait until they hit preview. -->
+      <fieldset id="preview" py:strip="'preview' not in req.args">
+        <legend py:if="'preview' in req.args">Preview (<a href="#${ticket.exists and 'edit' or 'properties'}">skip</a>)</legend>
 
         <!-- Preview of ticket changes -->
-        <div py:if="change_preview" id="preview" class="ticketdraft">
+        <div py:if="change_preview" class="ticketdraft">
           <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
             <span class="threading" py:if="'replyto' in change_preview">
               in reply to: ${commentref('&darr;&nbsp;', change_preview.replyto)}
             </span>
-            Preview of change by ${authorinfo(change_preview.author)}
+            Changed by ${authorinfo(change_preview.author)}
             <b py:if="not valid">
               (the change can't be saved, see the <a href="#warning"><em>warnings</em> above</a>)
             </b>
@@ -138,9 +138,9 @@
           ${display_change(change_preview)}
         </div>
 
-        <!-- Ticket number, summary, etc heading -->
-        <!-- Ticket (pre)view -->
-        <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.exists)) and {'class':'ticketdraft'} or {}">
+        <!-- Ticket Box (ticket fields along with description) -->
+        <div id="ticket" py:if="ticket.exists or 'preview' in req.args"
+          class="${'preview' in req.args and 'ticketdraft' or None}">
           <div class="date">
             <p py:if="ticket.exists">Opened ${dateinfo(ticket.time_created)} ago</p>
             <p py:if="ticket.time_changed != ticket.time_created">Last modified ${dateinfo(ticket.time_changed)} ago</p>
@@ -156,7 +156,7 @@
               <td headers="h_reporter" class="searchable">${authorinfo(ticket.reporter)}</td>
               <th id="h_owner">Assigned to:</th>
               <td headers="h_owner">${authorinfo(ticket.owner)}
-                <py:if test="ticket.status == 'assigned'">(accepted)</py:if>
+                <py:if test="ticket.status == 'assigned'">(accepted)</py:if> <!--! FIXME -->
               </td>
             </tr>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
@@ -194,10 +194,11 @@
             </div>
           </form>
         </div>
-        <!-- End of ticket (pre)view -->
+      </fieldset>
+      <!--! End of ticket box -->
 
-        <!-- do not show attachments for old versions of this ticket or for new
-          tickets -->
+      <py:if test="ticket.exists">
+        <!--! do not show attachments for old versions of this ticket or for new tickets -->
         <py:if test="not version and version != 0 and ticket.exists">
           ${list_of_attachments(context, attachments, attach_href)}
         </py:if>
@@ -234,12 +235,12 @@
             </form>
           </div>
         </py:if>
-      <!-- End of the section we don't show on initial new tickets -->
       </py:if>
+      <!--! End of the section we don't show on initial new tickets -->
 
       <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm or ('TICKET_CREATE' in perm and not ticket.id))"
             action="#preview" method="post">
-        <h3 py:if="ticket.exists"><a name="edit" onfocus="$('#comment').get(0).focus()">
+        <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} (${ticket.summary})</a></h3>
         <div py:if="authname == 'anonymous'" class="field">
           <fieldset>

@@ -65,7 +65,7 @@ h1 .status { color: #444; text-transform: lowercase; }
 }
 
 #changelog { border: 1px outset #996; padding: 1em }
-#preview { border: 1px outset #996; padding: 0 1em }
+#preview { border: 1px solid #d7d7d7; padding: 1em }
 #preview h3, #changelog h3 {
  border-bottom: 1px solid #d7d7d7;
  color: #999;
