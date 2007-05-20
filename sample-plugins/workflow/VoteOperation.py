@@ -32,7 +32,7 @@ class VoteOperation(Component):
         id = 'vote_%s_result' % (action, )
         selected_value = req.args.get(id, 'for')
         options = ['for', 'against']
-        return ('vote',
+        return ("vote",
                 tag.select([tag.option(x, selected=(x == selected_value or
                                                     None))
                             for x in options], name=id, id=id),

@@ -35,7 +35,7 @@ class DeleteTicketActionController(Component):
         return []
 
     def render_ticket_action_control(self, req, ticket, action):
-        return ('delete ticket', '', 'This ticket will be deleted.')
+        return ("delete ticket", '', "This ticket will be deleted.")
 
     def get_ticket_changes(self, req, ticket, action):
         return {}

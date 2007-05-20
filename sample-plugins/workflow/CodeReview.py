@@ -41,66 +41,75 @@ class CodeReviewActionController(Component):
     # ITicketActionController methods
     
     def get_ticket_actions(self, req, ticket):
-        # The review action is available in those states where it has been
+        # The review action is available in those status where it has been
         # configured, for those users who have the TICKET_REVIEW permission, as
         # long as they are not the owner of the ticket (you can't review your
         # own work!).
         actions_we_handle = []
         if req.authname != ticket['owner'] and 'TICKET_REVIEW' in req.perm:
             controller = ConfigurableTicketWorkflow(self.env)
-            actions_we_handle = controller.get_actions_by_operation_for_req(req,
-                                    ticket, 'code_review')
+            actions_we_handle = controller.get_actions_by_operation_for_req(
+                req, ticket, 'code_review')
         self.log.debug('code review handles actions: %r' % actions_we_handle)
         return actions_we_handle
 
     def get_all_status(self):
-        all_states = set()
+        all_status = set()
         controller = ConfigurableTicketWorkflow(self.env)
         ouractions = controller.get_actions_by_operation('code_review')
         for weight, action in ouractions:
-            raw_options = [x.strip() for x in
-                           self.config.getlist('ticket-workflow',
-                                               action + '.code_review')]
-            states = [x.split('->')[1].strip() for x in raw_options]
-            all_states.update(states)
-        return all_states
+            status = [status for option, status in
+                      self._get_review_options(action)]
+            all_status.update(status)
+        return all_status
 
     def render_ticket_action_control(self, req, ticket, action):
-        control = None
-        id = action + '_code_review_result'
-        raw_options = [x.strip() for x in
-                       self.config.getlist('ticket-workflow',
-                                           action + '.code_review')]
-        options = [x.split('->')[0].strip() for x in raw_options]
+        id, grade = self._get_grade(req, action)
 
-        selected_value = req.args.get(id, options[0])
-
+        review_options = self._get_review_options(action)
         actions = ConfigurableTicketWorkflow(self.env).actions
+
+        selected_value = grade or review_options[0][0]
+        
         label = actions[action]['name']
-        control = (label, tag(["as: ", tag.select(
-            [tag.option(x, selected=(x == selected_value or None))
-             for x in options],
-            name=id, id=id)]))
-        return control
+        control = tag(["as: ",
+                       tag.select([tag.option(option, selected=
+                                              (option == selected_value or
+                                               None))
+                                   for option, status in review_options],
+                                  name=id, id=id)])
+        if grade:
+            new_status = self._get_new_status(req, ticket, action,
+                                              review_options)
+            hint = "Next status will be '%s'" % new_status
+        else:
+            hint = "Next status will be one of " + \
+                   ', '.join(["'%s'" % status
+                              for option, status in review_options])
+        return (label, control, hint)
 
     def get_ticket_changes(self, req, ticket, action):
-        updated = {}
-        grade = req.args.get(action + '_code_review_result')
-
-        new_states = {}
-        raw_options = [x.strip() for x in
-                       self.config.getlist('ticket-workflow',
-                                           action + '.code_review')]
-        for raw_option in raw_options:
-            option, state = [x.strip() for x in raw_option.split('->')]
-            new_states[option] = state
-
-        try:
-            new_state = new_states[grade]
-            updated['status'] = new_state
-        except KeyError:
-            pass # FIXME: should probably throw an error of some sort.
-        return updated
+        new_status = self._get_new_status(req, ticket, action)
+        return {'status': new_status or 'new'}
 
     def apply_action_side_effects(self, req, ticket, action):
         pass
+
+    # Internal methods
+
+    def _get_grade(self, req, action):
+        id = action + '_code_review_result'
+        return id, req.args.get(id)
+        
+    def _get_review_options(self, action):
+        return [[x.strip() for x in raw_option.split('->')]
+                for raw_option in self.config.getlist('ticket-workflow',
+                                                      action + '.code_review')]
+
+    def _get_new_status(self, req, ticket, action, review_options=None):
+        id, grade = self._get_grade(req, action)
+        if not review_options:
+            review_options = self._get_review_options(action)
+        for option, status in review_options:
+            if grade == option:
+                return status            

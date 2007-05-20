@@ -108,8 +108,11 @@ def get_workflow_config(config):
 
 
 class ConfigurableTicketWorkflow(Component):
-    """Default ticket action controller that loads workflow actions from
-    config."""
+    """Ticket action controller which provides actions according to a
+    workflow defined in the TracIni configuration file, inside the
+    [ticket-workflow] section.
+    """
+    
     def __init__(self, *args, **kwargs):
         Component.__init__(self, *args, **kwargs)
         self.actions = get_workflow_config(self.config)
@@ -164,10 +167,13 @@ class ConfigurableTicketWorkflow(Component):
         self.log.debug('render_ticket_action_control: action "%s"' % action)
 
         this_action = self.actions[action]
+        status = this_action['newstate']        
         operations = this_action['operations']
 
         control = [] # default to nothing
+        hints = []
         if 'set_owner' in operations:
+            hints.append("The owner will change")
             id = action + '_reassign_owner'
             selected_owner = req.args.get(id, req.authname)
             if self.config.getbool('ticket', 'restrict_owner'):
@@ -181,6 +187,7 @@ class ConfigurableTicketWorkflow(Component):
                 control.append(tag.input(type='text', id=id, name=id,
                     value=req.args.get(id, req.authname)))
         if 'set_resolution' in operations:
+            hints.append("The resolution will be set")
             options = [val.name for val in model.Resolution.select(self.env)]
             id = action + '_resolve_resolution'
             selected_option = req.args.get(id, 'fixed')
@@ -190,21 +197,19 @@ class ConfigurableTicketWorkflow(Component):
                 id=id, name=id)]))
         if 'leave_status' in operations:
             control.append('as ' + ticket['status'])
-        return (this_action['name'], tag(*control))
+        else:
+            if status != '*':
+                hints.append("Next status will be '%s'" % status)
+        return (this_action['name'], tag(*control), '. '.join(hints))
 
     def get_ticket_changes(self, req, ticket, action):
-        # Any action we don't recognize, we ignore.
-        try:
-            this_action = self.actions[action]
-        except KeyError:
-            # Not one of our actions, ignore it.
-            return {}, ''
+        this_action = self.actions[action]
 
         # Enforce permissions
         if not self._has_perms_for_action(req, this_action):
             # The user does not have any of the listed permissions, so we won't
             # do anything.
-            return {}, ''
+            return {}
 
         updated = {}
         # Status changes
@@ -233,7 +238,7 @@ class ConfigurableTicketWorkflow(Component):
 
             # leave_status and hidden are just no-ops here, so we don't look
             # for them.
-        return updated, ''
+        return updated
 
     def apply_action_side_effects(self, req, ticket, action):
         pass

@@ -32,7 +32,7 @@ from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 class ITicketActionController(Interface):
     """Extension point interface for components willing to participate
-    in ticket the workflow.
+    in the ticket workflow.
 
     This is mainly about controlling the changes to the ticket ''status'',
     though not restricted to it.
@@ -59,35 +59,35 @@ class ITicketActionController(Interface):
         """
 
     def render_ticket_action_control(req, ticket, action):
-        """Return a tuple in the form of `(label, control)`
+        """Return a tuple in the form of `(label, control, hint)`
 
-        `label` is a short text used to present that action,
-        `control` is the markup for the action control.
+        `label` is a short text that will be used when listing the action,
+        `control` is the markup for the action control and `hint` should
+        explain what will happen if this action is taken.
         
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.
         """
 
     def get_ticket_changes(req, ticket, action):
-        """Return a tuple of `(changes, description)`
-
-        `changes` is a dictionary with all the changes to the ticket's fields
-        that should happen with this action.
-        `description` is a description of any side-effects that are triggered
-        by this change.
+        """Return a dictionary of ticket field changes.
 
         This method must not have any side-effects because it will also
-        be called in preview mode.
+        be called in preview mode (`req.args['preview']` will be set, then).
+        See `apply_action_side_effects` for that. If the latter indeed triggers
+        some side-effects, it is advised to emit a warning
+        (`req.warning(reason)`) when this method is called in preview mode.
 
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.
         """
 
     def apply_action_side_effects(req, ticket, action):
-        """The changes returned by `get_ticket_changes` have been made, any
-        changes outside of the ticket fields should be done here.
+        """Perform side effects once all changes have been made to the ticket.
 
-        This method will not be called in preview mode.
+        Multiple controllers might be involved, so the apply side-effects
+        offers a chance to trigger a side-effect based on the given `action`
+        after the new state of the ticket has been saved.
 
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.

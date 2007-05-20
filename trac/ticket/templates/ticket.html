@@ -326,14 +326,15 @@ ${comment}</textarea></p>
 
         </fieldset>
 
-        <!-- do not display the actions for New tickets -->
-        <py:if test="ticket.id">
+        <!--! Workflow support -->
+        <py:if test="ticket.id"> <!--! do not display the actions for New tickets -->
           <fieldset id="action">
             <legend>Action</legend>
-            <div py:for="key, label, html in action_controls">
+            <div py:for="key, label, controls, hints in action_controls">
               <input type="radio" id="$key" name="action" value="$key" checked="${action == key or None}" />
                 <label for="$key">$label</label>
-                <span py:replace="html"/>
+                $controls
+                <span class="hint" py:for="hint in hints">$hint</span>
             </div>
           </fieldset>
         </py:if>

@@ -760,8 +760,7 @@ class TicketModule(Component):
         if action not in actions:
             raise TracError('Invalid action "%s"' % action)
 
-        field_changes, side_effects = self.get_ticket_changes(req, ticket,
-                                                              action)
+        field_changes = self.get_ticket_changes(req, ticket, action)
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
@@ -792,15 +791,14 @@ class TicketModule(Component):
         req.redirect(req.href.ticket(ticket.id) + fragment)
 
     def get_ticket_changes(self, req, ticket, selected_action):
-        """Returns a dictionary of field changes and a list of side-effect
-        descriptions.
+        """Returns a dictionary of field changes.
+        
         The field changes are represented as:
         `{field: {'old': oldvalue, 'new': newvalue, 'by': what}, ...}`
         
         The side-effect descriptions are represented as a list of strings.
         """
         field_changes = {}
-        side_effect_descs = []
         for field, value in ticket._old.iteritems():
             field_changes[field] = {'old': value,
                                     'new': ticket[field],
@@ -808,13 +806,8 @@ class TicketModule(Component):
         for controller in self._get_action_controllers(req, ticket,
                                                        selected_action):
             cname = controller.__class__.__name__
-            action_changes, description = controller.get_ticket_changes(
-                req, ticket, selected_action)
-            
-            # Build up a list of side effect descriptions for the preview
-            if description:
-                side_effect_descs.append(description)
-                
+            action_changes = controller.get_ticket_changes(req, ticket,
+                                                           selected_action)
             for key in action_changes.keys():
                 old = ticket[key]
                 new = action_changes[key]
@@ -844,7 +837,7 @@ class TicketModule(Component):
         for key, item in field_changes.items():
             if item['old'] == item['new']:
                 del field_changes[key]
-        return field_changes, side_effect_descs
+        return field_changes
 
     def _insert_ticket_data(self, context, data, author_id):
         """Insert ticket data into the hdf"""
@@ -938,43 +931,39 @@ class TicketModule(Component):
         if version is not None:
             ticket.values.update(values)
 
-        # action_controls is an ordered list of (action, renders) tuples, where
-        # renders is a list of the rendered controls
-        all_actions = TicketSystem(self.env).get_available_actions(req, ticket)
-        # Determine what actions each controller handles outside of the action
-        # loop.
-        per_controller_actions = [
-            (controller,
-             [x[1] for x in controller.get_ticket_actions(req, ticket)])
-            for controller in TicketSystem(self.env).action_controllers]
-        # Now build the list of (action, label, render) for the UI
+        # -- Workflow support
+        
+        selected_action = req.args.get('action')
+        
+        # action_controls is an ordered list of "renders" tuples, where
+        # renders is a list of (action_key, label, widgets, hints) representing
+        # the user interface for each action
         action_controls = []
-        for action in all_actions:
-            controls = []
-            for controller, controller_actions in per_controller_actions:
-                # Only ask the controller to render actions it claims to be
-                # providing.
-                if action in controller_actions:
-                    controls.append(controller.render_ticket_action_control(req,
-                        ticket, action))
-            label = controls[0][0]
-            widgets = tag(*[widget for label, widget in controls])
-            action_render = (action, label, widgets)
-            action_controls.append(action_render)
+        sorted_actions = TicketSystem(self.env).get_available_actions(req,
+                                                                      ticket)
+        for action in sorted_actions:
+            first_label = None
+            hints = []
+            widgets = []
+            for controller in self._get_action_controllers(req, ticket,
+                                                           action):
+                label, widget, hint = controller.render_ticket_action_control(
+                    req, ticket, action)
+                if not first_label:
+                    first_label = label
+                widgets.append(widget)
+                hints.append(hint)
+            action_controls.append((action, label, tag(widgets), hints))
 
         # The default action is the first in the action_controls list.
-        selected_action = req.args.get('action')
         if not selected_action:
             if action_controls:
                 selected_action = action_controls[0][0]
 
-        side_effects = []
-
         # Insert change preview
         if req.method == 'POST':
-            field_changes, side_effects = self.get_ticket_changes(req, ticket,
-                selected_action)
-
+            field_changes = self.get_ticket_changes(req, ticket,
+                                                    selected_action)
             change = {
                 'date': datetime.now(utc),
                 'author': author_id,
@@ -997,8 +986,6 @@ class TicketModule(Component):
 
         if version is not None:
             ticket.values.update(values)
-        for side_effect in side_effects:
-            req.warning(side_effect)
 
         data.update({
             'fields': fields, 'changes': changes, 'field_types': types,
