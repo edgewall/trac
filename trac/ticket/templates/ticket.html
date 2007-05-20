@@ -173,14 +173,8 @@
               </py:for>
             </tr>
           </table>
-          <form py:if="ticket.description" method="get" action="#comment"
-                class="printableform">
             <div class="description">
               <h3 id="comment:description">
-                <span py:if="ticket.exists and 'TICKET_APPEND' in perm" class="inlinebuttons">
-                  <input type="hidden" name="replyto" value="description" />
-                  <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
-                </span>
                 Description
                 <span py:if="description_change" class="lastmod"
                       title="$description_change.date">
@@ -188,11 +182,33 @@
                   (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
                 </span>
               </h3>
-              <div class="searchable">
+
+              <!--! Clone the ticket (only for existing tickets) -->
+              <form py:if="ticket.exists and 'TICKET_ADMIN' in req.perm" method="post" action="${href.newticket()}">
+                <div class="inlinebuttons">
+                  <input type="submit" name="clone" value="Clone" title="Create a copy of this ticket"  />
+                  <py:for each="f in fields">
+                    <py:choose test="f.name">
+                      <input py:when="'summary'" type="hidden" name="field_summary" value="$ticket.description (cloned)" />
+                      <input py:when="'description'" type="hidden" name="field_description" value="Cloned from #$ticket.id: ${'\n----\n' + ticket.description}" />
+                      <input py:otherwise="" type="hidden" name="field_${f.name}" value="${ticket[f.name]}" />
+                    </py:choose>
+                  </py:for>
+                </div>
+              </form>
+
+              <!--! Quote the description (only for existing tickets) -->
+              <form py:if="ticket.exists and ticket.description and 'TICKET_APPEND' in perm"
+                method="get" action="#comment">
+                <div class="inlinebuttons">
+                  <input type="hidden" name="replyto" value="description" />
+                  <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
+                </div>
+              </form>
+              <div py:if="ticket.description" class="searchable">
                 ${wiki_to_html(context, ticket.description)}
               </div>
             </div>
-          </form>
         </div>
       </fieldset>
       <!--! End of ticket box -->
@@ -206,8 +222,7 @@
         <py:if test="ticket.exists and changes">
           <h2>Change History</h2>
           <div id="changelog">
-            <form py:for="change in changes" method="get" action="#comment"
-                  class="printableform">
+            <form py:for="change in changes" method="get" action="#comment" class="printableform">
               <div class="change">
                 <h3 class="change" id="${'cnum' in change and 'comment:%d' % change.cnum or None}">
                   <span class="threading" py:if="replies and 'cnum' in change"

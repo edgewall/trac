@@ -103,7 +103,7 @@ label.disabled { color: #d7d7d7 }
  font-size: 70%;
  border-width: 1px;
  border-style: dotted;
- margin: 0;
+ margin: 0 .1em;
  padding: 0.1em;
  background: none;
 }
