@@ -179,6 +179,9 @@
                 <py:choose>
                   <py:when test="'preview' in change">
                     Preview of change by ${authorinfo(change.author)}
+                    <py:if test="not valid">
+                      (the change can't be saved, see the <a href="#warning"><em>warnings</em> above</a>)
+                    </py:if>
                   </py:when>
                   <py:otherwise>
                     Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}

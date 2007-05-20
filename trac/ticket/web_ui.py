@@ -287,10 +287,18 @@ class TicketModule(Component):
                       get_reporter_id(req, 'author')
         ticket.values['reporter'] = reporter_id
 
-        preview = 'preview' in req.args
-        if req.method == 'POST' and not preview:
-            self._do_create(context) # ...redirected
+        valid = None
+        if req.method == 'POST' and not 'preview' in req.args:
+            valid = self._validate_ticket(req, ticket)
+            if valid:
+                self._do_create(context) # redirected if successful
+            # else fall through in a preview
+            req.args['preview'] = True
 
+        # don't validate for new tickets and don't validate twice
+        if valid is None and 'preview' in req.args:
+            valid = self._validate_ticket(req, ticket)
+            
         # Preview a new ticket
         data = {
             'ticket': ticket,
@@ -298,11 +306,9 @@ class TicketModule(Component):
             'author_id': reporter_id,
             'actions': [],
             'version': None,
-            'description_change': None
+            'description_change': None,
+            'valid': valid
         }
-
-        if preview and not ticket['summary']:
-            req.warning('Ticket needs a summary')
 
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
@@ -370,25 +376,31 @@ class TicketModule(Component):
             elif action == 'diff':
                 return self._render_diff(context, data, text_fields)
         elif req.method == 'POST':
-            if 'preview' not in req.args:
-                self._do_save(context)
-            else:
-                # Use user supplied values
-                self._populate(req, ticket)
-                self._validate_ticket(req, ticket)
+            self._populate(req, ticket)
+            valid = self._validate_ticket(req, ticket)
 
-                data['action'] = action
-                data['timestamp'] = req.args.get('ts')
-                data['reassign_owner'] = req.args.get('reassign_choice') \
-                                         or req.authname
-                data['resolve_resolution'] = req.args.get('resolve_choice')
-                data['comment'] = req.args.get('comment')
+            if 'preview' not in req.args:
+                if valid:
+                    self._do_save(context) # redirected if successful
+                # else fall through in a preview
+                req.args['preview'] = True
+
+            # Preview an existing ticket (after a Preview or a failed Save)
+            data.update({
+                'action': action,
+                'timestamp': req.args.get('ts'),
+                'reassign_owner': (req.args.get('reassign_choice') 
+                                   or req.authname),
+                'resolve_resolution': req.args.get('resolve_choice'),
+                'comment': req.args.get('comment'),
+                'valid': valid
+                })
         else:
-            data['action'] = None
-            data['reassign_owner'] = req.authname
-            data['resolve_resolution'] = None
-            # Store a timestamp in order to detect "mid air collisions"
-            data['timestamp'] = str(ticket.time_changed)
+            data.update({'action': None,
+                         'reassign_owner': req.authname,
+                         'resolve_resolution': None,
+                         # Store a timestamp for detecting "mid air collisions"
+                         'timestamp': str(ticket.time_changed)})
 
         self._insert_ticket_data(context, data, get_reporter_id(req, 'author'))
 
@@ -663,7 +675,45 @@ class TicketModule(Component):
                                                   'application/rss+xml')
         return output, 'application/rss+xml'
 
+    # Ticket validation and changes
+    
     def _validate_ticket(self, req, ticket):
+        valid = True
+
+        # If the ticket has been changed, check the proper permission
+        if ticket._old:
+            if 'TICKET_CHGPROP' not in req.perm:
+                req.warning("No permission to change ticket fields.")
+                ticket.values = ticket._old
+                valid = False
+            else: # TODO: field based checking
+                if 'description' in ticket._old or \
+                       'field_reporter' in ticket._old:
+                    if 'TICKET_ADMIN' not in req.perm:
+                        req.warning("No permissions to change ticket fields.")
+                        ticket.values = ticket._old
+                        valid = False
+
+        comment = req.args.get('comment')
+        if comment:
+            if 'TICKET_CHGPROP' not in req.perm or \
+               'TICKET_APPEND' not in req.perm:
+                req.warning("No permissions to add a comment.")
+                valid = False
+
+        # Mid air collision?
+        if ticket.exists and (ticket._old or comment):
+            if req.args.get('ts') != str(ticket.time_changed):
+                req.warning("Sorry, can not save your changes. "
+                            "This ticket has been modified by someone else "
+                            "since you started")
+                valid = False
+
+        # Always require a summary
+        if not ticket['summary']:
+            req.warning('Tickets must contain a summary.')
+            valid = False
+            
         # Always validate for known values
         for field in ticket.fields:
             if 'options' not in field:
@@ -675,15 +725,20 @@ class TicketModule(Component):
                 value = ticket[name]
                 if value:
                     if value not in field['options']:
-                        raise InvalidTicket('"%s" is not a valid value for '
-                                            'the %s field.' % (value, name))
+                        req.warning('"%s" is not a valid value for '
+                                    'the %s field.' % (value, name))
+                        valid = False
                 elif not field.get('optional', False):
-                    raise InvalidTicket('field %s must be set' % name)
+                    req.warning('field %s must be set' % name)
+                    valid = False
 
-        if len(ticket['description']) > self.max_description_size:
-            raise TracError('Ticket description is too big (must be less than'
-                            ' %s bytes)' % self.max_description_size)
+        # Validate description length
+        if len(ticket['description'] or '') > self.max_description_size:
+            req.warning('Ticket description is too big (must be less than'
+                        ' %s bytes)' % self.max_description_size)
+            valid = False
 
+        # Validate comment numbering
         try:
             # comment index must be a number
             int(req.args.get('cnum') or 0)
@@ -692,25 +747,23 @@ class TicketModule(Component):
             if replyto != 'description':
                 int(replyto or 0)
         except ValueError:
+            # Shouldn't happen in "normal" circumstances, hence not a warning
             raise InvalidTicket('Invalid comment threading identifier')
 
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
+                valid = False
                 if field:
-                    raise InvalidTicket("The ticket %s field is invalid: %s" %
-                                        (field, message))
+                    req.warning("The ticket %s field is invalid: %s" %
+                                (field, message))
                 else:
-                    raise InvalidTicket("Invalid ticket: %s" % message)
+                    req.warning(message)
+        return valid
 
     def _do_create(self, context):
         req = context.req
         ticket = context.resource
-
-        if not req.args.get('field_summary'):
-            raise TracError('Tickets must contain a summary.')
-
-        self._validate_ticket(req, ticket)
 
         ticket.insert(db=context.db)
         context.db.commit()
@@ -734,24 +787,6 @@ class TicketModule(Component):
         req = context.req
         ticket = context.resource
         
-        if 'TICKET_CHGPROP' in req.perm:
-            # TICKET_CHGPROP gives permission to edit the ticket
-            if not req.args.get('field_summary'):
-                raise TracError('Tickets must contain summary.')
-
-            if 'field_description' in req.args or 'field_reporter' in req.args:
-                req.perm.require('TICKET_ADMIN')
-
-            self._populate(req, ticket)
-        else:
-            req.perm.require('TICKET_APPEND')
-
-        # Mid air collision?
-        if req.args.get('ts') != str(ticket.time_changed):
-            raise TracError("Sorry, can not save your changes. "
-                            "This ticket has been modified by someone else "
-                            "since you started", 'Mid Air Collision')
-
         # Do any action on the ticket?
         action = req.args.get('action')
 
@@ -761,24 +796,25 @@ class TicketModule(Component):
 
         field_changes, problems = self.get_ticket_changes(req, ticket, action)
         if problems:
-            raise TracError(tag(
-                tag.p(problems, class_='message'),
-                tag.p('Please review your configuration, '
-                      'probably starting with'),
-                tag.pre('[trac]\nworkflow = ...\n'),
-                tag.p('in your ', tag.tt('trac.ini'), '.')))
+            for problem in problems:
+                req.warning(problem)
+                req.warning(tag(tag.p('Please review your configuration, '
+                                      'probably starting with'),
+                                tag.pre('[trac]\nworkflow = ...\n'),
+                                tag.p('in your ', tag.tt('trac.ini'), '.')))
                             
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
-
-        now = datetime.now(utc)
-        self._validate_ticket(req, ticket)
 
         cnum = req.args.get('cnum')
         replyto = req.args.get('replyto')
         internal_cnum = cnum
         if cnum and replyto: # record parent.child relationship
             internal_cnum = '%s.%s' % (replyto, cnum)
+
+        # -- Save changes
+        
+        now = datetime.now(utc)
         if ticket.save_changes(get_reporter_id(req, 'author'),
                                req.args.get('comment'), when=now,
                                db=context.db, cnum=internal_cnum):
@@ -791,8 +827,9 @@ class TicketModule(Component):
                 self.log.exception("Failure sending notification on change to "
                                    "ticket #%s: %s" % (ticket.id, e))
 
-        for controller in self._get_action_controllers(req, ticket, action):
-            controller.apply_action_side_effects(req, ticket, action)
+            for controller in self._get_action_controllers(req, ticket,
+                                                           action):
+                controller.apply_action_side_effects(req, ticket, action)
 
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
@@ -835,7 +872,7 @@ class TicketModule(Component):
         return field_changes, problems
 
     def _insert_ticket_data(self, context, data, author_id):
-        """Insert ticket data into the hdf"""
+        """Insert ticket data into the template `data`"""
         req = context.req
         ticket = context.resource
 
@@ -867,8 +904,8 @@ class TicketModule(Component):
                                          db=context.db).is_completed]
                     # FIXME: ... un air de "deja vu" ;)
                 if value and not value in options:
-                    # Current ticket value must be visible even if its not in the
-                    # possible values
+                    # Current ticket value must be visible even if its not in
+                    # the possible values
                     options.append(value)
                 field['options'] = options
             field.setdefault('optional', False)
