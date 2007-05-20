@@ -210,10 +210,6 @@
                   class="printableform">
               <div class="change">
                 <h3 class="change" id="${'cnum' in change and 'comment:%d' % change.cnum or None}">
-                  <span py:if="'cnum' in change and 'TICKET_APPEND' in perm" class="inlinebuttons">
-                    <input type="hidden" name="replyto" value="${change.cnum}" />
-                    <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
-                  </span>
                   <span class="threading" py:if="replies and 'cnum' in change"
                         py:with="change_replies = replies.get(str(change.cnum), [])">
                     <py:if test="change_replies or 'replyto' in change">
@@ -230,6 +226,10 @@
                   </span>
                   Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
                 </h3>
+                <div py:if="'cnum' in change and 'TICKET_APPEND' in perm" class="inlinebuttons">
+                  <input type="hidden" name="replyto" value="${change.cnum}" />
+                  <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
+                </div>
                 ${display_change(change)}
               </div>
             </form>

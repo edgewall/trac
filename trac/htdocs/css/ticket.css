@@ -72,11 +72,8 @@ h1 .status { color: #444; text-transform: lowercase; }
  font-size: 100%;
  font-weight: normal;
 }
-#preview .threading, #changelog .threading, #changelog .inlinebuttons {
- float: right;
- position: relative;
- bottom: 0.3em;
-}
+.threading, #changelog .inlinebuttons { float: right; }
+.threading { font-size: 90%; }
 
 #preview .changes, #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
 #preview .comment, #changelog .comment { margin-left: 2em }
