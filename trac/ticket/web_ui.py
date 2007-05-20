@@ -999,9 +999,10 @@ class TicketModule(Component):
                 selected_action = action_controls[0][0]
 
         # Insert change preview
+        change_preview = None
         if req.method == 'POST':
             self._apply_ticket_changes(ticket, field_changes)
-            change = {
+            change_preview = {
                 'date': datetime.now(utc),
                 'author': author_id,
                 'fields': field_changes,
@@ -1009,12 +1010,10 @@ class TicketModule(Component):
             }
             comment = req.args.get('comment')
             if comment:
-                change['comment'] = comment
+                change_preview['comment'] = comment
             replyto = req.args.get('replyto')
             if replyto:
-                change['replyto'] = replyto
-            if field_changes or comment:
-                changes.append(change)
+                change_preview['replyto'] = replyto
 
         if version is not None: ### FIXME
             ticket.values.update(values)
@@ -1029,6 +1028,7 @@ class TicketModule(Component):
 
             'action_controls': action_controls,
             'action': selected_action,
+            'change_preview': change_preview
         })
 
     def grouped_changelog_entries(self, ticket, db, when=None):

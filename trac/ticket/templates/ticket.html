@@ -51,6 +51,10 @@
       ${prevnext_nav('Ticket', 'Back to Query')}
     </div>
 
+    <py:def function="commentref(prefix, cnum)">
+      <a href="#comment:$cnum"><small>$prefix$cnum</small></a>
+    </py:def>
+
     <py:def function="display_change(change)">
       <ul py:if="change.fields" class="changes">
         <li py:for="field_name, field in change.fields.items()"
@@ -115,10 +119,25 @@
         </py:if>
       </h1>
 
-      <!-- Do not show the ticket preview when the user first comes to the "New
-           Ticket" page.  Wait until they hit preview.  ticket.status is defined if the
-           ticket exists, or we are previewing a new ticket -->
+      <!-- Do not show the ticket (pre)view when the user first comes to the "New Ticket" page.
+           Wait until they hit preview.
+           ticket.status is defined if the ticket exists, or we are previewing a new ticket -->
       <py:if test="ticket.exists or 'preview' in req.args">
+
+        <!-- Preview of ticket changes -->
+        <div py:if="change_preview" id="preview" class="ticketdraft">
+          <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
+            <span class="threading" py:if="'replyto' in change_preview">
+              in reply to: ${commentref('&darr;&nbsp;', change_preview.replyto)}
+            </span>
+            Preview of change by ${authorinfo(change_preview.author)}
+            <b py:if="not valid">
+              (the change can't be saved, see the <a href="#warning"><em>warnings</em> above</a>)
+            </b>
+          </h3>
+          ${display_change(change_preview)}
+        </div>
+
         <!-- Ticket number, summary, etc heading -->
         <!-- Ticket (pre)view -->
         <div id="ticket" py:attrs="(('preview' in req.args) or (not ticket.exists)) and {'class':'ticketdraft'} or {}">
@@ -188,7 +207,7 @@
           <div id="changelog">
             <form py:for="change in changes" method="get" action="#comment"
                   class="printableform">
-              <div py:attrs="'preview' in change and {'class':'ticketdraft', 'id':'preview'} or {'class':'change'}">
+              <div class="change">
                 <h3 class="change" id="${'cnum' in change and 'comment:%d' % change.cnum or None}">
                   <span py:if="'cnum' in change and 'TICKET_APPEND' in perm" class="inlinebuttons">
                     <input type="hidden" name="replyto" value="${change.cnum}" />
@@ -196,9 +215,6 @@
                   </span>
                   <span class="threading" py:if="replies and 'cnum' in change"
                         py:with="change_replies = replies.get(str(change.cnum), [])">
-                    <py:def function="commentref(prefix, cnum)">
-                      <a href="#comment:$cnum"><small>$prefix$cnum</small></a>
-                    </py:def>
                     <py:if test="change_replies or 'replyto' in change">
                       <py:if test="'replyto' in change">
                         in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
@@ -211,17 +227,7 @@
                     </py:if>
                     &nbsp;
                   </span>
-                <py:choose>
-                  <py:when test="'preview' in change">
-                    Preview of change by ${authorinfo(change.author)}
-                    <py:if test="not valid">
-                      (the change can't be saved, see the <a href="#warning"><em>warnings</em> above</a>)
-                    </py:if>
-                  </py:when>
-                  <py:otherwise>
-                    Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
-                  </py:otherwise>
-                </py:choose>
+                  Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
                 </h3>
                 ${display_change(change)}
               </div>
