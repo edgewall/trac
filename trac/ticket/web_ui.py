@@ -47,11 +47,6 @@ class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
     title = "Invalid Ticket"
 
-class ConflictingChange(TracError):
-    """Exception raised to signal conflicting change betwee action controllers
-    """
-    title = "Conflicting Change"
-
 class TicketModule(Component):
 
     implements(IContentConverter, INavigationContributor, IRequestHandler,
@@ -764,7 +759,15 @@ class TicketModule(Component):
         if action not in actions:
             raise TracError('Invalid action "%s"' % action)
 
-        field_changes = self.get_ticket_changes(req, ticket, action)
+        field_changes, problems = self.get_ticket_changes(req, ticket, action)
+        if problems:
+            raise TracError(tag(
+                tag.p(problems, class_='message'),
+                tag.p('Please review your configuration, '
+                      'probably starting with'),
+                tag.pre('[trac]\nworkflow = ...\n'),
+                tag.p('in your ', tag.tt('trac.ini'), '.')))
+                            
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
@@ -806,6 +809,7 @@ class TicketModule(Component):
             field_changes[field] = {'old': value, 'new': ticket[field]}
 
         # Apply controller changes corresponding to the selected action
+        problems = []
         for controller in self._get_action_controllers(req, ticket,
                                                        selected_action):
             cname = controller.__class__.__name__
@@ -817,19 +821,18 @@ class TicketModule(Component):
                 # Check for conflicting changes between controllers
                 if key in field_changes:
                     last_new = field_changes[key]['new']
-                    last_cname = field_changes[key]['by'] 
-                    if last_new != new and last_cname:
-                        problem = ('%s changed "%s" to "%s", '
-                                   'but %s changed it to "%s".' %
-                                   (cname, key, new, last_cname, last_new))
-                        raise ConflictingChange(problem)
+                    last_by = field_changes[key]['by'] 
+                    if last_new != new and last_by:
+                        problems.append('%s changed "%s" to "%s", '
+                                        'but %s changed it to "%s".' %
+                                        (cname, key, new, last_by, last_new))
                 field_changes[key] = {'old': old, 'new': new, 'by': cname}
 
         # Detect non-changes
         for key, item in field_changes.items():
             if item['old'] == item['new']:
                 del field_changes[key]
-        return field_changes
+        return field_changes, problems
 
     def _insert_ticket_data(self, context, data, author_id):
         """Insert ticket data into the hdf"""
@@ -954,13 +957,16 @@ class TicketModule(Component):
 
         # Insert change preview
         if req.method == 'POST':
-            field_changes = self.get_ticket_changes(req, ticket,
-                                                    selected_action)
+            field_changes, problems = self.get_ticket_changes(req, ticket,
+                                                              selected_action)
+            for problem in problems:
+                req.warning(problem)
             change = {
                 'date': datetime.now(utc),
                 'author': author_id,
                 'fields': field_changes,
                 'preview': True,
+                'valid': not(problems)
             }
             comment = req.args.get('comment')
             if comment:
