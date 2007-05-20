@@ -375,13 +375,30 @@ class TicketModule(Component):
                 return self._render_history(context, data, text_fields)
             elif action == 'diff':
                 return self._render_diff(context, data, text_fields)
-        elif req.method == 'POST':
+        elif req.method == 'POST': # 'Preview' or 'Submit'
             self._populate(req, ticket)
             valid = self._validate_ticket(req, ticket)
 
+            # Do any action on the ticket?
+            actions = TicketSystem(self.env).get_available_actions(req, ticket)
+            if action not in actions:
+                raise TracError('Invalid action "%s"' % action)
+                # (this should never happen in normal situations)
+            field_changes, problems = self.get_ticket_changes(req, ticket,
+                                                              action)
+            if problems:
+                valid = False
+                for problem in problems:
+                    req.warning(problem)
+                    req.warning(tag(tag.p('Please review your configuration, '
+                                          'probably starting with'),
+                                    tag.pre('[trac]\nworkflow = ...\n'),
+                                    tag.p('in your ', tag.tt('trac.ini'), '.'))
+                                )
             if 'preview' not in req.args:
                 if valid:
-                    self._do_save(context) # redirected if successful
+                    self._apply_ticket_changes(ticket, field_changes)
+                    self._do_save(context, action) # redirected if successful
                 # else fall through in a preview
                 req.args['preview'] = True
 
@@ -395,14 +412,16 @@ class TicketModule(Component):
                 'comment': req.args.get('comment'),
                 'valid': valid
                 })
-        else:
+        else: # simply 'View'ing the ticket
+            field_changes = None
             data.update({'action': None,
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
                          # Store a timestamp for detecting "mid air collisions"
                          'timestamp': str(ticket.time_changed)})
 
-        self._insert_ticket_data(context, data, get_reporter_id(req, 'author'))
+        self._insert_ticket_data(context, data, get_reporter_id(req, 'author'),
+                                 field_changes)
 
         mime = Mimeview(self.env)
         format = req.args.get('format')
@@ -783,28 +802,9 @@ class TicketModule(Component):
 
         req.redirect(req.href.ticket(ticket.id))
 
-    def _do_save(self, context):
+    def _do_save(self, context, action):
         req = context.req
         ticket = context.resource
-        
-        # Do any action on the ticket?
-        action = req.args.get('action')
-
-        actions = TicketSystem(self.env).get_available_actions(req, ticket)
-        if action not in actions:
-            raise TracError('Invalid action "%s"' % action)
-
-        field_changes, problems = self.get_ticket_changes(req, ticket, action)
-        if problems:
-            for problem in problems:
-                req.warning(problem)
-                req.warning(tag(tag.p('Please review your configuration, '
-                                      'probably starting with'),
-                                tag.pre('[trac]\nworkflow = ...\n'),
-                                tag.p('in your ', tag.tt('trac.ini'), '.')))
-                            
-        for key in field_changes:
-            ticket[key] = field_changes[key]['new']
 
         cnum = req.args.get('cnum')
         replyto = req.args.get('replyto')
@@ -871,7 +871,13 @@ class TicketModule(Component):
                 del field_changes[key]
         return field_changes, problems
 
-    def _insert_ticket_data(self, context, data, author_id):
+    def _apply_ticket_changes(self, ticket, field_changes):
+        """Apply the changes obtained from `get_ticket_changes` to the ticket
+        """
+        for key in field_changes:
+            ticket[key] = field_changes[key]['new']
+
+    def _insert_ticket_data(self, context, data, author_id, field_changes):
         """Insert ticket data into the template `data`"""
         req = context.req
         ticket = context.resource
@@ -994,16 +1000,12 @@ class TicketModule(Component):
 
         # Insert change preview
         if req.method == 'POST':
-            field_changes, problems = self.get_ticket_changes(req, ticket,
-                                                              selected_action)
-            for problem in problems:
-                req.warning(problem)
+            self._apply_ticket_changes(ticket, field_changes)
             change = {
                 'date': datetime.now(utc),
                 'author': author_id,
                 'fields': field_changes,
                 'preview': True,
-                'valid': not(problems)
             }
             comment = req.args.get('comment')
             if comment:
@@ -1013,13 +1015,8 @@ class TicketModule(Component):
                 change['replyto'] = replyto
             if field_changes or comment:
                 changes.append(change)
-                # And we need to update the values in the ticket, it seems
-                values = {}
-                for item, value in field_changes.items():
-                    values[item] = value['new']
-                ticket.values.update(values)
 
-        if version is not None:
+        if version is not None: ### FIXME
             ticket.values.update(values)
 
         data.update({
@@ -1031,7 +1028,7 @@ class TicketModule(Component):
                             req.href.attachment('ticket', ticket.id)),
 
             'action_controls': action_controls,
-            'action': selected_action
+            'action': selected_action,
         })
 
     def grouped_changelog_entries(self, ticket, db, when=None):
