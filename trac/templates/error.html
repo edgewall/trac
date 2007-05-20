@@ -85,7 +85,7 @@ ${traceback}
         <py:when test="'TracError'">
           <h1>$title</h1>
           <py:choose test="">
-            <p py:if="istext(message)" class="message">$message</p>
+            <p py:when="istext(message)" class="message">$message</p>
             <py:otherwise>$message</py:otherwise>
           </py:choose>
         </py:when>
