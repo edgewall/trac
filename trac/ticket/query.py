@@ -860,7 +860,7 @@ class TicketQueryMacro(WikiMacroBase):
         if format == 'count':
             cnt = tickets and len(tickets) or 0
             return tag.span(cnt, title='%d tickets for which %s' %
-                            (cnt, query_string))
+                            (cnt, query_string), class_='query_count')
         if tickets:
             def ticket_anchor(ticket):
                 return tag.a('#%s' % ticket['id'],
@@ -884,3 +884,5 @@ class TicketQueryMacro(WikiMacroBase):
                 return tag.dl([(tag.dt(ticket_anchor(ticket)),
                                 tag.dd(ticket['summary']))
                                 for ticket in tickets], class_='wiki compact')
+        else:
+            return tag.span("No results", class_='query_no_results')
