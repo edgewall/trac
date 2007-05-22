@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2006 Edgewall Software
+# Copyright (C) 2004-2007 Edgewall Software
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
-# Copyright (C) 2005-2006 Christian Boos <cboos@neuf.fr>
+# Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -30,6 +30,7 @@ from trac.perm import IPermissionRequestor
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.util import Ranges
+from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import escape, unescape
 from trac.util.text import shorten_line, CRLF
@@ -828,11 +829,10 @@ class TicketQueryMacro(WikiMacroBase):
     (defaults to '''id''').
 
     The optional `group` parameter sets the field used for grouping tickets
-    (defaults to not being set). For '''table''' format only.
+    (defaults to not being set).
 
     The optional `groupdesc` parameter indicates whether the natural display
     order of the groups should be reversed (defaults to '''false''').
-    For '''table''' format only.
 
     The optional `verbose` parameter can be set to a true value in order to
     get the description for the listed tickets. For '''table''' format only.
@@ -867,9 +867,33 @@ class TicketQueryMacro(WikiMacroBase):
                              class_=ticket['status'],
                              href=req.href.ticket(int(ticket['id'])),
                              title=shorten_line(ticket['summary']))
+            def ticket_groups():
+                groups = []
+                for v, g in groupby(tickets, lambda t: t[query.group]):
+                    q = Query.from_string(self.env, query_string)
+                    # produce the hint for the group
+                    q.group = q.groupdesc = None
+                    order = q.order
+                    q.order = None
+                    title = "%s %s tickets matching %s" % (
+                        v, query.group, q.to_string(formatter.context))
+                    # produce the href for the query corresponding to the group
+                    q.constraints[str(query.group)] = v
+                    q.order = order
+                    href = q.get_href(formatter.context)
+                    groups.append((v, [t for t in g], href, title))
+                return groups
+
             if format == 'compact':
-                alist = [ticket_anchor(ticket) for ticket in tickets]
-                return tag.span(alist[0], *[(', ', a) for a in alist[1:]])
+                if query.group:
+                    groups = [tag.a('#%s' % ','.join([str(t['id'])
+                                                      for t in g]),
+                                    href=href, class_='query', title=title)
+                              for v, g, href, title in ticket_groups()]
+                    return tag(groups[0], [(', ', g) for g in groups[1:]])
+                else:
+                    alist = [ticket_anchor(ticket) for ticket in tickets]
+                    return tag.span(alist[0], *[(', ', a) for a in alist[1:]])
             elif format == 'table':
                 db = self.env.get_db_cnx()
                 tickets = query.execute(req, db)
@@ -877,12 +901,21 @@ class TicketQueryMacro(WikiMacroBase):
 
                 add_stylesheet(req, 'common/css/report.css')
                 
-                return Chrome(self.env).render_template(req,
-                                                        'query_results.html',
-                                                        data, fragment=True)
+                return Chrome(self.env).render_template(
+                    req, 'query_results.html', data, None, fragment=True)
             else:
-                return tag.dl([(tag.dt(ticket_anchor(ticket)),
-                                tag.dd(ticket['summary']))
-                                for ticket in tickets], class_='wiki compact')
+                if query.group:
+                    return tag.div(
+                        [(tag.p(tag.a(query.group, ' ', v, href=href,
+                                      class_='query', title=title)),
+                          tag.dl([(tag.dt(ticket_anchor(t)),
+                                   tag.dd(t['summary'])) for t in g],
+                                 class_='wiki compact'))
+                         for v, g, href, title in ticket_groups()])
+                else:
+                    return tag.div(tag.dl([(tag.dt(ticket_anchor(ticket)),
+                                            tag.dd(ticket['summary']))
+                                           for ticket in tickets],
+                                          class_='wiki compact'))
         else:
             return tag.span("No results", class_='query_no_results')
