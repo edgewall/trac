@@ -700,7 +700,7 @@ class TicketModule(Component):
         valid = True
 
         # If the ticket has been changed, check the proper permission
-        if ticket._old:
+        if ticket.exists and ticket._old:
             if 'TICKET_CHGPROP' not in req.perm:
                 req.warning("No permission to change ticket fields.")
                 ticket.values = ticket._old
