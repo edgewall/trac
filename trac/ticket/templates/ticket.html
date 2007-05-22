@@ -90,7 +90,7 @@
       </div>
     </py:def>
 
-    <div id="content" class="ticket">
+    <div id="content" class="ticket" py:with="preview_mode = 'preview' in req.args">
       <h1>
         <py:choose>
           <py:when test="ticket.exists">
@@ -121,26 +121,27 @@
 
       <!-- Do not show the ticket (pre)view when the user first comes to the "New Ticket" page.
            Wait until they hit preview. -->
-      <fieldset id="preview" py:strip="'preview' not in req.args">
-        <legend py:if="'preview' in req.args">Preview (<a href="#${ticket.exists and 'edit' or 'properties'}">skip</a>)</legend>
+      <fieldset id="preview" py:strip="not preview_mode">
+        <py:if test="preview_mode">
+          <legend>Preview (<a href="#${ticket.exists and 'edit' or 'properties'}">skip</a>)</legend>
 
-        <!-- Preview of ticket changes -->
-        <div py:if="change_preview" class="ticketdraft">
-          <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
-            <span class="threading" py:if="'replyto' in change_preview">
-              in reply to: ${commentref('&darr;&nbsp;', change_preview.replyto)}
-            </span>
-            Changed by ${authorinfo(change_preview.author)}
-            <b py:if="not valid">
-              (the change can't be saved, see the <a href="#warning"><em>warnings</em> above</a>)
-            </b>
-          </h3>
-          ${display_change(change_preview)}
-        </div>
+          <!-- Preview of ticket changes -->
+          <div py:if="change_preview" id="ticketchange" class="ticketdraft">
+            <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
+              <span class="threading" py:if="'replyto' in change_preview">
+                in reply to: ${commentref('&darr;&nbsp;', change_preview.replyto)}
+              </span>
+              Changed by ${authorinfo(change_preview.author)}
+            </h3>
+            ${display_change(change_preview)}
+          </div>
+
+          <span py:if="not valid" class="preview-notice">Note: this ticket can't be saved, see the <a href="#warning"><em>warnings</em></a> above</span>
+        </py:if>
 
         <!-- Ticket Box (ticket fields along with description) -->
-        <div id="ticket" py:if="ticket.exists or 'preview' in req.args"
-          class="${'preview' in req.args and 'ticketdraft' or None}">
+        <div id="ticket" py:if="ticket.exists or preview_mode"
+          class="${preview_mode and 'ticketdraft' or None}">
           <div class="date">
             <p py:if="ticket.exists">Opened ${dateinfo(ticket.time_created)} ago</p>
             <p py:if="ticket.time_changed != ticket.time_created">Last modified ${dateinfo(ticket.time_changed)} ago</p>
