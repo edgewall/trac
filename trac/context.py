@@ -223,7 +223,9 @@ class Context(object):
         pass
 
     def _get_db(self):
-        return self.env.get_db_cnx()
+        if not self._db:
+            self._db = self.env.get_db_cnx()
+        return self._db
     db = property(fget=_get_db)
 
     def _get_href(self):
