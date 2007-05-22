@@ -58,7 +58,7 @@
     <py:def function="display_change(change)">
       <ul py:if="change.fields" class="changes">
         <li py:for="field_name, field in change.fields.items()"
-            py:with="field_type = field_types.get('field_name')">
+            py:with="field_type = field_types.get(field_name)">
           <strong>${field_name}</strong>
           <py:choose>
             <py:when test="field_name == 'attachment'">
