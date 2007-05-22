@@ -715,8 +715,8 @@ class TicketModule(Component):
 
         comment = req.args.get('comment')
         if comment:
-            if 'TICKET_CHGPROP' not in req.perm or \
-               'TICKET_APPEND' not in req.perm:
+            if not ('TICKET_CHGPROP' in req.perm or \
+                    'TICKET_APPEND' in req.perm):
                 req.warning("No permissions to add a comment.")
                 valid = False
 
