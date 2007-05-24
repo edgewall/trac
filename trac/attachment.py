@@ -384,6 +384,7 @@ class AttachmentModule(Component):
 
         ctx = context(attachment.parent_realm, attachment.parent_id) \
               ('attachment', attachment.filename, resource=attachment)
+        add_link(req, 'up', ctx.parent.resource_href(), ctx.parent.name())
         
         if req.method == 'POST':
             if action == 'new':
@@ -395,7 +396,6 @@ class AttachmentModule(Component):
         elif action == 'new':
             data = self._render_form(ctx)
         else:
-            add_link(req, 'up', ctx.parent.resource_href(), ctx.parent.name())
             data = self._render_view(ctx)
 
         data['context'] = ctx
