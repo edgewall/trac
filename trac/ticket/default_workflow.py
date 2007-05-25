@@ -179,19 +179,19 @@ class ConfigurableTicketWorkflow(Component):
             if self.config.getbool('ticket', 'restrict_owner'):
                 perm = PermissionSystem(self.env)
                 options = perm.get_users_with_permission('TICKET_MODIFY')
-                control.append(tag.select(
+                control.append(tag(['to ', tag.select(
                     [tag.option(x, selected=(x == selected_owner or None))
                      for x in options],
-                    id=id, name=id))
+                    id=id, name=id)]))
             else:
-                control.append(tag.input(type='text', id=id, name=id,
-                    value=req.args.get(id, req.authname)))
+                control.append(tag(['to ', tag.input(type='text', id=id, name=id,
+                    value=req.args.get(id, req.authname))]))
         if 'set_resolution' in operations:
             hints.append("The resolution will be set")
             options = [val.name for val in model.Resolution.select(self.env)]
             id = action + '_resolve_resolution'
             selected_option = req.args.get(id, 'fixed')
-            control.append(tag(['as:', tag.select(
+            control.append(tag(['as ', tag.select(
                 [tag.option(x, selected=(x == selected_option or None))
                  for x in options],
                 id=id, name=id)]))
