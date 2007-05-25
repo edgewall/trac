@@ -49,7 +49,10 @@ class ITicketActionController(Interface):
         by plugins)
         
         The actions will be presented on the page in descending order of the
-        integer weight. When in doubt, use a weight of 0."""
+        integer weight. The first action in the list is used as the default
+        action.
+
+        When in doubt, use a weight of 0."""
 
     def get_all_status():
         """Returns an iterable of all the possible values for the ''status''
