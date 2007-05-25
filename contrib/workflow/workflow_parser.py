@@ -3,7 +3,7 @@
 import sys
 import getopt
 from trac.config import Configuration
-from trac.ticket.api import parse_workflow_config
+from trac.ticket.default_workflow import parse_workflow_config
 
 _debug = True
 def debug(s):
