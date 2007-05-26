@@ -42,10 +42,7 @@ class NotificationTestCase(unittest.TestCase):
     
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.env.config.set('trac', 'templates_dir',
-                            os.path.join(os.path.dirname(self.env.path),
-                                         'templates'))
-        self.env.config.set('project',      'name', 'TracTest')
+        self.env.config.set('project','name', 'TracTest')
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'always_notify_owner', 'true')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
@@ -324,6 +321,32 @@ class NotificationTestCase(unittest.TestCase):
         # 'To' list should have been resolved to the real email address
         self.failIf('user-joe@example.com' not in tolist)
         self.failIf('joeuser' in tolist)
+        
+    def test_ignore_domains(self):
+        """Non-SMTP domain exclusion"""
+        self.env.config.set('notification', 'ignore_domains',
+                            'example.com, example.org')
+        self.env.known_users = \
+            [('kerberos@example.com', 'No Email', ''), 
+             ('kerberos@example.org', 'With Email', 'kerb@example.net')]
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'kerberos@example.com'
+        ticket['owner'] = 'kerberos@example.org'
+        ticket['summary'] = 'This is a summary'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        # Msg should always have a 'To' field
+        self.failIf('To' not in headers)
+        tolist = [addr.strip() for addr in headers['To'].split(',')]
+        # 'To' list should not contain addresses with non-SMTP domains
+        self.failIf('kerberos@example.com' in tolist)
+        self.failIf('kerberos@example.org' in tolist)
+        # 'To' list should have been resolved to the actual email address
+        self.failIf('kerb@example.net' not in tolist)
+        self.failIf(len(tolist) != 1)
 
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""

@@ -61,6 +61,10 @@ class NotificationSystem(Component):
            
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
         """Default host/domain to append to address that do not specify one""")
+        
+    ignore_domains = Option('notification', 'ignore_domains', '',
+        """Comma-separated list of domains that should not be considered
+           part of email addresses (for usernames with Kerberos domains)""")
            
     mime_encoding = Option('notification', 'mime_encoding', 'base64',
         """Specifies the MIME encoding scheme for emails.
@@ -161,6 +165,8 @@ class NotifyEmail(Notify):
 
         self._use_tls = self.env.config.getbool('notification', 'use_tls')
         self._init_pref_encoding()
+        domains = self.env.config.get('notification', 'ignore_domains', '')
+        self._ignore_domains = [x.strip() for x in domains.lower().split(',')]
         # Get the email addresses of all known users
         self.email_map = {}
         for username, name, email in self.env.get_known_users(self.db):
@@ -239,7 +245,16 @@ class NotifyEmail(Notify):
     def get_smtp_address(self, address):
         if not address:
             return None
-        if address.find('@') == -1:
+
+        def is_email(address):
+            pos = address.find('@')
+            if pos == -1:
+                return False
+            if address[pos+1:].lower() in self._ignore_domains:
+                return False
+            return True
+
+        if not is_email(address):
             if address == 'anonymous':
                 return None
             if self.email_map.has_key(address):
@@ -253,6 +268,7 @@ class NotifyEmail(Notify):
                 else:
                     self.env.log.info("Email address w/o domain: %s" % address)
                     return None
+
         mo = NotifyEmail.shortaddr_re.search(address)
         if mo:
             return mo.group(0)
