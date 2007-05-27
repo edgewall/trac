@@ -319,6 +319,8 @@ class NotifyEmail(Notify):
         headers['X-Trac-Version'] =  __version__
         headers['X-Trac-Project'] =  projname
         headers['X-URL'] = self.config.get('project', 'url')
+        headers['Precedence'] = 'bulk'
+        headers['Auto-Submitted'] = 'auto-generated'
         headers['Subject'] = self.subject
         headers['From'] = (self.from_name or projname, self.from_email)
         headers['Reply-To'] = self.replyto_email
