@@ -1,7 +1,7 @@
 from trac import perm
 from trac.core import *
 from trac.test import EnvironmentStub
-from trac.util.compat import sorted
+from trac.util.compat import sorted, set
 
 import unittest
 
@@ -129,8 +129,13 @@ class PermissionSystemTestCase(unittest.TestCase):
 class PermissionCacheTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.perm = perm.PermissionCache({'TEST_MODIFY': True,
-                                          'TEST_ADMIN': True})
+        self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
+                                           perm.DefaultPermissionPolicy,
+                                           TestPermissionRequestor])
+        self.perm_system = perm.PermissionSystem(self.env)
+        self.perm_system.grant_permission('testuser', 'TEST_MODIFY')
+        self.perm_system.grant_permission('testuser', 'TEST_ADMIN')
+        self.perm = perm.PermissionCache(self.env, 'testuser')
 
     def test_contains(self):
         self.assertEqual(True, 'TEST_MODIFY' in self.perm)
@@ -153,12 +158,80 @@ class PermissionCacheTestCase(unittest.TestCase):
         self.assertRaises(perm.PermissionError,
                           self.perm.assert_permission, 'TRAC_ADMIN')
 
+    def test_cache(self):
+        self.perm.assert_permission('TEST_MODIFY')
+        self.perm.assert_permission('TEST_ADMIN')
+        self.perm_system.revoke_permission('testuser', 'TEST_ADMIN')
+        # Using cached GRANT here
+        self.perm.assert_permission('TEST_ADMIN')
 
+
+class TestPermissionPolicy(Component):
+    implements(perm.IPermissionPolicy)
+
+    def __init__(self):
+        self.allowed = {}
+        self.results = {}
+
+    def grant(self, username, permissions):
+        self.allowed.setdefault(username, set()).update(permissions)
+
+    def revoke(self, username, permissions):
+        self.allowed.setdefault(username, set()).difference_update(permissions)
+
+    def check_permission(self, username, action, context):
+        result = action in self.allowed.get(username, set()) or None
+        self.results[(username, action)] = result
+        return result
+
+
+class PermissionPolicyTestCase(unittest.TestCase):
+    def setUp(self):
+        self.env = EnvironmentStub(enable=[perm.DefaultPermissionStore,
+                                           perm.DefaultPermissionPolicy,
+                                           TestPermissionPolicy,
+                                           TestPermissionRequestor])
+        self.env.config.set('trac', 'permission_policies', 'TestPermissionPolicy')
+        self.policy = TestPermissionPolicy(self.env)
+        self.perm = perm.PermissionCache(self.env, 'testuser')
+
+    def test_no_permissions(self):
+        self.assertRaises(perm.PermissionError,
+                          self.perm.assert_permission, 'TEST_MODIFY')
+        self.assertRaises(perm.PermissionError,
+                          self.perm.assert_permission, 'TEST_ADMIN')
+        self.assertEqual(self.policy.results,
+                         {('testuser', 'TEST_MODIFY'): None,
+                          ('testuser', 'TEST_ADMIN'): None})
+
+    def test_grant_revoke_permissions(self):
+        self.policy.grant('testuser', ['TEST_MODIFY', 'TEST_ADMIN'])
+        self.assertEqual('TEST_MODIFY' in self.perm, True)
+        self.assertEqual('TEST_ADMIN' in self.perm, True)
+        self.assertEqual(self.policy.results,
+                         {('testuser', 'TEST_MODIFY'): True,
+                          ('testuser', 'TEST_ADMIN'): True})
+
+    def test_policy_chaining(self):
+        self.env.config.set('trac', 'permission_policies', 'TestPermissionPolicy,DefaultPermissionPolicy')
+        self.policy.grant('testuser', ['TEST_MODIFY'])
+        system = perm.PermissionSystem(self.env)
+        system.grant_permission('testuser', 'TEST_ADMIN')
+
+        self.assertEqual(list(system.policies),
+                         [self.policy,
+                          perm.DefaultPermissionPolicy(self.env)])
+        self.assertEqual('TEST_MODIFY' in self.perm, True)
+        self.assertEqual('TEST_ADMIN' in self.perm, True)
+        self.assertEqual(self.policy.results,
+                         {('testuser', 'TEST_MODIFY'): True,
+                          ('testuser', 'TEST_ADMIN'): None})
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DefaultPermissionStoreTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PermissionSystemTestCase, 'test'))
     suite.addTest(unittest.makeSuite(PermissionCacheTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(PermissionPolicyTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

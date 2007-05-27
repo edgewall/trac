@@ -25,7 +25,7 @@ import StringIO
 from genshi.builder import tag
 
 from trac.attachment import Attachment, AttachmentModule
-from trac.context import Context
+from trac.context import Context, ResourceSystem
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
@@ -75,7 +75,7 @@ class WikiModule(Component):
         return 'wiki'
 
     def get_navigation_items(self, req):
-        if 'WIKI_VIEW' in req.perm:
+        if 'WIKI_VIEW' in req.perm('wiki'):
             yield ('mainnav', 'wiki',
                    tag.a('Wiki', href=req.href.wiki(), accesskey=1))
             yield ('metanav', 'help',
@@ -92,7 +92,7 @@ class WikiModule(Component):
 
     def match_request(self, req):
         match = re.match(r'^/wiki(?:/(.*)|$)', req.path_info)
-        if match:
+        if 'WIKI_VIEW' in req.perm('wiki') and match:
             if match.group(1):
                 req.args['page'] = match.group(1)
             return 1
@@ -113,7 +113,8 @@ class WikiModule(Component):
             raise TracError('No version "%s" for Wiki page "%s"' %
                             (version, pagename))
 
-        context = Context(self.env, req)('wiki', pagename, resource=page)
+        context = Context(self.env, req)('wiki', pagename, version=version,
+                                         resource=page)
 
         add_stylesheet(req, 'common/css/wiki.css')
 
@@ -145,7 +146,7 @@ class WikiModule(Component):
         elif action == 'history':
             return self._render_history(context)
         else:
-            req.perm.require('WIKI_VIEW')            
+            req.perm.require('WIKI_VIEW', context)
             format = req.args.get('format')
             if format:
                 Mimeview(self.env).send_converted(req, 'text/x-trac-wiki',
@@ -205,9 +206,9 @@ class WikiModule(Component):
         db = context.db
 
         if page.readonly:
-            req.perm.require('WIKI_ADMIN')
+            req.perm.require('WIKI_ADMIN', context)
         else:
-            req.perm.require('WIKI_DELETE')
+            req.perm.require('WIKI_DELETE', context)
 
         if 'cancel' in req.args:
             req.redirect(req.href.wiki(page.name))
@@ -233,16 +234,17 @@ class WikiModule(Component):
         page = context.resource
         req = context.req
         db = context.db
+        context_perm = req.perm(context)
 
         if page.readonly:
-            req.perm.require('WIKI_ADMIN')
+            context_perm.require('WIKI_ADMIN')
         elif not page.exists:
-            req.perm.require('WIKI_CREATE')
+            context_perm.require('WIKI_CREATE')
         else:
-            req.perm.require('WIKI_MODIFY')
+            context_perm.require('WIKI_MODIFY')
 
         page.text = req.args.get('text')
-        if 'WIKI_ADMIN' in req.perm:
+        if 'WIKI_ADMIN' in context_perm:
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
             page.readonly = int('readonly' in req.args)
@@ -271,9 +273,9 @@ class WikiModule(Component):
         db = context.db
 
         if page.readonly:
-            req.perm.require('WIKI_ADMIN')
+            req.perm.require('WIKI_ADMIN', context)
         else:
-            req.perm.require('WIKI_DELETE')
+            req.perm.require('WIKI_DELETE', context)
 
         version = None
         if 'delete_version' in req.args:
@@ -298,7 +300,7 @@ class WikiModule(Component):
         req = context.req
         db = context.db
 
-        req.perm.require('WIKI_VIEW')
+        req.perm.require('WIKI_VIEW', context)
 
         data = self._page_data(context, 'diff')
 
@@ -312,6 +314,7 @@ class WikiModule(Component):
             if old_version == page.version:
                 old_version = None
             elif old_version > page.version: # FIXME: what about reverse diffs?
+                req.perm.require('WIKI_VIEW', context(version=old_version))
                 old_version, page = page.version, \
                                     WikiPage(self.env, page.name, old_version)
         latest_page = WikiPage(self.env, page.name)
@@ -335,6 +338,7 @@ class WikiModule(Component):
                     if (old_version and version == old_version) or \
                             not old_version:
                         old_version = version
+                        req.perm.require('WIKI_VIEW', context(version=old_version))
                         old_page = WikiPage(self.env, page.name, old_version)
                         break
                 else:
@@ -377,17 +381,18 @@ class WikiModule(Component):
         context.version = None # use implicit ''latest'' in links
 
         if page.readonly:
-            req.perm.require('WIKI_ADMIN')
+            req.perm.require('WIKI_ADMIN', context)
         else:
-            req.perm.require('WIKI_MODIFY')
+            req.perm.require('WIKI_MODIFY', context)
         original_text = page.text
         if 'text' in req.args:
             page.text = req.args.get('text')
         elif 'template' in req.args:
             template = self.PAGE_TEMPLATES_PREFIX + req.args.get('template')
-            template_page = WikiPage(self.env, template)
-            if template_page.exists:
-                page.text = template_page.text
+            if 'WIKI_VIEW' in req.perm(context(id=template)):
+                template_page = WikiPage(self.env, template)
+                if template_page.exists:
+                    page.text = template_page.text
         if action == 'preview':
             page.readonly = 'readonly' in req.args
 
@@ -431,7 +436,7 @@ class WikiModule(Component):
         req = context.req
         db = context.db
 
-        req.perm.require('WIKI_VIEW')
+        req.perm.require('WIKI_VIEW', context)
 
         if not page.exists:
             raise TracError, "Page %s does not exist" % page.name
@@ -469,7 +474,7 @@ class WikiModule(Component):
             data['title'] = ''
 
         if not page.exists:
-            if 'WIKI_CREATE' not in req.perm:
+            if 'WIKI_CREATE' not in req.perm(context):
                 raise HTTPNotFound('Page %s not found', page.name)
 
         latest_page = WikiPage(self.env, page.name)
@@ -492,12 +497,13 @@ class WikiModule(Component):
             
         # Enable attachments
         attach_href = None
-        if 'WIKI_MODIFY' in req.perm:
+        if 'WIKI_MODIFY' in req.perm(context):
             attach_href = req.href.attachment('wiki', page.name)
 
         prefix = self.PAGE_TEMPLATES_PREFIX
         templates = [t[len(prefix):] for t in
-                     WikiSystem(self.env).get_pages(prefix)]
+                     WikiSystem(self.env).get_pages(prefix) if 'WIKI_VIEW'
+                     in req.perm(context(id=t))]
 
         # -- prev/up/next links
         if prev_version:
@@ -511,9 +517,14 @@ class WikiModule(Component):
                                                 version=next_version),
                      'Version %d' % next_version)
 
+        # List of attachments valid in this context
+        attachments = [a for a in Attachment.select(self.env, 'wiki', page.name)
+                       if 'WIKI_VIEW' in
+                       req.perm(context('attachment', a.filename))]
+
         data.update({
             'latest_version': latest_page.version,
-            'attachments': list(Attachment.select(self.env, 'wiki', page.name)),
+            'attachments': attachments,
             'attach_href': attach_href,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
@@ -536,6 +547,8 @@ class WikiModule(Component):
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (start, stop))
             for ts,name,comment,author,ipnr,version in cursor:
+                if 'WIKI_VIEW' not in req.perm('wiki', name):
+                    continue
                 ctx = context('wiki', name, version=version)
                 title = tag(tag.em(ctx.name()),
                             version > 1 and ' edited' or ' created')
@@ -576,6 +589,7 @@ class WikiModule(Component):
                        "AND " + sql_query, args)
 
         for name, ts, author, text in cursor:
-            yield (req.href.wiki(name), '%s: %s' % (name, shorten_line(text)),
-                   datetime.fromtimestamp(ts, utc), author,
-                   shorten_result(text, terms))
+            if 'WIKI_VIEW' in req.perm('wiki', name):
+                yield (req.href.wiki(name), '%s: %s' % (name, shorten_line(text)),
+                       datetime.fromtimestamp(ts, utc), author,
+                       shorten_result(text, terms))

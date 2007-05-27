@@ -1,5 +1,4 @@
 from trac.core import Component, ComponentManager, implements
-from trac.perm import PermissionCache
 from trac.test import EnvironmentStub, Mock
 from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
                             INavigationContributor

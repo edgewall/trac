@@ -7,7 +7,7 @@
   <div py:match="div[@id='content']" py:attrs="select('@*')">
       ${select('*|text()')}
 
-        <form py:if="'WIKI_DELETE' in perm and (not changes[0].diffs or new_version == latest_version)"
+        <form py:if="'WIKI_DELETE' in perm(context) and (not changes[0].diffs or new_version == latest_version)"
           method="get" action="${context.resource_href()}">
           <input type="hidden" name="action" value="delete" />
           <input type="hidden" name="version" value="$new_version" />

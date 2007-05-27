@@ -98,7 +98,6 @@ class Context(object):
         self.version = version
         self.abs_urls = abs_urls
         self._db = db
-        self._perm = None
         self.resource = resource
 
     def __repr__(self):
@@ -176,19 +175,18 @@ class Context(object):
             # copy current context
             copy = object.__new__(self.__class__)
             # strict copy
+            copy.resource = resource or self._resource
             copy.env = self.env
             copy.req = self.req
             copy.realm = self.realm
             copy.id = self.id
             copy.parent = self.parent
             copy._db = self._db
-            copy._perm = self._perm
             # copy + update
             if version is False: # not set, keep existing
                 version = self.version
             copy.version = version
             copy.abs_urls = abs_urls
-            copy.resource = resource or self._resource
             return copy
 
     def from_resource(cls, req, resource, *args, **kwargs):
@@ -222,6 +220,15 @@ class Context(object):
         """
         pass
 
+    def __hash__(self):
+        """Hash this context, including the context heirarchy."""
+        path = []
+        current = self
+        while current:
+            path.extend((self.realm, self.id, self.version))
+            current = current.parent
+        return hash(tuple(path))
+
     def _get_db(self):
         if not self._db:
             self._db = self.env.get_db_cnx()
@@ -248,14 +255,6 @@ class Context(object):
         self.set_resource(resource)
         self._resource = resource
     resource = property(_get_resource, _set_resource)
-
-    def _get_perm(self):
-        """Permissions specific to this context."""
-        from trac.perm import PermissionCache
-        if not self._perm:
-            self._perm = PermissionCacheProxy(self)
-        return self._perm
-    perm = property(_get_perm)
 
     def resource_href(self, path=None, **kwargs):
         """Return a canonical URL for the resource associated to this Context.
@@ -366,34 +365,3 @@ class ResourceSystem(Component):
             for context_class in provider.get_context_classes():
                 realms.append(context_class.realm)
         return realms
-
-
-class PermissionCacheProxy(object):
-    def __init__(self, context):
-        self.context = context
-
-    def __contains__(self, action):
-        """Checks whether the given `action` is permitted."""
-        return self.context.req.perm.__contains__(action, self.context)
-    has_permission = __contains__
-
-    def has_all(self, *actions):
-        """Return `True` if all the `actions` are permitted."""
-        return self.context.req.perm.has_all(actions, self.context)
-
-    def has_any(self, *actions):
-        """Return `True` if at least one of the `actions` is permitted."""
-        return self.context.req.perm.has_any(actions, self.context)
-
-    def require(self, action):
-        """Ensure that the given `action` is permitted."""
-        return self.context.req.perm.require(action, self.context)
-    assert_permission = require
-
-    def require_all(self, *actions):
-        """Ensure that all of the given `actions` are permitted."""
-        return self.context.req.perm.require_all(actions, self.context)
-
-    def require_any(self, *actions):
-        """Ensure that at least one of the given `actions` is permitted."""
-        return self.context.req.perm.require_any(actions, self.context)

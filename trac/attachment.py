@@ -436,9 +436,13 @@ class AttachmentModule(Component):
 
         `context` specifies the realm.
         """
+        req = context.req
+        perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         for change, realm, id, filename, time, descr, author in \
                 self.get_history(start, stop, context.realm):
             ctx = context(realm=realm, id=id)('attachment', filename)
+            if perm_map[realm] not in req.perm(ctx):
+                continue
             title = tag(tag.em(os.path.basename(filename)), ' attached to ',
                         tag.em(ctx.parent.name(), title=ctx.parent.summary()))
             event = TimelineEvent('attachment', title,
@@ -457,7 +461,7 @@ class AttachmentModule(Component):
     def _do_save(self, context):
         req, attachment = context.req, context.resource
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
-        req.perm.require(perm_map[attachment.parent_realm])
+        req.perm.require(perm_map[attachment.parent_realm], context)
 
         if 'cancel' in req.args:
             req.redirect(context.parent.resource_href())
@@ -512,7 +516,7 @@ class AttachmentModule(Component):
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
                     perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-                    req.perm.require(perm_map[old_attachment.parent_realm])
+                    req.perm.require(perm_map[old_attachment.parent_realm], context)
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace
@@ -525,7 +529,7 @@ class AttachmentModule(Component):
     def _do_delete(self, context):
         req, attachment = context.req, context.resource
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-        req.perm.require(perm_map[attachment.parent_realm])
+        req.perm.require(perm_map[attachment.parent_realm], context)
 
         parent_href = context.parent.resource_href()
         if 'cancel' in req.args:
@@ -539,7 +543,7 @@ class AttachmentModule(Component):
     def _render_confirm_delete(self, context):
         req, attachment = context.req, context.resource
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-        req.perm.require(perm_map[attachment.parent_realm])
+        req.perm.require(perm_map[attachment.parent_realm], context)
 
         attachment = context.resource
         return {'mode': 'delete', 'title': '%s (delete)' % context.name(),
@@ -548,14 +552,14 @@ class AttachmentModule(Component):
     def _render_form(self, context):
         req, attachment = context.req, context.resource
         perm_map = {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'}
-        req.perm.require(perm_map[attachment.parent_realm])
+        req.perm.require(perm_map[attachment.parent_realm], context)
 
         return {'mode': 'new', 'author': get_reporter_id(context.req)}
 
     def _render_list(self, context):
         req, attachment = context.req, context.resource
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
-        req.perm.require(perm_map[attachment.parent_realm])
+        req.perm.require(perm_map[attachment.parent_realm], context)
 
         data = {
             'mode': 'list', 'context': context,
@@ -571,7 +575,7 @@ class AttachmentModule(Component):
     def _render_view(self, context):
         req, attachment = context.req, context.resource
         perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
-        req.perm.require(perm_map[attachment.parent_realm])
+        req.perm.require(perm_map[attachment.parent_realm], context)
 
         req.check_modified(attachment.date)
 
@@ -579,7 +583,7 @@ class AttachmentModule(Component):
                 'attachment': attachment}
 
         perm_map = {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'}
-        if perm_map[attachment.parent_realm] in req.perm:
+        if perm_map[attachment.parent_realm] in req.perm(context):
             data['can_delete'] = True
 
         fd = attachment.open()

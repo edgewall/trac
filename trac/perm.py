@@ -18,7 +18,7 @@
 
 """Management of permissions."""
 
-from trac.config import ExtensionOption
+from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.util.compat import set
 
@@ -88,6 +88,17 @@ class IPermissionGroupProvider(Interface):
     def get_permission_groups(username):
         """Return a list of names of the groups that the user with the specified
         name is a member of."""
+
+
+class IPermissionPolicy(Interface):
+    """A security policy provider."""
+
+    def check_permission(username, action, context):
+        """Check that username can perform action in context.
+
+        Must return True if action is allowed, False if action is denied, or
+        None if indifferent. If None is returned, the next policy in the chain
+        will be used, and so on."""
 
 
 class DefaultPermissionStore(Component):
@@ -204,6 +215,18 @@ class DefaultPermissionGroupProvider(Component):
         return groups
 
 
+class DefaultPermissionPolicy(Component):
+    """Default permission policy using the IPermissionStore system."""
+
+    implements(IPermissionPolicy)
+
+    # IPermissionPolicy methods
+
+    def check_permission(self, username, action, context):
+        return PermissionSystem(self.env). \
+               get_user_permissions(username).get(action, None)
+
+
 class PermissionSystem(Component):
     """Sub-system that manages user permissions."""
 
@@ -215,6 +238,13 @@ class PermissionSystem(Component):
                             'DefaultPermissionStore',
         """Name of the component implementing `IPermissionStore`, which is used
         for managing user and group permissions.""")
+
+    policies = OrderedExtensionsOption('trac', 'permission_policies',
+                                       IPermissionPolicy,
+                                       'DefaultPermissionPolicy', False,
+        """List of components implementing `IPermissionPolicy`, in the order in
+        which they will be applied. These components manage fine-grained access
+        control to Trac resources.""")
 
     # Public API
 
@@ -302,6 +332,45 @@ class PermissionSystem(Component):
 
         return self.store.get_users_with_permissions(satisfying_perms.keys())
 
+    def expand_actions(self, actions):
+        """Helper method for expanding all meta actions."""
+        meta = {}
+        for requestor in self.requestors:
+            for m in requestor.get_permission_actions():
+                if isinstance(m, tuple):
+                    meta[m[0]] = m[1]
+        expanded_actions = set(actions)
+
+        def expand_action(action):
+            actions = meta.get(action, [])
+            expanded_actions.update(actions)
+            [expand_action(a) for a in actions]
+
+        [expand_action(a) for a in actions]
+        return expanded_actions
+
+    def check_permission(self, action, username=None, context=None):
+        """Return True if permission to perform action in the given context is
+        allowed."""
+        if context is None:
+            from trac.context import Context
+            context = Context(self.env, None)
+
+        if username is None:
+            username = 'anonymous'
+
+        for policy in self.policies:
+            decision = policy.check_permission(username, action, context)
+            if decision is not None:
+                self.log.debug("%s %s %s performing %s on %r" %
+                               (policy.__class__.__name__,
+                                decision and 'allows' or 'forbids',
+                                username, action, context))
+                return decision
+        self.log.debug("No policy allowed %s performing %s on %r" %
+                       (username, action, context))
+        return False
+
     # IPermissionRequestor methods
 
     def get_permission_actions(self):
@@ -322,19 +391,77 @@ class PermissionSystem(Component):
 
 
 class PermissionCache(object):
-    """Cache that maintains the permissions of a single user."""
+    """Cache that maintains the permissions of a single user.
 
-    def __init__(self, perms=None):
-        self.perms = perms or {}
+    'WIKI_VIEW' in perm
+    'WIKI_VIEW' in perm(context)
+    'WIKI_VIEW' in perm('wiki')
+    'WIKI_VIEW' in perm('wiki', 'WikiStart')
+    'WIKI_VIEW' in perm('wiki', 'WikiStart', 31)
 
-    def __contains__(self, action):
-        return action in self.perms
-    has_permission = __contains__
+    perm.require(...)
+    """
 
-    def require(self, action):
-        if action not in self.perms:
+    __slots__ = ('env', 'username', 'context', '_cache', '_cached_all')
+
+    def __init__(self, env, username=None, context=None, cache=None):
+        self.env = env
+        self.username = username or 'anonymous'
+        self.context = context
+        if cache is None:
+            self._cache = {}
+        else:
+            self._cache = cache
+        self._cached_all = False
+
+    def _normalize_context(self, realm_or_context, id, version):
+        from trac.context import Context
+
+        if isinstance(realm_or_context, Context):
+            return realm_or_context
+        elif realm_or_context is not None:
+            if self.context:
+                realm_or_context = realm_or_context or self.context.realm
+                id = id or self.context.id
+                version = version or self.context.version
+            return Context(self.env, None, realm_or_context, id, version)
+        else:
+            return self.context
+
+    def __call__(self, realm_or_context, id=None, version=None):
+        """Convenience function for using thus:
+            'WIKI_VIEW' in perm(context)
+        or
+            'WIKI_VIEW' in perm(realm, id, version)"""
+        context = self._normalize_context(realm_or_context, id, version)
+        return PermissionCache(self.env, self.username, context, self._cache)
+
+    def has_permission(self, action, realm_or_context=None, id=None, version=None):
+        context = self._normalize_context(realm_or_context, id, version)
+        key = (self.username, hash(context), action)
+        try:
+            return self._cache[key]
+        except KeyError:
+            decision = PermissionSystem(self.env). \
+                check_permission(action, self.username, context)
+            self._cache[key] = decision
+            return self._cache[key]
+    __contains__ = has_permission
+
+    def require(self, action, realm_or_context=None, id=None, version=None):
+        if not self.has_permission(action, realm_or_context, id, version):
             raise PermissionError(action)
     assert_permission = require
 
     def permissions(self):
-        return self.perms.keys()
+        """Deprecated (but still used by the HDF compatibility layer)"""
+        if not self._cached_all:
+            self.env.log.warning('perm.permissions() is deprecated and '
+                                 'is only present for HDF compatibility')
+            perm = PermissionSystem(self.env)
+            actions = perm.get_user_permissions(self.username)
+            # Perform a full permission check in this context
+            [action in self for action in actions]
+            self._cached_all = True
+        return [action for action, decision in
+                self._cache.get(None, {}).iteritems() if decision]

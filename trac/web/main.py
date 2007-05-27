@@ -263,8 +263,7 @@ class RequestDispatcher(Component):
         return hdf
 
     def _get_perm(self, req):
-        perms = PermissionSystem(self.env).get_user_permissions(req.authname)
-        return PermissionCache(perms)
+        return PermissionCache(self.env, self.authenticate(req))
 
     def _get_session(self, req):
         return Session(self.env, req)
