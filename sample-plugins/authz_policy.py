@@ -95,10 +95,10 @@ class AuthzPolicy(Component):
             self.parse_authz()
         ctx_key = self.flatten_context(context)
         permissions = self.authz_permissions(ctx_key, username)
-        if permissions:
+        if permissions is None:
+            return None
+        elif permissions:
             permissions = PermissionSystem(self.env).expand_actions(permissions)
-        self.env.log.debug('%s %s %s on %s' % (action in permissions and 'allow' or 'deny',
-                                               username, action, ctx_key))
         return action in permissions
 
     # Internal methods
@@ -140,4 +140,4 @@ class AuthzPolicy(Component):
                             return [permissions]
                         else:
                             return permissions
-        return []
+        return None
