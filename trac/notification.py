@@ -69,6 +69,10 @@ class NotificationSystem(Component):
         """Comma-separated list of domains that should not be considered
            part of email addresses (for usernames with Kerberos domains)""")
            
+    admit_domains = Option('notification', 'admit_domains', '',
+        """Comma-separated list of domains that should be considered as
+        valid for email addresses (such as localdomain)""")
+           
     mime_encoding = Option('notification', 'mime_encoding', 'base64',
         """Specifies the MIME encoding scheme for emails.
         
@@ -154,18 +158,23 @@ class NotifyEmail(Notify):
     smtp_port = 25
     from_email = 'trac+tickets@localhost'
     subject = ''
-    server = None
-    email_map = None
     template_name = None
-    addrfmt = r"[\w\d_\.\-\+=]+\@(([\w\d\-])+\.)+([\w\d]{2,4})+"
-    shortaddr_re = re.compile(addrfmt)
-    longaddr_re = re.compile(r"^\s*(.*)\s+<(" + addrfmt + ")>\s*$");
-    nodomaddr_re = re.compile(r"[\w\d_\.\-]+")
-    addrsep_re = re.compile(r"[;\s,]+")
+    nodomaddr_re = re.compile(r'[\w\d_\.\-]+')
+    addrsep_re = re.compile(r'[;\s,]+')
 
     def __init__(self, env):
         Notify.__init__(self, env)
 
+        addrfmt = r'[\w\d_\.\-\+=]+\@(?:(?:[\w\d\-])+\.)+(?:[\w\d]{2,4})'
+        admit_domains = self.env.config.get('notification', 'admit_domains')
+        if admit_domains:
+            pos = addrfmt.find('@')
+            domains = '|'.join([x.strip() for x in \
+                                admit_domains.replace('.','\.').split(',')])
+            addrfmt = r'%s@(?:(?:%s)|%s)' % (addrfmt[:pos], addrfmt[pos+1:], 
+                                              domains)
+        self.shortaddr_re = re.compile(r'%s$' % addrfmt)
+        self.longaddr_re = re.compile(r'^\s*(.*)\s+<(%s)>\s*$' % addrfmt);
         self._use_tls = self.env.config.getbool('notification', 'use_tls')
         self._init_pref_encoding()
         domains = self.env.config.get('notification', 'ignore_domains', '')
@@ -273,10 +282,10 @@ class NotifyEmail(Notify):
                     self.env.log.info("Email address w/o domain: %s" % address)
                     return None
 
-        mo = NotifyEmail.shortaddr_re.search(address)
+        mo = self.shortaddr_re.search(address)
         if mo:
             return mo.group(0)
-        mo = NotifyEmail.longaddr_re.search(address)
+        mo = self.longaddr_re.search(address)
         if mo:
             return mo.group(2)
         self.env.log.info("Invalid email address: %s" % address)
@@ -290,7 +299,7 @@ class NotifyEmail(Notify):
             for v in value:
                 items.append(self.encode_header(v))
             return ',\n\t'.join(items)
-        mo = NotifyEmail.longaddr_re.match(value)
+        mo = self.longaddr_re.match(value)
         if mo:
             return self.format_header(key, mo.group(1), mo.group(2))
         return self.format_header(key, value)
@@ -382,7 +391,7 @@ class NotifyEmail(Notify):
         msg.set_charset(self._charset)
         self.add_headers(msg, headers);
         self.add_headers(msg, mime_headers);
-        self.env.log.debug("Sending SMTP notification to %s on port %d to %s"
+        self.env.log.info("Sending SMTP notification to %s:%d to %s"
                            % (self.smtp_server, self.smtp_port, recipients))
         msgtext = msg.as_string()
         # Ensure the message complies with RFC2822: use CRLF line endings

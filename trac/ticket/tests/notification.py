@@ -346,6 +346,30 @@ class NotificationTestCase(unittest.TestCase):
         # 'To' list should have been resolved to the actual email address
         self.failIf('kerb@example.net' not in tolist)
         self.failIf(len(tolist) != 1)
+        
+    def test_admit_domains(self):
+        """SMTP domain inclusion"""
+        self.env.config.set('notification', 'admit_domains',
+                            'localdomain, mail.custom')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joeuser@example.com'
+        ticket['summary'] = 'This is a summary'
+        ticket['cc'] = 'joe.user@localdomain, joe.user@mail.nocustom, ' \
+                       'joe.user@mail.custom'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        message = notifysuite.smtpd.get_message()
+        (headers, body) = parse_smtp_message(message)
+        # Msg should always have a 'To' field
+        self.failIf('Cc' not in headers)
+        cclist = [addr.strip() for addr in headers['Cc'].split(',')]
+        # 'Cc' list should contain addresses with SMTP included domains
+        self.failIf('joe.user@localdomain' not in cclist)
+        self.failIf('joe.user@mail.custom' not in cclist)
+        # 'Cc' list should not contain non-FQDN domains
+        self.failIf('joe.user@mail.nocustom' in cclist)
+        self.failIf(len(cclist) != 2+2)
 
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
