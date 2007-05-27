@@ -136,7 +136,6 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf('Subject' not in headers)
         self.failIf('Message-ID' not in headers)
         self.failIf('From' not in headers)
-        self.failIf('Sender' not in headers)
 
     def test_date(self):
         """Date format compliance (RFC822) 

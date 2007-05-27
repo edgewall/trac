@@ -47,6 +47,9 @@ class NotificationSystem(Component):
 
     smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
         """Sender address to use in notification emails.""")
+        
+    smtp_from_name = Option('notification', 'smtp_from_name', '',
+        """Sender name to use in notification emails.""")
 
     smtp_replyto = Option('notification', 'smtp_replyto', 'trac@localhost',
         """Reply-To address to use in notification emails.""")
@@ -206,6 +209,7 @@ class NotifyEmail(Notify):
         self.smtp_server = self.config['notification'].get('smtp_server')
         self.smtp_port = self.config['notification'].getint('smtp_port')
         self.from_email = self.config['notification'].get('smtp_from')
+        self.from_name = self.config['notification'].get('smtp_from_name')
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
@@ -316,8 +320,7 @@ class NotifyEmail(Notify):
         headers['X-Trac-Project'] =  projname
         headers['X-URL'] = self.config.get('project', 'url')
         headers['Subject'] = self.subject
-        headers['From'] = (projname, self.from_email)
-        headers['Sender'] = self.from_email
+        headers['From'] = (self.from_name or projname, self.from_email)
         headers['Reply-To'] = self.replyto_email
 
         def build_addresses(rcpts):
