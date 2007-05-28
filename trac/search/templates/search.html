@@ -24,9 +24,10 @@
       <a href="${prevlink.href}" title="${prevlink.title}">&larr;</a>
     </span>
     <span py:for="num in range(max(0, results.page - 10),
-                               min(results.page + 11, results.num_pages))">
-      <a href="${page_href}&amp;page=${num + 1}"
-         py:strip="num == results.page">${num + 1}</a>
+                               min(results.page + 11, results.num_pages))"
+      py:choose="">
+      <span py:when="num == results.page" class="current">${num+1}</span>
+      <a py:otherwise="" href="${page_href}&amp;page=${num + 1}">${num + 1}</a>
     </span>
     <span py:if="results.has_next_page"
           py:with="nextlink = chrome.links.next[0]" class="next">

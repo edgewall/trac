@@ -17,23 +17,24 @@
 #content.search .paging { margin: 0 0 2em; padding: .5em 0 0;
   font-size: 85%; line-height: 2em; text-align: center;
 }
-#content.search .paging span { color: #666; padding: 0; }
+#content.search .paging span .current { 
+  padding: .1em .3em;
+  border: 1px solid #333;
+  background: #999; color: #fff; 
+}
 #content.search .paging :link, #content.search .paging :visited {
-  background: #999; border: 1px solid #666; color: #fff; padding: .1em .3em;
+  padding: .1em .3em;
+  border: 1px solid #666;
+  background: transparent; color: #666;
 }
 #content.search .paging :link:hover, #content.search .paging :visited:hover {
-  background: #666; border-color: #333;
+  background: #999; color: #fff;  border-color: #333;
 }
-#content.search .paging .previous :link,
-#content.search .paging .previous :visited,
-#content.search .paging .next :link,
-#content.search .paging .next :visited {
-  background: transparent; border: none; color: #666; font-size: 150%;
-  font-weight: bold;
+#content.search .paging .previous a, 
+#content.search .paging .next a {
+  font-size: 150%; font-weight: bold; border: none;
 }
-#content.search .paging .previous :link:hover,
-#content.search .paging .previous :visited:hover,
-#content.search .paging .next :link:hover,
-#content.search .paging .next :visited:hover {
-  background: transparent; color: #000;
+#content.search .paging .previous a:hover,
+#content.search .paging .next a:hover {
+  background: transparent; color: #666;
 }
