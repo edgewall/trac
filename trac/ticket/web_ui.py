@@ -993,7 +993,7 @@ class TicketModule(Component):
                     first_label = label
                 widgets.append(widget)
                 hints.append(hint)
-            action_controls.append((action, label, tag(widgets), hints))
+            action_controls.append((action, first_label, tag(widgets), hints))
 
         # The default action is the first in the action_controls list.
         if not selected_action:
