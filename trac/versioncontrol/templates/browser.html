@@ -21,7 +21,11 @@
           /* browsers using old WebKits have issues with expandDir... */
           var webkit_rev = /AppleWebKit\/(\d+)/.exec(navigator.userAgent);
           if ( !webkit_rev || (521 - webkit_rev[1]).toString()[0] == "-" )
-            enableExpandDir(null, $("#dirlist tr"));
+            enableExpandDir(null, $("#dirlist tr"), {
+                action: 'inplace',
+                ranges_min_secs: '$dir.range_min_secs',
+                ranges_max_secs: '$dir.range_max_secs'
+            });
         </py:if>
         <py:if test="file and file.annotate">
           enableBlame("${href.changeset()}/", "${path}");

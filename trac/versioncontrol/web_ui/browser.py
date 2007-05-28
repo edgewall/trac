@@ -15,7 +15,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 import re
 import os
@@ -30,7 +30,7 @@ from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
                               IHTMLPreviewAnnotator
 from trac.perm import IPermissionRequestor
 from trac.util import sorted, embedded_numbers
-from trac.util.datefmt import http_date
+from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
 from trac.util.text import shorten_line
 from trac.web import IRequestHandler, RequestDone
@@ -146,18 +146,29 @@ class WikiPropertyRenderer(Component):
 
 
 class TimeRange(object):
+
+    min = datetime(1, 1, 1, 0, 0, 0, 0, utc) # tz aware version of datetime.min
+    
     def __init__(self, base):
         self.oldest = self.newest = base
         self._total = None
 
+    def seconds_between(self, dt1, dt2):
+        delta = dt1 - dt2
+        return delta.days * 24 * 3600 + delta.seconds
+    
+    def to_seconds(self, dt):
+        return self.seconds_between(dt, TimeRange.min)
+
+    def from_seconds(self, secs):
+        return TimeRange.min + timedelta(*divmod(secs, 24* 3600))
+
     def relative(self, datetime):
-        def seconds(delta):
-            return delta.days * 3600 * 24 + delta.seconds
         if self._total is None:
-            self._total = float(seconds(self.newest - self.oldest))
+            self._total = float(self.seconds_between(self.newest, self.oldest))
         age = 1.0
         if self._total:
-            age = seconds(datetime - self.oldest) / self._total
+            age = self.seconds_between(datetime, self.oldest) / self._total
         return age
 
     def insert(self, datetime):
@@ -375,9 +386,13 @@ class BrowserModule(Component):
         timerange = custom_colorizer = None
         if self.color_scale:
             timerange = TimeRange(newest)
-            for c in changes.values():
-                if c:
-                    timerange.insert(c.date)
+            max_s = req.args.get('range_max_secs')
+            min_s = req.args.get('range_min_secs')
+            parent_range = [tr.from_seconds(long(s))
+                            for s in [max_s, min_s] if s]
+            this_range = [c.date for c in changes.values() if c]
+            for dt in this_range + parent_range:
+                timerange.insert(dt)
             custom_colorizer = self.get_custom_colorizer()
 
         # Ordering of entries
@@ -414,7 +429,12 @@ class BrowserModule(Component):
 
         return {'order': order, 'desc': desc and 1 or None,
                 'entries': entries, 'changes': changes,
-                'timerange': timerange, 'colorize_age': custom_colorizer}
+                'timerange': timerange, 'colorize_age': custom_colorizer,
+                'range_max_secs': (timerange and
+                                   timerange.to_seconds(timerange.newest)),
+                'range_min_secs': (timerange and
+                                   timerange.to_seconds(timerange.oldest)),
+                }
 
     def _render_file(self, context, repos, node, rev=None):
         req = context.req

@@ -5,15 +5,16 @@ var SUBFOLDER_INDENT = 20;
 
 // enableExpandDir adds the capability to folder rows to be expanded and folded
 // It also teach the rows about their ancestors. It expects:
-//  - `parent_tr`, the logical parent row
+//  - `parent_tr`, the logical parent row (`null` if there's no ancestor)
 //  - a `rows` jQuery object matching the newly created entry rows
+//  - `qargs`, additional parameters to send to the server when expanding
 
-function enableExpandDir(parent_tr, rows) {
+function enableExpandDir(parent_tr, rows, qargs) {
   // the ancestors folder ids are present in the parent_tr class attribute
   var ancestor_folderids = [];
   if (parent_tr)
     ancestor_folderids = $.grep(parent_tr.attr("class").split(" "), 
-				function(c) { return c.match(/^f\d+$/)});
+                                function(c) { return c.match(/^f\d+$/)});
   rows.each(function () {
     var a = $(this).find("a.dir");
 
@@ -27,7 +28,8 @@ function enableExpandDir(parent_tr, rows) {
       a.wrap('<div></div>');
       var expander = a.before('<span class="expander">&#x200b;</span>').prev();
       expander.css("cursor", "pointer")
-        .attr("title", "Expand sub-directory in place").click(toggleDir);
+        .attr("title", "Expand sub-directory in place")
+        .click(function() { toggleDir($(this), qargs); });
     }
 
     // tie that row to ancestor folders
@@ -37,14 +39,14 @@ function enableExpandDir(parent_tr, rows) {
 }
 
 // handler for click event on the expander icons
-function toggleDir() {
-  var tr = $(this).parents("tr");
+function toggleDir(expander, qargs) {
+  var tr = expander.parents("tr");
   var folderid = tr.get(0).id;
 
   if ( tr.filter(".expanded").length ) { // then *fold*
     tr.removeClass("expanded").addClass("collapsed");
     tr.siblings("tr."+folderid).hide();
-    $(this).attr("title", "Re-expand directory");
+    expander.attr("title", "Re-expand directory");
     return;
   }
 
@@ -54,12 +56,12 @@ function toggleDir() {
     // Note that the above will show all the already fetched subtree,
     // so we have to fold again the folders which were already collapsed.
     tr.siblings("tr.collapsed").each(function() {
-      $(this).siblings("tr."+this.id).hide();
+      expander.siblings("tr."+expander.get(0).id).hide();
     });
   } else {                                // then *fetch*
-    var td = $(this).parents("td");
+    var td = expander.parents("td");
     var td_class = td.attr("class");
-    var a = $(this).next("a");
+    var a = expander.next("a");
     var depth = 
       parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) + 
       SUBFOLDER_INDENT;
@@ -73,25 +75,24 @@ function toggleDir() {
       .css("padding-left", depth);
     loading_row.find("span.loading").text("Loading " + a.text() + "...");
 
-    $.get(a.attr("href"), {action: "inplace"}, function(data) {
+    // XHR for getting the rows corresponding to the folder entries
+    $.get(a.attr("href"), {}, function(data) {
       var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
       if (rows.length) {
-        // insert rows corresponding to the folder entries
+        // insert entry rows 
         rows.children("td."+td_class).css("padding-left", depth);
-	// make all rows collapsible and subdir rows expandable
-        enableExpandDir(tr, rows); 
+        // make all entry rows collapsible but only subdir rows expandable
+        enableExpandDir(tr, rows, qargs); 
         tr.after(rows);
         // remove "Loading ..." row
         loading_row.remove();
       } else {
         loading_row.find("span.loading").text("").append("<i>(empty)</i>")
           .removeClass("loading");
-	// make the (empty) row collapsible
-        enableExpandDir(tr, loading_row); 
+        // make the (empty) row collapsible
+        enableExpandDir(tr, loading_row, qargs); 
       }
     });
   }
-  $(this).attr("title", "Fold directory");
+  expander.attr("title", "Fold directory");
 }
-
-
