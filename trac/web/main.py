@@ -226,18 +226,19 @@ class RequestDispatcher(Component):
                     else: # Genshi
                         template, data, content_type = \
                                   self._post_process_request(req, *resp)
-                        output = chrome.render_template(req, template, data,
-                                                        content_type)
-                        # Give the session a chance to persist changes
-                        if req.session:
-                            req.session.save()
-
                         if 'hdfdump' in req.args:
+                            # debugging helper - no need to render first
                             from pprint import pprint
                             out = StringIO()
                             pprint(data, out)
                             req.send(out.getvalue(), 'text/plain')
                         else:
+                            output = chrome.render_template(req, template,
+                                                            data, content_type)
+                            # Give the session a chance to persist changes
+                            if req.session:
+                                req.session.save()
+
                             req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)
