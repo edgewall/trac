@@ -27,38 +27,116 @@ from trac.web.href import Href
 class TimelineEvent(object):
     """Group event related information.
 
-    title:   short summary for the event
-    href:    link to the resource advertised by this event;
-             if not given, will be the context's self reference
-    markup:  optional Markup that should be taken into account along side the
-             contextual information
+    The first two properties are set in the constructor:
+
+    provider: reference to the event provider
+
+    kind: category of the event, will also be used as the CSS class for
+          the event's entry in the timeline
+
+    The following is set using the `add_markup` method.
+    
+    markup: dictionary of litteral informations regarding the events.
+            Standard keys include:
+             - 'title': short summary for the event
+             - 'header': markup that comes before the main body
+             - 'footer': markup that comes after the main body
+
+    The next two are set using the `add_wiki` method.
+    
+    context: resource context
+    wikitext: dictionary of contextual information
+              Standard keys include:
+              `body` will be interpreted as the main text
+              `summary`
+
+    The next four are set using the `set_changeinfo` method.
+    
     date, author, authenticated, ipnr:
              date and authorship info for the event;
              `date` is a datetime instance
-    context, wikitext:
-             context and contextual information;
-             `wikitext` will be interpreted as wiki text
-    use_oneliner:
-             contextual information should be presented in brief
-    shorten_oneliner:
-             contextual information should be truncated
+
+    Other properties:
+
+    href_fragment: optional fragment that will position to some place
+                   within the resource page
+
+    direct_href: direct link to the event,, if there's no resource associated
+                 to it
     """
 
-    def __init__(self, kind, title='', href=None, markup=None):
-        self.kind = kind
-        self.title = title
-        self.href = href
-        self.markup = markup
+    def __init__(self, *args, **kwargs):
+        """`TimelineEvent(provider, kind)` creates an event.
+
+        `provider` is the Component which provided the event and
+        `kind` is the specific sub-type of this event.
+
+        Note that 0.11dev API introduced originally another signature:
+        `(self, kind, title='', href=None, markup=None)`
+        We'll also stay compatible with the above until 0.12.
+        """
+        self.markup = {}
+        self.wikitext = {}
         self.author = 'unknown'
         self.date = self.authenticated = self.ipnr = None
-        self.context = self.wikitext = None
-        self.use_oneliner = True
-        self.shorten_oneliner = True
+        self.context = None
+        self.href_fragment = ''
+        if isinstance(args[0], Component):
+            self.provider = args[0]
+            self.kind = args[1]
+        else:
+            self.kind = args[0]
+            class DummyProvider(object):
+                def event_formatter(self, event, key):
+                    return ('oneliner', {'shorten': True})
+            self.provider = DummyProvider()
+            title = len(args) > 1 and args[1] or kwargs.get('title')
+            href = len(args) > 2 and args[2] or kwargs.get('href')
+            markup = len(args) > 3 and args[3] or kwargs.get('markup')
+            self.direct_href = href
+            if title:
+                self.markup['title'] = title
+            if markup:
+                self.markup['header'] = markup
+
+    def get_href(self, href=None):
+        if self.context:
+            return self.context.get_href(href) + self.href_fragment
+        else:
+            return self.direct_href
 
     def __repr__(self):
-        return '<TimelineEvent %s - %r - %s>' % \
-               (self.date, self.context, self.href)
+        return '<TimelineEvent %s - %r>' % (self.date,
+                                            self.context or self.direct_href)
 
+    def set_changeinfo(self, date, author='anonymous', authenticated=None,
+                       ipnr=None):
+        self.date = date
+        self.author = author
+        self.authenticated = authenticated
+        self.ipnr = ipnr
+
+    def add_markup(self, **kwargs):
+        """Populate the markup dictionary."""
+        for k, v in kwargs.iteritems():
+            if v:
+                self.markup[k] = v
+
+    def add_wiki(self, context, **kwargs):
+        """Populate the wikitext dictionary."""
+        self.context = context
+        for k, v in kwargs.iteritems():
+            if v:
+                self.wikitext[k] = v
+
+    def dateuid(self):
+        return to_timestamp(self.date)
+
+    # What follows correspond to a temporary API used during 0.11dev
+    # It's kept for compatibility but will be removed in 0.12, so don't use
+
+    title = property(lambda s: s.markup.get('title'))
+    href = property(get_href)
     def _get_abs_href(self):
         req = self.context.req
         if self.href.startswith('/'):
@@ -68,19 +146,9 @@ class TimelineEvent(object):
             return self.href
     abs_href = property(fget=_get_abs_href)
 
-    def set_changeinfo(self, date, author='anonymous', authenticated=None,
-                       ipnr=None):
-        self.date = date
-        self.author = author
-        self.authenticated = authenticated
-        self.ipnr = ipnr
-
     def set_context(self, context, wikitext=None):
-        self.context = context
-        self.wikitext = wikitext
-
-    def dateuid(self):
-        return to_timestamp(self.date)
+        """Deprecated: use `add_wiki` instead"""
+        self.add_wiki(context, body=wikitext)
 
 
 
@@ -89,7 +157,7 @@ class ITimelineEventProvider(Interface):
     timeline.
     """
 
-    def get_timeline_filters(self, req):
+    def get_timeline_filters(req):
         """Return a list of filters that this event provider supports.
         
         Each filter must be a (name, label) tuple, where `name` is the internal
@@ -100,7 +168,7 @@ class ITimelineEventProvider(Interface):
         otherwise it will be inactive.
         """
 
-    def get_timeline_events(self, req, start, stop, filters):
+    def get_timeline_events(req, start, stop, filters):
         """Return a list of events in the time range given by the `start` and
         `stop` parameters.
 
@@ -112,4 +180,12 @@ class ITimelineEventProvider(Interface):
         Note:
         The events returned by this function used to be tuples of the form
         (kind, href, title, date, author, markup). This is now deprecated.
+        """
+
+    def event_formatter(event, wikitext_key):
+        """For a given key (as found in the TimelineEvent.wikitext dictionary),
+        specify which formatter flavor and options should be used.
+
+        Returning `('oneliner', {})` is a safe choice and returning `None`
+        will let the template decide.
         """

@@ -765,6 +765,8 @@ class ChangesetModule(Component):
                                          key=collapse_changesets):
                 changesets = list(changesets)
                 chgset = changesets[-1]
+                summary = shorten_line(chgset.message or '')
+                
                 if len(changesets) > 1:
                     revs = '%s-%s' % (changesets[0].rev, changesets[-1].rev)
                     title = tag('Changesets ', tag.em('[', revs, ']'))
@@ -777,8 +779,8 @@ class ChangesetModule(Component):
                     markup = ''
                 else:
                     message = None
-                    markup = long_messages and chgset.message or \
-                             shorten_line(chgset.message or '')
+                    markup = long_messages and chgset.message or summary
+                             
 
                 if 'BROWSER_VIEW' in req.perm:
                     files = []
@@ -791,9 +793,9 @@ class ChangesetModule(Component):
                         markup = tag.ul(tag.li(
                             [(tag.div(class_=kind),
                               tag.span(count, ' ',
-                                       count > 1 and (kind == 'copy' and
-                                                      'copies' or kind + 's') or
-                                       kind))
+                                       count > 1 and
+                                       (kind == 'copy' and
+                                        'copies' or kind + 's') or kind))
                              for kind in Changeset.ALL_CHANGES
                              for count in (filestats[kind],) if count],
                             ' in ', tag.strong(self._get_location(files))),
@@ -809,12 +811,20 @@ class ChangesetModule(Component):
                             files = files[:show_files] + [tag.li(u'\u2026')]
                         markup = tag(tag.ul(files, class_="changes"), markup)
 
-                event = TimelineEvent('changeset', title, href, markup)
+                event = TimelineEvent(self, 'changeset')
+                event.add_markup(title=title, header=markup,
+                                 summary='%s: %s' % (title, summary))
                 event.set_changeinfo(chgset.date, chgset.author, True)
-                event.set_context(context('changeset', chgset.rev), message)
-                event.use_oneliner = not long_messages
+                event.add_wiki(context('changeset', chgset.rev), body=message)
                 yield event
 
+    def event_formatter(self, event, key):
+        flavor = self.timeline_long_messages and 'default' or 'oneliner'
+        options = {}
+        if flavor == 'oneliner':
+            options['shorten'] = True
+        return (flavor, options)
+        
     # IWikiSyntaxProvider methods
 
     CHANGESET_ID = r"(?:\d+|[a-fA-F\d]{8,})" # only "long enough" hexa ids

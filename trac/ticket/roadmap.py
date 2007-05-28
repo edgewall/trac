@@ -386,6 +386,9 @@ class MilestoneModule(Component):
                 event.set_context(context('milestone', name), description)
                 yield event
 
+    def event_formatter(self, event, key):
+        return None
+
     # IRequestHandler methods
 
     def match_request(self, req):

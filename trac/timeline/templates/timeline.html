@@ -42,23 +42,22 @@
           <py:for each="event in events"
             py:with="highlight = precision and precisedate and timedelta(0) &lt;= (event.date - precisedate) &lt; precision">
             <dt class="${classes(event.kind, highlight=highlight)}">
-              <a href="${event.href}">
-                <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.title}
-                <py:if test="event.author">by <span class="author">${event.author}</span></py:if>
+              <a href="${event.get_href(href)}">
+                <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.markup.get('title')}
+                <py:if test="event.author">by <span class="author">${format_author(event.author)}</span></py:if>
               </a>
             </dt>
             <dd class="${classes(event.kind, highlight=highlight)}">
-              ${event.markup}
-              <py:if test="event.wikitext">
-                <py:choose>
-                  <py:when test="event.use_oneliner">
-                    ${wiki_to_oneliner(event.context, event.wikitext, shorten=event.shorten_oneliner)}
-                  </py:when>
-                  <py:otherwise>
-                    ${wiki_to_html(event.context, event.wikitext)}
-                  </py:otherwise>
-                </py:choose>
-              </py:if>
+              ${event.markup.get('header')}
+              <py:for each="key in event.wikitext">
+                <py:with vars="flavor, options = event.provider.event_formatter(event, key) or ('oneliner', {})"><?python
+                  if flavor == 'oneliner' and 'shorten' not in options:
+                      options['shorten'] = abbreviated_messages
+                  ?>
+                  ${wiki_to(flavor, event.context, event.wikitext[key], **options)}
+                </py:with>
+              </py:for>
+              ${event.markup.get('footer')}
             </dd>
           </py:for>
         </dl>

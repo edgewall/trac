@@ -445,12 +445,15 @@ class AttachmentModule(Component):
                 continue
             title = tag(tag.em(os.path.basename(filename)), ' attached to ',
                         tag.em(ctx.parent.name(), title=ctx.parent.summary()))
-            event = TimelineEvent('attachment', title,
-                                  context.href.attachment(realm, id, filename))
+            event = TimelineEvent(self, 'attachment')
             event.set_changeinfo(time, author)
-            event.set_context(ctx, descr)
+            event.add_markup(title=title)
+            event.add_wiki(ctx, body=descr)
             yield event
-            
+
+    def event_formatter(self, event, key):
+        return None
+    
     # IContextProvider methods
 
     def get_context_classes(self):

@@ -557,16 +557,19 @@ class WikiModule(Component):
                     markup = tag.a('(diff)',
                                    href=ctx.resource_href(action='diff'))
                 t = datetime.fromtimestamp(ts, utc)
-                event = TimelineEvent('wiki', title, ctx.resource_href(),
-                                      markup)
+                event = TimelineEvent(self, 'wiki')
                 event.set_changeinfo(t, author, ipnr=ipnr)
-                event.set_context(ctx, comment)
+                event.add_markup(title=title, markup=markup)
+                event.add_wiki(ctx, body=comment)
                 yield event
 
             # Attachments
             for event in AttachmentModule(self.env) \
                     .get_timeline_events(context('wiki'), start, stop):
                 yield event
+
+    def event_formatter(self, event, key):
+        return None
 
     # ISearchSource methods
 

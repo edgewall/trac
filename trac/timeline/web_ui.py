@@ -25,7 +25,7 @@ from urlparse import urlparse
 
 from genshi.builder import tag
 
-from trac.config import IntOption
+from trac.config import IntOption, BoolOption
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
@@ -51,6 +51,14 @@ class TimelineModule(Component):
         """Default number of days displayed in the Timeline, in days.
         (''since 0.9.'')""")
 
+    abbreviated_messages = BoolOption('timeline', 'abbreviated_messages',
+                                      'true',
+        """Whether wiki-formatted event messages should be truncated or not.
+
+        This only affects the default rendering, and can be overriden by
+        specific event providers, see their own documentation.
+        (''Since 0.11'')""")
+
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -73,7 +81,6 @@ class TimelineModule(Component):
 
     def process_request(self, req):
         req.perm.assert_permission('TIMELINE_VIEW')
-        data = {}
 
         format = req.args.get('format')
         maxrows = int(req.args.get('max', 0))
@@ -104,7 +111,8 @@ class TimelineModule(Component):
                 'today': format_date(today),
                 'yesterday': format_date(today - timedelta(days=1)),
                 'precisedate': precisedate, 'precision': precision,
-                'events': [], 'filters': []}
+                'events': [], 'filters': [],
+                'abbreviated_messages': self.abbreviated_messages}
 
         available_filters = []
         for event_provider in self.event_providers:

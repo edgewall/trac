@@ -42,7 +42,7 @@ from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
 from trac.web.api import IRequestHandler, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
-from trac.wiki.formatter import format_to_html, format_to_oneliner
+from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
@@ -231,6 +231,7 @@ class Chrome(Component):
         'timedelta': datetime.timedelta,
         'to_unicode': to_unicode,
         'utc': utc,
+        'wiki_to': format_to,
         'wiki_to_html': format_to_html,
         'wiki_to_oneliner': format_to_oneliner,
         }

@@ -38,6 +38,20 @@ class IContextProvider(Interface):
         """Generator yielding a list of `Context` subclasses."""
 
 
+class RenderingContext(object):
+    """Rendering contexts.
+
+    This specifies ''how'' a rendering should be done, with various
+    options that might be relevant to some or all the renderers.
+    """
+
+    abs_urls = False
+    escape_newlines = False
+    shorten = False
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+    
 class Context(object):
     """Base class for Wiki rendering contexts.
 
@@ -256,6 +270,24 @@ class Context(object):
         self._resource = resource
     resource = property(_get_resource, _set_resource)
 
+    def get_href(self, href, path=None, **kwargs):
+        """Produce a link to the associated resource
+        
+        Uses the given `Href` as a base. ''ResourceDescriptor''
+        """
+        if path and path[0] == '/': # absolute reference, start at project base
+            return self.href(path.lstrip('/'), **kwargs)
+        base = unicode(self.id or '').split('/')
+        for comp in (path or '').split('/'):
+            if comp in ('.', ''):
+                continue
+            elif comp == '..':
+                if base:
+                    base.pop()
+            else:
+                base.append(comp)
+        return href(self.realm, *base, **kwargs)
+
     def resource_href(self, path=None, **kwargs):
         """Return a canonical URL for the resource associated to this Context.
 
@@ -294,18 +326,7 @@ class Context(object):
         >>> main_sub.resource_href('../../..')
         '/trac.cgi/wiki'
         """
-        if path and path[0] == '/': # absolute reference, start at project base
-            return self.href(path.lstrip('/'), **kwargs)
-        base = unicode(self.id or '').split('/')
-        for comp in (path or '').split('/'):
-            if comp in ('.', ''):
-                continue
-            elif comp == '..':
-                if base:
-                    base.pop()
-            else:
-                base.append(comp)
-        return self.href(self.realm, *base, **kwargs)
+        return self.get_href(self.href, path, **kwargs)
 
     # -- resource descriptors methods
 

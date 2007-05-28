@@ -37,7 +37,7 @@ from trac.util.text import shorten_line, to_unicode
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'wiki_to_link', 'Formatter',
-           'format_to_html', 'format_to_oneliner', 'extract_link']
+           'format_to', 'format_to_html', 'format_to_oneliner', 'extract_link']
 
 def system_message(msg, text=None):
     return html.DIV(html.STRONG(msg), text and html.PRE(text),
@@ -991,10 +991,20 @@ class InlineHtmlFormatter(object):
         return Markup(out.getvalue())
 
 
-def format_to_html(ctx, wikidom, escape_newlines=False):
+def format_to(flavor, ctx, wikidom, **options):
+    if flavor == 'oneliner':
+        return format_to_oneliner(ctx, wikidom, **options)
+    else:
+        return format_to_html(ctx, wikidom, **options)
+
+def format_to_html(ctx, wikidom, escape_newlines=False, abs_urls=False):
+    if not wikidom:
+        return ''
     return HtmlFormatter(ctx, wikidom).generate(escape_newlines)
 
-def format_to_oneliner(ctx, wikidom, shorten=False):
+def format_to_oneliner(ctx, wikidom, shorten=False, abs_urls=False):
+    if not wikidom:
+        return ''
     return InlineHtmlFormatter(ctx, wikidom).generate(shorten)
 
 def extract_link(ctx, wikidom):

@@ -77,6 +77,13 @@ class TicketModule(Component):
         """Don't accept tickets with a too big description.
         (''since 0.11'').""")
 
+    timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
+                                          'oneliner',
+        """Which formatter flavor (e.g. 'default' or 'oneliner') should be
+        used when presenting the description for new tickets.
+        If 'oneliner', the [timeline] abbreviated_messages option applies.
+        (''since 0.11'').""")
+
     # IContentConverter methods
 
     def get_supported_conversions(self):
@@ -173,13 +180,14 @@ class TicketModule(Component):
         stop = to_timestamp(stop)
 
         status_map = {'new': ('newticket', 'created'),
-                      'reopened': ('newticket', 'reopened'),
+                      'reopened': ('reopenedticket', 'reopened'),
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
         context = Context(self.env, req)
+        description = {}
 
-        def produce((id, ts, author, type, summary), status, fields,
-                    comment, cid):
+        def produce((id, ts, author, type, summary, description),
+                    status, fields, comment, cid):
             ctx = context('ticket', id)
             info = ''
             resolution = fields.get('resolution')
@@ -202,19 +210,19 @@ class TicketModule(Component):
             title = ctx.format_summary(summary, status, resolution, type)
             title = tag('Ticket ', tag.em(ctx.shortname(), title=title),
                         ' (', shorten_line(summary), ') ', verb)
-            ticket_href = ctx.resource_href()
-            if cid:
-                ticket_href += '#comment:' + cid
             markup = message = None
             if status == 'new':
-                markup = summary
+                message = description
             else:
                 markup = info
                 message = comment
             t = datetime.fromtimestamp(ts, utc)
-            event = TimelineEvent(kind, title, ticket_href, markup)
+            event = TimelineEvent(self, kind)
             event.set_changeinfo(t, author)
-            event.set_context(ctx, message)
+            event.add_markup(title=title, header=markup)
+            event.add_wiki(ctx, body=message)
+            if cid:
+                event.href_fragment = '#comment:' + cid
             return event
 
         # Ticket changes
@@ -237,7 +245,7 @@ class TicketModule(Component):
                         if ev:
                             yield ev
                     status, fields, comment, cid = 'edit', {}, '', None
-                    previous_update = (id, t, author, type, summary)
+                    previous_update = (id, t, author, type, summary, None)
                 if field == 'comment':
                     comment = newvalue
                     cid = oldvalue and oldvalue.split('.')[-1]
@@ -252,7 +260,8 @@ class TicketModule(Component):
 
             # New tickets
             if 'ticket' in filters:
-                cursor.execute("SELECT id,time,reporter,type,summary"
+                cursor.execute("SELECT id,time,reporter,type,summary,"
+                               "description"
                                "  FROM ticket WHERE time>=%s AND time<=%s",
                                (start, stop))
                 for row in cursor:
@@ -263,6 +272,12 @@ class TicketModule(Component):
                 for event in AttachmentModule(self.env) \
                         .get_timeline_events(context('ticket'), start, stop):
                     yield event
+
+    def event_formatter(self, event, key):
+        flavor = 'oneliner'
+        if event.kind == 'newticket':
+            flavor = self.timeline_newticket_formatter
+        return (flavor, {})
 
     # Internal methods
 
