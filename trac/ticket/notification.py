@@ -68,6 +68,7 @@ class TicketNotifyEmail(NotifyEmail):
         changes_descr = ''
         change_data = {}
         link = self.env.abs_href.ticket(ticket.id)
+        summary = self.ticket['summary']
         
         if not self.newticket and modtime:  # Ticket change
             from trac.ticket.web_ui import TicketModule
@@ -96,6 +97,8 @@ class TicketNotifyEmail(NotifyEmail):
                         cdescr += 'New description:' + 2*CRLF + new_descr + \
                                   CRLF
                         changes_descr = cdescr
+                    elif field == 'summary':
+                        summary = "%s (was: %s)" % (new, old)
                     elif field == 'cc':
                         (addcc, delcc) = self.diff_cc(old, new)
                         chgcc = ''
@@ -125,7 +128,7 @@ class TicketNotifyEmail(NotifyEmail):
         self.ticket['new'] = self.newticket
         self.ticket['link'] = link
         
-        subject = self.format_subj()
+        subject = self.format_subj(summary)
         if not self.newticket:
             subject = 'Re: ' + subject
         self.data.update({
@@ -196,15 +199,14 @@ class TicketNotifyEmail(NotifyEmail):
         return '#%s: %s' % (self.ticket.id, wrap(self.ticket['summary'],
                                                  self.COLS, linesep=CRLF))
 
-    def format_subj(self):
+    def format_subj(self, summary):
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__': 
             prefix = '[%s]' % self.config.get('project', 'name') 
         if prefix: 
-            return '%s #%s: %s' % (prefix, self.ticket.id,
-                                  self.ticket['summary'])
+            return '%s #%s: %s' % (prefix, self.ticket.id, summary)
         else:
-            return '#%s: %s' % (self.ticket.id, self.ticket['summary']) 
+            return '#%s: %s' % (self.ticket.id, summary) 
 
     def get_recipients(self, tktid):
         notify_reporter = self.config.getbool('notification',
