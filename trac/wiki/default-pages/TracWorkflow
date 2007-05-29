@@ -31,9 +31,11 @@ The `accept.operations` line specifies changes that will be made to the ticket i
 The available operations are:
  - del_owner -- Clear the owner field.
  - set_owner -- Sets the owner to the selected or entered owner.
+   - ''actionname''`.set_owner` may optionally be set to a comma delimited list or a single value.
  - set_owner_to_self -- Sets the owner to the logged in user.
  - del_resolution -- Clears the resolution field
  - set_resolution -- Sets the resolution to the selected value.
+   - ''actionname''`.set_resolution` may optionally be set to a comma delimited list or a single value.
  - leave_status -- Displays "leave as <current status>" and makes no change to the ticket.
 '''Note:''' Specifying conflicting operations (such as `set_owner` and `del_owner`) has unspecified results.
 
