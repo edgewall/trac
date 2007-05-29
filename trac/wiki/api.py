@@ -345,7 +345,7 @@ class WikiSystem(Component):
         if 'WIKI_VIEW' not in req.perm(context):
             return html.A(label, href=href, rel='nofollow',
                           class_='forbidden wiki',
-                          title='Insufficient privilege')
+                          title='WIKI_VIEW required')
         elif not self.has_page(page): # TODO: check for the version?
             if ignore_missing:
                 return label
