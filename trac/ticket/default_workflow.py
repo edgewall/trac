@@ -173,28 +173,48 @@ class ConfigurableTicketWorkflow(Component):
         control = [] # default to nothing
         hints = []
         if 'set_owner' in operations:
-            hints.append("The owner will change")
             id = action + '_reassign_owner'
             selected_owner = req.args.get(id, req.authname)
-            if self.config.getbool('ticket', 'restrict_owner'):
+
+            if this_action.has_key('set_owner'):
+                owners = [x.strip() for x in this_action['set_owner'].split(',')]
+            elif self.config.getbool('ticket', 'restrict_owner'):
                 perm = PermissionSystem(self.env)
-                options = perm.get_users_with_permission('TICKET_MODIFY')
-                control.append(tag(['to ', tag.select(
-                    [tag.option(x, selected=(x == selected_owner or None))
-                     for x in options],
-                    id=id, name=id)]))
+                owners = perm.get_users_with_permission('TICKET_MODIFY')
             else:
+                owners = None
+
+            if owners == None:
                 control.append(tag(['to ', tag.input(type='text', id=id, name=id,
                     value=req.args.get(id, req.authname))]))
+                hints.append("The owner will change")
+            elif len(owners) == 1:
+                control.append(tag('to %s' % owners[0]))
+                hints.append("The owner will change to %s" % owners[0])
+            else:
+                control.append(tag(['to ', tag.select(
+                    [tag.option(x, selected=(x == selected_owner or None))
+                     for x in owners],
+                    id=id, name=id)]))
+                hints.append("The owner will change")
         if 'set_resolution' in operations:
-            hints.append("The resolution will be set")
-            options = [val.name for val in model.Resolution.select(self.env)]
-            id = action + '_resolve_resolution'
-            selected_option = req.args.get(id, 'fixed')
-            control.append(tag(['as ', tag.select(
-                [tag.option(x, selected=(x == selected_option or None))
-                 for x in options],
-                id=id, name=id)]))
+            if this_action.has_key('set_resolution'):
+                resolutions = [x.strip() for x in this_action['set_resolution'].split(',')]
+            else:
+                resolutions = [val.name for val in model.Resolution.select(self.env)]
+            if not resolutions:
+                assert(resolutions)
+            elif len(resolutions) == 1:
+                control.append(tag('as %s' % resolutions[0]))
+                hints.append("The resolution will be set to %s" % resolutions[0])
+            else:
+                id = action + '_resolve_resolution'
+                selected_option = req.args.get(id, 'fixed')
+                control.append(tag(['as ', tag.select(
+                    [tag.option(x, selected=(x == selected_option or None))
+                     for x in resolutions],
+                    id=id, name=id)]))
+                hints.append("The resolution will be set")
         if 'leave_status' in operations:
             control.append('as ' + ticket['status'])
         else:
@@ -221,7 +241,8 @@ class ConfigurableTicketWorkflow(Component):
             if operation == 'del_owner':
                 updated['owner'] = ''
             elif operation == 'set_owner':
-                newowner = req.args.get(action + '_reassign_owner')
+                newowner = req.args.get(action + '_reassign_owner',
+                                        this_action['set_owner'].strip())
                 # If there was already an owner, we get a list, [new, old],
                 # but if there wasn't we just get new.
                 if type(newowner) == list:
@@ -233,7 +254,8 @@ class ConfigurableTicketWorkflow(Component):
             if operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
-                newresolution = req.args.get(action + '_resolve_resolution')
+                newresolution = req.args.get(action + '_resolve_resolution',
+                                        this_action['set_resolution'].strip())
                 updated['resolution'] = newresolution
 
             # leave_status and hidden are just no-ops here, so we don't look
