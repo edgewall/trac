@@ -340,7 +340,13 @@ class WikiSystem(Component):
         if version and query:
             query = '&' + query[1:]
         href = formatter.href.wiki(page, version=version) + query + fragment
-        if not self.has_page(page): # TODO: check for the version?
+        req = formatter.context.req
+        context = Context(self.env, req, 'wiki', id=page, version=version)
+        if 'WIKI_VIEW' not in req.perm(context):
+            return html.A(label, href=href, rel='nofollow',
+                          class_='forbidden wiki',
+                          title='Insufficient privilege')
+        elif not self.has_page(page): # TODO: check for the version?
             if ignore_missing:
                 return label
             return html.A(label+'?', href=href, class_='missing wiki',

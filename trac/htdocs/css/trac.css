@@ -305,6 +305,7 @@ a.missing:link, a.missing:visited { background: #fafaf0 }
 a.missing:hover { color: #000 }
 a.closed:link, a.closed:visited { text-decoration: line-through }
 span.closed { text-decoration: line-through }
+span.forbidden, a.forbidden { background: #fafaf0; color: #998; }
 
 dl.wiki dt { font-weight: bold }
 dl.compact dt { float: left; padding-right: .5em }
