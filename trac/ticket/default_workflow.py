@@ -242,7 +242,7 @@ class ConfigurableTicketWorkflow(Component):
                 updated['owner'] = ''
             elif operation == 'set_owner':
                 newowner = req.args.get(action + '_reassign_owner',
-                                        this_action['set_owner'].strip())
+                                    this_action.get('set_owner', '').strip())
                 # If there was already an owner, we get a list, [new, old],
                 # but if there wasn't we just get new.
                 if type(newowner) == list:
@@ -255,7 +255,7 @@ class ConfigurableTicketWorkflow(Component):
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
                 newresolution = req.args.get(action + '_resolve_resolution',
-                                        this_action['set_resolution'].strip())
+                                this_action.get('set_resolution', '').strip())
                 updated['resolution'] = newresolution
 
             # leave_status and hidden are just no-ops here, so we don't look
