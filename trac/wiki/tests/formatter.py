@@ -9,7 +9,7 @@ from trac.core import *
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
 from trac.wiki.macros import WikiMacroBase
-from trac.test import Mock, EnvironmentStub
+from trac.test import Mock, MockPerm, EnvironmentStub
 from trac.util.html import html
 from trac.util.text import to_unicode
 
@@ -87,9 +87,11 @@ class WikiTestCase(unittest.TestCase):
         self.env = self.context.env = EnvironmentStub()
 
         from trac.web.href import Href
+
         req = Mock(href=Href('/'),
                         abs_href=Href('http://www.example.com/'),
-                        authname='anonymous')
+                        authname='anonymous',
+                        perm=MockPerm())
         if not self.context.req:
             self.context.req = self.req = req
         else:

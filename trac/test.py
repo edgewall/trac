@@ -84,6 +84,21 @@ def Mock(bases=(), *initargs, **kw):
     return mock
 
 
+class MockPerm(object):
+    """Fake permission class. Necessary as Mock can not be used with operator
+    overloading."""
+    def has_permission(self, x):
+        return True
+    __contains__ = has_permission
+
+    def __call__(self, *a, **kw):
+        return self
+
+    def require(self, *a, **kw):
+        pass
+    assert_permission = require
+
+
 class TestSetup(unittest.TestSuite):
     """
     Test suite decorator that allows a fixture to be setup for a complete
