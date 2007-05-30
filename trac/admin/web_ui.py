@@ -330,7 +330,7 @@ class PermissionAdminPanel(Component):
                 req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {
-            'actions': req.perm.permissions(),
+            'actions': perm.get_actions(),
             'perms': all_permissions
         }
 
