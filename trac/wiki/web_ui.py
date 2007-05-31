@@ -25,7 +25,7 @@ import StringIO
 from genshi.builder import tag
 
 from trac.attachment import Attachment, AttachmentModule
-from trac.context import Context, ResourceSystem
+from trac.context import Context, ResourceSystem, ResourceNotFound
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
 from trac.perm import IPermissionRequestor
@@ -37,7 +37,7 @@ from trac.util.text import shorten_line
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, ITemplateProvider
-from trac.web import HTTPNotFound, IRequestHandler
+from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.model import WikiPage
 
@@ -475,7 +475,7 @@ class WikiModule(Component):
 
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(context):
-                raise HTTPNotFound('Page %s not found', page.name)
+                raise ResourceNotFound('Page %s not found', page.name)
 
         latest_page = WikiPage(self.env, page.name)
 
