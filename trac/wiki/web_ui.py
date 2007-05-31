@@ -475,7 +475,7 @@ class WikiModule(Component):
 
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(context):
-                raise ResourceNotFound('Page %s not found', page.name)
+                raise ResourceNotFound('Page %s not found' % page.name)
 
         latest_page = WikiPage(self.env, page.name)
 
