@@ -21,6 +21,7 @@ import urllib
 
 from genshi.builder import tag
 
+from trac.context import ResourceNotFound 
 from trac.core import TracError
 from trac.util.datefmt import pretty_timedelta
 from trac.util.text import shorten_line
@@ -55,7 +56,7 @@ def get_existing_node(req, repos, path, rev):
     try: 
         return repos.get_node(path, rev) 
     except NoSuchNode, e:
-        raise TracError(tag(
+        raise ResourceNotFound(tag(
             tag.p(e.message, class_="message"), 
             tag.p("You can ",
                   tag.a("search",

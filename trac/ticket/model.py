@@ -23,6 +23,7 @@ import time
 from datetime import date, datetime
 
 from trac.attachment import Attachment
+from trac.context import ResourceNotFound
 from trac.core import TracError
 from trac.ticket.api import TicketSystem
 from trac.util import sorted, embedded_numbers
@@ -85,8 +86,8 @@ class Ticket(object):
                        % ','.join(std_fields), (tkt_id,))
         row = cursor.fetchone()
         if not row:
-            raise TracError('Ticket %d does not exist.' % tkt_id,
-                            'Invalid Ticket Number')
+            raise ResourceNotFound('Ticket %d does not exist.' % tkt_id,
+                                   'Invalid Ticket Number')
 
         self.id = tkt_id
         for i in range(len(std_fields)):
@@ -588,8 +589,8 @@ class Milestone(object):
                        "FROM milestone WHERE name=%s", (name,))
         row = cursor.fetchone()
         if not row:
-            raise TracError('Milestone %s does not exist.' % name,
-                            'Invalid Milestone Name')
+            raise ResourceNotFound('Milestone %s does not exist.' % name,
+                                   'Invalid Milestone Name')
         self.name = row[0]
         self.due = row[1] and datetime.fromtimestamp(int(row[1]), utc) or None
         self.completed = row[2] and datetime.fromtimestamp(int(row[2]), utc) or None

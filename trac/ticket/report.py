@@ -23,7 +23,7 @@ from itertools import izip
 
 from genshi.builder import tag
 
-from trac.context import Context
+from trac.context import Context, ResourceNotFound
 from trac.core import *
 from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
@@ -226,8 +226,8 @@ class ReportModule(Component):
             for title, sql, description in cursor:
                 break
             else:
-                raise TracError('Report %d does not exist.' % id,
-                                'Invalid Report Number')
+                raise ResourceNotFound('Report %d does not exist.' % id,
+                                       'Invalid Report Number')
 
         # If this is a saved custom query. redirect to the query module
         #

@@ -24,7 +24,7 @@ import urllib
 from genshi.builder import tag
 
 from trac.config import ListOption, BoolOption, Option
-from trac.context import Context
+from trac.context import Context, ResourceNotFound
 from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
                               IHTMLPreviewAnnotator
@@ -38,7 +38,7 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html, format_to_oneliner
-from trac.versioncontrol.api import NoSuchChangeset
+from trac.versioncontrol.api import NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.web_ui.util import *
 
 
@@ -330,12 +330,16 @@ class BrowserModule(Component):
 
         # Find node for the requested path/rev
         repos = self.env.get_repository(req.authname)
-        if rev:
-            rev = repos.normalize_rev(rev)
-        # If `rev` is `None`, we'll try to reuse `None` consistently,
-        # as a special shortcut to the latest revision.
-        rev_or_latest = rev or repos.youngest_rev
-        node = get_existing_node(req, repos, path, rev_or_latest)
+        
+        try:
+            if rev:
+                rev = repos.normalize_rev(rev)
+            # If `rev` is `None`, we'll try to reuse `None` consistently,
+            # as a special shortcut to the latest revision.
+            rev_or_latest = rev or repos.youngest_rev
+            node = get_existing_node(req, repos, path, rev_or_latest)
+        except NoSuchChangeset, e:
+            raise ResourceNotFound(e.message, 'Invalid Changeset Number')
 
         context = Context(self.env, req, 'source', path,
                           version=node.created_rev) # resource=node

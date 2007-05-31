@@ -31,6 +31,10 @@ class InvalidResourceSelector(ResourceError):
     """Thrown when an invalid resource selector is provided."""
 
 
+class ResourceNotFound(ResourceError):
+    """Thrown when a non-existent resource is requested"""
+
+
 class IContextProvider(Interface):
     """Map between Trac resources and their corresponding contexts."""
 

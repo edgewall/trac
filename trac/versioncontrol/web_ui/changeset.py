@@ -28,7 +28,7 @@ import time
 from genshi.builder import tag
 
 from trac.config import Option, BoolOption, IntOption
-from trac.context import Context
+from trac.context import Context, ResourceNotFound
 from trac.core import *
 from trac.mimeview import Mimeview, is_binary
 from trac.perm import IPermissionRequestor
@@ -226,13 +226,16 @@ class ChangesetModule(Component):
             new, new_path = new.split('@', 1)
 
         # -- normalize and check for special case
-        new_path = repos.normalize_path(new_path)
-        new = repos.normalize_rev(new)
-
-        repos.authz.assert_permission_for_changeset(new)
-
-        old_path = repos.normalize_path(old_path or new_path)
-        old = repos.normalize_rev(old or new)
+        try:
+            new_path = repos.normalize_path(new_path)
+            new = repos.normalize_rev(new)
+            
+            repos.authz.assert_permission_for_changeset(new)
+            
+            old_path = repos.normalize_path(old_path or new_path)
+            old = repos.normalize_rev(old or new)
+        except NoSuchChangeset, e:
+            raise ResourceNotFound(e.message, 'Invalid Changeset Number')
 
         if old_path == new_path and old == new: # revert to Changeset
             old_path = old = None

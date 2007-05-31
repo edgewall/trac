@@ -29,6 +29,7 @@ from genshi.output import DocType
 from genshi.template import TemplateLoader
 
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
+from trac.context import ResourceNotFound
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError, PermissionSystem
@@ -253,6 +254,8 @@ class RequestDispatcher(Component):
                 raise err[0], err[1], err[2]
         except PermissionError, e:
             raise HTTPForbidden(to_unicode(e))
+        except ResourceNotFound, e:
+            raise HTTPNotFound(e)
         except TracError, e:
             raise HTTPInternalError(e)
 
