@@ -497,7 +497,7 @@ class WikiModule(Component):
             
         # Enable attachments
         attach_href = None
-        if 'CREATE' in req.perm(context('attachment')):
+        if 'WIKI_MODIFY' in req.perm(context):
             attach_href = req.href.attachment('wiki', page.name)
 
         prefix = self.PAGE_TEMPLATES_PREFIX
@@ -517,9 +517,14 @@ class WikiModule(Component):
                                                 version=next_version),
                      'Version %d' % next_version)
 
+        # List of attachments valid in this context
+        attachments = [a for a in Attachment.select(self.env, 'wiki', page.name)
+                       if 'WIKI_VIEW' in
+                       req.perm(context('attachment', a.filename))]
+
         data.update({
             'latest_version': latest_page.version,
-            'attachments': Attachment.select(self.env, 'wiki', page.name),
+            'attachments': attachments,
             'attach_href': attach_href,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
