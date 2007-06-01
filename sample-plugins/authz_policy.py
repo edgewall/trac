@@ -18,30 +18,60 @@
 """Permission policy enforcement through an authz-like configuration file.
 Refer to SVN documentation for syntax of the authz file. Groups are supported.
 
-Each section of the config is a glob to match against a Trac resource
-descriptor. These descriptors are in the form:
+Note that this plugin requires the `configobj` package:
 
-    <realm>:<id>@<version>[/<realm>:<id>@<version> ...]
-
-Resources are ordered left to right, from parent to child. If any component is
-inapplicable, * is substituted.
-
-eg. An attachment on WikiStart:
-
-    wiki:WikiStart@117/attachment/FOO.JPG@*
-
-or the Wiki module as a whole:
-
-    wiki:*@*
+    http://www.voidspace.org.uk/python/configobj.html
+    
+You should be able to install it by doing a simple `easy_install configobj`
 
 
-Sections are checked against the current Trac resource **IN ORDER** of
-appearance in the configuration file. ORDER IS CRITICAL.
+Enabling this policy requires listing it in the trac.ini:
 
-Once a section matches, the current username is matched, **IN ORDER**, against
-the keys of the section. If a key is prefixed with a @ it is treated as a
-group. The username will match any of 'anonymous', 'authenticated', <username>
-or '*', using normal Trac permission rules.
+[trac]
+permission_policies = AuthzPolicy, DefaultPermissionPolicy
+
+[authz_policy]
+authz_file = conf/authzpolicy.conf
+
+
+This means that the AuthzPolicy permissions will be checked first, and only
+if no rule is found will the DefaultPermissionPolicy be used.
+
+The authzpolicy.conf file is a .ini style configuration file.
+
+ - Each section of the config is a glob pattern used to match against a Trac
+resource descriptor. These descriptors are in the form:
+
+     <realm>:<id>@<version>[/<realm>:<id>@<version> ...]
+
+   Resources are ordered left to right, from parent to child.
+   If any component is inapplicable, * is substituted.
+
+   e.g. An attachment on WikiStart:
+
+     wiki:WikiStart@117/attachment/FOO.JPG@*
+
+   any of the following sections would match it:
+
+     [wiki:*]
+     [wiki:WikiStart*]
+     [wiki:WikiStart@*]
+     [wiki:WikiStart@*/attachment/*]
+
+   but be careful, not this one:
+
+     [wiki:WikiStart@117/attachment/FOO.JPG]
+
+   as the above won't match the @ part in the attachment resource descriptor.
+
+
+ - Sections are checked against the current Trac resource **IN ORDER** of
+   appearance in the configuration file. ORDER IS CRITICAL.
+
+ - Once a section matches, the current username is matched, **IN ORDER**,
+   against the keys of the section. If a key is prefixed with a @, it is
+   treated as a group. The username will match any of 'anonymous',
+   'authenticated', <username> or '*', using normal Trac permission rules.
 
 Example configuration:
 
