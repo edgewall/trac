@@ -517,14 +517,9 @@ class WikiModule(Component):
                                                 version=next_version),
                      'Version %d' % next_version)
 
-        # List of attachments valid in this context
-        attachments = [a for a in Attachment.select(self.env, 'wiki', page.name)
-                       if 'WIKI_VIEW' in
-                       req.perm(context('attachment', a.filename))]
-
         data.update({
             'latest_version': latest_page.version,
-            'attachments': attachments,
+            'attachments': Attachment.select(self.env, 'wiki', page.name),
             'attach_href': attach_href,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,

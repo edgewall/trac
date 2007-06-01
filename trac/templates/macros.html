@@ -175,7 +175,7 @@
         <h3>Attachments</h3>
         <ul>
           <py:for each="attachment in attachments" py:with="ctx = context('attachment', attachment.filename)">
-            <li>
+            <li py:if="'VIEW' in req.perm(ctx)">
               ${show_one_attachment(attachment)}
               <q py:if="compact and attachment.description">${wiki_to_oneliner(ctx, attachment.description)}</q>
             </li>
@@ -188,8 +188,12 @@
           <dl py:if="attachments" class="attachments">
             <py:for each="attachment in attachments"
               py:with="ctx = context('attachment', attachment.filename)">
-              <dt>${show_one_attachment(attachment)}</dt>
-              <dd py:if="attachment.description">${wiki_to_oneliner(ctx, attachment.description)}</dd>
+              <py:if test="'VIEW' in req.perm(ctx)">
+                <dt>${show_one_attachment(attachment)}</dt>
+                <dd py:if="attachment.description">
+                  ${wiki_to_oneliner(ctx, attachment.description)}
+                </dd>
+              </py:if>
             </py:for>
           </dl>
           <form py:if="attach_href" method="get" action="$attach_href">
