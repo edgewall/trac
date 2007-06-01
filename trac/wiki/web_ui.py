@@ -497,7 +497,7 @@ class WikiModule(Component):
             
         # Enable attachments
         attach_href = None
-        if 'WIKI_MODIFY' in req.perm(context):
+        if 'CREATE' in req.perm(context('attachment')):
             attach_href = req.href.attachment('wiki', page.name)
 
         prefix = self.PAGE_TEMPLATES_PREFIX

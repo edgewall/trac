@@ -90,7 +90,7 @@
                 </div>
               </form>
               <py:if test="page.exists">
-                <form method="get" action="$attach_href">
+                <form py:if="attach_href" method="get" action="$attach_href">
                   <div>
                     <input type="hidden" name="action" value="new" />
                     <input type="submit" value="Attach file" />
