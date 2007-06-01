@@ -91,7 +91,7 @@ class AuthzPolicy(Component):
     # IPermissionPolicy methods
     def check_permission(self, username, action, context):
         if self.authz_file and not self.authz_mtime or \
-                os.path.getmtime(self.authz_file) > self.authz_mtime:
+                os.path.getmtime(self.get_authz_file()) > self.authz_mtime:
             self.parse_authz()
         ctx_key = self.flatten_context(context)
         permissions = self.authz_permissions(ctx_key, username)
@@ -102,16 +102,21 @@ class AuthzPolicy(Component):
         return action in permissions
 
     # Internal methods
+    def get_authz_file(self):
+        f = self.authz_file
+        return os.path.isabs(f) and f or os.path.join(self.env.path, f)
+    
     def parse_authz(self):
-        self.env.log.debug('Parsing authz security policy %s' % self.authz_file)
-        self.authz = ConfigObj(self.authz_file)
+        self.env.log.debug('Parsing authz security policy %s' %
+                           self.get_authz_file())
+        self.authz = ConfigObj(self.get_authz_file())
         self.groups_by_user = {}
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):
                 users = [users]
             for user in users:
                 self.groups_by_user.setdefault(user, set()).add('@' + group)
-        self.authz_mtime = os.path.getmtime(self.authz_file)
+        self.authz_mtime = os.path.getmtime(self.get_authz_file())
 
     def flatten_context(self, context):
         def flatten(context):
