@@ -692,9 +692,12 @@ class AttachmentModule(Component):
         return tag.a(label, class_='missing attachment', rel='nofollow')
 
     _perm_maps = {
-        'CREATE': {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY'},
-        'VIEW': {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'},
-        'DELETE': {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE'},
+        'CREATE': {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY',
+                   'milestone': 'MILESTONE_MODIFY'},
+        'VIEW': {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW',
+                 'milestone': 'MILESTONE_VIEW'},
+        'DELETE': {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE',
+                   'milestone': 'MILESTONE_DELETE'},
         }
     
     def _get_action_for_realm(self, action, req, context):

@@ -22,7 +22,8 @@ from time import localtime, strftime, time
 from genshi.builder import tag
 
 from trac import __version__
-from trac.context import Context
+from trac.attachment import AttachmentModule
+from trac.context import IContextProvider, Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util import sorted
@@ -334,10 +335,24 @@ class RoadmapModule(Component):
         write_prop('END', 'VCALENDAR')
 
 
+class MilestoneContext(Context):
+    """Milestone Context."""
+
+    realm = 'milestone'
+
+    # methods reimplemented from Context
+
+    def get_resource(self):
+        return Milestone(self.env, self.id)
+
+    def name(self):
+        return 'Milestone ' + self.id
+
+
 class MilestoneModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, IWikiSyntaxProvider)
+               ITimelineEventProvider, IWikiSyntaxProvider, IContextProvider)
  
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
@@ -385,6 +400,12 @@ class MilestoneModule(Component):
                 event.set_changeinfo(completed, '') # FIXME: store the author
                 event.set_context(context('milestone', name), description)
                 yield event
+
+            # Attachments
+            for event in AttachmentModule(self.env) \
+                    .get_timeline_events(context('milestone'), start, stop):
+                yield event
+                
 
     def event_formatter(self, event, key):
         return None
@@ -548,6 +569,8 @@ class MilestoneModule(Component):
         component_group_available = False
         ticket_fields = TicketSystem(self.env).get_ticket_fields()
 
+        context = Context(self.env, req)('milestone', milestone.name)
+
         # collect fields that can be used for grouping
         for field in ticket_fields:
             if field['type'] == 'select' and field['name'] != 'milestone' \
@@ -568,12 +591,13 @@ class MilestoneModule(Component):
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
         stat = get_ticket_stats(self.stats_provider, tickets)
 
-        data = {'milestone': milestone,
-                'context': Context(self.env, req, 'milestone', milestone.name,
-                                   db=db),
-                'available_groups': available_groups, 
-                'grouped_by': by,
-                'groups': milestone_groups}
+        data = {
+            'milestone': milestone, 'context': context,
+            'attachments': AttachmentModule(self.env).attachment_list(context),
+            'available_groups': available_groups, 
+            'grouped_by': by,
+            'groups': milestone_groups
+            }
         data.update(milestone_stats_data(req, stat, milestone.name))
 
         if by:
@@ -637,3 +661,8 @@ class MilestoneModule(Component):
         else: 
             return tag.a(label, class_='missing milestone', href=href,
                          rel="nofollow")
+
+    # IContextProvider methods
+
+    def get_context_classes(self):
+        yield MilestoneContext

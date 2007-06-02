@@ -71,7 +71,9 @@
 
       <div class="description">${wiki_to_html(context, milestone.description)}</div>
 
-      <div py:if="'MILESTONE_MODIFY' in perm or 'MILESTONE_DELETE' in perm"
+      ${list_of_attachments(attachments, compact=True)}
+
+      <div py:if="'MILESTONE_MODIFY' in perm or 'MILESTONE_DELETE' in perm or attachments.has_perm('CREATE')"
            class="buttons">
         <form py:if="'MILESTONE_MODIFY' in perm" method="get" action="">
           <input type="hidden" name="action" value="edit" />
@@ -81,6 +83,7 @@
           <input type="hidden" name="action" value="delete" />
           <input type="submit" value="Delete milestone" />
         </form>
+        ${attach_file_form(attachments)}
       </div>
 
     </div>
