@@ -594,12 +594,11 @@ class AttachmentModule(Component):
         self.require_perm('VIEW', context.req, context)
 
         data = {
-            'mode': 'list', 'context': context,
+            'mode': 'list', 'context': None, # no specific attachment
             'attachments': self.attachment_list(context)
             }
 
-        add_link(context.req, 'up', context.parent.resource_href(),
-                 context.parent.name())
+        add_link(context.req, 'up', context.resource_href(), context.name())
         
         return 'attachment.html', data, None
 

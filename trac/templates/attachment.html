@@ -10,8 +10,9 @@
     <title>Attachment</title>
   </head>
 
-  <body py:with="parent_name = context.parent.name();
-                 parent_href = context.parent.resource_href()">
+  <body py:with="parent = attachments and attachments.parent or context.parent;
+                 parent_name = parent.name();
+                 parent_href = parent.get_href(href)">
 
     <div id="ctxtnav" class="nav">
       <h2>Attachment Navigation</h2>
