@@ -416,12 +416,16 @@ class AttachmentModule(Component):
     # Public methods
 
     def require_perm(self, action, req, context):
+        if context.realm != 'attachment':
+            context = context('attachment')
         if action not in req.perm(context):
             mapped_action = self._get_action_for_realm(action, req, context)
             if mapped_action not in req.perm(context):
                 raise PermissionError(mapped_action or action)
 
     def has_perm(self, action, req, context):
+        if context.realm != 'attachment':
+            context = context('attachment')
         if action in req.perm(context):
             return True
         mapped_action = self._get_action_for_realm(action, req, context)
@@ -451,7 +455,6 @@ class AttachmentModule(Component):
         `context` specifies the realm.
         """
         req = context.req
-        perm_map = {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW'}
         for change, realm, id, filename, time, descr, author in \
                 self.get_history(start, stop, context.realm):
             ctx = context(realm=realm, id=id)('attachment', filename)
@@ -576,6 +579,7 @@ class AttachmentModule(Component):
             'mode': 'list', 'context': context,
             'attachments': Attachment.select(self.env, context.parent.realm,
                                              context.parent.id),
+            'attachment_perm': AttachmentModule(self.env).has_perm,            
             }
 
         add_link(req, 'up', context.parent.resource_href(),

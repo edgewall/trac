@@ -76,7 +76,7 @@
 
       <py:when test="'list'">
         <h1><a href="$parent_href">$parent_name</a></h1>
-        ${list_of_attachments(context.parent, attachments, context.resource_href())}
+        ${list_of_attachments(context.parent, attachments, attachment_perm)}
       </py:when>
 
       <py:otherwise> <!--! 'render' mode -->

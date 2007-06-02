@@ -495,11 +495,6 @@ class WikiModule(Component):
             except ValueError:
                 version = None
             
-        # Enable attachments
-        attach_href = None
-        if 'WIKI_MODIFY' in req.perm(context):
-            attach_href = req.href.attachment('wiki', page.name)
-
         prefix = self.PAGE_TEMPLATES_PREFIX
         templates = [t[len(prefix):] for t in
                      WikiSystem(self.env).get_pages(prefix) if 'WIKI_VIEW'
@@ -517,15 +512,10 @@ class WikiModule(Component):
                                                 version=next_version),
                      'Version %d' % next_version)
 
-        # List of attachments valid in this context
-        attachments = [a for a in Attachment.select(self.env, 'wiki', page.name)
-                       if 'WIKI_VIEW' in
-                       req.perm(context('attachment', a.filename))]
-
         data.update({
             'latest_version': latest_page.version,
-            'attachments': attachments,
-            'attach_href': attach_href,
+            'attachments': Attachment.select(self.env, 'wiki', page.name),
+            'attachment_perm': AttachmentModule(self.env).has_perm,
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
             'version': version

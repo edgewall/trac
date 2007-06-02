@@ -159,11 +159,11 @@
   <!--! Display a list of attachments
   -
   -     'attachments' is a list of attachment data
-  -     'attach_href' is a url for adding a new attachment
+  -     'attachment_perm' is a function for check permissions for actions on attachments
   -     'compact' is used to switch between a compact list of attachments (e.g. as used for
   -       the wiki view) and an expanded list (e.g. as used for the ticket view)
   -->
-  <py:def function="list_of_attachments(context, attachments, attach_href, compact=False)">
+  <py:def function="list_of_attachments(context, attachments, attachment_perm, compact=False)">
     <py:def function="show_one_attachment(attachment)">
       <a href="${context.href('attachment', context.realm, context.id, attachment.filename)}"
          title="View attachment">$attachment.filename</a>
@@ -175,7 +175,7 @@
         <h3>Attachments</h3>
         <ul>
           <py:for each="attachment in attachments" py:with="ctx = context('attachment', attachment.filename)">
-            <li>
+            <li py:if="attachment_perm('VIEW',req, ctx)">
               ${show_one_attachment(attachment)}
               <q py:if="compact and attachment.description">${wiki_to_oneliner(ctx, attachment.description)}</q>
             </li>
@@ -188,11 +188,16 @@
           <dl py:if="attachments" class="attachments">
             <py:for each="attachment in attachments"
               py:with="ctx = context('attachment', attachment.filename)">
-              <dt>${show_one_attachment(attachment)}</dt>
-              <dd py:if="attachment.description">${wiki_to_oneliner(ctx, attachment.description)}</dd>
+              <py:if test="attachment_perm('VIEW',req, ctx)">
+                <dt>${show_one_attachment(attachment)}</dt>
+                <dd py:if="attachment.description">
+                  ${wiki_to_oneliner(ctx, attachment.description)}
+                </dd>
+              </py:if>
             </py:for>
           </dl>
-          <form py:if="attach_href" method="get" action="$attach_href">
+          <form py:if="attachment_perm('CREATE',req, context)" method="get"
+            action="${context.href('attachment', context.realm, context.id, action='new')}">
             <div>
               <input type="hidden" name="action" value="new" />
               <input type="submit" value="Attach File" />
@@ -201,6 +206,16 @@
         </div>
       </py:when>
     </py:choose>
+  </py:def>
+
+  <py:def function="attach_file_form(context, attachment_perm)">
+    <form py:if="attachment_perm('CREATE', req, context)" method="get"
+          action="${context.href('attachment', context.realm, context.id, action='new')}">
+      <div>
+        <input type="hidden" name="action" value="new" />
+        <input type="submit" value="Attach file" />
+      </div>
+    </form>
   </py:def>
 
   <!--!  Display a generic "progress bar", for use in roadmap and milestone.

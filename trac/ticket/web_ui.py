@@ -1040,9 +1040,7 @@ class TicketModule(Component):
             'replies': replies, 'cnum': cnum + 1,
             'attachments': list(Attachment.select(self.env, 'ticket',
                                                   ticket.id)),
-            'attach_href': ('TICKET_APPEND' in req.perm and \
-                            req.href.attachment('ticket', ticket.id)),
-
+            'attachment_perm': AttachmentModule(self.env).has_perm,
             'action_controls': action_controls,
             'action': selected_action,
             'change_preview': change_preview
