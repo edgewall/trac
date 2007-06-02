@@ -90,7 +90,7 @@ class AttachmentContext(Context):
         return Attachment(self.env, self.parent.realm, self.parent.id,
                           filename=self.id, db=self._db)
 
-    def resource_href(self, path=None, **kwargs):
+    def get_href(self, href, path=None, **kwargs):
         """Return an URL to the attachment itself.
 
         A `format` keyword argument equal to `'raw'` will be converted
@@ -103,7 +103,7 @@ class AttachmentContext(Context):
             prefix = 'raw-attachment'
         path = [unicode(p) for p in [prefix, self.parent.realm, self.parent.id,
                                      self.id, path] if p]
-        return Context.resource_href(self, '/' + '/'.join(path), **kwargs)
+        return Context.get_href(self, href, '/' + '/'.join(path), **kwargs)
 
     def permid(self):
         return self.parent.permid() + (self.realm, self.id)
@@ -120,6 +120,22 @@ class AttachmentContext(Context):
     def summary(self):
         return self.resource.description
 
+
+class AttachmentList(object):
+    """Helper class for template data, representing a list of attachments."""
+    
+    def __init__(self, parent, attachments):
+        self.parent = parent
+        self.attachments = [parent('attachment', a.filename, resource=a)
+                            for a in attachments]
+
+    def attach_href(self):
+        return self.parent('attachment').get_href(self.parent.req.href,
+                                                  action='new')
+
+    def has_perm(self, action, attachment_context=None):
+        return AttachmentModule(self.parent.env).has_perm(
+            action, self.parent.req, attachment_context or self.parent)
 
 class Attachment(object):
 
@@ -378,8 +394,7 @@ class AttachmentModule(Component):
             parent_id = '/'.join(segments[:-1])
             filename = len(segments) > 1 and segments[-1]
             if not filename: # if there's a trailing '/', show the list
-                return self._render_list(context(parent_realm, parent_id) \
-                                         ('attachment'))
+                return self._render_list(context(parent_realm, parent_id))
             attachment = Attachment(self.env, parent_realm, parent_id,
                                     filename)
 
@@ -414,6 +429,10 @@ class AttachmentModule(Component):
         yield ('attachment', self._format_link)
 
     # Public methods
+
+    def attachment_list(self, parent):
+        return AttachmentList(
+            parent, Attachment.select(self.env, parent.realm, parent.id))
 
     def require_perm(self, action, req, context):
         if context.realm != 'attachment':
@@ -572,17 +591,14 @@ class AttachmentModule(Component):
         return {'mode': 'new', 'author': get_reporter_id(context.req)}
 
     def _render_list(self, context):
-        req, attachment = context.req, context.resource
-        self.require_perm('VIEW', req, context)
+        self.require_perm('VIEW', context.req, context)
 
         data = {
             'mode': 'list', 'context': context,
-            'attachments': Attachment.select(self.env, context.parent.realm,
-                                             context.parent.id),
-            'attachment_perm': AttachmentModule(self.env).has_perm,            
+            'attachments': self.attachment_list(context)
             }
 
-        add_link(req, 'up', context.parent.resource_href(),
+        add_link(context.req, 'up', context.parent.resource_href(),
                  context.parent.name())
         
         return 'attachment.html', data, None

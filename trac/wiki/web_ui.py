@@ -24,7 +24,7 @@ import StringIO
 
 from genshi.builder import tag
 
-from trac.attachment import Attachment, AttachmentModule
+from trac.attachment import AttachmentModule
 from trac.context import Context, ResourceSystem, ResourceNotFound
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter
@@ -514,8 +514,7 @@ class WikiModule(Component):
 
         data.update({
             'latest_version': latest_page.version,
-            'attachments': Attachment.select(self.env, 'wiki', page.name),
-            'attachment_perm': AttachmentModule(self.env).has_perm,
+            'attachments': AttachmentModule(self.env).attachment_list(context),
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
             'version': version

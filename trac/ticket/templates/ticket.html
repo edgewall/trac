@@ -217,7 +217,7 @@
       <py:if test="ticket.exists">
         <!--! do not show attachments for old versions of this ticket or for new tickets -->
         <py:if test="not version and version != 0 and ticket.exists">
-          ${list_of_attachments(context, attachments, attachment_perm)}
+          ${list_of_attachments(attachments)}
         </py:if>
 
         <py:if test="ticket.exists and changes">
@@ -369,9 +369,9 @@ ${comment}</textarea></p>
           </fieldset>
         </py:if>
 
-        <p py:if="not ticket.exists and can_attach">
+        <p py:if="not ticket.exists and attachments.has_perm('CREATE')">
           <label>
-            <input type="checkbox" name="attachment" checked="${attachment or None}" />
+            <input type="checkbox" name="attachment" checked="${'attachment' in req.args or None}" />
             I have files to attach to this ticket
           </label>
         </p>

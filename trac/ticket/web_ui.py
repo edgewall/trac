@@ -24,7 +24,7 @@ import time
 from genshi.core import Markup
 from genshi.builder import tag
 
-from trac.attachment import Attachment, AttachmentModule
+from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option, IntOption
 from trac.context import Context
 from trac.core import *
@@ -358,12 +358,6 @@ class TicketModule(Component):
             field.setdefault('skip', False)
             ticket.values.setdefault(name, field.get('value'))
             data['fields'].append(field)
-
-        if 'TICKET_APPEND' in req.perm:
-            data['can_attach'] = True
-            data['attachment'] = req.args.get('attachment')
-        else:
-            data['can_attach'] = False
 
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket.html', data, None
@@ -1038,9 +1032,7 @@ class TicketModule(Component):
         data.update({
             'fields': fields, 'changes': changes, 'field_types': types,
             'replies': replies, 'cnum': cnum + 1,
-            'attachments': list(Attachment.select(self.env, 'ticket',
-                                                  ticket.id)),
-            'attachment_perm': AttachmentModule(self.env).has_perm,
+            'attachments': AttachmentModule(self.env).attachment_list(context),
             'action_controls': action_controls,
             'action': selected_action,
             'change_preview': change_preview
