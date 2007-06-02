@@ -369,7 +369,7 @@ ${comment}</textarea></p>
           </fieldset>
         </py:if>
 
-        <p py:if="not ticket.exists and attachments.has_perm('CREATE')">
+        <p py:if="not ticket.exists and attachments and attachments.has_perm('CREATE')">
           <label>
             <input type="checkbox" name="attachment" checked="${'attachment' in req.args or None}" />
             I have files to attach to this ticket
