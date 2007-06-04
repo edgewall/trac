@@ -39,7 +39,7 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
-
+from trac.config import Option 
 
 class QuerySyntaxError(Exception):
     """Exception raised when a ticket query cannot be parsed from a string."""
@@ -527,6 +527,14 @@ class QueryModule(Component):
 
     implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
                IContentConverter)
+               
+    default_query = Option('query', 'default_query',  
+                            default='status!=closed&owner=$USER', 
+                            doc='The default query for authenticated users.') 
+    
+    default_anonymous_query = Option('query', 'default_anonymous_query',  
+                               default='status!=closed&cc~=$USER', 
+                               doc='The default query for anonymous users.') 
 
     # IContentConverter methods
     def get_supported_conversions(self):
@@ -568,19 +576,26 @@ class QueryModule(Component):
 
         constraints = self._get_constraints(req)
         if not constraints and not 'order' in req.args:
-            # avoid displaying all tickets when the query module is invoked
-            # with no parameters. Instead show only open tickets, possibly
-            # associated with the user
-            all_status = TicketSystem(self.env).get_all_status()
-            all_status.remove('closed')
-            constraints = {'status': tuple(all_status)}
+            # If no constraints are given in the URL, use the default ones.
             if req.authname and req.authname != 'anonymous':
-                constraints['owner'] = (req.authname,)
+                qstring = self.default_query 
+                user = req.authname 
             else:
                 email = req.session.get('email')
                 name = req.session.get('name')
-                if email or name:
-                    constraints['cc'] = ('~%s' % (email or name),)
+                qstring = self.default_anonymous_query 
+                user = email or name or None 
+                      
+            if user: 
+                qstring = qstring.replace('$USER', user) 
+            self.log.debug('QueryModule: Using default query: %s', qstring) 
+            constraints = Query.from_string(self.env, qstring).constraints 
+            # Ensure no field constraints that depend on $USER are used 
+            # if we have no username. 
+            for field, vals in constraints.items(): 
+                for val in vals: 
+                    if val.endswith('$USER'): 
+                        del constraints[field] 
 
         cols = req.args.get('col')
         if isinstance(cols, basestring):
