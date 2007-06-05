@@ -25,6 +25,7 @@ from trac.notification import NotifyEmail
 from trac.util.datefmt import to_timestamp
 from trac.util.text import CRLF, wrap
 
+from genshi.template.text import TextTemplate
 
 class TicketNotificationSystem(Component):
 
@@ -41,6 +42,11 @@ class TicketNotificationSystem(Component):
                                        'true',
         """Always send notifications to the person who causes the ticket 
         property change.""")
+        
+    ticket_subject_template = Option('notification', 'ticket_subject_template', 
+                                     '$prefix #$ticket.id: $summary',
+        """A Genshi text template snippet used to get the notification subject.
+        (since 0.11)""")
 
 
 class TicketNotifyEmail(NotifyEmail):
@@ -200,13 +206,21 @@ class TicketNotifyEmail(NotifyEmail):
                                                  self.COLS, linesep=CRLF))
 
     def format_subj(self, summary):
+        template = TextTemplate(self.config.get('notification', 
+                                                'ticket_subject_template'))
+                                                
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__': 
-            prefix = '[%s]' % self.config.get('project', 'name') 
-        if prefix: 
-            return '%s #%s: %s' % (prefix, self.ticket.id, summary)
-        else:
-            return '#%s: %s' % (self.ticket.id, summary) 
+            prefix = '[%s]' % self.config.get('project', 'name')
+        
+        data = {
+            'prefix': prefix,
+            'summary': summary,
+            'ticket': self.ticket,
+            'env': self.env,
+        }
+        
+        return template.generate(**data).render('text').strip()
 
     def get_recipients(self, tktid):
         notify_reporter = self.config.getbool('notification',
