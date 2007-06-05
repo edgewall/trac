@@ -74,20 +74,18 @@ h2 {
 .tickets .fullrow .meta { color: #999; }
 .tickets .fullrow hr { display: none }
 
-fieldset legend :link, fieldset legend :visited { 
- background: url(../expanded.png) 0 50% no-repeat;
- border: none;
- color: #666;
- font-size: 110%;
+/* Query results table */
+fieldset legend a { 
+ background: url(../expander_open.png) 0 50% no-repeat;
  padding-left: 16px;
+ margin-left: 0px; 
 }
-fieldset.collapsed legend :link, fieldset.collapsed legend :visited { 
- background-image: url(../collapsed.png);  
- padding-left: 16px;
+fieldset.collapsed legend a { 
+ background-image: url(../expander_normal.png);  
+ padding-left: 12px;
+ margin-left: 4px; 
 }
 fieldset.collapsed table, fieldset.collapsed div { display: none }
-
-/* Query results table */
 
 table.tickets tbody tr.added td { font-weight: bold }
 table.tickets tbody tr.changed td { font-style: italic }

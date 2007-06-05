@@ -73,27 +73,40 @@ div.message {
  padding-left: 20px;
 }
 #dirlist td.name a.parent { background-image: url(../parent.png) }
-#dirlist tr span.expander {
-  background-image: url(../collapsed.png);
-  cursor: pointer;
-  padding-left: 16px; 
+#dirlist tr span.expander { 
+  background-image: url(../expander_normal.png); 
+  padding-left: 12px; 
+  margin-left: 4px; 
 }
-#dirlist tr.expanded span.expander { background-image: url(../expanded.png); }
+#dirlist tr span.expander:hover { 
+  background-image: url(../expander_normal_hover.png); 
+  padding-left: 12px; 
+  margin-left: 4px; 
+}
+#dirlist tr.expanded span.expander { 
+  background-image: url(../expander_open.png); 
+  padding-left: 16px; 
+  margin-left: 0; 
+}
+#dirlist tr.expanded span.expander:hover { 
+  background-image: url(../expander_open_hover.png); 
+  padding-left: 16px; 
+  margin-left: 0; 
+}
 #dirlist td.name a.dir { background-image: url(../folder.png) }
 #dirlist td.name a.file { background-image: url(../file.png); display: block }
 #dirlist td.name a, #dirlist td.rev a { border-bottom: none }
 #dirlist td.rev { text-align: right }
 #dirlist td.change { 
-  font-size: 85%;
-  vertical-align: middle;
-  white-space: nowrap;
+  font-size: 85%; 
+  vertical-align: middle; 
+  white-space: nowrap 
 }
-#dirlist td span.loading {
-  background-image: url(../loading.gif);
-  color: #666;
-  font-style: italic;
+
+#dirlist td span.loading { 
+  background-image: url(../loading.gif); 
+  font-style: italic 
 }
-#dirlist td.name i { color: #666; }
 
 /* Style for the ''View Changes'' button and the diff preparation form */
 #anydiff { margin: 0 0 1em; float: left }
