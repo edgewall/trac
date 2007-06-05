@@ -424,6 +424,7 @@ and block
 Block 
 {{{
 number one
+
 and block
 {{{
 number two
@@ -433,6 +434,7 @@ number two
 Block 
 </p>
 <pre class="wiki">number one
+
 and block
 {{{
 number two

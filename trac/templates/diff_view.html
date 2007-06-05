@@ -52,7 +52,7 @@
           <py:otherwise>${authorinfo(change.author)} <span py:if="'ipnr' in change" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
         </dd>
         <dt class="property message">Comment:</dt>
-        <dd class="message" py:choose="">
+        <dd class="message" py:choose="" xml:space="preserve">
           <em py:when="multi" class="multi">(multiple changes)</em>
           <py:otherwise>${wiki_to_html(context, change.comment)}</py:otherwise>
         </dd>

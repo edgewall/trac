@@ -41,8 +41,12 @@
         <py:when test="'preview'">
           <table id="info" summary="Revision info">
             <tbody>
-              <tr><th scope="col">Change information for future version ${page.version+1} (modified by $author):</th></tr>
-              <tr><td class="message">${wiki_to_html(context, comment)}</td></tr>
+              <tr><th scope="col">
+                Change information for future version ${page.version+1} (modified by $author):
+              </th></tr>
+              <tr><td class="message" xml:space="preserve">
+                ${wiki_to_html(context, comment)}
+              </td></tr>
             </tbody>
           </table>
           <fieldset id="preview" py:choose="">

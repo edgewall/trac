@@ -85,7 +85,7 @@
           </py:choose>
         </li>
       </ul>
-      <div py:if="'comment' in change" class="comment searchable">
+      <div py:if="'comment' in change" class="comment searchable" xml:space="preserve">
         ${wiki_to_html(context, change.comment)}
       </div>
     </py:def>
@@ -206,7 +206,7 @@
                   <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
                 </div>
               </form>
-              <div py:if="ticket.description" class="searchable">
+              <div py:if="ticket.description" class="searchable" xml:space="preserve">
                 ${wiki_to_html(context, ticket.description)}
               </div>
             </div>

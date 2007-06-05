@@ -90,7 +90,7 @@ class WikiProcessor(object):
         return ''
 
     def _default_processor(self, text):
-        return html.PRE(text, class_="wiki")
+        return tag.pre(text, class_="wiki")
 
     def _html_processor(self, text):
         if WikiSystem(self.env).render_unsafe_content:
@@ -150,6 +150,8 @@ class WikiProcessor(object):
                         interrupt_paragraph = True
                 elif tagname == 'table':
                     interrupt_paragraph = True
+                text = text.generate().render('xhtml', encoding=None,
+                                              strip_whitespace=False)
             else:
                 text = to_unicode(text)
                 match = re.match(self._code_block_re, unicode(text))
@@ -679,7 +681,13 @@ class Formatter(object):
                 self.close_table()
                 self.close_paragraph()
                 processed = self.code_processor.process(self.code_text)
-                self.out.write(to_unicode(processed))
+                if isinstance(processed, Element):
+                    stream = processed.generate()
+                    processed = stream.render('xhtml', encoding=None,
+                                              strip_whitespace=False)
+                else:
+                    processed = to_unicode(processed)
+                self.out.write(processed)
 
             else:
                 self.code_text += line + os.linesep
@@ -718,7 +726,8 @@ class Formatter(object):
         replacement = self.handle_match(fullmatch)
         if replacement:
             if isinstance(replacement, Element):
-                return replacement.generate().render('xhtml', encoding=None)
+                return replacement.generate().render('xhtml', encoding=None,
+                                                     strip_whitespace=False)
             return to_unicode(replacement)
 
     def reset(self, source, out=None):

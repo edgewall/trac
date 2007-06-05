@@ -69,7 +69,9 @@
         </fieldset>
       </form>
 
-      <div class="description">${wiki_to_html(context, milestone.description)}</div>
+      <div class="description" xml:space="preserve">
+        ${wiki_to_html(context, milestone.description)}
+      </div>
 
       ${list_of_attachments(attachments, compact=True)}
 

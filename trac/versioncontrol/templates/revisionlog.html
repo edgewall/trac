@@ -154,19 +154,20 @@
                       </py:when>
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </td>
-                    </py:when>
-                    <td colspan="6" py:otherwise="" />
-                  </tr>
+                  </py:when>
+                  <td colspan="6" py:otherwise="" />
+                </tr>
 
-                  <tr py:if="verbose" class="summary $odd_even">
-                    <td />
-                    <td class="summary" colspan="6" py:choose="">
-                      <py:when test="wiki_format_messages">
-                        ${wiki_to_html(change_context, change.message, escape_newlines=True)}
+                <tr py:if="verbose" class="summary $odd_even">
+                  <td />
+                  <td class="summary" colspan="6" py:choose="" xml:space="preserve">
+                    <py:when test="wiki_format_messages">
+                      ${wiki_to_html(change_context, change.message, escape_newlines=True)}
                     </py:when>
                     <py:otherwise><pre>${change.message}</pre></py:otherwise>
                   </td>
                 </tr>
+
               </py:with>
             </py:for>
           </tbody>

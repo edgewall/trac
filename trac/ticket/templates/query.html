@@ -36,7 +36,7 @@
     <div id="content" class="query">
       <h1>$title ${num_matches(len(tickets))}</h1>
 
-      <div py:if="description" id="description">
+      <div py:if="description" id="description" xml:space="preserve">
         ${wiki_to_html(report, description)}
       </div>
 

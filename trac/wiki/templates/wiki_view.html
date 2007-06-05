@@ -43,15 +43,15 @@
             <tr><th scope="row">
                 Version $page.version (modified by ${authorinfo(page.author)}, ${dateinfo(page.time)} ago)
             </th></tr>
-            <tr><td class="message">
+            <tr><td class="message" xml:space="preserve">
               ${wiki_to_html(context, page.comment or '--')}
             </td></tr>
           </tbody>
         </table>
       </py:if>
 
-      <div class="wikipage searchable" py:choose="">
-        <py:when test="page.exists">
+      <div class="wikipage searchable" py:choose="" xml:space="preserve">
+        <py:when test="page.exists" xml:space="preserve">
           ${wiki_to_html(context, page.text)}
         </py:when>
         <py:otherwise>
