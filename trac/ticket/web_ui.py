@@ -322,8 +322,7 @@ class TicketModule(Component):
             'actions': [],
             'version': None,
             'description_change': None,
-            'valid': valid,
-            'attachments': None,
+            'valid': valid
         }
 
         field_names = [field['name'] for field in ticket.fields
