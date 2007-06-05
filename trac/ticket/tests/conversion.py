@@ -72,7 +72,8 @@ class TicketConversionTestCase(unittest.TestCase):
         ticket = self._create_a_ticket()
         content, mimetype, ext = self.mimeview.convert_content(
             self.req, 'trac.ticket.Ticket', ticket, 'rss')
-        self.assertEqual(("""<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
+        self.assertEqual(("""<?xml version="1.0"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
   
 
   <channel>

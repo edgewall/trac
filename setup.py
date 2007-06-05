@@ -42,7 +42,7 @@ facilities.
 
     install_requires = [
         'setuptools>=0.6b1',
-        'Genshi>=0.4'
+        'Genshi>=0.4.1'
     ],
 
     extras_require = {
