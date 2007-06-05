@@ -36,6 +36,8 @@ h2 {
 #filters td.filter label { padding-right: 1em }
 #filters td.actions { text-align: right; white-space: nowrap }
 
+#columns div label { padding-right: 1em }
+
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
 .reports td.title { width: 100% }
@@ -74,18 +76,23 @@ h2 {
 .tickets .fullrow .meta { color: #999; }
 .tickets .fullrow hr { display: none }
 
-/* Query results table */
-fieldset legend a { 
- background: url(../expander_open.png) 0 50% no-repeat;
+fieldset legend :link, fieldset legend :visited { 
+ background: url(../expanded.png) 0 50% no-repeat;
+ border: none;
+ color: #666;
+ font-size: 110%;
  padding-left: 16px;
- margin-left: 0px; 
 }
-fieldset.collapsed legend a { 
- background-image: url(../expander_normal.png);  
- padding-left: 12px;
- margin-left: 4px; 
+fieldset legend :link:hover, fieldset legend :visited:hover {
+  background-color: transparent;
+}
+
+fieldset.collapsed legend :link, fieldset.collapsed legend :visited { 
+ background-image: url(../collapsed.png);  
 }
 fieldset.collapsed table, fieldset.collapsed div { display: none }
+
+/* Query results table */
 
 table.tickets tbody tr.added td { font-weight: bold }
 table.tickets tbody tr.changed td { font-style: italic }

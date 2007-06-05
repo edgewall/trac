@@ -75,6 +75,7 @@ div.message {
 #dirlist td.name a.parent { background-image: url(../parent.png) }
 #dirlist tr span.expander { 
   background-image: url(../expander_normal.png); 
+  cursor: pointer; 
   padding-left: 12px; 
   margin-left: 4px; 
 }

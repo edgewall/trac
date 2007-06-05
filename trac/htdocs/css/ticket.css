@@ -57,7 +57,6 @@ h1 .status { color: #444; text-transform: lowercase; }
 #ticket table.properties td { width: 30% }
 #ticket table.properties .description { border-top: 1px solid #dd9 }
 
-
 #ticket .description h3 {
  border-bottom: 1px solid #dd9;
  color: #663;

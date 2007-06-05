@@ -142,11 +142,12 @@
           <legend>Columns</legend>
           <div>
             <py:for each="column in all_columns">
-              <input type="checkbox" id="column_$column" name="col"
-                value="$column"
-                checked="${any([(value == column)
-                                for value in col]) and 'checked' or None}" />
-              <label for="column_$column">${column or 'none'}</label>
+              <label>
+                <input type="checkbox" name="col" value="$column"
+                       checked="${any([(value == column) for value in col])
+                                  and 'checked' or None}" />
+                ${column or 'none'}
+              </label>
             </py:for>
           </div>
         </fieldset>
@@ -167,14 +168,13 @@
 
         <p class="option">
           <!--! Allow the user to decide what columns to include in the output of the query -->
-          Show
+          Show under each result:
           <py:for each="column in all_textareas">
-            <input type="checkbox" id="row_$column" name="row"
-              value="$column"
+            <input type="checkbox" id="row_$column" name="row" value="$column"
               checked="${any([(value == column)
                               for value in row]) and 'checked' or None}" />
             <label for="row_$column">${column or 'none'}</label>
-          </py:for> under each result
+          </py:for>
         </p>
 
         <div class="buttons">
