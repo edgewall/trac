@@ -102,7 +102,7 @@
           ${preview_file(preview)}
         </div>
 
-        <py:if test="can_delete">
+        <py:if test="'ATTACHMENT_DELETE' in perm(context)">
           <div class="buttons">
             <form method="get" action="">
               <div id="delete">

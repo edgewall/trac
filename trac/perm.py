@@ -240,11 +240,15 @@ class PermissionSystem(Component):
         for managing user and group permissions.""")
 
     policies = OrderedExtensionsOption('trac', 'permission_policies',
-                                       IPermissionPolicy,
-                                       'DefaultPermissionPolicy', False,
+        IPermissionPolicy,
+        'DefaultPermissionPolicy, LegacyAttachmentPolicy',
+        False,
         """List of components implementing `IPermissionPolicy`, in the order in
         which they will be applied. These components manage fine-grained access
-        control to Trac resources.""")
+        control to Trac resources.
+        Defaults to the DefaultPermissionPolicy (pre-0.11 behavior) and
+        LegacyAttachmentPolicy (map ATTACHMENT_* permissions to realm specific
+        ones)""")
 
     # Public API
 
@@ -436,7 +440,8 @@ class PermissionCache(object):
         context = self._normalize_context(realm_or_context, id, version)
         return PermissionCache(self.env, self.username, context, self._cache)
 
-    def has_permission(self, action, realm_or_context=None, id=None, version=None):
+    def has_permission(self, action, realm_or_context=None, id=None,
+                       version=None):
         context = self._normalize_context(realm_or_context, id, version)
         key = (self.username, hash(context), action)
         try:
@@ -445,7 +450,7 @@ class PermissionCache(object):
             decision = PermissionSystem(self.env). \
                 check_permission(action, self.username, context)
             self._cache[key] = decision
-            return self._cache[key]
+            return decision
     __contains__ = has_permission
 
     def require(self, action, realm_or_context=None, id=None, version=None):

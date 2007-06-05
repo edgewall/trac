@@ -175,7 +175,7 @@
         <h3>Attachments</h3>
         <ul>
           <py:for each="ctx in alist.attachments">
-            <li py:if="attachments.has_perm('VIEW', ctx)">
+            <li py:if="'ATTACHMENT_VIEW' in perm(ctx)">
               ${show_one_attachment(ctx)}
               <q py:if="compact and ctx.resource.description">${wiki_to_oneliner(ctx, ctx.resource.description)}</q>
             </li>
@@ -184,10 +184,10 @@
       </py:when>
       <py:when test="not compact">
         <h2>Attachments</h2>
-        <div py:if="alist.attachments or alist.has_perm('CREATE')" id="attachments">
+        <div py:if="alist.attachments or alist.can_create()" id="attachments">
           <dl py:if="alist.attachments" class="attachments">
             <py:for each="ctx in alist.attachments">
-              <py:if test="alist.has_perm('VIEW', ctx)">
+              <py:if test="'ATTACHMENT_VIEW' in perm(ctx)">
                 <dt>${show_one_attachment(ctx)}</dt>
                 <dd py:if="ctx.resource.description">
                   ${wiki_to_oneliner(ctx, ctx.resource.description)}
@@ -206,7 +206,7 @@
   -     'alist' is an AttachmentList object (see attachment.py)
   -->
   <py:def function="attach_file_form(alist)">
-    <form py:if="alist.has_perm('CREATE')" method="get" action="${alist.attach_href()}">
+    <form py:if="alist.can_create()" method="get" action="${alist.attach_href()}">
       <div>
         <input type="hidden" name="action" value="new" />
         <input type="submit" value="Attach file" />

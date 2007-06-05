@@ -31,7 +31,7 @@ from trac.context import IContextProvider, Context, ResourceSystem
 from trac.context import Context
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.perm import PermissionError
+from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.mimeview import *
 from trac.timeline.api import TimelineEvent
 from trac.util import get_reporter_id, create_unique_file, content_disposition
@@ -125,17 +125,17 @@ class AttachmentList(object):
     """Helper class for template data, representing a list of attachments."""
     
     def __init__(self, parent, attachments):
+        self.req = parent.req
         self.parent = parent
         self.attachments = [parent('attachment', a.filename, resource=a)
                             for a in attachments]
 
     def attach_href(self):
-        return self.parent('attachment').get_href(self.parent.req.href,
-                                                  action='new')
+        return self.parent('attachment').get_href(self.req.href, action='new')
 
-    def has_perm(self, action, attachment_context=None):
-        return AttachmentModule(self.parent.env).has_perm(
-            action, self.parent.req, attachment_context or self.parent)
+    def can_create(self):
+        return 'ATTACHMENT_CREATE' in self.req.perm(self.parent('attachment'))
+
 
 class Attachment(object):
 
@@ -434,23 +434,6 @@ class AttachmentModule(Component):
         return AttachmentList(
             parent, Attachment.select(self.env, parent.realm, parent.id))
 
-    def require_perm(self, action, req, context):
-        if context.realm != 'attachment':
-            context = context('attachment')
-        if action not in req.perm(context):
-            mapped_action = self._get_action_for_realm(action, req, context)
-            if mapped_action not in req.perm(context):
-                raise PermissionError(mapped_action or action)
-
-    def has_perm(self, action, req, context):
-        if context.realm != 'attachment':
-            context = context('attachment')
-        if action in req.perm(context):
-            return True
-        mapped_action = self._get_action_for_realm(action, req, context)
-        if mapped_action:
-            return mapped_action in req.perm(context)
-
     def get_history(self, start, stop, realm):
         """Return an iterable of tuples describing changes to attachments on
         a particular object realm.
@@ -477,7 +460,7 @@ class AttachmentModule(Component):
         for change, realm, id, filename, time, descr, author in \
                 self.get_history(start, stop, context.realm):
             ctx = context(realm=realm, id=id)('attachment', filename)
-            if not self.has_perm('VIEW', req, ctx):
+            if 'ATTACHMENT_VIEW' not in req.perm(ctx):
                 continue
             title = tag(tag.em(os.path.basename(filename)), ' attached to ',
                         tag.em(ctx.parent.name(), title=ctx.parent.summary()))
@@ -499,7 +482,7 @@ class AttachmentModule(Component):
 
     def _do_save(self, context):
         req, attachment = context.req, context.resource
-        self.require_perm('CREATE', req, context)
+        req.perm.require('ATTACHMENT_CREATE', context)
 
         if 'cancel' in req.args:
             req.redirect(context.parent.resource_href())
@@ -553,7 +536,7 @@ class AttachmentModule(Component):
                                             attachment.parent_id, filename)
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
-                    self.require_perm('DELETE', req, context)
+                    req.perm.require('ATTACHMENT_DELETE', context)
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace
@@ -565,7 +548,7 @@ class AttachmentModule(Component):
 
     def _do_delete(self, context):
         req, attachment = context.req, context.resource
-        self.require_perm('DELETE', req, context)
+        req.perm.require('ATTACHMENT_DELETE', context)
 
         parent_href = context.parent.resource_href()
         if 'cancel' in req.args:
@@ -578,7 +561,7 @@ class AttachmentModule(Component):
 
     def _render_confirm_delete(self, context):
         req, attachment = context.req, context.resource
-        self.require_perm('DELETE', req, context)
+        req.perm.require('ATTACHMENT_DELETE', context)
         
         attachment = context.resource
         return {'mode': 'delete', 'title': '%s (delete)' % context.name(),
@@ -586,12 +569,12 @@ class AttachmentModule(Component):
 
     def _render_form(self, context):
         req, attachment = context.req, context.resource
-        self.require_perm('CREATE', req, context)
+        req.perm.require('ATTACHMENT_CREATE', context)
 
         return {'mode': 'new', 'author': get_reporter_id(context.req)}
 
     def _render_list(self, context):
-        self.require_perm('VIEW', context.req, context)
+        context.req.perm.require('ATTACHMENT_VIEW', context('attachment'))
 
         data = {
             'mode': 'list', 'context': None, # no specific attachment
@@ -604,15 +587,12 @@ class AttachmentModule(Component):
 
     def _render_view(self, context):
         req, attachment = context.req, context.resource
-        self.require_perm('VIEW', req, context)
+        req.perm.require('ATTACHMENT_VIEW', context)
 
         req.check_modified(attachment.date)
 
         data = {'mode': 'view', 'title': context.name(),
                 'attachment': attachment}
-
-        if self.has_perm('DELETE', req, context):
-            data['can_delete'] = True
 
         fd = attachment.open()
         try:
@@ -691,15 +671,27 @@ class AttachmentModule(Component):
                 pass
         return tag.a(label, class_='missing attachment', rel='nofollow')
 
+
+class LegacyAttachmentPolicy(Component):
+
+    implements(IPermissionPolicy)
+
+    # IPermissionPolicy methods
+    
     _perm_maps = {
-        'CREATE': {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY',
-                   'milestone': 'MILESTONE_MODIFY'},
-        'VIEW': {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW',
-                 'milestone': 'MILESTONE_VIEW'},
-        'DELETE': {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE',
-                   'milestone': 'MILESTONE_DELETE'},
+        'ATTACHMENT_CREATE': {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY',
+                              'milestone': 'MILESTONE_MODIFY'},
+        'ATTACHMENT_VIEW': {'ticket': 'TICKET_VIEW', 'wiki': 'WIKI_VIEW',
+                            'milestone': 'MILESTONE_VIEW'},
+        'ATTACHMENT_DELETE': {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE',
+                              'milestone': 'MILESTONE_DELETE'},
         }
     
-    def _get_action_for_realm(self, action, req, context):
-        perm_map = self._perm_maps.get(action, {})
-        return perm_map.get(context.resource.parent_realm)
+    def check_permission(self, username, action, context):
+        if action.startswith('ATTACHMENT_'):
+            perm_map = self._perm_maps.get(action)
+            if perm_map:
+                legacy_action = perm_map.get(context.resource.parent_realm)
+                if legacy_action:
+                    return PermissionSystem(self.env).check_permission(
+                        legacy_action, username, context)

@@ -73,7 +73,7 @@
 
       ${list_of_attachments(attachments, compact=True)}
 
-      <div py:if="'MILESTONE_MODIFY' in perm or 'MILESTONE_DELETE' in perm or attachments.has_perm('CREATE')"
+      <div py:if="'MILESTONE_MODIFY' in perm or 'MILESTONE_DELETE' in perm or attachments.can_create()"
            class="buttons">
         <form py:if="'MILESTONE_MODIFY' in perm" method="get" action="">
           <input type="hidden" name="action" value="edit" />
