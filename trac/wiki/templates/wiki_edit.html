@@ -49,7 +49,7 @@
               </td></tr>
             </tbody>
           </table>
-          <fieldset id="preview" py:choose="">
+          <fieldset id="preview" py:choose="" xml:space="preserve">
             <legend>${diff and 'Review Changes' or 'Preview'} (<a href="#edit">skip</a>)</legend>
             <div py:when="diff" class="diff">
               <xi:include href="diff_div.html" py:with="no_id=True" />
