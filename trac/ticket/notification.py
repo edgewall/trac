@@ -23,7 +23,7 @@ from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
 from trac.util.datefmt import to_timestamp
-from trac.util.text import CRLF, wrap
+from trac.util.text import CRLF, wrap, to_unicode
 
 from genshi.template.text import TextTemplate
 
@@ -206,8 +206,8 @@ class TicketNotifyEmail(NotifyEmail):
                                                  self.COLS, linesep=CRLF))
 
     def format_subj(self, summary):
-        template = TextTemplate(self.config.get('notification', 
-                                                'ticket_subject_template'))
+        template = self.config.get('notification','ticket_subject_template')
+        template = TextTemplate(template.encode('utf8'))
                                                 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__': 
@@ -220,7 +220,7 @@ class TicketNotifyEmail(NotifyEmail):
             'env': self.env,
         }
         
-        return template.generate(**data).render('text').strip()
+        return to_unicode(template.generate(**data).render('text')).strip()
 
     def get_recipients(self, tktid):
         notify_reporter = self.config.getbool('notification',
