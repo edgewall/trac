@@ -220,7 +220,7 @@ class TicketNotifyEmail(NotifyEmail):
             'env': self.env,
         }
         
-        return to_unicode(template.generate(**data).render('text')).strip()
+        return template.generate(**data).render('text', encoding=None).strip()
 
     def get_recipients(self, tktid):
         notify_reporter = self.config.getbool('notification',
