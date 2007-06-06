@@ -271,7 +271,8 @@ class SubversionConnector(Component):
     def get_repository(self, type, dir, authname):
         """Return a `SubversionRepository`.
 
-        The repository is wrapped in a `CachedRepository`.
+        The repository is wrapped in a `CachedRepository`, unless `type` is
+        'direct-svnfs'.
         """
         if not self._version:
             self._version = self._get_version()
