@@ -99,6 +99,10 @@ class CachedRepository(Repository):
 
         self.db.commit() # save metadata changes made up to now
 
+        # -- retrieve the youngest revision in the repository
+        self.repos.clear()
+        repos_youngest = self.repos.youngest_rev
+
         # -- retrieve the youngest revision cached so far
         if CACHE_YOUNGEST_REV not in metadata:
             raise TracError('Missing "youngest_rev" in cache metadata')
@@ -114,10 +118,6 @@ class CachedRepository(Repository):
             self.log.debug('cache metadata undefined (youngest_rev=%r)' %
                            self.youngest_rev)
             self.youngest = None
-
-        # -- retrieve the youngest revision in the repository
-        self.repos.clear()
-        repos_youngest = self.repos.youngest_rev
 
         # -- compare them and try to resync if different
         if self.youngest != repos_youngest:
