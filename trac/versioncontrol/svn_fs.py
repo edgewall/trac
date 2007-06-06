@@ -264,6 +264,7 @@ class SubversionConnector(Component):
     def get_supported_types(self):
         global has_subversion
         if has_subversion:
+            yield ("direct-svnfs", 4)
             yield ("svnfs", 4)
             yield ("svn", 2)
 
@@ -275,14 +276,18 @@ class SubversionConnector(Component):
         if not self._version:
             self._version = self._get_version()
             self.env.systeminfo.append(('Subversion', self._version))
-        repos = SubversionRepository(dir, None, self.log,
-                                     {'tags': self.tags,
-                                      'branches': self.branches})
-        crepos = CachedRepository(self.env.get_db_cnx(), repos, None, self.log)
+        fs_repos = SubversionRepository(dir, None, self.log,
+                                        {'tags': self.tags,
+                                         'branches': self.branches})
+        if type == 'direct-svnfs':
+            repos = fs_repos
+        else:
+            repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
+                                     self.log)
         if authname:
-            authz = SubversionAuthorizer(self.env, crepos, authname)
-            repos.authz = crepos.authz = authz
-        return crepos
+            authz = SubversionAuthorizer(self.env, repos, authname)
+            repos.authz = fs_repos.authz = authz
+        return repos
 
     def _get_version(self):
         version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)

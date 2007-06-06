@@ -439,6 +439,7 @@ class Changeset(object):
         `text`, there were `wikiflag` and `htmlclass` values).
         This is now replaced by the usage of IPropertyRenderer (see #1601).
         """
+        return []
         
     def get_changes(self):
         """Generator that produces a tuple for every change in the changeset
