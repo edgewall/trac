@@ -176,8 +176,8 @@ class TicketModule(Component):
                 yield ('ticket_details', 'Ticket details', False)
 
     def get_timeline_events(self, req, start, stop, filters):
-        start = to_timestamp(start)
-        stop = to_timestamp(stop)
+        ts_start = to_timestamp(start)
+        ts_stop = to_timestamp(stop)
 
         status_map = {'new': ('newticket', 'created'),
                       'reopened': ('reopenedticket', 'reopened'),
@@ -235,7 +235,7 @@ class TicketModule(Component):
                            "    INNER JOIN ticket t ON t.id = tc.ticket "
                            "      AND tc.time>=%s AND tc.time<=%s "
                            "ORDER BY tc.time"
-                           % (start, stop))
+                           % (ts_start, ts_stop))
             previous_update = None
             for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
                 if not previous_update or (id,t,author) != previous_update[:3]:
@@ -263,7 +263,7 @@ class TicketModule(Component):
                 cursor.execute("SELECT id,time,reporter,type,summary,"
                                "description"
                                "  FROM ticket WHERE time>=%s AND time<=%s",
-                               (start, stop))
+                               (ts_start, ts_stop))
                 for row in cursor:
                     yield produce(row, 'new', {}, None, None)
 

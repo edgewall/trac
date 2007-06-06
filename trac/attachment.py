@@ -35,7 +35,7 @@ from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.mimeview import *
 from trac.timeline.api import TimelineEvent
 from trac.util import get_reporter_id, create_unique_file, content_disposition
-from trac.util.datefmt import utc
+from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
@@ -446,7 +446,8 @@ class AttachmentModule(Component):
         cursor.execute("SELECT type, id, filename, time, description, author "
                        "  FROM attachment "
                        "  WHERE time > %s AND time < %s "
-                       "        AND type = %s", (start, stop, realm))
+                       "        AND type = %s",
+                       (to_timestamp(start), to_timestamp(stop), realm))
         for realm, id, filename, ts, description, author in cursor:
             time = datetime.fromtimestamp(ts, utc)
             yield ('created', realm, id, filename, time, description, author)

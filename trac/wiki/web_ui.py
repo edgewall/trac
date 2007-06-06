@@ -529,12 +529,11 @@ class WikiModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
-            start, stop = to_timestamp(start), to_timestamp(stop)
             context = Context(self.env, req)
             cursor = context.db.cursor()
             cursor.execute("SELECT time,name,comment,author,ipnr,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
-                           (start, stop))
+                           (to_timestamp(start), to_timestamp(stop)))
             for ts,name,comment,author,ipnr,version in cursor:
                 if 'WIKI_VIEW' not in req.perm('wiki', name):
                     continue
