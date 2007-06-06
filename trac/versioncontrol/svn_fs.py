@@ -222,21 +222,26 @@ class SubversionConnector(Component):
     def get_supported_types(self):
         global has_subversion
         if has_subversion:
+            yield ("direct-svnfs", 4)
             yield ("svnfs", 4)
             yield ("svn", 2)
 
     def get_repository(self, type, dir, authname):
         """Return a `SubversionRepository`.
 
-        The repository is generally wrapped in a `CachedRepository`,
-        unless `direct-svn-fs` is the specified type.
+        The repository is wrapped in a `CachedRepository`, unless `type` is
+        'direct-svnfs'.
         """
-        repos = SubversionRepository(dir, None, self.log)
-        crepos = CachedRepository(self.env.get_db_cnx(), repos, None, self.log)
+        fs_repos = SubversionRepository(dir, None, self.log)
+        if type == 'direct-svnfs':
+            repos = fs_repos
+        else:
+            repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
+                                     self.log)
         if authname:
-            authz = SubversionAuthorizer(self.env, crepos, authname)
-            repos.authz = crepos.authz = authz
-        return crepos
+            authz = SubversionAuthorizer(self.env, repos, authname)
+            repos.authz = fs_repos.authz = authz
+        return repos
             
 
 

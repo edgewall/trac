@@ -409,6 +409,7 @@ class Changeset(object):
 
         Warning: API will be improved (see #1601 and #2545).
         """
+        return []
         
     def get_changes(self):
         """Generator that produces a tuple for every change in the changeset
