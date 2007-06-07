@@ -50,7 +50,8 @@
                 <td py:otherwise="" class="$name" py:choose="">
                   <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
                   <span py:when="isinstance(value, datetime)">${format_datetime(value)}</span>
-                  <span py:when="name in ('owner', 'reporter')">${authorinfo(value)}</span>
+                  <span py:when="name == 'reporter'">${authorinfo(value)}</span>
+                  <span py:when="name == 'owner' and value">${authorinfo(value)}</span>
                   <span py:otherwise="">$value</span>
                 </td>
               </py:with>

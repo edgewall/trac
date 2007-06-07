@@ -155,9 +155,8 @@
             <tr>
               <th id="h_reporter">Reported by:</th>
               <td headers="h_reporter" class="searchable">${authorinfo(ticket.reporter)}</td>
-              <th id="h_owner">Assigned to:</th>
-              <td headers="h_owner">${authorinfo(ticket.owner)}
-                <py:if test="ticket.status == 'assigned'">(accepted)</py:if> <!--! FIXME -->
+              <th id="h_owner">Owned by:</th>
+              <td headers="h_owner">${ticket.owner and authorinfo(ticket.owner) or ''}
               </td>
             </tr>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
