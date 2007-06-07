@@ -27,8 +27,8 @@ from genshi.builder import tag
 
 from trac import perm, util
 from trac.config import BoolOption, IntOption
-from trac.context import IContextProvider, Context, ResourceSystem
-from trac.context import Context
+from trac.context import IContextProvider, Context, ResourceSystem, \
+                         ResourceNotFound
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
@@ -165,8 +165,8 @@ class Attachment(object):
         cursor.close()
         if not row:
             self.filename = filename
-            raise TracError('Attachment %s does not exist.' % (self.title),
-                            'Invalid Attachment')
+            raise ResourceNotFound("Attachment '%s' does not exist." %
+                                   self.title, 'Invalid Attachment')
         self.filename = row[0]
         self.description = row[1]
         self.size = row[2] and int(row[2]) or 0
@@ -312,7 +312,7 @@ class Attachment(object):
         try:
             fd = open(self.path, 'rb')
         except IOError:
-            raise TracError('Attachment %s not found' % self.filename)
+            raise ResourceNotFound("Attachment '%s' not found" % self.filename)
         return fd
 
 
