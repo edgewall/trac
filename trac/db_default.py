@@ -164,18 +164,16 @@ schema = [
 ##
 
 def get_reports(db):
-    owner = db.concat('owner', "' *'")
     return (
 ('Active Tickets',
 """
  * List all active tickets by priority.
  * Color each row based on priority.
- * If a ticket has been accepted, a '*' is appended after the owner's name
 """,
 """
 SELECT p.value AS __color__,
    id AS ticket, summary, component, version, milestone, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
+   owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -183,7 +181,7 @@ SELECT p.value AS __color__,
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed'
   ORDER BY p.value, milestone, t.type, time
-""" % owner),
+"""),
 #----------------------------------------------------------------------------
  ('Active Tickets by Version',
 """
@@ -197,7 +195,7 @@ for useful RSS export.
 SELECT p.value AS __color__,
    version AS __group__,
    id AS ticket, summary, component, version, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
+   owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -205,7 +203,7 @@ SELECT p.value AS __color__,
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed'
   ORDER BY (version IS NULL),version, p.value, t.type, time
-""" % owner),
+"""),
 #----------------------------------------------------------------------------
 ('Active Tickets by Milestone',
 """
@@ -219,7 +217,7 @@ for useful RSS export.
 SELECT p.value AS __color__,
    %s AS __group__,
    id AS ticket, summary, component, version, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
+   owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -227,11 +225,11 @@ SELECT p.value AS __color__,
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 
   ORDER BY (milestone IS NULL),milestone, p.value, t.type, time
-""" % (db.concat("'Milestone '", 'milestone'), owner)),
+""" % db.concat("'Milestone '", 'milestone')),
 #----------------------------------------------------------------------------
-('Assigned, Active Tickets by Owner',
+('Accepted, Active Tickets by Owner',
 """
-List assigned tickets, group by ticket owner, sorted by priority.
+List accepted tickets, group by ticket owner, sorted by priority.
 """,
 """
 
@@ -242,13 +240,13 @@ SELECT p.value AS __color__,
    reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status = 'assigned'
+  WHERE status = 'accepted'
   ORDER BY owner, p.value, t.type, time
 """),
 #----------------------------------------------------------------------------
-('Assigned, Active Tickets by Owner (Full Description)',
+('Accepted, Active Tickets by Owner (Full Description)',
 """
-List tickets assigned, group by ticket owner.
+List tickets accepted, group by ticket owner.
 This report demonstrates the use of full-row display.
 """,
 """
@@ -259,7 +257,7 @@ SELECT p.value AS __color__,
    changetime AS _changetime, reporter AS _reporter
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
-  WHERE status = 'assigned'
+  WHERE status = 'accepted'
   ORDER BY owner, p.value, t.type, time
 """),
 #----------------------------------------------------------------------------
@@ -293,7 +291,7 @@ logged in user when executed.
 """,
 """
 SELECT p.value AS __color__,
-   (CASE status WHEN 'assigned' THEN 'Assigned' ELSE 'Owned' END) AS __group__,
+   (CASE status WHEN 'accepted' THEN 'Accepted' ELSE 'Owned' END) AS __group__,
    id AS ticket, summary, component, version, milestone,
    t.type AS type, priority, time AS created,
    changetime AS _changetime, description AS _description,
@@ -301,7 +299,7 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE t.status <> 'closed' AND owner = $USER
-  ORDER BY (status = 'assigned') DESC, p.value, milestone, t.type, time
+  ORDER BY (status = 'accepted') DESC, p.value, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets, Mine first',
@@ -316,7 +314,7 @@ SELECT p.value AS __color__,
      ELSE 'Active Tickets' 
     END) AS __group__,
    id AS ticket, summary, component, version, milestone, t.type AS type, 
-   (CASE status WHEN 'assigned' THEN %s ELSE owner END) AS owner,
+   owner, status,
    time AS created,
    changetime AS _changetime, description AS _description,
    reporter AS _reporter
@@ -324,7 +322,7 @@ SELECT p.value AS __color__,
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 
   ORDER BY (owner = $USER) DESC, p.value, milestone, t.type, time
-""" % owner))
+"""))
 
 
 ##
