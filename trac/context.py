@@ -134,7 +134,7 @@ class Context(object):
             detail += ' [abs]'
         if self._resource:
             detail += ' %r' % self._resource
-        return '<Context %s%s%s>' % \
+        return '<Context %r%s%s>' % \
                (', '.join(reversed(path)),
                 self.req and ' %r' % self.req or '', detail)
     

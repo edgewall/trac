@@ -170,7 +170,7 @@ class Request(object):
         raise AttributeError(name)
 
     def __repr__(self):
-        return '<%s "%s %s">' % (self.__class__.__name__, self.method,
+        return '<%s "%s %r">' % (self.__class__.__name__, self.method,
                                  self.path_info)
 
     # Public API
