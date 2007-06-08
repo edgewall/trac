@@ -297,6 +297,7 @@ class Request(object):
         if self.args.has_key('hdfdump'):
             # FIXME: the administrator should probably be able to disable HDF
             #        dumps
+            self.perm.require('TRAC_ADMIN')
             content_type = 'text/plain'
             data = str(self.hdf)
         else:
@@ -324,6 +325,7 @@ class Request(object):
         try:
             if template.endswith('.cs') and self.hdf: # FIXME: remove this
                 if self.args.has_key('hdfdump'):
+                    self.perm.require('TRAC_ADMIN')
                     content_type = 'text/plain'
                     data = str(self.hdf)
                 else:

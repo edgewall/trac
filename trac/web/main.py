@@ -228,6 +228,7 @@ class RequestDispatcher(Component):
                         template, data, content_type = \
                                   self._post_process_request(req, *resp)
                         if 'hdfdump' in req.args:
+                            req.perm.require('TRAC_ADMIN')
                             # debugging helper - no need to render first
                             from pprint import pprint
                             out = StringIO()
