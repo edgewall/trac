@@ -573,3 +573,21 @@ class IRequestFilter(Interface):
 
         (Since 0.11 - not yet stabilized)
         """
+
+
+class ITemplateStreamFilter(Interface):
+    """Filter a Genshi event stream prior to rendering."""
+
+    def match_stream(req, method, filename, stream, data):
+        """Whether to apply this filter to the stream."""
+
+    def filter_stream(req, method, filename, stream, data):
+        """Return a filtered Genshi event stream.
+
+        `req` is the current request object, `method` is the Genshi render
+        method (xml, xhtml or text), `filename` is the filename of the template
+        to be rendered, `stream` is the event stream and `data` is the data for
+        the current template.
+
+        See the Genshi documentation for more information.
+        """

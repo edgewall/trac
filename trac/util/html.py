@@ -61,4 +61,22 @@ def plaintext(text, keeplinebreaks=True):
         text = text.replace(u'\n', u' ')
     return text
 
+
+def expand_markup(stream, ctxt=None):
+    """A Genshi stream filter for expanding Markup events.
+
+    Note: Expansion may not be possible if the fragment is badly formed, or
+    partial.
+    """
+    for event in stream:
+        if isinstance(event[1], Markup):
+            try:
+                for subevent in HTML(event[1]):
+                    yield subevent
+            except ParseError:
+                yield event
+        else:
+            yield event
+
+
 html = TransposingElementFactory(str.lower)

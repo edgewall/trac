@@ -22,6 +22,7 @@ import re
 
 from genshi import Markup
 from genshi.builder import tag, Element
+from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
@@ -39,7 +40,7 @@ from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date, utc
-from trac.web.api import IRequestHandler, HTTPNotFound
+from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
@@ -156,6 +157,7 @@ class Chrome(Component):
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
+    stream_filters = ExtensionPoint(ITemplateStreamFilter)
 
     shared_templates_dir = PathOption('inherit', 'templates_dir', '',
         """Path to the shared templates directory.
@@ -565,6 +567,11 @@ class Chrome(Component):
         data = self.populate_data(req, data)
 
         stream = template.generate(**data)
+
+        # Filter through ITemplateStreamFilter plugins
+        if self.stream_filters:
+            stream |= self._filter_stream(req, method, filename, stream, data)
+
         if fragment:
             return stream
 
@@ -624,3 +631,12 @@ class Chrome(Component):
                 data = data[0], Attrs([(k,v) for k,v in data[1]
                                        if k != 'accesskey'])
             yield kind, data, pos
+
+    def _filter_stream(self, req, method, filename, stream, data):
+        def inner(stream, ctxt=None):
+            for filter in self.stream_filters:
+                if filter.match_stream(req, method, filename, stream, data):
+                    stream = filter.filter_stream(req, method, filename, stream, data)
+            return stream
+        return inner
+
