@@ -7,9 +7,9 @@ Requires:  Trac 0.9b1 from http://trac.edgewall.org/
            Python 2.3 from http://www.python.org/
            MySQL >= 3.23 from http://www.mysql.org/
 
-Thanks:    Mark Rowe <mrowe@bluewire.net.nz> 
+Thanks:    Mark Rowe <mrowe@bluewire.net.nz>
             for original TracDatabase class
-           
+
 Copyright 2004, Dmitry Yusupov <dmitry_yus@yahoo.com>
 
 Many enhancements, Bill Soudan <bill@soudan.net>
@@ -35,7 +35,7 @@ import re
 # asmodai@tendra.org so we can update the list.
 BZ_VERSION = 2180
 
-# MySQL connection parameters for the Bugzilla database.  These can also 
+# MySQL connection parameters for the Bugzilla database.  These can also
 # be specified on the command line.
 BZ_DB = ""
 BZ_HOST = ""
@@ -45,11 +45,11 @@ BZ_PASSWORD = ""
 # Path to the Trac environment.
 TRAC_ENV = "/usr/local/trac"
 
-# If true, all existing Trac tickets and attachments will be removed 
+# If true, all existing Trac tickets and attachments will be removed
 # prior to import.
 TRAC_CLEAN = True
 
-# Enclose imported ticket description and comments in a {{{ }}} 
+# Enclose imported ticket description and comments in a {{{ }}}
 # preformat block?  This formats the text in a fixed-point font.
 PREFORMAT_COMMENTS = False
 
@@ -165,8 +165,8 @@ STATUS_TRANSLATE = {
   "released":    "closed"
 }
 
-# Translate Bugzilla statuses into Trac keywords.  This provides a way 
-# to retain the Bugzilla statuses in Trac.  e.g. when a bug is marked 
+# Translate Bugzilla statuses into Trac keywords.  This provides a way
+# to retain the Bugzilla statuses in Trac.  e.g. when a bug is marked
 # 'verified' in Bugzilla it will be assigned a VERIFIED keyword.
 STATUS_KEYWORDS = {
   "verified": "VERIFIED",
@@ -209,14 +209,14 @@ sys.setdefaultencoding('latin1')
 #    def __init__(self, name, data):
 #        self.filename = name
 #        self.file = StringIO.StringIO(data.tostring())
-  
+
 # simple field translation mapping.  if string not in
 # mapping, just return string, otherwise return value
 class FieldTranslator(dict):
     def __getitem__(self, item):
         if not dict.has_key(self, item):
             return item
-            
+
         return dict.__getitem__(self, item)
 
 statusXlator = FieldTranslator(STATUS_TRANSLATE)
@@ -228,10 +228,10 @@ class TracDatabase(object):
         self._db.autocommit = False
         self.loginNameCache = {}
         self.fieldNameCache = {}
-    
+
     def db(self):
         return self._db
-    
+
     def hasTickets(self):
         c = self.db().cursor()
         c.execute("SELECT count(*) FROM Ticket")
@@ -240,11 +240,11 @@ class TracDatabase(object):
     def assertNoTickets(self):
         if self.hasTickets():
             raise Exception("Will not modify database with existing tickets!")
-    
+
     def setSeverityList(self, s):
         """Remove all severities, set them to `s`"""
         self.assertNoTickets()
-        
+
         c = self.db().cursor()
         c.execute("DELETE FROM enum WHERE type='severity'")
         for value, i in s:
@@ -253,11 +253,11 @@ class TracDatabase(object):
                                    VALUES (%s, %s, %s)""",
                       ("severity", value.encode('utf-8'), i))
         self.db().commit()
-    
+
     def setPriorityList(self, s):
         """Remove all priorities, set them to `s`"""
         self.assertNoTickets()
-        
+
         c = self.db().cursor()
         c.execute("DELETE FROM enum WHERE type='priority'")
         for value, i in s:
@@ -267,11 +267,11 @@ class TracDatabase(object):
                       ("priority", value.encode('utf-8'), i))
         self.db().commit()
 
-    
+
     def setComponentList(self, l, key):
         """Remove all components, set them to `l`"""
         self.assertNoTickets()
-        
+
         c = self.db().cursor()
         c.execute("DELETE FROM component")
         for comp in l:
@@ -281,11 +281,11 @@ class TracDatabase(object):
                       (comp[key].encode('utf-8'),
                        comp['owner'].encode('utf-8')))
         self.db().commit()
-    
+
     def setVersionList(self, v, key):
         """Remove all versions, set them to `v`"""
         self.assertNoTickets()
-        
+
         c = self.db().cursor()
         c.execute("DELETE FROM version")
         for vers in v:
@@ -293,11 +293,11 @@ class TracDatabase(object):
             c.execute("INSERT INTO version (name) VALUES (%s)",
                       (vers[key].encode('utf-8'),))
         self.db().commit()
-        
+
     def setMilestoneList(self, m, key):
         """Remove all milestones, set them to `m`"""
         self.assertNoTickets()
-        
+
         c = self.db().cursor()
         c.execute("DELETE FROM milestone")
         for ms in m:
@@ -306,19 +306,19 @@ class TracDatabase(object):
             c.execute("INSERT INTO milestone (name) VALUES (%s)",
                       (milestone.encode('utf-8'),))
         self.db().commit()
-    
+
     def addTicket(self, id, time, changetime, component, severity, priority,
                   owner, reporter, cc, version, milestone, status, resolution,
                   summary, description, keywords):
         c = self.db().cursor()
-        
+
         desc = description.encode('utf-8')
         type = "defect"
-        
+
         if severity.lower() == "enhancement":
                 severity = "minor"
                 type = "enhancement"
-        
+
         if PREFORMAT_COMMENTS:
           desc = '{{{\n%s\n}}}' % desc
 
@@ -344,13 +344,13 @@ class TracDatabase(object):
                    reporter, cc, version, milestone.encode('utf-8'),
                    status.lower(), resolution, summary.encode('utf-8'), desc,
                    keywords))
-        
+
         self.db().commit()
         return self.db().get_last_id(c, 'ticket')
-    
+
     def addTicketComment(self, ticket, time, author, value):
         comment = value.encode('utf-8')
-        
+
         if PREFORMAT_COMMENTS:
           comment = '{{{\n%s\n}}}' % comment
 
@@ -383,19 +383,19 @@ class TracDatabase(object):
         # Doesn't make sense if we go from highest -> highest, for example.
         if oldvalue == newvalue:
             return
-        
+
         c.execute("""INSERT INTO ticket_change (ticket, time, author, field,
                                                 oldvalue, newvalue)
                                         VALUES (%s, %s, %s, %s, %s, %s)""",
                   (ticket, time.strftime('%s'), author, field,
                    oldvalue.encode('utf-8'), newvalue.encode('utf-8')))
         self.db().commit()
-        
+
     def addAttachment(self, author, a):
         description = a['description'].encode('utf-8')
         id = a['bug_id']
         filename = a['filename'].encode('utf-8')
-        filedata = StringIO.StringIO(a['thedata'].tostring())
+        filedata = StringIO.StringIO(a['thedata'])
         filesize = len(filedata.getvalue())
         time = a['creation_ts']
         print "    ->inserting attachment '%s' for ticket %s -- %s" % \
@@ -406,7 +406,7 @@ class TracDatabase(object):
         attachment.description = description
         attachment.insert(filename, filedata, filesize, time.strftime('%s'))
         del attachment
-        
+
     def getLoginName(self, cursor, userid):
         if userid not in self.loginNameCache:
             cursor.execute("SELECT * FROM profiles WHERE userid = %s", (userid))
@@ -464,8 +464,8 @@ def convert(_db, _host, _user, _password, _env, _force):
     # init Bugzilla environment
     print "Bugzilla MySQL('%s':'%s':'%s':'%s'): connecting..." % \
             (_db, _host, _user, ("*" * len(_password)))
-    mysql_con = MySQLdb.connect(host=_host, 
-                user=_user, passwd=_password, db=_db, compress=1, 
+    mysql_con = MySQLdb.connect(host=_host,
+                user=_user, passwd=_password, db=_db, compress=1,
                 cursorclass=MySQLdb.cursors.DictCursor)
     mysql_cur = mysql_con.cursor()
 
@@ -479,10 +479,10 @@ def convert(_db, _host, _user, _password, _env, _force):
         c = trac.db().cursor()
         c.execute("DELETE FROM ticket_change")
         trac.db().commit()
-        
+
         c.execute("DELETE FROM ticket")
         trac.db().commit()
-        
+
         c.execute("DELETE FROM attachment")
 	attachments_dir = os.path.join(os.path.normpath(trac.env.path),
                                 "attachments")
@@ -499,7 +499,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
 
     print "\n0. Filtering products..."
-    mysql_cur.execute("SELECT name FROM products")
+    if BZ_VERSION >= 2180:
+        mysql_cur.execute("SELECT name FROM products")
+    else:
+        mysql_cur.execute("SELECT product AS name FROM products")
     products = []
     for line in mysql_cur.fetchall():
         product = line['name']
@@ -516,13 +519,13 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print "\n2. Import components..."
     if not COMPONENTS_FROM_PRODUCTS:
-    	if BZ_VERSION >= 2180:
-	    sql = """SELECT DISTINCT c.name AS name, c.initialowner AS owner
-                                FROM components AS c, products AS p
-	                       WHERE c.product_id = p.id AND"""
-	    sql += makeWhereClause('p.name', PRODUCTS)
-	else:
-	    sql = "SELECT value AS name, initialowner AS owner FROM components"
+        if BZ_VERSION >= 2180:
+            sql = """SELECT DISTINCT c.name AS name, c.initialowner AS owner
+                               FROM components AS c, products AS p
+                               WHERE c.product_id = p.id AND"""
+            sql += makeWhereClause('p.name', PRODUCTS)
+        else:
+            sql = "SELECT value AS name, initialowner AS owner FROM components"
             sql += " WHERE" + makeWhereClause('program', PRODUCTS)
         mysql_cur.execute(sql)
         components = mysql_cur.fetchall()
@@ -531,9 +534,14 @@ def convert(_db, _host, _user, _password, _env, _force):
                                                    component['owner'])
         trac.setComponentList(components, 'name')
     else:
-        sql = """SELECT program AS product, value AS comp, initialowner AS owner
+        if BZ_VERSION >= 2180:
+            sql = """SELECT p.name AS product, c.name AS comp, c.initialowner AS owner
+                   FROM components c, products p"""
+            sql += " WHERE c.product_id = p.id and " + makeWhereClause('p.name', PRODUCTS)
+        else:
+            sql = """SELECT program AS product, value AS comp, initialowner AS owner
                    FROM components"""
-        sql += " WHERE" + makeWhereClause('program', PRODUCTS)
+            sql += " WHERE" + makeWhereClause('program', PRODUCTS)
         mysql_cur.execute(sql)
         lines = mysql_cur.fetchall()
         all_components = {} # product -> components
@@ -566,10 +574,10 @@ def convert(_db, _host, _user, _password, _env, _force):
     if BZ_VERSION >= 2180:
         sql = """SELECT DISTINCTROW versions.value AS value
                                FROM products, versions"""
-	sql += " WHERE" + makeWhereClause('products.name', PRODUCTS)
+        sql += " WHERE" + makeWhereClause('products.name', PRODUCTS)
     else:
-    	sql = "SELECT DISTINCTROW value FROM versions"
-    	sql += " WHERE" + makeWhereClause('program', PRODUCTS)
+        sql = "SELECT DISTINCTROW value FROM versions"
+        sql += " WHERE" + makeWhereClause('program', PRODUCTS)
     mysql_cur.execute(sql)
     versions = mysql_cur.fetchall()
     trac.setVersionList(versions, 'value')
@@ -591,11 +599,11 @@ def convert(_db, _host, _user, _password, _env, _force):
     mysql_cur.execute(sql)
     bugs = mysql_cur.fetchall()
 
-    
+
     print "\n7. Import bugs and bug activity..."
     for bug in bugs:
         bugid = bug['bug_id']
-        
+
         ticket = {}
         keywords = []
         ticket['id'] = bugid
@@ -639,7 +647,7 @@ def convert(_db, _host, _user, _password, _env, _force):
 
         ticket['summary'] = bug['short_desc']
 
-        mysql_cur.execute("SELECT * FROM longdescs WHERE bug_id = %s" % bugid) 
+        mysql_cur.execute("SELECT * FROM longdescs WHERE bug_id = %s" % bugid)
         longdescs = list(mysql_cur.fetchall())
 
         # check for empty 'longdescs[0]' field...
@@ -654,10 +662,10 @@ def convert(_db, _host, _user, _password, _env, _force):
             for comment in IGNORE_COMMENTS:
                 if re.match(comment, desc['thetext']):
                     ignore = True
-                    
+
             if ignore:
                     continue
-            
+
             trac.addTicketComment(ticket=bugid,
                 time = desc['bug_when'],
                 author=trac.getLoginName(mysql_cur, desc['who']),
@@ -671,7 +679,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         keywords = []
         for activity in bugs_activity:
             field_name = trac.getFieldName(mysql_cur, activity['fieldid']).lower()
-            
+
             removed = activity[activityFields['removed']]
             added = activity[activityFields['added']]
 
@@ -754,14 +762,14 @@ def convert(_db, _host, _user, _password, _env, _force):
             # Skip changes that have no effect (think translation!).
             if added == removed:
                 continue
-                
+
             # Bugzilla splits large summary changes into two records.
             for oldChange in ticketChanges:
               if (field_name == "summary"
-                  and oldChange['field'] == ticketChange['field'] 
-                  and oldChange['time'] == ticketChange['time'] 
+                  and oldChange['field'] == ticketChange['field']
+                  and oldChange['time'] == ticketChange['time']
                   and oldChange['author'] == ticketChange['author']):
-                  oldChange['oldvalue'] += " " + ticketChange['oldvalue'] 
+                  oldChange['oldvalue'] += " " + ticketChange['oldvalue']
                   oldChange['newvalue'] += " " + ticketChange['newvalue']
                   break
               # cc sometime appear in different activities with same time
@@ -800,15 +808,19 @@ def convert(_db, _host, _user, _password, _env, _force):
             if kw and kw not in keywords:
                 keywords.append(kw)
 
-        ticket['keywords'] = string.join(keywords)                
+        ticket['keywords'] = string.join(keywords)
         ticketid = trac.addTicket(**ticket)
 
-        mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" % bugid)
+        if BZ_VERSION >= 2180:
+            mysql_cur.execute("SELECT attachments.*, attach_data.thedata FROM attachments, attach_data
+                    WHERE attachments.bug_id = %s AND attachments.attach_id = attach_data.id" % bugid)
+        else:
+            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" % bugid)
         attachments = mysql_cur.fetchall()
         for a in attachments:
             author = trac.getLoginName(mysql_cur, a['submitter_id'])
             trac.addAttachment(author, a)
-            
+
     print "\n8. Importing users and passwords..."
     if BZ_VERSION >= 2180:
         mysql_cur.execute("SELECT login_name, cryptpassword FROM profiles")
@@ -876,7 +888,7 @@ def main():
     	        print "Error: unknown parameter: " + sys.argv[iter]
     	        sys.exit(0)
     	    iter = iter + 1
-        
+
     convert(BZ_DB, BZ_HOST, BZ_USER, BZ_PASSWORD, TRAC_ENV, TRAC_CLEAN)
 
 if __name__ == '__main__':
