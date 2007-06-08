@@ -22,7 +22,7 @@
           <div class="field">
             <label>Due:<br />
               <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                value="${format_date(milestone.due)}" title="Format: $date_hint" />
+                value="${milestone.due and format_date(milestone.due)}" title="Format: $date_hint" />
               <em>Format: $date_hint</em>
             </label>
           </div>
@@ -106,7 +106,9 @@ ${milestone.description}</textarea>
                 <td>
                   <a href="${panel_href(milestone.name)}">${milestone.name}</a>
                 </td>
-                <td>${format_date(milestone.due)}</td>
+                <td><py:if test="milestone.due">
+                  ${format_date(milestone.due)}
+                </py:if></td>
                 <td><py:if test="milestone.completed">
                   ${format_datetime(milestone.completed)}
                 </py:if></td>

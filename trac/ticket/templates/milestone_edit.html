@@ -51,7 +51,7 @@
           <legend>Schedule</legend>
           <label>Due:<br />
             <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                   value="${format_date(milestone.due)}" title="Format: ${date_hint}" />
+                   value="${milestone.due and format_date(milestone.due)}" title="Format: ${date_hint}" />
             <em>Format: ${date_hint}</em>
           </label>
           <div class="field">
