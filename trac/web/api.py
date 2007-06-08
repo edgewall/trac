@@ -275,8 +275,7 @@ class Request(object):
         if not url.startswith('http://') and not url.startswith('https://'):
             # Make sure the URL is absolute, honor base_url for
             # scheme and host if present
-            scheme, host, path, params, query, fragment = urlparse.urlparse(
-                                                              self.abs_href())
+            scheme, host = urlparse.urlparse(self.base_url)[:2]
             url = urlparse.urlunparse((scheme, host, url, None, None, None))                           
 
         self.send_header('Location', url)
