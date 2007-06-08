@@ -72,10 +72,13 @@ class TicketSystemTestCase(unittest.TestCase):
         self.req.perm = perm.PermissionCache(self.env)
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
                          ts.get_available_actions(self.req, {'status': 'new'}))
-        self.assertEqual(['leave', 'resolve', 'reassign'],
+        self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
                          ts.get_available_actions(self.req,
                                                   {'status': 'assigned'}))
-        self.assertEqual(['leave', 'resolve', 'reassign'],
+        self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'accepted'}))
+        self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
                          ts.get_available_actions(self.req,
                                                   {'status': 'reopened'}))
         self.assertEqual(['leave', 'reopen'],
@@ -90,6 +93,9 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual(['leave'],
                          ts.get_available_actions(self.req,
                                                   {'status': 'assigned'}))
+        self.assertEqual(['leave'],
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'accepted'}))
         self.assertEqual(['leave'],
                          ts.get_available_actions(self.req,
                                                   {'status': 'reopened'}))
@@ -108,6 +114,9 @@ class TicketSystemTestCase(unittest.TestCase):
                                                   {'status': 'assigned'}))
         self.assertEqual(['leave'],
                          ts.get_available_actions(self.req,
+                                                  {'status': 'accepted'}))
+        self.assertEqual(['leave'],
+                         ts.get_available_actions(self.req,
                                                   {'status': 'reopened'}))
         self.assertEqual(['leave', 'reopen'],
                          ts.get_available_actions(self.req,
@@ -123,6 +132,9 @@ class TicketSystemTestCase(unittest.TestCase):
         self.assertEqual(['leave'],
                          ts.get_available_actions(self.req,
                                                   {'status': 'assigned'}))
+        self.assertEqual(['leave'],
+                         ts.get_available_actions(self.req,
+                                                  {'status': 'accepted'}))
         self.assertEqual(['leave'],
                          ts.get_available_actions(self.req,
                                                   {'status': 'reopened'}))

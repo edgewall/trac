@@ -76,22 +76,23 @@ def get_workflow_config(config):
     section.
     """
     # This is the default workflow used if there is no ticket-workflow section
-    # in the ini.  This is the workflow Trac has historically had, warts and
-    # all.
+    # in the ini.  This is a "fixed" version of the workflow Trac has
+    # historically had.  This is supposed to match the contents of
+    # contrib/workflow/basic-workflow.ini
     default_workflow = [
         ('leave', '* -> *'),
-        ('leave.default', '1'),
         ('leave.operations', 'leave_status'),
+        ('leave.default', '1'),
 
-        ('accept', 'new -> assigned'),
+        ('accept', 'new,assigned,accepted,reopened -> accepted'),
         ('accept.permissions', 'TICKET_MODIFY'),
         ('accept.operations', 'set_owner_to_self'),
 
-        ('resolve', 'new,assigned,reopened -> closed'),
+        ('resolve', 'new,assigned,accepted,reopened -> closed'),
         ('resolve.permissions', 'TICKET_MODIFY'),
         ('resolve.operations', 'set_resolution'),
 
-        ('reassign', 'new,assigned,reopened -> new'),
+        ('reassign', 'new,assigned,accepted,reopened -> assigned'),
         ('reassign.permissions', 'TICKET_MODIFY'),
         ('reassign.operations', 'set_owner'),
 
