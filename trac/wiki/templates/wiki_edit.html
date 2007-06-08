@@ -91,26 +91,24 @@ $page.text</textarea>
         </div>
         <fieldset id="changeinfo">
           <legend>Change information</legend>
-          <py:if test="authname == 'anonymous'">
-            <div class="field">
+          <div id="changeinfo1">
+            <div py:if="authname == 'anonymous'" class="field">
               <label>Your email or username:<br />
                 <input id="author" type="text" name="author" size="30" value="$author" />
               </label>
             </div>
-          </py:if>
-          <div class="field">
-            <label>Comment about this change (optional):<br />
-              <input id="comment" type="text" name="comment" size="60" value="$comment" />
-            </label>
-          </div><br />
-          <py:if test="'WIKI_ADMIN' in perm(context)">
-            <div class="options">
-              <label><input type="checkbox" name="readonly" id="readonly"
-                            checked="${page.readonly or None}" />
-                Page is read-only
+            <div class="field">
+              <label>Comment about this change (optional):<br />
+                <input id="comment" type="text" name="comment" size="60" value="$comment" />
               </label>
             </div>
-          </py:if>
+          </div>
+          <div py:if="'WIKI_ADMIN' in perm(context)" id="changeinfo2" class="options">
+            <label><input type="checkbox" name="readonly" id="readonly"
+                          checked="${page.readonly or None}" />
+              Page is read-only
+            </label>
+          </div>
         </fieldset>
         <div class="buttons" py:choose="action">
           <py:when test="'collision'">
