@@ -173,6 +173,8 @@ class ConfigurableTicketWorkflow(Component):
 
         control = [] # default to nothing
         hints = []
+        if 'del_owner' in operations:
+            hints.append("The ticket will be unowned")
         if 'set_owner' in operations:
             id = action + '_reassign_owner'
             selected_owner = req.args.get(id, req.authname)
@@ -198,6 +200,8 @@ class ConfigurableTicketWorkflow(Component):
                      for x in owners],
                     id=id, name=id)]))
                 hints.append("The owner will change")
+        if 'set_owner_to_self' in operations:
+            hints.append("The owner will change to %s" % req.authname)
         if 'set_resolution' in operations:
             if this_action.has_key('set_resolution'):
                 resolutions = [x.strip() for x in this_action['set_resolution'].split(',')]
