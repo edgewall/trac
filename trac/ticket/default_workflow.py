@@ -174,7 +174,7 @@ class ConfigurableTicketWorkflow(Component):
         control = [] # default to nothing
         hints = []
         if 'del_owner' in operations:
-            hints.append("The ticket will be unowned")
+            hints.append("The ticket will be disowned")
         if 'set_owner' in operations:
             id = action + '_reassign_owner'
             selected_owner = req.args.get(id, req.authname)
