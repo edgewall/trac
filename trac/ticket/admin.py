@@ -233,7 +233,7 @@ class VersionAdminPage(TicketAdminPage):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
                         ver.time = parse_date(req.args.get('time'))
-                        ver.insert()
+                    ver.insert()
                     req.redirect(req.href.admin(cat, page))
                          
                 # Remove versions
