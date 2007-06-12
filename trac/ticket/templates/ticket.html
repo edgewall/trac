@@ -189,7 +189,7 @@
                   <input type="submit" name="clone" value="Clone" title="Create a copy of this ticket"  />
                   <py:for each="f in fields">
                     <py:choose test="f.name">
-                      <input py:when="'summary'" type="hidden" name="field_summary" value="$ticket.description (cloned)" />
+                      <input py:when="'summary'" type="hidden" name="field_summary" value="$ticket.summary (cloned)" />
                       <input py:when="'description'" type="hidden" name="field_description" value="Cloned from #$ticket.id: ${'\n----\n' + ticket.description}" />
                       <input py:otherwise="" type="hidden" name="field_${f.name}" value="${ticket[f.name]}" />
                     </py:choose>
