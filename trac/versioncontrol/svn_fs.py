@@ -91,8 +91,10 @@ def _to_svn(*args):
 
 def _from_svn(path):
     """Expect an UTF-8 encoded string and transform it to an `unicode` object
+    But Subversion repositories built from conversion utilities can have
+    non-UTF-8, so we have to handle it.
     """
-    return path and path.decode('utf-8')
+    return path and to_unicode(path, 'utf-8')
     
 def _normalize_path(path):
     """Remove leading "/", except for the root."""
