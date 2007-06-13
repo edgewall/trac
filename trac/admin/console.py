@@ -722,10 +722,10 @@ Congratulations!
         old = list(rows)
         if old and title in create_only:
             print '  %s already exists.' % title
-            return
+            return False
         if old and data == old[0][0]:
             print '  %s already up to date.' % title
-            return
+            return False
         f.close()
 
         self.db_update("INSERT INTO wiki(version,name,time,author,ipnr,text) "
@@ -733,6 +733,7 @@ Congratulations!
                        " 'trac','127.0.0.1',%s FROM wiki "
                        " WHERE name=%s",
                        cursor, (title, int(time.time()), data, title))
+        return True
 
     def _do_wiki_export(self, page, filename=''):
         data = self.db_query("SELECT text FROM wiki WHERE name=%s "
@@ -761,8 +762,8 @@ Congratulations!
             filename = os.path.join(dir, page)
             page = urllib.unquote(page)
             if os.path.isfile(filename):
-                print " %s => %s" % (filename, page)
-                self._do_wiki_import(filename, page, cursor, create_only)
+                if self._do_wiki_import(filename, page, cursor, create_only):
+                    print "  %s imported from %s" % (page, filename)
 
     ## Ticket
     _help_ticket = [('ticket remove <number>', 'Remove ticket')]
