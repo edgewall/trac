@@ -1009,11 +1009,15 @@ def format_to(flavor, ctx, wikidom, **options):
 def format_to_html(ctx, wikidom, escape_newlines=False, abs_urls=False):
     if not wikidom:
         return ''
+    if abs_urls != ctx.abs_urls: # Note: temporary hack (need RenderingContext)
+        ctx = ctx(abs_urls=abs_urls)
     return HtmlFormatter(ctx, wikidom).generate(escape_newlines)
 
 def format_to_oneliner(ctx, wikidom, shorten=False, abs_urls=False):
     if not wikidom:
         return ''
+    if abs_urls != ctx.abs_urls: # Note: temporary hack (need RenderingContext)
+        ctx = ctx(abs_urls=abs_urls)
     return InlineHtmlFormatter(ctx, wikidom).generate(shorten)
 
 def extract_link(ctx, wikidom):
