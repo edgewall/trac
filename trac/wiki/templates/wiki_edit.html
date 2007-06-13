@@ -26,8 +26,8 @@
       <h2>Wiki Navigation</h2>
       <ul>
         <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
-        <li><a href="${href.wiki('TitleIndex')}">Index by Title</a></li>
-        <li><a href="${href.wiki('RecentChanges')}">Index by Date</a></li>
+        <li><a href="${href.wiki('TitleIndex')}">Index</a></li>
+        <li><a href="${href.wiki(page.name, action='history')}">History</a></li>
         <li class="last">
           <a href="${context.resource_href(action='diff')}">Last Change</a>
         </li>
