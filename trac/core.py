@@ -104,7 +104,11 @@ class ComponentMeta(type):
                 if cls not in compmgr.components:
                     compmgr.components[cls] = self
                     if init:
-                        init(self)
+                        try:
+                            init(self)
+                        except:
+                            del compmgr.components[cls]
+                            raise
             maybe_init._original = init
             new_class.__init__ = maybe_init
 
