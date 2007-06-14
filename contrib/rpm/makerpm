@@ -1,0 +1,4 @@
+#!/bin/bash
+# Run this script from the top of the Trac source tree.
+# Tested on Fedora Core 6
+python setup.py bdist_rpm --install-script=`pwd`/contrib/rpm/installscript

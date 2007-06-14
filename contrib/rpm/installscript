@@ -1,0 +1,1 @@
+python setup.py install --optimize=1 --single-version-externally-managed --root=$RPM_BUILD_ROOT --record=INSTALLED_FILES
