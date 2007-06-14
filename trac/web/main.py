@@ -182,13 +182,13 @@ class RequestDispatcher(Component):
         # Select the component that should handle the request
         chosen_handler = None
         try:
-            if not req.path_info or req.path_info == '/':
-                chosen_handler = self.default_handler
-            else:
-                for handler in self.handlers:
-                    if handler.match_request(req):
-                        chosen_handler = handler
-                        break
+            for handler in self.handlers:
+                if handler.match_request(req):
+                    chosen_handler = handler
+                    break
+            if not chosen_handler:
+                if not req.path_info or req.path_info == '/':
+                    chosen_handler = self.default_handler
             chosen_handler = self._pre_process_request(req, chosen_handler)
         except TracError, e:
             raise HTTPInternalError(e)
