@@ -952,10 +952,11 @@ Congratulations!
                        ('milestone rename <name> <newname>',
                         'Rename milestone'),
                        ('milestone due <name> <due>',
-                        'Set milestone due date (Format: "%s" or "now")'
+                        'Set milestone due date (Format: "%s", "now" or "")'
                         % _date_format_hint),
                        ('milestone completed <name> <completed>',
-                        'Set milestone completed date (Format: "%s" or "now")'
+                        'Set milestone completed date '
+                        '(Format: "%s", "now" or "")'
                         % _date_format_hint),
                        ('milestone remove <name>', 'Remove milestone')]
 
@@ -1009,12 +1010,12 @@ Congratulations!
 
     def _do_milestone_set_due(self, name, t):
         milestone = Milestone(self.env_open(), name)
-        milestone.due = parse_date(t)
+        milestone.due = t and parse_date(t)
         milestone.update()
 
     def _do_milestone_set_completed(self, name, t):
         milestone = Milestone(self.env_open(), name)
-        milestone.completed = parse_date(t)
+        milestone.completed = t and parse_date(t)
         milestone.update()
 
     ## Version
@@ -1023,7 +1024,7 @@ Congratulations!
                        ('version rename <name> <newname>',
                         'Rename version'),
                        ('version time <name> <time>',
-                        'Set version date (Format: "%s" or "now")'
+                        'Set version date (Format: "%s", "now" or "")'
                         % _date_format_hint),
                        ('version remove <name>', 'Remove version')]
 
@@ -1073,7 +1074,7 @@ Congratulations!
 
     def _do_version_time(self, name, t):
         version = Version(self.env_open(), name)
-        version.time = parse_date(t)
+        version.time = t and parse_date(t)
         version.update()
 
     _help_upgrade = [('upgrade', 'Upgrade database to current version')]

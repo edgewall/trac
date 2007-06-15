@@ -760,6 +760,18 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
+    def test_version_time_unset_ok(self):
+        """
+        Tests the 'version time' command in trac-admin.  This particular
+        test passes valid arguments for unsetting the date.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('version time 2.0 "%s"' % self._test_date)
+        self._execute('version time 2.0 ""')
+        rv, output = self._execute('version list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
     def test_version_time_error_bad_version(self):
         """
         Tests the 'version time' command in trac-admin.  This particular
@@ -868,6 +880,18 @@ class TracadminTestCase(unittest.TestCase):
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone due milestone2 "%s"' % self._test_date)
+        rv, output = self._execute('milestone list')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_milestone_due_unset_ok(self):
+        """
+        Tests the 'milestone due' command in trac-admin.  This particular
+        test passes valid arguments for unsetting the due date.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self._execute('milestone due milestone2 "%s"' % self._test_date)
+        self._execute('milestone due milestone2 ""')
         rv, output = self._execute('milestone list')
         self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)

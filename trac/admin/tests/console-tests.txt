@@ -128,7 +128,7 @@ version rename <name> <newname>
 	-- Rename version
 
 version time <name> <time>
-	-- Set version date (Format: "YYYY-MM-DD" or "now")
+	-- Set version date (Format: "YYYY-MM-DD", "now" or "")
 
 version remove <name>
 	-- Remove version
@@ -143,10 +143,10 @@ milestone rename <name> <newname>
 	-- Rename milestone
 
 milestone due <name> <due>
-	-- Set milestone due date (Format: "YYYY-MM-DD" or "now")
+	-- Set milestone due date (Format: "YYYY-MM-DD", "now" or "")
 
 milestone completed <name> <completed>
-	-- Set milestone completed date (Format: "YYYY-MM-DD" or "now")
+	-- Set milestone completed date (Format: "YYYY-MM-DD", "now" or "")
 
 milestone remove <name>
 	-- Remove milestone
@@ -602,6 +602,13 @@ Name  Time
 1.0                           
 2.0   2004-01-11
 
+===== test_version_time_unset_ok =====
+
+Name  Time                    
+----------
+2.0                           
+1.0                           
+
 ===== test_version_time_error_bad_version =====
 Command failed: Version bad_version does not exist.
 ===== test_version_remove_ok =====
@@ -660,6 +667,15 @@ Name        Due         Completed
 ---------------------------------
 milestone2  2004-01-11
 milestone1
+milestone3
+milestone4
+
+===== test_milestone_due_unset_ok =====
+
+Name        Due  Completed
+--------------------------
+milestone1
+milestone2
 milestone3
 milestone4
 
