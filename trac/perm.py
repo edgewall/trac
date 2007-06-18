@@ -460,13 +460,8 @@ class PermissionCache(object):
 
     def permissions(self):
         """Deprecated (but still used by the HDF compatibility layer)"""
-        if not self._cached_all:
-            self.env.log.warning('perm.permissions() is deprecated and '
-                                 'is only present for HDF compatibility')
-            perm = PermissionSystem(self.env)
-            actions = perm.get_user_permissions(self.username)
-            # Perform a full permission check in this context
-            [action in self for action in actions]
-            self._cached_all = True
-        return [action for action, decision in
-                self._cache.get(None, {}).iteritems() if decision]
+        self.env.log.warning('perm.permissions() is deprecated and '
+                             'is only present for HDF compatibility')
+        perm = PermissionSystem(self.env)
+        actions = perm.get_user_permissions(self.username)
+        return [action for action in actions if action in self]
