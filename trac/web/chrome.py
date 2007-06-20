@@ -303,8 +303,8 @@ class Chrome(Component):
     def get_templates_dirs(self):
         return filter(None, [
             self.env.get_templates_dir(),
+            self.shared_templates_dir,
             pkg_resources.resource_filename('trac', 'templates'),
-            self.shared_templates_dir
         ])
 
     # IWikiSyntaxProvider methods
