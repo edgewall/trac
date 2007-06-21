@@ -20,11 +20,13 @@
 import os
 import unittest
 import sys
+import pkg_resources
 
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, ExtensionPoint
 from trac.env import Environment
 from trac.db.sqlite_backend import SQLiteConnection
+from trac.ticket.default_workflow import load_workflow_config_snippet
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -153,6 +155,10 @@ class EnvironmentStub(Environment):
             self.path = os.path.join(os.getcwd(), self.path)
 
         self.config = Configuration(None)
+        # We have to have a ticket-workflow config for ''lots'' of things to
+        # work.  So insert the basic-workflow config here.  There may be a
+        # better solution than this.
+        load_workflow_config_snippet(self.config, 'basic-workflow.ini')
 
         from trac.log import logger_factory
         self.log = logger_factory('test')

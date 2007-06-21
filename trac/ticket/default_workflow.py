@@ -16,10 +16,14 @@
 #
 # Author: Eli Carter
 
+import pkg_resources
+
 from genshi.builder import tag
 
 from trac.core import *
 from trac.perm import PermissionSystem
+from trac.env import IEnvironmentSetupParticipant
+from trac.config import Configuration
 from trac.ticket.api import ITicketActionController
 from trac.util.compat import set
 
@@ -75,37 +79,19 @@ def get_workflow_config(config):
     """Usually passed self.config, this will return the parsed ticket-workflow
     section.
     """
-    # This is the default workflow used if there is no ticket-workflow section
-    # in the ini.  This is a "fixed" version of the workflow Trac has
-    # historically had.  This is supposed to match the contents of
-    # contrib/workflow/basic-workflow.ini
-    default_workflow = [
-        ('leave', '* -> *'),
-        ('leave.operations', 'leave_status'),
-        ('leave.default', '1'),
-
-        ('accept', 'new,assigned,accepted,reopened -> accepted'),
-        ('accept.permissions', 'TICKET_MODIFY'),
-        ('accept.operations', 'set_owner_to_self'),
-
-        ('resolve', 'new,assigned,accepted,reopened -> closed'),
-        ('resolve.permissions', 'TICKET_MODIFY'),
-        ('resolve.operations', 'set_resolution'),
-
-        ('reassign', 'new,assigned,accepted,reopened -> assigned'),
-        ('reassign.permissions', 'TICKET_MODIFY'),
-        ('reassign.operations', 'set_owner'),
-
-        ('reopen', 'closed -> reopened'),
-        ('reopen.permissions', 'TICKET_CREATE'),
-        ('reopen.operations', 'del_resolution'),
-    ]
     raw_actions = list(config.options('ticket-workflow'))
-    if not raw_actions:
-        # Fallback to the default
-        raw_actions = default_workflow
     actions = parse_workflow_config(raw_actions)
     return actions
+
+def load_workflow_config_snippet(config, filename):
+    """Loads the ticket-workflow section from the given file (expected to be in
+    the 'workflows' tree) into the provided config.
+    """
+    filename = pkg_resources.resource_filename('trac.ticket',
+                    'workflows/%s' % filename)
+    new_config = Configuration(filename)
+    for name, value in new_config.options('ticket-workflow'):
+        config.set('ticket-workflow', name, value)
 
 
 class ConfigurableTicketWorkflow(Component):
@@ -117,9 +103,37 @@ class ConfigurableTicketWorkflow(Component):
     def __init__(self, *args, **kwargs):
         Component.__init__(self, *args, **kwargs)
         self.actions = get_workflow_config(self.config)
-        self.log.debug('%s\n' % str(self.actions))
+        self.log.debug('Workflow actions at initialization: %s\n' % str(self.actions))
 
-    implements(ITicketActionController)
+    implements(ITicketActionController, IEnvironmentSetupParticipant)
+
+    # IEnvironmentSetupParticipant methods
+
+    def environment_created(self):
+        """When an environment is created, we provide the basic-workflow"""
+        
+        load_workflow_config_snippet(self.config, 'basic-workflow.ini')
+        self.config.save()
+        self.actions = get_workflow_config(self.config)
+
+    def environment_needs_upgrade(self, db):
+        """The environment needs an upgrade if there is no [ticket-workflow]
+        section in the config.
+        """
+        return not list(self.config.options('ticket-workflow'))
+
+    def upgrade_environment(self, db):
+        """Insert a [ticket-workflow] section using the original-workflow"""
+        load_workflow_config_snippet(self.config, 'original-workflow.ini')
+        self.config.save()
+        self.actions = get_workflow_config(self.config)
+        info_message = 'Workflow is now configurable.  Your environment has ' \
+                       'been upgraded, but configured to use the original ' \
+                       'workflow.  It is recommended that you look at ' \
+                       'changing this configuration to use basic-workflow.  ' \
+                       'Read TracWorkflow for more information.'
+        self.log.info(info_message)
+        print info_message
 
     # ITicketActionController methods
 

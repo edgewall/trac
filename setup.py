@@ -35,6 +35,7 @@ facilities.
         '': ['templates/*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*', 'htdocs/css/*'],
         'trac.wiki': ['default-pages/*'],
+        'trac.ticket': ['workflows/*.ini'],
     },
 
     test_suite = 'trac.test.suite',
