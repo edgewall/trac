@@ -367,7 +367,6 @@ def suite():
     # Purely so we don't have to have a complete env with registered context
     # providers
     context._populate('wiki', 'Main/Sub')
-    print context
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
                                   context=context))
     return suite
