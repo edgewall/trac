@@ -428,7 +428,7 @@ class PermissionCache(object):
                 realm_or_context = realm_or_context or self.context.realm
                 id = id or self.context.id
                 version = version or self.context.version
-            return Context(self.env, None, realm_or_context, id, version)
+            return Context(self.env, None)(realm_or_context, id, version)
         else:
             return self.context
 

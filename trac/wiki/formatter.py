@@ -1030,7 +1030,7 @@ def extract_link(ctx, wikidom):
 
 def wiki_to_html(wikitext, env, req, db=None,
                  absurls=False, escape_newlines=False):
-    ctx = Context(env, req, db=db, abs_urls=absurls)
+    ctx = Context(env, req, db=db)(abs_urls=absurls)
     if not wikitext:
         return Markup()
     out = StringIO()

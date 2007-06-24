@@ -341,7 +341,7 @@ class WikiSystem(Component):
             query = '&' + query[1:]
         href = formatter.href.wiki(page, version=version) + query + fragment
         req = formatter.context.req
-        context = Context(self.env, req, 'wiki', id=page, version=version)
+        context = Context(self.env, req)('wiki', id=page, version=version)
         if 'WIKI_VIEW' not in req.perm(context):
             return html.A(label, href=href, rel='nofollow',
                           class_='forbidden wiki',

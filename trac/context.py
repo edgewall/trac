@@ -104,19 +104,22 @@ class Context(object):
 
     realm = None
 
-    def __init__(self, env, req, realm=None, id=None, parent=None,
-                 version=None, abs_urls=False, db=None, resource=None):
+    def __init__(self, env, req, **kwargs):
+        # XXX Remove and replace ^^ kwargs when sure things aren't going to break.
         if not env:
             raise TracError("Environment not specified for Context")
         self.env = env
         self.req = req
-        self.realm = realm
-        self.id = id
-        self.parent = parent
-        self.version = version
-        self.abs_urls = abs_urls
-        self._db = db
-        self.resource = resource
+        self.parent = kwargs.pop('parent', None)
+        self.abs_urls = kwargs.pop('abs_urls', None)
+        self._db = kwargs.pop('db', None)
+        self.realm = None
+        self.id = None
+        self.version = None
+        self.resource = None
+        assert not kwargs, 'Context now only accepts "env", "req" positional ' \
+                           'arguments, followed by keyword arguments "abs_urls", ' \
+                           '"parent" and "db"'
 
     def __repr__(self):
         path = []
@@ -171,7 +174,7 @@ class Context(object):
         <Context u'[root], wiki:CurrentStatus@3'>
 
         >>> c4 = c3()
-        >>> c3
+        >>> c4
         <Context u'[root], wiki:CurrentStatus@3'>
 
         Only changing the `id` results in another resource in the same realm.
@@ -181,31 +184,39 @@ class Context(object):
         <Context u'[root], wiki:CurrentStatus@3, wiki:AnotherOne'>
         
         """
-        abs_urls = [abs_urls, self.abs_urls][abs_urls is None]
+        if abs_urls is None:
+            abs_urls = self.abs_urls
         if realm or id:
             # create a child context
             if version is False: # not set, use latest
                 version = None
-            return ResourceSystem(self.env).create_context(
-                self.req, realm or self.realm, id, self,
-                version=version, abs_urls=abs_urls, resource=resource)
+            realm = realm or self.realm
+            cls = ResourceSystem(self.env).realm_context_class(realm)
+            context = cls(self.env, self.req, parent=self, abs_urls=abs_urls)
+            context._populate(realm, id, version, abs_urls, resource)
+            return context
         else:
             # copy current context
             copy = object.__new__(self.__class__)
             # strict copy
-            copy.resource = resource or self._resource
             copy.env = self.env
             copy.req = self.req
-            copy.realm = self.realm
-            copy.id = self.id
             copy.parent = self.parent
             copy._db = self._db
-            # copy + update
             if version is False: # not set, keep existing
                 version = self.version
-            copy.version = version
-            copy.abs_urls = abs_urls
+            copy._populate(self.realm, self.id, version, abs_urls,
+                           resource or self._resource)
             return copy
+
+    def _populate(self, realm=None, id=None, version=None, abs_urls=None,
+                  resource=None):
+            self.realm = realm
+            self.id = id
+            self.version = version
+            self.resource = resource
+            self.version = version
+            self.abs_urls = abs_urls
 
     def from_resource(cls, req, resource, *args, **kwargs):
         """Create a new Context from an existing Resource.
@@ -214,9 +225,11 @@ class Context(object):
         which are deduced from the `resource` itself.
         """
         kwargs['resource'] = resource
-        res = ResourceSystem(resource.env)
-        return res.create_context(req, resource.realm, resource.id,
-                                  *args, **kwargs)
+        cls = ResourceSystem(self.env).realm_context_class(realm)
+        context = cls(self.env, req, resource=resource) \
+                     (resource.realm, resource.id, *args, **kwargs)
+        context._populate(realm, id, version)
+        return context
     from_resource = classmethod(from_resource)
 
     def get_resource(self):
@@ -369,11 +382,8 @@ class ResourceSystem(Component):
 
     # Public methods
 
-    def create_context(self, req, realm, *args, **kwargs):
-        """Create the appropriate Context for the given `realm`.
-
-        For the remaining arguments, see the Context constructor.
-        """
+    def realm_context_class(self, realm):
+        """Return the Context subclass for a realm, or Context."""
         # build a dict of realm keys to Context subclasses values
         if not self._context_map:
             map = {}
@@ -381,8 +391,7 @@ class ResourceSystem(Component):
                 for context_class in provider.get_context_classes():
                     map[context_class.realm] = context_class
             self._context_map = map
-        context_class = self._context_map.get(realm, Context)
-        return context_class(self.env, req, realm, *args, **kwargs)
+        return self._context_map.get(realm, Context)
 
     def get_known_realms(self):
         realms = []

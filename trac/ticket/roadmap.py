@@ -537,8 +537,7 @@ class MilestoneModule(Component):
 
         data = {
             'milestone': milestone,
-            'context': Context(self.env, req, 'milestone', milestone.name,
-                               db=db),
+            'context': Context(self.env, req, db=db)('milestone', milestone.name),
             'milestones': Milestone.select(self.env, False, db)
         }
         return 'milestone_delete.html', data, None
@@ -546,8 +545,7 @@ class MilestoneModule(Component):
     def _render_editor(self, req, db, milestone):
         data = {
             'milestone': milestone,
-            'context': Context(self.env, req, 'milestone', milestone.name,
-                               db=db),
+            'context': Context(self.env, req, db=db)('milestone', milestone.name),
             'date_hint': get_date_format_hint(),
             'datetime_hint': get_datetime_format_hint(),
             'milestones': [],

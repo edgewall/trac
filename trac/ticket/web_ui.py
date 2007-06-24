@@ -695,7 +695,7 @@ class TicketModule(Component):
 
         data = {
             'ticket': ticket,
-            'context': Context(self.env, req, 'ticket', ticket.id, db=db),
+            'context': Context(self.env, req, db=db)('ticket', ticket.id),
             'changes': changes,
         }
 

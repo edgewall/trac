@@ -4,6 +4,7 @@ from datetime import datetime
 import unittest
 
 from trac.context import Context
+from trac.wiki.api import WikiContext
 from trac.test import Mock
 from trac.util.datefmt import utc
 from trac.web.href import Href
@@ -358,10 +359,15 @@ nolink          http://noweb
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__))
-    context = Context(Mock(), Mock(href=Href('/trac'),
-                                   abs_href=Href('http://www.example.com/'),
-                                   authname='anonymous'),
-                      'wiki', 'Main/Sub')
+    env = Mock()
+    req = Mock(href=Href('/trac'),
+               abs_href=Href('http://www.example.com/'),
+               authname='anonymous')
+    context = WikiContext(env, req)
+    # Purely so we don't have to have a complete env with registered context
+    # providers
+    context._populate('wiki', 'Main/Sub')
+    print context
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
                                   context=context))
     return suite

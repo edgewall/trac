@@ -211,7 +211,7 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
         data = {
-            'context': Context(self.env, req, 'source', path),
+            'context': Context(self.env, req)('source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
             'path_links': path_links, 'limit' : limit,

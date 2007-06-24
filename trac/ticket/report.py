@@ -265,7 +265,7 @@ class ReportModule(Component):
         if id > 0:
             title = '{%i} %s' % (id, title)
 
-        context = Context(self.env, req, 'report', id)
+        context = Context(self.env, req)('report', id)
         data = {'action': 'view', 'title': title,
                 'context': context,
                 'report': {'id': id, 'title': title,

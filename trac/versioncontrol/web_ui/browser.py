@@ -341,8 +341,8 @@ class BrowserModule(Component):
         except NoSuchChangeset, e:
             raise ResourceNotFound(e.message, 'Invalid Changeset Number')
 
-        context = Context(self.env, req, 'source', path,
-                          version=node.created_rev) # resource=node
+        context = Context(self.env, req)('source', path,
+                                         version=node.created_rev) # resource=node
 
         path_links = get_path_links(req.href, path, rev, order, desc)
         if len(path_links) > 1:
