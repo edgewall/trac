@@ -17,7 +17,7 @@
 import datetime
 import unittest
 
-from trac.util.datefmt import get_timezone
+from trac.util import datefmt
 
 try:
     import pytz
@@ -26,28 +26,61 @@ except ImportError:
 else:
     class PytzTestCase(unittest.TestCase):
         def test_pytz_conversion(self):
-            tz = get_timezone('GMT +3:00')
+            tz = datefmt.get_timezone('GMT +3:00')
             self.assertEqual(datetime.timedelta(hours=3),
                              tz.utcoffset(None))
 
         def test_posix_conversion(self):
-            tz = get_timezone('Etc/GMT-4')
+            tz = datefmt.get_timezone('Etc/GMT-4')
             self.assertEqual(datetime.timedelta(hours=4),
                              tz.utcoffset(None))
             self.assertEqual('GMT +4:00', tz.zone)
 
         def test_unicode_input(self):
-            tz = get_timezone(u'Etc/GMT-4')
+            tz = datefmt.get_timezone(u'Etc/GMT-4')
             self.assertEqual(datetime.timedelta(hours=4),
                              tz.utcoffset(None))
             self.assertEqual('GMT +4:00', tz.zone)
 
+class DateFormatTestCase(unittest.TestCase):
+
+    def test_to_datetime(self):
+        expected = datetime.datetime(1970,1,1,1,0,23,0,datefmt.localtz)
+        self.assertEqual(datefmt.to_datetime(23), expected)
+        self.assertEqual(datefmt.to_datetime(23L), expected)
+        self.assertEqual(datefmt.to_datetime(23.0), expected)
+
+    def test_to_datetime_tz(self):
+        tz = datefmt.timezone('GMT +1:00')
+        expected = datetime.datetime(1970,1,1,1,0,23,0,tz)
+        self.assertEqual(datefmt.to_datetime(23, tz), expected)
+        self.assertEqual(datefmt.to_datetime(23L, tz), expected)
+        self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
+
+    def test_format_datetime(self):
+        t = datetime.datetime(1970,1,1,1,0,23,0,datefmt.utc)
+        expected = '1970-01-01T01:00:23Z+0000'
+        self.assertEqual(datefmt.format_datetime(t, '%Y-%m-%dT%H:%M:%SZ%z',
+                                                 datefmt.utc), expected)
+        self.assertEqual(datefmt.format_datetime(t, 'iso8601',
+                                                 datefmt.utc), expected)
+
+    def test_format_datetime(self):
+        t = datetime.datetime(1970,1,1,1,0,23,0,datefmt.utc)
+        expected = '1970-01-01T01:00:23Z+0000'
+        self.assertEqual(datefmt.format_datetime(t, '%Y-%m-%dT%H:%M:%SZ%z',
+                                                 datefmt.utc), expected)
+        self.assertEqual(datefmt.format_datetime(t, 'iso8601',
+                                                 datefmt.utc), expected)
+
+        
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
         suite.addTest(unittest.makeSuite(PytzTestCase, 'test'))
     else:
         print "SKIP: utils/tests/datefmt.py (no pytz installed)"
+    suite.addTest(unittest.makeSuite(DateFormatTestCase))
     return suite
 
 if __name__ == '__main__':

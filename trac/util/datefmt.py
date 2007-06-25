@@ -28,11 +28,47 @@ from trac.util.text import to_unicode
 
 # Date/time utilities
 
+# -- conversion
+
+def to_datetime(t, tzinfo=None):
+    """Convert `t` into a `datetime` object, using the following rules:
+    
+     - If `t` is already a `datetime` object, it is simply returned.
+     - If `t` is None, the current time will be used.
+     - If `t` is a number, it is interpreted as a timestamp. If no `tzinfo`
+       is given, the local timezone will be used for the conversion.
+
+    Any other input will trigger a `TypeError`.
+    """
+    if t is None:
+        return datetime.now(localtz)
+    elif isinstance(t, datetime):
+        return t
+    elif isinstance(t, (int,long,float)):
+        return datetime.fromtimestamp(t, tzinfo or localtz)
+    raise TypeError('expecting datetime, int, long, float, or None; got %s' %
+                    type(t))
+
+def to_timestamp(dt):
+    """Return the corresponding POSIX timestamp"""
+    if dt:
+        diff = dt - _epoc
+        return diff.days * 86400 + diff.seconds
+    else:
+        return 0
+
+
+# -- formatting
+
 def pretty_timedelta(time1, time2=None, resolution=None):
-    """Calculate time delta (inaccurately, only for decorative purposes ;-) for
-    prettyprinting. If time1 is None, the current time is used."""
-    if not time1: time1 = datetime.now(utc)
-    if not time2: time2 = datetime.now(utc)
+    """Calculate time delta between two `datetime` objects.
+    (the result is somewhat imprecise, only use for prettyprinting).
+
+    If either `time1` or `time2` is None, the current time will be used
+    instead.
+    """
+    time1 = to_datetime(time1)
+    time2 = to_datetime(time2)
     if time1 > time2:
         time2, time1 = time1, time2
     units = ((3600 * 24 * 365, 'year',   'years'),
@@ -53,17 +89,21 @@ def pretty_timedelta(time1, time2=None, resolution=None):
             r = int(round(r))
             return '%d %s' % (r, r == 1 and unit or unit_plural)
     return ''
-
+    
 def format_datetime(t=None, format='%x %X', tzinfo=None):
-    if not tzinfo:
-        tzinfo = localtz
-    if t is None:
-        t = datetime.now(utc)
-    if isinstance(t, (int,long)):
-        t = datetime.fromtimestamp(t, tzinfo)
+    """Format the `datetime` object `t` into an `unicode` string
+
+    If `t` is None, the current time will be used.
+    
+    The formatting will be done using the given `format`, which consist
+    of conventional `strftime` keys. In addition the format can be 'iso8601'
+    to specify the international date format.
+
+    `tzinfo` will default to the local timezone if left to `None`.
+    """
+    t = to_datetime(t, tzinfo).astimezone(tzinfo or localtz)
     if format.lower() == 'iso8601':
         format = '%Y-%m-%dT%H:%M:%SZ%z'
-    t = t.astimezone(tzinfo)
     text = t.strftime(format)
     encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
     if sys.platform != 'win32':
@@ -72,22 +112,38 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
     return unicode(text, encoding, 'replace')
 
 def format_date(t=None, format='%x', tzinfo=None):
+    """Convenience method for formatting the date part of a `datetime` object.
+    See `format_datetime` for more details.
+    """
     if format == 'iso8601':
         format = '%Y-%m-%d'
     return format_datetime(t, format, tzinfo=tzinfo)
 
 def format_time(t=None, format='%X', tzinfo=None):
+    """Convenience method for formatting the time part of a `datetime` object.
+    See `format_datetime` for more details.
+    """
     if format == 'iso8601':
         format = '%H:%M:%SZ%z'
     return format_datetime(t, format, tzinfo=tzinfo)
 
 def get_date_format_hint():
+    """Present the default format used by `format_date` in a human readable
+    form.
+    This is a format that will be recognized by `parse_date` when reading a
+    date.
+    """
     t = datetime(1999, 10, 29, tzinfo=utc)
     tmpl = format_date(t, tzinfo=utc)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
                .replace('10', 'MM', 1).replace('29', 'DD', 1)
 
 def get_datetime_format_hint():
+    """Present the default format used by `format_datetime` in a human readable
+    form.
+    This is a format that will be recognized by `parse_date` when reading a
+    date.
+    """
     t = datetime(1999, 10, 29, 23, 59, 58, tzinfo=utc)
     tmpl = format_datetime(t, tzinfo=utc)
     return tmpl.replace('1999', 'YYYY', 1).replace('99', 'YY', 1) \
@@ -96,16 +152,17 @@ def get_datetime_format_hint():
                .replace('59', 'mm', 1).replace('58', 'ss', 1)
 
 def http_date(t=None):
-    """Format t as a rfc822 timestamp"""
-    if t is None:
-        t = datetime.now(utc)
-    t = t.astimezone(utc)
+    """Format `datetime` object `t` as a rfc822 timestamp"""
+    t = to_datetime(t).astimezone(utc)
     weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
               'Oct', 'Nov', 'Dec']
     return '%s, %02d %s %04d %02d:%02d:%02d GMT' % (
         weekdays[t.weekday()], t.day, months[t.month - 1], t.year,
         t.hour, t.minute, t.second)
+
+
+# -- parsing
 
 _ISO_8601_RE = re.compile(r'(\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?'   # date
                           r'(?:T(\d\d)(?::?(\d\d)(?::?(\d\d))?)?)?' # time
@@ -157,14 +214,8 @@ def parse_date(text, tzinfo=None):
                         'Invalid Date')
     return datetime(*(tm[0:6] + (0, tzinfo)))
 
-def to_timestamp(dt):
-    """Return the corresponding POSIX timestamp"""
-    if dt:
-        diff = dt - _epoc
-        return diff.days * 86400 + diff.seconds
-    else:
-        return 0
 
+# -- timezone utilities
 
 class FixedOffset(tzinfo):
     """Fixed offset in minutes east from UTC."""
