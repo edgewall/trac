@@ -35,8 +35,7 @@ def get_changes(repos, revs):
         try:
             changeset = repos.get_changeset(rev)
         except NoSuchChangeset:
-            changes[rev] = {}
-            continue
+            changeset = {}
         changes[rev] = changeset
     return changes
 

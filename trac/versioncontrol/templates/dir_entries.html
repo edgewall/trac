@@ -19,17 +19,18 @@
         <td class="rev">
           <a title="View Revision Log" href="${href.log(entry.path, rev=rev)}">$entry.rev</a>
         </td>
-        <td class="age" style="${dir.timerange and 'border-color: rgb(%s,%s,%s)' %
+        <td class="age" style="${change and dir.timerange and 'border-color: rgb(%s,%s,%s)' %
           dir.colorize_age(dir.timerange.relative(change.date)) or None}">
-          ${dateinfo(change.date)}
+          ${change and dateinfo(change.date) or '-'}
         </td>
         <td class="change">
-          <span class="author">${authorinfo(change.author)}:</span>
+          <span class="author" py:if="change">${authorinfo(change.author)}:</span>
           <span class="change" py:choose="">
+            <py:when test="not change">-</py:when>
             <py:when test="wiki_format_messages">
-              ${wiki_to_oneliner(context('changeset', change.rev), change.message, shorten=True)}
+              ${change and wiki_to_oneliner(context('changeset', change.rev), change.message, shorten=True)}
             </py:when>
-            <py:otherwise>${shorten_line(change.message)}</py:otherwise>
+            <py:otherwise>${change and shorten_line(change.message)}</py:otherwise>
           </span>
         </td>
       </tr>
