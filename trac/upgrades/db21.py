@@ -3,7 +3,8 @@ def do_upgrade(env, ver, cursor):
     """Upgrade the reports to better handle the new workflow capabilities"""
     db = env.get_db_cnx()
     owner = db.concat('owner', "' *'")
-    reports = list(cursor.execute('SELECT id, query, description FROM report'))
+    cursor.execute('SELECT id, query, description FROM report')
+    reports = cursor.fetchall()
     for report, query, description in reports:
         # All states other than 'closed' are "active".
         query = query.replace("IN ('new', 'assigned', 'reopened')",
