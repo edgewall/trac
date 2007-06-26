@@ -35,10 +35,20 @@ class DivCodeMacro(WikiMacroBase):
         return '<div class="code">Hello World, args = %s</div>' % content
 
 class DivCodeElementMacro(WikiMacroBase):
-    """A dummy macro returning a div block, used by the unit test."""
+    """A dummy macro returning a Genshi Element, used by the unit test."""
 
     def expand_macro(self, formatter, name, content):
         return html.DIV('Hello World, args = ', content, class_="code")
+
+class DivCodeStreamMacro(WikiMacroBase):
+    """A dummy macro returning a Genshi Stream, used by the unit test."""
+
+    def expand_macro(self, formatter, name, content):
+        from genshi.template import MarkupTemplate
+        tmpl = MarkupTemplate("""
+        <div>Hello World, args = $args</div>
+        """)
+        return tmpl.generate(args=content)
 
 class NoneMacro(WikiMacroBase):
     """A dummy macro returning `None`, used by the unit test."""

@@ -566,6 +566,14 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivCodeElement(...)]]
+============================== Macro returning a Genshi Stream (no "code" div)
+[[DivCodeStream(hej hopp)]]
+------------------------------
+<p>
+</p><div>Hello World, args = hej hopp</div><p>
+</p>
+------------------------------
+[[DivCodeStream(...)]]
 ============================== Macro returning None
 [[None(hej hopp)]] nada
 ------------------------------

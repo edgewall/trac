@@ -25,6 +25,7 @@ import urllib
 from StringIO import StringIO
 
 from genshi.builder import tag
+from genshi.core import Stream
 
 from trac.context import Context
 from trac.core import *
@@ -42,6 +43,17 @@ __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
 def system_message(msg, text=None):
     return html.DIV(html.STRONG(msg), text and html.PRE(text),
                     class_="system-message")
+
+
+def _markup_to_unicode(markup):
+    stream = None
+    if isinstance(markup, Element):
+        stream = markup.generate()
+    elif isinstance(markup, Stream):
+        stream = markup
+    if stream:
+        markup = stream.render('xhtml', encoding=None, strip_whitespace=False)
+    return to_unicode(markup)
 
 
 class WikiProcessor(object):
@@ -95,7 +107,6 @@ class WikiProcessor(object):
     def _html_processor(self, text):
         if WikiSystem(self.env).render_unsafe_content:
             return Markup(text)
-        from genshi import Stream
         from genshi.input import HTMLParser, ParseError
         from genshi.filters import HTMLSanitizer
         try:
@@ -150,8 +161,6 @@ class WikiProcessor(object):
                         interrupt_paragraph = True
                 elif tagname == 'table':
                     interrupt_paragraph = True
-                text = text.generate().render('xhtml', encoding=None,
-                                              strip_whitespace=False)
             else:
                 text = to_unicode(text)
                 match = re.match(self._code_block_re, unicode(text))
@@ -681,13 +690,7 @@ class Formatter(object):
                 self.close_table()
                 self.close_paragraph()
                 processed = self.code_processor.process(self.code_text)
-                if isinstance(processed, Element):
-                    stream = processed.generate()
-                    processed = stream.render('xhtml', encoding=None,
-                                              strip_whitespace=False)
-                else:
-                    processed = to_unicode(processed)
-                self.out.write(processed)
+                self.out.write(_markup_to_unicode(processed))
 
             else:
                 self.code_text += line + os.linesep
@@ -725,10 +728,7 @@ class Formatter(object):
         """Replace one match with its corresponding expansion"""
         replacement = self.handle_match(fullmatch)
         if replacement:
-            if isinstance(replacement, Element):
-                return replacement.generate().render('xhtml', encoding=None,
-                                                     strip_whitespace=False)
-            return to_unicode(replacement)
+            return _markup_to_unicode(replacement)
 
     def reset(self, source, out=None):
         self.source = source
