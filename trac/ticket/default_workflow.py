@@ -137,7 +137,7 @@ Your environment has been upgraded, but configured to use the original
 workflow. It is recommended that you look at changing this configuration to use
 basic-workflow. 
 
-Read TracWorkflow for more information.
+Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
 """
         self.log.info(info_message.replace('\n', ' ').replace('==', ''))
