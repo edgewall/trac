@@ -127,12 +127,20 @@ class ConfigurableTicketWorkflow(Component):
         load_workflow_config_snippet(self.config, 'original-workflow.ini')
         self.config.save()
         self.actions = get_workflow_config(self.config)
-        info_message = 'Workflow is now configurable.  Your environment has ' \
-                       'been upgraded, but configured to use the original ' \
-                       'workflow.  It is recommended that you look at ' \
-                       'changing this configuration to use basic-workflow.  ' \
-                       'Read TracWorkflow for more information.'
-        self.log.info(info_message)
+        info_message = """
+
+==== Upgrade Notice ====
+
+The ticket Workflow is now configurable.
+
+Your environment has been upgraded, but configured to use the original
+workflow. It is recommended that you look at changing this configuration to use
+basic-workflow. 
+
+Read TracWorkflow for more information.
+
+"""
+        self.log.info(info_message.replace('\n', ' ').replace('==', ''))
         print info_message
 
     # ITicketActionController methods
