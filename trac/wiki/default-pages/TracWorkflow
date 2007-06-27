@@ -71,10 +71,10 @@ If not specified for an action, `.default` is 0.  The value may be negative.
 
 There are a couple of hard-coded constraints to the workflow.  In particular, tickets are created with status `new`, and tickets are expected to have a `closed` state.  Further, the default reports/queries treat any state other than `closed` as an open state.
 
-While creating or modifying a ticket workfow, `contrib/workflow/workflow_parser.py` may be useful.  It can create `.dot` files that GraphViz understands to provide a visual description of the workflow.
+While creating or modifying a ticket workfow, `contrib/workflow/workflow_parser.py` may be useful.  It can create `.dot` files that [http://www.graphviz.org GraphViz] understands to provide a visual description of the workflow.
 
 == Advanced Ticket Workflow Customization ==
 
 If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build).  Look at `sample-plugins/workflow` for a few simple examples to get started.
 
-But if even that is not enough, you can disable DefaultTicketActionController, and create a plugin that completely replaces it.
+But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it.
