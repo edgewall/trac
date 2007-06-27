@@ -8,7 +8,10 @@ def main():
     """Rewrite the ticket-workflow section of the config; and change all
     'assigned' tickets to 'accepted'.
     """
-    tracdir = sys.argv[1] # This could be more... robust and user-friendly.
+    if len(sys.argv) != 2:
+        print "Usage: %s path_to_trac_environment" % sys.argv[0]
+        sys.exit(1)
+    tracdir = sys.argv[1]
     trac_env = trac.env.open_environment(tracdir)
 
     # Update the config...
