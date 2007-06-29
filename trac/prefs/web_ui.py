@@ -83,7 +83,7 @@ class PreferencesModule(Component):
         yield ('datetime', _('Date & Time'))
         yield ('keybindings', _('Keyboard Shortcuts'))
         if not req.authname or req.authname == 'anonymous':
-            yield ('advanced', __('Advanced'))
+            yield ('advanced', _('Advanced'))
 
     def render_preference_panel(self, req, panel):
         if req.method == 'POST':
