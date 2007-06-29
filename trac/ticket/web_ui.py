@@ -590,7 +590,7 @@ class TicketModule(Component):
             if field:
                 path = tag(path, Markup(' &ndash; '), field)
             if v:
-                rev, shortrev = _('Version %(num)s)') % {'num': v}, 'v%d' % v
+                rev, shortrev = _('Version %(num)s') % {'num': v}, 'v%d' % v
             else:
                 rev, shortrev = _('Initial Version'), 'initial'
             return {'path':  path, 'rev': rev, 'shortrev': shortrev,

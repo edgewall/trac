@@ -215,7 +215,7 @@ class ReportModule(Component):
         try:
             args = self.get_var_args(req)
         except ValueError,e:
-            raise TracError(_('Report failed: %(error)s' % {'error': e}))
+            raise TracError(_('Report failed: %(error)s') % {'error': e})
 
         if id == -1:
             # If no particular report was requested, display
