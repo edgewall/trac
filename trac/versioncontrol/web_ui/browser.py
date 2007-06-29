@@ -33,6 +33,7 @@ from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
 from trac.util.text import shorten_line
+from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor
@@ -292,7 +293,7 @@ class BrowserModule(Component):
     def get_navigation_items(self, req):
         if 'BROWSER_VIEW' in req.perm:
             yield ('mainnav', 'browser',
-                   tag.a('Browse Source', href=req.href.browser()))
+                   tag.a(_('Browse Source'), href=req.href.browser()))
 
     # IPermissionRequestor methods
 
@@ -339,14 +340,14 @@ class BrowserModule(Component):
             rev_or_latest = rev or repos.youngest_rev
             node = get_existing_node(req, repos, path, rev_or_latest)
         except NoSuchChangeset, e:
-            raise ResourceNotFound(e.message, 'Invalid Changeset Number')
+            raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
         context = Context(self.env, req)('source', path,
                                          version=node.created_rev) # resource=node
 
         path_links = get_path_links(req.href, path, rev, order, desc)
         if len(path_links) > 1:
-            add_link(req, 'up', path_links[-2]['href'], 'Parent directory')
+            add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
 
         data = {
             'context': context,
@@ -426,7 +427,7 @@ class BrowserModule(Component):
                filter(None, [fnmatchcase(node.path, p) for p in patterns]):
             zip_href = req.href.changeset(rev or repos.youngest_rev, node.path,
                                           old=rev, old_path='/', format='zip')
-            add_link(req, 'alternate', zip_href, 'Zip Archive',
+            add_link(req, 'alternate', zip_href, _('Zip Archive'),
                      'application/zip', 'zip')
 
         add_script(req, 'common/js/expand_dir.js')
@@ -482,12 +483,13 @@ class BrowserModule(Component):
             # add ''Plain Text'' alternate link if needed
             if not is_binary(chunk) and mime_type != 'text/plain':
                 plain_href = req.href.browser(node.path, rev=rev, format='txt')
-                add_link(req, 'alternate', plain_href, 'Plain Text',
+                add_link(req, 'alternate', plain_href, _('Plain Text'),
                          'text/plain')
 
             # add ''Original Format'' alternate link (always)
             raw_href = req.href.export(rev or repos.youngest_rev, node.path)
-            add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+            add_link(req, 'alternate', raw_href, _('Original Format'),
+                     mime_type)
 
             self.log.debug("Rendering preview of node %s@%s with mime-type %s"
                            % (node.name, str(rev), mime_type))
@@ -592,7 +594,7 @@ class BrowserModule(Component):
     # IHTMLPreviewAnnotator methods
 
     def get_annotation_type(self):
-        return 'blame', 'Rev', 'Revision in which the line changed'
+        return 'blame', _('Rev'), _('Revision in which the line changed')
 
     def get_annotation_data(self, context):
         """Cache the annotation data corresponding to each revision."""

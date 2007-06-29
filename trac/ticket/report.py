@@ -30,6 +30,7 @@ from trac.perm import IPermissionRequestor
 from trac.util import sorted
 from trac.util.datefmt import format_datetime, format_time
 from trac.util.text import to_unicode, unicode_urlencode
+from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             Chrome
@@ -48,7 +49,7 @@ class ReportModule(Component):
 
     def get_navigation_items(self, req):
         if 'REPORT_VIEW' in req.perm:
-            yield ('mainnav', 'tickets', tag.a('View Tickets',
+            yield ('mainnav', 'tickets', tag.a(_('View Tickets'),
                                                href=req.href.report()))
 
     # IPermissionRequestor methods  
@@ -96,7 +97,7 @@ class ReportModule(Component):
                return template, data, content_type
 
         if id != -1 or action == 'new':
-            add_link(req, 'up', req.href.report(), 'Available Reports')
+            add_link(req, 'up', req.href.report(), _('Available Reports'))
 
         # Kludge: only show link to custom query if the query module is actually
         # enabled
@@ -163,8 +164,8 @@ class ReportModule(Component):
                     'action': 'delete',
                     'report': {'id': id, 'title': title}}
         else:
-            raise TracError('Report %s does not exist.' % id,
-                            'Invalid Report Number')
+            raise TracError(_('Report %(num)s does not exist.') % {'num': id},
+                            _('Invalid Report Number'))
 
     def _render_editor(self, req, db, id, copy):
         if id != -1:
@@ -175,8 +176,9 @@ class ReportModule(Component):
             for title, description, query in cursor:
                 break
             else:
-                raise TracError('Report %s does not exist.' % id,
-                                'Invalid Report Number')
+                raise TracError(_('Report %(num)s does not exist.') % {
+                    'num': id
+                }, _('Invalid Report Number'))
         else:
             req.perm.require('REPORT_CREATE')
             title = description = query = ''
@@ -188,11 +190,13 @@ class ReportModule(Component):
             title += ' (copy)'
 
         if copy or id == -1:
-            data = {'title': 'Create New Report',
+            data = {'title': _('Create New Report'),
                     'action': 'new',
                     'error': None}
         else:
-            data = {'title': 'Edit Report {%d} %s' % (id, title),
+            data = {'title': _('Edit Report {%(num)d} %(title)s') % {
+                        'num': id, 'title': title
+                    },
                     'action': 'edit',
                     'error': req.args.get('error')}
 
@@ -211,14 +215,14 @@ class ReportModule(Component):
         try:
             args = self.get_var_args(req)
         except ValueError,e:
-            raise TracError, 'Report failed: %s' % e
+            raise TracError(_('Report failed: %(error)s' % {'error': e}))
 
         if id == -1:
             # If no particular report was requested, display
             # a list of available reports instead
-            title = 'Available Reports'
+            title = _('Available Reports')
             sql = 'SELECT id AS report, title FROM report ORDER BY report'
-            description = 'This is a list of available reports.'
+            description = _('This is a list of available reports.')
         else:
             cursor = db.cursor()
             cursor.execute("SELECT title,query,description from report "
@@ -226,8 +230,9 @@ class ReportModule(Component):
             for title, sql, description in cursor:
                 break
             else:
-                raise ResourceNotFound('Report %d does not exist.' % id,
-                                       'Invalid Report Number')
+                raise ResourceNotFound(
+                    _('Report %(num)s does not exist.') % {'num': id},
+                    _('Invalid Report Number'))
 
         # If this is a saved custom query. redirect to the query module
         #
@@ -242,7 +247,8 @@ class ReportModule(Component):
             report_id = 'report=%s' % id
             if 'report=' in query:
                 if not report_id in query:
-                    err = 'When specified, report number should be "%s".' % id
+                    err = _('When specified, the report number should be '
+                            '"%(num)s".') % {'num': id}
                     req.redirect(req.href.report(id, action='edit', error=err))
             else:
                 if query[-1] != '?':
@@ -274,7 +280,9 @@ class ReportModule(Component):
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
         except Exception, e:
-            data['message'] = 'Report execution failed: ' + to_unicode(e)
+            data['message'] = _('Report execution failed: %(error)s') % {
+                'error': to_unicode(e)
+            }
             return 'report_view.html', data, None
 
         sort_col = req.args.get('sort', '')
@@ -415,20 +423,22 @@ class ReportModule(Component):
         href = ''
         if params:
             href = '&' + unicode_urlencode(params)
-        add_link(req, 'alternate', '?format=rss' + href, 'RSS Feed',
+        add_link(req, 'alternate', '?format=rss' + href, _('RSS Feed'),
                  'application/rss+xml', 'rss')
         add_link(req, 'alternate', '?format=csv' + href,
-                 'Comma-delimited Text', 'text/plain')
+                 _('Comma-delimited Text'), 'text/plain')
         add_link(req, 'alternate', '?format=tab' + href,
-                 'Tab-delimited Text', 'text/plain')
+                 _('Tab-delimited Text'), 'text/plain')
         if 'REPORT_SQL_VIEW' in req.perm:
-            add_link(req, 'alternate', '?format=sql', 'SQL Query',
+            add_link(req, 'alternate', '?format=sql', _('SQL Query'),
                      'text/plain')
 
     def execute_report(self, req, db, id, sql, args):
         sql, args = self.sql_sub_vars(sql, args, db)
         if not sql:
-            raise TracError('Report %s has no SQL query.' % id)
+            raise TracError(_('Report %(num)s has no SQL query.') % {
+                'num': id
+            })
         self.log.debug('Executing report with SQL "%s" (%s)', sql, args)
 
         cursor = db.cursor()
@@ -463,7 +473,9 @@ class ReportModule(Component):
             try:
                 arg = args[aname]
             except KeyError:
-                raise TracError("Dynamic variable '$%s' not defined." % aname)
+                raise TracError(_("Dynamic variable '%(name)s' not defined.") % {
+                    'name': '$%s' % aname
+                })
             values.append(arg)
 
         var_re = re.compile("[$]([A-Z]+)")

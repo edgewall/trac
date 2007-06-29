@@ -34,6 +34,7 @@ from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import escape, unescape
 from trac.util.text import shorten_line, CRLF
+from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
@@ -464,11 +465,11 @@ class Query(object):
         labels = dict([(f['name'], f['label']) for f in self.fields])
 
         # TODO: remove after adding time/changetime to the api.py
-        labels['changetime'] = 'Modified'
-        labels['time'] = 'Created'
+        labels['changetime'] = _('Modified')
+        labels['time'] = _('Created')
 
         headers = [{
-            'name': col, 'label': labels.get(col, 'Ticket'),
+            'name': col, 'label': labels.get(col, _('Ticket')),
             'href': self.get_href(context, order=col,
                                   desc=(col == self.order and not self.desc))
             } for col in cols]
@@ -484,16 +485,16 @@ class Query(object):
 
         modes = {}
         modes['text'] = [
-            {'name': "contains", 'value': "~"},
-            {'name': "doesn't contain", 'value': "!~"},
-            {'name': "begins with", 'value': "^"},
-            {'name': "ends with", 'value': "$"},
-            {'name': "is", 'value': ""},
-            {'name': "is not", 'value': "!"}
+            {'name': _("contains"), 'value': "~"},
+            {'name': _("doesn't contain"), 'value': "!~"},
+            {'name': _("begins with"), 'value': "^"},
+            {'name': _("ends with"), 'value': "$"},
+            {'name': _("is"), 'value': ""},
+            {'name': _("is not"), 'value': "!"}
         ]
         modes['select'] = [
-            {'name': "is", 'value': ""},
-            {'name': "is not", 'value': "!"}
+            {'name': _("is"), 'value': ""},
+            {'name': _("is not"), 'value': "!"}
         ]
 
         groups = {}
@@ -538,11 +539,11 @@ class QueryModule(Component):
 
     # IContentConverter methods
     def get_supported_conversions(self):
-        yield ('rss', 'RSS Feed', 'xml',
+        yield ('rss', _('RSS Feed'), 'xml',
                'trac.ticket.Query', 'application/rss+xml', 8)
-        yield ('csv', 'Comma-delimited Text', 'csv',
+        yield ('csv', _('Comma-delimited Text'), 'csv',
                'trac.ticket.Query', 'text/csv', 8)
-        yield ('tab', 'Tab-delimited Text', 'tsv',
+        yield ('tab', _('Tab-delimited Text'), 'tsv',
                'trac.ticket.Query', 'text/tab-separated-values', 8)
 
     def convert_content(self, req, mimetype, query, key):
@@ -564,7 +565,7 @@ class QueryModule(Component):
         if 'TICKET_VIEW' in req.perm and \
                 not self.env.is_component_enabled(ReportModule):
             yield ('mainnav', 'tickets',
-                   tag.a('View Tickets', href=req.href.query()))
+                   tag.a(_('View Tickets'), href=req.href.query()))
 
     # IRequestHandler methods
 
@@ -732,7 +733,7 @@ class QueryModule(Component):
         req.session['query_time'] = to_timestamp(orig_time)
         req.session['query_tickets'] = ' '.join([str(t['id'])
                                                  for t in tickets])
-        title = 'Custom Query'
+        title = _('Custom Query')
 
         # Only interact with the report module if it is actually enabled.
         #
@@ -817,7 +818,8 @@ class QueryModule(Component):
                 return tag.a(label, href=query.get_href(formatter.context),
                              class_='query')
             except QuerySyntaxError, e:
-                return tag.em('[Error: %s]' % e, class_='error')
+                return tag.em(_('[Error: %(error)s]') % {'error': e},
+                              class_='error')
 
 
 class TicketQueryMacro(WikiMacroBase):
@@ -933,4 +935,4 @@ class TicketQueryMacro(WikiMacroBase):
                                            for ticket in tickets],
                                           class_='wiki compact'))
         else:
-            return tag.span("No results", class_='query_no_results')
+            return tag.span(_("No results"), class_='query_no_results')

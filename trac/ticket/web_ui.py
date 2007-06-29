@@ -38,6 +38,7 @@ from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import CRLF, shorten_line
+from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
@@ -87,11 +88,11 @@ class TicketModule(Component):
     # IContentConverter methods
 
     def get_supported_conversions(self):
-        yield ('csv', 'Comma-delimited Text', 'csv',
+        yield ('csv', _('Comma-delimited Text'), 'csv',
                'trac.ticket.Ticket', 'text/csv', 8)
-        yield ('tab', 'Tab-delimited Text', 'tsv',
+        yield ('tab', _('Tab-delimited Text'), 'tsv',
                'trac.ticket.Ticket', 'text/tab-separated-values', 8)
-        yield ('rss', 'RSS Feed', 'xml',
+        yield ('rss', _('RSS Feed'), 'xml',
                'trac.ticket.Ticket', 'application/rss+xml', 8)
 
     def convert_content(self, req, mimetype, ticket, key):
@@ -113,7 +114,8 @@ class TicketModule(Component):
     def get_navigation_items(self, req):
         if 'TICKET_CREATE' in req.perm:
             yield ('mainnav', 'newticket', 
-                   tag.a('New Ticket', href=req.href.newticket(), accesskey=7))
+                   tag.a(_('New Ticket'), href=req.href.newticket(),
+                         accesskey=7))
 
     # IRequestHandler methods
 
@@ -171,9 +173,9 @@ class TicketModule(Component):
 
     def get_timeline_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', 'Ticket changes')
+            yield ('ticket', _('Ticket changes'))
             if self.timeline_details:
-                yield ('ticket_details', 'Ticket details', False)
+                yield ('ticket_details', _('Ticket details'), False)
 
     def get_timeline_events(self, req, start, stop, filters):
         ts_start = to_timestamp(start)
@@ -508,7 +510,7 @@ class TicketModule(Component):
                         'date': ticket.time_created,
                         'author': ticket['reporter'] # not 100% accurate...
                         })
-        data.update({'title': 'Ticket History', 'history': history})
+        data.update({'title': _('Ticket History'), 'history': history})
 
         return 'history_view.html', data, None
 
@@ -588,9 +590,9 @@ class TicketModule(Component):
             if field:
                 path = tag(path, Markup(' &ndash; '), field)
             if v:
-                rev, shortrev = 'Version %d' % v, 'v%d' % v
+                rev, shortrev = _('Version %(num)s)') % {'num': v}, 'v%d' % v
             else:
-                rev, shortrev = 'Initial Version', 'initial'
+                rev, shortrev = _('Initial Version'), 'initial'
             return {'path':  path, 'rev': rev, 'shortrev': shortrev,
                     'href': context.resource_href(version=v)}
 
@@ -635,19 +637,19 @@ class TicketModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.ticket(ticket.id, action='diff',
                                                   version=prev_version),
-                     'Version %d' % prev_version)
+                     _('Version %(num)s') % {'num': prev_version})
         add_link(req, 'up', req.href.ticket(ticket.id, action='history'),
                  'Ticket History')
         if next_version:
             add_link(req, 'next', req.href.ticket(ticket.id, action='diff',
                                                   version=next_version),
-                     'Version %d' % next_version)
+                     _('Version %(num)s') % {'num': next_version})
 
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
 
         data.update({
-            'title': 'Ticket Diff',
+            'title': _('Ticket Diff'),
             'old_version': old_version, 'new_version': new_version,
             'changes': changes, 'diff': diff_data,
             'num_changes': num_changes, 'change': new_change,
@@ -711,14 +713,14 @@ class TicketModule(Component):
         # If the ticket has been changed, check the proper permission
         if ticket.exists and ticket._old:
             if 'TICKET_CHGPROP' not in req.perm:
-                req.warning("No permission to change ticket fields.")
+                req.warning(_("No permission to change ticket fields."))
                 ticket.values = ticket._old
                 valid = False
             else: # TODO: field based checking
                 if 'description' in ticket._old or \
                        'field_reporter' in ticket._old:
                     if 'TICKET_ADMIN' not in req.perm:
-                        req.warning("No permissions to change ticket fields.")
+                        req.warning(_("No permissions to change ticket fields."))
                         ticket.values = ticket._old
                         valid = False
 
@@ -726,20 +728,20 @@ class TicketModule(Component):
         if comment:
             if not ('TICKET_CHGPROP' in req.perm or \
                     'TICKET_APPEND' in req.perm):
-                req.warning("No permissions to add a comment.")
+                req.warning(_("No permissions to add a comment."))
                 valid = False
 
         # Mid air collision?
         if ticket.exists and (ticket._old or comment):
             if req.args.get('ts') != str(ticket.time_changed):
-                req.warning("Sorry, can not save your changes. "
-                            "This ticket has been modified by someone else "
-                            "since you started")
+                req.warning(_("Sorry, can not save your changes. "
+                              "This ticket has been modified by someone else "
+                              "since you started"))
                 valid = False
 
         # Always require a summary
         if not ticket['summary']:
-            req.warning('Tickets must contain a summary.')
+            req.warning(_('Tickets must contain a summary.'))
             valid = False
             
         # Always validate for known values
@@ -762,8 +764,10 @@ class TicketModule(Component):
 
         # Validate description length
         if len(ticket['description'] or '') > self.max_description_size:
-            req.warning('Ticket description is too big (must be less than'
-                        ' %s bytes)' % self.max_description_size)
+            req.warning(_('Ticket description is too big (must be less than'
+                          ' %(num)s bytes)') % {
+                'num': self.max_description_size
+            })
             valid = False
 
         # Validate comment numbering
@@ -776,15 +780,17 @@ class TicketModule(Component):
                 int(replyto or 0)
         except ValueError:
             # Shouldn't happen in "normal" circumstances, hence not a warning
-            raise InvalidTicket('Invalid comment threading identifier')
+            raise InvalidTicket(_('Invalid comment threading identifier'))
 
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
             for field, message in manipulator.validate_ticket(req, ticket):
                 valid = False
                 if field:
-                    req.warning("The ticket %s field is invalid: %s" %
-                                (field, message))
+                    req.warning(_("The ticket field '%(field)s' is invalid: "
+                                  "%(message)s") % {
+                        'field': field, 'message': message
+                    })
                 else:
                     req.warning(message)
         return valid

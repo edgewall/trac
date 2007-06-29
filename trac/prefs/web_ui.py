@@ -23,6 +23,7 @@ from genshi.builder import tag
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
 from trac.util.datefmt import all_timezones, get_timezone
+from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_stylesheet, INavigationContributor, \
                             ITemplateProvider
@@ -44,7 +45,7 @@ class PreferencesModule(Component):
 
     def get_navigation_items(self, req):
         yield ('metanav', 'prefs',
-               tag.a('Preferences', href=req.href.prefs()))
+               tag.a(_('Preferences'), href=req.href.prefs()))
 
     # IRequestHandler methods
 
@@ -67,7 +68,7 @@ class PreferencesModule(Component):
                 panels.append((name, label))
         if not chosen_provider:
             self.log.warn('Unknown preference panel %r', panel_id)
-            raise HTTPNotFound('Unknown preference panel')
+            raise HTTPNotFound(_('Unknown preference panel'))
 
         template, data = chosen_provider.render_preference_panel(req, panel_id)
         data.update({'active_panel': panel_id, 'panels': panels})
@@ -78,11 +79,11 @@ class PreferencesModule(Component):
     # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
-        yield (None, 'General')
-        yield ('datetime', 'Date & Time')
-        yield ('keybindings', 'Keyboard Shortcuts')
+        yield (None, _('General'))
+        yield ('datetime', _('Date & Time'))
+        yield ('keybindings', _('Keyboard Shortcuts'))
         if not req.authname or req.authname == 'anonymous':
-            yield ('advanced', 'Advanced')
+            yield ('advanced', __('Advanced'))
 
     def render_preference_panel(self, req, panel):
         if req.method == 'POST':

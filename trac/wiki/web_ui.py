@@ -34,6 +34,7 @@ from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import shorten_line
+from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, ITemplateProvider
@@ -59,7 +60,8 @@ class WikiModule(Component):
 
     # IContentConverter methods
     def get_supported_conversions(self):
-        yield ('txt', 'Plain Text', 'txt', 'text/x-trac-wiki', 'text/plain', 9)
+        yield ('txt', _('Plain Text'), 'txt', 'text/x-trac-wiki', 'text/plain',
+               9)
 
     def convert_content(self, req, mimetype, content, key):
         # Tell the browser that the content should be downloaded and
@@ -77,9 +79,9 @@ class WikiModule(Component):
     def get_navigation_items(self, req):
         if 'WIKI_VIEW' in req.perm('wiki'):
             yield ('mainnav', 'wiki',
-                   tag.a('Wiki', href=req.href.wiki(), accesskey=1))
+                   tag.a(_('Wiki'), href=req.href.wiki(), accesskey=1))
             yield ('metanav', 'help',
-                   tag.a('Help/Guide', href=req.href.wiki('TracGuide'),
+                   tag.a(_('Help/Guide'), href=req.href.wiki('TracGuide'),
                          accesskey=6))
 
     # IPermissionRequestor methods
@@ -110,8 +112,9 @@ class WikiModule(Component):
         latest_page = WikiPage(self.env, pagename, None, db)
 
         if version and page.version == 0 and latest_page.version != 0:
-            raise TracError('No version "%s" for Wiki page "%s"' %
-                            (version, pagename))
+            raise TracError(_('No version "%(num)s" for Wiki page "%(name)s"') % {
+                'num': version, 'name': pagename
+            })
 
         context = Context(self.env, req)('wiki', pagename, version=version,
                                          resource=page)
@@ -253,10 +256,14 @@ class WikiModule(Component):
         for manipulator in self.page_manipulators:
             for field, message in manipulator.validate_wiki_page(req, page):
                 if field:
-                    raise InvalidWikiPage("The Wiki page field %s is invalid: %s"
-                                          % (field, message))
+                    raise InvalidWikiPage(_("The Wiki page field '%(field)s' "
+                                            "is invalid: %(message)s") % {
+                        'field': field, 'message': message
+                    })
                 else:
-                    raise InvalidWikiPage("Invalid Wiki page: %s" % message)
+                    raise InvalidWikiPage(_("Invalid Wiki page: %(message)s") % {
+                        'message': message
+                    })
 
         try:
             page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
@@ -305,8 +312,9 @@ class WikiModule(Component):
         data = self._page_data(context, 'diff')
 
         if not page.exists:
-            raise TracError("Version %s of page %s does not exist" %
-                            (req.args.get('version'), page.name))
+            raise TracError(_("Version %(num)s of page %(name)s does not exist") % {
+                'num': req.args.get('version'), 'name': page.name
+            })
 
         old_version = req.args.get('old_version')
         if old_version:
@@ -356,13 +364,13 @@ class WikiModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name, action='diff',
                                                 version=prev_version),
-                     'Version %d' % prev_version)
+                     _('Version %(num)s') % {'num': prev_version})
         add_link(req, 'up', req.href.wiki(page.name, action='history'),
-                 'Page history')
+                 _('Page history'))
         if next_version:
             add_link(req, 'next', req.href.wiki(page.name, action='diff',
                                                 version=next_version),
-                     'Version %d' % next_version)
+                     _('Version %(num)s') % {'num': next_version})
 
         data.update({ 
             'change': {'date': date, 'author': author, 'ipnr': ipnr,
@@ -439,7 +447,9 @@ class WikiModule(Component):
         req.perm.require('WIKI_VIEW', context)
 
         if not page.exists:
-            raise TracError, "Page %s does not exist" % page.name
+            raise TracError(_("Page %(name)s does not exist") % {
+                'name': page.name
+            })
 
         data = self._page_data(context, 'history')
 
@@ -475,7 +485,9 @@ class WikiModule(Component):
 
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(context):
-                raise ResourceNotFound('Page %s not found' % page.name)
+                raise ResourceNotFound(_('Page %(name)s not found') % {
+                    'name': page.name
+                })
 
         latest_page = WikiPage(self.env, page.name)
 
@@ -504,13 +516,13 @@ class WikiModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name,
                                                 version=prev_version),
-                     'Version %d' % prev_version)
+                     _('Version %(num)s') % {'num': prev_version})
         add_link(req, 'up', req.href.wiki(page.name),
                  'View Latest Version')
         if next_version:
             add_link(req, 'next', req.href.wiki(page.name,
                                                 version=next_version),
-                     'Version %d' % next_version)
+                     _('Version %(num)s') % {'num': next_version})
 
         data.update({
             'latest_version': latest_page.version,
@@ -525,7 +537,7 @@ class WikiModule(Component):
 
     def get_timeline_filters(self, req):
         if 'WIKI_VIEW' in req.perm:
-            yield ('wiki', 'Wiki changes')
+            yield ('wiki', _('Wiki changes'))
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'wiki' in filters:
@@ -563,7 +575,7 @@ class WikiModule(Component):
 
     def get_search_filters(self, req):
         if 'WIKI_VIEW' in req.perm:
-            yield ('wiki', 'Wiki')
+            yield ('wiki', _('Wiki'))
 
     def get_search_results(self, req, terms, filters):
         if not 'wiki' in filters:

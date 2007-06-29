@@ -27,6 +27,7 @@ from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
+from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
                             ITemplateProvider
@@ -54,7 +55,7 @@ class SearchModule(Component):
     def get_navigation_items(self, req):
         if 'SEARCH_VIEW' in req.perm:
             yield ('mainnav', 'search',
-                   tag.a('Search', href=req.href.search(), accesskey=4))
+                   tag.a(_('Search'), href=req.href.search(), accesskey=4))
 
     # IPermissionRequestor methods
 
@@ -96,9 +97,10 @@ class SearchModule(Component):
 
             # Refuse queries that obviously would result in a huge result set
             if len(terms) == 1 and len(terms[0]) < self.min_query_length:
-                raise TracError('Search query too short. '
-                                'Query must be at least %d characters long.' % \
-                                self.min_query_length, 'Search Error')
+                raise TracError(_('Search query too short. Query must be at '
+                                  'least %(num)s characters long.') % {
+                    'num': self.min_query_length
+                }, _('Search Error'))
 
             results = []
             for source in self.search_sources:
@@ -117,13 +119,13 @@ class SearchModule(Component):
                 next_href = req.href.search(zip(filters, ['on'] * len(filters)),
                                             q=req.args.get('q'), page=page + 1,
                                             noquickjump=1)
-                add_link(req, 'next', next_href, 'Next Page')
+                add_link(req, 'next', next_href, _('Next Page'))
 
             if results.has_previous_page:
                 prev_href = req.href.search(zip(filters, ['on'] * len(filters)),
                                             q=req.args.get('q'), page=page - 1,
                                             noquickjump=1)
-                add_link(req, 'prev', prev_href, 'Previous Page')
+                add_link(req, 'prev', prev_href, _('Previous Page'))
 
             data['page_href'] = req.href.search(
                 zip(filters, ['on'] * len(filters)), q=req.args.get('q'),
@@ -165,7 +167,7 @@ class SearchModule(Component):
         if kwd[0] == '/':
             quickjump_href = req.href.browser(kwd)
             name = kwd
-            description = 'Browse repository path ' + kwd
+            description = _('Browse repository path %(path)s') % {'path': kwd}
         else:
             link = extract_link(Context(self.env, req), kwd)
             if isinstance(link, Element):

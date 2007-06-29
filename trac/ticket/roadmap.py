@@ -30,6 +30,7 @@ from trac.util import sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, \
                               get_date_format_hint, get_datetime_format_hint
 from trac.util.text import shorten_line, CRLF, to_unicode
+from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
@@ -183,7 +184,7 @@ class RoadmapModule(Component):
     def get_navigation_items(self, req):
         if 'ROADMAP_VIEW' in req.perm:
             yield ('mainnav', 'roadmap',
-                   tag.a('Roadmap', href=req.href.roadmap(), accesskey=3))
+                   tag.a(_('Roadmap'), href=req.href.roadmap(), accesskey=3))
 
     # IPermissionRequestor methods
 
@@ -222,7 +223,8 @@ class RoadmapModule(Component):
             username = req.authname
         icshref = req.href.roadmap(show=req.args.get('show'), user=username,
                                    format='ics')
-        add_link(req, 'alternate', icshref, 'iCalendar', 'text/calendar', 'ics')
+        add_link(req, 'alternate', icshref, _('iCalendar'), 'text/calendar',
+                 'ics')
 
         data = {
             'context': Context(self.env, req),
@@ -290,7 +292,7 @@ class RoadmapModule(Component):
                    % __version__)
         write_prop('METHOD', 'PUBLISH')
         write_prop('X-WR-CALNAME',
-                   self.config.get('project', 'name') + ' - Roadmap')
+                   self.config.get('project', 'name') + ' - ' + _('Roadmap'))
         for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone['name'],
                                             host)
@@ -299,7 +301,9 @@ class RoadmapModule(Component):
                 write_prop('UID', uid)
                 write_utctime('DTSTAMP', localtime(milestone['due']))
                 write_date('DTSTART', localtime(milestone['due']))
-                write_prop('SUMMARY', 'Milestone %s' % milestone['name'])
+                write_prop('SUMMARY', _('Milestone %(name)s') % {
+                    'name': milestone['name']
+                })
                 write_prop('URL', req.base_url + '/milestone/' +
                            milestone['name'])
                 if milestone.has_key('description_source'):
@@ -314,8 +318,9 @@ class RoadmapModule(Component):
                 if milestone.has_key('due'):
                     write_prop('RELATED-TO', uid)
                     write_date('DUE', localtime(milestone['due']))
-                write_prop('SUMMARY', 'Ticket #%i: %s' % (ticket.id,
-                                                          ticket['summary']))
+                write_prop('SUMMARY', _('Ticket #%(num)s: %(summary)s') % {
+                    'num': ticket.id, 'summary': ticket['summary']
+                })
                 write_prop('URL', req.abs_href.ticket(ticket.id))
                 write_prop('DESCRIPTION', ticket['description'])
                 priority = get_priority(ticket)
@@ -346,7 +351,7 @@ class MilestoneContext(Context):
         return Milestone(self.env, self.id)
 
     def name(self):
-        return 'Milestone ' + self.id
+        return _('Milestone %(name)s') % {'name': self.id}
 
 
 class MilestoneModule(Component):
@@ -382,7 +387,7 @@ class MilestoneModule(Component):
 
     def get_timeline_filters(self, req):
         if 'MILESTONE_VIEW' in req.perm:
-            yield ('milestone', 'Milestones')
+            yield ('milestone', _('Milestones'))
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
@@ -424,7 +429,7 @@ class MilestoneModule(Component):
         req.perm.require('MILESTONE_VIEW')
         milestone_id = req.args.get('id')
 
-        add_link(req, 'up', req.href.roadmap(), 'Roadmap')
+        add_link(req, 'up', req.href.roadmap(), _('Roadmap'))
 
         db = self.env.get_db_cnx()
         milestone = Milestone(self.env, milestone_id, db)
@@ -494,19 +499,19 @@ class MilestoneModule(Component):
                 test_milestone = Milestone(self.env, milestone.name, db)
                 if not milestone.exists:
                     # then an exception should have been raised
-                    warn('Milestone "%s" already exists, '
-                         'please choose another name' % milestone.name)
+                    warn(_('Milestone "%(name)s" already exists, please choose '
+                           'another name') % {'name': milestone.name})
             except TracError:
                 pass
         else:
-            warn('You must provide a name for the milestone.')
+            warn(_('You must provide a name for the milestone.'))
 
         # -- check completed date
         if 'completed' in req.args:
             milestone.completed = completed and parse_date(completed) or \
                                   None
             if milestone.completed and milestone.completed > datetime.now(utc):
-                warn('Completion date may not be in the future')
+                warn(_('Completion date may not be in the future'))
         else:
             milestone.completed = None
 

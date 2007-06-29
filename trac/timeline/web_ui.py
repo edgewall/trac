@@ -33,6 +33,7 @@ from trac.util.compat import sorted
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
 from trac.util.text import to_unicode
+from trac.util.translation import _
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import add_link, add_stylesheet, Chrome, \
                             INavigationContributor, ITemplateProvider
@@ -67,7 +68,7 @@ class TimelineModule(Component):
     def get_navigation_items(self, req):
         if 'TIMELINE_VIEW' in req.perm:
             yield ('mainnav', 'timeline',
-                   tag.a('Timeline', href=req.href.timeline(), accesskey=2))
+                   tag.a(_('Timeline'), href=req.href.timeline(), accesskey=2))
 
     # IPermissionRequestor methods
 
@@ -175,8 +176,8 @@ class TimelineModule(Component):
         add_stylesheet(req, 'common/css/timeline.css')
         rss_href = req.href.timeline([(f, 'on') for f in filters],
                                      daysback=90, max=50, format='rss')
-        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
-                 'rss')
+        add_link(req, 'alternate', rss_href, _('RSS Feed'),
+                 'application/rss+xml', 'rss')
 
         for filter_ in available_filters:
             data['filters'].append({'name': filter_[0], 'label': filter_[1],
@@ -187,13 +188,13 @@ class TimelineModule(Component):
                                      format='%Y-%m-%d', tzinfo=req.tz)
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 daysback=daysback),
-                 'Previous period')
+                 _('Previous period'))
         if today - fromdate > timedelta(days=0):
             next_start = format_date(fromdate + timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     daysback=daysback),
-                     'Next period')
+                     _('Next period'))
         
         return 'timeline.html', data, None
 
@@ -253,7 +254,7 @@ class TimelineModule(Component):
         if fmt and fmt != 'iso8601':
             display_date = format_datetime(date, fmt, req.tz)
         return tag.a(label or utc_date, class_='timeline',
-                     title="%s in Timeline" % display_date,
+                     title=_("%(date)s in Timeline") % {'date': display_date},
                      href=req.href.timeline(from_=iso_date,
                                             precision=precision))
 
