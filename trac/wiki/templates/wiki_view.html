@@ -72,10 +72,10 @@
                   <input type="hidden" name="action" value="edit" />
                   <py:choose>
                     <py:when test="page.exists">
-                      <input type="submit" value="Edit this page" accesskey="e" />
+                      <input type="submit" value="${_('Edit this page')}" accesskey="e" />
                     </py:when>
                     <py:otherwise>
-                      <input type="submit" value="Create this page" accesskey="e" />
+                      <input type="submit" value="${_('Create this page')}" accesskey="e" />
                       <div py:if="templates" id="template">
                         <label for="template">Using the template:</label>
                         <select name="template">
@@ -99,9 +99,9 @@
                   <input type="hidden" name="action" value="delete" />
                   <input type="hidden" name="version" value="$page.version" />
                   <py:if test="page.version == latest_version">
-                    <input type="submit" name="delete_version" value="Delete this version" />
+                    <input type="submit" name="delete_version" value="${_('Delete this version')}" />
                   </py:if>
-                  <input type="submit" value="Delete page" />
+                  <input type="submit" value="${_('Delete page')}" />
                 </div>
               </form>
             </py:if>

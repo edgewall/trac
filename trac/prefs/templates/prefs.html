@@ -17,9 +17,9 @@
     <div id="content" class="prefs">
       <h1>Preferences</h1>
       <p>This page lets you customize your personal settings for this site.
-      These settings are stored on the server and are identified by a
-      <em>session key</em> stored in a browser cookie. That cookie allows
-      your settings to be restored on subsequent visits.</p>
+      These settings are stored on the server and are identified by a session
+      key stored in a browser cookie. That cookie allows your settings to be
+      restored on subsequent visits.</p>
       <ul id="tabs">
         <li py:for="name, label in sorted(panels)"
             class="${name == active_panel and 'active' or None}"
@@ -33,7 +33,7 @@
 
           <div class="buttons">
             <input type="hidden" name="action" value="save" />
-            <input type="submit" value="Save changes" />
+            <input type="submit" value="${_('Save changes')}" />
           </div >
         </form>
       </div>

@@ -209,7 +209,7 @@
     <form py:if="alist.can_create()" method="get" action="${alist.attach_href()}">
       <div>
         <input type="hidden" name="action" value="new" />
-        <input type="submit" value="Attach file" />
+        <input type="submit" value="${_('Attach file')}" />
       </div>
     </form>
   </py:def>

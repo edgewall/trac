@@ -33,7 +33,7 @@ from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      get_module_path
+                      get_module_path, translation
 from trac.util.compat import partial, set
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -205,6 +205,7 @@ class Chrome(Component):
 
     # A dictionary of default context data for templates
     _default_context_data = {
+        '_': translation._,
         'all': compat.all,
         'any': compat.any,
         'attrgetter': compat.attrgetter,
@@ -213,11 +214,13 @@ class Chrome(Component):
         'datetime': datetime.datetime,
         'first_last': presentation.first_last,
         'get_reporter_id': get_reporter_id,
+        'gettext': translation.gettext,
         'group': presentation.group,
         'groupby': compat.groupby,
         'http_date': http_date,
         'istext': presentation.istext,
         'itemgetter': compat.itemgetter,
+        'ngettext': translation.ngettext,
         'paginate': presentation.paginate,
         'partial': partial,
         'plaintext': plaintext,
@@ -236,7 +239,7 @@ class Chrome(Component):
         'wiki_to': format_to,
         'wiki_to_html': format_to_html,
         'wiki_to_oneliner': format_to_oneliner,
-        }
+    }
 
     def __init__(self):
         import genshi
