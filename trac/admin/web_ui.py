@@ -322,7 +322,7 @@ class PermissionAdminPanel(Component):
                     req.redirect(req.href.admin(cat, page))
                 else:
                     req.warning(_('"%(subject)s" was already added to group '
-                                  '"%(group)s"' %) {
+                                  '"%(group)s"') % {
                         'subject': subject, 'group': group
                     })
 
