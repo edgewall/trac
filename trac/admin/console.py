@@ -447,7 +447,7 @@ Type:  '?' or 'help' for help on commands.
     ## Initenv
     _help_initenv = [('initenv',
                       'Create and initialize a new environment interactively'),
-                     ('initenv <projectname> <db> <repostype> <repospath> <templatepath>',
+                     ('initenv <projectname> <db> <repostype> <repospath>',
                       'Create and initialize a new environment from arguments')]
 
     def do_initdb(self, line):
