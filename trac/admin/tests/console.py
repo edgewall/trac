@@ -14,6 +14,7 @@
 # Author: Tim Moloney <t.moloney@verizon.net>
 
 import ConfigParser
+import difflib
 import os
 import re
 import shlex
@@ -144,7 +145,14 @@ class TracadminTestCase(unittest.TestCase):
         expected_results = self.expected_results[test_name] % d
         rv, output = self._execute('help')
         self.assertEqual(0, rv)
-        self.assertEqual(expected_results, output)
+        # Create a useful delta between the output and the expected output
+        output_lines = ['%s\n' % x for x in output.split('\n')]
+        expected_lines = ['%s\n' % x for x in expected_results.split('\n')]
+        output_diff = ''.join(list(
+            difflib.unified_diff(expected_lines, output_lines)
+        ))
+        failure_message = "%r != %r\n" % (output, expected_results) + output_diff
+        self.assertEqual(expected_results, output, failure_message)
 
     # Permission tests
 
