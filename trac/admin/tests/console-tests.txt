@@ -10,7 +10,7 @@ help
 initenv
 	-- Create and initialize a new environment interactively
 
-initenv <projectname> <db> <repostype> <repospath> <templatepath>
+initenv <projectname> <db> <repostype> <repospath>
 	-- Create and initialize a new environment from arguments
 
 hotcopy <backupdir>
