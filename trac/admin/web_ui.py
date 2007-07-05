@@ -98,8 +98,8 @@ class AdminModule(Component):
 
         else: # support for legacy WebAdmin panels
             data = {}
-            cstmpl, _ = provider.process_admin_request(req, cat_id, panel_id,
-                                                       path_info)
+            cstmpl, ct = provider.process_admin_request(req, cat_id, panel_id,
+                                                        path_info)
             if isinstance(cstmpl, basestring):
                 output = req.hdf.render(cstmpl)
             else:
@@ -361,7 +361,7 @@ class PluginAdminPanel(Component):
         if 'TRAC_ADMIN' in req.perm:
             yield ('general', _('General'), 'plugin', _('Plugins'))
 
-    def render_admin_panel(self, req, cat, page, _):
+    def render_admin_panel(self, req, cat, page, path_info):
         req.perm.require('TRAC_ADMIN')
 
         if req.method == 'POST':
