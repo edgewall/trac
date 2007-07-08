@@ -250,6 +250,8 @@ class RequestDispatcher(Component):
                 err = sys.exc_info()
                 try:
                     self._post_process_request(req)
+                except RequestDone:
+                    raise
                 except Exception, e:
                     self.log.exception(e)
                 raise err[0], err[1], err[2]
