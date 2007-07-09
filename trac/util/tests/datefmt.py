@@ -45,7 +45,7 @@ else:
 class DateFormatTestCase(unittest.TestCase):
 
     def test_to_datetime(self):
-        expected = datetime.datetime(1970,1,1,1,0,23,0,datefmt.localtz)
+        expected = datetime.datetime.fromtimestamp(23, datefmt.localtz)
         self.assertEqual(datefmt.to_datetime(23), expected)
         self.assertEqual(datefmt.to_datetime(23L), expected)
         self.assertEqual(datefmt.to_datetime(23.0), expected)
