@@ -652,14 +652,19 @@ class MilestoneModule(Component):
     def _format_link(self, formatter, ns, name, label):
         name, query, fragment = formatter.split_link(name)
         href = formatter.href.milestone(name) + query + fragment
+        return self.render_milestone_link(href, name, label)
+
+    # Public methods
+    
+    def render_milestone_link(self, href, name, label):
         try:
-            milestone = Milestone(self.env, name, formatter.db)
+            milestone = Milestone(self.env, name)
         except TracError:
             milestone = Milestone(self.env)
-        # Note: this should really not be needed, exists should simply be false
-        # if the milestone doesn't exist in the db
+        # Note: the above should really not be needed, `Milestone.exists`
+        # should simply be false if the milestone doesn't exist in the db
         if milestone.exists:
-            closed = milestone.completed and 'closed ' or ''
+            closed = milestone.is_completed and 'closed ' or ''
             return tag.a(label, class_='%smilestone' % closed, href=href)
         else: 
             return tag.a(label, class_='missing milestone', href=href,

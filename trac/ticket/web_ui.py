@@ -337,6 +337,16 @@ class TicketModule(Component):
             'valid': valid
         }
 
+        fields = self._prepare_fields(req, ticket)
+
+        # setup default values for the new ticket
+        
+        for field in fields:
+            ticket.values.setdefault(field['name'], field.get('value'))
+
+        # position 'owner' immediately before 'cc',
+        # if not already positioned after (?)
+
         field_names = [field['name'] for field in ticket.fields
                        if not field.get('custom')]
         if 'owner' in field_names:
@@ -349,27 +359,7 @@ class TicketModule(Component):
                 ticket.fields.insert(insert_idx, ticket.fields[curr_idx])
                 del ticket.fields[curr_idx]
 
-        data['fields'] = []
-        for field in ticket.fields:
-            name = field['name']
-            if name in ('summary', 'reporter', 'description', 'status',
-                        'resolution'):
-                field['skip'] = True
-            elif name == 'owner':
-                field['label'] = 'Assign to'
-                if 'TICKET_MODIFY' not in req.perm:
-                    field['skip'] = True
-            elif name == 'milestone':
-                # Don't make completed milestones available for selection
-                options = [opt for opt in field['options'] if not
-                           Milestone(self.env, opt, db=context.db).is_completed]
-                # TODO:    context('milestone', opt).resource.is_completed
-                field['options'] = options
-            field.setdefault('optional', False)
-            field.setdefault('options', [])
-            field.setdefault('skip', False)
-            ticket.values.setdefault(name, field.get('value'))
-            data['fields'].append(field)
+        data['fields'] = fields
 
         add_stylesheet(req, 'common/css/ticket.css')
         return 'ticket.html', data, None
@@ -389,8 +379,7 @@ class TicketModule(Component):
             if field:
                 text_fields = [field]
             else:
-                text_fields = [field['name'] for field in 
-                               TicketSystem(self.env).get_ticket_fields() if
+                text_fields = [field['name'] for field in ticket.fields if
                                field['type'] == 'textarea']
             if action == 'history':
                 return self._render_history(context, data, text_fields)
@@ -899,6 +888,60 @@ class TicketModule(Component):
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
+    def _prepare_fields(self, req, ticket):
+        fields = []
+        for field in ticket.fields:
+            name = field['name']
+            type_ = field['type']
+
+            # per type settings
+            if type_ in ('radio', 'select'):
+                if ticket.exists:
+                    value = ticket.values.get(name)
+                    options = field['options']
+                    if value and not value in options:
+                        # Current ticket value must be visible,
+                        # even if it's not among the possible values
+                        options.append(value)
+            elif type_ == 'checkbox':
+                value = ticket.values.get(name)
+                if value in ('1', '0'):
+                    field['rendered'] = value == '1' and _('yes') or _('no')
+                    
+            # per field settings
+            if name in ('summary', 'reporter', 'description', 'status',
+                        'resolution'):
+                field['skip'] = True
+            elif name == 'owner':
+                field['skip'] = True
+                if not ticket.exists:
+                    field['label'] = 'Assign to'
+                    if 'TICKET_MODIFY' in req.perm:
+                        field['skip'] = False
+            elif name == 'milestone':
+                if not ticket.exists or 'TICKET_ADMIN' not in req.perm:
+                    field['options'] = [opt for opt in field['options'] if not
+                                        Milestone(self.env, opt).is_completed]
+                from trac.ticket.roadmap import MilestoneModule
+                milestone = ticket[name]
+                href = req.href.milestone(milestone)
+                field['rendered'] = MilestoneModule(self.env) \
+                                    .render_milestone_link(href, milestone,
+                                                           milestone)
+            elif name == 'cc':
+                if not (Chrome(self.env).show_email_addresses or \
+                        'EMAIL_VIEW' in req.perm):
+                    field['rendered'] = ', '.join(
+                        [obfuscate_email_address(cc)
+                         for cc in cc_list(ticket[name])])
+                    
+            # ensure sane defaults
+            field.setdefault('optional', False)
+            field.setdefault('options', [])
+            field.setdefault('skip', False)
+            fields.append(field)
+        return fields
+        
     def _insert_ticket_data(self, context, data, author_id, field_changes):
         """Insert ticket data into the template `data`"""
         req = context.req
@@ -916,33 +959,11 @@ class TicketModule(Component):
         data['version'] = version
         data['description_change'] = None
 
-        # -- Ticket fields
-        types = {}
-        fields = []
-        for field in TicketSystem(self.env).get_ticket_fields():
-            name = field['name']
-            type_ = field['type']
-            types[name] = type_
-            if type_ in ('radio', 'select'):
-                value = ticket.values.get(field['name'])
-                options = field['options']
-                if name == 'milestone' and 'TICKET_ADMIN' not in req.perm:
-                    options = [opt for opt in options if not
-                               Milestone(self.env, opt,
-                                         db=context.db).is_completed]
-                    # FIXME: ... un air de "deja vu" ;)
-                if value and not value in options:
-                    # Current ticket value must be visible even if its not in
-                    # the possible values
-                    options.append(value)
-                field['options'] = options
-            field.setdefault('optional', False)
-            field.setdefault('options', [])
-            field['skip'] = name in ('summary', 'reporter', 'description',
-                                     'status', 'resolution', 'owner')
-            fields.append(field)
-
         data['author_id'] = author_id
+
+        # -- Ticket fields
+        
+        fields = self._prepare_fields(req, ticket)
 
         # -- Ticket Change History
 
@@ -1041,7 +1062,7 @@ class TicketModule(Component):
             ticket.values.update(values)
 
         data.update({
-            'fields': fields, 'changes': changes, 'field_types': types,
+            'fields': fields, 'changes': changes,
             'replies': replies, 'cnum': cnum + 1,
             'attachments': AttachmentModule(self.env).attachment_list(context),
             'action_controls': action_controls,
