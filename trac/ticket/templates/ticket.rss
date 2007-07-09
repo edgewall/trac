@@ -27,6 +27,7 @@
           <py:for each="field, value in change.fields.items()">
             &lt;li&gt;&lt;strong&gt;$field&lt;/strong&gt;
             <py:choose>
+              <py:when test="value.rendered">${unicode(value.rendered)}</py:when>
               <py:when test="not value.old">
                 set to &lt;em&gt;$value.new&lt;/em&gt;
               </py:when>

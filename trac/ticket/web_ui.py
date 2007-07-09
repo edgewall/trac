@@ -601,9 +601,15 @@ class TicketModule(Component):
             if k not in text_fields:
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
-                    props.append({'name': k,
-                                  'old': {'name': k, 'value': old},
-                                  'new': {'name': k, 'value': new}})
+                    props.append({'name': k})
+                    ctx = context(version=new_version)
+                    rendered = self._render_property_diff(ctx, k, old, new)
+                    if rendered:
+                        props[-1]['diff'] = tag.li('Property ', tag.strong(k),
+                                                   ' ', rendered)
+                    else:
+                        props[-1]['old'] = {'name': k, 'value': old}
+                        props[-1]['new'] = {'name': k, 'value': new}
         changes.append({'props': props, 'diffs': [],
                         'new': version_info(new_version),
                         'old': version_info(old_version)})
@@ -1074,51 +1080,54 @@ class TicketModule(Component):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
         """
-        types = {}
-        for f in context.resource.fields:
-            types[f['name']] = f['type']
         for group in self.grouped_changelog_entries(context.resource, None,
                                                     when):
             for field, changes in group['fields'].iteritems():
-                # per type special rendering of diffs
-                type_ = types.get(field)
                 new, old = changes['new'], changes['old']
-                if type_ == 'checkbox':
-                    changes['rendered'] = new == '1' and "set" or "unset"
-                elif type_ == 'textarea':
-                    link = 'diff'
-                    if 'cnum' in group:
-                        href = context.resource_href(action='diff',
-                                                     version=group['cnum'])
-                        link = tag.a(link, href=href)
-
-                    changes['rendered'] = tag('(', link, ')')
-
-                # per name special rendering of diffs
-                old_list, new_list = None, None
-                sep = ', '
-                if field == 'cc':
-                    old_list, new_list = cc_list(old), cc_list(new)
-                    if not (Chrome(self.env).show_email_addresses or \
-                            'EMAIL_VIEW' in context.req.perm):
-                        old_list = [obfuscate_email_address(cc)
-                                    for cc in old_list]
-                        new_list = [obfuscate_email_address(cc)
-                                    for cc in new_list]
-                elif field == 'keywords':
-                    old_list, new_list = old.split(), new.split()
-                    sep = ' '
-
-                if (old_list, new_list) != (None, None):
-                    added = [tag.em(x) for x in new_list if x not in old_list]
-                    remvd = [tag.em(x) for x in old_list if x not in new_list]
-                    added = added and tag(separated(added, sep), " added")
-                    remvd = remvd and tag(separated(remvd, sep), " removed")
-                    if added or remvd:
-                        changes['rendered'] = tag(added,
-                                                  added and remvd and '; ',
-                                                  remvd)
+                ctx = context(version=group.get('cnum', None))
+                rendered = self._render_property_diff(ctx, field, old, new)
+                if rendered:
+                    changes['rendered'] = rendered
             yield group
+
+    def _render_property_diff(self, context, field, old, new):
+        rendered = None
+        # per type special rendering of diffs
+        type_ = None
+        for f in context.resource.fields:
+            if f['name'] == field:
+                type_ = f['type']
+                break
+        if type_ == 'checkbox':
+            rendered = new == '1' and "set" or "unset"
+        elif type_ == 'textarea':
+            href = context.resource_href(action='diff',
+                                         version=context.version)
+            rendered = tag('(', tag.a('diff', href=href), ')')
+
+        # per name special rendering of diffs
+        old_list, new_list = None, None
+        sep = ', '
+        if field == 'cc':
+            old_list, new_list = cc_list(old), cc_list(new)
+            if not (Chrome(self.env).show_email_addresses or \
+                    'EMAIL_VIEW' in context.req.perm):
+                old_list = [obfuscate_email_address(cc)
+                            for cc in old_list]
+                new_list = [obfuscate_email_address(cc)
+                            for cc in new_list]
+        elif field == 'keywords':
+            old_list, new_list = old.split(), new.split()
+            sep = ' '
+
+        if (old_list, new_list) != (None, None):
+            added = [tag.em(x) for x in new_list if x not in old_list]
+            remvd = [tag.em(x) for x in old_list if x not in new_list]
+            added = added and tag(separated(added, sep), " added")
+            remvd = remvd and tag(separated(remvd, sep), " removed")
+            if added or remvd:
+                rendered = tag(added, added and remvd and '; ', remvd)
+        return rendered
 
     def grouped_changelog_entries(self, ticket, db, when=None):
         """Iterate on changelog entries, consolidating related changes
