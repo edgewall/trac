@@ -218,9 +218,22 @@ class Paginator(object):
     has_previous_page = property(has_previous_page)
 
 def separated(items, sep=','):
+    """Yield `(item, sep)` tuples, one for each element in `items`.
+
+    `sep` will be `None` for the last item.
+
+    >>> list(separated([1, 2]))
+    [(1, ','), (2, None)]
+
+    >>> list(separated([1]))
+    [(1, None)]
+
+    >>> list(separated("abc", ':'))
+    [('a', ':'), ('b', ':'), ('c', None)]
+    """
     items = iter(items)
     last = items.next()
     for i in items:
-        yield sep, last
+        yield last, sep
         last = i
-    yield None, last
+    yield last, None
