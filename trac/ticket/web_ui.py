@@ -37,7 +37,8 @@ from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
-from trac.util.text import CRLF, shorten_line
+from trac.util.text import CRLF, shorten_line, obfuscate_email_address
+from trac.util.presentation import separated
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
@@ -47,6 +48,15 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
     title = "Invalid Ticket"
+
+
+def cc_list(cc_field):
+    """Split a CC: value in a list of addresses.
+
+    TODO: will become `CcField.cc_list(value)
+    """
+    return [cc.strip() for cc in cc_field.split(',') if cc]
+
 
 class TicketModule(Component):
 
@@ -489,7 +499,7 @@ class TicketModule(Component):
     def _get_history(self, context):
         ticket = context.resource
         history = []
-        for change in self.grouped_changelog_entries(ticket, context.db):
+        for change in self.rendered_changelog_entries(context):
             if change['permanent']:
                 change['version'] = change['cnum']
                 history.append(change)
@@ -671,11 +681,11 @@ class TicketModule(Component):
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, ticket):
-        db = self.env.get_db_cnx()
+        context = Context(self.env, req)('ticket', ticket.id)
         changes = []
         change_summary = {}
 
-        for change in self.grouped_changelog_entries(ticket, db):
+        for change in self.rendered_changelog_entries(context):
             changes.append(change)
             # compute a change summary
             change_summary = {}
@@ -695,12 +705,7 @@ class TicketModule(Component):
             change['title'] = '; '.join(['%s %s' % (', '.join(v), k) for k, v \
                                          in change_summary.iteritems()])
 
-        data = {
-            'ticket': ticket,
-            'context': Context(self.env, req, db=db)('ticket', ticket.id),
-            'changes': changes,
-        }
-
+        data = {'ticket': ticket, 'context': context, 'changes': changes}
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
                                                   'application/rss+xml')
         return output, 'application/rss+xml'
@@ -955,7 +960,7 @@ class TicketModule(Component):
         changes = []
         cnum = 0
         skip = False
-        for change in self.grouped_changelog_entries(ticket, context.db):
+        for change in self.rendered_changelog_entries(context):
             # change['permanent'] is false for attachment changes; true for
             # other changes.
             if change['permanent']:
@@ -1043,6 +1048,56 @@ class TicketModule(Component):
             'action': selected_action,
             'change_preview': change_preview
         })
+
+    def rendered_changelog_entries(self, context, when=None):
+        """Iterate on changelog entries, consolidating related changes
+        in a `dict` object.
+        """
+        types = {}
+        for f in context.resource.fields:
+            types[f['name']] = f['type']
+        for group in self.grouped_changelog_entries(context.resource, None,
+                                                    when):
+            for field, changes in group['fields'].iteritems():
+                # per type special rendering of diffs
+                type_ = types.get(field)
+                new, old = changes['new'], changes['old']
+                if type_ == 'checkbox':
+                    changes['rendered'] = new == '1' and "set" or "unset"
+                elif type_ == 'textarea':
+                    link = 'diff'
+                    if 'cnum' in group:
+                        href = context.resource_href(action='diff',
+                                                     version=group['cnum'])
+                        link = tag.a(link, href=href)
+
+                    changes['rendered'] = tag('(', link, ')')
+
+                # per name special rendering of diffs
+                old_list, new_list = None, None
+                sep = ', '
+                if field == 'cc':
+                    old_list, new_list = cc_list(old), cc_list(new)
+                    if not (Chrome(self.env).show_email_addresses or \
+                            'EMAIL_VIEW' in context.req.perm):
+                        old_list = [obfuscate_email_address(cc)
+                                    for cc in old_list]
+                        new_list = [obfuscate_email_address(cc)
+                                    for cc in new_list]
+                elif field == 'keywords':
+                    old_list, new_list = old.split(), new.split()
+                    sep = ' '
+
+                if (old_list, new_list) != (None, None):
+                    added = [tag.em(x) for x in new_list if x not in old_list]
+                    remvd = [tag.em(x) for x in old_list if x not in new_list]
+                    added = added and tag(separated(added, sep), " added")
+                    remvd = remvd and tag(separated(remvd, sep), " removed")
+                    if added or remvd:
+                        changes['rendered'] = tag(added,
+                                                  added and remvd and '; ',
+                                                  remvd)
+            yield group
 
     def grouped_changelog_entries(self, ticket, db, when=None):
         """Iterate on changelog entries, consolidating related changes

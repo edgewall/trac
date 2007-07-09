@@ -180,7 +180,8 @@ def obfuscate_email_address(address):
     if address:
         at = address.find('@')
         if at != -1:
-            return address[:at] + u'@\u2026' + (address[-1] == '>' and '>' or '')
+            return address[:at] + u'@\u2026' + \
+                   (address[-1] == '>' and '>' or '')
     return address
 
 # -- Conversion

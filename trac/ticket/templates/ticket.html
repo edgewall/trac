@@ -64,22 +64,12 @@
             <py:when test="field_name == 'attachment'">
               <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a> added
             </py:when>
+            <py:when test="'rendered' in field">${field.rendered}</py:when>
             <py:when test="field.old and field.new">
-              changed
-              <py:choose>
-                <py:when test="field_type == 'textarea'">
-                  (<a py:strip="'cnum' not in change" href="${href.ticket(ticket.id, action='diff', version=change.cnum)}">diff</a>)
-                </py:when>
-                <py:otherwise>
-                  from <em>${field.old}</em> to <em>${field.new}</em>
-                </py:otherwise>
-              </py:choose>
+              changed from <em>${field.old}</em> to <em>${field.new}</em>
             </py:when>
             <py:when test="not field.old and field.new">
-              set
-              <py:if test="field_type != 'textarea'">
-                to <em>${field.new}</em>
-              </py:if>
+              set to <em>${field.new}</em>
             </py:when>
             <py:otherwise>deleted</py:otherwise>
           </py:choose>
