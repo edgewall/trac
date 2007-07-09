@@ -162,10 +162,12 @@
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
               py:with="fullrow = len(row) == 1">
               <py:for each="idx, field in enumerate(row)">
-                <th py:if="idx == 0 or not fullrow">
+                <th py:if="idx == 0 or not fullrow"
+                    id="${field and 'h_'+field.name or None}">
                   <py:if test="field">${field.label or field.name}:</py:if>
                 </th>
                 <td py:if="idx == 0 or not fullrow"
+                    headers="${field and 'h_'+field.name or None}"
                     class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
                     colspan="${fullrow and 3 or None}">
                   <py:if test="field">${ticket[field.name]}</py:if>
