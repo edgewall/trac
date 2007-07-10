@@ -1051,6 +1051,7 @@ class TicketModule(Component):
         change_preview = None
         if req.method == 'POST':
             self._apply_ticket_changes(ticket, field_changes)
+            self._render_property_changes(context, field_changes)
             change_preview = {
                 'date': datetime.now(utc),
                 'author': author_id,
@@ -1082,13 +1083,16 @@ class TicketModule(Component):
         """
         for group in self.grouped_changelog_entries(context.resource, None,
                                                     when):
-            for field, changes in group['fields'].iteritems():
-                new, old = changes['new'], changes['old']
-                ctx = context(version=group.get('cnum', None))
-                rendered = self._render_property_diff(ctx, field, old, new)
-                if rendered:
-                    changes['rendered'] = rendered
+            ctx = context(version=group.get('cnum', None))
+            self._render_property_changes(ctx, group['fields'])
             yield group
+
+    def _render_property_changes(self, context, fields):
+        for field, changes in fields.iteritems():
+            new, old = changes['new'], changes['old']
+            rendered = self._render_property_diff(context, field, old, new)
+            if rendered:
+                changes['rendered'] = rendered
 
     def _render_property_diff(self, context, field, old, new):
         rendered = None
@@ -1101,9 +1105,12 @@ class TicketModule(Component):
         if type_ == 'checkbox':
             rendered = new == '1' and "set" or "unset"
         elif type_ == 'textarea':
-            href = context.resource_href(action='diff',
-                                         version=context.version)
-            rendered = tag('(', tag.a('diff', href=href), ')')
+            if 'preview' in context.req.args:
+                rendered = _('modified')
+            else:
+                href = context.resource_href(action='diff',
+                                             version=context.version)
+                rendered = tag('modified (', tag.a('diff', href=href), ')')
 
         # per name special rendering of diffs
         old_list, new_list = None, None
