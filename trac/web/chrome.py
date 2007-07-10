@@ -521,7 +521,7 @@ class Chrome(Component):
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
             'show_email_addresses': show_email_addresses,
-            'format_author': partial(self._format_author, req),
+            'format_author': partial(self.format_author, req),
 
             # Date/time formatting
             'dateinfo': dateinfo,
@@ -603,9 +603,7 @@ class Chrome(Component):
             req.chrome['links'] = links
             raise
 
-    # Helpers
-
-    def _format_author(self, req, author):
+    def format_author(self, req, author):
         if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
             return author
         else:
