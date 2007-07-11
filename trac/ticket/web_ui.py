@@ -55,6 +55,8 @@ def cc_list(cc_field):
 
     TODO: will become `CcField.cc_list(value)
     """
+    if not cc_field:
+        return []
     return [cc.strip() for cc in cc_field.split(',') if cc]
 
 
