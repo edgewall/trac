@@ -364,7 +364,7 @@ class TicketModule(TicketModuleBase):
 
         href = format == 'rss' and req.abs_href or req.href
 
-        def produce((id, t, author, type, summary), status, fields,
+        def produce((id, t, author, type_, summary), status, fields,
                     comment, cid):
             if status == 'edit':
                 if 'ticket_details' in filters:
@@ -386,10 +386,11 @@ class TicketModule(TicketModuleBase):
             kind, verb = status_map[status]
             if format == 'rss':
                 title = 'Ticket #%s (%s %s): %s' % \
-                        (id, type.lower(), verb, summary)
+                        (id, type_ and type_.lower() or '', verb, summary)
             else:
-                title = Markup('Ticket <em title="%s">#%s</em> (%s) %s by %s',
-                               summary, id, type, verb, author)
+                typeinfo = type_ and '(%s)' % type_ or ''
+                title = Markup('Ticket <em title="%s">#%s</em> %s %s by %s',
+                               summary, id, typeinfo, verb, author)
             ticket_href = href.ticket(id)
             if cid:
                 ticket_href += '#comment:' + cid
