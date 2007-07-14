@@ -27,7 +27,7 @@ def gettext_noop(string, **kwargs):
 N_ = gettext_noop
 gettext = _ = gettext_noop
 
-def ngettext_noop(singular, plural, num):
+def ngettext_noop(singular, plural, num, **kwargs):
     if num == 1:
         retval = singular
     else:
