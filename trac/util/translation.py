@@ -19,13 +19,20 @@ flag localizable strings as such.
 
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop']
 
-def gettext_noop(string):
-    return string
+def gettext_noop(string, **kwargs):
+    retval = string
+    if kwargs:
+        retval %= kwargs
+    return retval
 N_ = gettext_noop
 gettext = _ = gettext_noop
 
 def ngettext_noop(singular, plural, num):
     if num == 1:
-        return singular
-    return plural
+        retval = singular
+    else:
+        retval = plural
+    if kwargs:
+        retval %= kwargs
+    return retval
 ngettext = ngettext_noop

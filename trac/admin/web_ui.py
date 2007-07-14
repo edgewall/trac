@@ -222,7 +222,7 @@ class LoggingAdminPanel(Component):
             if new_type and new_type not in ('stderr', 'file', 'syslog',
                                              'eventlog'):
                 raise TracError(
-                    _('Unknown log type %(type)s') % {'type': new_type},
+                    _('Unknown log type %(type)s', type=new_type),
                     _('Invalid log type')
                 )
             if new_type != log_type:
@@ -234,7 +234,7 @@ class LoggingAdminPanel(Component):
                 new_level = req.args.get('log_level')
                 if new_level and new_level not in log_levels:
                     raise TracError(
-                        _('Unknown log level %(level)s') % {'level': new_level},
+                        _('Unknown log level %(level)s', level=new_level),
                         _('Invalid log level'))
                 if new_level and new_level != log_level:
                     self.config.set('logging', 'log_level', new_level)
@@ -308,9 +308,8 @@ class PermissionAdminPanel(Component):
                     req.redirect(req.href.admin(cat, page))
                 else:
                     req.warning(_('Permission "%(action)s" was already granted '
-                                  'to "%(subject)s"') % {
-                        'action': action, 'subject': subject
-                    })
+                                  'to "%(subject)s"', action=action,
+                                  subject=subject))
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
@@ -322,9 +321,7 @@ class PermissionAdminPanel(Component):
                     req.redirect(req.href.admin(cat, page))
                 else:
                     req.warning(_('"%(subject)s" was already added to group '
-                                  '"%(group)s"') % {
-                        'subject': subject, 'group': group
-                    })
+                                  '"%(group)s"', subject=subject, group=group))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
@@ -398,9 +395,8 @@ class PluginAdminPanel(Component):
 
         target_path = os.path.join(self.env.path, 'plugins', plugin_filename)
         if os.path.isfile(target_path):
-            raise TracError(_('Plugin %(name)s already installed') % {
-                'name': plugin_filename
-            })
+            raise TracError(_('Plugin %(name)s already installed',
+                              name=plugin_filename))
 
         self.log.info('Installing plugin %s', plugin_filename)
         flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL

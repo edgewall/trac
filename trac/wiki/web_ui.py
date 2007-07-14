@@ -112,9 +112,8 @@ class WikiModule(Component):
         latest_page = WikiPage(self.env, pagename, None, db)
 
         if version and page.version == 0 and latest_page.version != 0:
-            raise TracError(_('No version "%(num)s" for Wiki page "%(name)s"') % {
-                'num': version, 'name': pagename
-            })
+            raise TracError(_('No version "%(num)s" for Wiki page "%(name)s"',
+                              num=version, name=pagename))
 
         context = Context(self.env, req)('wiki', pagename, version=version,
                                          resource=page)
@@ -257,13 +256,11 @@ class WikiModule(Component):
             for field, message in manipulator.validate_wiki_page(req, page):
                 if field:
                     raise InvalidWikiPage(_("The Wiki page field '%(field)s' "
-                                            "is invalid: %(message)s") % {
-                        'field': field, 'message': message
-                    })
+                                            "is invalid: %(message)s",
+                                            field=field, message=message))
                 else:
-                    raise InvalidWikiPage(_("Invalid Wiki page: %(message)s") % {
-                        'message': message
-                    })
+                    raise InvalidWikiPage(_("Invalid Wiki page: %(message)s",
+                                            message=message))
 
         try:
             page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
@@ -312,9 +309,8 @@ class WikiModule(Component):
         data = self._page_data(context, 'diff')
 
         if not page.exists:
-            raise TracError(_("Version %(num)s of page %(name)s does not exist") % {
-                'num': req.args.get('version'), 'name': page.name
-            })
+            raise TracError(_("Version %(num)s of page %(name)s does not exist",
+                              num=req.args.get('version'), name=page.name))
 
         old_version = req.args.get('old_version')
         if old_version:
@@ -364,13 +360,13 @@ class WikiModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name, action='diff',
                                                 version=prev_version),
-                     _('Version %(num)s') % {'num': prev_version})
+                     _('Version %(num)s', num=prev_version))
         add_link(req, 'up', req.href.wiki(page.name, action='history'),
                  _('Page history'))
         if next_version:
             add_link(req, 'next', req.href.wiki(page.name, action='diff',
                                                 version=next_version),
-                     _('Version %(num)s') % {'num': next_version})
+                     _('Version %(num)s', num=next_version))
 
         data.update({ 
             'change': {'date': date, 'author': author, 'ipnr': ipnr,
@@ -447,9 +443,7 @@ class WikiModule(Component):
         req.perm.require('WIKI_VIEW', context)
 
         if not page.exists:
-            raise TracError(_("Page %(name)s does not exist") % {
-                'name': page.name
-            })
+            raise TracError(_("Page %(name)s does not exist", name=page.name))
 
         data = self._page_data(context, 'history')
 
@@ -485,9 +479,8 @@ class WikiModule(Component):
 
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(context):
-                raise ResourceNotFound(_('Page %(name)s not found') % {
-                    'name': page.name
-                })
+                raise ResourceNotFound(_('Page %(name)s not found',
+                                         name=page.name))
 
         latest_page = WikiPage(self.env, page.name)
 
@@ -516,13 +509,13 @@ class WikiModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.wiki(page.name,
                                                 version=prev_version),
-                     _('Version %(num)s') % {'num': prev_version})
+                     _('Version %(num)s', num=prev_version))
         add_link(req, 'up', req.href.wiki(page.name),
                  'View Latest Version')
         if next_version:
             add_link(req, 'next', req.href.wiki(page.name,
                                                 version=next_version),
-                     _('Version %(num)s') % {'num': next_version})
+                     _('Version %(num)s', num=next_version))
 
         data.update({
             'latest_version': latest_page.version,

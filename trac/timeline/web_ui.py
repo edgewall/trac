@@ -254,7 +254,7 @@ class TimelineModule(Component):
         if fmt and fmt != 'iso8601':
             display_date = format_datetime(date, fmt, req.tz)
         return tag.a(label or utc_date, class_='timeline',
-                     title=_("%(date)s in Timeline") % {'date': display_date},
+                     title=_("%(date)s in Timeline", date=display_date),
                      href=req.href.timeline(from_=iso_date,
                                             precision=precision))
 

@@ -160,11 +160,12 @@ class ReportModule(Component):
         cursor = db.cursor()
         cursor.execute("SELECT title FROM report WHERE id=%s", (id,))
         for title, in cursor:
-            return {'title': 'Delete Report {%s} %s' % (id, title),
+            return {'title': _('Delete Report {%(num)s} %(title)s', num=id,
+                               title=title),
                     'action': 'delete',
                     'report': {'id': id, 'title': title}}
         else:
-            raise TracError(_('Report %(num)s does not exist.') % {'num': id},
+            raise TracError(_('Report %(num)s does not exist.', num=id),
                             _('Invalid Report Number'))
 
     def _render_editor(self, req, db, id, copy):
@@ -176,9 +177,8 @@ class ReportModule(Component):
             for title, description, query in cursor:
                 break
             else:
-                raise TracError(_('Report %(num)s does not exist.') % {
-                    'num': id
-                }, _('Invalid Report Number'))
+                raise TracError(_('Report %(num)s does not exist.', num=id),
+                                _('Invalid Report Number'))
         else:
             req.perm.require('REPORT_CREATE')
             title = description = query = ''
@@ -194,9 +194,8 @@ class ReportModule(Component):
                     'action': 'new',
                     'error': None}
         else:
-            data = {'title': _('Edit Report {%(num)d} %(title)s') % {
-                        'num': id, 'title': title
-                    },
+            data = {'title': _('Edit Report {%(num)d} %(title)s', num=id,
+                               title=title),
                     'action': 'edit',
                     'error': req.args.get('error')}
 
@@ -215,7 +214,7 @@ class ReportModule(Component):
         try:
             args = self.get_var_args(req)
         except ValueError,e:
-            raise TracError(_('Report failed: %(error)s') % {'error': e})
+            raise TracError(_('Report failed: %(error)s', error=e))
 
         if id == -1:
             # If no particular report was requested, display
@@ -231,7 +230,7 @@ class ReportModule(Component):
                 break
             else:
                 raise ResourceNotFound(
-                    _('Report %(num)s does not exist.') % {'num': id},
+                    _('Report %(num)s does not exist.', num=id),
                     _('Invalid Report Number'))
 
         # If this is a saved custom query. redirect to the query module
@@ -248,7 +247,7 @@ class ReportModule(Component):
             if 'report=' in query:
                 if not report_id in query:
                     err = _('When specified, the report number should be '
-                            '"%(num)s".') % {'num': id}
+                            '"%(num)s".', num=id)
                     req.redirect(req.href.report(id, action='edit', error=err))
             else:
                 if query[-1] != '?':
@@ -280,9 +279,8 @@ class ReportModule(Component):
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
         except Exception, e:
-            data['message'] = _('Report execution failed: %(error)s') % {
-                'error': to_unicode(e)
-            }
+            data['message'] = _('Report execution failed: %(error)s',
+                                error=to_unicode(e))
             return 'report_view.html', data, None
 
         sort_col = req.args.get('sort', '')
@@ -436,9 +434,7 @@ class ReportModule(Component):
     def execute_report(self, req, db, id, sql, args):
         sql, args = self.sql_sub_vars(sql, args, db)
         if not sql:
-            raise TracError(_('Report %(num)s has no SQL query.') % {
-                'num': id
-            })
+            raise TracError(_('Report %(num)s has no SQL query.', num=id))
         self.log.debug('Executing report with SQL "%s" (%s)', sql, args)
 
         cursor = db.cursor()
@@ -473,9 +469,8 @@ class ReportModule(Component):
             try:
                 arg = args[aname]
             except KeyError:
-                raise TracError(_("Dynamic variable '%(name)s' not defined.") % {
-                    'name': '$%s' % aname
-                })
+                raise TracError(_("Dynamic variable '%(name)s' not defined.",
+                                  name='$%s' % aname))
             values.append(arg)
 
         var_re = re.compile("[$]([A-Z]+)")

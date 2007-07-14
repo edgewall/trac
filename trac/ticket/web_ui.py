@@ -591,7 +591,7 @@ class TicketModule(Component):
             if field:
                 path = tag(path, Markup(' &ndash; '), field)
             if v:
-                rev, shortrev = _('Version %(num)s') % {'num': v}, 'v%d' % v
+                rev, shortrev = _('Version %(num)s', num=v), 'v%d' % v
             else:
                 rev, shortrev = _('Initial Version'), 'initial'
             return {'path':  path, 'rev': rev, 'shortrev': shortrev,
@@ -644,13 +644,13 @@ class TicketModule(Component):
         if prev_version:
             add_link(req, 'prev', req.href.ticket(ticket.id, action='diff',
                                                   version=prev_version),
-                     _('Version %(num)s') % {'num': prev_version})
+                     _('Version %(num)s', num=prev_version))
         add_link(req, 'up', req.href.ticket(ticket.id, action='history'),
                  'Ticket History')
         if next_version:
             add_link(req, 'next', req.href.ticket(ticket.id, action='diff',
                                                   version=next_version),
-                     _('Version %(num)s') % {'num': next_version})
+                     _('Version %(num)s', num=next_version))
 
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
@@ -766,10 +766,8 @@ class TicketModule(Component):
 
         # Validate description length
         if len(ticket['description'] or '') > self.max_description_size:
-            req.warning(_('Ticket description is too big (must be less than'
-                          ' %(num)s bytes)') % {
-                'num': self.max_description_size
-            })
+            req.warning(_('Ticket description is too long (must be less than '
+                          '%(num)s characters)', num=self.max_description_size))
             valid = False
 
         # Validate comment numbering
@@ -790,9 +788,7 @@ class TicketModule(Component):
                 valid = False
                 if field:
                     req.warning(_("The ticket field '%(field)s' is invalid: "
-                                  "%(message)s") % {
-                        'field': field, 'message': message
-                    })
+                                  "%(message)s", field=field, message=message))
                 else:
                     req.warning(message)
         return valid

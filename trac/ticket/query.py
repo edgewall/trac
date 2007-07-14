@@ -818,8 +818,7 @@ class QueryModule(Component):
                 return tag.a(label, href=query.get_href(formatter.context),
                              class_='query')
             except QuerySyntaxError, e:
-                return tag.em(_('[Error: %(error)s]') % {'error': e},
-                              class_='error')
+                return tag.em(_('[Error: %(error)s]', error=e), class_='error')
 
 
 class TicketQueryMacro(WikiMacroBase):

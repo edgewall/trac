@@ -98,9 +98,8 @@ class SearchModule(Component):
             # Refuse queries that obviously would result in a huge result set
             if len(terms) == 1 and len(terms[0]) < self.min_query_length:
                 raise TracError(_('Search query too short. Query must be at '
-                                  'least %(num)s characters long.') % {
-                    'num': self.min_query_length
-                }, _('Search Error'))
+                                  'least %(num)s characters long.',
+                                  num=self.min_query_length), _('Search Error'))
 
             results = []
             for source in self.search_sources:
@@ -167,7 +166,7 @@ class SearchModule(Component):
         if kwd[0] == '/':
             quickjump_href = req.href.browser(kwd)
             name = kwd
-            description = _('Browse repository path %(path)s') % {'path': kwd}
+            description = _('Browse repository path %(path)s', path=kwd)
         else:
             link = extract_link(Context(self.env, req), kwd)
             if isinstance(link, Element):
