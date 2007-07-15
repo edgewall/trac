@@ -86,7 +86,7 @@ class Ticket(object):
                        % ','.join(std_fields), (tkt_id,))
         row = cursor.fetchone()
         if not row:
-            raise ResourceNotFound('Ticket %d does not exist.' % tkt_id,
+            raise ResourceNotFound('Ticket %s does not exist.' % tkt_id,
                                    'Invalid Ticket Number')
 
         self.id = tkt_id
