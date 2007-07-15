@@ -106,8 +106,7 @@ class Context(object):
 
     def __init__(self, env, req, **kwargs):
         # XXX Remove and replace ^^ kwargs when sure things aren't going to break.
-        if not env:
-            raise TracError("Environment not specified for Context")
+        assert env, 'Environment not specified for Context'
         self.env = env
         self.req = req
         self.parent = kwargs.pop('parent', None)

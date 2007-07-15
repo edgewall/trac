@@ -37,6 +37,7 @@ from trac.timeline.api import TimelineEvent
 from trac.util import get_reporter_id, create_unique_file, content_disposition
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
+from trac.util.translation import _
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
@@ -110,9 +111,10 @@ class AttachmentContext(Context):
 
     def name(self):
         if self.id:
-            return "Attachment '%s' in %s" % (self.id, self.parent.name())
+            return _("Attachment '%(id)s' in %(parent)s", id=self.id,
+                     parent=self.parent.name())
         else:
-            return 'Attachments of ' + self.parent.name()
+            return _("Attachments of %(parent)s", parent=self.parent.name())
 
     def shortname(self):
         return '%s:%s' % (self.parent.shortname(), self.filename)
@@ -165,8 +167,8 @@ class Attachment(object):
         cursor.close()
         if not row:
             self.filename = filename
-            raise ResourceNotFound("Attachment '%s' does not exist." %
-                                   self.title, 'Invalid Attachment')
+            raise ResourceNotFound(_("Attachment '%(title)s' does not exist.",
+                                     title=self.title), _('Invalid Attachment'))
         self.filename = row[0]
         self.description = row[1]
         self.size = row[2] and int(row[2]) or 0
@@ -208,7 +210,7 @@ class Attachment(object):
                                    self.path, exc_info=True)
                 if handle_ta:
                     db.rollback()
-                raise TracError, 'Could not delete attachment'
+                raise TracError(_('Could not delete attachment'))
 
         self.env.log.info('Attachment removed: %s' % self.title)
         if handle_ta:
@@ -312,7 +314,8 @@ class Attachment(object):
         try:
             fd = open(self.path, 'rb')
         except IOError:
-            raise ResourceNotFound("Attachment '%s' not found" % self.filename)
+            raise ResourceNotFound(_("Attachment '%(filename)s' not found",
+                                     filename=self.filename))
         return fd
 
 
@@ -382,7 +385,7 @@ class AttachmentModule(Component):
         path = req.args.get('path')
         
         if not parent_realm or not path:
-            raise HTTPBadRequest('Bad request')
+            raise HTTPBadRequest(_('Bad request'))
 
         context = Context(self.env, req)
 
@@ -439,7 +442,8 @@ class AttachmentModule(Component):
         a particular object realm.
 
         The tuples are in the form (change, realm, id, filename, time,
-        description, author). `change` can currently only be `created`."""
+        description, author). `change` can currently only be `created`.
+        """
         # Traverse attachment directory
         db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -490,7 +494,7 @@ class AttachmentModule(Component):
 
         upload = req.args['attachment']
         if not hasattr(upload, 'filename') or not upload.filename:
-            raise TracError('No file uploaded')
+            raise TracError(_('No file uploaded'))
         if hasattr(upload.file, 'fileno'):
             size = os.fstat(upload.file.fileno())[6]
         else:
@@ -498,13 +502,13 @@ class AttachmentModule(Component):
             size = upload.file.tell()
             upload.file.seek(0)
         if size == 0:
-            raise TracError("Can't upload empty file")
+            raise TracError(_("Can't upload empty file"))
 
         # Maximum attachment size (in bytes)
         max_size = self.max_size
         if max_size >= 0 and size > max_size:
-            raise TracError('Maximum attachment size: %d bytes' % max_size,
-                            'Upload failed')
+            raise TracError(_('Maximum attachment size: %(num)s bytes',
+                              num=max_size), _('Upload failed'))
 
         # We try to normalize the filename to unicode NFC if we can.
         # Files uploaded from OS X might be in NFD.
@@ -513,7 +517,7 @@ class AttachmentModule(Component):
         filename = filename.replace('\\', '/').replace(':', '/')
         filename = os.path.basename(filename)
         if not filename:
-            raise TracError('No file uploaded')
+            raise TracError(_('No file uploaded'))
         # Now the filename is known, update the attachment context
         context.id = filename
 
@@ -526,10 +530,12 @@ class AttachmentModule(Component):
             for field, message in manipulator.validate_attachment(req,
                                                                   attachment):
                 if field:
-                    raise InvalidAttachment('Attachment field %s is invalid: %s'
-                                            % (field, message))
+                    raise InvalidAttachment(_('Attachment field %(field)s is '
+                                              'invalid: %(message)s',
+                                              field=field, message=message))
                 else:
-                    raise InvalidAttachment('Invalid attachment: %s' % message)
+                    raise InvalidAttachment(_('Invalid attachment: %(message)s',
+                                              message=message))
 
         if req.args.get('replace'):
             try:
@@ -565,7 +571,8 @@ class AttachmentModule(Component):
         req.perm.require('ATTACHMENT_DELETE', context)
         
         attachment = context.resource
-        return {'mode': 'delete', 'title': '%s (delete)' % context.name(),
+        return {'mode': 'delete',
+                'title': _('%(context)s (delete)', context=context.name()),
                 'attachment': attachment}
 
     def _render_form(self, context):
@@ -579,11 +586,10 @@ class AttachmentModule(Component):
 
         data = {
             'mode': 'list', 'context': None, # no specific attachment
-            'attachments': self.attachment_list(context)
-            }
+            'attachments': self.attachment_list(context)}
 
         add_link(context.req, 'up', context.resource_href(), context.name())
-        
+
         return 'attachment.html', data, None
 
     def _render_view(self, context):
@@ -626,12 +632,13 @@ class AttachmentModule(Component):
             if (self.render_unsafe_content and 
                 mime_type and not mime_type.startswith('text/plain')):
                 plaintext_href = context.resource_href(format='txt')
-                add_link(req, 'alternate', plaintext_href, 'Plain Text',
+                add_link(req, 'alternate', plaintext_href, _('Plain Text'),
                          mime_type)
 
             # add ''Original Format'' alternate link (always)
             raw_href = context.resource_href(format='raw')
-            add_link(req, 'alternate', raw_href, 'Original Format', mime_type)
+            add_link(req, 'alternate', raw_href, _('Original Format'),
+                     mime_type)
 
             self.log.debug("Rendering preview of file %s with mime-type %s"
                            % (attachment.filename, mime_type))
@@ -678,7 +685,7 @@ class LegacyAttachmentPolicy(Component):
     implements(IPermissionPolicy)
 
     # IPermissionPolicy methods
-    
+
     _perm_maps = {
         'ATTACHMENT_CREATE': {'ticket': 'TICKET_APPEND', 'wiki': 'WIKI_MODIFY',
                               'milestone': 'MILESTONE_MODIFY'},
@@ -686,8 +693,8 @@ class LegacyAttachmentPolicy(Component):
                             'milestone': 'MILESTONE_VIEW'},
         'ATTACHMENT_DELETE': {'ticket': 'TICKET_ADMIN', 'wiki': 'WIKI_DELETE',
                               'milestone': 'MILESTONE_DELETE'},
-        }
-    
+    }
+
     def check_permission(self, username, action, context):
         if action.startswith('ATTACHMENT_'):
             perm_map = self._perm_maps.get(action)

@@ -18,7 +18,7 @@
       <h2>Attachment Navigation</h2>
       <ul>
         <li class="first">
-          <a href="${chrome.links.up[0].href}">Back to $parent_name</a>
+          <a href="${chrome.links.up[0].href}">${_("Back to %(parent)s", parent=parent_name)}</a>
         </li>
       </ul>
     </div>
@@ -107,7 +107,7 @@
             <form method="get" action="">
               <div id="delete">
                 <input type="hidden" name="action" value="delete" />
-                <input type="submit" value="Delete attachment" />
+                <input type="submit" value="${_('Delete attachment')}" />
               </div>
             </form>
           </div>

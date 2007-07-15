@@ -38,6 +38,7 @@ from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted, groupby
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
+from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule, \
@@ -235,7 +236,7 @@ class ChangesetModule(Component):
             old_path = repos.normalize_path(old_path or new_path)
             old = repos.normalize_rev(old or new)
         except NoSuchChangeset, e:
-            raise ResourceNotFound(e.message, 'Invalid Changeset Number')
+            raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
         if old_path == new_path and old == new: # revert to Changeset
             old_path = old = None
@@ -325,9 +326,9 @@ class ChangesetModule(Component):
                                              'new': new,
                                              'old_path': old_path,
                                              'old': old})
-        add_link(req, 'alternate', '?format=diff&'+diff_params, 'Unified Diff',
-                 'text/plain', 'diff')
-        add_link(req, 'alternate', '?format=zip&'+diff_params, 'Zip Archive',
+        add_link(req, 'alternate', '?format=diff&'+diff_params,
+                 _('Unified Diff'), 'text/plain', 'diff')
+        add_link(req, 'alternate', '?format=zip&'+diff_params, _('Zip Archive'),
                  'application/zip', 'zip')
         add_script(req, 'common/js/diff.js')
         add_stylesheet(req, 'common/css/changeset.css')
@@ -364,9 +365,9 @@ class ChangesetModule(Component):
 
             def _changeset_title(rev):
                 if restricted:
-                    return 'Changeset %s for %s' % (rev, path)
+                    return _('Changeset %(id)s for %(path)s', id=rev, path=path)
                 else:
-                    return 'Changeset %s' % rev
+                    return _('Changeset %(id)s', id=rev)
 
             data['changeset'] = chgset
             title = _changeset_title(rev)
@@ -387,7 +388,7 @@ class ChangesetModule(Component):
                         prev_path = prev_rev = None
                 else:
                     add_link(req, 'first', req.href.changeset(oldest_rev),
-                             'Changeset %s' % oldest_rev)
+                             _('Changeset %(id)s', id=oldest_rev))
                     prev_path = data['old_path']
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
@@ -405,7 +406,7 @@ class ChangesetModule(Component):
                             next_href = req.href.changeset(next_rev)
                 else:
                     add_link(req, 'last', req.href.changeset(youngest_rev),
-                             'Changeset %s' % youngest_rev)
+                             _('Changeset %(id)s', id=youngest_rev))
                     next_rev = repos.next_rev(chgset.rev)
                     if next_rev:
                         next_href = req.href.changeset(next_rev)
@@ -435,8 +436,8 @@ class ChangesetModule(Component):
                     'href': req.href.browser(node.created_path,
                                              rev=node.created_rev,
                                              annotate=annotated and 1 or None),
-                    'title': ('Show revision %s of this file in browser' %
-                              node.rev)}
+                    'title': (_('Show revision %(rev)s of this file in browser',
+                                rev=node.rev))}
         # Reminder: node.path may not exist at node.rev
         #           as long as node.rev==node.created_rev
         #           ... and data['old_rev'] may have nothing to do
@@ -573,15 +574,18 @@ class ChangesetModule(Component):
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
                         href = req.href.changeset(new_node.rev, new_node.path)
-                        title = 'Show the changeset %s restricted to %s' % \
-                                (new_node.rev, new_node.path)
+                        title = _('Show the changeset %(id)s restricted to '
+                                  '%(path)s', id=new_node.rev,
+                                  path=new_node.path)
                     else:
                         href = req.href.changeset(
                             new_node.created_rev, new_node.created_path,
                             old=old_node.created_rev,
                             old_path=old_node.created_path)
-                        title = 'Show the r%s:%s differences restricted to ' \
-                                % (old_node.rev, new_node.rev) + new_node.path
+                        title = _('Show the %(range)s differences restricted '
+                                  'to %(path)s',
+                                  range='r%s:%s' % (old_node.rev, new_node.rev),
+                                  path=new_node.path)
                     info['href'] = href
                     info['title'] = old_node and title
                 if change in Changeset.DIFF_CHANGES and not show_diff:
@@ -601,7 +605,7 @@ class ChangesetModule(Component):
             content = stream.select('//div[@id="content"]')
             req.write(content.render('xhtml'))
             raise RequestDone
-        
+
         return data
 
     def _render_diff(self, req, filename, repos, data):
@@ -741,7 +745,7 @@ class ChangesetModule(Component):
 
     def get_timeline_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:
-            yield ('changeset', 'Repository checkins')
+            yield ('changeset', _('Repository checkins'))
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
@@ -907,7 +911,7 @@ class ChangesetModule(Component):
 
     def get_search_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:
-            yield ('changeset', 'Changesets')
+            yield ('changeset', _('Changesets'))
 
     def get_search_results(self, req, terms, filters):
         if not 'changeset' in filters:

@@ -27,6 +27,7 @@ from trac.context import ResourceNotFound
 from trac.core import *
 from trac.perm import PermissionError
 from trac.util.text import to_unicode
+from trac.util.translation import _
 from trac.web.api import IRequestFilter
 
 
@@ -77,8 +78,8 @@ class RepositoryManager(Component):
             try:
                 self.get_repository(req.authname).sync()
             except TracError, e:
-                req.warning("Can't synchronize with the repository (%s)" %
-                            e.message)
+                req.warning(_("Can't synchronize with the repository "
+                              "(%(error)s)", error=e.message))
         return handler
 
     def post_process_request(self, req, template, content_type):
@@ -97,10 +98,10 @@ class RepositoryManager(Component):
             if candidates:
                 self._connector = max(candidates)[1]
             else:
-                raise TracError('Unsupported version control system "%s". '
-                                'Check that the Python bindings for "%s" are '
-                                'correctly installed.' %
-                                ((self.repository_type,)*2))
+                raise TracError(_('Unsupported version control system '
+                                  '"%(name)s". Check that the Python bindings '
+                                  'for "%(name)s" are correctly installed.',
+                                  name=self.repository_type))
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
@@ -131,14 +132,16 @@ class RepositoryManager(Component):
 
 class NoSuchChangeset(ResourceNotFound):
     def __init__(self, rev):
-        ResourceNotFound.__init__(self, "No changeset %s in the repository" %
-                                  rev, 'No such changeset')
+        ResourceNotFound.__init__(self,
+                                  _('No changeset %(rev)s in the repository',
+                                    rev=rev),
+                                  _('No such changeset'))
 
 class NoSuchNode(ResourceNotFound):
     def __init__(self, path, rev, msg=None):
         ResourceNotFound.__init__(self, "%sNo node %s at revision %s" %
                                   ((msg and '%s: ' % msg) or '', path, rev),
-                                  'No such node')
+                                  _('No such node'))
 
 class Repository(object):
     """Base class for a repository provided by a version control system."""
@@ -476,13 +479,13 @@ class Authorizer(object):
 
     def assert_permission(self, path):
         if not self.has_permission(path):
-            raise PermissionDenied, \
-                  'Insufficient permissions to access %s' % path
+            raise PermissionDenied(_('Insufficient permissions to access '
+                                     '%(path)s', path=path))
 
     def assert_permission_for_changeset(self, rev):
         if not self.has_permission_for_changeset(rev):
-            raise PermissionDenied, \
-                  'Insufficient permissions to access changeset %s' % rev
+            raise PermissionDenied(_('Insufficient permissions to access '
+                                     'changeset %(id)s', id=rev))
 
     def has_permission(self, path):
         return True

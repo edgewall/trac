@@ -21,6 +21,7 @@
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.util.compat import set
+from trac.util.translation import _
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
            'IPermissionGroupProvider', 'PermissionError', 'PermissionSystem']
@@ -34,7 +35,8 @@ class PermissionError(StandardError):
         self.action = action
 
     def __str__ (self):
-        return '%s privileges are required to perform this operation' % self.action
+        return _('%(perm)s privileges are required to perform this operation',
+                 perm=self.action)
 
 
 class IPermissionRequestor(Interface):
@@ -256,7 +258,7 @@ class PermissionSystem(Component):
         """Grant the user with the given name permission to perform to specified
         action."""
         if action.isupper() and action not in self.get_actions():
-            raise TracError, '%s is not a valid action.' % action
+            raise TracError(_('%(name)s is not a valid action.', name=action))
 
         self.store.grant_permission(username, action)
 

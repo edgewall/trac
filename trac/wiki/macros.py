@@ -28,6 +28,7 @@ from trac.core import *
 from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any, set
 from trac.util.html import escape
+from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
                                 extract_link, OutlineFormatter
@@ -130,7 +131,7 @@ class TitleIndexMacro(WikiMacroBase):
                               href=formatter.href.wiki(elt)))
                  for elt in groups])
         return render_groups(split_in_groups(pages))
-            
+
 
 class RecentChangesMacro(WikiMacroBase):
     """Lists all pages that have recently been modified, grouping them by the
@@ -447,8 +448,9 @@ class MacroListMacro(WikiMacroBase):
                         descr = macro_provider.get_macro_description(macro_name)
                         descr = format_to_html(wikimacros, descr or '')
                     except Exception, e:
-                        descr = system_message("Error: Can't get description "
-                                               "for macro %s" % macro_name, e)
+                        descr = system_message(_("Error: Can't get description "
+                                                 "for macro %(name)s",
+                                                 name=macro_name), e)
                     yield (macro_name, descr)
 
         return tag.dl([(tag.dt(tag.code('[[',macro_name,']]'),
@@ -527,7 +529,7 @@ class TracGuideTocMacro(WikiMacroBase):
         if idx > 0:
             lang = curpage[:idx+1]
             
-        return tag.div(tag.h4('Table of Contents'),
+        return tag.div(tag.h4(_('Table of Contents')),
                        tag.ul([tag.li(tag.a(title,
                                             href=formatter.href.wiki(lang+ref)),
                                       class_=(ref == curpage and "active"))

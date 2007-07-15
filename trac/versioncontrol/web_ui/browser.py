@@ -83,6 +83,7 @@ class IPropertyRenderer(Interface):
           normally, using that content as a block-level markup
         """
 
+
 class RenderedProperty(object):
     def __init__(self, name=None, name_attributes=None,
                  content=None, content_attributes=None):
@@ -323,7 +324,7 @@ class BrowserModule(Component):
         go_to_preselected = req.args.get('preselected')
         if go_to_preselected:
             req.redirect(go_to_preselected)
-            
+
         path = req.args.get('path', '/')
         rev = req.args.get('rev', None)
         order = req.args.get('order', None)
@@ -331,7 +332,7 @@ class BrowserModule(Component):
 
         # Find node for the requested path/rev
         repos = self.env.get_repository(req.authname)
-        
+
         try:
             if rev:
                 rev = repos.normalize_rev(rev)

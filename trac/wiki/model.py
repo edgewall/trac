@@ -21,6 +21,7 @@ from datetime import datetime
 
 from trac.core import *
 from trac.util.datefmt import utc, to_timestamp
+from trac.util.translation import _
 from trac.wiki.api import WikiSystem
 
 
@@ -137,7 +138,7 @@ class WikiPage(object):
             cursor.execute("UPDATE wiki SET readonly=%s WHERE name=%s",
                            (self.readonly, self.name))
         else:
-            raise TracError('Page not modified')
+            raise TracError(_('Page not modified'))
 
         if handle_ta:
             db.commit()

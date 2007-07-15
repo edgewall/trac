@@ -27,6 +27,7 @@ from trac.util import Ranges
 from trac.util.datefmt import http_date
 from trac.util.html import html
 from trac.util.text import wrap
+from trac.util.translation import _
 from trac.versioncontrol import Changeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
@@ -91,7 +92,7 @@ class LogModule(Component):
         rev = unicode(repos.normalize_rev(rev))    
         path_links = get_path_links(req.href, path, rev)
         if path_links:
-            add_link(req, 'up', path_links[-1]['href'], 'Parent directory')
+            add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
 
         # The `history()` method depends on the mode:
         #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
@@ -161,9 +162,9 @@ class LogModule(Component):
             previous_path = old_path
         if info == []:
             # FIXME: we should send a 404 error here
-            raise TracError("The file or directory '%s' doesn't exist "
-                            "at revision %s or at any previous revision."
-                            % (path, rev), 'Nonexistent path')
+            raise TracError(_("The file or directory '%(path)s' doesn't exist "
+                              "at revision %(rev)s or at any previous revision.",
+                              path=path, rev=rev), _('Nonexistent path'))
 
         def make_log_href(path, **args):
             link_rev = rev
@@ -179,8 +180,8 @@ class LogModule(Component):
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
             add_link(req, 'next', make_log_href(next_path, rev=next_rev),
-                     'Revision Log (restarting at %s, rev. %s)'
-                     % (next_path, next_rev))
+                     _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
+                       path=next_path, rev=next_rev))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
         
@@ -230,11 +231,11 @@ class LogModule(Component):
         add_stylesheet(req, 'common/css/browser.css')
 
         rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
-        add_link(req, 'alternate', rss_href, 'RSS Feed', 'application/rss+xml',
-                 'rss')
+        add_link(req, 'alternate', rss_href, _('RSS Feed'),
+                 'application/rss+xml', 'rss')
         changelog_href = make_log_href(path, format='changelog',
                                        stop_rev=stop_rev)
-        add_link(req, 'alternate', changelog_href, 'ChangeLog', 'text/plain')
+        add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
         return 'revisionlog.html', data, None
 
