@@ -114,7 +114,7 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         self.assertEquals('open', open['css_class'], 'open class incorrect')
         self.assertEquals(False, open['countsToProg'],
                           'open not count to prog')
-        self.assertEquals({'status': ['new', 'assigned', 'reopened']},
+        self.assertEquals({'status': ['!closed']},
                           open['qry_args'], 'qry_args incorrect')
         self.assertEquals(2, open['count'], 'open count incorrect')
         self.assertEquals(67, open['percent'], 'open percent incorrect')

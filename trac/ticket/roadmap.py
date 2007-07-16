@@ -130,7 +130,7 @@ class DefaultTicketGroupStatsProvider(Component):
                           {'status': 'closed', 'group': 'resolution'},
                           'closed', True)
         stat.add_interval('active', active_cnt,
-                          {'status': ['new', 'assigned', 'reopened']},
+                          {'status': ['!closed']},
                           'open', False)
         stat.refresh_calcs()
         return stat
