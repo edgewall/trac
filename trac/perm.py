@@ -151,28 +151,18 @@ class DefaultPermissionStore(Component):
         
         Users are returned as a list of usernames.
         """
+        # get_user_permissions() takes care of the magic 'authenticated' group.
+        # The optimized loop we had before didn't.  This is very inefficient,
+        # but it works.
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        groups = permissions
-        users = set([u[0] for u in self.env.get_known_users()])
         result = set()
-
-        # First iteration finds all users and groups that have any of the
-        # needed permissions. Subsequent iterations expand groups recursively
-        # and merge the results
-        while len(groups):
-            cursor.execute("SELECT p.username, COUNT(m.username) "
-                           "FROM permission AS p "
-                           "LEFT JOIN permission AS m ON m.action = p.username "
-                           "WHERE p.action IN (%s) GROUP BY p.username"
-                           % (', '.join(['%s'] * len(groups))), groups)
-            groups = []
-            for username, nummembers in cursor:
-                if username in users:
-                    result.add(username)
-                elif nummembers:
-                    groups.append(username)
-
+        users = set([u[0] for u in self.env.get_known_users()])
+        for user in users:
+            userperms = self.get_user_permissions(user)
+            for group in permissions:
+                if group in userperms:
+                    result.add(user)
         return list(result)
 
     def get_all_permissions(self):
