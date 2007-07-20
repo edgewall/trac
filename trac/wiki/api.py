@@ -244,7 +244,7 @@ class WikiSystem(Component):
 
     def format_page_name(self, page):
         if self.split_page_names:
-            return re.sub(r"([a-z])([A-Z][a-z])", r"\1 \2", page)
+            return re.sub(r"([a-z])([A-Z])(?=[a-z])", r"\1 \2", page)
         return page
     
     def get_wiki_syntax(self):
