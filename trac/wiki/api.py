@@ -266,7 +266,7 @@ class WikiSystem(Component):
     # See http://www.w3.org/TR/REC-xml/#id,
     # here adapted to exclude terminal "." and ":" characters
 
-    PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z][a-z])")
+    PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z])(?=[a-z])")
     
     def format_page_name(self, page, split=False):
         if split or self.split_page_names:
