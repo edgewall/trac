@@ -124,14 +124,16 @@ class WikiModule(Component):
             if action == 'edit':
                 if 'cancel' in req.args:
                     req.redirect(req.href.wiki(page.name))
-                elif int(version) != latest_page.version:
-                    return self._render_editor(context, 'collision')
-                elif 'preview' in req.args:
-                    return self._render_editor(context, 'preview')
-                elif 'diff' in req.args:
-                    return self._render_editor(context, 'diff')
-                else:
+                
+                has_collision = int(version) != latest_page.version
+                for a in ('preview', 'diff', 'merge'):
+                    if a in req.args:
+                        action = a
+                        break
+                if action == 'edit' and not has_collision:
                     self._do_save(context)
+                else:
+                    return self._render_editor(context, action, has_collision)
             elif action == 'delete':
                 self._do_delete(context)
             elif action == 'diff':
@@ -380,9 +382,16 @@ class WikiModule(Component):
         })
         return 'wiki_diff.html', data, None
 
-    def _render_editor(self, context, action='edit'):
+    def _render_editor(self, context, action='edit', has_collision=False):
+        if has_collision:
+            if action == 'merge':
+                context = context(realm=context.realm, id=context.id,
+                                  version=None)
+            else:
+                action = 'collision'
+
         page, req = context.resource, context.req
-        context.version = None # use implicit ''latest'' in links
+        context.version = None # always use implicit ''latest'' in links
 
         if page.readonly:
             req.perm.require('WIKI_ADMIN', context)
@@ -419,13 +428,13 @@ class WikiModule(Component):
             'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
             'diff': None,
         })
-        if action == 'diff':
+        if action in ('diff', 'merge'):
             old_text = original_text and original_text.splitlines() or []
             new_text = page.text and page.text.splitlines() or []
             diff_data, changes = self._prepare_diff(
                 context, old_text, new_text, page.version, '')
             data.update({'diff': diff_data, 'changes': changes,
-                         'action': 'preview',
+                         'action': 'preview', 'merge': action == 'merge',
                          'longcol': 'Version', 'shortcol': 'v'})
 
         return 'wiki_edit.html', data, None
