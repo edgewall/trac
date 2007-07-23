@@ -26,7 +26,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
 from trac.ticket.api import ITicketActionController
 from trac.util.compat import set
-
+from trac.util.translation import _
 
 # -- Utilities for the ConfigurableTicketWorkflow
 
@@ -43,7 +43,7 @@ def parse_workflow_config(rawactions):
             try:
                 oldstates, newstate = [x.strip() for x in value.split('->')]
             except ValueError:
-                raise Exception('Bad option "%s"' % (option, ))
+                raise Exception('Bad option "%s"' % (option, )) # 500, no _
             actions[action]['newstate'] = newstate
             actions[action]['oldstates'] = oldstates
         else:
@@ -103,7 +103,8 @@ class ConfigurableTicketWorkflow(Component):
     def __init__(self, *args, **kwargs):
         Component.__init__(self, *args, **kwargs)
         self.actions = get_workflow_config(self.config)
-        self.log.debug('Workflow actions at initialization: %s\n' % str(self.actions))
+        self.log.debug('Workflow actions at initialization: %s\n' %
+                       str(self.actions))
 
     implements(ITicketActionController, IEnvironmentSetupParticipant)
 
@@ -196,13 +197,14 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         control = [] # default to nothing
         hints = []
         if 'del_owner' in operations:
-            hints.append("The ticket will be disowned")
+            hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations:
             id = action + '_reassign_owner'
             selected_owner = req.args.get(id, req.authname)
 
             if this_action.has_key('set_owner'):
-                owners = [x.strip() for x in this_action['set_owner'].split(',')]
+                owners = [x.strip() for x in
+                          this_action['set_owner'].split(',')]
             elif self.config.getbool('ticket', 'restrict_owner'):
                 perm = PermissionSystem(self.env)
                 owners = perm.get_users_with_permission('TICKET_MODIFY')
@@ -211,30 +213,34 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 owners = None
 
             if owners == None:
-                control.append(tag(['to ', tag.input(type='text', id=id, name=id,
-                    value=req.args.get(id, req.authname))]))
-                hints.append("The owner will change")
+                owner = req.args.get(id, req.authname)
+                control.append(tag(['to ', tag.input(type='text', id=id,
+                                                     name=id, value=owner)]))
+                hints.append(_("The owner will change"))
             elif len(owners) == 1:
                 control.append(tag('to %s' % owners[0]))
-                hints.append("The owner will change to %s" % owners[0])
+                hints.append(_("The owner will change to %s") % owners[0])
             else:
-                control.append(tag(['to ', tag.select(
+                control.append(tag([_("to "), tag.select(
                     [tag.option(x, selected=(x == selected_owner or None))
                      for x in owners],
                     id=id, name=id)]))
-                hints.append("The owner will change")
+                hints.append(_("The owner will change"))
         if 'set_owner_to_self' in operations:
-            hints.append("The owner will change to %s" % req.authname)
+            hints.append(_("The owner will change to %s") % req.authname)
         if 'set_resolution' in operations:
             if this_action.has_key('set_resolution'):
-                resolutions = [x.strip() for x in this_action['set_resolution'].split(',')]
+                resolutions = [x.strip() for x in
+                               this_action['set_resolution'].split(',')]
             else:
-                resolutions = [val.name for val in model.Resolution.select(self.env)]
+                resolutions = [val.name for val in
+                               model.Resolution.select(self.env)]
             if not resolutions:
                 assert(resolutions)
             elif len(resolutions) == 1:
                 control.append(tag('as %s' % resolutions[0]))
-                hints.append("The resolution will be set to %s" % resolutions[0])
+                hints.append(_("The resolution will be set to %s") %
+                             resolutions[0])
             else:
                 id = action + '_resolve_resolution'
                 selected_option = req.args.get(id, 'fixed')
@@ -242,12 +248,12 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     [tag.option(x, selected=(x == selected_option or None))
                      for x in resolutions],
                     id=id, name=id)]))
-                hints.append("The resolution will be set")
+                hints.append(_("The resolution will be set"))
         if 'leave_status' in operations:
             control.append('as ' + ticket['status'])
         else:
             if status != '*':
-                hints.append("Next status will be '%s'" % status)
+                hints.append(_("Next status will be '%s'") % status)
         return (this_action['name'], tag(*control), '. '.join(hints))
 
     def get_ticket_changes(self, req, ticket, action):
