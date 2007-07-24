@@ -428,7 +428,8 @@ def dispatch_request(environ, start_response):
             return []
 
     except Exception, e:
-        env.log.exception(e)
+        if env:
+            env.log.exception(e)
 
         exc_info = sys.exc_info()
         try:
