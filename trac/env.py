@@ -507,6 +507,7 @@ def open_environment(env_path=None):
     try:
         needs_upgrade = env.needs_upgrade()
     except Exception, e: # e.g. no database connection
+        env.log.exception(e)
         raise TracError("The Trac Environment couldn't check for upgrade. "
                         + str(e))
     if needs_upgrade:
