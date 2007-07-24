@@ -22,7 +22,6 @@ import locale
 import os
 import pkg_resources
 import sys
-import urllib
 
 from genshi import Markup
 from genshi.output import DocType
@@ -335,45 +334,18 @@ def dispatch_request(environ, start_response):
         elif script_url.endswith(path_info):
             environ['SCRIPT_NAME'] = script_url[:-len(path_info)]
 
-    if 'mod_python.options' in environ:
-        options = environ['mod_python.options']
-        environ.setdefault('trac.env_path', options.get('TracEnv'))
-        environ.setdefault('trac.env_parent_dir',
-                           options.get('TracEnvParentDir'))
-        environ.setdefault('trac.env_index_template',
-                           options.get('TracEnvIndexTemplate'))
-        environ.setdefault('trac.template_vars',
-                           options.get('TracTemplateVars'))
-        environ.setdefault('trac.locale', options.get('TracLocale'))
-
-        if 'TracUriRoot' in options:
-            # Special handling of SCRIPT_NAME/PATH_INFO for mod_python, which
-            # tends to get confused for whatever reason
-            root_uri = options['TracUriRoot'].rstrip('/')
-            request_uri = environ['REQUEST_URI'].split('?', 1)[0]
-            if not request_uri.startswith(root_uri):
-                raise ValueError('TracUriRoot set to %s but request URL '
-                                 'is %s' % (root_uri, request_uri))
-            environ['SCRIPT_NAME'] = root_uri
-            environ['PATH_INFO'] = urllib.unquote(request_uri[len(root_uri):])
-
-    else:
-        environ.setdefault('trac.env_path', os.getenv('TRAC_ENV'))
-        environ.setdefault('trac.env_parent_dir',
-                           os.getenv('TRAC_ENV_PARENT_DIR'))
-        environ.setdefault('trac.env_index_template',
-                           os.getenv('TRAC_ENV_INDEX_TEMPLATE'))
-        environ.setdefault('trac.template_vars',
-                           os.getenv('TRAC_TEMPLATE_VARS'))
-        environ.setdefault('trac.locale', '')
+    # If the expected configuration keys aren't found in the WSGI environment,
+    # try looking them up in the process environment variables
+    environ.setdefault('trac.env_path', os.getenv('TRAC_ENV'))
+    environ.setdefault('trac.env_parent_dir',
+                       os.getenv('TRAC_ENV_PARENT_DIR'))
+    environ.setdefault('trac.env_index_template',
+                       os.getenv('TRAC_ENV_INDEX_TEMPLATE'))
+    environ.setdefault('trac.template_vars',
+                       os.getenv('TRAC_TEMPLATE_VARS'))
+    environ.setdefault('trac.locale', '')
 
     locale.setlocale(locale.LC_ALL, environ['trac.locale'])
-
-    # Allow specifying the python eggs cache directory using SetEnv
-    if 'mod_python.subprocess_env' in environ:
-        egg_cache = environ['mod_python.subprocess_env'].get('PYTHON_EGG_CACHE')
-        if egg_cache:
-            os.environ['PYTHON_EGG_CACHE'] = egg_cache
 
     # Determine the environment
     env_path = environ.get('trac.env_path')

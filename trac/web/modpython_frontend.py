@@ -17,6 +17,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import pkg_resources
+import urllib
 
 from mod_python import apache
 
@@ -51,8 +52,33 @@ class ModPythonGateway(WSGIGateway):
     def __init__(self, req, options):
         environ = {}
         environ.update(apache.build_cgi_env(req))
-        environ['mod_python.options'] = options
-        environ['mod_python.subprocess_env'] = req.subprocess_env
+
+        if 'TracEnv' in options:
+            environ['trac.env_path'] = options['TracEnv']
+        if 'TracEnvParentDir' in options:
+            environ['trac.env_parent_dir'] = options['TracEnvParentDir']
+        if 'TracEnvIndexTemplate' in options:
+            environ['trac.env_index_template'] = options['TracEnvIndexTemplate']
+        if 'TracTemplateVars' in options:
+            environ['trac.template_vars'] = options['TracTemplateVars']
+        if 'TracLocale' in options:
+            environ['trac.locale'] = options['TracLocale']
+
+        if 'TracUriRoot' in options:
+            # Special handling of SCRIPT_NAME/PATH_INFO for mod_python, which
+            # tends to get confused for whatever reason
+            root_uri = options['TracUriRoot'].rstrip('/')
+            request_uri = environ['REQUEST_URI'].split('?', 1)[0]
+            if not request_uri.startswith(root_uri):
+                raise ValueError('TracUriRoot set to %s but request URL '
+                                 'is %s' % (root_uri, request_uri))
+            environ['SCRIPT_NAME'] = root_uri
+            environ['PATH_INFO'] = urllib.unquote(request_uri[len(root_uri):])
+
+        egg_cache = req.subprocess_env.get('PYTHON_EGG_CACHE')
+        if egg_cache:
+            os.environ['PYTHON_EGG_CACHE'] = egg_cache
+
         WSGIGateway.__init__(self, environ, InputWrapper(req),
                              _ErrorsWrapper(lambda x: req.log_error(x)))
         self.req = req
@@ -86,7 +112,6 @@ class ModPythonGateway(WSGIGateway):
 
 def handler(req):
     pkg_resources.require('Trac==%s' % VERSION)
-    options = req.get_options()
-    gateway = ModPythonGateway(req, options)
+    gateway = ModPythonGateway(req, req.get_options())
     gateway.run(dispatch_request)
     return apache.OK
