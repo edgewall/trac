@@ -26,6 +26,7 @@ from urlparse import urlparse
 from genshi.builder import tag
 
 from trac.config import IntOption, BoolOption
+from trac.context import Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
