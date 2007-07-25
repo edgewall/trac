@@ -358,10 +358,10 @@ class PermissionSystem(Component):
         for policy in self.policies:
             decision = policy.check_permission(username, action, context)
             if decision is not None:
-                self.log.debug("%s %s %s performing %s on %r" %
-                               (policy.__class__.__name__,
-                                decision and 'allows' or 'forbids',
-                                username, action, context))
+                if not decision:
+                    self.log.debug("%s denies %s performing %s on %r" %
+                                   (policy.__class__.__name__, username, action,
+                                    context))
                 return decision
         self.log.debug("No policy allowed %s performing %s on %r" %
                        (username, action, context))
