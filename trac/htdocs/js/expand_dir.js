@@ -75,7 +75,7 @@ function toggleDir(expander, qargs) {
     loading_row.find("span.loading").text("Loading " + a.text() + "...");
 
     // XHR for getting the rows corresponding to the folder entries
-    $.get(a.attr("href"), {}, function(data) {
+    $.get(a.attr("href"), qargs, function(data) {
       var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
       if (rows.length) {
         // insert entry rows 

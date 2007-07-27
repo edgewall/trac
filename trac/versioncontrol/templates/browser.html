@@ -23,8 +23,8 @@
           if ( !webkit_rev || (521 - webkit_rev[1]).toString()[0] == "-" )
             enableExpandDir(null, $("#dirlist tr"), {
                 action: 'inplace',
-                ranges_min_secs: '$dir.range_min_secs',
-                ranges_max_secs: '$dir.range_max_secs'
+                range_min_secs: '$dir.range_min_secs',
+                range_max_secs: '$dir.range_max_secs'
             });
         </py:if>
         <py:if test="file and file.annotate">
