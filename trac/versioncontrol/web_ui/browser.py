@@ -394,7 +394,7 @@ class BrowserModule(Component):
             timerange = TimeRange(newest)
             max_s = req.args.get('range_max_secs')
             min_s = req.args.get('range_min_secs')
-            parent_range = [tr.from_seconds(long(s))
+            parent_range = [timerange.from_seconds(long(s))
                             for s in [max_s, min_s] if s]
             this_range = [c.date for c in changes.values() if c]
             for dt in this_range + parent_range:
