@@ -561,7 +561,7 @@ class WikiModule(Component):
                 t = datetime.fromtimestamp(ts, utc)
                 event = TimelineEvent(self, 'wiki')
                 event.set_changeinfo(t, author, ipnr=ipnr)
-                event.add_markup(title=title, markup=markup)
+                event.add_markup(title=title, footer=markup)
                 event.add_wiki(ctx, body=comment)
                 yield event
 
