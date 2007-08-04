@@ -39,6 +39,11 @@ class GetMimeTypeTestCase(unittest.TestCase):
 #!/usr/bin/python
 # This is a python script
 """))
+        self.assertEqual('text/x-python',
+                         get_mimetype('xxx', """
+#!/usr/bin/env python
+# This is a python script
+"""))
         self.assertEqual('text/x-ksh',
                          get_mimetype('xxx', """
 #!/bin/ksh
@@ -54,6 +59,8 @@ class GetMimeTypeTestCase(unittest.TestCase):
 # -*- mode: ruby -*-
 # This is a ruby script
 """))
+        self.assertEqual('text/x-python',
+                         get_mimetype('xxx', ' ' * 2000 + '# vim: ft=python'))
 
     def test_from_content_using_is_binary(self):
         self.assertEqual('application/octet-stream',

@@ -143,9 +143,10 @@ for t, exts in KNOWN_MIME_TYPES.items():
 
 # Simple builtin autodetection from the content using a regexp
 MODE_RE = re.compile(
-    r"#!(?:[/\w.-_]+/)?(\w+)|"               # look for shebang
+    r"#!.+?env (\w+)|"                       # look for shebang with env
+    r"#!(?:[/\w.-_]+/)?(\w+)|"               # look for regular shebang
     r"-\*-\s*(?:mode:\s*)?([\w+-]+)\s*-\*-|" # look for Emacs' -*- mode -*-
-    r"vim:.*?syntax=(\w+)"                   # look for VIM's syntax=<n>
+    r"vim:.*?(?:syntax|filetype|ft)=(\w+)"   # look for VIM's syntax=<n>
     )
 
 def get_mimetype(filename, content=None, mime_map=MIME_MAP):
@@ -169,10 +170,10 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP):
         except:
             pass
         if not mimetype and content:
-            match = re.search(MODE_RE, content[:1000])
+            match = re.search(MODE_RE, content[:1000] + content[-1000:])
             if match:
-                mode = match.group(1) or match.group(3) or \
-                    match.group(2).lower()
+                mode = match.group(1) or match.group(2) or match.group(4) or \
+                    match.group(3).lower()
                 if mode in mime_map:
                     # 3) mimetype from the content, using the `MODE_RE`
                     return mime_map[mode]
