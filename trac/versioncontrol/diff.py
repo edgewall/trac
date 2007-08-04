@@ -185,17 +185,21 @@ def diff_blocks(fromlines, tolines, context=None, tabwidth=8,
                 if tag in ('replace', 'delete'):
                     for line in fromlines[i1:i2]:
                         line = expandtabs(line, tabwidth, '\0\1')
-                        line = escape(line, quotes=False) \
-                               .replace('\0', '<del>').replace('\1', '</del>')
+                        line = escape(line, quotes=False)
+                        line = '<del>'.join([space_re.sub(htmlify, seg)
+                                             for seg in line.split('\0')])
+                        line = line.replace('\1', '</del>')
                         blocks[-1]['base']['lines'].append(
-                            Markup(space_re.sub(htmlify, unicode(line))))
+                            Markup(unicode(line)))
                 if tag in ('replace', 'insert'):
                     for line in tolines[j1:j2]:
                         line = expandtabs(line, tabwidth, '\0\1')
-                        line = escape(line, quotes=False) \
-                               .replace('\0', '<ins>').replace('\1', '</ins>')
+                        line = escape(line, quotes=False)
+                        line = '<ins>'.join([space_re.sub(htmlify, seg)
+                                             for seg in line.split('\0')])
+                        line = line.replace('\1', '</ins>')
                         blocks[-1]['changed']['lines'].append(
-                            Markup(space_re.sub(htmlify, unicode(line))))
+                            Markup(unicode(line)))
         changes.append(blocks)
     return changes
 

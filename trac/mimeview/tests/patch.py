@@ -100,6 +100,31 @@ class PatchRendererTestCase(unittest.TestCase):
 """)
         self.assertTrue(result)
         self._test('no_newline_in_changed', result)
+    def test_diff_to_hdf_expandtabs(self):
+        """Regression test related to #4557"""
+        changes = self.patch._diff_to_hdf(
+            ['--- hello.c 1',
+             '+++ hello.c 2',
+             '@@ -1 +1 @@',
+             '-aa\tb',
+             '+aaxb'], 8)
+        self.assertEquals('aa<del>&nbsp; &nbsp; &nbsp; </del>b',
+                          str(changes[0]['diffs'][0][0]['base']['lines'][0]))
+        self.assertEquals('aa<ins>x</ins>b',
+                          str(changes[0]['diffs'][0][0]['changed']['lines'][0]))
+
+    def test_diff_to_hdf_leading_ws(self):
+        """Regression test related to #5795"""
+        changes = self.patch._diff_to_hdf(
+            ['--- hello.c 1',
+             '+++ hello.c 2',
+             '@@ -1 +1 @@',
+             '-*a',
+             '+ *a'], 8)
+        self.assertEquals('<del></del>*a',
+                          str(changes[0]['diffs'][0][0]['base']['lines'][0]))
+        self.assertEquals('<ins>&nbsp;</ins>*a',
+                          str(changes[0]['diffs'][0][0]['changed']['lines'][0]))
 
 def suite():
     suite = unittest.TestSuite()

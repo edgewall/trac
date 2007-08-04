@@ -22,6 +22,7 @@ from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
                               Mimeview
 from trac.util.html import escape, Markup
+from trac.util.text import expandtabs
 from trac.web.chrome import Chrome, add_script, add_stylesheet
 
 __all__ = ['PatchRenderer']
@@ -224,15 +225,15 @@ class PatchRenderer(Component):
                         elif len(f) == len(t):
                             _markup_intraline_change(f, t)
                     for i in xrange(len(f)):
-                        line = f[i].expandtabs(tabwidth)
-                        line = escape(line)
+                        line = expandtabs(f[i], tabwidth, '\0\1')
+                        line = escape(line, quotes=False)
                         line = '<del>'.join([space_re.sub(htmlify, seg)
                                              for seg in line.split('\0')])
                         line = line.replace('\1', '</del>')
                         f[i] = Markup(line)
                     for i in xrange(len(t)):
-                        line = t[i].expandtabs(tabwidth)
-                        line = escape(line)
+                        line = expandtabs(t[i], tabwidth, '\0\1')
+                        line = escape(line, quotes=False)
                         line = '<ins>'.join([space_re.sub(htmlify, seg)
                                              for seg in line.split('\0')])
                         line = line.replace('\1', '</ins>')
