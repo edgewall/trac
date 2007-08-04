@@ -75,22 +75,33 @@ function toggleDir(expander, qargs) {
     loading_row.find("span.loading").text("Loading " + a.text() + "...");
 
     // XHR for getting the rows corresponding to the folder entries
-    $.get(a.attr("href"), qargs, function(data) {
-      var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
-      if (rows.length) {
-        // insert entry rows 
-        rows.children("td."+td_class).css("padding-left", depth);
-        // make all entry rows collapsible but only subdir rows expandable
-        enableExpandDir(tr, rows, qargs); 
-        tr.after(rows);
-        // remove "Loading ..." row
-        loading_row.remove();
-      } else {
-        loading_row.find("span.loading").text("").append("<i>(empty)</i>")
+    $.ajax({
+      type: "GET",
+      url: a.attr("href"),
+      data: qargs,
+      dataType: "html",
+      success: function(data) {
+        var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
+        if (rows.length) {
+          // insert entry rows 
+          rows.children("td."+td_class).css("padding-left", depth);
+          // make all entry rows collapsible but only subdir rows expandable
+          enableExpandDir(tr, rows, qargs); 
+          tr.after(rows);
+          // remove "Loading ..." row
+          loading_row.remove();
+        } else {
+          loading_row.find("span.loading").text("").append("<i>(empty)</i>")
+            .removeClass("loading");
+          // make the (empty) row collapsible
+          enableExpandDir(tr, loading_row, qargs); 
+        }
+      },
+      error: function(req, err, exc) {
+        loading_row.find("span.loading").text("").append("<i>(error)</i>")
           .removeClass("loading");
-        // make the (empty) row collapsible
-        enableExpandDir(tr, loading_row, qargs); 
-      }
+        enableExpandDir(tr, loading_row, qargs);
+      },
     });
   }
   expander.attr("title", "Fold directory");
