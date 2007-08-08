@@ -226,6 +226,7 @@ class TicketSystem(Component):
             field['type'] = 'select'
             perm = PermissionSystem(self.env)
             field['options'] = perm.get_users_with_permission('TICKET_MODIFY')
+            field['options'].sort()
             field['optional'] = True
         else:
             field['type'] = 'text'
