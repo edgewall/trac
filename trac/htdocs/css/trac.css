@@ -56,6 +56,11 @@ h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
   padding-left: 16px;
  }
  * html a.ext-link .icon { display: inline-block; }
+ a.mail-link .icon {
+  background: url(../envelope.png) left center no-repeat;
+  padding-left: 16px;
+ }
+ * html a.mail-link .icon { display: inline-block; }
 }
 
 /* Forms */

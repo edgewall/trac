@@ -334,8 +334,10 @@ class Formatter(object):
         if ns in self.wikiparser.link_resolvers:
             return self.wikiparser.link_resolvers[ns](self, ns, target,
                                                 escape(label, False))
-        elif target.startswith('//') or ns == "mailto":
+        elif target.startswith('//'):
             return self._make_ext_link(ns+':'+target, label)
+        elif ns == "mailto":
+            return self._make_mail_link('mailto:'+target, label)
         else:
             return self._make_intertrac_link(ns, target, label) or \
                    self._make_interwiki_link(ns, target, label) or \
@@ -389,6 +391,10 @@ class Formatter(object):
                           class_="ext-link", href=url, title=title or None)
         else:
             return html.A(text, href=url, title=title or None)
+
+    def _make_mail_link(self, url, text, title=''):
+        return html.A(html.SPAN(text, class_="icon"),
+                      class_="mail-link", href=url, title=title or None)
 
     # WikiMacros
     
