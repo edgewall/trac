@@ -86,6 +86,8 @@ KNOWN_MIME_TYPES = {
     'application/x-yaml':     ['yml', 'yaml'],
     
     'application/rss+xml':    ['rss'],
+    'application/xsl+xml':    ['xsl'],
+    'application/xslt+xml':   ['xslt'],
     
     'image/x-icon':           ['ico'],
     'image/svg+xml':          ['svg'],
@@ -97,7 +99,6 @@ KNOWN_MIME_TYPES = {
     'text/plain':             ['txt', 'TXT', 'text', 'README', 'INSTALL',
                                'AUTHORS', 'COPYING', 'ChangeLog', 'RELEASE'],
     'text/xml':               ['xml'],
-    'text/xsl':               ['xsl'],
     'text/x-csrc':            ['c', 'xs'],
     'text/x-chdr':            ['h'],
     'text/x-c++src':          ['cc', 'CC', 'cpp', 'C'],
