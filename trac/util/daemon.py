@@ -27,9 +27,10 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
         if os.path.exists(pidfile):
             fileobj = open(pidfile)
             try:
-                pid = int(fileobj.read())
-            except ValueError:
-                sys.exit('Invalid PID in file %s' % pidfile)
+                try:
+                    pid = int(fileobj.read())
+                except ValueError:
+                    sys.exit('Invalid PID in file %s' % pidfile)
             finally:
                 fileobj.close()
 
