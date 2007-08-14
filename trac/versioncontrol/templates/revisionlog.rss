@@ -19,7 +19,7 @@
       ${author_or_creator(change.author, email_map)}
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: ${shorten_line(change.message)}</title>
-      <link>${abs_href.changeset(rev, path)}</link>
+      <link>${abs_href.changeset(item.rev, item.path)}</link>
       <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>
       <description py:with="m = change.message">${
         unicode(wiki_format_messages and (verbose and wiki_to_html(item_context, m) \
