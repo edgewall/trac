@@ -101,7 +101,7 @@ function toggleDir(expander, qargs) {
         loading_row.find("span.loading").text("").append("<i>(error)</i>")
           .removeClass("loading");
         enableExpandDir(tr, loading_row, qargs);
-      },
+      }
     });
   }
   expander.attr("title", "Fold directory");
