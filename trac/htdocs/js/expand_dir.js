@@ -55,7 +55,7 @@ function toggleDir(expander, qargs) {
     // Note that the above will show all the already fetched subtree,
     // so we have to fold again the folders which were already collapsed.
     tr.siblings("tr.collapsed").each(function() {
-      expander.siblings("tr."+expander.get(0).id).hide();
+      tr.siblings("tr."+this.id).not(this).hide();
     });
   } else {                                // then *fetch*
     var td = expander.parents("td");
