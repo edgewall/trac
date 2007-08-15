@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005 Edgewall Software
-# Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
+# Copyright (C) 2005-2007 Edgewall Software
+# Copyright (C) 2005-2007 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 # All rights reserved.
 #
@@ -22,6 +22,10 @@ import locale
 import os
 import pkg_resources
 import sys
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 from genshi import Markup
 from genshi.output import DocType
@@ -41,35 +45,6 @@ from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper
 from trac.web.href import Href
 from trac.web.session import Session
-
-# Environment cache for multithreaded front-ends:
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-
-env_cache = {}
-env_cache_lock = threading.Lock()
-
-def _open_environment(env_path, run_once=False):
-    if run_once:
-        return open_environment(env_path)
-
-    global env_cache, env_cache_lock
-    env = None
-    env_cache_lock.acquire()
-    try:
-        if not env_path in env_cache:
-            env_cache[env_path] = open_environment(env_path)
-        env = env_cache[env_path]
-    finally:
-        env_cache_lock.release()
-
-    # Re-parse the configuration file if it changed since the last the time it
-    # was parsed
-    env.config.parse_if_needed()
-
-    return env
 
 def populate_hdf(hdf, env, req=None):
     """Populate the HDF data set with various information, such as common URLs,
@@ -390,7 +365,7 @@ def dispatch_request(environ, start_response):
 
     env = env_error = None
     try:
-        env = _open_environment(env_path, run_once=run_once)
+        env = open_environment(env_path, use_cache=not run_once)
         if env.base_url:
             environ['trac.base_url'] = env.base_url
     except TracError, e:
@@ -511,8 +486,8 @@ def send_project_index(environ, start_response, parent_dir=None,
         projects = []
         for env_name, env_path in get_environments(environ).items():
             try:
-                env = _open_environment(env_path,
-                                        run_once=environ['wsgi.run_once'])
+                env = open_environment(env_path,
+                                       use_cache=not environ['wsgi.run_once'])
                 proj = {
                     'name': env.project_name,
                     'description': env.project_description,

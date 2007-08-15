@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
-# Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2003-2007 Edgewall Software
+# Copyright (C) 2003-2007 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -15,10 +15,13 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 
 import os
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
+import setuptools
 import sys
 from urlparse import urlsplit
-
-import setuptools
 
 from trac import db_default
 from trac.config import *
@@ -487,14 +490,21 @@ class EnvironmentSetup(Component):
                           exc_info=True)
 
 
-def open_environment(env_path=None):
+env_cache = {}
+env_cache_lock = threading.Lock()
+
+def open_environment(env_path=None, use_cache=False):
     """Open an existing environment object, and verify that the database is up
     to date.
 
-    @param: env_path absolute path to the environment directory; if ommitted,
-            the value of the `TRAC_ENV` environment variable is used
+    @param env_path: absolute path to the environment directory; if ommitted,
+                     the value of the `TRAC_ENV` environment variable is used
+    @param use_cache: whether the environment should be cached for subsequent
+                      invocations of this function
     @return: the `Environment` object
     """
+    global env_cache, env_cache_lock
+
     if not env_path:
         env_path = os.getenv('TRAC_ENV')
     if not env_path:
@@ -502,15 +512,27 @@ def open_environment(env_path=None):
                         'Trac requires this variable to point to a valid '
                         'Trac environment.')
 
-    env = Environment(env_path)
-    needs_upgrade = False
-    try:
-        needs_upgrade = env.needs_upgrade()
-    except Exception, e: # e.g. no database connection
-        env.log.exception(e)
-        raise TracError("The Trac Environment couldn't check for upgrade. "
-                        + str(e))
-    if needs_upgrade:
-        raise TracError('The Trac Environment needs to be upgraded.\n\n'
-                        'Run "trac-admin %s upgrade"' % env_path)
+    if use_cache:
+        env_cache_lock.acquire()
+        try:
+            env = env_cache.get(env_path)
+            if env is None:
+                env = env_cache.setdefault(env_path, open_environment(env_path))
+            else:
+                # Re-parse the configuration file if it changed since the last
+                # the time it was parsed
+                env.config.parse_if_needed()
+        finally:
+            env_cache_lock.release()
+    else:
+        env = Environment(env_path)
+        needs_upgrade = False
+        try:
+            needs_upgrade = env.needs_upgrade()
+        except Exception, e: # e.g. no database connection
+            env.log.exception(e)
+        if needs_upgrade:
+            raise TracError('The Trac Environment needs to be upgraded.\n\n'
+                            'Run "trac-admin %s upgrade"' % env_path)
+
     return env
