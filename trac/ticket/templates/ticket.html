@@ -320,7 +320,7 @@ ${comment}</textarea></p>
                          py:strip="field.type == 'radio'">${field.label or field.name}:</label>
                 </th>
                 <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
-                    py:attrs="{'colspan': fullrow and 3 or None}">
+                    colspan="${fullrow and 3 or None}">
                   <py:choose test="field.type" py:if="field">
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
@@ -379,7 +379,7 @@ ${comment}</textarea></p>
             <input type="hidden" name="cnum" value="${cnum}" />
           </py:if>
           <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
-          <input type="submit" py:attrs="ticket.exists and {'value':'Submit changes'} or {'value':'Create ticket'}" />
+          <input type="submit" value="${ticket.exists and 'Submit changes' or 'Create ticket'}" />
         </div>
 
       </form>
