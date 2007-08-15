@@ -33,6 +33,7 @@ from trac.web.href import Href
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
                     in BaseHTTPRequestHandler.responses.items()])
 
+
 class HTTPException(Exception):
 
     def __init__(self, detail, *args):
@@ -45,16 +46,17 @@ class HTTPException(Exception):
             self.detail = self.detail % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
                                                  self.detail))
-
-def new_HTTPException(exc_name, code):
-    """Create a new Exception class representing a HTTP status code."""
-    reason = HTTP_STATUS.get(code, 'Unknown')
-    exc_class = new.classobj(exc_name, (HTTPException,), {
-        '__doc__': 'Exception for HTTP %d %s' % (code, reason)
+    def subclass(cls, name, code):
+        """Create a new Exception class representing a HTTP status code."""
+        reason = HTTP_STATUS.get(code, 'Unknown')
+        new_class = new.classobj(name, (HTTPException,), {
+            '__doc__': 'Exception for HTTP %d %s' % (code, reason)
         })
-    exc_class.code = code
-    exc_class.reason = reason
-    return exc_class
+        new_class.code = code
+        new_class.reason = reason
+        return new_class
+    subclass = classmethod(subclass)
+
 
 for code in [code for code in HTTP_STATUS if code >= 400]:
     exc_name = HTTP_STATUS[code].replace(' ', '').replace('-', '')
@@ -64,7 +66,8 @@ for code in [code for code in HTTP_STATUS if code >= 400]:
     if exc_name.lower().startswith('http'):
         exc_name = exc_name[4:]
     exc_name = 'HTTP' + exc_name        
-    setattr(sys.modules[__name__], exc_name, new_HTTPException(exc_name, code))
+    setattr(sys.modules[__name__], exc_name,
+            HTTPException.subclass(exc_name, code))
 del code, exc_name
 
 
