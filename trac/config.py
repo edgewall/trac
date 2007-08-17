@@ -14,16 +14,10 @@
 
 from ConfigParser import ConfigParser
 import os
-try:
-    set
-except NameError:
-    from sets import Set as set
-import sys
 
 from trac.core import ExtensionPoint, TracError
-from trac.util import sorted
-from trac.util.text import to_unicode, CRLF
 from trac.util.compat import set, sorted
+from trac.util.text import to_unicode, CRLF
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
            'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
@@ -162,20 +156,20 @@ class Configuration(object):
             if options:
                 sections.append((section, sorted(options)))
 
-        fileobj = file(self.filename, 'w')
+        fileobj = open(self.filename, 'w')
         try:
-            print>>fileobj, '# -*- coding: utf-8 -*-'
-            print>>fileobj
+            fileobj.write('# -*- coding: utf-8 -*-\n\n')
             for section, options in sections:
-                print>>fileobj, '[%s]' % section
+                fileobj.write('[%s]\n' % section)
                 for key, val in options:
                     if key in self[section].overridden:
-                        print>>fileobj, '# %s = <set in global trac.ini>' % key
+                        fileobj.write('# %s = <inherited>\n' % key)
                     else:
                         val = val.replace(CRLF, '\n').replace('\n', '\n ')
-                        print>>fileobj, '%s = %s' % \
-                                        (key, to_unicode(val).encode('utf-8'))
-                print>>fileobj
+                        fileobj.write('%s = %s\n' % (
+                            key, to_unicode(val).encode('utf-8')
+                        ))
+                fileobj.write('\n')
         finally:
             fileobj.close()
 

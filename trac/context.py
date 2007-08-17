@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2007 Edgewall Software
-# Copyright (C) 2003-2007 Christian Boos <cboos@neuf.fr>
-# Copyright (C) 2003-2007 Alec Thomas <alec@swapoff.org>
+# Copyright (C) 2006-2007 Edgewall Software
+# Copyright (C) 2006-2007 Alec Thomas <alec@swapoff.org>
+# Copyright (C) 2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -55,7 +55,8 @@ class RenderingContext(object):
 
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
-    
+
+
 class Context(object):
     """Base class for Wiki rendering contexts.
 

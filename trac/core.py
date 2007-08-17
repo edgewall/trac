@@ -59,7 +59,8 @@ class ExtensionPoint(property):
 
     def extensions(self, component):
         """Return a list of components that declare to implement the extension
-        point interface."""
+        point interface.
+        """
         extensions = ComponentMeta._registry.get(self.interface, [])
         return filter(None, [component.compmgr[cls] for cls in extensions])
 
@@ -78,9 +79,6 @@ class ComponentMeta(type):
 
     def __new__(cls, name, bases, d):
         """Create the component class."""
-
-        d['_implements'] = _implements[:]
-        del _implements[:]
 
         new_class = type.__new__(cls, name, bases, d)
         if name == 'Component':
@@ -127,15 +125,6 @@ class ComponentMeta(type):
         return new_class
 
 
-_implements = []
-
-def implements(*interfaces):
-    """Can be used in the class definiton of `Component` subclasses to declare
-    the extension points that are extended.
-    """
-    _implements.extend(interfaces)
-
-
 class Component(object):
     """Base class for components.
 
@@ -163,6 +152,25 @@ class Component(object):
             compmgr.component_activated(self)
         return self
 
+    def implements(*interfaces):
+        """Can be used in the class definiton of `Component` subclasses to
+        declare the extension points that are extended.
+        """
+        import sys
+
+        frame = sys._getframe(1)
+        locals_ = frame.f_locals
+
+        # Some sanity checks
+        assert locals_ is not frame.f_globals and '__module__' in locals_, \
+               'implements() can only be used in a class definition'
+
+        locals_.setdefault('_implements', []).extend(interfaces)
+    implements = staticmethod(implements)
+
+
+implements = Component.implements
+
 
 class ComponentManager(object):
     """The component manager keeps a pool of active components."""
@@ -180,7 +188,8 @@ class ComponentManager(object):
 
     def __getitem__(self, cls):
         """Activate the component instance for the given class, or return the
-        existing the instance if the component has already been activated."""
+        existing the instance if the component has already been activated.
+        """
         if cls not in self.enabled:
             self.enabled[cls] = self.is_component_enabled(cls)
         if not self.enabled[cls]:
