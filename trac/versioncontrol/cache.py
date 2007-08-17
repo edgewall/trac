@@ -55,7 +55,7 @@ class CachedRepository(Repository):
     def get_changesets(self, start, stop):
         cursor = self.db.cursor()
         cursor.execute("SELECT rev FROM revision "
-                       "WHERE time >= %s AND time < %s ORDER BY time, rev DESC",
+                       "WHERE time >= %s AND time < %s ORDER BY time DESC, rev DESC",
                        (to_timestamp(start), to_timestamp(stop)))
         for rev, in cursor:
             try:
