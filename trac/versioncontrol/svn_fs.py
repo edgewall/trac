@@ -331,7 +331,7 @@ class SubversionPropertyRenderer(Component):
             elements = external.split()
             if not elements:
                 continue
-            localpath, rev, url = elements[0], None, elements[-1]
+            localpath, rev, url = elements[0], '', elements[-1]
             if len(elements) == 3:
                 rev = elements[1]
                 rev = rev.replace('-r', '')
@@ -344,7 +344,7 @@ class SubversionPropertyRenderer(Component):
                 base_url, pref = posixpath.split(base_url)
                 prefix.append(pref)
             href = self._externals_map.get(base_url)
-            revstr = rev and 'at revision '+rev or ''
+            revstr = rev and ' at revision '+rev or ''
             if not href and url.startswith('http://'):
                 href = url
             if href:
@@ -353,7 +353,7 @@ class SubversionPropertyRenderer(Component):
                                   href % {'path': remotepath, 'rev': rev}))
             else:
                 externals.append((localpath, revstr, url, None, None))
-        return tag.ul([tag.li(tag.a(localpath + (not href and ' %s in %s' %
+        return tag.ul([tag.li(tag.a(localpath + (not href and '%s in %s' %
                                                  (rev, url) or ''),
                                     href=href,
                                     title=href and ('%s%s in %s repository' %
