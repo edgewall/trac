@@ -181,7 +181,7 @@ class EnvironmentStub(Environment):
 
     def is_component_enabled(self, cls):
         if self.enabled_components is None:
-            return True
+            return cls.__module__.startswith('trac.')
         return cls in self.enabled_components
 
     def get_db_cnx(self):
