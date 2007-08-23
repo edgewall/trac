@@ -180,7 +180,7 @@
               </h3>
 
               <!--! Clone the ticket (only for existing tickets) -->
-              <form py:if="ticket.exists and 'TICKET_ADMIN' in req.perm" method="post" action="${href.newticket()}">
+              <form py:if="ticket.exists and 'TICKET_ADMIN' in req.perm(context)" method="post" action="${href.newticket()}">
                 <div class="inlinebuttons">
                   <input type="submit" name="clone" value="Clone" title="Create a copy of this ticket"  />
                   <py:for each="f in fields">
@@ -194,7 +194,7 @@
               </form>
 
               <!--! Quote the description (only for existing tickets) -->
-              <form py:if="ticket.exists and ticket.description and 'TICKET_APPEND' in perm"
+              <form py:if="ticket.exists and ticket.description and 'TICKET_APPEND' in perm(context)"
                 method="get" action="#comment">
                 <div class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
@@ -238,7 +238,7 @@
                   </span>
                   Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
                 </h3>
-                <div py:if="'cnum' in change and 'TICKET_APPEND' in perm" class="inlinebuttons">
+                <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(context)" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
                   <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                 </div>
@@ -250,7 +250,7 @@
       </py:if>
       <!--! End of the section we don't show on initial new tickets -->
 
-      <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm or 'TICKET_CHGPROP' in perm or ('TICKET_CREATE' in perm and not ticket.id))"
+      <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm(context) or 'TICKET_CHGPROP' in perm(context) or ('TICKET_CREATE' in perm(context) and not ticket.id))"
             action="#preview" method="post">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} (${ticket.summary})</a></h3>
@@ -282,7 +282,7 @@ ${comment}</textarea></p>
         </div>
 
         <fieldset id="properties"
-                  py:if="'TICKET_CHGPROP' in req.perm or (not ticket.exists and 'TICKET_CREATE' in req.perm)"
+                  py:if="'TICKET_CHGPROP' in req.perm(context) or (not ticket.exists and 'TICKET_CREATE' in req.perm(context))"
                   py:with="fields = [f for f in fields if not f.skip]">
           <legend>${ticket.exists and 'Change ' or ''}Properties</legend>
           <table>
@@ -293,7 +293,7 @@ ${comment}</textarea></p>
                        value="${ticket.summary}" size="70" />
               </td>
             </tr>
-            <py:if test="'TICKET_ADMIN' in perm">
+            <py:if test="'TICKET_ADMIN' in perm(context)">
               <tr>
                 <th><label for="field-reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">
@@ -302,7 +302,7 @@ ${comment}</textarea></p>
                 </td>
               </tr>
             </py:if>
-            <py:if test="'TICKET_ADMIN' in perm or not ticket.exists">
+            <py:if test="'TICKET_ADMIN' in perm(context) or not ticket.exists">
               <tr>
                 <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">

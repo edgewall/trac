@@ -123,7 +123,8 @@ class AuthzPolicy(Component):
         if self.authz_file and not self.authz_mtime or \
                 os.path.getmtime(self.get_authz_file()) > self.authz_mtime:
             self.parse_authz()
-        ctx_key = self.flatten_context(context)
+        ctx_key = self.normalise_context(context)
+        self.env.log.debug('Checking %s on %s', action, ctx_key)
         permissions = self.authz_permissions(ctx_key, username)
         if permissions is None:
             return None
@@ -135,7 +136,7 @@ class AuthzPolicy(Component):
     def get_authz_file(self):
         f = self.authz_file
         return os.path.isabs(f) and f or os.path.join(self.env.path, f)
-    
+
     def parse_authz(self):
         self.env.log.debug('Parsing authz security policy %s' %
                            self.get_authz_file())
@@ -148,19 +149,29 @@ class AuthzPolicy(Component):
                 self.groups_by_user.setdefault(user, set()).add('@' + group)
         self.authz_mtime = os.path.getmtime(self.get_authz_file())
 
-    def flatten_context(self, context):
+    def normalise_context(self, context):
         def flatten(context):
-            # XXX Use of root realm is inconsistent. Sometimes it is the parent
-            # object, other times not. XXX
             if not context or not (context.realm or context.id):
                 return []
-            parent = flatten(context.parent)
+            # XXX Due to the mixed functionality in context we can end up with
+            # ticket, ticket:1, ticket:1@10. This code naively collapses all
+            # subsets of the parent context into one. eg. ticket:1@10
+            parent = context.parent
+            while parent and (context.realm == parent.realm or \
+                    (context.realm == parent.realm and context.id == parent.id)):
+                parent = parent.parent
+            if parent:
+                parent = flatten(parent)
+            else:
+                parnet = []
             return parent + ['%s:%s@%s' % (context.realm or '*',
                                            context.id or '*',
                                            context.version or '*')]
         return '/'.join(flatten(context))
 
     def authz_permissions(self, ctx_key, username):
+        # TODO: Handle permission negation in sections. eg. "if in this
+        # ticket, remove TICKET_MODIFY"
         valid_users = ['*', 'anonymous']
         if username and username != 'anonymous':
             valid_users += ['authenticated', username]

@@ -175,11 +175,13 @@ class TicketModule(Component):
                        args + args2)
         for summary, desc, author, type, tid, ts, status, resolution in cursor:
             ctx = context('ticket', tid)
-            yield (ctx.resource_href(),
-                   tag(tag.span(ctx.shortname(), class_=status), ': ',
-                       ctx.format_summary(summary, status, resolution, type)),
-                   datetime.fromtimestamp(ts, utc), author,
-                   shorten_result(desc, terms))
+            if 'TICKET_VIEW' in req.perm(ctx):
+                yield (ctx.resource_href(),
+                       tag(tag.span(ctx.shortname(), class_=status), ': ',
+                           ctx.format_summary(summary, status, resolution,
+                                              type)),
+                       datetime.fromtimestamp(ts, utc), author,
+                       shorten_result(desc, terms))
 
     # ITimelineEventProvider methods
 
@@ -203,6 +205,8 @@ class TicketModule(Component):
         def produce((id, ts, author, type, summary, description),
                     status, fields, comment, cid):
             ctx = context('ticket', id)
+            if 'TICKET_VIEW' not in req.perm(ctx):
+                return None
             info = ''
             resolution = fields.get('resolution')
             if status == 'edit':
@@ -279,7 +283,9 @@ class TicketModule(Component):
                                "  FROM ticket WHERE time>=%s AND time<=%s",
                                (ts_start, ts_stop))
                 for row in cursor:
-                    yield produce(row, 'new', {}, None, None)
+                    ev = produce(row, 'new', {}, None, None)
+                    if ev:
+                        yield ev
 
             # Attachments
             if 'ticket_details' in filters:
@@ -367,11 +373,11 @@ class TicketModule(Component):
         return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
-        req.perm.require('TICKET_VIEW')
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
         id = int(req.args.get('id'))
         context = Context(self.env, req)('ticket', id)
+        req.perm.require('TICKET_VIEW', context)
         ticket = context.resource
 
         data = {'ticket': ticket, 'context': context, 'comment': None}
@@ -894,6 +900,7 @@ class TicketModule(Component):
 
     def _prepare_fields(self, req, ticket):
         fields = []
+        context = Context(self.env, req)('ticket', ticket.id)
         for field in ticket.fields:
             name = field['name']
             type_ = field['type']
@@ -933,8 +940,9 @@ class TicketModule(Component):
                                     .render_milestone_link(href, milestone,
                                                            milestone)
             elif name == 'cc':
+                self.env.log.debug('Checking MUPPETS %s', context)
                 if not (Chrome(self.env).show_email_addresses or \
-                        'EMAIL_VIEW' in req.perm):
+                        'EMAIL_VIEW' in req.perm(context)):
                     field['rendered'] = ', '.join(
                         [obfuscate_email_address(cc)
                          for cc in cc_list(ticket[name])])
@@ -1069,7 +1077,7 @@ class TicketModule(Component):
         data.update({
             'fields': fields, 'changes': changes,
             'replies': replies, 'cnum': cnum + 1,
-            'attachments': AttachmentModule(self.env).attachment_list(context),
+            'attachments': AttachmentModule(self.env).permitted_attachment_list(req, context),
             'action_controls': action_controls,
             'action': selected_action,
             'change_preview': change_preview
@@ -1083,6 +1091,12 @@ class TicketModule(Component):
                                                     when):
             ctx = context(version=group.get('cnum', None))
             self._render_property_changes(ctx, group['fields'])
+            if 'attachment' in group['fields']:
+                if 'ATTACHMENT_VIEW' not in ctx.req.perm(ctx('attachment',
+                        group['fields']['attachment']['new'])):
+                    del group['fields']['attachment']
+                    if not group['fields']:
+                        continue
             yield group
 
     def _render_property_changes(self, context, fields):
@@ -1116,7 +1130,7 @@ class TicketModule(Component):
         if field == 'cc':
             old_list, new_list = cc_list(old), cc_list(new)
             if not (Chrome(self.env).show_email_addresses or \
-                    'EMAIL_VIEW' in context.req.perm):
+                    'EMAIL_VIEW' in context.req.perm(context)):
                 old_list = [obfuscate_email_address(cc)
                             for cc in old_list]
                 new_list = [obfuscate_email_address(cc)

@@ -170,35 +170,37 @@
         ${dateinfo(attachment.date)} ago.
       </py:with>
     </py:def>
-    <py:choose test="">
-      <py:when test="compact and alist.attachments">
-        <h3>Attachments</h3>
-        <ul>
-          <py:for each="ctx in alist.attachments">
-            <li py:if="'ATTACHMENT_VIEW' in perm(ctx)">
-              ${show_one_attachment(ctx)}
-              <q py:if="compact and ctx.resource.description">${wiki_to_oneliner(ctx, ctx.resource.description)}</q>
-            </li>
-          </py:for>
-        </ul>
-      </py:when>
-      <py:when test="not compact">
-        <h2>Attachments</h2>
-        <div py:if="alist.attachments or alist.can_create()" id="attachments">
-          <dl py:if="alist.attachments" class="attachments">
+    <py:if test="alist.attachments or alist.can_create()">
+      <py:choose test="">
+        <py:when test="compact and alist.attachments">
+          <h3>Attachments</h3>
+          <ul>
             <py:for each="ctx in alist.attachments">
-              <py:if test="'ATTACHMENT_VIEW' in perm(ctx)">
-                <dt>${show_one_attachment(ctx)}</dt>
-                <dd py:if="ctx.resource.description">
-                  ${wiki_to_oneliner(ctx, ctx.resource.description)}
-                </dd>
-              </py:if>
+              <li py:if="'ATTACHMENT_VIEW' in perm(ctx)">
+                ${show_one_attachment(ctx)}
+                <q py:if="compact and ctx.resource.description">${wiki_to_oneliner(ctx, ctx.resource.description)}</q>
+              </li>
             </py:for>
-          </dl>
-          ${attach_file_form(alist)}
-        </div>
-      </py:when>
-    </py:choose>
+          </ul>
+        </py:when>
+        <py:when test="not compact">
+          <h2>Attachments</h2>
+          <div py:if="alist.attachments or alist.can_create()" id="attachments">
+            <dl py:if="alist.attachments" class="attachments">
+              <py:for each="ctx in alist.attachments">
+                <py:if test="'ATTACHMENT_VIEW' in perm(ctx)">
+                  <dt>${show_one_attachment(ctx)}</dt>
+                  <dd py:if="ctx.resource.description">
+                    ${wiki_to_oneliner(ctx, ctx.resource.description)}
+                  </dd>
+                </py:if>
+              </py:for>
+            </dl>
+            ${attach_file_form(alist)}
+          </div>
+        </py:when>
+      </py:choose>
+    </py:if>
   </py:def>
 
   <!--! Conditionally render an ''Attach File'' button

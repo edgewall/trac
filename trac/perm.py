@@ -398,17 +398,16 @@ class PermissionCache(object):
     perm.require(...)
     """
 
-    __slots__ = ('env', 'username', 'context', '_cache', '_cached_all')
+    __slots__ = ('env', 'username', '_context', '_cache')
 
     def __init__(self, env, username=None, context=None, cache=None):
         self.env = env
         self.username = username or 'anonymous'
-        self.context = context
+        self._context = context
         if cache is None:
             self._cache = {}
         else:
             self._cache = cache
-        self._cached_all = False
 
     def _normalize_context(self, realm_or_context, id, version):
         from trac.context import Context
@@ -416,13 +415,13 @@ class PermissionCache(object):
         if isinstance(realm_or_context, Context):
             return realm_or_context
         elif realm_or_context is not None:
-            if self.context:
-                realm_or_context = realm_or_context or self.context.realm
-                id = id or self.context.id
-                version = version or self.context.version
+            if self._context:
+                realm_or_context = realm_or_context or self._context.realm
+                id = id or self._context.id
+                version = version or self._context.version
             return Context(self.env, None)(realm_or_context, id, version)
         else:
-            return self.context
+            return self._context
 
     def __call__(self, realm_or_context, id=None, version=None):
         """Convenience function for using thus:

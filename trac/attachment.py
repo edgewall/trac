@@ -397,7 +397,7 @@ class AttachmentModule(Component):
             parent_id = '/'.join(segments[:-1])
             filename = len(segments) > 1 and segments[-1]
             if not filename: # if there's a trailing '/', show the list
-                return self._render_list(context(parent_realm, parent_id))
+                return self._render_list(req, context(parent_realm, parent_id))
             attachment = Attachment(self.env, parent_realm, parent_id,
                                     filename)
 
@@ -433,9 +433,11 @@ class AttachmentModule(Component):
 
     # Public methods
 
-    def attachment_list(self, parent):
-        return AttachmentList(
-            parent, Attachment.select(self.env, parent.realm, parent.id))
+    def permitted_attachment_list(self, req, parent):
+        """Return list of attachments allowed in the request."""
+        return AttachmentList(parent,
+            [a for a in Attachment.select(self.env, parent.realm, parent.id)
+             if 'ATTACHMENT_VIEW' in req.perm(parent('attachment', a.filename))])
 
     def get_history(self, start, stop, realm):
         """Return an iterable of tuples describing changes to attachments on
@@ -581,12 +583,12 @@ class AttachmentModule(Component):
 
         return {'mode': 'new', 'author': get_reporter_id(context.req)}
 
-    def _render_list(self, context):
+    def _render_list(self, req, context):
         context.req.perm.require('ATTACHMENT_VIEW', context('attachment'))
 
         data = {
             'mode': 'list', 'context': None, # no specific attachment
-            'attachments': self.attachment_list(context)}
+            'attachments': self.permitted_attachment_list(req, context)}
 
         add_link(context.req, 'up', context.resource_href(), context.name())
 

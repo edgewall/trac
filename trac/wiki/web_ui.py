@@ -528,7 +528,7 @@ class WikiModule(Component):
 
         data.update({
             'latest_version': latest_page.version,
-            'attachments': AttachmentModule(self.env).attachment_list(context),
+            'attachments': AttachmentModule(self.env).permitted_attachment_list(req, context),
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
             'version': version
