@@ -45,6 +45,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
                             INavigationContributor, ITemplateProvider
 
+
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
     title = "Invalid Ticket"

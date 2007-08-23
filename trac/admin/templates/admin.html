@@ -6,12 +6,12 @@
       xmlns:py="http://genshi.edgewall.org/"
       py:strip="">
 
-  <head py:match="head">
+  <py:match path="head" once="true"><head>
     <title>Administration: ${select('title/text()')}</title>
     ${select("*[local-name() != 'title']")}
-  </head>
+  </head></py:match>
 
-  <body py:match="body">
+  <py:match path="body" once="true"><body>
     <div id="ctxtnav" class="nav"></div>
 
     <div id="content" class="admin">
@@ -37,7 +37,7 @@
       </div>
     </div>
 
-  </body>
+  </body></py:match>
 
   <xi:include href="layout.html" />
 </html>

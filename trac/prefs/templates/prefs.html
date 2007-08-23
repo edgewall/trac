@@ -6,12 +6,12 @@
       xmlns:py="http://genshi.edgewall.org/"
       py:strip="">
 
-  <head py:match="head">
+  <py:match path="head" once="true"><head>
     <title>Preferences: ${select('title/text()')}</title>
     ${select("*[local-name() != 'title']")}
-  </head>
+  </head></py:match>
 
-  <body py:match="body">
+  <py:match path="body" once="true"><body>
     <div id="ctxtnav" class="nav"></div>
 
     <div id="content" class="prefs">
@@ -30,17 +30,15 @@
       <div id="tabcontent">
         <form action="" method="post">
           ${select("*|text()")}
-
           <div class="buttons">
             <input type="hidden" name="action" value="save" />
             <input type="submit" value="${_('Save changes')}" />
           </div >
         </form>
       </div>
-
     </div>
 
-  </body>
+  </body></py:match>
 
   <xi:include href="layout.html" />
 </html>
