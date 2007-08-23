@@ -544,7 +544,8 @@ class Chrome(Component):
         """
         if not self.templates:
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
-                                            auto_reload=self.auto_reload)
+                                            auto_reload=self.auto_reload,
+                                            variable_lookup='lenient')
         if method == 'text':
             cls = TextTemplate
         else:
