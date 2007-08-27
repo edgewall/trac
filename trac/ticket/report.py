@@ -257,7 +257,7 @@ class ReportModule(Component):
         elif query.startswith('query:'):
             try:
                 from trac.ticket.query import Query, QuerySyntaxError
-                query = Query.from_string(self.env, req, query[6:], report=id)
+                query = Query.from_string(self.env, query[6:], report=id)
                 req.redirect(query.get_href(req))
             except QuerySyntaxError, e:
                 req.redirect(req.href.report(id, action='edit',
