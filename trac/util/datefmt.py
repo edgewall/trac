@@ -154,9 +154,9 @@ def get_datetime_format_hint():
 def http_date(t=None):
     """Format `datetime` object `t` as a rfc822 timestamp"""
     t = to_datetime(t).astimezone(utc)
-    weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-              'Oct', 'Nov', 'Dec']
+    weekdays = ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun')
+    months = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
+              'Oct', 'Nov', 'Dec')
     return '%s, %02d %s %04d %02d:%02d:%02d GMT' % (
         weekdays[t.weekday()], t.day, months[t.month - 1], t.year,
         t.hour, t.minute, t.second)
