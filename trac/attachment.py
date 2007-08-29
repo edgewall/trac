@@ -698,10 +698,13 @@ class LegacyAttachmentPolicy(Component):
     }
 
     def check_permission(self, username, action, context):
-        if action.startswith('ATTACHMENT_'):
-            perm_map = self._perm_maps.get(action)
-            if perm_map:
-                legacy_action = perm_map.get(context.resource.parent_realm)
-                if legacy_action:
-                    return PermissionSystem(self.env).check_permission(
-                        legacy_action, username, context)
+        perm_map = self._perm_maps.get(action)
+        if perm_map:
+            legacy_action = perm_map.get(context.resource.parent_realm)
+            if legacy_action:
+                decision = PermissionSystem(self.env) \
+                    .check_permission(legacy_action, username, context)
+                if not decision:
+                    self.env.log.debug('LegacyAttachmentPolicy denied %s '
+                                       'access to %s. User needs %s' %
+                                       (username, context, legacy_action))

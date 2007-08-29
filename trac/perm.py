@@ -30,13 +30,16 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore',
 class PermissionError(StandardError):
     """Insufficient permissions to complete the operation"""
 
-    def __init__ (self, action):
+    def __init__ (self, action=None):
         StandardError.__init__(self)
         self.action = action
 
     def __str__ (self):
-        return _('%(perm)s privileges are required to perform this operation',
-                 perm=self.action)
+        if self.action:
+            return _('%(perm)s privileges are required to perform this operation.',
+                     perm=self.action)
+        else:
+            return _('Insufficient privileges to perform this operation.')
 
 
 class IPermissionRequestor(Interface):
@@ -446,7 +449,7 @@ class PermissionCache(object):
 
     def require(self, action, realm_or_context=None, id=None, version=None):
         if not self.has_permission(action, realm_or_context, id, version):
-            raise PermissionError(action)
+            raise PermissionError()
     assert_permission = require
 
     def permissions(self):
