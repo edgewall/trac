@@ -104,10 +104,6 @@ class TracAdmin(cmd.Cmd):
         except TracError, e:
             print>>sys.stderr, 'Command failed: %s' % e
             rv = 2
-        except Exception, e:
-            print>>sys.stderr, 'Internal error: %s' % e
-            traceback.print_exc()
-            sys.exit(2)
         if not self.interactive:
             return rv
 
