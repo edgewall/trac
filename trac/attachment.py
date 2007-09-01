@@ -708,3 +708,4 @@ class LegacyAttachmentPolicy(Component):
                     self.env.log.debug('LegacyAttachmentPolicy denied %s '
                                        'access to %s. User needs %s' %
                                        (username, context, legacy_action))
+                return decision
