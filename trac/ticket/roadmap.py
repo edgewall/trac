@@ -217,7 +217,8 @@ class RoadmapModule(Component):
         for milestone in milestones:
             tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 'owner')
-            tickets = apply_ticket_permissions(self.env, req, milestone, tickets)
+            tickets = apply_ticket_permissions(self.env, req, milestone,
+                                               tickets)
             stat = get_ticket_stats(self.stats_provider, tickets)
             stats.append(milestone_stats_data(req, stat, milestone.name))
             #milestone['tickets'] = tickets # for the iCalendar view
@@ -303,30 +304,36 @@ class RoadmapModule(Component):
         write_prop('X-WR-CALNAME',
                    self.config.get('project', 'name') + ' - ' + _('Roadmap'))
         for milestone in milestones:
-            uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone['name'],
+            uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone.name,
                                             host)
-            if milestone.has_key('due'):
+            due_ts = None
+            if milestone.due:
+            	due_ts = milestone.due.timetuple()
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
-                write_utctime('DTSTAMP', localtime(milestone['due']))
-                write_date('DTSTART', localtime(milestone['due']))
+                write_utctime('DTSTAMP', due_ts)
+                write_date('DTSTART', due_ts)
                 write_prop('SUMMARY', _('Milestone %(name)s') % {
-                    'name': milestone['name']
+                    'name': milestone.name
                 })
                 write_prop('URL', req.base_url + '/milestone/' +
-                           milestone['name'])
-                if milestone.has_key('description_source'):
-                    write_prop('DESCRIPTION', milestone['description_source'])
+                           milestone.name)
+                if milestone.description:
+                    write_prop('DESCRIPTION', milestone.description)
                 write_prop('END', 'VEVENT')
-            for tkt_id in [ticket['id'] for ticket in milestone['tickets']
+            tickets = get_tickets_for_milestone(self.env, db, milestone.name,
+                                                field='owner')
+            tickets = apply_ticket_permissions(self.env, req, milestone,
+                                               tickets)
+            for tkt_id in [ticket['id'] for ticket in tickets
                            if ticket['owner'] == user]:
                 ticket = Ticket(self.env, tkt_id)
                 write_prop('BEGIN', 'VTODO')
                 write_prop('UID', '<%s/ticket/%s@%s>' % (req.base_path,
                                                          tkt_id, host))
-                if milestone.has_key('due'):
+                if milestone.due:
                     write_prop('RELATED-TO', uid)
-                    write_date('DUE', localtime(milestone['due']))
+                    write_date('DUE', due_ts)
                 write_prop('SUMMARY', _('Ticket #%(num)s: %(summary)s') % {
                     'num': ticket.id, 'summary': ticket['summary']
                 })
