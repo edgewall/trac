@@ -86,6 +86,10 @@ class CachedRepository(Repository):
         repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
         if repository_dir:
             if repository_dir != self.name:
+                self.log.info("'repository_dir' has changed from %r to %r"
+                              % (repository_dir, self.name))
+                self.log.info("'repository_dir' has changed from %r to %r"
+                              % (previous_repository_dir, self.name))
                 raise TracError("The 'repository_dir' has changed, "
                                 "a 'trac-admin resync' operation is needed.")
         elif repository_dir is None: # 

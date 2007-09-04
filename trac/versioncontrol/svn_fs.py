@@ -387,7 +387,7 @@ class SubversionRepository(Repository):
         self.fs_ptr = repos.svn_repos_fs(self.repos)
         
         uuid = fs.get_uuid(self.fs_ptr, self.pool())
-        name = 'svn:%s:%s' % (uuid, path)
+        name = 'svn:%s:%s' % (uuid, _from_svn(path))
 
         Repository.__init__(self, name, authz, log)
 
