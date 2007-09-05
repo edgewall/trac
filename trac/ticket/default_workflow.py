@@ -235,9 +235,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 resolutions = [val.name for val in
                                model.Resolution.select(self.env)]
-            if not resolutions:
-                assert(resolutions)
-            elif len(resolutions) == 1:
+            assert(resolutions)
+            if len(resolutions) == 1:
                 control.append(tag('as %s' % resolutions[0]))
                 hints.append(_("The resolution will be set to %s") %
                              resolutions[0])
