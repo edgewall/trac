@@ -159,14 +159,14 @@ class Query(object):
 
         def sort_columns(col1, col2):
             constrained_fields = self.constraints.keys()
-            # Ticket ID is always the first column
-            if 'id' in [col1, col2]:
+            if 'id' in (col1, col2):
+                # Ticket ID is always the first column
                 return col1 == 'id' and -1 or 1
-            # Ticket summary is always the second column
-            elif 'summary' in [col1, col2]:
+            elif 'summary' in (col1, col2):
+                # Ticket summary is always the second column
                 return col1 == 'summary' and -1 or 1
-            # Constrained columns appear before other columns
             elif col1 in constrained_fields or col2 in constrained_fields:
+                # Constrained columns appear before other columns
                 return col1 in constrained_fields and -1 or 1
             return 0
         cols.sort(sort_columns)
@@ -187,7 +187,7 @@ class Query(object):
             self.get_columns()
 
         sql, args = self.get_sql(req)
-        self.env.log.debug("Query SQL: "+sql % tuple([repr(a) for a in args]))
+        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))
 
         if not db:
             db = self.env.get_db_cnx()
@@ -472,7 +472,7 @@ class Query(object):
             'name': col, 'label': labels.get(col, _('Ticket')),
             'href': self.get_href(context, order=col,
                                   desc=(col == self.order and not self.desc))
-            } for col in cols]
+        } for col in cols]
 
         fields = {}
         for field in self.fields:
@@ -517,6 +517,7 @@ class Query(object):
         return {'query': self,
                 'context': context,
                 'constraints': constraints,
+                'labels': labels,
                 'headers': headers,
                 'fields': fields,
                 'modes': modes,
