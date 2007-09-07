@@ -47,7 +47,7 @@ facilities.
     ],
 
     extras_require = {
-        'Pygments': ['Pygments>=0.5'],
+        'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3'],
         'SilverCity': ['SilverCity>=0.9.4'],
         'Textile': ['textile>=2.0'],
@@ -69,7 +69,7 @@ facilities.
         trac.mimeview.enscript = trac.mimeview.enscript
         trac.mimeview.patch = trac.mimeview.patch
         trac.mimeview.php = trac.mimeview.php
-        trac.mimeview.pygments = trac.mimeview.pygments_renderer[Pygments]
+        trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
         trac.mimeview.rst = trac.mimeview.rst[reST]
         trac.mimeview.silvercity = trac.mimeview.silvercity[SilverCity]
         trac.mimeview.txtl = trac.mimeview.txtl[Textile]

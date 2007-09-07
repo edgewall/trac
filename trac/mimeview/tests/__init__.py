@@ -1,4 +1,4 @@
-from trac.mimeview.tests import api, patch, php, pygments_renderer
+from trac.mimeview.tests import api, patch, php, pygments
 
 import unittest
 
@@ -7,7 +7,7 @@ def suite():
     suite.addTest(api.suite())
     suite.addTest(patch.suite())
     suite.addTest(php.suite())
-    suite.addTest(pygments_renderer.suite())
+    suite.addTest(pygments.suite())
     return suite
 
 if __name__ == '__main__':

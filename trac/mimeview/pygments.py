@@ -29,9 +29,14 @@ from trac.web.chrome import add_stylesheet
 from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
 
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters.html import HtmlFormatter
-from pygments.styles import get_style_by_name
+# Kludge to workaround the lack of absolute imports in Python version prior to
+# 2.5
+pygments = __import__('pygments', {}, {}, ['lexers', 'styles', 'formatters'])
+get_all_lexers = pygments.lexers.get_all_lexers
+get_lexer_by_name = pygments.lexers.get_lexer_by_name
+HtmlFormatter = pygments.formatters.html.HtmlFormatter
+get_all_styles = pygments.styles.get_all_styles
+get_style_by_name = pygments.styles.get_style_by_name
 
 __all__ = ['PygmentsRenderer']
 
@@ -183,22 +188,6 @@ class PygmentsRenderer(Component):
         lexer = get_lexer_by_name(language, stripnl=False)
         return GenshiHtmlFormatter().generate(lexer.get_tokens(content))
 
-
-def get_all_lexers():
-    from pygments.lexers._mapping import LEXERS
-    from pygments.plugin import find_plugin_lexers
-
-    for item in LEXERS.itervalues():
-        yield item[1:]
-    for cls in find_plugin_lexers():
-        yield cls.name, cls.aliases, cls.filenames, cls.mimetypes
-
-def get_all_styles():
-    from pygments.styles import find_plugin_styles, STYLE_MAP
-    for name in STYLE_MAP:
-        yield name
-    for name, _ in find_plugin_styles():
-        yield name
 
 class GenshiHtmlFormatter(HtmlFormatter):
     """A Pygments formatter subclass that generates a Python stream instead

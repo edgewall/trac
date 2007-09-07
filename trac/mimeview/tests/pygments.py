@@ -19,7 +19,7 @@ from genshi.core import Stream, TEXT
 from genshi.input import HTMLParser, XML
 
 try:
-    import pygments
+    pygments = __import__('pygments', {}, {}, [])
     have_pygments = True
 except ImportError:
     have_pygments = False
@@ -27,7 +27,7 @@ except ImportError:
 from trac.context import Context
 from trac.mimeview.api import Mimeview
 if have_pygments:
-    from trac.mimeview.pygments_renderer import PygmentsRenderer
+    from trac.mimeview.pygments import PygmentsRenderer
 from trac.test import EnvironmentStub, Mock
 from trac.web.chrome import Chrome
 from trac.web.href import Href
@@ -105,7 +105,7 @@ def suite():
     if have_pygments:
         suite.addTest(unittest.makeSuite(PygmentsRendererTestCase, 'test'))
     else:
-        print 'SKIP: mimeview/tests/pygments_renderer (no pygments installed)'
+        print 'SKIP: mimeview/tests/pygments (no pygments installed)'
     return suite
 
 if __name__ == '__main__':
