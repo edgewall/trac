@@ -21,6 +21,7 @@ import os
 import unittest
 import sys
 import pkg_resources
+from fnmatch import fnmatch
 
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, ExtensionPoint
@@ -143,9 +144,15 @@ class EnvironmentStub(Environment):
     href = abs_href = None
 
     def __init__(self, default_data=False, enable=None):
+        """Construct a new Envuronment stub object.
+
+        default_data: If True, populate the database with some defaults.
+        enable: A list of component classes or name globs to activate in the
+                stub environment.
+        """
         ComponentManager.__init__(self)
         Component.__init__(self)
-        self.enabled_components = enable
+        self.enabled_components = enable or ['trac.*']
         self.db = InMemoryDatabase()
         self.systeminfo = [('Python', sys.version)]
 
@@ -180,9 +187,13 @@ class EnvironmentStub(Environment):
         self.known_users = []
 
     def is_component_enabled(self, cls):
-        if self.enabled_components is None:
-            return cls.__module__.startswith('trac.')
-        return cls in self.enabled_components
+        for component in self.enabled_components:
+            if component is cls:
+                return True
+            if isinstance(component, basestring) and \
+                fnmatch(cls.__module__ + '.' + cls.__name__, component):
+                return True
+        return False
 
     def get_db_cnx(self):
         return self.db
