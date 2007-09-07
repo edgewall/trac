@@ -385,20 +385,3 @@ def get_data(db):
            ('report',
              ('author', 'title', 'query', 'description'),
                __mkreports(get_reports(db))))
-
-
-default_components = ('trac.about', 'trac.admin.console', 'trac.admin.web_ui',
-                      'trac.attachment', 'trac.db.mysql_backend',
-                      'trac.db.postgres_backend', 'trac.db.sqlite_backend',
-                      'trac.mimeview.enscript', 'trac.mimeview.patch',
-                      'trac.mimeview.php', 'trac.mimeview.pygments_renderer',
-                      'trac.mimeview.rst', 'trac.mimeview.silvercity',
-                      'trac.mimeview.txtl',
-                      'trac.prefs.web_ui', 'trac.search.web_ui',
-                      'trac.ticket.admin', 'trac.ticket.query',
-                      'trac.ticket.report', 'trac.ticket.roadmap',
-                      'trac.ticket.web_ui', 'trac.timeline.web_ui',
-                      'trac.versioncontrol.web_ui',
-                      'trac.versioncontrol.svn_fs',
-                      'trac.wiki.macros', 'trac.wiki.web_ui',
-                      'trac.web.auth')
