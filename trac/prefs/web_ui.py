@@ -36,7 +36,7 @@ class PreferencesModule(Component):
     implements(INavigationContributor, IPreferencePanelProvider,
                IRequestHandler, ITemplateProvider)
 
-    _form_fields = ['newsid','name', 'email', 'tz', 'accesskeys']
+    _form_fields = ['newsid', 'name', 'email', 'tz', 'accesskeys']
 
     # INavigationContributor methods
 
@@ -119,7 +119,8 @@ class PreferencesModule(Component):
                     req.session.change_sid(val)
                 else:
                     req.session[field] = val
-            elif field in req.args and field in req.session:
+            elif field in req.session and (field in req.args or
+                                           field + '_cb' in req.args):
                 del req.session[field]
 
     def _do_load(self, req):
