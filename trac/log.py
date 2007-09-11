@@ -44,7 +44,7 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
             format = '%(asctime)s ' + format
     datefmt = ''
     if logtype == 'stderr':
-        datefmt = '%X'        
+        datefmt = '%X'
     level = level.upper()
     if level in ('DEBUG', 'ALL'):
         logger.setLevel(logging.DEBUG)
@@ -58,6 +58,9 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
         logger.setLevel(logging.WARNING)
     formatter = logging.Formatter(format, datefmt)
     hdlr.setFormatter(formatter)
-    logger.addHandler(hdlr) 
+    logger.addHandler(hdlr)
+
+    # Remember our handler so that we can remove it later
+    logger._trac_handler = hdlr 
 
     return logger

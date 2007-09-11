@@ -381,7 +381,7 @@ class PluginAdminPanel(Component):
                 self._do_update(req)
             anchor = ''
             if req.args.has_key('plugin'):
-                anchor = '#no' + req.args.get('plugin')
+                anchor = '#no%d' % (int(req.args.get('plugin')) + 1)
             req.redirect(req.href.admin(cat, page) + anchor)
 
         return self._render_view(req)
@@ -426,6 +426,9 @@ class PluginAdminPanel(Component):
 
         # TODO: Validate that the uploaded file is actually a valid Trac plugin
 
+        # Make the environment reset itself on the next request
+        self.env.config.touch()
+
     def _do_uninstall(self, req):
         """Uninstall a plugin."""
         plugin_filename = req.args.get('plugin_filename')
@@ -436,6 +439,9 @@ class PluginAdminPanel(Component):
             return
         self.log.info('Uninstalling plugin %s', plugin_filename)
         os.remove(plugin_path)
+
+        # Make the environment reset itself on the next request
+        self.env.config.touch()
 
     def _do_update(self, req):
         """Update component enablement."""

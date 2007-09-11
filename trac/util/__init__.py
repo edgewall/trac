@@ -228,6 +228,10 @@ def get_pkginfo(dist):
         pkginfo = email.message_from_string(dist.get_metadata('PKG-INFO'))
         for attr in [key for key in attrs if key in pkginfo]:
             info[normalize(attr)] = pkginfo[attr]
+    except IOError, e:
+        err = 'Failed to read PKG-INFO file for %s: %s' % (dist, e)
+        for attr in attrs:
+            info[normalize(attr)] = err
     except email.Errors.MessageError, e:
         err = 'Failed to parse PKG-INFO file for %s: %s' % (dist, e)
         for attr in attrs:

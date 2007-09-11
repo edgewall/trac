@@ -174,13 +174,16 @@ class Configuration(object):
             fileobj.close()
 
     def parse_if_needed(self):
-        # Load global configuration
         if not self.filename or not os.path.isfile(self.filename):
-            return
+            return False
+
+        changed = False
         modtime = os.path.getmtime(self.filename)
         if modtime > self._lastmtime:
+            self.parser._sections = {}
             self.parser.read(self.filename)
             self._lastmtime = modtime
+            changed = True
 
         if self.parser.has_option('inherit', 'file'):
             filename = self.parser.get('inherit', 'file')
@@ -189,10 +192,17 @@ class Configuration(object):
                                         filename)
             if not self.parent or self.parent.filename != filename:
                 self.parent = Configuration(filename)
+                changed = True
             else:
-                self.parent.parse_if_needed()
+                changed |= self.parent.parse_if_needed()
         elif self.parent:
+            changed = True
             self.parent = None
+
+        return changed
+
+    def touch(self):
+        os.utime(self.filename, None)
 
 
 class Section(object):
@@ -292,7 +302,9 @@ class Section(object):
         """
         if self.config.parser.has_option(self.name, name):
             path = self.config.parser.get(self.name, name)
-            if path and not os.path.isabs(path):
+            if not path:
+                return default
+            if not os.path.isabs(path):
                 path = os.path.join(os.path.dirname(self.config.filename),
                                     path)
             return os.path.normcase(os.path.realpath(path))

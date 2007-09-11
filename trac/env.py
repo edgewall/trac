@@ -516,12 +516,18 @@ def open_environment(env_path=None, use_cache=False):
         env_cache_lock.acquire()
         try:
             env = env_cache.get(env_path)
+            if env and env.config.parse_if_needed():
+                # The environment configuration has changed, so shut it down
+                # and remove it from the cache so that it gets reinitialized
+                env.log.info('Reloading environment due to configuration '
+                             'change')
+                env.shutdown()
+                if hasattr(env.log, '_trac_handler'):
+                    env.log.removeHandler(env.log._trac_handler)
+                del env_cache[env_path]
+                env = None
             if env is None:
                 env = env_cache.setdefault(env_path, open_environment(env_path))
-            else:
-                # Re-parse the configuration file if it changed since the last
-                # the time it was parsed
-                env.config.parse_if_needed()
         finally:
             env_cache_lock.release()
     else:
