@@ -277,7 +277,7 @@ class Repository(object):
 
     def normalize_path(self, path):
         """Return a canonical representation of path in the repos."""
-        return NotImplementedError
+        raise NotImplementedError
 
     def normalize_rev(self, rev):
         """Return a canonical representation of a revision.
@@ -290,7 +290,7 @@ class Repository(object):
         In addition, if `rev` is `None` or '', the youngest revision should
         be returned.
         """
-        return NotImplementedError
+        raise NotImplementedError
 
     def short_rev(self, rev):
         """Return a compact representation of a revision in the repos."""
