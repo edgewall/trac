@@ -26,7 +26,7 @@ from trac.attachment import AttachmentModule
 from trac.context import IContextProvider, Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
-from trac.util import sorted
+from trac.util.compat import set, sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, \
                               get_date_format_hint, get_datetime_format_hint
 from trac.util.text import shorten_line, CRLF, to_unicode
@@ -64,7 +64,8 @@ class TicketGroupStats(object):
         self.done_percent = 0
         self.done_count = 0
 
-    def add_interval(self, title, count, qry_args, css_class, countsToProg=0):
+    def add_interval(self, title, count, qry_args, css_class,
+                     overall_completion=None, countsToProg=0):
         """Adds a division to this stats' group's progress bar.
 
         `title` is the display name (eg 'closed', 'spent effort') of this
@@ -73,16 +74,22 @@ class TicketGroupStats(object):
         `qry_args` is a dict of extra params that will yield the subset of
           tickets in this interval on a query.
         `css_class` is the css class that will be used to display the division.
-        `countsToProg` can be set to true to make this interval count towards
-          overall completion of this group of tickets.
+        `overall_completion` can be set to true to make this interval count
+          towards overall completion of this group of tickets.
+          
+        (Warning: `countsToProg` argument will be removed in 0.12, use
+        `overall_completion` instead)
         """
+        if overall_completion is None:
+            overall_completion = countsToProg
         self.intervals.append({
             'title': title,
             'count': count,
             'qry_args': qry_args,
             'css_class': css_class,
             'percent': None,
-            'countsToProg': countsToProg
+            'countsToProg': overall_completion,
+            'overall_completion': overall_completion,
         })
         self.count = self.count + count
 
@@ -96,42 +103,143 @@ class TicketGroupStats(object):
             interval['percent'] = round(float(interval['count'] / 
                                         float(self.count) * 100))
             total_percent = total_percent + interval['percent']
-            if interval['countsToProg']:
+            if interval['overall_completion']:
                 self.done_percent += interval['percent']
                 self.done_count += interval['count']
 
+        # We want the percentages to add up to 100%.  To do that, we fudge the
+        # first interval that counts as "completed".  That interval is adjusted
+        # by enough to make the intervals sum to 100%.
         if self.done_count and total_percent != 100:
-            fudge_int = [i for i in self.intervals if i['countsToProg']][0]
+            fudge_int = [i for i in self.intervals
+                         if i['overall_completion']][0]
             fudge_amt = 100 - total_percent
             fudge_int['percent'] += fudge_amt
             self.done_percent += fudge_amt
 
+
 class DefaultTicketGroupStatsProvider(Component):
+    """Configurable ticket group statistics provider.
+
+    Example configuration (which is also the default):
+    {{{
+    [milestone-groups]
+
+    # Definition of a 'closed' group:
+    
+    closed = closed
+
+    # The definition consists in a comma-separated list of accepted status.
+    # Also, '*' means any status and could be used to associate all remaining
+    # states to one catch-all group.
+
+    # Qualifiers for the above group (the group must have been defined first):
+    
+    closed.order = 0                     # sequence number in the progress bar
+    closed.query_args = group=resolution # optional extra param for the query
+    closed.overall_completion = true     # count for overall completion
+
+    # Definition of an 'active' group:
+
+    active = *                           # one catch-all group is allowed
+    active.order = 1
+    active.css_class = open              # CSS class for this interval
+
+    # The CSS class can be one of: new (yellow), open (no color) or
+    # closed (green). New styles can easily be added using the following
+    # selector:  `table.progress td.<class>`
+    }}}
+    """
+
     implements(ITicketGroupStatsProvider)
+
+    default_milestone_groups =  [
+        {'name': 'closed', 'status': 'closed',
+         'query_args': 'group=resolution', 'overall_completion': 'true'},
+        {'name': 'active', 'status': '*', 'css_class': 'open'}
+        ]
+
+    def _get_ticket_groups(self):
+        """Returns a list of dict describing the ticket groups
+        in the expected order of appearance in the milestone progress bars.
+        """
+        if 'milestone-groups' in self.config:
+            groups = {}
+            order = 0
+            for groupname, value in self.config.options('milestone-groups'):
+                qualifier = 'status'
+                if '.' in groupname:
+                    groupname, qualifier = groupname.split('.', 1)
+                group = groups.setdefault(groupname, {'name': groupname,
+                                                      'order': order})
+                group[qualifier] = value
+                order = max(order, int(group['order'])) + 1
+            return [group for group in sorted(groups.values(),
+                                              key=lambda g: int(g['order']))]
+        else:
+            return self.default_milestone_groups
 
     def get_ticket_group_stats(self, ticket_ids):
         total_cnt = len(ticket_ids)
+        all_statuses = set(TicketSystem(self.env).get_all_status())
+        status_cnt = {}
+        for s in all_statuses:
+            status_cnt[s] = 0
         if total_cnt:
             cursor = self.env.get_db_cnx().cursor()
             str_ids = [str(x) for x in sorted(ticket_ids)]
-            active_cnt = cursor.execute("SELECT count(1) FROM ticket "
-                                        "WHERE status <> 'closed' AND id IN "
-                                        "(%s)" % ",".join(str_ids))
-            active_cnt = 0
-            for cnt, in cursor:
-                active_cnt = cnt
-        else:
-            active_cnt = 0
-
-        closed_cnt = total_cnt - active_cnt
+            cursor.execute("SELECT status, count(status) FROM ticket "
+                           "WHERE id IN (%s) GROUP BY status" %
+                           ",".join(str_ids))
+            for s, cnt in cursor:
+                status_cnt[s] = cnt
 
         stat = TicketGroupStats('ticket status', 'ticket')
-        stat.add_interval('closed', closed_cnt,
-                          {'status': 'closed', 'group': 'resolution'},
-                          'closed', True)
-        stat.add_interval('active', active_cnt,
-                          {'status': ['!closed']},
-                          'open', False)
+        remaining_statuses = set(all_statuses)
+        groups =  self._get_ticket_groups()
+        catch_all_group = None
+        # we need to go through the groups twice, so that the catch up group
+        # doesn't need to be the last one in the sequence
+        for group in groups:
+            status_str = group['status'].strip()
+            if status_str == '*':
+                if catch_all_group:
+                    raise TracError(_(
+                        "'%(group1)s' and '%(group2)s' milestone groups "
+                        "both are declared to be \"catch-all\" groups. "
+                        "Please check your configuration.",
+                        group1=group['name'], group2=catch_all_group['name']))
+                catch_all_group = group
+            else:
+                group_statuses = set([s.strip()
+                                      for s in status_str.split(',')]) \
+                                      & all_statuses
+                if group_statuses - remaining_statuses:
+                    raise TracError(_(
+                        "'%(groupname)s' milestone group reused status "
+                        "'%(status)s' already taken by other groups. "
+                        "Please check your configuration.",
+                        groupname=group['name'],
+                        status=', '.join(group_statuses - remaining_statuses)))
+                else:
+                    remaining_statuses -= group_statuses
+                group['statuses'] = group_statuses
+        if catch_all_group:
+            catch_all_group['statuses'] = remaining_statuses
+        for group in groups:
+            group_cnt = 0
+            query_args = {}
+            for s, cnt in status_cnt.iteritems():
+                if s in group['statuses']:
+                    group_cnt += cnt
+                    query_args.setdefault('status', []).append(s)
+            for arg in [kv for kv in group.get('query_args', '').split(',')
+                        if '=' in kv]:
+                k, v = [a.strip() for a in arg.split('=', 1)]
+                query_args[k] = v
+            stat.add_interval(group['name'], group_cnt, query_args,
+                              group.get('css_class', group['name']),
+                              bool(group.get('overall_completion')))
         stat.refresh_calcs()
         return stat
 
@@ -656,8 +764,10 @@ class MilestoneModule(Component):
 
             for idx, gstat in enumerate(group_stats):
                 gs_dict = milestone_groups[idx]
-                gs_dict['percent_of_max_total'] = (float(gstat.count) /
-                                                   float(max_count) * 100)
+                percent = 1.0
+                if max_count:
+                    percent = float(gstat.count) / float(max_count) * 100
+                gs_dict['percent_of_max_total'] = percent
 
         return 'milestone_view.html', data, None
 

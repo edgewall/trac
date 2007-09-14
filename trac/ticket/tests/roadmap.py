@@ -74,7 +74,7 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
 
         tkt1 = Ticket(self.env)
         tkt1.populate({'summary': 'Foo', 'milestone': 'Test', 'owner': 'foman',
-                        'status': 'open'})
+                        'status': 'new'})
         tkt1.insert()
         tkt2 = Ticket(self.env)
         tkt2.populate({'summary': 'Bar', 'milestone': 'Test',
@@ -90,6 +90,7 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         
         prov = DefaultTicketGroupStatsProvider(ComponentManager())
         prov.env = self.env
+        prov.config = self.env.config
         self.stats = prov.get_ticket_group_stats([tkt1.id, tkt2.id, tkt3.id])
 
     def test_stats(self):
@@ -101,9 +102,9 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         closed = self.stats.intervals[0]
         self.assertEquals('closed', closed['title'], 'closed title incorrect')
         self.assertEquals('closed', closed['css_class'], 'closed class incorrect')
-        self.assertEquals(True, closed['countsToProg'],
-                          'closed not count to prog')
-        self.assertEquals({'status': 'closed', 'group': 'resolution'},
+        self.assertEquals(True, closed['overall_completion'],
+                          'closed should contribute to overall completion')
+        self.assertEquals({'status': ['closed'], 'group': 'resolution'},
                           closed['qry_args'], 'qry_args incorrect')
         self.assertEquals(1, closed['count'], 'closed count incorrect')
         self.assertEquals(33, closed['percent'], 'closed percent incorrect')
@@ -112,9 +113,10 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         open = self.stats.intervals[1]
         self.assertEquals('active', open['title'], 'open title incorrect')
         self.assertEquals('open', open['css_class'], 'open class incorrect')
-        self.assertEquals(False, open['countsToProg'],
-                          'open not count to prog')
-        self.assertEquals({'status': ['!closed']},
+        self.assertEquals(False, open['overall_completion'],
+                          "open shouldn't contribute to overall completion")
+        self.assertEquals({'status':
+                           [u'assigned', u'new', u'accepted', u'reopened']},
                           open['qry_args'], 'qry_args incorrect')
         self.assertEquals(2, open['count'], 'open count incorrect')
         self.assertEquals(67, open['percent'], 'open percent incorrect')

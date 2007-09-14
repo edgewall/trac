@@ -239,7 +239,7 @@
         <dd><a href="${interval_hrefs[idx]}">${interval.count}</a></dd>
       </py:for>
       <py:if test="stats_href">
-        <dt>Total ${stats.unit}s:</dt>
+        <dt>/ Total ${stats.unit}s:</dt>
         <dd><a href="${stats_href}">${sum([x.count for x in stats.intervals], 0)}</a></dd>
       </py:if>
     </dl>
