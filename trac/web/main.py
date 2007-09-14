@@ -31,6 +31,7 @@ from genshi import Markup
 from genshi.output import DocType
 from genshi.template import TemplateLoader
 
+from trac import __version__ as TRAC_VERSION
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.context import ResourceNotFound
 from trac.core import *
@@ -49,11 +50,10 @@ from trac.web.session import Session
 def populate_hdf(hdf, env, req=None):
     """Populate the HDF data set with various information, such as common URLs,
     project information and request-related information.
-    FIXME: do we really have req==None at times?
     """
-    from trac import __version__
+    # FIXME: do we really have req==None at times?
     hdf['trac'] = {
-        'version': __version__,
+        'version': TRAC_VERSION,
         'time': format_datetime(),
         'time.gmt': http_date()
     }
@@ -469,7 +469,7 @@ def send_project_index(environ, start_response, parent_dir=None,
     else:
         template = 'index.html'
 
-    data = {}
+    data = {'trac': {'version': TRAC_VERSION, 'time': format_datetime()}}
     if req.environ.get('trac.template_vars'):
         for pair in req.environ['trac.template_vars'].split(','):
             key, val = pair.split('=')
