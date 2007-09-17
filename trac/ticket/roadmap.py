@@ -459,7 +459,7 @@ class RoadmapModule(Component):
                                    (ticket.id,))
                     row = cursor.fetchone()
                     if row:
-                        write_utctime('COMPLETED', to_datetime(row[0]))
+                        write_utctime('COMPLETED', to_datetime(row[0], utc))
                 write_prop('END', 'VTODO')
         write_prop('END', 'VCALENDAR')
 
