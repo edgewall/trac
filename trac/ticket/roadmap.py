@@ -27,8 +27,9 @@ from trac.context import IContextProvider, Context
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.compat import set, sorted
-from trac.util.datefmt import parse_date, utc, to_timestamp, \
-                              get_date_format_hint, get_datetime_format_hint
+from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
+                              get_date_format_hint, get_datetime_format_hint, \
+                              format_date, format_datetime
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem
@@ -396,10 +397,11 @@ class RoadmapModule(Component):
 
         def write_date(name, value, params={}):
             params['VALUE'] = 'DATE'
-            write_prop(name, strftime('%Y%m%d', value), params)
+            write_prop(name, format_date(value, '%Y%m%d', req.tz), params)
 
         def write_utctime(name, value, params={}):
-            write_prop(name, strftime('%Y%m%dT%H%M%SZ', value), params)
+            write_prop(name, format_datetime(value, '%Y%m%dT%H%M%SZ', utc),
+                       params)
 
         host = req.base_url[req.base_url.find('://') + 3:]
         user = req.args.get('user', 'anonymous')
@@ -414,13 +416,11 @@ class RoadmapModule(Component):
         for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone.name,
                                             host)
-            due_ts = None
             if milestone.due:
-            	due_ts = milestone.due.timetuple()
                 write_prop('BEGIN', 'VEVENT')
                 write_prop('UID', uid)
-                write_utctime('DTSTAMP', due_ts)
-                write_date('DTSTART', due_ts)
+                write_utctime('DTSTAMP', milestone.due)
+                write_date('DTSTART', milestone.due)
                 write_prop('SUMMARY', _('Milestone %(name)s') % {
                     'name': milestone.name
                 })
@@ -441,7 +441,7 @@ class RoadmapModule(Component):
                                                          tkt_id, host))
                 if milestone.due:
                     write_prop('RELATED-TO', uid)
-                    write_date('DUE', due_ts)
+                    write_date('DUE', milestone.due)
                 write_prop('SUMMARY', _('Ticket #%(num)s: %(summary)s') % {
                     'num': ticket.id, 'summary': ticket['summary']
                 })
@@ -459,7 +459,7 @@ class RoadmapModule(Component):
                                    (ticket.id,))
                     row = cursor.fetchone()
                     if row:
-                        write_utctime('COMPLETED', localtime(row[0]))
+                        write_utctime('COMPLETED', to_datetime(row[0]))
                 write_prop('END', 'VTODO')
         write_prop('END', 'VCALENDAR')
 
