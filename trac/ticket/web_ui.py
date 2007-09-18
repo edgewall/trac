@@ -849,9 +849,8 @@ class TicketModule(Component):
                 self.log.exception("Failure sending notification on change to "
                                    "ticket #%s: %s" % (ticket.id, e))
 
-            for controller in self._get_action_controllers(req, ticket,
-                                                           action):
-                controller.apply_action_side_effects(req, ticket, action)
+        for controller in self._get_action_controllers(req, ticket, action):
+            controller.apply_action_side_effects(req, ticket, action)
 
         fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
