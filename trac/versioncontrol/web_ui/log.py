@@ -205,8 +205,8 @@ class LogModule(Component):
                                      subsequent_indent='\t')
                 files = []
                 actions = []
-                for path, kind, chg, bpath, brev in changeset.get_changes():
-                    files.append(chg == Changeset.DELETE and bpath or path)
+                for cpath, kind, chg, bpath, brev in changeset.get_changes():
+                    files.append(chg == Changeset.DELETE and bpath or cpath)
                     actions.append(chg)
                 cs['files'] = files
                 cs['actions'] = actions
