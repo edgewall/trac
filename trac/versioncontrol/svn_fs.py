@@ -59,26 +59,19 @@ from trac.util import sorted, embedded_numbers, reversed
 from trac.util.text import to_unicode
 from trac.util.datefmt import utc
 
-try:
-    from svn import fs, repos, core, delta
-    has_subversion = True
-except ImportError:
-    has_subversion = False
-    class dummy_svn(object):
-        svn_node_dir = 1
-        svn_node_file = 2
-        def apr_pool_destroy(): pass
-        def apr_terminate(): pass
-        def apr_pool_clear(): pass
-        Editor = object
-    delta = core = dummy_svn()
-    
-
-_kindmap = {core.svn_node_dir: Node.DIRECTORY,
-            core.svn_node_file: Node.FILE}
-
 
 application_pool = None
+
+
+def _import_svn():
+    global fs, repos, core, delta, _kindmap
+    from svn import fs, repos, core, delta
+    _kindmap = {core.svn_node_dir: Node.DIRECTORY,
+                core.svn_node_file: Node.FILE}
+    # Protect svn.core methods from GC
+    Pool.apr_pool_clear = staticmethod(core.apr_pool_clear)
+    Pool.apr_terminate = staticmethod(core.apr_terminate)
+    Pool.apr_pool_destroy = staticmethod(core.apr_pool_destroy)
 
 def _to_svn(*args):
     """Expect a list of `unicode` path components.
@@ -146,11 +139,6 @@ def _mark_weakpool_invalid(weakpool):
 class Pool(object):
     """A Pythonic memory pool object"""
 
-    # Protect svn.core methods from GC
-    apr_pool_destroy = staticmethod(core.apr_pool_destroy)
-    apr_terminate = staticmethod(core.apr_terminate)
-    apr_pool_clear = staticmethod(core.apr_pool_clear)
-    
     def __init__(self, parent_pool=None):
         """Create a new memory pool"""
 
@@ -239,11 +227,6 @@ class Pool(object):
                 del self._weakref
 
 
-# Initialize application-level pool
-if has_subversion:
-    Pool()
-
-
 class SubversionConnector(Component):
 
     implements(IRepositoryConnector)
@@ -262,10 +245,19 @@ class SubversionConnector(Component):
 
     def __init__(self):
         self._version = None
+        
+        try:
+            _import_svn()
+            self.log.debug('Subversion bindings imported')
+        except ImportError:
+            self.log.info('Failed to load Subversion bindings', exc_info=True)
+            self.has_subversion = False
+        else:
+            self.has_subversion = True
+            Pool()
 
     def get_supported_types(self):
-        global has_subversion
-        if has_subversion:
+        if self.has_subversion:
             yield ("direct-svnfs", 4)
             yield ("svnfs", 4)
             yield ("svn", 2)
@@ -939,36 +931,41 @@ class SubversionChangeset(Changeset):
 # Note 2: the 'dir_baton' is the path of the parent directory
 #
 
-class DiffChangeEditor(delta.Editor): 
 
-    def __init__(self):
-        self.deltas = []
+def DiffChangeEditor():
+
+    class DiffChangeEditor(delta.Editor): 
+
+        def __init__(self):
+            self.deltas = []
     
-    # -- svn.delta.Editor callbacks
+        # -- svn.delta.Editor callbacks
 
-    def open_root(self, base_revision, dir_pool):
-        return ('/', Changeset.EDIT)
+        def open_root(self, base_revision, dir_pool):
+            return ('/', Changeset.EDIT)
 
-    def add_directory(self, path, dir_baton, copyfrom_path, copyfrom_rev,
-                      dir_pool):
-        self.deltas.append((path, Node.DIRECTORY, Changeset.ADD))
-        return (path, Changeset.ADD)
+        def add_directory(self, path, dir_baton, copyfrom_path, copyfrom_rev,
+                          dir_pool):
+            self.deltas.append((path, Node.DIRECTORY, Changeset.ADD))
+            return (path, Changeset.ADD)
 
-    def open_directory(self, path, dir_baton, base_revision, dir_pool):
-        return (path, dir_baton[1])
+        def open_directory(self, path, dir_baton, base_revision, dir_pool):
+            return (path, dir_baton[1])
 
-    def change_dir_prop(self, dir_baton, name, value, pool):
-        path, change = dir_baton
-        if change != Changeset.ADD:
-            self.deltas.append((path, Node.DIRECTORY, change))
+        def change_dir_prop(self, dir_baton, name, value, pool):
+            path, change = dir_baton
+            if change != Changeset.ADD:
+                self.deltas.append((path, Node.DIRECTORY, change))
 
-    def delete_entry(self, path, revision, dir_baton, pool):
-        self.deltas.append((path, None, Changeset.DELETE))
+        def delete_entry(self, path, revision, dir_baton, pool):
+            self.deltas.append((path, None, Changeset.DELETE))
 
-    def add_file(self, path, dir_baton, copyfrom_path, copyfrom_revision,
-                 dir_pool):
-        self.deltas.append((path, Node.FILE, Changeset.ADD))
+        def add_file(self, path, dir_baton, copyfrom_path, copyfrom_revision,
+                     dir_pool):
+            self.deltas.append((path, Node.FILE, Changeset.ADD))
 
-    def open_file(self, path, dir_baton, dummy_rev, file_pool):
-        self.deltas.append((path, Node.FILE, Changeset.EDIT))
+        def open_file(self, path, dir_baton, dummy_rev, file_pool):
+            self.deltas.append((path, Node.FILE, Changeset.EDIT))
+
+    return DiffChangeEditor() 
 

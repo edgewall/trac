@@ -36,6 +36,7 @@ from trac.core import TracError
 from trac.util.datefmt import utc
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.svn_fs import SubversionRepository
+from trac.versioncontrol import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 
@@ -48,6 +49,7 @@ class SubversionRepositoryTestSetup(TestSetup):
         dumpfile = open(os.path.join(os.path.split(__file__)[0],
                                      'svnrepos.dump'))
 
+        svn_fs._import_svn()
         core.apr_initialize()
         pool = core.svn_pool_create(None)
         dumpstream = None
