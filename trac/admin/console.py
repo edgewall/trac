@@ -34,7 +34,8 @@ from trac.perm import PermissionSystem
 from trac.ticket.model import *
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
-from trac.util.text import print_table, to_unicode, wrap
+from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
+                           print_table
 from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
 from trac.wiki.macros import WikiMacroBase
@@ -720,11 +721,12 @@ Congratulations!
                              "ORDER BY version DESC LIMIT 1", cursor,
                              params=(title,))
         old = list(rows)
+        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'        
         if old and title in create_only:
-            print '  %s already exists.' % title
+            print '  %s already exists.' % title.encode(cons_charset)
             return False
         if old and data == old[0][0]:
-            print '  %s already up to date.' % title
+            print '  %s already up to date.' % title.encode(cons_charset)
             return False
         f.close()
 
@@ -750,20 +752,23 @@ Congratulations!
 
     def _do_wiki_dump(self, dir):
         pages = self.get_wiki_list()
+        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         for p in pages:
-            dst = os.path.join(dir, urllib.quote(p, ''))
-            print " %s => %s" % (p, dst)
+            dst = os.path.join(dir, unicode_quote(p, ''))
+            print (" %s => %s" % (p, dst)).encode(cons_charset)
             self._do_wiki_export(p, dst)
 
     def _do_wiki_load(self, dir, cursor=None, ignore=[], create_only=[]):
+        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         for page in os.listdir(dir):
             if page in ignore:
                 continue
             filename = os.path.join(dir, page)
-            page = urllib.unquote(page)
+            page = unicode_unquote(page.encode('utf-8'))
             if os.path.isfile(filename):
                 if self._do_wiki_import(filename, page, cursor, create_only):
-                    print "  %s imported from %s" % (page, filename)
+                    print (" %s imported from %s" %
+                           (filename, page)).encode(cons_charset)
 
     ## Ticket
     _help_ticket = [('ticket remove <number>', 'Remove ticket')]

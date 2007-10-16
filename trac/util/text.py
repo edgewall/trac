@@ -63,9 +63,9 @@ def to_unicode(text, charset=None):
         except UnicodeError:
             return unicode(text, locale.getpreferredencoding(), 'replace')
 
-def unicode_quote(value):
+def unicode_quote(value, safe='/'):
     """A unicode aware version of urllib.quote"""
-    return quote(value.encode('utf-8'))
+    return quote(value.encode('utf-8'), safe)
 
 def unicode_quote_plus(value):
     """A unicode aware version of urllib.quote"""
