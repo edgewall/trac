@@ -31,7 +31,7 @@ from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
 from trac.util.html import html
-from trac.util.text import to_unicode, wrap
+from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote
 from trac.wiki import WikiPage
 from trac.wiki.macros import WikiMacroBase
 
@@ -823,19 +823,21 @@ Congratulations!
 
     def _do_wiki_dump(self, dir):
         pages = self.get_wiki_list()
+        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         for p in pages:
-            dst = os.path.join(dir, urllib.quote(p, ''))
-            print " %s => %s" % (p, dst)
+            dst = os.path.join(dir, unicode_quote(p, ''))
+            print (" %s => %s" % (p, dst)).encode(cons_charset)
             self._do_wiki_export(p, dst)
 
     def _do_wiki_load(self, dir, cursor=None, ignore=[], create_only=[]):
+        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         for page in os.listdir(dir):
             if page in ignore:
                 continue
             filename = os.path.join(dir, page)
-            page = urllib.unquote(page)
+            page = unicode_unquote(page.encode('utf-8'))
             if os.path.isfile(filename):
-                print " %s => %s" % (filename, page)
+                print (" %s => %s" % (filename, page)).encode(cons_charset)
                 self._do_wiki_import(filename, page, cursor, create_only)
 
     ## Ticket
