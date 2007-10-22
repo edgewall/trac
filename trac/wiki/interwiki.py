@@ -16,6 +16,7 @@
 
 import re
 
+from genshi.builder import tag
 from trac.core import *
 from trac.wiki.formatter import Formatter
 from trac.wiki.parser import WikiParser
@@ -136,7 +137,6 @@ class InterWikiMap(Component):
 
     def expand_macro(self, formatter, name, content):
         from trac.util import sorted
-        from trac.util.html import html as _
         interwikis = []
         for k in sorted(self.keys()):
             prefix, url, title = self[k]
@@ -145,8 +145,10 @@ class InterWikiMap(Component):
                 'rc_url': self._expand_or_append(url, ['RecentChanges']),
                 'description': title == prefix and url or title})
 
-        return _.TABLE(_.TR(_.TH(_.EM("Prefix")), _.TH(_.EM("Site"))),
-                       [ _.TR(_.TD(_.A(w['prefix'], href=w['rc_url'])),
-                              _.TD(_.A(w['description'], href=w['url'])))
-                         for w in interwikis ],
-                       class_="wiki interwiki")
+        return tag.table(tag.tr(tag.th(tag.em("Prefix")),
+                                tag.th(tag.em("Site"))),
+                         [tag.tr(tag.td(tag.a(w['prefix'], href=w['rc_url'])),
+                                 tag.td(tag.a(w['description'],
+                                              href=w['url'])))
+                          for w in interwikis ],
+                         class_="wiki interwiki")
