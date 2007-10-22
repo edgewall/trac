@@ -139,7 +139,7 @@ ${traceback}
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
                       <a href="#frame${idx}" id="frame${idx}">
                         <span class="file">File "${frame.filename}",
-                        line ${frame.lineno + 1}, in</span>
+                        line <b>${frame.lineno + 1}</b>, in</span>
                         <var>${frame.function}</var>
                       </a>
                       <div py:if="frame.line" class="source" style="display: none">
