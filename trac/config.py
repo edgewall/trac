@@ -49,7 +49,7 @@ class Configuration(object):
         """Return whether the configuration contains a section of the given
         name.
         """
-        return self.parser.has_section(name)
+        return name in self.sections()
 
     def __getitem__(self, name):
         """Return the configuration section with the specified name."""

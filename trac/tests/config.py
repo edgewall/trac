@@ -185,6 +185,7 @@ class ConfigurationTestCase(unittest.TestCase):
             config.remove('a', 'option') # Should *not* remove option in parent
             self.assertEqual('x', config.get('a', 'option'))
             self.assertEqual([('option', 'x')], list(config.options('a')))
+            self.assertEqual(True, 'a' in config)
         finally:
             os.remove(sitename)
 
