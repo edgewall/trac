@@ -282,13 +282,13 @@ Relative links are supported:
 ------------------------------
 <p>
 Relative links are supported:
-<a href="/parent">See above</a> Note: see wikisyntax tests for other parent tests
+<a href="/wiki/parent">See above</a> Note: see wikisyntax tests for other parent tests
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="">/</a> Note: "" is an Href("/") artifact
 <a href="/newticket?component=test">new ticket</a>
-<a href="#title">#title</a>
-<a href="#title">see Title</a>
+<a href="/wiki/WikiStart#title">#title</a>
+<a href="/wiki/WikiStart#title">see Title</a>
 </p>
 ------------------------------
 ==============================  Image links are now regular external links

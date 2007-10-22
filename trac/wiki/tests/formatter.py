@@ -92,16 +92,20 @@ class WikiTestCase(unittest.TestCase):
         self._setup = setup
         self._teardown = teardown
 
-        self.context = context and context() or Context(Mock(), None)
+        self.env = EnvironmentStub()
 
-        self.env = self.context.env = EnvironmentStub()
+        if context:
+            self.context = context()
+            self.context.env = self.env
+        else:
+            self.context = Context(self.env, None)('wiki', 'WikiStart')
 
         from trac.web.href import Href
 
         req = Mock(href=Href('/'),
-                        abs_href=Href('http://www.example.com/'),
-                        authname='anonymous',
-                        perm=MockPerm())
+                   abs_href=Href('http://www.example.com/'),
+                   authname='anonymous',
+                   perm=MockPerm())
         if not self.context.req:
             self.context.req = self.req = req
         else:
