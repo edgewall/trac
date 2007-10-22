@@ -942,12 +942,11 @@ class TicketModule(Component):
                                     .render_milestone_link(href, milestone,
                                                            milestone)
             elif name == 'cc':
-                self.env.log.debug('Checking MUPPETS %s', context)
+                all_cc = cc_list(ticket[name])
                 if not (Chrome(self.env).show_email_addresses or \
                         'EMAIL_VIEW' in req.perm(context)):
-                    field['rendered'] = ', '.join(
-                        [obfuscate_email_address(cc)
-                         for cc in cc_list(ticket[name])])
+                    all_cc = [obfuscate_email_address(cc) for cc in all_cc]
+                field['rendered'] = ', '.join(all_cc)
                     
             # ensure sane defaults
             field.setdefault('optional', False)
