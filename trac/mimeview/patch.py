@@ -183,11 +183,14 @@ class PatchRenderer(Component):
                         if (command == ' ') != last_type:
                             last_type = command == ' '
                             kind = last_type and 'unmod' or 'mod'
-                            blocks.append({'type': kind,
-                                           'base': {'offset': fromline - 1,
-                                                    'lines': []},
-                                           'changed': {'offset': toline - 1,
-                                                       'lines': []}})
+                            block = {'type': kind,
+                                     'base': {'offset': fromline - 1,
+                                              'lines': []},
+                                     'changed': {'offset': toline - 1,
+                                                 'lines': []}}
+                            blocks.append(block)
+                        else:
+                            block = blocks[-1]
                         if command == ' ':
                             sides = ['base', 'changed']
                         elif command == '+':
@@ -197,6 +200,8 @@ class PatchRenderer(Component):
                             last_side = 'base'
                             sides = [last_side]
                         elif command == '\\' and last_side:
+                            meta = block[last_side].setdefault('meta', {})
+                            meta[len(block[last_side]['lines'])] = True
                             sides = [last_side]
                         else:
                             return None
@@ -205,7 +210,7 @@ class PatchRenderer(Component):
                                 fromline += 1
                             else:
                                 toline += 1
-                            blocks[-1][side]['lines'].append(line)
+                            block[side]['lines'].append(line)
                         line = lines.next()
                         extra = line and line[0] == '\\'
         except StopIteration:
@@ -216,7 +221,8 @@ class PatchRenderer(Component):
         for o in changes:
             for group in o['diffs']:
                 for b in group:
-                    f, t = b['base']['lines'], b['changed']['lines']
+                    base, changed = b['base'], b['changed']
+                    f, t = base['lines'], changed['lines']
                     if b['type'] == 'mod':
                         if len(f) == 0:
                             b['type'] = 'add'
@@ -231,6 +237,8 @@ class PatchRenderer(Component):
                                              for seg in line.split('\0')])
                         line = line.replace('\1', '</del>')
                         f[i] = Markup(line)
+                        if 'meta' in base and i in base['meta']:
+                            f[i] = Markup('<em>%s</em>', f[i])
                     for i in xrange(len(t)):
                         line = expandtabs(t[i], tabwidth, '\0\1')
                         line = escape(line, quotes=False)
@@ -238,5 +246,6 @@ class PatchRenderer(Component):
                                              for seg in line.split('\0')])
                         line = line.replace('\1', '</ins>')
                         t[i] = Markup(line)
-
+                        if 'meta' in changed and i in changed['meta']:
+                            t[i] = Markup('<em>%s</em>', t[i])
         return changes
