@@ -81,7 +81,7 @@ function toggleDir(expander, qargs) {
       data: qargs,
       dataType: "html",
       success: function(data) {
-        var rows = $(data).filter("tr");
+        var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
         if (rows.length) {
           // insert entry rows 
           rows.children("td."+td_class).css("padding-left", depth);
