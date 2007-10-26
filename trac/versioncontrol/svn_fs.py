@@ -324,6 +324,9 @@ class SubversionPropertyRenderer(Component):
             if not elements:
                 continue
             localpath, rev, url = elements[0], '', elements[-1]
+            if localpath.startswith('#'):
+                externals.append((external, None, None, None, None))
+                continue
             if len(elements) == 3:
                 rev = elements[1]
                 rev = rev.replace('-r', '')
