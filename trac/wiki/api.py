@@ -112,13 +112,17 @@ class IWikiSyntaxProvider(Interface):
         """
 
 
-def parse_args(args):
+def parse_args(args, strict=True):
     """Utility for parsing macro "content" and splitting them into arguments.
 
     The content is split along commas, unless they are escaped with a
     backquote (like this: \,).
-    Named arguments a la Python are supported, and keys must be  valid python
-    identifiers immediately followed by the "=" sign.
+    
+    :param args: macros arguments, as plain text
+    :param strict: if `True`, only Python-like identifiers will be
+                   recognized as keyword arguments 
+
+    Example usage:
 
     >>> parse_args('')
     ([], {})
@@ -126,15 +130,20 @@ def parse_args(args):
     (['Some text'], {})
     >>> parse_args('Some text, mode= 3, some other arg\, with a comma.')
     (['Some text', ' some other arg, with a comma.'], {'mode': ' 3'})
+    >>> parse_args('milestone=milestone1,status!=closed', strict=False)
+    ([], {'status!': 'closed', 'milestone': 'milestone1'})
     
     """    
     largs, kwargs = [], {}
     if args:
         for arg in re.split(r'(?<!\\),', args):
             arg = arg.replace(r'\,', ',')
-            m = re.match(r'\s*[a-zA-Z_]\w+=', arg)
+            if strict:
+                m = re.match(r'\s*[a-zA-Z_]\w+=', arg)
+            else:
+                m = re.match(r'\s*[^=]+=', arg)
             if m:
-                kwargs[arg[:m.end()-1].lstrip()] = arg[m.end():]
+                kwargs[arg[:m.end()-1].strip()] = arg[m.end():]
             else:
                 largs.append(arg)
     return largs, kwargs

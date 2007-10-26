@@ -863,7 +863,7 @@ class TicketQueryMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         req = formatter.req
         query_string = ''
-        argv, kwargs = parse_args(content)
+        argv, kwargs = parse_args(content, strict=False)
         if len(argv) > 0 and not 'format' in kwargs: # 0.10 compatibility hack
             kwargs['format'] = argv[0]
 
