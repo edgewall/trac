@@ -34,7 +34,8 @@ from trac.util.compat import set
 from trac.wiki.api import WikiSystem
 from trac.wiki.parser import WikiParser
 from trac.util.html import escape, plaintext, Markup, Element, html
-from trac.util.text import shorten_line, to_unicode
+from trac.util.text import shorten_line, to_unicode, \
+                           unicode_quote, unicode_quote_plus
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'wiki_to_link', 'Formatter',
@@ -356,9 +357,9 @@ class Formatter(object):
                 if sep != -1:
                     url = '%s/%s/%s' % (url, target[:sep], target[sep + 1:])
                 else: 
-                    url = '%s/search?q=%s' % (url, urllib.quote_plus(target))
+                    url = '%s/search?q=%s' % (url, unicode_quote_plus(target))
             else:
-                url = '%s/intertrac/%s' % (url, urllib.quote(target))
+                url = '%s/intertrac/%s' % (url, unicode_quote(target))
             return self._make_ext_link(url, label, '%s in %s' % (target, name))
         else:
             return None

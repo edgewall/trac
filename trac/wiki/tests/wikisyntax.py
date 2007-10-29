@@ -218,12 +218,14 @@ t:wiki:InterTrac
 trac:wiki:InterTrac
 [t:wiki:InterTrac intertrac]
 [trac:wiki:InterTrac intertrac]
+[trac:wiki:JonasBorgström jonas]
 ------------------------------
 <p>
 <a class="ext-link" href="http://trac.edgewall.org/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">t:wiki:InterTrac</span></a>
 <a class="ext-link" href="http://trac.edgewall.org/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">trac:wiki:InterTrac</span></a>
 <a class="ext-link" href="http://trac.edgewall.org/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
 <a class="ext-link" href="http://trac.edgewall.org/wiki/InterTrac" title="wiki:InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/wiki/JonasBorgström" title="wiki:JonasBorgström in Trac's Trac"><span class="icon">jonas</span></a>
 </p>
 ------------------------------
 ============================== Wiki InterTrac shorthands
