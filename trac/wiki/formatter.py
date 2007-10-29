@@ -874,7 +874,7 @@ class OneLinerFormatter(Formatter):
                         processor = line[2:].strip()
             else:
                 buf.write(line + os.linesep)
-        result = buf.getvalue()[:-1]
+        result = buf.getvalue()[:-len(os.linesep)]
 
         if shorten:
             result = shorten_line(result)
