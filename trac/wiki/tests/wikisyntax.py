@@ -233,12 +233,14 @@ t:InterTrac
 trac:InterTrac
 [t:InterTrac intertrac]
 [trac:InterTrac intertrac]
+[trac:JonasBorgström jonas]
 ------------------------------
 <p>
 <a class="ext-link" href="http://trac.edgewall.org/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">t:InterTrac</span></a>
 <a class="ext-link" href="http://trac.edgewall.org/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">trac:InterTrac</span></a>
 <a class="ext-link" href="http://trac.edgewall.org/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
 <a class="ext-link" href="http://trac.edgewall.org/search?q=InterTrac" title="InterTrac in Trac's Trac"><span class="icon">intertrac</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/search?q=JonasBorgstr%C3%B6m" title="JonasBorgström in Trac's Trac"><span class="icon">jonas</span></a>
 </p>
 ------------------------------
 ============================== InterWiki links
