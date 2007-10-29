@@ -106,9 +106,9 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
         format = '%Y-%m-%dT%H:%M:%SZ%z'
     text = t.strftime(format)
     encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
-    if sys.platform != 'win32':
+    if sys.platform != 'win32' or sys.version_info[:2] > (2, 3):
         encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
-        # the above is broken on win32, e.g. we'd get '437' instead of 'cp437'
+        # Python 2.3 on windows doesn't know about 'XYZ' alias for 'cpXYZ'
     return unicode(text, encoding, 'replace')
 
 def format_date(t=None, format='%x', tzinfo=None):
