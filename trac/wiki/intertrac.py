@@ -16,10 +16,11 @@
 
 import re
 
+from genshi.builder import Element, tag
+
 from trac.context import Context
 from trac.core import *
 from trac.util import sorted
-from trac.util.html import Element, html
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
 from trac.wiki.formatter import extract_link
@@ -73,16 +74,16 @@ class InterTracDispatcher(Component):
         def generate_prefix(prefix):
             intertrac = intertracs[prefix]
             if isinstance(intertrac, basestring):
-                yield html.TR(html.TD(html.B(prefix)),
-                              html.TD('Alias for ', html.B(intertrac)))
+                yield tag.tr(tag.td(tag.b(prefix)),
+                             tag.td('Alias for ', tag.b(intertrac)))
             else:
                 url = intertrac.get('url', '')
                 if url:
                     title = intertrac.get('title', url)
-                    yield html.TR(html.TD(html.A(html.B(prefix),
-                                                 href=url + '/timeline')),
-                                  html.TD(html.A(title, href=url)))
+                    yield tag.tr(tag.td(tag.a(tag.b(prefix),
+                                              href=url + '/timeline')),
+                                 tag.td(tag.a(title, href=url)))
 
-        return html.TABLE(class_="wiki intertrac")(
-            html.TR(html.TH(html.EM('Prefix')), html.TH(html.EM('Trac Site'))),
+        return tag.table(class_="wiki intertrac")(
+            tag.tr(tag.th(tag.em('Prefix')), tag.th(tag.em('Trac Site'))),
             [generate_prefix(p) for p in sorted(intertracs.keys())])
