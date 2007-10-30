@@ -37,7 +37,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr py:for="idx, item in enumerate(history)" class="idx % 2 and 'odd' or 'even'">
+            <tr py:for="idx, item in enumerate(history)" class="${idx % 2 and 'odd' or 'even'}">
               <td class="diff">
                 <input type="radio" name="old_version" value="$item.version"
                        checked="${idx == 1 or None}" />
