@@ -523,15 +523,18 @@ class TracGuideTocMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, args):
         curpage = formatter.context.id
 
-        # Provision for multilingual TOC (e.g. TranslateRu/TracGuide ...)
-        lang = ''
+        # scoped TOC (e.g. TranslateRu/TracGuide or 0.11/TracGuide ...)
+        prefix = ''
         idx = curpage.find('/')
         if idx > 0:
-            lang = curpage[:idx+1]
+            prefix = curpage[:idx+1]
             
-        return tag.div(tag.h4(_('Table of Contents')),
-                       tag.ul([tag.li(tag.a(title,
-                                            href=formatter.href.wiki(lang+ref)),
-                                      class_=(ref == curpage and "active"))
-                               for ref, title in self.TOC]),
-                       class_="wiki-toc")
+        ws = WikiSystem(self.env)
+        return tag.div(
+            tag.h4(_('Table of Contents')),
+            tag.ul([tag.li(tag.a(title, href=formatter.href.wiki(prefix+ref),
+                                 class_=(not ws.has_page(prefix+ref) and
+                                         "missing")),
+                           class_=(prefix+ref == curpage and "active"))
+                    for ref, title in self.TOC]),
+            class_="wiki-toc")
