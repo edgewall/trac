@@ -134,6 +134,11 @@ class TicketModule(Component):
 
     def match_request(self, req):
         if re.match(r'/newticket/?$', req.path_info) is not None:
+            if req.method != 'POST':
+                for k in req.args.keys():
+                    if not k.startswith('__'):
+                        req.args['field_'+k] = req.args[k]
+                        del req.args[k]
             return True
         match = re.match(r'/ticket/([0-9]+)$', req.path_info)
         if match:
