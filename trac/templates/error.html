@@ -44,7 +44,7 @@
   </head>
 
   <py:def function="create_ticket(teo=False)">
-    <input type="hidden" name="preview" value="1" />
+    <input type="hidden" name="__preview" value="1" />
     <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
     <input py:if="teo" type="hidden" name="version"
            value="${'dev' in trac.version and 'devel' or trac.version}" />
