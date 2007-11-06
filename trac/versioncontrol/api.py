@@ -88,7 +88,6 @@ class RepositoryManager(Component):
     # Public API methods
 
     def get_repository(self, authname):
-        db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
             if not self._connector:
