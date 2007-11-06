@@ -446,11 +446,6 @@ def dispatch_request(environ, start_response):
                     'traceback': traceback, 'frames': frames,
                     'shorten_line': shorten_line}
 
-            try: # clear chrome data is already set
-                del req.chrome
-            except AttributeError:
-                pass
-
             try:
                 req.send_error(exc_info, status=500, env=env, data=data)
             except RequestDone:
