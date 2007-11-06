@@ -57,6 +57,7 @@ from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.util import sorted, embedded_numbers, reversed
 from trac.util.text import to_unicode
+from trac.util.translation import _
 from trac.util.datefmt import utc
 
 
@@ -348,13 +349,21 @@ class SubversionPropertyRenderer(Component):
                                   href % {'path': remotepath, 'rev': rev}))
             else:
                 externals.append((localpath, revstr, url, None, None))
-        return tag.ul([tag.li(tag.a(localpath + (not href and '%s in %s' %
-                                                 (rev, url) or ''),
-                                    href=href,
-                                    title=href and ('%s%s in %s repository' %
-                                                    (remotepath, rev, url)) or
-                                    'No svn:externals configured in trac.ini'))
-                       for localpath, rev, url, remotepath, href in externals])
+        externals_data = []
+        for localpath, rev, url, remotepath, href in externals:
+            label = localpath
+            if url is None:
+                title = ''
+            elif href:
+                if url:
+                    url = ' in ' + url
+                label += rev + url
+                title = ''.join((remotepath, rev, url))
+            else:
+                title = _('No svn:externals configured in trac.ini')
+            externals_data.append((label, href, title))
+        return tag.ul([tag.li(tag.a(label, href=href, title=title))
+                       for label, href, title in externals_data])
 
     def _render_needslock(self, context):
         return tag.img(src=context.href.chrome('common/lock-locked.png'),
