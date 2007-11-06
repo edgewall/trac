@@ -153,41 +153,45 @@ class RequestDispatcher(Component):
             'form_token': self._get_form_token
         })
 
-        # Select the component that should handle the request
-        chosen_handler = None
-        try:
-            for handler in self.handlers:
-                if handler.match_request(req):
-                    chosen_handler = handler
-                    break
-            if not chosen_handler:
-                if not req.path_info or req.path_info == '/':
-                    chosen_handler = self.default_handler
-            chosen_handler = self._pre_process_request(req, chosen_handler)
-        except TracError, e:
-            raise HTTPInternalError(e)
-        if not chosen_handler:
-            raise HTTPNotFound('No handler matched request to %s',
-                               req.path_info)
-
-        req.callbacks['chrome'] = partial(chrome.prepare_request,
-                                          handler=chosen_handler)
-
-        # Protect against CSRF attacks: we validate the form token for all POST
-        # requests with a content-type corresponding to form submissions
-        if req.method == 'POST':
-            ctype = req.get_header('Content-Type')
-            if ctype:
-                ctype, options = cgi.parse_header(ctype)
-            if ctype in ('application/x-www-form-urlencoded',
-                         'multipart/form-data') and \
-                    req.args.get('__FORM_TOKEN') != req.form_token:
-                raise HTTPBadRequest('Missing or invalid form token. '
-                                     'Do you have cookies enabled?')
-
-        # Process the request and render the template
         try:
             try:
+                # Select the component that should handle the request
+                chosen_handler = None
+                try:
+                    for handler in self.handlers:
+                        if handler.match_request(req):
+                            chosen_handler = handler
+                            break
+                    if not chosen_handler:
+                        if not req.path_info or req.path_info == '/':
+                            chosen_handler = self.default_handler
+                    # pre-process any incoming request, whether a handler
+                    # was found or not
+                    chosen_handler = self._pre_process_request(req,
+                                                               chosen_handler)
+                except TracError, e:
+                    raise HTTPInternalError(e)
+                if not chosen_handler:
+                    raise HTTPNotFound('No handler matched request to %s',
+                                       req.path_info)
+
+                req.callbacks['chrome'] = partial(chrome.prepare_request,
+                                                  handler=chosen_handler)
+
+                # Protect against CSRF attacks: we validate the form token for
+                # all POST requests with a content-type corresponding to form
+                # submissions
+                if req.method == 'POST':
+                    ctype = req.get_header('Content-Type')
+                    if ctype:
+                        ctype, options = cgi.parse_header(ctype)
+                    if ctype in ('application/x-www-form-urlencoded',
+                                 'multipart/form-data') and \
+                            req.args.get('__FORM_TOKEN') != req.form_token:
+                        raise HTTPBadRequest('Missing or invalid form token. '
+                                             'Do you have cookies enabled?')
+
+                # Process the request and render the template
                 resp = chosen_handler.process_request(req)
                 if resp:
                     if len(resp) == 2: # Clearsilver
@@ -221,6 +225,7 @@ class RequestDispatcher(Component):
             except RequestDone:
                 raise
             except:
+                # post-process the request in case of errors
                 err = sys.exc_info()
                 try:
                     self._post_process_request(req)
