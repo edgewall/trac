@@ -377,19 +377,16 @@ def dispatch_request(environ, start_response):
         env_error = e
 
     req = Request(environ, start_response)
+    resp = []
     try:
         if not env and env_error:
             raise HTTPInternalError(env_error)
         try:
-            try:
-                dispatcher = RequestDispatcher(env)
-                dispatcher.dispatch(req)
-            except RequestDone:
-                pass
-            return req._response or []
-        finally:
-            if not run_once:
-                env.shutdown(threading._get_ident())
+            dispatcher = RequestDispatcher(env)
+            dispatcher.dispatch(req)
+        except RequestDone:
+            pass
+        resp = req._response or []
 
     except HTTPException, e:
         if env:
@@ -405,7 +402,7 @@ def dispatch_request(environ, start_response):
         try:
             req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
         except RequestDone:
-            return []
+            pass
 
     except Exception, e:
         if env:
@@ -449,10 +446,14 @@ def dispatch_request(environ, start_response):
             try:
                 req.send_error(exc_info, status=500, env=env, data=data)
             except RequestDone:
-                return []
+                pass
 
         finally:
             del exc_info
+            
+    if not run_once:
+        env.shutdown(threading._get_ident())
+    return resp
 
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
