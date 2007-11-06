@@ -88,23 +88,24 @@ class RepositoryManager(Component):
     # Public API methods
 
     def get_repository(self, authname):
-        if not self._connector:
-            candidates = [
-                (prio, connector)
-                for connector in self.connectors
-                for repos_type, prio in connector.get_supported_types()
-                if repos_type == self.repository_type
-            ]
-            if candidates:
-                self._connector = max(candidates)[1]
-            else:
-                raise TracError(_('Unsupported version control system '
-                                  '"%(name)s". Check that the Python bindings '
-                                  'for "%(name)s" are correctly installed.',
-                                  name=self.repository_type))
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
+            if not self._connector:
+                candidates = [
+                    (prio, connector)
+                    for connector in self.connectors
+                    for repos_type, prio in connector.get_supported_types()
+                    if repos_type == self.repository_type
+                ]
+                if candidates:
+                    self._connector = max(candidates)[1]
+                else:
+                    raise TracError(
+                        _('Unsupported version control system "%(name)s". '
+                          'Check that the Python support libraries for '
+                          '"%(name)s" are correctly installed.',
+                          name=self.repository_type))
             tid = threading._get_ident()
             if tid in self._cache:
                 repos = self._cache[tid]
