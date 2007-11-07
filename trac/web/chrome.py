@@ -590,6 +590,7 @@ class Chrome(Component):
                 stream |= self._strip_accesskeys
 
         links = req.chrome.get('links')
+        scripts = req.chrome.get('scripts')
         req.chrome['links'] = {}
         req.chrome['scripts'] = []
         data.setdefault('chrome', {}).update({
@@ -602,6 +603,7 @@ class Chrome(Component):
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links
+            req.chrome['scripts'] = scripts
             raise
 
     def format_author(self, req, author):
