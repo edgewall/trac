@@ -306,6 +306,19 @@ http://example.com/img.png?foo=bar
 <i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</span></a></i>
 </p>
 ------------------------------
+============================== Generic InterTrac links
+th:roadmap
+th:roadmap:
+[th:]
+[th: Trac Hacks]
+------------------------------
+<p>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon">th:roadmap</span></a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon">th:roadmap</span></a>:
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon">th</span></a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon">Trac Hacks</span></a>
+</p>
+------------------------------
 ============================== Another arbitrary protocol Link
 svn+ssh://secureserver.org
 [svn+ssh://secureserver.org SVN link]

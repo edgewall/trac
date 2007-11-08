@@ -360,7 +360,11 @@ class Formatter(object):
                     url = '%s/search?q=%s' % (url, unicode_quote_plus(target))
             else:
                 url = '%s/intertrac/%s' % (url, unicode_quote(target))
-            return self._make_ext_link(url, label, '%s in %s' % (target, name))
+            if target:
+                title = '%s in %s' % (target, name)
+            else:
+                title = name
+            return self._make_ext_link(url, label, title)
         else:
             return None
 

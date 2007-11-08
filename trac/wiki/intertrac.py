@@ -42,15 +42,12 @@ class InterTracDispatcher(Component):
 
     def process_request(self, req):
         link = req.args.get('link', '')
-        if not link:
-            raise TracError('No TracLinks given')
         link_elt = extract_link(Context(self.env, req), link)
         if isinstance(link_elt, Element):
             href = link_elt.attrib.get('href')
-            if href:
-                req.redirect(href)
-        raise TracError('"%s" is not a TracLinks' % link)
-
+        else:
+            href = req.href(link)
+        req.redirect(href)
 
     # IWikiMacroProvider methods
 

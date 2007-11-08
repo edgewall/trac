@@ -118,6 +118,10 @@ class WikiTestCase(unittest.TestCase):
         self.env.config.set('intertrac', 'trac.url',
                             "http://trac.edgewall.org")
         self.env.config.set('intertrac', 't', 'trac')
+        self.env.config.set('intertrac', 'th.title', "Trac Hacks")
+        self.env.config.set('intertrac', 'th.url',
+                            "http://trac-hacks.org")
+        self.env.config.set('intertrac', 'th.compat', 'false')
 
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
