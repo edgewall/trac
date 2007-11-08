@@ -27,6 +27,10 @@
           }
           return false;
         });
+       /* Only activate interactive view if Javascript is enabled */
+       $("#traceback ul").show();
+       $("#traceback pre").hide();
+       $("#tbtoggle").parent().show();
 
        var descr = $("#description").text();
        descr = descr.replace(/==== System Information ====\s+/m,
@@ -135,7 +139,7 @@ ${traceback}
                 <h2>Python Traceback</h2>
                 <div id="traceback">
                   Most recent call last:
-                  <ul>
+                  <ul style="display: none">
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
                       <a href="#frame${idx}" id="frame${idx}">
                         <span class="file">File "${frame.filename}",
@@ -165,10 +169,10 @@ ${traceback}
                       </div>
                     </li>
                   </ul>
-                  <pre style="display: none"><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}<py:if test="frame.line">
+                  <pre><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}<py:if test="frame.line">
   ${frame.line.lstrip()}
 </py:if></py:for></pre>
-                  <p><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
+                  <p style="display: none"><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
                 </div>
               </py:if>
               <h2>System Information:</h2>
