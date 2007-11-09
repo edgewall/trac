@@ -23,8 +23,8 @@ import time
 from datetime import date, datetime
 
 from trac.attachment import Attachment
-from trac.context import ResourceNotFound
 from trac.core import TracError
+from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import utc, utcmax, to_timestamp
@@ -35,8 +35,9 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
 
 class Ticket(object):
 
-    def __init__(self, env, tkt_id=None, db=None):
+    def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
+        self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.values = {}
         if tkt_id is not None:
@@ -581,6 +582,10 @@ class Milestone(object):
             self.due = self.completed = None
             self.description = ''
 
+    def _get_resource(self):
+        return Resource('milestone', self.name) ### .version !!!
+    resource = property(_get_resource)
+
     def _fetch(self, name, db=None):
         if not db:
             db = self.env.get_db_cnx()
@@ -591,10 +596,12 @@ class Milestone(object):
         if not row:
             raise ResourceNotFound('Milestone %s does not exist.' % name,
                                    'Invalid Milestone Name')
-        self.name = row[0]
-        self.due = row[1] and datetime.fromtimestamp(int(row[1]), utc) or None
-        self.completed = row[2] and datetime.fromtimestamp(int(row[2]), utc) or None
-        self.description = row[3] or ''
+        name, due, completed, description = row
+        self.name = name
+        self.due = due and datetime.fromtimestamp(int(due), utc) or None
+        self.completed = completed and \
+                         datetime.fromtimestamp(int(completed), utc) or None
+        self.description = description or ''
 
     exists = property(fget=lambda self: self._old_name is not None)
     is_completed = property(fget=lambda self: self.completed is not None)

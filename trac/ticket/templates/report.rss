@@ -30,13 +30,13 @@
               <title>#$row.id: $cell.value</title>
             </py:when>
             <py:when test="col == 'description'">
-              <description>${unicode(wiki_to_html(row.context, cell.value, abs_urls=True))}</description>
+              <description>${unicode(wiki_to_html(row.context, cell.value, href=abs_href))}</description>
             </py:when>
           </py:choose>
         </py:with>
       </py:for>
-      <link py:if="row.id">${row.context.get_href(abs_href)}</link>
-      <guid isPermaLink="false" py:if="row.id">${row.context.get_href(abs_href)}</guid>
+      <link py:if="row.id">${abs_url_of(row.resource)}</link>
+      <guid isPermaLink="false" py:if="row.id">${abs_url_of(row.resource)}</guid>
       <category>Report</category>
     </item>
 

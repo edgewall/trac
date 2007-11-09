@@ -20,6 +20,7 @@ import time
 from datetime import datetime
 
 from trac.core import *
+from trac.resource import Resource
 from trac.util.datefmt import utc, to_timestamp
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem
@@ -30,9 +31,15 @@ class WikiPage(object):
 
     realm = 'wiki'
 
-    def __init__(self, env, name=None, version=None, db=None):
+    def __init__(self, env, name_or_resource=None, version=None, db=None):
         self.env = env
-        self.id = self.name = name
+        if isinstance(name_or_resource, Resource):
+            self.resource = name_or_resource
+            name = self.resource.id
+        else:
+            self.resource = Resource('wiki', name_or_resource, version)
+            name = name_or_resource
+        self.name = name
         if name:
             self._fetch(name, version, db)
         else:

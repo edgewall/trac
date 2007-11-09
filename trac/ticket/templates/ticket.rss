@@ -3,10 +3,10 @@
                    xmlns:dc="http://purl.org/dc/elements/1.1/"
                    xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.rss" />
-  <channel py:with="abs_context = context(abs_urls=True)">
+  <channel>
     <title>${project.name}: Ticket #${ticket.id}</title>
     <link>${abs_href.ticket(ticket.id)}</link>
-    <description>${unicode(wiki_to_html(abs_context, ticket.description))}</description>
+    <description>${unicode(wiki_to_html(context, ticket.description))}</description>
     <language>en-us</language>
     <image py:if="'src' in chrome.logo">
       <title>$project.name</title>
@@ -42,7 +42,7 @@
           </py:for>
           &lt;/ul&gt;
         </py:if>
-        ${unicode(wiki_to_html(abs_context, change.comment))}
+        ${unicode(wiki_to_html(context, change.comment))}
       </description>
       <category>Ticket</category>
     </item>

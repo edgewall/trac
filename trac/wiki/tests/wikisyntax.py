@@ -3,12 +3,7 @@
 from datetime import datetime
 import unittest
 
-from trac.context import Context
-from trac.wiki.api import WikiContext
-from trac.test import Mock
 from trac.util.datefmt import utc
-from trac.web.href import Href
-from trac.wiki.api import WikiSystem
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
@@ -286,8 +281,8 @@ RELATIVE_LINKS_TESTS=u"""
 [/ Project]
 ------------------------------
 <p>
-<a href="/trac/newticket?priority=high">bug</a>
-<a href="/trac">Project</a>
+<a href="/newticket?priority=high">bug</a>
+<a href="">Project</a>
 </p>
 ------------------------------
 ============================== Relative to the current page
@@ -296,9 +291,9 @@ RELATIVE_LINKS_TESTS=u"""
 [../Other see other]
 ------------------------------
 <p>
-<a href="/trac/wiki/Main/Sub/Detail">see detail</a>
-<a href="/trac/wiki/Main">see parent</a>
-<a href="/trac/wiki/Main/Other">see other</a>
+<a href="/wiki/Main/Sub/Detail">see detail</a>
+<a href="/wiki/Main">see parent</a>
+<a href="/wiki/Main/Other">see other</a>
 </p>
 ------------------------------
 ============================== Relative to the current page with anchors
@@ -312,14 +307,14 @@ RELATIVE_LINKS_TESTS=u"""
 [../Other/#topic see other]
 ------------------------------
 <p>
-<a href="/trac/wiki/Main/Sub#topic">see topic</a>
-<a href="/trac/wiki/Main/Sub#topic">see topic</a>
-<a href="/trac/wiki/Main/Sub#topic">see topic</a>
-<a href="/trac/wiki/Main/Sub/Detail#topic">see detail</a>
-<a href="/trac/wiki/Main#topic">see parent</a>
-<a href="/trac/wiki/Main#topic">see parent</a>
-<a href="/trac/wiki/Main/Other#topic">see other</a>
-<a href="/trac/wiki/Main/Other#topic">see other</a>
+<a href="/wiki/Main/Sub#topic">see topic</a>
+<a href="/wiki/Main/Sub#topic">see topic</a>
+<a href="/wiki/Main/Sub#topic">see topic</a>
+<a href="/wiki/Main/Sub/Detail#topic">see detail</a>
+<a href="/wiki/Main#topic">see parent</a>
+<a href="/wiki/Main#topic">see parent</a>
+<a href="/wiki/Main/Other#topic">see other</a>
+<a href="/wiki/Main/Other#topic">see other</a>
 </p>
 ------------------------------
 """ # "
@@ -363,16 +358,8 @@ nolink          http://noweb
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__))
-    env = Mock()
-    req = Mock(href=Href('/trac'),
-               abs_href=Href('http://www.example.com/'),
-               authname='anonymous')
-    context = WikiContext(env, req)
-    # Purely so we don't have to have a complete env with registered context
-    # providers
-    context._populate('wiki', 'Main/Sub')
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
-                                  context=context))
+                                  context=('wiki', 'Main/Sub')))
     return suite
 
 if __name__ == '__main__':

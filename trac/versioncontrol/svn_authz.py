@@ -70,6 +70,7 @@ class RealSubversionAuthorizer(Authorizer):
     replace `has_permission(path)` when resource is a `('source', path)`
     and `has_permission_for_changeset` when resource is a `('changeset', rev)`.
     """
+
     auth_name = ''
     module_name = ''
     conf_authz = None

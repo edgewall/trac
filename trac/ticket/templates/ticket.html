@@ -11,7 +11,7 @@
     <title>
       <py:choose>
         <py:when test="ticket.exists">
-          #${ticket.id} (${ticket.summary})
+          #${ticket.id} (ticket.summary)
         </py:when>
         <py:otherwise>
           New Ticket
@@ -137,7 +137,7 @@
             <p py:if="not ticket.exists"><i>(future ticket)</i></p>
           </div>
           <!-- use a placeholder if it's a new ticket -->
-          <h2 class="summary searchable">${ticket.summary}</h2>
+          <h2 class="summary searchable">$ticket.summary</h2>
 
           <table class="properties"
                  py:with="fields = [f for f in fields if not f.skip]">
@@ -180,7 +180,7 @@
               </h3>
 
               <!--! Clone the ticket (only for existing tickets) -->
-              <form py:if="ticket.exists and 'TICKET_ADMIN' in req.perm(context)" method="post" action="${href.newticket()}">
+              <form py:if="ticket.exists and 'TICKET_ADMIN' in perm(ticket.resource)" method="post" action="${href.newticket()}">
                 <div class="inlinebuttons">
                   <input type="submit" name="clone" value="Clone" title="Create a copy of this ticket"  />
                   <py:for each="f in fields">
@@ -194,7 +194,8 @@
               </form>
 
               <!--! Quote the description (only for existing tickets) -->
-              <form py:if="ticket.exists and ticket.description and 'TICKET_APPEND' in perm(context)"
+              <form py:if="ticket.exists and ticket.description and
+                           'TICKET_APPEND' in perm(ticket.resource)"
                 method="get" action="#comment">
                 <div class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
@@ -238,7 +239,7 @@
                   </span>
                   Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
                 </h3>
-                <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(context)" class="inlinebuttons">
+                <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(ticket.resource)" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
                   <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                 </div>
@@ -250,10 +251,13 @@
       </py:if>
       <!--! End of the section we don't show on initial new tickets -->
 
-      <form py:if="not version and version != 0 and ('TICKET_APPEND' in perm(context) or 'TICKET_CHGPROP' in perm(context) or ('TICKET_CREATE' in perm(context) and not ticket.id))"
+      <form py:if="not version and version != 0 and
+                   ('TICKET_APPEND' in perm(ticket.resource) or
+                    'TICKET_CHGPROP' in perm(ticket.resource) or
+                    ('TICKET_CREATE' in perm(ticket.resource) and not ticket.id))"
             action="#preview" method="post">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
-            Add/Change #${ticket.id} (${ticket.summary})</a></h3>
+            Add/Change #${ticket.id} ($ticket.summary)</a></h3>
         <div py:if="authname == 'anonymous'" class="field">
           <fieldset>
             <legend>${ticket.exists and 'Author' or 'Reporter'}</legend>
@@ -282,7 +286,8 @@ ${comment}</textarea></p>
         </div>
 
         <fieldset id="properties"
-                  py:if="'TICKET_CHGPROP' in req.perm(context) or (not ticket.exists and 'TICKET_CREATE' in req.perm(context))"
+                  py:if="'TICKET_CHGPROP' in perm(ticket.resource) or
+                         (not ticket.exists and 'TICKET_CREATE' in perm)"
                   py:with="fields = [f for f in fields if not f.skip]">
           <legend>${ticket.exists and 'Change ' or ''}Properties</legend>
           <table>
@@ -290,10 +295,10 @@ ${comment}</textarea></p>
               <th><label for="field-summary">Summary:</label></th>
               <td class="fullrow" colspan="3">
                 <input type="text" id="field-summary" name="field_summary"
-                       value="${ticket.summary}" size="70" />
+                       value="$ticket.summary" size="70" />
               </td>
             </tr>
-            <py:if test="'TICKET_ADMIN' in perm(context)">
+            <py:if test="'TICKET_ADMIN' in perm(ticket.resource)">
               <tr>
                 <th><label for="field-reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">
@@ -302,7 +307,7 @@ ${comment}</textarea></p>
                 </td>
               </tr>
             </py:if>
-            <py:if test="'TICKET_ADMIN' in perm(context) or not ticket.exists">
+            <py:if test="'TICKET_ADMIN' in perm(ticket.resource) or not ticket.exists">
               <tr>
                 <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">
@@ -365,7 +370,7 @@ ${comment}</textarea></p>
           </fieldset>
         </py:if>
 
-        <p py:if="not ticket.exists and 'ATTACHMENT_CREATE' in req.perm(context('attachment'))">
+        <p py:if="not ticket.exists and 'ATTACHMENT_CREATE' in perm(ticket.resource)">
           <label>
             <input type="checkbox" name="attachment" checked="${'attachment' in req.args or None}" />
             I have files to attach to this ticket

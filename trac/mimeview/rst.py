@@ -59,7 +59,7 @@ class ReStructuredTextRenderer(Component):
 
         def trac_get_reference(rawtext, target, text):
             fulltext = text and target+' '+text or target
-            link = extract_link(context, fulltext)
+            link = extract_link(self.env, context, fulltext)
             uri = None
             missing = False
             if isinstance(link, Element):

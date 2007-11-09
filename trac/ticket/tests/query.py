@@ -1,7 +1,8 @@
-from trac.context import Context
 from trac.log import logger_factory
-from trac.test import Mock, EnvironmentStub
+from trac.mimeview import Context
+from trac.test import Mock, EnvironmentStub, MockPerm
 from trac.ticket.query import Query, QueryModule
+from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
 
 import unittest
@@ -332,9 +333,11 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 
     def test_csv_escape(self):
         query = Mock(get_columns=lambda: ['col1'],
-                     execute=lambda r,c: [{'col1': 'value, needs escaped'}])
+                     execute=lambda r,c: [{'id': 1,
+                                           'col1': 'value, needs escaped'}])
         content, mimetype = QueryModule(self.env).export_csv(
-                                Mock(href=self.env.href), query)
+                                Mock(href=self.env.href, perm=MockPerm()),
+                                query)
         self.assertEqual('col1\r\n"value, needs escaped"\r\n',
                          content)
 
@@ -343,7 +346,8 @@ class QueryLinksTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.query_module = QueryModule(self.env)
-        self.formatter = LinkFormatter(Context(self.env, None))
+        req = Mock(perm=MockPerm(), args={}, href=Href('/'))
+        self.formatter = LinkFormatter(self.env, Context.from_request(req))
 
     def _format_link(self, query, label):
         return str(self.query_module._format_link(self.formatter, 'query',

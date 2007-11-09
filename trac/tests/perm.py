@@ -179,7 +179,7 @@ class TestPermissionPolicy(Component):
     def revoke(self, username, permissions):
         self.allowed.setdefault(username, set()).difference_update(permissions)
 
-    def check_permission(self, username, action, context):
+    def check_permission(self, action, username, resource, perm):
         result = action in self.allowed.get(username, set()) or None
         self.results[(username, action)] = result
         return result

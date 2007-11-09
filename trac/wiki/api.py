@@ -25,11 +25,14 @@ import urllib
 import re
 from StringIO import StringIO
 
+from genshi.builder import tag
+
 from trac.config import BoolOption
-from trac.context import IContextProvider, Context
 from trac.core import *
+from trac.resource import IResourceManager
 from trac.util import reversed, pairwise
 from trac.util.html import html
+from trac.util.translation import _
 from trac.wiki.parser import WikiParser
 
 
@@ -149,44 +152,11 @@ def parse_args(args, strict=True):
     return largs, kwargs
 
 
-class WikiContext(Context):
-    """Wiki Context."""
-
-    realm = 'wiki'
-
-    # methods reimplemented from Context
-
-    def set_resource(self, resource):
-        if resource:
-            self.version = resource.version
-
-    def get_resource(self):
-        from trac.wiki.model import WikiPage
-        return WikiPage(self.env, self.id, self.version, self.db)
-
-    def resource_href(self, path=None, **kwargs):
-        """
-        >>> from trac.test import EnvironmentStub
-        >>> c = Context(EnvironmentStub(), None)
-
-        >>> c('wiki', 'Main', version=3).resource_href()
-        '/trac.cgi/wiki/Main?version=3'
-
-        >>> c('wiki', 'Main', version=3).resource_href(action='diff')
-        '/trac.cgi/wiki/Main?action=diff&version=3'
-        """
-        if self.version is not None and 'version' not in kwargs:
-            kwargs['version'] = self.version
-        return Context.resource_href(self, path, **kwargs)
-
-    def name(self):
-        return WikiSystem(self.env).format_page_name(self.id)
-
 
 class WikiSystem(Component):
     """Represents the wiki system."""
 
-    implements(IWikiChangeListener, IWikiSyntaxProvider, IContextProvider)
+    implements(IWikiChangeListener, IWikiSyntaxProvider, IResourceManager)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
@@ -341,29 +311,50 @@ class WikiSystem(Component):
             return self._format_link(formatter, ns, target, label, False)
         yield ('wiki', link_resolver)
 
-    def _format_link(self, formatter, ns, page, label, ignore_missing):
-        page, query, fragment = formatter.split_link(page)
+    def _format_link(self, formatter, ns, pagename, label, ignore_missing):
+        pagename, query, fragment = formatter.split_link(pagename)
         version = None
-        if '@' in page:
-            page, version = page.split('@', 1)
+        if '@' in pagename:
+            pagename, version = pagename.split('@', 1)
         if version and query:
             query = '&' + query[1:]
-        href = formatter.href.wiki(page, version=version) + query + fragment
-        req = formatter.context.req
-        context = Context(self.env, req)('wiki', id=page, version=version)
-        if 'WIKI_VIEW' not in req.perm(context):
-            return html.A(label, href=href, rel='nofollow',
-                          class_='forbidden wiki',
-                          title='WIKI_VIEW required')
-        elif not self.has_page(page): # TODO: check for the version?
-            if ignore_missing:
-                return label
-            return html.A(label+'?', href=href, class_='missing wiki',
-                          rel='nofollow')
+        pagename = pagename.rstrip('/')
+        if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
+            href = formatter.href.wiki(pagename, version=version) + query \
+                   + fragment
+            if self.has_page(pagename):
+                return tag.a(label, href=href, class_='wiki')
+            else:
+                if ignore_missing:
+                    return label
+                return tag.a(label+'?', href=href, class_='missing wiki',
+                             rel='nofollow')
         else:
-            return html.A(label, href=href, class_='wiki', version=version)
+            return tag.span(label, class_='forbidden wiki',
+                            title=_("no permission to view this wiki page"))
 
-    # IContextProvider methods
+    # IResourceManager methods
 
-    def get_context_classes(self):
-        yield WikiContext
+    def get_resource_realms(self):
+        yield 'wiki'
+
+    def get_resource_description(self, resource, format, **kwargs):
+        """
+        >>> from trac.test import EnvironmentStub
+        >>> from trac.resource import Resource, get_resource_description
+        >>> env = EnvironmentStub()
+        >>> main = Resource('wiki', 'WikiStart')
+        >>> get_resource_description(env, main)
+        'WikiStart'
+
+        >>> get_resource_description(env, main(version=3))
+        'WikiStart'
+
+        >>> get_resource_description(env, main(version=3), format='summary')
+        'WikiStart'
+
+        >>> env.config['wiki'].set('split_page_names', 'true')
+        >>> get_resource_description(env, main(version=3))
+        'Wiki Start'
+        """
+        return self.format_page_name(resource.id)

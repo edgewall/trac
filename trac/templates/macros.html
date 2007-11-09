@@ -160,37 +160,33 @@
   -       the wiki view) and an expanded list (e.g. as used for the ticket view)
   -->
   <py:def function="list_of_attachments(alist, compact=False)">
-    <py:def function="show_one_attachment(ctx)">
-      <py:with vars="attachment = ctx.resource">
-        <a href="${ctx.get_href(href)}" title="View attachment">$attachment.filename</a>
-        (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
-        ${dateinfo(attachment.date)} ago.
-      </py:with>
+    <py:def function="show_one_attachment(attachment)">
+      <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
+      (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
+      ${dateinfo(attachment.date)} ago.
     </py:def>
-    <py:if test="alist.attachments or alist.can_create()">
+    <py:if test="alist.attachments or alist.can_create">
       <py:choose test="">
         <py:when test="compact and alist.attachments">
           <h3>Attachments</h3>
           <ul>
-            <py:for each="ctx in alist.attachments">
-              <li py:if="'ATTACHMENT_VIEW' in perm(ctx)">
-                ${show_one_attachment(ctx)}
-                <q py:if="compact and ctx.resource.description">${wiki_to_oneliner(ctx, ctx.resource.description)}</q>
+            <py:for each="attachment in alist.attachments">
+              <li>
+                ${show_one_attachment(attachment)}
+                <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
               </li>
             </py:for>
           </ul>
         </py:when>
         <py:when test="not compact">
           <h2>Attachments</h2>
-          <div py:if="alist.attachments or alist.can_create()" id="attachments">
+          <div py:if="alist.attachments or alist.can_create" id="attachments">
             <dl py:if="alist.attachments" class="attachments">
-              <py:for each="ctx in alist.attachments">
-                <py:if test="'ATTACHMENT_VIEW' in perm(ctx)">
-                  <dt>${show_one_attachment(ctx)}</dt>
-                  <dd py:if="ctx.resource.description">
-                    ${wiki_to_oneliner(ctx, ctx.resource.description)}
-                  </dd>
-                </py:if>
+              <py:for each="attachment in alist.attachments">
+                <dt>${show_one_attachment(attachment)}</dt>
+                <dd py:if="attachment.description">
+                  ${wiki_to_oneliner(context, attachment.description)}
+                </dd>
               </py:for>
             </dl>
             ${attach_file_form(alist)}
@@ -205,7 +201,7 @@
   -     'alist' is an AttachmentList object (see attachment.py)
   -->
   <py:def function="attach_file_form(alist)">
-    <form py:if="alist.can_create()" method="get" action="${alist.attach_href()}">
+    <form py:if="alist.can_create" method="get" action="${alist.attach_href}">
       <div>
         <input type="hidden" name="action" value="new" />
         <input type="submit" value="${_('Attach file')}" />

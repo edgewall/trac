@@ -126,7 +126,7 @@
             &nbsp;
             </py:when>
             <py:when test="wiki_format_messages">
-              ${wiki_to_html(context, changeset.message, escape_newlines=True)}
+              ${wiki_to_html(context('changeset', changeset.rev), changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise><pre>${changeset.message}</pre></py:otherwise>
           </dd>

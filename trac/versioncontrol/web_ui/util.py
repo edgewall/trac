@@ -21,8 +21,8 @@ import urllib
 
 from genshi.builder import tag
 
-from trac.context import ResourceNotFound 
 from trac.core import TracError
+from trac.resource import ResourceNotFound 
 from trac.util.datefmt import pretty_timedelta
 from trac.util.text import shorten_line
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset

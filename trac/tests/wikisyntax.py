@@ -4,10 +4,7 @@ import tempfile
 import unittest
 
 from trac.attachment import Attachment
-from trac.context import Context
 from trac.search.web_ui import SearchModule
-from trac.test import Mock, EnvironmentStub
-from trac.web.href import Href
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""
@@ -125,8 +122,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(ATTACHMENT_TEST_CASES, file=__file__,
-                                  context=(Context(EnvironmentStub(), None) \
-                                           ('wiki', 'WikiStart')),
+                                  context=('wiki', 'WikiStart'),
                                   setup=attachment_setup,
                                   teardown=attachment_teardown))
     return suite

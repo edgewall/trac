@@ -11,11 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
+import doctest
 import unittest
 from StringIO import StringIO
 
 from trac.core import *
 from trac.test import EnvironmentStub
+from trac.mimeview import api
 from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
                               _group_lines
 from genshi import Stream, Namespace
@@ -210,6 +212,7 @@ class GroupLinesTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(doctest.DocTestSuite(api))
     suite.addTest(unittest.makeSuite(GetMimeTypeTestCase, 'test'))
     suite.addTest(unittest.makeSuite(MimeviewTestCase, 'test'))
     suite.addTest(unittest.makeSuite(GroupLinesTestCase, 'test'))

@@ -22,11 +22,11 @@ from StringIO import StringIO
 
 from genshi.builder import tag
 
-from trac.context import Context
 from trac.core import *
 from trac.db import get_column_names
-from trac.mimeview.api import Mimeview, IContentConverter
+from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.perm import IPermissionRequestor
+from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.util import Ranges
@@ -36,6 +36,7 @@ from trac.util.html import escape, unescape
 from trac.util.text import shorten_line, CRLF
 from trac.util.translation import _
 from trac.web import IRequestHandler
+from trac.web.href import Href
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
@@ -85,6 +86,7 @@ class Query(object):
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
         kw_strs = ['order', 'group', 'limit']
+        kw_arys = ['rows']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         constraints = {}
         cols = []
@@ -112,6 +114,8 @@ class Query(object):
                 field = str(field)
                 if field in kw_strs:
                     kw[field] = processed_values[0]
+                elif field in kw_arys:
+                    kw[field] = processed_values
                 elif field in kw_bools:
                     kw[field] = True
                 elif field == 'col':
@@ -222,8 +226,19 @@ class Query(object):
         cursor.close()
         return results
 
-    def get_href(self, context, id=None, order=None, desc=None, format=None):
-        """Note: this could become the resource_href of the QueryContext"""
+    def get_href(self, href, id=None, order=None, desc=None, format=None):
+        """Create a link corresponding to this query.
+
+        :param href: the `Href` object used to build the URL
+        :param id: optionally set or override the report `id`
+        :param order: optionally override the order parameter of the query
+        :param desc: optionally override the desc parameter
+        :param format: optionally override the format of the query
+
+        Note: `get_resource_url` of a 'query' resource?
+        """
+        if not isinstance(href, Href):
+            href = href.href # compatibility with the `req` of the 0.10 API
         if id is None:
             id = self.id
         if desc is None:
@@ -236,21 +251,21 @@ class Query(object):
         # shorter in the common case where we just want the default columns.
         if cols == self.get_default_columns():
             cols = None
-        return context.href.query(report=id,
-                                  order=order, desc=desc and 1 or None,
-                                  group=self.group or None,
-                                  groupdesc=self.groupdesc and 1 or None,
-                                  col=cols,
-                                  row=self.rows,
-                                  format=format, **self.constraints)
+        return href.query(report=id,
+                          order=order, desc=desc and 1 or None,
+                          group=self.group or None,
+                          groupdesc=self.groupdesc and 1 or None,
+                          col=cols,
+                          row=self.rows,
+                          format=format, **self.constraints)
 
-    def to_string(self, context):
+    def to_string(self):
         """Return a user readable and editable representation of the query.
 
-        Note: for now this is an "exploded" query href, but ideally should be
+        Note: for now, this is an "exploded" query href, but ideally should be
         expressed in TracQuery language.
         """
-        query_string = self.get_href(context)
+        query_string = self.get_href(Href(''))
         if query_string and '?' in query_string:
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
@@ -470,7 +485,7 @@ class Query(object):
 
         headers = [{
             'name': col, 'label': labels.get(col, _('Ticket')),
-            'href': self.get_href(context, order=col,
+            'href': self.get_href(context.href, order=col,
                                   desc=(col == self.order and not self.desc))
         } for col in cols]
 
@@ -516,6 +531,8 @@ class Query(object):
 
         return {'query': self,
                 'context': context,
+                'col': cols,
+                'row': self.rows,
                 'constraints': constraints,
                 'labels': labels,
                 'headers': headers,
@@ -616,19 +633,18 @@ class QueryModule(Component):
                       rows,
                       req.args.get('limit'))
 
-        context = Context(self.env, req)
         if 'update' in req.args:
             # Reset session vars
             for var in ('query_constraints', 'query_time', 'query_tickets'):
                 if var in req.session:
                     del req.session[var]
-            req.redirect(query.get_href(context))
+            req.redirect(query.get_href(req.href))
 
         # Add registered converters
         for conversion in Mimeview(self.env).get_supported_conversions(
                                              'trac.ticket.Query'):
             add_link(req, 'alternate',
-                     query.get_href(context, format=conversion[0]),
+                     query.get_href(req.href, format=conversion[0]),
                      conversion[1], conversion[4], conversion[0])
 
         format = req.args.get('format')
@@ -636,7 +652,7 @@ class QueryModule(Component):
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
                                               format, 'query')
 
-        return self.display_html(context, query)
+        return self.display_html(req, query)
 
     # Internal methods
 
@@ -678,8 +694,7 @@ class QueryModule(Component):
 
         return constraints
 
-    def display_html(self, context, query):
-        req = context.req
+    def display_html(self, req, query):
         db = self.env.get_db_cnx()
         tickets = query.execute(req, db)
 
@@ -718,6 +733,7 @@ class QueryModule(Component):
                             'summary': tag.em(e)}
                 tickets.insert(orig_list.index(rest_id), data)
 
+        context = Context.from_request(req, 'query')
         data = query.template_data(context, tickets, orig_list, orig_time)
 
         # For clients without JavaScript, we add a new constraint here if
@@ -730,7 +746,7 @@ class QueryModule(Component):
                 constraint.setdefault('values', []).append('')
                 # FIXME: '' not always correct (e.g. checkboxes)
 
-        req.session['query_href'] = query.get_href(context)
+        req.session['query_href'] = query.get_href(context.href)
         req.session['query_time'] = to_timestamp(orig_time)
         req.session['query_tickets'] = ' '.join([str(t['id'])
                                                  for t in tickets])
@@ -749,7 +765,7 @@ class QueryModule(Component):
                 cursor.execute("SELECT title,description FROM report "
                                "WHERE id=%s", (query.id,))
                 for title, description in cursor:
-                    data['report'] = context('report', query.id)
+                    data['report_resource'] = Resource('report', query.id)
                     data['description'] = description
         else:
             data['report_href'] = None
@@ -761,8 +777,6 @@ class QueryModule(Component):
         # Don't allow the user to remove the id column        
         data['all_columns'].remove('id')
         data['all_textareas'] = query.get_all_textareas()
-        data['col'] = query.get_columns()
-        data['row'] = query.rows
 
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')
@@ -777,8 +791,9 @@ class QueryModule(Component):
 
         results = query.execute(req, self.env.get_db_cnx())
         for result in results:
-            writer.writerow([unicode(result[col]).encode('utf-8')
-                             for col in cols])
+            if 'TICKET_VIEW' in req.perm('ticket', result['id']):
+                writer.writerow([unicode(result[col]).encode('utf-8')
+                                 for col in cols])
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, query):
@@ -793,7 +808,7 @@ class QueryModule(Component):
                                         **query.constraints)
 
         data = {
-            'context': Context(self.env, req),
+            'context': Context.from_request(req, 'query', absurls=True),
             'results': results,
             'query_href': query_href
         }
@@ -816,7 +831,8 @@ class QueryModule(Component):
         else:
             try:
                 query = Query.from_string(self.env, query)
-                return tag.a(label, href=query.get_href(formatter.context),
+                return tag.a(label,
+                             href=query.get_href(formatter.context.href),
                              class_='query')
             except QuerySyntaxError, e:
                 return tag.em(_('[Error: %(error)s]', error=e), class_='error')
@@ -892,8 +908,8 @@ class TicketQueryMacro(WikiMacroBase):
                     q.group = q.groupdesc = None
                     order = q.order
                     q.order = None
-                    title = "%s %s tickets matching %s" % (
-                        v, query.group, q.to_string(formatter.context))
+                    title = "%s %s tickets matching %s" % (v, query.group,
+                                                           q.to_string())
                     # produce the href for the query corresponding to the group
                     q.constraints[str(query.group)] = v
                     q.order = order

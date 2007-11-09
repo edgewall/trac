@@ -21,8 +21,8 @@ import time
 from genshi.builder import tag, Element
 
 from trac.config import IntOption
-from trac.context import Context
 from trac.core import *
+from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.search.api import ISearchSource
 from trac.util.datefmt import format_datetime
@@ -168,7 +168,8 @@ class SearchModule(Component):
             name = kwd
             description = _('Browse repository path %(path)s', path=kwd)
         else:
-            link = extract_link(Context(self.env, req), kwd)
+            link = extract_link(self.env, Context.from_request(req, 'search'),
+                                kwd)
             if isinstance(link, Element):
                 quickjump_href = link.attrib.get('href')
                 name = link.children

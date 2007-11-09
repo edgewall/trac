@@ -23,10 +23,10 @@ from itertools import izip
 
 from genshi.builder import tag
 
-from trac.context import Context, ResourceNotFound
 from trac.core import *
 from trac.db import get_column_names
 from trac.perm import IPermissionRequestor
+from trac.resource import Resource, ResourceNotFound
 from trac.util import sorted
 from trac.util.datefmt import format_datetime, format_time
 from trac.util.text import to_unicode, unicode_urlencode
@@ -205,12 +205,6 @@ class ReportModule(Component):
 
     def _render_view(self, req, db, id):
         """Retrieve the report results and pre-process them for rendering."""
-
-        actions = {'CREATE': 'REPORT_CREATE', 'DELETE': 'REPORT_DELETE',
-                   'MODIFY': 'REPORT_MODIFY'}
-        perms = {}
-        for action in [k for k,v in actions.items() if v in req.perm]:
-            perms[action] = True
         try:
             args = self.get_var_args(req)
         except ValueError,e:
@@ -270,12 +264,10 @@ class ReportModule(Component):
         if id > 0:
             title = '{%i} %s' % (id, title)
 
-        context = Context(self.env, req)('report', id)
         data = {'action': 'view', 'title': title,
-                'context': context,
-                'report': {'id': id, 'title': title,
-                           'description': description,
-                           'perms': perms, 'args': args}}
+                'report': Resource('report', id),
+                'title': title, 'description': description,
+                'args': args, 'message': None}
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
         except Exception, e:
@@ -358,7 +350,10 @@ class ReportModule(Component):
                         realm = value
                     cell_group.append(cell)
                 cell_groups.append(cell_group)
-            row['context'] = context(realm, row.get('id'))
+            resource = Resource(realm, row.get('id'))
+            if 'view' not in req.perm(resource):
+                continue
+            row['resource'] = resource
             if row_groups:
                 row_group = row_groups[-1][1]
             else:

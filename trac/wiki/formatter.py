@@ -27,9 +27,9 @@ from StringIO import StringIO
 from genshi.builder import tag
 from genshi.core import Stream
 
-from trac.context import Context
 from trac.core import *
 from trac.mimeview import *
+from trac.resource import get_relative_url
 from trac.util.compat import set
 from trac.wiki.api import WikiSystem
 from trac.wiki.parser import WikiParser
@@ -38,13 +38,12 @@ from trac.util.text import shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
-           'wiki_to_link', 'Formatter',
-           'format_to', 'format_to_html', 'format_to_oneliner', 'extract_link']
+           'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
+           'extract_link']
 
 def system_message(msg, text=None):
     return html.DIV(html.STRONG(msg), text and html.PRE(text),
                     class_="system-message")
-
 
 def _markup_to_unicode(markup):
     stream = None
@@ -182,7 +181,7 @@ class WikiProcessor(object):
 class Formatter(object):
     """Base Wiki formatter.
 
-    Parses and formats wiki text, in a given Context.
+    Parses and formats wiki text, in a given `Context`.
     """
     
     flavor = 'default'
@@ -192,16 +191,17 @@ class Formatter(object):
     QUOTED_STRING = WikiParser.QUOTED_STRING
     LINK_SCHEME = WikiParser.LINK_SCHEME
 
-    def __init__(self, context):
-        """Since 0.11: only takes a single Context argument."""
+    def __init__(self, env, context):
+        """Note: `req` is still temporarily used."""
+        self.env = env
         self.context = context
-        # shortcuts
-        self.env = context.env
         self.req = context.req
-        self.db = context.db
         self.href = context.href
-        self.wiki = WikiSystem(context.env)
-        self.wikiparser = WikiParser(context.env)
+        self.resource = context.resource
+        self.perm = context.perm
+        self.db = self.env.get_db_cnx() # FIXME: remove
+        self.wiki = WikiSystem(self.env)
+        self.wikiparser = WikiParser(self.env)
         self._anchors = {}
         self._open_tags = []
 
@@ -321,8 +321,11 @@ class Formatter(object):
             path, query, fragment = self.split_link(rel)
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')
+            elif path.startswith('/'):
+                path = self.href(path)
             else:
-                path = self.context.resource_href(path)
+                path = get_relative_url(self.env, self.resource, self.href,
+                                        path)
                 if '?' in path:
                     query = '&' + query.lstrip('?')
             return html.A(label or rel, href=path + query + fragment)
@@ -334,7 +337,7 @@ class Formatter(object):
         ns = self.env.config['intertrac'].get(ns, ns)
         if ns in self.wikiparser.link_resolvers:
             return self.wikiparser.link_resolvers[ns](self, ns, target,
-                                                escape(label, False))
+                                                      escape(label, False))
         elif target.startswith('//'):
             return self._make_ext_link(ns+':'+target, label)
         elif ns == "mailto":
@@ -425,7 +428,8 @@ class Formatter(object):
         depth = min(len(fullmatch.group('hdepth')), 5)
         anchor = fullmatch.group('hanchor') or ''
         heading_text = match[depth+1:-depth-1-len(anchor)]
-        heading = format_to_oneliner(self.context, heading_text, False)
+        heading = format_to_oneliner(self.env, self.context, heading_text,
+                                     False)
         if anchor:
             anchor = anchor[1:]
         else:
@@ -441,7 +445,8 @@ class Formatter(object):
             i += 1
         self._anchors[anchor] = True
         if shorten:
-            heading = format_to_oneliner(self.context, heading_text, True)
+            heading = format_to_oneliner(self.env, self.context, heading_text,
+                                         True)
         return (depth, heading, anchor)
 
     def _heading_formatter(self, match, fullmatch):
@@ -542,7 +547,8 @@ class Formatter(object):
     def _definition_formatter(self, match, fullmatch):
         tmp = self.in_def_list and '</dd>' or '<dl>'
         definition = match[:match.find('::')]
-        tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.context, definition)
+        tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.env, self.context,
+                                                      definition)
         self.in_def_list = True
         return tmp
 
@@ -828,8 +834,8 @@ class OneLinerFormatter(Formatter):
     """
     flavor = 'oneliner'
 
-    def __init__(self, context):
-        Formatter.__init__(self, context)
+    def __init__(self, env, context):
+        Formatter.__init__(self, env, context)
 
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
     def _list_formatter(self, match, fullmatch): return match
@@ -900,8 +906,8 @@ class OutlineFormatter(Formatter):
     """Special formatter that generates an outline of all the headings."""
     flavor = 'outline'
     
-    def __init__(self, context):
-        Formatter.__init__(self, context)
+    def __init__(self, env, context):
+        Formatter.__init__(self, env, context)
 
     # Avoid the possible side-effects of rendering WikiProcessors
 
@@ -947,12 +953,12 @@ class LinkFormatter(OutlineFormatter):
     """Special formatter that focuses on TracLinks."""
     flavor = 'link'
     
-    def __init__(self, context):
-        OutlineFormatter.__init__(self, context)
-        
+    def __init__(self, env, context):
+        OutlineFormatter.__init__(self, env, context)
+
     def _heading_formatter(self, match, fullmatch):
          return ''
-    
+
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""
         self.reset(wikitext)        
@@ -968,10 +974,11 @@ class HtmlFormatter(object):
 
     flavor = 'default'
     
-    def __init__(self, context, wikidom):
+    def __init__(self, env, context, wikidom):
+        self.env = env
         self.context = context
         if isinstance(wikidom, basestring):
-            wikidom = WikiParser(context.env).parse(wikidom)
+            wikidom = WikiParser(env).parse(wikidom)
         self.wikidom = wikidom
 
     def generate(self, escape_newlines=False):
@@ -981,7 +988,8 @@ class HtmlFormatter(object):
         """
         # FIXME: compatibility code only for now
         out = StringIO()
-        Formatter(self.context).format(self.wikidom, out, escape_newlines)
+        Formatter(self.env, self.context).format(self.wikidom, out,
+                                                 escape_newlines)
         return Markup(out.getvalue())
 
 
@@ -993,10 +1001,11 @@ class InlineHtmlFormatter(object):
     
     flavor = 'oneliner'
 
-    def __init__(self, context, wikidom):
+    def __init__(self, env, context, wikidom):
+        self.env = env
         self.context = context
         if isinstance(wikidom, basestring):
-            wikidom = WikiParser(context.env).parse(wikidom)
+            wikidom = WikiParser(env).parse(wikidom)
         self.wikidom = wikidom
 
     def generate(self, shorten=False):
@@ -1007,67 +1016,61 @@ class InlineHtmlFormatter(object):
         """
         # FIXME: compatibility code only for now
         out = StringIO()
-        OneLinerFormatter(self.context).format(self.wikidom, out, shorten)
+        OneLinerFormatter(self.env, self.context).format(self.wikidom, out,
+                                                         shorten)
         return Markup(out.getvalue())
 
 
-def format_to(flavor, ctx, wikidom, **options):
+def format_to(env, flavor, context, wikidom, **options):
     if flavor == 'oneliner':
-        return format_to_oneliner(ctx, wikidom, **options)
+        return format_to_oneliner(env, context, wikidom, **options)
     else:
-        return format_to_html(ctx, wikidom, **options)
+        return format_to_html(env, context, wikidom, **options)
 
-def format_to_html(ctx, wikidom, escape_newlines=False, abs_urls=False):
+def format_to_html(env, context, wikidom, escape_newlines=False):
     if not wikidom:
         return ''
-    if abs_urls != ctx.abs_urls: # Note: temporary hack (need RenderingContext)
-        ctx = ctx(abs_urls=abs_urls)
-    return HtmlFormatter(ctx, wikidom).generate(escape_newlines)
+    return HtmlFormatter(env, context, wikidom).generate(escape_newlines)
 
-def format_to_oneliner(ctx, wikidom, shorten=False, abs_urls=False):
+def format_to_oneliner(env, context, wikidom, shorten=False):
     if not wikidom:
         return ''
-    if abs_urls != ctx.abs_urls: # Note: temporary hack (need RenderingContext)
-        ctx = ctx(abs_urls=abs_urls)
-    return InlineHtmlFormatter(ctx, wikidom).generate(shorten)
+    return InlineHtmlFormatter(env, context, wikidom).generate(shorten)
 
-def extract_link(ctx, wikidom):
+def extract_link(env, context, wikidom):
     if not wikidom:
         return ''
-    return LinkFormatter(ctx).match(wikidom)
+    return LinkFormatter(env, context).match(wikidom)
 
 
 # pre-0.11 wiki text to Markup compatibility methods
 
 def wiki_to_html(wikitext, env, req, db=None,
                  absurls=False, escape_newlines=False):
-    ctx = Context(env, req, db=db)(abs_urls=absurls)
     if not wikitext:
         return Markup()
+    abs_ref, href = (req or env).abs_href, (req or env).href
+    context = Context.from_request(req, absurls=absurls)
     out = StringIO()
-    Formatter(ctx).format(wikitext, out, escape_newlines)
+    Formatter(env, context).format(wikitext, out, escape_newlines)
     return Markup(out.getvalue())
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
                      req=None):
-    ctx = Context(env, req, db=db, abs_urls=absurls)
     if not wikitext:
         return Markup()
+    abs_ref, href = (req or env).abs_href, (req or env).href
+    context = Context.from_request(req, absurls=absurls)
     out = StringIO()
-    OneLinerFormatter(ctx).format(wikitext, out, shorten)
+    OneLinerFormatter(env, context).format(wikitext, out, shorten)
     return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,
                     absurls=False, max_depth=None, min_depth=None):
-    ctx = Context(env, req, db=db, abs_urls=absurls)
     if not wikitext:
         return Markup()
+    abs_ref, href = (req or env).abs_href, (req or env).href
+    context = Context.from_request(req, absurls=absurls)
     out = StringIO()
-    OutlineFormatter(ctx).format(wikitext, out, max_depth, min_depth)
+    OutlineFormatter(env, context).format(wikitext, out, max_depth, min_depth)
     return Markup(out.getvalue())
-
-def wiki_to_link(wikitext, env, req):
-    ctx = Context(env, req)
-    if not wikitext:
-        return ''
-    return LinkFormatter(ctx).match(wikitext)

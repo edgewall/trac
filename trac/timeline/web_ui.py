@@ -27,6 +27,7 @@ from genshi.builder import tag
 
 from trac.config import IntOption, BoolOption
 from trac.core import *
+from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util.compat import sorted
@@ -171,6 +172,7 @@ class TimelineModule(Component):
                     if email:
                         email_map[username] = email
             data['email_map'] = email_map
+            data['context'] = Context.from_request(req, absurls=True)
             return 'timeline.rss', data, 'application/rss+xml'
 
         add_stylesheet(req, 'common/css/timeline.css')

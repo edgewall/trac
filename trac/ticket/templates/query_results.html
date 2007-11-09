@@ -39,38 +39,49 @@
 
       <tbody>
         <py:for each="idx, result in enumerate(results)">
+          <py:with vars="ticket_context = context('ticket', result.id)">
+            <py:if test="'TICKET_VIEW' in perm(ticket_context.resource)">
 
-          <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${
-            'added' in result and ' added' or ''}${
-            'changed' in result and ' changed' or ''}${
-            'removed' in result and ' removed' or ''}">
-            <py:for each="idx, header in enumerate(headers)" py:choose="">
-              <py:with vars="name = header.name; value = result[name]">
-                <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
-                <td py:otherwise="" class="$name" py:choose="">
-                  <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
-                  <span py:when="isinstance(value, datetime)">${format_datetime(value)}</span>
-                  <span py:when="name == 'reporter'">${authorinfo(value)}</span>
-                  <span py:when="name == 'owner' and value">${authorinfo(value)}</span>
-                  <span py:otherwise="">$value</span>
-                </td>
+              <tr class="${idx % 2 and 'odd' or 'even'} prio${result.priority_value}${
+                'added' in result and ' added' or ''}${
+                'changed' in result and ' changed' or ''}${
+                'removed' in result and ' removed' or ''}">
+                <py:for each="idx, header in enumerate(headers)" py:choose="">
+                  <py:with vars="name = header.name; value = result[name]">
+                    <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
+                    <td py:otherwise="" class="$name" py:choose="">
+                      <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
+                      <span py:when="isinstance(value, datetime)">${format_datetime(value)}</span>
+                      <span py:when="name == 'reporter'">${authorinfo(value)}</span>
+                      <span py:when="name == 'owner' and value">${authorinfo(value)}</span>
+                      <span py:otherwise="">$value</span>
+                    </td>
+                  </py:with>
+                </py:for>
+              </tr>
+
+              <py:with vars="result_rows = [t for t in row if result[t]]">
+                <tr py:if="result_rows" class="fullrow">
+                  <td colspan="${len(headers)}">
+                    <p class="meta">Reported by <strong>${authorinfo(result.reporter)}</strong>,
+                      ${dateinfo(result.time)} ago.</p>
+                  </td>
+                </tr>
+                <py:choose>
+                  <tr py:when="ticket_context.resource in context" class="fullrow">
+                    <td colspan="${len(headers)}">
+                      <p class="meta"><em>(this ticket)</em></p>
+                    </td>
+                  </tr>
+                  <tr py:otherwise="" py:for="r in result_rows" class="fullrow">
+                    <th class="meta">$r</th>
+                    <td colspan="${len(headers)-1}" xml:space="preserve">
+                      ${wiki_to_html(ticket_context, result[r])}
+                    </td>
+                  </tr>
+                </py:choose>
               </py:with>
-            </py:for>
-          </tr>
-
-          <py:with vars="result_rows = [t for t in row if result[t]]">
-            <tr py:if="result_rows" class="fullrow">
-              <td colspan="${len(headers)}">
-                <p class="meta">Reported by <strong>${authorinfo(result.reporter)}</strong>,
-                  ${dateinfo(result.time)} ago.</p>
-              </td>
-            </tr>
-            <tr py:for="r in result_rows" class="fullrow">
-              <th class="meta">$r</th>
-              <td colspan="${len(headers)-1}" xml:space="preserve">
-                ${wiki_to_html(context('ticket', result.id), result[r])}
-              </td>
-            </tr>
+            </py:if>
           </py:with>
         </py:for>
       </tbody>

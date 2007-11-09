@@ -28,10 +28,11 @@ from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
 from trac import __version__ as VERSION
-from trac import mimeview
 from trac.config import *
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
+from trac.mimeview import get_mimetype, Context
+from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       get_module_path, translation
 from trac.util.compat import partial, set
@@ -236,9 +237,6 @@ class Chrome(Component):
         'timedelta': datetime.timedelta,
         'to_unicode': to_unicode,
         'utc': utc,
-        'wiki_to': format_to,
-        'wiki_to_html': format_to_html,
-        'wiki_to_oneliner': format_to_oneliner,
     }
 
     def __init__(self):
@@ -292,7 +290,7 @@ class Chrome(Component):
                 path = os.path.normpath(os.path.join(dir, filename))
                 assert os.path.commonprefix([dir, path]) == dir
                 if os.path.isfile(path):
-                    req.send_file(path, mimeview.get_mimetype(path))
+                    req.send_file(path, get_mimetype(path))
 
         self.log.warning('File %s not found in any of %s', filename, dirs)
         raise HTTPNotFound('File %s not found', filename)
@@ -438,7 +436,7 @@ class Chrome(Component):
                 else:
                     icon_abs_src = req.abs_href.chrome('common', icon_src)
                     icon_src = req.href.chrome('common', icon_src)
-            mimetype = mimeview.get_mimetype(icon_src)
+            mimetype = get_mimetype(icon_src)
             icon = {'src': icon_src, 'abs_src': icon_abs_src,
                     'mimetype': mimetype}
         return icon
@@ -514,10 +512,25 @@ class Chrome(Component):
             return tag.span(pretty_timedelta(date),
                             title=format_datetime(date))
 
+        href = req and req.href
+        abs_href = req and req.abs_href or self.env.abs_href
+        
+        def get_rel_url(resource, **kwargs):
+            return get_resource_url(self.env, resource, href, **kwargs)
+
+        def get_abs_url(resource, **kwargs):
+            return get_resource_url(self.env, resource, abs_href, **kwargs)
+
         d.update({
+            'context': req and Context.from_request(req) or None,
+            'url_of': get_rel_url,
+            'abs_url_of': get_abs_url,
+            'name_of': partial(get_resource_name, self.env),
+            'shortname_of': partial(get_resource_shortname, self.env),
+            'summary_of': partial(get_resource_summary, self.env),
             'req': req,
-            'abs_href': req and req.abs_href or self.env.abs_href,
-            'href': req and req.href,
+            'abs_href': abs_href,
+            'href': href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
             'show_email_addresses': show_email_addresses,
@@ -530,6 +543,11 @@ class Chrome(Component):
             'format_time': partial(format_time, tzinfo=tzinfo),
             'fromtimestamp': partial(datetime.datetime.fromtimestamp,
                                      tz=tzinfo),
+
+            # Wiki-formatting functions
+            'wiki_to': partial(format_to, self.env),
+            'wiki_to_html': partial(format_to_html, self.env),
+            'wiki_to_oneliner': partial(format_to_oneliner, self.env),
         })
 
         # Finally merge in the page-specific data

@@ -47,6 +47,7 @@
                 <py:if test="event.author">by <span class="author">${format_author(event.author)}</span></py:if>
               </a>
             </dt>
+            <!--! TODO: move the generation of the description back into the components -->
             <dd class="${classes(event.kind, highlight=highlight)}">
               ${event.markup.get('header')}
               <py:for each="key in event.wikitext">
@@ -54,7 +55,7 @@
                   if flavor == 'oneliner' and 'shorten' not in options:
                       options['shorten'] = abbreviated_messages
                   ?>
-                  ${wiki_to(flavor, event.context, event.wikitext[key], **options)}
+                  ${wiki_to(flavor, context(event.resource), event.wikitext[key], **options)}
                 </py:with>
               </py:for>
               ${event.markup.get('footer')}

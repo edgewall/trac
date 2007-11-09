@@ -6,8 +6,9 @@
       xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
   <py:match path="div[@id='content']" once="true"><div py:attrs="select('@*')">
     ${select('*|text()')}
-    <form py:if="'WIKI_DELETE' in perm(context) and (not changes[0].diffs or new_version == latest_version)"
-      method="get" action="${context.resource_href()}">
+    <form py:if="'WIKI_DELETE' in perm(page.resource) and
+                 (not changes[0].diffs or new_version == latest_version)"
+      method="get" action="${href.wiki(page.name)}">
       <input type="hidden" name="action" value="delete" />
       <input type="hidden" name="version" value="$new_version" />
       <input type="hidden" name="old_version" value="$old_version" />
@@ -16,5 +17,7 @@
         }version $new_version" />
     </form>
   </div></py:match>
-  <xi:include href="diff_view.html" />
+  <py:with vars="resource = page.resource">
+    <xi:include href="diff_view.html" />
+  </py:with>
 </html>

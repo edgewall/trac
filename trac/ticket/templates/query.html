@@ -37,7 +37,7 @@
       <h1>$title ${num_matches(len(tickets))}</h1>
 
       <div py:if="description" id="description" xml:space="preserve">
-        ${wiki_to_html(report, description)}
+        ${wiki_to_html(context(report_resource), description)}
       </div>
 
       <form id="query" method="post" action="${href.query()}">
@@ -177,7 +177,7 @@
         </p>
 
         <div class="buttons">
-          <input py:if="report" type="hidden" name="report" value="$report.id" />
+          <input py:if="report_resource" type="hidden" name="report" value="$report_resource.id" />
           <input type="hidden" name="order" value="$query.order" />
           <input py:if="query.desc" type="hidden" name="desc" value="1" />
           <input type="submit" name="update" value="Update" />
@@ -209,29 +209,30 @@
 
       <xi:include href="query_results.html" />
 
-      <div class="buttons" py:with="edit = report and 'REPORT_MODIFY' in req.perm;
-                     new = 'REPORT_CREATE' in req.perm;
-                     delete = report and 'REPORT_DELETE' in req.perm">
-        <form py:if="edit" method="get" action="${report.resource_href()}">
+      <div class="buttons" py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);
+                     new = 'REPORT_CREATE' in perm;
+                     delete = report_resource and 'REPORT_DELETE' in perm(report_resource)">
+        <form py:if="edit" method="get" action="${url_of(report_resource)}">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" title="Edit report {$report.id} corresponding to this query"
+            <input type="submit" title="Edit report {$report_resource.id} corresponding to this query"
                    value="Edit query" />
           </div>
         </form>
-        <form py:if="new or edit" method="get" action="${edit and report.resource_href() or req.href.report()}">
+        <form py:if="new or edit" method="get" action="${edit and url_of(report_resource) or href.report()}">
           <div>
             <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
-            <input type="hidden" name="query" value="${query.to_string(req)}" />
+            <input type="hidden" name="query" value="${query.to_string()}" />
             <input type="submit" value="Save query"
-                   title="${edit and ('Save updated query in report {%s}' % report.id) or
-                            'Create new report from current query'}" />
+                   title="${edit and _('Save updated query in report {%(id)s}',
+                                       id=report_resource.id) or
+                            _('Create new report from current query')}" />
           </div>
         </form>
-        <form py:if="delete" method="get" action="${report.resource_href()}">
+        <form py:if="delete" method="get" action="${url_of(report_resource)}">
           <div>
             <input type="hidden" name="action" value="delete" />
-            <input type="submit" title="Delete report {$report.id} corresponding to this query"
+            <input type="submit" title="Delete report {$report_resource.id} corresponding to this query"
                    value="Delete query" />
           </div>
         </form>

@@ -27,12 +27,11 @@ from genshi.builder import tag
 
 from trac import perm, util
 from trac.config import BoolOption, IntOption
-from trac.context import IContextProvider, Context, ResourceSystem, \
-                         ResourceNotFound
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
-from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.mimeview import *
+from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
+from trac.resource import *
 from trac.timeline.api import TimelineEvent
 from trac.util import get_reporter_id, create_unique_file, content_disposition
 from trac.util.datefmt import to_timestamp, utc
@@ -40,6 +39,7 @@ from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.util.translation import _
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 
 
@@ -80,73 +80,21 @@ class IAttachmentManipulator(Interface):
         OK."""
 
 
-class AttachmentContext(Context):
-    """Context for attachment resources."""
-
-    realm = 'attachment'
-
-    # methods reimplemented from Context
-
-    def get_resource(self):
-        return Attachment(self.env, self.parent.realm, self.parent.id,
-                          filename=self.id, db=self._db)
-
-    def get_href(self, href, path=None, **kwargs):
-        """Return an URL to the attachment itself.
-
-        A `format` keyword argument equal to `'raw'` will be converted
-        to the raw-attachment prefix.
-        """
-        format = kwargs.get('format')
-        prefix = 'attachment'
-        if format == 'raw':
-            kwargs.pop('format')
-            prefix = 'raw-attachment'
-        path = [unicode(p) for p in [prefix, self.parent.realm, self.parent.id,
-                                     self.id, path] if p]
-        return Context.get_href(self, href, '/' + '/'.join(path), **kwargs)
-
-    def permid(self):
-        return self.parent.permid() + (self.realm, self.id)
-
-    def name(self):
-        if self.id:
-            return _("Attachment '%(id)s' in %(parent)s", id=self.id,
-                     parent=self.parent.name())
-        else:
-            return _("Attachments of %(parent)s", parent=self.parent.name())
-
-    def shortname(self):
-        return '%s:%s' % (self.parent.shortname(), self.filename)
-
-    def summary(self):
-        return self.resource.description
-
-
-class AttachmentList(object):
-    """Helper class for template data, representing a list of attachments."""
-    
-    def __init__(self, parent, attachments):
-        self.req = parent.req
-        self.parent = parent
-        self.attachments = [parent('attachment', a.filename, resource=a)
-                            for a in attachments]
-
-    def attach_href(self):
-        return self.parent('attachment').get_href(self.req.href, action='new')
-
-    def can_create(self):
-        return 'ATTACHMENT_CREATE' in self.req.perm(self.parent('attachment'))
-
 
 class Attachment(object):
 
-    def __init__(self, env, parent_realm, parent_id, filename=None, db=None):
+    def __init__(self, env, parent_realm_or_attachment_resource,
+                 parent_id=None, filename=None, db=None):
+        if isinstance(parent_realm_or_attachment_resource, Resource):
+            self.resource = parent_realm_or_attachment_resource
+        else:
+            self.resource = Resource(parent_realm_or_attachment_resource,
+                                     parent_id).child('attachment', filename)
         self.env = env
-        self.parent_realm = parent_realm
-        self.parent_id = unicode(parent_id)
-        if filename:
-            self._fetch(filename, db)
+        self.parent_realm = self.resource.parent.realm
+        self.parent_id = unicode(self.resource.parent.id)
+        if self.resource.id:
+            self._fetch(self.resource.id, db)
         else:
             self.filename = None
             self.description = None
@@ -154,6 +102,11 @@ class Attachment(object):
             self.date = None
             self.author = None
             self.ipnr = None
+
+    def _set_filename(self, val):
+        self.resource.id = val
+
+    filename = property(lambda self: self.resource.id, _set_filename)
 
     def _fetch(self, filename, db=None):
         if not db:
@@ -257,7 +210,7 @@ class Attachment(object):
                             self.size, timestamp, self.description,
                             self.author, self.ipnr))
             shutil.copyfileobj(fileobj, targetfile)
-            self.filename = filename
+            self.resource.id = self.filename = filename
 
             self.env.log.info('New attachment: %s by %s', self.title,
                               self.author)
@@ -323,7 +276,7 @@ class AttachmentModule(Component):
 
     implements(IEnvironmentSetupParticipant, IRequestHandler,
                INavigationContributor, IWikiSyntaxProvider,
-               IContextProvider)
+               IResourceManager)
 
     change_listeners = ExtensionPoint(IAttachmentChangeListener)
     manipulators = ExtensionPoint(IAttachmentManipulator)
@@ -372,52 +325,51 @@ class AttachmentModule(Component):
         match = re.match(r'^/(raw-)?attachment/([^/]+)(?:[/:](.*))?$',
                          req.path_info)
         if match:
-            raw, realm, filename = match.groups()
+            raw, realm, path = match.groups()
             if raw:
                 req.args['format'] = 'raw'
             req.args['realm'] = realm
-            if filename:
-                req.args['path'] = filename.replace(':', '/')
+            if path:
+                req.args['path'] = path.replace(':', '/')
             return True
 
     def process_request(self, req):
+        parent_id = None
         parent_realm = req.args.get('realm')
         path = req.args.get('path')
+        filename = None
         
         if not parent_realm or not path:
             raise HTTPBadRequest(_('Bad request'))
 
-        context = Context(self.env, req)
-
+        parent_realm = Resource(parent_realm)
         action = req.args.get('action', 'view')
         if action == 'new':
-            attachment = Attachment(self.env, parent_realm, path)
+            parent_id = path.rstrip('/')
         else:
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
             filename = len(segments) > 1 and segments[-1]
             if not filename: # if there's a trailing '/', show the list
-                return self._render_list(req, context(parent_realm, parent_id))
-            attachment = Attachment(self.env, parent_realm, parent_id,
-                                    filename)
+                return self._render_list(req, parent_realm(id=parent_id))
 
-        ctx = context(attachment.parent_realm, attachment.parent_id) \
-              ('attachment', attachment.filename, resource=attachment)
-        add_link(req, 'up', ctx.parent.resource_href(), ctx.parent.name())
+        parent = parent_realm(id=parent_id)
+        attachment = Attachment(self.env, parent.child('attachment', filename))
+        
+        add_link(req, 'up', get_resource_url(self.env, parent, req.href),
+                 get_resource_name(self.env, parent))
         
         if req.method == 'POST':
             if action == 'new':
-                self._do_save(ctx)
+                self._do_save(req, attachment)
             elif action == 'delete':
-                self._do_delete(ctx)
+                self._do_delete(req, attachment)
         elif action == 'delete':
-            data = self._render_confirm_delete(ctx)
+            data = self._render_confirm_delete(req, attachment)
         elif action == 'new':
-            data = self._render_form(ctx)
+            data = self._render_form(req, attachment)
         else:
-            data = self._render_view(ctx)
-
-        data['context'] = ctx
+            data = self._render_view(req, attachment)
 
         add_stylesheet(req, 'common/css/code.css')
         return 'attachment.html', data, None
@@ -433,12 +385,24 @@ class AttachmentModule(Component):
 
     # Public methods
 
-    def permitted_attachment_list(self, req, parent):
-        """Return list of attachments allowed in the request."""
-        return AttachmentList(parent,
-            [a for a in Attachment.select(self.env, parent.realm, parent.id)
-             if 'ATTACHMENT_VIEW' in req.perm(parent('attachment', a.filename))])
+    def attachment_data(self, context):
+        """Return the list of viewable attachments.
 
+        :param context: the rendering context corresponding to the parent
+                        `Resource` of the attachments
+        """
+        parent = context.resource
+        attachments = []
+        for attachment in Attachment.select(self.env, parent.realm, parent.id):
+            if 'ATTACHMENT_VIEW' in context.perm(attachment.resource):
+                attachments.append(attachment)
+        new_att = parent.child('attachment')
+        return {'attach_href': get_resource_url(self.env, new_att,
+                                                context.href, action='new'),
+                'can_create': 'ATTACHMENT_CREATE' in context.perm(new_att),
+                'attachments': attachments,
+                'parent': context.resource}
+    
     def get_history(self, start, stop, realm):
         """Return an iterable of tuples describing changes to attachments on
         a particular object realm.
@@ -458,41 +422,76 @@ class AttachmentModule(Component):
             time = datetime.fromtimestamp(ts, utc)
             yield ('created', realm, id, filename, time, description, author)
 
-    def get_timeline_events(self, context, start, stop):
-        """Return an iterable of events suitable for ITimelineEventProvider.
+    def get_timeline_events(self, req, resource_realm, start, stop):
+        """Return an event generator suitable for ITimelineEventProvider.
 
-        `context` specifies the realm.
+        Events are changes to attachments on resources of the given
+        `resource_realm.realm`.
         """
-        req = context.req
         for change, realm, id, filename, time, descr, author in \
-                self.get_history(start, stop, context.realm):
-            ctx = context(realm=realm, id=id)('attachment', filename)
-            if 'ATTACHMENT_VIEW' not in req.perm(ctx):
-                continue
-            title = tag(tag.em(os.path.basename(filename)), ' attached to ',
-                        tag.em(ctx.parent.name(), title=ctx.parent.summary()))
-            event = TimelineEvent(self, 'attachment')
-            event.set_changeinfo(time, author)
-            event.add_markup(title=title)
-            event.add_wiki(ctx, body=descr)
-            yield event
+                self.get_history(start, stop, resource_realm.realm):
+            parent = resource_realm(id=id)
+            attachment = parent.child('attachment', filename)
+            if 'ATTACHMENT_VIEW' in req.perm(attachment):
+                title = tag(tag.em(os.path.basename(filename)),
+                            _(" attached to "),
+                            tag.em(get_resource_name(self.env, parent),
+                                   title=get_resource_summary(self.env,
+                                                              parent)))
+                ### FIXME: the link is no longer to the attachment...
+                event = TimelineEvent(self, 'attachment')
+                event.set_changeinfo(time, author)
+                event.add_markup(title=title)
+                event.add_wiki(parent, body=descr)
+                yield event
 
     def event_formatter(self, event, key):
         return None
     
-    # IContextProvider methods
+    # IResourceManager methods
+    
+    def get_resource_realms(self):
+        yield 'attachment'
 
-    def get_context_classes(self):
-        yield AttachmentContext
+    def get_resource_url(self, resource, href, **kwargs):
+        """Return an URL to the attachment itself.
+
+        A `format` keyword argument equal to `'raw'` will be converted
+        to the raw-attachment prefix.
+        """
+        format = kwargs.get('format')
+        prefix = 'attachment'
+        if format == 'raw':
+            kwargs.pop('format')
+            prefix = 'raw-attachment'
+        parent_href = get_resource_url(self.env, resource.parent, Href(''))
+        if not resource.id:
+            return href(prefix, parent_href) + '/'
+        else:
+            return href(prefix, parent_href, resource.id, **kwargs)
+
+    def get_resource_description(self, resource, format=None, **kwargs):
+        if format == 'compact':
+            return '%s:%s' % (get_resource_shortname(self.env,
+                                                     resource.parent),
+                              resource.filename)
+        elif format == 'summary':
+            return Attachment(self.env, resource).description
+        if resource.id:
+            return _("Attachment '%(id)s' in %(parent)s", id=resource.id,
+                     parent=get_resource_name(self.env, resource.parent))
+        else:
+            return _("Attachments of %(parent)s",
+                     parent=get_resource_name(self.env, resource.parent))
 
     # Internal methods
 
-    def _do_save(self, context):
-        req, attachment = context.req, context.resource
-        req.perm.require('ATTACHMENT_CREATE', context)
+    def _do_save(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_CREATE')
 
         if 'cancel' in req.args:
-            req.redirect(context.parent.resource_href())
+            req.redirect(get_resource_url(self.env, attachment.resource.parent,
+                                          req.href))
 
         upload = req.args['attachment']
         if not hasattr(upload, 'filename') or not upload.filename:
@@ -520,9 +519,8 @@ class AttachmentModule(Component):
         filename = os.path.basename(filename)
         if not filename:
             raise TracError(_('No file uploaded'))
-        # Now the filename is known, update the attachment context
-        context.id = filename
-
+        # Now the filename is known, update the attachment resource
+        # attachment.filename = filename
         attachment.description = req.args.get('description', '')
         attachment.author = get_reporter_id(req, 'author')
         attachment.ipnr = req.remote_addr
@@ -541,66 +539,63 @@ class AttachmentModule(Component):
 
         if req.args.get('replace'):
             try:
-                old_attachment = Attachment(self.env, attachment.parent_realm,
-                                            attachment.parent_id, filename)
+                old_attachment = Attachment(self.env,
+                                            attachment.resource(id=filename))
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
-                    req.perm.require('ATTACHMENT_DELETE', context)
+                    req.perm(attachment.resource).require('ATTACHMENT_DELETE')
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace
             attachment.filename = None
         attachment.insert(filename, upload.file, size)
 
-        # Redirect the user to list of attachments (must add a trailing '/')
-        req.redirect(context.resource_href('..') + '/')
+        req.redirect(get_resource_url(self.env, attachment.resource(id=None),
+                                      req.href))
 
-    def _do_delete(self, context):
-        req, attachment = context.req, context.resource
-        req.perm.require('ATTACHMENT_DELETE', context)
+    def _do_delete(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_DELETE')
 
-        parent_href = context.parent.resource_href()
+        parent_href = get_resource_url(self.env, attachment.resource.parent,
+                                       req.href)
         if 'cancel' in req.args:
             req.redirect(parent_href)
 
-        context.resource.delete()
-
-        # Redirect the user to the attachment parent page
+        attachment.delete()
         req.redirect(parent_href)
 
-    def _render_confirm_delete(self, context):
-        req, attachment = context.req, context.resource
-        req.perm.require('ATTACHMENT_DELETE', context)
-        
-        attachment = context.resource
+    def _render_confirm_delete(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_DELETE')
         return {'mode': 'delete',
-                'title': _('%(context)s (delete)', context=context.name()),
+                'title': _('%(attachment)s (delete)',
+                           attachment=get_resource_name(self.env,
+                                                        attachment.resource)),
                 'attachment': attachment}
 
-    def _render_form(self, context):
-        req, attachment = context.req, context.resource
-        req.perm.require('ATTACHMENT_CREATE', context)
+    def _render_form(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_CREATE')
+        return {'mode': 'new', 'author': get_reporter_id(req),
+                'attachment': attachment}
 
-        return {'mode': 'new', 'author': get_reporter_id(context.req)}
-
-    def _render_list(self, req, context):
-        context.req.perm.require('ATTACHMENT_VIEW', context('attachment'))
-
+    def _render_list(self, req, parent):
+        attachment = parent.child('attachment')
         data = {
-            'mode': 'list', 'context': None, # no specific attachment
-            'attachments': self.permitted_attachment_list(req, context)}
+            'mode': 'list',
+            'attachment': None, # no specific attachment
+            'attachments': self.attachment_data(Context.from_request(req,
+                                                                     parent))
+        }
 
-        add_link(context.req, 'up', context.resource_href(), context.name())
+        add_link(req, 'up', get_resource_url(self.env, parent, req.href),
+                 get_resource_name(self.env, parent))
 
         return 'attachment.html', data, None
 
-    def _render_view(self, context):
-        req, attachment = context.req, context.resource
-        req.perm.require('ATTACHMENT_VIEW', context)
-
+    def _render_view(self, req, attachment):
         req.check_modified(attachment.date)
 
-        data = {'mode': 'view', 'title': context.name(),
+        data = {'mode': 'view',
+                'title': get_resource_name(self.env, attachment.resource),
                 'attachment': attachment}
 
         fd = attachment.open()
@@ -633,12 +628,15 @@ class AttachmentModule(Component):
             # add ''Plain Text'' alternate link if needed
             if (self.render_unsafe_content and 
                 mime_type and not mime_type.startswith('text/plain')):
-                plaintext_href = context.resource_href(format='txt')
+                plaintext_href = get_resource_url(self.env,
+                                                  attachment.resource,
+                                                  req.href, format='txt')
                 add_link(req, 'alternate', plaintext_href, _('Plain Text'),
                          mime_type)
 
             # add ''Original Format'' alternate link (always)
-            raw_href = context.resource_href(format='raw')
+            raw_href = get_resource_url(self.env, attachment.resource,
+                                        req.href, format='raw')
             add_link(req, 'alternate', raw_href, _('Original Format'),
                      mime_type)
 
@@ -646,7 +644,8 @@ class AttachmentModule(Component):
                            % (attachment.filename, mime_type))
 
             data['preview'] = mimeview.preview_data(
-                context, fd, os.fstat(fd.fileno()).st_size, mime_type,
+                Context.from_request(req, attachment.resource), fd,
+                os.fstat(fd.fileno()).st_size, mime_type,
                 attachment.filename, raw_href, annotations=['lineno'])
             return data
         finally:
@@ -655,30 +654,42 @@ class AttachmentModule(Component):
     def _format_link(self, formatter, ns, target, label):
         link, params, fragment = formatter.split_link(target)
         ids = link.split(':', 2)
-        context = None
+        attachment = None
         if len(ids) == 3:
             known_realms = ResourceSystem(self.env).get_known_realms()
             # new-style attachment: TracLinks (filename:realm:id)
             if ids[1] in known_realms:
-                context = formatter.context(ids[1], ids[2]) \
-                          ('attachment', ids[0])
+                attachment = Resource(ids[1], ids[2]).child('attachment',
+                                                            ids[0])
             else: # try old-style attachment: TracLinks (realm:id:filename)
                 if ids[0] in known_realms:
-                    context = formatter.context(ids[0], ids[1]) \
-                              ('attachment', ids[2])
+                    attachment = Resource(ids[0], ids[1]).child('attachment',
+                                                                ids[2])
         else: # local attachment: TracLinks (filename)
-            context = formatter.context('attachment', link)
-        if context:
+            attachment = formatter.resource.child('attachment', link)
+        if attachment:
             try:
-                attachment = context.resource
+                model = Attachment(self.env, attachment)
                 format = None
                 if ns.startswith('raw'):
                     format = 'raw'
-                return tag.a(label, class_='attachment',
-                             href=context.resource_href(format=format) + params,
-                             title=context.name())
-            except TracError, e:
+                href = get_resource_url(self.env, attachment, formatter.href,
+                                        format=format)
+                return tag.a(label, class_='attachment', href=href + params,
+                             title=get_resource_name(self.env, attachment))
+            except ResourceNotFound, e:
                 pass
+            # FIXME: should be either:
+            #
+            # model = Attachment(self.env, attachment)
+            # if model.exists:
+            #     ...
+            #
+            # or directly:
+            #
+            # if attachment.exists:
+            #
+            # (related to #4130)
         return tag.a(label, class_='missing attachment', rel='nofollow')
 
 
@@ -697,15 +708,18 @@ class LegacyAttachmentPolicy(Component):
                               'milestone': 'MILESTONE_DELETE'},
     }
 
-    def check_permission(self, username, action, context):
+    def check_permission(self, action, username, resource, perm):
         perm_map = self._perm_maps.get(action)
-        if perm_map:
-            legacy_action = perm_map.get(context.resource.parent_realm)
+        if perm_map and resource:
+            if resource.realm != 'attachment':
+                realm = resource.realm
+            else:
+                realm = resource.parent.realm
+            legacy_action = perm_map.get(realm)
             if legacy_action:
-                decision = PermissionSystem(self.env) \
-                    .check_permission(legacy_action, username, context)
+                decision = legacy_action in perm
                 if not decision:
                     self.env.log.debug('LegacyAttachmentPolicy denied %s '
                                        'access to %s. User needs %s' %
-                                       (username, context, legacy_action))
+                                       (username, resource, legacy_action))
                 return decision

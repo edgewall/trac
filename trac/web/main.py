@@ -33,10 +33,10 @@ from genshi.template import TemplateLoader
 
 from trac import __version__ as TRAC_VERSION
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
-from trac.context import ResourceNotFound
 from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError, PermissionSystem
+from trac.resource import ResourceNotFound
 from trac.util import get_lines_from_file, get_last_traceback, hex_entropy
 from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone

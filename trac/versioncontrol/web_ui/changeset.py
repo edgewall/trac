@@ -28,10 +28,10 @@ import time
 from genshi.builder import tag
 
 from trac.config import Option, BoolOption, IntOption
-from trac.context import Context, ResourceNotFound
 from trac.core import *
-from trac.mimeview import Mimeview, is_binary
+from trac.mimeview import Mimeview, is_binary, Context
 from trac.perm import IPermissionRequestor
+from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider, TimelineEvent
 from trac.util import embedded_numbers, content_disposition
@@ -208,7 +208,7 @@ class ChangesetModule(Component):
         In any case, either path@rev pairs must exist.
         """
         req.perm.require('CHANGESET_VIEW')
-
+        
         repos = self.env.get_repository(req.authname)
 
         # -- retrieve arguments
@@ -283,7 +283,9 @@ class ChangesetModule(Component):
         data['wiki_format_messages'] = self.wiki_format_messages
 
         if chgset:
+            req.perm('changeset', new).require('CHANGESET_VIEW')
             chgset = repos.get_changeset(new)
+
             # TODO: find a cheaper way to reimplement r2636
             req.check_modified(chgset.date, [
                 style, ''.join(options), repos.name,
@@ -341,12 +343,10 @@ class ChangesetModule(Component):
     def _render_html(self, req, repos, chgset, restricted, xhr, data):
         """HTML version"""
         data['restricted'] = restricted
-        context = Context(self.env, req)
         browser = BrowserModule(self.env)
 
         if chgset: # Changeset Mode (possibly restricted on a path)
             path, rev = data['new_path'], data['new_rev']
-            context = context('changeset', rev) # context.detail = path ?
 
             # -- getting the change summary from the Changeset.get_changes
             def get_changes():
@@ -365,7 +365,8 @@ class ChangesetModule(Component):
 
             def _changeset_title(rev):
                 if restricted:
-                    return _('Changeset %(id)s for %(path)s', id=rev, path=path)
+                    return _('Changeset %(id)s for %(path)s', id=rev,
+                             path=path)
                 else:
                     return _('Changeset %(id)s', id=rev)
 
@@ -373,6 +374,7 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
 
             # Support for revision properties (#2545)
+            context = Context.from_request(req, 'changeset', chgset.rev)
             revprops = chgset.get_properties()
             data['properties'] = browser.render_properties('revprop', context,
                                                            revprops)
@@ -424,7 +426,6 @@ class ChangesetModule(Component):
             data['changeset'] = False
 
         data['title'] = title
-        data['context'] = context
 
         if 'BROWSER_VIEW' not in req.perm:
             return
@@ -446,12 +447,17 @@ class ChangesetModule(Component):
         options = data['diff']['options']
 
         def _prop_changes(old_node, new_node):
-            old_ctx = context('source', old_node.created_path,
+            old_source = Resource('source', old_node.created_path,
                                   version=old_node.created_rev)
-            new_ctx = context('source', new_node.created_path,
+            new_source = Resource('source', new_node.created_path,
                                   version=new_node.created_rev)
-            old_props = old_node.get_properties()
-            new_props = new_node.get_properties()
+            old_props = new_props = []
+            if 'FILE_VIEW' in req.perm(old_source):
+                old_props = old_node.get_properties()
+            if 'FILE_VIEW' in req.perm(new_source):
+                new_props = new_node.get_properties()
+            old_ctx = Context.from_request(req, old_source)
+            new_ctx = Context.from_request(req, new_source)
             changed_properties = []
             if old_props != new_props:
                 for k,v in old_props.items():
@@ -761,7 +767,6 @@ class ChangesetModule(Component):
             long_messages = self.timeline_long_messages
             
             repos = self.env.get_repository(req.authname)
-            context = Context(self.env, req)
 
             if self.timeline_collapse:
                 collapse_changesets = lambda c: (c.author, c.message)
@@ -772,6 +777,8 @@ class ChangesetModule(Component):
                                          key=collapse_changesets):
                 changesets = list(changesets)
                 chgset = changesets[-1]
+                if not 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
+                    continue
                 summary = shorten_line(chgset.message or '')
                 
                 if len(changesets) > 1:
@@ -822,7 +829,8 @@ class ChangesetModule(Component):
                 event.add_markup(title=title, header=markup,
                                  summary='%s: %s' % (title, summary))
                 event.set_changeinfo(chgset.date, chgset.author, True)
-                event.add_wiki(context('changeset', chgset.rev), body=message)
+                event.add_wiki(Resource('changeset', chgset.rev),
+                               body=message)
                 yield event
 
     def event_formatter(self, event, key):

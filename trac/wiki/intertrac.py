@@ -18,8 +18,8 @@ import re
 
 from genshi.builder import Element, tag
 
-from trac.context import Context
 from trac.core import *
+from trac.mimeview import Context
 from trac.util import sorted
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider

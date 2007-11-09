@@ -22,28 +22,28 @@
 
     <div id="content" class="report">
 
-      <h1>$report.title
+      <h1>$title
         <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
       </h1>
 
-      <div py:if="report.description" id="description" xml:space="preserve">
-        ${wiki_to_html(context, report.description)}
+      <div py:if="description" id="description" xml:space="preserve">
+        ${wiki_to_html(context(report), description)}
       </div>
 
-      <div py:if="report.id != -1 and report.perms" class="buttons">
-        <form py:if="'MODIFY' in report.perms" action="" method="get">
+      <div py:if="report.id != -1" class="buttons">
+        <form py:if="'REPORT_MODIFY' in perm(report)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
             <input type="submit" value="Edit report" accesskey="e" />
           </div>
         </form>
-        <form py:if="'CREATE' in report.perms" action="" method="get">
+        <form py:if="'REPORT_CREATE' in perm(report)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="copy" />
             <input type="submit" value="Copy report" />
           </div>
         </form>
-        <form py:if="'DELETE' in report.perms" action="" method="get">
+        <form py:if="'REPORT_DELETE' in perm(report)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="delete" />
             <input type="submit" value="Delete report" />
@@ -60,8 +60,8 @@
               <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
                 colspan="${fullrow and '100' or None}">
                 <a py:strip="not sorting_enabled"
-                   py:with="args = dict([(k,v) for k,v in report.args.items() if k not in ('sort', 'asc')])"
-                  href="${href.report(report.id, sort=header.col, asc=not header.asc and '1' or '0', **args)}">
+                   py:with="filtered_args = dict([(k,v) for k,v in args.items() if k not in ('sort', 'asc')])"
+                  href="${href.report(report.id, sort=header.col, asc=not header.asc and '1' or '0', **filtered_args)}">
                   $header.title
                 </a>
               </th>
@@ -102,14 +102,14 @@
                         <!--! for the ticket listing -->
                         <py:when test="col in ('ticket', 'id')">
                           <td class="ticket" py:attrs="td_attrs">
-                            <a title="View ticket" href="${row.context.resource_href()}">#$cell.value</a>
+                            <a title="View ${row.resource.realm}" href="${url_of(row.resource)}">#$cell.value</a>
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
                         <py:when test="col == 'summary' and row.id">
                           <td class="$col" py:attrs="td_attrs">
-                            <a title="View ticket" href="${row.context.resource_href()}">$cell.value</a>
+                            <a title="View ${row.resource.realm}" href="${url_of(row.resource)}">$cell.value</a>
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
@@ -135,7 +135,7 @@
 
                         <py:when test="col == 'description'">
                           <td class="$col" py:attrs="td_attrs" xml:space="preserve">
-                            ${wiki_to_html(row.context, cell.value)}
+                            ${wiki_to_html(context(row.resource), cell.value)}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
@@ -156,7 +156,7 @@
         </table>
       </py:for>
 
-      <div py:if="report.id == -1 and 'CREATE' in report.perms" class="buttons">
+      <div py:if="report.id == -1 and 'REPORT_CREATE' in perm(report)" class="buttons">
         <form action="" method="get">
           <div>
             <input type="hidden" name="action" value="new" />
@@ -165,7 +165,7 @@
         </form>
       </div>
 
-      <div py:if="'message' in report" class="system-message">$report.message</div>
+      <div py:if="message" class="system-message">$message</div>
       <div py:if="numrows == 0" id="report-notfound">No matches found.</div>
 
       <div id="help">

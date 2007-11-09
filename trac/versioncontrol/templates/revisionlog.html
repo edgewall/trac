@@ -113,7 +113,7 @@
           <tbody>
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
-                             change_context = context('changeset', change.rev);
+                             chgset_context = context('changeset', change.rev);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
@@ -148,9 +148,9 @@
                     <td class="date" py:content="dateinfo(change.date)" />
                     <td class="author" py:content="authorinfo(change.author)" />
                     <td class="summary" py:choose="">
-                      <py:when test="verbose"></py:when>
+                      <py:when test="verbose or 'CHANGESET_VIEW' not in perm(chgset_context.resource)"></py:when>
                       <py:when test="wiki_format_messages">
-                        ${wiki_to_oneliner(change_context, change.message, shorten=True)}
+                        ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
                       </py:when>
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </td>
@@ -162,7 +162,7 @@
                   <td />
                   <td class="summary" colspan="6" py:choose="" xml:space="preserve">
                     <py:when test="wiki_format_messages">
-                      ${wiki_to_html(change_context, change.message, escape_newlines=True)}
+                      ${wiki_to_html(context(changeset), change.message, escape_newlines=True)}
                     </py:when>
                     <py:otherwise><pre>${change.message}</pre></py:otherwise>
                   </td>

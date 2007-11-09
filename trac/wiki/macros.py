@@ -25,6 +25,7 @@ from genshi.builder import Element, tag
 from genshi.core import Markup
 
 from trac.core import *
+from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any, set
 from trac.util.html import escape
@@ -243,8 +244,9 @@ class PageOutlineMacro(WikiMacroBase):
         # TODO: - integrate the rest of the OutlineFormatter directly here
         #       - use formatter.wikidom instead of formatter.source
         out = StringIO()
-        OutlineFormatter(formatter.context).format(formatter.source, out,
-                                                   max_depth, min_depth)
+        OutlineFormatter(self.env, formatter.context).format(formatter.source,
+                                                             out, max_depth,
+                                                             min_depth)
         outline = Markup(out.getvalue())
 
         if title:
@@ -339,11 +341,10 @@ class ImageMacro(WikiMacroBase):
                 continue
             if arg.startswith('link='):
                 val = arg.split('=', 1)[1]
-                elt = extract_link(formatter.context, val.strip())
+                elt = extract_link(self.env, formatter.context, val.strip())
+                link = None
                 if isinstance(elt, Element):
                     link = elt.attrib.get('href')
-                else:
-                    link = None
                 continue
             if arg in ('left', 'right', 'top', 'bottom'):
                 style['float'] = arg
@@ -363,14 +364,14 @@ class ImageMacro(WikiMacroBase):
 
         # parse filespec argument to get realm and id if contained.
         parts = filespec.split(':')
-        url = None
-        context = None
+        url = raw_url = None
+        attachment = None
         if len(parts) == 3:                 # realm:id:attachment-filename
-            # TODO: consider using attachment-filename:realm:id?
             realm, id, filename = parts
-            context = formatter.context(realm, id) \
-                      ('attachment', filename)
+            attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
+            # FIXME: somehow use ResourceSystem.get_known_realms()
+            #        ... or directly trac.wiki.extract_link
             from trac.versioncontrol.web_ui import BrowserModule
             try:
                 browser_links = [res[0] for res in
@@ -384,7 +385,8 @@ class ImageMacro(WikiMacroBase):
                 if '@' in filename:
                     filename, rev = filename.split('@')
                 url = formatter.href.browser(filename, rev=rev)
-                raw_url = formatter.href.browser(filename, rev=rev, format='raw')
+                raw_url = formatter.href.browser(filename, rev=rev,
+                                                 format='raw')
                 desc = filespec
             else: # #ticket:attachment or WikiPage:attachment
                 # FIXME: do something generic about shorthand forms...
@@ -401,16 +403,17 @@ class ImageMacro(WikiMacroBase):
                 else:
                     realm = 'wiki'
                 if realm:
-                    context = formatter.context(realm, id) \
-                              ('attachment', filename)
-        elif len(parts) == 1:               # attachment
-            context = formatter.context('attachment', filespec)
+                    attachment = Resource(realm, id).child('attachment',
+                                                           filename)
+        elif len(parts) == 1: # it's an attachment of the current resource
+            attachment = formatter.resource.child('attachment', filespec)
         else:
-            raise Exception('No filespec given')
-        if context: # this is an attachment
-            url = context.resource_href()
-            raw_url = context.resource_href(format='raw')
-            desc = context.summary()
+            raise TracError('No filespec given')
+        if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
+            url = get_resource_url(self.env, attachment, formatter.href)
+            raw_url = get_resource_url(self.env, attachment, formatter.href,
+                                       format='raw')
+            desc = get_resource_summary(self.env, attachment)
         for key in ('title', 'alt'):
             if desc and not key in attr:
                 attr[key] = desc
@@ -438,7 +441,6 @@ class MacroListMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         from trac.wiki.formatter import system_message
 
-        wikimacros = formatter.context('wiki', 'WikiMacros')
         def get_macro_descr():
             for macro_provider in formatter.wiki.macro_providers:
                 for macro_name in macro_provider.get_macros():
@@ -446,7 +448,8 @@ class MacroListMacro(WikiMacroBase):
                         continue
                     try:
                         descr = macro_provider.get_macro_description(macro_name)
-                        descr = format_to_html(wikimacros, descr or '')
+                        descr = format_to_html(self.env, formatter.context,
+                                               descr or '')
                     except Exception, e:
                         descr = system_message(_("Error: Can't get description "
                                                  "for macro %(name)s",
@@ -475,12 +478,12 @@ class TracIniMacro(WikiMacroBase):
         sections = set([section for section, option in Option.registry.keys()
                         if section.startswith(filter)])
 
-        tracini = formatter.context('wiki', 'TracIni')
         return tag.div(class_='tracini')(
             [(tag.h2('[%s]' % section, id='%s-section' % section),
               tag.table(class_='wiki')(
             tag.tbody([tag.tr(tag.td(tag.tt(option.name)),
-                              tag.td(format_to_oneliner(tracini,
+                              tag.td(format_to_oneliner(self.env,
+                                                        formatter.context,
                                                         option.__doc__)))
                        for option in sorted(Option.registry.values(),
                                             key=lambda o: o.name)
@@ -521,7 +524,7 @@ class TracGuideTocMacro(WikiMacroBase):
           ]
 
     def expand_macro(self, formatter, name, args):
-        curpage = formatter.context.id
+        curpage = formatter.resource.id
 
         # scoped TOC (e.g. TranslateRu/TracGuide or 0.11/TracGuide ...)
         prefix = ''

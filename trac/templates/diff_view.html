@@ -13,25 +13,25 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav" py:with="realm = context.realm.capitalize()">
+    <div id="ctxtnav" class="nav" py:with="realm = resource.realm.capitalize()">
       <h2>$realm Navigation</h2>
       ${prevnext_nav('Change', realm + ' History')}
       <hr />
     </div>
 
-    <div id="content" class="${context.realm}">
+    <div id="content" class="${resource.realm}">
       <h1 py:choose="">Changes
         <py:when test="old_version">between
-          <a href="${context.resource_href(version=old_version)}">Version $old_version</a> and
+          <a href="${url_of(resource, version=old_version)}">Version $old_version</a> and
         </py:when>
         <py:when test="old_version == 0">between
-          <a href="${context.resource_href(version=0)}">Initial Version</a> and
+          <a href="${url_of(resource, version=0)}">Initial Version</a> and
         </py:when>
         <py:otherwise>from</py:otherwise>
-        <a href="${context.resource_href(version=new_version)}">Version $new_version</a> of
-        <a href="${context.resource_href()}">${context.name()}</a>
+        <a href="${url_of(resource, version=new_version)}">Version $new_version</a> of
+        <a href="${url_of(resource)}">${name_of(resource)}</a>
       </h1>
-      <form method="post" id="prefs" action="${context.resource_href()}">
+      <form method="post" id="prefs" action="${url_of(resource)}">
         <div>
           <input type="hidden" name="action" value="diff" />
           <input type="hidden" name="version" value="$new_version" />
@@ -54,7 +54,7 @@
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="" xml:space="preserve">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:otherwise>${wiki_to_html(context, change.comment)}</py:otherwise>
+          <py:otherwise>${wiki_to_html(context(resource), change.comment)}</py:otherwise>
         </dd>
       </dl>
       <div class="diff">

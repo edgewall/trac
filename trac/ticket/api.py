@@ -20,13 +20,14 @@ from datetime import datetime
 from genshi.builder import tag
 
 from trac.config import *
-from trac.context import IContextProvider, Context
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionSystem, PermissionError
+from trac.resource import IResourceManager
 from trac.util import Ranges
-from trac.util.text import shorten_line
-from trac.util.datefmt import utc
 from trac.util.compat import set, sorted
+from trac.util.datefmt import utc
+from trac.util.text import shorten_line
+from trac.util.translation import _
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -132,43 +133,8 @@ class ITicketManipulator(Interface):
         ticket. Therefore, a return value of `[]` means everything is OK."""
 
 
-class TicketContext(Context):
-    """Context used for describing Ticket resources."""
-
-    realm = 'ticket'
-
-    # methods reimplemented from Context
-
-    def get_resource(self):
-        from trac.ticket.model import Ticket
-        return Ticket(self.env, self.id and int(self.id) or None, self.db)
-
-    def name(self):
-        return 'Ticket ' + self.shortname()
-
-    def shortname(self):
-        return '#%s' % self.id
-
-    def summary(self):
-        args = [self.resource[f] for f in ('summary', 'status',
-                                           'resolution', 'type')]
-        return self.format_summary(*args)
-
-    def format_summary(self, summary, status=None, resolution=None, type=None):
-        summary = shorten_line(summary)
-        if type:
-            summary = type + ': ' + summary
-        if status:
-            if status == 'closed' and resolution:
-                status += ': ' + resolution
-            return "%s (%s)" % (summary, status)
-        else:
-            return summary
-        
-
-
 class TicketSystem(Component):
-    implements(IPermissionRequestor, IWikiSyntaxProvider, IContextProvider)
+    implements(IPermissionRequestor, IWikiSyntaxProvider, IResourceManager)
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
     action_controllers = OrderedExtensionsOption('ticket', 'workflow',
@@ -340,22 +306,22 @@ class TicketSystem(Component):
             r = Ranges(link)
             if len(r) == 1:
                 num = r.a
-                ctx = formatter.context('ticket', num)
-                if 0 < num <= 1L << 31: # TODO: implement ctx.exists()
-                    # status = ctx.resource['status']  -> currently expensive
+                ticket = formatter.resource('ticket', num)
+                if 0 < num <= 1L << 31:
+                     # TODO: implement resource.exists() (related to #4130)
                     cursor = formatter.db.cursor() 
                     cursor.execute("SELECT type,summary,status,resolution "
                                    "FROM ticket WHERE id=%s", (str(num),)) 
                     for type, summary, status, resolution in cursor:
-                        title = ctx.format_summary(summary, status, resolution,
-                                                   type)
+                        title = self.format_summary(summary, status,
+                                                    resolution, type)
+                        href = formatter.href.ticket(num) + params + fragment
                         return tag.a(label, class_='%s ticket' % status, 
-                                     title=title,
-                                     href=(ctx.resource_href() + params +
-                                           fragment))
-                    else: 
-                        return tag.a(label, class_='missing ticket',  
-                                     href=ctx.resource_href(), rel="nofollow")
+                                     title=title, href=href)
+                    else:
+                        href = formatter.href.ticket(num)
+                        return tag.a(label, class_='missing ticket', href=href,
+                                     rel="nofollow")
             else:
                 ranges = str(r)
                 if params:
@@ -367,26 +333,50 @@ class TicketSystem(Component):
         return tag.a(label, class_='missing ticket')
 
     def _format_comment_link(self, formatter, ns, target, label):
-        context = None
+        resource = None
         if ':' in target:
             elts = target.split(':')
             if len(elts) == 3:
                 cnum, realm, id = elts
                 if cnum != 'description' and cnum and not cnum[0].isdigit():
                     realm, id, cnum = elts # support old comment: style
-                context = formatter.context(realm, id)
+                resource = formatter.resource(realm, id)
         else:
-            context = formatter.context
+            resource = formatter.resource
             cnum = target
 
-        if context:
-            return tag.a(label, href=("%s#comment:%s" %
-                                      (context.resource_href(), cnum)),
-                         title="Comment %s for %s" % (cnum, context.name()))
+        if resource:
+            href = "%s#comment:%s" % (formatter.href.ticket(resource.id), cnum)
+            title = _("Comment %(cnum)s for Ticket #%(id)s", cnum=cnum,
+                      id=resource.id)
+            return tag.a(label, href=href, title=title)
         else:
             return label
  
-    # IContextProvider methods
+    # IResourceManager methods
 
-    def get_context_classes(self):
-        yield TicketContext
+    def get_resource_realms(self):
+        yield 'ticket'
+
+    def get_resource_description(self, resource, format=None, context=None,
+                                 **kwargs):
+        if format == 'compact':
+            return '#%s' % resource.id
+        elif format == 'summary':
+            from trac.ticket.model import Ticket
+            ticket = Ticket(self.env, resource.id)
+            args = [ticket[f] for f in ('summary', 'status', 'resolution',
+                                        'type')]
+            return self.format_summary(*args)
+        return _("Ticket #%(shortname)s", shortname=resource.id)
+
+    def format_summary(self, summary, status=None, resolution=None, type=None):
+        summary = shorten_line(summary)
+        if type:
+            summary = type + ': ' + summary
+        if status:
+            if status == 'closed' and resolution:
+                status += ': ' + resolution
+            return "%s (%s)" % (summary, status)
+        else:
+            return summary

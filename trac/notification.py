@@ -118,6 +118,8 @@ class Notify(object):
 
         self.template = Chrome(self.env).load_template(self.template_name,
                                                        method='text')
+        # FIXME: actually, we would need a Context with a different
+        #        PermissionCache for each recipient
         self.data = Chrome(self.env).populate_data(None, {'CRLF': CRLF})
 
     def notify(self, resid):

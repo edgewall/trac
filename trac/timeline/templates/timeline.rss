@@ -22,11 +22,11 @@
       <pubDate>${http_date(event.date)}</pubDate>
       <link>${event.get_href(abs_href)}</link>
       <guid isPermaLink="false">${event.get_href(abs_href)}/${event.dateuid()}</guid>
-      <description>${
-        unicode(event.markup.get('header', ''))
-      }<py:if test="'body' in event.wikitext">${unicode(wiki_to_html(event.context(abs_urls=True), event.wikitext.get('body'), abs_urls=True))}</py:if>${
-        unicode(event.markup.get('footer', ''))
-      }</description>
+      <!--! TODO: move the generation of the description back to the components -->
+      <description>
+        ${unicode(event.markup.get('header', ''))}
+        <py:if test="'body' in event.wikitext">${unicode(wiki_to_html(context(event.resource), event.wikitext.get('body')))}</py:if>
+        ${unicode(event.markup.get('footer', ''))}</description>
        <category>$event.kind</category>
     </item>
 

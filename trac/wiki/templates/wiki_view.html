@@ -28,7 +28,7 @@
           <li><a href="${href.wiki('TitleIndex')}">Index</a></li>
           <li><a href="${href.wiki(page.name, action='history')}">History</a></li>
           <li class="last">
-            <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
+            <a href="${href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
           </li>
         </ul>
         </py:choose>
@@ -55,15 +55,15 @@
           ${wiki_to_html(context, page.text)}
         </py:when>
         <py:otherwise>
-          Describe ${page.name} here.
+          Describe ${name_of(page.resource)} here.
         </py:otherwise>
       </div>
 
       ${list_of_attachments(attachments, compact=True)}
 
-      <py:with vars="modify_perm = 'WIKI_MODIFY' in perm(context);
-                     delete_perm = 'WIKI_DELETE' in perm(context);
-                     admin_perm = 'WIKI_ADMIN' in perm(context)">
+      <py:with vars="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
+                     delete_perm = 'WIKI_DELETE' in perm(page.resource);
+                     admin_perm = 'WIKI_ADMIN' in perm(page.resource)">
         <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
           <div class="buttons">
             <py:if test="modify_perm">

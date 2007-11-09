@@ -15,7 +15,9 @@
       <link>$log_href</link>
     </image>
 
-    <item py:for="item in items" py:with="change = changes[item.rev]; item_context = context('changeset', change.rev, abs_urls=True)">
+    <item py:for="item in items" 
+          py:with="change = changes[item.rev]; 
+                   item_context = context('changeset', change.rev)">
       ${author_or_creator(change.author, email_map)}
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: ${shorten_line(change.message)}</title>
@@ -24,7 +26,7 @@
       <description py:with="m = change.message">${
         unicode(wiki_format_messages and (verbose and wiki_to_html(item_context, m) \
                                                    or wiki_to_oneliner(item_context, m)) \
-                                       or m)
+                                     or m)
         }</description>
       <category>Log</category>
     </item>

@@ -19,10 +19,9 @@ import unittest
 from genshi.core import Stream
 from genshi.input import HTMLParser, XML
 
-from trac.context import Context
-from trac.mimeview.api import Mimeview
+from trac.mimeview.api import Mimeview, Context
 from trac.mimeview.patch import PatchRenderer
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub, Mock, MockPerm
 from trac.web.chrome import Chrome
 from trac.web.href import Href
 
@@ -31,10 +30,10 @@ class PatchRendererTestCase(unittest.TestCase):
 
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])
-        req = Mock(base_path='',chrome={},
+        req = Mock(base_path='',chrome={}, args={},
                    abs_href=Href('/'), href=Href('/'),
-                   perm=[], authname=None, tz=None)
-        self.context = Context(env, req)
+                   perm=MockPerm(), authname=None, tz=None)
+        self.context = Context.from_request(req)
         self.patch = Mimeview(env).renderers[0]
         patch_html = open(os.path.join(os.path.split(__file__)[0],
                                        'patch.html'))

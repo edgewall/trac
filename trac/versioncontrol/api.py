@@ -23,9 +23,9 @@ except ImportError:
     threading._get_ident = lambda: 0
 
 from trac.config import Option
-from trac.context import ResourceNotFound
 from trac.core import *
 from trac.perm import PermissionError
+from trac.resource import IResourceManager, ResourceSystem, ResourceNotFound
 from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
@@ -55,7 +55,7 @@ class RepositoryManager(Component):
     It provides easy access to the configured implementation.
     """
 
-    implements(IRequestFilter)
+    implements(IRequestFilter, IResourceManager)
 
     connectors = ExtensionPoint(IRepositoryConnector)
 
@@ -84,6 +84,32 @@ class RepositoryManager(Component):
 
     def post_process_request(self, req, template, content_type):
         return (template, content_type)
+
+    # IResourceManager methods
+
+    def get_resource_realms(self):
+        yield 'changeset'
+        yield 'source'
+
+    def get_resource_description(self, resource, format=None, **kwargs):
+        if resource.realm == 'changeset':
+            return _("Changeset %(rev)s", rev=resource.id)
+        elif resource.realm == 'source':
+            version = ''
+            if format == 'summary':
+                repos = resource.env.get_repository() # no perm.username!
+                node = repos.get_node(resource.id, resource.version)
+                if node.isdir:
+                    kind = _("Directory")
+                elif node.isfile:
+                    kind = _("File")
+                if resource.version:
+                    version = _("at version %(rev)s", rev=resource.version)
+            else:
+                kind = _("Path")
+                if resource.version:
+                    version = '@%s' % resource.version
+            return '%s %s%s' % (kind, path, version)
 
     # Public API methods
 

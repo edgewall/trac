@@ -24,11 +24,11 @@ import urllib
 from genshi.builder import tag
 
 from trac.config import ListOption, BoolOption, Option
-from trac.context import Context, ResourceNotFound
 from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
-                              IHTMLPreviewAnnotator
+                              IHTMLPreviewAnnotator, Context
 from trac.perm import IPermissionRequestor
+from trac.resource import ResourceNotFound, Resource
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
@@ -142,9 +142,9 @@ class WikiPropertyRenderer(Component):
 
     def render_property(self, name, mode, context, props):
         if name in self.wiki_properties:
-            return format_to_html(context, props[name])
+            return format_to_html(self.env, context, props[name])
         else:
-            return format_to_oneliner(context, props[name])
+            return format_to_oneliner(self.env, context, props[name])
 
 
 class TimeRange(object):
@@ -343,8 +343,7 @@ class BrowserModule(Component):
         except NoSuchChangeset, e:
             raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
-        context = Context(self.env, req)('source', path,
-                                         version=node.created_rev) # resource=node
+        context = Context.from_request(req, 'source', path, node.created_rev)
 
         path_links = get_path_links(req.href, path, rev, order, desc)
         if len(path_links) > 1:
@@ -359,7 +358,7 @@ class BrowserModule(Component):
                                                  node.get_properties()),
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
-            'file': node.isfile and self._render_file(context, repos,
+            'file': node.isfile and self._render_file(req, context, repos,
                                                       node, rev),
             'quickjump_entries': list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
@@ -442,9 +441,8 @@ class BrowserModule(Component):
                                    timerange.to_seconds(timerange.oldest)),
                 }
 
-    def _render_file(self, context, repos, node, rev=None):
-        req = context.req
-        req.perm.require('FILE_VIEW')
+    def _render_file(self, req, context, repos, node, rev=None):
+        req.perm(context.resource).require('FILE_VIEW')
 
         mimeview = Mimeview(self.env)
 
@@ -512,7 +510,7 @@ class BrowserModule(Component):
                                                  force_source=force_source)
             return {
                 'changeset': changeset,
-                'size': node.content_length ,
+                'size': node.content_length,
                 'preview': preview_data,
                 'annotate': force_source,
                 }
@@ -599,17 +597,20 @@ class BrowserModule(Component):
 
     def get_annotation_data(self, context):
         """Cache the annotation data corresponding to each revision."""
-        return BlameAnnotator(context)
+        return BlameAnnotator(self.env, context)
 
     def annotate_row(self, context, row, lineno, line, blame_annotator):
         blame_annotator.annotate(row, lineno)
 
 
 class BlameAnnotator(object):
-    def __init__(self, context):
-        # `context` is ('source', path, version=rev)
+
+    def __init__(self, env, context):
+        self.env = env
+        # `context`'s resource is ('source', path, version=rev)
         self.context = context
-        self.repos = context.env.get_repository()
+        self.resource = context.resource
+        self.repos = env.get_repository()
         # maintain state
         self.prev_chgset = None
         self.chgset_data = {}
@@ -619,8 +620,9 @@ class BlameAnnotator(object):
         self.reset()
 
     def reset(self):
-        rev = self.context.version
-        node = self.repos.get_node(self.context.id, rev)
+        rev = self.resource.version
+        node = self.repos.get_node(self.resource.id, rev)
+        # FIXME: get_annotations() should be in the Resource API
         # -- get revision numbers for each line
         self.annotations = node.get_annotations()
         # -- from the annotations, retrieve changesets and
@@ -646,7 +648,7 @@ class BlameAnnotator(object):
         for path, rev, chg in node.get_history():
             self.paths[rev] = path
         # -- get custom colorize function
-        browser = BrowserModule(self.context.env)
+        browser = BrowserModule(self.env)
         self.colorize_age = browser.get_custom_colorizer()
 
     def annotate(self, row, lineno):
@@ -675,7 +677,7 @@ class BlameAnnotator(object):
         if self.prev_chgset != chgset:
             self.prev_style = style
         # optimize away the path if there's no copy/rename info
-        if not path or path == self.context.id:
+        if not path or path == self.resource.id:
             path = ''
         # -- produce blame column, eventually with an anchor
         style = self.prev_style

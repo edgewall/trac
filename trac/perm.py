@@ -20,6 +20,7 @@
 
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
+from trac.resource import Resource
 from trac.util.compat import set
 from trac.util.translation import _
 
@@ -30,14 +31,20 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore',
 class PermissionError(StandardError):
     """Insufficient permissions to complete the operation"""
 
-    def __init__ (self, action=None):
+    def __init__ (self, action=None, resource=None):
         StandardError.__init__(self)
         self.action = action
+        self.resource = resource
 
     def __str__ (self):
         if self.action:
-            return _('%(perm)s privileges are required to perform this operation.',
-                     perm=self.action)
+            if self.resource:
+                return _('%(perm)s privileges are required to perform '
+                         'this operation on %(resource)s',
+                         perm=self.action, resource=self.resource)
+            else:
+                return _('%(perm)s privileges are required to perform '
+                         'this operation', perm=self.action)
         else:
             return _('Insufficient privileges to perform this operation.')
 
@@ -98,12 +105,23 @@ class IPermissionGroupProvider(Interface):
 class IPermissionPolicy(Interface):
     """A security policy provider."""
 
-    def check_permission(username, action, context):
-        """Check that username can perform action in context.
+    def check_permission(action, username, resource, perm):
+        """Check that the action can be performed by the username and
+        resource specified
 
         Must return True if action is allowed, False if action is denied, or
         None if indifferent. If None is returned, the next policy in the chain
-        will be used, and so on."""
+        will be used, and so on.
+
+        :param username: the username string or 'anonymous' if there's no
+                         authenticated user
+        :param resource: the resource on which the check applies.
+                         Will be `None`, if the check is a global one and
+                         is not addressed to a resource in particular
+        :param perm: the permission cache that can be used for doing secondary
+                     checks on other permissions. Care must be taken to avoid
+                     recursion.
+        """
 
 
 class DefaultPermissionStore(Component):
@@ -217,7 +235,7 @@ class DefaultPermissionPolicy(Component):
 
     # IPermissionPolicy methods
 
-    def check_permission(self, username, action, context):
+    def check_permission(self, action, username, resource, perm):
         return PermissionSystem(self.env). \
                get_user_permissions(username).get(action, None)
 
@@ -348,26 +366,22 @@ class PermissionSystem(Component):
         [expand_action(a) for a in actions]
         return expanded_actions
 
-    def check_permission(self, action, username=None, context=None):
-        """Return True if permission to perform action in the given context is
-        allowed."""
-        if context is None:
-            from trac.context import Context
-            context = Context(self.env, None)
-
+    def check_permission(self, action, username=None, resource=None, perm=None):
+        """Return True if permission to perform action for the given resource
+        is allowed."""
         if username is None:
             username = 'anonymous'
-
         for policy in self.policies:
-            decision = policy.check_permission(username, action, context)
+            decision = policy.check_permission(action, username, resource,
+                                               perm)
             if decision is not None:
                 if not decision:
                     self.log.debug("%s denies %s performing %s on %r" %
-                                   (policy.__class__.__name__, username, action,
-                                    context))
+                                   (policy.__class__.__name__, username,
+                                    action, resource))
                 return decision
         self.log.debug("No policy allowed %s performing %s on %r" %
-                       (username, action, context))
+                       (username, action, resource))
         return False
 
     # IPermissionRequestor methods
@@ -392,64 +406,91 @@ class PermissionSystem(Component):
 class PermissionCache(object):
     """Cache that maintains the permissions of a single user.
 
-    'WIKI_VIEW' in perm
-    'WIKI_VIEW' in perm(context)
-    'WIKI_VIEW' in perm('wiki')
-    'WIKI_VIEW' in perm('wiki', 'WikiStart')
-    'WIKI_VIEW' in perm('wiki', 'WikiStart', 31)
+    Permissions are usually checked using the following syntax:
+    
+        'WIKI_MODIFY' in perm
 
-    perm.require(...)
+    One can also apply more fine grained permission checks and
+    specify a specific resource for which the permission should be available:
+    
+        'WIKI_MODIFY' in perm('wiki', 'WikiStart')
+
+    If there's already a `page` object available, the check is simply:
+
+        'WIKI_MODIFY' in perm(page.resource)
+
+    If instead of a check, one wants to assert that a given permission is
+    available, the following form should be used:
+    
+        perm.require('WIKI_MODIFY')
+
+        or
+
+        perm('wiki', 'WikiStart').require('WIKI_MODIFY')
+
+        or
+
+        perm(page.resource).require('WIKI_MODIFY')
+
+    When using `require`,  a `PermissionError` exception is raised if the
+    permission is missing.
     """
 
-    __slots__ = ('env', 'username', '_context', '_cache')
-
-    def __init__(self, env, username=None, context=None, cache=None):
+    def __init__(self, env, username=None, resource=None, cache=None,
+                 groups=None):
         self.env = env
         self.username = username or 'anonymous'
-        self._context = context
-        if cache is None:
-            self._cache = {}
+        self._resource = resource
+        self._cache = cache is not None and cache or {}
+
+    def _normalize_resource(self, realm_or_resource, id, version):
+        if realm_or_resource:
+            return Resource(realm_or_resource, id, version)
         else:
-            self._cache = cache
+            return self._resource
 
-    def _normalize_context(self, realm_or_context, id, version):
-        from trac.context import Context
+    def __call__(self, realm_or_resource, id=False, version=False):
+        """Convenience function for using thus: 
+            'WIKI_VIEW' in perm(context) 
+        or 
+            'WIKI_VIEW' in perm(realm, id, version)
+        or 
+            'WIKI_VIEW' in perm(resource)
 
-        if isinstance(realm_or_context, Context):
-            return realm_or_context
-        elif realm_or_context is not None:
-            if self._context:
-                realm_or_context = realm_or_context or self._context.realm
-                id = id or self._context.id
-                version = version or self._context.version
-            return Context(self.env, None)(realm_or_context, id, version)
+        """
+        resource = Resource(realm_or_resource, id, version)
+        if resource and self._resource and resource == self._resource:
+            return self
         else:
-            return self._context
+            return PermissionCache(self.env, self.username, resource,
+                                   self._cache)
 
-    def __call__(self, realm_or_context, id=None, version=None):
-        """Convenience function for using thus:
-            'WIKI_VIEW' in perm(context)
-        or
-            'WIKI_VIEW' in perm(realm, id, version)"""
-        context = self._normalize_context(realm_or_context, id, version)
-        return PermissionCache(self.env, self.username, context, self._cache)
+    def has_permission(self, action, realm_or_resource=None, id=False,
+                       version=False):
+        resource = self._normalize_resource(realm_or_resource, id, version)
+        return self._has_permission(action, resource)
 
-    def has_permission(self, action, realm_or_context=None, id=None,
-                       version=None):
-        context = self._normalize_context(realm_or_context, id, version)
-        key = (self.username, hash(context), action)
+    def _has_permission(self, action, resource):
+        if action == action.lower():
+            action = (resource.realm+'_'+action).upper()
+        key = (self.username, hash(resource), action)
         try:
             return self._cache[key]
         except KeyError:
+            perm = self
+            if resource is not self._resource:
+                perm = PermissionCache(self.env, self.username, resource,
+                                       self._cache)
             decision = PermissionSystem(self.env). \
-                check_permission(action, self.username, context)
+                       check_permission(action, perm.username, resource, perm)
             self._cache[key] = decision
             return decision
     __contains__ = has_permission
 
-    def require(self, action, realm_or_context=None, id=None, version=None):
-        if not self.has_permission(action, realm_or_context, id, version):
-            raise PermissionError()
+    def require(self, action, realm_or_resource=None, id=False, version=False):
+        resource = self._normalize_resource(realm_or_resource, id, version)
+        if not self._has_permission(action, resource):
+            raise PermissionError(action, resource)
     assert_permission = require
 
     def permissions(self):

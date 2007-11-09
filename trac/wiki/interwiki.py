@@ -17,6 +17,7 @@
 import re
 
 from genshi.builder import tag
+
 from trac.core import *
 from trac.wiki.formatter import Formatter
 from trac.wiki.parser import WikiParser

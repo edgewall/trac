@@ -23,9 +23,10 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.attachment import AttachmentModule
-from trac.context import IContextProvider, Context
 from trac.core import *
+from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
+from trac.resource import *
 from trac.util.compat import set, sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
                               get_date_format_hint, get_datetime_format_hint, \
@@ -263,12 +264,11 @@ def get_tickets_for_milestone(env, db, milestone, field='component'):
         tickets.append({'id': tkt_id, 'status': status, field: fieldval})
     return tickets
 
-def apply_ticket_permissions(env, req, milestone, tickets):
+def apply_ticket_permissions(env, req, tickets):
     """Apply permissions to a set of milestone tickets as returned by
     get_tickets_for_milestone()."""
-    context = Context(env, req)
-    return [t for t in tickets if 'TICKET_VIEW' in
-            req.perm('ticket', t['id'])]
+    return [t for t in tickets
+            if 'TICKET_VIEW' in req.perm('ticket', t['id'])]
 
 def milestone_stats_data(req, stat, name, grouped_by='component', group=None):
     def query_href(extra_args):
@@ -313,21 +313,21 @@ class RoadmapModule(Component):
         return re.match(r'/roadmap/?', req.path_info) is not None
 
     def process_request(self, req):
-        req.perm.require('ROADMAP_VIEW')
+        milestone_realm = Resource('milestone')
+        req.perm.require('MILESTONE_VIEW')
 
         showall = req.args.get('show') == 'all'
 
         db = self.env.get_db_cnx()
         milestones = [m for m in Milestone.select(self.env, showall, db)
-                      if 'MILESTONE_VIEW' in req.perm('milestone', m.name)]
+                      if 'MILESTONE_VIEW' in req.perm(m.resource)]
         stats = []
         queries = []
 
         for milestone in milestones:
             tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 'owner')
-            tickets = apply_ticket_permissions(self.env, req, milestone,
-                                               tickets)
+            tickets = apply_ticket_permissions(self.env, req, tickets)
             stat = get_ticket_stats(self.stats_provider, tickets)
             stats.append(milestone_stats_data(req, stat, milestone.name))
             #milestone['tickets'] = tickets # for the iCalendar view
@@ -346,7 +346,6 @@ class RoadmapModule(Component):
                  'ics')
 
         data = {
-            'context': Context(self.env, req),
             'milestones': milestones,
             'milestone_stats': stats,
             'queries': queries,
@@ -431,8 +430,7 @@ class RoadmapModule(Component):
                 write_prop('END', 'VEVENT')
             tickets = get_tickets_for_milestone(self.env, db, milestone.name,
                                                 field='owner')
-            tickets = apply_ticket_permissions(self.env, req, milestone,
-                                               tickets)
+            tickets = apply_ticket_permissions(self.env, req, tickets)
             for tkt_id in [ticket['id'] for ticket in tickets
                            if ticket['owner'] == user]:
                 ticket = Ticket(self.env, tkt_id)
@@ -464,24 +462,11 @@ class RoadmapModule(Component):
         write_prop('END', 'VCALENDAR')
 
 
-class MilestoneContext(Context):
-    """Milestone Context."""
-
-    realm = 'milestone'
-
-    # methods reimplemented from Context
-
-    def get_resource(self):
-        return Milestone(self.env, self.id)
-
-    def name(self):
-        return _('Milestone %(name)s') % {'name': self.id}
-
 
 class MilestoneModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, IWikiSyntaxProvider, IContextProvider)
+               ITimelineEventProvider, IWikiSyntaxProvider, IResourceManager)
  
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
@@ -515,27 +500,27 @@ class MilestoneModule(Component):
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
-            context = Context(self.env, req)
-            cursor = context.db.cursor()
+            milestone_realm = Resource('milestone')
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
             # TODO: creation and (later) modifications should also be reported
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
                            (to_timestamp(start), to_timestamp(stop)))
             for ts, name, description in cursor:
-                if 'MILESTONE_VIEW' not in req.perm('milestone', name):
-                    continue
-                completed = datetime.fromtimestamp(ts, utc)
-                title = tag('Milestone ', tag.em(name), ' completed')
-                event = TimelineEvent('milestone', title,
-                                      req.href.milestone(name))
-                event.set_changeinfo(completed, '') # FIXME: store the author
-                event.set_context(context('milestone', name), description)
-                yield event
+                milestone = milestone_realm(id=name)
+                if 'MILESTONE_VIEW' in req.perm(milestone):
+                    completed = datetime.fromtimestamp(ts, utc)
+                    title = tag('Milestone ', tag.em(name), ' completed')
+                    event = TimelineEvent(self, 'milestone')
+                    event.set_changeinfo(completed, '') # FIXME: store the author
+                    event.add_markup(title=title)
+                    event.add_wiki(milestone, body=description) # FIXME xxxo
+                    yield event
 
             # Attachments
-            # TODO: apply permissions here?
-            for event in AttachmentModule(self.env) \
-                    .get_timeline_events(context('milestone'), start, stop):
+            for event in AttachmentModule(self.env).get_timeline_events(
+                req, milestone_realm, start, stop):
                 yield event
                 
 
@@ -554,11 +539,11 @@ class MilestoneModule(Component):
 
     def process_request(self, req):
         milestone_id = req.args.get('id')
-        req.perm.require('MILESTONE_VIEW', 'milestone', milestone_id)
-
+        req.perm('milestone', milestone_id).require('MILESTONE_VIEW')
+        
         add_link(req, 'up', req.href.roadmap(), _('Roadmap'))
 
-        db = self.env.get_db_cnx()
+        db = self.env.get_db_cnx() # TODO: db can be removed
         milestone = Milestone(self.env, milestone_id, db)
         action = req.args.get('action', 'view')
 
@@ -577,7 +562,7 @@ class MilestoneModule(Component):
         elif action == 'delete':
             return self._render_confirm(req, db, milestone)
 
-        if not milestone_id:
+        if not milestone.name:
             req.redirect(req.href.roadmap())
 
         return self._render_view(req, db, milestone)
@@ -585,7 +570,7 @@ class MilestoneModule(Component):
     # Internal methods
 
     def _do_delete(self, req, db, milestone):
-        req.perm.require('MILESTONE_DELETE', 'milestone', milestone.name)
+        req.perm(milestone.resource).require('MILESTONE_DELETE')
 
         retarget_to = None
         if req.args.has_key('retarget'):
@@ -596,13 +581,14 @@ class MilestoneModule(Component):
 
     def _do_save(self, req, db, milestone):
         if milestone.exists:
-            req.perm.require('MILESTONE_MODIFY', 'milestone', milestone.name)
+            req.perm(milestone.resource).require('MILESTONE_MODIFY')
         else:
-            req.perm.require('MILESTONE_CREATE', 'milestone', milestone.name)
+            req.perm(milestone.resource).require('MILESTONE_CREATE')
 
         old_name = milestone.name
-
-        milestone.name = req.args.get('name')
+        new_name = req.args.get('name')
+        
+        milestone.name = new_name
         milestone.description = req.args.get('description', '')
 
         due = req.args.get('duedate', '')
@@ -619,15 +605,16 @@ class MilestoneModule(Component):
             warnings.append(msg)
 
         # -- check the name
-        if milestone.name:
+        if new_name:
             # check that the milestone doesn't already exists
             # FIXME: the whole .exists business needs to be clarified (#4130)
+            #        and should behave like a WikiPage does in this respect.
             try:
-                test_milestone = Milestone(self.env, milestone.name, db)
-                if not milestone.exists:
+                test_milestone = Milestone(self.env, new_name, db)
+                if not test_milestone.exists:
                     # then an exception should have been raised
-                    warn(_('Milestone "%(name)s" already exists, please choose '
-                           'another name') % {'name': milestone.name})
+                    warn(_('Milestone "%(name)s" already exists, please '
+                           'choose another name', name=new_name))
             except TracError:
                 pass
         else:
@@ -635,16 +622,14 @@ class MilestoneModule(Component):
 
         # -- check completed date
         if 'completed' in req.args:
-            milestone.completed = completed and parse_date(completed) or \
-                                  None
-            if milestone.completed and milestone.completed > datetime.now(utc):
+            completed = completed and parse_date(completed) or None
+            if completed and completed > datetime.now(utc):
                 warn(_('Completion date may not be in the future'))
         else:
-            milestone.completed = None
+            completed = None
+        milestone.completed = completed
 
         if warnings:
-            if not milestone.exists:
-                milestone.name = None
             return self._render_editor(req, db, milestone)
         
         # -- actually save changes
@@ -665,11 +650,10 @@ class MilestoneModule(Component):
         req.redirect(req.href.milestone(milestone.name))
 
     def _render_confirm(self, req, db, milestone):
-        req.perm.require('MILESTONE_DELETE', 'milestone', milestone.name)
+        req.perm(milestone.resource).require('MILESTONE_DELETE')
 
         data = {
             'milestone': milestone,
-            'context': Context(self.env, req, db=db)('milestone', milestone.name),
             'milestones': Milestone.select(self.env, False, db)
         }
         return 'milestone_delete.html', data, None
@@ -677,19 +661,18 @@ class MilestoneModule(Component):
     def _render_editor(self, req, db, milestone):
         data = {
             'milestone': milestone,
-            'context': Context(self.env, req, db=db)('milestone', milestone.name),
             'date_hint': get_date_format_hint(),
             'datetime_hint': get_datetime_format_hint(),
             'milestones': [],
         }
 
         if milestone.exists:
-            req.perm.require('MILESTONE_MODIFY', 'milestone', milestone.name)
+            req.perm(milestone.resource).require('MILESTONE_MODIFY')
             data['milestones'] = [m for m in
                                   Milestone.select(self.env, False, db)
                                   if m.name != milestone.name]
         else:
-            req.perm.require('MILESTONE_CREATE', 'milestone', milestone.name)
+            req.perm(milestone.resource).require('MILESTONE_CREATE')
 
         return 'milestone_edit.html', data, None
 
@@ -698,8 +681,6 @@ class MilestoneModule(Component):
         available_groups = []
         component_group_available = False
         ticket_fields = TicketSystem(self.env).get_ticket_fields()
-
-        context = Context(self.env, req)('milestone', milestone.name)
 
         # collect fields that can be used for grouping
         for field in ticket_fields:
@@ -719,12 +700,14 @@ class MilestoneModule(Component):
         by = req.args.get('by', by)
 
         tickets = get_tickets_for_milestone(self.env, db, milestone.name, by)
-        tickets = apply_ticket_permissions(self.env, req, milestone, tickets)
+        tickets = apply_ticket_permissions(self.env, req, tickets)
         stat = get_ticket_stats(self.stats_provider, tickets)
 
+        context = Context.from_request(req, milestone.resource)
         data = {
-            'milestone': milestone, 'context': context,
-            'attachments': AttachmentModule(self.env).permitted_attachment_list(req, context),
+            'context': context,
+            'milestone': milestone,
+            'attachments': AttachmentModule(self.env).attachment_data(context),
             'available_groups': available_groups, 
             'grouped_by': by,
             'groups': milestone_groups
@@ -781,26 +764,37 @@ class MilestoneModule(Component):
 
     def _format_link(self, formatter, ns, name, label):
         name, query, fragment = formatter.split_link(name)
-        href = formatter.href.milestone(name) + query + fragment
-        return self.render_milestone_link(href, name, label)
+        return self._render_link(formatter.context, name, label,
+                                 query + fragment)
 
-    # Public methods
-    
-    def render_milestone_link(self, href, name, label):
+    def _render_link(self, context, name, label, extra=''):
         try:
             milestone = Milestone(self.env, name)
         except TracError:
-            milestone = Milestone(self.env)
+            milestone = None
         # Note: the above should really not be needed, `Milestone.exists`
         # should simply be false if the milestone doesn't exist in the db
-        if milestone.exists:
+        # (related to #4130)
+        href = context.href.milestone(name)
+        if milestone and milestone.exists and \
+           'MILESTONE_VIEW' in context.perm(milestone.resource):
             closed = milestone.is_completed and 'closed ' or ''
-            return tag.a(label, class_='%smilestone' % closed, href=href)
+            return tag.a(label, class_='%smilestone' % closed, href=href+extra)
         else: 
-            return tag.a(label, class_='missing milestone', href=href,
+            return tag.a(label, class_='missing milestone', href=href+extra,
                          rel="nofollow")
+        
+    # IResourceManager methods
 
-    # IContextProvider methods
+    def get_resource_realms(self):
+        yield 'milestone'
 
-    def get_context_classes(self):
-        yield MilestoneContext
+    def get_resource_description(self, resource, format=None, context=None,
+                                 **kwargs):
+        desc = resource.id
+        if format != 'compact':
+            desc =  _('Milestone %(name)s', name=resource.id)
+        if context:
+            return self._render_link(context, resource.id, desc)
+        else:
+            return desc

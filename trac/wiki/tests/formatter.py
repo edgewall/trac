@@ -4,14 +4,15 @@ import StringIO
 import unittest
 import difflib
 
-from trac.context import Context
 from trac.core import *
-from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
-from trac.wiki.macros import WikiMacroBase
+from trac.mimeview import Context
 from trac.test import Mock, MockPerm, EnvironmentStub
 from trac.util.html import html
 from trac.util.text import to_unicode
+from trac.web.href import Href
+from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
+from trac.wiki.macros import WikiMacroBase
 
 # We need to supply our own macro because the real macros
 # can not be loaded using our 'fake' environment.
@@ -93,23 +94,14 @@ class WikiTestCase(unittest.TestCase):
         self._teardown = teardown
 
         self.env = EnvironmentStub()
-
+        req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
+                   authname='anonymous', perm=MockPerm(), args={})
         if context:
-            self.context = context()
-            self.context.env = self.env
+            if isinstance(context, tuple):
+                context = Context.from_request(req, *context)
         else:
-            self.context = Context(self.env, None)('wiki', 'WikiStart')
-
-        from trac.web.href import Href
-
-        req = Mock(href=Href('/'),
-                   abs_href=Href('http://www.example.com/'),
-                   authname='anonymous',
-                   perm=MockPerm())
-        if not self.context.req:
-            self.context.req = self.req = req
-        else:
-            self.req = self.context.req
+            context = Context.from_request(req, 'wiki', 'WikiStart')
+        self.context = context
 
         # -- macros support
         self.env.path = ''
@@ -126,8 +118,8 @@ class WikiTestCase(unittest.TestCase):
         # TODO: remove the following lines in order to discover
         #       all the places were we should use the req.href
         #       instead of env.href
-        self.env.href = self.req.href
-        self.env.abs_href = self.req.abs_href
+        self.env.href = req.href
+        self.env.abs_href = req.abs_href
 
     def setUp(self):
         if self._setup:
@@ -152,18 +144,20 @@ class WikiTestCase(unittest.TestCase):
                 g1 = ["%s\n" % x for x in match.group(1).split(r'\n')]
                 g2 = ["%s\n" % x for x in match.group(2).split(r'\n')]
                 diff = ''.join(list(difflib.unified_diff(g1, g2)))
-                msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s\ndiff:\n%s' \
-                      % (sep, ''.join(g1), sep, ''.join(g2), sep, diff)
-# Tip: sometimes, 'expected' and 'actual' differ only by whitespace,
-#      then replace the above line by those two:
-#                      % (sep, match.group(1).replace(' ', '.'),
-#                         sep, match.group(2).replace(' ', '.'), sep)
+                msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s' \
+                      '\nwiki text:\n%s\ndiff:\n%s' \
+                      % (sep, ''.join(g1), sep, ''.join(g2), sep,
+# Tip: sometimes, 'expected' and 'actual' differ only by whitespace.
+#      If so, replace the above lines by those two:
+#                      % (sep, match.group(1).replace(' ', '.'), sep
+#                         sep, match.group(2).replace(' ', '.'), sep,
+                         self.input, diff)
             raise AssertionError( # See below for details
                 '%s\n\n%s:%s: "%s" (%s flavor)' \
                 % (msg, self.file, self.line, self.title, formatter.flavor))
 
     def formatter(self):
-        return HtmlFormatter(self.context, self.input)
+        return HtmlFormatter(self.env, self.context, self.input)
 
     def shortDescription(self):
         return 'Test ' + self.title
@@ -171,7 +165,7 @@ class WikiTestCase(unittest.TestCase):
 
 class OneLinerTestCase(WikiTestCase):
     def formatter(self):
-        return InlineHtmlFormatter(self.context, self.input)
+        return InlineHtmlFormatter(self.env, self.context, self.input)
 
 
 def suite(data=None, setup=None, file=__file__, teardown=None, context=None):

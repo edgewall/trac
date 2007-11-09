@@ -20,12 +20,15 @@
 from urlparse import urljoin
 
 from trac.core import *
+from trac.resource import get_resource_url
 from trac.util.datefmt import to_timestamp
 from trac.web.href import Href
 
 
 class TimelineEvent(object):
     """Group event related information.
+
+    WARNING: this interface is going to be overhauled
 
     The first two properties are set in the constructor:
 
@@ -44,7 +47,7 @@ class TimelineEvent(object):
 
     The next two are set using the `add_wiki` method.
     
-    context: resource context
+    resource: resource context
     wikitext: dictionary of contextual information
               Standard keys include:
               `body` will be interpreted as the main text
@@ -79,11 +82,12 @@ class TimelineEvent(object):
         self.wikitext = {}
         self.author = 'unknown'
         self.date = self.authenticated = self.ipnr = None
-        self.context = None
+        self.resource = None
         self.href_fragment = ''
         if isinstance(args[0], Component):
             self.provider = args[0]
             self.kind = args[1]
+            self.env = self.provider.env
         else:
             self.kind = args[0]
             class DummyProvider(object):
@@ -100,14 +104,15 @@ class TimelineEvent(object):
                 self.markup['header'] = markup
 
     def get_href(self, href=None):
-        if self.context:
-            return self.context.get_href(href) + self.href_fragment
+        if self.resource:
+            return get_resource_url(self.env, self.resource, href) + \
+                   self.href_fragment
         else:
             return self.direct_href
 
     def __repr__(self):
         return '<TimelineEvent %s - %r>' % (self.date,
-                                            self.context or self.direct_href)
+                                            self.resource or self.direct_href)
 
     def set_changeinfo(self, date, author='anonymous', authenticated=None,
                        ipnr=None):
@@ -122,33 +127,15 @@ class TimelineEvent(object):
             if v:
                 self.markup[k] = v
 
-    def add_wiki(self, context, **kwargs):
+    def add_wiki(self, resource, **kwargs):
         """Populate the wikitext dictionary."""
-        self.context = context
+        self.resource = resource
         for k, v in kwargs.iteritems():
             if v:
                 self.wikitext[k] = v
 
     def dateuid(self):
         return to_timestamp(self.date)
-
-    # What follows correspond to a temporary API used during 0.11dev
-    # It's kept for compatibility but will be removed in 0.12, so don't use
-
-    title = property(lambda s: s.markup.get('title'))
-    href = property(get_href)
-    def _get_abs_href(self):
-        req = self.context.req
-        if self.href.startswith('/'):
-            # Convert from a relative `href` 
-            return urljoin(req.abs_href.base, self.href)
-        else:
-            return self.href
-    abs_href = property(fget=_get_abs_href)
-
-    def set_context(self, context, wikitext=None):
-        """Deprecated: use `add_wiki` instead"""
-        self.add_wiki(context, body=wikitext)
 
 
 

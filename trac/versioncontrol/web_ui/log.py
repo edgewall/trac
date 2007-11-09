@@ -20,8 +20,8 @@ import re
 import urllib
 
 from trac.config import IntOption
-from trac.context import Context
 from trac.core import *
+from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.util import Ranges
 from trac.util.datefmt import http_date
@@ -212,7 +212,7 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
         data = {
-            'context': Context(self.env, req)('source', path),
+            'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
             'path_links': path_links, 'limit' : limit,
@@ -220,11 +220,13 @@ class LogModule(Component):
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
-            }
+        }
 
         if req.args.get('format') == 'changelog':
             return 'revisionlog.txt', data, 'text/plain'
         elif req.args.get('format') == 'rss':
+            data['context'] = Context.from_request(req, 'source', path,
+                                                   absurls=True)
             return 'revisionlog.rss', data, 'application/rss+xml'
 
         add_stylesheet(req, 'common/css/diff.css')
