@@ -42,7 +42,7 @@ class InterTracDispatcher(Component):
 
     def process_request(self, req):
         link = req.args.get('link', '')
-        link_elt = extract_link(Context(self.env, req), link)
+        link_elt = extract_link(self.env, Context.from_request(req), link)
         if isinstance(link_elt, Element):
             href = link_elt.attrib.get('href')
         else:
