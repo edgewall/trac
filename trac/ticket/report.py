@@ -214,7 +214,8 @@ class ReportModule(Component):
             # If no particular report was requested, display
             # a list of available reports instead
             title = _('Available Reports')
-            sql = 'SELECT id AS report, title FROM report ORDER BY report'
+            sql = ("SELECT id AS report, title, 'report' as _realm "
+                   "FROM report ORDER BY report")
             description = _('This is a list of available reports.')
         else:
             cursor = db.cursor()
