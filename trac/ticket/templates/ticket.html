@@ -93,8 +93,8 @@
         </py:choose>
 
         <py:if test="ticket.exists">
-          <span class="status">(${ticket.status} <py:if
-              test="ticket.type">${ticket.type}</py:if><py:if
+          <span class="status">(${ticket.status}<py:if
+              test="ticket.type"> ${ticket.type}</py:if><py:if
               test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
           <py:choose test="">
             <py:when test="version is None" />
