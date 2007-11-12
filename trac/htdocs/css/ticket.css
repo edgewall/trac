@@ -31,7 +31,7 @@ div#ticketchange.ticketdraft h3 {
  padding: 0 .2em;
 }
 
-h1 .status { color: #444; text-transform: lowercase; }
+h1 .status { color: #444; }
 #ticket h2.summary { margin: 0 0 .8em 0 }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
 #ticket .date p { margin: 0 }
