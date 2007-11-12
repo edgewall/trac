@@ -34,9 +34,10 @@ div#ticketchange.ticketdraft h3 {
 h1 .status { color: #444; }
 #ticket h2.summary { margin: 0 0 .8em 0 }
 #ticket .date { color: #996; float: right; font-size: 85%; position: relative }
-#ticket .date p { margin: 0 }
+#ticket .date p { margin: .3em }
 
 #ticket table.properties {
+ clear: both;
  border-top: 1px solid #dd9;
  border-collapse: collapse;
  table-layout: fixed;
