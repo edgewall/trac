@@ -88,7 +88,7 @@
             </a>
           </py:when>
           <py:otherwise>
-            Create New Ticket
+            Create New Ticket <span py:if="ticket.type" class="status">(${ticket.type})</span>
           </py:otherwise>
         </py:choose>
 
@@ -140,7 +140,7 @@
           <h2 class="summary searchable">$ticket.summary</h2>
 
           <table class="properties"
-                 py:with="fields = [f for f in fields if not f.skip]">
+                 py:with="fields = [f for f in fields if not f.skip and f.name != 'type']">
             <tr>
               <th id="h_reporter">Reported by:</th>
               <td headers="h_reporter" class="searchable">${authorinfo(ticket.reporter)}</td>
