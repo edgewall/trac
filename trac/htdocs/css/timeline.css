@@ -21,7 +21,6 @@ dt :link, dt :visited {
 dt>:link, dt>:visited {
  /* Hide from IE/Win */
  background-position: 3px 4px;
- display: block;
 }
 dt :link:hover, dt :visited:hover { background-color: #eed; color: #000 }
 dt em {
