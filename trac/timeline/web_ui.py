@@ -105,9 +105,13 @@ class TimelineModule(Component):
                 precision = None
         fromdate = fromdate.replace(hour=23, minute=59, second=59)
         try:
-            daysback = max(0, int(req.args.get('daysback', '')))
+            daysback = int(req.args.get('daysback', ''))
         except ValueError:
-            daysback = self.default_daysback
+            try:
+                daysback = int(req.session.get('timeline.daysback', ''))
+            except ValueError:
+                daysback = self.default_daysback
+        daysback = max(0, daysback)
 
         data = {'fromdate': fromdate, 'daysback': daysback,
                 'today': format_date(today),
@@ -174,6 +178,8 @@ class TimelineModule(Component):
             data['email_map'] = email_map
             data['context'] = Context.from_request(req, absurls=True)
             return 'timeline.rss', data, 'application/rss+xml'
+        else:
+            req.session['timeline.daysback'] = daysback
 
         add_stylesheet(req, 'common/css/timeline.css')
         rss_href = req.href.timeline([(f, 'on') for f in filters],
