@@ -352,9 +352,9 @@ class Formatter(object):
         url = intertrac.get(ns+'.url')
         if url:
             name = intertrac.get(ns+'.title', 'Trac project %s' % ns)
-            compat = intertrac.getbool(ns+'.compat', 'true')
-            # TODO: set `compat` default to False once 0.10 gets widely used
-            # and remove compatibility code altogether once 0.[89] disappear...
+            compat = intertrac.getbool(ns+'.compat', 'false')
+            # set `compat` default to False now that 0.10 is widely used
+            # TODO: remove compatibility code completely for 1.0 release
             if compat:
                 sep = target.find(':')
                 if sep != -1:
