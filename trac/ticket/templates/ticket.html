@@ -180,20 +180,6 @@
                 </span>
               </h3>
 
-              <!--! Clone the ticket (only for existing tickets) -->
-              <form py:if="ticket.exists and 'TICKET_ADMIN' in perm(ticket.resource)" method="post" action="${href.newticket()}">
-                <div class="inlinebuttons">
-                  <input type="submit" name="clone" value="Clone" title="Create a copy of this ticket"  />
-                  <py:for each="f in fields">
-                    <py:choose test="f.name">
-                      <input py:when="'summary'" type="hidden" name="field_summary" value="$ticket.summary (cloned)" />
-                      <input py:when="'description'" type="hidden" name="field_description" value="Cloned from #$ticket.id: ${'\n----\n' + ticket.description}" />
-                      <input py:otherwise="" type="hidden" name="field_${f.name}" value="${ticket[f.name]}" />
-                    </py:choose>
-                  </py:for>
-                </div>
-              </form>
-
               <!--! Quote the description (only for existing tickets) -->
               <form py:if="ticket.exists and ticket.description and
                            'TICKET_APPEND' in perm(ticket.resource)"
