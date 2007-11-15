@@ -79,6 +79,26 @@ class IAttachmentManipulator(Interface):
         attachment. Therefore, a return value of `[]` means everything is
         OK."""
 
+class ILegacyAttachmentPolicyDelegate(Interface):
+    """Interface that can be used by plugins to seemlessly participate to the
+       legacy way of checking for attachment permissions.
+
+       This should no longer be necessary once it becomes easier to 
+       setup fine-grained permissions in the default permission store.
+    """
+
+    def check_attachment_permission(action, username, resource, perm):
+        """Return the usual True/False/None security policy decision
+           appropriate for the requested action on an attachment.
+
+            :param action: one of ATTACHMENT_VIEW, ATTACHMENT_CREATE,
+                                  ATTACHMENT_DELETE
+            :param username: the user string
+            :param resource: the `Resource` for the attachment. Note that when
+                             ATTACHMENT_CREATE is checked, the resource `.id`
+                             will be `None`. 
+            :param perm: the permission cache for that username and resource
+            """
 
 
 class Attachment(object):
@@ -695,6 +715,8 @@ class AttachmentModule(Component):
 class LegacyAttachmentPolicy(Component):
 
     implements(IPermissionPolicy)
+    
+    delegates = ExtensionPoint(ILegacyAttachmentPolicyDelegate)
 
     # IPermissionPolicy methods
 
@@ -719,3 +741,9 @@ class LegacyAttachmentPolicy(Component):
                                    'access to %s. User needs %s' %
                                    (username, resource, legacy_action))
             return decision
+        else:
+            for d in self.delegates:
+                decision = d.check_attachment_permission(action, username,
+                        resource, perm)
+                if decision is not None:
+                    return decision
