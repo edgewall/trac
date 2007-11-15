@@ -1029,17 +1029,17 @@ def format_to(env, flavor, context, wikidom, **options):
 
 def format_to_html(env, context, wikidom, escape_newlines=False):
     if not wikidom:
-        return ''
+        return Markup()
     return HtmlFormatter(env, context, wikidom).generate(escape_newlines)
 
 def format_to_oneliner(env, context, wikidom, shorten=False):
     if not wikidom:
-        return ''
+        return Markup()
     return InlineHtmlFormatter(env, context, wikidom).generate(shorten)
 
 def extract_link(env, context, wikidom):
     if not wikidom:
-        return ''
+        return Markup()
     return LinkFormatter(env, context).match(wikidom)
 
 

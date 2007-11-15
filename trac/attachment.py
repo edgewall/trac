@@ -32,7 +32,6 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.resource import *
-from trac.timeline.api import TimelineEvent
 from trac.util import get_reporter_id, create_unique_file, content_disposition
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
@@ -41,6 +40,7 @@ from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.formatter import format_to_oneliner
 
 
 class InvalidAttachment(TracError):
@@ -430,24 +430,23 @@ class AttachmentModule(Component):
         """
         for change, realm, id, filename, time, descr, author in \
                 self.get_history(start, stop, resource_realm.realm):
-            parent = resource_realm(id=id)
-            attachment = parent.child('attachment', filename)
+            attachment = resource_realm(id=id).child('attachment', filename)
             if 'ATTACHMENT_VIEW' in req.perm(attachment):
-                title = tag(tag.em(os.path.basename(filename)),
-                            _(" attached to "),
-                            tag.em(get_resource_name(self.env, parent),
-                                   title=get_resource_summary(self.env,
-                                                              parent)))
-                ### FIXME: the link is no longer to the attachment...
-                event = TimelineEvent(self, 'attachment')
-                event.set_changeinfo(time, author)
-                event.add_markup(title=title)
-                event.add_wiki(parent, body=descr)
-                yield event
+                yield ('attachment', time, author, (attachment, descr), self)
 
-    def event_formatter(self, event, key):
-        return None
-    
+    def render_timeline_event(self, context, field, event):
+        attachment, descr = event[3]
+        if field == 'url':
+            return self.get_resource_url(attachment, context.href)
+        elif field == 'title':
+            name = get_resource_name(self.env, attachment.parent)
+            title = get_resource_summary(self.env, attachment.parent)
+            return tag(tag.em(os.path.basename(attachment.id)),
+                       _(" attached to "), tag.em(name, title=title))
+        elif field == 'description':
+            return format_to_oneliner(self.env, context(attachment.parent),
+                                      descr)
+   
     # IResourceManager methods
     
     def get_resource_realms(self):

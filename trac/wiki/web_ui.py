@@ -28,7 +28,7 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
-from trac.timeline.api import ITimelineEventProvider, TimelineEvent
+from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import shorten_line
@@ -38,6 +38,7 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, ITemplateProvider
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
+from trac.wiki.formatter import format_to_oneliner
 from trac.wiki.model import WikiPage
 
 class InvalidWikiPage(TracError):
@@ -521,33 +522,38 @@ class WikiModule(Component):
         if 'wiki' in filters:
             wiki_realm = Resource('wiki')
             cursor = db.cursor()
-            cursor.execute("SELECT time,name,comment,author,ipnr,version "
+            cursor.execute("SELECT time,name,comment,author,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (to_timestamp(start), to_timestamp(stop)))
-            for ts,name,comment,author,ipnr,version in cursor:
-                p = wiki_realm(id=name, version=version)
-                if 'WIKI_VIEW' not in req.perm(p):
+            for ts,name,comment,author,version in cursor:
+                wiki_page = wiki_realm(id=name, version=version)
+                if 'WIKI_VIEW' not in req.perm(wiki_page):
                     continue
-                title = tag(tag.em(get_resource_name(self.env, p)),
-                            version > 1 and ' edited' or ' created')
-                markup = None
-                if version > 1:
-                    markup = tag.a('(diff)',
-                                   href=req.href.wiki(p.id, action='diff'))
-                t = datetime.fromtimestamp(ts, utc)
-                event = TimelineEvent(self, 'wiki')
-                event.set_changeinfo(t, author, ipnr=ipnr)
-                event.add_markup(title=title, footer=markup)
-                event.add_wiki(p, body=comment)
-                yield event
+                yield ('wiki', datetime.fromtimestamp(ts, utc), author,
+                       (wiki_page, comment))
 
             # Attachments
             for event in AttachmentModule(self.env).get_timeline_events(
                 req, wiki_realm, start, stop):
                 yield event
 
-    def event_formatter(self, event, key):
-        return None
+    def render_timeline_event(self, context, field, event):
+        wiki_page, comment = event[3]
+        if field == 'url':
+            return context.href.wiki(wiki_page.id, version=wiki_page.version)
+        elif field == 'title':
+            return tag(tag.em(get_resource_name(self.env, wiki_page)),
+                       wiki_page.version > 1 and ' edited' or ' created')
+        elif field == 'description':
+            if self.config['timeline'].getbool('abbreviated_messages'):
+                comment = shorten_line(comment)
+            markup = format_to_oneliner(self.env, context(resource=wiki_page),
+                                        comment)
+            if wiki_page.version > 1:
+                diff_href = context.href.wiki(
+                    wiki_page.id, version=wiki_page.version, action='diff')
+                markup = tag(markup, ' ', tag.a('(diff)', href=diff_href))
+            return markup
 
     # ISearchSource methods
 

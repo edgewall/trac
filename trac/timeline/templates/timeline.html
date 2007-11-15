@@ -42,23 +42,13 @@
           <py:for each="event in events"
             py:with="highlight = precision and precisedate and timedelta(0) &lt;= (event.date - precisedate) &lt; precision">
             <dt class="${classes(event.kind, highlight=highlight)}">
-              <a href="${event.get_href(href)}">
-                <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.markup.get('title')}
+              <a href="${event.render('url', context)}">
+                <span class="time">${format_time(event.date, str('%H:%M'))}</span> ${event.render('title', context)}
                 <py:if test="event.author">by <span class="author">${format_author(event.author)}</span></py:if>
               </a>
             </dt>
-            <!--! TODO: move the generation of the description back into the components -->
             <dd class="${classes(event.kind, highlight=highlight)}">
-              ${event.markup.get('header')}
-              <py:for each="key in event.wikitext">
-                <py:with vars="flavor, options = event.provider.event_formatter(event, key) or ('oneliner', {})"><?python
-                  if flavor == 'oneliner' and 'shorten' not in options:
-                      options['shorten'] = abbreviated_messages
-                  ?>
-                  ${wiki_to(flavor, context(event.resource), event.wikitext[key], **options)}
-                </py:with>
-              </py:for>
-              ${event.markup.get('footer')}
+              ${event.render('description', context)}
             </dd>
           </py:for>
         </dl>

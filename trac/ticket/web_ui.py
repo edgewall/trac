@@ -34,7 +34,7 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket import ITicketActionController
 from trac.ticket.notification import TicketNotifyEmail
-from trac.timeline.api import ITimelineEventProvider, TimelineEvent
+from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
@@ -45,7 +45,7 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
                             INavigationContributor, ITemplateProvider
-
+from trac.wiki.formatter import format_to
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
@@ -213,17 +213,16 @@ class TicketModule(Component):
                       'reopened': ('reopenedticket', 'reopened'),
                       'closed': ('closedticket', 'closed'),
                       'edit': ('editedticket', 'updated')}
-        ticket_realm = Resource('ticket')
-        ticketsystem = TicketSystem(self.env)
-        description = {}
 
-        def produce((id, ts, author, type, summary, description),
-                    status, fields, comment, cid):
-            resource = ticket_realm(id=id)
-            if 'TICKET_VIEW' not in req.perm(resource):
+        ticket_realm = Resource('ticket')
+
+        def produce_event((id, ts, author, type, summary, description),
+                          status, fields, comment, cid):
+            ticket = ticket_realm(id=id)
+            if 'TICKET_VIEW' not in req.perm(ticket):
                 return None
-            info = ''
             resolution = fields.get('resolution')
+            info = ''
             if status == 'edit':
                 if 'ticket_details' in filters:
                     if len(fields) > 0:
@@ -240,26 +239,9 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            title = ticketsystem.format_summary(summary, status,
-                                                resolution, type)
-            title = tag('Ticket ', tag.em(get_resource_shortname(self.env,
-                                                                 resource),
-                                          title=title),
-                        ' (', shorten_line(summary), ') ', verb)
-            markup = message = None
-            if status == 'new':
-                message = description
-            else:
-                markup = info
-                message = comment
-            t = datetime.fromtimestamp(ts, utc)
-            event = TimelineEvent(self, kind)
-            event.set_changeinfo(t, author)
-            event.add_markup(title=title, header=markup) # FIXME
-            event.add_wiki(resource, body=message) # FIXME
-            if cid:
-                event.href_fragment = '#comment:' + cid
-            return event
+            return (kind, datetime.fromtimestamp(ts, utc), author,
+                    (ticket, verb, info, summary, status, resolution, type,
+                     description, comment, cid))
 
         # Ticket changes
         db = self.env.get_db_cnx()
@@ -277,8 +259,8 @@ class TicketModule(Component):
             for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
                 if not previous_update or (id,t,author) != previous_update[:3]:
                     if previous_update:
-                        ev = produce(previous_update, status, fields,
-                                     comment, cid)
+                        ev = produce_event(previous_update, status, fields,
+                                           comment, cid)
                         if ev:
                             yield ev
                     status, fields, comment, cid = 'edit', {}, '', None
@@ -291,7 +273,8 @@ class TicketModule(Component):
                 else:
                     fields[field] = newvalue
             if previous_update:
-                ev = produce(previous_update, status, fields, comment, cid)
+                ev = produce_event(previous_update, status, fields,
+                                   comment, cid)
                 if ev:
                     yield ev
 
@@ -302,7 +285,7 @@ class TicketModule(Component):
                                "  FROM ticket WHERE time>=%s AND time<=%s",
                                (ts_start, ts_stop))
                 for row in cursor:
-                    ev = produce(row, 'new', {}, None, None)
+                    ev = produce_event(row, 'new', {}, None, None)
                     if ev:
                         yield ev
 
@@ -312,11 +295,34 @@ class TicketModule(Component):
                     req, ticket_realm, start, stop):
                     yield event
 
-    def event_formatter(self, event, key):
-        flavor = 'oneliner'
-        if event.kind == 'newticket':
-            flavor = self.timeline_newticket_formatter
-        return (flavor, {})
+    def render_timeline_event(self, context, field, event):
+        ticket, verb, info, summary, status, resolution, type, \
+                description, comment, cid = event[3]
+        if field == 'url':
+            href = context.href.ticket(ticket.id)
+            if cid:
+                href += '#comment:' + cid
+            return href
+        elif field == 'title':
+            title = TicketSystem(self.env).format_summary(summary, status,
+                                                          resolution, type)
+            return tag('Ticket ', tag.em('#', ticket.id, title=title),
+                       ' (', shorten_line(summary), ') ', verb)
+        elif field == 'description':
+            descr = message = ''
+            if status == 'new':
+                message = description
+                flavor = self.timeline_newticket_formatter
+            else:
+                descr = info
+                message = comment
+                flavor = 'oneliner'
+            if message:
+                if self.config['timeline'].getbool('abbreviated_messages'):
+                    message = shorten_line(message)
+                descr += format_to(self.env, flavor, context(resource=ticket),
+                                   message)
+            return descr
 
     # Internal methods
 

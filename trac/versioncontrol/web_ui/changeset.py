@@ -33,7 +33,7 @@ from trac.mimeview import Mimeview, is_binary, Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
-from trac.timeline.api import ITimelineEventProvider, TimelineEvent
+from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted, groupby
 from trac.util.datefmt import pretty_timedelta, utc
@@ -47,6 +47,7 @@ from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
+from trac.wiki.formatter import format_to_html
 
 
 class IPropertyDiffRenderer(Interface):
@@ -140,7 +141,7 @@ class ChangesetModule(Component):
         some formatting (bullet points, etc).""")
 
     timeline_collapse = BoolOption('timeline', 'changeset_collapse_events',
-                                   'true',
+                                   'false',
         """Whether consecutive changesets from the same author having 
         exactly the same message should be presented as one event.
         That event will link to the range of changesets in the log view.
@@ -763,8 +764,6 @@ class ChangesetModule(Component):
                 show_files = int(show_files)
             else:
                 show_files = 0 # disabled
-            wiki_format = self.wiki_format_messages
-            long_messages = self.timeline_long_messages
             
             repos = self.env.get_repository(req.authname)
 
@@ -775,70 +774,76 @@ class ChangesetModule(Component):
                 
             for _, changesets in groupby(repos.get_changesets(start, stop),
                                          key=collapse_changesets):
-                changesets = list(changesets)
-                chgset = changesets[-1]
-                if not 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
-                    continue
-                summary = shorten_line(chgset.message or '')
-                
-                if len(changesets) > 1:
-                    revs = '%s-%s' % (changesets[0].rev, changesets[-1].rev)
-                    title = tag('Changesets ', tag.em('[', revs, ']'))
-                    href = req.href.log(revs=revs)
-                else:
-                    title = tag('Changeset ', tag.em('[%s]' % chgset.rev))
-                    href = req.href.changeset(chgset.rev)
-                if wiki_format:
-                    message = chgset.message
-                    markup = ''
-                else:
-                    message = None
-                    markup = long_messages and chgset.message or summary
-                             
+                permitted_changesets = []
+                for chgset in changesets:
+                    if 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
+                        permitted_changesets.append(chgset)
+                if permitted_changesets:
+                    chgset = permitted_changesets[-1]
+                    yield ('changeset', chgset.date, chgset.author,
+                           (permitted_changesets, chgset.message or '',
+                            show_location, show_files))
 
-                if 'BROWSER_VIEW' in req.perm:
-                    files = []
-                    if show_location:
-                        filestats = self._prepare_filestats()
-                        for c in changesets:
-                            for chg in c.get_changes():
-                                filestats[chg[2]] += 1
-                                files.append(chg[0])
-                        markup = tag.ul(tag.li(
-                            [(tag.div(class_=kind),
+    def render_timeline_event(self, context, field, event):
+        changesets, message, show_location, show_files = event[3]
+        rev_b, rev_a = changesets[0].rev, changesets[-1].rev
+        
+        if field == 'url':
+            if rev_a == rev_b:
+                return context.href.changeset(rev_a)
+            else:
+                return context.href.log(rev=rev_b, stop_rev=rev_a)
+            
+        elif field == 'description':
+            if self.timeline_long_messages:
+                message = shorten_line(message)
+            if self.wiki_format_messages:
+                markup = ''
+            else:
+                markup = message
+                message = None
+            if 'BROWSER_VIEW' in context.perm:
+                files = []
+                if show_location:
+                    filestats = self._prepare_filestats()
+                    for c in changesets:
+                        for chg in c.get_changes():
+                            filestats[chg[2]] += 1
+                            files.append(chg[0])
+                    stats = [(tag.div(class_=kind),
                               tag.span(count, ' ',
                                        count > 1 and
                                        (kind == 'copy' and
                                         'copies' or kind + 's') or kind))
                              for kind in Changeset.ALL_CHANGES
-                             for count in (filestats[kind],) if count],
-                            ' in ', tag.strong(self._get_location(files))),
-                            markup, class_="changes")
-                    elif show_files:
-                        for c in changesets:
-                            for chg in c.get_changes():
-                                if show_files > 0 and len(files) > show_files:
-                                    break
-                                files.append(tag.li(tag.div(class_=chg[2]),
-                                                    chg[0] or '/'))
-                        if show_files > 0 and len(files) > show_files:
-                            files = files[:show_files] + [tag.li(u'\u2026')]
-                        markup = tag(tag.ul(files, class_="changes"), markup)
+                             for count in (filestats[kind],) if count]
+                    markup = tag.ul(
+                        tag.li(stats, ' in ',
+                               tag.strong(self._get_location(files))),
+                        markup, class_="changes")
+                elif show_files:
+                    for c in changesets:
+                        for chg in c.get_changes():
+                            if show_files > 0 and len(files) > show_files:
+                                break
+                            files.append(tag.li(tag.div(class_=chg[2]),
+                                                chg[0] or '/'))
+                    if show_files > 0 and len(files) > show_files:
+                        files = files[:show_files] + [tag.li(u'\u2026')]
+                    markup = tag(tag.ul(files, class_="changes"), markup)
+            if message:
+                markup += format_to_html(self.env, context, message)
+            return markup
 
-                event = TimelineEvent(self, 'changeset')
-                event.add_markup(title=title, header=markup,
-                                 summary='%s: %s' % (title, summary))
-                event.set_changeinfo(chgset.date, chgset.author, True)
-                event.add_wiki(Resource('changeset', chgset.rev),
-                               body=message)
-                yield event
-
-    def event_formatter(self, event, key):
-        flavor = self.timeline_long_messages and 'default' or 'oneliner'
-        options = {}
-        if flavor == 'oneliner':
-            options['shorten'] = True
-        return (flavor, options)
+        if rev_a == rev_b:
+            title = tag('Changeset ', tag.em('[%s]' % rev_a))
+        else:
+            title = tag('Changesets ', tag.em('[', rev_a, '-', rev_b, ']'))
+            
+        if field == 'title':
+            return title
+        elif field == 'summary':
+            return '%s: %s' % (title, shorten_line(message))
         
     # IWikiSyntaxProvider methods
 

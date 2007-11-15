@@ -25,120 +25,6 @@ from trac.util.datefmt import to_timestamp
 from trac.web.href import Href
 
 
-class TimelineEvent(object):
-    """Group event related information.
-
-    WARNING: this interface is going to be overhauled
-
-    The first two properties are set in the constructor:
-
-    provider: reference to the event provider
-
-    kind: category of the event, will also be used as the CSS class for
-          the event's entry in the timeline
-
-    The following is set using the `add_markup` method.
-    
-    markup: dictionary of litteral informations regarding the events.
-            Standard keys include:
-             - 'title': short summary for the event
-             - 'header': markup that comes before the main body
-             - 'footer': markup that comes after the main body
-
-    The next two are set using the `add_wiki` method.
-    
-    resource: resource context
-    wikitext: dictionary of contextual information
-              Standard keys include:
-              `body` will be interpreted as the main text
-              `summary`
-
-    The next four are set using the `set_changeinfo` method.
-    
-    date, author, authenticated, ipnr:
-             date and authorship info for the event;
-             `date` is a datetime instance
-
-    Other properties:
-
-    href_fragment: optional fragment that will position to some place
-                   within the resource page
-
-    direct_href: direct link to the event,, if there's no resource associated
-                 to it
-    """
-
-    def __init__(self, *args, **kwargs):
-        """`TimelineEvent(provider, kind)` creates an event.
-
-        `provider` is the Component which provided the event and
-        `kind` is the specific sub-type of this event.
-
-        Note that 0.11dev API introduced originally another signature:
-        `(self, kind, title='', href=None, markup=None)`
-        We'll also stay compatible with the above until 0.12.
-        """
-        self.markup = {}
-        self.wikitext = {}
-        self.author = 'unknown'
-        self.date = self.authenticated = self.ipnr = None
-        self.resource = None
-        self.href_fragment = ''
-        if isinstance(args[0], Component):
-            self.provider = args[0]
-            self.kind = args[1]
-            self.env = self.provider.env
-        else:
-            self.kind = args[0]
-            class DummyProvider(object):
-                def event_formatter(self, event, key):
-                    return ('oneliner', {'shorten': True})
-            self.provider = DummyProvider()
-            title = len(args) > 1 and args[1] or kwargs.get('title')
-            href = len(args) > 2 and args[2] or kwargs.get('href')
-            markup = len(args) > 3 and args[3] or kwargs.get('markup')
-            self.direct_href = href
-            if title:
-                self.markup['title'] = title
-            if markup:
-                self.markup['header'] = markup
-
-    def get_href(self, href=None):
-        if self.resource:
-            return get_resource_url(self.env, self.resource, href) + \
-                   self.href_fragment
-        else:
-            return self.direct_href
-
-    def __repr__(self):
-        return '<TimelineEvent %s - %r>' % (self.date,
-                                            self.resource or self.direct_href)
-
-    def set_changeinfo(self, date, author='anonymous', authenticated=None,
-                       ipnr=None):
-        self.date = date
-        self.author = author
-        self.authenticated = authenticated
-        self.ipnr = ipnr
-
-    def add_markup(self, **kwargs):
-        """Populate the markup dictionary."""
-        for k, v in kwargs.iteritems():
-            if v:
-                self.markup[k] = v
-
-    def add_wiki(self, resource, **kwargs):
-        """Populate the wikitext dictionary."""
-        self.resource = resource
-        for k, v in kwargs.iteritems():
-            if v:
-                self.wikitext[k] = v
-
-    def dateuid(self):
-        return to_timestamp(self.date)
-
-
-
 class ITimelineEventProvider(Interface):
     """Extension point interface for adding sources for timed events to the
     timeline.
@@ -162,17 +48,31 @@ class ITimelineEventProvider(Interface):
         The `filters` parameters is a list of the enabled filters, each item
         being the name of the tuples returned by `get_timeline_filters`.
 
-        Since 0.11, the events are TimelineEvent instances.
+        Since 0.11, the events are `(kind, date, author, data)` tuples,
+        where `kind` is a string used for categorizing the event, `date`
+        is a `datetime` object, `author` is a string and `data` is some
+        private data that the component will reuse when rendering the event.
 
-        Note:
-        The events returned by this function used to be tuples of the form
-        (kind, href, title, date, author, markup). This is now deprecated.
+        When the event has been created indirectly by another module,
+        like this happens when calling `AttachmentModule.get_timeline_events()`
+        the tuple can also specify explicitly the provider by returning tuples
+        of the following form: `(kind, date, author, data, provider)`.
+
+        Before version 0.11,  the events returned by this function used to
+        be tuples of the form `(kind, href, title, date, author, markup)`.
+        This is still supported but less flexible, as `href`, `title` and
+        `markup` are not context dependent.
         """
 
-    def event_formatter(event, wikitext_key):
-        """For a given key (as found in the TimelineEvent.wikitext dictionary),
-        specify which formatter flavor and options should be used.
+    def render_timeline_event(context, field, event):
+        """Display the title of the event in the given context.
 
-        Returning `('oneliner', {})` is a safe choice and returning `None`
-        will let the template decide.
+        :param context: the rendering `Context` object that can be used for
+                        rendering
+        :param field: what specific part information from the event should
+                      be rendered: can be the 'title', the 'description' or
+                      the 'url'
+        :param event: the event tuple, as returned by `get_timeline_events`
         """
+
+

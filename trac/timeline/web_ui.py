@@ -29,7 +29,7 @@ from trac.config import IntOption, BoolOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
-from trac.timeline.api import ITimelineEventProvider, TimelineEvent
+from trac.timeline.api import ITimelineEventProvider
 from trac.util.compat import sorted
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
@@ -127,8 +127,8 @@ class TimelineModule(Component):
         filters = []
         # check the request or session for enabled filters, or use default
         for test in (lambda f: f[0] in req.args,
-                     lambda f: req.session.get('timeline.filter.%s' % f[0], '')\
-                               == '1',
+                     lambda f: req.session.get('timeline.filter.%s' % f[0],
+                                               '') == '1',
                      lambda f: len(f) == 2 or f[2]):
             if filters:
                 break
@@ -152,21 +152,18 @@ class TimelineModule(Component):
             try:
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters):
-                    # compatibility with 0.10 providers
-                    if isinstance(event, tuple):
-                        event = self._event_from_tuple(req, event)
-                    events.append(event)
+                    events.append(self._event_data(provider, event))
             except Exception, e: # cope with a failure of that provider
                 self._provider_failure(e, req, provider, filters,
                                        [f[0] for f in available_filters])
 
-        events = sorted(events, key=lambda e: e.date, reverse=True)
-
         # prepare sorted global list
+        events = sorted(events, key=lambda e: e['date'], reverse=True)
         if maxrows:
-            data['events'] = events[:maxrows]
-        else:
-            data['events'] = events
+            events = events[:maxrows]
+
+        data['events'] = events
+        
 
         if format == 'rss':
             # Get the email addresses of all known users
@@ -268,17 +265,27 @@ class TimelineModule(Component):
 
     # Internal methods
 
-    def _event_from_tuple(self, req, event):
-        """Build a TimelineEvent from a pre-0.11 ITimelineEventProvider tuple
-        """
-        kind, href, title, date, author, markup = event
-        if not isinstance(date, datetime):
+    def _event_data(self, provider, event):
+        """Compose the timeline event date from the event tuple and prepared
+        provider methods"""
+        if len(event) == 6: # 0.10 events
+            kind, href, title, date, author, markup = event
+            fields = {'href': href, 'title': title, 'description': markup}
+            render = lambda field, context: fields.get(field)
+        else: # 0.11 events
+            if len(event) == 5: # with special provider
+                kind, date, author, data, provider = event
+            else:
+                kind, date, author, data = event
+            render = lambda field, context: provider.render_timeline_event(
+                context, field, event)
+        if isinstance(date, datetime):
+            dateuid = to_timestamp(date)
+        else:
+            dateuid = date
             date = datetime.fromtimestamp(date, utc)
-        if href and href.startswith(req.abs_href.base):
-            href = urlparse(href)[2]
-        event = TimelineEvent(kind, title, href, markup)
-        event.set_changeinfo(date, author)
-        return event
+        return {'kind': kind, 'author': author, 'date': date,
+                'dateuid': dateuid, 'render': render}
 
     def _provider_failure(self, exc, req, ep, current_filters, all_filters):
         """Raise a TracError exception explaining the failure of a provider.

@@ -23,6 +23,7 @@ from genshi.builder import tag
 
 from trac import __version__
 from trac.attachment import AttachmentModule
+from trac.config import ExtensionOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
@@ -35,11 +36,11 @@ from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.query import Query
-from trac.timeline.api import ITimelineEventProvider, TimelineEvent
+from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.config import ExtensionOption
+from trac.wiki.formatter import format_to_html
 
 class ITicketGroupStatsProvider(Interface):
     def get_ticket_group_stats(self, ticket_ids):
@@ -507,25 +508,26 @@ class MilestoneModule(Component):
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
                            (to_timestamp(start), to_timestamp(stop)))
-            for ts, name, description in cursor:
+            for completed, name, description in cursor:
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
-                    completed = datetime.fromtimestamp(ts, utc)
-                    title = tag('Milestone ', tag.em(name), ' completed')
-                    event = TimelineEvent(self, 'milestone')
-                    event.set_changeinfo(completed, '') # FIXME: store the author
-                    event.add_markup(title=title)
-                    event.add_wiki(milestone, body=description) # FIXME xxxo
-                    yield event
+                    yield('milestone', datetime.fromtimestamp(completed, utc),
+                          '', (milestone, description)) # FIXME: author?
 
             # Attachments
             for event in AttachmentModule(self.env).get_timeline_events(
                 req, milestone_realm, start, stop):
                 yield event
                 
-
-    def event_formatter(self, event, key):
-        return None
+    def render_timeline_event(self, context, field, event):
+        milestone, description = event[3]
+        if field == 'url':
+            return context.href.milestone(milestone.id)
+        elif field == 'title':
+            return tag('Milestone ', tag.em(milestone.id), ' completed')
+        elif field == 'description':
+            return format_to_html(self.env, context(resource=milestone),
+                                  shorten_line(description))
 
     # IRequestHandler methods
 
