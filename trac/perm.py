@@ -103,24 +103,39 @@ class IPermissionGroupProvider(Interface):
 
 
 class IPermissionPolicy(Interface):
-    """A security policy provider."""
+    """A security policy provider used for fine grained permission checks."""
 
     def check_permission(action, username, resource, perm):
-        """Check that the action can be performed by the username and
-        resource specified
+	"""Check that the action can be performed by username on the resource
 
-        Must return True if action is allowed, False if action is denied, or
-        None if indifferent. If None is returned, the next policy in the chain
-        will be used, and so on.
-
+        :param action: the name of the permission
         :param username: the username string or 'anonymous' if there's no
                          authenticated user
         :param resource: the resource on which the check applies.
                          Will be `None`, if the check is a global one and
-                         is not addressed to a resource in particular
-        :param perm: the permission cache that can be used for doing secondary
-                     checks on other permissions. Care must be taken to avoid
-                     recursion.
+                         not made on a resource in particular
+        :param perm: the permission cache for that username and resource, 
+		     which can be used for doing secondary checks on other
+		     permissions. Care must be taken to avoid recursion.  
+
+	:return: `True` if action is allowed, `False` if action is denied,
+		 or `None` if indifferent. If `None` is returned, the next
+		 policy in the chain will be used, and so on.
+    
+	Note that when checking a permission on a realm resource (i.e. when
+	`.id` is `None`), the `IPermissionPolicy` will return:
+
+	 * `True` if the action is by default permitted for resources in
+	   that realm (the permission could still be denied for individual
+	   resources)
+	 * `False` if the action is by default not permitted for resources
+	   in that realm (the permission could still be granted for individual
+	   resources)
+	 * `None` if no decision can be made without a more specific resource 
+
+	Note that performing permission checks on realm resources may seem
+	redundant for now as the action name itself contains the realm, but
+	this will probably change in the future (e.g. `'VIEW' in ...`).
         """
 
 
@@ -471,7 +486,7 @@ class PermissionCache(object):
         return self._has_permission(action, resource)
 
     def _has_permission(self, action, resource):
-        if action == action.lower():
+        if action == action.lower(): # 'view' -> '<REALM>_VIEW' for now
             action = (resource.realm+'_'+action).upper()
         key = (self.username, hash(resource), action)
         try:
