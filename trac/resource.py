@@ -123,19 +123,20 @@ class Resource(object):
 
     # -- methods for creating other Resource identifiers
 
-    def __new__(cls, resource_or_realm=False, id=False, version=False,
+    def __new__(cls, resource_or_realm=None, id=False, version=False,
                 parent=False):
         """Create a new Resource object from a specification.
 
         :param resource_or_realm: this can be either:
-                                   - a `Resource`, which is then used as a
-                                     base for making a copy
-                                   - a `basestring`, used to specify a `realm`
+           - a `Resource`, which is then used as a base for making a copy
+           - a `basestring`, used to specify a `realm`
+           - `None`, in which case this means "no resource" and `None` is
+             returned instead of a `Resource` instance 
         :param id: the resource identifier
         :param version: the version or `None` for indicating the latest version
 
-        If `id` is overriden, then the original `version` value will not be
-        reused.
+        In a copy, if `id` is overriden, then the original `version` value
+        will not be reused.
 
         >>> main = Resource('wiki', 'WikiStart')
         >>> repr(main)
@@ -144,8 +145,15 @@ class Resource(object):
         >>> Resource(main) is main
         True
 
-        >>> repr(Resource(main, version=3))
+        >>> main3 = Resource(main, version=3)
+        >>> repr(main3)
         "<Resource u'wiki:WikiStart@3'>"
+
+        >>> repr(Resource(main3, id="WikiEnd"))
+        "<Resource u'wiki:WikiEnd'>"
+
+        >>> Resource(None) is None
+        True
         
         """
         realm = resource_or_realm
@@ -163,6 +171,8 @@ class Resource(object):
                     version = None
             if parent is False:
                 parent = resource_or_realm.parent
+        elif realm is None:
+            return None
         else:
             if id is False:
                 id = None
