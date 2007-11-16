@@ -611,6 +611,7 @@ class AttachmentModule(Component):
         return 'attachment.html', data, None
 
     def _render_view(self, req, attachment):
+        req.perm(attachment.resource).require('ATTACHMENT_VIEW')
         req.check_modified(attachment.date)
 
         data = {'mode': 'view',
