@@ -11,7 +11,7 @@
     <title>
       <py:choose>
         <py:when test="ticket.exists">
-          #${ticket.id} (ticket.summary)
+          #${ticket.id} (${ticket.summary})
         </py:when>
         <py:otherwise>
           New Ticket
