@@ -94,6 +94,8 @@ class Resource(object):
     """
 
     def __repr__(self):
+        if self.realm is None:
+            return '<Resource>'
         path = []
         r = self
         while r:
@@ -130,13 +132,8 @@ class Resource(object):
         :param resource_or_realm: this can be either:
            - a `Resource`, which is then used as a base for making a copy
            - a `basestring`, used to specify a `realm`
-           - `None`, in which case this means "no resource" and `None` is
-             returned instead of a `Resource` instance 
         :param id: the resource identifier
         :param version: the version or `None` for indicating the latest version
-
-        In a copy, if `id` is overriden, then the original `version` value
-        will not be reused.
 
         >>> main = Resource('wiki', 'WikiStart')
         >>> repr(main)
@@ -149,12 +146,14 @@ class Resource(object):
         >>> repr(main3)
         "<Resource u'wiki:WikiStart@3'>"
 
+        In a copy, if `id` is overriden, then the original `version` value
+        will not be reused.
+
         >>> repr(Resource(main3, id="WikiEnd"))
         "<Resource u'wiki:WikiEnd'>"
 
-        >>> Resource(None) is None
-        True
-        
+        >>> repr(Resource(None))
+        '<Resource>'
         """
         realm = resource_or_realm
         if isinstance(resource_or_realm, Resource):
@@ -171,8 +170,6 @@ class Resource(object):
                     version = None
             if parent is False:
                 parent = resource_or_realm.parent
-        elif realm is None:
-            return None
         else:
             if id is False:
                 id = None

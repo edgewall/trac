@@ -386,6 +386,8 @@ class PermissionSystem(Component):
         is allowed."""
         if username is None:
             username = 'anonymous'
+        if resource and resource.realm is None:
+            resource = None
         for policy in self.policies:
             decision = policy.check_permission(action, username, resource,
                                                perm)
