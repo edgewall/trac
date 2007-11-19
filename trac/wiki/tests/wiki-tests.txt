@@ -527,6 +527,39 @@ Paragraph
 <div>Click me</div>
 ------------------------------
  […]
+============================== div and span wiki processors
+And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
+{{{
+#!div ; class=important
+Go ahead, edit it freely.
+
+{{{
+#!div; style="border: 2pt solid blue; margin: 1em; padding: .5em"; class=demo
+And now it's [[span('''TIME FOR BED! ''',class=important)]]. Really.
+}}}
+etc.
+}}}
+Done.
+------------------------------
+<p>
+And now it's <span class="important"><strong>TIME FOR BED!</strong></span>. Really.
+</p>
+<div class="important"><p>
+Go ahead, edit it freely.
+</p>
+<div style="border: 2pt solid blue; margin: 1em; padding: .5em" class="demo"><p>
+And now it's <span class="important"><strong>TIME FOR BED! </strong></span>. Really.
+</p>
+</div><p>
+etc.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+And now it's [[span(...)]]. Really.
+ […]
+Done.
 ============================================================
 
         Wiki Macros

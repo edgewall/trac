@@ -145,7 +145,7 @@ class WikiTestCase(unittest.TestCase):
                 g2 = ["%s\n" % x for x in match.group(2).split(r'\n')]
                 diff = ''.join(list(difflib.unified_diff(g1, g2)))
                 msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s' \
-                      '\nwiki text:\n%s\ndiff:\n%s' \
+                      ' wiki text:\n%s\ndiff:\n%s' \
                       % (sep, ''.join(g1), sep, ''.join(g2), sep,
 # Tip: sometimes, 'expected' and 'actual' differ only by whitespace.
 #      If so, replace the above lines by those two:
