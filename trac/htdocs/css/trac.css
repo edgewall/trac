@@ -310,6 +310,15 @@ a.closed:link, a.closed:visited { text-decoration: line-through }
 span.closed { text-decoration: line-through }
 span.forbidden, a.forbidden { background: #fafaf0; color: #998; }
 
+/* User-selectable styles for blocks */
+.important {
+ background: #fcb;
+ border: 1px dotted #d00;
+ color: #500;
+ padding: 0 .5em 0 .5em;
+ margin: .5em;
+}
+
 dl.wiki dt { font-weight: bold }
 dl.compact dt { float: left; padding-right: .5em }
 dl.compact dd { margin: 0; padding: 0 }
