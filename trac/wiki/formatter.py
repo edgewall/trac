@@ -728,7 +728,7 @@ class Formatter(object):
             else:
                 self.code_text += line + os.linesep
         elif not self.code_processor:
-            match = WikiParser._processor_re.search(line)
+            match = WikiParser._processor_re.match(line)
             if match:
                 name = match.group(1)
                 self.code_processor = WikiProcessor(self, name)
