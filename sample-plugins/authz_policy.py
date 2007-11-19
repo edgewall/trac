@@ -16,7 +16,16 @@
 
 
 """Permission policy enforcement through an authz-like configuration file.
+
 Refer to SVN documentation for syntax of the authz file. Groups are supported.
+
+As the fine-grained permissions brought by this permission policy are often
+used in complement of the other pemission policies (like the
+DefaultPermissionPolicy), there's no need to redefine all the permissions
+here. Only additional rights or restrictions should be added.
+
+Installation
+------------
 
 Note that this plugin requires the `configobj` package:
 
@@ -37,15 +46,28 @@ authz_file = conf/authzpolicy.conf
 This means that the AuthzPolicy permissions will be checked first, and only
 if no rule is found will the DefaultPermissionPolicy be used.
 
+
+Configuration
+-------------
+
 The authzpolicy.conf file is a .ini style configuration file.
 
  - Each section of the config is a glob pattern used to match against a Trac
-resource descriptor. These descriptors are in the form:
+   resource descriptor. These descriptors are in the form:
 
      <realm>:<id>@<version>[/<realm>:<id>@<version> ...]
 
    Resources are ordered left to right, from parent to child.
    If any component is inapplicable, * is substituted.
+   If the version pattern is not specified explicitely, all versions (@*)
+   is added implicitly
+
+   e.g. the WikiStart page will be matched by:
+   
+     [wiki:*]
+     [wiki:WikiStart*]
+     [wiki:WikiStart@*]
+     [wiki:WikiStart]
 
    e.g. An attachment on WikiStart:
 
@@ -57,20 +79,15 @@ resource descriptor. These descriptors are in the form:
      [wiki:WikiStart*]
      [wiki:WikiStart@*]
      [wiki:WikiStart@*/attachment/*]
-
-   but be careful, not this one:
-
      [wiki:WikiStart@117/attachment/FOO.JPG]
-
-   as the above won't match the @ part in the attachment resource descriptor.
-
 
  - Sections are checked against the current Trac resource **IN ORDER** of
    appearance in the configuration file. ORDER IS CRITICAL.
 
  - Once a section matches, the current username is matched, **IN ORDER**,
    against the keys of the section. If a key is prefixed with a @, it is
-   treated as a group. The username will match any of 'anonymous',
+   treated as a group. If a key is prefixed with a !, the permission is denied
+   rather than granted. The username will match any of 'anonymous',
    'authenticated', <username> or '*', using normal Trac permission rules.
 
 Example configuration:
@@ -104,7 +121,7 @@ import os
 from fnmatch import fnmatch
 from trac.core import *
 from trac.config import Option
-from trac.util.compat import set
+from trac.util.compat import set, groupby
 from trac.perm import PermissionSystem, IPermissionPolicy
 from configobj import ConfigObj
 
@@ -128,10 +145,20 @@ class AuthzPolicy(Component):
         self.env.log.debug('Checking %s on %s', action, resource_key)
         permissions = self.authz_permissions(resource_key, username)
         if permissions is None:
-            return None
-        elif permissions:
-            permissions = PermissionSystem(self.env).expand_actions(permissions)
-        return action in permissions
+            return None                 # no match, can't decide
+        elif permissions == '':
+            return False                # all actions are denied
+
+        # FIXME: expand all permissions once for all
+        ps = PermissionSystem(self.env)
+        for deny, perms in groupby(permissions,
+                                    key=lambda p: p.startswith('!')):
+            if deny and action in ps.expand_actions([p[1:] for p in perms]):
+                return False            # action is explicitly denied
+            elif action in ps.expand_actions(perms):
+                return True            # action is explicitly granted
+
+        return None                    # no match for action, can't decide
 
     # Internal methods
 
@@ -177,9 +204,14 @@ class AuthzPolicy(Component):
         valid_users = ['*', 'anonymous']
         if username and username != 'anonymous':
             valid_users += ['authenticated', username]
-        for resource_glob in [a for a in self.authz.sections if a != 'groups']:
+        for resource_section in [a for a in self.authz.sections
+                                 if a != 'groups']:
+            resource_glob = resource_section
+            if '@' not in resource_glob:
+                resource_glob += '@*'
+
             if fnmatch(resource_key, resource_glob):
-                section = self.authz[resource_glob]
+                section = self.authz[resource_section]
                 for who, permissions in section.iteritems():
                     if who in valid_users or \
                             who in self.groups_by_user.get(username, []):
