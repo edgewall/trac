@@ -82,7 +82,6 @@ class PygmentsRenderer(Component):
 </html>"""
 
     def __init__(self):
-        import pygments
         version = get_pkginfo(pygments).get('version')
         # if installed from source, fallback to the hardcoded version info
         if not version and hasattr(pygments, '__version__'):
