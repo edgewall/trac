@@ -111,11 +111,12 @@
 
                 <py:when test="'unmod'"> <!--! Show identical lines on both "sides" -->
                   <tr py:for="idx, line in enumerate(block.base.lines)">
-                    <py:with vars="from_n = block.base.offset+idx+1; to_n = block.changed.offset+idx+1">
+                      <py:with vars="from_n = block.base.offset+idx+1; to_n = block.changed.offset+idx+1;
+                                     clines = block.changed.lines">
                       <py:choose test="diff.style">
                         <py:when test="'sidebyside'">
                           <th>$from_n</th><td class="l"><span>$line</span>&nbsp;</td>
-                          <th>$to_n</th><td class="r"><span>${block.changed.lines[idx]}</span>&nbsp;</td>
+                          <th>$to_n</th><td class="r"><span>${idx &lt; len(clines) and clines[idx] or ''}</span>&nbsp;</td>
                         </py:when>
                         <py:when test="'inline'">
                           <th>$from_n</th><th>$to_n</th><td class="l"><span>$line</span>&nbsp;</td>
