@@ -75,7 +75,7 @@
         </li>
       </ul>
       <div py:if="'comment' in change" class="comment searchable" xml:space="preserve">
-        ${wiki_to_html(context, change.comment, escape_newlines=True)}
+        ${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}
       </div>
     </py:def>
 
@@ -190,7 +190,7 @@
                 </div>
               </form>
               <div py:if="ticket.description" class="searchable" xml:space="preserve">
-                ${wiki_to_html(context, ticket.description, escape_newlines=True)}
+                ${wiki_to_html(context, ticket.description, escape_newlines=preserve_newlines)}
               </div>
               <br py:if="not ticket.description" style="clear: both" />
             </div>

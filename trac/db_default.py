@@ -381,6 +381,7 @@ def get_data(db):
            ('system',
              ('name', 'value'),
                (('database_version', str(db_version)),
+                ('initial_database_version', str(db_version)),
                 ('youngest_rev', ''))),
            ('report',
              ('author', 'title', 'query', 'description'),

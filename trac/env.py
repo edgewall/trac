@@ -285,12 +285,22 @@ class Environment(Component, ComponentManager):
         # Create the database
         DatabaseManager(self).init_db()
 
-    def get_version(self, db=None):
-        """Return the current version of the database."""
+    def get_version(self, db=None, initial=False):
+        """Return the current version of the database.
+        If the optional argument `initial` is set to `True`, the version
+        of the database used at the time of creation will be returned.
+
+        In practice, for database created before 0.11, this will return `False`
+        which is "older" than any db version number.
+
+        :since 0.11:
+        """
         if not db:
             db = self.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("SELECT value FROM system WHERE name='database_version'")
+        cursor.execute("SELECT value FROM system "
+                       "WHERE name='%sdatabase_version'" %
+                       (initial and 'initial_' or ''))
         row = cursor.fetchone()
         return row and int(row[0])
 

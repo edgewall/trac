@@ -25,7 +25,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
-from trac.config import BoolOption, Option, IntOption
+from trac.config import BoolOption, Option, IntOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource, get_resource_url, \
@@ -97,6 +97,13 @@ class TicketModule(Component):
         """Which formatter flavor (e.g. 'default' or 'oneliner') should be
         used when presenting the description for new tickets.
         If 'oneliner', the [timeline] abbreviated_messages option applies.
+        (''since 0.11'').""")
+
+    preserve_newlines = Option('ticket', 'preserve_newlines', 'default',
+        """Whether Wiki formatter should respect the new lines present
+        in the Wiki text.
+        If set to 'default', this is equivalent to 'yes' for new environments
+        but keeps the old behavior for upgraded environments (i.e. 'no').
         (''since 0.11'').""")
 
     # IContentConverter methods
@@ -360,14 +367,14 @@ class TicketModule(Component):
             valid = self._validate_ticket(req, ticket)
             
         # Preview a new ticket
-        data = {
-            'ticket': ticket,
+        data = self._prepare_data(req, ticket)        
+        data.update({
             'author_id': reporter_id,
             'actions': [],
             'version': None,
             'description_change': None,
             'valid': valid
-        }
+        })
 
         fields = self._prepare_fields(req, ticket)
 
@@ -411,6 +418,9 @@ class TicketModule(Component):
                                          'view'))
 
         data = {'ticket': ticket, 'comment': None}
+        data = self._prepare_data(req, ticket)
+        data['comment'] = None
+        
 
         if action in ('history', 'diff'):
             field = req.args.get('field')
@@ -525,6 +535,16 @@ class TicketModule(Component):
                      conversion[4], format)
 
         return 'ticket.html', data, None
+
+    def _prepare_data(self, req, ticket, absurls=False):
+        preserve_newlines = self.preserve_newlines
+        if preserve_newlines == 'default':
+            preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
+        preserve_newlines = preserve_newlines in _TRUE_VALUES
+        return {'ticket': ticket,
+                'context': Context.from_request(req, ticket.resource,
+                                                absurls=absurls),
+                'preserve_newlines': preserve_newlines}
 
     def _populate(self, req, ticket):
         ticket.populate(dict([(k[6:],v) for k,v in req.args.iteritems()
@@ -747,12 +767,8 @@ class TicketModule(Component):
             change['title'] = '; '.join(['%s %s' % (', '.join(v), k) for k, v \
                                          in change_summary.iteritems()])
 
-        data = {
-            'context': Context.from_request(req, ticket.resource,
-                                            absurls=True),
-            'ticket': ticket,
-            'changes': changes
-        }
+        data = self._prepare_data(req, ticket, absurls=True)
+        data['changes'] = changes
         output = Chrome(self.env).render_template(req, 'ticket.rss', data,
                                                   'application/rss+xml')
         return output, 'application/rss+xml'
