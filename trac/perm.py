@@ -20,7 +20,7 @@
 
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
-from trac.resource import Resource
+from trac.resource import Resource, get_resource_name
 from trac.util.compat import set
 from trac.util.translation import _
 
@@ -31,17 +31,19 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore',
 class PermissionError(StandardError):
     """Insufficient permissions to complete the operation"""
 
-    def __init__ (self, action=None, resource=None):
+    def __init__ (self, action=None, resource=None, env=None):
         StandardError.__init__(self)
         self.action = action
         self.resource = resource
+        self.env = env
 
     def __str__ (self):
         if self.action:
             if self.resource:
                 return _('%(perm)s privileges are required to perform '
                          'this operation on %(resource)s',
-                         perm=self.action, resource=self.resource)
+                         perm=self.action, 
+                         resource=get_resource_name(self.env, self.resource))
             else:
                 return _('%(perm)s privileges are required to perform '
                          'this operation', perm=self.action)
@@ -507,7 +509,7 @@ class PermissionCache(object):
     def require(self, action, realm_or_resource=None, id=False, version=False):
         resource = self._normalize_resource(realm_or_resource, id, version)
         if not self._has_permission(action, resource):
-            raise PermissionError(action, resource)
+            raise PermissionError(action, resource, self.env)
     assert_permission = require
 
     def permissions(self):
