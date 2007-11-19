@@ -74,10 +74,10 @@
                 py:with="fullrow = len(cell_group) == 1;
                          td_attrs = fullrow and {'class': 'fullrow', 'colspan': 100} or {}"
                 class="${'__color__' in row and 'color'+row.__color__+'-' or ''}${row.__idx__ % 2 and 'odd' or 'even'}"
-                style="${'__bgcolor__' in row and 'background: '+row.__bgcolor__+';'
-                }${'__fgcolor__' in row and 'color: '+row.__fgcolor__+';'
-                }${'__style__' in row and row.__style__+';'
-                }${fullrow and ';border: none; padding: 0;' or ''}">
+                style="${'__bgcolor__' in row and 'background: '+row.__bgcolor__+';' or None
+                }${'__fgcolor__' in row and 'color: '+row.__fgcolor__+';' or None
+                }${'__style__' in row and row.__style__+';' or None
+                }${fullrow and 'border: none; padding: 0;' or None}">
 
                 <py:for each="cell in cell_group">
                   <py:if test="not cell.header.hidden">
