@@ -24,8 +24,9 @@ import urllib
 
 from StringIO import StringIO
 
-from genshi.builder import tag
-from genshi.core import Stream
+from genshi.builder import tag, Element
+from genshi.core import Stream, Markup, escape
+from genshi.util import plaintext
 
 from trac.core import *
 from trac.mimeview import *
@@ -33,7 +34,6 @@ from trac.resource import get_relative_url
 from trac.util.compat import set
 from trac.wiki.api import WikiSystem
 from trac.wiki.parser import WikiParser
-from trac.util.html import escape, plaintext, Markup, Element, html
 from trac.util.text import shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 
@@ -42,8 +42,8 @@ __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'extract_link']
 
 def system_message(msg, text=None):
-    return html.DIV(html.STRONG(msg), text and html.PRE(text),
-                    class_="system-message")
+    return tag.div(tag.strong(msg), text and tag.pre(text),
+                   class_="system-message")
 
 def _markup_to_unicode(markup):
     stream = None
@@ -172,7 +172,7 @@ class WikiProcessor(object):
                 elif text.startswith('<table'):
                     interrupt_paragraph = True
             if content_for_span:
-                text = html.SPAN(class_='code-block')(*content_for_span)
+                text = tag.span(class_='code-block')(*content_for_span)
             elif interrupt_paragraph:
                 text = "</p>%s<p>" % to_unicode(text)
         return text
@@ -277,10 +277,10 @@ class Formatter(object):
         return self.simple_tag_handler(match, '<sup>', '</sup>')
 
     def _inlinecode_formatter(self, match, fullmatch):
-        return html.TT(fullmatch.group('inline'))
+        return tag.tt(fullmatch.group('inline'))
 
     def _inlinecode2_formatter(self, match, fullmatch):
-        return html.TT(fullmatch.group('inline2'))
+        return tag.tt(fullmatch.group('inline2'))
 
     # -- Post- IWikiSyntaxProvider rules
 
@@ -338,7 +338,7 @@ class Formatter(object):
                                         path)
                 if '?' in path:
                     query = '&' + query.lstrip('?')
-            return html.A(label or rel, href=path + query + fragment)
+            return tag.a(label or rel, href=path + query + fragment)
         else:
             return self._make_link(ns, target, match, label)
 
@@ -411,13 +411,13 @@ class Formatter(object):
         local_url = self.env.config.get('project', 'url') or \
                     (self.req or self.env).abs_href.base
         if not url.startswith(local_url):
-            return html.A(html.SPAN(text, class_="icon"),
+            return tag.a(tag.span(text, class_="icon"),
                           class_="ext-link", href=url, title=title or None)
         else:
-            return html.A(text, href=url, title=title or None)
+            return tag.a(text, href=url, title=title or None)
 
     def _make_mail_link(self, url, text, title=''):
-        return html.A(html.SPAN(text, class_="icon"),
+        return tag.a(tag.span(text, class_="icon"),
                       class_="mail-link", href=url, title=title or None)
 
     # WikiMacros
