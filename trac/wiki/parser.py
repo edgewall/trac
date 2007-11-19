@@ -72,6 +72,8 @@ class WikiParser(Component):
     # Rules provided by IWikiSyntaxProviders will be inserted here
 
     _post_rules = [
+        # e-mails
+        r"(?P<email>\w[\w.]+@\w[\w.]+\w)",
         # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # &, < and > to &amp;, &lt; and &gt;

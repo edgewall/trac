@@ -25,6 +25,7 @@ from genshi.builder import tag
 
 from trac.core import *
 from trac.db import get_column_names
+from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import sorted
@@ -265,12 +266,16 @@ class ReportModule(Component):
         if id > 0:
             title = '{%i} %s' % (id, title)
 
+        report_resource = Resource('report', id)
+        context = Context.from_request(req, report_resource)
         data = {'action': 'view', 'title': title,
-                'report': Resource('report', id),
+                'report': {'id': id, 'resource': report_resource},
+                'context': context,
                 'title': title, 'description': description,
                 'args': args, 'message': None}
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
+            results = [list(row) for row in results]
         except Exception, e:
             data['message'] = _('Report execution failed: %(error)s',
                                 error=to_unicode(e))
@@ -325,13 +330,14 @@ class ReportModule(Component):
             cell_groups = []
             row = {'cell_groups': cell_groups}
             realm = 'ticket'
+            email_cells = []
             for header_group in header_groups:
                 cell_group = []
                 for header in header_group:
                     value = unicode(result[col_idx])
-                    col_idx += 1
-                    cell = {'value': value, 'header': header}
+                    cell = {'value': value, 'header': header, 'index': col_idx}
                     col = header['col']
+                    col_idx += 1
                     # Detect and create new group
                     if col == '__group__' and value != prev_group_value:
                         prev_group_value = value
@@ -345,8 +351,8 @@ class ReportModule(Component):
                         row['id'] = value
                     # Special casing based on column name
                     col = col.strip('_')
-                    if col == 'reporter':
-                        cell['author'] = value
+                    if col in ('reporter', 'cc'):
+                        email_cells.append(cell)
                     elif col == 'realm':
                         realm = value
                     cell_group.append(cell)
@@ -354,6 +360,11 @@ class ReportModule(Component):
             resource = Resource(realm, row.get('id'))
             if 'view' not in req.perm(resource):
                 continue
+            if email_cells:
+                for cell in email_cells:
+                    emails = Chrome(self.env).format_emails(context(resource),
+                                                            cell['value'])
+                    result[cell['index']] = cell['value'] = emails
             row['resource'] = resource
             if row_groups:
                 row_group = row_groups[-1][1]
@@ -379,6 +390,8 @@ class ReportModule(Component):
             self.add_alternate_links(req, args)
 
         if format == 'rss':
+            data['context'] = Context.from_request(req, report_resource,
+                                                   absurls=True)
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':
             filename = id and 'report_%s.csv' % id or 'report.csv'

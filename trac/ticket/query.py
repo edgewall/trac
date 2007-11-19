@@ -787,13 +787,22 @@ class QueryModule(Component):
         content = StringIO()
         cols = query.get_columns()
         writer = csv.writer(content, delimiter=sep)
+        writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
 
+        context = Context.from_request(req)
         results = query.execute(req, self.env.get_db_cnx())
         for result in results:
-            if 'TICKET_VIEW' in req.perm('ticket', result['id']):
-                writer.writerow([unicode(result[col]).encode('utf-8')
-                                 for col in cols])
+            ticket = Resource('ticket', result['id'])
+            if 'TICKET_VIEW' in req.perm(ticket):
+                values = []
+                for col in cols:
+                    value = result[col]
+                    if col in ('cc', 'reporter'):
+                        value = Chrome(self.env).format_emails(context(ticket),
+                                                               value)
+                    values.append(unicode(value).encode('utf-8'))
+                writer.writerow(values)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, query):
@@ -806,7 +815,6 @@ class QueryModule(Component):
                                                    or None),
                                         row=query.rows, 
                                         **query.constraints)
-
         data = {
             'context': Context.from_request(req, 'query', absurls=True),
             'results': results,

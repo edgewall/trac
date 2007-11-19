@@ -27,23 +27,23 @@
       </h1>
 
       <div py:if="description" id="description" xml:space="preserve">
-        ${wiki_to_html(context(report), description)}
+        ${wiki_to_html(context, description)}
       </div>
 
       <div py:if="report.id != -1" class="buttons">
-        <form py:if="'REPORT_MODIFY' in perm(report)" action="" method="get">
+        <form py:if="'REPORT_MODIFY' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
             <input type="submit" value="Edit report" accesskey="e" />
           </div>
         </form>
-        <form py:if="'REPORT_CREATE' in perm(report)" action="" method="get">
+        <form py:if="'REPORT_CREATE' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="copy" />
             <input type="submit" value="Copy report" />
           </div>
         </form>
-        <form py:if="'REPORT_DELETE' in perm(report)" action="" method="get">
+        <form py:if="'REPORT_DELETE' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="delete" />
             <input type="submit" value="Delete report" />
@@ -156,7 +156,7 @@
         </table>
       </py:for>
 
-      <div py:if="report.id == -1 and 'REPORT_CREATE' in perm(report)" class="buttons">
+      <div py:if="report.id == -1 and 'REPORT_CREATE' in perm(report.resource)" class="buttons">
         <form action="" method="get">
           <div>
             <input type="hidden" name="action" value="new" />

@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import csv
 from datetime import datetime
 import os
 import pkg_resources
@@ -31,8 +32,9 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource, get_resource_url, \
                          render_resource_link, get_resource_shortname
 from trac.search import ISearchSource, search_to_sql, shorten_result
-from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
-from trac.ticket import ITicketActionController
+from trac.ticket.api import TicketSystem, ITicketManipulator, \
+                            ITicketActionController
+from trac.ticket.model import Milestone, Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id, partition
@@ -50,16 +52,6 @@ from trac.wiki.formatter import format_to
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
     title = "Invalid Ticket"
-
-
-def cc_list(cc_field):
-    """Split a CC: value in a list of addresses.
-
-    TODO: will become `CcField.cc_list(value)
-    """
-    if not cc_field:
-        return []
-    return [cc.strip() for cc in cc_field.split(',') if cc]
 
 
 class TicketModule(Component):
@@ -118,9 +110,9 @@ class TicketModule(Component):
 
     def convert_content(self, req, mimetype, ticket, key):
         if key == 'csv':
-            return self.export_csv(ticket, mimetype='text/csv')
+            return self.export_csv(req, ticket, mimetype='text/csv')
         elif key == 'tab':
-            return self.export_csv(ticket, sep='\t',
+            return self.export_csv(req, ticket, sep='\t',
                                    mimetype='text/tab-separated-values')
         elif key == 'rss':
             return self.export_rss(req, ticket)
@@ -731,16 +723,22 @@ class TicketModule(Component):
 
         return 'diff_view.html', data, None
 
-    def export_csv(self, ticket, sep=',', mimetype='text/plain'):
+    def export_csv(self, req, ticket, sep=',', mimetype='text/plain'):
+        # FIXME: consider dumping history of changes here as well
+        #        as one row of output doesn't seem to be terribly useful...
         content = StringIO()
-        content.write(sep.join(['id'] + [f['name'] for f in
-                                         ticket.fields])
-                      + CRLF)
-        content.write(sep.join([unicode(ticket.id)] +
-                                [ticket.values.get(f['name'], '')
-                                 .replace(sep, '_').replace('\\', '\\\\')
-                                 .replace('\n', '\\n').replace('\r', '\\r')
-                                 for f in ticket.fields]) + CRLF)
+        writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(['id'] + [unicode(f['name']) for f in ticket.fields])
+
+        context = Context.from_request(req, ticket.resource)
+        cols = [unicode(ticket.id)]
+        for f in ticket.fields:
+            name = f['name']
+            value = ticket.values.get(name, '')
+            if name in ('cc', 'reporter'):
+                value = Chrome(self.env).format_emails(context, value, ' ')
+            cols.append(value.encode('utf-8'))
+        writer.writerow(cols)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
 
     def export_rss(self, req, ticket):
@@ -950,6 +948,7 @@ class TicketModule(Component):
             ticket[key] = field_changes[key]['new']
 
     def _prepare_fields(self, req, ticket):
+        context = Context.from_request(req, ticket.resource)
         fields = []
         for field in ticket.fields:
             name = field['name']
@@ -980,15 +979,11 @@ class TicketModule(Component):
                 else:
                     field['options'] = open_milestones
                 milestone = Resource('milestone', ticket[name])
-                context = Context.from_request(req, ticket.resource)
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
             elif name == 'cc':
-                all_cc = cc_list(ticket[name])
-                if not (Chrome(self.env).show_email_addresses or \
-                        'EMAIL_VIEW' in req.perm(ticket.resource)):
-                    all_cc = [obfuscate_email_address(cc) for cc in all_cc]
-                field['rendered'] = ', '.join(all_cc)
+                emails = Chrome(self.env).format_emails(context, ticket[name])
+                field['rendered'] = emails
 
             # per type settings
             if type_ in ('radio', 'select'):
@@ -1179,7 +1174,8 @@ class TicketModule(Component):
         old_list, new_list = None, None
         sep = ', '
         if field == 'cc':
-            old_list, new_list = cc_list(old), cc_list(new)
+            chrome = Chrome(self.env)
+            old_list, new_list = chrome.cc_list(old), chrome.cc_list(new)
             if not (Chrome(self.env).show_email_addresses or 
                     'EMAIL_VIEW' in req.perm(ticket.resource)):
                 old_list = [obfuscate_email_address(cc)

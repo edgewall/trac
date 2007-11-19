@@ -535,6 +535,7 @@ class Chrome(Component):
             'authname': req and req.authname or '<trac>',
             'show_email_addresses': show_email_addresses,
             'format_author': partial(self.format_author, req),
+            'format_emails': self.format_emails,
 
             # Date/time formatting
             'dateinfo': dateinfo,
@@ -624,6 +625,27 @@ class Chrome(Component):
             req.chrome['scripts'] = scripts
             raise
 
+    # E-mail formatting utilities
+
+    def cc_list(self, cc_field):
+        """Split a CC: value in a list of addresses."""
+        if not cc_field:
+            return []
+        return [cc.strip() for cc in cc_field.split(',') if cc]
+
+    def format_emails(self, context, value, sep=', '):
+        """Normalize a list of e-mails and obfuscate them if needed.
+
+        :param context: the context in which the check for obfuscation should
+                        be done
+        :param value: a string containing a comma-separated list of e-mails
+        :param sep: the separator to use when rendering the list again
+        """
+        all_cc = self.cc_list(value)
+        if not (self.show_email_addresses or 'EMAIL_VIEW' in context.perm):
+            all_cc = [obfuscate_email_address(cc) for cc in all_cc]
+        return sep.join(all_cc)
+    
     def format_author(self, req, author):
         if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
             return author

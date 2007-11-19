@@ -306,6 +306,22 @@ http://example.com/img.png?foo=bar
 <i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</span></a></i>
 </p>
 ------------------------------
+==============================  mailto: links
+Author: mailto:cboos@neuf.fr, 
+i.e. [mailto:cboos@neuf.fr me]
+------------------------------
+<p>
+Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">mailto:cboos@neuf.fr</span></a>, 
+i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">me</span></a>
+</p>
+------------------------------
+============================== Arbitrary protocol Link
+''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
+------------------------------
+<p>
+<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</span></a></i>
+</p>
+------------------------------
 ============================== Generic InterTrac links
 th:roadmap
 th:roadmap:
@@ -724,7 +740,7 @@ Paragraph
  * item 2
    item 2 line 2
 Paragraph
-============================== Changelog sample
+============================== Changelog sample (and e-mail link)
 2003-09-18 23:26  Joe Bar <joeb@gloogle.gom>
 
 	* src/code.py: Fix problem with obsolete use of
@@ -735,7 +751,7 @@ Paragraph
 Paragraph
 ------------------------------
 <p>
-2003-09-18 23:26  Joe Bar &lt;joeb@gloogle.gom&gt;
+2003-09-18 23:26  Joe Bar &lt;<a class="mail-link" href="mailto:joeb@gloogle.gom"><span class="icon">joeb@gloogle.gom</span></a>&gt;
 </p>
 <ul><li>src/code.py: Fix problem with obsolete use of
 backslash in symbols.

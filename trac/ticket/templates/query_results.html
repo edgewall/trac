@@ -53,6 +53,7 @@
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
                       <span py:when="isinstance(value, datetime)">${format_datetime(value)}</span>
                       <span py:when="name == 'reporter'">${authorinfo(value)}</span>
+                      <span py:when="name == 'cc'">${format_emails(ticket_context, value)}</span>
                       <span py:when="name == 'owner' and value">${authorinfo(value)}</span>
                       <span py:otherwise="">$value</span>
                     </td>

@@ -284,6 +284,16 @@ class Formatter(object):
 
     # -- Post- IWikiSyntaxProvider rules
 
+    # E-mails
+
+    def _email_formatter(self, match, fullmatch):
+        from trac.web.chrome import Chrome
+        omatch = Chrome(self.env).format_emails(self.context, match)
+        if omatch == match: # not obfuscated, make a link
+            return self._make_mail_link('mailto:'+match, match)
+        else:
+            return omatch
+
     # HTML escape of &, < and >
 
     def _htmlescape_formatter(self, match, fullmatch):
@@ -341,7 +351,13 @@ class Formatter(object):
         elif target.startswith('//'):
             return self._make_ext_link(ns+':'+target, label)
         elif ns == "mailto":
-            return self._make_mail_link('mailto:'+target, label)
+            from trac.web.chrome import Chrome
+            otarget = Chrome(self.env).format_emails(self.context, target)
+            olabel = Chrome(self.env).format_emails(self.context, label)
+            if (otarget, olabel) == (target, label):
+                return self._make_mail_link('mailto:'+target, label)
+            else:
+                return olabel or otarget
         else:
             return self._make_intertrac_link(ns, target, label) or \
                    self._make_interwiki_link(ns, target, label) or \
