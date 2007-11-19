@@ -481,3 +481,14 @@ def pairwise(iterable):
     except StopIteration:
         pass
     return izip(a, b)
+
+def partition(iterable, order=None):
+    result = {}
+    if order is not None:
+        for key in order:
+            result[key] = []
+    for item, category in iterable:
+        result.setdefault(category, []).append(item)
+    if order is None:
+        return result
+    return [result[key] for key in order]

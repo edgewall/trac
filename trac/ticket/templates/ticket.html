@@ -319,6 +319,12 @@ ${comment}</textarea></p>
                       <option py:for="option in field.options"
                               selected="${ticket[field.name] == option or None}"
                               py:content="option"></option>
+                      <optgroup py:for="optgroup in field.optgroups"
+                                label="${optgroup.label}">
+                        <option py:for="option in optgroup.options"
+                                selected="${ticket[field.name] == option or None}"
+                                py:content="option"></option>
+                      </optgroup>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"

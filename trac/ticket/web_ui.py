@@ -35,7 +35,7 @@ from trac.ticket import Milestone, Ticket, TicketSystem, ITicketManipulator
 from trac.ticket import ITicketActionController
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import get_reporter_id
+from trac.util import get_reporter_id, partition
 from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address
@@ -954,6 +954,41 @@ class TicketModule(Component):
         for field in ticket.fields:
             name = field['name']
             type_ = field['type']
+ 
+            # per field settings
+            if name in ('summary', 'reporter', 'description', 'status',
+                        'resolution'):
+                field['skip'] = True
+            elif name == 'owner':
+                field['skip'] = True
+                if not ticket.exists:
+                    field['label'] = 'Assign to'
+                    if 'TICKET_MODIFY' in req.perm(ticket.resource):
+                        field['skip'] = False
+            elif name == 'milestone':
+                open_milestones, closed_milestones = \
+                        partition(((opt, Milestone(self.env, opt).is_completed)
+                                   for opt in field['options']),
+                                  (False, True))
+                if ticket.exists and \
+                       'TICKET_ADMIN' in req.perm(ticket.resource):
+                    field['options'] = []
+                    field['optgroups'] = [
+                        {'label': _('Open'), 'options': open_milestones},
+                        {'label': _('Closed'), 'options': closed_milestones},
+                    ]
+                else:
+                    field['options'] = open_milestones
+                milestone = Resource('milestone', ticket[name])
+                context = Context.from_request(req, ticket.resource)
+                field['rendered'] = render_resource_link(self.env, context,
+                                                         milestone, 'compact')
+            elif name == 'cc':
+                all_cc = cc_list(ticket[name])
+                if not (Chrome(self.env).show_email_addresses or \
+                        'EMAIL_VIEW' in req.perm(ticket.resource)):
+                    all_cc = [obfuscate_email_address(cc) for cc in all_cc]
+                field['rendered'] = ', '.join(all_cc)
 
             # per type settings
             if type_ in ('radio', 'select'):
@@ -968,33 +1003,7 @@ class TicketModule(Component):
                 value = ticket.values.get(name)
                 if value in ('1', '0'):
                     field['rendered'] = value == '1' and _('yes') or _('no')
-                    
-            # per field settings
-            if name in ('summary', 'reporter', 'description', 'status',
-                        'resolution'):
-                field['skip'] = True
-            elif name == 'owner':
-                field['skip'] = True
-                if not ticket.exists:
-                    field['label'] = 'Assign to'
-                    if 'TICKET_MODIFY' in req.perm(ticket.resource):
-                        field['skip'] = False
-            elif name == 'milestone':
-                if not ticket.exists or \
-                       'TICKET_ADMIN' not in req.perm(ticket.resource):
-                    field['options'] = [opt for opt in field['options'] if not
-                                        Milestone(self.env, opt).is_completed]
-                milestone = Resource('milestone', ticket[name])
-                context = Context.from_request(req, ticket.resource)
-                field['rendered'] = render_resource_link(self.env, context,
-                                                         milestone, 'compact')
-            elif name == 'cc':
-                all_cc = cc_list(ticket[name])
-                if not (Chrome(self.env).show_email_addresses or \
-                        'EMAIL_VIEW' in req.perm(ticket.resource)):
-                    all_cc = [obfuscate_email_address(cc) for cc in all_cc]
-                field['rendered'] = ', '.join(all_cc)
-                    
+                  
             # ensure sane defaults
             field.setdefault('optional', False)
             field.setdefault('options', [])
