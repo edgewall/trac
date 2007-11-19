@@ -164,7 +164,7 @@ class LoginModule(Component):
         self._expire_cookie(req)
         custom_redirect = self.config['metanav'].get('logout.redirect')
         if custom_redirect:
-            if not custom_redirect.startswith('/'):
+            if not re.match(r'https?:|/', custom_redirect):
                 custom_redirect = req.href(custom_redirect)
             req.redirect(custom_redirect)
 
