@@ -107,6 +107,7 @@ class WikiParser(Component):
         r"(?P<table_cell>\|\|)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
+    _processor_param_re = re.compile(r'''(\w+)=(".*?"|'.*?'|\w+)''')
     _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
     def __init__(self):

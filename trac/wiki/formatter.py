@@ -26,16 +26,19 @@ from StringIO import StringIO
 
 from genshi.builder import tag, Element
 from genshi.core import Stream, Markup, escape
+from genshi.filters import HTMLSanitizer
+from genshi.input import HTMLParser, ParseError
 from genshi.util import plaintext
 
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_url
 from trac.util.compat import set
-from trac.wiki.api import WikiSystem
+from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util.text import shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
+from trac.util.translation import _
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
@@ -60,18 +63,30 @@ class WikiProcessor(object):
 
     _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
 
-    def __init__(self, formatter, name):
-        """Since 0.11: first argument is a Formatter instead of an Environment.
+    def __init__(self, formatter, name, args={}):
+        """Find the processor by name
+        
+        :param formatter: the formatter embedding a call for this processor 
+        :param name: the name of the processor 
+        :param args: extra parameters for the processor
+
+        (since 0.11)
         """
         self.formatter = formatter
         self.env = formatter.env
         self.name = name
+        self.args = args
         self.error = None
         self.macro_provider = None
 
         builtin_processors = {'html': self._html_processor,
                               'default': self._default_processor,
-                              'comment': self._comment_processor}
+                              'comment': self._comment_processor,
+                              'div': self._div_processor,
+                              'span': self._span_processor}
+
+        self._sanitizer = HTMLSanitizer(safe_attrs=HTMLSanitizer.SAFE_ATTRS |
+                                        set(['style']))
         
         self.processor = builtin_processors.get(name)
         if not self.processor:
@@ -107,18 +122,33 @@ class WikiProcessor(object):
     def _html_processor(self, text):
         if WikiSystem(self.env).render_unsafe_content:
             return Markup(text)
-        from genshi.input import HTMLParser, ParseError
-        from genshi.filters import HTMLSanitizer
         try:
             stream = Stream(HTMLParser(StringIO(text)))
-            sanitizer = HTMLSanitizer(
-                safe_attrs=HTMLSanitizer.SAFE_ATTRS | set(['style'])
-            )
-            return (stream | sanitizer).render('xhtml', encoding=None)
+            return (stream | self._sanitizer).render('xhtml', encoding=None)
         except ParseError, e:
             self.env.log.warn(e)
-            return system_message('HTML parsing error: %s' % escape(e.msg),
-                                  text.splitlines()[e.lineno - 1].strip())
+            line = unicode(text).splitlines()[e.lineno - 1].strip()
+            return system_message(_('HTML parsing error: %(message)s',
+                                    message=escape(e.msg)), line)
+        
+    def _elt_processor(self, eltname, format_to, text, args):
+        elt = getattr(tag, eltname)(**args)
+        if not WikiSystem(self.env).render_unsafe_content:
+            sanitized_elt = getattr(tag, eltname)
+            for (k,data,pos) in (Stream(elt) | self._sanitizer):
+                sanitized_elt.attrib = data[1]
+                break # only look at START (elt,attrs)
+            elt = sanitized_elt
+        elt.append(format_to(self.env, self.formatter.context, text))
+        return elt
+
+    def _div_processor(self, text):
+        return self._elt_processor('div', format_to_html, text, self.args)
+    
+    def _span_processor(self, text):
+        args, kwargs = parse_args(text, strict=True)
+        return self._elt_processor('span', format_to_oneliner, ', '.join(args),
+                                   kwargs)
 
     # generic processors
 
@@ -731,7 +761,13 @@ class Formatter(object):
             match = WikiParser._processor_re.match(line)
             if match:
                 name = match.group(1)
-                self.code_processor = WikiProcessor(self, name)
+                args = WikiParser._processor_param_re.split(line[len(name):])
+                del args[::3]
+                keys = [str(k) for k in args[::2]] # used as keyword parameters
+                values = [v and v[0] in '"\'' and v[1:-1] or v
+                          for v in args[1::2]]
+                args = dict(zip(keys, values))
+                self.code_processor = WikiProcessor(self, name, args)
             else:
                 self.code_text += line + os.linesep 
                 self.code_processor = WikiProcessor(self, 'default')

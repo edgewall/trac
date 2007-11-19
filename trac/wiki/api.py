@@ -146,7 +146,10 @@ def parse_args(args, strict=True):
             else:
                 m = re.match(r'\s*[^=]+=', arg)
             if m:
-                kwargs[arg[:m.end()-1].strip()] = arg[m.end():]
+                kw = arg[:m.end()-1].strip()
+                if strict:
+                    kw = unicode(kw).encode('utf-8')
+                kwargs[kw] = arg[m.end():]
             else:
                 largs.append(arg)
     return largs, kwargs
