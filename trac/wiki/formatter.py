@@ -83,7 +83,8 @@ class WikiProcessor(object):
                               'default': self._default_processor,
                               'comment': self._comment_processor,
                               'div': self._div_processor,
-                              'span': self._span_processor}
+                              'span': self._span_processor,
+                              'Span': self._span_processor}
 
         self._sanitizer = HTMLSanitizer(safe_attrs=HTMLSanitizer.SAFE_ATTRS |
                                         set(['style']))

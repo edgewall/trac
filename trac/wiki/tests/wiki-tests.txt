@@ -560,6 +560,22 @@ Done.
 And now it's [[span(...)]]. Really.
  […]
 Done.
+============================== div and Span wiki processors
+{{{
+#!div ; class="important"
+Go ahead, [[Span(''edit it freely'',class=important)]].
+}}}
+Done.
+------------------------------
+<div class="important"><p>
+Go ahead, <span class="important"><i>edit it freely</i></span>.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+ […]
+Done.
 ============================================================
 
         Wiki Macros
