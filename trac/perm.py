@@ -108,7 +108,7 @@ class IPermissionPolicy(Interface):
     """A security policy provider used for fine grained permission checks."""
 
     def check_permission(action, username, resource, perm):
-	"""Check that the action can be performed by username on the resource
+        """Check that the action can be performed by username on the resource
 
         :param action: the name of the permission
         :param username: the username string or 'anonymous' if there's no
@@ -117,27 +117,31 @@ class IPermissionPolicy(Interface):
                          Will be `None`, if the check is a global one and
                          not made on a resource in particular
         :param perm: the permission cache for that username and resource, 
-		     which can be used for doing secondary checks on other
-		     permissions. Care must be taken to avoid recursion.  
+                     which can be used for doing secondary checks on other
+                     permissions. Care must be taken to avoid recursion.  
 
-	:return: `True` if action is allowed, `False` if action is denied,
-		 or `None` if indifferent. If `None` is returned, the next
-		 policy in the chain will be used, and so on.
-    
-	Note that when checking a permission on a realm resource (i.e. when
-	`.id` is `None`), the `IPermissionPolicy` will return:
+        :return: `True` if action is allowed, `False` if action is denied,
+                 or `None` if indifferent. If `None` is returned, the next
+                 policy in the chain will be used, and so on.
 
-	 * `True` if the action is by default permitted for resources in
-	   that realm (the permission could still be denied for individual
-	   resources)
-	 * `False` if the action is by default not permitted for resources
-	   in that realm (the permission could still be granted for individual
-	   resources)
-	 * `None` if no decision can be made without a more specific resource 
+        Note that when checking a permission on a realm resource (i.e. when
+        `.id` is `None`), this usually corresponds to some preliminary check
+        done before making a fine-grained check on some resource.
+        Therefore the `IPermissionPolicy` should be conservative and return:
 
-	Note that performing permission checks on realm resources may seem
-	redundant for now as the action name itself contains the realm, but
-	this will probably change in the future (e.g. `'VIEW' in ...`).
+         * `True` if the action *can* be allowed for some resources in
+           that realm. Later, for specific resource, the policy will be able
+           to return `True` (allow), `False` (deny) or `None` (don't decide).
+         * `None` if the action *can not* be performed for *some* resources.
+           This corresponds to situation where the policy is only interested
+           in returning `False` or `None` on specific resources.
+         * `False` if the action *can not* be performed for *any* resource in
+           that realm (that's a very strong decision as that will usually
+           prevent any fine-grained check to even happen).
+
+        Note that performing permission checks on realm resources may seem
+        redundant for now as the action name itself contains the realm, but
+        this will probably change in the future (e.g. `'VIEW' in ...`).
         """
 
 
