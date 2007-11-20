@@ -16,7 +16,10 @@ def _normalize_rev(rev):
     try:
         return int(rev)
     except ValueError:
-        return '200'
+        if rev == 'head':
+            return '200'
+        else:
+            raise NoSuchChangeset(rev)
     
 def _get_repository(authname=None):
     return Mock(get_changeset=_get_changeset, youngest_rev='200',
@@ -148,6 +151,7 @@ log:trunk@12-23
 log:trunk:12:23
 log:trunk:12-23
 log:trunk:12-head
+log:trunk:12@23 (bad, but shouldn't error out)
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=12">log:@12</a>
@@ -158,6 +162,7 @@ log:trunk:12-head
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12-23</a>
 <a class="source" href="/log/trunk?revs=12-200">log:trunk:12-head</a>
+<a class="source" href="/log/trunk">log:trunk:12@23</a> (bad, but shouldn't error out)
 </p>
 ------------------------------
 ============================== log: link resolver + query

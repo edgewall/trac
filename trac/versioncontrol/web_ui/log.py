@@ -28,7 +28,7 @@ from trac.util.datefmt import http_date
 from trac.util.html import html
 from trac.util.text import wrap
 from trac.util.translation import _
-from trac.versioncontrol import Changeset
+from trac.versioncontrol.api import Changeset, NoSuchChangeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
@@ -287,7 +287,10 @@ class LogModule(Component):
                 indexes = [sep in match and match.index(sep) for sep in ':@']
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
-        revs = self._normalize_ranges(formatter.req, revs)
+        try:
+            revs = self._normalize_ranges(formatter.req, revs)
+        except NoSuchChangeset:
+            revs = None
         if revs and query:
             query = '&' + query[1:]
         href = formatter.href.log(path or '/', revs=revs) + query + fragment
