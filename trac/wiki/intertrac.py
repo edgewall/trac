@@ -20,7 +20,9 @@ from genshi.builder import Element, tag
 
 from trac.core import *
 from trac.mimeview import Context
+from trac.perm import PermissionError
 from trac.util import sorted
+from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
 from trac.wiki.formatter import extract_link
@@ -45,6 +47,8 @@ class InterTracDispatcher(Component):
         link_elt = extract_link(self.env, Context.from_request(req), link)
         if isinstance(link_elt, Element):
             href = link_elt.attrib.get('href')
+            if href is None: # most probably no permissions to view
+                raise PermissionError(_("Can't view %(link)s:", link=link))
         else:
             href = req.href(link)
         req.redirect(href)
