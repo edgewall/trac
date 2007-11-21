@@ -210,7 +210,7 @@ class NotifyEmail(Notify):
             self._charset.input_codec = None
             self._charset.output_charset = 'ascii'
         else:
-            raise TracError, 'Invalid email encoding setting: %s' % pref
+            raise TracError(_('Invalid email encoding setting: %s' % pref))
 
     def notify(self, resid, subject):
         self.subject = subject
@@ -224,12 +224,12 @@ class NotifyEmail(Notify):
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError(tag(tag.p('Unable to send email due to identity '
-                                      'crisis.'),
-                                tag.p('Neither ', tag.b('notification.from'),
-                                      ' nor ', tag.b('notification.reply_to'),
-                                      'are specified in the configuration.')),
-                            'SMTP Notification Error')
+            raise TracError(_(tag(tag.p('Unable to send email due to identity '
+                                        'crisis.'),
+                                  tag.p('Neither ', tag.b('notification.from'),
+                                        ' nor ', tag.b('notification.reply_to'),
+                                        'are specified in the configuration.')),
+                              'SMTP Notification Error'))
 
         # Authentication info (optional)
         self.user_name = self.config['notification'].get('smtp_user')
@@ -242,7 +242,7 @@ class NotifyEmail(Notify):
         maxlength = MAXHEADERLEN-(len(key)+2)
         # Do not sent ridiculous short headers
         if maxlength < 10:
-            raise TracError, "Header length is too short"
+            raise TracError(_("Header length is too short"))
         try:
             tmp = name.encode('ascii')
             header = Header(tmp, 'ascii', maxlinelen=maxlength)
@@ -312,7 +312,8 @@ class NotifyEmail(Notify):
         if self._use_tls:
             self.server.ehlo()
             if not self.server.esmtp_features.has_key('starttls'):
-                raise TracError, "TLS enabled but server does not support TLS"
+                raise TracError(_("TLS enabled but server does not support " \
+                                  "TLS"))
             self.server.starttls()
             self.server.ehlo()
         if self.user_name:
@@ -383,8 +384,8 @@ class NotifyEmail(Notify):
             try:
                 dummy = body.encode('ascii')
             except UnicodeDecodeError:
-                raise TracError, "Ticket contains non-Ascii chars. " \
-                                 "Please change encoding setting"
+                raise TracError(_("Ticket contains non-Ascii chars. " \
+                                  "Please change encoding setting"))
         msg = MIMEText(body, 'plain')
         # Message class computes the wrong type from MIMEText constructor,
         # which does not take a Charset object as initializer. Reset the
