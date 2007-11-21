@@ -164,7 +164,7 @@ class LogModule(Component):
             node = get_existing_node(req, repos, path, rev)
             if repos.rev_older_than(stop_rev, node.created_rev):
                 # FIXME: we should send a 404 error here
-                raise TracError(_("The file or directory '%(path)s' doesn't"
+                raise TracError(_("The file or directory '%(path)s' doesn't "
                     "exist at revision %(rev)s or at any previous revision.", 
                     path=path, rev=rev), _('Nonexistent path'))
 
