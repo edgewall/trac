@@ -23,6 +23,7 @@ from trac import __version__
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.util.text import CRLF
+from trac.util.translation import _
 from trac.web.chrome import Chrome
 
 MAXHEADERLEN = 76
@@ -224,12 +225,12 @@ class NotifyEmail(Notify):
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError(_(tag(tag.p('Unable to send email due to identity '
+            raise TracError(tag(tag.p('Unable to send email due to identity '
                                         'crisis.'),
                                   tag.p('Neither ', tag.b('notification.from'),
                                         ' nor ', tag.b('notification.reply_to'),
                                         'are specified in the configuration.')),
-                              'SMTP Notification Error'))
+                              'SMTP Notification Error')
 
         # Authentication info (optional)
         self.user_name = self.config['notification'].get('smtp_user')
