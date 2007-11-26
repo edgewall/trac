@@ -130,6 +130,8 @@ class SQLiteConnector(Component):
             if os.path.exists(path):
                 raise TracError('Database already exists at %s' % path)
             os.makedirs(os.path.split(path)[0])
+        if isinstance(path, unicode): # needed with 2.4.0
+            path = path.encode('utf-8')
         cnx = sqlite.connect(path, timeout=int(params.get('timeout', 10000)))
         cursor = cnx.cursor()
         from trac.db_default import schema
@@ -167,6 +169,8 @@ class SQLiteConnection(ConnectionWrapper):
         if have_pysqlite == 2:
             self._active_cursors = weakref.WeakKeyDictionary()
             timeout = int(params.get('timeout', 10.0))
+            if isinstance(path, unicode): # needed with 2.4.0
+                path = path.encode('utf-8')
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                                  check_same_thread=sqlite_version < 30301,
                                  timeout=timeout)
