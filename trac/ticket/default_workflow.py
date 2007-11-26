@@ -111,11 +111,13 @@ class ConfigurableTicketWorkflow(Component):
     # IEnvironmentSetupParticipant methods
 
     def environment_created(self):
-        """When an environment is created, we provide the basic-workflow"""
-        
-        load_workflow_config_snippet(self.config, 'basic-workflow.ini')
-        self.config.save()
-        self.actions = get_workflow_config(self.config)
+        """When an environment is created, we provide the basic-workflow,
+        unless a ticket-workflow section already exists.
+        """
+        if not 'ticket-workflow' in self.config.sections():
+            load_workflow_config_snippet(self.config, 'basic-workflow.ini')
+            self.config.save()
+            self.actions = get_workflow_config(self.config)
 
     def environment_needs_upgrade(self, db):
         """The environment needs an upgrade if there is no [ticket-workflow]

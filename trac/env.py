@@ -253,7 +253,11 @@ class Environment(Component, ComponentManager):
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize
-        the database and populate the configuration file with default values."""
+        the database and populate the configuration file with default values.
+
+        If options contains ('inherit', 'file'), default values will not be
+        loaded; they are expected to be provided by that file or other options.
+        """
         def _create_file(fname, data=None):
             fd = open(fname, 'w')
             if data:
@@ -277,10 +281,13 @@ class Environment(Component, ComponentManager):
         # Setup the default configuration
         os.mkdir(os.path.join(self.path, 'conf'))
         _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
-        self.setup_config(load_defaults=True)
+        skip_defaults = options and ('inherit', 'file') in [(section, option) \
+                for (section, option, value) in options]
+        self.setup_config(load_defaults=not skip_defaults)
         for section, name, value in options:
             self.config.set(section, name, value)
         self.config.save()
+        self.config.parse_if_needed() # Full reload to get 'inherit' working
 
         # Create the database
         DatabaseManager(self).init_db()

@@ -509,6 +509,11 @@ Type:  '?' or 'help' for help on commands.
             return 2
 
         arg = self.arg_tokenize(line)
+        inherit_file = ''
+        for num, item in enumerate(arg):
+            if item.startswith('--inherit='):
+                inherit_file = arg.pop(num)[10:]
+        arg = arg or [''] # Reset to usual empty in case we popped the only one
         project_name = None
         db_str = None
         repository_dir = None
@@ -529,6 +534,8 @@ Type:  '?' or 'help' for help on commands.
                 ('trac', 'repository_dir', repository_dir),
                 ('project', 'name', project_name),
             ]
+            if inherit_file:
+                options.append(('inherit', 'file', inherit_file))
             try:
                 self.__env = Environment(self.envname, create=True,
                                          options=options)
