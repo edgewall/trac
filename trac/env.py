@@ -481,8 +481,8 @@ class EnvironmentSetup(Component):
                 upgrades = __import__('upgrades', globals(), locals(), [name])
                 script = getattr(upgrades, name)
             except AttributeError:
-                raise TracError(_('No upgrade module for version %i (%s.py)' %
-                                  (i, name)))
+                raise TracError(_('No upgrade module for version %(num)i '
+                                  '(%(version)s.py)', num=i, version=name))
             script.do_upgrade(self.env, i, cursor)
         cursor.execute("UPDATE system SET value=%s WHERE "
                        "name='database_version'", (db_default.db_version,))
@@ -557,6 +557,7 @@ def open_environment(env_path=None, use_cache=False):
             env.log.exception(e)
         if needs_upgrade:
             raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
-                              'Run "trac-admin %s upgrade"' % env_path))
+                              'Run "trac-admin %(path)s upgrade"',
+                              path=env_path))
 
     return env
