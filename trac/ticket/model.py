@@ -28,6 +28,7 @@ from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import utc, utcmax, to_timestamp
+from trac.util.translation import _
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
            'Component', 'Milestone', 'Version']
@@ -348,7 +349,8 @@ class AbstractEnum(object):
                            (self.type, name))
             row = cursor.fetchone()
             if not row:
-                raise TracError('%s %s does not exist.' % (self.type, name))
+                raise TracError(_('%(type)s %(name)s does not exist.',
+                                  type=self.type, name=name))
             self.value = self._old_value = row[0]
             self.name = self._old_name = name
         else:
@@ -483,7 +485,8 @@ class Component(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError('Component %s does not exist.' % name)
+                raise TracError(_('Component %(name)s does not exist.',
+                                  name=name))
             self.name = self._old_name = name
             self.owner = row[0] or None
             self.description = row[1] or ''
@@ -715,7 +718,8 @@ class Version(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError('Version %s does not exist.' % name)
+                raise TracError(_('Version %(name)s does not exist.',
+                                  name=name))
             self.name = self._old_name = name
             self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) or None
             self.description = row[1] or ''

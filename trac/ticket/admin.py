@@ -19,6 +19,7 @@ from trac.perm import PermissionSystem
 from trac.ticket import model
 from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint
+from trac.util.translation import _
 from trac.web.chrome import add_link, add_script
 
 
@@ -83,7 +84,7 @@ class ComponentAdminPage(TicketAdminPage):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError('No component selected')
+                        raise TracError(_('No component selected'))
                     db = self.env.get_db_cnx()
                     for name in sel:
                         comp = model.Component(self.env, name, db=db)
@@ -142,9 +143,9 @@ class MilestoneAdminPage(TicketAdminPage):
                     if completed:
                         mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):
-                            raise TracError('Completion date may not be in '
-                                            'the future',
-                                            'Invalid Completion Date')
+                            raise TracError(_('Completion date may not be in '
+                                              'the future',
+                                              'Invalid Completion Date'))
                     mil.description = req.args.get('description', '')
                     mil.update()
                     req.redirect(req.href.admin(cat, page))
@@ -170,7 +171,7 @@ class MilestoneAdminPage(TicketAdminPage):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError('No milestone selected')
+                        raise TracError(_('No milestone selected'))
                     db = self.env.get_db_cnx()
                     for name in sel:
                         mil = model.Milestone(self.env, name, db=db)
@@ -243,7 +244,7 @@ class VersionAdminPage(TicketAdminPage):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError('No version selected')
+                        raise TracError(_('No version selected'))
                     db = self.env.get_db_cnx()
                     for name in sel:
                         ver = model.Version(self.env, name, db=db)
@@ -315,7 +316,7 @@ class AbstractEnumAdminPage(TicketAdminPage):
                     sel = req.args.get('sel')
                     sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError('No enum selected')
+                        raise TracError(_('No enum selected'))
                     db = self.env.get_db_cnx()
                     for name in sel:
                         enum = self._enum_cls(self.env, name, db=db)
@@ -341,7 +342,7 @@ class AbstractEnumAdminPage(TicketAdminPage):
                                   if key.startswith('value_')])
                     values = dict([(val, True) for val in order.values()])
                     if len(order) != len(values):
-                        raise TracError('Order numbers must be unique')
+                        raise TracError(_('Order numbers must be unique'))
                     db = self.env.get_db_cnx()
                     for enum in self._enum_cls.select(self.env, db=db):
                         new_value = order[enum.value]

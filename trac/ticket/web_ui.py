@@ -433,7 +433,7 @@ class TicketModule(Component):
             actions = TicketSystem(self.env).get_available_actions(
                 req, ticket)
             if action not in actions:
-                raise TracError('Invalid action "%s"' % action)
+                raise TracError(_('Invalid action "%(name)s"', name=action))
                 # (this should never happen in normal situations)
             field_changes, problems = self.get_ticket_changes(req, ticket,
                                                               action)
@@ -609,7 +609,7 @@ class TicketModule(Component):
         if new_idx >= 0:
             new_version, new_change = descriptions[new_idx]
         else:
-            raise TracError('No differences to show')
+            raise TracError(_('No differences to show'))
 
         # determine prev and next versions
         prev_version = old_version
