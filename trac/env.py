@@ -29,6 +29,7 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
 from trac.util import get_pkginfo
+from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
 
@@ -383,7 +384,7 @@ class Environment(Component, ComponentManager):
 
         db_str = self.config.get('trac', 'database')
         if not db_str.startswith('sqlite:'):
-            raise TracError('Can only backup sqlite databases')
+            raise TracError(_('Can only backup sqlite databases'))
         db_name = os.path.join(self.path, db_str[7:])
         if not dest:
             dest = '%s.%i.bak' % (db_name, self.get_version())
@@ -468,7 +469,7 @@ class EnvironmentSetup(Component):
         if dbver == db_default.db_version:
             return False
         elif dbver > db_default.db_version:
-            raise TracError('Database newer than Trac version')
+            raise TracError(_('Database newer than Trac version'))
         return True
 
     def upgrade_environment(self, db):
@@ -480,8 +481,8 @@ class EnvironmentSetup(Component):
                 upgrades = __import__('upgrades', globals(), locals(), [name])
                 script = getattr(upgrades, name)
             except AttributeError:
-                raise TracError('No upgrade module for version %i (%s.py)' %
-                                (i, name))
+                raise TracError(_('No upgrade module for version %i (%s.py)' %
+                                  (i, name)))
             script.do_upgrade(self.env, i, cursor)
         cursor.execute("UPDATE system SET value=%s WHERE "
                        "name='database_version'", (db_default.db_version,))
@@ -525,9 +526,9 @@ def open_environment(env_path=None, use_cache=False):
     if not env_path:
         env_path = os.getenv('TRAC_ENV')
     if not env_path:
-        raise TracError('Missing environment variable "TRAC_ENV". '
-                        'Trac requires this variable to point to a valid '
-                        'Trac environment.')
+        raise TracError(_('Missing environment variable "TRAC_ENV". '
+                          'Trac requires this variable to point to a valid '
+                          'Trac environment.'))
 
     if use_cache:
         env_cache_lock.acquire()
@@ -555,7 +556,7 @@ def open_environment(env_path=None, use_cache=False):
         except Exception, e: # e.g. no database connection
             env.log.exception(e)
         if needs_upgrade:
-            raise TracError('The Trac Environment needs to be upgraded.\n\n'
-                            'Run "trac-admin %s upgrade"' % env_path)
+            raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
+                              'Run "trac-admin %s upgrade"' % env_path))
 
     return env
