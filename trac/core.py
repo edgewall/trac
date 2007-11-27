@@ -16,8 +16,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from trac.util.translation import _
-
 __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
            'TracError']
 
@@ -199,13 +197,12 @@ class ComponentManager(object):
         component = self.components.get(cls)
         if not component:
             if cls not in ComponentMeta._components:
-                raise TracError(_('Component "%s" not registered' % 
-                                  cls.__name__))
+                raise TracError('Component "%s" not registered' % cls.__name__)
             try:
                 component = cls(self)
             except TypeError, e:
-                raise TracError(_('Unable to instantiate component %r (%s)' %
-                                  (cls, e)))
+                raise TracError('Unable to instantiate component %r (%s)' %
+                                (cls, e))
         return component
 
     def component_activated(self, component):
