@@ -795,7 +795,7 @@ class ChangesetModule(Component):
                 return context.href.log(rev=rev_b, stop_rev=rev_a)
             
         elif field == 'description':
-            if self.timeline_long_messages:
+            if not self.timeline_long_messages:
                 message = shorten_line(message)
             if self.wiki_format_messages:
                 markup = ''
