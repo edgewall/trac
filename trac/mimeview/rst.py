@@ -30,6 +30,7 @@ import re
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Markup
+from trac.util.translation import _
 from trac.web.href import Href
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import WikiProcessor, Formatter, extract_link
@@ -52,10 +53,10 @@ class ReStructuredTextRenderer(Component):
             from docutils.parsers import rst
             from docutils import __version__
         except ImportError:
-            raise TracError, 'Docutils not found'
+            raise TracError(_('Docutils not found'))
         if StrictVersion(__version__) < StrictVersion('0.3.9'):
-            raise TracError, 'Docutils version >= %s required, %s found' \
-                             % ('0.3.9', __version__)
+            raise TracError(_('Docutils version >= %s required, %s found' %
+                              ('0.3.9', __version__)))
 
         def trac_get_reference(rawtext, target, text):
             fulltext = text and target+' '+text or target

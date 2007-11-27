@@ -69,6 +69,7 @@ from trac.core import *
 from trac.resource import Resource
 from trac.util import reversed, sorted, Ranges
 from trac.util.text import to_utf8, to_unicode
+from trac.util.translation import _
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',
@@ -549,8 +550,8 @@ class Mimeview(Component):
         candidates = list(self.get_supported_conversions(mimetype))
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
-            raise TracError('No available MIME conversions from %s to %s' %
-                            (mimetype, key))
+            raise TracError(_('No available MIME conversions from %s to %s' %
+                              (mimetype, key)))
 
         # First successful conversion wins
         for ck, name, ext, input_mimettype, output_mimetype, quality, \
@@ -559,8 +560,8 @@ class Mimeview(Component):
             if not output:
                 continue
             return (output[0], output[1], ext)
-        raise TracError('No available MIME conversions from %s to %s' %
-                        (mimetype, key))
+        raise TracError(_('No available MIME conversions from %s to %s' %
+                          (mimetype, key)))
 
     def get_annotation_types(self):
         """Generator that returns all available annotation types."""

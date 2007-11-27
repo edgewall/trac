@@ -23,6 +23,7 @@ from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
                               Mimeview
 from trac.util.html import escape, Markup
 from trac.util.text import expandtabs
+from trac.util.translation import _
 from trac.web.chrome import Chrome, add_script, add_stylesheet
 
 __all__ = ['PatchRenderer']
@@ -51,7 +52,7 @@ class PatchRenderer(Component):
         changes = self._diff_to_hdf(content.splitlines(),
                                     Mimeview(self.env).tab_width)
         if not changes:
-            raise TracError, 'Invalid unified diff content'
+            raise TracError(_('Invalid unified diff content'))
         data = {'diff': {'style': 'inline'}, 'no_id': True,
                 'changes': changes, 'longcol': 'File', 'shortcol': ''}
 
