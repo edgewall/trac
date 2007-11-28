@@ -550,8 +550,8 @@ class Mimeview(Component):
         candidates = list(self.get_supported_conversions(mimetype))
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
-            raise TracError(_('No available MIME conversions from %s to %s' %
-                              (mimetype, key)))
+            raise TracError(_('No available MIME conversions from %(old)s 
+                              'to %(new)s', old=mimetype, new=key))
 
         # First successful conversion wins
         for ck, name, ext, input_mimettype, output_mimetype, quality, \
@@ -560,8 +560,8 @@ class Mimeview(Component):
             if not output:
                 continue
             return (output[0], output[1], ext)
-        raise TracError(_('No available MIME conversions from %s to %s' %
-                          (mimetype, key)))
+        raise TracError(_('No available MIME conversions from %(old)s to '
+                          '%(new)s', old=mimetype, new=key))
 
     def get_annotation_types(self):
         """Generator that returns all available annotation types."""

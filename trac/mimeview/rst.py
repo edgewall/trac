@@ -55,8 +55,9 @@ class ReStructuredTextRenderer(Component):
         except ImportError:
             raise TracError(_('Docutils not found'))
         if StrictVersion(__version__) < StrictVersion('0.3.9'):
-            raise TracError(_('Docutils version >= %s required, %s found' %
-                              ('0.3.9', __version__)))
+            raise TracError(_('Docutils version >= %(version)s required, '
+                              '%(found)s found', version='0.3.9',
+                              found=__version__))
 
         def trac_get_reference(rawtext, target, text):
             fulltext = text and target+' '+text or target
