@@ -1172,23 +1172,23 @@ class TicketModule(Component):
 
         # per name special rendering of diffs
         old_list, new_list = None, None
+        render_elt = lambda x: x
         sep = ', '
         if field == 'cc':
             chrome = Chrome(self.env)
             old_list, new_list = chrome.cc_list(old), chrome.cc_list(new)
             if not (Chrome(self.env).show_email_addresses or 
                     'EMAIL_VIEW' in req.perm(ticket.resource)):
-                old_list = [obfuscate_email_address(cc)
-                            for cc in old_list]
-                new_list = [obfuscate_email_address(cc)
-                            for cc in new_list]
+                render_elt = obfuscate_email_address
         elif field == 'keywords':
             old_list, new_list = old.split(), new.split()
             sep = ' '
 
         if (old_list, new_list) != (None, None):
-            added = [tag.em(x) for x in new_list if x not in old_list]
-            remvd = [tag.em(x) for x in old_list if x not in new_list]
+            added = [tag.em(render_elt(x)) for x in new_list 
+                     if x not in old_list]
+            remvd = [tag.em(render_elt(x)) for x in old_list
+                     if x not in new_list]
             added = added and tag(separated(added, sep), " added")
             remvd = remvd and tag(separated(remvd, sep), " removed")
             if added or remvd:
