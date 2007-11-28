@@ -494,8 +494,6 @@ class PermissionCache(object):
         return self._has_permission(action, resource)
 
     def _has_permission(self, action, resource):
-        if action == action.lower(): # 'view' -> '<REALM>_VIEW' for now
-            action = (resource.realm+'_'+action).upper()
         key = (self.username, hash(resource), action)
         try:
             return self._cache[key]

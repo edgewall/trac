@@ -358,7 +358,8 @@ class ReportModule(Component):
                     cell_group.append(cell)
                 cell_groups.append(cell_group)
             resource = Resource(realm, row.get('id'))
-            if 'view' not in req.perm(resource):
+            # FIXME: for now, we still need to hardcode the realm in the action
+            if resource.realm.upper()+'_VIEW' not in req.perm(resource):
                 continue
             if email_cells:
                 for cell in email_cells:
