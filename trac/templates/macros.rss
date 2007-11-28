@@ -2,6 +2,14 @@
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
                    xmlns:dc="http://purl.org/dc/elements/1.1/" py:strip="">
 
+  <!--! 
+     
+     WARNING: this file and the corresponding <py:def>s are going to be phased
+              out soon. Please DON'T include macros.rss in your own templates.
+
+              See http://trac.edgewall.org/ticket/6374
+  -->
+
   <!--! Generate an <author> or a <dc:creator> tag, based on the presence
   -     of an email or not in the author's information.
   -
