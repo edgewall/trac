@@ -550,7 +550,7 @@ class Mimeview(Component):
         candidates = list(self.get_supported_conversions(mimetype))
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
-            raise TracError(_('No available MIME conversions from %(old)s 
+            raise TracError(_('No available MIME conversions from %(old)s '
                               'to %(new)s', old=mimetype, new=key))
 
         # First successful conversion wins
