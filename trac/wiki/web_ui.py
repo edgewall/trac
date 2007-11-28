@@ -132,8 +132,7 @@ class WikiModule(Component):
                 if action == 'edit' and not has_collision:
                     self._do_save(req, versioned_page)
                 else:
-                    return self._render_editor(req, versioned_page, action,
-                                               has_collision)
+                    return self._render_editor(req, page, action, has_collision)
             elif action == 'delete':
                 self._do_delete(req, versioned_page)
             elif action == 'diff':
