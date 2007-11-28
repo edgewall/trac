@@ -275,10 +275,10 @@ class TicketSystem(Component):
 
     def get_permission_actions(self):
         return ['TICKET_APPEND', 'TICKET_CREATE', 'TICKET_CHGPROP',
-                'TICKET_VIEW',
-                ('TICKET_MODIFY', ['TICKET_APPEND', 'TICKET_CHGPROP']),  
-                ('TICKET_ADMIN', ['TICKET_CREATE', 'TICKET_MODIFY',  
-                                  'TICKET_VIEW'])]
+                'TICKET_VIEW', 'TICKET_EDIT_CC',
+                ('TICKET_MODIFY', ['TICKET_APPEND', 'TICKET_CHGPROP']),
+                ('TICKET_ADMIN', ['TICKET_CREATE', 'TICKET_MODIFY',
+                                  'TICKET_VIEW', 'TICKET_EDIT_CC'])]
 
     # IWikiSyntaxProvider methods
 

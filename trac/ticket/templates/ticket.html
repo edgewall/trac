@@ -309,7 +309,7 @@ ${comment}</textarea></p>
               <py:for each="idx, field in enumerate(row)">
                 <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                   <label for="field-${field.name}" py:if="field"
-                         py:strip="field.type == 'radio'">${field.label or field.name}:</label>
+                         py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
                 </th>
                 <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
                     colspan="${fullrow and 3 or None}">
@@ -340,8 +340,17 @@ ${comment}</textarea></p>
                              checked="${ticket[field.name] == option or None}" />
                       ${option}
                     </label>
-                    <input py:otherwise="" type="text" id="field-${field.name}"
-                           name="field_${field.name}" value="${ticket[field.name]}" />
+                    <py:otherwise><!--! Text input fields -->
+                      <py:choose>
+                        <span py:when="field.cc_entry"><!--! Special case for Cc: field -->
+                          <em>${field.cc_entry}</em>
+                          <input type="checkbox" id="field-cc" name="cc_update" checked="${field.cc_update}" />
+                        </span>
+                        <!--! All the other text input fields, including Cc: when TICKET_EDIT_CC is allowed -->
+                        <input py:otherwise="" type="text" id="field-${field.name}"
+                          name="field_${field.name}" value="${ticket[field.name]}" />
+                      </py:choose>
+                    </py:otherwise>
                   </py:choose>
                 </td>
               </py:for>

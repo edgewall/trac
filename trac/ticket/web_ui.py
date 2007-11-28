@@ -538,9 +538,49 @@ class TicketModule(Component):
                                                 absurls=absurls),
                 'preserve_newlines': preserve_newlines}
 
+    def _toggle_cc(self, req, cc):
+        """Return an (action, recipient) tuple corresponding to a change
+        of CC status for this user relative to the current `cc_list`."""
+        entries = []
+        email = req.session.get('email', '').strip()
+        if email:
+            entries.append(email)
+        if req.authname != 'anonymous':
+            entries.append(req.authname)
+        else:
+            author = get_reporter_id(req, 'author').strip()
+            if author and author != 'anonymous':
+                email = author.split()[-1]
+                if (email[0], email[-1]) == ('<', '>'):
+                    email = email[1:-1]
+                entries.append(email)
+        add = []
+        remove = []
+        cc_list = Chrome(self.env).cc_list(cc)
+        for entry in entries:
+            if entry in cc_list:
+                remove.append(entry)
+            else:
+                add.append(entry)
+        action = entry = ''
+        if remove:
+            action, entry = ('remove', remove[0])
+        elif add:
+            action, entry = ('add', add[0])
+        return (action, entry, cc_list)
+        
     def _populate(self, req, ticket):
         ticket.populate(dict([(k[6:],v) for k,v in req.args.iteritems()
                               if k.startswith('field_')]))
+
+        # special case for updating the Cc: field
+        if 'cc_update' in req.args:
+            cc_action, cc_entry, cc_list = self._toggle_cc(req, ticket['cc'])
+            if cc_action == 'remove':
+                cc_list.remove(cc_entry)
+            elif cc_action == 'add':
+                cc_list.append(cc_entry)
+            ticket['cc'] = ', '.join(cc_list)
 
     def _get_history(self, req, ticket):
         history = []
@@ -984,6 +1024,16 @@ class TicketModule(Component):
             elif name == 'cc':
                 emails = Chrome(self.env).format_emails(context, ticket[name])
                 field['rendered'] = emails
+                if ticket.exists and \
+                        'TICKET_EDIT_CC' not in req.perm(ticket.resource):
+                    cc = ticket._old.get('cc', ticket['cc'])
+                    cc_action, cc_entry, cc_list = self._toggle_cc(req, cc)
+                    field['edit_label'] = {
+                            'add': _("Add to Cc"),
+                            'remove': _("Remove from Cc"),
+                            '': _("Add/Remove from Cc")}[cc_action]
+                    field['cc_entry'] = cc_entry or _("<Author field>")
+                    field['cc_update'] = 'cc_update' in req.args or None
 
             # per type settings
             if type_ in ('radio', 'select'):
