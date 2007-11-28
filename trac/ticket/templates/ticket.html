@@ -124,8 +124,6 @@
             </h3>
             ${display_change(change_preview)}
           </div>
-
-          <span py:if="not valid" class="preview-notice">Note: this ticket can't be saved, see the <a href="#warning"><em>warnings</em></a> above</span>
         </py:if>
 
         <!-- Ticket Box (ticket fields along with description) -->
@@ -242,7 +240,7 @@
                    ('TICKET_APPEND' in perm(ticket.resource) or
                     'TICKET_CHGPROP' in perm(ticket.resource) or
                     ('TICKET_CREATE' in perm(ticket.resource) and not ticket.id))"
-            action="#preview" method="post">
+            action="" method="post">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} ($ticket.summary)</a></h3>
         <div py:if="authname == 'anonymous'" class="field">
