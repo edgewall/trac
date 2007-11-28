@@ -483,7 +483,8 @@ class AttachmentModule(Component):
         if format == 'raw':
             kwargs.pop('format')
             prefix = 'raw-attachment'
-        parent_href = get_resource_url(self.env, resource.parent, Href(''))
+        parent_href = unicode_unquote(get_resource_url(self.env,
+                            resource.parent(version=None), Href('')))
         if not resource.id:
             return href(prefix, parent_href) + '/'
         else:
