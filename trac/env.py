@@ -81,12 +81,23 @@ class Environment(Component, ComponentManager):
         (''since 0.11'')""")
 
     base_url = Option('trac', 'base_url', '',
-        """Base URL of the Trac deployment.
+        """Reference URL for the Trac deployment.
         
-        In most configurations, Trac will automatically reconstruct the URL
-        that is used to access it automatically. However, in more complex
-        setups, usually involving running Trac behind a HTTP proxy, you may
-        need to use this option to force Trac to use the correct URL.""")
+        This is the base URL that will be used when producing documents that
+        will be used outside of the web browsing context, like for example
+        when inserting URLs pointing to Trac resources in notification
+        e-mails.""")
+
+    base_url_for_redirect = BoolOption('trac', 'use_base_url_for_redirect',
+            False, 
+        """Optionally use `[trac] base_url` for redirects.
+        
+        In some configurations, usually involving running Trac behind a HTTP
+        proxy, Trac can't automatically reconstruct the URL that is used to
+        access it. You may need to use this option to force Trac to use the
+        `base_url` setting also for redirects. This introduces the obvious
+        limitation that this environment will only be usable when accessible
+        from that URL, as redirects are frequently used.""")
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")

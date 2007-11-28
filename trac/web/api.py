@@ -276,10 +276,9 @@ class Request(object):
 
         self.send_response(status)
         if not url.startswith('http://') and not url.startswith('https://'):
-            # Make sure the URL is absolute, honor base_url for
-            # scheme and host if present
+            # Make sure the URL is absolute
             scheme, host = urlparse.urlparse(self.base_url)[:2]
-            url = urlparse.urlunparse((scheme, host, url, None, None, None))                           
+            url = urlparse.urlunparse((scheme, host, url, None, None, None))
 
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
