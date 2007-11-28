@@ -1194,7 +1194,10 @@ def run(args=None):
                 return admin.onecmd(command)
             else:
                 while True:
-                    admin.run()
+                    try:
+                        admin.run()
+                    except KeyboardInterrupt:
+                        admin.do_quit('')
     else:
         return admin.onecmd("help")
 
