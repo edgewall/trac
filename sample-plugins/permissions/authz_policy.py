@@ -142,11 +142,11 @@ class AuthzPolicy(Component):
                 os.path.getmtime(self.get_authz_file()) > self.authz_mtime:
             self.parse_authz()
         resource_key = self.normalise_resource(resource)
-        self.env.log.debug('Checking %s on %s', action, resource_key)
+        self.log.debug('Checking %s on %s', action, resource_key)
         permissions = self.authz_permissions(resource_key, username)
         if permissions is None:
             return None                 # no match, can't decide
-        elif permissions == '':
+        elif permissions == ['']:
             return False                # all actions are denied
 
         # FIXME: expand all permissions once for all
