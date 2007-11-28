@@ -88,7 +88,7 @@
             </a>
           </py:when>
           <py:otherwise>
-            Create New Ticket <span py:if="ticket.type" class="status">(${ticket.type})</span>
+            Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
           </py:otherwise>
         </py:choose>
 
