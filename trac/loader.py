@@ -49,7 +49,8 @@ def load_components(env):
                 if plugin_name not in loaded_components:
                     env.log.debug('Loading file plugin %s from %s' % \
                                   (plugin_name, plugin_file))
-                    module = imp.load_source(plugin_name, plugin_file)
+                    if plugin_name not in sys.modules:
+                        module = imp.load_source(plugin_name, plugin_file)
                     loaded_components.append(plugin_name)
                     if auto_enable and plugin_name + '.*' \
                             not in env.config['components']:
