@@ -19,6 +19,7 @@ from datetime import datetime
 
 from trac.core import TracError
 from trac.util.datefmt import utc, to_timestamp
+from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
                                 NoSuchChangeset
 
@@ -88,8 +89,8 @@ class CachedRepository(Repository):
             if repository_dir != self.name:
                 self.log.info("'repository_dir' has changed from %r to %r"
                               % (repository_dir, self.name))
-                raise TracError("The 'repository_dir' has changed, "
-                                "a 'trac-admin resync' operation is needed.")
+                raise TracError(_("The 'repository_dir' has changed, a "
+                                  "'trac-admin resync' operation is needed."))
         elif repository_dir is None: # 
             self.log.info('Storing initial "repository_dir": %s' % self.name)
             cursor.execute("INSERT INTO system (name,value) VALUES (%s,%s)",
@@ -107,7 +108,7 @@ class CachedRepository(Repository):
 
         # -- retrieve the youngest revision cached so far
         if CACHE_YOUNGEST_REV not in metadata:
-            raise TracError('Missing "youngest_rev" in cache metadata')
+            raise TracError(_('Missing "youngest_rev" in cache metadata'))
         
         self.youngest = metadata[CACHE_YOUNGEST_REV]
 

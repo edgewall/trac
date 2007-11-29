@@ -289,8 +289,8 @@ class SubversionConnector(Component):
         version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
         version_string = '%d.%d.%d' % version + core.SVN_VER_TAG
         if version[0] < 1:
-            raise TracError("Subversion >= 1.0 required: Found " +
-                            version_string)
+            raise TracError(_("Subversion >= 1.0 required: Found %(version)s",
+                              version=version_string))
         return version_string
 
 
@@ -384,8 +384,8 @@ class SubversionRepository(Repository):
         path = os.path.normpath(path).replace('\\', '/')
         self.path = repos.svn_repos_find_root_path(path, self.pool())
         if self.path is None:
-            raise TracError("%s does not appear to be a Subversion "
-                            "repository." % path)
+            raise TracError(_("%(path)s does not appear to be a Subversion "
+                              "repository.", path=path))
 
         self.repos = repos.svn_repos_open(self.path, self.pool())
         self.fs_ptr = repos.svn_repos_fs(self.repos)
@@ -632,10 +632,13 @@ class SubversionRepository(Repository):
             raise NoSuchNode(new_path, new_rev,
                              'The Target for Diff is invalid')
         if new_node.kind != old_node.kind:
-            raise TracError('Diff mismatch: Base is a %s (%s in revision %s) '
-                            'and Target is a %s (%s in revision %s).' \
-                            % (old_node.kind, old_path, old_rev,
-                               new_node.kind, new_path, new_rev))
+            raise TracError(_('Diff mismatch: Base is a %(oldnode)s '
+                              '(%(oldpath)s in revision %(oldrev)s) and '
+                              'Target is a %(newnode)s (%(newpath)s in '
+                              'revision %(newrev)s).', oldnode=old_node.kind,
+                              oldpath=old_path, oldrev=old_rev,
+                              newnode=new_node.kind, newpath=new_path,
+                              newrev=new_rev))
         subpool = Pool(self.pool)
         if new_node.isdir:
             editor = DiffChangeEditor()
@@ -776,7 +779,8 @@ class SubversionNode(Node):
                               client.create_context(), self.pool())
             except (core.SubversionException, AttributeError), e:
                 # svn thinks file is a binary or blame not supported
-                raise TracError('svn blame failed: '+to_unicode(e))
+                raise TracError(_('svn blame failed: %(error)s',
+                                  error=to_unicode(e)))
         return annotations
 
 #    def get_previous(self):
