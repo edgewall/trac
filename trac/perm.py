@@ -18,6 +18,7 @@
 
 """Management of permissions."""
 
+from time import time
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
@@ -254,11 +255,35 @@ class DefaultPermissionPolicy(Component):
 
     implements(IPermissionPolicy)
 
+    # Number of seconds a cached user permission set is valid for.
+    CACHE_EXPIRY = 5
+    # How frequently to clear the entire permission cache
+    CACHE_REAP_TIME = 60
+
+    def __init__(self):
+        self.permission_cache = {}
+        self.last_reap = time()
+
     # IPermissionPolicy methods
 
     def check_permission(self, action, username, resource, perm):
-        return PermissionSystem(self.env). \
-               get_user_permissions(username).get(action, None)
+        now = time()
+
+        if now - self.last_reap > self.CACHE_REAP_TIME:
+            self.permission_cache = {}
+            self.last_reap = time()
+
+        timestamp, permissions = self.permission_cache.get(username, (0, None))
+
+        # Cache hit?
+        if now - timestamp > self.CACHE_EXPIRY:
+            # No, pull permissions from database.
+            permissions = PermissionSystem(self.env). \
+                          get_user_permissions(username)
+            self.permission_cache[username] = (now, permissions)
+
+        return action in permissions
+
 
 
 class PermissionSystem(Component):
