@@ -95,9 +95,9 @@ class PHPRenderer(Component):
         odata = ''.join(np.out.splitlines()[1:-1])
         if odata.startswith('X-Powered-By:') or \
                 odata.startswith('Content-type:'):
-            raise TracError('You appear to be using the PHP CGI '
-                            'binary. Trac requires the CLI version '
-                            'for syntax highlighting.')
+            raise TracError(_('You appear to be using the PHP CGI '
+                              'binary. Trac requires the CLI version '
+                              'for syntax highlighting.'))
 
         epilogues = ["</span>", "</font>"]
         for e in epilogues:
