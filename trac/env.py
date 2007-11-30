@@ -221,12 +221,11 @@ class Environment(Component, ComponentManager):
         for pattern, enabled in rules:
             if component_name == pattern or pattern.endswith('*') \
                     and component_name.startswith(pattern[:-1]):
-                # warn if the pre-0.11 WebAdmin plugin is enabled
-                if enabled and component_name.startswith('webadmin.'):
-                    self.log.warning('TracWebAdmin plugin is being used '
-                                     'instead of the builtin admin module. '
-                                     'Please disable the webadmin.* '
-                                     'components.')
+                # force disabling of the pre-0.11 WebAdmin plugin
+                if component_name.startswith('webadmin.'):
+                    self.log.warning('The obsolete 0.10 TracWebAdmin plugin '
+                                     'had to be disabled. Please uninstall it.')
+                    return False
                 return enabled
 
         # versioncontrol components are enabled if the repository is configured
