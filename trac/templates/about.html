@@ -46,10 +46,10 @@
         <a href="http://www.edgewall.org/">Edgewall Software</a>
       </p>
 
-      <py:if test="'CONFIG_VIEW' in perm">
+      <py:if test="systeminfo or config">
         <hr />
 
-        <div id="systeminfo">
+        <div py:if="systeminfo" id="systeminfo">
           <h2>System Information</h2>
           <table class="listing">
             <tr py:for="name, value in systeminfo">
@@ -59,7 +59,7 @@
           </table>
         </div>
 
-        <div id="config">
+        <div py:if="config" id="config">
           <h2>Configuration</h2>
           <table class="listing">
             <thead>

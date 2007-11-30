@@ -55,10 +55,11 @@ class AboutModule(Component):
     def process_request(self, req):
         data = {}
 
-        if 'CONFIG_VIEW' in req.perm:
+        if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
             data['systeminfo'] = self.env.systeminfo
 
+        if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information
             sections = []
             for section in self.config.sections():
@@ -68,7 +69,7 @@ class AboutModule(Component):
                     default = default_options and default_options.get(name) or ''
                     options.append({
                         'name': name, 'value': value,
-                        'modified': unicode(value) == unicode(default)
+                        'modified': unicode(value) != unicode(default)
                     })
                 options.sort(lambda x,y: cmp(x['name'], y['name']))
                 sections.append({'name': section, 'options': options})
