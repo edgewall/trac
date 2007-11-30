@@ -377,6 +377,13 @@ def dispatch_request(environ, start_response):
         env_error = e
 
     req = Request(environ, start_response)
+    try:
+        return _dispatch_request(req, env, env_error)
+    finally:
+        if env and not run_once:
+            env.shutdown(threading._get_ident())
+
+def _dispatch_request(req, env, env_error):
     resp = []
     try:
         if not env and env_error:
@@ -450,9 +457,6 @@ def dispatch_request(environ, start_response):
 
         finally:
             del exc_info
-            
-    if not run_once:
-        env.shutdown(threading._get_ident())
     return resp
 
 def send_project_index(environ, start_response, parent_dir=None,
