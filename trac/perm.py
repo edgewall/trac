@@ -282,7 +282,7 @@ class DefaultPermissionPolicy(Component):
                           get_user_permissions(username)
             self.permission_cache[username] = (now, permissions)
 
-        return action in permissions
+        return action in permissions or None
 
 
 
