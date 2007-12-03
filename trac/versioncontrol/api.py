@@ -109,7 +109,7 @@ class RepositoryManager(Component):
                 kind = _("Path")
                 if resource.version:
                     version = '@%s' % resource.version
-            return '%s %s%s' % (kind, path, version)
+            return '%s %s%s' % (kind, resource.id, version)
 
     # Public API methods
 
