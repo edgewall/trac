@@ -1189,7 +1189,8 @@ class TicketModule(Component):
                 self._render_property_changes(req, ticket, group['fields'])
                 if 'attachment' in group['fields']:
                     filename = group['fields']['attachment']['new']
-                    if attachment_realm and attachment_realm(id=filename):
+                    attachment = attachment_realm(id=filename)
+                    if 'ATTACHMENT_VIEW' not in req.perm(attachment):
                         del group['fields']['attachment']
                         if not group['fields']:
                             continue
