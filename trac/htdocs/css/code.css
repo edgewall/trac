@@ -12,6 +12,7 @@ table.code {
  border: 1px solid #ddd;
  border-spacing: 0;
  border-top: 0;
+ border-collapse: collapse; 
  empty-cells: show;
  font-size: 12px;
  line-height: 130%;

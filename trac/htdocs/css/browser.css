@@ -28,7 +28,6 @@ h1 .sep { color: #666; padding: 0 .1em }
 #jumploc { margin-right: 2em;}
 
 /* Browser file annotations */
-table.code { border-collapse: collapse; }
 table.code th.blame { width: 5em; }
 table.code th.blame a { color: #ddd; }
 
