@@ -68,7 +68,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def test_default_int(self):
         config = self._read()
         self.assertRaises(ConfigurationError, config.getint, 'a', 'option', 'b')
-        self.assertEquals(None, config.getint('a', 'option'))
+        self.assertEquals(0, config.getint('a', 'option'))
         self.assertEquals(1, config.getint('a', 'option', '1'))
         self.assertEquals(1, config.getint('a', 'option', 1))
 
@@ -82,24 +82,37 @@ class ConfigurationTestCase(unittest.TestCase):
         config = self._read()
         self.assertEquals('x', config.get('a', 'option'))
         self.assertEquals('x', config.get('a', 'option', 'y'))
+        self.assertEquals('y', config.get('b', 'option2', 'y'))
 
     def test_read_and_getbool(self):
         self._write(['[a]', 'option = yes'])
         config = self._read()
         self.assertEquals(True, config.getbool('a', 'option'))
         self.assertEquals(True, config.getbool('a', 'option', False))
+        self.assertEquals(False, config.getbool('b', 'option2'))
+        self.assertEquals(False, config.getbool('b', 'option2', False))
+        self.assertEquals(False, config.getbool('b', 'option2', 'disabled'))
 
     def test_read_and_getint(self):
         self._write(['[a]', 'option = 42'])
         config = self._read()
         self.assertEquals(42, config.getint('a', 'option'))
         self.assertEquals(42, config.getint('a', 'option', 25))
+        self.assertEquals(0, config.getint('b', 'option2'))
+        self.assertEquals(25, config.getint('b', 'option2', 25))
+        self.assertEquals(25, config.getint('b', 'option2', '25'))
 
     def test_read_and_getlist(self):
         self._write(['[a]', 'option = foo, bar, baz'])
         config = self._read()
         self.assertEquals(['foo', 'bar', 'baz'],
                           config.getlist('a', 'option'))
+        self.assertEquals([],
+                          config.getlist('b', 'option2'))
+        self.assertEquals(['foo', 'bar', 'baz'],
+                    config.getlist('b', 'option2', ['foo', 'bar', 'baz']))
+        self.assertEquals(['foo', 'bar', 'baz'],
+                    config.getlist('b', 'option2', 'foo, bar, baz'))
 
     def test_read_and_getlist_sep(self):
         self._write(['[a]', 'option = foo | bar | baz'])
@@ -158,6 +171,13 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(('option', 'x'), iter(config.options('a')).next())
         self.assertEquals(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
+
+    def test_has_option(self):
+        config = self._read()
+        self.assertEquals(False, config.has_option('a', 'option'))
+        self._write(['[a]', 'option = x'])
+        config = self._read()
+        self.assertEquals(True, config.has_option('a', 'option'))
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])

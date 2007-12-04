@@ -60,37 +60,46 @@ class Configuration(object):
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.filename)
 
-    def get(self, section, name, default=None):
-        """Return the value of the specified option."""
+    def get(self, section, name, default=''):
+        """Return the value of the specified option.
+        
+        Valid default input is a string. Returns a string.
+        """
         return self[section].get(name, default)
 
-    def getbool(self, section, name, default=None):
+    def getbool(self, section, name, default=''):
         """Return the specified option as boolean value.
         
         If the value of the option is one of "yes", "true", "enabled", "on",
         or "1", this method wll return `True`, otherwise `False`.
         
+        Valid default input is a string or a bool. Returns a bool.
+        
         (since Trac 0.9.3, "enabled" added in 0.11)
         """
         return self[section].getbool(name, default)
 
-    def getint(self, section, name, default=None):
+    def getint(self, section, name, default=''):
         """Return the value of the specified option as integer.
         
         If the specified option can not be converted to an integer, a
         `ConfigurationError` exception is raised.
         
+        Valid default input is a string or an int. Returns an int.
+        
         (since Trac 0.10)
         """
         return self[section].getint(name, default)
 
-    def getlist(self, section, name, default=None, sep=',', keep_empty=False):
+    def getlist(self, section, name, default='', sep=',', keep_empty=False):
         """Return a list of values that have been specified as a single
         comma-separated option.
         
         A different separator can be specified using the `sep` parameter. If
         the `keep_empty` parameter is set to `True`, empty elements are
         included in the list.
+        
+        Valid default input is a string or a list. Returns a string.
         
         (since Trac 0.10)
         """
@@ -135,6 +144,27 @@ class Configuration(object):
             sections |= set(parent.parser.sections())
             parent = parent.parent
         return sorted(sections)
+
+    def has_option(self, section, option):
+        """Returns True if option exists in section in either project or
+        parent trac.ini, or available through the Option registry.
+        
+        (since Trac 0.11)
+        """
+        # Check project trac.ini
+        for file_option, val in self.options(section):
+            if file_option == option:
+                return True
+        # Check parent trac.ini
+        if self.parent:
+            for parent_option, val in self.parent.options(section):
+                if parent_option == option:
+                    return True
+        # Check the registry
+        if (section, option) in Option.registry:
+            return True
+        # Not found
+        return False
 
     def save(self):
         """Write the configuration options to the primary file."""
@@ -238,8 +268,11 @@ class Section(object):
     def __repr__(self):
         return '<Section [%s]>' % (self.name)
 
-    def get(self, name, default=None):
-        """Return the value of the specified option."""
+    def get(self, name, default=''):
+        """Return the value of the specified option.
+        
+        Valid default input is a string. Returns a string.
+        """
         if self.config.parser.has_option(self.name, name):
             value = self.config.parser.get(self.name, name)
         elif self.config.parent:
@@ -250,44 +283,55 @@ class Section(object):
                 value = option.default or default
             else:
                 value = default
-        if value is None:
-            return ''
-        return to_unicode(value)
+        if not value:
+            return u''
+        elif isinstance(value, basestring):
+            return to_unicode(value)
+        else:
+            return value
 
-    def getbool(self, name, default=None):
+    def getbool(self, name, default=''):
         """Return the value of the specified option as boolean.
         
         This method returns `True` if the option value is one of "yes", "true",
         "enabled", "on", or "1", ignoring case. Otherwise `False` is returned.
+
+        Valid default input is a string or a bool. Returns a bool.
         """
         value = self.get(name, default)
         if isinstance(value, basestring):
             value = value.lower() in _TRUE_VALUES
         return bool(value)
 
-    def getint(self, name, default=None):
+    def getint(self, name, default=''):
         """Return the value of the specified option as integer.
         
         If the specified option can not be converted to an integer, a
         `ConfigurationError` exception is raised.
+        
+        Valid default input is a string or an int. Returns an int.
         """
         value = self.get(name, default)
-        if value == '':
-            return default
+        if not value:
+            return 0
         try:
             return int(value)
         except ValueError:
             raise ConfigurationError('expected integer, got %s' % repr(value))
 
-    def getlist(self, name, default=None, sep=',', keep_empty=True):
+    def getlist(self, name, default='', sep=',', keep_empty=True):
         """Return a list of values that have been specified as a single
         comma-separated option.
         
         A different separator can be specified using the `sep` parameter. If
-        the `skip_empty` parameter is set to `True`, empty elements are omitted
+        the `keep_empty` parameter is set to `False`, empty elements are omitted
         from the list.
+        
+        Valid default input is a string or a list. Returns a list.
         """
         value = self.get(name, default)
+        if not value:
+            return []
         if isinstance(value, basestring):
             items = [item.strip() for item in value.split(sep)]
         else:
@@ -296,9 +340,11 @@ class Section(object):
             items = filter(None, items)
         return items
 
-    def getpath(self, name, default=None):
+    def getpath(self, name, default=''):
         """Return the value of the specified option as a path name, relative to
         the location of the configuration file the option is defined in.
+
+        Valid default input is a string. Returns a string with normalised path.
         """
         if self.config.parser.has_option(self.name, name):
             path = self.config.parser.get(self.name, name)
