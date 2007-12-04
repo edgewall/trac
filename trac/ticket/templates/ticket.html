@@ -240,7 +240,7 @@
                    ('TICKET_APPEND' in perm(ticket.resource) or
                     'TICKET_CHGPROP' in perm(ticket.resource) or
                     ('TICKET_CREATE' in perm(ticket.resource) and not ticket.id))"
-            action="" method="post">
+            action="${href.ticket(ticket.id)}" method="post">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} ($ticket.summary)</a></h3>
         <div py:if="authname == 'anonymous'" class="field">
