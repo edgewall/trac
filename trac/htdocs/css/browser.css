@@ -73,6 +73,7 @@ div.message {
  padding-left: 20px;
 }
 #dirlist td.name a.parent { background-image: url(../parent.png) }
+#dirlist td.name div { white-space: pre }
 #dirlist tr span.expander { 
   background-image: url(../expander_normal.png); 
   cursor: pointer; 
