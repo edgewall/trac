@@ -186,7 +186,7 @@ def obfuscate_email_address(address):
 
 # -- Conversion
 
-def pretty_size(size):
+def pretty_size(size, format='%.1f'):
     if size is None:
         return ''
 
@@ -200,7 +200,7 @@ def pretty_size(size):
         i += 1
         size /= 1024.
 
-    return '%.1f %s' % (size, units[i - 1])
+    return (format + ' %s') % (size, units[i - 1])
 
 def expandtabs(s, tabstop=8, ignoring=None):
     if '\t' not in s: return s

@@ -595,7 +595,7 @@ class AttachmentModule(Component):
     def _render_form(self, req, attachment):
         req.perm(attachment.resource).require('ATTACHMENT_CREATE')
         return {'mode': 'new', 'author': get_reporter_id(req),
-                'attachment': attachment}
+            'attachment': attachment, 'max_size': self.max_size}
 
     def _render_list(self, req, parent):
         attachment = parent.child('attachment')

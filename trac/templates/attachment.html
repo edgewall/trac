@@ -27,7 +27,9 @@
         <h1>Add Attachment to <a href="${url_of(parent)}">${name_of(parent)}</a></h1>
         <form id="attachment" method="post" enctype="multipart/form-data" action="">
           <div class="field">
-            <label>File:<br /><input type="file" name="attachment" /></label>
+            <label>File<py:if test="max_size"> (size limit
+                  ${pretty_size(max_size, format='%d')})</py:if>:<br />
+              <input type="file" name="attachment" /></label>
           </div>
           <fieldset>
             <legend>Attachment Info</legend>
