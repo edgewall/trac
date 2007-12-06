@@ -55,6 +55,7 @@ wiki_pages = [
  "TracUnicode",
  "TracUpgrade",
  "TracWiki",
+ "TracWorkflow",
  "WikiDeletePage",
  "WikiFormatting",
  "WikiHtml",
