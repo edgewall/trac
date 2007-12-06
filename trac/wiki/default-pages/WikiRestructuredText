@@ -83,12 +83,12 @@ Will result in the below.
 
 }}}
 
-=== WikiMacros in reStructuredText ===
+=== Wiki Macros in reStructuredText ===
 
-For doing WikiMacros in ReST you use the same directive as for syntax highlighting i.e
+For doing [TracWikiMacros Wiki Macros] in ReST you use the same directive as for syntax highlighting i.e
 code-block. To work you must use a version of trac that has #801 applied. 
 
-=== WikiMacro Example ===
+=== Wiki Macro Example ===
 
 {{{
 {{{

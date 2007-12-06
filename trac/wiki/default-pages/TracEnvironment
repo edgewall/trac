@@ -134,7 +134,7 @@ An environment directory will usually consist of the following files and directo
    * `site_css.cs` - Custom CSS rules.
    * `site_footer.cs` - Custom page footer.
    * `site_header.cs` - Custom page header.
- * `wiki-macros` - Environment-specific [wiki:WikiMacros Wiki macros].
+ * `wiki-macros` - Environment-specific [wiki:TracWikiMacros Wiki macros].
 
   '''Note: don't confuse a Trac environment directory with the source code repository directory.
 It happens that the above structure is loosely modelled after the Subversion repository directory 

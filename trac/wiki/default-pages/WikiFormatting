@@ -275,7 +275,7 @@ You now have to use the ![[Image]] macro The simplest way to include an image is
 for example: [[Image(dress.gif)]]
 
 
-(or see WikiMacros for the syntax).
+(or see TracWikiMacros for the syntax).
 
 
 == Macros ==
@@ -290,7 +290,7 @@ Example:
 Display:
  [[Timestamp]]
 
-See WikiMacros for more information, and a list of installed macros.
+See TracWikiMacros for more information, and a list of installed macros.
 
 
 == Processors ==
@@ -375,4 +375,4 @@ Display:
 
 
 ----
-See also: TracLinks, TracGuide, WikiHtml, WikiMacros, WikiProcessors, TracSyntaxColoring.
+See also: TracLinks, TracGuide, WikiHtml, TracWikiMacros, WikiProcessors, TracSyntaxColoring.

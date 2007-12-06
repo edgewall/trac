@@ -1,6 +1,6 @@
 = Wiki Processors =
 
-Processors are WikiMacros designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
+Processors are [TracWikiMacros wiki macros] designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
 
 The Wiki engine uses processors to allow using [wiki:WikiRestructuredText Restructured Text], [wiki:WikiHtml raw HTML] and [http://www.textism.com/tools/textile/ textile] in any Wiki text throughout Trac.
 
@@ -117,7 +117,7 @@ For more processor macros developed and/or contributed by users, visit:
 
 
 == Advanced Topics: Developing Processor Macros ==
-Developing processors is no different from WikiMacros. In fact they work the same way, only the usage syntax differs. See WikiMacros for more information.
+Developing processors is no different from [TracWikiMacros wiki macros]. In fact they work the same way, only the usage syntax differs.
 
 '''Example:''' (''Restructured Text Processor''):
 {{{
@@ -130,4 +130,4 @@ def execute(hdf, text, env):
 }}}
 
 ----
-See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
+See also: TracWikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
