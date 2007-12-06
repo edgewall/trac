@@ -75,6 +75,9 @@ Available Options:
 Additional configuration options can be defined directly in the script.
 }}} 
 
+See #5855 for an updated mantis2trac script.
+
+
 == Other ==
 
 Since trac uses a SQL database to store the data, you can import from other systems by examining the database tables. Just go into [http://www.sqlite.org/sqlite.html sqlite] command line to look at the tables and import into them from your application.

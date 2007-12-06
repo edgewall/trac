@@ -1,9 +1,9 @@
 = TracAdmin =
 [[TracGuideToc]]
 
-Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
+Trac is distributed with a powerful command-line configuration tool. This tool can be used to configure and customize your Trac-installation to better fit your needs.
 
-Some of those operations can also be performed via the web interface thanks to the optional [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] plugin, distributed separately for 0.10 (it's part of Trac proper starting with Trac 0.11).
+The [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] plugin allows to perform some of those operations via a web interface.
 
 == Usage ==
 

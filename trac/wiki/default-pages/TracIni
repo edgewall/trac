@@ -5,13 +5,9 @@ Trac configuration is done by editing the '''`trac.ini`''' config file, located 
 
 == Global Configuration ==
 
-==== Trac 0.9 and 0.10 ====
-Since version 0.9, Trac can also read the configuration from a global `trac.ini` file. These global options will then be merged with the environment-specific options, where local options override global options.  So be sure to remove options from the project specific local trac.ini which you wish to be inherited from the global trac.ini file.
+In previous versions, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.
 
-The trac/siteconfig.py defines the location of the global trac.ini with the {{{__default_conf_dir__}}} option.  The global configuration is by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution.  The [inherit] directive was introduced in version 0.11 and is not available in versions 0.9 and 0.10.
-
-==== Trac 0.11 ====
-Since version 0.11 you must explicitly note which file to inherit from, [inherit] is not valid for previous versions of trac:
+Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
 {{{
 [inherit]
 file = /usr/share/trac/conf/trac.ini

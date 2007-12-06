@@ -1,40 +1,38 @@
 = Upgrade Instructions =
 [[TracGuideToc]]
 
-A [wiki:TracEnvironment Trac environment] sometimes needs to be upgraded before it can be used with a new version of Trac. This document describes the steps necessary to upgrade an environment.
+A [wiki:TracEnvironment Trac environment] needs to be upgraded before it can be used with Trac-0.11. This document describes the steps necessary to upgrade an environment.
 
- '''Note''': ''Environment upgrades are not necessary for minor version releases unless otherwise noted. For example, there's no need to upgrade a Trac environment created with (or upgraded) 0.8.0 when installing 0.8.4 (or any other 0.8.x release).''
+ '''Note''': ''Environment upgrades are not necessary for minor version releases unless otherwise noted. 
 
-== General Instructions ==
+ '''Note''': ''A database change is required, so it is no longer safe to switch back from 0.11 to 0.10.
+
+ '''Beware:''' milestone:0.11 still says it is safe to switch between 0.10.4 and 0.11dev
+
+== Instructions ==
 
 Typically, there are four steps involved in upgrading to a newer version of Trac:
 
 === Update the Trac Code ===
 
-Get the new version of Trac, either by downloading an offical release package or by checking it out from the [http://projects.edgewall.com/trac/wiki/SubversionRepository Subversion repository].
+Get the new version as described in TracInstall, or your operation system specific procedure.
 
-If you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory.
+If you do a manual (not operating system specific) upgrade, you may also later on want to remove the existing Trac code by deleting the `trac` directory from the Python `lib/site-packages` directory.
 
 The location of the site-packages directory depends on the operating system, and the location in which Python was installed. However, the following locations are common:
  * If you’re using Linux: /usr/lib/python2.X/site-packages
  * If you’re using Windows: C:\Python2.X\lib\site-packages
  * If you’re using MacOSX: /Library/Python2.X/site-packages
- * If you’re using NetBSD or pkgsrc: /usr/pkg/lib/python2.X/site-packages
- * If you're using FreeBSD :  /usr/local/lib/python2.X/site-packages
-
 
 You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
-If you have a source distribution, you need to run
-{{{
-python setup.py install
-}}}
+> If You had the webadmin components, You should disable (remove from config file) webadmin.* -  now Admin is part of the Trac code base.
 
-to install the new version. If you've downloaded the Windows installer, you execute it, and so on.
+
 
 === Upgrade the Trac Environment ===
 
-Unless noted otherwise, upgrading between major versions (such as 0.8 and 0.9) involves changes to the database schema, and possibly the layout of the [wiki:TracEnvironment environment directory]. Fortunately, Trac provides automated upgrade scripts to ease the pain. These scripts are run via [wiki:TracAdmin trac-admin]:
+After restarting, Trac should show the instances which need a manual upgrade via the automated upgrade scripts to ease the pain. These scripts are run via [wiki:TracAdmin trac-admin]:
 {{{
 trac-admin /path/to/projenv upgrade
 }}}
@@ -55,105 +53,25 @@ trac-admin /path/to/projenv wiki upgrade
 
 Note that this procedure will of course leave your `WikiStart` page intact.
 
-=== Restart the Web Server ===
+=== Trac Macros, Plugins ===
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros.
 
-In order to reload the new Trac code you will need to restart your web server (note this is not necessary for [wiki:TracCgi CGI]).
+
+=== Restart the Web Server ===
+If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.
 
 == Known Issues ==
-
-=== Customized Templates ===
-
-Sometimes, the ClearSilver templates files have been locally modified, and placed in a special location referred to by the `[trac] templates_dir` configuration setting.
-
-When upgrading to a newer version, changes in the Trac source are usually concerning ''both'' the Python source code and the template markup, so they must be kept in sync.
-Upgrading the code base and still using the old templates (even not customized!) is a recipe for trouble:
- - ''Link and images missing for folders in the TracBrowser component (and tooltip saying "Access Denied")'' (#3915)
- - ''Report execution failed: Report ... has no SQL query'' (#3715)
+=== parent dir ===
+If you use a trac parent env configuration and one of the plugines in one child does not work, none of the children work.
 
 == Changing Database Backend ==
 == SQLite to PostgreSQL ==
 
 The [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] script on [http://trac-hacks.org trac-hacks.org] has been written to assist in migrating a SQLite database to a PostgreSQL database
 
-== Specific Versions ==
+== Older Versions ==
 
-The following sections discuss any extra actions that may need to be taken to upgrade to specific versions of Trac.
-
-== From 0.9.x to 0.10.x ==
-
-Due to some changes in the Wiki syntax, you may notice that certain parts of your pages no longer work as expected:
- * Previously, links to images would result in that image being embedded into the page. Since 0.10, links to images remain plain links. If you want to embed an image in the page, use the `[[Image]]` macro.
- * You can no longer use `%20` in wiki links to encode spaces. Instead, you should quote the name containing spaces (for example, use `wiki:"My page"` instead of `wiki:My%20page`.)
-
-Several enhancements have been made to the version control subsystem, in particular for the support of scoped repositories has been improved. 
-It is recommended that you perform a [TracAdmin#InteractiveMode trac-admin] '''`resync`''' operation to take advantage of these improvements.
-
-Also note that the argument list of the [TracAdmin trac-admin] '''`initenv`''' command has changed: there's a new argument for determining the type of version control system. The old usage was:
-{{{
-   initenv <projectname> <db> <repospath> <templatepath>
-}}}
-The new usage is:
-{{{
-   initenv <projectname> <db> <repostype> <repospath> <templatepath>
-}}}
-If you're using any scripts that automate the creation of Trac environments, you will need to update them. If you're using Subversion, specify `svn` for the `<repostype>` argument.
-
-== From 0.9.3 to 0.9.4 ==
-
-There is a bug in Pysqlite 1.x that causes reports using the "%" character for `LIKE` clauses or date formatting to fail.  You will need to use escape the percent characters with another: "%%".
-
-== From 0.9.x to 0.9.3 or later ==
-
-If you are using plugins you might need to upgrade them. See http://projects.edgewall.com/trac/milestone/0.9.3 for further details.
-
-== From 0.9-beta to 0.9 ==
-
-If inclusion of the static resources (style sheets, javascript, images) is not working, check the value of the `htdocs_location` in trac.ini. For [wiki:TracModPython mod_python], [wiki:TracStandalone Tracd] and [wiki:TracFastCgi FastCGI], you can simply remove the option altogether. For [wiki:TracCgi CGI], you should fix it to point to the URL you mapped the Trac `htdocs` directory to (although you can also remove it and then [wiki:TracCgi#MappingStaticResources map the static resources]). If you're still having problems after removing the option, check the paths in the `trac/siteconfig.py` file and fix them if they're incorrect.
-
-If you've been using plugins with a beta release of Trac 0.9, or have disabled some of the built-in components, you might have to update the rules for disabling/enabling components in [wiki:TracIni trac.ini]. In particular, globally installed plugins now need to be enabled explicitly. See TracPlugins and TracIni for more information.
-
-If you want to enable the display of all ticket changes in the timeline (the “Ticket Details” option), you now have to explicitly enable that in [wiki:TracIni trac.ini], too:
-
-{{{
-[timeline]
-ticket_show_details = true
-}}}
-
-== From 0.8.x to 0.9 ==
-
-[wiki:TracModPython mod_python] users will also need to change the name of the mod_python handler in the Apache HTTPD configuration:
-{{{
-   from: PythonHandler trac.ModPythonHandler
-   to:   PythonHandler trac.web.modpython_frontend
-}}}
-
-If you have [http://initd.org/tracker/pysqlite PySQLite] 2.x installed, Trac will now try to open your SQLite database using the SQLite 3.x file format. The database formats used by SQLite 2.8.x and SQLite 3.x are incompatible. If you get an error like ''“file is encrypted or is not a database”'' after upgrading, then you must convert your database file.
-
-To do this, you need to have both SQLite 2.8.x and SQLite 3.x installed (they have different filenames so can coexist on the same system). Then use the following commands:
-{{{
- $ mv trac.db trac2.db
- $ sqlite trac2.db .dump | sqlite3 trac.db
-}}}
-
-To update multiple database files at once on linux you may use the following command (replace {{{/var/trac}}} withe the location where your trac installtions reside):
-{{{
- $ find /var/trac/ -iname "trac.db" | xargs -i bash -c "mv {} {}.2; sqlite {}.2 .dump | sqlite3 {};"
-}}}
-
-Remember to give the webserver write permission to trac.db.
-
-After testing that the conversion was successful, the `trac2.db` file can be deleted. For more information on the SQLite upgrade see http://www.sqlite.org/version3.html.
-
-== From 0.7.x to 0.8 ==
-
-0.8 adds a new roadmap feature which requires additional permissions. While a
-fresh installation will by default grant ROADMAP_VIEW and MILESTONE_VIEW
-permissions to anonymous, these permissions have to be granted manually when
-upgrading:
-{{{
- $ trac-admin /path/to/projectenv permission add anonymous MILESTONE_VIEW
- $ trac-admin /path/to/projectenv permission add anonymous ROADMAP_VIEW
-}}}
+For upgrades from former versions refer to TracUpgrade.
 
 -----
 See also: TracGuide, TracInstall
