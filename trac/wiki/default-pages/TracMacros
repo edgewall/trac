@@ -1,0 +1,111 @@
+= Trac Macros =
+
+Trac macros are plugins to extend the Trac engine with custom 'functions' written in Python. A macro inserts dynamic HTML data in any context supporting WikiFormatting.
+
+Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting).
+
+== Using Macros ==
+Macro calls are enclosed in two ''square brackets''. Like Python functions, macros can also have arguments, a comma separated list within parentheses. 
+
+Trac macros can also be written as TracPlugins. This gives them some capabilities that macros do not have, such as being able to directly access the HTTP request.
+
+=== Examples ===
+
+{{{
+ [[Timestamp]]
+}}}
+Display:
+ [[Timestamp]]
+
+{{{
+ [[HelloWorld(Testing)]]
+}}}
+Display:
+ [[HelloWorld(Testing)]]
+
+== Available Macros ==
+
+''Note that the following list will only contain the macro documentation if you've not enabled `-OO` optimizations, or not set the `PythonOptimize` option for [wiki:TracModPython mod_python].''
+
+[[MacroList]]
+
+== Macros from around the world ==
+
+The [http://trac-hacks.org/ Trac Hacks] site provides a wide collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you're looking for new macros, or have written one that you'd like to share with the world, please don't hesitate to visit that site.
+
+== Developing Custom Macros ==
+Macros, like Trac itself, are written in the [http://python.org/ Python programming language].
+
+For more information about developing macros, see the [wiki:TracDev development resources] on the main project site.
+
+
+== Implementation ==
+
+Here are 2 simple examples on how to create a Macro with [wiki:0.11 Trac 0.11] have a look at source:trunk/sample-plugins/Timestamp.py for an example that shows the difference between old style and new style macros and also source:trunk/wiki-macros/README which Provides a little more insight.
+
+=== Macro without arguments ===
+It should be saved as `TimeStamp.py` as Trac will use the module name as the Macro name
+{{{
+from trac.core import *
+from trac.wiki.macros import WikiMacroBase
+from StringIO import StringIO
+import time
+
+__all__ = ['TimestampMacro']
+
+class TimestampMacro(WikiMacroBase):
+        """
+        Macro for inserting timestamp
+
+        {{{
+        [[Timestamp]]
+        }}}
+        """
+        def expand_macro(self, formatter, name, args):
+                buf = StringIO()
+                t = time.localtime()
+                buf = "<b>%s</b>" % time.strftime('%c', t)
+                return buf
+}}}
+
+=== Macro with arguments ===
+It should be saved as `HelloWorld.py` (in the plugins/ directory) as Trac will use the module name as the Macro name
+{{{
+"""Example macro."""
+from trac.core import *
+from trac.wiki.macros import WikiMacroBase
+from trac.util import escape
+
+__all__ = ['HelloWorldMacro']
+
+class HelloWorldMacro(WikiMacroBase):
+        """
+        Demo macro for a greeting with an argument.
+
+        {{{
+        [[HelloWorld(args)]]
+        }}}
+
+        """
+        def expand_macro(self, formatter, name, args):
+                # args will be `None` if the macro is called without parenthesis.
+                txt = args or 'No arguments'
+
+                # then, as `txt` comes from the user, it's important to guard against
+                # the possibility to inject malicious HTML/Javascript, by using `escape()`:
+                return 'Hello World, args = ' + escape(txt)
+}}}
+
+
+=== {{{expand_macro}}} details ===
+{{{expand_macro}}} should return either a simple Python string which will be interpreted as HTML, or preferably a Markup object (use {{{from trac.util.html import Markup}}}).  {{{Markup(string)}}} just annotates the string so the renderer will render the HTML string as-is with no escaping.
+
+If your macro creates wiki markup instead of HTML, you can convert it to HTML like this:
+
+{{{
+  text = "whatever wiki markup you want, even containing other macros"
+  # Convert Wiki markup to HTML, new style
+  out = StringIO()
+  Formatter(formatter.context).format(text, out)
+  return Markup(out.getvalue())
+}}}
