@@ -2,7 +2,7 @@
 
 == Bugzilla ==
 
-Ticket data can be imported from Bugzilla using the [http://projects.edgewall.com/trac/browser/trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
+Ticket data can be imported from Bugzilla using the [http://trac.edgewall.org/browser/trunk/contrib/bugzilla2trac.py bugzilla2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
 {{{
 $ bugzilla2trac.py
@@ -41,7 +41,7 @@ For more details on the available options, see the configuration section at the 
 
 == Sourceforge ==
 
-Ticket data can be imported from Sourceforge using the [http://projects.edgewall.com/trac/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
+Ticket data can be imported from Sourceforge using the [http://trac.edgewall.org/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
 == Mantis ==
 

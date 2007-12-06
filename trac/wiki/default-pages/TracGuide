@@ -1,7 +1,7 @@
 = The Trac User and Administration Guide =
 [[TracGuideToc]]
 
-The TracGuide is meant to serve as a starting point for all documentation regarding Trac usage and development. The guide is a free document, a collaborative effort, and a part of the [http://projects.edgewall.com/trac/ Trac Project] itself.
+The TracGuide is meant to serve as a starting point for all documentation regarding Trac usage and development. The guide is a free document, a collaborative effort, and a part of the [http://trac.edgewall.org/ Trac Project] itself.
 
 == Table of Contents ==
 Currently available documentation:
@@ -31,9 +31,9 @@ Currently available documentation:
      * TracReports -- Writing and using reports.
      * TracQuery -- Executing custom ticket queries.
      * TracRoadmap -- The roadmap helps tracking project progress.
- * [http://projects.edgewall.com/trac/wiki/TracFaq Trac FAQ] - A collection of Frequently Asked Questions (on the project website).
+ * [http://trac.edgewall.org/wiki/TracFaq Trac FAQ] - A collection of Frequently Asked Questions (on the project website).
 
 == Support and Other Sources of Information ==
-If you are looking for a good place to ask a question about Trac, look no further than the [http://projects.edgewall.com/trac/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
+If you are looking for a good place to ask a question about Trac, look no further than the [http://trac.edgewall.org/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
 
 See also the TracSupport page for more information resources.

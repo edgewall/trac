@@ -10,7 +10,7 @@
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://projects.edgewall.com/trac/.
+# history and logs, available at http://trac.edgewall.org/.
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 

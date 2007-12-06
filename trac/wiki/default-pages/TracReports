@@ -115,14 +115,14 @@ To assign a value to $PRIORITY when viewing the report, you must define it as an
 
 Example:
 {{{
- http://projects.edgewall.com/trac/reports/14?PRIORITY=high
+ http://trac.edgewall.org/reports/14?PRIORITY=high
 }}}
 
 To use multiple variables, separate them with an '&'.
 
 Example:
 {{{
- http://projects.edgewall.com/trac/reports/14?PRIORITY=high&SEVERITY=critical
+ http://trac.edgewall.org/reports/14?PRIORITY=high&SEVERITY=critical
 }}}
 
 

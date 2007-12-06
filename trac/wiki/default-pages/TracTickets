@@ -57,7 +57,7 @@ to understand.
 '''Note:''' See TracNotification for how to configure email notifications of ticket changes.
 
 === State Diagram ===
-[[Image(http://projects.edgewall.com/trac/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020060603DF.png?format=raw)]]
+[[Image(http://trac.edgewall.org/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020060603DF.png?format=raw)]]
 
 
 == Default Values for Drop-Down Fields ==

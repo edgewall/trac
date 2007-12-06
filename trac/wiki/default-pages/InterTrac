@@ -48,7 +48,7 @@ t = trac
 
 # -- Link to an external Trac:
 trac.title = Edgewall's Trac for Trac
-trac.url = http://projects.edgewall.com/trac
+trac.url = http://trac.edgewall.org
 }}}
 
 The `.url` is mandatory and is used for locating the other Trac.

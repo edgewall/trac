@@ -112,8 +112,8 @@ The result will be syntax highlighted HTML code. The same is valid for all other
 
 
 For more processor macros developed and/or contributed by users, visit: 
- * [http://projects.edgewall.com/trac/wiki/ProcessorBazaar ProcessorBazaar]
- * [http://projects.edgewall.com/trac/wiki/MacroBazaar MacroBazaar]
+ * [http://trac.edgewall.org/wiki/ProcessorBazaar ProcessorBazaar]
+ * [http://trac.edgewall.org/wiki/MacroBazaar MacroBazaar]
 
 
 == Advanced Topics: Developing Processor Macros ==
