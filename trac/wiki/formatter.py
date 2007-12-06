@@ -397,6 +397,8 @@ class Formatter(object):
     def _make_intertrac_link(self, ns, target, label):
         intertrac = self.env.config['intertrac']
         url = intertrac.get(ns+'.url')
+        if not url and ns == 'trac':
+            url = 'http://trac.edgewall.org'
         if url:
             name = intertrac.get(ns+'.title', 'Trac project %s' % ns)
             compat = intertrac.getbool(ns+'.compat', 'false')
