@@ -45,14 +45,17 @@ Ticket data can be imported from Sourceforge using the [http://projects.edgewall
 
 == Mantis ==
 
+NB! The mantis2trac script now lives at http://trac-hacks.org/wiki/MantisImportScript . You can always get the latest version from http://trac-hacks.org/changeset/latest/mantisimportscript?old_path=/&filename=mantisimportscript&format=zip
+
 Mantis bugs can be imported using the attached script.
 
 Currently, the following data is imported from Mantis:
   * bugs
   * bug comments
   * bug activity (field changes)
+  * attachments (as long as the files live in the mantis db, not on the filesystem) 
 
-Attachments are NOT imported.  If you use the script, please read the NOTES section (at the top of the file) and make sure you adjust the config parameters for your environment.
+If you use the script, please read the NOTES section (at the top of the file) and make sure you adjust the config parameters for your environment.
 
 mantis2trac.py has the same parameters as the bugzilla2trac.py script:
 {{{

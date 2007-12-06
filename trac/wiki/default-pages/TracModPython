@@ -11,32 +11,48 @@ LoadModule python_module modules/mod_python.so
 }}}
 
  ''Note: The exact path to the module depends on how the HTTPD installation is laid out.''
-
-You can test your mod_python installation by adding the following to your httpd.conf.  You should remove this when you are done testing for security reasons.
+On Debian using apt-get
 {{{
+apt-get install libapache2-mod-python libapache2-mod-python-doc
+}}}
+(Still on Debian) after you have installed mod_python, you must enable the modules in apache2 (equivalent of the above Load Module directive):
+{{{
+a2enmod mod_python
+}}}
+On Fedora use, using yum:
+{{{
+yum install mod_python
+}}}
+You can test your mod_python installation by adding the following to your httpd.conf.  You should remove this when you are done testing for security reasons. Note: mod_python.testhandler is only available in mod_python 3.2+.
+{{{
+#!xml
 <Location /mpinfo>
    SetHandler mod_python
+   PythonInterpreter main_interpreter
    PythonHandler mod_python.testhandler
 </Location>
 }}}
 
 A simple setup of Trac on mod_python looks like this:
 {{{
+#!xml
 <Location /projects/myproject>
    SetHandler mod_python
+   PythonInterpreter main_interpreter
    PythonHandler trac.web.modpython_frontend 
    PythonOption TracEnv /var/trac/myproject
    PythonOption TracUriRoot /projects/myproject
 </Location>
 }}}
 
-The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration with out it, and if the URLs produced by Trac look wrong or if Trac does not seem to recognize the URLs correctly, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.
+The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration without it; if the URLs produced by Trac look wrong, if Trac does not seem to recognize URLs correctly, or you get an odd "No handler matched request to..." error, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.
 
 === Configuring Authentication ===
 
-Configuring authentication works just like for [wiki:TracCgi#AddingAuthentication CGI]:
+Creating password files and configuring authentication works similar to the process for [wiki:TracCgi#AddingAuthentication CGI]:
 {{{
-<Location "/projects/myproject/login">
+#!xml
+<Location /projects/myproject/login>
   AuthType Basic
   AuthName "myproject"
   AuthUserFile /var/trac/myproject/.htpasswd
@@ -44,10 +60,74 @@ Configuring authentication works just like for [wiki:TracCgi#AddingAuthenticatio
 </Location>
 }}}
 
+Configuration for mod_ldap authentication in Apache is a bit tricky (httpd 2.2.x and OpenLDAP: slapd 2.3.19)
+
+1. You need to load the following modules in Apache httpd.conf
+{{{
+LoadModule ldap_module modules/mod_ldap.so
+LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
+}}}
+
+2. Your httpd.conf also needs to look something like:
+
+{{{
+#!xml
+<Location /trac/>
+  SetHandler mod_python
+  PythonInterpreter main_interpreter
+  PythonHandler trac.web.modpython_frontend
+  PythonOption TracEnv /home/trac/
+  PythonOption TracUriRoot /trac/
+  Order deny,allow
+  Deny from all
+  Allow from 192.168.11.0/24
+  AuthType Basic
+  AuthName "Trac"
+  AuthBasicProvider "ldap"
+  AuthLDAPURL "ldap://127.0.0.1/dc=example,dc=co,dc=ke?uid?sub?(objectClass=inetOrgPerson)"
+  authzldapauthoritative Off
+  require valid-user
+</Location>
+}}}
+
+Or the LDAP interface to a Microsoft Active Directory:
+
+{{{
+#!xml
+<Location /trac/>
+  SetHandler mod_python
+  PythonInterpreter main_interpreter
+  PythonHandler trac.web.modpython_frontend
+  PythonOption TracEnv /home/trac/
+  PythonOption TracUriRoot /trac/
+  Order deny,allow
+  Deny from all
+  Allow from 192.168.11.0/24
+  AuthType Basic
+  AuthName "Trac"
+  AuthBasicProvider "ldap"
+  AuthLDAPURL "ldap://adserver.company.com:3268/DC=company,DC=com?sAMAccountName?sub?(objectClass=user)"
+  AuthLDAPBindDN       ldap-auth-user@company.com
+  AuthLDAPBindPassword "the_password"
+  authzldapauthoritative Off
+  # require valid-user
+  require ldap-group CN=Trac Users,CN=Users,DC=company,DC=com
+</Location>
+}}}
+
+Note 1: This is the case where the LDAP search will get around the multiple OUs, conecting to Global Catalog Server portion of AD (Notice the port is 3268, not the normal LDAP 389). The GCS is basically a "flattened" tree which allows searching for a user without knowing to which OU they belong.
+
+Note 2: Active Directory requires an authenticating user/password to access records (AuthLDAPBindDN and AuthLDAPBindPassword).
+
+Note 3: The directive "require ldap-group ..."  specifies an AD group whose members are allowed access.
+
+
+
 === Setting the !PythonPath ===
 
 If the Trac installation isn't installed in your Python path, you'll have to tell Apache where to find the Trac mod_python handler  using the `PythonPath` directive:
 {{{
+#!xml
 <Location /projects/myproject>
   ...
   PythonPath "sys.path + ['/path/to/trac']"
@@ -61,8 +141,10 @@ Be careful about using the !PythonPath directive, and ''not'' `SetEnv PYTHONPATH
 
 The Trac mod_python handler supports a configuration option similar to Subversion's `SvnParentPath`, called `TracEnvParentDir`:
 {{{
+#!xml
 <Location /projects>
   SetHandler mod_python
+  PythonInterpreter main_interpreter
   PythonHandler trac.web.modpython_frontend 
   PythonOption TracEnvParentDir /var/trac
   PythonOption TracUriRoot /projects
@@ -73,6 +155,7 @@ When you request the `/projects` URL, you will get a listing of all subdirectori
 
 If you don't want to have the subdirectory listing as your projects home page you can use a
 {{{
+#!xml
 <LocationMatch "/.+/">
 }}}
 
@@ -80,6 +163,7 @@ This will instruct Apache to use mod_python for all locations different from roo
 
 You can also use the same authentication realm for all of the projects using a `<LocationMatch>` directive:
 {{{
+#!xml
 <LocationMatch "/projects/[^/]+/login">
   AuthType Basic
   AuthName "Trac"
@@ -94,11 +178,13 @@ Below is the sample configuration required to set up your trac as a virtual serv
 !http://trac.mycompany.com):
 
 {{{
+#!xml
 <VirtualHost * >
-    DocumentRoot /var/trac/myproject
+    DocumentRoot /var/www/myproject
     ServerName trac.mycompany.com
     <Location />
         SetHandler mod_python
+        PythonInterpreter main_interpreter
         PythonHandler trac.web.modpython_frontend
         PythonOption TracEnv /var/trac/myproject
         PythonOption TracUriRoot /
@@ -112,17 +198,22 @@ Below is the sample configuration required to set up your trac as a virtual serv
 </VirtualHost>
 }}}
 
+if you have issues with login try using `<LocationMatch>` instead of `<Location>`
+
 For a virtual host that supports multiple projects replace "`TracEnv`" /var/trac/myproject with "`TracEnvParentDir`" /var/trac/
 
 == Troubleshooting ==
 
 In general, if you get server error pages, you can either check the Apache error log, or enable the `PythonDebug` option:
 {{{
+#!xml
 <Location /projects/myproject>
   ...
   PythonDebug on
 </Location>
 }}}
+
+For multiple projects, try restarting the server as well.
 
 === Form submission problems ===
 
@@ -143,6 +234,7 @@ It may be possible to work around this with mod_rewrite, but I failed to get thi
 === Win32 Issues ===
 If you run trac with mod_python < 3.2 on Windows, uploading attachments will '''not''' work. This problem is resolved in mod_python 3.1.4 or later, so please upgrade mod_python to fix this.
 
+
 === OS X issues ===
 
 When using mod_python on OS X you will not be able to restart Apache using `apachectl restart`. This is apparently fixed in mod_python 3.2, but there's also a patch available for earlier versions [http://www.dscpl.com.au/projects/vampire/patches.html here].
@@ -161,11 +253,59 @@ See also [[http://subversion.tigris.org/faq.html#reposperms]]
 === FreeBSD issues ===
 Pay attention to the version of the installed mod_python and sqlite packages. Ports have both the new and old ones, but earlier versions of pysqlite and mod_python won't integrate as the former requires threaded support in python, and the latter requires a threadless install.
 
+If you compiled and installed apache2, apache wouldn´t support threads (cause it doesn´t work very well on FreeBSD). You could force thread support when running ./configure for apache, using --enable-threads, but this isn´t recomendable.
+The best option [[http://modpython.org/pipermail/mod_python/2006-September/021983.html seems to be]] adding to /usr/local/apache2/bin/ennvars the line 
+
+{{{
+export LD_PRELOAD=/usr/lib/libc_r.so
+}}}
+
 === Subversion issues ===
 
 If you get the following Trac Error `Unsupported version control system "svn"` only under mod_python, though it works well on the command-line and even with TracStandalone, chances are that you forgot to add the path to the Python bindings with the [TracModPython#ConfiguringPythonPath PythonPath] directive. (The better way is to add a link to the bindings in the Python `site-packages` directory, or create a `.pth` file in that directory.)
 
 If this is not the case, it's possible that you're using Subversion libraries that are binary incompatible with the apache ones (an incompatibility of the `apr` libraries is usually the cause). In that case, you also won't be able to use the svn modules for Apache (`mod_dav_svn`).
+
+You also need a recent version of `mod_python` in order to avoid a runtime error ({{{argument number 2: a 'apr_pool_t *' is expected}}}) due to the default usage of multiple sub-interpreters. 3.2.8 ''should'' work, though it's probably better to use the workaround described in #3371, in order to force the use of the main interpreter:
+{{{
+PythonInterpreter main_interpreter
+}}}
+This is anyway the recommended workaround for other well-known issues seen when using the Python bindings for Subversion within mod_python (#2611, #3455). See in particular Graham Dumpleton's comment in [comment:ticket:3455:9 #3455] explaining the issue.
+
+=== Page layout issues ===
+
+If the formatting of the Trac pages look weird chances are that the style sheets governing the page layout are not handled properly by the web server. Try adding the following lines to your apache configuration:
+{{{
+#!xml
+Alias /myproject/css "/usr/share/trac/htdocs/css"
+<Location /myproject/css>
+    SetHandler None
+</Location>
+}}}
+
+Note: For the above configuration to have any effect it must be put after the configuration of your project root location, i.e. {{{<Location /myproject />}}}.
+
+=== HTTPS issues ===
+
+If you want to run Trac fully under https you might find that it tries to redirect to plain http. In this case just add the following line to your apache configuration:
+{{{
+#!xml
+<VirtualHost * >
+    DocumentRoot /var/www/myproject
+    ServerName trac.mycompany.com
+    SetEnv HTTPS 1
+    ....
+</VirtualHost>
+}}}
+
+=== Fedora 7 Issues ===
+Make sure you install the 'python-sqlite2' package as it seems to be required for TracModPython but not for tracd
+
+
+=== Segmentation fault with php5-mhash or other php5 modules ===
+You may encounter segfaults (reported on debian etch) if php5-mhash module is installed. Try to remove it to see if this solves the problem. See debian bug report [[http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=411487]]
+
+Some people also have troubles when using php5 compiled with its own 3rd party libraries instead of system libraries. Check here [[http://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault]]
 
 ----
 See also TracGuide, TracInstall, TracCgi, TracFastCgi

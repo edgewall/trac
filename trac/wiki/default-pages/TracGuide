@@ -6,27 +6,30 @@ The TracGuide is meant to serve as a starting point for all documentation regard
 == Table of Contents ==
 Currently available documentation:
  * TracGuide (This page)  -- Documentation starting point.
+ * '''Administrator Guide'''
    * TracInstall -- How to install and run Trac.
    * TracUpgrade -- How to upgrade existing installations.
-   * TracAdmin -- Administrating a Trac project.
+   * TracAdmin -- Administering a Trac project.
    * TracImport -- Importing tickets from other bug databases.
    * TracIni -- Trac configuration file reference. 
    * TracPermissions -- Access control and permissions.
    * TracInterfaceCustomization -- Customizing the Trac interface.
    * TracPlugins -- Installing and managing Trac extensions.
-   * TracWiki -- How to use the built-in Wiki.
-   * TracBrowser -- Browsing source code with Trac.
-   * TracChangeset -- Viewing changes to source code.
-   * TracTickets -- Using the issue tracker.
-   * TracWorkflow -- Workflow and ticket status.
-   * TracReports -- Writing and using reports.
-   * TracQuery -- Executing custom ticket queries.
-   * TracRoadmap -- The roadmap helps tracking project progress.
-   * TracTimeline -- The timeline provides a historic perspective on a project.
    * TracLogging -- The Trac logging facility.
-   * TracRss -- RSS content syndication in Trac.
    * TracNotification -- Email notification.
-
+ * '''User Guide'''
+   * TracWiki -- How to use the built-in Wiki.
+   * TracTimeline -- The timeline provides a historic perspective on a project.
+   * TracRss -- RSS content syndication in Trac.
+   * ''The Version Control Subsystem''
+     * TracBrowser -- Browsing source code with Trac.
+     * TracChangeset -- Viewing changes to source code.
+     * TracRevisionLog -- Viewing change history
+   * ''The Ticket Subsystem''
+     * TracTickets -- Using the issue tracker.
+     * TracReports -- Writing and using reports.
+     * TracQuery -- Executing custom ticket queries.
+     * TracRoadmap -- The roadmap helps tracking project progress.
  * [http://projects.edgewall.com/trac/wiki/TracFaq Trac FAQ] - A collection of Frequently Asked Questions (on the project website)
 
 == Support and Other Sources of Information ==

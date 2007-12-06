@@ -24,7 +24,7 @@ Graphically, it looks like this:
 
 == Additional Ticket Workflows ==
 
-There are several example workflows provided in the Trac source tree; look in `contrib/workflow` for `.ini` config sections.  One of those may be a good match for what you want.
+There are several example workflows provided in the Trac source tree; look in `contrib/workflow` for `.ini` config sections.  One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file.
 
 == Basic Ticket Workflow Customization ==
 
@@ -48,6 +48,15 @@ The available operations are:
  - del_resolution -- Clears the resolution field
  - set_resolution -- Sets the resolution to the selected value.
    - ''actionname''`.set_resolution` may optionally be set to a comma delimited list or a single value.
+{{{
+Example:
+
+resolve_new = new -> closed
+resolve_new.name = resolve
+resolve_new.operations = set_resolution
+resolve_new.permissions = TICKET_MODIFY
+resolve_new.set_resolution = invalid,wontfix
+}}}
  - leave_status -- Displays "leave as <current status>" and makes no change to the ticket.
 '''Note:''' Specifying conflicting operations (such as `set_owner` and `del_owner`) has unspecified results.
 
@@ -73,8 +82,18 @@ There are a couple of hard-coded constraints to the workflow.  In particular, ti
 
 While creating or modifying a ticket workfow, `contrib/workflow/workflow_parser.py` may be useful.  It can create `.dot` files that [http://www.graphviz.org GraphViz] understands to provide a visual description of the workflow.
 
+This can be done as follows (your install path may be different).
+{{{
+cd /var/local/trac_devel/contrib/workflow/
+sudo ./showworkflow /srv/trac/PlannerSuite/conf/trac.ini
+}}}
+And then open up the resulting `trac.pdf` file created by the script (it will be in the same directory as the `trac.ini` file).
+
+After you have changed a workflow, you need to restart apache for the changes to take effect. This is important, because the changes will still show up when you run your script, but all the old workflow steps will still be there until the server is restarted.
+
 == Advanced Ticket Workflow Customization ==
 
-If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build).  Look at `sample-plugins/workflow` for a few simple examples to get started.
+If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build) that may not be merely simple state changes.  Look at `sample-plugins/workflow` for a few simple examples to get started.
 
 But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it.
+

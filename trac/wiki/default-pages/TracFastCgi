@@ -2,11 +2,18 @@
 
 Since version 0.9, Trac supports being run through the [http://www.fastcgi.com/ FastCGI] interface. Like [wiki:TracModPython mod_python], this allows Trac to remain resident, and is faster than external CGI interfaces which must start a new process for each request. However, unlike mod_python, it is able to support [http://httpd.apache.org/docs/suexec.html SuEXEC]. Additionally, it is supported by much wider variety of web servers.
 
+{{{
+#!html
+<p style="background: #fdc; border: 2px solid #d00; font-style: italic; padding: 0 .5em; margin: 1em 0;">
+<strong>Note for Windows:</strong> Trac's FCGI does not run under Windows, as Windows does not implement Socket.fromfd, which is used by _fcgi.py
+</p>
+}}}
+
 == Simple Apache configuration ==
 
 There are two FastCGI modules commonly available for Apache: `mod_fastcgi` and
 `mod_fcgid`.  The `FastCgiIpcDir` and `FastCgiConfig` directives discussed
-below are `mod_fastcgi` directives; the `DefaultInitEnv` is a `mod_fgcid`
+below are `mod_fastcgi` directives; the `DefaultInitEnv` is a `mod_fcgid`
 directive.
 
 For `mod_fastcgi`, add the following to an appropriate Apache configuration
@@ -292,7 +299,7 @@ If you don’t have a htpasswd file or don’t know how to create the entries wi
 {{{
 URI: /trac/                              <--- URI path to bind to python fcgi app we created	
 Fast CGI App: [VHost Level] MyTractFCGI  <--- select the trac fcgi extapp we just created
-Realm: TracUserDB                        <--- only if (4) is set. select ream created in (4)
+Realm: TracUserDB                        <--- only if (4) is set. select realm created in (4)
 }}}
 
 6) Modify /fullpathto/mytracproject/conf/trac.ini

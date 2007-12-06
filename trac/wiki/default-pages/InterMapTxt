@@ -43,7 +43,15 @@ Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.gene
 trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
 
 Mercurial http://www.selenic.com/mercurial/wiki/index.cgi/ # the wiki for the Mercurial distributed SCM
-RFC       http://rfc.net/rfc$1.html # IETF's RFC $1
+RFC       http://tools.ietf.org/html/rfc$1 # IETF's RFC $1
+ISO       http://en.wikipedia.org/wiki/ISO_ # ISO Standard $1 in Wikipedia
+
+CheeseShop  http://cheeseshop.python.org/pypi/  # Python Package $1 from the Cheese Shop
+SQLite      http://www.sqlite.org/cvstrac/wiki?p= 
+mysql-bugs  http://bugs.mysql.com/bug.php?id=  # Bug #$1 in MySQL's bug database
+peak        http://peak.telecommunity.com/DevCenter/ # $1 in Python Enterprise Application Kit's Wiki
+MODPYTHON   http://issues.apache.org/jira/browse/MODPYTHON- # Issue $1 in mod_python's JIRA instance
+SvnWiki     http://www.orcaware.com/svn/wiki/ # Subversion Wiki
 
 #
 # A arbitrary pick of InterWiki prefixes...

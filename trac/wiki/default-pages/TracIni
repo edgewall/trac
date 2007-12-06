@@ -1,13 +1,21 @@
 = The Trac Configuration File =
 [[TracGuideToc]]
 
-Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.
+Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
 
 == Global Configuration ==
 
-Since version 0.9, Trac can also read the configuration from a global `trac.ini` file. These global options will then be merged with the environment-specific options, where local options override global options.
+==== Trac 0.9 and 0.10 ====
+Since version 0.9, Trac can also read the configuration from a global `trac.ini` file. These global options will then be merged with the environment-specific options, where local options override global options.  So be sure to remove options from the project specific local trac.ini which you wish to be inherited from the global trac.ini file.
 
-The global configuration is by default localted in `$prefix/share/trac/conf/trac.ini`. It can be moved to a different location (for example, `/etc/trac.ini`), but that requires changing the file `trac/siteconfig.py` which gets created when Trac is installed. 
+The trac/siteconfig.py defines the location of the global trac.ini with the {{{__default_conf_dir__}}} option.  The global configuration is by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution.  The [inherit] directive was introduced in version 0.11 and is not available in versions 0.9 and 0.10.
+
+==== Trac 0.11 ====
+Since version 0.11 you must explicitly note which file to inherit from, [inherit] is not valid for previous versions of trac:
+{{{
+[inherit]
+file = /usr/share/trac/conf/trac.ini
+}}}
 
 == Reference ==
 
@@ -15,9 +23,7 @@ This is a brief reference of available configuration options.
 
 [[TracIni]]
 
-== [components] ==
-(''since 0.9'')
-
+== [components] == #components-section
 This section is used to enable or disable components provided by plugins, as well as by Trac itself. The component to enable/disable is specified via the name of the option. Whether its enabled is determined by the option value; setting the value to `enabled` or `on` will enable the component, any other value (typically `disabled` or `off`) will disable the component.
 
 The option name is either the fully qualified name of the components or the module/package prefix of the component. The former enables/disables a specific component, while the latter enables/disables any component in the specified package/module.
@@ -35,8 +41,62 @@ See the ''Plugins'' page on ''About Trac'' to get the list of active components 
 
 See also: TracPlugins
 
-  ''Note that prior to Trac r2335 (that applies to 0.9b1 and 0.9b2), you would use a `[disabled_components]` section instead. See a [http://projects.edgewall.com/trac/wiki/TracIni?version=42 previous version] of this page for the details.''
+== [ticket-custom] == #ticket-custom-section
+
+In this section, you can define additional fields for tickets. See TracTicketsCustomFields for more details.
+
+== [ticket-workflow] == #ticket-workflow-section
+''(since 0.11)''
+
+The workflow for tickets is controlled by plugins. 
+By default, there's only a `ConfigurableTicketWorkflow` component in charge. 
+That component allows the workflow to be configured via this section in the trac.ini file.
+See TracWorkflow for more details.
+
+== [milestone-groups] == #milestone-groups-section
+''(since 0.11)''
+
+As the workflow for tickets is now configurable, there can be many ticket states,
+and simply displaying closed tickets vs. all the others is maybe not appropriate 
+in all cases. This section enables one to easily create ''groups'' of states 
+that will be shown in different colors in the milestone progress bar.
+
+Example configuration (which is also the default):
+{{{
+closed = closed
+closed.order = 0                     # sequence number in the progress bar
+closed.query_args = group=resolution # optional extra param for the query
+closed.overall_completion = true     # count for overall completion
+
+active = *                           # one catch-all group is allowed
+active.order = 1
+active.css_class = open              # CSS class for this interval
+}}}
+
+The definition consists in a comma-separated list of accepted status.
+Also, '*' means any status and could be used to associate all remaining
+states to one catch-all group.
+
+The CSS class can be one of: new (yellow), open (no color) or
+closed (green). New styles can easily be added using the following
+selector:  `table.progress td.<class>`
+
+== [svn:externals] == #svn:externals-section
+''(since 0.11)''
+
+The TracBrowser for Subversion can interpret the `svn:externals` property of folders out of the box.
+However, if those externals are ''not'' using the `http:` protocol, or if a link to a different repository browser (such another Trac or [http://www.viewvc.org/ ViewVC]) is desired, then Trac needs to be able to map an external prefix to this other URL.
+
+This mapping is done in the `[svn:externals]` section of the TracIni
+
+Example:
+{{{
+[svn:externals]
+http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
+svn://anotherserver.com/tools_repository  http://ourserver/trac/support/browser/$path?rev=$rev
+}}}
+With the above, the `svn://anotherserver.com/tools_repository/tags/1.1/tools` external will be mapped to `http://ourserver/trac/support/browser/tags/1.1/tools?rev=` (and `rev` will be set to the appropriate revision number if the external additionally specifies a revision, see the [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals] for more details).
+
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment
-

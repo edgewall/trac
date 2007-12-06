@@ -4,9 +4,9 @@ Trac uses a directory structure and a database for storing project data. The dir
 
 == Creating an Environment ==
 
-A new Trac environment is created using [wiki:TracAdmin trac-admin]:
+A new Trac environment is created using  [wiki:TracAdmin trac-admin]:
 {{{
-$ trac-admin /path/to/projectenv initenv
+$ trac-admin /path/to/myproject initenv
 }}}
 
 [wiki:TracAdmin trac-admin] will ask you for the name of the project, the
@@ -21,18 +21,20 @@ as you're not using the BDB file system.''
 
 == Database Connection Strings ==
 
-Since version 0.9, Trac supports both [http://sqlite.org/ SQLite],
-[http://www.postgresql.org/ PostgreSQL] and [http://mysql.com/ MySQL] as
-database backends.  The default is to use SQLite, which is probably sufficient
-for most projects. The database file is then stored in the environment
-directory, and can easily be [wiki:TracBackup backed up] together with the
-rest of the environment.
+Since version 0.9, Trac supports both [http://sqlite.org/ SQLite] and
+[http://www.postgresql.org/ PostgreSQL] database backends.  Preliminary
+support for [http://mysql.com/ MySQL] was added in 0.10.  The default is
+to use SQLite, which is probably sufficient for most projects. The database
+file is then stored in the environment directory, and can easily be 
+[wiki:TracBackup backed up] together with the rest of the environment.
 
+=== Embedded SQLite Connection String ===
 The connection string for an embedded SQLite database is:
 {{{
 sqlite:db/trac.db
 }}}
 
+=== PostgreSQL Connection String ===
 If you want to use PostgreSQL or MySQL instead, you'll have to use a
 different connection string. For example, to connect to a PostgreSQL
 database on the same machine called `trac`, that allows access to the
@@ -40,24 +42,54 @@ user `johndoe` with the password `letmein`, use:
 {{{
 postgres://johndoe:letmein@localhost/trac
 }}}
+''Note that due to the way the above string is parsed, the "/" and "@" characters cannot be part of the password.''
 
 If PostgreSQL is running on a non-standard port (for example 9342), use:
 {{{
 postgres://johndoe:letmein@localhost:9342/trac
 }}}
 
+On UNIX, you might want to select a UNIX socket for the transport,
+either the default socket as defined by the PGHOST environment variable:
+{{{
+postgres://user:password@/database
+}}}
+or a specific one:
+{{{
+postgres://user:password@/database?host=/path/to/socket/dir
+}}}
+
 Note that with PostgreSQL you will have to create the database before running
 `trac-admin initenv`.
 
-And make sure PostgreSQl DB name is "trac". What worked for me:
-And didn't work uppercase trac-user-name
+See the [http://www.postgresql.org/docs/ PostgreSQL documentation] for detailed instructions on how to administer [http://postgresql.org PostgreSQL].
+Generally, the following is sufficient to create a database user named `tracuser`, and a database named `trac`.
 {{{
-sudo su - postgres -c createdb trac
-sudo su - postgres -c psql trac
-CREATE USER trac-user-name WITH PASSWORD 'trac-pass-name';
+createuser -U postgres -E -P tracuser
+createdb -U postgres -O tracuser -E UTF8 trac
+}}}
+When running `createuser` you will be prompted for the password for the user 'tracuser'. This new user will not be a superuser, will not be allowed to create other databases and will not be allowed to create other roles. These privileges are not needed to run a trac instance. If no password is desired for the user, simply remove the `-P` and `-E` options from the `createuser` command.  Also note that the database should be created as UTF8. LATIN1 encoding causes errors trac's use of unicode in trac.  SQL_ASCII also seems to work.
+
+Under some default configurations (debian) one will have run the `createuser` and `createdb` scripts as the `postgres` user.  For example:
+{{{
+sudo su - postgres -c 'createuser -U postgres -S -D -R -E -P tracuser'
+sudo su - postgres -c 'createdb -U postgres -O tracuser -E UTF8 trac'
 }}}
 
-(Just to remind you, if you don't have a sudo/su setup, you just need to do the createdb and psql statements. That threw me the first couple of times I read this.)
+Trac uses the `public` schema by default but you can specify a different schema in the connection string:
+{{{
+postgres://user:pass@server/database?schema=yourschemaname
+}}}
+
+=== MySQL Connection String ===
+
+If you want to use MySQL instead, you'll have to use a
+different connection string. For example, to connect to a MySQL
+database on the same machine called `trac`, that allows access to the
+user `johndoe` with the password `letmein`, the mysql connection string is:
+{{{
+mysql://johndoe:letmein@localhost:3306/trac
+}}}
 
 == Source Code Repository ==
 
@@ -97,7 +129,7 @@ An environment directory will usually consist of the following files and directo
    * `trac.ini` - Main configuration file. See TracIni.
  * `db`
    * `trac.db` - The SQLite database (if you're using SQLite).
- * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs)
+ * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs, since [milestone:0.10])
  * `templates` - Custom environment-specific templates.
    * `site_css.cs` - Custom CSS rules.
    * `site_footer.cs` - Custom page footer.

@@ -5,6 +5,16 @@ Trac stores all text using UTF-8 encoding, including text in tickets and wiki pa
 
 As such, it supports most (all?) commonly used character encodings.
 
+If your encoding is not UTF-8, you can use [wiki:TracModPython mod_python] to handle it.  For example, if your local encoding is gbk, you can set 
+   default_charset = gbk
+in trac.ini.
+
+You also must make sure that your [wiki:DatabaseBackend database backend] stores its data in UTF-8; otherwise strange things will happen.
+
+To convert your database to UTF-8, the easiest way is to dump the database, convert the dump into UTF-8 and then import the converted dump back into the database.[[BR]]
+You can use [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv] to convert the dump.
+
+
 == Examples ==
 
 === Arabic ===
@@ -73,7 +83,7 @@ Kas tie mes?
 }}}
 
 === Polish ===
-Pchnąć w tę łódź jeża lub ośm skrzyń fig
+Pchnąć w tę łódź jeża lub osiem skrzyń fig; Nocna gżegżółka zawsze dzienną przekuka.
 
 === Portuguese ===
 É possível guardar caracteres especias da língua portuguesa, incluindo o símbolo da moeda européia '€', trema 'ü', crase 'à', agudos 'áéíóú', circunflexos 'âêô', til 'ãõ', cedilha 'ç', ordinais 'ªº', grau '°¹²³'.

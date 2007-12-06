@@ -3,11 +3,11 @@
 
 Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
 
-Some of those operations can also be performed via the web interface thanks to the optional [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] plugin, distributed separately for now.
+Some of those operations can also be performed via the web interface thanks to the optional [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] plugin, distributed separately for 0.10 (it's part of Trac proper starting with Trac 0.11).
 
 == Usage ==
 
-You can get a comprehensive list of the available options, commands and sub-commands by invoking `trac-admin` with the `help` command:
+You can get a comprehensive list of the available options, commands and sub-commands by invoking `trac-admin` with the `help` command:.
 {{{
 trac-admin help
 }}}
@@ -35,5 +35,9 @@ To get help on a all the Wiki-related commands, run:
 > help wiki
 }}}
 
+== Full Command Reference ==
+
+[[TracAdminHelp()]]
+
 ----
-See also: TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni
+See also: TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni, TracMigrate

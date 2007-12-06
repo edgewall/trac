@@ -3,7 +3,7 @@
 
 The timeline provides a historic view of the project in a single report.
 
-It lists all Trac events that have occured in chronological order, a
+It lists all Trac events that have occurred in chronological order, a
 brief description of each event and if applicable, the person responsible for
 the change.
 
@@ -20,7 +20,7 @@ See [wiki:TracIni#timeline TracIni] for timeline configuration options.
 
 == RSS Support ==
 
-The Timeline module supports subscription using RSS 2.0 syndication. To subscribe to project events, click orange '''XML''' icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
+The Timeline module supports subscription using RSS 2.0 syndication. To subscribe to project events, click the orange '''XML''' icon at the bottom of the page. See TracRss for more information on RSS support in Trac.
 
 ----
 See also: TracGuide, TracWiki, WikiFormatting, TracRss, TracNotification

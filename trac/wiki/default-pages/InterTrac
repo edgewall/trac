@@ -36,14 +36,6 @@ for the identifier of a ticket, changeset or report:
 
 == Examples ==
 
-{{{
-#!comment
- Besides the other environments run by the same server process
- (called ''sibling'' environments), which are automatically detected,
-Support for sibling environments has been disabled.
-See http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/157
-}}}
-
 It is necessary to setup a configuration for the InterTrac facility.
 This configuration has to be done in the TracIni file, `[intertrac]` section.
 
@@ -57,7 +49,6 @@ t = trac
 # -- Link to an external Trac:
 trac.title = Edgewall's Trac for Trac
 trac.url = http://projects.edgewall.com/trac
-trac.compat = false
 }}}
 
 The `.url` is mandatory and is used for locating the other Trac.
@@ -67,16 +58,12 @@ on the same server.
 The `.title` information will be used for providing an useful tooltip
 when moving the cursor over an InterTrac links.
 
-Finally, the `.compat` option can be used to activate or disable
-a ''compatbility'' mode:
- * If the targeted Trac is running a version below milestone:0.10 
-   (r3526 to be precise), then it doesn't know how to dispatch an InterTrac 
-   link, and it's up to the local Trac to prepare the correct link. 
-   Not all links will work that way, but the most common do. 
-   This is called the compatibility mode, and is `true` by default. 
- * If you know that the remote Trac knows how to dispatch InterTrac links, 
-   you can explicitely disable this compatibility mode and then ''any'' 
-   TracLinks can become an InterTrac link.
+Note that there's an additional `.compat` option that can be used to 
+activate or disable a ''compatibility'' mode for remote Tracs running 
+versions older than 0.10. Those old versions don't know how to dispatch 
+InterTrac links, so it's up to the local Trac to prepare the correct link. 
+Not all links will work that way, but the most common do. 
+This is called the compatibility mode, and is now `false` by default.
 
 Now, given the above configuration, one could create the following links:
  * to this InterTrac page:
@@ -93,17 +80,13 @@ Now, given the above configuration, one could create the following links:
  * to the log range [3300:3330]: '''(Note: the following ones need `trac.compat=false`)'''
    * `trac:log:@3300:3330` trac:log:@3300:3330  
    * `[trac 3300:3330]` [trac 3300:3330] 
+ * finally, to link to the start page of a remote trac, simply use its prefix followed by ':', inside an explicit link. Example: `[th: Trac Hacks]` (''since 0.11; note that the ''remote'' Trac has to run 0.11 for this to work'')
 
 The generic form `intertrac_prefix:module:id` is translated
 to the corresponding URL `<remote>/module/id`, shorthand links
 are specific to some modules (e.g. !#T234 is processed by the
 ticket module) and for the rest (`intertrac_prefix:something`),
 we rely on the TracSearch#quickjump facility of the remote Trac.
-
-----
-=== Discussion ===
-
-I think that the `trac` prefix could even be set as a default in the `[intertrac]` TracIni section. --CB
 
 ----
 See also: TracLinks, InterWiki

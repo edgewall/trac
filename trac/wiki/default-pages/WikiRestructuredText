@@ -85,7 +85,7 @@ Will result in the below.
 
 === WikiMacros in reStructuredText ===
 
-For doing WikiMacros in ReST you use the same directive as for syntax highlightning i.e
+For doing WikiMacros in ReST you use the same directive as for syntax highlighting i.e
 code-block. To work you must use a version of trac that has #801 applied. 
 
 === WikiMacro Example ===
@@ -102,10 +102,19 @@ code-block. To work you must use a version of trac that has #801 applied.
 }}}
 }}}
 
-Will result in the below.
+Will result in the below:
 
-[[HelloWorld(Something I wanted to say)]]
+    [[HelloWorld(Something I wanted to say)]]
 
+Or a more concise WikiMacro like syntax is also available:
+
+{{{
+{{{
+#!rst
+
+:code-block:`HelloWorld:Something I wanted to say`
+}}}
+}}}
 
 === Bigger ReST Example ===
 The example below should be mostly self-explanatory:

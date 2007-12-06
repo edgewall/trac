@@ -16,7 +16,7 @@ The example below should help to explain the syntax.
  * '''text''': A simple (one line) text field.
    * label: Descriptive label.
    * value: Default value.
-   * order: Sort order placement. (Determines relative placement in forms.)
+   * order: Sort order placement. (Determines relative placement in forms with respect to other custom fields.)
  * '''checkbox''': A boolean value check box.
    * label: Descriptive label.
    * value: Default value (0 or 1).
@@ -24,7 +24,7 @@ The example below should help to explain the syntax.
  * '''select''': Drop-down select box. Uses a list of values.
    * label: Descriptive label.
    * options: List of values, separated by '''|''' (vertical pipe).
-   * value: Default value (Item #, starting at 0).
+   * value: Default value (one of the values from options).
    * order: Sort order placement.
  * '''radio''': Radio buttons. Essentially the same as '''select'''.
    * label: Descriptive label.
@@ -56,7 +56,7 @@ test_three.value = 1
 test_four = select
 test_four.label = My selectbox
 test_four.options = one|two|third option|four
-test_four.value = 2
+test_four.value = two
 
 test_five = radio
 test_five.label = Radio buttons are fun
@@ -74,9 +74,20 @@ test_six.rows = 30
 
 === Reports Involving Custom Fields ===
 
-The SQL required for TracReports to include custom ticket fields is relatively hard to get right. You need a `JOIN` with the `ticket_custom` field for every custom field that should be involved.
+Custom ticket fields are stored in the `ticket_custom` table, not in the `ticket` table. So to display the values from custom fields in a report, you will need a join on the 2 tables. Let's use an example with a custom ticket field called `progress`.
 
-The following example includes a custom ticket field named `progress` in the report:
+{{{
+#!sql
+SELECT p.value AS __color__,
+   id AS ticket, summary, owner, c.value AS progress
+  FROM ticket t, enum p, ticket_custom c
+  WHERE status IN ('assigned') AND t.id = c.ticket AND c.name = 'progress'
+AND p.name = t.priority AND p.type = 'priority'
+  ORDER BY p.value
+}}}
+'''Note''' that this will only show tickets that have progress set in them, which is '''not the same as showing all tickets'''. If you created this custom ticket field ''after'' you have already created some tickets, they will not have that field defined, and thus they will never show up on this ticket query. If you go back and modify those tickets, the field will be defined, and they will appear in the query. If that's all you want, you're set.
+
+However, if you want to show all ticket entries (with progress defined and without), you need to use a `JOIN` for every custom field that is in the query.
 {{{
 #!sql
 SELECT p.value AS __color__,

@@ -7,8 +7,6 @@ Since version 0.9, Trac supports plugins that extend the built-in functionality.
 
 To use egg based plugins in Trac, you need to have [http://peak.telecommunity.com/DevCenter/setuptools setuptools] (version 0.6) installed.
 
-Plugins can also consist of a single `.py` file dropped into either the environment or global `plugins` directory ''(since [milestone:0.10])''.
-
 To install `setuptools`, download the bootstrap module [http://peak.telecommunity.com/dist/ez_setup.py ez_setup.py] and execute it as follows:
 {{{
 $ python ez_setup.py
@@ -16,15 +14,22 @@ $ python ez_setup.py
 
 If the `ez_setup.py` script fails to install the setuptools release, you can download it from [http://www.python.org/pypi/setuptools PyPI] and install it manually.
 
+Plugins can also consist of a single `.py` file dropped into either the environment or global `plugins` directory ''(since [milestone:0.10])''.
+
 == Installing a Trac Plugin ==
 
 === For a Single Project ===
 
-Plugins are packaged as [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs]. That means they are ZIP archives with the file extension `.egg`. If you have downloaded a source distribution of a plugin, you can run:
+Plugins are packaged as [http://peak.telecommunity.com/DevCenter/PythonEggs Python eggs]. That means they are ZIP archives with the file extension `.egg`. 
+
+If you have downloaded a source distribution of a plugin, and want to build the `.egg` file, follow this instruction:
+ * Unpack the source. It should provide a setup.py. 
+ * Run:
 {{{
 $ python setup.py bdist_egg
 }}}
-to build the `.egg` file.
+
+Then you will have a *.egg file. Examine the output of running python to find where this was created.
 
 Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg.
 
@@ -51,13 +56,13 @@ easy_install --always-unzip TracWebAdmin-0.1.1dev_r2765-py2.3.egg
 }}}
 You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
 
-Trac also searches for globally installed plugins under `$prefix/share/trac/plugins` ''(since 0.10)''.
+Trac also searches for globally installed plugins under `$PREFIX/share/trac/plugins` ''(since 0.10)''.
 
 ==== From source ====
 
-If you downloaded the plugin's source from Subversion, or a source zip file you can install it using the included `setup.py`:
+`easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
 {{{
-$ python setup.py install
+easy_install http://svn.edgewall.com/repos/trac/sandbox/webadmin
 }}}
 
 ==== Enabling the plugin ====
@@ -67,9 +72,9 @@ Unlike plugins installed per-environment, you'll have to explicitly enable globa
 webadmin.* = enabled
 }}}
 
-The name of the option is the Python package of the plugin. This should be specified in the documentation of the Plugin, but can also be easily find out by looking at the source (look for a top-level directory that contains a file named `__init__.py`.)
+The name of the option is the Python package of the plugin. This should be specified in the documentation of the plugin, but can also be easily discovered by looking at the source (look for a top-level directory that contains a file named `__init__.py`.)
 
-Note: After installing the plugin, you may need to restart Apache.
+Note: After installing the plugin, you need to restart your web server.
 
 == Setting up the Plugin Cache ==
 
@@ -101,7 +106,9 @@ or (for mod_python):
 
  ''Note: this requires the `mod_env` module''
 
-For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables.
+For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables. 
+
+ ''Note: that if you already use -initial-env to set the project directory for either a single project or parent you will need to add atleast one environment variable inside trac.fcgi as expressed in the example on [wiki:TracFastCgi TracFastCgi].
 
 === About hook scripts ===
 
@@ -129,16 +136,23 @@ Also, verify that the egg file you downloaded is indeed a ZIP archive. If you do
 If you install a plugin globally (i.e. ''not'' inside the `plugins` directory of the Trac project environment) you will have to explicitly enable it in [TracIni trac.ini]. Make sure that:
  * you actually added the necessary line(s) to the `[components]` section
  * the package/module names are correct
- * if you're reference a module (as opposed to a class), you've appended the necessary “.*”
  * the value is “enabled", not e.g. “enable”
 
 === Check the permissions on the egg file ===
 
-Trac must of course be able to read the file. Yeah, you knew that ;-)
+Trac must be able to read the file. 
 
 === Check the log files ===
 
-Enable [TracLogging logging] in Trac, set the log level to `DEBUG` and then watch the log file for messages about loading plugins.
+Enable [wiki:TracLogging logging] and set the log level to `DEBUG`, then watch the log file for messages about loading plugins.
+
+=== Verify you have proper permissions ===
+
+Some plugins require you have special permissions in order to use them. WebAdmin, for example, requires the user to have TRAC_ADMIN permissions for it to show up on the navigation bar.
+
+=== If all of the above failed ===
+
+OK, so the logs don't mention plugins, the egg is readable, the python version is correct ''and'' the egg has been installed globally (and is enabled in the trac.ini) and it still doesn't work or give any error messages or any other indication as to why? Hop on the IrcChannel and ask away.
 
 ----
 See also TracGuide, [http://trac.edgewall.org/wiki/PluginList plugin list], [http://trac.edgewall.org/wiki/TracDev/ComponentArchitecture component architecture]

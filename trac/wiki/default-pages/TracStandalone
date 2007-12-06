@@ -20,6 +20,10 @@ A single project on port 8080. (http://localhost:8080/)
 {{{
  $ tracd -p 8080 /path/to/project
 }}}
+Stricly speaking this will make your Trac accessible to everybody from your network rather than ''localhost only''. To truly limit it use ''--hostname'' option.
+{{{
+ $ tracd --hostname=localhost -p 8080 /path/to/project
+}}}
 With more than one project. (http://localhost:8080/project1/ and http://localhost:8080/project2/)
 {{{
  $ tracd -p 8080 /path/to/project1 /path/to/project2
@@ -33,24 +37,39 @@ An alternative way to serve multiple projects is to specify a parent directory i
  $ tracd -p 8080 -e /path/to
 }}}
 
+To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-C}}} will leave a Python process running in the background.
+
+
 == Using Authentication ==
 
-Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below, and omit the realm.
+Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
 
   ''Support for Basic authentication was added in version 0.9.''
 
-If the file `/path/to/users.htdigest` contains user accounts for project1 with the realm "mycompany.com", you'd use the following command-line to start tracd:
+The general format for using authentication is:
+
 {{{
- $ tracd -p 8080 --auth project1,/path/to/users.htdigest,mycompany.com /path/to/project1
+ $ tracd -p port --auth=base_project_dir,password_file_path,realm project_path
 }}}
 
-'''Note''': the project "name" passed to the `--auth` option is the base name of the project environment directory.
+where:
 
+ * '''base_project_dir''' is the base directory of the project; note: this doesn't refer to the project name, and it is case-sensitive even for windows environments
+ * '''password_file_path''' path of the password file
+ * '''realm''' realm
+ * '''project_path''' path of the project
+
+Example:
+
+{{{
+ $ tracd -p 8080 \
+   --auth=project1,/path/to/users.htdigest,mycompany.com /path/to/project1
+}}}
 Of course, the digest file can be be shared so that it is used for more than one project:
 {{{
  $ tracd -p 8080 \
-   --auth project1,/path/to/users.htdigest,mycompany.com \
-   --auth project2,/path/to/users.htdigest,mycompany.com \
+   --auth=project1,/path/to/users.htdigest,mycompany.com \
+   --auth=project2,/path/to/users.htdigest,mycompany.com \
    /path/to/project1 /path/to/project2
 }}}
 
@@ -58,7 +77,7 @@ Another way to share the digest file is to specify "*"
 for the project name:
 {{{
  $ tracd -p 8080 \
-   --auth *,/path/to/users.htdigest,mycompany.com \
+   --auth=*,/path/to/users.htdigest,mycompany.com \
    /path/to/project1 /path/to/project2
 }}}
 
@@ -73,6 +92,7 @@ Note that you can start tracd without the --auth argument, but if you click on t
 If you don't have Apache available, you can use this simple Python script to generate your passwords:
 
 {{{
+#!python
 from optparse import OptionParser
 import md5
 
@@ -99,8 +119,10 @@ Note: If you use the above script you must use the --auth option to tracd, not -
 
 {{{
 python trac-digest.py -u username -p password >> c:\digest.txt
-python tracd --port 8000 --auth proj_name,c:\digest.txt,trac c:\path\to\proj_name
+tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
+
+Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). When using on Windows make sure to use -m option for it (did not tested it on *nix, so not sure if that is the case there).
 
 == Tips ==
 
@@ -121,6 +143,16 @@ in the Wiki: `[/<project_name>/chrome/site/software-0.1.tar.gz]`
 The development version of Trac supports a new `htdocs:` TracLinks 
 syntax for the above. With this, the example link above can be written simply 
 `htdocs:software-0.1.tar.gz`. 
+
+=== Using apache rewrite rules ===
+If for some reason you choose to use tracd behind apache, you should define the base_url in the trac section of the trac.ini. If you don't, all POSTS will fail. Trac tries to redirect the request and transform the POST url to a GET url, during that transition, it tries to calculate the correct redirect url, not knowing about the redirect rule of apache.
+Note that with [milestone:0.11], setting the `base_url` will be strongly recommended anyway.
+
+=== Serving a different base path than / ===
+Tracd supports serving projects with different base urls then /<project>. The parameter name to change this is
+{{{
+tracd --base-path=/some/path
+}}}
 
 ----
 See also: TracInstall, TracCgi, TracModPython, TracGuide

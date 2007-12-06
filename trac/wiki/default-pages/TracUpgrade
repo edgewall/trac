@@ -1,7 +1,7 @@
 = Upgrade Instructions =
 [[TracGuideToc]]
 
-A Trac environment sometimes needs to be upgraded before it can be used with a new version of Trac. This document describes the steps necessary to upgrade an environment.
+A [wiki:TracEnvironment Trac environment] sometimes needs to be upgraded before it can be used with a new version of Trac. This document describes the steps necessary to upgrade an environment.
 
  '''Note''': ''Environment upgrades are not necessary for minor version releases unless otherwise noted. For example, there's no need to upgrade a Trac environment created with (or upgraded) 0.8.0 when installing 0.8.4 (or any other 0.8.x release).''
 
@@ -13,7 +13,17 @@ Typically, there are four steps involved in upgrading to a newer version of Trac
 
 Get the new version of Trac, either by downloading an offical release package or by checking it out from the [http://projects.edgewall.com/trac/wiki/SubversionRepository Subversion repository].
 
-If you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory. You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
+If you're doing a major version upgrade (such as from 0.8 to 0.9), it is ''highly'' recommended that you first remove the existing Trac code. To do this, you need to delete the `trac` directory from the Python `lib/site-packages` directory.
+
+The location of the site-packages directory depends on the operating system, and the location in which Python was installed. However, the following locations are common:
+ * If you’re using Linux: /usr/lib/python2.X/site-packages
+ * If you’re using Windows: C:\Python2.X\lib\site-packages
+ * If you’re using MacOSX: /Library/Python2.X/site-packages
+ * If you’re using NetBSD or pkgsrc: /usr/pkg/lib/python2.X/site-packages
+ * If you're using FreeBSD :  /usr/local/lib/python2.X/site-packages
+
+
+You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
 If you have a source distribution, you need to run
 {{{
@@ -48,6 +58,22 @@ Note that this procedure will of course leave your `WikiStart` page intact.
 === Restart the Web Server ===
 
 In order to reload the new Trac code you will need to restart your web server (note this is not necessary for [wiki:TracCgi CGI]).
+
+== Known Issues ==
+
+=== Customized Templates ===
+
+Sometimes, the ClearSilver templates files have been locally modified, and placed in a special location referred to by the `[trac] templates_dir` configuration setting.
+
+When upgrading to a newer version, changes in the Trac source are usually concerning ''both'' the Python source code and the template markup, so they must be kept in sync.
+Upgrading the code base and still using the old templates (even not customized!) is a recipe for trouble:
+ - ''Link and images missing for folders in the TracBrowser component (and tooltip saying "Access Denied")'' (#3915)
+ - ''Report execution failed: Report ... has no SQL query'' (#3715)
+
+== Changing Database Backend ==
+== SQLite to PostgreSQL ==
+
+The [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] script on [http://trac-hacks.org trac-hacks.org] has been written to assist in migrating a SQLite database to a PostgreSQL database
 
 == Specific Versions ==
 
@@ -114,7 +140,7 @@ To update multiple database files at once on linux you may use the following com
  $ find /var/trac/ -iname "trac.db" | xargs -i bash -c "mv {} {}.2; sqlite {}.2 .dump | sqlite3 {};"
 }}}
 
-Remember the give the webserver write permission to trac.db.
+Remember to give the webserver write permission to trac.db.
 
 After testing that the conversion was successful, the `trac2.db` file can be deleted. For more information on the SQLite upgrade see http://www.sqlite.org/version3.html.
 

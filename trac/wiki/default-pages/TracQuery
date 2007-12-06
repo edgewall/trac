@@ -15,7 +15,7 @@ Once you've edited your filters click the ''Update'' button to refresh your resu
 == Navigating Tickets ==
 Clicking on one of the query results will take you to that ticket.  You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which was edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query critera has been created''', it will be shown in bold. 
+You can safely edit any of the tickets and continue to navigate through the results using the ''Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which was edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
 
 The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
 
@@ -45,25 +45,35 @@ Which is displayed as:
 
 === Using the `[[TicketQuery]]` Macro ===
 
-The `[[TicketQuery]]` macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
+The TicketQuery macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
 
 Example:
 {{{
-[[TicketQuery(version=1.0|2.0&resolution=duplicate)]]
+[[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 }}}
 
 This is displayed as:
-  [[TicketQuery(version=1.0|2.0&resolution=duplicate)]]
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate)]]
 
 Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter of this macro expects a query string formatted according to the rules of the simple [wiki:TracQuery#QueryLanguage ticket query language].
 
 A more compact representation without the ticket summaries is also available:
 {{{
-[[TicketQuery(version=1.0|2.0&resolution=duplicate, compact)]]
+[[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
 }}}
 
 This is displayed as:
-  [[TicketQuery(version=1.0|2.0&resolution=duplicate, compact)]]
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
+
+Finally if you wish to receive only the number of defects that match the query using the ``count`` parameter.
+
+{{{
+[[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+}}}
+
+This is displayed as:
+  [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+
 
 === Query Language ===
 

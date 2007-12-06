@@ -32,7 +32,19 @@ Or to use multiple projects you can specify their common parent directory using 
 </Location>
 }}}
 
- ''Note that the `SetEnv` directive requires the `mod_env` module to be installed and enable.''
+ ''Note that the `SetEnv` directive requires the `mod_env` module to be installed and enable. If not, you could set TRAC_ENV in trac.cgi. Just add the following code between "try:" and "from trac.web ...":''
+
+{{{
+    import os
+    os.environ['TRAC_ENV'] = "/path/to/projectenv"
+}}}
+
+ '' Or for TRAC_ENV_PARENT_DIR: ''
+
+{{{
+    import os
+    os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
+}}}
 
 This will make Trac available at `http://yourhost.example.org/trac`.
 
@@ -58,6 +70,16 @@ Alias /trac/chrome/common /usr/share/trac/htdocs
 Note that whatever URL path you mapped the `trac.cgi` script to, the path `/chrome/common` is the path you have to append to that location to intercept requests to the static resources. 
 
 For example, if Trac is mapped to `/cgi-bin/trac.cgi` on your server, the URL of the Alias should be `/cgi-bin/trac.cgi/chrome/common`.
+
+Similarly, if you have static resources in a projects htdocs directory, you can configure apache to serve those resources (again, put this '''before''' the `ScriptAlias` for the CGI script, and adjust names and locations to match your installation):
+
+{{{
+Alias /trac/chrome/site /path/to/projectenv/htdocs
+<Directory "/path/to/projectenv/htdocs">
+  Order allow,deny
+  Allow from all
+</Directory>
+}}}
 
 Alternatively, you can set the `htdocs_location` configuration option in [wiki:TracIni trac.ini]:
 {{{
@@ -112,7 +134,22 @@ If you're hosting multiple projects you can use the same password file for all o
 </LocationMatch>
 }}}
 
-For better security, it is recommended that you either enable SSL or at least use the “Digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more.
+For better security, it is recommended that you either enable SSL or at least use the “Digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more. For example, on a Debian 4.0r1 (etch) system the relevant section  in apache configuration can look like this:
+{{{
+<Location "/trac/login">
+    LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
+    AuthType Digest
+    AuthName "trac"
+    AuthDigestDomain /trac
+    AuthUserFile /somewhere/trac.htpasswd
+    Require valid-user
+</Location>
+}}}
+and you'll have to create your .htpasswd file with htdigest instead of htpasswd as follows:
+{{{
+# htdigest /somewhere/trac.htpasswd trac admin
+}}}
+where the "trac" parameter above is the same as !AuthName above  ("Realm" in apache-docs). 
 
 ----
 See also:  TracGuide, TracInstall, TracFastCgi, TracModPython

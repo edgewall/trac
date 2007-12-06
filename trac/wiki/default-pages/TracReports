@@ -16,6 +16,8 @@ Rather than have its own report definition format, TracReports relies on standar
   }}}
   ''This will make the query module the default handler for the “View Tickets” navigation item. We encourage you to try this configuration and report back what kind of features of reports you are missing, if any.''
 
+  '''''You will almost definitely need to restart your httpd at this point.'''''
+
 A report consists of these basic parts:
  * '''ID''' -- Unique (sequential) identifier 
  * '''Title'''  -- Descriptive title
@@ -28,6 +30,10 @@ Simple reports - ungrouped reports to be specific - can be changed to be sorted 
 
 If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
 
+== Navigating Tickets ==
+Clicking on one of the report results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Report'' link to return to the report page.
+
+You can safely edit any of the tickets and continue to navigate through the results using the Next/Previous/Back to Report links after saving your results, but when you return to the report, there will be no hint about what has changed, as would happen if you were navigating a list of tickets obtained from a query (see TracQuery#NavigatingTickets). ''(since 0.11)''
 
 == Alternative Download Formats ==
 Aside from the default HTML view, reports can also be exported in a number of alternative formats.
@@ -60,6 +66,7 @@ using the available columns and sorting the way you want it.
 == Ticket columns ==
 The ''ticket'' table has the following columns:
  * id
+ * type
  * time
  * changetime
  * component
@@ -74,6 +81,7 @@ The ''ticket'' table has the following columns:
  * resolution
  * summary
  * description
+ * keywords
 
 See TracTickets for a detailed description of the column fields.
 
@@ -100,7 +108,7 @@ The syntax for dynamic variables is simple, any upper case word beginning with '
 
 Example:
 {{{
-SELECT id AS ticket,summary FROM ticket WHERE priority='$PRIORITY'
+SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
 }}}
 
 To assign a value to $PRIORITY when viewing the report, you must define it as an argument in the report URL, leaving out the the leading '$'.
@@ -125,7 +133,7 @@ There is one ''magic'' dynamic variable to allow practical reports, its value au
 
 Example (''List all tickets assigned to me''):
 {{{
-SELECT id AS ticket,summary FROM ticket WHERE owner='$USER'
+SELECT id AS ticket,summary FROM ticket WHERE owner=$USER
 }}}
 
 
@@ -159,6 +167,16 @@ assumed to be ''formatting hints'', affecting the appearance of the row.
  
  * '''`__group__`''' -- Group results based on values in this column. Each group will have its own header and table.
  * '''`__color__`''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+{{{
+#!html
+<div style="margin-left:7.5em">Defaults: 
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #fdc; border-color: #e88; color: #a22">Color 1</span>
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #ffb; border-color: #eea; color: #880">Color 2</span>
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #fbfbfb; border-color: #ddd; color: #444">Color 3</span>
+<span style="border: none; color: #333; background: transparent; font-size: 85%; background: #e7ffff; border-color: #cee; color: #099">Color 4</span>
+<span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #e7eeff; border-color: #cde; color: #469">Color 5</span>
+</div>
+}}}
  * '''`__style__`''' -- A custom CSS style expression to use for the current row. 
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority''
@@ -208,9 +226,11 @@ SELECT p.value AS __color__,
 
 === Reporting on custom fields ===
 
-If you have added custom fields to your tickets (experimental feature in v0.8, see TracTicketsCustomFields), you can write a SQL query to cover them. You'll need to make a join on the ticket_custom table, but this isn't especially easy.
+If you have added custom fields to your tickets (a feature since v0.8, see TracTicketsCustomFields), you can write a SQL query to cover them. You'll need to make a join on the ticket_custom table, but this isn't especially easy.
 
 If you have tickets in the database ''before'' you declare the extra fields in trac.ini, there will be no associated data in the ticket_custom table. To get around this, use SQL's "LEFT OUTER JOIN" clauses. See TracIniReportCustomFieldSample for some examples.
 
+'''Note that you need to set up permissions in order to see the buttons for adding or editing reports.'''
+
 ----
-See also: TracTickets, TracQuery, TracGuide
+See also: TracTickets, TracQuery, TracGuide, [http://www.sqlite.org/lang_expr.html Query Language Understood by SQLite]

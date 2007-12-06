@@ -22,5 +22,17 @@ at any given repository revision. The default behavior is to display the
 latest revision but another revision number can easily be selected using
 the ''View revision'' input field at the top of the page.
 
+''(since 0.11)'':
+
+At the top of the browser page, there's a drop-down menu which you can use 
+to select some interesting places in the repository, for example branches or tags. 
+This is sometimes referred to as the ''browser quickjump'' facility.
+The precise meaning and content of this menu depends on your backend.
+For Subversion, this list contains by default a few branches (`trunk` and any sub-folder of the latest `branches` top-level folder) and a few tags (any sub-folder of the latest `tags` top-level folder). This can be [TracIni#svn configured] for more advanced cases.
+
+For the Subversion backend, some additional features are available:
+ - support for `svn:needs-lock` property
+ - support for `svn:externals` property (which can be [TracIni#svn:externals configured])
+
 ----
 See also: TracGuide, TracChangeset, FineGrainedPermissions

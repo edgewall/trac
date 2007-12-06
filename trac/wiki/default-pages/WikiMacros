@@ -31,7 +31,19 @@ Display:
 The [http://trac-hacks.org/ Trac Hacks] site provides a wide collection of macros and other Trac [TracPlugins plugins] contributed by the Trac community. If you're looking for new macros, or have written one that you'd like to share with the world, please don't hesitate to visit that site.
 
 == Developing Custom Macros ==
-Macros, like Trac itself, are written in the [http://www.python.org/ Python programming language]. They are very simple modules, identified by the filename and should contain a single `execute()` function. Trac will display the returned data inserted into the HTML representation of the Wiki page where the macro is called.
+Macros, like Trac itself, are written in the [http://www.python.org/ Python programming language]. 
+
+Since version 0.9, wiki macros can also be written as TracPlugins. This gives them some capabilities that “classic” macros do not have, such as being able to directly access the HTTP request.
+
+For more information about developing macros, see the [http://projects.edgewall.com/trac/wiki/TracDev development resources] on the main project site.
+
+See also #4381 '''TODO: write a TracDev/WikiMacros HOWTO for 0.11''
+
+=== Old Style Macros ===
+''Note: this is still supported in [trac:milestone:0.10], but deprecated.
+Support for old style macros has been removed in [trac:milestone:0.11].''
+
+They are very simple modules, identified by the filename and should contain a single `execute()` function. Trac will display the returned data inserted into the HTML representation of the Wiki page where the macro is called.
 
 It's easiest to learn from an example:
 {{{
@@ -48,10 +60,6 @@ You can also use the environment (`env`) object, for example to access configura
 def execute(hdf, txt, env):
     return env.config.get('trac', 'repository_dir')
 }}}
-
-Note that since version 0.9, wiki macros can also be written as TracPlugins. This gives them some capabilities that “classic” macros do not have, such as being able to directly access the HTTP request.
-
-For more information about developing macros, see the [http://projects.edgewall.com/trac/wiki/TracDev development resources] on the main project site.
 
 ----
 See also:  WikiProcessors, WikiFormatting, TracGuide

@@ -50,9 +50,9 @@ Note also that any of the above could have been written using the alternate synt
 {{{
 #!rst
 
-See `ticket:123`_
+See _`ticket:123`
 
- .. :trac: ticket:123 Ticket 123
+ .. trac:: ticket:123 Ticket 123
 }}}
 }}}
 ----
