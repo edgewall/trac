@@ -219,7 +219,8 @@ class AuthzPolicy(Component):
                 for who, permissions in section.iteritems():
                     if who in valid_users or \
                             who in self.groups_by_user.get(username, []):
-                        #self.env.log.debug('%s matched section %s' % (resource_key, resource_glob))
+                        self.env.log.debug('%s matched section %s for user %s'
+                                % (resource_key, resource_glob, username))
                         if isinstance(permissions, basestring):
                             return [permissions]
                         else:
