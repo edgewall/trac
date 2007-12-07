@@ -24,6 +24,9 @@ class PublicWikiPolicy(Component):
 
     """
 
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(IPermissionPolicy)
 
     view = Option('public_wiki', 'view', 'Public*',

@@ -18,6 +18,9 @@ class StatusFixerActionController(Component):
     workflow = ConfigurableTicketWorkflow,StatusFixerActionController
     """
 
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(ITicketActionController, IPermissionRequestor)
 
     # IPermissionRequestor methods

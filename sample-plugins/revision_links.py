@@ -11,6 +11,9 @@ from trac.wiki.api import IWikiSyntaxProvider
 class RevisionLinks(Component):
     """Adds a few more ways to refer to changesets."""
 
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(IWikiSyntaxProvider)
 
     KEYWORDS = ['[Rr]ev(?:ision)?', '[Cc]hangeset']

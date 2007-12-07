@@ -16,6 +16,9 @@ class DeleteTicketActionController(Component):
     workflow = ConfigurableTicketWorkflow,DeleteTicketActionController
     """
 
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(ITicketActionController, IPermissionRequestor)
 
     # IPermissionRequestor methods

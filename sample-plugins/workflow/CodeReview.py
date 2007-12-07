@@ -31,6 +31,9 @@ class CodeReviewActionController(Component):
     workflow = ConfigurableTicketWorkflow,CodeReviewActionController
     """
 
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(ITicketActionController, IPermissionRequestor)
 
     # IPermissionRequestor methods

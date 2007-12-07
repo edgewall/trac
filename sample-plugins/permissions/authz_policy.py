@@ -127,6 +127,10 @@ from configobj import ConfigObj
 
 
 class AuthzPolicy(Component):
+
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(IPermissionPolicy)
 
     authz_file = Option('authz_policy', 'authz_file', None,

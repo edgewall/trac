@@ -12,6 +12,9 @@ class SimpleTicketCloneButton(Component):
     which will be based on the cloned one.
     """
        
+    revision = "$Rev$"
+    url = "$URL$"
+
     implements(ITemplateStreamFilter)
 
     # ITemplateStreamFilter methods

@@ -45,6 +45,9 @@ class HelloWorldMacro(WikiMacroBase):
     the !MacroList macro (usually used in the TracWikiMacros page).
     """
 
+    revision = "$Rev$"
+    url = "$URL$"
+
     def expand_macro(self, formatter, name, args):
         """Return some output that will be displayed in the Wiki content.
 

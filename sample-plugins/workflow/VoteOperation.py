@@ -18,6 +18,8 @@ class VoteOperation(Component):
     workflow = ConfigurableTicketWorkflow,VoteOperation
     """
     
+    revision = "$Rev$"
+    url = "$URL$"
 
     implements(ITicketActionController)
 
