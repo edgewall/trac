@@ -149,7 +149,8 @@ Or one privilege for all users:
 
 == Default Permissions ==
 
-By default on a new Trac installation, the {{{anonymous}}} user will have ''view'' access to everything in Trac, and will also have permissions to ''create and modify tickets and wiki pages''.
+By default on a new Trac installation, the `anonymous` user will have ''view'' access to everything in Trac, but will not be able to create or modify anything.
+On the other hand, the `authenticated` users will have the permissions to ''create and modify tickets and wiki pages''
 
  '''anonymous'''::
  BROWSER_VIEW 
@@ -166,10 +167,10 @@ By default on a new Trac installation, the {{{anonymous}}} user will have ''view
  WIKI_VIEW 
 
  '''authenticated'''::
-   TICKET_CREATE 
+ TICKET_CREATE 
  TICKET_MODIFY 
  WIKI_CREATE 
  WIKI_MODIFY  
 
 ----
-See also: TracAdmin, TracGuide and [http://trac.edgewall.org/wiki/FineGrainedPermissions FineGrainedPermissions]
+See also: TracAdmin, TracGuide and TracFineGrainedPermissions

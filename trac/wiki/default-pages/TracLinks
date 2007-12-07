@@ -78,20 +78,30 @@ The link syntax for attachments is as follows:
 == source: links ==
 
 The default behavior for a source:/some/path link is to open the directory browser 
-if the path points to a directory and otherwise open the log view. 
-It's also possible to link directly to a specific revision of a file like this: source:/some/file@123 
-or like this to link to the latest revision: source:/some/file@latest.
-If the revision is specified, one can even link to a specific line number: source:/some/file@123#L10 
+if the path points to a directory and otherwise open the log view.
+
+It's also possible to link directly to a specific revision of a file like this:
+ - `source:/some/file@123` - link to the file's revision 123
+ - `source:/some/file@head` - link explicitly to the latest revision of the file
+
+If the revision is specified, one can even link to a specific line number:
+ - `source:/some/file@123#L10`
+ - `source:/tag/0.10@head#L10`
+
+Finally, one can also highlight an arbitrary set of lines:
+ - `source:/some/file@123:10-20,100,103#L99` - highlight lines 10 to 20, and lines 100 and 103.
+''(since 0.11)''
 
 == export: links ==
-''new in 0.11dev''
 
-To force the download of a file in the repository, as opposed to displaying it in the browser, use the {{{export}}} link.  Several forms are available:
- * {{{export:/some/file}}} - get the HEAD revision of the specified file
- * {{{export:123:/some/file}}} - get revision 123 of the specified file
- * {{{export:/some/file@123}}} - get revision 123 of the specified file
+To force the download of a file in the repository, as opposed to displaying it in the browser, use the `export` link.  Several forms are available:
+ * `export:/some/file` - get the HEAD revision of the specified file
+ * `export:123:/some/file` - get revision 123 of the specified file
+ * `export:/some/file@123` - get revision 123 of the specified file
 
-If the path is to a directory in the repository instead of a specific file, the source browser will be used to display the directory (identical to the result of {{{source:/some/dir}}}).
+This can be very useful for displaying HTML documentation with correct stylesheets and images, in case that has been checked in the repository.
+
+If the path is to a directory in the repository instead of a specific file, the source browser will be used to display the directory (identical to the result of `source:/some/dir`.
 
 == search: and query: links ==
 

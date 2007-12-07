@@ -29,6 +29,7 @@ wiki_pages = [
  "TracChangeset",
  "TracEnvironment",
  "TracFastCgi",
+ "TracFineGrainedPermissions",
  "TracGuide",
  "TracImport",
  "TracIni",

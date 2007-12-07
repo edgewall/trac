@@ -232,7 +232,7 @@ Display:
  * [wiki:TitleIndex Title Index]
  * [wiki:ISO9000]
 
-=== Trac Links ===
+== Trac Links ==
 
 Wiki pages can link directly to other parts of the Trac system. Pages can refer to tickets, reports, changesets, milestones, source files and other Wiki pages using the following notations:
 {{{
@@ -248,7 +248,7 @@ Display:
  * Changesets: r1, [1] or changeset:1
  * ... 
 
-See TracLinks for more in-depth information.
+There are many more flavors of Trac links, see TracLinks for more in-depth information.
 
 
 == Escaping Links and WikiPageNames ==
