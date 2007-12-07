@@ -1,13 +1,10 @@
 = Upgrade Instructions =
 [[TracGuideToc]]
 
-A [wiki:TracEnvironment Trac environment] needs to be upgraded before it can be used with Trac-0.11. This document describes the steps necessary to upgrade an environment.
+A [TracEnvironment Trac environment] needs to be upgraded before it can be used with Trac 0.11. This document describes the steps necessary to upgrade an environment.
 
- '''Note''': ''Environment upgrades are not necessary for minor version releases unless otherwise noted. 
+Environment upgrades are not necessary for minor version releases unless otherwise noted. 
 
- '''Note''': ''A database change is required, so it is no longer safe to switch back from 0.11 to 0.10.
-
- '''Beware:''' milestone:0.11 still says it is safe to switch between 0.10.4 and 0.11dev
 
 == Instructions ==
 
@@ -26,13 +23,12 @@ The location of the site-packages directory depends on the operating system, and
 
 You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
-> If You had the webadmin components, You should disable (remove from config file) webadmin.* -  now Admin is part of the Trac code base.
-
+> If you had the webadmin plugin installed, you can now uninstall it as it is now part of the Trac code base.
 
 
 === Upgrade the Trac Environment ===
 
-After restarting, Trac should show the instances which need a manual upgrade via the automated upgrade scripts to ease the pain. These scripts are run via [wiki:TracAdmin trac-admin]:
+After restarting, Trac should show the instances which need a manual upgrade via the automated upgrade scripts to ease the pain. These scripts are run via [TracAdmin trac-admin]:
 {{{
 trac-admin /path/to/projenv upgrade
 }}}
@@ -46,7 +42,7 @@ trac-admin /path/to/projenv upgrade --no-backup
 
 === Update the Trac Documentation ===
 
-Every [wiki:TracEnvironment Trac environment] includes a copy of the Trac documentation for the installed version. As you probably want to keep the included documentation in sync with the installed version of Trac, [wiki:TracAdmin trac-admin] provides a command to upgrade the documentation:
+Every [TracEnvironment Trac environment] includes a copy of the Trac documentation for the installed version. As you probably want to keep the included documentation in sync with the installed version of Trac, [TracAdmin trac-admin] provides a command to upgrade the documentation:
 {{{
 trac-admin /path/to/projenv wiki upgrade
 }}}
@@ -54,7 +50,7 @@ trac-admin /path/to/projenv wiki upgrade
 Note that this procedure will of course leave your `WikiStart` page intact.
 
 === Trac Macros, Plugins ===
-The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros.
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros, see TracWikiMacros.
 
 
 === Restart the Web Server ===
@@ -62,7 +58,7 @@ If you are not running [wiki:TracCgi CGI], reload the new Trac code by restartin
 
 == Known Issues ==
 === parent dir ===
-If you use a trac parent env configuration and one of the plugines in one child does not work, none of the children work.
+If you use a trac parent env configuration and one of the plugins in one child does not work, none of the children work.
 
 == Changing Database Backend ==
 == SQLite to PostgreSQL ==
@@ -71,7 +67,7 @@ The [http://trac-hacks.org/wiki/SqliteToPgScript sqlite2pg] script on [http://tr
 
 == Older Versions ==
 
-For upgrades from former versions refer to TracUpgrade.
+For upgrades from former versions refer to wiki:0.10/TracUpgrade.
 
 -----
 See also: TracGuide, TracInstall

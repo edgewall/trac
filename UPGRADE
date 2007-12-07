@@ -5,6 +5,10 @@ A Trac environment sometimes needs to be upgraded before it can be used with
 a new version of Trac. This document describes the steps necessary to upgrade
 an environment.
 
+Note that you should also read the trac/wiki/default-pages/TracUpgrade 
+documentation file present in the source distribution.
+
+
 Note that Environment upgrades are not necessary for minor version releases
 unless otherwise noted. For example, there's no need to upgrade a Trac
 environment created with (or upgraded) 0.8.0 when installing 0.8.4 (or any
@@ -64,6 +68,22 @@ server (note this is not necessary for CGI).
 
 The following sections discuss any extra actions that may need to be taken
 to upgrade to specific versions of Trac.
+
+From 0.10.x to 0.11.x
+---------------------
+
+There should not be any serious problems...
+
+However, take a look at the following documented caveats::
+
+ http://trac.edgewall.org/wiki/TracDev/ReleaseNotes/0.11#Caveats
+
+Also, you should be careful to check that the plugins you depend on have
+been ported to 0.11, as they most probably won't work without adaptation
+due to the numerous internal changes that occurred during 0.11 development.
+Note however that Clearsilver based plugin are still supported.
+
+See: http://trac.edgewall.org/wiki/TracDev/ApiChanges/0.11
 
 
 From 0.9.x to 0.10.x
