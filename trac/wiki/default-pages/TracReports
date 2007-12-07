@@ -111,7 +111,7 @@ Example:
 SELECT id AS ticket,summary FROM ticket WHERE priority=$PRIORITY
 }}}
 
-To assign a value to $PRIORITY when viewing the report, you must define it as an argument in the report URL, leaving out the the leading '$'.
+To assign a value to $PRIORITY when viewing the report, you must define it as an argument in the report URL, leaving out the leading '$'.
 
 Example:
 {{{

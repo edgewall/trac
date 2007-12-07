@@ -3,7 +3,9 @@
 
 Trac uses a simple, case sensitive, permission system to control what users can and can't access.
 
-Permission privileges are managed using the [wiki:TracAdmin trac-admin] tool.
+Permission privileges are managed using the [TracAdmin trac-admin] tool or the ''General / Permissions'' panel in the ''Admin'' web interface.
+
+In addition to the default permission policy described in this page, it is possible to activate additional permission policies by enabling plugins and listing them in the `[trac] permission_policies` configuration entry in the TracIni. See TracFineGrainedPermissions for more details.
 
 Non-authenticated users accessing the system are assigned the name "anonymous". Assign permissions to the "anonymous" user to set privileges for anonymous/guest users. The parts of Trac that a user does not have the privileges for will not be displayed in the navigation.
 In addition to these privileges, users can be granted additional individual rights in effect when authenticated and logged into the system. All logged in users belong to the virtual group "authenticated", which inherits permissions from "anonymous".
@@ -71,7 +73,7 @@ Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 || `TIMELINE_VIEW` || View the [wiki:TracTimeline timeline] page ||
 || `SEARCH_VIEW` || View and execute [wiki:TracSearch search] queries ||
 || `CONFIG_VIEW` || Enables additional pages on ''About Trac'' that show the current configuration or the list of installed plugins ||
-|| `EMAIL_VIEW` || Shows email addresses even if [TracIni `trac show_email_addresses` configuration optoin is `false`] ||
+|| `EMAIL_VIEW` || Shows email addresses even if [wiki:0.11/TracIni `trac show_email_addresses` configuration optoin is `false`] ||
 
 == Granting Privileges ==
 
@@ -150,7 +152,7 @@ Or one privilege for all users:
 == Default Permissions ==
 
 By default on a new Trac installation, the `anonymous` user will have ''view'' access to everything in Trac, but will not be able to create or modify anything.
-On the other hand, the `authenticated` users will have the permissions to ''create and modify tickets and wiki pages''
+On the other hand, the `authenticated` users will have the permissions to ''create and modify tickets and wiki pages''.
 
  '''anonymous'''::
  BROWSER_VIEW 

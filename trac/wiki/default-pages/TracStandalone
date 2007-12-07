@@ -145,8 +145,7 @@ syntax for the above. With this, the example link above can be written simply
 `htdocs:software-0.1.tar.gz`. 
 
 === Using apache rewrite rules ===
-If for some reason you choose to use tracd behind apache, you should define the base_url in the trac section of the trac.ini. If you don't, all POSTS will fail. Trac tries to redirect the request and transform the POST url to a GET url, during that transition, it tries to calculate the correct redirect url, not knowing about the redirect rule of apache.
-Note that with [milestone:0.11], setting the `base_url` will be strongly recommended anyway.
+In some situations when you choose to use tracd behind apache, you might experience issues with redirects, like being redirected to URLs with the wrong host or protocol. In this case (and only in this case), setting the `[trac] use_base_url_for_redirect` to `true` can help, as this will force Trac to use the value of `[trac] base_url` for doing the redirects.
 
 === Serving a different base path than / ===
 Tracd supports serving projects with different base urls then /<project>. The parameter name to change this is
@@ -156,7 +155,3 @@ tracd --base-path=/some/path
 
 ----
 See also: TracInstall, TracCgi, TracModPython, TracGuide
-
-----
-'''Translation:'''
- * [https://opensvn.csie.org/traccgi/trac_rus/wiki/StandAloneTracForTeapot Russian] (перевод на Русский)
