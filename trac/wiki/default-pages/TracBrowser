@@ -35,4 +35,4 @@ For the Subversion backend, some additional features are available:
  - support for `svn:externals` property (which can be [TracIni#svn:externals configured])
 
 ----
-See also: TracGuide, TracChangeset, FineGrainedPermissions
+See also: TracGuide, TracChangeset, TracFineGrainedPermissions

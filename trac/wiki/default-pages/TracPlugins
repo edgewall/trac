@@ -43,16 +43,16 @@ recognized.
 
 ==== With an .egg file ====
 
-Some plugins (such as [http://trac.edgewall.org/wiki/WebAdmin WebAdmin]) are downloadable as a `.egg` file which can be installed with the `easy_install` program:
+Some plugins (such as [http://trac.edgewall.org/wiki/SpamFilter SpamFilter]) are downloadable as a `.egg` file which can be installed with the `easy_install` program:
 {{{
-easy_install TracWebAdmin-0.1.1dev_r2765-py2.3.egg
+easy_install TracSpamFilter
 }}}
 
 If `easy_install` is not on your system see the Requirements section above to install it.  Windows users will need to add the `Scripts` directory of their Python installation (for example, `C:\Python23\Scripts`) to their `PATH` environment variable (see [http://peak.telecommunity.com/DevCenter/EasyInstall#windows-notes easy_install Windows notes] for more information).
 
 If Trac reports permission errors after installing a zipped egg and you would rather not bother providing a egg cache directory writable by the web server, you can get around it by simply unzipping the egg. Just pass `--always-unzip` to `easy_install`:
 {{{
-easy_install --always-unzip TracWebAdmin-0.1.1dev_r2765-py2.3.egg
+easy_install --always-unzip TracSpamFilter-0.2.1dev_r5943-py2.4.egg
 }}}
 You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
 
@@ -62,14 +62,14 @@ Trac also searches for globally installed plugins under `$PREFIX/share/trac/plug
 
 `easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
 {{{
-easy_install http://svn.edgewall.com/repos/trac/sandbox/webadmin
+easy_install http://svn.edgewall.com/repos/trac/sandbox/spam-filter
 }}}
 
 ==== Enabling the plugin ====
 Unlike plugins installed per-environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This is done in the `[components]` section of the configuration file, for example:
 {{{
 [components]
-webadmin.* = enabled
+tracspamfilter.* = enabled
 }}}
 
 The name of the option is the Python package of the plugin. This should be specified in the documentation of the plugin, but can also be easily discovered by looking at the source (look for a top-level directory that contains a file named `__init__.py`.)
