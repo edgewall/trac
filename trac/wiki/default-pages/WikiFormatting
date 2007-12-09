@@ -270,12 +270,17 @@ Display:
 
 Urls ending with `.png`, `.gif` or `.jpg` are no longer automatically interpreted as image links, and converted to `<img>` tags.
 
-You now have to use the ![[Image]] macro The simplest way to include an image is to upload the image and put the filename in a macro call like so ![[Image(dress.gif)]].
+You now have to use the ![[Image]] macro. The simplest way to include an image is to upload it as attachment to the current page, and put the filename in a macro call like `[[Image(picture.gif)]]`.
 
-for example: [[Image(dress.gif)]]
+In addition to the current page, it is possible to refer to other resources:
+ * `[[Image(wiki:WikiFormatting:picture.gif)]]` (referring to attachment on another page)
+ * `[[Image(ticket:1:picture.gif)]]` (file attached to a ticket)
+ * `[[Image(htdocs:picture.gif)]]` (referring to a file inside project htdocs)
+ * `[[Image(source:/trunk/trac/htdocs/trac_logo_mini.png)]]` (a file in repository)
 
+Example display: [[Image(htdocs:../common/trac_logo_mini.png)]]
 
-(or see TracWikiMacros for the syntax).
+See TracWikiMacros for further documentation on the `[[Image()]]` macro.
 
 
 == Macros ==
