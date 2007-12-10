@@ -36,8 +36,12 @@ def _reloader_thread(modification_callback):
             if not filename: # Couldn't map to physical file, so just ignore
                 continue
 
-            if filename.endswith('.pyc'):
+            if filename.endswith('.pyc') or filename.endswith('.pyo'):
                 filename = filename[:-1]
+
+            if not os.path.isfile(filename):
+                # Compiled file for non-existant source
+                continue
 
             mtime = os.stat(filename).st_mtime
             if filename not in mtimes:
