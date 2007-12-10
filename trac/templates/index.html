@@ -12,7 +12,7 @@
     <h1>Available Projects</h1>
     <ul>
       <li py:for="project in projects" py:choose="">
-        <a py:when="project.href" href="$project.href"
+        <a py:when="'href' in project" href="$project.href"
            title="$project.description">$project.name</a>
         <py:otherwise>
           <small>$project.name: <em>Error</em> <br /> ($project.description)</small>
