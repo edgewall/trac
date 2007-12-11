@@ -311,9 +311,12 @@ class EnumTestCase(unittest.TestCase):
 
     def test_priority_delete(self):
         prio = Priority(self.env, 'major')
+        self.assertEqual('3', prio.value)
         prio.delete()
         self.assertEqual(False, prio.exists)
         self.assertRaises(TracError, Priority, self.env, 'major')
+        prio = Priority(self.env, 'minor')
+        self.assertEqual('3', prio.value)
 
     def test_ticket_type_update(self):
         tkttype = Type(self.env, 'task')

@@ -371,6 +371,8 @@ class AbstractEnum(object):
         self.env.log.info('Deleting %s %s' % (self.type, self.name))
         cursor.execute("DELETE FROM enum WHERE type=%s AND value=%s",
                        (self.type, self._old_value))
+        cursor.execute("UPDATE enum set value=value-1 where "
+                       "type=%s and value>%s", (self.type, self._old_value))
 
         if handle_ta:
             db.commit()
