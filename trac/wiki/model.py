@@ -31,14 +31,13 @@ class WikiPage(object):
 
     realm = 'wiki'
 
-    def __init__(self, env, name_or_resource=None, version=None, db=None):
+    def __init__(self, env, name=None, version=None, db=None):
         self.env = env
-        if isinstance(name_or_resource, Resource):
-            self.resource = name_or_resource
+        if isinstance(name, Resource):
+            self.resource = name
             name = self.resource.id
         else:
-            self.resource = Resource('wiki', name_or_resource, version)
-            name = name_or_resource
+            self.resource = Resource('wiki', name, version)
         self.name = name
         if name:
             self._fetch(name, version, db)
