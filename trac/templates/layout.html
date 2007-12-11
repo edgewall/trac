@@ -23,7 +23,7 @@
     <script py:for="script in chrome.scripts"
             type="${script.type}" src="${script.href}"></script>
     ${Markup('&lt;!--[if lt IE 7]&gt;')}
-    <script type="text/javascript" src="${href.chrome('common/js/ie_pre7_hacks.js')}"></script>
+    <script type="text/javascript" src="${chrome.htdocs_location}js/ie_pre7_hacks.js"></script>
     ${Markup('&lt;![endif]--&gt;')}
     ${select("*[local-name() != 'title']")}
   </head></py:match>
@@ -90,7 +90,7 @@
 
     <div id="footer" xml:lang="en"><hr/>
       <a id="tracpowered" href="http://trac.edgewall.org/"><img
-        src="${href.chrome('common/trac_logo_mini.png')}" height="30"
+        src="${chrome.htdocs_location}trac_logo_mini.png" height="30"
         width="107" alt="Trac Powered"/></a>
       <p class="left">
         Powered by <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a><br />
