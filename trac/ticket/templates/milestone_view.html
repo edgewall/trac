@@ -56,10 +56,8 @@
           </legend>
           <table summary="Shows the milestone completion status grouped by ${grouped_by}">
             <tr py:for="group in groups">
-              <th scope="row">
-                <a href="${group.stats_href}">${group.name}</a>
-              </th>
-              <td style="white-space: nowrap">
+              <th scope="row"><a href="${group.stats_href}">${group.name}</a></th>
+              <td>
                 ${progress_bar(group.stats, group.interval_hrefs,
                                '%d / %d' % (group.stats.done_count, group.stats.count),
                                legend=False, style="width: %d%%" % (group.percent_of_max_total * 0.8))}
