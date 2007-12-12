@@ -49,7 +49,8 @@ class CodeReviewActionController(Component):
         # long as they are not the owner of the ticket (you can't review your
         # own work!).
         actions_we_handle = []
-        if req.authname != ticket['owner'] and 'TICKET_REVIEW' in req.perm:
+        if req.authname != ticket['owner'] and \
+                    'TICKET_REVIEW' in req.perm(ticket.resource):
             controller = ConfigurableTicketWorkflow(self.env)
             actions_we_handle = controller.get_actions_by_operation_for_req(
                 req, ticket, 'code_review')

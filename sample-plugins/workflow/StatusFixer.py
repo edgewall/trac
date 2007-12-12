@@ -32,7 +32,7 @@ class StatusFixerActionController(Component):
 
     def get_ticket_actions(self, req, ticket):
         actions = []
-        if 'TICKET_STATUSFIX' in req.perm:
+        if 'TICKET_STATUSFIX' in req.perm(ticket.resource):
             actions.append((0, 'force_status'))
         return actions
 

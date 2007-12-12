@@ -261,7 +261,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         this_action = self.actions[action]
 
         # Enforce permissions
-        if not self._has_perms_for_action(req, this_action):
+        if not self._has_perms_for_action(req, this_action, ticket.resource):
             # The user does not have any of the listed permissions, so we won't
             # do anything.
             return {}
@@ -300,11 +300,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
     def apply_action_side_effects(self, req, ticket, action):
         pass
 
-    def _has_perms_for_action(self, req, action):
+    def _has_perms_for_action(self, req, action, resource):
         required_perms = action['permissions']
         if required_perms:
             for permission in required_perms:
-                if permission in req.perm:
+                if permission in req.perm(resource):
                     break
             else:
                 # The user does not have any of the listed permissions
@@ -335,6 +335,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                    if operation in info['operations'] and
                       ('*' in info['oldstates'] or
                        ticket['status'] in info['oldstates']) and
-                      self._has_perms_for_action(req, info)]
+                      self._has_perms_for_action(req, info, ticket.resource)]
         return actions
 
