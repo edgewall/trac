@@ -291,7 +291,7 @@ class ImageMacro(WikiMacroBase):
     Examples:
     {{{
         [[Image(photo.jpg)]]                           # simplest
-        [[Image(photo.jpg, 120px)]]                    # with size
+        [[Image(photo.jpg, 120px)]]                    # with image width size
         [[Image(photo.jpg, right)]]                    # aligned by keyword
         [[Image(photo.jpg, nolink)]]                   # without link to source
         [[Image(photo.jpg, align=right)]]              # aligned by attribute
@@ -323,7 +323,7 @@ class ImageMacro(WikiMacroBase):
         filespec = args[0]
 
         # style information
-        size_re = re.compile('[0-9]+%?$')
+        size_re = re.compile('[0-9]+(%|px)?$')
         attr_re = re.compile('(align|border|width|height|alt'
                              '|title|longdesc|class|id|usemap)=(.+)')
         quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
