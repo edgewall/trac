@@ -212,7 +212,16 @@ def parse_date(text, tzinfo=None):
         raise TracError('"%s" is an invalid date, or the date format '
                         'is not known. Try "%s" instead.' % (text, hint),
                         'Invalid Date')
-    return datetime(*(tm[0:6] + (0, tzinfo)))
+    dt = datetime(*(tm[0:6] + (0, tzinfo)))
+    # Make sure we can convert it to a timestamp and back - fromtimestamp()
+    # may raise ValueError if larger than platform C localtime() or gmtime()
+    try:
+        to_datetime(to_timestamp(dt), tzinfo)
+    except ValueError:
+        raise TracError('The date "%s" is outside valid range. '
+                        'Try a date closer to present time.' % (text,),
+                        'Invalid Date')
+    return dt
 
 
 # -- timezone utilities

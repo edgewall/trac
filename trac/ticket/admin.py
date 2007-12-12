@@ -216,7 +216,7 @@ class VersionAdminPage(TicketAdminPage):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time =  parse_date(req.args.get('time'))
+                        ver.time = parse_date(req.args.get('time'))
                     else:
                         ver.time = None # unset
                     ver.description = req.args.get('description')
