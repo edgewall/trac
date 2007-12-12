@@ -33,12 +33,12 @@ class SimpleTicketCloneButton(Component):
         for f in data.get('fields', []):
             name = f['name']
             if name == 'summary':
-                fields['field_summary'] = ticket['summary'] + " (cloned)"
+                fields['summary'] = ticket['summary'] + " (cloned)"
             elif name == 'description':
-                fields['field_description'] = "Cloned from #%s: \n----\n%s" % \
+                fields['description'] = "Cloned from #%s: \n----\n%s" % \
                     (ticket.id, ticket['description'])
             else:
-                fields['field_'+name] = ticket[name]
+                fields[name] = ticket[name]
         return tag.form(
             tag.div(
                 tag.input(type="submit", name="clone", value="Clone",
@@ -46,5 +46,5 @@ class SimpleTicketCloneButton(Component):
                 [tag.input(type="hidden", name=n, value=v) for n, v in
                     fields.items()],
                 class_="inlinebuttons"),
-            method="post", action=req.href.newticket())
+            method="get", action=req.href.newticket())
 
