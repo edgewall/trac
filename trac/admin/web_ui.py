@@ -487,11 +487,24 @@ class PluginAdminPanel(Component):
                 if plugin_filename and os.access(dist.location,
                                                  os.F_OK + os.W_OK):
                     readonly = False
+                if plugin_filename:
+                    info = {'summary': description}
+                    for k in 'author author_email home_page license'.split():
+                        v = getattr(module, k, '')
+                        if v:
+                            info[k] = v
+                    version = (getattr(module, 'version', '') or
+                               getattr(module, 'revision', ''))
+                    # special handling for "$Rev$" strings
+                    version = version.replace('$', '').replace('Rev: ', 'r') 
+                else:
+                    info = get_pkginfo(dist)
+                    version = dist.version
                 plugins[dist.project_name] = {
-                    'name': dist.project_name, 'version': dist.version,
+                    'name': dist.project_name, 'version': version,
                     'path': dist.location, 'description': description,
                     'plugin_filename': plugin_filename, 'readonly': readonly,
-                    'info': get_pkginfo(dist), 'components': []
+                    'info': info, 'components': []
                 }
             plugins[dist.project_name]['components'].append({
                 'name': component.__name__, 'module': module.__name__,

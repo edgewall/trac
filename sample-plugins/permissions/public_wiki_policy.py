@@ -4,8 +4,13 @@ from trac.config import Option
 from trac.core import *
 from trac.perm import IPermissionPolicy
 
+revision = "$Rev$"
+url = "$URL$"
+
 class PublicWikiPolicy(Component):
-    """Sample permission policy plugin illustrating how to check 
+    """Allow public access to some wiki pages.
+
+    This is a sample permission policy plugin illustrating how to check 
     permission on realms.
 
     Don't forget to integrate that plugin in the appropriate place in the
@@ -23,9 +28,6 @@ class PublicWikiPolicy(Component):
     }}}
 
     """
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     implements(IPermissionPolicy)
 

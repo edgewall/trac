@@ -14,6 +14,8 @@
 #
 # Author: Alec Thomas <alec@swapoff.org>
 
+revision = "$Rev$"
+url = "$URL$"
 
 """Permission policy enforcement through an authz-like configuration file.
 
@@ -127,9 +129,6 @@ from configobj import ConfigObj
 
 
 class AuthzPolicy(Component):
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     implements(IPermissionPolicy)
 

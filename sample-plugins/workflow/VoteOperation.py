@@ -6,6 +6,9 @@ from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.ticket.model import Priority, Ticket
 #from trac.perm import IPermissionRequestor # (TODO)
 
+revision = "$Rev$"
+url = "$URL$"
+
 class VoteOperation(Component):
     """Provides a simplistic vote feature.
 
@@ -18,9 +21,6 @@ class VoteOperation(Component):
     workflow = ConfigurableTicketWorkflow,VoteOperation
     """
     
-    revision = "$Rev$"
-    url = "$URL$"
-
     implements(ITicketActionController)
 
     def get_ticket_actions(self, req, ticket):

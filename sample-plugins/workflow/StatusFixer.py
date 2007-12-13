@@ -4,6 +4,9 @@ from trac.core import Component, implements
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.perm import IPermissionRequestor
 
+revision = "$Rev$"
+url = "$URL$"
+
 class StatusFixerActionController(Component):
     """Provides the admin with a way to correct a ticket's status.
 
@@ -17,9 +20,6 @@ class StatusFixerActionController(Component):
 
     workflow = ConfigurableTicketWorkflow,StatusFixerActionController
     """
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     implements(ITicketActionController, IPermissionRequestor)
 

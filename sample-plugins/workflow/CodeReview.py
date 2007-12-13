@@ -7,6 +7,9 @@ from trac.perm import IPermissionRequestor
 from trac.config import Option, ListOption
 from trac.util.compat import set
 
+revision = "$Rev$"
+url = "$URL$"
+
 class CodeReviewActionController(Component):
     """Support for simple code reviews.
 
@@ -30,9 +33,6 @@ class CodeReviewActionController(Component):
 
     workflow = ConfigurableTicketWorkflow,CodeReviewActionController
     """
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     implements(ITicketActionController, IPermissionRequestor)
 

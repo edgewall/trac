@@ -1,5 +1,8 @@
 """Example macro."""
 
+revision = "$Rev$"
+url = "$URL$"
+
 #
 # The following shows the code for macro, old-style.
 #
@@ -44,9 +47,6 @@ class HelloWorldMacro(WikiMacroBase):
     will become the documentation of the macro, as shown by
     the !MacroList macro (usually used in the TracWikiMacros page).
     """
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     def expand_macro(self, formatter, name, args):
         """Return some output that will be displayed in the Wiki content.

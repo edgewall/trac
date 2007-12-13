@@ -1,5 +1,8 @@
 """Inserts the current time (in seconds) into the wiki page."""
 
+revision = "$Rev$"
+url = "$URL$"
+
 #
 # The following shows the code for macro, old-style.
 #
@@ -32,9 +35,6 @@ from trac.wiki.macros import WikiMacroBase
 
 class TimestampMacro(WikiMacroBase):
     """Inserts the current time (in seconds) into the wiki page."""
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     def expand_macro(self, formatter, name, args):
         t = datetime.now(utc)

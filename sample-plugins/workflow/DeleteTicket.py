@@ -4,6 +4,9 @@ from trac.core import implements,Component
 from trac.ticket.api import ITicketActionController
 from trac.perm import IPermissionRequestor
 
+revision = "$Rev$"
+url = "$URL$"
+
 class DeleteTicketActionController(Component):
     """Provides the admin with a way to delete a ticket.
 
@@ -15,9 +18,6 @@ class DeleteTicketActionController(Component):
 
     workflow = ConfigurableTicketWorkflow,DeleteTicketActionController
     """
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     implements(ITicketActionController, IPermissionRequestor)
 

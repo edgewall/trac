@@ -4,17 +4,17 @@ from trac.web.api import ITemplateStreamFilter
 from genshi.builder import tag
 from genshi.filters import Transformer
 
+revision = "$Rev$"
+url = "$URL$"
+
 class SimpleTicketCloneButton(Component):
-    """Add a 'Clone' button in the ticket box. 
+    """Add a 'Clone' button to the ticket box. 
     
     This button is located next to the 'Reply' to description button,
     and pressing it will send a request for creating a new ticket
     which will be based on the cloned one.
     """
        
-    revision = "$Rev$"
-    url = "$URL$"
-
     implements(ITemplateStreamFilter)
 
     # ITemplateStreamFilter methods

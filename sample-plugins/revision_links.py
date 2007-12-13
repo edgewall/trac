@@ -8,11 +8,11 @@ from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui import ChangesetModule
 from trac.wiki.api import IWikiSyntaxProvider
 
+revision = "$Rev$"
+url = "$URL$"
+
 class RevisionLinks(Component):
     """Adds a few more ways to refer to changesets."""
-
-    revision = "$Rev$"
-    url = "$URL$"
 
     implements(IWikiSyntaxProvider)
 
