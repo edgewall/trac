@@ -467,6 +467,7 @@ class PluginAdminPanel(Component):
     def _render_view(self, req):
         plugins = {}
         plugins_dir = os.path.realpath(os.path.join(self.env.path, 'plugins'))
+        plugins_dir = os.path.normcase(plugins_dir) # needs to match loader.py
 
         from trac.core import ComponentMeta
         for component in ComponentMeta._components:
