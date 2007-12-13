@@ -371,8 +371,14 @@ class AbstractEnum(object):
         self.env.log.info('Deleting %s %s' % (self.type, self.name))
         cursor.execute("DELETE FROM enum WHERE type=%s AND value=%s",
                        (self.type, self._old_value))
-        cursor.execute("UPDATE enum set value=value-1 where "
-                       "type=%s and value>%s", (self.type, self._old_value))
+        # Re-order any enums that have higher value than deleted (close gap)
+        for enum in list(self.select(self.env)):
+            try:
+                if int(enum.value) > int(self._old_value):
+                    enum.value = unicode(int(enum.value) - 1)
+                    enum.update(db=db)
+            except ValueError:
+                pass # Ignore cast error for this non-essential operation
 
         if handle_ta:
             db.commit()
