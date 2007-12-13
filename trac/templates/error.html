@@ -135,11 +135,11 @@ ${traceback}
                 the Trac project site, where you can describe the problem and
                 explain how to reproduce it.</p>
               </form>
-              <py:if test="frames">
+              <py:if test="traceback">
                 <h2>Python Traceback</h2>
                 <div id="traceback">
                   Most recent call last:
-                  <ul style="display: none">
+                  <ul py:if="frames" style="display: none">
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
                       <a href="#frame${idx}" id="frame${idx}">
                         <span class="file">File "${frame.filename}",
@@ -171,7 +171,7 @@ ${traceback}
                   </ul>
                   <pre><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}<py:if test="frame.line">
   ${frame.line.lstrip()}
-</py:if></py:for></pre>
+</py:if></py:for><py:if test="not frames">${traceback}</py:if></pre>
                   <p style="display: none"><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
                 </div>
               </py:if>

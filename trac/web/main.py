@@ -431,7 +431,7 @@ def _dispatch_request(req, env, env_error):
                 has_admin = 'TRAC_ADMIN' in req.perm
             except Exception, e:
                 pass
-            if has_admin:
+            if has_admin and not isinstance(e, MemoryError):
                 tb = exc_info[2]
                 while tb:
                     tb_hide = tb.tb_frame.f_locals.get('__traceback_hide__')
