@@ -523,8 +523,10 @@ class SubversionRepository(Repository):
     def get_oldest_rev(self):
         if self.oldest is None:
             self.oldest = 1
-            if self.scope != '/':
-                self.oldest = self.next_rev(0, find_initial_rev=True)
+            # trying to figure out the oldest rev for scoped repository
+            # is too expensive and uncovers a big memory leak (#5213)
+            # if self.scope != '/':
+            #    self.oldest = self.next_rev(0, find_initial_rev=True)
         return self.oldest
 
     def get_youngest_rev(self):

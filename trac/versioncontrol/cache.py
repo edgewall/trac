@@ -132,6 +132,12 @@ class CachedRepository(Repository):
                 next_youngest = None
                 try:
                     next_youngest = self.repos.oldest_rev
+                    # Ugly hack needed because doing that everytime in 
+                    # oldest_rev suffers from horrendeous performance (#5213)
+                    if hasattr(self.repos, 'scope'):
+                        if self.repos.scope != '/':
+                            next_youngest = self.repos.next_rev(next_youngest, 
+                                    find_initial_rev=True)
                     next_youngest = self.repos.normalize_rev(next_youngest)
                 except TracError:
                     return # can't normalize oldest_rev: repository was empty
