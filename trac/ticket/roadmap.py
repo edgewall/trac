@@ -43,7 +43,7 @@ from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html
 
 class ITicketGroupStatsProvider(Interface):
-    def get_ticket_group_stats(self, ticket_ids):
+    def get_ticket_group_stats(ticket_ids):
         """ Gather statistics on a group of tickets.
 
         This method returns a valid TicketGroupStats object.

@@ -76,7 +76,7 @@ class IPermissionStore(Interface):
         of the permission, and the value is either `True` for granted
         permissions or `False` for explicitly denied permissions."""
 
-    def get_users_with_permissions(self, permissions):
+    def get_users_with_permissions(permissions):
         """Retrieve a list of users that have any of the specified permissions.
 
         Users are returned as a list of usernames.
