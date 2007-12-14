@@ -1274,7 +1274,7 @@ class TicketModule(Component):
                     else:
                         this_num = old
                     current['cnum'] = int(this_num)
-            else:
+            elif old or new:
                 current['fields'][field] = {'old': old, 'new': new}
         if current:
             yield current
