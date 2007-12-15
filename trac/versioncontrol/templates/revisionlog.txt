@@ -12,8 +12,7 @@ ${http_date(change.date)} ${format_author(change.author)} [$item.rev]
                         copy='copied', move='moved')[extra.actions[idx]]})
     #end
 
-${verbose and change.message or shorten_line(change.message)}
-## TODO: add some wrapping to the above message
+${verbose and extra.message or shorten_line(extra.message)}
 
 
   #end
