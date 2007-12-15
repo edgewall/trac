@@ -11,19 +11,16 @@ Macro calls are enclosed in two ''square brackets''. Like Python functions, macr
 
 Trac macros can also be written as TracPlugins. This gives them some capabilities that macros do not have, such as being able to directly access the HTTP request.
 
-=== Examples ===
+=== Example ===
+
+A list of 3 most recently changed wiki pages starting with 'Trac':
 
 {{{
- [[Timestamp]]
+ [[RecentChanges(Trac,3)]]
 }}}
-Display:
- [[Timestamp]]
 
-{{{
- [[HelloWorld(Testing)]]
-}}}
 Display:
- [[HelloWorld(Testing)]]
+ [[RecentChanges(Trac,3)]]
 
 == Available Macros ==
 
@@ -43,59 +40,65 @@ For more information about developing macros, see the [wiki:TracDev development 
 
 == Implementation ==
 
-Here are 2 simple examples on how to create a Macro with [wiki:0.11 Trac 0.11] have a look at source:trunk/sample-plugins/Timestamp.py for an example that shows the difference between old style and new style macros and also source:trunk/wiki-macros/README which Provides a little more insight.
+Here are 2 simple examples on how to create a Macro with [wiki:0.11 Trac 0.11] have a look at source:trunk/sample-plugins/Timestamp.py for an example that shows the difference between old style and new style macros and also source:trunk/wiki-macros/README which provides a little more insight about the transition.
 
 === Macro without arguments ===
 It should be saved as `TimeStamp.py` as Trac will use the module name as the Macro name
 {{{
-from trac.core import *
-from trac.wiki.macros import WikiMacroBase
-from StringIO import StringIO
-import time
+#!python
+from datetime import datetime
+# Note: since Trac 0.11, datetime objects are used internally
 
-__all__ = ['TimestampMacro']
+from genshi.builder import tag
+
+from trac.util.datefmt import format_datetime, utc
+from trac.wiki.macros import WikiMacroBase
 
 class TimestampMacro(WikiMacroBase):
-        """
-        Macro for inserting timestamp
+    """Inserts the current time (in seconds) into the wiki page."""
 
-        {{{
-        [[Timestamp]]
-        }}}
-        """
-        def expand_macro(self, formatter, name, args):
-                buf = StringIO()
-                t = time.localtime()
-                buf = "<b>%s</b>" % time.strftime('%c', t)
-                return buf
+    revision = "$Rev$"
+    url = "$URL$"
+
+    def expand_macro(self, formatter, name, args):
+        t = datetime.now(utc)
+        return tag.b(format_datetime(t, '%c'))
 }}}
 
 === Macro with arguments ===
 It should be saved as `HelloWorld.py` (in the plugins/ directory) as Trac will use the module name as the Macro name
 {{{
-"""Example macro."""
-from trac.core import *
+#!python
 from trac.wiki.macros import WikiMacroBase
-from trac.util import escape
-
-__all__ = ['HelloWorldMacro']
 
 class HelloWorldMacro(WikiMacroBase):
+    """Simple HelloWorld macro.
+
+    Note that the name of the class is meaningful:
+     - it must end with "Macro"
+     - what comes before "Macro" ends up being the macro name
+
+    The documentation of the class (i.e. what you're reading)
+    will become the documentation of the macro, as shown by
+    the !MacroList macro (usually used in the TracWikiMacros page).
+    """
+
+    revision = "$Rev$"
+    url = "$URL$"
+
+    def expand_macro(self, formatter, name, args):
+        """Return some output that will be displayed in the Wiki content.
+
+        `name` is the actual name of the macro (no surprise, here it'll be
+        `'HelloWorld'`),
+        `args` is the text enclosed in parenthesis at the call of the macro.
+          Note that if there are ''no'' parenthesis (like in, e.g.
+          [[HelloWorld]]), then `args` is `None`.
         """
-        Demo macro for a greeting with an argument.
-
-        {{{
-        [[HelloWorld(args)]]
-        }}}
-
-        """
-        def expand_macro(self, formatter, name, args):
-                # args will be `None` if the macro is called without parenthesis.
-                txt = args or 'No arguments'
-
-                # then, as `txt` comes from the user, it's important to guard against
-                # the possibility to inject malicious HTML/Javascript, by using `escape()`:
-                return 'Hello World, args = ' + escape(txt)
+        return 'Hello World, args = ' + unicode(args)
+    
+    # Note that there's no need to HTML escape the returned data,
+    # as the template engine (Genshi) will do it for us.
 }}}
 
 
@@ -105,6 +108,7 @@ class HelloWorldMacro(WikiMacroBase):
 If your macro creates wiki markup instead of HTML, you can convert it to HTML like this:
 
 {{{
+#!python
   text = "whatever wiki markup you want, even containing other macros"
   # Convert Wiki markup to HTML, new style
   out = StringIO()

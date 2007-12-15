@@ -22,7 +22,27 @@ Results in:
 <h1 style="text-align: right; color: blue">HTML Test</h1>
 }}}
 
-Note that Trac sanitizes your HTML code before displaying it. That means that if you try to use potentially dangerous constructs such as Javascript event handlers, those will be removed from the output.
+Note that Trac sanitizes your HTML code before displaying it. That means that if you try to use potentially dangerous constructs such as Javascript event handlers, those will be removed from the output. 
+
+Since 0.11, the filtering is done by Genshi, and as such, the produced out will be a well-formed fragment of HTML. In other words, this mean that you can no longer use two HTML blocks, one for opening a <div>, the second for closing it, in order to wrap arbitrary wiki text.
+To achieve this, you need now to use the ''div'' Wiki processor:
+
+{{{
+{{{
+#!div class=important style="border: 2pt solid; text-align: center"
+This is the ''only'' way to go in Trac 0.11
+}}}
+}}}
+
+Results in:
+{{{
+{{{
+-- NOTE: activate once t.e.o. is running 0.11 --
+#!div class=important style="border: 2pt solid; text-align: center"
+This is the ''only'' way to go in Trac 0.11
+}}}
+}}}
+
 
 == More Information ==
 

@@ -73,7 +73,7 @@ Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 || `TIMELINE_VIEW` || View the [wiki:TracTimeline timeline] page ||
 || `SEARCH_VIEW` || View and execute [wiki:TracSearch search] queries ||
 || `CONFIG_VIEW` || Enables additional pages on ''About Trac'' that show the current configuration or the list of installed plugins ||
-|| `EMAIL_VIEW` || Shows email addresses even if [wiki:0.11/TracIni `trac show_email_addresses` configuration optoin is `false`] ||
+|| `EMAIL_VIEW` || Shows email addresses even if [wiki:0.11/TracIni `trac show_email_addresses` configuration option is `false`] ||
 
 == Granting Privileges ==
 

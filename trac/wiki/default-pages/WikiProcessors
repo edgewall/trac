@@ -80,11 +80,10 @@ int main(int argc, char *argv[])
 == Available Processors ==
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
+ * '''div''' -- Wrap an arbitrary Wiki content in a <div> element (''since 0.11''). See WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
- * '''textile''' -- Supported if  [http://dealmeida.net/projects/textile/ Textile] is installed. See [http://hobix.com/textile/ a Textile reference].
+ * '''textile''' -- Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference].
  * '''comment''' -- Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page).
-
-Textile link above is rotten. [http://www.textism.com/tools/textile/ this one] works, allows to test example. To install, download from [http://cheeseshop.python.org/pypi/textile] and run `python setup.py install`. 
 
 === Code Highlighting Support ===
 Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for the following languages:
@@ -119,15 +118,6 @@ For more processor macros developed and/or contributed by users, visit:
 == Advanced Topics: Developing Processor Macros ==
 Developing processors is no different from [TracWikiMacros wiki macros]. In fact they work the same way, only the usage syntax differs.
 
-'''Example:''' (''Restructured Text Processor''):
-{{{
-#!python
-from docutils.core import publish_string
-
-def execute(hdf, text, env):
-    html = publish_string(text, writer_name = 'html')
-    return html[html.find('<body>')+6:html.find('</body>')].strip()
-}}}
 
 ----
 See also: TracWikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide

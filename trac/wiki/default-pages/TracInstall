@@ -3,7 +3,7 @@
 
   '''NOTE: this page is now for 0.11, which will be released soon. For installing previous Trac versions, please refer to wiki:0.10/TracInstall.'''
 
-Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.com Genshi] templating system.
+Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you can find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
@@ -84,7 +84,9 @@ Please refer to the documentation of these packages to find out how they are bes
 
 == Installing Trac ==
 
-Because of setuptools you can do, with the release tag, as well as with trunk:
+One way to install Trac is using `setuptools`.
+With setuptools you can install Trac from the subversion repository; for example,
+to install release version 0.11 do:
 {{{
 easy_install http://svn.edgewall.com/repos/trac/tags/trac-0.11
 }}}
@@ -98,6 +100,7 @@ $ python ./setup.py install
 
 This will byte-compile the python source code and install it in the `site-packages` directory
 of your Python installation. The directories `cgi-bin`, `templates`, `htdocs`, `wiki-default` and `wiki-macros` are all copied to `$prefix/share/trac/`. `conf` and `plugins` stub directories are also created under `$prefix/share/trac/`.
+On Linux, the default value of `$prefix` is `/usr`, so the installation will be to `/usr/share/trac`, whereas the BSDs use `/usr/local`. Other Unix or Unix-like systems might use a similar prefix or something like `/opt`, please see your system's documentation for details.
 
 The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
 
@@ -128,7 +131,9 @@ $ trac-admin /path/to/myproject initenv
 
 Also note that the values you specify here can be changed later by directly editing the [wiki:TracIni] configuration file.
 
-''Note: The user account under which the web server runs will require write permissions to the environment directory and all the files inside.''
+''Note: The user account under which the web server runs will require write permissions to the environment directory and all the files inside.  On Linux, with the web server running as user apache and group apache, enter:''
+
+  chown -R apache.apache /path/to/myproject
 
 
 == Running the Standalone Server ==
