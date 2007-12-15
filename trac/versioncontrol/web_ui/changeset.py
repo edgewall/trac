@@ -576,7 +576,7 @@ class ChangesetModule(Component):
                         'props': props,
                         'diffs': diffs}
                 files.append(new_node and new_node.path or \
-                             old_node and old_node.path)
+                             old_node and old_node.path or '')
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
