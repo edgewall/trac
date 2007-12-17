@@ -244,7 +244,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                              resolutions[0])
             else:
                 id = action + '_resolve_resolution'
-                selected_option = req.args.get(id, 'fixed')
+                selected_option = req.args.get(id,
+                        self.config.get('ticket', 'default_resolution'))
                 control.append(tag(['as ', tag.select(
                     [tag.option(x, selected=(x == selected_option or None))
                      for x in resolutions],

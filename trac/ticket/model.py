@@ -62,7 +62,10 @@ class Ticket(object):
     def _init_defaults(self, db=None):
         for field in self.fields:
             default = None
-            if not field.get('custom'):
+            if field['name'] in ['resolution', 'status']:
+                # Ignore for new - only change through workflow
+                pass
+            elif not field.get('custom'):
                 default = self.env.config.get('ticket',
                                               'default_' + field['name'])
             else:

@@ -76,6 +76,10 @@ class TicketModule(Component):
     default_component = Option('ticket', 'default_component', '',
         """Default component for newly created tickets""")
 
+    default_resolution = Option('ticket', 'default_resolution', 'fixed',
+        """Default resolution for resolving (closing) tickets
+        (''since 0.11'').""")
+
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline
         (''since 0.9'').""")
