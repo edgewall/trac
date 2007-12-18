@@ -39,14 +39,16 @@ zone implementation.
 Wiki
 ----
  * Usability improvements:
-   - possibility to review changes before saving a new version of a
-     page
+ 
+   - possibility to review changes before saving a new version of a page
    - basic handling of conflicts in case of concurrent edits
    - Restored direct link to History and revert to an Index link, from
      where it's easy to switch between the Index by Title and Index by
      Date
    - The [[PageOutline]] macro now works as expected in preview mode
+
  * Wiki syntax improvements:
+ 
    - most TracLinks now accept trailing arguments (?...) and targets
      (#...)
    - more intuitive relative links ([.. parent page], [./OtherPage
@@ -100,6 +102,7 @@ Roadmap and Milestone
 Reports and Custom Queries
 
  * Improved custom queries:
+ 
    - columns can now be selected
    - possibility to save custom queries as reports
    - possibility to configure the default custom query, both for
@@ -180,6 +183,7 @@ Lots of other minor improvements
    project wide or on a per-user basis
  * possibility to configure the navigation bars (see TracNavigation)
  * Timeline improvements:
+ 
    - paging support
    - remember user settings
    - more configuration settings for tweaking the display of the
