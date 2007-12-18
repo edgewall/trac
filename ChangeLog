@@ -1,4 +1,24 @@
-Trac 0.10.4 (April ?, 2007)
+Trac 0.11b1 'Genshi' (December 18, 2007)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11b1
+
+ Trac 0.11b1 contains a great number of new features, improvements and
+ bug fixes. The following list contains only a few highlights:
+
+ * New template engine for generating content (Genshi)
+ * New configurable workflow in the ticket subsystem
+ * Finer-grained control of permissions
+ * Support for Pygments as the default syntax highlighter
+ * Improved repository browser ("blame" support, dynamic in-place
+   expansion of folders)
+ * Improved user preferences subsystem, among which the possibility for
+ * any user to select their time zone and disable access keys
+ * The WebAdmin plugin is now an integral part of Trac
+
+ A more complete list of new features can be found in the RELEASE file.
+ The complete list of closed tickets can be found here:
+   http://trac.edgewall.org/query?status=closed&milestone=0.10
+
+Trac 0.10.4 (April 20, 2007)
 http://svn.edgewall.org/repos/trac/tags/trac-0.10.4
 
  Trac 0.10.4 is a bug fix release. The following list contains only a 
