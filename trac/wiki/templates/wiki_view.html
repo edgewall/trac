@@ -17,24 +17,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <h2>Wiki Navigation</h2>
-      <py:choose>
-        <py:when test="version">
-          ${prevnext_nav('Version', 'View Latest Version')}
-        </py:when>
-        <ul py:otherwise="">
-          <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
-          <li><a href="${href.wiki('TitleIndex')}">Index</a></li>
-          <li><a href="${href.wiki(page.name, action='history')}">History</a></li>
-          <li class="last">
-            <a href="${href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
-          </li>
-        </ul>
-        </py:choose>
-      <hr />
-    </div>
-
     <div id="content" class="wiki">
 
       <py:if test="version">

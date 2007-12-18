@@ -11,20 +11,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <ul py:with="prev = chrome.links.get('prev'); next = chrome.links.get('next')">
-        <li class="first${not (prev or next) and ' last' or ''}">
-          <a href="${href.browser(path)}">View Latest Revision</a>
-        </li>
-        <li py:if="prev" class="${not next and 'last' or None}">
-          &larr; <a title="${prev[0].title}" href="${prev[0].href}">Newer Revisions</a>
-        </li>
-        <li py:if="next" class="last">
-          <a  title="${next[0].title}" href="${next[0].href}">Older Revisions</a> &rarr;
-        </li>
-      </ul>
-    </div>
-
     <div id="content" class="log">
       <h1>${browser_path_links(path_links)}</h1>
 

@@ -12,7 +12,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-"""Varios utility functions and classes that support common presentation
+"""Various utility functions and classes that support common presentation
 tasks such as grouping or pagination.
 """
 

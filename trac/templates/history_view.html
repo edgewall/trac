@@ -11,13 +11,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav" py:with="realm = resource.realm.capitalize()">
-      <h2>$realm Navigation</h2>
-      <ul>
-        <li class="last"><a href="${url_of(resource)}">Back to ${name_of(resource)}</a></li>
-      </ul>
-    </div>
-
     <div id="content" class="ticket">
       <h1>Change History for <a href="${url_of(resource)}">${name_of(resource)}</a></h1>
 

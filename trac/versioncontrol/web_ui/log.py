@@ -19,6 +19,9 @@
 import re
 import urllib
 
+from genshi.core import Markup
+from genshi.builder import tag
+
 from trac.config import IntOption
 from trac.core import *
 from trac.mimeview import Context
@@ -32,8 +35,8 @@ from trac.versioncontrol.api import Changeset, NoSuchChangeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
-                            Chrome
+from trac.web.chrome import add_ctxtnav, add_link, add_stylesheet, \
+                            INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser 
 
 class LogModule(Component):
@@ -240,6 +243,14 @@ class LogModule(Component):
         changelog_href = make_log_href(path, format='changelog',
                                        stop_rev=stop_rev)
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
+
+        add_ctxtnav(req, _('View Latest Revision'), 
+                    href=req.href.browser(path))
+        if 'next' in req.chrome['links']:
+            next = req.chrome['links']['next'][0]
+            add_ctxtnav(req, tag.span(tag.a(_('Older Revisions'), 
+                                            href=next['href']),
+                                      Markup(' &rarr;')))
 
         return 'revisionlog.html', data, None
 

@@ -38,7 +38,8 @@ from trac.ticket import Milestone, Ticket, TicketSystem
 from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, add_warning, \
+                            INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html
 
@@ -603,7 +604,7 @@ class MilestoneModule(Component):
         # let the user fix them by going back to edit mode showing the warnings
         warnings = []
         def warn(msg):
-            req.warning(msg)
+            add_warning(req, msg)
             warnings.append(msg)
 
         # -- check the name

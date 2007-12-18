@@ -37,7 +37,8 @@ from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
 from trac.util.translation import _
 from trac.web import HTTPBadRequest, IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor
+from trac.web.chrome import add_link, add_stylesheet, add_ctxtnav, \
+                            INavigationContributor
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_oneliner
@@ -392,6 +393,9 @@ class AttachmentModule(Component):
             data = self._render_view(req, attachment)
 
         add_stylesheet(req, 'common/css/code.css')
+        add_ctxtnav(req, _('Back to %(parent)s', 
+                           parent=get_resource_name(self.env, parent)), 
+                    req.chrome['links']['up'][0]['href'])
         return 'attachment.html', data, None
 
     # IWikiSyntaxProvider methods

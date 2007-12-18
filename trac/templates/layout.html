@@ -53,19 +53,27 @@
       ${navigation('metanav')}
     </div>
     ${navigation('mainnav')}
-    <div id="warning" py:if="req and req.warnings" class="system-message">
-      <py:choose test="len(req.warnings)">
-        <py:when test="1">
-          <strong>Warning:</strong> ${req.warnings[0]}
-        </py:when>
-        <py:otherwise>
-          <strong>Warnings:</strong>
-          <ul><li py:for="w in req.warnings">$w</li></ul>
-        </py:otherwise>
-      </py:choose>
-    </div>
 
     <div id="main">
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+          <ul>
+            <li py:for="i, elm in enumerate(chrome.ctxtnav)" class="${i == 0 and 'first ' or None}${i+1 == len(chrome.ctxtnav) and 'last' or None}">$elm</li>
+          </ul>
+        <hr />
+      </div>
+      <div id="warning" py:if="chrome.warnings" class="system-message">
+        <py:choose test="len(chrome.warnings)">
+          <py:when test="1">
+            <strong>Warning:</strong> ${chrome.warnings[0]}
+          </py:when>
+          <py:otherwise>
+            <strong>Warnings:</strong>
+            <ul><li py:for="w in chrome.warnings">$w</li></ul>
+          </py:otherwise>
+        </py:choose>
+      </div>
+
       ${select('*|text()')}
 
       <script type="text/javascript" py:if="chrome.late_links">

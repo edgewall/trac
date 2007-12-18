@@ -20,6 +20,7 @@ from datetime import datetime
 import pkg_resources
 import re
 
+from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
@@ -35,6 +36,7 @@ from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
+                            add_ctxtnav, prevnext_nav, \
                             INavigationContributor, ITemplateProvider
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
@@ -282,6 +284,7 @@ class WikiModule(Component):
                     break
             data.update({'new_version': version, 'old_version': old_version,
                          'num_versions': num_versions})
+        self._wiki_ctxtnav(req, page)
         return 'wiki_delete.html', data, None
 
     def _render_diff(self, req, page):
@@ -359,6 +362,7 @@ class WikiModule(Component):
             'changes': changes,
             'diff': diff_data,
         })
+        prevnext_nav(req, _('Change'), _('Wiki History'))
         return 'wiki_diff.html', data, None
 
     def _render_editor(self, req, page, action='edit', has_collision=False):
@@ -412,7 +416,8 @@ class WikiModule(Component):
             data.update({'diff': diff_data, 'changes': changes,
                          'action': 'preview', 'merge': action == 'merge',
                          'longcol': 'Version', 'shortcol': 'v'})
-
+        
+        self._wiki_ctxtnav(req, page)
         return 'wiki_edit.html', data, None
 
     def _render_history(self, req, page):
@@ -436,6 +441,7 @@ class WikiModule(Component):
                 'ipnr': ipnr
             })
         data.update({'history': history, 'resource': page.resource})
+        add_ctxtnav(req, 'Back to '+page.name, req.href.wiki(page.name))
         return 'history_view.html', data, None
 
     def _render_view(self, req, page):
@@ -499,6 +505,12 @@ class WikiModule(Component):
                      req.href.wiki(page.name, version=next_version),
                      _('Version %(num)s', num=next_version))
 
+        # Add ctxtnav entries
+        if version:
+            prevnext_nav(req, _('Version'), _('View Latest Version'))
+        else:
+            self._wiki_ctxtnav(req, page)
+
         context = Context.from_request(req, page.resource)
         data.update({
             'context': context,
@@ -509,6 +521,16 @@ class WikiModule(Component):
             'version': version
         })
         return 'wiki_view.html', data, None
+    
+    def _wiki_ctxtnav(self, req, page):
+        """Add the normal wiki ctxtnav entries."""
+        add_ctxtnav(req, _('Start Page'), req.href.wiki('WikiStart'))
+        add_ctxtnav(req, _('Index'), req.href.wiki('TitleIndex'))
+        add_ctxtnav(req, _('History'), req.href.wiki(page.name, 
+                                                     action='history'))
+        add_ctxtnav(req, _('Last Change'), req.href.wiki(page.name,
+                                                    action='diff',
+                                                    version=page.version))
 
     # ITimelineEventProvider methods
 

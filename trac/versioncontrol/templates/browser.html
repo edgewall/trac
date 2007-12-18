@@ -35,21 +35,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <ul>
-        <li class="first"><a href="${href.changeset(rev, created_path)}">Last Change</a></li>
-        <li py:if="file" py:choose="">
-          <a py:when="file.annotate" href="${href.browser(created_path, rev=rev)}"
-             title="View file without annotations">
-            Normal</a>
-          <a py:otherwise="" href="${href.browser(created_path, rev=rev, annotate=1)}"
-             title="Annotate each line with the last changed revision (this can be time consuming...)">
-            Annotate</a>
-        </li>
-        <li class="last"><a href="${href.log(path, rev=stickyrev)}">Revision Log</a></li>
-      </ul>
-    </div>
-
     <div id="content" class="browser">
 
       <h1>${browser_path_links(path_links, stickyrev)}</h1>

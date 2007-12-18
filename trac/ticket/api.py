@@ -82,7 +82,8 @@ class ITicketActionController(Interface):
         be called in preview mode (`req.args['preview']` will be set, then).
         See `apply_action_side_effects` for that. If the latter indeed triggers
         some side-effects, it is advised to emit a warning
-        (`req.warning(reason)`) when this method is called in preview mode.
+        (`trac.web.chrome.add_warning(req, reason)`) when this method is called
+        in preview mode.
 
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.

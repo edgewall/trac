@@ -33,8 +33,8 @@ from trac.util.datefmt import format_datetime, format_time
 from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
-                            Chrome
+from trac.web.chrome import add_ctxtnav, add_link, add_stylesheet, \
+                            INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -98,13 +98,17 @@ class ReportModule(Component):
                return template, data, content_type
 
         if id != -1 or action == 'new':
+            add_ctxtnav(req, _('Available Reports'), href=req.href.report())
             add_link(req, 'up', req.href.report(), _('Available Reports'))
+        else:
+            add_ctxtnav(req, _('Available Reports'))
 
         # Kludge: only show link to custom query if the query module is actually
         # enabled
         from trac.ticket.query import QueryModule
         if 'TICKET_VIEW' in req.perm and \
                 self.env.is_component_enabled(QueryModule):
+            add_ctxtnav(req, _('Custom Query'), href=req.href.query())
             data['query_href'] = req.href.query()
         else:
             data['query_href'] = None

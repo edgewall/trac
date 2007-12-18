@@ -10,19 +10,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <h2>Wiki Navigation</h2>
-      <ul>
-        <li><a href="${href.wiki('WikiStart')}">Start Page</a></li>
-        <li><a href="${href.wiki('TitleIndex')}">Index</a></li>
-        <li><a href="${href.wiki(page.name, action='history')}">History</a></li>
-        <li class="last">
-          <a href="${req.href.wiki(page.name, action='diff', version=page.version)}">Last Change</a>
-        </li>
-      </ul>
-      <hr />
-    </div>
-
     <div id="content" class="wiki"
       py:with="
       current_href = href.wiki(page.name);

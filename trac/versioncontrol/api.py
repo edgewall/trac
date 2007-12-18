@@ -73,12 +73,12 @@ class RepositoryManager(Component):
     # IRequestFilter methods
 
     def pre_process_request(self, req, handler):
-        from trac.web.chrome import Chrome        
+        from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
             try:
                 self.get_repository(req.authname).sync()
             except TracError, e:
-                req.warning(_("Can't synchronize with the repository "
+                add_warning(req, _("Can't synchronize with the repository "
                               "(%(error)s)", error=e.message))
         return handler
 

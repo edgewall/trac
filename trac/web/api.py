@@ -161,8 +161,6 @@ class Request(object):
         self.href = Href(self.base_path)
         self.abs_href = Href(self.base_url)
 
-        self.warnings = []
-
     def __getattr__(self, name):
         """Performs lazy attribute lookup by delegating to the functions in the
         callbacks dictionary."""
@@ -425,9 +423,6 @@ class Request(object):
         if isinstance(data, unicode):
             data = data.encode(self._outcharset or 'utf-8')
         self._write(data)
-
-    def warning(self, msg):
-        self.warnings.append(msg)
 
     # Internal methods
 

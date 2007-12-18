@@ -36,7 +36,7 @@ from trac.util.datefmt import format_date, format_datetime, parse_date, \
 from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web import IRequestHandler, IRequestFilter
-from trac.web.chrome import add_link, add_stylesheet, Chrome, \
+from trac.web.chrome import add_link, add_stylesheet, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
                             
 from trac.wiki.api import IWikiSyntaxProvider
@@ -200,6 +200,7 @@ class TimelineModule(Component):
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     daysback=daysback),
                      _('Next period'))
+        prevnext_nav(req, 'Period')
         
         return 'timeline.html', data, None
 

@@ -41,11 +41,11 @@ from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date, utc
+from trac.util.translation import _
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
-
 
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the chrome info that will be inserted as <link> element in
@@ -105,6 +105,68 @@ def add_script(req, filename, mimetype='text/javascript'):
 def add_javascript(req, filename):
     """Deprecated: use `add_script()` instead."""
     add_script(req, filename, mimetype='text/javascript')
+
+def add_warning(req, msg, *args):
+    """Add a non-fatal warning to the request object.
+    When rendering pages, any warnings will be rendered to the user."""
+    req.chrome['warnings'].append(msg % args)
+
+def add_ctxtnav(req, elm_or_label, href=None, title=None):
+    """Add an entry to the current page's ctxtnav bar.
+    """
+    if href:
+        elm = tag.a(elm_or_label, href=href, title=title)
+    else:
+        elm = elm_or_label
+    req.chrome.setdefault('ctxtnav', []).append(elm)
+
+# ???: Does this belong in trac.util somewhere? <NPK>
+def prevnext_nav(req, label, uplabel=None):
+    """Add Previous/Up/Next navigation links
+       
+       `req` a Request object
+       `label` the label to use after the Previous/Next words
+       `uplabel` the label to use for the Up link
+    """
+    links = req.chrome['links']
+    
+    if 'prev' not in links and \
+       'up' not in links and \
+       'next' not in links:
+        # Short circuit
+        return
+    
+    if 'prev' in links:
+        link = links['prev'][0]
+        add_ctxtnav(req, 
+            tag.span(Markup('&larr; '),
+                     tag.a(_('Previous %(label)s', label=label),
+                            href=link['href'],
+                            title=link['title'],
+                            class_='prev'
+                           )))
+    else:
+        add_ctxtnav(req, 
+            tag.span(_('Previous %(label)s', label=label), 
+                     class_='missing'))
+
+    if uplabel and 'up' in links:
+        link = links['up'][0]
+        add_ctxtnav(req, tag.a(uplabel, 
+                               href=link['href'], 
+                               title=link['title']))
+
+    if 'next' in links:
+        link = links['next'][0]
+        add_ctxtnav(req, 
+            tag.span(tag.a(_('Next %(label)s', label=label),
+                           href=link['href'],
+                           title=link['title'],
+                           class_='next'),
+                     Markup(' &rarr;')))
+    else:
+        add_ctxtnav(req, 
+            tag.span(_('Next %(label)s', label=label), class_='missing'))
 
 
 class INavigationContributor(Interface):
@@ -337,7 +399,7 @@ class Chrome(Component):
         """
         self.log.debug('Prepare chrome data for request')
 
-        chrome = {'links': {}, 'scripts': []}
+        chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': []}
 
         # This is ugly... we can't pass the real Request object to the
         # add_xxx methods, because it doesn't yet have the chrome attribute

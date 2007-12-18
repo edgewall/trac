@@ -45,7 +45,8 @@ from trac.util.presentation import separated
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
+from trac.web.chrome import add_link, add_script, add_stylesheet, \
+                            add_warning, add_ctxtnav, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
 from trac.wiki.formatter import format_to
 
@@ -444,8 +445,9 @@ class TicketModule(Component):
             if problems:
                 valid = False
                 for problem in problems:
-                    req.warning(problem)
-                    req.warning(tag(tag.p('Please review your configuration, '
+                    add_warning(req, problem)
+                    add_warning(req,
+                                tag(tag.p('Please review your configuration, '
                                           'probably starting with'),
                                     tag.pre('[trac]\nworkflow = ...\n'),
                                     tag.p('in your ', tag.tt('trac.ini'), '.'))
@@ -529,6 +531,8 @@ class TicketModule(Component):
                                                req.href, format=format)
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[4], format)
+                     
+        prevnext_nav(req, _('Ticket'), _('Back to Query'))
 
         return 'ticket.html', data, None
 
@@ -610,6 +614,7 @@ class TicketModule(Component):
                      'resource': ticket.resource,
                      'history': history})
 
+        add_ctxtnav(req, 'Back to Ticket #%s'%ticket.id, req.href.ticket(ticket.id))
         return 'history_view.html', data, None
 
     def _render_diff(self, req, ticket, data, text_fields):
@@ -752,6 +757,7 @@ class TicketModule(Component):
                                                    version=next_version),
                      _('Version %(num)s', num=next_version))
 
+        prevnext_nav(req, _('Change'), _('Ticket History'))
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
 
@@ -823,14 +829,14 @@ class TicketModule(Component):
         # If the ticket has been changed, check the proper permission
         if ticket.exists and ticket._old:
             if 'TICKET_CHGPROP' not in req.perm:
-                req.warning(_("No permission to change ticket fields."))
+                add_warning(req, _("No permission to change ticket fields."))
                 ticket.values = ticket._old
                 valid = False
             else: # TODO: field based checking
                 if 'description' in ticket._old or \
                        'field_reporter' in ticket._old:
                     if 'TICKET_ADMIN' not in req.perm:
-                        req.warning(_("No permissions to change ticket "
+                        add_warning(req, _("No permissions to change ticket "
                                       "fields."))
                         ticket.values = ticket._old
                         valid = False
@@ -839,20 +845,20 @@ class TicketModule(Component):
         if comment:
             if not ('TICKET_CHGPROP' in req.perm or \
                     'TICKET_APPEND' in req.perm):
-                req.warning(_("No permissions to add a comment."))
+                add_warning(req, _("No permissions to add a comment."))
                 valid = False
 
         # Mid air collision?
         if ticket.exists and (ticket._old or comment):
             if req.args.get('ts') != str(ticket.time_changed):
-                req.warning(_("Sorry, can not save your changes. "
+                add_warning(req, _("Sorry, can not save your changes. "
                               "This ticket has been modified by someone else "
                               "since you started"))
                 valid = False
 
         # Always require a summary
         if not ticket['summary']:
-            req.warning(_('Tickets must contain a summary.'))
+            add_warning(req, _('Tickets must contain a summary.'))
             valid = False
             
         # Always validate for known values
@@ -866,17 +872,18 @@ class TicketModule(Component):
                 value = ticket[name]
                 if value:
                     if value not in field['options']:
-                        req.warning('"%s" is not a valid value for '
+                        add_warning(req, '"%s" is not a valid value for '
                                     'the %s field.' % (value, name))
                         valid = False
                 elif not field.get('optional', False):
-                    req.warning('field %s must be set' % name)
+                    add_warning(req, 'field %s must be set' % name)
                     valid = False
 
         # Validate description length
         if len(ticket['description'] or '') > self.max_description_size:
-            req.warning(_('Ticket description is too long (must be less than '
-                          '%(num)s characters)', num=self.max_description_size))
+            add_warning(req, _('Ticket description is too long (must be less '
+                          'than %(num)s characters)',
+                          num=self.max_description_size))
             valid = False
 
         # Validate comment numbering
@@ -896,10 +903,11 @@ class TicketModule(Component):
             for field, message in manipulator.validate_ticket(req, ticket):
                 valid = False
                 if field:
-                    req.warning(_("The ticket field '%(field)s' is invalid: "
-                                  "%(message)s", field=field, message=message))
+                    add_warning(req, _("The ticket field '%(field)s' is "
+                                  "invalid: %(message)s",
+                                  field=field, message=message))
                 else:
-                    req.warning(message)
+                    add_warning(req, message)
         return valid
 
     def _do_create(self, req, ticket):

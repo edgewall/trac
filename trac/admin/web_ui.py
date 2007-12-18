@@ -32,7 +32,7 @@ from trac.util import get_pkginfo, get_module_path
 from trac.util.compat import partial
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.web.chrome import add_script, add_stylesheet, Chrome, \
+from trac.web.chrome import add_script, add_stylesheet, add_warning, Chrome, \
                             INavigationContributor, ITemplateProvider
 
 try:
@@ -318,9 +318,10 @@ class PermissionAdminPanel(Component):
                     perm.grant_permission(subject, action)
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    req.warning(_('Permission "%(action)s" was already granted '
-                                  'to "%(subject)s"', action=action,
-                                  subject=subject))
+                    add_warning(req,
+                            _('Permission "%(action)s" was already granted '
+                            'to "%(subject)s"', action=action,
+                            subject=subject))
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
@@ -331,8 +332,9 @@ class PermissionAdminPanel(Component):
                     perm.grant_permission(subject, group)
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    req.warning(_('"%(subject)s" was already added to group '
-                                  '"%(group)s"', subject=subject, group=group))
+                    add_warning(req, 
+                                _('"%(subject)s" was already added to group '
+                                '"%(group)s"', subject=subject, group=group))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):

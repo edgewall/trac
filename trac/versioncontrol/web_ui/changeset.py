@@ -44,8 +44,8 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule, \
                                                DefaultPropertyRenderer
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            INavigationContributor, Chrome
+from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
+                            prevnext_nav, INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 from trac.wiki.formatter import format_to_html
 
@@ -337,6 +337,16 @@ class ChangesetModule(Component):
         add_stylesheet(req, 'common/css/changeset.css')
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/code.css')
+        if chgset:
+            if restricted:
+                prevnext_nav(req, _('Change'))
+            else:
+                prevnext_nav(req, _('Changeset'))
+        else:
+            rev_href = req.href.changeset(old, old_path, old=new, 
+                                          old_path=new_path)
+            add_ctxtnav(req, _('Reverse Diff'), href=rev_href)
+            
         return 'changeset.html', data, None
 
     # Internal methods

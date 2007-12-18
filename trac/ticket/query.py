@@ -37,7 +37,7 @@ from trac.util.text import shorten_line, CRLF
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.href import Href
-from trac.web.chrome import add_link, add_script, add_stylesheet, \
+from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
@@ -760,6 +760,8 @@ class QueryModule(Component):
         if 'REPORT_VIEW' in req.perm and \
                self.env.is_component_enabled(ReportModule):
             data['report_href'] = req.href.report()
+            add_ctxtnav(req, _('Available Reports'), req.href.report())
+            add_ctxtnav(req, _('Custom Query'))
             if query.id:
                 cursor = db.cursor()
                 cursor.execute("SELECT title,description FROM report "

@@ -10,16 +10,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav">
-      <h2>Report Navigation</h2>
-      <ul>
-        <li class="first">
-          <a py:strip="not chrome.links.up" href="${chrome.links.up[0].href}">Available Reports</a>
-        </li>
-        <li py:if="query_href" class="last"><a href="$query_href">Custom Query</a></li>
-      </ul>
-    </div>
-
     <div id="content" class="report">
 
       <h1>${action == 'new' and 'New Report' or report.title}</h1>

@@ -13,12 +13,6 @@
   </head>
 
   <body>
-    <div id="ctxtnav" class="nav" py:with="realm = resource.realm.capitalize()">
-      <h2>$realm Navigation</h2>
-      ${prevnext_nav('Change', realm + ' History')}
-      <hr />
-    </div>
-
     <div id="content" class="${resource.realm}">
       <h1 py:choose="">Changes
         <py:when test="old_version">between

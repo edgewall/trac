@@ -660,6 +660,7 @@ class Mimeview(Component):
         return errors
 
     def _render_source(self, context, stream, annotations, marks=None):
+        from trac.web.chrome import add_warning
         annotators, labels, titles = {}, {}, {}
         for annotator in self.annotators:
             atype, alabel, atitle = annotator.get_annotation_type()
@@ -685,7 +686,7 @@ class Mimeview(Component):
             except TracError, e:
                 self.log.warning("Can't use annotator '%s': %s" %
                                  (a, e.message))
-                context.req.warning(tag.strong("Can't use ", tag.em(a),
+                add_warning(context.req, tag.strong("Can't use ", tag.em(a),
                                                " annotator:") +
                                     tag.pre(e.message))
                 data = (None, None)

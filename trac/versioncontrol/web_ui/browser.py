@@ -35,8 +35,8 @@ from trac.util.html import escape, Markup
 from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            INavigationContributor
+from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
+                            prevnext_nav, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 from trac.versioncontrol.api import NoSuchChangeset, NoSuchNode
@@ -364,6 +364,25 @@ class BrowserModule(Component):
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }
+        add_ctxtnav(req, tag.a(_('Last Change'), 
+                    href=req.href.changeset(node.rev, node.created_path)))
+        if node.isfile:
+            if data['file']['annotate']:
+                add_ctxtnav(req, _('Normal'), 
+                            title=_('View file without annotations'), 
+                            href=req.href.browser(node.created_path, 
+                                                  rev=node.rev))
+            else:
+                add_ctxtnav(req, _('Annotate'), 
+                            title=_('Annotate each line with the last '
+                                    'changed revision '
+                                    '(this can be time consuming...)'), 
+                            href=req.href.browser(node.created_path, 
+                                                  rev=node.rev,
+                                                  annotate=1))
+                
+        add_ctxtnav(req, _('Revision Log'), 
+                    href=req.href.log(path, rev=rev))
 
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
         if xhr: # render and return the content only
