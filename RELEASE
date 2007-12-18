@@ -1,161 +1,243 @@
-Release Notes for Trac 0.10 'Zengia'
-====================================
-September 28, 2006
+Release Notes for Trac 0.11 beta1 Genshi Release
+================================================
+December 18, 2007
 
-We're happy to announce the Trac 0.10 release, available from:
+Highlights
+----------
+ * New template engine for generating content (Genshi)
+ * New configurable workflow in the ticket subsystem
+ * Finer-grained control of permissions
+ * Support for Pygments as the default syntax highlighter
+ * Improved repository browser ("blame" support, dynamic in-place
+   expansion of folders)
+ * Improved user preferences subsystem, among which the possibility for
+ * any user to select their time zone and disable access keys
+ * The WebAdmin plugin is now an integral part of Trac
 
-  http://trac.edgewall.org/wiki/TracDownload
+Detailed User Visible Changes
+=============================
 
-For questions, comments and user discussions, please use the Trac mailing
-list. List information, subscription and archive available at:
+User Preferences
+----------------
+A new user preference module has been added. It presents by default
+several panels and plugins can easily add their own user settings there:
 
-  http://trac.edgewall.org/wiki/MailingList
+ * General (name and e-mail information)
+ * Date & Time (timezone)
+ * Keyboard Shortcuts (enable/disable)
+ * Pygments Theme
+ * Advanced (restore session)
 
-User visible changes
-====================
+Most significantly, support for setting the time zone has been added to
+the Date & Time panel.
 
-Advanced diff support
----------------------
-The TracRevisionLog view can now be used to select two arbitrary
-revisions of a given path in the repository and see the differences
-between them, in the familiar TracChangeset view.
+Each user can select which time zone they want timestamps to be presented
+in. If pytz is installed a complete list of time zones will be available,
+otherwise Trac will fall back on a shorter list from an internal time
+zone implementation.
 
-A related change is the possibility to navigate through a sequence of
-restricted changesets. A restricted changeset is the subset of changes
-within a changeset inside a given directory. One can easily start
-navigating such a sequence by following the new Last Change navigation
-link present for the currently browsed path.
+Wiki
+----
+ * Usability improvements:
+   - possibility to review changes before saving a new version of a
+     page
+   - basic handling of conflicts in case of concurrent edits
+   - Restored direct link to History and revert to an Index link, from
+     where it's easy to switch between the Index by Title and Index by
+     Date
+   - The [[PageOutline]] macro now works as expected in preview mode
+ * Wiki syntax improvements:
+   - most TracLinks now accept trailing arguments (?...) and targets
+     (#...)
+   - more intuitive relative links ([.. parent page], [./OtherPage
+     sibling page], [/WikiStart toplevel page])
+   - relative links like [#anchor see this section] always link to the
+     proper originating page or ticket, irrelevant from where the wiki
+     text appears (e.g. in the timeline)
+   - new #!div wiki processor and new [[span]] macro added. The former
+     can be used to encapsulate an arbitrary block of wiki markup in a
+     <div> element. The second can be used to encapsulate an arbitrary
+     fragment of wiki markup in a <span> element. Both div and span
+     can be provided with attributes like class=... or style="...".
+   - [[Image]] macro can now "link" to an arbitrary TracLinks instead
+     of the image's attachment itself
+   - InterTrac prefixes written alone can be used to target the
+     default page in the remote Trac, e.g. [TracHacks: the site for
+     contributing Trac plugins]
+   - trac: InterTrac prefix is known by default and refers to the
+     "Trac for Trac"
 
-It's now also possible to compare two arbitrary paths at any revision.
-This can be used to check the differences between a tagged version and
-trunk, or to review the set of differences between two branches.
+Ticket System
+-------------
 
-Other enhancements have been made to the version control subsystem, in
-particular the support of scoped repositories has been improved. You
-should therefore perform a trac-admin resync operation.
+Ticket Editing
 
-InterWiki and InterTrac support
--------------------------------
-An InterWiki link can be used to refer to a Wiki page located on another
-Wiki system, and by extension, to any object located on any other Web
-site, as long as simple URL mapping is possible.
+ * The ticket workflow is now configurable, see TracWorkflow
+ * Improved preview, showing the comment preview at the top of the page,
+   so one can see at the same time the preview of the comment and the
+   preview of the fields and the description in the ticket box
+ * It is now possible to examine the changes made to the ticket
+   description and textual custom fields
+ * The display of field changes has been improved and is now more
+   compact
+ * Major usability enhancement for the CC: field
+ * Like for the concurrent wiki edits, a conflict due to simultaneous
+   editing of a ticket by two or more users lead to warnings, minimizing
+   the risk for the user to lose his changes
+ * Syntax for linking to arbitrary ticket comments is now more
+   intuitive: use comment:3:ticket:123 for linking to the 3^rd comment
+   of ticket #123. Alternatively, you can write: ticket:123#comment:3
+   (but not #123#comment:3!)
 
-An InterTrac link can be used for referring to a Trac resource (Wiki
-page, changeset, ticket, ...) on an other Trac environment. This makes it
-easier to work with multiple separate projects, and seamlessly refer to
-resources from one Trac to another.
+Roadmap and Milestone
 
-Improved modularity
--------------------
-Trac now supports database and version control backends as third-party
-plugins.
+ * The Milestones can now have attachments
+ * If needed, it is possible to configure additional ticket groups to be
+   shown in the milestone progress bar (according to the status). For
+   even more complex needs, a plugin can now take over the way the
+   tickets and stats are collected.
 
-It is now easier to add support for new database backends. In addition to
-the already existing support for SQLite and PostgreSQL, Trac now features
-experimental support for the MySQL database.
+Reports and Custom Queries
 
-As for the version control systems, Trac still features best of breed
-Subversion support, but the Subversion bindings and libraries are no
-longer mandatory for using Trac itself. Other version control systems can
-be supported by external plugins.
+ * Improved custom queries:
+   - columns can now be selected
+   - possibility to save custom queries as reports
+   - possibility to configure the default custom query, both for
+   - anonymous and authenticated users
+ * the [[TicketQuery]] now supports a format=table option, which will
+   produce the usual tabular result of a custom query, see the macro
+   documentation.
+ * the custom query can list a fixed set of tickets, either using the
+   [[TicketQuery]] macro or query: links
 
-Improved notification system
-----------------------------
-The encoding for emails sent out by Trac can now be configured. This may
-decrease email size and can avoid useless encoding for western languages
-that make some touchy SMTP servers bounce the notifications.
+Repository Browser
+------------------
+ * "Blame" support (annotation of every line with the changeset which
+   last modified them)
+ * Dynamically expandable folders for Javascript enabled browsers
+ * "Quickjump" navigation menu for easily going to branches and tags
+ * Alternative text view on diffs for Javascript enabled browsers
+ * Significantly improved patch renderer (supports extended diff
+   formats)
+ * Support for svn:externals and other properties. Improved display of
+   property changes. In addition, support for custom properties can be
+   added through plugins.
+ * Add the ability to highlight arbitrary ranges of lines in the source
+   code, using the appropriate source TracLinks
+ * Add the ability to access to the raw content of files inside the
+   repository using export TracLinks.
+ * Revision log display is more compact and allows selecting a diff for
+   the whole range of specified revisions
+ * Changeset display of list of files is more compact as well and shows
+   the main location where the changes happened. That can also be done
+   in the timeline by setting the [timeline] changeset_show_files
+   configuration entry to location instead of a number.
 
-Support for local network installations using local email addresses
-(addresses without a domain name) and a configurable default domain name
-has been added, as well as support for both visible and blind carbon
-copies.
+General
+-------
+Setuptools is now used for the packaging
 
-Support for spam protection
----------------------------
-Trac now provides extension point that allow plugins to intercept content
-submissions, which can be used to filter out spam. One plugin that does
-this is the SpamFilter plugin, which is available as a separate package:
+This means you'll be able to just do
 
-  http://trac.edgewall.org/wiki/SpamFilter
+easy_install Trac
 
-This plugin implements a number of different strategies for testing
-content, such as regular expression matching, IP blacklisting, and
-Akismet queries.
+once we've made the release.
 
-WSGI used as web server protocol
---------------------------------
-Trac now uses WSGI (the "Python Web Server Gateway Interface")
-internally. While Trac continues to provide builtin support for CGI,
-FastCGI and mod_python, as well as the standalone server "tracd", you can
-now take advantage of the WSGI support to use Trac in other setups, such
-as Twisted, Paste, SCGI, or ISAPI.
+It also means that a number of things had to be changed to make this work
+correctly. In particular, Trac no longer implicitly assumes nor installs
+global data in the $prefix/share/trac. Instead, you'll have to modify the
+configuration of your project environments to explicitly “inherit” a
+global configuration in trac.ini, for example:
 
-Lots of minor improvements
---------------------------
-To the Wiki syntax
+[inherit]
+file = /etc/trac/trac.ini
 
-Numerous improvements have been made in the WikiFormatting syntax:
+This will load the configuration from the /etc/trac/trac.ini file, while
+of course allowing to override any global settings in the environment's
+configuration.
 
- * Headings can optionally be given explicit id.
- * MoinMoin ["internal free link"] syntax is now supported.
- * Introduced citation syntax for the Wiki (e-mail style).
- * Added more robust parsing and formatting of Wiki lists and robust
-   coupling of lists and quotes.
- * Improved the way external links are displayed.
- * Lots of new ways to refer to specific repository views (diff:from//
-   to, log:, [x:y], rx:y)
- * htdocs:, useful for referring to local resources in TracStandalone
- * MoinMoin-style syntax for description lists
- * Removed support for direct embedding of images using links: use the
-   [[Image]] macro instead.
+In that global configuration, you can specify shared directories for
+templates and plugins, e.g.:
 
-To the Wiki subsystem
+[inherit]
+plugins_dir = /etc/trac/plugins/
+templates_dir = /etc/trac/templates/
 
- * Quicker access to last change on a page and better navigation in the
-   page history
- * Preview the change comment before saving a change and display the
-   change comment when viewing a specific version of a page. This
-   hopefully will encourage authors to document their changes!
+  Note: naming of these options may still change until the final 0.11
+        release
 
-To the Ticket subsystem
+Improved Syntax Highlighting
 
- * Possibility to Reply to ticket description and changes
- * Export individual ticket data in CSV or RSS format
+Trac can now use the Pygments syntax highlighter out-of-the-box. This is
+a much nicer syntax highlighter than the one previously supported (
+SilverCity, Enscript and PHP).
+
+Lots of other minor improvements
+
+ * all configuration changes made to the TracIni files are now taken
+   into account immediately, without the need for a server restart
+ * e-mail obfuscation everywhere turned on by default (can be disabled
+   project wide or on a per-user basis
+ * possibility to configure the navigation bars (see TracNavigation)
+ * Timeline improvements:
+   - paging support
+   - remember user settings
+   - more configuration settings for tweaking the display of the
+     events (see TracIni#timeline-section)
+ * Search improvements:
+   - OpenSearch support
+
+Caveats
+-------
+ * It is strongly advised to set the [trac] base_url setting for
+   generating correct URLs outside the context of a user request.
+   However, contrary to what happened for a while in 0.10.5dev, this
+   setting won't be used for the redirects, unless Trac is explicitly
+   told to do so, with the use_base_url_for_redirect setting.
+ * The [trac] templates_dir setting is considered harmful... You
+   probably need to remove that setting when you browse Trac and get the
+   following plain text error:
+
+   TemplateNotFound: Template "error.html" not found
+
+   FIXME: is this still the case?
+ * The support for MySQL as a database backend has not improved
+   significantly in any ways... It is still considered to be
+   experimental for 0.11. YMMV.
+ * The usual trick of wrapping a piece of wiki text inside a <div> for
+   advanced custom formatting can't be done anymore using the #!html
+   WikiProcessor, as that one can only produce well-formed HTML
+   fragments. Instead, one must use the new #!div Wiki processor for
+   that.
+
+Wiki Macros
+
+The change in templating engines necessitated a change in wiki macros.
+The HelloWorld and Timestamp macros which are distributed with trac will
+not work as released.
+
+For examples of new style macros, see some of the macros which have
+already been ported at MacroBazaar or ports of HelloWorld and Timestamp
+attached to #5274.
 
 Developer-visible changes
 =========================
+Many changes happened under the hood, among them:
 
-unicode everywhere
-------------------
-Trac used to handle text content by using str objects, in which Unicode
-characters were represented using UTF-8 encoding. This lead to various
-problems with most non-western languages. We now use the dedicated
-unicode datatype to consistently handle text written in any language. See
-also TracDev/UnicodeGuidelines.
+ * Trac now uses the Genshi template engine instead of ClearSilver.
+   Plugins using the latter will still be supported in Trac 0.11, but
+   probably not longer.
+ * Trac used to handle time informations as int timestamps. Now we're
+   using datetime objects.
 
-Better way to programmatically generate HTML fragments
-------------------------------------------------------
-Trac now provides utility code to programmatically generate HTML
-snippets. This can be used in the various places where Trac expects
-plugins to return small fragments of HTML bypassing the template system.
-These utilities can be found in the trac.util.html module.
-
-Unit test framework for email notifications
--------------------------------------------
-Email notifications can now be validated; unit tests include a private
-SMTP server and helper methods to extract and decode email data.
-
-Internal API changes
---------------------
-A detailed view of the API changes since 0.9.x can be found in TracDev/
-ApiChanges/0.10.
+A detailed view of the API changes since 0.10.x can be found in TracDev/
+ApiChanges/0.11.
 
 Acknowledgements
-================
-
+----------------
 Many thanks to the growing number of people who have, and continue to,
 support the project. Also our thanks to all people providing feedback and
-bug reports that helps us make Trac better, easier to use and more
+bug reports that helps us making Trac better, easier to use and more
 effective.
 
 Without your invaluable help, Trac would not evolve. Thank you all.
