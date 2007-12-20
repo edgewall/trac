@@ -324,6 +324,9 @@ def dispatch_request(environ, start_response):
     environ.setdefault('trac.template_vars',
                        os.getenv('TRAC_TEMPLATE_VARS'))
     environ.setdefault('trac.locale', '')
+    environ.setdefault('trac.base_url',
+                       os.getenv('TRAC_BASE_URL'))
+    
 
     locale.setlocale(locale.LC_ALL, environ['trac.locale'])
 
