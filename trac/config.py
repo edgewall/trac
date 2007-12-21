@@ -180,7 +180,7 @@ class Configuration(object):
                 if self.parent:
                     default = self.parent.get(section, option)
                 current = self.parser.has_option(section, option) and \
-                          self.parser.get(section, option)
+                          to_unicode(self.parser.get(section, option))
                 if current is not False and current != default:
                     options.append((option, current))
             if options:
@@ -196,9 +196,7 @@ class Configuration(object):
                         fileobj.write('# %s = <inherited>\n' % key)
                     else:
                         val = val.replace(CRLF, '\n').replace('\n', '\n ')
-                        fileobj.write('%s = %s\n' % (
-                            key, to_unicode(val).encode('utf-8')
-                        ))
+                        fileobj.write('%s = %s\n' % (key, val.encode('utf-8')))
                 fileobj.write('\n')
         finally:
             fileobj.close()

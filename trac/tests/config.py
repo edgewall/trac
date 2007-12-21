@@ -160,6 +160,34 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
         # self.assertEquals(u"Voilà l'été", config2.get('a', 'option3'))
 
+    def test_set_and_save_inherit(self):
+        def testcb():
+            config = self._read()
+            config.set('a', 'option2', "Voilà l'été")  # UTF-8
+            config.set('a', 'option1', u"Voilà l'été") # unicode
+            self.assertEquals('x', config.get('a', 'option'))
+            self.assertEquals(u"Voilà l'été", config.get('a', 'option1'))
+            self.assertEquals(u"Voilà l'été", config.get('a', 'option2'))
+            config.save()
+
+            configfile = open(self.filename, 'r')
+            self.assertEquals(['# -*- coding: utf-8 -*-\n',
+                               '\n',
+                               '[a]\n',
+                               "option1 = Voilà l'été\n", 
+                               "option2 = Voilà l'été\n", 
+                               '\n',
+                               '[inherit]\n',
+                               "file = trac-site.ini\n", 
+                               '\n'],
+                              configfile.readlines())
+            configfile.close()
+            config2 = Configuration(self.filename)
+            self.assertEquals('x', config2.get('a', 'option'))
+            self.assertEquals(u"Voilà l'été", config2.get('a', 'option1'))
+            self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
+        self._test_with_inherit(testcb)
+
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
@@ -190,6 +218,18 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('y', config.get('a', 'option'))
 
     def test_inherit_one_level(self):
+        def testcb():
+            config = self._read()
+            self.assertEqual('x', config.get('a', 'option'))
+            self.assertEqual(['a', 'inherit'], config.sections())
+            config.remove('a', 'option') # Should *not* remove option in parent
+            self.assertEqual('x', config.get('a', 'option'))
+            self.assertEqual([('option', 'x')], list(config.options('a')))
+            self.assertEqual(True, 'a' in config)
+        self._test_with_inherit(testcb)
+
+
+    def _test_with_inherit(self, testcb):
         sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')
         sitefile = open(sitename, 'w')
         try:
@@ -199,13 +239,7 @@ class ConfigurationTestCase(unittest.TestCase):
                 sitefile.close()
 
             self._write(['[inherit]', 'file = trac-site.ini'])
-            config = self._read()
-            self.assertEqual('x', config.get('a', 'option'))
-            self.assertEqual(['a', 'inherit'], config.sections())
-            config.remove('a', 'option') # Should *not* remove option in parent
-            self.assertEqual('x', config.get('a', 'option'))
-            self.assertEqual([('option', 'x')], list(config.options('a')))
-            self.assertEqual(True, 'a' in config)
+            testcb()
         finally:
             os.remove(sitename)
 
