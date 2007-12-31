@@ -93,6 +93,8 @@ class Resource(object):
     the real work to the Resource's manager.
     """
 
+    __slots__ = ('realm', 'id', 'version', 'parent')
+
     def __repr__(self):
         if self.realm is None:
             return '<Resource>'
