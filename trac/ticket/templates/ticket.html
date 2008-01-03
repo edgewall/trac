@@ -26,8 +26,7 @@
         $("#changelog h3.change").addAnchor("Link to this change");
 
         /* only enable control elements for the currenly selected action */
-        var actions = $("fieldset input[name='action']");
-        /* ... as Opera doesn't like $("#action input[@name=action]") */
+        var actions = $("#action input[name='action']");
 
         function updateActionFields() {
           actions.each(function () {

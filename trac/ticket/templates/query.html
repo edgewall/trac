@@ -15,8 +15,7 @@
         }).change();
         $("fieldset legend").enableFolding(false);
         /* Hide the columns by default. */
-        $(document.getElementById("columns")).toggleClass("collapsed");
-        /* Note that Opera has some trouble with $("#columns") as it's a fieldset, see #4911. */
+        $("#columns").toggleClass("collapsed");
       });
     </script>
   </head>
