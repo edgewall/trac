@@ -26,7 +26,7 @@ function enableExpandDir(parent_tr, rows, qargs) {
 
       // add the expander icon
       a.wrap('<div></div>');
-      var expander = a.before('<span class="expander">&#x200b;</span>').prev();
+      var expander = a.before('<span class="expander">&nbsp;</span>').prev();
       expander.attr("title", "Expand sub-directory in place")
         .click(function() { toggleDir($(this), qargs); });
     }

@@ -76,23 +76,19 @@ div.message {
 #dirlist tr span.expander { 
   background-image: url(../expander_normal.png); 
   cursor: pointer; 
-  padding-left: 12px; 
+  padding-left: 8px; 
   margin-left: 4px; 
 }
 #dirlist tr span.expander:hover { 
   background-image: url(../expander_normal_hover.png); 
-  padding-left: 12px; 
-  margin-left: 4px; 
 }
 #dirlist tr.expanded span.expander { 
   background-image: url(../expander_open.png); 
-  padding-left: 16px; 
+  padding-left: 12px; 
   margin-left: 0; 
 }
 #dirlist tr.expanded span.expander:hover { 
   background-image: url(../expander_open_hover.png); 
-  padding-left: 16px; 
-  margin-left: 0; 
 }
 #dirlist td.name a.dir { background-image: url(../folder.png) }
 #dirlist td.name a.file { background-image: url(../file.png); display: block }
