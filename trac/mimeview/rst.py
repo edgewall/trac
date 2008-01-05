@@ -144,7 +144,7 @@ class ReStructuredTextRenderer(Component):
 
         # The code_block could is taken from the leo plugin rst2
         def code_formatter(language, text):
-            processor = WikiProcessor(Formatter(context), language)
+            processor = WikiProcessor(Formatter(self.env, context), language)
             html = processor.process(text)
             raw = nodes.raw('', html, format='html')
             return raw
