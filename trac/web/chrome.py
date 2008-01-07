@@ -111,6 +111,11 @@ def add_warning(req, msg, *args):
     When rendering pages, any warnings will be rendered to the user."""
     req.chrome['warnings'].append(msg % args)
 
+def add_notice(req, msg, *args):
+    """Add an informational notice to the request object.
+    When rendering pages, any notice will be rendered to the user."""
+    req.chrome['notices'].append(msg % args)
+
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar.
     """
@@ -399,7 +404,8 @@ class Chrome(Component):
         """
         self.log.debug('Prepare chrome data for request')
 
-        chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': []}
+        chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': [],
+                  'notices': []}
 
         # This is ugly... we can't pass the real Request object to the
         # add_xxx methods, because it doesn't yet have the chrome attribute

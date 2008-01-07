@@ -480,8 +480,11 @@ table.listing tbody tr:hover { background: #eed !important }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
-#warning.system-message { background: #def; border: 2px solid #00d; }
+#warning.system-message { background: #ff4; border: 2px solid #882; }
 #warning.system-message li { list-style-type: square; }
+
+#notice.system-message { background: #bfb; border: 2px solid #484; }
+#notice.system-message li { list-style-type: square; }
 
 #content.error form.newticket { display: inline; }
 #content.error form.newticket textarea { display: none; }
