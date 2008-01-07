@@ -20,7 +20,7 @@ import os
 import pkg_resources
 import urllib
 
-from mod_python import apache
+from mod_python import apache, version
 
 from trac import __version__ as VERSION
 from trac.web.main import dispatch_request
@@ -53,6 +53,9 @@ class ModPythonGateway(WSGIGateway):
     def __init__(self, req, options):
         environ = {}
         environ.update(apache.build_cgi_env(req))
+
+        environ['trac.web.frontend'] = 'mod_python'
+        environ['trac.web.version'] = version
 
         if 'TracEnv' in options:
             environ['trac.env_path'] = options['TracEnv']
