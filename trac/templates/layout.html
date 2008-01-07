@@ -62,14 +62,25 @@
           </ul>
         <hr />
       </div>
-      <div py:for="message in ('warnings', 'notices')" id="${message[:-1]}" py:if="chrome[message]" class="system-message">
-        <py:choose test="len(chrome[message])">
+      <div id="warning" py:if="chrome.warnings" class="system-message">
+        <py:choose test="len(chrome.warnings)">
           <py:when test="1">
-            <strong>${message[:-1].title()}:</strong> ${chrome[message][0]}
+            <strong>Warning:</strong> ${chrome.warnings[0]}
           </py:when>
           <py:otherwise>
-            <strong>${message.title()}:</strong>
-            <ul><li py:for="i in chrome[message]">$i</li></ul>
+            <strong>Warnings:</strong>
+            <ul><li py:for="w in chrome.warnings">$w</li></ul>
+          </py:otherwise>
+        </py:choose>
+      </div>
+      <div id="notice" py:if="chrome.notices" class="system-message">
+        <py:choose test="len(chrome.notices)">
+          <py:when test="1">
+            <strong>Notice:</strong> ${chrome.notices[0]}
+          </py:when>
+          <py:otherwise>
+            <strong>Notices:</strong>
+            <ul><li py:for="w in chrome.notices">$w</li></ul>
           </py:otherwise>
         </py:choose>
       </div>
