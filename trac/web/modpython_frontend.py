@@ -20,7 +20,11 @@ import os
 import pkg_resources
 import urllib
 
-from mod_python import apache, version
+from mod_python import apache
+try:
+    from mod_python import version
+except ImportError:
+    version = "< 3.2"
 
 from trac import __version__ as VERSION
 from trac.web.main import dispatch_request
