@@ -8,9 +8,9 @@
     <link>${abs_href.report(report.id)}</link>
     <description>Trac Report - $report.description</description>
     <language>en-us</language>
-    <image py:if="chrome.logo.src">
+    <image py:if="chrome.logo.src_abs">
       <title>$project.name</title>
-      <url>$chrome.logo.src</url>
+      <url>$chrome.logo.src_abs</url>
       <link>${abs_href.report(report.id != -1 and report.id or '')}</link>
     </image>
     <generator>Trac v${trac.version}</generator>

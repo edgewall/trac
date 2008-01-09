@@ -68,22 +68,34 @@ class ChromeTestCase(unittest.TestCase):
         self.env.config.set('header_logo', 'src', '')
         info = Chrome(self.env).prepare_request(req)
         assert 'src' not in info['logo']
+        assert 'src_abs' not in info['logo']
 
         # Test with a relative path to the logo image
         self.env.config.set('header_logo', 'src', 'foo.png')
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/common/foo.png', info['logo']['src'])
+        self.assertEqual('http://example.org/trac.cgi/chrome/common/foo.png', 
+                    info['logo']['src_abs'])
+
+        # Test with a location in project htdocs
+        self.env.config.set('header_logo', 'src', 'site/foo.png')
+        info = Chrome(self.env).prepare_request(req)
+        self.assertEqual('/trac.cgi/chrome/site/foo.png', info['logo']['src'])
+        self.assertEqual('http://example.org/trac.cgi/chrome/site/foo.png', 
+                    info['logo']['src_abs'])
 
         # Test with a server-relative path to the logo image
         self.env.config.set('header_logo', 'src', '/img/foo.png')
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/img/foo.png', info['logo']['src'])
+        self.assertEqual('/img/foo.png', info['logo']['src_abs'])
 
         # Test with an absolute path to the logo image
         self.env.config.set('header_logo', 'src',
                             'http://www.example.org/foo.png')
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('http://www.example.org/foo.png', info['logo']['src'])
+        self.assertEqual('http://www.example.org/foo.png', info['logo']['src_abs'])
 
     def test_default_links(self):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),

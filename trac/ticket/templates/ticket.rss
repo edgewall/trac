@@ -8,9 +8,9 @@
     <link>${abs_href.ticket(ticket.id)}</link>
     <description>${unicode(wiki_to_html(context, ticket.description))}</description>
     <language>en-us</language>
-    <image py:if="'src' in chrome.logo">
+    <image py:if="chrome.logo.src_abs">
       <title>$project.name</title>
-      <url>$chrome.logo.src</url>
+      <url>$chrome.logo.src_abs</url>
       <link>${abs_href.ticket(ticket.id)}</link>
     </image>
     <generator>Trac $trac.version</generator>

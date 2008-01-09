@@ -436,7 +436,7 @@ class Chrome(Component):
             add_link(fakereq, 'shortcut icon', src, mimetype=mimetype)
 
         # Logo image
-        chrome['logo'] = self.get_logo_data(req.href)
+        chrome['logo'] = self.get_logo_data(req.href, req.abs_href)
 
         # Navigation links
         allitems = {}
@@ -509,17 +509,25 @@ class Chrome(Component):
                     'mimetype': mimetype}
         return icon
 
-    def get_logo_data(self, href):
+    def get_logo_data(self, href, abs_href=None):
+        # TODO: Possibly, links to 'common/' could use chrome.htdocs_location
         logo = {}
         logo_src = self.logo_src
         if logo_src:
-            logo_src_abs = logo_src.startswith('http://') or \
-                           logo_src.startswith('https://')
-            if not logo_src.startswith('/') and not logo_src_abs:
-                if '/' in logo_src:
-                    logo_src = href.chrome(logo_src)
-                else:
-                    logo_src = href.chrome('common', logo_src)
+            abs_href = abs_href or href
+            if logo_src.startswith('http://') or \
+                    logo_src.startswith('https://') or \
+                    logo_src.startswith('/'):
+                # Nothing further can be calculated
+                logo_src_abs = logo_src
+            elif '/' in logo_src:
+                # Like 'common/trac_banner.png' or 'site/my_banner.png'
+                logo_src_abs = abs_href.chrome(logo_src)
+                logo_src = href.chrome(logo_src)
+            else:
+                # Like 'trac_banner.png'
+                logo_src_abs = abs_href.chrome('common', logo_src)
+                logo_src = href.chrome('common', logo_src)
             width = self.logo_width > -1 and self.logo_width or None
             height = self.logo_height > -1 and self.logo_height or None
             logo = {

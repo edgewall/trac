@@ -9,9 +9,9 @@
     <description>Trac Log - Revisions of $path</description>
     <language>en-US</language>
     <generator>Trac ${trac.version}</generator>
-    <image py:if="chrome.logo">
+    <image py:if="chrome.logo.src_abs">
       <title>${project.name}</title>
-      <url>${chrome.logo.src}</url>
+      <url>${chrome.logo.src_abs}</url>
       <link>$log_href</link>
     </image>
 
