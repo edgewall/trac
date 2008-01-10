@@ -484,6 +484,8 @@ class PermissionCache(object):
     permission is missing.
     """
 
+    __slots__ = ('env', 'username', '_resource', '_cache')
+
     def __init__(self, env, username=None, resource=None, cache=None,
                  groups=None):
         self.env = env

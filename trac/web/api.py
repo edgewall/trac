@@ -248,7 +248,7 @@ class Request(object):
             for elt in extra:
                 m.update(repr(elt))
             extra = m.hexdigest()
-        etag = 'W"%s/%s/%s"' % (self.authname, http_date(datetime), extra)
+        etag = 'W/"%s/%s/%s"' % (self.authname, http_date(datetime), extra)
         inm = self.get_header('If-None-Match')
         if (not inm or inm != etag):
             self.send_header('ETag', etag)
