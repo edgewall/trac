@@ -140,7 +140,7 @@ def suite():
         suite.addTest(unittest.makeSuite(PhpDeuglifierTestCase, 'test'))
         suite.addTest(unittest.makeSuite(PhpRendererTestCase, 'test'))
     else:
-        print "SKIP: mimeview/tests/php.py"
+        print "SKIP: mimeview/tests/php.py (php-cgi binary, 'php', not found)"
     return suite
 
 if __name__ == '__main__':
