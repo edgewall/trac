@@ -253,7 +253,7 @@ Type:  '?' or 'help' for help on commands.
 
     def all_docs(cls):
         return (cls._help_help + cls._help_initenv + cls._help_hotcopy +
-                cls._help_resync + cls._help_upgrade +
+                cls._help_resync + cls._help_upgrade + cls._help_staticcopy +
                 cls._help_permission + cls._help_wiki +
                 cls._help_ticket + cls._help_ticket_type + 
                 cls._help_priority + cls._help_severity +
@@ -1143,6 +1143,34 @@ Congratulations!
             cnx.rollback()
 
         print 'Hotcopy done.'
+
+    _help_staticcopy = [('staticcopy <directory>',
+                         'Extract static resources from Trac and all plugins.')]
+
+    def do_staticcopy(self, line):
+        argv = self.arg_tokenize(line)
+        if not argv[0]:
+            self.do_help('staticcopy')
+            return
+
+        target = os.path.normpath(argv[0])
+        if os.path.exists(target):
+            raise TracError('Destination already exists. Remove and retry.')
+
+        os.makedirs(target)
+        from trac.web.chrome import Chrome
+        print 'Copying resources from:'
+        for provider in Chrome(self.env_open()).template_providers:
+            paths = list(provider.get_htdocs_dirs())
+            if not len(paths):
+                continue
+            print '  %s.%s' % (provider.__module__, provider.__class__.__name__)
+            for key, root in paths:
+                source = os.path.normpath(root)
+                print '   ', source
+                dest = os.path.join(target, key)
+                copytree(source, dest)
+        
 
 
 class TracAdminHelpMacro(WikiMacroBase):
