@@ -253,7 +253,7 @@ Type:  '?' or 'help' for help on commands.
 
     def all_docs(cls):
         return (cls._help_help + cls._help_initenv + cls._help_hotcopy +
-                cls._help_resync + cls._help_upgrade + cls._help_staticcopy +
+                cls._help_resync + cls._help_upgrade + cls._help_copystatic +
                 cls._help_permission + cls._help_wiki +
                 cls._help_ticket + cls._help_ticket_type + 
                 cls._help_priority + cls._help_severity +
@@ -1144,13 +1144,13 @@ Congratulations!
 
         print 'Hotcopy done.'
 
-    _help_staticcopy = [('staticcopy <directory>',
+    _help_copystatic = [('copystatic <directory>',
                          'Extract static resources from Trac and all plugins.')]
 
-    def do_staticcopy(self, line):
+    def do_copystatic(self, line):
         argv = self.arg_tokenize(line)
         if not argv[0]:
-            self.do_help('staticcopy')
+            self.do_help('copystatic')
             return
 
         target = os.path.normpath(argv[0])
