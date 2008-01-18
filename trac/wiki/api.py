@@ -332,6 +332,8 @@ class WikiSystem(Component):
                     return label
                 return tag.a(label+'?', href=href, class_='missing wiki',
                              rel='nofollow')
+        elif ignore_missing and not self.has_page(pagename):
+            return label
         else:
             return tag.span(label, class_='forbidden wiki',
                             title=_("no permission to view this wiki page"))
