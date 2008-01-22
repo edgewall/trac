@@ -25,6 +25,9 @@ resync <rev>
 upgrade
 	-- Upgrade database to current version
 
+copystatic <directory>
+	-- Extract static resources from Trac and all plugins.
+
 permission list [user]
 	-- List permission rules
 
