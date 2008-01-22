@@ -152,7 +152,8 @@ def prevnext_nav(req, label, uplabel=None):
                            )))
     else:
         add_ctxtnav(req, 
-            tag.span(_('Previous %(label)s', label=label), 
+            tag.span(Markup('&larr; '),
+                     _('Previous %(label)s', label=label), 
                      class_='missing'))
 
     if uplabel and 'up' in links:
@@ -171,7 +172,8 @@ def prevnext_nav(req, label, uplabel=None):
                      Markup(' &rarr;')))
     else:
         add_ctxtnav(req, 
-            tag.span(_('Next %(label)s', label=label), class_='missing'))
+            tag.span(_('Next %(label)s', label=label),
+                     Markup(' &rarr;'), class_='missing'))
 
 
 class INavigationContributor(Interface):
