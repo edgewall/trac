@@ -1017,9 +1017,13 @@ class TicketModule(Component):
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
             elif name == 'milestone':
+                milestones = [(opt, Milestone(self.env, opt))
+                              for opt in field['options']]
+                milestones = [(opt, m) for opt, m in milestones
+                              if 'MILESTONE_VIEW' in req.perm(m.resource)]
                 open_milestones, closed_milestones = \
-                        partition([(opt, Milestone(self.env, opt).is_completed)
-                                   for opt in field['options']],
+                        partition([(opt, m.is_completed)
+                                   for opt, m in milestones],
                                   (False, True))
                 if ticket.exists and \
                        'TICKET_ADMIN' in req.perm(ticket.resource):
