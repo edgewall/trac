@@ -47,6 +47,27 @@ IMAGE_MACRO_TEST_CASES=u"""
 <img src="http://www.edgewall.com/gfx/shredder.png" alt="http://www.edgewall.com/gfx/shredder.png" title="http://www.edgewall.com/gfx/shredder.png" />
 </p>
 ------------------------------
+============================== http: Image, absolute, many ':'
+[[Image(http://chart.apis.google.com:80/chart?cht=p3&chd=s:hW&chs=250x100&chl=Hello|World, title=Google & Charting, link=)]]
+------------------------------
+<p>
+<img src="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Hello|World" alt="http://chart.apis.google.com:80/chart?cht=p3&amp;chd=s:hW&amp;chs=250x100&amp;chl=Hello|World" title="Google &amp; Charting" />
+</p>
+------------------------------
+============================== // Image, server-relative
+[[Image(//browser/test.png?format=raw, link=)]]
+------------------------------
+<p>
+<img src="/browser/test.png?format=raw" alt="/browser/test.png?format=raw" title="/browser/test.png?format=raw" />
+</p>
+------------------------------
+============================== / Image, project-relative, link to WikiStart
+[[Image(/browser/test.png?format=raw, link=wiki:WikiStart)]]
+------------------------------
+<p>
+<a style="padding:0; border:none" href="/wiki/WikiStart"><img src="/browser/test.png?format=raw" alt="/browser/test.png?format=raw" title="/browser/test.png?format=raw" /></a>
+</p>
+------------------------------
 """
 
 

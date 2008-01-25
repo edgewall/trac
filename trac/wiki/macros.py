@@ -29,6 +29,7 @@ from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any, set
 from trac.util.html import escape
+from trac.util.text import unquote
 from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
@@ -260,7 +261,7 @@ class ImageMacro(WikiMacroBase):
     """Embed an image in wiki-formatted text.
     
     The first argument is the file specification. The file specification may
-    reference attachments or files in three ways:
+    reference attachments in three ways:
      * `module:id:file`, where module can be either '''wiki''' or '''ticket''',
        to refer to the attachment named ''file'' of the specified wiki page or
        ticket.
@@ -271,6 +272,10 @@ class ImageMacro(WikiMacroBase):
     
     Also, the file specification may refer to repository files, using the
     `source:file` syntax (`source:file@rev` works also).
+    
+    Files can also be accessed with a direct URLs; `/file` for a
+    project-relative, `//file` for a server-relative, or `http://server/file`
+    for absolute location of the file.
     
     The remaining arguments are optional and allow configuring the attributes
     and style of the rendered `<img>` element:
@@ -364,9 +369,16 @@ class ImageMacro(WikiMacroBase):
 
         # parse filespec argument to get realm and id if contained.
         parts = filespec.split(':')
-        url = raw_url = None
+        url = raw_url = desc = None
         attachment = None
-        if len(parts) == 3:                 # realm:id:attachment-filename
+        if (parts and parts[0] in ('http', 'https', 'ftp')): # absolute
+            raw_url = url = desc = filespec
+        elif filespec.startswith('//'):       # server-relative
+            raw_url = url = desc = filespec[1:]
+        elif filespec.startswith('/'):        # project-relative
+            # use href, but unquote to allow args (use default html escaping)
+            raw_url = url = desc = unquote(formatter.href(filespec))
+        elif len(parts) == 3:                 # realm:id:attachment-filename
             realm, id, filename = parts
             attachment = Resource(realm, id).child('attachment', filename)
         elif len(parts) == 2:
@@ -398,8 +410,6 @@ class ImageMacro(WikiMacroBase):
                 elif id == 'htdocs':
                     raw_url = url = formatter.href.chrome('site', filename)
                     desc = os.path.basename(filename)
-                elif id in ('http', 'https', 'ftp'): # external URLs
-                    raw_url = url = desc = id+':'+filename
                 else:
                     realm = 'wiki'
                 if realm:
