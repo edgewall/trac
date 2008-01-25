@@ -262,7 +262,7 @@ class CachedChangeset(Changeset):
         self.authz = authz
         cursor = self.db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
-                       "WHERE rev=%s", (rev,))
+                       "WHERE rev=%s", (str(rev),))
         row = cursor.fetchone()
         if row:
             _date, author, message = row
@@ -276,7 +276,7 @@ class CachedChangeset(Changeset):
         cursor = self.db.cursor()
         cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE rev=%s "
-                       "ORDER BY path", (self.rev,))
+                       "ORDER BY path", (str(self.rev),))
         for path, kind, change, base_path, base_rev in cursor:
             if not self.authz.has_permission(posixpath.join(self.scope,
                                                             path.strip('/'))):
