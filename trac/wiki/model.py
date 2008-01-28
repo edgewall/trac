@@ -87,7 +87,6 @@ class WikiPage(object):
         else:
             handle_ta = False
 
-        page_deleted = False
         cursor = db.cursor()
         if version is None:
             # Delete a wiki page completely
