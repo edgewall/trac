@@ -449,7 +449,8 @@ def makeWhereClause(fieldName, values, negative=False):
         connector, op = ' AND ', '!='
     else:
         connector, op = ' OR ', '='
-    clause = connector.join(["%s %s '%s'" % (fieldName, op, value) for value in values])
+    clause = connector.join(["%s %s '%s'" % (fieldName, op, value) 
+                             for value in values])
     return ' ' + clause
 
 def convert(_db, _host, _user, _password, _env, _force):
@@ -535,13 +536,16 @@ def convert(_db, _host, _user, _password, _env, _force):
         trac.setComponentList(components, 'name')
     else:
         if BZ_VERSION >= 2180:
-            sql = """SELECT p.name AS product, c.name AS comp, c.initialowner AS owner
-                   FROM components c, products p"""
-            sql += " WHERE c.product_id = p.id and " + makeWhereClause('p.name', PRODUCTS)
+            sql = ("SELECT p.name AS product, c.name AS comp, "
+                   " c.initialowner AS owner "
+                   "FROM components c, products p "
+                   "WHERE c.product_id = p.id and " + 
+                   makeWhereClause('p.name', PRODUCTS))
         else:
-            sql = """SELECT program AS product, value AS comp, initialowner AS owner
-                   FROM components"""
-            sql += " WHERE" + makeWhereClause('program', PRODUCTS)
+            sql = ("SELECT program AS product, value AS comp, "
+                   " initialowner AS owner "
+                   "FROM components WHERE" + 
+                   makeWhereClause('program', PRODUCTS))
         mysql_cur.execute(sql)
         lines = mysql_cur.fetchall()
         all_components = {} # product -> components
@@ -812,10 +816,13 @@ def convert(_db, _host, _user, _password, _env, _force):
         ticketid = trac.addTicket(**ticket)
 
         if BZ_VERSION >= 2180:
-            mysql_cur.execute("SELECT attachments.*, attach_data.thedata FROM attachments, attach_data
-                    WHERE attachments.bug_id = %s AND attachments.attach_id = attach_data.id" % bugid)
+            mysql_cur.execute("SELECT attachments.*, attach_data.thedata "
+                              "FROM attachments, attach_data "
+                              "WHERE attachments.bug_id = %s AND "
+                              "attachments.attach_id = attach_data.id" % bugid)
         else:
-            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" % bugid)
+            mysql_cur.execute("SELECT * FROM attachments WHERE bug_id = %s" % 
+                              bugid)
         attachments = mysql_cur.fetchall()
         for a in attachments:
             author = trac.getLoginName(mysql_cur, a['submitter_id'])
