@@ -48,6 +48,23 @@ class IRepositoryConnector(Interface):
         """Return a Repository instance for the given repository type and dir.
         """
 
+class IRepositoryProvider(Interface):
+    """Provide known named instances of Repository."""
+
+    def get_repositories():
+        """Generate repository information for known repositories.
+        
+        Repository information is a key,value pair, where the value is 
+        a dictionary which must contain at the very least one of the following 
+        entries:
+         - `'dir'`: the repository directory which can be used by the 
+                    connector to create a `Repository` instance
+         - `'alias'`: if set, it is the name of another repository.
+        Optional entries:
+         - `'type'`: the type of the repository (if not given, the default
+                     repository type will be used)
+        """
+
 
 class RepositoryManager(Component):
     """Component registering the supported version control systems,
@@ -55,9 +72,10 @@ class RepositoryManager(Component):
     It provides easy access to the configured implementation.
     """
 
-    implements(IRequestFilter, IResourceManager)
+    implements(IRequestFilter, IResourceManager, IRepositoryProvider)
 
     connectors = ExtensionPoint(IRepositoryConnector)
+    providers = ExtensionPoint(IRepositoryProvider)
 
     repository_type = Option('trac', 'repository_type', 'svn',
         """Default repository connector type. (''since 0.10'')""")
@@ -69,6 +87,7 @@ class RepositoryManager(Component):
         self._cache = {}
         self._lock = threading.Lock()
         self._connectors = None
+        self._all_repositories = None
 
     # IRequestFilter methods
 
@@ -112,6 +131,38 @@ class RepositoryManager(Component):
                     version = '@%s' % resource.version
             return '%s %s%s' % (kind, resource.id, version)
 
+    # IRepositoryProvider methods
+
+    def get_repositories(self):
+        """Retrieve repositories specified in TracIni.
+        
+        The `[repositories]` section can be used to specify a list
+        of repositories.
+        """
+        repositories = self.config['repositories']
+        reponames = {}
+        # first pass to gather the <name>.dir entries
+        for option in repositories:
+            if option.endswith('.dir'):
+                reponames[option[:-4]] = {}
+        # second pass to gather the <name>.<detail> entries or <alias> ones
+        for option in repositories:
+            if '.' in option:
+                dotindex = option.rindex('.')
+                name, detail = option[:dotindex], option[dotindex+1:]
+                if name in reponames:
+                    reponames[name][detail] = repositories.get(option)
+                else: # alias?
+                    alias = repositories.get(option)
+                    if alias in reponames:
+                        reponames[option] = {'alias': alias}
+        # eventually add pre-0.12 default repository
+        if '' not in reponames:
+            reponames[''] = {'dir': self.repository_dir}
+
+        for reponame, info in reponames.iteritems():
+            yield (reponame, info)
+
     # Public API methods
 
     def get_repository(self, reponame, authname):
@@ -124,28 +175,24 @@ class RepositoryManager(Component):
            :return: if no corresponding repository was defined, 
                     simply return `None`.
         """
-        # retrieve repository type and dir
-        repositories = self.config['repositories']
-        if reponame:
-            # dereference aliases
-            seen = {}
-            while True:
-                if reponame in repositories and reponame not in seen:
-                    seen[reponame] = True
-                    reponame = repositories.get(reponame)
-                else:
-                    break
-            rdir = repositories.get(reponame+'.dir')
-            rtype = repositories.get(reponame+'.type', self.repository_type)
+        repoinfo = self.get_all_repositories().get(reponame)
+        if repoinfo and 'alias' in repoinfo:
+            repoinfo = self.get_all_repositories().get(repoinfo['alias'])
+        if repoinfo:
+            rdir = repoinfo.get('dir')
+            rtype = repoinfo.get('type', self.repository_type)
             if not rdir:
                 return None
+        elif reponame:
+            return None
         else:
             reponame = '' # normalize the name for the default repository
             rdir, rtype = self.repository_dir, self.repository_type
+
+        # get a Repository for the reponame (use a thread-level cache)
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
-            # get a Repository for the reponame (use a thread-level cache)
             tid = threading._get_ident()
             if tid in self._cache:
                 repositories = self._cache[tid]
@@ -161,6 +208,19 @@ class RepositoryManager(Component):
             return repos
         finally:
             self._lock.release()
+
+    def get_all_repositories(self):
+        """Return a dictionary of repository information, indexed by name."""
+        if not self._all_repositories:
+            self._all_repositories = {}
+            for provider in self.providers:
+                for reponame, info in provider.get_repositories():
+                    if reponame in self._all_repositories:
+                        self.log.warn("Discarding duplicate repository '%s'",
+                                      reponame)
+                    else:
+                        self._all_repositories[reponame] = info
+        return self._all_repositories
 
     def shutdown(self, tid=None):
         if tid:
