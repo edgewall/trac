@@ -400,7 +400,8 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
 
             # Support for revision properties (#2545)
-            context = Context.from_request(req, 'changeset', chgset.rev)
+            context = Context.from_request(req, 'changeset', 
+                                           (reponame, chgset.rev))
             revprops = chgset.get_properties()
             data['properties'] = browser.render_properties('revprop', context,
                                                            revprops)

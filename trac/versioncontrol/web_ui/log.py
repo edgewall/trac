@@ -225,7 +225,7 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
         data = {
-            'context': Context.from_request(req, 'source', path),
+            'context': Context.from_request(req, 'source', (reponame, path)),
             'reponame': reponame, 
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
@@ -239,7 +239,8 @@ class LogModule(Component):
         if req.args.get('format') == 'changelog':
             return 'revisionlog.txt', data, 'text/plain'
         elif req.args.get('format') == 'rss':
-            data['context'] = Context.from_request(req, 'source', path,
+            data['context'] = Context.from_request(req, 'source', 
+                                                   (reponame, path),
                                                    absurls=True)
             return 'revisionlog.rss', data, 'application/rss+xml'
 

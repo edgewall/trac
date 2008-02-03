@@ -363,7 +363,8 @@ class BrowserModule(Component):
         except NoSuchChangeset, e:
             raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
-        context = Context.from_request(req, 'source', path, node.created_rev)
+        context = Context.from_request(req, 'source', (reponame, path), 
+                                       node.created_rev)
 
         path_links = get_path_links(req.href, reponame, path, rev, order, desc)
         if len(path_links) > 1:
@@ -657,8 +658,7 @@ class BlameAnnotator(object):
         self.context = context
         # `context`'s resource is ('source', (reponame, path), version=rev)
         r = context.resource
-        self.path = r.id[0]
-        self.reponame = r.id[1]
+        self.reponame, self.path = r.id
         self.repos = env.get_repository(self.reponame)
         self.rev = r.version
         # maintain state

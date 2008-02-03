@@ -213,6 +213,7 @@ class RepositoryManager(Component):
                     rdir = os.path.join(self.env.path, rdir)
                 connector = self._get_connector(rtype)
                 repos = connector.get_repository(rtype, rdir, authname)
+                repos.reponame = reponame
                 repositories[reponame] = repos
             return repos
         finally:
@@ -227,7 +228,7 @@ class RepositoryManager(Component):
                  been truncated, if needed.
         """
         matches = []
-        path = path.strip('/')+'/'
+        path = path and path.strip('/')+'/' or '/'
         for reponame in self.get_all_repositories().keys():
             stripped_reponame = reponame.strip('/')+'/'
             if path.startswith(stripped_reponame):
@@ -323,6 +324,7 @@ class Repository(object):
         self.name = name
         self.authz = authz or Authorizer()
         self.log = log
+        self.reponame = name # overriden by the reponame key used to create it
 
     def close(self):
         """Close the connection to the repository."""

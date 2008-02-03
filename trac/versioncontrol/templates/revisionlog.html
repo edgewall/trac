@@ -99,7 +99,7 @@
           <tbody>
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
-                             chgset_context = context('changeset', change.rev);
+                             chgset_context = context('changeset', (reponame, change.rev));
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
