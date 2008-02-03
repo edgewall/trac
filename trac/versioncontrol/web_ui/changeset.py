@@ -37,9 +37,10 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted, groupby
 from trac.util.datefmt import pretty_timedelta, utc
-from trac.util.text import unicode_urlencode, shorten_line, CRLF
+from trac.util.text import to_unicode, unicode_urlencode, shorten_line, CRLF
 from trac.util.translation import _
-from trac.versioncontrol import Changeset, Node, NoSuchChangeset
+from trac.versioncontrol.api import RepositoryManager, Changeset, Node, \
+                                    NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule, \
                                                DefaultPropertyRenderer
@@ -178,7 +179,11 @@ class ChangesetModule(Component):
 
     # IRequestHandler methods
 
-    _request_re = re.compile(r"/changeset(?:/([^/]+))?(/.*)?$")
+    _request_re = re.compile(r'''
+        /changeset     # module
+        (?:/([^/]+))?  # optional revision
+        (/.*)?$        # optional path restriction
+        ''', re.VERBOSE)
 
     def match_request(self, req):
         match = re.match(self._request_re, req.path_info)
@@ -209,14 +214,11 @@ class ChangesetModule(Component):
         In any case, either path@rev pairs must exist.
         """
         req.perm.require('CHANGESET_VIEW')
-        reponame = req.args.get('reponame')
         
-        repos = self.env.get_repository(reponame, req.authname)
-
         # -- retrieve arguments
-        new_path = req.args.get('new_path')
+        full_new_path = new_path = req.args.get('new_path')
         new = req.args.get('new')
-        old_path = req.args.get('old_path')
+        full_old_path = old_path = req.args.get('old_path')
         old = req.args.get('old')
 
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
@@ -227,6 +229,17 @@ class ChangesetModule(Component):
             old, old_path = old.split('@', 1)
         if new and '@' in new:
             new, new_path = new.split('@', 1)
+
+        reponame, repos, new_path = RepositoryManager(self.env).\
+                get_repository_by_path(new_path, req.authname)
+
+        if old_path:
+            old_reponame, old_repos, old_path = RepositoryManager(self.env).\
+                get_repository_by_path(old_path, req.authname)
+            if old_repos != new_repos:
+                raise TracError(_("Can't compare accross different "
+                                  "repositories: %(old)s vs. %(new)s",
+                                  old=old_reponame, new=reponame))
 
         # -- normalize and check for special case
         try:
@@ -256,12 +269,12 @@ class ChangesetModule(Component):
         if req.args.has_key('update'):
             if chgset:
                 if restricted:
-                    req.redirect(req.href.changeset(new, new_path))
+                    req.redirect(req.href.changeset(new, reponame, new_path))
                 else:
-                    req.redirect(req.href.changeset(new))
+                    req.redirect(req.href.changeset(new, reponame))
             else:
-                req.redirect(req.href.changeset(new, new_path, old=old,
-                                                old_path=old_path))
+                req.redirect(req.href.changeset(new, reponame, new_path, 
+                                                old=old, old_path=full_old_path))
 
         # -- preparing the data
         if chgset:
@@ -281,6 +294,7 @@ class ChangesetModule(Component):
                 old_path = new_path
             data = {'old_path': old_path, 'old_rev': old,
                     'new_path': new_path, 'new_rev': new}
+        data['reponame'] = reponame or None
         data['diff'] = diff_data
         data['wiki_format_messages'] = self.wiki_format_messages
 
@@ -321,7 +335,7 @@ class ChangesetModule(Component):
                 self._render_zip(req, filename, repos, data)
 
         # -- HTML format
-        self._render_html(req, repos, chgset, restricted, xhr, data)
+        self._render_html(req, reponame, repos, chgset, restricted, xhr, data)
         
         if chgset:
             diff_params = 'new=%s' % new
@@ -344,15 +358,15 @@ class ChangesetModule(Component):
             else:
                 prevnext_nav(req, _('Changeset'))
         else:
-            rev_href = req.href.changeset(old, old_path, old=new, 
-                                          old_path=new_path)
+            rev_href = req.href.changeset(old, full_old_path, 
+                                          old=new, old_path=full_new_path)
             add_ctxtnav(req, _('Reverse Diff'), href=rev_href)
             
         return 'changeset.html', data, None
 
     # Internal methods
 
-    def _render_html(self, req, repos, chgset, restricted, xhr, data):
+    def _render_html(self, req, reponame, repos, chgset, restricted, xhr, data):
         """HTML version"""
         data['restricted'] = restricted
         browser = BrowserModule(self.env)
@@ -397,16 +411,18 @@ class ChangesetModule(Component):
                     if prev:
                         prev_path, prev_rev = prev[:2]
                         if prev_rev:
-                            prev_href = req.href.changeset(prev_rev, prev_path)
+                            prev_href = req.href.changeset(prev_rev, reponame,
+                                                           prev_path)
                     else:
                         prev_path = prev_rev = None
                 else:
-                    add_link(req, 'first', req.href.changeset(oldest_rev),
+                    add_link(req, 'first', 
+                             req.href.changeset(oldest_rev, reponame),
                              _('Changeset %(id)s', id=oldest_rev))
                     prev_path = data['old_path']
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
-                        prev_href = req.href.changeset(prev_rev)
+                        prev_href = req.href.changeset(prev_rev, reponame)
                 if prev_rev:
                     add_link(req, 'prev', prev_href, _changeset_title(prev_rev))
             youngest_rev = repos.youngest_rev
@@ -415,15 +431,17 @@ class ChangesetModule(Component):
                     next_rev = repos.next_rev(chgset.rev, path)
                     if next_rev:
                         if repos.has_node(path, next_rev):
-                            next_href = req.href.changeset(next_rev, path)
+                            next_href = req.href.changeset(next_rev, reponame, 
+                                                           path)
                         else: # must be a 'D'elete or 'R'ename, show full cset
-                            next_href = req.href.changeset(next_rev)
+                            next_href = req.href.changeset(next_rev, reponame)
                 else:
-                    add_link(req, 'last', req.href.changeset(youngest_rev),
+                    add_link(req, 'last', 
+                             req.href.changeset(youngest_rev, reponame),
                              _('Changeset %(id)s', id=youngest_rev))
                     next_rev = repos.next_rev(chgset.rev)
                     if next_rev:
-                        next_href = req.href.changeset(next_rev)
+                        next_href = req.href.changeset(next_rev, reponame)
                 if next_rev:
                     add_link(req, 'next', next_href, _changeset_title(next_rev))
 
@@ -446,7 +464,7 @@ class ChangesetModule(Component):
             return {'path': node.path,
                     'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
-                    'href': req.href.browser(node.created_path,
+                    'href': req.href.browser(reponame, node.created_path,
                                              rev=node.created_rev,
                                              annotate=annotated and 1 or None),
                     'title': (_('Show revision %(rev)s of this file in browser',
@@ -459,9 +477,9 @@ class ChangesetModule(Component):
         options = data['diff']['options']
 
         def _prop_changes(old_node, new_node):
-            old_source = Resource('source', old_node.created_path,
+            old_source = Resource('source', (reponame, old_node.created_path),
                                   version=old_node.created_rev)
-            new_source = Resource('source', new_node.created_path,
+            new_source = Resource('source', (reponame, new_node.created_path),
                                   version=new_node.created_rev)
             old_props = new_props = []
             if 'FILE_VIEW' in req.perm(old_source):
@@ -591,15 +609,18 @@ class ChangesetModule(Component):
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
-                        href = req.href.changeset(new_node.rev, new_node.path)
+                        href = req.href.changeset(new_node.rev, reponame, 
+                                                  new_node.path)
                         title = _('Show the changeset %(id)s restricted to '
                                   '%(path)s', id=new_node.rev,
                                   path=new_node.path)
                     else:
                         href = req.href.changeset(
-                            new_node.created_rev, new_node.created_path,
+                            new_node.created_rev, 
+                            reponame, new_node.created_path,
                             old=old_node.created_rev,
-                            old_path=old_node.created_path)
+                            old_path=posixpath.join(reponame, 
+                                                    old_node.created_path))
                         title = _('Show the %(range)s differences restricted '
                                   'to %(path)s',
                                   range='r%s:%s' % (old_node.rev, new_node.rev),
@@ -808,13 +829,12 @@ class ChangesetModule(Component):
     def render_timeline_event(self, context, field, event):
         reponame, changesets, message, show_location, show_files = event[3]
         rev_b, rev_a = changesets[0].rev, changesets[-1].rev
-        
+
         if field == 'url':
             if rev_a == rev_b:
-                return context.href.changeset(rev_a, reponame=reponame)
+                return context.href.changeset(rev_a, reponame)
             else:
-                return context.href.log(rev=rev_b, stop_rev=rev_a, 
-                                        reponame=reponame)
+                return context.href.log(reponame, rev=rev_b, stop_rev=rev_a) 
             
         elif field == 'description':
             if not self.timeline_long_messages:
@@ -898,22 +918,33 @@ class ChangesetModule(Component):
                                                          fullmatch)
         if intertrac:
             return intertrac
+
+        # identifying repository
+        rm = RepositoryManager(self.env)
+        authname = formatter.perm.username
         chgset, params, fragment = formatter.split_link(chgset)
         sep = chgset.find('/')
         if sep > 0:
             rev, path = chgset[:sep], chgset[sep:]
+            reponame, repos, path = rm.get_repository_by_path(path, authname)
         else:
             rev, path = chgset, None
-        try:
-            changeset = self.env.get_repository().get_changeset(rev)
-            return tag.a(label, class_="changeset",
-                         title=shorten_line(changeset.message),
-                         href=(formatter.href.changeset(rev, path) +
-                               params + fragment))
-        except TracError, e:
-            return tag.a(label, class_="missing changeset",
-                         href=formatter.href.changeset(rev, path),
-                         title=unicode(e), rel="nofollow")
+            reponame = rm.get_default_repository(formatter.context)
+            repos = rm.get_repository(reponame, authname)
+
+        # rendering changeset link
+        if repos:
+            try:
+                changeset = repos.get_changeset(rev)
+                return tag.a(label, class_="changeset",
+                             title=shorten_line(changeset.message),
+                             href=(formatter.href.changeset(rev, reponame, path) +
+                                   params + fragment))
+            except TracError, e:
+                errmsg = to_unicode(e)
+        else:
+            errmsg = _("Repository %(repos)s not found", repos=reponame)
+        return tag.a(label, class_="missing changeset", title=errmsg)
 
     def _format_diff_link(self, formatter, ns, target, label):
         params, query, fragment = formatter.split_link(target)
@@ -945,7 +976,9 @@ class ChangesetModule(Component):
                                             old=data['old_rev']) + query
         return tag.a(label, class_="changeset", title=title, href=href)
 
-    # ISearchSource methods
+    # ISearchSource methods 
+    
+    ### FIXME: move to the Repository connector level
 
     def get_search_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:

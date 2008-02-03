@@ -240,6 +240,17 @@ class RepositoryManager(Component):
             reponame = ''
         return (reponame, self.get_repository(reponame, authname), path or '/')
 
+    def get_default_repository(self, context):
+        """Recover the appropriatet repository from the current context.
+
+        Lookup the closest source or changeset resource in the context 
+        hierarchy and return the name of its associated repository.
+        """
+        while context:
+            if context.resource.realm in ('source', 'changeset'):
+                return context.resource.id[0]
+            context = context.parent
+
     def get_all_repositories(self):
         """Return a dictionary of repository information, indexed by name."""
         if not self._all_repositories:
