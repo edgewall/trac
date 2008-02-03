@@ -57,7 +57,7 @@
               <option selected="selected" />
               <optgroup py:for="category, locations in groupby(quickjump_entries, key=lambda q: q[0])"
                 label="${category}">
-                <option py:for="_, name, path, rev in locations" value="${href.browser(path, rev=rev)}">$name</option>
+                <option py:for="_, name, path, rev in locations" value="${href.browser(reponame, path, rev=rev)}">$name</option>
               </optgroup>
             </select>
             <input type="submit" value="Go!" title="Jump to the chosen preselected path" />
@@ -73,7 +73,7 @@
                 <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
                   <a title="Sort by $class_${order == class_ and not desc and
                                              ' (descending)' or ''}"
-                    href="${href.browser(path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
+                    href="${href.browser(reponame, path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
                     desc=(class_ == order and not desc and 1 or None))}">$title</a>
                 </th>
               </py:def>
@@ -100,7 +100,7 @@
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
           <th scope="col">
-            Revision <a href="${href.changeset(rev)}">$rev</a>, ${sizeinfo(file.size)}
+            Revision <a href="${href.changeset(rev, reponame)}">$rev</a>, ${sizeinfo(file.size)}
             (checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago)
           </th>
         </tr>

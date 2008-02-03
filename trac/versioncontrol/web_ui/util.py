@@ -39,15 +39,20 @@ def get_changes(repos, revs):
         changes[rev] = changeset
     return changes
 
-def get_path_links(href, fullpath, rev, order=None, desc=None):
+def get_path_links(href, reponame, path, rev, order=None, desc=None):
     links = [{'name': 'root',
               'href': href.browser(rev=rev, order=order, desc=desc)}]
-    path = ''
-    for part in [p for p in fullpath.split('/') if p]:
-        path += part + '/'
+    if reponame:
+        links.append({
+            'name': reponame, 
+            'href': href.browser(reponame, rev=rev, order=order, desc=desc)})
+    partial_path = ''
+    for part in [p for p in path.split('/') if p]:
+        partial_path += part + '/'
         links.append({
             'name': part,
-            'href': href.browser(path, rev=rev, order=order, desc=desc)
+            'href': href.browser(reponame, partial_path, rev=rev, 
+                                 order=order, desc=desc)
             })
     return links
 
