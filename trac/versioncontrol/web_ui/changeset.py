@@ -210,7 +210,7 @@ class ChangesetModule(Component):
         """
         req.perm.require('CHANGESET_VIEW')
         
-        repos = self.env.get_repository(req.authname)
+        repos = self.env.get_repository('', req.authname)
 
         # -- retrieve arguments
         new_path = req.args.get('new_path')
@@ -775,7 +775,7 @@ class ChangesetModule(Component):
             else:
                 show_files = 0 # disabled
             
-            repos = self.env.get_repository(req.authname)
+            repos = self.env.get_repository('', req.authname)
 
             if self.timeline_collapse:
                 collapse_changesets = lambda c: (c.author, c.message)
@@ -939,7 +939,7 @@ class ChangesetModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'changeset' in filters:
             return
-        repos = self.env.get_repository(req.authname)
+        repos = self.env.get_repository('', req.authname)
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
         cursor = db.cursor()
@@ -964,7 +964,7 @@ class AnyDiffModule(Component):
         return re.match(r'/diff$', req.path_info)
 
     def process_request(self, req):
-        repos = self.env.get_repository(req.authname)
+        repos = self.env.get_repository('', req.authname)
 
         if req.get_header('X-Requested-With') == 'XMLHttpRequest':
             dirname, prefix = posixpath.split(req.args.get('q'))

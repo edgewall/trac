@@ -21,7 +21,7 @@ def _normalize_rev(rev):
         else:
             raise NoSuchChangeset(rev)
     
-def _get_repository(authname=None):
+def _get_repository(reponame, authname=None):
     return Mock(get_changeset=_get_changeset, youngest_rev='200',
                 normalize_rev=_normalize_rev)
 

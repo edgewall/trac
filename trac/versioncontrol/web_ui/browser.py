@@ -331,7 +331,7 @@ class BrowserModule(Component):
         desc = req.args.get('desc', None)
 
         # Find node for the requested path/rev
-        repos = self.env.get_repository(req.authname)
+        repos = self.env.get_repository('', req.authname)
 
         try:
             if rev:

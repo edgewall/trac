@@ -60,15 +60,15 @@ class RepositoryManager(Component):
     connectors = ExtensionPoint(IRepositoryConnector)
 
     repository_type = Option('trac', 'repository_type', 'svn',
-        """Repository connector type. (''since 0.10'')""")
+        """Default repository connector type. (''since 0.10'')""")
     repository_dir = Option('trac', 'repository_dir', '',
-        """Path to local repository. This can also be a relative path
+        """Path to the default repository. This can also be a relative path
         (''since 0.11'').""")
 
     def __init__(self):
         self._cache = {}
         self._lock = threading.Lock()
-        self._connector = None
+        self._connectors = None
 
     # IRequestFilter methods
 
@@ -76,7 +76,8 @@ class RepositoryManager(Component):
         from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
             try:
-                self.get_repository(req.authname).sync()
+                # FIXME: only sync the default repository - this is bogus
+                self.get_repository('', req.authname).sync()
             except TracError, e:
                 add_warning(req, _("Can't synchronize with the repository "
                               "(%(error)s)", error=e.message))
@@ -113,34 +114,50 @@ class RepositoryManager(Component):
 
     # Public API methods
 
-    def get_repository(self, authname):
+    def get_repository(self, reponame, authname):
+        """Retrieve the appropriate Repository for the given name
+
+           :param reponame: the key for specifying the repository.
+                            If no name is given, take the the default 
+                            repository 
+           :param authname: deprecated (use fine grained permissions)
+           :return: if no corresponding repository was defined, 
+                    simply return `None`.
+        """
+        # retrieve repository type and dir
+        repositories = self.config['repositories']
+        if reponame:
+            # dereference aliases
+            seen = {}
+            while True:
+                if reponame in repositories and reponame not in seen:
+                    seen[reponame] = True
+                    reponame = repositories.get(reponame)
+                else:
+                    break
+            rdir = repositories.get(reponame+'.dir')
+            rtype = repositories.get(reponame+'.type', self.repository_type)
+            if not rdir:
+                return None
+        else:
+            reponame = '' # normalize the name for the default repository
+            rdir, rtype = self.repository_dir, self.repository_type
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
         try:
             self._lock.acquire()
-            if not self._connector:
-                candidates = [
-                    (prio, connector)
-                    for connector in self.connectors
-                    for repos_type, prio in connector.get_supported_types()
-                    if repos_type == self.repository_type
-                ]
-                if candidates:
-                    self._connector = max(candidates)[1]
-                else:
-                    raise TracError(
-                        _('Unsupported version control system "%(name)s". '
-                          'Check that the Python support libraries for '
-                          '"%(name)s" are correctly installed.',
-                          name=self.repository_type))
+            # get a Repository for the reponame (use a thread-level cache)
             tid = threading._get_ident()
             if tid in self._cache:
-                repos = self._cache[tid]
+                repositories = self._cache[tid]
             else:
-                rtype, rdir = self.repository_type, self.repository_dir
+                repositories = self._cache[tid] = {}
+            repos = repositories.get(reponame)
+            if not repos:
                 if not os.path.isabs(rdir):
                     rdir = os.path.join(self.env.path, rdir)
-                repos = self._connector.get_repository(rtype, rdir, authname)
-                self._cache[tid] = repos
+                connector = self._get_connector(rtype)
+                repos = connector.get_repository(rtype, rdir, authname)
+                repositories[reponame] = repos
             return repos
         finally:
             self._lock.release()
@@ -150,11 +167,38 @@ class RepositoryManager(Component):
             assert tid == threading._get_ident()
             try:
                 self._lock.acquire()
-                repos = self._cache.pop(tid, None)
-                if repos:
+                repositories = self._cache.pop(tid, {})
+                for reponame, repos in repositories.iteritems():
                     repos.close()
             finally:
                 self._lock.release()
+        
+    # private methods
+
+    def _get_connector(self, rtype):
+        """Retrieve the appropriate connector for the given repository type.
+        
+        Note that the self._lock must be held when calling this method.
+        """
+        if self._connectors is None:
+            # build an environment-level cache for the preferred connectors
+            self._connectors = {}
+            prioritize = {}
+            for connector in self.connectors:
+                for type_, prio in connector.get_supported_types():
+                    best = prioritize.setdefault(type_, [(None, 0)])
+                    if prio > best[0][1]:
+                        best[0] = (connector, prio)
+            for type_, best in prioritize.iteritems():
+                    self._connectors[type_] = best[0][0]
+        connector = self._connectors[rtype]
+        if not connector:
+            raise TracError(
+                    _('Unsupported version control system "%(name)s". '
+                      'Check that the Python support libraries for '
+                      '"%(name)s" are correctly installed.',
+                      name=self.repository_type))
+        return connector
 
 
 class NoSuchChangeset(ResourceNotFound):

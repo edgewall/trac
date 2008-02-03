@@ -82,7 +82,7 @@ class LogModule(Component):
         verbose = req.args.get('verbose')
         limit = int(req.args.get('limit') or self.default_log_limit)
 
-        repos = self.env.get_repository(req.authname)
+        repos = self.env.get_repository('', req.authname)
         normpath = repos.normalize_path(path)
         revranges = None
         rev = revs
@@ -316,7 +316,7 @@ class LogModule(Component):
             revranges = Ranges(ranges) 
         except ValueError:
             # slow path, normalize each rev
-            repos = self.env.get_repository(req.authname)
+            repos = self.env.get_repository('', req.authname)
             splitted_ranges = re.split(r'([-,])', ranges)
             revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
             seps = splitted_ranges[1::2]+['']
