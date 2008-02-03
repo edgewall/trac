@@ -209,8 +209,9 @@ class ChangesetModule(Component):
         In any case, either path@rev pairs must exist.
         """
         req.perm.require('CHANGESET_VIEW')
+        reponame = req.args.get('reponame')
         
-        repos = self.env.get_repository('', req.authname)
+        repos = self.env.get_repository(reponame, req.authname)
 
         # -- retrieve arguments
         new_path = req.args.get('new_path')
@@ -775,34 +776,39 @@ class ChangesetModule(Component):
             else:
                 show_files = 0 # disabled
             
-            repos = self.env.get_repository('', req.authname)
-
             if self.timeline_collapse:
                 collapse_changesets = lambda c: (c.author, c.message)
             else:
                 collapse_changesets = lambda c: c.rev
                 
-            for _, changesets in groupby(repos.get_changesets(start, stop),
-                                         key=collapse_changesets):
-                permitted_changesets = []
-                for chgset in changesets:
-                    if 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
-                        permitted_changesets.append(chgset)
-                if permitted_changesets:
-                    chgset = permitted_changesets[-1]
-                    yield ('changeset', chgset.date, chgset.author,
-                           (permitted_changesets, chgset.message or '',
-                            show_location, show_files))
+            def generate_changesets(reponame, repo):
+                for _, changesets in groupby(repos.get_changesets(start, stop),
+                                             key=collapse_changesets):
+                    permitted_changesets = []
+                    for chgset in changesets:
+                        if 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
+                            permitted_changesets.append(chgset)
+                    if permitted_changesets:
+                        chgset = permitted_changesets[-1]
+                        yield ('changeset', chgset.date, chgset.author,
+                               (reponame or None, permitted_changesets, 
+                                chgset.message or '',
+                                show_location, show_files))
 
+            for reponame, repos in self.env.get_all_repositories(req.authname):
+                for event in generate_changesets(reponame, repos):
+                    yield event
+                
     def render_timeline_event(self, context, field, event):
-        changesets, message, show_location, show_files = event[3]
+        reponame, changesets, message, show_location, show_files = event[3]
         rev_b, rev_a = changesets[0].rev, changesets[-1].rev
         
         if field == 'url':
             if rev_a == rev_b:
-                return context.href.changeset(rev_a)
+                return context.href.changeset(rev_a, reponame=reponame)
             else:
-                return context.href.log(rev=rev_b, stop_rev=rev_a)
+                return context.href.log(rev=rev_b, stop_rev=rev_a, 
+                                        reponame=reponame)
             
         elif field == 'description':
             if not self.timeline_long_messages:
@@ -845,11 +851,14 @@ class ChangesetModule(Component):
                 markup += format_to_html(self.env, context, message)
             return markup
 
+        reposuffix = ''
+        if reponame:
+            reposuffix = '/'+reponame
         if rev_a == rev_b:
-            title = tag('Changeset ', tag.em('[%s]' % rev_a))
+            title = tag('Changeset ', tag.em('[%s%s]' % (rev_a, reposuffix)))
         else:
-            title = tag('Changesets ', tag.em('[', rev_a, '-', rev_b, ']'))
-            
+            title = tag('Changesets ', tag.em('[', rev_a, '-', rev_b, 
+                                              reposuffix+']'))
         if field == 'title':
             return title
         elif field == 'summary':
