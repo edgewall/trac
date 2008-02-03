@@ -107,17 +107,24 @@ class RepositoryManager(Component):
 
     # IResourceManager methods
 
+    # Note: with multiple repository support, the repository name becomes
+    #       part of the 'id', which becomes a `(reponame, rev or path)` pair.
+
     def get_resource_realms(self):
         yield 'changeset'
         yield 'source'
 
     def get_resource_description(self, resource, format=None, **kwargs):
+        reponame, id = resource.id
         if resource.realm == 'changeset':
-            return _("Changeset %(rev)s", rev=resource.id)
+            if reponame:
+                return _("Changeset %(rev)s in %(repo)s", rev=id, repo=reponame)
+            else:
+                return _("Changeset %(rev)s", rev=id)
         elif resource.realm == 'source':
-            version = ''
+            version = in_repo = ''
             if format == 'summary':
-                repos = resource.env.get_repository() # no perm.username!
+                repos = resource.env.get_repository(reponame)
                 node = repos.get_node(resource.id, resource.version)
                 if node.isdir:
                     kind = _("Directory")
@@ -129,7 +136,9 @@ class RepositoryManager(Component):
                 kind = _("Path")
                 if resource.version:
                     version = '@%s' % resource.version
-            return '%s %s%s' % (kind, resource.id, version)
+            if reponame:
+                in_repo = _("in %(repo)s", repo=reponame)
+            return ''.join(kind, ' ', resource.id, version, in_repo)
 
     # IRepositoryProvider methods
 
