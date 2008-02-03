@@ -209,6 +209,28 @@ class RepositoryManager(Component):
         finally:
             self._lock.release()
 
+    def get_repository_by_path(self, path, authname):
+        """Retrieve a matching Repository for the given path.
+        
+        :param path: the eventually scoped repository-scoped path
+        :return: a `(reponame, repos, path)` triple, where `path` is 
+                 the remaining part of `path` once the `reponame` has
+                 been truncated, if needed.
+        """
+        matches = []
+        path = path.strip('/')+'/'
+        for reponame in self.get_all_repositories().keys():
+            stripped_reponame = reponame.strip('/')+'/'
+            if path.startswith(stripped_reponame):
+                matches.append((len(stripped_reponame), reponame))
+        if matches:
+            matches.sort()
+            length, reponame = matches[-1]
+            path = path[length:]
+        else:
+            reponame = ''
+        return (reponame, self.get_repository(reponame, authname), path or '/')
+
     def get_all_repositories(self):
         """Return a dictionary of repository information, indexed by name."""
         if not self._all_repositories:
