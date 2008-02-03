@@ -99,6 +99,13 @@ div.message {
   vertical-align: middle; 
   white-space: nowrap 
 }
+#dirlist td.change a.chgset { 
+  background-repeat: no-repeat;
+  background-image: url(../changeset.png); 
+  background-position: 100% 50%;
+  padding: 6px; 
+  border: none;
+}
 
 #dirlist td span.loading { 
   background-image: url(../loading.gif); 

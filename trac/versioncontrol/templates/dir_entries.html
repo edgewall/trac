@@ -21,6 +21,7 @@
           ${change and dateinfo(change.date) or '-'}
         </td>
         <td class="change">
+          <a title="View changeset ${change.rev}" class="chgset" href="${href.changeset(change.rev, reponame)}" />
           <span class="author" py:if="change">${authorinfo(change.author)}:</span>
           <span class="change" py:choose="" py:with="chgset_context = context('changeset', (reponame, change.rev))">
             <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
