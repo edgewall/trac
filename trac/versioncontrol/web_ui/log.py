@@ -31,7 +31,8 @@ from trac.util.datefmt import http_date
 from trac.util.html import html
 from trac.util.text import wrap
 from trac.util.translation import _
-from trac.versioncontrol.api import Changeset, NoSuchChangeset
+from trac.versioncontrol.api import RepositoryManager, Changeset, \
+                                    NoSuchChangeset
 from trac.versioncontrol.web_ui.changeset import ChangesetModule
 from trac.versioncontrol.web_ui.util import *
 from trac.web import IRequestHandler
@@ -63,9 +64,14 @@ class LogModule(Component):
 
     # IRequestHandler methods
 
+    _request_re = re.compile(r'''
+        /log    # module
+        (/.*)?  # optional path
+        ''', re.VERBOSE)
+
     def match_request(self, req):
         import re
-        match = re.match(r'/log(?:(/.*)|$)', req.path_info)
+        match = re.match(self._request_re, req.path_info)
         if match:
             req.args['path'] = match.group(1) or '/'
             return True
@@ -82,7 +88,9 @@ class LogModule(Component):
         verbose = req.args.get('verbose')
         limit = int(req.args.get('limit') or self.default_log_limit)
 
-        repos = self.env.get_repository('', req.authname)
+        reponame, repos, path = RepositoryManager(self.env).\
+                get_repository_by_path(path, req.authname)
+
         normpath = repos.normalize_path(path)
         revranges = None
         rev = revs
@@ -93,7 +101,7 @@ class LogModule(Component):
             except ValueError:
                 pass
         rev = unicode(repos.normalize_rev(rev))    
-        path_links = get_path_links(req.href, path, rev)
+        path_links = get_path_links(req.href, reponame, path, rev)
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
 
@@ -179,7 +187,7 @@ class LogModule(Component):
             params.update(args)
             if verbose:
                 params['verbose'] = verbose
-            return req.href.log(path, **params)
+            return req.href.log(reponame, path, **params)
 
         if len(info) == limit+1: # limit+1 reached, there _might_ be some more
             next_rev = info[-1]['rev']
@@ -218,6 +226,7 @@ class LogModule(Component):
                 extra_changes[rev] = cs
         data = {
             'context': Context.from_request(req, 'source', path),
+            'reponame': reponame, 
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'mode': mode, 'verbose': verbose,
             'path_links': path_links, 'limit' : limit,
@@ -245,7 +254,7 @@ class LogModule(Component):
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
         add_ctxtnav(req, _('View Latest Revision'), 
-                    href=req.href.browser(path))
+                    href=req.href.browser(reponame, path))
         if 'next' in req.chrome['links']:
             next = req.chrome['links']['next'][0]
             add_ctxtnav(req, tag.span(tag.a(_('Older Revisions'), 
@@ -299,24 +308,25 @@ class LogModule(Component):
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
         try:
-            revs = self._normalize_ranges(formatter.req, revs)
+            revs = self._normalize_ranges(formatter.req, path, revs)
         except NoSuchChangeset:
             revs = None
         if revs and query:
             query = '&' + query[1:]
-        href = formatter.href.log(path or '/', revs=revs) + query + fragment
-        return html.A(label, class_='source', href=href)
+        href = formatter.href.log(path or '/', revs=revs) # full path is OK
+        return html.A(label, class_='source', href=href + query + fragment)
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
-    def _normalize_ranges(self, req, revs):
+    def _normalize_ranges(self, req, path, revs):
         ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
             revranges = Ranges(ranges) 
         except ValueError:
             # slow path, normalize each rev
-            repos = self.env.get_repository('', req.authname)
+            reponame, repos, path = RepositoryManager(self.env).\
+                get_repository_by_path(path, req.authname)
             splitted_ranges = re.split(r'([-,])', ranges)
             revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
             seps = splitted_ranges[1::2]+['']

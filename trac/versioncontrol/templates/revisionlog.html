@@ -105,7 +105,7 @@
                 <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
                   <td />
                   <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
-                    copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
+                    copied from <a href="${href.browser(reponame, item.path, rev=item.rev)}">$item.copyfrom_path</a>:
                   </td>
                 </tr>
 
@@ -118,17 +118,17 @@
                   </td>
                   <py:when test="item.change">
                     <td class="change" style="padding-left: ${item.depth}em">
-                      <a title="View log starting at this revision" href="${href.log(item.path, rev=item.rev)}">
+                      <a title="View log starting at this revision" href="${href.log(reponame, item.path, rev=item.rev)}">
                         <span class="$item.change"></span>
                         <span class="comment">($item.change)</span>
                       </a>
                     </td>
                     <td class="rev">
-                      <a title="Browse at revision $item.rev" href="${href.browser(item.path, rev=item.existing_rev)}">
+                      <a title="Browse at revision $item.rev" href="${href.browser(reponame, item.path, rev=item.existing_rev)}">
                         @$item.existing_rev</a>
                     </td>
                     <td class="chgset">
-                      <a title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, item.path)}">
+                      <a title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, reponame, item.path)}">
                         [$item.rev]</a>
                     </td>
                     <td class="date" py:content="dateinfo(change.date)" />
