@@ -10,7 +10,7 @@
       <tr class="${idx % 2 and 'even' or 'odd'}">
         <td class="name">
           <a class="$entry.kind" title="View ${entry.kind.capitalize()}"
-             href="${href.browser(reponame, entry.path, rev=stickyrev, order=(dir.order != 'name' and dir.order or None), desc=dir.desc)}">$entry.name</a>
+             href="${href.browser(reponame, entry.path, rev=stickyrev, order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
         </td>
         <td class="size">${sizeinfo(entry.content_length)}</td>
         <td class="rev">

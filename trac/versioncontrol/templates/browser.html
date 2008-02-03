@@ -37,50 +37,111 @@
   <body>
     <div id="content" class="browser">
 
-      <h1>${browser_path_links(path_links, stickyrev)}</h1>
+      <py:def function="sortable_th(class_, title)">
+        <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
+          <a title="Sort by $class_${order == class_ and not desc and
+                                     ' (descending)' or ''}"
+            href="${href.browser(reponame, path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
+            desc=(class_ == order and not desc and 1 or None))}">$title</a>
+        </th>
+      </py:def>
 
-      <div id="jumprev">
-        <form action="" method="get">
-          <div>
-            <label for="rev" title="${stickyrev and 'Hint: clear the field to view latest revision' or None}">
-              View revision:</label>
-            <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
-          </div>
-        </form>
-      </div>
+      <py:if test="repo">
+        <h1>Repository Index</h1>
+  
+        <table class="listing" id="dirlist">
+          <thead>
+            <tr>
+              ${sortable_th('name', 'Name')}
+              ${sortable_th('size', 'Size')}
+              <th class="rev">Rev</th>
+              ${sortable_th('date', 'Age')}
+              <th class="change">Last Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            <py:for each="idx, (reponame, repos, repoinfo, change) in enumerate(repo.repositories)">
+              <tr class="${idx % 2 and 'even' or 'odd'}">
+                <td class="name">
+                  <a class="dir" title="View Root Directory"
+                      href="${href.browser(reponame, order=(order != 'name' and order or None), desc=desc)}" py:choose="reponame"><b py:when="''">(default)</b><py:otherwise>$reponame</py:otherwise></a>
+                </td>
+                <td class="size" />
+                <td class="rev">
+                  <a title="View Revision Log" href="${href.log(reponame)}">$change.rev</a>
+                </td>
+                <td class="age" style="${change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
+                  repo.colorize_age(repo.timerange.relative(change.date)) or None}">
+                  ${change and dateinfo(change.date) or '-'}
+                </td>
+                <td class="change">
+                  <span class="author" py:if="change">${authorinfo(change.author)}:</span>
+                  <span class="change" py:choose="" py:with="chgset_context = context('changeset', (reponame, change.rev))">
+                    <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
+                    <py:when test="wiki_format_messages">
+                      ${change and wiki_to_oneliner(chgset_context, change.message, shorten=True)}
+                    </py:when>
+                    <py:otherwise>${change and shorten_line(change.message)}</py:otherwise>
+                  </span>
+                </td>
+              </tr>
+              <tr class="${idx % 2 and 'even' or 'odd'}" py:if="repoinfo.description">
+                <td class="description" colspan="4">$repoinfo.description</td>
+              </tr>
+            </py:for>
+          </tbody>
+        </table>
+      </py:if>
 
-      <div py:if="quickjump_entries" id="jumploc">
-        <form action="" method="get">
-          <div class="buttons">
-            <label for="preselected">Visit:</label>
-            <select id="preselected" name="preselected">
-              <option selected="selected" />
-              <optgroup py:for="category, locations in groupby(quickjump_entries, key=lambda q: q[0])"
-                label="${category}">
-                <option py:for="_, name, path, rev in locations" value="${href.browser(reponame, path, rev=rev)}">$name</option>
-              </optgroup>
-            </select>
-            <input type="submit" value="Go!" title="Jump to the chosen preselected path" />
-          </div>
-        </form>
-      </div>
+      <py:if test="dir or file">
+        <py:choose>
+          <py:when test="repo">
+            <hr />
+            <h1>Default Repository</h1>
+            <p class="hint">The entries in that repository are reachable directly, 
+            without a repository prefix. <br />
+            However, a repository name will always take precedence over a similarly 
+            named entry in the default repository. <br />
+            If this is a problem, add a separate explicit entry for that repository.</p>
+          </py:when>
+          <h1 py:otherwise="" py:content="browser_path_links(path_links, stickyrev)" />
+        </py:choose>
+  
+        <div id="jumprev">
+          <form action="" method="get">
+            <div>
+              <label for="rev" title="${stickyrev and 'Hint: clear the field to view latest revision' or None}">
+                View revision:</label>
+              <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
+            </div>
+          </form>
+        </div>
+  
+        <div py:if="quickjump_entries" id="jumploc">
+          <form action="" method="get">
+            <div class="buttons">
+              <label for="preselected">Visit:</label>
+              <select id="preselected" name="preselected">
+                <option selected="selected" />
+                <optgroup py:for="category, locations in groupby(quickjump_entries, key=lambda q: q[0])"
+                  label="${category}">
+                  <option py:for="_, name, path, rev in locations" value="${href.browser(reponame, path, rev=rev)}">$name</option>
+                </optgroup>
+              </select>
+              <input type="submit" value="Go!" title="Jump to the chosen preselected path" />
+            </div>
+          </form>
+        </div>
+      </py:if>
 
       <py:if test="dir">
         <table class="listing" id="dirlist">
           <thead>
             <tr>
-              <py:def function="sortable_th(order, desc, class_, title)">
-                <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
-                  <a title="Sort by $class_${order == class_ and not desc and
-                                             ' (descending)' or ''}"
-                    href="${href.browser(reponame, path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
-                    desc=(class_ == order and not desc and 1 or None))}">$title</a>
-                </th>
-              </py:def>
-              ${sortable_th(dir.order, dir.desc, 'name', 'Name')}
-              ${sortable_th(dir.order, dir.desc, 'size', 'Size')}
+              ${sortable_th('name', 'Name')}
+              ${sortable_th('size', 'Size')}
               <th class="rev">Rev</th>
-              ${sortable_th(dir.order, dir.desc, 'date', 'Age')}
+              ${sortable_th('date', 'Age')}
               <th class="change">Last Change</th>
             </tr>
           </thead>

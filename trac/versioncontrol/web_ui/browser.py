@@ -334,16 +334,20 @@ class BrowserModule(Component):
 
         path = req.args.get('path', '/')
         rev = req.args.get('rev', None)
-        order = req.args.get('order', None)
-        desc = req.args.get('desc', None)
+        order = req.args.get('order', 'name').lower()
+        desc = req.args.has_key('desc')
         
         rm = RepositoryManager(self.env)
         reponame, repos, path = rm.get_repository_by_path(path, req.authname)
 
+        # Repository index
+        all_repositories = None
         if not reponame and path == '/':
             all_repositories = rm.get_all_repositories().items()
             if len(all_repositories) > 1:
-                return self._render_repository_index(req, all_repositories)
+                repos = rm.get_repository('', req.authname)
+            else:
+                all_repositories = None
 
         if not repos:
             if reponame:
@@ -378,7 +382,12 @@ class BrowserModule(Component):
             'properties': self.render_properties('browser', context,
                                                  node.get_properties()),
             'path_links': path_links,
-            'dir': node.isdir and self._render_dir(req, repos, node, rev),
+            'order': order, 'desc': desc and 1 or None,
+            'repo': all_repositories and \
+                    self._render_repository_index(req, all_repositories,
+                                                  order, desc),
+            'dir': node.isdir and self._render_dir(req, repos, node, rev,
+                                                   order, desc),
             'file': node.isfile and self._render_file(req, context, reponame,
                                                       repos, node, rev),
             'quickjump_entries': list(repos.get_quickjump_entries(rev)),
@@ -416,7 +425,7 @@ class BrowserModule(Component):
 
     # Internal methods
 
-    def _render_repository_index(self, req, all_repositories):
+    def _render_repository_index(self, req, all_repositories, order, desc):
         req.perm.require('BROWSER_VIEW')
 
         # Color scale for the age column
@@ -424,10 +433,7 @@ class BrowserModule(Component):
         if self.color_scale:
             custom_colorizer = self.get_custom_colorizer()
 
-        # Ordering of entries
-        order = req.args.get('order', 'name').lower()
-        desc = req.args.has_key('desc')
-
+        # Prepare repository data
         rm = RepositoryManager(self.env)
         repositories = []
         for reponame, repoinfo in all_repositories:
@@ -440,13 +446,20 @@ class BrowserModule(Component):
                     timerange.insert(youngest.date)
             repositories.append((reponame, repoinfo, repos, youngest))
 
-        data = {'repositories' : repositories,
-                'timerange': timerange, 'colorize_age': custom_colorizer,
-                'order': order, 'desc': desc}
-        add_stylesheet(req, 'common/css/browser.css')
-        return 'repository_index.html', data, None
+        # Ordering of repositories
+        if order == 'date':
+            def repo_order((reponame, repoinfo, repos, youngest)):
+                return youngest and youngest.date
+        else:
+            def repo_order((reponame, repoinfo, repos, youngest)):
+                return embedded_numbers(reponame.lower())
 
-    def _render_dir(self, req, repos, node, rev=None):
+        repositories = sorted(repositories, key=repo_order, reverse=desc)
+
+        return {'repositories' : repositories,
+                'timerange': timerange, 'colorize_age': custom_colorizer}
+
+    def _render_dir(self, req, repos, node, rev, order, desc):
         req.perm.require('BROWSER_VIEW')
 
         # Entries metadata
@@ -472,9 +485,6 @@ class BrowserModule(Component):
             custom_colorizer = self.get_custom_colorizer()
 
         # Ordering of entries
-        order = req.args.get('order', 'name').lower()
-        desc = req.args.has_key('desc')
-
         if order == 'date':
             def file_order(a):
                 return changes[a.rev].date
@@ -505,8 +515,7 @@ class BrowserModule(Component):
 
         add_script(req, 'common/js/expand_dir.js')
 
-        return {'order': order, 'desc': desc and 1 or None,
-                'entries': entries, 'changes': changes,
+        return {'entries': entries, 'changes': changes,
                 'timerange': timerange, 'colorize_age': custom_colorizer,
                 'range_max_secs': (timerange and
                                    timerange.to_seconds(timerange.newest)),
