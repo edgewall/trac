@@ -781,11 +781,17 @@ class ChangesetModule(Component):
             else:
                 collapse_changesets = lambda c: c.rev
                 
+            uids_seen = {}
             def generate_changesets(reponame, repo):
                 for _, changesets in groupby(repos.get_changesets(start, stop),
                                              key=collapse_changesets):
                     permitted_changesets = []
                     for chgset in changesets:
+                        uid = chgset.get_uid()
+                        if uid:
+                            if uid in uids_seen:
+                                continue
+                            uids_seen[uid] = True
                         if 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
                             permitted_changesets.append(chgset)
                     if permitted_changesets:

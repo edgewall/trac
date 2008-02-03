@@ -586,7 +586,7 @@ class Changeset(object):
         self.message = message or ''
         self.author = author or ''
         self.date = date
-
+    
     def get_properties(self):
         """Returns the properties (meta-data) of the node, as a dictionary.
 
@@ -611,6 +611,13 @@ class Changeset(object):
         action (`None` and `-1` in the case of an ADD change).
         """
         raise NotImplementedError
+
+    def get_uid(self):
+        """Return a globally unique identifier for this changesets.
+
+        Two changesets from different repositories can sometimes refer to
+        the ''very same'' changesets (e.g. two different clones)
+        """
 
 
 class PermissionDenied(PermissionError):
