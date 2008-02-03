@@ -44,7 +44,7 @@ class IRepositoryConnector(Interface):
         choose between them (highest number is highest priority).
         """
 
-    def get_repository(repos_type, repos_dir, authname):
+    def get_repository(repos_type, repos_dir, options):
         """Return a Repository instance for the given repository type and dir.
         """
 
@@ -184,7 +184,7 @@ class RepositoryManager(Component):
            :return: if no corresponding repository was defined, 
                     simply return `None`.
         """
-        repoinfo = self.get_all_repositories().get(reponame)
+        repoinfo = self.get_all_repositories().get(reponame, {})
         if repoinfo and 'alias' in repoinfo:
             repoinfo = self.get_all_repositories().get(repoinfo['alias'])
         if repoinfo:
@@ -212,7 +212,7 @@ class RepositoryManager(Component):
                 if not os.path.isabs(rdir):
                     rdir = os.path.join(self.env.path, rdir)
                 connector = self._get_connector(rtype)
-                repos = connector.get_repository(rtype, rdir, authname)
+                repos = connector.get_repository(rtype, rdir, repoinfo)
                 repos.reponame = reponame
                 repositories[reponame] = repos
             return repos

@@ -263,7 +263,7 @@ class SubversionConnector(Component):
             yield ("svnfs", 4)
             yield ("svn", 2)
 
-    def get_repository(self, type, dir, authname):
+    def get_repository(self, type, dir, options):
         """Return a `SubversionRepository`.
 
         The repository is wrapped in a `CachedRepository`, unless `type` is
@@ -280,9 +280,10 @@ class SubversionConnector(Component):
         else:
             repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
                                      self.log)
-        if authname:
+        # FIXME: convert SubversionAuthorizer to a PermissionPolicy
+        if 'authname' in options:
             authz = SubversionAuthorizer(self.env, weakref.proxy(repos),
-                                         authname)
+                                         options['authname'])
             repos.authz = fs_repos.authz = authz
         return repos
 
