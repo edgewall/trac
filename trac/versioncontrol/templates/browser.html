@@ -28,7 +28,7 @@
             });
         </py:if>
         <py:if test="file and file.annotate">
-          enableBlame("${href.changeset()}/", "${path}");
+          enableBlame("${href.changeset()}/", "${reponame}", "${path}");
         </py:if>
       });
     </script>

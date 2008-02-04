@@ -236,8 +236,8 @@ class ChangesetModule(Component):
         if old_path:
             old_reponame, old_repos, old_path = RepositoryManager(self.env).\
                 get_repository_by_path(old_path, req.authname)
-            if old_repos != new_repos:
-                raise TracError(_("Can't compare accross different "
+            if old_repos != repos:
+                raise TracError(_("Can't compare across different "
                                   "repositories: %(old)s vs. %(new)s",
                                   old=old_reponame, new=reponame))
 

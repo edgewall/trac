@@ -1,4 +1,4 @@
-function enableBlame(url, original_path) {
+function enableBlame(url, reponame, original_path) {
   var message = null;
   var message_rev = null;
 
@@ -73,7 +73,8 @@ function enableBlame(url, original_path) {
         message_rev = rev;
         highlight_rev = message_rev;
 
-        $.get(url + rev.substr(1), {annotate: path}, function(data) {
+        $.get(url + [rev.substr(1), reponame].join("/"), 
+              {annotate: path}, function(data) {
           // remove former message panel if any
           if (message)
             message.remove();

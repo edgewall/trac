@@ -320,8 +320,7 @@ class BrowserModule(Component):
                     req.args['rev'] = rev
                     req.args['format'] = 'raw'
             elif mode == 'file':
-                req.redirect(req.href.browser(reponame, path, 
-                                              rev=req.args.get('rev'),
+                req.redirect(req.href.browser(path, rev=req.args.get('rev'),
                                               format=req.args.get('format')),
                              permanent=True)
             req.args['path'] = path or '/'
@@ -666,7 +665,7 @@ class BrowserModule(Component):
         if match:
             path, rev, marks = match.groups()
         return tag.a(label, class_='source',
-                     href=(formatter.href.browser(reponame, path, rev=rev, marks=marks) +
+                     href=(formatter.href.browser(path, rev=rev, marks=marks) +
                            query + fragment))
 
     PATH_LINK_RE = re.compile(r"([^@#:]*)"     # path
