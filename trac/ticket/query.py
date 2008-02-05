@@ -30,7 +30,7 @@ from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.ticket.model import Ticket
 from trac.util import Ranges
-from trac.util.compat import groupby
+from trac.util.compat import groupby, sorted
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.html import escape, unescape
 from trac.util.text import shorten_line, CRLF
@@ -525,8 +525,9 @@ class Query(object):
             if self.group:
                 group_key = ticket[self.group]
                 groups.setdefault(group_key, []).append(ticket)
-                if not groupsequence or groupsequence[-1] != group_key:
+                if not groupsequence or group_key not in groupsequence:
                     groupsequence.append(group_key)
+        groupsequence = sorted(groupsequence, reverse=self.groupdesc)
         groupsequence = [(value, groups[value]) for value in groupsequence]
 
         return {'query': self,
