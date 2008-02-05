@@ -144,7 +144,7 @@ class EnvironmentStub(Environment):
     href = abs_href = None
 
     def __init__(self, default_data=False, enable=None):
-        """Construct a new Envuronment stub object.
+        """Construct a new Environment stub object.
 
         default_data: If True, populate the database with some defaults.
         enable: A list of component classes or name globs to activate in the
