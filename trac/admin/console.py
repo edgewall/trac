@@ -1133,8 +1133,8 @@ Congratulations!
             prefix, db_path = db_str.split(':', 1)
             if prefix == 'sqlite':
                 # don't copy the journal (also, this would fail on Windows)
-                db_path = os.path.normpath(db_path)
-                skip = ['%s-journal' % os.path.join(self.__env.path, db_path)]
+                db = os.path.join(self.__env.path, os.path.normpath(db_path))
+                skip = [db + '-journal', db + '-stmtjrnl']
             else:
                 skip = []
             copytree(self.__env.path, dest, symlinks=1, skip=skip)
