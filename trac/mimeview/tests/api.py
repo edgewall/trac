@@ -32,8 +32,8 @@ class GetMimeTypeTestCase(unittest.TestCase):
         self.assertEqual('text/plain', get_mimetype('README.txt', None))
         
     def test_from_suffix_using_mimetypes(self):
-        self.assertEqual('application/x-python-code',
-                         get_mimetype('test.pyc', None))
+        self.assertEqual('image/png',
+                         get_mimetype('doc/trac_logo.png', None))
         
     def test_from_content_using_CONTENT_RE(self):
         self.assertEqual('text/x-python',

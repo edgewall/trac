@@ -522,17 +522,20 @@ class PermissionCache(object):
 
     def _has_permission(self, action, resource):
         key = (self.username, hash(resource), action)
-        try:
-            return self._cache[key]
-        except KeyError:
-            perm = self
-            if resource is not self._resource:
-                perm = PermissionCache(self.env, self.username, resource,
-                                       self._cache)
-            decision = PermissionSystem(self.env). \
-                       check_permission(action, perm.username, resource, perm)
-            self._cache[key] = decision
-            return decision
+        cached = self._cache.get(key)
+        if cached:
+            cache_decision, cache_resource = cached
+            if resource == cache_resource:
+                return cache_decision
+        perm = self
+        if resource is not self._resource:
+            perm = PermissionCache(self.env, self.username, resource,
+                                   self._cache)
+        decision = PermissionSystem(self.env). \
+                   check_permission(action, perm.username, resource, perm)
+        self._cache[key] = (decision, resource)
+        return decision
+
     __contains__ = has_permission
 
     def require(self, action, realm_or_resource=None, id=False, version=False):

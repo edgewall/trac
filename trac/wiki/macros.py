@@ -96,7 +96,8 @@ class TitleIndexMacro(WikiMacroBase):
         start = prefix and prefix.count('/') or 0
 
         wiki = formatter.wiki
-        pages = sorted(wiki.get_pages(prefix))
+        pages = sorted([page for page in wiki.get_pages(prefix) \
+                        if 'WIKI_VIEW' in formatter.perm('wiki', page)])
 
         if format != 'group':
             return tag.ul([tag.li(tag.a(wiki.format_page_name(page),
@@ -176,6 +177,8 @@ class RecentChangesMacro(WikiMacroBase):
         entries_per_date = []
         prevdate = None
         for name, version, ts in cursor:
+            if not 'WIKI_VIEW' in formatter.perm('wiki', name, version):
+                continue
             time = datetime.fromtimestamp(ts, utc)
             date = format_date(time)
             if date != prevdate:
