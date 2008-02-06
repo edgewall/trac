@@ -3,6 +3,7 @@ import unittest
 from trac.test import Mock
 from trac.wiki.tests import formatter
 from trac.versioncontrol import NoSuchChangeset
+from trac.versioncontrol.api import *
 from trac.versioncontrol.web_ui import *
 
 
@@ -27,6 +28,7 @@ def _get_repository(reponame, authname=None):
 
 def repository_setup(tc):
     setattr(tc.env, 'get_repository', _get_repository)
+    setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
 
 
 CHANGESET_TEST_CASES="""
@@ -38,8 +40,8 @@ changeset:1, changeset:1/README.txt
 ------------------------------
 <p>
 <a class="changeset" href="/changeset/1" title="start">changeset:1</a>
-<a class="missing changeset" href="/changeset/12" rel="nofollow" title="No changeset 12 in the repository">changeset:12</a>
-<a class="missing changeset" href="/changeset/abc" rel="nofollow" title="No changeset abc in the repository">changeset:abc</a>
+<a class="missing changeset" title="No changeset 12 in the repository">changeset:12</a>
+<a class="missing changeset" title="No changeset abc in the repository">changeset:abc</a>
 <a class="changeset" href="/changeset/1" title="start">changeset:1</a>, <a class="changeset" href="/changeset/1/README.txt" title="start">changeset:1/README.txt</a>
 </p>
 ------------------------------
@@ -59,7 +61,7 @@ changeset:1#file0
 ------------------------------
 <p>
 <a class="changeset" href="/changeset/1" title="start">[1]</a>, <a class="changeset" href="/changeset/1" title="start">r1</a>
-<a class="missing changeset" href="/changeset/12" rel="nofollow" title="No changeset 12 in the repository">[12]</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow" title="No changeset 12 in the repository">r12</a>, rABC
+<a class="missing changeset" title="No changeset 12 in the repository">[12]</a>, <a class="missing changeset" title="No changeset 12 in the repository">r12</a>, rABC
 <a class="changeset" href="/changeset/1/README.txt" title="start">[1/README.txt]</a>
 </p>
 ------------------------------
@@ -90,13 +92,13 @@ Change:[10] There should be a link to changeset [10]
 rfc and rfc:4180 should not be changeset links, neither should rfc4180
 ------------------------------
 <p>
-Change:<a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a>
+Change:<a class="missing changeset" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" title="No changeset 10 in the repository">[10]</a>
 </p>
 <p>
 rfc and rfc:4180 should not be changeset links, neither should rfc4180
 </p>
 ------------------------------
-Change:<a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a>
+Change:<a class="missing changeset" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" title="No changeset 10 in the repository">[10]</a>
 
 rfc and rfc:4180 should not be changeset links, neither should rfc4180
 ============================== InterTrac for changesets
@@ -299,7 +301,7 @@ export:123:/foo/pict.gif
 export:/foo/pict.gif@123
 ------------------------------
 <p>
-<a class="source" href="/export/200/foo/bar.html">export:/foo/bar.html</a>
+<a class="source" href="/export//foo/bar.html">export:/foo/bar.html</a>
 <a class="source" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
 <a class="source" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
 </p>
@@ -308,7 +310,7 @@ export:/foo/pict.gif@123
 export:/foo/bar.html#header
 ------------------------------
 <p>
-<a class="source" href="/export/200/foo/bar.html#header">export:/foo/bar.html#header</a>
+<a class="source" href="/export//foo/bar.html#header">export:/foo/bar.html#header</a>
 </p>
 ------------------------------
 """ # " (be Emacs friendly...)

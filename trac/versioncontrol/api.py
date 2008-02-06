@@ -294,7 +294,7 @@ class RepositoryManager(Component):
                         best[0] = (connector, prio)
             for type_, best in prioritize.iteritems():
                     self._connectors[type_] = best[0][0]
-        connector = self._connectors[rtype]
+        connector = self._connectors.get(rtype)
         if not connector:
             raise TracError(
                     _('Unsupported version control system "%(name)s". '

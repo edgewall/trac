@@ -937,10 +937,10 @@ class ChangesetModule(Component):
         if repos:
             try:
                 changeset = repos.get_changeset(rev)
+                href = formatter.href.changeset(rev, reponame or None, path)
                 return tag.a(label, class_="changeset",
                              title=shorten_line(changeset.message),
-                             href=(formatter.href.changeset(rev, reponame, path) +
-                                   params + fragment))
+                             href=href + params + fragment)
             except TracError, e:
                 errmsg = to_unicode(e)
         else:

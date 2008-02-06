@@ -654,9 +654,9 @@ class BrowserModule(Component):
         elif '@' in export:
             path, rev = export.split('@', 1)
         else:
-            rev, path = '', export # TODO: check /export//path
+            rev, path = '', export
         return tag.a(label, class_='source',
-                     href=formatter.href.export(rev, reponame, path) + fragment)
+                     href=formatter.href.export(rev, path) + fragment)
 
     def _format_browser_link(self, formatter, ns, path, label):
         path, query, fragment = formatter.split_link(path)

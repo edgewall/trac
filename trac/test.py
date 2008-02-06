@@ -90,6 +90,9 @@ def Mock(bases=(), *initargs, **kw):
 class MockPerm(object):
     """Fake permission class. Necessary as Mock can not be used with operator
     overloading."""
+
+    username = ''
+    
     def has_permission(self, x):
         return True
     __contains__ = has_permission
