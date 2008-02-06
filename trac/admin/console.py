@@ -36,6 +36,7 @@ from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
                            print_table
+from trac.util.translation import _
 from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
 from trac.wiki.macros import WikiMacroBase
@@ -1122,6 +1123,10 @@ Congratulations!
             self.do_help('hotcopy')
             return
 
+        if os.path.exists(dest):
+            raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
+                              dest=dest))
+
         # Bogus statement to lock the database while copying files
         cnx = self.db_open()
         cursor = cnx.cursor()
@@ -1232,4 +1237,4 @@ def run(args=None):
 
 if __name__ == '__main__':
     pkg_resources.require('Trac==%s' % VERSION)
-    run()
+    sys.exit(run())
