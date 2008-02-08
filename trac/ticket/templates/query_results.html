@@ -24,7 +24,9 @@
 
   <py:for each="groupname, results in groups">
     <h2 py:if="groupname">
-      ${fields[query.group].label}: $groupname ${num_matches(len(results))}
+      ${fields[query.group].label}:
+      ${query.group in ['owner', 'reporter'] and authorinfo(groupname) or groupname}
+      ${num_matches(len(results))}
     </h2>
     <table class="listing tickets">
       <thead>
