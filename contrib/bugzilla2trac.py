@@ -338,8 +338,8 @@ class TracDatabase(object):
                                          keywords)
                                  VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s,
                                          %s, %s, %s, %s, %s, %s, %s, %s)""",
-                  (id, type.encode('utf-8'), time.strftime('%s'),
-                   changetime.strftime('%s'), component.encode('utf-8'),
+                  (id, type.encode('utf-8'), datetime2epoch(time),
+                   datetime2epoch(changetime), component.encode('utf-8'),
                    severity.encode('utf-8'), priority.encode('utf-8'), owner,
                    reporter, cc, version, milestone.encode('utf-8'),
                    status.lower(), resolution, summary.encode('utf-8'), desc,
@@ -362,7 +362,7 @@ class TracDatabase(object):
         c.execute("""INSERT INTO ticket_change (ticket, time, author, field,
                                                 oldvalue, newvalue)
                                         VALUES (%s, %s, %s, %s, %s, %s)""",
-                  (ticket, time.strftime('%s'), author, 'comment', '', comment))
+                  (ticket, datetime2epoch(time), author, 'comment', '', comment))
         self.db().commit()
 
     def addTicketChange(self, ticket, time, author, field, oldvalue, newvalue):
@@ -387,7 +387,7 @@ class TracDatabase(object):
         c.execute("""INSERT INTO ticket_change (ticket, time, author, field,
                                                 oldvalue, newvalue)
                                         VALUES (%s, %s, %s, %s, %s, %s)""",
-                  (ticket, time.strftime('%s'), author, field,
+                  (ticket, datetime2epoch(time), author, field,
                    oldvalue.encode('utf-8'), newvalue.encode('utf-8')))
         self.db().commit()
 
@@ -404,7 +404,7 @@ class TracDatabase(object):
         attachment = Attachment(self.env, 'ticket', id)
         attachment.author = author
         attachment.description = description
-        attachment.insert(filename, filedata, filesize, time.strftime('%s'))
+        attachment.insert(filename, filedata, filesize, datetime2epoch(time))
         del attachment
 
     def getLoginName(self, cursor, userid):
@@ -847,6 +847,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
 def log(msg):
     print "DEBUG: %s" % (msg)
+
+def datetime2epoch(dt) :
+    import time
+    return time.mktime(dt.timetuple())
 
 def usage():
     print """bugzilla2trac - Imports a bug database from Bugzilla into Trac.
