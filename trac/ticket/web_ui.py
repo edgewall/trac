@@ -628,9 +628,6 @@ class TicketModule(Component):
         if old_version > new_version:
             old_version, new_version = new_version, old_version
 
-        req.perm(ticket.resource(version=new_version)).require('TICKET_VIEW')
-        req.perm(ticket.resource(version=old_version)).require('TICKET_VIEW')
-
         # get the list of versions having a description change
         history = self._get_history(req, ticket)
         changes = {}
@@ -660,6 +657,12 @@ class TicketModule(Component):
         else:
             raise TracError(_('No differences to show'))
 
+        tnew = ticket.resource(version=new_version)
+        told = ticket.resource(version=old_version)
+
+        req.perm(tnew).require('TICKET_VIEW')
+        req.perm(told).require('TICKET_VIEW')
+
         # determine prev and next versions
         prev_version = old_version
         next_version = None
@@ -686,18 +689,18 @@ class TicketModule(Component):
 
         changes = []
 
-        def version_info(v, field=None):
+        def version_info(t, field=None):
             path = 'Ticket #%s' % ticket.id
             # TODO: field info should probably be part of the Resource as well
             if field:
                 path = tag(path, Markup(' &ndash; '), field)
-            if v:
-                rev, shortrev = _('Version %(num)s', num=v), 'v%d' % v
+            if t.version:
+                rev = _('Version %(num)s', num=t.version)
+                shortrev = 'v%d' % t.version
             else:
-                rev, shortrev = _('Initial Version'), 'initial'
+                rev, shortrev = _('Initial Version'), _('initial')
             return {'path':  path, 'rev': rev, 'shortrev': shortrev,
-                    'href': get_resource_url(self.env, ticket.resource,
-                                             req.href, version=v)}
+                    'href': get_resource_url(self.env, t, req.href)}
 
         # -- prop changes
         props = []
@@ -707,7 +710,7 @@ class TicketModule(Component):
                 if old != new:
                     props.append({'name': k})
                     rendered = self._render_property_diff(req, ticket, k,
-                                                          old, new)
+                                                          old, new, tnew)
                     if rendered:
                         props[-1]['diff'] = tag.li('Property ', tag.strong(k),
                                                    ' ', rendered)
@@ -715,8 +718,8 @@ class TicketModule(Component):
                         props[-1]['old'] = {'name': k, 'value': old}
                         props[-1]['new'] = {'name': k, 'value': new}
         changes.append({'props': props, 'diffs': [],
-                        'new': version_info(new_version),
-                        'old': version_info(old_version)})
+                        'new': version_info(tnew),
+                        'old': version_info(told)})
 
         # -- text diffs
         diff_style, diff_options, diff_data = get_diff_options(req)
@@ -739,8 +742,8 @@ class TicketModule(Component):
                                 ignore_space_changes='-b' in diff_options)
 
             changes.append({'diffs': diffs, 'props': [],
-                            'new': version_info(new_version, field),
-                            'old': version_info(old_version, field)})
+                            'new': version_info(tnew, field),
+                            'old': version_info(told, field)})
 
         # -- prev/up/next links
         if prev_version:
@@ -1202,7 +1205,7 @@ class TicketModule(Component):
         for group in self.grouped_changelog_entries(ticket, None, when):
             t = ticket.resource(version=group.get('cnum', None))
             if 'TICKET_VIEW' in req.perm(t):
-                self._render_property_changes(req, ticket, group['fields'])
+                self._render_property_changes(req, ticket, group['fields'], t)
                 if 'attachment' in group['fields']:
                     filename = group['fields']['attachment']['new']
                     attachment = attachment_realm(id=filename)
@@ -1212,14 +1215,16 @@ class TicketModule(Component):
                             continue
                 yield group
 
-    def _render_property_changes(self, req, ticket, fields):
+    def _render_property_changes(self, req, ticket, fields, resource_new=None):
         for field, changes in fields.iteritems():
             new, old = changes['new'], changes['old']
-            rendered = self._render_property_diff(req, ticket, field, old, new)
+            rendered = self._render_property_diff(req, ticket, field, old, new,
+                                                  resource_new)
             if rendered:
                 changes['rendered'] = rendered
 
-    def _render_property_diff(self, req, ticket, field, old, new):
+    def _render_property_diff(self, req, ticket, field, old, new, 
+                              resource_new=None):
         rendered = None
         # per type special rendering of diffs
         type_ = None
@@ -1230,10 +1235,10 @@ class TicketModule(Component):
         if type_ == 'checkbox':
             rendered = new == '1' and "set" or "unset"
         elif type_ == 'textarea':
-            if 'preview' in req.args:
+            if not resource_new:
                 rendered = _('modified')
             else:
-                href = get_resource_url(self.env, ticket.resource, req.href,
+                href = get_resource_url(self.env, resource_new, req.href,
                                         action='diff')
                 rendered = tag('modified (', tag.a('diff', href=href), ')')
 
@@ -1245,7 +1250,7 @@ class TicketModule(Component):
             chrome = Chrome(self.env)
             old_list, new_list = chrome.cc_list(old), chrome.cc_list(new)
             if not (Chrome(self.env).show_email_addresses or 
-                    'EMAIL_VIEW' in req.perm(ticket.resource)):
+                    'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
                 render_elt = obfuscate_email_address
         elif field == 'keywords':
             old_list, new_list = old.split(), new.split()
