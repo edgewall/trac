@@ -318,7 +318,8 @@ class SubversionPropertyRenderer(Component):
                 # ConfigParser splits at ':', i.e. key='http', value='//...'
                 value = value.split()
                 key, value = key+':'+value[0], ' '.join(value[1:])
-                self._externals_map[key] = value.replace('$path', '%(path)s') \
+                self._externals_map[key] = value.replace('%', '%%') \
+                                           .replace('$path', '%(path)s') \
                                            .replace('$rev', '%(rev)s')
         externals = []
         for external in prop.splitlines():
