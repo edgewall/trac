@@ -85,7 +85,7 @@ def add_script(req, filename, mimetype='text/javascript'):
     will be based off the application root path. If it is relative, the link
     will be based off the `/chrome/` path.
     """
-    scriptset = req.chrome.setdefault('trac.chrome.scriptset', set())
+    scriptset = req.chrome.setdefault('scriptset', set())
     if filename in scriptset:
         return False # Already added that script
 
