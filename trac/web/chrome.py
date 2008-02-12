@@ -386,7 +386,9 @@ class Chrome(Component):
         yield ('htdocs', self._format_link)
 
     def _format_link(self, formatter, ns, file, label):
-        return tag.a(label, href=formatter.href.chrome('site', file))
+        file, query, fragment = formatter.split_link(file)
+        href = formatter.href.chrome('site', file) + query + fragment
+        return tag.a(label, href=href)
 
     # Public API methods
 
