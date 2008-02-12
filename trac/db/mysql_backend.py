@@ -185,10 +185,11 @@ class MySQLConnection(ConnectionWrapper):
         return self.cnx.insert_id()
 
     def rollback(self):
-        if self.cnx.ping():
-            self._set_character_set(self.cnx, 'utf8')
+        self.cnx.ping()
+        self._set_character_set(self.cnx, 'utf8')
+        try:
             self.cnx.rollback()
-        else:
+        except ProgrammingError:
             self._is_closed = True
 
     def close(self):
