@@ -22,6 +22,11 @@ from trac.db.util import ConnectionWrapper
 
 _like_escape_re = re.compile(r'([/_%])')
 
+try:
+    import MySQLdb
+    has_mysqldb = True
+except ImportError:
+    has_mysqldb = False
 
 class MySQLConnector(Component):
     """MySQL database support for version 4.1 and greater.
@@ -33,7 +38,11 @@ class MySQLConnector(Component):
     implements(IDatabaseConnector)
 
     def get_supported_schemes(self):
-        return [('mysql', 1)]
+        global has_mysqldb
+        if has_mysqldb:
+            return [('mysql', 1)]
+        else:
+            return []
 
     def get_connection(self, path, user=None, password=None, host=None,
                        port=None, params={}):
@@ -112,7 +121,7 @@ class MySQLConnection(ConnectionWrapper):
         Note that the tuple only checks the major, minor, and sub versions;
         the sub-sub version is weird, so we only check for 'final' versions.
         """
-        from MySQLdb import version_info as ver
+        ver = MySQLdb.version_info
         if ver[0] < v[0] or ver[1] < v[1] or ver[2] < v[2]:
             return False
         if ver[3] != 'final':
@@ -129,8 +138,6 @@ class MySQLConnection(ConnectionWrapper):
 
     def __init__(self, path, user=None, password=None, host=None,
                  port=None, params={}):
-        import MySQLdb
-
         if path.startswith('/'):
             path = path[1:]
         if password == None:
@@ -174,10 +181,13 @@ class MySQLConnection(ConnectionWrapper):
         self._set_character_set(self.cnx, 'utf8')
         try:
             self.cnx.rollback()
-        except ProgrammingError:
+        except MySQLdb.ProgrammingError:
             self._is_closed = True
 
     def close(self):
         if not self._is_closed:
-            self.cnx.close()
+            try:
+                self.cnx.close()
+            except MySQLdb.ProgrammingError:
+                pass # this error would mean it's already closed.  So, ignore
             self._is_closed = True
