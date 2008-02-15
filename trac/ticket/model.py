@@ -297,7 +297,8 @@ class Ticket(object):
                            "SELECT time,author,'comment',null,description,0 "
                            "FROM attachment WHERE id=%s AND time=%s "
                            "ORDER BY time",
-                           (self.id, when_ts, str(self.id), when_ts, self.id, when_ts))
+                           (self.id, when_ts, str(self.id), when_ts, 
+                           str(self.id), when_ts))
         else:
             cursor.execute("SELECT time,author,field,oldvalue,newvalue,1 "
                            "FROM ticket_change WHERE ticket=%s "
@@ -307,7 +308,8 @@ class Ticket(object):
                            "UNION "
                            "SELECT time,author,'comment',null,description,0 "
                            "FROM attachment WHERE id=%s "
-                           "ORDER BY time", (self.id,  str(self.id), self.id))
+                           "ORDER BY time", (self.id,  str(self.id), 
+                           str(self.id)))
         log = []
         for t, author, field, oldvalue, newvalue, permanent in cursor:
             log.append((datetime.fromtimestamp(int(t), utc), author, field,
