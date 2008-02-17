@@ -490,7 +490,7 @@ class AttachmentModule(Component):
         parent_href = unicode_unquote(get_resource_url(self.env,
                             resource.parent(version=None), Href('')))
         if not resource.id:
-            return href(prefix, parent_href) + '/'
+            return href(prefix, parent_href)
         else:
             return href(prefix, parent_href, resource.id, **kwargs)
 
