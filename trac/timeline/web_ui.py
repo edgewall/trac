@@ -270,8 +270,8 @@ class TimelineModule(Component):
         """Compose the timeline event date from the event tuple and prepared
         provider methods"""
         if len(event) == 6: # 0.10 events
-            kind, href, title, date, author, markup = event
-            fields = {'href': href, 'title': title, 'description': markup}
+            kind, url, title, date, author, markup = event
+            fields = {'url': url, 'title': title, 'description': markup}
             render = lambda field, context: fields.get(field)
         else: # 0.11 events
             if len(event) == 5: # with special provider
