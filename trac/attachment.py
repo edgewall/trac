@@ -489,7 +489,9 @@ class AttachmentModule(Component):
             prefix = 'raw-attachment'
         parent_href = unicode_unquote(get_resource_url(self.env,
                             resource.parent(version=None), Href('')))
-        if not resource.id:
+        if not resource.id: 
+            # link to list of attachments, which must end with a trailing '/' 
+            # (see process_request)
             return href(prefix, parent_href) + '/'
         else:
             return href(prefix, parent_href, resource.id, **kwargs)

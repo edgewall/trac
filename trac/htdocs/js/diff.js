@@ -74,6 +74,7 @@ $(document).ready(function() {
     var switcher = $("<span class='switch'></span>").prependTo(this);
     var name = $.trim($(this).text());
     var table = $(this).siblings("table").get(0);
+    if (! table) return;
     var pre = $("<pre></pre>").hide().insertAfter(table);
     $("<span>Tabular</span>").click(function() {
       $(pre).hide();

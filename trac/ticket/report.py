@@ -345,7 +345,9 @@ class ReportModule(Component):
                     # Detect and create new group
                     if col == '__group__' and value != prev_group_value:
                         prev_group_value = value
-                        row_groups.append((value, []))
+                        # Brute force handling of email in group by header
+                        row_groups.append(
+                            (Chrome(self.env).format_author(req, value), []) )
                     # Other row properties
                     row['__idx__'] = row_idx
                     if col in ('__style__', '__color__',
@@ -355,7 +357,7 @@ class ReportModule(Component):
                         row['id'] = value
                     # Special casing based on column name
                     col = col.strip('_')
-                    if col in ('reporter', 'cc'):
+                    if col in ('reporter', 'cc', 'owner'):
                         email_cells.append(cell)
                     elif col == 'realm':
                         realm = value
