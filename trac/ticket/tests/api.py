@@ -1,5 +1,6 @@
 import trac.perm as perm
 from trac.ticket.api import TicketSystem
+from trac.ticket.model import Ticket
 from trac.test import EnvironmentStub, Mock
 
 import unittest
@@ -12,6 +13,12 @@ class TicketSystemTestCase(unittest.TestCase):
         self.perm = perm.PermissionSystem(self.env)
         self.ticket_system = TicketSystem(self.env)
         self.req = Mock()
+
+    def _ts_get_available_actions(self, ts, ticket_dict):
+        ticket = Ticket(self.env)
+        ticket.populate(ticket_dict)
+        id = ticket.insert()
+        return ts.get_available_actions(self.req, Ticket(self.env, id))
 
     def test_custom_field_text(self):
         self.env.config.set('ticket-custom', 'test', 'text')
@@ -71,36 +78,36 @@ class TicketSystemTestCase(unittest.TestCase):
         self.perm.grant_permission('anonymous', 'TICKET_MODIFY')
         self.req.perm = perm.PermissionCache(self.env)
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
-                         ts.get_available_actions(self.req, {'status': 'new'}))
+                         self._ts_get_available_actions(ts, {'status': 'new'}))
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'assigned'}))
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'accepted'}))
         self.assertEqual(['leave', 'resolve', 'reassign', 'accept'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'reopened'}))
         self.assertEqual(['leave', 'reopen'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'closed'}))
 
     def test_available_actions_no_perms(self):
         ts = TicketSystem(self.env)
         self.req.perm = perm.PermissionCache(self.env)
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req, {'status': 'new'}))
+                         self._ts_get_available_actions(ts, {'status': 'new'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'assigned'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'accepted'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'reopened'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'closed'}))
 
     def test_available_actions_create_only(self):
@@ -108,18 +115,18 @@ class TicketSystemTestCase(unittest.TestCase):
         self.perm.grant_permission('anonymous', 'TICKET_CREATE')
         self.req.perm = perm.PermissionCache(self.env)
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req, {'status': 'new'}))
+                         self._ts_get_available_actions(ts, {'status': 'new'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'assigned'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'accepted'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'reopened'}))
         self.assertEqual(['leave', 'reopen'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'closed'}))
 
     def test_available_actions_chgprop_only(self):
@@ -128,18 +135,18 @@ class TicketSystemTestCase(unittest.TestCase):
         self.perm.grant_permission('anonymous', 'TICKET_CHGPROP')
         self.req.perm = perm.PermissionCache(self.env)
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req, {'status': 'new'}))
+                         self._ts_get_available_actions(ts, {'status': 'new'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'assigned'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'accepted'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'reopened'}))
         self.assertEqual(['leave'],
-                         ts.get_available_actions(self.req,
+                         self._ts_get_available_actions(ts,
                                                   {'status': 'closed'}))
 
 
