@@ -53,7 +53,7 @@
                     <td py:when="idx == 0" class="id"><a href="$result.href" title="View ticket">#$result.id</a></td>
                     <td py:otherwise="" class="$name" py:choose="">
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
-                      <py:when test="isinstance(value, datetime)">${format_datetime(value)}</py:when>
+                      <py:when test="isinstance(value, datetime)">${dateinfo(value)}</py:when>
                       <py:when test="name == 'reporter'">${authorinfo(value)}</py:when>
                       <py:when test="name == 'cc'">${format_emails(ticket_context, value)}</py:when>
                       <py:when test="name == 'owner' and value">${authorinfo(value)}</py:when>

@@ -54,6 +54,7 @@ h2 {
 .tickets tbody td.id :link, .tickets tbody td.id :visited {
  font-weight: bold;
 }
+.tickets tbody td.time a, .tickets tbody td.changetime a { white-space: nowrap }
 .tickets tbody tr:hover { background: #eed; color: #000 }
 .tickets tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
 .tickets tr.color1-even { background: #fed; border-color: #e99; color: #a22 }
