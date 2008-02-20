@@ -314,10 +314,14 @@ class SubversionPropertyRenderer(Component):
 
     def _render_externals(self, prop):
         if not self._externals_map:
-            for key, value in self.config.options('svn:externals'):
-                # ConfigParser splits at ':', i.e. key='http', value='//...'
+            for dummykey, value in self.config.options('svn:externals'):
                 value = value.split()
-                key, value = key+':'+value[0], ' '.join(value[1:])
+                if len(value) != 2:
+                    self.env.warn("svn:externals entry %s doesn't contain "
+                            "a space-separated key value pair, skipping.", 
+                            label)
+                    continue
+                key, value = value
                 self._externals_map[key] = value.replace('%', '%%') \
                                            .replace('$path', '%(path)s') \
                                            .replace('$rev', '%(rev)s')
