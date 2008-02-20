@@ -337,7 +337,8 @@ class AbstractEnumAdminPage(TicketAdminPage):
                             self.config.save()
 
                     # Change enum values
-                    order = dict([(key[6:], req.args.get(key)) for key
+                    order = dict([(str(int(key[6:])), 
+                                   str(int(req.args.get(key)))) for key
                                   in req.args.keys()
                                   if key.startswith('value_')])
                     values = dict([(val, True) for val in order.values()])
