@@ -36,7 +36,11 @@ h2 {
 #filters td.filter label { padding-right: 1em }
 #filters td.actions { text-align: right; white-space: nowrap }
 
-#columns div label { padding-right: 1em }
+#columns div label { 
+ display: block;
+ float: left;
+ padding: 0pt 1em .5em 0pt;
+}
 
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
