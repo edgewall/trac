@@ -69,7 +69,7 @@ function convertDiff(name, table) {
   return lines.join($.browser.msie ? "\r\n" : "\n");
 }
 
-$(document).ready(function() {
+jQuery(document).ready(function($) {
   $("div.diff h2").each(function() {
     var switcher = $("<span class='switch'></span>").prependTo(this);
     var name = $.trim($(this).text());

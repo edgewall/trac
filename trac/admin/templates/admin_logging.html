@@ -8,7 +8,7 @@
   <head>
     <title>Logging</title>
     <script type="text/javascript">/*<![CDATA[*/
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("#log_type").change(function() {
           $("#log_level").enable(this.selectedIndex > 0);
           $("#log_file").enable(this.options[this.selectedIndex].value == "file");

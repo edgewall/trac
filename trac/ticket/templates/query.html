@@ -9,7 +9,7 @@
     <title>$title</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
