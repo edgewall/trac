@@ -10,7 +10,7 @@ The workflow configured in this case is the original workflow, so that ticket ac
 
 Graphically, that looks like this:
 
-[[Image(htdocs:../common/original-workflow.png)]]
+[[Image(htdocs:../common/guide/original-workflow.png)]]
 
 There are some significant "warts" in this; such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state.  Perfectly obvious, right?
 So you will probably want to migrate to "basic" workflow; `contrib/workflow/migrate_original_to_basic.py` may be helpful.
@@ -20,7 +20,7 @@ When a new environment is created, a default workflow is configured in your trac
 
 Graphically, it looks like this:
 
-[[Image(htdocs:../common/basic-workflow.png)]]
+[[Image(htdocs:../common/guide/basic-workflow.png)]]
 
 == Additional Ticket Workflows ==
 
