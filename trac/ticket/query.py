@@ -66,7 +66,8 @@ class Query(object):
             rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
         field_names = [f['name'] for f in self.fields]
-        self.cols = [c for c in cols or [] if c in field_names or c == 'id']
+        self.cols = [c for c in cols or [] if c in field_names or 
+                     c in ('id', 'time', 'changetime')]
         self.rows = [c for c in rows if c in field_names]
 
         if self.order != 'id' and self.order not in field_names:
@@ -145,6 +146,8 @@ class Query(object):
             if col in cols:
                 cols.remove(col)
                 cols.append(col)
+        # TODO: fix after adding time/changetime to the api.py
+        cols += ['time', 'changetime']
 
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
