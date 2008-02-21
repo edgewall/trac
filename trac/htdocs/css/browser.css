@@ -32,12 +32,14 @@ table.code th.blame { width: 5em; }
 table.code th.blame a { color: #ddd; }
 
 div.message { 
-  background: #ccf;
-  border: 2px ridge #999;
+  background: #f7f7f0;
+  border: 3px double #d7d7d7;
   margin: 0;
   padding: 8px; 
   /* Note: border width and padding must be compensated for in the placement */
 }
+
+div.message div.inlinebuttons { float: right;  }
 
 /* Styles for the directory entries table
    (extends the styles for "table.listing") */

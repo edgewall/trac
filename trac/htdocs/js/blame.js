@@ -40,7 +40,7 @@
           var max_w = (3.0 * row_w / 5.0);
           if (!message_w || message_w > max_w) {
             message_w = max_w; 
-            var borderw = (2+8)*2; // borderwidth + padding on both sides 
+            var borderw = (3+8)*2; // borderwidth + padding on both sides 
             message.css({width: message_w - borderw + "px"});
           }
   
@@ -71,11 +71,15 @@
             if (message)
               message.remove();
             // create new message panel
-            message = $("<div>").addClass("message").css({
-              position: "absolute", zIndex: 2
-            }).appendTo("body"); /* add a close button somehow... */
-            // fill in changeset data
-            message.html(data || "<strong>(no changeset information)</strong>");
+            message = $('<div class="message">').css("position", "absolute")
+                .append($('<div class="inlinebuttons">')
+                  .append($('<input value="Close" type="button">').click(hide)))
+                .append($('<div>').html(data || "<strong>(no changeset information)</strong>"))
+              .appendTo("body");
+
+            // workaround non-clickable "Close" issue in Firefox
+            if ($.browser == 'mozilla')
+              message.find("div.inlinebuttons").next().css("clear", "right");
   
             show();
           });
