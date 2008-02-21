@@ -9,6 +9,7 @@
     var rev_paths = {};
     $("table.code th.blame a").each(function() {
       href = $(this).attr("href");
+      $(this).removeAttr("href");
       rev_href = href.substr(href.indexOf("changeset/") + 10);
       elts = rev_href.split("/");
       var path = elts.slice(1).join("/");
@@ -24,7 +25,7 @@
       if (!rev)
         return;
   
-      $(this).click(function() {
+      $(this).css("cursor", "pointer").click(function() {
         var row = this.parentNode;
         var message_is_visible = message && message.css("display") == "block";
         var highlight_rev = null;
@@ -43,7 +44,7 @@
             message.css({width: message_w - borderw + "px"});
           }
   
-                var row_offset = $(row).offset();
+          var row_offset = $(row).offset();
           var left = row_offset.left + row.offsetWidth - message_w;
           message.css({display: "block", top: row_offset.top+"px", left: left-2+"px"});
         }
