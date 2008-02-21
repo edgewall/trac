@@ -612,7 +612,7 @@ class ChangesetModule(Component):
             changes.append(info) # the sequence should be immutable
 
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
-                     'filestats': filestats,
+                     'filestats': filestats, 'annotated': annotated,
                      'files': files, 'location': self._get_location(files),
                      'longcol': 'Revision', 'shortcol': 'r'})
 

@@ -33,7 +33,7 @@
           to <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
           at <a title="Show full changeset" href="${href.changeset(new_rev)}">r$new_rev</a>
           </h1>
-        <h1 py:otherwise="">Changeset $new_rev</h1>
+        <h1 py:otherwise="">Changeset <a py:strip="not annotated" title="Show full changeset" href="${href.changeset(new_rev)}">$new_rev</a></h1>
       </div>
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
