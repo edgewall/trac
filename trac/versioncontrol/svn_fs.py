@@ -501,19 +501,26 @@ class SubversionRepository(Repository):
         if start < end:
             start, end = end, start
         root = fs.revision_root(self.fs_ptr, start, pool())
-        history_ptr = fs.node_history(root, svn_path, pool())
+        tmp1 = Pool(pool)
+        tmp2 = Pool(pool)
+        history_ptr = fs.node_history(root, svn_path, tmp1())
         cross_copies = 1
         while history_ptr:
-            history_ptr = fs.history_prev(history_ptr, cross_copies, pool())
+            history_ptr = fs.history_prev(history_ptr, cross_copies, tmp2())
+            tmp1.clear()
+            tmp1, tmp2 = tmp2, tmp1
             if history_ptr:
-                path, rev = fs.history_location(history_ptr, pool())
+                path, rev = fs.history_location(history_ptr, tmp2())
+                tmp2.clear()
                 if rev < end:
                     break
                 path = _from_svn(path)
                 if not self.authz.has_permission(path):
                     break
                 yield path, rev
-
+        del tmp1
+        del tmp2
+    
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
             try:
