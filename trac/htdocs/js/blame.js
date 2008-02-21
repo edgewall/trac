@@ -5,17 +5,6 @@
 	  var message = null;
 	  var message_rev = null;
 	
-	  function getOffset(elem) {
-	    elem = $(elem).get(0);
-	    var offset = {left: 0, top: 0};
-	    do {
-	      offset.left += elem.offsetLeft || 0;
-	      offset.top += elem.offsetTop || 0;
-	      elem = elem.offsetParent;
-	    } while (elem);
-	    return offset;
-	  }
-	
 	  /* for each blame cell containing a changeset link... */
 	  var rev_paths = {};
 	  $("table.code th.blame a").each(function() {
@@ -54,7 +43,7 @@
 	          message.css({width: message_w - borderw + "px"});
 	        }
 	
-	        var row_offset = getOffset(row);
+                var row_offset = $(row).offset();
 	        var left = row_offset.left + row.offsetWidth - message_w;
 	        message.css({display: "block", top: row_offset.top+"px", left: left-2+"px"});
 	      }

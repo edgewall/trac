@@ -54,17 +54,6 @@
 	    timeout = setTimeout(hide, 200);
 	  });
 	
-	  function getOffset(elem) {
-	    elem = $(elem).get(0);
-	    var offset = {left: 0, top: 0};
-	    do {
-	      offset.left += elem.offsetLeft || 0;
-	      offset.top += elem.offsetTop || 0;
-	      elem = elem.offsetParent;
-	    } while (elem);
-	    return offset;
-	  }
-	
 	  function hide() {
 	    if (timeout) clearTimeout(timeout);
 	    input.removeClass("loading");
@@ -105,7 +94,7 @@
 	    $.get(url, params, function(data) {
 	      if (!data) { hide(); return; }
 	      if (!results) {
-	        var offset = getOffset(input);
+	        var offset = input.offset();
 	        results = $("<div>").addClass("suggestions").css({
 	          position: "absolute",
 	          minWidth: input.get(0).offsetWidth + "px",
