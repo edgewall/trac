@@ -245,12 +245,14 @@ class Chrome(Component):
 
     metanav_order = ListOption('trac', 'metanav',
                                'login,logout,prefs,help,about', doc=
-        """List of items IDs to display in the navigation bar `metanav`.""")
+        """Order of the items to display in the `metanav` navigation bar,
+           listed by IDs. See also TracNavigation.""")
 
     mainnav_order = ListOption('trac', 'mainnav',
                                'wiki,timeline,roadmap,browser,tickets,'
                                'newticket,search', doc=
-        """List of item IDs to display in the navigation bar `mainnav`.""")
+        """Order of the items to display in the `mainnav` navigation bar, 
+           listed by IDs. See also TracNavigation.""")
 
     logo_link = Option('header_logo', 'link', 'http://example.org/',
         """URL to link to from header logo.""")
