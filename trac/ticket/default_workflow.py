@@ -24,7 +24,7 @@ from trac.core import *
 from trac.perm import PermissionSystem
 from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
-from trac.ticket.api import ITicketActionController
+from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.util.compat import set
 from trac.util.translation import _
 
@@ -104,6 +104,16 @@ class ConfigurableTicketWorkflow(Component):
     def __init__(self, *args, **kwargs):
         Component.__init__(self, *args, **kwargs)
         self.actions = get_workflow_config(self.config)
+        if not '_reset' in self.actions:
+            # Special action that gets enabled if the current status no longer
+            # exists, as no other action can then change its state. (#5307)
+            self.actions['_reset'] = {
+                'default': 0,
+                'name': 'reset',
+                'newstate': 'new',
+                'oldstates': [],  # Will not be invoked unless needed
+                'operations': ['reset_workflow'],
+                'permissions': []}
         self.log.debug('Workflow actions at initialization: %s\n' %
                        str(self.actions))
 
@@ -167,7 +177,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 required_perms = action_info['permissions']
                 if required_perms:
                     for permission in required_perms:
-                        if permission in req.perm:
+                        if permission in req.perm(ticket.resource):
                             allowed = 1
                             break
                 else:
@@ -175,6 +185,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 if allowed:
                     allowed_actions.append((action_info['default'],
                                             action_name))
+        if not (status in ['new', 'closed'] or \
+                    status in TicketSystem(self.env).get_all_status()) \
+                and 'TICKET_ADMIN' in req.perm(ticket.resource):
+            # State no longer exists - add a 'reset' action if admin.
+            allowed_actions.append((0, '_reset'))
         return allowed_actions
 
     def get_all_status(self):
@@ -199,6 +214,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
         control = [] # default to nothing
         hints = []
+        if 'reset_workflow' in operations:
+            control.append(tag("from invalid state"))
+            hints.append(_("Current state no longer exists"))
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations:
@@ -275,6 +293,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             updated['status'] = status
 
         for operation in this_action['operations']:
+            if operation == 'reset_workflow':
+                updated['status'] = 'new'
             if operation == 'del_owner':
                 updated['owner'] = ''
             elif operation == 'set_owner':

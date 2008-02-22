@@ -9,7 +9,7 @@
   <head>
     <title>$title</title>
     <script type="text/javascript">
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("#content").find("li.entry h2 a").parent().addAnchor("Link to this diff");
       });
     </script>
@@ -34,7 +34,7 @@
           to <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
           at <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">r$new_rev</a>
           </h1>
-        <h1 py:otherwise="">Changeset $new_rev<py:if test="reponame"> in $reponame</py:if></h1>
+        <h1 py:otherwise="">Changeset <a py:strip="not annotated" title="Show full changeset" href="${href.changeset(new_rev)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
       </div>
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or

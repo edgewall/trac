@@ -33,7 +33,8 @@ facilities.
     packages = find_packages(exclude=['*.tests']),
     package_data = {
         '': ['templates/*'],
-        'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*', 'htdocs/css/*'],
+        'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*', 'htdocs/css/*',
+                 'htdocs/guide/*'],
         'trac.wiki': ['default-pages/*'],
         'trac.ticket': ['workflows/*.ini'],
     },

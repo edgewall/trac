@@ -148,6 +148,8 @@ class DefaultTicketGroupStatsProvider(Component):
     active = *                           # one catch-all group is allowed
     active.order = 1
     active.css_class = open              # CSS class for this interval
+    active.label = in progress           # Displayed name for the group,
+                                         #  needed for non-ascii group names
 
     # The CSS class can be one of: new (yellow), open (no color) or
     # closed (green). New styles can easily be added using the following
@@ -241,7 +243,8 @@ class DefaultTicketGroupStatsProvider(Component):
                         if '=' in kv]:
                 k, v = [a.strip() for a in arg.split('=', 1)]
                 query_args[k] = v
-            stat.add_interval(group['name'], group_cnt, query_args,
+            stat.add_interval(group.get('label', group['name']), 
+                              group_cnt, query_args,
                               group.get('css_class', group['name']),
                               bool(group.get('overall_completion')))
         stat.refresh_calcs()

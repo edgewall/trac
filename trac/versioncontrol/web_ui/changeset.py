@@ -635,7 +635,7 @@ class ChangesetModule(Component):
             changes.append(info) # the sequence should be immutable
 
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
-                     'filestats': filestats,
+                     'filestats': filestats, 'annotated': annotated,
                      'files': files, 'location': self._get_location(files),
                      'longcol': 'Revision', 'shortcol': 'r'})
 
@@ -736,6 +736,7 @@ class ChangesetModule(Component):
                 # UTF-8 is not supported by all Zip tools either,
                 # but as some does, I think UTF-8 is the best option here.
                 zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
+                zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
                 zipinfo.compress_type = ZIP_DEFLATED
                 zipfile.writestr(zipinfo, new_node.get_content().read())
         zipfile.close()

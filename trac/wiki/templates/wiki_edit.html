@@ -10,7 +10,7 @@
     <title>$title</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("#text").blur(function() {
           $("#scroll_bar_pos").val(this.scrollTop);
         }).get(0).scrollTop = $("#scroll_bar_pos").val();

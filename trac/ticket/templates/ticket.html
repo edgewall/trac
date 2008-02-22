@@ -20,7 +20,7 @@
     </title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript" py:choose="">
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
       <py:when test="ticket.exists">
         $("#changelog h3.change").addAnchor("Link to this change");
@@ -38,7 +38,7 @@
         updateActionFields();
       </py:when>
       <py:otherwise>
-        $(document).ready(function() {$("#field-summary").get(0).focus()});
+        $("#field-summary").focus();
       </py:otherwise>
       });
     </script>

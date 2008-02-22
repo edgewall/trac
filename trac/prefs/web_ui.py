@@ -117,6 +117,8 @@ class PreferencesModule(Component):
                     del req.session['tz']
                 elif field == 'newsid' and val:
                     req.session.change_sid(val)
+                elif field == 'accesskeys' and val:
+                    req.session[field] = '1'
                 else:
                     req.session[field] = val
             elif field in req.session and (field in req.args or

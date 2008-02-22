@@ -15,12 +15,14 @@
     <link py:for="style in sorted(styles)" rel="stylesheet" type="text/css"
           href="${href.pygments('%s.css' % style)}" title="${style.title()}" />
     <script type="text/javascript">
-      function switchStyleSheet(title) {
-        $('link[@rel="stylesheet"][@title]').each(function() {
-          this.disabled = this.getAttribute('title') != title;
-        });
-      }
-      $(document).ready(function() {
+    	(function($){
+	      window.switchStyleSheet = function(title) {
+	        $('link[@rel="stylesheet"][@title]').each(function() {
+	          this.disabled = this.getAttribute('title') != title;
+	        });
+	      }
+      })(jQuery);
+      jQuery(document).ready(function($) {
         switchStyleSheet("${selection.title()}");
         $("#pygment_theme").attr("autocomplete", "off").change(function() {
           switchStyleSheet(this.options[this.selectedIndex].text);

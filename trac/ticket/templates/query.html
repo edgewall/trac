@@ -9,11 +9,14 @@
     <title>$title</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
         $("fieldset legend").enableFolding(false);
+        /* Hide the filters for saved queries. */
+        if ( window.location.href.search(/[?&amp;]report=[0-9]+/) != -1 )
+          $("#filters").toggleClass("collapsed");
         /* Hide the columns by default. */
         $("#columns").toggleClass("collapsed");
       });

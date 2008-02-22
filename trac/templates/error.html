@@ -8,7 +8,7 @@
   <head>
     <title>${title or 'Error'}</title>
     <script py:if="frames" type="text/javascript">/*<![CDATA[*/
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         $("#traceback a").click(function() {
           $("div", this.parentNode).slideToggle("fast");
           return false;

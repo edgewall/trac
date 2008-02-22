@@ -18,6 +18,7 @@
 
 import cgi
 import dircache
+import gc
 import locale
 import os
 import pkg_resources
@@ -390,6 +391,18 @@ def dispatch_request(environ, start_response):
     finally:
         if env and not run_once:
             env.shutdown(threading._get_ident())
+            # Now it's a good time to do some clean-ups
+            #
+            # Note: enable the '##' lines as soon as there's a suspicion
+            #       of memory leak due to uncollectable objects (typically
+            #       objects with a __del__ method caught in a cycle)
+            ##gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
+            unreachable = gc.collect()
+            env.log.debug("%d unreachable objects found.", unreachable)
+            ##uncollectable = len(gc.garbage)
+            ##if uncollectable:
+            ##    del gc.garbage[:]
+            ##    env.log.warn("%d uncollectable objects found.", uncollectable)
 
 def _dispatch_request(req, env, env_error):
     resp = []

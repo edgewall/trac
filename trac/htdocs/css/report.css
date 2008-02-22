@@ -20,6 +20,7 @@ h2 {
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select { font-size: 11px }
 #query fieldset { margin-top: 1em }
+#query fieldset.collapsed { border-width: 0 }
 #query .option, #query .option input, #query .option select { font-size: 11px }
 #query .option { float: left; line-height: 2em; margin: .9em 2.5em 0 .5em; padding: 0 0 .1em }
 #query .buttons { float: right; margin-top: .5em }
@@ -36,7 +37,11 @@ h2 {
 #filters td.filter label { padding-right: 1em }
 #filters td.actions { text-align: right; white-space: nowrap }
 
-#columns div label { padding-right: 1em }
+#columns div label { 
+ display: block;
+ float: left;
+ padding: 0pt 1em .5em 0pt;
+}
 
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
@@ -50,6 +55,7 @@ h2 {
 .tickets tbody td.id :link, .tickets tbody td.id :visited {
  font-weight: bold;
 }
+.tickets tbody td.time a, .tickets tbody td.changetime a { white-space: nowrap }
 .tickets tbody tr:hover { background: #eed; color: #000 }
 .tickets tr.color1-odd  { background: #fdc; border-color: #e88; color: #a22 }
 .tickets tr.color1-even { background: #fed; border-color: #e99; color: #a22 }

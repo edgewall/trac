@@ -14,7 +14,7 @@
           href="${chrome.htdocs_location}css/roadmap.css" />
     <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">/*<![CDATA[*/
-      $(document).ready(function() {
+      jQuery(document).ready(function($) {
         function updateCompletedDate() {
           var checked = $("#completed").checked();
           $("#completeddate").enable(checked);
