@@ -78,7 +78,7 @@
               .appendTo("body");
 
             // workaround non-clickable "Close" issue in Firefox
-            if ($.browser == 'mozilla')
+            if ($.browser.mozilla)
               message.find("div.inlinebuttons").next().css("clear", "right");
   
             show();
