@@ -89,7 +89,7 @@
 
       <script type="text/javascript" py:if="chrome.late_links">
         <py:for each="link in chrome.late_links.get('stylesheet')">
-          $.loadStyleSheet("${link.href}", "${link.title}");
+          jQuery.loadStyleSheet("${link.href}", "${link.title}");
         </py:for>
       </script>
       <script py:for="script in chrome.late_scripts"
