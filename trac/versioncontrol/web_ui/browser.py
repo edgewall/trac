@@ -385,8 +385,8 @@ class BrowserModule(Component):
             'repo': all_repositories and \
                     self._render_repository_index(req, all_repositories,
                                                   order, desc),
-            'dir': node.isdir and self._render_dir(req, repos, node, rev,
-                                                   order, desc),
+            'dir': node.isdir and self._render_dir(req, reponame, repos, 
+                                                   node, rev, order, desc),
             'file': node.isfile and self._render_file(req, context, reponame,
                                                       repos, node, rev),
             'quickjump_entries': list(repos.get_quickjump_entries(rev)),
@@ -458,7 +458,7 @@ class BrowserModule(Component):
         return {'repositories' : repositories,
                 'timerange': timerange, 'colorize_age': custom_colorizer}
 
-    def _render_dir(self, req, repos, node, rev, order, desc):
+    def _render_dir(self, req, reponame, repos, node, rev, order, desc):
         req.perm.require('BROWSER_VIEW')
 
         # Entries metadata

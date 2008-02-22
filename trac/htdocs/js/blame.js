@@ -1,7 +1,7 @@
 
 (function($){
 
-  window.enableBlame = function(url, original_path) {
+  window.enableBlame = function(url, reponame, original_path) {
     var message = null;
     var message_rev = null;
   
@@ -12,9 +12,13 @@
       $(this).removeAttr("href");
       rev_href = href.substr(href.indexOf("changeset/") + 10);
       elts = rev_href.split("/");
-      var path = elts.slice(1).join("/");
-      if (path != original_path)
+      var repopath = elts.slice(1).join("/")+"/";
+      if (repopath != [reponame, original_path].join("/")) {
+        var path = repopath;
+        if (reponame)
+          path = repopath.substr(reponame.length);
         rev_paths["r"+elts[0]] = path;
+      }
     });
   
     /* for each blame cell... */

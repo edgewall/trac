@@ -127,18 +127,18 @@ class RepositoryManager(Component):
                 repos = resource.env.get_repository(reponame)
                 node = repos.get_node(resource.id, resource.version)
                 if node.isdir:
-                    kind = _("Directory")
+                    kind = _("directory")
                 elif node.isfile:
-                    kind = _("File")
+                    kind = _("file")
                 if resource.version:
                     version = _("at version %(rev)s", rev=resource.version)
             else:
-                kind = _("Path")
+                kind = _("path")
                 if resource.version:
                     version = '@%s' % resource.version
             if reponame:
-                in_repo = _("in %(repo)s", repo=reponame)
-            return ''.join(kind, ' ', resource.id, version, in_repo)
+                in_repo = _(" in %(repo)s", repo=reponame)
+            return ''.join([kind, ' ', id, version, in_repo])
 
     # IRepositoryProvider methods
 
