@@ -29,7 +29,7 @@ from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.datefmt import format_date, utc
 from trac.util.compat import sorted, groupby, any, set
 from trac.util.html import escape
-from trac.util.text import unquote
+from trac.util.text import unquote, to_unicode
 from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
@@ -53,7 +53,7 @@ class WikiMacroBase(Component):
 
     def get_macro_description(self, name):
         """Return the subclass's docstring."""
-        return inspect.getdoc(self.__class__)
+        return to_unicode(inspect.getdoc(self.__class__))
 
     def parse_macro(self, parser, name, content):
         raise NotImplementedError
