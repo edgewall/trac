@@ -211,7 +211,8 @@ class ConfigurationTestCase(unittest.TestCase):
         self._write(['[a]', 'option = x'])
         config = self._read()
         self.assertEquals('x', config.get('a', 'option'))
-        time.sleep(1) # needed because of low mtime granularity
+        time.sleep(2) # needed because of low mtime granularity,
+                      # especially on fat filesystems
 
         self._write(['[a]', 'option = y'])
         config.parse_if_needed()
