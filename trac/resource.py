@@ -104,7 +104,7 @@ class Resource(object):
             name = r.realm
             if r.id:
                 name += ':' + unicode(r.id) # id can be numerical
-            if r.version:
+            if r.version is not None:
                 name += '@' + unicode(r.version)
             path.append(name)
             r = r.parent
@@ -148,6 +148,10 @@ class Resource(object):
         >>> repr(main3)
         "<Resource u'wiki:WikiStart@3'>"
 
+        >>> main0 = main3(version=0)
+        >>> repr(main0)
+        "<Resource u'wiki:WikiStart@0'>"
+
         In a copy, if `id` is overriden, then the original `version` value
         will not be reused.
 
@@ -159,7 +163,7 @@ class Resource(object):
         """
         realm = resource_or_realm
         if isinstance(resource_or_realm, Resource):
-            if (id, version, parent) == (False, False, False):
+            if id is False and version is False and parent is False:
                 return resource_or_realm
             else: # copy and override
                 realm = resource_or_realm.realm
