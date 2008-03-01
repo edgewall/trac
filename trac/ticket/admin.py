@@ -113,6 +113,8 @@ class ComponentAdminPage(TicketAdminPage):
             data['owners'] = [username for username, name, email
                               in self.env.get_known_users()
                               if valid_owner(username)]
+            data['owners'].insert(0, '')
+            data['owners'].sort()
         else:
             data['owners'] = None
 
