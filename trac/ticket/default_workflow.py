@@ -215,7 +215,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         control = [] # default to nothing
         hints = []
         if 'reset_workflow' in operations:
-            control.append(tag("from invalid state"))
+            control.append(tag("from invalid state "))
             hints.append(_("Current state no longer exists"))
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
@@ -239,7 +239,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                                      name=id, value=owner)]))
                 hints.append(_("The owner will change"))
             elif len(owners) == 1:
-                control.append(tag('to %s' % owners[0]))
+                control.append(tag('to %s ' % owners[0]))
                 hints.append(_("The owner will change to %s") % owners[0])
             else:
                 control.append(tag([_("to "), tag.select(
@@ -271,7 +271,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     id=id, name=id)]))
                 hints.append(_("The resolution will be set"))
         if 'leave_status' in operations:
-            control.append('as ' + ticket['status'])
+            control.append('as %s ' % ticket['status'])
         else:
             if status != '*':
                 hints.append(_("Next status will be '%s'") % status)
