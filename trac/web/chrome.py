@@ -288,7 +288,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': compat.groupby,
+        'groupby': compat.py_groupby,
         'http_date': http_date,
         'istext': presentation.istext,
         'itemgetter': compat.itemgetter,
