@@ -329,6 +329,7 @@ class BrowserModule(Component):
         rev = req.args.get('rev', None)
         order = req.args.get('order', None)
         desc = req.args.get('desc', None)
+        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
         # Find node for the requested path/rev
         repos = self.env.get_repository(req.authname)
@@ -354,16 +355,21 @@ class BrowserModule(Component):
             'path': path, 'rev': node.rev, 'stickyrev': rev,
             'created_path': node.created_path,
             'created_rev': node.created_rev,
-            'properties': self.render_properties('browser', context,
-                                                 node.get_properties()),
+            'properties': xhr or self.render_properties('browser', context,
+                                                        node.get_properties()),
             'path_links': path_links,
             'dir': node.isdir and self._render_dir(req, repos, node, rev),
             'file': node.isfile and self._render_file(req, context, repos,
                                                       node, rev),
-            'quickjump_entries': list(repos.get_quickjump_entries(rev)),
+            'quickjump_entries': xhr or list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }
+        if xhr: # render and return the content only
+            data['xhr'] = True
+            return 'dir_entries.html', data, None
+
+        # Links for contextual navigation
         add_ctxtnav(req, tag.a(_('Last Change'), 
                     href=req.href.changeset(node.rev, node.created_path)))
         if node.isfile:
@@ -380,15 +386,9 @@ class BrowserModule(Component):
                             href=req.href.browser(node.created_path, 
                                                   rev=node.rev,
                                                   annotate=1))
-                
         add_ctxtnav(req, _('Revision Log'), 
                     href=req.href.log(path, rev=rev))
 
-        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
-        if xhr: # render and return the content only
-            data['xhr'] = True
-            return 'dir_entries.html', data, None
-        
         add_stylesheet(req, 'common/css/browser.css')
         return 'browser.html', data, None
 
