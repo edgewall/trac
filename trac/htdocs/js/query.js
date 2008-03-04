@@ -133,12 +133,15 @@
   
       // Convenience function for creating an <input type="radio">
       function createRadio(name, value, id) {
-        var input = document.createElement("input");
-        input.type = "radio";
-        if (name) input.name = name;
-        if (value) input.value = value;
-        if (id) input.id = id;
-        return input;
+        var str = '<input type="radio"';
+        if (name) str += ' name="' + name + '"';
+        if (value) str += ' value="' + value + '"';
+        if (id) str += ' id="' + id + '"'; 
+        str += '/>';
+        var span = document.createElement('span');
+        // create radio button with innerHTML to avoid IE mangling it.
+        span.innerHTML = str; 
+        return span;
       }
   
       // Convenience function for creating a <select>
