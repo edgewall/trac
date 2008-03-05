@@ -412,7 +412,6 @@ class TicketModule(Component):
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
 
-        data = {'ticket': ticket, 'comment': None}
         data = self._prepare_data(req, ticket)
         data['comment'] = None
         
