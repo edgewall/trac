@@ -371,14 +371,21 @@ class AttachmentModule(Component):
             segments = path.split('/')
             parent_id = '/'.join(segments[:-1])
             filename = len(segments) > 1 and segments[-1]
-            if not filename: # if there's a trailing '/', show the list
-                return self._render_list(req, parent_realm(id=parent_id))
 
         parent = parent_realm(id=parent_id)
-        attachment = Attachment(self.env, parent.child('attachment', filename))
         
-        add_link(req, 'up', get_resource_url(self.env, parent, req.href),
-                 get_resource_name(self.env, parent))
+        # Link the attachment page to parent resource
+        parent_name = get_resource_name(self.env, parent)
+        parent_url = get_resource_url(self.env, parent, req.href)
+        add_link(req, 'up', parent_url, parent_name)
+        add_ctxtnav(req, _('Back to %(parent)s', parent=parent_name), 
+                    parent_url)
+        
+        if action != 'new' and not filename: 
+            # there's a trailing '/', show the list
+            return self._render_list(req, parent)
+
+        attachment = Attachment(self.env, parent.child('attachment', filename))
         
         if req.method == 'POST':
             if action == 'new':
@@ -393,9 +400,6 @@ class AttachmentModule(Component):
             data = self._render_view(req, attachment)
 
         add_stylesheet(req, 'common/css/code.css')
-        add_ctxtnav(req, _('Back to %(parent)s', 
-                           parent=get_resource_name(self.env, parent)), 
-                    req.chrome['links']['up'][0]['href'])
         return 'attachment.html', data, None
 
     # IWikiSyntaxProvider methods
@@ -611,9 +615,6 @@ class AttachmentModule(Component):
             'attachments': self.attachment_data(Context.from_request(req,
                                                                      parent))
         }
-
-        add_link(req, 'up', get_resource_url(self.env, parent, req.href),
-                 get_resource_name(self.env, parent))
 
         return 'attachment.html', data, None
 
