@@ -2,12 +2,20 @@
 """Replacement for htpasswd"""
 
 import os
+import sys
 import random
+from optparse import OptionParser
+
+# We need a crypt module, but Windows doesn't have one by default.  Try to find
+# one, and tell the user if we can't.
 try:
     import crypt
 except ImportError:
-    import fcrypt as crypt
-from optparse import OptionParser
+    try:
+        import fcrypt as crypt
+    except ImportError:
+        sys.stderr.write("Cannot find a crypt module.  Possibly http://carey.geek.nz/code/python-fcrypt/\n")
+        sys.exit(1)
 
 
 def salt():
