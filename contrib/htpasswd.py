@@ -85,28 +85,28 @@ def main():
 
     options, args = parser.parse_args()
 
-    if not options.batch:
-        sys.stderr.write("Only batch mode is supported\n")
+    def syntax_error(msg):
+        """Utility function for displaying fatal error messages with usage
+        help.
+        """
+        sys.stderr.write("Syntax error: " + msg)
         sys.stderr.write(parser.get_usage())
         sys.exit(1)
 
+    if not options.batch:
+        syntax_error("Only batch mode is supported\n")
+
     # Non-option arguments
     if len(args) < 2:
-        sys.stderr.write("Insufficient number of arguments.\n")
-        sys.stderr.write(parser.get_usage())
-        sys.exit(1)
+        syntax_error("Insufficient number of arguments.\n")
     filename, username = args[:2]
     if options.delete_user:
         if len(args) != 2:
-            sys.stderr.write("Incorrect number of arguments.\n")
-            sys.stderr.write(parser.get_usage())
-            sys.exit(1)
+            syntax_error("Incorrect number of arguments.\n")
         password = None
     else:
         if len(args) != 3:
-            sys.stderr.write("Incorrect number of arguments.\n")
-            sys.stderr.write(parser.get_usage())
-            sys.exit(1)
+            syntax_error("Incorrect number of arguments.\n")
         password = args[2]
 
     passwdfile = HtpasswdFile(filename, create=options.create)
