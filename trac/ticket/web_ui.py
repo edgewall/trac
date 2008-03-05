@@ -178,7 +178,8 @@ class TicketModule(Component):
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['b.newvalue'], terms)
         sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
-                                         'reporter', 'cc', 'id'], terms)
+                                         'reporter', 'cc', 
+                                         db.cast('id', 'text')], terms)
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
                        "a.type,a.id,a.time,a.status,a.resolution "

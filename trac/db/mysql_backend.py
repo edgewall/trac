@@ -1,4 +1,4 @@
-# -*- coding: iso8859-1 -*-
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2005-2006 Edgewall Software
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
@@ -176,6 +176,8 @@ class MySQLConnection(ConnectionWrapper):
     def cast(self, column, type):
         if type == 'int':
             type = 'signed'
+        elif type == 'text':
+            type = 'char'
         return 'CAST(%s AS %s)' % (column, type)
 
     def concat(self, *args):
