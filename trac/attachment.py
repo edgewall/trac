@@ -620,7 +620,8 @@ class AttachmentModule(Component):
 
     def _render_view(self, req, attachment):
         req.perm(attachment.resource).require('ATTACHMENT_VIEW')
-        req.check_modified(attachment.date)
+        can_delete = 'ATTACHMENT_DELETE' in req.perm(attachment.resource)
+        req.check_modified(attachment.date, str(can_delete))
 
         data = {'mode': 'view',
                 'title': get_resource_name(self.env, attachment.resource),
