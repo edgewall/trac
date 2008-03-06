@@ -13,7 +13,6 @@
 #content.about #config th, #content.about #config td { border: 1px solid #ddd;
   padding: 3px;
 }
-#content.about #config td.value { font-family: monospace; }
-#content.about #config tr.modified { background: #fee; }
-#content.about #config tr.modified td.value { font-weight: bold; }
+#content.about #config tr.modified { background: #ffd; }
+#content.about #config tr.modified td.value { font-style: italic; }
 #content.about #config td.doc { padding: 3px 1em; }
