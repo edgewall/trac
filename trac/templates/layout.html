@@ -38,7 +38,7 @@
   <py:match path="body" once="true"><body>
     <div id="banner">
       <div id="header" py:choose="">
-        <a py:when="chrome.logo.src" id="logo" href="${chrome.logo.link}"><img
+        <a py:when="chrome.logo.src" id="logo" href="${chrome.logo.link or href.wiki('TracIni')+'#header_logo-section'}"><img
           src="${chrome.logo.src}" alt="${chrome.logo.alt}"
           height="${chrome.logo.height or None}" width="${chrome.logo.width or None}" /></a>
         <h1 py:otherwise=""><a href="${chrome.logo.link}">${project.name}</a></h1>

@@ -254,13 +254,14 @@ class Chrome(Component):
         """Order of the items to display in the `mainnav` navigation bar, 
            listed by IDs. See also TracNavigation.""")
 
-    logo_link = Option('header_logo', 'link', 'http://example.org/',
+    logo_link = Option('header_logo', 'link', '',
         """URL to link to from header logo.""")
 
-    logo_src = Option('header_logo', 'src', 'common/trac_banner.png',
+    logo_src = Option('header_logo', 'src', 'site/your_project_logo.png',
         """URL of the image to use as header logo.""")
 
-    logo_alt = Option('header_logo', 'alt', '',
+    logo_alt = Option('header_logo', 'alt', 
+        "(please configure the [header_logo] section in trac.ini)",
         """Alternative text for the header logo.""")
 
     logo_width = IntOption('header_logo', 'width', -1,
