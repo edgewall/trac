@@ -81,11 +81,11 @@ def pretty_timedelta(time1, time2=None, resolution=None):
     age_s = int(diff.days * 86400 + diff.seconds)
     if resolution and age_s < resolution:
         return ''
-    if age_s < 60:
+    if age_s <= 60 * 1.9:
         return '%i second%s' % (age_s, age_s != 1 and 's' or '')
     for u, unit, unit_plural in units:
         r = float(age_s) / float(u)
-        if r >= 0.9:
+        if r >= 1.9:
             r = int(round(r))
             return '%d %s' % (r, r == 1 and unit or unit_plural)
     return ''
