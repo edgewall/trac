@@ -612,17 +612,20 @@ class Milestone(object):
         if not row:
             raise ResourceNotFound('Milestone %s does not exist.' % name,
                                    'Invalid Milestone Name')
-        name, due, completed, description = row
-        self.name = name
-        self.due = due and datetime.fromtimestamp(int(due), utc) or None
-        self.completed = completed and \
-                         datetime.fromtimestamp(int(completed), utc) or None
-        self.description = description or ''
+        self._from_database(row)
 
     exists = property(fget=lambda self: self._old_name is not None)
     is_completed = property(fget=lambda self: self.completed is not None)
     is_late = property(fget=lambda self: self.due and \
                                          self.due.date() < date.today())
+
+    def _from_database(self, row):
+        name, due, completed, description = row
+        self.name = self._old_name = name
+        self.due = due and datetime.fromtimestamp(int(due), utc) or None
+        self.completed = completed and \
+                         datetime.fromtimestamp(int(completed), utc) or None
+        self.description = description or ''
 
     def delete(self, retarget_to=None, author=None, db=None):
         if not db:
@@ -701,15 +704,9 @@ class Milestone(object):
         cursor = db.cursor()
         cursor.execute(sql)
         milestones = []
-        for name,due,completed,description in cursor:
+        for row in cursor:
             milestone = Milestone(env)
-            milestone.name = milestone._old_name = name
-            milestone.due = due and datetime.fromtimestamp(int(due), utc) or None
-            if completed:
-                milestone.completed = datetime.fromtimestamp(int(completed), utc)
-            else:
-                milestone.completed = None
-            milestone.description = description or ''
+            milestone._from_database(row)
             milestones.append(milestone)
         def milestone_order(m):
             return (m.completed or utcmax,
