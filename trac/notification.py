@@ -24,10 +24,10 @@ from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.util.text import CRLF
 from trac.util.translation import _
-from trac.web.chrome import Chrome
 
 MAXHEADERLEN = 76
-
+EMAIL_LOOKALIKE_PATTERN = (r"[a-zA-Z0-9.'=+_-]+" '@'
+                            '(?:[a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,4}')
 
 class NotificationSystem(Component):
 
@@ -117,6 +117,7 @@ class Notify(object):
         self.config = env.config
         self.db = env.get_db_cnx()
 
+        from trac.web.chrome import Chrome
         self.template = Chrome(self.env).load_template(self.template_name,
                                                        method='text')
         # FIXME: actually, we would need a Context with a different
@@ -166,9 +167,10 @@ class NotifyEmail(Notify):
     addrsep_re = re.compile(r'[;\s,]+')
 
     def __init__(self, env):
+        global EMAIL_LOOKALIKE_PATTERN
         Notify.__init__(self, env)
 
-        addrfmt = r'[\w\d_\.\-\+=]+\@(?:(?:[\w\d\-])+\.)+(?:[\w\d]{2,4})'
+        addrfmt = EMAIL_LOOKALIKE_PATTERN
         admit_domains = self.env.config.get('notification', 'admit_domains')
         if admit_domains:
             pos = addrfmt.find('@')
