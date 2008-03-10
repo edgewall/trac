@@ -280,8 +280,8 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   ORDER BY (milestone IS NULL), milestone DESC, (status = 'closed'), 
-        (CASE status WHEN 'closed' THEN modified ELSE (-1)*p.value END) DESC
-"""),
+        (CASE status WHEN 'closed' THEN changetime ELSE (-1) * %s END) DESC
+""" % db.cast('p.value', 'int')),
 #----------------------------------------------------------------------------
 ('My Tickets',
 """
