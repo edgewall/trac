@@ -584,6 +584,10 @@ class Mimeview(Component):
         """
         if not content:
             return ''
+        if not isinstance(context, Context):
+            # backwards compatibility: the first argument used to be the
+            # request prior to 0.11
+            context = Context.from_request(context)
 
         # Ensure we have a MIME type for this content
         full_mimetype = mimetype
