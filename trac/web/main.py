@@ -38,7 +38,8 @@ from trac.core import *
 from trac.env import open_environment
 from trac.perm import PermissionCache, PermissionError, PermissionSystem
 from trac.resource import ResourceNotFound
-from trac.util import get_lines_from_file, get_last_traceback, hex_entropy
+from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
+                      arity
 from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import shorten_line, to_unicode
@@ -286,15 +287,12 @@ class RequestDispatcher(Component):
         return chosen_handler
 
     def _post_process_request(self, req, *args):
-        nbargs = len(args)
         resp = args
         for f in reversed(self.filters):
-            arity = f.post_process_request.func_code.co_argcount - 2
-            if nbargs:
-                if arity == nbargs:
-                    resp = f.post_process_request(req, *resp)
-            else:
-                resp = f.post_process_request(req, *(None,)*arity)
+            # as the arity of `post_process_request` has changed since 
+            # Trac 0.10, we only call filters which have the same arity
+            if arity(f.post_process_request) - 2 == len(args):
+                resp = f.post_process_request(req, *resp)
         return resp
 
 

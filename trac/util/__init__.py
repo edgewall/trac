@@ -129,6 +129,9 @@ class NaivePopen:
 
 # -- sys utils
 
+def arity(f):
+    return f.func_code.co_argcount
+
 def get_last_traceback():
     import traceback
     from StringIO import StringIO
