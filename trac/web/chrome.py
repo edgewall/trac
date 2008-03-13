@@ -19,6 +19,10 @@ import os
 import pkg_resources
 import pprint
 import re
+try: 
+    from cStringIO import StringIO as cStringIO 
+except ImportError: 
+    cStringIO = StringIO 
 
 from genshi import Markup
 from genshi.builder import tag, Element
@@ -34,7 +38,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      get_module_path, translation
+                      get_module_path, translation, arity
 from trac.util.compat import partial, set
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -682,7 +686,13 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            return stream.render('text')
+            if arity(stream.render) == 3:
+                # TODO: remove this when we depend on Genshi >= 0.5
+                return stream.render('text')
+            else:
+                buffer = cStringIO()
+                stream.render('text', out=buffer)
+                return buffer.getvalue()
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         if doctype:
@@ -701,7 +711,13 @@ class Chrome(Component):
         })
 
         try:
-            return stream.render(method, doctype=doctype)
+            if arity(stream.render) == 3:
+                # TODO: remove this when we depend on Genshi >= 0.5
+                return stream.render(method, doctype=doctype)
+            else:
+                buffer = cStringIO()
+                stream.render('xhtml', doctype=doctype, out=buffer)
+                return buffer.getvalue()
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links
