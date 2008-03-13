@@ -186,6 +186,7 @@ class Session(dict):
                 # No need to keep around empty unauthenticated sessions
                 cursor.execute("DELETE FROM session "
                                "WHERE sid=%s AND authenticated=0", (self.sid,))
+                db.commit()
                 return
 
         now = int(time.time())
