@@ -500,6 +500,9 @@ class Chrome(Component):
                 })
 
         chrome['nav'] = nav
+        
+        # Default theme file
+        chrome['theme'] = 'theme.html'
 
         return chrome
 
