@@ -719,7 +719,7 @@ class Chrome(Component):
                 return stream.render(method, doctype=doctype)
             else:
                 buffer = cStringIO()
-                stream.render('xhtml', doctype=doctype, out=buffer)
+                stream.render(method, doctype=doctype, out=buffer)
                 return buffer.getvalue()
         except:
             # restore what may be needed by the error template
