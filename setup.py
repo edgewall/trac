@@ -29,6 +29,16 @@ facilities.
     license = 'BSD',
     url = 'http://trac.edgewall.org/',
     download_url = 'http://trac.edgewall.org/wiki/TracDownload',
+    classifiers = [
+        'Environment :: Web Environment',
+        'Framework :: Trac',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Software Development :: Bug Tracking',
+        'Topic :: Software Development :: Version Control',
+    ],
 
     packages = find_packages(exclude=['*.tests']),
     package_data = {
