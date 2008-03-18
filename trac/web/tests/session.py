@@ -6,7 +6,7 @@ from trac.core import TracError
 from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
 from trac.web.href import Href
-from trac.web.session import Session, PURGE_AGE, UPDATE_INTERVAL
+from trac.web.session import DetachedSession, Session, PURGE_AGE, UPDATE_INTERVAL
 
 
 class SessionTestCase(unittest.TestCase):
@@ -285,6 +285,42 @@ class SessionTestCase(unittest.TestCase):
         cursor.execute("SELECT last_visit FROM session WHERE sid='123456' AND "
                        "authenticated=0")
         self.assertAlmostEqual(now, int(cursor.fetchone()[0]), -1)
+
+    def test_modify_detached_session(self):
+        """
+        Verify that a modifying a variable in a session not associated with a
+        request updates the database accordingly.
+        """
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO session VALUES ('john', 1, 0)")
+        cursor.execute("INSERT INTO session_attribute VALUES "
+                       "('john', 1, 'foo', 'bar')")
+
+        session = DetachedSession(self.env, 'john')
+        self.assertEqual('bar', session['foo'])
+        session['foo'] = 'baz'
+        session.save()
+        cursor.execute("SELECT value FROM session_attribute "
+                       "WHERE sid='john' AND name='foo'")
+        self.assertEqual('baz', cursor.fetchone()[0])
+
+    def test_delete_detached_session_var(self):
+        """
+        Verify that removing a variable in a session not associated with a
+        request deletes the variable from the database.
+        """
+        cursor = self.db.cursor()
+        cursor.execute("INSERT INTO session VALUES ('john', 1, 0)")
+        cursor.execute("INSERT INTO session_attribute VALUES "
+                       "('john', 1, 'foo', 'bar')")
+
+        session = DetachedSession(self.env, 'john')
+        self.assertEqual('bar', session['foo'])
+        del session['foo']
+        session.save()
+        cursor.execute("SELECT COUNT(*) FROM session_attribute "
+                       "WHERE sid='john' AND name='foo'")
+        self.assertEqual(0, cursor.fetchone()[0])
 
 
 def suite():

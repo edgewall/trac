@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2006 Edgewall Software
+# Copyright (C) 2004-2008 Edgewall Software
 # Copyright (C) 2004 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006 Jonas Borgström <jonas@edgewall.com>
+# Copyright (C) 2008 Matt Good <matt@matt-good.net>
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -28,17 +29,105 @@ PURGE_AGE = 3600*24*90 # Purge session after 90 days idle
 COOKIE_KEY = 'trac_session'
 
 
-class Session(dict):
-    """Basic session handling and per-session storage."""
-
-    def __init__(self, env, req):
+class DetachedSession(dict):
+    def __init__(self, env, sid):
         dict.__init__(self)
         self.env = env
-        self.req = req
         self.sid = None
         self.last_visit = 0
         self._new = True
         self._old = {}
+        if sid:
+            self.get_session(sid, authenticated=True)
+        else:
+            self.authenticated = False
+
+    def get_session(self, sid, authenticated=False):
+        self.env.log.debug('Retrieving session for ID %r', sid)
+
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+
+        self.sid = sid
+        self.authenticated = authenticated
+
+        cursor.execute("SELECT last_visit FROM session "
+                       "WHERE sid=%s AND authenticated=%s",
+                       (sid, int(authenticated)))
+        row = cursor.fetchone()
+        if not row:
+            return
+        self._new = False
+        self.last_visit = int(row[0])
+
+        cursor.execute("SELECT name,value FROM session_attribute "
+                       "WHERE sid=%s and authenticated=%s",
+                       (sid, int(authenticated)))
+        for name, value in cursor:
+            self[name] = value
+        self._old.update(self)
+
+    def save(self):
+        if not self._old and not self.items():
+            # The session doesn't have associated data, so there's no need to
+            # persist it
+            return
+
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        authenticated = int(self.authenticated)
+
+        if self._new:
+            self._new = False
+            cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
+                           " VALUES(%s,%s,%s)",
+                           (self.sid, self.last_visit, authenticated))
+        if self._old != self:
+            attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
+            cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
+                           (self.sid,))
+            self._old = dict(self.items())
+            if attrs:
+                cursor.executemany("INSERT INTO session_attribute "
+                                   "(sid,authenticated,name,value) "
+                                   "VALUES(%s,%s,%s,%s)", attrs)
+            elif not authenticated:
+                # No need to keep around empty unauthenticated sessions
+                cursor.execute("DELETE FROM session "
+                               "WHERE sid=%s AND authenticated=0", (self.sid,))
+                db.commit()
+                return
+
+        now = int(time.time())
+        # Update the session last visit time if it is over an hour old,
+        # so that session doesn't get purged
+        if now - self.last_visit > UPDATE_INTERVAL:
+            self.last_visit = now
+            self.env.log.info("Refreshing session %s" % self.sid)
+            cursor.execute('UPDATE session SET last_visit=%s '
+                           'WHERE sid=%s AND authenticated=%s',
+                           (self.last_visit, self.sid, authenticated))
+            # Purge expired sessions. We do this only when the session was
+            # changed as to minimize the purging.
+            mintime = now - PURGE_AGE
+            self.env.log.debug('Purging old, expired, sessions.')
+            cursor.execute("DELETE FROM session_attribute "
+                           "WHERE authenticated=0 AND sid "
+                           "IN (SELECT sid FROM session WHERE "
+                           "authenticated=0 AND last_visit < %s)",
+                           (mintime,))
+            cursor.execute("DELETE FROM session WHERE "
+                           "authenticated=0 AND last_visit < %s",
+                           (mintime,))
+        db.commit()
+
+
+class Session(DetachedSession):
+    """Basic session handling and per-session storage."""
+
+    def __init__(self, env, req):
+        super(Session, self).__init__(env, None)
+        self.req = req
         if req.authname == 'anonymous':
             if not req.incookie.has_key(COOKIE_KEY):
                 self.sid = hex_entropy(24)
@@ -59,33 +148,14 @@ class Session(dict):
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
 
     def get_session(self, sid, authenticated=False):
-        self.env.log.debug('Retrieving session for ID %r', sid)
-
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
         refresh_cookie = False
 
         if self.sid and sid != self.sid:
             refresh_cookie = True
-        self.sid = sid
 
-        cursor.execute("SELECT last_visit FROM session "
-                       "WHERE sid=%s AND authenticated=%s",
-                       (sid, int(authenticated)))
-        row = cursor.fetchone()
-        if not row:
-            return
-        self._new = False
-        self.last_visit = int(row[0])
+        super(Session, self).get_session(sid, authenticated)
         if self.last_visit and time.time() - self.last_visit > UPDATE_INTERVAL:
             refresh_cookie = True
-
-        cursor.execute("SELECT name,value FROM session_attribute "
-                       "WHERE sid=%s and authenticated=%s",
-                       (sid, int(authenticated)))
-        for name, value in cursor:
-            self[name] = value
-        self._old.update(self)
 
         # Refresh the session cookie if this is the first visit since over a day
         if not authenticated and refresh_cookie:
@@ -157,57 +227,3 @@ class Session(dict):
 
         self.sid = sid
         self.bake_cookie(0) # expire the cookie
-
-    def save(self):
-        if not self._old and not self.items():
-            # The session doesn't have associated data, so there's no need to
-            # persist it
-            return
-
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        authenticated = int(self.req.authname != 'anonymous')
-
-        if self._new:
-            self._new = False
-            cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
-                           " VALUES(%s,%s,%s)",
-                           (self.sid, self.last_visit, authenticated))
-        if self._old != self:
-            attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
-            cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
-                           (self.sid,))
-            self._old = dict(self.items())
-            if attrs:
-                cursor.executemany("INSERT INTO session_attribute "
-                                   "(sid,authenticated,name,value) "
-                                   "VALUES(%s,%s,%s,%s)", attrs)
-            elif not authenticated:
-                # No need to keep around empty unauthenticated sessions
-                cursor.execute("DELETE FROM session "
-                               "WHERE sid=%s AND authenticated=0", (self.sid,))
-                db.commit()
-                return
-
-        now = int(time.time())
-        # Update the session last visit time if it is over an hour old,
-        # so that session doesn't get purged
-        if now - self.last_visit > UPDATE_INTERVAL:
-            self.last_visit = now
-            self.env.log.info("Refreshing session %s" % self.sid)
-            cursor.execute('UPDATE session SET last_visit=%s '
-                           'WHERE sid=%s AND authenticated=%s',
-                           (self.last_visit, self.sid, authenticated))
-            # Purge expired sessions. We do this only when the session was
-            # changed as to minimize the purging.
-            mintime = now - PURGE_AGE
-            self.env.log.debug('Purging old, expired, sessions.')
-            cursor.execute("DELETE FROM session_attribute "
-                           "WHERE authenticated=0 AND sid "
-                           "IN (SELECT sid FROM session WHERE "
-                           "authenticated=0 AND last_visit < %s)",
-                           (mintime,))
-            cursor.execute("DELETE FROM session WHERE "
-                           "authenticated=0 AND last_visit < %s",
-                           (mintime,))
-        db.commit()
