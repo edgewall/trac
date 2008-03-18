@@ -1,7 +1,7 @@
 var SELECTED_FILE_ELEM = null;
 
 (function($){
-  $(window).keydown(function(event) {
+  $(document).keydown(function(event) {
     var selection = SELECTED_FILE_ELEM;
     switch (event.keyCode) {
       case 74: // j
