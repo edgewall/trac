@@ -437,6 +437,7 @@ table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
+table.listing tbody tr.focus { background: #ddf !important }
 
 /* Styles for the page history table
    (extends the styles for "table.listing") */

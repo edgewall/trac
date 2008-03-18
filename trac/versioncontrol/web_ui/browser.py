@@ -456,6 +456,7 @@ class BrowserModule(Component):
                      'application/zip', 'zip')
 
         add_script(req, 'common/js/expand_dir.js')
+        add_script(req, 'common/js/keyboard_nav.js')
 
         return {'order': order, 'desc': desc and 1 or None,
                 'entries': entries, 'changes': changes,
