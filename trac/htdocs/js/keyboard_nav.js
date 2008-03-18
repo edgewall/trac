@@ -1,6 +1,6 @@
-var SELECTED_FILE_ELEM = null;
-
 (function($){
+  var SELECTED_FILE_ELEM = null;
+
   $(document).keydown(function(event) {
     var selection = SELECTED_FILE_ELEM;
     switch (event.keyCode) {
