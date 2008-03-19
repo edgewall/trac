@@ -342,7 +342,7 @@ try:
             tz = _tzoffsetmap.get(tz.utcoffset(None))
         return tz
 
-    _pytz_zones = [tzname for tzname in pytz.all_timezones
+    _pytz_zones = [tzname for tzname in pytz.common_timezones
                    if not tzname.startswith('Etc/') and
                       not tzname.startswith('GMT')]
     # insert just the GMT timezones into the pytz zones at the right location
