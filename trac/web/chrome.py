@@ -435,6 +435,10 @@ class Chrome(Component):
         add_link(fakereq, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(fakereq, 'common/css/trac.css')
         add_script(fakereq, 'common/js/jquery.js')
+        # Only activate noConflict mode if requested to by the handler
+        if handler is not None and \
+           getattr(handler.__class__, 'jquery_noconflict', False):
+            add_script(fakereq, 'common/js/noconflict.js')
         add_script(fakereq, 'common/js/trac.js')
         add_script(fakereq, 'common/js/search.js')
 
