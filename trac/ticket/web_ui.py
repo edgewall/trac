@@ -16,6 +16,7 @@
 
 import csv
 from datetime import datetime
+from itertools import chain
 import os
 import pkg_resources
 import re
@@ -1057,7 +1058,11 @@ class TicketModule(Component):
                 if ticket.exists:
                     value = ticket.values.get(name)
                     options = field['options']
-                    if value and not value in options:
+                    optgroups = list(chain(*[x['options'] for x in
+                                            field.get('optgroups', [])]))
+                    if value and \
+                        (not value in options and \
+                        not value in optgroups):
                         # Current ticket value must be visible,
                         # even if it's not among the possible values
                         options.append(value)
