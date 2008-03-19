@@ -526,11 +526,12 @@ class WikiModule(Component):
         """Add the normal wiki ctxtnav entries."""
         add_ctxtnav(req, _('Start Page'), req.href.wiki('WikiStart'))
         add_ctxtnav(req, _('Index'), req.href.wiki('TitleIndex'))
-        add_ctxtnav(req, _('History'), req.href.wiki(page.name, 
-                                                     action='history'))
-        add_ctxtnav(req, _('Last Change'), req.href.wiki(page.name,
-                                                    action='diff',
-                                                    version=page.version))
+        if page.exists:
+            add_ctxtnav(req, _('History'), req.href.wiki(page.name, 
+                                                         action='history'))
+            add_ctxtnav(req, _('Last Change'),
+                        req.href.wiki(page.name, action='diff',
+                                      version=page.version))
 
     # ITimelineEventProvider methods
 
