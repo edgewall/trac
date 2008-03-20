@@ -1,7 +1,10 @@
 (function($){
   var SELECTED_FILE_ELEM = null;
+  var ENABLE_KEY_NAV = true;
 
   $(document).keydown(function(event) {
+    if (!ENABLE_KEY_NAV)
+      return true;
     var selection = SELECTED_FILE_ELEM;
     switch (event.keyCode) {
       case 74: // j
@@ -44,5 +47,15 @@
       SELECTED_FILE_ELEM = selection;
     }
     return false;
+  });
+
+  $(function() {
+    $('a,input,select,textarea,button')
+      .focus(function(event) {
+        ENABLE_KEY_NAV = false;
+      })
+      .blur(function(event) {
+        ENABLE_KEY_NAV = true;
+      });
   });
 })(jQuery);
