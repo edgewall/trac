@@ -1173,9 +1173,9 @@ Congratulations!
             for key, root in paths:
                 source = os.path.normpath(root)
                 print '   ', source
-                dest = os.path.join(target, key)
-                copytree(source, dest)
-        
+                if os.path.exists(source):
+                    dest = os.path.join(target, key)
+                    copytree(source, dest)
 
 
 class TracAdminHelpMacro(WikiMacroBase):
