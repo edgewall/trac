@@ -28,37 +28,29 @@
     ${select("*[local-name() != 'title']")}
   </head></py:match>
 
-  <div py:def="navigation(category)" id="${category}" class="nav">
-    <ul py:if="chrome.nav[category]">
-      <li py:for="idx, item in  enumerate(chrome.nav[category])"
-          class="${classes(first_last(idx, chrome.nav[category]), active=item.active)}">${item.label}</li>
-    </ul>
-  </div>
-  
   <py:match path="body" once="true"><body>
     ${select('*|text()')}
-    
-      <script type="text/javascript" py:if="chrome.late_links">
-        <py:for each="link in chrome.late_links.get('stylesheet')">
-          jQuery.loadStyleSheet("${link.href}", "${link.title}");
-        </py:for>
-      </script>
-      <script py:for="script in chrome.late_scripts"
-              type="${script.type}" src="${script.href}"></script>
 
-      <div id="altlinks" py:if="'alternate' in chrome.links">
-        <h3>Download in other formats:</h3>
-        <ul>
-          <li py:for="idx, link in enumerate(chrome.links.alternate)"
-              class="${first_last(idx, chrome.links.alternate)}">
-            <a rel="nofollow" href="${link.href}" class="${link['class']}"
-               py:content="link.title" />
-          </li>
-        </ul>
-      </div>
-    </body></py:match>
-    
+    <script type="text/javascript" py:if="chrome.late_links">
+      <py:for each="link in chrome.late_links.get('stylesheet')">
+        jQuery.loadStyleSheet("${link.href}", "${link.title}");
+      </py:for>
+    </script>
+    <script py:for="script in chrome.late_scripts"
+            type="${script.type}" src="${script.href}"></script>
+
+    <div id="altlinks" py:if="'alternate' in chrome.links">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li py:for="idx, link in enumerate(chrome.links.alternate)"
+            class="${first_last(idx, chrome.links.alternate)}">
+          <a rel="nofollow" href="${link.href}" class="${link['class']}"
+             py:content="link.title" />
+        </li>
+      </ul>
+    </div>
+  </body></py:match>
+
   <xi:include href="$chrome.theme"><xi:fallback /></xi:include>
   <xi:include href="site.html"><xi:fallback /></xi:include>
-
 </html>

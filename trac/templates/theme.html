@@ -5,7 +5,15 @@
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
       py:strip="">
-  <py:match path="body" once="true"><body>
+
+  <div py:def="navigation(category)" id="${category}" class="nav">
+    <ul py:if="chrome.nav[category]">
+      <li py:for="idx, item in  enumerate(chrome.nav[category])"
+          class="${classes(first_last(idx, chrome.nav[category]), active=item.active)}">${item.label}</li>
+    </ul>
+  </div>
+
+  <py:match path="body" once="true" buffer="false"><body>
     <div id="banner">
       <div id="header" py:choose="">
         <a py:when="chrome.logo.src" id="logo" href="${chrome.logo.link or href.wiki('TracIni')+'#header_logo-section'}"><img
