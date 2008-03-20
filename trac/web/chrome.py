@@ -333,7 +333,7 @@ class Chrome(Component):
             try:
                 fileobj.write("""<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/" py:strip="">
-  <!-- Custom match templates go here -->
+  <!--! Custom match templates go here -->
 </html>""")
             finally:
                 fileobj.close()
