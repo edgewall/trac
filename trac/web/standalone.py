@@ -152,7 +152,7 @@ def main():
                       help='parent directory of the project environments')
     parser.add_option('--base-path', action='store', type='string', # XXX call this url_base_path?
                       dest='base_path',
-                      help='base path')
+                      help='the initial portion of the request URL\'s "path"')
 
     parser.add_option('-r', '--auto-reload', action='store_true',
                       dest='autoreload',
