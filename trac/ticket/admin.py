@@ -23,7 +23,7 @@ from trac.util.translation import _
 from trac.web.chrome import add_link, add_script
 
 
-class TicketAdminPage(Component):
+class TicketAdminPanel(Component):
 
     implements(IAdminPanelProvider)
 
@@ -44,12 +44,12 @@ class TicketAdminPage(Component):
             raise TracError(e)
 
 
-class ComponentAdminPage(TicketAdminPage):
+class ComponentAdminPanel(TicketAdminPanel):
 
     _type = 'components'
     _label = ('Component', 'Components')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, component):
         # Detail view?
@@ -121,12 +121,12 @@ class ComponentAdminPage(TicketAdminPage):
         return 'admin_components.html', data
 
 
-class MilestoneAdminPage(TicketAdminPage):
+class MilestoneAdminPanel(TicketAdminPanel):
 
     _type = 'milestones'
     _label = ('Milestone', 'Milestones')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, milestone):
         req.perm.require('TICKET_ADMIN')
@@ -203,12 +203,12 @@ class MilestoneAdminPage(TicketAdminPage):
         return 'admin_milestones.html', data
 
 
-class VersionAdminPage(TicketAdminPage):
+class VersionAdminPanel(TicketAdminPanel):
 
     _type = 'versions'
     _label = ('Version', 'Versions')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, version):
         # Detail view?
@@ -275,7 +275,7 @@ class VersionAdminPage(TicketAdminPage):
         return 'admin_versions.html', data
 
 
-class AbstractEnumAdminPage(TicketAdminPage):
+class AbstractEnumAdminPanel(TicketAdminPanel):
     implements(IAdminPanelProvider)
     abstract = True
 
@@ -283,7 +283,7 @@ class AbstractEnumAdminPage(TicketAdminPage):
     _enum_cls = None
     _label = ('(Undefined)', '(Undefined)')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, path_info):
         req.perm.require('TICKET_ADMIN')
@@ -361,25 +361,25 @@ class AbstractEnumAdminPage(TicketAdminPage):
         return 'admin_enums.html', data
 
 
-class PriorityAdminPage(AbstractEnumAdminPage):
+class PriorityAdminPanel(AbstractEnumAdminPanel):
     _type = 'priority'
     _enum_cls = model.Priority
     _label = ('Priority', 'Priorities')
 
 
-class ResolutionAdminPage(AbstractEnumAdminPage):
+class ResolutionAdminPanel(AbstractEnumAdminPanel):
     _type = 'resolution'
     _enum_cls = model.Resolution
     _label = ('Resolution', 'Resolutions')
 
 
-class SeverityAdminPage(AbstractEnumAdminPage):
+class SeverityAdminPanel(AbstractEnumAdminPanel):
     _type = 'severity'
     _enum_cls = model.Severity
     _label = ('Severity', 'Severities')
 
 
-class TicketTypeAdminPage(AbstractEnumAdminPage):
+class TicketTypeAdminPanel(AbstractEnumAdminPanel):
     _type = 'type'
     _enum_cls = model.Type
     _label = ('Ticket Type', 'Ticket Types')
