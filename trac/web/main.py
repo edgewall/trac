@@ -532,8 +532,9 @@ def send_project_index(environ, start_response, parent_dir=None,
             req.hdf['projects'] = projects
             req.display(template)
 
-        markuptemplate = TemplateLoader(loadpaths).load(template)
-        stream = markuptemplate.generate(**data)
+        loader = TemplateLoader(loadpaths, variable_lookup='lenient')
+        tmpl = loader.load(template)
+        stream = tmpl.generate(**data)
         output = stream.render('xhtml', doctype=DocType.XHTML_STRICT)
         req.send(output, 'text/html')
 
