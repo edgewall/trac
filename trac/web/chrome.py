@@ -347,7 +347,7 @@ class Chrome(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/chrome/(?P<prefix>[^/]+)/+(?P<filename>[/\w\-\.]+)',
+        match = re.match(r'/chrome/(?P<prefix>[^/]+)/+(?P<filename>.+)',
                          req.path_info)
         if match:
             req.args['prefix'] = match.group('prefix')
