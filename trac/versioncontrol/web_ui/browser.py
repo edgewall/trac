@@ -385,7 +385,7 @@ class BrowserModule(Component):
                                     '(this can be time consuming...)'), 
                             href=req.href.browser(node.created_path, 
                                                   rev=node.rev,
-                                                  annotate=1))
+                                                  annotate='blame'))
         add_ctxtnav(req, _('Revision Log'), 
                     href=req.href.log(path, rev=rev))
 
@@ -527,7 +527,7 @@ class BrowserModule(Component):
             force_source = False
             if 'annotate' in req.args:
                 force_source = True
-                annotations.insert(0, 'blame')
+                annotations.insert(0, req.args['annotate'])
             preview_data = mimeview.preview_data(context, node.get_content(),
                                                  node.get_content_length(),
                                                  mime_type, node.created_path,
