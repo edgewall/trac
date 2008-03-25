@@ -146,8 +146,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '
-                                              'the future',
-                                              'Invalid Completion Date'))
+                                              'the future'),
+                                            _('Invalid Completion Date'))
                     mil.description = req.args.get('description', '')
                     mil.update()
                     req.redirect(req.href.admin(cat, page))
