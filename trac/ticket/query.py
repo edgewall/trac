@@ -732,10 +732,9 @@ class QueryModule(Component):
                             'changetime': ticket.time_changed, 'removed': True,
                             'href': req.href.ticket(ticket.id)}
                     data.update(ticket.values)
+                    tickets.insert(orig_list.index(rest_id), data)
                 except TracError, e:
-                    data = {'id': rest_id, 'time': 0, 'changetime': 0,
-                            'summary': tag.em(e)}
-                tickets.insert(orig_list.index(rest_id), data)
+                    pass
 
         context = Context.from_request(req, 'query')
         data = query.template_data(context, tickets, orig_list, orig_time)
