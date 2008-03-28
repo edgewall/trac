@@ -28,7 +28,7 @@
     ${select("*[local-name() != 'title']")}
   </head></py:match>
 
-  <py:match path="body" once="true"><body>
+  <py:match path="body" once="true" buffer="false"><body>
     ${select('*|text()')}
 
     <script type="text/javascript" py:if="chrome.late_links">
