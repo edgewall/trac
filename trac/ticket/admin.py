@@ -16,6 +16,7 @@ from datetime import datetime
 from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem
+from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint
@@ -161,12 +162,18 @@ class MilestoneAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Milestone
                 if req.args.get('add') and req.args.get('name'):
-                    mil = model.Milestone(self.env)
-                    mil.name = req.args.get('name')
-                    if req.args.get('duedate'):
-                        mil.due = parse_date(req.args.get('duedate'))
-                    mil.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        model.Milestone(self.env, name=name)
+                    except ResourceNotFound:
+                        mil = model.Milestone(self.env)
+                        mil.name = name
+                        if req.args.get('duedate'):
+                            mil.due = parse_date(req.args.get('duedate'))
+                        mil.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('Milestone %s already exists.') % name)
 
                 # Remove milestone
                 elif req.args.get('remove') and req.args.get('sel'):
