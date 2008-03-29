@@ -73,12 +73,18 @@ class ComponentAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Component
                 if req.args.get('add') and req.args.get('name'):
-                    comp = model.Component(self.env)
-                    comp.name = req.args.get('name')
-                    if req.args.get('owner'):
-                        comp.owner = req.args.get('owner')
-                    comp.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        model.Component(self.env, name=name)
+                    except ResourceNotFound:
+                        comp = model.Component(self.env)
+                        comp.name = name
+                        if req.args.get('owner'):
+                            comp.owner = req.args.get('owner')
+                        comp.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('Component %s already exists.') % name)
 
                 # Remove components
                 elif req.args.get('remove') and req.args.get('sel'):
