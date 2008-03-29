@@ -155,8 +155,8 @@ class Ticket(object):
                 component = Component(self.env, self['component'], db=db)
                 if component.owner:
                     self['owner'] = component.owner
-            except ResourceNotFound, e:
-                # No such component exists
+            except TracError, e:
+                # Assume that no such component exists
                 pass
 
         # Insert ticket record
@@ -498,7 +498,7 @@ class Component(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise ResourceNotFound(_('Component %(name)s does not exist.',
+                raise TracError(_('Component %(name)s does not exist.',
                                   name=name))
             self.name = self._old_name = name
             self.owner = row[0] or None
