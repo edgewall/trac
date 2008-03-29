@@ -247,12 +247,18 @@ class VersionAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Version
                 if req.args.get('add') and req.args.get('name'):
-                    ver = model.Version(self.env)
-                    ver.name = req.args.get('name')
-                    if req.args.get('time'):
-                        ver.time = parse_date(req.args.get('time'))
-                    ver.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        model.Version(self.env, name=name)
+                    except ResourceNotFound:
+                        ver = model.Version(self.env)
+                        ver.name = name
+                        if req.args.get('time'):
+                            ver.time = parse_date(req.args.get('time'))
+                        ver.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('Version %s already exists.') % name)
                          
                 # Remove versions
                 elif req.args.get('remove') and req.args.get('sel'):

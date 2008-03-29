@@ -728,7 +728,7 @@ class Version(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError(_('Version %(name)s does not exist.',
+                raise ResourceNotFound(_('Version %(name)s does not exist.',
                                   name=name))
             self.name = self._old_name = name
             self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) or None
