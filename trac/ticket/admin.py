@@ -327,10 +327,16 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add enum
                 if req.args.get('add') and req.args.get('name'):
-                    enum = self._enum_cls(self.env)
-                    enum.name = req.args.get('name')
-                    enum.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        self._enum_cls(self.env, name=name)
+                    except:
+                        enum = self._enum_cls(self.env)
+                        enum.name = name
+                        enum.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('%s %s already exists') % (self._type.title(), name))
                          
                 # Remove enums
                 elif req.args.get('remove') and req.args.get('sel'):

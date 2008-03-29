@@ -354,7 +354,7 @@ class AbstractEnum(object):
                            (self.type, name))
             row = cursor.fetchone()
             if not row:
-                raise TracError(_('%(type)s %(name)s does not exist.',
+                raise ResourceNotFound(_('%(type)s %(name)s does not exist.',
                                   type=self.type, name=name))
             self.value = self._old_value = row[0]
             self.name = self._old_name = name
