@@ -447,7 +447,8 @@ class ChangesetModule(Component):
                     'shortrev': repos.short_rev(node.rev),
                     'href': req.href.browser(node.created_path,
                                              rev=node.created_rev,
-                                             annotate=annotated and 1 or None),
+                                             annotate=annotated and 'blame' or \
+                                                      None),
                     'title': (_('Show revision %(rev)s of this file in browser',
                                 rev=node.rev))}
         # Reminder: node.path may not exist at node.rev
