@@ -25,15 +25,12 @@ from genshi.builder import tag
 from trac.core import *
 from trac.db import get_column_names
 from trac.mimeview.api import Mimeview, IContentConverter, Context
-from trac.perm import IPermissionRequestor
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
-from trac.ticket.model import Ticket
 from trac.util import Ranges
-from trac.util.compat import groupby, sorted
+from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
-from trac.util.html import escape, unescape
-from trac.util.text import shorten_line, CRLF
+from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.href import Href
@@ -189,11 +186,11 @@ class Query(object):
             cols[-1] = self.order
         return cols
 
-    def execute(self, req, db=None):
+    def execute(self, req, db=None, cached_ids=None):
         if not self.cols:
             self.get_columns()
 
-        sql, args = self.get_sql(req)
+        sql, args = self.get_sql(req, cached_ids)
         self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))
 
         if not db:
@@ -273,7 +270,7 @@ class Query(object):
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
 
-    def get_sql(self, req=None):
+    def get_sql(self, req=None, cached_ids=None):
         """Return a (sql, params) tuple for the query."""
         if not self.cols:
             self.get_columns()
@@ -406,9 +403,16 @@ class Query(object):
                     args.append(constraint_sql[1])
 
         clauses = filter(None, clauses)
+        if clauses or cached_ids:
+            sql.append("\nWHERE ")
         if clauses:
-            sql.append("\nWHERE " + " AND ".join(clauses))
-
+            sql.append(" AND ".join(clauses))
+        if cached_ids:
+            if clauses:
+                sql.append(" OR ")
+            sql.append("id in (%s)" % (','.join(
+                                            [str(id) for id in cached_ids])))
+            
         sql.append("\nORDER BY ")
         order_cols = [(self.order, self.desc)]
         if self.group and self.group != self.order:
@@ -530,7 +534,6 @@ class Query(object):
                 groups.setdefault(group_key, []).append(ticket)
                 if not groupsequence or group_key not in groupsequence:
                     groupsequence.append(group_key)
-        groupsequence = sorted(groupsequence, reverse=self.groupdesc)
         groupsequence = [(value, groups[value]) for value in groupsequence]
 
         return {'query': self,
@@ -700,16 +703,16 @@ class QueryModule(Component):
 
     def display_html(self, req, query):
         db = self.env.get_db_cnx()
-        tickets = query.execute(req, db)
 
         # The most recent query is stored in the user session;
-        orig_list = rest_list = None
+        orig_list = None
         orig_time = datetime.now(utc)
         query_time = int(req.session.get('query_time', 0))
         query_time = datetime.fromtimestamp(query_time, utc)
         query_constraints = unicode(query.constraints)
         if query_constraints != req.session.get('query_constraints') \
                 or query_time < orig_time - timedelta(hours=1):
+            tickets = query.execute(req, db)
             # New or outdated query, (re-)initialize session vars
             req.session['query_constraints'] = query_constraints
             req.session['query_tickets'] = ' '.join([str(t['id'])
@@ -717,24 +720,8 @@ class QueryModule(Component):
         else:
             orig_list = [int(id) for id
                          in req.session.get('query_tickets', '').split()]
-            rest_list = orig_list[:]
+            tickets = query.execute(req, db, orig_list)
             orig_time = query_time
-
-        # Find out which tickets originally in the query results no longer
-        # match the constraints
-        if rest_list:
-            for tid in [t['id'] for t in tickets if t['id'] in rest_list]:
-                rest_list.remove(tid)
-            for rest_id in rest_list:
-                try:
-                    ticket = Ticket(self.env, int(rest_id), db=db)
-                    data = {'id': ticket.id, 'time': ticket.time_created,
-                            'changetime': ticket.time_changed, 'removed': True,
-                            'href': req.href.ticket(ticket.id)}
-                    data.update(ticket.values)
-                    tickets.insert(orig_list.index(rest_id), data)
-                except TracError, e:
-                    pass
 
         context = Context.from_request(req, 'query')
         data = query.template_data(context, tickets, orig_list, orig_time)
