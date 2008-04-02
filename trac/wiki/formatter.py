@@ -748,9 +748,9 @@ class Formatter(object):
             self.in_code_block += 1
             if self.in_code_block == 1:
                 self.code_processor = None
-                self.code_text = ''
+                self.code_buf = []
             else:
-                self.code_text += line + os.linesep
+                self.code_buf.append(line)
                 if not self.code_processor:
                     self.code_processor = WikiProcessor(self, 'default')
         elif line.strip() == WikiParser.ENDBLOCK:
@@ -758,11 +758,14 @@ class Formatter(object):
             if self.in_code_block == 0 and self.code_processor:
                 self.close_table()
                 self.close_paragraph()
-                processed = self.code_processor.process(self.code_text)
+                if self.code_buf:
+                    self.code_buf.append('')
+                code_text = os.linesep.join(self.code_buf)
+                processed = self.code_processor.process(code_text)
                 self.out.write(_markup_to_unicode(processed))
 
             else:
-                self.code_text += line + os.linesep
+                self.code_buf.append(line)
         elif not self.code_processor:
             match = WikiParser._processor_re.match(line)
             if match:
@@ -775,10 +778,10 @@ class Formatter(object):
                 args = dict(zip(keys, values))
                 self.code_processor = WikiProcessor(self, name, args)
             else:
-                self.code_text += line + os.linesep 
+                self.code_buf.append(line)
                 self.code_processor = WikiProcessor(self, 'default')
         else:
-            self.code_text += line + os.linesep
+            self.code_buf.append(line)
 
     def close_code_blocks(self):
         while self.in_code_block > 0:
