@@ -446,6 +446,9 @@ class UserMacroProvider(Component):
                         continue
                     found.append(name)
                     yield name
+                except GeneratorExit:
+                    # never catch GeneratorExit
+                    raise
                 except Exception, e:
                     self.log.error('Failed to load wiki macro %s (%s)',
                                    filename, e, exc_info=True)
