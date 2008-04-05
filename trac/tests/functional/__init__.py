@@ -124,6 +124,12 @@ if twill and subprocess:
 
     class FunctionalTwillTestCaseSetup(FunctionalTestCaseSetup):
         failureException = twill.errors.TwillAssertionError
+else:
+    # We're going to have to skip the functional tests
+    class FunctionalTwillTestCaseSetup:
+        pass
+    class FunctionalTestCaseSetup:
+        pass
 
 
 # Twill's find command accepts regexes; some convenient but complex regexes
