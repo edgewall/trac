@@ -150,12 +150,15 @@ class TestNewReport(FunctionalTwillTestCaseSetup):
             '   reporter, time AS created,'
             '   changetime AS modified, description AS _description,'
             '   priority,'
-            '   round(julianday(\'now\') - julianday(changetime, \'unixepoch\')) as days,'
+            '   round(julianday(\'now\') - '
+            '         julianday(changetime, \'unixepoch\')) as days,'
             '   resolution,'
             '   owner as __group__'
             '  FROM ticket t'
-            '  LEFT JOIN enum p ON p.name = t.priority AND p.type = \'priority\''
-            '  WHERE ((julianday(\'now\') - julianday(changetime, \'unixepoch\')) < 7)'
+            '  LEFT JOIN enum p ON p.name = t.priority AND '
+            '                      p.type = \'priority\''
+            '  WHERE ((julianday(\'now\') -'
+            '          julianday(changetime, \'unixepoch\')) < 7)'
             '   AND status = \'closed\''
             '  ORDER BY __group__, changetime, p.value',
             'List of all tickets that are closed, and have been modified in'
@@ -179,7 +182,8 @@ class RegressionTestRev5994(FunctionalTwillTestCaseSetup):
         try:
             self._testenv.restart()
             self._tester.go_to_query()
-            tc.find('<label>( |\\n)*<input[^<]*value="custfield"[^<]*/>( |\\n)*Custom Field( |\\n)*</label>', 's')
+            tc.find('<label>( |\\n)*<input[^<]*value="custfield"'
+                    '[^<]*/>( |\\n)*Custom Field( |\\n)*</label>', 's')
         finally:
             pass
             #env.config.set('ticket', 'restrict_owner', 'no')
@@ -194,7 +198,8 @@ class RegressionTestTicket4447(FunctionalTwillTestCaseSetup):
         
         env = self._testenv.get_trac_environment()
         env.config.set('ticket-custom', 'newfield', 'text')
-        env.config.set('ticket-custom', 'newfield.label', 'Another Custom Field')
+        env.config.set('ticket-custom', 'newfield.label',
+                       'Another Custom Field')
         env.config.save()
         try:
             self._testenv.restart()
@@ -439,7 +444,8 @@ class RegressionTestTicket5687(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket5930(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/5930
-        TypeError: from_string() takes exactly 3 non-keyword arguments (4 given)
+        TypeError: from_string() takes exactly 3 non-keyword arguments (4
+        given)
         Caused by a saved query
         """
         self._tester.create_report('Saved Query', 'query:version=1.0', '')
@@ -456,15 +462,18 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         # Setup the DeleteTicket plugin
         plugin = open(os.path.join(self._testenv.command_cwd, 'sample-plugins',
                                    'workflow', 'DeleteTicket.py')).read()
-        open(os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.py'), 'w').write(plugin)
+        open(os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.py'),
+             'w').write(plugin)
         env = self._testenv.get_trac_environment()
         prevconfig = env.config.get('ticket', 'workflow')
-        env.config.set('ticket', 'workflow', prevconfig + ',DeleteTicketActionController')
+        env.config.set('ticket', 'workflow',
+                       prevconfig + ',DeleteTicketActionController')
         env.config.save()
         env = self._testenv.get_trac_environment() # reload environment
 
         # Create a ticket and delete it
-        ticket_id = self._tester.create_ticket(summary='RegressionTestTicket6048')
+        ticket_id = self._tester.create_ticket(
+            summary='RegressionTestTicket6048')
         # (Create a second ticket so that the ticket id does not get reused
         # and confuse the tester object.)
         self._tester.create_ticket(summary='RegressionTestTicket6048b')
@@ -482,7 +491,8 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         env.config.save()
         env = self._testenv.get_trac_environment() # reload environment
         for ext in ('py', 'pyc', 'pyo'):
-            filename = os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.%s' % ext)
+            filename = os.path.join(self._testenv.tracdir, 'plugins',
+                                    'DeleteTicket.%s' % ext)
             if os.path.exists(filename):
                 os.unlink(filename)
 
@@ -491,8 +501,10 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6747"""
         env = self._testenv.get_trac_environment()
-        env.config.set('ticket-workflow', 'resolve.operations', 'set_resolution,set_owner')
-        env.config.set('ticket-workflow', 'resolve.set_owner', 'a_specified_owner')
+        env.config.set('ticket-workflow', 'resolve.operations',
+                       'set_resolution,set_owner')
+        env.config.set('ticket-workflow', 'resolve.set_owner',
+                       'a_specified_owner')
         env.config.save()
 
         try:
@@ -506,7 +518,8 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
         finally:
             # Undo the config change to avoid causing problems for later
             # tests.
-            env.config.set('ticket-workflow', 'resolve.operations', 'set_resolution')
+            env.config.set('ticket-workflow', 'resolve.operations',
+                           'set_resolution')
             env.config.remove('ticket-workflow', 'resolve.set_owner')
             env.config.save()
             self._testenv.restart()
@@ -516,7 +529,8 @@ class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6912 a"""
         try:
-            self._tester.create_component(name='RegressionTestTicket6912a', user='')
+            self._tester.create_component(name='RegressionTestTicket6912a',
+                                          user='')
         except twill.utils.mechanize.ClientForm.ItemNotFoundError, e:
             raise twill.errors.TwillAssertionError(e)
 
@@ -524,7 +538,8 @@ class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
 class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6912 b"""
-        self._tester.create_component(name='RegressionTestTicket6912b', user='admin')
+        self._tester.create_component(name='RegressionTestTicket6912b',
+                                      user='admin')
         tc.follow('RegressionTestTicket6912b')
         try:
             tc.formvalue('modcomp', 'owner', '')
@@ -532,7 +547,8 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
             raise twill.errors.TwillAssertionError(e)
         tc.formvalue('modcomp', 'save', 'Save')
         tc.submit()
-        tc.find('RegressionTestTicket6912b</a>[ \n\t]*</td>[ \n\t]*<td class="owner"></td>', 's')
+        tc.find('RegressionTestTicket6912b</a>[ \n\t]*</td>[ \n\t]*'
+                '<td class="owner"></td>', 's')
 
 
 def functionalSuite(suite=None):

@@ -80,9 +80,9 @@ class FunctionalTestEnvironment(object):
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
-        retval = call([sys.executable, "./trac/admin/console.py", self.tracdir] +
-                list(args), stdout=logfile, stderr=logfile, close_fds=close_fds,
-                cwd=self.command_cwd)
+        retval = call([sys.executable, "./trac/admin/console.py", self.tracdir]
+                      + list(args), stdout=logfile, stderr=logfile,
+                      close_fds=close_fds, cwd=self.command_cwd)
         if retval:
             raise Exception('Failed with exitcode %s running trac-admin ' \
                             'with %r' % (retval, args))

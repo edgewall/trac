@@ -35,7 +35,8 @@ class TestRepoBrowse(FunctionalTwillTestCaseSetup):
         if commit.wait():
             raise Exception('Commit failed.')
         try:
-            revision = int(re.compile('Committed revision ([0-9]+)\\.', re.M).findall(output)[0])
+            revision = int(re.compile('Committed revision ([0-9]+)\\.',
+                                      re.M).findall(output)[0])
         except Exception, e:
             args = e.args + (output, )
             raise Exception(*args)

@@ -71,17 +71,21 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
         # Setup the DeleteTicket plugin
         plugin = open(os.path.join(self._testenv.command_cwd, 'sample-plugins',
             'workflow', 'DeleteTicket.py')).read()
-        open(os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.py'), 'w').write(plugin)
+        open(os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.py'),
+             'w').write(plugin)
         env = self._testenv.get_trac_environment()
         prevconfig = env.config.get('ticket', 'workflow')
-        env.config.set('ticket', 'workflow', prevconfig + ',DeleteTicketActionController')
+        env.config.set('ticket', 'workflow',
+                       prevconfig + ',DeleteTicketActionController')
         env.config.save()
         env = self._testenv.get_trac_environment() # reloads the environment
 
         loaded_components = env.compmgr.__metaclass__._components
-        delete_plugins = [c for c in loaded_components if 'DeleteTicketActionController' in c.__name__]
+        delete_plugins = [c for c in loaded_components
+                          if 'DeleteTicketActionController' in c.__name__]
         try:
-            self.assertEqual(len(delete_plugins), 1, "Plugin loaded more than once.")
+            self.assertEqual(len(delete_plugins), 1,
+                             "Plugin loaded more than once.")
 
         finally:
             # Remove the DeleteTicket plugin
@@ -89,7 +93,8 @@ class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
             env.config.save()
             self._testenv.restart()
             for ext in ('py', 'pyc', 'pyo'):
-                filename = os.path.join(self._testenv.tracdir, 'plugins', 'DeleteTicket.%s' % ext)
+                filename = os.path.join(self._testenv.tracdir, 'plugins',
+                                        'DeleteTicket.%s' % ext)
                 if os.path.exists(filename):
                     os.unlink(filename)
 
@@ -98,7 +103,8 @@ class RegressionTestTicket3833a(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 a"""
         # Assume the logging is already set to debug.
-        traclogfile = open(os.path.join(self._testenv.tracdir, 'log', 'trac.log'))
+        traclogfile = open(os.path.join(self._testenv.tracdir, 'log',
+                                        'trac.log'))
         # Seek to the end of file so we only look at new log output
         traclogfile.seek(0, 2)
         # Verify that logging is on initially
@@ -106,14 +112,16 @@ class RegressionTestTicket3833a(FunctionalTestCaseSetup):
 
         env.log.debug("RegressionTestTicket3833 debug1")
         debug1 = traclogfile.read()
-        self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1, 'Logging off when it should have been on.\n%r' % debug1)
+        self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1,
+            'Logging off when it should have been on.\n%r' % debug1)
 
 class RegressionTestTicket3833b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 b"""
         # Turn logging off, try to log something, and verify that it does
         # not show up.
-        traclogfile = open(os.path.join(self._testenv.tracdir, 'log', 'trac.log'))
+        traclogfile = open(os.path.join(self._testenv.tracdir, 'log',
+                                        'trac.log'))
         # Seek to the end of file so we only look at new log output
         traclogfile.seek(0, 2)
         env = self._testenv.get_trac_environment()
@@ -124,15 +132,18 @@ class RegressionTestTicket3833b(FunctionalTestCaseSetup):
         env.log.debug("RegressionTestTicket3833 debug2")
         env.log.info("RegressionTestTicket3833 info2")
         debug2 = traclogfile.read()
-        self.assertNotEqual(debug2.find("RegressionTestTicket3833 info2"), -1, 'Logging at info failed.\n%r' % debug2)
-        self.assertEqual(debug2.find("RegressionTestTicket3833 debug2"), -1, 'Logging still on when it should have been off.\n%r' % debug2)
+        self.assertNotEqual(debug2.find("RegressionTestTicket3833 info2"), -1,
+                            'Logging at info failed.\n%r' % debug2)
+        self.assertEqual(debug2.find("RegressionTestTicket3833 debug2"), -1,
+            'Logging still on when it should have been off.\n%r' % debug2)
 
 class RegressionTestTicket3833c(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 c"""
         # Turn logging back on, try to log something, and verify that it
         # does show up.
-        traclogfile = open(os.path.join(self._testenv.tracdir, 'log', 'trac.log'))
+        traclogfile = open(os.path.join(self._testenv.tracdir, 'log',
+                                        'trac.log'))
         # Seek to the end of file so we only look at new log output
         traclogfile.seek(0, 2)
         env = self._testenv.get_trac_environment()
@@ -154,7 +165,8 @@ class RegressionTestTicket3833c(FunctionalTestCaseSetup):
             self._testenv.restart()
             env.log.debug("RegressionTestTicket3833 fixup3")
             fixup3 = traclogfile.read()
-            message = 'Logging still off when it should have been on.\n%r\n%r' % (debug3, fixup3)
+            message = 'Logging still off when it should have been on.\n' \
+                      '%r\n%r' % (debug3, fixup3)
         self.assert_(success, message)
 
 
