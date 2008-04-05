@@ -78,11 +78,11 @@
                   'MILESTONE_DELETE' in perm(milestone.resource) or
                   attachments.can_create"
            class="buttons">
-        <form py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" method="get" action="">
+        <form py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" method="get" action="" name="editmilestone">
           <input type="hidden" name="action" value="edit" />
           <input type="submit" value="Edit milestone" />
         </form>
-        <form py:if="'MILESTONE_DELETE' in perm(milestone.resource)" method="get" action="">
+        <form py:if="'MILESTONE_DELETE' in perm(milestone.resource)" method="get" action="" name="deletemilestone">
           <input type="hidden" name="action" value="delete" />
           <input type="submit" value="Delete milestone" />
         </form>

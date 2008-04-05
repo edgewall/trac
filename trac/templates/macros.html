@@ -209,10 +209,10 @@
   -     'alist' is an AttachmentList object (see attachment.py)
   -->
   <py:def function="attach_file_form(alist)">
-    <form py:if="alist.can_create" method="get" action="${alist.attach_href}">
+    <form py:if="alist.can_create" method="get" action="${alist.attach_href}" name="attachfile">
       <div>
         <input type="hidden" name="action" value="new" />
-        <input type="submit" value="${_('Attach file')}" />
+        <input type="submit" name="attachfilebutton" value="${_('Attach file')}" />
       </div>
     </form>
   </py:def>

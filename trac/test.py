@@ -108,16 +108,29 @@ class TestSetup(unittest.TestSuite):
     suite of test cases.
     """
     def setUp(self):
+        """Sets up the fixture, and sets self.fixture if needed"""
         pass
 
     def tearDown(self):
+        """Tears down the fixture"""
         pass
 
-    def __call__(self, result):
+    def run(self, result):
+        """Setup the fixture (self.setUp), call .setFixture on all the tests,
+        and tear down the fixture (self.tearDown)."""
         self.setUp()
-        unittest.TestSuite.__call__(self, result)
+        if hasattr(self, 'fixture'):
+            for test in self._tests:
+                if hasattr(test, 'setFixture'):
+                    test.setFixture(self.fixture)
+        unittest.TestSuite.run(self, result)
         self.tearDown()
         return result
+
+
+class TestCaseSetup(unittest.TestCase):
+    def setFixture(self, fixture):
+        self.fixture = fixture
 
 
 class InMemoryDatabase(SQLiteConnection):
@@ -217,6 +230,8 @@ def locate(fn):
     return None
 
 
+INCLUDE_FUNCTIONAL_TESTS = True
+
 def suite():
     import trac.tests
     import trac.admin.tests
@@ -230,7 +245,9 @@ def suite():
     import trac.wiki.tests
 
     suite = unittest.TestSuite()
-    suite.addTest(trac.tests.suite())
+    suite.addTest(trac.tests.basicSuite())
+    if INCLUDE_FUNCTIONAL_TESTS:
+        suite.addTest(trac.tests.functionalSuite())
     suite.addTest(trac.admin.tests.suite())
     suite.addTest(trac.db.tests.suite())
     suite.addTest(trac.mimeview.tests.suite())
@@ -246,4 +263,8 @@ def suite():
 if __name__ == '__main__':
     import doctest, sys
     doctest.testmod(sys.modules[__name__])
+    #FIXME: this is a bit inelegant
+    if '--skip-functional-tests' in sys.argv:
+        sys.argv.remove('--skip-functional-tests')
+        INCLUDE_FUNCTIONAL_TESTS = False
     unittest.main(defaultTest='suite')

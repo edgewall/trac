@@ -224,7 +224,7 @@ class SMTPServer:
     def __init__(self, port):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._socket.bind(("", port))
+        self._socket.bind(("localhost", port))
         self._socket_service = None
 
     def serve(self, impl):

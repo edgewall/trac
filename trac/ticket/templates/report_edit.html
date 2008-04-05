@@ -13,7 +13,7 @@
     <div id="content" class="report">
 
       <h1>${action == 'new' and 'New Report' or report.title}</h1>
-      <form action="${href.report(report.id)}" method="post">
+      <form action="${href.report(report.id)}" method="post" name="edit_report">
         <div>
           <input type="hidden" name="action" value="$action" />
           <div class="field">
