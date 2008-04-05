@@ -51,6 +51,7 @@ import stat
 import unittest
 import exceptions
 
+import trac
 from trac.tests.functional.compat import close_fds, rmtree
 
 # Handle missing twill and/or subprocess so we can print a useful 'SKIP'
@@ -105,6 +106,9 @@ if twill and subprocess:
                 dirname = "testenv"
             else:
                 dirname = "testenv%s" % port
+            dirname = os.path.normpath(os.path.join(trac.__file__, '..', '..',
+                dirname))
+
             baseurl = "http://localhost:%s" % port
             self._testenv = FunctionalTestEnvironment(dirname, port, baseurl)
             self._testenv.start()

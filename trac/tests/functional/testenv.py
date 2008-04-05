@@ -36,6 +36,7 @@ class FunctionalTestEnvironment(object):
         to create the test repository and Trac environment, and a port
         number to use for the webserver."""
         self.url = url
+        self.command_cwd = os.path.normpath(os.path.join(dirname, '..'))
         self.dirname = os.path.abspath(dirname)
         self.repodir = os.path.join(self.dirname, "repo")
         self.tracdir = os.path.join(self.dirname, "trac")
@@ -61,7 +62,8 @@ class FunctionalTestEnvironment(object):
         self._tracadmin('initenv', 'testenv%s' % self.port,
                         'sqlite:db/trac.db', 'svn', self.repodir)
         if call([sys.executable, "./contrib/htpasswd.py", "-c", "-b",
-                 self.htpasswd, "admin", "admin"], close_fds=close_fds):
+                 self.htpasswd, "admin", "admin"], close_fds=close_fds,
+                 cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
         self.adduser('user')
         self._tracadmin('permission', 'add', 'admin', 'TRAC_ADMIN')
@@ -73,13 +75,14 @@ class FunctionalTestEnvironment(object):
     def adduser(self, user):
         """Add a user to the environment.  Password is the username."""
         if call([sys.executable, './contrib/htpasswd.py', '-b', self.htpasswd,
-                 user, user], close_fds=close_fds):
+                 user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
         retval = call([sys.executable, "./trac/admin/console.py", self.tracdir] +
-                list(args), stdout=logfile, stderr=logfile, close_fds=close_fds)
+                list(args), stdout=logfile, stderr=logfile, close_fds=close_fds,
+                cwd=self.command_cwd)
         if retval:
             raise Exception('Failed with exitcode %s running trac-admin ' \
                             'with %r' % (retval, args))
@@ -93,6 +96,7 @@ class FunctionalTestEnvironment(object):
                         self.tracdir],
                        stdout=logfile, stderr=logfile,
                        close_fds=close_fds,
+                       cwd=self.command_cwd,
                       )
         self.pid = server.pid
         # Verify that the url is ok
