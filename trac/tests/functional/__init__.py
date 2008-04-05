@@ -83,8 +83,14 @@ internal_error = 'Trac detected an internal error:'
 trac_error = 'Trac Error'
 
 if twill and subprocess:
+    trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..',
+                                                     '..'))
+
     # testing.log gets any unused output from subprocesses
-    logfile = open('testing.log', 'w')
+    logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
+    # functional-testing.log gets the twill output
+    twill.set_output(open(os.path.join(trac_source_tree,
+                                       'functional-testing.log'), 'w'))
 
     from trac.tests.functional.testenv import FunctionalTestEnvironment
 
@@ -106,8 +112,7 @@ if twill and subprocess:
                 dirname = "testenv"
             else:
                 dirname = "testenv%s" % port
-            dirname = os.path.normpath(os.path.join(trac.__file__, '..', '..',
-                dirname))
+            dirname = os.path.join(trac_source_tree, dirname)
 
             baseurl = "http://localhost:%s" % port
             self._testenv = FunctionalTestEnvironment(dirname, port, baseurl)
