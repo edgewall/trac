@@ -149,13 +149,16 @@ class TicketSystem(Component):
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
         (''since 0.9'').""")
 
+    def __init__(self):
+        self.log.debug('action controllers for ticket workflow: %r' % 
+                [c.__class__.__name__ for c in self.action_controllers])
+
     # Public API
 
     def get_available_actions(self, req, ticket):
         """Returns a sorted list of available actions"""
         # The list should not have duplicates.
         actions = {}
-        self.log.debug('action controllers: %s' % (self.action_controllers,))
         for controller in self.action_controllers:
             weighted_actions = controller.get_ticket_actions(req, ticket)
             for weight, action in weighted_actions:
