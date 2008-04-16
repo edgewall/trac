@@ -14,7 +14,7 @@ Copyright 2004, Dmitry Yusupov <dmitry_yus@yahoo.com>
 
 Many enhancements, Bill Soudan <bill@soudan.net>
 Other enhancements, Florent Guillaume <fg@nuxeo.com>
-Reworked, Jeroen Ruigrok van der Werven <asmodai@tendra.org>
+Reworked, Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
 
 $Id$
 """
