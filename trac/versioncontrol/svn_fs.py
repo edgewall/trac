@@ -341,7 +341,7 @@ class SubversionPropertyRenderer(Component):
             prefix = []
             base_url = url
             while base_url:
-                if base_url in self._externals_map:
+                if base_url in self._externals_map or base_url==u'/':
                     break
                 base_url, pref = posixpath.split(base_url)
                 prefix.append(pref)
