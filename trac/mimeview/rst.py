@@ -26,6 +26,14 @@ __docformat__ = 'reStructuredText'
 
 from distutils.version import StrictVersion
 import re
+try:
+    from docutils import nodes
+    from docutils.core import publish_parts
+    from docutils.parsers import rst
+    from docutils import __version__
+    has_docutils = True
+except ImportError:
+    has_docutils = False
 
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
@@ -47,12 +55,8 @@ class ReStructuredTextRenderer(Component):
         return 0
 
     def render(self, context, mimetype, content, filename=None, rev=None):
-        try:
-            from docutils import nodes
-            from docutils.core import publish_parts
-            from docutils.parsers import rst
-            from docutils import __version__
-        except ImportError:
+        global has_docutils
+        if not has_docutils:
             raise TracError(_('Docutils not found'))
         if StrictVersion(__version__) < StrictVersion('0.3.9'):
             raise TracError(_('Docutils version >= %(version)s required, '

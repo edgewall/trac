@@ -335,6 +335,7 @@ class BrowserModule(Component):
         rev = req.args.get('rev', None)
         order = req.args.get('order', 'name').lower()
         desc = req.args.has_key('desc')
+        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
         
         rm = RepositoryManager(self.env)
         reponame, repos, path = rm.get_repository_by_path(path, req.authname)
@@ -378,8 +379,8 @@ class BrowserModule(Component):
             'path': path, 'rev': node.rev, 'stickyrev': rev,
             'created_path': node.created_path,
             'created_rev': node.created_rev,
-            'properties': self.render_properties('browser', context,
-                                                 node.get_properties()),
+            'properties': xhr or self.render_properties('browser', context,
+                                                        node.get_properties()),
             'path_links': path_links,
             'order': order, 'desc': desc and 1 or None,
             'repo': all_repositories and \
@@ -389,10 +390,15 @@ class BrowserModule(Component):
                                                    node, rev, order, desc),
             'file': node.isfile and self._render_file(req, context, reponame,
                                                       repos, node, rev),
-            'quickjump_entries': list(repos.get_quickjump_entries(rev)),
+            'quickjump_entries': xhr or list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
         }
+        if xhr: # render and return the content only
+            data['xhr'] = True
+            return 'dir_entries.html', data, None
+
+        # Links for contextual navigation
         add_ctxtnav(req, tag.a(_('Last Change'), 
                     href=req.href.changeset(node.rev, reponame,
                                             node.created_path)))
@@ -409,16 +415,10 @@ class BrowserModule(Component):
                                     '(this can be time consuming...)'), 
                             href=req.href.browser(reponame, node.created_path, 
                                                   rev=node.rev,
-                                                  annotate=1))
-                
+                                                  annotate='blame'))
         add_ctxtnav(req, _('Revision Log'), 
                     href=req.href.log(reponame, path, rev=rev))
 
-        xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
-        if xhr: # render and return the content only
-            data['xhr'] = True
-            return 'dir_entries.html', data, None
-        
         add_stylesheet(req, 'common/css/browser.css')
         return 'browser.html', data, None
 
@@ -462,7 +462,13 @@ class BrowserModule(Component):
         req.perm.require('BROWSER_VIEW')
 
         # Entries metadata
-        entries = list(node.get_entries())
+        class entry(object):
+            __slots__ = 'name rev kind isdir path content_length'.split()
+            def __init__(self, node):
+                for f in entry.__slots__:
+                    setattr(self, f, getattr(n, f))
+                
+        entries = [entry(n) for n in node.get_entries()]
         changes = get_changes(repos, [i.rev for i in entries])
 
         if rev:
@@ -513,6 +519,7 @@ class BrowserModule(Component):
                      'application/zip', 'zip')
 
         add_script(req, 'common/js/expand_dir.js')
+        add_script(req, 'common/js/keyboard_nav.js')
 
         return {'entries': entries, 'changes': changes,
                 'timerange': timerange, 'colorize_age': custom_colorizer,
@@ -584,7 +591,7 @@ class BrowserModule(Component):
             force_source = False
             if 'annotate' in req.args:
                 force_source = True
-                annotations.insert(0, 'blame')
+                annotations.insert(0, req.args['annotate'])
             preview_data = mimeview.preview_data(context, node.get_content(),
                                                  node.get_content_length(),
                                                  mime_type, node.created_path,

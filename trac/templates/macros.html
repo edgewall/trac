@@ -209,10 +209,10 @@
   -     'alist' is an AttachmentList object (see attachment.py)
   -->
   <py:def function="attach_file_form(alist)">
-    <form py:if="alist.can_create" method="get" action="${alist.attach_href}">
+    <form py:if="alist.can_create" method="get" action="${alist.attach_href}" name="attachfile">
       <div>
         <input type="hidden" name="action" value="new" />
-        <input type="submit" value="${_('Attach file')}" />
+        <input type="submit" name="attachfilebutton" value="${_('Attach file')}" />
       </div>
     </form>
   </py:def>
@@ -236,11 +236,11 @@
     <p class="percent">${percent is None and '%d%%' % stats.done_percent or percent}</p>
     <dl py:if="legend">
       <py:for each="idx, interval in enumerate(stats.intervals)">
-        <dt>${interval.title.capitalize()} ${stats.unit}s:</dt>
+        <dt><a href="${interval_hrefs[idx]}">${interval.title.capitalize()} ${stats.unit}s:</a></dt>
         <dd><a href="${interval_hrefs[idx]}">${interval.count}</a></dd>
       </py:for>
       <py:if test="stats_href">
-        <dt>/ Total ${stats.unit}s:</dt>
+        <dt>/ <a href="${stats_href}">Total ${stats.unit}s:</a></dt>
         <dd><a href="${stats_href}">${sum([x.count for x in stats.intervals], 0)}</a></dd>
       </py:if>
     </dl>

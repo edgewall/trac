@@ -1,9 +1,8 @@
 // Enable expanding/folding folders in TracBrowser
 
-var FOLDERID_COUNTER = 0;
-var SUBFOLDER_INDENT = 20;
-
 (function($){
+  var FOLDERID_COUNTER = 0;
+  var SUBFOLDER_INDENT = 20;
   
   // enableExpandDir adds the capability to folder rows to be expanded and folded
   // It also teach the rows about their ancestors. It expects:

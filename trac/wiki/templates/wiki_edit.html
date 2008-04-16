@@ -64,7 +64,7 @@
           </div>
         </py:when>
       </py:choose>
-      <form id="edit" action="${href.wiki(page.name)}" method="post">
+      <form id="edit" action="${href.wiki(page.name)}" method="post" name="edit">
         <fieldset class="iefix">
           <input type="hidden" name="action" value="edit" />
           <input type="hidden" name="version" value="$page.version" />

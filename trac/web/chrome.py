@@ -19,6 +19,10 @@ import os
 import pkg_resources
 import pprint
 import re
+try: 
+    from cStringIO import StringIO as cStringIO 
+except ImportError: 
+    cStringIO = StringIO 
 
 from genshi import Markup
 from genshi.builder import tag, Element
@@ -34,7 +38,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      get_module_path, translation
+                      get_module_path, translation, arity
 from trac.util.compat import partial, set
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -254,13 +258,14 @@ class Chrome(Component):
         """Order of the items to display in the `mainnav` navigation bar, 
            listed by IDs. See also TracNavigation.""")
 
-    logo_link = Option('header_logo', 'link', 'http://example.org/',
+    logo_link = Option('header_logo', 'link', '',
         """URL to link to from header logo.""")
 
-    logo_src = Option('header_logo', 'src', 'common/trac_banner.png',
+    logo_src = Option('header_logo', 'src', 'site/your_project_logo.png',
         """URL of the image to use as header logo.""")
 
-    logo_alt = Option('header_logo', 'alt', '',
+    logo_alt = Option('header_logo', 'alt', 
+        "(please configure the [header_logo] section in trac.ini)",
         """Alternative text for the header logo.""")
 
     logo_width = IntOption('header_logo', 'width', -1,
@@ -288,7 +293,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': compat.groupby,
+        'groupby': compat.py_groupby,
         'http_date': http_date,
         'istext': presentation.istext,
         'itemgetter': compat.itemgetter,
@@ -328,7 +333,7 @@ class Chrome(Component):
             try:
                 fileobj.write("""<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/" py:strip="">
-  <!-- Custom match templates go here -->
+  <!--! Custom match templates go here -->
 </html>""")
             finally:
                 fileobj.close()
@@ -342,7 +347,7 @@ class Chrome(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/chrome/(?P<prefix>[^/]+)/+(?P<filename>[/\w\-\.]+)',
+        match = re.match(r'/chrome/(?P<prefix>[^/]+)/+(?P<filename>.+)',
                          req.path_info)
         if match:
             req.args['prefix'] = match.group('prefix')
@@ -430,6 +435,10 @@ class Chrome(Component):
         add_link(fakereq, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(fakereq, 'common/css/trac.css')
         add_script(fakereq, 'common/js/jquery.js')
+        # Only activate noConflict mode if requested to by the handler
+        if handler is not None and \
+           getattr(handler.__class__, 'jquery_noconflict', False):
+            add_script(fakereq, 'common/js/noconflict.js')
         add_script(fakereq, 'common/js/trac.js')
         add_script(fakereq, 'common/js/search.js')
 
@@ -495,6 +504,9 @@ class Chrome(Component):
                 })
 
         chrome['nav'] = nav
+        
+        # Default theme file
+        chrome['theme'] = 'theme.html'
 
         return chrome
 
@@ -681,7 +693,13 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            return stream.render('text')
+            if arity(stream.render) == 3:
+                # TODO: remove this when we depend on Genshi >= 0.5
+                return stream.render('text')
+            else:
+                buffer = cStringIO()
+                stream.render('text', out=buffer)
+                return buffer.getvalue()
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         if doctype:
@@ -700,7 +718,13 @@ class Chrome(Component):
         })
 
         try:
-            return stream.render(method, doctype=doctype)
+            if arity(stream.render) == 3:
+                # TODO: remove this when we depend on Genshi >= 0.5
+                return stream.render(method, doctype=doctype)
+            else:
+                buffer = cStringIO()
+                stream.render(method, doctype=doctype, out=buffer)
+                return buffer.getvalue()
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links

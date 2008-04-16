@@ -239,7 +239,7 @@ class PatchRenderer(Component):
                         line = line.replace('\1', '</del>')
                         f[i] = Markup(line)
                         if 'meta' in base and i in base['meta']:
-                            f[i] = Markup('<em>%s</em>', f[i])
+                            f[i] = Markup('<em>%s</em>') % f[i]
                     for i in xrange(len(t)):
                         line = expandtabs(t[i], tabwidth, '\0\1')
                         line = escape(line, quotes=False)
@@ -248,5 +248,5 @@ class PatchRenderer(Component):
                         line = line.replace('\1', '</ins>')
                         t[i] = Markup(line)
                         if 'meta' in changed and i in changed['meta']:
-                            t[i] = Markup('<em>%s</em>', t[i])
+                            t[i] = Markup('<em>%s</em>') % t[i]
         return changes

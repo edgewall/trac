@@ -21,6 +21,7 @@
 import re
 
 from trac.core import *
+from trac.notification import EMAIL_LOOKALIKE_PATTERN
 
 class WikiParser(Component):
     """wiki subsystem dedicated to the Wiki text parsing."""
@@ -73,7 +74,7 @@ class WikiParser(Component):
 
     _post_rules = [
         # e-mails
-        r"(?P<email>\w[\w.]+@\w[\w.]+\w)",
+        r"(?P<email>%s)" % EMAIL_LOOKALIKE_PATTERN,
         # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # &, < and > to &amp;, &lt; and &gt;

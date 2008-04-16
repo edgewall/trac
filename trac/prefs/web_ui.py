@@ -22,7 +22,7 @@ from genshi.builder import tag
 
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
-from trac.util.datefmt import all_timezones, get_timezone
+from trac.util.datefmt import all_timezones, get_timezone, localtz
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_stylesheet, INavigationContributor, \
@@ -95,7 +95,8 @@ class PreferencesModule(Component):
 
         return 'prefs_%s.html' % (panel or 'general'), {
             'settings': {'session': req.session, 'session_id': req.session.sid},
-            'timezones': all_timezones, 'timezone': get_timezone
+            'timezones': all_timezones, 'timezone': get_timezone,
+            'localtz': localtz
         }
 
     # ITemplateProvider methods

@@ -16,6 +16,7 @@
 
 import csv
 from datetime import datetime
+from itertools import chain
 import os
 import pkg_resources
 import re
@@ -178,7 +179,8 @@ class TicketModule(Component):
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['b.newvalue'], terms)
         sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
-                                         'reporter', 'cc', 'id'], terms)
+                                         'reporter', 'cc', 
+                                         db.cast('id', 'text')], terms)
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
                        "a.type,a.id,a.time,a.status,a.resolution "
@@ -412,7 +414,6 @@ class TicketModule(Component):
         action = req.args.get('action', ('history' in req.args and 'history' or
                                          'view'))
 
-        data = {'ticket': ticket, 'comment': None}
         data = self._prepare_data(req, ticket)
         data['comment'] = None
         
@@ -706,15 +707,15 @@ class TicketModule(Component):
             if k not in text_fields:
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
-                    props.append({'name': k})
+                    prop = {'name': k,
+                            'old': {'name': k, 'value': old},
+                            'new': {'name': k, 'value': new}}
                     rendered = self._render_property_diff(req, ticket, k,
                                                           old, new, tnew)
                     if rendered:
-                        props[-1]['diff'] = tag.li('Property ', tag.strong(k),
+                        prop['diff'] = tag.li('Property ', tag.strong(k),
                                                    ' ', rendered)
-                    else:
-                        props[-1]['old'] = {'name': k, 'value': old}
-                        props[-1]['new'] = {'name': k, 'value': new}
+                    props.append(prop)
         changes.append({'props': props, 'diffs': [],
                         'new': version_info(tnew),
                         'old': version_info(told)})
@@ -1057,7 +1058,11 @@ class TicketModule(Component):
                 if ticket.exists:
                     value = ticket.values.get(name)
                     options = field['options']
-                    if value and not value in options:
+                    optgroups = list(chain(*[x['options'] for x in
+                                            field.get('optgroups', [])]))
+                    if value and \
+                        (not value in options and \
+                        not value in optgroups):
                         # Current ticket value must be visible,
                         # even if it's not among the possible values
                         options.append(value)
@@ -1253,7 +1258,6 @@ class TicketModule(Component):
         elif field == 'keywords':
             old_list, new_list = old.split(), new.split()
             sep = ' '
-
         if (old_list, new_list) != (None, None):
             added = [tag.em(render_elt(x)) for x in new_list 
                      if x not in old_list]
@@ -1263,6 +1267,18 @@ class TicketModule(Component):
             remvd = remvd and tag(separated(remvd, sep), " removed")
             if added or remvd:
                 rendered = tag(added, added and remvd and '; ', remvd)
+        if field in ('reporter', 'owner'):
+            if not (Chrome(self.env).show_email_addresses or 
+                    'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
+                old = obfuscate_email_address(old)
+                new = obfuscate_email_address(new)
+            if old and not new:
+                rendered = tag(tag.em(old), " deleted")
+            elif new and not old:
+                rendered = tag("set to ", tag.em(new))
+            elif old and new:
+                rendered = tag("changed from ", tag.em(old),
+                               " to ", tag.em(new))
         return rendered
 
     def grouped_changelog_entries(self, ticket, db, when=None):

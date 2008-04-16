@@ -49,7 +49,7 @@
         <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
           <div class="buttons">
             <py:if test="modify_perm">
-              <form method="get" action="${href.wiki(page.name)}">
+              <form method="get" action="${href.wiki(page.name)}" name="modifypage">
                 <div>
                   <input type="hidden" name="action" value="edit" />
                   <py:choose>

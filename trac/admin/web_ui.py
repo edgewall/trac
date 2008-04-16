@@ -30,6 +30,7 @@ from trac.core import *
 from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util import get_pkginfo, get_module_path
 from trac.util.compat import partial
+from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_script, add_stylesheet, add_warning, Chrome, \
@@ -395,7 +396,7 @@ class PluginAdminPanel(Component):
         if not req.args.has_key('plugin_file'):
             raise TracError(_('No file uploaded'))
         upload = req.args['plugin_file']
-        if not upload.filename:
+        if isinstance(upload, unicode) or not upload.filename:
             raise TracError(_('No file uploaded'))
         plugin_filename = upload.filename.replace('\\', '/').replace(':', '/')
         plugin_filename = os.path.basename(plugin_filename)
@@ -480,7 +481,7 @@ class PluginAdminPanel(Component):
             if os.path.realpath(os.path.dirname(dist.location)) == plugins_dir:
                 plugin_filename = os.path.basename(dist.location)
 
-            description = inspect.getdoc(component)
+            description = to_unicode(inspect.getdoc(component))
             if description:
                 description = description.split('.', 1)[0] + '.'
 

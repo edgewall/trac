@@ -2,6 +2,7 @@ import unittest
 
 from trac.ticket.tests import api, model, query, wikisyntax, notification, \
                               conversion, report, roadmap
+from trac.ticket.tests.functional import functionalSuite
 
 def suite():
     suite = unittest.TestSuite()

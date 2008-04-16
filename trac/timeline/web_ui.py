@@ -53,6 +53,10 @@ class TimelineModule(Component):
         """Default number of days displayed in the Timeline, in days.
         (''since 0.9.'')""")
 
+    max_daysback = IntOption('timeline', 'max_daysback', 90,
+        """Maximum number of days (-1 for unlimited) displayable in the 
+        Timeline. (''since 0.11'')""")
+
     abbreviated_messages = BoolOption('timeline', 'abbreviated_messages',
                                       'true',
         """Whether wiki-formatted event messages should be truncated or not.
@@ -112,6 +116,8 @@ class TimelineModule(Component):
             except ValueError:
                 daysback = self.default_daysback
         daysback = max(0, daysback)
+        if self.max_daysback >= 0:
+            daysback = min(self.max_daysback, daysback)
 
         data = {'fromdate': fromdate, 'daysback': daysback,
                 'today': format_date(today),

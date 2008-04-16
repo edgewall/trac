@@ -20,7 +20,11 @@ h2 {
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select { font-size: 11px }
 #query fieldset { margin-top: 1em }
-#query fieldset.collapsed { border-width: 0 }
+#query fieldset.collapsed { 
+ border-width: 0;
+ margin-bottom: 0pt;
+ padding: 0pt .5em;
+}
 #query .option, #query .option input, #query .option select { font-size: 11px }
 #query .option { float: left; line-height: 2em; margin: .9em 2.5em 0 .5em; padding: 0 0 .1em }
 #query .buttons { float: right; margin-top: .5em }

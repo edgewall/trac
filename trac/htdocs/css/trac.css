@@ -14,7 +14,7 @@ h3 { font-size: 14px }
 hr { border: none;  border-top: 1px solid #ccb; margin: 2em 0 }
 address { font-style: normal }
 img { border: none }
-tt { white-space: pre }
+tt { white-space: normal }
 
 .underline { text-decoration: underline }
 ol.loweralpha { list-style-type: lower-alpha }
@@ -437,6 +437,7 @@ table.listing tbody tr { border-top: 1px solid #ddd }
 table.listing tbody tr.even { background-color: #fcfcfc }
 table.listing tbody tr.odd { background-color: #f7f7f7 }
 table.listing tbody tr:hover { background: #eed !important }
+table.listing tbody tr.focus { background: #ddf !important }
 
 /* Styles for the page history table
    (extends the styles for "table.listing") */

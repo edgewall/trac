@@ -16,6 +16,7 @@ from datetime import datetime
 from trac.admin import IAdminPanelProvider
 from trac.core import *
 from trac.perm import PermissionSystem
+from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint
@@ -23,7 +24,7 @@ from trac.util.translation import _
 from trac.web.chrome import add_link, add_script
 
 
-class TicketAdminPage(Component):
+class TicketAdminPanel(Component):
 
     implements(IAdminPanelProvider)
 
@@ -44,12 +45,12 @@ class TicketAdminPage(Component):
             raise TracError(e)
 
 
-class ComponentAdminPage(TicketAdminPage):
+class ComponentAdminPanel(TicketAdminPanel):
 
     _type = 'components'
     _label = ('Component', 'Components')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, component):
         # Detail view?
@@ -72,12 +73,18 @@ class ComponentAdminPage(TicketAdminPage):
             if req.method == 'POST':
                 # Add Component
                 if req.args.get('add') and req.args.get('name'):
-                    comp = model.Component(self.env)
-                    comp.name = req.args.get('name')
-                    if req.args.get('owner'):
-                        comp.owner = req.args.get('owner')
-                    comp.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        model.Component(self.env, name=name)
+                    except ResourceNotFound:
+                        comp = model.Component(self.env)
+                        comp.name = name
+                        if req.args.get('owner'):
+                            comp.owner = req.args.get('owner')
+                        comp.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('Component %s already exists.') % name)
 
                 # Remove components
                 elif req.args.get('remove') and req.args.get('sel'):
@@ -113,18 +120,20 @@ class ComponentAdminPage(TicketAdminPage):
             data['owners'] = [username for username, name, email
                               in self.env.get_known_users()
                               if valid_owner(username)]
+            data['owners'].insert(0, '')
+            data['owners'].sort()
         else:
             data['owners'] = None
 
         return 'admin_components.html', data
 
 
-class MilestoneAdminPage(TicketAdminPage):
+class MilestoneAdminPanel(TicketAdminPanel):
 
     _type = 'milestones'
     _label = ('Milestone', 'Milestones')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, milestone):
         req.perm.require('TICKET_ADMIN')
@@ -144,8 +153,8 @@ class MilestoneAdminPage(TicketAdminPage):
                         mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '
-                                              'the future',
-                                              'Invalid Completion Date'))
+                                              'the future'),
+                                            _('Invalid Completion Date'))
                     mil.description = req.args.get('description', '')
                     mil.update()
                     req.redirect(req.href.admin(cat, page))
@@ -159,12 +168,18 @@ class MilestoneAdminPage(TicketAdminPage):
             if req.method == 'POST':
                 # Add Milestone
                 if req.args.get('add') and req.args.get('name'):
-                    mil = model.Milestone(self.env)
-                    mil.name = req.args.get('name')
-                    if req.args.get('duedate'):
-                        mil.due = parse_date(req.args.get('duedate'))
-                    mil.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        model.Milestone(self.env, name=name)
+                    except ResourceNotFound:
+                        mil = model.Milestone(self.env)
+                        mil.name = name
+                        if req.args.get('duedate'):
+                            mil.due = parse_date(req.args.get('duedate'))
+                        mil.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('Milestone %s already exists.') % name)
 
                 # Remove milestone
                 elif req.args.get('remove') and req.args.get('sel'):
@@ -201,12 +216,12 @@ class MilestoneAdminPage(TicketAdminPage):
         return 'admin_milestones.html', data
 
 
-class VersionAdminPage(TicketAdminPage):
+class VersionAdminPanel(TicketAdminPanel):
 
     _type = 'versions'
     _label = ('Version', 'Versions')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, version):
         # Detail view?
@@ -232,12 +247,18 @@ class VersionAdminPage(TicketAdminPage):
             if req.method == 'POST':
                 # Add Version
                 if req.args.get('add') and req.args.get('name'):
-                    ver = model.Version(self.env)
-                    ver.name = req.args.get('name')
-                    if req.args.get('time'):
-                        ver.time = parse_date(req.args.get('time'))
-                    ver.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        model.Version(self.env, name=name)
+                    except ResourceNotFound:
+                        ver = model.Version(self.env)
+                        ver.name = name
+                        if req.args.get('time'):
+                            ver.time = parse_date(req.args.get('time'))
+                        ver.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('Version %s already exists.') % name)
                          
                 # Remove versions
                 elif req.args.get('remove') and req.args.get('sel'):
@@ -273,7 +294,7 @@ class VersionAdminPage(TicketAdminPage):
         return 'admin_versions.html', data
 
 
-class AbstractEnumAdminPage(TicketAdminPage):
+class AbstractEnumAdminPanel(TicketAdminPanel):
     implements(IAdminPanelProvider)
     abstract = True
 
@@ -281,7 +302,7 @@ class AbstractEnumAdminPage(TicketAdminPage):
     _enum_cls = None
     _label = ('(Undefined)', '(Undefined)')
 
-    # TicketAdminPage methods
+    # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, path_info):
         req.perm.require('TICKET_ADMIN')
@@ -306,10 +327,16 @@ class AbstractEnumAdminPage(TicketAdminPage):
             if req.method == 'POST':
                 # Add enum
                 if req.args.get('add') and req.args.get('name'):
-                    enum = self._enum_cls(self.env)
-                    enum.name = req.args.get('name')
-                    enum.insert()
-                    req.redirect(req.href.admin(cat, page))
+                    name = req.args.get('name')
+                    try:
+                        self._enum_cls(self.env, name=name)
+                    except:
+                        enum = self._enum_cls(self.env)
+                        enum.name = name
+                        enum.insert()
+                        req.redirect(req.href.admin(cat, page))
+                    else:
+                        raise TracError(_('%s %s already exists') % (self._type.title(), name))
                          
                 # Remove enums
                 elif req.args.get('remove') and req.args.get('sel'):
@@ -359,25 +386,25 @@ class AbstractEnumAdminPage(TicketAdminPage):
         return 'admin_enums.html', data
 
 
-class PriorityAdminPage(AbstractEnumAdminPage):
+class PriorityAdminPanel(AbstractEnumAdminPanel):
     _type = 'priority'
     _enum_cls = model.Priority
     _label = ('Priority', 'Priorities')
 
 
-class ResolutionAdminPage(AbstractEnumAdminPage):
+class ResolutionAdminPanel(AbstractEnumAdminPanel):
     _type = 'resolution'
     _enum_cls = model.Resolution
     _label = ('Resolution', 'Resolutions')
 
 
-class SeverityAdminPage(AbstractEnumAdminPage):
+class SeverityAdminPanel(AbstractEnumAdminPanel):
     _type = 'severity'
     _enum_cls = model.Severity
     _label = ('Severity', 'Severities')
 
 
-class TicketTypeAdminPage(AbstractEnumAdminPage):
+class TicketTypeAdminPanel(AbstractEnumAdminPanel):
     _type = 'type'
     _enum_cls = model.Type
     _label = ('Ticket Type', 'Ticket Types')

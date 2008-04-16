@@ -107,7 +107,11 @@ class ModPythonGateway(WSGIGateway):
 
     def _sendfile(self, fileobj):
         self._send_headers()
-        self.req.sendfile(fileobj.name)
+        try:
+            self.req.sendfile(fileobj.name)
+        except IOError, e:
+            if 'client closed connection' not in str(e):
+                raise
 
     def _write(self, data):
         self._send_headers()

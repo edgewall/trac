@@ -32,6 +32,8 @@ __all__ = ['get_changes', 'get_path_links', 'get_existing_node']
 def get_changes(repos, revs):
     changes = {}
     for rev in revs:
+        if rev in changes:
+            continue
         try:
             changeset = repos.get_changeset(rev)
         except NoSuchChangeset:

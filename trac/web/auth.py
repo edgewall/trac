@@ -236,7 +236,11 @@ class BasicAuthentication(PasswordFileAuthentication):
             import crypt
             self.crypt = crypt.crypt
         except ImportError:
-            self.crypt = None
+            try:
+                import fcrypt
+                self.crypt = fcrypt.crypt
+            except ImportError:
+                self.crypt = None
         PasswordFileAuthentication.__init__(self, htpasswd)
 
     def load(self, filename):

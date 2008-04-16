@@ -37,7 +37,7 @@
   var:project.name_encoded ?></a></h1><?cs
  /if ?></div>
 
-<form id="search" action="<?cs var:trac.href.search ?>" method="get">
+<form id="search" name="quicksearch" action="<?cs var:trac.href.search ?>" method="get">
  <?cs if:trac.acl.SEARCH_VIEW ?><div>
   <label for="proj-search">Search:</label>
   <input type="text" id="proj-search" name="q" size="10" accesskey="f" value="" />

@@ -155,8 +155,8 @@ class Ticket(object):
                 component = Component(self.env, self['component'], db=db)
                 if component.owner:
                     self['owner'] = component.owner
-            except TracError, e:
-                # Assume that no such component exists
+            except ResourceNotFound, e:
+                # No such component exists
                 pass
 
         # Insert ticket record
@@ -354,7 +354,7 @@ class AbstractEnum(object):
                            (self.type, name))
             row = cursor.fetchone()
             if not row:
-                raise TracError(_('%(type)s %(name)s does not exist.',
+                raise ResourceNotFound(_('%(type)s %(name)s does not exist.',
                                   type=self.type, name=name))
             self.value = self._old_value = row[0]
             self.name = self._old_name = name
@@ -498,7 +498,7 @@ class Component(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError(_('Component %(name)s does not exist.',
+                raise ResourceNotFound(_('Component %(name)s does not exist.',
                                   name=name))
             self.name = self._old_name = name
             self.owner = row[0] or None
@@ -612,17 +612,20 @@ class Milestone(object):
         if not row:
             raise ResourceNotFound('Milestone %s does not exist.' % name,
                                    'Invalid Milestone Name')
-        name, due, completed, description = row
-        self.name = name
-        self.due = due and datetime.fromtimestamp(int(due), utc) or None
-        self.completed = completed and \
-                         datetime.fromtimestamp(int(completed), utc) or None
-        self.description = description or ''
+        self._from_database(row)
 
     exists = property(fget=lambda self: self._old_name is not None)
     is_completed = property(fget=lambda self: self.completed is not None)
     is_late = property(fget=lambda self: self.due and \
                                          self.due.date() < date.today())
+
+    def _from_database(self, row):
+        name, due, completed, description = row
+        self.name = self._old_name = name
+        self.due = due and datetime.fromtimestamp(int(due), utc) or None
+        self.completed = completed and \
+                         datetime.fromtimestamp(int(completed), utc) or None
+        self.description = description or ''
 
     def delete(self, retarget_to=None, author=None, db=None):
         if not db:
@@ -701,15 +704,9 @@ class Milestone(object):
         cursor = db.cursor()
         cursor.execute(sql)
         milestones = []
-        for name,due,completed,description in cursor:
+        for row in cursor:
             milestone = Milestone(env)
-            milestone.name = milestone._old_name = name
-            milestone.due = due and datetime.fromtimestamp(int(due), utc) or None
-            if completed:
-                milestone.completed = datetime.fromtimestamp(int(completed), utc)
-            else:
-                milestone.completed = None
-            milestone.description = description or ''
+            milestone._from_database(row)
             milestones.append(milestone)
         def milestone_order(m):
             return (m.completed or utcmax,
@@ -731,7 +728,7 @@ class Version(object):
                            "WHERE name=%s", (name,))
             row = cursor.fetchone()
             if not row:
-                raise TracError(_('Version %(name)s does not exist.',
+                raise ResourceNotFound(_('Version %(name)s does not exist.',
                                   name=name))
             self.name = self._old_name = name
             self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) or None

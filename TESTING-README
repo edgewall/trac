@@ -1,0 +1,72 @@
+So, you want to see what's broken?  Eeeexcellent.  Welcome to the testing branch.
+
+First thing to do is run the tests.
+If you have genshi and twill installed on your system, you should be able to run the tests like this:
+PYTHONPATH=. ./trac/test.py
+
+If you want to test against specific versions of genshi, twill, pygments, etc., you can set those up like this:
+myworktree/trac
+          /pygments-0.8
+          /twill-0.9
+          /genshi-0.4.4
+
+Run 'python setup egg_info' in those subdirectories as needed.
+Then you can run:
+PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/test.py
+
+If you want to run just the functional tests, you can do that by running
+PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/tests/functional/testcases.py
+And to run everything except the functional tests,
+PYTHONPATH=. ./trac/test.py --skip-functional-tests
+
+NOTE: Unlike most unittests, the functional tests share a test fixture across tests.  This means that you can't[1] run just one of the tests by itself.
+You can now run a sub-set of the functional tests:
+PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/tests/functional/__init__.py
+PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/ticket/tests/functional.py
+PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/versioncontrol/tests/functional.py
+Note that that there is a set of functional tests that are run regardless of what subset you choose.
+
+
+[1] Unless you modify the code to comment out the other functional tests.  The test fixture is setup and torn down by FunctionalTestSuite, and it runs the tests added to it with _tester and _testenv set in the testcase objects.
+
+The functional tests require subversion, and use a random port 8000-8999 for the test web server
+
+There is some logging done:
+ - testing.log
+    output from trac environment creation, tracd, and some svn commands
+ - functional-testing.log
+    output from twill
+
+The test fixture is left behind in 'testenv' so you can inspect it when debugging a problem.
+testenv/htpasswd   -- the password/authentication for the test fixture.  password = username
+       /repo       -- the Subversion repository
+       /trac       -- the Trac environment
+
+The command to serve the test environment is:
+PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 \
+./trac/web/standalone.py --basic-auth=trac,testenv/htpasswd, -s \
+    --port=8888 testenv/trac
+
+--------------------------------------------------------------------------------
+TROUBLESHOOTING:
+----------------
+0) trac-admin is failing on initenv with this exception:
+    raise Exception('Failed with exitcode %s running trac-admin with %r' % (retval, args))
+Exception: Failed with exitcode 1 running trac-admin with ('initenv', 'testenv', 'sqlite:db/trac.db', 'svn', '..../testenv/repo')
+
+This can be caused by not having run 'python setup.py egg_info' in the genshi tree.
+
+1) Windows needs an implementation of crypt or fcrypt.  Carey Evans' pure
+   python version works, but prints warnings on Python 2.3 (they can be
+   ignored).  http://carey.geek.nz/code/python-fcrypt/
+
+2) * If using Python >=2.4.0, <2.4.4, you need to backport unittest from
+     2.4.4.  If you do not do this, you will get an AttributeError regarding
+     _fixture being unset on every test.
+   * If using Python >=2.3.0, <2.3.5, you need to backport a few modules for
+     setuptools to work properly (httplib2, cookielib, _*CookieJar) and
+     remove the tuple imports to replace with explicit line continuations.
+   * If using Python >=2.3.0, <2.4.0, you need subprocess, unittest, and
+     traceback from 2.4.4.  On Windows you also need to modify subprocess.py
+     to use pywin32 instead of _subprocess.  Twill includes a subprocess
+     module that will not work in this situation because it is not modified.

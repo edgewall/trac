@@ -348,7 +348,8 @@ class SubversionPropertyRenderer(Component):
                 prefix.append(pref)
             href = self._externals_map.get(base_url)
             revstr = rev and ' at revision '+rev or ''
-            if not href and url.startswith('http://'):
+            if not href and (url.startswith('http://') or 
+                             url.startswith('https://')):
                 href = url
             if href:
                 remotepath = posixpath.join(*reversed(prefix))
@@ -700,7 +701,7 @@ class SubversionRepository(Repository):
 
 class SubversionNode(Node):
 
-    def __init__(self, path, rev, repos, pool=None):
+    def __init__(self, path, rev, repos, pool=None, parent=None):
         self.repos = repos
         self.fs_ptr = repos.fs_ptr
         self.authz = repos.authz
@@ -710,7 +711,10 @@ class SubversionNode(Node):
         self._requested_rev = rev
         pool = self.pool()
 
-        self.root = fs.revision_root(self.fs_ptr, rev, pool)
+        if parent and parent._requested_rev == self._requested_rev:
+            self.root = parent.root
+        else:
+            self.root = fs.revision_root(self.fs_ptr, rev, self.pool())
         node_type = fs.check_path(self.root, self._scoped_svn_path, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
@@ -753,7 +757,7 @@ class SubversionNode(Node):
                                                             path.strip('/'))):
                 continue
             yield SubversionNode(path, self._requested_rev, self.repos,
-                                 self.pool)
+                                 self.pool, self)
 
     def get_history(self, limit=None):
         newer = None # 'newer' is the previously seen history tuple

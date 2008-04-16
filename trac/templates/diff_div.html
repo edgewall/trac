@@ -46,6 +46,7 @@
         <pre py:if="comments">$comments</pre>
         <ul py:if="item.props" class="props">
           <py:for each="prop in item.props" py:choose="">
+            <py:when test="prop.diff">$prop.diff</py:when>
             <py:with vars="one = prop.old or prop.new;
                            both = prop.old and prop.new;
                            action = both and 'changed from ' or not prop.old and 'set' or 'deleted'">
@@ -63,7 +64,6 @@
                 <py:if test="prop.new"> to ${render_property(prop.new)}</py:if>
               </li>
             </py:with>
-            <py:when test="prop.diff">$prop.diff</py:when>
           </py:for>
         </ul>
         <table py:if="item.diffs" class="$diff.style" summary="Differences" cellspacing="0"

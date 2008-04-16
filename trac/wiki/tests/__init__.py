@@ -3,6 +3,7 @@ import unittest
 
 from trac.wiki import api
 from trac.wiki.tests import formatter, macros, model, wikisyntax
+from trac.wiki.tests.functional import functionalSuite
 
 def suite():
 

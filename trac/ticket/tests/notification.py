@@ -32,7 +32,7 @@ import re
 import time
 import unittest
 
-SMTP_TEST_PORT = 8225
+SMTP_TEST_PORT = 7000 + os.getpid() % 1000
 MAXBODYWIDTH = 76
 notifysuite = None
 
