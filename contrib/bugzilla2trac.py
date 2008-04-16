@@ -427,6 +427,8 @@ class TracDatabase(object):
 
     def getFieldName(self, cursor, fieldid):
         if fieldid not in self.fieldNameCache:
+            # fielddefs.fieldid got changed to fielddefs.id in Bugzilla
+            # 2.23.3.
             if BZ_VERSION >= 2233:
                 cursor.execute("SELECT * FROM fielddefs WHERE id = %s",
                                (fieldid))
