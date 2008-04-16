@@ -94,7 +94,7 @@ class WikiModule(Component):
 
     def match_request(self, req):
         match = re.match(r'^/wiki(?:/(.*)|$)', req.path_info)
-        if 'WIKI_VIEW' in req.perm('wiki') and match:
+        if match:
             if match.group(1):
                 req.args['page'] = match.group(1)
             return 1
