@@ -311,8 +311,10 @@ class TicketSystem(Component):
             if len(r) == 1:
                 num = r.a
                 ticket = formatter.resource('ticket', num)
-                if 0 < num <= 1L << 31:
-                     # TODO: implement resource.exists() (related to #4130)
+                from trac.ticket.model import Ticket
+                if Ticket.id_is_valid(num):
+                    # TODO: watch #6436 and when done, attempt to retrieve 
+                    #       ticket directly (try: Ticket(self.env, num) ...)
                     cursor = formatter.db.cursor() 
                     cursor.execute("SELECT type,summary,status,resolution "
                                    "FROM ticket WHERE id=%s", (str(num),)) 

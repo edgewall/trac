@@ -36,6 +36,8 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
 
 class Ticket(object):
 
+    id_is_valid = staticmethod(lambda num: 0 < int(num) <= 1L << 31)
+
     def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
         self.resource = Resource('ticket', tkt_id, version)
@@ -82,14 +84,16 @@ class Ticket(object):
                 self.values.setdefault(field['name'], default)
 
     def _fetch_ticket(self, tkt_id, db=None):
-        db = self._get_db(db)
+        row = None
+        if self.id_is_valid(tkt_id):
+            db = self._get_db(db)
 
-        # Fetch the standard ticket fields
-        std_fields = [f['name'] for f in self.fields if not f.get('custom')]
-        cursor = db.cursor()
-        cursor.execute("SELECT %s,time,changetime FROM ticket WHERE id=%%s"
-                       % ','.join(std_fields), (tkt_id,))
-        row = cursor.fetchone()
+            # Fetch the standard ticket fields
+            std_fields = [f['name'] for f in self.fields if not f.get('custom')]
+            cursor = db.cursor()
+            cursor.execute("SELECT %s,time,changetime FROM ticket WHERE id=%%s"
+                           % ','.join(std_fields), (tkt_id,))
+            row = cursor.fetchone()
         if not row:
             raise ResourceNotFound('Ticket %s does not exist.' % tkt_id,
                                    'Invalid Ticket Number')
