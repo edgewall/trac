@@ -48,7 +48,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=None, limit=None):
+                 rows=None, limit=0):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -56,7 +56,7 @@ class Query(object):
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
-        self.limit = limit
+        self.limit = int(limit or 0)
         if rows == None:
             rows = []
         if verbose and 'description' not in rows: # 0.10 compatibility
@@ -638,7 +638,7 @@ class QueryModule(Component):
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
                       rows,
-                      req.args.get('limit'))
+                      req.args.get('limit', 0))
 
         if 'update' in req.args:
             # Reset session vars
