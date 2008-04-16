@@ -215,7 +215,7 @@ class Query(object):
                 elif val is None:
                     val = '--'
                 elif name in ('changetime', 'time'):
-                    val = datetime.fromtimestamp(int(val), utc)
+                    val = datetime.fromtimestamp(int(val or 0), utc)
                 elif field and field['type'] == 'checkbox':
                     try:
                         val = bool(int(val))
