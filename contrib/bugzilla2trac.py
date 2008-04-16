@@ -28,7 +28,7 @@ import re
 # Bugzilla version.  You can find this in Bugzilla's globals.pl file.
 #
 # Currently, the following bugzilla versions are known to work:
-#   2.11 (2110), 2.16.5 (2165), 2.18.3 (2183), 2.19.1 (2191)
+#   2.11 (2110), 2.16.5 (2165), 2.18.3 (2183), 2.19.1 (2191), 2.23.3 (2233)
 #
 # If you run this script on a version not listed here and it is successful,
 # please report it to the Trac mailing list and drop a note to
@@ -427,8 +427,12 @@ class TracDatabase(object):
 
     def getFieldName(self, cursor, fieldid):
         if fieldid not in self.fieldNameCache:
-            cursor.execute("SELECT * FROM fielddefs WHERE fieldid = %s",
-                           (fieldid))
+            if BZ_VERSION >= 2233:
+                cursor.execute("SELECT * FROM fielddefs WHERE id = %s",
+                               (fieldid))
+            else:
+                cursor.execute("SELECT * FROM fielddefs WHERE fieldid = %s",
+                               (fieldid))
             fieldName = cursor.fetchall()
 
             if fieldName:
