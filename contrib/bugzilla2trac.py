@@ -31,8 +31,8 @@ import re
 #   2.11 (2110), 2.16.5 (2165), 2.18.3 (2183), 2.19.1 (2191), 2.23.3 (2233)
 #
 # If you run this script on a version not listed here and it is successful,
-# please report it to the Trac mailing list and drop a note to
-# asmodai@tendra.org so we can update the list.
+# please file a ticket at http://trac.edgewall.org/ and assign it to
+# jruigrok.
 BZ_VERSION = 2180
 
 # MySQL connection parameters for the Bugzilla database.  These can also
