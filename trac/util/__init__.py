@@ -152,9 +152,20 @@ def get_lines_from_file(filename, lineno, context=0):
             lbound = max(0, lineno - context)
             ubound = lineno + 1 + context
 
-            before = [l.rstrip('\n') for l in lines[lbound:lineno]]
-            line = lines[lineno].rstrip('\n')
-            after = [l.rstrip('\n') for l in lines[lineno + 1:ubound]]
+
+            charset = None
+            rep = re.compile('coding[=:]\s*([-\w.]+)')
+            for linestr in lines[0], lines[1]:
+                match = rep.search(linestr)
+                if match:
+                    charset = match.group(1)
+                    break
+
+            before = [to_unicode(l.rstrip('\n'), charset)
+                         for l in lines[lbound:lineno]]
+            line = to_unicode(lines[lineno].rstrip('\n'), charset)
+            after = [to_unicode(l.rstrip('\n'), charset) \
+                         for l in lines[lineno + 1:ubound]]
 
             return before, line, after
         finally:
