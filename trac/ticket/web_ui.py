@@ -835,13 +835,14 @@ class TicketModule(Component):
                 ticket.values = ticket._old
                 valid = False
             else: # TODO: field based checking
-                if 'description' in ticket._old or \
-                       'field_reporter' in ticket._old:
-                    if 'TICKET_ADMIN' not in req.perm:
-                        add_warning(req, _("No permissions to change ticket "
-                                      "fields."))
-                        ticket.values = ticket._old
-                        valid = False
+                if ('description' in ticket._old and \
+                       'TICKET_EDIT_DESCRIPTION' not in req.perm) or \
+                   ('field_reporter' in ticket._old and \
+                       'TICKET_ADMIN' not in req.perm):
+                    add_warning(req, _("No permissions to change ticket "
+                                       "fields."))
+                    ticket.values = ticket._old
+                    valid = False
 
         comment = req.args.get('comment')
         if comment:
