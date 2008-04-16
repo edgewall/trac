@@ -1218,7 +1218,7 @@ def run(args=None):
         if args[0] in ('-h', '--help', 'help'):
             return admin.onecmd('help')
         elif args[0] in ('-v','--version'):
-            print '%s %s' % (os.path.basename(args[0]), TRAC_VERSION)
+            print '%s %s' % (os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
             admin.env_set(os.path.abspath(args[0]))
             if len(args) > 1:
