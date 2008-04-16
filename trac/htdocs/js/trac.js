@@ -41,7 +41,7 @@
       if (document.createStyleSheet) { // MSIE
         document.createStyleSheet(href);
       } else {
-        $("<link rel='stylesheet type='" + type + "' href='" + href + "' />")
+        $("<link rel='stylesheet' type='" + type + "' href='" + href + "' />")
           .appendTo("head");
       }
     });
