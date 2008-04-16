@@ -17,7 +17,6 @@ tasks such as grouping or pagination.
 """
 
 from math import ceil
-from itertools import izip, chain, repeat
 
 __all__ = ['classes', 'first_last', 'group', 'istext', 'paginate', 'Paginator']
 
