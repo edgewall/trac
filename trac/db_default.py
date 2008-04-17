@@ -180,7 +180,7 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed'
-  ORDER BY p.value, milestone, t.type, time
+  ORDER BY """ + db.cast('p.value', 'int') + """, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
  ('Active Tickets by Version',
@@ -202,7 +202,8 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed'
-  ORDER BY (version IS NULL),version, p.value, t.type, time
+  ORDER BY (version IS NULL),version, """ + db.cast('p.value', 'int') +
+  """, t.type, time
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets by Milestone',
@@ -224,8 +225,8 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 
-  ORDER BY (milestone IS NULL),milestone, p.value, t.type, time
-""" % db.concat("'Milestone '", 'milestone')),
+  ORDER BY (milestone IS NULL),milestone, %s, t.type, time
+""" % (db.concat("'Milestone '", 'milestone'), db.cast('p.value', 'int'))),
 #----------------------------------------------------------------------------
 ('Accepted, Active Tickets by Owner',
 """
@@ -241,7 +242,7 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status = 'accepted'
-  ORDER BY owner, p.value, t.type, time
+  ORDER BY owner, """ + db.cast('p.value', 'int') + """, t.type, time
 """),
 #----------------------------------------------------------------------------
 ('Accepted, Active Tickets by Owner (Full Description)',
@@ -258,7 +259,7 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status = 'accepted'
-  ORDER BY owner, p.value, t.type, time
+  ORDER BY owner, """ + db.cast('p.value', 'int') + """, t.type, time
 """),
 #----------------------------------------------------------------------------
 ('All Tickets By Milestone  (Including closed)',
@@ -299,7 +300,8 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE t.status <> 'closed' AND owner = $USER
-  ORDER BY (status = 'accepted') DESC, p.value, milestone, t.type, time
+  ORDER BY (status = 'accepted') DESC, """ + db.cast('p.value', 'int') + 
+  """, milestone, t.type, time
 """),
 #----------------------------------------------------------------------------
 ('Active Tickets, Mine first',
@@ -321,7 +323,8 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 
-  ORDER BY (owner = $USER) DESC, p.value, milestone, t.type, time
+  ORDER BY (owner = $USER) DESC, """ + db.cast('p.value', 'int') + 
+  """, milestone, t.type, time
 """))
 
 
