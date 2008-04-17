@@ -230,7 +230,9 @@ class Configuration(object):
         return changed
 
     def touch(self):
-        os.utime(self.filename, None)
+        if self.filename and os.path.isfile(self.filename) \
+           and os.access(self.filename, W_OK):
+            os.utime(self.filename, None)
 
 
 class Section(object):
