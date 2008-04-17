@@ -418,10 +418,10 @@ class Query(object):
         if self.group and self.group != self.order:
             order_cols.insert(0, (self.group, self.groupdesc))
         for name, desc in order_cols:
-            if name not in custom_fields:
-                col = 't.' + name
-            else:
+            if name in custom_fields or name in enum_columns:
                 col = name + '.value'
+            else:
+                col = 't.' + name
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
             #        one, if text, we do 'else'
@@ -436,10 +436,12 @@ class Query(object):
                 else:
                     sql.append("COALESCE(%s,'')=''," % col)
             if name in enum_columns:
+                # These values must be compared as ints, not as strings
+                db = self.env.get_db_cnx()
                 if desc:
-                    sql.append("%s.value DESC" % name)
+                    sql.append(db.cast(col, 'int') + ' DESC')
                 else:
-                    sql.append("%s.value" % name)
+                    sql.append(db.cast(col, 'int'))
             elif name in ('milestone', 'version'):
                 if name == 'milestone': 
                     time_col = 'milestone.due'

@@ -73,7 +73,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(t.priority,'')='',priority.value,t.id""")
+ORDER BY COALESCE(priority.value,'')='',CAST(priority.value AS int),t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -84,7 +84,7 @@ ORDER BY COALESCE(t.priority,'')='',priority.value,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(t.priority,'')='' DESC,priority.value DESC,t.id""")
+ORDER BY COALESCE(priority.value,'')='' DESC,CAST(priority.value AS int) DESC,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -155,7 +155,7 @@ ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.due,0)=0 DESC,miles
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.milestone AS milestone,t.component AS component,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(t.priority,'')='',priority.value,t.id""")
+ORDER BY COALESCE(priority.value,'')='',CAST(priority.value AS int),t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
