@@ -231,7 +231,7 @@ class Configuration(object):
 
     def touch(self):
         if self.filename and os.path.isfile(self.filename) \
-           and os.access(self.filename, W_OK):
+           and os.access(self.filename, os.W_OK):
             os.utime(self.filename, None)
 
 
