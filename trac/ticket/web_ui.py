@@ -148,6 +148,8 @@ class TicketModule(Component):
 
     def process_request(self, req):
         if 'id' in req.args:
+            if req.path_info.startswith('/newticket'):
+                raise TracError(_("id can't be set for a new ticket request."))
             return self._process_ticket_request(req)
         return self._process_newticket_request(req)
 
