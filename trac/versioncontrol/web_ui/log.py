@@ -65,13 +65,12 @@ class LogModule(Component):
     # IRequestHandler methods
 
     _request_re = re.compile(r'''
-        /log    # module
-        (/.*)?  # optional path
+        /log         # module
+        (?:(/.*)|$)  # optional path
         ''', re.VERBOSE)
 
     def match_request(self, req):
-        import re
-        match = re.match(self._request_re, req.path_info)
+        match = self._request_re.match(req.path_info)
         if match:
             req.args['path'] = match.group(1) or '/'
             return True
