@@ -48,7 +48,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=None, limit=None):
+                 rows=None, limit=0):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -56,7 +56,7 @@ class Query(object):
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
-        self.limit = limit
+        self.limit = int(limit or 0)
         if rows == None:
             rows = []
         if verbose and 'description' not in rows: # 0.10 compatibility
@@ -215,7 +215,7 @@ class Query(object):
                 elif val is None:
                     val = '--'
                 elif name in ('changetime', 'time'):
-                    val = datetime.fromtimestamp(int(val), utc)
+                    val = datetime.fromtimestamp(int(val or 0), utc)
                 elif field and field['type'] == 'checkbox':
                     try:
                         val = bool(int(val))
@@ -418,10 +418,10 @@ class Query(object):
         if self.group and self.group != self.order:
             order_cols.insert(0, (self.group, self.groupdesc))
         for name, desc in order_cols:
-            if name not in custom_fields:
-                col = 't.' + name
-            else:
+            if name in custom_fields or name in enum_columns:
                 col = name + '.value'
+            else:
+                col = 't.' + name
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
             #        one, if text, we do 'else'
@@ -436,10 +436,12 @@ class Query(object):
                 else:
                     sql.append("COALESCE(%s,'')=''," % col)
             if name in enum_columns:
+                # These values must be compared as ints, not as strings
+                db = self.env.get_db_cnx()
                 if desc:
-                    sql.append("%s.value DESC" % name)
+                    sql.append(db.cast(col, 'int') + ' DESC')
                 else:
-                    sql.append("%s.value" % name)
+                    sql.append(db.cast(col, 'int'))
             elif name in ('milestone', 'version'):
                 if name == 'milestone': 
                     time_col = 'milestone.due'
@@ -638,7 +640,7 @@ class QueryModule(Component):
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
                       rows,
-                      req.args.get('limit'))
+                      req.args.get('limit', 0))
 
         if 'update' in req.args:
             # Reset session vars

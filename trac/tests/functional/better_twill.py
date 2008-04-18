@@ -71,7 +71,8 @@ if twill:
     def better_formvalue(form, field, value, fv=tc.formvalue):
         try:
             fv(form, field, value)
-        except twill.errors.TwillAssertionError, e:
+        except (twill.errors.TwillAssertionError,
+                twill.utils.ClientForm.ItemNotFoundError), e:
             filename = twill_write_html()
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)

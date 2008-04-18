@@ -15,6 +15,10 @@
 # Author: Christian Boos <cboos@neuf.fr>
 
 import re
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 from genshi.builder import tag
 
@@ -35,27 +39,28 @@ class InterWikiMap(Component):
     _argspec_re = re.compile(r"\$\d")
 
     def __init__(self):
+        self._interwiki_lock = threading.RLock()
+        self.reset()
+
+    def reset(self):
         self._interwiki_map = None
+        self.config.touch()
         # This dictionary maps upper-cased namespaces
         # to (namespace, prefix, title) values;
 
     # The component itself behaves as a map
 
     def __contains__(self, ns):
-        self._update()
-        return ns.upper() in self._interwiki_map
+        return ns.upper() in self.interwiki_map
 
     def __getitem__(self, ns):
-        self._update()
-        return self._interwiki_map[ns.upper()]
+        return self.interwiki_map[ns.upper()]
 
     def __setitem__(self, ns, value):
-        self._update()
-        self._interwiki_map[ns.upper()] = value
+        self.interwiki_map[ns.upper()] = value
 
     def keys(self):
-        self._update()
-        return self._interwiki_map.keys()
+        return self.interwiki_map.keys()
 
     # Expansion of positional arguments ($1, $2, ...) in URL and title
     def _expand(self, txt, args):
@@ -97,36 +102,42 @@ class InterWikiMap(Component):
 
     def wiki_page_changed(self, page, version, t, comment, author, ipnr):
         if page.name == InterWikiMap._page_name:
-            self._interwiki_map = None
+            self.reset()
 
     def wiki_page_deleted(self, page):
         if page.name == InterWikiMap._page_name:
-            self._interwiki_map = None
+            self.reset()
 
     def wiki_page_version_deleted(self, page):
         if page.name == InterWikiMap._page_name:
-            self._interwiki_map = None
+            self.reset()
 
-    def _update(self):
+    def _get_interwiki_map(self):
         from trac.wiki.model import WikiPage
-        if self._interwiki_map is not None:
-            return
-        self._interwiki_map = {}
-        content = WikiPage(self.env, InterWikiMap._page_name).text
-        in_map = False
-        for line in content.split('\n'):
-            if in_map:
-                if line.startswith('----'):
+        if self._interwiki_map is None:
+            self._interwiki_lock.acquire()
+            try:
+                if self._interwiki_map is None:
+                    self._interwiki_map = {}
+                    content = WikiPage(self.env, InterWikiMap._page_name).text
                     in_map = False
-                else:
-                    m = re.match(InterWikiMap._interwiki_re, line)
-                    if m:
-                        prefix, url, title = m.groups()
-                        url = url.strip()
-                        title = title and title.strip() or prefix
-                        self[prefix] = (prefix, url, title)
-            elif line.startswith('----'):
-                in_map = True
+                    for line in content.split('\n'):
+                        if in_map:
+                            if line.startswith('----'):
+                                in_map = False
+                            else:
+                                m = re.match(InterWikiMap._interwiki_re, line)
+                                if m:
+                                    prefix, url, title = m.groups()
+                                    url = url.strip()
+                                    title = title and title.strip() or prefix
+                                    self[prefix] = (prefix, url, title)
+                        elif line.startswith('----'):
+                            in_map = True
+            finally:
+                self._interwiki_lock.release()
+        return self._interwiki_map
+    interwiki_map = property(_get_interwiki_map)
 
     # IWikiMacroProvider methods
 

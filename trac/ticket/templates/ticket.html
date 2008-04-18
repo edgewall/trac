@@ -287,7 +287,7 @@ ${comment}</textarea></p>
                 </td>
               </tr>
             </py:if>
-            <py:if test="'TICKET_ADMIN' in perm(ticket.resource) or not ticket.exists">
+            <py:if test="'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource) or not ticket.exists">
               <tr>
                 <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">

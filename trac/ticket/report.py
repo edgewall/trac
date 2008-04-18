@@ -303,8 +303,27 @@ class ReportModule(Component):
 
             if col == sort_col:
                 header['asc'] = asc
+                
+                # this dict will have enum values for sorting
+                # and will be used in sortkey(), if non-empty:
+                sort_values = {}
+                if sort_col in ['status', 'resolution', 'priority', 'severity']:
+                    # must fetch sort values for that columns
+                    # instead of comparing them as strings
+                    if not db:
+                        db = self.env.get_db_cnx()
+                    cursor = db.cursor()
+                    cursor.execute("SELECT name," + db.cast('value', 'int') + 
+                                   " FROM enum WHERE type=%s", (sort_col,))
+                    for name, value in cursor:
+                        sort_values[name] = value
+
                 def sortkey(row):
                     val = row[idx]
+                    # check if we have sort_values, then use them as sort keys.
+                    if sort_values:
+                        return sort_values.get(val)
+                    # otherwise, continue with string comparison:
                     if isinstance(val, basestring):
                         val = val.lower()
                     return val

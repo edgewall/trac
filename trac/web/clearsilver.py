@@ -299,7 +299,14 @@ class HDFWrapper:
         """
         if isinstance(template, basestring):
             filename = template
-            import neo_cs
+            try:
+                import neo_cs
+            except ImportError:
+                raise TracError("You're using a plugin which requires "
+                                "the Clearsilver template engine and "
+                                "Clearsilver is not installed. "
+                                "Either disable that plugin or install "
+                                "Clearsilver.")
             template = neo_cs.CS(self.hdf)
             template.parseFile(filename)
 

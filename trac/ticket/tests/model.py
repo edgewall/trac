@@ -1,5 +1,6 @@
 from trac import core
 from trac.core import TracError, implements
+from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
 from trac.ticket.api import ITicketChangeListener
 from trac.test import EnvironmentStub
@@ -49,6 +50,15 @@ class TicketTestCase(unittest.TestCase):
         ticket['summary'] = 'Foo'
         ticket['foo'] = 'This is a custom field'
         return ticket
+
+    def test_invalid_ticket_id(self):
+        self.assertEqual(Ticket.id_is_valid(-1), False)
+        self.assertEqual(Ticket.id_is_valid(0), False)
+        self.assertEqual(Ticket.id_is_valid(1), True)
+        self.assertEqual(Ticket.id_is_valid(1L << 31), True)
+        self.assertEqual(Ticket.id_is_valid(1L << 32), False)
+        self.assertRaises(ResourceNotFound, Ticket, self.env, -1)
+        self.assertRaises(ResourceNotFound, Ticket, self.env, 1L << 32)
 
     def test_create_ticket_1(self):
         ticket = self._create_a_ticket()

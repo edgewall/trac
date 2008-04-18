@@ -140,13 +140,6 @@ class TicketModule(Component):
 
     def match_request(self, req):
         if re.match(r'/newticket/?$', req.path_info) is not None:
-            if req.method != 'POST':
-                for k in req.args.keys():
-                    if k.startswith('__'): # non field argument
-                        req.args[k[2:]] = req.args[k]
-                    else:
-                        req.args['field_'+k] = req.args[k]
-                    del req.args[k]
             return True
         match = re.match(r'/ticket/([0-9]+)$', req.path_info)
         if match:
@@ -155,6 +148,8 @@ class TicketModule(Component):
 
     def process_request(self, req):
         if 'id' in req.args:
+            if req.path_info.startswith('/newticket'):
+                raise TracError(_("id can't be set for a new ticket request."))
             return self._process_ticket_request(req)
         return self._process_newticket_request(req)
 
@@ -342,12 +337,17 @@ class TicketModule(Component):
         req.perm.require('TICKET_CREATE')
         ticket = Ticket(self.env)
 
-        if req.method == 'POST' and 'field_owner' in req.args and \
-               'TICKET_MODIFY' not in req.perm:
-            del req.args['field_owner']
+        plain_fields = True # support for /newticket?version=0.11 GETs
+        field_reporter = 'reporter'
 
-        self._populate(req, ticket)
-        reporter_id = req.args.get('field_reporter') or \
+        if req.method == 'POST':
+            plain_fields = False
+            field_reporter = 'field_reporter'
+            if 'field_owner' in req.args and 'TICKET_MODIFY' not in req.perm:
+                del req.args['field_owner']
+
+        self._populate(req, ticket, plain_fields)
+        reporter_id = req.args.get(field_reporter) or \
                       get_reporter_id(req, 'author')
         ticket.values['reporter'] = reporter_id
 
@@ -576,10 +576,12 @@ class TicketModule(Component):
             action, entry = ('add', add[0])
         return (action, entry, cc_list)
         
-    def _populate(self, req, ticket):
-        ticket.populate(dict([(k[6:],v) for k,v in req.args.iteritems()
-                              if k.startswith('field_')]))
-
+    def _populate(self, req, ticket, plain_fields=False):
+        fields = req.args
+        if not plain_fields:
+            fields = dict([(k[6:],v) for k,v in fields.items()
+                           if k.startswith('field_')])
+        ticket.populate(fields)
         # special case for updating the Cc: field
         if 'cc_update' in req.args:
             cc_action, cc_entry, cc_list = self._toggle_cc(req, ticket['cc'])
@@ -835,13 +837,14 @@ class TicketModule(Component):
                 ticket.values = ticket._old
                 valid = False
             else: # TODO: field based checking
-                if 'description' in ticket._old or \
-                       'field_reporter' in ticket._old:
-                    if 'TICKET_ADMIN' not in req.perm:
-                        add_warning(req, _("No permissions to change ticket "
-                                      "fields."))
-                        ticket.values = ticket._old
-                        valid = False
+                if ('description' in ticket._old and \
+                       'TICKET_EDIT_DESCRIPTION' not in req.perm) or \
+                   ('reporter' in ticket._old and \
+                       'TICKET_ADMIN' not in req.perm):
+                    add_warning(req, _("No permissions to change ticket "
+                                       "fields."))
+                    ticket.values = ticket._old
+                    valid = False
 
         comment = req.args.get('comment')
         if comment:

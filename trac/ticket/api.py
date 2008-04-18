@@ -149,13 +149,16 @@ class TicketSystem(Component):
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
         (''since 0.9'').""")
 
+    def __init__(self):
+        self.log.debug('action controllers for ticket workflow: %r' % 
+                [c.__class__.__name__ for c in self.action_controllers])
+
     # Public API
 
     def get_available_actions(self, req, ticket):
         """Returns a sorted list of available actions"""
         # The list should not have duplicates.
         actions = {}
-        self.log.debug('action controllers: %s' % (self.action_controllers,))
         for controller in self.action_controllers:
             weighted_actions = controller.get_ticket_actions(req, ticket)
             for weight, action in weighted_actions:
@@ -276,10 +279,11 @@ class TicketSystem(Component):
 
     def get_permission_actions(self):
         return ['TICKET_APPEND', 'TICKET_CREATE', 'TICKET_CHGPROP',
-                'TICKET_VIEW', 'TICKET_EDIT_CC',
+                'TICKET_VIEW', 'TICKET_EDIT_CC', 'TICKET_EDIT_DESCRIPTION',
                 ('TICKET_MODIFY', ['TICKET_APPEND', 'TICKET_CHGPROP']),
                 ('TICKET_ADMIN', ['TICKET_CREATE', 'TICKET_MODIFY',
-                                  'TICKET_VIEW', 'TICKET_EDIT_CC'])]
+                                  'TICKET_VIEW', 'TICKET_EDIT_CC',
+                                  'TICKET_EDIT_DESCRIPTION'])]
 
     # IWikiSyntaxProvider methods
 
@@ -308,8 +312,10 @@ class TicketSystem(Component):
             if len(r) == 1:
                 num = r.a
                 ticket = formatter.resource('ticket', num)
-                if 0 < num <= 1L << 31:
-                     # TODO: implement resource.exists() (related to #4130)
+                from trac.ticket.model import Ticket
+                if Ticket.id_is_valid(num):
+                    # TODO: watch #6436 and when done, attempt to retrieve 
+                    #       ticket directly (try: Ticket(self.env, num) ...)
                     cursor = formatter.db.cursor() 
                     cursor.execute("SELECT type,summary,status,resolution "
                                    "FROM ticket WHERE id=%s", (str(num),)) 
