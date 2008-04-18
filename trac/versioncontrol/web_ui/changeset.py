@@ -809,20 +809,21 @@ class ChangesetModule(Component):
             def generate_changesets(reponame, repo):
                 for _, changesets in groupby(repos.get_changesets(start, stop),
                                              key=collapse_changesets):
-                    permitted_changesets = []
-                    for chgset in changesets:
-                        uid = chgset.get_uid()
+                    viewable_changesets = []
+                    for cset in changesets:
+                        uid = cset.get_uid()
                         if uid:
                             if uid in uids_seen:
                                 continue
                             uids_seen[uid] = True
-                        if 'CHANGESET_VIEW' in req.perm('changeset', chgset.rev):
-                            permitted_changesets.append(chgset)
-                    if permitted_changesets:
-                        chgset = permitted_changesets[-1]
-                        yield ('changeset', chgset.date, chgset.author,
-                               (reponame or None, permitted_changesets, 
-                                chgset.message or '',
+                        cset_resource = Resource('changeset', 
+                                                 (reponame, cset.rev))
+                        if 'CHANGESET_VIEW' in req.perm(cset_resource):
+                            viewable_changesets.append((cset, cset_resource))
+                    if viewable_changesets:
+                        cset, resource = viewable_changesets[-1]
+                        yield ('changeset', cset.date, cset.author,
+                               (viewable_changesets, 
                                 show_location, show_files))
 
             for reponame, repos in self.env.get_all_repositories(req.authname):
@@ -830,8 +831,11 @@ class ChangesetModule(Component):
                     yield event
                 
     def render_timeline_event(self, context, field, event):
-        reponame, changesets, message, show_location, show_files = event[3]
-        rev_b, rev_a = changesets[0].rev, changesets[-1].rev
+        changesets, show_location, show_files = event[3]
+        cset, cset_resource = changesets[0]
+        message = cset.message or ''
+        reponame = cset_resource.id[0]
+        rev_b, rev_a = cset.rev, cset.rev
 
         if field == 'url':
             if rev_a == rev_b:
@@ -851,7 +855,7 @@ class ChangesetModule(Component):
                 files = []
                 if show_location:
                     filestats = self._prepare_filestats()
-                    for c in changesets:
+                    for c,r in changesets:
                         for chg in c.get_changes():
                             filestats[chg[2]] += 1
                             files.append(chg[0])
@@ -867,7 +871,7 @@ class ChangesetModule(Component):
                                tag.strong(self._get_location(files))),
                         markup, class_="changes")
                 elif show_files:
-                    for c in changesets:
+                    for c,r in changesets:
                         for chg in c.get_changes():
                             if show_files > 0 and len(files) > show_files:
                                 break
@@ -877,7 +881,8 @@ class ChangesetModule(Component):
                         files = files[:show_files] + [tag.li(u'\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
             if message:
-                markup += format_to_html(self.env, context, message)
+                markup += format_to_html(self.env, context(cset_resource), 
+                                         message)
             return markup
 
         reposuffix = ''
