@@ -124,14 +124,14 @@ ${traceback}
               you should consider reporting this to the Trac team.</p>
               <p>Before you do that, though, please first try
                 <a py:with="q = quote_plus(message[:80])"
-                   href="${trac.homepage}/search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
+                   href="${trac.homepage}search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
                 for similar issues, as it is quite likely that this problem
                 has been reported before. For questions about installation
                 and configuration of Trac, please try the
-                <a href="${trac.homepage}/wiki/MailingList">mailing list</a>
+                <a href="${trac.homepage}wiki/MailingList">mailing list</a>
                 instead of filing a ticket.
               </p>
-              <form class="newticket" method="get" action="${trac.homepage}/newticket">
+              <form class="newticket" method="get" action="${trac.homepage}newticket">
                 <p>Otherwise, please ${create_ticket(True)} a new ticket at
                 the Trac project site, where you can describe the problem and
                 explain how to reproduce it.</p>
