@@ -47,7 +47,7 @@ table.dirlist { margin-top: 0 }
 table.dirlist td.rev, table.dirlist td.age, table.dirlist td.change {
  color: #888;
  white-space: nowrap;
- vertical-align: baseline;
+ vertical-align: middle;
 }
 table.dirlist td.rev {
  font-family: monospace;
@@ -95,18 +95,17 @@ table.dirlist tr.expanded span.expander:hover {
 table.dirlist td.name a.dir { background-image: url(../folder.png) }
 table.dirlist td.name a.file { background-image: url(../file.png); display: block }
 table.dirlist td.name a, table.dirlist td.rev a { border-bottom: none }
-table.dirlist td.rev { text-align: right }
 table.dirlist td.change { 
   font-size: 85%; 
   vertical-align: middle; 
   white-space: nowrap 
 }
-table.dirlist td.change a.chgset { 
+table.dirlist td.rev a.chgset { 
   background-repeat: no-repeat;
   background-image: url(../changeset.png); 
   background-position: 100% 50%;
-  padding: 6px; 
-  border: none;
+  padding: 0 0 0 5px; 
+  margin: 0 5px 0 0; 
 }
 
 table.dirlist td span.loading { 

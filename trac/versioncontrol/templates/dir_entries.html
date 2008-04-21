@@ -10,18 +10,19 @@
       <tr class="${idx % 2 and 'even' or 'odd'}">
         <td class="name">
           <a class="$entry.kind" title="View ${entry.kind.capitalize()}"
-             href="${href.browser(reponame, entry.path, rev=stickyrev, order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
+              href="${href.browser(reponame, entry.path, rev=stickyrev, 
+                                   order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
         </td>
         <td class="size">${sizeinfo(entry.content_length)}</td>
         <td class="rev">
           <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">$entry.rev</a>
+          <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
         </td>
         <td class="age" style="${change and dir.timerange and 'border-color: rgb(%s,%s,%s)' %
-          dir.colorize_age(dir.timerange.relative(change.date)) or None}">
+                                 dir.colorize_age(dir.timerange.relative(change.date)) or None}">
           ${change and dateinfo(change.date) or '-'}
         </td>
         <td class="change">
-          <a title="View changeset ${change.rev}" class="chgset" href="${href.changeset(change.rev, reponame)}" />
           <span class="author" py:if="change">${authorinfo(change.author)}:</span>
           <span class="change" py:choose="" py:with="chgset_context = context('changeset', (reponame, change.rev))">
             <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
