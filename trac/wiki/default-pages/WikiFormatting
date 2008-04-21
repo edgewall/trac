@@ -289,11 +289,11 @@ Macros are ''custom functions'' to insert dynamic content in a page.
 
 Example:
 {{{
- [[Timestamp]]
+ [[RecentChanges(Trac,3)]]
 }}}
 
 Display:
- [[Timestamp]]
+ [[RecentChanges(Trac,3)]]
 
 See TracWikiMacros for more information, and a list of installed macros.
 

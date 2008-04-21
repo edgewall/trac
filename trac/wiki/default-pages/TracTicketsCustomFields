@@ -29,7 +29,7 @@ The example below should help to explain the syntax.
  * '''radio''': Radio buttons. Essentially the same as '''select'''.
    * label: Descriptive label.
    * options: List of values, separated by '''|''' (vertical pipe).
-   * value: Default value (Item #, starting at 0).
+   * value: Default value (one of the values from options).
    * order: Sort order placement.
  * '''textarea''': Multi-line text area.
    * label: Descriptive label.
@@ -61,7 +61,7 @@ test_four.value = two
 test_five = radio
 test_five.label = Radio buttons are fun
 test_five.options = uno|dos|tres|cuatro|cinco
-test_five.value = 1
+test_five.value = dos
 
 test_six = textarea
 test_six.label = This is a large textarea
@@ -105,6 +105,40 @@ SELECT p.value AS __color__,
 }}}
 
 Note in particular the `LEFT OUTER JOIN` statement here.
+
+=== Updating the database ===
+
+As noted above, any tickets created before a custom field has been defined will not have a value for that field. Here's a bit of SQL (tested with SQLite) that you can run directly on the Trac database to set an initial value for custom ticket fields. Inserts the default value of 'None' into a custom field called 'request_source' for all tickets that have no existing value:
+
+{{{
+#!sql
+INSERT INTO ticket_custom
+   (ticket, name, value)
+   SELECT 
+      id AS ticket,
+      'request_source' AS name,
+      'None' AS value
+   FROM ticket 
+   WHERE id NOT IN (
+      SELECT ticket FROM ticket_custom
+   );
+}}}
+
+If you added multiple custom fields at different points in time, you should be more specific in the subquery on table {{{ticket}}} by adding the exact custom field name to the query:
+
+{{{
+#!sql
+INSERT INTO ticket_custom
+   (ticket, name, value)
+   SELECT 
+      id AS ticket,
+      'request_source' AS name,
+      'None' AS value
+   FROM ticket 
+   WHERE id NOT IN (
+      SELECT ticket FROM ticket_custom WHERE name = 'request_source'
+   );
+}}}
 
 ----
 See also: TracTickets, TracIni

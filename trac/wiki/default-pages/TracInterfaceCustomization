@@ -40,7 +40,7 @@ icon = /favicon.ico
 }}}
 
 == Custom Navigation Entries ==
-The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them.
+The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them (but not for adding new ones).
 
 In the following example, we rename the link to the Wiki start "Home", and hide the "Help/Guide". We also make the "View Tickets" entry link to a specific report .
 {{{
@@ -52,6 +52,7 @@ tickets.href = /report/24
 help = disabled
 }}}
 
+See also TracNavigation for a more detailed explanation of the mainnav and metanav terms.
 
 == Site Appearance ==
 
@@ -117,7 +118,7 @@ If the environment is upgraded from 0.10 and a `site_newticket.cs` file already 
 Also note that the `site.html` (despite its name) can be put in a common templates directory - see the `[inherit] templates_dir` option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
 
 == Project List ==
-You can use a custom ClearSilver template to display the list of projects if you are using Trac with multiple projects.  
+You can use a custom Genshi template to display the list of projects if you are using Trac with multiple projects.  
 
 The following is the basic template used by Trac to display a list of links to the projects.  For projects that could not be loaded it displays an error message. You can use this as a starting point for your own index template.
 

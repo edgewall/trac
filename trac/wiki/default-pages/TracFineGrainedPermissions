@@ -12,13 +12,13 @@ An example policy based on an Authz-style system has been added. See
 [source:trunk/sample-plugins/permissions/authz_policy.py] for details. (See also [source:trunk/sample-plugins/permissions] for more samples.)
 
  - Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (required).
- - Copy this file in your plugins directory
- - Plonk a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere. FIXME: what does ''plonk'' mean? ;-)
+ - Copy authz_policy.py into your plugins directory.
+ - Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere (preferably on a secured location on the server, not readable for others than the webuser.
  - Update your `trac.ini`:
 {{{
 [trac]
 ...
-permission_policies = AuthzPolicy, DefaultPermissionPolicy
+permission_policies = AuthzPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
 
 [authz_policy]
 authz_file = /some/trac/env/conf/authzpolicy.conf
@@ -39,10 +39,10 @@ If no policy explicitly grants the permission, the final result will be `False`
 For example, if the `authz_file` contains:
 {{{
 [wiki:WikiStart@*]
-* = VIEW
+* = WIKI_VIEW
 
 [wiki:PrivatePage@*]
-john = VIEW
+john = WIKI_VIEW
 * =
 }}}
 and the default permissions are set like this:

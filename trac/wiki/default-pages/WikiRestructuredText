@@ -94,25 +94,24 @@ code-block. To work you must use a version of trac that has #801 applied.
 {{{
 #!rst
 
-.. code-block:: HelloWorld
- 
-   Something I wanted to say
+.. code-block:: RecentChanges
 
+   Trac,3
 
 }}}
 }}}
 
 Will result in the below:
 
-    [[HelloWorld(Something I wanted to say)]]
+     [[RecentChanges(Trac,3)]]
 
-Or a more concise WikiMacro like syntax is also available:
+Or a more concise Wiki Macro like syntax is also available:
 
 {{{
 {{{
 #!rst
 
-:code-block:`HelloWorld:Something I wanted to say`
+:code-block:`RecentChanges:Trac,3`
 }}}
 }}}
 

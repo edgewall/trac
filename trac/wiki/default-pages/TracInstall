@@ -10,9 +10,7 @@ What follows are generic instructions for installing and setting up Trac and its
 == Short - Install a released version ==
 For the quick install, make sure you have [http://python.org Python-2.5], [http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install easy_install] and SQlite-3.3.4 installed (or above).
 {{{
-sudo easy_install Pygments
-sudo easy_install Genshi
-sudo easy_install Trac
+sudo easy_install Trac==0.11b2
 }}}
 
 == Requirements - also older versions possible ==
@@ -24,7 +22,7 @@ To install Trac, the following software packages must be installed:
    * For RPM-based systems you might also need the `python-devel` and `python-xml` packages.
    * See instructions in ["TracOnWindows/Python2.5"]
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
- * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.3.6
+ * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.4.1
  * You also need a database system and the corresponding python drivers for it.
    The database can be either SQLite, PostgreSQL or ''MySQL (experimental)''.
  * optional if some plugins require it: [http://www.clearsilver.net/ ClearSilver]
@@ -43,9 +41,11 @@ To install Trac, the following software packages must be installed:
  * [http://www.postgresql.org/ PostgreSQL]
  * [http://initd.org/projects/psycopg2 psycopg2] or [http://pypgsql.sourceforge.net/ pyPgSQL]
 
+'''Warning''': PostgreSQL 8.3 uses a strict type checking mechanism. To use Trac with the 8.3 Version of PostgreSQL, you will need [http://trac.edgewall.org/changeset/6512 trac-0.11] or later.
+
 === For MySQL ===
 
-'''Warning''': MySQL support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See MySqlDb for more detailed informations.
+'''Warning''': MySQL support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See MySqlDb for more detailed information.
 
  * [http://mysql.com/ MySQL], version 4.1 or later
  * [http://sf.net/projects/mysql-python MySQLdb], version 1.2.1 or later
@@ -65,10 +65,10 @@ To install Trac, the following software packages must be installed:
 ==== Web Server ====
  * A CGI-capable web server (see TracCgi), or
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
+ * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI])
+    * This should work with Apache 1.3, 2.0 or 2.2 and promises to deliver more performance than using mod_python. A little less mature than mod_python.
  * [http://httpd.apache.org/ Apache] with [http://www.modpython.org/ mod_python 3.1.3+] (see TracModPython)
     * When installing mod_python the development versions of Python and Apache are required (actually the libraries and header files)
- * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI])
-    * While mod_wsgi is very new and somewhat experimental, this should work with Apache 1.3, 2.0 or 2.2 and promises to deliver more performance than using mod_python.
 
 For those stuck with Apache 1.3, it is also possible to get Trac working with [http://www.modpython.org/ mod_python 2.7] (see [wiki:TracModPython2.7 TracModPython2.7]). This guide hasn't been updated since 0.84, so it may or may not work.
 
@@ -86,9 +86,9 @@ Please refer to the documentation of these packages to find out how they are bes
 
 One way to install Trac is using `setuptools`.
 With setuptools you can install Trac from the subversion repository; for example,
-to install release version 0.11 do:
+to install release version 0.11b2 do:
 {{{
-easy_install http://svn.edgewall.com/repos/trac/tags/trac-0.11
+easy_install http://svn.edgewall.org/repos/trac/tags/trac-0.11b2
 }}}
 
 But of course the python-typical setup at the top of the source directory also works:
@@ -98,9 +98,8 @@ $ python ./setup.py install
 
 ''Note: you'll need root permissions or equivalent for this step.''
 
-This will byte-compile the python source code and install it in the `site-packages` directory
-of your Python installation. The directories `cgi-bin`, `templates`, `htdocs`, `wiki-default` and `wiki-macros` are all copied to `$prefix/share/trac/`. `conf` and `plugins` stub directories are also created under `$prefix/share/trac/`.
-On Linux, the default value of `$prefix` is `/usr`, so the installation will be to `/usr/share/trac`, whereas the BSDs use `/usr/local`. Other Unix or Unix-like systems might use a similar prefix or something like `/opt`, please see your system's documentation for details.
+This will byte-compile the python source code and install it as an .egg file or folder in the `site-packages` directory
+of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as htdocs and templates.
 
 The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
 
@@ -117,6 +116,12 @@ Specifically, you might be interested in:
 {{{
 easy_install --prefix=/path/to/installdir
 }}}
+or, if installing Trac to a Mac OS X system:
+{{{
+easy_install --prefix=/usr/local --install-dir=/Library/Python/2.5/site-packages
+}}}
+
+The above will place your `tracd` and `trac-admin` commands into `/usr/local/bin` and will install the Trac libraries and dependencies into `/Library/Python/2.5/site-packages`, which is Apple's preferred location for third-party Python application installations.
 
 == Creating a Project Environment ==
 
@@ -143,12 +148,15 @@ After having created a Trac environment, you can easily try the web interface by
 $ tracd --port 8000 /path/to/myproject
 }}}
 
-Then, fire up a browser and visit `http://localhost:8000/`. You should get a simple listing of all environments that tracd knows about. Follow the link to the environment you just created, and you should see Trac in action.
+Then, fire up a browser and visit `http://localhost:8000/`. You should get a simple listing of all environments that tracd knows about. Follow the link to the environment you just created, and you should see Trac in action. If you only plan on managing a single project with trac you can have the standalone server skip the environment list by starting it like this:
+{{{
+$ tracd -s --port 8000 /path/to/myproject
+}}}
 
 
 == Running Trac on a Web Server ==
 
-Trac provides three options for connecting to a ârealâ web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_python.
+Trac provides three options for connecting to a "real" web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_python.
 
 If you're not afraid of running development code, you can also try running Trac on [wiki:TracModWSGI mod_wsgi]. This should deliver even better performance than mod_python, but the module is not considered stable just yet.
 
@@ -159,6 +167,10 @@ The process of adding, removing, and configuring user accounts for authenticatio
  * TracStandalone if you use the standalone server, `tracd`.
  * TracCgi if you use the CGI or FastCGI methods.
  * TracModPython if you use the mod_python method.
+
+== Trac 0.11 & SVN on Mac OS X Leopard (10.5) ==
+
+ * TracOnLeopardServer
 
 == Using Trac ==
 
@@ -172,3 +184,4 @@ Keep in mind that anonymous (not logged in) users can by default access most but
 
 ----
 See also:  TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions
+

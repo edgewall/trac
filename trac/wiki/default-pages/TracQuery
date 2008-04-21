@@ -28,6 +28,7 @@ While Trac does not yet allow saving a named query and somehow making it availab
 You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.
 {{{
 [query:status=new|assigned|reopened&version=1.0 Active tickets against 1.0]
+
 }}}
 
 Which is displayed as:
@@ -38,6 +39,7 @@ This uses a very simple query language to specify the criteria (see [wiki:TracQu
 Alternatively, you can copy the query string of a query and paste that into the Wiki link, including the leading `?` character:
 {{{
 [query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
+
 }}}
 
 Which is displayed as:
@@ -60,6 +62,7 @@ Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter o
 A more compact representation without the ticket summaries is also available:
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
+
 }}}
 
 This is displayed as:
@@ -69,6 +72,7 @@ Finally if you wish to receive only the number of defects that match the query u
 
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+
 }}}
 
 This is displayed as:
@@ -77,7 +81,7 @@ This is displayed as:
 
 === Query Language ===
 
-`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separate by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values.
+`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values.
 
 The available operators are:
 || '''=''' || the field content exactly matches the one of the values ||

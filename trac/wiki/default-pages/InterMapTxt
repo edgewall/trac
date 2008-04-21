@@ -39,6 +39,7 @@ Also note that !InterWiki prefixes are case insensitive.
 
 {{{
 PEP     http://www.python.org/peps/pep-$1.html                                       # Python Enhancement Proposal 
+PythonBug http://bugs.python.org/issue$1                                             # Python Issue #$1
 Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/ # Message $1 in Trac Mailing List
 trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
 

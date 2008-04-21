@@ -91,9 +91,65 @@ And then open up the resulting `trac.pdf` file created by the script (it will be
 
 After you have changed a workflow, you need to restart apache for the changes to take effect. This is important, because the changes will still show up when you run your script, but all the old workflow steps will still be there until the server is restarted.
 
+== Example: Adding optional Testing with Workflow ==
+
+By adding the following to your [ticket-workflow] section of trac.ini you get optional testing.  When the ticket is in new, accepted or needs_work status you can choose to submit it for testing.  When it's in the testing status the user gets the option to reject it and send it back to needs_work, or pass the testing and send it along to closed.  If they accept it then it gets automatically marked as closed and the resolution is set to fixed.  Since all the old work flow remains, a ticket can skip this entire section.
+
+{{{
+testing = new,accepted,needs_work -> testing
+testing.name = Submit to reporter for testing
+testing.permissions = TICKET_MODIFY
+
+reject = testing -> needs_work
+reject.name = Failed testing, return to developer
+
+pass = testing -> closed
+pass.name = Passes Testing
+pass.operations = set_resolution
+pass.set_resolution = fixed
+}}}
+
+== Example: Limit the resolution options for a new ticket ==
+
+The above resolve_new operation allows you to set the possible resolutions for a new ticket.  By modifying the existing resolve action and removing the new status from before the `->` we then get two resolve actions.  One with limited resolutions for new tickets, and then the regular one once a ticket is accepted.
+
+{{{
+resolve_new = new -> closed
+resolve_new.name = resolve
+resolve_new.operations = set_resolution
+resolve_new.permissions = TICKET_MODIFY
+resolve_new.set_resolution = invalid,wontfix,duplicate
+
+resolve = assigned,accepted,reopened -> closed
+resolve.operations = set_resolution
+resolve.permissions = TICKET_MODIFY
+}}}
+
 == Advanced Ticket Workflow Customization ==
 
-If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build) that may not be merely simple state changes.  Look at `sample-plugins/workflow` for a few simple examples to get started.
+If the customization above is not extensive enough for your needs, you can extend the workflow using plugins.  These plugins can provide additional operations for the workflow (like code_review), or implement side-effects for an action (such as triggering a build) that may not be merely simple state changes.  Look at [trac:source:trunk/sample-plugins/workflow sample-plugins/workflow] for a few simple examples to get started.
 
 But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it.
 
+== some ideas for next steps ==
+
+New enhancement ideas for the workflow system should be filed as enhancement tickets against the `ticket system` component.  If desired, add a single-line link to that ticket here.
+
+If you have a response to the comments below, create an enhancement ticket, and replace the description below with a link to the ticket.
+
+ * the "operation" could be on the nodes, possible operations are:
+   * '''preops''': automatic, before entering the state/activity
+   * '''postops''': automatic, when leaving the state/activity
+   * '''actions''': can be chosen by the owner in the list at the bottom, and/or drop-down/pop-up together with the default actions of leaving the node on one of the arrows.
+This appears to add complexity without adding functionality; please provide a detailed example where these additions allow something currently impossible to implement.
+
+ * operations could be anything: sum up the time used for the activity, or just write some statistical fields like 
+A workflow plugin can add an arbitrary workflow operation, so this is already possible.
+
+ * set_actor should be an operation allowing to set the owner, e.g. as a "preop":
+   * either to a role, a person
+   * entered fix at define time, or at run time, e.g. out of a field, or select.
+This is either duplicating the existing `set_owner` operation, or needs to be clarified.
+
+ * Actions should be selectable based on the ticket type (different Workflows for different tickets)
+This is becoming a frequent request, with clear usecases.  The closest the current implementation will allow is to have a plugin provide a `triage` action that sets the next state based on the ticket type, so a `new` ticket would move to `new_task`, `new_defect`, etc., and the workflow graph would separate at that point.

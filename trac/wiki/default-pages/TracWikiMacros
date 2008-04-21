@@ -103,7 +103,7 @@ class HelloWorldMacro(WikiMacroBase):
 
 
 === {{{expand_macro}}} details ===
-{{{expand_macro}}} should return either a simple Python string which will be interpreted as HTML, or preferably a Markup object (use {{{from trac.util.html import Markup}}}).  {{{Markup(string)}}} just annotates the string so the renderer will render the HTML string as-is with no escaping.
+{{{expand_macro}}} should return either a simple Python string which will be interpreted as HTML, or preferably a Markup object (use {{{from trac.util.html import Markup}}}).  {{{Markup(string)}}} just annotates the string so the renderer will render the HTML string as-is with no escaping. You will also need to import Formatter using {{{from trac.wiki import Formatter}}}.
 
 If your macro creates wiki markup instead of HTML, you can convert it to HTML like this:
 
@@ -112,6 +112,6 @@ If your macro creates wiki markup instead of HTML, you can convert it to HTML li
   text = "whatever wiki markup you want, even containing other macros"
   # Convert Wiki markup to HTML, new style
   out = StringIO()
-  Formatter(formatter.context).format(text, out)
+  Formatter(self.env, formatter.context).format(text, out)
   return Markup(out.getvalue())
 }}}

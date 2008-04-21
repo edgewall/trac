@@ -1,6 +1,6 @@
 = Wiki Processors =
 
-Processors are [TracWikiMacros wiki macros] designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
+Processors are WikiMacros designed to provide alternative markup formats for the [TracWiki Wiki engine]. Processors can be thought of as ''macro functions to process user-edited text''. 
 
 The Wiki engine uses processors to allow using [wiki:WikiRestructuredText Restructured Text], [wiki:WikiHtml raw HTML] and [http://www.textism.com/tools/textile/ textile] in any Wiki text throughout Trac.
 
@@ -93,10 +93,13 @@ Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highl
  * '''perl''' -- Perl
  * '''ruby''' -- Ruby
  * '''php''' -- PHP
- * '''asp''' --- ASP
+ * '''asp''' -- ASP
+ * '''java''' -- Java
+ * '''js''' -- Javascript
  * '''sql''' -- SQL
  * '''xml''' -- XML
  * '''sh''' -- Bourne/Bash shell
+
 '''Note:''' ''Trac relies on external software packages for syntax coloring. See TracSyntaxColoring for more info.''
 
 By using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code. For example, you can write:
@@ -111,12 +114,13 @@ The result will be syntax highlighted HTML code. The same is valid for all other
 
 
 For more processor macros developed and/or contributed by users, visit: 
- * [http://trac.edgewall.org/wiki/ProcessorBazaar ProcessorBazaar]
- * [http://trac.edgewall.org/wiki/MacroBazaar MacroBazaar]
+ * [trac:ProcessorBazaar]
+ * [trac:MacroBazaar]
+ * [th:WikiStart Trac Hacks] community site
 
 
 == Advanced Topics: Developing Processor Macros ==
-Developing processors is no different from [TracWikiMacros wiki macros]. In fact they work the same way, only the usage syntax differs.
+Developing processors is no different from Wiki macros. In fact they work the same way, only the usage syntax differs. See TracWikiMacros for more information.
 
 
 ----

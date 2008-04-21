@@ -1,7 +1,7 @@
 = Trac Plugins =
 [[TracGuideToc]]
 
-Since version 0.9, Trac supports plugins that extend the built-in functionality. The plugin functionality is based on the [http://trac.edgewall.org/wiki/TracDev/ComponentArchitecture component architecture].
+Since version 0.9, Trac supports [PluginList plugins] that extend the built-in functionality. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture].
 
 == Requirements ==
 
@@ -14,7 +14,7 @@ $ python ez_setup.py
 
 If the `ez_setup.py` script fails to install the setuptools release, you can download it from [http://www.python.org/pypi/setuptools PyPI] and install it manually.
 
-Plugins can also consist of a single `.py` file dropped into either the environment or global `plugins` directory ''(since [milestone:0.10])''.
+Plugins can also consist of a single `.py` file dropped into either the environment or global `plugins` directory ''(since [milestone:0.10])''. See TracIni#GlobalConfiguration .
 
 == Installing a Trac Plugin ==
 
@@ -33,17 +33,21 @@ Then you will have a *.egg file. Examine the output of running python to find wh
 
 Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg.
 
+To uninstall a plugin installed this way, remove the egg from `plugins` directory and restart web server.
+
 Note that the Python version that the egg is built with must
 match the Python version with which Trac is run.  If for
 instance you are running Trac under Python 2.3, but have
 upgraded your standalone Python to 2.4, the eggs won't be
 recognized.
 
+Note also that in a multi-project setup, a pool of Python interpreter instances will be dynamically allocated to projects based on need, and since plugins occupy a place in Python's module system, the first version of any given plugin to be loaded will be used for all the projects. In other words, you cannot use different versions of a single plugin in two projects of a multi-project setup. It may be safer to install plugins for all projects (see below) and then enable them selectively on a project-by-project basis.
+
 === For All Projects ===
 
 ==== With an .egg file ====
 
-Some plugins (such as [http://trac.edgewall.org/wiki/SpamFilter SpamFilter]) are downloadable as a `.egg` file which can be installed with the `easy_install` program:
+Some plugins (such as [trac:SpamFilter SpamFilter]) are downloadable as a `.egg` file which can be installed with the `easy_install` program:
 {{{
 easy_install TracSpamFilter
 }}}
@@ -56,7 +60,7 @@ easy_install --always-unzip TracSpamFilter-0.2.1dev_r5943-py2.4.egg
 }}}
 You should end up with a directory having the same name as the zipped egg (complete with `.egg` extension) and containing its uncompressed contents.
 
-Trac also searches for globally installed plugins under `$PREFIX/share/trac/plugins` ''(since 0.10)''.
+Trac also searches for globally installed plugins ''(since 0.10)'', see TracIni#GlobalConfiguration.
 
 ==== From source ====
 
@@ -75,6 +79,20 @@ tracspamfilter.* = enabled
 The name of the option is the Python package of the plugin. This should be specified in the documentation of the plugin, but can also be easily discovered by looking at the source (look for a top-level directory that contains a file named `__init__.py`.)
 
 Note: After installing the plugin, you need to restart your web server.
+
+==== Uninstalling ====
+
+`easy_install` or `python setup.py` does not have an uninstall feature. Hower, it is usually quite trivial to remove a globally installed egg and reference:
+ 1. Delete the .egg file or folder from where it is installed, usually inside `$PYTHONLIB/site-packages/`.
+ 1. Edit the `$PYTHONLIB/site-packages/easy-install.pth` text file and delete the line that contains the reference to the removed egg.
+ 1. Restart web server.
+
+If you are uncertain about the location of the egg, here is a small tip to help locate an egg (or any package) - replace `myplugin` with whatever namespace the plugin uses (as used when enabling the plugin):
+{{{
+>>> import myplugin
+>>> print myplugin.__file__
+/opt/local/python24/lib/site-packages/myplugin-0.4.2-py2.4.egg/myplugin/__init__.pyc
+}}}
 
 == Setting up the Plugin Cache ==
 
@@ -152,7 +170,7 @@ Some plugins require you have special permissions in order to use them. WebAdmin
 
 === Is the wrong version of the plugin loading? ===
 
-If you put your plugins inside plugins directories, and certainly if you have more than one project, you need to make sure that the correct version of the plugin is loading. Here are som basic rules:
+If you put your plugins inside plugins directories, and certainly if you have more than one project, you need to make sure that the correct version of the plugin is loading. Here are some basic rules:
  * Only one version of the plugin can be loaded for each running Trac server (ie. each Python process). The Python namespaces and module list will be shared, and it cannot handle duplicates. Whether a plugin is `enabled` or `disabled` makes no difference.
  * A globally installed plugin (typically `setup.py install`) will override any version in global or project plugins directories. A plugin from the global plugins directory will be located before any project plugins directory.
  * If your Trac server hosts more than one project (as with `TRAC_ENV_PARENT_DIR` setups), then having two versions of a plugin in two different projects will give uncertain results. Only one of them will load, and the one loaded will be shared by both projects. Trac will load the first found - basically from the project that receives the first request.
@@ -163,4 +181,4 @@ If you put your plugins inside plugins directories, and certainly if you have mo
 OK, so the logs don't mention plugins, the egg is readable, the python version is correct ''and'' the egg has been installed globally (and is enabled in the trac.ini) and it still doesn't work or give any error messages or any other indication as to why? Hop on the IrcChannel and ask away.
 
 ----
-See also TracGuide, [http://trac.edgewall.org/wiki/PluginList plugin list], [http://trac.edgewall.org/wiki/TracDev/ComponentArchitecture component architecture]
+See also TracGuide, [trac:PluginList plugin list], [trac:TracDev/ComponentArchitecture component architecture]

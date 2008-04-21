@@ -30,6 +30,19 @@ Simple reports - ungrouped reports to be specific - can be changed to be sorted 
 
 If a column header is a hyperlink (red), click the column you would like to sort by. Clicking the same header again reverses the order.
 
+== Changing Report Numbering ==
+There may be instances where you need to change the ID of the report, perhaps to organize the reports better. At present this requires changes to the trac database. The ''report'' table has the following schema (as of 0.10):
+ * id integer PRIMARY KEY
+ * author text
+ * title text
+ * query text
+ * description text
+Changing the ID changes the shown order and number in the ''View Reports'' list. This is done by running something like:
+{{{
+update report set id=5 where id=3;
+}}}
+Keep in mind that the integrity has to be maintained (i.e., ID has to be unique, and you don't want to exceed the max, since that's managed by SQLite someplace).
+
 == Navigating Tickets ==
 Clicking on one of the report results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Report'' link to return to the report page.
 

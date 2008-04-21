@@ -1,11 +1,10 @@
 = The Trac Configuration File =
-[[TracGuideToc]]
 
-Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
+[[TracGuideToc]]
 
 == Global Configuration ==
 
-In previous versions, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.
+In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.
 
 Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
 {{{
@@ -13,11 +12,19 @@ Global options will be merged with the environment-specific options, where local
 file = /usr/share/trac/conf/trac.ini
 }}}
 
+Note that you can also specify a global option file when creating a new project,  by adding the option
+`--inherit=/path/to/global/options` to [TracAdmin trac-admin]'s `initenv` command.
+If you would not do this but nevertheless intend to use a global option file with your new environment, 
+you would have to go through the newly generated conf/trac.ini file and delete the entries that would
+otherwise override those set in the global file.
+
+
 == Reference ==
 
 This is a brief reference of available configuration options.
 
-[[TracIni]]
+[[TracIni()]]
+
 
 == [components] == #components-section
 This section is used to enable or disable components provided by plugins, as well as by Trac itself. The component to enable/disable is specified via the name of the option. Whether its enabled is determined by the option value; setting the value to `enabled` or `on` will enable the component, any other value (typically `disabled` or `off`) will disable the component.
@@ -67,6 +74,7 @@ closed.overall_completion = true     # count for overall completion
 active = *                           # one catch-all group is allowed
 active.order = 1
 active.css_class = open              # CSS class for this interval
+active.label = in progress           # Displayed label for this group
 }}}
 
 The definition consists in a comma-separated list of accepted status.
@@ -88,11 +96,14 @@ This mapping is done in the `[svn:externals]` section of the TracIni
 Example:
 {{{
 [svn:externals]
-http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
-svn://anotherserver.com/tools_repository  http://ourserver/trac/support/browser/$path?rev=$rev
+1 = svn://server/repos1 http://trac/proj1/browser/$path?rev=$rev
+2 = svn://server/repos2 http://trac/proj2/browser/$path?rev=$rev
+3 = http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
+4 = svn://anotherserver.com/tools_repository  http://ourserver/trac/support/browser/$path?rev=$rev
 }}}
 With the above, the `svn://anotherserver.com/tools_repository/tags/1.1/tools` external will be mapped to `http://ourserver/trac/support/browser/tags/1.1/tools?rev=` (and `rev` will be set to the appropriate revision number if the external additionally specifies a revision, see the [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals] for more details).
 
+Note that the number used as a key in the above section is purely used as a place holder, as the URLs themselves can't be used as a key due to various limitations in the configuration file parser.
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

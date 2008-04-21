@@ -92,6 +92,10 @@ Trac will then use this URL when embedding static resources into HTML pages. Of 
 $ ln -s /usr/share/trac/htdocs /var/www/your_site.com/htdocs/trac-htdocs
 }}}
 
+Note that in order to get this `htdocs` directory, you need first to extract the relevant Trac resources using the `copystatic` command of TracAdmin:
+[[TracAdminHelp(copystatic)]]
+
+
 == Adding Authentication ==
 
 The simplest way to enable authentication with Apache is to create a password file. Use the `htpasswd` program to create the password file:
@@ -141,7 +145,7 @@ For better security, it is recommended that you either enable SSL or at least us
     AuthType Digest
     AuthName "trac"
     AuthDigestDomain /trac
-    AuthUserFile /somewhere/trac.htpasswd
+    AuthDigestFile /somewhere/trac.htpasswd
     Require valid-user
 </Location>
 }}}

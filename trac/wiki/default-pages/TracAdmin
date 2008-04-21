@@ -1,7 +1,7 @@
 = TracAdmin =
 [[TracGuideToc]]
 
-Trac is distributed with a powerful command-line configuration tool. This tool can be used to configure and customize your Trac-installation to better fit your needs.
+Trac is distributed with a powerful command-line configuration tool. This tool can be used  to configure and customize your Trac-installation to better fit your needs.
 
 Some of those operations can also be performed via the ''Admin'' web interface, an updated version of the [http://trac.edgewall.org/wiki/WebAdmin WebAdmin] plugin now integrated within Trac (since version 0.11).
 
@@ -30,7 +30,7 @@ For example, to get an explanation of the `resync` command, run:
 > help resync
 }}}
 
-To get help on a all the Wiki-related commands, run:
+To get help on all the Wiki-related commands, run:
 {{{
 > help wiki
 }}}
@@ -39,5 +39,9 @@ To get help on a all the Wiki-related commands, run:
 
 [[TracAdminHelp()]]
 
+=== Notes ===
+
+The `initenv` also supports an extra `--inherit` option, which can be used to specify the `[inherit] file` option at environment creation time so that only the options ''not'' already specified in the global configuration file will be written in the conf/trac.ini file of the newly created environment.
+See TracIni#GlobalConfiguration.
 ----
 See also: TracGuide, TracBackup, TracPermissions, TracEnvironment, TracIni, TracMigrate

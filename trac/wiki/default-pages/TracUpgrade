@@ -12,7 +12,7 @@ Typically, there are four steps involved in upgrading to a newer version of Trac
 
 === Update the Trac Code ===
 
-Get the new version as described in TracInstall, or your operation system specific procedure.
+Get the new version as described in TracInstall, or your operating system specific procedure.
 
 If you do a manual (not operating system specific) upgrade, you may also later on want to remove the existing Trac code by deleting the `trac` directory from the Python `lib/site-packages` directory.
 
@@ -59,6 +59,13 @@ If you are not running [wiki:TracCgi CGI], reload the new Trac code by restartin
 == Known Issues ==
 === parent dir ===
 If you use a trac parent env configuration and one of the plugins in one child does not work, none of the children work.
+=== some core modules won't load === 
+This can happen in particular with Python 2.3 on Windows when upgrading without uninstalling first.
+Some modules were previously capitalized and were changed to lower case, e.g. trac/About.py became trac/about.py. You may find such messages in the Trac log:
+{{{
+ERROR: Skipping "trac.about = trac.about": (can't import "No module named about")
+}}}
+Remove the `Lib/site-packages/trac` folder and reinstall.
 
 == Changing Database Backend ==
 == SQLite to PostgreSQL ==
