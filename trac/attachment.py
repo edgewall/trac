@@ -305,7 +305,8 @@ class AttachmentModule(Component):
     CHUNK_SIZE = 4096
 
     max_size = IntOption('attachment', 'max_size', 262144,
-        """Maximum allowed file size for ticket and wiki attachments.""")
+        """Maximum allowed file size (in bytes) for ticket and wiki 
+        attachments.""")
 
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
                                        'false',

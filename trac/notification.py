@@ -57,7 +57,7 @@ class NotificationSystem(Component):
 
     smtp_always_cc = Option('notification', 'smtp_always_cc', '',
         """Email address(es) to always send notifications to,
-           addresses can be see by all recipients (Cc:).""")
+           addresses can be seen by all recipients (Cc:).""")
 
     smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
         """Email address(es) to always send notifications to,

@@ -76,7 +76,8 @@ class Environment(Component, ComponentManager):
         """Path of the directory containing additional plugins.
         
         Plugins in that directory are loaded in addition to those in the
-        environments `plugins` directory, but the latter take precedence.
+        directory of the environment `plugins`, with this one taking 
+        precedence.
         
         (''since 0.11'')""")
 

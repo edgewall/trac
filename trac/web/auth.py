@@ -58,7 +58,8 @@ class LoginModule(Component):
          authentication (''since 0.9'').""")
 
     ignore_case = BoolOption('trac', 'ignore_auth_case', 'false',
-        """Whether case should be ignored for login names (''since 0.9'').""")
+        """Whether login names should be converted to lower case
+        (''since 0.9'').""")
 
     # IAuthenticator methods
 
