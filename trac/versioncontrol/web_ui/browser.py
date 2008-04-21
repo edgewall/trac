@@ -37,7 +37,7 @@ from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             prevnext_nav, INavigationContributor
-from trac.wiki.api import IWikiSyntaxProvider
+from trac.wiki.api import IWikiSyntaxProvider, IWikiMacroProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 from trac.versioncontrol.api import RepositoryManager, NoSuchChangeset, \
                                     NoSuchNode
@@ -184,7 +184,8 @@ class TimeRange(object):
 class BrowserModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               IWikiSyntaxProvider, IHTMLPreviewAnnotator)
+               IWikiSyntaxProvider, IHTMLPreviewAnnotator, 
+               IWikiMacroProvider)
 
     property_renderers = ExtensionPoint(IPropertyRenderer)
 
@@ -384,7 +385,7 @@ class BrowserModule(Component):
             'path_links': path_links,
             'order': order, 'desc': desc and 1 or None,
             'repo': all_repositories and \
-                    self._render_repository_index(req, all_repositories,
+                    self._render_repository_index(context, all_repositories,
                                                   order, desc),
             'dir': node.isdir and self._render_dir(req, reponame, repos, 
                                                    node, rev, order, desc),
@@ -424,19 +425,18 @@ class BrowserModule(Component):
 
     # Internal methods
 
-    def _render_repository_index(self, req, all_repositories, order, desc):
-        req.perm.require('BROWSER_VIEW')
+    def _render_repository_index(self, context, all_repositories, order, desc):
+        context.perm.require('BROWSER_VIEW')
 
         # Color scale for the age column
         timerange = custom_colorizer = None
         if self.color_scale:
             custom_colorizer = self.get_custom_colorizer()
 
-        # Prepare repository data
         rm = RepositoryManager(self.env)
         repositories = []
         for reponame, repoinfo in all_repositories:
-            repos = rm.get_repository(reponame, req.authname)
+            repos = rm.get_repository(reponame, context.perm.username)
             youngest = repos.get_changeset(repos.youngest_rev)
             if self.color_scale and youngest:
                 if not timerange:
@@ -692,6 +692,65 @@ class BrowserModule(Component):
     def annotate_row(self, context, row, lineno, line, blame_annotator):
         blame_annotator.annotate(row, lineno)
 
+    # IWikiMacroProvider methods
+
+    def get_macros(self):
+        yield "RepositoryIndex"
+
+    def get_macro_description(self, name):
+        return """
+        Display the list of available repositories.
+
+        Can be given a ''format'' argument (defaults to ''compact'')
+         - ''compact'' will produce a comma-separated list of
+           repository prefix names 
+         - ''list'' will produce a description list of
+           repository prefix names 
+         - ''table'' will produce a table view, similar to the 
+           one visible in the ''Browse View'' page
+        
+        Can be given a ''glob'' argument, which will do a glob-style
+        filtering on the repository names (defaults to '*')
+
+        (since 0.12)
+        """
+
+    def expand_macro(self, formatter, name, content):
+        args, kwargs = parse_args(content)
+        format = kwargs.get('format', 'compact')
+        glob = kwargs.get('glob', '*')
+        order = kwargs.get('order')
+        desc = kwargs.get('desc', 0)
+
+        all_repositories = [rdata for rdata in RepositoryManager(self.env). 
+                                               get_all_repositories().items()
+                            if fnmatchcase(rdata[0], glob)]
+        if format == 'table':
+            data = self._render_repository_index(
+                    formatter.context, all_repositories, order, desc)
+
+            add_stylesheet(formatter.req, 'common/css/browser.css')
+            from trac.web.chrome import Chrome
+            return Chrome(self.env).render_template(
+                    formatter.req, 'repository_index.html', 
+                    {'repo': data}, None, fragment=True)
+
+        def repolink(reponame):
+            return Markup(tag.a(reponame, 
+                          title=_('View repository %(repo)s', repo=reponame),
+                          href=formatter.href.browser(reponame)))
+
+        if format == 'list':
+            return tag.dl([
+                tag(tag.dt(repolink(reponame)),
+                    tag.dd(repoinfo.get('description')))
+                for reponame, repoinfo in all_repositories])
+        else: # compact
+            return Markup(', ').join([
+                repolink(reponame) for reponame, repoinfo in all_repositories 
+                if reponame])
+
+        
 
 class BlameAnnotator(object):
 

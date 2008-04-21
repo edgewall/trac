@@ -1,0 +1,14 @@
+<!--! Template snippet for a standard table header for a dirlist -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
+  <thead>
+    <tr>
+      <py:with vars="class_ = 'name'; title = 'Name'"><xi:include href="sortable_th.html" /></py:with>
+      <py:with vars="class_ = 'size'; title = 'Size'"><xi:include href="sortable_th.html" /></py:with>
+      <th class="rev">Rev</th>
+      <py:with vars="class_ = 'date'; title = 'Age'"><xi:include href="sortable_th.html" /></py:with>
+      <th class="change">Last Change</th>
+    </tr>
+  </thead>
+</html>

@@ -628,6 +628,7 @@ class Chrome(Component):
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
             'show_email_addresses': show_email_addresses,
+            'authorinfo': partial(self.authorinfo, req),
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
 
@@ -752,6 +753,14 @@ class Chrome(Component):
             all_cc = [obfuscate_email_address(cc) for cc in all_cc]
         return sep.join(all_cc)
     
+    def authorinfo(self, req, author, email_map=None):
+        if author:
+            return self.format_author(req, 
+                    email_map and '@' not in author and
+                    email_map.get(author) or author)
+        else:
+            return 'anonymous'
+
     def format_author(self, req, author):
         if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
             return author

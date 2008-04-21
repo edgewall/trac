@@ -21,7 +21,7 @@
           /* browsers using old WebKits have issues with expandDir... */
           var webkit_rev = /AppleWebKit\/(\d+)/.exec(navigator.userAgent);
           if ( !webkit_rev || (521 - webkit_rev[1]).toString()[0] == "-" )
-            enableExpandDir(null, $("#dirlist tr"), {
+            enableExpandDir(null, $("table.dirlist tr"), {
                 action: 'inplace',
                 range_min_secs: '$dir.range_min_secs',
                 range_max_secs: '$dir.range_max_secs'
@@ -37,61 +37,11 @@
   <body>
     <div id="content" class="browser">
 
-      <py:def function="sortable_th(class_, title)">
-        <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
-          <a title="Sort by $class_${order == class_ and not desc and
-                                     ' (descending)' or ''}"
-            href="${href.browser(reponame, path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
-            desc=(class_ == order and not desc and 1 or None))}">$title</a>
-        </th>
-      </py:def>
-
       <py:if test="repo">
         <h1>Repository Index</h1>
-  
-        <table class="listing dirlist" id="repoindex">
-          <thead>
-            <tr>
-              ${sortable_th('name', 'Name')}
-              ${sortable_th('size', 'Size')}
-              <th class="rev">Rev</th>
-              ${sortable_th('date', 'Age')}
-              <th class="change">Last Change</th>
-            </tr>
-          </thead>
-          <tbody>
-            <py:for each="idx, (reponame, repos, repoinfo, change) in enumerate(repo.repositories)">
-              <tr class="${idx % 2 and 'even' or 'odd'}">
-                <td class="name">
-                  <a class="dir" title="View Root Directory"
-                      href="${href.browser(reponame, order=(order != 'name' and order or None), desc=desc)}" py:choose="reponame"><b py:when="''">(default)</b><py:otherwise>$reponame</py:otherwise></a>
-                </td>
-                <td class="size" />
-                <td class="rev">
-                  <a title="View Revision Log" href="${href.log(reponame)}">$change.rev</a>
-                </td>
-                <td class="age" style="${change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
-                  repo.colorize_age(repo.timerange.relative(change.date)) or None}">
-                  ${change and dateinfo(change.date) or '-'}
-                </td>
-                <td class="change">
-                  <a title="View changeset ${change.rev}" class="chgset" href="${href.changeset(change.rev, reponame)}" />
-                  <span class="author" py:if="change">${authorinfo(change.author)}:</span>
-                  <span class="change" py:choose="" py:with="chgset_context = context('changeset', (reponame, change.rev))">
-                    <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
-                    <py:when test="wiki_format_messages">
-                      ${change and wiki_to_oneliner(chgset_context, change.message, shorten=True)}
-                    </py:when>
-                    <py:otherwise>${change and shorten_line(change.message)}</py:otherwise>
-                  </span>
-                </td>
-              </tr>
-              <tr class="${idx % 2 and 'even' or 'odd'}" py:if="repoinfo.description">
-                <td class="description" colspan="4">$repoinfo.description</td>
-              </tr>
-            </py:for>
-          </tbody>
-        </table>
+        <py:with vars="repoindex = 'repoindex'">
+          <xi:include href="repository_index.html" />
+        </py:with>
       </py:if>
 
       <py:if test="dir or file">
@@ -137,15 +87,7 @@
 
       <py:if test="dir">
         <table class="listing dirlist" id="dirlist">
-          <thead>
-            <tr>
-              ${sortable_th('name', 'Name')}
-              ${sortable_th('size', 'Size')}
-              <th class="rev">Rev</th>
-              ${sortable_th('date', 'Age')}
-              <th class="change">Last Change</th>
-            </tr>
-          </thead>
+          <xi:include href="dirlist_thead.html" />
           <tbody>
             <py:if test="'up' in chrome.links">
               <tr class="even">

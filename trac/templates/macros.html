@@ -30,15 +30,6 @@
       pretty_size(size)
   }</span></py:def>
 
-  <!--!  Display author information, eventually obfuscating the e-mail address
-  -
-  -      We take care to not insert any extra space.
-  -->
-  <py:def function="authorinfo(author, email_map=None)"><py:choose><py:when test="author"><py:with
-    vars="author = show_email_addresses and email_map and '@' not in author and email_map[author] or author">${
-      author and format_author(author) or 'anonymous'
-  }</py:with></py:when><py:otherwise>anonymous</py:otherwise></py:choose></py:def>
-
   <!--!  Display a sequence of path components.
   -
   -      Each component is a link to the corresponding location in the browser.
