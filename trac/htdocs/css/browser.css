@@ -43,65 +43,65 @@ div.message div.inlinebuttons { float: right;  }
 
 /* Styles for the directory entries table
    (extends the styles for "table.listing") */
-#dirlist { margin-top: 0 }
-#dirlist td.rev, #dirlist td.age, #dirlist td.change {
+table.dirlist { margin-top: 0 }
+table.dirlist td.rev, table.dirlist td.age, table.dirlist td.change {
  color: #888;
  white-space: nowrap;
  vertical-align: baseline;
 }
-#dirlist td.rev {
+table.dirlist td.rev {
  font-family: monospace;
  letter-spacing: -0.08em;
  font-size: 90%;
  text-align: right;
 }
-#dirlist td.size {  
+table.dirlist td.size {  
  color: #888;
  white-space: nowrap;
  text-align: right;
  vertical-align: middle;
  font-size: 70%;
 }
-#dirlist td.age {
+table.dirlist td.age {
  border-width: 0 2px 0 0;
  border-style: solid;
  font-size: 85%;
 }
-#dirlist td.name { width: 100% }
-#dirlist td.name a, #dirlist td.name span {
+table.dirlist td.name { width: 100% }
+table.dirlist td.name a, table.dirlist td.name span {
  background-position: 0% 50%;
  background-repeat: no-repeat;
  padding-left: 20px;
 }
-#dirlist td.name a.parent { background-image: url(../parent.png) }
-#dirlist td.name div { white-space: pre }
-#dirlist tr span.expander { 
+table.dirlist td.name a.parent { background-image: url(../parent.png) }
+table.dirlist td.name div { white-space: pre }
+table.dirlist tr span.expander { 
   background-image: url(../expander_normal.png); 
   cursor: pointer; 
   padding-left: 8px; 
   margin-left: 4px; 
 }
-#dirlist tr span.expander:hover { 
+table.dirlist tr span.expander:hover { 
   background-image: url(../expander_normal_hover.png); 
 }
-#dirlist tr.expanded span.expander { 
+table.dirlist tr.expanded span.expander { 
   background-image: url(../expander_open.png); 
   padding-left: 12px; 
   margin-left: 0; 
 }
-#dirlist tr.expanded span.expander:hover { 
+table.dirlist tr.expanded span.expander:hover { 
   background-image: url(../expander_open_hover.png); 
 }
-#dirlist td.name a.dir { background-image: url(../folder.png) }
-#dirlist td.name a.file { background-image: url(../file.png); display: block }
-#dirlist td.name a, #dirlist td.rev a { border-bottom: none }
-#dirlist td.rev { text-align: right }
-#dirlist td.change { 
+table.dirlist td.name a.dir { background-image: url(../folder.png) }
+table.dirlist td.name a.file { background-image: url(../file.png); display: block }
+table.dirlist td.name a, table.dirlist td.rev a { border-bottom: none }
+table.dirlist td.rev { text-align: right }
+table.dirlist td.change { 
   font-size: 85%; 
   vertical-align: middle; 
   white-space: nowrap 
 }
-#dirlist td.change a.chgset { 
+table.dirlist td.change a.chgset { 
   background-repeat: no-repeat;
   background-image: url(../changeset.png); 
   background-position: 100% 50%;
@@ -109,7 +109,7 @@ div.message div.inlinebuttons { float: right;  }
   border: none;
 }
 
-#dirlist td span.loading { 
+table.dirlist td span.loading { 
   background-image: url(../loading.gif); 
   font-style: italic 
 }

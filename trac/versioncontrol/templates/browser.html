@@ -49,7 +49,7 @@
       <py:if test="repo">
         <h1>Repository Index</h1>
   
-        <table class="listing" id="dirlist">
+        <table class="listing dirlist" id="repoindex">
           <thead>
             <tr>
               ${sortable_th('name', 'Name')}
@@ -136,7 +136,7 @@
       </py:if>
 
       <py:if test="dir">
-        <table class="listing" id="dirlist">
+        <table class="listing dirlist" id="dirlist">
           <thead>
             <tr>
               ${sortable_th('name', 'Name')}
