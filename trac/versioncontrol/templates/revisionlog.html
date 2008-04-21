@@ -83,16 +83,15 @@
         <div class="buttons">
           <input type="hidden" name="reponame" value="$reponame" />
           <input type="submit" value="View changes"
-            title="Diff from Old Revision to New Revision (select them below)" />
+            title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
         <table id="chglist" class="listing">
           <thead>
             <tr>
-              <th class="diff"></th>
+              <th class="diff">Diff</th>
               <th class="change"></th>
               <th class="rev">Rev</th>
-              <th class="chgset">Chgset</th>
-              <th class="date">Date</th>
+              <th class="age">Age</th>
               <th class="author">Author</th>
               <th class="summary"><py:if test="not verbose">Log Message</py:if></th>
             </tr>
@@ -105,12 +104,12 @@
                 <!--! highlight copy or rename operations -->
                 <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
                   <td />
-                  <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
+                  <td class="copyfrom_path" colspan="6" style="padding-left: ${item.depth - 1}em">
                     copied from <a href="${href.browser(reponame, item.path, rev=item.rev)}">$item.copyfrom_path</a>:
                   </td>
                 </tr>
 
-                <tr class="$odd_even" py:choose="">
+                <tr class="${classes(odd_even,verbose=verbose)}" py:choose="">
                   <td class="diff">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
                            checked="${idx == (len(items) - 1) or None}" />
@@ -127,12 +126,9 @@
                     <td class="rev">
                       <a title="Browse at revision $item.rev" href="${href.browser(reponame, item.path, rev=item.existing_rev)}">
                         @$item.existing_rev</a>
+                      <a title="View changeset [$item.rev] for $item.path" class="chgset" href="${href.changeset(item.rev, reponame, item.path)}">&nbsp;</a>
                     </td>
-                    <td class="chgset">
-                      <a title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, reponame, item.path)}">
-                        [$item.rev]</a>
-                    </td>
-                    <td class="date" py:content="dateinfo(change.date)" />
+                    <td class="age" py:content="dateinfo(change.date)" />
                     <td class="author" py:content="authorinfo(change.author)" />
                     <td class="summary" py:choose="">
                       <py:when test="verbose or 'CHANGESET_VIEW' not in perm(chgset_context.resource)"></py:when>
@@ -142,12 +138,13 @@
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </td>
                   </py:when>
-                  <td colspan="6" py:otherwise="" />
+                  <td colspan="5" py:otherwise="" />
                 </tr>
 
-                <tr py:if="verbose" class="summary $odd_even">
+                <tr py:if="verbose and item.change" class="summary verbose $odd_even">
                   <td />
-                  <td class="summary" colspan="6" py:choose="" xml:space="preserve">
+                  <td />
+                  <td class="summary" colspan="4" py:choose="" xml:space="preserve">
                     <py:when test="wiki_format_messages">
                       ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
                     </py:when>
@@ -162,7 +159,7 @@
 
         <div py:if="len(items) &gt; 10" class="buttons">
           <input type="submit" value="View changes"
-            title="Diff from Old Revision to New Revision (select them above)" />
+            title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
       </form>
 
