@@ -369,7 +369,7 @@ class AbstractEnum(object):
     exists = property(fget=lambda self: self._old_value is not None)
 
     def delete(self, db=None):
-        assert self.exists, 'Cannot deleting non-existent %s' % self.type
+        assert self.exists, 'Cannot delete non-existent %s' % self.type
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -515,7 +515,7 @@ class Component(object):
     exists = property(fget=lambda self: self._old_name is not None)
 
     def delete(self, db=None):
-        assert self.exists, 'Cannot deleting non-existent component'
+        assert self.exists, 'Cannot delete non-existent component'
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -745,7 +745,7 @@ class Version(object):
     exists = property(fget=lambda self: self._old_name is not None)
 
     def delete(self, db=None):
-        assert self.exists, 'Cannot deleting non-existent version'
+        assert self.exists, 'Cannot delete non-existent version'
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
