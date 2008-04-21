@@ -3,11 +3,23 @@
   function convertDiff(name, table) {
     var inline = table.className == 'inline';
     var ths = table.tHead.rows[0].cells;
+    var afile, bfile;
+    if ( inline ) {
+        afile = ths[0].title;
+        bfile = ths[1].title;
+    } else {
+        afile = $(ths[0]).find('a').text();
+        bfile = $(ths[1]).find('a').text();
+    }
+    if ( afile.match(/^Revision /) ) {
+        afile = 'a/' + name;
+        bfile = 'b/' + name;
+    }
     var lines = [
       "Index: " + name,
       "===================================================================",
-      "--- " + (inline ? ths[0].title : $(ths[0]).find('a').text()),
-      "+++ " + (inline ? ths[1].title : $(ths[1]).find('a').text()),
+      "--- " + afile.replace(/File /, ''),
+      "+++ " + bfile.replace(/File /, ''),
     ];
     var sepIndex = 0;
     var oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
@@ -23,7 +35,7 @@
             .replace("{3}", newOffset).replace("{4}", newLength);
         }
         sepIndex = lines.length;
-        lines.push("@@ -{1},{2}, +{3},{4} @@");
+        lines.push("@@ -{1},{2} +{3},{4} @@");
         oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
         if (tBody.className == "skipped") continue;
       }
@@ -33,7 +45,7 @@
         var oldLineNo = parseInt($(cells[0]).text());
         var newLineNo = parseInt($(cells[inline ? 1 : 2]).text());
         if (tBody.className == 'unmod') {
-          lines.push("  " + $(cells[inline ? 2 : 1]).text());
+          lines.push(" " + $(cells[inline ? 2 : 1]).text());
           oldLength += 1;
           newLength += 1;
           if (!oldOffset) oldOffset = oldLineNo;
@@ -48,11 +60,11 @@
             newLine = $(cells[3]).text();
           }
           if (!isNaN(oldLineNo)) {
-            lines.push("- " + oldLine);
+            lines.push("-" + oldLine);
             oldLength += 1;
           }
           if (!isNaN(newLineNo)) {
-            tmpLines.push("+ " + newLine);
+            tmpLines.push("+" + newLine);
             newLength += 1;
           }
         }
@@ -62,13 +74,15 @@
       }
     }
   
-    if (!oldOffset && oldLength) oldOffset = 1
-    if (!newOffset && newLength) newOffset = 1
+    if (!oldOffset && oldLength) oldOffset = 1;
+    if (!newOffset && newLength) newOffset = 1;
     lines[sepIndex] = lines[sepIndex]
       .replace("{1}", oldOffset).replace("{2}", oldLength)
       .replace("{3}", newOffset).replace("{4}", newLength);
   
-    return lines.join($.browser.msie ? "\r\n" : "\n");
+    /* remove trailing &nbsp; and join lines (with CRLF for IExplorer) */
+    return $.map(lines, function(l){ return l.replace(/\xa0$/, ''); })
+        .join($.browser.msie ? "\r\n" : "\n");
   }
   
   $(document).ready(function($) {
