@@ -220,6 +220,7 @@ class ChangesetModule(Component):
         new = req.args.get('new')
         full_old_path = old_path = req.args.get('old_path')
         old = req.args.get('old')
+        reponame = req.args.get('reponame')
 
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
 
@@ -230,16 +231,20 @@ class ChangesetModule(Component):
         if new and '@' in new:
             new, new_path = new.split('@', 1)
 
-        reponame, repos, new_path = RepositoryManager(self.env).\
-                get_repository_by_path(new_path, req.authname)
+        rm = RepositoryManager(self.env)
+        if reponame:
+            repos = rm.get_repository(reponame, req.authname)
+        else:
+            reponame, repos, new_path = rm.get_repository_by_path(
+                    new_path, req.authname)
 
-        if old_path:
-            old_reponame, old_repos, old_path = RepositoryManager(self.env).\
-                get_repository_by_path(old_path, req.authname)
-            if old_repos != repos:
-                raise TracError(_("Can't compare across different "
-                                  "repositories: %(old)s vs. %(new)s",
-                                  old=old_reponame, new=reponame))
+            if old_path:
+                old_reponame, old_repos, old_path = rm.get_repository_by_path(
+                        old_path, req.authname)
+                if old_repos != repos:
+                    raise TracError(_("Can't compare across different "
+                                      "repositories: %(old)s vs. %(new)s",
+                                      old=old_reponame, new=reponame))
 
         # -- normalize and check for special case
         try:

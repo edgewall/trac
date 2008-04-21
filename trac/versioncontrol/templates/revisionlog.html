@@ -79,8 +79,9 @@
         </div>
       </div>
 
-      <form  class="printableform" action="${href.changeset()}" method="get">
+      <form class="printableform" action="${href.changeset()}" method="get">
         <div class="buttons">
+          <input type="hidden" name="reponame" value="$reponame" />
           <input type="submit" value="View changes"
             title="Diff from Old Revision to New Revision (select them below)" />
         </div>
