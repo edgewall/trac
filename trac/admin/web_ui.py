@@ -481,28 +481,34 @@ class PluginAdminPanel(Component):
             if os.path.realpath(os.path.dirname(dist.location)) == plugins_dir:
                 plugin_filename = os.path.basename(dist.location)
 
-            description = to_unicode(inspect.getdoc(component))
+            description = inspect.getdoc(component)
             if description:
-                description = description.split('.', 1)[0] + '.'
+                description = to_unicode(description).split('.', 1)[0] + '.'
 
             if dist.project_name not in plugins:
                 readonly = True
                 if plugin_filename and os.access(dist.location,
                                                  os.F_OK + os.W_OK):
                     readonly = False
-                if plugin_filename:
+                # retrieve plugin metadata
+                info = get_pkginfo(dist)
+                if not info:
                     info = {'summary': description}
-                    for k in 'author author_email home_page license'.split():
+                    for k in ('author author_email home_page url license trac'
+                              .split()):
                         v = getattr(module, k, '')
                         if v:
+                            if k == 'home_page' or k == 'url':
+                                k = 'home_page'
+                                v = v.replace('$', '').replace('URL: ', '') 
                             info[k] = v
+                # retrieve plugin version info
+                version = dist.version
+                if not version:
                     version = (getattr(module, 'version', '') or
                                getattr(module, 'revision', ''))
                     # special handling for "$Rev$" strings
                     version = version.replace('$', '').replace('Rev: ', 'r') 
-                else:
-                    info = get_pkginfo(dist)
-                    version = dist.version
                 plugins[dist.project_name] = {
                     'name': dist.project_name, 'version': version,
                     'path': dist.location, 'description': description,
