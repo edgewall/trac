@@ -38,9 +38,15 @@ Results in:
 {{{
 #!div class=important style="border: 2pt solid; text-align: center"
 This is the ''only'' way to go in Trac 0.11
--- NOTE: activate once t.e.o. is running 0.11 --
 }}}
 
+For spans, you should rather use the Macro call syntax:
+{{{
+ Hello [[span(''WORLD'' (click [#world-anchor here]), style=color: green; font-size: 120%, id=world-anchor)]]!
+}}}
+
+Results in:
+ Hello [[span(''WORLD'' (click [#world-anchor here]), style=color: green; font-size: 120%, id=world-anchor)]]!
 
 
 == More Information ==

@@ -25,6 +25,8 @@ To use a processor on a block of text, use a Wiki code block, selecting a proces
 <h1 style="color: orange">This is raw HTML</h1>
 }}}
 
+Note that since 0.11, such blocks of HTML have to be self-contained, i.e. you can't start an HTML element in one block and close it later in a second block. Use div or span processors for achieving similar effect (see WikiHtml).
+
 ----
 
 '''Example 2''' (''inserting Restructured Text in wiki text''):
@@ -81,6 +83,7 @@ int main(int argc, char *argv[])
 The following processors are included in the Trac distribution:
  * '''html''' -- Insert custom HTML in a wiki page. See WikiHtml.
  * '''div''' -- Wrap an arbitrary Wiki content in a <div> element (''since 0.11''). See WikiHtml.
+ * '''span''' -- Wrap an arbitrary Wiki content in a <span> element (''since 0.11''). See also WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
  * '''textile''' -- Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference].
  * '''comment''' -- Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page).
@@ -110,7 +113,13 @@ By using the MIME type as processor, it is possible to syntax-highlight the same
 }}}
 }}}
 
-The result will be syntax highlighted HTML code. The same is valid for all other mime types supported.
+The result will be syntax highlighted HTML code:
+{{{
+#!text/html
+<h1>text</h1>
+}}}
+
+The same is valid for all other mime types supported.
 
 
 For more processor macros developed and/or contributed by users, visit: 

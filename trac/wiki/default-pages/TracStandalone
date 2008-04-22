@@ -42,6 +42,23 @@ To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-
 
 == Using Authentication ==
 
+Using tracd with Apache .htpasswd files:
+
+To create a .htpasswd file using htpasswd:
+
+{{{
+sudo htpasswd -c /path/to/env/.htpasswd username
+}}}
+then for additional users:
+{{{
+sudo htpasswd /var/www/html/.htpasswd-users username2
+}}}
+then for starting the tracd:
+{{{
+tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
+}}}
+
+
 Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
 
   ''Support for Basic authentication was added in version 0.9.''
