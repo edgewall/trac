@@ -64,7 +64,8 @@ def parse_workflow_config(rawactions):
         if 'operations' not in attributes:
             attributes['operations'] = []
         else:
-            attributes['operations'] = attributes['operations'].split(',')
+            attributes['operations'] = [a.strip() for a in
+                                        attributes['operations'].split(',')]
         # If no permissions are specified, then no permissions are needed
         if 'permissions' not in attributes:
             attributes['permissions'] = []
