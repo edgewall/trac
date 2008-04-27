@@ -37,10 +37,10 @@ class InterWikiMap(Component):
     _interwiki_re = re.compile(r"(%s)[ \t]+([^ \t]+)(?:[ \t]+#(.*))?" %
                                WikiParser.LINK_SCHEME, re.UNICODE)
     _argspec_re = re.compile(r"\$\d")
+    _interwiki_map = None
 
     def __init__(self):
         self._interwiki_lock = threading.RLock()
-        self.reset()
 
     def reset(self):
         self._interwiki_map = None
