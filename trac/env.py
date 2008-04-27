@@ -552,7 +552,9 @@ def open_environment(env_path=None, use_cache=False):
                              'change')
                 env.shutdown()
                 if hasattr(env.log, '_trac_handler'):
-                    env.log.removeHandler(env.log._trac_handler)
+                    hdlr = env.log._trac_handler
+                    env.log.removeHandler(hdlr)
+                    hdlr.close()
                 del env_cache[env_path]
                 env = None
             if env is None:
