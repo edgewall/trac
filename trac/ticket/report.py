@@ -23,6 +23,7 @@ from itertools import izip
 
 from genshi.builder import tag
 
+from trac.config import IntOption
 from trac.core import *
 from trac.db import get_column_names
 from trac.mimeview import Context
@@ -30,6 +31,7 @@ from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import sorted
 from trac.util.datefmt import format_datetime, format_time
+from trac.util.presentation import Paginator
 from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
@@ -43,6 +45,14 @@ class ReportModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
+    items_per_page = IntOption('report', 'items_per_page', 100,
+        """Number of tickets displayed per page in ticket reports,
+        by default (''since 0.11'')""")
+
+    items_per_page_rss = IntOption('report', 'items_per_page_rss', 0,
+        """Number of tickets displayed in the rss feeds for reports
+        (''since 0.11'')""")
+    
     # INavigationContributor methods
 
     def get_active_navigation_item(self, req):
@@ -276,14 +286,53 @@ class ReportModule(Component):
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': title, 'description': description,
-                'args': args, 'message': None}
+                'args': args, 'message': None, 'paginator':None}
+
+        self.page = int(req.args.get('page', '1'))
+        if req.args.get('format', '') == 'rss':
+            self.limit = self.items_per_page_rss
+        else:
+            self.limit = self.items_per_page
+        self.offset = (self.page - 1) * self.limit
+
         try:
             cols, results = self.execute_report(req, db, id, sql, args)
             results = [list(row) for row in results]
+            numrows = len(results)
+
         except Exception, e:
             data['message'] = _('Report execution failed: %(error)s',
                                 error=to_unicode(e))
             return 'report_view.html', data, None
+        paginator = None
+        if id != -1 and self.limit > 0:
+            self.asc = req.args.get('asc', None)
+            self.sort = req.args.get('sort', None)
+            self.USER = req.args.get('USER', None)
+            paginator = Paginator(results, self.page - 1, self.limit,
+                                  self.num_items)
+            data['paginator'] = paginator
+            if paginator.has_next_page:
+                next_href = req.href.report(id, asc=self.asc, sort=self.sort,
+                                            USER=self.USER, page=self.page + 1)
+                add_link(req, 'next', next_href, _('Next Page'))
+            if paginator.has_previous_page:
+                prev_href = req.href.report(id, asc=self.asc, sort=self.sort,
+                                            USER=self.USER, page=self.page - 1)
+                add_link(req, 'prev', prev_href, _('Previous Page'))
+
+            pagedata = []
+            shown_pages = paginator.get_shown_pages(21)
+            for page in shown_pages:
+                pagedata.append([req.href.report(id, asc=self.asc,
+                                 sort=self.sort, USER=self.USER, page=page),
+                                 None, str(page), _('Page %(num)d', num=page)])          
+            fields = ['href', 'class', 'string', 'title']
+            paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
+            paginator.current_page = {'href': None, 'class': 'current',
+                                    'string': str(paginator.page + 1),
+                                    'title': None}
+            numrows = paginator.num_items
 
         sort_col = req.args.get('sort', '')
         asc = req.args.get('asc', 1)
@@ -303,31 +352,33 @@ class ReportModule(Component):
 
             if col == sort_col:
                 header['asc'] = asc
-                
-                # this dict will have enum values for sorting
-                # and will be used in sortkey(), if non-empty:
-                sort_values = {}
-                if sort_col in ['status', 'resolution', 'priority', 'severity']:
-                    # must fetch sort values for that columns
-                    # instead of comparing them as strings
-                    if not db:
-                        db = self.env.get_db_cnx()
-                    cursor = db.cursor()
-                    cursor.execute("SELECT name," + db.cast('value', 'int') + 
-                                   " FROM enum WHERE type=%s", (sort_col,))
-                    for name, value in cursor:
-                        sort_values[name] = value
+                if not paginator:
+                    # this dict will have enum values for sorting
+                    # and will be used in sortkey(), if non-empty:
+                    sort_values = {}
+                    if sort_col in ['status', 'resolution', 'priority', 
+                                    'severity']:
+                        # must fetch sort values for that columns
+                        # instead of comparing them as strings
+                        if not db:
+                            db = self.env.get_db_cnx()
+                        cursor = db.cursor()
+                        cursor.execute("SELECT name," + 
+                                       db.cast('value', 'int') + 
+                                       " FROM enum WHERE type=%s", (sort_col,))
+                        for name, value in cursor:
+                            sort_values[name] = value
 
-                def sortkey(row):
-                    val = row[idx]
-                    # check if we have sort_values, then use them as sort keys.
-                    if sort_values:
-                        return sort_values.get(val)
-                    # otherwise, continue with string comparison:
-                    if isinstance(val, basestring):
-                        val = val.lower()
-                    return val
-                results = sorted(results, key=sortkey, reverse=(not asc))
+                    def sortkey(row):
+                        val = row[idx]
+                        # check if we have sort_values, then use them as keys.
+                        if sort_values:
+                            return sort_values.get(val)
+                        # otherwise, continue with string comparison:
+                        if isinstance(val, basestring):
+                            val = val.lower()
+                        return val
+                    results = sorted(results, key=sortkey, reverse=(not asc))
 
             header_group = header_groups[-1]
 
@@ -408,7 +459,7 @@ class ReportModule(Component):
 
         data.update({'header_groups': header_groups,
                      'row_groups': row_groups,
-                     'numrows': len(results),
+                     'numrows': numrows,
                      'sorting_enabled': len(row_groups)==1,
                      'email_map': email_map})
 
@@ -437,7 +488,10 @@ class ReportModule(Component):
                     req.session['query_tickets'] = \
                         ' '.join([str(int(row['id']))
                                   for rg in row_groups for row in rg[1]])
-                    req.session['query_href'] = req.href.report(id)
+                    #FIXME: I am not sure the extra args are necessary
+                    req.session['query_href'] = \
+                        req.href.report(id, asc=self.asc, sort=self.sort,
+                                        USER=self.USER, page=self.page)
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
@@ -471,10 +525,56 @@ class ReportModule(Component):
         if not sql:
             raise TracError(_('Report %(num)s has no SQL query.', num=id))
         self.log.debug('Executing report with SQL "%s" (%s)', sql, args)
-
+        self.log.debug('Request args' + str(req.args))
         cursor = db.cursor()
-        cursor.execute(sql, args)
 
+        if id != -1 and self.limit > 0:
+            # The number of tickets is obtained.
+            count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS tab'
+            cursor.execute(count_sql, args)
+            self.env.log.debug("Query SQL(Get num items): " + count_sql)
+            for row in cursor:
+                pass
+            self.num_items = row[0]
+    
+            # The column name is obtained.
+            get_col_name_sql = 'SELECT * FROM ( ' + sql + ' ) AS tab LIMIT 1'
+            cursor.execute(get_col_name_sql, args)
+            self.env.log.debug("Query SQL(Get col names): " + get_col_name_sql)
+            cols = get_column_names(cursor)
+
+            sort_col = req.args.get('sort', '')
+            self.env.log.debug("Colnum Names %s, Sort column %s" %
+                               (str(cols), sort_col))
+            order_cols = []
+            try:
+                group_idx = cols.index('__group__')
+                order_cols.append(str(group_idx))
+            except ValueError:
+                pass
+
+            if sort_col:
+                try:
+                    sort_idx = cols.index(sort_col) + 1
+                    order_cols.append(str(sort_idx))
+                except ValueError:
+                    raise TracError(_('Query parameter "sort=%(sort_col)s" '
+                                      ' is invalid', sort_col=sort_col))
+
+            # The report-query results is obtained
+            asc_str = ['DESC', 'ASC']
+            asc_idx = int(req.args.get('asc','0'))
+            order_by = ''
+            if len(order_cols) != 0:
+                dlmt = ", "
+                order = dlmt.join(order_cols)
+                order_by = " ".join([' ORDER BY' ,order, asc_str[asc_idx]])
+            sql = " ".join(['SELECT * FROM (', sql, ') AS tab', order_by])
+            sql =" ".join([sql, 'LIMIT', str(self.limit), 'OFFSET',
+                           str(self.offset)])
+            self.env.log.debug("Query SQL: " + sql)
+        cursor.execute(sql, args)
+        self.env.log.debug("Query SQL: " + sql)
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
         cols = get_column_names(cursor)

@@ -16,12 +16,14 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import csv
+from math import ceil
 from datetime import datetime, timedelta
 import re
 from StringIO import StringIO
 
 from genshi.builder import tag
 
+from trac.config import Option, IntOption 
 from trac.core import *
 from trac.db import get_column_names
 from trac.mimeview.api import Mimeview, IContentConverter, Context
@@ -30,15 +32,16 @@ from trac.ticket.api import TicketSystem
 from trac.util import Ranges
 from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
+from trac.util.presentation import Paginator
 from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
+
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
-from trac.config import Option 
 
 class QuerySyntaxError(Exception):
     """Exception raised when a ticket query cannot be parsed from a string."""
@@ -48,7 +51,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=None, limit=0):
+                 rows=None, page=1, max=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -56,7 +59,46 @@ class Query(object):
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
-        self.limit = int(limit or 0)
+        self.default_page = 1
+        self.items_per_page = QueryModule(self.env).items_per_page
+
+        try:
+            if not page:
+                page = self.default_page
+            page = int(page)
+            if page < 1:
+                raise ValueError()
+        except ValueError:
+            raise TracError(_('Query page %(page)s is invalid.',
+                              page=page))
+
+        # max=0 signifies showing all items on one page
+        # max=n will show precisely n items on all pages except the last
+        # max<0 is invalid (FIXME: wouldn't -1 also do for unlimited?)
+        if max in ('none', ''):
+            max = 0
+
+        try:
+            if max is None: # meaning unspecified
+                max = self.items_per_page
+            max = int(max)
+            if max < 0:
+                raise ValueError()
+        except ValueError:
+            raise TracError(_('Query max %(max)s is invalid.', max=max))
+        
+        self.page = 0
+        self.offset = 0
+        self.max = 0
+
+        if max == 0:
+            self.has_more_pages = False
+        else:
+            self.has_more_pages = True
+            self.page = page
+            self.offset = max * (page - 1)
+            self.max = max
+
         if rows == None:
             rows = []
         if verbose and 'description' not in rows: # 0.10 compatibility
@@ -66,7 +108,6 @@ class Query(object):
         self.cols = [c for c in cols or [] if c in field_names or 
                      c in ('id', 'time', 'changetime')]
         self.rows = [c for c in rows if c in field_names]
-
         if self.order != 'id' and self.order not in field_names:
             # TODO: fix after adding time/changetime to the api.py
             if order == 'created':
@@ -83,7 +124,7 @@ class Query(object):
 
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
-        kw_strs = ['order', 'group', 'limit']
+        kw_strs = ['order', 'group', 'page', 'max']
         kw_arys = ['rows']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         constraints = {}
@@ -190,12 +231,37 @@ class Query(object):
         if not self.cols:
             self.get_columns()
 
-        sql, args = self.get_sql(req, cached_ids)
-        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))
-
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
+
+        sql, args = self.get_sql(req, cached_ids)
+        count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS foo'
+
+        self.env.log.debug("Count results in Query SQL: " + count_sql % 
+                           tuple([repr(a) for a in args]))
+
+        cursor.execute(count_sql, args);
+        for row in cursor:
+            pass
+        self.num_items = row[0]
+
+        self.env.log.debug("Count results in Query: %d" % self.num_items)
+
+        if self.num_items <= self.max:
+            self.has_more_pages = False
+
+        if self.has_more_pages:
+            max = self.max
+            if self.group:
+                max += 1
+            sql = sql + " LIMIT %d OFFSET %d" % (max, self.offset)
+            if (self.page > int(ceil(float(self.num_items) / self.max)) and
+                self.num_items != 0):
+                raise TracError(_('Page %(page)s is beyond the number of '
+                                  'pages in the query', page=self.page))
+
+        self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))     
         cursor.execute(sql, args)
         columns = get_column_names(cursor)
         fields = []
@@ -226,7 +292,8 @@ class Query(object):
         cursor.close()
         return results
 
-    def get_href(self, href, id=None, order=None, desc=None, format=None):
+    def get_href(self, href, id=None, order=None, desc=None, format=None,
+                 max=None, page=None):
         """Create a link corresponding to this query.
 
         :param href: the `Href` object used to build the URL
@@ -234,29 +301,50 @@ class Query(object):
         :param order: optionally override the order parameter of the query
         :param desc: optionally override the desc parameter
         :param format: optionally override the format of the query
+        :param max: optionally override the max items per page
+        :param page: optionally specify which page of results (defaults to
+                     the first)
 
         Note: `get_resource_url` of a 'query' resource?
         """
         if not isinstance(href, Href):
             href = href.href # compatibility with the `req` of the 0.10 API
+
+        if format == 'rss':
+            max = self.items_per_page
+            page = self.default_page
+
         if id is None:
             id = self.id
         if desc is None:
             desc = self.desc
         if order is None:
             order = self.order
+        if max is None:
+            max = self.max
+        if page is None:
+            page = self.page
+
         cols = self.get_columns()
         # don't specify the columns in the href if they correspond to
-        # the default columns, in the same order.  That keeps the query url
-        # shorter in the common case where we just want the default columns.
+        # the default columns, page and max in the same order. That keeps the
+        # query url shorter in the common case where we just want the default
+        # columns.
         if cols == self.get_default_columns():
             cols = None
+        if page == self.default_page:
+            page = None
+        if max == self.items_per_page:
+            max = None
+
         return href.query(report=id,
                           order=order, desc=desc and 1 or None,
                           group=self.group or None,
                           groupdesc=self.groupdesc and 1 or None,
                           col=cols,
                           row=self.rows,
+                          max=max,
+                          page=page,
                           format=format, **self.constraints)
 
     def to_string(self):
@@ -461,16 +549,12 @@ class Query(object):
             if name == self.group and not name == self.order:
                 sql.append(",")
         if self.order != 'id':
-            sql.append(",t.id")
-            
-        # Limit number of records
-        if self.limit:
-            sql.append("\nLIMIT %s")
-            args.append(self.limit)       
+            sql.append(",t.id")  
 
         return "".join(sql), args
 
-    def template_data(self, context, tickets, orig_list=None, orig_time=None):
+    def template_data(self, context, tickets, orig_list=None, orig_time=None,
+                      req=None):
         constraints = {}
         for k, v in self.constraints.items():
             constraint = {'values': [], 'mode': ''}
@@ -538,6 +622,47 @@ class Query(object):
                     groupsequence.append(group_key)
         groupsequence = [(value, groups[value]) for value in groupsequence]
 
+        # detect whether the last group continues on the next page,
+        # by checking if the extra (max+1)th ticket is in the last group
+        last_group_is_partial = False
+        if groupsequence and self.max and len(tickets) == self.max + 1:
+            del tickets[-1]
+            if len(groupsequence[-1][1]) == 1: 
+                # additional ticket started a new group
+                del groupsequence[-1] # remove that additional group
+            else:
+                # additional ticket stayed in the group 
+                last_group_is_partial = True
+                del groupsequence[-1][1][-1] # remove the additional ticket
+
+        results = Paginator(tickets,
+                            self.page - 1,
+                            self.max,
+                            self.num_items)
+        
+        if req:
+            if results.has_next_page:
+                next_href = self.get_href(req.href, max=self.max, 
+                                          page=self.page + 1)
+                add_link(req, 'next', next_href, _('Next Page'))
+
+            if results.has_previous_page:
+                prev_href = self.get_href(req.href, max=self.max, 
+                                          page=self.page - 1)
+                add_link(req, 'prev', prev_href, _('Previous Page'))
+
+        pagedata = []
+        shown_pages = results.get_shown_pages(21)
+        for page in shown_pages:
+            pagedata.append([self.get_href(context.href, page=page), None,
+                             str(page), _('Page %(num)d', num=page)])
+
+        results.shown_pages = [dict(zip(['href', 'class', 'string', 'title'],
+                                        p)) for p in pagedata]
+        results.current_page = {'href': None, 'class': 'current',
+                                'string': str(results.page + 1),
+                                'title':None}
+
         return {'query': self,
                 'context': context,
                 'col': cols,
@@ -548,9 +673,10 @@ class Query(object):
                 'fields': fields,
                 'modes': modes,
                 'tickets': tickets,
-                'groups': groupsequence or [(None, tickets)]}
-
-
+                'groups': groupsequence or [(None, tickets)],
+                'last_group_is_partial': last_group_is_partial,
+                'paginator': results}
+    
 class QueryModule(Component):
 
     implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
@@ -563,6 +689,10 @@ class QueryModule(Component):
     default_anonymous_query = Option('query', 'default_anonymous_query',  
                                default='status!=closed&cc~=$USER', 
                                doc='The default query for anonymous users.') 
+
+    items_per_page = IntOption('query', 'items_per_page', 100,
+        """Number of tickets displayed per page in ticket queries,
+        by default (''since 0.11'')""")
 
     # IContentConverter methods
     def get_supported_conversions(self):
@@ -616,7 +746,7 @@ class QueryModule(Component):
                       
             if user: 
                 qstring = qstring.replace('$USER', user) 
-            self.log.debug('QueryModule: Using default query: %s', qstring) 
+            self.log.debug('QueryModule: Using default query: %s', str(qstring)) 
             constraints = Query.from_string(self.env, qstring).constraints 
             # Ensure no field constraints that depend on $USER are used 
             # if we have no username. 
@@ -640,7 +770,8 @@ class QueryModule(Component):
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
                       rows,
-                      req.args.get('limit', 0))
+                      req.args.get('page'), 
+                      req.args.get('max'))
 
         if 'update' in req.args:
             # Reset session vars
@@ -726,7 +857,7 @@ class QueryModule(Component):
             orig_time = query_time
 
         context = Context.from_request(req, 'query')
-        data = query.template_data(context, tickets, orig_list, orig_time)
+        data = query.template_data(context, tickets, orig_list, orig_time, req)
 
         # For clients without JavaScript, we add a new constraint here if
         # requested
@@ -807,7 +938,9 @@ class QueryModule(Component):
         query_href = req.abs_href.query(group=query.group,
                                         groupdesc=(query.groupdesc and 1
                                                    or None),
-                                        row=query.rows, 
+                                        row=query.rows,
+                                        page=req.args.get('page'), 
+                                        max=req.args.get('max'),
                                         **query.constraints)
         data = {
             'context': Context.from_request(req, 'query', absurls=True),

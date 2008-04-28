@@ -40,7 +40,12 @@
           </div>
         </form>
       </div>
-
+      <py:if test="report.id != -1">
+        <h2 py:if="paginator.has_more_pages">
+          Results <span class="numresults">(${paginator.displayed_items()})</span>
+        </h2>
+        <xi:include href="page_index.html" />
+      </py:if>
       <py:for each="value_for_group, row_group in row_groups">
         <h2 py:if="value_for_group">$value_for_group
         <span class="numrows" py:with="cnt = len(row_group)">(${cnt or 'No'} match${cnt != 1 and 'es' or ''})</span></h2>
@@ -145,7 +150,9 @@
           </tbody>
         </table>
       </py:for>
-
+      <py:if test="report.id != -1">
+        <xi:include href="page_index.html" />
+      </py:if>
       <div py:if="report.id == -1 and 'REPORT_CREATE' in perm(report.resource)" class="buttons">
         <form action="" method="get" name="create_report">
           <div>

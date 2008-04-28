@@ -529,6 +529,34 @@ div.system-message p.system-message-title { font-weight: bold; }
 #content.error #traceback td code { white-space: pre; }
 #content.error #traceback pre { font-size: 95%; }
 
+#content .paging { margin: 0 0 2em; padding: .5em 0 0;
+  font-size: 85%; line-height: 2em; text-align: center;
+}
+#content .paging .current { 
+  padding: .1em .3em;
+  border: 1px solid #333;
+  background: #999; color: #fff; 
+}
+
+#content .paging :link, #content .paging :visited {
+  padding: .1em .3em;
+  border: 1px solid #666;
+  background: transparent; color: #666;
+}
+#content .paging :link:hover, #content .paging :visited:hover {
+  background: #999; color: #fff;  border-color: #333;
+}
+#content .paging .previous a, 
+#content .paging .next a {
+  font-size: 150%; font-weight: bold; border: none;
+}
+#content .paging .previous a:hover,
+#content .paging .next a:hover {
+  background: transparent; color: #666;
+}
+
+#content h2 .numresults { color: #666; font-size: 90%; }
+
 /* Styles for search word highlighting */
 @media screen {
  .searchword0 { background: #ff9 }

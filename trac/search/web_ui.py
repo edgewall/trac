@@ -112,7 +112,23 @@ class SearchModule(Component):
                 results[idx] = {'href': result[0], 'title': result[1],
                                 'date': format_datetime(result[2]),
                                 'author': result[3], 'excerpt': result[4]}
+            
+            pagedata = []    
             data['results'] = results
+            shown_pages = results.get_shown_pages(21)
+            for shown_page in shown_pages:
+                page_href = req.href.search([(f, 'on') for f in filters],
+                                            q=req.args.get('q'),
+                                            page=shown_page, noquickjump=1)
+                pagedata.append([page_href, None, str(shown_page),
+                                 'page ' + str(shown_page)])
+
+            fields = ['href', 'class', 'string', 'title']
+            results.shown_pages = [dict(zip(fields, p)) for p in pagedata]
+            
+            results.current_page = {'href': None, 'class': 'current',
+                                    'string': str(results.page + 1),
+                                    'title':None}
 
             if results.has_next_page:
                 next_href = req.href.search(zip(filters, ['on'] * len(filters)),

@@ -29,7 +29,7 @@
     </py:def>
 
     <div id="content" class="query">
-      <h1>$title ${num_matches(len(tickets))}</h1>
+      <h1>$title ${num_matches(query.num_items)}</h1>
 
       <div py:if="description" id="description" xml:space="preserve">
         ${wiki_to_html(context(report_resource), description)}
@@ -169,6 +169,11 @@
                 checked="${any([(value == column) for value in row]) and 'checked' or None}" />
             ${labels.get(column, column or 'none')}</label>
           </py:for>
+        </p>
+
+        <p class="option">
+          <label for="max">Max items per page</label>
+          <input type="text" name="max" id="max" size="10" value="${query.max}" />
         </p>
 
         <div class="buttons">
