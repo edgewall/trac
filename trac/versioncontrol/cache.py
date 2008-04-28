@@ -56,7 +56,8 @@ class CachedRepository(Repository):
     def get_changesets(self, start, stop):
         cursor = self.db.cursor()
         cursor.execute("SELECT rev FROM revision "
-                       "WHERE time >= %s AND time < %s ORDER BY time DESC, rev DESC",
+                       "WHERE time >= %s AND time < %s "
+                       "ORDER BY time DESC, rev DESC",
                        (to_timestamp(start), to_timestamp(stop)))
         for rev, in cursor:
             try:
@@ -206,7 +207,8 @@ class CachedRepository(Repository):
                     self.youngest = next_youngest                    
                     next_youngest = self.repos.next_rev(next_youngest)
 
-                    # 1.4. update 'youngest_rev' metadata (minimize failures at 0.)
+                    # 1.4. update 'youngest_rev' metadata 
+                    #      (minimize possibility of failures at point 0.)
                     cursor.execute("UPDATE system SET value=%s WHERE name=%s",
                                    (str(self.youngest), CACHE_YOUNGEST_REV))
                     self.db.commit()
@@ -250,8 +252,10 @@ class CachedRepository(Repository):
     def normalize_rev(self, rev):
         return self.repos.normalize_rev(rev)
 
-    def get_changes(self, old_path, old_rev, new_path, new_rev, ignore_ancestry=1):
-        return self.repos.get_changes(old_path, old_rev, new_path, new_rev, ignore_ancestry)
+    def get_changes(self, old_path, old_rev, new_path, new_rev, 
+            ignore_ancestry=1):
+        return self.repos.get_changes(old_path, old_rev, new_path, new_rev, 
+                ignore_ancestry)
 
 
 class CachedChangeset(Changeset):
