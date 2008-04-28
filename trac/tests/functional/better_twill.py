@@ -47,7 +47,7 @@ if twill:
         """
         frame = sys._getframe()
         while frame:
-            if frame.f_code.co_name == 'runTest':
+            if frame.f_code.co_name in ('runTest', 'setUp', 'tearDown'):
                 testcase = frame.f_locals['self']
                 testname = testcase.__class__.__name__
                 tracdir = testcase._testenv.tracdir
