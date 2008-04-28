@@ -37,6 +37,8 @@ CACHE_METADATA_KEYS = (CACHE_REPOSITORY_DIR, CACHE_YOUNGEST_REV)
 
 class CachedRepository(Repository):
 
+    has_linear_changesets = False
+
     def __init__(self, db, repos, authz, log):
         Repository.__init__(self, repos.name, authz, log)
         self.db = db
@@ -238,7 +240,31 @@ class CachedRepository(Repository):
         return self.repos.previous_rev(rev)
 
     def next_rev(self, rev, path=''):
-        return self.repos.next_rev(rev, path)
+        if not self.has_linear_changesets:
+            return self.repos.next_rev(rev, path)
+
+        # the changeset revs are sequence of ints:
+        sql = "SELECT rev FROM node_change WHERE " + \
+              self.db.cast('rev', 'int') + " > %s"
+        args = [rev]
+
+        if path:
+            # Child changes
+            sql += " AND (path %s OR " % self.db.like()
+            args.append(self.db.like_escape(path.lstrip('/')) + '%')
+            # Parent deletion
+            components = path.lstrip('/').split('/')
+            for i in range(1, len(components)+1):
+                args.append('/'.join(components[:i]))
+            parent_insert = ','.join(('%s',) * len(components))
+            sql += " (path in (" + parent_insert + ") and change_type='D') )"
+
+        sql += " ORDER BY " + self.db.cast('rev', 'int') + " LIMIT 1"
+        
+        cursor = self.db.cursor()
+        cursor.execute(sql, args)
+        for rev, in cursor:
+            return rev
 
     def rev_older_than(self, rev1, rev2):
         return self.repos.rev_older_than(rev1, rev2)

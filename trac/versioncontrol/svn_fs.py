@@ -280,6 +280,7 @@ class SubversionConnector(Component):
         else:
             repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
                                      self.log)
+            repos.has_linear_changesets = True
         if authname:
             authz = SubversionAuthorizer(self.env, weakref.proxy(repos),
                                          authname)
