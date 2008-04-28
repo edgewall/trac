@@ -236,16 +236,22 @@ class CachedRepository(Repository):
             self.sync()
         return self.youngest
 
-    def previous_rev(self, rev):
-        return self.repos.previous_rev(rev)
+    def previous_rev(self, rev, path=''):
+        if not self.has_linear_changesets:
+            return self.repos.previous_rev(rev, path)
+        else:
+            return self._next_prev_rev('<', rev, path)
 
     def next_rev(self, rev, path=''):
         if not self.has_linear_changesets:
             return self.repos.next_rev(rev, path)
+        else:
+            return self._next_prev_rev('>', rev, path)
 
+    def _next_prev_rev(self, direction, rev, path=''):
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE " + \
-              self.db.cast('rev', 'int') + " > %s"
+              self.db.cast('rev', 'int') + " " + direction + " %s"
         args = [rev]
 
         if path:

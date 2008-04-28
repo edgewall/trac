@@ -263,7 +263,7 @@ class Repository(object):
         raise NotImplementedError
     youngest_rev = property(lambda x: x.get_youngest_rev())
 
-    def previous_rev(self, rev):
+    def previous_rev(self, rev, path=''):
         """Return the revision immediately preceding the specified revision."""
         raise NotImplementedError
 
