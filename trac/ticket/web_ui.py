@@ -835,7 +835,7 @@ class TicketModule(Component):
         if ticket.exists and ticket._old:
             if 'TICKET_CHGPROP' not in req.perm(resource):
                 add_warning(req, _("No permission to change ticket fields."))
-                ticket.values = ticket._old
+                ticket.values.update(ticket._old)
                 valid = False
             else: # TODO: field based checking
                 if ('description' in ticket._old and \
@@ -844,7 +844,7 @@ class TicketModule(Component):
                        'TICKET_ADMIN' not in req.perm(resource)):
                     add_warning(req, _("No permissions to change ticket "
                                        "fields."))
-                    ticket.values = ticket._old
+                    ticket.values.update(ticket._old)
                     valid = False
 
         comment = req.args.get('comment')
