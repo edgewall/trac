@@ -993,6 +993,9 @@ class TicketQueryMacro(WikiMacroBase):
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
 
+    The optional `max` parameter can be used to limit the number of tickets
+    shown (defaults to '''0''', i.e. no maximum).
+
     The optional `order` parameter sets the field used for ordering tickets
     (defaults to '''id''').
 
@@ -1004,7 +1007,8 @@ class TicketQueryMacro(WikiMacroBase):
 
     The optional `verbose` parameter can be set to a true value in order to
     get the description for the listed tickets. For '''table''' format only.
-    ''deprecated in favor of the row parameter''.
+    ''deprecated in favor of the row parameter, which can be used to specify
+    which field should be viewed as a row, e.g. row=description''.
 
     For compatibility with Trac 0.10, if there's a second positional parameter
     given to the macro, it will be used to specify the `format`.
