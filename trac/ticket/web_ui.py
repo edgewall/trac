@@ -829,18 +829,19 @@ class TicketModule(Component):
     
     def _validate_ticket(self, req, ticket):
         valid = True
+        resource = ticket.resource
 
         # If the ticket has been changed, check the proper permission
         if ticket.exists and ticket._old:
-            if 'TICKET_CHGPROP' not in req.perm:
+            if 'TICKET_CHGPROP' not in req.perm(resource):
                 add_warning(req, _("No permission to change ticket fields."))
                 ticket.values = ticket._old
                 valid = False
             else: # TODO: field based checking
                 if ('description' in ticket._old and \
-                       'TICKET_EDIT_DESCRIPTION' not in req.perm) or \
+                       'TICKET_EDIT_DESCRIPTION' not in req.perm(resource)) or \
                    ('reporter' in ticket._old and \
-                       'TICKET_ADMIN' not in req.perm):
+                       'TICKET_ADMIN' not in req.perm(resource)):
                     add_warning(req, _("No permissions to change ticket "
                                        "fields."))
                     ticket.values = ticket._old
@@ -848,8 +849,8 @@ class TicketModule(Component):
 
         comment = req.args.get('comment')
         if comment:
-            if not ('TICKET_CHGPROP' in req.perm or \
-                    'TICKET_APPEND' in req.perm):
+            if not ('TICKET_CHGPROP' in req.perm(resource) or \
+                    'TICKET_APPEND' in req.perm(resource)):
                 add_warning(req, _("No permissions to add a comment."))
                 valid = False
 
