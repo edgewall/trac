@@ -265,7 +265,8 @@ class CachedRepository(Repository):
             parent_insert = ','.join(('%s',) * len(components))
             sql += " (path in (" + parent_insert + ") and change_type='D') )"
 
-        sql += " ORDER BY " + self.db.cast('rev', 'int') + " LIMIT 1"
+        sql += " ORDER BY " + self.db.cast('rev', 'int') + \
+                (direction == '<' and " DESC" or "") + " LIMIT 1"
         
         cursor = self.db.cursor()
         cursor.execute(sql, args)
