@@ -605,7 +605,8 @@ Congratulations!
                     ('resync <rev>', 'Re-synchronize only the given <rev>')]
 
     def _resync_feedback(self, rev):
-        print ' [%s]\r' % rev,
+        sys.stdout.write(' [%s]\r' % rev)
+        sys.stdout.flush()
         
     ## Resync
     def do_resync(self, line):
