@@ -1068,6 +1068,19 @@ class TicketQueryMacro(WikiMacroBase):
                     groups.append((v, [t for t in g], href, title))
                 return groups
 
+            if format == 'table':
+                data = query.template_data(formatter.context, tickets)
+
+                add_stylesheet(req, 'common/css/report.css')
+                
+                return Chrome(self.env).render_template(
+                    req, 'query_results.html', data, None, fragment=True)
+
+            # 'table' format had its own permission checks, here we need to
+            # do it explicitly:
+            tickets = [t for t in tickets 
+                       if 'TICKET_VIEW' in req.perm('ticket', t['id'])]
+
             if format == 'compact':
                 if query.group:
                     groups = [tag.a('#%s' % ','.join([str(t['id'])
@@ -1078,13 +1091,6 @@ class TicketQueryMacro(WikiMacroBase):
                 else:
                     alist = [ticket_anchor(ticket) for ticket in tickets]
                     return tag.span(alist[0], *[(', ', a) for a in alist[1:]])
-            elif format == 'table':
-                data = query.template_data(formatter.context, tickets)
-
-                add_stylesheet(req, 'common/css/report.css')
-                
-                return Chrome(self.env).render_template(
-                    req, 'query_results.html', data, None, fragment=True)
             else:
                 if query.group:
                     return tag.div(
