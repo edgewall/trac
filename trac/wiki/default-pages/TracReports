@@ -37,7 +37,7 @@ There may be instances where you need to change the ID of the report, perhaps to
  * title text
  * query text
  * description text
-Changing the ID changes the shown order and number in the ''View Reports'' list. This is done by running something like:
+Changing the ID changes the shown order and number in the ''Available Reports'' list and the report's perma-link. This is done by running something like:
 {{{
 update report set id=5 where id=3;
 }}}

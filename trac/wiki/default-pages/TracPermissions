@@ -31,6 +31,7 @@ Otherwise, individual privileges can be assigned to users for the various differ
 || `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties (priority, assignment, keywords, etc.) except description field, cc field add/remove when logged in or set email to pref ||
 || `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets] ||
 || `TICKET_EDIT_CC` || Full modify cc field ||
+|| `TICKET_EDIT_DESCRIPTION` || Modify description field ||
 || `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the description field ||
 
 Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.

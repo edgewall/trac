@@ -49,6 +49,22 @@ A simple setup of Trac on mod_python looks like this:
 
 The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration without it; if the URLs produced by Trac look wrong, if Trac does not seem to recognize URLs correctly, or you get an odd "No handler matched request to..." error, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.
 
+The options available are
+{{{
+    # For a single project
+    PythonOption TracEnv /var/trac/myproject
+    # For multiple projects
+    PythonOption TracEnvParentDir /var/trac/myprojects
+    # For the index of multiple projects
+    PythonOption TracEnvIndexTemplate /srv/www/htdocs/trac/project_list_tepmlate.html
+    # A space delimitted list, with a "," between key and value pairs.
+    PythonOption TracTemplateVars key1,val1 key2,val2
+    # Useful to get the date in the wanted order
+    PythonOption TracLocale en_GB.UTF8
+    # See description above        
+    PythonOption TracUriRoot /projects/myproject
+}}}
+
 === Configuring Authentication ===
 
 Creating password files and configuring authentication works similar to the process for [wiki:TracCgi#AddingAuthentication CGI]:

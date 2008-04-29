@@ -17,7 +17,8 @@ your source code repository.
 the environment directory and all the files inside. Please remember to set
 the appropriate permissions. The same applies to the Subversion repository 
 Trac is eventually using, although Trac will only require read access as long 
-as you're not using the BDB file system.''
+as you're not using the BDB file system. Also, it seems that project names
+with spaces can be problematic for authentication (see [trac:#7163]).''
 
 == Database Connection Strings ==
 

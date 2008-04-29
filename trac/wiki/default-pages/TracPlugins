@@ -83,8 +83,9 @@ Note: After installing the plugin, you need to restart your web server.
 ==== Uninstalling ====
 
 `easy_install` or `python setup.py` does not have an uninstall feature. Hower, it is usually quite trivial to remove a globally installed egg and reference:
+ 1. Do `easy_install -m [plugin name]` to remove references from `$PYTHONLIB/site-packages/easy-install.pth` when the plugin installed by setuptools.
+ 1. Delete executables from `/usr/bin`, `/usr/local/bin` or `C:\\Python*\Scripts`. For search what executables are there, you may refer to `[console-script]` section of `setup.py`.
  1. Delete the .egg file or folder from where it is installed, usually inside `$PYTHONLIB/site-packages/`.
- 1. Edit the `$PYTHONLIB/site-packages/easy-install.pth` text file and delete the line that contains the reference to the removed egg.
  1. Restart web server.
 
 If you are uncertain about the location of the egg, here is a small tip to help locate an egg (or any package) - replace `myplugin` with whatever namespace the plugin uses (as used when enabling the plugin):
