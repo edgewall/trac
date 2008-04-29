@@ -227,6 +227,26 @@ class Query(object):
             cols[-1] = self.order
         return cols
 
+    def count(self, req, db=None, cached_ids=None):
+        sql, args = self.get_sql(req, cached_ids)
+        return self._count(sql, args)
+
+    def _count(self, sql, args, db=None):
+        if not db:
+            db = self.env.get_db_cnx()
+        cursor = db.cursor()
+
+        count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS foo'
+        # self.env.log.debug("Count results in Query SQL: " + count_sql % 
+        #                    tuple([repr(a) for a in args]))
+
+        cnt = 0
+        cursor.execute(count_sql, args);
+        for cnt, in cursor:
+            break
+        self.env.log.debug("Count results in Query: %d" % cnt)
+        return cnt
+
     def execute(self, req, db=None, cached_ids=None):
         if not self.cols:
             self.get_columns()
@@ -236,17 +256,7 @@ class Query(object):
         cursor = db.cursor()
 
         sql, args = self.get_sql(req, cached_ids)
-        count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS foo'
-
-        self.env.log.debug("Count results in Query SQL: " + count_sql % 
-                           tuple([repr(a) for a in args]))
-
-        cursor.execute(count_sql, args);
-        for row in cursor:
-            pass
-        self.num_items = row[0]
-
-        self.env.log.debug("Count results in Query: %d" % self.num_items)
+        self.num_items = self._count(sql, args, db)
 
         if self.num_items <= self.max:
             self.has_more_pages = False
@@ -1027,12 +1037,14 @@ class TicketQueryMacro(WikiMacroBase):
                                  for item in kwargs.iteritems()])
 
         query = Query.from_string(self.env, query_string)
-        tickets = query.execute(req)
 
         if format == 'count':
-            cnt = tickets and len(tickets) or 0
+            cnt = query.count(req)
             return tag.span(cnt, title='%d tickets for which %s' %
                             (cnt, query_string), class_='query_count')
+        
+        tickets = query.execute(req)
+
         if tickets:
             def ticket_anchor(ticket):
                 return tag.a('#%s' % ticket['id'],
