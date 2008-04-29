@@ -187,12 +187,13 @@ class WikiModule(Component):
                             ignore_blank_lines='-B' in diff_options,
                             ignore_case='-i' in diff_options,
                             ignore_space_changes='-b' in diff_options)
-        def version_info(v):
+        def version_info(v, last=0):
             return {'path': get_resource_name(self.env, page.resource),
-                    'rev': v, 'shortrev': v,
+                    'rev': v or 'currently edited', 
+                    'shortrev': v or last + 1,
                     'href': v and req.href.wiki(page.name, version=v) or None}
         changes = [{'diffs': diffs, 'props': [],
-                    'new': version_info(new_version),
+                    'new': version_info(new_version, old_version),
                     'old': version_info(old_version)}]
 
         add_stylesheet(req, 'common/css/diff.css')
