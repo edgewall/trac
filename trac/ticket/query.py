@@ -1067,8 +1067,6 @@ class TicketQueryMacro(WikiMacroBase):
                     alist = [ticket_anchor(ticket) for ticket in tickets]
                     return tag.span(alist[0], *[(', ', a) for a in alist[1:]])
             elif format == 'table':
-                db = self.env.get_db_cnx()
-                tickets = query.execute(req, db)
                 data = query.template_data(formatter.context, tickets)
 
                 add_stylesheet(req, 'common/css/report.css')
