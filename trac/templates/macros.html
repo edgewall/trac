@@ -226,7 +226,7 @@
     <table class="progress" style="$style">
       <tr>
         <td py:for="idx, interval in enumerate(stats.intervals)"
-            class="$interval.css_class" style="width: ${interval.percent}%">
+            class="$interval.css_class" style="${interval.percent and 'width: %d%%' % interval.percent or 'display: none'}">
           <a href="${interval_hrefs[idx]}"
             title="${interval.count} of ${stats.count} ${stats.unit}${
             stats.count != 1 and 's' or ''} ${interval.title}"></a>
