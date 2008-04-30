@@ -482,10 +482,9 @@ class Ranges(object):
 
 def content_disposition(type, filename=None):
     """Generate a properly escaped Content-Disposition header"""
-    from email.Utils import encode_rfc2231
     if isinstance(filename, unicode):
         filename = filename.encode('utf-8')
-    return type +'; filename*=' + encode_rfc2231(filename, 'utf-8')
+    return type + '; filename=' + quote(filename, safe='')
 
 def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
