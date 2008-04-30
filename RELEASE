@@ -1,6 +1,6 @@
-Release Notes for Trac 0.11 beta2 Genshi Release
-================================================
-March 12, 2008
+Release Notes for Trac 0.11 rc1 Genshi Release
+==============================================
+April 30, 2008
 
 Highlights
 ----------
@@ -13,6 +13,7 @@ Highlights
  * Improved user preferences subsystem, among which the possibility for
  * any user to select their time zone and disable access keys
  * The WebAdmin plugin is now an integral part of Trac
+ * Paging of timeline and query results.
 
 Detailed User Visible Changes
 =============================
