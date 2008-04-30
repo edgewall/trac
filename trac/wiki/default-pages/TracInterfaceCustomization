@@ -69,7 +69,7 @@ header and footer.  Create a file {{{/path/to/env/templates/site.html}}} or {{{/
 
   <!--! Add site-specific style sheet -->
   <head py:match="head" py:attrs="select('@*')">
-    ${select('*')}
+    ${select('*|comment()|text()')}
     <link rel="stylesheet" type="text/css"
           href="${href.chrome('site/style.css')}" />
   </head>
