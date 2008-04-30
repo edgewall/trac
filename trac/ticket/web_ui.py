@@ -430,19 +430,26 @@ class TicketModule(Component):
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
         elif req.method == 'POST': # 'Preview' or 'Submit'
-            self._populate(req, ticket)
-            valid = self._validate_ticket(req, ticket)
-
             # Do any action on the ticket?
             actions = TicketSystem(self.env).get_available_actions(
                 req, ticket)
             if action not in actions:
                 raise TracError(_('Invalid action "%(name)s"', name=action))
                 # (this should never happen in normal situations)
+
+            # We have a bit of a problem.  There are two sources of changes to
+            # the ticket: the user, and the workflow.  We need to show all the
+            # changes that are proposed, but we need to be able to drop the
+            # workflow changes if the user changes the action they want to do
+            # from one preview to the next.
+            #
+            # the _populate() call pulls all the changes from the webpage; but
+            # the webpage includes both changes by the user and changes by the
+            # workflow... so we aren't able to differentiate them clearly.
+
             field_changes, problems = self.get_ticket_changes(req, ticket,
                                                               action)
             if problems:
-                valid = False
                 for problem in problems:
                     add_warning(req, problem)
                     add_warning(req,
@@ -451,9 +458,16 @@ class TicketModule(Component):
                                     tag.pre('[trac]\nworkflow = ...\n'),
                                     tag.p('in your ', tag.tt('trac.ini'), '.'))
                                 )
+
+            self._populate(req, ticket) # Apply changes made by the user
+            self._apply_ticket_changes(ticket, field_changes) # Apply changes made by the workflow
+            # Unconditionally run the validation so that the user gets
+            # information any and all problems.  But it's only valid if it
+            # validates and there were no problems with the workflow side of
+            # things.
+            valid = self._validate_ticket(req, ticket) and not problems
             if 'preview' not in req.args:
                 if valid:
-                    self._apply_ticket_changes(ticket, field_changes)
                     # redirected if successful
                     self._do_save(req, ticket, action)
                 # else fall through in a preview

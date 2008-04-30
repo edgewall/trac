@@ -165,7 +165,15 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         request and this ticket."""
         # Get the list of actions that can be performed
 
-        status = ticket['status'] or 'new'
+        # Determine the current status of this ticket.  If this ticket is in
+        # the process of being modified, we need to base our information on the
+        # pre-modified state so that we don't try to do two (or more!) steps at
+        # once and get really confused.
+        if 'status' in ticket._old:
+            status = ticket._old['status']
+        else:
+            status = ticket['status']
+        status = status or 'new'
 
         allowed_actions = []
         for action_name, action_info in self.actions.items():
