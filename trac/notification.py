@@ -387,7 +387,7 @@ class NotifyEmail(Notify):
             try:
                 dummy = body.encode('ascii')
             except UnicodeDecodeError:
-                raise TracError(_("Ticket contains non-Ascii chars. " \
+                raise TracError(_("Ticket contains non-ASCII chars. " \
                                   "Please change encoding setting"))
         msg = MIMEText(body, 'plain')
         # Message class computes the wrong type from MIMEText constructor,
