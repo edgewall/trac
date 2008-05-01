@@ -36,6 +36,7 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
+from trac.util.translation import _
 
 
 class LoginModule(Component):
@@ -87,10 +88,10 @@ class LoginModule(Component):
         if req.authname and req.authname != 'anonymous':
             yield ('metanav', 'login', 'logged in as %s' % req.authname)
             yield ('metanav', 'logout',
-                   tag.a('Logout', href=req.href.logout()))
+                   tag.a(_('Logout'), href=req.href.logout()))
         else:
             yield ('metanav', 'login',
-                   tag.a('Login', href=req.href.login()))
+                   tag.a(_('Login'), href=req.href.login()))
 
     # IRequestHandler methods
 
