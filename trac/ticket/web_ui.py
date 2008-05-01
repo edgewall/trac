@@ -985,7 +985,7 @@ class TicketModule(Component):
         for field, value in ticket._old.iteritems():
             field_changes[field] = {'old': value,
                                     'new': ticket[field],
-                                    'by':'user'}
+                                    'by': 'user'}
 
         # Apply controller changes corresponding to the selected action
         problems = []
