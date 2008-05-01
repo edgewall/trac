@@ -80,7 +80,7 @@ ${traceback}
 }}}
     </textarea>
     <span class="inlinebuttons">
-      <input type="submit" name="create" value="Create" />
+      <input type="submit" name="create" value="${_('Create')}" />
     </span>
   </py:def>
 
@@ -173,7 +173,7 @@ ${traceback}
                   <pre><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}<py:if test="frame.line">
   ${frame.line.lstrip()}
 </py:if></py:for><py:if test="not frames">${traceback}</py:if></pre>
-                  <p style="display: none"><input type="button" id="tbtoggle" value="Switch to plain text view" /></p>
+                  <p style="display: none"><input type="button" id="tbtoggle" value="${_('Switch to plain text view')}" /></p>
                 </div>
               </py:if>
               <h2>System Information:</h2>

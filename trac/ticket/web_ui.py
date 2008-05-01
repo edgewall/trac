@@ -1033,7 +1033,7 @@ class TicketModule(Component):
             elif name == 'owner':
                 field['skip'] = True
                 if not ticket.exists:
-                    field['label'] = 'Assign to'
+                    field['label'] = _('Assign to')
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
             elif name == 'milestone':

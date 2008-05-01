@@ -180,7 +180,7 @@
           <input py:if="report_resource" type="hidden" name="report" value="$report_resource.id" />
           <input type="hidden" name="order" value="$query.order" />
           <input py:if="query.desc" type="hidden" name="desc" value="1" />
-          <input type="submit" name="update" value="Update" />
+          <input type="submit" name="update" value="${_('Update')}" />
         </div>
         <hr />
       </form>
@@ -216,14 +216,14 @@
           <div>
             <input type="hidden" name="action" value="edit" />
             <input type="submit" title="Edit report {$report_resource.id} corresponding to this query"
-                   value="Edit query" />
+            value="${_('Edit query')}" />
           </div>
         </form>
         <form py:if="new or edit" method="get" action="${edit and url_of(report_resource) or href.report()}">
           <div>
             <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
             <input type="hidden" name="query" value="${query.to_string()}" />
-            <input type="submit" value="Save query"
+            <input type="submit" value="${_('Save query')}"
                    title="${edit and _('Save updated query in report {%(id)s}',
                                        id=report_resource.id) or
                             _('Create new report from current query')}" />
@@ -233,7 +233,7 @@
           <div>
             <input type="hidden" name="action" value="delete" />
             <input type="submit" title="Delete report {$report_resource.id} corresponding to this query"
-                   value="Delete query" />
+            value="${_('Delete query')}" />
           </div>
         </form>
       </div>

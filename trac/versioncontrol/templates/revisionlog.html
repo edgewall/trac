@@ -61,7 +61,7 @@
           </label>
         </div>
         <div class="buttons">
-          <input type="submit" value="Update" />
+          <input type="submit" value="${_('Update')}" />
         </div>
       </form>
 
@@ -81,8 +81,8 @@
 
       <form  class="printableform" action="${href.changeset()}" method="get">
         <div class="buttons">
-          <input type="submit" value="View changes"
-            title="Diff from Old Revision to New Revision (select them below)" />
+          <input type="submit" value="${_('View changes')}"
+            title="${_('Diff from Old Revision to New Revision (select them below)')}" />
         </div>
         <table id="chglist" class="listing">
           <thead>
@@ -160,8 +160,8 @@
         </table>
 
         <div py:if="len(items) &gt; 10" class="buttons">
-          <input type="submit" value="View changes"
-            title="Diff from Old Revision to New Revision (select them above)" />
+          <input type="submit" value="${_('View changes')}"
+            title="${_('Diff from Old Revision to New Revision (select them above)')}" />
         </div>
       </form>
 

@@ -17,7 +17,7 @@
       <form py:if="history" class="printableform" method="get" action="">
         <input type="hidden" name="action" value="diff" />
         <div class="buttons">
-          <input type="submit" value="View changes" />
+          <input type="submit" value="${_('View changes')}" />
         </div>
         <table id="fieldhist" class="listing" summary="Change history">
           <thead>
@@ -48,7 +48,7 @@
         </table>
         <py:if test="len(history) &gt; 10">
           <div class="buttons">
-            <input type="submit" value="View changes" />
+            <input type="submit" value="${_('View changes')}" />
           </div>
         </py:if>
       </form>

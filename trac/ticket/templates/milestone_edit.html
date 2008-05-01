@@ -85,9 +85,9 @@ ${milestone.description}</textarea></p>
           </fieldset>
         </div>
         <div class="buttons" py:choose="milestone.exists">
-          <input py:when="True" type="submit" value="Submit changes" />
-          <input py:otherwise="" type="submit" value="Add milestone" />
-          <input type="submit" name="cancel" value="Cancel" />
+          <input py:when="True" type="submit" value="${_('Submit changes')}" />
+          <input py:otherwise="" type="submit" value="${_('Add milestone')}" />
+          <input type="submit" name="cancel" value="${_('Cancel')}" />
         </div>
       </form>
 

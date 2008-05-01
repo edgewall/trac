@@ -24,19 +24,19 @@
         <form py:if="'REPORT_MODIFY' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" value="Edit report" accesskey="e" />
+            <input type="submit" value="${_('Edit report')}" accesskey="e" />
           </div>
         </form>
         <form py:if="'REPORT_CREATE' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="copy" />
-            <input type="submit" value="Copy report" />
+            <input type="submit" value="${_('Copy report')}" />
           </div>
         </form>
         <form py:if="'REPORT_DELETE' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="delete" />
-            <input type="submit" value="Delete report" />
+            <input type="submit" value="${_('Delete report')}" />
           </div>
         </form>
       </div>
@@ -157,7 +157,7 @@
         <form action="" method="get" name="create_report">
           <div>
             <input type="hidden" name="action" value="new" />
-            <input type="submit" value="Create new report" />
+            <input type="submit" value="${_('Create new report')}" />
           </div>
         </form>
       </div>

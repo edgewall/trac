@@ -179,7 +179,7 @@
                 method="get" action="#comment">
                 <div class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
-                  <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
+                  <input type="submit" name="reply" value="${_('Reply')}" title="${_('Reply, quoting this description')}" />
                 </div>
               </form>
               <div py:if="ticket.description" class="searchable" xml:space="preserve">
@@ -221,7 +221,7 @@
                 </h3>
                 <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(ticket.resource)" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
-                  <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
+                  <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}" />
                 </div>
                 ${display_change(change)}
               </div>
@@ -378,7 +378,7 @@ ${comment}</textarea></p>
             <input type="hidden" name="replyto" value="${replyto}" />
             <input type="hidden" name="cnum" value="${cnum}" />
           </py:if>
-          <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
+          <input type="submit" name="preview" value="${_('Preview')}" accesskey="r" />&nbsp;
           <input type="submit" name="submit" value="${ticket.exists and 'Submit changes' or 'Create ticket'}" />
         </div>
 

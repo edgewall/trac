@@ -50,7 +50,7 @@
                       value="${group.name}" py:content="group.label"
                       selected="${grouped_by == group.name or None}" />
             </select>
-            <noscript><input type="submit" value="Update" /></noscript>
+            <noscript><input type="submit" value="${_('Update')}" /></noscript>
           </legend>
           <table summary="Shows the milestone completion status grouped by ${grouped_by}">
             <tr py:for="group in groups">
@@ -84,11 +84,11 @@
            class="buttons">
         <form py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" method="get" action="" name="editmilestone">
           <input type="hidden" name="action" value="edit" />
-          <input type="submit" value="Edit milestone" />
+          <input type="submit" value="${_('Edit milestone')}" />
         </form>
         <form py:if="'MILESTONE_DELETE' in perm(milestone.resource)" method="get" action="" name="deletemilestone">
           <input type="hidden" name="action" value="delete" />
-          <input type="submit" value="Delete milestone" />
+          <input type="submit" value="${_('Delete milestone')}" />
         </form>
         ${attach_file_form(attachments)}
       </div>
