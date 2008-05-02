@@ -5,7 +5,6 @@ A [TracEnvironment Trac environment] needs to be upgraded before it can be used 
 
 Environment upgrades are not necessary for minor version releases unless otherwise noted. 
 
-
 == Instructions ==
 
 Typically, there are four steps involved in upgrading to a newer version of Trac:
@@ -23,8 +22,7 @@ The location of the site-packages directory depends on the operating system, and
 
 You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
-> If you had the webadmin plugin installed, you can now uninstall it as it is now part of the Trac code base.
-
+If you had the webadmin plugin installed, you can now uninstall it as it is now part of the Trac code base.
 
 === Upgrade the Trac Environment ===
 
@@ -40,6 +38,8 @@ Note that if you are using a PostgreSQL database, this command will fail with th
 trac-admin /path/to/projenv upgrade --no-backup
 }}}
 
+If you are using custom CSS styles or modified templates in the templates directory of the TracEnvironment, you will need to convert them to the Genshi way of doing things. To continue to use your style sheet, follow the instructions at TracInterfaceCustomization#SiteAppearance.
+
 === Update the Trac Documentation ===
 
 Every [TracEnvironment Trac environment] includes a copy of the Trac documentation for the installed version. As you probably want to keep the included documentation in sync with the installed version of Trac, [TracAdmin trac-admin] provides a command to upgrade the documentation:
@@ -50,8 +50,7 @@ trac-admin /path/to/projenv wiki upgrade
 Note that this procedure will of course leave your `WikiStart` page intact.
 
 === Trac Macros, Plugins ===
-The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros, see TracWikiMacros.
-
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros, see TracWikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
 
 === Restart the Web Server ===
 If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.
@@ -66,6 +65,8 @@ Some modules were previously capitalized and were changed to lower case, e.g. tr
 ERROR: Skipping "trac.about = trac.about": (can't import "No module named about")
 }}}
 Remove the `Lib/site-packages/trac` folder and reinstall.
+=== Wiki Upgrade ===
+`trac-admin` will not delete or remove pages that were in version 0.10 but now are not in version 0.11, such as WikiMacros.
 
 == Changing Database Backend ==
 == SQLite to PostgreSQL ==
