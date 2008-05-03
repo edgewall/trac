@@ -359,7 +359,7 @@ class AbstractEnum(object):
             row = cursor.fetchone()
             if not row:
                 raise ResourceNotFound(_('%(type)s %(name)s does not exist.',
-                                  type=self.type, name=name))
+                                         type=self.type, name=name))
             self.value = self._old_value = row[0]
             self.name = self._old_name = name
         else:
@@ -503,7 +503,7 @@ class Component(object):
             row = cursor.fetchone()
             if not row:
                 raise ResourceNotFound(_('Component %(name)s does not exist.',
-                                  name=name))
+                                         name=name))
             self.name = self._old_name = name
             self.owner = row[0] or None
             self.description = row[1] or ''
@@ -733,7 +733,7 @@ class Version(object):
             row = cursor.fetchone()
             if not row:
                 raise ResourceNotFound(_('Version %(name)s does not exist.',
-                                  name=name))
+                                         name=name))
             self.name = self._old_name = name
             self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) or None
             self.description = row[1] or ''

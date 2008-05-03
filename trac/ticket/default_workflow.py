@@ -250,7 +250,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif len(owners) == 1:
                 control.append(tag('to %s ' % owners[0]))
                 if ticket['owner'] != owners[0]:
-                    hints.append(_("The owner will change to %s") % owners[0])
+                    hints.append(_("The owner will change to %(name)s",
+                                   name=owners[0]))
             else:
                 control.append(tag([_("to "), tag.select(
                     [tag.option(x, selected=(x == selected_owner or None))
@@ -259,7 +260,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 hints.append(_("The owner will change"))
         if 'set_owner_to_self' in operations and \
             ticket['owner'] != req.authname:
-            hints.append(_("The owner will change to %s") % req.authname)
+            hints.append(_("The owner will change to %(name)s",
+                           name=req.authname))
         if 'set_resolution' in operations:
             if this_action.has_key('set_resolution'):
                 resolutions = [x.strip() for x in
@@ -270,8 +272,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             assert(resolutions)
             if len(resolutions) == 1:
                 control.append(tag('as %s' % resolutions[0]))
-                hints.append(_("The resolution will be set to %s") %
-                             resolutions[0])
+                hints.append(_("The resolution will be set to %(name)s",
+                               name=resolutions[0]))
             else:
                 id = action + '_resolve_resolution'
                 selected_option = req.args.get(id,
@@ -285,7 +287,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             control.append('as %s ' % ticket['status'])
         else:
             if status != '*':
-                hints.append(_("Next status will be '%s'") % status)
+                hints.append(_("Next status will be '%(name)s'", name=status))
         return (this_action['name'], tag(*control), '. '.join(hints))
 
     def get_ticket_changes(self, req, ticket, action):

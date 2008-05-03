@@ -425,9 +425,8 @@ class RoadmapModule(Component):
                 write_prop('UID', uid)
                 write_utctime('DTSTAMP', milestone.due)
                 write_date('DTSTART', milestone.due)
-                write_prop('SUMMARY', _('Milestone %(name)s') % {
-                    'name': milestone.name
-                })
+                write_prop('SUMMARY', _('Milestone %(name)s',
+                                        name=milestone.name))
                 write_prop('URL', req.base_url + '/milestone/' +
                            milestone.name)
                 if milestone.description:
@@ -445,9 +444,9 @@ class RoadmapModule(Component):
                 if milestone.due:
                     write_prop('RELATED-TO', uid)
                     write_date('DUE', milestone.due)
-                write_prop('SUMMARY', _('Ticket #%(num)s: %(summary)s') % {
-                    'num': ticket.id, 'summary': ticket['summary']
-                })
+                write_prop('SUMMARY', _('Ticket #%(num)s: %(summary)s',
+                                        num=ticket.id,
+                                        summary=ticket['summary']))
                 write_prop('URL', req.abs_href.ticket(ticket.id))
                 write_prop('DESCRIPTION', ticket['description'])
                 priority = get_priority(ticket)

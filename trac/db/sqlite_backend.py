@@ -165,7 +165,7 @@ class SQLiteConnection(ConnectionWrapper):
                 raise TracError(_('The user %(user)s requires read _and_ write '
                                   'permission to the database file %(path)s '
                                   'and the directory it is located in.',
-                                  (user=getuser(), path=path)))
+                                  user=getuser(), path=path))
 
         if have_pysqlite == 2:
             self._active_cursors = weakref.WeakKeyDictionary()
