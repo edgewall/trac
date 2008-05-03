@@ -3368,15 +3368,3 @@ msgstr "このバージョンの削除"
 msgid "Delete page"
 msgstr "このページを削除"
 
-#~ msgid "Component %s already exists."
-#~ msgstr ""
-
-#~ msgid "Milestone %s already exists."
-#~ msgstr ""
-
-#~ msgid "Version %s already exists."
-#~ msgstr ""
-
-#~ msgid "%s %s already exists"
-#~ msgstr ""
-

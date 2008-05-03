@@ -3456,12 +3456,3 @@ msgstr "Elimina questa versione"
 msgid "Delete page"
 msgstr "Elimina la pagina"
 
-#~ msgid "The owner will change to %s"
-#~ msgstr ""
-
-#~ msgid "The resolution will be set to %s"
-#~ msgstr ""
-
-#~ msgid "Next status will be '%s'"
-#~ msgstr ""
-

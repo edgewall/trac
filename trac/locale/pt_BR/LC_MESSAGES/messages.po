@@ -3384,10 +3384,3 @@ msgstr "Remover essa versão"
 msgid "Delete page"
 msgstr "Remover página"
 
-#~ msgid ""
-#~ "A positive offset is used to "
-#~ "indicate a timezone at the east of"
-#~ " Greenwhich, i.e. ahead of Universal "
-#~ "Time."
-#~ msgstr ""
-

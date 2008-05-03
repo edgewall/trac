@@ -3288,31 +3288,3 @@ msgstr ""
 msgid "Delete page"
 msgstr ""
 
-#~ msgid ""
-#~ "A positive offset is used to "
-#~ "indicate a timezone at the east of"
-#~ " Greenwhich, i.e. ahead of Universal "
-#~ "Time."
-#~ msgstr ""
-
-#~ msgid "Component %s already exists."
-#~ msgstr ""
-
-#~ msgid "Milestone %s already exists."
-#~ msgstr ""
-
-#~ msgid "Version %s already exists."
-#~ msgstr ""
-
-#~ msgid "%s %s already exists"
-#~ msgstr ""
-
-#~ msgid "The owner will change to %s"
-#~ msgstr ""
-
-#~ msgid "The resolution will be set to %s"
-#~ msgstr ""
-
-#~ msgid "Next status will be '%s'"
-#~ msgstr ""
-

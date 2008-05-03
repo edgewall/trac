@@ -3443,12 +3443,3 @@ msgstr "Удалить данную версию"
 msgid "Delete page"
 msgstr "Удалить страницу"
 
-#~ msgid "The owner will change to %s"
-#~ msgstr ""
-
-#~ msgid "The resolution will be set to %s"
-#~ msgstr ""
-
-#~ msgid "Next status will be '%s'"
-#~ msgstr ""
-

@@ -3328,19 +3328,3 @@ msgstr "Diese Version löschen"
 msgid "Delete page"
 msgstr "Seite löschen"
 
-#~ msgid ""
-#~ "A positive offset is used to "
-#~ "indicate a timezone at the east of"
-#~ " Greenwhich, i.e. ahead of Universal "
-#~ "Time."
-#~ msgstr ""
-
-#~ msgid "The owner will change to %s"
-#~ msgstr ""
-
-#~ msgid "The resolution will be set to %s"
-#~ msgstr ""
-
-#~ msgid "Next status will be '%s'"
-#~ msgstr ""
-
