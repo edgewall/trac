@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-05-03 00:10+0200\n"
+"POT-Creation-Date: 2008-05-03 12:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.0dev-r363\n"
+"Generated-By: Babel 1.0dev-r364\n"
 
 #: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:26
 msgid "About Trac"
@@ -367,7 +367,8 @@ msgstr ""
 #: trac/ticket/templates/report_delete.html:20
 #: trac/ticket/templates/report_edit.html:42
 #: trac/wiki/templates/wiki_delete.html:36
-#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:123
+#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
+#: trac/wiki/templates/wiki_edit.html:133
 msgid "Cancel"
 msgstr ""
 
@@ -1065,7 +1066,7 @@ msgid "Attachment Info"
 msgstr ""
 
 #: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:248
-#: trac/wiki/templates/wiki_edit.html:95
+#: trac/wiki/templates/wiki_edit.html:105
 msgid "Your email or username:"
 msgstr ""
 
@@ -2056,8 +2057,8 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:89
-#: trac/wiki/templates/wiki_edit.html:116
-#: trac/wiki/templates/wiki_edit.html:121
+#: trac/wiki/templates/wiki_edit.html:126
+#: trac/wiki/templates/wiki_edit.html:131
 msgid "Submit changes"
 msgstr ""
 
@@ -2323,7 +2324,7 @@ msgstr ""
 msgid "Preview ("
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:52
+#: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:62
 msgid "skip"
 msgstr ""
 
@@ -2418,7 +2419,7 @@ msgstr ""
 msgid "I have files to attach to this ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:114
+#: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:124
 msgid "Preview"
 msgstr ""
 
@@ -2611,7 +2612,7 @@ msgid "Parent Directory"
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:100
-#: trac/wiki/templates/wiki_edit.html:41 trac/wiki/templates/wiki_view.html:23
+#: trac/wiki/templates/wiki_edit.html:51 trac/wiki/templates/wiki_view.html:23
 msgid "Revision info"
 msgstr ""
 
@@ -2970,12 +2971,22 @@ msgstr ""
 msgid "Older Revisions"
 msgstr ""
 
+#: trac/web/auth.py:89
+#, python-format
+msgid "logged in as %s"
+msgstr ""
+
 #: trac/web/auth.py:91
 msgid "Logout"
 msgstr ""
 
 #: trac/web/auth.py:94
 msgid "Login"
+msgstr ""
+
+#: trac/web/auth.py:136
+#, python-format
+msgid "Already logged in as %s."
 msgstr ""
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
@@ -3109,21 +3120,21 @@ msgstr ""
 msgid "Someone else has modified that page since you started your edits."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:31
+#: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:31
+#: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "(highlighted below as deletions)."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:33
+#: trac/wiki/templates/wiki_edit.html:33 trac/wiki/templates/wiki_edit.html:42
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:34
+#: trac/wiki/templates/wiki_edit.html:34 trac/wiki/templates/wiki_edit.html:44
 msgid "If you're unsure about what you're doing, please press"
 msgstr ""
 
@@ -3133,51 +3144,61 @@ msgid ""
 "        again."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:43
+#: trac/wiki/templates/wiki_edit.html:39
+msgid "Someone else modified that page since you started your edits."
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit.html:45
+msgid ""
+"(loosing your changes) and start editing the latest version of the page\n"
+"        again."
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:44 trac/wiki/templates/wiki_view.html:26
+#: trac/wiki/templates/wiki_edit.html:54 trac/wiki/templates/wiki_view.html:26
 msgid "(modified by"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:62
+#: trac/wiki/templates/wiki_edit.html:72
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:75
+#: trac/wiki/templates/wiki_edit.html:85
 msgid "Adjust edit area height:"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:87
+#: trac/wiki/templates/wiki_edit.html:97
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:92
+#: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:100
+#: trac/wiki/templates/wiki_edit.html:110
 msgid "Comment about this change (optional):"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:107
+#: trac/wiki/templates/wiki_edit.html:117
 msgid "Page is read-only"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:115
+#: trac/wiki/templates/wiki_edit.html:125
 msgid "Merge changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:119
+#: trac/wiki/templates/wiki_edit.html:129
 msgid "Preview Page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:120
+#: trac/wiki/templates/wiki_edit.html:130
 msgid "Review Changes"
 msgstr ""
 
