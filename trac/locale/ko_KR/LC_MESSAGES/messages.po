@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -38,7 +37,7 @@ msgstr "첨부파일을 삭제할 수 없습니다."
 #: trac/attachment.py:291
 #, python-format
 msgid "Attachment '%(filename)s' not found"
-msgstr "첨부파일 '%(filename)s'가 존재하지 않습니다."
+msgstr "'%(filename)s' 첨부파일이 존재하지 않습니다."
 
 #: trac/attachment.py:365
 msgid "Bad request"
@@ -84,7 +83,7 @@ msgstr "업로드 실패"
 #: trac/attachment.py:564
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
-msgstr "첨부파일 필드 %(field)s가 유효하지 않습니다.: %(message)s"
+msgstr "첨부파일의 %(field)s 필드가 유효하지 않습니다: %(message)s"
 
 #: trac/attachment.py:568
 #, python-format
@@ -111,7 +110,7 @@ msgstr "단지 sqlite 데이타베이스만 백업할 수 있습니다."
 
 #: trac/env.py:483
 msgid "Database newer than Trac version"
-msgstr "데이타베이스가 Trac 버전보다 더 새 버전입니다."
+msgstr "데이타베이스가 Trac 버전보다 더 새로운 버전입니다."
 
 #: trac/env.py:495
 #, python-format
@@ -123,8 +122,8 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"\"TRAC_ENV\" 환경 변수가 없습니다. 유효한 Trac 저장소를 지정하기 위해서 Trac은 이 변수를 필요로 합니다.환경변수"
-" \"TRAC_ENV\"가 존재하지 않습니다. Trac 은 유효한 Trac 저장소를 지정하기 위해 이 환경변수가 필요합니다."
+"\"TRAC_ENV\" 환경 변수가 없습니다. 유효한 Trac 저장소를 지정하기 위해서 "
+"Trac은 이 변수를 필요로 합니다."
 
 #: trac/env.py:572
 #, python-format
@@ -135,7 +134,7 @@ msgid ""
 msgstr ""
 "Trac 환경이 업그레이드되어야만 합니다.\n"
 "\n"
-"\"trac-admin %(path)s upgrade\"를 실행하십시오."
+"\"trac-admin %(path)s upgrade\" 명령을 실행하십시오."
 
 #: trac/notification.py:216
 #, python-format
@@ -148,11 +147,12 @@ msgstr "헤더의 길이가 너무 짧습니다."
 
 #: trac/notification.py:318
 msgid "TLS enabled but server does not support TLS"
-msgstr "TLS 활성화되었지만, 서버가 TLS를 지원하지 않습니다."
+msgstr "TLS가 활성화되었지만, 서버가 TLS를 지원하지 않습니다."
 
 #: trac/notification.py:390
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-msgstr "티켓이 ASCII 아닌 문자를 포함하고 있습니다. 인코딩 설정을 변경해 주십시오."
+msgstr ""
+"티켓이 ASCII가 아닌 문자를 포함하고 있습니다. 인코딩 설정을 변경해 주십시오."
 
 #: trac/perm.py:47
 #, python-format
@@ -181,7 +181,7 @@ msgstr " 버전 %(version)s"
 #: trac/admin/console.py:1129
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr "hotcopy가 존재하는 '%(dest)s'를 덮어쓸 수 없습니다."
+msgstr "hotcopy는 존재하는 '%(dest)s'를 덮어쓸 수 없습니다."
 
 #: trac/admin/web_ui.py:66
 msgid "Admin"
@@ -268,7 +268,7 @@ msgstr "권한"
 
 #: trac/admin/web_ui.py:309
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr "모두 대문자로 된 단어는 권한 이름으로 예약되어있습니다."
+msgstr "모두 대문자로 된 단어는 권한 이름을 위해 예약되어있습니다."
 
 #: trac/admin/web_ui.py:316
 msgid "Unknown action"
@@ -295,7 +295,7 @@ msgstr "업로드된 파일이 파이썬 소스 파일이나 egg 파일이 아�
 #: trac/admin/web_ui.py:412
 #, python-format
 msgid "Plugin %(name)s already installed"
-msgstr "플러그인 %(name)s가 이미 설치되어있습니다."
+msgstr "%(name)s 플러그인이 이미 설치되어있습니다."
 
 #: trac/admin/templates/admin.html:10
 msgid "Administration:"
@@ -337,9 +337,8 @@ msgstr "상세설명:"
 #: trac/admin/templates/admin_milestones.html:124
 #: trac/admin/templates/admin_plugins.html:102
 #: trac/admin/templates/admin_versions.html:94
-#, fuzzy
 msgid "Apply changes"
-msgstr "변경사항 저장"
+msgstr "변경사항 적용하기"
 
 #: trac/admin/templates/admin_components.html:10
 msgid "Components"
@@ -363,7 +362,7 @@ msgid ""
 "                [1:WikiFormatting]\n"
 "                here):"
 msgstr ""
-"상세설명 (여기에서\n"
+"상세한 설명 (여기에서\n"
 "                [1:WikiFormatting]\n"
 "                을 사용할 수 있습니다.):"
 
@@ -386,7 +385,7 @@ msgstr "취소"
 #: trac/admin/templates/admin_milestones.html:66
 #: trac/admin/templates/admin_versions.html:46
 msgid "Save"
-msgstr ""
+msgstr "저장하기"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
@@ -426,9 +425,8 @@ msgstr "기본값"
 #: trac/admin/templates/admin_milestones.html:123
 #: trac/admin/templates/admin_perms.html:93
 #: trac/admin/templates/admin_versions.html:93
-#, fuzzy
 msgid "Remove selected items"
-msgstr "선택된 버전이 없습니다"
+msgstr "선택된 아이템 삭제하기"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
@@ -477,9 +475,8 @@ msgid "Log file:"
 msgstr "로그 파일:"
 
 #: trac/admin/templates/admin_logging.html:47
-#, fuzzy
 msgid "If you specify a relative path, the log file will be stored inside the"
-msgstr "만약 상대경로를 지정한다면, the log file will be stored inside the"
+msgstr "만약 상대경로를 지정했다면, 로그 파일은 다음의 안에 저장될 것입니다."
 
 #: trac/admin/templates/admin_logging.html:49
 msgid "log"
@@ -631,11 +628,11 @@ msgstr "파이썬 egg로 패키지된 플러그인 업로드하기."
 
 #: trac/admin/templates/admin_plugins.html:37
 msgid "Install"
-msgstr ""
+msgstr "설치하기"
 
 #: trac/admin/templates/admin_plugins.html:49
 msgid "Uninstall"
-msgstr ""
+msgstr "설치제거하기"
 
 #: trac/admin/templates/admin_plugins.html:59 trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:97
@@ -836,8 +833,8 @@ msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwhich, i.e. ahead of Universal Time."
 msgstr ""
-"양의 옵셋은 그리니치(Greenwhich)에서 동쪽에 있는 시간대를 지시하기 위해서 사용됩니다. 즉, Universal Time보다"
-" 이른 시간대."
+"양의 옵셋은 그리니치(Greenwhich)에서 동쪽에 있는 시간대를 지시하기 위해서 "
+"사용됩니다. 즉, Universal Time보다 이른 시간대."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1025,9 +1022,10 @@ msgid ""
 "\n"
 "        and changes within a project."
 msgstr ""
-"Trac은 쉬운 사용에 초점이 맞추어진 웹기반의 소프트웨어 프로젝트 관리도구이며 버그/이슈 트랙킹 시스템입니다.\n"
-"Trac은 통합된 위키, 버전 컨트롤 시스템 인터페이스, 그리고 이벤트와 프로젝트의 변경사항을 유지할 수 있는 몇개의 편리한 방법을"
-" 제공합니다."
+"Trac은 쉬운 사용에 초점이 맞추어진 웹기반의 소프트웨어 프로젝트 관리도구이며 "
+"버그/이슈 트랙킹 시스템입니다.\n"
+"Trac은 통합된 위키, 버전 컨트롤 시스템 인터페이스, 그리고 이벤트와 "
+"프로젝트의 변경사항을 유지할 수 있는 몇개의 편리한 방법을 제공합니다."
 
 #: trac/templates/about.html:33
 msgid "Trac is distributed under the modified BSD License."
@@ -1078,7 +1076,6 @@ msgid "Value"
 msgstr "값"
 
 #: trac/templates/attachment.html:10
-#, fuzzy
 msgid "Attachment"
 msgstr "첨부파일"
 
@@ -1108,9 +1105,8 @@ msgid "Replace existing attachment of the same name"
 msgstr "이미 존재하는 같은 이름의 첨부파일을 교체합니다."
 
 #: trac/templates/attachment.html:48
-#, fuzzy
 msgid "Add attachment"
-msgstr "첨부파일 추가"
+msgstr "첨부파일 추가하기"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
@@ -1279,9 +1275,8 @@ msgstr ""
 "{{{"
 
 #: trac/templates/error.html:83
-#, fuzzy
 msgid "Create"
-msgstr "생성하"
+msgstr "생성하기"
 
 #: trac/templates/error.html:98
 msgid "Oops…"
@@ -1403,7 +1398,7 @@ msgstr "\", 라인"
 
 #: trac/templates/error.html:176
 msgid "Switch to plain text view"
-msgstr ""
+msgstr "일반 텍스트 보기로 전환하기"
 
 #: trac/templates/error.html:179
 msgid "System Information:"
@@ -1425,7 +1420,6 @@ msgstr "다음 페이지에 대한 변경 이력 : "
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:163
-#, fuzzy
 msgid "View changes"
 msgstr "변경사항 보기"
 
@@ -1516,9 +1510,8 @@ msgstr "공백문자 변경사항"
 #: trac/ticket/templates/query.html:183 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
-#, fuzzy
 msgid "Update"
-msgstr "늦음"
+msgstr "업데이트"
 
 #: trac/templates/macros.html:139 trac/templates/macros.html:152
 msgid "HTML preview not available"
@@ -1882,8 +1875,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
-"'%(group1)s'와 '%(group2)s' 마일스톤 그룹은 둘 다 \"catch-all\" 그룹들로 선언되어 있습니다. 설정을"
-" 체크하십시오."
+"'%(group1)s'와 '%(group2)s' 마일스톤 그룹은 둘 다 \"catch-all\" 그룹들로 "
+"선언되어 있습니다. 설정을 체크하십시오."
 
 #: trac/ticket/roadmap.py:229
 #, python-format
@@ -2012,7 +2005,7 @@ msgstr "티켓 필드 '%(field)s'가 유효하지 않습니다.: %(message)s"
 
 #: trac/ticket/web_ui.py:1036
 msgid "Assign to"
-msgstr ""
+msgstr "다음 사람에게 할당하기"
 
 #: trac/ticket/web_ui.py:1052
 msgid "Open"
@@ -2106,9 +2099,8 @@ msgstr "마일스톤에 관계된 열려진 티켓을 다른 마일스톤으로 
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:116
 #: trac/wiki/templates/wiki_edit.html:121
-#, fuzzy
 msgid "Submit changes"
-msgstr "티켓 변경사항"
+msgstr "변경사항 적용하기"
 
 #: trac/ticket/templates/milestone_edit.html:90
 msgid "Add milestone"
@@ -2202,14 +2194,12 @@ msgid "Max items per page"
 msgstr "페이지당 최대 아이템들"
 
 #: trac/ticket/templates/query.html:218
-#, fuzzy
 msgid "Edit query"
-msgstr "질의 편집하기"
+msgstr "질의문 편집하기"
 
 #: trac/ticket/templates/query.html:226
-#, fuzzy
 msgid "Save query"
-msgstr "질의 저장"
+msgstr "질의문 저장하기"
 
 #: trac/ticket/templates/query.html:226
 #, python-format
@@ -2221,9 +2211,8 @@ msgid "Create new report from current query"
 msgstr "현재 쿼리로부터 새로운 리포트를 생성합니다."
 
 #: trac/ticket/templates/query.html:235
-#, fuzzy
 msgid "Delete query"
-msgstr "질의 삭제"
+msgstr "질의문 삭제하기"
 
 #: trac/ticket/templates/query.html:242
 #: trac/ticket/templates/report_edit.html:36
@@ -2257,7 +2246,6 @@ msgstr "이 리포트를 정말로 삭제하기겠습니까?"
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
-#, fuzzy
 msgid "Delete report"
 msgstr "리포트 삭제하기"
 
@@ -2302,23 +2290,20 @@ msgid "expression)"
 msgstr "표현)"
 
 #: trac/ticket/templates/report_edit.html:41
-#, fuzzy
 msgid "Save report"
-msgstr "리포트 저장"
+msgstr "리포트 저장하기"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
 msgstr "일치함)"
 
 #: trac/ticket/templates/report_view.html:27
-#, fuzzy
 msgid "Edit report"
 msgstr "리포트 편집하기"
 
 #: trac/ticket/templates/report_view.html:33
-#, fuzzy
 msgid "Copy report"
-msgstr "리포트 보기"
+msgstr "리포트 복사하기"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
@@ -2326,7 +2311,6 @@ msgid "View report"
 msgstr "리포트 보기"
 
 #: trac/ticket/templates/report_view.html:160
-#, fuzzy
 msgid "Create new report"
 msgstr "새로운 리포트 생성하기"
 
@@ -2347,9 +2331,8 @@ msgstr ""
 "                ("
 
 #: trac/ticket/templates/roadmap.html:67
-#, fuzzy
 msgid "Add new milestone"
-msgstr "새로운 마일스톤 생성하기"
+msgstr "새로운 마일스톤 추가하기"
 
 #: trac/ticket/templates/ticket.html:59
 #: trac/versioncontrol/templates/changeset.html:128
@@ -2430,7 +2413,6 @@ msgid "diff"
 msgstr "비교"
 
 #: trac/ticket/templates/ticket.html:183 trac/ticket/templates/ticket.html:225
-#, fuzzy
 msgid "Reply"
 msgstr "응답"
 
@@ -2587,8 +2569,8 @@ msgid ""
 "Unsupported version control system \"%(name)s\". Check that the Python "
 "support libraries for \"%(name)s\" are correctly installed."
 msgstr ""
-"지원되지 않는 버전 컨트롤 시스템 \"%(name)s\". \"%(name)s\"를 위한 파이썬 지원 라이브러리가 정상적으로 "
-"설치되어있는지 체크하십시오."
+"지원되지 않는 버전 컨트롤 시스템 \"%(name)s\". \"%(name)s\"를 위한 파이썬 "
+"지원 라이브러리가 정상적으로 설치되어있는지 체크하십시오."
 
 #: trac/versioncontrol/api.py:163
 #, python-format
@@ -2643,8 +2625,8 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-"차이점 비교가 일치하지 않음: 베이스는 %(oldnode)s (%(oldrev)s 리비전에 서의 %(oldpath)s), 그리고 "
-"타켓은 %(newnode)s (%(newrev)s 리비전에서의 %(newpath)s)."
+"차이점 비교가 일치하지 않음: 베이스는 %(oldnode)s (%(oldrev)s 리비전에 서의 "
+"%(oldpath)s), 그리고 타켓은 %(newnode)s (%(newrev)s 리비전에서의 %(newpath)s)."
 
 #: trac/versioncontrol/svn_fs.py:803
 #, python-format
@@ -2660,9 +2642,8 @@ msgid "Visit:"
 msgstr "다음 경로 보기:"
 
 #: trac/versioncontrol/templates/browser.html:63
-#, fuzzy
 msgid "Go!"
-msgstr "가다!"
+msgstr "이동!"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Jump to the chosen preselected path"
@@ -2705,7 +2686,6 @@ msgid "for help on using the browser."
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:153
-#, fuzzy
 msgid "View changes..."
 msgstr "변경사항 보기..."
 
@@ -3049,12 +3029,10 @@ msgid "Older Revisions"
 msgstr "더 오래된 리비전"
 
 #: trac/web/auth.py:91
-#, fuzzy
 msgid "Logout"
 msgstr "로그아웃"
 
 #: trac/web/auth.py:94
-#, fuzzy
 msgid "Login"
 msgstr "로그인"
 
@@ -3178,8 +3156,11 @@ msgid "this page?"
 msgstr "이 페이지?"
 
 #: trac/wiki/templates/wiki_delete.html:28
-msgid "This is the only version the page, so the page will be removed completely!"
-msgstr "이 버전이 이 페이지의 유일한 버전입니다. 따라서 이 페이지는 완전히 제거될 것입니다!"
+msgid ""
+"This is the only version the page, so the page will be removed completely!"
+msgstr ""
+"이 버전이 이 페이지의 유일한 버전입니다. 따라서 이 페이지는 완전히 제거될 "
+"것입니다!"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
@@ -3238,8 +3219,8 @@ msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
-"[1:참고:] 위키 내용을 편집하면서 도움이 필요하다면 [2:WikiFormatting]과 [3:TracWiki] 페이지를 "
-"참고하십시오."
+"[1:참고:] 위키 내용을 편집하면서 도움이 필요하다면 [2:WikiFormatting]과 "
+"[3:TracWiki] 페이지를 참고하십시오."
 
 #: trac/wiki/templates/wiki_edit.html:92
 msgid "Change information"
@@ -3254,19 +3235,16 @@ msgid "Page is read-only"
 msgstr "이 페이지는 읽기전용입니다."
 
 #: trac/wiki/templates/wiki_edit.html:115
-#, fuzzy
 msgid "Merge changes"
-msgstr "변경사항 병합"
+msgstr "변경사항 병합하기"
 
 #: trac/wiki/templates/wiki_edit.html:119
-#, fuzzy
 msgid "Preview Page"
-msgstr "미리보기"
+msgstr "미리보기 페이지"
 
 #: trac/wiki/templates/wiki_edit.html:120
-#, fuzzy
 msgid "Review Changes"
-msgstr "변경사항 검토"
+msgstr "변경사항 다시보기"
 
 #: trac/wiki/templates/wiki_view.html:39
 msgid "Describe"
