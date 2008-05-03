@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-05-01 21:33+0200\n"
+"PO-Revision-Date: 2008-05-03 22:35+0200\n"
 "Last-Translator: Emmanuel Blot <emmanuel.blot@free.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.0dev-r363\n"
+"Generated-By: Babel 1.0dev-r364\n"
 
 #: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:26
 msgid "About Trac"
@@ -203,7 +203,7 @@ msgid "Unknown administration panel"
 msgstr "Panneau d'administration inconnu"
 
 #: trac/admin/web_ui.py:180 trac/admin/web_ui.py:207 trac/admin/web_ui.py:296
-#: trac/admin/web_ui.py:373 trac/prefs/web_ui.py:85
+#: trac/admin/web_ui.py:373 trac/prefs/web_ui.py:89
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Général"
@@ -380,7 +380,8 @@ msgstr ""
 #: trac/ticket/templates/report_delete.html:20
 #: trac/ticket/templates/report_edit.html:42
 #: trac/wiki/templates/wiki_delete.html:36
-#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:123
+#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
+#: trac/wiki/templates/wiki_edit.html:133
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -495,7 +496,7 @@ msgstr "journal"
 msgid "directory of the project environment ("
 msgstr "répertoire du projet ("
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:504
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
 msgid "Milestones"
 msgstr "Jalons"
 
@@ -698,6 +699,41 @@ msgstr "Livrée :"
 msgid "Released"
 msgstr "Livrée"
 
+#: trac/db/api.py:97
+#, python-format
+msgid "Unsupported database type \"%(scheme)s\""
+msgstr ""
+
+#: trac/db/api.py:120
+msgid "Database connection string must start with scheme:/"
+msgstr ""
+
+#: trac/db/mysql_backend.py:148
+msgid "MySQL servers older than 4.1 are not supported!"
+msgstr ""
+
+#: trac/db/pool.py:107
+#, python-format
+msgid "Unable to get database connection within %(time)d seconds"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:131
+#, python-format
+msgid "Database already exists at %(path)s"
+msgstr ""
+
+#: trac/db/sqlite_backend.py:159
+#, fuzzy, python-format
+msgid "Database \"%(path)s\" not found."
+msgstr "La page %(name)s est introuvable"
+
+#: trac/db/sqlite_backend.py:168
+#, python-format
+msgid ""
+"The user %(user)s requires read _and_ write permission to the database "
+"file %(path)s and the directory it is located in."
+msgstr ""
+
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
@@ -724,28 +760,28 @@ msgstr "Docutils non trouvé"
 msgid "Docutils version >= %(version)s required, %(found)s found"
 msgstr "Docutils version >= %(version)s nécessaire, %(found)s trouvé"
 
-#: trac/prefs/web_ui.py:51 trac/prefs/templates/prefs.html:16
+#: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
 msgstr "Préférences"
 
-#: trac/prefs/web_ui.py:74
+#: trac/prefs/web_ui.py:77
 msgid "Unknown preference panel"
 msgstr "Panneau de préférence inconnu"
 
-#: trac/prefs/web_ui.py:86 trac/prefs/templates/prefs_datetime.html:9
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_datetime.html:9
 msgid "Date & Time"
 msgstr "Date & Heure"
 
-#: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_keybindings.html:9
+#: trac/prefs/web_ui.py:91 trac/prefs/templates/prefs_keybindings.html:9
 msgid "Keyboard Shortcuts"
 msgstr "Raccourcis Clavier"
 
-#: trac/prefs/web_ui.py:88 trac/prefs/templates/prefs_language.html:9
+#: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
 #, fuzzy
 msgid "Language"
 msgstr "Gestions des"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_advanced.html:9
+#: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
 msgstr "Avancé"
 
@@ -863,9 +899,10 @@ msgstr ""
 "\"Greenwich (GMT)."
 
 #: trac/prefs/templates/prefs_datetime.html:36
+#, fuzzy
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
-"Greenwhich, i.e. ahead of Universal Time."
+"Greenwich, i.e. ahead of Universal Time."
 msgstr ""
 "Un décalage positif est utilisé pour indiquer un fuseau horaire situé à "
 "l'Est de Greenwhich, c.à.d. en avance sur l'Heure Universelle."
@@ -1151,7 +1188,7 @@ msgid "Attachment Info"
 msgstr "Info du fichier joint"
 
 #: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:248
-#: trac/wiki/templates/wiki_edit.html:95
+#: trac/wiki/templates/wiki_edit.html:105
 msgid "Your email or username:"
 msgstr "Courriel ou nom d'utilisateur :"
 
@@ -1703,50 +1740,50 @@ msgstr "Notes :"
 
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
-msgid "Component %s already exists."
+msgid "Component %(name)s already exists."
 msgstr "Composant %s existe déjà."
 
-#: trac/ticket/admin.py:94
+#: trac/ticket/admin.py:95
 msgid "No component selected"
 msgstr "Pas de composant sélectionné"
 
-#: trac/ticket/admin.py:155 trac/ticket/roadmap.py:633
+#: trac/ticket/admin.py:156 trac/ticket/roadmap.py:632
 msgid "Completion date may not be in the future"
 msgstr "La date de fin ne peut pas être dans le futur"
 
-#: trac/ticket/admin.py:157
+#: trac/ticket/admin.py:158
 #, fuzzy
 msgid "Invalid Completion Date"
 msgstr ""
 
-#: trac/ticket/admin.py:182
-#, python-format
-msgid "Milestone %s already exists."
+#: trac/ticket/admin.py:183
+#, fuzzy, python-format
+msgid "Milestone %(name)s already exists."
 msgstr "Jalon %s existe déjà."
 
-#: trac/ticket/admin.py:189
+#: trac/ticket/admin.py:191
 msgid "No milestone selected"
 msgstr "Pas de jalon sélectionné"
 
-#: trac/ticket/admin.py:261
+#: trac/ticket/admin.py:263
 #, fuzzy, python-format
-msgid "Version %s already exists."
+msgid "Version %(name)s already exists."
 msgstr "Version %s existe déjà."
 
-#: trac/ticket/admin.py:268
+#: trac/ticket/admin.py:271
 msgid "No version selected"
 msgstr "Pas de version sélectionné"
 
-#: trac/ticket/admin.py:339
-#, python-format
-msgid "%s %s already exists"
+#: trac/ticket/admin.py:343
+#, fuzzy, python-format
+msgid "%(type)s %(name)s already exists"
 msgstr "%s %s existe déjà"
 
-#: trac/ticket/admin.py:346
+#: trac/ticket/admin.py:350
 msgid "No enum selected"
 msgstr "Pas d'énumération sélectionné"
 
-#: trac/ticket/admin.py:373
+#: trac/ticket/admin.py:377
 msgid "Order numbers must be unique"
 msgstr "Les numéros doivent être uniques"
 
@@ -1768,31 +1805,31 @@ msgstr ""
 msgid "The ticket will be disowned"
 msgstr "Le ticket perdra son propriétaire"
 
-#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:259
+#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:260
 msgid "The owner will change"
 msgstr "Le ticket sera réaffecté"
 
-#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:262
-#, python-format
-msgid "The owner will change to %s"
+#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
+#, fuzzy, python-format
+msgid "The owner will change to %(name)s"
 msgstr "Le propriétaire changera pour %s"
 
-#: trac/ticket/default_workflow.py:255
+#: trac/ticket/default_workflow.py:256
 msgid "to "
 msgstr "ā"
 
-#: trac/ticket/default_workflow.py:273
-#, python-format
-msgid "The resolution will be set to %s"
+#: trac/ticket/default_workflow.py:275
+#, fuzzy, python-format
+msgid "The resolution will be set to %(name)s"
 msgstr "La résolution sera définie à %s"
 
-#: trac/ticket/default_workflow.py:283
+#: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
 msgstr "La résolution sera définie"
 
-#: trac/ticket/default_workflow.py:288
-#, python-format
-msgid "Next status will be '%s'"
+#: trac/ticket/default_workflow.py:290
+#, fuzzy, python-format
+msgid "Next status will be '%(name)s'"
 msgstr "Le prochain status sera '%s'"
 
 #: trac/ticket/model.py:361
@@ -1980,7 +2017,7 @@ msgstr ""
 " utilisé par d'autres groupes. Merci de vérifier votre configuration."
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:419
-#: trac/ticket/roadmap.py:550 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
 msgstr "Feuille de Route"
@@ -1989,22 +2026,22 @@ msgstr "Feuille de Route"
 msgid "iCalendar"
 msgstr "iCalendar"
 
-#: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:802
+#: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
 msgid "Milestone %(name)s"
 msgstr "Jalon %(name)s"
 
-#: trac/ticket/roadmap.py:448
+#: trac/ticket/roadmap.py:447
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr "Ticket #%(num)s: %(summary)s"
 
-#: trac/ticket/roadmap.py:622
+#: trac/ticket/roadmap.py:621
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
 msgstr "Le Jalon \"%(name)s\" existe déjà, merci de choisir un nom différent"
 
-#: trac/ticket/roadmap.py:627
+#: trac/ticket/roadmap.py:626
 msgid "You must provide a name for the milestone."
 msgstr "Aucun nom n'a été défini pour ce Jalon."
 
@@ -2203,8 +2240,8 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "Mettre à jour les tickets ouverts associés au jalon"
 
 #: trac/ticket/templates/milestone_edit.html:89
-#: trac/wiki/templates/wiki_edit.html:116
-#: trac/wiki/templates/wiki_edit.html:121
+#: trac/wiki/templates/wiki_edit.html:126
+#: trac/wiki/templates/wiki_edit.html:131
 #, fuzzy
 msgid "Submit changes"
 msgstr "Modifications du ticket"
@@ -2492,7 +2529,7 @@ msgstr "— à"
 msgid "Preview ("
 msgstr "Aperçu ("
 
-#: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:52
+#: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:62
 msgid "skip"
 msgstr "sauter"
 
@@ -2590,7 +2627,7 @@ msgstr "Rapporteur:"
 msgid "I have files to attach to this ticket"
 msgstr "Joindre des fichiers à ce ticket"
 
-#: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:114
+#: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:124
 #, fuzzy
 msgid "Preview"
 msgstr "Aperçu :"
@@ -2798,7 +2835,7 @@ msgid "Parent Directory"
 msgstr "Répertoire Parent"
 
 #: trac/versioncontrol/templates/browser.html:100
-#: trac/wiki/templates/wiki_edit.html:41 trac/wiki/templates/wiki_view.html:23
+#: trac/wiki/templates/wiki_edit.html:51 trac/wiki/templates/wiki_view.html:23
 msgid "Revision info"
 msgstr "Info Révision"
 
@@ -3174,22 +3211,32 @@ msgstr "Afficher la Dernière Révision"
 msgid "Older Revisions"
 msgstr "Révisions antérieures"
 
-#: trac/web/auth.py:91
+#: trac/web/auth.py:89
+#, python-format
+msgid "logged in as %(user)s"
+msgstr ""
+
+#: trac/web/auth.py:92
 #, fuzzy
 msgid "Logout"
 msgstr "journal"
 
-#: trac/web/auth.py:94
+#: trac/web/auth.py:95
 #, fuzzy
 msgid "Login"
 msgstr "journal"
 
-#: trac/web/chrome.py:154 trac/web/chrome.py:162
+#: trac/web/auth.py:137
+#, python-format
+msgid "Already logged in as %(user)s."
+msgstr ""
+
+#: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, fuzzy, python-format
 msgid "Previous %(label)s"
 msgstr "Précédent %(label)s"
 
-#: trac/web/chrome.py:174 trac/web/chrome.py:181
+#: trac/web/chrome.py:180 trac/web/chrome.py:187
 #, python-format
 msgid "Next %(label)s"
 msgstr "Suivant %(label)s"
@@ -3320,15 +3367,15 @@ msgstr "Edition"
 msgid "Someone else has modified that page since you started your edits."
 msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
 
-#: trac/wiki/templates/wiki_edit.html:31
+#: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
 msgstr "Une sauvegarde directe écraserait ces modifications"
 
-#: trac/wiki/templates/wiki_edit.html:31
+#: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "(highlighted below as deletions)."
 msgstr "(mises en évidence ci-dessous en tant que suppressions)"
 
-#: trac/wiki/templates/wiki_edit.html:33
+#: trac/wiki/templates/wiki_edit.html:33 trac/wiki/templates/wiki_edit.html:42
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
@@ -3337,7 +3384,7 @@ msgstr ""
 "manuellement\n"
 "avec les changements locaux."
 
-#: trac/wiki/templates/wiki_edit.html:34
+#: trac/wiki/templates/wiki_edit.html:34 trac/wiki/templates/wiki_edit.html:44
 msgid "If you're unsure about what you're doing, please press"
 msgstr "Si vous avez des doutes sur ce que vous faites, merci d'appuyer sur"
 
@@ -3350,15 +3397,30 @@ msgstr ""
 "la\n"
 "toute dernière version de cette page"
 
-#: trac/wiki/templates/wiki_edit.html:43
+#: trac/wiki/templates/wiki_edit.html:39
+#, fuzzy
+msgid "Someone else modified that page since you started your edits."
+msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
+
+#: trac/wiki/templates/wiki_edit.html:45
+#, fuzzy
+msgid ""
+"(loosing your changes) and start editing the latest version of the page\n"
+"        again."
+msgstr ""
+"(vos modifications seront perdues) et recommencez l'édition à partir de "
+"la\n"
+"toute dernière version de cette page"
+
+#: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"
 msgstr "Information sur les modifications pour les versions futures"
 
-#: trac/wiki/templates/wiki_edit.html:44 trac/wiki/templates/wiki_view.html:26
+#: trac/wiki/templates/wiki_edit.html:54 trac/wiki/templates/wiki_view.html:26
 msgid "(modified by"
 msgstr "(modifié par"
 
-#: trac/wiki/templates/wiki_edit.html:62
+#: trac/wiki/templates/wiki_edit.html:72
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
@@ -3366,11 +3428,11 @@ msgstr ""
 "Désolé, cette page a été modifiée par un autre utilisateur depuis\n"
 "le début de l'édition. Les modifications ne peuvent être enregistrées."
 
-#: trac/wiki/templates/wiki_edit.html:75
+#: trac/wiki/templates/wiki_edit.html:85
 msgid "Adjust edit area height:"
 msgstr "Ajustement de la hauteur de la zone d'édition :"
 
-#: trac/wiki/templates/wiki_edit.html:87
+#: trac/wiki/templates/wiki_edit.html:97
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
@@ -3378,29 +3440,29 @@ msgstr ""
 "[1:Note:] Voir [2:WikiFormatting] et\n"
 "          [3:TracWiki] pour de l'aide sur l'édition de contenus Wiki."
 
-#: trac/wiki/templates/wiki_edit.html:92
+#: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
 msgstr "Modification des informations"
 
-#: trac/wiki/templates/wiki_edit.html:100
+#: trac/wiki/templates/wiki_edit.html:110
 msgid "Comment about this change (optional):"
 msgstr "Commentaires sur cette modification (optionnel)"
 
-#: trac/wiki/templates/wiki_edit.html:107
+#: trac/wiki/templates/wiki_edit.html:117
 msgid "Page is read-only"
 msgstr "La page est en lecture seule"
 
-#: trac/wiki/templates/wiki_edit.html:115
+#: trac/wiki/templates/wiki_edit.html:125
 #, fuzzy
 msgid "Merge changes"
 msgstr "Enregistrer les changements"
 
-#: trac/wiki/templates/wiki_edit.html:119
+#: trac/wiki/templates/wiki_edit.html:129
 #, fuzzy
 msgid "Preview Page"
 msgstr "Aperçu ("
 
-#: trac/wiki/templates/wiki_edit.html:120
+#: trac/wiki/templates/wiki_edit.html:130
 #, fuzzy
 msgid "Review Changes"
 msgstr "Enregistrer les changements"
