@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-05-03 16:33+0200\n"
+"POT-Creation-Date: 2008-05-03 18:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -478,7 +478,7 @@ msgstr ""
 msgid "directory of the project environment ("
 msgstr ""
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:504
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
 msgid "Milestones"
 msgstr ""
 
@@ -850,7 +850,7 @@ msgstr ""
 #: trac/prefs/templates/prefs_datetime.html:36
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
-"Greenwhich, i.e. ahead of Universal Time."
+"Greenwich, i.e. ahead of Universal Time."
 msgstr ""
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1610,49 +1610,49 @@ msgstr ""
 
 #: trac/ticket/admin.py:87
 #, python-format
-msgid "Component %s already exists."
+msgid "Component %(name)s already exists."
 msgstr ""
 
-#: trac/ticket/admin.py:94
+#: trac/ticket/admin.py:95
 msgid "No component selected"
 msgstr ""
 
-#: trac/ticket/admin.py:155 trac/ticket/roadmap.py:633
+#: trac/ticket/admin.py:156 trac/ticket/roadmap.py:632
 msgid "Completion date may not be in the future"
 msgstr ""
 
-#: trac/ticket/admin.py:157
+#: trac/ticket/admin.py:158
 msgid "Invalid Completion Date"
 msgstr ""
 
-#: trac/ticket/admin.py:182
+#: trac/ticket/admin.py:183
 #, python-format
-msgid "Milestone %s already exists."
+msgid "Milestone %(name)s already exists."
 msgstr ""
 
-#: trac/ticket/admin.py:189
+#: trac/ticket/admin.py:191
 msgid "No milestone selected"
 msgstr ""
 
-#: trac/ticket/admin.py:261
+#: trac/ticket/admin.py:263
 #, python-format
-msgid "Version %s already exists."
+msgid "Version %(name)s already exists."
 msgstr ""
 
-#: trac/ticket/admin.py:268
+#: trac/ticket/admin.py:271
 msgid "No version selected"
 msgstr ""
 
-#: trac/ticket/admin.py:339
+#: trac/ticket/admin.py:343
 #, python-format
-msgid "%s %s already exists"
+msgid "%(type)s %(name)s already exists"
 msgstr ""
 
-#: trac/ticket/admin.py:346
+#: trac/ticket/admin.py:350
 msgid "No enum selected"
 msgstr ""
 
-#: trac/ticket/admin.py:373
+#: trac/ticket/admin.py:377
 msgid "Order numbers must be unique"
 msgstr ""
 
@@ -1674,31 +1674,31 @@ msgstr ""
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:259
+#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:260
 msgid "The owner will change"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:262
+#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, python-format
-msgid "The owner will change to %s"
+msgid "The owner will change to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:255
+#: trac/ticket/default_workflow.py:256
 msgid "to "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:273
+#: trac/ticket/default_workflow.py:275
 #, python-format
-msgid "The resolution will be set to %s"
+msgid "The resolution will be set to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:283
+#: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:288
+#: trac/ticket/default_workflow.py:290
 #, python-format
-msgid "Next status will be '%s'"
+msgid "Next status will be '%(name)s'"
 msgstr ""
 
 #: trac/ticket/model.py:361
@@ -1881,7 +1881,7 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:419
-#: trac/ticket/roadmap.py:550 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
 msgstr ""
@@ -1890,22 +1890,22 @@ msgstr ""
 msgid "iCalendar"
 msgstr ""
 
-#: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:802
+#: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
 msgid "Milestone %(name)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:448
+#: trac/ticket/roadmap.py:447
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:622
+#: trac/ticket/roadmap.py:621
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
 msgstr ""
 
-#: trac/ticket/roadmap.py:627
+#: trac/ticket/roadmap.py:626
 msgid "You must provide a name for the milestone."
 msgstr ""
 
