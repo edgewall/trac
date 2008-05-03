@@ -3008,12 +3008,11 @@ msgstr ""
 
 #: trac/web/auth.py:91
 msgid "Logout"
-msgstr ""
+msgstr "Uitloggen"
 
 #: trac/web/auth.py:94
-#, fuzzy
 msgid "Login"
-msgstr "Plugins"
+msgstr "Inloggen"
 
 #: trac/web/chrome.py:154 trac/web/chrome.py:162
 #, python-format
