@@ -177,8 +177,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
         allowed_actions = []
         for action_name, action_info in self.actions.items():
-            if 'hidden' in action_info['operations']:
-                continue
             oldstates = action_info['oldstates']
             if oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.
@@ -328,8 +326,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                 this_action.get('set_resolution', '').strip())
                 updated['resolution'] = newresolution
 
-            # leave_status and hidden are just no-ops here, so we don't look
-            # for them.
+            # leave_status is just a no-op here, so we don't look for it.
         return updated
 
     def apply_action_side_effects(self, req, ticket, action):
@@ -363,7 +360,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         in the given state for the controller's get_ticket_actions().
 
         If state='*' (the default), all actions with the given operation are
-        returned (including those that are 'hidden').
+        returned.
         """
         actions = [(info['default'], action) for action, info
                    in self.actions.items()
