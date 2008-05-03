@@ -86,7 +86,7 @@ class LoginModule(Component):
 
     def get_navigation_items(self, req):
         if req.authname and req.authname != 'anonymous':
-            yield ('metanav', 'login', 'logged in as %s' % req.authname)
+            yield ('metanav', 'login', _('logged in as %s') % req.authname)
             yield ('metanav', 'logout',
                    tag.a(_('Logout'), href=req.href.logout()))
         else:
@@ -133,7 +133,7 @@ class LoginModule(Component):
             remote_user = remote_user.lower()
 
         assert req.authname in ('anonymous', remote_user), \
-               'Already logged in as %s.' % req.authname
+               _('Already logged in as %s.') % req.authname
 
         cookie = hex_entropy()
         db = self.env.get_db_cnx()
