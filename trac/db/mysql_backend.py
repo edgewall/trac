@@ -145,7 +145,8 @@ class MySQLConnection(ConnectionWrapper):
     def _set_character_set(self, cnx, charset):
         vers = tuple([ int(n) for n in cnx.get_server_info().split('.')[:2] ])
         if vers < (4, 1):
-            raise TracError, 'MySQL servers older than 4.1 are not supported!'
+            raise TracError(_('MySQL servers older than 4.1 are not '
+                              'supported!'))
         cnx.query('SET NAMES %s' % charset)
         cnx.store_result()
         cnx.charset = charset
