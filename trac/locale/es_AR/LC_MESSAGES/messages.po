@@ -730,7 +730,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "No se encontró la página %(name)s"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1734,7 +1734,7 @@ msgstr "Notas:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "El component %s ya existe."
+msgstr "El component %(name)s ya existe."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1752,7 +1752,7 @@ msgstr ""
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Hito %s ya existe."
+msgstr "Hito %(name)s ya existe."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1761,7 +1761,7 @@ msgstr "No hay ningún hito seleccionado"
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "La versión %s ya existe."
+msgstr "La versión %(name)s ya existe."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1770,7 +1770,7 @@ msgstr "No hay ninguna versión seleccionada"
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "%s %s ya existe."
+msgstr "%(type)s %(name)s ya existe."
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
@@ -1805,7 +1805,7 @@ msgstr "El dueño cambiará"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "El dueño cambiará a %s"
+msgstr "El dueño cambiará a %(name)s"
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "
@@ -1814,7 +1814,7 @@ msgstr "a "
 #: trac/ticket/default_workflow.py:275
 #, fuzzy, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "La resolución será establecida a %s"
+msgstr "La resolución será establecida a %(name)s"
 
 #: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
@@ -1823,7 +1823,7 @@ msgstr "La resolución será establecida"
 #: trac/ticket/default_workflow.py:290
 #, fuzzy, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "El siguiente estado será '%s'"
+msgstr "El siguiente estado será '%(name)s'"
 
 #: trac/ticket/model.py:361
 #, python-format

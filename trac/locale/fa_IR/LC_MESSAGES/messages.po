@@ -720,7 +720,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "صفحه %(name)s  پیدا نشد"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1794,7 +1794,7 @@ msgstr "مالک تغییر خواهد کرد"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "مالک تغییر خواهد کرد به %s"
+msgstr "مالک تغییر خواهد کرد به %(name)s"
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "
@@ -1803,7 +1803,7 @@ msgstr "به"
 #: trac/ticket/default_workflow.py:275
 #, fuzzy, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "نتیجه تحلیل به‌صورت %s تنظیم خواهد شد."
+msgstr "نتیجه تحلیل به‌صورت %(name)s تنظیم خواهد شد."
 
 #: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
@@ -1812,7 +1812,7 @@ msgstr "نتیجه تحلیل تنظیم خواهد شد"
 #: trac/ticket/default_workflow.py:290
 #, fuzzy, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "وضعیت بعدی '%s' خواهد بود"
+msgstr "وضعیت بعدی '%(name)s' خواهد بود"
 
 #: trac/ticket/model.py:361
 #, python-format

@@ -723,7 +723,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "La pagina %(name)s non è stata trovata"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1714,7 +1714,7 @@ msgstr "Licenza:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "Componente %s esiste già."
+msgstr "Componente %(name)s esiste già."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1732,7 +1732,7 @@ msgstr ""
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Edizione %s esiste già."
+msgstr "Edizione %(name)s esiste già."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1741,7 +1741,7 @@ msgstr ""
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "Versione %s esiste già."
+msgstr "Versione %(name)s esiste già."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1750,7 +1750,7 @@ msgstr ""
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "%s %s esiste già"
+msgstr "%(type)s %(name)s esiste già"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
@@ -1786,7 +1786,7 @@ msgstr "Mostra l'intero changeset"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "Mostra l'intero changeset"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "

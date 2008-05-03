@@ -719,7 +719,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "没有找到页面 %(name)s"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1677,7 +1677,7 @@ msgstr "注:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "组件 %s 已经存在."
+msgstr "组件 %(name)s 已经存在."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1695,7 +1695,7 @@ msgstr "无效完成日期"
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "里程碑 %s 已经存在."
+msgstr "里程碑 %(name)s 已经存在."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1704,7 +1704,7 @@ msgstr "没有选择里程碑"
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "版本 %s 已经存在."
+msgstr "版本 %(name)s 已经存在."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1713,7 +1713,7 @@ msgstr "没有选择版本"
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "%s %s 已经存在"
+msgstr "%(type)s %(name)s 已经存在"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
@@ -1748,7 +1748,7 @@ msgstr "属主将修改"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "属主将修改为 %s"
+msgstr "属主将修改为 %(name)s"
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "
@@ -1757,7 +1757,7 @@ msgstr "到"
 #: trac/ticket/default_workflow.py:275
 #, fuzzy, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "处理结果将设置为 %s"
+msgstr "处理结果将设置为 %(name)s"
 
 #: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
@@ -1766,7 +1766,7 @@ msgstr "处理结果将设置为"
 #: trac/ticket/default_workflow.py:290
 #, fuzzy, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "下一个状态将是 '%s'"
+msgstr "下一个状态将是 '%(name)s'"
 
 #: trac/ticket/model.py:361
 #, fuzzy, python-format

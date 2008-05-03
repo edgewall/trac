@@ -1770,7 +1770,7 @@ msgstr "Zobrazit úplný seznam změn"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "Zobrazit úplný seznam změn"
+msgstr "Zobrazit úplný seznam změn %(name)s"
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "

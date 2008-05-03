@@ -713,7 +713,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "Pagina %(name)s niet gevonden"
+msgstr "Database \"%(path)s\" niet gevonden."
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1636,7 +1636,7 @@ msgstr "Licentie:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "Component %s bestaat al."
+msgstr "Component %(name)s bestaat al."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1654,7 +1654,7 @@ msgstr ""
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Mijlpaal %s bestaat al."
+msgstr "Mijlpaal %(name)s bestaat al."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1663,7 +1663,7 @@ msgstr ""
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "Versie %s bestaat al."
+msgstr "Versie %(name)s bestaat al."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1672,7 +1672,7 @@ msgstr ""
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "%s %s bestaat al"
+msgstr "%(type)s %(name)s bestaat al"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"

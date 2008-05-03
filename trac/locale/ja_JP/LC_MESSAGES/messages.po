@@ -707,7 +707,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "ページ %(name)s が見つかりません"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1702,7 +1702,7 @@ msgstr ""
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "プラグイン %(name)s は既にインストール済みです"
+msgstr ""
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
@@ -1737,7 +1737,7 @@ msgstr "担当者を変更します"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "担当者を %s に変更します"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "
@@ -1746,7 +1746,7 @@ msgstr ""
 #: trac/ticket/default_workflow.py:275
 #, fuzzy, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "解決方法を %s に設定します"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
@@ -1755,7 +1755,7 @@ msgstr "解決方法が設定されます"
 #: trac/ticket/default_workflow.py:290
 #, fuzzy, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "次のステータスは '%s' です"
+msgstr ""
 
 #: trac/ticket/model.py:361
 #, python-format

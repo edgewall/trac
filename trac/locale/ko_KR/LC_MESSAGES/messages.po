@@ -707,7 +707,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "%(name)s 페이지를 찾을 수 없습니다"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1647,7 +1647,7 @@ msgstr "주의:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "컴포넌트 %s가 이미 존재합니다."
+msgstr "컴포넌트 %(name)s가 이미 존재합니다."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1664,7 +1664,7 @@ msgstr "유효하지 않은 완료 날짜"
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "마일스톤 %s가 이미 존재합니다."
+msgstr "마일스톤 %(name)s가 이미 존재합니다."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1673,7 +1673,7 @@ msgstr "선택된 마일스톤이 없습니다."
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "버전 %s가 이미 존재합니다."
+msgstr "버전 %(name)s가 이미 존재합니다."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1682,7 +1682,7 @@ msgstr "선택된 버전이 없습니다."
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "%s %s가 이미 존재합니다"
+msgstr "%(type)s %(name)s가 이미 존재합니다"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
@@ -1717,7 +1717,7 @@ msgstr "소유자가 변경될 것입니다"
 #: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
-msgstr "소유자가 %s 로 변경될 것입니다"
+msgstr "소유자가 %(name)s 로 변경될 것입니다"
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "
@@ -1726,7 +1726,7 @@ msgstr ""
 #: trac/ticket/default_workflow.py:275
 #, fuzzy, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "해결방법이 %s 로 설정될 것입니다"
+msgstr "해결방법이 %(name)s 로 설정될 것입니다"
 
 #: trac/ticket/default_workflow.py:285
 msgid "The resolution will be set"
@@ -1735,7 +1735,7 @@ msgstr "해결방법이 설정될 것입니다"
 #: trac/ticket/default_workflow.py:290
 #, fuzzy, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "다음 상태는 '%s' 가 될 것입니다."
+msgstr "다음 상태는 '%(name)s' 가 될 것입니다."
 
 #: trac/ticket/model.py:361
 #, python-format

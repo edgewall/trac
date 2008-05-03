@@ -726,7 +726,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "Страница не найдена: %(name)s"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1701,7 +1701,7 @@ msgstr "Лицензия:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "Компонент %s уже существует."
+msgstr ""
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1719,7 +1719,7 @@ msgstr ""
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Этап %s уже существует."
+msgstr ""
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1728,7 +1728,7 @@ msgstr ""
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "Версия %s уже существует."
+msgstr ""
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1737,7 +1737,7 @@ msgstr ""
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "%s %s уже существует"
+msgstr ""
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"

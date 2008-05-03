@@ -723,7 +723,7 @@ msgstr ""
 #: trac/db/sqlite_backend.py:159
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "Die Seite %(name)s wurde nicht gefunden"
+msgstr ""
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -1648,7 +1648,7 @@ msgstr "Hinweise:"
 #: trac/ticket/admin.py:87
 #, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr "Es gibt bereits eine Komponente %s."
+msgstr "Es gibt bereits eine Komponente %(name)s."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1666,7 +1666,7 @@ msgstr ""
 #: trac/ticket/admin.py:183
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Es gibt bereits ein Meileinstein %s."
+msgstr "Es gibt bereits ein Meileinstein %(name)s."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
@@ -1675,7 +1675,7 @@ msgstr "Kein Meilenstein ausgewählt"
 #: trac/ticket/admin.py:263
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
-msgstr "Es gibt bereits einen Version %s."
+msgstr "Es gibt bereits einen Version %(name)s."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
@@ -1684,7 +1684,7 @@ msgstr "Keine Version ausgewählt"
 #: trac/ticket/admin.py:343
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr "Es gibt bereits ein %s %s"
+msgstr "Es gibt bereits ein %(type)s %(name)s"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
