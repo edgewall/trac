@@ -14,6 +14,22 @@
 
 from setuptools import setup, find_packages
 
+extra = {}
+
+try:
+    import babel
+    extra['message_extractors'] = {
+        'trac': [
+            ('**.py',                'python', None),
+            ('**/templates/**.html', 'genshi', None),
+            ('**/templates/**.txt',  'genshi', {
+                'template_class': 'genshi.template:TextTemplate'
+            })
+        ],
+    }
+except ImportError:
+    pass
+
 setup(
     name = 'Trac',
     version = '0.12',
@@ -44,7 +60,7 @@ facilities.
     package_data = {
         '': ['templates/*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*', 'htdocs/css/*',
-                 'htdocs/guide/*'],
+                 'htdocs/guide/*', 'locale/*.*', 'locale/*/LC_MESSAGES/*.*'],
         'trac.wiki': ['default-pages/*'],
         'trac.ticket': ['workflows/*.ini'],
     },
@@ -56,8 +72,8 @@ facilities.
         'setuptools>=0.6b1',
         'Genshi>=0.4.1'
     ],
-
     extras_require = {
+        'Babel': ['Babel>=0.9.2'],
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3'],
         'SilverCity': ['SilverCity>=0.9.4'],
@@ -98,4 +114,6 @@ facilities.
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
     """,
+
+    **extra
 )

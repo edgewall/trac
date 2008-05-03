@@ -18,12 +18,18 @@ from datetime import datetime
 import pkg_resources
 import re
 
+try:
+    from babel.core import Locale
+except ImportError:
+    Locale = None
+
 from genshi.builder import tag
 
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
+from trac.util.compat import sorted
 from trac.util.datefmt import all_timezones, get_timezone, localtz
-from trac.util.translation import _
+from trac.util.translation import _, get_available_locales
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_stylesheet, INavigationContributor, \
                             ITemplateProvider
@@ -36,7 +42,7 @@ class PreferencesModule(Component):
     implements(INavigationContributor, IPreferencePanelProvider,
                IRequestHandler, ITemplateProvider)
 
-    _form_fields = ['newsid', 'name', 'email', 'tz', 'accesskeys']
+    _form_fields = ['newsid', 'name', 'email', 'tz', 'language', 'accesskeys']
 
     # INavigationContributor methods
 
@@ -79,13 +85,17 @@ class PreferencesModule(Component):
     # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
+        global Locale
         yield (None, _('General'))
         yield ('datetime', _('Date & Time'))
         yield ('keybindings', _('Keyboard Shortcuts'))
+        if Locale:
+            yield ('language', _('Language'))
         if not req.authname or req.authname == 'anonymous':
             yield ('advanced', _('Advanced'))
 
     def render_preference_panel(self, req, panel):
+        global Locale
         if req.method == 'POST':
             if 'restore' in req.args:
                 self._do_load(req)
@@ -93,11 +103,20 @@ class PreferencesModule(Component):
                 self._do_save(req)
             req.redirect(req.href.prefs(panel or None))
 
-        return 'prefs_%s.html' % (panel or 'general'), {
+        data = {
             'settings': {'session': req.session, 'session_id': req.session.sid},
             'timezones': all_timezones, 'timezone': get_timezone,
             'localtz': localtz
         }
+
+        if Locale:
+            locales = map(Locale.parse, get_available_locales())
+            languages = sorted([(str(locale).replace('_','-'),
+                                 locale.display_name) for locale in locales])
+            data['locales'] = locales
+            data['languages'] = languages
+
+        return 'prefs_%s.html' % (panel or 'general'), data
 
     # ITemplateProvider methods
 

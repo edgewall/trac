@@ -2,8 +2,9 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
 
@@ -256,7 +257,7 @@
         </div>
         <div py:if="ticket.exists" class="field">
           <fieldset class="iefix">
-            <label for="comment">Comment (you may use
+            <label for="comment" i18n:msg="">Comment (you may use
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
               here):
             </label><br />

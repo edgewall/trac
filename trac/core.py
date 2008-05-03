@@ -38,6 +38,8 @@ class TracError(Exception):
             self.title = title
         self.show_traceback = show_traceback
 
+    def __unicode__(self):
+        return unicode(self.message)
 
 class Interface(object):
     """Marker base class for extension point interfaces."""

@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <head>
@@ -21,7 +22,7 @@
             <input type="text" id="title" name="title" value="$report.title" size="50"/><br />
           </div>
           <div class="field">
-            <label for="description">
+            <label for="description" i18n:msg="">
               Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
             </label>
             <br />

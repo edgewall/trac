@@ -2,8 +2,9 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
@@ -34,6 +35,16 @@
         If you're unsure about what you're doing, please press <tt>Cancel</tt>
         (losing your changes) and start editing the latest version of the page
         again.</p>
+      </div>
+      <div py:if="merge" class="system-message">
+        Someone else modified that page since you started your edits.
+        <b>If you save right away, you risk to revert those changes</b>
+        (highlighted below as deletions). <br />
+        Please review all those changes and manually merge them with your
+        own changes. <br />
+        If you're unsure about what you're doing, please press <tt>Cancel</tt>
+        (loosing your changes) and start editing the latest version of the page
+        again. <br />
       </div>
       <py:choose test="action">
         <py:when test="'preview'">
@@ -83,7 +94,7 @@
 $page.text</textarea>
           </p>
         </fieldset>
-        <div id="help">
+        <div id="help" i18n:msg="">
           <b>Note:</b> See <a href="${href.wiki('WikiFormatting')}">WikiFormatting</a> and
           <a href="${href.wiki('TracWiki')}">TracWiki</a> for help on editing wiki content.
         </div>

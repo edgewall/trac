@@ -24,8 +24,16 @@ try:
 except ImportError: 
     cStringIO = StringIO 
 
+try:
+    from babel.support import Translations
+except ImportError:
+    Translations = None
 from genshi import Markup
 from genshi.builder import tag, Element
+if Translations:
+    from genshi.filters import Translator
+else:
+    Translator = None
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
@@ -282,7 +290,7 @@ class Chrome(Component):
 
     # A dictionary of default context data for templates
     _default_context_data = {
-        '_': translation._,
+        '_': translation.gettext,
         'all': compat.all,
         'any': compat.any,
         'attrgetter': compat.attrgetter,
@@ -510,7 +518,6 @@ class Chrome(Component):
 
         return chrome
 
-
     def get_icon_data(self, req):
         icon = {}
         icon_src = icon_abs_src = self.env.project_icon
@@ -627,6 +634,7 @@ class Chrome(Component):
             'href': href,
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
+            'locale': req and req.locale,
             'show_email_addresses': show_email_addresses,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
@@ -665,6 +673,11 @@ class Chrome(Component):
             cls = MarkupTemplate
 
         return self.templates.load(filename, cls=cls)
+
+    def _template_loaded(self, template):
+        global Translator
+        if Translator:
+            template.filters.insert(0, Translator(translation.gettext))
 
     def render_template(self, req, filename, data, content_type=None,
                         fragment=False):
