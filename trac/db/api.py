@@ -21,6 +21,7 @@ from trac.config import Option, IntOption
 from trac.core import *
 from trac.db.pool import ConnectionPool
 from trac.util.text import unicode_passwd
+from trac.util.translation import _
 
 
 def get_column_names(cursor):
