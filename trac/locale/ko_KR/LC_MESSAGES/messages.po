@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-20 23:45+0200\n"
-"PO-Revision-Date: 2008-05-03 22:36+0200\n"
+"PO-Revision-Date: 2008-05-05 14:58+0200\n"
 "Last-Translator: Kim Taedong <fly1004@gmail.com>\n"
 "Language-Team: ko_KR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -1702,37 +1702,37 @@ msgstr "티켓 #%(id)s에 대한 설명 %(cnum)s"
 msgid "Ticket #%(shortname)s"
 msgstr "티켓 #%(shortname)s"
 
-#: trac/ticket/default_workflow.py:228
+#: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
 msgstr "현재 상태가 더 이상 존재하지 않습니다"
 
-#: trac/ticket/default_workflow.py:230
+#: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
 msgstr "이 티켓은 소유자가 없어질 것입니다"
 
-#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
 msgstr "소유자가 변경될 것입니다"
 
-#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
 #, fuzzy, python-format
 msgid "The owner will change to %(name)s"
 msgstr "소유자가 %(name)s 로 변경될 것입니다"
 
-#: trac/ticket/default_workflow.py:256
+#: trac/ticket/default_workflow.py:254
 msgid "to "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:275
+#: trac/ticket/default_workflow.py:273
 #, fuzzy, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "해결방법이 %(name)s 로 설정될 것입니다"
 
-#: trac/ticket/default_workflow.py:285
+#: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
 msgstr "해결방법이 설정될 것입니다"
 
-#: trac/ticket/default_workflow.py:290
+#: trac/ticket/default_workflow.py:288
 #, fuzzy, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "다음 상태는 '%(name)s' 가 될 것입니다."
@@ -3228,7 +3228,7 @@ msgstr "모든 변경사항을 다시 확인하고 수정한 내용을 수동으
 msgid "If you're unsure about what you're doing, please press"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:35
+#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
@@ -3238,13 +3238,6 @@ msgstr "(변경내용을 잃었습니다.) 이 페이지의 마지막 버전으�
 #, fuzzy
 msgid "Someone else modified that page since you started your edits."
 msgstr "편집을 시작한 후에 다른 사람이 이 페이지를 변경했습니다."
-
-#: trac/wiki/templates/wiki_edit.html:45
-#, fuzzy
-msgid ""
-"(loosing your changes) and start editing the latest version of the page\n"
-"        again."
-msgstr "(변경내용을 잃었습니다.) 이 페이지의 마지막 버전으로 다시 편집을 시작하십시오."
 
 #: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"

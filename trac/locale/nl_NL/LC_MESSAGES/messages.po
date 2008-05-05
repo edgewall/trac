@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-29 16:25+0200\n"
-"PO-Revision-Date: 2008-05-03 22:36+0200\n"
+"PO-Revision-Date: 2008-05-05 14:58+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language-Team: nl_NL <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1692,37 +1692,37 @@ msgstr ""
 msgid "Ticket #%(shortname)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:228
+#: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:230
+#: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
 #, python-format
 msgid "The owner will change to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:256
+#: trac/ticket/default_workflow.py:254
 msgid "to "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:275
+#: trac/ticket/default_workflow.py:273
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:285
+#: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:290
+#: trac/ticket/default_workflow.py:288
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr ""
@@ -3210,7 +3210,7 @@ msgstr ""
 msgid "If you're unsure about what you're doing, please press"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit.html:35
+#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
@@ -3218,12 +3218,6 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:39
 msgid "Someone else modified that page since you started your edits."
-msgstr ""
-
-#: trac/wiki/templates/wiki_edit.html:45
-msgid ""
-"(loosing your changes) and start editing the latest version of the page\n"
-"        again."
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:53

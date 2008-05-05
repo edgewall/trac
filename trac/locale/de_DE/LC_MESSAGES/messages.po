@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2008-05-03 22:35+0200\n"
+"PO-Revision-Date: 2008-05-05 14:58+0200\n"
 "Last-Translator: Christopher Lenz <cmlenz@gmx.de>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -151,7 +151,9 @@ msgstr "TLS ist aktiviert aber dieser Server unterstützt kein TLS"
 
 #: trac/notification.py:390
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-msgstr "Ticket enthält nicht-ASCII Zeichen. Bitte ändern Sie Ihre Enkodierungseinstellung."
+msgstr ""
+"Ticket enthält nicht-ASCII Zeichen. Bitte ändern Sie Ihre "
+"Enkodierungseinstellung."
 
 #: trac/perm.py:47
 #, python-format
@@ -744,7 +746,9 @@ msgstr "Ungültiger Vereinheitlichtes Diff Inhalt"
 msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
-msgstr "Sie scheinen die PHP CGI Binärdatei zu verwenden. Trac benötigt die CLI-Version für Syntaxhervorhebung."
+msgstr ""
+"Sie scheinen die PHP CGI Binärdatei zu verwenden. Trac benötigt die CLI-"
+"Version für Syntaxhervorhebung."
 
 #: trac/mimeview/rst.py:60
 msgid "Docutils not found"
@@ -792,10 +796,14 @@ msgid ""
 " be\n"
 "      restored on subsequent visits."
 msgstr ""
-"Diese Seite lässt Sie Ihre persönlichen Einstellungen für diese Seite verändern.\n"
-"      Diese Einstellungen werden auf dem Server gespeichert und werden über den\n"
-"      Sitzungsschlüssel welcher in einem Browser-Cookie identifiziert. Dieses Cookie\n"
-"      ermöglicht es Ihre Einstellungen bei folgenden Besuchen wiederherzustellen."
+"Diese Seite lässt Sie Ihre persönlichen Einstellungen für diese Seite "
+"verändern.\n"
+"      Diese Einstellungen werden auf dem Server gespeichert und werden "
+"über den\n"
+"      Sitzungsschlüssel welcher in einem Browser-Cookie identifiziert. "
+"Dieses Cookie\n"
+"      ermöglicht es Ihre Einstellungen bei folgenden Besuchen "
+"wiederherzustellen."
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
@@ -836,7 +844,8 @@ msgid ""
 "      multiple computers and web browsers."
 msgstr ""
 "Sie können eine bereits erstellte Sitzung laden inden Sie\n"
-"      den entsprechenden Sitzungsschlüssel unten eingeben. Dies lässt Sie Ihre\n"
+"      den entsprechenden Sitzungsschlüssel unten eingeben. Dies lässt Sie"
+" Ihre\n"
 "      Einstellungen zwischen mehreren Computern und Web-Browsern teilen."
 
 #: trac/prefs/templates/prefs_datetime.html:15
@@ -928,12 +937,13 @@ msgid ""
 "      web browser, they are disabled by default. See"
 msgstr ""
 "Diese Seite stellt Schnelltasten für schnelleren\n"
-"      Zugriff auf die verschiedenen Funktionen der Seite bereit. Da diese\n"
-"      Schnelltasten Konflikte mit den Schnelltasten die vom Desktopsystem\n"
+"      Zugriff auf die verschiedenen Funktionen der Seite bereit. Da diese"
+"\n"
+"      Schnelltasten Konflikte mit den Schnelltasten die vom Desktopsystem"
+"\n"
 "      oder dem Web-Browser bereitgestellt werden haben können, sind Sie\n"
 "      standardmässig ausgeschaltet. Sehen Sie in"
 
-# This should not be translated
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "TracAccessibility"
 msgstr ""
@@ -999,7 +1009,9 @@ msgstr "Suche"
 #: trac/search/web_ui.py:100
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
-msgstr "Suchanfrage ist zu kurz. Anfrage muss mindestens %(num)s Zeichen lang sein."
+msgstr ""
+"Suchanfrage ist zu kurz. Anfrage muss mindestens %(num)s Zeichen lang "
+"sein."
 
 #: trac/search/web_ui.py:102
 msgid "Search Error"
@@ -1069,7 +1081,6 @@ msgstr "Hinweis:"
 msgid "See"
 msgstr "Siehe"
 
-# This should not be translated
 #: trac/search/templates/search.html:70
 msgid "TracSearch"
 msgstr ""
@@ -1093,7 +1104,8 @@ msgid ""
 msgstr ""
 "Trac ist ein webbasiertes Softwareprojektmanagement- und Fehler-/\n"
 "        Problemverfolgung- System welches einfach zu benutzen ist\n"
-"        und eine niedrige Einführungszeit hat. Es stellt ein integriertes Wiki,\n"
+"        und eine niedrige Einführungszeit hat. Es stellt ein integriertes"
+" Wiki,\n"
 "        ein Interface zu Versionskontrollsystemen, sowie eine Menge\n"
 "        praktische Wege um alle Ereignisse sowie Änderungen im Projekt\n"
 "        zu verfolgen bereit."
@@ -1130,7 +1142,6 @@ msgstr "python powered"
 msgid "Please visit the Trac open source project:"
 msgstr "Bitte besuchen Sie das Trac Opensource Projekt:"
 
-# This should not be translated
 #: trac/templates/about.html:42
 msgid "http://trac.edgewall.org/"
 msgstr ""
@@ -1201,7 +1212,6 @@ msgstr "Beschreibung"
 msgid "(added by"
 msgstr "(Hinzugefügt von"
 
-# This is really wrong!!!
 #: trac/templates/attachment.html:83 trac/templates/diff_view.html:40
 #: trac/versioncontrol/templates/browser.html:104
 #: trac/versioncontrol/templates/changeset.html:96
@@ -1410,7 +1420,9 @@ msgstr ""
 
 #: trac/templates/error.html:125
 msgid "Before you do that, though, please first try"
-msgstr "Bevor Sie dies tun versuchen Sie jedoch bitte zuerst nach ähnlichen Problemen zu"
+msgstr ""
+"Bevor Sie dies tun versuchen Sie jedoch bitte zuerst nach ähnlichen "
+"Problemen zu"
 
 #: trac/templates/error.html:127
 msgid "searching"
@@ -1435,12 +1447,10 @@ msgstr "Mailingliste"
 msgid "instead of filing a ticket."
 msgstr "anstatt ein Ticket zu erstellen."
 
-# This is really wrong!!!
 #: trac/templates/error.html:135
 msgid "Otherwise, please"
 msgstr "Andernfalls"
 
-# This is really wrong!!!
 #: trac/templates/error.html:135
 msgid ""
 "a new ticket at\n"
@@ -1449,14 +1459,14 @@ msgid ""
 "                explain how to reproduce it."
 msgstr ""
 "Sie bitte ein\n"
-"                neues Ticket auf der Trac Projektseite, wo Sie Ihr Problem erklären\n"
+"                neues Ticket auf der Trac Projektseite, wo Sie Ihr "
+"Problem erklären\n"
 "                können und beschreiben können wie es zu reproduzieren ist."
 
 #: trac/templates/error.html:140
 msgid "Python Traceback"
 msgstr "Python Traceback"
 
-# This is really wrong!!!
 #: trac/templates/error.html:141
 msgid "Most recent call last:"
 msgstr "Letzer Aufruf:"
@@ -1497,7 +1507,6 @@ msgstr "Auf Klartextansicht wechseln"
 msgid "System Information:"
 msgstr "Systeminformation:"
 
-# This should not be translated
 #: trac/templates/error.html:191
 msgid "TracGuide"
 msgstr ""
@@ -1623,7 +1632,6 @@ msgstr "Bytes."
 msgid "since no preview renderer could handle it."
 msgstr "da kein Vorschau-Handler die Datei handhaben konnte."
 
-# This is really wrong!!!
 #: trac/templates/macros.html:147
 msgid "Try"
 msgstr "Versuchen Sie stattdessen die Datei"
@@ -1632,12 +1640,10 @@ msgstr "Versuchen Sie stattdessen die Datei"
 msgid "downloading"
 msgstr "herunterzuladen"
 
-# This is really wrong!!!
 #: trac/templates/macros.html:148
 msgid "the file instead."
 msgstr "."
 
-# This is really wrong!!!
 #: trac/templates/macros.html:152
 msgid ""
 ".\n"
@@ -1650,7 +1656,6 @@ msgstr ""
 msgid "download"
 msgstr "herunterladen"
 
-# This is really wrong!!!
 #: trac/templates/macros.html:153
 msgid "the file."
 msgstr "um sie zu betrachten."
@@ -1667,7 +1672,6 @@ msgstr "Anhang betrachten"
 msgid ") - added by"
 msgstr ") - hinzugefügt von"
 
-# This is really wrong!!!
 #: trac/templates/macros.html:174 trac/ticket/templates/query_results.html:74
 msgid "ago."
 msgstr ""
@@ -1680,7 +1684,6 @@ msgstr "Anhänge"
 msgid "Attach file"
 msgstr "Datei anhängen"
 
-# This is really wrong and should be handled in another way.
 #: trac/templates/macros.html:239 trac/templates/macros.html:243
 msgid "s:"
 msgstr ""
@@ -1771,37 +1774,37 @@ msgstr "Kommentar %(cnum)s für Ticket #%(id)s"
 msgid "Ticket #%(shortname)s"
 msgstr "Ticket #%(shortname)s"
 
-#: trac/ticket/default_workflow.py:228
+#: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
 msgstr "Aktueller Zustand existiert nicht mehr"
 
-#: trac/ticket/default_workflow.py:230
+#: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
 msgstr "Das Ticket wird abgelehnt"
 
-#: trac/ticket/default_workflow.py:249 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
 msgstr "Der Besitzer wird wechseln"
 
-#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
 #, python-format
 msgid "The owner will change to %(name)s"
 msgstr "Der Besitzer wird auf %(name)s wechseln"
 
-#: trac/ticket/default_workflow.py:256
+#: trac/ticket/default_workflow.py:254
 msgid "to "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:275
+#: trac/ticket/default_workflow.py:273
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "Die Lösung wird auf %(name)s gesetzt"
 
-#: trac/ticket/default_workflow.py:285
+#: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
 msgstr "Die Lösung wird gesetzt"
 
-#: trac/ticket/default_workflow.py:290
+#: trac/ticket/default_workflow.py:288
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Nächster Status wird '%(name)s' sein"
@@ -2081,11 +2084,13 @@ msgstr "Keine Berechtigungen um Ticketfelder zu ändern."
 msgid "No permissions to add a comment."
 msgstr "Keine Berechtigungen um einen Kommentar hinzuzufügen."
 
-#: trac/ticket/web_ui.py:859
+#: trac/ticket/web_ui.py:874
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
-msgstr "Entschuldigung, Ihre Änderungen können nicht gespeichert werden. Dieses Ticket wurde von jemand anderem modifiziert seitdem Sie begonnen haben"
+msgstr ""
+"Entschuldigung, Ihre Änderungen können nicht gespeichert werden. Dieses "
+"Ticket wurde von jemand anderem modifiziert seitdem Sie begonnen haben"
 
 #: trac/ticket/web_ui.py:881
 msgid "Tickets must contain a summary."
@@ -2163,7 +2168,6 @@ msgstr "Zugewiesene Tickets neuansetzen auf Meilenstein"
 msgid "Delete milestone"
 msgstr "Meilenstein löschen"
 
-# This should not be translated
 #: trac/ticket/templates/milestone_delete.html:39
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2228,7 +2232,6 @@ msgstr ""
 msgid "Milestone"
 msgstr "Meilenstein"
 
-# This is really wrong!!!
 #: trac/ticket/templates/milestone_view.html:26
 msgid ""
 "ago\n"
@@ -2322,7 +2325,6 @@ msgstr "Neuen Report aus aktueller Abfrage erstellen"
 msgid "Delete query"
 msgstr "Abfrage löschen"
 
-# This should not be translated
 #: trac/ticket/templates/query.html:242
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
@@ -2358,7 +2360,6 @@ msgstr "Sind Sie sicher, dass Sie diesen Bericht löschen möchten?"
 msgid "Delete report"
 msgstr "Bericht löschen"
 
-# This should not be translated
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
 #: trac/ticket/templates/report_view.html:170
@@ -2387,7 +2388,6 @@ msgstr "Fehler:"
 msgid "Query for Report: (can be either SQL or, if starting with"
 msgstr "Abfrage für Report: (kann entweder SQL sein, oder wenn sie anfängt mit"
 
-# This should not be translated
 #: trac/ticket/templates/report_edit.html:36
 msgid "query:"
 msgstr ""
@@ -2433,7 +2433,6 @@ msgstr "Bereits fertiggestellte Meilensteine anzeigen"
 msgid "Milestone:"
 msgstr "Meilenstein:"
 
-# This is really wrong!!!
 #: trac/ticket/templates/roadmap.html:39
 msgid ""
 "ago\n"
@@ -2494,7 +2493,6 @@ msgstr "Geändert von"
 msgid "Opened"
 msgstr "Geöffnet"
 
-# This is really wrong!!!
 #: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:129
 msgid "ago"
 msgstr ""
@@ -2535,17 +2533,14 @@ msgstr "Antworten mit Zitat der Beschreibung"
 msgid "Change History"
 msgstr "Änderungshistorie"
 
-# This is really wrong!!! Plural!!!
 #: trac/ticket/templates/ticket.html:214
 msgid "follow-up"
 msgstr "Antworten"
 
-# This is really wrong!!!
 #: trac/ticket/templates/ticket.html:220
 msgid "Changed"
 msgstr "Geändert vor"
 
-# This is really wrong!!!
 #: trac/ticket/templates/ticket.html:221
 msgid "ago by"
 msgstr "von"
@@ -2635,7 +2630,6 @@ msgstr "Zeige Änderungen seit"
 msgid "days back"
 msgstr "Tage in der Vergangenheit"
 
-# This should not be translated
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
 msgstr ""
@@ -2682,7 +2676,10 @@ msgstr "Pfad"
 msgid ""
 "Unsupported version control system \"%(name)s\". Check that the Python "
 "support libraries for \"%(name)s\" are correctly installed."
-msgstr "Nicht unterstütztes Versionskontrollsystem \"%(name)s\". Überprüfen Sie dass die Python-Unterstützungsbibliotheken für \"%(name)s\" korrekt installiert sind."
+msgstr ""
+"Nicht unterstütztes Versionskontrollsystem \"%(name)s\". Überprüfen Sie "
+"dass die Python-Unterstützungsbibliotheken für \"%(name)s\" korrekt "
+"installiert sind."
 
 #: trac/versioncontrol/api.py:163
 #, python-format
@@ -2711,7 +2708,9 @@ msgstr "Unzureichende Berechtigungen um auf Änderungen %(id)s zuzugreifen"
 msgid ""
 "The 'repository_dir' has changed, a 'trac-admin resync' operation is "
 "needed."
-msgstr "Das 'repository_dir' hat sich geändert, eine 'trac-admin resync' Operation ist nötig."
+msgstr ""
+"Das 'repository_dir' hat sich geändert, eine 'trac-admin resync' "
+"Operation ist nötig."
 
 #: trac/versioncontrol/cache.py:114
 msgid "Missing \"youngest_rev\" in cache metadata"
@@ -2736,7 +2735,10 @@ msgstr "%(path)s scheint kein Subversion Repository zu sein."
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
-msgstr "Diff ungleichgewicht: Basis ist ein %(oldnode)s (%(oldpath)s in Revision %(oldrev)s) und Ziel ist ein %(newnode)s (%(newpath)s in Revision %(newrev)s)."
+msgstr ""
+"Diff ungleichgewicht: Basis ist ein %(oldnode)s (%(oldpath)s in Revision "
+"%(oldrev)s) und Ziel ist ein %(newnode)s (%(newpath)s in Revision "
+"%(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:803
 #, python-format
@@ -2787,7 +2789,6 @@ msgstr "Version"
 msgid "(checked in by"
 msgstr "(eingecheckt von"
 
-# This should not be translated
 #: trac/versioncontrol/templates/browser.html:142
 msgid "TracBrowser"
 msgstr ""
@@ -2924,7 +2925,6 @@ msgstr ""
 "              Eintrag aus indem Sie auf Ihn klicken oder indem Sie die\n"
 "              Hoch/Runter Cursortasten verwenden und Tab drücken."
 
-# This should not be translated
 #: trac/versioncontrol/templates/diff_form.html:63
 msgid "TracChangeset"
 msgstr ""
@@ -3005,7 +3005,6 @@ msgstr "Zeige Protokoll ab dieser Revision"
 msgid "Diff from Old Revision to New Revision (select them above)"
 msgstr "Diff zwischen Alter Revision und Neuer Revision (wählen Sie sie oben aus)"
 
-# This should not be translated
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "TracRevisionLog"
 msgstr ""
@@ -3060,7 +3059,9 @@ msgstr "Notieren"
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
-msgstr "Jede Zeile mit der Revision der letzten Änderung notieren (dies kann lange dauern...)"
+msgstr ""
+"Jede Zeile mit der Revision der letzten Änderung notieren (dies kann "
+"lange dauern...)"
 
 #: trac/versioncontrol/web_ui/browser.py:389
 msgid "Revision Log"
@@ -3123,7 +3124,9 @@ msgstr "Änderungen"
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
-msgstr "Die Datei oder das Verzeichnis '%(path)s' existieren nicht in Revision %(rev)s oder früheren Revisionen."
+msgstr ""
+"Die Datei oder das Verzeichnis '%(path)s' existieren nicht in Revision "
+"%(rev)s oder früheren Revisionen."
 
 #: trac/versioncontrol/web_ui/log.py:172
 msgid "Nonexistent path"
@@ -3285,7 +3288,9 @@ msgstr "?"
 
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
-msgstr "This ist die einzige Version der Seite, also wird die Seite komplett entfernt!"
+msgstr ""
+"This ist die einzige Version der Seite, also wird die Seite komplett "
+"entfernt!"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
@@ -3293,11 +3298,15 @@ msgstr "Bearbeite"
 
 #: trac/wiki/templates/wiki_edit.html:30
 msgid "Someone else has modified that page since you started your edits."
-msgstr "Jemand anders hat diese Seite verändert seitdem Sie angefangen haben diese zu bearbeiten."
+msgstr ""
+"Jemand anders hat diese Seite verändert seitdem Sie angefangen haben "
+"diese zu bearbeiten."
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
-msgstr "Wenn Sie jetzt speichern, riskieren Sie diese Änderungen rückgängig zu machen"
+msgstr ""
+"Wenn Sie jetzt speichern, riskieren Sie diese Änderungen rückgängig zu "
+"machen"
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "(highlighted below as deletions)."
@@ -3315,7 +3324,7 @@ msgstr ""
 msgid "If you're unsure about what you're doing, please press"
 msgstr "Wenn Sie sich nicht sicher sind was Sie tun, drücken Sie bitte"
 
-#: trac/wiki/templates/wiki_edit.html:35
+#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
@@ -3325,12 +3334,6 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:39
 msgid "Someone else modified that page since you started your edits."
-msgstr ""
-
-#: trac/wiki/templates/wiki_edit.html:45
-msgid ""
-"(loosing your changes) and start editing the latest version of the page\n"
-"        again."
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:53
@@ -3347,7 +3350,8 @@ msgid ""
 "            editing. Your changes cannot be saved."
 msgstr ""
 "Entschuldigung, diese Seite wurde von jemand anderem bearbeitet seitdem\n"
-"            Sie begonnen haben sie zu bearbeiten. Ihre Änderungen können nicht gespeichert werden."
+"            Sie begonnen haben sie zu bearbeiten. Ihre Änderungen können "
+"nicht gespeichert werden."
 
 #: trac/wiki/templates/wiki_edit.html:85
 msgid "Adjust edit area height:"
