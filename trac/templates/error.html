@@ -2,6 +2,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
@@ -122,7 +123,7 @@ ${traceback}
             <py:otherwise>
               <p>If you think this should work you can reproduce the problem,
               you should consider reporting this to the Trac team.</p>
-              <p>Before you do that, though, please first try
+              <p i18n:msg="">Before you do that, though, please first try
                 <a py:with="q = quote_plus(message[:80])"
                    href="${trac.homepage}search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
                 for similar issues, as it is quite likely that this problem
