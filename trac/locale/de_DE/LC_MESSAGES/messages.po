@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2008-05-05 14:58+0200\n"
+"PO-Revision-Date: 2008-05-06 11:57+0200\n"
 "Last-Translator: Christopher Lenz <cmlenz@gmx.de>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -410,7 +410,7 @@ msgstr "Hinzufügen"
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:66
-#: trac/templates/error.html:161
+#: trac/templates/error.html:162
 msgid "Name"
 msgstr "Name"
 
@@ -1154,7 +1154,7 @@ msgstr "Systeminformation"
 msgid "Section"
 msgstr "Abschnitt"
 
-#: trac/templates/about.html:67 trac/templates/error.html:161
+#: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
 msgstr "Wert"
 
@@ -1313,7 +1313,7 @@ msgstr "Entfernt"
 msgid "Modified"
 msgstr "Verändert"
 
-#: trac/templates/error.html:59
+#: trac/templates/error.html:60
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
@@ -1323,11 +1323,11 @@ msgstr ""
 "\n"
 "Während dem durchführen einer"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid "operation on `"
 msgstr "Operation auf `"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid ""
 "`, Trac issued an internal error.\n"
 "\n"
@@ -1337,7 +1337,7 @@ msgstr ""
 "\n"
 "''(Bitte geben Sie hier weitere Details an)''"
 
-#: trac/templates/error.html:67
+#: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
@@ -1345,11 +1345,11 @@ msgstr ""
 "Anfrageparameter:\n"
 "{{{"
 
-#: trac/templates/error.html:72
+#: trac/templates/error.html:73
 msgid "==== System Information ===="
 msgstr "==== Systeminformationen ===="
 
-#: trac/templates/error.html:75
+#: trac/templates/error.html:76
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
@@ -1357,19 +1357,19 @@ msgstr ""
 "==== Python Zurückverfolgung ====\n"
 "{{{"
 
-#: trac/templates/error.html:83
+#: trac/templates/error.html:84
 msgid "Create"
 msgstr "Erstellen"
 
-#: trac/templates/error.html:98
+#: trac/templates/error.html:99
 msgid "Oops…"
 msgstr "Oops…"
 
-#: trac/templates/error.html:100
+#: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
 msgstr "Trac hat einen internen Fehler festgestellt:"
 
-#: trac/templates/error.html:105
+#: trac/templates/error.html:106
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
@@ -1377,7 +1377,7 @@ msgstr ""
 "Es gab einen internen Fehler in Trac. Es wird empfohlen\n"
 "              dass Sie Ihren lokalen Trac"
 
-#: trac/templates/error.html:107
+#: trac/templates/error.html:108
 msgid ""
 "Trac\n"
 "              administrator"
@@ -1385,7 +1385,7 @@ msgstr ""
 "Administrator\n"
 "              informieren"
 
-#: trac/templates/error.html:108
+#: trac/templates/error.html:109
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
@@ -1393,23 +1393,23 @@ msgstr ""
 "und ihm all die Informationen geben die er zum\n"
 "              Reproduzieren des Problems benötigt."
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid "To that end, you could"
 msgstr ""
 "Zu diesem Zweck könnten Sie ein Ticket auf dieser\n"
 "                  Seite"
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid ""
 "a ticket at this\n"
 "                  site."
 msgstr "."
 
-#: trac/templates/error.html:117
+#: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
 msgstr "Die Aktion die diesen Fehler auslöste war:"
 
-#: trac/templates/error.html:123
+#: trac/templates/error.html:124
 msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
@@ -1418,40 +1418,30 @@ msgstr ""
 "              das Problem reproduzieren, Sie sollten es in betracht\n"
 "              ziehen dies dem Trac Team zu berichten."
 
-#: trac/templates/error.html:125
-msgid "Before you do that, though, please first try"
-msgstr ""
-"Bevor Sie dies tun versuchen Sie jedoch bitte zuerst nach ähnlichen "
-"Problemen zu"
-
-#: trac/templates/error.html:127
-msgid "searching"
-msgstr "suchen"
-
-#: trac/templates/error.html:127
+#: trac/templates/error.html:126
+#, fuzzy
 msgid ""
-"for similar issues, as it is quite likely that this problem\n"
+"Before you do that, though, please first try\n"
+"                [1:searching]\n"
+"                for similar issues, as it is quite likely that this "
+"problem\n"
 "                has been reported before. For questions about "
 "installation\n"
-"                and configuration of Trac, please try the"
+"                and configuration of Trac, please try the\n"
+"                [2:mailing list]\n"
+"                instead of filing a ticket."
 msgstr ""
-", da es sehr wahrscheinlich ist das dieses Problem\n"
-"                schon berichtet wurde. Für Fragen über die Installation\n"
-"                und Konfiguration von Trac versuchen Sie bitte die"
+"Bevor Sie dies tun versuchen Sie jedoch bitte zuerst nach ähnlichen "
+"Problemen zu [1:suchen], da es sehr wahrscheinlich ist das dieses Problem "
+"schon berichtet wurde. Für Fragen über die Installation "
+"und Konfiguration von Trac versuchen Sie bitte die "
+"[2:Mailingliste] anstatt ein Ticket zu erstellen."
 
-#: trac/templates/error.html:131
-msgid "mailing list"
-msgstr "Mailingliste"
-
-#: trac/templates/error.html:131
-msgid "instead of filing a ticket."
-msgstr "anstatt ein Ticket zu erstellen."
-
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid "Otherwise, please"
 msgstr "Andernfalls"
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid ""
 "a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
@@ -1463,19 +1453,19 @@ msgstr ""
 "Problem erklären\n"
 "                können und beschreiben können wie es zu reproduzieren ist."
 
-#: trac/templates/error.html:140
+#: trac/templates/error.html:141
 msgid "Python Traceback"
 msgstr "Python Traceback"
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:142
 msgid "Most recent call last:"
 msgstr "Letzer Aufruf:"
 
-#: trac/templates/error.html:146 trac/templates/error.html:173
+#: trac/templates/error.html:147 trac/templates/error.html:174
 msgid "File \""
 msgstr "Datei \""
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:147
 msgid ""
 "\",\n"
 "                        line"
@@ -1483,35 +1473,35 @@ msgstr ""
 "\",\n"
 "                        Zeile"
 
-#: trac/templates/error.html:147 trac/templates/error.html:173
+#: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
 msgstr ", in"
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:152
 msgid "Code fragment:"
 msgstr "Code-Abschnitt:"
 
-#: trac/templates/error.html:159
+#: trac/templates/error.html:160
 msgid "Local variables:"
 msgstr "Lokale Variablen:"
 
-#: trac/templates/error.html:173
+#: trac/templates/error.html:174
 msgid "\", line"
 msgstr "\", Zeile"
 
-#: trac/templates/error.html:176
+#: trac/templates/error.html:177
 msgid "Switch to plain text view"
 msgstr "Auf Klartextansicht wechseln"
 
-#: trac/templates/error.html:179
+#: trac/templates/error.html:180
 msgid "System Information:"
 msgstr "Systeminformation:"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "TracGuide"
 msgstr ""
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "— The Trac User and Administration Guide"
 msgstr "— Das Trac Benutzer- and Administrations-Handbuch"
 

@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2008-05-05 14:58+0200\n"
+"PO-Revision-Date: 2008-05-06 11:57+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language-Team: zh_CN <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -404,7 +404,7 @@ msgstr "增加"
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:66
-#: trac/templates/error.html:161
+#: trac/templates/error.html:162
 msgid "Name"
 msgstr "名称"
 
@@ -723,9 +723,7 @@ msgstr "数据库 \"%(path)s\" 未找到."
 msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
-msgstr ""
-"用户 %(user)s 需要数据库文件"
-" %(path)s 即其所在目录的读/写权限."
+msgstr "用户 %(user)s 需要数据库文件 %(path)s 即其所在目录的读/写权限."
 
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
 #, python-format
@@ -1120,7 +1118,7 @@ msgstr "系统信息"
 msgid "Section"
 msgstr "部分"
 
-#: trac/templates/about.html:67 trac/templates/error.html:161
+#: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
 msgstr "值"
 
@@ -1279,7 +1277,7 @@ msgstr "删除"
 msgid "Modified"
 msgstr "修改"
 
-#: trac/templates/error.html:59
+#: trac/templates/error.html:60
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
@@ -1289,11 +1287,11 @@ msgstr ""
 "\n"
 "当进行"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid "operation on `"
 msgstr "操作于 `"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid ""
 "`, Trac issued an internal error.\n"
 "\n"
@@ -1303,7 +1301,7 @@ msgstr ""
 "\n"
 "''(请在此附加详细情况)''"
 
-#: trac/templates/error.html:67
+#: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
@@ -1311,11 +1309,11 @@ msgstr ""
 "请求参数:\n"
 "{{{"
 
-#: trac/templates/error.html:72
+#: trac/templates/error.html:73
 msgid "==== System Information ===="
 msgstr "==== 系统信息 ===="
 
-#: trac/templates/error.html:75
+#: trac/templates/error.html:76
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
@@ -1323,19 +1321,19 @@ msgstr ""
 "==== Python Traceback ====\n"
 "{{{"
 
-#: trac/templates/error.html:83
+#: trac/templates/error.html:84
 msgid "Create"
 msgstr "创建"
 
-#: trac/templates/error.html:98
+#: trac/templates/error.html:99
 msgid "Oops…"
 msgstr "糟了…"
 
-#: trac/templates/error.html:100
+#: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
 msgstr "Trac检测到一个内部错误:"
 
-#: trac/templates/error.html:105
+#: trac/templates/error.html:106
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
@@ -1343,7 +1341,7 @@ msgstr ""
 "Trac中有一个内部错误. 建议\n"
 "              通知你的本地"
 
-#: trac/templates/error.html:107
+#: trac/templates/error.html:108
 msgid ""
 "Trac\n"
 "              administrator"
@@ -1351,27 +1349,27 @@ msgstr ""
 "Trac\n"
 "              管理员"
 
-#: trac/templates/error.html:108
+#: trac/templates/error.html:109
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
 msgstr "并将如何重现该问题的所有信息都告诉他."
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid "To that end, you could"
 msgstr "最后, 你可以"
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid ""
 "a ticket at this\n"
 "                  site."
 msgstr "一个传票于这个站点."
 
-#: trac/templates/error.html:117
+#: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
 msgstr "触发此错误的动作是:"
 
-#: trac/templates/error.html:123
+#: trac/templates/error.html:124
 msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
@@ -1379,38 +1377,28 @@ msgstr ""
 "如果认为这应当可用,且你也可以重现该问题,\n"
 "              应考虑向Trac开发团队报告这个问题."
 
-#: trac/templates/error.html:125
-msgid "Before you do that, though, please first try"
-msgstr "然而, 在你这样做之前, 请先尝试"
-
-#: trac/templates/error.html:127
-msgid "searching"
-msgstr "搜索"
-
-#: trac/templates/error.html:127
+#: trac/templates/error.html:126
+#, fuzzy
 msgid ""
-"for similar issues, as it is quite likely that this problem\n"
+"Before you do that, though, please first try\n"
+"                [1:searching]\n"
+"                for similar issues, as it is quite likely that this "
+"problem\n"
 "                has been reported before. For questions about "
 "installation\n"
-"                and configuration of Trac, please try the"
+"                and configuration of Trac, please try the\n"
+"                [2:mailing list]\n"
+"                instead of filing a ticket."
 msgstr ""
-"类似提案, 因为通常这个问题\n"
-"                已经被其他人报告了. 对于有关Trac安装和配置的问题\n"
-"                请尝试"
+"然而, 在你这样做之前, 请先尝试[1:搜索]类似提案, 因为通常这个问题\n"
+"已经被其他人报告了. 对于有关Trac安装和配置的问题请尝试"
+"[2:邮件列表]而不是发出一个传票."
 
-#: trac/templates/error.html:131
-msgid "mailing list"
-msgstr "邮件列表"
-
-#: trac/templates/error.html:131
-msgid "instead of filing a ticket."
-msgstr "而不是发出一个传票."
-
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid "Otherwise, please"
 msgstr "然而, 请"
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid ""
 "a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
@@ -1421,19 +1409,19 @@ msgstr ""
 "                Trac项目站点, 在此你可以描述问题\n"
 "                并解释如何重现这个问题."
 
-#: trac/templates/error.html:140
+#: trac/templates/error.html:141
 msgid "Python Traceback"
 msgstr "Python Traceback"
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:142
 msgid "Most recent call last:"
 msgstr "最多最近调用的:"
 
-#: trac/templates/error.html:146 trac/templates/error.html:173
+#: trac/templates/error.html:147 trac/templates/error.html:174
 msgid "File \""
 msgstr "文件 \""
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:147
 msgid ""
 "\",\n"
 "                        line"
@@ -1441,35 +1429,35 @@ msgstr ""
 "\",\n"
 "                        行"
 
-#: trac/templates/error.html:147 trac/templates/error.html:173
+#: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
 msgstr ", 于"
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:152
 msgid "Code fragment:"
 msgstr "部分代码:"
 
-#: trac/templates/error.html:159
+#: trac/templates/error.html:160
 msgid "Local variables:"
 msgstr "局部变量:"
 
-#: trac/templates/error.html:173
+#: trac/templates/error.html:174
 msgid "\", line"
 msgstr "\", 行"
 
-#: trac/templates/error.html:176
+#: trac/templates/error.html:177
 msgid "Switch to plain text view"
 msgstr "切换到纯文本视图"
 
-#: trac/templates/error.html:179
+#: trac/templates/error.html:180
 msgid "System Information:"
 msgstr "系统信息:"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "TracGuide"
 msgstr "TracGuide"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "— The Trac User and Administration Guide"
 msgstr "— Trac用户及管理员指南"
 
@@ -1937,9 +1925,7 @@ msgstr "动态变量 '%(name)s' 未定义."
 msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
-msgstr ""
-"'%(group1)s' 和 '%(group2)s' 里程碑组都声明为"
-"\"catch-all\" 组. 请检查你的配置."
+msgstr "'%(group1)s' 和 '%(group2)s' 里程碑组都声明为\"catch-all\" 组. 请检查你的配置."
 
 #: trac/ticket/roadmap.py:229
 #, python-format
@@ -2868,8 +2854,7 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
-"每个路径, 你可以开始输入路径, 然后将获得现有路径和文件的提示, 以供选择."
-"              点击条目以选择, 或者使用上下箭头, "
+"每个路径, 你可以开始输入路径, 然后将获得现有路径和文件的提示, 以供选择.              点击条目以选择, 或者使用上下箭头, "
 "然后按tab键."
 
 #: trac/versioncontrol/templates/diff_form.html:63
@@ -3006,9 +2991,7 @@ msgstr "注释"
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
-msgstr ""
-"给最后的变更修订每行都加注释 (可能这将花费过多 "
-"时间...)"
+msgstr "给最后的变更修订每行都加注释 (可能这将花费过多 时间...)"
 
 #: trac/versioncontrol/web_ui/browser.py:389
 msgid "Revision Log"

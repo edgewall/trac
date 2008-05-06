@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-04-29 18:55+0200\n"
-"PO-Revision-Date: 2008-05-05 14:58+0200\n"
+"PO-Revision-Date: 2008-05-06 11:57+0200\n"
 "Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language-Team: nb_NO <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -123,8 +123,8 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"Manglende environment variabel \"TRAC_ENV\". Trac behøver denne variabelen"
-" som må peke til et gyldig Trac prosjekt."
+"Manglende environment variabel \"TRAC_ENV\". Trac behøver denne "
+"variabelen som må peke til et gyldig Trac prosjekt."
 
 #: trac/env.py:572
 #, python-format
@@ -157,7 +157,9 @@ msgstr ""
 #: trac/perm.py:47
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr "%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på %(resource)s"
+msgstr ""
+"%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på "
+"%(resource)s"
 
 #: trac/perm.py:49
 #, python-format
@@ -362,8 +364,7 @@ msgid ""
 "                [1:WikiFormatting]\n"
 "                here):"
 msgstr ""
-"Beskrivelse (du kan benytte\"
-"                [1:WikiFormatting]\n"
+"Beskrivelse (du kan benytte\\                [1:WikiFormatting]\n"
 "                her):"
 
 #: trac/admin/templates/admin_components.html:55
@@ -406,7 +407,7 @@ msgstr "Legg til"
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:66
-#: trac/templates/error.html:161
+#: trac/templates/error.html:162
 msgid "Name"
 msgstr "Navn"
 
@@ -449,8 +450,8 @@ msgid ""
 "            will remain completely hidden from the user interface."
 msgstr ""
 "Så lenge du ikke legger til verdier i denne listen vil dette\n"
-"            feltet være skjult fra brukergrensesnittet."
-"As long as you don't add any items to the list, this field\n"
+"            feltet være skjult fra brukergrensesnittet.As long as you "
+"don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
 
 #: trac/admin/templates/admin_enums.html:13
@@ -560,7 +561,7 @@ msgid "Subject"
 msgstr "Subjekt"
 
 #: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:64
-msgid "eller"
+msgid "or"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:16
@@ -593,7 +594,8 @@ msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr ""
-"Tildel rettighet for en action til et subject, som kan være enten en bruker\n"
+"Tildel rettighet for en action til et subject, som kan være enten en "
+"bruker\n"
 "          eller en gruppe."
 
 #: trac/admin/templates/admin_perms.html:51
@@ -728,8 +730,8 @@ msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
-"Brukeren %(user)s må ha lese _og_ skrive rettigheter til database "
-"filen %(path)s og til mappen den ligger i."
+"Brukeren %(user)s må ha lese _og_ skrive rettigheter til database filen "
+"%(path)s og til mappen den ligger i."
 
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
 #, python-format
@@ -745,8 +747,8 @@ msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
 msgstr ""
-"Det virker som om du benytter PHP CGI binærfil. Trac behøver CLI versjonen "
-"for syntaks markering
+"Det virker som om du benytter PHP CGI binærfil. Trac behøver CLI "
+"versjonen for syntaks markerin"
 
 #: trac/mimeview/rst.py:60
 msgid "Docutils not found"
@@ -798,7 +800,7 @@ msgstr ""
 "      Disse instillingene er lagret på serveren, identifisert via en "
 "sesjonsnøkkel\n"
 "      lagret i en nettleser cookie. Den cookien gjør at dine instillinger"
-" kan\n" 
+" kan\n"
 "      gjenskapes ved fremtidige besøk."
 
 #: trac/prefs/templates/prefs.html:33
@@ -839,8 +841,7 @@ msgid ""
 "      multiple computers and web browsers."
 msgstr ""
 "Du kan laste en tidligere lagret sesjon ved å legge inn\n"
-"      sesjonsnøkkelen nedenfor. Dette lar det dele instillinger "
-"mellom\n"
+"      sesjonsnøkkelen nedenfor. Dette lar det dele instillinger mellom\n"
 "      flere datamaskiner og nettlesere."
 
 #: trac/prefs/templates/prefs_datetime.html:15
@@ -895,8 +896,8 @@ msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Positiv offset benyttes for å indikere en tidssone øst for "
-"Greenwich, altså foran Universal Time."
+"Positiv offset benyttes for å indikere en tidssone øst for Greenwich, "
+"altså foran Universal Time."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -911,7 +912,7 @@ msgid ""
 "This information is used to automatically populate some forms\n"
 "        on this site with your contact details."
 msgstr ""
-"Denne informasjonen benyttes i prosjektet til automatisk å fylle\n
+"Denne informasjonen benyttes i prosjektet til automatisk å fylle\\"
 "        inn noen skjema med dine kontakt detaljer."
 
 #: trac/prefs/templates/prefs_general.html:30
@@ -920,7 +921,7 @@ msgid ""
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
 msgstr ""
-"Denne informasjonen benytes til å knytte sammen ditt login navn med din\"
+"Denne informasjonen benytes til å knytte sammen ditt login navn med din\\"
 "        email adresse og fulle navn, og benyttes for eksempel til\n"
 "        email varsling og RSS strømmer."
 
@@ -937,7 +938,7 @@ msgid ""
 msgstr ""
 "Tastatursnarveier kan benyttes i prosjektet for raskere\n"
 "      tilgang til noen funksjoner. Ettersom disse snarveien kan\n"
-"      komme i konflikt med snarveier i operativsystemet eller nettleser\n
+"      komme i konflikt med snarveier i operativsystemet eller nettleser\\"
 "      så er disse ikke aktivert som standard. Se"
 
 #: trac/prefs/templates/prefs_keybindings.html:24
@@ -1139,7 +1140,7 @@ msgstr ""
 msgid "Section"
 msgstr ""
 
-#: trac/templates/about.html:67 trac/templates/error.html:161
+#: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
 msgstr ""
 
@@ -1298,119 +1299,108 @@ msgstr ""
 msgid "Modified"
 msgstr ""
 
-#: trac/templates/error.html:59
+#: trac/templates/error.html:60
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
 "While doing a"
 msgstr ""
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid "operation on `"
 msgstr ""
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid ""
 "`, Trac issued an internal error.\n"
 "\n"
 "''(please provide additional details here)''"
 msgstr ""
 
-#: trac/templates/error.html:67
+#: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
 msgstr ""
 
-#: trac/templates/error.html:72
+#: trac/templates/error.html:73
 msgid "==== System Information ===="
 msgstr ""
 
-#: trac/templates/error.html:75
+#: trac/templates/error.html:76
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
 msgstr ""
 
-#: trac/templates/error.html:83
+#: trac/templates/error.html:84
 msgid "Create"
 msgstr ""
 
-#: trac/templates/error.html:98
+#: trac/templates/error.html:99
 msgid "Oops…"
 msgstr ""
 
-#: trac/templates/error.html:100
+#: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
 msgstr ""
 
-#: trac/templates/error.html:105
+#: trac/templates/error.html:106
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
 msgstr ""
 
-#: trac/templates/error.html:107
+#: trac/templates/error.html:108
 msgid ""
 "Trac\n"
 "              administrator"
 msgstr ""
 
-#: trac/templates/error.html:108
+#: trac/templates/error.html:109
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
 msgstr ""
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid "To that end, you could"
 msgstr ""
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid ""
 "a ticket at this\n"
 "                  site."
 msgstr ""
 
-#: trac/templates/error.html:117
+#: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
 msgstr ""
 
-#: trac/templates/error.html:123
+#: trac/templates/error.html:124
 msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
 msgstr ""
 
-#: trac/templates/error.html:125
-msgid "Before you do that, though, please first try"
-msgstr ""
-
-#: trac/templates/error.html:127
-msgid "searching"
-msgstr ""
-
-#: trac/templates/error.html:127
+#: trac/templates/error.html:126
 msgid ""
-"for similar issues, as it is quite likely that this problem\n"
+"Before you do that, though, please first try\n"
+"                [1:searching]\n"
+"                for similar issues, as it is quite likely that this "
+"problem\n"
 "                has been reported before. For questions about "
 "installation\n"
-"                and configuration of Trac, please try the"
+"                and configuration of Trac, please try the\n"
+"                [2:mailing list]\n"
+"                instead of filing a ticket."
 msgstr ""
 
-#: trac/templates/error.html:131
-msgid "mailing list"
-msgstr ""
-
-#: trac/templates/error.html:131
-msgid "instead of filing a ticket."
-msgstr ""
-
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid "Otherwise, please"
 msgstr ""
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid ""
 "a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
@@ -1418,53 +1408,53 @@ msgid ""
 "                explain how to reproduce it."
 msgstr ""
 
-#: trac/templates/error.html:140
+#: trac/templates/error.html:141
 msgid "Python Traceback"
 msgstr ""
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:142
 msgid "Most recent call last:"
 msgstr ""
 
-#: trac/templates/error.html:146 trac/templates/error.html:173
+#: trac/templates/error.html:147 trac/templates/error.html:174
 msgid "File \""
 msgstr ""
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:147
 msgid ""
 "\",\n"
 "                        line"
 msgstr ""
 
-#: trac/templates/error.html:147 trac/templates/error.html:173
+#: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
 msgstr ""
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:152
 msgid "Code fragment:"
 msgstr ""
 
-#: trac/templates/error.html:159
+#: trac/templates/error.html:160
 msgid "Local variables:"
 msgstr ""
 
-#: trac/templates/error.html:173
+#: trac/templates/error.html:174
 msgid "\", line"
 msgstr ""
 
-#: trac/templates/error.html:176
+#: trac/templates/error.html:177
 msgid "Switch to plain text view"
 msgstr ""
 
-#: trac/templates/error.html:179
+#: trac/templates/error.html:180
 msgid "System Information:"
 msgstr ""
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "TracGuide"
 msgstr ""
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "— The Trac User and Administration Guide"
 msgstr ""
 

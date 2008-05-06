@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-12-01 12:55+0100\n"
-"PO-Revision-Date: 2008-05-05 14:58+0200\n"
+"PO-Revision-Date: 2008-05-06 11:57+0200\n"
 "Last-Translator: Ghassem Tofighi <tofighi@gmail.com>\n"
 "Language-Team: fa_IR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -407,7 +407,7 @@ msgstr "افزودن"
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:66
-#: trac/templates/error.html:161
+#: trac/templates/error.html:162
 msgid "Name"
 msgstr "نام"
 
@@ -1152,7 +1152,7 @@ msgstr "اطلاعات سیستم"
 msgid "Section"
 msgstr "بخش"
 
-#: trac/templates/about.html:67 trac/templates/error.html:161
+#: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
 msgstr "مقدار"
 
@@ -1312,7 +1312,7 @@ msgstr "حذف شد"
 msgid "Modified"
 msgstr "تغییر کرد"
 
-#: trac/templates/error.html:59
+#: trac/templates/error.html:60
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
@@ -1322,11 +1322,11 @@ msgstr ""
 "\n"
 "هنگام انجام یک"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid "operation on `"
 msgstr "عملیات روی `"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid ""
 "`, Trac issued an internal error.\n"
 "\n"
@@ -1336,7 +1336,7 @@ msgstr ""
 "\n"
 "''(لطفا جزییات بیشتر را اینجا آماده کنید)''"
 
-#: trac/templates/error.html:67
+#: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
@@ -1344,11 +1344,11 @@ msgstr ""
 "درخواست پارامترهای:\n"
 "{{{"
 
-#: trac/templates/error.html:72
+#: trac/templates/error.html:73
 msgid "==== System Information ===="
 msgstr "==== اطلاعات سیستم ===="
 
-#: trac/templates/error.html:75
+#: trac/templates/error.html:76
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
@@ -1356,20 +1356,20 @@ msgstr ""
 "==== دنبال‌کردن ردپای پیتون ====\n"
 "{{{"
 
-#: trac/templates/error.html:83
+#: trac/templates/error.html:84
 #, fuzzy
 msgid "Create"
 msgstr "ایجاد شد"
 
-#: trac/templates/error.html:98
+#: trac/templates/error.html:99
 msgid "Oops…"
 msgstr "وای..."
 
-#: trac/templates/error.html:100
+#: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
 msgstr "«ترک» متوجه یک خطای داخلی شد:"
 
-#: trac/templates/error.html:105
+#: trac/templates/error.html:106
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
@@ -1377,7 +1377,7 @@ msgstr ""
 "یک خطای داخلی در «ترک» به وجود آمد. پیشنهاد می‌شود\n"
 "              شما اطاع دهید به محلی خود"
 
-#: trac/templates/error.html:107
+#: trac/templates/error.html:108
 msgid ""
 "Trac\n"
 "              administrator"
@@ -1385,7 +1385,7 @@ msgstr ""
 "«ترک»\n"
 "              مدیر"
 
-#: trac/templates/error.html:108
+#: trac/templates/error.html:109
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
@@ -1393,11 +1393,11 @@ msgstr ""
 "و تمام اطلاعات مورد نیاز را برای تکثیر این موضوع\n"
 "              به او بده."
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid "To that end, you could"
 msgstr "در پایان، می‌توانید"
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid ""
 "a ticket at this\n"
 "                  site."
@@ -1405,11 +1405,11 @@ msgstr ""
 "یک درخواست در این\n"
 "                  سایت."
 
-#: trac/templates/error.html:117
+#: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
 msgstr "عملیاتی که باعث ایجاد خطا شد این بود:"
 
-#: trac/templates/error.html:123
+#: trac/templates/error.html:124
 msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
@@ -1418,38 +1418,31 @@ msgstr ""
 " کنید\n"
 "              شما باید آن‌را به تیم «ترک» گزارش کنید."
 
-#: trac/templates/error.html:125
-msgid "Before you do that, though, please first try"
-msgstr "پیش از انجام آن، به هرحال، لطفا اول آزمایش کنید"
-
-#: trac/templates/error.html:127
-msgid "searching"
-msgstr "جستجو"
-
-#: trac/templates/error.html:127
+#: trac/templates/error.html:126
+#, fuzzy
 msgid ""
-"for similar issues, as it is quite likely that this problem\n"
+"Before you do that, though, please first try\n"
+"                [1:searching]\n"
+"                for similar issues, as it is quite likely that this "
+"problem\n"
 "                has been reported before. For questions about "
 "installation\n"
-"                and configuration of Trac, please try the"
+"                and configuration of Trac, please try the\n"
+"                [2:mailing list]\n"
+"                instead of filing a ticket."
 msgstr ""
+"[1:ﺞﺴﺘﺟﻭ] پیﺵ ﺍﺯ ﺎﻨﺟﺎﻣ ﺂﻧ، ﺐﻫ ﻩﺮﺣﺎﻟ، ﻞﻄﻓﺍ ﺍﻮﻟ ﺁﺰﻣﺍیﺵ کﻥیﺩ"
 "برای موضوعات مشابه، که دقیقا شبیه این مساله هستند\n"
 "                قبلا گزارش شده است. برای سوالات درباره نصب\n"
 "                «ترک» و  تنظیم ,لطفا آزمایش کنید"
+"[2:ﻝیﺲﺗ پﺲﺗی]"
+"ﺐﻫ ﺝﺍی پﺭکﺭﺪﻧ ﻑﺮﻣ ﺩﺮﺧﻭﺎﺴﺗ."
 
-#: trac/templates/error.html:131
-msgid "mailing list"
-msgstr "لیست پستی"
-
-#: trac/templates/error.html:131
-msgid "instead of filing a ticket."
-msgstr "به جای پرکردن فرم درخواست."
-
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid "Otherwise, please"
 msgstr "در غیر این صورت، لطفا"
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid ""
 "a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
@@ -1461,19 +1454,19 @@ msgstr ""
 "و \n"
 "                توضیح دهید چگونه آن‌را تکثیر کنید."
 
-#: trac/templates/error.html:140
+#: trac/templates/error.html:141
 msgid "Python Traceback"
 msgstr "ردپای پیتون"
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:142
 msgid "Most recent call last:"
 msgstr "آخرین فراخوانی:"
 
-#: trac/templates/error.html:146 trac/templates/error.html:173
+#: trac/templates/error.html:147 trac/templates/error.html:174
 msgid "File \""
 msgstr "فایل \""
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:147
 msgid ""
 "\",\n"
 "                        line"
@@ -1481,35 +1474,35 @@ msgstr ""
 "\"،\n"
 "                        خط"
 
-#: trac/templates/error.html:147 trac/templates/error.html:173
+#: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
 msgstr "، در"
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:152
 msgid "Code fragment:"
 msgstr "تکه کد:"
 
-#: trac/templates/error.html:159
+#: trac/templates/error.html:160
 msgid "Local variables:"
 msgstr "متغیرهای محلی"
 
-#: trac/templates/error.html:173
+#: trac/templates/error.html:174
 msgid "\", line"
 msgstr "\"، خط"
 
-#: trac/templates/error.html:176
+#: trac/templates/error.html:177
 msgid "Switch to plain text view"
 msgstr ""
 
-#: trac/templates/error.html:179
+#: trac/templates/error.html:180
 msgid "System Information:"
 msgstr "اطلاعات سیستم:"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "TracGuide"
 msgstr "راهنمای‌«ترک»"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "— The Trac User and Administration Guide"
 msgstr "— راهنمای کاربری و مدیریت کاربر «ترک»"
 

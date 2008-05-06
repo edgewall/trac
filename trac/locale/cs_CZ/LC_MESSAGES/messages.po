@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2008-05-05 14:58+0200\n"
+"PO-Revision-Date: 2008-05-06 11:57+0200\n"
 "Last-Translator: Radek Bartoň <xbarto33@stud.fit.vutbr.cz>\n"
 "Language-Team: cs_CZ <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -401,7 +401,7 @@ msgstr "Přidat"
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:66
-#: trac/templates/error.html:161
+#: trac/templates/error.html:162
 msgid "Name"
 msgstr "Jméno"
 
@@ -1138,7 +1138,7 @@ msgstr "Systémové informace"
 msgid "Section"
 msgstr "Sekce"
 
-#: trac/templates/about.html:67 trac/templates/error.html:161
+#: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
 msgstr "Hodnota"
 
@@ -1301,7 +1301,7 @@ msgstr "Odstraněno"
 msgid "Modified"
 msgstr "Změněno"
 
-#: trac/templates/error.html:59
+#: trac/templates/error.html:60
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
@@ -1311,18 +1311,18 @@ msgstr ""
 "\n"
 "Během provádění operace "
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid "operation on `"
 msgstr "na `"
 
-#: trac/templates/error.html:63
+#: trac/templates/error.html:64
 msgid ""
 "`, Trac issued an internal error.\n"
 "\n"
 "''(please provide additional details here)''"
 msgstr "` nastala interní chyba Tracu. (Zde, prosím, poskytněte další informace.)"
 
-#: trac/templates/error.html:67
+#: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
@@ -1330,11 +1330,11 @@ msgstr ""
 "Požadované parametry:\n"
 "{{{"
 
-#: trac/templates/error.html:72
+#: trac/templates/error.html:73
 msgid "==== System Information ===="
 msgstr "==== Systémové informace ===="
 
-#: trac/templates/error.html:75
+#: trac/templates/error.html:76
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
@@ -1342,32 +1342,32 @@ msgstr ""
 "==== Výpis Pythonu ====\n"
 "{{{"
 
-#: trac/templates/error.html:83
+#: trac/templates/error.html:84
 #, fuzzy
 msgid "Create"
 msgstr "zpožděna"
 
-#: trac/templates/error.html:98
+#: trac/templates/error.html:99
 msgid "Oops…"
 msgstr "Hups…"
 
-#: trac/templates/error.html:100
+#: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
 msgstr "Systém Trac detekoval vnitřní chybu:"
 
-#: trac/templates/error.html:105
+#: trac/templates/error.html:106
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
 msgstr "V systému Trac nastala vnitřní chyba. Doporučujeme kontaktovat "
 
-#: trac/templates/error.html:107
+#: trac/templates/error.html:108
 msgid ""
 "Trac\n"
 "              administrator"
 msgstr "správce totoho systému Trac"
 
-#: trac/templates/error.html:108
+#: trac/templates/error.html:109
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
@@ -1375,21 +1375,21 @@ msgstr ""
 ", upozornit ho na tuto skutečnost a poskytnout mu všechny potřebné "
 "informace k opětovnému navození situace."
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid "To that end, you could"
 msgstr "Můžete také vytvořit záznám o chybě"
 
-#: trac/templates/error.html:113
+#: trac/templates/error.html:114
 msgid ""
 "a ticket at this\n"
 "                  site."
 msgstr "v tomto systému."
 
-#: trac/templates/error.html:117
+#: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
 msgstr "Údálost, která vyvolala chybu, byla:"
 
-#: trac/templates/error.html:123
+#: trac/templates/error.html:124
 msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
@@ -1397,37 +1397,29 @@ msgstr ""
 "Pokud si myslíte, že chyba není v nastavení systému a dokážete situaci "
 "opětovně navodit, lze uvažovat o nahlášení chyby vývojovému týmu Tracu."
 
-#: trac/templates/error.html:125
-msgid "Before you do that, though, please first try"
-msgstr "Než to však uděláte, zkuste nejprve "
-
-#: trac/templates/error.html:127
-msgid "searching"
-msgstr "nalézt "
-
-#: trac/templates/error.html:127
+#: trac/templates/error.html:126
+#, fuzzy
 msgid ""
-"for similar issues, as it is quite likely that this problem\n"
+"Before you do that, though, please first try\n"
+"                [1:searching]\n"
+"                for similar issues, as it is quite likely that this "
+"problem\n"
 "                has been reported before. For questions about "
 "installation\n"
-"                and configuration of Trac, please try the"
+"                and configuration of Trac, please try the\n"
+"                [2:mailing list]\n"
+"                instead of filing a ticket."
 msgstr ""
+"Než to však uděláte, zkuste nejprve [1:nalézt] "
 "jestli podobný problém už není evidován, což bývá časté. Otázky ohledně "
-"instalace a nastavení systému Trac směřujte do"
+"instalace a nastavení systému Trac směřujte do "
+"[2:e-mailového fóra] místo vytváření záznamů."
 
-#: trac/templates/error.html:131
-msgid "mailing list"
-msgstr "e-mailového fóra "
-
-#: trac/templates/error.html:131
-msgid "instead of filing a ticket."
-msgstr "místo vytváření záznamů."
-
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid "Otherwise, please"
 msgstr "Opravdové chyby, prosím, "
 
-#: trac/templates/error.html:135
+#: trac/templates/error.html:136
 msgid ""
 "a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
@@ -1437,19 +1429,19 @@ msgstr ""
 "hlaste vyplněním nového záznamu na stránkách projektu Trac, kde podrobně "
 "popište probém a vysvětlete způsob, jak ho znovu navodit."
 
-#: trac/templates/error.html:140
+#: trac/templates/error.html:141
 msgid "Python Traceback"
 msgstr "Výpis Pythonu"
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:142
 msgid "Most recent call last:"
 msgstr "Nejnovější volání funkce jako poslední:"
 
-#: trac/templates/error.html:146 trac/templates/error.html:173
+#: trac/templates/error.html:147 trac/templates/error.html:174
 msgid "File \""
 msgstr "Soubor \""
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:147
 msgid ""
 "\",\n"
 "                        line"
@@ -1457,35 +1449,35 @@ msgstr ""
 "\",\n"
 "                        řádek"
 
-#: trac/templates/error.html:147 trac/templates/error.html:173
+#: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
 msgstr ", v"
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:152
 msgid "Code fragment:"
 msgstr "Zlomek kódu:"
 
-#: trac/templates/error.html:159
+#: trac/templates/error.html:160
 msgid "Local variables:"
 msgstr "Lokální proměnné:"
 
-#: trac/templates/error.html:173
+#: trac/templates/error.html:174
 msgid "\", line"
 msgstr "\" řádek"
 
-#: trac/templates/error.html:176
+#: trac/templates/error.html:177
 msgid "Switch to plain text view"
 msgstr ""
 
-#: trac/templates/error.html:179
+#: trac/templates/error.html:180
 msgid "System Information:"
 msgstr "Systémové informace:"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "TracGuide"
 msgstr "TracGuide"
 
-#: trac/templates/error.html:191
+#: trac/templates/error.html:192
 msgid "— The Trac User and Administration Guide"
 msgstr "— Uživatelská a administrátorská příručka systému Trac."
 
