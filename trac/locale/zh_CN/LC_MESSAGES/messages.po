@@ -116,7 +116,7 @@ msgstr "数据库的版本比Trac使用的版本新"
 #: trac/env.py:495
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
-msgstr "没有version %(num)i 的升级模块 (%(version)s.py)"
+msgstr "没有版本为 %(num)i 的升级模块 (%(version)s.py)"
 
 #: trac/env.py:540
 msgid ""
@@ -149,7 +149,6 @@ msgid "TLS enabled but server does not support TLS"
 msgstr "启用了TLS, 但是服务器并不支持TLS"
 
 #: trac/notification.py:390
-#, fuzzy
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
 msgstr "传票包含非ASCII字符. 请修改编码设置"
 
@@ -180,7 +179,7 @@ msgstr "于版本 %(version)s"
 #: trac/admin/console.py:1129
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr ""
+msgstr "热备无法覆写己有的 '%(dest)s'"
 
 #: trac/admin/web_ui.py:66
 msgid "Admin"
@@ -206,7 +205,7 @@ msgstr "一般"
 
 #: trac/admin/web_ui.py:180 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
-msgstr "设置"
+msgstr "基础设置"
 
 #: trac/admin/web_ui.py:207 trac/admin/templates/admin_logging.html:9
 #: trac/admin/templates/admin_logging.html:21
@@ -229,7 +228,7 @@ msgstr "文件"
 
 #: trac/admin/web_ui.py:221
 msgid "Syslog"
-msgstr ""
+msgstr "Syslog"
 
 #: trac/admin/web_ui.py:223
 msgid "Windows event log"
@@ -267,7 +266,7 @@ msgstr "权限"
 
 #: trac/admin/web_ui.py:309
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr "全部大写的标记保留为权限名称"
+msgstr "全部大写的标记已保留为权限名称"
 
 #: trac/admin/web_ui.py:316
 msgid "Unknown action"
@@ -285,7 +284,7 @@ msgstr "\"%(subject)s\" 已增加给用户组 \"%(group)s\""
 
 #: trac/admin/web_ui.py:373 trac/admin/templates/admin_plugins.html:9
 msgid "Plugins"
-msgstr "插件"
+msgstr "插件s"
 
 #: trac/admin/web_ui.py:407
 msgid "Uploaded file is not a Python source file or egg"
@@ -322,7 +321,7 @@ msgstr "名称:"
 
 #: trac/admin/templates/admin_basics.html:24
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
 #: trac/ticket/templates/ticket.html:293
@@ -336,9 +335,8 @@ msgstr "描述:"
 #: trac/admin/templates/admin_milestones.html:124
 #: trac/admin/templates/admin_plugins.html:102
 #: trac/admin/templates/admin_versions.html:94
-#, fuzzy
 msgid "Apply changes"
-msgstr "保存修改"
+msgstr "应用修改"
 
 #: trac/admin/templates/admin_components.html:10
 msgid "Components"
@@ -386,7 +384,7 @@ msgstr "取消"
 #: trac/admin/templates/admin_milestones.html:66
 #: trac/admin/templates/admin_versions.html:46
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
@@ -426,9 +424,8 @@ msgstr "默认"
 #: trac/admin/templates/admin_milestones.html:123
 #: trac/admin/templates/admin_perms.html:93
 #: trac/admin/templates/admin_versions.html:93
-#, fuzzy
 msgid "Remove selected items"
-msgstr "没有选择版本"
+msgstr "删选择项"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
@@ -502,7 +499,7 @@ msgstr "管理里程碑"
 
 #: trac/admin/templates/admin_milestones.html:19
 msgid "Modify Milestone:"
-msgstr "组件里程碑:"
+msgstr "修订里程碑:"
 
 #: trac/admin/templates/admin_milestones.html:24
 #: trac/admin/templates/admin_milestones.html:82
@@ -529,7 +526,7 @@ msgstr "完成:"
 #: trac/admin/templates/admin_versions.html:35
 #: trac/ticket/templates/milestone_edit.html:82
 msgid "Description (you may use [1:WikiFormatting] here):"
-msgstr "描述 (此处可以使用 [1:WikiFormatting]):"
+msgstr "描述 (此处可用 [1:WikiFormatting] 格式):"
 
 #: trac/admin/templates/admin_milestones.html:75
 msgid "Add Milestone:"
@@ -638,11 +635,11 @@ msgstr "上传一个Python egg包形式的插件."
 
 #: trac/admin/templates/admin_plugins.html:37
 msgid "Install"
-msgstr ""
+msgstr "安装"
 
 #: trac/admin/templates/admin_plugins.html:49
 msgid "Uninstall"
-msgstr ""
+msgstr "卸载"
 
 #: trac/admin/templates/admin_plugins.html:59 trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:97
@@ -696,30 +693,30 @@ msgstr "发布"
 #: trac/db/api.py:97
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
-msgstr ""
+msgstr "不支持的数据库 \"%(scheme)s\""
 
 #: trac/db/api.py:120
 msgid "Database connection string must start with scheme:/"
-msgstr ""
+msgstr "数据库链接字符串必须始于scheme:/"
 
 #: trac/db/mysql_backend.py:148
 msgid "MySQL servers older than 4.1 are not supported!"
-msgstr ""
+msgstr "不支持版本低于4.1的MySQL服务器!"
 
 #: trac/db/pool.py:107
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr ""
+msgstr "无法在%(time)d 秒内获得数据库连接"
 
 #: trac/db/sqlite_backend.py:131
 #, python-format
 msgid "Database already exists at %(path)s"
-msgstr ""
+msgstr "数据库已经存在于 %(path)s"
 
 #: trac/db/sqlite_backend.py:159
-#, fuzzy, python-format
+#, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr ""
+msgstr "数据库 \"%(path)s\" 未找到."
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -727,6 +724,8 @@ msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
+"用户 %(user)s 需要数据库文件"
+" %(path)s 即其所在目录的读/写权限."
 
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
 #, python-format
@@ -770,7 +769,7 @@ msgstr "键盘快捷方式"
 
 #: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
 msgid "Language"
-msgstr "管理"
+msgstr "语言"
 
 #: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
@@ -795,7 +794,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
-msgstr "保存修改"
+msgstr "保存变更"
 
 #: trac/prefs/templates/prefs_advanced.html:14
 msgid "Session key:"
@@ -854,7 +853,7 @@ msgstr "例如: 当前时间是"
 
 #: trac/prefs/templates/prefs_datetime.html:29
 msgid "(UTC)."
-msgstr ""
+msgstr "(UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:30
 #: trac/prefs/templates/prefs_language.html:27
@@ -888,7 +887,7 @@ msgstr "完整名称:"
 
 #: trac/prefs/templates/prefs_general.html:20
 msgid "Email address:"
-msgstr "电子邮件帐户:"
+msgstr "电子邮件地址:"
 
 #: trac/prefs/templates/prefs_general.html:26
 msgid ""
@@ -907,7 +906,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_keybindings.html:17
 msgid "Enable access keys"
-msgstr "启用快捷键"
+msgstr "启用存取关键字"
 
 #: trac/prefs/templates/prefs_keybindings.html:20
 msgid ""
@@ -922,19 +921,19 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "TracAccessibility"
-msgstr ""
+msgstr "TracAccessibility"
 
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "for more information on access keys."
-msgstr "辅助按键的更多信息."
+msgstr "存取关键字的更多信息."
 
 #: trac/prefs/templates/prefs_language.html:14
 msgid "Language:"
-msgstr "管理:"
+msgstr "语言:"
 
 #: trac/prefs/templates/prefs_language.html:16
 msgid "Default language"
-msgstr ""
+msgstr "默认语言"
 
 #: trac/prefs/templates/prefs_language.html:21
 msgid ""
@@ -942,14 +941,17 @@ msgid ""
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
 msgstr ""
+"配置语言将作用到所有显示文本，\n"
+"      会使用你的母语来代替原先的 \n"
+"      的."
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid "Example:"
-msgstr "文件名："
+msgstr "例如："
 
 #: trac/prefs/templates/prefs_language.html:28
 msgid "language, this would be displayed as"
-msgstr ""
+msgstr "语言，可显示的"
 
 #: trac/prefs/templates/prefs_pygments.html:9
 msgid "Pygments Theme"
@@ -1050,7 +1052,7 @@ msgstr "参见"
 
 #: trac/search/templates/search.html:70
 msgid "TracSearch"
-msgstr ""
+msgstr "TracSearch"
 
 #: trac/search/templates/search.html:70
 msgid "for help on searching."
@@ -1100,11 +1102,11 @@ msgstr "文件中(包含的发布文件中)."
 
 #: trac/templates/about.html:38
 msgid "python powered"
-msgstr "python powered"
+msgstr "动力源自python"
 
 #: trac/templates/about.html:41
 msgid "Please visit the Trac open source project:"
-msgstr "访问Trac开源项目网站:"
+msgstr "访问Trac开源项目:"
 
 #: trac/templates/about.html:42
 msgid "http://trac.edgewall.org/"
@@ -1116,7 +1118,7 @@ msgstr "系统信息"
 
 #: trac/templates/about.html:65
 msgid "Section"
-msgstr "项目"
+msgstr "部分"
 
 #: trac/templates/about.html:67 trac/templates/error.html:161
 msgid "Value"
@@ -1152,9 +1154,8 @@ msgid "Replace existing attachment of the same name"
 msgstr "替换已有同名附件"
 
 #: trac/templates/attachment.html:48
-#, fuzzy
 msgid "Add attachment"
-msgstr "增加附件到"
+msgstr "追加附件"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
@@ -1200,7 +1201,7 @@ msgstr "差异"
 
 #: trac/templates/diff_view.html:17
 msgid "Changes"
-msgstr "修改"
+msgstr "变更"
 
 #: trac/templates/diff_view.html:18 trac/templates/diff_view.html:21
 msgid "between"
@@ -1220,7 +1221,7 @@ msgstr "和"
 #: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:716
 #: trac/ticket/templates/ticket.html:97
 msgid "Initial Version"
-msgstr "最初版本"
+msgstr "初始版本"
 
 #: trac/templates/diff_view.html:24
 #: trac/versioncontrol/templates/changeset.html:71
@@ -1239,11 +1240,11 @@ msgstr "时间戳:"
 #: trac/templates/diff_view.html:39 trac/templates/diff_view.html:45
 #: trac/templates/diff_view.html:50
 msgid "(multiple changes)"
-msgstr "(多次修改)"
+msgstr "(多次变更)"
 
 #: trac/templates/diff_view.html:46
 msgid "(IP:"
-msgstr ""
+msgstr "(IP:"
 
 #: trac/templates/diff_view.html:48
 msgid "Comment:"
@@ -1264,7 +1265,7 @@ msgstr "未修改"
 #: trac/versioncontrol/templates/changeset.html:154
 #: trac/versioncontrol/templates/revisionlog.html:72
 msgid "Added"
-msgstr "增加"
+msgstr "已增加"
 
 #: trac/templates/diff_view.html:60
 #: trac/versioncontrol/templates/changeset.html:155
@@ -1319,9 +1320,10 @@ msgid ""
 "==== Python Traceback ====\n"
 "{{{"
 msgstr ""
+"==== Python Traceback ====\n"
+"{{{"
 
 #: trac/templates/error.html:83
-#, fuzzy
 msgid "Create"
 msgstr "创建"
 
@@ -1339,7 +1341,7 @@ msgid ""
 "              that you inform your local"
 msgstr ""
 "Trac中有一个内部错误. 建议\n"
-"              你通知你的本地"
+"              通知你的本地"
 
 #: trac/templates/error.html:107
 msgid ""
@@ -1374,8 +1376,8 @@ msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
 msgstr ""
-"如果你认为你这应当工作, 你也可以重现该问题,\n"
-"              你应当考虑向Trac开发团队报告这个问题."
+"如果认为这应当可用,且你也可以重现该问题,\n"
+"              应考虑向Trac开发团队报告这个问题."
 
 #: trac/templates/error.html:125
 msgid "Before you do that, though, please first try"
@@ -1392,7 +1394,7 @@ msgid ""
 "installation\n"
 "                and configuration of Trac, please try the"
 msgstr ""
-"类似问题, 因为通常这个问题\n"
+"类似提案, 因为通常这个问题\n"
 "                已经被其他人报告了. 对于有关Trac安装和配置的问题\n"
 "                请尝试"
 
@@ -1421,11 +1423,11 @@ msgstr ""
 
 #: trac/templates/error.html:140
 msgid "Python Traceback"
-msgstr ""
+msgstr "Python Traceback"
 
 #: trac/templates/error.html:141
 msgid "Most recent call last:"
-msgstr ""
+msgstr "最多最近调用的:"
 
 #: trac/templates/error.html:146 trac/templates/error.html:173
 msgid "File \""
@@ -1457,35 +1459,34 @@ msgstr "\", 行"
 
 #: trac/templates/error.html:176
 msgid "Switch to plain text view"
-msgstr ""
+msgstr "切换到纯文本视图"
 
 #: trac/templates/error.html:179
 msgid "System Information:"
-msgstr "统信息:"
+msgstr "系统信息:"
 
 #: trac/templates/error.html:191
 msgid "TracGuide"
-msgstr ""
+msgstr "TracGuide"
 
 #: trac/templates/error.html:191
 msgid "— The Trac User and Administration Guide"
-msgstr "— Trac用户和管理员指南"
+msgstr "— Trac用户及管理员指南"
 
 #: trac/templates/history_view.html:15
 msgid "Change History for"
-msgstr "修改历史"
+msgstr "变更历史"
 
 #: trac/templates/history_view.html:20 trac/templates/history_view.html:51
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:163
-#, fuzzy
 msgid "View changes"
-msgstr "保存修改"
+msgstr "查阅变更"
 
 #: trac/templates/history_view.html:22
 msgid "Change history"
-msgstr "修改历史"
+msgstr "变更历史"
 
 #: trac/templates/history_view.html:27
 #: trac/versioncontrol/templates/revisionlog.html:94
@@ -1548,7 +1549,7 @@ msgstr "显示"
 
 #: trac/templates/macros.html:105
 msgid "lines around each change"
-msgstr "每次修改行数"
+msgstr "每次变更行数"
 
 #: trac/templates/macros.html:108
 msgid "Ignore:"
@@ -1570,9 +1571,8 @@ msgstr "空字符变化"
 #: trac/ticket/templates/query.html:183 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
-#, fuzzy
 msgid "Update"
-msgstr "后"
+msgstr "升级"
 
 #: trac/templates/macros.html:139 trac/templates/macros.html:152
 msgid "HTML preview not available"
@@ -1584,11 +1584,11 @@ msgstr "由于文件大小超过"
 
 #: trac/templates/macros.html:142
 msgid "bytes."
-msgstr "字节。"
+msgstr "字节."
 
 #: trac/templates/macros.html:144
 msgid "since no preview renderer could handle it."
-msgstr "由于没有合适的预览处理器来处理."
+msgstr "由于没有合适的渲染器来处理."
 
 #: trac/templates/macros.html:147
 msgid "Try"
@@ -1596,7 +1596,7 @@ msgstr "尝试"
 
 #: trac/templates/macros.html:148
 msgid "downloading"
-msgstr "下载"
+msgstr "下载中"
 
 #: trac/templates/macros.html:148
 msgid "the file instead."
@@ -1644,7 +1644,7 @@ msgstr "附加文件"
 
 #: trac/templates/macros.html:239 trac/templates/macros.html:243
 msgid "s:"
-msgstr ""
+msgstr "s:"
 
 #: trac/templates/macros.html:243
 msgid "Total"
@@ -1664,18 +1664,18 @@ msgstr "警告:"
 
 #: trac/templates/theme.html:49
 msgid "Warnings:"
-msgstr "警告:"
+msgstr "警告s:"
 
 #: trac/templates/theme.html:57
 msgid "Notice:"
-msgstr "注:"
+msgstr "注意:"
 
 #: trac/templates/theme.html:60
 msgid "Notices:"
-msgstr "注:"
+msgstr "注意s:"
 
 #: trac/ticket/admin.py:87
-#, fuzzy, python-format
+#, python-format
 msgid "Component %(name)s already exists."
 msgstr "组件 %(name)s 已经存在."
 
@@ -1688,12 +1688,11 @@ msgid "Completion date may not be in the future"
 msgstr "完成日期不能是未来的日期"
 
 #: trac/ticket/admin.py:158
-#, fuzzy
 msgid "Invalid Completion Date"
 msgstr "无效完成日期"
 
 #: trac/ticket/admin.py:183
-#, fuzzy, python-format
+#, python-format
 msgid "Milestone %(name)s already exists."
 msgstr "里程碑 %(name)s 已经存在."
 
@@ -1702,7 +1701,7 @@ msgid "No milestone selected"
 msgstr "没有选择里程碑"
 
 #: trac/ticket/admin.py:263
-#, fuzzy, python-format
+#, python-format
 msgid "Version %(name)s already exists."
 msgstr "版本 %(name)s 已经存在."
 
@@ -1711,13 +1710,13 @@ msgid "No version selected"
 msgstr "没有选择版本"
 
 #: trac/ticket/admin.py:343
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s %(name)s already exists"
 msgstr "%(type)s %(name)s 已经存在"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
-msgstr "没有选择enum"
+msgstr "没有值被选择"
 
 #: trac/ticket/admin.py:377
 msgid "Order numbers must be unique"
@@ -1735,27 +1734,27 @@ msgstr "传票 #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "当前状态己不存在"
 
 #: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
-msgstr "传票将脱离属主"
+msgstr "传票将将脱离属主"
 
 #: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
-msgstr "属主将修改"
+msgstr "属主将变更"
 
 #: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
-#, fuzzy, python-format
+#, python-format
 msgid "The owner will change to %(name)s"
-msgstr "属主将修改为 %(name)s"
+msgstr "属主将变更为 %(name)s"
 
 #: trac/ticket/default_workflow.py:254
 msgid "to "
 msgstr "到"
 
 #: trac/ticket/default_workflow.py:273
-#, fuzzy, python-format
+#, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "处理结果将设置为 %(name)s"
 
@@ -1764,39 +1763,39 @@ msgid "The resolution will be set"
 msgstr "处理结果将设置为"
 
 #: trac/ticket/default_workflow.py:288
-#, fuzzy, python-format
+#, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "下一个状态将是 '%(name)s'"
 
 #: trac/ticket/model.py:361
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s 不存在."
 
 #: trac/ticket/model.py:505
-#, fuzzy, python-format
+#, python-format
 msgid "Component %(name)s does not exist."
 msgstr "组件 '%(name)s' 不存在."
 
 #: trac/ticket/model.py:735
-#, fuzzy, python-format
+#, python-format
 msgid "Version %(name)s does not exist."
 msgstr "版本 '%(name)s' 不存在."
 
 #: trac/ticket/query.py:72
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "查询页面 %(page)s 无效"
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "Query max %(max)s 无效"
 
 #: trac/ticket/query.py:271
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "页面 %(page)s 已超出查询结果页数"
 
 #: trac/ticket/query.py:587
 msgid "Created"
@@ -1816,7 +1815,7 @@ msgstr "不包含"
 
 #: trac/ticket/query.py:608
 msgid "begins with"
-msgstr "开始于"
+msgstr "起始于"
 
 #: trac/ticket/query.py:609
 msgid "ends with"
@@ -1833,12 +1832,12 @@ msgstr "不是"
 #: trac/ticket/query.py:668 trac/ticket/report.py:329
 #, python-format
 msgid "Page %(num)d"
-msgstr ""
+msgstr "第 %(num)d 页"
 
 #: trac/ticket/query.py:709 trac/ticket/report.py:513 trac/ticket/web_ui.py:114
 #: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
 msgid "RSS Feed"
-msgstr ""
+msgstr "RSS Feed"
 
 #: trac/ticket/query.py:711 trac/ticket/report.py:516 trac/ticket/web_ui.py:110
 msgid "Comma-delimited Text"
@@ -1864,7 +1863,7 @@ msgstr "可用的报表"
 #: trac/ticket/query.py:983
 #, python-format
 msgid "[Error: %(error)s]"
-msgstr ""
+msgstr "[Error: %(error)s]"
 
 #: trac/ticket/query.py:1063
 msgid "No results"
@@ -1879,7 +1878,7 @@ msgstr "删除报表 {%(num)s} %(title)s"
 #: trac/ticket/report.py:243
 #, python-format
 msgid "Report %(num)s does not exist."
-msgstr "吧报表 %(num)s 不存在."
+msgstr "报表 %(num)s 不存在."
 
 #: trac/ticket/report.py:184 trac/ticket/report.py:196
 #: trac/ticket/report.py:244
@@ -1888,7 +1887,7 @@ msgstr "无效报表号"
 
 #: trac/ticket/report.py:208
 msgid "Create New Report"
-msgstr "新建传票"
+msgstr "新建报表"
 
 #: trac/ticket/report.py:212
 #, python-format
@@ -1926,12 +1925,12 @@ msgstr "报表 %(num)s 没有SQL查询."
 #: trac/ticket/report.py:561
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "查询参数 \"sort=%(sort_col)s\"  无效"
 
 #: trac/ticket/report.py:607
 #, python-format
 msgid "Dynamic variable '%(name)s' not defined."
-msgstr "动态变量 '%(name)s' 未指定."
+msgstr "动态变量 '%(name)s' 未定义."
 
 #: trac/ticket/roadmap.py:213
 #, python-format
@@ -1939,6 +1938,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
+"'%(group1)s' 和 '%(group2)s' 里程碑组都声明为"
+"\"catch-all\" 组. 请检查你的配置."
 
 #: trac/ticket/roadmap.py:229
 #, python-format
@@ -1951,11 +1952,11 @@ msgstr "'%(groupname)s' 里程碑组重用了已经被其它组使用的状态 '
 #: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
-msgstr "线路图"
+msgstr "路线图"
 
 #: trac/ticket/roadmap.py:350
 msgid "iCalendar"
-msgstr ""
+msgstr "iCalendar"
 
 #: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
@@ -1982,11 +1983,11 @@ msgstr "新建传票"
 
 #: trac/ticket/web_ui.py:152
 msgid "id can't be set for a new ticket request."
-msgstr "id不能设置到新传票请求."
+msgstr "id不能设置给新传票请求."
 
 #: trac/ticket/web_ui.py:203
 msgid "Ticket changes"
-msgstr "传票修改"
+msgstr "传票变更"
 
 #: trac/ticket/web_ui.py:205
 msgid "Ticket details"
@@ -2018,12 +2019,12 @@ msgstr "版本 %(num)s"
 
 #: trac/ticket/web_ui.py:716
 msgid "initial"
-msgstr ""
+msgstr "初始"
 
 #: trac/ticket/web_ui.py:778 trac/versioncontrol/web_ui/changeset.py:342
 #: trac/wiki/web_ui.py:366
 msgid "Change"
-msgstr "修改"
+msgstr "变更"
 
 #: trac/ticket/web_ui.py:783
 msgid "Ticket Diff"
@@ -2031,15 +2032,15 @@ msgstr "传票差异"
 
 #: trac/ticket/web_ui.py:851
 msgid "No permission to change ticket fields."
-msgstr "没有修改传票字段的权限."
+msgstr "无权修改传票字段."
 
 #: trac/ticket/web_ui.py:859
 msgid "No permissions to change ticket fields."
-msgstr "没有修改传票字段的权限."
+msgstr "无权修改传票字段."
 
 #: trac/ticket/web_ui.py:868
 msgid "No permissions to add a comment."
-msgstr "没有增加评论的权限."
+msgstr "无权增加评论."
 
 #: trac/ticket/web_ui.py:874
 msgid ""
@@ -2067,7 +2068,7 @@ msgstr "传票字段 '%(field)s' 无效: %(message)s"
 
 #: trac/ticket/web_ui.py:1036
 msgid "Assign to"
-msgstr ""
+msgstr "指派给"
 
 #: trac/ticket/web_ui.py:1052
 msgid "Open"
@@ -2091,7 +2092,7 @@ msgstr "增加/删除抄送"
 
 #: trac/ticket/web_ui.py:1071
 msgid "<Author field>"
-msgstr ""
+msgstr "<Author field>"
 
 #: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:93
 msgid "yes"
@@ -2103,7 +2104,7 @@ msgstr "否"
 
 #: trac/ticket/web_ui.py:1260 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
-msgstr "修改"
+msgstr "已修改"
 
 #: trac/ticket/templates/milestone_delete.html:9
 #: trac/ticket/templates/milestone_delete.html:21
@@ -2120,7 +2121,6 @@ msgstr "重指定关联传票到里程碑"
 
 #: trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_view.html:91
-#, fuzzy
 msgid "Delete milestone"
 msgstr "删除里程碑"
 
@@ -2129,13 +2129,13 @@ msgstr "删除里程碑"
 #: trac/ticket/templates/milestone_view.html:97
 #: trac/ticket/templates/roadmap.html:72
 msgid "TracRoadmap"
-msgstr ""
+msgstr "TracRoadmap"
 
 #: trac/ticket/templates/milestone_delete.html:39
 msgid ""
 "for help on using\n"
 "      the roadmap."
-msgstr "使用线路图的帮助."
+msgstr "使用路线图的帮助."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
@@ -2162,14 +2162,12 @@ msgstr "重指定关联活动传票到里程碑"
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
-#, fuzzy
 msgid "Submit changes"
-msgstr "传票修改"
+msgstr "提交变更"
 
 #: trac/ticket/templates/milestone_edit.html:90
-#, fuzzy
 msgid "Add milestone"
-msgstr "增加里程碑:"
+msgstr "增加里程碑"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2177,7 +2175,7 @@ msgstr "增加里程碑:"
 msgid ""
 "for help on using\n"
 "        the roadmap."
-msgstr "使用线路图的帮助."
+msgstr "使用路线图的帮助."
 
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:22
@@ -2213,12 +2211,10 @@ msgid "by"
 msgstr "由"
 
 #: trac/ticket/templates/milestone_view.html:58
-#, fuzzy
 msgid "(none)"
 msgstr "(无)"
 
 #: trac/ticket/templates/milestone_view.html:87
-#, fuzzy
 msgid "Edit milestone"
 msgstr "编辑里程碑"
 
@@ -2230,15 +2226,15 @@ msgstr "匹配"
 
 #: trac/ticket/templates/query.html:41
 msgid "Filters"
-msgstr "过滤"
+msgstr "过滤器"
 
 #: trac/ticket/templates/query.html:42
 msgid "Query filters"
-msgstr "查询过滤"
+msgstr "查询过滤器"
 
 #: trac/ticket/templates/query.html:117
 msgid "Add filter"
-msgstr "增加过滤"
+msgstr "增加过滤器"
 
 #: trac/ticket/templates/query.html:137
 msgid "Columns"
@@ -2258,17 +2254,15 @@ msgstr "在每个结果下显示:"
 
 #: trac/ticket/templates/query.html:175
 msgid "Max items per page"
-msgstr ""
+msgstr "每页最多条目"
 
 #: trac/ticket/templates/query.html:218
-#, fuzzy
 msgid "Edit query"
-msgstr "查询:"
+msgstr "编辑查询"
 
 #: trac/ticket/templates/query.html:226
-#, fuzzy
 msgid "Save query"
-msgstr "查询:"
+msgstr "保存查询"
 
 #: trac/ticket/templates/query.html:226
 #, python-format
@@ -2277,17 +2271,16 @@ msgstr "在报表 {%(id)s} 中保存更新的查询"
 
 #: trac/ticket/templates/query.html:226
 msgid "Create new report from current query"
-msgstr "使用当前查询创新新报表"
+msgstr "用当前查询创建新的"
 
 #: trac/ticket/templates/query.html:235
-#, fuzzy
 msgid "Delete query"
-msgstr "删除"
+msgstr "删除查询"
 
 #: trac/ticket/templates/query.html:242
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
-msgstr ""
+msgstr "TracQuery"
 
 #: trac/ticket/templates/query.html:242
 msgid "for help on using queries."
@@ -2300,7 +2293,7 @@ msgstr "查看传票"
 
 #: trac/ticket/templates/query_results.html:73
 msgid "Reported by"
-msgstr "报表者"
+msgstr "汇报人"
 
 #: trac/ticket/templates/query_results.html:80
 msgid "(this ticket)"
@@ -2308,7 +2301,7 @@ msgstr "(本传票)"
 
 #: trac/ticket/templates/query_results.html:96
 msgid "(more results for this group on next page)"
-msgstr ""
+msgstr "(下页有更多结果)"
 
 #: trac/ticket/templates/report_delete.html:18
 msgid "Are you sure you want to delete this report?"
@@ -2316,15 +2309,14 @@ msgstr "确定删除此报表吗?"
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
-#, fuzzy
 msgid "Delete report"
-msgstr "查看报表"
+msgstr "删除报表"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
 #: trac/ticket/templates/report_view.html:170
 msgid "TracReports"
-msgstr ""
+msgstr "TracReports"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
@@ -2338,7 +2330,7 @@ msgstr "报表标题:"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr "描述: (你可以在此使用 [1:WikiFormatting])"
+msgstr "描述: (你可用 [1:WikiFormatting] 格式)"
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
@@ -2361,23 +2353,20 @@ msgid "expression)"
 msgstr "表达式)"
 
 #: trac/ticket/templates/report_edit.html:41
-#, fuzzy
 msgid "Save report"
-msgstr "查看报表"
+msgstr "保存报表"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
 msgstr "匹配)"
 
 #: trac/ticket/templates/report_view.html:27
-#, fuzzy
 msgid "Edit report"
-msgstr "查看报表"
+msgstr "编辑报表"
 
 #: trac/ticket/templates/report_view.html:33
-#, fuzzy
 msgid "Copy report"
-msgstr "查看报表"
+msgstr "复制报表"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
@@ -2385,9 +2374,8 @@ msgid "View report"
 msgstr "查看报表"
 
 #: trac/ticket/templates/report_view.html:160
-#, fuzzy
 msgid "Create new report"
-msgstr "新建传票"
+msgstr "新建报表"
 
 #: trac/ticket/templates/roadmap.html:23
 msgid "Show already completed milestones"
@@ -2406,7 +2394,6 @@ msgstr ""
 "                ("
 
 #: trac/ticket/templates/roadmap.html:67
-#, fuzzy
 msgid "Add new milestone"
 msgstr "新建里程碑"
 
@@ -2417,7 +2404,7 @@ msgstr "增加"
 
 #: trac/ticket/templates/ticket.html:62
 msgid "changed from"
-msgstr "修改自"
+msgstr "变更自"
 
 #: trac/ticket/templates/ticket.html:65
 #: trac/versioncontrol/templates/browser.html:125
@@ -2474,7 +2461,7 @@ msgstr "(还没有创建传票)"
 
 #: trac/ticket/templates/ticket.html:139
 msgid "Reported by:"
-msgstr "报表者:"
+msgstr "汇报人:"
 
 #: trac/ticket/templates/ticket.html:141
 msgid "Owned by:"
@@ -2490,7 +2477,7 @@ msgstr "差异"
 
 #: trac/ticket/templates/ticket.html:183 trac/ticket/templates/ticket.html:225
 msgid "Reply"
-msgstr ""
+msgstr "回复"
 
 #: trac/ticket/templates/ticket.html:183
 msgid "Reply, quoting this description"
@@ -2498,7 +2485,7 @@ msgstr "回复, 引用此描述"
 
 #: trac/ticket/templates/ticket.html:202
 msgid "Change History"
-msgstr "修改历史"
+msgstr "变更历史"
 
 #: trac/ticket/templates/ticket.html:214
 msgid "follow-up"
@@ -2506,7 +2493,7 @@ msgstr "跟随"
 
 #: trac/ticket/templates/ticket.html:220
 msgid "Changed"
-msgstr "修改"
+msgstr "已变更"
 
 #: trac/ticket/templates/ticket.html:221
 msgid "ago by"
@@ -2514,7 +2501,7 @@ msgstr "前, 由"
 
 #: trac/ticket/templates/ticket.html:240
 msgid "Add/Change #"
-msgstr "加/修改 #"
+msgstr "增加/修改 #"
 
 #: trac/ticket/templates/ticket.html:260
 msgid ""
@@ -2522,7 +2509,7 @@ msgid ""
 "              [1:WikiFormatting]\n"
 "              here):"
 msgstr ""
-"评论 (你可以使用\n"
+"评论 (你可用\n"
 "              [1:WikiFormatting]\n"
 "              ):"
 
@@ -2536,20 +2523,19 @@ msgstr "概述:"
 
 #: trac/ticket/templates/ticket.html:284
 msgid "Reporter:"
-msgstr "报告人:"
+msgstr "汇报人:"
 
 #: trac/ticket/templates/ticket.html:371
 msgid "I have files to attach to this ticket"
 msgstr "我有文件需要附加到传票"
 
 #: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:124
-#, fuzzy
 msgid "Preview"
-msgstr "预览:"
+msgstr "预览"
 
 #: trac/ticket/templates/ticket.html:390
 msgid "TracTickets"
-msgstr ""
+msgstr "TracTickets"
 
 #: trac/ticket/templates/ticket.html:390
 msgid ""
@@ -2559,11 +2545,11 @@ msgstr "关于传票的使用帮助."
 
 #: trac/ticket/templates/ticket_notify_email.txt:9
 msgid "Changes (by"
-msgstr "修改者 ("
+msgstr "变更人 ("
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 msgid "Description changed by"
-msgstr "描述修改者"
+msgstr "变更描述"
 
 #: trac/ticket/templates/ticket_notify_email.txt:28
 msgid ""
@@ -2593,7 +2579,7 @@ msgstr "%(date)s 在时间线"
 
 #: trac/timeline/templates/timeline.html:20
 msgid "View changes from"
-msgstr "视图修改自"
+msgstr "查看变更自"
 
 #: trac/timeline/templates/timeline.html:21
 msgid "days back"
@@ -2601,7 +2587,7 @@ msgstr "天前"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
-msgstr ""
+msgstr "TracTimeline"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "for information about the timeline view."
@@ -2610,12 +2596,12 @@ msgstr "关于时间线视图的信息."
 #: trac/util/presentation.py:252
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr ""
+msgstr "%(last)d 共 %(total)d"
 
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr ""
+msgstr "%(start)d - %(stop)d 共 %(total)d"
 
 #: trac/versioncontrol/api.py:81
 #, python-format
@@ -2700,7 +2686,7 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-"差异不匹配: 基准是 %(oldnode)s (%(oldpath)s 在版本 %(oldrev)s)中,  而目标是 %(newnode)s "
+"差异不匹配: 基准是 %(oldnode)s (%(oldpath)s 在修订 %(oldrev)s)中,  而目标是 %(newnode)s "
 "(%(newpath)s 在版本 %(newrev)s)中."
 
 #: trac/versioncontrol/svn_fs.py:803
@@ -2717,9 +2703,8 @@ msgid "Visit:"
 msgstr "访问:"
 
 #: trac/versioncontrol/templates/browser.html:63
-#, fuzzy
 msgid "Go!"
-msgstr "前"
+msgstr "走!"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Jump to the chosen preselected path"
@@ -2729,12 +2714,12 @@ msgstr "跳转到预选择的路径"
 #: trac/versioncontrol/templates/revisionlog.html:92
 #: trac/versioncontrol/web_ui/browser.py:622
 msgid "Rev"
-msgstr "版本"
+msgstr "修订"
 
 #: trac/versioncontrol/templates/browser.html:84
 #: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:533
 msgid "Last Change"
-msgstr "最后修改"
+msgstr "最后变更"
 
 #: trac/versioncontrol/templates/browser.html:91
 msgid "Parent Directory"
@@ -2762,9 +2747,8 @@ msgid "for help on using the browser."
 msgstr "使用源码游览的帮助."
 
 #: trac/versioncontrol/templates/browser.html:153
-#, fuzzy
 msgid "View changes..."
-msgstr "保存修改"
+msgstr "查阅变更"
 
 #: trac/versioncontrol/templates/browser.html:153
 msgid "Select paths and revs for Diff"
@@ -2797,16 +2781,15 @@ msgstr "在源码游览中显示条目"
 
 #: trac/versioncontrol/templates/changeset.html:25
 msgid "Changes in"
-msgstr "修改于"
+msgstr "变更于"
 
 #: trac/versioncontrol/templates/changeset.html:27
 msgid "Show revision log"
 msgstr "显示修订日志"
 
 #: trac/versioncontrol/templates/changeset.html:30
-#, fuzzy
 msgid "Changes from"
-msgstr "修改信息"
+msgstr "变更自"
 
 #: trac/versioncontrol/templates/changeset.html:31
 #: trac/versioncontrol/templates/changeset.html:33
@@ -2845,15 +2828,15 @@ msgstr "位置:"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "removed"
-msgstr "删除"
+msgstr "已删除"
 
 #: trac/versioncontrol/templates/changeset.html:131
 msgid "copied"
-msgstr "复制"
+msgstr "已复制"
 
 #: trac/versioncontrol/templates/changeset.html:132
 msgid "moved"
-msgstr "移动"
+msgstr "已移动"
 
 #: trac/versioncontrol/templates/diff_form.html:9
 #: trac/versioncontrol/templates/diff_form.html:20
@@ -2871,7 +2854,7 @@ msgstr "从:"
 #: trac/versioncontrol/templates/diff_form.html:33
 #: trac/versioncontrol/templates/diff_form.html:43
 msgid "at revision:"
-msgstr "修订:"
+msgstr "在修订:"
 
 #: trac/versioncontrol/templates/diff_form.html:39
 msgid "To:"
@@ -2885,7 +2868,8 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
-"每个路径, 你可以开始输入路径, 然后将获得现有路径和文件的提示, 以供选择.              点击条目以选择, 或者使用上下箭头, "
+"每个路径, 你可以开始输入路径, 然后将获得现有路径和文件的提示, 以供选择."
+"              点击条目以选择, 或者使用上下箭头, "
 "然后按tab键."
 
 #: trac/versioncontrol/templates/diff_form.html:63
@@ -2910,7 +2894,7 @@ msgstr "修订日志模式:"
 
 #: trac/versioncontrol/templates/revisionlog.html:26
 msgid "Stop on copy"
-msgstr "只显示到复制时的版本"
+msgstr "只显示到复制时的修订"
 
 #: trac/versioncontrol/templates/revisionlog.html:32
 msgid "Follow copies"
@@ -2946,9 +2930,7 @@ msgstr "复制或更名"
 
 #: trac/versioncontrol/templates/revisionlog.html:84
 msgid "Diff from Old Revision to New Revision (select them below)"
-msgstr ""
-"显示旧版本到新版本的差异(从下面选择)\"\n"
-"\"使用最新修改版本注释每行(需要较长时间...)"
+msgstr "显示旧修订到新修订的差异(从下面选择)"
 
 #: trac/versioncontrol/templates/revisionlog.html:93
 msgid "Chgset"
@@ -2964,15 +2946,15 @@ msgstr "复制于"
 
 #: trac/versioncontrol/templates/revisionlog.html:121
 msgid "View log starting at this revision"
-msgstr "查看从这个版本之后的日志"
+msgstr "查看从这个修订之后的日志"
 
 #: trac/versioncontrol/templates/revisionlog.html:163
 msgid "Diff from Old Revision to New Revision (select them above)"
-msgstr "显示旧版本到新版本的差异(从上面选择)"
+msgstr "显示旧修订到新修订的差异(从上面选择)"
 
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "TracRevisionLog"
-msgstr ""
+msgstr "TracRevisionLog"
 
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "for help on using the revision log."
@@ -2984,7 +2966,7 @@ msgid ""
 "# ChangeLog for"
 msgstr ""
 "#\n"
-"# 变更集"
+"# 变更集日志"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 msgid ""
@@ -3001,7 +2983,7 @@ msgstr "源码游览"
 #: trac/versioncontrol/web_ui/browser.py:345
 #: trac/versioncontrol/web_ui/changeset.py:240
 msgid "Invalid Changeset Number"
-msgstr "无效变更集号"
+msgstr "无效变更版本号"
 
 #: trac/versioncontrol/web_ui/browser.py:351
 #: trac/versioncontrol/web_ui/log.py:98
@@ -3025,6 +3007,8 @@ msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
+"给最后的变更修订每行都加注释 (可能这将花费过多 "
+"时间...)"
 
 #: trac/versioncontrol/web_ui/browser.py:389
 msgid "Revision Log"
@@ -3037,15 +3021,15 @@ msgstr "Zip归档"
 
 #: trac/versioncontrol/web_ui/browser.py:622
 msgid "Revision in which the line changed"
-msgstr "该行修改时的修订"
+msgstr "该行变更时的修订"
 
 #: trac/versioncontrol/web_ui/changeset.py:333
 msgid "Unified Diff"
-msgstr ""
+msgstr "统一格式差异"
 
 #: trac/versioncontrol/web_ui/changeset.py:348
 msgid "Reverse Diff"
-msgstr "反转差异"
+msgstr "回退差异"
 
 #: trac/versioncontrol/web_ui/changeset.py:379
 #, python-format
@@ -3067,7 +3051,7 @@ msgstr "在浏览器中显示文件的修订 %(rev)s"
 #: trac/versioncontrol/web_ui/changeset.py:595
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr "显示修订 %(id)s , 仅包含路径 %(path)s"
+msgstr "显示变更集 %(id)s , 仅包含路径 %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:605
 #, python-format
@@ -3080,7 +3064,7 @@ msgstr "仓库检入"
 
 #: trac/versioncontrol/web_ui/changeset.py:939
 msgid "Changesets"
-msgstr "变更集"
+msgstr "变更集s"
 
 #: trac/versioncontrol/web_ui/log.py:170
 #, python-format
@@ -3100,7 +3084,7 @@ msgstr "修订日志 (起始于 %(path)s, 修订. %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:245
 msgid "ChangeLog"
-msgstr "修改日志"
+msgstr "变更日志"
 
 #: trac/versioncontrol/web_ui/log.py:247
 msgid "View Latest Revision"
@@ -3113,22 +3097,20 @@ msgstr "更早版本"
 #: trac/web/auth.py:89
 #, python-format
 msgid "logged in as %(user)s"
-msgstr ""
+msgstr "登录为 %(user)s"
 
 #: trac/web/auth.py:92
-#, fuzzy
 msgid "Logout"
-msgstr "日志"
+msgstr "登出"
 
 #: trac/web/auth.py:95
-#, fuzzy
 msgid "Login"
-msgstr "日志"
+msgstr "登录"
 
 #: trac/web/auth.py:137
 #, python-format
 msgid "Already logged in as %(user)s."
-msgstr ""
+msgstr "已经登录为 %(user)s."
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, python-format
@@ -3142,7 +3124,7 @@ msgstr "后 %(label)s"
 
 #: trac/wiki/api.py:339
 msgid "no permission to view this wiki page"
-msgstr "没有查看此维基页面的权限"
+msgstr "无权查看此维基页面"
 
 #: trac/wiki/formatter.py:133
 #, python-format
@@ -3161,7 +3143,7 @@ msgstr "错误: 无法得到宏 %(name)s 的描述"
 
 #: trac/wiki/macros.py:550
 msgid "Table of Contents"
-msgstr "目录"
+msgstr "内容索引"
 
 #: trac/wiki/model.py:146
 msgid "Page not modified"
@@ -3178,7 +3160,7 @@ msgstr "帮助/指南"
 #: trac/wiki/web_ui.py:119
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
-msgstr "无修订 \"%(num)s\" , 维基页面 \"%(name)s\""
+msgstr "无版本 \"%(num)s\" , 维基页面 \"%(name)s\""
 
 #: trac/wiki/web_ui.py:248
 #, python-format
@@ -3231,7 +3213,7 @@ msgstr "历史"
 
 #: trac/wiki/web_ui.py:541
 msgid "Wiki changes"
-msgstr "维基修改"
+msgstr "维基变更"
 
 #: trac/wiki/templates/wiki_delete.html:22
 msgid "Delete"
@@ -3239,7 +3221,7 @@ msgstr "删除"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "Are you sure you want to"
-msgstr "确定"
+msgstr "你确认"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "delete"
@@ -3247,7 +3229,7 @@ msgstr "删除"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "this page?"
-msgstr "该页面吗?"
+msgstr "此页?"
 
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
@@ -3263,7 +3245,7 @@ msgstr "已有其他人修改了该页面."
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
-msgstr "如果你现在保存, 你将可能覆盖那些修改"
+msgstr "如果你现在保存, 可能将那些修改覆盖"
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "(highlighted below as deletions)."
@@ -3318,7 +3300,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
-msgstr "修改信息"
+msgstr "变更信息"
 
 #: trac/wiki/templates/wiki_edit.html:110
 msgid "Comment about this change (optional):"
@@ -3326,22 +3308,19 @@ msgstr "评论此次修改(可选):"
 
 #: trac/wiki/templates/wiki_edit.html:117
 msgid "Page is read-only"
-msgstr "只读页面"
+msgstr "页面只读"
 
 #: trac/wiki/templates/wiki_edit.html:125
-#, fuzzy
 msgid "Merge changes"
-msgstr "保存修改"
+msgstr "合并变更"
 
 #: trac/wiki/templates/wiki_edit.html:129
-#, fuzzy
 msgid "Preview Page"
-msgstr "预览 ("
+msgstr "页面预览"
 
 #: trac/wiki/templates/wiki_edit.html:130
-#, fuzzy
 msgid "Review Changes"
-msgstr "保存修改"
+msgstr "预览变更"
 
 #: trac/wiki/templates/wiki_view.html:39
 msgid "Describe"
