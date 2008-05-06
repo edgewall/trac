@@ -562,7 +562,7 @@ msgstr "Subjekt"
 
 #: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:64
 msgid "or"
-msgstr ""
+msgstr "eller"
 
 #: trac/admin/templates/admin_perms.html:16
 msgid "Group"
