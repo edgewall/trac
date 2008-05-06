@@ -530,7 +530,7 @@ msgstr "کامل شده:"
 #: trac/admin/templates/admin_versions.html:35
 #: trac/ticket/templates/milestone_edit.html:82
 msgid "Description (you may use [1:WikiFormatting] here):"
-msgstr "شرح (شما می‌توانید از [۲:قالب‌بندی‌ویکی] در اینجا استفاده کنید):"
+msgstr "شرح (شما می‌توانید از [1:قالب‌بندی‌ویکی] در اینجا استفاده کنید):"
 
 #: trac/admin/templates/admin_milestones.html:75
 msgid "Add Milestone:"
@@ -2389,7 +2389,7 @@ msgstr "عنوان گزارش:"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr "شرح: (شما می‌توانید اینجا از [۱:قالب‌بندی‌ویکی] استفاده کنید)"
+msgstr "شرح: (شما می‌توانید اینجا از [1:قالب‌بندی‌ویکی] استفاده کنید)"
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
@@ -2574,7 +2574,7 @@ msgid ""
 "              here):"
 msgstr ""
 "نظر (شما می‌توانید اینجا از\n"
-"              [۱:قالب‌بندی‌ویکی]\n"
+"              [1:قالب‌بندی‌ویکی]\n"
 "              استفاده کنید):"
 
 #: trac/ticket/templates/ticket.html:273
@@ -3379,8 +3379,8 @@ msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
-"[۱:توجه:] See [۲:قالب‌بندی‌ویکی] را ببینید و\n"
-"          [۳:ویکی‌«ترک»]برای کمک در ویرایش محتوای ویکی."
+"[1:توجه:] See [2:قالب‌بندی‌ویکی] را ببینید و\n"
+"          [3:ویکی‌«ترک»]برای کمک در ویرایش محتوای ویکی."
 
 #: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
