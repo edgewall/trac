@@ -447,6 +447,7 @@ class TicketModule(Component):
             # the webpage includes both changes by the user and changes by the
             # workflow... so we aren't able to differentiate them clearly.
 
+            self._populate(req, ticket) # Apply changes made by the user
             field_changes, problems = self.get_ticket_changes(req, ticket,
                                                               action)
             if problems:
@@ -459,7 +460,6 @@ class TicketModule(Component):
                                     tag.p('in your ', tag.tt('trac.ini'), '.'))
                                 )
 
-            self._populate(req, ticket) # Apply changes made by the user
             self._apply_ticket_changes(ticket, field_changes) # Apply changes made by the workflow
             # Unconditionally run the validation so that the user gets
             # information any and all problems.  But it's only valid if it
