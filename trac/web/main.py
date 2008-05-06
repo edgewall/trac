@@ -522,7 +522,8 @@ def send_project_index(environ, start_response, parent_dir=None,
     else:
         template = 'index.html'
 
-    data = {'trac': {'version': TRAC_VERSION, 'time': format_datetime()}}
+    data = {'trac': {'version': TRAC_VERSION, 'time': format_datetime()},
+            'req': req}
     if req.environ.get('trac.template_vars'):
         for pair in req.environ['trac.template_vars'].split(','):
             key, val = pair.split('=')
