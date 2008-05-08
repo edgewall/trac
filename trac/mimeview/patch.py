@@ -127,7 +127,7 @@ class PatchRenderer(Component):
 
                 shortrev = ('old', 'new')
                 if oldpath or newpath:
-                    sep = re.compile(r'([/.~])')
+                    sep = re.compile(r'([/.~\\])')
                     commonprefix = ''.join(os.path.commonprefix(
                         [sep.split(newpath), sep.split(oldpath)]))
                     commonsuffix = ''.join(os.path.commonprefix(
