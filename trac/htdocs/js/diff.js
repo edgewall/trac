@@ -81,8 +81,8 @@
       .replace("{3}", newOffset).replace("{4}", newLength);
   
     /* remove trailing &nbsp; and join lines (with CRLF for IExplorer) */
-    return $.map(lines, function(l){ return l.replace(/\xa0$/, ''); })
-        .join($.browser.msie ? "\r\n" : "\n");
+    return $.map(lines, function(l){ return l ? l.replace(/\xa0$/, '') : l; })
+        .join($.browser.msie ? "\r" : "\n");
   }
   
   $(document).ready(function($) {
