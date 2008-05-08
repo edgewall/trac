@@ -124,6 +124,8 @@ class Ticket(object):
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
         if value:
+            if isinstance(value, list):
+                raise TracError(_("Multi-values fields not supported yet"))
             field = [field for field in self.fields if field['name'] == name]
             if field and field[0].get('type') != 'textarea':
                 value = value.strip()
