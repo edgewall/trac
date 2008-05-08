@@ -509,6 +509,9 @@ class WikiModule(Component):
         # Add ctxtnav entries
         if version:
             prevnext_nav(req, _('Version'), _('View Latest Version'))
+            add_ctxtnav(req, _('Last Change'),
+                        req.href.wiki(page.name, action='diff',
+                                      version=page.version))
         else:
             self._wiki_ctxtnav(req, page)
 
