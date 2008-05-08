@@ -367,7 +367,7 @@ class Formatter(object):
             else:
                 path = get_relative_url(self.env, self.resource, self.href,
                                         path)
-                if '?' in path:
+                if '?' in path and query:
                     query = '&' + query.lstrip('?')
             return tag.a(label or rel, href=path + query + fragment)
         else:
