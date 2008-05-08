@@ -50,7 +50,7 @@ trac-admin /path/to/projenv wiki upgrade
 Note that this procedure will of course leave your `WikiStart` page intact.
 
 === Trac Macros, Plugins ===
-The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros, see TracWikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
 
 === Restart the Web Server ===
 If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.

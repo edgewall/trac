@@ -129,8 +129,8 @@ For more processor macros developed and/or contributed by users, visit:
 
 
 == Advanced Topics: Developing Processor Macros ==
-Developing processors is no different from Wiki macros. In fact they work the same way, only the usage syntax differs. See TracWikiMacros for more information.
+Developing processors is no different from Wiki macros. In fact they work the same way, only the usage syntax differs. See WikiMacros for more information.
 
 
 ----
-See also: TracWikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
+See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
