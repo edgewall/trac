@@ -139,7 +139,7 @@ An environment directory will usually consist of the following files and directo
    * `site_header.cs` - Custom page header.
  * `templates` - Custom Genshi environment-specific templates. '''''(0.11 only)'''''
    * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
- * `wiki-macros` - Environment-specific [TracWikiMacros Wiki macros]. '''''(0.10 only)'''''
+ * `wiki-macros` - Environment-specific [WikiMacros Wiki macros]. '''''(0.10 only)'''''
 
   '''Note: don't confuse a Trac environment directory with the source code repository directory.
 It happens that the above structure is loosely modelled after the Subversion repository directory 
