@@ -273,6 +273,8 @@ link:"123"
 ============================== Relative links
 Relative links are supported:
 [../parent See above] Note: see wikisyntax tests for other parent tests
+[./sibling See next]
+[... nothing to see] [...]
 [//docs See documentation]
 [//images/logo.png Our logo]
 [/] Note: "" is an Href("/") artifact
@@ -283,6 +285,8 @@ Relative links are supported:
 <p>
 Relative links are supported:
 <a href="/wiki/parent">See above</a> Note: see wikisyntax tests for other parent tests
+<a href="/wiki/WikiStart/sibling">See next</a>
+[... nothing to see] [...]
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="">/</a> Note: "" is an Href("/") artifact

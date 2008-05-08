@@ -937,7 +937,7 @@ class OneLinerFormatter(Formatter):
                     in_code_block -= 1
                     if in_code_block == 0:
                         if processor != 'comment':
-                            buf.write(' ![...]' + os.linesep)
+                            buf.write(' [...]' + os.linesep)
                         processor = None
             elif in_code_block:
                 if not processor:
