@@ -36,16 +36,19 @@ from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            add_ctxtnav, prevnext_nav, \
+                            add_ctxtnav, add_warning, prevnext_nav, \
                             INavigationContributor, ITemplateProvider
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.formatter import format_to_oneliner
 from trac.wiki.model import WikiPage
-
+ 
 class InvalidWikiPage(TracError):
-    """Exception raised when a Wiki page fails validation."""
-
+    """Exception raised when a Wiki page fails validation.
+    
+    :deprecated: Not used anymore since 0.11
+    """
+ 
 
 class WikiModule(Component):
 
@@ -131,7 +134,8 @@ class WikiModule(Component):
                     if a in req.args:
                         action = a
                         break
-                if action == 'edit' and not has_collision:
+                valid = self._validate(req, versioned_page)
+                if action == 'edit' and not has_collision and valid:
                     self._do_save(req, versioned_page)
                 else:
                     return self._render_editor(req, page, action, has_collision)
@@ -166,6 +170,21 @@ class WikiModule(Component):
         return [pkg_resources.resource_filename('trac.wiki', 'templates')]
 
     # Internal methods
+
+    def _validate(self, req, page):
+        valid = True
+        # Give the manipulators a pass at post-processing the page
+        for manipulator in self.page_manipulators:
+            for field, message in manipulator.validate_wiki_page(req, page):
+                valid = False
+                if field:
+                    add_warning(req, _("The Wiki page field '%(field)s' is "
+                                       "invalid: %(message)s",
+                                       field=field, message=message))
+                else:
+                    add_warning(req, _("Invalid Wiki page: %(message)s",
+                                       message=message))
+        return valid
 
     def _page_data(self, req, page, action=''):
         title = get_resource_summary(self.env, page.resource)
@@ -240,17 +259,6 @@ class WikiModule(Component):
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
             page.readonly = int('readonly' in req.args)
-
-        # Give the manipulators a pass at post-processing the page
-        for manipulator in self.page_manipulators:
-            for field, message in manipulator.validate_wiki_page(req, page):
-                if field:
-                    raise InvalidWikiPage(_("The Wiki page field '%(field)s' "
-                                            "is invalid: %(message)s",
-                                            field=field, message=message))
-                else:
-                    raise InvalidWikiPage(_("Invalid Wiki page: %(message)s",
-                                            message=message))
 
         try:
             page.save(get_reporter_id(req, 'author'),
