@@ -580,6 +580,10 @@ class IRequestFilter(Interface):
         Always returns a tuple of (template, content_type), even if
         unchanged.
 
+        Note that `template`, `content_type` will be `None` if:
+         - called when processing an error page
+         - the default request handler did not return any result
+
         (for 0.10 compatibility; only used together with ClearSilver templates)
         """
 
@@ -594,7 +598,11 @@ class IRequestFilter(Interface):
         Always returns a tuple of (template, data, content_type), even if
         unchanged.
 
-        (Since 0.11 - not yet stabilized)
+        Note that `template`, `data`, `content_type` will be `None` if:
+         - called when processing an error page
+         - the default request handler did not return any result
+
+        (Since 0.11)
         """
 
 

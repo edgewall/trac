@@ -491,7 +491,9 @@ class PermissionCache(object):
         self.env = env
         self.username = username or 'anonymous'
         self._resource = resource
-        self._cache = cache is not None and cache or {}
+        if cache is None:
+            cache = {}
+        self._cache = cache
 
     def _normalize_resource(self, realm_or_resource, id, version):
         if realm_or_resource:

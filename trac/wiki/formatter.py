@@ -367,7 +367,7 @@ class Formatter(object):
             else:
                 path = get_relative_url(self.env, self.resource, self.href,
                                         path)
-                if '?' in path:
+                if '?' in path and query:
                     query = '&' + query.lstrip('?')
             return tag.a(label or rel, href=path + query + fragment)
         else:
@@ -937,7 +937,7 @@ class OneLinerFormatter(Formatter):
                     in_code_block -= 1
                     if in_code_block == 0:
                         if processor != 'comment':
-                            buf.write(' ![...]' + os.linesep)
+                            buf.write(' [...]' + os.linesep)
                         processor = None
             elif in_code_block:
                 if not processor:

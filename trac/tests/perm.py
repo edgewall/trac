@@ -133,6 +133,8 @@ class PermissionCacheTestCase(unittest.TestCase):
                                            perm.DefaultPermissionPolicy,
                                            TestPermissionRequestor])
         self.perm_system = perm.PermissionSystem(self.env)
+        # by-pass DefaultPermissionPolicy cache:
+        perm.DefaultPermissionPolicy.CACHE_EXPIRY = -1 
         self.perm_system.grant_permission('testuser', 'TEST_MODIFY')
         self.perm_system.grant_permission('testuser', 'TEST_ADMIN')
         self.perm = perm.PermissionCache(self.env, 'testuser')
@@ -164,6 +166,17 @@ class PermissionCacheTestCase(unittest.TestCase):
         self.perm_system.revoke_permission('testuser', 'TEST_ADMIN')
         # Using cached GRANT here
         self.perm.assert_permission('TEST_ADMIN')
+
+    def test_cache_shared(self):
+        # we need to start with an empty cache here (#7201)
+        perm1 = perm.PermissionCache(self.env, 'testcache')
+        perm1 = perm1('ticket', 1)
+        perm2 = perm1('ticket', 1) # share internal cache
+        self.perm_system.grant_permission('testcache', 'TEST_ADMIN')
+        perm1.assert_permission('TEST_ADMIN')
+        self.perm_system.revoke_permission('testcache', 'TEST_ADMIN')
+        # Using cached GRANT here (from shared cache)
+        perm2.assert_permission('TEST_ADMIN')
 
 
 class TestPermissionPolicy(Component):

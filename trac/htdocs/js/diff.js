@@ -80,9 +80,11 @@
       .replace("{1}", oldOffset).replace("{2}", oldLength)
       .replace("{3}", newOffset).replace("{4}", newLength);
   
-    /* remove trailing &nbsp; and join lines (with CRLF for IExplorer) */
-    return $.map(lines, function(l){ return l.replace(/\xa0$/, ''); })
-        .join($.browser.msie ? "\r\n" : "\n");
+    /* remove trailing &nbsp; and join lines (with CR for IExplorer) */
+    for ( var i = 0; i < lines.length; i++ )
+        if ( lines[i] )
+            lines[i] = lines[i].replace(/\xa0$/, '');
+    return lines.join($.browser.msie ? "\r" : "\n");
   }
   
   $(document).ready(function($) {

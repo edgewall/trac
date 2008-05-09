@@ -311,12 +311,18 @@ class RequestDispatcher(Component):
         return chosen_handler
 
     def _post_process_request(self, req, *args):
+        nbargs = len(args)
         resp = args
         for f in reversed(self.filters):
-            # as the arity of `post_process_request` has changed since 
-            # Trac 0.10, we only call filters which have the same arity
-            if arity(f.post_process_request) - 2 == len(args):
+            # As the arity of `post_process_request` has changed since 
+            # Trac 0.10, only filters with same arity gets passed real values.
+            # Errors will call all filters with None arguments,
+            # and results will not be not saved.
+            extra_arg_count = arity(f.post_process_request) - 2
+            if extra_arg_count == nbargs:
                 resp = f.post_process_request(req, *resp)
+            elif nbargs == 0:
+                f.post_process_request(req, *(None,)*extra_arg_count)
         return resp
 
 
