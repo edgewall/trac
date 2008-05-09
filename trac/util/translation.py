@@ -64,7 +64,7 @@ try:
             return trans
         if not hasattr(_current, 'translations'):
             return LazyProxy(_ngettext)
-        return _gettext()
+        return _ngettext()
 
     def activate(locale):
         locale_dir = pkg_resources.resource_filename(__name__, '../locale')
