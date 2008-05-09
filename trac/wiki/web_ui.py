@@ -136,7 +136,7 @@ class WikiModule(Component):
                         break
                 valid = self._validate(req, versioned_page)
                 if action == 'edit' and not has_collision and valid:
-                    self._do_save(req, versioned_page)
+                    return self._do_save(req, versioned_page)
                 else:
                     return self._render_editor(req, page, action, has_collision)
             elif action == 'delete':
@@ -265,11 +265,11 @@ class WikiModule(Component):
                             req.args.get('comment'),
                             req.remote_addr)
             not_modified = False
+            req.redirect(get_resource_url(self.env, page.resource, req.href,
+                                          version=page.version))
         except TracError:
-            not_modified = True
-        version = (not_modified and page.version or None)
-        req.redirect(get_resource_url(self.env, page.resource, req.href,
-                                      version=version))
+            add_warning(req, _("Page not modified, showing latest version."))
+            return self._render_view(req, page)
 
     def _render_confirm(self, req, page):
         if page.readonly:
