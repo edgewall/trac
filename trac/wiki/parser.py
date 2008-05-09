@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2006 Edgewall Software
+# Copyright (C) 2005-2008 Edgewall Software
 # Copyright (C) 2003-2006 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
@@ -50,7 +50,7 @@ class WikiParser(Component):
     SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
     SHREF_TARGET_LAST = r"[\w/=](?<!_)" # we don't want "_"
 
-    LHREF_RELATIVE_TARGET = r"[/.#][^\s[\]]*"
+    LHREF_RELATIVE_TARGET = r"[/#][^\s\]]*|\.\.?(?:[/#][^\s\]]*)?"
 
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
 

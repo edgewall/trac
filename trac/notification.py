@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
 # All rights reserved.
@@ -57,7 +57,7 @@ class NotificationSystem(Component):
 
     smtp_always_cc = Option('notification', 'smtp_always_cc', '',
         """Email address(es) to always send notifications to,
-           addresses can be see by all recipients (Cc:).""")
+           addresses can be seen by all recipients (Cc:).""")
 
     smtp_always_bcc = Option('notification', 'smtp_always_bcc', '',
         """Email address(es) to always send notifications to,
@@ -387,7 +387,7 @@ class NotifyEmail(Notify):
             try:
                 dummy = body.encode('ascii')
             except UnicodeDecodeError:
-                raise TracError(_("Ticket contains non-Ascii chars. " \
+                raise TracError(_("Ticket contains non-ASCII chars. " \
                                   "Please change encoding setting"))
         msg = MIMEText(body, 'plain')
         # Message class computes the wrong type from MIMEText constructor,

@@ -17,24 +17,6 @@
       jQuery(document).ready(function($) {$("#q").get(0).focus()});
     </script>
   </head>
-
-  <div py:def="paging" class="paging" py:if="results.has_more_pages">
-    <span py:if="results.has_previous_page"
-          py:with="prevlink = chrome.links.prev[0]" class="previous">
-      <a href="${prevlink.href}" title="${prevlink.title}">&larr;</a>
-    </span>
-    <span py:for="num in range(max(0, results.page - 10),
-                               min(results.page + 11, results.num_pages))"
-      py:choose="">
-      <span py:when="num == results.page" class="current">${num+1}</span>
-      <a py:otherwise="" href="${page_href}&amp;page=${num + 1}">${num + 1}</a>
-    </span>
-    <span py:if="results.has_next_page"
-          py:with="nextlink = chrome.links.next[0]" class="next">
-      <a href="${nextlink.href}" title="${nextlink.title}">&rarr;</a>
-    </span>
-  </div>
-
   <body>
     <div id="content" class="search">
 
@@ -55,13 +37,10 @@
       </form>
 
       <py:if test="results or quickjump"><hr />
-        <h2>
-          Results
-          <span class="numresults">
-            (${results.span[0] + 1} - ${results.span[1]} of ${results.num_items})
-          </span>
+        <h2 py:if="results">
+          Results <span class="numresults">(${results.displayed_items()})</span>
         </h2>
-        ${paging()}
+        <xi:include py:with="paginator = results" href="page_index.html" />
         <div>
           <dl id="results">
             <py:if test="quickjump">
@@ -80,7 +59,7 @@
             </py:for>
           </dl>
         </div>
-        ${paging()}
+        <xi:include py:with="paginator = results" href="page_index.html" />
       </py:if>
 
       <div id="notfound" py:if="query and not (results or quickjump)">

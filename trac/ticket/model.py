@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2006 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
@@ -124,6 +124,8 @@ class Ticket(object):
         elif self._old[name] == value: # Change of field reverted
             del self._old[name]
         if value:
+            if isinstance(value, list):
+                raise TracError(_("Multi-values fields not supported yet"))
             field = [field for field in self.fields if field['name'] == name]
             if field and field[0].get('type') != 'textarea':
                 value = value.strip()
@@ -359,7 +361,7 @@ class AbstractEnum(object):
             row = cursor.fetchone()
             if not row:
                 raise ResourceNotFound(_('%(type)s %(name)s does not exist.',
-                                  type=self.type, name=name))
+                                         type=self.type, name=name))
             self.value = self._old_value = row[0]
             self.name = self._old_name = name
         else:
@@ -369,7 +371,7 @@ class AbstractEnum(object):
     exists = property(fget=lambda self: self._old_value is not None)
 
     def delete(self, db=None):
-        assert self.exists, 'Cannot deleting non-existent %s' % self.type
+        assert self.exists, 'Cannot delete non-existent %s' % self.type
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -503,7 +505,7 @@ class Component(object):
             row = cursor.fetchone()
             if not row:
                 raise ResourceNotFound(_('Component %(name)s does not exist.',
-                                  name=name))
+                                         name=name))
             self.name = self._old_name = name
             self.owner = row[0] or None
             self.description = row[1] or ''
@@ -515,7 +517,7 @@ class Component(object):
     exists = property(fget=lambda self: self._old_name is not None)
 
     def delete(self, db=None):
-        assert self.exists, 'Cannot deleting non-existent component'
+        assert self.exists, 'Cannot delete non-existent component'
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -733,7 +735,7 @@ class Version(object):
             row = cursor.fetchone()
             if not row:
                 raise ResourceNotFound(_('Version %(name)s does not exist.',
-                                  name=name))
+                                         name=name))
             self.name = self._old_name = name
             self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) or None
             self.description = row[1] or ''
@@ -745,7 +747,7 @@ class Version(object):
     exists = property(fget=lambda self: self._old_name is not None)
 
     def delete(self, db=None):
-        assert self.exists, 'Cannot deleting non-existent version'
+        assert self.exists, 'Cannot delete non-existent version'
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2004 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
@@ -38,6 +38,8 @@ class TracError(Exception):
             self.title = title
         self.show_traceback = show_traceback
 
+    def __unicode__(self):
+        return unicode(self.message)
 
 class Interface(object):
     """Marker base class for extension point interfaces."""

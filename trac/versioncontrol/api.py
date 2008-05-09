@@ -102,8 +102,8 @@ class RepositoryManager(Component):
                               "(%(error)s)", error=e.message))
         return handler
 
-    def post_process_request(self, req, template, content_type):
-        return (template, content_type)
+    def post_process_request(self, req, template, data, content_type):
+        return (template, data, content_type)
 
     # IResourceManager methods
 
@@ -411,7 +411,7 @@ class Repository(object):
         raise NotImplementedError
     youngest_rev = property(lambda x: x.get_youngest_rev())
 
-    def previous_rev(self, rev):
+    def previous_rev(self, rev, path=''):
         """Return the revision immediately preceding the specified revision."""
         raise NotImplementedError
 

@@ -34,7 +34,7 @@
           </py:otherwise>
         </p>
         <div class="buttons">
-          <input type="submit" name="install" value="Install"
+          <input type="submit" name="install" value="${_('Install')}"
                  disabled="${readonly or None}" />
         </div>
       </fieldset>
@@ -46,7 +46,7 @@
         <div class="uninstall buttons">
           <input type="hidden" name="plugin_filename"
                  value="${plugin.plugin_filename}" />
-          <input type="submit" name="uninstall" value="Uninstall"
+          <input type="submit" name="uninstall" value="${_('Uninstall')}"
                  disabled="${plugin.readonly or None}" />
         </div>
         <py:if test="plugin.info">
@@ -99,7 +99,7 @@
         </table>
         <div class="update buttons">
           <input type="hidden" name="plugin" value="$idx" />
-          <input type="submit" name="update" value="Apply changes" />
+          <input type="submit" name="update" value="${_('Apply changes')}" />
         </div>
       </div>
     </form>

@@ -21,6 +21,7 @@ from trac.config import Option, IntOption
 from trac.core import *
 from trac.db.pool import ConnectionPool
 from trac.util.text import unicode_passwd
+from trac.util.translation import _
 
 
 def get_column_names(cursor):
@@ -94,7 +95,8 @@ class DatabaseManager(Component):
 
         connector = candidates.get(scheme, [None])[0]
         if not connector:
-            raise TracError('Unsupported database type "%s"' % scheme)
+            raise TracError(_('Unsupported database type "%(scheme)s"',
+                              scheme=scheme))
 
         if scheme == 'sqlite':
             # Special case for SQLite to support a path relative to the
@@ -116,8 +118,8 @@ def _parse_db_str(db_str):
             host = None
             path = rest
         else:
-            raise TracError('Database connection string must start with '
-                            'scheme:/')
+            raise TracError(_('Database connection string must start with '
+                              'scheme:/'))
     else:
         if not rest.startswith('//'):
             host = None

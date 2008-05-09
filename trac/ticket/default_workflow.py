@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2007 Edgewall Software
+# Copyright (C) 2006-2008 Edgewall Software
 # Copyright (C) 2006 Alec Thomas
 # Copyright (C) 2007 Eli Carter
 # Copyright (C) 2007 Christian Boos <cboos@neuf.fr>
@@ -64,7 +64,8 @@ def parse_workflow_config(rawactions):
         if 'operations' not in attributes:
             attributes['operations'] = []
         else:
-            attributes['operations'] = attributes['operations'].split(',')
+            attributes['operations'] = [a.strip() for a in
+                                        attributes['operations'].split(',')]
         # If no permissions are specified, then no permissions are needed
         if 'permissions' not in attributes:
             attributes['permissions'] = []
@@ -164,12 +165,18 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         request and this ticket."""
         # Get the list of actions that can be performed
 
-        status = ticket['status'] or 'new'
+        # Determine the current status of this ticket.  If this ticket is in
+        # the process of being modified, we need to base our information on the
+        # pre-modified state so that we don't try to do two (or more!) steps at
+        # once and get really confused.
+        if 'status' in ticket._old:
+            status = ticket._old['status']
+        else:
+            status = ticket['status']
+        status = status or 'new'
 
         allowed_actions = []
         for action_name, action_info in self.actions.items():
-            if 'hidden' in action_info['operations']:
-                continue
             oldstates = action_info['oldstates']
             if oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.
@@ -241,7 +248,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif len(owners) == 1:
                 control.append(tag('to %s ' % owners[0]))
                 if ticket['owner'] != owners[0]:
-                    hints.append(_("The owner will change to %s") % owners[0])
+                    hints.append(_("The owner will change to %(name)s",
+                                   name=owners[0]))
             else:
                 control.append(tag([_("to "), tag.select(
                     [tag.option(x, selected=(x == selected_owner or None))
@@ -250,7 +258,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 hints.append(_("The owner will change"))
         if 'set_owner_to_self' in operations and \
             ticket['owner'] != req.authname:
-            hints.append(_("The owner will change to %s") % req.authname)
+            hints.append(_("The owner will change to %(name)s",
+                           name=req.authname))
         if 'set_resolution' in operations:
             if this_action.has_key('set_resolution'):
                 resolutions = [x.strip() for x in
@@ -261,8 +270,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             assert(resolutions)
             if len(resolutions) == 1:
                 control.append(tag('as %s' % resolutions[0]))
-                hints.append(_("The resolution will be set to %s") %
-                             resolutions[0])
+                hints.append(_("The resolution will be set to %(name)s",
+                               name=resolutions[0]))
             else:
                 id = action + '_resolve_resolution'
                 selected_option = req.args.get(id,
@@ -276,7 +285,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             control.append('as %s ' % ticket['status'])
         else:
             if status != '*':
-                hints.append(_("Next status will be '%s'") % status)
+                hints.append(_("Next status will be '%(name)s'", name=status))
         return (this_action['name'], tag(*control), '. '.join(hints))
 
     def get_ticket_changes(self, req, ticket, action):
@@ -317,8 +326,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                 this_action.get('set_resolution', '').strip())
                 updated['resolution'] = newresolution
 
-            # leave_status and hidden are just no-ops here, so we don't look
-            # for them.
+            # leave_status is just a no-op here, so we don't look for it.
         return updated
 
     def apply_action_side_effects(self, req, ticket, action):
@@ -352,7 +360,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         in the given state for the controller's get_ticket_actions().
 
         If state='*' (the default), all actions with the given operation are
-        returned (including those that are 'hidden').
+        returned.
         """
         actions = [(info['default'], action) for action, info
                    in self.actions.items()

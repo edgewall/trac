@@ -18,7 +18,8 @@ tasks such as grouping or pagination.
 
 from math import ceil
 
-__all__ = ['classes', 'first_last', 'group', 'istext', 'paginate', 'Paginator']
+__all__ = ['classes', 'first_last', 'group', 'istext', 'prepared_paginate', 
+           'paginate', 'Paginator']
 
 
 def classes(*args, **kwargs):
@@ -105,6 +106,12 @@ def istext(text):
     from genshi.core import Markup
     return isinstance(text, basestring) and not isinstance(text, Markup)
 
+def prepared_paginate(items, num_items, max_per_page):
+    if max_per_page == 0:
+        num_pages = 1
+    else:
+        num_pages = int(ceil(float(num_items) / max_per_page))
+    return items, num_items, num_pages
 
 def paginate(items, page=0, max_per_page=10):
     """Simple generic pagination.
@@ -178,15 +185,18 @@ def paginate(items, page=0, max_per_page=10):
 
 class Paginator(object):
 
-    def __init__(self, items, page=0, max_per_page=10):
+    def __init__(self, items, page=0, max_per_page=10, num_items=None):
         if not page:
             page = 0
-        offset = page * max_per_page
+
+        if num_items is None:
+            items, num_items, num_pages = paginate(items, page, max_per_page)
+        else:
+            items, num_items, num_pages = prepared_paginate(items, num_items,
+                                                            max_per_page)
+        offset = page * max_per_page        
         self.page = page
         self.max_per_page = max_per_page
-
-        items, num_items, num_pages = paginate(items, page, max_per_page)
-
         self.items = items
         self.num_items = num_items
         self.num_pages = num_pages
@@ -215,6 +225,35 @@ class Paginator(object):
     def has_previous_page(self):
         return self.page > 0
     has_previous_page = property(has_previous_page)
+   
+    def get_shown_pages(self, page_index_count = 11):
+        if self.has_more_pages == False:
+            return range(1, 2)
+
+        min_page = 1
+        max_page = int(ceil(float(self.num_items) / self.max_per_page))
+        current_page = self.page + 1
+        start_page = current_page - page_index_count / 2
+        end_page = current_page + page_index_count / 2 + \
+                   (page_index_count % 2 - 1)
+
+        if start_page < min_page:
+            start_page = min_page
+        if end_page > max_page:
+            end_page = max_page
+
+        return range(start_page, end_page + 1)
+
+    def displayed_items(self):
+        from trac.util.translation import _
+        start, stop = self.span
+        total = self.num_items
+        if start+1 == stop:
+            return _("%(last)d of %(total)d", last=stop, total=total)
+        else:
+            return _("%(start)d - %(stop)d of %(total)d",
+                    start=self.span[0]+1, stop=self.span[1], total=total)
+
 
 def separated(items, sep=','):
     """Yield `(item, sep)` tuples, one for each element in `items`.

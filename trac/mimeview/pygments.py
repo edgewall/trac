@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2007 Edgewall Software
+# Copyright (C) 2006-2008 Edgewall Software
 # Copyright (C) 2006 Matthew Good <matt@matt-good.net>
 # All rights reserved.
 #

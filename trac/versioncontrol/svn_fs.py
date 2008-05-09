@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2007 Edgewall Software
+# Copyright (C) 2005-2008 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -280,6 +280,7 @@ class SubversionConnector(Component):
         else:
             repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
                                      self.log)
+            repos.has_linear_changesets = True
         # FIXME: convert SubversionAuthorizer to a PermissionPolicy
         if 'authname' in options:
             authz = SubversionAuthorizer(self.env, weakref.proxy(repos),

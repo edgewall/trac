@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -430,19 +430,27 @@ class TicketModule(Component):
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
         elif req.method == 'POST': # 'Preview' or 'Submit'
-            self._populate(req, ticket)
-            valid = self._validate_ticket(req, ticket)
-
             # Do any action on the ticket?
             actions = TicketSystem(self.env).get_available_actions(
                 req, ticket)
             if action not in actions:
                 raise TracError(_('Invalid action "%(name)s"', name=action))
                 # (this should never happen in normal situations)
+
+            # We have a bit of a problem.  There are two sources of changes to
+            # the ticket: the user, and the workflow.  We need to show all the
+            # changes that are proposed, but we need to be able to drop the
+            # workflow changes if the user changes the action they want to do
+            # from one preview to the next.
+            #
+            # the _populate() call pulls all the changes from the webpage; but
+            # the webpage includes both changes by the user and changes by the
+            # workflow... so we aren't able to differentiate them clearly.
+
+            self._populate(req, ticket) # Apply changes made by the user
             field_changes, problems = self.get_ticket_changes(req, ticket,
                                                               action)
             if problems:
-                valid = False
                 for problem in problems:
                     add_warning(req, problem)
                     add_warning(req,
@@ -451,9 +459,15 @@ class TicketModule(Component):
                                     tag.pre('[trac]\nworkflow = ...\n'),
                                     tag.p('in your ', tag.tt('trac.ini'), '.'))
                                 )
+
+            self._apply_ticket_changes(ticket, field_changes) # Apply changes made by the workflow
+            # Unconditionally run the validation so that the user gets
+            # information any and all problems.  But it's only valid if it
+            # validates and there were no problems with the workflow side of
+            # things.
+            valid = self._validate_ticket(req, ticket) and not problems
             if 'preview' not in req.args:
                 if valid:
-                    self._apply_ticket_changes(ticket, field_changes)
                     # redirected if successful
                     self._do_save(req, ticket, action)
                 # else fall through in a preview
@@ -829,27 +843,28 @@ class TicketModule(Component):
     
     def _validate_ticket(self, req, ticket):
         valid = True
+        resource = ticket.resource
 
         # If the ticket has been changed, check the proper permission
         if ticket.exists and ticket._old:
-            if 'TICKET_CHGPROP' not in req.perm:
+            if 'TICKET_CHGPROP' not in req.perm(resource):
                 add_warning(req, _("No permission to change ticket fields."))
-                ticket.values = ticket._old
+                ticket.values.update(ticket._old)
                 valid = False
             else: # TODO: field based checking
                 if ('description' in ticket._old and \
-                       'TICKET_EDIT_DESCRIPTION' not in req.perm) or \
+                       'TICKET_EDIT_DESCRIPTION' not in req.perm(resource)) or \
                    ('reporter' in ticket._old and \
-                       'TICKET_ADMIN' not in req.perm):
+                       'TICKET_ADMIN' not in req.perm(resource)):
                     add_warning(req, _("No permissions to change ticket "
                                        "fields."))
-                    ticket.values = ticket._old
+                    ticket.values.update(ticket._old)
                     valid = False
 
         comment = req.args.get('comment')
         if comment:
-            if not ('TICKET_CHGPROP' in req.perm or \
-                    'TICKET_APPEND' in req.perm):
+            if not ('TICKET_CHGPROP' in req.perm(resource) or \
+                    'TICKET_APPEND' in req.perm(resource)):
                 add_warning(req, _("No permissions to add a comment."))
                 valid = False
 
@@ -970,7 +985,7 @@ class TicketModule(Component):
         for field, value in ticket._old.iteritems():
             field_changes[field] = {'old': value,
                                     'new': ticket[field],
-                                    'by':'user'}
+                                    'by': 'user'}
 
         # Apply controller changes corresponding to the selected action
         problems = []
@@ -1018,7 +1033,7 @@ class TicketModule(Component):
             elif name == 'owner':
                 field['skip'] = True
                 if not ticket.exists:
-                    field['label'] = 'Assign to'
+                    field['label'] = _('Assign to')
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
             elif name == 'milestone':

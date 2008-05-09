@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="admin.html" />
   <head>
     <title>Versions</title>
@@ -31,7 +32,7 @@
           </div>
           <div class="field">
             <fieldset class="iefix">
-              <label for="description">
+              <label for="description" i18n:msg="">
                 Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
               </label>
               <p>
@@ -41,8 +42,8 @@ $version.description</textarea>
             </fieldset>
           </div>
           <div class="buttons">
-            <input type="submit" name="cancel" value="Cancel"/>
-            <input type="submit" name="save" value="Save"/>
+            <input type="submit" name="cancel" value="${_('Cancel')}"/>
+            <input type="submit" name="save" value="${_('Save')}"/>
           </div>
         </fieldset>
       </form>
@@ -63,7 +64,7 @@ $version.description</textarea>
               </label>
             </div>
             <div class="buttons">
-              <input type="submit" name="add" value="Add" />
+              <input type="submit" name="add" value="${_('Add')}" />
             </div>
           </fieldset>
         </form>
@@ -89,8 +90,8 @@ $version.description</textarea>
               </tbody>
             </table>
             <div class="buttons">
-              <input type="submit" name="remove" value="Remove selected items" />
-              <input type="submit" name="apply" value="Apply changes" />
+              <input type="submit" name="remove" value="${_('Remove selected items')}" />
+              <input type="submit" name="apply" value="${_('Apply changes')}" />
             </div>
             <p class="help">
               You can remove all items from this list to completely hide this

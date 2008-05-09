@@ -57,6 +57,12 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual('http://localhost/trac', req.base_url)
 
+    def test_languages(self):
+        environ = self._make_environ()
+        environ['HTTP_ACCEPT_LANGUAGE'] = 'en-us,en;q=0.5'
+        req = Request(environ, None)
+        self.assertEqual(['en-us', 'en'], req.languages)
+
     def test_redirect(self):
         status_sent = []
         headers_sent = {}

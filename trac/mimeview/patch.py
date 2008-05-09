@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2006 Edgewall Software
+# Copyright (C) 2005-2008 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2006 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -127,7 +127,7 @@ class PatchRenderer(Component):
 
                 shortrev = ('old', 'new')
                 if oldpath or newpath:
-                    sep = re.compile(r'([/.~])')
+                    sep = re.compile(r'([/.~\\])')
                     commonprefix = ''.join(os.path.commonprefix(
                         [sep.split(newpath), sep.split(oldpath)]))
                     commonsuffix = ''.join(os.path.commonprefix(

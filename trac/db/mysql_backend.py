@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2006 Edgewall Software
+# Copyright (C) 2005-2008 Edgewall Software
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005 Jeff Weiss <trac@jeffweiss.org>
 # Copyright (C) 2006 Andres Salomon <dilinger@athenacr.com>
@@ -20,6 +20,7 @@ from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
+from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -145,7 +146,8 @@ class MySQLConnection(ConnectionWrapper):
     def _set_character_set(self, cnx, charset):
         vers = tuple([ int(n) for n in cnx.get_server_info().split('.')[:2] ])
         if vers < (4, 1):
-            raise TracError, 'MySQL servers older than 4.1 are not supported!'
+            raise TracError(_('MySQL servers older than 4.1 are not '
+                              'supported!'))
         cnx.query('SET NAMES %s' % charset)
         cnx.store_result()
         cnx.charset = charset

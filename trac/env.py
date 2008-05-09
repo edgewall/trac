@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2007 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2007 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -76,7 +76,8 @@ class Environment(Component, ComponentManager):
         """Path of the directory containing additional plugins.
         
         Plugins in that directory are loaded in addition to those in the
-        environments `plugins` directory, but the latter take precedence.
+        directory of the environment `plugins`, with this one taking 
+        precedence.
         
         (''since 0.11'')""")
 
@@ -560,7 +561,9 @@ def open_environment(env_path=None, use_cache=False):
                              'change')
                 env.shutdown()
                 if hasattr(env.log, '_trac_handler'):
-                    env.log.removeHandler(env.log._trac_handler)
+                    hdlr = env.log._trac_handler
+                    env.log.removeHandler(hdlr)
+                    hdlr.close()
                 del env_cache[env_path]
                 env = None
             if env is None:

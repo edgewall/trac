@@ -155,6 +155,15 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('foo', ticket['component'])
         self.assertEqual('  bar  ', ticket['description'])
 
+    def test_set_field_multi(self):
+        """
+        Ticket fields can't yet be multi-valued
+        """
+        ticket = Ticket(self.env)
+        def set_multi_valued():
+            ticket['component'] = ['  foo  ',  '  bar  ']
+        self.assertRaises(TracError, set_multi_valued)
+
     def test_owner_from_component(self):
         """
         Verify that the owner of a new ticket is set to the owner of the

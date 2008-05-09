@@ -49,6 +49,22 @@ A simple setup of Trac on mod_python looks like this:
 
 The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration without it; if the URLs produced by Trac look wrong, if Trac does not seem to recognize URLs correctly, or you get an odd "No handler matched request to..." error, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.
 
+The options available are
+{{{
+    # For a single project
+    PythonOption TracEnv /var/trac/myproject
+    # For multiple projects
+    PythonOption TracEnvParentDir /var/trac/myprojects
+    # For the index of multiple projects
+    PythonOption TracEnvIndexTemplate /srv/www/htdocs/trac/project_list_tepmlate.html
+    # A space delimitted list, with a "," between key and value pairs.
+    PythonOption TracTemplateVars key1,val1 key2,val2
+    # Useful to get the date in the wanted order
+    PythonOption TracLocale en_GB.UTF8
+    # See description above        
+    PythonOption TracUriRoot /projects/myproject
+}}}
+
 === Configuring Authentication ===
 
 Creating password files and configuring authentication works similar to the process for [wiki:TracCgi#AddingAuthentication CGI]:
@@ -204,6 +220,8 @@ if you have issues with login try using `<LocationMatch>` instead of `<Location>
 
 For a virtual host that supports multiple projects replace "`TracEnv`" /var/trac/myproject with "`TracEnvParentDir`" /var/trac/
 
+Note: !DocumentRoot should not point to your Trac project env. As Asmodai wrote on #trac: "suppose there's a webserer bug that allows disclosure of !DocumentRoot they could then leech the entire Trac environment".
+
 == Troubleshooting ==
 
 In general, if you get server error pages, you can either check the Apache error log, or enable the `PythonDebug` option:
@@ -219,10 +237,10 @@ For multiple projects, try restarting the server as well.
 
 === Expat-related segmentation faults === #expat
 
-This problem will most certainly hit you on Unix when using python 2.4.
+This problem will most certainly hit you on Unix when using Python 2.4.
 In Python 2.4, some version of Expat (an XML parser library written in C) is used, 
 and if Apache is using another version, this results in segmentation faults.
-As Trac 0.11 is using Genshi, which will use indirectly use Expat, that problem
+As Trac 0.11 is using Genshi, which will indirectly use Expat, that problem
 can now hit you even if everything was working fine before with Trac 0.10.
 
 See Graham Dumpleton's detailed [http://www.dscpl.com.au/wiki/ModPython/Articles/ExpatCausingApacheCrash explanation and workarounds] for the issue.
@@ -265,7 +283,7 @@ See also [[http://subversion.tigris.org/faq.html#reposperms]]
 === FreeBSD issues ===
 Pay attention to the version of the installed mod_python and sqlite packages. Ports have both the new and old ones, but earlier versions of pysqlite and mod_python won't integrate as the former requires threaded support in python, and the latter requires a threadless install.
 
-If you compiled and installed apache2, apache wouldn´t support threads (cause it doesn´t work very well on FreeBSD). You could force thread support when running ./configure for apache, using --enable-threads, but this isn´t recomendable.
+If you compiled and installed apache2, apache wouldn´t support threads (cause it doesn´t work very well on FreeBSD). You could force thread support when running ./configure for apache, using --enable-threads, but this isn´t recommendable.
 The best option [[http://modpython.org/pipermail/mod_python/2006-September/021983.html seems to be]] adding to /usr/local/apache2/bin/ennvars the line 
 
 {{{

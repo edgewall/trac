@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2005 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
@@ -305,7 +305,8 @@ class AttachmentModule(Component):
     CHUNK_SIZE = 4096
 
     max_size = IntOption('attachment', 'max_size', 262144,
-        """Maximum allowed file size for ticket and wiki attachments.""")
+        """Maximum allowed file size (in bytes) for ticket and wiki 
+        attachments.""")
 
     render_unsafe_content = BoolOption('attachment', 'render_unsafe_content',
                                        'false',

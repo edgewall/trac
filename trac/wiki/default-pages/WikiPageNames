@@ -23,6 +23,8 @@ This will be rendered as:
  * [wiki:"Space Matters"] that page name embeds space characters
  * or simply: ["WikiPageName"]s (!MoinMoin's internal free links style)
 
+Starting with Trac 0.11, it's also possible to link to a specific ''version'' of a Wiki page, as you would do for a specific version of a file, for example: WikiStart@1.
+
 See also TracLinks#QuotingspaceinTracLinks.
 
 Finally, and as exemplified in the line above, one can also append an anchor to a Wiki page name, in order to link to a specific section within that page. The anchor can easily be seen by hovering the mouse over a section heading, then clicking on the [[html(&para;)]] sign that appears at its end. The anchor is usually generated automatically, but it's also possible to specify it explicitly: see WikiFormatting#using-explicit-id-in-heading.

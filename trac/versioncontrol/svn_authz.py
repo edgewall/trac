@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2005 Edgewall Software
+# Copyright (C) 2004-2008 Edgewall Software
 # Copyright (C) 2004 Francois Harvey <fharvey@securiweb.net>
 # Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 # All rights reserved.

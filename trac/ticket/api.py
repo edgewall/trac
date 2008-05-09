@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -204,7 +204,7 @@ class TicketSystem(Component):
 
         # Description
         fields.append({'name': 'description', 'type': 'textarea',
-                       'label': 'Description'})
+                       'label': _('Description')})
 
         # Default select and radio fields
         selects = [('type', model.Type),

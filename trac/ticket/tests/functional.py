@@ -525,6 +525,40 @@ class RegressionTestTicket6747(FunctionalTwillTestCaseSetup):
             self._testenv.restart()
 
 
+class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/6879 a
+
+        Make sure that previewing a close does not make the available actions
+        be those for the close status.
+        """
+        # create a ticket, then preview resolving the ticket twice
+        ticket_id = self._tester.create_ticket("RegressionTestTicket6879 a")
+        self._tester.go_to_ticket(ticket_id)
+        tc.formvalue('propform', 'action', 'resolve')
+        tc.formvalue('propform', 'resolve_resolve_resolution', 'fixed')
+        tc.submit('preview')
+        tc.formvalue('propform', 'action', 'resolve')
+        tc.submit('preview')
+
+
+class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/6879 a
+
+        Make sure that previewing a close does not make the available actions
+        be those for the close status.
+        """
+        # create a ticket, then preview resolving the ticket twice
+        ticket_id = self._tester.create_ticket("RegressionTestTicket6879 b")
+        self._tester.go_to_ticket(ticket_id)
+        tc.formvalue('propform', 'action', 'resolve')
+        tc.formvalue('propform', 'resolve_resolve_resolution', 'fixed')
+        tc.submit('preview')
+        tc.formvalue('propform', 'action', 'resolve')
+        tc.submit('submit')
+
+
 class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/6912 a"""
@@ -591,6 +625,8 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket5930())
     suite.addTest(RegressionTestTicket6048())
     suite.addTest(RegressionTestTicket6747())
+    suite.addTest(RegressionTestTicket6879a())
+    suite.addTest(RegressionTestTicket6879b())
     suite.addTest(RegressionTestTicket6912a())
     suite.addTest(RegressionTestTicket6912b())
 

@@ -42,6 +42,23 @@ To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-
 
 == Using Authentication ==
 
+Using tracd with Apache .htpasswd files:
+
+To create a .htpasswd file using htpasswd:
+
+{{{
+sudo htpasswd -c /path/to/env/.htpasswd username
+}}}
+then for additional users:
+{{{
+sudo htpasswd /var/www/html/.htpasswd-users username2
+}}}
+then for starting the tracd:
+{{{
+tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
+}}}
+
+
 Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
 
   ''Support for Basic authentication was added in version 0.9.''
@@ -122,7 +139,13 @@ python trac-digest.py -u username -p password >> c:\digest.txt
 tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
 
-Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). When using on Windows make sure to use -m option for it (did not tested it on *nix, so not sure if that is the case there).
+Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). When using on Windows make sure to use -m option for it (did not tested it on *nix, so not sure if that is the case there).  If you do not have Apache, [trac:source:/tags/trac-0.11b2/contrib/htpasswd.py htpasswd.py] may help.  (Note that it requires a `crypt` or `fcrypt` module; see the source comments for details.)
+
+It is possible to use md5sum utility to generate digest-password file using such method:
+{{{
+echo -e "${user}:trac:${password}\c" | md5sum - >>to-file
+}}}
+and manually delete " -" from the end and add "${user}:trac:" to the start of line from 'to-file'. You can see attachment:trac-digest-corrected.sh for detail.
 
 == Tips ==
 

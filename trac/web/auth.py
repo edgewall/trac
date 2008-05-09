@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2006 Edgewall Software
+# Copyright (C) 2003-2008 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # All rights reserved.
 #
@@ -36,6 +36,7 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5crypt
+from trac.util.translation import _
 
 
 class LoginModule(Component):
@@ -58,7 +59,8 @@ class LoginModule(Component):
          authentication (''since 0.9'').""")
 
     ignore_case = BoolOption('trac', 'ignore_auth_case', 'false',
-        """Whether case should be ignored for login names (''since 0.9'').""")
+        """Whether login names should be converted to lower case
+        (''since 0.9'').""")
 
     # IAuthenticator methods
 
@@ -84,12 +86,13 @@ class LoginModule(Component):
 
     def get_navigation_items(self, req):
         if req.authname and req.authname != 'anonymous':
-            yield ('metanav', 'login', 'logged in as %s' % req.authname)
+            yield ('metanav', 'login', _('logged in as %(user)s',
+                                         user=req.authname))
             yield ('metanav', 'logout',
-                   tag.a('Logout', href=req.href.logout()))
+                   tag.a(_('Logout'), href=req.href.logout()))
         else:
             yield ('metanav', 'login',
-                   tag.a('Login', href=req.href.login()))
+                   tag.a(_('Login'), href=req.href.login()))
 
     # IRequestHandler methods
 
@@ -131,7 +134,7 @@ class LoginModule(Component):
             remote_user = remote_user.lower()
 
         assert req.authname in ('anonymous', remote_user), \
-               'Already logged in as %s.' % req.authname
+               _('Already logged in as %(user)s.', user=req.authname)
 
         cookie = hex_entropy()
         db = self.env.get_db_cnx()

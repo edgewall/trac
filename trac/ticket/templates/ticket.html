@@ -2,8 +2,9 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
 
@@ -179,7 +180,7 @@
                 method="get" action="#comment">
                 <div class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
-                  <input type="submit" name="reply" value="Reply" title="Reply, quoting this description" />
+                  <input type="submit" name="reply" value="${_('Reply')}" title="${_('Reply, quoting this description')}" />
                 </div>
               </form>
               <div py:if="ticket.description" class="searchable" xml:space="preserve">
@@ -221,7 +222,7 @@
                 </h3>
                 <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(ticket.resource)" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
-                  <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
+                  <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}" />
                 </div>
                 ${display_change(change)}
               </div>
@@ -256,7 +257,7 @@
         </div>
         <div py:if="ticket.exists" class="field">
           <fieldset class="iefix">
-            <label for="comment">Comment (you may use
+            <label for="comment" i18n:msg="">Comment (you may use
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
               here):
             </label><br />
@@ -378,7 +379,7 @@ ${comment}</textarea></p>
             <input type="hidden" name="replyto" value="${replyto}" />
             <input type="hidden" name="cnum" value="${cnum}" />
           </py:if>
-          <input type="submit" name="preview" value="Preview" accesskey="r" />&nbsp;
+          <input type="submit" name="preview" value="${_('Preview')}" accesskey="r" />&nbsp;
           <input type="submit" name="submit" value="${ticket.exists and 'Submit changes' or 'Create ticket'}" />
         </div>
 

@@ -56,9 +56,7 @@ to understand.
 
 '''Note:''' See TracNotification for how to configure email notifications of ticket changes.
 
-=== State Diagram ===
-[[Image(http://trac.edgewall.org/attachment/wiki/TracTickets/Trac%20Ticket%20State%20Chart%2020060603DF.png?format=raw)]]
-
+'''Note:''' See TracWorkflow for information about the state transitions (ticket lifecycle), and how this workflow can be customized.
 
 == Default Values for Drop-Down Fields ==
 
@@ -83,9 +81,9 @@ Trac also lets you add your own custom ticket fields. See TracTicketsCustomField
 
 == Assign-to as Drop-Down List ==
 
-If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to “true”. In that case, Trac will use the list of all users who have logged in and set their email address to populate the drop-down field.
+If the list of possible ticket owners is finite, you can change the ''assign-to'' ticket field from a text input to a drop-down list. This is done by setting the `restrict_owner` option of the `[ticket]` section in [wiki:TracIni trac.ini] to “true”. In that case, Trac will use the list of all users who have accessed the project to populate the drop-down field.
 
-To appear in the dropdown list, a user needs be registered with the project, ''i.e.'' a user session should exist in the database. Such an entry is automatically created in the database the first time the user submits a change in the project, for example when editing the user's details in the ''Settings'' page. Also, the user must have `TICKET_MODIFY` [TracPermissions permissions].
+To appear in the dropdown list, a user needs be registered with the project, ''i.e.'' a user session should exist in the database. Such an entry is automatically created in the database the first time the user submits a change in the project, for example when editing the user's details in the ''Settings'' page, or simply by authenticating if the user has a login. Also, the user must have `TICKET_MODIFY` [TracPermissions permissions].
 
 == Preset Values for New Tickets ==
 

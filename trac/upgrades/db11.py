@@ -1,5 +1,3 @@
-import os.path
-
 sql = [
 #-- Remove empty values from the milestone list
 """DELETE FROM milestone WHERE COALESCE(name,'')='';""",

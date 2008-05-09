@@ -17,12 +17,16 @@
      xmlns:py="http://genshi.edgewall.org/"
      xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.html" />
-
+  
   <py:def function="num_matches(v)">
     <span class="numrows">(${v or 'No'} match${v != 1 and 'es' or ''})</span>
   </py:def>
-
-  <py:for each="groupname, results in groups">
+  
+  <h2 py:if="paginator.has_more_pages">
+    Results <span class="numresults">(${paginator.displayed_items()})</span>
+  </h2>
+  <xi:include href="page_index.html" />
+  <py:for each="group_index, (groupname, results) in enumerate(groups)">
     <h2 py:if="groupname">
       ${fields[query.group].label}:
       ${query.group in ['owner', 'reporter'] and authorinfo(groupname) or groupname}
@@ -87,8 +91,15 @@
             </py:if>
           </py:with>
         </py:for>
+        <tr py:if="group_index == len(groups)-1 and last_group_is_partial">
+          <td colspan="${len(headers)}">
+            <i>(more results for this group on next page)</i>
+          </td>
+        </tr>
       </tbody>
     </table>
   </py:for>
+  <xi:include href="page_index.html" />
 </div>
+
 

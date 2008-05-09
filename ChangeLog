@@ -1,7 +1,7 @@
-Trac 0.11b2 'Genshi' (March 12, 2008)
-http://svn.edgewall.org/repos/trac/tags/trac-0.11b2
+Trac 0.11rc1 'Genshi' (April 30, 2008)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11rc1
 
- Trac 0.11b2 contains a great number of new features, improvements and
+ Trac 0.11rc1 contains a great number of new features, improvements and
  bug fixes. The following list contains only a few highlights:
 
  * New template engine for generating content (Genshi)
@@ -13,10 +13,16 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.11b2
  * Improved user preferences subsystem, among which the possibility for
  * any user to select their time zone and disable access keys
  * The WebAdmin plugin is now an integral part of Trac
+ * Paging of timeline and query results.
 
  A more complete list of new features can be found in the RELEASE file.
  The complete list of closed tickets can be found here:
    http://trac.edgewall.org/query?status=closed&milestone=0.11
+
+Trac 0.11b2 'Genshi' (March 12, 2008)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11b2
+
+  See 0.11rc1
 
 Trac 0.11b1 'Genshi' (December 18, 2007)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11b1

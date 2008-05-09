@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2007 Edgewall Software
+# Copyright (C) 2006-2008 Edgewall Software
 # Copyright (C) 2006-2007 Alec Thomas <alec@swapoff.org>
 # Copyright (C) 2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -313,18 +313,18 @@ def get_resource_description(env, resource, format='default', **kwargs):
     >>> env = EnvironmentStub()
     >>> main = Resource('generic', 'Main')
     >>> get_resource_description(env, main)
-    'generic:Main'
+    u'generic:Main'
     
     >>> get_resource_description(env, main(version=3))
-    'generic:Main'
+    u'generic:Main'
 
     >>> get_resource_description(env, main(version=3), format='summary')
-    'generic:Main at version 3'
+    u'generic:Main at version 3'
     
     """
     manager = ResourceSystem(env).get_resource_manager(resource.realm)
     if not manager or not hasattr(manager, 'get_resource_description'):
-        name = '%s:%s' % (resource.realm, resource.id)
+        name = u'%s:%s' % (resource.realm, resource.id)
         if format == 'summary':
             name += _(' at version %(version)s', version=resource.version)
         return name

@@ -22,6 +22,7 @@ These are the available options for the ''[notification]'' section in trac.ini.
  * '''smtp_user''': (''since 0.9'') User name for authentication SMTP account.
  * '''smtp_password''': (''since 0.9'') Password for authentication SMTP account.
  * '''smtp_from''': Email address to use for ''Sender''-headers in notification emails.
+ * '''smtp_from_name''': Sender name to use for ''Sender''-headers in notification emails.
  * '''smtp_replyto''': Email address to use for ''Reply-To''-headers in notification emails.
  * '''smtp_default_domain''': (''since 0.10'') Append the specified domain to addresses that do not contain one. Fully qualified addresses are not modified. The default domain is appended to all username/login for which an email address cannot be found from the user settings.
  * '''smtp_always_cc''': List of email addresses to always send notifications to. ''Typically used to post ticket changes to a dedicated mailing list.''
@@ -77,6 +78,25 @@ Ticket URL: <http://example.com/trac/ticket/42>
 My Project <http://myproj.example.com/>
 }}}
 
+== Using GMail as the SMTP relay host ==
+
+Use the following configuration snippet
+{{{
+[notification]
+smtp_enabled = true
+use_tls = true
+mime_encoding = base64
+smtp_server = smtp.gmail.com
+smtp_port = 587
+smtp_user = user
+smtp_password = password
+}}}
+
+where ''user'' and ''password'' match an existing GMail account, ''i.e.'' the ones you use to log in on [http://gmail.com]
+
+Alternatively, you can use `smtp_port = 25`.[[br]]
+You should not use `smtp_port = 465`. It will not work and your ticket submission may deadlock. Port 465 is reserved for the SMTPS protocol, which is not supported by Trac. See [comment:ticket:7107:2 #7107] for details.
+ 
 == Filtering notifications for one's own changes ==
 In Gmail, use the filter:
 

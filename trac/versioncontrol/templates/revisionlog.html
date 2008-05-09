@@ -61,7 +61,7 @@
           </label>
         </div>
         <div class="buttons">
-          <input type="submit" value="Update" />
+          <input type="submit" value="${_('Update')}" />
         </div>
       </form>
 
@@ -83,7 +83,7 @@
         <div class="buttons">
           <input type="hidden" name="reponame" value="$reponame" />
           <input type="submit" value="View changes"
-            title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
+            title="${_('Diff from Old Revision to New Revision (as selected in the Diff column)')}" />
         </div>
         <table id="chglist" class="listing">
           <thead>
@@ -158,8 +158,8 @@
         </table>
 
         <div py:if="len(items) &gt; 10" class="buttons">
-          <input type="submit" value="View changes"
-            title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
+          <input type="submit" value="${_('View changes')}"
+            title="${_('Diff from Old Revision to New Revision (as selected in the Diff column)')}" />
         </div>
       </form>
 

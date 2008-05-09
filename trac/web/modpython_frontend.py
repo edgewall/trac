@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2004-2007 Edgewall Software
+# Copyright (C) 2004-2008 Edgewall Software
 # Copyright (C) 2004-2007 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005 Matthew Good <trac@matt-good.net>
 # All rights reserved.
@@ -27,7 +27,6 @@ except ImportError:
     version = "< 3.2"
 
 from trac import __version__ as VERSION
-from trac.web.main import dispatch_request
 from trac.web.wsgi import WSGIGateway, _ErrorsWrapper
 
 
@@ -125,5 +124,6 @@ class ModPythonGateway(WSGIGateway):
 def handler(req):
     pkg_resources.require('Trac==%s' % VERSION)
     gateway = ModPythonGateway(req, req.get_options())
+    from trac.web.main import dispatch_request
     gateway.run(dispatch_request)
     return apache.OK

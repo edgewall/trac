@@ -23,7 +23,7 @@
           <label for="showall">Show already completed milestones</label>
         </div>
         <div class="buttons">
-          <input type="submit" value="Update" />
+          <input type="submit" value="${_('Update')}" />
         </div>
       </form>
 
@@ -64,7 +64,7 @@
       <div py:if="'MILESTONE_CREATE' in perm" class="buttons">
        <form method="get" action="${href.milestone()}"><div>
         <input type="hidden" name="action" value="new" />
-        <input type="submit" value="Add new milestone" />
+        <input type="submit" value="${_('Add new milestone')}" />
        </div></form>
       </div>
 
