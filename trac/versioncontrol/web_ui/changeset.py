@@ -38,7 +38,7 @@ from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted, groupby
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import to_unicode, unicode_urlencode, shorten_line, CRLF
-from trac.util.translation import _
+from trac.util.translation import _, ngettext
 from trac.versioncontrol.api import RepositoryManager, Changeset, Node, \
                                     NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
@@ -890,14 +890,16 @@ class ChangesetModule(Component):
                                          message)
             return markup
 
-        reposuffix = ''
+        single = rev_a == rev_b
         if reponame:
-            reposuffix = '/'+reponame
-        if rev_a == rev_b:
-            title = tag('Changeset ', tag.em('[%s%s]' % (rev_a, reposuffix)))
+            title = ngettext('Changeset in %(repo)s', 'Changesets in %(repo)s',
+                             single and 1 or 2, repo=reponame)
         else:
-            title = tag('Changesets ', tag.em('[', rev_a, '-', rev_b, 
-                                              reposuffix+']'))
+            title = ngettext('Changeset', 'Changesets', single and 1 or 2)
+        if single:
+            title = tag(title, tag.em(' [%s]' % rev_a))
+        else:
+            title = tag(title, tag.em(' [%s-%s]' % (rev_a, rev_b)))
         if field == 'title':
             return title
         elif field == 'summary':
