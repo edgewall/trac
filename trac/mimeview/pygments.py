@@ -204,6 +204,8 @@ class GenshiHtmlFormatter(HtmlFormatter):
 
             for ttype, value in tokens:
                 c = self._get_css_class(ttype)
+                if c == 'n':
+                    c = ''
                 if c == lc:
                     text.append(value)
                 elif value: # if no value, leave old span open
