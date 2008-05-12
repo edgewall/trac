@@ -487,7 +487,10 @@ def content_disposition(type, filename=None):
     return type + '; filename=' + quote(filename, safe='')
 
 def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    """
+    >>> list(pairwise([0, 1, 2, 3]))
+    [(0, 1), (1, 2), (2, 3)]
+    """
     a, b = tee(iterable)
     try:
         b.next()
@@ -496,6 +499,12 @@ def pairwise(iterable):
     return izip(a, b)
 
 def partition(iterable, order=None):
+    """
+    >>> partition([(1,"a"),(2, "b"),(3, "a")])
+    {'a': [1, 3], 'b': [2]}
+    >>> partition([(1,"a"),(2, "b"),(3, "a")], "ab")
+    [[1, 3], [2]]
+    """
     result = {}
     if order is not None:
         for key in order:
