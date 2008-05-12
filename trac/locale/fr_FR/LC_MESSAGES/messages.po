@@ -76,7 +76,7 @@ msgstr "Impossible d'envoyer un fichier vide"
 #: trac/attachment.py:542
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
-msgstr "Taille maximale pour un fichier joint: %(num)s octets"
+msgstr "Taille maximale pour un fichier joint : %(num)s octets"
 
 #: trac/attachment.py:543
 msgid "Upload failed"
@@ -85,12 +85,12 @@ msgstr "L'envoi a echoué"
 #: trac/attachment.py:564
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
-msgstr "Le champ %(field)s du fichier joint est invalide: %(message)s"
+msgstr "Le champ %(field)s du fichier joint est invalide : %(message)s"
 
 #: trac/attachment.py:568
 #, python-format
 msgid "Invalid attachment: %(message)s"
-msgstr "Fichier joint invalide: %(message)s"
+msgstr "Fichier joint invalide : %(message)s"
 
 #: trac/attachment.py:602
 #, fuzzy, python-format
@@ -1381,7 +1381,7 @@ msgstr "Aïe..."
 
 #: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
-msgstr "Trac a detecté une erreur interne:"
+msgstr "Trac a detecté une erreur interne :"
 
 #: trac/templates/error.html:106
 msgid ""
@@ -1564,7 +1564,7 @@ msgstr "Erreur"
 
 #: trac/templates/layout.html:43
 msgid "Download in other formats:"
-msgstr "Télécharger dans d'autres formats:"
+msgstr "Télécharger dans d'autres formats :"
 
 #: trac/templates/macros.html:40
 msgid "anonymous"
@@ -1667,7 +1667,7 @@ msgstr "le fichier."
 
 #: trac/templates/macros.html:155
 msgid "found:"
-msgstr "trouvé:"
+msgstr "trouvé :"
 
 #: trac/templates/macros.html:172
 msgid "View attachment"
@@ -1919,7 +1919,7 @@ msgstr "Rapports disponibles"
 #: trac/ticket/query.py:983
 #, python-format
 msgid "[Error: %(error)s]"
-msgstr "[Erreur: %(error)s]"
+msgstr "[Erreur : %(error)s]"
 
 #: trac/ticket/query.py:1063
 msgid "No results"
@@ -1967,7 +1967,7 @@ msgstr "Lorsque spécifié, le numéro du Rapport doit être \"%(num)s\"."
 #: trac/ticket/report.py:305
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr "Echec de l'exécution du Rapport: %(error)s"
+msgstr "Echec de l'exécution du Rapport : %(error)s"
 
 #: trac/ticket/report.py:520
 msgid "SQL Query"
@@ -2025,7 +2025,7 @@ msgstr "Jalon %(name)s"
 #: trac/ticket/roadmap.py:447
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
-msgstr "Ticket #%(num)s: %(summary)s"
+msgstr "Ticket #%(num)s : %(summary)s"
 
 #: trac/ticket/roadmap.py:621
 #, python-format
@@ -2155,7 +2155,7 @@ msgstr "Identifiant du commentaire invalide"
 #: trac/ticket/web_ui.py:927
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr "Le champ du ticket '%(field)s' est invalide: %(message)s"
+msgstr "Le champ du ticket '%(field)s' est invalide : %(message)s"
 
 #: trac/ticket/web_ui.py:1037
 msgid "Assign to"
@@ -2307,7 +2307,7 @@ msgstr "Pas de date définie"
 
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:42
-msgid "by "
+msgid "by"
 msgstr "par"
 
 #: trac/ticket/templates/milestone_view.html:58
@@ -2633,11 +2633,11 @@ msgstr "Propriétés"
 
 #: trac/ticket/templates/ticket.html:276
 msgid "Summary:"
-msgstr "Intitulé:"
+msgstr "Intitulé :"
 
 #: trac/ticket/templates/ticket.html:284
 msgid "Reporter:"
-msgstr "Rapporteur:"
+msgstr "Rapporteur :"
 
 #: trac/ticket/templates/ticket.html:371
 msgid "I have files to attach to this ticket"
@@ -2792,7 +2792,7 @@ msgstr "Il manque \"youngest_rev\" dans le cache metadata"
 #: trac/versioncontrol/svn_fs.py:294
 #, python-format
 msgid "Subversion >= 1.0 required: Found %(version)s"
-msgstr "Subversion >=1.0 nécessaire: %(version)s trouvé"
+msgstr "Subversion >=1.0 nécessaire : %(version)s trouvé"
 
 #: trac/versioncontrol/svn_fs.py:371
 msgid "No svn:externals configured in trac.ini"
@@ -3301,12 +3301,12 @@ msgstr "Pas de version \"%(num)s\" pour la page Wiki \"%(name)s\""
 #: trac/wiki/web_ui.py:181
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
-msgstr "Le champ '%(field)s' de la page Wiki est invalide: %(message)s"
+msgstr "Le champ '%(field)s' de la page Wiki est invalide : %(message)s"
 
 #: trac/wiki/web_ui.py:185
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
-msgstr "Page Wiki invalide: %(message)s"
+msgstr "Page Wiki invalide : %(message)s"
 
 #: trac/wiki/web_ui.py:271
 msgid "Page not modified, showing latest version."
