@@ -23,11 +23,17 @@ import sys
 import pkg_resources
 from fnmatch import fnmatch
 
+try:
+    from babel import Locale
+except ImportError:
+    Locale = None
+
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, ExtensionPoint
 from trac.env import Environment
 from trac.db.sqlite_backend import SQLiteConnection
 from trac.ticket.default_workflow import load_workflow_config_snippet
+from trac.util import translation
 
 
 def Mock(bases=(), *initargs, **kw):
@@ -198,6 +204,7 @@ class EnvironmentStub(Environment):
             self.db.commit()
             
         self.known_users = []
+        translation.activate(Locale and Locale('en', 'US'))
 
     def is_component_enabled(self, cls):
         for component in self.enabled_components:
