@@ -664,20 +664,22 @@ class Chrome(Component):
         TextTemplate instance will be created instead of a MarkupTemplate.
         """
         if not self.templates:
+            _template_loaded = None
+            global Translator
+            if Translator:
+                def _template_loaded(template):
+                    template.filters.insert(0, Translator(translation.gettext))
+
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
-                                            variable_lookup='lenient')
+                                            variable_lookup='lenient',
+                                            callback=_template_loaded)
         if method == 'text':
             cls = TextTemplate
         else:
             cls = MarkupTemplate
 
         return self.templates.load(filename, cls=cls)
-
-    def _template_loaded(self, template):
-        global Translator
-        if Translator:
-            template.filters.insert(0, Translator(translation.gettext))
 
     def render_template(self, req, filename, data, content_type=None,
                         fragment=False):
