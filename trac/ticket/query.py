@@ -660,6 +660,8 @@ class Query(object):
                 prev_href = self.get_href(req.href, max=self.max, 
                                           page=self.page - 1)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
+        else:
+            results.show_index = False
 
         pagedata = []
         shown_pages = results.get_shown_pages(21)

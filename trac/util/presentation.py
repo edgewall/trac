@@ -201,6 +201,7 @@ class Paginator(object):
         self.num_items = num_items
         self.num_pages = num_pages
         self.span = offset, offset + len(items)
+        self.show_index = True
 
     def __iter__(self):
         return iter(self.items)
