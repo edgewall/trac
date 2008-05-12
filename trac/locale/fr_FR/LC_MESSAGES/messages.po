@@ -2057,27 +2057,27 @@ msgstr "Détails du Ticket"
 #: trac/ticket/web_ui.py:211
 #, fuzzy
 msgid "created"
-msgstr "Crée"
+msgstr "créé"
 
 #: trac/ticket/web_ui.py:212
 #, fuzzy
 msgid "reopened"
-msgstr "Ouvert"
+msgstr "réouvert"
 
 #: trac/ticket/web_ui.py:213
 #, fuzzy
 msgid "closed"
-msgstr "Termé"
+msgstr "fermé"
 
 #: trac/ticket/web_ui.py:214
 #, fuzzy
 msgid "updated"
-msgstr "en retard"
+msgstr "modifié"
 
 #: trac/ticket/web_ui.py:310
 #, fuzzy, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
-msgstr "Ticket #%(num)s: %(summary)s"
+msgstr "Le ticket %(ticketref)s (%(summary)s) a été %(verb)s"
 
 #: trac/ticket/web_ui.py:438
 #, fuzzy, python-format
