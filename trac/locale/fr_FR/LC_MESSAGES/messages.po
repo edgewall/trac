@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-05-12 11:51+0200\n"
+"PO-Revision-Date: 2008-05-12 15:47+0200\n"
 "Last-Translator: Emmanuel Blot <emmanuel.blot@free.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -112,7 +112,9 @@ msgstr "Seules les base de données sqlite peuvent être sauvegardées"
 
 #: trac/env.py:483
 msgid "Database newer than Trac version"
-msgstr "La version de la base de données est plus récente que la version de Tracutilisée"
+msgstr ""
+"La version de la base de données est plus récente que la version de "
+"Tracutilisée"
 
 #: trac/env.py:495
 #, python-format
@@ -707,16 +709,22 @@ msgstr "Type de base de données \"%(scheme)s\" non supporté"
 
 #: trac/db/api.py:121
 msgid "Database connection string must start with scheme:/"
-msgstr "La chaîne de caractères utilisée pour définir la connection à la base de données doit commencer par \"type:/\""
+msgstr ""
+"La chaîne de caractères utilisée pour définir la connection à la base de "
+"données doit commencer par \"type:/\""
 
 #: trac/db/mysql_backend.py:149
 msgid "MySQL servers older than 4.1 are not supported!"
-msgstr "Les serveurs MySQL antérieurs à la version 4.1 ne sont pas supportés (et les plus récents sont à peine tolérés...)"
+msgstr ""
+"Les serveurs MySQL antérieurs à la version 4.1 ne sont pas supportés (et "
+"les plus récents sont à peine tolérés...)"
 
 #: trac/db/pool.py:108
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr "Impossible d'obtenir une connection à la base de donnée au bout de %(time)d secondes"
+msgstr ""
+"Impossible d'obtenir une connection à la base de donnée au bout de "
+"%(time)d secondes"
 
 #: trac/db/sqlite_backend.py:132
 #, python-format
@@ -733,7 +741,9 @@ msgstr "Base de données %(path)s inexistante"
 msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
-msgstr "L'utilisateur %(user)s à besoin de la permission de lire et d'écrire dans la base de données %(path)s et dans le répértoire où elle se situe."
+msgstr ""
+"L'utilisateur %(user)s à besoin de la permission de lire et d'écrire dans"
+" la base de données %(path)s et dans le répértoire où elle se situe."
 
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
 #, python-format
@@ -845,8 +855,9 @@ msgid ""
 "between\n"
 "      multiple computers and web browsers."
 msgstr ""
-"Il est possible de recharger une session précédemment créée en fournissant"
-"      la clef de session correspondante dans le champ suivant.\n"
+"Il est possible de recharger une session précédemment créée en "
+"fournissant      la clef de session correspondante dans le champ suivant."
+"\n"
 "Cette fonctionnalité permet de conserver les même réglages sur de "
 "multiples      machines et/ou navigateurs web."
 
@@ -1103,8 +1114,7 @@ msgstr "pour de l'aide sur la recherche"
 
 #: trac/templates/about.html:23
 msgid "Trac: Integrated SCM & Project Management"
-msgstr ""
-"Trac: Gestion de controle de source et de project logiciel intégré"
+msgstr "Trac: Gestion de controle de source et de project logiciel intégré"
 
 #: trac/templates/about.html:27
 msgid ""
@@ -1117,7 +1127,8 @@ msgid ""
 msgstr ""
 "Trac est un système de gestion de projet logiciel et de suivi de\n"
 "défauts/incidents via le Web, qui met l'accent sur la facilité\n"
-"d'utilisation et n'impose qu'un minimum de protocole. Il propose une interface pour le\n"
+"d'utilisation et n'impose qu'un minimum de protocole. Il propose une "
+"interface pour le\n"
 "système de contrôle de source, un Wiki intégré, et un nombre intéressant\n"
 "d'options permettant d'être tenu informé des évènements et changements\n"
 "survenant dans le cadre d'un projet logiciel."
@@ -3244,9 +3255,9 @@ msgid "Login"
 msgstr "Connexion"
 
 #: trac/web/auth.py:137
-#, python-format
-msgid "Déjà connecté en tant qu'utilisateur %(user)s."
-msgstr ""
+#, fuzzy, python-format
+msgid "Already logged in as %(user)s."
+msgstr "Connecté en tant qu'utilisateur %(user)s"
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, fuzzy, python-format
