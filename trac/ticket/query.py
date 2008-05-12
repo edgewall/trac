@@ -34,7 +34,7 @@ from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.presentation import Paginator
 from trac.util.text import shorten_line
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.web import IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
@@ -1097,8 +1097,10 @@ class TicketQueryMacro(WikiMacroBase):
         else:
             if query.group:
                 return tag.div(
-                    [(tag.p(tag.a(query.group, ' ', v, href=href,
-                                  class_='query', title=title)),
+                    [(tag.p(tag_('%(groupvalue) %(groupname)s tickets:',
+                                 groupvalue=tag.a(v, href=href, class_='query',
+                                                  title=title),
+                                 groupname=query.group)),
                       tag.dl([(tag.dt(ticket_anchor(t)),
                                tag.dd(t['summary'])) for t in g],
                              class_='wiki compact'))

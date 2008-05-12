@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-05-12 15:47+0200\n"
+"PO-Revision-Date: 2008-05-12 16:15+0200\n"
 "Last-Translator: Emmanuel Blot <emmanuel.blot@free.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -1935,6 +1935,11 @@ msgstr "[Erreur : %(error)s]"
 #: trac/ticket/query.py:1063
 msgid "No results"
 msgstr "Aucun résultat"
+
+#: trac/ticket/query.py:1101
+#, python-format
+msgid "%(groupvalue) %(groupname)s tickets:"
+msgstr "Tickets de %(groupname)s %(groupvalue)s :"
 
 #: trac/ticket/report.py:178
 #, python-format

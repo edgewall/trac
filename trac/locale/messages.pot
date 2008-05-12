@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-05-12 11:51+0200\n"
+"POT-Creation-Date: 2008-05-12 16:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1794,6 +1794,11 @@ msgstr ""
 
 #: trac/ticket/query.py:1063
 msgid "No results"
+msgstr ""
+
+#: trac/ticket/query.py:1101
+#, python-format
+msgid "%(groupvalue) %(groupname)s tickets:"
 msgstr ""
 
 #: trac/ticket/report.py:178
