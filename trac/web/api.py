@@ -343,7 +343,8 @@ class Request(object):
                         data = Chrome(env).render_template(self, template,
                                                            data, 'text/html')
                     finally:
-                        translation.deactivate()
+                        if hasattr(self, 'locale'):
+                            translation.deactivate()
                 else:
                     content_type = 'text/plain'
                     data = '%s\n\n%s: %s' % (data.get('title'),
