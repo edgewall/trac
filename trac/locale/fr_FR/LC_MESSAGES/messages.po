@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-05-12 16:15+0200\n"
+"PO-Revision-Date: 2008-05-12 17:42+0200\n"
 "Last-Translator: Emmanuel Blot <emmanuel.blot@free.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -565,7 +565,7 @@ msgstr "Notez que pour un"
 msgid "Subject"
 msgstr "Sujet"
 
-#: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:64
+#: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:60
 msgid "or"
 msgstr "ou"
 
@@ -1054,7 +1054,7 @@ msgid "Browse repository path %(path)s"
 msgstr "Explorer le chemin du dépot %(path)s"
 
 #: trac/search/templates/search.html:10 trac/search/templates/search.html:40
-#: trac/ticket/templates/query_results.html:25
+#: trac/ticket/templates/query_results.html:21
 #: trac/ticket/templates/report_view.html:44
 msgid "Results"
 msgstr "Résultats"
@@ -1076,7 +1076,7 @@ msgstr "Aucun résultat trouvé."
 #: trac/ticket/templates/milestone_delete.html:38
 #: trac/ticket/templates/milestone_edit.html:95
 #: trac/ticket/templates/milestone_view.html:96
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:169
@@ -1092,7 +1092,7 @@ msgstr "Note :"
 #: trac/ticket/templates/milestone_delete.html:38
 #: trac/ticket/templates/milestone_edit.html:95
 #: trac/ticket/templates/milestone_view.html:96
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:169
@@ -1626,7 +1626,7 @@ msgid "White space changes"
 msgstr "Changements d'espacement"
 
 #: trac/templates/macros.html:126 trac/ticket/templates/milestone_view.html:53
-#: trac/ticket/templates/query.html:183 trac/ticket/templates/roadmap.html:26
+#: trac/ticket/templates/query.html:179 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
@@ -1688,7 +1688,7 @@ msgstr "Voir le fichier joint"
 msgid ") - added by"
 msgstr ") - ajouté par"
 
-#: trac/templates/macros.html:174 trac/ticket/templates/query_results.html:74
+#: trac/templates/macros.html:174 trac/ticket/templates/query_results.html:70
 msgid "ago."
 msgstr "avant."
 
@@ -1896,47 +1896,47 @@ msgstr "est"
 msgid "is not"
 msgstr "n'est pas"
 
-#: trac/ticket/query.py:668 trac/ticket/report.py:329
+#: trac/ticket/query.py:670 trac/ticket/report.py:329
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/ticket/query.py:709 trac/ticket/report.py:513 trac/ticket/web_ui.py:114
+#: trac/ticket/query.py:711 trac/ticket/report.py:513 trac/ticket/web_ui.py:114
 #: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
 msgid "RSS Feed"
 msgstr "Flux RSS"
 
-#: trac/ticket/query.py:711 trac/ticket/report.py:516 trac/ticket/web_ui.py:110
+#: trac/ticket/query.py:713 trac/ticket/report.py:516 trac/ticket/web_ui.py:110
 msgid "Comma-delimited Text"
 msgstr "Texte (séparateur : virgules)"
 
-#: trac/ticket/query.py:713 trac/ticket/report.py:518 trac/ticket/web_ui.py:112
+#: trac/ticket/query.py:715 trac/ticket/report.py:518 trac/ticket/web_ui.py:112
 msgid "Tab-delimited Text"
 msgstr "Texte (séparateur : tabulation)"
 
-#: trac/ticket/query.py:735 trac/ticket/report.py:63
+#: trac/ticket/query.py:737 trac/ticket/report.py:63
 msgid "View Tickets"
 msgstr "Voir les Tickets"
 
-#: trac/ticket/query.py:886 trac/ticket/query.py:897 trac/ticket/report.py:121
+#: trac/ticket/query.py:888 trac/ticket/query.py:899 trac/ticket/report.py:121
 msgid "Custom Query"
 msgstr "Requête personnalisé"
 
-#: trac/ticket/query.py:896 trac/ticket/report.py:111 trac/ticket/report.py:112
+#: trac/ticket/query.py:898 trac/ticket/report.py:111 trac/ticket/report.py:112
 #: trac/ticket/report.py:114 trac/ticket/report.py:231
 msgid "Available Reports"
 msgstr "Rapports disponibles"
 
-#: trac/ticket/query.py:983
+#: trac/ticket/query.py:985
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[Erreur : %(error)s]"
 
-#: trac/ticket/query.py:1063
+#: trac/ticket/query.py:1065
 msgid "No results"
 msgstr "Aucun résultat"
 
-#: trac/ticket/query.py:1101
+#: trac/ticket/query.py:1103
 #, python-format
 msgid "%(groupvalue) %(groupname)s tickets:"
 msgstr "Tickets de %(groupname)s %(groupvalue)s :"
@@ -2203,11 +2203,11 @@ msgstr "Ajouter/Supprimer en Copie"
 msgid "<Author field>"
 msgstr "<Champ auteur>"
 
-#: trac/ticket/web_ui.py:1091 trac/ticket/templates/query.html:93
+#: trac/ticket/web_ui.py:1091 trac/ticket/templates/query.html:89
 msgid "yes"
 msgstr "oui"
 
-#: trac/ticket/web_ui.py:1091 trac/ticket/templates/query.html:96
+#: trac/ticket/web_ui.py:1091 trac/ticket/templates/query.html:92
 msgid "no"
 msgstr "non"
 
@@ -2337,91 +2337,93 @@ msgid "Edit milestone"
 msgstr "Edition du Jalon"
 
 #: trac/ticket/templates/query.html:28
-#: trac/ticket/templates/query_results.html:22
-#: trac/ticket/templates/report_view.html:51
-msgid "match"
-msgstr "correspondance"
+#: trac/ticket/templates/query_results.html:29
+#, python-format
+msgid "%(num)s match"
+msgid_plural "%(num)s matches"
+msgstr[0] "%(num)s résultat"
+msgstr[1] "%(num)s résultats"
 
-#: trac/ticket/templates/query.html:41
+#: trac/ticket/templates/query.html:37
 msgid "Filters"
 msgstr "Filtres"
 
-#: trac/ticket/templates/query.html:42
+#: trac/ticket/templates/query.html:38
 msgid "Query filters"
 msgstr "Filtres de requête"
 
-#: trac/ticket/templates/query.html:117
+#: trac/ticket/templates/query.html:113
 msgid "Add filter"
 msgstr "Ajouter un filtre"
 
-#: trac/ticket/templates/query.html:137
+#: trac/ticket/templates/query.html:133
 msgid "Columns"
 msgstr "Colonnes"
 
-#: trac/ticket/templates/query.html:151
+#: trac/ticket/templates/query.html:147
 msgid "Group results by"
 msgstr "Grouper les résultats par"
 
-#: trac/ticket/templates/query.html:161
+#: trac/ticket/templates/query.html:157
 msgid "descending"
 msgstr "décroissant"
 
-#: trac/ticket/templates/query.html:165
+#: trac/ticket/templates/query.html:161
 msgid "Show under each result:"
 msgstr "Afficher sous chaque résultat :"
 
-#: trac/ticket/templates/query.html:175
+#: trac/ticket/templates/query.html:171
 msgid "Max items per page"
 msgstr ""
 
-#: trac/ticket/templates/query.html:218
+#: trac/ticket/templates/query.html:214
 #, fuzzy
 msgid "Edit query"
 msgstr "requête :"
 
-#: trac/ticket/templates/query.html:226
+#: trac/ticket/templates/query.html:222
 #, fuzzy
 msgid "Save query"
 msgstr "requête :"
 
-#: trac/ticket/templates/query.html:226
+#: trac/ticket/templates/query.html:222
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "Sauvegarder dans le rapport {%(id)s} la requête mise à jour"
 
-#: trac/ticket/templates/query.html:226
+#: trac/ticket/templates/query.html:222
 msgid "Create new report from current query"
 msgstr "Créer un nouveau rapport à partir de la requête courante"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:231
 #, fuzzy
 msgid "Delete query"
 msgstr "suppression"
 
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
 msgstr "TracQuery"
 
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 msgid "for help on using queries."
 msgstr "pour de l'aide sur l'utilisation des requêtes."
 
-#: trac/ticket/templates/query_results.html:57
-#: trac/ticket/templates/query_results.html:59
+#: trac/ticket/templates/query_results.html:53
+#: trac/ticket/templates/query_results.html:55
 msgid "View ticket"
 msgstr "Voir le Ticket"
 
-#: trac/ticket/templates/query_results.html:73
+#: trac/ticket/templates/query_results.html:69
 msgid "Reported by"
 msgstr "Rapporté par"
 
-#: trac/ticket/templates/query_results.html:80
+#: trac/ticket/templates/query_results.html:76
 #, fuzzy
 msgid "(this ticket)"
 msgstr "(futur ticket)"
 
-#: trac/ticket/templates/query_results.html:96
+#: trac/ticket/templates/query_results.html:92
 msgid "(more results for this group on next page)"
 msgstr ""
 
@@ -2495,6 +2497,10 @@ msgstr "Voir le rapport"
 #, fuzzy
 msgid "Copy report"
 msgstr "Voir le rapport"
+
+#: trac/ticket/templates/report_view.html:51
+msgid "match"
+msgstr "correspondance"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
@@ -2726,12 +2732,12 @@ msgstr "TracTimeline"
 msgid "for information about the timeline view."
 msgstr "pour des informations sur l'Historique"
 
-#: trac/util/presentation.py:252
+#: trac/util/presentation.py:253
 #, python-format
 msgid "%(last)d of %(total)d"
 msgstr ""
 
-#: trac/util/presentation.py:254
+#: trac/util/presentation.py:255
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr ""

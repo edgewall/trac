@@ -34,6 +34,8 @@ N_ = gettext_noop
 
 def ngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
+    if '%(num)' in string:
+        kwargs.update(num=num)
     return kwargs and string % kwargs or string
 
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
@@ -48,6 +50,8 @@ def tgettext_noop(string, **kwargs):
 
 def tngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
+    if '%(num)' in string:
+        kwargs.update(num=num)
     return kwargs and _tag_kwargs(string, kwargs) or string
 
 
@@ -67,8 +71,11 @@ try:
     _ = gettext
 
     def ngettext(singular, plural, num, **kwargs):
+        kwargs = kwargs.copy()
         def _ngettext():
             trans = get_translations().ungettext(singular, plural, num)
+            if '%(num)' in trans:
+                kwargs.update(num=num)
             return kwargs and trans % kwargs or trans
         if not hasattr(_current, 'translations'):
             return LazyProxy(_ngettext)
@@ -84,8 +91,11 @@ try:
     tag_ = tgettext
 
     def tngettext(singular, plural, num, **kwargs):
+        kwargs = kwargs.copy()
         def _tngettext():
             trans = get_translations().ungettext(singular, plural, num)
+            if '%(num)' in trans:
+                kwargs.update(num=num)
             return kwargs and _tag_kwargs(trans, kwargs) or trans
         if not hasattr(_current, 'translations'):
             return LazyProxy(_tngettext)
