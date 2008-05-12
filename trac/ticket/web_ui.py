@@ -43,7 +43,7 @@ from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address
 from trac.util.presentation import separated
-from trac.util.translation import _
+from trac.util.translation import _, tag_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -208,10 +208,10 @@ class TicketModule(Component):
         ts_start = to_timestamp(start)
         ts_stop = to_timestamp(stop)
 
-        status_map = {'new': ('newticket', 'created'),
-                      'reopened': ('reopenedticket', 'reopened'),
-                      'closed': ('closedticket', 'closed'),
-                      'edit': ('editedticket', 'updated')}
+        status_map = {'new': ('newticket', N_('created')),
+                      'reopened': ('reopenedticket', N_('reopened')),
+                      'closed': ('closedticket', N_('closed')),
+                      'edit': ('editedticket', N_('updated'))}
 
         ticket_realm = Resource('ticket')
 
@@ -305,8 +305,9 @@ class TicketModule(Component):
         elif field == 'title':
             title = TicketSystem(self.env).format_summary(summary, status,
                                                           resolution, type)
-            return tag('Ticket ', tag.em('#', ticket.id, title=title),
-                       ' (', shorten_line(summary), ') ', verb)
+            return tag_('Ticket %(ticketref)s (%(summary)s) %(verb)s', 
+                        ticketref=tag.em('#', ticket.id, title=title),
+                        summary=shorten_line(summary), verb=gettext(verb))
         elif field == 'description':
             descr = message = ''
             if status == 'new':

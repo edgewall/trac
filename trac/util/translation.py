@@ -13,30 +13,42 @@
 
 """Utilities for text translation with gettext."""
 
-import pkg_resources
+import re
 try:
     import threading
 except ImportError:
     import dummy_threading as threading
 
-__all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop']
+import pkg_resources
+
+from genshi.builder import tag
+
+
+__all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop', 
+           'tgettext', 'tgettext_noop', 'tngettext', 'tngettext_noop']
 
 
 def gettext_noop(string, **kwargs):
-    retval = string
-    if kwargs:
-        retval %= kwargs
-    return retval
+    return kwargs and string % kwargs or string
 N_ = gettext_noop
 
 def ngettext_noop(singular, plural, num, **kwargs):
-    if num == 1:
-        retval = singular
-    else:
-        retval = plural
-    if kwargs:
-        retval %= kwargs
-    return retval
+    string = (plural, singular)[num == 1]
+    return kwargs and string % kwargs or string
+
+_param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
+def _tag_kwargs(trans, kwargs):
+    trans_elts = _param_re.split(trans)
+    for i in xrange(1, len(trans_elts), 2):
+        trans_elts[i] = kwargs.get(trans_elts[i], '???')
+    return tag(*trans_elts)
+    
+def tgettext_noop(string, **kwargs):
+    return kwargs and _tag_kwargs(string, kwargs) or string
+
+def tngettext_noop(singular, plural, num, **kwargs):
+    string = (plural, singular)[num == 1]
+    return kwargs and _tag_kwargs(string, kwargs) or string
 
 
 try:
@@ -48,9 +60,7 @@ try:
     def gettext(string, **kwargs):
         def _gettext():
             trans = get_translations().ugettext(string)
-            if kwargs:
-                trans %= kwargs
-            return trans
+            return kwargs and trans % kwargs or trans
         if not hasattr(_current, 'translations'):
             return LazyProxy(_gettext)
         return _gettext()
@@ -59,12 +69,27 @@ try:
     def ngettext(singular, plural, num, **kwargs):
         def _ngettext():
             trans = get_translations().ungettext(singular, plural, num)
-            if kwargs:
-                trans %= kwargs
-            return trans
+            return kwargs and trans % kwargs or trans
         if not hasattr(_current, 'translations'):
             return LazyProxy(_ngettext)
         return _ngettext()
+
+    def tgettext(string, **kwargs):
+        def _tgettext():
+            trans = get_translations().ugettext(string)
+            return kwargs and _tag_kwargs(trans, kwargs) or trans
+        if not hasattr(_current, 'translations'):
+            return LazyProxy(_tgettext)
+        return _tgettext()
+    tag_ = tgettext
+
+    def tngettext(singular, plural, num, **kwargs):
+        def _tngettext():
+            trans = get_translations().ungettext(singular, plural, num)
+            return kwargs and _tag_kwargs(trans, kwargs) or trans
+        if not hasattr(_current, 'translations'):
+            return LazyProxy(_tngettext)
+        return _tngettext()
 
     def activate(locale):
         locale_dir = pkg_resources.resource_filename(__name__, '../locale')
@@ -86,9 +111,11 @@ try:
                 in pkg_resources.resource_listdir(__name__, '../locale')
                 if '.' not in dirname]
 
-except ImportError: # fall back on 0.11 behavior
+except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     gettext = _ = gettext_noop
     ngettext = ngettext_noop
+    tgettext = tag_ = tgettext_noop
+    tngettext = tngettext_noop
 
     def activate(locale):
         pass
