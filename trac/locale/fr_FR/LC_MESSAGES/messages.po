@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-05-06 11:57+0200\n"
+"PO-Revision-Date: 2008-05-12 11:51+0200\n"
 "Last-Translator: Emmanuel Blot <emmanuel.blot@free.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -97,7 +97,7 @@ msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (suppression)"
 
 #: trac/attachment.py:664 trac/versioncontrol/web_ui/browser.py:511
-#: trac/wiki/web_ui.py:63
+#: trac/wiki/web_ui.py:66
 msgid "Plain Text"
 msgstr "Texte Brut"
 
@@ -699,35 +699,35 @@ msgstr "Livrée :"
 msgid "Released"
 msgstr "Livrée"
 
-#: trac/db/api.py:97
+#: trac/db/api.py:98
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr ""
 
-#: trac/db/api.py:120
+#: trac/db/api.py:121
 msgid "Database connection string must start with scheme:/"
 msgstr ""
 
-#: trac/db/mysql_backend.py:148
+#: trac/db/mysql_backend.py:149
 msgid "MySQL servers older than 4.1 are not supported!"
 msgstr ""
 
-#: trac/db/pool.py:107
+#: trac/db/pool.py:108
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:131
+#: trac/db/sqlite_backend.py:132
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:159
+#: trac/db/sqlite_backend.py:160
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:168
+#: trac/db/sqlite_backend.py:169
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
@@ -1257,7 +1257,7 @@ msgstr "entre"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
 #: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:100
-#: trac/wiki/web_ui.py:511 trac/wiki/templates/wiki_view.html:25
+#: trac/wiki/web_ui.py:519 trac/wiki/templates/wiki_view.html:25
 msgid "Version"
 msgstr "Version"
 
@@ -1266,7 +1266,7 @@ msgstr "Version"
 msgid "and"
 msgstr "et"
 
-#: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:716
+#: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:717
 #: trac/ticket/templates/ticket.html:97
 msgid "Initial Version"
 msgstr "Version Initiale"
@@ -1449,9 +1449,9 @@ msgstr ""
 "Néanmoins, avant de rapporter ce problème, merci de vérifier avant tout "
 "de [1:rechercher] des erreurs similaires, car il est fortement probable "
 "que ce problème ait déjà été rapporté précédemment. Pour toutes les "
-"questions relatives a l'installation et/ou la configuration de Trac, merci "
-"de poster un message dans la [2:liste de discussion] plutôt que de remplir "
-"un nouveau ticket."
+"questions relatives a l'installation et/ou la configuration de Trac, "
+"merci de poster un message dans la [2:liste de discussion] plutôt que de "
+"remplir un nouveau ticket."
 
 #: trac/templates/error.html:136
 msgid "Otherwise, please"
@@ -1821,17 +1821,21 @@ msgstr "La résolution sera définie"
 msgid "Next status will be '%(name)s'"
 msgstr "Le prochain status sera '%(name)s'"
 
-#: trac/ticket/model.py:361
+#: trac/ticket/model.py:128
+msgid "Multi-values fields not supported yet"
+msgstr ""
+
+#: trac/ticket/model.py:363
 #, fuzzy, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s n'existe pas"
 
-#: trac/ticket/model.py:505
+#: trac/ticket/model.py:507
 #, fuzzy, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Composant %(name)s n'existe pas."
 
-#: trac/ticket/model.py:735
+#: trac/ticket/model.py:737
 #, fuzzy, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Version %(name)s n'existe pas"
@@ -1855,7 +1859,7 @@ msgstr ""
 msgid "Created"
 msgstr "Crée"
 
-#: trac/ticket/query.py:590 trac/ticket/web_ui.py:548
+#: trac/ticket/query.py:590 trac/ticket/web_ui.py:549
 msgid "Ticket"
 msgstr "Ticket"
 
@@ -2050,59 +2054,84 @@ msgstr "Modifications du ticket"
 msgid "Ticket details"
 msgstr "Détails du Ticket"
 
-#: trac/ticket/web_ui.py:437
+#: trac/ticket/web_ui.py:211
+#, fuzzy
+msgid "created"
+msgstr "Crée"
+
+#: trac/ticket/web_ui.py:212
+#, fuzzy
+msgid "reopened"
+msgstr "Ouvert"
+
+#: trac/ticket/web_ui.py:213
+#, fuzzy
+msgid "closed"
+msgstr "Termé"
+
+#: trac/ticket/web_ui.py:214
+#, fuzzy
+msgid "updated"
+msgstr "en retard"
+
+#: trac/ticket/web_ui.py:310
+#, fuzzy, python-format
+msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Ticket #%(num)s: %(summary)s"
+
+#: trac/ticket/web_ui.py:438
 #, fuzzy, python-format
 msgid "Invalid action \"%(name)s\""
 msgstr "Action invalide \"%(name)s\""
 
-#: trac/ticket/web_ui.py:548
+#: trac/ticket/web_ui.py:549
 #, fuzzy
 msgid "Back to Query"
 msgstr "Retour à"
 
-#: trac/ticket/web_ui.py:628 trac/ticket/web_ui.py:778
+#: trac/ticket/web_ui.py:629 trac/ticket/web_ui.py:779
 msgid "Ticket History"
 msgstr "Historique des Tickets"
 
-#: trac/ticket/web_ui.py:673
+#: trac/ticket/web_ui.py:674
 #, fuzzy
 msgid "No differences to show"
 msgstr "Pas de différences"
 
-#: trac/ticket/web_ui.py:713 trac/ticket/web_ui.py:768
-#: trac/ticket/web_ui.py:776 trac/wiki/web_ui.py:347 trac/wiki/web_ui.py:353
-#: trac/wiki/web_ui.py:499 trac/wiki/web_ui.py:507
+#: trac/ticket/web_ui.py:714 trac/ticket/web_ui.py:769
+#: trac/ticket/web_ui.py:777 trac/wiki/web_ui.py:355 trac/wiki/web_ui.py:361
+#: trac/wiki/web_ui.py:507 trac/wiki/web_ui.py:515
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
 
-#: trac/ticket/web_ui.py:716
+#: trac/ticket/web_ui.py:717
 msgid "initial"
 msgstr ""
 
-#: trac/ticket/web_ui.py:778 trac/versioncontrol/web_ui/changeset.py:342
-#: trac/wiki/web_ui.py:366
+#: trac/ticket/web_ui.py:779 trac/versioncontrol/web_ui/changeset.py:342
+#: trac/wiki/web_ui.py:374
 #, fuzzy
 msgid "Change"
 msgstr "Modifications"
 
-#: trac/ticket/web_ui.py:783
+#: trac/ticket/web_ui.py:784
 msgid "Ticket Diff"
 msgstr "Différence sur le Ticket"
 
-#: trac/ticket/web_ui.py:851
+#: trac/ticket/web_ui.py:852
 msgid "No permission to change ticket fields."
 msgstr "Pas le droit de changer les champs du ticket."
 
-#: trac/ticket/web_ui.py:859
+#: trac/ticket/web_ui.py:860
 msgid "No permissions to change ticket fields."
 msgstr "Pas les droits de changer les champs du ticket."
 
-#: trac/ticket/web_ui.py:868
+#: trac/ticket/web_ui.py:869
 msgid "No permissions to add a comment."
 msgstr "Pas le droit d'ajouter un commentaire."
 
-#: trac/ticket/web_ui.py:874
+#: trac/ticket/web_ui.py:875
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -2110,65 +2139,65 @@ msgstr ""
 "Desolé, les changements ne peuvent pas étre enregistrés. Ce ticket a été "
 "modifié par un autre utilisateur depuis que l'édition a debuté"
 
-#: trac/ticket/web_ui.py:881
+#: trac/ticket/web_ui.py:882
 msgid "Tickets must contain a summary."
 msgstr "Les Tickets doivent avoir un résumé"
 
-#: trac/ticket/web_ui.py:904
+#: trac/ticket/web_ui.py:905
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr ""
 "La description du ticket est trop longue (elle doit être inférieure\"\n"
 "\"à %(num)s caractères)"
 
-#: trac/ticket/web_ui.py:919
+#: trac/ticket/web_ui.py:920
 msgid "Invalid comment threading identifier"
 msgstr "Identifiant du commentaire invalide"
 
-#: trac/ticket/web_ui.py:926
+#: trac/ticket/web_ui.py:927
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "Le champ du ticket '%(field)s' est invalide: %(message)s"
 
-#: trac/ticket/web_ui.py:1036
+#: trac/ticket/web_ui.py:1037
 msgid "Assign to"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1052
+#: trac/ticket/web_ui.py:1053
 #, fuzzy
 msgid "Open"
 msgstr "Ouvert"
 
-#: trac/ticket/web_ui.py:1053
+#: trac/ticket/web_ui.py:1054
 #, fuzzy
 msgid "Closed"
 msgstr "Termé"
 
-#: trac/ticket/web_ui.py:1068
+#: trac/ticket/web_ui.py:1069
 msgid "Add to Cc"
 msgstr "Ajouter en Copie"
 
-#: trac/ticket/web_ui.py:1069
+#: trac/ticket/web_ui.py:1070
 msgid "Remove from Cc"
 msgstr "Supprimer de Copie"
 
-#: trac/ticket/web_ui.py:1070
+#: trac/ticket/web_ui.py:1071
 msgid "Add/Remove from Cc"
 msgstr "Ajouter/Supprimer en Copie"
 
-#: trac/ticket/web_ui.py:1071
+#: trac/ticket/web_ui.py:1072
 msgid "<Author field>"
 msgstr "<Champ auteur>"
 
-#: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:93
+#: trac/ticket/web_ui.py:1091 trac/ticket/templates/query.html:93
 msgid "yes"
 msgstr "oui"
 
-#: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:96
+#: trac/ticket/web_ui.py:1091 trac/ticket/templates/query.html:96
 msgid "no"
 msgstr "non"
 
-#: trac/ticket/web_ui.py:1260 trac/versioncontrol/templates/changeset.html:130
+#: trac/ticket/web_ui.py:1261 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
 msgstr "modifié"
 
@@ -2815,7 +2844,8 @@ msgid "Rev"
 msgstr "Rév"
 
 #: trac/versioncontrol/templates/browser.html:84
-#: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:533
+#: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:520
+#: trac/wiki/web_ui.py:544
 msgid "Last Change"
 msgstr "Dernière modification"
 
@@ -3257,71 +3287,75 @@ msgstr "Table des Matières"
 msgid "Page not modified"
 msgstr "Page non modifiée"
 
-#: trac/wiki/web_ui.py:82 trac/wiki/web_ui.py:585
+#: trac/wiki/web_ui.py:85 trac/wiki/web_ui.py:596
 msgid "Wiki"
 msgstr "Wiki"
 
-#: trac/wiki/web_ui.py:84
+#: trac/wiki/web_ui.py:87
 msgid "Help/Guide"
 msgstr "Aide/Guide"
 
-#: trac/wiki/web_ui.py:119
+#: trac/wiki/web_ui.py:122
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr "Pas de version \"%(num)s\" pour la page Wiki \"%(name)s\""
 
-#: trac/wiki/web_ui.py:248
+#: trac/wiki/web_ui.py:181
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr "Le champ '%(field)s' de la page Wiki est invalide: %(message)s"
 
-#: trac/wiki/web_ui.py:252
+#: trac/wiki/web_ui.py:185
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr "Page Wiki invalide: %(message)s"
 
-#: trac/wiki/web_ui.py:295
+#: trac/wiki/web_ui.py:271
+msgid "Page not modified, showing latest version."
+msgstr ""
+
+#: trac/wiki/web_ui.py:303
 #, fuzzy, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "La version %(num)s de la page %(name)s n'existe pas"
 
-#: trac/wiki/web_ui.py:349
+#: trac/wiki/web_ui.py:357
 msgid "Page history"
 msgstr "Historique de la page"
 
-#: trac/wiki/web_ui.py:366
+#: trac/wiki/web_ui.py:374
 #, fuzzy
 msgid "Wiki History"
 msgstr "Historique des Tickets"
 
-#: trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:439
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "La page %(name)s n'existe pas"
 
-#: trac/wiki/web_ui.py:468
+#: trac/wiki/web_ui.py:476
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "La page %(name)s est introuvable"
 
-#: trac/wiki/web_ui.py:502 trac/wiki/web_ui.py:511
+#: trac/wiki/web_ui.py:510 trac/wiki/web_ui.py:519
 #, fuzzy
 msgid "View Latest Version"
 msgstr "Explorer cette version"
 
-#: trac/wiki/web_ui.py:528
+#: trac/wiki/web_ui.py:539
 msgid "Start Page"
 msgstr "Page d'accueil"
 
-#: trac/wiki/web_ui.py:529
+#: trac/wiki/web_ui.py:540
 msgid "Index"
 msgstr "Index"
 
-#: trac/wiki/web_ui.py:531
+#: trac/wiki/web_ui.py:542
 msgid "History"
 msgstr "Historique"
 
-#: trac/wiki/web_ui.py:541
+#: trac/wiki/web_ui.py:552
 msgid "Wiki changes"
 msgstr "Modification Wiki"
 
