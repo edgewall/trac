@@ -98,7 +98,7 @@ class Environment(Component, ComponentManager):
         access it. You may need to use this option to force Trac to use the
         `base_url` setting also for redirects. This introduces the obvious
         limitation that this environment will only be usable when accessible
-        from that URL, as redirects are frequently used.""")
+        from that URL, as redirects are frequently used. ''(since 0.10.5)''""")
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
@@ -154,7 +154,7 @@ class Environment(Component, ComponentManager):
          Example:
          ($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
 
-         (since 0.11)""")
+         (since 0.10.5)""")
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
