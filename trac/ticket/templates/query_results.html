@@ -25,7 +25,7 @@
   <h2 py:if="paginator.has_more_pages">
     Results <span class="numresults">(${paginator.displayed_items()})</span>
   </h2>
-  <xi:include href="page_index.html" />
+  <xi:include py:if="paginator.show_index" href="page_index.html" />
   <py:for each="group_index, (groupname, results) in enumerate(groups)">
     <h2 py:if="groupname">
       ${fields[query.group].label}:
@@ -99,7 +99,7 @@
       </tbody>
     </table>
   </py:for>
-  <xi:include href="page_index.html" />
+  <xi:include py:if="paginator.show_index" href="page_index.html" />
 </div>
 
 
