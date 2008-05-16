@@ -21,7 +21,7 @@ try:
     if 'TRAC_ENV' not in os.environ and \
        'TRAC_ENV_PARENT_DIR' not in os.environ:
         os.environ['TRAC_ENV'] = '${env.path}'
-    if 'PYTHON_EGG_CACHE' not in os.envion:
+    if 'PYTHON_EGG_CACHE' not in os.environ:
         os.environ['PYTHON_EGG_CACHE'] = tempfile.gettempdir()
     from trac.web import cgi_frontend
     cgi_frontend.run()
