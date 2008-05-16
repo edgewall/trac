@@ -277,8 +277,8 @@ class TimelineModule(Component):
         provider methods"""
         if len(event) == 6: # 0.10 events
             kind, url, title, date, author, markup = event
-            fields = {'url': url, 'title': title, 'description': markup}
-            render = lambda field, context: fields.get(field)
+            data = {'url': url, 'title': title, 'description': markup}
+            render = lambda field, context: data.get(field)
         else: # 0.11 events
             if len(event) == 5: # with special provider
                 kind, date, author, data, provider = event
@@ -292,7 +292,8 @@ class TimelineModule(Component):
             dateuid = date
             date = datetime.fromtimestamp(date, utc)
         return {'kind': kind, 'author': author, 'date': date,
-                'dateuid': dateuid, 'render': render}
+                'dateuid': dateuid, 'render': render, 'event': event,
+                'data': data, 'provider': provider}
 
     def _provider_failure(self, exc, req, ep, current_filters, all_filters):
         """Raise a TracError exception explaining the failure of a provider.
