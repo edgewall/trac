@@ -222,7 +222,7 @@
      <td<?cs if:fullrow ?> colspan="3"<?cs /if ?>><?cs
       if:field.type == 'text' ?><input type="text" id="<?cs
         var:name(field) ?>" name="<?cs
-        var:name(field) ?>" value="<?cs var:ticket[name(field)] ?>" /><?cs
+        var:name(field) ?>" <?cs if:name(field) == 'cc' ?>title="Space or comma delimited email addresses and usernames are accepted." <?cs /if ?> value="<?cs var:ticket[name(field)] ?>" /><?cs
       elif:field.type == 'select' ?><select id="<?cs
         var:name(field) ?>" name="<?cs
         var:name(field) ?>"><?cs
