@@ -73,6 +73,11 @@ class ITicketActionController(Interface):
         
         This method will only be called if the controller claimed to handle
         the given `action` in the call to `get_ticket_actions`.
+
+        Note that the radio button for the action has an `id` of
+        `"action_%s" % action`.  Any `id`s used in `control` need to be made
+        unique.  The method used in the default ITicketActionController is to
+        use `"action_%s_something" % action`.
         """
 
     def get_ticket_changes(req, ticket, action):
