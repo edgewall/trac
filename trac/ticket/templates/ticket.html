@@ -26,7 +26,7 @@
       <py:when test="ticket.exists">
         $("#changelog h3.change").addAnchor("Link to this change");
 
-        /* only enable control elements for the currenly selected action */
+        /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
 
         function updateActionFields() {
@@ -366,8 +366,8 @@ ${comment}</textarea></p>
           <fieldset id="action">
             <legend>Action</legend>
             <div py:for="key, label, controls, hints in action_controls">
-              <input type="radio" id="$key" name="action" value="$key" checked="${action == key or None}" />
-                <label for="$key">$label</label>
+              <input type="radio" id="action_$key" name="action" value="$key" checked="${action == key or None}" />
+                <label for="action_$key">$label</label>
                 $controls
                 <span class="hint" py:for="hint in hints">$hint</span>
             </div>

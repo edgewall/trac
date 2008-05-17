@@ -227,7 +227,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_owner' in operations:
             hints.append(_("The ticket will be disowned"))
         if 'set_owner' in operations:
-            id = action + '_reassign_owner'
+            id = 'action_%s_reassign_owner' % action
             selected_owner = req.args.get(id, req.authname)
 
             if this_action.has_key('set_owner'):
@@ -273,7 +273,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 hints.append(_("The resolution will be set to %(name)s",
                                name=resolutions[0]))
             else:
-                id = action + '_resolve_resolution'
+                id = 'action_%s_resolve_resolution' % action
                 selected_option = req.args.get(id,
                         self.config.get('ticket', 'default_resolution'))
                 control.append(tag(['as ', tag.select(
@@ -309,7 +309,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if operation == 'del_owner':
                 updated['owner'] = ''
             elif operation == 'set_owner':
-                newowner = req.args.get(action + '_reassign_owner',
+                newowner = req.args.get('action_%s_reassign_owner' % action,
                                     this_action.get('set_owner', '').strip())
                 # If there was already an owner, we get a list, [new, old],
                 # but if there wasn't we just get new.
@@ -322,7 +322,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
-                newresolution = req.args.get(action + '_resolve_resolution',
+                newresolution = req.args.get('action_%s_resolve_resolution' % \
+                                             action,
                                 this_action.get('set_resolution', '').strip())
                 updated['resolution'] = newresolution
 
