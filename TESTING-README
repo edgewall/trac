@@ -1,11 +1,17 @@
-So, you want to see what's broken?  Eeeexcellent.  Welcome to the testing branch.
+ = Testing Readme =
 
+So, you want to see what's broken?  Eeeexcellent.
+
+If you are running python < 2.4.4, please see the troubleshooting section.
+
+ == Quick Start ==
 First thing to do is run the tests.
 If you have genshi and twill installed on your system, you should be able to run the tests like this:
 {{{
 PYTHONPATH=. ./trac/test.py
 }}}
 
+ == Slow Start ==
 If you want to test against specific versions of genshi, twill, pygments, etc., you can set those up like this:
 {{{
 myworktree/trac
@@ -32,19 +38,20 @@ PYTHONPATH=. ./trac/test.py --skip-functional-tests
 
 
 NOTE: Unlike most unittests, the functional tests share a test fixture across tests.  This means that you can't(*) run just one of the tests by itself.
-You can now run a sub-set of the functional tests:
+But you can run a sub-set of the functional tests:
 {{{
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/tests/functional/__init__.py
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/ticket/tests/functional.py
 PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 ./trac/versioncontrol/tests/functional.py
 }}}
-Note that that there is a set of functional tests that are run regardless of what subset you choose.
+Note that that there is a set of functional tests that are run regardless of what subset you choose; these tests setup the shared fixture.
 
 
 (*) Unless you modify the code to comment out the other functional tests.  The test fixture is setup and torn down by `FunctionalTestSuite`, and it runs the tests added to it with `_tester` and `_testenv` set in the testcase objects.
 
-The functional tests require subversion, and use a random port 8000-8999 for the test web server
+The functional tests require subversion, and use a random local port 8000-8999 for the test web server.
 
+ == Testing output and byproducts ==
 There is some logging done:
  - testing.log
     output from trac environment creation, tracd, and some svn commands
@@ -57,6 +64,7 @@ testenv/htpasswd   -- the password/authentication for the test fixture.  passwor
        /repo       -- the Subversion repository
        /trac       -- the Trac environment
 }}}
+(Note that running the tests again will automatically delete this test environment and create a new one.  If you want to save a test environment, you will need to rename this directory before running the tests again.)
 
 The command to serve the test environment is:
 {{{
@@ -64,6 +72,7 @@ PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 \
 ./trac/web/standalone.py --basic-auth=trac,testenv/htpasswd, -s \
     --port=8888 testenv/trac
 }}}
+This is particularly useful when a test fails and you want to explore the environment to debug the problem.
 
 --------------------------------------------------------------------------------
 == TROUBLESHOOTING: ==
