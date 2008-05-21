@@ -44,6 +44,21 @@ class TestAdminComponentRemoval(FunctionalTwillTestCaseSetup):
         tc.notfind(name)
 
 
+class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin set default component"""
+        name = "DefaultComponent"
+        self._tester.create_component(name)
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.formvalue('component_table', 'default', name)
+        tc.submit('apply')
+        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
+                name)
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected">%s</option>' % name)
+        
+
 class TestAdminMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create milestone"""
@@ -606,6 +621,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
     suite.addTest(TestAdminComponentRemoval())
+    suite.addTest(TestAdminComponentDefault())
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
