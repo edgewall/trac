@@ -32,6 +32,18 @@ class TestAdminComponentDuplicates(FunctionalTwillTestCaseSetup):
         tc.find('Component .* already exists')
 
 
+class TestAdminComponentRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove component"""
+        name = "RemovalComponent"
+        self._tester.create_component(name)
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.formvalue('component_table', 'sel', name)
+        tc.submit('remove')
+        tc.notfind(name)
+
+
 class TestAdminMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create milestone"""
@@ -593,6 +605,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTickets())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
+    suite.addTest(TestAdminComponentRemoval())
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
