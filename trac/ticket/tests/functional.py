@@ -71,7 +71,23 @@ class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
                 name)
         tc.go(self._tester.url + '/newticket')
         tc.find('<option selected="selected">%s</option>' % name)
-        
+
+
+class TestAdminComponentDetail(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin component detail"""
+        name = "DetailComponent"
+        self._tester.create_component(name)
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.follow(name)
+        desc = 'Some component description'
+        tc.formvalue('modcomp', 'description', desc)
+        tc.submit('cancel')
+        tc.url(component_url + '$')
+        tc.follow(name)
+        tc.notfind(desc)
+
 
 class TestAdminMilestone(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -806,6 +822,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminComponentRemoval())
     suite.addTest(TestAdminComponentNonRemoval())
     suite.addTest(TestAdminComponentDefault())
+    suite.addTest(TestAdminComponentDetail())
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
