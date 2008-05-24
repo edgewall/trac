@@ -44,6 +44,16 @@ class TestAdminComponentRemoval(FunctionalTwillTestCaseSetup):
         tc.notfind(name)
 
 
+class TestAdminComponentNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected component"""
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.formvalue('component_table', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No component selected')
+
+
 class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin set default component"""
@@ -621,6 +631,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
     suite.addTest(TestAdminComponentRemoval())
+    suite.addTest(TestAdminComponentNonRemoval())
     suite.addTest(TestAdminComponentDefault())
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
