@@ -13,7 +13,7 @@
     <h2>Manage $label_plural</h2>
 
     <py:choose test="view">
-      <form py:when="'detail'" class="mod" id="modenum" method="post">
+      <form py:when="'detail'" class="mod" id="modenum" name="modenum" method="post">
         <fieldset>
           <legend>Modify $label_singular</legend>
           <div class="field">
@@ -40,7 +40,7 @@
         </form>
 
         <py:choose>
-          <form py:when="enums" method="POST">
+          <form py:when="enums" id="enumtable" name="enumtable" method="POST">
             <table class="listing" id="enumlist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>
