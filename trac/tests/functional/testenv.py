@@ -89,7 +89,11 @@ class FunctionalTestEnvironment(object):
 
     def start(self):
         """Starts the webserver"""
-        server = Popen([sys.executable, "./trac/web/standalone.py",
+        if 'FIGLEAF' in os.environ:
+            exe = os.environ['FIGLEAF']
+        else:
+            exe = sys.executable
+        server = Popen([exe, "./trac/web/standalone.py",
                         "--port=%s" % self.port, "-s",
                         "--hostname=localhost",
                         "--basic-auth=trac,%s," % self.htpasswd,
@@ -120,7 +124,7 @@ class FunctionalTestEnvironment(object):
                 call(["taskkill", "/f", "/pid", str(self.pid)],
                      stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
-                os.kill(self.pid, signal.SIGTERM)
+                os.kill(self.pid, signal.SIGINT)
                 try:
                     os.waitpid(self.pid, 0)
                 except OSError, e:
