@@ -74,6 +74,30 @@ PYTHONPATH=.:../twill-0.9:../genshi-0.4.4:../pygments-0.8 \
 }}}
 This is particularly useful when a test fails and you want to explore the environment to debug the problem.
 
+ == Test Coverage ==
+You can now determine statement coverage of unittests and functional tests.  But you'll have to run them separately for now.
+
+`figleaf` will need to be on your `PATH`.  Set the `FIGLEAF` environment variable to the figleaf command.
+
+Create a figleaf-exclude file with filename patterns to exclude.  For example:
+{{{
+/usr/lib/python.*/.*.py
+.*.html
+}}}
+
+Then run the tests something like this:
+{{{
+export FIGLEAF=figleaf
+figleaf ./trac/test.py -v --skip-functional-tests
+mv .figleaf .figleaf.unittests
+python trac/tests/functional/testcases.py -v
+mv .figleaf .figleaf.functional
+figleaf2html --exclude-patterns=../figleaf-exclude .figleaf.functional .figleaf.unittests
+}}}
+Also, this is very slow; on a decent machine, 10 minutes for the functional tests is normal.
+
+To run without figleaf, be sure to unset `FIGLEAF`.
+
 --------------------------------------------------------------------------------
 == TROUBLESHOOTING: ==
 
