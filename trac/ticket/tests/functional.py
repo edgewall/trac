@@ -163,6 +163,27 @@ class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
         tc.find(duedate_string)
 
 
+class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify milestone duedate on detail page"""
+        name = "DetailDueMilestone"
+        # Create a milestone
+        self._tester.create_milestone(name)
+
+        # Modify the details of the milestone
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        duedate = datetime.now(tz=utc)
+        duedate_string = format_date(duedate, tzinfo=utc)
+        tc.formvalue('modifymilestone', 'due', duedate_string)
+        tc.submit('save')
+        tc.url(milestone_url + '$')
+        tc.find(name + '(<[^>]*>|\\s)*'+ duedate_string, 's')
+
+
 class TestAdminMilestoneCompleted(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin milestone completed"""
@@ -828,6 +849,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneDuplicates())
     suite.addTest(TestAdminMilestoneDetail())
     suite.addTest(TestAdminMilestoneDue())
+    suite.addTest(TestAdminMilestoneDetailDue())
     suite.addTest(TestAdminMilestoneCompleted())
     suite.addTest(TestAdminMilestoneCompletedFuture())
     suite.addTest(TestAdminPriority())
