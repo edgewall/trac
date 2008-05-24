@@ -132,6 +132,12 @@ class FunctionalTester(object):
         self.go_to_front()
         tc.follow('Admin')
 
+    def go_to_roadmap(self):
+        """Surf to the roadmap page."""
+        self.go_to_front()
+        tc.follow('\\bRoadmap\\b')
+        tc.url(self.url + '/roadmap')
+
     def add_comment(self, ticketid):
         """Adds a comment to the given ticket ID, assumes ticket exists."""
         self.go_to_ticket(ticketid)
