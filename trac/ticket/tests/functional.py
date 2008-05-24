@@ -198,6 +198,72 @@ class TestAdminPriorityDuplicates(FunctionalTwillTestCaseSetup):
         tc.find('Priority %s already exists' % name)
 
 
+class TestAdminPriorityModify(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify priority"""
+        name = "ModifyPriority"
+        self._tester.create_priority(name)
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name)
+        tc.follow(name)
+        tc.formvalue('modenum', 'name', name * 2)
+        tc.submit('save')
+        tc.url(priority_url + '$')
+        tc.find(name * 2)
+
+
+class TestAdminPriorityRemove(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove priority"""
+        name = "RemovePriority"
+        self._tester.create_priority(name)
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name)
+        tc.formvalue('enumtable', 'sel', name)
+        tc.submit('remove')
+        tc.url(priority_url + '$')
+        tc.notfind(name)
+
+
+class TestAdminPriorityRemoveMulti(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove multiple priorities"""
+        name = "MultiRemovePriority"
+        count = 3
+        for i in range(count):
+            self._tester.create_priority("%s%s" % (name, i))
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        for i in range(count):
+            tc.find("%s%s" % (name, i))
+        for i in range(count):
+            tc.formvalue('enumtable', 'sel', "%s%s" % (name, i))
+        tc.submit('remove')
+        tc.url(priority_url + '$')
+        for i in range(count):
+            tc.notfind("%s%s" % (name, i))
+
+
+class TestAdminPriorityDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin default priority"""
+        name = "DefaultPriority"
+        self._tester.create_priority(name)
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name)
+        tc.formvalue('enumtable', 'default', name)
+        tc.submit('apply')
+        tc.url(priority_url + '$')
+        tc.find('radio.*"%s"\\schecked="checked"' % name)
+
+
 class TestAdminResolution(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create resolution"""
@@ -748,7 +814,10 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneCompleted())
     suite.addTest(TestAdminMilestoneCompletedFuture())
     suite.addTest(TestAdminPriority())
-    suite.addTest(TestAdminPriorityDuplicates())
+    suite.addTest(TestAdminPriorityModify())
+    suite.addTest(TestAdminPriorityRemove())
+    suite.addTest(TestAdminPriorityRemoveMulti())
+    suite.addTest(TestAdminPriorityDefault())
     suite.addTest(TestAdminResolution())
     suite.addTest(TestAdminResolutionDuplicates())
     suite.addTest(TestAdminSeverity())
