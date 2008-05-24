@@ -213,6 +213,26 @@ class TestAdminVersionDuplicates(FunctionalTwillTestCaseSetup):
         tc.find("Version %s already exists." % name)
 
 
+class TestAdminVersionDetail(FunctionalTwillTestCaseSetup):
+    # This is somewhat pointless... the only place to find the version
+    # description is on the version details page.
+    def runTest(self):
+        """Admin version details"""
+        name = "DetailVersion"
+        self._tester.create_version(name)
+        version_admin = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_admin)
+        tc.url(version_admin)
+        tc.follow(name)
+
+        desc = 'Some version description.'
+        tc.formvalue('modifyversion', 'description', desc)
+        tc.submit('save')
+        tc.url(version_admin)
+        tc.follow(name)
+        tc.find(desc)
+
+
 class TestNewReport(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a new report"""
@@ -684,6 +704,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminTypeDuplicates())
     suite.addTest(TestAdminVersion())
     suite.addTest(TestAdminVersionDuplicates())
+    suite.addTest(TestAdminVersionDetail())
     suite.addTest(TestNewReport())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
