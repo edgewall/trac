@@ -150,7 +150,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     due = req.args.get('duedate', '')
                     if due:
                         mil.due = parse_date(due)
-                    completed = req.args.get('completeddate', '')
+                    completed = req.args.get('completed', '')
                     if completed:
                         mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):

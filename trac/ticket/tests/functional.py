@@ -96,6 +96,43 @@ class TestAdminMilestoneDuplicates(FunctionalTwillTestCaseSetup):
         tc.notfind('%s')
 
 
+class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify milestone details"""
+        name = "DetailMilestone"
+        # Create a milestone
+        self._tester.create_milestone(name)
+
+        # Modify the details of the milestone
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        tc.formvalue('modifymilestone', 'description', 'Some description.')
+        tc.submit('save')
+        tc.url(milestone_url)
+
+        # Make sure the milestone isn't closed
+        self._tester.go_to_roadmap()
+        tc.find(name)
+
+        # Cancel more modifications
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.formvalue('modifymilestone', 'description',
+                     '~~Some other description.~~')
+        tc.submit('cancel')
+        tc.url(milestone_url)
+
+        # Verify the correct modifications show up
+        self._tester.go_to_roadmap()
+        tc.find('Some description.')
+        tc.follow(name)
+        tc.find('Some description.')
+
+
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create priority"""
@@ -636,6 +673,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
+    suite.addTest(TestAdminMilestoneDetail())
     suite.addTest(TestAdminPriority())
     suite.addTest(TestAdminPriorityDuplicates())
     suite.addTest(TestAdminResolution())
