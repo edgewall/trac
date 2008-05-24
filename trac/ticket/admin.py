@@ -150,8 +150,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     due = req.args.get('duedate', '')
                     if due:
                         mil.due = parse_date(due)
-                    completed = req.args.get('completed', '')
-                    if completed:
+                    if req.args.get('completed', False):
+                        completed = req.args.get('completeddate', '')
                         mil.completed = parse_date(completed)
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '

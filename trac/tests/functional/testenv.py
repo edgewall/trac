@@ -8,6 +8,7 @@ import time
 import signal
 import sys
 import errno
+import locale
 
 from subprocess import call, Popen, PIPE
 from trac.tests.functional.compat import rmtree, close_fds
@@ -45,6 +46,7 @@ class FunctionalTestEnvironment(object):
         self.pid = None
         self.destroy()
         self.create()
+        locale.setlocale(locale.LC_ALL, '')
 
     def destroy(self):
         """Remove all of the test environment data."""

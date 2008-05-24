@@ -1,6 +1,10 @@
 #!/usr/bin/python
 import os
+
+from datetime import datetime, timedelta
+
 from trac.tests.functional import *
+from trac.util.datefmt import utc, format_date
 
 class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -131,6 +135,52 @@ class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
         tc.find('Some description.')
         tc.follow(name)
         tc.find('Some description.')
+
+
+class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin milestone duedate"""
+        name = "DueMilestone"
+        duedate = datetime.now(tz=utc)
+        duedate_string = format_date(duedate, tzinfo=utc)
+        self._tester.create_milestone(name, due=duedate_string)
+        tc.find(duedate_string)
+
+
+class TestAdminMilestoneCompleted(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin milestone completed"""
+        name = "CompletedMilestone"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        tc.formvalue('modifymilestone', 'completed', True)
+        tc.submit('save')
+        tc.url(milestone_url + "$")
+
+
+class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin milestone completed in the future"""
+        name = "CompletedFutureMilestone"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        tc.formvalue('modifymilestone', 'completed', True)
+        cdate = datetime.now(tz=utc) + timedelta(days=1)
+        cdate_string = format_date(cdate, tzinfo=utc)
+        tc.formvalue('modifymilestone', 'completeddate', cdate_string)
+        tc.submit('save')
+        tc.find('Completion date may not be in the future')
+        # And make sure it wasn't marked as completed.
+        self._tester.go_to_roadmap()
+        tc.find(name)
 
 
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
@@ -694,6 +744,9 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
     suite.addTest(TestAdminMilestoneDetail())
+    suite.addTest(TestAdminMilestoneDue())
+    suite.addTest(TestAdminMilestoneCompleted())
+    suite.addTest(TestAdminMilestoneCompletedFuture())
     suite.addTest(TestAdminPriority())
     suite.addTest(TestAdminPriorityDuplicates())
     suite.addTest(TestAdminResolution())
