@@ -19,7 +19,6 @@
 import csv
 import re
 from StringIO import StringIO
-from itertools import izip
 
 from genshi.builder import tag
 
@@ -45,7 +44,7 @@ class ReportModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
-    items_per_page = IntOption('report', 'items_per_page', 100,
+    items_per_page = IntOption('report', 'items_per_page', 10000,
         """Number of tickets displayed per page in ticket reports,
         by default (''since 0.11'')""")
 
@@ -662,8 +661,10 @@ class ReportModule(Component):
         writer = csv.writer(req, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
         for row in rows:
-            writer.writerow([f(v).encode('utf-8') for f,v
-                             in izip(converters, row)])
+            row = list(row)
+            for i in xrange(len(row)):
+                row[i] = converters[i](row[i]).encode('utf-8')
+            writer.writerow(row)
 
         raise RequestDone
 
