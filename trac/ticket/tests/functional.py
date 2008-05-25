@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import os
+import re
 
 from datetime import datetime, timedelta
 
@@ -398,6 +399,42 @@ class TestAdminPriorityDetail(FunctionalTwillTestCaseSetup):
         tc.notfind(name + '1')
         tc.find(name + '2')
         tc.notfind(name + '3')
+
+
+class TestAdminPriorityRenumber(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin renumber priorities"""
+        valuesRE = re.compile('<select name="value_([0-9]+)">', re.M)
+        html = b.get_html()
+        max_priority = max([int(x) for x in valuesRE.findall(html)])
+
+        name = "RenumberPriority"
+        self._tester.create_priority(name + '1')
+        self._tester.create_priority(name + '2')
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name + '1')
+        tc.find(name + '2')
+        tc.formvalue('enumtable', 'value_%s' % (max_priority + 1), str(max_priority + 2))
+        tc.formvalue('enumtable', 'value_%s' % (max_priority + 2), str(max_priority + 1))
+        tc.submit('apply')
+        tc.url(priority_url + '$')
+        # Verify that their order has changed.
+        tc.find(name + '2.*' + name + '1', 's')
+
+class TestAdminPriorityRenumberDup(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin badly renumber priorities"""
+        # Make the first priority the 2nd priority, and leave the 2nd priority
+        # as the 2nd priority.
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.formvalue('enumtable', 'value_1', '2')
+        tc.submit('apply')
+        tc.url(priority_url + '$')
+        tc.find('Order numbers must be unique')
 
 
 class TestAdminResolution(FunctionalTwillTestCaseSetup):
@@ -1055,6 +1092,8 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminPriorityNonRemoval())
     suite.addTest(TestAdminPriorityDefault())
     suite.addTest(TestAdminPriorityDetail())
+    suite.addTest(TestAdminPriorityRenumber())
+    suite.addTest(TestAdminPriorityRenumberDup())
     suite.addTest(TestAdminResolution())
     suite.addTest(TestAdminResolutionDuplicates())
     suite.addTest(TestAdminSeverity())
