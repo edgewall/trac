@@ -132,11 +132,11 @@ class Query(object):
         for filter_ in filters:
             filter_ = filter_.split('=')
             if len(filter_) != 2:
-                raise QuerySyntaxError('Query filter requires field and ' 
-                                       'constraints separated by a "="')
+                raise QuerySyntaxError(_('Query filter requires field and ' 
+                                         'constraints separated by a "="'))
             field,values = filter_
             if not field:
-                raise QuerySyntaxError('Query filter requires field name')
+                raise QuerySyntaxError(_('Query filter requires field name'))
             # from last char of `field`, get the mode of comparison
             mode, neg = '', ''
             if field[-1] in ('~', '^', '$'):
@@ -251,9 +251,6 @@ class Query(object):
         return cnt
 
     def execute(self, req, db=None, cached_ids=None):
-        if not self.cols:
-            self.get_columns()
-
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -376,8 +373,7 @@ class Query(object):
 
     def get_sql(self, req=None, cached_ids=None):
         """Return a (sql, params) tuple for the query."""
-        if not self.cols:
-            self.get_columns()
+        self.get_columns()
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
@@ -1041,6 +1037,9 @@ class TicketQueryMacro(WikiMacroBase):
             kwargs['format'] = argv[0]
 
         format = kwargs.pop('format', 'list').strip().lower()
+        if format in ('list', 'compact'): # we need 'status' and 'summary'
+            kwargs['col'] = '|'.join(['status', 'summary', 
+                                      kwargs.get('col', '')])
         query_string = '&'.join(['%s=%s' % item
                                  for item in kwargs.iteritems()])
 
