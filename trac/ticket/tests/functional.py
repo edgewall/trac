@@ -370,6 +370,36 @@ class TestAdminPriorityDefault(FunctionalTwillTestCaseSetup):
         tc.find('radio.*"%s"\\schecked="checked"' % name)
 
 
+class TestAdminPriorityDetail(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify priority details"""
+        name = "DetailPriority"
+        # Create a priority
+        self._tester.create_priority(name + '1')
+
+        # Modify the details of the priority
+        priority_url = self._tester.url + "/admin/ticket/priority"
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.follow(name + '1')
+        tc.url(priority_url + '/' + name + '1')
+        tc.formvalue('modenum', 'name', name + '2')
+        tc.submit('save')
+        tc.url(priority_url + '$')
+
+        # Cancel more modifications
+        tc.go(priority_url)
+        tc.follow(name)
+        tc.formvalue('modenum', 'name', name + '3')
+        tc.submit('cancel')
+        tc.url(priority_url + '$')
+
+        # Verify that only the correct modifications show up
+        tc.notfind(name + '1')
+        tc.find(name + '2')
+        tc.notfind(name + '3')
+
+
 class TestAdminResolution(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create resolution"""
@@ -469,6 +499,24 @@ class TestAdminVersionDetailTime(FunctionalTwillTestCaseSetup):
         tc.submit('save')
         tc.url(version_admin + '$')
         tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"' % name, 's')
+
+
+class TestAdminVersionDetailCancel(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin version details"""
+        name = "DetailVersion"
+        self._tester.create_version(name)
+        version_admin = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_admin)
+        tc.url(version_admin)
+        tc.follow(name)
+
+        desc = 'Some other version description.'
+        tc.formvalue('modifyversion', 'description', desc)
+        tc.submit('cancel')
+        tc.url(version_admin)
+        tc.follow(name)
+        tc.notfind(desc)
 
 
 class TestAdminVersionRemove(FunctionalTwillTestCaseSetup):
@@ -1016,6 +1064,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionDuplicates())
     suite.addTest(TestAdminVersionDetail())
     suite.addTest(TestAdminVersionDetailTime())
+    suite.addTest(TestAdminVersionDetailCancel())
     suite.addTest(TestAdminVersionRemove())
     suite.addTest(TestAdminVersionRemoveMulti())
     suite.addTest(TestAdminVersionNonRemoval())
