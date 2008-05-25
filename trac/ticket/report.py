@@ -44,7 +44,7 @@ class ReportModule(Component):
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
                IWikiSyntaxProvider)
 
-    items_per_page = IntOption('report', 'items_per_page', 10000,
+    items_per_page = IntOption('report', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket reports,
         by default (''since 0.11'')""")
 
