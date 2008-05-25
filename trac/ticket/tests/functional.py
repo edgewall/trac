@@ -263,6 +263,22 @@ class TestAdminMilestoneNonRemoval(FunctionalTwillTestCaseSetup):
         tc.find('No milestone selected')
 
 
+class TestAdminMilestoneDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin set default milestone"""
+        name = "DefaultMilestone"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'default', name)
+        tc.submit('apply')
+        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
+                name)
+        # verify it is the default on the newticket page.
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected">%s</option>' % name)
+
+
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create priority"""
@@ -914,6 +930,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneRemove())
     suite.addTest(TestAdminMilestoneRemoveMulti())
     suite.addTest(TestAdminMilestoneNonRemoval())
+    suite.addTest(TestAdminMilestoneDefault())
     suite.addTest(TestAdminPriority())
     suite.addTest(TestAdminPriorityModify())
     suite.addTest(TestAdminPriorityRemove())
