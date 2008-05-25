@@ -487,7 +487,11 @@ def content_disposition(type, filename=None):
     return type + '; filename=' + quote(filename, safe='')
 
 def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    """s -> (s0,s1), (s1,s2), (s2, s3), ...
+
+    :deprecated: since 0.11 (if this really needs to be used, rewrite it
+                             without izip)
+    """
     a, b = tee(iterable)
     try:
         b.next()
