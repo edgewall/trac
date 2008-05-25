@@ -266,11 +266,12 @@ class VersionAdminPanel(TicketAdminPanel):
                                           name=name))
                          
                 # Remove versions
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
                         raise TracError(_('No version selected'))
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         ver = model.Version(self.env, name, db=db)

@@ -461,6 +461,65 @@ class TestAdminVersionDetailTime(FunctionalTwillTestCaseSetup):
         tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"' % name, 's')
 
 
+class TestAdminVersionRemove(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove version"""
+        name = "VersionRemove"
+        self._tester.create_version(name)
+        version_url = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_url)
+        tc.formvalue('version_table', 'sel', name)
+        tc.submit('remove')
+        tc.url(version_url + '$')
+        tc.notfind(name)
+
+
+class TestAdminVersionRemoveMulti(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove multiple versions"""
+        name = "MultiRemoveVersion"
+        count = 3
+        for i in range(count):
+            self._tester.create_version("%s%s" % (name, i))
+        version_url = self._tester.url + '/admin/ticket/versions'
+        tc.go(version_url)
+        tc.url(version_url + '$')
+        for i in range(count):
+            tc.find("%s%s" % (name, i))
+        for i in range(count):
+            tc.formvalue('version_table', 'sel', "%s%s" % (name, i))
+        tc.submit('remove')
+        tc.url(version_url + '$')
+        for i in range(count):
+            tc.notfind("%s%s" % (name, i))
+
+
+class TestAdminVersionNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected version"""
+        version_url = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_url)
+        tc.formvalue('version_table', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No version selected')
+
+
+class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin set default version"""
+        name = "DefaultVersion"
+        self._tester.create_version(name)
+        version_url = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_url)
+        tc.formvalue('version_table', 'default', name)
+        tc.submit('apply')
+        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
+                name)
+        # verify it is the default on the newticket page.
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected">%s</option>' % name)
+
+
 class TestNewReport(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a new report"""
@@ -946,6 +1005,10 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersionDuplicates())
     suite.addTest(TestAdminVersionDetail())
     suite.addTest(TestAdminVersionDetailTime())
+    suite.addTest(TestAdminVersionRemove())
+    suite.addTest(TestAdminVersionRemoveMulti())
+    suite.addTest(TestAdminVersionNonRemoval())
+    suite.addTest(TestAdminVersionDefault())
     suite.addTest(TestNewReport())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
