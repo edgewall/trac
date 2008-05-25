@@ -419,6 +419,22 @@ class TestAdminVersionDetail(FunctionalTwillTestCaseSetup):
         tc.find(desc)
 
 
+class TestAdminVersionDetailTime(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin version detail set time"""
+        name = "DetailTimeVersion"
+        self._tester.create_version(name)
+        version_admin = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_admin)
+        tc.url(version_admin)
+        tc.follow(name)
+
+        tc.formvalue('modifyversion', 'time', '')
+        tc.submit('save')
+        tc.url(version_admin + '$')
+        tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"' % name, 's')
+
+
 class TestNewReport(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a new report"""
@@ -901,6 +917,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminVersion())
     suite.addTest(TestAdminVersionDuplicates())
     suite.addTest(TestAdminVersionDetail())
+    suite.addTest(TestAdminVersionDetailTime())
     suite.addTest(TestNewReport())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())
