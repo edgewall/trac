@@ -185,11 +185,12 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                           name=name))
 
                 # Remove milestone
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
                         raise TracError(_('No milestone selected'))
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         mil = model.Milestone(self.env, name, db=db)
