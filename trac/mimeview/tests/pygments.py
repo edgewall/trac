@@ -53,8 +53,8 @@ class PygmentsRendererTestCase(unittest.TestCase):
     def _test(self, expected_id, result):
         expected = str(self._expected(expected_id))
         result = str(result)
-        print "\nE: " + repr(expected)
-        print "\nR: " + repr(result)
+        #print "\nE: " + repr(expected)
+        #print "\nR: " + repr(result)
         expected, result = expected.splitlines(), result.splitlines()
         for exp, res in zip(expected, result):
             self.assertEquals(exp, res)
