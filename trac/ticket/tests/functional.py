@@ -1054,6 +1054,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminPriorityRemoveMulti())
     suite.addTest(TestAdminPriorityNonRemoval())
     suite.addTest(TestAdminPriorityDefault())
+    suite.addTest(TestAdminPriorityDetail())
     suite.addTest(TestAdminResolution())
     suite.addTest(TestAdminResolutionDuplicates())
     suite.addTest(TestAdminSeverity())
