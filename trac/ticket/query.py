@@ -171,6 +171,9 @@ class Query(object):
     def get_columns(self):
         if not self.cols:
             self.cols = self.get_default_columns()
+        if not 'id' in self.cols:
+            # make sure 'id' is always present (needed for permission checks)
+            self.cols.insert(0, 'id')        
         return self.cols
 
     def get_all_textareas(self):
@@ -279,15 +282,18 @@ class Query(object):
             fields += [f for f in self.fields if f['name'] == column] or [None]
         results = []
 
+        column_indices = range(len(columns))
         for row in cursor:
-            id = int(row[0])
-            result = {'id': id, 'href': req.href.ticket(id)}
-            for i in range(1, len(columns)):
+            result = {}
+            for i in column_indices:
                 name, field, val = columns[i], fields[i], row[i]
                 if name == self.group:
                     val = val or 'None'
                 elif name == 'reporter':
                     val = val or 'anonymous'
+                elif name == 'id':
+                    val = int(val)
+                    result['href'] = req.href.ticket(val)
                 elif val is None:
                     val = '--'
                 elif name in ('changetime', 'time'):
