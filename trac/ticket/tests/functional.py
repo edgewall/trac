@@ -220,6 +220,39 @@ class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
         tc.find(name)
 
 
+class TestAdminMilestoneRemove(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove milestone"""
+        name = "MilestoneRemove"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'sel', name)
+        tc.submit('remove')
+        tc.url(milestone_url + '$')
+        tc.notfind(name)
+
+
+class TestAdminMilestoneRemoveMulti(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove multiple milestones"""
+        name = "MultiRemoveMilestone"
+        count = 3
+        for i in range(count):
+            self._tester.create_milestone("%s%s" % (name, i))
+        milestone_url = self._tester.url + '/admin/ticket/milestones'
+        tc.go(milestone_url)
+        tc.url(milestone_url + '$')
+        for i in range(count):
+            tc.find("%s%s" % (name, i))
+        for i in range(count):
+            tc.formvalue('milestone_table', 'sel', "%s%s" % (name, i))
+        tc.submit('remove')
+        tc.url(milestone_url + '$')
+        for i in range(count):
+            tc.notfind("%s%s" % (name, i))
+
+
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create priority"""
@@ -852,6 +885,8 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneDetailDue())
     suite.addTest(TestAdminMilestoneCompleted())
     suite.addTest(TestAdminMilestoneCompletedFuture())
+    suite.addTest(TestAdminMilestoneRemove())
+    suite.addTest(TestAdminMilestoneRemoveMulti())
     suite.addTest(TestAdminPriority())
     suite.addTest(TestAdminPriorityModify())
     suite.addTest(TestAdminPriorityRemove())
