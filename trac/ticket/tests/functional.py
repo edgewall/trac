@@ -253,6 +253,16 @@ class TestAdminMilestoneRemoveMulti(FunctionalTwillTestCaseSetup):
             tc.notfind("%s%s" % (name, i))
 
 
+class TestAdminMilestoneNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected milestone"""
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No milestone selected')
+
+
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create priority"""
@@ -903,6 +913,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminMilestoneCompletedFuture())
     suite.addTest(TestAdminMilestoneRemove())
     suite.addTest(TestAdminMilestoneRemoveMulti())
+    suite.addTest(TestAdminMilestoneNonRemoval())
     suite.addTest(TestAdminPriority())
     suite.addTest(TestAdminPriorityModify())
     suite.addTest(TestAdminPriorityRemove())
