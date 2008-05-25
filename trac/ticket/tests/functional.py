@@ -345,6 +345,16 @@ class TestAdminPriorityRemoveMulti(FunctionalTwillTestCaseSetup):
             tc.notfind("%s%s" % (name, i))
 
 
+class TestAdminPriorityNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected priority"""
+        priority_url = self._tester.url + "/admin/ticket/priority"
+        tc.go(priority_url)
+        tc.formvalue('enumtable', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No priority selected')
+
+
 class TestAdminPriorityDefault(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin default priority"""
@@ -994,6 +1004,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminPriorityModify())
     suite.addTest(TestAdminPriorityRemove())
     suite.addTest(TestAdminPriorityRemoveMulti())
+    suite.addTest(TestAdminPriorityNonRemoval())
     suite.addTest(TestAdminPriorityDefault())
     suite.addTest(TestAdminResolution())
     suite.addTest(TestAdminResolutionDuplicates())

@@ -346,11 +346,12 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                           type=self._type.title(), name=name))
                          
                 # Remove enums
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError(_('No enum selected'))
+                        raise TracError(_('No %s selected') % self._type)
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         enum = self._enum_cls(self.env, name, db=db)
