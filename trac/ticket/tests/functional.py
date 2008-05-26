@@ -70,6 +70,34 @@ class TestTicketRSSFormat(FunctionalTestCaseSetup):
             raise AssertionError('RSS Feed not valid feed')
 
 
+class TestTicketSearch(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket search"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_front()
+        tc.follow('Search')
+        tc.formvalue('fullsearch', 'ticket', True)
+        tc.formvalue('fullsearch', 'q', summary)
+        tc.submit('Search')
+        tc.find('class="searchable">.*' + summary)
+        tc.notfind('No matches found')
+
+
+class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test non-ticket search"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_front()
+        tc.follow('Search')
+        tc.formvalue('fullsearch', 'ticket', False)
+        tc.formvalue('fullsearch', 'q', summary)
+        tc.submit('Search')
+        tc.notfind('class="searchable">' + summary)
+        tc.find('No matches found')
+
+
 class TestAdminComponent(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create component"""
@@ -1123,6 +1151,8 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketCSVFormat())
     suite.addTest(TestTicketTabFormat())
     suite.addTest(TestTicketRSSFormat())
+    suite.addTest(TestTicketSearch())
+    suite.addTest(TestNonTicketSearch())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
     suite.addTest(TestAdminComponentRemoval())
