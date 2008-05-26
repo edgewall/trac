@@ -3427,10 +3427,3 @@ msgstr "이 버전 삭제하기"
 msgid "Delete page"
 msgstr "페이지 삭제하기"
 
-#~ msgid "Before you do that, though, please first try"
-#~ msgstr "그렇게 하기 전에, 먼저 다음을 시도해보십시오"
-#~ msgid "searching"
-#~ msgstr "검색중"
-#~ msgid "mailing list"
-#~ msgstr "메일링 리스트"
-
