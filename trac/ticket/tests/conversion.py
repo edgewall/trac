@@ -77,7 +77,7 @@ class TicketConversionTestCase(unittest.TestCase):
   
 
   <channel>
-    <title>My Project: Ticket #1</title>
+    <title>My Project: Ticket #1: Foo</title>
     <link>http://example.org/trac.cgi/ticket/1</link>
     <description>&lt;p&gt;
 Bar
