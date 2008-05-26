@@ -160,6 +160,21 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.find(comment)
 
 
+class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket history"""
+        name = 'TestTicketHistoryDiff'
+        ticketid = self._tester.create_ticket(name)
+        self._tester.go_to_ticket(ticketid)
+        tc.formvalue
+        tc.formvalue('propertyform', 'description', random_sentence(6))
+        tc.submit('submit')
+        tc.find('description<[^>]*>\\s*modified \\(<[^>]*>diff', 's')
+        tc.follow('diff')
+        tc.find('Changes\\s*between\\s*<[^>]*>Initial Version<[^>]*>\\s*and' \
+                '\\s*<[^>]*>Version 1<[^>]*>\\s*of\\s*<[^>]*>Ticket #' , 's')
+
+
 class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket query links"""
@@ -1271,6 +1286,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketSearch())
     suite.addTest(TestNonTicketSearch())
     suite.addTest(TestTicketHistory())
+    suite.addTest(TestTicketHistoryDiff())
     suite.addTest(TestTicketQueryLinks())
     suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
