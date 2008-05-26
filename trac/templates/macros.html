@@ -44,17 +44,16 @@
   -      Each component is a link to the corresponding location in the browser.
   -->
   <py:def function="browser_path_links(path_links,rev=None)">
-    <py:for each="idx, part in enumerate(path_links)">
-      <py:with vars="first = idx == 0; last = idx == len(path_links) - 1">
-        <a class="${first and 'first' or None}"
+    <py:for each="idx, part in enumerate(path_links)"><py:with 
+        vars="first = idx == 0; last = idx == len(path_links) - 1"><a 
+          class="${classes('pathentry', first=first)}"
           title="${first and 'Go to root directory' or 'View ' + part.name}"
-          href="$part.href">$part.name</a>
-        <py:if test="not last"><span class="sep">/</span></py:if>
-      </py:with>
-    </py:for>
-    <py:if test="rev"><span class="sep">@</span>
-      <a href="${href.changeset(rev)}" title="View changeset $rev">$rev</a>
+          href="$part.href">$part.name</a><py:if 
+        test="not last"><span class="pathentry sep">/</span></py:if></py:with></py:for>
+    <py:if test="rev"><span class="pathentry sep">@</span>
+      <a class="pathentry" href="${href.changeset(rev)}" title="View changeset $rev">$rev</a>
     </py:if>
+    <br style="clear: both" />
   </py:def>
 
   <!--! Add Previous/Up/Next navigation links

@@ -82,13 +82,18 @@
         data: qargs,
         dataType: "html",
         success: function(data) {
-          var rows = $(data.replace(/^<!DOCTYPE[^>]+>/, "")).filter("tr");
+          // Safari 3.1.1 has some trouble reconstructing HTML snippets
+          // bigger than 50k - splitting in rows before building DOM nodes
+          var rows = data.replace(/^<!DOCTYPE[^>]+>/, "").split("</tr>");
           if (rows.length) {
             // insert entry rows 
-            rows.children("td."+td_class).css("padding-left", depth);
-            // make all entry rows collapsible but only subdir rows expandable
-            enableExpandDir(tr, rows, qargs); 
-            tr.after(rows);
+            $(rows).each(function() {
+              row = $(this+"</tr>");
+              row.children("td."+td_class).css("padding-left", depth);
+              // make all entry rows collapsible but only subdir rows expandable
+              enableExpandDir(tr, row, qargs); 
+              loading_row.before(row);
+            });
             // remove "Loading ..." row
             loading_row.remove();
           } else {

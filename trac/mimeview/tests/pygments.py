@@ -46,11 +46,15 @@ class PygmentsRendererTestCase(unittest.TestCase):
         self.pygments_html = Stream(list(HTMLParser(pygments_html)))
 
     def _expected(self, expected_id):
-        return self.pygments_html.select('//div[@id="%s"]/*' % expected_id)
+        return self.pygments_html.select(
+            '//div[@id="%s"]/*|//div[@id="%s"]/text())' % 
+            (expected_id, expected_id))
 
     def _test(self, expected_id, result):
         expected = str(self._expected(expected_id))
         result = str(result)
+        #print "\nE: " + repr(expected)
+        #print "\nR: " + repr(result)
         expected, result = expected.splitlines(), result.splitlines()
         for exp, res in zip(expected, result):
             self.assertEquals(exp, res)

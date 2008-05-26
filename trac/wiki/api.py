@@ -30,7 +30,7 @@ from genshi.builder import tag
 from trac.config import BoolOption
 from trac.core import *
 from trac.resource import IResourceManager
-from trac.util import reversed, pairwise
+from trac.util import reversed
 from trac.util.html import html
 from trac.util.translation import _
 from trac.wiki.parser import WikiParser
@@ -267,24 +267,10 @@ class WikiSystem(Component):
             r"(?=:(?:\Z|\s)|[^:a-zA-Z]|\s|\Z)" # what should follow it
             )
 
-        def check_unicode_camelcase(pagename):
-            if not pagename[0].isupper():
-                return False
-            pagename = pagename.split('@', 1)[0].split('#', 1)[0]
-            if not pagename[-1].islower():
-                return False
-            humps = 0
-            for a, b in pairwise(pagename):
-                if a.isupper():
-                    if b.islower():
-                        humps += 1
-                    else:
-                        return False
-            return humps > 1
         
         # Regular WikiPageNames
         def wikipagename_link(formatter, match, fullmatch):
-            if not check_unicode_camelcase(match):
+            if not _check_unicode_camelcase(match):
                 return match
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
@@ -296,7 +282,7 @@ class WikiSystem(Component):
         # [WikiPageNames with label]
         def wikipagename_with_label_link(formatter, match, fullmatch):
             page, label = match[1:-1].split(' ', 1)
-            if not check_unicode_camelcase(page):
+            if not _check_unicode_camelcase(page):
                 return label
             return self._format_link(formatter, 'wiki', page, label.strip(),
                                      self.ignore_missing_pages)
@@ -363,3 +349,31 @@ class WikiSystem(Component):
         'Wiki Start'
         """
         return self.format_page_name(resource.id)
+
+
+def _check_unicode_camelcase(pagename):
+    """A camelcase word must have at least 2 humps (well...)
+
+    >>> _check_unicode_camelcase(u"\xc9l\xe9phant")
+    False
+    >>> _check_unicode_camelcase(u"\xc9l\xe9Phant")
+    True
+    >>> _check_unicode_camelcase(u"\xe9l\xe9Phant")
+    False
+    >>> _check_unicode_camelcase(u"\xc9l\xe9PhanT")
+    False
+    """
+    if not pagename[0].isupper():
+        return False
+    pagename = pagename.split('@', 1)[0].split('#', 1)[0]
+    if not pagename[-1].islower():
+        return False
+    humps = 0
+    for i in xrange(1, len(pagename)):
+        if pagename[i-1].isupper():
+            if pagename[i].islower():
+                humps += 1
+            else:
+                return False
+    return humps > 1
+

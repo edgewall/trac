@@ -53,6 +53,7 @@ except NameError:
             lst = reversed(lst)
         return [i[-1] for i in lst]
 
+# Note: not used, suggest to remove in 0.12
 try:
     from operator import attrgetter, itemgetter
 except ImportError:
@@ -90,6 +91,8 @@ try:
 except ImportError:
     groupby = py_groupby
 
+# Note: only used by pairwise, which is now deprecated
+#       (suggest to remove it from 0.12 as well)
 try:
     from itertools import tee
 except ImportError:

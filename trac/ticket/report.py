@@ -19,7 +19,6 @@
 import csv
 import re
 from StringIO import StringIO
-from itertools import izip
 
 from genshi.builder import tag
 
@@ -547,23 +546,19 @@ class ReportModule(Component):
             self.env.log.debug("Colnum Names %s, Sort column %s" %
                                (str(cols), sort_col))
             order_cols = []
-            try:
-                group_idx = cols.index('__group__')
-                order_cols.append(str(group_idx))
-            except ValueError:
-                pass
+            if '__group__' in cols:
+                order_cols.append('__group__')
 
             if sort_col:
-                try:
-                    sort_idx = cols.index(sort_col) + 1
-                    order_cols.append(str(sort_idx))
-                except ValueError:
+                if sort_col in cols:
+                    order_cols.append(sort_col)
+                else:
                     raise TracError(_('Query parameter "sort=%(sort_col)s" '
                                       ' is invalid', sort_col=sort_col))
 
             # The report-query results is obtained
             asc_str = ['DESC', 'ASC']
-            asc_idx = int(req.args.get('asc','0'))
+            asc_idx = int(req.args.get('asc','1'))
             order_by = ''
             if len(order_cols) != 0:
                 dlmt = ", "
@@ -666,8 +661,10 @@ class ReportModule(Component):
         writer = csv.writer(req, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
         for row in rows:
-            writer.writerow([f(v).encode('utf-8') for f,v
-                             in izip(converters, row)])
+            row = list(row)
+            for i in xrange(len(row)):
+                row[i] = converters[i](row[i]).encode('utf-8')
+            writer.writerow(row)
 
         raise RequestDone
 

@@ -490,6 +490,9 @@ def pairwise(iterable):
     """
     >>> list(pairwise([0, 1, 2, 3]))
     [(0, 1), (1, 2), (2, 3)]
+
+    :deprecated: since 0.11 (if this really needs to be used, rewrite it
+                             without izip)
     """
     a, b = tee(iterable)
     try:
