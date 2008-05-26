@@ -332,9 +332,8 @@ msgstr "詳細:"
 #: trac/admin/templates/admin_milestones.html:124
 #: trac/admin/templates/admin_plugins.html:102
 #: trac/admin/templates/admin_versions.html:94
-#, fuzzy
 msgid "Apply changes"
-msgstr "変更を保存"
+msgstr "変更を適用"
 
 #: trac/admin/templates/admin_components.html:10
 msgid "Components"
@@ -379,7 +378,7 @@ msgstr "取り消し"
 #: trac/admin/templates/admin_milestones.html:66
 #: trac/admin/templates/admin_versions.html:46
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
@@ -393,7 +392,7 @@ msgstr "コンポーネントの追加"
 #: trac/admin/templates/admin_perms.html:66
 #: trac/admin/templates/admin_versions.html:67
 msgid "Add"
-msgstr "追加:"
+msgstr "追加"
 
 #: trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:47
@@ -420,7 +419,7 @@ msgstr "規定値"
 #: trac/admin/templates/admin_perms.html:93
 #: trac/admin/templates/admin_versions.html:93
 msgid "Remove selected items"
-msgstr ""
+msgstr "選択した項目を削除"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
@@ -705,7 +704,7 @@ msgid "Database already exists at %(path)s"
 msgstr ""
 
 #: trac/db/sqlite_backend.py:159
-#, fuzzy, python-format
+#, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
@@ -782,7 +781,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
-msgstr "変更を保存"
+msgstr "保存"
 
 #: trac/prefs/templates/prefs_advanced.html:14
 msgid "Session key:"
@@ -865,11 +864,10 @@ msgid ""
 msgstr "※ 世界標準時(UTC)はグリニッジ標準時(GMT)としても知られています。"
 
 #: trac/prefs/templates/prefs_datetime.html:36
-#, fuzzy
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
-msgstr "正のオフセット時間はグリニッジより東方の地域で使用され、世界標準時に対しての進み時間です。"
+msgstr ""
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1146,9 +1144,8 @@ msgid "Replace existing attachment of the same name"
 msgstr "同名の添付ファイルを置き換える"
 
 #: trac/templates/attachment.html:48
-#, fuzzy
 msgid "Add attachment"
-msgstr "添付ファイルの追加: "
+msgstr "添付ファイルを登録"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
@@ -1317,9 +1314,8 @@ msgstr ""
 "{{{"
 
 #: trac/templates/error.html:84
-#, fuzzy
 msgid "Create"
-msgstr "作成されました"
+msgstr ""
 
 #: trac/templates/error.html:99
 msgid "Oops…"
@@ -1463,9 +1459,8 @@ msgstr "更新履歴:"
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:163
-#, fuzzy
 msgid "View changes"
-msgstr "変更を保存"
+msgstr "diff 表示"
 
 #: trac/templates/history_view.html:22
 msgid "Change history"
@@ -1554,9 +1549,8 @@ msgstr "空白文字の変更"
 #: trac/ticket/templates/query.html:183 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
-#, fuzzy
 msgid "Update"
-msgstr "遅れ"
+msgstr "更新"
 
 #: trac/templates/macros.html:139 trac/templates/macros.html:152
 msgid "HTML preview not available"
@@ -1657,9 +1651,9 @@ msgid "Notices:"
 msgstr ""
 
 #: trac/ticket/admin.py:87
-#, fuzzy, python-format
+#, python-format
 msgid "Component %(name)s already exists."
-msgstr "プラグイン %(name)s は既にインストール済みです"
+msgstr "コンポーネント %(name)s はすでに登録されています。"
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
@@ -1674,27 +1668,27 @@ msgid "Invalid Completion Date"
 msgstr ""
 
 #: trac/ticket/admin.py:183
-#, fuzzy, python-format
+#, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "プラグイン %(name)s は既にインストール済みです"
+msgstr "マイルストーン %(name)s はすでに登録されています。"
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
 msgstr ""
 
 #: trac/ticket/admin.py:263
-#, fuzzy, python-format
+#, python-format
 msgid "Version %(name)s already exists."
-msgstr "プラグイン %(name)s は既にインストール済みです"
+msgstr "プラグイン %(name)s はすでにインストールされています。"
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
 msgstr ""
 
 #: trac/ticket/admin.py:343
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr ""
+msgstr "%(type)s %(name)s はすでに登録されています。"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
@@ -1727,27 +1721,27 @@ msgid "The owner will change"
 msgstr "担当者を変更します"
 
 #: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
-#, fuzzy, python-format
+#, python-format
 msgid "The owner will change to %(name)s"
-msgstr ""
+msgstr "担当者を %(name)s に変更します"
 
 #: trac/ticket/default_workflow.py:254
 msgid "to "
 msgstr ""
 
 #: trac/ticket/default_workflow.py:273
-#, fuzzy, python-format
+#, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr ""
+msgstr "解決方法を %(name)s に設定します"
 
 #: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
 msgstr "解決方法が設定されます"
 
 #: trac/ticket/default_workflow.py:288
-#, fuzzy, python-format
+#, python-format
 msgid "Next status will be '%(name)s'"
-msgstr ""
+msgstr "次のステータスは '%(name)s' です"
 
 #: trac/ticket/model.py:361
 #, python-format
@@ -1883,7 +1877,7 @@ msgstr "レポートの実行に失敗しました: %(error)s"
 
 #: trac/ticket/report.py:234
 msgid "This is a list of available reports."
-msgstr "これは定義済みのレポートの一覧です。"
+msgstr "利用可能なレポートの一覧です。"
 
 #: trac/ticket/report.py:259
 #, python-format
@@ -2049,9 +2043,8 @@ msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "チケットのフィールド '%(field)s' の内容が不正です: %(message)s"
 
 #: trac/ticket/web_ui.py:1036
-#, fuzzy
 msgid "Assign to"
-msgstr "割り当てる"
+msgstr "担当者"
 
 #: trac/ticket/web_ui.py:1052
 msgid "Open"
@@ -2092,7 +2085,7 @@ msgstr "更新"
 #: trac/ticket/templates/milestone_delete.html:9
 #: trac/ticket/templates/milestone_delete.html:21
 msgid "Delete Milestone"
-msgstr "マイルストーンの削除:"
+msgstr "マイルストーンを削除"
 
 #: trac/ticket/templates/milestone_delete.html:25
 msgid "Are you sure you want to delete this milestone?"
@@ -2104,9 +2097,8 @@ msgstr "このマイルストーンに属するチケットを次のものに割
 
 #: trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_view.html:91
-#, fuzzy
 msgid "Delete milestone"
-msgstr "マイルストーンの削除:"
+msgstr "マイルストーンを削除"
 
 #: trac/ticket/templates/milestone_delete.html:39
 #: trac/ticket/templates/milestone_edit.html:96
@@ -2124,12 +2116,12 @@ msgstr "を参照してください。"
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
 msgid "Edit Milestone"
-msgstr "マイルストーンの編集"
+msgstr "マイルストーンを編集"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
 msgid "New Milestone"
-msgstr "マイルストーンの作成"
+msgstr "マイルストーンの登録"
 
 #: trac/ticket/templates/milestone_edit.html:45
 msgid "Name of the milestone:"
@@ -2146,14 +2138,12 @@ msgstr "このマイルストーンに属するクローズされていないチ
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
-#, fuzzy
 msgid "Submit changes"
-msgstr "チケットの更新"
+msgstr "変更を適用"
 
 #: trac/ticket/templates/milestone_edit.html:90
-#, fuzzy
 msgid "Add milestone"
-msgstr "マイルストーンの追加"
+msgstr "登録"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2199,7 +2189,6 @@ msgid "(none)"
 msgstr ""
 
 #: trac/ticket/templates/milestone_view.html:87
-#, fuzzy
 msgid "Edit milestone"
 msgstr "マイルストーンの編集"
 
@@ -2242,14 +2231,12 @@ msgid "Max items per page"
 msgstr ""
 
 #: trac/ticket/templates/query.html:218
-#, fuzzy
 msgid "Edit query"
-msgstr "query:"
+msgstr "このクエリを編集"
 
 #: trac/ticket/templates/query.html:226
-#, fuzzy
 msgid "Save query"
-msgstr "query:"
+msgstr "このクエリを保存"
 
 #: trac/ticket/templates/query.html:226
 #, python-format
@@ -2261,9 +2248,8 @@ msgid "Create new report from current query"
 msgstr ""
 
 #: trac/ticket/templates/query.html:235
-#, fuzzy
 msgid "Delete query"
-msgstr "削除"
+msgstr "このクエリを削除"
 
 #: trac/ticket/templates/query.html:242
 #: trac/ticket/templates/report_edit.html:36
@@ -2297,9 +2283,8 @@ msgstr "このレポートを本当に削除しますか？"
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
-#, fuzzy
 msgid "Delete report"
-msgstr "レポートを表示する"
+msgstr "このレポートを削除"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
@@ -2342,23 +2327,20 @@ msgid "expression)"
 msgstr "表記が使用可能)"
 
 #: trac/ticket/templates/report_edit.html:41
-#, fuzzy
 msgid "Save report"
-msgstr "レポートを表示する"
+msgstr "保存"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
 msgstr "件が該当)"
 
 #: trac/ticket/templates/report_view.html:27
-#, fuzzy
 msgid "Edit report"
-msgstr "レポートを表示する"
+msgstr "このレポートを編集"
 
 #: trac/ticket/templates/report_view.html:33
-#, fuzzy
 msgid "Copy report"
-msgstr "レポートを表示する"
+msgstr "このレポートをコピー"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
@@ -2366,7 +2348,6 @@ msgid "View report"
 msgstr "レポートを表示する"
 
 #: trac/ticket/templates/report_view.html:160
-#, fuzzy
 msgid "Create new report"
 msgstr "新しいレポートの作成"
 
@@ -2385,9 +2366,8 @@ msgid ""
 msgstr "前 ("
 
 #: trac/ticket/templates/roadmap.html:67
-#, fuzzy
 msgid "Add new milestone"
-msgstr "マイルストーンの作成"
+msgstr "新しいマイルストーンの登録"
 
 #: trac/ticket/templates/ticket.html:59
 #: trac/versioncontrol/templates/changeset.html:128
@@ -2516,12 +2496,11 @@ msgstr "報告者:"
 
 #: trac/ticket/templates/ticket.html:371
 msgid "I have files to attach to this ticket"
-msgstr "添付するファイルがある"
+msgstr "このチケットにファイルを添付します"
 
 #: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:124
-#, fuzzy
 msgid "Preview"
-msgstr "表示例:"
+msgstr "プレビュー"
 
 #: trac/ticket/templates/ticket.html:390
 msgid "TracTickets"
@@ -2694,9 +2673,8 @@ msgid "Visit:"
 msgstr "ジャンプ:"
 
 #: trac/versioncontrol/templates/browser.html:63
-#, fuzzy
 msgid "Go!"
-msgstr "前に作成"
+msgstr "移動"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Jump to the chosen preselected path"
@@ -2739,9 +2717,8 @@ msgid "for help on using the browser."
 msgstr "を参照してください。"
 
 #: trac/versioncontrol/templates/browser.html:153
-#, fuzzy
 msgid "View changes..."
-msgstr "変更を保存"
+msgstr "変更箇所を見る..."
 
 #: trac/versioncontrol/templates/browser.html:153
 msgid "Select paths and revs for Diff"
@@ -3087,7 +3064,7 @@ msgstr "古いリビジョン"
 #: trac/web/auth.py:89
 #, python-format
 msgid "logged in as %(user)s"
-msgstr ""
+msgstr "%(user)s としてログイン中"
 
 #: trac/web/auth.py:92
 msgid "Logout"
@@ -3100,17 +3077,17 @@ msgstr "ログイン"
 #: trac/web/auth.py:137
 #, python-format
 msgid "Already logged in as %(user)s."
-msgstr ""
+msgstr "すでに %(user)s としてログイン中です。"
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
-#, fuzzy, python-format
+#, python-format
 msgid "Previous %(label)s"
-msgstr "前の%(label)s"
+msgstr "前の %(label)s"
 
 #: trac/web/chrome.py:180 trac/web/chrome.py:187
-#, fuzzy, python-format
+#, python-format
 msgid "Next %(label)s"
-msgstr "次の%(label)s"
+msgstr "次の %(label)s"
 
 #: trac/wiki/api.py:339
 msgid "no permission to view this wiki page"
@@ -3260,9 +3237,8 @@ msgstr ""
 "再度最新のバージョンを編集し直して下さい。"
 
 #: trac/wiki/templates/wiki_edit.html:39
-#, fuzzy
 msgid "Someone else modified that page since you started your edits."
-msgstr "ページはあなたが編集を始めた時より後に他の人により更新されています。"
+msgstr "あなたが編集中に、他の人がこのページの更新を行ないました。"
 
 #: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"
@@ -3307,17 +3283,15 @@ msgstr "このページは書き込み禁止です"
 #: trac/wiki/templates/wiki_edit.html:125
 #, fuzzy
 msgid "Merge changes"
-msgstr "変更を保存"
+msgstr "マージする"
 
 #: trac/wiki/templates/wiki_edit.html:129
-#, fuzzy
 msgid "Preview Page"
-msgstr "プレビュー ("
+msgstr "プレビュー"
 
 #: trac/wiki/templates/wiki_edit.html:130
-#, fuzzy
 msgid "Review Changes"
-msgstr "変更を保存"
+msgstr "diff を表示"
 
 #: trac/wiki/templates/wiki_view.html:39
 msgid "Describe"
@@ -3345,7 +3319,7 @@ msgstr "(空のページ)"
 
 #: trac/wiki/templates/wiki_view.html:84
 msgid "Delete this version"
-msgstr "このバージョンの削除"
+msgstr "このバージョンを削除"
 
 #: trac/wiki/templates/wiki_view.html:86
 msgid "Delete page"
