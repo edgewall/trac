@@ -19,6 +19,22 @@ class TestTickets(FunctionalTwillTestCaseSetup):
         self._tester.attach_file_to_ticket(ticketid)
 
 
+class TestTicketPreview(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Preview ticket creation"""
+        self._tester.go_to_front()
+        tc.follow('New Ticket')
+        summary = random_sentence(5)
+        desc = random_sentence(5)
+        tc.formvalue('propertyform', 'field-summary', summary)
+        tc.formvalue('propertyform', 'field-description', desc)
+        tc.submit('preview')
+        tc.url(self._tester.url + '/newticket$')
+        tc.find('ticket not yet created')
+        tc.find(summary)
+        tc.find(desc)
+
+
 class TestTicketAltFormats(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in alternative formats"""
@@ -1165,6 +1181,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestTickets())
+    suite.addTest(TestTicketPreview())
     suite.addTest(TestTicketAltFormats())
     suite.addTest(TestTicketCSVFormat())
     suite.addTest(TestTicketTabFormat())
