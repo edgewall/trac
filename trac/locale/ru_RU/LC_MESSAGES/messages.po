@@ -107,7 +107,7 @@ msgstr "Простой текст"
 
 #: trac/attachment.py:670 trac/versioncontrol/web_ui/browser.py:516
 msgid "Original Format"
-msgstr "Исзодный формат"
+msgstr "Исходный формат"
 
 #: trac/env.py:398
 msgid "Can only backup sqlite databases"
@@ -204,7 +204,7 @@ msgstr "Неизвестная панель администрирования"
 #: trac/admin/web_ui.py:373 trac/prefs/web_ui.py:89
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
-msgstr "Без ограничений"
+msgstr "Общие"
 
 #: trac/admin/web_ui.py:180 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
@@ -778,7 +778,7 @@ msgstr "Горячие клавиши"
 #: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
 #, fuzzy
 msgid "Language"
-msgstr "Управлять"
+msgstr "Язык"
 
 #: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
@@ -1865,7 +1865,7 @@ msgstr "Текст, разделенный табуляцией"
 #: trac/ticket/query.py:735 trac/ticket/report.py:63
 #, fuzzy
 msgid "View Tickets"
-msgstr "Смотреть Карточки"
+msgstr "Смотреть карточки"
 
 #: trac/ticket/query.py:886 trac/ticket/query.py:897 trac/ticket/report.py:121
 msgid "Custom Query"
@@ -2060,11 +2060,11 @@ msgstr "Нет прав для изменения полей карточки."
 
 #: trac/ticket/web_ui.py:859
 msgid "No permissions to change ticket fields."
-msgstr "Нет прав для изменения полей карточки."
+msgstr "Недостаточно прав для изменения полей карточки."
 
 #: trac/ticket/web_ui.py:868
 msgid "No permissions to add a comment."
-msgstr "Не хватает прав для добавления комментария."
+msgstr "Недостаточно прав для добавления комментария."
 
 #: trac/ticket/web_ui.py:874
 msgid ""
@@ -2373,7 +2373,7 @@ msgstr "Описание: (можно использовать [1:WikiFormatting
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
-msgstr "Ощибка:"
+msgstr "Ошибка:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "Query for Report: (can be either SQL or, if starting with"
@@ -2561,7 +2561,7 @@ msgstr "Свойства"
 
 #: trac/ticket/templates/ticket.html:276
 msgid "Summary:"
-msgstr "Описание:"
+msgstr "Краткое описание:"
 
 #: trac/ticket/templates/ticket.html:284
 msgid "Reporter:"
@@ -3281,7 +3281,7 @@ msgstr "История"
 
 #: trac/wiki/web_ui.py:541
 msgid "Wiki changes"
-msgstr "Изменения в Вике"
+msgstr "Изменения в Вики"
 
 #: trac/wiki/templates/wiki_delete.html:22
 msgid "Delete"
