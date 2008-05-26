@@ -133,6 +133,41 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
         tc.find(comment)
 
 
+class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket query links"""
+        count = 3
+        ticket_ids = [self._tester.create_ticket(
+                        summary='TestTicketQueryLinks%s' % i)
+                      for i in range(count)]
+        self._tester.go_to_query()
+        # We don't have the luxury of javascript, so this is a multi-step
+        # process
+        tc.formvalue('query', 'add_filter', 'summary')
+        tc.submit('add')
+        tc.formvalue('query', 'owner', 'nothing')
+        tc.submit('rm_filter_owner_0')
+        tc.formvalue('query', 'summary', 'TestTicketQueryLinks')
+        tc.submit('update')
+        query_url = b.get_url()
+        for i in range(count):
+            tc.find('TestTicketQueryLinks%s' % i)
+
+        tc.follow('TestTicketQueryLinks0')
+        tc.find('class="missing">&larr; Previous Ticket')
+        tc.find('title="Ticket #%s">Next Ticket' % ticket_ids[1])
+        tc.follow('Back to Query')
+        tc.url(re.escape(query_url))
+
+        tc.follow('TestTicketQueryLinks1')
+        tc.find('title="Ticket #%s">Previous Ticket' % ticket_ids[0])
+        tc.find('title="Ticket #%s">Next Ticket' % ticket_ids[2])
+        tc.follow('Next Ticket')
+
+        tc.find('title="Ticket #%s">Previous Ticket' % ticket_ids[1])
+        tc.find('class="missing">Next Ticket &rarr;')
+
+
 class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket details on timeline"""
@@ -1208,6 +1243,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketSearch())
     suite.addTest(TestNonTicketSearch())
     suite.addTest(TestTicketHistory())
+    suite.addTest(TestTicketQueryLinks())
     suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
