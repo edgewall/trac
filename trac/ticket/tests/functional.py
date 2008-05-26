@@ -98,6 +98,24 @@ class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
         tc.find('No matches found')
 
 
+class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket details on timeline"""
+        env = self._testenv.get_trac_environment()
+        env.config.set('timeline', 'ticket_show_details', 'yes')
+        env.config.save()
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        self._tester.add_comment(ticketid)
+        self._tester.go_to_timeline()
+        tc.formvalue('prefs', 'ticket_details', True)
+        tc.submit()
+        htmltags = '(<[^>]*>)*'
+        tc.find('Ticket ' + htmltags + '#' + str(ticketid) + htmltags + ' \\(' +
+                summary + '\\) updated\\s+by\\s+' + htmltags + 'admin', 's')
+
+
 class TestAdminComponent(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create component"""
@@ -1153,6 +1171,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketRSSFormat())
     suite.addTest(TestTicketSearch())
     suite.addTest(TestNonTicketSearch())
+    suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
     suite.addTest(TestAdminComponentRemoval())

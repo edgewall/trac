@@ -139,13 +139,16 @@ class FunctionalTester(object):
         tc.follow('\\bRoadmap\\b')
         tc.url(self.url + '/roadmap')
 
-    def add_comment(self, ticketid):
+    def add_comment(self, ticketid, comment=None):
         """Adds a comment to the given ticket ID, assumes ticket exists."""
         self.go_to_ticket(ticketid)
-        tc.formvalue('propform', 'comment', random_sentence())
+        if comment is None:
+            comment = random_sentence()
+        tc.formvalue('propform', 'comment', comment)
         tc.submit("submit")
         # Verify we're where we're supposed to be.
         tc.url(self.url + '/ticket/%s#comment:.*' % ticketid)
+        return comment
 
     def attach_file_to_ticket(self, ticketid, data=None):
         """Attaches a file to the given ticket id.  Assumes the ticket
