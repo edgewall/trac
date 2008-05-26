@@ -701,30 +701,30 @@ msgstr "Freigegeben"
 #: trac/db/api.py:97
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
-msgstr ""
+msgstr "Nicht unterstützter Datenbanktyp \"%(scheme)s\""
 
 #: trac/db/api.py:120
 msgid "Database connection string must start with scheme:/"
-msgstr ""
+msgstr "Datenbankverbindungsstring muss mit Schema beginnen:/"
 
 #: trac/db/mysql_backend.py:148
 msgid "MySQL servers older than 4.1 are not supported!"
-msgstr ""
+msgstr "MySQL Server älter als 4.1 werden nicht unterstützt!"
 
 #: trac/db/pool.py:107
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr ""
+msgstr "Konnte Datenbank nicht innerhalb von %(time)d Sekunden verbinden"
 
 #: trac/db/sqlite_backend.py:131
 #, python-format
 msgid "Database already exists at %(path)s"
-msgstr ""
+msgstr "Datenbank existiert bereits unter %(path)s"
 
 #: trac/db/sqlite_backend.py:159
-#, fuzzy, python-format
+#, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr ""
+msgstr "Datenbank \"%(path)s\" nicht gefunden."
 
 #: trac/db/sqlite_backend.py:168
 #, python-format
@@ -732,6 +732,9 @@ msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
+"Der Benutzer %(user)s benötigt Lese- _und_ Schreibzugriff auf die "
+"Datenbankdatei %(path)s und das Verzeichnis in welchem diese sich "
+"befindet."
 
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
 #, python-format
@@ -868,36 +871,40 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:28
 msgid "Example: The current time is"
-msgstr ""
+msgstr "Beispiel: Die aktuelle Zeit ist"
 
 #: trac/prefs/templates/prefs_datetime.html:29
 msgid "(UTC)."
-msgstr ""
+msgstr "(UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:30
 #: trac/prefs/templates/prefs_language.html:27
 msgid "In"
-msgstr ""
+msgstr "In"
 
 #: trac/prefs/templates/prefs_datetime.html:31
 msgid "time zone"
-msgstr ""
+msgstr "Zeitzone"
 
 #: trac/prefs/templates/prefs_datetime.html:31
 msgid ", this would be displayed as"
-msgstr ""
+msgstr ", dies würde angezeigt werden als"
 
 #: trac/prefs/templates/prefs_datetime.html:35
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
 msgstr ""
+"Hinweis: Universal Co-ordinated Time (UTC) ist auch als Greenwich Mean Time "
+"(GMT) bekannt."
 
 #: trac/prefs/templates/prefs_datetime.html:36
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
+"Ein positives Offset wird verwendet um eine Zeitzone östlich von "
+"Greenwich, also vor universeller Zeit, anzugeben."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1742,7 +1749,7 @@ msgid "No version selected"
 msgstr "Keine Version ausgewählt"
 
 #: trac/ticket/admin.py:343
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s %(name)s already exists"
 msgstr "Es gibt bereits ein %(type)s %(name)s"
 
@@ -1783,7 +1790,7 @@ msgstr "Der Besitzer wird auf %(name)s wechseln"
 
 #: trac/ticket/default_workflow.py:254
 msgid "to "
-msgstr ""
+msgstr "zu "
 
 #: trac/ticket/default_workflow.py:273
 #, python-format
@@ -1957,12 +1964,12 @@ msgstr "Report %(num)s hat keine SQL-Abfrage."
 #: trac/ticket/report.py:561
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "Abfrageparameter \"sort=%(sort_col)s\"  ist ungültig"
 
 #: trac/ticket/report.py:607
 #, python-format
 msgid "Dynamic variable '%(name)s' not defined."
-msgstr ""
+msgstr "Dynamische Variable '%(name)s' nicht definiert"
 
 #: trac/ticket/roadmap.py:213
 #, python-format
@@ -1970,6 +1977,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
+"'%(group1)s' und '%(group2)s' Meilensteingruppen sind beide als \"catch-all\" "
+"Gruppen definiert. Bitte überprüfen Sie Ihre Konfiguration."
 
 #: trac/ticket/roadmap.py:229
 #, python-format
@@ -1977,16 +1986,19 @@ msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
+"'%(groupname)s' Meilensteingruppe hat Status '%(status)s' wiederverwendet, "
+"welcher bereits von anderen Gruppen verwendet wird. Bitte überprüfen Sie Ihre "
+"Konfiguration."
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:419
 #: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
-msgstr ""
+msgstr "Fahrplan"
 
 #: trac/ticket/roadmap.py:350
 msgid "iCalendar"
-msgstr ""
+msgstr "iCalendar"
 
 #: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
@@ -2198,14 +2210,12 @@ msgstr "Zugewiesene Tickets neuansetzen auf Meilenstein"
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
-#, fuzzy
 msgid "Submit changes"
-msgstr "Ticket-Änderungen"
+msgstr "Änderungen absenden"
 
 #: trac/ticket/templates/milestone_edit.html:90
-#, fuzzy
 msgid "Add milestone"
-msgstr "Neuer Meilenstein"
+msgstr "Meilenstein hinzufügen"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2556,7 +2566,7 @@ msgstr "Zusammenfassung:"
 
 #: trac/ticket/templates/ticket.html:284
 msgid "Reporter:"
-msgstr ""
+msgstr "Ersteller:"
 
 #: trac/ticket/templates/ticket.html:371
 msgid "I have files to attach to this ticket"
@@ -3142,7 +3152,7 @@ msgstr "Ältere Versionen"
 #: trac/web/auth.py:89
 #, python-format
 msgid "logged in as %(user)s"
-msgstr ""
+msgstr "angemeldet als %(user)s"
 
 #: trac/web/auth.py:92
 msgid "Logout"
@@ -3155,44 +3165,44 @@ msgstr "Login"
 #: trac/web/auth.py:137
 #, python-format
 msgid "Already logged in as %(user)s."
-msgstr ""
+msgstr "Bereits als %(user)s angemeldet."
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, python-format
 msgid "Previous %(label)s"
-msgstr ""
+msgstr "Vorherige %(label)s"
 
 #: trac/web/chrome.py:180 trac/web/chrome.py:187
 #, python-format
 msgid "Next %(label)s"
-msgstr ""
+msgstr "Nächste %(label)s"
 
 #: trac/wiki/api.py:339
 msgid "no permission to view this wiki page"
-msgstr ""
+msgstr "keine Berechtigung um diese Wiki-Seite anzuzeigen"
 
 #: trac/wiki/formatter.py:133
 #, python-format
 msgid "HTML parsing error: %(message)s"
-msgstr ""
+msgstr "HTML-Parser-Fehler: %(message)s"
 
 #: trac/wiki/intertrac.py:51
 #, python-format
 msgid "Can't view %(link)s:"
-msgstr ""
+msgstr "Kann %(link)s nicht betrachten:"
 
 #: trac/wiki/macros.py:467
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
-msgstr ""
+msgstr "Fehler: Kann die Beschreibung für Macro %(name)s nicht lesen"
 
 #: trac/wiki/macros.py:550
 msgid "Table of Contents"
-msgstr ""
+msgstr "Inhaltsverzeichnis"
 
 #: trac/wiki/model.py:146
 msgid "Page not modified"
-msgstr ""
+msgstr "Seite nicht modifiziert"
 
 #: trac/wiki/web_ui.py:82 trac/wiki/web_ui.py:585
 msgid "Wiki"
@@ -3324,7 +3334,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:39
 msgid "Someone else modified that page since you started your edits."
-msgstr ""
+msgstr "Jemand anders hat diese Seite verändert seitdem Sie angefangen haben diese zu bearbeiten."
 
 #: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"
