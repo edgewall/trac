@@ -14,7 +14,7 @@
     <h2>Manage Versions</h2>
 
     <py:choose test="view">
-      <form py:when="'detail'" class="mod" id="modver" name="modifyversion" method="post">
+      <form py:when="'detail'" class="mod" id="modifyversion" method="post">
         <fieldset>
           <legend>Modify Version:</legend>
           <div class="field">
@@ -49,7 +49,7 @@ $version.description</textarea>
       </form>
 
       <py:otherwise>
-        <form class="addnew" id="addver" name="addversion" method="post">
+        <form class="addnew" id="addversion" method="post">
           <fieldset>
             <legend>Add Version:</legend>
             <div class="field">

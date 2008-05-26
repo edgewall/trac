@@ -59,7 +59,7 @@ $component.description</textarea>
       </form>
 
       <py:otherwise>
-        <form class="addnew" id="addcomp" name="addcomponent" method="post">
+        <form class="addnew" id="addcomponent" method="post">
           <fieldset>
             <legend>Add Component:</legend>
             <div class="field">
@@ -73,7 +73,7 @@ $component.description</textarea>
         </form>
 
         <py:choose>
-          <form py:when="components" name="component_table" method="POST">
+          <form py:when="components" id="component_table" method="POST">
             <table class="listing" id="complist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>
