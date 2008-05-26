@@ -114,6 +114,25 @@ class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
         tc.find('No matches found')
 
 
+class TestTicketHistory(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket history"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        comment = random_sentence(5)
+        self._tester.add_comment(ticketid, comment=comment)
+        self._tester.go_to_ticket(ticketid)
+        url = b.get_url()
+        tc.go(url + '?version=0')
+        tc.find('at <[^>]*>*Initial Version')
+        tc.find(summary)
+        tc.notfind(comment)
+        tc.go(url + '?version=1')
+        tc.find('at <[^>]*>*Version 1')
+        tc.find(summary)
+        tc.find(comment)
+
+
 class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket details on timeline"""
@@ -1188,6 +1207,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketRSSFormat())
     suite.addTest(TestTicketSearch())
     suite.addTest(TestNonTicketSearch())
+    suite.addTest(TestTicketHistory())
     suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
