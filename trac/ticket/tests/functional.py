@@ -80,6 +80,17 @@ class TestTicketRSSFormat(FunctionalTestCaseSetup):
         summary = random_sentence(5)
         ticketid = self._tester.create_ticket(summary)
         self._tester.go_to_ticket(ticketid)
+        # Make a number of changes to exercise all of the RSS feed code
+        self._tester.go_to_ticket(ticketid)
+        tc.formvalue('propertyform', 'comment', random_sentence(3))
+        tc.formvalue('propertyform', 'field-type', 'task')
+        tc.formvalue('propertyform', 'description', summary + '\n\n' +
+                                                    random_sentence(8))
+        tc.formvalue('propertyform', 'field-keywords', 'key')
+        tc.submit('submit')
+        tc.formvalue('propertyform', 'field-keywords', '')
+        tc.submit('submit')
+
         tc.follow('RSS Feed')
         rss = b.get_html()
         if not rss.startswith('<?xml version="1.0"?>'):
