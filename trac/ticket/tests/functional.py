@@ -35,6 +35,20 @@ class TestTicketPreview(FunctionalTwillTestCaseSetup):
         tc.find(desc)
 
 
+class TestTicketNoSummary(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Creating a ticket without summary should fail"""
+        self._tester.go_to_front()
+        tc.follow('New Ticket')
+        desc = random_sentence(5)
+        tc.formvalue('propertyform', 'field-description', desc)
+        tc.submit('submit')
+        tc.find(desc)
+        tc.find('Tickets must contain a summary.')
+        tc.find('Create New Ticket')
+        tc.find('ticket not yet created')
+
+
 class TestTicketAltFormats(FunctionalTestCaseSetup):
     def runTest(self):
         """Download ticket in alternative formats"""
@@ -88,9 +102,11 @@ class TestTicketRSSFormat(FunctionalTestCaseSetup):
                                                     random_sentence(8))
         tc.formvalue('propertyform', 'field-keywords', 'key')
         tc.submit('submit')
+        time.sleep(1) # Have to wait a second
         tc.formvalue('propertyform', 'field-keywords', '')
         tc.submit('submit')
 
+        tc.find('RSS Feed')
         tc.follow('RSS Feed')
         rss = b.get_html()
         if not rss.startswith('<?xml version="1.0"?>'):
@@ -1247,6 +1263,7 @@ def functionalSuite(suite=None):
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestTickets())
     suite.addTest(TestTicketPreview())
+    suite.addTest(TestTicketNoSummary())
     suite.addTest(TestTicketAltFormats())
     suite.addTest(TestTicketCSVFormat())
     suite.addTest(TestTicketTabFormat())
