@@ -63,6 +63,7 @@ class FunctionalTester(object):
         info['summary'] overrides summary.
         summary and description default to randomly generated values.
         """
+        self.go_to_front()
         tc.follow('New Ticket')
         tc.notfind(internal_error)
         if summary == None:

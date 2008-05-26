@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from trac.tests.functional import *
 from trac.util.datefmt import utc, format_date
 
+
 class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Create a ticket, comment on it, and attach a file"""
@@ -16,6 +17,57 @@ class TestTickets(FunctionalTwillTestCaseSetup):
         self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.attach_file_to_ticket(ticketid)
+
+
+class TestTicketAltFormats(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in alternative formats"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        for format in ['Comma-delimited Text', 'Tab-delimited Text',
+                       'RSS Feed']:
+            tc.follow(format)
+            content = b.get_html()
+            if content.find(summary) < 0:
+                raise AssertionError('Summary missing from %s format' % format)
+            tc.back()
+
+
+class TestTicketCSVFormat(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in CSV format"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        tc.follow('Comma-delimited Text')
+        csv = b.get_html()
+        if not csv.startswith('id,summary,'):
+            raise AssertionError('Bad CSV format')
+
+
+class TestTicketTabFormat(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in Tab-delimitted format"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        tc.follow('Tab-delimited Text')
+        tab = b.get_html()
+        if not tab.startswith('id\tsummary\t'):
+            raise AssertionError('Bad tab delimitted format')
+
+
+class TestTicketRSSFormat(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in RSS format"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        tc.follow('RSS Feed')
+        rss = b.get_html()
+        if not rss.startswith('<?xml version="1.0"?>'):
+            raise AssertionError('RSS Feed not valid feed')
 
 
 class TestAdminComponent(FunctionalTwillTestCaseSetup):
@@ -1067,6 +1119,10 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestTickets())
+    suite.addTest(TestTicketAltFormats())
+    suite.addTest(TestTicketCSVFormat())
+    suite.addTest(TestTicketTabFormat())
+    suite.addTest(TestTicketRSSFormat())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
     suite.addTest(TestAdminComponentRemoval())
