@@ -995,7 +995,8 @@ class OutlineFormatter(Formatter):
             if depth < min_depth or depth > max_depth:
                 continue
             if depth < curr_depth:
-                out.write('</li></ol><li>' * (curr_depth - depth))
+                out.write('</li></ol>' * (curr_depth - depth))
+                out.write("</li><li>\n")
             elif depth > curr_depth:
                 out.write('<ol><li>' * (depth - curr_depth))
             else:
