@@ -130,7 +130,9 @@ class TestTicketSearch(FunctionalTwillTestCaseSetup):
 class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test non-ticket search"""
-        summary = random_sentence(5)
+        # Create a summary containing only unique words
+        summary = ' '.join([random_word() + '_TestNonTicketSearch'
+                            for i in range(5)])
         ticketid = self._tester.create_ticket(summary)
         self._tester.go_to_front()
         tc.follow('Search')
