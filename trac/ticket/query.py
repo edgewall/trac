@@ -993,11 +993,15 @@ class TicketQueryMacro(WikiMacroBase):
     This macro accepts a comma-separated list of keyed parameters,
     in the form "key=value".
 
-    If the key is the name of a field, the value must use the same syntax as
-    for `query:` wiki links (but '''not''' the variant syntax starting with
-    "?").
+    If the key is the name of a field, the value must use the syntax 
+    of a filter specifier as defined in TracQuery#QueryLanguage.
+    Note that this is ''not'' the same as the simplified URL syntax 
+    used for `query:` links starting with a `?` character.
 
-    The optional `format` parameter determines how the list of tickets is
+    In addition to filters, several other named parameters can be used
+    to control how the results are presented. All of them are optional.
+
+    The `format` parameter determines how the list of tickets is
     presented: 
      - '''list''' -- the default presentation is to list the ticket ID next
        to the summary, with each ticket on a separate line.
@@ -1007,22 +1011,24 @@ class TicketQueryMacro(WikiMacroBase):
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
 
-    The optional `max` parameter can be used to limit the number of tickets
-    shown (defaults to '''0''', i.e. no maximum).
+    The `max` parameter can be used to limit the number of tickets shown
+    (defaults to '''0''', i.e. no maximum).
 
-    The optional `order` parameter sets the field used for ordering tickets
+    The `order` parameter sets the field used for ordering tickets
     (defaults to '''id''').
 
-    The optional `group` parameter sets the field used for grouping tickets
+    The `group` parameter sets the field used for grouping tickets
     (defaults to not being set).
 
-    The optional `groupdesc` parameter indicates whether the natural display
+    The `groupdesc` parameter indicates whether the natural display
     order of the groups should be reversed (defaults to '''false''').
 
-    The optional `verbose` parameter can be set to a true value in order to
+    The `verbose` parameter can be set to a true value in order to
     get the description for the listed tickets. For '''table''' format only.
-    ''deprecated in favor of the row parameter, which can be used to specify
-    which field should be viewed as a row, e.g. row=description''.
+    ''deprecated in favor of the `rows` parameter''
+    
+    The `rows` parameter can be used to specify which field(s) should 
+    be viewed as a row, e.g. `rows=description|summary`
 
     For compatibility with Trac 0.10, if there's a second positional parameter
     given to the macro, it will be used to specify the `format`.
