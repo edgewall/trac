@@ -546,10 +546,10 @@ class ReportModule(Component):
             self.env.log.debug("Colnum Names %s, Sort column %s" %
                                (str(cols), sort_col))
             order_cols = []
-            if '__group__' in cols:
-                order_cols.append('__group__')
-
             if sort_col:
+                if '__group__' in cols:
+                    order_cols.append('__group__')
+    
                 if sort_col in cols:
                     order_cols.append(sort_col)
                 else:
