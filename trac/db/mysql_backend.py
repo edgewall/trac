@@ -120,7 +120,8 @@ class MySQLConnector(Component):
         yield '\n'.join(sql)
 
         for index in table.indices:
-            yield 'CREATE INDEX %s_%s_idx ON %s (%s);' % (table.name,
+            unique = index.unique and 'UNIQUE' or ''
+            yield 'CREATE %s INDEX %s_%s_idx ON %s (%s);' % (unique, table.name,
                   '_'.join(index.columns), table.name,
                   self._collist(table, index.columns))
 
