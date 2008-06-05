@@ -91,7 +91,7 @@ class FunctionalTester(object):
 
     def quickjump(self, search):
         """Do a quick search to jump to a page."""
-        tc.formvalue('quicksearch', 'q', search)
+        tc.formvalue('search', 'q', search)
         tc.submit()
         tc.notfind(internal_error)
 
