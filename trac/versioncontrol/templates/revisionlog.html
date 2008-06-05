@@ -110,7 +110,7 @@
                 </tr>
 
                 <tr class="$odd_even" py:choose="">
-                  <td class="diff">
+                  <td class="diff" rowspan="${verbose and 2 or None}">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
                            checked="${idx == (len(items) - 1) or None}" />
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
@@ -144,8 +144,7 @@
                   <td colspan="6" py:otherwise="" />
                 </tr>
 
-                <tr py:if="verbose" class="summary $odd_even">
-                  <td />
+                <tr py:if="verbose" class="$odd_even verbose">
                   <td class="summary" colspan="6" py:choose="" xml:space="preserve">
                     <py:when test="wiki_format_messages">
                       ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}

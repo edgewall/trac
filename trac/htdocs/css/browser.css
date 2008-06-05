@@ -153,13 +153,13 @@ tr.diff input { padding: 0 1em; margin: 0 }
  width: 100%; 
  font-size: 85%; 
  vertical-align: middle; 
- white-space: nowrap 
+ white-space: nowrap;
 }
-#chglist tr.summary {
+#chglist tr.verbose td.summary {
  border: none;
  color: #333;
  padding: .5em 1em 1em 2em;
- white-space: normal 
+ white-space: normal;
 }
 
 #chglist td.summary * { margin-top: 0 }
