@@ -222,10 +222,16 @@ class Environment(Component, ComponentManager):
         for pattern, enabled in rules:
             if component_name == pattern or pattern.endswith('*') \
                     and component_name.startswith(pattern[:-1]):
-                # force disabling of the pre-0.11 WebAdmin plugin
+                # Disable the pre-0.11 WebAdmin plugin
+                # Please note that there's no recommendation to uninstall the
+                # plugin because doing so would obviously break the backwards
+                # compatibility that the new integration administration
+                # interface tries to provide for old WebAdmin extensions
                 if component_name.startswith('webadmin.'):
-                    self.log.warning('The obsolete 0.10 TracWebAdmin plugin '
-                                     'had to be disabled. Please uninstall it.')
+                    self.log.info('The legacy TracWebAdmin plugin has been '
+                                  'automatically disabled, and the integrated '
+                                  'administration interface will be used '
+                                  'instead.')
                     return False
                 return enabled
 
