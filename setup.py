@@ -54,9 +54,8 @@ facilities.
 
     install_requires = [
         'setuptools>=0.6b1',
-        'Genshi>=0.4.1'
+        'Genshi>=0.5'
     ],
-
     extras_require = {
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3'],
