@@ -955,6 +955,10 @@ class TicketModule(Component):
         if cnum and replyto: # record parent.child relationship
             internal_cnum = '%s.%s' % (replyto, cnum)
 
+        # Save the action controllers we need to call side-effects for before
+        # we save the changes to the ticket.
+        controllers = list(self._get_action_controllers(req, ticket, action))
+
         # -- Save changes
 
         now = datetime.now(utc)
@@ -968,7 +972,10 @@ class TicketModule(Component):
                 self.log.exception("Failure sending notification on change to "
                                    "ticket #%s: %s" % (ticket.id, e))
 
-        for controller in self._get_action_controllers(req, ticket, action):
+        # After saving the changes, apply the side-effects.
+        for controller in controllers:
+            self.env.log.debug('Side effect for %s' %
+                               controller.__class__.__name__)
             controller.apply_action_side_effects(req, ticket, action)
 
         fragment = cnum and '#comment:'+cnum or ''

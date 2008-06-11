@@ -363,11 +363,13 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         If state='*' (the default), all actions with the given operation are
         returned.
         """
+        # Be sure to look at the original status.
+        status = ticket._old.get('status', ticket['status'])
         actions = [(info['default'], action) for action, info
                    in self.actions.items()
                    if operation in info['operations'] and
                       ('*' in info['oldstates'] or
-                       ticket['status'] in info['oldstates']) and
+                       status in info['oldstates']) and
                       self._has_perms_for_action(req, info, ticket.resource)]
         return actions
 
