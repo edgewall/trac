@@ -44,15 +44,27 @@ from trac.wiki.macros import WikiMacroBase
 
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 
-def copytree(src, dst, symlinks=False, skip=[]):
+
+def makedirs(path, overwrite=False):
+    if overwrite and os.path.exists(path):
+        return
+    os.makedirs(path)
+
+
+def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
 
     Added a `skip` parameter consisting of absolute paths
     which we don't want to copy.
     """
     names = os.listdir(src)
-    os.mkdir(dst)
+    makedirs(dst, overwrite=overwrite)
     errors = []
+
+    def remove_if_overwriting(path):
+        if overwrite and os.path.exists(path):
+            os.unlink(path)
+
     for name in names:
         srcname = os.path.join(src, name)
         if srcname in skip:
@@ -60,14 +72,16 @@ def copytree(src, dst, symlinks=False, skip=[]):
         dstname = os.path.join(dst, name)
         try:
             if symlinks and os.path.islink(srcname):
+                remove_if_overwriting(dstname)
                 linkto = os.readlink(srcname)
                 os.symlink(linkto, dstname)
             elif os.path.isdir(srcname):
-                copytree(srcname, dstname, symlinks, skip)
+                copytree(srcname, dstname, symlinks, skip, overwrite)
             else:
+                remove_if_overwriting(dstname)
                 shutil.copy2(srcname, dstname)
             # XXX What about devices, sockets etc.?
-        except (IOError, os.error), why:
+        except EnvironmentError, why:
             errors.append((srcname, dstname, why))
     if errors:
         raise shutil.Error, errors
@@ -1156,19 +1170,17 @@ Congratulations!
 
     def do_deploy(self, line):
         argv = self.arg_tokenize(line)
-        if not argv[0]:
+        if not argv[0] or len(argv) != 1:
             self.do_help('deploy')
             return
 
         target = os.path.normpath(argv[0])
-        if os.path.exists(target):
-            raise TracError('Destination already exists. Remove and retry.')
         chrome_target = os.path.join(target, 'htdocs')
         script_target = os.path.join(target, 'cgi-bin')
 
         # Copy static content
-        os.makedirs(target)
-        os.makedirs(chrome_target)
+        makedirs(target, overwrite=True)
+        makedirs(chrome_target, overwrite=True)
         from trac.web.chrome import Chrome
         print 'Copying resources from:'
         for provider in Chrome(self.env_open()).template_providers:
@@ -1181,10 +1193,10 @@ Congratulations!
                 print '   ', source
                 if os.path.exists(source):
                     dest = os.path.join(chrome_target, key)
-                    copytree(source, dest)
-        
+                    copytree(source, dest, overwrite=True)
+
         # Create and copy scripts
-        os.makedirs(script_target)
+        makedirs(script_target, overwrite=True)
         print 'Creating scripts.'
         data = {'env': self.env_open()}
         for script in ('cgi', 'fcgi', 'wsgi'):
