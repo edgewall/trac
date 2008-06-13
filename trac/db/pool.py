@@ -139,10 +139,13 @@ class ConnectionPoolBackend(object):
 
     def shutdown(self, tid=None):
         """Close pooled connections not used in a while"""
-        when = time.time() - 120
+        delay = 120
+        if tid is None:
+            delay = 0
+        when = time.time() - delay
         self._available.acquire()
         try:
-            while self._pool_time and self._pool_time[0] < when:
+            while self._pool_time and self._pool_time[0] <= when:
                 self._pool.pop(0)
                 self._pool_key.pop(0)
                 self._pool_time.pop(0)
