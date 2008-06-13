@@ -395,7 +395,7 @@ class Formatter(object):
                 label = ns+':'+label
             return self._make_intertrac_link(ns, target, label) or \
                    self._make_interwiki_link(ns, target, label) or \
-                   match
+                   escape(match)
 
     def _make_intertrac_link(self, ns, target, label):
         intertrac = self.env.config['intertrac']
