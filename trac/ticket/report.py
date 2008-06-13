@@ -287,15 +287,16 @@ class ReportModule(Component):
                 'title': title, 'description': description,
                 'args': args, 'message': None, 'paginator':None}
 
-        self.page = int(req.args.get('page', '1'))
+        page = int(req.args.get('page', '1'))
+        limit = self.items_per_page
         if req.args.get('format', '') == 'rss':
-            self.limit = self.items_per_page_rss
-        else:
-            self.limit = self.items_per_page
-        self.offset = (self.page - 1) * self.limit
+            limit = self.items_per_page_rss
+        offset = (page - 1) * limit
+        user = req.args.get('USER', None)
 
         try:
-            cols, results = self.execute_report(req, db, id, sql, args)
+            cols, results, num_items = self.execute_paginated_report(
+                    req, db, id, sql, args, limit, offset)
             results = [list(row) for row in results]
             numrows = len(results)
 
@@ -304,28 +305,26 @@ class ReportModule(Component):
                                 error=to_unicode(e))
             return 'report_view.html', data, None
         paginator = None
-        if id != -1 and self.limit > 0:
-            self.asc = req.args.get('asc', None)
-            self.sort = req.args.get('sort', None)
-            self.USER = req.args.get('USER', None)
-            paginator = Paginator(results, self.page - 1, self.limit,
-                                  self.num_items)
+        if id != -1 and limit > 0:
+            asc = req.args.get('asc', None)
+            sort_col = req.args.get('sort', None)
+            paginator = Paginator(results, page - 1, limit, num_items)
             data['paginator'] = paginator
             if paginator.has_next_page:
-                next_href = req.href.report(id, asc=self.asc, sort=self.sort,
-                                            USER=self.USER, page=self.page + 1)
+                next_href = req.href.report(id, asc=asc, sort=sort_col,
+                                            USER=user, page=page + 1)
                 add_link(req, 'next', next_href, _('Next Page'))
             if paginator.has_previous_page:
-                prev_href = req.href.report(id, asc=self.asc, sort=self.sort,
-                                            USER=self.USER, page=self.page - 1)
+                prev_href = req.href.report(id, asc=asc, sort=sort_col,
+                                            USER=user, page=page - 1)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
 
             pagedata = []
             shown_pages = paginator.get_shown_pages(21)
-            for page in shown_pages:
-                pagedata.append([req.href.report(id, asc=self.asc,
-                                 sort=self.sort, USER=self.USER, page=page),
-                                 None, str(page), _('Page %(num)d', num=page)])          
+            for p in shown_pages:
+                pagedata.append([req.href.report(id, asc=asc, sort=sort_col, 
+                                                 USER=user, page=p),
+                                 None, str(p), _('Page %(num)d', num=p)])          
             fields = ['href', 'class', 'string', 'title']
             paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
             paginator.current_page = {'href': None, 'class': 'current',
@@ -489,8 +488,8 @@ class ReportModule(Component):
                                   for rg in row_groups for row in rg[1]])
                     #FIXME: I am not sure the extra args are necessary
                     req.session['query_href'] = \
-                        req.href.report(id, asc=self.asc, sort=self.sort,
-                                        USER=self.USER, page=self.page)
+                        req.href.report(id, asc=asc, sort=sort_col,
+                                        USER=user, page=page)
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
@@ -520,21 +519,30 @@ class ReportModule(Component):
                      'text/plain')
 
     def execute_report(self, req, db, id, sql, args):
+        """Execute given sql report (0.10 backward compatibility method)
+        
+        :see: ``execute_paginated_report``
+        """
+        return self.execute_paginated_report(req, db, id, sql, args)[:2]
+
+    def execute_paginated_report(self, req, db, id, sql, args, 
+                                 limit=0, offset=0):
         sql, args = self.sql_sub_vars(sql, args, db)
         if not sql:
             raise TracError(_('Report %(num)s has no SQL query.', num=id))
-        self.log.debug('Executing report with SQL "%s" (%s)', sql, args)
-        self.log.debug('Request args' + str(req.args))
+        self.log.debug('Executing report with SQL "%s"' % sql)
+        self.log.debug('Request args: %r' % req.args)
         cursor = db.cursor()
 
-        if id != -1 and self.limit > 0:
+        num_items = 0
+        if id != -1 and limit > 0:
             # The number of tickets is obtained.
             count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS tab'
             cursor.execute(count_sql, args)
-            self.env.log.debug("Query SQL(Get num items): " + count_sql)
+            self.log.debug("Query SQL(Get num items): " + count_sql)
             for row in cursor:
                 pass
-            self.num_items = row[0]
+            num_items = row[0]
     
             # The column name is obtained.
             get_col_name_sql = 'SELECT * FROM ( ' + sql + ' ) AS tab LIMIT 1'
@@ -543,13 +551,11 @@ class ReportModule(Component):
             cols = get_column_names(cursor)
 
             sort_col = req.args.get('sort', '')
-            self.env.log.debug("Colnum Names %s, Sort column %s" %
-                               (str(cols), sort_col))
+            self.log.debug("Columns %r, Sort column %s" % (cols, sort_col))
             order_cols = []
             if sort_col:
                 if '__group__' in cols:
                     order_cols.append('__group__')
-    
                 if sort_col in cols:
                     order_cols.append(sort_col)
                 else:
@@ -557,26 +563,23 @@ class ReportModule(Component):
                                       ' is invalid', sort_col=sort_col))
 
             # The report-query results is obtained
-            asc_str = ['DESC', 'ASC']
-            asc_idx = int(req.args.get('asc','1'))
+            asc = req.args.get('asc', '1')
+            asc_str = asc == '1' and 'ASC' or 'DESC'
             order_by = ''
             if len(order_cols) != 0:
-                dlmt = ", "
-                order = dlmt.join(order_cols)
-                order_by = " ".join([' ORDER BY' ,order, asc_str[asc_idx]])
+                order = ', '.join(order_cols)
+                order_by = " ".join([' ORDER BY', order, asc_str])
             sql = " ".join(['SELECT * FROM (', sql, ') AS tab', order_by])
-            sql =" ".join([sql, 'LIMIT', str(self.limit), 'OFFSET',
-                           str(self.offset)])
-            self.env.log.debug("Query SQL: " + sql)
+            sql =" ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
+            self.log.debug("Query SQL: " + sql)
         cursor.execute(sql, args)
-        self.env.log.debug("Query SQL: " + sql)
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
         cols = get_column_names(cursor)
 
         db.rollback()
 
-        return cols, info
+        return cols, info, num_items
 
     def get_var_args(self, req):
         report_args = {}
