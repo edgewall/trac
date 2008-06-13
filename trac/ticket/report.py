@@ -530,8 +530,8 @@ class ReportModule(Component):
         sql, args = self.sql_sub_vars(sql, args, db)
         if not sql:
             raise TracError(_('Report %(num)s has no SQL query.', num=id))
-        self.log.debug('Executing report with SQL "%s" (%s)', sql, args)
-        self.log.debug('Request args' + str(req.args))
+        self.log.debug('Executing report with SQL "%s"' % sql)
+        self.log.debug('Request args: %r' % req.args)
         cursor = db.cursor()
 
         num_items = 0
@@ -539,7 +539,7 @@ class ReportModule(Component):
             # The number of tickets is obtained.
             count_sql = 'SELECT COUNT(*) FROM (' + sql + ') AS tab'
             cursor.execute(count_sql, args)
-            self.env.log.debug("Query SQL(Get num items): " + count_sql)
+            self.log.debug("Query SQL(Get num items): " + count_sql)
             for row in cursor:
                 pass
             num_items = row[0]
@@ -551,13 +551,11 @@ class ReportModule(Component):
             cols = get_column_names(cursor)
 
             sort_col = req.args.get('sort', '')
-            self.env.log.debug("Colnum Names %s, Sort column %s" %
-                               (str(cols), sort_col))
+            self.log.debug("Columns %r, Sort column %s" % (cols, sort_col))
             order_cols = []
             if sort_col:
                 if '__group__' in cols:
                     order_cols.append('__group__')
-    
                 if sort_col in cols:
                     order_cols.append(sort_col)
                 else:
@@ -565,18 +563,16 @@ class ReportModule(Component):
                                       ' is invalid', sort_col=sort_col))
 
             # The report-query results is obtained
-            asc_str = ['DESC', 'ASC']
-            asc_idx = int(req.args.get('asc','1'))
+            asc = req.args.get('asc', '1')
+            asc_str = asc == '1' and 'ASC' or 'DESC'
             order_by = ''
             if len(order_cols) != 0:
-                dlmt = ", "
-                order = dlmt.join(order_cols)
-                order_by = " ".join([' ORDER BY' ,order, asc_str[asc_idx]])
+                order = ', '.join(order_cols)
+                order_by = " ".join([' ORDER BY', order, asc_str])
             sql = " ".join(['SELECT * FROM (', sql, ') AS tab', order_by])
             sql =" ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
-            self.env.log.debug("Query SQL: " + sql)
+            self.log.debug("Query SQL: " + sql)
         cursor.execute(sql, args)
-        self.env.log.debug("Query SQL: " + sql)
         # FIXME: fetchall should probably not be used.
         info = cursor.fetchall() or []
         cols = get_column_names(cursor)
