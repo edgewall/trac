@@ -350,7 +350,7 @@ class SubversionPropertyRenderer(Component):
             revstr = rev and ' at revision '+rev or ''
             if not href and (url.startswith('http://') or 
                              url.startswith('https://')):
-                href = url
+                href = url.replace('%', '%%')
             if href:
                 remotepath = posixpath.join(*reversed(prefix))
                 externals.append((localpath, revstr, base_url, remotepath,

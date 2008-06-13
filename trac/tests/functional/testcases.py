@@ -31,11 +31,8 @@ class TestRepoCreation(FunctionalTwillTestCaseSetup):
             for subdir in ('branches', 'tags', 'trunk'):
                 directories.append('/'.join([component, subdir]))
         commit_message = 'Create component trees.'
-        if call(['svn', '--username=admin', 'mkdir', '-m', commit_message]
-                + [self._tester.repo_url + '/' + d for d in directories],
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('Failed to create component trees in the '
-                            'repository.')
+        self._tester.svn_mkdir(directories, commit_message)
+
         browser_url = self._tester.url + '/browser'
         tc.go(browser_url)
         tc.url(browser_url)
