@@ -148,10 +148,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
                     if due:
-                        mil.due = parse_date(due)
+                        mil.due = parse_date(due, req.tz)
                     if req.args.get('completed', False):
                         completed = req.args.get('completeddate', '')
-                        mil.completed = parse_date(completed)
+                        mil.completed = parse_date(completed, req.tz)
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '
                                               'the future'),
@@ -176,7 +176,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil = model.Milestone(self.env)
                         mil.name = name
                         if req.args.get('duedate'):
-                            mil.due = parse_date(req.args.get('duedate'))
+                            mil.due = parse_date(req.args.get('duedate'),
+                                                 req.tz)
                         mil.insert()
                         req.redirect(req.href.admin(cat, page))
                     else:
@@ -233,7 +234,7 @@ class VersionAdminPanel(TicketAdminPanel):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time = parse_date(req.args.get('time'))
+                        ver.time = parse_date(req.args.get('time'), req.tz)
                     else:
                         ver.time = None # unset
                     ver.description = req.args.get('description')
@@ -256,7 +257,8 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver = model.Version(self.env)
                         ver.name = name
                         if req.args.get('time'):
-                            ver.time = parse_date(req.args.get('time'))
+                            ver.time = parse_date(req.args.get('time'),
+                                                  req.tz)
                         ver.insert()
                         req.redirect(req.href.admin(cat, page))
                     else:
