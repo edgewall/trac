@@ -488,8 +488,8 @@ class ReportModule(Component):
                                   for rg in row_groups for row in rg[1]])
                     #FIXME: I am not sure the extra args are necessary
                     req.session['query_href'] = \
-                        req.href.report(id, asc=asc, sort=sort_col,
-                                        USER=user, page=page)
+                        req.href.report(id, asc=not asc and '0' or None, 
+                                        sort=sort_col, USER=user, page=page)
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
