@@ -26,7 +26,24 @@ _like_escape_re = re.compile(r'([/_%])')
 
 try:
     import MySQLdb
+    import MySQLdb.cursors
     has_mysqldb = True
+    
+    class MySQLUnicodeCursor(MySQLdb.cursors.Cursor):
+        def _convert_row(self, row):
+            return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
+                          for v in row])
+        def fetchone(self):
+            row = super(MySQLUnicodeCursor, self).fetchone()
+            return row and self._convert_row(row) or None
+        def fetchmany(self, num):
+            rows = super(MySQLUnicodeCursor, self).fetchmany(num)
+            return rows != None and [self._convert_row(row)
+                                     for row in rows] or []
+        def fetchall(self):
+            rows = super(MySQLUnicodeCursor, self).fetchall()
+            return rows != None and [self._convert_row(row)
+                                     for row in rows] or []
 except ImportError:
     has_mysqldb = False
 
@@ -131,28 +148,6 @@ class MySQLConnection(ConnectionWrapper):
 
     poolable = True
 
-    def _mysqldb_gt_or_eq(self, v):
-        """This function checks whether the version of python-mysqldb
-        is greater than or equal to the version that's passed to it.
-        Note that the tuple only checks the major, minor, and sub versions;
-        the sub-sub version is weird, so we only check for 'final' versions.
-        """
-        ver = MySQLdb.version_info
-        if ver[0] < v[0] or ver[1] < v[1] or ver[2] < v[2]:
-            return False
-        if ver[3] != 'final':
-            return False
-        return True
-
-    def _set_character_set(self, cnx, charset):
-        vers = tuple([ int(n) for n in cnx.get_server_info().split('.')[:2] ])
-        if vers < (4, 1):
-            raise TracError(_('MySQL servers older than 4.1 are not '
-                              'supported!'))
-        cnx.query('SET NAMES %s' % charset)
-        cnx.store_result()
-        cnx.charset = charset
-
     def __init__(self, path, user=None, password=None, host=None,
                  port=None, params={}):
         if path.startswith('/'):
@@ -161,18 +156,8 @@ class MySQLConnection(ConnectionWrapper):
             password = ''
         if port == None:
             port = 3306
-
-        # python-mysqldb 1.2.1 added a 'charset' arg that is required for
-        # unicode stuff.  We hack around that here for older versions; at
-        # some point, this hack should be removed, and a strict requirement
-        # on 1.2.1 made.  -dilinger
-        if (self._mysqldb_gt_or_eq((1, 2, 1))):
-            cnx = MySQLdb.connect(db=path, user=user, passwd=password,
-                                  host=host, port=port, charset='utf8')
-        else:
-            cnx = MySQLdb.connect(db=path, user=user, passwd=password,
-                                  host=host, port=port, use_unicode=True)
-            self._set_character_set(cnx, 'utf8')
+        cnx = MySQLdb.connect(db=path, user=user, passwd=password,
+                              host=host, port=port, charset='utf8')
         ConnectionWrapper.__init__(self, cnx)
         self._is_closed = False
 
@@ -197,7 +182,6 @@ class MySQLConnection(ConnectionWrapper):
 
     def rollback(self):
         self.cnx.ping()
-        self._set_character_set(self.cnx, 'utf8')
         try:
             self.cnx.rollback()
         except MySQLdb.ProgrammingError:
@@ -210,3 +194,7 @@ class MySQLConnection(ConnectionWrapper):
             except MySQLdb.ProgrammingError:
                 pass # this error would mean it's already closed.  So, ignore
             self._is_closed = True
+
+    def cursor(self):
+        return MySQLUnicodeCursor(self.cnx)
+        
