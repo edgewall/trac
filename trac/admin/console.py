@@ -32,7 +32,7 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
-from trac.util import arity
+from trac.util import arity, translation
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
@@ -41,6 +41,8 @@ from trac.util.translation import _
 from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
 from trac.wiki.macros import WikiMacroBase
+
+import babel
 
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 
@@ -1247,6 +1249,11 @@ def run(args=None):
     """Main entry point."""
     if args is None:
         args = sys.argv[1:]
+    try:
+        locale = babel.Locale.default()
+    except babel.UnknownLocaleError:
+        locale = None
+    translation.activate(locale)
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
