@@ -230,6 +230,9 @@ class SearchModule(Component):
                 name = link.children
                 description = link.attr.get('title', '')
         if quickjump_href:
+            # Only automatically redirect to local quickjump links
+            if not quickjump_href.startswith(req.base_path or '/'):
+                noquickjump = True
             if noquickjump:
                 req.hdf['search.quickjump'] = {
                     'href': quickjump_href,
