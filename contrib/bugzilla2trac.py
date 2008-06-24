@@ -821,7 +821,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         ticket['keywords'] = string.join(keywords)
         ticketid = trac.addTicket(**ticket)
 
-        if BZ_VERSION >= 2180:
+        if BZ_VERSION >= 2210:
             mysql_cur.execute("SELECT attachments.*, attach_data.thedata "
                               "FROM attachments, attach_data "
                               "WHERE attachments.bug_id = %s AND "
