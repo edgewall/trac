@@ -341,7 +341,7 @@ class Formatter(object):
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = self._unquote(fullmatch.group('stgt'))
-        return self._make_link(ns, target, match, match)
+        return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
         rel = fullmatch.group('rel')
@@ -371,9 +371,9 @@ class Formatter(object):
                     query = '&' + query.lstrip('?')
             return tag.a(label or rel, href=path + query + fragment)
         else:
-            return self._make_link(ns, target, match, label)
+            return self._make_link(ns, target, match, label, fullmatch)
 
-    def _make_link(self, ns, target, match, label):
+    def _make_link(self, ns, target, match, label, fullmatch):
         # first check for an alias defined in trac.ini
         ns = self.env.config['intertrac'].get(ns, ns)
         if ns in self.wikiparser.link_resolvers:
@@ -390,7 +390,7 @@ class Formatter(object):
             else:
                 return olabel or otarget
         else:
-            if label == target:
+            if label == target and not fullmatch.group('label'):
                 # add ns for Inter* links when nothing is set
                 label = ns+':'+label
             return self._make_intertrac_link(ns, target, label) or \
