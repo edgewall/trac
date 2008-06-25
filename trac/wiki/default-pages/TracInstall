@@ -1,8 +1,6 @@
 = Trac Installation Guide for 0.11 = 
 [[TracGuideToc]]
 
-  '''NOTE: this page is now for 0.11, which will be released soon. For installing previous Trac versions, please refer to wiki:0.10/TracInstall.'''
-
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you can find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
@@ -10,7 +8,7 @@ What follows are generic instructions for installing and setting up Trac and its
 == Short - Install a released version ==
 For the quick install, make sure you have [http://python.org Python-2.5], [http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install easy_install] and SQlite-3.3.4 installed (or above).
 {{{
-sudo easy_install Trac==0.11b2
+sudo easy_install Trac==0.11
 }}}
 
 == Requirements - also older versions possible ==

@@ -17,7 +17,7 @@ To install Trac, the following software packages must be installed:
  * Python, version >= 2.3.
    + Please keep in mind, that for RPM-based systems you will also need
    python-devel and python-xml packages.
- * Genshi, version >= 0.4.1 (0.5dev recommended)
+ * Genshi, version >= 0.5
  * Optionally, Subversion, version >= 1.0. (>= 1.1.x recommended)and Subversion SWIG Python bindings (not PySVN).
  * PySQLite, version 2.x for SQLite 3.x
  * A web server capable of executing CGI/FastCGI scripts, or Apache HTTPD with
