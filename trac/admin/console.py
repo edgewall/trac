@@ -42,8 +42,6 @@ from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
 from trac.wiki.macros import WikiMacroBase
 
-import babel
-
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 
 
@@ -1249,10 +1247,15 @@ def run(args=None):
     """Main entry point."""
     if args is None:
         args = sys.argv[1:]
+    locale = None
     try:
-        locale = babel.Locale.default()
-    except babel.UnknownLocaleError:
-        locale = None
+        import babel
+        try:
+            locale = babel.Locale.default()
+        except babel.UnknownLocaleError:
+            pass
+    except ImportError:
+        pass
     translation.activate(locale)
     admin = TracAdmin()
     if len(args) > 0:
