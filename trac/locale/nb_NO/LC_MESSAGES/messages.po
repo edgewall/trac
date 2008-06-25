@@ -155,8 +155,7 @@ msgstr "Saken inneholder tegn som ikker ASCII. Vennligst endre innstilling for e
 #: trac/perm.py:47
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr "%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på "
-"%(resource)s"
+msgstr "%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på %(resource)s"
 
 #: trac/perm.py:49
 #, python-format
@@ -2030,7 +2029,6 @@ msgid ""
 msgstr ""
 "Beklager, dine endringer kan ikke lagres. Denne saken har blit endret av "
 "noen andre siden du begynte"
-"someone else since you started"
 
 #: trac/ticket/web_ui.py:881
 msgid "Tickets must contain a summary."
