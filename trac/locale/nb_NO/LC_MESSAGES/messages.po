@@ -3,14 +3,13 @@
 # This file is distributed under the same license as the Trac project.
 # Odd Simon Simonsen <simon-code@bvnetwork.no>, 2008.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-04-29 18:55+0200\n"
-"PO-Revision-Date: 2008-05-06 11:57+0200\n"
-"Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
+"PO-Revision-Date: 2008-06-24 13:43+0100\n"
+"Last-Translator: Odd Simon Simonsen <simon-code@bvnetwork.no>\n"
 "Language-Team: nb_NO <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
@@ -70,7 +69,7 @@ msgstr "Ingen fil lastet opp"
 
 #: trac/attachment.py:537
 msgid "Can't upload empty file"
-msgstr "Kan ikke laste tom fil"
+msgstr "Kan ikke laste opp tom fil"
 
 #: trac/attachment.py:542
 #, python-format
@@ -122,9 +121,8 @@ msgstr "Ingen oppgraderingsmodul for versjon %(num)i (%(version)s.py"
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
-msgstr ""
-"Manglende environment variabel \"TRAC_ENV\". Trac behøver denne "
-"variabelen som må peke til et gyldig Trac prosjekt."
+msgstr "Manglende environment variabel \"TRAC_ENV\". Trac behøver denne"
+" variabelen som må peke til et gyldig Trac prosjekt."
 
 #: trac/env.py:572
 #, python-format
@@ -152,13 +150,12 @@ msgstr "TLS er aktivert, men serveren støtter ikke TLS"
 
 #: trac/notification.py:390
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-msgstr ""
+msgstr "Saken inneholder tegn som ikker ASCII. Vennligst endre innstilling for encoding"
 
 #: trac/perm.py:47
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr ""
-"%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på "
+msgstr "%(perm)s rettigheter er nødvendig for å utføre denne operasjonen på "
 "%(resource)s"
 
 #: trac/perm.py:49
@@ -183,7 +180,7 @@ msgstr " i versjon %(version)s"
 #: trac/admin/console.py:1129
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr ""
+msgstr "hotcopy kan ikke overskrive ekisterende '%(dest)s'"
 
 #: trac/admin/web_ui.py:66
 msgid "Admin"
@@ -450,9 +447,7 @@ msgid ""
 "            will remain completely hidden from the user interface."
 msgstr ""
 "Så lenge du ikke legger til verdier i denne listen vil dette\n"
-"            feltet være skjult fra brukergrensesnittet.As long as you "
-"don't add any items to the list, this field\n"
-"            will remain completely hidden from the user interface."
+"            feltet være skjult fra brukergrensesnittet."
 
 #: trac/admin/templates/admin_enums.html:13
 msgid "Manage"
@@ -594,8 +589,7 @@ msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr ""
-"Tildel rettighet for en action til et subject, som kan være enten en "
-"bruker\n"
+"Tildel rettighet for en action til et subject, som kan være enten en bruker\n"
 "          eller en gruppe."
 
 #: trac/admin/templates/admin_perms.html:51
@@ -748,7 +742,7 @@ msgid ""
 "for syntax highlighting."
 msgstr ""
 "Det virker som om du benytter PHP CGI binærfil. Trac behøver CLI "
-"versjonen for syntaks markerin"
+"versjonen for syntaks markering."
 
 #: trac/mimeview/rst.py:60
 msgid "Docutils not found"
@@ -785,7 +779,7 @@ msgstr "Avansert"
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
-msgstr "Instillinger:"
+msgstr "Innstillinger:"
 
 #: trac/prefs/templates/prefs.html:17
 msgid ""
@@ -796,12 +790,12 @@ msgid ""
 " be\n"
 "      restored on subsequent visits."
 msgstr ""
-"Denne siden lar deg endring personlige innstillinger for prosjektet.\n"
-"      Disse instillingene er lagret på serveren, identifisert via en "
+"Denne siden lar deg endre personlige innstillinger for prosjektet.\n"
+"      Disse instillingene lagres på serveren, identifisert via en "
 "sesjonsnøkkel\n"
 "      lagret i en nettleser cookie. Den cookien gjør at dine instillinger"
 " kan\n"
-"      gjenskapes ved fremtidige besøk."
+"      hentes frem ved fremtidige besøk."
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
@@ -896,7 +890,7 @@ msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
-"Positiv offset benyttes for å indikere en tidssone øst for Greenwich, "
+"Positivt offset benyttes for å indikere en tidssone øst for Greenwich, "
 "altså foran Universal Time."
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -943,7 +937,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "TracAccessibility"
-msgstr ""
+msgstr "TracAccessibility"
 
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "for more information on access keys."
@@ -973,7 +967,7 @@ msgstr "Eksempel:"
 
 #: trac/prefs/templates/prefs_language.html:28
 msgid "language, this would be displayed as"
-msgstr "språk, dette vil vises som"
+msgstr "språk, vil dette vises som"
 
 #: trac/prefs/templates/prefs_pygments.html:9
 msgid "Pygments Theme"
@@ -1021,26 +1015,26 @@ msgstr "Forrige side"
 #: trac/search/web_ui.py:185
 #, python-format
 msgid "Browse repository path %(path)s"
-msgstr ""
+msgstr "Kodevisning for stien %(path)s"
 
 #: trac/search/templates/search.html:10 trac/search/templates/search.html:40
 #: trac/ticket/templates/query_results.html:25
 #: trac/ticket/templates/report_view.html:44
 msgid "Results"
-msgstr ""
+msgstr "Resultater"
 
 #: trac/search/templates/search.html:48
 msgid "Quickjump to"
-msgstr ""
+msgstr "Snarvei til"
 
 #: trac/search/templates/search.html:56
 msgid "By"
-msgstr ""
+msgstr "av"
 
 #: trac/search/templates/search.html:65
 #: trac/ticket/templates/report_view.html:166
 msgid "No matches found."
-msgstr ""
+msgstr "Ingen treff."
 
 #: trac/search/templates/search.html:70
 #: trac/ticket/templates/milestone_delete.html:38
@@ -1056,7 +1050,7 @@ msgstr ""
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "Note:"
-msgstr ""
+msgstr "Merk:"
 
 #: trac/search/templates/search.html:70
 #: trac/ticket/templates/milestone_delete.html:38
@@ -1072,15 +1066,15 @@ msgstr ""
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "See"
-msgstr ""
+msgstr "Se"
 
 #: trac/search/templates/search.html:70
 msgid "TracSearch"
-msgstr ""
+msgstr "TracSearch"
 
 #: trac/search/templates/search.html:70
 msgid "for help on searching."
-msgstr ""
+msgstr "for hjelp til søking."
 
 #: trac/templates/about.html:23
 msgid "Trac: Integrated SCM & Project Management"
@@ -1126,7 +1120,7 @@ msgstr ""
 
 #: trac/templates/about.html:41
 msgid "Please visit the Trac open source project:"
-msgstr ""
+msgstr "Besøk Trac åpen kildekode prosjektet:"
 
 #: trac/templates/about.html:42
 msgid "http://trac.edgewall.org/"
@@ -1134,170 +1128,170 @@ msgstr ""
 
 #: trac/templates/about.html:51
 msgid "System Information"
-msgstr ""
+msgstr "Systeminformasjon"
 
 #: trac/templates/about.html:65
 msgid "Section"
-msgstr ""
+msgstr "Seksjon"
 
 #: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
-msgstr ""
+msgstr "Verdi"
 
 #: trac/templates/attachment.html:10
 msgid "Attachment"
-msgstr ""
+msgstr "Vedlegg"
 
 #: trac/templates/attachment.html:17
 msgid "Add Attachment to"
-msgstr ""
+msgstr "Legg vedlegg til"
 
 #: trac/templates/attachment.html:20
 msgid "(size limit"
-msgstr ""
+msgstr "(størrelsesbegrensning"
 
 #: trac/templates/attachment.html:25
 msgid "Attachment Info"
-msgstr ""
+msgstr "Vedleggsinformasjon"
 
 #: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:248
 #: trac/wiki/templates/wiki_edit.html:105
 msgid "Your email or username:"
-msgstr ""
+msgstr "Din email eller brukernavn:"
 
 #: trac/templates/attachment.html:34
 msgid "Description of the file (optional):"
-msgstr ""
+msgstr "Filbeskrivelse (ikke påkrevet):"
 
 #: trac/templates/attachment.html:39
 msgid "Replace existing attachment of the same name"
-msgstr ""
+msgstr "Erstatt vedlegg med samme navn"
 
 #: trac/templates/attachment.html:48
 msgid "Add attachment"
-msgstr ""
+msgstr "Legg til vedlegg"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
-msgstr ""
+msgstr "Er du sikker på at du ønsker å slette dette vedlegget?"
 
 #: trac/templates/attachment.html:56 trac/wiki/templates/wiki_delete.html:32
 msgid "This is an irreversible operation."
-msgstr ""
+msgstr "Denne handlingen kan ikke reverseres."
 
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:103
 msgid "Delete attachment"
-msgstr ""
+msgstr "Slett vedlegg"
 
 #: trac/templates/attachment.html:78 trac/ticket/api.py:207
 #: trac/ticket/templates/ticket.html:167
 msgid "Description"
-msgstr ""
+msgstr "Beskrivelse"
 
 #: trac/templates/attachment.html:82
 msgid "(added by"
-msgstr ""
+msgstr "(lagt til av"
 
 #: trac/templates/attachment.html:83 trac/templates/diff_view.html:40
 #: trac/versioncontrol/templates/browser.html:104
 #: trac/versioncontrol/templates/changeset.html:96
 #: trac/wiki/templates/wiki_view.html:26
 msgid "ago)"
-msgstr ""
+msgstr "siden)"
 
 #: trac/templates/diff_div.html:53
 #: trac/versioncontrol/templates/browser.html:124
 msgid "Property"
-msgstr ""
+msgstr "Egenskap"
 
 #: trac/templates/diff_div.html:64 trac/ticket/templates/ticket.html:63
 #: trac/versioncontrol/templates/changeset.html:32
 msgid "to"
-msgstr ""
+msgstr "til"
 
 #: trac/templates/diff_div.html:69
 msgid "Differences"
-msgstr ""
+msgstr "Forskjeller"
 
 #: trac/templates/diff_view.html:17
 msgid "Changes"
-msgstr ""
+msgstr "Endringer"
 
 #: trac/templates/diff_view.html:18 trac/templates/diff_view.html:21
 msgid "between"
-msgstr ""
+msgstr "mellom"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
 #: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:100
 #: trac/wiki/web_ui.py:511 trac/wiki/templates/wiki_view.html:25
 msgid "Version"
-msgstr ""
+msgstr "Versjon"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
 #: trac/timeline/templates/timeline.html:20
 msgid "and"
-msgstr ""
+msgstr "og"
 
 #: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:716
 #: trac/ticket/templates/ticket.html:97
 msgid "Initial Version"
-msgstr ""
+msgstr "Første versjon"
 
 #: trac/templates/diff_view.html:24
 #: trac/versioncontrol/templates/changeset.html:71
 msgid "from"
-msgstr ""
+msgstr "fra"
 
 #: trac/templates/diff_view.html:25
 msgid "of"
-msgstr ""
+msgstr "av"
 
 #: trac/templates/diff_view.html:37
 #: trac/versioncontrol/templates/changeset.html:94
 msgid "Timestamp:"
-msgstr ""
+msgstr "Tid:"
 
 #: trac/templates/diff_view.html:39 trac/templates/diff_view.html:45
 #: trac/templates/diff_view.html:50
 msgid "(multiple changes)"
-msgstr ""
+msgstr "(flere endringer)"
 
 #: trac/templates/diff_view.html:46
 msgid "(IP:"
-msgstr ""
+msgstr "(IP:"
 
 #: trac/templates/diff_view.html:48
 msgid "Comment:"
-msgstr ""
+msgstr "Kommentar:"
 
 #: trac/templates/diff_view.html:56
 #: trac/versioncontrol/templates/changeset.html:151
 #: trac/versioncontrol/templates/revisionlog.html:70
 msgid "Legend:"
-msgstr ""
+msgstr "Forklaring:"
 
 #: trac/templates/diff_view.html:58
 #: trac/versioncontrol/templates/changeset.html:153
 msgid "Unmodified"
-msgstr ""
+msgstr "Uendret"
 
 #: trac/templates/diff_view.html:59
 #: trac/versioncontrol/templates/changeset.html:154
 #: trac/versioncontrol/templates/revisionlog.html:72
 msgid "Added"
-msgstr ""
+msgstr "Lagt til"
 
 #: trac/templates/diff_view.html:60
 #: trac/versioncontrol/templates/changeset.html:155
 #: trac/versioncontrol/templates/revisionlog.html:74
 msgid "Removed"
-msgstr ""
+msgstr "Fjernet"
 
 #: trac/templates/diff_view.html:61 trac/ticket/query.py:586
 #: trac/versioncontrol/templates/changeset.html:157
 #: trac/versioncontrol/templates/revisionlog.html:76
 msgid "Modified"
-msgstr ""
+msgstr "Endret"
 
 #: trac/templates/error.html:60
 msgid ""
@@ -1460,460 +1454,462 @@ msgstr ""
 
 #: trac/templates/history_view.html:15
 msgid "Change History for"
-msgstr ""
+msgstr "Endringslogg for"
 
 #: trac/templates/history_view.html:20 trac/templates/history_view.html:51
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:163
 msgid "View changes"
-msgstr ""
+msgstr "Se endringer"
 
 #: trac/templates/history_view.html:22
 msgid "Change history"
-msgstr ""
+msgstr "Endringlogg"
 
 #: trac/templates/history_view.html:27
 #: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
 #: trac/templates/history_view.html:28
 #: trac/versioncontrol/templates/revisionlog.html:95
 msgid "Author"
-msgstr ""
+msgstr "Forfatter"
 
 #: trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket_notify_email.txt:21
 msgid "Comment"
-msgstr ""
+msgstr "Kommentar"
 
 #: trac/templates/history_view.html:41
 msgid "View this version"
-msgstr ""
+msgstr "Se denne versjonen"
 
 #: trac/templates/index.html:8 trac/templates/index.html:12
 msgid "Available Projects"
-msgstr ""
+msgstr "Tilgjengelige Prosjekter"
 
 #: trac/templates/index.html:18
 msgid "Error"
-msgstr ""
+msgstr "Feil"
 
 #: trac/templates/layout.html:43
 msgid "Download in other formats:"
-msgstr ""
+msgstr "Last ned i andre formater:"
 
 #: trac/templates/macros.html:40
 msgid "anonymous"
-msgstr ""
+msgstr "anonym"
 
 #: trac/templates/macros.html:74 trac/templates/macros.html:75
 msgid "Previous"
-msgstr ""
+msgstr "Forrige"
 
 #: trac/templates/macros.html:84 trac/templates/macros.html:85
 msgid "Next"
-msgstr ""
+msgstr "Neste"
 
 #: trac/templates/macros.html:95
 msgid "View differences"
-msgstr ""
+msgstr "Se forskjeller"
 
 #: trac/templates/macros.html:98
 msgid "inline"
-msgstr ""
+msgstr "sammenflettet"
 
 #: trac/templates/macros.html:100
 msgid "side by side"
-msgstr ""
+msgstr "side ved side"
 
 #: trac/templates/macros.html:102
 msgid "Show"
-msgstr ""
+msgstr "Vis"
 
 #: trac/templates/macros.html:105
 msgid "lines around each change"
-msgstr ""
+msgstr "linjer rundt hver endring"
 
 #: trac/templates/macros.html:108
 msgid "Ignore:"
-msgstr ""
+msgstr "Ignorer:"
 
 #: trac/templates/macros.html:112
 msgid "Blank lines"
-msgstr ""
+msgstr "Blanke linjer"
 
 #: trac/templates/macros.html:117
 msgid "Case changes"
-msgstr ""
+msgstr "Endringer store/små bokstaver"
 
 #: trac/templates/macros.html:122
 msgid "White space changes"
-msgstr ""
+msgstr "Endringer mellomrom"
 
 #: trac/templates/macros.html:126 trac/ticket/templates/milestone_view.html:53
 #: trac/ticket/templates/query.html:183 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
-msgstr ""
+msgstr "Oppdater"
 
 #: trac/templates/macros.html:139 trac/templates/macros.html:152
 msgid "HTML preview not available"
-msgstr ""
+msgstr "HTML visning ikke tilgjengelig"
 
 #: trac/templates/macros.html:141
 msgid "since the file size exceeds"
-msgstr ""
+msgstr "siden størrelsen på filen er mer enn"
 
 #: trac/templates/macros.html:142
 msgid "bytes."
-msgstr ""
+msgstr "bytes."
 
 #: trac/templates/macros.html:144
 msgid "since no preview renderer could handle it."
-msgstr ""
+msgstr "ettersom ingen forhåndsviser kunne håndtere det."
 
 #: trac/templates/macros.html:147
 msgid "Try"
-msgstr ""
+msgstr "Forsøk å"
 
 #: trac/templates/macros.html:148
 msgid "downloading"
-msgstr ""
+msgstr "laste ned"
 
 #: trac/templates/macros.html:148
 msgid "the file instead."
-msgstr ""
+msgstr "filen i stedet."
 
 #: trac/templates/macros.html:152
 msgid ""
 ".\n"
 "          To view,"
 msgstr ""
+".\n"
+"          For å se,"
 
 #: trac/templates/macros.html:153
 msgid "download"
-msgstr ""
+msgstr "last ned"
 
 #: trac/templates/macros.html:153
 msgid "the file."
-msgstr ""
+msgstr "filen"
 
 #: trac/templates/macros.html:155
 msgid "found:"
-msgstr ""
+msgstr "fant:"
 
 #: trac/templates/macros.html:172
 msgid "View attachment"
-msgstr ""
+msgstr "Se vedlegg"
 
 #: trac/templates/macros.html:173
 msgid ") - added by"
-msgstr ""
+msgstr ") - lagt til av"
 
 #: trac/templates/macros.html:174 trac/ticket/templates/query_results.html:74
 msgid "ago."
-msgstr ""
+msgstr "siden."
 
 #: trac/templates/macros.html:179 trac/templates/macros.html:190
 msgid "Attachments"
-msgstr ""
+msgstr "Vedlegg"
 
 #: trac/templates/macros.html:215
 msgid "Attach file"
-msgstr ""
+msgstr "Legg ved fil"
 
 #: trac/templates/macros.html:239 trac/templates/macros.html:243
 msgid "s:"
-msgstr ""
+msgstr "s:"
 
 #: trac/templates/macros.html:243
 msgid "Total"
-msgstr ""
+msgstr "Totalt"
 
 #: trac/templates/theme.html:26
 msgid "Search:"
-msgstr ""
+msgstr "Søk:"
 
 #: trac/templates/theme.html:37
 msgid "Context Navigation"
-msgstr ""
+msgstr "Context Navigation"
 
 #: trac/templates/theme.html:46
 msgid "Warning:"
-msgstr ""
+msgstr "Advarsel:"
 
 #: trac/templates/theme.html:49
 msgid "Warnings:"
-msgstr ""
+msgstr "Advarsler:"
 
 #: trac/templates/theme.html:57
 msgid "Notice:"
-msgstr ""
+msgstr "Merk:"
 
 #: trac/templates/theme.html:60
 msgid "Notices:"
-msgstr ""
+msgstr "Merknader:"
 
 #: trac/ticket/admin.py:87
 #, python-format
 msgid "Component %(name)s already exists."
-msgstr ""
+msgstr "Komponenten %(name)s eksisterer allerede."
 
 #: trac/ticket/admin.py:95
 msgid "No component selected"
-msgstr ""
+msgstr "Ingen komponent valgt"
 
 #: trac/ticket/admin.py:156 trac/ticket/roadmap.py:632
 msgid "Completion date may not be in the future"
-msgstr ""
+msgstr "Ferdigstillelsesdato kan ikke være i fremtiden"
 
 #: trac/ticket/admin.py:158
 msgid "Invalid Completion Date"
-msgstr ""
+msgstr "Ugyldig ferdigstillelsesdato"
 
 #: trac/ticket/admin.py:183
 #, python-format
 msgid "Milestone %(name)s already exists."
-msgstr ""
+msgstr "Milepæl %(name)s eksisterer allerede."
 
 #: trac/ticket/admin.py:191
 msgid "No milestone selected"
-msgstr ""
+msgstr "Ingen milepæl valgt"
 
 #: trac/ticket/admin.py:263
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr ""
+msgstr "Versjon %(name)s eksisterer allerede."
 
 #: trac/ticket/admin.py:271
 msgid "No version selected"
-msgstr ""
+msgstr "Ingen versjon valgt"
 
 #: trac/ticket/admin.py:343
 #, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr ""
+msgstr "%(type)s %(name)s eksisterer allerede"
 
 #: trac/ticket/admin.py:350
 msgid "No enum selected"
-msgstr ""
+msgstr "Ingen enumerasjon valgt"
 
 #: trac/ticket/admin.py:377
 msgid "Order numbers must be unique"
-msgstr ""
+msgstr "Nummer for rekkefølge må være unike"
 
 #: trac/ticket/api.py:357
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
-msgstr ""
+msgstr "Kommentar %(cnum)s for Sak #%(id)s"
 
 #: trac/ticket/api.py:378
 #, python-format
 msgid "Ticket #%(shortname)s"
-msgstr ""
+msgstr "Sak #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "Nåværende status eksisterer ikke lenger"
 
 #: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
-msgstr ""
+msgstr "Saken vil bli uten eier"
 
 #: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
-msgstr ""
+msgstr "Eier vil endres"
 
 #: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
 #, python-format
 msgid "The owner will change to %(name)s"
-msgstr ""
+msgstr "Eier vil endres til %(name)s"
 
 #: trac/ticket/default_workflow.py:254
 msgid "to "
-msgstr ""
+msgstr "til"
 
 #: trac/ticket/default_workflow.py:273
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr ""
+msgstr "Avslutningsgrunn vil settes til $(name)s"
 
 #: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
-msgstr ""
+msgstr "Avslutningsgrunn vil settes"
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr ""
+msgstr "Neste status vil være '%(name)s'"
 
 #: trac/ticket/model.py:361
 #, python-format
 msgid "%(type)s %(name)s does not exist."
-msgstr ""
+msgstr "%(type)s %(name)s eksisterer ikke."
 
 #: trac/ticket/model.py:505
 #, python-format
 msgid "Component %(name)s does not exist."
-msgstr ""
+msgstr "Komponenten %(name)s eksisterer ikke."
 
 #: trac/ticket/model.py:735
 #, python-format
 msgid "Version %(name)s does not exist."
-msgstr ""
+msgstr "Versjon %(name)s eksisterer ikke."
 
 #: trac/ticket/query.py:72
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "Spørring side %(page)s er ikke gyldig."
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "Spørring max %(max)s er ikke gyldig."
 
 #: trac/ticket/query.py:271
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "Siden %(page)s eksisterer ikke for denne spørringen"
 
 #: trac/ticket/query.py:587
 msgid "Created"
-msgstr ""
+msgstr "Opprettet"
 
 #: trac/ticket/query.py:590 trac/ticket/web_ui.py:548
 msgid "Ticket"
-msgstr ""
+msgstr "Sak"
 
 #: trac/ticket/query.py:606
 msgid "contains"
-msgstr ""
+msgstr "inneholder"
 
 #: trac/ticket/query.py:607
 msgid "doesn't contain"
-msgstr ""
+msgstr "inneholder ikke"
 
 #: trac/ticket/query.py:608
 msgid "begins with"
-msgstr ""
+msgstr "starter med"
 
 #: trac/ticket/query.py:609
 msgid "ends with"
-msgstr ""
+msgstr "slutter med"
 
 #: trac/ticket/query.py:610 trac/ticket/query.py:614
 msgid "is"
-msgstr ""
+msgstr "er lik"
 
 #: trac/ticket/query.py:611 trac/ticket/query.py:615
 msgid "is not"
-msgstr ""
+msgstr "er ulik"
 
 #: trac/ticket/query.py:668 trac/ticket/report.py:329
 #, python-format
 msgid "Page %(num)d"
-msgstr ""
+msgstr "Side %(num)d"
 
 #: trac/ticket/query.py:709 trac/ticket/report.py:513 trac/ticket/web_ui.py:114
 #: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
 msgid "RSS Feed"
-msgstr ""
+msgstr "RSS strøm"
 
 #: trac/ticket/query.py:711 trac/ticket/report.py:516 trac/ticket/web_ui.py:110
 msgid "Comma-delimited Text"
-msgstr ""
+msgstr "Komma-separert Tekst"
 
 #: trac/ticket/query.py:713 trac/ticket/report.py:518 trac/ticket/web_ui.py:112
 msgid "Tab-delimited Text"
-msgstr ""
+msgstr "Tab-separert Tekst"
 
 #: trac/ticket/query.py:735 trac/ticket/report.py:63
 msgid "View Tickets"
-msgstr ""
+msgstr "Se Saker"
 
 #: trac/ticket/query.py:886 trac/ticket/query.py:897 trac/ticket/report.py:121
 msgid "Custom Query"
-msgstr ""
+msgstr "Spørring"
 
 #: trac/ticket/query.py:896 trac/ticket/report.py:111 trac/ticket/report.py:112
 #: trac/ticket/report.py:114 trac/ticket/report.py:231
 msgid "Available Reports"
-msgstr ""
+msgstr "Tilgjengelige Rapporter"
 
 #: trac/ticket/query.py:983
 #, python-format
 msgid "[Error: %(error)s]"
-msgstr ""
+msgstr "[Feil: %(error)s]"
 
 #: trac/ticket/query.py:1063
 msgid "No results"
-msgstr ""
+msgstr "Ingen resultat"
 
 #: trac/ticket/report.py:178
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
-msgstr ""
+msgstr "Slett rapport {%(num)s} %(title)s"
 
 #: trac/ticket/report.py:183 trac/ticket/report.py:195
 #: trac/ticket/report.py:243
 #, python-format
 msgid "Report %(num)s does not exist."
-msgstr ""
+msgstr "Rapport %(num)s eksisterer ikke."
 
 #: trac/ticket/report.py:184 trac/ticket/report.py:196
 #: trac/ticket/report.py:244
 msgid "Invalid Report Number"
-msgstr ""
+msgstr "Finner ikke rapportnummer"
 
 #: trac/ticket/report.py:208
 msgid "Create New Report"
-msgstr ""
+msgstr "Opprett ny Rapport"
 
 #: trac/ticket/report.py:212
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr ""
+msgstr "Endre Rapport {%(num)d} %(title)s"
 
 #: trac/ticket/report.py:226
 #, python-format
 msgid "Report failed: %(error)s"
-msgstr ""
+msgstr "Rapport feilet: %(error)s"
 
 #: trac/ticket/report.py:234
 msgid "This is a list of available reports."
-msgstr ""
+msgstr "Dette er en liste over tilgjengelige rapporter."
 
 #: trac/ticket/report.py:259
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
-msgstr ""
+msgstr "Ved spesifisering skal rapportnummeret være \"%(num)s\"."
 
 #: trac/ticket/report.py:305
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr ""
+msgstr "Rapportgenerering feilet: %(error)s"
 
 #: trac/ticket/report.py:520
 msgid "SQL Query"
-msgstr ""
+msgstr "SQL spørring"
 
 #: trac/ticket/report.py:526
 #, python-format
 msgid "Report %(num)s has no SQL query."
-msgstr ""
+msgstr "Rapport %(num)s har ikke noe SQL spørring."
 
 #: trac/ticket/report.py:561
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "Spørring parameter \"sort=%(sort_col)s\" er ikke gyldig"
 
 #: trac/ticket/report.py:607
 #, python-format
 msgid "Dynamic variable '%(name)s' not defined."
-msgstr ""
+msgstr "Dynamisk variabel '%(name)s' er ikke definert"
 
 #: trac/ticket/roadmap.py:213
 #, python-format
@@ -1921,6 +1917,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
+"'%(group1)s' og '%(group2)s' milepælgrupper er satt opp som "
+"\"catch-all\" grupper. Vennligst sjekk konfigurasjon."
 
 #: trac/ticket/roadmap.py:229
 #, python-format
@@ -1928,227 +1926,234 @@ msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
+"'%(groupname)s' milepælgruppe bruker status '%(status)s' som allerede er i "
+"bruk av andre grupper. Vennligst sjekk konfigurasjon."
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:419
 #: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
-msgstr ""
+msgstr "Tidsplan"
 
 #: trac/ticket/roadmap.py:350
 msgid "iCalendar"
-msgstr ""
+msgstr "iCalendar"
 
 #: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
 msgid "Milestone %(name)s"
-msgstr ""
+msgstr "Milepæl %(name)s"
 
 #: trac/ticket/roadmap.py:447
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
-msgstr ""
+msgstr "Sak #%(num)s: %(summary)s"
 
 #: trac/ticket/roadmap.py:621
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
-msgstr ""
+msgstr "Milepælen \"%(name)s\" eksisterer allerede, velg et annet navn"
 
 #: trac/ticket/roadmap.py:626
 msgid "You must provide a name for the milestone."
-msgstr ""
+msgstr "Du må angi et navn for milepælen."
 
 #: trac/ticket/web_ui.py:136 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
-msgstr ""
+msgstr "Ny Sak"
 
 #: trac/ticket/web_ui.py:152
 msgid "id can't be set for a new ticket request."
-msgstr ""
+msgstr "id kan ikke settes ved opprettelse av nye saker"
 
 #: trac/ticket/web_ui.py:203
 msgid "Ticket changes"
-msgstr ""
+msgstr "Saksendringer"
 
 #: trac/ticket/web_ui.py:205
 msgid "Ticket details"
-msgstr ""
+msgstr "Detaljer om saken"
 
 #: trac/ticket/web_ui.py:437
 #, python-format
 msgid "Invalid action \"%(name)s\""
-msgstr ""
+msgstr "Ugyldig handling \"%(name)s\""
 
 #: trac/ticket/web_ui.py:548
 msgid "Back to Query"
-msgstr ""
+msgstr "Tilbake til spørring"
 
 #: trac/ticket/web_ui.py:628 trac/ticket/web_ui.py:778
 msgid "Ticket History"
-msgstr ""
+msgstr "Sakshistorikk"
 
 #: trac/ticket/web_ui.py:673
 msgid "No differences to show"
-msgstr ""
+msgstr "Ingen endringer å vise"
 
 #: trac/ticket/web_ui.py:713 trac/ticket/web_ui.py:768
 #: trac/ticket/web_ui.py:776 trac/wiki/web_ui.py:347 trac/wiki/web_ui.py:353
 #: trac/wiki/web_ui.py:499 trac/wiki/web_ui.py:507
 #, python-format
 msgid "Version %(num)s"
-msgstr ""
+msgstr "Versjon %(num)s"
 
 #: trac/ticket/web_ui.py:716
 msgid "initial"
-msgstr ""
+msgstr "første"
 
 #: trac/ticket/web_ui.py:778 trac/versioncontrol/web_ui/changeset.py:342
 #: trac/wiki/web_ui.py:366
 msgid "Change"
-msgstr ""
+msgstr "Endring"
 
 #: trac/ticket/web_ui.py:783
 msgid "Ticket Diff"
-msgstr ""
+msgstr "Diff for sak"
 
 #: trac/ticket/web_ui.py:851
 msgid "No permission to change ticket fields."
-msgstr ""
+msgstr "Ikke rettighet til å endre felter for saken."
 
 #: trac/ticket/web_ui.py:859
 msgid "No permissions to change ticket fields."
-msgstr ""
+msgstr "Ikke rettighet til å endre felter for saken."
 
 #: trac/ticket/web_ui.py:868
 msgid "No permissions to add a comment."
-msgstr ""
+msgstr "Ikke rettigheter til å legge inn kommentar"
 
 #: trac/ticket/web_ui.py:874
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr ""
+"Beklager, dine endringer kan ikke lagres. Denne saken har blit endret av "
+"noen andre siden du begynte"
+"someone else since you started"
 
 #: trac/ticket/web_ui.py:881
 msgid "Tickets must contain a summary."
-msgstr ""
+msgstr "Saken må ha en tittel."
 
 #: trac/ticket/web_ui.py:904
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
-msgstr ""
+msgstr "Beskrivelsen for saken er for lang (må være kortere enn %(num)s tegn)"
 
 #: trac/ticket/web_ui.py:919
 msgid "Invalid comment threading identifier"
-msgstr ""
+msgstr "Feil med id for kommentar"
 
 #: trac/ticket/web_ui.py:926
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr ""
+msgstr "Saksfeltet '%(field)s' er ikke gyldig: %(message)s"
 
 #: trac/ticket/web_ui.py:1036
 msgid "Assign to"
-msgstr ""
+msgstr "Overfør til"
 
 #: trac/ticket/web_ui.py:1052
 msgid "Open"
-msgstr ""
+msgstr "Åpen"
 
 #: trac/ticket/web_ui.py:1053
 msgid "Closed"
-msgstr ""
+msgstr "Lukket"
 
 #: trac/ticket/web_ui.py:1068
 msgid "Add to Cc"
-msgstr ""
+msgstr "Legg til Cc"
 
 #: trac/ticket/web_ui.py:1069
 msgid "Remove from Cc"
-msgstr ""
+msgstr "Fjern fra Cc"
 
 #: trac/ticket/web_ui.py:1070
 msgid "Add/Remove from Cc"
-msgstr ""
+msgstr "Legg til/fjern fra Cc"
 
 #: trac/ticket/web_ui.py:1071
 msgid "<Author field>"
-msgstr ""
+msgstr "<Forfatter felt>"
 
 #: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:93
 msgid "yes"
-msgstr ""
+msgstr "ja"
 
 #: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:96
 msgid "no"
-msgstr ""
+msgstr "nei"
 
 #: trac/ticket/web_ui.py:1260 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
-msgstr ""
+msgstr "endret"
 
 #: trac/ticket/templates/milestone_delete.html:9
 #: trac/ticket/templates/milestone_delete.html:21
 msgid "Delete Milestone"
-msgstr ""
+msgstr "Slett Milepæl"
 
 #: trac/ticket/templates/milestone_delete.html:25
 msgid "Are you sure you want to delete this milestone?"
-msgstr ""
+msgstr "Er du sikker på at du vil slette denne milepælen?"
 
 #: trac/ticket/templates/milestone_delete.html:27
 msgid "Retarget associated tickets to milestone"
-msgstr ""
+msgstr "Overfør tilknyttede saker til milepæl"
 
 #: trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_view.html:91
 msgid "Delete milestone"
-msgstr ""
+msgstr "Slett Milepæl"
 
 #: trac/ticket/templates/milestone_delete.html:39
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
 #: trac/ticket/templates/roadmap.html:72
 msgid "TracRoadmap"
-msgstr ""
+msgstr "TracRoadmap"
 
 #: trac/ticket/templates/milestone_delete.html:39
 msgid ""
 "for help on using\n"
 "      the roadmap."
 msgstr ""
+"for hjelp til bruk av\n"
+"      tidsplanen."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
 msgid "Edit Milestone"
-msgstr ""
+msgstr "Endre Milepæl"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
 msgid "New Milestone"
-msgstr ""
+msgstr "Ny Milepæl"
 
 #: trac/ticket/templates/milestone_edit.html:45
 msgid "Name of the milestone:"
-msgstr ""
+msgstr "Milepælens navn:"
 
 #: trac/ticket/templates/milestone_edit.html:50
 msgid "Schedule"
-msgstr ""
+msgstr "Tidsplan"
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
-msgstr ""
+msgstr "Overfør tilknyttede åpne saker til milepæl:"
 
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
 msgid "Submit changes"
-msgstr ""
+msgstr "Send endringer"
 
 #: trac/ticket/templates/milestone_edit.html:90
 msgid "Add milestone"
-msgstr ""
+msgstr "Legg til milepæl"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2157,328 +2162,334 @@ msgid ""
 "for help on using\n"
 "        the roadmap."
 msgstr ""
+"for hjelp til bruk av\n"
+"      tidsplanen."
 
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:22
 msgid "Milestone"
-msgstr ""
+msgstr "Milepæl"
 
 #: trac/ticket/templates/milestone_view.html:26
 msgid ""
 "ago\n"
 "            ("
 msgstr ""
+"siden\n"
+"            ("
 
 #: trac/ticket/templates/milestone_view.html:30
 #: trac/ticket/templates/roadmap.html:43
 msgid "late"
-msgstr ""
+msgstr "forsinket"
 
 #: trac/ticket/templates/milestone_view.html:33
 #: trac/ticket/templates/roadmap.html:46
 msgid "Due in"
-msgstr ""
+msgstr "Beregnet slutt"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:50
 msgid "No date set"
-msgstr ""
+msgstr "Ingen dato satt"
 
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:42
 msgid "by"
-msgstr ""
+msgstr "av"
 
 #: trac/ticket/templates/milestone_view.html:58
 msgid "(none)"
-msgstr ""
+msgstr "(ingen)"
 
 #: trac/ticket/templates/milestone_view.html:87
 msgid "Edit milestone"
-msgstr ""
+msgstr "Endre milepæl"
 
 #: trac/ticket/templates/query.html:28
 #: trac/ticket/templates/query_results.html:22
 #: trac/ticket/templates/report_view.html:51
 msgid "match"
-msgstr ""
+msgstr "treff"
 
 #: trac/ticket/templates/query.html:41
 msgid "Filters"
-msgstr ""
+msgstr "Filtere"
 
 #: trac/ticket/templates/query.html:42
 msgid "Query filters"
-msgstr ""
+msgstr "Filter for spørring"
 
 #: trac/ticket/templates/query.html:117
 msgid "Add filter"
-msgstr ""
+msgstr "Legg til filter"
 
 #: trac/ticket/templates/query.html:137
 msgid "Columns"
-msgstr ""
+msgstr "Kolonner"
 
 #: trac/ticket/templates/query.html:151
 msgid "Group results by"
-msgstr ""
+msgstr "Gruppér etter"
 
 #: trac/ticket/templates/query.html:161
 msgid "descending"
-msgstr ""
+msgstr "nedadstigende"
 
 #: trac/ticket/templates/query.html:165
 msgid "Show under each result:"
-msgstr ""
+msgstr "Vis under hvert resultat:"
 
 #: trac/ticket/templates/query.html:175
 msgid "Max items per page"
-msgstr ""
+msgstr "Maks. antall per side"
 
 #: trac/ticket/templates/query.html:218
 msgid "Edit query"
-msgstr ""
+msgstr "Endre spørring"
 
 #: trac/ticket/templates/query.html:226
 msgid "Save query"
-msgstr ""
+msgstr "Lagre spørring"
 
 #: trac/ticket/templates/query.html:226
 #, python-format
 msgid "Save updated query in report {%(id)s}"
-msgstr ""
+msgstr "Lagre endret spørring som rapport {%(id)s}"
 
 #: trac/ticket/templates/query.html:226
 msgid "Create new report from current query"
-msgstr ""
+msgstr "Opprett ny rapport fra gjeldende spørring"
 
 #: trac/ticket/templates/query.html:235
 msgid "Delete query"
-msgstr ""
+msgstr "Slett spørring"
 
 #: trac/ticket/templates/query.html:242
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
-msgstr ""
+msgstr "TracQuery"
 
 #: trac/ticket/templates/query.html:242
 msgid "for help on using queries."
-msgstr ""
+msgstr "for hjelp om spørringer."
 
 #: trac/ticket/templates/query_results.html:57
 #: trac/ticket/templates/query_results.html:59
 msgid "View ticket"
-msgstr ""
+msgstr "Se sak"
 
 #: trac/ticket/templates/query_results.html:73
 msgid "Reported by"
-msgstr ""
+msgstr "Rapportert av"
 
 #: trac/ticket/templates/query_results.html:80
 msgid "(this ticket)"
-msgstr ""
+msgstr "(denne saken)"
 
 #: trac/ticket/templates/query_results.html:96
 msgid "(more results for this group on next page)"
-msgstr ""
+msgstr "(flere resultat for denne gruppen på neste side)"
 
 #: trac/ticket/templates/report_delete.html:18
 msgid "Are you sure you want to delete this report?"
-msgstr ""
+msgstr "Er du sikker på at du vil slette denne rapporten?"
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
 msgid "Delete report"
-msgstr ""
+msgstr "Slett rapport"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
 #: trac/ticket/templates/report_view.html:170
 msgid "TracReports"
-msgstr ""
+msgstr "TracReports"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
 #: trac/ticket/templates/report_view.html:170
 msgid "for help on using and creating reports."
-msgstr ""
+msgstr "for hjelp til opprettelse og bruk av rapporter."
 
 #: trac/ticket/templates/report_edit.html:21
 msgid "Report Title:"
-msgstr ""
+msgstr "Tittel:"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr ""
+msgstr "Beskrivelse: (Du kan benytte [1:WikiFormatting] her)"
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
-msgstr ""
+msgstr "Feil:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "Query for Report: (can be either SQL or, if starting with"
-msgstr ""
+msgstr "Spørring for rapport: (kan være enten SQL, eller starte med"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "query:"
-msgstr ""
+msgstr "query:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid ", a"
-msgstr ""
+msgstr ", en"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "expression)"
-msgstr ""
+msgstr "spørring"
 
 #: trac/ticket/templates/report_edit.html:41
 msgid "Save report"
-msgstr ""
+msgstr "Lagre rapport"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
-msgstr ""
+msgstr "treff)"
 
 #: trac/ticket/templates/report_view.html:27
 msgid "Edit report"
-msgstr ""
+msgstr "Endre rapport"
 
 #: trac/ticket/templates/report_view.html:33
 msgid "Copy report"
-msgstr ""
+msgstr "Kopiér rapport"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
 msgid "View report"
-msgstr ""
+msgstr "Se på rapport"
 
 #: trac/ticket/templates/report_view.html:160
 msgid "Create new report"
-msgstr ""
+msgstr "Opprett ny rapport"
 
 #: trac/ticket/templates/roadmap.html:23
 msgid "Show already completed milestones"
-msgstr ""
+msgstr "Vis ferdige milepæler"
 
 #: trac/ticket/templates/roadmap.html:34
 msgid "Milestone:"
-msgstr ""
+msgstr "Milepæl:"
 
 #: trac/ticket/templates/roadmap.html:39
 msgid ""
 "ago\n"
 "                ("
 msgstr ""
+"siden\n"
+"                ("
 
 #: trac/ticket/templates/roadmap.html:67
 msgid "Add new milestone"
-msgstr ""
+msgstr "Legg til ny milepæl"
 
 #: trac/ticket/templates/ticket.html:59
 #: trac/versioncontrol/templates/changeset.html:128
 msgid "added"
-msgstr ""
+msgstr "lagt til"
 
 #: trac/ticket/templates/ticket.html:62
 msgid "changed from"
-msgstr ""
+msgstr "endret fra"
 
 #: trac/ticket/templates/ticket.html:65
 #: trac/versioncontrol/templates/browser.html:125
 msgid "set to"
-msgstr ""
+msgstr "satt til"
 
 #: trac/ticket/templates/ticket.html:68
 msgid "deleted"
-msgstr ""
+msgstr "slettet"
 
 #: trac/ticket/templates/ticket.html:81
 msgid "Ticket #"
-msgstr ""
+msgstr "Sak #"
 
 #: trac/ticket/templates/ticket.html:85
 msgid "Create New Ticket"
-msgstr ""
+msgstr "Opprett ny sak"
 
 #: trac/ticket/templates/ticket.html:96 trac/ticket/templates/ticket.html:99
 msgid "— at"
-msgstr ""
+msgstr "ved"
 
 #: trac/ticket/templates/ticket.html:110
 msgid "Preview ("
-msgstr ""
+msgstr "Forhåndsvis ("
 
 #: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:62
 msgid "skip"
-msgstr ""
+msgstr "hopp"
 
 #: trac/ticket/templates/ticket.html:115 trac/ticket/templates/ticket.html:210
 msgid "in reply to:"
-msgstr ""
+msgstr "som svar til:"
 
 #: trac/ticket/templates/ticket.html:117
 msgid "Changed by"
-msgstr ""
+msgstr "Endret av"
 
 #: trac/ticket/templates/ticket.html:128
 msgid "Opened"
-msgstr ""
+msgstr "Åpnet"
 
 #: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:129
 msgid "ago"
-msgstr ""
+msgstr "siden"
 
 #: trac/ticket/templates/ticket.html:129
 msgid "Last modified"
-msgstr ""
+msgstr "Sist endret"
 
 #: trac/ticket/templates/ticket.html:130
 msgid "(ticket not yet created)"
-msgstr ""
+msgstr "(saken er ikke opprettet enda)"
 
 #: trac/ticket/templates/ticket.html:139
 msgid "Reported by:"
-msgstr ""
+msgstr "Rapportert av:"
 
 #: trac/ticket/templates/ticket.html:141
 msgid "Owned by:"
-msgstr ""
+msgstr "Eies av:"
 
 #: trac/ticket/templates/ticket.html:170
 msgid "(last modified by"
-msgstr ""
+msgstr "(sist endret av"
 
 #: trac/ticket/templates/ticket.html:172
 msgid "diff"
-msgstr ""
+msgstr "diff"
 
 #: trac/ticket/templates/ticket.html:183 trac/ticket/templates/ticket.html:225
 msgid "Reply"
-msgstr ""
+msgstr "Svar"
 
 #: trac/ticket/templates/ticket.html:183
 msgid "Reply, quoting this description"
-msgstr ""
+msgstr "Svar, med kopi av beskrivelsen"
 
 #: trac/ticket/templates/ticket.html:202
 msgid "Change History"
-msgstr ""
+msgstr "Endringslogg"
 
 #: trac/ticket/templates/ticket.html:214
 msgid "follow-up"
-msgstr ""
+msgstr "oppfølging"
 
 #: trac/ticket/templates/ticket.html:220
 msgid "Changed"
-msgstr ""
+msgstr "Endret"
 
 #: trac/ticket/templates/ticket.html:221
 msgid "ago by"
-msgstr ""
+msgstr "siden av"
 
 #: trac/ticket/templates/ticket.html:240
 msgid "Add/Change #"
-msgstr ""
+msgstr "Legg til/endre #"
 
 #: trac/ticket/templates/ticket.html:260
 msgid ""
@@ -2486,117 +2497,124 @@ msgid ""
 "              [1:WikiFormatting]\n"
 "              here):"
 msgstr ""
+"Kommentar (du kan bruke\n"
+"              [1:WikiFormatting]\n"
+"              her):"
 
 #: trac/ticket/templates/ticket.html:273
 msgid "Properties"
-msgstr ""
+msgstr "Egenskaper"
 
 #: trac/ticket/templates/ticket.html:276
 msgid "Summary:"
-msgstr ""
+msgstr "Tittel:"
 
 #: trac/ticket/templates/ticket.html:284
 msgid "Reporter:"
-msgstr ""
+msgstr "Rapportert av:"
 
 #: trac/ticket/templates/ticket.html:371
 msgid "I have files to attach to this ticket"
-msgstr ""
+msgstr "Jeg har filer som vedlegg til denne saken"
 
 #: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:124
 msgid "Preview"
-msgstr ""
+msgstr "Forhåndsvis"
 
 #: trac/ticket/templates/ticket.html:390
 msgid "TracTickets"
-msgstr ""
+msgstr "TracTickets"
 
 #: trac/ticket/templates/ticket.html:390
 msgid ""
 "for help on using\n"
 "        tickets."
 msgstr ""
+"for hjelp om\n"
+"        saker."
 
 #: trac/ticket/templates/ticket_notify_email.txt:9
 msgid "Changes (by"
-msgstr ""
+msgstr "Endringer (av"
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 msgid "Description changed by"
-msgstr ""
+msgstr "Beskrivelse endret av"
 
 #: trac/ticket/templates/ticket_notify_email.txt:28
 msgid ""
 "-- \n"
 "Ticket URL: <"
 msgstr ""
+"-- \n"
+"URL til saken: <"
 
 #: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
-msgstr ""
+msgstr "Tidslinje"
 
 #: trac/timeline/web_ui.py:202
 msgid "Previous period"
-msgstr ""
+msgstr "Forrige periode"
 
 #: trac/timeline/web_ui.py:208
 msgid "Next period"
-msgstr ""
+msgstr "Neste periode"
 
 #: trac/timeline/web_ui.py:269
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr ""
+msgstr "%(date)s i Tidslinjen"
 
 #: trac/timeline/templates/timeline.html:20
 msgid "View changes from"
-msgstr ""
+msgstr "Se endringer siden"
 
 #: trac/timeline/templates/timeline.html:21
 msgid "days back"
-msgstr ""
+msgstr "dager tilbake"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
-msgstr ""
+msgstr "TracTimeline"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "for information about the timeline view."
-msgstr ""
+msgstr "for informasjon om Tidslinje visningen."
 
 #: trac/util/presentation.py:252
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr ""
+msgstr "%(last)d av %(total)d"
 
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr ""
+msgstr "%(start)d - %(stop)d av %(total)d"
 
 #: trac/versioncontrol/api.py:81
 #, python-format
 msgid "Can't synchronize with the repository (%(error)s)"
-msgstr ""
+msgstr "Kan ikke synkronisere med kildekodelager (%(error)s)"
 
 #: trac/versioncontrol/api.py:96
 #, python-format
 msgid "Changeset %(rev)s"
-msgstr ""
+msgstr "Endringssett %(rev)s"
 
 #: trac/versioncontrol/api.py:103
 msgid "Directory"
-msgstr ""
+msgstr "Mappe"
 
 #: trac/versioncontrol/api.py:107
 #, python-format
 msgid "at version %(rev)s"
-msgstr ""
+msgstr "i versjon %(rev)s"
 
 #: trac/versioncontrol/api.py:109
 msgid "Path"
-msgstr ""
+msgstr "Sti"
 
 #: trac/versioncontrol/api.py:131
 #, python-format
@@ -2608,49 +2626,51 @@ msgstr ""
 #: trac/versioncontrol/api.py:163
 #, python-format
 msgid "No changeset %(rev)s in the repository"
-msgstr ""
+msgstr "Endringssett %(rev) finnes ikke i kildekodelager"
 
 #: trac/versioncontrol/api.py:165
 msgid "No such changeset"
-msgstr ""
+msgstr "Endringssett finnes ikke"
 
 #: trac/versioncontrol/api.py:171
 msgid "No such node"
-msgstr ""
+msgstr "Node finnes ikke"
 
 #: trac/versioncontrol/api.py:509
 #, python-format
 msgid "Insufficient permissions to access %(path)s"
-msgstr ""
+msgstr "Manglende rettigheter for tilgang til %(path)s"
 
 #: trac/versioncontrol/api.py:514
 #, python-format
 msgid "Insufficient permissions to access changeset %(id)s"
-msgstr ""
+msgstr "Manglende rettigheter for tilgang til endringssett %(id)s"
 
 #: trac/versioncontrol/cache.py:95
 msgid ""
 "The 'repository_dir' has changed, a 'trac-admin resync' operation is "
 "needed."
 msgstr ""
+"Inntilling for 'repository_dir' er endret. Kommandoen 'trac-admin resync'"
+"er nødvendig."
 
 #: trac/versioncontrol/cache.py:114
 msgid "Missing \"youngest_rev\" in cache metadata"
-msgstr ""
+msgstr "Mangler \"youngest_rev\" i cache metadata"
 
 #: trac/versioncontrol/svn_fs.py:294
 #, python-format
 msgid "Subversion >= 1.0 required: Found %(version)s"
-msgstr ""
+msgstr "Subversion >= 1.0 nødvendig: Fant %(version)s"
 
 #: trac/versioncontrol/svn_fs.py:371
 msgid "No svn:externals configured in trac.ini"
-msgstr ""
+msgstr "Ingen svn:externals er konfigurert i trac.ini"
 
 #: trac/versioncontrol/svn_fs.py:395
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
-msgstr ""
+msgstr "%(path)s virker ikke å være et Subversion repository"
 
 #: trac/versioncontrol/svn_fs.py:652
 #, python-format
@@ -2658,88 +2678,90 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
+"Diff feil: Utgangspunkt %(oldnode)s (%(oldpath)s i revisjon %(oldrev)s)"
+" og Målet er %(newnode)s (%(newpath)s i revisjon %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:803
 #, python-format
 msgid "svn blame failed: %(error)s"
-msgstr ""
+msgstr "svn blame feilet: %(error)s"
 
 #: trac/versioncontrol/templates/browser.html:45
 msgid "View revision:"
-msgstr ""
+msgstr "Se revisjon:"
 
 #: trac/versioncontrol/templates/browser.html:55
 msgid "Visit:"
-msgstr ""
+msgstr "Gå til:"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Go!"
-msgstr ""
+msgstr "Gå!"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Jump to the chosen preselected path"
-msgstr ""
+msgstr "Snarvei til forhåndsvalgt sti"
 
 #: trac/versioncontrol/templates/browser.html:82
 #: trac/versioncontrol/templates/revisionlog.html:92
 #: trac/versioncontrol/web_ui/browser.py:622
 msgid "Rev"
-msgstr ""
+msgstr "Rev"
 
 #: trac/versioncontrol/templates/browser.html:84
 #: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:533
 msgid "Last Change"
-msgstr ""
+msgstr "Siste endring"
 
 #: trac/versioncontrol/templates/browser.html:91
 msgid "Parent Directory"
-msgstr ""
+msgstr "Ett nivå opp"
 
 #: trac/versioncontrol/templates/browser.html:100
 #: trac/wiki/templates/wiki_edit.html:51 trac/wiki/templates/wiki_view.html:23
 msgid "Revision info"
-msgstr ""
+msgstr "Revisjonsinformasjon"
 
 #: trac/versioncontrol/templates/browser.html:102
 msgid "Revision"
-msgstr ""
+msgstr "Revisjon"
 
 #: trac/versioncontrol/templates/browser.html:103
 msgid "(checked in by"
-msgstr ""
+msgstr "(sjekket inn av"
 
 #: trac/versioncontrol/templates/browser.html:142
 msgid "TracBrowser"
-msgstr ""
+msgstr "TracBrowser"
 
 #: trac/versioncontrol/templates/browser.html:142
 msgid "for help on using the browser."
-msgstr ""
+msgstr "for hjelp til bruk av kodevisning."
 
 #: trac/versioncontrol/templates/browser.html:153
 msgid "View changes..."
-msgstr ""
+msgstr "Se endringer..."
 
 #: trac/versioncontrol/templates/browser.html:153
 msgid "Select paths and revs for Diff"
-msgstr ""
+msgstr "Velg stier og revisjoner for Diff"
 
 #: trac/versioncontrol/templates/changeset.html:21
 #: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/web_ui/changeset.py:344
 msgid "Changeset"
-msgstr ""
+msgstr "Endringssett"
 
 #: trac/versioncontrol/templates/changeset.html:22
 #: trac/versioncontrol/templates/changeset.html:32
 #: trac/versioncontrol/templates/changeset.html:34
 #: trac/versioncontrol/templates/changeset.html:36
 msgid "Show full changeset"
-msgstr ""
+msgstr "Vis fullt endringssett"
 
 #: trac/versioncontrol/templates/changeset.html:22
 msgid "for"
-msgstr ""
+msgstr "for"
 
 #: trac/versioncontrol/templates/changeset.html:23
 #: trac/versioncontrol/templates/changeset.html:26
@@ -2747,88 +2769,88 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:33
 #: trac/versioncontrol/templates/changeset.html:64
 msgid "Show entry in browser"
-msgstr ""
+msgstr "Vis valg i kildekodevisning"
 
 #: trac/versioncontrol/templates/changeset.html:25
 msgid "Changes in"
-msgstr ""
+msgstr "Endringer i"
 
 #: trac/versioncontrol/templates/changeset.html:27
 msgid "Show revision log"
-msgstr ""
+msgstr "Vis revisjonslogg"
 
 #: trac/versioncontrol/templates/changeset.html:30
 msgid "Changes from"
-msgstr ""
+msgstr "Endringer fra"
 
 #: trac/versioncontrol/templates/changeset.html:31
 #: trac/versioncontrol/templates/changeset.html:33
 msgid "at"
-msgstr ""
+msgstr "ved"
 
 #: trac/versioncontrol/templates/changeset.html:32
 #: trac/versioncontrol/templates/changeset.html:34
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: trac/versioncontrol/templates/changeset.html:77
 #: trac/versioncontrol/templates/changeset.html:80
 msgid "Show differences"
-msgstr ""
+msgstr "Vis forskjeller"
 
 #: trac/versioncontrol/templates/changeset.html:77
 msgid "view diffs"
-msgstr ""
+msgstr "vis forskjeller"
 
 #: trac/versioncontrol/templates/changeset.html:87
 msgid "Show previous version in browser"
-msgstr ""
+msgstr "Vis forrige versjon i kodevisning"
 
 #: trac/versioncontrol/templates/changeset.html:87
 msgid "previous"
-msgstr ""
+msgstr "forrige"
 
 #: trac/versioncontrol/templates/changeset.html:109
 msgid "Message:"
-msgstr ""
+msgstr "Melding:"
 
 #: trac/versioncontrol/templates/changeset.html:121
 msgid "Location:"
-msgstr ""
+msgstr "Lokasjon:"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "removed"
-msgstr ""
+msgstr "slettet"
 
 #: trac/versioncontrol/templates/changeset.html:131
 msgid "copied"
-msgstr ""
+msgstr "kopiert"
 
 #: trac/versioncontrol/templates/changeset.html:132
 msgid "moved"
-msgstr ""
+msgstr "flyttet"
 
 #: trac/versioncontrol/templates/diff_form.html:9
 #: trac/versioncontrol/templates/diff_form.html:20
 msgid "Prepare Diff"
-msgstr ""
+msgstr "Vis Diff"
 
 #: trac/versioncontrol/templates/diff_form.html:26
 msgid "Select the base and the target for the diff:"
-msgstr ""
+msgstr "Velg basis og mål for sammenligning:"
 
 #: trac/versioncontrol/templates/diff_form.html:29
 msgid "From:"
-msgstr ""
+msgstr "Fra:"
 
 #: trac/versioncontrol/templates/diff_form.html:33
 #: trac/versioncontrol/templates/diff_form.html:43
 msgid "at revision:"
-msgstr ""
+msgstr "i revisjon:"
 
 #: trac/versioncontrol/templates/diff_form.html:39
 msgid "To:"
-msgstr ""
+msgstr "Til:"
 
 #: trac/versioncontrol/templates/diff_form.html:49
 msgid ""
@@ -2838,194 +2860,205 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
+"For begge filområder kan du begynne å skrive stien og så vil du få\n"
+"              presentert en liste over eksistererende filer og mapper å "
+"velge\n"
+"              fra. Foreta valg i listen ved å klikke, eller bruk\n"
+"              opp/ned piler og tabulator på tastaturet."
 
 #: trac/versioncontrol/templates/diff_form.html:63
 msgid "TracChangeset"
-msgstr ""
+msgstr "TracChangeset"
 
 #: trac/versioncontrol/templates/diff_form.html:63
 msgid "for help on using the diff feature."
-msgstr ""
+msgstr "for hjelp til sammenligninger."
 
 #: trac/versioncontrol/templates/dir_entries.html:17
 msgid "View Revision Log"
-msgstr ""
+msgstr "Se revisjonslogg"
 
 #: trac/versioncontrol/templates/revisionlog.html:10
 msgid "(log)"
-msgstr ""
+msgstr "(logg)"
 
 #: trac/versioncontrol/templates/revisionlog.html:22
 msgid "Revision Log Mode:"
-msgstr ""
+msgstr "Modus for revisjonslogg:"
 
 #: trac/versioncontrol/templates/revisionlog.html:26
 msgid "Stop on copy"
-msgstr ""
+msgstr "Stop ved kopi"
 
 #: trac/versioncontrol/templates/revisionlog.html:32
 msgid "Follow copies"
-msgstr ""
+msgstr "Følg kopiering"
 
 #: trac/versioncontrol/templates/revisionlog.html:38
 msgid "Show only adds and deletes"
-msgstr ""
+msgstr "Vis kun nye og slettede"
 
 #: trac/versioncontrol/templates/revisionlog.html:43
 msgid "View log starting at"
-msgstr ""
+msgstr "Se logg fra"
 
 #: trac/versioncontrol/templates/revisionlog.html:47
 msgid "and back to"
-msgstr ""
+msgstr "og tilbake til"
 
 #: trac/versioncontrol/templates/revisionlog.html:52
 msgid "Show at most"
-msgstr ""
+msgstr "Begrens til"
 
 #: trac/versioncontrol/templates/revisionlog.html:54
 msgid "revisions per page."
-msgstr ""
+msgstr "revisjoner per side."
 
 #: trac/versioncontrol/templates/revisionlog.html:59
 msgid "Show full log messages"
-msgstr ""
+msgstr "Vis fulle logg meldinger"
 
 #: trac/versioncontrol/templates/revisionlog.html:77
 msgid "Copied or renamed"
-msgstr ""
+msgstr "Kopiert eller døpt om"
 
 #: trac/versioncontrol/templates/revisionlog.html:84
 msgid "Diff from Old Revision to New Revision (select them below)"
-msgstr ""
+msgstr "Endring fra gammel revisjon til ny revisjon (velg nedenfor)"
 
 #: trac/versioncontrol/templates/revisionlog.html:93
 msgid "Chgset"
-msgstr ""
+msgstr "Endring"
 
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Log Message"
-msgstr ""
+msgstr "Endringsmelding"
 
 #: trac/versioncontrol/templates/revisionlog.html:107
 msgid "copied from"
-msgstr ""
+msgstr "kopiert fra"
 
 #: trac/versioncontrol/templates/revisionlog.html:121
 msgid "View log starting at this revision"
-msgstr ""
+msgstr "Se logg med start på denne revisjonen"
 
 #: trac/versioncontrol/templates/revisionlog.html:163
 msgid "Diff from Old Revision to New Revision (select them above)"
-msgstr ""
+msgstr "Endring fra gammel revisjon til ny revisjon (velg ovenfor)"
 
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "TracRevisionLog"
-msgstr ""
+msgstr "TracRevisionLog"
 
 #: trac/versioncontrol/templates/revisionlog.html:169
 msgid "for help on using the revision log."
-msgstr ""
+msgstr "for hjelp til bruk av revisjonsloggen."
 
 #: trac/versioncontrol/templates/revisionlog.txt:1
 msgid ""
 "#\n"
 "# ChangeLog for"
 msgstr ""
+"#\n"
+"# Endringslogg for"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 msgid ""
 "# \n"
 "# Generated by Trac"
 msgstr ""
+"# \n"
+"# Generert av Trac"
 
 #: trac/versioncontrol/web_ui/browser.py:297
 msgid "Browse Source"
-msgstr ""
+msgstr "Kildekode"
 
 #: trac/versioncontrol/web_ui/browser.py:345
 #: trac/versioncontrol/web_ui/changeset.py:240
 msgid "Invalid Changeset Number"
-msgstr ""
+msgstr "Ikke gyldig endringsnummer"
 
 #: trac/versioncontrol/web_ui/browser.py:351
 #: trac/versioncontrol/web_ui/log.py:98
 msgid "Parent directory"
-msgstr ""
+msgstr "Ett nivå opp"
 
 #: trac/versioncontrol/web_ui/browser.py:377
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: trac/versioncontrol/web_ui/browser.py:378
 msgid "View file without annotations"
-msgstr ""
+msgstr "Se fil uten annotasjoner"
 
 #: trac/versioncontrol/web_ui/browser.py:382
 msgid "Annotate"
-msgstr ""
+msgstr "Annotèr"
 
 #: trac/versioncontrol/web_ui/browser.py:383
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
+"Annotèr hver linje med revisjonsnummer for siste endring (dette kan være "
+"tidkrevende...)"
 
 #: trac/versioncontrol/web_ui/browser.py:389
 msgid "Revision Log"
-msgstr ""
+msgstr "Revisjonslogg"
 
 #: trac/versioncontrol/web_ui/browser.py:455
 #: trac/versioncontrol/web_ui/changeset.py:334
 msgid "Zip Archive"
-msgstr ""
+msgstr "Zip arkiv"
 
 #: trac/versioncontrol/web_ui/browser.py:622
 msgid "Revision in which the line changed"
-msgstr ""
+msgstr "Revisjon som endret linjen"
 
 #: trac/versioncontrol/web_ui/changeset.py:333
 msgid "Unified Diff"
-msgstr ""
+msgstr "Unified Diff"
 
 #: trac/versioncontrol/web_ui/changeset.py:348
 msgid "Reverse Diff"
-msgstr ""
+msgstr "Reversert Diff"
 
 #: trac/versioncontrol/web_ui/changeset.py:379
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
-msgstr ""
+msgstr "Endringssett %(id)s for %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:382
 #: trac/versioncontrol/web_ui/changeset.py:404
 #: trac/versioncontrol/web_ui/changeset.py:422
 #, python-format
 msgid "Changeset %(id)s"
-msgstr ""
+msgstr "Endringssett %(id)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:452
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
-msgstr ""
+msgstr "Vis revisjon %(rev)s av denne filen i kodevisning"
 
 #: trac/versioncontrol/web_ui/changeset.py:595
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr ""
+msgstr "Vis endringssett %(id)s innenfor %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:605
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
-msgstr ""
+msgstr "Vis %(range)s forskjeller innenfor %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:767
 msgid "Repository checkins"
-msgstr ""
+msgstr "Repository innsjekkinger"
 
 #: trac/versioncontrol/web_ui/changeset.py:939
 msgid "Changesets"
-msgstr ""
+msgstr "Endringssett"
 
 #: trac/versioncontrol/web_ui/log.py:170
 #, python-format
@@ -3033,190 +3066,194 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
+"Filen eller mappen '%(path)s' eksisterer ikke i revisjon %(rev)s eller i "
+"noen tidligere revisjon."
 
 #: trac/versioncontrol/web_ui/log.py:172
 msgid "Nonexistent path"
-msgstr ""
+msgstr "Stien eksisterer ikke"
 
 #: trac/versioncontrol/web_ui/log.py:188
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr ""
+msgstr "Endringslogg (start i %(path)s, revisjon %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:245
 msgid "ChangeLog"
-msgstr ""
+msgstr "Endringslogg"
 
 #: trac/versioncontrol/web_ui/log.py:247
 msgid "View Latest Revision"
-msgstr ""
+msgstr "Se siste revisjon"
 
 #: trac/versioncontrol/web_ui/log.py:251
 msgid "Older Revisions"
-msgstr ""
+msgstr "Eldre revisjoner"
 
 #: trac/web/auth.py:89
 #, python-format
 msgid "logged in as %(user)s"
-msgstr ""
+msgstr "innlogget som %(user)s"
 
 #: trac/web/auth.py:92
 msgid "Logout"
-msgstr ""
+msgstr "Logg ut"
 
 #: trac/web/auth.py:95
 msgid "Login"
-msgstr ""
+msgstr "Logg inn"
 
 #: trac/web/auth.py:137
 #, python-format
 msgid "Already logged in as %(user)s."
-msgstr ""
+msgstr "Allerde innlogget som %(user)s."
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, python-format
 msgid "Previous %(label)s"
-msgstr ""
+msgstr "Forrige %(label)s"
 
 #: trac/web/chrome.py:180 trac/web/chrome.py:187
 #, python-format
 msgid "Next %(label)s"
-msgstr ""
+msgstr "Neste %(label)s"
 
 #: trac/wiki/api.py:339
 msgid "no permission to view this wiki page"
-msgstr ""
+msgstr "mangler rettighet til å se denne wiki siden"
 
 #: trac/wiki/formatter.py:133
 #, python-format
 msgid "HTML parsing error: %(message)s"
-msgstr ""
+msgstr "HTML visningsfeil: %(message)s"
 
 #: trac/wiki/intertrac.py:51
 #, python-format
 msgid "Can't view %(link)s:"
-msgstr ""
+msgstr "Kan ikke vise %(link)s:"
 
 #: trac/wiki/macros.py:467
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
-msgstr ""
+msgstr "Feil: kan ikke finne beskrivelse for macro %(name)s"
 
 #: trac/wiki/macros.py:550
 msgid "Table of Contents"
-msgstr ""
+msgstr "Innholdsfortegnelse"
 
 #: trac/wiki/model.py:146
 msgid "Page not modified"
-msgstr ""
+msgstr "Siden er ikke endret"
 
 #: trac/wiki/web_ui.py:82 trac/wiki/web_ui.py:585
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: trac/wiki/web_ui.py:84
 msgid "Help/Guide"
-msgstr ""
+msgstr "Hjelp/Guide"
 
 #: trac/wiki/web_ui.py:119
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
-msgstr ""
+msgstr "Ingen versjon \"%(num)s\" for Wiki siden \"%(name)s\""
 
 #: trac/wiki/web_ui.py:248
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
-msgstr ""
+msgstr "Wiki side feltet '%(field)s' er ugyldig: %(message)s"
 
 #: trac/wiki/web_ui.py:252
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
-msgstr ""
+msgstr "Ugyldig Wiki side: %(message)s"
 
 #: trac/wiki/web_ui.py:295
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
-msgstr ""
+msgstr "Versjon %(num)s for siden \"%(name)s\" eksisterer ikke"
 
 #: trac/wiki/web_ui.py:349
 msgid "Page history"
-msgstr ""
+msgstr "Side historikk"
 
 #: trac/wiki/web_ui.py:366
 msgid "Wiki History"
-msgstr ""
+msgstr "Wiki historikk"
 
 #: trac/wiki/web_ui.py:431
 #, python-format
 msgid "Page %(name)s does not exist"
-msgstr ""
+msgstr "Siden %(name)s eksisterer ikke"
 
 #: trac/wiki/web_ui.py:468
 #, python-format
 msgid "Page %(name)s not found"
-msgstr ""
+msgstr "Siden %(name)s ikke funnet"
 
 #: trac/wiki/web_ui.py:502 trac/wiki/web_ui.py:511
 msgid "View Latest Version"
-msgstr ""
+msgstr "Se siste versjon"
 
 #: trac/wiki/web_ui.py:528
 msgid "Start Page"
-msgstr ""
+msgstr "Startsiden"
 
 #: trac/wiki/web_ui.py:529
 msgid "Index"
-msgstr ""
+msgstr "Indeks"
 
 #: trac/wiki/web_ui.py:531
 msgid "History"
-msgstr ""
+msgstr "Historikk"
 
 #: trac/wiki/web_ui.py:541
 msgid "Wiki changes"
-msgstr ""
+msgstr "Wiki endringer"
 
 #: trac/wiki/templates/wiki_delete.html:22
 msgid "Delete"
-msgstr ""
+msgstr "Slett"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "Are you sure you want to"
-msgstr ""
+msgstr "Er du sikker på at du vil"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "delete"
-msgstr ""
+msgstr "slette"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "this page?"
-msgstr ""
+msgstr "denne siden?"
 
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
-msgstr ""
+msgstr "Dette er eneste versjonen av siden, så siden vil fjernes helt!"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
-msgstr ""
+msgstr "Redigering"
 
 #: trac/wiki/templates/wiki_edit.html:30
 msgid "Someone else has modified that page since you started your edits."
-msgstr ""
+msgstr "Siden har blitt endret av andre etter at du begynte å editere."
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
-msgstr ""
+msgstr "Hvis du lagrer nå risikerer du å overskrive de endringene"
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "(highlighted below as deletions)."
-msgstr ""
+msgstr "(uthevet nedenfor som slettinger)."
 
 #: trac/wiki/templates/wiki_edit.html:33 trac/wiki/templates/wiki_edit.html:42
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
 msgstr ""
+"Vennligst gå igjennom alle endringer og manuelt flett dem sammen med dine\n"
+"        egne endringer."
 
 #: trac/wiki/templates/wiki_edit.html:34 trac/wiki/templates/wiki_edit.html:44
 msgid "If you're unsure about what you're doing, please press"
@@ -3227,88 +3264,94 @@ msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
 msgstr ""
+"(dine endringer blir borte) og start redigering av siste versjonen av siden\n"
+"        igjen."
 
 #: trac/wiki/templates/wiki_edit.html:39
 msgid "Someone else modified that page since you started your edits."
-msgstr ""
+msgstr "Noen andre har endret siden etter at du begynte å redigere."
 
 #: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"
-msgstr ""
+msgstr "Endringsinformasjon for fremtidig versjon"
 
 #: trac/wiki/templates/wiki_edit.html:54 trac/wiki/templates/wiki_view.html:26
 msgid "(modified by"
-msgstr ""
+msgstr "(endret av"
 
 #: trac/wiki/templates/wiki_edit.html:72
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
 msgstr ""
+"Beklager, denne siden har blitt endret av en annen siden du begynte\n"
+"            redigering. Dine endringer kan ikke lagres."
 
 #: trac/wiki/templates/wiki_edit.html:85
 msgid "Adjust edit area height:"
-msgstr ""
+msgstr "Endre editeringsboks:"
 
 #: trac/wiki/templates/wiki_edit.html:97
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
+"[1:Merk:] Se [2:WikiFormatting] og\n"
+"          [3:TracWiki] for hjelp om editering av wiki innhold."
 
 #: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
-msgstr ""
+msgstr "Endringsinformasjon"
 
 #: trac/wiki/templates/wiki_edit.html:110
 msgid "Comment about this change (optional):"
-msgstr ""
+msgstr "Kommentar til endringen (valgfritt):"
 
 #: trac/wiki/templates/wiki_edit.html:117
 msgid "Page is read-only"
-msgstr ""
+msgstr "Siden kan bare leses"
 
 #: trac/wiki/templates/wiki_edit.html:125
 msgid "Merge changes"
-msgstr ""
+msgstr "Flett endringer"
 
 #: trac/wiki/templates/wiki_edit.html:129
 msgid "Preview Page"
-msgstr ""
+msgstr "Forhåndvis siden"
 
 #: trac/wiki/templates/wiki_edit.html:130
 msgid "Review Changes"
-msgstr ""
+msgstr "Sjekk endringer"
 
 #: trac/wiki/templates/wiki_view.html:39
 msgid "Describe"
-msgstr ""
+msgstr "Beskriv"
 
 #: trac/wiki/templates/wiki_view.html:40
 msgid "here."
-msgstr ""
+msgstr "her."
 
 #: trac/wiki/templates/wiki_view.html:57
 msgid "Edit this page"
-msgstr ""
+msgstr "Endre denne siden"
 
 #: trac/wiki/templates/wiki_view.html:60
 msgid "Create this page"
-msgstr ""
+msgstr "Opprett denne siden"
 
 #: trac/wiki/templates/wiki_view.html:62
 msgid "Using the template:"
-msgstr ""
+msgstr "Bruk mal:"
 
 #: trac/wiki/templates/wiki_view.html:65
 msgid "(blank page)"
-msgstr ""
+msgstr "(tom side)"
 
 #: trac/wiki/templates/wiki_view.html:84
 msgid "Delete this version"
-msgstr ""
+msgstr "Slett denne versjonen"
 
 #: trac/wiki/templates/wiki_view.html:86
 msgid "Delete page"
-msgstr ""
+msgstr "Slett siden"
 
