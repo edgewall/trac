@@ -24,8 +24,6 @@
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
       <py:when test="ticket.exists">
-        $("#changelog h3.change").addAnchor("Link to this change");
-
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
 
@@ -47,7 +45,7 @@
 
   <body>
     <py:def function="commentref(prefix, cnum)">
-      <a href="#comment:$cnum"><small>$prefix$cnum</small></a>
+      <a href="#comment:$cnum">$prefix$cnum</a>
     </py:def>
 
     <py:def function="display_change(change)">
@@ -203,9 +201,10 @@
           <div id="changelog">
             <form py:for="change in changes" method="get" action="#comment" class="printableform">
               <div class="change">
-                <h3 class="change" id="${'cnum' in change and 'comment:%d' % change.cnum or None}">
-                  <span class="threading" py:if="replies and 'cnum' in change"
+                <h3 class="change">
+                  <span class="threading" py:if="'cnum' in change"
                         py:with="change_replies = replies.get(str(change.cnum), [])">
+                    <span id="comment:$change.cnum" class="cnum">${commentref('comment:', change.cnum)}</span>
                     <py:if test="change_replies or 'replyto' in change">
                       <py:if test="'replyto' in change">
                         in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
@@ -216,7 +215,6 @@
                           ${commentref('&darr;&nbsp;', reply)}
                         </py:for></py:if>
                     </py:if>
-                    &nbsp;
                   </span>
                   Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
                 </h3>
