@@ -1,242 +1,31 @@
-Release Notes for Trac 0.11 Genshi Release
-==========================================
-June 22, 2008
+Release Notes for Trac 0.12 Babel Release
+=========================================
+''Month'' ''DD'', YYYY
 
 Highlights
 ----------
- * New template engine for generating content (Genshi)
- * New configurable workflow in the ticket subsystem
- * Finer-grained control of permissions
- * Support for Pygments as the default syntax highlighter
- * Improved repository browser ("blame" support, dynamic in-place
-   expansion of folders)
- * Improved user preferences subsystem, among which the possibility for
- * any user to select their time zone and disable access keys
- * The WebAdmin plugin is now an integral part of Trac
- * Paging of timeline and query results.
+ * Internationalization support and available translations in more than twenty languages 
+ * ...
 
 Detailed User Visible Changes
 =============================
 
 User Preferences
 ----------------
-A new user preference module has been added. It presents by default
-several panels and plugins can easily add their own user settings there:
-
- * General (name and e-mail information)
- * Date & Time (timezone)
- * Keyboard Shortcuts (enable/disable)
- * Pygments Theme
- * Advanced (restore session)
-
-Most significantly, support for setting the time zone has been added to
-the Date & Time panel.
-
-Each user can select which time zone they want timestamps to be presented
-in. If pytz is installed a complete list of time zones will be available,
-otherwise Trac will fall back on a shorter list from an internal time
-zone implementation.
-
-Wiki
-----
- * Usability improvements:
- 
-   - possibility to review changes before saving a new version of a page
-   - basic handling of conflicts in case of concurrent edits
-   - Restored direct link to History and revert to an Index link, from
-     where it's easy to switch between the Index by Title and Index by
-     Date
-   - The [[PageOutline]] macro now works as expected in preview mode
-
- * Wiki syntax improvements:
- 
-   - most TracLinks now accept trailing arguments (?...) and targets
-     (#...)
-   - more intuitive relative links ([.. parent page], [./OtherPage
-     sibling page], [/WikiStart toplevel page])
-   - relative links like [#anchor see this section] always link to the
-     proper originating page or ticket, irrelevant from where the wiki
-     text appears (e.g. in the timeline)
-   - new #!div wiki processor and new [[span]] macro added. The former
-     can be used to encapsulate an arbitrary block of wiki markup in a
-     <div> element. The second can be used to encapsulate an arbitrary
-     fragment of wiki markup in a <span> element. Both div and span
-     can be provided with attributes like class=... or style="...".
-   - [[Image]] macro can now "link" to an arbitrary TracLinks instead
-     of the image's attachment itself
-   - InterTrac prefixes written alone can be used to target the
-     default page in the remote Trac, e.g. [TracHacks: the site for
-     contributing Trac plugins]
-   - trac: InterTrac prefix is known by default and refers to the
-     "Trac for Trac"
-
-Ticket System
--------------
-
-Ticket Editing
-
- * The ticket workflow is now configurable, see TracWorkflow
- * Improved preview, showing the comment preview at the top of the page,
-   so one can see at the same time the preview of the comment and the
-   preview of the fields and the description in the ticket box
- * It is now possible to examine the changes made to the ticket
-   description and textual custom fields
- * The display of field changes has been improved and is now more
-   compact
- * Major usability enhancement for the CC: field
- * Like for the concurrent wiki edits, a conflict due to simultaneous
-   editing of a ticket by two or more users lead to warnings, minimizing
-   the risk for the user to lose his changes
- * Syntax for linking to arbitrary ticket comments is now more
-   intuitive: use comment:3:ticket:123 for linking to the 3^rd comment
-   of ticket #123. Alternatively, you can write: ticket:123#comment:3
-   (but not #123#comment:3!)
-
-Roadmap and Milestone
-
- * The Milestones can now have attachments
- * If needed, it is possible to configure additional ticket groups to be
-   shown in the milestone progress bar (according to the status). For
-   even more complex needs, a plugin can now take over the way the
-   tickets and stats are collected.
-
-Reports and Custom Queries
-
- * Improved custom queries:
- 
-   - columns can now be selected
-   - possibility to save custom queries as reports
-   - possibility to configure the default custom query, both for
-   - anonymous and authenticated users
- * the [[TicketQuery]] now supports a format=table option, which will
-   produce the usual tabular result of a custom query, see the macro
-   documentation.
- * the custom query can list a fixed set of tickets, either using the
-   [[TicketQuery]] macro or query: links
-
-Repository Browser
-------------------
- * "Blame" support (annotation of every line with the changeset which
-   last modified them)
- * Dynamically expandable folders for Javascript enabled browsers
- * "Quickjump" navigation menu for easily going to branches and tags
- * Alternative text view on diffs for Javascript enabled browsers
- * Significantly improved patch renderer (supports extended diff
-   formats)
- * Support for svn:externals and other properties. Improved display of
-   property changes. In addition, support for custom properties can be
-   added through plugins.
- * Add the ability to highlight arbitrary ranges of lines in the source
-   code, using the appropriate source TracLinks
- * Add the ability to access to the raw content of files inside the
-   repository using export TracLinks.
- * Revision log display is more compact and allows selecting a diff for
-   the whole range of specified revisions
- * Changeset display of list of files is more compact as well and shows
-   the main location where the changes happened. That can also be done
-   in the timeline by setting the [timeline] changeset_show_files
-   configuration entry to location instead of a number.
-
-General
--------
-Setuptools is now used for the packaging
-
-This means you'll be able to just do
-
-easy_install Trac
-
-once we've made the release.
-
-It also means that a number of things had to be changed to make this work
-correctly. In particular, Trac no longer implicitly assumes nor installs
-global data in the $prefix/share/trac. Instead, you'll have to modify the
-configuration of your project environments to explicitly “inherit” a
-global configuration in trac.ini, for example:
-
-[inherit]
-file = /etc/trac/trac.ini
-
-This will load the configuration from the /etc/trac/trac.ini file, while
-of course allowing to override any global settings in the environment's
-configuration.
-
-In that global configuration, you can specify shared directories for
-templates and plugins, e.g.:
-
-[inherit]
-plugins_dir = /etc/trac/plugins/
-templates_dir = /etc/trac/templates/
-
-  Note: naming of these options may still change until the final 0.11
-        release
-
-Improved Syntax Highlighting
-
-Trac can now use the Pygments syntax highlighter out-of-the-box. This is
-a much nicer syntax highlighter than the one previously supported (
-SilverCity, Enscript and PHP).
+A new panel for selecting the prefered language has been added.
 
 Lots of other minor improvements
 
- * all configuration changes made to the TracIni files are now taken
-   into account immediately, without the need for a server restart
- * e-mail obfuscation everywhere turned on by default (can be disabled
-   project wide or on a per-user basis
- * possibility to configure the navigation bars (see TracNavigation)
- * Timeline improvements:
- 
-   - paging support
-   - remember user settings
-   - more configuration settings for tweaking the display of the
-     events (see TracIni#timeline-section)
- * Search improvements:
-   - OpenSearch support
+ * ...
 
 Caveats
 -------
- * It is strongly advised to set the [trac] base_url setting for
-   generating correct URLs outside the context of a user request.
-   However, contrary to what happened for a while in 0.10.5dev, this
-   setting won't be used for the redirects, unless Trac is explicitly
-   told to do so, with the use_base_url_for_redirect setting.
- * The [trac] templates_dir setting is considered harmful... You
-   probably need to remove that setting when you browse Trac and get the
-   following plain text error:
-
-   TemplateNotFound: Template "error.html" not found
-
-   FIXME: is this still the case?
- * The support for MySQL as a database backend has not improved
-   significantly in any ways... It is still considered to be
-   experimental for 0.11. YMMV.
- * The usual trick of wrapping a piece of wiki text inside a <div> for
-   advanced custom formatting can't be done anymore using the #!html
-   WikiProcessor, as that one can only produce well-formed HTML
-   fragments. Instead, one must use the new #!div Wiki processor for
-   that.
-
-Wiki Macros
-
-The change in templating engines necessitated a change in wiki macros.
-The HelloWorld and Timestamp macros which are distributed with trac will
-not work as released.
-
-For examples of new style macros, see some of the macros which have
-already been ported at MacroBazaar or ports of HelloWorld and Timestamp
-attached to #5274.
 
 Developer-visible changes
 =========================
-Many changes happened under the hood, among them:
 
- * Trac now uses the Genshi template engine instead of ClearSilver.
-   Plugins using the latter will still be supported in Trac 0.11, but
-   probably not longer.
- * Trac used to handle time informations as int timestamps. Now we're
-   using datetime objects.
-
-A detailed view of the API changes since 0.10.x can be found in TracDev/
-ApiChanges/0.11.
+A detailed view of the API changes since 0.11.x can be found in 
+TracDev/ApiChanges/0.12.
 
 Acknowledgements
 ----------------
