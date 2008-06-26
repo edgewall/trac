@@ -1,8 +1,4 @@
 #!/usr/bin/python
-import os
-import re
-from subprocess import call, Popen, PIPE
-from tempfile import mkdtemp
 from trac.tests.functional import *
 from trac.util.datefmt import format_date, utc
 
@@ -11,36 +7,10 @@ class TestRepoBrowse(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Add a file to the repository and verify it is in the browser"""
         # Add a file to Subversion
-        tempdir = mkdtemp()
-        working_copy = os.path.join(tempdir, 'trunk')
-
-        if call(['svn', 'co', self._tester.repo_url + '/component1/trunk',
-                 working_copy], stdout=logfile, stderr=logfile,
-                close_fds=close_fds):
-            raise Exception('Checkout from %s failed.' % self._tester.repo_url)
         tempfilename = random_word()
-        temppathname = os.path.join(working_copy, tempfilename)
-        data = random_page()
-        f = open(temppathname, 'w')
-        f.write(data)
-        f.close()
-        if call(['svn', 'add', tempfilename], cwd=working_copy,
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('Checkout failed.')
-        commit = Popen(['svn', '--username=admin', 'commit', '-m',
-                 'Add %s' % tempfilename, tempfilename],
-                cwd=working_copy, stdout=PIPE, stderr=logfile,
-                close_fds=close_fds)
-        output = commit.stdout.read()
-        if commit.wait():
-            raise Exception('Commit failed.')
-        try:
-            revision = int(re.compile('Committed revision ([0-9]+)\\.',
-                                      re.M).findall(output)[0])
-        except Exception, e:
-            args = e.args + (output, )
-            raise Exception(*args)
-        rmtree(tempdir) # Cleanup
+        revision = self._tester.svn_add('/component1/trunk', tempfilename,
+                                        random_page())
+
         # Verify that it appears in the browser view:
         browser_url = self._tester.url + '/browser'
         tc.go(browser_url)
@@ -58,6 +28,16 @@ class TestRepoBrowse(FunctionalTwillTestCaseSetup):
         tc.find('Add %s' % tempfilename)
 
 
+class TestNewFileLog(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Verify browser log for a new file"""
+        tempfilename = random_word()
+        revision = self._tester.svn_add('/component1/trunk', tempfilename, '')
+        tc.go(self._tester.url + '/log/component1/trunk/' + tempfilename)
+        tc.find('@%d' % revision)
+        tc.find('Add %s' % tempfilename)
+
+
 class RegressionTestRev5877(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the source browser fix in r5877"""
@@ -70,6 +50,7 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestRepoBrowse())
+    suite.addTest(TestNewFileLog())
     suite.addTest(RegressionTestRev5877())
 
     return suite

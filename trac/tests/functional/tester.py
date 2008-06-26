@@ -3,9 +3,13 @@
 with a Trac environment to make test cases more succinct.
 """
 
+import os
+import re
 from datetime import datetime, timedelta
+from subprocess import call, Popen, PIPE
+from tempfile import mkdtemp
 
-from trac.tests.functional import internal_error
+from trac.tests.functional import internal_error, logfile, close_fds, rmtree
 from trac.tests.functional.better_twill import tc, b
 from trac.tests.contentgen import random_page, random_sentence, random_word, \
     random_unique_camel
@@ -21,7 +25,7 @@ class FunctionalTester(object):
     """Provides a library of higher-level operations for interacting with a
     test environment.
 
-    It make assumptions such as knowing what ticket number is next, so
+    It makes assumptions such as knowing what ticket number is next, so
     avoid doing things manually in testcases when you can.
     """
 
@@ -63,6 +67,7 @@ class FunctionalTester(object):
         info['summary'] overrides summary.
         summary and description default to randomly generated values.
         """
+        self.go_to_front()
         tc.follow('New Ticket')
         tc.notfind(internal_error)
         if summary == None:
@@ -90,7 +95,7 @@ class FunctionalTester(object):
 
     def quickjump(self, search):
         """Do a quick search to jump to a page."""
-        tc.formvalue('quicksearch', 'q', search)
+        tc.formvalue('search', 'q', search)
         tc.submit()
         tc.notfind(internal_error)
 
@@ -132,13 +137,22 @@ class FunctionalTester(object):
         self.go_to_front()
         tc.follow('Admin')
 
-    def add_comment(self, ticketid):
+    def go_to_roadmap(self):
+        """Surf to the roadmap page."""
+        self.go_to_front()
+        tc.follow('\\bRoadmap\\b')
+        tc.url(self.url + '/roadmap')
+
+    def add_comment(self, ticketid, comment=None):
         """Adds a comment to the given ticket ID, assumes ticket exists."""
         self.go_to_ticket(ticketid)
-        tc.formvalue('propform', 'comment', random_sentence())
+        if comment is None:
+            comment = random_sentence()
+        tc.formvalue('propform', 'comment', comment)
         tc.submit("submit")
         # Verify we're where we're supposed to be.
         tc.url(self.url + '/ticket/%s#comment:.*' % ticketid)
+        return comment
 
     def attach_file_to_ticket(self, ticketid, data=None):
         """Attaches a file to the given ticket id.  Assumes the ticket
@@ -340,4 +354,42 @@ class FunctionalTester(object):
         tc.formvalue('propform', 'milestone', milestone)
         tc.submit('submit')
         # TODO: verify the change occurred.
+
+    def svn_mkdir(self, paths, msg):
+        # This happens with a url so no need for a working copy
+        if call(['svn', '--username=admin', 'mkdir', '-m', msg]
+                + [self.repo_url + '/' + d for d in paths],
+                stdout=logfile, stderr=logfile, close_fds=close_fds):
+            raise Exception('Failed to create directories')
+ 
+    def svn_add(self, path, filename, data):
+        tempdir = mkdtemp()
+        working_copy = os.path.join(tempdir, 'wc')
+
+        if call(['svn', 'co', self.repo_url + path,
+                 working_copy], stdout=logfile, stderr=logfile,
+                 close_fds=close_fds):
+            raise Exception('Checkout from %s failed.' % self.repo_url)
+        temppathname = os.path.join(working_copy, filename)
+        f = open(temppathname, 'w')
+        f.write(data)
+        f.close()
+        if call(['svn', 'add', filename], cwd=working_copy,
+                stdout=logfile, stderr=logfile, close_fds=close_fds):
+            raise Exception('Add of %s failed.' % filename)
+        commit = Popen(['svn', '--username=admin', 'commit', '-m',
+                        'Add %s' % filename, filename],
+                       cwd=working_copy, stdout=PIPE, stderr=logfile,
+                       close_fds=close_fds)
+        output = commit.stdout.read()
+        if commit.wait():
+            raise Exception('Commit failed.')
+        try:
+            revision = re.search(r'Committed revision ([0-9]+)\.',
+                                 output).group(1)
+        except Exception, e:
+            args = e.args + (output, )
+            raise Exception(*args)
+        rmtree(tempdir) # Cleanup
+        return int(revision)
 

@@ -341,7 +341,7 @@ class Formatter(object):
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = self._unquote(fullmatch.group('stgt'))
-        return self._make_link(ns, target, match, match)
+        return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
         rel = fullmatch.group('rel')
@@ -371,9 +371,9 @@ class Formatter(object):
                     query = '&' + query.lstrip('?')
             return tag.a(label or rel, href=path + query + fragment)
         else:
-            return self._make_link(ns, target, match, label)
+            return self._make_link(ns, target, match, label, fullmatch)
 
-    def _make_link(self, ns, target, match, label):
+    def _make_link(self, ns, target, match, label, fullmatch):
         # first check for an alias defined in trac.ini
         ns = self.env.config['intertrac'].get(ns, ns)
         if ns in self.wikiparser.link_resolvers:
@@ -390,12 +390,12 @@ class Formatter(object):
             else:
                 return olabel or otarget
         else:
-            if label == target:
+            if label == target and not fullmatch.group('label'):
                 # add ns for Inter* links when nothing is set
                 label = ns+':'+label
             return self._make_intertrac_link(ns, target, label) or \
                    self._make_interwiki_link(ns, target, label) or \
-                   match
+                   escape(match)
 
     def _make_intertrac_link(self, ns, target, label):
         intertrac = self.env.config['intertrac']
@@ -982,6 +982,7 @@ class OutlineFormatter(Formatter):
             self.in_code_block -= 1
 
     def format(self, text, out, max_depth=6, min_depth=1):
+        whitespace_indent = '  '
         self.outline = []
         Formatter.format(self, text)
 
@@ -991,18 +992,30 @@ class OutlineFormatter(Formatter):
         min_depth = max(1, min_depth)
 
         curr_depth = min_depth - 1
+        out.write('\n')
         for depth, anchor, text in self.outline:
             if depth < min_depth or depth > max_depth:
                 continue
-            if depth < curr_depth:
-                out.write('</li></ol><li>' * (curr_depth - depth))
-            elif depth > curr_depth:
-                out.write('<ol><li>' * (depth - curr_depth))
-            else:
-                out.write("</li><li>\n")
+            if depth > curr_depth: # Deeper indent
+                for i in range(curr_depth, depth):
+                    out.write(whitespace_indent * (2*i) + '<ol>\n' +
+                              whitespace_indent * (2*i+1) + '<li>\n')
+            elif depth < curr_depth: # Shallower indent
+                for i in range(curr_depth-1, depth-1, -1):
+                    out.write(whitespace_indent * (2*i+1) + '</li>\n' +
+                              whitespace_indent * (2*i) + '</ol>\n')
+                out.write(whitespace_indent * (2*depth-1) + '</li>\n' +
+                          whitespace_indent * (2*depth-1) + '<li>\n')
+            else: # Same indent
+                out.write( whitespace_indent * (2*depth-1) + '</li>\n' +
+                           whitespace_indent * (2*depth-1) + '<li>\n')
             curr_depth = depth
-            out.write('<a href="#%s">%s</a>' % (anchor, text))
-        out.write('</li></ol>' * curr_depth)
+            out.write(whitespace_indent * (2*depth) +
+                      '<a href="#%s">%s</a>\n' % (anchor, text))
+        # Close out all indentation
+        for i in range(curr_depth-1, min_depth-2, -1):
+            out.write(whitespace_indent * (2*i+1) + '</li>\n' +
+                      whitespace_indent * (2*i) + '</ol>\n')
 
     def _heading_formatter(self, match, fullmatch):
         depth, heading, anchor = self._parse_heading(match, fullmatch, True)

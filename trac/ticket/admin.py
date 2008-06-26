@@ -88,11 +88,12 @@ class ComponentAdminPanel(TicketAdminPanel):
                                           name=name))
 
                 # Remove components
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
                         raise TracError(_('No component selected'))
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         comp = model.Component(self.env, name, db=db)
@@ -148,10 +149,10 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
                     if due:
-                        mil.due = parse_date(due)
-                    completed = req.args.get('completeddate', '')
-                    if completed:
-                        mil.completed = parse_date(completed)
+                        mil.due = parse_date(due, req.tz)
+                    if req.args.get('completed', False):
+                        completed = req.args.get('completeddate', '')
+                        mil.completed = parse_date(completed, req.tz)
                         if mil.completed > datetime.now(utc):
                             raise TracError(_('Completion date may not be in '
                                               'the future'),
@@ -176,7 +177,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil = model.Milestone(self.env)
                         mil.name = name
                         if req.args.get('duedate'):
-                            mil.due = parse_date(req.args.get('duedate'))
+                            mil.due = parse_date(req.args.get('duedate'),
+                                                 req.tz)
                         mil.insert()
                         req.redirect(req.href.admin(cat, page))
                     else:
@@ -184,11 +186,12 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                           name=name))
 
                 # Remove milestone
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
                         raise TracError(_('No milestone selected'))
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         mil = model.Milestone(self.env, name, db=db)
@@ -233,7 +236,7 @@ class VersionAdminPanel(TicketAdminPanel):
                 if req.args.get('save'):
                     ver.name = req.args.get('name')
                     if req.args.get('time'):
-                        ver.time = parse_date(req.args.get('time'))
+                        ver.time = parse_date(req.args.get('time'), req.tz)
                     else:
                         ver.time = None # unset
                     ver.description = req.args.get('description')
@@ -256,7 +259,8 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver = model.Version(self.env)
                         ver.name = name
                         if req.args.get('time'):
-                            ver.time = parse_date(req.args.get('time'))
+                            ver.time = parse_date(req.args.get('time'),
+                                                  req.tz)
                         ver.insert()
                         req.redirect(req.href.admin(cat, page))
                     else:
@@ -264,11 +268,12 @@ class VersionAdminPanel(TicketAdminPanel):
                                           name=name))
                          
                 # Remove versions
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
                         raise TracError(_('No version selected'))
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         ver = model.Version(self.env, name, db=db)
@@ -343,11 +348,12 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                           type=self._type.title(), name=name))
                          
                 # Remove enums
-                elif req.args.get('remove') and req.args.get('sel'):
+                elif req.args.get('remove'):
                     sel = req.args.get('sel')
-                    sel = isinstance(sel, list) and sel or [sel]
                     if not sel:
-                        raise TracError(_('No enum selected'))
+                        raise TracError(_('No %s selected') % self._type)
+                    if not isinstance(sel, list):
+                        sel = [sel]
                     db = self.env.get_db_cnx()
                     for name in sel:
                         enum = self._enum_cls(self.env, name, db=db)

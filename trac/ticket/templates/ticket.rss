@@ -4,7 +4,7 @@
                    xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.rss" />
   <channel>
-    <title>${project.name}: Ticket #${ticket.id}</title>
+    <title>${project.name}: Ticket #${ticket.id}: ${ticket.summary}</title>
     <link>${abs_href.ticket(ticket.id)}</link>
     <description>${unicode(wiki_to_html(context, ticket.description))}</description>
     <language>en-us</language>

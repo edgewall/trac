@@ -44,7 +44,7 @@ def load_eggs(entry_point_name):
 
         def _log_error(item, e):
             if isinstance(e, DistributionNotFound):
-                env.log.warning('Skipping "%s": ("%s" not found)', item, e)
+                env.log.debug('Skipping "%s": ("%s" not found)', item, e)
             elif isinstance(e, VersionConflict):
                 env.log.error('Skipping "%s": (version conflict "%s")',
                               item, e)

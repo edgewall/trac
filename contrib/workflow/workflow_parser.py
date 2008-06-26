@@ -46,13 +46,15 @@ def actions2graphviz(actions, show_ops=False, show_perms=False):
     """Returns a list of lines to be fed to graphviz."""
     # The size value makes it easier to create a useful printout.
     color_scheme = ColorScheme()
-    digraph_lines = ['digraph G {\nrotate=90\ncenter=1\nsize="10,8"\n']
+    digraph_lines = ['digraph G {\ncenter=1\nsize="10,8"\n']
     for action, attributes in actions.items():
         label = [attributes['name'], ]
         if show_ops:
             label += attributes['operations']
         if show_perms:
             label += attributes['permissions']
+        if 'set_resolution' in attributes:
+            label += ['(' + attributes['set_resolution'] + ')'] 
         for oldstate in attributes['oldstates']:
             color = color_scheme.get_color(attributes['name'])
             digraph_lines.append(

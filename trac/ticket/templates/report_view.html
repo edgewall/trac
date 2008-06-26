@@ -154,7 +154,7 @@
         <xi:include href="page_index.html" />
       </py:if>
       <div py:if="report.id == -1 and 'REPORT_CREATE' in perm(report.resource)" class="buttons">
-        <form action="" method="get" name="create_report">
+        <form action="" method="get" id="create_report">
           <div>
             <input type="hidden" name="action" value="new" />
             <input type="submit" value="${_('Create new report')}" />

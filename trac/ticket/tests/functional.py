@@ -1,6 +1,12 @@
 #!/usr/bin/python
 import os
+import re
+
+from datetime import datetime, timedelta
+
 from trac.tests.functional import *
+from trac.util.datefmt import utc, format_date
+
 
 class TestTickets(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -11,6 +17,217 @@ class TestTickets(FunctionalTwillTestCaseSetup):
         self._tester.create_ticket()
         self._tester.add_comment(ticketid)
         self._tester.attach_file_to_ticket(ticketid)
+
+
+class TestTicketPreview(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Preview ticket creation"""
+        self._tester.go_to_front()
+        tc.follow('New Ticket')
+        summary = random_sentence(5)
+        desc = random_sentence(5)
+        tc.formvalue('propertyform', 'field-summary', summary)
+        tc.formvalue('propertyform', 'field-description', desc)
+        tc.submit('preview')
+        tc.url(self._tester.url + '/newticket$')
+        tc.find('ticket not yet created')
+        tc.find(summary)
+        tc.find(desc)
+
+
+class TestTicketNoSummary(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Creating a ticket without summary should fail"""
+        self._tester.go_to_front()
+        tc.follow('New Ticket')
+        desc = random_sentence(5)
+        tc.formvalue('propertyform', 'field-description', desc)
+        tc.submit('submit')
+        tc.find(desc)
+        tc.find('Tickets must contain a summary.')
+        tc.find('Create New Ticket')
+        tc.find('ticket not yet created')
+
+
+class TestTicketAltFormats(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in alternative formats"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        for format in ['Comma-delimited Text', 'Tab-delimited Text',
+                       'RSS Feed']:
+            tc.follow(format)
+            content = b.get_html()
+            if content.find(summary) < 0:
+                raise AssertionError('Summary missing from %s format' % format)
+            tc.back()
+
+
+class TestTicketCSVFormat(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in CSV format"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        tc.follow('Comma-delimited Text')
+        csv = b.get_html()
+        if not csv.startswith('id,summary,'):
+            raise AssertionError('Bad CSV format')
+
+
+class TestTicketTabFormat(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in Tab-delimitted format"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        tc.follow('Tab-delimited Text')
+        tab = b.get_html()
+        if not tab.startswith('id\tsummary\t'):
+            raise AssertionError('Bad tab delimitted format')
+
+
+class TestTicketRSSFormat(FunctionalTestCaseSetup):
+    def runTest(self):
+        """Download ticket in RSS format"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        # Make a number of changes to exercise all of the RSS feed code
+        self._tester.go_to_ticket(ticketid)
+        tc.formvalue('propertyform', 'comment', random_sentence(3))
+        tc.formvalue('propertyform', 'field-type', 'task')
+        tc.formvalue('propertyform', 'description', summary + '\n\n' +
+                                                    random_sentence(8))
+        tc.formvalue('propertyform', 'field-keywords', 'key')
+        tc.submit('submit')
+        time.sleep(1) # Have to wait a second
+        tc.formvalue('propertyform', 'field-keywords', '')
+        tc.submit('submit')
+
+        tc.find('RSS Feed')
+        tc.follow('RSS Feed')
+        rss = b.get_html()
+        if not rss.startswith('<?xml version="1.0"?>'):
+            raise AssertionError('RSS Feed not valid feed')
+
+
+class TestTicketSearch(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket search"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_front()
+        tc.follow('Search')
+        tc.formvalue('fullsearch', 'ticket', True)
+        tc.formvalue('fullsearch', 'q', summary)
+        tc.submit('Search')
+        tc.find('class="searchable">.*' + summary)
+        tc.notfind('No matches found')
+
+
+class TestNonTicketSearch(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test non-ticket search"""
+        # Create a summary containing only unique words
+        summary = ' '.join([random_word() + '_TestNonTicketSearch'
+                            for i in range(5)])
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_front()
+        tc.follow('Search')
+        tc.formvalue('fullsearch', 'ticket', False)
+        tc.formvalue('fullsearch', 'q', summary)
+        tc.submit('Search')
+        tc.notfind('class="searchable">' + summary)
+        tc.find('No matches found')
+
+
+class TestTicketHistory(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket history"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        comment = random_sentence(5)
+        self._tester.add_comment(ticketid, comment=comment)
+        self._tester.go_to_ticket(ticketid)
+        url = b.get_url()
+        tc.go(url + '?version=0')
+        tc.find('at <[^>]*>*Initial Version')
+        tc.find(summary)
+        tc.notfind(comment)
+        tc.go(url + '?version=1')
+        tc.find('at <[^>]*>*Version 1')
+        tc.find(summary)
+        tc.find(comment)
+
+
+class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket history"""
+        name = 'TestTicketHistoryDiff'
+        ticketid = self._tester.create_ticket(name)
+        self._tester.go_to_ticket(ticketid)
+        tc.formvalue
+        tc.formvalue('propertyform', 'description', random_sentence(6))
+        tc.submit('submit')
+        tc.find('description<[^>]*>\\s*modified \\(<[^>]*>diff', 's')
+        tc.follow('diff')
+        tc.find('Changes\\s*between\\s*<[^>]*>Initial Version<[^>]*>\\s*and' \
+                '\\s*<[^>]*>Version 1<[^>]*>\\s*of\\s*<[^>]*>Ticket #' , 's')
+
+
+class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket query links"""
+        count = 3
+        ticket_ids = [self._tester.create_ticket(
+                        summary='TestTicketQueryLinks%s' % i)
+                      for i in range(count)]
+        self._tester.go_to_query()
+        # We don't have the luxury of javascript, so this is a multi-step
+        # process
+        tc.formvalue('query', 'add_filter', 'summary')
+        tc.submit('add')
+        tc.formvalue('query', 'owner', 'nothing')
+        tc.submit('rm_filter_owner_0')
+        tc.formvalue('query', 'summary', 'TestTicketQueryLinks')
+        tc.submit('update')
+        query_url = b.get_url()
+        for i in range(count):
+            tc.find('TestTicketQueryLinks%s' % i)
+
+        tc.follow('TestTicketQueryLinks0')
+        tc.find('class="missing">&larr; Previous Ticket')
+        tc.find('title="Ticket #%s">Next Ticket' % ticket_ids[1])
+        tc.follow('Back to Query')
+        tc.url(re.escape(query_url))
+
+        tc.follow('TestTicketQueryLinks1')
+        tc.find('title="Ticket #%s">Previous Ticket' % ticket_ids[0])
+        tc.find('title="Ticket #%s">Next Ticket' % ticket_ids[2])
+        tc.follow('Next Ticket')
+
+        tc.find('title="Ticket #%s">Previous Ticket' % ticket_ids[1])
+        tc.find('class="missing">Next Ticket &rarr;')
+
+
+class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket details on timeline"""
+        env = self._testenv.get_trac_environment()
+        env.config.set('timeline', 'ticket_show_details', 'yes')
+        env.config.save()
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.go_to_ticket(ticketid)
+        self._tester.add_comment(ticketid)
+        self._tester.go_to_timeline()
+        tc.formvalue('prefs', 'ticket_details', True)
+        tc.submit()
+        htmltags = '(<[^>]*>)*'
+        tc.find('Ticket ' + htmltags + '#' + str(ticketid) + htmltags + ' \\(' +
+                summary + '\\) updated\\s+by\\s+' + htmltags + 'admin', 's')
 
 
 class TestAdminComponent(FunctionalTwillTestCaseSetup):
@@ -30,6 +247,59 @@ class TestAdminComponentDuplicates(FunctionalTwillTestCaseSetup):
         tc.submit()
         tc.notfind(internal_error)
         tc.find('Component .* already exists')
+
+
+class TestAdminComponentRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove component"""
+        name = "RemovalComponent"
+        self._tester.create_component(name)
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.formvalue('component_table', 'sel', name)
+        tc.submit('remove')
+        tc.notfind(name)
+
+
+class TestAdminComponentNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected component"""
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.formvalue('component_table', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No component selected')
+
+
+class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin set default component"""
+        name = "DefaultComponent"
+        self._tester.create_component(name)
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.formvalue('component_table', 'default', name)
+        tc.submit('apply')
+        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
+                name)
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected">%s</option>' % name)
+
+
+class TestAdminComponentDetail(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin component detail"""
+        name = "DetailComponent"
+        self._tester.create_component(name)
+        component_url = self._tester.url + "/admin/ticket/components"
+        tc.go(component_url)
+        tc.follow(name)
+        desc = 'Some component description'
+        tc.formvalue('modcomp', 'description', desc)
+        tc.submit('cancel')
+        tc.url(component_url + '$')
+        tc.follow(name)
+        tc.notfind(desc)
 
 
 class TestAdminMilestone(FunctionalTwillTestCaseSetup):
@@ -59,6 +329,169 @@ class TestAdminMilestoneDuplicates(FunctionalTwillTestCaseSetup):
         tc.notfind('%s')
 
 
+class TestAdminMilestoneDetail(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify milestone details"""
+        name = "DetailMilestone"
+        # Create a milestone
+        self._tester.create_milestone(name)
+
+        # Modify the details of the milestone
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        tc.formvalue('modifymilestone', 'description', 'Some description.')
+        tc.submit('save')
+        tc.url(milestone_url)
+
+        # Make sure the milestone isn't closed
+        self._tester.go_to_roadmap()
+        tc.find(name)
+
+        # Cancel more modifications
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.formvalue('modifymilestone', 'description',
+                     '~~Some other description.~~')
+        tc.submit('cancel')
+        tc.url(milestone_url)
+
+        # Verify the correct modifications show up
+        self._tester.go_to_roadmap()
+        tc.find('Some description.')
+        tc.follow(name)
+        tc.find('Some description.')
+
+
+class TestAdminMilestoneDue(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin milestone duedate"""
+        name = "DueMilestone"
+        duedate = datetime.now(tz=utc)
+        duedate_string = format_date(duedate, tzinfo=utc)
+        self._tester.create_milestone(name, due=duedate_string)
+        tc.find(duedate_string)
+
+
+class TestAdminMilestoneDetailDue(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify milestone duedate on detail page"""
+        name = "DetailDueMilestone"
+        # Create a milestone
+        self._tester.create_milestone(name)
+
+        # Modify the details of the milestone
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        duedate = datetime.now(tz=utc)
+        duedate_string = format_date(duedate, tzinfo=utc)
+        tc.formvalue('modifymilestone', 'due', duedate_string)
+        tc.submit('save')
+        tc.url(milestone_url + '$')
+        tc.find(name + '(<[^>]*>|\\s)*'+ duedate_string, 's')
+
+
+class TestAdminMilestoneCompleted(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin milestone completed"""
+        name = "CompletedMilestone"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        tc.formvalue('modifymilestone', 'completed', True)
+        tc.submit('save')
+        tc.url(milestone_url + "$")
+
+
+class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin milestone completed in the future"""
+        name = "CompletedFutureMilestone"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.url(milestone_url)
+        tc.follow(name)
+        tc.url(milestone_url + '/' + name)
+        tc.formvalue('modifymilestone', 'completed', True)
+        cdate = datetime.now(tz=utc) + timedelta(days=1)
+        cdate_string = format_date(cdate, tzinfo=utc)
+        tc.formvalue('modifymilestone', 'completeddate', cdate_string)
+        tc.submit('save')
+        tc.find('Completion date may not be in the future')
+        # And make sure it wasn't marked as completed.
+        self._tester.go_to_roadmap()
+        tc.find(name)
+
+
+class TestAdminMilestoneRemove(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove milestone"""
+        name = "MilestoneRemove"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'sel', name)
+        tc.submit('remove')
+        tc.url(milestone_url + '$')
+        tc.notfind(name)
+
+
+class TestAdminMilestoneRemoveMulti(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove multiple milestones"""
+        name = "MultiRemoveMilestone"
+        count = 3
+        for i in range(count):
+            self._tester.create_milestone("%s%s" % (name, i))
+        milestone_url = self._tester.url + '/admin/ticket/milestones'
+        tc.go(milestone_url)
+        tc.url(milestone_url + '$')
+        for i in range(count):
+            tc.find("%s%s" % (name, i))
+        for i in range(count):
+            tc.formvalue('milestone_table', 'sel', "%s%s" % (name, i))
+        tc.submit('remove')
+        tc.url(milestone_url + '$')
+        for i in range(count):
+            tc.notfind("%s%s" % (name, i))
+
+
+class TestAdminMilestoneNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected milestone"""
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No milestone selected')
+
+
+class TestAdminMilestoneDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin set default milestone"""
+        name = "DefaultMilestone"
+        self._tester.create_milestone(name)
+        milestone_url = self._tester.url + "/admin/ticket/milestones"
+        tc.go(milestone_url)
+        tc.formvalue('milestone_table', 'default', name)
+        tc.submit('apply')
+        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
+                name)
+        # verify it is the default on the newticket page.
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected">%s</option>' % name)
+
+
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Admin create priority"""
@@ -72,6 +505,148 @@ class TestAdminPriorityDuplicates(FunctionalTwillTestCaseSetup):
         self._tester.create_priority(name)
         self._tester.create_priority(name)
         tc.find('Priority %s already exists' % name)
+
+
+class TestAdminPriorityModify(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify priority"""
+        name = "ModifyPriority"
+        self._tester.create_priority(name)
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name)
+        tc.follow(name)
+        tc.formvalue('modenum', 'name', name * 2)
+        tc.submit('save')
+        tc.url(priority_url + '$')
+        tc.find(name * 2)
+
+
+class TestAdminPriorityRemove(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove priority"""
+        name = "RemovePriority"
+        self._tester.create_priority(name)
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name)
+        tc.formvalue('enumtable', 'sel', name)
+        tc.submit('remove')
+        tc.url(priority_url + '$')
+        tc.notfind(name)
+
+
+class TestAdminPriorityRemoveMulti(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove multiple priorities"""
+        name = "MultiRemovePriority"
+        count = 3
+        for i in range(count):
+            self._tester.create_priority("%s%s" % (name, i))
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        for i in range(count):
+            tc.find("%s%s" % (name, i))
+        for i in range(count):
+            tc.formvalue('enumtable', 'sel', "%s%s" % (name, i))
+        tc.submit('remove')
+        tc.url(priority_url + '$')
+        for i in range(count):
+            tc.notfind("%s%s" % (name, i))
+
+
+class TestAdminPriorityNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected priority"""
+        priority_url = self._tester.url + "/admin/ticket/priority"
+        tc.go(priority_url)
+        tc.formvalue('enumtable', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No priority selected')
+
+
+class TestAdminPriorityDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin default priority"""
+        name = "DefaultPriority"
+        self._tester.create_priority(name)
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name)
+        tc.formvalue('enumtable', 'default', name)
+        tc.submit('apply')
+        tc.url(priority_url + '$')
+        tc.find('radio.*"%s"\\schecked="checked"' % name)
+
+
+class TestAdminPriorityDetail(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin modify priority details"""
+        name = "DetailPriority"
+        # Create a priority
+        self._tester.create_priority(name + '1')
+
+        # Modify the details of the priority
+        priority_url = self._tester.url + "/admin/ticket/priority"
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.follow(name + '1')
+        tc.url(priority_url + '/' + name + '1')
+        tc.formvalue('modenum', 'name', name + '2')
+        tc.submit('save')
+        tc.url(priority_url + '$')
+
+        # Cancel more modifications
+        tc.go(priority_url)
+        tc.follow(name)
+        tc.formvalue('modenum', 'name', name + '3')
+        tc.submit('cancel')
+        tc.url(priority_url + '$')
+
+        # Verify that only the correct modifications show up
+        tc.notfind(name + '1')
+        tc.find(name + '2')
+        tc.notfind(name + '3')
+
+
+class TestAdminPriorityRenumber(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin renumber priorities"""
+        valuesRE = re.compile('<select name="value_([0-9]+)">', re.M)
+        html = b.get_html()
+        max_priority = max([int(x) for x in valuesRE.findall(html)])
+
+        name = "RenumberPriority"
+        self._tester.create_priority(name + '1')
+        self._tester.create_priority(name + '2')
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.find(name + '1')
+        tc.find(name + '2')
+        tc.formvalue('enumtable', 'value_%s' % (max_priority + 1), str(max_priority + 2))
+        tc.formvalue('enumtable', 'value_%s' % (max_priority + 2), str(max_priority + 1))
+        tc.submit('apply')
+        tc.url(priority_url + '$')
+        # Verify that their order has changed.
+        tc.find(name + '2.*' + name + '1', 's')
+
+class TestAdminPriorityRenumberDup(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin badly renumber priorities"""
+        # Make the first priority the 2nd priority, and leave the 2nd priority
+        # as the 2nd priority.
+        priority_url = self._tester.url + '/admin/ticket/priority'
+        tc.go(priority_url)
+        tc.url(priority_url + '$')
+        tc.formvalue('enumtable', 'value_1', '2')
+        tc.submit('apply')
+        tc.url(priority_url + '$')
+        tc.find('Order numbers must be unique')
 
 
 class TestAdminResolution(FunctionalTwillTestCaseSetup):
@@ -137,6 +712,119 @@ class TestAdminVersionDuplicates(FunctionalTwillTestCaseSetup):
         tc.submit()
         tc.notfind(internal_error)
         tc.find("Version %s already exists." % name)
+
+
+class TestAdminVersionDetail(FunctionalTwillTestCaseSetup):
+    # This is somewhat pointless... the only place to find the version
+    # description is on the version details page.
+    def runTest(self):
+        """Admin version details"""
+        name = "DetailVersion"
+        self._tester.create_version(name)
+        version_admin = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_admin)
+        tc.url(version_admin)
+        tc.follow(name)
+
+        desc = 'Some version description.'
+        tc.formvalue('modifyversion', 'description', desc)
+        tc.submit('save')
+        tc.url(version_admin)
+        tc.follow(name)
+        tc.find(desc)
+
+
+class TestAdminVersionDetailTime(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin version detail set time"""
+        name = "DetailTimeVersion"
+        self._tester.create_version(name)
+        version_admin = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_admin)
+        tc.url(version_admin)
+        tc.follow(name)
+
+        tc.formvalue('modifyversion', 'time', '')
+        tc.submit('save')
+        tc.url(version_admin + '$')
+        tc.find(name + '(<[^>]*>|\\s)*<[^>]* name="default" value="%s"' % name, 's')
+
+
+class TestAdminVersionDetailCancel(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin version details"""
+        name = "DetailVersion"
+        self._tester.create_version(name)
+        version_admin = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_admin)
+        tc.url(version_admin)
+        tc.follow(name)
+
+        desc = 'Some other version description.'
+        tc.formvalue('modifyversion', 'description', desc)
+        tc.submit('cancel')
+        tc.url(version_admin)
+        tc.follow(name)
+        tc.notfind(desc)
+
+
+class TestAdminVersionRemove(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove version"""
+        name = "VersionRemove"
+        self._tester.create_version(name)
+        version_url = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_url)
+        tc.formvalue('version_table', 'sel', name)
+        tc.submit('remove')
+        tc.url(version_url + '$')
+        tc.notfind(name)
+
+
+class TestAdminVersionRemoveMulti(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove multiple versions"""
+        name = "MultiRemoveVersion"
+        count = 3
+        for i in range(count):
+            self._tester.create_version("%s%s" % (name, i))
+        version_url = self._tester.url + '/admin/ticket/versions'
+        tc.go(version_url)
+        tc.url(version_url + '$')
+        for i in range(count):
+            tc.find("%s%s" % (name, i))
+        for i in range(count):
+            tc.formvalue('version_table', 'sel', "%s%s" % (name, i))
+        tc.submit('remove')
+        tc.url(version_url + '$')
+        for i in range(count):
+            tc.notfind("%s%s" % (name, i))
+
+
+class TestAdminVersionNonRemoval(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin remove no selected version"""
+        version_url = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_url)
+        tc.formvalue('version_table', 'remove', 'Remove selected items')
+        tc.submit('remove')
+        tc.find('No version selected')
+
+
+class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Admin set default version"""
+        name = "DefaultVersion"
+        self._tester.create_version(name)
+        version_url = self._tester.url + "/admin/ticket/versions"
+        tc.go(version_url)
+        tc.formvalue('version_table', 'default', name)
+        tc.submit('apply')
+        tc.find('type="radio" name="default" value="%s" checked="checked"' % \
+                name)
+        # verify it is the default on the newticket page.
+        tc.go(self._tester.url + '/newticket')
+        tc.find('<option selected="selected">%s</option>' % name)
 
 
 class TestNewReport(FunctionalTwillTestCaseSetup):
@@ -229,7 +917,7 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             self._tester.go_to_ticket(ticket_id)
             tc.formvalue('propform', 'action', 'reassign')
             tc.find('reassign_reassign_owner')
-            tc.formvalue('propform', 'reassign_reassign_owner', 'user')
+            tc.formvalue('propform', 'action_reassign_reassign_owner', 'user')
             tc.submit('submit')
         finally:
             # Undo the config change for now since this (failing)
@@ -294,7 +982,7 @@ class RegressionTestTicket5394a(FunctionalTwillTestCaseSetup):
         ticketid = self._tester.create_ticket("regression test 5394a")
         self._tester.go_to_ticket(ticketid)
 
-        options = 'id="reassign_reassign_owner">' + \
+        options = 'id="action_reassign_reassign_owner">' + \
             ''.join(['<option[^>]*>%s</option>' % user for user in
                      sorted(test_users + ['admin', 'user'])])
         tc.find(options, 's')
@@ -354,8 +1042,9 @@ class RegressionTestTicket5497b(FunctionalTwillTestCaseSetup):
         self._tester.go_to_ticket(ticketid)
         tc.formvalue('propform', 'field-component', 'regression5497')
         tc.formvalue('propform', 'action', 'reassign')
-        tc.formvalue('propform', 'reassign_reassign_owner', 'admin')
+        tc.formvalue('propform', 'action_reassign_reassign_owner', 'admin')
         tc.submit('submit')
+        tc.notfind(regex_owned_by('user'))
         tc.find(regex_owned_by('admin'))
 
 class RegressionTestTicket5497c(FunctionalTwillTestCaseSetup):
@@ -390,7 +1079,7 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         # make ids[1] be assigned
         self._tester.go_to_ticket(ids[1])
         tc.formvalue('propform', 'action', 'reassign')
-        tc.formvalue('propform', 'reassign_reassign_owner', 'admin')
+        tc.formvalue('propform', 'action_reassign_reassign_owner', 'admin')
         tc.submit('submit')
         # make ids[2] be accepted
         self._tester.go_to_ticket(ids[2])
@@ -399,12 +1088,12 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         # make ids[3] be closed
         self._tester.go_to_ticket(ids[3])
         tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('submit')
         # make ids[4] be reopened
         self._tester.go_to_ticket(ids[4])
         tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('submit')
         # FIXME: we have to wait a second to avoid "IntegrityError: columns
         # ticket, time, field are not unique"
@@ -536,7 +1225,7 @@ class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
         ticket_id = self._tester.create_ticket("RegressionTestTicket6879 a")
         self._tester.go_to_ticket(ticket_id)
         tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('preview')
         tc.formvalue('propform', 'action', 'resolve')
         tc.submit('preview')
@@ -553,7 +1242,7 @@ class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
         ticket_id = self._tester.create_ticket("RegressionTestTicket6879 b")
         self._tester.go_to_ticket(ticket_id)
         tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('preview')
         tc.formvalue('propform', 'action', 'resolve')
         tc.submit('submit')
@@ -590,13 +1279,45 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestTickets())
+    suite.addTest(TestTicketPreview())
+    suite.addTest(TestTicketNoSummary())
+    suite.addTest(TestTicketAltFormats())
+    suite.addTest(TestTicketCSVFormat())
+    suite.addTest(TestTicketTabFormat())
+    suite.addTest(TestTicketRSSFormat())
+    suite.addTest(TestTicketSearch())
+    suite.addTest(TestNonTicketSearch())
+    suite.addTest(TestTicketHistory())
+    suite.addTest(TestTicketHistoryDiff())
+    suite.addTest(TestTicketQueryLinks())
+    suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
+    suite.addTest(TestAdminComponentRemoval())
+    suite.addTest(TestAdminComponentNonRemoval())
+    suite.addTest(TestAdminComponentDefault())
+    suite.addTest(TestAdminComponentDetail())
     suite.addTest(TestAdminMilestone())
     suite.addTest(TestAdminMilestoneSpace())
     suite.addTest(TestAdminMilestoneDuplicates())
+    suite.addTest(TestAdminMilestoneDetail())
+    suite.addTest(TestAdminMilestoneDue())
+    suite.addTest(TestAdminMilestoneDetailDue())
+    suite.addTest(TestAdminMilestoneCompleted())
+    suite.addTest(TestAdminMilestoneCompletedFuture())
+    suite.addTest(TestAdminMilestoneRemove())
+    suite.addTest(TestAdminMilestoneRemoveMulti())
+    suite.addTest(TestAdminMilestoneNonRemoval())
+    suite.addTest(TestAdminMilestoneDefault())
     suite.addTest(TestAdminPriority())
-    suite.addTest(TestAdminPriorityDuplicates())
+    suite.addTest(TestAdminPriorityModify())
+    suite.addTest(TestAdminPriorityRemove())
+    suite.addTest(TestAdminPriorityRemoveMulti())
+    suite.addTest(TestAdminPriorityNonRemoval())
+    suite.addTest(TestAdminPriorityDefault())
+    suite.addTest(TestAdminPriorityDetail())
+    suite.addTest(TestAdminPriorityRenumber())
+    suite.addTest(TestAdminPriorityRenumberDup())
     suite.addTest(TestAdminResolution())
     suite.addTest(TestAdminResolutionDuplicates())
     suite.addTest(TestAdminSeverity())
@@ -605,6 +1326,13 @@ def functionalSuite(suite=None):
     suite.addTest(TestAdminTypeDuplicates())
     suite.addTest(TestAdminVersion())
     suite.addTest(TestAdminVersionDuplicates())
+    suite.addTest(TestAdminVersionDetail())
+    suite.addTest(TestAdminVersionDetailTime())
+    suite.addTest(TestAdminVersionDetailCancel())
+    suite.addTest(TestAdminVersionRemove())
+    suite.addTest(TestAdminVersionRemoveMulti())
+    suite.addTest(TestAdminVersionNonRemoval())
+    suite.addTest(TestAdminVersionDefault())
     suite.addTest(TestNewReport())
     suite.addTest(RegressionTestRev5665())
     suite.addTest(RegressionTestRev5994())

@@ -196,24 +196,31 @@ class GenshiHtmlFormatter(HtmlFormatter):
     def generate(self, tokens):
         pos = (None, -1, -1)
         span = QName('span')
+        class_ = QName('class')
 
         def _generate():
             attrs = lc = None
+            text = []
 
             for ttype, value in tokens:
                 c = self._get_css_class(ttype)
+                if c == 'n':
+                    c = ''
                 if c == lc:
-                    yield TEXT, value, pos
-
+                    text.append(value)
                 elif value: # if no value, leave old span open
+                    if text:
+                        yield TEXT, u''.join(text), pos
                     if attrs:
                         yield END, span, pos
-                    attrs = Attrs([(QName('class'), c)])
+                        attrs = None
+                    text = [value]
                     lc = c
-                    yield START, (span, attrs), pos
-                    yield TEXT, value, pos
-
+                    if c:
+                        attrs = Attrs([(class_, c)])
+                        yield START, (span, attrs), pos
+            if text:
+                yield TEXT, u''.join(text), pos
             if attrs:
                 yield END, span, pos
-
         return Stream(_generate())

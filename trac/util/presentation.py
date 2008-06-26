@@ -169,6 +169,7 @@ def paginate(items, page=0, max_per_page=10):
         retval = items[start:stop]
     except TypeError: # Slicing not supported, so iterate through the whole list
         retval = []
+        idx = -1 # Needed if items = []
         for idx, item in enumerate(items):
             if start <= idx < stop:
                 retval.append(item)
@@ -201,6 +202,7 @@ class Paginator(object):
         self.num_items = num_items
         self.num_pages = num_pages
         self.span = offset, offset + len(items)
+        self.show_index = True
 
     def __iter__(self):
         return iter(self.items)

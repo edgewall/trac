@@ -98,7 +98,7 @@ class Environment(Component, ComponentManager):
         access it. You may need to use this option to force Trac to use the
         `base_url` setting also for redirects. This introduces the obvious
         limitation that this environment will only be usable when accessible
-        from that URL, as redirects are frequently used.""")
+        from that URL, as redirects are frequently used. ''(since 0.10.5)''""")
 
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
@@ -154,7 +154,7 @@ class Environment(Component, ComponentManager):
          Example:
          ($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
 
-         (since 0.11)""")
+         (since 0.10.5)""")
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
@@ -222,10 +222,16 @@ class Environment(Component, ComponentManager):
         for pattern, enabled in rules:
             if component_name == pattern or pattern.endswith('*') \
                     and component_name.startswith(pattern[:-1]):
-                # force disabling of the pre-0.11 WebAdmin plugin
+                # Disable the pre-0.11 WebAdmin plugin
+                # Please note that there's no recommendation to uninstall the
+                # plugin because doing so would obviously break the backwards
+                # compatibility that the new integration administration
+                # interface tries to provide for old WebAdmin extensions
                 if component_name.startswith('webadmin.'):
-                    self.log.warning('The obsolete 0.10 TracWebAdmin plugin '
-                                     'had to be disabled. Please uninstall it.')
+                    self.log.info('The legacy TracWebAdmin plugin has been '
+                                  'automatically disabled, and the integrated '
+                                  'administration interface will be used '
+                                  'instead.')
                     return False
                 return enabled
 

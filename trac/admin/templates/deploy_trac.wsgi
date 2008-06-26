@@ -14,8 +14,14 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 #
 # Author: Noah Kantrowitz <noah@coderanger.net>
+import os
+import tempfile
+
 from trac.web.main import dispatch_request
+import pkg_resources
 
 def application(environ, start_request):
     environ['trac.env_path'] = '${env.path}'
+    if 'PYTHON_EGG_CACHE' not in os.environ:
+        pkg_resources.set_extraction_path(tempfile.gettempdir())
     return dispatch_request(environ, start_request)

@@ -627,7 +627,7 @@ class MilestoneModule(Component):
 
         # -- check completed date
         if 'completed' in req.args:
-            completed = completed and parse_date(completed) or None
+            completed = completed and parse_date(completed, req.tz) or None
             if completed and completed > datetime.now(utc):
                 warn(_('Completion date may not be in the future'))
         else:

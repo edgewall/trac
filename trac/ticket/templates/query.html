@@ -24,12 +24,8 @@
   </head>
 
   <body>
-    <py:def function="num_matches(v)">
-      <span class="numrows">(${v or 'No'} match${v != 1 and 'es' or ''})</span>
-    </py:def>
-
     <div id="content" class="query">
-      <h1>$title ${num_matches(query.num_items)}</h1>
+      <h1>$title <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches', query.num_items)})</span></h1>
 
       <div py:if="description" id="description" xml:space="preserve">
         ${wiki_to_html(context(report_resource), description)}

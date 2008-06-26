@@ -82,7 +82,7 @@ h1 .status { color: #444; }
  font-weight: normal;
 }
 .threading, #changelog .inlinebuttons { float: right; }
-.threading { font-size: 90%; }
+.threading { font-size: 85%; }
 
 #preview .changes, #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
 #preview .comment, #changelog .comment { margin-left: 2em }

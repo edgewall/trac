@@ -255,9 +255,9 @@ def get_pkginfo(dist):
 # -- crypto utils
 
 def hex_entropy(bytes=32):
-    import md5
+    import sha
     import random
-    return md5.md5(str(random.random())).hexdigest()[:bytes]
+    return sha.new(str(random.random())).hexdigest()[:bytes]
 
 
 # Original license for md5crypt:
@@ -487,7 +487,13 @@ def content_disposition(type, filename=None):
     return type + '; filename=' + quote(filename, safe='')
 
 def pairwise(iterable):
-    "s -> (s0,s1), (s1,s2), (s2, s3), ..."
+    """
+    >>> list(pairwise([0, 1, 2, 3]))
+    [(0, 1), (1, 2), (2, 3)]
+
+    :deprecated: since 0.11 (if this really needs to be used, rewrite it
+                             without izip)
+    """
     a, b = tee(iterable)
     try:
         b.next()
@@ -496,6 +502,12 @@ def pairwise(iterable):
     return izip(a, b)
 
 def partition(iterable, order=None):
+    """
+    >>> partition([(1,"a"),(2, "b"),(3, "a")])
+    {'a': [1, 3], 'b': [2]}
+    >>> partition([(1,"a"),(2, "b"),(3, "a")], "ab")
+    [[1, 3], [2]]
+    """
     result = {}
     if order is not None:
         for key in order:

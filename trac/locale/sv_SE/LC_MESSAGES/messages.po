@@ -1,9 +1,9 @@
 # Swedish (Sweden) translations for Trac.
 # Copyright (C) 2007-2008 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# Jonas Borgström <jonas@edgewall.com>, 2007.
+# Jonas Borgström <jonas@edgewall.com>, 2007-2008.
 #
-#, fuzzy
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -28,33 +28,33 @@ msgid "Attachment '%(title)s' does not exist."
 msgstr ""
 
 #: trac/attachment.py:145
-#, fuzzy
+#
 msgid "Invalid Attachment"
 msgstr "Felaktig Bilaga"
 
 #: trac/attachment.py:187
-#, fuzzy
+#
 msgid "Could not delete attachment"
 msgstr "Kunde inte radera bilaga"
 
 #: trac/attachment.py:291
-#, fuzzy, python-format
+#, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "Bilaga '%(filename)s' kunde inte hittas"
 
 #: trac/attachment.py:365
 msgid "Bad request"
-msgstr ""
+msgstr "Felaktig förfrågan"
 
 #: trac/attachment.py:382
 #, python-format
 msgid "Back to %(parent)s"
-msgstr ""
+msgstr "Tillbaka till %(parent)s"
 
 #: trac/attachment.py:474
-#, fuzzy
+#
 msgid " attached to "
-msgstr "Bilaga"
+msgstr " bifogad till "
 
 #: trac/attachment.py:513
 #, python-format
@@ -64,7 +64,7 @@ msgstr ""
 #: trac/attachment.py:516
 #, python-format
 msgid "Attachments of %(parent)s"
-msgstr ""
+msgstr "Bilagor till %(parent)s"
 
 #: trac/attachment.py:529 trac/attachment.py:552 trac/admin/web_ui.py:397
 #: trac/admin/web_ui.py:400 trac/admin/web_ui.py:404
@@ -92,7 +92,7 @@ msgstr ""
 #: trac/attachment.py:568
 #, python-format
 msgid "Invalid attachment: %(message)s"
-msgstr ""
+msgstr "Ogiltig bilaga: %(message)s"
 
 #: trac/attachment.py:602
 #, python-format
@@ -106,15 +106,15 @@ msgstr ""
 
 #: trac/attachment.py:670 trac/versioncontrol/web_ui/browser.py:516
 msgid "Original Format"
-msgstr ""
+msgstr "Orginalformat"
 
 #: trac/env.py:398
 msgid "Can only backup sqlite databases"
-msgstr ""
+msgstr "Kan bara ta backup av sqlite-databaser"
 
 #: trac/env.py:483
 msgid "Database newer than Trac version"
-msgstr ""
+msgstr "Databas nyare än Trac-version"
 
 #: trac/env.py:495
 #, python-format
@@ -183,7 +183,7 @@ msgstr ""
 
 #: trac/admin/web_ui.py:66
 msgid "Admin"
-msgstr "Administratör"
+msgstr "Administrera"
 
 #: trac/admin/web_ui.py:67 trac/admin/templates/admin.html:16
 msgid "Administration"
@@ -195,9 +195,9 @@ msgid "No administration panels available"
 msgstr "inga administrationssidor tillgängliga"
 
 #: trac/admin/web_ui.py:105
-#, fuzzy
+#
 msgid "Unknown administration panel"
-msgstr "Administration:"
+msgstr "Okänd administrationspanel"
 
 #: trac/admin/web_ui.py:180 trac/admin/web_ui.py:207 trac/admin/web_ui.py:296
 #: trac/admin/web_ui.py:373 trac/prefs/web_ui.py:89
@@ -217,10 +217,10 @@ msgstr "Loggning"
 #: trac/admin/web_ui.py:216 trac/ticket/templates/milestone_delete.html:29
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 #: trac/admin/web_ui.py:217
-#, fuzzy
+#
 msgid "Console"
 msgstr "Konsoll"
 
@@ -249,7 +249,7 @@ msgstr "Ogiltig loggtyp"
 #: trac/admin/web_ui.py:249
 #, python-format
 msgid "Unknown log level %(level)s"
-msgstr ""
+msgstr "Okänd loggningsnivå %(level)s"
 
 #: trac/admin/web_ui.py:250
 msgid "Invalid log level"
@@ -338,7 +338,7 @@ msgstr "Beskrivning:"
 #: trac/admin/templates/admin_milestones.html:124
 #: trac/admin/templates/admin_plugins.html:102
 #: trac/admin/templates/admin_versions.html:94
-#, fuzzy
+#
 msgid "Apply changes"
 msgstr "Spara ändringar"
 
@@ -378,14 +378,14 @@ msgstr ""
 #: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
 #: trac/wiki/templates/wiki_edit.html:133
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: trac/admin/templates/admin_components.html:56
 #: trac/admin/templates/admin_enums.html:24
 #: trac/admin/templates/admin_milestones.html:66
 #: trac/admin/templates/admin_versions.html:46
 msgid "Save"
-msgstr ""
+msgstr "Spara"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
@@ -399,7 +399,7 @@ msgstr "Lägg till komponent:"
 #: trac/admin/templates/admin_perms.html:66
 #: trac/admin/templates/admin_versions.html:67
 msgid "Add"
-msgstr ""
+msgstr "Lägg till"
 
 #: trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:47
@@ -426,7 +426,7 @@ msgstr ""
 #: trac/admin/templates/admin_perms.html:93
 #: trac/admin/templates/admin_versions.html:93
 msgid "Remove selected items"
-msgstr ""
+msgstr "Ta bort markerade element"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
@@ -488,15 +488,15 @@ msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
 msgid "Milestones"
-msgstr ""
+msgstr "Milstolpar"
 
 #: trac/admin/templates/admin_milestones.html:14
 msgid "Manage Milestones"
-msgstr ""
+msgstr "Hantera Milstolpar"
 
 #: trac/admin/templates/admin_milestones.html:19
 msgid "Modify Milestone:"
-msgstr ""
+msgstr "Ändra Milstolpe:"
 
 #: trac/admin/templates/admin_milestones.html:24
 #: trac/admin/templates/admin_milestones.html:82
@@ -527,7 +527,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:75
 msgid "Add Milestone:"
-msgstr ""
+msgstr "Lägg till milstolpe:"
 
 #: trac/admin/templates/admin_milestones.html:100
 msgid "Due"
@@ -554,11 +554,11 @@ msgstr ""
 
 #: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:64
 msgid "or"
-msgstr ""
+msgstr "eller"
 
 #: trac/admin/templates/admin_perms.html:16
 msgid "Group"
-msgstr ""
+msgstr "Grupp"
 
 #: trac/admin/templates/admin_perms.html:16
 msgid "names can't be all upper cased,"
@@ -614,7 +614,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:23
 msgid "File:"
-msgstr ""
+msgstr "Fil:"
 
 #: trac/admin/templates/admin_plugins.html:28
 msgid ""
@@ -628,11 +628,11 @@ msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:37
 msgid "Install"
-msgstr ""
+msgstr "Installera"
 
 #: trac/admin/templates/admin_plugins.html:49
 msgid "Uninstall"
-msgstr ""
+msgstr "Avinstallera"
 
 #: trac/admin/templates/admin_plugins.html:59 trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:97
@@ -641,35 +641,35 @@ msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:68
 msgid "Home page:"
-msgstr ""
+msgstr "Hemsida:"
 
 #: trac/admin/templates/admin_plugins.html:75
 msgid "License:"
-msgstr ""
+msgstr "Licens:"
 
 #: trac/admin/templates/admin_plugins.html:82
 msgid "Component"
-msgstr ""
+msgstr "Komponent"
 
 #: trac/admin/templates/admin_plugins.html:82
 msgid "Enabled"
-msgstr ""
+msgstr "Aktiverad"
 
 #: trac/admin/templates/admin_versions.html:10
 msgid "Versions"
-msgstr ""
+msgstr "Versioner"
 
 #: trac/admin/templates/admin_versions.html:14
 msgid "Manage Versions"
-msgstr ""
+msgstr "Hantera Versioner"
 
 #: trac/admin/templates/admin_versions.html:19
 msgid "Modify Version:"
-msgstr ""
+msgstr "Modifera Version:"
 
 #: trac/admin/templates/admin_versions.html:26
 msgid "Date:"
-msgstr ""
+msgstr "Datum:"
 
 #: trac/admin/templates/admin_versions.html:54
 msgid "Add Version:"
@@ -759,9 +759,9 @@ msgid "Keyboard Shortcuts"
 msgstr "Tangentbordsgenvägar"
 
 #: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
-#, fuzzy
+#
 msgid "Language"
-msgstr "(tom sida)"
+msgstr "Språk"
 
 #: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
@@ -788,7 +788,7 @@ msgstr ""
 "för dina inställningar att finnas kvar vid framtida besök."
 
 #: trac/prefs/templates/prefs.html:33
-#, fuzzy
+#
 msgid "Save changes"
 msgstr "Spara ändringar"
 
@@ -1476,7 +1476,7 @@ msgstr ""
 
 #: trac/templates/layout.html:43
 msgid "Download in other formats:"
-msgstr ""
+msgstr "Ladda hem in annat format:"
 
 #: trac/templates/macros.html:40
 msgid "anonymous"
@@ -1532,7 +1532,7 @@ msgstr ""
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
-msgstr ""
+msgstr "Uppdatera"
 
 #: trac/templates/macros.html:139 trac/templates/macros.html:152
 msgid "HTML preview not available"
@@ -1600,7 +1600,7 @@ msgstr "Bilagor"
 
 #: trac/templates/macros.html:215
 msgid "Attach file"
-msgstr ""
+msgstr "Bifoga fil"
 
 #: trac/templates/macros.html:239 trac/templates/macros.html:243
 msgid "s:"
@@ -1795,10 +1795,11 @@ msgstr ""
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/ticket/query.py:709 trac/ticket/report.py:513 trac/ticket/web_ui.py:114
-#: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
+#: trac/ticket/query.py:709 trac/ticket/report.py:513
+trac/ticket/web_ui.py:114 #: trac/timeline/web_ui.py:190
+trac/versioncontrol/web_ui/log.py:241
 msgid "RSS Feed"
-msgstr ""
+msgstr "RSS-ström"
 
 #: trac/ticket/query.py:711 trac/ticket/report.py:516 trac/ticket/web_ui.py:110
 msgid "Comma-delimited Text"
@@ -1809,18 +1810,18 @@ msgid "Tab-delimited Text"
 msgstr ""
 
 #: trac/ticket/query.py:735 trac/ticket/report.py:63
-#, fuzzy
+#
 msgid "View Tickets"
 msgstr "Visa Ärenden"
 
 #: trac/ticket/query.py:886 trac/ticket/query.py:897 trac/ticket/report.py:121
 msgid "Custom Query"
-msgstr ""
+msgstr "Anpassad utsökning"
 
 #: trac/ticket/query.py:896 trac/ticket/report.py:111 trac/ticket/report.py:112
 #: trac/ticket/report.py:114 trac/ticket/report.py:231
 msgid "Available Reports"
-msgstr ""
+msgstr "Tillgängliga Rapporter"
 
 #: trac/ticket/query.py:983
 #, python-format
@@ -1849,9 +1850,9 @@ msgid "Invalid Report Number"
 msgstr ""
 
 #: trac/ticket/report.py:208
-#, fuzzy
+#
 msgid "Create New Report"
-msgstr "Skapa Nytt Ärende"
+msgstr "Skapa Nytt Rapport"
 
 #: trac/ticket/report.py:212
 #, python-format
@@ -1865,7 +1866,7 @@ msgstr ""
 
 #: trac/ticket/report.py:234
 msgid "This is a list of available reports."
-msgstr ""
+msgstr "Detta är en lista över tillgängliga rapporter."
 
 #: trac/ticket/report.py:259
 #, python-format
@@ -1879,7 +1880,7 @@ msgstr ""
 
 #: trac/ticket/report.py:520
 msgid "SQL Query"
-msgstr ""
+msgstr "SQL-Fråga"
 
 #: trac/ticket/report.py:526
 #, python-format
@@ -1914,7 +1915,7 @@ msgstr ""
 #: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
-msgstr "Plan"
+msgstr "Planering"
 
 #: trac/ticket/roadmap.py:350
 msgid "iCalendar"
@@ -1962,11 +1963,11 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:548
 msgid "Back to Query"
-msgstr ""
+msgstr "Tillbaka till utsökning"
 
 #: trac/ticket/web_ui.py:628 trac/ticket/web_ui.py:778
 msgid "Ticket History"
-msgstr ""
+msgstr "Ärendehistorik"
 
 #: trac/ticket/web_ui.py:673
 #, fuzzy
@@ -2228,7 +2229,7 @@ msgstr ""
 
 #: trac/ticket/templates/query.html:226
 msgid "Save query"
-msgstr ""
+msgstr "Spara utsökning"
 
 #: trac/ticket/templates/query.html:226
 #, python-format
@@ -2345,9 +2346,9 @@ msgid "View report"
 msgstr "Visa rapport"
 
 #: trac/ticket/templates/report_view.html:160
-#, fuzzy
+#
 msgid "Create new report"
-msgstr "Skapa Nytt Ärende"
+msgstr "Skapa ny rapport"
 
 #: trac/ticket/templates/roadmap.html:23
 msgid "Show already completed milestones"
@@ -2527,7 +2528,7 @@ msgstr ""
 
 #: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
-#, fuzzy
+#
 msgid "Timeline"
 msgstr "Tidslinje"
 
@@ -2545,7 +2546,7 @@ msgid "%(date)s in Timeline"
 msgstr ""
 
 #: trac/timeline/templates/timeline.html:20
-#, fuzzy
+#
 msgid "View changes from"
 msgstr "Visa ändringar från"
 
@@ -2564,12 +2565,12 @@ msgstr ""
 #: trac/util/presentation.py:252
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr ""
+msgstr "%(last)d av %(total)d"
 
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr ""
+msgstr "%(start)d - %(stop)d av %(total)d"
 
 #: trac/versioncontrol/api.py:81
 #, python-format
@@ -2583,7 +2584,7 @@ msgstr ""
 
 #: trac/versioncontrol/api.py:103
 msgid "Directory"
-msgstr ""
+msgstr "Katalog"
 
 #: trac/versioncontrol/api.py:107
 #, python-format
@@ -2592,7 +2593,7 @@ msgstr ""
 
 #: trac/versioncontrol/api.py:109
 msgid "Path"
-msgstr ""
+msgstr "Sökväg"
 
 #: trac/versioncontrol/api.py:131
 #, python-format
@@ -3064,9 +3065,9 @@ msgid "Logout"
 msgstr ""
 
 #: trac/web/auth.py:95
-#, fuzzy
+#
 msgid "Login"
-msgstr "Loggning"
+msgstr "Logga In"
 
 #: trac/web/auth.py:137
 #, python-format
@@ -3104,7 +3105,7 @@ msgstr ""
 
 #: trac/wiki/macros.py:550
 msgid "Table of Contents"
-msgstr ""
+msgstr "Innehållsförteckning"
 
 #: trac/wiki/model.py:146
 msgid "Page not modified"
@@ -3112,7 +3113,7 @@ msgstr ""
 
 #: trac/wiki/web_ui.py:82 trac/wiki/web_ui.py:585
 msgid "Wiki"
-msgstr "Wiki"
+msgstr ""
 
 #: trac/wiki/web_ui.py:84
 msgid "Help/Guide"

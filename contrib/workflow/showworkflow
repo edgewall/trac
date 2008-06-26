@@ -1,5 +1,6 @@
 #!/bin/bash -x
 
+basedir=`dirname $0`
 options=""
 while [ $# -gt 1 ]; do
     options="$options $1"
@@ -16,12 +17,12 @@ ps=`echo "$config" | sed 's/\.ini$/.ps/g'`
 pdf=`echo "$config" | sed 's/\.ini$/.pdf/g'`
 png=`echo "$config" | sed 's/\.ini$/.png/g'`
 
-./workflow_parser.py $options "$config" > "$dot"
+$basedir/workflow_parser.py $options "$config" > "$dot"
 if [ $? -ne 0 ]; then
     echo "Failed to parse \"$config\", exiting." >&2
     exit 1
 fi
 
-dot -T ps -o "$ps" "$dot" && ps2pdf "$ps" "$pdf" || exit 1
 dot -T png -o "$png" "$dot"
+dot -T ps -o "$ps" "$dot" && ps2pdf "$ps" "$pdf" || exit 1
 kpdf "$pdf"

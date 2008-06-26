@@ -34,7 +34,7 @@ from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.presentation import Paginator
 from trac.util.text import shorten_line
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.web import IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
@@ -132,11 +132,11 @@ class Query(object):
         for filter_ in filters:
             filter_ = filter_.split('=')
             if len(filter_) != 2:
-                raise QuerySyntaxError('Query filter requires field and ' 
-                                       'constraints separated by a "="')
+                raise QuerySyntaxError(_('Query filter requires field and ' 
+                                         'constraints separated by a "="'))
             field,values = filter_
             if not field:
-                raise QuerySyntaxError('Query filter requires field name')
+                raise QuerySyntaxError(_('Query filter requires field name'))
             # from last char of `field`, get the mode of comparison
             mode, neg = '', ''
             if field[-1] in ('~', '^', '$'):
@@ -171,6 +171,9 @@ class Query(object):
     def get_columns(self):
         if not self.cols:
             self.cols = self.get_default_columns()
+        if not 'id' in self.cols:
+            # make sure 'id' is always present (needed for permission checks)
+            self.cols.insert(0, 'id')        
         return self.cols
 
     def get_all_textareas(self):
@@ -248,9 +251,6 @@ class Query(object):
         return cnt
 
     def execute(self, req, db=None, cached_ids=None):
-        if not self.cols:
-            self.get_columns()
-
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -279,15 +279,18 @@ class Query(object):
             fields += [f for f in self.fields if f['name'] == column] or [None]
         results = []
 
+        column_indices = range(len(columns))
         for row in cursor:
-            id = int(row[0])
-            result = {'id': id, 'href': req.href.ticket(id)}
-            for i in range(1, len(columns)):
+            result = {}
+            for i in column_indices:
                 name, field, val = columns[i], fields[i], row[i]
                 if name == self.group:
                     val = val or 'None'
                 elif name == 'reporter':
                     val = val or 'anonymous'
+                elif name == 'id':
+                    val = int(val)
+                    result['href'] = req.href.ticket(val)
                 elif val is None:
                     val = '--'
                 elif name in ('changetime', 'time'):
@@ -370,8 +373,7 @@ class Query(object):
 
     def get_sql(self, req=None, cached_ids=None):
         """Return a (sql, params) tuple for the query."""
-        if not self.cols:
-            self.get_columns()
+        self.get_columns()
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
@@ -660,6 +662,8 @@ class Query(object):
                 prev_href = self.get_href(req.href, max=self.max, 
                                           page=self.page - 1)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
+        else:
+            results.show_index = False
 
         pagedata = []
         shown_pages = results.get_shown_pages(21)
@@ -989,11 +993,15 @@ class TicketQueryMacro(WikiMacroBase):
     This macro accepts a comma-separated list of keyed parameters,
     in the form "key=value".
 
-    If the key is the name of a field, the value must use the same syntax as
-    for `query:` wiki links (but '''not''' the variant syntax starting with
-    "?").
+    If the key is the name of a field, the value must use the syntax 
+    of a filter specifier as defined in TracQuery#QueryLanguage.
+    Note that this is ''not'' the same as the simplified URL syntax 
+    used for `query:` links starting with a `?` character.
 
-    The optional `format` parameter determines how the list of tickets is
+    In addition to filters, several other named parameters can be used
+    to control how the results are presented. All of them are optional.
+
+    The `format` parameter determines how the list of tickets is
     presented: 
      - '''list''' -- the default presentation is to list the ticket ID next
        to the summary, with each ticket on a separate line.
@@ -1003,22 +1011,24 @@ class TicketQueryMacro(WikiMacroBase):
      - '''table'''  -- a view similar to the custom query view (but without
        the controls)
 
-    The optional `max` parameter can be used to limit the number of tickets
-    shown (defaults to '''0''', i.e. no maximum).
+    The `max` parameter can be used to limit the number of tickets shown
+    (defaults to '''0''', i.e. no maximum).
 
-    The optional `order` parameter sets the field used for ordering tickets
+    The `order` parameter sets the field used for ordering tickets
     (defaults to '''id''').
 
-    The optional `group` parameter sets the field used for grouping tickets
+    The `group` parameter sets the field used for grouping tickets
     (defaults to not being set).
 
-    The optional `groupdesc` parameter indicates whether the natural display
+    The `groupdesc` parameter indicates whether the natural display
     order of the groups should be reversed (defaults to '''false''').
 
-    The optional `verbose` parameter can be set to a true value in order to
+    The `verbose` parameter can be set to a true value in order to
     get the description for the listed tickets. For '''table''' format only.
-    ''deprecated in favor of the row parameter, which can be used to specify
-    which field should be viewed as a row, e.g. row=description''.
+    ''deprecated in favor of the `rows` parameter''
+    
+    The `rows` parameter can be used to specify which field(s) should 
+    be viewed as a row, e.g. `rows=description|summary`
 
     For compatibility with Trac 0.10, if there's a second positional parameter
     given to the macro, it will be used to specify the `format`.
@@ -1033,6 +1043,9 @@ class TicketQueryMacro(WikiMacroBase):
             kwargs['format'] = argv[0]
 
         format = kwargs.pop('format', 'list').strip().lower()
+        if format in ('list', 'compact'): # we need 'status' and 'summary'
+            kwargs['col'] = '|'.join(['status', 'summary', 
+                                      kwargs.get('col', '')])
         query_string = '&'.join(['%s=%s' % item
                                  for item in kwargs.iteritems()])
 
@@ -1097,8 +1110,10 @@ class TicketQueryMacro(WikiMacroBase):
         else:
             if query.group:
                 return tag.div(
-                    [(tag.p(tag.a(query.group, ' ', v, href=href,
-                                  class_='query', title=title)),
+                    [(tag.p(tag_('%(groupvalue) %(groupname)s tickets:',
+                                 groupvalue=tag.a(v, href=href, class_='query',
+                                                  title=title),
+                                 groupname=query.group)),
                       tag.dl([(tag.dt(ticket_anchor(t)),
                                tag.dd(t['summary'])) for t in g],
                              class_='wiki compact'))

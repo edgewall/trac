@@ -27,7 +27,7 @@
       </form>
 
       <py:otherwise>
-        <form class="addnew" id="addenum" name="addenum" method="post">
+        <form class="addnew" id="addenum" method="post">
           <fieldset>
             <legend>Add $label_singular</legend>
             <div class="field">
@@ -40,7 +40,7 @@
         </form>
 
         <py:choose>
-          <form py:when="enums" method="POST">
+          <form py:when="enums" id="enumtable" method="POST">
             <table class="listing" id="enumlist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>

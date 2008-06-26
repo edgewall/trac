@@ -16,7 +16,6 @@
 
 import csv
 from datetime import datetime
-from itertools import chain
 import os
 import pkg_resources
 import re
@@ -43,7 +42,7 @@ from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address
 from trac.util.presentation import separated
-from trac.util.translation import _
+from trac.util.translation import _, tag_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -208,10 +207,10 @@ class TicketModule(Component):
         ts_start = to_timestamp(start)
         ts_stop = to_timestamp(stop)
 
-        status_map = {'new': ('newticket', 'created'),
-                      'reopened': ('reopenedticket', 'reopened'),
-                      'closed': ('closedticket', 'closed'),
-                      'edit': ('editedticket', 'updated')}
+        status_map = {'new': ('newticket', N_('created')),
+                      'reopened': ('reopenedticket', N_('reopened')),
+                      'closed': ('closedticket', N_('closed')),
+                      'edit': ('editedticket', N_('updated'))}
 
         ticket_realm = Resource('ticket')
 
@@ -305,8 +304,9 @@ class TicketModule(Component):
         elif field == 'title':
             title = TicketSystem(self.env).format_summary(summary, status,
                                                           resolution, type)
-            return tag('Ticket ', tag.em('#', ticket.id, title=title),
-                       ' (', shorten_line(summary), ') ', verb)
+            return tag_('Ticket %(ticketref)s (%(summary)s) %(verb)s', 
+                        ticketref=tag.em('#', ticket.id, title=title),
+                        summary=shorten_line(summary), verb=gettext(verb))
         elif field == 'description':
             descr = message = ''
             if status == 'new':
@@ -955,6 +955,10 @@ class TicketModule(Component):
         if cnum and replyto: # record parent.child relationship
             internal_cnum = '%s.%s' % (replyto, cnum)
 
+        # Save the action controllers we need to call side-effects for before
+        # we save the changes to the ticket.
+        controllers = list(self._get_action_controllers(req, ticket, action))
+
         # -- Save changes
 
         now = datetime.now(utc)
@@ -968,7 +972,10 @@ class TicketModule(Component):
                 self.log.exception("Failure sending notification on change to "
                                    "ticket #%s: %s" % (ticket.id, e))
 
-        for controller in self._get_action_controllers(req, ticket, action):
+        # After saving the changes, apply the side-effects.
+        for controller in controllers:
+            self.env.log.debug('Side effect for %s' %
+                               controller.__class__.__name__)
             controller.apply_action_side_effects(req, ticket, action)
 
         fragment = cnum and '#comment:'+cnum or ''
@@ -1076,11 +1083,12 @@ class TicketModule(Component):
                 if ticket.exists:
                     value = ticket.values.get(name)
                     options = field['options']
-                    optgroups = list(chain(*[x['options'] for x in
-                                            field.get('optgroups', [])]))
+                    optgroups = []
+                    for x in field.get('optgroups', []):
+                        optgroups.extend(x['options'])
                     if value and \
                         (not value in options and \
-                        not value in optgroups):
+                         not value in optgroups):
                         # Current ticket value must be visible,
                         # even if it's not among the possible values
                         options.append(value)
