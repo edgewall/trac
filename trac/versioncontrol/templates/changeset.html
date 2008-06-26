@@ -55,7 +55,7 @@
                        nprops = len(item.props);
                        is_removal = cl == 'rem';
                        path = is_removal and item.old.get('path') or item.new.get('path');
-                       path = len(files) == 1 and path or (path and path[len(location):].strip('/'))">
+                       path = path and path[len(location):].strip('/')">
           <div class="$cl"> </div>
           <py:choose>
             <a py:when="is_removal" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
@@ -117,7 +117,7 @@
             <py:otherwise><pre>${changeset.message}</pre></py:otherwise>
           </dd>
         </py:if>
-        <py:if test="location and len(files) &gt; 1">
+        <py:if test="location">
           <dt class="property location">Location:</dt>
           <dd class="searchable"><a href="${req.href.browser(location, rev=new_rev)}">$location</a></dd>
         </py:if>
