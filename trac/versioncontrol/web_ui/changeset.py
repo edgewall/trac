@@ -614,7 +614,8 @@ class ChangesetModule(Component):
 
         data.update({'has_diffs': has_diffs, 'changes': changes, 'xhr': xhr,
                      'filestats': filestats, 'annotated': annotated,
-                     'files': files, 'location': self._get_location(files),
+                     'files': files, 
+                     'location': self._get_parent_location(files),
                      'longcol': 'Revision', 'shortcol': 'r'})
 
         if xhr: # render and return the content only
@@ -752,7 +753,23 @@ class ChangesetModule(Component):
             return None
 
     def _get_location(self, files):
-        return '/'.join(os.path.commonprefix([f.split('/') for f in files]))
+        """Return the deepest common path for the given files.
+           If all the files are actually the same, return that location."""
+        if len(files) == 1:
+            return files[0]
+        else:
+            return '/'.join(os.path.commonprefix([f.split('/') 
+                                                  for f in files]))
+    def _get_parent_location(self, files):
+        """Only get a location when there are different files,
+           otherwise return the empty string."""
+        if files: 
+            files.sort()
+            prev = files[0]
+            for f in files[1:]:
+                if f != prev:
+                    return self._get_location(files)
+        return ''
 
     def _prepare_filestats(self):
         filestats = {}
@@ -831,7 +848,7 @@ class ChangesetModule(Component):
                              for count in (filestats[kind],) if count]
                     markup = tag.ul(
                         tag.li(stats, ' in ',
-                               tag.strong(self._get_location(files))),
+                               tag.strong(self._get_location(files) or '/')),
                         markup, class_="changes")
                 elif show_files:
                     for c in changesets:
