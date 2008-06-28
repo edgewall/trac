@@ -13,7 +13,7 @@
     <div class="field" py:with="session_language = settings.session.get('language')">
       <label>Language:
       <select name="language">
-        <option value="">Default language</option>
+        <option value="">default language</option>
         <option py:for="locale, language in languages"
                 selected="${session_language == locale or None}"
                 value="$locale">$language</option>
@@ -22,13 +22,8 @@
       displayed on this site to use your language instead of that of the
       server.</p>
 
-      <p class="hint">
-        Example: 
-        <br />
-        In ${session_language and 'your' or 'the Default'} language, this would be displayed as
-        <strong>${session_language}</strong>.
-      </p>
-
+      <p class="hint">The 'default language' option uses the browser's
+        language negotiation feature to select the appropriate language.</p>
     </div>
 
   </body>
