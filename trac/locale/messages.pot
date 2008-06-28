@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-06-28 14:33+0200\n"
+"POT-Creation-Date: 2008-06-28 15:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -825,7 +825,6 @@ msgid "(UTC)."
 msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:30
-#: trac/prefs/templates/prefs_language.html:27
 msgid "In"
 msgstr ""
 
@@ -895,7 +894,7 @@ msgid "Language:"
 msgstr ""
 
 #: trac/prefs/templates/prefs_language.html:16
-msgid "Default language"
+msgid "default language"
 msgstr ""
 
 #: trac/prefs/templates/prefs_language.html:21
@@ -906,11 +905,9 @@ msgid ""
 msgstr ""
 
 #: trac/prefs/templates/prefs_language.html:25
-msgid "Example:"
-msgstr ""
-
-#: trac/prefs/templates/prefs_language.html:28
-msgid "language, this would be displayed as"
+msgid ""
+"The 'default language' option uses the browser's\n"
+"        language negotiation feature to select the appropriate language."
 msgstr ""
 
 #: trac/prefs/templates/prefs_pygments.html:9
@@ -1803,7 +1800,7 @@ msgstr ""
 
 #: trac/ticket/query.py:1114
 #, python-format
-msgid "%(groupvalue) %(groupname)s tickets:"
+msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
 
 #: trac/ticket/report.py:177
