@@ -164,7 +164,7 @@ msgstr "O bilhete contém caracteres ASCII inválidos. Por favor modifique "
 #: trac/perm.py:47
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr "São necessários os privilégios %(perm)s para efectuar esta operação em %(ressource)s" 
+msgstr "São necessários os privilégios %(perm)s para efectuar esta operação em %(resource)s" 
 
 #: trac/perm.py:49
 #, python-format
