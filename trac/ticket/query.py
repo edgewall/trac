@@ -1110,7 +1110,7 @@ class TicketQueryMacro(WikiMacroBase):
         else:
             if query.group:
                 return tag.div(
-                    [(tag.p(tag_('%(groupvalue) %(groupname)s tickets:',
+                    [(tag.p(tag_('%(groupvalue)s %(groupname)s tickets:',
                                  groupvalue=tag.a(v, href=href, class_='query',
                                                   title=title),
                                  groupname=query.group)),
