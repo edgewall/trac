@@ -2624,7 +2624,7 @@ msgstr ""
 #: trac/versioncontrol/api.py:163
 #, python-format
 msgid "No changeset %(rev)s in the repository"
-msgstr "Endringssett %(rev) finnes ikke i kildekodelager"
+msgstr "Endringssett %(rev)s finnes ikke i kildekodelager"
 
 #: trac/versioncontrol/api.py:165
 msgid "No such changeset"
