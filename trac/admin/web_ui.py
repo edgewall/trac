@@ -298,6 +298,7 @@ class PermissionAdminPanel(Component):
     def render_admin_panel(self, req, cat, page, path_info):
         perm = PermissionSystem(self.env)
         all_permissions = perm.get_all_permissions()
+        all_actions = perm.get_actions()
 
         if req.method == 'POST':
             subject = req.args.get('subject', '')
@@ -312,7 +313,7 @@ class PermissionAdminPanel(Component):
             # Grant permission to subject
             if req.args.get('add') and subject and action:
                 req.perm.require('PERMISSION_GRANT')
-                if action not in perm.get_actions():
+                if action not in all_actions:
                     raise TracError(_('Unknown action'))
                 req.perm.require(action)
                 if (subject, action) not in all_permissions:
@@ -328,7 +329,12 @@ class PermissionAdminPanel(Component):
             elif req.args.get('add') and subject and group:
                 req.perm.require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
-                    req.perm.require(action)
+                    if not action in all_actions: # plugin disabled?
+                        self.env.log.warn("Adding %s to group %s: " \
+                            "Permission %s unavailable, skipping perm check." \
+                            % (subject, group, action))
+                    else:
+                        req.perm.require(action)
                 if (subject,group) not in all_permissions:
                     perm.grant_permission(subject, group)
                     req.redirect(req.href.admin(cat, page))
@@ -349,7 +355,7 @@ class PermissionAdminPanel(Component):
                 req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {
-            'actions': perm.get_actions(),
+            'actions': all_actions,
             'perms': all_permissions
         }
 
