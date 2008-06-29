@@ -27,7 +27,8 @@
       <label for="target">Retarget associated tickets to milestone</label>
       <select name="target" id="target">
         <option value="">None</option>
-        <option py:for="m in milestones">${m.name}</option>
+        <option py:for="m in milestones"
+                py:if="m.name != milestone.name">${m.name}</option>
       </select>
       <div class="buttons">
         <input type="submit" name="cancel" value="${_('Cancel')}" />

@@ -75,7 +75,10 @@ class TicketModule(Component):
         """Default milestone for newly created tickets.""")
 
     default_component = Option('ticket', 'default_component', '',
-        """Default component for newly created tickets""")
+        """Default component for newly created tickets.""")
+
+    default_severity = Option('ticket', 'default_severity', '',
+        """Default severity for newly created tickets.""")
 
     default_resolution = Option('ticket', 'default_resolution', 'fixed',
         """Default resolution for resolving (closing) tickets
