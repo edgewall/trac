@@ -777,6 +777,12 @@ Congratulations!
     def _do_wiki_dump(self, dir):
         pages = self.get_wiki_list()
         cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
+        if not os.path.isdir(dir):
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+            else:
+                raise TracError("%s is not a directory" % \
+                                                dir.encode(cons_charset))
         for p in pages:
             dst = os.path.join(dir, unicode_quote(p, ''))
             print (" %s => %s" % (p, dst)).encode(cons_charset)
