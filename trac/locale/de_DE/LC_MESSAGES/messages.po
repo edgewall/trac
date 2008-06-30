@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
 "PO-Revision-Date: 2008-06-28 21:56+0200\n"
-"Last-Translator: Christopher Lenz <cmlenz@gmx.de>\n"
+"Last-Translator: Axel Gembe <ago@seca-online.de>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
@@ -1432,9 +1432,9 @@ msgid ""
 "                [2:mailing list]\n"
 "                instead of filing a ticket."
 msgstr ""
-"Bevor Sie dies tun versuchen Sie jedoch bitte zuerst nach ähnlichen "
-"Problemen zu [1:suchen], da es sehr wahrscheinlich ist das dieses Problem"
-" schon berichtet wurde. Für Fragen über die Installation und "
+"Bevor Sie dies tun versuchen Sie jedoch bitte zuerst [1:suchen] nach "
+"ähnlichen Problemen, da es sehr wahrscheinlich ist das dieses Problem "
+"schon berichtet wurde. Für Fragen über die Installation und "
 "Konfiguration von Trac versuchen Sie bitte die [2:Mailingliste] anstatt "
 "ein Ticket zu erstellen."
 
@@ -1748,7 +1748,7 @@ msgid "%(type)s %(name)s already exists"
 msgstr "Es gibt bereits ein %(type)s %(name)s"
 
 #: trac/ticket/admin.py:354
-#, fuzzy, python-format
+#, python-format
 msgid "No %s selected"
 msgstr "Keine %s ausgewählt"
 
@@ -1803,7 +1803,7 @@ msgstr "Nächster Status wird '%(name)s' sein"
 
 #: trac/ticket/model.py:128
 msgid "Multi-values fields not supported yet"
-msgstr ""
+msgstr "Felder mit mehreren Werten weden nicht unterstützt"
 
 #: trac/ticket/model.py:363
 #, python-format
@@ -1832,11 +1832,11 @@ msgstr "Abfrage max %(max)s ist ungültig."
 
 #: trac/ticket/query.py:135
 msgid "Query filter requires field and constraints separated by a \"=\""
-msgstr ""
+msgstr "Abfragefilter benötigt Feld und Beschränkungen durch ein \"=\" getrennt"
 
 #: trac/ticket/query.py:139
 msgid "Query filter requires field name"
-msgstr ""
+msgstr "Abfragefilter benötigt Feldname"
 
 #: trac/ticket/query.py:271
 #, python-format
@@ -1918,7 +1918,7 @@ msgstr "Keine Ergebnisse"
 #: trac/ticket/query.py:1114
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr ""
+msgstr "%(groupvalue) %(groupname)s Tickets:"
 
 #: trac/ticket/report.py:177
 #, python-format
@@ -2050,27 +2050,23 @@ msgid "Ticket details"
 msgstr "Ticketdetails"
 
 #: trac/ticket/web_ui.py:210
-#, fuzzy
 msgid "created"
-msgstr "Erstellt"
+msgstr "erstellt"
 
 #: trac/ticket/web_ui.py:211
-#, fuzzy
 msgid "reopened"
-msgstr "Geöffnet"
+msgstr "wiedergeöffnet"
 
 #: trac/ticket/web_ui.py:212
-#, fuzzy
 msgid "closed"
-msgstr "Geschlossen"
+msgstr "geschlossen"
 
 #: trac/ticket/web_ui.py:213
-#, fuzzy
 msgid "updated"
-msgstr "Aktualisieren"
+msgstr "aktualisiert"
 
 #: trac/ticket/web_ui.py:309
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 
@@ -2293,7 +2289,7 @@ msgstr "Datum nicht gesetzt"
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:42
 msgid "by"
-msgstr "nach"
+msgstr "von"
 
 #: trac/ticket/templates/milestone_view.html:58
 msgid "(none)"
@@ -2301,15 +2297,15 @@ msgstr "(kein)"
 
 #: trac/ticket/templates/milestone_view.html:87
 msgid "Edit milestone"
-msgstr "Meilenstein löschen"
+msgstr "Meilenstein bearbeiten"
 
 #: trac/ticket/templates/query.html:28
 #: trac/ticket/templates/query_results.html:29
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)s Treffer"
+msgstr[1] "%(num)s Treffer"
 
 #: trac/ticket/templates/query.html:37
 msgid "Filters"
@@ -2614,10 +2610,14 @@ msgstr "Ersteller:"
 #: trac/ticket/templates/ticket.html:339
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
+"Diese Checkbox erlaubt es Ihnen sich in der CC Liste zu entfernen oder "
+"hinzuzufügen."
 
 #: trac/ticket/templates/ticket.html:345
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
+"Leerzeichen- oder Kommagetrennte Emailadressen und Benutzernamen werden "
+"angenommen."
 
 #: trac/ticket/templates/ticket.html:377
 msgid "I have files to attach to this ticket"
@@ -2679,7 +2679,7 @@ msgstr "Zeige Änderungen seit"
 
 #: trac/timeline/templates/timeline.html:21
 msgid "days back"
-msgstr "Tage in der Vergangenheit"
+msgstr "Tage davor"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
@@ -3281,7 +3281,7 @@ msgstr "Ungültige Wiki-Seite: %(message)s"
 
 #: trac/wiki/web_ui.py:271
 msgid "Page not modified, showing latest version."
-msgstr ""
+msgstr "Seite nicht modifiziert, zeige letzte Version."
 
 #: trac/wiki/web_ui.py:303
 #, python-format
