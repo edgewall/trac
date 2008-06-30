@@ -502,15 +502,15 @@ msgstr "diretório do ambiente do projeto ("
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
 msgid "Milestones"
-msgstr "Marcas"
+msgstr "Marcos"
 
 #: trac/admin/templates/admin_milestones.html:14
 msgid "Manage Milestones"
-msgstr "Gerenciar Marcas"
+msgstr "Gerenciar Marcos"
 
 #: trac/admin/templates/admin_milestones.html:19
 msgid "Modify Milestone:"
-msgstr "Modificar Marca:"
+msgstr "Modificar Marco:"
 
 #: trac/admin/templates/admin_milestones.html:24
 #: trac/admin/templates/admin_milestones.html:82
@@ -541,7 +541,7 @@ msgstr "Descrição (você poderá usar [1:WikiFormatting] aqui):"
 
 #: trac/admin/templates/admin_milestones.html:75
 msgid "Add Milestone:"
-msgstr "Adicionar Marca:"
+msgstr "Adicionar Marco:"
 
 #: trac/admin/templates/admin_milestones.html:100
 msgid "Due"
@@ -1688,11 +1688,11 @@ msgstr "Data de Finalização Inválida"
 #: trac/ticket/admin.py:185
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Marca %(name)s já existe."
+msgstr "Marco %(name)s já existe."
 
 #: trac/ticket/admin.py:192
 msgid "No milestone selected"
-msgstr "Nenhuma marca selecionada"
+msgstr "Nenhuma marco selecionada"
 
 #: trac/ticket/admin.py:267
 #, fuzzy, python-format
@@ -2199,12 +2199,12 @@ msgstr ""
 #: trac/wiki/templates/wiki_edit.html:131
 #, fuzzy
 msgid "Submit changes"
-msgstr "Última Alteração"
+msgstr "Enviar mudanças"
 
 #: trac/ticket/templates/milestone_edit.html:90
 #, fuzzy
 msgid "Add milestone"
-msgstr "Marco"
+msgstr "Adicionar Marco"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2252,7 +2252,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_view.html:87
 #, fuzzy
 msgid "Edit milestone"
-msgstr "Marco"
+msgstr "Editar Marco"
 
 #: trac/ticket/templates/query.html:28
 #: trac/ticket/templates/query_results.html:29
@@ -2392,19 +2392,19 @@ msgstr ""
 
 #: trac/ticket/templates/report_edit.html:41
 msgid "Save report"
-msgstr ""
+msgstr "Salvar relatório"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
-msgstr ""
+msgstr "encontrados)"
 
 #: trac/ticket/templates/report_view.html:27
 msgid "Edit report"
-msgstr ""
+msgstr "Editar relatório"
 
 #: trac/ticket/templates/report_view.html:33
 msgid "Copy report"
-msgstr ""
+msgstr "Copiar relatório"
 
 #: trac/ticket/templates/report_view.html:51
 msgid "match"
@@ -2413,19 +2413,19 @@ msgstr ""
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
 msgid "View report"
-msgstr ""
+msgstr "Ver relatório"
 
 #: trac/ticket/templates/report_view.html:160
 msgid "Create new report"
-msgstr ""
+msgstr "Criar novo relatório"
 
 #: trac/ticket/templates/roadmap.html:23
 msgid "Show already completed milestones"
-msgstr ""
+msgstr "Mostrar marcos já completados"
 
 #: trac/ticket/templates/roadmap.html:34
 msgid "Milestone:"
-msgstr "Marca:"
+msgstr "Marco:"
 
 #: trac/ticket/templates/roadmap.html:39
 msgid ""
@@ -2435,7 +2435,7 @@ msgstr ""
 
 #: trac/ticket/templates/roadmap.html:67
 msgid "Add new milestone"
-msgstr "Adicionar nova marca"
+msgstr "Adicionar novo marco"
 
 #: trac/ticket/templates/ticket.html:57
 #: trac/versioncontrol/templates/changeset.html:128
@@ -2505,7 +2505,7 @@ msgstr "Reportado por:"
 
 #: trac/ticket/templates/ticket.html:139
 msgid "Owned by:"
-msgstr ""
+msgstr "Assumido por:"
 
 #: trac/ticket/templates/ticket.html:168
 msgid "(last modified by"
@@ -2633,7 +2633,7 @@ msgstr "Visualizar mudanças de"
 
 #: trac/timeline/templates/timeline.html:21
 msgid "days back"
-msgstr ""
+msgstr "dias atrás"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
@@ -2641,7 +2641,7 @@ msgstr ""
 
 #: trac/timeline/templates/timeline.html:53
 msgid "for information about the timeline view."
-msgstr ""
+msgstr "para informações sobre a visualização da linha do tempo."
 
 #: trac/util/presentation.py:254
 #, python-format
