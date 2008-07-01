@@ -301,6 +301,7 @@ class ReportModule(Component):
             numrows = len(results)
 
         except Exception, e:
+            db.rollback()
             data['message'] = _('Report execution failed: %(error)s',
                                 error=to_unicode(e))
             return 'report_view.html', data, None
