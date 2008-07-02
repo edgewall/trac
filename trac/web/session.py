@@ -73,11 +73,13 @@ class DetachedSession(dict):
             # persist it
             return
 
+        authenticated = int(self.authenticated)
+        now = int(time.time())
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        authenticated = int(self.authenticated)
 
         if self._new:
+            self.last_visit = now
             self._new = False
             cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
                            " VALUES(%s,%s,%s)",
@@ -98,7 +100,6 @@ class DetachedSession(dict):
                 db.commit()
                 return
 
-        now = int(time.time())
         # Update the session last visit time if it is over an hour old,
         # so that session doesn't get purged
         if now - self.last_visit > UPDATE_INTERVAL:
