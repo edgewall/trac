@@ -60,8 +60,7 @@ class RepositoryManager(Component):
     connectors = ExtensionPoint(IRepositoryConnector)
 
     repository_type = Option('trac', 'repository_type', 'svn',
-        """Repository connector type. See also RepositoryType.
-        (''since 0.10'')""")
+        """Repository connector type. (''since 0.10'')""")
     repository_dir = Option('trac', 'repository_dir', '',
         """Path to local repository. This can also be a relative path
         (''since 0.11'').""")
