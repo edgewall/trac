@@ -98,8 +98,9 @@ msgstr ""
 
 #: trac/attachment.py:664 trac/versioncontrol/web_ui/browser.py:511
 #: trac/wiki/web_ui.py:66
+#, fuzzy
 msgid "Plain Text"
-msgstr ""
+msgstr "Απλού κειμένου"
 
 #: trac/attachment.py:670 trac/versioncontrol/web_ui/browser.py:516
 msgid "Original Format"
@@ -336,20 +337,23 @@ msgid "Apply changes"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:10
+#, fuzzy
 msgid "Components"
-msgstr ""
+msgstr "Συνιστώσες"
 
 #: trac/admin/templates/admin_components.html:14
+#, fuzzy
 msgid "Manage Components"
-msgstr ""
+msgstr "Διαχειριστούν συνιστώσες"
 
 #: trac/admin/templates/admin_components.html:18
 msgid "Owner:"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:35
+#, fuzzy
 msgid "Modify Component:"
-msgstr ""
+msgstr "Τροποποιήσετε συνιστώσα:"
 
 #: trac/admin/templates/admin_components.html:42
 msgid ""
@@ -381,8 +385,9 @@ msgid "Save"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:64
+#, fuzzy
 msgid "Add Component:"
-msgstr ""
+msgstr "Προσθέσετε συνιστώσα:"
 
 #: trac/admin/templates/admin_components.html:70
 #: trac/admin/templates/admin_enums.html:32
@@ -391,8 +396,9 @@ msgstr ""
 #: trac/admin/templates/admin_perms.html:44
 #: trac/admin/templates/admin_perms.html:66
 #: trac/admin/templates/admin_versions.html:67
+#, fuzzy
 msgid "Add"
-msgstr ""
+msgstr "Προσθέτω"
 
 #: trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:47
@@ -418,8 +424,9 @@ msgstr ""
 #: trac/admin/templates/admin_milestones.html:123
 #: trac/admin/templates/admin_perms.html:93
 #: trac/admin/templates/admin_versions.html:93
+#, fuzzy
 msgid "Remove selected items"
-msgstr ""
+msgstr "Αφαιρεση επιλεγμένων αντικείμενα"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
@@ -444,8 +451,9 @@ msgid "Manage"
 msgstr ""
 
 #: trac/admin/templates/admin_enums.html:18
+#, fuzzy
 msgid "Modify"
-msgstr ""
+msgstr "Τροποποιήσετε"
 
 #: trac/admin/templates/admin_enums.html:47
 msgid "Order"
@@ -480,16 +488,19 @@ msgid "directory of the project environment ("
 msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
+#, fuzzy
 msgid "Milestones"
-msgstr ""
+msgstr "Ορόσημα"
 
 #: trac/admin/templates/admin_milestones.html:14
+#, fuzzy
 msgid "Manage Milestones"
-msgstr ""
+msgstr "Διαχειριστούν ορόσημα"
 
 #: trac/admin/templates/admin_milestones.html:19
+#, fuzzy
 msgid "Modify Milestone:"
-msgstr ""
+msgstr "Τροποποιήσει ορόσημο:"
 
 #: trac/admin/templates/admin_milestones.html:24
 #: trac/admin/templates/admin_milestones.html:82
@@ -519,8 +530,9 @@ msgid "Description (you may use [1:WikiFormatting] here):"
 msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:75
+#, fuzzy
 msgid "Add Milestone:"
-msgstr ""
+msgstr "Προσθήκη ορόσημο:"
 
 #: trac/admin/templates/admin_milestones.html:100
 msgid "Due"
@@ -546,8 +558,9 @@ msgid "Subject"
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:60
+#, fuzzy
 msgid "or"
-msgstr ""
+msgstr "ή"
 
 #: trac/admin/templates/admin_perms.html:16
 msgid "Group"
@@ -581,8 +594,9 @@ msgid ""
 msgstr ""
 
 #: trac/admin/templates/admin_perms.html:51
+#, fuzzy
 msgid "Add Subject to Group:"
-msgstr ""
+msgstr "Προσθέσει υπόκειται στην ομάδα:"
 
 #: trac/admin/templates/admin_perms.html:58
 msgid "Group:"
@@ -641,32 +655,36 @@ msgid "License:"
 msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:82
+#, fuzzy
 msgid "Component"
-msgstr ""
+msgstr "Συνιστώσα"
 
 #: trac/admin/templates/admin_plugins.html:82
 msgid "Enabled"
 msgstr ""
 
 #: trac/admin/templates/admin_versions.html:10
+#, fuzzy
 msgid "Versions"
-msgstr ""
+msgstr "Εκδόσεις"
 
 #: trac/admin/templates/admin_versions.html:14
 msgid "Manage Versions"
 msgstr ""
 
 #: trac/admin/templates/admin_versions.html:19
+#, fuzzy
 msgid "Modify Version:"
-msgstr ""
+msgstr "Τροποποιήσει έκδοση:"
 
 #: trac/admin/templates/admin_versions.html:26
 msgid "Date:"
 msgstr ""
 
 #: trac/admin/templates/admin_versions.html:54
+#, fuzzy
 msgid "Add Version:"
-msgstr ""
+msgstr "Προσθέσετε έκδοση:"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Released:"
@@ -732,8 +750,9 @@ msgid "Docutils version >= %(version)s required, %(found)s found"
 msgstr ""
 
 #: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:16
+#, fuzzy
 msgid "Preferences"
-msgstr ""
+msgstr "Προτιμήσεων"
 
 #: trac/prefs/web_ui.py:77
 msgid "Unknown preference panel"
@@ -748,16 +767,18 @@ msgid "Keyboard Shortcuts"
 msgstr ""
 
 #: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
+#, fuzzy
 msgid "Language"
-msgstr ""
+msgstr "Γλώσσα"
 
 #: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
 msgstr ""
 
 #: trac/prefs/templates/prefs.html:10
+#, fuzzy
 msgid "Preferences:"
-msgstr ""
+msgstr "Προτιμήσεων:"
 
 #: trac/prefs/templates/prefs.html:17
 msgid ""
@@ -1079,12 +1100,14 @@ msgid "Value"
 msgstr ""
 
 #: trac/templates/attachment.html:10
+#, fuzzy
 msgid "Attachment"
-msgstr ""
+msgstr "Συνημμένο"
 
 #: trac/templates/attachment.html:17
+#, fuzzy
 msgid "Add Attachment to"
-msgstr ""
+msgstr "Προσθέσετε συνημμένο σε"
 
 #: trac/templates/attachment.html:20
 msgid "(size limit"
@@ -1108,8 +1131,9 @@ msgid "Replace existing attachment of the same name"
 msgstr ""
 
 #: trac/templates/attachment.html:48
+#, fuzzy
 msgid "Add attachment"
-msgstr ""
+msgstr "Προσθέσετε συνημμένο"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
@@ -1120,8 +1144,9 @@ msgid "This is an irreversible operation."
 msgstr ""
 
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:103
+#, fuzzy
 msgid "Delete attachment"
-msgstr ""
+msgstr "Διαγράψετε συνημμένο"
 
 #: trac/templates/attachment.html:78 trac/ticket/api.py:212
 #: trac/ticket/templates/ticket.html:165
@@ -1224,8 +1249,9 @@ msgstr ""
 #: trac/templates/diff_view.html:60
 #: trac/versioncontrol/templates/changeset.html:155
 #: trac/versioncontrol/templates/revisionlog.html:74
+#, fuzzy
 msgid "Removed"
-msgstr ""
+msgstr "Αφαιρέθηκαν"
 
 #: trac/templates/diff_view.html:61 trac/ticket/query.py:588
 #: trac/versioncontrol/templates/changeset.html:157
@@ -1351,8 +1377,9 @@ msgid "Most recent call last:"
 msgstr ""
 
 #: trac/templates/error.html:147 trac/templates/error.html:174
+#, fuzzy
 msgid "File \""
-msgstr ""
+msgstr "Αρχείο"
 
 #: trac/templates/error.html:147
 msgid ""
@@ -1592,9 +1619,9 @@ msgid "Notices:"
 msgstr ""
 
 #: trac/ticket/admin.py:87
-#, python-format
+#, fuzzy, python-format
 msgid "Component %(name)s already exists."
-msgstr ""
+msgstr "Συνιστώσας %(name)s υπάρχει ήδη."
 
 #: trac/ticket/admin.py:94
 msgid "No component selected"
@@ -1609,9 +1636,9 @@ msgid "Invalid Completion Date"
 msgstr ""
 
 #: trac/ticket/admin.py:185
-#, python-format
+#, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
-msgstr ""
+msgstr "Ορόσημο %(name)s υπάρχει ήδη."
 
 #: trac/ticket/admin.py:192
 msgid "No milestone selected"
@@ -1695,9 +1722,9 @@ msgid "%(type)s %(name)s does not exist."
 msgstr ""
 
 #: trac/ticket/model.py:507
-#, python-format
+#, fuzzy, python-format
 msgid "Component %(name)s does not exist."
-msgstr ""
+msgstr "Συνιστώσας %(name)s δεν υπάρχει."
 
 #: trac/ticket/model.py:737
 #, python-format
@@ -1805,9 +1832,9 @@ msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr ""
 
 #: trac/ticket/report.py:177
-#, python-format
+#, fuzzy, python-format
 msgid "Delete Report {%(num)s} %(title)s"
-msgstr ""
+msgstr "Διαγράψετε έκθεση {%(num)s} %(title)s"
 
 #: trac/ticket/report.py:182 trac/ticket/report.py:194
 #: trac/ticket/report.py:242
@@ -1892,9 +1919,9 @@ msgid "iCalendar"
 msgstr ""
 
 #: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
-#, python-format
+#, fuzzy, python-format
 msgid "Milestone %(name)s"
-msgstr ""
+msgstr "Ορόσημο %(name)s"
 
 #: trac/ticket/roadmap.py:447
 #, python-format
@@ -2025,36 +2052,42 @@ msgid "Assign to"
 msgstr ""
 
 #: trac/ticket/web_ui.py:1059
+#, fuzzy
 msgid "Open"
-msgstr ""
+msgstr "Ανοικτός"
 
 #: trac/ticket/web_ui.py:1060
+#, fuzzy
 msgid "Closed"
-msgstr ""
+msgstr "Κλειστά"
 
 #: trac/ticket/web_ui.py:1075
 msgid "Add to Cc"
 msgstr ""
 
 #: trac/ticket/web_ui.py:1076
+#,fuzzy
 msgid "Remove from Cc"
-msgstr ""
+msgstr "Αφαίρεση από κοινοποίηση"
 
 #: trac/ticket/web_ui.py:1077
+#, fuzzy
 msgid "Add/Remove from Cc"
-msgstr ""
+msgstr "Προσθέτω/αφαίρεση από κοινοποίηση"
 
 #: trac/ticket/web_ui.py:1078
 msgid "<Author field>"
 msgstr ""
 
 #: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:89
+#, fuzzy
 msgid "yes"
-msgstr ""
+msgstr "ναι"
 
 #: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:92
+#, fuzzy
 msgid "no"
-msgstr ""
+msgstr "δεν"
 
 #: trac/ticket/web_ui.py:1268 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
@@ -2062,8 +2095,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_delete.html:9
 #: trac/ticket/templates/milestone_delete.html:21
+#, fuzzy
 msgid "Delete Milestone"
-msgstr ""
+msgstr "Διαγράψετε ορόσημο"
 
 #: trac/ticket/templates/milestone_delete.html:25
 msgid "Are you sure you want to delete this milestone?"
@@ -2075,8 +2109,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_view.html:91
+#, fuzzy
 msgid "Delete milestone"
-msgstr ""
+msgstr "Διαγράψετε ορόσημο"
 
 #: trac/ticket/templates/milestone_delete.html:39
 #: trac/ticket/templates/milestone_edit.html:96
@@ -2093,13 +2128,15 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
+#, fuzzy
 msgid "Edit Milestone"
-msgstr ""
+msgstr "Επεξεργασία ορόσημο"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
+#, fuzzy
 msgid "New Milestone"
-msgstr ""
+msgstr "Νέο ορόσημο"
 
 #: trac/ticket/templates/milestone_edit.html:45
 msgid "Name of the milestone:"
@@ -2120,8 +2157,9 @@ msgid "Submit changes"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:90
+#, fuzzy
 msgid "Add milestone"
-msgstr ""
+msgstr "προσθέσετε"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2133,8 +2171,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:22
+#, fuzzy
 msgid "Milestone"
-msgstr ""
+msgstr "Ορόσημο"
 
 #: trac/ticket/templates/milestone_view.html:26
 msgid ""
@@ -2187,8 +2226,9 @@ msgid "Query filters"
 msgstr ""
 
 #: trac/ticket/templates/query.html:113
+#, fuzzy
 msgid "Add filter"
-msgstr ""
+msgstr "Προσθήκη φίλτρου"
 
 #: trac/ticket/templates/query.html:133
 msgid "Columns"
@@ -2228,8 +2268,9 @@ msgid "Create new report from current query"
 msgstr ""
 
 #: trac/ticket/templates/query.html:231
+#, fuzzy
 msgid "Delete query"
-msgstr ""
+msgstr "Διαγράψετε ερωτήματος"
 
 #: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_edit.html:36
@@ -2263,8 +2304,9 @@ msgstr ""
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
+#, fuzzy
 msgid "Delete report"
-msgstr ""
+msgstr "Διαγράψετε έκθεση"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
@@ -2340,8 +2382,9 @@ msgid "Show already completed milestones"
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:34
+#, fuzzy
 msgid "Milestone:"
-msgstr ""
+msgstr "Ορόσημο:"
 
 #: trac/ticket/templates/roadmap.html:39
 msgid ""
@@ -2350,8 +2393,9 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:67
+#, fuzzy
 msgid "Add new milestone"
-msgstr ""
+msgstr "Προσθέστε νέο ορόσημο"
 
 #: trac/ticket/templates/ticket.html:57
 #: trac/versioncontrol/templates/changeset.html:128
@@ -2456,8 +2500,9 @@ msgid "ago by"
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:238
+#, fuzzy
 msgid "Add/Change #"
-msgstr ""
+msgstr "Προσθέσετε/τροποποιήσετε"
 
 #: trac/ticket/templates/ticket.html:258
 msgid ""
@@ -3170,8 +3215,9 @@ msgid "Wiki changes"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:22
+#, fuzzy
 msgid "Delete"
-msgstr ""
+msgstr "Διαγράψετε"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "Are you sure you want to"
@@ -3190,14 +3236,14 @@ msgid "This is the only version the page, so the page will be removed completely
 msgstr ""
 
 #: trac/wiki/templates/wiki_diff.html:16
-#, python-format
+#, fuzzy, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
-msgstr ""
+msgstr "Διαγράψετε έκδοση %(old_version)d σε έκδοση %(version)d"
 
 #: trac/wiki/templates/wiki_diff.html:17
-#, python-format
+#, fuzzy, python-format
 msgid "Delete version %(version)d"
-msgstr ""
+msgstr "Διαγράψετε έκδοση %(version)d"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
@@ -3308,10 +3354,12 @@ msgid "(blank page)"
 msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:84
+#, fuzzy
 msgid "Delete this version"
-msgstr ""
+msgstr "Διαγραφή αυτής της έκδοσης"
 
 #: trac/wiki/templates/wiki_view.html:86
+#, fuzzy
 msgid "Delete page"
-msgstr ""
+msgstr "Διαγραφή σελίδας"
 
