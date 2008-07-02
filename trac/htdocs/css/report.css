@@ -6,7 +6,7 @@ h1 .numrows, h2 .numrows {
  font-size: 65%; 
  font-weight: normal; 
 }
-h2 {
+h2.report-result {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  margin: 2em 0 0;
