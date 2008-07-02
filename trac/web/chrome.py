@@ -708,13 +708,7 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            if arity(stream.render) == 3:
-                # TODO: remove this when we depend on Genshi >= 0.5
-                return stream.render('text')
-            else:
-                buffer = cStringIO()
-                stream.render('text', out=buffer)
-                return buffer.getvalue()
+            return stream.render('text')
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         if doctype:
@@ -733,13 +727,7 @@ class Chrome(Component):
         })
 
         try:
-            if arity(stream.render) == 3:
-                # TODO: remove this when we depend on Genshi >= 0.5
-                return stream.render(method, doctype=doctype)
-            else:
-                buffer = cStringIO()
-                stream.render(method, doctype=doctype, out=buffer)
-                return buffer.getvalue()
+            return stream.render(method, doctype=doctype)
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links

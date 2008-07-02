@@ -18,12 +18,12 @@
      xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.html" />
   
-  <h2 py:if="paginator.has_more_pages">
+  <h2 class="report-result" py:if="paginator.has_more_pages">
     Results <span class="numresults">(${paginator.displayed_items()})</span>
   </h2>
   <xi:include py:if="paginator.show_index" href="page_index.html" />
   <py:for each="group_index, (groupname, results) in enumerate(groups)">
-    <h2 py:if="groupname">
+    <h2 class="report-result" py:if="groupname">
       ${fields[query.group].label}:
       ${query.group in ['owner', 'reporter'] and authorinfo(groupname) or groupname}
       <span class="numrows">(${ngettext('%(num)s match', '%(num)s matches', len(results))})</span>

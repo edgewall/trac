@@ -13,7 +13,7 @@
         $("#group").change(function() {
           $("#groupdesc").enable(this.selectedIndex != 0)
         }).change();
-        $("fieldset legend").enableFolding(false);
+        $("fieldset legend.foldable").enableFolding(false);
         /* Hide the filters for saved queries. */
         if ( window.location.href.search(/[?&amp;]report=[0-9]+/) != -1 )
           $("#filters").toggleClass("collapsed");
@@ -34,7 +34,7 @@
       <form id="query" method="post" action="${href.query()}">
         <fieldset id="filters">
           <input py:if="'id' in query.constraints" type="hidden" name="id" value="${query.constraints['id']}" />
-          <legend>Filters</legend>
+          <legend class="foldable">Filters</legend>
           <table summary="Query filters">
             <tbody>
               <tr style="height: 1px"><td colspan="4"></td></tr>
@@ -130,7 +130,7 @@
 
         <!--! Allow the user to decide what columns to include in the output of the query -->
         <fieldset id="columns">
-          <legend>Columns</legend>
+          <legend class="foldable">Columns</legend>
           <div>
             <py:for each="column in all_columns">
               <label>
