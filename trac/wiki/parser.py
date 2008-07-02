@@ -74,7 +74,7 @@ class WikiParser(Component):
 
     _post_rules = [
         # e-mails
-        r"(?P<email>%s)" % EMAIL_LOOKALIKE_PATTERN,
+        r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
         # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # &, < and > to &amp;, &lt; and &gt;
