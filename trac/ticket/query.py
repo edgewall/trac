@@ -1017,6 +1017,9 @@ class TicketQueryMacro(WikiMacroBase):
     The `order` parameter sets the field used for ordering tickets
     (defaults to '''id''').
 
+    The `desc` parameter indicates whether the order of the tickets
+    should be reversed (defaults to '''false''').
+
     The `group` parameter sets the field used for grouping tickets
     (defaults to not being set).
 
@@ -1042,13 +1045,18 @@ class TicketQueryMacro(WikiMacroBase):
         if len(argv) > 0 and not 'format' in kwargs: # 0.10 compatibility hack
             kwargs['format'] = argv[0]
 
+        if 'order' not in kwargs:
+            kwargs['order'] = 'id'
+        if 'max' not in kwargs:
+            kwargs['max'] = '0' # unlimited by default
+
         format = kwargs.pop('format', 'list').strip().lower()
         if format in ('list', 'compact'): # we need 'status' and 'summary'
             kwargs['col'] = '|'.join(['status', 'summary', 
                                       kwargs.get('col', '')])
+
         query_string = '&'.join(['%s=%s' % item
                                  for item in kwargs.iteritems()])
-
         query = Query.from_string(self.env, query_string)
 
         if format == 'count':
