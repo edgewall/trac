@@ -259,9 +259,9 @@ class SubversionConnector(Component):
 
     def get_supported_types(self):
         if self.has_subversion:
-            yield ("direct-svnfs", 4)
-            yield ("svnfs", 4)
-            yield ("svn", 2)
+            yield ("direct-svnfs", 5)
+            yield ("svnfs", 5)
+            yield ("svn", 3)
 
     def get_repository(self, type, dir, authname):
         """Return a `SubversionRepository`.
