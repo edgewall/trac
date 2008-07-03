@@ -288,9 +288,8 @@ class ReportModule(Component):
                 'args': args, 'message': None, 'paginator':None}
 
         page = int(req.args.get('page', '1'))
-        limit = self.items_per_page
-        if req.args.get('format', '') == 'rss':
-            limit = self.items_per_page_rss
+        limit = {'rss': self.items_per_page_rss,
+                 'csv': 0, 'tab': 0}.get(format, self.items_per_page)
         offset = (page - 1) * limit
         user = req.args.get('USER', None)
 
