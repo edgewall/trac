@@ -237,16 +237,16 @@ class CachedRepository(Repository):
         return self.youngest
 
     def previous_rev(self, rev, path=''):
-        if not self.has_linear_changesets:
-            return self.repos.previous_rev(rev, path)
-        else:
+        if self.has_linear_changesets:
             return self._next_prev_rev('<', rev, path)
+        else:
+            return self.repos.previous_rev(rev, path)
 
     def next_rev(self, rev, path=''):
-        if not self.has_linear_changesets:
-            return self.repos.next_rev(rev, path)
-        else:
+        if self.has_linear_changesets:
             return self._next_prev_rev('>', rev, path)
+        else:
+            return self.repos.next_rev(rev, path)
 
     def _next_prev_rev(self, direction, rev, path=''):
         # the changeset revs are sequence of ints:
@@ -255,15 +255,23 @@ class CachedRepository(Repository):
         args = [rev]
 
         if path:
-            # Child changes
-            sql += " AND (path %s OR " % self.db.like()
-            args.append(self.db.like_escape(path.lstrip('/')) + '%')
-            # Parent deletion
+            path = path.lstrip('/')
+            sql += " AND ("
+            # changes on path itself
+            sql += "path=%s "
+            args.append(path)
+            sql += " OR "
+            # changes on path children
+            sql += "path "+self.db.like()
+            args.append(self.db.like_escape(path+'/') + '%')
+            sql += " OR "
+            # deletion of path ancestors
             components = path.lstrip('/').split('/')
             for i in range(1, len(components)+1):
                 args.append('/'.join(components[:i]))
             parent_insert = ','.join(('%s',) * len(components))
-            sql += " (path in (" + parent_insert + ") and change_type='D') )"
+            sql += " (path in (" + parent_insert + ") and change_type='D')"
+            sql += ")"
 
         sql += " ORDER BY " + self.db.cast('rev', 'int') + \
                 (direction == '<' and " DESC" or "") + " LIMIT 1"
