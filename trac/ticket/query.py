@@ -774,13 +774,17 @@ class QueryModule(Component):
         rows = req.args.get('row', [])
         if isinstance(rows, basestring):
             rows = [rows]
+        format = req.args.get('format')
+        max = req.args.get('max')
+        if max is None and format in ('csv', 'tab'):
+            max = 0 # unlimited unless specified explicitly
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
                       rows,
                       req.args.get('page'), 
-                      req.args.get('max'))
+                      max)
 
         if 'update' in req.args:
             # Reset session vars
@@ -796,7 +800,6 @@ class QueryModule(Component):
                      query.get_href(req.href, format=conversion[0]),
                      conversion[1], conversion[4], conversion[0])
 
-        format = req.args.get('format')
         if format:
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
                                               format, 'query')
