@@ -81,9 +81,16 @@ class DetachedSession(dict):
         if self._new:
             self.last_visit = now
             self._new = False
-            cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
-                           " VALUES(%s,%s,%s)",
-                           (self.sid, self.last_visit, authenticated))
+            # The session might already exist even if _new is True since
+            # it could have been created by a concurrent request (#3563).
+            try:
+                cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
+                               " VALUES(%s,%s,%s)",
+                               (self.sid, self.last_visit, authenticated))
+            except Exception, e:
+                db.rollback()
+                self.env.log.warning('Session %s already exists: %s' % 
+                                     (self.sid, e))
         if self._old != self:
             attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
             cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
