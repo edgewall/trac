@@ -50,7 +50,7 @@ class InterTracDispatcher(Component):
             if href is None: # most probably no permissions to view
                 raise PermissionError(_("Can't view %(link)s:", link=link))
         else:
-            href = req.href(link)
+            href = req.href(link.rstrip(':'))
         req.redirect(href)
 
     # IWikiMacroProvider methods

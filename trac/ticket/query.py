@@ -51,7 +51,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=None, page=1, max=None):
+                 rows=None, page=None, max=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -62,42 +62,37 @@ class Query(object):
         self.default_page = 1
         self.items_per_page = QueryModule(self.env).items_per_page
 
+        # getting page number (default_page if unspecified)
+        if not page:
+            page = self.default_page
         try:
-            if not page:
-                page = self.default_page
-            page = int(page)
-            if page < 1:
+            self.page = int(page)
+            if self.page < 1:
                 raise ValueError()
         except ValueError:
-            raise TracError(_('Query page %(page)s is invalid.',
-                              page=page))
+            raise TracError(_('Query page %(page)s is invalid.', page=page))
 
         # max=0 signifies showing all items on one page
         # max=n will show precisely n items on all pages except the last
-        # max<0 is invalid (FIXME: wouldn't -1 also do for unlimited?)
+        # max<0 is invalid
         if max in ('none', ''):
             max = 0
 
+        if max is None: # meaning unspecified
+            max = self.items_per_page
         try:
-            if max is None: # meaning unspecified
-                max = self.items_per_page
-            max = int(max)
-            if max < 0:
+            self.max = int(max)
+            if self.max < 0:
                 raise ValueError()
         except ValueError:
             raise TracError(_('Query max %(max)s is invalid.', max=max))
         
-        self.page = 0
-        self.offset = 0
-        self.max = 0
-
-        if max == 0:
+        if self.max == 0:
             self.has_more_pages = False
+            self.offset = 0
         else:
             self.has_more_pages = True
-            self.page = page
-            self.offset = max * (page - 1)
-            self.max = max
+            self.offset = self.max * (self.page - 1)
 
         if rows == None:
             rows = []
@@ -779,13 +774,17 @@ class QueryModule(Component):
         rows = req.args.get('row', [])
         if isinstance(rows, basestring):
             rows = [rows]
+        format = req.args.get('format')
+        max = req.args.get('max')
+        if max is None and format in ('csv', 'tab'):
+            max = 0 # unlimited unless specified explicitly
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
                       rows,
                       req.args.get('page'), 
-                      req.args.get('max'))
+                      max)
 
         if 'update' in req.args:
             # Reset session vars
@@ -801,7 +800,6 @@ class QueryModule(Component):
                      query.get_href(req.href, format=conversion[0]),
                      conversion[1], conversion[4], conversion[0])
 
-        format = req.args.get('format')
         if format:
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
                                               format, 'query')
