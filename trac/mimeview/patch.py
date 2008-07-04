@@ -117,6 +117,7 @@ class PatchRenderer(Component):
                 # Changed filename/version
                 line = lines.next()
                 if not line.startswith('+++ '):
+                    self.log.debug('expected +++ after ---, got '+line)
                     return None
 
                 newinfo = line.split(None, 2)
@@ -205,6 +206,7 @@ class PatchRenderer(Component):
                             meta[len(block[last_side]['lines'])] = True
                             sides = [last_side]
                         else:
+                            self.log.debug('expected +, - or \\, got '+command)
                             return None
                         for side in sides:
                             if side == 'base':
