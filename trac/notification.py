@@ -403,7 +403,12 @@ class NotifyEmail(Notify):
         # Ensure the message complies with RFC2822: use CRLF line endings
         recrlf = re.compile("\r?\n")
         msgtext = CRLF.join(recrlf.split(msgtext))
+        start = time.time()
         self.server.sendmail(msg['From'], recipients, msgtext)
+        t = time.time() - start
+        if t > 5:
+            self.env.log.warning('Slow mail submission (%.2f s), '
+                                 'check your mail setup' % t)
 
     def finish_send(self):
         if self._use_tls:
