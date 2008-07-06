@@ -494,8 +494,9 @@ msgstr ""
 #: trac/admin/templates/admin_milestones.html:24
 #: trac/admin/templates/admin_milestones.html:82
 #: trac/ticket/templates/milestone_edit.html:51
+#, fuzzy
 msgid "Due:"
-msgstr ""
+msgstr "Johtuu"
 
 #: trac/admin/templates/admin_milestones.html:27
 #: trac/admin/templates/admin_milestones.html:41
@@ -523,8 +524,9 @@ msgid "Add Milestone:"
 msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:100
+#, fuzzy
 msgid "Due"
-msgstr ""
+msgstr "Johtuu"
 
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/ticket/templates/milestone_view.html:25
@@ -542,12 +544,14 @@ msgstr ""
 
 #: trac/admin/templates/admin_perms.html:16
 #: trac/admin/templates/admin_perms.html:75
+#, fuzzy
 msgid "Subject"
-msgstr ""
+msgstr "Aihe"
 
 #: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:60
+#, fuzzy
 msgid "or"
-msgstr ""
+msgstr "tai"
 
 #: trac/admin/templates/admin_perms.html:16
 msgid "Group"
@@ -2050,11 +2054,11 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:89
 msgid "yes"
-msgstr ""
+msgstr "kyllä"
 
 #: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:92
 msgid "no"
-msgstr ""
+msgstr "ei"
 
 #: trac/ticket/web_ui.py:1268 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
@@ -2149,8 +2153,9 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_view.html:33
 #: trac/ticket/templates/roadmap.html:46
+#, fuzzy
 msgid "Due in"
-msgstr ""
+msgstr "Johtuu"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:50
@@ -2541,8 +2546,9 @@ msgid "View changes from"
 msgstr ""
 
 #: trac/timeline/templates/timeline.html:21
+#, fuzzy
 msgid "days back"
-msgstr ""
+msgstr "päivän kulutta"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
