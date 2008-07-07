@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!${executable}
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2008 Edgewall Software

@@ -1192,7 +1192,7 @@ Congratulations!
         # Create and copy scripts
         os.makedirs(script_target)
         print 'Creating scripts.'
-        data = {'env': self.env_open()}
+        data = {'env': self.env_open(), 'executable': sys.executable}
         for script in ('cgi', 'fcgi', 'wsgi'):
             dest = os.path.join(script_target, 'trac.'+script)
             template = Chrome(self.env_open()).load_template('deploy_trac.'+script, 'text')
