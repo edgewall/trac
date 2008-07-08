@@ -12,12 +12,6 @@
   <body>
     <h2>Manage Permissions</h2>
 
-    <p class="help">
-      Note that <em>Subject</em> or <em>Group</em> names can't be all upper cased, <br />
-      as this is reserved for permission names.
-    </p>
-
-
     <py:if test="'PERMISSION_GRANT' in perm">
     <form id="addperm" class="addnew" method="post" action="">
       <fieldset>
@@ -93,6 +87,11 @@
         <input type="submit" name="remove" value="${_('Remove selected items')}" />
       </div>
     </form>
+
+    <p class="help">
+      Note that <em>Subject</em> or <em>Group</em> names can't be all upper-case,
+      as that is reserved for permission names.
+    </p>
   </body>
 
 </html>

@@ -62,5 +62,7 @@ form#addplug { width: 35% }
 .plugin .listing .name p { color: #999; font-size: 80%; margin: 0 }
 
 /* Perm Panel */
-#permlist div { width: 13em; float: left; }
+#permlist div { float: left; min-width: 13em; max-width: 33%;
+  padding: 0 2em 0 0;
+}
 fieldset tr.field th { text-align: right; }

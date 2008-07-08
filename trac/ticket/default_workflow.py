@@ -267,7 +267,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 resolutions = [val.name for val in
                                model.Resolution.select(self.env)]
-            assert(resolutions)
+            if not resolutions:
+                raise TracError(_("Your workflow attempts to set a resolution "
+                                  "but none is defined (configuration issue, "
+                                  "please contact your Trac admin)."))
             if len(resolutions) == 1:
                 control.append(tag('as %s' % resolutions[0]))
                 hints.append(_("The resolution will be set to %(name)s",
