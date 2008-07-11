@@ -323,7 +323,7 @@ class ReportModule(Component):
             shown_pages = paginator.get_shown_pages(21)
             for p in shown_pages:
                 pagedata.append([req.href.report(id, asc=asc, sort=sort_col, 
-                                                 USER=user, page=p),
+                                                 page=p, **args),
                                  None, str(p), _('Page %(num)d', num=p)])          
             fields = ['href', 'class', 'string', 'title']
             paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
