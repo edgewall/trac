@@ -344,7 +344,7 @@ msgstr "Συνιστώσες"
 #: trac/admin/templates/admin_components.html:14
 #, fuzzy
 msgid "Manage Components"
-msgstr "Διαχειριστούν συνιστώσες"
+msgstr "Διαχείριση συνιστώσεων"
 
 #: trac/admin/templates/admin_components.html:18
 msgid "Owner:"
@@ -353,7 +353,7 @@ msgstr ""
 #: trac/admin/templates/admin_components.html:35
 #, fuzzy
 msgid "Modify Component:"
-msgstr "Τροποποιήσετε συνιστώσα:"
+msgstr "Τροποποίηση συνιστώσας:"
 
 #: trac/admin/templates/admin_components.html:42
 msgid ""
@@ -1146,7 +1146,7 @@ msgstr ""
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:103
 #, fuzzy
 msgid "Delete attachment"
-msgstr "Διαγράψετε συνημμένο"
+msgstr "Διαγραφή συνημμένου"
 
 #: trac/templates/attachment.html:78 trac/ticket/api.py:212
 #: trac/ticket/templates/ticket.html:165
@@ -1834,7 +1834,7 @@ msgstr ""
 #: trac/ticket/report.py:177
 #, fuzzy, python-format
 msgid "Delete Report {%(num)s} %(title)s"
-msgstr "Διαγράψετε έκθεση {%(num)s} %(title)s"
+msgstr "Διαγραφή έκθεσης {%(num)s} %(title)s"
 
 #: trac/ticket/report.py:182 trac/ticket/report.py:194
 #: trac/ticket/report.py:242
@@ -2097,7 +2097,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_delete.html:21
 #, fuzzy
 msgid "Delete Milestone"
-msgstr "Διαγράψετε ορόσημο"
+msgstr "Διαγραφή ορόσημου"
 
 #: trac/ticket/templates/milestone_delete.html:25
 msgid "Are you sure you want to delete this milestone?"
@@ -2111,7 +2111,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_view.html:91
 #, fuzzy
 msgid "Delete milestone"
-msgstr "Διαγράψετε ορόσημο"
+msgstr "Διαγραφή ορόσημου"
 
 #: trac/ticket/templates/milestone_delete.html:39
 #: trac/ticket/templates/milestone_edit.html:96
@@ -2130,7 +2130,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit.html:37
 #, fuzzy
 msgid "Edit Milestone"
-msgstr "Επεξεργασία ορόσημο"
+msgstr "Επεξεργασία ορόσημου"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
@@ -2159,7 +2159,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit.html:90
 #, fuzzy
 msgid "Add milestone"
-msgstr "προσθέσετε"
+msgstr "προσθέση ορόσημου"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
