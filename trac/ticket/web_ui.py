@@ -197,6 +197,11 @@ class TicketModule(Component):
                                                        resolution, type)),
                        datetime.fromtimestamp(ts, utc), author,
                        shorten_result(desc, terms))
+        
+        # Attachments
+        for result in AttachmentModule(self.env).get_search_results(
+            req, ticket_realm, terms):
+            yield result        
 
     # ITimelineEventProvider methods
 
