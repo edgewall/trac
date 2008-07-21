@@ -169,9 +169,13 @@ def main():
         parser.add_option('--pidfile', action='store',
                           dest='pidfile',
                           help='When daemonizing, file to which to write pid')
+        parser.add_option('--umask', action='store', type='int', dest='umask',
+                          metavar='MASK',
+                          help='When daemonizing, file mode creation mask '
+                          'to use (default 022)')
 
     parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
-                        protocol='http')
+                        protocol='http', umask=022)
     options, args = parser.parse_args()
 
     if not args and not options.env_parent_dir:
@@ -243,7 +247,8 @@ def main():
 
     try:
         if options.daemonize:
-            daemon.daemonize(pidfile=options.pidfile, progname='tracd')
+            daemon.daemonize(pidfile=options.pidfile, progname='tracd',
+                             umask=options.umask)
 
         if options.autoreload:
             def modification_callback(file):

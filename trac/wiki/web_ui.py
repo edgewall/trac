@@ -617,3 +617,8 @@ class WikiModule(Component):
                        '%s: %s' % (name, shorten_line(text)),
                        datetime.fromtimestamp(ts, utc), author,
                        shorten_result(text, terms))
+        
+        # Attachments
+        for result in AttachmentModule(self.env).get_search_results(
+            req, wiki_realm, terms):
+            yield result

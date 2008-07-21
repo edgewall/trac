@@ -108,9 +108,10 @@ class PygmentsRenderer(Component):
         add_stylesheet(req, '/pygments/%s.css' %
                        req.session.get('pygments_style', self.default_style))
         try:
-            mimetype = mimetype.split(';', 1)[0]
-            language = self._types[mimetype][0]
-            return self._generate(language, content)
+            if len(content) > 0:
+                mimetype = mimetype.split(';', 1)[0]
+                language = self._types[mimetype][0]
+                return self._generate(language, content)
         except (KeyError, ValueError):
             raise Exception("No Pygments lexer found for mime-type '%s'."
                             % mimetype)

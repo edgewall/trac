@@ -32,6 +32,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.resource import *
+from trac.search import search_to_sql, shorten_result
 from trac.util import get_reporter_id, create_unique_file, content_disposition
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import unicode_quote, unicode_unquote, pretty_size
@@ -476,6 +477,30 @@ class AttachmentModule(Component):
             return format_to_oneliner(self.env, context(attachment.parent),
                                       descr)
    
+    def get_search_results(self, req, resource_realm, terms):
+        """Return a search result generator suitable for ISearchSource.
+        
+        Search results are attachments on resources of the given 
+        `resource_realm.realm` whose filename, description or author match 
+        the given terms.
+        """
+        db = self.env.get_db_cnx()
+        sql_query, args = search_to_sql(db, ['filename', 'description', 
+                                        'author'], terms)
+        cursor = db.cursor()
+        cursor.execute("SELECT id,time,filename,description,author "
+                       "FROM attachment "
+                       "WHERE type = %s "
+                       "AND " + sql_query, (resource_realm.realm, ) + args)
+        
+        for id, time, filename, desc, author in cursor:
+            attachment = resource_realm(id=id).child('attachment', filename)
+            if 'ATTACHMENT_VIEW' in req.perm(attachment):
+                yield (get_resource_url(self.env, attachment, req.href),
+                       get_resource_shortname(self.env, attachment),
+                       datetime.fromtimestamp(time, utc), author,
+                       shorten_result(desc, terms))
+    
     # IResourceManager methods
     
     def get_resource_realms(self):
@@ -503,9 +528,8 @@ class AttachmentModule(Component):
 
     def get_resource_description(self, resource, format=None, **kwargs):
         if format == 'compact':
-            return '%s:%s' % (get_resource_shortname(self.env,
-                                                     resource.parent),
-                              resource.filename)
+            return '%s (%s)' % (resource.id,
+                    get_resource_name(self.env, resource.parent))
         elif format == 'summary':
             return Attachment(self.env, resource).description
         if resource.id:

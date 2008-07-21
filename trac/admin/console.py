@@ -36,7 +36,7 @@ from trac.util import arity, translation
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
-                           print_table
+                           print_table, console_print
 from trac.util.translation import _
 from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
@@ -57,34 +57,37 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
     Added a `skip` parameter consisting of absolute paths
     which we don't want to copy.
     """
-    names = os.listdir(src)
-    makedirs(dst, overwrite=overwrite)
-    errors = []
-
-    def remove_if_overwriting(path):
-        if overwrite and os.path.exists(path):
-            os.unlink(path)
-
-    for name in names:
-        srcname = os.path.join(src, name)
-        if srcname in skip:
-            continue
-        dstname = os.path.join(dst, name)
-        try:
-            if symlinks and os.path.islink(srcname):
-                remove_if_overwriting(dstname)
-                linkto = os.readlink(srcname)
-                os.symlink(linkto, dstname)
-            elif os.path.isdir(srcname):
-                copytree(srcname, dstname, symlinks, skip, overwrite)
-            else:
-                remove_if_overwriting(dstname)
-                shutil.copy2(srcname, dstname)
-            # XXX What about devices, sockets etc.?
-        except EnvironmentError, why:
-            errors.append((srcname, dstname, why))
-    if errors:
-        raise shutil.Error, errors
+    def str_path(path):
+        if isinstance(path, unicode):
+            path = path.encode(sys.getfilesystemencoding() or
+                               locale.getpreferredencoding())
+        return path
+    skip = [str_path(f) for f in skip]
+    def copytree_rec(src, dst):
+        names = os.listdir(src)
+        makedirs(dst, overwrite=overwrite)
+        errors = []
+        for name in names:
+            srcname = os.path.join(src, name)
+            if srcname in skip:
+                continue
+            dstname = os.path.join(dst, name)
+            try:
+                if symlinks and os.path.islink(srcname):
+                    remove_if_overwriting(dstname)
+                    linkto = os.readlink(srcname)
+                    os.symlink(linkto, dstname)
+                elif os.path.isdir(srcname):
+                    copytree_rec(srcname, dstname)
+                else:
+                    remove_if_overwriting(dstname)
+                    shutil.copy2(srcname, dstname)
+                # XXX What about devices, sockets etc.?
+            except EnvironmentError, why:
+                errors.append((srcname, dstname, why))
+        if errors:
+            raise shutil.Error, errors
+    copytree_rec(str_path(src), str_path(dst))
 
 
 class TracAdmin(cmd.Cmd):
@@ -113,13 +116,17 @@ class TracAdmin(cmd.Cmd):
         """`line` may be a `str` or an `unicode` object"""
         try:
             if isinstance(line, str):
-                line = to_unicode(line, sys.stdin.encoding)
+                if self.interactive:
+                    encoding = sys.stdin.encoding
+                else:
+                    encoding = locale.getpreferredencoding() # sys.argv
+                line = to_unicode(line, encoding)
             line = line.replace('\\', '\\\\')
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
         except TracError, e:
-            print>>sys.stderr, 'Command failed: %s' % e
+            console_print(sys.stderr, 'Command failed:', e)
             rv = 2
         if not self.interactive:
             return rv
@@ -157,7 +164,7 @@ Type:  '?' or 'help' for help on commands.
                 self.__env = Environment(self.envname)
             return self.__env
         except Exception, e:
-            print 'Failed to open environment.', e
+            console_print(sys.stderr, 'Failed to open environment.', e)
             traceback.print_exc()
             sys.exit(1)
 
@@ -208,8 +215,8 @@ Type:  '?' or 'help' for help on commands.
             stream = sys.stdout
         if not docs: return
         for cmd, doc in docs:
-            print>>stream, cmd
-            print>>stream, '\t-- %s\n' % doc
+            console_print(stream, cmd)
+            console_print(stream, '\t-- %s\n' % doc)
     print_doc = classmethod(print_doc)
 
     def get_component_list(self):
@@ -284,7 +291,8 @@ Type:  '?' or 'help' for help on commands.
                 doc = getattr(self, "_help_" + arg[0])
                 self.print_doc(doc)
             except AttributeError:
-                print "No documentation found for '%s'" % arg[0]
+                console_print(sys.stderr, "No documentation found for '%s'" % 
+                              arg[0])
         else:
             print 'trac-admin - The Trac Administration Console %s' \
                   % TRAC_VERSION
@@ -514,14 +522,15 @@ Type:  '?' or 'help' for help on commands.
         return returnvals
 
     def do_initenv(self, line):
+        def initenv_error(msg):
+            console_print(sys.stderr, "Initenv for '%s' failed.\n%s" % 
+                          (self.envname, msg))
         if self.env_check():
-            print "Initenv for '%s' failed." % self.envname
-            print "Does an environment already exist?"
+            initenv_error("Does an environment already exist?")
             return 2
 
         if os.path.exists(self.envname) and os.listdir(self.envname):
-            print "Initenv for '%s' failed." % self.envname
-            print "Directory exists and is not empty."
+            initenv_error("Directory exists and is not empty.")
             return 2
 
         arg = self.arg_tokenize(line)
@@ -537,7 +546,7 @@ Type:  '?' or 'help' for help on commands.
             returnvals = self.get_initenv_args()
             project_name, db_str, repository_type, repository_dir = returnvals
         elif len(arg) != 4:
-            print 'Wrong number of arguments to initenv: %d' % len(arg)
+            initenv_error('Wrong number of arguments: %d' % len(arg))
             return 2
         else:
             project_name, db_str, repository_type, repository_dir = arg[:4]
@@ -556,7 +565,8 @@ Type:  '?' or 'help' for help on commands.
                 self.__env = Environment(self.envname, create=True,
                                          options=options)
             except Exception, e:
-                print 'Failed to create environment.', e
+                initenv_error('Failed to create environment.')
+                console_print(sys.stderr, e)
                 traceback.print_exc()
                 sys.exit(1)
 
@@ -576,14 +586,16 @@ Type:  '?' or 'help' for help on commands.
                         print ' Indexing repository'
                         repos.sync(self._resync_feedback)
                 except TracError, e:
-                    print>>sys.stderr, "\nWarning:\n"
+                    console_print(sys.stderr, "\nWarning:\n")
                     if repository_type == "svn":
-                        print>>sys.stderr, "You should install the SVN bindings"
+                        console_print(sys.stderr, 
+                                      "You should install the SVN bindings")
                     else:
-                        print>>sys.stderr, "Repository type %s not supported" \
-                                           % repository_type
+                        console_print(sys.stderr, 
+                                      "Repository type %s not supported" %
+                                      repository_type)
         except Exception, e:
-            print 'Failed to initialize environment.', e
+            initenv_error(to_unicode(e))
             traceback.print_exc()
             return 2
 
@@ -745,12 +757,11 @@ Congratulations!
                              "ORDER BY version DESC LIMIT 1", cursor,
                              params=(title,))
         old = list(rows)
-        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'        
         if old and title in create_only:
-            print '  %s already exists.' % title.encode(cons_charset)
+            console_print(sys.stdout, '  %s already exists.' % title)
             return False
         if old and data == old[0][0]:
-            print '  %s already up to date.' % title.encode(cons_charset)
+            console_print(sys.stdout, '  %s already up to date.' % title)
             return False
         f.close()
 
@@ -776,16 +787,14 @@ Congratulations!
 
     def _do_wiki_dump(self, dir):
         pages = self.get_wiki_list()
-        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         if not os.path.isdir(dir):
             if not os.path.exists(dir):
                 os.mkdir(dir)
             else:
-                raise TracError("%s is not a directory" % \
-                                                dir.encode(cons_charset))
+                raise TracError("%s is not a directory" % dir)
         for p in pages:
             dst = os.path.join(dir, unicode_quote(p, ''))
-            print (" %s => %s" % (p, dst)).encode(cons_charset)
+            console_print(sys.stdout, " %s => %s" % (p, dst))
             self._do_wiki_export(p, dst)
 
     def _do_wiki_load(self, dir, cursor=None, ignore=[], create_only=[]):
@@ -819,7 +828,7 @@ Congratulations!
             try:
                 number = int(arg[1])
             except ValueError:
-                print>>sys.stderr, "<number> must be a number"
+                console_print(sys.stderr, "<number> must be a number")
                 return
             self._do_ticket_remove(number)
         else:    
@@ -1270,7 +1279,15 @@ def run(args=None):
         elif args[0] in ('-v','--version'):
             print '%s %s' % (os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
-            admin.env_set(os.path.abspath(args[0]))
+            env_path = os.path.abspath(args[0])
+            try:
+                unicode(env_path, 'ascii')
+            except UnicodeDecodeError:
+                console_print(sys.stderr, _("non-ascii environment path "
+                                            "'%(path)s' not supported.",
+                                            path=env_path))
+                sys.exit(2)
+            admin.env_set(env_path)
             if len(args) > 1:
                 s_args = ' '.join(["'%s'" % c for c in args[2:]])
                 command = args[1] + ' ' +s_args

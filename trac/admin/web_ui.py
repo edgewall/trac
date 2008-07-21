@@ -429,7 +429,7 @@ class PluginAdminPanel(Component):
         except AttributeError:
             # OS_BINARY not available on every platform
             pass
-        target_file = os.fdopen(os.open(target_path, flags), 'w')
+        target_file = os.fdopen(os.open(target_path, flags, 0666), 'w')
         try:
             shutil.copyfileobj(upload.file, target_file)
             self.log.info('Plugin %s installed to %s', plugin_filename,

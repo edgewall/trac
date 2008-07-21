@@ -808,7 +808,7 @@ class Mimeview(Component):
 
         Note: `content` will usually be an object with a `read` method.
         """        
-        data = {'raw_href': url,
+        data = {'raw_href': url, 'size': length,
                 'max_file_size': self.max_preview_size,
                 'max_file_size_reached': False,
                 'rendered': None,

@@ -28,6 +28,7 @@ from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
+from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.util.compat import set, sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
                               get_date_format_hint, get_datetime_format_hint, \
@@ -470,7 +471,8 @@ class RoadmapModule(Component):
 class MilestoneModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
-               ITimelineEventProvider, IWikiSyntaxProvider, IResourceManager)
+               ITimelineEventProvider, IWikiSyntaxProvider, IResourceManager,
+               ISearchSource)
  
     stats_provider = ExtensionOption('milestone', 'stats_provider',
                                      ITicketGroupStatsProvider,
@@ -803,3 +805,34 @@ class MilestoneModule(Component):
             return self._render_link(context, resource.id, desc)
         else:
             return desc
+
+    # ISearchSource methods
+
+    def get_search_filters(self, req):
+        if 'MILESTONE_VIEW' in req.perm:
+            yield ('milestone', _('Milestones'))
+
+    def get_search_results(self, req, terms, filters):
+        if not 'milestone' in filters:
+            return
+        db = self.env.get_db_cnx()
+        sql_query, args = search_to_sql(db, ['name', 'description'], terms)
+        cursor = db.cursor()
+        cursor.execute("SELECT name,due,completed,description "
+                       "FROM milestone "
+                       "WHERE " + sql_query, args)
+
+        milestone_realm = Resource('milestone')
+        for name, due, completed, description in cursor:
+            milestone = milestone_realm(id=name)
+            if 'MILESTONE_VIEW' in req.perm(milestone):
+                yield (get_resource_url(self.env, milestone, req.href),
+                       get_resource_name(self.env, milestone),
+                       datetime.fromtimestamp(
+                           completed or due or time(), utc),
+                       '', shorten_result(description, terms))
+        
+        # Attachments
+        for result in AttachmentModule(self.env).get_search_results(
+            req, milestone_realm, terms):
+            yield result

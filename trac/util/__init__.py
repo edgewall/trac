@@ -77,7 +77,7 @@ def create_unique_file(path):
             flags = os.O_CREAT + os.O_WRONLY + os.O_EXCL
             if hasattr(os, 'O_BINARY'):
                 flags += os.O_BINARY
-            return path, os.fdopen(os.open(path, flags), 'w')
+            return path, os.fdopen(os.open(path, flags, 0666), 'w')
         except OSError:
             idx += 1
             # A sanity check
