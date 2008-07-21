@@ -80,6 +80,21 @@ class TicketModule(Component):
     default_severity = Option('ticket', 'default_severity', '',
         """Default severity for newly created tickets.""")
 
+    default_summary = Option('ticket', 'default_summary', '',
+        """Default summary (title) for newly created tickets.""")
+
+    default_description = Option('ticket', 'default_description', '',
+        """Default description for newly created tickets.""")
+
+    default_keywords = Option('ticket', 'default_keywords', '',
+        """Default keywords for newly created tickets.""")
+
+    default_owner = Option('ticket', 'default_owner', '',
+        """Default owner for newly created tickets.""")
+
+    default_cc = Option('ticket', 'default_cc', '',
+        """Default cc: list for newly created tickets.""")
+
     default_resolution = Option('ticket', 'default_resolution', 'fixed',
         """Default resolution for resolving (closing) tickets
         (''since 0.11'').""")
