@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timedelta
 
 from trac.tests.functional import *
-from trac.util.datefmt import utc, format_date
+from trac.util.datefmt import utc, localtz, format_date
 
 
 class TestTickets(FunctionalTwillTestCaseSetup):
@@ -424,7 +424,7 @@ class TestAdminMilestoneCompletedFuture(FunctionalTwillTestCaseSetup):
         tc.url(milestone_url + '/' + name)
         tc.formvalue('modifymilestone', 'completed', True)
         cdate = datetime.now(tz=utc) + timedelta(days=1)
-        cdate_string = format_date(cdate, tzinfo=utc)
+        cdate_string = format_date(cdate, tzinfo=localtz)
         tc.formvalue('modifymilestone', 'completeddate', cdate_string)
         tc.submit('save')
         tc.find('Completion date may not be in the future')
