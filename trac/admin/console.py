@@ -50,27 +50,35 @@ def copytree(src, dst, symlinks=False, skip=[]):
     Added a `skip` parameter consisting of absolute paths
     which we don't want to copy.
     """
-    names = os.listdir(src)
-    os.mkdir(dst)
-    errors = []
-    for name in names:
-        srcname = os.path.join(src, name)
-        if srcname in skip:
-            continue
-        dstname = os.path.join(dst, name)
-        try:
-            if symlinks and os.path.islink(srcname):
-                linkto = os.readlink(srcname)
-                os.symlink(linkto, dstname)
-            elif os.path.isdir(srcname):
-                copytree(srcname, dstname, symlinks, skip)
-            else:
-                shutil.copy2(srcname, dstname)
-            # XXX What about devices, sockets etc.?
-        except (IOError, os.error), why:
-            errors.append((srcname, dstname, why))
-    if errors:
-        raise shutil.Error, errors
+    def str_path(path):
+        if isinstance(path, unicode):
+            path = path.encode(sys.getfilesystemencoding() or
+                               locale.getpreferredencoding())
+        return path
+    skip = [str_path(f) for f in skip]
+    def copytree_rec(src, dst):
+        names = os.listdir(src)
+        os.mkdir(dst)
+        errors = []
+        for name in names:
+            srcname = os.path.join(src, name)
+            if srcname in skip:
+                continue
+            dstname = os.path.join(dst, name)
+            try:
+                if symlinks and os.path.islink(srcname):
+                    linkto = os.readlink(srcname)
+                    os.symlink(linkto, dstname)
+                elif os.path.isdir(srcname):
+                    copytree_rec(srcname, dstname)
+                else:
+                    shutil.copy2(srcname, dstname)
+                # XXX What about devices, sockets etc.?
+            except (IOError, os.error), why:
+                errors.append((srcname, dstname, why))
+        if errors:
+            raise shutil.Error, errors
+    copytree_rec(str_path(src), str_path(dst))
 
 
 class TracAdmin(cmd.Cmd):
