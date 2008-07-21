@@ -497,9 +497,7 @@ class AttachmentModule(Component):
             attachment = resource_realm(id=id).child('attachment', filename)
             if 'ATTACHMENT_VIEW' in req.perm(attachment):
                 yield (get_resource_url(self.env, attachment, req.href),
-                       "%s: %s" % (get_resource_shortname(self.env, 
-                                                          attachment.parent),
-                                   filename),
+                       get_resource_shortname(self.env, attachment),
                        datetime.fromtimestamp(time, utc), author,
                        shorten_result(desc, terms))
     
@@ -530,9 +528,8 @@ class AttachmentModule(Component):
 
     def get_resource_description(self, resource, format=None, **kwargs):
         if format == 'compact':
-            return '%s:%s' % (get_resource_shortname(self.env,
-                                                     resource.parent),
-                              resource.filename)
+            return '%s (%s)' % (resource.id,
+                    get_resource_name(self.env, resource.parent))
         elif format == 'summary':
             return Attachment(self.env, resource).description
         if resource.id:
