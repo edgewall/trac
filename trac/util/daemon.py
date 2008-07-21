@@ -17,7 +17,7 @@ import os
 import sys
 
 def daemonize(pidfile=None, progname=None, stdin='/dev/null',
-              stdout='/dev/null', stderr='/dev/null'):
+              stdout='/dev/null', stderr='/dev/null', umask=022):
     """Fork a daemon process."""
 
     if pidfile:
@@ -50,7 +50,7 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
 
     # Decouple from parent environment
     os.chdir('/')
-    os.umask(0)
+    os.umask(umask)
     os.setsid()
 
     # Perform second fork
