@@ -1130,7 +1130,8 @@ class TicketModule(Component):
         def quote_original(author, original, link):
             if 'comment' not in req.args: # i.e. the comment was not yet edited
                 data['comment'] = '\n'.join(
-                    ['Replying to [%s %s]:' % (link, author)] +
+                    ['Replying to [%s %s]:' % (link,
+                                        obfuscate_email_address(author))] +
                     ['> %s' % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':
