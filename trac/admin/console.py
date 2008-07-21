@@ -1262,7 +1262,15 @@ def run(args=None):
         elif args[0] in ('-v','--version'):
             print '%s %s' % (os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
-            admin.env_set(os.path.abspath(args[0]))
+            env_path = os.path.abspath(args[0])
+            try:
+                unicode(env_path, 'ascii')
+            except UnicodeDecodeError:
+                console_print(sys.stderr, _("non-ascii environment path "
+                                            "'%(path)s' not supported.",
+                                            path=env_path))
+                sys.exit(2)
+            admin.env_set(env_path)
             if len(args) > 1:
                 s_args = ' '.join(["'%s'" % c for c in args[2:]])
                 command = args[1] + ' ' +s_args
