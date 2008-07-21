@@ -134,6 +134,9 @@
   <py:def function="preview_file(preview)">
     ${preview.rendered}
     <py:choose>
+      <p py:when="preview.size == 0">
+        <strong>(The file is empty)</strong>
+      </p>
       <p py:when="not preview.rendered">
         <strong>HTML preview not available</strong>,
         <py:choose>
