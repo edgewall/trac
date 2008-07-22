@@ -309,8 +309,8 @@ class PermissionAdminPanel(Component):
             action = req.args.get('action')
             group = req.args.get('group', '')
 
-            if subject and subject == subject.upper() or \
-                   group and group == group.upper():
+            if subject and subject.isupper() or \
+                   group and group.isupper():
                 raise TracError(_('All upper-cased tokens are reserved for '
                                   'permission names'))
 
