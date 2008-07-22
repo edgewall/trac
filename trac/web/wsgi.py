@@ -86,7 +86,8 @@ class WSGIGateway(object):
         """Start the gateway with the given WSGI application."""
         response = application(self.environ, self._start_response)
         try:
-            if isinstance(response, self.wsgi_file_wrapper) \
+            if self.wsgi_file_wrapper is not None \
+                    and isinstance(response, self.wsgi_file_wrapper) \
                     and hasattr(self, '_sendfile'):
                 self._sendfile(response.fileobj)
             else:
