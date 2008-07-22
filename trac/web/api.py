@@ -29,6 +29,7 @@ from trac.core import Interface, TracError
 from trac.util import get_last_traceback
 from trac.util.datefmt import http_date, localtz
 from trac.web.href import Href
+from trac.web.wsgi import _FileWrapper
 
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
                     in BaseHTTPRequestHandler.responses.items()])
@@ -400,10 +401,9 @@ class Request(object):
         self.end_headers()
 
         if self.method != 'HEAD':
-            self._response = file(path, 'rb')
-            file_wrapper = self.environ.get('wsgi.file_wrapper')
-            if file_wrapper:
-                self._response = file_wrapper(self._response, 4096)
+            fileobj = file(path, 'rb')
+            file_wrapper = self.environ.get('wsgi.file_wrapper', _FileWrapper)
+            self._response = file_wrapper(fileobj, 4096)
         raise RequestDone
 
     def read(self, size=None):
