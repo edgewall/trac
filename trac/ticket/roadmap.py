@@ -644,7 +644,7 @@ class MilestoneModule(Component):
         if milestone.exists:
             milestone.update()
             # eventually retarget opened tickets associated with the milestone
-            if 'retarget' in req.args:
+            if 'retarget' in req.args and completed:
                 cursor = db.cursor()
                 cursor.execute("UPDATE ticket SET milestone=%s WHERE "
                                "milestone=%s and status != 'closed'",
