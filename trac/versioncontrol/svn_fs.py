@@ -278,7 +278,7 @@ class SubversionConnector(Component):
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
-            repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
+            repos = CachedRepository(self.env.get_db_cnx, fs_repos, None,
                                      self.log)
             repos.has_linear_changesets = True
         if authname:
