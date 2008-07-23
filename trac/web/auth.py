@@ -22,7 +22,6 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
-import md5
 import os
 import re
 import sys
@@ -35,7 +34,7 @@ from trac.config import BoolOption
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import hex_entropy, md5crypt
+from trac.util import hex_entropy, md5, md5crypt
 
 
 class LoginModule(Component):
@@ -367,7 +366,7 @@ class DigestAuthentication(PasswordFileAuthentication):
             self.send_auth_request(environ, start_response)
             return None
 
-        kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+        kd = lambda x: md5(':'.join(x)).hexdigest()
         a1 = self.hash[auth['username']]
         a2 = kd([environ['REQUEST_METHOD'], auth['uri']])
         # Is the response correct?

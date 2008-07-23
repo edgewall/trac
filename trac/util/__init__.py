@@ -18,7 +18,6 @@
 #         Matthew Good <trac@matt-good.net>
 
 import locale
-import md5
 import os
 import re
 import sys
@@ -29,7 +28,7 @@ from itertools import izip
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.compat import reversed, sorted, tee
+from trac.util.compat import reversed, sorted, tee, md5
 from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size
@@ -271,11 +270,10 @@ def md5crypt(password, salt, magic='$1$'):
     # /* The password first, since that is what is most unknown */
     # /* Then our magic string */
     # /* Then the raw salt */
-    m = md5.new()
-    m.update(password + magic + salt)
+    m = md5(password + magic + salt)
 
     # /* Then just as many characters of the MD5(pw,salt,pw) */
-    mixin = md5.md5(password + salt + password).digest()
+    mixin = md5(password + salt + password).digest()
     for i in range(0, len(password)):
         m.update(mixin[i % 16])
 
@@ -293,7 +291,7 @@ def md5crypt(password, salt, magic='$1$'):
 
     # /* and now, just to make sure things don't run too fast */
     for i in range(1000):
-        m2 = md5.md5()
+        m2 = md5()
         if i & 1:
             m2.update(password)
         else:
