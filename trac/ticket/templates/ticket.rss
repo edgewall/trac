@@ -32,10 +32,10 @@
                 set to &lt;em&gt;$value.new&lt;/em&gt;
               </py:when>
               <py:when test="value.new">
-                changed from &lt;em&gt;$value.old&lt;/em&gt; to &lt;em&gt;$value.new&lt;/em&gt;.
+                changed from &lt;em&gt;$value.old&lt;/em&gt; to &lt;em&gt;$value.new&lt;/em&gt;
               </py:when>
               <py:otherwise>
-                deleted
+                &lt;em&gt;$value.old&lt;/em&gt; deleted
               </py:otherwise>
             </py:choose>
             &lt;/li&gt;
