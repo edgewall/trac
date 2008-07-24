@@ -278,7 +278,7 @@ class RequestDispatcher(Component):
             return req.incookie['trac_form_token'].value
         else:
             req.outcookie['trac_form_token'] = hex_entropy(24)
-            req.outcookie['trac_form_token']['path'] = req.base_path
+            req.outcookie['trac_form_token']['path'] = req.base_path or '/'
             return req.outcookie['trac_form_token'].value
 
     def _pre_process_request(self, req, chosen_handler):
