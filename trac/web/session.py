@@ -152,7 +152,7 @@ class Session(DetachedSession):
     def bake_cookie(self, expires=PURGE_AGE):
         assert self.sid, 'Session ID not set'
         self.req.outcookie[COOKIE_KEY] = self.sid
-        self.req.outcookie[COOKIE_KEY]['path'] = self.req.base_path
+        self.req.outcookie[COOKIE_KEY]['path'] = self.req.base_path or '/'
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
 
     def get_session(self, sid, authenticated=False):

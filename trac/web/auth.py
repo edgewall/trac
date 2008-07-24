@@ -146,7 +146,7 @@ class LoginModule(Component):
 
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
-        req.outcookie['trac_auth']['path'] = req.href()
+        req.outcookie['trac_auth']['path'] = req.base_path or '/'
 
     def _do_logout(self, req):
         """Log the user out.
@@ -176,7 +176,7 @@ class LoginModule(Component):
         "expires" property to a date in the past.
         """
         req.outcookie['trac_auth'] = ''
-        req.outcookie['trac_auth']['path'] = req.href()
+        req.outcookie['trac_auth']['path'] = req.base_path or '/'
         req.outcookie['trac_auth']['expires'] = -10000
 
     def _get_name_for_cookie(self, req, cookie):
