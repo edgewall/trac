@@ -177,7 +177,7 @@
               <!--! Quote the description (only for existing tickets) -->
               <form py:if="ticket.exists and ticket.description and
                            'TICKET_APPEND' in perm(ticket.resource)"
-                name="addreply"
+                id="addreply"
                 method="get" action="#comment">
                 <div class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
@@ -237,7 +237,7 @@
                    ('TICKET_APPEND' in perm(ticket.resource) or
                     'TICKET_CHGPROP' in perm(ticket.resource) or
                     ('TICKET_CREATE' in perm(ticket.resource) and not ticket.id))"
-            action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" name="propform" id="propertyform">
+            action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" id="propertyform">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} ($ticket.summary)</a></h3>
         <div py:if="authname == 'anonymous'" class="field">

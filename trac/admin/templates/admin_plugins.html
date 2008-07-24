@@ -16,7 +16,7 @@
   <body>
     <h2>Manage Plugins</h2>
 
-    <form id="addplug" class="addnew" method="post" enctype="multipart/form-data">
+    <form id="addplug" class="addnew" method="post" enctype="multipart/form-data" action="">
       <fieldset>
         <legend>Install Plugin:</legend>
         <div class="field">
@@ -40,7 +40,7 @@
       </fieldset>
     </form>
 
-    <form py:for="idx, plugin in enumerate(plugins)" method="post">
+    <form py:for="idx, plugin in enumerate(plugins)" method="post" action="">
       <div class="plugin">
         <h3>${plugin.name} ${plugin.version}</h3>
         <div class="uninstall buttons">

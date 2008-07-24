@@ -21,8 +21,8 @@
       ">
       <h1>Delete $range <a href="$current_href">$page.name</a></h1>
       <form action="$current_href" method="post">
-        <input type="hidden" name="action" value="delete" />
         <p>
+          <input type="hidden" name="action" value="delete" />
           <strong>Are you sure you want to ${not range and 'completely' or ''} delete $range this page?</strong>
           <br />
           <py:if test="num_versions == 1">
