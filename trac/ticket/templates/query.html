@@ -148,7 +148,7 @@
           <select name="group" id="group">
             <option></option>
             <option py:for="field_name, field in fields.items()"
-                    py:if="field.type in ('select', 'radio') or field_name == 'owner'"
+                    py:if="field.type in ('select', 'radio') or field_name in ('owner', 'reporter')"
                     selected="${field_name == query.group or None}"
                     value="${field_name}">${field.label}</option>
           </select>

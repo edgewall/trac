@@ -139,3 +139,10 @@ except ImportError:
         except TypeError: # python 2.3
             pass
         return newfunc
+
+
+# The md5 module is deprecated in Python 2.5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5

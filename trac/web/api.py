@@ -26,7 +26,7 @@ import sys
 import urlparse
 
 from trac.core import Interface, TracError
-from trac.util import get_last_traceback
+from trac.util import get_last_traceback, md5
 from trac.util.datefmt import http_date, localtz
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
@@ -245,8 +245,7 @@ class Request(object):
         so that consecutive requests can be cached.
         """
         if isinstance(extra, list):
-            import md5
-            m = md5.new()
+            m = md5()
             for elt in extra:
                 m.update(repr(elt))
             extra = m.hexdigest()

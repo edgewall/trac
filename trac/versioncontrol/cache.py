@@ -39,9 +39,12 @@ class CachedRepository(Repository):
 
     has_linear_changesets = False
 
-    def __init__(self, db, repos, authz, log):
+    def __init__(self, getdb, repos, authz, log):
         Repository.__init__(self, repos.name, authz, log)
-        self.db = db
+        if callable(getdb):
+            self.getdb = getdb
+        else:
+            self.getdb = lambda: getdb
         self.repos = repos
 
     def close(self):
@@ -53,10 +56,11 @@ class CachedRepository(Repository):
 
     def get_changeset(self, rev):
         return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
-                               self.db, self.authz)
+                               self.getdb, self.authz)
 
     def get_changesets(self, start, stop):
-        cursor = self.db.cursor()
+        db = self.getdb()
+        cursor = db.cursor()
         cursor.execute("SELECT rev FROM revision "
                        "WHERE time >= %s AND time < %s "
                        "ORDER BY time DESC, rev DESC",
@@ -70,16 +74,17 @@ class CachedRepository(Repository):
 
     def sync_changeset(self, rev):
         cset = self.repos.get_changeset(rev)
-        cursor = self.db.cursor()
+        db = self.getdb()
+        cursor = db.cursor()
         cursor.execute("UPDATE revision SET time=%s, author=%s, message=%s "
                        "WHERE rev=%s", (to_timestamp(cset.date),
                                         cset.author, cset.message,
                                         (str(cset.rev))))
-        self.db.commit()
+        db.commit()
         
     def sync(self, feedback=None):
-        cursor = self.db.cursor()
-
+        db = self.getdb()
+        cursor = db.cursor()
         cursor.execute("SELECT name, value FROM system WHERE name IN (%s)" %
                        ','.join(["'%s'" % key for key in CACHE_METADATA_KEYS]))
         metadata = {}
@@ -103,7 +108,7 @@ class CachedRepository(Repository):
             cursor.execute("UPDATE system SET value=%s WHERE name=%s",
                            (self.name, CACHE_REPOSITORY_DIR))
 
-        self.db.commit() # save metadata changes made up to now
+        db.commit() # save metadata changes made up to now
 
         # -- retrieve the youngest revision in the repository
         self.repos.clear()
@@ -186,7 +191,7 @@ class CachedRepository(Repository):
                         # also potentially in progress, so keep ''previous''
                         # notion of 'youngest'
                         self.repos.clear(youngest_rev=self.youngest)
-                        self.db.rollback()
+                        db.rollback()
                         return
 
                     # 1.2. now *only* one process was able to get there
@@ -213,7 +218,7 @@ class CachedRepository(Repository):
                     #      (minimize possibility of failures at point 0.)
                     cursor.execute("UPDATE system SET value=%s WHERE name=%s",
                                    (str(self.youngest), CACHE_YOUNGEST_REV))
-                    self.db.commit()
+                    db.commit()
 
                     # 1.5. provide some feedback
                     if feedback:
@@ -249,9 +254,10 @@ class CachedRepository(Repository):
             return self.repos.next_rev(rev, path)
 
     def _next_prev_rev(self, direction, rev, path=''):
+        db = self.getdb()
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE " + \
-              self.db.cast('rev', 'int') + " " + direction + " %s"
+              db.cast('rev', 'int') + " " + direction + " %s"
         args = [rev]
 
         if path:
@@ -262,8 +268,8 @@ class CachedRepository(Repository):
             args.append(path)
             sql += " OR "
             # changes on path children
-            sql += "path "+self.db.like()
-            args.append(self.db.like_escape(path+'/') + '%')
+            sql += "path "+db.like()
+            args.append(db.like_escape(path+'/') + '%')
             sql += " OR "
             # deletion of path ancestors
             components = path.lstrip('/').split('/')
@@ -273,10 +279,10 @@ class CachedRepository(Repository):
             sql += " (path in (" + parent_insert + ") and change_type='D')"
             sql += ")"
 
-        sql += " ORDER BY " + self.db.cast('rev', 'int') + \
+        sql += " ORDER BY " + db.cast('rev', 'int') + \
                 (direction == '<' and " DESC" or "") + " LIMIT 1"
         
-        cursor = self.db.cursor()
+        cursor = db.cursor()
         cursor.execute(sql, args)
         for rev, in cursor:
             return rev
@@ -301,11 +307,12 @@ class CachedRepository(Repository):
 
 class CachedChangeset(Changeset):
 
-    def __init__(self, repos, rev, db, authz):
+    def __init__(self, repos, rev, getdb, authz):
         self.repos = repos
-        self.db = db
+        self.getdb = getdb
         self.authz = authz
-        cursor = self.db.cursor()
+        db = self.getdb()
+        cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE rev=%s", (str(rev),))
         row = cursor.fetchone()
@@ -318,7 +325,8 @@ class CachedChangeset(Changeset):
         self.scope = getattr(repos, 'scope', '')
 
     def get_changes(self):
-        cursor = self.db.cursor()
+        db = self.getdb()
+        cursor = db.cursor()
         cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE rev=%s "
                        "ORDER BY path", (str(self.rev),))

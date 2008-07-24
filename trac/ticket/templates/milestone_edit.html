@@ -67,13 +67,12 @@
             </label>
             <py:if test="milestones">
               <br/>
-              <input type="checkbox" id="retarget" name="retarget" checked="checked" />
-              <label>Retarget associated open tickets to milestone:
-                <select id="target" name="target" py:with="t = req.args.get('target')">
-                  <option value="">None</option>
-                  <option py:for="m in milestones" selected="${m.name == t or None}">${m.name}</option>
-                </select>
-              </label>
+              <input type="checkbox" id="retarget" name="retarget" checked="${not milestone.completed or None}" />
+              <label for="retarget">Retarget associated open tickets to milestone:</label>
+              <select id="target" name="target" py:with="t = req.args.get('target')">
+                <option value="">None</option>
+                <option py:for="m in milestones" selected="${m.name == t or None}">${m.name}</option>
+              </select>
             </py:if>
           </div>
         </fieldset>

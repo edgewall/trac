@@ -1071,19 +1071,22 @@ class TicketModule(Component):
                               for opt in field['options']]
                 milestones = [(opt, m) for opt, m in milestones
                               if 'MILESTONE_VIEW' in req.perm(m.resource)]
-                open_milestones, closed_milestones = \
-                        partition([(opt, m.is_completed)
-                                   for opt, m in milestones],
-                                  (False, True))
+                def category(m):
+                    return m.is_completed and 1 or m.due and 2 or 3
+                open_due_milestones, open_not_due_milestones, \
+                    closed_milestones = partition([(opt, category(m))
+                        for opt, m in milestones], (2, 3, 1))
+                field['options'] = []
+                field['optgroups'] = [
+                    {'label': _('Open (by due date)'), 
+                        'options': open_due_milestones},
+                    {'label': _('Open (no due date)'), 
+                        'options': open_not_due_milestones},
+                ]
                 if ticket.exists and \
                        'TICKET_ADMIN' in req.perm(ticket.resource):
-                    field['options'] = []
-                    field['optgroups'] = [
-                        {'label': _('Open'), 'options': open_milestones},
-                        {'label': _('Closed'), 'options': closed_milestones},
-                    ]
-                else:
-                    field['options'] = open_milestones
+                    field['optgroups'].append(
+                        {'label': _('Closed'), 'options': closed_milestones})
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')

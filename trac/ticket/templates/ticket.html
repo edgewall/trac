@@ -63,7 +63,9 @@
             <py:when test="not field.old and field.new">
               set to <em>${field.new}</em>
             </py:when>
-            <py:otherwise>deleted</py:otherwise>
+            <py:otherwise>
+              <em>${field.old}</em> deleted
+            </py:otherwise>
           </py:choose>
         </li>
       </ul>
