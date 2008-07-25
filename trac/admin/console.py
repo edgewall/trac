@@ -118,7 +118,8 @@ class TracAdmin(cmd.Cmd):
                 else:
                     encoding = locale.getpreferredencoding() # sys.argv
                 line = to_unicode(line, encoding)
-            line = line.replace('\\', '\\\\')
+            if self.interactive:
+                line = line.replace('\\', '\\\\')
             rv = cmd.Cmd.onecmd(self, line) or 0
         except SystemExit:
             raise
