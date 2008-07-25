@@ -854,8 +854,6 @@ class Formatter(object):
             if not line.startswith(' '):
                 self._tabstops = []
 
-            if escape_newlines:
-                line += ' [[BR]]'
             self.in_list_item = False
             self.in_quote = False
             # Throw a bunch of regexps on the problem
@@ -873,10 +871,13 @@ class Formatter(object):
             if self.in_table and line.strip()[0:2] != '||':
                 self.close_table()
 
-            if len(result) and not self.in_list_item and not self.in_def_list \
-                    and not self.in_table:
-                self.open_paragraph()
-            self.out.write(result + os.linesep)
+            sep = os.linesep
+            if not(self.in_list_item or self.in_def_list or self.in_table):
+                if len(result):
+                    self.open_paragraph()
+                if escape_newlines:
+                    sep = '<br />' + sep
+            self.out.write(result + sep)
             self.close_table_row()
 
         self.close_table()
