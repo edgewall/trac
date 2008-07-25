@@ -461,7 +461,7 @@ class ReportModule(Component):
                      'sorting_enabled': len(row_groups)==1,
                      'email_map': email_map})
 
-        if id:
+        if id and id != -1:
             self.add_alternate_links(req, args)
 
         if format == 'rss':

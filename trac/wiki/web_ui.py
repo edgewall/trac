@@ -457,15 +457,16 @@ class WikiModule(Component):
         version = page.resource.version
 
         # Add registered converters
-        for conversion in Mimeview(self.env).get_supported_conversions(
-                                             'text/x-trac-wiki'):
-            conversion_href = req.href.wiki(page.name, version=version,
-                                            format=conversion[0])
-            # or...
-            conversion_href = get_resource_url(self.env, page.resource,
-                                               req.href, format=conversion[0])
-            add_link(req, 'alternate', conversion_href, conversion[1],
-                     conversion[3])
+        if page.exists:
+            for conversion in Mimeview(self.env).get_supported_conversions(
+                                                 'text/x-trac-wiki'):
+                conversion_href = req.href.wiki(page.name, version=version,
+                                                format=conversion[0])
+                # or...
+                conversion_href = get_resource_url(self.env, page.resource,
+                                                req.href, format=conversion[0])
+                add_link(req, 'alternate', conversion_href, conversion[1],
+                         conversion[3])
 
         data = self._page_data(req, page)
         if page.name == 'WikiStart':
