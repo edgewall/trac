@@ -47,6 +47,9 @@ TRAC_VERSION = pkg_resources.get_distribution('Trac').version
 def printout(*args):
     console_print(sys.stdout, *args)
 
+def printerr(*args):
+    console_print(sys.stderr, *args)
+
 def copytree(src, dst, symlinks=False, skip=[]):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
 
@@ -120,7 +123,7 @@ class TracAdmin(cmd.Cmd):
         except SystemExit:
             raise
         except TracError, e:
-            console_print(sys.stderr, 'Command failed:', e)
+            printerr(_("Command failed:", e))
             rv = 2
         if not self.interactive:
             return rv
@@ -158,7 +161,7 @@ Type:  '?' or 'help' for help on commands.
                 self.__env = Environment(self.envname)
             return self.__env
         except Exception, e:
-            console_print(sys.stderr, 'Failed to open environment.', e)
+            printerr(_("Failed to open environment.", e))
             traceback.print_exc()
             sys.exit(1)
 
@@ -285,8 +288,7 @@ Type:  '?' or 'help' for help on commands.
                 doc = getattr(self, "_help_" + arg[0])
                 self.print_doc(doc)
             except AttributeError:
-                console_print(sys.stderr, "No documentation found for '%s'" % 
-                              arg[0])
+                printerr(_("No documentation found for '%(cmd)s'", cmd=arg[0]))
         else:
             printout(_("trac-admin - The Trac Administration Console "
                        "%(version)s", version=TRAC_VERSION))
@@ -522,8 +524,8 @@ in order to initialize and prepare the project database.
 
     def do_initenv(self, line):
         def initenv_error(msg):
-            console_print(sys.stderr, "Initenv for '%s' failed.\n%s" % 
-                          (self.envname, msg))
+            printerr(_("Initenv for '%(env)s' failed.", env=self.envname),
+                     "\n", msg)
         if self.env_check():
             initenv_error("Does an environment already exist?")
             return 2
@@ -565,7 +567,7 @@ in order to initialize and prepare the project database.
                                          options=options)
             except Exception, e:
                 initenv_error('Failed to create environment.')
-                console_print(sys.stderr, e)
+                printerr(e)
                 traceback.print_exc()
                 sys.exit(1)
 
@@ -585,14 +587,12 @@ in order to initialize and prepare the project database.
                         printout(_(" Indexing repository"))
                         repos.sync(self._resync_feedback)
                 except TracError, e:
-                    console_print(sys.stderr, "\nWarning:\n")
+                    printerr("\n", _("Warning:"), "\n")
                     if repository_type == "svn":
-                        console_print(sys.stderr, 
-                                      "You should install the SVN bindings")
+                        printerr(_("You should install the SVN bindings"))
                     else:
-                        console_print(sys.stderr, 
-                                      "Repository type %s not supported" %
-                                      repository_type)
+                        printerr(_("Repository type %(type)s not supported", 
+                                   type=repository_type))
         except Exception, e:
             initenv_error(to_unicode(e))
             traceback.print_exc()
@@ -828,7 +828,7 @@ Congratulations!
             try:
                 number = int(arg[1])
             except ValueError:
-                console_print(sys.stderr, "<number> must be a number")
+                printerr(_("<number> must be a number"))
                 return
             self._do_ticket_remove(number)
         else:    
@@ -1277,9 +1277,8 @@ def run(args=None):
             try:
                 unicode(env_path, 'ascii')
             except UnicodeDecodeError:
-                console_print(sys.stderr, _("non-ascii environment path "
-                                            "'%(path)s' not supported.",
-                                            path=env_path))
+                printerr(_("non-ascii environment path '%(path)s' not "
+                           "supported.", path=env_path))
                 sys.exit(2)
             admin.env_set(env_path)
             if len(args) > 1:
