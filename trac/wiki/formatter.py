@@ -868,14 +868,14 @@ class Formatter(object):
             if self.in_def_list and not line.startswith(' '):
                 self.close_def_list()
 
-            if self.in_table and line.strip()[0:2] != '||':
+            if self.in_table and not line.lstrip().startswith('||'):
                 self.close_table()
 
             sep = os.linesep
             if not(self.in_list_item or self.in_def_list or self.in_table):
                 if len(result):
                     self.open_paragraph()
-                if escape_newlines:
+                if escape_newlines and not result.rstrip().endswith('<br />'):
                     sep = '<br />' + sep
             self.out.write(result + sep)
             self.close_table_row()
