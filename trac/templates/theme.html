@@ -35,7 +35,7 @@
     <div id="main">
       <div id="ctxtnav" class="nav">
         <h2>Context Navigation</h2>
-          <ul>
+          <ul py:if="chrome.ctxtnav">
             <li py:for="i, elm in enumerate(chrome.ctxtnav)" class="${i == 0 and 'first ' or None}${i+1 == len(chrome.ctxtnav) and 'last' or None}">$elm</li>
           </ul>
         <hr />

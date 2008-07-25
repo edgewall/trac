@@ -14,7 +14,7 @@
     <h2>Manage Milestones</h2>
 
     <py:choose test="view">
-      <form py:when="'detail'" class="mod" method="post" id="modifymilestone">
+      <form py:when="'detail'" class="mod" method="post" id="modifymilestone" action="">
         <fieldset>
           <legend>Modify Milestone:</legend>
           <div class="field">
@@ -70,7 +70,7 @@ ${milestone.description}</textarea>
 
       <py:otherwise>
 
-        <form class="addnew" id="addmilestone" method="post">
+        <form class="addnew" id="addmilestone" method="post" action="">
           <fieldset>
             <legend>Add Milestone:</legend>
             <div class="field">
@@ -93,7 +93,7 @@ ${milestone.description}</textarea>
         </form>
 
         <py:choose>
-          <form py:when="milestones" id="milestone_table" method="POST">
+          <form py:when="milestones" id="milestone_table" method="post" action="">
             <table class="listing" id="millist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>

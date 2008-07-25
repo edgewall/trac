@@ -50,9 +50,12 @@
                       value="${group.name}" py:content="group.label"
                       selected="${grouped_by == group.name or None}" />
             </select>
-            <noscript><input type="submit" value="${_('Update')}" /></noscript>
+            <input type="submit" value="${_('Update')}" class="noscript" />
+            <script type="text/javascript">
+              jQuery(document).ready(function ($) { $(".noscript").attr("style", "display: none"); });
+            </script>
           </legend>
-          <table summary="Shows the milestone completion status grouped by ${grouped_by}">
+          <table py:if="groups" summary="Shows the milestone completion status grouped by ${grouped_by}">
             <tr py:for="group in groups">
               <th scope="row" py:choose="">
                 <i py:when="not group.name"><a href="${group.stats_href}">(none)</a></i>
@@ -83,12 +86,24 @@
                   attachments.can_create"
            class="buttons">
         <form py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" method="get" action="" id="editmilestone">
-          <input type="hidden" name="action" value="edit" />
-          <input type="submit" value="${_('Edit milestone')}" />
+          <div>
+            <input type="hidden" name="action" value="edit" />
+<<<<<<< local
+            <input type="submit" value="${_('Edit milestone')}" />
+=======
+            <input type="submit" value="Edit milestone" />
+>>>>>>> other
+          </div>
         </form>
         <form py:if="'MILESTONE_DELETE' in perm(milestone.resource)" method="get" action="" id="deletemilestone">
-          <input type="hidden" name="action" value="delete" />
-          <input type="submit" value="${_('Delete milestone')}" />
+          <div>
+            <input type="hidden" name="action" value="delete" />
+<<<<<<< local
+            <input type="submit" value="${_('Delete milestone')}" />
+=======
+            <input type="submit" value="Delete milestone" />
+>>>>>>> other
+          </div>
         </form>
         ${attach_file_form(attachments)}
       </div>

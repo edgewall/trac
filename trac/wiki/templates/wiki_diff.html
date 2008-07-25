@@ -9,13 +9,15 @@
     <form py:if="'WIKI_DELETE' in perm(page.resource) and
                  (not changes[0].diffs or new_version == latest_version)"
       method="get" action="${href.wiki(page.name)}">
-      <input type="hidden" name="action" value="delete" />
-      <input type="hidden" name="version" value="$new_version" />
-      <input type="hidden" name="old_version" value="$old_version" />
-      <py:choose test="">
-      <py:when test="new_version - old_version &gt; 1"><input type="submit" name="delete_version" value="${_('Delete version %(old_version)d to version %(version)d', old_version=(old_version + 1), version=new_version)}" /></py:when>
-      <py:otherwise test=""><input type="submit" name="delete_version" value="${_('Delete version %(version)d', version=new_version)}" /></py:otherwise>
-      </py:choose>
+      <div>
+        <input type="hidden" name="action" value="delete" />
+        <input type="hidden" name="version" value="$new_version" />
+        <input type="hidden" name="old_version" value="$old_version" />
+        <py:choose>
+          <input py:when="new_version - old_version &gt; 1" type="submit" name="delete_version" value="${_('Delete version %(old_version)d to version %(version)d', old_version=(old_version + 1), version=new_version)}" />
+          <input py:otherwise="" type="submit" name="delete_version" value="${_('Delete version %(version)d', version=new_version)}" />
+        </py:choose>
+      </div>
     </form>
   </div></py:match>
   <py:with vars="resource = page.resource">

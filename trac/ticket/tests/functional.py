@@ -915,9 +915,9 @@ class RegressionTestTicket4630a(FunctionalTwillTestCaseSetup):
             self._tester.login('admin')
             ticket_id = self._tester.create_ticket()
             self._tester.go_to_ticket(ticket_id)
-            tc.formvalue('propform', 'action', 'reassign')
+            tc.formvalue('propertyform', 'action', 'reassign')
             tc.find('reassign_reassign_owner')
-            tc.formvalue('propform', 'action_reassign_reassign_owner', 'user')
+            tc.formvalue('propertyform', 'action_reassign_reassign_owner', 'user')
             tc.submit('submit')
         finally:
             # Undo the config change for now since this (failing)
@@ -1030,7 +1030,7 @@ class RegressionTestTicket5497a(FunctionalTwillTestCaseSetup):
         Open ticket, component changed, owner not changed"""
         ticketid = self._tester.create_ticket("regression test 5497a")
         self._tester.go_to_ticket(ticketid)
-        tc.formvalue('propform', 'field-component', 'regression5497')
+        tc.formvalue('propertyform', 'field-component', 'regression5497')
         tc.submit('submit')
         tc.find(regex_owned_by('user'))
 
@@ -1040,9 +1040,9 @@ class RegressionTestTicket5497b(FunctionalTwillTestCaseSetup):
         Open ticket, component changed, owner changed"""
         ticketid = self._tester.create_ticket("regression test 5497b")
         self._tester.go_to_ticket(ticketid)
-        tc.formvalue('propform', 'field-component', 'regression5497')
-        tc.formvalue('propform', 'action', 'reassign')
-        tc.formvalue('propform', 'action_reassign_reassign_owner', 'admin')
+        tc.formvalue('propertyform', 'field-component', 'regression5497')
+        tc.formvalue('propertyform', 'action', 'reassign')
+        tc.formvalue('propertyform', 'action_reassign_reassign_owner', 'admin')
         tc.submit('submit')
         tc.notfind(regex_owned_by('user'))
         tc.find(regex_owned_by('admin'))
@@ -1078,27 +1078,27 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         # leave ids[0] as new
         # make ids[1] be assigned
         self._tester.go_to_ticket(ids[1])
-        tc.formvalue('propform', 'action', 'reassign')
-        tc.formvalue('propform', 'action_reassign_reassign_owner', 'admin')
+        tc.formvalue('propertyform', 'action', 'reassign')
+        tc.formvalue('propertyform', 'action_reassign_reassign_owner', 'admin')
         tc.submit('submit')
         # make ids[2] be accepted
         self._tester.go_to_ticket(ids[2])
-        tc.formvalue('propform', 'action', 'accept')
+        tc.formvalue('propertyform', 'action', 'accept')
         tc.submit('submit')
         # make ids[3] be closed
         self._tester.go_to_ticket(ids[3])
-        tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propertyform', 'action', 'resolve')
+        tc.formvalue('propertyform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('submit')
         # make ids[4] be reopened
         self._tester.go_to_ticket(ids[4])
-        tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propertyform', 'action', 'resolve')
+        tc.formvalue('propertyform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('submit')
         # FIXME: we have to wait a second to avoid "IntegrityError: columns
         # ticket, time, field are not unique"
         time.sleep(1)
-        tc.formvalue('propform', 'action', 'reopen')
+        tc.formvalue('propertyform', 'action', 'reopen')
         tc.submit('submit')
         tc.show()
         tc.notfind("Python Traceback")
@@ -1168,7 +1168,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         self._tester.create_ticket(summary='RegressionTestTicket6048b')
         self._tester.go_to_ticket(ticket_id)
         tc.find('delete ticket')
-        tc.formvalue('propform', 'action', 'delete')
+        tc.formvalue('propertyform', 'action', 'delete')
         tc.submit('submit')
 
         self._tester.go_to_ticket(ticket_id)
@@ -1224,10 +1224,10 @@ class RegressionTestTicket6879a(FunctionalTwillTestCaseSetup):
         # create a ticket, then preview resolving the ticket twice
         ticket_id = self._tester.create_ticket("RegressionTestTicket6879 a")
         self._tester.go_to_ticket(ticket_id)
-        tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propertyform', 'action', 'resolve')
+        tc.formvalue('propertyform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('preview')
-        tc.formvalue('propform', 'action', 'resolve')
+        tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('preview')
 
 
@@ -1241,10 +1241,10 @@ class RegressionTestTicket6879b(FunctionalTwillTestCaseSetup):
         # create a ticket, then preview resolving the ticket twice
         ticket_id = self._tester.create_ticket("RegressionTestTicket6879 b")
         self._tester.go_to_ticket(ticket_id)
-        tc.formvalue('propform', 'action', 'resolve')
-        tc.formvalue('propform', 'action_resolve_resolve_resolution', 'fixed')
+        tc.formvalue('propertyform', 'action', 'resolve')
+        tc.formvalue('propertyform', 'action_resolve_resolve_resolution', 'fixed')
         tc.submit('preview')
-        tc.formvalue('propform', 'action', 'resolve')
+        tc.formvalue('propertyform', 'action', 'resolve')
         tc.submit('submit')
 
 

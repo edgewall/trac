@@ -21,15 +21,17 @@
       <h1>Delete Milestone ${milestone.name}</h1>
 
     <form id="edit" action="" method="post">
-      <input type="hidden" name="action" value="delete" />
-      <p><strong>Are you sure you want to delete this milestone?</strong></p>
-      <input type="checkbox" id="retarget" name="retarget" checked="checked" />
-      <label for="target">Retarget associated tickets to milestone</label>
-      <select name="target" id="target">
-        <option value="">None</option>
-        <option py:for="m in milestones"
-                py:if="m.name != milestone.name">${m.name}</option>
-      </select>
+      <div>
+        <input type="hidden" name="action" value="delete" />
+        <p><strong>Are you sure you want to delete this milestone?</strong></p>
+        <input type="checkbox" id="retarget" name="retarget" checked="checked" />
+        <label for="target">Retarget associated tickets to milestone</label>
+        <select name="target" id="target">
+          <option value="">None</option>
+          <option py:for="m in milestones"
+                  py:if="m.name != milestone.name">${m.name}</option>
+        </select>
+      </div>
       <div class="buttons">
         <input type="submit" name="cancel" value="${_('Cancel')}" />
         <input type="submit" value="${_('Delete milestone')}" />

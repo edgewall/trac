@@ -72,11 +72,11 @@ class FunctionalTester(object):
         tc.notfind(internal_error)
         if summary == None:
             summary = random_sentence(4)
-        tc.formvalue('propform', 'field_summary', summary)
-        tc.formvalue('propform', 'field_description', random_page())
+        tc.formvalue('propertyform', 'field_summary', summary)
+        tc.formvalue('propertyform', 'field_description', random_page())
         if info:
             for field, value in info.items():
-                tc.formvalue('propform', 'field_%s' % field, value)
+                tc.formvalue('propertyform', 'field_%s' % field, value)
         tc.submit('submit')
         # we should be looking at the newly created ticket
         tc.url(self.url + '/ticket/%s' % (self.ticketcount + 1))
@@ -148,7 +148,7 @@ class FunctionalTester(object):
         self.go_to_ticket(ticketid)
         if comment is None:
             comment = random_sentence()
-        tc.formvalue('propform', 'comment', comment)
+        tc.formvalue('propertyform', 'comment', comment)
         tc.submit("submit")
         # Verify we're where we're supposed to be.
         tc.url(self.url + '/ticket/%s#comment:.*' % ticketid)
@@ -351,7 +351,7 @@ class FunctionalTester(object):
     def ticket_set_milestone(self, ticketid, milestone):
         """Set the milestone on a given ticket"""
         self.go_to_ticket(ticketid)
-        tc.formvalue('propform', 'milestone', milestone)
+        tc.formvalue('propertyform', 'milestone', milestone)
         tc.submit('submit')
         # TODO: verify the change occurred.
 
