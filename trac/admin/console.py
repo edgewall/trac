@@ -124,7 +124,7 @@ class TracAdmin(cmd.Cmd):
         except SystemExit:
             raise
         except TracError, e:
-            printerr(_("Command failed:", e))
+            printerr(_("Command failed:"), e)
             rv = 2
         if not self.interactive:
             return rv
@@ -162,7 +162,7 @@ Type:  '?' or 'help' for help on commands.
                 self.__env = Environment(self.envname)
             return self.__env
         except Exception, e:
-            printerr(_("Failed to open environment.", e))
+            printerr(_("Failed to open environment."), e)
             traceback.print_exc()
             sys.exit(1)
 
