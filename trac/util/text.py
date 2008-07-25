@@ -112,8 +112,8 @@ class unicode_passwd(unicode):
 
 def console_print(out, *args):
     cons_charset = getattr(out, 'encoding', None) or 'utf-8'
-    out.write(' '.join([to_unicode(a).encode(cons_charset) for a in args])+
-              '\n')
+    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
+                        for a in args])+ '\n')
 
 # -- Plain text formatting
 

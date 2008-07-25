@@ -37,12 +37,15 @@ from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
                            print_table, console_print
-from trac.util.translation import _
+from trac.util.translation import _, ngettext
 from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
 from trac.wiki.macros import WikiMacroBase
 
 TRAC_VERSION = pkg_resources.get_distribution('Trac').version
+
+def printout(*args):
+    console_print(sys.stdout, *args)
 
 def copytree(src, dst, symlinks=False, skip=[]):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
@@ -124,12 +127,12 @@ class TracAdmin(cmd.Cmd):
 
     def run(self):
         self.interactive = True
-        print """Welcome to trac-admin %(version)s
+        printout(_("""Welcome to trac-admin %(version)s
 Interactive Trac administration console.
 Copyright (c) 2003-2008 Edgewall Software
 
 Type:  '?' or 'help' for help on commands.
-        """ % {'version': TRAC_VERSION}
+        """, version=TRAC_VERSION))
         self.cmdloop()
 
     ##
@@ -285,13 +288,15 @@ Type:  '?' or 'help' for help on commands.
                 console_print(sys.stderr, "No documentation found for '%s'" % 
                               arg[0])
         else:
-            print 'trac-admin - The Trac Administration Console %s' \
-                  % TRAC_VERSION
+            printout(_("trac-admin - The Trac Administration Console "
+                       "%(version)s", version=TRAC_VERSION))
             if not self.interactive:
                 print
-                print "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
-                print "Invoking trac-admin without command starts "\
-                      "interactive mode."
+                printout(_("Usage: trac-admin </path/to/projenv> "
+                           "[command [subcommand] [option ...]]\n")
+                    )
+                printout(_("Invoking trac-admin without command starts "
+                           "interactive mode."))
             self.print_doc(self.all_docs())
 
 
@@ -427,19 +432,20 @@ Type:  '?' or 'help' for help on commands.
         rows.sort()
         print_table(rows, ['User', 'Action'])
         print
-        print 'Available actions:'
+        printout(_("Available actions:"))
         actions = self._permsys.get_actions()
         actions.sort()
         text = ', '.join(actions)
-        print wrap(text, initial_indent=' ', subsequent_indent=' ',
-                   linesep='\n')
+        printout(wrap(text, initial_indent=' ', subsequent_indent=' ', 
+                      linesep='\n'))
         print
 
     def _do_permission_add(self, user, action):
         if not self._permsys:
             self._permsys = PermissionSystem(self.env_open())
         if not action.islower() and not action.isupper():
-            print 'Group names must be in lower case and actions in upper case'
+            printout(_("Group names must be in lower case and actions in "
+                       "upper case"))
             return
         self._permsys.grant_permission(user, action)
 
@@ -471,43 +477,45 @@ Type:  '?' or 'help' for help on commands.
 
     def get_initenv_args(self):
         returnvals = []
-        print 'Creating a new Trac environment at %s' % self.envname
-        print
-        print 'Trac will first ask a few questions about your environment '
-        print 'in order to initalize and prepare the project database.'
-        print
-        print " Please enter the name of your project."
-        print " This name will be used in page titles and descriptions."
-        print
+        printout(_("Creating a new Trac environment at %(envname)s",
+                   envname=self.envname))
+        printout(_("""
+Trac will first ask a few questions about your environment 
+in order to initialize and prepare the project database.
+
+ Please enter the name of your project.
+ This name will be used in page titles and descriptions.
+"""))
         dp = 'My Project'
-        returnvals.append(raw_input('Project Name [%s]> ' % dp).strip() or dp)
-        print
-        print ' Please specify the connection string for the database to use.'
-        print ' By default, a local SQLite database is created in the environment '
-        print ' directory. It is also possible to use an already existing '
-        print ' PostgreSQL database (check the Trac documentation for the exact '
-        print ' connection string syntax).'
-        print
+        returnvals.append(raw_input(_("Project Name [%(default)s]> ",
+                                      default=dp)).strip() or dp)
+        printout(_(""" 
+ Please specify the connection string for the database to use.
+ By default, a local SQLite database is created in the environment
+ directory. It is also possible to use an already existing
+ PostgreSQL database (check the Trac documentation for the exact
+ connection string syntax).
+"""))
         ddb = 'sqlite:db/trac.db'
-        prompt = 'Database connection string [%s]> ' % ddb
+        prompt = _("Database connection string [%(default)s]> ", default=ddb)
         returnvals.append(raw_input(prompt).strip() or ddb)
-        print
-        print ' Please specify the type of version control system,'
-        print ' By default, it will be svn.'
-        print
-        print ' If you don\'t want to use Trac with version control integration, '
-        print ' choose the default here and don\'t specify a repository directory. '
-        print ' in the next question.'
-        print 
+        printout(_(""" 
+ Please specify the type of version control system,
+ By default, it will be svn.
+
+ If you don't want to use Trac with version control integration,
+ choose the default here and don\'t specify a repository directory.
+ in the next question.
+"""))
         drpt = 'svn'
-        prompt = 'Repository type [%s]> ' % drpt
+        prompt = _("Repository type [%(default)s]> ", default=drpt)
         returnvals.append(raw_input(prompt).strip() or drpt)
-        print
-        print ' Please specify the absolute path to the version control '
-        print ' repository, or leave it blank to use Trac without a repository.'
-        print ' You can also set the repository location later.'
-        print 
-        prompt = 'Path to repository [/path/to/repos]> '
+        printout(_("""
+ Please specify the absolute path to the version control
+ repository, or leave it blank to use Trac without a repository.
+ You can also set the repository location later.
+"""))
+        prompt = _("Path to repository [/path/to/repos]> ")
         returnvals.append(raw_input(prompt).strip())
         print
         return returnvals
@@ -543,7 +551,7 @@ Type:  '?' or 'help' for help on commands.
             project_name, db_str, repository_type, repository_dir = arg[:4]
 
         try:
-            print 'Creating and Initializing Project'
+            printout(_("Creating and Initializing Project"))
             options = [
                 ('trac', 'database', db_str),
                 ('trac', 'repository_type', repository_type),
@@ -562,7 +570,7 @@ Type:  '?' or 'help' for help on commands.
                 sys.exit(1)
 
             # Add a few default wiki pages
-            print ' Installing default wiki pages'
+            printout(_(" Installing default wiki pages"))
             cnx = self.__env.get_db_cnx()
             cursor = cnx.cursor()
             pages_dir = pkg_resources.resource_filename('trac.wiki', 
@@ -574,7 +582,7 @@ Type:  '?' or 'help' for help on commands.
                 try:
                     repos = self.__env.get_repository()
                     if repos:
-                        print ' Indexing repository'
+                        printout(_(" Indexing repository"))
                         repos.sync(self._resync_feedback)
                 except TracError, e:
                     console_print(sys.stderr, "\nWarning:\n")
@@ -590,7 +598,7 @@ Type:  '?' or 'help' for help on commands.
             traceback.print_exc()
             return 2
 
-        print """
+        printout(_("""
 ---------------------------------------------------------------------
 Project environment for '%(project_name)s' created.
 
@@ -614,9 +622,9 @@ website:
   http://trac.edgewall.org/
 
 Congratulations!
-""" % dict(project_name=project_name, project_path=self.envname,
+""", project_name=project_name, project_path=self.envname,
            project_dir=os.path.basename(self.envname),
-           config_path=os.path.join(self.envname, 'conf', 'trac.ini'))
+           config_path=os.path.join(self.envname, 'conf', 'trac.ini')))
 
     _help_resync = [('resync', 'Re-synchronize trac with the repository'),
                     ('resync <rev>', 'Re-synchronize only the given <rev>')]
@@ -633,10 +641,10 @@ Congratulations!
             rev = argv[0]
             if rev:
                 env.get_repository().sync_changeset(rev)
-                print '%s resynced.' % rev
+                printout(_("%(rev)s resynced.", rev=rev))
                 return
         from trac.versioncontrol.cache import CACHE_METADATA_KEYS
-        print 'Resyncing repository history... '
+        printout(_("Resyncing repository history... "))
         cnx = self.db_open()
         cursor = cnx.cursor()
         cursor.execute("DELETE FROM revision")
@@ -649,8 +657,9 @@ Congratulations!
         repos = env.get_repository().sync(self._resync_feedback)
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
-            print cnt, 'revisions cached.',
-        print 'Done.'
+            printout(ngettext("%(num)s revision cached.",
+                              "%(num)s revisions cached.", cnt, num=cnt))
+        printout(_("Done."))
 
     ## Wiki
     _help_wiki = [('wiki list', 'List wiki pages'),
@@ -749,10 +758,10 @@ Congratulations!
                              params=(title,))
         old = list(rows)
         if old and title in create_only:
-            console_print(sys.stdout, '  %s already exists.' % title)
+            printout('  %s already exists.' % title)
             return False
         if old and data == old[0][0]:
-            console_print(sys.stdout, '  %s already up to date.' % title)
+            printout('  %s already up to date.' % title)
             return False
         f.close()
 
@@ -768,7 +777,7 @@ Congratulations!
                              "ORDER BY version DESC LIMIT 1", params=[page])
         text = data.next()[0]
         if not filename:
-            print text
+            printout(text)
         else:
             if os.path.isfile(filename):
                 raise Exception("File '%s' exists" % filename)
@@ -785,7 +794,7 @@ Congratulations!
                 raise TracError("%s is not a directory" % dir)
         for p in pages:
             dst = os.path.join(dir, unicode_quote(p, ''))
-            console_print(sys.stdout, " %s => %s" % (p, dst))
+            printout(_(" %(src)s => %(dst)s", src=p, dst=dst))
             self._do_wiki_export(p, dst)
 
     def _do_wiki_load(self, dir, cursor=None, ignore=[], create_only=[]):
@@ -797,8 +806,8 @@ Congratulations!
             page = unicode_unquote(page.encode('utf-8'))
             if os.path.isfile(filename):
                 if self._do_wiki_import(filename, page, cursor, create_only):
-                    print (" %s imported from %s" %
-                           (filename, page)).encode(cons_charset)
+                    printout(_(" %(page)s imported from %(filename)s",
+                               filename=filename, page=page))
 
     ## Ticket
     _help_ticket = [('ticket remove <number>', 'Remove ticket')]
@@ -825,10 +834,10 @@ Congratulations!
         else:    
             self.do_help ('ticket')
 
-    def _do_ticket_remove(self, number):
-        ticket = Ticket(self.env_open(), number)
+    def _do_ticket_remove(self, num):
+        ticket = Ticket(self.env_open(), num)
         ticket.delete()
-        print "Ticket %d and all associated data removed." % number
+        printout(_("Ticket %(num)s and all associated data removed.", num=num))
 
 
     ## (Ticket) Type
@@ -1121,7 +1130,7 @@ Congratulations!
         self.db_open()
 
         if not self.__env.needs_upgrade():
-            print "Database is up to date, no upgrade necessary."
+            printout(_("Database is up to date, no upgrade necessary."))
             return
 
         try:
@@ -1133,7 +1142,7 @@ Congratulations!
                                 "upgrade without doing a backup." % msg)
             else:
                 raise
-        print 'Upgrade done.'
+        printout(_("Upgrade done."))
 
     _help_hotcopy = [('hotcopy <backupdir>',
                       'Make a hot backup copy of an environment')]
@@ -1155,7 +1164,8 @@ Congratulations!
         cursor.execute("UPDATE system SET name=NULL WHERE name IS NULL")
 
         try:
-            print 'Hotcopying %s to %s ...' % (self.__env.path, dest),
+            printout(_('Hotcopying %(src)s to %(dst)s ...', 
+                       src=self.__env.path, dst=dest))
             db_str = self.__env.config.get('trac', 'database')
             prefix, db_path = db_str.split(':', 1)
             if prefix == 'sqlite':
@@ -1169,7 +1179,7 @@ Congratulations!
             # Unlock database
             cnx.rollback()
 
-        print 'Hotcopy done.'
+        printout(_("Hotcopy done."))
 
     _help_deploy = [('deploy <directory>',
                      'Extract static resources from Trac and all plugins.')]
@@ -1190,22 +1200,23 @@ Congratulations!
         os.makedirs(target)
         os.makedirs(chrome_target)
         from trac.web.chrome import Chrome
-        print 'Copying resources from:'
+        printout(_("Copying resources from:"))
         for provider in Chrome(self.env_open()).template_providers:
             paths = list(provider.get_htdocs_dirs())
             if not len(paths):
                 continue
-            print '  %s.%s' % (provider.__module__, provider.__class__.__name__)
+            printout('  %s.%s' % (provider.__module__, 
+                                  provider.__class__.__name__))
             for key, root in paths:
                 source = os.path.normpath(root)
-                print '   ', source
+                printout('   ', source)
                 if os.path.exists(source):
                     dest = os.path.join(chrome_target, key)
                     copytree(source, dest)
         
         # Create and copy scripts
         os.makedirs(script_target)
-        print 'Creating scripts.'
+        printout(_("Creating scripts."))
         data = {'env': self.env_open(), 'executable': sys.executable}
         for script in ('cgi', 'fcgi', 'wsgi'):
             dest = os.path.join(script_target, 'trac.'+script)
@@ -1260,7 +1271,7 @@ def run(args=None):
         if args[0] in ('-h', '--help', 'help'):
             return admin.onecmd('help')
         elif args[0] in ('-v','--version'):
-            print '%s %s' % (os.path.basename(sys.argv[0]), TRAC_VERSION)
+            printout(os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:
             env_path = os.path.abspath(args[0])
             try:
