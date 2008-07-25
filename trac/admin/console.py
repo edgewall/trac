@@ -587,12 +587,19 @@ in order to initialize and prepare the project database.
                         printout(_(" Indexing repository"))
                         repos.sync(self._resync_feedback)
                 except TracError, e:
-                    printerr("\n", _("Warning:"), "\n")
-                    if repository_type == "svn":
-                        printerr(_("You should install the SVN bindings"))
-                    else:
-                        printerr(_("Repository type %(type)s not supported", 
-                                   type=repository_type))
+                    printerr(_("""
+---------------------------------------------------------------------
+Warning: couldn't index the repository.
+
+This can happen for a variety of reasons: wrong repository type, 
+no appropriate third party library for this repository type,
+no actual repository at the specified repository path...
+
+You can nevertheless start using your Trac environment, but 
+you'll need to check again your trac.ini file and the [trac] 
+repository_type and repository_path settings in order to enable
+the Trac repository browser.
+"""))
         except Exception, e:
             initenv_error(to_unicode(e))
             traceback.print_exc()
