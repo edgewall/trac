@@ -325,6 +325,7 @@ joe'bar@site.info,
 trac+devel@another-site.fr,
 T_r=a-c1.23@yet_another-site.edu.au
 !not@an.email.com
+someone@louvre.museum-
 ------------------------------
 <p>
 Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">mailto:cboos@neuf.fr</span></a>, 
@@ -335,6 +336,7 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">me</spa
 <a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon">trac+devel@another-site.fr</span></a>,
 <a class="mail-link" href="mailto:T_r=a-c1.23@yet_another-site.edu.au"><span class="icon">T_r=a-c1.23@yet_another-site.edu.au</span></a>
 not@an.email.com
+<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon">someone@louvre.museum</span></a>-
 </p>
 ------------------------------
 ============================== Arbitrary protocol Link
