@@ -118,9 +118,6 @@ class ModPythonGateway(WSGIGateway):
 
 
 def handler(req):
-    egg_cache = req.subprocess_env.get('PYTHON_EGG_CACHE')
-    if egg_cache:
-        os.environ['PYTHON_EGG_CACHE'] = egg_cache
     pkg_resources.require('Trac==%s' % VERSION)
     gateway = ModPythonGateway(req, req.get_options())
     from trac.web.main import dispatch_request
