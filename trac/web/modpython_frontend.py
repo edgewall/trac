@@ -82,10 +82,6 @@ class ModPythonGateway(WSGIGateway):
             environ['SCRIPT_NAME'] = root_uri
             environ['PATH_INFO'] = urllib.unquote(request_uri[len(root_uri):])
 
-        egg_cache = req.subprocess_env.get('PYTHON_EGG_CACHE')
-        if egg_cache:
-            os.environ['PYTHON_EGG_CACHE'] = egg_cache
-
         WSGIGateway.__init__(self, environ, InputWrapper(req),
                              _ErrorsWrapper(lambda x: req.log_error(x)))
         self.req = req
