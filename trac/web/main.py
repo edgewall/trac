@@ -276,7 +276,7 @@ class RequestDispatcher(Component):
                 translation.get_available_locales()]
 
             preferred = req.session.get('language', req.languages)
-            if isinstance(preferred, list):
+            if not isinstance(preferred, list):
                 preferred = [preferred]
             return Locale.negotiate(preferred, available, sep='-')
 
