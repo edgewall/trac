@@ -15,12 +15,10 @@
 #
 # Author: Noah Kantrowitz <noah@coderanger.net>
 import os
-import pkg_resources
 
 def application(environ, start_request):
-    environ['trac.env_path'] = '${env.path}'
-    if 'PYTHON_EGG_CACHE' not in os.environ:
-        egg_cache = os.path.join('${env.path}', 'egg-cache')
-        pkg_resources.set_extraction_path(egg_cache)
+    if 'PYTHON_EGG_CACHE' in environ:                                           
+        os.environ['PYTHON_EGG_CACHE'] = environ['PYTHON_EGG_CACHE']
     from trac.web.main import dispatch_request
+    environ.setdefault('trac.env_path', '${env.path}')
     return dispatch_request(environ, start_request)
