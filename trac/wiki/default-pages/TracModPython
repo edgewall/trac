@@ -46,7 +46,7 @@ A simple setup of Trac on mod_python looks like this:
    PythonOption TracUriRoot /projects/myproject
 </Location>
 # The next option must be placed outside all Location and Virtualhost sections. 
-PythonOption PYTHON_EGG_CACHE /tmp/egg-cache 
+PythonOption PYTHON_EGG_CACHE /var/trac/myproject/egg-cache 
 }}}
 
 The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration without it; if the URLs produced by Trac look wrong, if Trac does not seem to recognize URLs correctly, or you get an odd "No handler matched request to..." error, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.

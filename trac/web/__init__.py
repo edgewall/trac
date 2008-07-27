@@ -10,11 +10,11 @@
 #
 try:
     from mod_python import apache
-    import os
+    import pkg_resources
     options = apache.main_server.get_options()
     egg_cache = options.get('PYTHON_EGG_CACHE')
     if egg_cache:
-        os.environ['PYTHON_EGG_CACHE'] = egg_cache
+        pkg_resources.set_extraction_path(egg_cache)
 except ImportError:
     pass
     
