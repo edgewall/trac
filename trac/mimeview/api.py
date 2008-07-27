@@ -258,6 +258,7 @@ KNOWN_MIME_TYPES = {
     'text/x-elisp':           ['el'],
     'text/x-fortran':         ['f'],
     'text/x-haskell':         ['hs'],
+    'text/x-ini':             ['ini', 'cfg'],
     'text/x-javascript':      ['js'],
     'text/x-objc':            ['m', 'mm'],
     'text/x-ocaml':           ['ml', 'mli'],
