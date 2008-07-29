@@ -9,11 +9,11 @@
 # and Location sections.
 #
 try:
-    from mod_python import apache
-    import pkg_resources
-    options = apache.main_server.get_options()
-    egg_cache = options.get('PYTHON_EGG_CACHE')
+    # main_server is only available in mod_python >= 3.3
+    from mod_python.apache import main_server
+    egg_cache = main_server.get_options().get('PYTHON_EGG_CACHE')
     if egg_cache:
+        import pkg_resources
         pkg_resources.set_extraction_path(egg_cache)
 except ImportError:
     pass
