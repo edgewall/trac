@@ -45,8 +45,6 @@ A simple setup of Trac on mod_python looks like this:
    PythonOption TracEnv /var/trac/myproject
    PythonOption TracUriRoot /projects/myproject
 </Location>
-# The next option must be placed outside all Location and Virtualhost sections. 
-PythonOption PYTHON_EGG_CACHE /var/trac/myproject/egg-cache 
 }}}
 
 The option '''`TracUriRoot`''' may or may not be necessary in your setup. Try your configuration without it; if the URLs produced by Trac look wrong, if Trac does not seem to recognize URLs correctly, or you get an odd "No handler matched request to..." error, add the '''`TracUriRoot`''' option.  You will notice that the `Location` and '''`TracUriRoot`''' have the same path.
@@ -66,6 +64,14 @@ The options available are
     # See description above        
     PythonOption TracUriRoot /projects/myproject
 }}}
+
+=== Python Egg Cache ===
+
+Compressed python eggs like Genshi are normally extracted into a directory named `.python-eggs` in the users home directory. Since apache's home usually is not writable an alternate egg cache directory can be specified like this:
+{{{
+PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
+}}}
+Note: This option must be placed outside any `Location` and `VirtualHost` section. This option requires mod_python 3.3 or greater.
 
 === Configuring Authentication ===
 
