@@ -32,7 +32,6 @@ def ngettext_noop(singular, plural, num, **kwargs):
         retval = singular
     else:
         retval = plural
-    if kwargs:
-        retval %= kwargs
-    return retval
+    kwargs.setdefault('num', num)
+    return retval % kwargs
 ngettext = ngettext_noop

@@ -666,7 +666,7 @@ Congratulations!
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             printout(ngettext("%(num)s revision cached.",
-                              "%(num)s revisions cached.", cnt, num=cnt))
+                              "%(num)s revisions cached.", num=cnt))
         printout(_("Done."))
 
     ## Wiki
