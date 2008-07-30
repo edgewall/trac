@@ -53,19 +53,6 @@ except NameError:
             lst = reversed(lst)
         return [i[-1] for i in lst]
 
-# Note: not used, suggest to remove in 0.12
-try:
-    from operator import attrgetter, itemgetter
-except ImportError:
-    def attrgetter(name):
-        def _getattr(obj):
-            return getattr(obj, name)
-        return _getattr
-    def itemgetter(name):
-        def _getitem(obj):
-            return obj[name]
-        return _getitem
-
 class py_groupby(object):
     def __init__(self, iterable, key=None):
         if key is None:
