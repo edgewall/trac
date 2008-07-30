@@ -14,7 +14,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 """Various classes and functions to provide some backwards-compatibility with
-previous of Python prior to 2.4.
+previous versions of Python from 2.4 onward.
 """
 
 try:
