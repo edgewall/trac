@@ -26,8 +26,13 @@ from trac.util.text import CRLF
 from trac.util.translation import _
 
 MAXHEADERLEN = 76
-EMAIL_LOOKALIKE_PATTERN = (r"[a-zA-Z0-9.'=+_-]+" '@'
-                            '(?:[a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,4}')
+EMAIL_LOOKALIKE_PATTERN = (
+        # the local part
+        r"[a-zA-Z0-9.'=+_-]+" '@'
+        # the domain name part (RFC:1035)
+        '(?:[a-zA-Z0-9_-]+\.)+' # labels (but also allow '_')
+        '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
+        )
 
 class NotificationSystem(Component):
 

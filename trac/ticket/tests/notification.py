@@ -351,12 +351,12 @@ class NotificationTestCase(unittest.TestCase):
     def test_admit_domains(self):
         """SMTP domain inclusion"""
         self.env.config.set('notification', 'admit_domains',
-                            'localdomain, mail.custom')
+                            'localdomain, server')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joeuser@example.com'
         ticket['summary'] = 'This is a summary'
-        ticket['cc'] = 'joe.user@localdomain, joe.user@mail.nocustom, ' \
-                       'joe.user@mail.custom'
+        ticket['cc'] = 'joe.user@localdomain, joe.user@unknown, ' \
+                       'joe.user@server'
         ticket.insert()
         tn = TicketNotifyEmail(self.env)
         tn.notify(ticket, newticket=True)
@@ -367,9 +367,9 @@ class NotificationTestCase(unittest.TestCase):
         cclist = [addr.strip() for addr in headers['Cc'].split(',')]
         # 'Cc' list should contain addresses with SMTP included domains
         self.failIf('joe.user@localdomain' not in cclist)
-        self.failIf('joe.user@mail.custom' not in cclist)
+        self.failIf('joe.user@server' not in cclist)
         # 'Cc' list should not contain non-FQDN domains
-        self.failIf('joe.user@mail.nocustom' in cclist)
+        self.failIf('joe.user@unknown' in cclist)
         self.failIf(len(cclist) != 2+2)
 
     def test_multiline_header(self):
