@@ -34,6 +34,8 @@ from trac.web.api import IRequestFilter
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
+    error = None # place holder for storing relevant error message
+
     def get_supported_types():
         """Return the types of version control systems that are supported.
 
@@ -42,6 +44,11 @@ class IRepositoryConnector(Interface):
         
         If multiple provider match a given type, the `priority` is used to
         choose between them (highest number is highest priority).
+
+        If the `priority` returned is negative, this indicates that the 
+        connector for the given `repotype` indeed exists but can't be
+        used for some reason. The `error` property can then be used to 
+        store an error message or exception relevant to the problem detected.
         """
 
     def get_repository(repos_type, repos_dir, authname):
@@ -79,7 +86,9 @@ class RepositoryManager(Component):
                 self.get_repository(req.authname).sync()
             except TracError, e:
                 add_warning(req, _("Can't synchronize with the repository "
-                              "(%(error)s)", error=e.message))
+                              "(%(error)s). Look in the Trac log for more "
+                              "information.", error=e.message))
+                          
         return handler
 
     def post_process_request(self, req, template, data, content_type):
@@ -125,12 +134,18 @@ class RepositoryManager(Component):
                     if repos_type == self.repository_type
                 ]
                 if candidates:
-                    self._connector = max(candidates)[1]
+                    prio, connector = max(candidates)
+                    if prio < 0: # error condition
+                        raise TracError(
+                            _('Unsupported version control system "%(name)s"'
+                              ': "%(error)s" ', name=self.repository_type, 
+                              error=connector.error))
+                    self._connector = connector
                 else:
                     raise TracError(
-                        _('Unsupported version control system "%(name)s". '
-                          'Check that the Python support libraries for '
-                          '"%(name)s" are correctly installed.',
+                        _('Unsupported version control system "%(name)s": '
+                          'Can\'t find an appropriate component, maybe the '
+                          'corresponding plugin was not enabled? ',
                           name=self.repository_type))
             tid = threading._get_ident()
             if tid in self._cache:

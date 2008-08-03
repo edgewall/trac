@@ -244,24 +244,27 @@ class SubversionConnector(Component):
         below that path will be included.
         """)
 
+    error = None
+
     def __init__(self):
         self._version = None
         
         try:
             _import_svn()
             self.log.debug('Subversion bindings imported')
-        except ImportError:
+        except ImportError, e:
+            self.error = e
             self.log.info('Failed to load Subversion bindings', exc_info=True)
-            self.has_subversion = False
         else:
-            self.has_subversion = True
             Pool()
 
     def get_supported_types(self):
-        if self.has_subversion:
-            yield ("direct-svnfs", 4)
-            yield ("svnfs", 4)
-            yield ("svn", 2)
+        prio = 1
+        if self.error:
+            prio = -1
+        yield ("direct-svnfs", prio*4)
+        yield ("svnfs", prio*4)
+        yield ("svn", prio*2)
 
     def get_repository(self, type, dir, authname):
         """Return a `SubversionRepository`.
