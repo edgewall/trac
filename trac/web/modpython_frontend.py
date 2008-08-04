@@ -18,7 +18,12 @@
 
 import os
 import pkg_resources
+import sys
 import urllib
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 from mod_python import apache
 try:
@@ -116,8 +121,28 @@ class ModPythonGateway(WSGIGateway):
             if 'client closed connection' not in str(e):
                 raise
 
-
+_first = True
+_first_lock = threading.Lock()
+            
 def handler(req):
+    global _first, _first_lock
+    try:
+        _first_lock.acquire()
+        if _first: 
+            _first = False
+            options = req.get_options()
+            egg_cache = options.get('PYTHON_EGG_CACHE')
+            if not egg_cache and options.get('TracEnv'):
+                egg_cache = os.path.join(options.get('TracEnv'), '.egg-cache')
+            if not egg_cache and options.get('TracEnvParentDir'):
+                egg_cache = os.path.join(options.get('TracEnvParentDir'), '.egg-cache')
+            if not egg_cache and req.subprocess_env.get('PYTHON_EGG_CACHE'):
+                egg_cache = req.subprocess_env.get('PYTHON_EGG_CACHE')
+            if egg_cache:
+                pkg_resources.set_extraction_path(egg_cache)
+            reload(sys.modules['trac.web'])
+    finally:
+        _first_lock.release()
     pkg_resources.require('Trac==%s' % VERSION)
     gateway = ModPythonGateway(req, req.get_options())
     from trac.web.main import dispatch_request
