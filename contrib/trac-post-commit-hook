@@ -75,16 +75,6 @@ import re
 import os
 import sys
 from datetime import datetime 
-
-from trac.env import open_environment
-from trac.ticket.notification import TicketNotifyEmail
-from trac.ticket import Ticket
-from trac.ticket.web_ui import TicketModule
-# TODO: move grouped_changelog_entries to model.py
-from trac.util.text import to_unicode
-from trac.util.datefmt import utc
-from trac.versioncontrol.api import NoSuchChangeset
-
 from optparse import OptionParser
 
 parser = OptionParser()
@@ -109,6 +99,17 @@ parser.add_option('-s', '--siteurl', dest='url',
 
 (options, args) = parser.parse_args(sys.argv[1:])
 
+if not 'PYTHON_EGG_CACHE' in os.environ:
+    os.environ['PYTHON_EGG_CACHE'] = os.path.join(options.project, '.egg-cache')
+
+from trac.env import open_environment
+from trac.ticket.notification import TicketNotifyEmail
+from trac.ticket import Ticket
+from trac.ticket.web_ui import TicketModule
+# TODO: move grouped_changelog_entries to model.py
+from trac.util.text import to_unicode
+from trac.util.datefmt import utc
+from trac.versioncontrol.api import NoSuchChangeset
 
 ticket_prefix = '(?:#|(?:ticket|issue|bug)[: ]?)'
 ticket_reference = ticket_prefix + '[0-9]+'
