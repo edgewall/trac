@@ -1,21 +1,13 @@
-# mod_python specific code that needs to be here in order to
-# to be executed before anything is imported.
-# 
-# Make it possible to set PYTHON_EGG_CACHE from the apache config like this:
+# With mod_python we'll have to delay importing trac.web.api until
+# modpython_frontend.handler() has been called since the
+# PYTHON_EGG_CACHE variable is set from there
 #
-# PythonOption PYTHON_EGG_CACHE /some/path
-#
-# Important: This option must be placed outside any Virtualhost 
-# and Location sections.
-#
+# TODO: Remove this once the Genshi zip_safe issue has been resolved.
 try:
-    # main_server is only available in mod_python >= 3.3
-    from mod_python.apache import main_server
-    egg_cache = main_server.get_options().get('PYTHON_EGG_CACHE')
-    if egg_cache:
-        import pkg_resources
-        pkg_resources.set_extraction_path(egg_cache)
+    import mod_python.apache
+    import sys
+    if 'trac.web.modpython_frontend' in sys.modules:
+        from trac.web.api import *
 except ImportError:
-    pass
-    
-from trac.web.api import *
+    from trac.web.api import *
+

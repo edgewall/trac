@@ -63,15 +63,9 @@ The options available are
     PythonOption TracLocale en_GB.UTF8
     # See description above        
     PythonOption TracUriRoot /projects/myproject
+    # Override default python egg cache location
+    PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
 }}}
-
-=== Python Egg Cache ===
-
-Compressed python eggs like Genshi are normally extracted into a directory named `.python-eggs` in the users home directory. Since apache's home usually is not writable an alternate egg cache directory can be specified like this:
-{{{
-PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
-}}}
-Note: This option must be placed outside any `Location` and `VirtualHost` section. This option requires mod_python 3.3 or greater.
 
 === Configuring Authentication ===
 
