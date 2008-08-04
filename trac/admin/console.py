@@ -62,6 +62,11 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
             path = path.encode(sys.getfilesystemencoding() or
                                locale.getpreferredencoding())
         return path
+
+    def remove_if_overwriting(path):
+        if overwrite and os.path.exists(path):
+            os.unlink(path)
+
     skip = [str_path(f) for f in skip]
     def copytree_rec(src, dst):
         names = os.listdir(src)
