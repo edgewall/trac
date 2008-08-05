@@ -22,7 +22,11 @@ try:
        'TRAC_ENV_PARENT_DIR' not in os.environ:
         os.environ['TRAC_ENV'] = '${env.path}'
     if 'PYTHON_EGG_CACHE' not in os.environ:
-        egg_cache = os.path.join('${env.path}', 'egg-cache')
+        if 'TRAC_ENV' in os.environ:
+            egg_cache = os.path.join(os.environ['TRAC_ENV'], '.egg-cache')
+        elif 'TRAC_ENV_PARENT_DIR' in os.environ:
+            egg_cache = os.path.join(os.environ['TRAC_ENV_PARENT_DIR'], 
+                                     '.egg-cache')
         pkg_resources.set_extraction_path(egg_cache)
     from trac.web import fcgi_frontend
     fcgi_frontend.run()
