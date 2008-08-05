@@ -17,11 +17,15 @@
 import os
 
 def application(environ, start_request):
+    if not 'trac.env_path_parent_dir' in environ:
+        environ.setdefault('trac.env_path', '${env.path}')
     if 'PYTHON_EGG_CACHE' in environ:                                           
         os.environ['PYTHON_EGG_CACHE'] = environ['PYTHON_EGG_CACHE']
-    else:
-        os.environ['PYTHON_EGG_CACHE'] = os.path.join('${env.path}',
-                                                      'egg-cache')
+    elif 'trac.env_path' in environ:
+        os.environ['PYTHON_EGG_CACHE'] = os.path.join(environ['trac.env_path'],
+                                                      '.egg-cache')
+    elif 'trac.env_path_parent_dir' in environ:
+        os.environ['PYTHON_EGG_CACHE'] = os.path.join(environ['trac.env_path_parent_dir'],
+                                                      '.egg-cache')
     from trac.web.main import dispatch_request
-    environ.setdefault('trac.env_path', '${env.path}')
     return dispatch_request(environ, start_request)
