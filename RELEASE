@@ -1,9 +1,24 @@
-Release Notes for Trac 0.11 Genshi Release
-==========================================
-June 22, 2008
+Release Notes for Trac 0.11.1 Genshi Release
+============================================
+August 6, 2008
 
-Highlights
-----------
+Trac 0.11.1 is a maintenance release and contains a number of bug fixes
+and minor enhancements. The following list contains only a few highlights:
+
+ * Improved DB connection handling (new connection pool)
+ * Better MySQL backend unicode support. "utf8" and "utf8_bin" is the
+   recommended database charset and collation settings.
+ * Fixes intermittent "constraint violation" and "invalid form token"
+   error messages.
+ * Fixes roadmap layout glitch in Firefox 3.
+ * Safer default umask value for tracd (can be set using --umask option)
+ * Better default PYTHON_EGG_CACHE value.
+
+The complete list of closed tickets can be found here:
+http://trac.edgewall.org/query?status=closed&milestone=0.11.1
+
+Highlights in 0.11
+------------------
  * New template engine for generating content (Genshi)
  * New configurable workflow in the ticket subsystem
  * Finer-grained control of permissions
