@@ -61,6 +61,7 @@ class Query(object):
         self.groupdesc = groupdesc
         self.default_page = 1
         self.items_per_page = QueryModule(self.env).items_per_page
+        self.substitutions = ['$USER']
 
         # getting page number (default_page if unspecified)
         if not page:
@@ -134,7 +135,8 @@ class Query(object):
                 raise QuerySyntaxError(_('Query filter requires field name'))
             # from last char of `field`, get the mode of comparison
             mode, neg = '', ''
-            if field[-1] in ('~', '^', '$'):
+            if field[-1] in ('~', '^', '$') \
+                                and not field in self.substitutions:
                 mode = field[-1]
                 field = field[:-1]
             if field[-1] == '!':
@@ -570,7 +572,8 @@ class Query(object):
                 if neg:
                     val = val[1:]
                 mode = ''
-                if val[:1] in ('~', '^', '$'):
+                if val[:1] in ('~', '^', '$') \
+                                    and not val in self.substitutions:
                     mode, val = val[:1], val[1:]
                 constraint['mode'] = (neg and '!' or '') + mode
                 constraint['values'].append(val)
