@@ -48,6 +48,7 @@ class QuerySyntaxError(Exception):
 
 
 class Query(object):
+    substitutions = ['$USER']
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
@@ -61,7 +62,6 @@ class Query(object):
         self.groupdesc = groupdesc
         self.default_page = 1
         self.items_per_page = QueryModule(self.env).items_per_page
-        self.substitutions = ['$USER']
 
         # getting page number (default_page if unspecified)
         if not page:
@@ -136,7 +136,7 @@ class Query(object):
             # from last char of `field`, get the mode of comparison
             mode, neg = '', ''
             if field[-1] in ('~', '^', '$') \
-                                and not field in self.substitutions:
+                                and not field in cls.substitutions:
                 mode = field[-1]
                 field = field[:-1]
             if field[-1] == '!':
