@@ -32,6 +32,7 @@
 #
 # REPOS="$1"
 # REV="$2"
+# TRAC_ENV="/path/to/tracenv"
 #
 # /usr/bin/python /usr/local/src/trac/contrib/trac-post-commit-hook \
 #  -p "$TRAC_ENV" -r "$REV"
