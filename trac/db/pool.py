@@ -23,6 +23,7 @@ import os
 import time
 
 from trac.db.util import ConnectionWrapper
+from trac.util.translation import _
 
 
 class TimeoutError(Exception):
