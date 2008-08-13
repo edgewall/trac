@@ -5,11 +5,19 @@ It also handles twill's absense.
 """
 
 import os
+from os.path import abspath, dirname, join
 import sys
 try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+# On OSX lxml needs to be imported before twill to avoid Resolver issues
+# somehow caused by the mac specific 'ic' module
+try:
+    from lxml import etree
+except ImportError:
+    pass
 
 try:
     import twill
@@ -38,6 +46,48 @@ if twill:
     tc = twill.commands
     b = twill.get_browser()
 
+    # Setup XHTML validation for all retrieved pages
+    try:
+        from lxml import etree
+    except ImportError:
+        print "SKIP: validation of XHTML output in functional tests " \
+              "(no lxml installed)"
+    else:
+        class _Resolver(etree.Resolver):
+            base_dir = dirname(abspath(__file__))
+            
+            def resolve(self, system_url, public_id, context):
+                return self.resolve_filename(join(self.base_dir, 
+                                                  system_url.split("/")[-1]),
+                                             context)
+        
+        _parser = etree.XMLParser(dtd_validation=True)
+        _parser.resolvers.add(_Resolver())
+        etree.set_default_parser(_parser)
+        
+        def _format_error_log(data, log):
+            msg = []
+            for each in log:
+                context = data.splitlines()[max(0, each.line - 5): 
+                                            each.line + 6]
+                msg.append("%s\n\nURL: %s\nLine %d, column %d\n\n%s" % (
+                    each.message, each.filename, each.line, each.column,
+                    "\n".join(context)))
+            return "\n".join(msg)
+        
+        def _validate_xhtml(func_name, *args, **kwargs):
+            page = b.get_html()
+            if "xhtml1-strict.dtd" not in page:
+                return
+            etree.clear_error_log()
+            try:
+                doc = etree.parse(StringIO(page), base_url=b.get_url())
+            except etree.XMLSyntaxError, e:
+                raise twill.errors.TwillAssertionError(
+                    _format_error_log(page, e.error_log))
+            
+        b._post_load_hooks.append(_validate_xhtml)
+    
     # When we can't find something we expected, or find something we didn't
     # expect, it helps the debugging effort to have a copy of the html to
     # analyze.

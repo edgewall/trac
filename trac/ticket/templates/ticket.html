@@ -315,6 +315,7 @@ ${comment}</textarea></p>
                               selected="${ticket[field.name] == option or None}"
                               py:content="option"></option>
                       <optgroup py:for="optgroup in field.optgroups"
+                                py:if="optgroup.options"
                                 label="${optgroup.label}">
                         <option py:for="option in optgroup.options"
                                 selected="${ticket[field.name] == option or None}"

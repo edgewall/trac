@@ -40,6 +40,7 @@ worry about basic issues such as if the ticket was successfully created.
 Requirements:
  - Twill (http://twill.idyll.org/)
  - subprocess (py2.4)
+ - lxml for XHTML validation (optional)
 """
 
 import os
