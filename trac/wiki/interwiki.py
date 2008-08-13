@@ -148,7 +148,6 @@ class InterWikiMap(Component):
         return "Provide a description list for the known InterWiki prefixes."
 
     def expand_macro(self, formatter, name, content):
-        from trac.util import sorted
         interwikis = []
         for k in sorted(self.keys()):
             prefix, url, title = self[k]

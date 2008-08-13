@@ -76,7 +76,6 @@ from datetime import datetime, timedelta
 
 from trac.tests.contentgen import random_sentence, random_page, random_word, \
     random_unique_camel
-from trac.util.compat import sorted, reversed
 from trac.test import TestSetup, TestCaseSetup
 
 internal_error = 'Trac detected an internal error:'

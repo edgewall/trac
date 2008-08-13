@@ -55,7 +55,7 @@ from trac.versioncontrol import Changeset, Node, Repository, \
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
-from trac.util import sorted, embedded_numbers, reversed
+from trac.util import embedded_numbers
 from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import utc

@@ -28,7 +28,7 @@ from itertools import izip
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.compat import reversed, sorted, tee, md5
+from trac.util.compat import md5
 from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size

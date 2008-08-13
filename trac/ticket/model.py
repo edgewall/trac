@@ -26,7 +26,7 @@ from trac.attachment import Attachment
 from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import sorted, embedded_numbers
+from trac.util import embedded_numbers
 from trac.util.datefmt import utc, utcmax, to_timestamp
 from trac.util.translation import _
 

@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
+from itertools import groupby
 import os
 import pkg_resources
 import pprint
@@ -47,7 +48,7 @@ from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       get_module_path, translation, arity
-from trac.util.compat import partial, set
+from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode
@@ -300,7 +301,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': compat.py_groupby,
+        'groupby': groupby,
         'http_date': http_date,
         'istext': presentation.istext,
         'ngettext': translation.ngettext,
@@ -311,10 +312,10 @@ class Chrome(Component):
         'pretty_size': pretty_size,
         'pretty_timedelta': pretty_timedelta,
         'quote_plus': unicode_quote_plus,
-        'reversed': compat.reversed,
+        'reversed': reversed,
         'separated': presentation.separated,
         'shorten_line': shorten_line,
-        'sorted': compat.sorted,
+        'sorted': sorted,
         'time': datetime.time,
         'timedelta': datetime.timedelta,
         'to_unicode': to_unicode,

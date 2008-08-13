@@ -25,7 +25,6 @@ from trac.perm import PermissionSystem
 from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
 from trac.ticket.api import ITicketActionController, TicketSystem
-from trac.util.compat import set
 from trac.util.translation import _
 
 # -- Utilities for the ConfigurableTicketWorkflow

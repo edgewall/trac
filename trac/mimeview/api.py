@@ -67,7 +67,7 @@ from genshi.input import HTMLParser
 from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.resource import Resource
-from trac.util import reversed, sorted, Ranges
+from trac.util import Ranges
 from trac.util.text import to_utf8, to_unicode
 from trac.util.translation import _
 

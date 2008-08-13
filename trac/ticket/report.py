@@ -28,7 +28,6 @@ from trac.db import get_column_names
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
-from trac.util import sorted
 from trac.util.datefmt import format_datetime, format_time
 from trac.util.presentation import Paginator
 from trac.util.text import to_unicode, unicode_urlencode

@@ -22,8 +22,6 @@ from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
 import os
 import sys
 
-from trac.util.compat import set
-
 __all__ = ['load_components']
 
 def _enable_plugin(env, module):

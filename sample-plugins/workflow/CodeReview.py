@@ -5,7 +5,6 @@ from trac.ticket.api import ITicketActionController
 from trac.ticket.default_workflow import ConfigurableTicketWorkflow
 from trac.perm import IPermissionRequestor
 from trac.config import Option, ListOption
-from trac.util.compat import set
 
 revision = "$Rev$"
 url = "$URL$"

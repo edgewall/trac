@@ -17,7 +17,6 @@
 #         Alec Thomas <alec@swapoff.org>
 
 from trac.core import *
-from trac.util.compat import reversed
 from trac.util.translation import _
 
 

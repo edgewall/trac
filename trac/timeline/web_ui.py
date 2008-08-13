@@ -30,7 +30,6 @@ from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
-from trac.util.compat import sorted
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
 from trac.util.text import to_unicode

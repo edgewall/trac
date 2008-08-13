@@ -21,7 +21,6 @@ from genshi.builder import Element, tag
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import PermissionError
-from trac.util import sorted
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider

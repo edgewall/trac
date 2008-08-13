@@ -19,6 +19,7 @@
 #         Christian Boos <cboos@neuf.fr>
 
 from datetime import datetime
+from itertools import groupby
 import os
 import posixpath
 import re
@@ -35,7 +36,7 @@ from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers, content_disposition
-from trac.util.compat import any, sorted, groupby
+from trac.util.compat import any
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.util.translation import _

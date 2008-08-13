@@ -119,11 +119,11 @@ Example configuration:
 
 """
 
+from itertools import groupby
 import os
 from fnmatch import fnmatch
 from trac.core import *
 from trac.config import Option
-from trac.util.compat import set, groupby
 from trac.perm import PermissionSystem, IPermissionPolicy
 from configobj import ConfigObj
 

@@ -33,7 +33,6 @@ from genshi.util import plaintext
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_url
-from trac.util.compat import set
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util.text import shorten_line, to_unicode, \

@@ -29,7 +29,6 @@ from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
-from trac.util.compat import set, sorted
 from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
                               get_date_format_hint, get_datetime_format_hint, \
                               format_date, format_datetime
