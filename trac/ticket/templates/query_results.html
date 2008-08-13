@@ -40,6 +40,11 @@
       </thead>
 
       <tbody>
+        <tr py:if="not results" class="even">
+          <td colspan="${len(headers)}">
+            No tickets found
+          </td>
+        </tr>
         <py:for each="idx, result in enumerate(results)">
           <py:with vars="ticket_context = context('ticket', result.id)">
             <py:if test="'TICKET_VIEW' in perm(ticket_context.resource)">

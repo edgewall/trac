@@ -97,6 +97,14 @@
             </tr>
           </thead>
           <tbody>
+            <tr py:if="not items" class="even">
+              <td />
+              <td />
+              <td class="copyfrom_path" colspan="6">
+                No revisions found
+              </td>
+            </tr>
+            
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
                              chgset_context = context('changeset', change.rev);
