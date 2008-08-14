@@ -301,7 +301,8 @@ ${comment}</textarea></p>
             </py:if>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
                 py:with="fullrow = len(row) == 1">
-              <py:for each="idx, field in enumerate(row)">
+              <py:for each="idx, field in enumerate(row)"
+                      py:with="value = ticket.get_value_or_default(field.name)">
                 <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                   <label for="field-${field.name}" py:if="field"
                          py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
@@ -312,28 +313,28 @@ ${comment}</textarea></p>
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
-                              selected="${ticket[field.name] == option or None}"
+                              selected="${value == option or None}"
                               py:content="option"></option>
                       <optgroup py:for="optgroup in field.optgroups"
                                 py:if="optgroup.options"
                                 label="${optgroup.label}">
                         <option py:for="option in optgroup.options"
-                                selected="${ticket[field.name] == option or None}"
+                                selected="${value == option or None}"
                                 py:content="option"></option>
                       </optgroup>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
-                              py:content="ticket[field.name]"></textarea>
+                              py:content="value"></textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                             checked="${ticket[field.name] == '1' and 'checked' or None}" value="1" />
+                             checked="${value == '1' and 'checked' or None}" value="1" />
                       <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                     </span>
                     <label py:when="'radio'"
                            py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="field_${field.name}" value="${option}"
-                             checked="${ticket[field.name] == option or None}" />
+                             checked="${value == option or None}" />
                       ${option}
                     </label>
                     <py:otherwise><!--! Text input fields -->
@@ -348,11 +349,11 @@ ${comment}</textarea></p>
                         <span py:when="field.name == 'cc'">
                           <input  type="text" id="field-${field.name}"
                             title="Space or comma delimited email addresses and usernames are accepted."
-                            name="field_${field.name}" value="${ticket[field.name]}" />
+                            name="field_${field.name}" value="${value}" />
                         </span>
                         <!--! All the other text input fields -->
                         <input py:otherwise="" type="text" id="field-${field.name}"
-                          name="field_${field.name}" value="${ticket[field.name]}" />
+                          name="field_${field.name}" value="${value}" />
                       </py:choose>
                     </py:otherwise>
                   </py:choose>

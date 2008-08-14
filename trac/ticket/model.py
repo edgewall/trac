@@ -131,6 +131,17 @@ class Ticket(object):
                 value = value.strip()
         self.values[name] = value
 
+    def get_value_or_default(self, name):
+        """Return the value of a field or the default value if it is
+        undefined"""
+        try:
+            return self.values[name]
+        except KeyError:
+            field = [field for field in self.fields if field['name'] == name]
+            if field:
+                return field[0].get('value')
+            return None
+        
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
         field_names = [f['name'] for f in self.fields]
