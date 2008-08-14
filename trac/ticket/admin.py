@@ -206,9 +206,18 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         self.config.save()
                         req.redirect(req.href.admin(cat, page))
 
+            # Get ticket count
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
+            milestones = []
+            for milestone in model.Milestone.select(self.env, db=db):
+                cursor.execute("SELECT COUNT(*) FROM ticket "
+                               "WHERE milestone=%s", (milestone.name, ))
+                milestones.append((milestone, cursor.fetchone()[0]))
+            
             data = {
                 'view': 'list',
-                'milestones': model.Milestone.select(self.env),
+                'milestones': milestones,
                 'default': self.config.get('ticket', 'default_milestone'),
             }
 
