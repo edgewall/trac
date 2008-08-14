@@ -107,6 +107,10 @@ class TicketModule(Component):
         """Don't accept tickets with a too big description.
         (''since 0.11'').""")
 
+    max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
+        """Don't accept tickets with a too big comment.
+        (''since 0.11.2'')""")
+
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
         """Which formatter flavor (e.g. 'default' or 'oneliner') should be
@@ -926,6 +930,13 @@ class TicketModule(Component):
             add_warning(req, _('Ticket description is too long (must be less '
                           'than %(num)s characters)',
                           num=self.max_description_size))
+            valid = False
+
+        # Validate comment length
+        if len(comment or '') > self.max_comment_size:
+            add_warning(req, _('Ticket comment is too long (must be less '
+                               'than %(num)s characters)',
+                               num=self.max_comment_size))
             valid = False
 
         # Validate comment numbering
