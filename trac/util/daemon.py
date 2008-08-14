@@ -14,6 +14,7 @@
 import atexit
 import errno
 import os
+import signal
 import sys
 
 def daemonize(pidfile=None, progname=None, stdin='/dev/null',
@@ -69,14 +70,23 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
     os.dup2(stderr.fileno(), sys.stderr.fileno())
 
     if pidfile:
+        # Register signal handlers to ensure atexit hooks are called on exit
+        for signum in [signal.SIGTERM, signal.SIGHUP]:
+            signal.signal(signum, handle_signal)
+        
         # Create/update the pid file, and register a hook to remove it when the
         # process exits
+        def remove_pidfile():
+            if os.path.exists(pidfile):
+                   os.remove(pidfile)
+        atexit.register(remove_pidfile)
         fileobj = open(pidfile, 'w')
         try:
             fileobj.write(str(os.getpid()))
         finally:
             fileobj.close()
-        def remove_pidfile():
-            if os.path.exists(pidfile):
-                   os.remove(pidfile)
-        atexit.register(remove_pidfile)
+
+
+def handle_signal(signum, frame):
+    """Handle signals sent to the daemonized process."""
+    sys.exit()
