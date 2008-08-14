@@ -97,10 +97,10 @@ ${milestone.description}</textarea>
             <table class="listing" id="millist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>
-                  <th>Name</th><th>Due</th><th>Completed</th><th>Default</th>
+                  <th>Name</th><th>Due</th><th>Completed</th><th>Default</th><th>Tickets</th>
                 </tr>
               </thead>
-              <tbody><tr py:for="milestone in milestones">
+              <tbody><tr py:for="(milestone, ticket_count) in milestones">
                 <td>
                   <input type="checkbox" name="sel" value="$milestone.name" />
                 </td>
@@ -117,6 +117,7 @@ ${milestone.description}</textarea>
                   <input type="radio" name="default" value="$milestone.name"
                          checked="${milestone.name==default or None}" />
                 </td>
+                <td class="num">${ticket_count}</td>
               </tr></tbody>
             </table>
             <div class="buttons">

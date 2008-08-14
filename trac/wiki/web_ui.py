@@ -24,6 +24,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
+from trac.config import IntOption
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.perm import IPermissionRequestor
@@ -57,6 +58,9 @@ class WikiModule(Component):
                ITemplateProvider)
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
+
+    max_size = IntOption('wiki', 'max_size', 262144,
+        """Maximum allowed wiki page size in bytes. (''since 0.11.2'')""")
 
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
@@ -173,6 +177,14 @@ class WikiModule(Component):
 
     def _validate(self, req, page):
         valid = True
+        
+        # Validate page size
+        if len(req.args.get('text', '')) > self.max_size:
+            add_warning(req, _('The wiki page is too long (must be less '
+                               'than %(num)s characters)',
+                               num=self.max_size))
+            valid = False
+
         # Give the manipulators a pass at post-processing the page
         for manipulator in self.page_manipulators:
             for field, message in manipulator.validate_wiki_page(req, page):
