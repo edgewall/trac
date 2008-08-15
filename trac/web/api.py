@@ -47,6 +47,8 @@ class HTTPException(Exception):
             self.detail = self.detail % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
                                                  self.detail))
+
+    @classmethod
     def subclass(cls, name, code):
         """Create a new Exception class representing a HTTP status code."""
         reason = HTTP_STATUS.get(code, 'Unknown')
@@ -56,7 +58,6 @@ class HTTPException(Exception):
         new_class.code = code
         new_class.reason = reason
         return new_class
-    subclass = classmethod(subclass)
 
 
 for code in [code for code in HTTP_STATUS if code >= 400]:

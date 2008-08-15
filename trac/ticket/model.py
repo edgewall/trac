@@ -36,7 +36,9 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
 
 class Ticket(object):
 
-    id_is_valid = staticmethod(lambda num: 0 < int(num) <= 1L << 31)
+    @staticmethod
+    def id_is_valid(num):
+        return 0 < int(num) <= 1L << 31
 
     def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
@@ -458,6 +460,7 @@ class AbstractEnum(object):
         self._old_name = self.name
         self._old_value = self.value
 
+    @classmethod
     def select(cls, env, db=None):
         if not db:
             db = env.get_db_cnx()
@@ -470,7 +473,6 @@ class AbstractEnum(object):
             obj.name = obj._old_name = name
             obj.value = obj._old_value = value
             yield obj
-    select = classmethod(select)
 
 
 class Type(AbstractEnum):
@@ -481,12 +483,13 @@ class Type(AbstractEnum):
 class Status(object):
     def __init__(self, env):
         self.env = env
+
+    @classmethod
     def select(cls, env, db=None):
         for state in TicketSystem(env).get_all_status():
             status = cls(env)
             status.name = state
             yield status
-    select = classmethod(select)
 
 
 class Resolution(AbstractEnum):
@@ -588,6 +591,7 @@ class Component(object):
         if handle_ta:
             db.commit()
 
+    @classmethod
     def select(cls, env, db=None):
         if not db:
             db = env.get_db_cnx()
@@ -600,7 +604,6 @@ class Component(object):
             component.owner = owner or None
             component.description = description or ''
             yield component
-    select = classmethod(select)
 
 
 class Milestone(object):
@@ -712,6 +715,7 @@ class Milestone(object):
         if handle_ta:
             db.commit()
 
+    @classmethod
     def select(cls, env, include_completed=True, db=None):
         if not db:
             db = env.get_db_cnx()
@@ -730,7 +734,6 @@ class Milestone(object):
                     m.due or utcmax,
                     embedded_numbers(m.name))
         return sorted(milestones, key=milestone_order)
-    select = classmethod(select)
 
 
 class Version(object):
@@ -818,6 +821,7 @@ class Version(object):
         if handle_ta:
             db.commit()
 
+    @classmethod
     def select(cls, env, db=None):
         if not db:
             db = env.get_db_cnx()
@@ -833,4 +837,3 @@ class Version(object):
         def version_order(v):
             return (v.time or utcmax, embedded_numbers(v.name))
         return sorted(versions, key=version_order, reverse=True)
-    select = classmethod(select)

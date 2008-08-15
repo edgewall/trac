@@ -215,6 +215,7 @@ Type:  '?' or 'help' for help on commands.
     def word_complete (self, text, words):
         return [a for a in words if a.startswith (text)]
 
+    @classmethod
     def print_doc(cls, docs, stream=None):
         if stream is None:
             stream = sys.stdout
@@ -222,7 +223,6 @@ Type:  '?' or 'help' for help on commands.
         for cmd, doc in docs:
             console_print(stream, cmd)
             console_print(stream, '\t-- %s\n' % doc)
-    print_doc = classmethod(print_doc)
 
     def get_component_list(self):
         rows = self.db_query("SELECT name FROM component")
@@ -279,6 +279,7 @@ Type:  '?' or 'help' for help on commands.
     ## Help
     _help_help = [('help', 'Show documentation')]
 
+    @classmethod
     def all_docs(cls):
         return (cls._help_help + cls._help_initenv + cls._help_hotcopy +
                 cls._help_resync + cls._help_upgrade + cls._help_deploy +
@@ -287,7 +288,6 @@ Type:  '?' or 'help' for help on commands.
                 cls._help_priority + cls._help_severity +
                 cls._help_component + cls._help_version +
                 cls._help_milestone + cls._help_resolution)
-    all_docs = classmethod(all_docs)
 
     def do_help(self, line=None):
         arg = self.arg_tokenize(line)

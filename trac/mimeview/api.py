@@ -125,6 +125,7 @@ class Context(object):
         self.href = href
         self.perm = resource and perm and perm(resource) or perm
 
+    @classmethod
     def from_request(cls, req, resource=None, id=False, version=False,
                      absurls=False):
         """Create a rendering context from a request.
@@ -160,7 +161,6 @@ class Context(object):
                    perm=perm)
         self.req = req
         return self
-    from_request = classmethod(from_request)
 
     def __repr__(self):
         path = []

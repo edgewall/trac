@@ -48,6 +48,7 @@ class PhpDeuglifier(Deuglifier):
         # of applying css classes.
         return Deuglifier.format(self, indata)
 
+    @classmethod
     def rules(cls):
         colors = dict(comment='FF8000', lang='0000BB', keyword='007700',
                       string='DD0000')
@@ -57,7 +58,6 @@ class PhpDeuglifier(Deuglifier):
             for c in colors.items()
             ]
         return color_rules + [ r'(?P<font><font.*?>)', r'(?P<endfont></font>)' ]
-    rules = classmethod(rules)
 
 
 class PHPRenderer(Component):

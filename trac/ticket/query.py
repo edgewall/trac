@@ -118,6 +118,7 @@ class Query(object):
         if self.group not in field_names:
             self.group = None
 
+    @classmethod
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
         kw_strs = ['order', 'group', 'page', 'max']
@@ -163,7 +164,6 @@ class Query(object):
         report = constraints.pop('report', None)
         report = kw.pop('report', report)
         return cls(env, report, constraints=constraints, cols=cols, **kw)
-    from_string = classmethod(from_string)
 
     def get_columns(self):
         if not self.cols:
