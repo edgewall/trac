@@ -1254,7 +1254,7 @@ class RegressionTestTicket6912a(FunctionalTwillTestCaseSetup):
         try:
             self._tester.create_component(name='RegressionTestTicket6912a',
                                           user='')
-        except twill.utils.mechanize.ClientForm.ItemNotFoundError, e:
+        except twill.utils.ClientForm.ItemNotFoundError, e:
             raise twill.errors.TwillAssertionError(e)
 
 
@@ -1266,7 +1266,7 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
         tc.follow('RegressionTestTicket6912b')
         try:
             tc.formvalue('modcomp', 'owner', '')
-        except twill.utils.mechanize.ClientForm.ItemNotFoundError, e:
+        except twill.utils.ClientForm.ItemNotFoundError, e:
             raise twill.errors.TwillAssertionError(e)
         tc.formvalue('modcomp', 'save', 'Save')
         tc.submit()
