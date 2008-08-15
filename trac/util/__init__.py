@@ -24,7 +24,7 @@ import sys
 import time
 import tempfile
 from urllib import quote, unquote, urlencode
-from itertools import izip
+from itertools import izip, tee
 
 # Imports for backward compatibility
 from trac.core import TracError
