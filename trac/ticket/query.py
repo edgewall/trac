@@ -383,7 +383,7 @@ class Query(object):
             add_cols(self.group)
         if self.rows:
             add_cols('reporter', *self.rows)
-        add_cols('priority', 'time', 'changetime', self.order)
+        add_cols('status', 'priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
         custom_fields = [f['name'] for f in self.fields if 'custom' in f]
