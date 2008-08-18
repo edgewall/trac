@@ -312,11 +312,11 @@ class ReportModule(Component):
             data['paginator'] = paginator
             if paginator.has_next_page:
                 next_href = req.href.report(id, asc=asc, sort=sort_col,
-                                            USER=user, page=page + 1)
+                                            page=page + 1, **args)
                 add_link(req, 'next', next_href, _('Next Page'))
             if paginator.has_previous_page:
                 prev_href = req.href.report(id, asc=asc, sort=sort_col,
-                                            USER=user, page=page - 1)
+                                            page=page - 1, **args)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
 
             pagedata = []
@@ -486,10 +486,10 @@ class ReportModule(Component):
                     req.session['query_tickets'] = \
                         ' '.join([str(int(row['id']))
                                   for rg in row_groups for row in rg[1]])
-                    #FIXME: I am not sure the extra args are necessary
                     req.session['query_href'] = \
-                        req.href.report(id, asc=not asc and '0' or None, 
-                                        sort=sort_col, USER=user, page=page)
+                        req.href.report(id, asc=req.args.get('asc', None),
+                                        sort=req.args.get('sort', None),
+                                        page=page, **args)
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
@@ -500,7 +500,7 @@ class ReportModule(Component):
             return 'report_view.html', data, None
 
     def add_alternate_links(self, req, args):
-        params = args
+        params = args.copy()
         if 'sort' in req.args:
             params['sort'] = req.args['sort']
         if 'asc' in req.args:
