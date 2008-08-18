@@ -241,7 +241,11 @@ class Query(object):
         #                    tuple([repr(a) for a in args]))
 
         cnt = 0
-        cursor.execute(count_sql, args);
+        try:
+            cursor.execute(count_sql, args);
+        except:
+            db.rollback()
+            raise
         for cnt, in cursor:
             break
         self.env.log.debug("Count results in Query: %d" % cnt)
@@ -269,7 +273,11 @@ class Query(object):
                                   'pages in the query', page=self.page))
 
         self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))     
-        cursor.execute(sql, args)
+        try:
+            cursor.execute(sql, args)
+        except:
+            db.rollback()
+            raise
         columns = get_column_names(cursor)
         fields = []
         for column in columns:
