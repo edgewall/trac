@@ -197,4 +197,3 @@ class MySQLConnection(ConnectionWrapper):
 
     def cursor(self):
         return MySQLUnicodeCursor(self.cnx)
-        
