@@ -25,16 +25,9 @@ try:
 except ImportError: 
     cStringIO = StringIO 
 
-try:
-    from babel.support import Translations
-except ImportError:
-    Translations = None
 from genshi import Markup
 from genshi.builder import tag, Element
-if Translations:
-    from genshi.filters import Translator
-else:
-    Translator = None
+from genshi.filters import Translator
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
@@ -663,11 +656,8 @@ class Chrome(Component):
         TextTemplate instance will be created instead of a MarkupTemplate.
         """
         if not self.templates:
-            _template_loaded = None
-            global Translator
-            if Translator:
-                def _template_loaded(template):
-                    template.filters.insert(0, Translator(translation.gettext))
+            def _template_loaded(template):
+                template.filters.insert(0, Translator(translation.gettext))
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
