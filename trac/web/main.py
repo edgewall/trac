@@ -536,11 +536,6 @@ def send_project_index(environ, start_response, parent_dir=None,
             data[key] = val
             if use_clearsilver:
                 req.hdf[key] = val
-
-    if parent_dir and not env_paths:
-        env_paths = dict([(filename, os.path.join(parent_dir, filename))
-                          for filename in os.listdir(parent_dir)])
-
     try:
         href = Href(req.base_path)
         projects = []
@@ -585,7 +580,8 @@ def get_environments(environ, warn=False):
         paths = dircache.listdir(env_parent_dir)[:]
         dircache.annotate(env_parent_dir, paths)
         env_paths += [os.path.join(env_parent_dir, project) \
-                      for project in paths if project[-1] == '/']
+                      for project in paths 
+                      if project[-1] == '/' and project != '.egg-cache/']
     envs = {}
     for env_path in env_paths:
         env_path = os.path.normpath(env_path)
