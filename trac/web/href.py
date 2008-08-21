@@ -129,7 +129,7 @@ class Href(object):
             if type(value) in (list, tuple):
                 for i in [i for i in value if i != None]:
                     params.append((name, i))
-            elif v != None:
+            elif value != None:
                 params.append((name, value))
 
         if args:
