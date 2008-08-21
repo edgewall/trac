@@ -527,42 +527,28 @@ class Query(object):
                 col = name + '.value'
             else:
                 col = 't.' + name
+            desc = desc and ' DESC' or ''
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
             #        one, if text, we do 'else'
             if name in ('id', 'time', 'changetime'):
-                if desc:
-                    sql.append("COALESCE(%s,0)=0 DESC," % col)
-                else:
-                    sql.append("COALESCE(%s,0)=0," % col)
+                sql.append("COALESCE(%s,0)=0%s," % (col, desc))
             else:
-                if desc:
-                    sql.append("COALESCE(%s,'')='' DESC," % col)
-                else:
-                    sql.append("COALESCE(%s,'')=''," % col)
+                sql.append("COALESCE(%s,'')=''%s," % (col, desc))
             if name in enum_columns:
                 # These values must be compared as ints, not as strings
                 db = self.env.get_db_cnx()
-                if desc:
-                    sql.append(db.cast(col, 'int') + ' DESC')
-                else:
-                    sql.append(db.cast(col, 'int'))
-            elif name in ('milestone', 'version'):
-                if name == 'milestone': 
-                    time_col = 'milestone.due'
-                else:
-                    time_col = 'version.time'
-                if desc:
-                    sql.append("COALESCE(%s,0)=0 DESC,%s DESC,%s DESC"
-                               % (time_col, time_col, col))
-                else:
-                    sql.append("COALESCE(%s,0)=0,%s,%s"
-                               % (time_col, time_col, col))
+                sql.append(db.cast(col, 'int') + desc)
+            elif name == 'milestone':
+                sql.append("COALESCE(milestone.completed,0)=0%s,"
+                           "milestone.completed%s,"
+                           "COALESCE(milestone.due,0)=0%s,milestone.due%s,"
+                           "%s%s" % (desc, desc, desc, desc, col, desc))
+            elif name == 'version':
+                sql.append("COALESCE(version.time,0)=0%s,version.time%s,%s%s"
+                           % (desc, desc, col, desc))
             else:
-                if desc:
-                    sql.append("%s DESC" % col)
-                else:
-                    sql.append("%s" % col)
+                sql.append("%s%s" % (col, desc))
             if name == self.group and not name == self.order:
                 sql.append(",")
         if self.order != 'id':
