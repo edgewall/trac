@@ -1918,7 +1918,7 @@ msgstr "Keine Ergebnisse"
 #: trac/ticket/query.py:1114
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr "%(groupvalue) %(groupname)s Tickets:"
+msgstr "%(groupvalue)s %(groupname)s Tickets:"
 
 #: trac/ticket/report.py:177
 #, python-format
