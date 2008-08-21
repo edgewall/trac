@@ -7,6 +7,7 @@ It also handles twill's absense.
 import os
 from os.path import abspath, dirname, join
 import sys
+from pkg_resources import parse_version as pv
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -52,7 +53,15 @@ if twill:
     except ImportError:
         print "SKIP: validation of XHTML output in functional tests " \
               "(no lxml installed)"
-    else:
+        etree = None
+
+    if etree and pv(etree.__version__) < pv('2.0.0'):
+        # 2.0.7 and 2.1.x are known to work.
+        print "SKIP: validation of XHTML output in functional tests " \
+              "(lxml < 2.0, api incompatibility)"
+        etree = None
+
+    if etree:
         class _Resolver(etree.Resolver):
             base_dir = dirname(abspath(__file__))
             
