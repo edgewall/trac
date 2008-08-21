@@ -177,9 +177,10 @@ class PygmentsRenderer(Component):
 
     def _init_types(self):
         self._types = {}
-        for _, aliases, _, mimetypes in get_all_lexers():
+        for lexname, aliases, _, mimetypes in get_all_lexers():
+            name = aliases and aliases[0] or lexname
             for mimetype in mimetypes:
-                self._types[mimetype] = (aliases[0], self.QUALITY_RATIO)
+                self._types[mimetype] = (name, self.QUALITY_RATIO)
         self._types.update(
             Mimeview(self.env).configured_modes_mapping('pygments')
         )
