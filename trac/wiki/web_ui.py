@@ -519,8 +519,14 @@ class WikiModule(Component):
                      req.href.wiki(page.name, version=prev_version),
                      _('Version %(num)s', num=prev_version))
 
-        add_link(req, 'up', req.href.wiki(page.name, version=None),
-                 _('View Latest Version'))
+        parent = None
+        if version:
+            add_link(req, 'up', req.href.wiki(page.name, version=None),
+                     _('View latest version'))
+        elif '/' in page.name:
+            parent = page.name[:page.name.rindex('/')]
+            add_link(req, 'up', req.href.wiki(parent, version=None),
+                     _("View parent page"))
         
         if next_version:
             add_link(req, 'next',
@@ -534,6 +540,8 @@ class WikiModule(Component):
                         req.href.wiki(page.name, action='diff',
                                       version=page.version))
         else:
+            if parent:
+                add_ctxtnav(req, _('Up'), req.href.wiki(parent))
             self._wiki_ctxtnav(req, page)
 
         context = Context.from_request(req, page.resource)
