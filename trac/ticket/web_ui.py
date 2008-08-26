@@ -26,7 +26,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
-from trac.config import BoolOption, Option, IntOption, _TRUE_VALUES
+from trac.config import BoolOption, Option, IntOption, ListOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource, get_resource_url, \
@@ -124,6 +124,10 @@ class TicketModule(Component):
         If set to 'default', this is equivalent to 'yes' for new environments
         but keeps the old behavior for upgraded environments (i.e. 'no').
         (''since 0.11'').""")
+    
+    unlinked_fields = ListOption('ticket', 'unlinked_fields', 
+                                 default=['estimatedhours', 'hours', 'totalhours'],
+                                 doc="fields to exclude from AutoQuery markup")
 
     # IContentConverter methods
 
@@ -1060,6 +1064,14 @@ class TicketModule(Component):
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
+    def _query_link(self, req, name, value):
+        """return a link to /query with the appropriate name and value"""
+        query = req.href('query', **{name:value})
+        args = self.env.config.get('query', 'default_anonymous_query')
+        if args:
+            query = '%s&%s' % (query, args)
+        return tag.a(value, href=query)
+
     def _prepare_fields(self, req, ticket):
         context = Context.from_request(req, ticket.resource)
         fields = []
@@ -1067,6 +1079,10 @@ class TicketModule(Component):
             name = field['name']
             type_ = field['type']
  
+            # enable a link to custom query for the field
+            if name not in self.unlinked_fields:
+                field['rendered'] = self._query_link(req, name, ticket[name])
+
             # per field settings
             if name in ('summary', 'reporter', 'description', 'status',
                         'resolution'):
@@ -1261,7 +1277,9 @@ class TicketModule(Component):
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls,
             'action': selected_action,
-            'change_preview': change_preview
+            'change_preview': change_preview,
+            'reporter_link': self._query_link(req, 'reporter', ticket['reporter']),
+            'owner_link': self._query_link(req, 'owner', ticket['owner'])
         })
 
     def rendered_changelog_entries(self, req, ticket, when=None):
