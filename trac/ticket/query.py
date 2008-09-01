@@ -508,15 +508,13 @@ class Query(object):
                     args.append(constraint_sql[1])
 
         clauses = filter(None, clauses)
-        if clauses or cached_ids:
-            sql.append("\nWHERE ")
         if clauses:
+            sql.append("\nWHERE ")
             sql.append(" AND ".join(clauses))
-        if cached_ids:
-            if clauses:
+            if cached_ids:
                 sql.append(" OR ")
-            sql.append("id in (%s)" % (','.join(
-                                            [str(id) for id in cached_ids])))
+                sql.append("id in (%s)" % (','.join(
+                                                [str(id) for id in cached_ids])))
             
         sql.append("\nORDER BY ")
         order_cols = [(self.order, self.desc)]
