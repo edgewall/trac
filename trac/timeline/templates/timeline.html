@@ -18,7 +18,8 @@
       <form id="prefs" method="get" action="">
        <div>
         <label>View changes from <input type="text" size="10" name="from" value="${format_date(fromdate)}" /></label> <br />
-        and <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label>.
+        and <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label><br />
+        <label>done by <input type="text" size="16" name="author" value="$author" /></label>
        </div>
        <fieldset>
         <label py:for="filter in filters">
