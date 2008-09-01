@@ -742,24 +742,25 @@ class QueryModule(Component):
         if not constraints and not 'order' in req.args:
             # If no constraints are given in the URL, use the default ones.
             if req.authname and req.authname != 'anonymous':
-                qstring = self.default_query 
-                user = req.authname 
+                qstring = self.default_query
+                user = req.authname
             else:
                 email = req.session.get('email')
                 name = req.session.get('name')
-                qstring = self.default_anonymous_query 
-                user = email or name or None 
+                qstring = self.default_anonymous_query
+                user = email or name or None
                       
-            if user: 
-                qstring = qstring.replace('$USER', user) 
-            self.log.debug('QueryModule: Using default query: %s', str(qstring)) 
-            constraints = Query.from_string(self.env, qstring).constraints 
-            # Ensure no field constraints that depend on $USER are used 
-            # if we have no username. 
-            for field, vals in constraints.items(): 
-                for val in vals: 
-                    if val.endswith('$USER'): 
-                        del constraints[field] 
+            self.log.debug('QueryModule: Using default query: %s', str(qstring))
+            constraints = Query.from_string(self.env, qstring).constraints
+            # Substitute $USER, or ensure no field constraints that depend on
+            # $USER are used if we have no username.
+            for field, vals in constraints.items():
+                for (i, val) in enumerate(vals):
+                    if user:
+                        vals[i] = val.replace('$USER', user)
+                    elif val.endswith('$USER'):
+                        del constraints[field]
+                        break
 
         cols = req.args.get('col')
         if isinstance(cols, basestring):
