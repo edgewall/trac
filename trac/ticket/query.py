@@ -909,7 +909,11 @@ class QueryModule(Component):
         data['all_columns'] = query.get_all_columns()
         # Don't allow the user to remove the id column        
         data['all_columns'].remove('id')
-        data['all_textareas'] = query.get_all_textareas()
+        def field_key(name):
+            return data['labels'][name].lower()
+        data['all_columns'].sort(key=field_key)
+        data['all_textareas'] = sorted(query.get_all_textareas(),
+                                       key=field_key)
 
         add_stylesheet(req, 'common/css/report.css')
         add_script(req, 'common/js/query.js')

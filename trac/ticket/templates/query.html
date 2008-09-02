@@ -35,7 +35,8 @@
         ${wiki_to_html(context(report_resource), description)}
       </div>
 
-      <form id="query" method="post" action="${href.query()}">
+      <form id="query" method="post" action="${href.query()}"
+            py:with="field_names = sorted(fields.iterkeys(), key=lambda name: labels[name].lower())">
         <fieldset id="filters">
           <input py:if="'id' in query.constraints" type="hidden" name="id" value="${query.constraints['id']}" />
           <legend class="foldable">Filters</legend>
@@ -43,7 +44,7 @@
             <tbody>
               <tr style="height: 1px"><td colspan="4"></td></tr>
             </tbody>
-            <py:for each="field_name, field in fields.items()">
+            <py:for each="field_name in field_names" py:with="field = fields[field_name]">
               <py:for each="constraint_name, constraint in constraints.items()">
                 <tbody py:if="field_name == constraint_name"
                   py:with="multiline = field.type in ('select', 'text')">
@@ -117,7 +118,7 @@
                   <label for="add_filter">Add filter</label>&nbsp;
                   <select name="add_filter" id="add_filter">
                     <option></option>
-                    <option py:for="field_name, field in fields.items()"
+                    <option py:for="field_name in field_names" py:with="field = fields[field_name]"
                             value="$field_name"
                             disabled="${(field.type == 'radio' and
                                          field_name in constraints and
@@ -151,10 +152,11 @@
           <label for="group">Group results by</label>
           <select name="group" id="group">
             <option></option>
-            <option py:for="field_name, field in fields.items()"
-                    py:if="field.type in ('select', 'radio') or field_name in ('owner', 'reporter')"
-                    selected="${field_name == query.group or None}"
-                    value="${field_name}">${field.label}</option>
+            <py:for each="field_name in field_names" py:with="field = fields[field_name]">
+              <option py:if="field.type in ('select', 'radio') or field_name in ('owner', 'reporter')"
+                      selected="${field_name == query.group or None}"
+                      value="${field_name}">${field.label}</option>
+            </py:for>
           </select>
           <input type="checkbox" name="groupdesc" id="groupdesc"
                  checked="${query.groupdesc or None}" />
