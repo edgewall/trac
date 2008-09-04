@@ -79,6 +79,7 @@ class WikiProcessor(object):
         self.macro_provider = None
 
         builtin_processors = {'html': self._html_processor,
+                              'htmlcomment': self._htmlcomment_processor,
                               'default': self._default_processor,
                               'comment': self._comment_processor,
                               'div': self._div_processor,
@@ -130,6 +131,12 @@ class WikiProcessor(object):
             line = unicode(text).splitlines()[e.lineno - 1].strip()
             return system_message(_('HTML parsing error: %(message)s',
                                     message=escape(e.msg)), line)
+        
+    def _htmlcomment_processor(self, text):
+        if "--" in text:
+            return system_message(_('Error: Forbidden character sequence '
+                                    '"--" in htmlcomment wiki code block'))
+        return Markup('<!--\n%s-->\n' % text)
         
     def _elt_processor(self, eltname, format_to, text, args):
         elt = getattr(tag, eltname)(**args)

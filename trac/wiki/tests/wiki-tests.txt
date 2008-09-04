@@ -551,6 +551,66 @@ Paragraph
 <div>Click me</div>
 ------------------------------
  […]
+============================== HTML comment wiki processor
+Before
+{{{
+#!htmlcomment
+This is a comment <em>with embedded tags &amp; entities</em>
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<!--
+This is a comment <em>with embedded tags &amp; entities</em>
+-->
+<p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== HTML comment wiki processor, comment ends with "-"
+Before
+{{{
+#!htmlcomment
+This comment ends with -
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<!--
+This comment ends with -
+-->
+<p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== HTML comment wiki processor, comment contains "--"
+Before
+{{{
+#!htmlcomment
+The character sequence -- is not allowed in comments
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<div class="system-message"><strong>Error: Forbidden character sequence "--" in htmlcomment wiki code block</strong></div><p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
 ============================== div and span wiki processors
 And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
 {{{
