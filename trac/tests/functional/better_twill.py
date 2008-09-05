@@ -76,13 +76,14 @@ if twill:
 
         def _format_error_log(data, log):
             msg = []
-            for each in log:
-                context = data.splitlines()[max(0, each.line - 5):
-                                            each.line + 6]
-                msg.append("%s\n\nURL: %s\nLine %d, column %d\n\n%s" % (
-                    each.message, each.filename, each.line, each.column,
-                    "\n".join(context)))
-            return "\n".join(msg)
+            for entry in log:
+                context = data.splitlines()[max(0, entry.line - 5):
+                                            entry.line + 6]
+                msg.append("\n# %s\n# URL: %s\n# Line %d, column %d\n\n%s\n"
+                    % (entry.message, entry.filename, 
+                       entry.line, entry.column,
+                       "\n".join(each.decode('utf-8') for each in context)))
+            return "\n".join(msg).encode('ascii', 'xmlcharrefreplace')
 
         def _validate_xhtml(func_name, *args, **kwargs):
             page = b.get_html()
