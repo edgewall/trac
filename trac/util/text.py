@@ -161,10 +161,10 @@ def print_table(data, headers=None, sep='  ', out=None):
 def shorten_line(text, maxlen=75):
     if len(text or '') < maxlen:
         return text
-    shortline = text[:maxlen]
-    cut = shortline.rfind(' ') + 1 or shortline.rfind('\n') + 1 or maxlen
-    shortline = text[:cut]+' ...'
-    return shortline
+    cut = max(text.rfind(' ', 0, maxlen), text.rfind('\n', 0, maxlen))
+    if cut < 0:
+        cut = maxlen
+    return text[:cut] + ' ...'
 
 def wrap(t, cols=75, initial_indent='', subsequent_indent='',
          linesep=os.linesep):
