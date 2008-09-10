@@ -47,7 +47,7 @@
             <py:for each="field_name in field_names" py:with="field = fields[field_name]">
               <py:for each="constraint_name, constraint in constraints.items()">
                 <tbody py:if="field_name == constraint_name"
-                  py:with="multiline = field.type in ('select', 'text')">
+                  py:with="multiline = field.type in ('select', 'text', 'textarea')">
                   <py:for each="constraint_idx, constraint_value in enumerate(constraint['values'])">
                     <tr class="${field_name}" py:if="multiline or constraint_idx == 0">
                       <py:choose test="constraint_idx">
@@ -67,9 +67,9 @@
                       </py:choose>
 
                       <td class="filter" colspan="${field.type in ('radio', 'checkbox') and 2 or None}"
-                          py:choose="field.type">
+                          py:choose="">
 
-                        <py:when test="'select'">
+                        <py:when test="field.type == 'select'">
                           <select name="${constraint_name}">
                             <option></option>
                             <option py:for="option in field.options"
@@ -78,7 +78,7 @@
                           </select>
                         </py:when>
 
-                        <py:when test="'radio'">
+                        <py:when test="field.type == 'radio'">
                           <py:for each="option in field.options">
                             <input type="checkbox" id="${field_name}_$option" name="${field_name}"
                               value="$option"
@@ -88,7 +88,7 @@
                           </py:for>
                         </py:when>
 
-                        <py:when test="'checkbox'">
+                        <py:when test="field.type == 'checkbox'">
                           <input type="radio" id="${field_name}_on" name="$field_name" value="1"
                                  checked="${constraint.mode != '!' or constraint_value == '1' or None}" />
                           <label for="${field_name}_on">yes</label>
@@ -97,7 +97,7 @@
                           <label for="${field_name}_off">no</label>
                         </py:when>
 
-                        <py:when test="'text'">
+                        <py:when test="field.type in ('text', 'textarea')">
                           <input type="text" name="${field_name}" value="$constraint_value" size="42" />
                         </py:when>
 
