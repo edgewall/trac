@@ -586,8 +586,6 @@ class Query(object):
 
         fields = {}
         for field in self.fields:
-            if field['type'] == 'textarea':
-                continue
             field_data = {}
             field_data.update(field)
             del field_data['name']
@@ -601,6 +599,10 @@ class Query(object):
             {'name': _("ends with"), 'value': "$"},
             {'name': _("is"), 'value': ""},
             {'name': _("is not"), 'value': "!"}
+        ]
+        modes['textarea'] = [
+            {'name': _("contains"), 'value': "~"},
+            {'name': _("doesn't contain"), 'value': "!~"},
         ]
         modes['select'] = [
             {'name': _("is"), 'value': ""},
