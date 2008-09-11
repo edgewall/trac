@@ -211,7 +211,7 @@ class EnvironmentStub(Environment):
     def get_db_cnx(self):
         return self.db
 
-    def get_known_users(self, db):
+    def get_known_users(self, cnx=None):
         return self.known_users
 
 
