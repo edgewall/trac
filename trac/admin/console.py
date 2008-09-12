@@ -56,6 +56,7 @@ def makedirs(path, overwrite=False):
         return
     os.makedirs(path)
 
+
 def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
 
@@ -679,7 +680,7 @@ Congratulations!
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             printout(ngettext("%(num)s revision cached.",
-                              "%(num)s revisions cached.", cnt, num=cnt))
+                              "%(num)s revisions cached.", num=cnt))
         printout(_("Done."))
 
     ## Wiki
