@@ -92,8 +92,8 @@ Trac will then use this URL when embedding static resources into HTML pages. Of 
 $ ln -s /usr/share/trac/htdocs /var/www/your_site.com/htdocs/trac-htdocs
 }}}
 
-Note that in order to get this `htdocs` directory, you need first to extract the relevant Trac resources using the `copystatic` command of TracAdmin:
-[[TracAdminHelp(copystatic)]]
+Note that in order to get this `htdocs` directory, you need first to extract the relevant Trac resources using the `deploy` command of TracAdmin:
+[[TracAdminHelp(deploy)]]
 
 
 == Adding Authentication ==
