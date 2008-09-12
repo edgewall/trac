@@ -115,8 +115,8 @@ def console_print(out, *args):
     # Windows returns 'cp0' to indicate no encoding
     if cons_charset in (None, 'cp0'):
         cons_charset = 'utf-8'
-    out.write(' '.join([to_unicode(a).encode(cons_charset) for a in args])+
-              '\n')
+    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
+                        for a in args])+ '\n')
 
 # -- Plain text formatting
 
