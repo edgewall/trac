@@ -6,6 +6,11 @@ http://svn.edgewall.org/repos/trac/tags/trac-0.11.1
 
  * Safer default umask value for tracd (can be set using --umask option)
  * Improved DB connection handling (new connection pool)
+ * Better MySQL backend unicode support. "utf8" and "utf8_bin" is the
+   recommended database charset and collation settings.
+ * Fixes intermittent "constraint violation" and "invalid form token"
+   error messages.
+ * Fixes roadmap layout glitch in Firefox 3.
 
  The complete list of closed tickets can be found here:
    http://trac.edgewall.org/query?status=closed&milestone=0.11.1
