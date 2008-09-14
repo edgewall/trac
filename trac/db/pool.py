@@ -125,13 +125,13 @@ class ConnectionPoolBackend(object):
         try:
             assert (tid, key) in self._active
             cnx, num = self._active[(tid, key)]
-            if num == 1 and cnx.poolable and try_rollback(cnx):
+            if num == 1:
                 del self._active[(tid, key)]
-                self._pool.append(cnx)
-                self._pool_key.append(key)
-                self._pool_time.append(time.time())
-            elif num == 1:
-                del self._active[(tid, key)]
+                self._available.notify() 
+                if cnx.poolable and try_rollback(cnx):
+                    self._pool.append(cnx)
+                    self._pool_key.append(key)
+                    self._pool_time.append(time.time())
             else:
                 self._active[(tid, key)] = (cnx, num - 1)
         finally:
