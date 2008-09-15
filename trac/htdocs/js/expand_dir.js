@@ -40,7 +40,7 @@
   
   // handler for click event on the expander icons
   window.toggleDir = function(expander, qargs) {
-    var tr = expander.parents("tr");
+    var tr = expander.parents("tr:first");
     var folderid = tr.get(0).id;
   
     if ( tr.filter(".expanded").length ) { // then *fold*
