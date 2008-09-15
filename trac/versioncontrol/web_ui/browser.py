@@ -436,14 +436,18 @@ class BrowserModule(Component):
         rm = RepositoryManager(self.env)
         repositories = []
         for reponame, repoinfo in all_repositories:
-            repos = rm.get_repository(reponame, context.perm.username)
-            youngest = repos.get_changeset(repos.youngest_rev)
-            if self.color_scale and youngest:
-                if not timerange:
-                    timerange = TimeRange(youngest.date)
-                else:
-                    timerange.insert(youngest.date)
-            repositories.append((reponame, repoinfo, repos, youngest))
+            try:
+                repos = rm.get_repository(reponame, context.perm.username)
+                youngest = repos.get_changeset(repos.youngest_rev)
+                if self.color_scale and youngest:
+                    if not timerange:
+                        timerange = TimeRange(youngest.date)
+                    else:
+                        timerange.insert(youngest.date)
+                entry = (reponame, repoinfo, youngest, None)
+            except TracError, err:
+                entry = (reponame, repoinfo, None, err)
+            repositories.append(entry)
 
         # Ordering of repositories
         if order == 'date':

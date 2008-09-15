@@ -5,11 +5,13 @@
   <table class="listing dirlist" id="${repoindex or None}">
     <xi:include href="dirlist_thead.html" />
     <tbody>
-      <py:for each="idx, (reponame, repos, repoinfo, change) in enumerate(repo.repositories)">
+      <py:for each="idx, (reponame, repoinfo, change, err) in enumerate(repo.repositories)">
         <tr class="${idx % 2 and 'even' or 'odd'}">
           <td class="name">
-            <a class="dir" title="View Root Directory"
+            <em py:strip="not err">
+              <a class="dir" title="View Root Directory"
                 href="${href.browser(reponame, order=(order != 'name' and order or None), desc=desc)}" py:choose="reponame"><b py:when="''">(default)</b><py:otherwise>$reponame</py:otherwise></a>
+            </em>
           </td>
           <td class="size" />
           <td class="rev">
@@ -23,6 +25,7 @@
           <td class="change">
             <span class="author" py:if="change">${authorinfo(change.author)}:</span>
             <span class="change" py:choose="" py:with="chgset_context = context('changeset', (reponame, change.rev))">
+              <em py:when="err" py:content="err" />
               <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
               <py:when test="wiki_format_messages">
                 ${change and wiki_to_oneliner(chgset_context, change.message, shorten=True)}
