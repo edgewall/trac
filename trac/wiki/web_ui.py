@@ -24,6 +24,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
+from trac.config import IntOption
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.perm import IPermissionRequestor
@@ -57,6 +58,9 @@ class WikiModule(Component):
                ITemplateProvider)
 
     page_manipulators = ExtensionPoint(IWikiPageManipulator)
+
+    max_size = IntOption('wiki', 'max_size', 262144,
+        """Maximum allowed wiki page size in bytes. (''since 0.11.2'')""")
 
     PAGE_TEMPLATES_PREFIX = 'PageTemplates/'
     DEFAULT_PAGE_TEMPLATE = 'DefaultPage'
@@ -173,6 +177,14 @@ class WikiModule(Component):
 
     def _validate(self, req, page):
         valid = True
+        
+        # Validate page size
+        if len(req.args.get('text', '')) > self.max_size:
+            add_warning(req, _('The wiki page is too long (must be less '
+                               'than %(num)s characters)',
+                               num=self.max_size))
+            valid = False
+
         # Give the manipulators a pass at post-processing the page
         for manipulator in self.page_manipulators:
             for field, message in manipulator.validate_wiki_page(req, page):
@@ -457,15 +469,16 @@ class WikiModule(Component):
         version = page.resource.version
 
         # Add registered converters
-        for conversion in Mimeview(self.env).get_supported_conversions(
-                                             'text/x-trac-wiki'):
-            conversion_href = req.href.wiki(page.name, version=version,
-                                            format=conversion[0])
-            # or...
-            conversion_href = get_resource_url(self.env, page.resource,
-                                               req.href, format=conversion[0])
-            add_link(req, 'alternate', conversion_href, conversion[1],
-                     conversion[3])
+        if page.exists:
+            for conversion in Mimeview(self.env).get_supported_conversions(
+                                                 'text/x-trac-wiki'):
+                conversion_href = req.href.wiki(page.name, version=version,
+                                                format=conversion[0])
+                # or...
+                conversion_href = get_resource_url(self.env, page.resource,
+                                                req.href, format=conversion[0])
+                add_link(req, 'alternate', conversion_href, conversion[1],
+                         conversion[3])
 
         data = self._page_data(req, page)
         if page.name == 'WikiStart':
@@ -506,8 +519,14 @@ class WikiModule(Component):
                      req.href.wiki(page.name, version=prev_version),
                      _('Version %(num)s', num=prev_version))
 
-        add_link(req, 'up', req.href.wiki(page.name, version=None),
-                 _('View Latest Version'))
+        parent = None
+        if version:
+            add_link(req, 'up', req.href.wiki(page.name, version=None),
+                     _('View latest version'))
+        elif '/' in page.name:
+            parent = page.name[:page.name.rindex('/')]
+            add_link(req, 'up', req.href.wiki(parent, version=None),
+                     _("View parent page"))
         
         if next_version:
             add_link(req, 'next',
@@ -521,6 +540,8 @@ class WikiModule(Component):
                         req.href.wiki(page.name, action='diff',
                                       version=page.version))
         else:
+            if parent:
+                add_ctxtnav(req, _('Up'), req.href.wiki(parent))
             self._wiki_ctxtnav(req, page)
 
         context = Context.from_request(req, page.resource)
@@ -617,3 +638,8 @@ class WikiModule(Component):
                        '%s: %s' % (name, shorten_line(text)),
                        datetime.fromtimestamp(ts, utc), author,
                        shorten_result(text, terms))
+        
+        # Attachments
+        for result in AttachmentModule(self.env).get_search_results(
+            req, wiki_realm, terms):
+            yield result

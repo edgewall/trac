@@ -16,7 +16,6 @@ from ConfigParser import ConfigParser
 import os
 
 from trac.core import ExtensionPoint, TracError
-from trac.util.compat import set, sorted
 from trac.util.text import to_unicode, CRLF
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',

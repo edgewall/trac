@@ -30,7 +30,6 @@ from genshi.builder import tag
 from trac.config import BoolOption
 from trac.core import *
 from trac.resource import IResourceManager
-from trac.util import reversed
 from trac.util.html import html
 from trac.util.translation import _
 from trac.wiki.parser import WikiParser

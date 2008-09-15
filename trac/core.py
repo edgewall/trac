@@ -154,6 +154,7 @@ class Component(object):
             compmgr.component_activated(self)
         return self
 
+    @staticmethod
     def implements(*interfaces):
         """Can be used in the class definiton of `Component` subclasses to
         declare the extension points that are extended.
@@ -168,7 +169,6 @@ class Component(object):
                'implements() can only be used in a class definition'
 
         locals_.setdefault('_implements', []).extend(interfaces)
-    implements = staticmethod(implements)
 
 
 implements = Component.implements

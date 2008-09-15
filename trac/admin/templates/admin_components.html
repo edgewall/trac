@@ -30,7 +30,7 @@
     </py:def>
 
     <py:choose test="view">
-      <form py:when="'detail'" class="mod" id="modcomp" method="post">
+      <form py:when="'detail'" class="mod" id="modcomp" method="post" action="">
         <fieldset>
           <legend>Modify Component:</legend>
           <div class="field">
@@ -59,7 +59,7 @@ $component.description</textarea>
       </form>
 
       <py:otherwise>
-        <form class="addnew" id="addcomponent" method="post">
+        <form class="addnew" id="addcomponent" method="post" action="">
           <fieldset>
             <legend>Add Component:</legend>
             <div class="field">
@@ -73,7 +73,7 @@ $component.description</textarea>
         </form>
 
         <py:choose>
-          <form py:when="components" id="component_table" method="POST">
+          <form py:when="components" id="component_table" method="post" action="">
             <table class="listing" id="complist">
               <thead>
                 <tr><th class="sel">&nbsp;</th>

@@ -63,6 +63,8 @@ The options available are
     PythonOption TracLocale en_GB.UTF8
     # See description above        
     PythonOption TracUriRoot /projects/myproject
+    # Override default python egg cache location
+    PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
 }}}
 
 === Configuring Authentication ===

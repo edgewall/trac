@@ -17,10 +17,15 @@
 
 import errno
 import fileinput
-import md5
 import sys
 from optparse import OptionParser
 from getpass import getpass
+
+# The md5 module is deprecated in Python 2.5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
 
 def ask_pass():
     pass1 = getpass('New password: ')
@@ -36,7 +41,7 @@ def get_digest(userprefix, password=None):
     return make_digest(userprefix, password)
 
 def make_digest(userprefix, password):
-    return userprefix + md5.new(userprefix + password).hexdigest()
+    return userprefix + md5(userprefix + password).hexdigest()
 
 usage = "%prog [-c] [-b] passwordfile realm username"
 parser = OptionParser(usage=usage)

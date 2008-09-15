@@ -169,9 +169,13 @@ def main():
         parser.add_option('--pidfile', action='store',
                           dest='pidfile',
                           help='When daemonizing, file to which to write pid')
+        parser.add_option('--umask', action='store', type='int', dest='umask',
+                          metavar='MASK',
+                          help='When daemonizing, file mode creation mask '
+                          'to use (default 022)')
 
     parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
-                        protocol='http')
+                        protocol='http', umask=022)
     options, args = parser.parse_args()
 
     if not args and not options.env_parent_dir:
@@ -184,6 +188,9 @@ def main():
         elif len(args) > 1:
             parser.error('the --single-env option cannot be used with '
                          'more than one enviroment')
+    if options.daemonize and options.autoreload:
+        parser.error('the --auto-reload option cannot be used with '
+                     '--daemonize')
 
     if options.port is None:
         options.port = {
@@ -192,15 +199,6 @@ def main():
             'ajp': 8009,
         }[options.protocol]
     server_address = (options.hostname, options.port)
-
-    # autoreload doesn't work when daemonized and using relative paths
-    if options.daemonize and options.autoreload:
-        for path in args + [options.env_parent_dir, options.pidfile]:
-            if path and not os.path.isabs(path):
-                parser.error('"%s" is not an absolute path.\n\n'
-                             'when using both --auto-reload and --daemonize '
-                             'all path arguments must be absolute'
-                             % path)
 
     # relative paths don't work when daemonized
     args = [os.path.abspath(a) for a in args]
@@ -243,7 +241,8 @@ def main():
 
     try:
         if options.daemonize:
-            daemon.daemonize(pidfile=options.pidfile, progname='tracd')
+            daemon.daemonize(pidfile=options.pidfile, progname='tracd',
+                             umask=options.umask)
 
         if options.autoreload:
             def modification_callback(file):

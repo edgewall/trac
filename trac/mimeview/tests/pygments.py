@@ -102,6 +102,13 @@ def hello():
         t = "".join([r[1] for r in result if r[0] is TEXT])
         self.assertEqual("\n\n\n", t)
 
+    def test_empty_content(self):
+        """
+        A '\n' token is generated for an empty file, so we have to bypass
+        pygments when rendering empty files.
+        """
+        result = self.pygments.render(self.context, 'text/x-python', '')
+        self.assertEqual(None, result)
 
 def suite():
     suite = unittest.TestSuite()

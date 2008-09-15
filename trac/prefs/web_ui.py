@@ -27,7 +27,6 @@ from genshi.builder import tag
 
 from trac.core import *
 from trac.prefs.api import IPreferencePanelProvider
-from trac.util.compat import sorted
 from trac.util.datefmt import all_timezones, get_timezone, localtz
 from trac.util.translation import _, get_available_locales
 from trac.web import HTTPNotFound, IRequestHandler

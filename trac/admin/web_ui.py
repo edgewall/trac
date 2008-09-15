@@ -98,7 +98,11 @@ class AdminModule(Component):
         panel_id = req.args.get('panel_id')
         path_info = req.args.get('path_info')
         if not panel_id:
-            panel_id = filter(lambda panel: panel[0] == cat_id, panels)[0][2]
+            try:
+                panel_id = filter(
+                            lambda panel: panel[0] == cat_id, panels)[0][2]
+            except IndexError:
+                raise HTTPNotFound(_('Unknown administration panel'))
 
         provider = providers.get((cat_id, panel_id), None)
         if not provider:
@@ -298,21 +302,22 @@ class PermissionAdminPanel(Component):
     def render_admin_panel(self, req, cat, page, path_info):
         perm = PermissionSystem(self.env)
         all_permissions = perm.get_all_permissions()
+        all_actions = perm.get_actions()
 
         if req.method == 'POST':
             subject = req.args.get('subject', '')
             action = req.args.get('action')
             group = req.args.get('group', '')
 
-            if subject and subject == subject.upper() or \
-                   group and group == group.upper():
+            if subject and subject.isupper() or \
+                   group and group.isupper():
                 raise TracError(_('All upper-cased tokens are reserved for '
                                   'permission names'))
 
             # Grant permission to subject
             if req.args.get('add') and subject and action:
                 req.perm.require('PERMISSION_GRANT')
-                if action not in perm.get_actions():
+                if action not in all_actions:
                     raise TracError(_('Unknown action'))
                 req.perm.require(action)
                 if (subject, action) not in all_permissions:
@@ -328,7 +333,12 @@ class PermissionAdminPanel(Component):
             elif req.args.get('add') and subject and group:
                 req.perm.require('PERMISSION_GRANT')
                 for action in perm.get_user_permissions(group):
-                    req.perm.require(action)
+                    if not action in all_actions: # plugin disabled?
+                        self.env.log.warn("Adding %s to group %s: " \
+                            "Permission %s unavailable, skipping perm check." \
+                            % (subject, group, action))
+                    else:
+                        req.perm.require(action)
                 if (subject,group) not in all_permissions:
                     perm.grant_permission(subject, group)
                     req.redirect(req.href.admin(cat, page))
@@ -349,7 +359,7 @@ class PermissionAdminPanel(Component):
                 req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {
-            'actions': perm.get_actions(),
+            'actions': all_actions,
             'perms': all_permissions
         }
 
@@ -419,7 +429,7 @@ class PluginAdminPanel(Component):
         except AttributeError:
             # OS_BINARY not available on every platform
             pass
-        target_file = os.fdopen(os.open(target_path, flags), 'w')
+        target_file = os.fdopen(os.open(target_path, flags, 0666), 'w')
         try:
             shutil.copyfileobj(upload.file, target_file)
             self.log.info('Plugin %s installed to %s', plugin_filename,

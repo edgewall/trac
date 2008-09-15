@@ -34,9 +34,8 @@ N_ = gettext_noop
 
 def ngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
-    if '%(num)' in string:
-        kwargs.update(num=num)
-    return kwargs and string % kwargs or string
+    kwargs.setdefault('num', num)
+    return string % kwargs
 
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
 def _tag_kwargs(trans, kwargs):
@@ -44,15 +43,14 @@ def _tag_kwargs(trans, kwargs):
     for i in xrange(1, len(trans_elts), 2):
         trans_elts[i] = kwargs.get(trans_elts[i], '???')
     return tag(*trans_elts)
-    
+
 def tgettext_noop(string, **kwargs):
     return kwargs and _tag_kwargs(string, kwargs) or string
 
 def tngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
-    if '%(num)' in string:
-        kwargs.update(num=num)
-    return kwargs and _tag_kwargs(string, kwargs) or string
+    kwargs.setdefault('num', num)
+    return _tag_kwargs(string, kwargs)
 
 
 try:
@@ -72,11 +70,10 @@ try:
 
     def ngettext(singular, plural, num, **kwargs):
         kwargs = kwargs.copy()
+        kwargs.setdefault('num', num)
         def _ngettext():
             trans = get_translations().ungettext(singular, plural, num)
-            if '%(num)' in trans:
-                kwargs.update(num=num)
-            return kwargs and trans % kwargs or trans
+            return trans % kwargs
         if not hasattr(_current, 'translations'):
             return LazyProxy(_ngettext)
         return _ngettext()
@@ -92,11 +89,10 @@ try:
 
     def tngettext(singular, plural, num, **kwargs):
         kwargs = kwargs.copy()
+        kwargs.setdefault('num', num)
         def _tngettext():
             trans = get_translations().ungettext(singular, plural, num)
-            if '%(num)' in trans:
-                kwargs.update(num=num)
-            return kwargs and _tag_kwargs(trans, kwargs) or trans
+            return _tag_kwargs(trans, kwargs)
         if not hasattr(_current, 'translations'):
             return LazyProxy(_tngettext)
         return _tngettext()

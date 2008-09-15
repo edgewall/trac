@@ -26,9 +26,10 @@ import sys
 import urlparse
 
 from trac.core import Interface, TracError
-from trac.util import get_last_traceback
+from trac.util import get_last_traceback, md5
 from trac.util.datefmt import http_date, localtz
 from trac.web.href import Href
+from trac.web.wsgi import _FileWrapper
 
 HTTP_STATUS = dict([(code, reason.title()) for code, (reason, description)
                     in BaseHTTPRequestHandler.responses.items()])
@@ -46,6 +47,8 @@ class HTTPException(Exception):
             self.detail = self.detail % args
         Exception.__init__(self, '%s %s (%s)' % (self.code, self.reason,
                                                  self.detail))
+
+    @classmethod
     def subclass(cls, name, code):
         """Create a new Exception class representing a HTTP status code."""
         reason = HTTP_STATUS.get(code, 'Unknown')
@@ -55,7 +58,6 @@ class HTTPException(Exception):
         new_class.code = code
         new_class.reason = reason
         return new_class
-    subclass = classmethod(subclass)
 
 
 for code in [code for code in HTTP_STATUS if code >= 400]:
@@ -181,6 +183,9 @@ class Request(object):
                       doc='The HTTP method of the request')
     path_info = property(fget=lambda self: self.environ.get('PATH_INFO', '').decode('utf-8'),
                          doc='Path inside the application')
+    query_string = property(fget=lambda self: self.environ.get('QUERY_STRING',
+                                                               ''),
+                            doc='Query part of the request')
     remote_addr = property(fget=lambda self: self.environ.get('REMOTE_ADDR'),
                            doc='IP address of the remote user')
     remote_user = property(fget=lambda self: self.environ.get('REMOTE_USER'),
@@ -244,8 +249,7 @@ class Request(object):
         so that consecutive requests can be cached.
         """
         if isinstance(extra, list):
-            import md5
-            m = md5.new()
+            m = md5()
             for elt in extra:
                 m.update(repr(elt))
             extra = m.hexdigest()
@@ -400,10 +404,9 @@ class Request(object):
         self.end_headers()
 
         if self.method != 'HEAD':
-            self._response = file(path, 'rb')
-            file_wrapper = self.environ.get('wsgi.file_wrapper')
-            if file_wrapper:
-                self._response = file_wrapper(self._response, 4096)
+            fileobj = file(path, 'rb')
+            file_wrapper = self.environ.get('wsgi.file_wrapper', _FileWrapper)
+            self._response = file_wrapper(fileobj, 4096)
         raise RequestDone
 
     def read(self, size=None):

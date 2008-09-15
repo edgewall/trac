@@ -78,6 +78,7 @@ types = {
 
 
 class EnscriptDeuglifier(Deuglifier):
+    @classmethod
     def rules(cls):
         return [
             r'(?P<comment><FONT COLOR="#B22222">)',
@@ -91,7 +92,6 @@ class EnscriptDeuglifier(Deuglifier):
             r'(?P<font><FONT.*?>)',
             r'(?P<endfont></FONT>)'
         ]
-    rules = classmethod(rules)
 
 
 class EnscriptRenderer(Component):

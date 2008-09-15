@@ -6,7 +6,7 @@ h1 .numrows, h2 .numrows {
  font-size: 65%; 
  font-weight: normal; 
 }
-h2 {
+h2.report-result {
  background: #f7f7f7;
  border-bottom: 1px solid #d7d7d7;
  margin: 2em 0 0;
@@ -86,18 +86,18 @@ h2 {
 .tickets .fullrow .meta { color: #999; }
 .tickets .fullrow hr { display: none }
 
-fieldset legend :link, fieldset legend :visited { 
+fieldset legend.foldable :link, fieldset legend.foldable :visited { 
  background: url(../expanded.png) 0 50% no-repeat;
  border: none;
  color: #666;
  font-size: 110%;
  padding-left: 16px;
 }
-fieldset legend :link:hover, fieldset legend :visited:hover {
+fieldset legend.foldable :link:hover, fieldset legend.foldable :visited:hover {
   background-color: transparent;
 }
 
-fieldset.collapsed legend :link, fieldset.collapsed legend :visited { 
+fieldset.collapsed legend.foldable :link, fieldset.collapsed legend.foldable :visited { 
  background-image: url(../collapsed.png);  
 }
 fieldset.collapsed table, fieldset.collapsed div { display: none }

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!${executable}
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2008 Edgewall Software
@@ -17,12 +17,17 @@
 
 try:
     import os
-    import tempfile
+    import pkg_resources
     if 'TRAC_ENV' not in os.environ and \
        'TRAC_ENV_PARENT_DIR' not in os.environ:
         os.environ['TRAC_ENV'] = '${env.path}'
     if 'PYTHON_EGG_CACHE' not in os.environ:
-        os.environ['PYTHON_EGG_CACHE'] = tempfile.gettempdir()
+        if 'TRAC_ENV' in os.environ:
+            egg_cache = os.path.join(os.environ['TRAC_ENV'], '.egg-cache')
+        elif 'TRAC_ENV_PARENT_DIR' in os.environ:
+            egg_cache = os.path.join(os.environ['TRAC_ENV_PARENT_DIR'], 
+                                     '.egg-cache')
+        pkg_resources.set_extraction_path(egg_cache)
     from trac.web import fcgi_frontend
     fcgi_frontend.run()
 except SystemExit:

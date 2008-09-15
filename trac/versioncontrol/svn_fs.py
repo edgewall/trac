@@ -55,7 +55,7 @@ from trac.versioncontrol import Changeset, Node, Repository, \
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
-from trac.util import sorted, embedded_numbers, reversed
+from trac.util import embedded_numbers
 from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import utc
@@ -244,24 +244,27 @@ class SubversionConnector(Component):
         below that path will be included.
         """)
 
+    error = None
+
     def __init__(self):
         self._version = None
         
         try:
             _import_svn()
             self.log.debug('Subversion bindings imported')
-        except ImportError:
+        except ImportError, e:
+            self.error = e
             self.log.info('Failed to load Subversion bindings', exc_info=True)
-            self.has_subversion = False
         else:
-            self.has_subversion = True
             Pool()
 
     def get_supported_types(self):
-        if self.has_subversion:
-            yield ("direct-svnfs", 4)
-            yield ("svnfs", 4)
-            yield ("svn", 2)
+        prio = 1
+        if self.error:
+            prio = -1
+        yield ("direct-svnfs", prio*4)
+        yield ("svnfs", prio*4)
+        yield ("svn", prio*2)
 
     def get_repository(self, type, dir, options):
         """Return a `SubversionRepository`.
@@ -278,7 +281,7 @@ class SubversionConnector(Component):
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
-            repos = CachedRepository(self.env.get_db_cnx(), fs_repos, None,
+            repos = CachedRepository(self.env.get_db_cnx, fs_repos, None,
                                      self.log)
             repos.has_linear_changesets = True
         # FIXME: convert SubversionAuthorizer to a PermissionPolicy

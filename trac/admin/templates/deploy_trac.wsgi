@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!${executable}
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2008 Edgewall Software
@@ -15,13 +15,17 @@
 #
 # Author: Noah Kantrowitz <noah@coderanger.net>
 import os
-import tempfile
-
-from trac.web.main import dispatch_request
-import pkg_resources
 
 def application(environ, start_request):
-    environ['trac.env_path'] = '${env.path}'
-    if 'PYTHON_EGG_CACHE' not in os.environ:
-        pkg_resources.set_extraction_path(tempfile.gettempdir())
+    if not 'trac.env_path_parent_dir' in environ:
+        environ.setdefault('trac.env_path', '${env.path}')
+    if 'PYTHON_EGG_CACHE' in environ:                                           
+        os.environ['PYTHON_EGG_CACHE'] = environ['PYTHON_EGG_CACHE']
+    elif 'trac.env_path' in environ:
+        os.environ['PYTHON_EGG_CACHE'] = os.path.join(environ['trac.env_path'],
+                                                      '.egg-cache')
+    elif 'trac.env_path_parent_dir' in environ:
+        os.environ['PYTHON_EGG_CACHE'] = os.path.join(environ['trac.env_path_parent_dir'],
+                                                      '.egg-cache')
+    from trac.web.main import dispatch_request
     return dispatch_request(environ, start_request)

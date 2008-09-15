@@ -16,6 +16,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import csv
+from itertools import groupby
 from math import ceil
 from datetime import datetime, timedelta
 import re
@@ -30,7 +31,6 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges
-from trac.util.compat import groupby
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.presentation import Paginator
 from trac.util.text import shorten_line
@@ -48,10 +48,11 @@ class QuerySyntaxError(Exception):
 
 
 class Query(object):
+    substitutions = ['$USER']
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=None, page=1, max=None):
+                 rows=None, page=None, max=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -62,42 +63,37 @@ class Query(object):
         self.default_page = 1
         self.items_per_page = QueryModule(self.env).items_per_page
 
+        # getting page number (default_page if unspecified)
+        if not page:
+            page = self.default_page
         try:
-            if not page:
-                page = self.default_page
-            page = int(page)
-            if page < 1:
+            self.page = int(page)
+            if self.page < 1:
                 raise ValueError()
         except ValueError:
-            raise TracError(_('Query page %(page)s is invalid.',
-                              page=page))
+            raise TracError(_('Query page %(page)s is invalid.', page=page))
 
         # max=0 signifies showing all items on one page
         # max=n will show precisely n items on all pages except the last
-        # max<0 is invalid (FIXME: wouldn't -1 also do for unlimited?)
+        # max<0 is invalid
         if max in ('none', ''):
             max = 0
 
+        if max is None: # meaning unspecified
+            max = self.items_per_page
         try:
-            if max is None: # meaning unspecified
-                max = self.items_per_page
-            max = int(max)
-            if max < 0:
+            self.max = int(max)
+            if self.max < 0:
                 raise ValueError()
         except ValueError:
             raise TracError(_('Query max %(max)s is invalid.', max=max))
         
-        self.page = 0
-        self.offset = 0
-        self.max = 0
-
-        if max == 0:
+        if self.max == 0:
             self.has_more_pages = False
+            self.offset = 0
         else:
             self.has_more_pages = True
-            self.page = page
-            self.offset = max * (page - 1)
-            self.max = max
+            self.offset = self.max * (self.page - 1)
 
         if rows == None:
             rows = []
@@ -122,6 +118,7 @@ class Query(object):
         if self.group not in field_names:
             self.group = None
 
+    @classmethod
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
         kw_strs = ['order', 'group', 'page', 'max']
@@ -139,7 +136,8 @@ class Query(object):
                 raise QuerySyntaxError(_('Query filter requires field name'))
             # from last char of `field`, get the mode of comparison
             mode, neg = '', ''
-            if field[-1] in ('~', '^', '$'):
+            if field[-1] in ('~', '^', '$') \
+                                and not field in cls.substitutions:
                 mode = field[-1]
                 field = field[:-1]
             if field[-1] == '!':
@@ -166,7 +164,6 @@ class Query(object):
         report = constraints.pop('report', None)
         report = kw.pop('report', report)
         return cls(env, report, constraints=constraints, cols=cols, **kw)
-    from_string = classmethod(from_string)
 
     def get_columns(self):
         if not self.cols:
@@ -244,7 +241,11 @@ class Query(object):
         #                    tuple([repr(a) for a in args]))
 
         cnt = 0
-        cursor.execute(count_sql, args);
+        try:
+            cursor.execute(count_sql, args);
+        except:
+            db.rollback()
+            raise
         for cnt, in cursor:
             break
         self.env.log.debug("Count results in Query: %d" % cnt)
@@ -272,7 +273,11 @@ class Query(object):
                                   'pages in the query', page=self.page))
 
         self.env.log.debug("Query SQL: " + sql % tuple([repr(a) for a in args]))     
-        cursor.execute(sql, args)
+        try:
+            cursor.execute(sql, args)
+        except:
+            db.rollback()
+            raise
         columns = get_column_names(cursor)
         fields = []
         for column in columns:
@@ -386,7 +391,7 @@ class Query(object):
             add_cols(self.group)
         if self.rows:
             add_cols('reporter', *self.rows)
-        add_cols('priority', 'time', 'changetime', self.order)
+        add_cols('status', 'priority', 'time', 'changetime', self.order)
         cols.extend([c for c in self.constraints.keys() if not c in cols])
 
         custom_fields = [f['name'] for f in self.fields if 'custom' in f]
@@ -503,15 +508,13 @@ class Query(object):
                     args.append(constraint_sql[1])
 
         clauses = filter(None, clauses)
-        if clauses or cached_ids:
-            sql.append("\nWHERE ")
         if clauses:
+            sql.append("\nWHERE ")
             sql.append(" AND ".join(clauses))
-        if cached_ids:
-            if clauses:
+            if cached_ids:
                 sql.append(" OR ")
-            sql.append("id in (%s)" % (','.join(
-                                            [str(id) for id in cached_ids])))
+                sql.append("id in (%s)" % (','.join(
+                                                [str(id) for id in cached_ids])))
             
         sql.append("\nORDER BY ")
         order_cols = [(self.order, self.desc)]
@@ -522,42 +525,28 @@ class Query(object):
                 col = name + '.value'
             else:
                 col = 't.' + name
+            desc = desc and ' DESC' or ''
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
             #        one, if text, we do 'else'
             if name in ('id', 'time', 'changetime'):
-                if desc:
-                    sql.append("COALESCE(%s,0)=0 DESC," % col)
-                else:
-                    sql.append("COALESCE(%s,0)=0," % col)
+                sql.append("COALESCE(%s,0)=0%s," % (col, desc))
             else:
-                if desc:
-                    sql.append("COALESCE(%s,'')='' DESC," % col)
-                else:
-                    sql.append("COALESCE(%s,'')=''," % col)
+                sql.append("COALESCE(%s,'')=''%s," % (col, desc))
             if name in enum_columns:
                 # These values must be compared as ints, not as strings
                 db = self.env.get_db_cnx()
-                if desc:
-                    sql.append(db.cast(col, 'int') + ' DESC')
-                else:
-                    sql.append(db.cast(col, 'int'))
-            elif name in ('milestone', 'version'):
-                if name == 'milestone': 
-                    time_col = 'milestone.due'
-                else:
-                    time_col = 'version.time'
-                if desc:
-                    sql.append("COALESCE(%s,0)=0 DESC,%s DESC,%s DESC"
-                               % (time_col, time_col, col))
-                else:
-                    sql.append("COALESCE(%s,0)=0,%s,%s"
-                               % (time_col, time_col, col))
+                sql.append(db.cast(col, 'int') + desc)
+            elif name == 'milestone':
+                sql.append("COALESCE(milestone.completed,0)=0%s,"
+                           "milestone.completed%s,"
+                           "COALESCE(milestone.due,0)=0%s,milestone.due%s,"
+                           "%s%s" % (desc, desc, desc, desc, col, desc))
+            elif name == 'version':
+                sql.append("COALESCE(version.time,0)=0%s,version.time%s,%s%s"
+                           % (desc, desc, col, desc))
             else:
-                if desc:
-                    sql.append("%s DESC" % col)
-                else:
-                    sql.append("%s" % col)
+                sql.append("%s%s" % (col, desc))
             if name == self.group and not name == self.order:
                 sql.append(",")
         if self.order != 'id':
@@ -575,7 +564,8 @@ class Query(object):
                 if neg:
                     val = val[1:]
                 mode = ''
-                if val[:1] in ('~', '^', '$'):
+                if val[:1] in ('~', '^', '$') \
+                                    and not val in self.substitutions:
                     mode, val = val[:1], val[1:]
                 constraint['mode'] = (neg and '!' or '') + mode
                 constraint['values'].append(val)
@@ -596,8 +586,6 @@ class Query(object):
 
         fields = {}
         for field in self.fields:
-            if field['type'] == 'textarea':
-                continue
             field_data = {}
             field_data.update(field)
             del field_data['name']
@@ -611,6 +599,10 @@ class Query(object):
             {'name': _("ends with"), 'value': "$"},
             {'name': _("is"), 'value': ""},
             {'name': _("is not"), 'value': "!"}
+        ]
+        modes['textarea'] = [
+            {'name': _("contains"), 'value': "~"},
+            {'name': _("doesn't contain"), 'value': "!~"},
         ]
         modes['select'] = [
             {'name': _("is"), 'value': ""},
@@ -750,24 +742,25 @@ class QueryModule(Component):
         if not constraints and not 'order' in req.args:
             # If no constraints are given in the URL, use the default ones.
             if req.authname and req.authname != 'anonymous':
-                qstring = self.default_query 
-                user = req.authname 
+                qstring = self.default_query
+                user = req.authname
             else:
                 email = req.session.get('email')
                 name = req.session.get('name')
-                qstring = self.default_anonymous_query 
-                user = email or name or None 
+                qstring = self.default_anonymous_query
+                user = email or name or None
                       
-            if user: 
-                qstring = qstring.replace('$USER', user) 
-            self.log.debug('QueryModule: Using default query: %s', str(qstring)) 
-            constraints = Query.from_string(self.env, qstring).constraints 
-            # Ensure no field constraints that depend on $USER are used 
-            # if we have no username. 
-            for field, vals in constraints.items(): 
-                for val in vals: 
-                    if val.endswith('$USER'): 
-                        del constraints[field] 
+            self.log.debug('QueryModule: Using default query: %s', str(qstring))
+            constraints = Query.from_string(self.env, qstring).constraints
+            # Substitute $USER, or ensure no field constraints that depend on
+            # $USER are used if we have no username.
+            for field, vals in constraints.items():
+                for (i, val) in enumerate(vals):
+                    if user:
+                        vals[i] = val.replace('$USER', user)
+                    elif val.endswith('$USER'):
+                        del constraints[field]
+                        break
 
         cols = req.args.get('col')
         if isinstance(cols, basestring):
@@ -779,13 +772,17 @@ class QueryModule(Component):
         rows = req.args.get('row', [])
         if isinstance(rows, basestring):
             rows = [rows]
+        format = req.args.get('format')
+        max = req.args.get('max')
+        if max is None and format in ('csv', 'tab'):
+            max = 0 # unlimited unless specified explicitly
         query = Query(self.env, req.args.get('report'),
                       constraints, cols, req.args.get('order'),
                       'desc' in req.args, req.args.get('group'),
                       'groupdesc' in req.args, 'verbose' in req.args,
                       rows,
                       req.args.get('page'), 
-                      req.args.get('max'))
+                      max)
 
         if 'update' in req.args:
             # Reset session vars
@@ -801,7 +798,6 @@ class QueryModule(Component):
                      query.get_href(req.href, format=conversion[0]),
                      conversion[1], conversion[4], conversion[0])
 
-        format = req.args.get('format')
         if format:
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
                                               format, 'query')
@@ -1017,6 +1013,9 @@ class TicketQueryMacro(WikiMacroBase):
     The `order` parameter sets the field used for ordering tickets
     (defaults to '''id''').
 
+    The `desc` parameter indicates whether the order of the tickets
+    should be reversed (defaults to '''false''').
+
     The `group` parameter sets the field used for grouping tickets
     (defaults to not being set).
 
@@ -1042,13 +1041,18 @@ class TicketQueryMacro(WikiMacroBase):
         if len(argv) > 0 and not 'format' in kwargs: # 0.10 compatibility hack
             kwargs['format'] = argv[0]
 
+        if 'order' not in kwargs:
+            kwargs['order'] = 'id'
+        if 'max' not in kwargs:
+            kwargs['max'] = '0' # unlimited by default
+
         format = kwargs.pop('format', 'list').strip().lower()
         if format in ('list', 'compact'): # we need 'status' and 'summary'
             kwargs['col'] = '|'.join(['status', 'summary', 
                                       kwargs.get('col', '')])
+
         query_string = '&'.join(['%s=%s' % item
                                  for item in kwargs.iteritems()])
-
         query = Query.from_string(self.env, query_string)
 
         if format == 'count':
@@ -1110,7 +1114,7 @@ class TicketQueryMacro(WikiMacroBase):
         else:
             if query.group:
                 return tag.div(
-                    [(tag.p(tag_('%(groupvalue) %(groupname)s tickets:',
+                    [(tag.p(tag_('%(groupvalue)s %(groupname)s tickets:',
                                  groupvalue=tag.a(v, href=href, class_='query',
                                                   title=title),
                                  groupname=query.group)),

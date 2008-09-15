@@ -22,7 +22,12 @@ table.progress td { background: #fff; padding: 0 }
 table.progress td.new { background: #f5f5b5 }
 table.progress td.closed { background: #bae0ba }
 table.progress td :hover { background: none }
-p.percent { font-size: 10px; line-height: 2.4em; margin: 0.9em 0 0 }
+p.percent { 
+ font-size: 10px; 
+ line-height: 2.4em; 
+ margin: 0.9em 0 .1em 1.2em; 
+ float: left; 
+}
 
 /* Styles for the roadmap view */
 ul.milestones { margin: 2em 0 0; padding: 0 }
@@ -48,12 +53,13 @@ li.milestone { list-style: none; margin-bottom: 4em }
  font-style: italic;
  margin: 0;
 }
-.milestone .info .progress { margin: 1em 1em 0; width: 40em; max-width: 70% }
+.milestone .info .progress { margin: 1em 0 0 1em; width: 40em; max-width: 70% }
 .milestone .info dl {
  font-size: 10px;
  font-style: italic;
  margin: 0 1em 2em;
  white-space: nowrap;
+ clear: left;
 }
 .milestone .info dt { display: inline; margin-left: .5em }
 .milestone .info dd { display: inline; margin: 0 1em 0 .5em }

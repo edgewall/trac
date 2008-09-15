@@ -21,7 +21,6 @@ from genshi.builder import Element, tag
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import PermissionError
-from trac.util import sorted
 from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiMacroProvider
@@ -50,7 +49,7 @@ class InterTracDispatcher(Component):
             if href is None: # most probably no permissions to view
                 raise PermissionError(_("Can't view %(link)s:", link=link))
         else:
-            href = req.href(link)
+            href = req.href(link.rstrip(':'))
         req.redirect(href)
 
     # IWikiMacroProvider methods

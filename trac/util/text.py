@@ -110,6 +110,13 @@ class unicode_passwd(unicode):
     def __repr__(self):
         return '*******'
 
+def console_print(out, *args):
+    cons_charset = getattr(out, 'encoding', None)
+    # Windows returns 'cp0' to indicate no encoding
+    if cons_charset in (None, 'cp0'):
+        cons_charset = 'utf-8'
+    out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
+                        for a in args])+ '\n')
 
 # -- Plain text formatting
 
@@ -154,10 +161,10 @@ def print_table(data, headers=None, sep='  ', out=None):
 def shorten_line(text, maxlen=75):
     if len(text or '') < maxlen:
         return text
-    shortline = text[:maxlen]
-    cut = shortline.rfind(' ') + 1 or shortline.rfind('\n') + 1 or maxlen
-    shortline = text[:cut]+' ...'
-    return shortline
+    cut = max(text.rfind(' ', 0, maxlen), text.rfind('\n', 0, maxlen))
+    if cut < 0:
+        cut = maxlen
+    return text[:cut] + ' ...'
 
 def wrap(t, cols=75, initial_indent='', subsequent_indent='',
          linesep=os.linesep):

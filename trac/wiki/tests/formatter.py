@@ -140,18 +140,23 @@ class WikiTestCase(unittest.TestCase):
             import re
             match = re.match(r"u?'(.*)' != u?'(.*)'", msg)
             if match:
-                sep = '-' * 15
                 g1 = ["%s\n" % x for x in match.group(1).split(r'\n')]
                 g2 = ["%s\n" % x for x in match.group(2).split(r'\n')]
-                diff = ''.join(list(difflib.unified_diff(g1, g2)))
-                msg = '\n%s expected:\n%s\n%s actual:\n%s\n%s' \
-                      ' wiki text:\n%s\ndiff:\n%s' \
-                      % (sep, ''.join(g1), sep, ''.join(g2), sep,
-# Tip: sometimes, 'expected' and 'actual' differ only by whitespace.
-#      If so, replace the above lines by those two:
-#                      % (sep, match.group(1).replace(' ', '.'), sep
-#                         sep, match.group(2).replace(' ', '.'), sep,
-                         self.input, diff)
+                expected = ''.join(g1)
+                actual = ''.join(g2)
+                wiki = repr(self.input).replace(r'\n', '\n')
+                diff = ''.join(list(difflib.unified_diff(g1, g2, 'expected',
+                                                         'actual')))
+                # Tip: sometimes, 'expected' and 'actual' differ only by 
+                #      whitespace, so it can be useful to visualize them, e.g.
+                # expected = expected.replace(' ', '.')
+                # actual = actual.replace(' ', '.')
+                def info(*args):
+                    return '\n========== %s: ==========\n%s' % args
+                msg = info('expected', expected)
+                msg += info('actual', actual)
+                msg += info('wiki', ''.join(wiki))
+                msg += info('diff', diff)
             raise AssertionError( # See below for details
                 '%s\n\n%s:%s: "%s" (%s flavor)' \
                 % (msg, self.file, self.line, self.title, formatter.flavor))

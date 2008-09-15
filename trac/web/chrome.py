@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
+from itertools import groupby
 import os
 import pkg_resources
 import pprint
@@ -24,16 +25,9 @@ try:
 except ImportError: 
     cStringIO = StringIO 
 
-try:
-    from babel.support import Translations
-except ImportError:
-    Translations = None
 from genshi import Markup
 from genshi.builder import tag, Element
-if Translations:
-    from genshi.filters import Translator
-else:
-    Translator = None
+from genshi.filters import Translator
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
@@ -47,7 +41,7 @@ from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       get_module_path, translation, arity
-from trac.util.compat import partial, set
+from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode
@@ -293,7 +287,6 @@ class Chrome(Component):
         '_': translation.gettext,
         'all': compat.all,
         'any': compat.any,
-        'attrgetter': compat.attrgetter,
         'classes': presentation.classes,
         'date': datetime.date,
         'datetime': datetime.datetime,
@@ -301,10 +294,9 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': compat.py_groupby,
+        'groupby': groupby,
         'http_date': http_date,
         'istext': presentation.istext,
-        'itemgetter': compat.itemgetter,
         'ngettext': translation.ngettext,
         'paginate': presentation.paginate,
         'partial': partial,
@@ -313,10 +305,10 @@ class Chrome(Component):
         'pretty_size': pretty_size,
         'pretty_timedelta': pretty_timedelta,
         'quote_plus': unicode_quote_plus,
-        'reversed': compat.reversed,
+        'reversed': reversed,
         'separated': presentation.separated,
         'shorten_line': shorten_line,
-        'sorted': compat.sorted,
+        'sorted': sorted,
         'time': datetime.time,
         'timedelta': datetime.timedelta,
         'to_unicode': to_unicode,
@@ -476,7 +468,7 @@ class Chrome(Component):
                     href = category_section.get(name + '.href')
                     if href:
                         if href.startswith('/'):
-                            href = req.href(href)
+                            href = req.href() + href
                         if label:
                             item = tag.a(label) # create new label
                         elif not item:
@@ -665,11 +657,8 @@ class Chrome(Component):
         TextTemplate instance will be created instead of a MarkupTemplate.
         """
         if not self.templates:
-            _template_loaded = None
-            global Translator
-            if Translator:
-                def _template_loaded(template):
-                    template.filters.insert(0, Translator(translation.gettext))
+            def _template_loaded(template):
+                template.filters.insert(0, Translator(translation.gettext))
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
@@ -709,13 +698,7 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            if arity(stream.render) == 3:
-                # TODO: remove this when we depend on Genshi >= 0.5
-                return stream.render('text')
-            else:
-                buffer = cStringIO()
-                stream.render('text', out=buffer)
-                return buffer.getvalue()
+            return stream.render('text')
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         if doctype:
@@ -734,13 +717,7 @@ class Chrome(Component):
         })
 
         try:
-            if arity(stream.render) == 3:
-                # TODO: remove this when we depend on Genshi >= 0.5
-                return stream.render(method, doctype=doctype)
-            else:
-                buffer = cStringIO()
-                stream.render(method, doctype=doctype, out=buffer)
-                return buffer.getvalue()
+            return stream.render(method, doctype=doctype)
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links

@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from datetime import datetime
+from itertools import groupby
 import imp
 import inspect
 import os
@@ -27,7 +28,7 @@ from genshi.core import Markup
 from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.datefmt import format_date, utc
-from trac.util.compat import sorted, groupby, any, set
+from trac.util.compat import any
 from trac.util.html import escape
 from trac.util.text import unquote, to_unicode
 from trac.util.translation import _

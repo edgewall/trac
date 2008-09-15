@@ -26,7 +26,7 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
-from trac.config import BoolOption, Option, IntOption, _TRUE_VALUES
+from trac.config import BoolOption, Option, IntOption, ListOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource, get_resource_url, \
@@ -75,7 +75,25 @@ class TicketModule(Component):
         """Default milestone for newly created tickets.""")
 
     default_component = Option('ticket', 'default_component', '',
-        """Default component for newly created tickets""")
+        """Default component for newly created tickets.""")
+
+    default_severity = Option('ticket', 'default_severity', '',
+        """Default severity for newly created tickets.""")
+
+    default_summary = Option('ticket', 'default_summary', '',
+        """Default summary (title) for newly created tickets.""")
+
+    default_description = Option('ticket', 'default_description', '',
+        """Default description for newly created tickets.""")
+
+    default_keywords = Option('ticket', 'default_keywords', '',
+        """Default keywords for newly created tickets.""")
+
+    default_owner = Option('ticket', 'default_owner', '',
+        """Default owner for newly created tickets.""")
+
+    default_cc = Option('ticket', 'default_cc', '',
+        """Default cc: list for newly created tickets.""")
 
     default_resolution = Option('ticket', 'default_resolution', 'fixed',
         """Default resolution for resolving (closing) tickets
@@ -88,6 +106,10 @@ class TicketModule(Component):
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
         """Don't accept tickets with a too big description.
         (''since 0.11'').""")
+
+    max_comment_size = IntOption('ticket', 'max_comment_size', 262144,
+        """Don't accept tickets with a too big comment.
+        (''since 0.11.2'')""")
 
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
@@ -102,6 +124,10 @@ class TicketModule(Component):
         If set to 'default', this is equivalent to 'yes' for new environments
         but keeps the old behavior for upgraded environments (i.e. 'no').
         (''since 0.11'').""")
+    
+    unlinked_fields = ListOption('ticket', 'unlinked_fields', 
+                                 default=['estimatedhours', 'hours', 'totalhours'],
+                                 doc="fields to exclude from AutoQuery markup")
 
     # IContentConverter methods
 
@@ -194,6 +220,11 @@ class TicketModule(Component):
                                                        resolution, type)),
                        datetime.fromtimestamp(ts, utc), author,
                        shorten_result(desc, terms))
+        
+        # Attachments
+        for result in AttachmentModule(self.env).get_search_results(
+            req, ticket_realm, terms):
+            yield result        
 
     # ITimelineEventProvider methods
 
@@ -906,6 +937,13 @@ class TicketModule(Component):
                           num=self.max_description_size))
             valid = False
 
+        # Validate comment length
+        if len(comment or '') > self.max_comment_size:
+            add_warning(req, _('Ticket comment is too long (must be less '
+                               'than %(num)s characters)',
+                               num=self.max_comment_size))
+            valid = False
+
         # Validate comment numbering
         try:
             # comment index must be a number
@@ -1026,6 +1064,14 @@ class TicketModule(Component):
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
+    def _query_link(self, req, name, value):
+        """return a link to /query with the appropriate name and value"""
+        query = req.href('query', **{name:value})
+        args = self.env.config.get('query', 'default_anonymous_query')
+        if args:
+            query = '%s&%s' % (query, args)
+        return tag.a(value, href=query)
+
     def _prepare_fields(self, req, ticket):
         context = Context.from_request(req, ticket.resource)
         fields = []
@@ -1033,6 +1079,10 @@ class TicketModule(Component):
             name = field['name']
             type_ = field['type']
  
+            # enable a link to custom query for the field
+            if name not in self.unlinked_fields:
+                field['rendered'] = self._query_link(req, name, ticket[name])
+
             # per field settings
             if name in ('summary', 'reporter', 'description', 'status',
                         'resolution'):
@@ -1048,19 +1098,22 @@ class TicketModule(Component):
                               for opt in field['options']]
                 milestones = [(opt, m) for opt, m in milestones
                               if 'MILESTONE_VIEW' in req.perm(m.resource)]
-                open_milestones, closed_milestones = \
-                        partition([(opt, m.is_completed)
-                                   for opt, m in milestones],
-                                  (False, True))
+                def category(m):
+                    return m.is_completed and 1 or m.due and 2 or 3
+                open_due_milestones, open_not_due_milestones, \
+                    closed_milestones = partition([(opt, category(m))
+                        for opt, m in milestones], (2, 3, 1))
+                field['options'] = []
+                field['optgroups'] = [
+                    {'label': _('Open (by due date)'), 
+                        'options': open_due_milestones},
+                    {'label': _('Open (no due date)'), 
+                        'options': open_not_due_milestones},
+                ]
                 if ticket.exists and \
                        'TICKET_ADMIN' in req.perm(ticket.resource):
-                    field['options'] = []
-                    field['optgroups'] = [
-                        {'label': _('Open'), 'options': open_milestones},
-                        {'label': _('Closed'), 'options': closed_milestones},
-                    ]
-                else:
-                    field['options'] = open_milestones
+                    field['optgroups'].append(
+                        {'label': _('Closed'), 'options': closed_milestones})
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
@@ -1122,7 +1175,8 @@ class TicketModule(Component):
         def quote_original(author, original, link):
             if 'comment' not in req.args: # i.e. the comment was not yet edited
                 data['comment'] = '\n'.join(
-                    ['Replying to [%s %s]:' % (link, author)] +
+                    ['Replying to [%s %s]:' % (link,
+                                        obfuscate_email_address(author))] +
                     ['> %s' % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':
@@ -1223,7 +1277,9 @@ class TicketModule(Component):
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls,
             'action': selected_action,
-            'change_preview': change_preview
+            'change_preview': change_preview,
+            'reporter_link': self._query_link(req, 'reporter', ticket['reporter']),
+            'owner_link': self._query_link(req, 'owner', ticket['owner'])
         })
 
     def rendered_changelog_entries(self, req, ticket, when=None):

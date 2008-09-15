@@ -324,6 +324,8 @@ i.e. [mailto:cboos@neuf.fr me]
 joe'bar@site.info,
 trac+devel@another-site.fr,
 T_r=a-c1.23@yet_another-site.edu.au
+!not@an.email.com
+someone@louvre.museum-
 ------------------------------
 <p>
 Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">mailto:cboos@neuf.fr</span></a>, 
@@ -333,6 +335,8 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">me</spa
 <a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon">joe'bar@site.info</span></a>,
 <a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon">trac+devel@another-site.fr</span></a>,
 <a class="mail-link" href="mailto:T_r=a-c1.23@yet_another-site.edu.au"><span class="icon">T_r=a-c1.23@yet_another-site.edu.au</span></a>
+not@an.email.com
+<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon">someone@louvre.museum</span></a>-
 </p>
 ------------------------------
 ============================== Arbitrary protocol Link
@@ -547,6 +551,66 @@ Paragraph
 <div>Click me</div>
 ------------------------------
  […]
+============================== HTML comment wiki processor
+Before
+{{{
+#!htmlcomment
+This is a comment <em>with embedded tags &amp; entities</em>
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<!--
+This is a comment <em>with embedded tags &amp; entities</em>
+-->
+<p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== HTML comment wiki processor, comment ends with "-"
+Before
+{{{
+#!htmlcomment
+This comment ends with -
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<!--
+This comment ends with -
+-->
+<p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
+============================== HTML comment wiki processor, comment contains "--"
+Before
+{{{
+#!htmlcomment
+The character sequence -- is not allowed in comments
+}}}
+After
+------------------------------
+<p>
+Before
+</p>
+<div class="system-message"><strong>Error: Forbidden character sequence "--" in htmlcomment wiki code block</strong></div><p>
+After
+</p>
+------------------------------
+Before
+ […]
+After
 ============================== div and span wiki processors
 And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
 {{{

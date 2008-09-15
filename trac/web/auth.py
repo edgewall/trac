@@ -22,7 +22,6 @@ try:
     import threading
 except ImportError:
     import dummy_threading as threading
-import md5
 import os
 import re
 import sys
@@ -35,7 +34,7 @@ from trac.config import BoolOption
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import hex_entropy, md5crypt
+from trac.util import hex_entropy, md5, md5crypt
 from trac.util.translation import _
 
 
@@ -146,7 +145,7 @@ class LoginModule(Component):
 
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
-        req.outcookie['trac_auth']['path'] = req.href()
+        req.outcookie['trac_auth']['path'] = req.base_path or '/'
 
     def _do_logout(self, req):
         """Log the user out.
@@ -176,7 +175,7 @@ class LoginModule(Component):
         "expires" property to a date in the past.
         """
         req.outcookie['trac_auth'] = ''
-        req.outcookie['trac_auth']['path'] = req.href()
+        req.outcookie['trac_auth']['path'] = req.base_path or '/'
         req.outcookie['trac_auth']['expires'] = -10000
 
     def _get_name_for_cookie(self, req, cookie):
@@ -200,12 +199,15 @@ class LoginModule(Component):
 
     def _redirect_back(self, req):
         """Redirect the user back to the URL she came from."""
-        referer = req.get_header('Referer')
+        referer = self._referer(req)
         if referer and not (referer == req.base_url or \
                 referer.startswith(req.base_url.rstrip('/')+'/')):
             # only redirect to referer if it is from the same site
             referer = None
         req.redirect(referer or req.abs_href())
+
+    def _referer(self, req):
+        return req.args.get('referer') or req.get_header('Referer')
 
 
 class HTTPAuthentication(object):
@@ -369,7 +371,7 @@ class DigestAuthentication(PasswordFileAuthentication):
             self.send_auth_request(environ, start_response)
             return None
 
-        kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+        kd = lambda x: md5(':'.join(x)).hexdigest()
         a1 = self.hash[auth['username']]
         a2 = kd([environ['REQUEST_METHOD'], auth['uri']])
         # Is the response correct?

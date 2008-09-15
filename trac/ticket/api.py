@@ -24,7 +24,6 @@ from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionSystem, PermissionError
 from trac.resource import IResourceManager
 from trac.util import Ranges
-from trac.util.compat import set, sorted
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line, obfuscate_email_address
 from trac.util.translation import _

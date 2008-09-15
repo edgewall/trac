@@ -33,7 +33,6 @@ from genshi.util import plaintext
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_url
-from trac.util.compat import set
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util.text import shorten_line, to_unicode, \
@@ -80,6 +79,7 @@ class WikiProcessor(object):
         self.macro_provider = None
 
         builtin_processors = {'html': self._html_processor,
+                              'htmlcomment': self._htmlcomment_processor,
                               'default': self._default_processor,
                               'comment': self._comment_processor,
                               'div': self._div_processor,
@@ -131,6 +131,12 @@ class WikiProcessor(object):
             line = unicode(text).splitlines()[e.lineno - 1].strip()
             return system_message(_('HTML parsing error: %(message)s',
                                     message=escape(e.msg)), line)
+        
+    def _htmlcomment_processor(self, text):
+        if "--" in text:
+            return system_message(_('Error: Forbidden character sequence '
+                                    '"--" in htmlcomment wiki code block'))
+        return Markup('<!--\n%s-->\n' % text)
         
     def _elt_processor(self, eltname, format_to, text, args):
         elt = getattr(tag, eltname)(**args)
@@ -854,8 +860,6 @@ class Formatter(object):
             if not line.startswith(' '):
                 self._tabstops = []
 
-            if escape_newlines:
-                line += ' [[BR]]'
             self.in_list_item = False
             self.in_quote = False
             # Throw a bunch of regexps on the problem
@@ -870,13 +874,16 @@ class Formatter(object):
             if self.in_def_list and not line.startswith(' '):
                 self.close_def_list()
 
-            if self.in_table and line.strip()[0:2] != '||':
+            if self.in_table and not line.lstrip().startswith('||'):
                 self.close_table()
 
-            if len(result) and not self.in_list_item and not self.in_def_list \
-                    and not self.in_table:
-                self.open_paragraph()
-            self.out.write(result + os.linesep)
+            sep = os.linesep
+            if not(self.in_list_item or self.in_def_list or self.in_table):
+                if len(result):
+                    self.open_paragraph()
+                if escape_newlines and not result.rstrip().endswith('<br />'):
+                    sep = '<br />' + sep
+            self.out.write(result + sep)
             self.close_table_row()
 
         self.close_table()

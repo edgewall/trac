@@ -137,7 +137,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
   LEFT OUTER JOIN milestone ON (milestone.name=milestone)
-ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.due,0)=0,milestone.due,t.milestone,COALESCE(t.id,0)=0,t.id""")
+ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.completed,0)=0,milestone.completed,COALESCE(milestone.due,0)=0,milestone.due,t.milestone,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -149,7 +149,7 @@ ORDER BY COALESCE(t.milestone,'')='',COALESCE(milestone.due,0)=0,milestone.due,t
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
   LEFT OUTER JOIN milestone ON (milestone.name=milestone)
-ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.due,0)=0 DESC,milestone.due DESC,t.milestone DESC,COALESCE(t.id,0)=0,t.id""")
+ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC,milestone.completed DESC,COALESCE(milestone.due,0)=0 DESC,milestone.due DESC,t.milestone DESC,COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 

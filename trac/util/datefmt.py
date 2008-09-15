@@ -35,13 +35,14 @@ def to_datetime(t, tzinfo=None):
     
      - If `t` is already a `datetime` object, it is simply returned.
      - If `t` is None, the current time will be used.
-     - If `t` is a number, it is interpreted as a timestamp. If no `tzinfo`
-       is given, the local timezone will be used for the conversion.
+     - If `t` is a number, it is interpreted as a timestamp.
+     
+    If no `tzinfo` is given, the local timezone will be used.
 
     Any other input will trigger a `TypeError`.
     """
     if t is None:
-        return datetime.now(localtz)
+        return datetime.now(tzinfo or localtz)
     elif isinstance(t, datetime):
         return t
     elif isinstance(t, (int,long,float)):

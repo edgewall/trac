@@ -108,9 +108,10 @@ class PygmentsRenderer(Component):
         add_stylesheet(req, '/pygments/%s.css' %
                        req.session.get('pygments_style', self.default_style))
         try:
-            mimetype = mimetype.split(';', 1)[0]
-            language = self._types[mimetype][0]
-            return self._generate(language, content)
+            if len(content) > 0:
+                mimetype = mimetype.split(';', 1)[0]
+                language = self._types[mimetype][0]
+                return self._generate(language, content)
         except (KeyError, ValueError):
             raise Exception("No Pygments lexer found for mime-type '%s'."
                             % mimetype)
@@ -176,9 +177,10 @@ class PygmentsRenderer(Component):
 
     def _init_types(self):
         self._types = {}
-        for _, aliases, _, mimetypes in get_all_lexers():
+        for lexname, aliases, _, mimetypes in get_all_lexers():
+            name = aliases and aliases[0] or lexname
             for mimetype in mimetypes:
-                self._types[mimetype] = (aliases[0], self.QUALITY_RATIO)
+                self._types[mimetype] = (name, self.QUALITY_RATIO)
         self._types.update(
             Mimeview(self.env).configured_modes_mapping('pygments')
         )

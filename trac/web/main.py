@@ -44,9 +44,10 @@ from trac.perm import PermissionCache, PermissionError, PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
                       arity, translation
-from trac.util.compat import partial, reversed
+from trac.util.compat import partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import shorten_line, to_unicode
+from trac.util.translation import _
 from trac.web.api import *
 from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper
@@ -276,7 +277,7 @@ class RequestDispatcher(Component):
                 translation.get_available_locales()]
 
             preferred = req.session.get('language', req.languages)
-            if type(preferred) != type(list()):
+            if not isinstance(preferred, list):
                 preferred = [preferred]
             return Locale.negotiate(preferred, available, sep='-')
 
@@ -302,7 +303,7 @@ class RequestDispatcher(Component):
             return req.incookie['trac_form_token'].value
         else:
             req.outcookie['trac_form_token'] = hex_entropy(24)
-            req.outcookie['trac_form_token']['path'] = req.base_path
+            req.outcookie['trac_form_token']['path'] = req.base_path or '/'
             return req.outcookie['trac_form_token'].value
 
     def _pre_process_request(self, req, chosen_handler):
@@ -460,6 +461,11 @@ def _dispatch_request(req, env, env_error):
                 title = 'Error: %s' % e.reason
         data = {'title': title, 'type': 'TracError', 'message': e.detail,
                 'frames': [], 'traceback': None}
+        if e.code == 403 and req.authname == 'anonymous':
+            req.chrome['notices'].append(Markup(
+                _('You are currently not logged in. You may want to '
+                  '<a href="%(href)s">do so</a> now.',
+                  href=req.href.login())))
         try:
             req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
         except RequestDone:
@@ -536,11 +542,6 @@ def send_project_index(environ, start_response, parent_dir=None,
             data[key] = val
             if use_clearsilver:
                 req.hdf[key] = val
-
-    if parent_dir and not env_paths:
-        env_paths = dict([(filename, os.path.join(parent_dir, filename))
-                          for filename in os.listdir(parent_dir)])
-
     try:
         href = Href(req.base_path)
         projects = []
@@ -585,7 +586,8 @@ def get_environments(environ, warn=False):
         paths = dircache.listdir(env_parent_dir)[:]
         dircache.annotate(env_parent_dir, paths)
         env_paths += [os.path.join(env_parent_dir, project) \
-                      for project in paths if project[-1] == '/']
+                      for project in paths 
+                      if project[-1] == '/' and project != '.egg-cache/']
     envs = {}
     for env_path in env_paths:
         env_path = os.path.normpath(env_path)

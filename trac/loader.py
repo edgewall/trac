@@ -22,8 +22,6 @@ from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
 import os
 import sys
 
-from trac.util.compat import set
-
 __all__ = ['load_components']
 
 def _enable_plugin(env, module):
@@ -35,6 +33,7 @@ def _enable_plugin(env, module):
 def load_eggs(entry_point_name):
     """Loader that loads any eggs on the search path and `sys.path`."""
     def _load_eggs(env, search_path, auto_enable=None):
+        # Note that the following doesn't seem to support unicode search_path
         distributions, errors = working_set.find_plugins(
             pkg_resources.Environment(search_path)
         )

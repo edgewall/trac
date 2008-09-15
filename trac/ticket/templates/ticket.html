@@ -63,7 +63,9 @@
             <py:when test="not field.old and field.new">
               set to <em>${field.new}</em>
             </py:when>
-            <py:otherwise>deleted</py:otherwise>
+            <py:otherwise>
+              <em>${field.old}</em> deleted
+            </py:otherwise>
           </py:choose>
         </li>
       </ul>
@@ -135,9 +137,9 @@
                                     not in ('type', 'owner')]">
             <tr>
               <th id="h_reporter">Reported by:</th>
-              <td headers="h_reporter" class="searchable">${authorinfo(ticket.reporter)}</td>
+              <td headers="h_reporter" class="searchable">${reporter_link}</td>
               <th id="h_owner">Owned by:</th>
-              <td headers="h_owner">${ticket.owner and authorinfo(ticket.owner) or ''}
+              <td headers="h_owner">${owner_link}
               </td>
             </tr>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
@@ -174,7 +176,7 @@
               <!--! Quote the description (only for existing tickets) -->
               <form py:if="ticket.exists and ticket.description and
                            'TICKET_APPEND' in perm(ticket.resource)"
-                name="addreply"
+                id="addreply"
                 method="get" action="#comment">
                 <div class="inlinebuttons">
                   <input type="hidden" name="replyto" value="description" />
@@ -234,7 +236,7 @@
                    ('TICKET_APPEND' in perm(ticket.resource) or
                     'TICKET_CHGPROP' in perm(ticket.resource) or
                     ('TICKET_CREATE' in perm(ticket.resource) and not ticket.id))"
-            action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" name="propform" id="propertyform">
+            action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" id="propertyform">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} ($ticket.summary)</a></h3>
         <div py:if="authname == 'anonymous'" class="field">
@@ -298,7 +300,8 @@ ${comment}</textarea></p>
             </py:if>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
                 py:with="fullrow = len(row) == 1">
-              <py:for each="idx, field in enumerate(row)">
+              <py:for each="idx, field in enumerate(row)"
+                      py:with="value = ticket.get_value_or_default(field.name)">
                 <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                   <label for="field-${field.name}" py:if="field"
                          py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
@@ -309,27 +312,28 @@ ${comment}</textarea></p>
                     <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
                       <option py:if="field.optional"></option>
                       <option py:for="option in field.options"
-                              selected="${ticket[field.name] == option or None}"
+                              selected="${value == option or None}"
                               py:content="option"></option>
                       <optgroup py:for="optgroup in field.optgroups"
+                                py:if="optgroup.options"
                                 label="${optgroup.label}">
                         <option py:for="option in optgroup.options"
-                                selected="${ticket[field.name] == option or None}"
+                                selected="${value == option or None}"
                                 py:content="option"></option>
                       </optgroup>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
-                              py:content="ticket[field.name]"></textarea>
+                              py:content="value"></textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                             checked="${ticket[field.name] == '1' and 'checked' or None}" value="1" />
+                             checked="${value == '1' and 'checked' or None}" value="1" />
                       <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                     </span>
                     <label py:when="'radio'"
                            py:for="idx, option in enumerate(field.options)">
                       <input type="radio" name="field_${field.name}" value="${option}"
-                             checked="${ticket[field.name] == option or None}" />
+                             checked="${value == option or None}" />
                       ${option}
                     </label>
                     <py:otherwise><!--! Text input fields -->
@@ -344,11 +348,11 @@ ${comment}</textarea></p>
                         <span py:when="field.name == 'cc'">
                           <input  type="text" id="field-${field.name}"
                             title="Space or comma delimited email addresses and usernames are accepted."
-                            name="field_${field.name}" value="${ticket[field.name]}" />
+                            name="field_${field.name}" value="${value}" />
                         </span>
                         <!--! All the other text input fields -->
                         <input py:otherwise="" type="text" id="field-${field.name}"
-                          name="field_${field.name}" value="${ticket[field.name]}" />
+                          name="field_${field.name}" value="${value}" />
                       </py:choose>
                     </py:otherwise>
                   </py:choose>

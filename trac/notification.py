@@ -26,8 +26,13 @@ from trac.util.text import CRLF
 from trac.util.translation import _
 
 MAXHEADERLEN = 76
-EMAIL_LOOKALIKE_PATTERN = (r"[a-zA-Z0-9.'=+_-]+" '@'
-                            '(?:[a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,4}')
+EMAIL_LOOKALIKE_PATTERN = (
+        # the local part
+        r"[a-zA-Z0-9.'=+_-]+" '@'
+        # the domain name part (RFC:1035)
+        '(?:[a-zA-Z0-9_-]+\.)+' # labels (but also allow '_')
+        '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
+        )
 
 class NotificationSystem(Component):
 
@@ -403,7 +408,12 @@ class NotifyEmail(Notify):
         # Ensure the message complies with RFC2822: use CRLF line endings
         recrlf = re.compile("\r?\n")
         msgtext = CRLF.join(recrlf.split(msgtext))
+        start = time.time()
         self.server.sendmail(msg['From'], recipients, msgtext)
+        t = time.time() - start
+        if t > 5:
+            self.env.log.warning('Slow mail submission (%.2f s), '
+                                 'check your mail setup' % t)
 
     def finish_send(self):
         if self._use_tls:

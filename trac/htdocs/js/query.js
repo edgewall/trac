@@ -27,7 +27,7 @@
       }
       if (mode && (getAncestorByTagName(mode, "tr") == tr)) {
         // Check whether there are more 'or' rows for this filter
-        var next = tr.nextSibling;
+        var next = $(tr).next()[0];
         if (next && (next.className == propertyName)) {
           function getChildElementAt(e, idx) {
             e = e.firstChild;
@@ -225,7 +225,7 @@
         td.className = "filter";
         if (property.type == "select") {
           var element = createSelect(propertyName, property.options, true);
-        } else if (property.type == "text") {
+        } else if ((property.type == "text") || (property.type == "textarea")) {
           var element = document.createElement("input");
           element.type = "text";
           element.name = propertyName;

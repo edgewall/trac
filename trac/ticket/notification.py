@@ -16,12 +16,11 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
-import md5
-
 from trac import __version__
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
+from trac.util import md5
 from trac.util.datefmt import to_timestamp
 from trac.util.text import CRLF, wrap, to_unicode
 
@@ -284,7 +283,7 @@ class TicketNotifyEmail(NotifyEmail):
         s = '%s.%08d.%d.%s' % (self.config.get('project', 'url'),
                                int(self.ticket.id), to_timestamp(modtime),
                                rcpt.encode('ascii', 'ignore'))
-        dig = md5.new(s).hexdigest()
+        dig = md5(s).hexdigest()
         host = self.from_email[self.from_email.find('@') + 1:]
         msgid = '<%03d.%s@%s>' % (len(s), dig, host)
         return msgid

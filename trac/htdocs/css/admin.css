@@ -33,6 +33,7 @@ form .field .disabled em { color: #d7d7d7 }
 
 table.listing { clear: none; width: 64% }
 table.listing .sel, table.listing .default { text-align: center; width: 1% }
+table.listing .num { text-align: right; width: 1% }
 
 /* Plugins panel */
 form#addplug { width: 35% }
@@ -62,5 +63,7 @@ form#addplug { width: 35% }
 .plugin .listing .name p { color: #999; font-size: 80%; margin: 0 }
 
 /* Perm Panel */
-#permlist div { width: 13em; float: left; }
+#permlist div { float: left; min-width: 13em; max-width: 33%;
+  padding: 0 2em 0 0;
+}
 fieldset tr.field th { text-align: right; }

@@ -162,6 +162,9 @@ class SessionTestCase(unittest.TestCase):
         """
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO session "
+                       "VALUES ('123456', 0, %s)",
+                       (0,))
+        cursor.execute("INSERT INTO session "
                        "VALUES ('987654', 0, %s)",
                        (time.time() - PURGE_AGE - 3600,))
         cursor.execute("INSERT INTO session_attribute VALUES "

@@ -73,15 +73,24 @@ class DetachedSession(dict):
             # persist it
             return
 
+        authenticated = int(self.authenticated)
+        now = int(time.time())
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        authenticated = int(self.authenticated)
 
         if self._new:
+            self.last_visit = now
             self._new = False
-            cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
-                           " VALUES(%s,%s,%s)",
-                           (self.sid, self.last_visit, authenticated))
+            # The session might already exist even if _new is True since
+            # it could have been created by a concurrent request (#3563).
+            try:
+                cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
+                               " VALUES(%s,%s,%s)",
+                               (self.sid, self.last_visit, authenticated))
+            except Exception, e:
+                db.rollback()
+                self.env.log.warning('Session %s already exists: %s' % 
+                                     (self.sid, e))
         if self._old != self:
             attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
             cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
@@ -98,7 +107,6 @@ class DetachedSession(dict):
                 db.commit()
                 return
 
-        now = int(time.time())
         # Update the session last visit time if it is over an hour old,
         # so that session doesn't get purged
         if now - self.last_visit > UPDATE_INTERVAL:
@@ -144,7 +152,7 @@ class Session(DetachedSession):
     def bake_cookie(self, expires=PURGE_AGE):
         assert self.sid, 'Session ID not set'
         self.req.outcookie[COOKIE_KEY] = self.sid
-        self.req.outcookie[COOKIE_KEY]['path'] = self.req.base_path
+        self.req.outcookie[COOKIE_KEY]['path'] = self.req.base_path or '/'
         self.req.outcookie[COOKIE_KEY]['expires'] = expires
 
     def get_session(self, sid, authenticated=False):

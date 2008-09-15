@@ -67,7 +67,7 @@ from genshi.input import HTMLParser
 from trac.config import IntOption, ListOption, Option
 from trac.core import *
 from trac.resource import Resource
-from trac.util import reversed, sorted, Ranges
+from trac.util import Ranges
 from trac.util.text import to_utf8, to_unicode
 from trac.util.translation import _
 
@@ -125,6 +125,7 @@ class Context(object):
         self.href = href
         self.perm = resource and perm and perm(resource) or perm
 
+    @classmethod
     def from_request(cls, req, resource=None, id=False, version=False,
                      absurls=False):
         """Create a rendering context from a request.
@@ -160,7 +161,6 @@ class Context(object):
                    perm=perm)
         self.req = req
         return self
-    from_request = classmethod(from_request)
 
     def __repr__(self):
         path = []
@@ -258,6 +258,7 @@ KNOWN_MIME_TYPES = {
     'text/x-elisp':           ['el'],
     'text/x-fortran':         ['f'],
     'text/x-haskell':         ['hs'],
+    'text/x-ini':             ['ini', 'cfg'],
     'text/x-javascript':      ['js'],
     'text/x-objc':            ['m', 'mm'],
     'text/x-ocaml':           ['ml', 'mli'],
@@ -808,7 +809,7 @@ class Mimeview(Component):
 
         Note: `content` will usually be an object with a `read` method.
         """        
-        data = {'raw_href': url,
+        data = {'raw_href': url, 'size': length,
                 'max_file_size': self.max_preview_size,
                 'max_file_size_reached': False,
                 'rendered': None,

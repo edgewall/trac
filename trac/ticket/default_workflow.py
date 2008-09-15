@@ -25,7 +25,6 @@ from trac.perm import PermissionSystem
 from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
 from trac.ticket.api import ITicketActionController, TicketSystem
-from trac.util.compat import set
 from trac.util.translation import _
 
 # -- Utilities for the ConfigurableTicketWorkflow
@@ -169,11 +168,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         # the process of being modified, we need to base our information on the
         # pre-modified state so that we don't try to do two (or more!) steps at
         # once and get really confused.
-        if 'status' in ticket._old:
-            status = ticket._old['status']
-        else:
-            status = ticket['status']
-        status = status or 'new'
+        status = ticket._old.get('status', ticket['status']) or 'new'
 
         allowed_actions = []
         for action_name, action_info in self.actions.items():
@@ -218,6 +213,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         this_action = self.actions[action]
         status = this_action['newstate']        
         operations = this_action['operations']
+        current_owner = ticket._old.get('owner', ticket['owner'] or '(none)')
 
         control = [] # default to nothing
         hints = []
@@ -244,22 +240,27 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 owner = req.args.get(id, req.authname)
                 control.append(tag(['to ', tag.input(type='text', id=id,
                                                      name=id, value=owner)]))
-                hints.append(_("The owner will change"))
+                hints.append(_("The owner will change from %(current_owner)s",
+                               current_owner=current_owner))
             elif len(owners) == 1:
                 control.append(tag('to %s ' % owners[0]))
                 if ticket['owner'] != owners[0]:
-                    hints.append(_("The owner will change to %(name)s",
-                                   name=owners[0]))
+                    hints.append(_("The owner will change from "
+                                   "%(current_owner)s to %(selected_owner)s",
+                                   current_owner=current_owner,
+                                   selected_owner=owners[0]))
             else:
                 control.append(tag([_("to "), tag.select(
                     [tag.option(x, selected=(x == selected_owner or None))
                      for x in owners],
                     id=id, name=id)]))
-                hints.append(_("The owner will change"))
+                hints.append(_("The owner will change from %(current_owner)s",
+                               current_owner=current_owner))
         if 'set_owner_to_self' in operations and \
-            ticket['owner'] != req.authname:
-            hints.append(_("The owner will change to %(name)s",
-                           name=req.authname))
+                ticket._old.get('owner', ticket['owner']) != req.authname:
+            hints.append(_("The owner will change from %(current_owner)s "
+                           "to %(authname)s", current_owner=current_owner,
+                           authname=req.authname))
         if 'set_resolution' in operations:
             if this_action.has_key('set_resolution'):
                 resolutions = [x.strip() for x in
@@ -267,7 +268,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             else:
                 resolutions = [val.name for val in
                                model.Resolution.select(self.env)]
-            assert(resolutions)
+            if not resolutions:
+                raise TracError(_("Your workflow attempts to set a resolution "
+                                  "but none is defined (configuration issue, "
+                                  "please contact your Trac admin)."))
             if len(resolutions) == 1:
                 control.append(tag('as %s' % resolutions[0]))
                 hints.append(_("The resolution will be set to %(name)s",
@@ -282,7 +286,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                     id=id, name=id)]))
                 hints.append(_("The resolution will be set"))
         if 'leave_status' in operations:
-            control.append('as %s ' % ticket['status'])
+            control.append('as %s ' % ticket._old.get('status', 
+                                                      ticket['status']))
         else:
             if status != '*':
                 hints.append(_("Next status will be '%(name)s'", name=status))
