@@ -345,7 +345,7 @@ class AttachmentModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'^/(raw-)?attachment/([^/]+)(?:[/:](.*))?$',
+        match = re.match(r'^/(raw-)?attachment/([^/]+)(?:/(.*))?$',
                          req.path_info)
         if match:
             raw, realm, path = match.groups()
@@ -353,7 +353,7 @@ class AttachmentModule(Component):
                 req.args['format'] = 'raw'
             req.args['realm'] = realm
             if path:
-                req.args['path'] = path.replace(':', '/')
+                req.args['path'] = path
             return True
 
     def process_request(self, req):
