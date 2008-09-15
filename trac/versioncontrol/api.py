@@ -34,6 +34,8 @@ from trac.web.api import IRequestFilter
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
+    error = None # place holder for storing relevant error message
+
     def get_supported_types():
         """Return the types of version control systems that are supported.
 
@@ -42,6 +44,11 @@ class IRepositoryConnector(Interface):
         
         If multiple provider match a given type, the `priority` is used to
         choose between them (highest number is highest priority).
+
+        If the `priority` returned is negative, this indicates that the 
+        connector for the given `repotype` indeed exists but can't be
+        used for some reason. The `error` property can then be used to 
+        store an error message or exception relevant to the problem detected.
         """
 
     def get_repository(repos_type, repos_dir, options):
@@ -99,7 +106,9 @@ class RepositoryManager(Component):
                 self.get_repository('', req.authname).sync()
             except TracError, e:
                 add_warning(req, _("Can't synchronize with the repository "
-                              "(%(error)s)", error=e.message))
+                              "(%(error)s). Look in the Trac log for more "
+                              "information.", error=e.message))
+                          
         return handler
 
     def post_process_request(self, req, template, data, content_type):
@@ -286,22 +295,27 @@ class RepositoryManager(Component):
         if self._connectors is None:
             # build an environment-level cache for the preferred connectors
             self._connectors = {}
-            prioritize = {}
             for connector in self.connectors:
                 for type_, prio in connector.get_supported_types():
-                    best = prioritize.setdefault(type_, [(None, 0)])
-                    if prio > best[0][1]:
-                        best[0] = (connector, prio)
-            for type_, best in prioritize.iteritems():
-                    self._connectors[type_] = best[0][0]
-        connector = self._connectors.get(rtype)
-        if not connector:
+                    keep = (connector, prio)
+                    if type_ in self._connectors and \
+                        prio <= self._connectors[type_][1]:
+                            keep = None
+                    if keep:
+                        self._connectors[type_] = keep
+        if rtype in self._connectors:
+            connector, prio = self._connectors[rtype]
+            if prio >= 0: # no error condition
+                return connector
+            else:
+                raise TracError(
+                    _('Unsupported version control system "%(name)s"'
+                      ': "%(error)s" ', name=rtype, error=connector.error))
+        else:
             raise TracError(
-                    _('Unsupported version control system "%(name)s". '
-                      'Check that the Python support libraries for '
-                      '"%(name)s" are correctly installed.',
-                      name=self.repository_type))
-        return connector
+                _('Unsupported version control system "%(name)s": '
+                  'Can\'t find an appropriate component, maybe the '
+                  'corresponding plugin was not enabled? ', name=rtype))
 
 
 class NoSuchChangeset(ResourceNotFound):
