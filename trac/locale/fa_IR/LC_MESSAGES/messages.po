@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-12-01 12:55+0100\n"
-"PO-Revision-Date: 2008-05-06 11:57+0200\n"
+"PO-Revision-Date: 2008-06-28 21:56+0200\n"
 "Last-Translator: Ghassem Tofighi <tofighi@gmail.com>\n"
 "Language-Team: fa_IR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.0dev-r364\n"
+"Generated-By: Babel 1.0dev-r404\n"
 
 #: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:26
 msgid "About Trac"
@@ -63,8 +63,8 @@ msgstr "پیوست  '%(id)s' در  %(parent)s"
 msgid "Attachments of %(parent)s"
 msgstr "پیوست‌های %(parent)s"
 
-#: trac/attachment.py:529 trac/attachment.py:552 trac/admin/web_ui.py:397
-#: trac/admin/web_ui.py:400 trac/admin/web_ui.py:404
+#: trac/attachment.py:529 trac/attachment.py:552 trac/admin/web_ui.py:403
+#: trac/admin/web_ui.py:406 trac/admin/web_ui.py:410
 msgid "No file uploaded"
 msgstr "هیچ فایلی بارگیری نشد"
 
@@ -97,7 +97,7 @@ msgid "%(attachment)s (delete)"
 msgstr "(حذف) %(attachment)s"
 
 #: trac/attachment.py:664 trac/versioncontrol/web_ui/browser.py:511
-#: trac/wiki/web_ui.py:63
+#: trac/wiki/web_ui.py:66
 msgid "Plain Text"
 msgstr "متن ساده"
 
@@ -105,20 +105,20 @@ msgstr "متن ساده"
 msgid "Original Format"
 msgstr "قالب اصلی"
 
-#: trac/env.py:398
+#: trac/env.py:404
 msgid "Can only backup sqlite databases"
 msgstr "تنها می‌توان از پایگاه‌های داده sqlite پشتیبان گرفت"
 
-#: trac/env.py:483
+#: trac/env.py:489
 msgid "Database newer than Trac version"
 msgstr "پایگاه داده از نسخه Trac جدیدتر است"
 
-#: trac/env.py:495
+#: trac/env.py:501
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "ماژول به‌روززسانی برای نسخه %(num)i (%(version)s.py) وجودندارد"
 
-#: trac/env.py:540
+#: trac/env.py:546
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -126,7 +126,7 @@ msgstr ""
 "متغیر محیطی  \"TRAC_ENV\" از دست رفته است. «ترک» به این متغیر برای اشاره "
 "به یک محیط ترک معتبر نیاز دارد."
 
-#: trac/env.py:572
+#: trac/env.py:578
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -181,7 +181,7 @@ msgstr "%(name)s یک عملیات معتبر نیست."
 msgid " at version %(version)s"
 msgstr " در نسخه %(version)s"
 
-#: trac/admin/console.py:1129
+#: trac/admin/console.py:1143
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
@@ -203,7 +203,7 @@ msgid "Unknown administration panel"
 msgstr "پنل مدیریت ناشناخته"
 
 #: trac/admin/web_ui.py:180 trac/admin/web_ui.py:207 trac/admin/web_ui.py:296
-#: trac/admin/web_ui.py:373 trac/prefs/web_ui.py:89
+#: trac/admin/web_ui.py:379 trac/prefs/web_ui.py:89
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "کلی"
@@ -269,33 +269,33 @@ msgstr "ورودی فراموش‌شده"
 msgid "Permissions"
 msgstr "مجوزها"
 
-#: trac/admin/web_ui.py:309
+#: trac/admin/web_ui.py:310
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "همه‌ی نشانه‌های «با حروف بزرگ» برای نام‌های مجوز رزرو شده‌اند"
 
-#: trac/admin/web_ui.py:316
+#: trac/admin/web_ui.py:317
 msgid "Unknown action"
 msgstr "عملیات ناشناخته"
 
-#: trac/admin/web_ui.py:323
+#: trac/admin/web_ui.py:324
 #, python-format
 msgid "Permission \"%(action)s\" was already granted to \"%(subject)s\""
 msgstr "مجوز \"%(action)s\" قبلا به  \"%(subject)s\" اعطا شده بود"
 
-#: trac/admin/web_ui.py:337
+#: trac/admin/web_ui.py:343
 #, python-format
 msgid "\"%(subject)s\" was already added to group \"%(group)s\""
 msgstr "\"%(subject)s\" قبلا به گروه \"%(group)s\" اضافه شده بود"
 
-#: trac/admin/web_ui.py:373 trac/admin/templates/admin_plugins.html:9
+#: trac/admin/web_ui.py:379 trac/admin/templates/admin_plugins.html:9
 msgid "Plugins"
 msgstr "افزونه‌ها"
 
-#: trac/admin/web_ui.py:407
+#: trac/admin/web_ui.py:413
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "فایل بارگیری شده یک سورس کد پیتون یا یک egg پیتون نیست"
 
-#: trac/admin/web_ui.py:412
+#: trac/admin/web_ui.py:418
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "افزونه %(name)s هم‌اکنون نصب شده است"
@@ -329,7 +329,7 @@ msgid "URL:"
 msgstr "آدرس وب:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:293
+#: trac/ticket/templates/ticket.html:291
 msgid "Description:"
 msgstr "شرح:"
 
@@ -559,7 +559,7 @@ msgstr "توجه کنید"
 msgid "Subject"
 msgstr "موضوع"
 
-#: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:64
+#: trac/admin/templates/admin_perms.html:16 trac/ticket/templates/query.html:60
 msgid "or"
 msgstr "یا"
 
@@ -609,7 +609,7 @@ msgid "Add a user or group to an existing permission group."
 msgstr "یک کاربر یا گروه را به یک گروه مجوز موجود بیفزایید"
 
 #: trac/admin/templates/admin_perms.html:75
-#: trac/ticket/templates/ticket.html:359
+#: trac/ticket/templates/ticket.html:365
 msgid "Action"
 msgstr "عملیات:"
 
@@ -694,35 +694,31 @@ msgstr "منتشر شده:"
 msgid "Released"
 msgstr "منتشر شده"
 
-#: trac/db/api.py:97
+#: trac/db/api.py:98
 #, python-format
 msgid "Unsupported database type \"%(scheme)s\""
 msgstr ""
 
-#: trac/db/api.py:120
+#: trac/db/api.py:121
 msgid "Database connection string must start with scheme:/"
 msgstr ""
 
-#: trac/db/mysql_backend.py:148
-msgid "MySQL servers older than 4.1 are not supported!"
-msgstr ""
-
-#: trac/db/pool.py:107
+#: trac/db/pool.py:113
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:131
+#: trac/db/sqlite_backend.py:133
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:159
+#: trac/db/sqlite_backend.py:161
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:168
+#: trac/db/sqlite_backend.py:170
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
@@ -869,7 +865,6 @@ msgid "(UTC)."
 msgstr "(UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:30
-#: trac/prefs/templates/prefs_language.html:27
 msgid "In"
 msgstr "در"
 
@@ -956,7 +951,7 @@ msgid "Language:"
 msgstr "مدیریت"
 
 #: trac/prefs/templates/prefs_language.html:16
-msgid "Default language"
+msgid "default language"
 msgstr ""
 
 #: trac/prefs/templates/prefs_language.html:21
@@ -971,14 +966,10 @@ msgstr ""
 "      به‌جای سرور استفاده شود."
 
 #: trac/prefs/templates/prefs_language.html:25
-#, fuzzy
-msgid "Example:"
-msgstr "نام:"
-
-#: trac/prefs/templates/prefs_language.html:28
-#, fuzzy
-msgid "language, this would be displayed as"
-msgstr "، این باید نمایش داده شود به عنوان"
+msgid ""
+"The 'default language' option uses the browser's\n"
+"        language negotiation feature to select the appropriate language."
+msgstr ""
 
 #: trac/prefs/templates/prefs_pygments.html:9
 msgid "Pygments Theme"
@@ -1017,11 +1008,11 @@ msgstr ""
 msgid "Search Error"
 msgstr "خطای جستجو"
 
-#: trac/search/web_ui.py:137 trac/ticket/query.py:657 trac/ticket/report.py:318
+#: trac/search/web_ui.py:137 trac/ticket/query.py:659 trac/ticket/report.py:316
 msgid "Next Page"
 msgstr "صفحه بعد"
 
-#: trac/search/web_ui.py:143 trac/ticket/query.py:662 trac/ticket/report.py:322
+#: trac/search/web_ui.py:143 trac/ticket/query.py:664 trac/ticket/report.py:320
 msgid "Previous Page"
 msgstr "صفحه قبل"
 
@@ -1031,7 +1022,7 @@ msgid "Browse repository path %(path)s"
 msgstr "مرور مسیر %(path)s انبار"
 
 #: trac/search/templates/search.html:10 trac/search/templates/search.html:40
-#: trac/ticket/templates/query_results.html:25
+#: trac/ticket/templates/query_results.html:21
 #: trac/ticket/templates/report_view.html:44
 msgid "Results"
 msgstr "نتایج"
@@ -1053,15 +1044,15 @@ msgstr "مطابقتی پیدا نشد."
 #: trac/ticket/templates/milestone_delete.html:38
 #: trac/ticket/templates/milestone_edit.html:95
 #: trac/ticket/templates/milestone_view.html:96
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:169
-#: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:389
+#: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:395
 #: trac/timeline/templates/timeline.html:53
 #: trac/versioncontrol/templates/browser.html:142
 #: trac/versioncontrol/templates/diff_form.html:62
-#: trac/versioncontrol/templates/revisionlog.html:169
+#: trac/versioncontrol/templates/revisionlog.html:168
 msgid "Note:"
 msgstr "توجه:"
 
@@ -1069,15 +1060,15 @@ msgstr "توجه:"
 #: trac/ticket/templates/milestone_delete.html:38
 #: trac/ticket/templates/milestone_edit.html:95
 #: trac/ticket/templates/milestone_view.html:96
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:169
-#: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:389
+#: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:395
 #: trac/timeline/templates/timeline.html:53
 #: trac/versioncontrol/templates/browser.html:142
 #: trac/versioncontrol/templates/diff_form.html:62
-#: trac/versioncontrol/templates/revisionlog.html:169
+#: trac/versioncontrol/templates/revisionlog.html:168
 msgid "See"
 msgstr "ببینید"
 
@@ -1172,7 +1163,7 @@ msgstr ""
 msgid "Attachment Info"
 msgstr "اطلاعات پیوست"
 
-#: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:248
+#: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:246
 #: trac/wiki/templates/wiki_edit.html:105
 msgid "Your email or username:"
 msgstr "پست الکترونیک یا نام کاربری شما:"
@@ -1202,8 +1193,8 @@ msgstr "این یک عملیات بدون بازگشت است."
 msgid "Delete attachment"
 msgstr "حذف پیوست"
 
-#: trac/templates/attachment.html:78 trac/ticket/api.py:207
-#: trac/ticket/templates/ticket.html:167
+#: trac/templates/attachment.html:78 trac/ticket/api.py:212
+#: trac/ticket/templates/ticket.html:165
 msgid "Description"
 msgstr "شرح"
 
@@ -1223,7 +1214,7 @@ msgstr "قبل)"
 msgid "Property"
 msgstr "ویژگی"
 
-#: trac/templates/diff_div.html:64 trac/ticket/templates/ticket.html:63
+#: trac/templates/diff_div.html:64 trac/ticket/templates/ticket.html:61
 #: trac/versioncontrol/templates/changeset.html:32
 msgid "to"
 msgstr "به"
@@ -1241,8 +1232,8 @@ msgid "between"
 msgstr "بین"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
-#: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:100
-#: trac/wiki/web_ui.py:511 trac/wiki/templates/wiki_view.html:25
+#: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:98
+#: trac/wiki/web_ui.py:519 trac/wiki/templates/wiki_view.html:25
 msgid "Version"
 msgstr "نسخه"
 
@@ -1252,7 +1243,7 @@ msgid "and"
 msgstr "و"
 
 #: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:716
-#: trac/ticket/templates/ticket.html:97
+#: trac/ticket/templates/ticket.html:95
 msgid "Initial Version"
 msgstr "نسخه آغازین"
 
@@ -1306,7 +1297,7 @@ msgstr "افزوده شد"
 msgid "Removed"
 msgstr "حذف شد"
 
-#: trac/templates/diff_view.html:61 trac/ticket/query.py:586
+#: trac/templates/diff_view.html:61 trac/ticket/query.py:588
 #: trac/versioncontrol/templates/changeset.html:157
 #: trac/versioncontrol/templates/revisionlog.html:76
 msgid "Modified"
@@ -1431,12 +1422,11 @@ msgid ""
 "                [2:mailing list]\n"
 "                instead of filing a ticket."
 msgstr ""
-"[1:ﺞﺴﺘﺟﻭ] پیﺵ ﺍﺯ ﺎﻨﺟﺎﻣ ﺂﻧ، ﺐﻫ ﻩﺮﺣﺎﻟ، ﻞﻄﻓﺍ ﺍﻮﻟ ﺁﺰﻣﺍیﺵ کﻥیﺩ"
-"برای موضوعات مشابه، که دقیقا شبیه این مساله هستند\n"
+"[1:ﺞﺴﺘﺟﻭ] پیﺵ ﺍﺯ ﺎﻨﺟﺎﻣ ﺂﻧ، ﺐﻫ ﻩﺮﺣﺎﻟ، ﻞﻄﻓﺍ ﺍﻮﻟ ﺁﺰﻣﺍیﺵ کﻥیﺩبرای موضوعات "
+"مشابه، که دقیقا شبیه این مساله هستند\n"
 "                قبلا گزارش شده است. برای سوالات درباره نصب\n"
-"                «ترک» و  تنظیم ,لطفا آزمایش کنید"
-"[2:ﻝیﺲﺗ پﺲﺗی]"
-"ﺐﻫ ﺝﺍی پﺭکﺭﺪﻧ ﻑﺮﻣ ﺩﺮﺧﻭﺎﺴﺗ."
+"                «ترک» و  تنظیم ,لطفا آزمایش کنید[2:ﻝیﺲﺗ پﺲﺗی]ﺐﻫ ﺝﺍی "
+"پﺭکﺭﺪﻧ ﻑﺮﻣ ﺩﺮﺧﻭﺎﺴﺗ."
 
 #: trac/templates/error.html:136
 msgid "Otherwise, please"
@@ -1513,7 +1503,7 @@ msgstr "تغییر تاریخچه برای"
 #: trac/templates/history_view.html:20 trac/templates/history_view.html:51
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
-#: trac/versioncontrol/templates/revisionlog.html:163
+#: trac/versioncontrol/templates/revisionlog.html:162
 #, fuzzy
 msgid "View changes"
 msgstr "ذخیره تغییرات"
@@ -1557,87 +1547,87 @@ msgstr "بارگذاری در دیگر فرمت‌ها:"
 msgid "anonymous"
 msgstr "ناشناس"
 
-#: trac/templates/macros.html:74 trac/templates/macros.html:75
+#: trac/templates/macros.html:73 trac/templates/macros.html:74
 msgid "Previous"
 msgstr "قبلی"
 
-#: trac/templates/macros.html:84 trac/templates/macros.html:85
+#: trac/templates/macros.html:83 trac/templates/macros.html:84
 msgid "Next"
 msgstr "بعدی"
 
-#: trac/templates/macros.html:95
+#: trac/templates/macros.html:94
 msgid "View differences"
 msgstr "نمایش تفاوت‌ها"
 
-#: trac/templates/macros.html:98
+#: trac/templates/macros.html:97
 msgid "inline"
 msgstr "درخط"
 
-#: trac/templates/macros.html:100
+#: trac/templates/macros.html:99
 msgid "side by side"
 msgstr "در کنار هم"
 
-#: trac/templates/macros.html:102
+#: trac/templates/macros.html:101
 msgid "Show"
 msgstr "نمایش"
 
-#: trac/templates/macros.html:105
+#: trac/templates/macros.html:104
 msgid "lines around each change"
 msgstr "خط‌های پیرامون هر تغییر"
 
-#: trac/templates/macros.html:108
+#: trac/templates/macros.html:107
 msgid "Ignore:"
 msgstr "چشم‌پوشی:"
 
-#: trac/templates/macros.html:112
+#: trac/templates/macros.html:111
 msgid "Blank lines"
 msgstr "خط‌های خالی"
 
-#: trac/templates/macros.html:117
+#: trac/templates/macros.html:116
 msgid "Case changes"
 msgstr "تغییرات مورد"
 
-#: trac/templates/macros.html:122
+#: trac/templates/macros.html:121
 msgid "White space changes"
 msgstr "تغییرات فضای خالی"
 
-#: trac/templates/macros.html:126 trac/ticket/templates/milestone_view.html:53
-#: trac/ticket/templates/query.html:183 trac/ticket/templates/roadmap.html:26
+#: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:53
+#: trac/ticket/templates/query.html:179 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
 #, fuzzy
 msgid "Update"
 msgstr "دیر"
 
-#: trac/templates/macros.html:139 trac/templates/macros.html:152
+#: trac/templates/macros.html:138 trac/templates/macros.html:151
 msgid "HTML preview not available"
 msgstr "پیش‌نمایش HTML در دسترس نیست"
 
-#: trac/templates/macros.html:141
+#: trac/templates/macros.html:140
 msgid "since the file size exceeds"
 msgstr "از آنجاییکه اندازه فایل از حد مجاز بیشتر شده است"
 
-#: trac/templates/macros.html:142
+#: trac/templates/macros.html:141
 msgid "bytes."
 msgstr "بایت."
 
-#: trac/templates/macros.html:144
+#: trac/templates/macros.html:143
 msgid "since no preview renderer could handle it."
 msgstr "از آنجاییکه پویشگر پیش‌نمایش از عهده آن بر نمی‌آید."
 
-#: trac/templates/macros.html:147
+#: trac/templates/macros.html:146
 msgid "Try"
 msgstr "تلاش کنید"
 
-#: trac/templates/macros.html:148
+#: trac/templates/macros.html:147
 msgid "downloading"
 msgstr "در حال بارگذاری"
 
-#: trac/templates/macros.html:148
+#: trac/templates/macros.html:147
 msgid "the file instead."
 msgstr "به‌جای فایل."
 
-#: trac/templates/macros.html:152
+#: trac/templates/macros.html:151
 msgid ""
 ".\n"
 "          To view,"
@@ -1645,43 +1635,43 @@ msgstr ""
 ".\n"
 "          برای نمایش،"
 
-#: trac/templates/macros.html:153
+#: trac/templates/macros.html:152
 msgid "download"
 msgstr "بارگذاری"
 
-#: trac/templates/macros.html:153
+#: trac/templates/macros.html:152
 msgid "the file."
 msgstr "فایل."
 
-#: trac/templates/macros.html:155
+#: trac/templates/macros.html:154
 msgid "found:"
 msgstr "بنا نهادن:"
 
-#: trac/templates/macros.html:172
+#: trac/templates/macros.html:171
 msgid "View attachment"
 msgstr "مشاهده پیوست"
 
-#: trac/templates/macros.html:173
+#: trac/templates/macros.html:172
 msgid ") - added by"
 msgstr ") - افزوده شده به‌وسیله‌ی"
 
-#: trac/templates/macros.html:174 trac/ticket/templates/query_results.html:74
+#: trac/templates/macros.html:173 trac/ticket/templates/query_results.html:70
 msgid "ago."
 msgstr "پیش."
 
-#: trac/templates/macros.html:179 trac/templates/macros.html:190
+#: trac/templates/macros.html:178 trac/templates/macros.html:189
 msgid "Attachments"
 msgstr "پیوست‌ها"
 
-#: trac/templates/macros.html:215
+#: trac/templates/macros.html:214
 msgid "Attach file"
 msgstr "پیوست کردن فایل"
 
-#: trac/templates/macros.html:239 trac/templates/macros.html:243
+#: trac/templates/macros.html:238 trac/templates/macros.html:242
 msgid "s:"
 msgstr "s:"
 
-#: trac/templates/macros.html:243
+#: trac/templates/macros.html:242
 #, fuzzy
 msgid "Total"
 msgstr "سرجمع"
@@ -1718,56 +1708,57 @@ msgstr "مجوز:"
 msgid "Component %(name)s already exists."
 msgstr "مؤلفه %(name)s وجود ندارد."
 
-#: trac/ticket/admin.py:95
+#: trac/ticket/admin.py:94
 msgid "No component selected"
 msgstr "هیچ مؤلفه‌ای انتخاب نشده است"
 
-#: trac/ticket/admin.py:156 trac/ticket/roadmap.py:632
+#: trac/ticket/admin.py:157 trac/ticket/roadmap.py:632
 msgid "Completion date may not be in the future"
 msgstr "زمان انجام نمی‌تواند در آینده باشد."
 
-#: trac/ticket/admin.py:158
+#: trac/ticket/admin.py:159
 #, fuzzy
 msgid "Invalid Completion Date"
 msgstr ""
 
-#: trac/ticket/admin.py:183
+#: trac/ticket/admin.py:185
 #, fuzzy, python-format
 msgid "Milestone %(name)s already exists."
 msgstr "افزونه %(name)s هم‌اکنون نصب شده است"
 
-#: trac/ticket/admin.py:191
+#: trac/ticket/admin.py:192
 msgid "No milestone selected"
 msgstr "هیچ فرسخ‌شماری انتخاب نشده است"
 
-#: trac/ticket/admin.py:263
+#: trac/ticket/admin.py:267
 #, fuzzy, python-format
 msgid "Version %(name)s already exists."
 msgstr "نسخه  %(name)s وجود ندارد."
 
-#: trac/ticket/admin.py:271
+#: trac/ticket/admin.py:274
 msgid "No version selected"
 msgstr "هیچ نسخه‌ای انتخاب نشده است"
 
-#: trac/ticket/admin.py:343
+#: trac/ticket/admin.py:348
 #, fuzzy, python-format
 msgid "%(type)s %(name)s already exists"
 msgstr "%(type)s %(name)s وجود ندارد."
 
-#: trac/ticket/admin.py:350
-msgid "No enum selected"
-msgstr "هیچ enumای انتخاب نشده است"
+#: trac/ticket/admin.py:354
+#, fuzzy, python-format
+msgid "No %s selected"
+msgstr ""
 
-#: trac/ticket/admin.py:377
+#: trac/ticket/admin.py:383
 msgid "Order numbers must be unique"
 msgstr "شماره‌های ترتیب باید یکتا باشند"
 
-#: trac/ticket/api.py:357
+#: trac/ticket/api.py:362
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "%(cnum)s نظر برای درخواست #%(id)s"
 
-#: trac/ticket/api.py:378
+#: trac/ticket/api.py:383
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "درخواست #%(shortname)s"
@@ -1807,17 +1798,21 @@ msgstr "نتیجه تحلیل تنظیم خواهد شد"
 msgid "Next status will be '%(name)s'"
 msgstr "وضعیت بعدی '%(name)s' خواهد بود"
 
-#: trac/ticket/model.py:361
+#: trac/ticket/model.py:128
+msgid "Multi-values fields not supported yet"
+msgstr ""
+
+#: trac/ticket/model.py:363
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s وجود ندارد."
 
-#: trac/ticket/model.py:505
+#: trac/ticket/model.py:507
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "مؤلفه %(name)s وجود ندارد."
 
-#: trac/ticket/model.py:735
+#: trac/ticket/model.py:737
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "نسخه  %(name)s وجود ندارد."
@@ -1832,118 +1827,131 @@ msgstr ""
 msgid "Query max %(max)s is invalid."
 msgstr ""
 
+#: trac/ticket/query.py:135
+msgid "Query filter requires field and constraints separated by a \"=\""
+msgstr ""
+
+#: trac/ticket/query.py:139
+msgid "Query filter requires field name"
+msgstr ""
+
 #: trac/ticket/query.py:271
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr ""
 
-#: trac/ticket/query.py:587
+#: trac/ticket/query.py:589
 msgid "Created"
 msgstr "ایجاد شد"
 
-#: trac/ticket/query.py:590 trac/ticket/web_ui.py:548
+#: trac/ticket/query.py:592 trac/ticket/web_ui.py:548
 msgid "Ticket"
 msgstr "درخواست"
 
-#: trac/ticket/query.py:606
+#: trac/ticket/query.py:608
 msgid "contains"
 msgstr "شامل می‌شود"
 
-#: trac/ticket/query.py:607
+#: trac/ticket/query.py:609
 msgid "doesn't contain"
 msgstr "شامل نمی‌شود"
 
-#: trac/ticket/query.py:608
+#: trac/ticket/query.py:610
 msgid "begins with"
 msgstr "آغاز شده به‌وسیله"
 
-#: trac/ticket/query.py:609
+#: trac/ticket/query.py:611
 msgid "ends with"
 msgstr "پایان یافته به‌وسیله"
 
-#: trac/ticket/query.py:610 trac/ticket/query.py:614
+#: trac/ticket/query.py:612 trac/ticket/query.py:616
 msgid "is"
 msgstr "است"
 
-#: trac/ticket/query.py:611 trac/ticket/query.py:615
+#: trac/ticket/query.py:613 trac/ticket/query.py:617
 msgid "is not"
 msgstr "نیست"
 
-#: trac/ticket/query.py:668 trac/ticket/report.py:329
+#: trac/ticket/query.py:672 trac/ticket/report.py:327
 #, python-format
 msgid "Page %(num)d"
 msgstr ""
 
-#: trac/ticket/query.py:709 trac/ticket/report.py:513 trac/ticket/web_ui.py:114
+#: trac/ticket/query.py:713 trac/ticket/report.py:511 trac/ticket/web_ui.py:113
 #: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
 msgid "RSS Feed"
 msgstr "فید RSS"
 
-#: trac/ticket/query.py:711 trac/ticket/report.py:516 trac/ticket/web_ui.py:110
+#: trac/ticket/query.py:715 trac/ticket/report.py:514 trac/ticket/web_ui.py:109
 msgid "Comma-delimited Text"
 msgstr "متن «با کاما جداشده»"
 
-#: trac/ticket/query.py:713 trac/ticket/report.py:518 trac/ticket/web_ui.py:112
+#: trac/ticket/query.py:717 trac/ticket/report.py:516 trac/ticket/web_ui.py:111
 msgid "Tab-delimited Text"
 msgstr "متن «با تب جداشده»"
 
-#: trac/ticket/query.py:735 trac/ticket/report.py:63
+#: trac/ticket/query.py:739 trac/ticket/report.py:62
 msgid "View Tickets"
 msgstr "مشاهده درخواست‌ها"
 
-#: trac/ticket/query.py:886 trac/ticket/query.py:897 trac/ticket/report.py:121
+#: trac/ticket/query.py:890 trac/ticket/query.py:901 trac/ticket/report.py:120
 msgid "Custom Query"
 msgstr "پرس و جوی دلخواه"
 
-#: trac/ticket/query.py:896 trac/ticket/report.py:111 trac/ticket/report.py:112
-#: trac/ticket/report.py:114 trac/ticket/report.py:231
+#: trac/ticket/query.py:900 trac/ticket/report.py:110 trac/ticket/report.py:111
+#: trac/ticket/report.py:113 trac/ticket/report.py:230
 msgid "Available Reports"
 msgstr "گزارش‌های موجود"
 
-#: trac/ticket/query.py:983
+#: trac/ticket/query.py:987
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[خطا: %(error)s]"
 
-#: trac/ticket/query.py:1063
+#: trac/ticket/query.py:1076
 msgid "No results"
 msgstr "بدون نتیجه"
 
-#: trac/ticket/report.py:178
+#: trac/ticket/query.py:1114
+#, python-format
+msgid "%(groupvalue)s %(groupname)s tickets:"
+msgstr ""
+
+#: trac/ticket/report.py:177
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "حذف گزارش {%(num)s} %(title)s"
 
-#: trac/ticket/report.py:183 trac/ticket/report.py:195
-#: trac/ticket/report.py:243
+#: trac/ticket/report.py:182 trac/ticket/report.py:194
+#: trac/ticket/report.py:242
 #, python-format
 msgid "Report %(num)s does not exist."
 msgstr "گزارش %(num)s وجود ندارد."
 
-#: trac/ticket/report.py:184 trac/ticket/report.py:196
-#: trac/ticket/report.py:244
+#: trac/ticket/report.py:183 trac/ticket/report.py:195
+#: trac/ticket/report.py:243
 msgid "Invalid Report Number"
 msgstr "شماره گزارش نامعتبر"
 
-#: trac/ticket/report.py:208
+#: trac/ticket/report.py:207
 msgid "Create New Report"
 msgstr "یک گزارش جدید ایجاد کنید"
 
-#: trac/ticket/report.py:212
+#: trac/ticket/report.py:211
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr "ویرایش گزارش {%(num)d} %(title)s"
 
-#: trac/ticket/report.py:226
+#: trac/ticket/report.py:225
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr "گزارش ناکام ماند: %(error)s"
 
-#: trac/ticket/report.py:234
+#: trac/ticket/report.py:233
 msgid "This is a list of available reports."
 msgstr "این یک لیست از گزارش‌های موجود است."
 
-#: trac/ticket/report.py:259
+#: trac/ticket/report.py:258
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "وقتی مشخص شد، شماره گزارش باید \"%(num)s\" باشد."
@@ -1953,21 +1961,21 @@ msgstr "وقتی مشخص شد، شماره گزارش باید \"%(num)s\" با
 msgid "Report execution failed: %(error)s"
 msgstr "گزارش ناکامی اجرا: %(error)s"
 
-#: trac/ticket/report.py:520
+#: trac/ticket/report.py:518
 msgid "SQL Query"
 msgstr "پرس و جوی SQL"
 
-#: trac/ticket/report.py:526
+#: trac/ticket/report.py:532
 #, python-format
 msgid "Report %(num)s has no SQL query."
 msgstr "گزارش  %(num)s هیچ پرس و جوی SQLای ندارد."
 
-#: trac/ticket/report.py:561
+#: trac/ticket/report.py:562
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
 msgstr ""
 
-#: trac/ticket/report.py:607
+#: trac/ticket/report.py:605
 #, python-format
 msgid "Dynamic variable '%(name)s' not defined."
 msgstr "متغیر پویای '%(name)s' تعریف نشده است."
@@ -2019,21 +2027,46 @@ msgstr "فرسخ‌شمار \"%(name)s\" هم‌اکنون وجود دارد، �
 msgid "You must provide a name for the milestone."
 msgstr "شما باید یک نام برای فرسخ‌شمار وارد کنید."
 
-#: trac/ticket/web_ui.py:136 trac/ticket/templates/ticket.html:17
+#: trac/ticket/web_ui.py:135 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
 msgstr "درخواست جدید"
 
-#: trac/ticket/web_ui.py:152
+#: trac/ticket/web_ui.py:151
 msgid "id can't be set for a new ticket request."
 msgstr "نمی‌توان شماره‌ای برای تقاضای درخواست جدید صادر کرد."
 
-#: trac/ticket/web_ui.py:203
+#: trac/ticket/web_ui.py:202
 msgid "Ticket changes"
 msgstr "تغییرات درخواست"
 
-#: trac/ticket/web_ui.py:205
+#: trac/ticket/web_ui.py:204
 msgid "Ticket details"
 msgstr "جزییات درخواست"
+
+#: trac/ticket/web_ui.py:210
+#, fuzzy
+msgid "created"
+msgstr "ایجاد شد"
+
+#: trac/ticket/web_ui.py:211
+#, fuzzy
+msgid "reopened"
+msgstr "باز"
+
+#: trac/ticket/web_ui.py:212
+#, fuzzy
+msgid "closed"
+msgstr "بسته شده"
+
+#: trac/ticket/web_ui.py:213
+#, fuzzy
+msgid "updated"
+msgstr "دیر"
+
+#: trac/ticket/web_ui.py:309
+#, fuzzy, python-format
+msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "درخواست %(ticketref)s (%(summary)s) %(verb)s"
 
 #: trac/ticket/web_ui.py:437
 #, python-format
@@ -2054,8 +2087,8 @@ msgid "No differences to show"
 msgstr "هیچ تفاوتی برای نمایش وجود ندارد"
 
 #: trac/ticket/web_ui.py:713 trac/ticket/web_ui.py:768
-#: trac/ticket/web_ui.py:776 trac/wiki/web_ui.py:347 trac/wiki/web_ui.py:353
-#: trac/wiki/web_ui.py:499 trac/wiki/web_ui.py:507
+#: trac/ticket/web_ui.py:776 trac/wiki/web_ui.py:355 trac/wiki/web_ui.py:361
+#: trac/wiki/web_ui.py:507 trac/wiki/web_ui.py:515
 #, python-format
 msgid "Version %(num)s"
 msgstr "نسخه %(num)s"
@@ -2065,7 +2098,7 @@ msgid "initial"
 msgstr ""
 
 #: trac/ticket/web_ui.py:778 trac/versioncontrol/web_ui/changeset.py:342
-#: trac/wiki/web_ui.py:366
+#: trac/wiki/web_ui.py:374
 #, fuzzy
 msgid "Change"
 msgstr "تغییرات"
@@ -2112,43 +2145,43 @@ msgstr "شاخص رشته نظرات نامعتبر"
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "ورودی '%(field)s' درخواست نامعتبر است: %(message)s"
 
-#: trac/ticket/web_ui.py:1036
+#: trac/ticket/web_ui.py:1043
 msgid "Assign to"
 msgstr ""
 
-#: trac/ticket/web_ui.py:1052
+#: trac/ticket/web_ui.py:1059
 msgid "Open"
 msgstr "باز"
 
-#: trac/ticket/web_ui.py:1053
+#: trac/ticket/web_ui.py:1060
 msgid "Closed"
 msgstr "بسته شده"
 
-#: trac/ticket/web_ui.py:1068
+#: trac/ticket/web_ui.py:1075
 msgid "Add to Cc"
 msgstr "افزودن به دریافت کننده آشکار"
 
-#: trac/ticket/web_ui.py:1069
+#: trac/ticket/web_ui.py:1076
 msgid "Remove from Cc"
 msgstr "حذف از دریافت کننده آشکار"
 
-#: trac/ticket/web_ui.py:1070
+#: trac/ticket/web_ui.py:1077
 msgid "Add/Remove from Cc"
 msgstr "افزودن/حذف از دریافت کننده آشکار"
 
-#: trac/ticket/web_ui.py:1071
+#: trac/ticket/web_ui.py:1078
 msgid "<Author field>"
 msgstr "<ورودی نویسنده>"
 
-#: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:93
+#: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:89
 msgid "yes"
 msgstr "بله"
 
-#: trac/ticket/web_ui.py:1090 trac/ticket/templates/query.html:96
+#: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:92
 msgid "no"
 msgstr "خیر"
 
-#: trac/ticket/web_ui.py:1260 trac/versioncontrol/templates/changeset.html:130
+#: trac/ticket/web_ui.py:1268 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
 msgstr "تغییر کرد"
 
@@ -2274,90 +2307,91 @@ msgid "Edit milestone"
 msgstr "ویرایش فرسخ‌شمار"
 
 #: trac/ticket/templates/query.html:28
-#: trac/ticket/templates/query_results.html:22
-#: trac/ticket/templates/report_view.html:51
-msgid "match"
-msgstr "مطابق"
+#: trac/ticket/templates/query_results.html:29
+#, fuzzy, python-format
+msgid "%(num)s match"
+msgid_plural "%(num)s matches"
+msgstr[0] ""
 
-#: trac/ticket/templates/query.html:41
+#: trac/ticket/templates/query.html:37
 msgid "Filters"
 msgstr "فیلترها"
 
-#: trac/ticket/templates/query.html:42
+#: trac/ticket/templates/query.html:38
 msgid "Query filters"
 msgstr "فیلترهای پرس و جو"
 
-#: trac/ticket/templates/query.html:117
+#: trac/ticket/templates/query.html:113
 msgid "Add filter"
 msgstr "افزودن فیلتر"
 
-#: trac/ticket/templates/query.html:137
+#: trac/ticket/templates/query.html:133
 msgid "Columns"
 msgstr "ستون‌ها"
 
-#: trac/ticket/templates/query.html:151
+#: trac/ticket/templates/query.html:147
 msgid "Group results by"
 msgstr "دسته‌بندی نتایج بر اساس"
 
-#: trac/ticket/templates/query.html:161
+#: trac/ticket/templates/query.html:157
 msgid "descending"
 msgstr "نزولی"
 
-#: trac/ticket/templates/query.html:165
+#: trac/ticket/templates/query.html:161
 msgid "Show under each result:"
 msgstr "نمایش زیر هر نتیجه:"
 
-#: trac/ticket/templates/query.html:175
+#: trac/ticket/templates/query.html:171
 msgid "Max items per page"
 msgstr ""
 
-#: trac/ticket/templates/query.html:218
+#: trac/ticket/templates/query.html:214
 #, fuzzy
 msgid "Edit query"
 msgstr "پرس و جو:"
 
-#: trac/ticket/templates/query.html:226
+#: trac/ticket/templates/query.html:222
 #, fuzzy
 msgid "Save query"
 msgstr "پرس و جو:"
 
-#: trac/ticket/templates/query.html:226
+#: trac/ticket/templates/query.html:222
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "ذخیره پرس و جوی به‌روزرسانی شده در گزارش {%(id)s}"
 
-#: trac/ticket/templates/query.html:226
+#: trac/ticket/templates/query.html:222
 msgid "Create new report from current query"
 msgstr "ایجاد یک گزارش جدید از پرس و جوی کنونی"
 
-#: trac/ticket/templates/query.html:235
+#: trac/ticket/templates/query.html:231
 #, fuzzy
 msgid "Delete query"
 msgstr "حذف"
 
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
 msgstr "پرس و جوی «ترک»"
 
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:238
 msgid "for help on using queries."
 msgstr "برای کمک از پرس و جوها استفاده کنید."
 
-#: trac/ticket/templates/query_results.html:57
-#: trac/ticket/templates/query_results.html:59
+#: trac/ticket/templates/query_results.html:53
+#: trac/ticket/templates/query_results.html:55
 msgid "View ticket"
 msgstr "مشاهده درخواست"
 
-#: trac/ticket/templates/query_results.html:73
+#: trac/ticket/templates/query_results.html:69
 msgid "Reported by"
 msgstr "گزارش شده به‌وسیله"
 
-#: trac/ticket/templates/query_results.html:80
+#: trac/ticket/templates/query_results.html:76
 msgid "(this ticket)"
 msgstr "(این درخواست)"
 
-#: trac/ticket/templates/query_results.html:96
+#: trac/ticket/templates/query_results.html:92
 msgid "(more results for this group on next page)"
 msgstr ""
 
@@ -2430,6 +2464,10 @@ msgstr "مشاهده گزارش"
 msgid "Copy report"
 msgstr "مشاهده گزارش"
 
+#: trac/ticket/templates/report_view.html:51
+msgid "match"
+msgstr "مطابق"
+
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
 msgid "View report"
@@ -2461,113 +2499,113 @@ msgstr ""
 msgid "Add new milestone"
 msgstr "فرسخ‌شمار جدید"
 
-#: trac/ticket/templates/ticket.html:59
+#: trac/ticket/templates/ticket.html:57
 #: trac/versioncontrol/templates/changeset.html:128
 msgid "added"
 msgstr "افزوده شد"
 
-#: trac/ticket/templates/ticket.html:62
+#: trac/ticket/templates/ticket.html:60
 msgid "changed from"
 msgstr "تغییر کرد از"
 
-#: trac/ticket/templates/ticket.html:65
+#: trac/ticket/templates/ticket.html:63
 #: trac/versioncontrol/templates/browser.html:125
 msgid "set to"
 msgstr "تنظیم شد به"
 
-#: trac/ticket/templates/ticket.html:68
+#: trac/ticket/templates/ticket.html:66
 msgid "deleted"
 msgstr "حذف شد"
 
-#: trac/ticket/templates/ticket.html:81
+#: trac/ticket/templates/ticket.html:79
 msgid "Ticket #"
 msgstr "درخواست #"
 
-#: trac/ticket/templates/ticket.html:85
+#: trac/ticket/templates/ticket.html:83
 msgid "Create New Ticket"
 msgstr "درخواست جدید بسازید"
 
-#: trac/ticket/templates/ticket.html:96 trac/ticket/templates/ticket.html:99
+#: trac/ticket/templates/ticket.html:94 trac/ticket/templates/ticket.html:97
 msgid "— at"
 msgstr "— در"
 
-#: trac/ticket/templates/ticket.html:110
+#: trac/ticket/templates/ticket.html:108
 msgid "Preview ("
 msgstr "پیش‌نمایش)"
 
-#: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:62
+#: trac/ticket/templates/ticket.html:108 trac/wiki/templates/wiki_edit.html:62
 msgid "skip"
 msgstr "از قلم انداختن"
 
-#: trac/ticket/templates/ticket.html:115 trac/ticket/templates/ticket.html:210
+#: trac/ticket/templates/ticket.html:113 trac/ticket/templates/ticket.html:209
 msgid "in reply to:"
 msgstr "در پاسخ به:"
 
-#: trac/ticket/templates/ticket.html:117
+#: trac/ticket/templates/ticket.html:115
 msgid "Changed by"
 msgstr "تغییر کرد به وسیله"
 
-#: trac/ticket/templates/ticket.html:128
+#: trac/ticket/templates/ticket.html:126
 msgid "Opened"
 msgstr "باز"
 
-#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:129
+#: trac/ticket/templates/ticket.html:126 trac/ticket/templates/ticket.html:127
 msgid "ago"
 msgstr "قبل"
 
-#: trac/ticket/templates/ticket.html:129
+#: trac/ticket/templates/ticket.html:127
 msgid "Last modified"
 msgstr "آخرین تغییر"
 
-#: trac/ticket/templates/ticket.html:130
+#: trac/ticket/templates/ticket.html:128
 msgid "(ticket not yet created)"
 msgstr "(درخواست تاکنون ایجاد نشده است)"
 
-#: trac/ticket/templates/ticket.html:139
+#: trac/ticket/templates/ticket.html:137
 msgid "Reported by:"
 msgstr "گزارش شد به‌وسیله:"
 
-#: trac/ticket/templates/ticket.html:141
+#: trac/ticket/templates/ticket.html:139
 msgid "Owned by:"
 msgstr "در مالکیت:"
 
-#: trac/ticket/templates/ticket.html:170
+#: trac/ticket/templates/ticket.html:168
 msgid "(last modified by"
 msgstr "(آخرین تغییر به‌وسیله"
 
-#: trac/ticket/templates/ticket.html:172
+#: trac/ticket/templates/ticket.html:170
 msgid "diff"
 msgstr "تفاوت"
 
-#: trac/ticket/templates/ticket.html:183 trac/ticket/templates/ticket.html:225
+#: trac/ticket/templates/ticket.html:181 trac/ticket/templates/ticket.html:223
 msgid "Reply"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:183
+#: trac/ticket/templates/ticket.html:181
 msgid "Reply, quoting this description"
 msgstr "پاسخ، با نقل‌قول این شرح"
 
-#: trac/ticket/templates/ticket.html:202
+#: trac/ticket/templates/ticket.html:200
 msgid "Change History"
 msgstr "تغییر تاریخچه"
 
-#: trac/ticket/templates/ticket.html:214
+#: trac/ticket/templates/ticket.html:213
 msgid "follow-up"
 msgstr "پیگیری"
 
-#: trac/ticket/templates/ticket.html:220
+#: trac/ticket/templates/ticket.html:218
 msgid "Changed"
 msgstr "تغییر کرد"
 
-#: trac/ticket/templates/ticket.html:221
+#: trac/ticket/templates/ticket.html:219
 msgid "ago by"
 msgstr "پیش به‌وسیله"
 
-#: trac/ticket/templates/ticket.html:240
+#: trac/ticket/templates/ticket.html:238
 msgid "Add/Change #"
 msgstr "افزودن/تغییر #"
 
-#: trac/ticket/templates/ticket.html:260
+#: trac/ticket/templates/ticket.html:258
 msgid ""
 "Comment (you may use\n"
 "              [1:WikiFormatting]\n"
@@ -2577,32 +2615,40 @@ msgstr ""
 "              [1:قالب‌بندی‌ویکی]\n"
 "              استفاده کنید):"
 
-#: trac/ticket/templates/ticket.html:273
+#: trac/ticket/templates/ticket.html:271
 msgid "Properties"
 msgstr "ویژگی‌ها"
 
-#: trac/ticket/templates/ticket.html:276
+#: trac/ticket/templates/ticket.html:274
 msgid "Summary:"
 msgstr "خلاصه:"
 
-#: trac/ticket/templates/ticket.html:284
+#: trac/ticket/templates/ticket.html:282
 msgid "Reporter:"
 msgstr "گزارش کننده:"
 
-#: trac/ticket/templates/ticket.html:371
+#: trac/ticket/templates/ticket.html:339
+msgid "This checkbox allows you to add or remove yourself from the CC list."
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:345
+msgid "Space or comma delimited email addresses and usernames are accepted."
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:377
 msgid "I have files to attach to this ticket"
 msgstr "فایل‌هایی برای افزودن به این درخواست به صورت پیوست دارم"
 
-#: trac/ticket/templates/ticket.html:382 trac/wiki/templates/wiki_edit.html:124
+#: trac/ticket/templates/ticket.html:388 trac/wiki/templates/wiki_edit.html:124
 #, fuzzy
 msgid "Preview"
 msgstr "پیش‌نمایش"
 
-#: trac/ticket/templates/ticket.html:390
+#: trac/ticket/templates/ticket.html:396
 msgid "TracTickets"
 msgstr "درخواست‌های «ترک»"
 
-#: trac/ticket/templates/ticket.html:390
+#: trac/ticket/templates/ticket.html:396
 msgid ""
 "for help on using\n"
 "        tickets."
@@ -2660,12 +2706,12 @@ msgstr "برنامه زمانی «ترک»"
 msgid "for information about the timeline view."
 msgstr "برای اطلاعات درباره نمایش برنامه زمانی."
 
-#: trac/util/presentation.py:252
+#: trac/util/presentation.py:254
 #, python-format
 msgid "%(last)d of %(total)d"
 msgstr ""
 
-#: trac/util/presentation.py:254
+#: trac/util/presentation.py:256
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr ""
@@ -2787,7 +2833,8 @@ msgid "Rev"
 msgstr "نسخه"
 
 #: trac/versioncontrol/templates/browser.html:84
-#: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:533
+#: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:520
+#: trac/wiki/web_ui.py:544
 msgid "Last Change"
 msgstr "آخرین تغییر"
 
@@ -3021,15 +3068,15 @@ msgstr "کپی سده از"
 msgid "View log starting at this revision"
 msgstr "مشاهده رویدادنگاری شروع شده از این نسخه"
 
-#: trac/versioncontrol/templates/revisionlog.html:163
+#: trac/versioncontrol/templates/revisionlog.html:162
 msgid "Diff from Old Revision to New Revision (select them above)"
 msgstr "تفاوت از نسخه قبلی به نسخه جدید (از بالا انتخاب کنید)"
 
-#: trac/versioncontrol/templates/revisionlog.html:169
+#: trac/versioncontrol/templates/revisionlog.html:168
 msgid "TracRevisionLog"
 msgstr "رویدادنگاری‌نسخه«ترک»"
 
-#: trac/versioncontrol/templates/revisionlog.html:169
+#: trac/versioncontrol/templates/revisionlog.html:168
 msgid "for help on using the revision log."
 msgstr "برای کمک در به‌کارگیری رویدادنگاری نسخه."
 
@@ -3129,11 +3176,11 @@ msgstr "نمایش مجموعه تغییرات  %(id)s محدود شده به %(
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "نمایش %(range)s تفاوت‌ها محدود به %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:767
+#: trac/versioncontrol/web_ui/changeset.py:784
 msgid "Repository checkins"
 msgstr "ثبت ورودی انبار"
 
-#: trac/versioncontrol/web_ui/changeset.py:939
+#: trac/versioncontrol/web_ui/changeset.py:956
 msgid "Changesets"
 msgstr "مجموعه تغییرات"
 
@@ -3195,7 +3242,7 @@ msgstr "صفحه قبل%(label)s"
 msgid "Next %(label)s"
 msgstr ""
 
-#: trac/wiki/api.py:339
+#: trac/wiki/api.py:325
 msgid "no permission to view this wiki page"
 msgstr "مجوز نمایش این صفحه از ویکی وجود ندارد"
 
@@ -3222,70 +3269,74 @@ msgstr "فهرست مندرجات"
 msgid "Page not modified"
 msgstr "صفحه تغییر نکرده است"
 
-#: trac/wiki/web_ui.py:82 trac/wiki/web_ui.py:585
+#: trac/wiki/web_ui.py:85 trac/wiki/web_ui.py:596
 msgid "Wiki"
 msgstr "ویکی"
 
-#: trac/wiki/web_ui.py:84
+#: trac/wiki/web_ui.py:87
 msgid "Help/Guide"
 msgstr "کمک/راهنمایی"
 
-#: trac/wiki/web_ui.py:119
+#: trac/wiki/web_ui.py:122
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr "نسخه  \"%(num)s\" برای صفحه ویکی  \"%(name)s\" موجود نیست"
 
-#: trac/wiki/web_ui.py:248
+#: trac/wiki/web_ui.py:181
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr "ورودی '%(field)s' صفحه ویکی نامعتبر است: %(message)s"
 
-#: trac/wiki/web_ui.py:252
+#: trac/wiki/web_ui.py:185
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr "صفحه ویکی نامعتبر: %(message)s"
 
-#: trac/wiki/web_ui.py:295
+#: trac/wiki/web_ui.py:271
+msgid "Page not modified, showing latest version."
+msgstr ""
+
+#: trac/wiki/web_ui.py:303
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "نسخه  %(num)s از صفحه \"%(name)s\" وجود ندارد"
 
-#: trac/wiki/web_ui.py:349
+#: trac/wiki/web_ui.py:357
 msgid "Page history"
 msgstr "تاریخچه صفحه"
 
-#: trac/wiki/web_ui.py:366
+#: trac/wiki/web_ui.py:374
 #, fuzzy
 msgid "Wiki History"
 msgstr "تاریخچه درخواست"
 
-#: trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:439
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "%(name)s صفحه وجود ندارد"
 
-#: trac/wiki/web_ui.py:468
+#: trac/wiki/web_ui.py:476
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "صفحه %(name)s  پیدا نشد"
 
-#: trac/wiki/web_ui.py:502 trac/wiki/web_ui.py:511
+#: trac/wiki/web_ui.py:510 trac/wiki/web_ui.py:519
 msgid "View Latest Version"
 msgstr "مشاهد آخرین نسخه"
 
-#: trac/wiki/web_ui.py:528
+#: trac/wiki/web_ui.py:539
 msgid "Start Page"
 msgstr "صفحه شروع"
 
-#: trac/wiki/web_ui.py:529
+#: trac/wiki/web_ui.py:540
 msgid "Index"
 msgstr "شاخص"
 
-#: trac/wiki/web_ui.py:531
+#: trac/wiki/web_ui.py:542
 msgid "History"
 msgstr "تاریخچه"
 
-#: trac/wiki/web_ui.py:541
+#: trac/wiki/web_ui.py:552
 msgid "Wiki changes"
 msgstr "تغییرات ویکی"
 
@@ -3308,6 +3359,16 @@ msgstr "این صفحه"
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
 msgstr "این تنها نسخه این صفحه بود، بنابراین صفحه کاملا حذف خواهد شد!"
+
+#: trac/wiki/templates/wiki_diff.html:16
+#, python-format
+msgid "Delete version %(old_version)d to version %(version)d"
+msgstr ""
+
+#: trac/wiki/templates/wiki_diff.html:17
+#, fuzzy, python-format
+msgid "Delete version %(version)d"
+msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
