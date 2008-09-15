@@ -8,8 +8,7 @@
 
   <py:match path="head" once="true"><head>
     <title py:with="title = list(select('title/text()'))">
-      <py:if test="title">${title} –</py:if>
-      ${' – '.join(filter(None, [project.name, 'Trac']))}
+      <py:if test="title">${title} – </py:if>${project.name or 'Trac'}
     </title>
     <py:if test="chrome.links">
       <py:for each="rel, links in chrome.links.items()">
