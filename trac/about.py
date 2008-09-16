@@ -50,7 +50,7 @@ class AboutModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/about(?:_trac)?(?:/.*)?$', req.path_info)
+        return re.match(r'/about(?:_trac)?(?:/.+)?$', req.path_info)
 
     def process_request(self, req):
         data = {}

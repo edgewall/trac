@@ -71,7 +71,7 @@ class ReportModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match(r'/report(?:/([0-9]+))?', req.path_info)
+        match = re.match(r'/report(?:/([0-9]+))?$', req.path_info)
         if match:
             if match.group(1):
                 req.args['id'] = match.group(1)

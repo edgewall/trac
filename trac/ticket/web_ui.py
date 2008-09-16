@@ -164,7 +164,7 @@ class TicketModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        if re.match(r'/newticket/?$', req.path_info) is not None:
+        if req.path_info == "/newticket":
             return True
         match = re.match(r'/ticket/([0-9]+)$', req.path_info)
         if match:
@@ -173,7 +173,7 @@ class TicketModule(Component):
 
     def process_request(self, req):
         if 'id' in req.args:
-            if req.path_info.startswith('/newticket'):
+            if req.path_info == '/newticket':
                 raise TracError(_("id can't be set for a new ticket request."))
             return self._process_ticket_request(req)
         return self._process_newticket_request(req)
