@@ -50,7 +50,7 @@ class PreferencesModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match('/prefs(?:/([^/]+))?', req.path_info)
+        match = re.match('/prefs(?:/([^/]+))?$', req.path_info)
         if match:
             req.args['panel_id'] = match.group(1)
             return True

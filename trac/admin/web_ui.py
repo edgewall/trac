@@ -69,7 +69,7 @@ class AdminModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        match = re.match('/admin(?:/([^/]+))?(?:/([^/]+))?(?:/(.*)$)?',
+        match = re.match('/admin(?:/([^/]+)(?:/([^/]+)(?:/(.+))?)?)?$',
                          req.path_info)
         if match:
             req.args['cat_id'] = match.group(1)

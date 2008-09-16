@@ -316,7 +316,7 @@ class RoadmapModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/roadmap/?', req.path_info) is not None
+        return req.path_info == '/roadmap'
 
     def process_request(self, req):
         milestone_realm = Resource('milestone')
@@ -538,8 +538,7 @@ class MilestoneModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        import re, urllib
-        match = re.match(r'/milestone(?:/(.+))?', req.path_info)
+        match = re.match(r'/milestone(?:/(.+))?$', req.path_info)
         if match:
             if match.group(1):
                 req.args['id'] = match.group(1)
