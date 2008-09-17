@@ -17,6 +17,15 @@
 previous versions of Python from 2.4 onward.
 """
 
+# Import symbols previously defined here for Python 2.3 compatibility from
+# __builtin__ so that plugins importing them don't suddenly stop working
+set = set
+frozenset = frozenset
+reversed = reversed
+sorted = sorted
+from itertools import groupby, tee
+
+
 try:
     all = all
     any = any
