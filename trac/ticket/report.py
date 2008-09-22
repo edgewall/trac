@@ -33,7 +33,8 @@ from trac.util.presentation import Paginator
 from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import add_ctxtnav, add_link, add_stylesheet, \
+from trac.web.chrome import add_ctxtnav, add_link, add_script, \
+                            add_stylesheet, add_warning, \
                             INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
@@ -218,11 +219,6 @@ class ReportModule(Component):
 
     def _render_view(self, req, db, id):
         """Retrieve the report results and pre-process them for rendering."""
-        try:
-            args = self.get_var_args(req)
-        except ValueError,e:
-            raise TracError(_('Report failed: %(error)s', error=e))
-
         if id == -1:
             # If no particular report was requested, display
             # a list of available reports instead
@@ -240,6 +236,11 @@ class ReportModule(Component):
                 raise ResourceNotFound(
                     _('Report %(num)s does not exist.', num=id),
                     _('Invalid Report Number'))
+
+        try:
+            args = self.get_var_args(req)
+        except ValueError,e:
+            raise TracError(_('Report failed: %(error)s', error=e))
 
         # If this is a saved custom query. redirect to the query module
         #
@@ -293,8 +294,9 @@ class ReportModule(Component):
         user = req.args.get('USER', None)
 
         try:
-            cols, results, num_items = self.execute_paginated_report(
-                    req, db, id, sql, args, limit, offset)
+            cols, results, num_items, missing_args = \
+                self.execute_paginated_report(req, db, id, sql, args, limit,
+                                              offset)
             results = [list(row) for row in results]
             numrows = len(results)
 
@@ -496,6 +498,12 @@ class ReportModule(Component):
                             del req.session[var]
                 except (ValueError, KeyError):
                     pass
+            if len(data['args']) > 1:
+                add_script(req, 'common/js/folding.js')
+            if missing_args:
+                add_warning(req, _(
+                    'The following arguments are missing: %(args)s',
+                    args=", ".join(missing_args)))
             return 'report_view.html', data, None
 
     def add_alternate_links(self, req, args):
@@ -526,7 +534,7 @@ class ReportModule(Component):
 
     def execute_paginated_report(self, req, db, id, sql, args, 
                                  limit=0, offset=0):
-        sql, args = self.sql_sub_vars(sql, args, db)
+        sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
             raise TracError(_('Report %(num)s has no SQL query.', num=id))
         self.log.debug('Executing report with SQL "%s"' % sql)
@@ -578,7 +586,7 @@ class ReportModule(Component):
 
         db.rollback()
 
-        return cols, info, num_items
+        return cols, info, num_items, missing_args
 
     def get_var_args(self, req):
         report_args = {}
@@ -597,12 +605,13 @@ class ReportModule(Component):
         if db is None:
             db = self.env.get_db_cnx()
         values = []
+        missing_args = []
         def add_value(aname):
             try:
                 arg = args[aname]
             except KeyError:
-                raise TracError(_("Dynamic variable '%(name)s' not defined.",
-                                  name='$%s' % aname))
+                arg = args[str(aname)] = ''
+                missing_args.append(aname)
             values.append(arg)
 
         var_re = re.compile("[$]([A-Z]+)")
@@ -633,7 +642,7 @@ class ReportModule(Component):
                 sql_io.write(repl_literal(expr))
             else:
                 sql_io.write(var_re.sub(repl, expr))
-        return sql_io.getvalue(), values
+        return sql_io.getvalue(), values, missing_args
 
     def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',
                   filename=None):

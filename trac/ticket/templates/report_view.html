@@ -7,11 +7,15 @@
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
+    <script type="text/javascript" py:if="report.id != -1 and len(args) > 1">
+      jQuery(document).ready(function($) {
+        $("fieldset legend").enableFolding(false);
+      });
+    </script>
   </head>
 
   <body>
     <div id="content" class="report">
-
       <h1>$title
         <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
       </h1>
@@ -19,6 +23,32 @@
       <div py:if="description" id="description" xml:space="preserve">
         ${wiki_to_html(context, description)}
       </div>
+
+      <form py:if="report.id != -1 and len(args) > 1" method="get" action="">
+        <fieldset id="filters" >
+          <legend class="foldable">Arguments</legend>
+          <table summary="Report arguments">
+            <tbody>
+              <tr style="height: 1px"><td colspan="2"></td></tr>
+            </tbody>
+            <tbody py:for="arg in args" py:if="arg != 'USER'">
+              <tr>
+                <th scope="row"><label>${arg}</label></th>
+                <td class="filter">
+                  <input type="text" name="${arg}" value="${req.args[arg] or None}" size="42" />
+                </td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr class="actions">
+                <td class="actions" colspan="2" style="text-align: right">
+                  <input type="submit" value="Update" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </fieldset>
+      </form>
 
       <div py:if="report.id != -1" class="buttons">
         <form py:if="'REPORT_MODIFY' in perm(report.resource)" action="" method="get">
