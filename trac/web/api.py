@@ -26,7 +26,7 @@ import sys
 import urlparse
 
 from trac.core import Interface, TracError
-from trac.util import get_last_traceback, md5
+from trac.util import get_last_traceback, md5, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
@@ -97,6 +97,31 @@ class _RequestArgs(dict):
         if not isinstance(val, list):
             val = [val]
         return val
+
+
+def parse_query_string(query_string):
+    """Parse a query string into a _RequestArgs."""
+    args = _RequestArgs()
+    for arg in query_string.split('&'):
+        nv = arg.split('=', 1)
+        if len(nv) == 2:
+            (name, value) = nv
+        else:
+            (name, value) = (nv[0], '')
+        name = unquote(name.replace('+', ' '))
+        if isinstance(name, unicode):
+            name = name.encode('utf-8')
+        value = unquote(value.replace('+', ' '))
+        if not isinstance(value, unicode):
+            value = unicode(value, 'utf-8')
+        if name in args:
+            if isinstance(args[name], list):
+                args[name].append(value)
+            else:
+                args[name] = [args[name], value]
+        else:
+            args[name] = value
+    return args
 
 
 class RequestDone(Exception):
