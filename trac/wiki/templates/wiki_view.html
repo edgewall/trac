@@ -19,6 +19,13 @@
   <body>
     <div id="content" class="wiki">
 
+      <h1 class="path" py:if="'/' in page.name" py:with="parts = page.name.split('/')">
+        <py:for each="idx, part in enumerate(parts)"><a
+          class="pathentry" title="View ${'/'.join(parts[:idx + 1])}" href="${href.wiki(*parts[:idx + 1])}">${part}</a><span
+          class="pathentry sep" py:if="idx != len(parts) - 1">/</span></py:for>
+        <br style="clear: both" />
+      </h1>
+
       <py:if test="version">
         <table id="info" summary="Revision info">
           <tbody>

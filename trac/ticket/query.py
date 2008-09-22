@@ -35,7 +35,7 @@ from trac.util.datefmt import to_timestamp, utc
 from trac.util.presentation import Paginator
 from trac.util.text import shorten_line
 from trac.util.translation import _, tag_
-from trac.web import IRequestHandler
+from trac.web import parse_query_string, IRequestHandler
 from trac.web.href import Href
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             INavigationContributor, Chrome
@@ -148,7 +148,8 @@ class Query(object):
                 val = neg + mode + val # add mode of comparison
                 processed_values.append(val)
             try:
-                field = str(field)
+                if isinstance(field, unicode):
+                    field = field.encode('utf-8')
                 if field in kw_strs:
                     kw[field] = processed_values[0]
                 elif field in kw_arys:
@@ -688,13 +689,21 @@ class QueryModule(Component):
     implements(IRequestHandler, INavigationContributor, IWikiSyntaxProvider,
                IContentConverter)
                
-    default_query = Option('query', 'default_query',  
-                            default='status!=closed&owner=$USER', 
-                            doc='The default query for authenticated users.') 
+    default_query = Option('query', 'default_query',
+        default='status!=closed&owner=$USER', 
+        doc="""The default query for authenticated users. The query is either
+            in [TracQuery#QueryLanguage query language] syntax, or a URL query
+            string starting with `?` as used in `query:`
+            [TracQuery#UsingTracLinks Trac links].
+            (''since 0.11.2'')""") 
     
     default_anonymous_query = Option('query', 'default_anonymous_query',  
-                               default='status!=closed&cc~=$USER', 
-                               doc='The default query for anonymous users.') 
+        default='status!=closed&cc~=$USER', 
+        doc="""The default query for anonymous users. The query is either
+            in [TracQuery#QueryLanguage query language] syntax, or a URL query
+            string starting with `?` as used in `query:`
+            [TracQuery#UsingTracLinks Trac links].
+            (''since 0.11.2'')""") 
 
     items_per_page = IntOption('query', 'items_per_page', 100,
         """Number of tickets displayed per page in ticket queries,
@@ -739,6 +748,7 @@ class QueryModule(Component):
         req.perm.assert_permission('TICKET_VIEW')
 
         constraints = self._get_constraints(req)
+        args = req.args
         if not constraints and not 'order' in req.args:
             # If no constraints are given in the URL, use the default ones.
             if req.authname and req.authname != 'anonymous':
@@ -751,37 +761,45 @@ class QueryModule(Component):
                 user = email or name or None
                       
             self.log.debug('QueryModule: Using default query: %s', str(qstring))
-            constraints = Query.from_string(self.env, qstring).constraints
-            # Substitute $USER, or ensure no field constraints that depend on
-            # $USER are used if we have no username.
-            for field, vals in constraints.items():
-                for (i, val) in enumerate(vals):
-                    if user:
-                        vals[i] = val.replace('$USER', user)
-                    elif val.endswith('$USER'):
-                        del constraints[field]
-                        break
+            if qstring.startswith('?'):
+                ticket_fields = [f['name'] for f in
+                                 TicketSystem(self.env).get_ticket_fields()]
+                ticket_fields.append('id')
+                args = parse_query_string(qstring[1:])
+                constraints = dict([(k, args.getlist(k)) for k in args 
+                                    if k in ticket_fields])
+            else:
+                constraints = Query.from_string(self.env, qstring).constraints
+                # Substitute $USER, or ensure no field constraints that depend
+                # on $USER are used if we have no username.
+                for field, vals in constraints.items():
+                    for (i, val) in enumerate(vals):
+                        if user:
+                            vals[i] = val.replace('$USER', user)
+                        elif val.endswith('$USER'):
+                            del constraints[field]
+                            break
 
-        cols = req.args.get('col')
+        cols = args.get('col')
         if isinstance(cols, basestring):
             cols = [cols]
         # Since we don't show 'id' as an option to the user,
         # we need to re-insert it here.            
         if cols and 'id' not in cols: 
             cols.insert(0, 'id')
-        rows = req.args.get('row', [])
+        rows = args.get('row', [])
         if isinstance(rows, basestring):
             rows = [rows]
         format = req.args.get('format')
-        max = req.args.get('max')
+        max = args.get('max')
         if max is None and format in ('csv', 'tab'):
             max = 0 # unlimited unless specified explicitly
         query = Query(self.env, req.args.get('report'),
-                      constraints, cols, req.args.get('order'),
-                      'desc' in req.args, req.args.get('group'),
-                      'groupdesc' in req.args, 'verbose' in req.args,
+                      constraints, cols, args.get('order'),
+                      'desc' in args, args.get('group'),
+                      'groupdesc' in args, 'verbose' in args,
                       rows,
-                      req.args.get('page'), 
+                      args.get('page'), 
                       max)
 
         if 'update' in req.args:
