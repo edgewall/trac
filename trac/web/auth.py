@@ -144,6 +144,8 @@ class LoginModule(Component):
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = req.base_path or '/'
+        if self.env.secure_cookies:
+            req.outcookie['trac_auth']['secure'] = True
 
     def _do_logout(self, req):
         """Log the user out.
@@ -175,6 +177,8 @@ class LoginModule(Component):
         req.outcookie['trac_auth'] = ''
         req.outcookie['trac_auth']['path'] = req.base_path or '/'
         req.outcookie['trac_auth']['expires'] = -10000
+        if self.env.secure_cookies:
+            req.outcookie['trac_auth']['secure'] = True
 
     def _get_name_for_cookie(self, req, cookie):
         db = self.env.get_db_cnx()

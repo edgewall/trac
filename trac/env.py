@@ -100,6 +100,13 @@ class Environment(Component, ComponentManager):
         limitation that this environment will only be usable when accessible
         from that URL, as redirects are frequently used. ''(since 0.10.5)''""")
 
+    secure_cookies = BoolOption('trac', 'secure_cookies', False,
+        """Restrict cookies to HTTPS connections.
+        
+        When true, set the `secure` flag on all cookies so that they are
+        only sent to the server on HTTPS connections. Use this if your Trac
+        instance is only accessible through HTTPS. (''since 0.11.2'')""")
+
     project_name = Option('project', 'name', 'My Project',
         """Name of the project.""")
 
