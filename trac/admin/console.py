@@ -115,6 +115,12 @@ class TracAdmin(cmd.Cmd):
 
     def __init__(self, envdir=None):
         cmd.Cmd.__init__(self)
+        try:
+            import readline
+            readline.set_completer_delims(
+                readline.get_completer_delims().replace('-', ''))
+        except ImportError:
+            pass
         self.interactive = False
         if envdir:
             self.env_set(os.path.abspath(envdir))
@@ -220,7 +226,7 @@ Type:  '?' or 'help' for help on commands.
                 for token in shlex.split(argstr.encode('utf-8'))] or ['']
 
     def word_complete (self, text, words):
-        return [a for a in words if a.startswith (text)]
+        return [a for a in words if a.startswith(text)]
 
     @classmethod
     def print_doc(cls, docs, stream=None):
@@ -290,6 +296,7 @@ Type:  '?' or 'help' for help on commands.
     def all_docs(cls):
         return (cls._help_help + cls._help_initenv + cls._help_hotcopy +
                 cls._help_resync + cls._help_upgrade + cls._help_deploy +
+                cls._help_config +
                 cls._help_permission + cls._help_wiki +
                 cls._help_ticket + cls._help_ticket_type + 
                 cls._help_priority + cls._help_severity +
@@ -330,6 +337,60 @@ Type:  '?' or 'help' for help on commands.
     do_EOF = do_quit # Alias
 
 
+    ## Trac.ini editing
+    _help_config = [('config get <section> <option>',
+                     'Get the value of the given option in "trac.ini"'),
+                    ('config set <section> <option> <value>',
+                     'Set the value for the given option in "trac.ini"'),
+                    ('config remove <section> <option>',
+                     'Remove the specified option from "trac.ini"')]
+    
+    def complete_config(self, text, line, begidx, endidx):
+        argv = self.arg_tokenize(line)
+        argc = len(argv)
+        if line[-1] == ' ': # Space starts new argument
+            argc += 1
+        if argc == 2:
+            comp = ['get', 'set', 'remove']
+        elif argc == 3:
+            comp = self.env_open().config.sections()
+        elif argc == 4:
+            comp = [name for (name, value) in 
+                    self.env_open().config[argv[2]].options()]
+        else:
+            comp = []
+        return self.word_complete(text, comp)
+
+    def do_config(self, line):
+        arg = self.arg_tokenize(line)
+        if arg[0] == 'get' and len(arg) == 3:
+            self._do_config_get(arg[1], arg[2])
+        elif arg[0] == 'set' and len(arg) == 4:
+            self._do_config_set(arg[1], arg[2], arg[3])
+        elif arg[0] == 'remove' and len(arg) == 3:
+            self._do_config_remove(arg[1], arg[2])
+        else:
+            self.do_help('config')
+
+    def _do_config_get(self, section, option):
+        env = self.env_open()
+        printout(env.config.get(section, option))
+        
+    def _do_config_set(self, section, option, value):
+        env = self.env_open()
+        env.config.set(section, option, value)
+        env.config.save()
+        if section == 'inherit' and option == 'file':
+            env.config.parse_if_needed()    # Full reload
+
+    def _do_config_remove(self, section, option):
+        env = self.env_open()
+        env.config.remove(section, option)
+        env.config.save()
+        if section == 'inherit' and option == 'file':
+            env.config.parse_if_needed()    # Full reload
+
+  
     # Component
     _help_component = [('component list', 'Show available components'),
                        ('component add <name> <owner>', 'Add a new component'),

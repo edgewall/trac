@@ -28,6 +28,15 @@ upgrade
 deploy <directory>
 	-- Extract static resources from Trac and all plugins.
 
+config get <section> <option>
+	-- Get the value of the given option in "trac.ini"
+
+config set <section> <option> <value>
+	-- Set the value for the given option in "trac.ini"
+
+config remove <section> <option>
+	-- Remove the specified option from "trac.ini"
+
 permission list [user]
 	-- List permission rules
 
@@ -169,6 +178,10 @@ resolution remove <value>
 resolution order <value> up|down
 	-- Move a resolution value up or down in the list
 
+===== test_config_get =====
+Test project
+===== test_config_set =====
+===== test_config_remove =====
 ===== test_permission_list_ok =====
 
 User           Action
