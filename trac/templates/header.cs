@@ -5,7 +5,7 @@
 <head><?cs
  if:project.name_encoded ?>
  <title><?cs if:title ?><?cs var:title ?> - <?cs /if ?><?cs
-   var:project.name_encoded ?> - Trac</title><?cs
+   var:project.name_encoded ?></title><?cs
  else ?>
  <title>Trac: <?cs var:title ?></title><?cs
  /if ?><?cs

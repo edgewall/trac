@@ -180,11 +180,7 @@ class ChangesetModule(Component):
 
     # IRequestHandler methods
 
-    _request_re = re.compile(r'''
-        /changeset     # module
-        (?:/([^/]+))?  # optional revision
-        (/.*)?$        # optional path restriction
-        ''', re.VERBOSE)
+    _request_re = re.compile(r"/changeset(?:/([^/]+)(/.*)?)?$")
 
     def match_request(self, req):
         match = re.match(self._request_re, req.path_info)
@@ -1042,7 +1038,7 @@ class AnyDiffModule(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return re.match(r'/diff$', req.path_info)
+        return req.path_info == '/diff'
 
     def process_request(self, req):
         repos = self.env.get_repository('', req.authname)

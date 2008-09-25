@@ -27,21 +27,34 @@ class ReportTestCase(unittest.TestCase):
         return environ
 
     def test_sub_var_no_quotes(self):
-        sql, args = self.report_module.sql_sub_vars("$VAR", {'VAR': 'value'})
+        sql, values, missing_args = self.report_module.sql_sub_vars(
+            "$VAR", {'VAR': 'value'})
         self.assertEqual("%s", sql)
-        self.assertEqual(['value'], args)
+        self.assertEqual(['value'], values)
+        self.assertEqual([], missing_args)
 
     def test_sub_var_quotes(self):
-        sql, args = self.report_module.sql_sub_vars("'$VAR'", {'VAR': 'value'})
+        sql, values, missing_args = self.report_module.sql_sub_vars(
+            "'$VAR'", {'VAR': 'value'})
         self.assertEqual("''||%s||''", sql)
-        self.assertEqual(['value'], args)
+        self.assertEqual(['value'], values)
+        self.assertEqual([], missing_args)
 
     def test_sub_var_mysql(self):
         env = EnvironmentStub()
         env.db = MockMySQLConnection()
-        sql, args = ReportModule(env).sql_sub_vars("'$VAR'", {'VAR': 'value'})
+        sql, values, missing_args = ReportModule(env).sql_sub_vars(
+            "'$VAR'", {'VAR': 'value'})
         self.assertEqual("concat('', %s, '')", sql)
-        self.assertEqual(['value'], args)
+        self.assertEqual(['value'], values)
+        self.assertEqual([], missing_args)
+
+    def test_sub_var_missing_args(self):
+        sql, values, missing_args = self.report_module.sql_sub_vars(
+            "$VAR, $PARAM, $MISSING", {'VAR': 'value'})
+        self.assertEqual("%s, %s, %s", sql)
+        self.assertEqual(['value', '', ''], values)
+        self.assertEqual(['PARAM', 'MISSING'], missing_args)
 
     def test_csv_escape(self):
         buf = StringIO()

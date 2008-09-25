@@ -162,6 +162,44 @@ class TracadminTestCase(unittest.TestCase):
         failure_message = "%r != %r\n" % (output, expected_results) + output_diff
         self.assertEqual(expected_results, output, failure_message)
 
+    # Config tests
+    
+    def test_config_get(self):
+        """
+        Tests the 'config get' command in trac-admin.  This particular
+        test gets the project name from the config.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self.env.config.set('project', 'name', 'Test project')
+        rv, output = self._execute('config get project name')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_config_set(self):
+        """
+        Tests the 'config set' command in trac-admin.  This particular
+        test sets the project name using an option value containing a space.
+        """
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('config set project name "Test project"')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+        self.assertEqual('Test project',
+                         self.env.config.get('project', 'name'))
+
+    def test_config_remove(self):
+        """
+        Tests the 'config remove' command in trac-admin.  This particular
+        test removes the project name from the config, therefore reverting
+        the option to the default value.
+        """
+        test_name = sys._getframe().f_code.co_name
+        self.env.config.set('project', 'name', 'Test project')
+        rv, output = self._execute('config remove project name')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+        self.assertEqual('My Project', self.env.config.get('project', 'name'))
+
     # Permission tests
 
     def test_permission_list_ok(self):

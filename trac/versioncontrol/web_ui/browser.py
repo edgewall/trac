@@ -305,14 +305,8 @@ class BrowserModule(Component):
 
     # IRequestHandler methods
 
-    _request_re = re.compile(r'''
-        /(export|browser|file) # module name
-        (?:(/.*))?             # optional path
-        ''', re.VERBOSE)
-
     def match_request(self, req):
-        import re
-        match = re.match(self._request_re, req.path_info)
+        match = re.match(r'/(export|browser|file)(/.*)?$', req.path_info)
         if match:
             mode, path = match.groups()
             if mode == 'export':
