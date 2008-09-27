@@ -574,6 +574,8 @@ class Query(object):
 
         cols = self.get_columns()
         labels = dict([(f['name'], f['label']) for f in self.fields])
+        wikify = set(f['name'] for f in self.fields 
+                     if f['type'] == 'text' and f.get('format') == 'wiki')
 
         # TODO: remove after adding time/changetime to the api.py
         labels['changetime'] = _('Modified')
@@ -581,6 +583,7 @@ class Query(object):
 
         headers = [{
             'name': col, 'label': labels.get(col, _('Ticket')),
+            'wikify': col in wikify,
             'href': self.get_href(context.href, order=col,
                                   desc=(col == self.order and not self.desc))
         } for col in cols]

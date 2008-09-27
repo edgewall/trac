@@ -271,7 +271,10 @@ class TicketSystem(Component):
                 if '' in field['options']:
                     field['optional'] = True
                     field['options'].remove('')
+            elif field['type'] == 'text':
+                field['format'] = config.get(name + '.format', 'plain')
             elif field['type'] == 'textarea':
+                field['format'] = config.get(name + '.format', 'plain')
                 field['width'] = config.getint(name + '.cols')
                 field['height'] = config.getint(name + '.rows')
             fields.append(field)

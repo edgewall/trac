@@ -48,7 +48,7 @@ from trac.web import parse_query_string, IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             add_warning, add_ctxtnav, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
-from trac.wiki.formatter import format_to
+from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
@@ -584,15 +584,17 @@ class TicketModule(Component):
 
         return 'ticket.html', data, None
 
-    def _prepare_data(self, req, ticket, absurls=False):
+    def _get_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines
         if preserve_newlines == 'default':
             preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
-        preserve_newlines = preserve_newlines in _TRUE_VALUES
+        return preserve_newlines in _TRUE_VALUES
+        
+    def _prepare_data(self, req, ticket, absurls=False):
         return {'ticket': ticket,
                 'context': Context.from_request(req, ticket.resource,
                                                 absurls=absurls),
-                'preserve_newlines': preserve_newlines}
+                'preserve_newlines': self._get_preserve_newlines()}
 
     def _toggle_cc(self, req, cc):
         """Return an (action, recipient) tuple corresponding to a change
@@ -1175,7 +1177,16 @@ class TicketModule(Component):
                 if value in ('1', '0'):
                     field['rendered'] = self._query_link(req, name, value,
                                 value == '1' and _('yes') or _('no'))
-                  
+            elif type_ == 'text':
+                if field.get('format') == 'wiki':
+                    field['rendered'] = format_to_oneliner(self.env, context,
+                                                           ticket[name])
+            elif type_ == 'textarea':
+                if field.get('format') == 'wiki':
+                    field['rendered'] = \
+                        format_to_html(self.env, context, ticket[name],
+                                escape_newlines=self._get_preserve_newlines())
+            
             # ensure sane defaults
             field.setdefault('optional', False)
             field.setdefault('options', [])

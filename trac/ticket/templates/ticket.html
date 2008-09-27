@@ -327,6 +327,7 @@ ${comment}</textarea></p>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
+                              class="${field.format == 'wiki' and 'wikitext' or None}"
                               py:content="value"></textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
