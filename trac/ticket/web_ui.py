@@ -44,7 +44,7 @@ from trac.util.text import CRLF, shorten_line, obfuscate_email_address
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web import IRequestHandler
+from trac.web import parse_query_string, IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             add_warning, add_ctxtnav, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
@@ -124,10 +124,14 @@ class TicketModule(Component):
         If set to 'default', this is equivalent to 'yes' for new environments
         but keeps the old behavior for upgraded environments (i.e. 'no').
         (''since 0.11'').""")
-    
-    unlinked_fields = ListOption('ticket', 'unlinked_fields', 
-                                 default=['estimatedhours', 'hours', 'totalhours'],
-                                 doc="fields to exclude from AutoQuery markup")
+
+    ticketlink_query = Option('query', 'ticketlink_query',
+        default='?status=!closed', 
+        doc="""The base query to be used when linkifying values of ticket
+            fields. The query is a URL query
+            string starting with `?` as used in `query:`
+            [TracQuery#UsingTracLinks Trac links].
+            (''since 0.12'')""")
 
     # IContentConverter methods
 
@@ -1064,13 +1068,30 @@ class TicketModule(Component):
         for key in field_changes:
             ticket[key] = field_changes[key]['new']
 
-    def _query_link(self, req, name, value):
-        """return a link to /query with the appropriate name and value"""
-        query = req.href('query', **{name:value})
-        args = self.env.config.get('query', 'default_anonymous_query')
-        if args:
-            query = '%s&%s' % (query, args)
-        return tag.a(value, href=query)
+    def _query_link(self, req, name, value, text=None):
+        """Return a link to /query with the appropriate name and value"""
+        default_query = self.ticketlink_query.startswith('?') and \
+                        self.ticketlink_query[1:] or self.ticketlink_query
+        args = parse_query_string(default_query)
+        args[name] = value
+        return tag.a(text or value, href=req.href.query(**args))
+
+    def _query_link_words(self, req, name, value):
+        """Splits a list of words and makes a query link to each separately"""
+        if not isinstance(value, basestring): # None or other non-splitable
+            return value
+        default_query = self.ticketlink_query.startswith('?') and \
+                        self.ticketlink_query[1:] or self.ticketlink_query
+        args = parse_query_string(default_query)
+        items = []
+        for (i, word) in enumerate(re.split(r'(\s*(?:\s|[,;])\s*)', value)):
+            if i % 2:
+                items.append(word)
+            elif word:
+                word_args = args.copy()
+                word_args[name] = '~' + word
+                items.append(tag.a(word, href=req.href.query(**word_args)))
+        return tag(items)
 
     def _prepare_fields(self, req, ticket):
         context = Context.from_request(req, ticket.resource)
@@ -1079,8 +1100,8 @@ class TicketModule(Component):
             name = field['name']
             type_ = field['type']
  
-            # enable a link to custom query for the field
-            if name not in self.unlinked_fields:
+            # enable a link to custom query for all choice fields
+            if type_ not in ['text', 'textarea']:
                 field['rendered'] = self._query_link(req, name, ticket[name])
 
             # per field settings
@@ -1117,9 +1138,13 @@ class TicketModule(Component):
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
+            elif name == 'keywords':
+                field['rendered'] = self._query_link_words(
+                                                req, name, ticket[name])
             elif name == 'cc':
                 emails = Chrome(self.env).format_emails(context, ticket[name])
-                field['rendered'] = emails
+                field['rendered'] = emails == ticket[name] and \
+                        self._query_link_words(req, name, emails) or emails
                 if ticket.exists and \
                         'TICKET_EDIT_CC' not in req.perm(ticket.resource):
                     cc = ticket._old.get('cc', ticket['cc'])
@@ -1148,7 +1173,8 @@ class TicketModule(Component):
             elif type_ == 'checkbox':
                 value = ticket.values.get(name)
                 if value in ('1', '0'):
-                    field['rendered'] = value == '1' and _('yes') or _('no')
+                    field['rendered'] = self._query_link(req, name, value,
+                                value == '1' and _('yes') or _('no'))
                   
             # ensure sane defaults
             field.setdefault('optional', False)
@@ -1270,6 +1296,14 @@ class TicketModule(Component):
             ticket.values.update(values)
 
         context = Context.from_request(req, ticket.resource)
+
+        # Display the owner and reporter links when not obfuscated
+        chrome = Chrome(self.env)
+        for user in 'reporter', 'owner':
+            if chrome.format_author(req, ticket[user]) == ticket[user]:
+                data['%s_link' % user] = self._query_link(req, user,
+                                                            ticket[user])
+
         data.update({
             'context': context,
             'fields': fields, 'changes': changes,
@@ -1278,8 +1312,6 @@ class TicketModule(Component):
             'action_controls': action_controls,
             'action': selected_action,
             'change_preview': change_preview,
-            'reporter_link': self._query_link(req, 'reporter', ticket['reporter']),
-            'owner_link': self._query_link(req, 'owner', ticket['owner'])
         })
 
     def rendered_changelog_entries(self, req, ticket, when=None):

@@ -137,9 +137,12 @@
                                     not in ('type', 'owner')]">
             <tr>
               <th id="h_reporter">Reported by:</th>
-              <td headers="h_reporter" class="searchable">${reporter_link}</td>
+              <td headers="h_reporter" class="searchable">
+                ${defined('reporter_link') and reporter_link or authorinfo(ticket.reporter)}
+              </td>
               <th id="h_owner">Owned by:</th>
-              <td headers="h_owner">${owner_link}
+              <td headers="h_owner">
+                ${defined('owner_link') and owner_link or authorinfo(ticket.owner)}
               </td>
             </tr>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
