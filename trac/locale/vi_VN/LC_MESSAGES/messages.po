@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-12-01 12:55+0100\n"
 "PO-Revision-Date: 2008-06-28 21:56+0200\n"
-"Last-Translator: Tính Trương Xuân <tinh.truong@evolus.vn>\n"
+"Last-Translator: Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>\n"
 "Language-Team: vi_VN <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
@@ -94,7 +94,7 @@ msgstr "Tập tin đính kèm không hợp lệ: %(message)s"
 #: trac/attachment.py:602
 #, python-format
 msgid "%(attachment)s (delete)"
-msgstr "%(attachment)s (xóa))"
+msgstr "%(attachemt)s (xóa))"
 
 #: trac/attachment.py:664 trac/versioncontrol/web_ui/browser.py:511
 #: trac/wiki/web_ui.py:66
@@ -891,7 +891,7 @@ msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
 msgstr "Một độ lệch dương được dùng để chỉ thị một múi giờ ở phía đông của ""
-""Greenwich, nghĩa là trước giờ Univeral"
+""Greenwich, nghĩa là trước giờ Universal"
 #I don't know how to translate the word 'Universal' into Vietnamese
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1089,99 +1089,105 @@ msgid ""
 "\n"
 "        and changes within a project."
 msgstr ""
+"Trac là một ứng dụng web quản lý dự án và lưu vết lỗi/vấn đề\n"
+"        tập trung vào việc dễ sử dụng và. \n"
+"        Nó cung cấp một Wiki tích hợp, một giao diện đồ họa cho các hệ thống\n"
+"        kiểm soát phiên bản, và nhiều cách truy cập vào các sự kiện"
+"\n"
+"        và thay đổi trong một dự án."
 
 #: trac/templates/about.html:33
 msgid "Trac is distributed under the modified BSD License."
-msgstr ""
+msgstr "Trac được phân phối dưới bản quyền có thay đổi của BSD"
 
 #: trac/templates/about.html:33
 msgid "The complete text of the license can be found"
-msgstr ""
+msgstr "Nguyên văn của bản quyền có thể được xem"
 
 #: trac/templates/about.html:35
 msgid "online"
-msgstr ""
+msgstr "trực tuyến"
 
 #: trac/templates/about.html:35
 msgid "as well as in the"
-msgstr ""
+msgstr "hoặc trong tập tin"
 
 #: trac/templates/about.html:36
 msgid "COPYING"
-msgstr ""
+msgstr "COPYING"
 
 #: trac/templates/about.html:36
 msgid "file included in the distribution."
-msgstr ""
+msgstr "có sẵn trong bản phân phối"
 
 #: trac/templates/about.html:38
 msgid "python powered"
-msgstr ""
+msgstr "python powered"
 
 #: trac/templates/about.html:41
 msgid "Please visit the Trac open source project:"
-msgstr ""
+msgstr "Mời ghé thăm dự án mã nguồn mở Trac:"
 
 #: trac/templates/about.html:42
 msgid "http://trac.edgewall.org/"
-msgstr ""
+msgstr "http://trac.edgewall.org/"
 
 #: trac/templates/about.html:51
 msgid "System Information"
-msgstr ""
+msgstr "Thông tin Hệ thống"
 
 #: trac/templates/about.html:65
 msgid "Section"
-msgstr ""
+msgstr "Phần"
 
 #: trac/templates/about.html:67 trac/templates/error.html:162
 msgid "Value"
-msgstr ""
+msgstr "Giá trị"
 
 #: trac/templates/attachment.html:10
 msgid "Attachment"
-msgstr ""
+msgstr "Tập tin đính kèm"
 
 #: trac/templates/attachment.html:17
 msgid "Add Attachment to"
-msgstr ""
+msgstr "Thêm Tập tin đính kèm vào"
 
 #: trac/templates/attachment.html:20
 msgid "(size limit"
-msgstr ""
+msgstr "(kích thước giới hạn"
 
 #: trac/templates/attachment.html:25
 msgid "Attachment Info"
-msgstr ""
+msgstr "Thông tin tập tin đính kèm"
 
 #: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:246
 #: trac/wiki/templates/wiki_edit.html:105
 msgid "Your email or username:"
-msgstr ""
+msgstr "Thư điện tử hoặc tên đăng nhập:"
 
 #: trac/templates/attachment.html:34
 msgid "Description of the file (optional):"
-msgstr ""
+msgstr "Mô tả về tập tin (không bắt buộc):"
 
 #: trac/templates/attachment.html:39
 msgid "Replace existing attachment of the same name"
-msgstr ""
+msgstr "Thay tập tin đính kèm đã có cùng tên"
 
 #: trac/templates/attachment.html:48
 msgid "Add attachment"
-msgstr ""
+msgstr "Thêm tập tin đính kèm"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
-msgstr ""
+msgstr "Bạn có chắc là bạn muốn xóa tập tin đính kèm này?"
 
 #: trac/templates/attachment.html:56 trac/wiki/templates/wiki_delete.html:32
 msgid "This is an irreversible operation."
-msgstr ""
+msgstr "Đây là một tác vụ không thể khôi phục lại."
 
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:103
 msgid "Delete attachment"
-msgstr ""
+msgstr "Xóa tập tin đính kèm"
 
 #: trac/templates/attachment.html:78 trac/ticket/api.py:212
 #: trac/ticket/templates/ticket.html:165
@@ -1191,108 +1197,108 @@ msgstr "Mô tả"
 
 #: trac/templates/attachment.html:82
 msgid "(added by"
-msgstr ""
+msgstr "(thêm vào bởi"
 
 #: trac/templates/attachment.html:83 trac/templates/diff_view.html:40
 #: trac/versioncontrol/templates/browser.html:104
 #: trac/versioncontrol/templates/changeset.html:96
 #: trac/wiki/templates/wiki_view.html:26
 msgid "ago)"
-msgstr ""
+msgstr "trước)"
 
 #: trac/templates/diff_div.html:53
 #: trac/versioncontrol/templates/browser.html:124
 msgid "Property"
-msgstr ""
+msgstr "Thuộc tính"
 
 #: trac/templates/diff_div.html:64 trac/ticket/templates/ticket.html:61
 #: trac/versioncontrol/templates/changeset.html:32
 msgid "to"
-msgstr ""
+msgstr "thành"
 
 #: trac/templates/diff_div.html:69
 msgid "Differences"
-msgstr ""
+msgstr "Những khác biệt"
 
 #: trac/templates/diff_view.html:17
 msgid "Changes"
-msgstr ""
+msgstr "Các thay đổi"
 
 #: trac/templates/diff_view.html:18 trac/templates/diff_view.html:21
 msgid "between"
-msgstr ""
+msgstr "giữa"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
 #: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:98
 #: trac/wiki/web_ui.py:519 trac/wiki/templates/wiki_view.html:25
 msgid "Version"
-msgstr ""
+msgstr "Phiên bản"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
 #: trac/timeline/templates/timeline.html:20
 msgid "and"
-msgstr ""
+msgstr "và"
 
 #: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:716
 #: trac/ticket/templates/ticket.html:95
 msgid "Initial Version"
-msgstr ""
+msgstr "Phiên bản ban đầu"
 
 #: trac/templates/diff_view.html:24
 #: trac/versioncontrol/templates/changeset.html:71
 msgid "from"
-msgstr ""
+msgstr "từ"
 
 #: trac/templates/diff_view.html:25
 msgid "of"
-msgstr ""
+msgstr "của"
 
 #: trac/templates/diff_view.html:37
 #: trac/versioncontrol/templates/changeset.html:94
 msgid "Timestamp:"
-msgstr ""
+msgstr "Thời gian"
 
 #: trac/templates/diff_view.html:39 trac/templates/diff_view.html:45
 #: trac/templates/diff_view.html:50
 msgid "(multiple changes)"
-msgstr ""
+msgstr "(nhiều thay đổi)"
 
 #: trac/templates/diff_view.html:46
 msgid "(IP:"
-msgstr ""
+msgstr "(IP:"
 
 #: trac/templates/diff_view.html:48
 msgid "Comment:"
-msgstr ""
+msgstr "Lời bình:"
 
 #: trac/templates/diff_view.html:56
 #: trac/versioncontrol/templates/changeset.html:151
 #: trac/versioncontrol/templates/revisionlog.html:70
 msgid "Legend:"
-msgstr ""
+msgstr "Ghi chú:"
 
 #: trac/templates/diff_view.html:58
 #: trac/versioncontrol/templates/changeset.html:153
 msgid "Unmodified"
-msgstr ""
+msgstr "Không thay đổi"
 
 #: trac/templates/diff_view.html:59
 #: trac/versioncontrol/templates/changeset.html:154
 #: trac/versioncontrol/templates/revisionlog.html:72
 msgid "Added"
-msgstr ""
+msgstr "Thêm"
 
 #: trac/templates/diff_view.html:60
 #: trac/versioncontrol/templates/changeset.html:155
 #: trac/versioncontrol/templates/revisionlog.html:74
 msgid "Removed"
-msgstr ""
+msgstr "xóa"
 
 #: trac/templates/diff_view.html:61 trac/ticket/query.py:588
 #: trac/versioncontrol/templates/changeset.html:157
 #: trac/versioncontrol/templates/revisionlog.html:76
 msgid "Modified"
-msgstr ""
+msgstr "Có thay đổi"
 
 #: trac/templates/error.html:60
 msgid ""
@@ -1300,10 +1306,13 @@ msgid ""
 "\n"
 "While doing a"
 msgstr ""
+"==== Cách để tạo lại lỗi ====\n"
+"\n"
+"Trong khi đang thực thi một"
 
 #: trac/templates/error.html:64
 msgid "operation on `"
-msgstr ""
+msgstr "tác vụ trên `"
 
 #: trac/templates/error.html:64
 msgid ""
@@ -1311,72 +1320,89 @@ msgid ""
 "\n"
 "''(please provide additional details here)''"
 msgstr ""
+"`, Trac đã sinh ra một lỗi nội bộ.\n"
+"\n"
+"''(đề nghị cung cấp thêm chi tiết tại đây)''"
 
 #: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
 msgstr ""
+"Request parameters:\n"
+"{{{"
 
 #: trac/templates/error.html:73
 msgid "==== System Information ===="
-msgstr ""
+msgstr "==== System Information ===="
 
 #: trac/templates/error.html:76
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
 msgstr ""
+"==== Python Traceback ====\n"
+"{{{"
 
 #: trac/templates/error.html:84
 msgid "Create"
-msgstr ""
+msgstr "Tạo"
 
 #: trac/templates/error.html:99
 msgid "Oops…"
-msgstr ""
+msgstr "Ay da…"
 
 #: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
-msgstr ""
+msgstr "Trac đã phát hiện ra một lỗi nội bộ:"
 
 #: trac/templates/error.html:106
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
 msgstr ""
+"Đã có một lỗi bên trong Trac. Bạn nên thông báo\n"
+"              cho"
 
 #: trac/templates/error.html:108
 msgid ""
 "Trac\n"
 "              administrator"
 msgstr ""
+"quản trị\n"
+"              của Trac"
 
 #: trac/templates/error.html:109
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
 msgstr ""
+"và đưa tất cả thông tin mà anh ấy cần để\n"
+"              tạo lại vấn đề này."
 
 #: trac/templates/error.html:114
 msgid "To that end, you could"
-msgstr ""
+msgstr "Về phía bạn, bạn có thể"
 
 #: trac/templates/error.html:114
 msgid ""
 "a ticket at this\n"
 "                  site."
 msgstr ""
+"một thẻ tại trang\n"
+"                  này."
 
 #: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
-msgstr ""
+msgstr "Hành động dẫn đến lỗi là:"
 
 #: trac/templates/error.html:124
 msgid ""
 "If you think this should work you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
 msgstr ""
+"Nếu bạn nghĩ bạn có thể tại tạo lại vấn đề,\n"
+"              bạn nên thông báo việc này cho đội ngũ phát triển Trac."
 
 #: trac/templates/error.html:126
 msgid ""
@@ -1390,10 +1416,19 @@ msgid ""
 "                [2:mailing list]\n"
 "                instead of filing a ticket."
 msgstr ""
+"Trước khi bạn làm việc đó, thử\n"
+"                [1:tìm kiếm]\n"
+"                những vấn đề tương tự, bởi gì rất nhiều khả năng "
+"vấn đề này\n"
+"                đã được thông báo trước đó. Đối với những câu hỏi về "
+"cài đặt\n"
+"                và cấu hình của Trac, thử tìm trên\n"
+"                [2:mailing list]\n"
+"                thay vì tạo một thẻ mới."
 
 #: trac/templates/error.html:136
 msgid "Otherwise, please"
-msgstr ""
+msgstr "Ngược lại, hãy"
 
 #: trac/templates/error.html:136
 msgid ""
@@ -1402,531 +1437,538 @@ msgid ""
 " and\n"
 "                explain how to reproduce it."
 msgstr ""
+"một thẻ mới tại\n"
+"                trang của dự án Trac, nơi ban có thể mô tả vấn đề"
+" và\n"
+"                giải thích để tái tạo lại nó."
 
 #: trac/templates/error.html:141
 msgid "Python Traceback"
-msgstr ""
+msgstr "Python Traceback"
 
 #: trac/templates/error.html:142
 msgid "Most recent call last:"
-msgstr ""
+msgstr "Các lời gọi hàm sau cùng:"
 
 #: trac/templates/error.html:147 trac/templates/error.html:174
 msgid "File \""
-msgstr ""
+msgstr "Tập tin \""
 
 #: trac/templates/error.html:147
 msgid ""
 "\",\n"
 "                        line"
 msgstr ""
+"\",\n"
+"                        dòng"
 
 #: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
-msgstr ""
+msgstr ", trong"
 
 #: trac/templates/error.html:152
 msgid "Code fragment:"
-msgstr ""
+msgstr "Đoạn mã:"
 
 #: trac/templates/error.html:160
 msgid "Local variables:"
-msgstr ""
+msgstr "Các biến cục bộ:"
 
 #: trac/templates/error.html:174
 msgid "\", line"
-msgstr ""
+msgstr "\", dòng"
 
 #: trac/templates/error.html:177
 msgid "Switch to plain text view"
-msgstr ""
+msgstr "Chuyển sang văn bản đơn giản"
 
 #: trac/templates/error.html:180
 msgid "System Information:"
-msgstr ""
+msgstr "Thông tin Hệ thống:"
 
 #: trac/templates/error.html:192
 msgid "TracGuide"
-msgstr ""
+msgstr "TracGuide"
 
 #: trac/templates/error.html:192
 msgid "— The Trac User and Administration Guide"
-msgstr ""
+msgstr "— Hướng dẫn sử dụng và quản trị Trac"
 
 #: trac/templates/history_view.html:15
 msgid "Change History for"
-msgstr ""
+msgstr "Lịch sử thay đổi của"
 
 #: trac/templates/history_view.html:20 trac/templates/history_view.html:51
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:162
 msgid "View changes"
-msgstr ""
+msgstr "Xem các thay đổi"
 
 #: trac/templates/history_view.html:22
 msgid "Change history"
-msgstr ""
+msgstr "Lịch sử thay đổi"
 
 #: trac/templates/history_view.html:27
 #: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Date"
-msgstr ""
+msgstr "Ngày"
 
 #: trac/templates/history_view.html:28
 #: trac/versioncontrol/templates/revisionlog.html:95
 msgid "Author"
-msgstr ""
+msgstr "Tác giả"
 
 #: trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket_notify_email.txt:21
 msgid "Comment"
-msgstr ""
+msgstr "Lời bình"
 
 #: trac/templates/history_view.html:41
 msgid "View this version"
-msgstr ""
+msgstr "Xem phiên bản này"
 
 #: trac/templates/index.html:8 trac/templates/index.html:12
 msgid "Available Projects"
-msgstr ""
+msgstr "Các dự án có sẵn"
 
 #: trac/templates/index.html:18
 msgid "Error"
-msgstr ""
+msgstr "Lỗi"
 
 #: trac/templates/layout.html:43
 msgid "Download in other formats:"
-msgstr ""
+msgstr "Tải xuống ở định dạng khác:"
 
 #: trac/templates/macros.html:40
 msgid "anonymous"
-msgstr ""
+msgstr "ẩn danh"
 
 #: trac/templates/macros.html:73 trac/templates/macros.html:74
 msgid "Previous"
-msgstr ""
+msgstr "Trước"
 
 #: trac/templates/macros.html:83 trac/templates/macros.html:84
 msgid "Next"
-msgstr ""
+msgstr "Sau"
 
 #: trac/templates/macros.html:94
 msgid "View differences"
-msgstr ""
+msgstr "Xem các khác biệt"
 
 #: trac/templates/macros.html:97
 msgid "inline"
-msgstr ""
+msgstr "trộn lẫn"
 
 #: trac/templates/macros.html:99
 msgid "side by side"
-msgstr ""
+msgstr "kề bên"
 
 #: trac/templates/macros.html:101
 msgid "Show"
-msgstr ""
+msgstr "Hiển thị"
 
 #: trac/templates/macros.html:104
 msgid "lines around each change"
-msgstr ""
+msgstr "các dòng xung quanh mỗi thay đổi"
 
 #: trac/templates/macros.html:107
 msgid "Ignore:"
-msgstr ""
+msgstr "Bỏ qua:"
 
 #: trac/templates/macros.html:111
 msgid "Blank lines"
-msgstr ""
+msgstr "Các dòng trống:"
 
 #: trac/templates/macros.html:116
 msgid "Case changes"
-msgstr ""
+msgstr "Các thay đổi hoa/thường"
 
 #: trac/templates/macros.html:121
 msgid "White space changes"
-msgstr ""
+msgstr "Các thay đổi khoảng trắng"
 
 #: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:53
 #: trac/ticket/templates/query.html:179 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
-msgstr ""
+msgstr "Cập nhật"
 
 #: trac/templates/macros.html:138 trac/templates/macros.html:151
 msgid "HTML preview not available"
-msgstr ""
+msgstr "Xem thử HTML không có sẵn"
 
 #: trac/templates/macros.html:140
 msgid "since the file size exceeds"
-msgstr ""
+msgstr "bởi vì kích thước tập tin vuợt giới hạn"
 
 #: trac/templates/macros.html:141
 msgid "bytes."
-msgstr ""
+msgstr "byte."
 
 #: trac/templates/macros.html:143
 msgid "since no preview renderer could handle it."
-msgstr ""
+msgstr "bởi vì không có chương trình xem thử nào có thể xử lý nó."
 
 #: trac/templates/macros.html:146
 msgid "Try"
-msgstr ""
+msgstr "Thử"
 
 #: trac/templates/macros.html:147
 msgid "downloading"
-msgstr ""
+msgstr "tải xuống"
 
 #: trac/templates/macros.html:147
 msgid "the file instead."
-msgstr ""
+msgstr "tập tin."
 
 #: trac/templates/macros.html:151
 msgid ""
 ".\n"
 "          To view,"
 msgstr ""
-
+".\n"
+"          Để xem,"
 #: trac/templates/macros.html:152
 msgid "download"
-msgstr ""
+msgstr "tải xuống"
 
 #: trac/templates/macros.html:152
 msgid "the file."
-msgstr ""
+msgstr "tập tin"
 
 #: trac/templates/macros.html:154
 msgid "found:"
-msgstr ""
+msgstr "tìm thấy:"
 
 #: trac/templates/macros.html:171
 msgid "View attachment"
-msgstr ""
+msgstr "Xem tập tin đính kèm"
 
 #: trac/templates/macros.html:172
 msgid ") - added by"
-msgstr ""
+msgstr ") - thêm bởi"
 
 #: trac/templates/macros.html:173 trac/ticket/templates/query_results.html:70
 msgid "ago."
-msgstr ""
+msgstr "trước"
 
 #: trac/templates/macros.html:178 trac/templates/macros.html:189
 msgid "Attachments"
-msgstr ""
+msgstr "Tập tin đính kèm"
 
 #: trac/templates/macros.html:214
 msgid "Attach file"
-msgstr ""
+msgstr "Đính kèm tập tin"
 
 #: trac/templates/macros.html:238 trac/templates/macros.html:242
 msgid "s:"
-msgstr ""
+msgstr "s:"
 
 #: trac/templates/macros.html:242
 msgid "Total"
-msgstr ""
+msgstr "Tổng số"
 
 #: trac/templates/theme.html:26
 msgid "Search:"
-msgstr ""
+msgstr "Tìm kiếm:"
 
 #: trac/templates/theme.html:37
 msgid "Context Navigation"
-msgstr ""
+msgstr "Định vị Ngữ cảnh"
 
 #: trac/templates/theme.html:46
 msgid "Warning:"
-msgstr ""
+msgstr "Cảnh báo:"
 
 #: trac/templates/theme.html:49
 msgid "Warnings:"
-msgstr ""
+msgstr "Các cảnh báo:"
 
 #: trac/templates/theme.html:57
 msgid "Notice:"
-msgstr ""
+msgstr "Chú ý:"
 
 #: trac/templates/theme.html:60
 msgid "Notices:"
-msgstr ""
+msgstr "Các chú ý:"
 
 #: trac/ticket/admin.py:87
 #, python-format
 msgid "Component %(name)s already exists."
-msgstr ""
+msgstr "Thành phần %(name)s đã tồn tại."
 
 #: trac/ticket/admin.py:94
 msgid "No component selected"
-msgstr ""
+msgstr "Không có thành phần nào được chọn"
 
 #: trac/ticket/admin.py:157 trac/ticket/roadmap.py:632
 msgid "Completion date may not be in the future"
-msgstr ""
+msgstr "Ngày hoàn tất không thể ở trong tương lai"
 
 #: trac/ticket/admin.py:159
 msgid "Invalid Completion Date"
-msgstr ""
+msgstr "Ngày hoàn tất không hợp lệ"
 
 #: trac/ticket/admin.py:185
 #, python-format
 msgid "Milestone %(name)s already exists."
-msgstr ""
+msgstr "Mốc thời gian %(name)s đã tồn tại"
 
 #: trac/ticket/admin.py:192
 msgid "No milestone selected"
-msgstr ""
+msgstr "Không có mốc thời gian nào được chọn"
 
 #: trac/ticket/admin.py:267
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr ""
+msgstr "Phiên bản %(name)s đã tồn tại"
 
 #: trac/ticket/admin.py:274
 msgid "No version selected"
-msgstr ""
+msgstr "Không phiên bản nào được chọn"
 
 #: trac/ticket/admin.py:348
 #, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr ""
+msgstr "%(type)s %(name)s đã tồn tại"
 
 #: trac/ticket/admin.py:354
 #, python-format
 msgid "No %s selected"
-msgstr ""
+msgstr "Không %s nào được chọn"
 
 #: trac/ticket/admin.py:383
 msgid "Order numbers must be unique"
-msgstr ""
+msgstr "Số thứ tự phải duy nhất"
 
 #: trac/ticket/api.py:362
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
-msgstr ""
+msgstr "Lời bình %(cnum)s cho Thẻ #%(id)s"
 
 #: trac/ticket/api.py:383
 #, python-format
 msgid "Ticket #%(shortname)s"
-msgstr ""
+msgstr "Thẻ #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "Trạng thái hiện tại không còn tồn tại nữa"
 
 #: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
-msgstr ""
+msgstr "Thẻ sẽ không công nhận"
 
 #: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
-msgstr ""
+msgstr "Chủ thẻ sẽ thay đổi"
 
 #: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
 #, python-format
 msgid "The owner will change to %(name)s"
-msgstr ""
+msgstr "Chủ thẻ sẽ thay đổi thành %(name)s"
 
 #: trac/ticket/default_workflow.py:254
 msgid "to "
-msgstr ""
+msgstr "thành "
 
 #: trac/ticket/default_workflow.py:273
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr ""
+msgstr "Chuyển đổi sẽ được đặt thành %(name)s"
 
 #: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
-msgstr ""
+msgstr "Chuyển đổi sẽ được đặt"
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr ""
+msgstr "Trạng thái kế tiếp sẽ là '%(name)s'"
 
 #: trac/ticket/model.py:128
 msgid "Multi-values fields not supported yet"
-msgstr ""
+msgstr "Trường đa trị chưa được hổ trợ"
 
 #: trac/ticket/model.py:363
 #, python-format
 msgid "%(type)s %(name)s does not exist."
-msgstr ""
+msgstr "%(type)s %(name)s không tồn tại."
 
 #: trac/ticket/model.py:507
 #, python-format
 msgid "Component %(name)s does not exist."
-msgstr ""
+msgstr "Thành phần %(name)s không tồn tại."
 
 #: trac/ticket/model.py:737
 #, python-format
 msgid "Version %(name)s does not exist."
-msgstr ""
+msgstr "Phiên bản %(name)s không tồn tại."
 
 #: trac/ticket/query.py:72
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "Trang truy vấn %(page)s không hợp lệ."
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "Truy vấn tối đa %(max)s không hợp lệ."
 
 #: trac/ticket/query.py:135
 msgid "Query filter requires field and constraints separated by a \"=\""
-msgstr ""
+msgstr "Lọc truy vấn cần trường và các ràng buộc phân cách bởi \"=\""
 
 #: trac/ticket/query.py:139
 msgid "Query filter requires field name"
-msgstr ""
+msgstr "Lọc truy vấn cần tên trường"
 
 #: trac/ticket/query.py:271
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "Trang %(page)s thì vượt quá số lượng trang của truy vấn"
 
 #: trac/ticket/query.py:589
 msgid "Created"
-msgstr ""
+msgstr "Tạo"
 
 #: trac/ticket/query.py:592 trac/ticket/web_ui.py:548
 msgid "Ticket"
-msgstr ""
+msgstr "Thẻ"
 
 #: trac/ticket/query.py:608
 msgid "contains"
-msgstr ""
+msgstr "chứa"
 
 #: trac/ticket/query.py:609
 msgid "doesn't contain"
-msgstr ""
+msgstr "không chứa"
 
 #: trac/ticket/query.py:610
 msgid "begins with"
-msgstr ""
+msgstr "bắt đầu với"
 
 #: trac/ticket/query.py:611
 msgid "ends with"
-msgstr ""
+msgstr "kết thúc với"
 
 #: trac/ticket/query.py:612 trac/ticket/query.py:616
 msgid "is"
-msgstr ""
+msgstr "là"
 
 #: trac/ticket/query.py:613 trac/ticket/query.py:617
 msgid "is not"
-msgstr ""
+msgstr "không là"
 
 #: trac/ticket/query.py:672 trac/ticket/report.py:327
 #, python-format
 msgid "Page %(num)d"
-msgstr ""
+msgstr "Trang %(num)d"
 
 #: trac/ticket/query.py:713 trac/ticket/report.py:511 trac/ticket/web_ui.py:113
 #: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
 msgid "RSS Feed"
-msgstr ""
+msgstr "RSS Feed"
 
 #: trac/ticket/query.py:715 trac/ticket/report.py:514 trac/ticket/web_ui.py:109
 msgid "Comma-delimited Text"
-msgstr ""
+msgstr "Văn bản phân cách bởi dấu phẩy"
 
 #: trac/ticket/query.py:717 trac/ticket/report.py:516 trac/ticket/web_ui.py:111
 msgid "Tab-delimited Text"
-msgstr ""
+msgstr "Văn bản phân cách bởi dấu cách (tab)"
 
 #: trac/ticket/query.py:739 trac/ticket/report.py:62
 msgid "View Tickets"
-msgstr ""
+msgstr "Xem thẻ"
 
 #: trac/ticket/query.py:890 trac/ticket/query.py:901 trac/ticket/report.py:120
 msgid "Custom Query"
-msgstr ""
+msgstr "Truy vấn tự tạo"
 
 #: trac/ticket/query.py:900 trac/ticket/report.py:110 trac/ticket/report.py:111
 #: trac/ticket/report.py:113 trac/ticket/report.py:230
 msgid "Available Reports"
-msgstr ""
+msgstr "Các báo cáo có sẵn"
 
 #: trac/ticket/query.py:987
 #, python-format
 msgid "[Error: %(error)s]"
-msgstr ""
+msgstr "[Lỗi: %(error)s]"
 
 #: trac/ticket/query.py:1076
 msgid "No results"
-msgstr ""
+msgstr "Không có kết quả"
 
 #: trac/ticket/query.py:1114
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr ""
+msgstr "%(groupvalue)s %(groupname)s thẻ:"
 
 #: trac/ticket/report.py:177
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
-msgstr ""
+msgstr "xóa báo cáo {%(num)s} %(title)s"
 
 #: trac/ticket/report.py:182 trac/ticket/report.py:194
 #: trac/ticket/report.py:242
 #, python-format
 msgid "Report %(num)s does not exist."
-msgstr ""
+msgstr "Báo cáo %(num)s không tồn tại."
 
 #: trac/ticket/report.py:183 trac/ticket/report.py:195
 #: trac/ticket/report.py:243
 msgid "Invalid Report Number"
-msgstr ""
+msgstr "Số báo cáo không hợp lệ"
 
 #: trac/ticket/report.py:207
 msgid "Create New Report"
-msgstr ""
+msgstr "Tạo Báo cáo mới"
 
 #: trac/ticket/report.py:211
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr ""
+msgstr "Sửa đổi Báo cáo {%(num)d} %(title)s"
 
 #: trac/ticket/report.py:225
 #, python-format
 msgid "Report failed: %(error)s"
-msgstr ""
+msgstr "Báo cáo thất bại: %(error)s"
 
 #: trac/ticket/report.py:233
 msgid "This is a list of available reports."
-msgstr ""
+msgstr "Đây là danh sách các báo cáo có sẵn."
 
 #: trac/ticket/report.py:258
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
-msgstr ""
+msgstr "Khi được thiết lập, số báo cáo phải là \"%(num)s\"."
 
 #: trac/ticket/report.py:305
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr ""
+msgstr "Thực thi báo cáo thất bại: %(error)s"
 
 #: trac/ticket/report.py:518
 msgid "SQL Query"
-msgstr ""
+msgstr "Truy vấn SQL"
 
 #: trac/ticket/report.py:532
 #, python-format
 msgid "Report %(num)s has no SQL query."
-msgstr ""
+msgstr "Báo cáo %(num)s không có truy vấn SQL"
 
 #: trac/ticket/report.py:562
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "Thông số truy vấn \"sort=%(sort_col)s\" không hợp lệ"
 
 #: trac/ticket/report.py:605
 #, python-format
 msgid "Dynamic variable '%(name)s' not defined."
-msgstr ""
+msgstr "Biến động '%(name)s' chưa được định nghĩa"
 
 #: trac/ticket/roadmap.py:213
 #, python-format
@@ -1934,255 +1976,262 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
+"'%(group1)s' và nhóm mốc thời gian '%(group2)s' được khai báo là "
+"\"catch-all\" nhóm. Hãy kiểm tra lại cấu hình của bạn."
 
 #: trac/ticket/roadmap.py:229
 #, python-format
 msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
-msgstr ""
+msgstr "Nhóm mốc thời gian '%(groupname)s' đã sử dụng lại trạng thái '%(status)s' đã được sử dụng"
+"bởi nhóm khác. Hãy kiểm tra lại cấu hình của bạn."
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:419
 #: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:17
 msgid "Roadmap"
-msgstr ""
+msgstr "Kế hoạch"
 
 #: trac/ticket/roadmap.py:350
 msgid "iCalendar"
-msgstr ""
+msgstr "iCalendar"
 
 #: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
 msgid "Milestone %(name)s"
-msgstr ""
+msgstr "Mốc thời gian %(name)s"
 
 #: trac/ticket/roadmap.py:447
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
-msgstr ""
+msgstr "Thẻ #%(num)s: %(summary)s"
 
 #: trac/ticket/roadmap.py:621
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
-msgstr ""
+msgstr "Mốc thời gian \"%(name)s\" đã tồn tại, hãy chọn một tên khác"
 
 #: trac/ticket/roadmap.py:626
 msgid "You must provide a name for the milestone."
-msgstr ""
+msgstr "Bạn phải cung cấp tên cho mốc thời gian."
 
 #: trac/ticket/web_ui.py:135 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
-msgstr ""
+msgstr "Thẻ mới"
 
 #: trac/ticket/web_ui.py:151
 msgid "id can't be set for a new ticket request."
-msgstr ""
+msgstr "id không thể được thiết lập cho một yêu cầu thể mới."
 
 #: trac/ticket/web_ui.py:202
 msgid "Ticket changes"
-msgstr ""
+msgstr "Các thay đổi thẻ"
 
 #: trac/ticket/web_ui.py:204
 msgid "Ticket details"
-msgstr ""
+msgstr "Chi tiết thẻ"
 
 #: trac/ticket/web_ui.py:210
 msgid "created"
-msgstr ""
+msgstr "tạo"
 
 #: trac/ticket/web_ui.py:211
 msgid "reopened"
-msgstr ""
+msgstr "mở lại"
 
 #: trac/ticket/web_ui.py:212
 msgid "closed"
-msgstr ""
+msgstr "đóng"
 
 #: trac/ticket/web_ui.py:213
 msgid "updated"
-msgstr ""
+msgstr "cập nhật"
 
 #: trac/ticket/web_ui.py:309
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
-msgstr ""
+msgstr "Thẻ %(ticketref)s (%(summary)s) %(verb)s"
 
 #: trac/ticket/web_ui.py:437
 #, python-format
 msgid "Invalid action \"%(name)s\""
-msgstr ""
+msgstr "Hành động không hợp lệ \"%(name)s\""
 
 #: trac/ticket/web_ui.py:548
 msgid "Back to Query"
-msgstr ""
+msgstr "Trở về Truy vấn"
 
 #: trac/ticket/web_ui.py:628 trac/ticket/web_ui.py:778
 msgid "Ticket History"
-msgstr ""
+msgstr "Lịch sử thẻ"
 
 #: trac/ticket/web_ui.py:673
 msgid "No differences to show"
-msgstr ""
+msgstr "Không có khác biệt nào để hiển thị"
 
 #: trac/ticket/web_ui.py:713 trac/ticket/web_ui.py:768
 #: trac/ticket/web_ui.py:776 trac/wiki/web_ui.py:355 trac/wiki/web_ui.py:361
 #: trac/wiki/web_ui.py:507 trac/wiki/web_ui.py:515
 #, python-format
 msgid "Version %(num)s"
-msgstr ""
+msgstr "Phiên bản %(num)s"
 
 #: trac/ticket/web_ui.py:716
 msgid "initial"
-msgstr ""
+msgstr "ban đầu"
 
 #: trac/ticket/web_ui.py:778 trac/versioncontrol/web_ui/changeset.py:342
 #: trac/wiki/web_ui.py:374
 msgid "Change"
-msgstr ""
+msgstr "Thay đổi"
 
 #: trac/ticket/web_ui.py:783
 msgid "Ticket Diff"
-msgstr ""
+msgstr "Sự khác biệt thẻ"
 
 #: trac/ticket/web_ui.py:851
 msgid "No permission to change ticket fields."
-msgstr ""
+msgstr "Không có quyền thay đổi các trường của thẻ"
 
 #: trac/ticket/web_ui.py:859
 msgid "No permissions to change ticket fields."
-msgstr ""
+msgstr "Không có quyền thay đổi các trường của thẻ"
 
 #: trac/ticket/web_ui.py:868
 msgid "No permissions to add a comment."
-msgstr ""
+msgstr "Không có quyền thêm lời bình"
 
 #: trac/ticket/web_ui.py:874
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
-msgstr ""
+msgstr "Xin lỗi, không thể lưu các thay đổi của bạn. Thẻ này đã được thay đổi bởi "
+"người khác kể từ khi bạn bắt đầu"
 
 #: trac/ticket/web_ui.py:881
 msgid "Tickets must contain a summary."
-msgstr ""
+msgstr "Thẻ phải chứa phần tóm lược."
 
 #: trac/ticket/web_ui.py:904
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
-msgstr ""
+msgstr "Mô tả của thẻ quá dài (phải ít hơn %(num)s ký tự)"
 
 #: trac/ticket/web_ui.py:919
 msgid "Invalid comment threading identifier"
-msgstr ""
+msgstr "Số phân biệt luồng lời bình không hợp lệ"
 
 #: trac/ticket/web_ui.py:926
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr ""
+msgstr "Trương '%(field)s' của thẻ không hợp lệ: %(message)s"
 
 #: trac/ticket/web_ui.py:1043
 msgid "Assign to"
-msgstr ""
+msgstr "Giao cho"
 
 #: trac/ticket/web_ui.py:1059
 msgid "Open"
-msgstr ""
+msgstr "Mở"
 
 #: trac/ticket/web_ui.py:1060
 msgid "Closed"
-msgstr ""
+msgstr "Đóng"
 
 #: trac/ticket/web_ui.py:1075
 msgid "Add to Cc"
-msgstr ""
+msgstr "Thêm vào Cc"
 
 #: trac/ticket/web_ui.py:1076
 msgid "Remove from Cc"
-msgstr ""
+msgstr "Bỏ ra khỏi Cc"
 
 #: trac/ticket/web_ui.py:1077
 msgid "Add/Remove from Cc"
-msgstr ""
+msgstr "Thêm/Bỏ ra Cc"
 
 #: trac/ticket/web_ui.py:1078
 msgid "<Author field>"
-msgstr ""
+msgstr "<Trường tác giả>"
 
 #: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:89
 msgid "yes"
-msgstr ""
+msgstr "có"
 
 #: trac/ticket/web_ui.py:1098 trac/ticket/templates/query.html:92
 msgid "no"
-msgstr ""
+msgstr "không"
 
 #: trac/ticket/web_ui.py:1268 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
-msgstr ""
+msgstr "đã thay đổi"
 
 #: trac/ticket/templates/milestone_delete.html:9
 #: trac/ticket/templates/milestone_delete.html:21
 msgid "Delete Milestone"
-msgstr ""
+msgstr "xóa Mốc thời gian"
 
 #: trac/ticket/templates/milestone_delete.html:25
 msgid "Are you sure you want to delete this milestone?"
-msgstr ""
+msgstr "Bạn có chắc là bạn muốn xóa Mốc thời gian này?"
 
 #: trac/ticket/templates/milestone_delete.html:27
 msgid "Retarget associated tickets to milestone"
-msgstr ""
+msgstr "Dời các thẻ có liên quan về mốc thời gian"
 
 #: trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_view.html:91
 msgid "Delete milestone"
-msgstr ""
+msgstr "xóa mốc thời gian"
 
 #: trac/ticket/templates/milestone_delete.html:39
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
 #: trac/ticket/templates/roadmap.html:72
 msgid "TracRoadmap"
-msgstr ""
+msgstr "TracRoadmap"
 
 #: trac/ticket/templates/milestone_delete.html:39
 msgid ""
 "for help on using\n"
 "      the roadmap."
 msgstr ""
+" là hướng dẫn sử dụng\n"
+"          roadmap."
+
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
 msgid "Edit Milestone"
-msgstr ""
+msgstr "Sửa đổi Mốc thời gian"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
 msgid "New Milestone"
-msgstr ""
+msgstr "Mốc thời gian mới"
 
 #: trac/ticket/templates/milestone_edit.html:45
 msgid "Name of the milestone:"
-msgstr ""
+msgstr "Tên của mốc thời gian:"
 
 #: trac/ticket/templates/milestone_edit.html:50
 msgid "Schedule"
-msgstr ""
+msgstr "Lập lịch"
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
-msgstr ""
+msgstr "Dời các thẻ mở có liên quan về mốc thời gian"
 
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
 msgid "Submit changes"
-msgstr ""
+msgstr "Gởi các thay đổi"
 
 #: trac/ticket/templates/milestone_edit.html:90
 msgid "Add milestone"
-msgstr ""
+msgstr "Thêm mốc thời gian"
 
 #: trac/ticket/templates/milestone_edit.html:96
 #: trac/ticket/templates/milestone_view.html:97
@@ -2191,37 +2240,41 @@ msgid ""
 "for help on using\n"
 "        the roadmap."
 msgstr ""
+" là hướng dẫn sử dụng\n"
+"          roadmap."
 
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:22
 msgid "Milestone"
-msgstr ""
+msgstr "Mốc thời gian"
 
 #: trac/ticket/templates/milestone_view.html:26
 msgid ""
 "ago\n"
 "            ("
 msgstr ""
+"trước\n"
+"            ("
 
 #: trac/ticket/templates/milestone_view.html:30
 #: trac/ticket/templates/roadmap.html:43
 msgid "late"
-msgstr ""
+msgstr "trễ"
 
 #: trac/ticket/templates/milestone_view.html:33
 #: trac/ticket/templates/roadmap.html:46
 msgid "Due in"
-msgstr ""
+msgstr "Hết hạn vào"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:50
 msgid "No date set"
-msgstr ""
+msgstr "Ngày chưa được thiết lập"
 
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:42
 msgid "by"
-msgstr ""
+msgstr "vào"
 
 #: trac/ticket/templates/milestone_view.html:58
 #, fuzzy
@@ -2230,7 +2283,7 @@ msgstr "Không có"
 
 #: trac/ticket/templates/milestone_view.html:87
 msgid "Edit milestone"
-msgstr ""
+msgstr "Sửa đổi mốc thời gian"
 
 #: trac/ticket/templates/query.html:28
 #: trac/ticket/templates/query_results.html:29
@@ -2241,284 +2294,286 @@ msgstr[0] ""
 
 #: trac/ticket/templates/query.html:37
 msgid "Filters"
-msgstr ""
+msgstr "Bộ lọc"
 
 #: trac/ticket/templates/query.html:38
 msgid "Query filters"
-msgstr ""
+msgstr "Lọc truy vấn"
 
 #: trac/ticket/templates/query.html:113
 msgid "Add filter"
-msgstr ""
+msgstr "Thêm bộ lọc"
 
 #: trac/ticket/templates/query.html:133
 msgid "Columns"
-msgstr ""
+msgstr "Cột"
 
 #: trac/ticket/templates/query.html:147
 msgid "Group results by"
-msgstr ""
+msgstr "Nhóm kết quả theo"
 
 #: trac/ticket/templates/query.html:157
 msgid "descending"
-msgstr ""
+msgstr "giảm dần"
 
 #: trac/ticket/templates/query.html:161
 msgid "Show under each result:"
-msgstr ""
+msgstr "Hiển thị dưới mỗi kết quả:"
 
 #: trac/ticket/templates/query.html:171
 msgid "Max items per page"
-msgstr ""
+msgstr "Số lượng hiển thị một trang"
 
 #: trac/ticket/templates/query.html:214
 msgid "Edit query"
-msgstr ""
+msgstr "Sửa đổi truy vấn"
 
 #: trac/ticket/templates/query.html:222
 msgid "Save query"
-msgstr ""
+msgstr "Lưu truy vấn"
 
 #: trac/ticket/templates/query.html:222
 #, python-format
 msgid "Save updated query in report {%(id)s}"
-msgstr ""
+msgstr "Lưu truy vấn được cập nhật trong báo cáo {%(id)s}"
 
 #: trac/ticket/templates/query.html:222
 msgid "Create new report from current query"
-msgstr ""
+msgstr "Tạo báo cáo mới từ truy vấn hiện tại"
 
 #: trac/ticket/templates/query.html:231
 msgid "Delete query"
-msgstr ""
+msgstr "xóa truy vấn"
 
 #: trac/ticket/templates/query.html:238
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
-msgstr ""
+msgstr "TracQuery"
 
 #: trac/ticket/templates/query.html:238
 msgid "for help on using queries."
-msgstr ""
+msgstr "là hướng dẫn sử dụng các truy vấn"
 
 #: trac/ticket/templates/query_results.html:53
 #: trac/ticket/templates/query_results.html:55
 msgid "View ticket"
-msgstr ""
+msgstr "Xem thẻ"
 
 #: trac/ticket/templates/query_results.html:69
 msgid "Reported by"
-msgstr ""
+msgstr "Báo cáo bởi"
 
 #: trac/ticket/templates/query_results.html:76
 msgid "(this ticket)"
-msgstr ""
+msgstr "(thẻ này)"
 
 #: trac/ticket/templates/query_results.html:92
 msgid "(more results for this group on next page)"
-msgstr ""
+msgstr "(các kết quả thêm cho nhóm này ở trang kế)"
 
 #: trac/ticket/templates/report_delete.html:18
 msgid "Are you sure you want to delete this report?"
-msgstr ""
+msgstr "Bạn có chắc là bạn muốn xóa báo cáo này?"
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
 msgid "Delete report"
-msgstr ""
+msgstr "Xóa báo cáo"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
 #: trac/ticket/templates/report_view.html:170
 msgid "TracReports"
-msgstr ""
+msgstr "TracReports"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
 #: trac/ticket/templates/report_view.html:170
 msgid "for help on using and creating reports."
-msgstr ""
+msgstr "là hướng dẫn sử dụng và tạo các báo cáo."
 
 #: trac/ticket/templates/report_edit.html:21
 msgid "Report Title:"
-msgstr ""
+msgstr "Tiêu đề Báo cáo:"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr ""
+msgstr "Mô tả: (bạn có thể dùng [1:WikiFormatting] tại đây)"
 
 #: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
-msgstr ""
+msgstr "Lỗi:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "Query for Report: (can be either SQL or, if starting with"
-msgstr ""
+msgstr "Truy vấn cho Báo cáo: (có thể là SQL hoặc, nếu bắt đầu bằng)"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "query:"
-msgstr ""
+msgstr "truy vấn:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid ", a"
-msgstr ""
+msgstr ", một"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "expression)"
-msgstr ""
+msgstr "biểu thức"
 
 #: trac/ticket/templates/report_edit.html:41
 msgid "Save report"
-msgstr ""
+msgstr "Lưu báo cáo"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
-msgstr ""
+msgstr "trùng khớp)"
 
 #: trac/ticket/templates/report_view.html:27
 msgid "Edit report"
-msgstr ""
+msgstr "Sửa đổi báo cáo"
 
 #: trac/ticket/templates/report_view.html:33
 msgid "Copy report"
-msgstr ""
+msgstr "Sao chép báo cáo"
 
 #: trac/ticket/templates/report_view.html:51
 msgid "match"
-msgstr ""
+msgstr "trùng khớp"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
 msgid "View report"
-msgstr ""
+msgstr "Xem báo cáo"
 
 #: trac/ticket/templates/report_view.html:160
 msgid "Create new report"
-msgstr ""
+msgstr "Tạo báo cáo mới"
 
 #: trac/ticket/templates/roadmap.html:23
 msgid "Show already completed milestones"
-msgstr ""
+msgstr "Hiện thị các môc thời gian đã hoàn tất"
 
 #: trac/ticket/templates/roadmap.html:34
 msgid "Milestone:"
-msgstr ""
+msgstr "Mốc thời gian:"
 
 #: trac/ticket/templates/roadmap.html:39
 msgid ""
 "ago\n"
 "                ("
 msgstr ""
+"trước\n"
+"                ("
 
 #: trac/ticket/templates/roadmap.html:67
 msgid "Add new milestone"
-msgstr ""
+msgstr "Thêm mốc thời gian mới"
 
 #: trac/ticket/templates/ticket.html:57
 #: trac/versioncontrol/templates/changeset.html:128
 msgid "added"
-msgstr ""
+msgstr "thêm vào"
 
 #: trac/ticket/templates/ticket.html:60
 msgid "changed from"
-msgstr ""
+msgstr "thay đổi từ"
 
 #: trac/ticket/templates/ticket.html:63
 #: trac/versioncontrol/templates/browser.html:125
 msgid "set to"
-msgstr ""
+msgstr "đặt thàng"
 
 #: trac/ticket/templates/ticket.html:66
 msgid "deleted"
-msgstr ""
+msgstr "đã xóa"
 
 #: trac/ticket/templates/ticket.html:79
 msgid "Ticket #"
-msgstr ""
+msgstr "Thẻ #"
 
 #: trac/ticket/templates/ticket.html:83
 msgid "Create New Ticket"
-msgstr ""
+msgstr "Tạo thẻ mới"
 
 #: trac/ticket/templates/ticket.html:94 trac/ticket/templates/ticket.html:97
 msgid "— at"
-msgstr ""
+msgstr "— tại"
 
 #: trac/ticket/templates/ticket.html:108
 msgid "Preview ("
-msgstr ""
+msgstr "Xem trước ("
 
 #: trac/ticket/templates/ticket.html:108 trac/wiki/templates/wiki_edit.html:62
 msgid "skip"
-msgstr ""
+msgstr "bỏ"
 
 #: trac/ticket/templates/ticket.html:113 trac/ticket/templates/ticket.html:209
 msgid "in reply to:"
-msgstr ""
+msgstr "trả lời cho:"
 
 #: trac/ticket/templates/ticket.html:115
 msgid "Changed by"
-msgstr ""
+msgstr "Thay đổi bởi"
 
 #: trac/ticket/templates/ticket.html:126
 msgid "Opened"
-msgstr ""
+msgstr "Mở"
 
 #: trac/ticket/templates/ticket.html:126 trac/ticket/templates/ticket.html:127
 msgid "ago"
-msgstr ""
+msgstr "trước"
 
 #: trac/ticket/templates/ticket.html:127
 msgid "Last modified"
-msgstr ""
+msgstr "Thay đổi cuối cùng"
 
 #: trac/ticket/templates/ticket.html:128
 msgid "(ticket not yet created)"
-msgstr ""
+msgstr "(thẻ chưa được tạo)"
 
 #: trac/ticket/templates/ticket.html:137
 msgid "Reported by:"
-msgstr ""
+msgstr "Báo cáo bởi:"
 
 #: trac/ticket/templates/ticket.html:139
 msgid "Owned by:"
-msgstr ""
+msgstr "Sở hữu bởi:"
 
 #: trac/ticket/templates/ticket.html:168
 msgid "(last modified by"
-msgstr ""
+msgstr "(thay đổi cuối cùng bởi"
 
 #: trac/ticket/templates/ticket.html:170
 msgid "diff"
-msgstr ""
+msgstr "khác biệt"
 
 #: trac/ticket/templates/ticket.html:181 trac/ticket/templates/ticket.html:223
 msgid "Reply"
-msgstr ""
+msgstr "Trả lời"
 
 #: trac/ticket/templates/ticket.html:181
 msgid "Reply, quoting this description"
-msgstr ""
+msgstr "Trả lời, trích dẫn mô tả"
 
 #: trac/ticket/templates/ticket.html:200
 msgid "Change History"
-msgstr ""
+msgstr "Lịch sử thay đổi"
 
 #: trac/ticket/templates/ticket.html:213
 msgid "follow-up"
-msgstr ""
+msgstr "Tiếp theo"
 
 #: trac/ticket/templates/ticket.html:218
 msgid "Changed"
-msgstr ""
+msgstr "Đã thay đổi"
 
 #: trac/ticket/templates/ticket.html:219
 msgid "ago by"
-msgstr ""
+msgstr "trước bởi"
 
 #: trac/ticket/templates/ticket.html:238
 msgid "Add/Change #"
-msgstr ""
+msgstr "Thêm/Thay đổi #"
 
 #: trac/ticket/templates/ticket.html:258
 msgid ""
@@ -2526,125 +2581,131 @@ msgid ""
 "              [1:WikiFormatting]\n"
 "              here):"
 msgstr ""
+"Lời bình (bạn có thể dùng\n"
+"              [1:WikiFormatting]\n"
+"              tại đây):"
 
 #: trac/ticket/templates/ticket.html:271
 msgid "Properties"
-msgstr ""
+msgstr "Các thuộc tính"
 
 #: trac/ticket/templates/ticket.html:274
 msgid "Summary:"
-msgstr ""
+msgstr "Tóm tắt:"
 
 #: trac/ticket/templates/ticket.html:282
 msgid "Reporter:"
-msgstr ""
+msgstr "Người thông báo:"
 
 #: trac/ticket/templates/ticket.html:339
 msgid "This checkbox allows you to add or remove yourself from the CC list."
-msgstr ""
+msgstr "Hộp đánh dấu này cho phép bạn thêm hoặc bỏ chính bạn ra khỏi danh sách CC"
 
 #: trac/ticket/templates/ticket.html:345
 msgid "Space or comma delimited email addresses and usernames are accepted."
-msgstr ""
+msgstr "Địa chỉ thư điện tử và tên đăng nhập phân cách bởi khoảng trắng hoặc dấu phẩy được chấp nhận."
 
 #: trac/ticket/templates/ticket.html:377
 msgid "I have files to attach to this ticket"
-msgstr ""
+msgstr "Tôi có tập tin cần đính kềm vào thẻ này"
 
 #: trac/ticket/templates/ticket.html:388 trac/wiki/templates/wiki_edit.html:124
 msgid "Preview"
-msgstr ""
+msgstr "Xem trước"
 
 #: trac/ticket/templates/ticket.html:396
 msgid "TracTickets"
-msgstr ""
+msgstr "TracTickets"
 
 #: trac/ticket/templates/ticket.html:396
 msgid ""
 "for help on using\n"
 "        tickets."
 msgstr ""
-
+"là hướng dẫn sử dụng\n"
+"        thẻ."
 #: trac/ticket/templates/ticket_notify_email.txt:9
 msgid "Changes (by"
-msgstr ""
+msgstr "Các thay đổi (bởi"
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 msgid "Description changed by"
-msgstr ""
+msgstr "Mô tả thay đổi bởi"
 
 #: trac/ticket/templates/ticket_notify_email.txt:28
 msgid ""
 "-- \n"
 "Ticket URL: <"
 msgstr ""
+"-- \n"
+"URL của thẻ: <"
 
 #: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
-msgstr ""
+msgstr "Timeline"
 
 #: trac/timeline/web_ui.py:202
 msgid "Previous period"
-msgstr ""
+msgstr "Khoảng thời gian trước"
 
 #: trac/timeline/web_ui.py:208
 msgid "Next period"
-msgstr ""
+msgstr "Khoảng thời gian sau"
 
 #: trac/timeline/web_ui.py:269
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr ""
+msgstr "%(date)s trong Timeline"
 
 #: trac/timeline/templates/timeline.html:20
 msgid "View changes from"
-msgstr ""
+msgstr "Xem các thay đổi từ"
 
 #: trac/timeline/templates/timeline.html:21
 msgid "days back"
-msgstr ""
+msgstr "ngày trước"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
-msgstr ""
+msgstr "TracTimeline"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "for information about the timeline view."
-msgstr ""
+msgstr "là hướng dẫn sử dụng về timeline"
 
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr ""
+msgstr "%(last)d của %(total)d"
 
 #: trac/util/presentation.py:256
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr ""
+msgstr "%(start)d - %(stop)d của %(total)d"
 
 #: trac/versioncontrol/api.py:81
 #, python-format
 msgid "Can't synchronize with the repository (%(error)s)"
-msgstr ""
+msgstr "Không thể đồng bộ với repository (%(error)s)"
 
 #: trac/versioncontrol/api.py:96
 #, python-format
 msgid "Changeset %(rev)s"
-msgstr ""
+msgstr "Tập hợp các thay đổi %(rev)s"
 
 #: trac/versioncontrol/api.py:103
 msgid "Directory"
-msgstr ""
+msgstr "Thư mục"
 
 #: trac/versioncontrol/api.py:107
 #, python-format
 msgid "at version %(rev)s"
-msgstr ""
+msgstr "của phiên bản %(rev)s"
 
 #: trac/versioncontrol/api.py:109
 msgid "Path"
-msgstr ""
+msgstr "Đường dẫn"
 
 #: trac/versioncontrol/api.py:131
 #, python-format
@@ -2652,53 +2713,56 @@ msgid ""
 "Unsupported version control system \"%(name)s\". Check that the Python "
 "support libraries for \"%(name)s\" are correctly installed."
 msgstr ""
+"Hệ thống quản lý phiên bản không được hổ trợ \"%(name)s\". Hãy kiểm tra "
+"thư viện Python dành cho \"%(name)s\" đã được cài đặt đúng chưa."
 
 #: trac/versioncontrol/api.py:163
 #, python-format
 msgid "No changeset %(rev)s in the repository"
-msgstr ""
+msgstr "Không có tập các thay đổi %(rev)s trong repository"
 
 #: trac/versioncontrol/api.py:165
 msgid "No such changeset"
-msgstr ""
+msgstr "Không có tập thay đổi nào như thế"
 
 #: trac/versioncontrol/api.py:171
 msgid "No such node"
-msgstr ""
+msgstr "Không có nút (node) nào như thế"
 
 #: trac/versioncontrol/api.py:509
 #, python-format
 msgid "Insufficient permissions to access %(path)s"
-msgstr ""
+msgstr "Không đủ quyền để truy cập %(path)s"
 
 #: trac/versioncontrol/api.py:514
 #, python-format
 msgid "Insufficient permissions to access changeset %(id)s"
-msgstr ""
+msgstr "Không đủ quyền để truy cập tập các thay đổi %(id)s"
 
 #: trac/versioncontrol/cache.py:95
 msgid ""
 "The 'repository_dir' has changed, a 'trac-admin resync' operation is "
 "needed."
-msgstr ""
+msgstr "Thông số 'repository_dir' đã thay đổi, một tác vụ 'trac-admin resync' cần "
+"được thực thị."
 
 #: trac/versioncontrol/cache.py:114
 msgid "Missing \"youngest_rev\" in cache metadata"
-msgstr ""
+msgstr "Thiếu \"youngest_rev\" trong thông tin mô tả bộ đệm (cache)"
 
 #: trac/versioncontrol/svn_fs.py:294
 #, python-format
 msgid "Subversion >= 1.0 required: Found %(version)s"
-msgstr ""
+msgstr "Cần Subversion >= 1.0: Tìm thấy %(version)s"
 
 #: trac/versioncontrol/svn_fs.py:371
 msgid "No svn:externals configured in trac.ini"
-msgstr ""
+msgstr "Không có svn:externals đuợc cấu hình trong trac.ini"
 
 #: trac/versioncontrol/svn_fs.py:395
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
-msgstr ""
+msgstr "%(path)s không phải là một Subversion repository"
 
 #: trac/versioncontrol/svn_fs.py:652
 #, python-format
@@ -2706,89 +2770,91 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-
+"Diff không khớp: Gốc là một %(oldnode)s (%(oldpath)s ở lần cập nhật %(oldrev)s)"
+" và Đích là một %(newnode)s (%(newpath)s ở lần cập nhật %(newrev)s)."
 #: trac/versioncontrol/svn_fs.py:803
 #, python-format
 msgid "svn blame failed: %(error)s"
-msgstr ""
+msgstr "svn blame thất bại: %(error)s"
+
 
 #: trac/versioncontrol/templates/browser.html:45
 msgid "View revision:"
-msgstr ""
+msgstr "Xem lần cập nhật"
 
 #: trac/versioncontrol/templates/browser.html:55
 msgid "Visit:"
-msgstr ""
+msgstr "Xem"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Go!"
-msgstr ""
+msgstr "Đi nào!"
 
 #: trac/versioncontrol/templates/browser.html:63
 msgid "Jump to the chosen preselected path"
-msgstr ""
+msgstr "Nhảy tới đường dẫn đã được chọn trước"
 
 #: trac/versioncontrol/templates/browser.html:82
 #: trac/versioncontrol/templates/revisionlog.html:92
 #: trac/versioncontrol/web_ui/browser.py:622
 msgid "Rev"
-msgstr ""
+msgstr "Rev"
 
 #: trac/versioncontrol/templates/browser.html:84
 #: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:520
 #: trac/wiki/web_ui.py:544
 msgid "Last Change"
-msgstr ""
+msgstr "Thay đổi cuối cùng"
 
 #: trac/versioncontrol/templates/browser.html:91
 msgid "Parent Directory"
-msgstr ""
+msgstr "Thư mục cha"
 
 #: trac/versioncontrol/templates/browser.html:100
 #: trac/wiki/templates/wiki_edit.html:51 trac/wiki/templates/wiki_view.html:23
 msgid "Revision info"
-msgstr ""
+msgstr "Thông tin lân cập nhật"
 
 #: trac/versioncontrol/templates/browser.html:102
 msgid "Revision"
-msgstr ""
+msgstr "Lần cập nhật"
 
 #: trac/versioncontrol/templates/browser.html:103
 msgid "(checked in by"
-msgstr ""
+msgstr "(cập nhật bởi"
 
 #: trac/versioncontrol/templates/browser.html:142
 msgid "TracBrowser"
-msgstr ""
+msgstr "TracBrowser"
 
 #: trac/versioncontrol/templates/browser.html:142
 msgid "for help on using the browser."
-msgstr ""
+msgstr "là hướng dẫn sử dụng trình duyệt"
 
 #: trac/versioncontrol/templates/browser.html:153
 msgid "View changes..."
-msgstr ""
+msgstr "Xem các thay đổi..."
 
 #: trac/versioncontrol/templates/browser.html:153
 msgid "Select paths and revs for Diff"
-msgstr ""
+msgstr "Chọn đường dẫn và revs cho Diff"
 
 #: trac/versioncontrol/templates/changeset.html:21
 #: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/web_ui/changeset.py:344
 msgid "Changeset"
-msgstr ""
+msgstr "Tập các thay đổi"
 
 #: trac/versioncontrol/templates/changeset.html:22
 #: trac/versioncontrol/templates/changeset.html:32
 #: trac/versioncontrol/templates/changeset.html:34
 #: trac/versioncontrol/templates/changeset.html:36
 msgid "Show full changeset"
-msgstr ""
+msgstr "Hiển thị toàn bộ tập các thay đổi"
 
 #: trac/versioncontrol/templates/changeset.html:22
 msgid "for"
-msgstr ""
+msgstr "dành cho"
 
 #: trac/versioncontrol/templates/changeset.html:23
 #: trac/versioncontrol/templates/changeset.html:26
@@ -2796,88 +2862,88 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:33
 #: trac/versioncontrol/templates/changeset.html:64
 msgid "Show entry in browser"
-msgstr ""
+msgstr "Hiển thị entry trong trình duyệt"
 
 #: trac/versioncontrol/templates/changeset.html:25
 msgid "Changes in"
-msgstr ""
+msgstr "Các thay đổi trong"
 
 #: trac/versioncontrol/templates/changeset.html:27
 msgid "Show revision log"
-msgstr ""
+msgstr "Hiển thị nhật ký các lần cập nhật"
 
 #: trac/versioncontrol/templates/changeset.html:30
 msgid "Changes from"
-msgstr ""
+msgstr "Các thay đổi từ"
 
 #: trac/versioncontrol/templates/changeset.html:31
 #: trac/versioncontrol/templates/changeset.html:33
 msgid "at"
-msgstr ""
+msgstr "tại"
 
 #: trac/versioncontrol/templates/changeset.html:32
 #: trac/versioncontrol/templates/changeset.html:34
 msgid "r"
-msgstr ""
+msgstr "r"
 
 #: trac/versioncontrol/templates/changeset.html:77
 #: trac/versioncontrol/templates/changeset.html:80
 msgid "Show differences"
-msgstr ""
+msgstr "Hiển thị các khác biệt"
 
 #: trac/versioncontrol/templates/changeset.html:77
 msgid "view diffs"
-msgstr ""
+msgstr "xem diffs"
 
 #: trac/versioncontrol/templates/changeset.html:87
 msgid "Show previous version in browser"
-msgstr ""
+msgstr "Hiển thị phiên bản trước trong trình duyệt"
 
 #: trac/versioncontrol/templates/changeset.html:87
 msgid "previous"
-msgstr ""
+msgstr "trước"
 
 #: trac/versioncontrol/templates/changeset.html:109
 msgid "Message:"
-msgstr ""
+msgstr "Thông điệp"
 
 #: trac/versioncontrol/templates/changeset.html:121
 msgid "Location:"
-msgstr ""
+msgstr "Vị trí:"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "removed"
-msgstr ""
+msgstr "xóa"
 
 #: trac/versioncontrol/templates/changeset.html:131
 msgid "copied"
-msgstr ""
+msgstr "sao chép"
 
 #: trac/versioncontrol/templates/changeset.html:132
 msgid "moved"
-msgstr ""
+msgstr "di chuyển"
 
 #: trac/versioncontrol/templates/diff_form.html:9
 #: trac/versioncontrol/templates/diff_form.html:20
 msgid "Prepare Diff"
-msgstr ""
+msgstr "Chuẩn bị Diff"
 
 #: trac/versioncontrol/templates/diff_form.html:26
 msgid "Select the base and the target for the diff:"
-msgstr ""
+msgstr "Hãy chọn Gốc và Đích để thực hiện diff:"
 
 #: trac/versioncontrol/templates/diff_form.html:29
 msgid "From:"
-msgstr ""
+msgstr "Từ:"
 
 #: trac/versioncontrol/templates/diff_form.html:33
 #: trac/versioncontrol/templates/diff_form.html:43
 msgid "at revision:"
-msgstr ""
+msgstr "tại lân cập nhật:"
 
 #: trac/versioncontrol/templates/diff_form.html:39
 msgid "To:"
-msgstr ""
+msgstr "Đến:"
 
 #: trac/versioncontrol/templates/diff_form.html:49
 msgid ""
@@ -2887,194 +2953,204 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
+"Bạn có thể bắt đầu gõ đường dẫn vào và một danh sách các thư mục và tập tin đã có"
+"sẽ hiện ra để\n"
+"              chọn. Chọn bằng cách nhấp chuột vào nó, hoặc sử dụng\n"
+"              phím lên/xuống và chọn tab."
 
 #: trac/versioncontrol/templates/diff_form.html:63
 msgid "TracChangeset"
-msgstr ""
+msgstr "TracChangeset"
 
 #: trac/versioncontrol/templates/diff_form.html:63
 msgid "for help on using the diff feature."
-msgstr ""
+msgstr "là hướng dẫn sử dụng tính năng diff."
 
 #: trac/versioncontrol/templates/dir_entries.html:17
 msgid "View Revision Log"
-msgstr ""
+msgstr "Xem nhật ký các lần thay đổi"
 
 #: trac/versioncontrol/templates/revisionlog.html:10
 msgid "(log)"
-msgstr ""
+msgstr "(nhật ký)"
 
 #: trac/versioncontrol/templates/revisionlog.html:22
 msgid "Revision Log Mode:"
-msgstr ""
+msgstr "Kiểu nhật ký lần thay đổi:"
 
 #: trac/versioncontrol/templates/revisionlog.html:26
 msgid "Stop on copy"
-msgstr ""
+msgstr "Dừng khi gặp bản sao"
 
 #: trac/versioncontrol/templates/revisionlog.html:32
 msgid "Follow copies"
-msgstr ""
+msgstr "Theo các bản sao"
 
 #: trac/versioncontrol/templates/revisionlog.html:38
 msgid "Show only adds and deletes"
-msgstr ""
+msgstr "Chỉ hiển thị cái được thêm và xóa"
 
 #: trac/versioncontrol/templates/revisionlog.html:43
 msgid "View log starting at"
-msgstr ""
+msgstr "Xem nhật ký bắt đầu tại"
 
 #: trac/versioncontrol/templates/revisionlog.html:47
 msgid "and back to"
-msgstr ""
+msgstr "và trở về"
 
 #: trac/versioncontrol/templates/revisionlog.html:52
 msgid "Show at most"
-msgstr ""
+msgstr "Hiển thị tối đa"
 
 #: trac/versioncontrol/templates/revisionlog.html:54
 msgid "revisions per page."
-msgstr ""
+msgstr "lần cập nhật một trang"
 
 #: trac/versioncontrol/templates/revisionlog.html:59
 msgid "Show full log messages"
-msgstr ""
+msgstr "Hiển thị toàn bộ thông điệp trong nhật ký"
 
 #: trac/versioncontrol/templates/revisionlog.html:77
 msgid "Copied or renamed"
-msgstr ""
+msgstr "Được sao chép hoặc đổi tên"
 
 #: trac/versioncontrol/templates/revisionlog.html:84
 msgid "Diff from Old Revision to New Revision (select them below)"
-msgstr ""
+msgstr "Diff từ Lần cập nhật cũ tới Lần cập nhật mới (chọn chúng ở bên dưới)"
 
 #: trac/versioncontrol/templates/revisionlog.html:93
 msgid "Chgset"
-msgstr ""
+msgstr "Chgset"
 
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Log Message"
-msgstr ""
+msgstr "Thông điệp nhật ký"
 
 #: trac/versioncontrol/templates/revisionlog.html:107
 msgid "copied from"
-msgstr ""
+msgstr "sao chép từ"
 
 #: trac/versioncontrol/templates/revisionlog.html:121
 msgid "View log starting at this revision"
-msgstr ""
+msgstr "Xem nhật ký bắt đầu từ lần cập nhật"
 
 #: trac/versioncontrol/templates/revisionlog.html:162
 msgid "Diff from Old Revision to New Revision (select them above)"
-msgstr ""
+msgstr "Diff từ Lần cập nhật cũ tới Lần cập nhật mới (chọn chúng ở bên trên)"
 
 #: trac/versioncontrol/templates/revisionlog.html:168
 msgid "TracRevisionLog"
-msgstr ""
+msgstr "TracRevisionLog"
 
 #: trac/versioncontrol/templates/revisionlog.html:168
 msgid "for help on using the revision log."
-msgstr ""
+msgstr "là hướng dẫn sử dụng cho nhật ký các lần cập nhật"
 
 #: trac/versioncontrol/templates/revisionlog.txt:1
 msgid ""
 "#\n"
 "# ChangeLog for"
 msgstr ""
+"#\n"
+"# Nhật ký thay đổi cho"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 msgid ""
 "# \n"
 "# Generated by Trac"
 msgstr ""
+"# \n"
+"# Sinh bởi Trac"
 
 #: trac/versioncontrol/web_ui/browser.py:297
 msgid "Browse Source"
-msgstr ""
+msgstr "Duyệt Mã nguồn"
 
 #: trac/versioncontrol/web_ui/browser.py:345
 #: trac/versioncontrol/web_ui/changeset.py:240
 msgid "Invalid Changeset Number"
-msgstr ""
+msgstr "Số tập các thay đổi không hợp lệ"
 
 #: trac/versioncontrol/web_ui/browser.py:351
 #: trac/versioncontrol/web_ui/log.py:98
 msgid "Parent directory"
-msgstr ""
+msgstr "Thư mục cha"
 
 #: trac/versioncontrol/web_ui/browser.py:377
 msgid "Normal"
-msgstr ""
+msgstr "Thường"
 
 #: trac/versioncontrol/web_ui/browser.py:378
 msgid "View file without annotations"
-msgstr ""
+msgstr "Xem tập tin không có chú thích"
 
 #: trac/versioncontrol/web_ui/browser.py:382
 msgid "Annotate"
-msgstr ""
+msgstr "Chú thích"
 
 #: trac/versioncontrol/web_ui/browser.py:383
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
 msgstr ""
+"Chú thích từng dòng với lần cập nhật sau cùng (việc này có thể "
+"tốn thời gian...)"
 
 #: trac/versioncontrol/web_ui/browser.py:389
 msgid "Revision Log"
-msgstr ""
+msgstr "Nhật ký lần thay đổi"
 
 #: trac/versioncontrol/web_ui/browser.py:455
 #: trac/versioncontrol/web_ui/changeset.py:334
 msgid "Zip Archive"
-msgstr ""
+msgstr "Tập tin zip"
 
 #: trac/versioncontrol/web_ui/browser.py:622
 msgid "Revision in which the line changed"
-msgstr ""
+msgstr "Lần thay đổi mà dòng này thuộc về"
 
 #: trac/versioncontrol/web_ui/changeset.py:333
 msgid "Unified Diff"
-msgstr ""
+msgstr "Diff hợp nhất"
 
 #: trac/versioncontrol/web_ui/changeset.py:348
 msgid "Reverse Diff"
-msgstr ""
+msgstr "Diff ngược"
 
 #: trac/versioncontrol/web_ui/changeset.py:379
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
-msgstr ""
+msgstr "Tập các thay đổi %(id)s dành cho %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:382
 #: trac/versioncontrol/web_ui/changeset.py:404
 #: trac/versioncontrol/web_ui/changeset.py:422
 #, python-format
 msgid "Changeset %(id)s"
-msgstr ""
+msgstr "Tập các thay đổi %(id)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:452
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
-msgstr ""
+msgstr "Hiển thị lần cập nhật %(rev)s của tập tin này trong trình duyệt"
 
 #: trac/versioncontrol/web_ui/changeset.py:595
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
-msgstr ""
+msgstr "Hiển thị tập các thay đổi %(id)s của %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:605
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
-msgstr ""
+msgstr "Hiển thị %(range)s khác biệt của %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:784
 msgid "Repository checkins"
-msgstr ""
+msgstr "Repository gởi lên"
 
 #: trac/versioncontrol/web_ui/changeset.py:956
 msgid "Changesets"
-msgstr ""
+msgstr "Tập các thay đổi"
 
 #: trac/versioncontrol/web_ui/log.py:170
 #, python-format
@@ -3082,297 +3158,307 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
+"Tập tin hoặc thư mục '%(path)s' không tồn tại ở lần cập nhật %(rev)s hoặc ở"
+"bất cứ lần cập nhật trước đây."
 
 #: trac/versioncontrol/web_ui/log.py:172
 msgid "Nonexistent path"
-msgstr ""
+msgstr "Đường dẫn không tồn tại"
 
 #: trac/versioncontrol/web_ui/log.py:188
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr ""
+msgstr "Nhật ký lần thay đổi (bắt đầu lại tại %(path)s, rev. %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:245
 msgid "ChangeLog"
-msgstr ""
+msgstr "Nhật ký thay đổi"
 
 #: trac/versioncontrol/web_ui/log.py:247
 msgid "View Latest Revision"
-msgstr ""
+msgstr "Xem lần cập nhật gần đây nhất"
 
 #: trac/versioncontrol/web_ui/log.py:251
 msgid "Older Revisions"
-msgstr ""
+msgstr "Các lần cập nhật cũ hơn"
 
 #: trac/web/auth.py:89
 #, python-format
 msgid "logged in as %(user)s"
-msgstr ""
+msgstr "đăng nhập vào dưới quyền %(user)s"
 
 #: trac/web/auth.py:92
 msgid "Logout"
-msgstr ""
+msgstr "Đăng xuất"
 
 #: trac/web/auth.py:95
 #, fuzzy
 msgid "Login"
-msgstr "Ghi nhật kí"
+msgstr "Đăng nhập"
 
 #: trac/web/auth.py:137
 #, python-format
 msgid "Already logged in as %(user)s."
-msgstr ""
+msgstr "Đã đăng nhập dưới quyền %(user)s."
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, python-format
 msgid "Previous %(label)s"
-msgstr ""
+msgstr "%(label)s trước "
 
 #: trac/web/chrome.py:180 trac/web/chrome.py:187
 #, python-format
 msgid "Next %(label)s"
-msgstr ""
+msgstr "%(label)s kế tiếp"
 
 #: trac/wiki/api.py:325
 msgid "no permission to view this wiki page"
-msgstr ""
+msgstr "không có quyền xem trang wiki này"
 
 #: trac/wiki/formatter.py:133
 #, python-format
 msgid "HTML parsing error: %(message)s"
-msgstr ""
+msgstr "Lỗi phân tích HTML: %(message)s"
 
 #: trac/wiki/intertrac.py:51
 #, python-format
 msgid "Can't view %(link)s:"
-msgstr ""
+msgstr "Không thể xem %(link)s:"
 
 #: trac/wiki/macros.py:467
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
-msgstr ""
+msgstr "Lỗi: Không thể lấy mô tả cho macro %(name)s"
 
 #: trac/wiki/macros.py:550
 msgid "Table of Contents"
-msgstr ""
+msgstr "Mục lục"
 
 #: trac/wiki/model.py:146
 msgid "Page not modified"
-msgstr ""
+msgstr "Trang không thay đổi"
 
 #: trac/wiki/web_ui.py:85 trac/wiki/web_ui.py:596
 msgid "Wiki"
-msgstr ""
+msgstr "Wiki"
 
 #: trac/wiki/web_ui.py:87
 msgid "Help/Guide"
-msgstr ""
+msgstr "Giúp đõ/Hướng dẫn"
 
 #: trac/wiki/web_ui.py:122
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
-msgstr ""
+msgstr "Không có phiên bản %(name)s cho trang Wiki \"%(name)s\""
 
 #: trac/wiki/web_ui.py:181
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
-msgstr ""
+msgstr "Trường '%(field)s' của trang Wiki không hợp lệ: %(message)s"
 
 #: trac/wiki/web_ui.py:185
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
-msgstr ""
+msgstr "Trang Wiki không hợp lệ: %(message)s"
 
 #: trac/wiki/web_ui.py:271
 msgid "Page not modified, showing latest version."
-msgstr ""
+msgstr "Trang không có thay đổi, hiển thị phiên bản sau cùng"
 
 #: trac/wiki/web_ui.py:303
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
-msgstr ""
+msgstr "Phiên bản %(num)s của trang \"%(name)s\" không tồn tại"
 
 #: trac/wiki/web_ui.py:357
 msgid "Page history"
-msgstr ""
+msgstr "Lịch sử trang"
 
 #: trac/wiki/web_ui.py:374
 msgid "Wiki History"
-msgstr ""
+msgstr "Lịch sử Wiki"
 
 #: trac/wiki/web_ui.py:439
 #, python-format
 msgid "Page %(name)s does not exist"
-msgstr ""
+msgstr "Trang %(name)s không tồn tại"
 
 #: trac/wiki/web_ui.py:476
 #, python-format
 msgid "Page %(name)s not found"
-msgstr ""
+msgstr "Không tìm thấy trang %(name)s"
 
 #: trac/wiki/web_ui.py:510 trac/wiki/web_ui.py:519
 msgid "View Latest Version"
-msgstr ""
+msgstr "Xem phiên bản sau cùng"
 
 #: trac/wiki/web_ui.py:539
 msgid "Start Page"
-msgstr ""
+msgstr "Trang bắt đầu"
 
 #: trac/wiki/web_ui.py:540
 msgid "Index"
-msgstr ""
+msgstr "Chỉ mục"
 
 #: trac/wiki/web_ui.py:542
 msgid "History"
-msgstr ""
+msgstr "Lịch sử"
 
 #: trac/wiki/web_ui.py:552
 msgid "Wiki changes"
-msgstr ""
+msgstr "Các thay đổi Wiki"
 
 #: trac/wiki/templates/wiki_delete.html:22
 msgid "Delete"
-msgstr ""
+msgstr "xóa"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "Are you sure you want to"
-msgstr ""
+msgstr "Bạn có chắc là bạn muốn"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "delete"
-msgstr ""
+msgstr "xóa"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "this page?"
-msgstr ""
+msgstr "trang này?"
 
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
-msgstr ""
+msgstr "Đây là phiên bản duy nhất của trang này, vì thế trang này sẽ bị xóa hoàn toàn!"
 
 #: trac/wiki/templates/wiki_diff.html:16
 #, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
-msgstr ""
+msgstr "Xóa phiên bản %(old_version)d đến phiên bản %(version)d"
 
 #: trac/wiki/templates/wiki_diff.html:17
 #, python-format
 msgid "Delete version %(version)d"
-msgstr ""
+msgstr "Xóa phiên bản %(version)d"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
-msgstr ""
+msgstr "Đang soạn thảo"
 
 #: trac/wiki/templates/wiki_edit.html:30
 msgid "Someone else has modified that page since you started your edits."
-msgstr ""
+msgstr "Một người khác đã thay đổi trang đó kể từ khi bạn bắt đầu soạn thảo."
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
-msgstr ""
+msgstr "Nếu bạn lưu ngay lập tức, bạn sẽ xóa bỏ các thay đổi đó"
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "(highlighted below as deletions)."
-msgstr ""
+msgstr "(phần được tô bên dưới là bị xóa)"
 
 #: trac/wiki/templates/wiki_edit.html:33 trac/wiki/templates/wiki_edit.html:42
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
 msgstr ""
+"Hãy xem lại tất cả các thay đổi này và trộn chúng với các thay đổi\n"
+"        của bạn."
 
 #: trac/wiki/templates/wiki_edit.html:34 trac/wiki/templates/wiki_edit.html:44
 msgid "If you're unsure about what you're doing, please press"
-msgstr ""
+msgstr "Nếu bạn không chắc về điều bạn đang làm, hãy nhấn"
 
 #: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
 msgstr ""
+"(mất các thay đổi) và bắt đầu soạn thảo phiên bản sau cùng của trang\n"
+"        một lần nữa."
 
 #: trac/wiki/templates/wiki_edit.html:39
 msgid "Someone else modified that page since you started your edits."
-msgstr ""
+msgstr "Một người khác đã thay đổi trang đó kể từ khi bạn bắt đầu soạn thảo."
 
 #: trac/wiki/templates/wiki_edit.html:53
 msgid "Change information for future version"
-msgstr ""
+msgstr "Thay đổi thông tin cho những phiên bản tiếp theo"
 
 #: trac/wiki/templates/wiki_edit.html:54 trac/wiki/templates/wiki_view.html:26
 msgid "(modified by"
-msgstr ""
+msgstr "(thay đổi bởi"
 
 #: trac/wiki/templates/wiki_edit.html:72
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
 msgstr ""
+"Xin lỗi, trang này đã được thay đổi bởi người khác kể từ khi bạn bắt đầu\n"
+"            soạn thảo. Các thay đổi của bạn không được lưu."
 
 #: trac/wiki/templates/wiki_edit.html:85
 msgid "Adjust edit area height:"
-msgstr ""
+msgstr "Điều chỉnh chiều cao vùng soạn thảo:"
 
 #: trac/wiki/templates/wiki_edit.html:97
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
+"[1:Note:] Xem [2:WikiFormatting] và \n"
+"          [3:TracWiki] là hướng dẫn sử dụng soạn thảo nội dung wiki."
 
 #: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
-msgstr ""
+msgstr "Thay đổi thông tin"
 
 #: trac/wiki/templates/wiki_edit.html:110
 msgid "Comment about this change (optional):"
-msgstr ""
+msgstr "Lời bình về thay đổi này (không bắt buộc):"
 
 #: trac/wiki/templates/wiki_edit.html:117
 msgid "Page is read-only"
-msgstr ""
+msgstr "Trang này chỉ cho phép đọc"
 
 #: trac/wiki/templates/wiki_edit.html:125
 msgid "Merge changes"
-msgstr ""
+msgstr "Trộn các thay đổi"
 
 #: trac/wiki/templates/wiki_edit.html:129
 msgid "Preview Page"
-msgstr ""
+msgstr "Xem trước Trang"
 
 #: trac/wiki/templates/wiki_edit.html:130
 msgid "Review Changes"
-msgstr ""
+msgstr "Xem lại các thay đổi"
 
 #: trac/wiki/templates/wiki_view.html:39
 msgid "Describe"
-msgstr ""
+msgstr "Mô tả"
 
 #: trac/wiki/templates/wiki_view.html:40
 msgid "here."
-msgstr ""
+msgstr "tại đây."
 
 #: trac/wiki/templates/wiki_view.html:57
 msgid "Edit this page"
-msgstr ""
+msgstr "Chỉnh sửa trang này."
 
 #: trac/wiki/templates/wiki_view.html:60
 msgid "Create this page"
-msgstr ""
+msgstr "Tạo trang này"
 
 #: trac/wiki/templates/wiki_view.html:62
 msgid "Using the template:"
-msgstr ""
+msgstr "Sử dụng mẫu:"
 
 #: trac/wiki/templates/wiki_view.html:65
 msgid "(blank page)"
-msgstr ""
+msgstr "(trang trống)"
 
 #: trac/wiki/templates/wiki_view.html:84
 msgid "Delete this version"
-msgstr ""
+msgstr "Xóa phiên bản này"
 
 #: trac/wiki/templates/wiki_view.html:86
 msgid "Delete page"
-msgstr ""
+msgstr "Xóa trang"
 
