@@ -102,7 +102,9 @@ class Ticket(object):
 
         self.id = tkt_id
         for i in range(len(std_fields)):
-            self.values[std_fields[i]] = row[i] or ''
+            value = row[i]
+            if value is not None:
+                self.values[std_fields[i]] = row[i]
         self.time_created = datetime.fromtimestamp(row[len(std_fields)], utc)
         self.time_changed = datetime.fromtimestamp(row[len(std_fields) + 1], utc)
 

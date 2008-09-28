@@ -205,13 +205,15 @@ class TicketModule(Component):
         sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
                                          'reporter', 'cc', 
                                          db.cast('id', 'text')], terms)
+        sql3, args3 = search_to_sql(db, ['c.value'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
                        "a.type,a.id,a.time,a.status,a.resolution "
                        "FROM ticket a "
                        "LEFT JOIN ticket_change b ON a.id = b.ticket "
-                       "WHERE (b.field='comment' AND %s ) OR %s" % (sql, sql2),
-                       args + args2)
+                       "LEFT OUTER JOIN ticket_custom c ON (a.id = c.ticket) "
+                       "WHERE (b.field='comment' AND %s) OR %s OR %s" % 
+                       (sql, sql2, sql3), args + args2 + args3)
         ticketsystem = TicketSystem(self.env)
         for summary, desc, author, type, tid, ts, status, resolution in cursor:
             t = ticket_realm(id=tid)
