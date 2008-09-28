@@ -301,7 +301,7 @@ ${comment}</textarea></p>
                 </td>
               </tr>
             </py:if>
-            <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
+            <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea' and f.name != 'owner')"
                 py:with="fullrow = len(row) == 1">
               <py:for each="idx, field in enumerate(row)"
                       py:with="value = ticket.get_value_or_default(field.name)">
