@@ -50,8 +50,6 @@ h2.report-result {
 /* Styles for the report list and the report results table
    (extends the styles for "table.listing") */
 .reports td.title { width: 100% }
-.reports tbody td :link, .reports tbody td :visited,
-.tickets tbody td :link, .tickets tbody td :visited { display: block }
 .tickets { border-bottom: none }
 .tickets thead th { text-transform: capitalize; white-space: nowrap; }
 .tickets tbody td, .reports tbody td { padding: .1em .5em !important }
