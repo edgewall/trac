@@ -1,10 +1,10 @@
 @import url(code.css);
 
 /* Styles for the path of hierarchical pages */
-h1.path { margin: 0; padding: 0 0 .5em }
-h1.path :link, h1.path :visited { border: none; padding: 0 .2em; color: #b00 }
-h1.path .sep { color: #666; padding: 0 .1em }
-h1.path .pathentry { float: left }
+p.path { margin: 0; padding: 0 0 .5em; font-size: .75em }
+p.path :link, p.path :visited { border: none; padding: 0 .2em; color: #b00 }
+p.path .sep { color: #666; padding: 0 .1em }
+p.path .pathentry { float: left }
 
 /* Styles for the page editing form */
 #edit #rows { float: right; font-size: 80% }
