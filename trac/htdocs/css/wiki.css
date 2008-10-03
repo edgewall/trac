@@ -2,7 +2,7 @@
 
 /* Styles for the path of hierarchical pages */
 p.path { margin: 0; padding: 0 0 .5em; font-size: .75em }
-p.path :link, p.path :visited { border: none; padding: 0 .2em; color: #b00 }
+p.path :link, p.path :visited { margin: 0 .2em }
 p.path .sep { color: #666; padding: 0 .1em }
 p.path .pathentry { float: left }
 
