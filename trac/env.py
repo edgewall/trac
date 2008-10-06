@@ -283,7 +283,10 @@ class Environment(Component, ComponentManager):
         """
         rm = RepositoryManager(self)
         for reponame in rm.get_all_repositories().keys():
-            yield (reponame, rm.get_repository(reponame, authname))
+            try:
+                yield (reponame, rm.get_repository(reponame, authname))
+            except TracError:
+                "only yield valid repositories"
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize
