@@ -165,18 +165,19 @@ tr.diff input { padding: 0 1em; margin: 0 }
   margin: 0 5px 0 0; 
 }
 
-#chglist td.summary { 
+#chglist td.summary, #chglist td.log { 
  width: 100%; 
  font-size: 85%; 
  vertical-align: middle; 
 }
-#chglist tr.verbose td.summary {
+#chglist td.summary *, #chglist td.log * { margin-top: 0 }
+/* verbose mode */
+#chglist tr.verbose { border-top: none }
+#chglist tr.verbose td.log {
  border: none;
+ border-bottom: 1px solid #ddd;
  color: #333;
- padding: .5em 1em 1em 2em;
 }
-#chglist td.summary * { margin-top: 0 }
-
 #chglist tr.verbose td { border: none; }
 
 #paging { margin: 1em 0 }
