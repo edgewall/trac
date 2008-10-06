@@ -2,6 +2,7 @@ from trac.log import logger_factory
 from trac.mimeview import Context
 from trac.test import Mock, EnvironmentStub, MockPerm
 from trac.ticket.query import Query, QueryModule
+from trac.util.datefmt import utc
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
 from trac.db.sqlite_backend import sqlite_version
@@ -35,7 +36,7 @@ class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.req = Mock(href=self.env.href, authname='anonymous')
+        self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
         
 
     def test_all_ordered_by_id(self):
@@ -336,10 +337,71 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
+    def test_constrained_by_time_range(self):
+        query = Query.from_string(self.env, 'created=2008-08-01;2008-09-01', order='id')
+        sql, args = query.get_sql(self.req)
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE (CAST(t.time AS int)>=%s AND CAST(t.time AS int)<%s)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([1217548800, 1220227200], args)
+        tickets = query.execute(self.req)
+
+    def test_constrained_by_time_range_exclusion(self):
+        query = Query.from_string(self.env, 'created!=2008-08-01;2008-09-01', order='id')
+        sql, args = query.get_sql(self.req)
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE NOT (CAST(t.time AS int)>=%s AND CAST(t.time AS int)<%s)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([1217548800, 1220227200], args)
+        tickets = query.execute(self.req)
+
+    def test_constrained_by_time_range_open_right(self):
+        query = Query.from_string(self.env, 'created=2008-08-01;', order='id')
+        sql, args = query.get_sql(self.req)
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE CAST(t.time AS int)>=%s
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([1217548800], args)
+        tickets = query.execute(self.req)
+
+    def test_constrained_by_time_range_open_left(self):
+        query = Query.from_string(self.env, 'created=;2008-09-01', order='id')
+        sql, args = query.get_sql(self.req)
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE CAST(t.time AS int)<%s
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([1220227200], args)
+        tickets = query.execute(self.req)
+
+    def test_constrained_by_time_range_modified(self):
+        query = Query.from_string(self.env, 'modified=2008-08-01;2008-09-01', order='id')
+        sql, args = query.get_sql(self.req)
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.changetime AS changetime,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE (CAST(t.changetime AS int)>=%s AND CAST(t.changetime AS int)<%s)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([1217548800, 1220227200], args)
+        tickets = query.execute(self.req)
+
     def test_csv_escape(self):
         query = Mock(get_columns=lambda: ['col1'],
                      execute=lambda r,c: [{'id': 1,
-                                           'col1': 'value, needs escaped'}])
+                                           'col1': 'value, needs escaped'}],
+                     time_fields=['time', 'changetime'])
         content, mimetype = QueryModule(self.env).export_csv(
                                 Mock(href=self.env.href, perm=MockPerm()),
                                 query)

@@ -149,7 +149,8 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_props(self):
         tkt = self.ticket
-        fields = [f for f in tkt.fields if f['name'] not in ('summary', 'cc')]
+        fields = [f for f in tkt.fields 
+                  if f['name'] not in ('summary', 'cc', 'time', 'changetime')]
         width = [0, 0, 0, 0]
         i = 0
         for f in [f['name'] for f in fields if f['type'] != 'textarea']:

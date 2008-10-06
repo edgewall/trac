@@ -40,16 +40,22 @@ class Ticket(object):
     def id_is_valid(num):
         return 0 < int(num) <= 1L << 31
 
+    # 0.11 compatibility
+    time_created = property(lambda self: self.values.get('time'))
+    time_changed = property(lambda self: self.values.get('changetime'))
+    
     def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
         self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
+        self.time_fields = [f['name'] for f in self.fields
+                            if f['type'] == 'time']
         self.values = {}
         if tkt_id is not None:
             self._fetch_ticket(tkt_id, db)
         else:
             self._init_defaults(db)
-            self.id = self.time_created = self.time_changed = None
+            self.id = None
         self._old = {}
 
     def _get_db(self, db):
@@ -66,7 +72,7 @@ class Ticket(object):
     def _init_defaults(self, db=None):
         for field in self.fields:
             default = None
-            if field['name'] in ['resolution', 'status']:
+            if field['name'] in ['resolution', 'status', 'time', 'changetime']:
                 # Ignore for new - only change through workflow
                 pass
             elif not field.get('custom'):
@@ -93,7 +99,7 @@ class Ticket(object):
             # Fetch the standard ticket fields
             std_fields = [f['name'] for f in self.fields if not f.get('custom')]
             cursor = db.cursor()
-            cursor.execute("SELECT %s,time,changetime FROM ticket WHERE id=%%s"
+            cursor.execute("SELECT %s FROM ticket WHERE id=%%s"
                            % ','.join(std_fields), (tkt_id,))
             row = cursor.fetchone()
         if not row:
@@ -104,9 +110,11 @@ class Ticket(object):
         for i in range(len(std_fields)):
             value = row[i]
             if value is not None:
-                self.values[std_fields[i]] = row[i]
-        self.time_created = datetime.fromtimestamp(row[len(std_fields)], utc)
-        self.time_changed = datetime.fromtimestamp(row[len(std_fields) + 1], utc)
+                field = std_fields[i]
+                if field in self.time_fields:
+                    self.values[field] = datetime.fromtimestamp(value, utc)
+                else:
+                    self.values[field] = value
 
         # Fetch custom fields if available
         custom_fields = [f['name'] for f in self.fields if f.get('custom')]
@@ -166,7 +174,7 @@ class Ticket(object):
         # Add a timestamp
         if when is None:
             when = datetime.now(utc)
-        self.time_created = self.time_changed = when
+        self.values['time'] = self.values['changetime'] = when
 
         cursor = db.cursor()
 
@@ -180,9 +188,13 @@ class Ticket(object):
                 # No such component exists
                 pass
 
+        # Perform type conversions
+        values = dict(self.values)
+        for field in self.time_fields:
+            if field in values:
+                values[field] = to_timestamp(values[field])
+        
         # Insert ticket record
-        created = to_timestamp(self.time_created)
-        changed = to_timestamp(self.time_changed)
         std_fields = []
         custom_fields = []
         for f in self.fields:
@@ -192,10 +204,10 @@ class Ticket(object):
                     custom_fields.append(fname)
                 else:
                     std_fields.append(fname)
-        cursor.execute("INSERT INTO ticket (%s,time,changetime) VALUES (%s)"
+        cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
                        % (','.join(std_fields),
-                          ','.join(['%s'] * (len(std_fields) + 2))),
-                       [self[name] for name in std_fields] + [created, changed])
+                          ','.join(['%s'] * len(std_fields))),
+                       [values[name] for name in std_fields])
         tkt_id = db.get_last_id(cursor, 'ticket')
 
         # Insert custom fields
@@ -291,7 +303,7 @@ class Ticket(object):
             db.commit()
         old_values = self._old
         self._old = {}
-        self.time_changed = when
+        self.values['changetime'] = when
 
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_changed(self, comment, author, old_values)

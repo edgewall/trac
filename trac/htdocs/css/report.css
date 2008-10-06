@@ -38,7 +38,7 @@ h2.report-result {
 #filters td label { font-size: 11px }
 #filters td.mode { text-align: right }
 #filters td.filter { width: 100% }
-#filters td.filter label { padding-right: 1em }
+#filters td.filter label.control { padding-right: 1em }
 #filters td.actions { text-align: right; white-space: nowrap }
 
 #columns div label { 

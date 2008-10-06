@@ -31,7 +31,7 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges
-from trac.util.datefmt import to_timestamp, utc
+from trac.util.datefmt import format_datetime, parse_date, to_timestamp, utc
 from trac.util.presentation import Paginator
 from trac.util.text import shorten_line
 from trac.util.translation import _, tag_
@@ -56,7 +56,8 @@ class Query(object):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
-        self.order = order
+        synonyms = TicketSystem(self.env).get_field_synonyms()
+        self.order = synonyms.get(order, order)     # 0.11 compatibility
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
@@ -100,20 +101,14 @@ class Query(object):
         if verbose and 'description' not in rows: # 0.10 compatibility
             rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
+        self.time_fields = [f['name'] for f in self.fields
+                            if f['type'] == 'time']
         field_names = [f['name'] for f in self.fields]
         self.cols = [c for c in cols or [] if c in field_names or 
-                     c in ('id', 'time', 'changetime')]
+                     c == 'id']
         self.rows = [c for c in rows if c in field_names]
         if self.order != 'id' and self.order not in field_names:
-            # TODO: fix after adding time/changetime to the api.py
-            if order == 'created':
-                order = 'time'
-            elif order == 'modified':
-                order = 'changetime'
-            if order in ('time', 'changetime'):
-                self.order = order
-            else:
-                self.order = 'priority'
+            self.order = 'priority'
 
         if self.group not in field_names:
             self.group = None
@@ -124,6 +119,7 @@ class Query(object):
         kw_strs = ['order', 'group', 'page', 'max']
         kw_arys = ['rows']
         kw_bools = ['desc', 'groupdesc', 'verbose']
+        synonyms = TicketSystem(env).get_field_synonyms()
         constraints = {}
         cols = []
         for filter_ in filters:
@@ -131,7 +127,7 @@ class Query(object):
             if len(filter_) != 2:
                 raise QuerySyntaxError(_('Query filter requires field and ' 
                                          'constraints separated by a "="'))
-            field,values = filter_
+            field, values = filter_
             if not field:
                 raise QuerySyntaxError(_('Query filter requires field name'))
             # from last char of `field`, get the mode of comparison
@@ -157,9 +153,11 @@ class Query(object):
                 elif field in kw_bools:
                     kw[field] = True
                 elif field == 'col':
-                    cols.extend(processed_values)
+                    cols.extend(synonyms.get(value, value)
+                                for value in processed_values)
                 else:
-                    constraints[field] = processed_values
+                    constraints.setdefault(synonyms.get(field, field), 
+                                           []).extend(processed_values)
             except UnicodeError:
                 pass # field must be a str, see `get_href()`
         report = constraints.pop('report', None)
@@ -185,8 +183,6 @@ class Query(object):
             if col in cols:
                 cols.remove(col)
                 cols.append(col)
-        # TODO: fix after adding time/changetime to the api.py
-        cols += ['time', 'changetime']
 
         # Semi-intelligently remove columns that are restricted to a single
         # value by a query constraint.
@@ -195,7 +191,7 @@ class Query(object):
             constraint = self.constraints[col]
             if len(constraint) == 1 and constraint[0] \
                     and not constraint[0][0] in ('!', '~', '^', '$'):
-                if col in cols:
+                if col in cols and col not in self.time_fields:
                     cols.remove(col)
             if col == 'status' and not 'closed' in constraint \
                     and 'resolution' in cols:
@@ -299,7 +295,7 @@ class Query(object):
                     result['href'] = req.href.ticket(val)
                 elif val is None:
                     val = '--'
-                elif name in ('changetime', 'time'):
+                elif name in self.time_fields:
                     val = datetime.fromtimestamp(int(val or 0), utc)
                 elif field and field['type'] == 'checkbox':
                     try:
@@ -425,17 +421,41 @@ class Query(object):
 
         def get_constraint_sql(name, value, mode, neg):
             if name not in custom_fields:
-                name = 't.' + name
+                col = 't.' + name
             else:
-                name = name + '.value'
+                col = name + '.value'
             value = value[len(mode) + neg:]
 
+            if name in self.time_fields:
+                if ';' in value:
+                    (start, end) = [each.strip() for each in 
+                                    value.split(';', 1)]
+                else:
+                    (start, end) = (value.strip(), '')
+                col_cast = db.cast(col, 'int')
+                if start and end:
+                    start = to_timestamp(parse_date(start, req.tz))
+                    end = to_timestamp(parse_date(end, req.tz))
+                    return ("%s(%s>=%%s AND %s<%%s)" % (neg and 'NOT ' or '',
+                                                        col_cast, col_cast),
+                            (start, end))
+                elif start:
+                    start = to_timestamp(parse_date(start, req.tz))
+                    return ("%s%s>=%%s" % (neg and 'NOT ' or '', col_cast),
+                            (start, ))
+                elif end:
+                    end = to_timestamp(parse_date(end, req.tz))
+                    return ("%s%s<%%s" % (neg and 'NOT ' or '', col_cast),
+                            (end, ))
+                else:
+                    return None
+                
             if mode == '':
-                return ("COALESCE(%s,'')%s=%%s" % (name, neg and '!' or ''),
-                        value)
+                return ("COALESCE(%s,'')%s=%%s" % (col, neg and '!' or ''),
+                        (value, ))
+
             if not value:
                 return None
-            db = self.env.get_db_cnx()
             value = db.like_escape(value)
             if mode == '~':
                 value = '%' + value + '%'
@@ -443,10 +463,11 @@ class Query(object):
                 value = value + '%'
             elif mode == '$':
                 value = '%' + value
-            return ("COALESCE(%s,'') %s%s" % (name, neg and 'NOT ' or '',
+            return ("COALESCE(%s,'') %s%s" % (col, neg and 'NOT ' or '',
                                               db.like()),
-                    value)
+                    (value, ))
 
+        db = self.env.get_db_cnx()
         clauses = []
         args = []
         for k, v in self.constraints.items():
@@ -480,7 +501,7 @@ class Query(object):
                     clauses.append('%s(%s)' % (neg and 'NOT ' or '',
                                                ' OR '.join(id_clauses)))
             # Special case for exact matches on multiple values
-            elif not mode and len(v) > 1:
+            elif not mode and len(v) > 1 and k not in self.time_fields:
                 if k not in custom_fields:
                     col = 't.' + k
                 else:
@@ -501,12 +522,13 @@ class Query(object):
                 else:
                     clauses.append("(" + " OR ".join(
                         [item[0] for item in constraint_sql]) + ")")
-                args += [item[1] for item in constraint_sql]
+                for item in constraint_sql:
+                    args.extend(item[1])
             elif len(v) == 1:
                 constraint_sql = get_constraint_sql(k, v[0], mode, neg)
                 if constraint_sql:
                     clauses.append(constraint_sql[0])
-                    args.append(constraint_sql[1])
+                    args.extend(constraint_sql[1])
 
         clauses = filter(None, clauses)
         if clauses:
@@ -530,7 +552,7 @@ class Query(object):
             # FIXME: This is a somewhat ugly hack.  Can we also have the
             #        column type for this?  If it's an integer, we do first
             #        one, if text, we do 'else'
-            if name in ('id', 'time', 'changetime'):
+            if name == 'id' or name in self.time_fields:
                 sql.append("COALESCE(%s,0)=0%s," % (col, desc))
             else:
                 sql.append("COALESCE(%s,'')=''%s," % (col, desc))
@@ -576,10 +598,6 @@ class Query(object):
         labels = dict([(f['name'], f['label']) for f in self.fields])
         wikify = set(f['name'] for f in self.fields 
                      if f['type'] == 'text' and f.get('format') == 'wiki')
-
-        # TODO: remove after adding time/changetime to the api.py
-        labels['changetime'] = _('Modified')
-        labels['time'] = _('Created')
 
         headers = [{
             'name': col, 'label': labels.get(col, _('Ticket')),
@@ -829,9 +847,14 @@ class QueryModule(Component):
 
     def _get_constraints(self, req):
         constraints = {}
-        ticket_fields = [f['name'] for f in
-                         TicketSystem(self.env).get_ticket_fields()]
+        fields = TicketSystem(self.env).get_ticket_fields()
+        synonyms = TicketSystem(self.env).get_field_synonyms()
+        ticket_fields = [f['name'] for f in fields]
         ticket_fields.append('id')
+        ticket_fields.extend(synonyms.iterkeys())
+        time_fields = [f['name'] for f in fields if f['type'] == 'time']
+        time_fields.extend([k for (k, v) in synonyms.iteritems() 
+                            if v in time_fields])
 
         # For clients without JavaScript, we remove constraints here if
         # requested
@@ -853,6 +876,11 @@ class QueryModule(Component):
                 mode = req.args.get(field + '_mode')
                 if mode:
                     vals = [mode + x for x in vals]
+                if field in time_fields:
+                    ends = req.args.getlist(field + '_end')
+                    if ends:
+                        vals = [start + ';' + end 
+                                for (start, end) in zip(vals, ends)]
                 if field in remove_constraints:
                     idx = remove_constraints[field]
                     if idx >= 0:
@@ -861,7 +889,8 @@ class QueryModule(Component):
                             continue
                     else:
                         continue
-                constraints[field] = vals
+                constraints.setdefault(synonyms.get(field, field), 
+                                       []).extend(vals)
 
         return constraints
 
@@ -957,6 +986,8 @@ class QueryModule(Component):
                     if col in ('cc', 'reporter'):
                         value = Chrome(self.env).format_emails(context(ticket),
                                                                value)
+                    elif col in query.time_fields:
+                        value = format_datetime(value, tzinfo=req.tz)
                     values.append(unicode(value).encode('utf-8'))
                 writer.writerow(values)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)

@@ -39,7 +39,7 @@ from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id, partition
 from trac.util.compat import any
-from trac.util.datefmt import to_timestamp, utc
+from trac.util.datefmt import format_datetime, to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, N_, gettext
@@ -526,7 +526,7 @@ class TicketModule(Component):
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
                          # Store a timestamp for detecting "mid air collisions"
-                         'timestamp': str(ticket.time_changed)})
+                         'timestamp': str(ticket['changetime'])})
 
         self._insert_ticket_data(req, ticket, data,
                                  get_reporter_id(req, 'author'), field_changes)
@@ -661,7 +661,7 @@ class TicketModule(Component):
         history = [c for c in history if any([f in text_fields
                                               for f in c['fields']])]
         history.append({'version': 0, 'comment': "''Initial version''",
-                        'date': ticket.time_created,
+                        'date': ticket['time'],
                         'author': ticket['reporter'] # not 100% accurate...
                         })
         data.update({'title': _('Ticket History'),
@@ -833,17 +833,21 @@ class TicketModule(Component):
     def export_csv(self, req, ticket, sep=',', mimetype='text/plain'):
         # FIXME: consider dumping history of changes here as well
         #        as one row of output doesn't seem to be terribly useful...
+        fields = [f for f in ticket.fields 
+                  if f['name'] not in ('time', 'changetime')]
         content = StringIO()
         writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
-        writer.writerow(['id'] + [unicode(f['name']) for f in ticket.fields])
+        writer.writerow(['id'] + [unicode(f['name']) for f in fields])
 
         context = Context.from_request(req, ticket.resource)
         cols = [unicode(ticket.id)]
-        for f in ticket.fields:
+        for f in fields:
             name = f['name']
             value = ticket.values.get(name, '')
             if name in ('cc', 'reporter'):
                 value = Chrome(self.env).format_emails(context, value, ' ')
+            elif name in ticket.time_fields:
+                value = format_datetime(value, tzinfo=req.tz)
             cols.append(value.encode('utf-8'))
         writer.writerow(cols)
         return (content.getvalue(), '%s;charset=utf-8' % mimetype)
@@ -909,7 +913,7 @@ class TicketModule(Component):
 
         # Mid air collision?
         if ticket.exists and (ticket._old or comment):
-            if req.args.get('ts') != str(ticket.time_changed):
+            if req.args.get('ts') != str(ticket['changetime']):
                 add_warning(req, _("Sorry, can not save your changes. "
                               "This ticket has been modified by someone else "
                               "since you started"))
@@ -1112,7 +1116,7 @@ class TicketModule(Component):
 
             # per field settings
             if name in ('summary', 'reporter', 'description', 'status',
-                        'resolution'):
+                        'resolution', 'time', 'changetime'):
                 field['skip'] = True
             elif name == 'owner':
                 field['skip'] = True
