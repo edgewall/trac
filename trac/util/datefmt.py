@@ -172,9 +172,7 @@ _ISO_8601_RE = re.compile(r'(\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?'   # date
 
 def parse_date(text, tzinfo=None):
     tzinfo = tzinfo or localtz
-    if text == 'now': # TODO: today, yesterday, etc.
-        return datetime.now(utc)
-    tm = None
+    dt = None
     text = text.strip()
     # normalize ISO time
     match = _ISO_8601_RE.match(text)
@@ -198,22 +196,25 @@ def parse_date(text, tzinfo=None):
             tm = time.strptime('%s ' * 6 % (years, months, days,
                                             hours, minutes, seconds),
                                '%Y %m %d %H %M %S ')
+            dt = datetime(*(tm[0:6] + (0, tzinfo)))
         except ValueError:
             pass
-    else:
+    if dt is None:
         for format in ['%x %X', '%x, %X', '%X %x', '%X, %x', '%x', '%c',
                        '%b %d, %Y']:
             try:
                 tm = time.strptime(text, format)
+                dt = datetime(*(tm[0:6] + (0, tzinfo)))
                 break
             except ValueError:
                 continue
-    if tm == None:
+    if dt is None:
+        dt = _parse_relative_time(text, tzinfo)
+    if dt is None:
         hint = get_date_format_hint()        
         raise TracError('"%s" is an invalid date, or the date format '
                         'is not known. Try "%s" instead.' % (text, hint),
                         'Invalid Date')
-    dt = datetime(*(tm[0:6] + (0, tzinfo)))
     # Make sure we can convert it to a timestamp and back - fromtimestamp()
     # may raise ValueError if larger than platform C localtime() or gmtime()
     try:
@@ -223,6 +224,68 @@ def parse_date(text, tzinfo=None):
                         'Try a date closer to present time.' % (text,),
                         'Invalid Date')
     return dt
+
+
+_REL_TIME_RE = re.compile(
+    r'(\d+\.?\d*)\s*'
+    r'(second|minute|hour|day|week|month|year|[hdwmy])s?\s*'
+    r'(?:ago)?$')
+_time_intervals = dict(
+    second=lambda v: timedelta(seconds=v),
+    minute=lambda v: timedelta(minutes=v),
+    hour=lambda v: timedelta(hours=v),
+    day=lambda v: timedelta(days=v),
+    week=lambda v: timedelta(weeks=v),
+    month=lambda v: timedelta(days=30 * v),
+    year=lambda v: timedelta(days=365 * v),
+    h=lambda v: timedelta(hours=v),
+    d=lambda v: timedelta(days=v),
+    w=lambda v: timedelta(weeks=v),
+    m=lambda v: timedelta(days=30 * v),
+    y=lambda v: timedelta(days=365 * v),
+)
+_TIME_START_RE = re.compile(r'(this|last)\s*'
+                            r'(second|minute|hour|day|week|month|year)$')
+_time_starts = dict(
+    second=lambda now: now.replace(microsecond=0),
+    minute=lambda now: now.replace(microsecond=0, second=0),
+    hour=lambda now: now.replace(microsecond=0, second=0, minute=0),
+    day=lambda now: now.replace(microsecond=0, second=0, minute=0, hour=0),
+    week=lambda now: now.replace(microsecond=0, second=0, minute=0, hour=0) \
+                     - timedelta(days=now.weekday()),
+    month=lambda now: now.replace(microsecond=0, second=0, minute=0, hour=0,
+                                  day=1),
+    year=lambda now: now.replace(microsecond=0, second=0, minute=0, hour=0,
+                                  day=1, month=1),
+)
+
+def _parse_relative_time(text, tzinfo):
+    now = datetime.now(tzinfo)
+    if text == 'now':
+        return now
+    if text == 'today':
+        return now.replace(microsecond=0, second=0, minute=0, hour=0)
+    if text == 'yesterday':
+        return now.replace(microsecond=0, second=0, minute=0, hour=0) \
+               - timedelta(days=1)
+    match = _REL_TIME_RE.match(text)
+    if match:
+        (value, interval) = match.groups()
+        return now - _time_intervals[interval](float(value))
+    match = _TIME_START_RE.match(text)
+    if match:
+        (which, start) = match.groups()
+        dt = _time_starts[start](now)
+        if which == 'last':
+            if start == 'month':
+                if dt.month > 1:
+                    dt = dt.replace(month=dt.month - 1)
+                else:
+                    dt = dt.replace(year=dt.year - 1, month=12)
+            else:
+                dt -= _time_intervals[start](1)
+        return dt
+    return None
 
 
 # -- timezone utilities

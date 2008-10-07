@@ -95,6 +95,13 @@ class ConnectionPoolBackend(object):
                     self._pool_key.pop(idx)
                     self._pool_time.pop(idx)
                     cnx = self._pool.pop(idx)
+                    # If possible, verify that the pooled connection is
+                    # still available and working.
+                    if hasattr(cnx, 'ping'):
+                        try:
+                            cnx.ping()
+                        except:
+                            continue
                 # Third best option: Create a new connection
                 elif len(self._active) + len(self._pool) < self._maxsize:
                     cnx = connector.get_connection(**kwargs)

@@ -240,6 +240,12 @@ class TicketSystem(Component):
             field = {'name': name, 'type': 'text', 'label': name.title()}
             fields.append(field)
 
+        # Date/time fields
+        fields.append({'name': 'time', 'type': 'time',
+                       'label': _('Created')})
+        fields.append({'name': 'changetime', 'type': 'time',
+                       'label': _('Modified')})
+
         for field in self.get_custom_fields():
             if field['name'] in [f['name'] for f in fields]:
                 self.log.warning('Duplicate field name "%s" (ignoring)',
@@ -271,13 +277,21 @@ class TicketSystem(Component):
                 if '' in field['options']:
                     field['optional'] = True
                     field['options'].remove('')
+            elif field['type'] == 'text':
+                field['format'] = config.get(name + '.format', 'plain')
             elif field['type'] == 'textarea':
+                field['format'] = config.get(name + '.format', 'plain')
                 field['width'] = config.getint(name + '.cols')
                 field['height'] = config.getint(name + '.rows')
             fields.append(field)
 
         fields.sort(lambda x, y: cmp(x['order'], y['order']))
         return fields
+
+    def get_field_synonyms(self):
+        """Return a mapping from field name synonyms to field names.
+        The synonyms are supposed to be more intuitive for custom queries."""
+        return {'created': 'time', 'modified': 'changetime'}
 
     # IPermissionRequestor methods
 

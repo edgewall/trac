@@ -579,7 +579,7 @@ class MilestoneModule(Component):
 
         retarget_to = None
         if req.args.has_key('retarget'):
-            retarget_to = req.args.get('target')
+            retarget_to = req.args.get('target') or None
         milestone.delete(retarget_to, req.authname)
         db.commit()
         req.redirect(req.href.roadmap())

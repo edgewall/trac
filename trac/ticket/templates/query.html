@@ -43,13 +43,13 @@
             <py:for each="field_name in field_names" py:with="field = fields[field_name]">
               <py:for each="constraint_name, constraint in constraints.items()">
                 <tbody py:if="field_name == constraint_name"
-                  py:with="multiline = field.type in ('select', 'text', 'textarea')">
+                  py:with="multiline = field.type in ('select', 'text', 'textarea', 'time')">
                   <py:for each="constraint_idx, constraint_value in enumerate(constraint['values'])">
                     <tr class="${field_name}" py:if="multiline or constraint_idx == 0">
                       <py:choose test="constraint_idx">
                         <py:when test="0">
-                          <th scope="row"><label>$field.label</label></th>
-                          <td py:if="field.type not in ('radio', 'checkbox')" class="mode">
+                          <th scope="row"><label id="label_${field_name}">$field.label</label></th>
+                          <td py:if="field.type not in ('radio', 'checkbox', 'time')" class="mode">
                             <select name="${field_name}_mode">
                               <option py:for="mode in modes[field.type]" value="$mode.value"
                                 selected="${mode.value == constraint.mode and 'selected' or None}">$mode.name
@@ -58,11 +58,11 @@
                           </td>
                         </py:when>
                         <py:otherwise><!--! not the first line of a multiline constraint -->
-                          <th colspan="2"><label>or</label></th>
+                          <th colspan="${field.type == 'time' and 1 or 2}"><label>or</label></th>
                         </py:otherwise>
                       </py:choose>
 
-                      <td class="filter" colspan="${field.type in ('radio', 'checkbox') and 2 or None}"
+                      <td class="filter" colspan="${field.type in ('radio', 'checkbox', 'time') and 2 or None}"
                           py:choose="">
 
                         <py:when test="field.type == 'select'">
@@ -80,21 +80,30 @@
                               value="$option"
                               checked="${any([(value == option) == (constraint.mode == '')
                                               for value in constraint['values']]) and 'checked' or None}" />
-                            <label for="${field_name}_$option">${option or 'none'}</label>
+                            <label for="${field_name}_$option" class="control">${option or 'none'}</label>
                           </py:for>
                         </py:when>
 
                         <py:when test="field.type == 'checkbox'">
                           <input type="radio" id="${field_name}_on" name="$field_name" value="1"
                                  checked="${constraint.mode != '!' or constraint_value == '1' or None}" />
-                          <label for="${field_name}_on">yes</label>
+                          <label for="${field_name}_on" class="control">yes</label>
                           <input type="radio" id="${field_name}_off" name="$field_name" value="0"
                                  checked="${constraint.mode == '!' or constraint_value != '1' or None}" />
-                          <label for="${field_name}_off">no</label>
+                          <label for="${field_name}_off" class="control">no</label>
                         </py:when>
 
                         <py:when test="field.type in ('text', 'textarea')">
                           <input type="text" name="${field_name}" value="$constraint_value" size="42" />
+                        </py:when>
+                        
+                        <py:when test="'time'" py:with="(start, end) = ';' in constraint_value 
+                                                        and constraint_value.split(';', 1)
+                                                        or (constraint_value, '')">
+                          <label>between</label>
+                          <input type="text" name="${field_name}" value="$start" size="14" />
+                          <label>and</label>
+                          <input type="text" name="${field_name}_end" value="$end" size="14" />
                         </py:when>
 
                       </td>

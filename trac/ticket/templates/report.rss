@@ -4,7 +4,7 @@
                    xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.rss" />
   <channel>
-    <title>$project.name: $report.title</title>
+    <title>$project.name: $title</title>
     <link>${abs_href.report(report.id)}</link>
     <description>Trac Report - $report.description</description>
     <language>en-us</language>

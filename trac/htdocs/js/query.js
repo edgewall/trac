@@ -16,16 +16,8 @@
     // Removes an existing row from the filters table
     function removeRow(button, propertyName) {
       var tr = getAncestorByTagName(button, "tr");
-  
-      var mode = null;
-      var selects = tr.getElementsByTagName("select");
-      for (var i = 0; i < selects.length; i++) {
-        if (selects[i].name == propertyName + "_mode") {
-          mode = selects[i];
-          break;
-        }
-      }
-      if (mode && (getAncestorByTagName(mode, "tr") == tr)) {
+      var label = document.getElementById("label_" + propertyName);
+      if (label && (getAncestorByTagName(label, "tr") == tr)) {
         // Check whether there are more 'or' rows for this filter
         var next = $(tr).next()[0];
         if (next && (next.className == propertyName)) {
@@ -42,12 +34,15 @@
   
           var thisTh = getChildElementAt(tr, 0);
           var nextTh = getChildElementAt(next, 0);
-          next.insertBefore(thisTh, nextTh);
-          nextTh.colSpan = 1;
-  
-          thisTd = getChildElementAt(tr, 0);
-          nextTd = getChildElementAt(next, 1);
-          next.replaceChild(thisTd, nextTd);
+          if (nextTh.colSpan == 1) {
+            next.replaceChild(thisTh, nextTh);
+          } else {
+            next.insertBefore(thisTh, nextTh);
+            nextTh.colSpan = 1;
+            thisTd = getChildElementAt(tr, 0);
+            nextTd = getChildElementAt(next, 1);
+            next.replaceChild(thisTd, nextTd);
+          }
         }
       }
   
@@ -117,10 +112,22 @@
       function createLabel(text, htmlFor) {
         var label = document.createElement("label");
         if (text) label.appendChild(document.createTextNode(text));
-        if (htmlFor) label.htmlFor = htmlFor;
+        if (htmlFor) {
+          label.htmlFor = htmlFor;
+          label.className = "control";
+        }
         return label;
       }
   
+      // Convenience function for creating an <input type="text">
+      function createText(name, size) {
+        var input = document.createElement("input");
+        input.type = "text";
+        if (name) input.name = name;
+        if (size) input.size = size;
+        return input;
+      }
+      
       // Convenience function for creating an <input type="checkbox">
       function createCheckbox(name, value, id) {
         var input = document.createElement("input");
@@ -182,15 +189,18 @@
       var th = document.createElement("th");
       th.scope = "row";
       if (!alreadyPresent) {
-        th.appendChild(createLabel(property.label));
+        var label = createLabel(property.label);
+        label.id = "label_" + propertyName;
+        th.appendChild(label);
       } else {
-        th.colSpan = 2;
+        th.colSpan = property.type == "time"? 1: 2;
         th.appendChild(createLabel("or"));
       }
       tr.appendChild(th);
   
       var td = document.createElement("td");
-      if (property.type == "radio" || property.type == "checkbox") {
+      var focusElement = null;
+      if (property.type == "radio" || property.type == "checkbox" || property.type == "time") {
         td.colSpan = 2;
         td.className = "filter";
         if (property.type == "radio") {
@@ -201,13 +211,22 @@
             td.appendChild(createLabel(option ? option : "none",
               propertyName + "_" + option));
           }
-        } else {
+        } else if (property.type == "checkbox") {
           td.appendChild(createRadio(propertyName, "1", propertyName + "_on"));
           td.appendChild(document.createTextNode(" "));
           td.appendChild(createLabel("yes", propertyName + "_on"));
           td.appendChild(createRadio(propertyName, "0", propertyName + "_off"));
           td.appendChild(document.createTextNode(" "));
           td.appendChild(createLabel("no", propertyName + "_off"));
+        } else if (property.type == "time") {
+          td.appendChild(createLabel("between"));
+          td.appendChild(document.createTextNode(" "));
+          focusElement = createText(propertyName, 14);
+          td.appendChild(focusElement);
+          td.appendChild(document.createTextNode(" "));
+          td.appendChild(createLabel("and"));
+          td.appendChild(document.createTextNode(" "));
+          td.appendChild(createText(propertyName + "_end", 14));
         }
         tr.appendChild(td);
       } else {
@@ -224,15 +243,11 @@
         td = document.createElement("td");
         td.className = "filter";
         if (property.type == "select") {
-          var element = createSelect(propertyName, property.options, true);
+          focusElement = createSelect(propertyName, property.options, true);
         } else if ((property.type == "text") || (property.type == "textarea")) {
-          var element = document.createElement("input");
-          element.type = "text";
-          element.name = propertyName;
-          element.size = 42;
+          focusElement = createText(propertyName, 42);
         }
-        td.appendChild(element);
-        element.focus();
+        td.appendChild(focusElement);
         tr.appendChild(td);
       }
   
@@ -266,6 +281,8 @@
         tbody.appendChild(tr);
         insertionPoint.parentNode.insertBefore(tbody, insertionPoint);
       }
+      if(focusElement)
+          focusElement.focus();
   
       // Disable the add filter in the drop-down list
       if (property.type == "radio" || property.type == "checkbox") {

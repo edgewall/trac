@@ -566,6 +566,7 @@ def open_environment(env_path=None, use_cache=False):
                           'Trac requires this variable to point to a valid '
                           'Trac environment.'))
 
+    env_path = os.path.normcase(os.path.normpath(env_path))
     if use_cache:
         env_cache_lock.acquire()
         try:
