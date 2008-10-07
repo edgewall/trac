@@ -94,7 +94,7 @@ msgstr "Tập tin đính kèm không hợp lệ: %(message)s"
 #: trac/attachment.py:602
 #, python-format
 msgid "%(attachment)s (delete)"
-msgstr "%(attachemt)s (xóa))"
+msgstr "%(attachment)s (xóa))"
 
 #: trac/attachment.py:664 trac/versioncontrol/web_ui/browser.py:511
 #: trac/wiki/web_ui.py:66
