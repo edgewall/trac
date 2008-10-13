@@ -104,13 +104,19 @@ class WikiProcessor(object):
         if not self.processor:
             # Find a matching mimeview renderer
             from trac.mimeview.api import Mimeview
-            mimetype = Mimeview(formatter.env).get_mimetype(self.name)
-            if mimetype:
-                self.name = mimetype
-                self.processor = self._mimeview_processor
-            else:
-                self.processor = self._default_processor
-                self.error = "No macro or processor named '%s' found" % name
+            mimeview = Mimeview(formatter.env)
+            for renderer in mimeview.renderers:
+                if renderer.get_quality_ratio(self.name) > 1:
+                    self.processor = self._mimeview_processor
+                    break
+            if not self.processor:
+                mimetype = mimeview.get_mimetype(self.name)
+                if mimetype:
+                    self.name = mimetype
+                    self.processor = self._mimeview_processor
+        if not self.processor:
+            self.processor = self._default_processor
+            self.error = "No macro or processor named '%s' found" % name
 
     # builtin processors
 
