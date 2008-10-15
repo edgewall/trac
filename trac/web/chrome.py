@@ -113,12 +113,16 @@ def add_javascript(req, filename):
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
     When rendering pages, any warnings will be rendered to the user."""
-    req.chrome['warnings'].append(msg % args)
+    if args:
+        msg %= args
+    req.chrome['warnings'].append(msg)
 
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
     When rendering pages, any notice will be rendered to the user."""
-    req.chrome['notices'].append(msg % args)
+    if args:
+        msg %= args
+    req.chrome['notices'].append(msg)
 
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar.
