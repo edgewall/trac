@@ -527,7 +527,7 @@ class TicketModule(Component):
         if format:
             # FIXME: mime.send_converted(context, ticket, 'ticket_x')
             mime.send_converted(req, 'trac.ticket.Ticket', ticket,
-                                format, 'ticket_%d' % ticket.id)
+                                format, filename=None)
 
         def add_ticket_link(css_class, id):
             t = ticket.resource(id=id, version=None)

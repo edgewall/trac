@@ -818,7 +818,7 @@ class QueryModule(Component):
 
         if format:
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
-                                              format, 'query')
+                                              format, filename=None)
 
         return self.display_html(req, query)
 
