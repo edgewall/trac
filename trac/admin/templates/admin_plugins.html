@@ -43,12 +43,13 @@
     <form py:for="idx, plugin in enumerate(plugins)" method="post" action="">
       <div class="plugin">
         <h3>${plugin.name} ${plugin.version}</h3>
+        <!--! FIXME: Plugin uninstall disabled as it is unreliable (#3545)
         <div class="uninstall buttons">
           <input type="hidden" name="plugin_filename"
                  value="${plugin.plugin_filename}" />
           <input type="submit" name="uninstall" value="${_('Uninstall')}"
                  disabled="${plugin.readonly or None}" />
-        </div>
+        </div> -->
         <py:if test="plugin.info">
           <p class="summary">${plugin.info.get('summary')}</p>
           <dl py:if="'home_page' in plugin.info or
