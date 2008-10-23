@@ -227,9 +227,12 @@
   <py:def function="progress_bar(stats, interval_hrefs, percent=None, legend=True, style=None, stats_href=None)">
     <table class="progress" style="$style">
       <tr>
-        <td py:for="idx, interval in enumerate(stats.intervals)"
+        <td py:for="idx, interval in enumerate(stats.intervals)" py:choose=""
             class="$interval.css_class" style="${interval.percent and 'width: %d%%' % interval.percent or 'display: none'}">
-          <a href="${interval_hrefs[idx]}"
+          <a py:when="interval_hrefs" href="${interval_hrefs[idx]}"
+            title="${interval.count} of ${stats.count} ${stats.unit}${
+            stats.count != 1 and 's' or ''} ${interval.title}"></a>
+          <a py:otherwise=""
             title="${interval.count} of ${stats.count} ${stats.unit}${
             stats.count != 1 and 's' or ''} ${interval.title}"></a>
         </td>
@@ -238,8 +241,14 @@
     <p class="percent">${percent is None and '%d%%' % stats.done_percent or percent}</p>
     <dl py:if="legend">
       <py:for each="idx, interval in enumerate(stats.intervals)">
-        <dt><a href="${interval_hrefs[idx]}">${interval.title.capitalize()} ${stats.unit}s:</a></dt>
-        <dd><a href="${interval_hrefs[idx]}">${interval.count}</a></dd>
+        <dt py:choose="">
+          <a py:when="interval_hrefs" href="${interval_hrefs[idx]}">${interval.title.capitalize()} ${stats.unit}s:</a>
+          <a py:otherwise="">${interval.title.capitalize()} ${stats.unit}s:</a>
+        </dt>
+        <dd py:choose="">
+          <a py:when="interval_hrefs" href="${interval_hrefs[idx]}">${interval.count}</a>
+          <a py:otherwise="">${interval.count}</a>
+        </dd>
       </py:for>
       <py:if test="stats_href">
         <dt>/ <a href="${stats_href}">Total ${stats.unit}s:</a></dt>
