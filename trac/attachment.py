@@ -720,7 +720,7 @@ class AttachmentModule(Component):
                                                                 ids[2])
         else: # local attachment: TracLinks (filename)
             attachment = formatter.resource.child('attachment', link)
-        if attachment:
+        if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
             try:
                 model = Attachment(self.env, attachment)
                 format = None
@@ -743,7 +743,7 @@ class AttachmentModule(Component):
             # if attachment.exists:
             #
             # (related to #4130)
-        return tag.a(label, class_='missing attachment', rel='nofollow')
+        return tag.a(label, class_='missing attachment')
 
 
 class LegacyAttachmentPolicy(Component):

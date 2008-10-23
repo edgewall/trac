@@ -14,7 +14,7 @@ ticket:abc
 ------------------------------
 <p>
 <a class="new ticket" href="/ticket/1" title="This is the summary (new)">ticket:1</a>
-<a class="missing ticket" href="/ticket/12" rel="nofollow">ticket:12</a>
+<a class="missing ticket">ticket:12</a>
 <a class="missing ticket">ticket:abc</a>
 </p>
 ------------------------------
@@ -41,8 +41,8 @@ ticket:12,33?order=created
 #12, #abc
 ------------------------------
 <p>
-<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>, <a class="missing ticket" href="/ticket/2" rel="nofollow">#2</a>
-<a class="missing ticket" href="/ticket/12" rel="nofollow">#12</a>, #abc
+<a class="new ticket" href="/ticket/1" title="This is the summary (new)">#1</a>, <a class="missing ticket">#2</a>
+<a class="missing ticket">#12</a>, #abc
 </p>
 ------------------------------
 ============================== escaping the above
@@ -148,11 +148,11 @@ milestone:foo
 ------------------------------
 ============================== milestone: link resolver + arguments
 milestone:?action=new
-[milestone:1.0#KnownIssues Known Issues for 1.0]
+[milestone:boo#KnownIssues Known Issues for 1.0]
 ------------------------------
 <p>
 <a class="missing milestone" href="/milestone/?action=new" rel="nofollow">milestone:?action=new</a>
-<a class="missing milestone" href="/milestone/1.0#KnownIssues" rel="nofollow">Known Issues for 1.0</a>
+<a class="milestone" href="/milestone/boo#KnownIssues">Known Issues for 1.0</a>
 </p>
 ------------------------------
 """ #"

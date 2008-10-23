@@ -909,16 +909,17 @@ class ChangesetModule(Component):
             rev, path = chgset[:sep], chgset[sep:]
         else:
             rev, path = chgset, None
-        try:
-            changeset = self.env.get_repository().get_changeset(rev)
-            return tag.a(label, class_="changeset",
-                         title=shorten_line(changeset.message),
-                         href=(formatter.href.changeset(rev, path) +
-                               params + fragment))
-        except TracError, e:
-            return tag.a(label, class_="missing changeset",
-                         href=formatter.href.changeset(rev, path),
-                         title=unicode(e), rel="nofollow")
+        if 'CHANGESET_VIEW' in formatter.perm('changeset', rev):
+            try:
+                changeset = self.env.get_repository().get_changeset(rev)
+                return tag.a(label, class_="changeset",
+                             title=shorten_line(changeset.message),
+                             href=(formatter.href.changeset(rev, path) +
+                                   params + fragment))
+            except TracError, e:
+                return tag.a(label, class_="missing changeset",
+                             title=unicode(e))
+        return tag.a(label, class_="missing changeset")
 
     def _format_diff_link(self, formatter, ns, target, label):
         params, query, fragment = formatter.split_link(target)

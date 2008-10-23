@@ -38,8 +38,8 @@ changeset:1, changeset:1/README.txt
 ------------------------------
 <p>
 <a class="changeset" href="/changeset/1" title="start">changeset:1</a>
-<a class="missing changeset" href="/changeset/12" rel="nofollow" title="No changeset 12 in the repository">changeset:12</a>
-<a class="missing changeset" href="/changeset/abc" rel="nofollow" title="No changeset abc in the repository">changeset:abc</a>
+<a class="missing changeset" title="No changeset 12 in the repository">changeset:12</a>
+<a class="missing changeset" title="No changeset abc in the repository">changeset:abc</a>
 <a class="changeset" href="/changeset/1" title="start">changeset:1</a>, <a class="changeset" href="/changeset/1/README.txt" title="start">changeset:1/README.txt</a>
 </p>
 ------------------------------
@@ -59,7 +59,7 @@ changeset:1#file0
 ------------------------------
 <p>
 <a class="changeset" href="/changeset/1" title="start">[1]</a>, <a class="changeset" href="/changeset/1" title="start">r1</a>
-<a class="missing changeset" href="/changeset/12" rel="nofollow" title="No changeset 12 in the repository">[12]</a>, <a class="missing changeset" href="/changeset/12" rel="nofollow" title="No changeset 12 in the repository">r12</a>, rABC
+<a class="missing changeset" title="No changeset 12 in the repository">[12]</a>, <a class="missing changeset" title="No changeset 12 in the repository">r12</a>, rABC
 <a class="changeset" href="/changeset/1/README.txt" title="start">[1/README.txt]</a>
 </p>
 ------------------------------
@@ -90,13 +90,13 @@ Change:[10] There should be a link to changeset [10]
 rfc and rfc:4180 should not be changeset links, neither should rfc4180
 ------------------------------
 <p>
-Change:<a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a>
+Change:<a class="missing changeset" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" title="No changeset 10 in the repository">[10]</a>
 </p>
 <p>
 rfc and rfc:4180 should not be changeset links, neither should rfc4180
 </p>
 ------------------------------
-Change:<a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" href="/changeset/10" rel="nofollow" title="No changeset 10 in the repository">[10]</a>
+Change:<a class="missing changeset" title="No changeset 10 in the repository">[10]</a> There should be a link to changeset <a class="missing changeset" title="No changeset 10 in the repository">[10]</a>
 
 rfc and rfc:4180 should not be changeset links, neither should rfc4180
 ============================== InterTrac for changesets

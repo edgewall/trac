@@ -79,8 +79,8 @@ attachment:foo.txt
 [attachment:foo.txt other file]
 ------------------------------
 <p>
-<a class="missing attachment" rel="nofollow">attachment:foo.txt</a>
-<a class="missing attachment" rel="nofollow">other file</a>
+<a class="missing attachment">attachment:foo.txt</a>
+<a class="missing attachment">other file</a>
 </p>
 ------------------------------
 ============================== attachment: "raw" links
