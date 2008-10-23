@@ -316,13 +316,16 @@ class WikiSystem(Component):
             else:
                 if ignore_missing:
                     return label
-                return tag.a(label+'?', href=href, class_='missing wiki',
-                             rel='nofollow')
+                if 'WIKI_CREATE' in formatter.perm('wiki', pagename, version):
+                    return tag.a(label + '?', class_='missing wiki',
+                                 href=href, rel='nofollow')
+                else:
+                    return tag.a(label + '?', class_='missing wiki')
         elif ignore_missing and not self.has_page(pagename):
             return label
         else:
-            return tag.span(label, class_='forbidden wiki',
-                            title=_("no permission to view this wiki page"))
+            return tag.a(label, class_='forbidden wiki',
+                         title=_("no permission to view this wiki page"))
 
     # IResourceManager methods
 

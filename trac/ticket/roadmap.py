@@ -783,13 +783,15 @@ class MilestoneModule(Component):
         # should simply be false if the milestone doesn't exist in the db
         # (related to #4130)
         href = context.href.milestone(name)
-        if milestone and milestone.exists and \
-           'MILESTONE_VIEW' in context.perm(milestone.resource):
-            closed = milestone.is_completed and 'closed ' or ''
-            return tag.a(label, class_='%smilestone' % closed, href=href+extra)
-        else: 
-            return tag.a(label, class_='missing milestone', href=href+extra,
-                         rel="nofollow")
+        if milestone and milestone.exists:
+            if 'MILESTONE_VIEW' in context.perm(milestone.resource):
+                closed = milestone.is_completed and 'closed ' or ''
+                return tag.a(label, class_='%smilestone' % closed,
+                             href=href + extra)
+        elif 'MILESTONE_CREATE' in context.perm('milestone', name):
+            return tag.a(label, class_='missing milestone', href=href + extra,
+                         rel='nofollow')
+        return tag.a(label, class_='missing milestone')
         
     # IResourceManager methods
 

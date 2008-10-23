@@ -108,8 +108,9 @@ class FunctionalTester(object):
     def go_to_ticket(self, ticketid):
         """Surf to the page for the given ticket ID.  Assumes ticket
         exists."""
-        self.quickjump('#%s' % ticketid)
-        tc.url(self.url + "/ticket/%s" % ticketid)
+        ticket_url = self.url + "/ticket/%s" % ticketid
+        tc.go(ticket_url)
+        tc.url(ticket_url)
 
     def go_to_wiki(self, name):
         """Surf to the page for the given wiki page."""

@@ -304,7 +304,10 @@ class LogModule(Component):
         if revs and query:
             query = '&' + query[1:]
         href = formatter.href.log(path or '/', revs=revs) + query + fragment
-        return html.A(label, class_='source', href=href)
+        if 'LOG_VIEW' in formatter.perm:
+            return html.A(label, class_='source', href=href)
+        else:
+            return html.A(label, class_='missing source')
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 

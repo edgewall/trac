@@ -318,7 +318,8 @@ class TicketSystem(Component):
                 num = r.a
                 ticket = formatter.resource('ticket', num)
                 from trac.ticket.model import Ticket
-                if Ticket.id_is_valid(num):
+                if Ticket.id_is_valid(num) and \
+                        'TICKET_VIEW' in formatter.perm(ticket):
                     # TODO: watch #6436 and when done, attempt to retrieve 
                     #       ticket directly (try: Ticket(self.env, num) ...)
                     cursor = formatter.db.cursor() 
@@ -330,10 +331,6 @@ class TicketSystem(Component):
                         href = formatter.href.ticket(num) + params + fragment
                         return tag.a(label, class_='%s ticket' % status, 
                                      title=title, href=href)
-                    else:
-                        href = formatter.href.ticket(num)
-                        return tag.a(label, class_='missing ticket', href=href,
-                                     rel="nofollow")
             else:
                 ranges = str(r)
                 if params:
