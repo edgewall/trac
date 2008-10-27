@@ -1085,19 +1085,25 @@ class InlineHtmlFormatter(object):
 
 
 def format_to(env, flavor, context, wikidom, **options):
+    if flavor is None:
+        flavor = context.get_hint('wiki_flavor', 'html')
     if flavor == 'oneliner':
         return format_to_oneliner(env, context, wikidom, **options)
     else:
         return format_to_html(env, context, wikidom, **options)
 
-def format_to_html(env, context, wikidom, escape_newlines=False):
+def format_to_html(env, context, wikidom, escape_newlines=None):
     if not wikidom:
         return Markup()
+    if escape_newlines is None:
+        escape_newlines = context.get_hint('preserve_newlines', False)
     return HtmlFormatter(env, context, wikidom).generate(escape_newlines)
 
-def format_to_oneliner(env, context, wikidom, shorten=False):
+def format_to_oneliner(env, context, wikidom, shorten=None):
     if not wikidom:
         return Markup()
+    if shorten is None:
+        shorten = context.get_hint('shorten_lines', False)
     return InlineHtmlFormatter(env, context, wikidom).generate(shorten)
 
 def extract_link(env, context, wikidom):

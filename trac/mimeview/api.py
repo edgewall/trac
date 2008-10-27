@@ -238,12 +238,12 @@ class Context(object):
         >>> ctx = Context('timeline')
         >>> ctx.set_hints(wiki_flavor='oneliner', shorten_lines=True)
         >>> t_ctx = ctx('ticket', 1)
-        >>> t_ctx.set_hints(wiki_flavor='html', escape_newlines=True)
+        >>> t_ctx.set_hints(wiki_flavor='html', preserve_newlines=True)
         >>> (t_ctx.get_hint('wiki_flavor'), t_ctx.get_hint('shorten_lines'), \
-             t_ctx.get_hint('escape_newlines'))
+             t_ctx.get_hint('preserve_newlines'))
         ('html', True, True)
         >>> (ctx.get_hint('wiki_flavor'), ctx.get_hint('shorten_lines'), \
-             ctx.get_hint('escape_newlines'))
+             ctx.get_hint('preserve_newlines'))
         ('oneliner', True, None)
         """
         if self._hints is None:
@@ -261,7 +261,7 @@ class Context(object):
         >>> t_ctx = ctx('ticket', 1)
         >>> t_ctx.get_hint('wiki_flavor')
         'oneliner'
-        >>> t_ctx.get_hint('escape_newlines', True)
+        >>> t_ctx.get_hint('preserve_newlines', True)
         True
         """
         hints = self._hints
@@ -280,7 +280,7 @@ class Context(object):
         >>> t_ctx = ctx('ticket', 1)
         >>> t_ctx.has_hint('wiki_flavor')
         True
-        >>> t_ctx.has_hint('escape_newlines')
+        >>> t_ctx.has_hint('preserve_newlines')
         False
         """
         hints = self._hints
