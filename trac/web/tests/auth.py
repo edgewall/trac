@@ -42,7 +42,8 @@ class LoginModuleTestCase(unittest.TestCase):
         self.assertEqual('john', self.module.authenticate(req))
         self.failIf('auth_cookie' in req.outcookie)
 
-    def test_known_cookie_different_ipnr_access(self):
+    def test_known_cookie_ip_check_enabled(self):
+        self.env.config.set('trac', 'check_auth_ip', 'yes')
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO auth_cookie (cookie, name, ipnr) "
                        "VALUES ('123', 'john', '127.0.0.1')")
