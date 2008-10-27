@@ -47,7 +47,7 @@ from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             prevnext_nav, INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
-from trac.wiki.formatter import format_to_html
+from trac.wiki.formatter import format_to
 
 
 class IPropertyDiffRenderer(Interface):
@@ -824,10 +824,11 @@ class ChangesetModule(Component):
                 return context.href.log(rev=rev_b, stop_rev=rev_a)
             
         elif field == 'description':
-            if not self.timeline_long_messages:
-                message = shorten_line(message)
             if self.wiki_format_messages:
                 markup = ''
+                if self.timeline_long_messages: # override default flavor
+                    context = context()
+                    context.set_hints(wiki_flavor='html')
             else:
                 markup = message
                 message = None
@@ -861,7 +862,7 @@ class ChangesetModule(Component):
                         files = files[:show_files] + [tag.li(u'\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
             if message:
-                markup += format_to_html(self.env, context, message)
+                markup += format_to(self.env, None, context, message)
             return markup
 
         if rev_a == rev_b:

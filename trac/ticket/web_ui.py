@@ -113,7 +113,7 @@ class TicketModule(Component):
 
     timeline_newticket_formatter = Option('timeline', 'newticket_formatter',
                                           'oneliner',
-        """Which formatter flavor (e.g. 'default' or 'oneliner') should be
+        """Which formatter flavor (e.g. 'html' or 'oneliner') should be
         used when presenting the description for new tickets.
         If 'oneliner', the [timeline] abbreviated_messages option applies.
         (''since 0.11'').""")
@@ -124,6 +124,13 @@ class TicketModule(Component):
         If set to 'default', this is equivalent to 'yes' for new environments
         but keeps the old behavior for upgraded environments (i.e. 'no').
         (''since 0.11'').""")
+
+    def _must_preserve_newlines(self):
+        preserve_newlines = self.preserve_newlines
+        if preserve_newlines == 'default':
+            preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
+        return preserve_newlines in _TRUE_VALUES
+    must_preserve_newlines = property(_must_preserve_newlines)
 
     # IContentConverter methods
 
@@ -339,17 +346,17 @@ class TicketModule(Component):
             descr = message = ''
             if status == 'new':
                 message = description
-                flavor = self.timeline_newticket_formatter
             else:
                 descr = info
                 message = comment
-                flavor = 'oneliner'
-            if message:
-                if self.config['timeline'].getbool('abbreviated_messages'):
-                    message = shorten_line(message)
-                descr += format_to(self.env, flavor, context(resource=ticket),
-                                   message)
-            return descr
+            t_context = context(resource=ticket)
+            t_context.set_hints(preserve_newlines=self.must_preserve_newlines)
+            if status == 'new' and \
+                    context.get_hint('wiki_flavor') == 'oneliner': 
+                flavor = self.timeline_newticket_formatter
+                t_context.set_hints(wiki_flavor=flavor,
+                                    shorten_lines=flavor == 'oneliner')
+            return descr + format_to(self.env, None, t_context, message)
 
     # Internal methods
 
@@ -578,14 +585,10 @@ class TicketModule(Component):
         return 'ticket.html', data, None
 
     def _prepare_data(self, req, ticket, absurls=False):
-        preserve_newlines = self.preserve_newlines
-        if preserve_newlines == 'default':
-            preserve_newlines = self.env.get_version(initial=True) >= 21 # 0.11
-        preserve_newlines = preserve_newlines in _TRUE_VALUES
         return {'ticket': ticket,
                 'context': Context.from_request(req, ticket.resource,
                                                 absurls=absurls),
-                'preserve_newlines': preserve_newlines}
+                'preserve_newlines': self.must_preserve_newlines}
 
     def _toggle_cc(self, req, cc):
         """Return an (action, recipient) tuple corresponding to a change

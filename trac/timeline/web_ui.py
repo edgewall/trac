@@ -58,7 +58,7 @@ class TimelineModule(Component):
         Timeline. (''since 0.11'')""")
 
     abbreviated_messages = BoolOption('timeline', 'abbreviated_messages',
-                                      'true',
+                                      True,
         """Whether wiki-formatted event messages should be truncated or not.
 
         This only affects the default rendering, and can be overriden by
@@ -179,10 +179,16 @@ class TimelineModule(Component):
                     if email:
                         email_map[username] = email
             data['email_map'] = email_map
-            data['context'] = Context.from_request(req, absurls=True)
+            rss_context = Context.from_request(req, absurls=True)
+            rss_context.set_hints(wiki_flavor='html', shorten_lines=False)
+            data['context'] = rss_context
             return 'timeline.rss', data, 'application/rss+xml'
         else:
             req.session['timeline.daysback'] = daysback
+            html_context = Context.from_request(req, absurls=True)
+            html_context.set_hints(wiki_flavor='oneliner', 
+                                   shorten_lines=self.abbreviated_messages)
+            data['context'] = html_context
 
         add_stylesheet(req, 'common/css/timeline.css')
         rss_href = req.href.timeline([(f, 'on') for f in filters],
@@ -284,8 +290,8 @@ class TimelineModule(Component):
                 kind, date, author, data, provider = event
             else:
                 kind, date, author, data = event
-            render = lambda field, context: provider.render_timeline_event(
-                context, field, event)
+            render = lambda field, context: \
+                    provider.render_timeline_event(context, field, event)
         if isinstance(date, datetime):
             dateuid = to_timestamp(date)
         else:

@@ -42,7 +42,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, add_warning, \
                             INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import format_to_html
+from trac.wiki.formatter import format_to
 
 class ITicketGroupStatsProvider(Interface):
     def get_ticket_group_stats(ticket_ids):
@@ -532,8 +532,8 @@ class MilestoneModule(Component):
         elif field == 'title':
             return tag('Milestone ', tag.em(milestone.id), ' completed')
         elif field == 'description':
-            return format_to_html(self.env, context(resource=milestone),
-                                  shorten_line(description))
+            return format_to(self.env, None, context(resource=milestone),
+                             description)
 
     # IRequestHandler methods
 

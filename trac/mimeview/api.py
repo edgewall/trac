@@ -172,14 +172,15 @@ class Context(object):
             context = context.parent
         return '<%s %s>' % (type(self).__name__, ' - '.join(reversed(path)))
 
-    def __call__(self, resource, id=False, version=False):
+    def __call__(self, resource=None, id=False, version=False):
         """Create a nested rendering context.
 
         `self` will be the parent for the new nested context.
 
         :param resource: either a `Resource` object or the realm string for a
                          resource specification to be associated to the new
-                         context
+                         context. If `None`, the resource will be the same
+                         as the resource of the parent context.
         :param id: the identifier part of the resource specification
         :param version: the version of the resource specification
         :return: the new context object
@@ -191,8 +192,13 @@ class Context(object):
         True
         >>> context(ticket1).resource is ticket1
         True
+        >>> context(ticket1)().resource is ticket1
+        True
         """
-        resource = Resource(resource, id=id, version=version)
+        if resource:
+            resource = Resource(resource, id=id, version=version)
+        else:
+            resource = self.resource
         context = Context(resource, href=self.href, perm=self.perm)
         context.parent = self
 

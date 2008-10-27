@@ -42,7 +42,7 @@ from trac.web.chrome import add_link, add_stylesheet, add_ctxtnav, \
                             INavigationContributor
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import format_to_oneliner
+from trac.wiki.formatter import format_to
 
 
 class InvalidAttachment(TracError):
@@ -474,8 +474,7 @@ class AttachmentModule(Component):
             return tag(tag.em(os.path.basename(attachment.id)),
                        _(" attached to "), tag.em(name, title=title))
         elif field == 'description':
-            return format_to_oneliner(self.env, context(attachment.parent),
-                                      descr)
+            return format_to(self.env, None, context(attachment.parent), descr)
    
     def get_search_results(self, req, resource_realm, terms):
         """Return a search result generator suitable for ISearchSource.
