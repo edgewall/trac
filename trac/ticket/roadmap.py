@@ -243,7 +243,7 @@ class DefaultTicketGroupStatsProvider(Component):
             for arg in [kv for kv in group.get('query_args', '').split(',')
                         if '=' in kv]:
                 k, v = [a.strip() for a in arg.split('=', 1)]
-                query_args[k] = v
+                query_args.setdefault(k, []).append(v)
             stat.add_interval(group.get('label', group['name']), 
                               group_cnt, query_args,
                               group.get('css_class', group['name']),
