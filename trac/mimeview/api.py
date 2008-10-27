@@ -124,6 +124,7 @@ class Context(object):
         self.resource = resource
         self.href = href
         self.perm = resource and perm and perm(resource) or perm
+        self._hints = None
 
     def from_request(cls, req, resource=None, id=False, version=False,
                      absurls=False):
@@ -221,6 +222,79 @@ class Context(object):
                 # we don't care about version here
                 return True
             context = context.parent
+
+    # Rendering hints 
+    #
+    # A rendering hint is a key/value pairs that can influence renderers,
+    # wiki formatters and processors in the way they produce their output.
+    # The keys are strings, but the values could be anything.
+    #
+    # In nested contexts, the hints are inherited from their parent context,
+    # unless overriden locally.
+
+    def set_hints(self, **keyvalues):
+        """Set rendering hints for this rendering context.
+
+        >>> ctx = Context('timeline')
+        >>> ctx.set_hints(wiki_flavor='oneliner', shorten_lines=True)
+        >>> t_ctx = ctx('ticket', 1)
+        >>> t_ctx.set_hints(wiki_flavor='html', escape_newlines=True)
+        >>> (t_ctx.get_hint('wiki_flavor'), t_ctx.get_hint('shorten_lines'), \
+             t_ctx.get_hint('escape_newlines'))
+        ('html', True, True)
+        >>> (ctx.get_hint('wiki_flavor'), ctx.get_hint('shorten_lines'), \
+             ctx.get_hint('escape_newlines'))
+        ('oneliner', True, None)
+        """
+        if self._hints is None:
+            self._hints = {}
+            hints = self._parent_hints()
+            if hints is not None:
+                self._hints.update(hints)
+        self._hints.update(keyvalues)
+
+    def get_hint(self, hint, default=None):
+        """Retrieve a rendering hint from this context or an ancestor context.
+
+        >>> ctx = Context('timeline')
+        >>> ctx.set_hints(wiki_flavor='oneliner')
+        >>> t_ctx = ctx('ticket', 1)
+        >>> t_ctx.get_hint('wiki_flavor')
+        'oneliner'
+        >>> t_ctx.get_hint('escape_newlines', True)
+        True
+        """
+        hints = self._hints
+        if hints is None:
+            hints = self._parent_hints()
+            if hints is None:
+                return default
+        return hints.get(hint, default)
+
+    def has_hint(self, hint):
+        """Test whether a rendering hint is defined in this context or in some
+        ancestor context.
+
+        >>> ctx = Context('timeline')
+        >>> ctx.set_hints(wiki_flavor='oneliner')
+        >>> t_ctx = ctx('ticket', 1)
+        >>> t_ctx.has_hint('wiki_flavor')
+        True
+        >>> t_ctx.has_hint('escape_newlines')
+        False
+        """
+        hints = self._hints
+        if hints is None:
+            hints = self._parent_hints()
+            if hints is None:
+                return False
+        return hint in hints
+
+    def _parent_hints(self):
+        p = self.parent
+        while p and p._hints is None:
+            p = p.parent
+        return p and p._hints
 
 
 # Some common MIME types and their associated keywords and/or file extensions
