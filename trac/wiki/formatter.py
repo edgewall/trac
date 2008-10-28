@@ -195,6 +195,7 @@ class WikiProcessor(object):
                 elif tagname == 'table':
                     interrupt_paragraph = True
             else:
+                # FIXME: do something smarter for Streams
                 text = to_unicode(text)
                 match = re.match(self._code_block_re, text)
                 if match:
