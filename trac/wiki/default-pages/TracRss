@@ -27,6 +27,7 @@ Anywhere in Trac where RSS is available, you should find a small orange '''XML''
  * http://ranchero.com/netnewswire/ -- An excellent RSS reader for Mac OS X (has both free and pay versions)
  * http://www.utsire.com/shrook/ -- An RSS reader for Max OS X that supports https (even with self signed certificates) and authenticated feeds.
  * http://vienna-rss.sourceforge.net/ -- Open source Feed Reader for Mac OS X with smart folders support
+ * http://www.mesadynamics.com/Tickershock.html -- Non-intrusive "news ticker" style RSS reader for Mac OS X
  * http://www.wizzrss.com/Welcome.php -- WizzRSS Feed Reader for Firefox
 ----
 See also: TracGuide, TracTimeline, TracReports, TracBrowser

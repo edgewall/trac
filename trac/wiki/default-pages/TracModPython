@@ -12,7 +12,8 @@ If you just installed mod_python, you may have to add a line to load the module 
 LoadModule python_module modules/mod_python.so
 }}}
 
- ''Note: The exact path to the module depends on how the HTTPD installation is laid out.''
+''Note: The exact path to the module depends on how the HTTPD installation is laid out.''
+
 On Debian using apt-get
 {{{
 apt-get install libapache2-mod-python libapache2-mod-python-doc
@@ -56,15 +57,20 @@ The options available are
     # For multiple projects
     PythonOption TracEnvParentDir /var/trac/myprojects
     # For the index of multiple projects
-    PythonOption TracEnvIndexTemplate /srv/www/htdocs/trac/project_list_tepmlate.html
+    PythonOption TracEnvIndexTemplate /srv/www/htdocs/trac/project_list_template.html
     # A space delimitted list, with a "," between key and value pairs.
     PythonOption TracTemplateVars key1,val1 key2,val2
     # Useful to get the date in the wanted order
     PythonOption TracLocale en_GB.UTF8
     # See description above        
     PythonOption TracUriRoot /projects/myproject
-    # Override default python egg cache location
-    PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
+}}}
+
+=== Python Egg Cache ===
+
+Compressed python eggs like Genshi are normally extracted into a directory named `.python-eggs` in the users home directory. Since apache's home usually is not writable an alternate egg cache directory can be specified like this:
+{{{
+PythonOption PYTHON_EGG_CACHE /var/trac/myprojects/egg-cache
 }}}
 
 === Configuring Authentication ===
@@ -218,11 +224,13 @@ Below is the sample configuration required to set up your trac as a virtual serv
 </VirtualHost>
 }}}
 
-if you have issues with login try using `<LocationMatch>` instead of `<Location>`
+This does not seem to work in all cases. What you can do if it does not:
+ * Try using `<LocationMatch>` instead of `<Location>`
+ * <Location /> may, in your server setup, refer to the complete host instead of simple the root of the server. This means that everything (including the login directory referenced below) will be sent to python and authentication does not work (i.e. you get the infamous Authentication information missing error). If this applies to you, try using a sub-directory for trac instead of the root (i.e. /web/ and /web/login instead of / and /login).
 
 For a virtual host that supports multiple projects replace "`TracEnv`" /var/trac/myproject with "`TracEnvParentDir`" /var/trac/
 
-Note: !DocumentRoot should not point to your Trac project env. As Asmodai wrote on #trac: "suppose there's a webserer bug that allows disclosure of !DocumentRoot they could then leech the entire Trac environment".
+Note: !DocumentRoot should not point to your Trac project env. As Asmodai wrote on #trac: "suppose there's a webserver bug that allows disclosure of !DocumentRoot they could then leech the entire Trac environment".
 
 == Troubleshooting ==
 
@@ -262,6 +270,22 @@ Using <Location /> together with `SetHandler` resulted in having everything hand
 Although it may seem trivial to rewrite the above configuration as a directory in your document root with a `.htaccess` file, this does not work. Apache will append a "/" to any Trac URLs, which interferes with its correct operation.
 
 It may be possible to work around this with mod_rewrite, but I failed to get this working. In all, it is more hassle than it is worth. Stick to the provided instructions. :)
+
+A success story: For me it worked out-of-box, with following trivial config:
+{{{
+SetHandler mod_python
+PythonInterpreter main_interpreter
+PythonHandler trac.web.modpython_frontend 
+PythonOption TracEnv /system/path/to/this/directory
+PythonOption TracUriRoot /path/on/apache
+
+AuthType Basic
+AuthName "ProjectName"
+AuthUserFile /path/to/.htpasswd
+Require valid-user
+}}}
+
+The TracUriRoot is obviously the path you need to enter to the browser to get to the trac (e.g. domain.tld/projects/trac)
 
 === Win32 Issues ===
 If you run trac with mod_python < 3.2 on Windows, uploading attachments will '''not''' work. This problem is resolved in mod_python 3.1.4 or later, so please upgrade mod_python to fix this.

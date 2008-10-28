@@ -26,7 +26,7 @@ If neither package is available, Trac will display the data as plain text.
 
 Starting with trac 0.11 [http://pygments.org/ pygments] will be the new default highlighter. It's a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented]. While it does not support as many languages as Enscript or Scintilla the overall output quality is much better.
 
-To use pygments trac 0.11 you just have to install pygments 0.5.1 or higher. If you want to use it in trac 0.10 too you have to install the [http://trac-hacks.org/wiki/TracPygmentsPlugin TracPygmentsPlugin] from trac hacks. If you encounter any bugs, please file tickets regarding Pygments in [http://dev.pocoo.org/projects/pygments/ the pygments trac].
+To use pygments in trac 0.11 you just have to install pygments 0.6 or higher. If you want to use it in trac 0.10 too you have to install the [http://trac-hacks.org/wiki/TracPygmentsPlugin TracPygmentsPlugin] from trac hacks. If you encounter any bugs, please file tickets regarding Pygments in [http://dev.pocoo.org/projects/pygments/ the pygments trac].
 
 It's very likely that the list below is outdated because the list of supported pygments lexers is growing weekly. Just have a look at the page of [http://pygments.org/docs/lexers/ supported lexers] on the pygments webpage.
 
