@@ -62,6 +62,8 @@ def _markup_to_unicode(markup):
 class WikiProcessor(object):
 
     _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
+    _block_elem_re = re.compile(r'^\s*<(?:div|table)(?:\s+[^>]+)?>',
+                                re.I | re.M)
 
     def __init__(self, formatter, name, args={}):
         """Find the processor by name
@@ -194,13 +196,13 @@ class WikiProcessor(object):
                     interrupt_paragraph = True
             else:
                 text = to_unicode(text)
-                match = re.match(self._code_block_re, unicode(text))
+                match = re.match(self._code_block_re, text)
                 if match:
                     if match.group(1) and 'code' in match.group(1):
                         content_for_span = match.group(2)
                     else:
                         interrupt_paragraph = True
-                elif text.startswith('<table'):
+                elif re.match(self._block_elem_re, text):
                     interrupt_paragraph = True
             if content_for_span:
                 text = tag.span(class_='code-block')(*content_for_span)
