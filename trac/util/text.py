@@ -201,7 +201,7 @@ def pretty_size(size, format='%.1f'):
     if size < jump:
         return '%d bytes' % size
 
-    units = ['kB', 'MB', 'GB', 'TB']
+    units = ['KB', 'MB', 'GB', 'TB']
     i = 0
     while size >= jump and i < len(units):
         i += 1

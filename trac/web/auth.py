@@ -53,7 +53,7 @@ class LoginModule(Component):
 
     implements(IAuthenticator, INavigationContributor, IRequestHandler)
 
-    check_ip = BoolOption('trac', 'check_auth_ip', 'true',
+    check_ip = BoolOption('trac', 'check_auth_ip', 'false',
          """Whether the IP address of the user should be checked for
          authentication (''since 0.9'').""")
 
