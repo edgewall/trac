@@ -828,7 +828,8 @@ class ChangesetModule(Component):
                 markup = ''
                 if self.timeline_long_messages: # override default flavor
                     context = context()
-                    context.set_hints(wiki_flavor='html')
+                    context.set_hints(wiki_flavor='html', 
+                                      preserve_newlines=True)
             else:
                 markup = message
                 message = None
