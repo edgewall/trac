@@ -54,7 +54,7 @@ help = disabled
 
 See also TracNavigation for a more detailed explanation of the mainnav and metanav terms.
 
-== Site Appearance ==
+== Site Appearance == #SiteAppearance
 
 Trac is using [http://genshi.edgewall.org Genshi] as the templating engine. Documentation is yet to be written, in the meantime the following tip should work.
 
@@ -117,7 +117,8 @@ If the environment is upgraded from 0.10 and a `site_newticket.cs` file already 
 
 Also note that the `site.html` (despite its name) can be put in a common templates directory - see the `[inherit] templates_dir` option. This could provide easier maintainence (and a migration path from 0.10 for larger installations) as one new global `site.html` file can be made to include any existing header, footer and newticket snippets.
 
-== Project List ==
+== Project List == #ProjectList
+
 You can use a custom Genshi template to display the list of projects if you are using Trac with multiple projects.  
 
 The following is the basic template used by Trac to display a list of links to the projects.  For projects that could not be loaded it displays an error message. You can use this as a starting point for your own index template.
@@ -158,6 +159,7 @@ FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects \
 
 For [wiki:TracModPython mod_python]:
 {{{
+PythonOption TracEnvParentDir /parent/dir/of/projects
 PythonOption TracEnvIndexTemplate /path/to/template
 }}}
 
@@ -177,6 +179,18 @@ $ export TRAC_ENV_INDEX_TEMPLATE=/path/to/template
 #!sh
 $ set TRAC_ENV_INDEX_TEMPLATE=/path/to/template
    }}}
+
+== Project Templates ==
+
+The appearance of each individual Trac environment (that is, instance of a project) can be customized independently of other projects, even those hosted by the same server. The recommended way is to use a `site.html` template (see [#SiteAppearance]) whenever possible. Using `site.html` means changes are made to the original templates as they are rendered, and you should not normally need to redo modifications whenever Trac is upgraded. If you do make a copy of `theme.html` or any other Trac template, you need to migrate your modifiations to the newer version - if not, new Trac features or bug fixes may not work as expected.
+
+With that word of caution, any Trac template may be copied and customized. The default Trac templates are located inside the installed Trac egg (`/usr/lib/pythonVERSION/site-packages/Trac-VERSION.egg/trac/templates, .../trac/ticket/templates, .../trac/wiki/templates, ++`). The [#ProjectList] template file is called `index.html`, while the template responsible for main layout is called `theme.html`. Page assets such as images and CSS style sheets are located in the egg's `trac/htdocs` directory.
+
+However, do not edit templates or site resources inside the Trac egg - installing Trac again can completely delete your modifications. Instead use one of two alternatives:
+ * For a modification to one project only, copy the template to project `templates` directory.
+ * For a modification shared by several projects, copy the template to a shared location and have each project point to this location using the `[inherit] templates_dir =` trac.ini option.
+
+Trac resolves requests for a template by first looking inside the project, then in any inherited templates location, and finally inside the Trac egg.
 
 ----
 See also TracGuide, TracIni

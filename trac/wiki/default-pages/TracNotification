@@ -106,6 +106,15 @@ from:(<smtp_from>) (("Reporter: <username>" -Changes) OR "Changes (by <username>
 
 to delete these notifications.
 
+In Thunderbird, there is no such solution if you use IMAP
+(see http://kb.mozillazine.org/Filters_(Thunderbird)#Filtering_the_message_body).
+
+The best you can do is to set "always_notify_updater" in conf/trac.ini to false.
+You will however still get an email if you comment a ticket that you own or have reported.
+
+You can also add this plugin:
+http://trac-hacks.org/wiki/NeverNotifyUpdaterPlugin
+
 == Troubleshooting ==
 
 If you cannot get the notification working, first make sure the log is activated and have a look at the log to find if an error message has been logged. See TracLogging for help about the log feature.
@@ -133,7 +142,7 @@ The trouble is that a regular user may connect to the SMTP server, but the web s
 sudo -u www-data telnet localhost 25
 }}}
 
-In such a case, you need to configure your server so that the web server is authorize to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help browsing the Trac MailingList archive.
+In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help browsing the Trac MailingList archive.
 
 Relevant ML threads:
  * SELinux: http://article.gmane.org/gmane.comp.version-control.subversion.trac.general/7518

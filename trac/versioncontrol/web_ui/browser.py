@@ -235,14 +235,14 @@ class BrowserModule(Component):
 
     render_unsafe_content = BoolOption('browser', 'render_unsafe_content',
                                         'false',
-        """Whether attachments should be rendered in the browser, or
-        only made downloadable.
+        """Whether raw files should be rendered in the browser, or only made 
+        downloadable.
  
         Pretty much any file may be interpreted as HTML by the browser,
-        which allows a malicious user to attach a file containing cross-site
+        which allows a malicious user to create a file containing cross-site
         scripting attacks.
         
-        For public sites where anonymous users can create attachments it is
+        For open repositories where anyone can check-in a file, it is
         recommended to leave this option disabled (which is the default).""")
 
     # public methods

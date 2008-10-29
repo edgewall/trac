@@ -29,6 +29,14 @@ class DivHelloWorldMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         return '<div>Hello World, args = %s</div>' % content
 
+class TableHelloWorldMacro(WikiMacroBase):
+    """A dummy macro returning a table block, used by the unit test."""
+
+    def expand_macro(self, formatter, name, content):
+        return """
+        <table><tr><th>Hello World</th><td>%s</td></tr></table>
+        """ % content
+
 class DivCodeMacro(WikiMacroBase):
     """A dummy macro returning a div block, used by the unit test."""
 

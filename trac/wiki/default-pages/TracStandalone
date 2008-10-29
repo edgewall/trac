@@ -39,6 +39,8 @@ An alternative way to serve multiple projects is to specify a parent directory i
 
 To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-C}}} will leave a Python process running in the background.
 
+When running as a Windows service using a utility such as [http://www.google.com/search?q=srvany.exe SRVANY], stopping or restarting the service will also leave a Python process running -- restart the system instead.
+
 
 == Using Authentication ==
 
@@ -51,7 +53,7 @@ sudo htpasswd -c /path/to/env/.htpasswd username
 }}}
 then for additional users:
 {{{
-sudo htpasswd /var/www/html/.htpasswd-users username2
+sudo htpasswd /path/to/env/.htpasswd username2
 }}}
 then for starting the tracd:
 {{{
@@ -94,9 +96,10 @@ Another way to share the digest file is to specify "*"
 for the project name:
 {{{
  $ tracd -p 8080 \
-   --auth=*,/path/to/users.htdigest,mycompany.com \
+   --auth="*",/path/to/users.htdigest,mycompany.com \
    /path/to/project1 /path/to/project2
 }}}
+If using the `-s` parameter for serving a Trac environment from the root of a domain, one must use `*` for the project name
 
 == How to set up an htdigest password file ==
 
@@ -111,7 +114,12 @@ If you don't have Apache available, you can use this simple Python script to gen
 {{{
 #!python
 from optparse import OptionParser
-import md5
+# The md5 module is deprecated in Python 2.5
+try:
+    from hashlib import md5
+except ImportError:
+    from md5 import md5
+realm = 'trac'
 
 # build the options
 usage = "usage: %prog [options]"
@@ -120,15 +128,18 @@ parser.add_option("-u", "--username",action="store", dest="username", type = "st
                   help="the username for whom to generate a password")
 parser.add_option("-p", "--password",action="store", dest="password", type = "string",
                   help="the password to use")
+parser.add_option("-r", "--realm",action="store", dest="realm", type = "string",
+                  help="the realm in which to create the digest")
 (options, args) = parser.parse_args()
 
 # check options
 if (options.username is None) or (options.password is None):
    parser.error("You must supply both the username and password")
+if (options.realm is not None):
+   realm = options.realm
    
 # Generate the string to enter into the htdigest file
-realm = 'trac'
-kd = lambda x: md5.md5(':'.join(x)).hexdigest()
+kd = lambda x: md5(':'.join(x)).hexdigest()
 print ':'.join((options.username, realm, kd([options.username, realm, options.password])))
 }}}
 
@@ -171,7 +182,7 @@ syntax for the above. With this, the example link above can be written simply
 In some situations when you choose to use tracd behind apache, you might experience issues with redirects, like being redirected to URLs with the wrong host or protocol. In this case (and only in this case), setting the `[trac] use_base_url_for_redirect` to `true` can help, as this will force Trac to use the value of `[trac] base_url` for doing the redirects.
 
 === Serving a different base path than / ===
-Tracd supports serving projects with different base urls then /<project>. The parameter name to change this is
+Tracd supports serving projects with different base urls than /<project>. The parameter name to change this is
 {{{
 tracd --base-path=/some/path
 }}}

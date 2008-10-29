@@ -61,6 +61,8 @@ def _markup_to_unicode(markup):
 class WikiProcessor(object):
 
     _code_block_re = re.compile('^<div(?:\s+class="([^"]+)")?>(.*)</div>$')
+    _block_elem_re = re.compile(r'^\s*<(?:div|table)(?:\s+[^>]+)?>',
+                                re.I | re.M)
 
     def __init__(self, formatter, name, args={}):
         """Find the processor by name
@@ -205,14 +207,15 @@ class WikiProcessor(object):
                 elif tagname == 'table':
                     interrupt_paragraph = True
             else:
+                # FIXME: do something smarter for Streams
                 text = to_unicode(text)
-                match = re.match(self._code_block_re, unicode(text))
+                match = re.match(self._code_block_re, text)
                 if match:
                     if match.group(1) and 'code' in match.group(1):
                         content_for_span = match.group(2)
                     else:
                         interrupt_paragraph = True
-                elif text.startswith('<table'):
+                elif re.match(self._block_elem_re, text):
                     interrupt_paragraph = True
             if content_for_span:
                 text = tag.span(class_='code-block')(*content_for_span)
@@ -1109,19 +1112,25 @@ class InlineHtmlFormatter(object):
 
 
 def format_to(env, flavor, context, wikidom, **options):
+    if flavor is None:
+        flavor = context.get_hint('wiki_flavor', 'html')
     if flavor == 'oneliner':
         return format_to_oneliner(env, context, wikidom, **options)
     else:
         return format_to_html(env, context, wikidom, **options)
 
-def format_to_html(env, context, wikidom, escape_newlines=False):
+def format_to_html(env, context, wikidom, escape_newlines=None):
     if not wikidom:
         return Markup()
+    if escape_newlines is None:
+        escape_newlines = context.get_hint('preserve_newlines', False)
     return HtmlFormatter(env, context, wikidom).generate(escape_newlines)
 
-def format_to_oneliner(env, context, wikidom, shorten=False):
+def format_to_oneliner(env, context, wikidom, shorten=None):
     if not wikidom:
         return Markup()
+    if shorten is None:
+        shorten = context.get_hint('shorten_lines', False)
     return InlineHtmlFormatter(env, context, wikidom).generate(shorten)
 
 def extract_link(env, context, wikidom):

@@ -1,10 +1,12 @@
 = The Trac Configuration File =
-
 [[TracGuideToc]]
+
+Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
 
 == Global Configuration ==
 
 In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.
+Literally, when you're upgrading to 0.11, you have to add an `inherit`-section to your project's `trac.ini` file. Additionally you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
 
 Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
 {{{
@@ -64,12 +66,17 @@ and simply displaying closed tickets vs. all the others is maybe not appropriate
 in all cases. This section enables one to easily create ''groups'' of states 
 that will be shown in different colors in the milestone progress bar.
 
-Example configuration (which is also the default):
+Example configuration (the default only has closed and active):
 {{{
 closed = closed
 closed.order = 0                     # sequence number in the progress bar
 closed.query_args = group=resolution # optional extra param for the query
-closed.overall_completion = true     # count for overall completion
+closed.overall_completion = true     # indicates groups that count for overall completion percentage
+
+new = new
+new.order = 1
+new.css_class = new
+new.label = new
 
 active = *                           # one catch-all group is allowed
 active.order = 1

@@ -15,7 +15,7 @@ Once you've edited your filters click the ''Update'' button to refresh your resu
 == Navigating Tickets ==
 Clicking on one of the query results will take you to that ticket.  You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which was edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
+You can safely edit any of the tickets and continue to navigate through the results using the ''Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which were edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
 
 The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
 
@@ -28,7 +28,6 @@ While Trac does not yet allow saving a named query and somehow making it availab
 You may want to save some queries so that you can come back to them later.  You can do this by making a link to the query from any Wiki page.
 {{{
 [query:status=new|assigned|reopened&version=1.0 Active tickets against 1.0]
-
 }}}
 
 Which is displayed as:
@@ -39,7 +38,6 @@ This uses a very simple query language to specify the criteria (see [wiki:TracQu
 Alternatively, you can copy the query string of a query and paste that into the Wiki link, including the leading `?` character:
 {{{
 [query:?status=new&status=assigned&status=reopened&group=owner Assigned tickets by owner]
-
 }}}
 
 Which is displayed as:
@@ -62,7 +60,6 @@ Just like the [wiki:TracQuery#UsingTracLinks query: wiki links], the parameter o
 A more compact representation without the ticket summaries is also available:
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, compact)]]
-
 }}}
 
 This is displayed as:
@@ -72,11 +69,20 @@ Finally if you wish to receive only the number of defects that match the query u
 
 {{{
 [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
-
 }}}
 
 This is displayed as:
   [[TicketQuery(version=0.6|0.7&resolution=duplicate, count)]]
+
+=== Customizing the ''table'' format ===
+You can also customize the columns displayed in the table format (''format=table'') by using ''col=<field>'' - you can specify multiple fields and what order they are displayed by placing pipes (`|`) between the columns like below:
+
+{{{
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
+}}}
+
+This is displayed as:
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
 
 
 === Query Language ===
@@ -84,16 +90,17 @@ This is displayed as:
 `query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values.
 
 The available operators are:
-|| '''=''' || the field content exactly matches the one of the values ||
-|| '''~=''' || the field content contains one or more of the values ||
-|| '''!^=''' || the field content starts with one of the values ||
-|| '''$=''' || the field content ends with one of the values ||
+|| '''`=`''' || the field content exactly matches the one of the values ||
+|| '''`~=`''' || the field content contains one or more of the values ||
+|| '''`^=`''' || the field content starts with one of the values ||
+|| '''`$=`''' || the field content ends with one of the values ||
 
 All of these operators can also be negated:
-|| '''!=''' || the field content matches none of the values ||
-|| '''!~=''' || the field content does not contain any of the values ||
-|| '''!!^=''' || the field content does not start with any of the values ||
-|| '''!$=''' || the field content does not end with any of the values ||
+|| '''`!=`''' || the field content matches none of the values ||
+|| '''`!~=`''' || the field content does not contain any of the values ||
+|| '''`!^=`''' || the field content does not start with any of the values ||
+|| '''`!$=`''' || the field content does not end with any of the values ||
+
 
 ----
 See also: TracTickets, TracReports, TracGuide

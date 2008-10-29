@@ -9,7 +9,7 @@ Since 0.11, there's a general mechanism in place that allows custom permission p
 === !AuthzPolicy ===
 
 An example policy based on an Authz-style system has been added. See
-[source:trunk/sample-plugins/permissions/authz_policy.py] for details. (See also [source:trunk/sample-plugins/permissions] for more samples.)
+[trac:source:branches/0.11-stable/sample-plugins/permissions/authz_policy.py authz_policy.py] for details (current version requires >= Python 2.4). (See also [trac:source:branches/0.11-stable/sample-plugins/permissions sample-plugins/permissions] for more samples.)
 
  - Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (required).
  - Copy authz_policy.py into your plugins directory.
@@ -60,7 +60,7 @@ Then:
 
 === mod_authz_svn-like permission policy ===
 
-At the time of this writing, the old fine grained permissions system from Trac 0.10 and before used for restricting access to the repository has not yet been converted to a permission policy component, but from the user point of view, this makes little if no differences.
+At the time of this writing, the old fine grained permissions system from Trac 0.10 and before used for restricting access to the repository has not yet been converted to a permission policy component, but from the user point of view, this makes little if no difference.
 
 That kind of fine-grained permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
 More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/svnbook/book.html#svn-ch-6-sect-4.4.2 Subversion Book (Per-Directory Access Control)].
@@ -116,5 +116,10 @@ The same access file is typically applied to the corresponding Subversion reposi
 
 For information about how to restrict access to entire projects in a multiple project environment see [trac:wiki:TracMultipleProjectsSVNAccess]
 
+== Getting TracFineGrainedPermissions to work ==
+
+Don't forget to restart Trac engine to apply new configuration if you are running tracd standalone server.
+
 ----
 See also: TracPermissions
+http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin for a simple editor plugin.

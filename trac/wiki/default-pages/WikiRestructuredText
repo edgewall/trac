@@ -9,6 +9,8 @@ From the reStucturedText webpage:
 Note that to activate RST support in Trac, the python docutils package must be installed. 
 If not already available on your operating system, you can download it at the [http://docutils.sourceforge.net/rst.html RST Website].
 
+Install docutils using `easy_install docutils`. Do not use the package manager of your OS (e.g. `apt-get install python-docutils`), because Trac will not find docutils then.
+
 === More information on RST ===
 
  * reStructuredText Website -- http://docutils.sourceforge.net/rst.html

@@ -712,6 +712,16 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[DivHelloWorld(...)]]
+============================== Macro returning a <table> preceeded by space
+[[TableHelloWorld(hej hopp)]]
+------------------------------
+<p>
+</p>
+        <table><tr><th>Hello World</th><td>hej hopp</td></tr></table>
+        <p>
+</p>
+------------------------------
+[[TableHelloWorld(...)]]
 ============================== Macro returning a <div class="...code...">
 [[DivCode(hej hopp)]]
 ------------------------------

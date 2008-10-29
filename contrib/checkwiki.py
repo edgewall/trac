@@ -38,6 +38,7 @@ wiki_pages = [
  "TracLinks",
  "TracLogging",
  "TracModPython",
+ "TracModWSGI",
  "TracNavigation",
  "TracNotification",
  "TracPermissions",
@@ -121,7 +122,7 @@ if __name__ == '__main__':
         opts, args = getopt.getopt(sys.argv[1:], "d")
     except getopt.GetoptError:
         # print help information and exit:
-        print "%s [-d]" % sys.argv[0]
+        print "%s [-d] [PAGE ...]" % sys.argv[0]
         print "\t-d  -- Download pages from the main project wiki."
         sys.exit()
     get_page = get_page_from_file
@@ -129,7 +130,7 @@ if __name__ == '__main__':
         if o == '-d':
             get_page = get_page_from_web
     data = {}
-    for p in wiki_pages:
+    for p in args or wiki_pages:
         data[p] = get_page (p)
     check_links(data)
 
