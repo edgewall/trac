@@ -191,6 +191,12 @@ The link syntax for attachments is as follows:
 
 Note that the older way, putting the filename at the end, is still supported: !attachment:ticket:753:the_file.txt.
 
+If you'd like to create a direct link to the content of the attached file instead of a link to the attachment page, simply use `raw-attachment:` instead of `attachment:`.
+
+This can be useful for pointing directly to an HTML document, for example. Note that for this use case, you'd have to allow the web browser to render the content by setting `[attachment] render_unsafe_content = yes` (see TracIni#attachment-section). Caveat: only do that in environments for which you're 100% confident you can trust the people who are able to attach files, as otherwise this would open up your site to [wikipedia:Cross-site_scripting cross-site scripting] attacks.
+
+See also [#export:links].
+
 === comment: links ===
 
 When you're inside a given tickets, you can simply write e.g. !comment:3 to link to the third change comment.
@@ -256,9 +262,9 @@ To force the download of a file in the repository, as opposed to displaying it i
  * `export:123:/some/file` - get revision 123 of the specified file
  * `export:/some/file@123` - get revision 123 of the specified file
 
-This can be very useful for displaying XML or HTML documentation with correct stylesheets and images, in case that has been checked in into the repository. Note that for this use case, you'd have to allow the web browser to render the content by setting `[browser] render_unsafe_content = yes` (see TracIni#browser-section), otherwise Trac will force the files to be downloaded as attachments for security concerns.
+This can be very useful for displaying XML or HTML documentation with correct stylesheets and images, in case that has been checked in into the repository. Note that for this use case, you'd have to allow the web browser to render the content by setting `[browser] render_unsafe_content = yes` (see TracIni#browser-section), otherwise Trac will force the files to be downloaded as attachments for security concerns. 
 
-If the path is to a directory in the repository instead of a specific file, the source browser will be used to display the directory (identical to the result of `source:/some/dir`.
+If the path is to a directory in the repository instead of a specific file, the source browser will be used to display the directory (identical to the result of `source:/some/dir`).
 
 ==== log: links ====
 
