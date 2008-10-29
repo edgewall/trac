@@ -70,7 +70,7 @@ easy_install http://svn.edgewall.com/repos/trac/sandbox/spam-filter
 }}}
 
 ==== Enabling the plugin ====
-Unlike plugins installed per-environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This is done in the `[components]` section of the configuration file, for example:
+Unlike plugins installed per-environment, you'll have to explicitly enable globally installed plugins via [wiki:TracIni trac.ini]. This also applies to plugins installed in the path specified in the `[inherit] plugins_dir` configuration option. This is done in the `[components]` section of the configuration file, for example:
 {{{
 [components]
 tracspamfilter.* = enabled
@@ -119,15 +119,19 @@ or (for mod_python):
  <Location /trac>
    SetHandler mod_python
    ...
-   SetEnv PYTHON_EGG_CACHE /path/to/dir
+   PythonOption PYTHON_EGG_CACHE /path/to/dir
  </Location>
 }}}
 
- ''Note: this requires the `mod_env` module''
+ ''Note: SetEnv requires the `mod_env` module which needs to be activated for Apache. In this case the SetEnv directive can also be used in the `mod_python` Location block.''
 
 For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables. 
 
- ''Note: that if you already use -initial-env to set the project directory for either a single project or parent you will need to add atleast one environment variable inside trac.fcgi as expressed in the example on [wiki:TracFastCgi TracFastCgi].
+ ''Note: that if you already use -initial-env to set the project directory for either a single project or parent you will need to add an additional -initial-env directive to the FastCgiConfig directive. I.e.
+
+{{{
+FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
+}}}
 
 === About hook scripts ===
 
@@ -151,6 +155,7 @@ Python eggs have the Python version encoded in their filename. For example, `MyP
 Also, verify that the egg file you downloaded is indeed a ZIP archive. If you downloaded it from a Trac site, chances are you downloaded the HTML preview page instead.
 
 === Is the plugin enabled? ===
+
 
 If you install a plugin globally (i.e. ''not'' inside the `plugins` directory of the Trac project environment) you will have to explicitly enable it in [TracIni trac.ini]. Make sure that:
  * you actually added the necessary line(s) to the `[components]` section

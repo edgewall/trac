@@ -326,5 +326,116 @@ link = http://yourdomain.com/trac/     <--- link of graphic logo
 http://yourdomain.com/trac/
 }}}
 
+=== Simple Nginx Configuration ===
+
+1) Nginx configuration snippet - confirmed to work on 0.5.36
+{{{
+    server {
+        listen       10.9.8.7:443;
+        server_name  trac.example;
+
+        ssl                  on;
+        ssl_certificate      /etc/ssl/trac.example.crt;
+        ssl_certificate_key  /etc/ssl/trac.example.key;
+
+        ssl_session_timeout  5m;
+
+        ssl_protocols  SSLv2 SSLv3 TLSv1;
+        ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+        ssl_prefer_server_ciphers   on;
+
+        location / {
+            auth_basic            "trac realm";
+            auth_basic_user_file /home/trac/htpasswd;
+
+            # full path
+            if ($uri ~ ^/([^/]+)(/.*)) {
+                 set $script_name $1;
+                 set $path_info $2;
+            }
+
+            # index redirect 
+            if ($uri ~ ^/([^/]+)$) {
+                 rewrite (.+) $1/ permanent; 
+            }
+         
+            # socket address
+            fastcgi_pass   unix:/home/trac/run/instance.sock;
+
+            # python - wsgi specific
+            fastcgi_param HTTPS on;
+
+            ## WSGI REQUIRED VARIABLES
+            # WSGI application name - trac instance prefix. 
+            fastcgi_param  SCRIPT_NAME        /$script_name;
+            fastcgi_param  PATH_INFO          $path_info;
+
+            ## WSGI NEEDED VARIABLES - trac warns about them
+            fastcgi_param  REQUEST_METHOD     $request_method;
+            fastcgi_param  SERVER_NAME        $server_name;
+            fastcgi_param  SERVER_PORT        $server_port;
+            fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+
+            # for authentication to work
+            fastcgi_param  REMOTE_USER        $remote_user;
+        }
+    }
+}}}
+
+2) Modified trac.fcgi:
+
+{{{
+#!/usr/bin/env python
+import os
+sockaddr = '/home/trac/run/instance.sock'
+os.environ['TRAC_ENV'] = '/home/trac/instance'
+
+try:
+     from trac.web.main import dispatch_request
+     import trac.web._fcgi
+
+     fcgiserv = trac.web._fcgi.WSGIServer(dispatch_request, 
+          bindAddress = sockaddr, umask = 7)
+     fcgiserv.run()
+
+except SystemExit:
+    raise
+except Exception, e:
+    print 'Content-Type: text/plain\r\n\r\n',
+    print 'Oops...'
+    print
+    print 'Trac detected an internal error:'
+    print
+    print e
+    print
+    import traceback
+    import StringIO
+    tb = StringIO.StringIO()
+    traceback.print_exc(file=tb)
+    print tb.getvalue()
+
+}}}
+
+3) reload nginx and launch trac.fcgi like that:
+
+{{{
+trac@trac.example ~ $ ./trac-standalone-fcgi.py 
+}}}
+
+The above assumes that:
+ * There is a user named 'trac' for running trac instances and keeping trac environments in its home directory.
+ * /home/trac/instance contains a trac environment
+ * /home/trac/htpasswd contains authentication information
+ * /home/trac/run is owned by the same group the nginx runs under
+  * and if your system is Linux the /home/trac/run has setgid bit set (chmod g+s run)
+  * and patch from ticket #7239 is applied, or you'll have to fix the socket file permissions every time
+
+Unfortunately nginx does not support variable expansion in fastcgi_pass directive. 
+Thus it is not possible to serve multiple trac instances from one server block. 
+
+If you worry enough about security, run trac instances under separate users. 
+
+Another way to run trac as a FCGI external application is offered in ticket #6224
+
 ----
-See also TracCgi, TracModPython, TracInstall, TracGuide
+See also TracCgi, TracModPython, TracInstall, TracGuide, [Trac:TracNginxRecipe]

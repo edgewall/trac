@@ -15,7 +15,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
-from itertools import groupby
 import os
 import pkg_resources
 import pprint
@@ -115,12 +114,16 @@ def add_javascript(req, filename):
 def add_warning(req, msg, *args):
     """Add a non-fatal warning to the request object.
     When rendering pages, any warnings will be rendered to the user."""
-    req.chrome['warnings'].append(msg % args)
+    if args:
+        msg %= args
+    req.chrome['warnings'].append(msg)
 
 def add_notice(req, msg, *args):
     """Add an informational notice to the request object.
     When rendering pages, any notice will be rendered to the user."""
-    req.chrome['notices'].append(msg % args)
+    if args:
+        msg %= args
+    req.chrome['notices'].append(msg)
 
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
     """Add an entry to the current page's ctxtnav bar.
@@ -294,7 +297,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': groupby,
+        'groupby': compat.py_groupby, # http://bugs.python.org/issue2246
         'http_date': http_date,
         'istext': presentation.istext,
         'ngettext': translation.ngettext,

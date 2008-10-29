@@ -49,7 +49,7 @@ from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             prevnext_nav, INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
-from trac.wiki.formatter import format_to_html
+from trac.wiki.formatter import format_to
 
 
 class IPropertyDiffRenderer(Interface):
@@ -863,10 +863,12 @@ class ChangesetModule(Component):
                 return context.href.log(reponame, rev=rev_b, stop_rev=rev_a) 
             
         elif field == 'description':
-            if not self.timeline_long_messages:
-                message = shorten_line(message)
             if self.wiki_format_messages:
                 markup = ''
+                if self.timeline_long_messages: # override default flavor
+                    context = context()
+                    context.set_hints(wiki_flavor='html', 
+                                      preserve_newlines=True)
             else:
                 markup = message
                 message = None
@@ -900,8 +902,8 @@ class ChangesetModule(Component):
                         files = files[:show_files] + [tag.li(u'\u2026')]
                     markup = tag(tag.ul(files, class_="changes"), markup)
             if message:
-                markup += format_to_html(self.env, context(cset_resource), 
-                                         message)
+                markup += format_to(self.env, None, context(cset_resource),
+                                    message)
             return markup
 
         single = rev_a == rev_b
@@ -962,7 +964,8 @@ class ChangesetModule(Component):
             repos = rm.get_repository(reponame, authname)
 
         # rendering changeset link
-        if repos:
+        if repos and 'CHANGESET_VIEW' in formatter.perm('changeset', 
+                                                        (reponame, rev)):
             try:
                 changeset = repos.get_changeset(rev)
                 href = formatter.href.changeset(rev, reponame or None, path)

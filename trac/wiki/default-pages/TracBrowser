@@ -33,8 +33,9 @@ For Subversion, this list contains by default a few branches (`trunk` and any su
 If you're using a Javascript enabled brower, you'll be able to expand and collapse folders in-place by clicking on the arrow head at the right side of a folder. Alternatively, the keyboard can also be used for this: use 'j' and 'k' to go to the next or previous entry, and 'o' (or 'Enter') to toggle between expanded and collapsed state of the selected folder or for visiting the selected file.
 
 For the Subversion backend, some additional features are available:
- - support for `svn:needs-lock` property
- - support for `svn:externals` property (which can be [TracIni#svn:externals-section configured])
+ - Support for the `svn:needs-lock` property
+ - Support for the `svn:externals` property (which can be [TracIni#svn:externals-section configured])
+ - The `svn:mime-type` property is used to select the syntax highlighter for rendering the file. For example, setting `svn:mime-type` to `text/html` will ensure the file is highlighted as HTML, regardless of the file extension. It also allows selecting the character encoding used in the file content. For example, if the file content is encoded in UTF-8, set `svn:mime-type` to `text/html;charset=utf-8`. The `charset=` specification overrides the default encoding defined in the `default_charset` option of the `[trac]` section of [TracIni#trac-section trac.ini].
 
 ----
 See also: TracGuide, TracChangeset, TracFineGrainedPermissions

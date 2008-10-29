@@ -41,7 +41,7 @@ from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             INavigationContributor, ITemplateProvider
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
-from trac.wiki.formatter import format_to_oneliner
+from trac.wiki.formatter import format_to
 from trac.wiki.model import WikiPage
  
 class InvalidWikiPage(TracError):
@@ -600,10 +600,8 @@ class WikiModule(Component):
             return tag(tag.em(get_resource_name(self.env, wiki_page)),
                        wiki_page.version > 1 and ' edited' or ' created')
         elif field == 'description':
-            if self.config['timeline'].getbool('abbreviated_messages'):
-                comment = shorten_line(comment)
-            markup = format_to_oneliner(self.env, context(resource=wiki_page),
-                                        comment)
+            markup = format_to(self.env, None, context(resource=wiki_page),
+                               comment)
             if wiki_page.version > 1:
                 diff_href = context.href.wiki(
                     wiki_page.id, version=wiki_page.version, action='diff')

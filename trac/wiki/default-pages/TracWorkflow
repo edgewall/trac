@@ -13,7 +13,7 @@ Graphically, that looks like this:
 [[Image(htdocs:../common/guide/original-workflow.png)]]
 
 There are some significant "warts" in this; such as accepting a ticket sets it to 'assigned' state, and assigning a ticket sets it to 'new' state.  Perfectly obvious, right?
-So you will probably want to migrate to "basic" workflow; `contrib/workflow/migrate_original_to_basic.py` may be helpful.
+So you will probably want to migrate to "basic" workflow; [trac:source:trunk/contrib/workflow/migrate_original_to_basic.py contrib/workflow/migrate_original_to_basic.py] may be helpful.
 
 === Environments created with 0.11 ===
 When a new environment is created, a default workflow is configured in your trac.ini.  This workflow is the basic workflow (described in `basic-workflow.ini`), which is somewhat different from the workflow of the 0.10 releases.
@@ -24,7 +24,9 @@ Graphically, it looks like this:
 
 == Additional Ticket Workflows ==
 
-There are several example workflows provided in the Trac source tree; look in `contrib/workflow` for `.ini` config sections.  One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file.
+There are several example workflows provided in the Trac source tree; look in [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections.  One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file.
+
+Here are some [http://trac.edgewall.org/wiki/WorkFlow/Examples diagrams] of the above examples.
 
 == Basic Ticket Workflow Customization ==
 
@@ -109,6 +111,63 @@ pass.operations = set_resolution
 pass.set_resolution = fixed
 }}}
 
+== Example: Add simple optional generic review state ==
+
+Sometimes Trac is used in situations where "testing" can mean different things to different people so you may want to create an optional workflow state that is between the default workflow's `assigned` and `closed` states, but does not impose implementation-specific details. The only new state you need to add for this is a `reviewing` state. A ticket may then be "submitted for review" from any state that it can be reassigned. If a review passes, you can re-use the `resolve` action to close the ticket, and if it fails you can re-use the `reassign` action to push it back into the normal workflow.
+
+The new `reviewing` state along with its associated `review` action looks like this:
+
+{{{
+review = new,assigned,reopened -> reviewing
+review.operations = set_owner
+review.permissions = TICKET_MODIFY
+}}}
+
+Then, to integrate this with the default Trac 0.11 workflow, you also need to add the `reviewing` state to the `accept` and `resolve` actions, like so:
+
+{{{
+accept = new,reviewing -> assigned
+[…]
+resolve = new,assigned,reopened,reviewing -> closed
+}}}
+
+Optionally, you can also add a new action that allows you to change the ticket's owner without moving the ticket out of the `reviewing` state. This enables you to reassign review work without pushing the ticket back to the `new` status.
+
+{{{
+reassign_reviewing = reviewing -> *
+reassign_reviewing.name = reassign review
+reassign_reviewing.operations = set_owner
+reassign_reviewing.permissions = TICKET_MODIFY
+}}}
+
+The full `[ticket-workflow]` configuration will thus look like this:
+
+{{{
+[ticket-workflow]
+accept = new,reviewing -> assigned
+accept.operations = set_owner_to_self
+accept.permissions = TICKET_MODIFY
+leave = * -> *
+leave.default = 1
+leave.operations = leave_status
+reassign = new,assigned,reopened -> new
+reassign.operations = set_owner
+reassign.permissions = TICKET_MODIFY
+reopen = closed -> reopened
+reopen.operations = del_resolution
+reopen.permissions = TICKET_CREATE
+resolve = new,assigned,reopened,reviewing -> closed
+resolve.operations = set_resolution
+resolve.permissions = TICKET_MODIFY
+review = new,assigned,reopened -> reviewing
+review.operations = set_owner
+review.permissions = TICKET_MODIFY
+reassign_reviewing = reviewing -> *
+reassign_reviewing.operations = set_owner
+reassign_reviewing.name = reassign review
+reassign_reviewing.permissions = TICKET_MODIFY
+}}}
+
 == Example: Limit the resolution options for a new ticket ==
 
 The above resolve_new operation allows you to set the possible resolutions for a new ticket.  By modifying the existing resolve action and removing the new status from before the `->` we then get two resolve actions.  One with limited resolutions for new tickets, and then the regular one once a ticket is accepted.
@@ -131,9 +190,13 @@ If the customization above is not extensive enough for your needs, you can exten
 
 But if even that is not enough, you can disable the !ConfigurableTicketWorkflow component and create a plugin that completely replaces it.
 
+== Adding Workflow States to Milestone Progress Bars ==
+
+If you add additional states to your workflow, you may want to customize your milestone progress bars as well.  See [TracIni#milestone-groups-section TracIni].
+
 == some ideas for next steps ==
 
-New enhancement ideas for the workflow system should be filed as enhancement tickets against the `ticket system` component.  If desired, add a single-line link to that ticket here.
+New enhancement ideas for the workflow system should be filed as enhancement tickets against the `ticket system` component.  If desired, add a single-line link to that ticket here.  Also look at the [th:wiki:AdvancedTicketWorkflowPlugin] as it provides experimental operations.
 
 If you have a response to the comments below, create an enhancement ticket, and replace the description below with a link to the ticket.
 
@@ -141,15 +204,15 @@ If you have a response to the comments below, create an enhancement ticket, and 
    * '''preops''': automatic, before entering the state/activity
    * '''postops''': automatic, when leaving the state/activity
    * '''actions''': can be chosen by the owner in the list at the bottom, and/or drop-down/pop-up together with the default actions of leaving the node on one of the arrows.
-This appears to add complexity without adding functionality; please provide a detailed example where these additions allow something currently impossible to implement.
+''This appears to add complexity without adding functionality; please provide a detailed example where these additions allow something currently impossible to implement.''
 
  * operations could be anything: sum up the time used for the activity, or just write some statistical fields like 
-A workflow plugin can add an arbitrary workflow operation, so this is already possible.
+''A workflow plugin can add an arbitrary workflow operation, so this is already possible.''
 
  * set_actor should be an operation allowing to set the owner, e.g. as a "preop":
    * either to a role, a person
    * entered fix at define time, or at run time, e.g. out of a field, or select.
-This is either duplicating the existing `set_owner` operation, or needs to be clarified.
+''This is either duplicating the existing `set_owner` operation, or needs to be clarified.''
 
  * Actions should be selectable based on the ticket type (different Workflows for different tickets)
-This is becoming a frequent request, with clear usecases.  The closest the current implementation will allow is to have a plugin provide a `triage` action that sets the next state based on the ticket type, so a `new` ticket would move to `new_task`, `new_defect`, etc., and the workflow graph would separate at that point.
+''Look into the [th:wiki:AdvancedTicketWorkflowPlugin]'s `triage` operation.''

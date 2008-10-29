@@ -36,16 +36,6 @@
         (losing your changes) and start editing the latest version of the page
         again.</p>
       </div>
-      <div py:if="merge" class="system-message">
-        Someone else modified that page since you started your edits.
-        <b>If you save right away, you risk to revert those changes</b>
-        (highlighted below as deletions). <br />
-        Please review all those changes and manually merge them with your
-        own changes. <br />
-        If you're unsure about what you're doing, please press <tt>Cancel</tt>
-        (losing your changes) and start editing the latest version of the page
-        again. <br />
-      </div>
       <py:choose test="action">
         <py:when test="'preview'">
           <table id="info" summary="Revision info">

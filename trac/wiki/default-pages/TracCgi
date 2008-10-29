@@ -2,12 +2,15 @@
 
 To install Trac as a CGI script, you need to make the `trac.cgi` executable as a CGI by your web server.
 
+{{{
+#!div class=important
   ''Please note that using Trac via CGI is significantly slower than any other deployment method, such as [TracModPython mod_python] or [TracFastCgi FastCGI].''
+}}}
 
 If you're using [http://httpd.apache.org/ Apache HTTPD], there are a couple ways to do that:
 
  1. Use a `ScriptAlias` to map a URL to the `trac.cgi` script
- 2. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
+ 2. Copy the `trac.cgi` file into the directory for CGI executables used by your web server (commonly named `cgi-bin`). A word of warning, copying the file directly from the repository onto a windows server 2003 machine created difficulties. Rather create a new text file and cut and copy the text into the newly created file. You can also create a symbolic link, but in that case make sure that the `FollowSymLinks` option is enabled for the `cgi-bin` directory.
 
 The first option is recommended as it also allows you to map the CGI to a friendly URL.
 
@@ -138,14 +141,14 @@ If you're hosting multiple projects you can use the same password file for all o
 </LocationMatch>
 }}}
 
-For better security, it is recommended that you either enable SSL or at least use the “Digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more. For example, on a Debian 4.0r1 (etch) system the relevant section  in apache configuration can look like this:
+For better security, it is recommended that you either enable SSL or at least use the “digest” authentication scheme instead of “Basic”. Please read the [http://httpd.apache.org/docs/2.0/ Apache HTTPD documentation] to find out more. For example, on a Debian 4.0r1 (etch) system the relevant section  in apache configuration can look like this:
 {{{
 <Location "/trac/login">
     LoadModule auth_digest_module /usr/lib/apache2/modules/mod_auth_digest.so
     AuthType Digest
     AuthName "trac"
     AuthDigestDomain /trac
-    AuthDigestFile /somewhere/trac.htpasswd
+    AuthUserFile /somewhere/trac.htpasswd
     Require valid-user
 </Location>
 }}}

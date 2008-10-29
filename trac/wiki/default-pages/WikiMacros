@@ -40,7 +40,9 @@ For more information about developing macros, see the [wiki:TracDev development 
 
 == Implementation ==
 
-Here are 2 simple examples on how to create a Macro with [wiki:0.11 Trac 0.11] have a look at source:trunk/sample-plugins/Timestamp.py for an example that shows the difference between old style and new style macros and also source:trunk/wiki-macros/README which provides a little more insight about the transition.
+Here are 2 simple examples showing how to create a Macro with Trac 0.11. 
+
+Also, have a look at [trac:source:tags/trac-0.11/sample-plugins/Timestamp.py Timestamp.py] for an example that shows the difference between old style and new style macros and at the [trac:source:tags/trac-0.11/wiki-macros/README macros/README] which provides a little more insight about the transition.
 
 === Macro without arguments ===
 It should be saved as `TimeStamp.py` as Trac will use the module name as the Macro name
@@ -54,7 +56,7 @@ from genshi.builder import tag
 from trac.util.datefmt import format_datetime, utc
 from trac.wiki.macros import WikiMacroBase
 
-class TimestampMacro(WikiMacroBase):
+class TimeStampMacro(WikiMacroBase):
     """Inserts the current time (in seconds) into the wiki page."""
 
     revision = "$Rev$"

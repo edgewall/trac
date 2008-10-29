@@ -41,7 +41,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, add_warning, \
                             INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
-from trac.wiki.formatter import format_to_html
+from trac.wiki.formatter import format_to
 
 class ITicketGroupStatsProvider(Interface):
     def get_ticket_group_stats(ticket_ids):
@@ -242,7 +242,7 @@ class DefaultTicketGroupStatsProvider(Component):
             for arg in [kv for kv in group.get('query_args', '').split(',')
                         if '=' in kv]:
                 k, v = [a.strip() for a in arg.split('=', 1)]
-                query_args[k] = v
+                query_args.setdefault(k, []).append(v)
             stat.add_interval(group.get('label', group['name']), 
                               group_cnt, query_args,
                               group.get('css_class', group['name']),
@@ -530,8 +530,8 @@ class MilestoneModule(Component):
         elif field == 'title':
             return tag('Milestone ', tag.em(milestone.id), ' completed')
         elif field == 'description':
-            return format_to_html(self.env, context(resource=milestone),
-                                  shorten_line(description))
+            return format_to(self.env, None, context(resource=milestone),
+                             description)
 
     # IRequestHandler methods
 
@@ -781,13 +781,15 @@ class MilestoneModule(Component):
         # should simply be false if the milestone doesn't exist in the db
         # (related to #4130)
         href = context.href.milestone(name)
-        if milestone and milestone.exists and \
-           'MILESTONE_VIEW' in context.perm(milestone.resource):
-            closed = milestone.is_completed and 'closed ' or ''
-            return tag.a(label, class_='%smilestone' % closed, href=href+extra)
-        else: 
-            return tag.a(label, class_='missing milestone', href=href+extra,
-                         rel="nofollow")
+        if milestone and milestone.exists:
+            if 'MILESTONE_VIEW' in context.perm(milestone.resource):
+                closed = milestone.is_completed and 'closed ' or ''
+                return tag.a(label, class_='%smilestone' % closed,
+                             href=href + extra)
+        elif 'MILESTONE_CREATE' in context.perm('milestone', name):
+            return tag.a(label, class_='missing milestone', href=href + extra,
+                         rel='nofollow')
+        return tag.a(label, class_='missing milestone')
         
     # IResourceManager methods
 

@@ -66,7 +66,9 @@
                 <a py:otherwise="" href="${group.stats_href}">${group.name}</a>
               </th>
               <td>
-                ${progress_bar(group.stats, group.interval_hrefs,
+                ${progress_bar(group.stats, (group.interval_hrefs, None)
+                               [grouped_by in ['owner', 'reporter'] 
+                                  and group.name != format_author(group.name)],
                                '%d / %d' % (group.stats.done_count, group.stats.count),
                                legend=False, style="width: %d%%" % (group.percent_of_max_total * 0.8))}
               </td>
