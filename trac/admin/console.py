@@ -917,7 +917,6 @@ Congratulations!
                          'Move a resolution value up or down in the list')]
 
     def complete_resolution (self, text, line, begidx, endidx):
-        print begidx
         if begidx == 18:
             comp = self.get_enum_list ('resolution')
         elif begidx < 17:
