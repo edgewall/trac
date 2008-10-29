@@ -15,7 +15,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
-from itertools import groupby
 import os
 import pkg_resources
 import pprint
@@ -298,7 +297,7 @@ class Chrome(Component):
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
         'group': presentation.group,
-        'groupby': groupby,
+        'groupby': compat.py_groupby, # http://bugs.python.org/issue2246
         'http_date': http_date,
         'istext': presentation.istext,
         'ngettext': translation.ngettext,
