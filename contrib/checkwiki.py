@@ -70,7 +70,7 @@ wiki_pages = [
  "WikiRestructuredTextLinks"
  ]
 
-def get_page_from_file (pname):
+def get_page_from_file(prefix, pname):
     d = ''
     try:
         f = open(pname ,'r')
@@ -80,9 +80,9 @@ def get_page_from_file (pname):
         print "Missing page: %s" % pname
     return d
 
-def get_page_from_web (pname):
+def get_page_from_web(prefix, pname):
     host = "trac.edgewall.org"
-    rfile = "/wiki/%s?format=txt" % pname
+    rfile = "/wiki/%s%s?format=txt" % (prefix, pname)
     c = httplib.HTTPConnection(host)
     c.request("GET", rfile)
     r = c.getresponse()
@@ -119,18 +119,22 @@ def check_links (data):
 
 if __name__ == '__main__':
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "d")
+        opts, args = getopt.getopt(sys.argv[1:], "dp:")
     except getopt.GetoptError:
         # print help information and exit:
-        print "%s [-d] [PAGE ...]" % sys.argv[0]
-        print "\t-d  -- Download pages from the main project wiki."
+        print "%s [-d] [-p prefix] [PAGE ...]" % sys.argv[0]
+        print "\t-d        -- Download pages from the main project wiki."
+        print "\t-p prefix -- When downloading, prepend 'prefix/' to the page."
         sys.exit()
     get_page = get_page_from_file
+    prefix = None
     for o,a in opts:
         if o == '-d':
             get_page = get_page_from_web
+        elif o == '-p':
+            prefix = a+'/'
     data = {}
     for p in args or wiki_pages:
-        data[p] = get_page (p)
+        data[p] = get_page(prefix, p)
     check_links(data)
 

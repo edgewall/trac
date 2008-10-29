@@ -49,6 +49,25 @@ Results in:
  Hello [[span(''WORLD'' (click [#world-anchor here]), style=color: green; font-size: 120%, id=world-anchor)]]!
 
 
+== HTML comments ==
+HTML comments are stripped from the output of the `html` processor. To add an HTML comment to a wiki page, use the `htmlcomment` processor (available since 0.12). For example, the following code block:
+{{{
+{{{
+#!htmlcomment
+This block is translated to an HTML comment.
+It can contain <tags> and &entities; that will not be escaped in the output.
+}}}
+}}}
+results in the following block in the HTML output:
+{{{
+<!--
+This block is translated to an HTML comment.
+It can contain <tags> and &entities; that will not be escaped in the output.
+-->
+}}}
+Please note that the character sequence "--" is not allowed in HTML comments, and will generate a rendering error.
+
+
 == More Information ==
 
  * http://www.w3.org/ -- World Wide Web Consortium

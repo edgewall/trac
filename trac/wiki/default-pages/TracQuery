@@ -101,6 +101,11 @@ All of these operators can also be negated:
 || '''`!^=`''' || the field content does not start with any of the values ||
 || '''`!$=`''' || the field content does not end with any of the values ||
 
+Since 0.12, the date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by a semicolon (`;`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be left out to avoid having to quote the query string. 
+|| '''`created=2007-01-01;2008-01-01`''' || query tickets created in 2007 ||
+|| '''`created=lastmonth;thismonth`''' || query tickets created during the previous month ||
+|| '''`modified=1weekago;`''' || query tickets that have been modified in the last week ||
+|| '''`modified=;30daysago`''' || query tickets that have been inactive for the last 30 days ||
 
 ----
 See also: TracTickets, TracReports, TracGuide
