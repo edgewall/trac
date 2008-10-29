@@ -48,7 +48,7 @@ if twill:
         def __getattribute__(self, name):
             return getattr(twill.get_browser(), name)
         
-        def __setattr(self, name, value):
+        def __setattr__(self, name, value):
             setattr(twill.get_browser(), name, value)
             
     # setup short names to reduce typing
