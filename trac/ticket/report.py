@@ -614,7 +614,7 @@ class ReportModule(Component):
                 missing_args.append(aname)
             values.append(arg)
 
-        var_re = re.compile("[$]([A-Z]+)")
+        var_re = re.compile("[$]([A-Z_][A-Z0-9_]*)")
 
         # simple parameter substitution outside literal
         def repl(match):
