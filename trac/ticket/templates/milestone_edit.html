@@ -61,7 +61,7 @@
             <label>
               <input type="text" id="completeddate" name="completeddate"
                      size="${len(datetime_hint)}" title="Format: ${datetime_hint}"
-                     value="${format_date(milestone.completed)}" />
+                     value="${format_datetime(milestone.completed)}" />
               <em>Format: ${datetime_hint}</em>
             </label>
             <py:if test="milestones">
