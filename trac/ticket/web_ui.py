@@ -1067,7 +1067,7 @@ class TicketModule(Component):
     def _prepare_fields(self, req, ticket):
         context = Context.from_request(req, ticket.resource)
         fields = []
-        ownerField = None
+        owner_field = None
         for field in ticket.fields:
             name = field['name']
             type_ = field['type']
@@ -1082,7 +1082,7 @@ class TicketModule(Component):
                     field['label'] = 'Assign to'
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
-                        ownerField = field
+                        owner_field = field
             elif name == 'milestone':
                 milestones = [(opt, Milestone(self.env, opt))
                               for opt in field['options']]
@@ -1147,9 +1147,9 @@ class TicketModule(Component):
             fields.append(field)
         
         # Move owner field to end when shown
-        if ownerField is not None:
-            fields.remove(ownerField)
-            fields.append(ownerField)
+        if owner_field is not None:
+            fields.remove(owner_field)
+            fields.append(owner_field)
         return fields
         
     def _insert_ticket_data(self, req, ticket, data, author_id, field_changes):
