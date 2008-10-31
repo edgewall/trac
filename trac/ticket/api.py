@@ -27,7 +27,7 @@ from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
-from trac.util import Ranges, arity
+from trac.util import Ranges
 from trac.util.compat import set, sorted
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line, obfuscate_email_address
