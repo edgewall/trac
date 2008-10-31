@@ -24,7 +24,7 @@
         <py:choose>
           <p py:when="milestone.completed" class="date">
             Completed ${dateinfo(milestone.completed)} ago
-            (${format_date(milestone.completed)})
+            (${format_datetime(milestone.completed)})
           </p>
           <p py:when="milestone.is_late" class="date">
             <strong>${dateinfo(milestone.due)} late</strong>

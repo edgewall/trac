@@ -604,9 +604,11 @@ class ReportModule(Component):
     def sql_sub_vars(self, sql, args, db=None):
         if db is None:
             db = self.env.get_db_cnx()
+        names = set()
         values = []
         missing_args = []
         def add_value(aname):
+            names.add(aname)
             try:
                 arg = args[aname]
             except KeyError:
@@ -614,7 +616,7 @@ class ReportModule(Component):
                 missing_args.append(aname)
             values.append(arg)
 
-        var_re = re.compile("[$]([A-Z]+)")
+        var_re = re.compile("[$]([A-Z_][A-Z0-9_]*)")
 
         # simple parameter substitution outside literal
         def repl(match):
@@ -642,6 +644,10 @@ class ReportModule(Component):
                 sql_io.write(repl_literal(expr))
             else:
                 sql_io.write(var_re.sub(repl, expr))
+        
+        # Remove arguments that don't appear in the SQL query
+        for name in set(args) - names:
+            del args[name]
         return sql_io.getvalue(), values, missing_args
 
     def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',

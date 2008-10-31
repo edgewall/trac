@@ -100,9 +100,9 @@ class TimelineModule(Component):
             precision = req.args.get('precision', '')
             if precision.startswith('second'):
                 precision = timedelta(seconds=1)
-            elif precision.startswith('minutes'):
+            elif precision.startswith('minute'):
                 precision = timedelta(minutes=1)
-            elif precision.startswith('hours'):
+            elif precision.startswith('hour'):
                 precision = timedelta(hours=1)
             else:
                 precision = None

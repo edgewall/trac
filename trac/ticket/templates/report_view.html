@@ -31,11 +31,11 @@
             <tbody>
               <tr style="height: 1px"><td colspan="2"></td></tr>
             </tbody>
-            <tbody py:for="arg in args" py:if="arg != 'USER'">
+            <tbody py:for="(name, value) in args.iteritems()" py:if="name != 'USER'">
               <tr>
-                <th scope="row"><label>${arg}</label></th>
+                <th scope="row"><label>${name}</label></th>
                 <td class="filter">
-                  <input type="text" name="${arg}" value="${req.args[arg] or None}" size="42" />
+                  <input type="text" name="${name}" value="${value or None}" size="42" />
                 </td>
               </tr>
             </tbody>

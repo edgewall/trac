@@ -33,6 +33,13 @@ class ReportTestCase(unittest.TestCase):
         self.assertEqual(['value'], values)
         self.assertEqual([], missing_args)
 
+    def test_sub_var_digits_underscore(self):
+        sql, values, missing_args = self.report_module.sql_sub_vars(
+            "$_VAR, $VAR2, $2VAR", {'_VAR': 'value1', 'VAR2': 'value2'})
+        self.assertEqual("%s, %s, $2VAR", sql)
+        self.assertEqual(['value1', 'value2'], values)
+        self.assertEqual([], missing_args)
+        
     def test_sub_var_quotes(self):
         sql, values, missing_args = self.report_module.sql_sub_vars(
             "'$VAR'", {'VAR': 'value'})

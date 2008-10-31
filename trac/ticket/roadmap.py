@@ -549,8 +549,15 @@ class MilestoneModule(Component):
         add_link(req, 'up', req.href.roadmap(), _('Roadmap'))
 
         db = self.env.get_db_cnx() # TODO: db can be removed
-        milestone = Milestone(self.env, milestone_id, db)
         action = req.args.get('action', 'view')
+        try:
+            milestone = Milestone(self.env, milestone_id, db)
+        except ResourceNotFound:
+            if 'MILESTONE_CREATE' not in req.perm('milestone', milestone_id):
+                raise
+            milestone = Milestone(self.env, None, db)
+            milestone.name = milestone_id
+            action = 'edit' # rather than 'new' so that it works for POST/save
 
         if req.method == 'POST':
             if req.args.has_key('cancel'):
@@ -620,7 +627,7 @@ class MilestoneModule(Component):
                     # then an exception should have been raised
                     warn(_('Milestone "%(name)s" already exists, please '
                            'choose another name', name=new_name))
-            except TracError:
+            except ResourceNotFound:
                 pass
         else:
             warn(_('You must provide a name for the milestone.'))

@@ -917,6 +917,9 @@ class QueryModule(Component):
             orig_time = query_time
 
         context = Context.from_request(req, 'query')
+        owner_field = [f for f in query.fields if f['name'] == 'owner']
+        if owner_field:
+            TicketSystem(self.env).eventually_restrict_owner(owner_field[0])
         data = query.template_data(context, tickets, orig_list, orig_time, req)
 
         # For clients without JavaScript, we add a new constraint here if
