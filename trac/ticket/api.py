@@ -16,6 +16,10 @@
 
 import re
 from datetime import datetime
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 from genshi.builder import tag
 
@@ -157,6 +161,7 @@ class TicketSystem(Component):
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' % 
                 [c.__class__.__name__ for c in self.action_controllers])
+        self._fields_lock = threading.RLock()
 
     # Public API
 
@@ -185,6 +190,26 @@ class TicketSystem(Component):
 
     def get_ticket_fields(self):
         """Returns the list of fields available for tickets."""
+        # This is now cached - as it makes quite a number of things faster,
+        # e.g. #6436
+        if self._fields is None:
+            self._fields_lock.acquire()
+            try:
+                self._fields = self._get_ticket_fields()
+            finally:
+                self._fields_lock.release()
+        return [f.copy() for f in self._fields]
+
+    def reset_ticket_fields(self):
+        self._fields_lock.acquire()
+        try:
+            self._fields = None
+            self.config.touch() # brute force approach for now
+        finally:
+            self._fields_lock.release()
+
+    _fields = None
+    def _get_ticket_fields(self):
         from trac.ticket import model
 
         db = self.env.get_db_cnx()
@@ -250,6 +275,16 @@ class TicketSystem(Component):
         return fields
 
     def get_custom_fields(self):
+        if self._custom_fields is None:
+            self._fields_lock.acquire()
+            try:
+                self._custom_fields = self._get_custom_fields()
+            finally:
+                self._fields_lock.release()
+        return [f.copy() for f in self._custom_fields]
+
+    _custom_fields = None
+    def _get_custom_fields(self):
         fields = []
         config = self.config['ticket-custom']
         for name in [option for option, value in config.options()

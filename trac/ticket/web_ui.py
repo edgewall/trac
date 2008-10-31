@@ -1069,7 +1069,6 @@ class TicketModule(Component):
         fields = []
         owner_field = None
         for field in ticket.fields:
-            field = field.copy()
             name = field['name']
             type_ = field['type']
  
