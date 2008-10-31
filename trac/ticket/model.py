@@ -422,6 +422,7 @@ class AbstractEnum(object):
             db.commit()
         self.value = self._old_value = None
         self.name = self._old_name = None
+        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing %s' % self.type
@@ -447,6 +448,7 @@ class AbstractEnum(object):
             db.commit()
         self._old_name = self.name
         self._old_value = self.value
+        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent %s' % self.type
@@ -473,6 +475,7 @@ class AbstractEnum(object):
             db.commit()
         self._old_name = self.name
         self._old_value = self.value
+        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
@@ -560,6 +563,7 @@ class Component(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing component'
@@ -579,6 +583,7 @@ class Component(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent component'
@@ -604,6 +609,7 @@ class Component(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
@@ -684,6 +690,7 @@ class Milestone(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert self.name, 'Cannot create milestone with no name'
@@ -703,6 +710,7 @@ class Milestone(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.name, 'Cannot update milestone with no name'
@@ -728,6 +736,7 @@ class Milestone(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, include_completed=True, db=None):
@@ -790,6 +799,7 @@ class Version(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing version'
@@ -809,6 +819,7 @@ class Version(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent version'
@@ -834,6 +845,7 @@ class Version(object):
 
         if handle_ta:
             db.commit()
+        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):

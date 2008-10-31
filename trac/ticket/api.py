@@ -16,12 +16,16 @@
 
 import re
 from datetime import datetime
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
 
 from genshi.builder import tag
 
 from trac.config import *
 from trac.core import *
-from trac.perm import IPermissionRequestor, PermissionSystem, PermissionError
+from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
 from trac.util import Ranges
 from trac.util.datefmt import utc
@@ -156,6 +160,7 @@ class TicketSystem(Component):
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' % 
                 [c.__class__.__name__ for c in self.action_controllers])
+        self._fields_lock = threading.RLock()
 
     # Public API
 
@@ -184,6 +189,26 @@ class TicketSystem(Component):
 
     def get_ticket_fields(self):
         """Returns the list of fields available for tickets."""
+        # This is now cached - as it makes quite a number of things faster,
+        # e.g. #6436
+        if self._fields is None:
+            self._fields_lock.acquire()
+            try:
+                self._fields = self._get_ticket_fields()
+            finally:
+                self._fields_lock.release()
+        return [f.copy() for f in self._fields]
+
+    def reset_ticket_fields(self):
+        self._fields_lock.acquire()
+        try:
+            self._fields = None
+            self.config.touch() # brute force approach for now
+        finally:
+            self._fields_lock.release()
+
+    _fields = None
+    def _get_ticket_fields(self):
         from trac.ticket import model
 
         db = self.env.get_db_cnx()
@@ -194,16 +219,10 @@ class TicketSystem(Component):
             field = {'name': name, 'type': 'text', 'label': name.title()}
             fields.append(field)
 
-        # Owner field, can be text or drop-down depending on configuration
+        # Owner field, by default text but can be changed dynamically 
+        # into a drop-down depending on configuration (restrict_owner=true)
         field = {'name': 'owner', 'label': 'Owner'}
-        if self.restrict_owner:
-            field['type'] = 'select'
-            perm = PermissionSystem(self.env)
-            field['options'] = perm.get_users_with_permission('TICKET_MODIFY')
-            field['options'].sort()
-            field['optional'] = True
-        else:
-            field['type'] = 'text'
+        field['type'] = 'text'
         fields.append(field)
 
         # Description
@@ -261,6 +280,16 @@ class TicketSystem(Component):
         return fields
 
     def get_custom_fields(self):
+        if self._custom_fields is None:
+            self._fields_lock.acquire()
+            try:
+                self._custom_fields = self._get_custom_fields()
+            finally:
+                self._fields_lock.release()
+        return [f.copy() for f in self._custom_fields]
+
+    _custom_fields = None
+    def _get_custom_fields(self):
         fields = []
         config = self.config['ticket-custom']
         for name in [option for option, value in config.options()
@@ -292,6 +321,23 @@ class TicketSystem(Component):
         """Return a mapping from field name synonyms to field names.
         The synonyms are supposed to be more intuitive for custom queries."""
         return {'created': 'time', 'modified': 'changetime'}
+
+    def eventually_restrict_owner(self, field, ticket=None):
+        """Restrict given owner field to be a list of users having
+        the TICKET_MODIFY permission (for the given ticket)
+        """
+        if self.restrict_owner:
+            field['type'] = 'select'
+            possible_owners = []
+            for user in PermissionSystem(self.env) \
+                    .get_users_with_permission('TICKET_MODIFY'):
+                if not ticket or \
+                        'TICKET_MODIFY' in PermissionCache(self.env, user,
+                                                           ticket.resource):
+                    possible_owners.append(user)
+            possible_owners.sort()
+            field['options'] = possible_owners
+            field['optional'] = True
 
     # IPermissionRequestor methods
 
