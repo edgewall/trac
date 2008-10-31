@@ -1069,6 +1069,7 @@ class TicketModule(Component):
         fields = []
         owner_field = None
         for field in ticket.fields:
+            field = field.copy()
             name = field['name']
             type_ = field['type']
  
@@ -1077,6 +1078,8 @@ class TicketModule(Component):
                         'resolution'):
                 field['skip'] = True
             elif name == 'owner':
+                TicketSystem(self.env).eventually_restrict_owner(field, ticket)
+                type_ = field['type']
                 field['skip'] = True
                 if not ticket.exists:
                     field['label'] = 'Assign to'

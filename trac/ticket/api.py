@@ -21,9 +21,9 @@ from genshi.builder import tag
 
 from trac.config import *
 from trac.core import *
-from trac.perm import IPermissionRequestor, PermissionSystem, PermissionError
+from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
-from trac.util import Ranges
+from trac.util import Ranges, arity
 from trac.util.compat import set, sorted
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line, obfuscate_email_address
@@ -195,16 +195,10 @@ class TicketSystem(Component):
             field = {'name': name, 'type': 'text', 'label': name.title()}
             fields.append(field)
 
-        # Owner field, can be text or drop-down depending on configuration
+        # Owner field, by default text but can be changed dynamically 
+        # into a drop-down depending on configuration (restrict_owner=true)
         field = {'name': 'owner', 'label': 'Owner'}
-        if self.restrict_owner:
-            field['type'] = 'select'
-            perm = PermissionSystem(self.env)
-            field['options'] = perm.get_users_with_permission('TICKET_MODIFY')
-            field['options'].sort()
-            field['optional'] = True
-        else:
-            field['type'] = 'text'
+        field['type'] = 'text'
         fields.append(field)
 
         # Description
@@ -279,6 +273,23 @@ class TicketSystem(Component):
 
         fields.sort(lambda x, y: cmp(x['order'], y['order']))
         return fields
+
+    def eventually_restrict_owner(self, field, ticket=None):
+        """Restrict given owner field to be a list of users having
+        the TICKET_MODIFY permission (for the given ticket)
+        """
+        if self.restrict_owner:
+            field['type'] = 'select'
+            possible_owners = []
+            for user in PermissionSystem(self.env) \
+                    .get_users_with_permission('TICKET_MODIFY'):
+                if not ticket or \
+                        'TICKET_MODIFY' in PermissionCache(self.env, user,
+                                                           ticket.resource):
+                    possible_owners.append(user)
+            possible_owners.sort()
+            field['options'] = possible_owners
+            field['optional'] = True
 
     # IPermissionRequestor methods
 
