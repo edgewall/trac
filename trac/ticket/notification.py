@@ -22,7 +22,7 @@ from trac.config import *
 from trac.notification import NotifyEmail
 from trac.util import md5
 from trac.util.datefmt import to_timestamp
-from trac.util.text import CRLF, wrap, to_unicode
+from trac.util.text import CRLF, wrap, to_unicode, obfuscate_email_address
 
 from genshi.template.text import TextTemplate
 
@@ -82,7 +82,7 @@ class TicketNotifyEmail(NotifyEmail):
                 if not change['permanent']: # attachment with same time...
                     continue
                 change_data.update({
-                    'author': change['author'],
+                    'author': obfuscate_email_address(change['author']),
                     'comment': wrap(change['comment'], self.COLS, ' ', ' ',
                                     CRLF)
                     })
@@ -119,6 +119,9 @@ class TicketNotifyEmail(NotifyEmail):
                             changes_body += chgcc
                         self.prev_cc += old and self.parse_cc(old) or []
                     else:
+                        if field in ['owner', 'reporter']:
+                            old = obfuscate_email_address(old)
+                            new = obfuscate_email_address(new)
                         newv = new
                         l = 7 + len(field)
                         chg = wrap('%s => %s' % (old, new), self.COLS - l, '',
@@ -177,6 +180,8 @@ class TicketNotifyEmail(NotifyEmail):
             if not tkt.values.has_key(fname):
                 continue
             fval = tkt[fname]
+            if fname in ['owner', 'reporter']:
+                fval = obfuscate_email_address(fval)
             if f['type'] == 'textarea' or '\n' in unicode(fval):
                 big.append((fname.capitalize(), CRLF.join(fval.splitlines())))
             else:
@@ -197,8 +202,10 @@ class TicketNotifyEmail(NotifyEmail):
     def diff_cc(self, old, new):
         oldcc = NotifyEmail.addrsep_re.split(old)
         newcc = NotifyEmail.addrsep_re.split(new)
-        added = [x for x in newcc if x and x not in oldcc]
-        removed = [x for x in oldcc if x and x not in newcc]
+        added = [obfuscate_email_address(x) \
+                                for x in newcc if x and x not in oldcc]
+        removed = [obfuscate_email_address(x) \
+                                for x in oldcc if x and x not in newcc]
         return (added, removed)
 
     def format_hdr(self):
