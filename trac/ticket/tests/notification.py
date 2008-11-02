@@ -415,7 +415,7 @@ class NotificationTestCase(unittest.TestCase):
         """MIME None/ascii encoding"""
         self.env.config.set('notification','mime_encoding', 'none')
         ticket = Ticket(self.env)
-        ticket['reporter'] = 'joe.user@example.org'
+        ticket['reporter'] = 'joe.user'
         ticket['summary'] = u'This is a summary'
         ticket.insert()
         self._validate_mimebody((None, '7bit', 'ascii'), \
@@ -609,7 +609,11 @@ class NotificationTestCase(unittest.TestCase):
         # check banner content (field exists, msg value matches ticket value)
         for p in [prop for prop in ticket.values.keys() if prop not in xlist]:
             self.failIf(not props.has_key(p))
-            self.failIf(props[p] != ticket[p])
+            # Email addresses might be obfuscated
+            if '@' in ticket[p] and '@' in props[p]:
+                self.failIf(props[p].split('@')[0] != ticket[p].split('@')[0])
+            else:
+                self.failIf(props[p] != ticket[p])
 
 
 class NotificationTestSuite(unittest.TestSuite):
