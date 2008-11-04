@@ -276,9 +276,8 @@ class WikiModule(Component):
             page.save(get_reporter_id(req, 'author'),
                             req.args.get('comment'),
                             req.remote_addr)
-            not_modified = False
             req.redirect(get_resource_url(self.env, page.resource, req.href,
-                                          version=page.version))
+                                          version=None))
         except TracError:
             add_warning(req, _("Page not modified, showing latest version."))
             return self._render_view(req, page)
