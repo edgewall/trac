@@ -2,12 +2,7 @@
 
 Since version 0.9, Trac supports being run through the [http://www.fastcgi.com/ FastCGI] interface. Like [wiki:TracModPython mod_python], this allows Trac to remain resident, and is faster than external CGI interfaces which must start a new process for each request. However, unlike mod_python, it is able to support [http://httpd.apache.org/docs/suexec.html SuEXEC]. Additionally, it is supported by much wider variety of web servers.
 
-{{{
-#!html
-<p style="background: #fdc; border: 2px solid #d00; font-style: italic; padding: 0 .5em; margin: 1em 0;">
-<strong>Note for Windows:</strong> Trac's FCGI does not run under Windows, as Windows does not implement Socket.fromfd, which is used by _fcgi.py
-</p>
-}}}
+'''Note for Windows:''' Trac's FCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, your choice may be [Trac:TracOnWindowsIisAjp AJP].
 
 == Simple Apache configuration ==
 
@@ -84,12 +79,15 @@ The FastCGI front-end was developed primarily for use with alternative webserver
 lighttpd is a secure, fast, compliant and very flexible web-server that has been optimized for high-performance
 environments.  It has a very low memory footprint compared to other web servers and takes care of CPU load.
 
-For using `trac.fcgi` with lighttpd add the following to your lighttpd.conf:
+For using `trac.fcgi`(prior to 0.11) / fcgi_frontend.py (0.11) with lighttpd add the following to your lighttpd.conf:
 {{{
+#var.fcgi_binary="/path/to/fcgi_frontend.py" # 0.11 if installed with easy_setup, it is inside the egg directory
+var.fcgi_binary="/path/to/cgi-bin/trac.fcgi" # 0.10 name of prior fcgi executable
 fastcgi.server = ("/trac" =>
+   
                    ("trac" =>
                      ("socket" => "/tmp/trac-fastcgi.sock",
-                      "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                      "bin-path" => fcgi_binary,
                       "check-local" => "disable",
                       "bin-environment" =>
                         ("TRAC_ENV" => "/path/to/projenv")
@@ -107,7 +105,7 @@ For using two projects with lighttpd add the following to your `lighttpd.conf`:
 fastcgi.server = ("/first" =>
                    ("first" =>
                     ("socket" => "/tmp/trac-fastcgi-first.sock",
-                     "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                     "bin-path" => fcgi_binary,
                      "check-local" => "disable",
                      "bin-environment" =>
                        ("TRAC_ENV" => "/path/to/projenv-first")
@@ -116,7 +114,7 @@ fastcgi.server = ("/first" =>
                   "/second" =>
                     ("second" =>
                     ("socket" => "/tmp/trac-fastcgi-second.sock",
-                     "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                     "bin-path" => fcgi_binary,
                      "check-local" => "disable",
                      "bin-environment" =>
                        ("TRAC_ENV" => "/path/to/projenv-second")
@@ -130,10 +128,8 @@ variables in the `.fcgi` scripts, then copy/rename `trac.fcgi`, e.g., to
 Note that the above will result in different processes in any event, even
 if both are running from the same `trac.fcgi` script.
 {{{
-#!html
-<p style="background: #fdc; border: 2px solid #d00; font-style: italic; padding: 0 .5em; margin: 1em 0;">
-<strong>Note from c00i90wn:</strong> It's very important the order on which server.modules are loaded, if mod_auth is not loaded <strong>BEFORE</strong> mod_fastcgi, then the server will fail to authenticate the user.
-</p>
+#!div class=important
+'''Note''' It's very important the order on which server.modules are loaded, if mod_auth is not loaded '''BEFORE''' mod_fastcgi, then the server will fail to authenticate the user.
 }}}
 For authentication you should enable mod_auth in lighttpd.conf 'server.modules', select auth.backend and auth rules:
 {{{
@@ -192,7 +188,7 @@ $HTTP["url"] =~ "^/trac(?!/chrome/common)" {
 fastcgi.server = ("/trac" =>
                    ("trac" =>
                      ("socket" => "/tmp/trac-fastcgi.sock",
-                      "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                      "bin-path" => fcgi_binary,
                       "check-local" => "disable",
                       "bin-environment" =>
                         ("TRAC_ENV" => "/path/to/projenv")
@@ -211,7 +207,7 @@ Also there is another way to handle multiple projects and it's to use TRAC_ENV_P
                       ("trac" =>
                         (
                           "socket" => "/tmp/trac.sock",
-                          "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                          "bin-path" => fcgi_binary,
                           "check-local" => "disable",
                           "bin-environment" =>
                             ("TRAC_ENV_PARENT_DIR" => "/path/to/parent/dir/of/projects/" )
@@ -237,7 +233,7 @@ Changing date/time format also supported by lighttpd over environment variable L
 fastcgi.server = ("/trac" =>
                    ("trac" =>
                      ("socket" => "/tmp/trac-fastcgi.sock",
-                      "bin-path" => "/path/to/cgi-bin/trac.fcgi",
+                      "bin-path" => fcgi_binary,
                       "check-local" => "disable",
                       "bin-environment" =>
                         ("TRAC_ENV" => "/path/to/projenv",

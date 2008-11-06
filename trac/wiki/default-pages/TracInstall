@@ -69,8 +69,9 @@ To install Trac, the following software packages must be installed:
 
 ==== Web Server ====
  * A CGI-capable web server (see TracCgi), or
- * a [http://fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
- * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI])
+ * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
+ * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web server (see Trac:TracOnWindowsIisAjp), or
+ * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI] or http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac)
     * This should work with Apache 1.3, 2.0 or 2.2 and promises to deliver more performance than using mod_python. A little less mature than mod_python.
  * [http://httpd.apache.org/ Apache] with [http://modpython.org/ mod_python 3.1.3+] (see TracModPython)
     * When installing mod_python the development versions of Python and Apache are required (actually the libraries and header files)
@@ -172,7 +173,13 @@ $ tracd -s --port 8000 /path/to/myproject
 
 Trac provides three options for connecting to a "real" web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_python.
 
-If you're not afraid of running development code, you can also try running Trac on [wiki:TracModWSGI mod_wsgi]. This should deliver even better performance than mod_python, but the module is not considered stable just yet.
+If you're not afraid of running newer code, you can also try running Trac on [wiki:TracModWSGI mod_wsgi]. This should deliver even better performance than mod_python, but the module isn't as extensively tested as mod_python.
+
+Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS.
+
+==== Setting up the Plugin Cache ====
+
+Some Python plugins need to be extracted to a cache directory. By default the cache resides in the home directory of the current user. When running Trac on a Web Server as a dedicated user (which is highly recommended) who has no home directory, this might prevent the plugins from starting. To override the cache location you can set the PYTHON_EGG_CACHE environment variable. Refer to your server documentation for detailed instructions.
 
 == Configuring Authentication ==
 

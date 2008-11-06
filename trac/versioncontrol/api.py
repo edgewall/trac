@@ -139,7 +139,7 @@ class RepositoryManager(Component):
                         raise TracError(
                             _('Unsupported version control system "%(name)s"'
                               ': "%(error)s" ', name=self.repository_type, 
-                              error=connector.error))
+                              error=to_unicode(connector.error)))
                     self._connector = connector
                 else:
                     raise TracError(
