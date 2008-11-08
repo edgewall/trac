@@ -1044,6 +1044,16 @@ term::definition
 </blockquote>
 ------------------------------
 term::definition
+============================== Pathological definition list counter example with block quotes
+ {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}} {{{a}}}
+------------------------------
+<blockquote>
+<p>
+<tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt>
+</p>
+</blockquote>
+------------------------------
+<tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt> <tt>a</tt>
 ============================== Definition list + escaped definition list
  complex topic:: multiline
                  `not:: a dl`
