@@ -26,7 +26,6 @@ from StringIO import StringIO
 
 from genshi.builder import tag, Element
 from genshi.core import Stream, Markup, escape
-from genshi.filters import HTMLSanitizer
 from genshi.input import HTMLParser, ParseError
 from genshi.util import plaintext
 
@@ -38,6 +37,7 @@ from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util.text import shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
+from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _
 
 __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
@@ -88,8 +88,7 @@ class WikiProcessor(object):
                               'span': self._span_processor,
                               'Span': self._span_processor}
 
-        self._sanitizer = HTMLSanitizer(safe_attrs=HTMLSanitizer.SAFE_ATTRS |
-                                        set(['style']))
+        self._sanitizer = TracHTMLSanitizer()
         
         self.processor = builtin_processors.get(name)
         if not self.processor:
