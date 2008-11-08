@@ -35,7 +35,7 @@ To install Trac, the following software packages must be installed:
 === For SQLite ===
 
  * [http://www.sqlite.org/ SQLite], version 3.3.4 and above preferred.
- * If not using Python-2.5: [http://pysqlite.org/ PySQLite], version 1.x (for SQLite 2.x) or version 2.x (for SQLite 3.x), version 2.3.2 preferred. For details see PySqlite
+ * If not using Python-2.5: [http://pysqlite.org/ PySQLite], version 1.x (for SQLite 2.x) or version 2.x (for SQLite 3.x), version 2.3.2 preferred. For details see [trac:PySqlite PySqlite]
 
 ''Note: It appears that PySQLite 2.x is required if you plan to use the 'trac-post-commit-hook.py' script available from the 'contrib' section of the source repository.''
 
@@ -50,7 +50,7 @@ To install Trac, the following software packages must be installed:
 
 === For MySQL ===
 
-'''Warning''': MySQL support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See MySqlDb for more detailed information.
+'''Warning''': MySQL support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See [trac:MySqlDb MySqlDb] for more detailed information.
 
  * [http://mysql.com/ MySQL], version 4.1 or later
  * [http://sf.net/projects/mysql-python MySQLdb], version 1.2.2 or later
@@ -61,17 +61,16 @@ To install Trac, the following software packages must be installed:
 
 '''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently not supported.
 
- * [http://subversion.tigris.org/ Subversion], version >= 1.0. (versions recommended: 1.2.4, 1.3.2 or 1.4.2) and the '''''corresponding''''' Python bindings. For troubleshooting, check TracSubversion
+ * [http://subversion.tigris.org/ Subversion], version >= 1.0. (versions recommended: 1.2.4, 1.3.2 or 1.4.2) and the '''''corresponding''''' Python bindings. For troubleshooting, check [trac:TracSubversion TracSubversion]
    * Trac uses the [http://svnbook.red-bean.com/svnbook-1.1/ch08s02.html#svn-ch-8-sect-2.3 SWIG] bindings included in the Subversion distribution, '''not''' [http://pysvn.tigris.org/ PySVN] (which is sometimes confused with the standard SWIG bindings).
    * If Subversion was already installed without the SWIG bindings, on Unix you'll need to re-`configure` Subversion and `make swig-py`, `make install-swig-py`.
    * There are [http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=91 pre-compiled bindings] available for win32. 
- * Support for other version control systems is provided via third-parties. See PluginList and VersioningSystemBackend.
+ * Support for other version control systems is provided via third-parties. See [trac:PluginList PluginList] and [trac:VersioningSystemBackend VersioningSystemBackend].
 
 ==== Web Server ====
  * A CGI-capable web server (see TracCgi), or
- * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
- * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web server (see Trac:TracOnWindowsIisAjp), or
- * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI] or http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac)
+ * a [http://fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
+ * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI])
     * This should work with Apache 1.3, 2.0 or 2.2 and promises to deliver more performance than using mod_python. A little less mature than mod_python.
  * [http://httpd.apache.org/ Apache] with [http://modpython.org/ mod_python 3.1.3+] (see TracModPython)
     * When installing mod_python the development versions of Python and Apache are required (actually the libraries and header files)
@@ -85,7 +84,7 @@ For those stuck with Apache 1.3, it is also possible to get Trac working with [h
     * Note that !SilverCity 0.9.6 has a [http://sourceforge.net/tracker/index.php?func=detail&aid=1424436&group_id=45693&atid=443739 bug] that breaks Python syntax highlighting in Trac. Until an update is made available, we recommend using version 0.9.5.
  * [http://pytz.sf.net pytz] to get a complete list of time zones, otherwise Trac will fall back on a shorter list from an internal time zone implementation.
 
-'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the MailingList or IrcChannel.
+'''Attention''': The various available versions of these dependencies are not necessarily interchangable, so please pay attention to the version numbers above. If you are having trouble getting Trac to work please double-check all the dependencies before asking for help on the [trac:MailingList MailingList] or [trac:IrcChannel IrcChannel].
 
 Please refer to the documentation of these packages to find out how they are best installed. In addition, most of the [wiki:TracInstallPlatforms platform-specific instructions] also describe the installation of the dependencies. Keep in mind however that the information there ''probably concern older versions of Trac than the one you're installing''.
 
@@ -173,13 +172,7 @@ $ tracd -s --port 8000 /path/to/myproject
 
 Trac provides three options for connecting to a "real" web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_python.
 
-If you're not afraid of running newer code, you can also try running Trac on [wiki:TracModWSGI mod_wsgi]. This should deliver even better performance than mod_python, but the module isn't as extensively tested as mod_python.
-
-Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS.
-
-==== Setting up the Plugin Cache ====
-
-Some Python plugins need to be extracted to a cache directory. By default the cache resides in the home directory of the current user. When running Trac on a Web Server as a dedicated user (which is highly recommended) who has no home directory, this might prevent the plugins from starting. To override the cache location you can set the PYTHON_EGG_CACHE environment variable. Refer to your server documentation for detailed instructions.
+If you're not afraid of running development code, you can also try running Trac on [wiki:TracModWSGI mod_wsgi]. This should deliver even better performance than mod_python, but the module is not considered stable just yet.
 
 == Configuring Authentication ==
 
@@ -191,7 +184,7 @@ The process of adding, removing, and configuring user accounts for authenticatio
 
 == Trac 0.11 & SVN on Mac OS X Leopard (10.5) ==
 
- * TracOnLeopardServer
+ * [trac:TracOnLeopardServer TracOnLeopardServer]
 
 == Using Trac ==
 
@@ -201,7 +194,7 @@ Keep in mind that anonymous (not logged in) users can by default access most but
 
 '' Enjoy! ''
 
-[wiki:TracTeam The Trac Team]
+[trac:TracTeam The Trac Team]
 
 ----
 See also:  TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions

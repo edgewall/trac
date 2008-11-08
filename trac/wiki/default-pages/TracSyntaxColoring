@@ -19,7 +19,7 @@ If neither package is available, Trac will display the data as plain text.
 
 '''Note:''' Enscript supports a greater number of languages, however !SilverCity is generally faster since it is a library and isn't executed in an external process.
 
-=== About SilverCity ===
+=== About !SilverCity ===
 !SilverCity uses the lexer from [http://www.scintilla.org/ Scintilla]. Scintilla supports more languages than !SilverCity implements. If you want to add a language to !SilverCity supported by Scintilla, it's not very difficult. See [http://trac.edgewall.org/wiki/SilverCityAddLanguage SilverCityAddLanguage] for some information how.
 
 === About Pygments ===

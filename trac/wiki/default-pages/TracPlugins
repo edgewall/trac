@@ -1,7 +1,7 @@
 = Trac Plugins =
 [[TracGuideToc]]
 
-Since version 0.9, Trac supports [PluginList plugins] that extend the built-in functionality. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture].
+Since version 0.9, Trac supports [trac:PluginList plugins] that extend the built-in functionality. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture].
 
 == Requirements ==
 
@@ -123,11 +123,11 @@ or (for mod_python):
  </Location>
 }}}
 
- ''Note: SetEnv requires the `mod_env` module which needs to be activated for Apache. In this case the SetEnv directive can also be used in the `mod_python` Location block.''
+ ''Note: !SetEnv requires the `mod_env` module which needs to be activated for Apache. In this case the !SetEnv directive can also be used in the `mod_python` Location block.''
 
 For [wiki:TracFastCgi FastCGI], you'll need to `-initial-env` option, or whatever is provided by your web server for setting environment variables. 
 
- ''Note: that if you already use -initial-env to set the project directory for either a single project or parent you will need to add an additional -initial-env directive to the FastCgiConfig directive. I.e.
+ ''Note: that if you already use -initial-env to set the project directory for either a single project or parent you will need to add an additional -initial-env directive to the !FastCgiConfig directive. I.e.
 
 {{{
 FastCgiConfig -initial-env TRAC_ENV=/var/lib/trac -initial-env PYTHON_EGG_CACHE=/var/lib/trac/plugin-cache
@@ -172,7 +172,7 @@ Enable [wiki:TracLogging logging] and set the log level to `DEBUG`, then watch t
 
 === Verify you have proper permissions ===
 
-Some plugins require you have special permissions in order to use them. WebAdmin, for example, requires the user to have TRAC_ADMIN permissions for it to show up on the navigation bar.
+Some plugins require you have special permissions in order to use them. [trac:WebAdmin WebAdmin], for example, requires the user to have TRAC_ADMIN permissions for it to show up on the navigation bar.
 
 === Is the wrong version of the plugin loading? ===
 
@@ -184,7 +184,7 @@ If you put your plugins inside plugins directories, and certainly if you have mo
 
 === If all of the above failed ===
 
-OK, so the logs don't mention plugins, the egg is readable, the python version is correct ''and'' the egg has been installed globally (and is enabled in the trac.ini) and it still doesn't work or give any error messages or any other indication as to why? Hop on the IrcChannel and ask away.
+OK, so the logs don't mention plugins, the egg is readable, the python version is correct ''and'' the egg has been installed globally (and is enabled in the trac.ini) and it still doesn't work or give any error messages or any other indication as to why? Hop on the [trac:IrcChannel IrcChannel] and ask away.
 
 ----
 See also TracGuide, [trac:PluginList plugin list], [trac:TracDev/ComponentArchitecture component architecture]

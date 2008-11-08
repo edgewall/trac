@@ -9,7 +9,7 @@ If your encoding is not UTF-8, you can use [wiki:TracModPython mod_python] to ha
    default_charset = gbk
 in trac.ini.
 
-You also must make sure that your [wiki:DatabaseBackend database backend] stores its data in UTF-8; otherwise strange things will happen.
+You also must make sure that your [trac:DatabaseBackend database backend] stores its data in UTF-8; otherwise strange things will happen.
 
 To convert your database to UTF-8, the easiest way is to dump the database, convert the dump into UTF-8 and then import the converted dump back into the database.[[BR]]
 You can use [http://www.gnu.org/software/libiconv/documentation/libiconv/iconv.1.html iconv] to convert the dump.
