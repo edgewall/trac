@@ -45,7 +45,7 @@ Which is displayed as:
 
 === Using the `[[TicketQuery]]` Macro ===
 
-The TicketQuery macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
+The [trac:TicketQuery TicketQuery] macro lets you display lists of tickets matching certain criteria anywhere you can use WikiFormatting.
 
 Example:
 {{{

@@ -2,7 +2,7 @@
 
 Since version 0.9, Trac supports being run through the [http://www.fastcgi.com/ FastCGI] interface. Like [wiki:TracModPython mod_python], this allows Trac to remain resident, and is faster than external CGI interfaces which must start a new process for each request. However, unlike mod_python, it is able to support [http://httpd.apache.org/docs/suexec.html SuEXEC]. Additionally, it is supported by much wider variety of web servers.
 
-'''Note for Windows:''' Trac's FCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, your choice may be [Trac:TracOnWindowsIisAjp AJP].
+'''Note for Windows:''' Trac's FCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, your choice may be [trac:TracOnWindowsIisAjp AJP].
 
 == Simple Apache configuration ==
 
@@ -242,7 +242,7 @@ fastcgi.server = ("/trac" =>
                    )
                  )
 }}}
-For details about languages specification see TracFaq question 2.13.
+For details about languages specification see [trac:TracFaq TracFaq] question 2.13.
 
 Other important information like [http://trac.lighttpd.net/trac/wiki/TracInstall this updated TracInstall page], [wiki:TracCgi#MappingStaticResources and this] are useful for non-fastcgi specific installation aspects.
 
@@ -255,11 +255,11 @@ Note about running lighttpd with reduced permissions:
   If nothing else helps and trac.fcgi doesn't start with lighttpd settings __server.username = "www-data"__, __server.groupname = "www-data"__, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
 
 
-== Simple LiteSpeed Configuration ==
+== Simple !LiteSpeed Configuration ==
 
 The FastCGI front-end was developed primarily for use with alternative webservers, such as [http://www.litespeedtech.com/ LiteSpeed].
 
-LiteSpeed web server is an event-driven asynchronous Apache replacement designed from the ground-up to be secure, scalable, and operate with minimal resources. LiteSpeed can operate directly from an Apache config file and is targeted for business-critical environments.
+!LiteSpeed web server is an event-driven asynchronous Apache replacement designed from the ground-up to be secure, scalable, and operate with minimal resources. !LiteSpeed can operate directly from an Apache config file and is targeted for business-critical environments.
 
 Setup
 
@@ -316,7 +316,7 @@ url = http://yourdomain.com/trac/      <--- link of project
 link = http://yourdomain.com/trac/     <--- link of graphic logo
 }}}
 
-7) Restart LiteSpeed, “lswsctrl restart”, and access your new Trac project at: 
+7) Restart !LiteSpeed, “lswsctrl restart”, and access your new Trac project at: 
 
 {{{
 http://yourdomain.com/trac/
@@ -424,14 +424,14 @@ The above assumes that:
  * /home/trac/htpasswd contains authentication information
  * /home/trac/run is owned by the same group the nginx runs under
   * and if your system is Linux the /home/trac/run has setgid bit set (chmod g+s run)
-  * and patch from ticket #7239 is applied, or you'll have to fix the socket file permissions every time
+  * and patch from ticket #T7239 is applied, or you'll have to fix the socket file permissions every time
 
 Unfortunately nginx does not support variable expansion in fastcgi_pass directive. 
 Thus it is not possible to serve multiple trac instances from one server block. 
 
 If you worry enough about security, run trac instances under separate users. 
 
-Another way to run trac as a FCGI external application is offered in ticket #6224
+Another way to run trac as a FCGI external application is offered in ticket #T6224
 
 ----
-See also TracCgi, TracModPython, TracInstall, TracGuide, [Trac:TracNginxRecipe]
+See also TracCgi, TracModPython, TracInstall, TracGuide, [trac:TracNginxRecipe TracNginxRecipe]

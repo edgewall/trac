@@ -1,6 +1,6 @@
 = Support for InterWiki links =
 
-''(since [milestone:0.10])''
+''(since [trac:milestone:0.10 0.10])''
 
 == Definition ==
 
@@ -10,7 +10,7 @@ located in any other Web application, provided a simple URL
 mapping can be done.
 
 At the extreme, InterWiki prefixes can even be used to simply introduce
-links to new protocols, such as `tsvn:` used by TortoiseSvn.
+links to new protocols, such as `tsvn:` used by [trac:TortoiseSvn TortoiseSvn].
 
 == Link Syntax ==
 

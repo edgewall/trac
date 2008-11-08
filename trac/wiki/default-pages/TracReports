@@ -241,7 +241,7 @@ SELECT p.value AS __color__,
 
 If you have added custom fields to your tickets (a feature since v0.8, see TracTicketsCustomFields), you can write a SQL query to cover them. You'll need to make a join on the ticket_custom table, but this isn't especially easy.
 
-If you have tickets in the database ''before'' you declare the extra fields in trac.ini, there will be no associated data in the ticket_custom table. To get around this, use SQL's "LEFT OUTER JOIN" clauses. See TracIniReportCustomFieldSample for some examples.
+If you have tickets in the database ''before'' you declare the extra fields in trac.ini, there will be no associated data in the ticket_custom table. To get around this, use SQL's "LEFT OUTER JOIN" clauses. See [trac:TracIniReportCustomFieldSample TracIniReportCustomFieldSample] for some examples.
 
 '''Note that you need to set up permissions in order to see the buttons for adding or editing reports.'''
 

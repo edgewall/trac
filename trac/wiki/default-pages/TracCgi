@@ -4,7 +4,7 @@ To install Trac as a CGI script, you need to make the `trac.cgi` executable as a
 
 {{{
 #!div class=important
-  ''Please note that using Trac via CGI is significantly slower than any other deployment method, such as [TracModPython mod_python] or [TracFastCgi FastCGI] or even [Trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''
+  ''Please note that using Trac via CGI is significantly slower than any other deployment method, such as [TracModPython mod_python] or [TracFastCgi FastCGI] or even [trac:TracOnWindowsIisAjp IIS/AJP] on Windows.''
 }}}
 
 If you're using [http://httpd.apache.org/ Apache HTTPD], there are a couple ways to do that:

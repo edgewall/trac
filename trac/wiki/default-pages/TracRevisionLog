@@ -83,9 +83,9 @@ changeset will be shown (same effect as clicking on column 5).
 
 == Alternative Formats ==
 
-=== The ChangeLog Text ===
+=== The !ChangeLog Text ===
 
-At the bottom of the page, there's a ''ChangeLog'' link
+At the bottom of the page, there's a ''!ChangeLog'' link
 that will show the range of revisions as currently shown,
 but as a simple text, matching the usual conventions for
 !ChangeLog files.

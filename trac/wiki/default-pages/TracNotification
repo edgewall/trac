@@ -142,7 +142,7 @@ The trouble is that a regular user may connect to the SMTP server, but the web s
 sudo -u www-data telnet localhost 25
 }}}
 
-In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help browsing the Trac MailingList archive.
+In such a case, you need to configure your server so that the web server is authorized to post to the SMTP server. The actual settings depend on your Linux distribution and current security policy. You may find help browsing the Trac [trac:MailingList MailingList] archive.
 
 Relevant ML threads:
  * SELinux: http://article.gmane.org/gmane.comp.version-control.subversion.trac.general/7518

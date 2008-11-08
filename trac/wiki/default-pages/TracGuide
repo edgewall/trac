@@ -31,12 +31,12 @@ Currently available documentation:
      * TracReports -- Writing and using reports.
      * TracQuery -- Executing custom ticket queries.
      * TracRoadmap -- The roadmap helps tracking project progress.
- * [Trac:TracFaq Trac FAQ] - A collection of Frequently Asked Questions (on the project website).
+ * [trac:TracFaq Trac FAQ] - A collection of Frequently Asked Questions (on the project website).
 
 == Support and Other Sources of Information ==
 If you are looking for a good place to ask a question about Trac, look no further than the [http://trac.edgewall.org/wiki/MailingList MailingList]. It provides a friendly environment to discuss openly among Trac users and developers.
 
 See also the TracSupport page for more information resources.
 
-Finally, developer documentation can be found in [Trac:TracDev] and its sub-pages.
+Finally, developer documentation can be found in [trac:TracDev TracDev] and its sub-pages.
 
