@@ -18,6 +18,8 @@ from genshi.core import stripentities, striptags, START, END
 from genshi.builder import Element, ElementFactory, Fragment
 from genshi.filters.html import HTMLSanitizer
 
+from trac.util.compat import set
+
 __all__ = ['escape', 'unescape', 'html', 'plaintext', 'TracHTMLSanitizer']
 
 
