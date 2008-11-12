@@ -5,23 +5,26 @@
     var message = null;
     var message_rev = null;
   
-    /* for each blame cell containing a changeset link... */
-    var rev_paths = {};
-    $("table.code th.blame a").each(function() {
-      href = $(this).attr("href");
-      $(this).removeAttr("href");
-      rev_href = href.substr(href.indexOf("changeset/") + 10);
-      elts = rev_href.split("/");
-      var path = elts.slice(1).join("/");
-      if (path != original_path)
-        rev_paths["r"+elts[0]] = path;
-    });
-  
     /* for each blame cell... */
+    var path = null;
     $("table.code th.blame").each(function() {
-      var rev = $(this).attr("class").split(" ")[1]; // "blame r123"
-      var path = rev_paths[rev] || original_path; // only found if != orig
-  
+      // determine path from the changeset link
+      var a = $(this).find("a");
+      var href = a.attr("href");
+      if ( ! (href || path) )
+        return; // was "Rev" column title
+      
+      if ( href ) {
+        a.removeAttr("href");
+        var sep = href.slice(href.indexOf("changeset/") + 10).indexOf("/");
+        if ( sep > 0 )
+          path = elts.slice(sep+1);
+        else
+          path = original_path;
+      }
+
+      // determine rev from th class, which is of the form "blame r123"
+      var rev = $(this).attr("class").split(" ")[1];
       if (!rev)
         return;
   
