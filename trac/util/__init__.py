@@ -171,10 +171,18 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
                     remove_if_overwriting(dstname)
                     shutil.copy2(srcname, dstname)
                 # XXX What about devices, sockets etc.?
-            except EnvironmentError, why:
-                errors.append((srcname, dstname, why))
+            except (IOError, OSError), why:
+                errors.append((srcname, dstname, str(why)))
+            # catch the Error from the recursive copytree so that we can
+            # continue with other files
+            except shutil.Error, err:
+                errors.extend(err.args[0])
+        try:
+            shutil.copystat(src, dst)
+        except OSError, why:
+            errors.append((src, dst, str(why)))
         if errors:
-            raise shutil.Error, errors
+            raise shutil.Error(errors)
     copytree_rec(str_path(src), str_path(dst))
 
 

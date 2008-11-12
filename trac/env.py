@@ -30,7 +30,7 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
 from trac.util import arity, copytree, get_pkginfo, makedirs
-from trac.util.text import printout
+from trac.util.text import printerr, printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
@@ -654,6 +654,7 @@ class EnvironmentAdmin(Component):
         if os.path.exists(dest):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
                               dest=dest))
+        import shutil
 
         # Bogus statement to lock the database while copying files
         cnx = self.env.get_db_cnx()
@@ -671,12 +672,24 @@ class EnvironmentAdmin(Component):
                 skip = [db + '-journal', db + '-stmtjrnl']
             else:
                 skip = []
-            copytree(self.env.path, dest, symlinks=1, skip=skip)
+            try:
+                copytree(self.env.path, dest, symlinks=1, skip=skip)
+                retval = 0
+            except shutil.Error, e:
+                retval = 1
+                printerr(_('The following errors happened while copying '
+                           'the environment:'))
+                for (src, dst, err) in e.args[0]:
+                    if src in err:
+                        printerr('  %s' % err)
+                    else:
+                        printerr("  %s: '%s'" % (err, src))
         finally:
             # Unlock database
             cnx.rollback()
 
         printout(_("Hotcopy done."))
+        return retval
     
     def _do_upgrade(self, no_backup=None):
         if no_backup not in (None, '-b', '--no-backup'):
