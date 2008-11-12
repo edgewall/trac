@@ -4,6 +4,7 @@ trac-admin - The Trac Administration Console %(version)s
 Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
 
 Invoking trac-admin without command starts interactive mode.
+
 help
 	-- Show documentation
 
@@ -13,80 +14,62 @@ initenv
 initenv <projectname> <db> <repostype> <repospath>
 	-- Create and initialize a new environment from arguments
 
-hotcopy <backupdir>
-	-- Make a hot backup copy of an environment
+component add <name> <owner>
+	-- Add a new component
 
-resync
-	-- Re-synchronize trac with the repository
+component chown <name> <owner>
+	-- Change component ownership
 
-resync <rev>
-	-- Re-synchronize only the given <rev>
+component list
+	-- Show available components
 
-upgrade
-	-- Upgrade database to current version
+component remove <name>
+	-- Remove/uninstall a component
 
-deploy <directory>
-	-- Extract static resources from Trac and all plugins.
+component rename <name> <newname>
+	-- Rename a component
 
 config get <section> <option>
 	-- Get the value of the given option in "trac.ini"
 
-config set <section> <option> <value>
-	-- Set the value for the given option in "trac.ini"
-
 config remove <section> <option>
 	-- Remove the specified option from "trac.ini"
 
-permission list [user]
-	-- List permission rules
+config set <section> <option> <value>
+	-- Set the value for the given option in "trac.ini"
+
+deploy <directory>
+	-- Extract static resources from Trac and all plugins.
+
+hotcopy <backupdir>
+	-- Make a hot backup copy of an environment
+
+milestone add <name> [due]
+	-- Add milestone
+
+milestone completed <name> <completed>
+	-- Set milestone completed date (Format: "YYYY-MM-DD", "now" or "")
+
+milestone due <name> <due>
+	-- Set milestone due date (Format: "YYYY-MM-DD", "now" or "")
+
+milestone list
+	-- Show milestones
+
+milestone remove <name>
+	-- Remove milestone
+
+milestone rename <name> <newname>
+	-- Rename milestone
 
 permission add <user> <action> [action] [...]
 	-- Add a new permission rule
 
+permission list [user]
+	-- List permission rules
+
 permission remove <user> <action> [action] [...]
-	-- Remove permission rule
-
-wiki list
-	-- List wiki pages
-
-wiki remove <page>
-	-- Remove wiki page
-
-wiki export <page> [file]
-	-- Export wiki page to file or stdout
-
-wiki import <page> [file]
-	-- Import wiki page from file or stdin
-
-wiki dump <directory>
-	-- Export all wiki pages to files named by title
-
-wiki load <directory>
-	-- Import all wiki pages from directory
-
-wiki upgrade
-	-- Upgrade default wiki pages to current version
-
-ticket remove <number>
-	-- Remove ticket
-
-ticket_type list
-	-- Show possible ticket types
-
-ticket_type add <value>
-	-- Add a ticket type
-
-ticket_type change <value> <newvalue>
-	-- Change a ticket type
-
-ticket_type remove <value>
-	-- Remove a ticket type
-
-ticket_type order <value> up|down
-	-- Move a ticket type up or down in the list
-
-priority list
-	-- Show possible ticket priorities
+	-- Remove a permission rule
 
 priority add <value>
 	-- Add a priority value option
@@ -94,77 +77,14 @@ priority add <value>
 priority change <value> <newvalue>
 	-- Change a priority value
 
-priority remove <value>
-	-- Remove priority value
+priority list
+	-- Show possible ticket priorities
 
 priority order <value> up|down
 	-- Move a priority value up or down in the list
 
-severity list
-	-- Show possible ticket severities
-
-severity add <value>
-	-- Add a severity value option
-
-severity change <value> <newvalue>
-	-- Change a severity value
-
-severity remove <value>
-	-- Remove severity value
-
-severity order <value> up|down
-	-- Move a severity value up or down in the list
-
-component list
-	-- Show available components
-
-component add <name> <owner>
-	-- Add a new component
-
-component rename <name> <newname>
-	-- Rename a component
-
-component remove <name>
-	-- Remove/uninstall component
-
-component chown <name> <owner>
-	-- Change component ownership
-
-version list
-	-- Show versions
-
-version add <name> [time]
-	-- Add version
-
-version rename <name> <newname>
-	-- Rename version
-
-version time <name> <time>
-	-- Set version date (Format: "YYYY-MM-DD", "now" or "")
-
-version remove <name>
-	-- Remove version
-
-milestone list
-	-- Show milestones
-
-milestone add <name> [due]
-	-- Add milestone
-
-milestone rename <name> <newname>
-	-- Rename milestone
-
-milestone due <name> <due>
-	-- Set milestone due date (Format: "YYYY-MM-DD", "now" or "")
-
-milestone completed <name> <completed>
-	-- Set milestone completed date (Format: "YYYY-MM-DD", "now" or "")
-
-milestone remove <name>
-	-- Remove milestone
-
-resolution list
-	-- Show possible ticket resolutions
+priority remove <value>
+	-- Remove a priority value
 
 resolution add <value>
 	-- Add a resolution value option
@@ -172,11 +92,92 @@ resolution add <value>
 resolution change <value> <newvalue>
 	-- Change a resolution value
 
-resolution remove <value>
-	-- Remove resolution value
+resolution list
+	-- Show possible ticket resolutions
 
 resolution order <value> up|down
 	-- Move a resolution value up or down in the list
+
+resolution remove <value>
+	-- Remove a resolution value
+
+resync
+	-- Re-synchronize trac with the repository
+
+resync <rev>
+	-- Re-synchronize only the given <rev>
+
+severity add <value>
+	-- Add a severity value option
+
+severity change <value> <newvalue>
+	-- Change a severity value
+
+severity list
+	-- Show possible ticket severities
+
+severity order <value> up|down
+	-- Move a severity value up or down in the list
+
+severity remove <value>
+	-- Remove a severity value
+
+ticket remove <number>
+	-- Remove ticket
+
+ticket_type add <value>
+	-- Add a ticket type
+
+ticket_type change <value> <newvalue>
+	-- Change a ticket type
+
+ticket_type list
+	-- Show possible ticket types
+
+ticket_type order <value> up|down
+	-- Move a ticket type up or down in the list
+
+ticket_type remove <value>
+	-- Remove a ticket type
+
+upgrade
+	-- Upgrade database to current version
+
+version add <name> [time]
+	-- Add version
+
+version list
+	-- Show versions
+
+version remove <name>
+	-- Remove version
+
+version rename <name> <newname>
+	-- Rename version
+
+version time <name> <time>
+	-- Set version date (Format: "YYYY-MM-DD", "now" or "")
+
+wiki dump <directory>
+	-- Export all wiki pages to files named by title
+
+wiki export <page> [file]
+	-- Export wiki page to file or stdout
+
+wiki import <page> [file]
+	-- Import wiki page from file or stdin
+
+wiki list
+	-- List wiki pages
+
+wiki load <directory>
+	-- Import all wiki pages from directory
+
+wiki remove <page>
+	-- Remove wiki page
+
+wiki upgrade
+	-- Upgrade default wiki pages to current version
 
 ===== test_config_get =====
 Test project

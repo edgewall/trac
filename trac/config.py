@@ -15,8 +15,9 @@
 from ConfigParser import ConfigParser
 import os
 
-from trac.core import ExtensionPoint, TracError
-from trac.util.text import to_unicode, CRLF
+from trac.admin import IAdminCommandProvider
+from trac.core import *
+from trac.util.text import printout, to_unicode, CRLF
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
            'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
@@ -496,3 +497,43 @@ class OrderedExtensionsOption(ListOption):
             return cmp(order.index(x), order.index(y))
         components.sort(compare)
         return components
+
+
+class ConfigurationAdmin(Component):
+    """Component representing the project configuration administration."""
+    
+    implements(IAdminCommandProvider)
+    
+    # IAdminCommandProvider methods
+    
+    def get_admin_commands(self):
+        yield ('config get', '<section> <option>',
+               'Get the value of the given option in "trac.ini"',
+               self._complete_config, self._do_get)
+        yield ('config remove', '<section> <option>',
+               'Remove the specified option from "trac.ini"',
+               self._complete_config, self._do_remove)
+        yield ('config set', '<section> <option> <value>',
+               'Set the value for the given option in "trac.ini"',
+               self._complete_config, self._do_set)
+    
+    def _complete_config(self, args):
+        if len(args) == 1:
+            return self.config.sections()
+        elif len(args) == 2:
+            return [name for (name, value) in self.config[args[0]].options()]
+
+    def _do_get(self, section, option):
+        printout(self.config.get(section, option))
+        
+    def _do_set(self, section, option, value):
+        self.config.set(section, option, value)
+        self.config.save()
+        if section == 'inherit' and option == 'file':
+            self.config.parse_if_needed()   # Full reload
+
+    def _do_remove(self, section, option):
+        self.config.remove(section, option)
+        self.config.save()
+        if section == 'inherit' and option == 'file':
+            self.config.parse_if_needed()   # Full reload

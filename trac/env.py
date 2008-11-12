@@ -14,7 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
-import os
+import os.path
 try:
     import threading
 except ImportError:
@@ -24,11 +24,13 @@ import sys
 from urlparse import urlsplit
 
 from trac import db_default
+from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
-from trac.util import get_pkginfo
+from trac.util import arity, copytree, get_pkginfo, makedirs
+from trac.util.text import printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
@@ -588,3 +590,110 @@ def open_environment(env_path=None, use_cache=False):
                               path=env_path))
 
     return env
+
+
+class EnvironmentAdmin(Component):
+    """Component representing the project environment administration."""
+    
+    implements(IAdminCommandProvider)
+    
+    # IAdminCommandProvider methods
+    
+    def get_admin_commands(self):
+        yield ('deploy', '<directory>',
+               'Extract static resources from Trac and all plugins.',
+               None, self._do_deploy)
+        yield ('hotcopy', '<backupdir>',
+               'Make a hot backup copy of an environment',
+               None, self._do_hotcopy)
+        yield ('upgrade', '',
+               'Upgrade database to current version',
+               None, self._do_upgrade)
+    
+    def _do_deploy(self, dest):
+        target = os.path.normpath(dest)
+        chrome_target = os.path.join(target, 'htdocs')
+        script_target = os.path.join(target, 'cgi-bin')
+
+        # Copy static content
+        makedirs(target, overwrite=True)
+        makedirs(chrome_target, overwrite=True)
+        from trac.web.chrome import Chrome
+        printout(_("Copying resources from:"))
+        for provider in Chrome(self.env).template_providers:
+            paths = list(provider.get_htdocs_dirs())
+            if not len(paths):
+                continue
+            printout('  %s.%s' % (provider.__module__, 
+                                  provider.__class__.__name__))
+            for key, root in paths:
+                source = os.path.normpath(root)
+                printout('   ', source)
+                if os.path.exists(source):
+                    dest = os.path.join(chrome_target, key)
+                    copytree(source, dest, overwrite=True)
+
+        # Create and copy scripts
+        makedirs(script_target, overwrite=True)
+        printout(_("Creating scripts."))
+        data = {'env': self.env, 'executable': sys.executable}
+        for script in ('cgi', 'fcgi', 'wsgi'):
+            dest = os.path.join(script_target, 'trac.' + script)
+            template = Chrome(self.env).load_template('deploy_trac.' + script,
+                                                      'text')
+            stream = template.generate(**data)
+            out = open(dest, 'w')
+            if arity(stream.render) == 3:
+                # TODO: remove this when we depend on Genshi >= 0.5
+                out.write(stream.render('text'))
+            else:
+                stream.render('text', out=out)
+            out.close()
+    
+    def _do_hotcopy(self, dest):
+        if os.path.exists(dest):
+            raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
+                              dest=dest))
+
+        # Bogus statement to lock the database while copying files
+        cnx = self.env.get_db_cnx()
+        cursor = cnx.cursor()
+        cursor.execute("UPDATE system SET name=NULL WHERE name IS NULL")
+
+        try:
+            printout(_('Hotcopying %(src)s to %(dst)s ...', 
+                       src=self.env.path, dst=dest))
+            db_str = self.env.config.get('trac', 'database')
+            prefix, db_path = db_str.split(':', 1)
+            if prefix == 'sqlite':
+                # don't copy the journal (also, this would fail on Windows)
+                db = os.path.join(self.env.path, os.path.normpath(db_path))
+                skip = [db + '-journal', db + '-stmtjrnl']
+            else:
+                skip = []
+            copytree(self.env.path, dest, symlinks=1, skip=skip)
+        finally:
+            # Unlock database
+            cnx.rollback()
+
+        printout(_("Hotcopy done."))
+    
+    def _do_upgrade(self, no_backup=None):
+        if no_backup not in (None, '-b', '--no-backup'):
+            raise AdminCommandError(_("Invalid arguments"), show_usage=True)
+        
+        if not self.env.needs_upgrade():
+            printout(_("Database is up to date, no upgrade necessary."))
+            return
+
+        try:
+            self.env.upgrade(backup=no_backup is None)
+        except TracError, e:
+            msg = unicode(e)
+            if 'backup' in msg:
+                raise TracError(_("Backup failed with '%(msg)s'.\nUse "
+                                  "'--no-backup' to upgrade without doing a "
+                                  "backup.", msg=msg))
+            else:
+                raise
+        printout(_("Upgrade done."))
