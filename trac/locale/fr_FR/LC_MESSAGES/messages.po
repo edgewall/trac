@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the Trac project.
 # Emmanuel Blot <emmanuel.blot@free.fr>, 2007.
 # Christian Boos <cboos@neuf.fr>, 2008.
+# Michel Briand <michelbriand@free.fr>, 2008.
 #
 msgid ""
 msgstr ""
@@ -97,7 +98,7 @@ msgid "Invalid attachment: %(message)s"
 msgstr "Fichier joint invalide : %(message)s"
 
 #: trac/attachment.py:602
-#, fuzzy, python-format
+#, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (suppression)"
 
@@ -351,7 +352,6 @@ msgstr "Description :"
 #: trac/admin/templates/admin_milestones.html:124
 #: trac/admin/templates/admin_plugins.html:102
 #: trac/admin/templates/admin_versions.html:94
-#, fuzzy
 msgid "Apply changes"
 msgstr "Enregistrer les changements"
 
@@ -787,7 +787,6 @@ msgstr "Raccourcis Clavier"
 
 #: trac/prefs/web_ui.py:93
 #: trac/prefs/templates/prefs_language.html:9
-#, fuzzy
 msgid "Language"
 msgstr "Langues"
 
@@ -954,7 +953,6 @@ msgid "Language:"
 msgstr "Langues"
 
 #: trac/prefs/templates/prefs_language.html:16
-#, fuzzy
 msgid "default language"
 msgstr "Langue par défaut (anglais)"
 
@@ -1193,7 +1191,6 @@ msgid "Replace existing attachment of the same name"
 msgstr "Remplacer tout fichier joint existant avec un fichier homonyme"
 
 #: trac/templates/attachment.html:48
-#, fuzzy
 msgid "Add attachment"
 msgstr "Joindre un fichier à"
 
@@ -1377,7 +1374,6 @@ msgstr ""
 "{{{"
 
 #: trac/templates/error.html:84
-#, fuzzy
 msgid "Create"
 msgstr "Créer"
 
@@ -1439,7 +1435,6 @@ msgstr ""
 "l'équipe de développement de Trac"
 
 #: trac/templates/error.html:126
-#, fuzzy
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:searching]\n"
@@ -1527,7 +1522,6 @@ msgstr "Historique des modification pour"
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:162
-#, fuzzy
 msgid "View changes"
 msgstr "Enregistrer les changements"
 
@@ -1703,7 +1697,6 @@ msgid "s:"
 msgstr "s :"
 
 #: trac/templates/macros.html:242
-#, fuzzy
 msgid "Total"
 msgstr "Total"
 
@@ -1712,7 +1705,6 @@ msgid "Search:"
 msgstr "Recherche :"
 
 #: trac/templates/theme.html:37
-#, fuzzy
 msgid "Context Navigation"
 msgstr "Consultation des Tickets"
 
@@ -1725,17 +1717,15 @@ msgid "Warnings:"
 msgstr "Alertes :"
 
 #: trac/templates/theme.html:57
-#, fuzzy
 msgid "Notice:"
 msgstr "Note :"
 
 #: trac/templates/theme.html:60
-#, fuzzy
 msgid "Notices:"
 msgstr "Notes :"
 
 #: trac/ticket/admin.py:87
-#, fuzzy, python-format
+#, python-format
 msgid "Component %(name)s already exists."
 msgstr "Composant %(name)s existe déjà."
 
@@ -1753,7 +1743,7 @@ msgid "Invalid Completion Date"
 msgstr "Date de fin invalide"
 
 #: trac/ticket/admin.py:185
-#, fuzzy, python-format
+#, python-format
 msgid "Milestone %(name)s already exists."
 msgstr "Jalon %(name)s existe déjà."
 
@@ -1762,7 +1752,7 @@ msgid "No milestone selected"
 msgstr "Pas de jalon sélectionné"
 
 #: trac/ticket/admin.py:267
-#, fuzzy, python-format
+#, python-format
 msgid "Version %(name)s already exists."
 msgstr "Version %(name)s existe déjà."
 
@@ -1771,12 +1761,12 @@ msgid "No version selected"
 msgstr "Pas de version sélectionné"
 
 #: trac/ticket/admin.py:348
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s %(name)s already exists"
 msgstr "%(type)s %(name)s existe déjà"
 
 #: trac/ticket/admin.py:354
-#, fuzzy, python-format
+#, python-format
 msgid "No %s selected"
 msgstr "Pas de %s sélectionné"
 
@@ -1790,7 +1780,7 @@ msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "Commentaire %(cnum)s pour le Ticket #%(id)s"
 
 #: trac/ticket/api.py:383
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "Ticket #%(shortname)s"
 
@@ -1809,7 +1799,7 @@ msgstr "Le ticket sera réaffecté"
 
 #: trac/ticket/default_workflow.py:251
 #: trac/ticket/default_workflow.py:261
-#, fuzzy, python-format
+#, python-format
 msgid "The owner will change to %(name)s"
 msgstr "Le propriétaire changera pour %(name)s"
 
@@ -1818,7 +1808,7 @@ msgid "to "
 msgstr "ā"
 
 #: trac/ticket/default_workflow.py:273
-#, fuzzy, python-format
+#, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "La résolution sera définie à %(name)s"
 
@@ -1827,7 +1817,7 @@ msgid "The resolution will be set"
 msgstr "La résolution sera définie"
 
 #: trac/ticket/default_workflow.py:288
-#, fuzzy, python-format
+#, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Le prochain status sera '%(name)s'"
 
@@ -1836,17 +1826,17 @@ msgid "Multi-values fields not supported yet"
 msgstr "Champs à valeurs multiples non supportés"
 
 #: trac/ticket/model.py:363
-#, fuzzy, python-format
+#, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s n'existe pas"
 
 #: trac/ticket/model.py:507
-#, fuzzy, python-format
+#, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Composant %(name)s n'existe pas."
 
 #: trac/ticket/model.py:737
-#, fuzzy, python-format
+#, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Version %(name)s n'existe pas"
 
@@ -1963,7 +1953,7 @@ msgid "No results"
 msgstr "Aucun résultat"
 
 #: trac/ticket/query.py:1114
-#, fuzzy, python-format
+#, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "Tickets de %(groupname)s %(groupvalue)s :"
 
@@ -2092,37 +2082,32 @@ msgid "Ticket details"
 msgstr "Toutes modifications des tickets"
 
 #: trac/ticket/web_ui.py:210
-#, fuzzy
 msgid "created"
 msgstr "créé"
 
 #: trac/ticket/web_ui.py:211
-#, fuzzy
 msgid "reopened"
 msgstr "réouvert"
 
 #: trac/ticket/web_ui.py:212
-#, fuzzy
 msgid "closed"
 msgstr "fermé"
 
 #: trac/ticket/web_ui.py:213
-#, fuzzy
 msgid "updated"
 msgstr "modifié"
 
 #: trac/ticket/web_ui.py:309
-#, fuzzy, python-format
+#, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "Le ticket %(ticketref)s (%(summary)s) a été %(verb)s"
 
 #: trac/ticket/web_ui.py:437
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid action \"%(name)s\""
 msgstr "Action invalide \"%(name)s\""
 
 #: trac/ticket/web_ui.py:548
-#, fuzzy
 msgid "Back to Query"
 msgstr "Retour à"
 
@@ -2132,7 +2117,6 @@ msgid "Ticket History"
 msgstr "Historique des Tickets"
 
 #: trac/ticket/web_ui.py:673
-#, fuzzy
 msgid "No differences to show"
 msgstr "Pas de différences"
 
@@ -2154,7 +2138,6 @@ msgstr "initial"
 #: trac/ticket/web_ui.py:778
 #: trac/versioncontrol/web_ui/changeset.py:342
 #: trac/wiki/web_ui.py:374
-#, fuzzy
 msgid "Change"
 msgstr "Modifications"
 
@@ -2203,12 +2186,10 @@ msgid "Assign to"
 msgstr "Assigner à :"
 
 #: trac/ticket/web_ui.py:1059
-#, fuzzy
 msgid "Open"
 msgstr "Ouvert"
 
 #: trac/ticket/web_ui.py:1060
-#, fuzzy
 msgid "Closed"
 msgstr "Termé"
 
@@ -2301,12 +2282,10 @@ msgstr "Mettre à jour les tickets ouverts associés au jalon"
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
-#, fuzzy
 msgid "Submit changes"
 msgstr "Enregistrer"
 
 #: trac/ticket/templates/milestone_edit.html:90
-#, fuzzy
 msgid "Add milestone"
 msgstr "Ajouter un Jalon :"
 
@@ -2354,12 +2333,10 @@ msgid "by"
 msgstr "par"
 
 #: trac/ticket/templates/milestone_view.html:58
-#, fuzzy
 msgid "(none)"
 msgstr "Aucun"
 
 #: trac/ticket/templates/milestone_view.html:87
-#, fuzzy
 msgid "Edit milestone"
 msgstr "Edition du Jalon"
 
@@ -2404,14 +2381,12 @@ msgid "Max items per page"
 msgstr "Nombre maximum d'objets par page"
 
 #: trac/ticket/templates/query.html:214
-#, fuzzy
 msgid "Edit query"
-msgstr "requête :"
+msgstr "Editer la requête :"
 
 #: trac/ticket/templates/query.html:222
-#, fuzzy
 msgid "Save query"
-msgstr "requête :"
+msgstr "Enregistrer la requête :"
 
 #: trac/ticket/templates/query.html:222
 #, python-format
@@ -2445,7 +2420,6 @@ msgid "Reported by"
 msgstr "Rapporté par"
 
 #: trac/ticket/templates/query_results.html:76
-#, fuzzy
 msgid "(this ticket)"
 msgstr "(futur ticket)"
 
@@ -2505,21 +2479,18 @@ msgid "expression)"
 msgstr "expression)"
 
 #: trac/ticket/templates/report_edit.html:41
-#, fuzzy
 msgid "Save report"
-msgstr "Voir le rapport"
+msgstr "Sauvegarder le rapport"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
 msgstr "correspondantes)"
 
 #: trac/ticket/templates/report_view.html:27
-#, fuzzy
 msgid "Edit report"
-msgstr "Voir le rapport"
+msgstr "Editer le rapport"
 
 #: trac/ticket/templates/report_view.html:33
-#, fuzzy
 msgid "Copy report"
 msgstr "Voir le rapport"
 
@@ -2533,7 +2504,6 @@ msgid "View report"
 msgstr "Voir le rapport"
 
 #: trac/ticket/templates/report_view.html:160
-#, fuzzy
 msgid "Create new report"
 msgstr "Création d'un Nouveau Rapport"
 
@@ -2554,7 +2524,6 @@ msgstr ""
 "                ("
 
 #: trac/ticket/templates/roadmap.html:67
-#, fuzzy
 msgid "Add new milestone"
 msgstr "Nouveau Jalon"
 
@@ -2705,7 +2674,6 @@ msgstr "Joindre des fichiers à ce ticket"
 
 #: trac/ticket/templates/ticket.html:388
 #: trac/wiki/templates/wiki_edit.html:124
-#, fuzzy
 msgid "Preview"
 msgstr "Aperçu :"
 
@@ -2788,27 +2756,25 @@ msgid "Can't synchronize with the repository (%(error)s)"
 msgstr "Impossible de se synchroniser avec le dépôt (%(error)s)"
 
 #: trac/versioncontrol/api.py:96
-#, fuzzy, python-format
+#, python-format
 msgid "Changeset %(rev)s"
 msgstr "Révision %(rev)s"
 
 #: trac/versioncontrol/api.py:103
-#, fuzzy
 msgid "Directory"
 msgstr "Répertoire parent"
 
 #: trac/versioncontrol/api.py:107
-#, fuzzy, python-format
+#, python-format
 msgid "at version %(rev)s"
 msgstr "à la version %(rev)s"
 
 #: trac/versioncontrol/api.py:109
-#, fuzzy
 msgid "Path"
 msgstr "Chemin"
 
 #: trac/versioncontrol/api.py:131
-#, fuzzy, python-format
+#, python-format
 msgid "Unsupported version control system \"%(name)s\". Check that the Python support libraries for \"%(name)s\" are correctly installed."
 msgstr "Le système de contrôle de version \"%(name)s\\ n'est pas supporté\". Les librairies Python pour \"%(name)s\" sont-elles correctement installées ?"
 
@@ -2863,7 +2829,7 @@ msgid "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)
 msgstr "Discordance de comparaison : La Base est %(oldnode)s (%(oldpath)s dans la révision %(oldrev)s) et la Destination est %(newnode)s (%(newpath)s dans la révision %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:803
-#, fuzzy, python-format
+#, python-format
 msgid "svn blame failed: %(error)s"
 msgstr "Echec du svn blame: %(error)s"
 
@@ -2876,7 +2842,6 @@ msgid "Visit:"
 msgstr "Explorer :"
 
 #: trac/versioncontrol/templates/browser.html:63
-#, fuzzy
 msgid "Go!"
 msgstr "Changer"
 
@@ -2924,7 +2889,6 @@ msgid "for help on using the browser."
 msgstr "pour de l'aide sur l'utilisation du Navigateur"
 
 #: trac/versioncontrol/templates/browser.html:153
-#, fuzzy
 msgid "View changes..."
 msgstr "Enregistrer les changements"
 
@@ -3280,13 +3244,13 @@ msgid "Login"
 msgstr "Connexion"
 
 #: trac/web/auth.py:137
-#, fuzzy, python-format
+#, python-format
 msgid "Already logged in as %(user)s."
 msgstr "Connecté en tant qu'utilisateur %(user)s"
 
 #: trac/web/chrome.py:160
 #: trac/web/chrome.py:168
-#, fuzzy, python-format
+#, python-format
 msgid "Previous %(label)s"
 msgstr "Précédent %(label)s"
 
@@ -3301,7 +3265,7 @@ msgid "no permission to view this wiki page"
 msgstr "pas le droit de voir cette page wiki"
 
 #: trac/wiki/formatter.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "HTML parsing error: %(message)s"
 msgstr "Page Wiki invalide : %(message)s"
 
@@ -3352,7 +3316,7 @@ msgid "Page not modified, showing latest version."
 msgstr "Page inchangée, version précédente affichée."
 
 #: trac/wiki/web_ui.py:303
-#, fuzzy, python-format
+#, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "La version %(num)s de la page %(name)s n'existe pas"
 
@@ -3361,9 +3325,8 @@ msgid "Page history"
 msgstr "Historique de la page"
 
 #: trac/wiki/web_ui.py:374
-#, fuzzy
 msgid "Wiki History"
-msgstr "Historique des Tickets"
+msgstr "Historique de la page"
 
 #: trac/wiki/web_ui.py:439
 #, python-format
@@ -3377,9 +3340,8 @@ msgstr "La page %(name)s est introuvable"
 
 #: trac/wiki/web_ui.py:510
 #: trac/wiki/web_ui.py:519
-#, fuzzy
 msgid "View Latest Version"
-msgstr "Explorer cette version"
+msgstr "Voir la dernière version"
 
 #: trac/wiki/web_ui.py:539
 msgid "Start Page"
@@ -3434,7 +3396,6 @@ msgid "Editing"
 msgstr "Edition"
 
 #: trac/wiki/templates/wiki_edit.html:30
-#, fuzzy
 msgid "Someone else has modified that page since you started your edits."
 msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
 
@@ -3472,7 +3433,6 @@ msgstr ""
 "toute dernière version de cette page"
 
 #: trac/wiki/templates/wiki_edit.html:39
-#, fuzzy
 msgid "Someone else modified that page since you started your edits."
 msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
 
@@ -3518,19 +3478,16 @@ msgid "Page is read-only"
 msgstr "La page est en lecture seule"
 
 #: trac/wiki/templates/wiki_edit.html:125
-#, fuzzy
 msgid "Merge changes"
-msgstr "Enregistrer les changements"
+msgstr "Joindre les changements"
 
 #: trac/wiki/templates/wiki_edit.html:129
-#, fuzzy
 msgid "Preview Page"
 msgstr "Aperçu ("
 
 #: trac/wiki/templates/wiki_edit.html:130
-#, fuzzy
 msgid "Review Changes"
-msgstr "Enregistrer les changements"
+msgstr "Voir les changements"
 
 #: trac/wiki/templates/wiki_view.html:39
 msgid "Describe"
