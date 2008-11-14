@@ -319,13 +319,22 @@ class MilestoneAdminPanel(TicketAdminPanel):
                'Rename milestone',
                self._complete_name, self._do_rename)
         yield ('milestone due', '<name> <due>',
-               'Set milestone due date (Format: "%s", "now" or "")'
-               % console_date_format_hint,
+               """Set milestone due date
+               
+               The <due> date must be specified in the "%s" format.
+               Alternatively, "now" can be used to set the due date to the
+               current time. To remove the due date from a milestone, specify
+               an empty string ("").
+               """ % console_date_format_hint,
                self._complete_name, self._do_due)
         yield ('milestone completed', '<name> <completed>',
-               'Set milestone completed date '
-               '(Format: "%s", "now" or "")'
-               % console_date_format_hint,
+               """Set milestone complete date
+               
+               The <completed> date must be specified in the "%s" format.
+               Alternatively, "now" can be used to set the completion date to
+               the current time. To remove the completion date from a
+               milestone, specify an empty string ("").
+               """ % console_date_format_hint,
                self._complete_name, self._do_completed)
         yield ('milestone remove', '<name>',
                'Remove milestone',
@@ -474,8 +483,13 @@ class VersionAdminPanel(TicketAdminPanel):
                'Rename version',
                self._complete_name, self._do_rename)
         yield ('version time', '<name> <time>',
-               'Set version date (Format: "%s", "now" or "")'
-               % console_date_format_hint,
+               """Set version date
+               
+               The <time> must be specified in the "%s" format. Alternatively,
+               "now" can be used to set the version date to the current time.
+               To remove the date from a version, specify an empty string
+               ("").
+               """ % console_date_format_hint,
                self._complete_name, self._do_time)
         yield ('version remove', '<name>',
                'Remove version',

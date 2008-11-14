@@ -140,52 +140,77 @@ Type:  '?' or 'help' for help on commands.
     def word_complete(self, text, words):
         words = list(set(a for a in words if a.startswith(text)))
         if len(words) == 1:
-            return [words[0] + ' ']     # Only one choice, skip to next arg
+            words[0] += ' '     # Only one choice, skip to next arg
         return words
 
     def path_complete(self, text, words):
         words = list(set(a for a in words if a.startswith(text)))
         if len(words) == 1 and not os.path.isdir(words[0]):
-            return [words[0] + ' ']
+            words[0] += ' '
         return words
-        
+    
+    @staticmethod
+    def split_help_text(text):
+        import re
+        paragraphs = re.split(r'(?m)(?:^[ \t]*\n){1,}', text)
+        return [re.sub(r'(?m)\s+', ' ', each.strip())
+                for each in paragraphs]
+    
     @classmethod
-    def print_doc(cls, docs, stream=None):
+    def print_doc(cls, docs, stream=None, short=False, long=False):
         if stream is None:
             stream = sys.stdout
-        if not docs: return
-        for cmd, doc in docs:
-            if doc:
-                console_print(stream, cmd)
-                console_print(stream, '\t-- %s\n' % doc)
+        docs = [doc for doc in docs if doc[2]]
+        if not docs:
+            return
+        if short:
+            max_len = max(len(doc[0]) for doc in docs)
+            for (cmd, args, doc) in docs:
+                paragraphs = cls.split_help_text(doc)
+                console_print(stream, '%s  %s' % (cmd.ljust(max_len), 
+                                                  paragraphs[0]))
+        else:
+            import textwrap
+            for (cmd, args, doc) in docs:
+                paragraphs = cls.split_help_text(doc)
+                console_print(stream, '%s %s\n' % (cmd, args))
+                console_print(stream, '    %s\n' % paragraphs[0])
+                if (long or len(docs) == 1) and len(paragraphs) > 1:
+                    for paragraph in paragraphs[1:]:
+                        console_print(stream, textwrap.fill(paragraph, 79, 
+                            initial_indent='    ', subsequent_indent='    ')
+                            + '\n')
 
     ##
     ## Command dispatcher
     ##
     
-    def completenames(self, text, line, begidx, endidx):
-        names = cmd.Cmd.completenames(self, text, line, begidx, endidx)
-        cmd_mgr = AdminCommandManager(self.env_open())
-        names.extend(cmd_mgr.get_commands())
-        return self.word_complete(text, names)
-        
-    def completedefault(self, text, line, begidx, endidx):
+    def complete_line(self, text, line, cmd_only=False):
         args = self.arg_tokenize(line)
-        if line[-1] == ' ':     # Space starts new argument
+        if line and line[-1] == ' ':    # Space starts new argument
             args.append('')
         cmd_mgr = AdminCommandManager(self.env_open())
         try:
-            comp = cmd_mgr.complete_command(args)
+            comp = cmd_mgr.complete_command(args, cmd_only)
         except Exception, e:
             printerr()
             printerr(_('Completion error:'), e)
             # Uncomment the following line to get the full traceback
 #            traceback.print_exc()
             return []
+        if len(args) == 1:
+            comp.extend(name[3:] for name in self.get_names()
+                        if name.startswith('do_'))
         if isinstance(comp, PathList):
             return self.path_complete(text, comp)
         else:
             return self.word_complete(text, comp)
+        
+    def completenames(self, text, line, begidx, endidx):
+        return self.complete_line(text, line, True)
+        
+    def completedefault(self, text, line, begidx, endidx):
+        return self.complete_line(text, line)
         
     def default(self, line):
         args = self.arg_tokenize(line)
@@ -197,7 +222,7 @@ Type:  '?' or 'help' for help on commands.
     ##
 
     ## Help
-    _help_help = [('help', 'Show documentation')]
+    _help_help = [('help', '', 'Show documentation')]
 
     @classmethod
     def all_docs(cls, env=None):
@@ -206,17 +231,21 @@ Type:  '?' or 'help' for help on commands.
             docs.extend(AdminCommandManager(env).get_command_help())
         return docs
 
+    def complete_help(self, text, line, begidx, endidx):
+        return self.complete_line(text, line[5:], True)
+        
     def do_help(self, line=None):
         arg = self.arg_tokenize(line)
         if arg[0]:
             doc = getattr(self, "_help_" + arg[0], None)
             if doc is None and self.envname is not None:
                 cmd_mgr = AdminCommandManager(self.env_open())
-                doc = cmd_mgr.get_command_help(' '.join(arg))
-            if doc is not None:
+                doc = cmd_mgr.get_command_help(arg)
+            if doc:
                 self.print_doc(doc)
             else:
-                printerr(_("No documentation found for '%(cmd)s'", cmd=arg[0]))
+                printerr(_("No documentation found for '%(cmd)s'",
+                           cmd=' '.join(arg)))
         else:
             printout(_("trac-admin - The Trac Administration Console "
                        "%(version)s", version=TRAC_VERSION))
@@ -228,11 +257,11 @@ Type:  '?' or 'help' for help on commands.
                 printout(_("Invoking trac-admin without command starts "
                            "interactive mode.\n"))
             env = (self.envname is not None) and self.env_open() or None
-            self.print_doc(self.all_docs(env))
+            self.print_doc(self.all_docs(env), short=True)
 
 
     ## Quit / EOF
-    _help_quit = [['quit', 'Exit the program']]
+    _help_quit = [('quit', '', 'Exit the program')]
     _help_exit = _help_quit
     _help_EOF = _help_quit
 
@@ -245,10 +274,18 @@ Type:  '?' or 'help' for help on commands.
 
 
     ## Initenv
-    _help_initenv = [('initenv',
-                      'Create and initialize a new environment interactively'),
-                     ('initenv <projectname> <db> <repostype> <repospath>',
-                      'Create and initialize a new environment from arguments')]
+    _help_initenv = [
+        ('initenv', '[<projectname> <db> <repostype> <repospath>]',
+         """Create and initialize a new environment
+         
+         If no arguments are given, then the required parameters are requested
+         interactively.
+         
+         An optional argument --inherit can be used to specify the "[inherit]
+         file" option at environment creation time so that only the options
+         not already specified in the global configuration file are written to
+         the conf/trac.ini file of the newly created environment.
+         """)]
 
     def do_initdb(self, line):
         self.do_initenv(line)
@@ -428,22 +465,17 @@ class TracAdminHelpMacro(WikiMacroBase):
 
     def expand_macro(self, formatter, name, content):
         if content:
-            arg = content.split(' ', 1)[0]
-            doc = getattr(TracAdmin, "_help_" + arg, None)
+            arg = content.strip().split()
+            doc = getattr(TracAdmin, "_help_" + arg[0], None)
             if doc is None:
                 cmd_mgr = AdminCommandManager(self.env)
                 doc = cmd_mgr.get_command_help(arg)
-            if doc is None:
+            if not doc:
                 raise TracError('Unknown trac-admin command "%s"' % content)
-            if arg != content:
-                for cmd, help in doc:
-                    if cmd.startswith(content):
-                        doc = [(cmd, help)]
-                        break
         else:
             doc = TracAdmin.all_docs(self.env)
         buf = StringIO.StringIO()
-        TracAdmin.print_doc(doc, buf)
+        TracAdmin.print_doc(doc, buf, long=True)
         return html.PRE(buf.getvalue(), class_='wiki')
 
 
@@ -464,7 +496,7 @@ def run(args=None):
     admin = TracAdmin()
     if len(args) > 0:
         if args[0] in ('-h', '--help', 'help'):
-            return admin.onecmd('help')
+            return admin.onecmd(' '.join(['help'] + args[1:]))
         elif args[0] in ('-v','--version'):
             printout(os.path.basename(sys.argv[0]), TRAC_VERSION)
         else:

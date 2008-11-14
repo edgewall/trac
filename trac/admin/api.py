@@ -79,36 +79,28 @@ class AdminCommandManager(Component):
     
     providers = ExtensionPoint(IAdminCommandProvider)
     
-    def get_commands(self):
-        """Return the names of the top-level commands."""
-        for provider in self.providers:
-            for cmd in provider.get_admin_commands():
-                yield cmd[0].split(None, 1)[0]
-    
-    def get_command_help(self, command=None):
-        """Return help information for a command, or all commands if None."""
+    def get_command_help(self, args=[]):
+        """Return help information for a set of commands."""
         commands = []
         for provider in self.providers:
             for cmd in provider.get_admin_commands():
-                if command is None or cmd[0].startswith(command):
-                    commands.append((cmd[0] + ' ' + cmd[1], cmd[2]))
+                parts = cmd[0].split()
+                if parts[:len(args)] == args:
+                    commands.append(cmd[:3])
         commands.sort()
         return commands
         
-    def complete_command(self, args):
+    def complete_command(self, args, cmd_only=False):
         """Perform auto-completion on the given arguments."""
         comp = []
         for provider in self.providers:
             for cmd in provider.get_admin_commands():
                 parts = cmd[0].split()
-                common_len = common_length(args, parts)
-                if common_len == 0:                 # No match
+                if args[:-1] != parts[:len(args) - 1]:  # Prefix doesn't match
                     continue
-                elif common_len < len(parts):       # Command name
-                    comp.append(parts[common_len])
-                elif len(args) == len(parts):       # Command name (end)
-                    comp.append(parts[common_len - 1])
-                else:                               # Arguments
+                elif len(args) <= len(parts):           # Command name
+                    comp.append(parts[len(args) - 1])
+                elif not cmd_only:                      # Arguments
                     if cmd[3] is None:
                         return []
                     return cmd[3](args[len(parts):]) or []
