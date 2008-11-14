@@ -13,7 +13,7 @@ Typically, there are four steps involved in upgrading to a newer version of Trac
 
 Get the new version as described in TracInstall, or your operating system specific procedure.
 
-If you do a manual (not operating system specific) upgrade, you should also stop any running Trac server before the installation. Doing "hot" upgrades is not advised, especially not on Windows ([Trac:ticket:7625 #7265]).
+If you do a manual (not operating system specific) upgrade, you should also stop any running Trac server before the installation. Doing "hot" upgrades is not advised, especially not on Windows ([trac:ticket:7625 #7265]).
 
 You may also want to remove the pre-existing Trac code by deleting the `trac` directory from the Python `lib/site-packages` directory, or remove Trac .eggs from former versions.
 The location of the site-packages directory depends on the operating system, and the location in which Python was installed. However, the following locations are common:
@@ -56,7 +56,7 @@ Note that this procedure will of course leave your `WikiStart` page intact.
 The templating engine has changed in 0.11, please look at TracInterfaceCustomization for more information.
 
 === Trac Macros, Plugins ===
-The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of ClearSilver and the HDF); they need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
+The Trac macros will need to be adapted, as the old-style wiki-macros are not supported anymore (due to the drop of [trac:ClearSilver ClearSilver] and the HDF); they need to be converted to the new-style macros, see WikiMacros. When they are converted to the new style, they need to be placed into the plugins directory instead and not wiki-macros, which is no longer scanned for macros or plugins.
 
 === For CGI users ===
 

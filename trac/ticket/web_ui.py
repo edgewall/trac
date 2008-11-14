@@ -1197,7 +1197,7 @@ class TicketModule(Component):
                 if field.get('format') == 'wiki':
                     field['rendered'] = \
                         format_to_html(self.env, context, ticket[name],
-                                escape_newlines=self._get_preserve_newlines())
+                                escape_newlines=self.must_preserve_newlines)
             
             # ensure sane defaults
             field.setdefault('optional', False)

@@ -203,7 +203,7 @@ class FunctionalTester(object):
 
         tc.formvalue('edit', 'text', content)
         tc.submit('save')
-        tc.url(page_url)
+        tc.url(page_url+'$')
 
         # verify the event shows up in the timeline
         self.go_to_timeline()

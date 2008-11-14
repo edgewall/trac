@@ -35,6 +35,17 @@ table.code thead th {
  text-align: center;
  white-space: nowrap;
 }
+table.code thead th.content {
+ text-align: left;
+}
+table.code thead th.content span.recover {
+ background: #f7f7f7;
+ border-left: 1px solid;
+ border-right: 1px solid;
+ cursor: pointer;
+ margin: 0 1em 0 0;
+ padding: 0 .5em;
+}
 table.code tbody th {
  background: #eed;
  color: #886;

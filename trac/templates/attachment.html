@@ -8,6 +8,14 @@
   <xi:include href="macros.html" />
   <head>
     <title>Attachment</title>
+    <py:if test="preview">
+      <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
+      <script type="text/javascript">
+        jQuery(document).ready(function($) {
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content')); 
+        });
+      </script>
+    </py:if>
   </head>
 
   <body py:with="parent = attachments and attachments.parent or

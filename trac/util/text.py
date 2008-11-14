@@ -118,6 +118,12 @@ def console_print(out, *args):
     out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
                         for a in args])+ '\n')
 
+def printout(*args):
+    console_print(sys.stdout, *args)
+
+def printerr(*args):
+    console_print(sys.stderr, *args)
+
 # -- Plain text formatting
 
 def print_table(data, headers=None, sep='  ', out=None):

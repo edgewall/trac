@@ -128,20 +128,20 @@ class Query(object):
                 raise QuerySyntaxError(_('Query filter requires field and ' 
                                          'constraints separated by a "="'))
             field, values = filter_
-            if not field:
-                raise QuerySyntaxError(_('Query filter requires field name'))
-            # from last char of `field`, get the mode of comparison
-            mode, neg = '', ''
-            if field[-1] in ('~', '^', '$') \
+            # from last chars of `field`, get the mode of comparison
+            mode = ''
+            if field and field[-1] in ('~', '^', '$') \
                                 and not field in cls.substitutions:
                 mode = field[-1]
                 field = field[:-1]
-            if field[-1] == '!':
-                neg = '!'
+            if field and field[-1] == '!':
+                mode = '!' + mode
                 field = field[:-1]
+            if not field:
+                raise QuerySyntaxError(_('Query filter requires field name'))
             processed_values = []
             for val in values.split('|'):
-                val = neg + mode + val # add mode of comparison
+                val = mode + val # add mode of comparison
                 processed_values.append(val)
             try:
                 if isinstance(field, unicode):

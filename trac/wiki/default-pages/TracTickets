@@ -33,9 +33,9 @@ A  ticket contains the following information attributes:
 
 '''Note:''' Versions of Trac prior to 0.9 did not have the ''type'' field, but instead provided a ''severity'' field and different default values for the ''priority'' field. This change was done to simplify the ticket model by removing the somewhat blurry distinction between ''priority'' and ''severity''. However, the old model is still available if you prefer it: just add/modify the default values of the ''priority'' and ''severity'', and optionally hide the ''type'' field by removing all the possible values through [wiki:TracAdmin trac-admin].
 
-'''Note:''' the [wiki:TicketTypes type], [wiki:TicketComponent component], version, priority and severity fields can be managed with [wiki:TracAdmin trac-admin] or with the WebAdmin plugin.
+'''Note:''' the [trac:TicketTypes type], [trac:TicketComponent component], version, priority and severity fields can be managed with [wiki:TracAdmin trac-admin] or with the [trac:WebAdmin WebAdmin] plugin.
 
-'''Note:''' Description of the builtin ''priority'' values is available at [wiki:TicketTypes#Whyistheseverityfieldgone]
+'''Note:''' Description of the builtin ''priority'' values is available at [trac:TicketTypes#Whyistheseverityfieldgone TicketTypes]
 
 == Changing and Commenting Tickets ==
 

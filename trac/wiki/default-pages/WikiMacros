@@ -35,7 +35,7 @@ The [http://trac-hacks.org/ Trac Hacks] site provides a wide collection of macro
 == Developing Custom Macros ==
 Macros, like Trac itself, are written in the [http://python.org/ Python programming language].
 
-For more information about developing macros, see the [wiki:TracDev development resources] on the main project site.
+For more information about developing macros, see the [trac:TracDev development resources] on the main project site.
 
 
 == Implementation ==

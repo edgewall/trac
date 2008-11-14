@@ -19,9 +19,12 @@
 """Management of permissions."""
 
 from time import time
+
+from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
 from trac.resource import Resource, get_resource_name
+from trac.util.text import print_table, printout, wrap
 from trac.util.translation import _
 
 __all__ = ['IPermissionRequestor', 'IPermissionStore',
@@ -552,3 +555,96 @@ class PermissionCache(object):
         perm = PermissionSystem(self.env)
         actions = perm.get_user_permissions(self.username)
         return [action for action in actions if action in self]
+
+
+class PermissionAdmin(Component):
+    """Component representing the permission system administration."""
+    
+    implements(IAdminCommandProvider)
+    
+    # IAdminCommandProvider methods
+    
+    def get_admin_commands(self):
+        yield ('permission list', '[user]',
+               'List permission rules',
+               self._complete_list, self._do_list)
+        yield ('permission add', '<user> <action> [action] [...]',
+               'Add a new permission rule',
+               self._complete_add, self._do_add)
+        yield ('permission remove', '<user> <action> [action] [...]',
+               'Remove a permission rule',
+               self._complete_remove, self._do_remove)
+    
+    def get_user_list(self):
+        return set(user for (user, action) in 
+                   PermissionSystem(self.env).get_all_permissions())
+    
+    def get_user_perms(self, user):
+        return [action for (subject, action) in
+                PermissionSystem(self.env).get_all_permissions()
+                if subject == user]
+    
+    def _complete_list(self, args):
+        if len(args) == 1:
+            return self.get_user_list()
+    
+    def _complete_add(self, args):
+        if len(args) == 1:
+            return self.get_user_list()
+        elif len(args) >= 2:
+            return (set(PermissionSystem(self.env).get_actions())
+                    - set(self.get_user_perms(args[0])) - set(args[1:-1]))
+    
+    def _complete_remove(self, args):
+        if len(args) == 1:
+            return self.get_user_list()
+        elif len(args) >= 2:
+            return set(self.get_user_perms(args[0])) - set(args[1:-1])
+    
+    def _do_list(self, user=None):
+        permsys = PermissionSystem(self.env)
+        if user:
+            rows = []
+            perms = permsys.get_user_permissions(user)
+            for action in perms:
+                if perms[action]:
+                    rows.append((user, action))
+        else:
+            rows = permsys.get_all_permissions()
+        rows.sort()
+        print_table(rows, [_('User'), _('Action')])
+        print
+        printout(_("Available actions:"))
+        actions = permsys.get_actions()
+        actions.sort()
+        text = ', '.join(actions)
+        printout(wrap(text, initial_indent=' ', subsequent_indent=' ', 
+                      linesep='\n'))
+        print
+    
+    def _do_add(self, user, *actions):
+        permsys = PermissionSystem(self.env)
+        # Check all actions before perform any modifications
+        for action in actions:
+            if not action.islower() and not action.isupper():
+                raise AdminCommandError(_('Group names must be in lower case '
+                                          'and actions in upper case'))
+        for action in actions:
+            permsys.grant_permission(user, action)
+    
+    def _do_remove(self, user, *actions):
+        permsys = PermissionSystem(self.env)
+        rows = permsys.get_all_permissions()
+        for action in actions:
+            if action == '*':
+                for row in rows:
+                    if user != '*' and user != row[0]:
+                        continue
+                    permsys.revoke_permission(row[0], row[1])
+            else:
+                for row in rows:
+                    if action != row[1]:
+                        continue
+                    if user != '*' and user != row[0]:
+                        continue
+                    permsys.revoke_permission(row[0], row[1])

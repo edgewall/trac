@@ -18,8 +18,9 @@
 #         Matthew Good <trac@matt-good.net>
 
 import locale
-import os
+import os.path
 import re
+import shutil
 import sys
 import time
 import tempfile
@@ -125,6 +126,65 @@ class NaivePopen:
                 os.remove(infile)
             if capturestderr and os.path.isfile(errfile):
                 os.remove(errfile)
+
+
+def makedirs(path, overwrite=False):
+    if overwrite and os.path.exists(path):
+        return
+    os.makedirs(path)
+
+
+def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
+    """Recursively copy a directory tree using copy2() (from shutil.copytree.)
+
+    Added a `skip` parameter consisting of absolute paths
+    which we don't want to copy.
+    """
+    def str_path(path):
+        if isinstance(path, unicode):
+            path = path.encode(sys.getfilesystemencoding() or
+                               locale.getpreferredencoding())
+        return path
+
+    def remove_if_overwriting(path):
+        if overwrite and os.path.exists(path):
+            os.unlink(path)
+
+    skip = [str_path(f) for f in skip]
+    def copytree_rec(src, dst):
+        names = os.listdir(src)
+        makedirs(dst, overwrite=overwrite)
+        errors = []
+        for name in names:
+            srcname = os.path.join(src, name)
+            if srcname in skip:
+                continue
+            dstname = os.path.join(dst, name)
+            try:
+                if symlinks and os.path.islink(srcname):
+                    remove_if_overwriting(dstname)
+                    linkto = os.readlink(srcname)
+                    os.symlink(linkto, dstname)
+                elif os.path.isdir(srcname):
+                    copytree_rec(srcname, dstname)
+                else:
+                    remove_if_overwriting(dstname)
+                    shutil.copy2(srcname, dstname)
+                # XXX What about devices, sockets etc.?
+            except (IOError, OSError), why:
+                errors.append((srcname, dstname, str(why)))
+            # catch the Error from the recursive copytree so that we can
+            # continue with other files
+            except shutil.Error, err:
+                errors.extend(err.args[0])
+        try:
+            shutil.copystat(src, dst)
+        except OSError, why:
+            errors.append((src, dst, str(why)))
+        if errors:
+            raise shutil.Error(errors)
+    copytree_rec(str_path(src), str_path(dst))
+
 
 # -- sys utils
 
@@ -515,3 +575,11 @@ def partition(iterable, order=None):
     if order is None:
         return result
     return [result[key] for key in order]
+
+def common_length(lhs, rhs):
+    """Return the number of common items in two lists."""
+    m = min(len(lhs), len(rhs))
+    for i in range(m):
+        if lhs[i] != rhs[i]:
+            return i
+    return m

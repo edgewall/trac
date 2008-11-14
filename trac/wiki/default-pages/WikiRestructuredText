@@ -88,7 +88,7 @@ Will result in the below.
 === Wiki Macros in reStructuredText ===
 
 For doing [WikiMacros Wiki Macros] in ReST you use the same directive as for syntax highlighting i.e
-code-block. To work you must use a version of trac that has #801 applied. 
+code-block. To work you must use a version of trac that has [trac:ticket:801 #801] applied. 
 
 === Wiki Macro Example ===
 
