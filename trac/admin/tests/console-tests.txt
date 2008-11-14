@@ -5,180 +5,62 @@ Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]
 
 Invoking trac-admin without command starts interactive mode.
 
-help
-	-- Show documentation
-
-initenv
-	-- Create and initialize a new environment interactively
-
-initenv <projectname> <db> <repostype> <repospath>
-	-- Create and initialize a new environment from arguments
-
-component add <name> <owner>
-	-- Add a new component
-
-component chown <name> <owner>
-	-- Change component ownership
-
-component list
-	-- Show available components
-
-component remove <name>
-	-- Remove/uninstall a component
-
-component rename <name> <newname>
-	-- Rename a component
-
-config get <section> <option>
-	-- Get the value of the given option in "trac.ini"
-
-config remove <section> <option>
-	-- Remove the specified option from "trac.ini"
-
-config set <section> <option> <value>
-	-- Set the value for the given option in "trac.ini"
-
-deploy <directory>
-	-- Extract static resources from Trac and all plugins.
-
-hotcopy <backupdir>
-	-- Make a hot backup copy of an environment
-
-milestone add <name> [due]
-	-- Add milestone
-
-milestone completed <name> <completed>
-	-- Set milestone completed date (Format: "YYYY-MM-DD", "now" or "")
-
-milestone due <name> <due>
-	-- Set milestone due date (Format: "YYYY-MM-DD", "now" or "")
-
-milestone list
-	-- Show milestones
-
-milestone remove <name>
-	-- Remove milestone
-
-milestone rename <name> <newname>
-	-- Rename milestone
-
-permission add <user> <action> [action] [...]
-	-- Add a new permission rule
-
-permission list [user]
-	-- List permission rules
-
-permission remove <user> <action> [action] [...]
-	-- Remove a permission rule
-
-priority add <value>
-	-- Add a priority value option
-
-priority change <value> <newvalue>
-	-- Change a priority value
-
-priority list
-	-- Show possible ticket priorities
-
-priority order <value> up|down
-	-- Move a priority value up or down in the list
-
-priority remove <value>
-	-- Remove a priority value
-
-resolution add <value>
-	-- Add a resolution value option
-
-resolution change <value> <newvalue>
-	-- Change a resolution value
-
-resolution list
-	-- Show possible ticket resolutions
-
-resolution order <value> up|down
-	-- Move a resolution value up or down in the list
-
-resolution remove <value>
-	-- Remove a resolution value
-
-resync
-	-- Re-synchronize trac with the repository
-
-resync <rev>
-	-- Re-synchronize only the given <rev>
-
-severity add <value>
-	-- Add a severity value option
-
-severity change <value> <newvalue>
-	-- Change a severity value
-
-severity list
-	-- Show possible ticket severities
-
-severity order <value> up|down
-	-- Move a severity value up or down in the list
-
-severity remove <value>
-	-- Remove a severity value
-
-ticket remove <number>
-	-- Remove ticket
-
-ticket_type add <value>
-	-- Add a ticket type
-
-ticket_type change <value> <newvalue>
-	-- Change a ticket type
-
-ticket_type list
-	-- Show possible ticket types
-
-ticket_type order <value> up|down
-	-- Move a ticket type up or down in the list
-
-ticket_type remove <value>
-	-- Remove a ticket type
-
-upgrade
-	-- Upgrade database to current version
-
-version add <name> [time]
-	-- Add version
-
-version list
-	-- Show versions
-
-version remove <name>
-	-- Remove version
-
-version rename <name> <newname>
-	-- Rename version
-
-version time <name> <time>
-	-- Set version date (Format: "YYYY-MM-DD", "now" or "")
-
-wiki dump <directory>
-	-- Export all wiki pages to files named by title
-
-wiki export <page> [file]
-	-- Export wiki page to file or stdout
-
-wiki import <page> [file]
-	-- Import wiki page from file or stdin
-
-wiki list
-	-- List wiki pages
-
-wiki load <directory>
-	-- Import all wiki pages from directory
-
-wiki remove <page>
-	-- Remove wiki page
-
-wiki upgrade
-	-- Upgrade default wiki pages to current version
-
+help                 Show documentation
+initenv              Create and initialize a new environment
+component add        Add a new component
+component chown      Change component ownership
+component list       Show available components
+component remove     Remove/uninstall a component
+component rename     Rename a component
+config get           Get the value of the given option in "trac.ini"
+config remove        Remove the specified option from "trac.ini"
+config set           Set the value for the given option in "trac.ini"
+deploy               Extract static resources from Trac and all plugins
+hotcopy              Make a hot backup copy of an environment
+milestone add        Add milestone
+milestone completed  Set milestone complete date
+milestone due        Set milestone due date
+milestone list       Show milestones
+milestone remove     Remove milestone
+milestone rename     Rename milestone
+permission add       Add a new permission rule
+permission list      List permission rules
+permission remove    Remove a permission rule
+priority add         Add a priority value option
+priority change      Change a priority value
+priority list        Show possible ticket priorities
+priority order       Move a priority value up or down in the list
+priority remove      Remove a priority value
+resolution add       Add a resolution value option
+resolution change    Change a resolution value
+resolution list      Show possible ticket resolutions
+resolution order     Move a resolution value up or down in the list
+resolution remove    Remove a resolution value
+resync               Re-synchronize trac with the repository
+severity add         Add a severity value option
+severity change      Change a severity value
+severity list        Show possible ticket severities
+severity order       Move a severity value up or down in the list
+severity remove      Remove a severity value
+ticket remove        Remove ticket
+ticket_type add      Add a ticket type
+ticket_type change   Change a ticket type
+ticket_type list     Show possible ticket types
+ticket_type order    Move a ticket type up or down in the list
+ticket_type remove   Remove a ticket type
+upgrade              Upgrade database to current version
+version add          Add version
+version list         Show versions
+version remove       Remove version
+version rename       Rename version
+version time         Set version date
+wiki dump            Export all wiki pages to files named by title
+wiki export          Export wiki page to file or stdout
+wiki import          Import wiki page from file or stdin
+wiki list            List wiki pages
+wiki load            Import all wiki pages from directory
+wiki remove          Remove wiki page
+wiki upgrade         Upgrade default wiki pages to current version
 ===== test_config_get =====
 Test project
 ===== test_config_set =====

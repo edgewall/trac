@@ -27,11 +27,13 @@ class VersionControlAdmin(Component):
     # IAdminCommandProvider methods
     
     def get_admin_commands(self):
-        yield ('resync', '',
-               'Re-synchronize trac with the repository',
-               None, self._do_resync)
-        yield ('resync', '<rev>',
-               'Re-synchronize only the given <rev>',
+        yield ('resync', '[rev]',
+               """Re-synchronize trac with the repository
+               
+               When [rev] is specified, only that revision is synchronized.
+               Otherwise, the complete revision history is synchronized. Note
+               that this operation can take a long time to complete.
+               """,
                None, self._do_resync)
     
     def _do_resync(self, rev=None):

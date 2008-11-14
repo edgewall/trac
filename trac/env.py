@@ -601,7 +601,7 @@ class EnvironmentAdmin(Component):
     
     def get_admin_commands(self):
         yield ('deploy', '<directory>',
-               'Extract static resources from Trac and all plugins.',
+               'Extract static resources from Trac and all plugins',
                None, self._do_deploy)
         yield ('hotcopy', '<backupdir>',
                'Make a hot backup copy of an environment',
