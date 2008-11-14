@@ -16,9 +16,10 @@
       
       if ( href ) {
         a.removeAttr("href");
-        var sep = href.slice(href.indexOf("changeset/") + 10).indexOf("/");
+        href = href.slice(href.indexOf("changeset/") + 10);
+        var sep = href.indexOf("/");
         if ( sep > 0 )
-          path = elts.slice(sep+1);
+          path = href.slice(sep+1);
         else
           path = original_path;
       }
@@ -32,6 +33,7 @@
         var row = this.parentNode;
         var message_is_visible = message && message.css("display") == "block";
         var highlight_rev = null;
+        var annotate_path = path;
   
         function show() {
           /* Display commit message for the selected revision */
@@ -69,7 +71,7 @@
           message_rev = rev;
           highlight_rev = message_rev;
   
-          $.get(url + rev.substr(1), {annotate: path}, function(data) {
+          $.get(url + rev.substr(1), {annotate: annotate_path}, function(data) {
             // remove former message panel if any
             if (message)
               message.remove();
