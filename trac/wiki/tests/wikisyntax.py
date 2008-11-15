@@ -319,6 +319,41 @@ RELATIVE_LINKS_TESTS=u"""
 ------------------------------
 """ # "
 
+SCOPED_LINKS_TESTS=u"""
+============================== Scoped links for hierarchical pages
+ThirdLevel
+[wiki:ThirdLevel]
+OtherThirdLevel
+[wiki:OtherThirdLevel]
+SecondLevel
+[wiki:SecondLevel]
+FirstLevel
+[wiki:FirstLevel]
+TestPage
+[wiki:TestPage]
+MissingPage
+[wiki:MissingPage]
+["/OtherThirdLevel"]
+[wiki:/OtherThirdLevel]
+------------------------------
+<p>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/ThirdLevel">ThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/ThirdLevel">ThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">OtherThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">OtherThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel">SecondLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel">SecondLevel</a>
+<a class="wiki" href="/wiki/FirstLevel">FirstLevel</a>
+<a class="wiki" href="/wiki/FirstLevel">FirstLevel</a>
+<a class="wiki" href="/wiki/TestPage">TestPage</a>
+<a class="wiki" href="/wiki/TestPage">TestPage</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
+</p>
+------------------------------
+""" # "
 
 def wiki_setup(tc):
     now = datetime.now(utc)
@@ -354,12 +389,35 @@ nolink          http://noweb
 """ 
     imt.save('joe', 'test InterWiki links', '::1', now)
 
+    w = WikiPage(tc.env)
+    w.name = 'FirstLevel'
+    w.text = '--'
+    w.save('joe', 'first level of hierarchy', '::1', now)
+    
+    w = WikiPage(tc.env)
+    w.name = 'FirstLevel/SecondLevel'
+    w.text = '--'
+    w.save('joe', 'second level of hierarchy', '::1', now)
+    
+    w = WikiPage(tc.env)
+    w.name = 'FirstLevel/SecondLevel/ThirdLevel'
+    w.text = '--'
+    w.save('joe', 'third level of hierarchy', '::1', now)
+    
+    w = WikiPage(tc.env)
+    w.name = 'FirstLevel/SecondLevel/OtherThirdLevel'
+    w.text = '--'
+    w.save('joe', 'other third level of hierarchy', '::1', now)
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__))
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
                                   context=('wiki', 'Main/Sub')))
+    suite.addTest(formatter.suite(SCOPED_LINKS_TESTS, wiki_setup, __file__,
+                                  context=('wiki', 
+                                      'FirstLevel/SecondLevel/ThirdLevel')))
     return suite
 
 if __name__ == '__main__':

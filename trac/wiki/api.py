@@ -307,6 +307,21 @@ class WikiSystem(Component):
         if version and query:
             query = '&' + query[1:]
         pagename = pagename.rstrip('/')
+        if formatter.resource and formatter.resource.realm == 'wiki' \
+                              and not pagename.startswith('/'):
+            prefix = formatter.resource.id
+            if '/' in prefix:
+                while '/' in prefix:
+                    prefix = prefix.rsplit('/', 1)[0]
+                    name = prefix + '/' + pagename
+                    if self.has_page(name):
+                        pagename = name
+                        break
+                else:
+                    if not self.has_page(pagename):
+                        pagename = formatter.resource.id.rsplit('/', 1)[0] \
+                                   + '/' + pagename
+        pagename = pagename.lstrip('/')
         if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
                    + fragment
