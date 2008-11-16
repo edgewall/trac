@@ -575,11 +575,3 @@ def partition(iterable, order=None):
     if order is None:
         return result
     return [result[key] for key in order]
-
-def common_length(lhs, rhs):
-    """Return the number of common items in two lists."""
-    m = min(len(lhs), len(rhs))
-    for i in range(m):
-        if lhs[i] != rhs[i]:
-            return i
-    return m

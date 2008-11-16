@@ -16,7 +16,6 @@ import sys
 import traceback
 
 from trac.core import *
-from trac.util import common_length
 from trac.util.translation import _
 
 
