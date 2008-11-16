@@ -308,11 +308,14 @@ class SubversionPropertyRenderer(Component):
     # IPropertyRenderer methods
 
     def match_property(self, name, mode):
-        return name in ('svn:externals', 'svn:needs-lock') and 4 or 0
+        return name in ('svn:externals', 'svn:mergeinfo', 'svn:needs-lock',
+                        'svnmerge-blocked', 'svnmerge-integrated') and 4 or 0
     
     def render_property(self, name, mode, context, props):
         if name == 'svn:externals':
             return self._render_externals(props[name])
+        elif name == 'svn:mergeinfo' or name.startswith('svnmerge-'):
+            return self._render_mergeinfo(props[name])
         elif name == 'svn:needs-lock':
             return self._render_needslock(context)
 
@@ -375,6 +378,12 @@ class SubversionPropertyRenderer(Component):
             externals_data.append((label, href, title))
         return tag.ul([tag.li(tag.a(label, href=href, title=title))
                        for label, href, title in externals_data])
+
+    def _render_mergeinfo(self, prop):
+        prop = prop.rsplit(':', 1)
+        if len(prop) == 2:
+            prop[1] = prop[1].replace(',', u',\u200b')
+        return ':'.join(prop)
 
     def _render_needslock(self, context):
         return tag.img(src=context.href.chrome('common/lock-locked.png'),
