@@ -28,7 +28,7 @@ from itertools import izip
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.compat import reversed, sorted, tee, md5
+from trac.util.compat import md5, reversed, sha1, sorted, tee
 from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size
@@ -254,9 +254,8 @@ def get_pkginfo(dist):
 # -- crypto utils
 
 def hex_entropy(bytes=32):
-    import sha
     import random
-    return sha.new(str(random.random())).hexdigest()[:bytes]
+    return sha1(str(random.random())).hexdigest()[:bytes]
 
 
 # Original license for md5crypt:
