@@ -1,39 +1,10 @@
-Release Notes for Trac 0.11.2 Genshi Release
-============================================
-November 8, 2008
+Release Notes for Trac 0.11.2.1 Genshi Release
+==============================================
+November 17, 2008
 
-Trac 0.11.2 contains two security fixes and a couple of bug fixes.
-The following list contains only a few highlights:
+Trac 0.11.2.1 fixes a Python 2.3 incompatibility introduced in Trac 0.11.2.
+Python 2.4+ users already running Trac 0.11.2 do not need to upgrade.
 
-Bug fixes:
-
- * Fixes potential DOS vulnerability with certain wiki markup. Reported by
-   Matt Murphy.
- * Improved HTML sanitizer filter to detect possible phishing attempts.
-   Reported by Simon Willison.
- * MySQL db backend improvement (reconnect after idle timeout #4465)
- * TicketQuery speed improvements (#6436)
- * Fixes for RSS feeds (timeline entries no longer truncated #7316, no longer
-   download some feeds under Firefox #3899)
- * Search now works for custom fields (#2530)
- * Same order for ticket fields for new and existing tickets (#7018)
- * Enforce fine-grained permission for "quickjump" search results (#7655)
- * E-mail obfuscation was not done in a few remaining places (#7688, #6532)
- * Uninstall of plugins from WebAdmin was not working - feature disabled 
-   for now
- * More robust pagination of results for reports and custom queries (#7424,
-   #7544)
- * Support for newer version of pygments (#7622)
- * Documentation updated (#7603, #7205, #7318)
-
-Minor improvements:
-
- * Better support for Wiki page hierarchy (show path #2780, link to 
-   parent #2150)
- * Custom query allow to search in description and other text fields (#4824)
-
-The complete list of closed tickets can be found here:
-http://trac.edgewall.org/query?status=closed&milestone=0.11.2
 
 Highlights in 0.11
 ------------------
