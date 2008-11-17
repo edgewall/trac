@@ -80,10 +80,18 @@ def copytree(src, dst, symlinks=False, skip=[]):
                 else:
                     shutil.copy2(srcname, dstname)
                 # XXX What about devices, sockets etc.?
-            except (IOError, os.error), why:
-                errors.append((srcname, dstname, why))
+            except (IOError, OSError), why:
+                errors.append((srcname, dstname, str(why)))
+            # catch the Error from the recursive copytree so that we can
+            # continue with other files
+            except shutil.Error, err:
+                errors.extend(err.args[0])
+        try:
+            shutil.copystat(src, dst)
+        except OSError, why:
+            errors.append((src, dst, str(why)))
         if errors:
-            raise shutil.Error, errors
+            raise shutil.Error(errors)
     copytree_rec(str_path(src), str_path(dst))
 
 
@@ -1164,6 +1172,7 @@ Congratulations!
         if os.path.exists(dest):
             raise TracError(_("hotcopy can't overwrite existing '%(dest)s'",
                               dest=dest))
+        import shutil
 
         # Bogus statement to lock the database while copying files
         cnx = self.db_open()
@@ -1181,12 +1190,24 @@ Congratulations!
                 skip = [db + '-journal', db + '-stmtjrnl']
             else:
                 skip = []
-            copytree(self.__env.path, dest, symlinks=1, skip=skip)
+            try:
+                copytree(self.__env.path, dest, symlinks=1, skip=skip)
+                retval = 0
+            except shutil.Error, e:
+                retval = 1
+                printerr(_('The following errors happened while copying '
+                           'the environment:'))
+                for (src, dst, err) in e.args[0]:
+                    if src in err:
+                        printerr('  %s' % err)
+                    else:
+                        printerr("  %s: '%s'" % (err, src))
         finally:
             # Unlock database
             cnx.rollback()
 
         printout(_("Hotcopy done."))
+        return retval
 
     _help_deploy = [('deploy <directory>',
                      'Extract static resources from Trac and all plugins.')]
