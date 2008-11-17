@@ -78,8 +78,9 @@ except ImportError:
         return newfunc
 
 
-# The md5 module is deprecated in Python 2.5
+# The md5 and sha modules are deprecated in Python 2.5
 try:
-    from hashlib import md5
+    from hashlib import md5, sha1
 except ImportError:
     from md5 import md5
+    from sha import new as sha1
