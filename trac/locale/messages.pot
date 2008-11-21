@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-11-17 14:56+0100\n"
+"POT-Creation-Date: 2008-11-21 23:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1158,30 +1158,30 @@ msgstr ""
 msgid "Preview:"
 msgstr ""
 
-#: trac/search/web_ui.py:58 trac/search/templates/search.html:10
+#: trac/search/web_ui.py:64 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
 #: trac/templates/theme.html:28
 msgid "Search"
 msgstr ""
 
-#: trac/search/web_ui.py:100
+#: trac/search/web_ui.py:107
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 
-#: trac/search/web_ui.py:102
+#: trac/search/web_ui.py:109
 msgid "Search Error"
 msgstr ""
 
-#: trac/search/web_ui.py:137 trac/ticket/query.py:673 trac/ticket/report.py:317
+#: trac/search/web_ui.py:144 trac/ticket/query.py:673 trac/ticket/report.py:317
 msgid "Next Page"
 msgstr ""
 
-#: trac/search/web_ui.py:143 trac/ticket/query.py:678 trac/ticket/report.py:321
+#: trac/search/web_ui.py:150 trac/ticket/query.py:678 trac/ticket/report.py:321
 msgid "Previous Page"
 msgstr ""
 
-#: trac/search/web_ui.py:185
+#: trac/search/web_ui.py:192
 #, python-format
 msgid "Browse repository path %(path)s"
 msgstr ""
@@ -2948,23 +2948,23 @@ msgstr ""
 msgid "Subversion >= 1.0 required: Found %(version)s"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:374
+#: trac/versioncontrol/svn_fs.py:377
 msgid "No svn:externals configured in trac.ini"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:398
+#: trac/versioncontrol/svn_fs.py:407
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:655
+#: trac/versioncontrol/svn_fs.py:664
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:806
+#: trac/versioncontrol/svn_fs.py:815
 #, python-format
 msgid "svn blame failed: %(error)s"
 msgstr ""
@@ -3441,7 +3441,7 @@ msgstr ""
 msgid " %(src)s => %(dst)s"
 msgstr ""
 
-#: trac/wiki/api.py:327
+#: trac/wiki/api.py:342 trac/wiki/templates/wiki_view.html:53
 msgid "no permission to view this wiki page"
 msgstr ""
 
@@ -3669,7 +3669,7 @@ msgstr ""
 msgid "Review Changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:46
+#: trac/wiki/templates/wiki_view.html:47
 msgid "Describe"
 msgstr ""
 
@@ -3677,27 +3677,31 @@ msgstr ""
 msgid "here."
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:64
+#: trac/wiki/templates/wiki_view.html:49
+msgid "Alternatively, you can also create the page higher in the hierarchy:"
+msgstr ""
+
+#: trac/wiki/templates/wiki_view.html:74
 msgid "Edit this page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:67
+#: trac/wiki/templates/wiki_view.html:77
 msgid "Create this page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:69
+#: trac/wiki/templates/wiki_view.html:79
 msgid "Using the template:"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:72
+#: trac/wiki/templates/wiki_view.html:82
 msgid "(blank page)"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:91
+#: trac/wiki/templates/wiki_view.html:101
 msgid "Delete this version"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:93
+#: trac/wiki/templates/wiki_view.html:103
 msgid "Delete page"
 msgstr ""
 
