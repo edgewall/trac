@@ -73,7 +73,7 @@ facilities.
         'Genshi>=0.5'
     ],
     extras_require = {
-        'Babel': ['Babel>=0.9.3'],
+        'Babel': ['Babel>=0.9.4'],
         'Pygments': ['Pygments>=0.6'],
         'reST': ['docutils>=0.3'],
         'SilverCity': ['SilverCity>=0.9.4'],
