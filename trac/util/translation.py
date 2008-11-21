@@ -14,6 +14,7 @@
 """Utilities for text translation with gettext."""
 
 import re
+import sys 
 try:
     import threading
 except ImportError:
@@ -52,62 +53,194 @@ def tngettext_noop(singular, plural, num, **kwargs):
     kwargs.setdefault('num', num)
     return _tag_kwargs(string, kwargs)
 
+def add_domain(domain, env_path, locale_dir):
+    pass
+
+def domain_functions(domain, *symbols):
+    _functions = {
+      'gettext': gettext_noop,
+      '_': gettext_noop,
+      'N_': gettext_noop,
+      'ngettext': ngettext_noop,
+      'tgettext': tgettext_noop,
+      'tag_': tgettext_noop,
+      'tngettext': tngettext_noop,
+      'add_domain': add_domain,
+      }
+    return [_functions(s) for s in symbols]
+
 
 try:
     from babel.support import LazyProxy, Translations
     from gettext import NullTranslations
 
-    _current = threading.local()
+    class TranslationsProxy(object):
+        """Delegate Translations calls to the currently active Translations.
 
-    def gettext(string, **kwargs):
-        def _gettext():
-            trans = get_translations().ugettext(string)
-            return kwargs and trans % kwargs or trans
-        if not hasattr(_current, 'translations'):
-            return LazyProxy(_gettext)
-        return _gettext()
-    _ = gettext
+        If there's none, wrap those calls in LazyProxy objects.
+        """
 
-    def ngettext(singular, plural, num, **kwargs):
-        kwargs = kwargs.copy()
-        kwargs.setdefault('num', num)
-        def _ngettext():
-            trans = get_translations().ungettext(singular, plural, num)
-            return trans % kwargs
-        if not hasattr(_current, 'translations'):
-            return LazyProxy(_ngettext)
-        return _ngettext()
+        def __init__(self):
+            self._current = threading.local()
+            self._null_translations = NullTranslations()
+            self._plugin_domains = {}
+            self._plugin_domains_lock = threading.RLock()
 
-    def tgettext(string, **kwargs):
-        def _tgettext():
-            trans = get_translations().ugettext(string)
-            return kwargs and _tag_kwargs(trans, kwargs) or trans
-        if not hasattr(_current, 'translations'):
-            return LazyProxy(_tgettext)
-        return _tgettext()
-    tag_ = tgettext
+        # Public API
 
-    def tngettext(singular, plural, num, **kwargs):
-        kwargs = kwargs.copy()
-        kwargs.setdefault('num', num)
-        def _tngettext():
-            trans = get_translations().ungettext(singular, plural, num)
-            return _tag_kwargs(trans, kwargs)
-        if not hasattr(_current, 'translations'):
-            return LazyProxy(_tngettext)
-        return _tngettext()
+        def add_domain(self, domain, env_path, locales_dir):
+            self._plugin_domains_lock.acquire()
+            try:
+                if env_path not in self._plugin_domains:
+                    self._plugin_domains[env_path] = []
+                self._plugin_domains[env_path].append((domain, locales_dir))
+            finally:
+                self._plugin_domains_lock.release()
 
-    def activate(locale):
-        locale_dir = pkg_resources.resource_filename(__name__, '../locale')
-        _current.translations = Translations.load(locale_dir, locale)
+        def activate(self, locale, env_path=None):
+            locale_dir = pkg_resources.resource_filename(__name__, '../locale')
+            t = Translations.load(locale_dir, locale)
+            if env_path:
+                self._plugin_domains_lock.acquire()
+                try:
+                    domains = list(self._plugin_domains.get(env_path, []))
+                finally:
+                    self._plugin_domains_lock.release()
+                for domain, dirname in domains:
+                    t.add(Translations.load(dirname, locale, domain))
+            self._current.translations = t
+         
+        def deactivate(self):
+            del self._current.translations
+    
+        @property
+        def active(self):
+            return getattr(self._current, 'translations', 
+                           self._null_translations)
 
-    _null_translations = NullTranslations()
+        @property
+        def isactive(self):
+            return hasattr(self._current, 'translations')
+
+        # Delegated methods
+
+        def __getattr__(self, name):
+            return getattr(self.active, name)
+
+        def gettext(self, string, **kwargs):
+            def _gettext():
+                trans = self.active.ugettext(string)
+                return kwargs and trans % kwargs or trans
+            if not self.isactive:
+                return LazyProxy(_gettext)
+            return _gettext()
+
+        def dgettext(self, domain, string, **kwargs):
+            def _dgettext():
+                trans = self.active.dugettext(domain, string)
+                return kwargs and trans % kwargs or trans
+            if not self.isactive:
+                return LazyProxy(_dgettext)
+            return _dgettext()
+
+        def ngettext(self, singular, plural, num, **kwargs):
+            kwargs = kwargs.copy()
+            kwargs.setdefault('num', num)
+            def _ngettext():
+                trans = self.active.ungettext(singular, plural, num)
+                return trans % kwargs
+            if not self.isactive:
+                return LazyProxy(_ngettext)
+            return _ngettext()
+
+        def dngettext(self, domain, singular, plural, num, **kwargs):
+            kwargs = kwargs.copy()
+            kwargs.setdefault('num', num)
+            def _dngettext():
+                trans = self.active.dungettext(domain, singular, plural, num)
+                return trans % kwargs
+            if not self.isactive:
+                return LazyProxy(_dngettext)
+            return _dngettext()
+
+        def tgettext(self, string, **kwargs):
+            def _tgettext():
+                trans = self.active.ugettext(string)
+                return kwargs and _tag_kwargs(trans, kwargs) or trans
+            if not self.isactive:
+                return LazyProxy(_tgettext)
+            return _tgettext()
+
+        def dtgettext(self, domain, string, **kwargs):
+            def _dtgettext():
+                trans = self.active.dugettext(domain, string)
+                return kwargs and _tag_kwargs(trans, kwargs) or trans
+            if not self.isactive:
+                return LazyProxy(_dtgettext)
+            return _dtgettext()
+
+        def tngettext(self, singular, plural, num, **kwargs):
+            kwargs = kwargs.copy()
+            kwargs.setdefault('num', num)
+            def _tngettext():
+                trans = self.active.ungettext(singular, plural, num)
+                return _tag_kwargs(trans, kwargs)
+            if not self.isactive:
+                return LazyProxy(_tngettext)
+            return _tngettext()
+
+        def dtngettext(self, domain, singular, plural, num, **kwargs):
+            kwargs = kwargs.copy()
+            def _dtngettext():
+                trans = self.active.dungettext(domain, singular, plural, num)
+                if '%(num)' in trans:
+                    kwargs.update(num=num)
+                return kwargs and _tag_kwargs(trans, kwargs) or trans
+            if not self.isactive:
+                return LazyProxy(_dtngettext)
+            return _dtngettext()
+
+    
+    translations = TranslationsProxy()
+
+    def domain_functions(domain, *symbols):
+        _functions = {
+          'gettext': translations.dgettext,
+          '_': translations.dgettext,
+          'ngettext': translations.dngettext,
+          'tgettext': translations.dtgettext,
+          'tag_': translations.dtgettext,
+          'tngettext': translations.dtngettext,
+          'add_domain': translations.add_domain,
+          }
+        def wrapdomain(symbol):
+            if symbol == 'N_':
+                return gettext_noop
+            return lambda *args, **kw: _functions[symbol](domain, *args, **kw)
+        return [wrapdomain(s) for s in symbols]
+
+    gettext = translations.gettext 
+    _ = gettext 
+    dgettext = translations.dgettext 
+    ngettext = translations.ngettext 
+    dngettext = translations.dngettext 
+    tgettext = translations.tgettext 
+    tag_ = tgettext 
+    dtgettext = translations.dtgettext 
+    tngettext = translations.tngettext 
+    dtngettext = translations.dtngettext 
+    
+    def deactivate():
+        translations.deactivate()
+
+    def activate(locale, env_path=None):
+        translations.activate(locale, env_path)
+
+    def add_domain(domain, env_path, locale_dir):
+        translations.add_domain(domain, env_path, locale_dir)
 
     def get_translations():
-        return getattr(_current, 'translations', _null_translations)
-
-    def deactivate():
-        del _current.translations
+        return translations
 
     def get_available_locales():
         """Return a list of locale identifiers of the locales for which

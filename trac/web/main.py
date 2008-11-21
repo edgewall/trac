@@ -165,7 +165,7 @@ class RequestDispatcher(Component):
         try:
             try:
                 try:
-                    translation.activate(req.locale)
+                    translation.activate(req.locale, self.env.path)
 
                     # Select the component that should handle the request
                     chosen_handler = None

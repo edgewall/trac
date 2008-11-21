@@ -26,7 +26,7 @@ except ImportError:
 
 from genshi import Markup
 from genshi.builder import tag, Element
-from genshi.filters import Translator
+from genshi.filters import Translator, setup_i18n
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
@@ -293,6 +293,8 @@ class Chrome(Component):
         'classes': presentation.classes,
         'date': datetime.date,
         'datetime': datetime.datetime,
+        'dgettext': translation.dgettext,
+        'dngettext': translation.dngettext,
         'first_last': presentation.first_last,
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
@@ -660,7 +662,8 @@ class Chrome(Component):
         """
         if not self.templates:
             def _template_loaded(template):
-                template.filters.insert(0, Translator(translation.gettext))
+                translator = Translator(translation.get_translations())
+                setup_i18n(template, translator)
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,

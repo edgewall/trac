@@ -369,7 +369,7 @@ class Request(object):
                     from trac.web.chrome import Chrome
                     from trac.util import translation
                     if hasattr(self, 'locale'):
-                        translation.activate(self.locale)
+                        translation.activate(self.locale, env.path)
                     try:
                         data = Chrome(env).render_template(self, template,
                                                            data, 'text/html')
