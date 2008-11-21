@@ -3397,11 +3397,14 @@ msgstr ""
 msgid "Next %(label)s"
 msgstr ""
 
-#: trac/web/main.py:476
+#. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+#: trac/web/main.py:475
+msgid "do so"
+msgstr ""
+
+#: trac/web/main.py:477
 #, python-format
-msgid ""
-"You are currently not logged in. You may want to <a href=\"%(href)s\">do "
-"so</a> now."
+msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
 
 #: trac/wiki/admin.py:74

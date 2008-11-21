@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-11-18 14:19+0100\n"
+"PO-Revision-Date: 2008-11-21 23:46+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3669,14 +3669,15 @@ msgstr "Précédent %(label)s"
 msgid "Next %(label)s"
 msgstr "Suivant %(label)s"
 
-#: trac/web/main.py:476
-#, python-format
-msgid ""
-"You are currently not logged in. You may want to <a href=\"%(href)s\">do "
-"so</a> now."
-msgstr ""
-"Vous n'êtes pas connecté actuellement. Vous pouvez <a "
-"href=\"%(href)s\">vous connecter</a> maintenant."
+#. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+#: trac/web/main.py:475
+msgid "do so"
+msgstr "le faire"
+
+#: trac/web/main.py:477
+#, fuzzy, python-format
+msgid "You are currently not logged in. You may want to %(do_so)s now."
+msgstr "Vous n'êtes pas connecté actuellement. Vous pouvez %(do_so)s maintenant."
 
 #: trac/wiki/admin.py:74
 #, python-format

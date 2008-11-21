@@ -33,6 +33,7 @@ try:
 except ImportError:
     Locale = None
 from genshi import Markup
+from genshi.builder import tag
 from genshi.output import DocType
 from genshi.template import TemplateLoader
 
@@ -47,7 +48,7 @@ from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
 from trac.util.compat import partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import shorten_line, to_unicode
-from trac.util.translation import _
+from trac.util.translation import tag_, _
 from trac.web.api import *
 from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper
@@ -470,10 +471,11 @@ def _dispatch_request(req, env, env_error):
         data = {'title': title, 'type': 'TracError', 'message': e.detail,
                 'frames': [], 'traceback': None}
         if e.code == 403 and req.authname == 'anonymous':
-            req.chrome['notices'].append(Markup(
-                _('You are currently not logged in. You may want to '
-                  '<a href="%(href)s">do so</a> now.',
-                  href=req.href.login())))
+            # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+            do_so = tag.a(_("do so"), href=req.href.login())
+            req.chrome['notices'].append(
+                tag_("You are currently not logged in. You may want to "
+                     "%(do_so)s now.", do_so=do_so))
         try:
             req.send_error(sys.exc_info(), status=e.code, env=env, data=data)
         except RequestDone:
