@@ -3711,11 +3711,6 @@ msgstr "Supprimer la page"
 msgid "'%(name)s' is not a directory"
 msgstr "%(name)s n'est pas un répertoire valide"
 
-#: trac/wiki/admin.py:188
-#, python-format
-msgid " %(src)s => %(dst)s"
-msgstr ""
-
 #: trac/wiki/api.py:327
 msgid "no permission to view this wiki page"
 msgstr "pas le droit de voir cette page wiki"

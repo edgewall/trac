@@ -185,7 +185,7 @@ class WikiAdmin(Component):
         cursor = db.cursor()
         for p in pages:
             dst = os.path.join(directory, unicode_quote(p, ''))
-            printout(_(' %(src)s => %(dst)s', src=p, dst=dst))
+            printout(' %(src)s => %(dst)s', src=p, dst=dst)
             self.export_page(p, dst, cursor)
     
     def _do_load(self, directory):

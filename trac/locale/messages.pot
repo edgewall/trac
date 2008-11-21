@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-11-21 23:53+0100\n"
+"POT-Creation-Date: 2008-11-21 23:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3437,11 +3437,6 @@ msgstr ""
 #: trac/wiki/admin.py:182
 #, python-format
 msgid "'%(name)s' is not a directory"
-msgstr ""
-
-#: trac/wiki/admin.py:188
-#, python-format
-msgid " %(src)s => %(dst)s"
 msgstr ""
 
 #: trac/wiki/api.py:342 trac/wiki/templates/wiki_view.html:53
