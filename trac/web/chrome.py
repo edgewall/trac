@@ -26,7 +26,22 @@ except ImportError:
 
 from genshi import Markup
 from genshi.builder import tag, Element
-from genshi.filters import Translator, setup_i18n
+
+# FIXME Genshi's advanced-i18n is now required if one wants to use 0.12 + i18n
+#       Genshi 0.5.1 can still be used with Trac 0.12 without i18n support.
+#
+# Once advanced-i18n is in the required Genshi version (0.6?), uncomment the
+# following:
+#
+# from genshi.filters import Translator, setup_i18n
+#
+# and remove the rest:
+from genshi.filters import Translator
+try:
+    from genshi.filters import setup_i18n
+except ImportError:
+    setup_i18n = None
+
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
@@ -663,7 +678,8 @@ class Chrome(Component):
         if not self.templates:
             def _template_loaded(template):
                 translator = Translator(translation.get_translations())
-                setup_i18n(template, translator)
+                if setup_i18n: ## FIXME see comment near corresponding import
+                    setup_i18n(template, translator)
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
