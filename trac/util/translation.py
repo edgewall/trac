@@ -13,6 +13,7 @@
 
 """Utilities for text translation with gettext."""
 
+from functools import partial
 import re
 import sys 
 try:
@@ -29,14 +30,16 @@ __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop',
            'tgettext', 'tgettext_noop', 'tngettext', 'tngettext_noop']
 
 
-def gettext_noop(string, **kwargs):
+def dgettext_noop(domain, string, **kwargs):
     return kwargs and string % kwargs or string
+gettext_noop = partial(dgettext_noop, None)
 N_ = gettext_noop
 
-def ngettext_noop(singular, plural, num, **kwargs):
+def dngettext_noop(domain, singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
     kwargs.setdefault('num', num)
     return string % kwargs
+ngettext_noop = partial(dngettext_noop, None)
 
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
 def _tag_kwargs(trans, kwargs):
@@ -45,13 +48,15 @@ def _tag_kwargs(trans, kwargs):
         trans_elts[i] = kwargs.get(trans_elts[i], '???')
     return tag(*trans_elts)
 
-def tgettext_noop(string, **kwargs):
+def dtgettext_noop(domain, string, **kwargs):
     return kwargs and _tag_kwargs(string, kwargs) or string
+tgettext_noop = partial(dtgettext_noop, None)
 
-def tngettext_noop(singular, plural, num, **kwargs):
+def dtngettext_noop(domain, singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
     kwargs.setdefault('num', num)
     return _tag_kwargs(string, kwargs)
+tngettext_noop = partial(dtngettext_noop, None)
 
 def add_domain(domain, env_path, locale_dir):
     pass
@@ -67,7 +72,7 @@ def domain_functions(domain, *symbols):
       'tngettext': tngettext_noop,
       'add_domain': add_domain,
       }
-    return [_functions(s) for s in symbols]
+    return [_functions[s] for s in symbols]
 
 
 try:
@@ -252,11 +257,15 @@ try:
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     gettext = _ = gettext_noop
+    dgettext = dgettext_noop
     ngettext = ngettext_noop
+    dngettext = dngettext_noop
     tgettext = tag_ = tgettext_noop
+    dtgettext = dtgettext_noop
     tngettext = tngettext_noop
+    dtngettext = dtngettext_noop
 
-    def activate(locale):
+    def activate(locale, env_path=None):
         pass
 
     def deactivate():

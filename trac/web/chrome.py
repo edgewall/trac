@@ -40,7 +40,8 @@ from genshi.filters import Translator
 try:
     from genshi.filters import setup_i18n
 except ImportError:
-    setup_i18n = None
+    def setup_i18n(template, translator):
+        template.filters.insert(0, Translator(translation.gettext))
 
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
@@ -678,8 +679,7 @@ class Chrome(Component):
         if not self.templates:
             def _template_loaded(template):
                 translator = Translator(translation.get_translations())
-                if setup_i18n: ## FIXME see comment near corresponding import
-                    setup_i18n(template, translator)
+                setup_i18n(template, translator)
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
