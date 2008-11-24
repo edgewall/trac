@@ -13,7 +13,6 @@
 
 """Utilities for text translation with gettext."""
 
-from functools import partial
 import re
 import sys 
 try:
@@ -30,16 +29,21 @@ __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop',
            'tgettext', 'tgettext_noop', 'tngettext', 'tngettext_noop']
 
 
-def dgettext_noop(domain, string, **kwargs):
+def gettext_noop(string, **kwargs):
     return kwargs and string % kwargs or string
-gettext_noop = partial(dgettext_noop, None)
+
+def dgettext_noop(domain, string, **kwargs):
+    return gettext_noop(string, **kwargs)
+
 N_ = gettext_noop
 
-def dngettext_noop(domain, singular, plural, num, **kwargs):
+def ngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
     kwargs.setdefault('num', num)
     return string % kwargs
-ngettext_noop = partial(dngettext_noop, None)
+
+def dngettext_noop(domain, singular, plural, num, **kwargs):
+    return ngettext_noop(singular, plural, num, **kwargs)
 
 _param_re = re.compile(r"%\((\w+)\)(?:s|[\d]*d|\d*.?\d*[fg])")
 def _tag_kwargs(trans, kwargs):
@@ -48,15 +52,19 @@ def _tag_kwargs(trans, kwargs):
         trans_elts[i] = kwargs.get(trans_elts[i], '???')
     return tag(*trans_elts)
 
-def dtgettext_noop(domain, string, **kwargs):
+def tgettext_noop(string, **kwargs):
     return kwargs and _tag_kwargs(string, kwargs) or string
-tgettext_noop = partial(dtgettext_noop, None)
 
-def dtngettext_noop(domain, singular, plural, num, **kwargs):
+def dtgettext_noop(domain, string, **kwargs):
+    return tgettext_noop(string, **kwargs)
+
+def tngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
     kwargs.setdefault('num', num)
     return _tag_kwargs(string, kwargs)
-tngettext_noop = partial(dtngettext_noop, None)
+
+def dtngettext_noop(domain, singular, plural, num, **kwargs):
+    return tngettext_noop(singular, plural, num, **kwargs)
 
 def add_domain(domain, env_path, locale_dir):
     pass
