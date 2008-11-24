@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-11-21 23:46+0100\n"
+"PO-Revision-Date: 2008-11-22 13:05+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -1323,32 +1323,32 @@ msgstr "Thème :"
 msgid "Preview:"
 msgstr "Aperçu :"
 
-#: trac/search/web_ui.py:58 trac/search/templates/search.html:10
+#: trac/search/web_ui.py:64 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
 #: trac/templates/theme.html:28
 msgid "Search"
 msgstr "Recherche"
 
-#: trac/search/web_ui.py:100
+#: trac/search/web_ui.py:107
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
 "La requête de recherche est trop courte. Elle doit contenir au moins\"\n"
 "\"%(num)s caractères."
 
-#: trac/search/web_ui.py:102
+#: trac/search/web_ui.py:109
 msgid "Search Error"
 msgstr "Erreur survenue lors de la recherche"
 
-#: trac/search/web_ui.py:137 trac/ticket/query.py:673 trac/ticket/report.py:317
+#: trac/search/web_ui.py:144 trac/ticket/query.py:673 trac/ticket/report.py:317
 msgid "Next Page"
 msgstr "Page suivante"
 
-#: trac/search/web_ui.py:143 trac/ticket/query.py:678 trac/ticket/report.py:321
+#: trac/search/web_ui.py:150 trac/ticket/query.py:678 trac/ticket/report.py:321
 msgid "Previous Page"
 msgstr "Page précédente"
 
-#: trac/search/web_ui.py:185
+#: trac/search/web_ui.py:192
 #, python-format
 msgid "Browse repository path %(path)s"
 msgstr "Explorer le chemin du dépot %(path)s"
@@ -3201,16 +3201,16 @@ msgstr "Il manque \"youngest_rev\" dans le cache metadata"
 msgid "Subversion >= 1.0 required: Found %(version)s"
 msgstr "Subversion >=1.0 nécessaire : %(version)s trouvé"
 
-#: trac/versioncontrol/svn_fs.py:374
+#: trac/versioncontrol/svn_fs.py:377
 msgid "No svn:externals configured in trac.ini"
 msgstr "Pas de svn:externals configuré dans le fichier trac.ini"
 
-#: trac/versioncontrol/svn_fs.py:398
+#: trac/versioncontrol/svn_fs.py:407
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr "%(path)s n'est apparemment pas un dépôt Subversion."
 
-#: trac/versioncontrol/svn_fs.py:655
+#: trac/versioncontrol/svn_fs.py:664
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
@@ -3220,7 +3220,7 @@ msgstr ""
 " révision %(oldrev)s) et la Destination est %(newnode)s (%(newpath)s dans"
 " la révision %(newrev)s)."
 
-#: trac/versioncontrol/svn_fs.py:806
+#: trac/versioncontrol/svn_fs.py:815
 #, python-format
 msgid "svn blame failed: %(error)s"
 msgstr "Echec du svn blame: %(error)s"
@@ -3711,7 +3711,7 @@ msgstr "Supprimer la page"
 msgid "'%(name)s' is not a directory"
 msgstr "%(name)s n'est pas un répertoire valide"
 
-#: trac/wiki/api.py:327
+#: trac/wiki/api.py:342 trac/wiki/templates/wiki_view.html:53
 msgid "no permission to view this wiki page"
 msgstr "pas le droit de voir cette page wiki"
 
@@ -3955,7 +3955,7 @@ msgstr "Voir l'aperçu"
 msgid "Review Changes"
 msgstr "Passer en revue les modifications"
 
-#: trac/wiki/templates/wiki_view.html:46
+#: trac/wiki/templates/wiki_view.html:47
 msgid "Describe"
 msgstr "Description"
 
@@ -3963,27 +3963,33 @@ msgstr "Description"
 msgid "here."
 msgstr "ici."
 
-#: trac/wiki/templates/wiki_view.html:64
+#: trac/wiki/templates/wiki_view.html:49
+msgid "Alternatively, you can also create the page higher in the hierarchy:"
+msgstr ""
+"Il vous est également possible de créer la page plus haut dans la "
+"hiérarchie :"
+
+#: trac/wiki/templates/wiki_view.html:74
 msgid "Edit this page"
 msgstr "Edition de cette page"
 
-#: trac/wiki/templates/wiki_view.html:67
+#: trac/wiki/templates/wiki_view.html:77
 msgid "Create this page"
 msgstr "Création de cette page"
 
-#: trac/wiki/templates/wiki_view.html:69
+#: trac/wiki/templates/wiki_view.html:79
 msgid "Using the template:"
 msgstr "En utilisant le modèle :"
 
-#: trac/wiki/templates/wiki_view.html:72
+#: trac/wiki/templates/wiki_view.html:82
 msgid "(blank page)"
 msgstr "(page vierge)"
 
-#: trac/wiki/templates/wiki_view.html:91
+#: trac/wiki/templates/wiki_view.html:101
 msgid "Delete this version"
 msgstr "Supprimer cette version"
 
-#: trac/wiki/templates/wiki_view.html:93
+#: trac/wiki/templates/wiki_view.html:103
 msgid "Delete page"
 msgstr "Supprimer la page"
 
