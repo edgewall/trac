@@ -20,12 +20,24 @@
         <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
       </h1>
 
-      <div py:if="description" id="description" xml:space="preserve">
-        ${wiki_to_html(context, description)}
-      </div>
+      <form method="get" action="">
+        <div id="prefs" py:if="report.id != -1">
+          <div>
+            <label>
+              Max items per page
+              <input type="text" name="max" size="10" value="${max}" />
+            </label>
+          </div>
+          <div class="buttons">
+            <input type="submit" value="${_('Update')}" />
+          </div>
+        </div>
 
-      <form py:if="report.id != -1 and len(args) > 1" method="get" action="">
-        <fieldset id="filters" >
+        <div py:if="description" id="description" xml:space="preserve">
+          ${wiki_to_html(context, description)}
+        </div>
+
+        <fieldset id="filters" py:if="report.id != -1 and len(args) > 1">
           <legend class="foldable">Arguments</legend>
           <table summary="Report arguments">
             <tbody>

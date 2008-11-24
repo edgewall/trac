@@ -574,3 +574,16 @@ def partition(iterable, order=None):
     if order is None:
         return result
     return [result[key] for key in order]
+
+def as_int(s, default, min=None, max=None):
+    """Convert s to an int and limit it to the given range, or return default
+    if unsuccessful."""
+    try:
+        value = int(s)
+    except (TypeError, ValueError):
+        return default
+    if min is not None and value < min:
+        value = min
+    if max is not None and value > max:
+        value = max
+    return value
