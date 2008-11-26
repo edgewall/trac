@@ -397,6 +397,7 @@ class PermissionSystem(Component):
 
     def expand_actions(self, actions):
         """Helper method for expanding all meta actions."""
+        actions = list(actions)     # Consume actions if it is an iterator
         meta = {}
         for requestor in self.requestors:
             for m in requestor.get_permission_actions():
