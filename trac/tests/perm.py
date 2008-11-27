@@ -123,6 +123,13 @@ class PermissionSystemTestCase(unittest.TestCase):
                     ('jane', 'TEST_ADMIN')]
         for res in self.perm.get_all_permissions():
             self.failIf(res not in expected)
+    
+    def test_expand_actions_iter_7467(self):
+        # Check that expand_actions works with iterators (#7467)
+        perms = set(['EMAIL_VIEW', 'TRAC_ADMIN', 'TEST_DELETE', 'TEST_MODIFY',
+                     'TEST_CREATE', 'TEST_ADMIN'])
+        self.assertEqual(perms, self.perm.expand_actions(['TRAC_ADMIN']))
+        self.assertEqual(perms, self.perm.expand_actions(iter(['TRAC_ADMIN'])))
 
 
 class PermissionCacheTestCase(unittest.TestCase):
