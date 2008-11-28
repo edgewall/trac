@@ -1,3 +1,9 @@
+Trac 0.11.2.1 (November 17, 2008)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11.2.1
+
+ Trac 0.11.2.1 fixes a Python 2.3 incompatibility introduced in Trac 0.11.2.
+ Python 2.4+ users already running Trac 0.11.2 do not need to upgrade.
+  
 Trac 0.11.2 (November 8, 2008)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.2
 
