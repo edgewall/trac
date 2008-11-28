@@ -121,7 +121,7 @@ class Ticket(object):
         cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
                        (tkt_id,))
         for name, value in cursor:
-            if name in custom_fields:
+            if name in custom_fields and value is not None:
                 self.values[name] = value
 
     def __getitem__(self, name):
