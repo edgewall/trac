@@ -78,7 +78,7 @@ def domain_functions(domain, *symbols):
       'tgettext': tgettext_noop,
       'tag_': tgettext_noop,
       'tngettext': tngettext_noop,
-      'add_domain': add_domain,
+      'add_domain': lambda env_path, locale_dir: None,
       }
     return [_functions[s] for s in symbols]
 
@@ -280,7 +280,10 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
         pass
 
     def get_translations():
-        return []
+        # for correctness we should return a NullTranslations subclass,
+        # like the DummyTranslations one can find in genshi/filters/i18n.py, 
+        # but this works just as well for our current needs:
+        return gettext_noop 
 
     def get_available_locales():
         return []
