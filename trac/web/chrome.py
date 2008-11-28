@@ -344,8 +344,14 @@ class Chrome(Component):
 
     def __init__(self):
         import genshi
-        self.env.systeminfo.append(('Genshi',
-                                    get_pkginfo(genshi).get('version')))
+        genshi_version = get_pkginfo(genshi).get('version')
+        self.env.systeminfo.append(('Genshi', genshi_version))
+        try:
+            import babel
+            babel_version = get_pkginfo(babel).get('version')
+            self.env.systeminfo.append(('Babel', babel_version))
+        except ImportError:
+            pass
 
     # IEnvironmentSetupParticipant methods
 
