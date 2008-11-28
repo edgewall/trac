@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-11-21 23:55+0100\n"
+"POT-Creation-Date: 2008-11-22 13:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -714,8 +714,7 @@ msgstr ""
 msgid "directory of the project environment ("
 msgstr ""
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:504
-#: trac/ticket/roadmap.py:820
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:820
 msgid "Milestones"
 msgstr ""
 
@@ -1214,7 +1213,7 @@ msgstr ""
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:199
 #: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:403
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 #: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:176
@@ -1230,7 +1229,7 @@ msgstr ""
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:199
 #: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:403
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 #: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:176
@@ -1393,13 +1392,12 @@ msgstr ""
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
 #: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:100
-#: trac/wiki/web_ui.py:537 trac/wiki/templates/wiki_view.html:32
+#: trac/wiki/web_ui.py:538 trac/wiki/templates/wiki_view.html:32
 msgid "Version"
 msgstr ""
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
 #: trac/ticket/templates/query.html:105
-#: trac/timeline/templates/timeline.html:20
 msgid "and"
 msgstr ""
 
@@ -1719,7 +1717,7 @@ msgstr ""
 
 #: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:53
 #: trac/ticket/templates/query.html:190 trac/ticket/templates/roadmap.html:26
-#: trac/timeline/templates/timeline.html:31
+#: trac/timeline/templates/timeline.html:32
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
 msgstr ""
@@ -2171,6 +2169,10 @@ msgstr ""
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr ""
 
+#: trac/ticket/roadmap.py:504
+msgid "Milestones reached"
+msgstr ""
+
 #: trac/ticket/roadmap.py:628
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
@@ -2235,8 +2237,8 @@ msgid "No differences to show"
 msgstr ""
 
 #: trac/ticket/web_ui.py:753 trac/ticket/web_ui.py:808
-#: trac/ticket/web_ui.py:816 trac/wiki/web_ui.py:366 trac/wiki/web_ui.py:372
-#: trac/wiki/web_ui.py:519 trac/wiki/web_ui.py:533
+#: trac/ticket/web_ui.py:816 trac/wiki/web_ui.py:367 trac/wiki/web_ui.py:373
+#: trac/wiki/web_ui.py:520 trac/wiki/web_ui.py:534
 #, python-format
 msgid "Version %(num)s"
 msgstr ""
@@ -2246,7 +2248,7 @@ msgid "initial"
 msgstr ""
 
 #: trac/ticket/web_ui.py:818 trac/versioncontrol/web_ui/changeset.py:343
-#: trac/wiki/web_ui.py:385
+#: trac/wiki/web_ui.py:386
 msgid "Change"
 msgstr ""
 
@@ -2437,7 +2439,7 @@ msgid "No date set"
 msgstr ""
 
 #: trac/ticket/templates/milestone_view.html:47
-#: trac/timeline/templates/timeline.html:43
+#: trac/timeline/templates/timeline.html:44
 msgid "by"
 msgstr ""
 
@@ -2805,8 +2807,8 @@ msgid ""
 "Ticket URL: <"
 msgstr ""
 
-#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
-#: trac/timeline/templates/timeline.html:16
+#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:11
+#: trac/timeline/templates/timeline.html:17
 msgid "Timeline"
 msgstr ""
 
@@ -2824,22 +2826,25 @@ msgid "%(date)s in Timeline"
 msgstr ""
 
 #: trac/timeline/templates/timeline.html:20
-msgid "View changes from"
+msgid ""
+"[1:View changes from [2:]] [3:]\n"
+"        and [4:[5:] days back][6:]\n"
+"        [7:done by [8:]]"
 msgstr ""
 
-#: trac/timeline/templates/timeline.html:21
-msgid "days back"
+#: trac/timeline/templates/timeline.html:37
+msgid "Today"
 msgstr ""
 
-#: trac/timeline/templates/timeline.html:22
-msgid "done by"
+#: trac/timeline/templates/timeline.html:37
+msgid "Yesterday"
 msgstr ""
 
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 msgid "TracTimeline"
 msgstr ""
 
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 msgid "for information about the timeline view."
 msgstr ""
 
@@ -2992,8 +2997,8 @@ msgid "Rev"
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:88
-#: trac/versioncontrol/web_ui/browser.py:372 trac/wiki/web_ui.py:538
-#: trac/wiki/web_ui.py:564
+#: trac/versioncontrol/web_ui/browser.py:372 trac/wiki/web_ui.py:539
+#: trac/wiki/web_ui.py:565
 msgid "Last Change"
 msgstr ""
 
@@ -3470,7 +3475,7 @@ msgstr ""
 msgid "Page not modified"
 msgstr ""
 
-#: trac/wiki/web_ui.py:89 trac/wiki/web_ui.py:614
+#: trac/wiki/web_ui.py:89 trac/wiki/web_ui.py:616
 msgid "Wiki"
 msgstr ""
 
@@ -3498,63 +3503,77 @@ msgstr ""
 msgid "Invalid Wiki page: %(message)s"
 msgstr ""
 
-#: trac/wiki/web_ui.py:282
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:224
+msgid "currently edited"
+msgstr ""
+
+#: trac/wiki/web_ui.py:283
 msgid "Page not modified, showing latest version."
 msgstr ""
 
-#: trac/wiki/web_ui.py:314
+#: trac/wiki/web_ui.py:315
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:368
+#: trac/wiki/web_ui.py:369
 msgid "Page history"
 msgstr ""
 
-#: trac/wiki/web_ui.py:385
+#: trac/wiki/web_ui.py:386
 msgid "Wiki History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:450
+#: trac/wiki/web_ui.py:451
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr ""
 
-#: trac/wiki/web_ui.py:488
+#: trac/wiki/web_ui.py:489
 #, python-format
 msgid "Page %(name)s not found"
 msgstr ""
 
-#: trac/wiki/web_ui.py:524
+#: trac/wiki/web_ui.py:525
 msgid "View latest version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:528
+#: trac/wiki/web_ui.py:529
 msgid "View parent page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:537
+#: trac/wiki/web_ui.py:538
 msgid "View Latest Version"
 msgstr ""
 
-#: trac/wiki/web_ui.py:543
+#: trac/wiki/web_ui.py:544
 msgid "Up"
 msgstr ""
 
-#: trac/wiki/web_ui.py:559
+#: trac/wiki/web_ui.py:560
 msgid "Start Page"
 msgstr ""
 
-#: trac/wiki/web_ui.py:560
+#: trac/wiki/web_ui.py:561
 msgid "Index"
 msgstr ""
 
-#: trac/wiki/web_ui.py:562
+#: trac/wiki/web_ui.py:563
 msgid "History"
 msgstr ""
 
-#: trac/wiki/web_ui.py:572
+#: trac/wiki/web_ui.py:573
 msgid "Wiki changes"
+msgstr ""
+
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:602
+msgid " edited"
+msgstr ""
+
+#: trac/wiki/web_ui.py:602
+msgid " created"
 msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:22

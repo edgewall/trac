@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
@@ -16,7 +17,7 @@
       <h1>Timeline</h1>
 
       <form id="prefs" method="get" action="">
-       <div>
+       <div i18n:msg="">
         <label>View changes from <input type="text" size="10" name="from" value="${format_date(fromdate)}" /></label> <br />
         and <label><input type="text" size="3" name="daysback" value="$daysback" /> days back</label><br />
         <label>done by <input type="text" size="16" name="author" value="$author" /></label>
@@ -33,7 +34,7 @@
       </form>
 
       <py:for each="day, events in groupby(events, key=lambda e: format_date(e.date))">
-        <h2>${day}: ${day == today and 'Today' or day == yesterday and 'Yesterday' or None}</h2>
+        <h2>${day}: ${day == today and _("Today") or day == yesterday and _("Yesterday") or None}</h2>
         <dl>
           <py:for each="event in events"
             py:with="highlight = precision and precisedate and timedelta(0) &lt;= (event.date - precisedate) &lt; precision">

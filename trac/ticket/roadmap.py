@@ -501,7 +501,7 @@ class MilestoneModule(Component):
 
     def get_timeline_filters(self, req):
         if 'MILESTONE_VIEW' in req.perm:
-            yield ('milestone', _('Milestones'))
+            yield ('milestone', _('Milestones reached'))
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:

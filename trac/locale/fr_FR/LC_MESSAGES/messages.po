@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2008-11-22 13:05+0100\n"
+"PO-Revision-Date: 2008-11-22 13:06+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -817,8 +817,7 @@ msgstr "journal"
 msgid "directory of the project environment ("
 msgstr "répertoire du projet ("
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:504
-#: trac/ticket/roadmap.py:820
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:820
 msgid "Milestones"
 msgstr "Jalons"
 
@@ -1381,7 +1380,7 @@ msgstr "Aucun résultat trouvé."
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:199
 #: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:403
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 #: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:176
@@ -1397,7 +1396,7 @@ msgstr "Note :"
 #: trac/ticket/templates/report_edit.html:49
 #: trac/ticket/templates/report_view.html:199
 #: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:403
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 #: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:176
@@ -1567,13 +1566,12 @@ msgstr "entre"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
 #: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:100
-#: trac/wiki/web_ui.py:537 trac/wiki/templates/wiki_view.html:32
+#: trac/wiki/web_ui.py:538 trac/wiki/templates/wiki_view.html:32
 msgid "Version"
 msgstr "Version"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
 #: trac/ticket/templates/query.html:105
-#: trac/timeline/templates/timeline.html:20
 msgid "and"
 msgstr "et"
 
@@ -1925,7 +1923,7 @@ msgstr "Changements dans les espaces"
 
 #: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:53
 #: trac/ticket/templates/query.html:190 trac/ticket/templates/roadmap.html:26
-#: trac/timeline/templates/timeline.html:31
+#: trac/timeline/templates/timeline.html:32
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
 msgstr "Mise à jour"
@@ -2390,6 +2388,10 @@ msgstr "Jalon %(name)s"
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr "Ticket #%(num)s : %(summary)s"
 
+#: trac/ticket/roadmap.py:504
+msgid "Milestones reached"
+msgstr "Jalons atteints"
+
 #: trac/ticket/roadmap.py:628
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
@@ -2409,7 +2411,7 @@ msgstr "L'id d'un nouveau ticket ne peut être changé."
 
 #: trac/ticket/web_ui.py:246
 msgid "Ticket changes"
-msgstr "Changements d'états du ticket"
+msgstr "Changements d'état des tickets"
 
 #: trac/ticket/web_ui.py:248
 msgid "Ticket details"
@@ -2454,8 +2456,8 @@ msgid "No differences to show"
 msgstr "Pas de différences"
 
 #: trac/ticket/web_ui.py:753 trac/ticket/web_ui.py:808
-#: trac/ticket/web_ui.py:816 trac/wiki/web_ui.py:366 trac/wiki/web_ui.py:372
-#: trac/wiki/web_ui.py:519 trac/wiki/web_ui.py:533
+#: trac/ticket/web_ui.py:816 trac/wiki/web_ui.py:367 trac/wiki/web_ui.py:373
+#: trac/wiki/web_ui.py:520 trac/wiki/web_ui.py:534
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
@@ -2465,7 +2467,7 @@ msgid "initial"
 msgstr "initial"
 
 #: trac/ticket/web_ui.py:818 trac/versioncontrol/web_ui/changeset.py:343
-#: trac/wiki/web_ui.py:385
+#: trac/wiki/web_ui.py:386
 msgid "Change"
 msgstr "Modifications"
 
@@ -2668,7 +2670,7 @@ msgid "No date set"
 msgstr "Pas de date définie"
 
 #: trac/ticket/templates/milestone_view.html:47
-#: trac/timeline/templates/timeline.html:43
+#: trac/timeline/templates/timeline.html:44
 msgid "by"
 msgstr "par"
 
@@ -3051,8 +3053,8 @@ msgstr ""
 "-- \n"
 "Ticket URL : <"
 
-#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
-#: trac/timeline/templates/timeline.html:16
+#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:11
+#: trac/timeline/templates/timeline.html:17
 msgid "Timeline"
 msgstr "Historique"
 
@@ -3070,22 +3072,28 @@ msgid "%(date)s in Timeline"
 msgstr "%(date)s dans l'Historique"
 
 #: trac/timeline/templates/timeline.html:20
-msgid "View changes from"
-msgstr "Afficher les modifications depuis"
+msgid ""
+"[1:View changes from [2:]] [3:]\n"
+"        and [4:[5:] days back][6:]\n"
+"        [7:done by [8:]]"
+msgstr ""
+"[1:Afficher les modifications entre le [2:]] [3:]\n"
+"        et les [4:[5:] jours précédents][6:]\n"
+"        [7:Auteur : [8:]]"
 
-#: trac/timeline/templates/timeline.html:21
-msgid "days back"
-msgstr "jours précédents"
+#: trac/timeline/templates/timeline.html:37
+msgid "Today"
+msgstr "Aujourd'hui"
 
-#: trac/timeline/templates/timeline.html:22
-msgid "done by"
-msgstr "Auteur :"
+#: trac/timeline/templates/timeline.html:37
+msgid "Yesterday"
+msgstr "Hier"
 
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 msgid "TracTimeline"
 msgstr "TracTimeline"
 
-#: trac/timeline/templates/timeline.html:54
+#: trac/timeline/templates/timeline.html:55
 msgid "for information about the timeline view."
 msgstr "pour des informations sur l'Historique"
 
@@ -3248,8 +3256,8 @@ msgid "Rev"
 msgstr "Rév."
 
 #: trac/versioncontrol/templates/browser.html:88
-#: trac/versioncontrol/web_ui/browser.py:372 trac/wiki/web_ui.py:538
-#: trac/wiki/web_ui.py:564
+#: trac/versioncontrol/web_ui/browser.py:372 trac/wiki/web_ui.py:539
+#: trac/wiki/web_ui.py:565
 msgid "Last Change"
 msgstr "Dernière modification"
 
@@ -3744,7 +3752,7 @@ msgstr "Table des Matières"
 msgid "Page not modified"
 msgstr "Page non modifiée"
 
-#: trac/wiki/web_ui.py:89 trac/wiki/web_ui.py:614
+#: trac/wiki/web_ui.py:89 trac/wiki/web_ui.py:616
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -3774,64 +3782,78 @@ msgstr "Le champ '%(field)s' de la page Wiki est invalide : %(message)s"
 msgid "Invalid Wiki page: %(message)s"
 msgstr "Page Wiki invalide : %(message)s"
 
-#: trac/wiki/web_ui.py:282
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:224
+msgid "currently edited"
+msgstr "actuellement éditée"
+
+#: trac/wiki/web_ui.py:283
 msgid "Page not modified, showing latest version."
 msgstr "Page inchangée, version précédente affichée."
 
-#: trac/wiki/web_ui.py:314
+#: trac/wiki/web_ui.py:315
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "La version %(num)s de la page %(name)s n'existe pas"
 
-#: trac/wiki/web_ui.py:368
+#: trac/wiki/web_ui.py:369
 msgid "Page history"
 msgstr "Historique de la page"
 
-#: trac/wiki/web_ui.py:385
+#: trac/wiki/web_ui.py:386
 msgid "Wiki History"
 msgstr "Historique de la page"
 
-#: trac/wiki/web_ui.py:450
+#: trac/wiki/web_ui.py:451
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "La page %(name)s n'existe pas"
 
-#: trac/wiki/web_ui.py:488
+#: trac/wiki/web_ui.py:489
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "La page %(name)s est introuvable"
 
-#: trac/wiki/web_ui.py:524
+#: trac/wiki/web_ui.py:525
 msgid "View latest version"
 msgstr "Voir la dernière version"
 
-#: trac/wiki/web_ui.py:528
+#: trac/wiki/web_ui.py:529
 msgid "View parent page"
 msgstr "Voir la page parente"
 
-#: trac/wiki/web_ui.py:537
+#: trac/wiki/web_ui.py:538
 msgid "View Latest Version"
 msgstr "Voir la dernière version"
 
-#: trac/wiki/web_ui.py:543
+#: trac/wiki/web_ui.py:544
 msgid "Up"
 msgstr "Remonter"
 
-#: trac/wiki/web_ui.py:559
+#: trac/wiki/web_ui.py:560
 msgid "Start Page"
 msgstr "Page d'accueil"
 
-#: trac/wiki/web_ui.py:560
+#: trac/wiki/web_ui.py:561
 msgid "Index"
 msgstr "Index"
 
-#: trac/wiki/web_ui.py:562
+#: trac/wiki/web_ui.py:563
 msgid "History"
 msgstr "Historique"
 
-#: trac/wiki/web_ui.py:572
+#: trac/wiki/web_ui.py:573
 msgid "Wiki changes"
-msgstr "Modification Wiki"
+msgstr "Modifications des pages Wiki"
+
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:602
+msgid " edited"
+msgstr " modifiée"
+
+#: trac/wiki/web_ui.py:602
+msgid " created"
+msgstr " créée"
 
 #: trac/wiki/templates/wiki_delete.html:22
 msgid "Delete"
