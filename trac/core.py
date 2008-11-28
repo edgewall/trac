@@ -207,6 +207,16 @@ class ComponentManager(object):
                                 (cls, e))
         return component
 
+    def disable_component(self, component):
+        """Force a component to be disabled.
+        
+        The argument `component` can be a class or an instance.
+        """
+        if not isinstance(component, type):
+            component = component.__class__
+        self.enabled[component] = False
+        self.components[component] = None
+
     def component_activated(self, component):
         """Can be overridden by sub-classes so that special initialization for
         components can be provided.

@@ -140,9 +140,11 @@ class EnscriptRenderer(Component):
 
         np = NaivePopen(cmdline, content.encode('utf-8'), capturestderr=1)
         if np.errorlevel or np.err:
-            err = 'Running (%s) failed: %s, %s.' % (cmdline, np.errorlevel,
-                                                    np.err)
-            raise Exception, err
+            self.env.disable_component(self)
+            err = "Running enscript failed with (%s, %s), disabling " \
+                  "EnscriptRenderer (command: '%s')" \
+                  % (np.errorlevel, np.err.strip(), cmdline)
+            raise Exception(err)
         odata = np.out
 
         # Strip header and footer
