@@ -158,7 +158,7 @@ class TicketNotifyEmail(NotifyEmail):
         for f in [f['name'] for f in fields if f['type'] != 'textarea']:
             if not tkt.values.has_key(f):
                 continue
-            fval = tkt[f]
+            fval = tkt[f] or ''
             if fval.find('\n') != -1:
                 continue
             idx = 2 * (i % 2)
@@ -178,7 +178,7 @@ class TicketNotifyEmail(NotifyEmail):
             fname = f['name']
             if not tkt.values.has_key(fname):
                 continue
-            fval = tkt[fname]
+            fval = tkt[fname] or ''
             if fname in ['owner', 'reporter']:
                 fval = obfuscate_email_address(fval)
             if f['type'] == 'textarea' or '\n' in unicode(fval):

@@ -100,8 +100,7 @@ class Ticket(object):
 
         self.id = tkt_id
         for i in range(len(std_fields)):
-            value = row[i]
-            if value is not None:
+            if row[i] is not None:
                 self.values[std_fields[i]] = row[i]
         self.time_created = datetime.fromtimestamp(row[len(std_fields)], utc)
         self.time_changed = datetime.fromtimestamp(row[len(std_fields) + 1], utc)
@@ -111,7 +110,7 @@ class Ticket(object):
         cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
                        (tkt_id,))
         for name, value in cursor:
-            if name in custom_fields:
+            if name in custom_fields and value is not None:
                 self.values[name] = value
 
     def __getitem__(self, name):
