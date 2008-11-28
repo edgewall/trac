@@ -41,7 +41,10 @@ try:
     from genshi.filters import setup_i18n
 except ImportError:
     def setup_i18n(template, translator):
-        template.filters.insert(0, Translator(translation.gettext))
+        # another compatibility hack for Genshi trunk, we need a FunctionType
+        def gettext(*args,**kwargs):
+            return translation.gettext(*args, **kwargs)
+        template.filters.insert(0, Translator(gettext))
 
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
