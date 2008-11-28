@@ -188,21 +188,6 @@ class Query(object):
         # TODO: fix after adding time/changetime to the api.py
         cols += ['time', 'changetime']
 
-        # Semi-intelligently remove columns that are restricted to a single
-        # value by a query constraint.
-        for col in [k for k in self.constraints.keys()
-                    if k != 'id' and k in cols]:
-            constraint = self.constraints[col]
-            if len(constraint) == 1 and constraint[0] \
-                    and not constraint[0][0] in ('!', '~', '^', '$'):
-                if col in cols:
-                    cols.remove(col)
-            if col == 'status' and not 'closed' in constraint \
-                    and 'resolution' in cols:
-                cols.remove('resolution')
-        if self.group in cols:
-            cols.remove(self.group)
-
         def sort_columns(col1, col2):
             constrained_fields = self.constraints.keys()
             if 'id' in (col1, col2):
@@ -219,9 +204,24 @@ class Query(object):
         return cols
 
     def get_default_columns(self):
-        all_cols = self.get_all_columns()
+        cols = self.get_all_columns()
+        
+        # Semi-intelligently remove columns that are restricted to a single
+        # value by a query constraint.
+        for col in [k for k in self.constraints.keys()
+                    if k != 'id' and k in cols]:
+            constraint = self.constraints[col]
+            if len(constraint) == 1 and constraint[0] \
+                    and not constraint[0][0] in '!~^$' and col in cols:
+                cols.remove(col)
+            if col == 'status' and not 'closed' in constraint \
+                    and 'resolution' in cols:
+                cols.remove('resolution')
+        if self.group in cols:
+            cols.remove(self.group)
+
         # Only display the first seven columns by default
-        cols = all_cols[:7]
+        cols = cols[:7]
         # Make sure the column we order by is visible, if it isn't also
         # the column we group by
         if not self.order in cols and not self.order == self.group:
