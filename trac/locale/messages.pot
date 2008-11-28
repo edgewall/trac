@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-11-22 16:27+0100\n"
+"POT-Creation-Date: 2008-11-22 13:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1214,7 +1214,7 @@ msgstr ""
 #: trac/ticket/templates/report_view.html:199
 #: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:403
 #: trac/timeline/templates/timeline.html:55
-#: trac/versioncontrol/templates/browser.html:152
+#: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:176
 msgid "Note:"
@@ -1230,7 +1230,7 @@ msgstr ""
 #: trac/ticket/templates/report_view.html:199
 #: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:403
 #: trac/timeline/templates/timeline.html:55
-#: trac/versioncontrol/templates/browser.html:152
+#: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
 #: trac/versioncontrol/templates/revisionlog.html:176
 msgid "See"
@@ -1361,14 +1361,14 @@ msgid "(added by"
 msgstr ""
 
 #: trac/templates/attachment.html:91 trac/templates/diff_view.html:40
-#: trac/versioncontrol/templates/browser.html:114
+#: trac/versioncontrol/templates/browser.html:113
 #: trac/versioncontrol/templates/changeset.html:96
 #: trac/wiki/templates/wiki_view.html:33
 msgid "ago)"
 msgstr ""
 
 #: trac/templates/diff_div.html:53
-#: trac/versioncontrol/templates/browser.html:134
+#: trac/versioncontrol/templates/browser.html:133
 msgid "Property"
 msgstr ""
 
@@ -2652,7 +2652,7 @@ msgid "changed from"
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:63
-#: trac/versioncontrol/templates/browser.html:135
+#: trac/versioncontrol/templates/browser.html:134
 msgid "set to"
 msgstr ""
 
@@ -2974,72 +2974,68 @@ msgstr ""
 msgid "svn blame failed: %(error)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:50
-msgid "Hint: clear the field to view latest revision"
-msgstr ""
-
-#: trac/versioncontrol/templates/browser.html:50
+#: trac/versioncontrol/templates/browser.html:49
 msgid "View revision:"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:60
+#: trac/versioncontrol/templates/browser.html:59
 msgid "Visit:"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:68
+#: trac/versioncontrol/templates/browser.html:67
 msgid "Go!"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:68
+#: trac/versioncontrol/templates/browser.html:67
 msgid "Jump to the chosen preselected path"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:87
+#: trac/versioncontrol/templates/browser.html:86
 #: trac/versioncontrol/templates/revisionlog.html:92
 #: trac/versioncontrol/web_ui/browser.py:621
 msgid "Rev"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:89
+#: trac/versioncontrol/templates/browser.html:88
 #: trac/versioncontrol/web_ui/browser.py:372 trac/wiki/web_ui.py:539
 #: trac/wiki/web_ui.py:565
 msgid "Last Change"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:96
+#: trac/versioncontrol/templates/browser.html:95
 msgid "Parent Directory"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:102
+#: trac/versioncontrol/templates/browser.html:101
 msgid "No files found"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:110
+#: trac/versioncontrol/templates/browser.html:109
 #: trac/wiki/templates/wiki_edit.html:41 trac/wiki/templates/wiki_view.html:30
 msgid "Revision info"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:112
+#: trac/versioncontrol/templates/browser.html:111
 msgid "Revision"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:113
+#: trac/versioncontrol/templates/browser.html:112
 msgid "(checked in by"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:152
+#: trac/versioncontrol/templates/browser.html:151
 msgid "TracBrowser"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:152
+#: trac/versioncontrol/templates/browser.html:151
 msgid "for help on using the browser."
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:163
+#: trac/versioncontrol/templates/browser.html:162
 msgid "View changes..."
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:163
+#: trac/versioncontrol/templates/browser.html:162
 msgid "Select paths and revs for Diff"
 msgstr ""
 
