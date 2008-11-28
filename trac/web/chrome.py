@@ -226,6 +226,12 @@ class ITemplateProvider(Interface):
         """
 
 
+# Mappings for removal of control characters
+_translate_nop = "".join([chr(i) for i in range(256)])
+_invalid_control_chars = "".join([chr(i) for i in range(32)
+                                  if i not in [0x09, 0x0a, 0x0d]])
+
+    
 class Chrome(Component):
     """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
@@ -716,12 +722,14 @@ class Chrome(Component):
         })
 
         try:
-            return stream.render(method, doctype=doctype)
+            output = stream.render(method, doctype=doctype)
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links
             req.chrome['scripts'] = scripts
             raise
+        
+        return output.translate(_translate_nop, _invalid_control_chars)
 
     # E-mail formatting utilities
 
@@ -781,4 +789,3 @@ class Chrome(Component):
                                               data)
             return stream
         return inner
-
