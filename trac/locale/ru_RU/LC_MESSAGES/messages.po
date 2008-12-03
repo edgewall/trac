@@ -55,7 +55,7 @@ msgstr "Вернуться к %(parent)s"
 #: trac/attachment.py:474
 #, fuzzy
 msgid " attached to "
-msgstr "Вложение"
+msgstr " прикреплено к "
 
 #: trac/attachment.py:513
 #, python-format
@@ -110,53 +110,63 @@ msgid "Original Format"
 msgstr "Исходный формат"
 
 #: trac/env.py:404
+#, fuzzy
 msgid "Can only backup sqlite databases"
-msgstr ""
+msgstr "Может быть создана резервная копия только для баз sqlite"
 
 #: trac/env.py:489
+#, fuzzy
 msgid "Database newer than Trac version"
-msgstr ""
+msgstr "Версия базы данных новее нежели версия Trac"
 
 #: trac/env.py:501
-#, python-format
+#, fuzzy, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
-msgstr ""
+msgstr "Не найден модуль обновления для версии %(num)i (%(version)s.py)"
 
 #: trac/env.py:546
+#, fuzzy
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
-msgstr ""
+msgstr "Пропущена переменная окружения \"TRAC_ENV\". Trac требуется, чтобы данная переменная"
+" указывала на существующий путь к окружению Trac."
 
 #: trac/env.py:578
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
-msgstr ""
+msgstr "Требуется обновление окружения Trac.\n"
+"\n"
+"Выполните \"trac-admin %(path)s upgrade\""
 
 #: trac/notification.py:216
-#, python-format
+#, fuzzy, python-format
 msgid "Invalid email encoding setting: %s"
-msgstr ""
+msgstr "Неверная настройка кодировки email: %s"
 
 #: trac/notification.py:248
+#, fuzzy
 msgid "Header length is too short"
-msgstr ""
+msgstr "Слишком маленькая длина заголовка"
 
 #: trac/notification.py:318
+#, fuzzy
 msgid "TLS enabled but server does not support TLS"
-msgstr ""
+msgstr "Включена опция TLS, однако сервер не поддерживает TLS"
 
 #: trac/notification.py:390
+#, fuzzy
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-msgstr ""
+msgstr "Карточка содержит символы в кодировке отличной от ASCII. Пожалуйста, измените настройку кодировки"
 
 #: trac/perm.py:47
 #, python-format
+#, fuzzy
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr ""
+msgstr "Для осуществления данной операции над %(resource)s требуются права доступа %(perm)s"
 
 #: trac/perm.py:49
 #, python-format
@@ -164,8 +174,9 @@ msgid "%(perm)s privileges are required to perform this operation"
 msgstr "Для данного действия требуются права доступа %(perm)s"
 
 #: trac/perm.py:52
+#, fuzzy
 msgid "Insufficient privileges to perform this operation."
-msgstr ""
+msgstr "Для осуществления данной операции недостаточно прав доступа."
 
 #: trac/perm.py:318
 #, python-format
@@ -173,14 +184,14 @@ msgid "%(name)s is not a valid action."
 msgstr "Недопустимое действие: %(name)s"
 
 #: trac/resource.py:329
-#, python-format
+#, fuzzy, python-format
 msgid " at version %(version)s"
-msgstr ""
+msgstr " в версии %(version)s"
 
 #: trac/admin/console.py:1143
-#, python-format
+#, fuzzy, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr ""
+msgstr "hotcopy не может переписать существующую '%(dest)s'"
 
 #: trac/admin/web_ui.py:66
 msgid "Admin"
@@ -272,7 +283,7 @@ msgstr "Права"
 #: trac/admin/web_ui.py:310
 #, fuzzy
 msgid "All upper-cased tokens are reserved for permission names"
-msgstr "Все слова в верхенм регистре зарезервированы под наименование прав"
+msgstr "Все слова в верхенм регистре зарезервированы под наименование прав доступа"
 
 #: trac/admin/web_ui.py:317
 msgid "Unknown action"
@@ -367,7 +378,7 @@ msgid ""
 "                [1:WikiFormatting]\n"
 "                here):"
 msgstr ""
-"Description (Здесь можно использовать\n"
+"Описание (здесь можно использовать\n"
 "                [1:WikiFormatting])"
 
 #: trac/admin/templates/admin_components.html:55
@@ -383,14 +394,14 @@ msgstr ""
 #: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
 #: trac/wiki/templates/wiki_edit.html:133
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: trac/admin/templates/admin_components.html:56
 #: trac/admin/templates/admin_enums.html:24
 #: trac/admin/templates/admin_milestones.html:66
 #: trac/admin/templates/admin_versions.html:46
 msgid "Save"
-msgstr ""
+msgstr "Сохранить"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
@@ -431,7 +442,7 @@ msgstr "По умолчанию"
 #: trac/admin/templates/admin_perms.html:93
 #: trac/admin/templates/admin_versions.html:93
 msgid "Remove selected items"
-msgstr ""
+msgstr "Удалить выделенные элементы"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
@@ -494,7 +505,7 @@ msgstr "журнал"
 
 #: trac/admin/templates/admin_logging.html:49
 msgid "directory of the project environment ("
-msgstr "директории окружения проекта"
+msgstr "директория окружения проекта"
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
 msgid "Milestones"
@@ -641,12 +652,14 @@ msgid "Upload a plugin packaged as Python egg."
 msgstr "Принять плагин упакованный в яйцо питона"
 
 #: trac/admin/templates/admin_plugins.html:37
+#, fuzzy
 msgid "Install"
-msgstr ""
+msgstr "Установить"
 
 #: trac/admin/templates/admin_plugins.html:49
+#, fuzzy
 msgid "Uninstall"
-msgstr ""
+msgstr "Удалить"
 
 #: trac/admin/templates/admin_plugins.html:59 trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:97
@@ -701,40 +714,42 @@ msgid "Released"
 msgstr "Выпущена"
 
 #: trac/db/api.py:98
-#, python-format
+#, fuzzy, python-format
 msgid "Unsupported database type \"%(scheme)s\""
-msgstr ""
+msgstr "Неподдерживаемый тип базы данных \"%(scheme)s\""
 
 #: trac/db/api.py:121
+#, fuzzy
 msgid "Database connection string must start with scheme:/"
-msgstr ""
+msgstr "Строка соединения с базой данных должна начинаться с имени схемы (scheme:/)"
 
 #: trac/db/pool.py:113
-#, python-format
+#, fuzzy, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr ""
+msgstr "Невозможно соединиться с базой данных в течении %(time)d секунд"
 
 #: trac/db/sqlite_backend.py:133
-#, python-format
+#, fuzzy, python-format
 msgid "Database already exists at %(path)s"
-msgstr ""
+msgstr "База данных по пути %(path)s уже существует"
 
 #: trac/db/sqlite_backend.py:161
 #, fuzzy, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr ""
+msgstr "Не найден путь к базе данных \"%(path)s\""
 
 #: trac/db/sqlite_backend.py:170
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
-msgstr ""
+msgstr "Пользователю %(user)s трубуются права на чтение _и_ на запись к файлу базы данных "
+"%(path)s и директории, в которой она находится."
 
 #: trac/mimeview/api.py:553 trac/mimeview/api.py:563
-#, python-format
+#, fuzzy, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr ""
+msgstr "Нет доступного MIME преобразования из %(old)s в %(new)s"
 
 #: trac/mimeview/patch.py:55
 msgid "Invalid unified diff content"
@@ -747,13 +762,14 @@ msgid ""
 msgstr ""
 
 #: trac/mimeview/rst.py:60
+#, fuzzy
 msgid "Docutils not found"
-msgstr ""
+msgstr "Не найден пакет Docutils"
 
 #: trac/mimeview/rst.py:62
-#, python-format
+#, fuzzy, python-format
 msgid "Docutils version >= %(version)s required, %(found)s found"
-msgstr ""
+msgstr "Требуется пакет Docutils версии >= %(version)s, найден пакет версии %(found)s"
 
 #: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:16
 msgid "Preferences"
@@ -863,8 +879,9 @@ msgid "Example: The current time is"
 msgstr "Пример: текущее время:"
 
 #: trac/prefs/templates/prefs_datetime.html:29
+#, fuzzy
 msgid "(UTC)."
-msgstr ""
+msgstr "(по Гринвичу, UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:30
 msgid "In"
@@ -898,8 +915,9 @@ msgid "Full name:"
 msgstr "Полное имя:"
 
 #: trac/prefs/templates/prefs_general.html:20
+#, fuzzy
 msgid "Email address:"
-msgstr ""
+msgstr "Адрес email:"
 
 #: trac/prefs/templates/prefs_general.html:26
 msgid ""
@@ -946,11 +964,12 @@ msgstr " о горячих клавишах."
 #: trac/prefs/templates/prefs_language.html:14
 #, fuzzy
 msgid "Language:"
-msgstr "Управлять"
+msgstr "Язык:"
 
 #: trac/prefs/templates/prefs_language.html:16
+#, fuzzy
 msgid "default language"
-msgstr ""
+msgstr "язык по умолчанию"
 
 #: trac/prefs/templates/prefs_language.html:21
 #, fuzzy
@@ -970,8 +989,9 @@ msgid ""
 msgstr ""
 
 #: trac/prefs/templates/prefs_pygments.html:9
+#, fuzzy
 msgid "Pygments Theme"
-msgstr ""
+msgstr "Тема Pygments"
 
 #: trac/prefs/templates/prefs_pygments.html:36
 msgid ""
@@ -1157,8 +1177,9 @@ msgid "Add Attachment to"
 msgstr "Добавить вложение к"
 
 #: trac/templates/attachment.html:20
+#, fuzzy
 msgid "(size limit"
-msgstr ""
+msgstr "(максимальный размер"
 
 #: trac/templates/attachment.html:25
 msgid "Attachment Info"
@@ -1347,30 +1368,40 @@ msgid "Create"
 msgstr "Создано"
 
 #: trac/templates/error.html:99
+#, fuzzy
 msgid "Oops…"
-msgstr ""
+msgstr "Упс…"
 
 #: trac/templates/error.html:101
+#, fuzzy
 msgid "Trac detected an internal error:"
-msgstr ""
+msgstr "Обнаружена внутренняя ошибка Trac:"
 
 #: trac/templates/error.html:106
+#, fuzzy
 msgid ""
 "There was an internal error in Trac. It is recommended\n"
 "              that you inform your local"
-msgstr ""
+msgstr "Обнаружена внутренняя ошибка Trac. Рекомендуется\n"
+"              информировать вашего локального"
 
 #: trac/templates/error.html:108
+#, fuzzy
 msgid ""
 "Trac\n"
 "              administrator"
 msgstr ""
+"Trac\n"
+"              администратора"
 
 #: trac/templates/error.html:109
+#, fuzzy
 msgid ""
 "and give him all the information he needs to\n"
 "              reproduce the issue."
 msgstr ""
+"и предоставить ему всю информацию, которая может потребоваться\n"
+"              для воспроизведения данной ошибки."
 
 #: trac/templates/error.html:114
 msgid "To that end, you could"
@@ -3215,12 +3246,12 @@ msgstr ""
 #: trac/web/auth.py:92
 #, fuzzy
 msgid "Logout"
-msgstr "выход"
+msgstr "Выход"
 
 #: trac/web/auth.py:95
 #, fuzzy
 msgid "Login"
-msgstr "вход"
+msgstr "Вход"
 
 #: trac/web/auth.py:137
 #, python-format
@@ -3238,8 +3269,9 @@ msgid "Next %(label)s"
 msgstr ""
 
 #: trac/wiki/api.py:325
+#, fuzzy
 msgid "no permission to view this wiki page"
-msgstr ""
+msgstr "нет прав на просмотр этой страницы вики"
 
 #: trac/wiki/formatter.py:133
 #, fuzzy, python-format
@@ -3358,14 +3390,14 @@ msgid "This is the only version the page, so the page will be removed completely
 msgstr "Это единственная версия, страница будет окончательно удалена."
 
 #: trac/wiki/templates/wiki_diff.html:16
-#, python-format
+#, fuzzy, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
-msgstr ""
+msgstr "Удаление версий с %(old_version)d по %(version)d"
 
 #: trac/wiki/templates/wiki_diff.html:17
-#, python-format
+#, fuzzy, python-format
 msgid "Delete version %(version)d"
-msgstr ""
+msgstr "Удалить версию %(version)d"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
@@ -3489,4 +3521,3 @@ msgstr "Удалить данную версию"
 #: trac/wiki/templates/wiki_view.html:86
 msgid "Delete page"
 msgstr "Удалить страницу"
-
