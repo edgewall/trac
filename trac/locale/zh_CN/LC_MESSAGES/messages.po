@@ -1553,11 +1553,11 @@ msgstr "空字符变化"
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
-msgstr "升级"
+msgstr "更新结果"
 
 #: trac/templates/macros.html:138 trac/templates/macros.html:151
 msgid "HTML preview not available"
-msgstr "不能HTML预览"
+msgstr "HTML预览功能不可用"
 
 #: trac/templates/macros.html:140
 msgid "since the file size exceeds"
@@ -1577,7 +1577,7 @@ msgstr "尝试"
 
 #: trac/templates/macros.html:147
 msgid "downloading"
-msgstr "下载中"
+msgstr "下载"
 
 #: trac/templates/macros.html:147
 msgid "the file instead."
@@ -2215,12 +2215,12 @@ msgstr ""
 #: trac/ticket/templates/milestone_view.html:30
 #: trac/ticket/templates/roadmap.html:43
 msgid "late"
-msgstr "后"
+msgstr "延期"
 
 #: trac/ticket/templates/milestone_view.html:33
 #: trac/ticket/templates/roadmap.html:46
 msgid "Due in"
-msgstr "预期于"
+msgstr "剩余"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:50
@@ -2230,7 +2230,7 @@ msgstr "没有设置日期"
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:42
 msgid "by"
-msgstr "由"
+msgstr "操作者"
 
 #: trac/ticket/templates/milestone_view.html:58
 msgid "(none)"
