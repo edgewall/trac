@@ -310,7 +310,9 @@ class RoadmapModule(Component):
     # IPermissionRequestor methods
 
     def get_permission_actions(self):
-        return ['ROADMAP_VIEW']
+        actions = ['MILESTONE_CREATE', 'MILESTONE_DELETE', 'MILESTONE_MODIFY',
+                   'MILESTONE_VIEW', 'ROADMAP_VIEW']
+        return ['ROADMAP_VIEW'] + [('ROADMAP_ADMIN', actions)]
 
     # IRequestHandler methods
 
@@ -494,8 +496,7 @@ class MilestoneModule(Component):
     def get_permission_actions(self):
         actions = ['MILESTONE_CREATE', 'MILESTONE_DELETE', 'MILESTONE_MODIFY',
                    'MILESTONE_VIEW']
-        return actions + [('MILESTONE_ADMIN', actions),
-                          ('ROADMAP_ADMIN', actions)]
+        return actions + [('MILESTONE_ADMIN', actions)]
 
     # ITimelineEventProvider methods
 
