@@ -191,7 +191,7 @@ class TimelineModule(Component):
         else:
             req.session['timeline.daysback'] = daysback
             req.session['timeline.author'] = author
-            html_context = Context.from_request(req, absurls=True)
+            html_context = Context.from_request(req)
             html_context.set_hints(wiki_flavor='oneliner', 
                                    shorten_lines=self.abbreviated_messages)
             data['context'] = html_context
