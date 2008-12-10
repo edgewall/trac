@@ -294,7 +294,7 @@ class ReportModule(Component):
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': title, 'description': description,
-                'max': limit, 'args': args,
+                'max': limit, 'args': args, 'show_args_form': False,
                 'message': None, 'paginator':None}
 
         try:
@@ -502,8 +502,9 @@ class ReportModule(Component):
                             del req.session[var]
                 except (ValueError, KeyError):
                     pass
-            if len(data['args']) > 1:
-                add_script(req, 'common/js/folding.js')
+                if set(data['args']) - set(['USER']):
+                    data['show_args_form'] = True
+                    add_script(req, 'common/js/folding.js')
             if missing_args:
                 add_warning(req, _(
                     'The following arguments are missing: %(args)s',

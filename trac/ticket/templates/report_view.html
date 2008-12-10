@@ -7,7 +7,7 @@
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
-    <script type="text/javascript" py:if="report.id != -1 and len(args) > 1">
+    <script type="text/javascript" py:if="show_args_form">
       jQuery(document).ready(function($) {
         $("fieldset legend").enableFolding(false);
       });
@@ -37,13 +37,13 @@
           ${wiki_to_html(context, description)}
         </div>
 
-        <fieldset id="filters" py:if="report.id != -1 and len(args) > 1">
+        <fieldset id="filters" py:if="show_args_form">
           <legend class="foldable">Arguments</legend>
           <table summary="Report arguments">
             <tbody>
               <tr style="height: 1px"><td colspan="2"></td></tr>
             </tbody>
-            <tbody py:for="(name, value) in args.iteritems()" py:if="name != 'USER'">
+            <tbody py:for="(name, value) in sorted(args.items())" py:if="name != 'USER'">
               <tr>
                 <th scope="row"><label>${name}</label></th>
                 <td class="filter">
