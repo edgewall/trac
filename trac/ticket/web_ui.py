@@ -100,8 +100,8 @@ class TicketModule(Component):
         (''since 0.11'').""")
 
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
-        """Enable the display of all ticket changes in the timeline
-        (''since 0.9'').""")
+        """Enable the display of all ticket changes in the timeline, not only
+        open / close operations (''since 0.9'').""")
 
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
         """Don't accept tickets with a too big description.
@@ -243,9 +243,9 @@ class TicketModule(Component):
 
     def get_timeline_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', _('Ticket changes'))
+            yield ('ticket', _('Opened and closed tickets'))
             if self.timeline_details:
-                yield ('ticket_details', _('Ticket details'), False)
+                yield ('ticket_details', _('Ticket updates'), False)
 
     def get_timeline_events(self, req, start, stop, filters):
         ts_start = to_timestamp(start)
