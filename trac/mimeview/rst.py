@@ -113,9 +113,11 @@ class ReStructuredTextRenderer(Component):
                 text = None
             reference = trac_get_reference(block_text, link, text)
             if reference:
+                if isinstance(state, rst.states.SubstitutionDef):
+                    return [reference]
                 p = nodes.paragraph()
                 p += reference
-                return p
+                return [p]
             # didn't find a match (invalid TracLink),
             # report a warning
             warning = state_machine.reporter.warning(
