@@ -1137,7 +1137,7 @@ class WSGIServer(Server):
     FastCGI server that supports the Web Server Gateway Interface. See
     <http://www.python.org/peps/pep-0333.html>.
     """
-    def __init__(self, application, environ=None, umask=None,
+    def __init__(self, application, environ=None,
                  multithreaded=True, **kw):
         """
         environ, if present, must be a dictionary-like object. Its
