@@ -560,15 +560,23 @@ class TicketModule(Component):
         if global_sequence:
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT max(id) FROM ticket")
-            for max_id, in cursor:
+            cursor.execute("SELECT min(id), max(id) FROM ticket")
+            for (min_id, max_id) in cursor:
+                min_id = int(min_id)
                 max_id = int(max_id)
-                if ticket.id > 1:
-                    add_ticket_link('first', 1)
-                    add_ticket_link('prev', ticket.id - 1)
+                if min_id < ticket.id:
+                    add_ticket_link('first', min_id)
+                    cursor.execute("SELECT max(id) FROM ticket WHERE id < %s",
+                                   (ticket.id,))
+                    for (prev_id,) in cursor:
+                        add_ticket_link('prev', int(prev_id))
                 if ticket.id < max_id:
-                    add_ticket_link('next', ticket.id + 1)
                     add_ticket_link('last', max_id)
+                    cursor.execute("SELECT min(id) FROM ticket WHERE %s < id",
+                                   (ticket.id,))
+                    for (next_id,) in cursor:
+                        add_ticket_link('next', int(next_id))
+                break
 
         add_stylesheet(req, 'common/css/ticket.css')
 
