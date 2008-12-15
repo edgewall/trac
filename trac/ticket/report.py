@@ -411,7 +411,7 @@ class ReportModule(Component):
             for header_group in header_groups:
                 cell_group = []
                 for header in header_group:
-                    value = unicode(result[col_idx])
+                    value = unicode(result[col_idx] or '')
                     cell = {'value': value, 'header': header, 'index': col_idx}
                     col = header['col']
                     col_idx += 1
@@ -669,6 +669,9 @@ class ReportModule(Component):
         def iso_datetime(dt):
             return format_datetime(dt, 'iso8601')
 
+        def string(value):
+            return unicode(value or '')
+        
         col_conversions = {
             'time': iso_time,
             'datetime': iso_datetime,
@@ -678,7 +681,7 @@ class ReportModule(Component):
             'modified': iso_datetime,
         }
 
-        converters = [col_conversions.get(c.strip('_'), unicode) for c in cols]
+        converters = [col_conversions.get(c.strip('_'), string) for c in cols]
 
         writer = csv.writer(req, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])

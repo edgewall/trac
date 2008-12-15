@@ -323,8 +323,8 @@ SELECT p.value AS __color__,
   FROM ticket t
   LEFT JOIN enum p ON p.name = t.priority AND p.type = 'priority'
   WHERE status <> 'closed' 
-  ORDER BY (owner = $USER) DESC, """ + db.cast('p.value', 'int') + 
-  """, milestone, t.type, time
+  ORDER BY (COALESCE(owner, '') = $USER) DESC, """
+  + db.cast('p.value', 'int') + """, milestone, t.type, time
 """))
 
 
