@@ -26,12 +26,12 @@ from trac.attachment import Attachment
 from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
-from trac.util import sorted, embedded_numbers
+from trac.util import embedded_numbers, partition, sorted
 from trac.util.datefmt import utc, utcmax, to_timestamp
 from trac.util.translation import _
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
-           'Component', 'Milestone', 'Version']
+           'Component', 'Milestone', 'Version', 'group_milestones']
 
 
 class Ticket(object):
@@ -741,6 +741,23 @@ class Milestone(object):
                     embedded_numbers(m.name))
         return sorted(milestones, key=milestone_order)
     select = classmethod(select)
+
+
+def group_milestones(milestones, include_completed):
+    """Group milestones into "open with due date", "open with no due date",
+    and possibly "completed". Return a list of (label, milestones) tuples."""
+    def category(m):
+        return m.is_completed and 1 or m.due and 2 or 3
+    open_due_milestones, open_not_due_milestones, \
+        closed_milestones = partition([(m, category(m))
+            for m in milestones], (2, 3, 1))
+    groups = [
+        (_('Open (by due date)'), open_due_milestones),
+        (_('Open (no due date)'), open_not_due_milestones),
+    ]
+    if include_completed:
+        groups.append((_('Closed'), closed_milestones))
+    return groups
 
 
 class Version(object):

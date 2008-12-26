@@ -28,8 +28,11 @@
         <label for="target">Retarget associated tickets to milestone</label>
         <select name="target" id="target">
           <option value="">None</option>
-          <option py:for="m in milestones"
-                  py:if="m.name != milestone.name">${m.name}</option>
+          <optgroup py:for="(label, milestones) in milestone_groups"
+                    py:if="milestones" label="${label}">
+            <option py:for="milestone in milestones"
+                    py:content="milestone.name"></option>
+          </optgroup>
         </select>
       </div>
       <div class="buttons">

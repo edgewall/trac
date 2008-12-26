@@ -35,7 +35,7 @@ from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
                               format_date, format_datetime
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.util.translation import _
-from trac.ticket import Milestone, Ticket, TicketSystem
+from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler
@@ -660,9 +660,13 @@ class MilestoneModule(Component):
     def _render_confirm(self, req, db, milestone):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
 
+        milestones = [m for m in Milestone.select(self.env, db=db)
+                      if m.name != milestone.name
+                      and 'MILESTONE_VIEW' in req.perm(m.resource)]
         data = {
             'milestone': milestone,
-            'milestones': Milestone.select(self.env, False, db)
+            'milestone_groups': group_milestones(milestones,
+                'TICKET_ADMIN' in req.perm)
         }
         return 'milestone_delete.html', data, None
 
@@ -671,14 +675,16 @@ class MilestoneModule(Component):
             'milestone': milestone,
             'date_hint': get_date_format_hint(),
             'datetime_hint': get_datetime_format_hint(),
-            'milestones': [],
+            'milestone_groups': [],
         }
 
         if milestone.exists:
             req.perm(milestone.resource).require('MILESTONE_MODIFY')
-            data['milestones'] = [m for m in
-                                  Milestone.select(self.env, False, db)
-                                  if m.name != milestone.name]
+            milestones = [m for m in Milestone.select(self.env, db=db)
+                          if m.name != milestone.name
+                          and 'MILESTONE_VIEW' in req.perm(m.resource)]
+            data['milestone_groups'] = group_milestones(milestones,
+                'TICKET_ADMIN' in req.perm)
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
 
