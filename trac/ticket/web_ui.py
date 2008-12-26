@@ -34,10 +34,10 @@ from trac.resource import Resource, get_resource_url, \
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator, \
                             ITicketActionController
-from trac.ticket.model import Milestone, Ticket
+from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import get_reporter_id, partition
+from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address
@@ -1137,26 +1137,16 @@ class TicketModule(Component):
                         field['skip'] = False
                         owner_field = field
             elif name == 'milestone':
-                milestones = [(opt, Milestone(self.env, opt))
+                milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
-                milestones = [(opt, m) for opt, m in milestones
+                milestones = [m for m in milestones
                               if 'MILESTONE_VIEW' in req.perm(m.resource)]
-                def category(m):
-                    return m.is_completed and 1 or m.due and 2 or 3
-                open_due_milestones, open_not_due_milestones, \
-                    closed_milestones = partition([(opt, category(m))
-                        for opt, m in milestones], (2, 3, 1))
+                groups = group_milestones(milestones, ticket.exists 
+                    and 'TICKET_ADMIN' in req.perm(ticket.resource))
                 field['options'] = []
                 field['optgroups'] = [
-                    {'label': _('Open (by due date)'), 
-                        'options': open_due_milestones},
-                    {'label': _('Open (no due date)'), 
-                        'options': open_not_due_milestones},
-                ]
-                if ticket.exists and \
-                       'TICKET_ADMIN' in req.perm(ticket.resource):
-                    field['optgroups'].append(
-                        {'label': _('Closed'), 'options': closed_milestones})
+                    {'label': label, 'options': [m.name for m in milestones]}
+                    for (label, milestones) in groups]
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')
