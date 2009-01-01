@@ -33,13 +33,13 @@ class TracError(Exception):
         error message.
         """
         Exception.__init__(self, message)
-        self.msg = message
+        self.message = message
         if title:
             self.title = title
         self.show_traceback = show_traceback
 
     def __unicode__(self):
-        return unicode(self.msg)
+        return unicode(self.message)
 
 class Interface(object):
     """Marker base class for extension point interfaces."""
