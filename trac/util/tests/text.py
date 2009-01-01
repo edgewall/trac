@@ -36,14 +36,6 @@ class ToUnicodeTestCase(unittest.TestCase):
         except ValueError, e:
             self.assertEquals(u, to_unicode(e))
 
-    def test_from_exception_using_str(self):
-        class PermissionError(StandardError):
-            def __str__(self):
-                return u'acc\xe8s interdit'
-        try:
-            raise PermissionError()
-        except PermissionError, e:
-            self.assertEquals(u'acc\xe8s interdit', to_unicode(e))
 
 class ExpandtabsTestCase(unittest.TestCase):
     def test_empty(self):
