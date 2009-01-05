@@ -307,7 +307,7 @@ class WikiSystem(Component):
             pagename, version = pagename.split('@', 1)
         if version and query:
             query = '&' + query[1:]
-        pagename = pagename.rstrip('/')
+        pagename = pagename.rstrip('/') or 'WikiStart'
         if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
                    + fragment

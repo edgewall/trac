@@ -186,12 +186,12 @@ This is a ["Wiki@12"] page link.
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/page?version=12" rel="nofollow">wiki:page@12?</a>
-<a class="missing wiki" href="/wiki/WikiStart?version=12" rel="nofollow">WikiStart@12?</a>
-<a class="missing wiki" href="/wiki/WikiStart?version=12#heading" rel="nofollow">WikiStart@12#heading?</a>
-[<a class="missing wiki" href="/wiki/WikiStart?version=12" rel="nofollow">WikiStart@12?</a>]
-[<a class="missing wiki" href="/wiki/WikiStart?version=12#heading" rel="nofollow">WikiStart@12#heading?</a>]
+<a class="wiki" href="/wiki/WikiStart?version=12">WikiStart@12</a>
+<a class="wiki" href="/wiki/WikiStart?version=12#heading">WikiStart@12#heading</a>
+[<a class="wiki" href="/wiki/WikiStart?version=12">WikiStart@12</a>]
+[<a class="wiki" href="/wiki/WikiStart?version=12#heading">WikiStart@12#heading</a>]
 This is a <a class="missing wiki" href="/wiki/Wiki?version=12" rel="nofollow">Wiki@12?</a> page link.
-<a class="missing wiki" href="/wiki/WikiStart?version=12&amp;format=txt" rel="nofollow">v12 as text?</a>
+<a class="wiki" href="/wiki/WikiStart?version=12&amp;format=txt">v12 as text</a>
 </p>
 ------------------------------
 ============================== WikiPageName with label
@@ -291,9 +291,9 @@ RELATIVE_LINKS_TESTS=u"""
 [../Other see other]
 ------------------------------
 <p>
-<a href="/wiki/Main/Sub/Detail">see detail</a>
-<a href="/wiki/Main">see parent</a>
-<a href="/wiki/Main/Other">see other</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent?</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
 </p>
 ------------------------------
 ============================== Relative to the current page with anchors
@@ -307,14 +307,14 @@ RELATIVE_LINKS_TESTS=u"""
 [../Other/#topic see other]
 ------------------------------
 <p>
-<a href="/wiki/Main/Sub#topic">see topic</a>
-<a href="/wiki/Main/Sub#topic">see topic</a>
-<a href="/wiki/Main/Sub#topic">see topic</a>
-<a href="/wiki/Main/Sub/Detail#topic">see detail</a>
-<a href="/wiki/Main#topic">see parent</a>
-<a href="/wiki/Main#topic">see parent</a>
-<a href="/wiki/Main/Other#topic">see other</a>
-<a href="/wiki/Main/Other#topic">see other</a>
+<a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
+<a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
+<a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail#topic" rel="nofollow">see detail?</a>
+<a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent?</a>
+<a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent?</a>
+<a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other?</a>
 </p>
 ------------------------------
 """ # "
@@ -322,6 +322,11 @@ RELATIVE_LINKS_TESTS=u"""
 
 def wiki_setup(tc):
     now = datetime.now(utc)
+    wiki0 = WikiPage(tc.env)
+    wiki0.name = 'Main/Sub'
+    wiki0.text = '--'
+    wiki0.save('joe', 'subpage', '::1', now)
+
     wiki1 = WikiPage(tc.env)
     wiki1.name = 'TestPage'
     wiki1.text = '--'
