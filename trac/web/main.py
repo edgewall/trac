@@ -420,7 +420,7 @@ def dispatch_request(environ, start_response):
             if env.webfrontend:
                 env.systeminfo.append((env.webfrontend, 
                                        environ['trac.web.version']))
-    except TracError, e:
+    except Exception, e:
         env_error = e
 
     req = Request(environ, start_response)
@@ -468,7 +468,10 @@ def _dispatch_request(req, env, env_error):
                 title = e.reason
             else:
                 title = 'Error: %s' % e.reason
-        data = {'title': title, 'type': 'TracError', 'message': e.detail,
+        type_ = 'TracError'
+        if isinstance(e.detail, Exception):
+            type_ = e.detail.__class__.__name__
+        data = {'title': title, 'type': type_, 'message': to_unicode(e.detail),
                 'frames': [], 'traceback': None}
         if e.code == 403 and req.authname == 'anonymous':
             # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
