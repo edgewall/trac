@@ -6,13 +6,14 @@
  * Juanma Barranquero             lektu@terra.es
  * Remy Blank                     remy.blank@pobox.com
  * Christian Boos                 cboos@bct-technology.com
- * Rocky Burt                     rocky.burt@myrealbox.com
  * Toni Brkic                     toni.brkic@switchcore.com
+ * Rocky Burt                     rocky.burt@myrealbox.com
  * Eli Carter                     eli.carter@commprove.com
  * Michele Cella
  * Felix Colins                   felix@keyghost.com
  * Wesley Crucius                 wcrucius@sandc.com
  * dju'                           
+ * Juracy Filho                   juracy@gmail.com
  * Daragh Fitzpatrick             Daragh@i2i-Tech.com
  * Justin Francis
  * Markus Fuchs                   
@@ -42,19 +43,18 @@
  * Tim Moloney                    moloney@mrsl.com
  * Jennifer Murtell               jen@jmurtell.com
  * Jacob Norda                    jacobnorda@gmail.com
- * Juracy Filho                   juracy@gmail.com
+ * Dirkjan Ochtman                dirkjan@ochtman.nl
  * Cap Petschulat                 cap@cdres.com
+ * pkou                           pkou@ua.fm
  * Nicholas Riley                 sabi
- * Manuzhai                       manuzhai@gmail.com
  * Armin Ronacher (mitsuhiko)     armin.ronacher@active-4.com
  * Mark Rowe                      mark.rowe@bdash.net.nz
- * Odd Simon Simonsen             simon-code@bvnetwork.no
  * Olliver Rutherfurd             ollie
- * pkou                           pkou@ua.fm
  * Andres Salomon                 dilinger@athenacr.com
  * Michael Scherer                misc@mandrake.org
  * Andreas Schrattenecker         vittorio
  * Emmeran Seehuber               rototor@rototor.de
+ * Odd Simon Simonsen             simon-code@bvnetwork.no
  * Noah Slater                    nslater@gmail.com
  * Bill Soudan                    bill@soudan.net
  * Ludvig Strigeus                
