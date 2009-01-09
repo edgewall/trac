@@ -468,10 +468,11 @@ def _dispatch_request(req, env, env_error):
                 title = e.reason
             else:
                 title = 'Error: %s' % e.reason
-        type_ = 'TracError'
-        if isinstance(e.detail, Exception):
-            type_ = e.detail.__class__.__name__
-        data = {'title': title, 'type': type_, 'message': to_unicode(e.detail),
+        message = to_unicode(e.detail)
+        if isinstance(e.detail, Exception) and \
+                not isinstance(e.detail, TracError):
+            message = '%s: %s' % (e.detail.__class__.__name__, message)
+        data = {'title': title, 'type': 'TracError', 'message': message,
                 'frames': [], 'traceback': None}
         if e.code == 403 and req.authname == 'anonymous':
             # TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
