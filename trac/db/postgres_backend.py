@@ -74,23 +74,23 @@ class PostgreSQLConnector(Component):
         cnx.commit()
 
     def to_sql(self, table):
-        sql = ["CREATE TABLE %s (" % table.name]
+        sql = ['CREATE TABLE "%s" (' % table.name]
         coldefs = []
         for column in table.columns:
             ctype = column.type
             if column.auto_increment:
-                ctype = "SERIAL"
+                ctype = 'SERIAL'
             if len(table.key) == 1 and column.name in table.key:
-                ctype += " PRIMARY KEY"
-            coldefs.append("    %s %s" % (column.name, ctype))
+                ctype += ' PRIMARY KEY'
+            coldefs.append('    "%s" %s' % (column.name, ctype))
         if len(table.key) > 1:
-            coldefs.append("    CONSTRAINT %s_pk PRIMARY KEY (%s)"
-                           % (table.name, ','.join(table.key)))
+            coldefs.append('    CONSTRAINT "%s_pk" PRIMARY KEY ("%s")'
+                           % (table.name, '","'.join(table.key)))
         sql.append(',\n'.join(coldefs) + '\n)')
         yield '\n'.join(sql)
         for index in table.indices:
             unique = index.unique and 'UNIQUE' or ''
-            yield "CREATE %s INDEX %s_%s_idx ON %s (%s)" % (unique, table.name, 
+            yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % (unique, table.name, 
                    '_'.join(index.columns), table.name, ','.join(index.columns))
 
 
