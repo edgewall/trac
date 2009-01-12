@@ -195,9 +195,9 @@
       <script type="text/javascript">
         var properties={
         <py:for each="(field_name, field), sep in separated(fields.iteritems())">
-          $field_name: { type: "$field.type", label: "$field.label"
+          $field_name: { type: "${javascript_quote(field.type)}", label: "${javascript_quote(field.label)}"
           <py:if test="'options' in field">, options: [
-            <py:for each="option, sep in separated(field.options)">"$option"$sep
+            <py:for each="option, sep in separated(field.options)">"${javascript_quote(option)}"$sep
             </py:for>]
           </py:if>}$sep
         </py:for>
@@ -206,7 +206,7 @@
         <py:for each="(type_name, type_modes), sep in separated(modes.iteritems())">
           $type_name: [
           <py:for each="mode, sep in separated(type_modes)">
-            {text: "$mode.name", value: "$mode.value" }$sep
+            {text: "${javascript_quote(mode.name)}", value: "${javascript_quote(mode.value)}"}$sep
           </py:for>
             ]$sep
         </py:for>

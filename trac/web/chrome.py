@@ -62,7 +62,8 @@ from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
 from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
-                           shorten_line, unicode_quote_plus, to_unicode
+                           shorten_line, unicode_quote_plus, to_unicode, \
+                           javascript_quote
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date, utc
 from trac.util.translation import _
@@ -327,6 +328,7 @@ class Chrome(Component):
         'groupby': compat.py_groupby, # http://bugs.python.org/issue2246
         'http_date': http_date,
         'istext': presentation.istext,
+        'javascript_quote': javascript_quote,
         'ngettext': translation.ngettext,
         'paginate': presentation.paginate,
         'partial': partial,
