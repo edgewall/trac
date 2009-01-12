@@ -63,6 +63,12 @@ def to_unicode(text, charset=None):
         except UnicodeError:
             return unicode(text, locale.getpreferredencoding(), 'replace')
 
+def javascript_quote(text):
+    """Quote strings for inclusion in javascript"""
+    return text.replace('\\', '\\\\').replace('\r', '\\r') \
+               .replace('\n', '\\n').replace('"', '\\"') \
+               .replace("'", "\\'")
+
 def unicode_quote(value, safe='/'):
     """A unicode aware version of urllib.quote"""
     return quote(value.encode('utf-8'), safe)
