@@ -63,6 +63,9 @@ def to_unicode(text, charset=None):
         except UnicodeError:
             return unicode(text, locale.getpreferredencoding(), 'replace')
 
+def exception_to_unicode(e):
+    return '%s: %s' % (e.__class__.__name__, to_unicode(e))
+
 def javascript_quote(text):
     """Quote strings for inclusion in javascript"""
     return text.replace('\\', '\\\\').replace('\r', '\\r') \

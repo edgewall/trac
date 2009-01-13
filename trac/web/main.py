@@ -42,7 +42,7 @@ from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
                       arity
 from trac.util.compat import partial, reversed
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
-from trac.util.text import shorten_line, to_unicode
+from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import _
 from trac.web.api import *
 from trac.web.chrome import Chrome
@@ -443,10 +443,10 @@ def _dispatch_request(req, env, env_error):
                 title = e.reason
             else:
                 title = 'Error: %s' % e.reason
-        message = to_unicode(e.detail)
-        if isinstance(e.detail, Exception) and \
-                not isinstance(e.detail, TracError):
-            message = '%s: %s' % (e.detail.__class__.__name__, message)
+        message = e.detail
+        if isinstance(e.detail, Exception):
+            # Note that e.detail can't be a TracError, see HTTPException
+            message = exception_to_unicode(e.detail)
         data = {'title': title, 'type': 'TracError', 'message': message,
                 'frames': [], 'traceback': None}
         if e.code == 403 and req.authname == 'anonymous':
