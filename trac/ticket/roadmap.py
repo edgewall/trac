@@ -605,7 +605,7 @@ class MilestoneModule(Component):
         milestone.description = req.args.get('description', '')
 
         due = req.args.get('duedate', '')
-        milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
+        milestone.due = due and parse_date(due, tzinfo=req.tz) or None
 
         completed = req.args.get('completeddate', '')
         retarget_to = req.args.get('target')
@@ -619,17 +619,17 @@ class MilestoneModule(Component):
 
         # -- check the name
         if new_name:
-            # check that the milestone doesn't already exists
-            # FIXME: the whole .exists business needs to be clarified (#4130)
-            #        and should behave like a WikiPage does in this respect.
-            try:
-                test_milestone = Milestone(self.env, new_name, db)
-                if not test_milestone.exists:
-                    # then an exception should have been raised
+            if new_name != old_name:
+                # check that the milestone doesn't already exists
+                # FIXME: the whole .exists business needs to be clarified
+                #        (#4130) and should behave like a WikiPage does in
+                #        this respect.
+                try:
+                    other_milestone = Milestone(self.env, new_name, db)
                     warn(_('Milestone "%(name)s" already exists, please '
                            'choose another name', name=new_name))
-            except ResourceNotFound:
-                pass
+                except ResourceNotFound:
+                    pass
         else:
             warn(_('You must provide a name for the milestone.'))
 
