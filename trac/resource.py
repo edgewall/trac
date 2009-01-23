@@ -339,6 +339,25 @@ def get_resource_shortname(env, resource):
 def get_resource_summary(env, resource):
     return get_resource_description(env, resource, 'summary')
 
+def get_relative_resource(resource, path=''):
+    """Build a Resource relative to a reference resource.
+    
+    :param path: path leading to another resource within the same realm.
+    """
+    if path in (None, '', '.'):
+        return resource
+    else:
+        base = unicode(path[0] != '/' and resource.id or '').split('/')
+        for comp in path.split('/'):
+            if comp in ('.', ''):
+                continue
+            elif comp == '..':
+                if base:
+                    base.pop()
+            elif comp:
+                base.append(comp)
+        return resource(id=base and '/'.join(base) or None)
+
 def get_relative_url(env, resource, href, path='', **kwargs):
     """Build an URL relative to a resource given as reference.
 
@@ -394,20 +413,8 @@ def get_relative_url(env, resource, href, path='', **kwargs):
     '/trac.cgi/wiki/Main?action=diff&version=3'
 
     """
-    if path in (None, '', '.'):
-        return get_resource_url(env, resource, href, **kwargs)
-    else:
-        base = unicode(path[0] != '/' and resource.id or '').split('/')
-        for comp in path.split('/'):
-            if comp in ('.', ''):
-                continue
-            elif comp == '..':
-                if base:
-                    base.pop()
-            elif comp:
-                base.append(comp)
-        return get_resource_url(env, resource(id=base and '/'.join(base) or
-                                              None), href, **kwargs)
+    return get_resource_url(env, get_relative_resource(resource, path),
+                            href, **kwargs)
 
 def render_resource_link(env, context, resource, format='default'):
     """Utility for generating a link `Element` to the given resource.

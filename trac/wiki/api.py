@@ -306,7 +306,7 @@ class WikiSystem(Component):
             pagename, version = pagename.split('@', 1)
         if version and query:
             query = '&' + query[1:]
-        pagename = pagename.rstrip('/')
+        pagename = pagename.rstrip('/') or 'WikiStart'
         if formatter.resource and formatter.resource.realm == 'wiki' \
                               and not pagename.startswith('/'):
             prefix = formatter.resource.id

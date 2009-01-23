@@ -31,7 +31,7 @@ from genshi.util import plaintext
 
 from trac.core import *
 from trac.mimeview import *
-from trac.resource import get_relative_url
+from trac.resource import get_relative_resource, get_resource_url
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util.text import shorten_line, to_unicode, \
@@ -379,8 +379,20 @@ class Formatter(object):
             elif path.startswith('/'):
                 path = self.href(path)
             else:
-                path = get_relative_url(self.env, self.resource, self.href,
-                                        path)
+                resource = get_relative_resource(self.resource, path)
+                path = get_resource_url(self.env, resource, self.href)
+                if resource.id:
+                    idx = path.find('?')
+                    if idx >= 0:
+                        if query:
+                            query = path[idx:] + '&' + query.lstrip('?')
+                        else:
+                            query = path[idx:]
+                    target = unicode(resource.id) + query + fragment
+                    if resource.realm == 'wiki':
+                        target = '/' + target   # Avoid wiki page scoping
+                    return self._make_link(resource.realm, target, match,
+                                           label or rel, fullmatch)
                 if '?' in path and query:
                     query = '&' + query.lstrip('?')
             return tag.a(label or rel, href=path + query + fragment)
