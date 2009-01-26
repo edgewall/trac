@@ -41,7 +41,7 @@
                 <a href="${url_of(resource, version=item.version)}" title="View this version">$item.version</a>
               </td>
               <td class="date">${dateinfo(item.date)}</td>
-              <td class="author" title="${item.ipnr and 'IP-Address: ' + item.ipnr or None}">${authorinfo(item.author)}</td>
+              <td class="author" title="${show_ip_addresses and item.ipnr and 'IP-Address: ' + item.ipnr or None}">${authorinfo(item.author)}</td>
               <td class="comment">${wiki_to_oneliner(context(resource), item.comment, shorten=True)}</td>
             </tr>
           </tbody>
