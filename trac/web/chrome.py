@@ -289,6 +289,10 @@ class Chrome(Component):
         """Show email addresses instead of usernames. If false, we obfuscate
         email addresses (''since 0.11'').""")
 
+    show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
+        """Show IP addresses for resource edits (e.g. wiki).
+        (''since 0.11.3'').""")
+
     templates = None
 
     # A dictionary of default context data for templates
@@ -640,6 +644,7 @@ class Chrome(Component):
             'perm': req and req.perm,
             'authname': req and req.authname or '<trac>',
             'show_email_addresses': show_email_addresses,
+            'show_ip_addresses': self.show_ip_addresses,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
 
