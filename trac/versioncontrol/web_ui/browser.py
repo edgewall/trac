@@ -401,7 +401,7 @@ class BrowserModule(Component):
             __slots__ = 'name rev kind isdir path content_length'.split()
             def __init__(self, node):
                 for f in entry.__slots__:
-                    setattr(self, f, getattr(n, f))
+                    setattr(self, f, getattr(node, f))
                 
         entries = [entry(n) for n in node.get_entries()]
         changes = get_changes(repos, [i.rev for i in entries])
