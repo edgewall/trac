@@ -177,6 +177,13 @@
                           </td>
                         </py:when>
 
+                        <py:when test="col == 'milestone'">
+                          <td class="$col" py:attrs="td_attrs">
+                            <a title="View milestone" href="${href.milestone(cell.value)}">$cell.value</a>
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
+
                         <py:otherwise>
                           <td class="$col" py:attrs="td_attrs">$cell.value
                             <hr py:if="fullrow"/>
