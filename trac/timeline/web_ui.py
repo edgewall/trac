@@ -211,8 +211,8 @@ class TimelineModule(Component):
 
         add_stylesheet(req, 'common/css/timeline.css')
         rss_href = req.href.timeline([(f, 'on') for f in filters],
-                                     daysback=90, max=50,
-                                     authors=authors or None, format='rss')
+                                     daysback=90, max=50, authors=authors,
+                                     format='rss')
         add_link(req, 'alternate', rss_href, _('RSS Feed'),
                  'application/rss+xml', 'rss')
 
@@ -224,14 +224,14 @@ class TimelineModule(Component):
         previous_start = format_date(fromdate - timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
-                                                authors=authors or None,
+                                                authors=authors,
                                                 daysback=daysback),
                  _('Previous period'))
         if today - fromdate > timedelta(days=0):
             next_start = format_date(fromdate + timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
-                                                    authors=authors or None,
+                                                    authors=authors,
                                                     daysback=daysback),
                      _('Next period'))
         prevnext_nav(req, 'Period')
