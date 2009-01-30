@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
+import errno
 import locale
 import os
 import re
@@ -77,7 +78,9 @@ def create_unique_file(path):
             if hasattr(os, 'O_BINARY'):
                 flags += os.O_BINARY
             return path, os.fdopen(os.open(path, flags, 0666), 'w')
-        except OSError:
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                raise
             idx += 1
             # A sanity check
             if idx > 100:
