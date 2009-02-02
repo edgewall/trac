@@ -1,7 +1,7 @@
 # Slovenian (Slovenia) translations for Trac.
 # Copyright (C) 2008 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2008.
+# Venčeslav Vezjak <vezjakv@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-07-28 20:28+0200\n"
 "PO-Revision-Date: 2008-08-19 18:04+0100\n"
-"Last-Translator: vezjakv <vezjakv@gmail.com>\n"
+"Last-Translator: Venčeslav Vezjak <vezjakv@gmail.com>\n"
 "Language-Team: sl_SI <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)\n"
 "MIME-Version: 1.0\n"

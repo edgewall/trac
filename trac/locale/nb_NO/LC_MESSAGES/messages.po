@@ -83,7 +83,7 @@ msgstr "Opplasting feilet"
 #: trac/attachment.py:564
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
-msgstr "Vedlegg felt %(field)s er ikke gyldig: %(message)s"
+msgstr "Vedleggsfelt %(field)s er ikke gyldig: %(message)s"
 
 #: trac/attachment.py:568
 #, python-format
@@ -122,7 +122,7 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"Manglende environment variabel \"TRAC_ENV\". Trac behøver denne\"\n"
+"Manglende miljøvariabel \"TRAC_ENV\". Trac behøver denne\"\n"
 "\" variabelen som må peke til et gyldig Trac prosjekt."
 
 #: trac/env.py:578
@@ -139,7 +139,7 @@ msgstr ""
 #: trac/notification.py:216
 #, python-format
 msgid "Invalid email encoding setting: %s"
-msgstr "Ugyldig innstilling for email encoding: %s"
+msgstr "Ugyldig innstilling for email tegnsett: %s"
 
 #: trac/notification.py:248
 msgid "Header length is too short"
@@ -152,8 +152,8 @@ msgstr "TLS er aktivert, men serveren støtter ikke TLS"
 #: trac/notification.py:390
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
 msgstr ""
-"Saken inneholder tegn som ikker ASCII. Vennligst endre innstilling for "
-"encoding"
+"Saken inneholder tegn som ikke er ASCII. Vennligst endre innstilling for "
+"tegnsett"
 
 #: trac/perm.py:47
 #, python-format
@@ -174,7 +174,7 @@ msgstr "Manglende rettigheter til å utføre denne operasjonen."
 #: trac/perm.py:318
 #, python-format
 msgid "%(name)s is not a valid action."
-msgstr "%(name)s er ikke en gyldig endring."
+msgstr "%(name)s er ikke en gyldig rolle."
 
 #: trac/resource.py:329
 #, python-format
@@ -196,7 +196,7 @@ msgstr "Administrasjon"
 
 #: trac/admin/web_ui.py:83
 msgid "No administration panels available"
-msgstr "Ingen panel for administrasjon tilgjengelig"
+msgstr "Ingen administrasjonspanel tilgjengelig"
 
 #: trac/admin/web_ui.py:105
 msgid "Unknown administration panel"
@@ -233,7 +233,7 @@ msgstr "Fil"
 
 #: trac/admin/web_ui.py:221
 msgid "Syslog"
-msgstr "System logg"
+msgstr "Systemlogg"
 
 #: trac/admin/web_ui.py:223
 msgid "Windows event log"
@@ -242,11 +242,11 @@ msgstr "Windows hendelseslogg"
 #: trac/admin/web_ui.py:237
 #, python-format
 msgid "Unknown log type %(type)s"
-msgstr "Ukjent logg type %(type)s"
+msgstr "Ukjent loggtype %(type)s"
 
 #: trac/admin/web_ui.py:238
 msgid "Invalid log type"
-msgstr "Ugyldig logg type"
+msgstr "Ugyldig loggtype"
 
 #: trac/admin/web_ui.py:249
 #, python-format
@@ -259,7 +259,7 @@ msgstr "Ugyldig logg nivå"
 
 #: trac/admin/web_ui.py:266
 msgid "You must specify a log file"
-msgstr "Logg fil må angis"
+msgstr "Loggfil må angis"
 
 #: trac/admin/web_ui.py:267
 msgid "Missing field"
@@ -275,7 +275,7 @@ msgstr "Kun store bokstaver er reservert navn på rettigheter"
 
 #: trac/admin/web_ui.py:317
 msgid "Unknown action"
-msgstr "Ukjent action"
+msgstr "Ukjent rolle"
 
 #: trac/admin/web_ui.py:324
 #, python-format
@@ -479,7 +479,7 @@ msgstr "Logg nivå:"
 
 #: trac/admin/templates/admin_logging.html:44
 msgid "Log file:"
-msgstr "Logg fil:"
+msgstr "Loggfil:"
 
 #: trac/admin/templates/admin_logging.html:47
 msgid "If you specify a relative path, the log file will be stored inside the"
@@ -586,14 +586,14 @@ msgstr "Subjekt:"
 
 #: trac/admin/templates/admin_perms.html:31
 msgid "Action:"
-msgstr "Action:"
+msgstr "Rolle:"
 
 #: trac/admin/templates/admin_perms.html:39
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr ""
-"Tildel rettighet for en action til et subject, som kan være enten en "
+"Tildel rettighet for en rolle til et subject, som kan være enten en "
 "bruker\n"
 "          eller en gruppe."
 
@@ -612,7 +612,7 @@ msgstr "Legg bruker eller gruppe til en eksisterende gruppe."
 #: trac/admin/templates/admin_perms.html:75
 #: trac/ticket/templates/ticket.html:365
 msgid "Action"
-msgstr "Action"
+msgstr "Rolle"
 
 #: trac/admin/templates/admin_plugins.html:17
 msgid "Manage Plugins"
@@ -794,7 +794,7 @@ msgstr ""
 "Denne siden lar deg endre personlige innstillinger for prosjektet.\n"
 "      Disse instillingene lagres på serveren, identifisert via en "
 "sesjonsnøkkel\n"
-"      lagret i en nettleser cookie. Den cookien gjør at dine instillinger"
+"      lagret i en informasjonskapsel. Denne gjør at dine innstillinger"
 " kan\n"
 "      hentes frem ved fremtidige besøk."
 
@@ -1634,7 +1634,7 @@ msgstr "Søk:"
 
 #: trac/templates/theme.html:37
 msgid "Context Navigation"
-msgstr "Context Navigation"
+msgstr "Kontekstnavigasjon"
 
 #: trac/templates/theme.html:46
 msgid "Warning:"
@@ -3307,7 +3307,7 @@ msgstr "Redigering"
 
 #: trac/wiki/templates/wiki_edit.html:30
 msgid "Someone else has modified that page since you started your edits."
-msgstr "Siden har blitt endret av andre etter at du begynte å editere."
+msgstr "Siden har blitt endret av andre etter at du begynte å redigere."
 
 #: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
 msgid "If you save right away, you risk to revert those changes"
@@ -3361,7 +3361,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:85
 msgid "Adjust edit area height:"
-msgstr "Endre editeringsboks:"
+msgstr "Endre redigeringsboks:"
 
 #: trac/wiki/templates/wiki_edit.html:97
 msgid ""
@@ -3369,7 +3369,7 @@ msgid ""
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
 "[1:Merk:] Se [2:WikiFormatting] og\n"
-"          [3:TracWiki] for hjelp om editering av wiki innhold."
+"          [3:TracWiki] for hjelp om redigering av wiki innhold."
 
 #: trac/wiki/templates/wiki_edit.html:102
 msgid "Change information"
