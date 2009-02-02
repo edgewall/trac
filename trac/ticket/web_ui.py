@@ -34,10 +34,10 @@ from trac.resource import Resource, get_resource_url, \
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator, \
                             ITicketActionController
-from trac.ticket.model import Milestone, Ticket
+from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import get_reporter_id, partition
+from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address
@@ -100,8 +100,8 @@ class TicketModule(Component):
         (''since 0.11'').""")
 
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
-        """Enable the display of all ticket changes in the timeline
-        (''since 0.9'').""")
+        """Enable the display of all ticket changes in the timeline, not only
+        open / close operations (''since 0.9'').""")
 
     max_description_size = IntOption('ticket', 'max_description_size', 262144,
         """Don't accept tickets with a too big description.
@@ -243,9 +243,9 @@ class TicketModule(Component):
 
     def get_timeline_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', _('Ticket changes'))
+            yield ('ticket', _('Opened and closed tickets'))
             if self.timeline_details:
-                yield ('ticket_details', _('Ticket details'), False)
+                yield ('ticket_details', _('Ticket updates'), False)
 
     def get_timeline_events(self, req, start, stop, filters):
         ts_start = to_timestamp(start)
@@ -569,15 +569,23 @@ class TicketModule(Component):
         if global_sequence:
             db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT max(id) FROM ticket")
-            for max_id, in cursor:
+            cursor.execute("SELECT min(id), max(id) FROM ticket")
+            for (min_id, max_id) in cursor:
+                min_id = int(min_id)
                 max_id = int(max_id)
-                if ticket.id > 1:
-                    add_ticket_link('first', 1)
-                    add_ticket_link('prev', ticket.id - 1)
+                if min_id < ticket.id:
+                    add_ticket_link('first', min_id)
+                    cursor.execute("SELECT max(id) FROM ticket WHERE id < %s",
+                                   (ticket.id,))
+                    for (prev_id,) in cursor:
+                        add_ticket_link('prev', int(prev_id))
                 if ticket.id < max_id:
-                    add_ticket_link('next', ticket.id + 1)
                     add_ticket_link('last', max_id)
+                    cursor.execute("SELECT min(id) FROM ticket WHERE %s < id",
+                                   (ticket.id,))
+                    for (next_id,) in cursor:
+                        add_ticket_link('next', int(next_id))
+                break
 
         add_stylesheet(req, 'common/css/ticket.css')
 
@@ -1129,26 +1137,16 @@ class TicketModule(Component):
                         field['skip'] = False
                         owner_field = field
             elif name == 'milestone':
-                milestones = [(opt, Milestone(self.env, opt))
+                milestones = [Milestone(self.env, opt)
                               for opt in field['options']]
-                milestones = [(opt, m) for opt, m in milestones
+                milestones = [m for m in milestones
                               if 'MILESTONE_VIEW' in req.perm(m.resource)]
-                def category(m):
-                    return m.is_completed and 1 or m.due and 2 or 3
-                open_due_milestones, open_not_due_milestones, \
-                    closed_milestones = partition([(opt, category(m))
-                        for opt, m in milestones], (2, 3, 1))
+                groups = group_milestones(milestones, ticket.exists 
+                    and 'TICKET_ADMIN' in req.perm(ticket.resource))
                 field['options'] = []
                 field['optgroups'] = [
-                    {'label': _('Open (by due date)'), 
-                        'options': open_due_milestones},
-                    {'label': _('Open (no due date)'), 
-                        'options': open_not_due_milestones},
-                ]
-                if ticket.exists and \
-                       'TICKET_ADMIN' in req.perm(ticket.resource):
-                    field['optgroups'].append(
-                        {'label': _('Closed'), 'options': closed_milestones})
+                    {'label': label, 'options': [m.name for m in milestones]}
+                    for (label, milestones) in groups]
                 milestone = Resource('milestone', ticket[name])
                 field['rendered'] = render_resource_link(self.env, context,
                                                          milestone, 'compact')

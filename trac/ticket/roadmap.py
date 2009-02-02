@@ -34,7 +34,7 @@ from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
                               format_date, format_datetime
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.util.translation import _
-from trac.ticket import Milestone, Ticket, TicketSystem
+from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler
@@ -310,7 +310,9 @@ class RoadmapModule(Component):
     # IPermissionRequestor methods
 
     def get_permission_actions(self):
-        return ['ROADMAP_VIEW']
+        actions = ['MILESTONE_CREATE', 'MILESTONE_DELETE', 'MILESTONE_MODIFY',
+                   'MILESTONE_VIEW', 'ROADMAP_VIEW']
+        return ['ROADMAP_VIEW'] + [('ROADMAP_ADMIN', actions)]
 
     # IRequestHandler methods
 
@@ -494,14 +496,13 @@ class MilestoneModule(Component):
     def get_permission_actions(self):
         actions = ['MILESTONE_CREATE', 'MILESTONE_DELETE', 'MILESTONE_MODIFY',
                    'MILESTONE_VIEW']
-        return actions + [('MILESTONE_ADMIN', actions),
-                          ('ROADMAP_ADMIN', actions)]
+        return actions + [('MILESTONE_ADMIN', actions)]
 
     # ITimelineEventProvider methods
 
     def get_timeline_filters(self, req):
         if 'MILESTONE_VIEW' in req.perm:
-            yield ('milestone', _('Milestones'))
+            yield ('milestone', _('Milestones reached'))
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'milestone' in filters:
@@ -604,7 +605,7 @@ class MilestoneModule(Component):
         milestone.description = req.args.get('description', '')
 
         due = req.args.get('duedate', '')
-        milestone.due = due and parse_date(due, tzinfo=req.tz) or 0
+        milestone.due = due and parse_date(due, tzinfo=req.tz) or None
 
         completed = req.args.get('completeddate', '')
         retarget_to = req.args.get('target')
@@ -618,17 +619,17 @@ class MilestoneModule(Component):
 
         # -- check the name
         if new_name:
-            # check that the milestone doesn't already exists
-            # FIXME: the whole .exists business needs to be clarified (#4130)
-            #        and should behave like a WikiPage does in this respect.
-            try:
-                test_milestone = Milestone(self.env, new_name, db)
-                if not test_milestone.exists:
-                    # then an exception should have been raised
+            if new_name != old_name:
+                # check that the milestone doesn't already exists
+                # FIXME: the whole .exists business needs to be clarified
+                #        (#4130) and should behave like a WikiPage does in
+                #        this respect.
+                try:
+                    other_milestone = Milestone(self.env, new_name, db)
                     warn(_('Milestone "%(name)s" already exists, please '
                            'choose another name', name=new_name))
-            except ResourceNotFound:
-                pass
+                except ResourceNotFound:
+                    pass
         else:
             warn(_('You must provide a name for the milestone.'))
 
@@ -664,9 +665,13 @@ class MilestoneModule(Component):
     def _render_confirm(self, req, db, milestone):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
 
+        milestones = [m for m in Milestone.select(self.env, db=db)
+                      if m.name != milestone.name
+                      and 'MILESTONE_VIEW' in req.perm(m.resource)]
         data = {
             'milestone': milestone,
-            'milestones': Milestone.select(self.env, False, db)
+            'milestone_groups': group_milestones(milestones,
+                'TICKET_ADMIN' in req.perm)
         }
         return 'milestone_delete.html', data, None
 
@@ -675,14 +680,16 @@ class MilestoneModule(Component):
             'milestone': milestone,
             'date_hint': get_date_format_hint(),
             'datetime_hint': get_datetime_format_hint(),
-            'milestones': [],
+            'milestone_groups': [],
         }
 
         if milestone.exists:
             req.perm(milestone.resource).require('MILESTONE_MODIFY')
-            data['milestones'] = [m for m in
-                                  Milestone.select(self.env, False, db)
-                                  if m.name != milestone.name]
+            milestones = [m for m in Milestone.select(self.env, db=db)
+                          if m.name != milestone.name
+                          and 'MILESTONE_VIEW' in req.perm(m.resource)]
+            data['milestone_groups'] = group_milestones(milestones,
+                'TICKET_ADMIN' in req.perm)
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
 

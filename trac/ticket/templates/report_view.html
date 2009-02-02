@@ -7,7 +7,7 @@
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
-    <script type="text/javascript" py:if="report.id != -1 and len(args) > 1">
+    <script type="text/javascript" py:if="show_args_form">
       jQuery(document).ready(function($) {
         $("fieldset legend").enableFolding(false);
       });
@@ -20,18 +20,30 @@
         <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
       </h1>
 
-      <div py:if="description" id="description" xml:space="preserve">
-        ${wiki_to_html(context, description)}
-      </div>
+      <form method="get" action="">
+        <div id="prefs" py:if="report.id != -1">
+          <div>
+            <label>
+              Max items per page
+              <input type="text" name="max" size="10" value="${max}" />
+            </label>
+          </div>
+          <div class="buttons">
+            <input type="submit" value="${_('Update')}" />
+          </div>
+        </div>
 
-      <form py:if="report.id != -1 and len(args) > 1" method="get" action="">
-        <fieldset id="filters" >
+        <div py:if="description" id="description" xml:space="preserve">
+          ${wiki_to_html(context, description)}
+        </div>
+
+        <fieldset id="filters" py:if="show_args_form">
           <legend class="foldable">Arguments</legend>
           <table summary="Report arguments">
             <tbody>
               <tr style="height: 1px"><td colspan="2"></td></tr>
             </tbody>
-            <tbody py:for="(name, value) in args.iteritems()" py:if="name != 'USER'">
+            <tbody py:for="(name, value) in sorted(args.items())" py:if="name != 'USER'">
               <tr>
                 <th scope="row"><label>${name}</label></th>
                 <td class="filter">
@@ -161,6 +173,13 @@
                         <py:when test="col == 'description'">
                           <td class="$col" py:attrs="td_attrs" xml:space="preserve">
                             ${wiki_to_html(context(row.resource), cell.value)}
+                            <hr py:if="fullrow"/>
+                          </td>
+                        </py:when>
+
+                        <py:when test="col == 'milestone'">
+                          <td class="$col" py:attrs="td_attrs">
+                            <a title="View milestone" href="${href.milestone(cell.value)}">$cell.value</a>
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>

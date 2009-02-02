@@ -3,16 +3,19 @@ import inspect
 import StringIO
 import unittest
 import difflib
+from datetime import datetime
 
 from trac.core import *
 from trac.mimeview import Context
 from trac.test import Mock, MockPerm, EnvironmentStub
+from trac.util.datefmt import utc
 from trac.util.html import html
 from trac.util.text import to_unicode
 from trac.web.href import Href
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import HtmlFormatter, InlineHtmlFormatter
 from trac.wiki.macros import WikiMacroBase
+from trac.wiki.model import WikiPage
 
 # We need to supply our own macro because the real macros
 # can not be loaded using our 'fake' environment.
@@ -102,6 +105,10 @@ class WikiTestCase(unittest.TestCase):
         self._teardown = teardown
 
         self.env = EnvironmentStub()
+        wiki = WikiPage(self.env)
+        wiki.name = 'WikiStart'
+        wiki.text = '--'
+        wiki.save('joe', 'Entry page', '::1', datetime.now(utc))
         req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
                    authname='anonymous', perm=MockPerm(), args={})
         if context:

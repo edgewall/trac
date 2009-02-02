@@ -20,7 +20,7 @@ import time
 
 from genshi.builder import tag, Element
 
-from trac.config import IntOption
+from trac.config import IntOption, ListOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
@@ -46,6 +46,12 @@ class SearchModule(Component):
 
     min_query_length = IntOption('search', 'min_query_length', 3,
         """Minimum length of query string allowed when performing a search.""")
+
+    default_disabled_filters = ListOption('search', 'default_disabled_filters',
+        doc="""Specifies which search filters should be disabled by default
+               on the search page. This will also restrict the filters for the
+               quick search function. Search filters can still be manually
+               enabled by the user on the search page. (since 0.12)""")
 
     # INavigationContributor methods
 
@@ -80,7 +86,8 @@ class SearchModule(Component):
         filters = [f[0] for f in available_filters if req.args.has_key(f[0])]
         if not filters:
             filters = [f[0] for f in available_filters
-                       if len(f) < 3 or len(f) > 2 and f[2]]
+                       if f[0] not in self.default_disabled_filters and
+                       (len(f) < 3 or len(f) > 2 and f[2])]
         data = {'filters': [{'name': f[0], 'label': f[1],
                              'active': f[0] in filters}
                             for f in available_filters],

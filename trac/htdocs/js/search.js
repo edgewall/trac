@@ -1,4 +1,3 @@
-
 (function($){
   
   /* Adapted from http://www.kryogenix.org/code/browser/searchhi/ */
@@ -38,9 +37,10 @@
           if (query[0] == "!") query = query.slice(1);
           var terms = [];
           $.each(query.split(/(".*?")|('.*?')|(\s+)/), function() {
-            term = this.replace(/^\s+$/, "");
-            if (term.length) {
-              terms.push(term.replace(/^['"]/, "").replace(/['"]$/, ""));
+            if (terms.length < 10) {
+              term = this.replace(/^\s+$/, "").replace(/^['"]/, "").replace(/['"]$/, "");
+              if (term.length >= 3)
+                terms.push(term);
             }
           });
           return terms;

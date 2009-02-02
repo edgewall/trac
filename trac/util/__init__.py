@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Matthew Good <trac@matt-good.net>
 
+import errno
 import locale
 import os.path
 import re
@@ -29,7 +30,7 @@ from itertools import izip, tee
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.compat import md5, reversed, sorted
+from trac.util.compat import md5, reversed, sha1, sorted
 from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size
@@ -78,7 +79,9 @@ def create_unique_file(path):
             if hasattr(os, 'O_BINARY'):
                 flags += os.O_BINARY
             return path, os.fdopen(os.open(path, flags, 0666), 'w')
-        except OSError:
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                raise
             idx += 1
             # A sanity check
             if idx > 100:
@@ -314,9 +317,8 @@ def get_pkginfo(dist):
 # -- crypto utils
 
 def hex_entropy(bytes=32):
-    import sha
     import random
-    return sha.new(str(random.random())).hexdigest()[:bytes]
+    return sha1(str(random.random())).hexdigest()[:bytes]
 
 
 # Original license for md5crypt:
@@ -576,10 +578,15 @@ def partition(iterable, order=None):
         return result
     return [result[key] for key in order]
 
-def common_length(lhs, rhs):
-    """Return the number of common items in two lists."""
-    m = min(len(lhs), len(rhs))
-    for i in range(m):
-        if lhs[i] != rhs[i]:
-            return i
-    return m
+def as_int(s, default, min=None, max=None):
+    """Convert s to an int and limit it to the given range, or return default
+    if unsuccessful."""
+    try:
+        value = int(s)
+    except (TypeError, ValueError):
+        return default
+    if min is not None and value < min:
+        value = min
+    if max is not None and value > max:
+        value = max
+    return value

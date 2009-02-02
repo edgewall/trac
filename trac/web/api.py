@@ -369,7 +369,7 @@ class Request(object):
                     from trac.web.chrome import Chrome
                     from trac.util import translation
                     if hasattr(self, 'locale'):
-                        translation.activate(self.locale)
+                        translation.activate(self.locale, env.path)
                     try:
                         data = Chrome(env).render_template(self, template,
                                                            data, 'text/html')
@@ -478,8 +478,14 @@ class Request(object):
         if ctype not in ('application/x-www-form-urlencoded',
                          'multipart/form-data'):
             fp = StringIO('')
-
+        # Python 2.6 introduced a backwards incompatible change for
+        # FieldStorage where QUERY_STRING is no longer ignored for POST
+        # requests. We'll keep the pre 2.6 behaviour for now...
+        if self.method == 'POST':
+            qs_on_post = self.environ.pop('QUERY_STRING')
         fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
+        if self.method == 'POST':
+            self.environ['QUERY_STRING'] = qs_on_post
         if fs.list:
             for name in fs.keys():
                 values = fs[name]

@@ -291,15 +291,15 @@ Relative links are supported:
 ------------------------------
 <p>
 Relative links are supported:
-<a href="/wiki/parent">See above</a> Note: see wikisyntax tests for other parent tests
-<a href="/wiki/WikiStart/sibling">See next</a>
+<a class="missing wiki" href="/wiki/parent" rel="nofollow">See above?</a> Note: see wikisyntax tests for other parent tests
+<a class="missing wiki" href="/wiki/WikiStart/sibling" rel="nofollow">See next?</a>
 [... nothing to see] [...]
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="">/</a> Note: "" is an Href("/") artifact
 <a href="/newticket?component=test">new ticket</a>
-<a href="/wiki/WikiStart#title">#title</a>
-<a href="/wiki/WikiStart#title">see Title</a>
+<a class="wiki" href="/wiki/WikiStart#title">#title</a>
+<a class="wiki" href="/wiki/WikiStart#title">see Title</a>
 </p>
 ------------------------------
 ==============================  Image links are now regular external links

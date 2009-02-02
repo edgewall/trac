@@ -16,7 +16,6 @@ import sys
 import traceback
 
 from trac.core import *
-from trac.util import common_length
 from trac.util.translation import _
 
 
@@ -96,7 +95,8 @@ class AdminCommandManager(Component):
         for provider in self.providers:
             for cmd in provider.get_admin_commands():
                 parts = cmd[0].split()
-                if args[:-1] != parts[:len(args) - 1]:  # Prefix doesn't match
+                plen = min(len(parts), len(args) - 1)
+                if args[:plen] != parts[:plen]:         # Prefix doesn't match
                     continue
                 elif len(args) <= len(parts):           # Command name
                     comp.append(parts[len(args) - 1])

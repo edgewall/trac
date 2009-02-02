@@ -119,6 +119,22 @@ class RequestTestCase(unittest.TestCase):
         req = Request(environ, None)
         self.assertEqual('test', req.read(size=4))
 
+    def test_qs_on_post(self):
+        """Make sure req.args parsing is consistent even after the backwards
+        incompatible change introduced in Python 2.6.
+        """
+        environ = self._make_environ(method='GET',
+                                     **{'QUERY_STRING': 'action=foo'})
+        req = Request(environ, None)
+        self.assertEqual('foo', req.args['action'])
+        environ = self._make_environ(method='POST',
+                                     **{'wsgi.input': StringIO('action=bar'),
+                                        'CONTENT_LENGTH': '10',
+                                        'CONTENT_TYPE': 'application/x-www-form-urlencoded',
+                                        'QUERY_STRING': 'action=foo'})
+        req = Request(environ, None)
+        self.assertEqual('bar', req.args['action'])
+
 
 def suite():
     suite = unittest.TestSuite()

@@ -4,16 +4,19 @@
  * Christopher Armstrong          radix
  * Jani Averbach                  jaa@jaa.iki.fi
  * Juanma Barranquero             lektu@terra.es
+ * Anton Batenev
  * Remy Blank                     remy.blank@pobox.com
  * Christian Boos                 cboos@bct-technology.com
- * Rocky Burt                     rocky.burt@myrealbox.com
+ * Erik Bray                      hyugaricdeau@gmail.com
  * Toni Brkic                     toni.brkic@switchcore.com
+ * Rocky Burt                     rocky.burt@myrealbox.com
  * Eli Carter                     eli.carter@commprove.com
  * Michele Cella
  * Sergey S. Chernov              sergeych@tancher.com
  * Felix Colins                   felix@keyghost.com
  * Wesley Crucius                 wcrucius@sandc.com
  * dju'                           
+ * Juracy Filho                   juracy@gmail.com
  * Daragh Fitzpatrick             Daragh@i2i-Tech.com
  * Justin Francis
  * Markus Fuchs                   
@@ -23,6 +26,7 @@
  * Daniel Kahn Gillmor
  * Matthew Good                   trac@matt-good.net
  * Shun-ichi Goto                 gotoh@taiyo.co.jp
+ * Heiko Graeber
  * Chris Green                    cmgreen@uab.edu
  * Gruffudd Prys                  cbs201@bangor.ac.uk
  * Mikael Hallendal               micke@imendio.com
@@ -31,6 +35,7 @@
  * Laurie Harper                  zodiac@holoweb.net
  * Francois Harvey                fharvey@securiweb.net
  * Tim Hatch                      trac@timhatch.com
+ * Mikko Hellsing
  * Michael Hope                   michael.hope@hamjet.co.nz
  * Zheng Hui Hu                   huzhengh@gmail.com
  * Richard Hult                   richard@imendio.com
@@ -48,6 +53,7 @@
  * Rui Lopes                      rgl ruilopes com
  * Tilemahos Manolatos
  * Angel Marin                    anmar@gmx.net
+ * Simon Martin
  * Aristotelis Mertis
  * Wojciech Michalski
  * Keir Mierle                    keir@cs.utoronto.ca
@@ -57,21 +63,21 @@
  * Manuel Muradas
  * Jennifer Murtell               jen@jmurtell.com
  * Jacob Norda                    jacobnorda@gmail.com
+ * Dirkjan Ochtman                dirkjan@ochtman.nl
  * Seungseo Park                  sseopark@gmail.com
- * Jeroen Ruigrok van der Werven  asmodai@in-nomine.org
- * Juracy Filho                   juracy@gmail.com
  * Cap Petschulat                 cap@cdres.com
+ * pkou                           pkou@ua.fm
+ * Mikko Rantalainen
  * Nicholas Riley                 sabi
- * Manuzhai                       manuzhai@gmail.com
  * Armin Ronacher (mitsuhiko)     armin.ronacher@active-4.com
  * Mark Rowe                      mark.rowe@bdash.net.nz
- * Odd Simon Simonsen             simon-code@bvnetwork.no
+ * Jeroen Ruigrok van der Werven  asmodai@in-nomine.org
  * Olliver Rutherfurd             ollie
- * pkou                           pkou@ua.fm
  * Andres Salomon                 dilinger@athenacr.com
  * Michael Scherer                misc@mandrake.org
  * Andreas Schrattenecker         vittorio
  * Emmeran Seehuber               rototor@rototor.de
+ * Odd Simon Simonsen             simon-code@bvnetwork.no
  * Noah Slater                    nslater@gmail.com
  * Bill Soudan                    bill@soudan.net
  * Ludvig Strigeus                
@@ -84,6 +90,7 @@
  * Ghassem Tofighi                tofighi@gmail.com
  * Zilvinas Valinskas             zilvinas@gemtek.lt
  * Jason Vasquez                  jason@mugfu.com
+ * Venčeslav Vezjak
  * Leslie H. Watter
  * Jeff Weiss                     trac@jeffweiss.org
  * Tính Trương Xuân

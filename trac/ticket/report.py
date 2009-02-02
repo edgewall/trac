@@ -28,6 +28,7 @@ from trac.db import get_column_names
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
+from trac.util import as_int
 from trac.util.datefmt import format_datetime, format_time
 from trac.util.presentation import Paginator
 from trac.util.text import to_unicode, unicode_urlencode
@@ -281,17 +282,20 @@ class ReportModule(Component):
 
         report_resource = Resource('report', id)
         context = Context.from_request(req, report_resource)
+
+        page = int(req.args.get('page', '1'))
+        max = as_int(req.args.get('max'), self.items_per_page, min=0)
+        limit = {'rss': self.items_per_page_rss,
+                 'csv': 0, 'tab': 0}.get(format, max)
+        offset = (page - 1) * limit
+        user = req.args.get('USER', None)
+
         data = {'action': 'view', 'title': title,
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': title, 'description': description,
-                'args': args, 'message': None, 'paginator':None}
-
-        page = int(req.args.get('page', '1'))
-        limit = {'rss': self.items_per_page_rss,
-                 'csv': 0, 'tab': 0}.get(format, self.items_per_page)
-        offset = (page - 1) * limit
-        user = req.args.get('USER', None)
+                'max': limit, 'args': args, 'show_args_form': False,
+                'message': None, 'paginator':None}
 
         try:
             cols, results, num_items, missing_args = \
@@ -313,18 +317,18 @@ class ReportModule(Component):
             data['paginator'] = paginator
             if paginator.has_next_page:
                 next_href = req.href.report(id, asc=asc, sort=sort_col,
-                                            page=page + 1, **args)
+                                            max=limit, page=page + 1, **args)
                 add_link(req, 'next', next_href, _('Next Page'))
             if paginator.has_previous_page:
                 prev_href = req.href.report(id, asc=asc, sort=sort_col,
-                                            page=page - 1, **args)
+                                            max=limit, page=page - 1, **args)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
 
             pagedata = []
             shown_pages = paginator.get_shown_pages(21)
             for p in shown_pages:
                 pagedata.append([req.href.report(id, asc=asc, sort=sort_col, 
-                                                 page=p, **args),
+                                                 max=limit, page=p, **args),
                                  None, str(p), _('Page %(num)d', num=p)])          
             fields = ['href', 'class', 'string', 'title']
             paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
@@ -407,7 +411,7 @@ class ReportModule(Component):
             for header_group in header_groups:
                 cell_group = []
                 for header in header_group:
-                    value = unicode(result[col_idx])
+                    value = unicode(result[col_idx] or '')
                     cell = {'value': value, 'header': header, 'index': col_idx}
                     col = header['col']
                     col_idx += 1
@@ -490,7 +494,7 @@ class ReportModule(Component):
                     req.session['query_href'] = \
                         req.href.report(id, asc=req.args.get('asc', None),
                                         sort=req.args.get('sort', None),
-                                        page=page, **args)
+                                        max=limit, page=page, **args)
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
@@ -498,8 +502,9 @@ class ReportModule(Component):
                             del req.session[var]
                 except (ValueError, KeyError):
                     pass
-            if len(data['args']) > 1:
-                add_script(req, 'common/js/folding.js')
+                if set(data['args']) - set(['USER']):
+                    data['show_args_form'] = True
+                    add_script(req, 'common/js/folding.js')
             if missing_args:
                 add_warning(req, _(
                     'The following arguments are missing: %(args)s',
@@ -664,6 +669,9 @@ class ReportModule(Component):
         def iso_datetime(dt):
             return format_datetime(dt, 'iso8601')
 
+        def string(value):
+            return unicode(value or '')
+        
         col_conversions = {
             'time': iso_time,
             'datetime': iso_datetime,
@@ -673,7 +681,7 @@ class ReportModule(Component):
             'modified': iso_datetime,
         }
 
-        converters = [col_conversions.get(c.strip('_'), unicode) for c in cols]
+        converters = [col_conversions.get(c.strip('_'), string) for c in cols]
 
         writer = csv.writer(req, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
