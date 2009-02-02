@@ -26,7 +26,26 @@ except ImportError:
 
 from genshi import Markup
 from genshi.builder import tag, Element
+
+# FIXME Genshi's advanced-i18n is now required if one wants to use 0.12 + i18n
+#       Genshi 0.5.1 can still be used with Trac 0.12 without i18n support.
+#
+# Once advanced-i18n is in the required Genshi version (0.6?), uncomment the
+# following:
+#
+# from genshi.filters import Translator, setup_i18n
+#
+# and remove the rest:
 from genshi.filters import Translator
+try:
+    from genshi.filters import setup_i18n
+except ImportError:
+    def setup_i18n(template, translator):
+        # another compatibility hack for Genshi trunk, we need a FunctionType
+        def gettext(*args,**kwargs):
+            return translation.gettext(*args, **kwargs)
+        template.filters.insert(0, Translator(gettext))
+
 from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
@@ -43,7 +62,8 @@ from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
 from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
-                           shorten_line, unicode_quote_plus, to_unicode
+                           shorten_line, unicode_quote_plus, to_unicode, \
+                           javascript_quote
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date, utc
 from trac.util.translation import _
@@ -227,6 +247,12 @@ class ITemplateProvider(Interface):
         """
 
 
+# Mappings for removal of control characters
+_translate_nop = "".join([chr(i) for i in range(256)])
+_invalid_control_chars = "".join([chr(i) for i in range(32)
+                                  if i not in [0x09, 0x0a, 0x0d]])
+
+    
 class Chrome(Component):
     """Responsible for assembling the web site chrome, i.e. everything that
     is not actual page content.
@@ -283,6 +309,10 @@ class Chrome(Component):
         """Show email addresses instead of usernames. If false, we obfuscate
         email addresses (''since 0.11'').""")
 
+    show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
+        """Show IP addresses for resource edits (e.g. wiki).
+        (''since 0.11.3'').""")
+
     templates = None
 
     # A dictionary of default context data for templates
@@ -293,6 +323,8 @@ class Chrome(Component):
         'classes': presentation.classes,
         'date': datetime.date,
         'datetime': datetime.datetime,
+        'dgettext': translation.dgettext,
+        'dngettext': translation.dngettext,
         'first_last': presentation.first_last,
         'get_reporter_id': get_reporter_id,
         'gettext': translation.gettext,
@@ -300,6 +332,7 @@ class Chrome(Component):
         'groupby': compat.py_groupby, # http://bugs.python.org/issue2246
         'http_date': http_date,
         'istext': presentation.istext,
+        'javascript_quote': javascript_quote,
         'ngettext': translation.ngettext,
         'paginate': presentation.paginate,
         'partial': partial,
@@ -320,8 +353,14 @@ class Chrome(Component):
 
     def __init__(self):
         import genshi
-        self.env.systeminfo.append(('Genshi',
-                                    get_pkginfo(genshi).get('version')))
+        genshi_version = get_pkginfo(genshi).get('version')
+        self.env.systeminfo.append(('Genshi', genshi_version))
+        try:
+            import babel
+            babel_version = get_pkginfo(babel).get('version')
+            self.env.systeminfo.append(('Babel', babel_version))
+        except ImportError:
+            pass
 
     # IEnvironmentSetupParticipant methods
 
@@ -631,7 +670,8 @@ class Chrome(Component):
             'authname': req and req.authname or '<trac>',
             'locale': req and req.locale,
             'show_email_addresses': show_email_addresses,
-            'authorinfo': partial(self.authorinfo, req),
+            'show_ip_addresses': self.show_ip_addresses,
+			'authorinfo': partial(self.authorinfo, req),
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
 
@@ -661,7 +701,8 @@ class Chrome(Component):
         """
         if not self.templates:
             def _template_loaded(template):
-                template.filters.insert(0, Translator(translation.gettext))
+                translator = Translator(translation.get_translations())
+                setup_i18n(template, translator)
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
@@ -720,12 +761,14 @@ class Chrome(Component):
         })
 
         try:
-            return stream.render(method, doctype=doctype)
+            output = stream.render(method, doctype=doctype)
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links
             req.chrome['scripts'] = scripts
             raise
+        
+        return output.translate(_translate_nop, _invalid_control_chars)
 
     # E-mail formatting utilities
 
@@ -793,4 +836,3 @@ class Chrome(Component):
                                               data)
             return stream
         return inner
-
