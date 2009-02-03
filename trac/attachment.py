@@ -240,11 +240,14 @@ class Attachment(object):
             if handle_ta:
                 db.commit()
 
+            targetfile.close()
+
             for listener in AttachmentModule(self.env).change_listeners:
                 listener.attachment_added(self)
 
         finally:
-            targetfile.close()
+            if not targetfile.closed:
+                targetfile.close()
 
     def select(cls, env, parent_realm, parent_id, db=None):
         if not db:
