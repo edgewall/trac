@@ -94,6 +94,9 @@ $page.text</textarea>
               <label>Your email or username:<br />
                 <input id="author" type="text" name="author" size="30" value="$author" />
               </label>
+              <p py:if="author == 'anonymous'" class="hint">
+                E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.
+              </p>
             </div>
             <div class="field">
               <label>Comment about this change (optional):<br />
