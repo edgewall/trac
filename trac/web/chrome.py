@@ -671,7 +671,7 @@ class Chrome(Component):
             'locale': req and req.locale,
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
-			'authorinfo': partial(self.authorinfo, req),
+            'authorinfo': partial(self.authorinfo, req),
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
 
