@@ -108,24 +108,29 @@ ${traceback}
               administrator</a> and give him all the information he needs to
               reproduce the issue.
               </p>
-              <py:if test="not project.admin">
-                <form class="newticket" method="get" action="${href.newticket()}#">
-                  <p>To that end, you could ${create_ticket()} a ticket at this
-                  site.</p>
-                </form>
-              </py:if>
-              <p>
-                The action that triggered the error was:
-                <pre>${req.method}: ${req.path_info}</pre>
-              </p>
+              <form py:if="project.admin_href"
+                    class="newticket" method="get" action="${project.admin_href.newticket()}#">
+                <p>To that end, you could ${create_ticket()} a ticket.</p>
+              </form>
+              <p>The action that triggered the error was:</p>
+              <pre>${req.method}: ${req.path_info}</pre>
             </py:when>
             <py:otherwise>
-              <p>If you think this should work you can reproduce the problem,
+              <form class="newticket" method="get" action="${project.admin_href.newticket()}#">
+                <p>This is probably a local installation issue.
+                  <py:if test="project.admin_href and project.admin_trac_url != '.'">
+                    You should ${create_ticket()} a ticket at the admin Trac to report
+                    the issue.
+                  </py:if>
+                </p>
+              </form>
+              <h2>Found a bug in Trac?</h2>
+              <p>If you think this should work and you can reproduce the problem,
               you should consider reporting this to the Trac team.</p>
-              <p>Before you do that, though, please first try
+              <p>Before you do that, though, <strong>please first try
                 <a py:with="q = quote_plus(message[:80])"
                    href="${trac.homepage}search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
-                for similar issues, as it is quite likely that this problem
+                for similar issues</strong>, as it is quite likely that this problem
                 has been reported before. For questions about installation
                 and configuration of Trac, please try the
                 <a href="${trac.homepage}wiki/MailingList">mailing list</a>

@@ -526,7 +526,6 @@ class Chrome(Component):
 
         return chrome
 
-
     def get_icon_data(self, req):
         icon = {}
         icon_src = icon_abs_src = self.env.project_icon
@@ -595,11 +594,22 @@ class Chrome(Component):
             'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
             'systeminfo': self.env.systeminfo,
         }
+        
+        href = req and req.href
+        abs_href = req and req.abs_href or self.env.abs_href
+        admin_href = None
+        if self.env.project_admin_trac_url == '.':
+            admin_href = href
+        elif self.env.project_admin_trac_url:
+            admin_href = Href(self.env.project_admin_trac_url)
+            
         d['project'] = {
             'name': self.env.project_name,
             'descr': self.env.project_description,
             'url': self.env.project_url,
             'admin': self.env.project_admin,
+            'admin_href': admin_href,
+            'admin_trac_url': self.env.project_admin_trac_url,
         }
         d['chrome'] = {
             'footer': Markup(self.env.project_footer)
@@ -622,9 +632,6 @@ class Chrome(Component):
             return tag.span(pretty_timedelta(date),
                             title=format_datetime(date))
 
-        href = req and req.href
-        abs_href = req and req.abs_href or self.env.abs_href
-        
         def get_rel_url(resource, **kwargs):
             return get_resource_url(self.env, resource, href, **kwargs)
 
