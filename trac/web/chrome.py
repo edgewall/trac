@@ -58,7 +58,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      get_module_path, translation, arity
+                      get_module_path, translation
 from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -749,7 +749,9 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            return stream.render('text')
+            buffer = cStringIO()
+            stream.render('text', out=buffer)
+            return buffer.getvalue()
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         if doctype:
@@ -768,7 +770,9 @@ class Chrome(Component):
         })
 
         try:
-            output = stream.render(method, doctype=doctype)
+            buffer = cStringIO()
+            stream.render(method, doctype=doctype, out=buffer)
+            return buffer.getvalue()
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links

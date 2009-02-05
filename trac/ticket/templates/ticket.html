@@ -256,6 +256,9 @@
                 </td>
               </tr>
             </table>
+            <p py:if="author_id == 'anonymous'" class="hint">
+              E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.
+            </p>
           </fieldset>
         </div>
         <div py:if="ticket.exists" class="field">

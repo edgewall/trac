@@ -102,10 +102,27 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
 
     `tzinfo` will default to the local timezone if left to `None`.
     """
-    t = to_datetime(t, tzinfo).astimezone(tzinfo or localtz)
-    if format.lower() == 'iso8601':
-        format = '%Y-%m-%dT%H:%M:%SZ%z'
+    tz = tzinfo or localtz
+    t = to_datetime(t, tzinfo).astimezone(tz)
+    normalize_Z = False
+    if format.lower().startswith('iso8601'):
+        date_only = time_only = False
+        if 'date' in format:
+            date_only = True
+        elif 'time' in format:
+            time_only = True
+        if date_only:
+            format = '%Y-%m-%d'
+        elif time_only:
+            format = '%H:%M:%S'
+        else:
+            format = '%Y-%m-%dT%H:%M:%S'
+        if not date_only:
+            format += '%z'
+            normalize_Z = True
     text = t.strftime(format)
+    if normalize_Z:
+        text = text.replace('+0000', 'Z')
     encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
     if sys.platform != 'win32' or sys.version_info[:2] > (2, 3):
         encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
@@ -117,7 +134,7 @@ def format_date(t=None, format='%x', tzinfo=None):
     See `format_datetime` for more details.
     """
     if format == 'iso8601':
-        format = '%Y-%m-%d'
+        format = 'iso8601date'
     return format_datetime(t, format, tzinfo=tzinfo)
 
 def format_time(t=None, format='%X', tzinfo=None):
@@ -125,7 +142,7 @@ def format_time(t=None, format='%X', tzinfo=None):
     See `format_datetime` for more details.
     """
     if format == 'iso8601':
-        format = '%H:%M:%SZ%z'
+        format = 'iso8601time'
     return format_datetime(t, format, tzinfo=tzinfo)
 
 def get_date_format_hint():
@@ -167,7 +184,7 @@ def http_date(t=None):
 
 _ISO_8601_RE = re.compile(r'(\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?'   # date
                           r'(?:T(\d\d)(?::?(\d\d)(?::?(\d\d))?)?)?' # time
-                          r'(Z(?:([-+])?(\d\d):?(\d\d)?)?)?$'       # timezone
+                          r'(Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$'      # timezone
                           )
 
 def parse_date(text, tzinfo=None):
