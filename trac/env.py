@@ -122,6 +122,14 @@ class Environment(Component, ComponentManager):
     project_admin = Option('project', 'admin', '',
         """E-Mail address of the project's administrator.""")
 
+    project_admin_trac_url = Option('project', 'admin_trac_url', '.',
+        """Base URL of a Trac instance where errors in this Trac should be
+        reported.
+        
+        This can be an absolute or relative URL, or '.' to reference this
+        Trac instance. An empty value will disable the reporting buttons.
+        (''since 0.11.3'')""")
+
     project_footer = Option('project', 'footer',
                             'Visit the Trac open source project at<br />'
                             '<a href="http://trac.edgewall.org/">'

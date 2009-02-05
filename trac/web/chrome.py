@@ -58,7 +58,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      get_module_path, translation, arity
+                      get_module_path, translation
 from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -620,11 +620,22 @@ class Chrome(Component):
             'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
             'systeminfo': self.env.systeminfo,
         }
+        
+        href = req and req.href
+        abs_href = req and req.abs_href or self.env.abs_href
+        admin_href = None
+        if self.env.project_admin_trac_url == '.':
+            admin_href = href
+        elif self.env.project_admin_trac_url:
+            admin_href = Href(self.env.project_admin_trac_url)
+            
         d['project'] = {
             'name': self.env.project_name,
             'descr': self.env.project_description,
             'url': self.env.project_url,
             'admin': self.env.project_admin,
+            'admin_href': admin_href,
+            'admin_trac_url': self.env.project_admin_trac_url,
         }
         d['chrome'] = {
             'footer': Markup(self.env.project_footer)
@@ -647,9 +658,6 @@ class Chrome(Component):
             return tag.span(pretty_timedelta(date),
                             title=format_datetime(date))
 
-        href = req and req.href
-        abs_href = req and req.abs_href or self.env.abs_href
-        
         def get_rel_url(resource, **kwargs):
             return get_resource_url(self.env, resource, href, **kwargs)
 
@@ -742,7 +750,9 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            return stream.render('text')
+            buffer = cStringIO()
+            stream.render('text', out=buffer)
+            return buffer.getvalue()
 
         doctype = {'text/html': DocType.XHTML_STRICT}.get(content_type)
         if doctype:
@@ -761,7 +771,9 @@ class Chrome(Component):
         })
 
         try:
-            output = stream.render(method, doctype=doctype)
+            buffer = cStringIO()
+            stream.render(method, doctype=doctype, out=buffer)
+            return buffer.getvalue()
         except:
             # restore what may be needed by the error template
             req.chrome['links'] = links
