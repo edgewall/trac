@@ -27,7 +27,7 @@ except ImportError:
 from genshi import Markup
 from genshi.builder import tag, Element
 from genshi.input import HTML, ParseError
-from genshi.core import Attrs, START, TEXT
+from genshi.core import Attrs, START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
