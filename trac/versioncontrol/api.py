@@ -87,7 +87,7 @@ class RepositoryManager(Component):
             except TracError, e:
                 add_warning(req, _("Can't synchronize with the repository "
                               "(%(error)s). Look in the Trac log for more "
-                              "information.", error=e.message))
+                              "information.", error=to_unicode(e.message)))
                           
         return handler
 
