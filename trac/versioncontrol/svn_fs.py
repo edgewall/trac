@@ -56,7 +56,7 @@ from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.util import sorted, embedded_numbers, reversed
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import utc
 
@@ -400,7 +400,12 @@ class SubversionRepository(Repository):
             raise TracError(_("%(path)s does not appear to be a Subversion "
                               "repository.", path=path))
 
-        self.repos = repos.svn_repos_open(self.path, self.pool())
+        try:
+            self.repos = repos.svn_repos_open(self.path, self.pool())
+        except core.SubversionException, e:
+            raise TracError(_("Couldn't open Subversion repository %(path)s: "
+                              "%(svn_error)s", path=path, 
+                              svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
         
         uuid = fs.get_uuid(self.fs_ptr, self.pool())
