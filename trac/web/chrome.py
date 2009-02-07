@@ -27,7 +27,7 @@ except ImportError:
 from genshi import Markup
 from genshi.builder import tag, Element
 from genshi.input import HTML, ParseError
-from genshi.core import Attrs, START
+from genshi.core import Attrs, START, TEXT
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 
@@ -741,10 +741,21 @@ class Chrome(Component):
             buffer = cStringIO()
             stream.render(method, doctype=doctype, out=buffer)
             return buffer.getvalue()
-        except:
+        except Exception, e:
             # restore what may be needed by the error template
             req.chrome['links'] = links
             req.chrome['scripts'] = scripts
+            # give some hints when hitting a Genshi unicode error
+            if isinstance(e, UnicodeError):
+                pos = self._stream_location(stream)
+                if pos:
+                    location = "'%s', line %s, char %s" % pos
+                else:
+                    location = _("(unknown template location)")
+                raise TracError(_("Genshi %(error)s error while rendering "
+                                  "template %(location)s", 
+                                  error=e.__class__.__name__, 
+                                  location=location))
             raise
         
         return output.translate(_translate_nop, _invalid_control_chars)
@@ -807,3 +818,8 @@ class Chrome(Component):
                                               data)
             return stream
         return inner
+
+    def _stream_location(self, stream):
+        for kind, data, pos in stream:
+            return pos
+
