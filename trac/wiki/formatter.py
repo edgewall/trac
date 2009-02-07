@@ -35,7 +35,7 @@ from trac.resource import get_relative_resource, get_resource_url
 from trac.util.compat import set
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
-from trac.util.text import shorten_line, to_unicode, \
+from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 from trac.util.html import TracHTMLSanitizer
 from trac.util.translation import _
@@ -479,8 +479,8 @@ class Formatter(object):
             macro = WikiProcessor(self, name)
             return macro.process(args, in_paragraph=True)
         except Exception, e:
-            self.env.log.error('Macro %s(%s) failed' % (name, args),
-                               exc_info=True)
+            self.env.log.error('Macro %s(%s) failed: %s' % 
+                    (name, args, exception_to_unicode(e, traceback=True)))
             return system_message('Error: Macro %s(%s) failed' % (name, args),
                                   e)
 

@@ -33,7 +33,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util.compat import sorted
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import add_link, add_stylesheet, prevnext_nav, Chrome, \
@@ -308,7 +308,8 @@ class TimelineModule(Component):
         without the filters corresponding to the guilty event provider `ep`.
         """
         ep_name, exc_name = [i.__class__.__name__ for i in (ep, exc)]
-        self.log.exception('Timeline event provider %s failed', ep_name)
+        self.log.error('Timeline event provider failed: %s', 
+                       exception_to_unicode(exc, traceback=True))
 
         guilty_filters = [f[0] for f in ep.get_timeline_filters(req)]
         guilty_kinds = [f[1] for f in ep.get_timeline_filters(req)]

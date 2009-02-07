@@ -40,7 +40,8 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import to_timestamp, utc
-from trac.util.text import CRLF, shorten_line, obfuscate_email_address
+from trac.util.text import CRLF, shorten_line, obfuscate_email_address, \
+                           exception_to_unicode
 from trac.util.presentation import separated
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
@@ -985,8 +986,8 @@ class TicketModule(Component):
             tn = TicketNotifyEmail(self.env)
             tn.notify(ticket, newticket=True)
         except Exception, e:
-            self.log.exception("Failure sending notification on creation of "
-                               "ticket #%s: %s" % (ticket.id, e))
+            self.log.error("Failure sending notification on creation of "
+                    "ticket #%s: %s", ticket.id, exception_to_unicode(e))
 
         # Redirect the user to the newly created ticket or add attachment
         if 'attachment' in req.args:
@@ -1015,8 +1016,8 @@ class TicketModule(Component):
                 tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=False, modtime=now)
             except Exception, e:
-                self.log.exception("Failure sending notification on change to "
-                                   "ticket #%s: %s" % (ticket.id, e))
+                self.log.error("Failure sending notification on change to "
+                        "ticket #%s: %s", ticket.id, exception_to_unicode(e))
 
         # After saving the changes, apply the side-effects.
         for controller in controllers:

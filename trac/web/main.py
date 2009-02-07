@@ -241,7 +241,9 @@ class RequestDispatcher(Component):
                 except RequestDone:
                     raise
                 except Exception, e:
-                    self.log.exception(e)
+                    self.log.error("Exception caught while post-processing"
+                                   " request: %s",
+                                   exception_to_unicode(e, traceback=True))
                 raise err[0], err[1], err[2]
         except PermissionError, e:
             raise HTTPForbidden(to_unicode(e))
@@ -461,7 +463,8 @@ def _dispatch_request(req, env, env_error):
 
     except Exception, e:
         if env:
-            env.log.exception(e)
+            env.log.error("Internal Server Error: %s", 
+                          exception_to_unicode(e, traceback=True))
 
         exc_info = sys.exc_info()
         try:
