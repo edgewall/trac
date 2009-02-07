@@ -449,6 +449,8 @@ def _dispatch_request(req, env, env_error):
         if isinstance(e.detail, Exception):
             # Note that e.detail can't be a TracError, see HTTPException
             message = exception_to_unicode(e.detail)
+        else:
+            message = to_unicode(message)
         data = {'title': title, 'type': 'TracError', 'message': message,
                 'frames': [], 'traceback': None}
         if e.code == 403 and req.authname == 'anonymous':
