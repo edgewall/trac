@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import os
 import posixpath
 from datetime import datetime
 
@@ -94,7 +95,8 @@ class CachedRepository(Repository):
         # -- check that we're populating the cache for the correct repository
         repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
         if repository_dir:
-            if repository_dir != self.name:
+            # directory part of the repo name can vary on case insensitive fs
+            if os.path.normcase(repository_dir) != os.path.normcase(self.name):
                 self.log.info("'repository_dir' has changed from %r to %r"
                               % (repository_dir, self.name))
                 raise TracError(_("The 'repository_dir' has changed, a "
