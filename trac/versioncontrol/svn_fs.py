@@ -515,30 +515,31 @@ class SubversionRepository(Repository):
 
         return SubversionNode(path, rev, self, self.pool)
 
-    def _history(self, svn_path, start, end, pool):
-        """`svn_path` must be a full scope path, UTF-8 encoded string.
+    def _history(self, path, start, end, pool):
+        """`path` is a unicode path in the scope.
 
         Generator yielding `(path, rev)` pairs, where `path` is an `unicode`
         object.
         Must start with `(path, created rev)`.
         """
+        path_utf8 = _to_svn(self.scope, path)
         if start < end:
             start, end = end, start
         root = fs.revision_root(self.fs_ptr, start, pool())
         tmp1 = Pool(pool)
         tmp2 = Pool(pool)
-        history_ptr = fs.node_history(root, svn_path, tmp1())
+        history_ptr = fs.node_history(root, path_utf8, tmp1())
         cross_copies = 1
         while history_ptr:
             history_ptr = fs.history_prev(history_ptr, cross_copies, tmp2())
             tmp1.clear()
             tmp1, tmp2 = tmp2, tmp1
             if history_ptr:
-                path, rev = fs.history_location(history_ptr, tmp2())
+                path_utf8, rev = fs.history_location(history_ptr, tmp2())
                 tmp2.clear()
                 if rev < end:
                     break
-                path = _from_svn(path)
+                path = _from_svn(path_utf8)
                 if not self.authz.has_permission(path):
                     break
                 yield path, rev
@@ -548,8 +549,7 @@ class SubversionRepository(Repository):
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
             try:
-                for _, prev in self._history(_to_svn(self.scope, path),
-                                             0, rev-1, pool or self.pool):
+                for _, prev in self._history(path, 0, rev-1, pool or self.pool):
                     return prev
             except (SystemError, # "null arg to internal routine" in 1.2.x
                     core.SubversionException): # in 1.3.x
@@ -570,8 +570,7 @@ class SubversionRepository(Repository):
         if not self.youngest:
             self.youngest = fs.youngest_rev(self.fs_ptr, self.pool())
             if self.scope != '/':
-                for path, rev in self._history(_to_svn(self.scope),
-                                               0, self.youngest, self.pool):
+                for path, rev in self._history('', 0, self.youngest, self.pool):
                     self.youngest = rev
                     break
         return self.youngest
@@ -588,8 +587,7 @@ class SubversionRepository(Repository):
         while next <= youngest:
             subpool.clear()            
             try:
-                for _, next in self._history(_to_svn(self.scope, path),
-                                             rev+1, next, subpool):
+                for _, next in self._history(path, rev+1, next, subpool):
                     return next
             except (SystemError, # "null arg to internal routine" in 1.2.x
                     core.SubversionException): # in 1.3.x
@@ -630,8 +628,7 @@ class SubversionRepository(Repository):
                     yield path, rev+1, Changeset.DELETE
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
-                for p, r in self._history(_to_svn(self.scope, path), 0, rev,
-                                          subpool):
+                for p, r in self._history(path, 0, rev, subpool):
                     older = (_path_within_scope(self.scope, p), r,
                              Changeset.ADD)
                     rev = self._previous_rev(r, pool=subpool)
@@ -786,8 +783,8 @@ class SubversionNode(Node):
         older = None # 'older' is the currently examined history tuple
         pool = Pool(self.pool)
         numrevs = 0
-        for path, rev in self.repos._history(self._scoped_path_utf8,
-                                             0, self._requested_rev, pool):
+        for path, rev in self.repos._history(self.path, 0, self._requested_rev,
+                                             pool):
             path = _path_within_scope(self.scope, path)
             if rev > 0 and path:
                 older = (path, rev, Changeset.ADD)
