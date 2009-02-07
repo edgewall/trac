@@ -169,7 +169,7 @@
   -     'compact' is used to switch between a compact list of attachments (e.g. as used for
   -       the wiki view) and an expanded list (e.g. as used for the ticket view)
   -->
-  <py:def function="list_of_attachments(alist, compact=False)">
+  <py:def function="list_of_attachments(alist, compact=False, add_button_title=None)">
     <py:def function="show_one_attachment(attachment)">
       <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
       (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
@@ -199,7 +199,7 @@
                 </dd>
               </py:for>
             </dl>
-            ${attach_file_form(alist)}
+            ${attach_file_form(alist, add_button_title)}
           </div>
         </py:when>
       </py:choose>
@@ -210,11 +210,11 @@
   -
   -     'alist' is an AttachmentList object (see attachment.py)
   -->
-  <py:def function="attach_file_form(alist)">
+  <py:def function="attach_file_form(alist, add_button_title=None)">
     <form py:if="alist.can_create" method="get" action="${alist.attach_href}" id="attachfile">
       <div>
         <input type="hidden" name="action" value="new" />
-        <input type="submit" name="attachfilebutton" value="${_('Attach file')}" />
+        <input type="submit" name="attachfilebutton" value="${add_button_title or _('Attach file')}" />
       </div>
     </form>
   </py:def>
