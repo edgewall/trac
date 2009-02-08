@@ -36,7 +36,7 @@
           var query = decodeURIComponent(param[1].replace(/\+/g, " "));
           if (query[0] == "!") query = query.slice(1);
           var terms = [];
-          $.each(query.split(/(".*?")|('.*?')|(\s+)/), function() {
+          $.each(query.split(/(".*?"|'.*?'|\s+)/), function() {
             if (terms.length < 10) {
               term = this.replace(/^\s+$/, "").replace(/^['"]/, "").replace(/['"]$/, "");
               if (term.length >= 3)
