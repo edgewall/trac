@@ -77,7 +77,7 @@
       <py:when test="'list'">
         <h1><a href="${url_of(parent)}">${name_of(parent)}</a></h1>
         <py:with vars="context = context(parent)">
-          ${list_of_attachments(attachments)}
+          ${list_of_attachments(attachments, add_button_title=_("Attach another file"))}
         </py:with>
       </py:when>
 

@@ -31,6 +31,7 @@ from trac.core import Component, ComponentManager, implements, Interface, \
 from trac.db import DatabaseManager
 from trac.util import arity, copytree, get_pkginfo, makedirs
 from trac.util.text import printerr, printout
+from trac.util.text import exception_to_unicode
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
@@ -591,7 +592,8 @@ def open_environment(env_path=None, use_cache=False):
         try:
             needs_upgrade = env.needs_upgrade()
         except Exception, e: # e.g. no database connection
-            env.log.exception(e)
+            env.log.error("Exception caught while checking for upgrade: %s",
+                          exception_to_unicode(e, traceback=True))
         if needs_upgrade:
             raise TracError(_('The Trac Environment needs to be upgraded.\n\n'
                               'Run "trac-admin %(path)s upgrade"',

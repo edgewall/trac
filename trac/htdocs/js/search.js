@@ -9,7 +9,8 @@
         if (pos >= 0 && !$.className.has(node.parentNode, className)) {
           var span = document.createElement("span");
           span.className = className;
-          span.appendChild(document.createTextNode(val.substr(pos, text.length)));
+          var txt = document.createTextNode(val.substr(pos, text.length));
+          span.appendChild(txt);
           node.parentNode.insertBefore(span, node.parentNode.insertBefore(
             document.createTextNode(val.substr(pos + text.length)),
               node.nextSibling));
@@ -32,13 +33,15 @@
       for (var p in params) {
         var param = params[p].split("=");
         if (param.length < 2) continue;
-        if (param[0] == "q" || param[0] == "p") { // q= for Google, p= for Yahoo
+        if (param[0] == "q" || param[0] == "p") {// q= for Google, p= for Yahoo
           var query = decodeURIComponent(param[1].replace(/\+/g, " "));
           if (query[0] == "!") query = query.slice(1);
           var terms = [];
-          $.each(query.split(/(".*?")|('.*?')|(\s+)/), function() {
+          $.each(query.split(/(".*?"|'.*?'|\s+)/), function() {
             if (terms.length < 10) {
-              term = this.replace(/^\s+$/, "").replace(/^['"]/, "").replace(/['"]$/, "");
+              term = this.replace(/^\s+$/, "")
+                         .replace(/^['"]/, "")
+                         .replace(/['"]$/, "");
               if (term.length >= 3)
                 terms.push(term);
             }

@@ -18,16 +18,21 @@
 
 """
 Note about Unicode:
-  All paths (or strings) manipulated by the Subversion bindings are
-  assumed to be UTF-8 encoded.
+    
+  The Subversion bindings are not unicode-aware and they expect to
+  receive UTF-8 encoded `string` parameters,
 
-  All paths manipulated by Trac are `unicode` objects.
+  On the other hand, all paths manipulated by Trac are `unicode` objects.
 
   Therefore:
+
    * before being handed out to SVN, the Trac paths have to be encoded to
      UTF-8, using `_to_svn()`
    * before being handed out to Trac, a SVN path has to be decoded from
      UTF-8, using `_from_svn()`
+
+  Whenever a value has to be stored as utf8, we explicitly mark the
+  variable name with "_utf8", in order to avoid any possible confusion.
 
   Warning: `SubversionNode.get_content` returns an object from which one
            can read a stream of bytes.
@@ -56,7 +61,7 @@ from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.util import embedded_numbers
-from trac.util.text import to_unicode
+from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import utc
 
@@ -77,19 +82,22 @@ def _import_svn():
 def _to_svn(*args):
     """Expect a list of `unicode` path components.
     
-    Returns an UTF-8 encoded string suitable for the Subversion python bindings
-    (the returned path never starts with a leading "/")
+    Returns an UTF-8 encoded string suitable for the Subversion python 
+    bindings (the returned path never starts with a leading "/")
     """
     return '/'.join([p for p in [p.strip('/') for p in args] if p]) \
            .encode('utf-8')
 
 def _from_svn(path):
     """Expect an UTF-8 encoded string and transform it to an `unicode` object
+
     But Subversion repositories built from conversion utilities can have
-    non-UTF-8, so we have to handle it.
+    non-UTF-8 byte strings, so we have to convert using `to_unicode`.
     """
     return path and to_unicode(path, 'utf-8')
     
+# The following 3 helpers deal with unicode paths
+
 def _normalize_path(path):
     """Remove leading "/", except for the root."""
     return path and path.strip('/') or '/'
@@ -402,23 +410,32 @@ class SubversionRepository(Repository):
         
         # Remove any trailing slash or else subversion might abort
         if isinstance(path, unicode):
-            path = path.encode('utf-8')
-        path = os.path.normpath(path).replace('\\', '/')
-        self.path = repos.svn_repos_find_root_path(path, self.pool())
-        if self.path is None:
+            self.path = path
+            path_utf8 = path.encode('utf-8')
+        else: # note that this should usually not happen (unicode arg expected)
+            self.path = to_unicode(path)
+            path_utf8 = path.decode('utf-8')
+        path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
+        root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
+        if root_path_utf8 is None:
             raise TracError(_("%(path)s does not appear to be a Subversion "
-                              "repository.", path=path))
+                              "repository.", path=to_unicode(path_utf8)))
 
-        self.repos = repos.svn_repos_open(self.path, self.pool())
+        try:
+            self.repos = repos.svn_repos_open(root_path_utf8, self.pool())
+        except core.SubversionException, e:
+            raise TracError(_("Couldn't open Subversion repository %(path)s: "
+                              "%(svn_error)s", path=to_unicode(path_utf8),
+                              svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
         
         uuid = fs.get_uuid(self.fs_ptr, self.pool())
-        name = 'svn:%s:%s' % (uuid, _from_svn(path))
+        name = 'svn:%s:%s' % (uuid, _from_svn(path_utf8))
 
         Repository.__init__(self, name, authz, log)
 
-        if self.path != path:
-            self.scope = path[len(self.path):]
+        if root_path_utf8 != path_utf8:
+            self.scope = path_utf8[len(root_path_utf8):].decode('utf-8')
             if not self.scope[-1] == '/':
                 self.scope += '/'
         else:
@@ -507,30 +524,31 @@ class SubversionRepository(Repository):
 
         return SubversionNode(path, rev, self, self.pool)
 
-    def _history(self, svn_path, start, end, pool):
-        """`svn_path` must be a full scope path, UTF-8 encoded string.
+    def _history(self, path, start, end, pool):
+        """`path` is a unicode path in the scope.
 
         Generator yielding `(path, rev)` pairs, where `path` is an `unicode`
         object.
         Must start with `(path, created rev)`.
         """
+        path_utf8 = _to_svn(self.scope, path)
         if start < end:
             start, end = end, start
         root = fs.revision_root(self.fs_ptr, start, pool())
         tmp1 = Pool(pool)
         tmp2 = Pool(pool)
-        history_ptr = fs.node_history(root, svn_path, tmp1())
+        history_ptr = fs.node_history(root, path_utf8, tmp1())
         cross_copies = 1
         while history_ptr:
             history_ptr = fs.history_prev(history_ptr, cross_copies, tmp2())
             tmp1.clear()
             tmp1, tmp2 = tmp2, tmp1
             if history_ptr:
-                path, rev = fs.history_location(history_ptr, tmp2())
+                path_utf8, rev = fs.history_location(history_ptr, tmp2())
                 tmp2.clear()
                 if rev < end:
                     break
-                path = _from_svn(path)
+                path = _from_svn(path_utf8)
                 if not self.authz.has_permission(path):
                     break
                 yield path, rev
@@ -540,8 +558,7 @@ class SubversionRepository(Repository):
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
             try:
-                for _, prev in self._history(_to_svn(self.scope, path),
-                                             0, rev-1, pool or self.pool):
+                for _, prev in self._history(path, 0, rev-1, pool or self.pool):
                     return prev
             except (SystemError, # "null arg to internal routine" in 1.2.x
                     core.SubversionException): # in 1.3.x
@@ -562,8 +579,7 @@ class SubversionRepository(Repository):
         if not self.youngest:
             self.youngest = fs.youngest_rev(self.fs_ptr, self.pool())
             if self.scope != '/':
-                for path, rev in self._history(_to_svn(self.scope),
-                                               0, self.youngest, self.pool):
+                for path, rev in self._history('', 0, self.youngest, self.pool):
                     self.youngest = rev
                     break
         return self.youngest
@@ -580,8 +596,7 @@ class SubversionRepository(Repository):
         while next <= youngest:
             subpool.clear()            
             try:
-                for _, next in self._history(_to_svn(self.scope, path),
-                                             rev+1, next, subpool):
+                for _, next in self._history(path, rev+1, next, subpool):
                     return next
             except (SystemError, # "null arg to internal routine" in 1.2.x
                     core.SubversionException): # in 1.3.x
@@ -622,8 +637,7 @@ class SubversionRepository(Repository):
                     yield path, rev+1, Changeset.DELETE
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
-                for p, r in self._history(_to_svn(self.scope, path), 0, rev,
-                                          subpool):
+                for p, r in self._history(path, 0, rev, subpool):
                     older = (_path_within_scope(self.scope, p), r,
                              Changeset.ADD)
                     rev = self._previous_rev(r, pool=subpool)
@@ -720,7 +734,7 @@ class SubversionNode(Node):
         self.fs_ptr = repos.fs_ptr
         self.authz = repos.authz
         self.scope = repos.scope
-        self._scoped_svn_path = _to_svn(self.scope, path)
+        self._scoped_path_utf8 = _to_svn(self.scope, path)
         self.pool = Pool(pool)
         self._requested_rev = rev
         pool = self.pool()
@@ -729,11 +743,11 @@ class SubversionNode(Node):
             self.root = parent.root
         else:
             self.root = fs.revision_root(self.fs_ptr, rev, self.pool())
-        node_type = fs.check_path(self.root, self._scoped_svn_path, pool)
+        node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
-        cr = fs.node_created_rev(self.root, self._scoped_svn_path, pool)
-        cp = fs.node_created_path(self.root, self._scoped_svn_path, pool)
+        cr = fs.node_created_rev(self.root, self._scoped_path_utf8, pool)
+        cp = fs.node_created_path(self.root, self._scoped_path_utf8, pool)
         # Note: `cp` differs from `path` if the last change was a copy,
         #        In that case, `path` doesn't even exist at `cr`.
         #        The only guarantees are:
@@ -741,7 +755,7 @@ class SubversionNode(Node):
         #          * the node existed at (created_path,created_rev)
         # Also, `cp` might well be out of the scope of the repository,
         # in this case, we _don't_ use the ''create'' information.
-        if _is_path_within_scope(self.scope, cp):
+        if _is_path_within_scope(self.scope, _from_svn(cp)):
             self.created_rev = cr
             self.created_path = _path_within_scope(self.scope, _from_svn(cp))
         else:
@@ -753,7 +767,7 @@ class SubversionNode(Node):
     def get_content(self):
         if self.isdir:
             return None
-        s = core.Stream(fs.file_contents(self.root, self._scoped_svn_path,
+        s = core.Stream(fs.file_contents(self.root, self._scoped_path_utf8,
                                          self.pool()))
         # Make sure the stream object references the pool to make sure the pool
         # is not destroyed before the stream object.
@@ -764,7 +778,7 @@ class SubversionNode(Node):
         if self.isfile:
             return
         pool = Pool(self.pool)
-        entries = fs.dir_entries(self.root, self._scoped_svn_path, pool())
+        entries = fs.dir_entries(self.root, self._scoped_path_utf8, pool())
         for item in entries.keys():
             path = posixpath.join(self.path, _from_svn(item))
             if not self.authz.has_permission(posixpath.join(self.scope,
@@ -778,8 +792,8 @@ class SubversionNode(Node):
         older = None # 'older' is the currently examined history tuple
         pool = Pool(self.pool)
         numrevs = 0
-        for path, rev in self.repos._history(self._scoped_svn_path,
-                                             0, self._requested_rev, pool):
+        for path, rev in self.repos._history(self.path, 0, self._requested_rev,
+                                             pool):
             path = _path_within_scope(self.scope, path)
             if rev > 0 and path:
                 older = (path, rev, Changeset.ADD)
@@ -805,23 +819,24 @@ class SubversionNode(Node):
             try:
                 rev = _svn_rev(self.rev)
                 start = _svn_rev(0)
-                repo_url = 'file:///%s/%s' % (self.repos.path.lstrip('/'),
-                                              self._scoped_svn_path)
-                self.repos.log.info('opening ra_local session to ' + repo_url)
+                repo_url_utf8 = 'file:///%s/%s' % (self.repos.path,
+                                                   self._scoped_path_utf8)
+                self.repos.log.info('opening ra_local session to %r',
+                                    repo_url_utf8)
                 from svn import client
-                client.blame2(repo_url, rev, start, rev, blame_receiver,
+                client.blame2(repo_url_utf8, rev, start, rev, blame_receiver,
                               client.create_context(), self.pool())
             except (core.SubversionException, AttributeError), e:
                 # svn thinks file is a binary or blame not supported
-                raise TracError(_('svn blame failed: %(error)s',
-                                  error=to_unicode(e)))
+                raise TracError(_('svn blame failed on %(path)s: %(error)s',
+                                  path=self.path, error=to_unicode(e)))
         return annotations
 
 #    def get_previous(self):
 #        # FIXME: redo it with fs.node_history
 
     def get_properties(self):
-        props = fs.node_proplist(self.root, self._scoped_svn_path, self.pool())
+        props = fs.node_proplist(self.root, self._scoped_path_utf8, self.pool())
         for name, value in props.items():
             # Note that property values can be arbitrary binary values
             # so we can't assume they are UTF-8 strings...
@@ -831,7 +846,7 @@ class SubversionNode(Node):
     def get_content_length(self):
         if self.isdir:
             return None
-        return fs.file_length(self.root, self._scoped_svn_path, self.pool())
+        return fs.file_length(self.root, self._scoped_path_utf8, self.pool())
 
     def get_content_type(self):
         if self.isdir:
@@ -847,7 +862,7 @@ class SubversionNode(Node):
         return datetime.fromtimestamp(ts, utc)
 
     def _get_prop(self, name):
-        return fs.node_prop(self.root, self._scoped_svn_path, name,
+        return fs.node_prop(self.root, self._scoped_path_utf8, name,
                             self.pool())
 
 
