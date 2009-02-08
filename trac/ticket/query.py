@@ -1116,8 +1116,9 @@ class TicketQueryMacro(WikiMacroBase):
                 q.group = q.groupdesc = None
                 order = q.order
                 q.order = None
-                title = "%s %s tickets matching %s" % (v, query.group,
-                                                       q.to_string())
+                title = _("%(groupvalue)s %(groupname)s tickets matching "
+                          "%(query)s", groupvalue=v, groupname=query.group,
+                          query=q.to_string())
                 # produce the href for the query corresponding to the group
                 q.constraints[str(query.group)] = v
                 q.order = order
@@ -1127,9 +1128,9 @@ class TicketQueryMacro(WikiMacroBase):
 
         if format == 'compact':
             if query.group:
-                groups = [tag.a('#%s' % ','.join([str(t['id'])
-                                                  for t in g]),
-                                href=href, class_='query', title=title)
+                groups = [(v, ' ', 
+                           tag.a('#%s' % ','.join([str(t['id']) for t in g]),
+                                 href=href, class_='query', title=title))
                           for v, g, href, title in ticket_groups()]
                 return tag(groups[0], [(', ', g) for g in groups[1:]])
             else:
