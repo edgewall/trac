@@ -35,7 +35,8 @@ from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import get_reporter_id, create_unique_file, content_disposition
 from trac.util.datefmt import to_timestamp, utc
-from trac.util.text import unicode_quote, unicode_unquote, pretty_size
+from trac.util.text import exception_to_unicode, unicode_quote, \
+                           unicode_unquote, pretty_size
 from trac.util.translation import _
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, add_ctxtnav, \
@@ -180,9 +181,9 @@ class Attachment(object):
         if os.path.isfile(self.path):
             try:
                 os.unlink(self.path)
-            except OSError:
-                self.env.log.error('Failed to delete attachment file %s',
-                                   self.path, exc_info=True)
+            except OSError, e:
+                self.env.log.error('Failed to delete attachment file %s: %s',
+                           self.path, exception_to_unicode(e, traceback=True))
                 if handle_ta:
                     db.rollback()
                 raise TracError(_('Could not delete attachment'))
@@ -282,9 +283,9 @@ class Attachment(object):
         if attachment_dir:
             try:
                 os.rmdir(attachment_dir)
-            except OSError:
-                env.log.error("Can't delete attachment directory %s",
-                              attachment_dir, exc_info=True)
+            except OSError, e:
+                env.log.error("Can't delete attachment directory %s: %s",
+                    attachment_dir, exception_to_unicode(e, traceback=True))
             
     def open(self):
         self.env.log.debug('Trying to open attachment at %s', self.path)

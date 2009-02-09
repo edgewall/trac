@@ -496,9 +496,9 @@ class TracIniMacro(WikiMacroBase):
             [(tag.h2('[%s]' % section, id='%s-section' % section),
               tag.table(class_='wiki')(
             tag.tbody([tag.tr(tag.td(tag.tt(option.name)),
-                              tag.td(format_to_oneliner(self.env,
-                                                        formatter.context,
-                                                        option.__doc__)))
+                              tag.td(format_to_oneliner(
+                                            self.env, formatter.context,
+                                            to_unicode(option.__doc__))))
                        for option in sorted(Option.registry.values(),
                                             key=lambda o: o.name)
                        if option.section == section])))

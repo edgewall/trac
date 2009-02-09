@@ -273,7 +273,7 @@ class WikiSystem(Component):
                 return match
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
-                                     self.ignore_missing_pages)
+                                     self.ignore_missing_pages, match)
         
         yield (r"!?(?<!/)\b" + # start at a word boundary but not after '/'
                wiki_page_name, wikipagename_link)
@@ -284,7 +284,7 @@ class WikiSystem(Component):
             if not _check_unicode_camelcase(page):
                 return label
             return self._format_link(formatter, 'wiki', page, label.strip(),
-                                     self.ignore_missing_pages)
+                                     self.ignore_missing_pages, match)
         yield (r"!?\[%s\s+(?:%s|[^\]]+)\]" % (wiki_page_name,
                                               WikiParser.QUOTED_STRING),
                wikipagename_with_label_link)
@@ -299,7 +299,8 @@ class WikiSystem(Component):
             return self._format_link(formatter, ns, target, label, False)
         yield ('wiki', link_resolver)
 
-    def _format_link(self, formatter, ns, pagename, label, ignore_missing):
+    def _format_link(self, formatter, ns, pagename, label, ignore_missing,
+                     original_label=None):
         pagename, query, fragment = formatter.split_link(pagename)
         version = None
         if '@' in pagename:
@@ -329,7 +330,7 @@ class WikiSystem(Component):
                 return tag.a(label, href=href, class_='wiki')
             else:
                 if ignore_missing:
-                    return label
+                    return original_label or label
                 if 'WIKI_CREATE' in formatter.perm('wiki', pagename, version):
                     return tag.a(label + '?', class_='missing wiki',
                                  href=href, rel='nofollow')

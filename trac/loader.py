@@ -22,6 +22,8 @@ from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
 import os
 import sys
 
+from trac.util.text import exception_to_unicode
+
 __all__ = ['load_components']
 
 def _enable_plugin(env, module):
@@ -42,17 +44,18 @@ def load_eggs(entry_point_name):
             working_set.add(dist)
 
         def _log_error(item, e):
+            ue = exception_to_unicode(e)
             if isinstance(e, DistributionNotFound):
-                env.log.debug('Skipping "%s": ("%s" not found)', item, e)
+                env.log.debug('Skipping "%s": ("%s" not found)', item, ue)
             elif isinstance(e, VersionConflict):
                 env.log.error('Skipping "%s": (version conflict "%s")',
-                              item, e)
+                              item, ue)
             elif isinstance(e, UnknownExtra):
-                env.log.error('Skipping "%s": (unknown extra "%s")', item, e)
+                env.log.error('Skipping "%s": (unknown extra "%s")', item, ue)
             elif isinstance(e, ImportError):
-                env.log.error('Skipping "%s": (can\'t import "%s")', item, e)
+                env.log.error('Skipping "%s": (can\'t import "%s")', item, ue)
             else:
-                env.log.error('Skipping "%s": (error "%s")', item, e)
+                env.log.error('Skipping "%s": (error "%s")', item, ue)
 
         for dist, e in errors.iteritems():
             _log_error(dist, e)
@@ -89,7 +92,7 @@ def load_py_files():
                         _enable_plugin(env, plugin_name)
                 except Exception, e:
                     env.log.error('Failed to load plugin from %s', plugin_file,
-                                  exc_info=True)
+                                  exception_to_unicode(e, traceback=True))
 
     return _load_py_files
 
