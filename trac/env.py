@@ -30,8 +30,7 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
 from trac.util import arity, copytree, get_pkginfo, makedirs
-from trac.util.text import printerr, printout
-from trac.util.text import exception_to_unicode
+from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
 from trac.web.href import Href
