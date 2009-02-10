@@ -182,6 +182,8 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
                 errors.extend(err.args[0])
         try:
             shutil.copystat(src, dst)
+        except WindowsError, why:
+            pass # Ignore errors due to limited Windows copystat support
         except OSError, why:
             errors.append((src, dst, str(why)))
         if errors:
