@@ -56,6 +56,8 @@ h1 .status { color: #444; }
  width: 20%;
 }
 #ticket table.properties td { width: 30% }
+#ticket table.properties td p:first-child { margin-top: 0 }
+#ticket table.properties td p:last-child { margin-bottom: 0 }
 #ticket table.properties .description { border-top: 1px solid #dd9 }
 
 #ticket .description h3 {

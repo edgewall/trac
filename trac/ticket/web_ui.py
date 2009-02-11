@@ -49,7 +49,7 @@ from trac.web import IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             add_warning, add_ctxtnav, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
-from trac.wiki.formatter import format_to
+from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
@@ -1140,7 +1140,16 @@ class TicketModule(Component):
                 value = ticket.values.get(name)
                 if value in ('1', '0'):
                     field['rendered'] = value == '1' and _('yes') or _('no')
-                  
+            elif type_ == 'text':
+                if field.get('format') == 'wiki':
+                    field['rendered'] = format_to_oneliner(self.env, context,
+                                                           ticket[name])
+            elif type_ == 'textarea':
+                if field.get('format') == 'wiki':
+                    field['rendered'] = \
+                        format_to_html(self.env, context, ticket[name],
+                                escape_newlines=self.must_preserve_newlines)
+            
             # ensure sane defaults
             field.setdefault('optional', False)
             field.setdefault('options', [])
