@@ -204,6 +204,7 @@ class Ticket(object):
             db.commit()
 
         self.id = tkt_id
+        self.resource = self.resource(id=tkt_id)
         self._old = {}
 
         for listener in TicketSystem(self.env).change_listeners:
