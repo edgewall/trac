@@ -138,6 +138,7 @@ class WikiPage(object):
                                       to_timestamp(t), author, remote_addr,
                                       self.text, comment, self.readonly))
             self.version += 1
+            self.resource = self.resource(version=self.version)
         elif self.readonly != self.old_readonly:
             cursor = db.cursor()
             cursor.execute("UPDATE wiki SET readonly=%s WHERE name=%s",

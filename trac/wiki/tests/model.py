@@ -85,6 +85,7 @@ class WikiPageTestCase(unittest.TestCase):
         page = WikiPage(self.env, 'TestPage')
         page.text = 'Bla'
         page.save('kate', 'Changing', '192.168.0.101', t2)
+        self.assertEqual(2, page.resource.version)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
