@@ -158,6 +158,9 @@ class TicketSystem(Component):
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
         (''since 0.9'').""")
 
+    _fields = None
+    _custom_fields = None
+
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' % 
                 [c.__class__.__name__ for c in self.action_controllers])
@@ -195,7 +198,8 @@ class TicketSystem(Component):
         if self._fields is None:
             self._fields_lock.acquire()
             try:
-                self._fields = self._get_ticket_fields()
+                if self._fields is None: # double-check (race after 1st check)
+                    self._fields = self._get_ticket_fields()
             finally:
                 self._fields_lock.release()
         return [f.copy() for f in self._fields]
@@ -208,7 +212,6 @@ class TicketSystem(Component):
         finally:
             self._fields_lock.release()
 
-    _fields = None
     def _get_ticket_fields(self):
         from trac.ticket import model
 
@@ -285,12 +288,12 @@ class TicketSystem(Component):
         if self._custom_fields is None:
             self._fields_lock.acquire()
             try:
-                self._custom_fields = self._get_custom_fields()
+                if self._custom_fields is None: # double-check
+                    self._custom_fields = self._get_custom_fields()
             finally:
                 self._fields_lock.release()
         return [f.copy() for f in self._custom_fields]
 
-    _custom_fields = None
     def _get_custom_fields(self):
         fields = []
         config = self.config['ticket-custom']
