@@ -173,5 +173,6 @@ class PostgreSQLConnection(ConnectionWrapper):
         if self.schema:
             try:
                 self.cnx.cursor().execute("SET search_path TO %s", (self.schema,))
+                self.cnx.commit() # Make sure no transaction is left open
             except PGSchemaError:
                 self.cnx.rollback()
