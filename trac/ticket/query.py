@@ -149,7 +149,7 @@ class Query(object):
                 if field in kw_strs:
                     kw[field] = processed_values[0]
                 elif field in kw_arys:
-                    kw[field] = processed_values
+                    kw.setdefault(field, []).extend(processed_values)
                 elif field in kw_bools:
                     kw[field] = True
                 elif field == 'col':
@@ -1143,6 +1143,7 @@ class TicketQueryMacro(WikiMacroBase):
                          class_=ticket['status'],
                          href=req.href.ticket(int(ticket['id'])),
                          title=shorten_line(ticket['summary']))
+
         def ticket_groups():
             groups = []
             for v, g in groupby(tickets, lambda t: t[query.group]):
