@@ -1,6 +1,6 @@
 = TracLinks in reStructuredText =
 
-This document illustrates how to use the `:trac:` directive in reStructuredText. The page is written like:
+This document illustrates how to use the `:trac:` role in reStructuredText. The page is written like:
 
 {{{
 {{{
@@ -48,6 +48,27 @@ Examples:
 An explicit label can be specified, separated from the link by a space:
 
  * See :trac:`#1 ticket 1` and the :trac:`source:trunk/COPYING license`.
+}}}
+----
+
+Note also that any of the above could have been written using substitution references and the `trac::` directive:
+{{{
+{{{
+#!rst
+See |ticket123|.
+
+ .. |ticket123| trac:: ticket:123 this ticket
+}}}
+}}}
+
+This renders as:
+----
+
+{{{
+#!rst
+See |ticket123|.
+
+ .. |ticket123| trac:: ticket:123 this ticket
 }}}
 
 ----
