@@ -53,18 +53,23 @@
         } else {
           var oldLine;
           var newLine;
+          var oldTag = "-";
+          var newTag = "+";
           if (inline) {
             oldLine = newLine = $(cells[2]).text();
+            if ($('em', cells[2]).length) oldTag = newTag = "\\";
           } else {
             oldLine = $(cells[1]).text();
+            if ($('em', cells[1]).length) oldTag = "\\";
             newLine = $(cells[3]).text();
+            if ($('em', cells[3]).length) newTag = "\\";
           }
           if (!isNaN(oldLineNo)) {
-            lines.push("-" + oldLine);
+            lines.push(oldTag + oldLine);
             oldLength += 1;
           }
           if (!isNaN(newLineNo)) {
-            tmpLines.push("+" + newLine);
+            tmpLines.push(newTag + newLine);
             newLength += 1;
           }
         }
