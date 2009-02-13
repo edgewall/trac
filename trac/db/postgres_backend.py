@@ -145,6 +145,7 @@ class PostgreSQLConnection(ConnectionWrapper):
             if 'schema' in params:
                 self.schema = params['schema']
                 cnx.cursor().execute('SET search_path TO %s', (self.schema,))
+                cnx.commit()
         except PGSchemaError:
             cnx.rollback()
         ConnectionWrapper.__init__(self, cnx)
@@ -167,12 +168,3 @@ class PostgreSQLConnection(ConnectionWrapper):
     def get_last_id(self, cursor, table, column='id'):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]
-
-    def rollback(self):
-        self.cnx.rollback()
-        if self.schema:
-            try:
-                self.cnx.cursor().execute("SET search_path TO %s", (self.schema,))
-                self.cnx.commit() # Make sure no transaction is left open
-            except PGSchemaError:
-                self.cnx.rollback()
