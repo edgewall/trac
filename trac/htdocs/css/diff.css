@@ -139,6 +139,8 @@
 .diff td ins, .diff td del {text-decoration: none;}
 
 /* Styles for the inline diff */
+pre.diff .rem { background: #fdd; }
+pre.diff .add { background: #dfd; }
 .diff table.inline tbody.mod td.l, .diff table.inline tbody.rem td.l {
  background: #fdd;
  border-color: #c00;
