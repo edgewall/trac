@@ -23,6 +23,9 @@
     ];
     var sepIndex = 0;
     var oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
+    var title = "";
+    if (inline)
+      title = $(ths[2]).text();
   
     for (var i = 0; i < table.tBodies.length; i++) {
       var tBody = table.tBodies[i];
@@ -32,12 +35,17 @@
           if (!newOffset && newLength) newOffset = 1
           lines[sepIndex] = lines[sepIndex]
             .replace("{1}", oldOffset).replace("{2}", oldLength)
-            .replace("{3}", newOffset).replace("{4}", newLength);
+            .replace("{3}", newOffset).replace("{4}", newLength)
+            .replace("{5}", title);
         }
         sepIndex = lines.length;
-        lines.push("@@ -{1},{2} +{3},{4} @@");
+        lines.push("@@ -{1},{2} +{3},{4} @@{5}");
         oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
-        if (tBody.className == "skipped") continue;
+        if (tBody.className == "skipped") {
+          if (inline)
+            title = $(tBody.rows[0].cells[2]).text();
+          continue;
+        }
       }
       var tmpLines = [];
       for (var j = 0; j < tBody.rows.length; j++) {
@@ -83,7 +91,8 @@
     if (!newOffset && newLength) newOffset = 1;
     lines[sepIndex] = lines[sepIndex]
       .replace("{1}", oldOffset).replace("{2}", oldLength)
-      .replace("{3}", newOffset).replace("{4}", newLength);
+      .replace("{3}", newOffset).replace("{4}", newLength)
+      .replace("{5}", title);
   
     /* remove trailing &nbsp; and join lines (with CR for IExplorer) */
     var sep = $.browser.msie ? "\r" : "\n";

@@ -125,14 +125,14 @@
  text-align: right;
  vertical-align: top;
 }
-.diff table tbody td {
+.diff table td {
  background: #fff;
  font: normal 11px monospace;
  overflow: visible;
  padding: 1px 2px;
  vertical-align: top;
 }
-.diff table tbody.skipped td {
+.diff table tbody.skipped td, .diff table thead td {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
 }

@@ -149,9 +149,11 @@ class PatchRenderer(Component):
                     common = ''
 
                 groups = []
+                groups_title = []
                 changes.append({'change': 'edit', 'props': [],
                                 'comments': '\n'.join(comments),
-                                'diffs': groups,
+                                'diffs': groups, 
+                                'diffs_title': groups_title,
                                 'old': {'path': common,
                                         'rev': ' '.join(oldinfo[1:]),
                                         'shortrev': shortrev[0]},
@@ -161,15 +163,16 @@ class PatchRenderer(Component):
                 comments = []
                 line = lines.next()
                 while line:
-                    # "@@ -333,10 +329,8 @@" or "@@ -1 +1 @@"
-                    r = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@',
-                                 line)
+                    # "@@ -333,10 +329,8 @@" or "@@ -1 +1 @@ [... title ...]"
+                    r = re.match(r'@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@'
+                                  '(.*)', line)
                     if not r:
                         break
                     blocks = []
                     groups.append(blocks)
-                    fromline, fromend, toline, toend = [int(x or 1)
-                                                        for x in r.groups()]
+                    groups_title.append(r.groups()[-1])
+                    fromline, fromend, toline, toend = \
+                            [int(x or 1) for x in r.groups()[:4]]
                     last_type = last_change = extra = None
 
                     fromend += fromline
