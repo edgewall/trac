@@ -6,7 +6,7 @@ Trac is written in the Python programming language and needs a database, [http:/
 What follows are generic instructions for installing and setting up Trac and its requirements. While you can find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
 == Short - Install a released version ==
-For the quick install, make sure you have [http://python.org Python-2.5], [http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install easy_install] and SQlite-3.3.4 installed (or above).
+For the quick install, make sure you have [http://python.org Python-2.5], [http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install easy_install] and SQlite-3.3.4 installed (or above). (You also might want to install python-dev to build genshi)
 {{{
 sudo easy_install Trac
 }}}
@@ -175,9 +175,38 @@ The process of adding, removing, and configuring user accounts for authenticatio
  * TracCgi if you use the CGI or FastCGI methods.
  * TracModPython if you use the mod_python method.
 
-== Trac 0.11 & SVN on Mac OS X Leopard (10.5) ==
+== Automatic reference to the SVN changesets in Trac tickets ==
 
- * [trac:TracOnLeopardServer TracOnLeopardServer]
+You can configure SVN to automatically add a reference to the changeset into the ticket comments, whenever files are committed to the repository. The description of the commit needs to contain one of the following formulas:
+ * '''Refs #123''' - to reference this changeset in #123 ticket
+ * '''Fixes #123''' - to reference this changeset and close #123 ticket with the default status ''fixed''
+
+All you have to do is to edit the ''post-commit'' hook in your SVN repository and make it execute ''trac-post-commit-hook'' coming with Trac.
+
+If you are editing the ''post-commit'' hook for the first time you need to navigate to your SVN repository's hooks subfolder and rename existing there ''post-commit'' template:
+
+{{{
+$ cd /path/to/svn/repository/hooks
+$ mv post-commit.tmpl post-commit
+}}}
+
+Next open it in any text editor and add a line with path to the Trac environment connected with this SVN repository and another line executing the ''trac-post-commit-hook'' script:
+
+{{{
+REPOS="$1"
+REV="$2"
+TRAC_ENV="/var/lib/trac/mamut"
+
+/usr/bin/python /usr/local/bin/trac-post-commit-hook -p "$TRAC_ENV" -r "$REV"
+}}}
+
+Make sure that ''trac-post-commit-hook'' exists in above path with execution permissions for the same user which SVN is running from. This script can be found in contrib subfolder of your Trac distribution and the latest version can be always downloaded from [source:trunk/contrib/trac-post-commit-hook].
+
+
+== Platform-specifics installations ==
+
+ * See [trac:TracInstallPlatforms TracInstallPlatforms]
+ 
 
 == Using Trac ==
 
@@ -190,5 +219,4 @@ Keep in mind that anonymous (not logged in) users can by default access most but
 [trac:TracTeam The Trac Team]
 
 ----
-See also:  TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions
-
+See also:  TracInstallPlatforms, TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions

@@ -1,12 +1,12 @@
 = TracLinks in reStructuredText =
 
-This document illustrates how to use the ``..trac::`` directive in reStructureThe page is written like
+This document illustrates how to use the `:trac:` directive in reStructuredText. The page is written like:
 
 {{{
 {{{
 #!rst 
-
 Examples:
+
  * Tickets: :trac:`#1` or :trac:`ticket:1`
  * Ticket comments: :trac:`comment:ticket:1:2`
  * Reports: :trac:`{1}` or :trac:`report:1`
@@ -20,6 +20,9 @@ Examples:
  * A specific file revision: :trac:`source:/trunk/COPYING@200`
  * A particular line of a specific file revision: :trac:`source:/trunk/COPYING@200#L25`
 
+An explicit label can be specified, separated from the link by a space:
+
+ * See :trac:`#1 ticket 1` and the :trac:`source:trunk/COPYING license`.
 }}}
 }}}
 
@@ -27,8 +30,8 @@ Provided you have docutils installed, the above block will render as:
 ----
 {{{
 #!rst 
-
 Examples:
+
  * Tickets: :trac:`#1` or :trac:`ticket:1`
  * Ticket comments: :trac:`comment:ticket:1:2`
  * Reports: :trac:`{1}` or :trac:`report:1`
@@ -42,30 +45,10 @@ Examples:
  * A specific file revision: :trac:`source:/trunk/COPYING@200`
  * A particular line of a specific file revision: :trac:`source:/trunk/COPYING@200#L25`
 
+An explicit label can be specified, separated from the link by a space:
+
+ * See :trac:`#1 ticket 1` and the :trac:`source:trunk/COPYING license`.
 }}}
-----
-
-Note also that any of the above could have been written using the alternate syntax for roles:
-{{{
-{{{
-#!rst
-
-See _`ticket:123`
-
- .. trac:: ticket:123 Ticket 123
-}}}
-}}}
-----
-
-{{{
-#!rst
-
-See _`ticket:123`
-
-.. trac:: ticket:123 Ticket 123
-}}}
-----
-The above form has the additional benefit of allowing you to specify an explicit label for the link.
 
 ----
 See also: WikiRestructuredText, TracLinks

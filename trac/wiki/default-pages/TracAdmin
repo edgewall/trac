@@ -39,6 +39,7 @@ To get help on all the Wiki-related commands, run:
 
 [[TracAdminHelp()]]
 
+
 === Notes ===
 
 The `initenv` also supports an extra `--inherit` option, which can be used to specify the `[inherit] file` option at environment creation time so that only the options ''not'' already specified in the global configuration file will be written in the conf/trac.ini file of the newly created environment.

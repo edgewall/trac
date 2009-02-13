@@ -62,6 +62,9 @@ to understand.
 
 The option selected by default for the various drop-down fields can be set in [wiki:TracIni trac.ini], in the `[ticket]` section:
 
+
+
+
  * `default_component`: Name of the component selected by default
  * `default_milestone`: Name of the default milestone
  * `default_priority`: Default priority value
@@ -86,6 +89,8 @@ If the list of possible ticket owners is finite, you can change the ''assign-to'
 To appear in the dropdown list, a user needs be registered with the project, ''i.e.'' a user session should exist in the database. Such an entry is automatically created in the database the first time the user submits a change in the project, for example when editing the user's details in the ''Settings'' page, or simply by authenticating if the user has a login. Also, the user must have `TICKET_MODIFY` [TracPermissions permissions].
 
 '''Note:''' See [http://pacopablo.com/wiki/pacopablo/blog/set-assign-to-drop-down Populating Assign To Drop Down] on how to add user entries at database level
+
+'''Note 2:''' If you need serious flexibility and aren't afraid of a little plugin coding of your own, see [http://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo] (disclosure: I'm the author)
 
 == Preset Values for New Tickets ==
 
