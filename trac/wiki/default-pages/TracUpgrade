@@ -19,7 +19,7 @@ You may also want to remove the pre-existing Trac code by deleting the `trac` di
 The location of the site-packages directory depends on the operating system, and the location in which Python was installed. However, the following locations are common:
  * If you’re using Linux: /usr/lib/python2.X/site-packages
  * If you’re using Windows: C:\Python2.X\lib\site-packages
- * If you’re using MacOSX: /Library/Python2.X/site-packages
+ * If you’re using MacOSX: /Library/Python/2.X/site-packages
 
 You may also want to remove the Trac `cgi-bin`, `htdocs`, `templates` and `wiki-default` directories that are commonly found in a directory called `share/trac` (the exact location depends on your platform).
 
@@ -65,7 +65,7 @@ For those who run Trac under the CGI environment, run this command in order to o
 trac-admin /path/to/env deploy /deploy/directory/path
 }}}
 
-This will create a deploy directory with the following two subdirectories: `cgi-bin` and `htdocs`. Move those directories to your environment directory, and then update your Apache configuration file `httpd.conf` with this new `trac.cgi` location.
+This will create a deploy directory with the following two subdirectories: `cgi-bin` and `htdocs`. Then update your Apache configuration file `httpd.conf` with this new `trac.cgi` location and `htdocs` location.
 
 === Restart the Web Server ===
 If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.

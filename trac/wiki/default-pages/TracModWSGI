@@ -69,3 +69,22 @@ trac.db.postgres_backend.PostgreSQLConnection.poolable = False
 }}}
 
 Now Trac drops the connection after serving a page and the connection count on the database will be kept minimal.
+
+== Getting Trac to work nicely with SSPI and 'Require Group' ==
+If like me you've set Trac up on Apache, Win32 and configured SSPI, but added a 'Require group' option to your apache configuration, then the SSPIOmitDomain option is probably not working.  If its not working your usernames in trac are probably looking like 'DOMAIN\user' rather than 'user'.
+
+This WSGI script 'fixes' things, hope it helps:
+{{{
+import os
+import trac.web.main
+
+os.environ['TRAC_ENV'] = '/usr/local/trac/mysite'
+os.environ['PYTHON_EGG_CACHE'] = '/usr/local/trac/mysite/eggs'
+
+def application(environ, start_response):
+    if "\\" in environ['REMOTE_USER']:
+        environ['REMOTE_USER'] = environ['REMOTE_USER'].split("\\", 1)[1]
+    return trac.web.main.dispatch_request(environ, start_response)
+}}}
+----
+See also:  TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracFastCgi FastCGI], [wiki:TracModPython ModPython], [trac:TracNginxRecipe TracNginxRecipe]

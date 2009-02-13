@@ -119,7 +119,7 @@ or (for mod_python):
  <Location /trac>
    SetHandler mod_python
    ...
-   PythonOption PYTHON_EGG_CACHE /path/to/dir
+   SetEnv PYTHON_EGG_CACHE /path/to/dir
  </Location>
 }}}
 

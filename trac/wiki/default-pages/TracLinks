@@ -136,7 +136,7 @@ or a relative link from the URL of the current page (''Changed in 0.11''):
 [/ home]
 }}}
 
-Display: [../newticket newticket][[comment(FIXME that's the 0.10 syntax)]]  [/ home]
+Display: [/newticket newticket] [/ home]
 
 To link to another location on the server (outside the project), use the '//location' link syntax (''Changed in 0.11''):
 

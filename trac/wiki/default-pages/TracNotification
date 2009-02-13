@@ -38,6 +38,7 @@ These are the available options for the ''[notification]'' section in trac.ini.
    * `base64`: default value, works with any kind of content. May cause some issues with touchy anti-spam/anti-virus engines.
    * `qp` or `quoted-printable`: best for european languages (more compact than base64), not recommended for non-ASCII text (less compact than base64)
    * `none`: no encoding. Use with plain english only (ASCII). E-mails with non-ASCII chars won't be delivered. 
+ * '''ticket_subject_template''': (''since 0.11'') A [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet used to get the notification subject.
 
 Either '''smtp_from''' or '''smtp_replyto''' (or both) ''must'' be set, otherwise Trac refuses to send notification mails.
 
@@ -51,6 +52,18 @@ smtp_from = notifier@example.com
 smtp_replyto = myproj@projects.example.com
 smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 }}}
+
+=== Customizing the e-mail subject ===
+The e-mail subject can be customized with the `ticket_subject_template` option, which contains a [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet. The default value is:
+{{{
+$prefix #$ticket.id: $summary
+}}}
+The following variables are available in the template:
+
+ * `env`: The project environment (see [trac:source:/trunk/trac/env.py env.py]).
+ * `prefix`: The prefix defined in `smtp_subject_prefix`.
+ * `summary`: The ticket summary, with the old value if the summary was edited.
+ * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, e.g. `$ticket.milestone`.
 
 == Sample Email ==
 {{{

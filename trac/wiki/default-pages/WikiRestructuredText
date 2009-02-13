@@ -23,7 +23,7 @@ To specify that a block of text should be parsed using RST, use the ''rst'' proc
 
 === TracLinks in reStructuredText ===
 
- * Trac provides a custom RST reference-directive 'trac' to allow TracLinks from within RST text.
+ * Trac provides a custom RST directive `trac::` to allow TracLinks from within RST text.
 
  Example:
  {{{
@@ -35,10 +35,7 @@ To specify that a block of text should be parsed using RST, use the ''rst'' proc
  }}}
  }}}
 
- For a complete example of all uses of the ''trac''-directive, please see WikiRestructuredTextLinks. 
-
-
- * Trac allows an even easier way of creating TracLinks in RST, using the custom '':trac:'' link naming scheme.
+ * Trac allows an even easier way of creating TracLinks in RST, using the custom `:trac:` role.
 
  Example:
  {{{
@@ -50,9 +47,12 @@ To specify that a block of text should be parsed using RST, use the ''rst'' proc
  }}}
  }}}
 
+ For a complete example of all uses of the `:trac:` role, please see WikiRestructuredTextLinks. 
+
+
 === Syntax highlighting in reStructuredText ===
 
-There is a directive for doing TracSyntaxColoring in ReST as well. The directive is called
+There is a directive for doing TracSyntaxColoring in RST as well. The directive is called
 code-block
 
 Example
@@ -87,7 +87,7 @@ Will result in the below.
 
 === Wiki Macros in reStructuredText ===
 
-For doing [WikiMacros Wiki Macros] in ReST you use the same directive as for syntax highlighting i.e
+For doing [WikiMacros Wiki Macros] in RST you use the same directive as for syntax highlighting i.e
 code-block. To work you must use a version of trac that has [trac:ticket:801 #801] applied. 
 
 === Wiki Macro Example ===
@@ -117,7 +117,7 @@ Or a more concise Wiki Macro like syntax is also available:
 }}}
 }}}
 
-=== Bigger ReST Example ===
+=== Bigger RST Example ===
 The example below should be mostly self-explanatory:
 {{{
 #!html

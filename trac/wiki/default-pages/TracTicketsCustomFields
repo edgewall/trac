@@ -17,6 +17,7 @@ The example below should help to explain the syntax.
    * label: Descriptive label.
    * value: Default value.
    * order: Sort order placement. (Determines relative placement in forms with respect to other custom fields.)
+   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
  * '''checkbox''': A boolean value check box.
    * label: Descriptive label.
    * value: Default value (0 or 1).
@@ -37,6 +38,7 @@ The example below should help to explain the syntax.
    * cols: Width in columns.
    * rows: Height in lines.
    * order: Sort order placement.
+   * format: Either `plain` for plain text or `wiki` to interpret the content as WikiFormatting. (''since 0.11.3'')
 
 === Sample Config ===
 {{{
@@ -47,7 +49,8 @@ test_one.label = Just a text box
 
 test_two = text
 test_two.label = Another text-box
-test_two.value = Just a default value
+test_two.value = Default [mailto:joe@nospam.com owner]
+test_two.format = wiki
 
 test_three = checkbox
 test_three.label = Some checkbox

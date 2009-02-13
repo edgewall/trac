@@ -19,7 +19,7 @@ It is possible to add, modify and remove milestones using either TracAdmin or th
 
 == iCalendar Support ==
 
-The Roadmap supports the [http://www.ietf.org/rfc/rfc2445.txt iCalendar] format to keep track of planned milestones and related tickets from your favorite calendar software. Calendar applications supporting the iCalendar specification include [http://www.apple.com/ical/ Apple iCal] for Mac OS X and the cross-platform [http://www.mozilla.org/projects/calendar/ Mozilla Calendar], and [http://chandlerproject.org Chandler]. [http://kdepim.kde.org/components/korganizer.php Korganizer] (the calendar application of the [http://www.kde.org/ KDE] project) and [http://www.novell.com/de-de/products/desktop/features/evolution.html Evolution] also support iCalendar.
+The Roadmap supports the [http://www.ietf.org/rfc/rfc2445.txt iCalendar] format to keep track of planned milestones and related tickets from your favorite calendar software. Calendar applications supporting the iCalendar specification include [http://www.apple.com/ical/ Apple iCal] for Mac OS X and the cross-platform [http://www.mozilla.org/projects/calendar/ Mozilla Calendar], and [http://chandlerproject.org Chandler]. [http://kontact.kde.org/korganizer/ Korganizer] (the calendar application of the [http://www.kde.org/ KDE] project) and [http://www.novell.com/de-de/products/desktop/features/evolution.html Evolution] also support iCalendar.
 
 To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at the bottom of the page) and choose the "Subscribe to remote calendar" action (or similar) of your calendar application, and insert the URL just copied.
 

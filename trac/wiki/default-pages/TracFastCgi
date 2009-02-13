@@ -70,7 +70,22 @@ ScriptAlias / /srv/tracsite/cgi-bin/trac.fcgi/
 
 == Simple Cherokee Configuration ==
 
-Configuration wanted.
+The configuration on Cherokee's side is quite simple. You will only need to know that you can spawn Trac as an SCGI process.
+You can either start it manually, or better yet, automatically by letting Cherokee spawn the server whenever it is down.
+First set up an information source in cherokee-admin with a local interpreter.
+
+{{{
+Host:
+localhost:4433
+
+Interpreter:
+/usr/bin/tracd —single-env —daemonize —protocol=scgi —hostname=localhost —port=4433 /path/to/project/
+}}}
+
+If the port was not reachable, the interpreter command would be launched. Note that, in the definition of the information source, you will have to manually launch the spawner if you use a ''Remote host'' as ''Information source'' instead of a ''Local interpreter''.
+
+After doing this, we will just have to create a new rule managed by the SCGI handler to access Trac. It can be created in a new virtual server, trac.example.net for instance, and will only need two rules. The '''default''' one will use the SCGI handler associated to the previously created information source.
+The second rule will be there to serve the few static files needed to correctly display the Trac interface. Create it as ''Directory rule'' for ''/chrome/common'' and just set it to the ''Static files'' handler and with a ''Document root'' that points to the appropriate files: ''/usr/share/trac/htdocs/''
 
 == Simple Lighttpd Configuration ==
 
@@ -324,7 +339,7 @@ http://yourdomain.com/trac/
 
 === Simple Nginx Configuration ===
 
-1) Nginx configuration snippet - confirmed to work on 0.5.36
+1) Nginx configuration snippet - confirmed to work on 0.6.32
 {{{
     server {
         listen       10.9.8.7:443;
@@ -340,21 +355,20 @@ http://yourdomain.com/trac/
         ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
         ssl_prefer_server_ciphers   on;
 
+        # (Or ``^/some/prefix/(.*)``.
+        if ($uri ~ ^/(.*)) {
+             set $path_info /$1;
+        }
+
+        # You can copy this whole location to ``location [/some/prefix]/login``
+        # and remove the auth entries below if you want Trac to enforce
+        # authorization where appropriate instead of needing to authenticate
+        # for accessing the whole site.
+        # (Or ``location /some/prefix``.)
         location / {
             auth_basic            "trac realm";
             auth_basic_user_file /home/trac/htpasswd;
 
-            # full path
-            if ($uri ~ ^/([^/]+)(/.*)) {
-                 set $script_name $1;
-                 set $path_info $2;
-            }
-
-            # index redirect 
-            if ($uri ~ ^/([^/]+)$) {
-                 rewrite (.+) $1/ permanent; 
-            }
-         
             # socket address
             fastcgi_pass   unix:/home/trac/run/instance.sock;
 
@@ -362,8 +376,9 @@ http://yourdomain.com/trac/
             fastcgi_param HTTPS on;
 
             ## WSGI REQUIRED VARIABLES
-            # WSGI application name - trac instance prefix. 
-            fastcgi_param  SCRIPT_NAME        /$script_name;
+            # WSGI application name - trac instance prefix.
+	    # (Or ``fastcgi_param  SCRIPT_NAME  /some/prefix``.)
+            fastcgi_param  SCRIPT_NAME        "";
             fastcgi_param  PATH_INFO          $path_info;
 
             ## WSGI NEEDED VARIABLES - trac warns about them
@@ -373,6 +388,7 @@ http://yourdomain.com/trac/
             fastcgi_param  SERVER_PROTOCOL    $server_protocol;
 
             # for authentication to work
+            fastcgi_param  AUTH_USER          $remote_user;
             fastcgi_param  REMOTE_USER        $remote_user;
         }
     }
@@ -434,4 +450,4 @@ If you worry enough about security, run trac instances under separate users.
 Another way to run trac as a FCGI external application is offered in ticket #T6224
 
 ----
-See also TracCgi, TracModPython, TracInstall, TracGuide, [trac:TracNginxRecipe TracNginxRecipe]
+See also:  TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracCgi CGI], [wiki:TracModPython ModPython], [trac:TracNginxRecipe TracNginxRecipe]
