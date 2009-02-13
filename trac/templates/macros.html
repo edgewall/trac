@@ -148,13 +148,6 @@
           </py:otherwise>
         </py:choose>
         Try <a href="$preview.raw_href">downloading</a> the file instead.
-        <py:if test="'errors' in preview">
-          <p>${plural(len(preview.errors), 'issue')} found:</p>
-          <div py:for="renderer, err in preview.errors" class="system-message">
-            <strong>${renderer.__class__.__name__}</strong>
-            <pre>$err</pre>
-          </div>
-        </py:if>
       </p>
     </py:choose>
   </py:def>
