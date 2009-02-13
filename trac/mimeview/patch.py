@@ -99,32 +99,50 @@ class PatchRenderer(Component):
         try:
             line = lines.next()
             while True:
+                oldpath = oldrev = newpath = newrev = ''
+                oldinfo = newinfo = []
+                binary = False
+
+                # consume preample, storing free lines in comments
+                # (also detect the special case of git binary patches)
                 if not line.startswith('--- '):
                     if not line.startswith('Index: ') and line != '='*67:
                         comments.append(line)
+                    if line == "GIT binary patch":
+                        binary = True
+                        line = lines.next()
+                        while line and line != '':
+                            line = lines.next()
+                            comments.append(line)
+                        diffcmd_line = comments[0] # diff --git a/... b/,,,
+                        oldpath, newpath = diffcmd_line.split()[-2:]
+                        index_line = comments[1] # index 8f****78..1e****5c
+                        oldrev, newrev = index_line.split()[-1].split('..')
+                        oldinfo = ['', oldpath, oldrev]
+                        newinfo = ['', newpath, newrev]
+                    else:
+                        line = lines.next()
+                        continue
+
+                if not oldinfo and not newinfo:
+                    # Base filename/version from '--- <file> [rev]'
+                    oldinfo = line.split(None, 2)
+                    if len(oldinfo) > 1:
+                        oldpath = oldinfo[1]
+                        if len(oldinfo) > 2:
+                            oldrev = oldinfo[2]
+
+                    # Changed filename/version from '+++ <file> [rev]'
                     line = lines.next()
-                    continue
+                    if not line.startswith('+++ '):
+                        self.log.debug('expected +++ after ---, got '+line)
+                        return None
 
-                oldpath = oldrev = newpath = newrev = ''
-
-                # Base filename/version
-                oldinfo = line.split(None, 2)
-                if len(oldinfo) > 1:
-                    oldpath = oldinfo[1]
-                    if len(oldinfo) > 2:
-                        oldrev = oldinfo[2]
-
-                # Changed filename/version
-                line = lines.next()
-                if not line.startswith('+++ '):
-                    self.log.debug('expected +++ after ---, got '+line)
-                    return None
-
-                newinfo = line.split(None, 2)
-                if len(newinfo) > 1:
-                    newpath = newinfo[1]
-                    if len(newinfo) > 2:
-                        newrev = newinfo[2]
+                    newinfo = line.split(None, 2)
+                    if len(newinfo) > 1:
+                        newpath = newinfo[1]
+                        if len(newinfo) > 2:
+                            newrev = newinfo[2]
 
                 shortrev = ('old', 'new')
                 if oldpath or newpath:
@@ -152,6 +170,7 @@ class PatchRenderer(Component):
                 groups_title = []
                 changes.append({'change': 'edit', 'props': [],
                                 'comments': '\n'.join(comments),
+                                'binary': binary,
                                 'diffs': groups, 
                                 'diffs_title': groups_title,
                                 'old': {'path': common,
