@@ -189,9 +189,9 @@ class PatchRenderer(Component):
                         break
                     blocks = []
                     groups.append(blocks)
-                    groups_title.append(r.groups()[-1])
                     fromline, fromend, toline, toend = \
                             [int(x or 1) for x in r.groups()[:4]]
+                    groups_title.append(r.group(5))
                     last_type = last_change = extra = None
 
                     fromend += fromline
@@ -227,6 +227,12 @@ class PatchRenderer(Component):
                             meta = block[last_side].setdefault('meta', {})
                             meta[len(block[last_side]['lines'])] = True
                             sides = [last_side]
+                        elif command == '@': # ill-formed patch
+                            groups_title[-1] = "%s (%s)" % (
+                                groups_title[-1],
+                                _("this hunk was shorter than expected"))
+                            line = '@'+line
+                            break
                         else:
                             self.log.debug('expected +, - or \\, got '+command)
                             return None
