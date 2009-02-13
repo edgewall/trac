@@ -32,8 +32,8 @@ try:
     from babel import Locale
 except ImportError:
     Locale = None
-from genshi import Markup
-from genshi.builder import tag
+from genshi.core import Markup
+from genshi.builder import Fragment, tag
 from genshi.output import DocType
 from genshi.template import TemplateLoader
 
@@ -462,20 +462,25 @@ def _dispatch_request(req, env, env_error):
         resp = req._response or []
 
     except HTTPException, e:
+        # This part is a bit more complex than it should be.
+        # See trac/web/api.py for the definition of HTTPException subclasses.
         if env:
-            env.log.warn(e)
+            env.log.warn(exception_to_unicode(e))
         title = 'Error'
         if e.reason:
             if 'error' in e.reason.lower():
                 title = e.reason
             else:
                 title = 'Error: %s' % e.reason
-        message = e.detail
-        if isinstance(e.detail, Exception):
-            # Note that e.detail can't be a TracError, see HTTPException
+        # The message is based on the e.detail, which can be an Exception
+        # object, but not a TracError one: when creating HTTPException,
+        # a TracError.message is directly assigned to e.detail
+        if isinstance(e.detail, Exception): # not a TracError
             message = exception_to_unicode(e.detail)
+        elif isinstance(e.detail, Fragment): # markup coming from a TracError
+            message = e.detail
         else:
-            message = to_unicode(message)
+            message = to_unicode(e.detail)
         data = {'title': title, 'type': 'TracError', 'message': message,
                 'frames': [], 'traceback': None}
         if e.code == 403 and req.authname == 'anonymous':

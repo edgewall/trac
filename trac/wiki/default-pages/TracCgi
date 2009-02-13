@@ -159,4 +159,4 @@ and you'll have to create your .htpasswd file with htdigest instead of htpasswd 
 where the "trac" parameter above is the same as !AuthName above  ("Realm" in apache-docs). 
 
 ----
-See also:  TracGuide, TracInstall, TracFastCgi, TracModPython
+See also:  TracGuide, TracInstall, wiki:TracModWSGI, TracFastCgi, TracModPython

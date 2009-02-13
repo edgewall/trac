@@ -15,6 +15,7 @@ class TestTicketChangeListener(core.Component):
     def ticket_created(self, ticket):
         self.action = 'created'
         self.ticket = ticket
+        self.resource = ticket.resource
 
     def ticket_changed(self, ticket, comment, author, old_values):
         self.action = 'changed'
@@ -270,6 +271,7 @@ class TicketTestCase(unittest.TestCase):
         ticket.insert()
         self.assertEqual('created', listener.action)
         self.assertEqual(ticket, listener.ticket)
+        self.assertEqual(ticket.id, ticket.resource.id)
 
     def test_change_listener_changed(self):
         listener = TestTicketChangeListener(self.env)

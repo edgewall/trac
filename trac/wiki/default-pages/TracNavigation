@@ -26,4 +26,4 @@ help = disabled
 }}}
 
 ----
-See also: TracInterfaceCustomization, the TracHacks:NavAddPlugin (still needed for adding entries)
+See also: TracInterfaceCustomization, and the [http://trac-hacks.org/wiki/NavAddPlugin TracHacks:NavAddPlugin] or [http://trac-hacks.org/wiki/MenusPlugin TracHacks:MenusPlugin] (still needed for adding entries)

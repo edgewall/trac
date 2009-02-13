@@ -772,7 +772,7 @@ class LegacyAttachmentPolicy(Component):
             return
         legacy_action = perm_map.get(resource.parent.realm)
         if legacy_action:
-            decision = legacy_action in perm
+            decision = legacy_action in perm(resource.parent)
             if not decision:
                 self.env.log.debug('LegacyAttachmentPolicy denied %s '
                                    'access to %s. User needs %s' %

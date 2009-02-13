@@ -397,6 +397,17 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
 
+    def test_repeated_constraint_field(self):
+        like_query = Query.from_string(self.env, 'owner!=someone|someone_else',
+                                       order='id')
+        query = Query.from_string(self.env, 'owner!=someone&owner!=someone_else',
+                                  order='id')
+        like_sql, like_args = like_query.get_sql()
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql, like_sql)
+        self.assertEqual(args, like_args)
+        tickets = query.execute(self.req)
+
     def test_csv_escape(self):
         query = Mock(get_columns=lambda: ['col1'],
                      execute=lambda r,c: [{'id': 1,

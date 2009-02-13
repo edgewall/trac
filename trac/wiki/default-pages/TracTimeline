@@ -15,6 +15,10 @@ The timeline lists these kinds of events:
 
 Each event entry provides a hyperlink to the specific event in question, as well as
 a brief excerpt of the actual comment or text, if available.
+The author of the change is also mentioned.
+
+It is possible to filter those events by authors. The option panel contains a ''done by'' field which accepts a space-separated list of authors for which events should be included. Alternatively, if the author names are prefixed by a "-" character, then the events having those authors will be excluded, and all the others included. Single or double quotes can be used for specifying author names containing space characters.
+''(since 0.12)''
 
 See [wiki:TracIni#timeline TracIni] for timeline configuration options.
 
@@ -24,3 +28,4 @@ The Timeline module supports subscription using RSS 2.0 syndication. To subscrib
 
 ----
 See also: TracGuide, TracWiki, WikiFormatting, TracRss, TracNotification
+

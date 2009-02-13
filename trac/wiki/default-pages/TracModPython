@@ -364,4 +364,4 @@ You may encounter segfaults (reported on debian etch) if php5-mhash module is in
 Some people also have troubles when using php5 compiled with its own 3rd party libraries instead of system libraries. Check here [[http://www.djangoproject.com/documentation/modpython/#if-you-get-a-segmentation-fault]]
 
 ----
-See also TracGuide, TracInstall, TracCgi, TracFastCgi
+See also:  TracGuide, TracInstall, [wiki:TracModWSGI ModWSGI], [wiki:TracFastCgi FastCGI], [wiki:TracModPython ModPython], [trac:TracNginxRecipe TracNginxRecipe]
