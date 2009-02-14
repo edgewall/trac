@@ -105,7 +105,7 @@
                        py:strip="'href' not in item.new">
                       $shortcol$item.new.shortrev</a>
                   </th>
-                  <td><em>${item.diffs_title[0]}</em>&nbsp;</td>
+                  <td><em py:if="'diffs_title' in item">${item.diffs_title[0]}</em>&nbsp;</td>
                 </tr>
               </thead>
             </py:when>
@@ -219,7 +219,7 @@
                 <tr py:when="'inline'">
                   <th><a href="$item.old.href#L$fromline">&hellip;</a></th>
                   <th><a href="$item.new.href#L$toline">&hellip;</a></th>
-                  <td><em>${item.diffs_title[idx+1]}</em>&nbsp;</td>
+                  <td><em py:if="'diffs_title' in item">${item.diffs_title[idx+1]}</em>&nbsp;</td>
                 </tr>
               </tbody>
             </py:if>
