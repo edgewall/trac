@@ -48,7 +48,7 @@ Content-length: 10
 PROPS-END
 
 
-Node-path: trunk
+Node-path: tête
 Node-kind: dir
 Node-action: add
 Prop-content-length: 10
@@ -75,7 +75,7 @@ V 27
 2005-04-01T13:12:18.216267Z
 PROPS-END
 
-Node-path: trunk/README.txt
+Node-path: tête/README.txt
 Node-kind: file
 Node-action: add
 Prop-content-length: 10
@@ -106,7 +106,7 @@ V 27
 2005-04-01T13:24:58.234643Z
 PROPS-END
 
-Node-path: trunk/README.txt
+Node-path: tête/README.txt
 Node-kind: file
 Node-action: change
 Prop-content-length: 75
@@ -144,7 +144,7 @@ V 27
 2005-04-01T15:42:35.450595Z
 PROPS-END
 
-Node-path: trunk/dir1
+Node-path: tête/dir1
 Node-kind: dir
 Node-action: add
 Prop-content-length: 10
@@ -153,7 +153,7 @@ Content-length: 10
 PROPS-END
 
 
-Node-path: trunk/dir2
+Node-path: tête/dir2
 Node-kind: dir
 Node-action: add
 Prop-content-length: 10
@@ -162,7 +162,7 @@ Content-length: 10
 PROPS-END
 
 
-Node-path: trunk/dir3
+Node-path: tête/dir3
 Node-kind: dir
 Node-action: add
 Prop-content-length: 10
@@ -189,25 +189,25 @@ V 27
 2005-04-01T16:25:39.658099Z
 PROPS-END
 
-Node-path: trunk/dir1/dir2
+Node-path: tête/dir1/dir2
 Node-kind: dir
 Node-action: add
 Node-copyfrom-rev: 4
-Node-copyfrom-path: trunk/dir2
+Node-copyfrom-path: tête/dir2
 
 
-Node-path: trunk/dir1/dir3
+Node-path: tête/dir1/dir3
 Node-kind: dir
 Node-action: add
 Node-copyfrom-rev: 4
-Node-copyfrom-path: trunk/dir3
+Node-copyfrom-path: tête/dir3
 
 
-Node-path: trunk/dir2
+Node-path: tête/dir2
 Node-action: delete
 
 
-Node-path: trunk/dir3
+Node-path: tête/dir3
 Node-action: delete
 
 
@@ -229,11 +229,11 @@ V 27
 2005-04-01T18:56:46.985846Z
 PROPS-END
 
-Node-path: trunk/README2.txt
+Node-path: tête/README2.txt
 Node-kind: file
 Node-action: add
 Node-copyfrom-rev: 3
-Node-copyfrom-path: trunk/README.txt
+Node-copyfrom-path: tête/README.txt
 
 
 Revision-number: 7
@@ -258,7 +258,7 @@ Node-path: tags/v1
 Node-kind: dir
 Node-action: add
 Node-copyfrom-rev: 6
-Node-copyfrom-path: trunk
+Node-copyfrom-path: tête
 
 
 Revision-number: 8
@@ -418,7 +418,7 @@ V 6
 PROPS-END
 
 
-Node-path: trunk
+Node-path: tête
 Node-kind: dir
 Node-action: change
 Prop-content-length: 37
@@ -450,11 +450,11 @@ V 27
 2005-11-30T08:47:03.467814Z
 PROPS-END
 
-Node-path: trunk/README3.txt
+Node-path: tête/README3.txt
 Node-kind: file
 Node-action: add
 Node-copyfrom-rev: 13
-Node-copyfrom-path: trunk/README2.txt
+Node-copyfrom-path: tête/README2.txt
 Text-content-length: 42
 Text-content-md5: 211b820b566541dd49a1283d6476d89f
 Content-length: 42
@@ -462,7 +462,7 @@ Content-length: 42
 A test of svn move, followed by a change.
 
 
-Node-path: trunk/README2.txt
+Node-path: tête/README2.txt
 Node-action: delete
 
 
@@ -541,7 +541,7 @@ V 27
 2006-03-31T12:30:25.421875Z
 PROPS-END
 
-Node-path: trunk/Résumé.txt
+Node-path: tête/Résumé.txt
 Node-kind: file
 Node-action: add
 Prop-content-length: 10
@@ -570,7 +570,7 @@ V 27
 2006-09-27T10:40:38.671875Z
 PROPS-END
 
-Node-path: trunk/Xprimary_proc
+Node-path: tête/Xprimary_proc
 Node-kind: dir
 Node-action: add
 Prop-content-length: 10
@@ -579,7 +579,7 @@ Content-length: 10
 PROPS-END
 
 
-Node-path: trunk/Xprimary_proc/Xprimary_pkg.vhd
+Node-path: tête/Xprimary_proc/Xprimary_pkg.vhd
 Node-kind: file
 Node-action: add
 Prop-content-length: 10
@@ -609,29 +609,29 @@ V 27
 2006-09-27T10:41:27.484375Z
 PROPS-END
 
-Node-path: trunk/mpp_proc
+Node-path: tête/mpp_proc
 Node-kind: dir
 Node-action: add
 Node-copyfrom-rev: 18
-Node-copyfrom-path: trunk/Xprimary_proc
+Node-copyfrom-path: tête/Xprimary_proc
 
 
-Node-path: trunk/mpp_proc/Xprimary_proc
+Node-path: tête/mpp_proc/Xprimary_proc
 Node-kind: dir
 Node-action: add
 Node-copyfrom-rev: 18
-Node-copyfrom-path: trunk/Xprimary_proc
+Node-copyfrom-path: tête/Xprimary_proc
 
 
-Node-path: trunk/mpp_proc/Xprimary_proc/Xprimary_pkg.vhd
+Node-path: tête/mpp_proc/Xprimary_proc/Xprimary_pkg.vhd
 Node-action: delete
 
 
-Node-path: trunk/mpp_proc/Xprimary_pkg.vhd
+Node-path: tête/mpp_proc/Xprimary_pkg.vhd
 Node-action: delete
 
 
-Node-path: trunk/Xprimary_proc
+Node-path: tête/Xprimary_proc
 Node-action: delete
 
 
@@ -654,7 +654,7 @@ V 27
 2006-12-04T10:47:24.015625Z
 PROPS-END
 
-Node-path: trunk/Résumé.txt
+Node-path: tête/Résumé.txt
 Node-kind: file
 Node-action: change
 Text-content-length: 25
@@ -682,18 +682,18 @@ V 27
 2007-04-30T17:45:26.234375Z
 PROPS-END
 
-Node-path: trunk/v2
+Node-path: tête/v2
 Node-kind: dir
 Node-action: add
 Node-copyfrom-rev: 20
 Node-copyfrom-path: branches/v2
 
 
-Node-path: trunk/v2/README2.txt
+Node-path: tête/v2/README2.txt
 Node-action: delete
 
 
-Node-path: trunk/v2/dir1
+Node-path: tête/v2/dir1
 Node-action: delete
 
 
