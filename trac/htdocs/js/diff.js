@@ -1,6 +1,6 @@
 (function($){
   
-  function convertDiff(name, table) {
+  function convertDiff(name, table, pre) {
     var inline = table.className == 'inline';
     var ths = table.tHead.rows[0].cells;
     var afile, bfile;
@@ -23,6 +23,9 @@
     ];
     var sepIndex = 0;
     var oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
+    var title = "";
+    if (inline)
+      title = $(ths[2]).text();
   
     for (var i = 0; i < table.tBodies.length; i++) {
       var tBody = table.tBodies[i];
@@ -32,12 +35,17 @@
           if (!newOffset && newLength) newOffset = 1
           lines[sepIndex] = lines[sepIndex]
             .replace("{1}", oldOffset).replace("{2}", oldLength)
-            .replace("{3}", newOffset).replace("{4}", newLength);
+            .replace("{3}", newOffset).replace("{4}", newLength)
+            .replace("{5}", title);
         }
         sepIndex = lines.length;
-        lines.push("@@ -{1},{2} +{3},{4} @@");
+        lines.push("@@ -{1},{2} +{3},{4} @@{5}");
         oldOffset = 0, oldLength = 0, newOffset = 0, newLength = 0;
-        if (tBody.className == "skipped") continue;
+        if (tBody.className == "skipped") {
+          if (inline)
+            title = $(tBody.rows[0].cells[2]).text();
+          continue;
+        }
       }
       var tmpLines = [];
       for (var j = 0; j < tBody.rows.length; j++) {
@@ -53,18 +61,23 @@
         } else {
           var oldLine;
           var newLine;
+          var oldTag = "-";
+          var newTag = "+";
           if (inline) {
             oldLine = newLine = $(cells[2]).text();
+            if ($('em', cells[2]).length) oldTag = newTag = "\\";
           } else {
             oldLine = $(cells[1]).text();
+            if ($('em', cells[1]).length) oldTag = "\\";
             newLine = $(cells[3]).text();
+            if ($('em', cells[3]).length) newTag = "\\";
           }
           if (!isNaN(oldLineNo)) {
-            lines.push("-" + oldLine);
+            lines.push(oldTag + oldLine);
             oldLength += 1;
           }
           if (!isNaN(newLineNo)) {
-            tmpLines.push("+" + newLine);
+            tmpLines.push(newTag + newLine);
             newLength += 1;
           }
         }
@@ -78,13 +91,22 @@
     if (!newOffset && newLength) newOffset = 1;
     lines[sepIndex] = lines[sepIndex]
       .replace("{1}", oldOffset).replace("{2}", oldLength)
-      .replace("{3}", newOffset).replace("{4}", newLength);
+      .replace("{3}", newOffset).replace("{4}", newLength)
+      .replace("{5}", title);
   
     /* remove trailing &nbsp; and join lines (with CR for IExplorer) */
+    var sep = $.browser.msie ? "\r" : "\n";
     for ( var i = 0; i < lines.length; i++ )
         if ( lines[i] )
-            lines[i] = lines[i].replace(/\xa0$/, '');
-    return lines.join($.browser.msie ? "\r" : "\n");
+        {
+            var line = lines[i].replace(/\xa0$/, '') + sep;
+            if ( lines[i][0] == '+' )
+              pre.append($('<span class="add">').text(line));
+            else if ( lines[i][0] == '-' )
+              pre.append($('<span class="rem">').text(line));
+            else
+              pre.append($('<span>').text(line));
+        }
   }
   
   $(document).ready(function($) {
@@ -93,7 +115,7 @@
       var name = $.trim($(this).text());
       var table = $(this).siblings("table").get(0);
       if (! table) return;
-      var pre = $("<pre></pre>").hide().insertAfter(table);
+      var pre = $('<pre class="diff">').hide().insertAfter(table);
       $("<span>Tabular</span>").click(function() {
         $(pre).hide();
         $(table).show();
@@ -102,7 +124,7 @@
       }).addClass("active").appendTo(switcher);
       $("<span>Unified</span>").click(function() {
         $(table).hide();
-        if (!pre.get(0).firstChild) pre.text(convertDiff(name, table));
+        if (!pre.get(0).firstChild) convertDiff(name, table, pre);
         $(pre).fadeIn("fast")
         $(this).addClass("active").siblings("span").removeClass("active");
         return false;

@@ -125,20 +125,22 @@
  text-align: right;
  vertical-align: top;
 }
-.diff table tbody td {
+.diff table td {
  background: #fff;
  font: normal 11px monospace;
  overflow: visible;
  padding: 1px 2px;
  vertical-align: top;
 }
-.diff table tbody.skipped td {
+.diff table tbody.skipped td, .diff table thead td {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
 }
 .diff td ins, .diff td del {text-decoration: none;}
 
 /* Styles for the inline diff */
+pre.diff .rem { background: #fdd; }
+pre.diff .add { background: #dfd; }
 .diff table.inline tbody.mod td.l, .diff table.inline tbody.rem td.l {
  background: #fdd;
  border-color: #c00;

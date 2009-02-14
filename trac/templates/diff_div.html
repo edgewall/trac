@@ -15,11 +15,16 @@
                        .old          - old value of the property
                        .new          - new value for the property
                        (both .old and .new have .name, .value and .rendered properties)
-                     .diffs        - a sequence of diff blocks, each block being a dict:
+                     .diffs        - a sequence of list of blocks
+                     
+                       Each block being a dict:
                        .type         - one of 'unmod', 'add', 'rem' or 'mod'
                        .base and .changed - informations about lines from old and new content
                          .lines              - the lines
                          .offset             - position within the file
+
+                     .diffs_title  - a sequence of titles for the list of blocks
+                                     Note: integrate this into .diffs for 0.12 or 0.13.
 
        diff      - dict specifying diff style and options
                      .style     - can be 'sidebyside' (4 columns) or 'inline' (3 columns)
@@ -37,7 +42,7 @@
 
   <ul py:if="any([item.diffs or item.props for item in changes])" class="entries">
     <py:for each="idx, item in enumerate(changes)">
-      <li py:if="item.diffs or item.props" class="entry" py:with="comments = item.get('comments')">
+      <li py:if="item.diffs or item.props or 'comments' in item" class="entry" py:with="comments = item.get('comments')">
         <h2 id="${not no_id and 'file%s' % idx or None}" py:choose="">
           <a py:when="item.new.path" title="${item.get('title', item.new.get('title'))}"
              href="${item.get('href', item.new.get('href'))}">$item.new.path</a>
@@ -100,7 +105,7 @@
                        py:strip="'href' not in item.new">
                       $shortcol$item.new.shortrev</a>
                   </th>
-                  <th>&nbsp;</th>
+                  <td><em py:if="'diffs_title' in item">${item.diffs_title[0]}</em>&nbsp;</td>
                 </tr>
               </thead>
             </py:when>
@@ -214,7 +219,7 @@
                 <tr py:when="'inline'">
                   <th><a href="$item.old.href#L$fromline">&hellip;</a></th>
                   <th><a href="$item.new.href#L$toline">&hellip;</a></th>
-                  <td>&nbsp;</td>
+                  <td><em py:if="'diffs_title' in item">${item.diffs_title[idx+1]}</em>&nbsp;</td>
                 </tr>
               </tbody>
             </py:if>
