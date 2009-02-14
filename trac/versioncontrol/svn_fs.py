@@ -425,6 +425,8 @@ class SubversionRepository(Repository):
 
         Repository.__init__(self, name, authz, log)
 
+        # if root_path_utf8 is shorter than the path_utf8, the difference is
+        # this scope (which always starts with a '/')
         if root_path_utf8 != path_utf8:
             self.scope = path_utf8[len(root_path_utf8):].decode('utf-8')
             if not self.scope[-1] == '/':
@@ -432,6 +434,8 @@ class SubversionRepository(Repository):
         else:
             self.scope = '/'
         assert self.scope[0] == '/'
+        # we keep root_path_utf8 for  RA 
+        self.ra_url_utf8 = 'file:///' + root_path_utf8
         self.clear()
 
     def clear(self, youngest_rev=None):
@@ -737,8 +741,9 @@ class SubversionNode(Node):
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
         if not node_type in _kindmap:
             raise NoSuchNode(path, rev)
+        cp_utf8 = fs.node_created_path(self.root, self._scoped_path_utf8, pool)
+        cp = _from_svn(cp_utf8)
         cr = fs.node_created_rev(self.root, self._scoped_path_utf8, pool)
-        cp = fs.node_created_path(self.root, self._scoped_path_utf8, pool)
         # Note: `cp` differs from `path` if the last change was a copy,
         #        In that case, `path` doesn't even exist at `cr`.
         #        The only guarantees are:
@@ -746,9 +751,9 @@ class SubversionNode(Node):
         #          * the node existed at (created_path,created_rev)
         # Also, `cp` might well be out of the scope of the repository,
         # in this case, we _don't_ use the ''create'' information.
-        if _is_path_within_scope(self.scope, _from_svn(cp)):
+        if _is_path_within_scope(self.scope, cp):
             self.created_rev = cr
-            self.created_path = _path_within_scope(self.scope, _from_svn(cp))
+            self.created_path = _path_within_scope(self.scope, cp)
         else:
             self.created_rev, self.created_path = rev, path
         self.rev = self.created_rev
@@ -810,12 +815,12 @@ class SubversionNode(Node):
             try:
                 rev = _svn_rev(self.rev)
                 start = _svn_rev(0)
-                repo_url_utf8 = 'file:///%s/%s' % (self.repos.path,
-                                                   self._scoped_path_utf8)
+                file_url_utf8 = posixpath.join(self.repos.ra_url_utf8,
+                                               self._scoped_path_utf8)
                 self.repos.log.info('opening ra_local session to %r',
-                                    repo_url_utf8)
+                                    file_url_utf8)
                 from svn import client
-                client.blame2(repo_url_utf8, rev, start, rev, blame_receiver,
+                client.blame2(file_url_utf8, rev, start, rev, blame_receiver,
                               client.create_context(), self.pool())
             except (core.SubversionException, AttributeError), e:
                 # svn thinks file is a binary or blame not supported
@@ -905,19 +910,22 @@ class SubversionChangeset(Changeset):
         copies, deletions = {}, {}
         changes = []
         revroots = {}
-        for path, change in editor.changes.items():
-            
+        for path_utf8, change in editor.changes.items():
+            path = _from_svn(path_utf8)
+
             # Filtering on `path`
-            if not (_is_path_within_scope(self.scope, path) and \
+            if not (_is_path_within_scope(self.scope, path) and
                     self.authz.has_permission(path)):
                 continue
 
-            path = change.path
-            base_path = change.base_path
+            path_utf8 = change.path
+            base_path_utf8 = change.base_path
+            path = _from_svn(path_utf8)
+            base_path = _from_svn(base_path_utf8)
             base_rev = change.base_rev
 
             # Ensure `base_path` is within the scope
-            if not (_is_path_within_scope(self.scope, base_path) and \
+            if not (_is_path_within_scope(self.scope, base_path) and
                     self.authz.has_permission(base_path)):
                 base_path, base_rev = None, -1
 
@@ -947,15 +955,17 @@ class SubversionChangeset(Changeset):
                     b_root = fs.revision_root(self.fs_ptr, base_rev, pool())
                     revroots[base_rev] = b_root
                 tmp.clear()
-                cbase_path = fs.node_created_path(b_root, base_path, tmp())
-                cbase_rev = fs.node_created_rev(b_root, base_path, tmp()) 
+                cbase_path_utf8 = fs.node_created_path(b_root, base_path_utf8,
+                                                       tmp())
+                cbase_path = _from_svn(cbase_path_utf8)
+                cbase_rev = fs.node_created_rev(b_root, base_path_utf8, tmp()) 
                 # give up if the created path is outside the scope
                 if _is_path_within_scope(self.scope, cbase_path):
                     base_path, base_rev = cbase_path, cbase_rev
 
             kind = _kindmap[change.item_kind]
-            path = _path_within_scope(self.scope, _from_svn(path or base_path))
-            base_path = _path_within_scope(self.scope, _from_svn(base_path))
+            path = _path_within_scope(self.scope, path or base_path)
+            base_path = _path_within_scope(self.scope, base_path)
             changes.append([path, kind, action, base_path, base_rev])
             idx += 1
 
