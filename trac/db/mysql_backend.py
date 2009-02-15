@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2008 Edgewall Software
+# Copyright (C) 2005-2009 Edgewall Software
 # Copyright (C) 2005-2006 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005 Jeff Weiss <trac@jeffweiss.org>
 # Copyright (C) 2006 Andres Salomon <dilinger@athenacr.com>
