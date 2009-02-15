@@ -574,8 +574,8 @@ class Query(object):
 
         cols = self.get_columns()
         labels = dict([(f['name'], f['label']) for f in self.fields])
-        wikify = set(f['name'] for f in self.fields 
-                     if f['type'] == 'text' and f.get('format') == 'wiki')
+        wikify = set([f['name'] for f in self.fields 
+                      if f['type'] == 'text' and f.get('format') == 'wiki'])
 
         # TODO: remove after adding time/changetime to the api.py
         labels['changetime'] = _('Modified')
