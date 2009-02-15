@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2008 Edgewall Software
+# Copyright (C)2006-2009 Edgewall Software
 # Copyright (C) 2006 Matthew Good <trac@matt-good.net>
 # Copyright (C) 2006 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
