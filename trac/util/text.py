@@ -73,6 +73,8 @@ def exception_to_unicode(e, traceback=""):
 
 def javascript_quote(text):
     """Quote strings for inclusion in javascript"""
+    if not text:
+        return ''
     return text.replace('\\', '\\\\').replace('\r', '\\r') \
                .replace('\n', '\\n').replace('"', '\\"') \
                .replace("'", "\\'")
