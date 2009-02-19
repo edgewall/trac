@@ -34,6 +34,9 @@ from trac.web.href import Href
 
 class PygmentsRendererTestCase(unittest.TestCase):
 
+    if not hasattr(unittest.TestCase, "assertTrue"):
+        assertTrue = unittest.TestCase.failUnless   # Python 2.3 compatibility
+
     def setUp(self):
         self.env = EnvironmentStub(enable=[Chrome, PygmentsRenderer])
         self.pygments = Mimeview(self.env).renderers[0]

@@ -27,6 +27,9 @@ from trac.web.href import Href
 
 
 class PatchRendererTestCase(unittest.TestCase):
+    
+    if not hasattr(unittest.TestCase, "assertTrue"):
+        assertTrue = unittest.TestCase.failUnless   # Python 2.3 compatibility
 
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])

@@ -123,9 +123,15 @@ class TestSetup(unittest.TestSuite):
             for test in self._tests:
                 if hasattr(test, 'setFixture'):
                     test.setFixture(self.fixture)
-        unittest.TestSuite.run(self, result)
+        for test in self._tests:    # Content of unittest.TestSuite.run()
+            if result.shouldStop:   # copied here for Python 2.3 compatibility
+                break
+            test(result)
         self.tearDown()
         return result
+
+    def __call__(self, *args, **kwds):      # Python 2.3 compatibility
+        return self.run(*args, **kwds)
 
 
 class TestCaseSetup(unittest.TestCase):

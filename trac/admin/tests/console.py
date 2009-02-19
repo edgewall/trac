@@ -132,7 +132,7 @@ class TracadminTestCase(unittest.TestCase):
             sys.stderr = _err
             sys.stdout = _out
             if expect_exception:
-                tb = traceback.format_exc()
+                tb = ''.join(traceback.format_exception(*sys.exc_info()))
                 message = tb.splitlines()[-1] + '\n'
                 return -1, message
             raise
