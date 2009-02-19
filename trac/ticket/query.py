@@ -304,7 +304,7 @@ class Query(object):
                 elif field and field['type'] == 'checkbox':
                     try:
                         val = bool(int(val))
-                    except TypeError, ValueError:
+                    except (TypeError, ValueError):
                         val = False
                 result[name] = val
             results.append(result)
