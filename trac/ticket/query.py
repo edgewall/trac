@@ -301,7 +301,7 @@ class Query(object):
                 elif field and field['type'] == 'checkbox':
                     try:
                         val = bool(int(val))
-                    except TypeError, ValueError:
+                    except (TypeError, ValueError):
                         val = False
                 result[name] = val
             results.append(result)
@@ -978,7 +978,6 @@ class QueryModule(Component):
     def export_csv(self, req, query, sep=',', mimetype='text/plain'):
         content = StringIO()
         cols = query.get_columns()
-        writer = csv.writer(content, delimiter=sep)
         writer = csv.writer(content, delimiter=sep, quoting=csv.QUOTE_MINIMAL)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
 
