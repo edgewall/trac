@@ -772,7 +772,8 @@ class Chrome(Component):
         try:
             buffer = cStringIO()
             stream.render(method, doctype=doctype, out=buffer)
-            return buffer.getvalue()
+            return buffer.getvalue().translate(_translate_nop,
+                                               _invalid_control_chars)
         except Exception, e:
             # restore what may be needed by the error template
             req.chrome['links'] = links
@@ -789,8 +790,6 @@ class Chrome(Component):
                                   error=e.__class__.__name__, 
                                   location=location))
             raise
-        
-        return output.translate(_translate_nop, _invalid_control_chars)
 
     # E-mail formatting utilities
 
