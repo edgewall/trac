@@ -325,7 +325,8 @@ class NotifyEmail(Notify):
             self.server.starttls()
             self.server.ehlo()
         if self.user_name:
-            self.server.login(self.user_name, self.password)
+            self.server.login(self.user_name.encode('utf-8'),
+                              self.password.encode('utf-8'))
 
     def send(self, torcpts, ccrcpts, mime_headers={}):
         from email.MIMEText import MIMEText
