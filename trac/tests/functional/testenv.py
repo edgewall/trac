@@ -97,7 +97,7 @@ class FunctionalTestEnvironment(object):
             exe = sys.executable
         server = Popen([exe, "./trac/web/standalone.py",
                         "--port=%s" % self.port, "-s",
-                        "--hostname=localhost",
+                        "--hostname=127.0.0.1",
                         "--basic-auth=trac,%s," % self.htpasswd,
                         self.tracdir],
                        stdout=logfile, stderr=logfile,

@@ -115,7 +115,7 @@ if twill and subprocess:
                 dirname = "testenv%s" % port
             dirname = os.path.join(trac_source_tree, dirname)
 
-            baseurl = "http://localhost:%s" % port
+            baseurl = "http://127.0.0.1:%s" % port
             self._testenv = FunctionalTestEnvironment(dirname, port, baseurl)
             self._testenv.start()
             self._tester = FunctionalTester(baseurl, self._testenv.repo_url())
