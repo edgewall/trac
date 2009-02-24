@@ -156,7 +156,7 @@ Thing [link:1 number 1], CS[link:1], [link:bar]
 [link:1 thing one], [http://www.edgewall.com/ edgewall]
 ------------------------------
 <p>
-<a class="odd resolver" href="/thing/1">thing one</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon">edgewall</span></a>
+<a class="odd resolver" href="/thing/1">thing one</a>, <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>edgewall</a>
 </p>
 ------------------------------
 ============================== Link resolver SHREF_TARGET_LAST
@@ -191,7 +191,7 @@ __Summary:__
 see link:Überflüssigkeit
 ------------------------------
 <p>
-&lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon">http://localhost/bugzilla/show_bug.cgi?id=1284</span></a>&lt;/bug&gt; 804
+&lt;bug&gt;<a class="ext-link" href="http://localhost/bugzilla/show_bug.cgi?id=1284"><span class="icon"> </span>http://localhost/bugzilla/show_bug.cgi?id=1284</a>&lt;/bug&gt; 804
 <span class="underline">Summary:</span>
 see <a class="text resolver" href="/stuff/%C3%9Cberfl%C3%BCssigkeit">link:Überflüssigkeit</a>
 </p>
@@ -200,10 +200,10 @@ see <a class="text resolver" href="/stuff/%C3%9Cberfl%C3%BCssigkeit">link:Überf
 ||http://example.com/img.png||text||
 ------------------------------
 <table class="wiki">
-<tr><td><a class="ext-link" href="http://example.com/img.png"><span class="icon">http://example.com/img.png</span></a></td><td>text
+<tr><td><a class="ext-link" href="http://example.com/img.png"><span class="icon"> </span>http://example.com/img.png</a></td><td>text
 </td></tr></table>
 ------------------------------
-||<a class="ext-link" href="http://example.com/img.png"><span class="icon">http://example.com/img.png</span></a>||text||
+||<a class="ext-link" href="http://example.com/img.png"><span class="icon"> </span>http://example.com/img.png</a>||text||
 ============================== Link resolver, long form with quoting
 [link:WikiStart Foo] [http://www.edgewall.com/ Edgewall]
 
@@ -218,7 +218,7 @@ link:"Foo Bar" link:"Foo Bar#baz"
 [link:pl/de %de]
 ------------------------------
 <p>
-<a class="text resolver" href="/stuff/WikiStart">Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon">Edgewall</span></a>
+<a class="text resolver" href="/stuff/WikiStart">Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>Edgewall</a>
 </p>
 <p>
 <a class="text resolver" href="/stuff/Foo%20Bar">link:"Foo Bar"</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">link:"Foo Bar#baz"</a>
@@ -306,15 +306,15 @@ Relative links are supported:
 http://example.com/img.png?foo=bar
 ------------------------------
 <p>
-<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon">http://example.com/img.png?foo=bar</span></a>
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"> </span>http://example.com/img.png?foo=bar</a>
 </p>
 ------------------------------
-<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon">http://example.com/img.png?foo=bar</span></a>
+<a class="ext-link" href="http://example.com/img.png?foo=bar"><span class="icon"> </span>http://example.com/img.png?foo=bar</a>
 ============================== Arbitrary protocol Link
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</span></a></i>
+<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
 ------------------------------
 ==============================  mailto: links and automatic e-mail detection
@@ -328,22 +328,22 @@ T_r=a-c1.23@yet_another-site.edu.au
 someone@louvre.museum-
 ------------------------------
 <p>
-Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">mailto:cboos@neuf.fr</span></a>, 
-i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon">me</span></a>
+Author: <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </span>mailto:cboos@neuf.fr</a>, 
+i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </span>me</a>
 </p>
 <p>
-<a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon">joe'bar@site.info</span></a>,
-<a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon">trac+devel@another-site.fr</span></a>,
-<a class="mail-link" href="mailto:T_r=a-c1.23@yet_another-site.edu.au"><span class="icon">T_r=a-c1.23@yet_another-site.edu.au</span></a>
+<a class="mail-link" href="mailto:joe'bar@site.info"><span class="icon"> </span>joe'bar@site.info</a>,
+<a class="mail-link" href="mailto:trac+devel@another-site.fr"><span class="icon"> </span>trac+devel@another-site.fr</a>,
+<a class="mail-link" href="mailto:T_r=a-c1.23@yet_another-site.edu.au"><span class="icon"> </span>T_r=a-c1.23@yet_another-site.edu.au</a>
 not@an.email.com
-<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon">someone@louvre.museum</span></a>-
+<a class="mail-link" href="mailto:someone@louvre.museum"><span class="icon"> </span>someone@louvre.museum</a>-
 </p>
 ------------------------------
 ============================== Arbitrary protocol Link
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon">ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</span></a></i>
+<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
 </p>
 ------------------------------
 ============================== Generic InterTrac links
@@ -353,10 +353,10 @@ th:roadmap:
 [th: Trac Hacks]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon">th:roadmap</span></a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon">th:roadmap</span></a>:
-<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon">th</span></a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon">Trac Hacks</span></a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"> </span>th:roadmap</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"> </span>th:roadmap</a>:
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>th</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>Trac Hacks</a>
 </p>
 ------------------------------
 ============================== Another arbitrary protocol Link
@@ -366,10 +366,10 @@ rfc-2396.compatible://link
 [rfc-2396.compatible://link RFC 2396]
 ------------------------------
 <p>
-<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon">svn+ssh://secureserver.org</span></a>
-<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon">SVN link</span></a>
-<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon">rfc-2396.compatible://link</span></a>
-<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon">RFC 2396</span></a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>svn+ssh://secureserver.org</a>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>rfc-2396.compatible://link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
 </p>
 ------------------------------
 ============================== Link resolver counter examples
@@ -834,7 +834,7 @@ Paragraph
 Paragraph
 ------------------------------
 <p>
-2003-09-18 23:26  Joe Bar &lt;<a class="mail-link" href="mailto:joeb@gloogle.gom"><span class="icon">joeb@gloogle.gom</span></a>&gt;
+2003-09-18 23:26  Joe Bar &lt;<a class="mail-link" href="mailto:joeb@gloogle.gom"><span class="icon"> </span>joeb@gloogle.gom</a>&gt;
 </p>
 <ul><li>src/code.py: Fix problem with obsolete use of
 backslash in symbols.
@@ -1188,7 +1188,7 @@ Paragraph
 </td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
 </td></tr></table>
 <p>
-<a class="ext-link" href="http://www.edgewall.com/"><span class="icon">http://www.edgewall.com/</span></a>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a>
 </p>
 ------------------------------
 Paragraph
@@ -1197,7 +1197,7 @@ Paragraph
    2. Item 2
 ||Table||cell||
 ||Foo||Bar||Baz||
-<a class="ext-link" href="http://www.edgewall.com/"><span class="icon">http://www.edgewall.com/</span></a>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a>
 ============================== Lists, indents and table
 
   * Bar
