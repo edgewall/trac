@@ -111,19 +111,19 @@
 
                         <!--! generic fields -->
                         <py:when test="col == 'time'">
-                          <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_time(int(cell.value)) or '--'}
+                          <td class="date" py:attrs="td_attrs">${cell.value != '' and format_time(int(cell.value)) or '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
                         <py:when test="col in ('date', 'created', 'modified')">
-                          <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_date(int(cell.value)) or '--'}
+                          <td class="date" py:attrs="td_attrs">${cell.value != '' and format_date(int(cell.value)) or '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
 
                         <py:when test="col == 'datetime'">
-                          <td class="date" py:attrs="td_attrs">${cell.value != 'None' and format_datetime(int(cell.value)) or '--'}
+                          <td class="date" py:attrs="td_attrs">${cell.value != '' and format_datetime(int(cell.value)) or '--'}
                             <hr py:if="fullrow"/>
                           </td>
                         </py:when>
