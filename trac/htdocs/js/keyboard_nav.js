@@ -32,7 +32,11 @@
           if (expander.length > 0) {
             expander.click();
           } else {
-            window.location = selection.find('a.file').attr('href');
+            var href = selection.find('a.file').attr('href');
+            if (!href)
+              href = selection.find('a.parent').attr('href');
+            if (href)
+              window.location = href;
           }
         }
         return false;
