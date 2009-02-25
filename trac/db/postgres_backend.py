@@ -91,7 +91,7 @@ class PostgreSQLConnector(Component):
         for index in table.indices:
             unique = index.unique and 'UNIQUE' or ''
             yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % (unique, table.name, 
-                   '_'.join(index.columns), table.name, ','.join(index.columns))
+                   '_'.join(index.columns), table.name, '","'.join(index.columns))
 
 
 class PostgreSQLConnection(ConnectionWrapper):
