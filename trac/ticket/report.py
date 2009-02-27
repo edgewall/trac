@@ -290,7 +290,7 @@ class ReportModule(Component):
         offset = (page - 1) * limit
         user = req.args.get('USER', None)
 
-        data = {'action': 'view', 'title': title,
+        data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': title, 'description': description,
