@@ -224,7 +224,7 @@ class SMTPServer:
     def __init__(self, port):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self._socket.bind(("localhost", port))
+        self._socket.bind(("127.0.0.1", port))
         self._socket_service = None
 
     def serve(self, impl):
@@ -318,7 +318,7 @@ class SMTPThreadedServer(threading.Thread):
         # send a message to make the SMTP server quit gracefully
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            s.connect(('localhost', self.port))
+            s.connect(('127.0.0.1', self.port))
             r = s.send("QUIT\r\n");
         except socket.error:
             pass

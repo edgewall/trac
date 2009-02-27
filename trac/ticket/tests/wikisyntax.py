@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import unittest
 
 from trac.ticket.model import Ticket
@@ -6,7 +8,7 @@ from trac.ticket.query import QueryModule
 from trac.ticket.report import ReportModule
 from trac.wiki.tests import formatter
 
-TICKET_TEST_CASES="""
+TICKET_TEST_CASES=u"""
 ============================== ticket: link resolver
 ticket:1
 ticket:12
@@ -60,10 +62,10 @@ trac:ticket:2041
 #trac2041
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">trac:ticket:2041</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">Trac #2041</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">#T2041</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">#trac2041</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>trac:ticket:2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>Trac #2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>#T2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/ticket%3A2041" title="ticket:2041 in Trac's Trac"><span class="icon">\xa0</span>#trac2041</a>
 </p>
 ------------------------------
 ============================== Ticket InterTrac shorthands
@@ -71,8 +73,8 @@ T:#2041
 trac:#2041
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon">T:#2041</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon">trac:#2041</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon">\xa0</span>T:#2041</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/%232041" title="#2041 in Trac's Trac"><span class="icon">\xa0</span>trac:#2041</a>
 </p>
 ------------------------------
 """ # " 
@@ -86,7 +88,7 @@ def ticket_setup(tc):
 
 
 
-REPORT_TEST_CASES="""
+REPORT_TEST_CASES=u"""
 ============================== report link shorthand form
 {1}, {2}
 {12}, {abc}
@@ -120,11 +122,11 @@ trac:report:1
 {trac 1}
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">trac:report:1</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">Trac r1</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">{T1}</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">{trac1}</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">{trac 1}</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>trac:report:1</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>Trac r1</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>{T1}</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>{trac1}</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/report%3A1" title="report:1 in Trac's Trac"><span class="icon">\xa0</span>{trac 1}</a>
 </p>
 ------------------------------
 """ # '

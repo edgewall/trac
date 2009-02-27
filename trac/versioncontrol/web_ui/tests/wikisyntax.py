@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 import unittest
 
 from trac.test import Mock
@@ -29,7 +31,7 @@ def repository_setup(tc):
     setattr(tc.env, 'get_repository', _get_repository)
 
 
-CHANGESET_TEST_CASES="""
+CHANGESET_TEST_CASES=u"""
 ============================== changeset: link resolver
 changeset:1
 changeset:12
@@ -104,8 +106,8 @@ trac:changeset:2081
 [trac:changeset:2081 Trac r2081]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">trac:changeset:2081</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">Trac r2081</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>trac:changeset:2081</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>Trac r2081</a>
 </p>
 ------------------------------
 ============================== Changeset InterTrac shorthands
@@ -115,16 +117,16 @@ trac:changeset:2081
 T:r2081
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">[T2081]</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">[trac 2081]</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081/trunk" title="changeset:2081/trunk in Trac\'s Trac"><span class="icon">[trac 2081/trunk]</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/r2081" title="r2081 in Trac's Trac"><span class="icon">T:r2081</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>[T2081]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081" title="changeset:2081 in Trac's Trac"><span class="icon">\xa0</span>[trac 2081]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/changeset%3A2081/trunk" title="changeset:2081/trunk in Trac\'s Trac"><span class="icon">\xa0</span>[trac 2081/trunk]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/r2081" title="r2081 in Trac's Trac"><span class="icon">\xa0</span>T:r2081</a>
 </p>
 ------------------------------
 """ #"
 
 
-LOG_TEST_CASES="""
+LOG_TEST_CASES=u"""
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
 [1:2/trunk]
@@ -206,9 +208,9 @@ rfc:4180 should not be a log link
 [trac 3317:3318/trunk]
 ------------------------------
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">[T3317:3318]</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">[trac 3317:3318]</span></a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon">[trac 3317:3318/trunk]</span></a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">\xa0</span>[T3317:3318]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/%403317%3A3318" title="log:/@3317:3318 in Trac\'s Trac"><span class="icon">\xa0</span>[trac 3317:3318]</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/log%3A/trunk%403317%3A3318" title="log:/trunk@3317:3318 in Trac\'s Trac"><span class="icon">\xa0</span>[trac 3317:3318/trunk]</a>
 </p>
 ------------------------------
 """
