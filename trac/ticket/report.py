@@ -281,7 +281,7 @@ class ReportModule(Component):
 
         report_resource = Resource('report', id)
         context = Context.from_request(req, report_resource)
-        data = {'action': 'view', 'title': title,
+        data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': title, 'description': description,

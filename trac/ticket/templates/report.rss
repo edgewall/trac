@@ -6,7 +6,7 @@
   <channel>
     <title>$project.name: $title</title>
     <link>${abs_href.report(report.id)}</link>
-    <description>Trac Report - $report.description</description>
+    <description>Trac Report - $description</description>
     <language>en-us</language>
     <image py:if="chrome.logo.src_abs">
       <title>$project.name</title>
