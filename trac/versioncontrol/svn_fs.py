@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2005-2008 Edgewall Software
+# Copyright (C) 2005-2009 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.
@@ -415,7 +415,7 @@ class SubversionRepository(Repository):
             path_utf8 = path.encode('utf-8')
         else: # note that this should usually not happen (unicode arg expected)
             self.path = to_unicode(path)
-            path_utf8 = path.decode('utf-8')
+            path_utf8 = self.path.encode('utf-8')
         path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
         if root_path_utf8 is None:

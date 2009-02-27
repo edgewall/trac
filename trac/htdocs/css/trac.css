@@ -51,12 +51,12 @@ h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
 
 @media screen {
  a.ext-link .icon {
-  background: url(../extlink.gif) left center no-repeat;
-  padding-left: 16px;
+  background: url(../extlink.gif) center center no-repeat;
+  padding-left: 12px;
  }
  a.mail-link .icon {
-  background: url(../envelope.png) left center no-repeat;
-  padding-left: 16px;
+  background: url(../envelope.png) center center no-repeat;
+  padding-left: 14px;
  }
 }
 

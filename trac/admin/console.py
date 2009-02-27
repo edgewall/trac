@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # 
-# Copyright (C) 2003-2008 Edgewall Software
+# Copyright (C) 2003-2009 Edgewall Software
 # All rights reserved.
 #
 # This software is licensed as described in the file COPYING, which
@@ -92,7 +92,7 @@ class TracAdmin(cmd.Cmd):
         self.interactive = True
         printout(_("""Welcome to trac-admin %(version)s
 Interactive Trac administration console.
-Copyright (c) 2003-2008 Edgewall Software
+Copyright (c) 2003-2009 Edgewall Software
 
 Type:  '?' or 'help' for help on commands.
         """, version=TRAC_VERSION))

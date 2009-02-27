@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2006-2008 Edgewall Software
+# Copyright (C) 2006-2009 Edgewall Software
 # Copyright (C) 2006-2007 Alec Thomas <alec@swapoff.org>
 # Copyright (C) 2007 Christian Boos <cboos@neuf.fr>
 # All rights reserved.

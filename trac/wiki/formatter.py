@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2008 Edgewall Software
+# Copyright (C) 2003-2009 Edgewall Software
 # Copyright (C) 2003-2005 Jonas Borgström <jonas@edgewall.com>
 # Copyright (C) 2004-2005 Christopher Lenz <cmlenz@gmx.de>
 # Copyright (C) 2005-2007 Christian Boos <cboos@neuf.fr>
@@ -473,13 +473,13 @@ class Formatter(object):
         local_url = self.env.config.get('project', 'url') or \
                     (self.req or self.env).abs_href.base
         if not url.startswith(local_url):
-            return tag.a(tag.span(text, class_="icon"),
+            return tag.a(tag.span(u'\xa0', class_="icon"), text,
                           class_="ext-link", href=url, title=title or None)
         else:
             return tag.a(text, href=url, title=title or None)
 
     def _make_mail_link(self, url, text, title=''):
-        return tag.a(tag.span(text, class_="icon"),
+        return tag.a(tag.span(u'\xa0', class_="icon"), text,
                       class_="mail-link", href=url, title=title or None)
 
     # WikiMacros

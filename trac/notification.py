@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2003-2008 Edgewall Software
+# Copyright (C) 2003-2009 Edgewall Software
 # Copyright (C) 2003-2005 Daniel Lundin <daniel@edgewall.com>
 # Copyright (C) 2005-2006 Emmanuel Blot <emmanuel.blot@free.fr>
 # All rights reserved.
@@ -325,7 +325,8 @@ class NotifyEmail(Notify):
             self.server.starttls()
             self.server.ehlo()
         if self.user_name:
-            self.server.login(self.user_name, self.password)
+            self.server.login(self.user_name.encode('utf-8'),
+                              self.password.encode('utf-8'))
 
     def send(self, torcpts, ccrcpts, mime_headers={}):
         from email.MIMEText import MIMEText
