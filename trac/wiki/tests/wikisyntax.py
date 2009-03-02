@@ -271,9 +271,11 @@ NoLink:ignored
 RELATIVE_LINKS_TESTS=u"""
 ============================== Relative to the project url
 [//docs Documentation]
+[// Home]
 ------------------------------
 <p>
 <a href="/docs">Documentation</a>
+<a href="/">Home</a>
 </p>
 ------------------------------
 ============================== Relative to the base url
@@ -282,7 +284,7 @@ RELATIVE_LINKS_TESTS=u"""
 ------------------------------
 <p>
 <a href="/newticket?priority=high">bug</a>
-<a href="">Project</a>
+<a href="/">Project</a>
 </p>
 ------------------------------
 ============================== Relative to the current page

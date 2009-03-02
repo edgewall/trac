@@ -296,7 +296,7 @@ Relative links are supported:
 [... nothing to see] [...]
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
-<a href="">/</a> Note: "" is an Href("/") artifact
+<a href="/">/</a> Note: "" is an Href("/") artifact
 <a href="/newticket?component=test">new ticket</a>
 <a class="wiki" href="/wiki/WikiStart#title">#title</a>
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
