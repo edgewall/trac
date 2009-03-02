@@ -139,7 +139,7 @@ def get_last_traceback():
     from StringIO import StringIO
     tb = StringIO()
     traceback.print_exc(file=tb)
-    return tb.getvalue()
+    return to_unicode(tb.getvalue())
 
 def get_lines_from_file(filename, lineno, context=0):
     """Return `content` number of lines before and after the specified
