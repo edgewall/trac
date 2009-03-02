@@ -15,11 +15,53 @@
 import doctest
 import unittest
 
-from trac.web import href
+import trac.web.href
+
+
+class HrefTestCase(unittest.TestCase):
+    """Unit tests for Href URL builder."""
+    
+    def test_non_empty_base(self):
+        """Build URLs with a non-empty base."""
+        href = trac.web.href.Href('/base')
+        self.assertEqual('/base', href())
+        self.assertEqual('/base', href('/'))
+        self.assertEqual('/base/sub', href('sub'))
+        self.assertEqual('/base/sub', href('/sub/'))
+        self.assertEqual('/base/sub/other', href('sub', 'other'))
+        self.assertEqual('/base/sub/other', href('sub', None, 'other'))
+        self.assertEqual('/base/sub//other', href('sub', '', 'other'))  # ???
+        self.assertEqual('/base/with%20special%26chars',
+                         href('with special&chars'))
+        assert href('page', param='value', other='other value', more=None) in [
+            '/base/page?param=value&other=other+value',
+            '/base/page?other=other+value&param=value']
+        self.assertEqual('/base/page?param=multiple&param=values',
+                         href('page', param=['multiple', 'values']))
+
+    def test_empty_base(self):
+        """Build URLs with an empty base."""
+        href = trac.web.href.Href('')
+        self.assertEqual('/', href())
+        self.assertEqual('/', href('/'))
+        self.assertEqual('/sub', href('sub'))
+        self.assertEqual('/sub', href('/sub/'))
+        self.assertEqual('/sub/other', href('sub', 'other'))
+        self.assertEqual('/sub/other', href('sub', None, 'other'))
+        self.assertEqual('/sub//other', href('sub', '', 'other'))       # ???
+        self.assertEqual('/with%20special%26chars',
+                         href('with special&chars'))
+        assert href('page', param='value', other='other value', more=None) in [
+            '/page?param=value&other=other+value',
+            '/page?other=other+value&param=value']
+        self.assertEqual('/page?param=multiple&param=values',
+                         href('page', param=['multiple', 'values']))
+
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(doctest.DocTestSuite(href))
+    suite.addTest(doctest.DocTestSuite(trac.web.href))
+    suite.addTest(unittest.makeSuite(HrefTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
