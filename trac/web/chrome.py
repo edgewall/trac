@@ -33,7 +33,7 @@ from genshi.builder import tag, Element
 # Once advanced-i18n is in the required Genshi version (0.6?), uncomment the
 # following:
 #
-# from genshi.filters import Translator, setup_i18n
+# from genshi.filters import Translator
 #
 # and remove the rest:
 from genshi.filters import Translator
@@ -709,7 +709,10 @@ class Chrome(Component):
         if not self.templates:
             def _template_loaded(template):
                 translator = Translator(translation.get_translations())
-                setup_i18n(template, translator)
+                if hasattr(translator, 'setup'):
+                    translator.setup(template)
+                else: # pre-[G1003], remove once advanced-i18n hits trunk
+                    setup_i18n(template, translator)
 
             self.templates = TemplateLoader(self.get_all_templates_dirs(),
                                             auto_reload=self.auto_reload,
