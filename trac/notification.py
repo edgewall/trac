@@ -13,14 +13,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import time
-import smtplib
 import re
+import smtplib
+from subprocess import Popen, PIPE
+import time
 
 from genshi.builder import tag
 
 from trac import __version__
-from trac.config import BoolOption, IntOption, Option
+from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
 from trac.util.text import CRLF
 from trac.util.translation import _
@@ -34,22 +35,27 @@ EMAIL_LOOKALIKE_PATTERN = (
         '[a-zA-Z](?:[-a-zA-Z\d]*[a-zA-Z\d])?' # TLD
         )
 
+
+class IEmailSender(Interface):
+    """Extension point interface for components that allow sending e-mail."""
+    
+    def send(self, from_addr, recipients, message):
+        """Send message to recipients."""
+
+
 class NotificationSystem(Component):
+
+    email_sender = ExtensionOption('notification', 'email_sender',
+                                   IEmailSender, 'SmtpEmailSender',
+        """Name of the component implementing `IEmailSender`.
+        
+        This component is used by the notification system to send e-mails.
+        Trac currently provides `SmtpEmailSender` for connecting to an SMTP
+        server, and `SendmailEmailSender` for running a Sendmail-compatible
+        executable. (''since 0.12'')""")
 
     smtp_enabled = BoolOption('notification', 'smtp_enabled', 'false',
         """Enable SMTP (email) notification.""")
-
-    smtp_server = Option('notification', 'smtp_server', 'localhost',
-        """SMTP server hostname to use for email notifications.""")
-
-    smtp_port = IntOption('notification', 'smtp_port', 25,
-        """SMTP server port to use for email notification.""")
-
-    smtp_user = Option('notification', 'smtp_user', '',
-        """Username for SMTP server. (''since 0.9'').""")
-
-    smtp_password = Option('notification', 'smtp_password', '',
-        """Password for SMTP server. (''since 0.9'').""")
 
     smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
         """Sender address to use in notification emails.""")
@@ -69,15 +75,16 @@ class NotificationSystem(Component):
            addresses do not appear publicly (Bcc:). (''since 0.10'').""")
            
     smtp_default_domain = Option('notification', 'smtp_default_domain', '',
-        """Default host/domain to append to address that do not specify one""")
+        """Default host/domain to append to address that do not specify
+           one.""")
         
     ignore_domains = Option('notification', 'ignore_domains', '',
         """Comma-separated list of domains that should not be considered
-           part of email addresses (for usernames with Kerberos domains)""")
+           part of email addresses (for usernames with Kerberos domains).""")
            
     admit_domains = Option('notification', 'admit_domains', '',
         """Comma-separated list of domains that should be considered as
-        valid for email addresses (such as localdomain)""")
+        valid for email addresses (such as localdomain).""")
            
     mime_encoding = Option('notification', 'mime_encoding', 'base64',
         """Specifies the MIME encoding scheme for emails.
@@ -85,30 +92,114 @@ class NotificationSystem(Component):
         Valid options are 'base64' for Base64 encoding, 'qp' for
         Quoted-Printable, and 'none' for no encoding. Note that the no encoding
         means that non-ASCII characters in text are going to cause problems
-        with notifications (''since 0.10'').""")
+        with notifications. (''since 0.10'')""")
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
         """Recipients can see email addresses of other CC'ed recipients.
         
-        If this option is disabled (the default), recipients are put on BCC
-        (''since 0.10'').""")
+        If this option is disabled (the default), recipients are put on BCC.
+        (''since 0.10'')""")
 
     use_short_addr = BoolOption('notification', 'use_short_addr', 'false',
-        """Permit email address without a host/domain (i.e. username only)
+        """Permit email address without a host/domain (i.e. username only).
         
         The SMTP server should accept those addresses, and either append
-        a FQDN or use local delivery (''since 0.10'').""")
+        a FQDN or use local delivery. (''since 0.10'')""")
         
-    use_tls = BoolOption('notification', 'use_tls', 'false',
-        """Use SSL/TLS to send notifications (''since 0.10'').""")
-    
     smtp_subject_prefix = Option('notification', 'smtp_subject_prefix',
                                  '__default__', 
         """Text to prepend to subject line of notification emails. 
         
         If the setting is not defined, then the [$project_name] prefix.
         If no prefix is desired, then specifying an empty option 
-        will disable it.(''since 0.10.1'').""")
+        will disable it. (''since 0.10.1'')""")
+
+    def send_email(self, from_addr, recipients, message):
+        """Send message to recipients via e-mail."""
+        self.email_sender.send(from_addr, recipients, message)
+
+
+class SmtpEmailSender(Component):
+    """SMTP e-mail sender."""
+    
+    implements(IEmailSender)
+    
+    smtp_server = Option('notification', 'smtp_server', 'localhost',
+        """SMTP server hostname to use for email notifications.""")
+
+    smtp_port = IntOption('notification', 'smtp_port', 25,
+        """SMTP server port to use for email notification.""")
+
+    smtp_user = Option('notification', 'smtp_user', '',
+        """Username for SMTP server. (''since 0.9'')""")
+
+    smtp_password = Option('notification', 'smtp_password', '',
+        """Password for SMTP server. (''since 0.9'')""")
+
+    use_tls = BoolOption('notification', 'use_tls', 'false',
+        """Use SSL/TLS to send notifications. (''since 0.10'')""")
+    
+    crlf = re.compile("\r?\n")
+    
+    def send(self, from_addr, recipients, message):
+        # Ensure the message complies with RFC2822: use CRLF line endings
+        message = CRLF.join(self.crlf.split(message))
+        
+        self.log.info("Sending notification through SMTP at %s:%d to %s"
+                      % (self.smtp_server, self.smtp_port, recipients))
+        server = smtplib.SMTP(self.smtp_server, self.smtp_port)
+        # server.set_debuglevel(True)
+        if self.use_tls:
+            server.ehlo()
+            if not server.esmtp_features.has_key('starttls'):
+                raise TracError(_("TLS enabled but server does not support " \
+                                  "TLS"))
+            server.starttls()
+            server.ehlo()
+        if self.smtp_user:
+            server.login(self.smtp_user.encode('utf-8'),
+                         self.smtp_password.encode('utf-8'))
+        start = time.time()
+        server.sendmail(from_addr, recipients, message)
+        t = time.time() - start
+        if t > 5:
+            self.log.warning('Slow mail submission (%.2f s), '
+                             'check your mail setup' % t)
+        if self.use_tls:
+            # avoid false failure detection when the server closes
+            # the SMTP connection with TLS enabled
+            import socket
+            try:
+                server.quit()
+            except socket.sslerror:
+                pass
+        else:
+            server.quit()
+
+
+class SendmailEmailSender(Component):
+    """Sendmail e-mail sender."""
+    
+    implements(IEmailSender)
+    
+    sendmail_path = Option('notification', 'sendmail_path', 'sendmail',
+        """Path to the sendmail executable.
+        
+        The sendmail program must accept the `-i` and `-f` options.
+         (''since 0.12'')""")
+
+    def send(self, from_addr, recipients, message):
+        self.log.info("Sending notification through sendmail at %s to %s"
+                      % (self.sendmail_path, recipients))
+        cmdline = [self.sendmail_path, "-i", "-f", from_addr]
+        cmdline.extend(recipients)
+        self.log.debug("Sendmail command line: %s" % cmdline)
+        child = Popen(cmdline, bufsize=-1, stdin=PIPE, stdout=PIPE,
+                      stderr=PIPE)
+        (out, err) = child.communicate(message)
+        if child.returncode or err:
+            raise Exception("Sendmail failed with (%s, %s), command: '%s'"
+                            % (child.returncode, err.strip(), cmdline))
 
 
 class Notify(object):
@@ -163,8 +254,6 @@ class Notify(object):
 class NotifyEmail(Notify):
     """Baseclass for notification by email."""
 
-    smtp_server = 'localhost'
-    smtp_port = 25
     from_email = 'trac+tickets@localhost'
     subject = ''
     template_name = None
@@ -185,7 +274,6 @@ class NotifyEmail(Notify):
                                               domains)
         self.shortaddr_re = re.compile(r'%s$' % addrfmt)
         self.longaddr_re = re.compile(r'^\s*(.*)\s+<(%s)>\s*$' % addrfmt);
-        self._use_tls = self.env.config.getbool('notification', 'use_tls')
         self._init_pref_encoding()
         domains = self.env.config.get('notification', 'ignore_domains', '')
         self._ignore_domains = [x.strip() for x in domains.lower().split(',')]
@@ -225,8 +313,6 @@ class NotifyEmail(Notify):
 
         if not self.config.getbool('notification', 'smtp_enabled'):
             return
-        self.smtp_server = self.config['notification'].get('smtp_server')
-        self.smtp_port = self.config['notification'].getint('smtp_port')
         self.from_email = self.config['notification'].get('smtp_from')
         self.from_name = self.config['notification'].get('smtp_from_name')
         self.replyto_email = self.config['notification'].get('smtp_replyto')
@@ -238,10 +324,6 @@ class NotifyEmail(Notify):
                                         ' nor ', tag.b('notification.reply_to'),
                                         'are specified in the configuration.')),
                               'SMTP Notification Error')
-
-        # Authentication info (optional)
-        self.user_name = self.config['notification'].get('smtp_user')
-        self.password = self.config['notification'].get('smtp_password')
 
         Notify.notify(self, resid)
 
@@ -313,20 +395,6 @@ class NotifyEmail(Notify):
         if mo:
             return self.format_header(key, mo.group(1), mo.group(2))
         return self.format_header(key, value)
-
-    def begin_send(self):
-        self.server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-        # self.server.set_debuglevel(True)
-        if self._use_tls:
-            self.server.ehlo()
-            if not self.server.esmtp_features.has_key('starttls'):
-                raise TracError(_("TLS enabled but server does not support " \
-                                  "TLS"))
-            self.server.starttls()
-            self.server.ehlo()
-        if self.user_name:
-            self.server.login(self.user_name.encode('utf-8'),
-                              self.password.encode('utf-8'))
 
     def send(self, torcpts, ccrcpts, mime_headers={}):
         from email.MIMEText import MIMEText
@@ -403,27 +471,5 @@ class NotifyEmail(Notify):
         msg.set_charset(self._charset)
         self.add_headers(msg, headers);
         self.add_headers(msg, mime_headers);
-        self.env.log.info("Sending SMTP notification to %s:%d to %s"
-                           % (self.smtp_server, self.smtp_port, recipients))
-        msgtext = msg.as_string()
-        # Ensure the message complies with RFC2822: use CRLF line endings
-        recrlf = re.compile("\r?\n")
-        msgtext = CRLF.join(recrlf.split(msgtext))
-        start = time.time()
-        self.server.sendmail(msg['From'], recipients, msgtext)
-        t = time.time() - start
-        if t > 5:
-            self.env.log.warning('Slow mail submission (%.2f s), '
-                                 'check your mail setup' % t)
-
-    def finish_send(self):
-        if self._use_tls:
-            # avoid false failure detection when the server closes
-            # the SMTP connection with TLS enabled
-            import socket
-            try:
-                self.server.quit()
-            except socket.sslerror:
-                pass
-        else:
-            self.server.quit()
+        NotificationSystem(self.env).send_email(self.from_email, recipients,
+                                                msg.as_string())
