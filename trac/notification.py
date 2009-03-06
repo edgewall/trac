@@ -49,13 +49,13 @@ class NotificationSystem(Component):
                                    IEmailSender, 'SmtpEmailSender',
         """Name of the component implementing `IEmailSender`.
         
-        This component is used by the notification system to send e-mails.
+        This component is used by the notification system to send emails.
         Trac currently provides `SmtpEmailSender` for connecting to an SMTP
-        server, and `SendmailEmailSender` for running a Sendmail-compatible
+        server, and `SendmailEmailSender` for running a `sendmail`-compatible
         executable. (''since 0.12'')""")
 
     smtp_enabled = BoolOption('notification', 'smtp_enabled', 'false',
-        """Enable SMTP (email) notification.""")
+        """Enable email notification.""")
 
     smtp_from = Option('notification', 'smtp_from', 'trac@localhost',
         """Sender address to use in notification emails.""")
@@ -137,7 +137,7 @@ class SmtpEmailSender(Component):
         """Password for SMTP server. (''since 0.9'')""")
 
     use_tls = BoolOption('notification', 'use_tls', 'false',
-        """Use SSL/TLS to send notifications. (''since 0.10'')""")
+        """Use SSL/TLS to send notifications over SMTP. (''since 0.10'')""")
     
     crlf = re.compile("\r?\n")
     
