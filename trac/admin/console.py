@@ -27,7 +27,8 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.util import translation
 from trac.util.html import html
-from trac.util.text import to_unicode, console_print, printout, printerr
+from trac.util.text import console_print, exception_to_unicode, printout, \
+                           printerr, to_unicode
 from trac.util.translation import _
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
@@ -50,7 +51,7 @@ class TracAdmin(cmd.Cmd):
         try:
             import readline
             delims = readline.get_completer_delims()
-            for c in '-/':
+            for c in '-/:':
                 delims = delims.replace(c, '')
             readline.set_completer_delims(delims)
         except ImportError:
@@ -82,8 +83,8 @@ class TracAdmin(cmd.Cmd):
                 print
                 self.do_help(e.cmd or self.arg_tokenize(line)[0])
             rv = 2
-        except TracError, e:
-            printerr(_("Command failed:"), e)
+        except Exception, e:
+            printerr(exception_to_unicode(e))
             rv = 2
         if not self.interactive:
             return rv
@@ -143,12 +144,6 @@ Type:  '?' or 'help' for help on commands.
             words[0] += ' '     # Only one choice, skip to next arg
         return words
 
-    def path_complete(self, text, words):
-        words = list(set(a for a in words if a.startswith(text)))
-        if len(words) == 1 and not os.path.isdir(words[0]):
-            words[0] += ' '
-        return words
-    
     @staticmethod
     def split_help_text(text):
         import re
@@ -201,9 +196,9 @@ Type:  '?' or 'help' for help on commands.
         if len(args) == 1:
             comp.extend(name[3:] for name in self.get_names()
                         if name.startswith('do_'))
-        if isinstance(comp, PathList):
-            return self.path_complete(text, comp)
-        else:
+        try:
+            return comp.complete(text)
+        except AttributeError:
             return self.word_complete(text, comp)
         
     def completenames(self, text, line, begidx, endidx):

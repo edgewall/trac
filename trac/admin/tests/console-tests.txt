@@ -258,7 +258,7 @@ changed_name  somebody
 component2    somebody
 
 ===== test_component_rename_error_bad_component =====
-Command failed: Component bad_component does not exist.
+ResourceNotFound: Component bad_component does not exist.
 ===== test_component_rename_error_bad_new_name =====
 IntegrityError: column name is not unique
 ===== test_component_chown_ok =====
@@ -269,7 +269,7 @@ component1  somebody
 component2  changed_owner
 
 ===== test_component_chown_error_bad_component =====
-Command failed: Component bad_component does not exist.
+ResourceNotFound: Component bad_component does not exist.
 ===== test_component_remove_ok =====
 
 Name        Owner   
@@ -277,7 +277,7 @@ Name        Owner
 component2  somebody
 
 ===== test_component_remove_error_bad_component =====
-Command failed: Component bad_component does not exist.
+ResourceNotFound: Component bad_component does not exist.
 ===== test_ticket_type_list_ok =====
 
 Possible Values
@@ -306,7 +306,7 @@ enhancement
 task
 
 ===== test_ticket_type_change_error_bad_type =====
-Command failed: ticket_type bad_type does not exist.
+ResourceNotFound: ticket_type bad_type does not exist.
 ===== test_ticket_type_change_error_bad_new_name =====
 IntegrityError: columns type, name are not unique
 ===== test_ticket_type_remove_ok =====
@@ -317,7 +317,7 @@ defect
 enhancement
 
 ===== test_ticket_type_remove_error_bad_type =====
-Command failed: ticket_type bad_type does not exist.
+ResourceNotFound: ticket_type bad_type does not exist.
 ===== test_ticket_type_order_down_ok =====
 
 Possible Values
@@ -335,7 +335,7 @@ defect
 task
 
 ===== test_ticket_type_order_error_bad_type =====
-Command failed: ticket_type bad_type does not exist.
+ResourceNotFound: ticket_type bad_type does not exist.
 ===== test_priority_list_ok =====
 
 Possible Values
@@ -391,7 +391,7 @@ minor
 trivial    
 
 ===== test_priority_change_error_bad_priority =====
-Command failed: priority bad_priority does not exist.
+ResourceNotFound: priority bad_priority does not exist.
 ===== test_priority_change_error_bad_new_name =====
 IntegrityError: columns type, name are not unique
 ===== test_priority_remove_ok =====
@@ -404,7 +404,7 @@ minor
 trivial    
 
 ===== test_priority_remove_error_bad_priority =====
-Command failed: priority bad_priority does not exist.
+ResourceNotFound: priority bad_priority does not exist.
 ===== test_priority_order_down_ok =====
 
 Possible Values
@@ -426,7 +426,7 @@ minor
 trivial
 
 ===== test_priority_order_error_bad_priority =====
-Command failed: priority bad_priority does not exist.
+ResourceNotFound: priority bad_priority does not exist.
 ===== test_severity_list_ok =====
 
 Possible Values
@@ -447,7 +447,7 @@ Possible Values
 end-of-the-world
 
 ===== test_severity_change_error_bad_severity =====
-Command failed: severity bad_severity does not exist.
+ResourceNotFound: severity bad_severity does not exist.
 ===== test_severity_change_error_bad_new_name =====
 IntegrityError: columns type, name are not unique
 ===== test_severity_remove_ok =====
@@ -456,7 +456,7 @@ Possible Values
 ---------------
 
 ===== test_severity_remove_error_bad_severity =====
-Command failed: severity bad_severity does not exist.
+ResourceNotFound: severity bad_severity does not exist.
 ===== test_severity_order_down_ok =====
 
 Possible Values
@@ -472,7 +472,7 @@ bar
 foo
 
 ===== test_severity_order_error_bad_severity =====
-Command failed: severity bad_severity does not exist.
+ResourceNotFound: severity bad_severity does not exist.
 ===== test_version_list_ok =====
 
 Name  Time
@@ -498,7 +498,7 @@ Name  Time
 2.0       
 
 ===== test_version_rename_error_bad_version =====
-Command failed: Version bad_version does not exist.
+ResourceNotFound: Version bad_version does not exist.
 ===== test_version_time_ok =====
 
 Name  Time                    
@@ -514,7 +514,7 @@ Name  Time
 1.0                           
 
 ===== test_version_time_error_bad_version =====
-Command failed: Version bad_version does not exist.
+ResourceNotFound: Version bad_version does not exist.
 ===== test_version_remove_ok =====
 
 Name  Time
@@ -522,7 +522,7 @@ Name  Time
 2.0       
 
 ===== test_version_remove_error_bad_version =====
-Command failed: Version bad_version does not exist.
+ResourceNotFound: Version bad_version does not exist.
 ===== test_milestone_list_ok =====
 
 Name        Due  Completed
@@ -564,7 +564,7 @@ milestone3
 milestone4
 
 ===== test_milestone_rename_error_bad_milestone =====
-Command failed: Milestone bad_milestone does not exist.
+ResourceNotFound: Milestone bad_milestone does not exist.
 ===== test_milestone_due_ok =====
 
 Name        Due         Completed
@@ -584,7 +584,7 @@ milestone3
 milestone4
 
 ===== test_milestone_due_error_bad_milestone =====
-Command failed: Milestone bad_milestone does not exist.
+ResourceNotFound: Milestone bad_milestone does not exist.
 ===== test_milestone_completed_ok =====
 
 Name        Due  Completed
@@ -595,7 +595,7 @@ milestone3
 milestone4
 
 ===== test_milestone_completed_error_bad_milestone =====
-Command failed: Milestone bad_milestone does not exist.
+ResourceNotFound: Milestone bad_milestone does not exist.
 ===== test_milestone_remove_ok =====
 
 Name        Due  Completed
@@ -605,7 +605,7 @@ milestone2
 milestone4
 
 ===== test_milestone_remove_error_bad_milestone =====
-Command failed: Milestone bad_milestone does not exist.
+ResourceNotFound: Milestone bad_milestone does not exist.
 ===== test_backslash_use_ok =====
 
 Name  Time

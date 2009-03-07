@@ -108,7 +108,7 @@ class TracadminTestCase(unittest.TestCase):
     def tearDown(self):
         self.env = None
 
-    def _execute(self, cmd, strip_trailing_space=True, expect_exception=False):
+    def _execute(self, cmd, strip_trailing_space=True):
         _err = sys.stderr
         _out = sys.stdout
         try:
@@ -119,8 +119,6 @@ class TracadminTestCase(unittest.TestCase):
                 retval = self._admin.onecmd(cmd)
             except SystemExit, e:
                 pass
-            sys.stderr = _err
-            sys.stdout = _out
             value = out.getvalue()
             if isinstance(value, str): # reverse what print_listing did
                 value = value.decode('utf-8')
@@ -128,14 +126,9 @@ class TracadminTestCase(unittest.TestCase):
                 return retval, STRIP_TRAILING_SPACE.sub('', value)
             else:
                 return retval, value
-        except Exception, e:
+        finally:
             sys.stderr = _err
             sys.stdout = _out
-            if expect_exception:
-                tb = traceback.format_exc()
-                message = tb.splitlines()[-1] + '\n'
-                return -1, message
-            raise
 
     def assertEqual(self, expected_results, output):
         if not (isinstance(expected_results, basestring) and \
@@ -299,9 +292,8 @@ class TracadminTestCase(unittest.TestCase):
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('component add component1 new_user',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('component add component1 new_user')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_rename_ok(self):
@@ -331,9 +323,8 @@ class TracadminTestCase(unittest.TestCase):
         test tries to rename a component to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('component rename component1 component2',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('component rename component1 component2')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_component_chown_ok(self):
@@ -413,9 +404,8 @@ class TracadminTestCase(unittest.TestCase):
         message.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('ticket_type add defect',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('ticket_type add defect')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_change_ok(self):
@@ -445,9 +435,8 @@ class TracadminTestCase(unittest.TestCase):
         test tries to change a ticket type to another type that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('ticket_type change defect task',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('ticket_type change defect task')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_ticket_type_remove_ok(self):
@@ -546,9 +535,8 @@ class TracadminTestCase(unittest.TestCase):
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('priority add blocker',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('priority add blocker')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_change_ok(self):
@@ -578,9 +566,8 @@ class TracadminTestCase(unittest.TestCase):
         test tries to change a priority to a name that already exists.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('priority change major minor',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('priority change major minor')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_priority_remove_ok(self):
@@ -668,9 +655,8 @@ class TracadminTestCase(unittest.TestCase):
         """
         test_name = sys._getframe().f_code.co_name
         self._execute('severity add blocker')
-        rv, output = self._execute('severity add blocker',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('severity add blocker')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_change_ok(self):
@@ -703,9 +689,8 @@ class TracadminTestCase(unittest.TestCase):
         test_name = sys._getframe().f_code.co_name
         self._execute('severity add major')
         self._execute('severity add critical')
-        rv, output = self._execute('severity change critical major',
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('severity change critical major')
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_severity_remove_ok(self):
@@ -796,9 +781,8 @@ class TracadminTestCase(unittest.TestCase):
         error message.
         """
         test_name = sys._getframe().f_code.co_name
-        rv, output = self._execute('version add 1.0 "%s"' % self._test_date,
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+        rv, output = self._execute('version add 1.0 "%s"' % self._test_date)
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_version_rename_ok(self):
@@ -921,9 +905,8 @@ class TracadminTestCase(unittest.TestCase):
         """
         test_name = sys._getframe().f_code.co_name
         rv, output = self._execute('milestone add milestone1 "%s"'
-                                   % self._test_date,
-                                   expect_exception=True)
-        self.assertEqual(-1, rv)
+                                   % self._test_date)
+        self.assertEqual(2, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_rename_ok(self):
