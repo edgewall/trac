@@ -17,15 +17,18 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 from datetime import datetime
-import os
+import os.path
 import re
 import shutil
+import sys
 import time
 import unicodedata
 
 from genshi.builder import tag
 
 from trac import perm, util
+from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
+                       console_datetime_format, get_dir_list
 from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
@@ -34,9 +37,9 @@ from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import get_reporter_id, create_unique_file, content_disposition
-from trac.util.datefmt import to_timestamp, utc
-from trac.util.text import exception_to_unicode, unicode_quote, \
-                           unicode_unquote, pretty_size
+from trac.util.datefmt import format_datetime, to_timestamp, utc
+from trac.util.text import exception_to_unicode, pretty_size, print_table, \
+                           unicode_quote, unicode_unquote
 from trac.util.translation import _
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, add_ctxtnav, \
@@ -784,3 +787,119 @@ class LegacyAttachmentPolicy(Component):
                         resource, perm)
                 if decision is not None:
                     return decision
+
+
+class AttachmentAdmin(Component):
+    """Component representing the attachment system administration."""
+    
+    implements(IAdminCommandProvider)
+    
+    # IAdminCommandProvider methods
+    
+    def get_admin_commands(self):
+        yield ('attachment list', '<realm:id>',
+               """List attachments of a resource
+               
+               The resource is identified by its realm and identifier.""",
+               self._complete_list, self._do_list)
+        yield ('attachment add', '<realm:id> <path> [author] [description]',
+               """Attach a file to a resource
+               
+               The resource is identified by its realm and identifier. The
+               attachment will be named according to the base name of the file.""",
+               self._complete_add, self._do_add)
+        yield ('attachment remove', '<realm:id> <name>',
+               """Remove an attachment from a resource
+               
+               The resource is identified by its realm and identifier.""",
+               self._complete_remove, self._do_remove)
+        yield ('attachment export', '<realm:id> <name> [destination]',
+               """Export an attachment from a resource to a file or stdout
+               
+               The resource is identified by its realm and identifier. If no
+               destination is specified, the attachment is output to stdout.
+               """,
+               self._complete_export, self._do_export)
+    
+    def get_realm_list(self):
+        rs = ResourceSystem(self.env)
+        return PrefixList([each + ":" for each in rs.get_known_realms()])
+    
+    def split_resource(self, resource):
+        result = resource.split(':', 1)
+        if len(result) != 2:
+            raise AdminCommandError(_("Invalid resource identifier '%(id)s'",
+                                      id=resource))
+        return result
+    
+    def get_attachment_list(self, resource):
+        (realm, id) = self.split_resource(resource)
+        return [a.filename for a in Attachment.select(self.env, realm, id)]
+    
+    def _complete_list(self, args):
+        if len(args) == 1:
+            return self.get_realm_list()
+    
+    def _complete_add(self, args):
+        if len(args) == 1:
+            return self.get_realm_list()
+        elif len(args) == 2:
+            return get_dir_list(args[1])
+    
+    def _complete_remove(self, args):
+        if len(args) == 1:
+            return self.get_realm_list()
+        elif len(args) == 2:
+            return self.get_attachment_list(args[0])
+    
+    def _complete_export(self, args):
+        if len(args) < 3:
+            return self._complete_remove(args)
+        elif len(args) == 3:
+            return get_dir_list(args[2])
+    
+    def _do_list(self, resource):
+        (realm, id) = self.split_resource(resource)
+        print_table([(a.filename, pretty_size(a.size), a.author,
+                      format_datetime(a.date, console_datetime_format),
+                      a.description)
+                     for a in Attachment.select(self.env, realm, id)],
+                    [_('Name'), _('Size'), _('Author'), _('Date'),
+                     _('Description')])
+    
+    def _do_add(self, resource, path, author='trac', description=''):
+        (realm, id) = self.split_resource(resource)
+        attachment = Attachment(self.env, realm, id)
+        attachment.author = author
+        attachment.description = description
+        f = open(path, 'rb')
+        try:
+            attachment.insert(os.path.basename(path), f, os.path.getsize(path))
+        finally:
+            f.close()
+    
+    def _do_remove(self, resource, name):
+        (realm, id) = self.split_resource(resource)
+        attachment = Attachment(self.env, realm, id, name)
+        attachment.delete()
+    
+    def _do_export(self, resource, name, destination=None):
+        (realm, id) = self.split_resource(resource)
+        attachment = Attachment(self.env, realm, id, name)
+        if destination is not None:
+            if os.path.isdir(destination):
+                destination = os.path.join(destination, name)
+            if os.path.isfile(destination):
+                raise AdminCommandError(_("File '%(name)s' exists",
+                                          name=destination))
+        input = attachment.open()
+        try:
+            output = (destination is None) and sys.stdout \
+                                           or open(destination, "wb")
+            try:
+                shutil.copyfileobj(input, output)
+            finally:
+                if destination is not None:
+                    output.close()
+        finally:
+            input.close()

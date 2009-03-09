@@ -56,7 +56,7 @@ def load_expected_results(file, pattern):
 
 class InMemoryEnvironment(Environment):
     """
-    A subclass of Environment that keeps its' DB in memory.
+    A subclass of Environment that keeps its DB in memory.
     """
 
     def get_db_cnx(self):
@@ -162,6 +162,22 @@ class TracadminTestCase(unittest.TestCase):
         self.assertEqual(0, rv)
         self.assertEqual(expected_results, output)
 
+    # Attachment tests
+    
+    def test_attachment_list_empty(self):
+        """
+        Tests the 'attachment list' command in trac-admin, on a wiki page that
+        doesn't have any attachments.
+        """
+        # FIXME: Additional tests should be written for the other 'attachment'
+        #        commands. This requires being able to control the current
+        #        time, which in turn would require centralizing the time
+        #        provider, for example in the environment object.
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('attachment list wiki:WikiStart')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+    
     # Config tests
     
     def test_config_get(self):
@@ -882,7 +898,7 @@ class TracadminTestCase(unittest.TestCase):
         test_name = sys._getframe().f_code.co_name
         self._execute('milestone add new_milestone "%s"' % self._test_date)
         rv, output = self._execute('milestone list')
-        #self.assertEqual(0, rv)
+        self.assertEqual(0, rv)
         self.assertEqual(self.expected_results[test_name], output)
 
     def test_milestone_add_utf8_ok(self):

@@ -7,6 +7,10 @@ Invoking trac-admin without command starts interactive mode.
 
 help                 Show documentation
 initenv              Create and initialize a new environment
+attachment add       Attach a file to a resource
+attachment export    Export an attachment from a resource to a file or stdout
+attachment list      List attachments of a resource
+attachment remove    Remove an attachment from a resource
 component add        Add a new component
 component chown      Change component ownership
 component list       Show available components
@@ -61,6 +65,11 @@ wiki list            List wiki pages
 wiki load            Import all wiki pages from directory
 wiki remove          Remove wiki page
 wiki upgrade         Upgrade default wiki pages to current version
+===== test_attachment_list_empty =====
+
+Name  Size  Author  Date  Description
+-------------------------------------
+
 ===== test_config_get =====
 Test project
 ===== test_config_set =====
