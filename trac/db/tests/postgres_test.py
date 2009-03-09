@@ -65,6 +65,17 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
         self.assertEqual('CREATE TABLE "foo" ( "my name" text)', sql_commands[0])
         index_sql = 'CREATE INDEX "foo_my name_idx" ON "foo" ("my name")'
         self.assertEqual(index_sql, sql_commands[1])
+    
+    def test_quote_index_declaration_for_multiple_indexes(self):
+        table = Table('foo')
+        table[Column('a'), Column('b'), 
+              Index(['a', 'b'])]
+        sql_generator = PostgreSQLConnector(self.env).to_sql(table)
+        sql_commands = self._normalize_sql(sql_generator)
+        self.assertEqual(2, len(sql_commands))
+        self.assertEqual('CREATE TABLE "foo" ( "a" text, "b" text)', sql_commands[0])
+        index_sql = 'CREATE INDEX "foo_a_b_idx" ON "foo" ("a","b")'
+        self.assertEqual(index_sql, sql_commands[1])
 
 
 def suite():
