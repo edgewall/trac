@@ -299,8 +299,8 @@ label.disabled { color: #d7d7d7 }
 #info .message p { margin: 0; padding: 0 }
 
 /* Wiki */
-.wikipage > * { margin-left: 18px }
-.wikipage h1, .wikipage h2, .wikipage h3 { margin-left: 0 }
+.wikipage { padding-left: 18px }
+.wikipage h1, .wikipage h2, .wikipage h3 { margin-left: -18px }
 
 a.missing:link, a.missing:visited, a.missing, span.missing,
 a.forbidden, span.forbidden { color: #998 }

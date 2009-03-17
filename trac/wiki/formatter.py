@@ -802,6 +802,8 @@ class Formatter(object):
                 values = [v and v[0] in '"\'' and v[1:-1] or v
                           for v in args[1::2]]
                 args = dict(zip(keys, values))
+                if 'class' not in args:
+                    args['class'] = 'wikipage'
                 self.code_processor = WikiProcessor(self, name, args)
             else:
                 self.code_buf.append(line)
