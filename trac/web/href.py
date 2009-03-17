@@ -148,6 +148,8 @@ class Href(object):
                          if arg != None])
         if path:
             href += '/' + path
+        elif not href:
+            href = '/'
 
         # assemble the query string
         for k,v in kw.items():

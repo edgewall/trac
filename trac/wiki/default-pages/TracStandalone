@@ -39,8 +39,23 @@ An alternative way to serve multiple projects is to specify a parent directory i
 
 To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-C}}} will leave a Python process running in the background.
 
-When running as a Windows service using a utility such as [http://www.google.com/search?q=srvany.exe SRVANY], stopping or restarting the service will also leave a Python process running -- restart the system instead.
+== Installing as a Windows Service ==
 
+To install as a Windows service, get the [http://www.google.com/search?q=srvany.exe SRVANY] utility and run:
+{{{
+ C:\path\to\instsrv.exe tracd C:\path\to\srvany.exe
+ reg add HKLM\SYSTEM\CurrentControlSet\Services\tracd\Parameters /v Application /d "\"C:\path\to\python.exe\" \"C:\path\to\python\scripts\tracd-script.py\" <your tracd parameters>"
+ net start tracd
+}}}
+
+'''DO NOT''' use {{{tracd.exe}}}.  Instead register {{{python.exe}}} directly with {{{tracd-script.py}}} as a parameter.  If you use {{{tracd.exe}}}, it will spawn the python process without SRVANY's knowledge.  This python process will survive a {{{net stop tracd}}}.
+
+If you want tracd to start automatically when you boot Windows, do:
+{{{
+ sc config tracd start= auto
+}}}
+
+The spacing here is important.
 
 == Using Authentication ==
 
@@ -154,9 +169,9 @@ Note: If you would like to use --basic-auth you need to use htpasswd tool from a
 
 It is possible to use md5sum utility to generate digest-password file using such method:
 {{{
-echo -e "${user}:trac:${password}\c" | md5sum - >>to-file
+ $ printf "${user}:trac:${password}" | md5sum - >>user.htdigest
 }}}
-and manually delete " -" from the end and add "${user}:trac:" to the start of line from 'to-file'. You can see attachment:trac-digest-corrected.sh for detail.
+and manually delete " -" from the end and add "${user}:trac:" to the start of line from 'to-file'.
 
 == Tips ==
 
@@ -184,7 +199,7 @@ In some situations when you choose to use tracd behind apache, you might experie
 === Serving a different base path than / ===
 Tracd supports serving projects with different base urls than /<project>. The parameter name to change this is
 {{{
-tracd --base-path=/some/path
+ $ tracd --base-path=/some/path
 }}}
 
 ----

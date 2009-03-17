@@ -27,7 +27,8 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.util import translation
 from trac.util.html import html
-from trac.util.text import to_unicode, console_print, printout, printerr
+from trac.util.text import console_print, exception_to_unicode, printout, \
+                           printerr, to_unicode
 from trac.util.translation import _
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
@@ -50,7 +51,7 @@ class TracAdmin(cmd.Cmd):
         try:
             import readline
             delims = readline.get_completer_delims()
-            for c in '-/':
+            for c in '-/:':
                 delims = delims.replace(c, '')
             readline.set_completer_delims(delims)
         except ImportError:
@@ -77,14 +78,19 @@ class TracAdmin(cmd.Cmd):
         except SystemExit:
             raise
         except AdminCommandError, e:
-            printerr(_("Error:"), e)
+            printerr(_("Error:"), to_unicode(e))
             if e.show_usage:
                 print
                 self.do_help(e.cmd or self.arg_tokenize(line)[0])
             rv = 2
         except TracError, e:
-            printerr(_("Command failed:"), e)
+            printerr(exception_to_unicode(e))
             rv = 2
+        except Exception, e:
+            printerr(exception_to_unicode(e))
+            rv = 2
+            self.env.log.error("Exception in trac-admin command: %s",
+                               exception_to_unicode(e, traceback=True))
         if not self.interactive:
             return rv
 
@@ -115,7 +121,8 @@ Type:  '?' or 'help' for help on commands.
             return 0
         return 1
 
-    def env_open(self):
+    @property
+    def env(self):
         try:
             if not self.__env:
                 self.__env = Environment(self.envname)
@@ -143,12 +150,6 @@ Type:  '?' or 'help' for help on commands.
             words[0] += ' '     # Only one choice, skip to next arg
         return words
 
-    def path_complete(self, text, words):
-        words = list(set(a for a in words if a.startswith(text)))
-        if len(words) == 1 and not os.path.isdir(words[0]):
-            words[0] += ' '
-        return words
-    
     @staticmethod
     def split_help_text(text):
         import re
@@ -189,21 +190,21 @@ Type:  '?' or 'help' for help on commands.
         args = self.arg_tokenize(line)
         if line and line[-1] == ' ':    # Space starts new argument
             args.append('')
-        cmd_mgr = AdminCommandManager(self.env_open())
+        cmd_mgr = AdminCommandManager(self.env)
         try:
             comp = cmd_mgr.complete_command(args, cmd_only)
         except Exception, e:
             printerr()
-            printerr(_('Completion error:'), e)
-            # Uncomment the following line to get the full traceback
-#            traceback.print_exc()
+            printerr(_('Completion error:'), exception_to_unicode(e))
+            self.env.log.error("trac-admin completion error: %s",
+                               exception_to_unicode(e, traceback=True))
             return []
         if len(args) == 1:
             comp.extend(name[3:] for name in self.get_names()
                         if name.startswith('do_'))
-        if isinstance(comp, PathList):
-            return self.path_complete(text, comp)
-        else:
+        try:
+            return comp.complete(text)
+        except AttributeError:
             return self.word_complete(text, comp)
         
     def completenames(self, text, line, begidx, endidx):
@@ -214,7 +215,7 @@ Type:  '?' or 'help' for help on commands.
         
     def default(self, line):
         args = self.arg_tokenize(line)
-        cmd_mgr = AdminCommandManager(self.env_open())
+        cmd_mgr = AdminCommandManager(self.env)
         return cmd_mgr.execute_command(*args)
 
     ##
@@ -239,7 +240,7 @@ Type:  '?' or 'help' for help on commands.
         if arg[0]:
             doc = getattr(self, "_help_" + arg[0], None)
             if doc is None and self.envname is not None:
-                cmd_mgr = AdminCommandManager(self.env_open())
+                cmd_mgr = AdminCommandManager(self.env)
                 doc = cmd_mgr.get_command_help(arg)
             if doc:
                 self.print_doc(doc)
@@ -256,7 +257,7 @@ Type:  '?' or 'help' for help on commands.
                     )
                 printout(_("Invoking trac-admin without command starts "
                            "interactive mode.\n"))
-            env = (self.envname is not None) and self.env_open() or None
+            env = (self.envname is not None) and self.env or None
             self.print_doc(self.all_docs(env), short=True)
 
 

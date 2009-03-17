@@ -130,8 +130,20 @@ class AdminCommandManager(Component):
         raise AdminCommandError(_("Command not found"), show_usage=True)
 
 
+class PrefixList(list):
+    """A list of prefixes for command argument auto-completion."""
+    def complete(self, text):
+        return list(set(a for a in self if a.startswith(text)))
+
+        
 class PathList(list):
-    """A list of paths for command auto-completion."""
+    """A list of paths for command argument auto-completion."""
+    def complete(self, text):
+        """Return the items in the list matching text."""
+        matches = list(set(a for a in self if a.startswith(text)))
+        if len(matches) == 1 and not os.path.isdir(matches[0]):
+            matches[0] += ' '
+        return matches
 
 
 def get_dir_list(path, dirs_only=False):

@@ -296,7 +296,7 @@ Relative links are supported:
 [... nothing to see] [...]
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
-<a href="">/</a> Note: "" is an Href("/") artifact
+<a href="/">/</a> Note: "" is an Href("/") artifact
 <a href="/newticket?component=test">new ticket</a>
 <a class="wiki" href="/wiki/WikiStart#title">#title</a>
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
@@ -653,6 +653,24 @@ Done.
 ------------------------------
 <div class="important"><p>
 Go ahead, <span class="important"><i>edit it freely</i></span>.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+ […]
+Done.
+============================== div and Span wiki processors
+{{{
+#!div ; style="background: #aeaeae"
+== Heading ==
+Headings are now inside the block thanks to the default .wikipage class.
+}}}
+Done.
+------------------------------
+<div style="background: #aeaeae" class="wikipage"><h2 id="Heading">Heading</h2>
+<p>
+Headings are now inside the block thanks to the default .wikipage class.
 </p>
 </div><p>
 Done.

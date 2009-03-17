@@ -197,6 +197,7 @@ If you are editing the ''post-commit'' hook for the first time you need to navig
 {{{
 $ cd /path/to/svn/repository/hooks
 $ mv post-commit.tmpl post-commit
+$ chmod 755 post-commit
 }}}
 
 Next open it in any text editor and add a line with path to the Trac environment connected with this SVN repository and another line executing the ''trac-post-commit-hook'' script:
@@ -204,7 +205,7 @@ Next open it in any text editor and add a line with path to the Trac environment
 {{{
 REPOS="$1"
 REV="$2"
-TRAC_ENV="/var/lib/trac/mamut"
+TRAC_ENV="/path/to/your/trac/project"
 
 /usr/bin/python /usr/local/bin/trac-post-commit-hook -p "$TRAC_ENV" -r "$REV"
 }}}
