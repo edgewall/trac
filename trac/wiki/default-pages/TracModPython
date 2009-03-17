@@ -287,6 +287,17 @@ Require valid-user
 
 The TracUriRoot is obviously the path you need to enter to the browser to get to the trac (e.g. domain.tld/projects/trac)
 
+=== Additional .htaccess help ===
+
+If you are using the .htaccess method you may have additional problems if your trac directory is inheriting .htaccess directives from another.  This may also help to add to your .htaccess file:
+
+{{{
+<IfModule mod_rewrite.c>
+  RewriteEngine Off
+</IfModule>
+}}}
+
+
 === Win32 Issues ===
 If you run trac with mod_python < 3.2 on Windows, uploading attachments will '''not''' work. This problem is resolved in mod_python 3.1.4 or later, so please upgrade mod_python to fix this.
 

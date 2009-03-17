@@ -133,13 +133,13 @@ An environment directory will usually consist of the following files and directo
  * `htdocs` - directory containing web resources, which can be referenced in Genshi templates. '''''(0.11 only)'''''
  * `log` - default directory for log files, if logging is turned on and a relative path is given.
  * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs, since [trac:milestone:0.10 0.10])
- * `templates` - Custom [trac:ClearSilver ClearSilver] environment-specific templates. '''''(0.10 only)'''''
-   * `site_css.cs` - Custom CSS rules.
-   * `site_footer.cs` - Custom page footer.
-   * `site_header.cs` - Custom page header.
  * `templates` - Custom Genshi environment-specific templates. '''''(0.11 only)'''''
    * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
- * `wiki-macros` - Environment-specific [WikiMacros Wiki macros]. '''''(0.10 only)'''''
+ * ''`templates` - Custom [trac:ClearSilver ClearSilver] environment-specific templates. '''(0.10 only)''' ''
+   * ''`site_css.cs` - Custom CSS rules.''
+   * ''`site_footer.cs` - Custom page footer.''
+   * ''`site_header.cs` - Custom page header.''
+ * ''`wiki-macros` - Environment-specific [WikiMacros Wiki macros]. '''(0.10 only)''' ''
 
   '''Note: don't confuse a Trac environment directory with the source code repository directory.
 It happens that the above structure is loosely modelled after the Subversion repository directory 

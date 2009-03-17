@@ -97,7 +97,7 @@ If you are uncertain about the location of the egg, here is a small tip to help 
 
 == Setting up the Plugin Cache ==
 
-Some plugins will need to be extracted by the Python eggs runtime (`pkg_resources`), so that their contents are actual files on the file system. The directory in which they are extracted defaults to the home directory of the current user, which may or may not be a problem. You can however override the default location using the `PYTHON_EGG_CACHE` environment variable.
+Some plugins will need to be extracted by the Python eggs runtime (`pkg_resources`), so that their contents are actual files on the file system. The directory in which they are extracted defaults to '.python-eggs' in the home directory of the current user, which may or may not be a problem. You can however override the default location using the `PYTHON_EGG_CACHE` environment variable.
 
 To do this from the Apache configuration, use the `SetEnv` directive as follows:
 {{{
