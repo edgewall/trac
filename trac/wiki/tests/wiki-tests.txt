@@ -600,6 +600,24 @@ Done.
 ------------------------------
  […]
 Done.
+============================== div and Span wiki processors
+{{{
+#!div ; style="background: #aeaeae"
+== Heading ==
+Headings are now inside the block thanks to the default .wikipage class.
+}}}
+Done.
+------------------------------
+<div style="background: #aeaeae" class="wikipage"><h2 id="Heading">Heading</h2>
+<p>
+Headings are now inside the block thanks to the default .wikipage class.
+</p>
+</div><p>
+Done.
+</p>
+------------------------------
+ […]
+Done.
 ============================================================
 
         Wiki Macros
