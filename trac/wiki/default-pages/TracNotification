@@ -35,6 +35,9 @@ These are the available options for the `[notification]` section in trac.ini.
    * `qp` or `quoted-printable`: best for european languages (more compact than base64), not recommended for non-ASCII text (less compact than base64)
    * `none`: no encoding. Use with plain english only (ASCII). E-mails with non-ASCII chars won't be delivered. 
  * '''`ticket_subject_template`''': (''since 0.11'') A [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet used to get the notification subject.
+ * '''`email_sender`''': (''since 0.12'') Name of the component implementing `IEmailSender`. This component is used by the notification system to send emails. Trac currently provides the following components:
+   * `SmtpEmailSender`: connects to an SMTP server (default).
+   * `SendmailEmailSender`: runs a `sendmail`-compatible executable.
 
 Either '''`smtp_from`''' or '''`smtp_replyto`''' (or both) ''must'' be set, otherwise Trac refuses to send notification mails.
 
@@ -45,6 +48,8 @@ The following options are specific to email delivery through SMTP.
  * '''`smtp_password`''': (''since 0.9'') Password for authentication SMTP account.
  * '''`use_tls`''': (''since 0.10'') Toggle to send notifications via a SMTP server using [http://en.wikipedia.org/wiki/Transport_Layer_Security TLS], such as GMail.
 
+The following option is specific to email delivery through a `sendmail`-compatible executable.
+ * '''`sendmail_path`''': (''since 0.12'') Path to the sendmail executable. The sendmail program must accept the `-i` and `-f` options.
 
 === Example Configuration (SMTP) ===
 {{{
@@ -56,6 +61,16 @@ smtp_replyto = myproj@projects.example.com
 smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
 }}}
 
+=== Example Configuration (`sendmail`) ===
+{{{
+[notification]
+smtp_enabled = true
+email_sender = SendmailEmailSender
+sendmail_path = /usr/sbin/sendmail
+smtp_from = notifier@example.com
+smtp_replyto = myproj@projects.example.com
+smtp_always_cc = ticketmaster@example.com, theboss+myproj@example.com
+}}}
 
 === Customizing the e-mail subject ===
 The e-mail subject can be customized with the `ticket_subject_template` option, which contains a [http://genshi.edgewall.org/wiki/Documentation/text-templates.html Genshi text template] snippet. The default value is:
