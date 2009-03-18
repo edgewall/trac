@@ -1,16 +1,14 @@
-Release Notes for Trac 0.11.3 Genshi Release
+Release Notes for Trac 0.11.4rc1 Genshi Release
 ============================================
-February 15, 2009
+March 18, 2009
 
-Trac 0.11.3 contains a number of bug fixes and minor enhancements.
+Trac 0.11.4rc1 contains a number of bug fixes and minor enhancements.
 
-Highlights in 0.11.3
---------------------
- * Compatibility with Python 2.6 (#7876, #7458)
- * PostgreSQL db backend improvement (#4987, #7600)
- * Highlighting of search results is more robust (#7324, #7830)
- * Unicode related fixes (#7672, #7959, #7845, #7935, #8024)
- * Fixed Trac link rendering in ReST (#7712)
+Highlights in 0.11.4rc1
+-----------------------
+ * Fixed Python 2.3 incompatibility (#8061)
+ * Fixed Python 2.6 notification issue (#8083)
+ * Fixed PostgreSQL multi column index issue (#7600)
 
 Highlights in 0.11
 ------------------
