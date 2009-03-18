@@ -23,6 +23,7 @@ import pkg_resources
 import os
 import sys
 from SocketServer import ThreadingMixIn
+import urllib
 
 from trac import __version__ as VERSION
 from trac.util import autoreload, daemon
@@ -67,6 +68,16 @@ class BasePathMiddleware(object):
         path = environ['SCRIPT_NAME'] + environ.get('PATH_INFO', '')
         environ['PATH_INFO'] = path[len(self.base_path):]
         environ['SCRIPT_NAME'] = self.base_path
+        return self.application(environ, start_response)
+
+
+class FlupMiddleware(object):
+
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, environ, start_response):
+        environ['PATH_INFO'] = urllib.unquote(environ.get('PATH_INFO', ''))
         return self.application(environ, start_response)
 
 
@@ -147,6 +158,9 @@ def main():
                       dest='protocol', callback=_validate_callback,
                       callback_args=(('http', 'scgi', 'ajp', 'fcgi'),),
                       help='http|scgi|ajp|fcgi')
+    parser.add_option('-q', '--unquote', action='store_true',
+                      dest='unquote',
+                      help='unquote PATH_INFO (may be needed when using ajp')
     parser.add_option('-e', '--env-parent-dir', action='store',
                       dest='env_parent_dir', metavar='PARENTDIR',
                       help='parent directory of the project environments')
@@ -237,7 +251,10 @@ def main():
         def serve():
             server_cls = __import__('flup.server.%s' % options.protocol,
                                     None, None, ['']).WSGIServer
-            ret = server_cls(wsgi_app, bindAddress=server_address).run()
+            flup_app = wsgi_app
+            if options.unquote:
+                flup_app = FlupMiddleware(flup_app)
+            ret = server_cls(flup_app, bindAddress=server_address).run()
             sys.exit(ret and 42 or 0) # if SIGHUP exit with status 42
 
     try:
