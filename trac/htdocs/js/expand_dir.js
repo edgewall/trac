@@ -4,7 +4,9 @@
   var FOLDERID_COUNTER = 0;
   var SUBFOLDER_INDENT = 20;
   
-  // enableExpandDir adds the capability to folder rows to be expanded and folded
+  // enableExpandDir adds the capability to ''folder'' rows in a table
+  // to be expanded and folded.
+  //
   // It also teach the rows about their ancestors. It expects:
   //  - `parent_tr`, the logical parent row (`null` if there's no ancestor)
   //  - a `rows` jQuery object matching the newly created entry rows
@@ -26,10 +28,11 @@
         $(this).addClass(folderid);
   
         // add the expander icon
-        a.wrap('<div></div>');
-        var expander = a.before('<span class="expander">&nbsp;</span>').prev();
-        expander.attr("title", "Expand sub-directory in place")
-          .click(function() { toggleDir($(this), qargs); });
+        a.wrap('<div></div>').before(
+          $('<span class="expander">&nbsp;</span>')
+          .attr("title", "Expand sub-directory in place")
+          .click(function() { toggleDir($(this), qargs); })
+        );
       }
   
       // tie that row to ancestor folders
@@ -68,12 +71,20 @@
   
       tr.addClass("expanded");
       // insert "Loading ..." row
-      tr.after('<tr><td><span class="loading"></span></td></tr>');
-      var loading_row = tr.next();
-      loading_row.children("td").addClass(td_class)
-        .attr("colspan", tr.children("td").length)
-        .css("padding-left", depth);
-      loading_row.find("span.loading").text("Loading " + a.text() + "...");
+      var loading_row = $((
+        '<tr>'+
+        ' <td class="$td_class" colspan="$cols" '+
+        '     style="padding-left: ${depth}px">'+
+        '  <span class="loading">Loading $entry...</span>'+
+        ' </td>'+
+        '</tr>'
+        ).replace(/[\$]{?(\w+)}?/g, function(_,key) { return {
+         td_class: td_class, 
+         cols: tr.children("td").length, 
+         depth: depth, 
+         entry: a.text() }[key]; })
+        );
+      tr.after(loading_row);
   
       // XHR for getting the rows corresponding to the folder entries
       $.ajax({
