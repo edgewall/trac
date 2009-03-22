@@ -122,7 +122,10 @@ class RepositoryManager(Component):
         """Default repository connector type. (''since 0.10'')""")
     repository_dir = Option('trac', 'repository_dir', '',
         """Path to the default repository. This can also be a relative path
-        (''since 0.11'').""")
+        (''since 0.11''). If this entry is specified (even when left empty),
+        this will auto-enable the trac.versioncontrol.* components. 
+        This means that if you want to use Trac without the source browser,
+        simply remove that entry from the [trac] section.""")
 
     def __init__(self):
         self._cache = {}

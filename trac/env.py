@@ -252,10 +252,11 @@ class Environment(Component, ComponentManager):
                     return False
                 return enabled
 
-        # versioncontrol components are enabled if the repository is configured
-        # FIXME: this shouldn't be hardcoded like this
+        # versioncontrol components are automatically enabled if the
+        # repository_dir key is present in the [trac] section
+        # FIXME: this probably shouldn't be hardcoded like this
         if component_name.startswith('trac.versioncontrol.'):
-            return self.config.get('trac', 'repository_dir') != ''
+            return 'repository_dir' in self.config['trac']
 
         # By default, all components in the trac package are enabled
         return component_name.startswith('trac.')
