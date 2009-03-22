@@ -79,6 +79,12 @@
         .substr(window.location.pathname.length+1)
         .replace(/([^?]*)(\?.*)?$/, '$1');    
 
+    // update sort links in column headers
+    tr.parents("table:first").find("thead tr:first").find("a").each(function(){
+      var href = $(this).attr("href").replace(/#.*$/, '');
+      $(this).attr("href", href+window.location.hash);
+     });
+
     if ( tr.hasClass("collapsed") ) { // then *expand*
       tr.removeClass("collapsed").addClass("expanded");
       tr.siblings("tr."+folderid).show();
