@@ -37,6 +37,7 @@ priority order       Move a priority value up or down in the list
 priority remove      Remove a priority value
 repository notify    Notify trac about repository events
 repository resync    Re-synchronize trac with repositories
+repository sync      Resume synchronization of repositories
 resolution add       Add a resolution value option
 resolution change    Change a resolution value
 resolution list      Show possible ticket resolutions

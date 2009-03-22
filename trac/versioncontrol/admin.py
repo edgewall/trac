@@ -44,10 +44,21 @@ class VersionControlAdmin(Component):
                When [rev] is specified, only that revision is synchronized.
                Otherwise, the complete revision history is synchronized. Note
                that this operation can take a long time to complete.
+               If synchronization gets interrupted, it can be resumed later
+               using the `sync` command.
                
                To synchronize all repositories, specify "*" as the repository.
                """,
                self._complete_repos, self._do_resync)
+        yield ('repository sync', '<repos> [rev]',
+               """Resume synchronization of repositories
+               
+               Similar to `resync`, but doesn't clear the already synchronized
+               changesets. Useful for resuming an interrupted `resync`.
+               
+               To synchronize all repositories, specify "*" as the repository.
+               """,
+               self._complete_repos, self._do_sync)
     
     _notify_events = [each for each in IRepositoryChangeListener.__dict__
                       if not each.startswith('_')]
@@ -72,7 +83,10 @@ class VersionControlAdmin(Component):
         rm = RepositoryManager(self.env)
         rm.notify(event, reponame, revs, None)
     
-    def _do_resync(self, reponame, rev=None):
+    def _do_sync(self, reponame, rev=None):
+        self._do_resync(reponame, rev, clean=False)
+
+    def _do_resync(self, reponame, rev=None, clean=True):
         rm = RepositoryManager(self.env)
         if reponame == '*':
             if rev is not None:
@@ -101,16 +115,19 @@ class VersionControlAdmin(Component):
             reponame = repos.reponame
             printout(_('Resyncing repository history for %(reponame)s... ',
                        reponame=reponame or '(default)'))
-            cursor.execute("DELETE FROM revision WHERE repos=%s", (reponame,))
-            cursor.execute("DELETE FROM node_change "
-                           "WHERE repos=%s", (reponame,))
-            cursor.executemany("DELETE FROM repository "
-                               "WHERE id=%s AND name=%s",
-                               [(reponame, k) for k in CACHE_METADATA_KEYS])
-            cursor.executemany("INSERT INTO repository (id, name, value) "
-                               "VALUES (%s, %s, %s)", [(reponame, k, '') 
-                                                for k in CACHE_METADATA_KEYS])
-            db.commit()
+            if clean:
+                cursor.execute("DELETE FROM revision WHERE repos=%s",
+                               (reponame,))
+                cursor.execute("DELETE FROM node_change "
+                               "WHERE repos=%s", (reponame,))
+                cursor.executemany("DELETE FROM repository "
+                                   "WHERE id=%s AND name=%s",
+                                   [(reponame, k) for k in CACHE_METADATA_KEYS])
+                cursor.executemany("INSERT INTO repository (id, name, value) "
+                                   "VALUES (%s, %s, %s)", 
+                                   [(reponame, k, '') 
+                                       for k in CACHE_METADATA_KEYS])
+                db.commit()
             if repos.sync(self._resync_feedback):
                 inval = True
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
