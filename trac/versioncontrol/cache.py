@@ -93,8 +93,10 @@ class CachedRepository(Repository):
                         self.reponame, str(cset.rev)))
         db.commit()
         
-    def sync(self, feedback=None):
-        db = self.getdb()
+    # @cached? => move to RepositoryManager
+    def metadata(self, db=None):
+        if not db:
+            db = self.getdb()
         cursor = db.cursor()
         cursor.execute("SELECT name, value FROM repository "
                        "WHERE id=%%s AND name IN (%s)" % 
@@ -103,6 +105,12 @@ class CachedRepository(Repository):
         metadata = {}
         for name, value in cursor:
             metadata[name] = value
+        return metadata
+
+    def sync(self, feedback=None):
+        db = self.getdb()
+        cursor = db.cursor()
+        metadata = self.metadata(db)
         
         # -- check that we're populating the cache for the correct repository
         repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
@@ -261,12 +269,8 @@ class CachedRepository(Repository):
 
     def get_youngest_rev(self):
         if not hasattr(self, 'youngest'):
-            db = self.getdb()
-            cursor = db.cursor()
-            cursor.execute("SELECT MAX(" + db.cast('rev', 'int') + ") "
-                           "FROM revision WHERE repos=%s", (self.reponame,))
-            for rev, in cursor:
-                self.youngest = str(rev)
+            metadata = self.metadata()
+            self.youngest = metadata.get(CACHE_YOUNGEST_REV)
         return self.youngest
 
     def previous_rev(self, rev, path=''):
