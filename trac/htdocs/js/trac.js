@@ -47,6 +47,10 @@
     });
   }
   
+  $.template = function(str, dict) { 
+    return str.replace(/\${?(\w+)}?/g, function(_, k) { return dict[k]; }); 
+  }
+
   // Used for dynamically updating the height of a textarea
   window.resizeTextArea = function (id, rows) {
     var textarea = $("#" + id).get(0);

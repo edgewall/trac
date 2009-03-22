@@ -71,19 +71,18 @@
   
       tr.addClass("expanded");
       // insert "Loading ..." row
-      var loading_row = $((
+      var loading_row = $($.template(
         '<tr>'+
-        ' <td class="$td_class" colspan="$cols" '+
+        ' <td class="$td_class" colspan="$colspan" '+
         '     style="padding-left: ${depth}px">'+
         '  <span class="loading">Loading $entry...</span>'+
         ' </td>'+
-        '</tr>'
-        ).replace(/[\$]{?(\w+)}?/g, function(_,key) { return {
-         td_class: td_class, 
-         cols: tr.children("td").length, 
-         depth: depth, 
-         entry: a.text() }[key]; })
-        );
+        '</tr>', {
+        td_class: td_class, 
+        colspan: tr.children("td").length, 
+        depth: depth, 
+        entry: a.text()
+      }));
       tr.after(loading_row);
   
       // XHR for getting the rows corresponding to the folder entries
