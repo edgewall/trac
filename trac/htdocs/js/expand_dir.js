@@ -61,7 +61,7 @@
     if ( tr.hasClass("collapsed") ) { // then *expand*
       tr.removeClass("collapsed").addClass("expanded");
       tr.siblings("tr."+folderid).show();
-      // Note that the above will show all the already fetched subtree,
+      // Note that the above will show all the already fetched subtrees,
       // so we have to fold again the folders which were already collapsed.
       tr.siblings("tr.collapsed").each(function() {
         tr.siblings("tr."+this.id).not(this).hide();

@@ -5,6 +5,8 @@
   $(document).keydown(function(event) {
     if (!ENABLE_KEY_NAV)
       return true;
+    if (event.ctrlKey)
+      return true; // let CTRL+R do its job
     var selection = SELECTED_FILE_ELEM;
     switch (event.keyCode) {
       case 74: // j - next line
@@ -30,9 +32,14 @@
       case 13: // Enter
       case 65: // 'a'nnotate
       case 79: // 'o'pen
+      case 82: // 'r'eload
         if (selection != null) {
           var expander = selection.find('.expander');
           if (expander.length > 0) {
+            if (event.keyCode == 82) {
+              selection.removeClass("expanded").removeClass("collapsed")
+                .siblings("tr."+selection.get(0).id).not(selection).remove();
+            }
             expander.click();
           } else {
             var href = selection.find('a.file').attr('href');
