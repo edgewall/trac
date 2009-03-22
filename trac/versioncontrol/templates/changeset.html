@@ -19,7 +19,8 @@
     <div id="content" class="changeset">
       <div id="title" py:choose="">
         <h1 py:when="changeset and restricted">
-          Changeset <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if>
+          Changeset <a title="Show full changeset" 
+                       href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if>
           for <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
         </h1>
         <h1 py:when="not changeset and restricted">
@@ -34,7 +35,10 @@
           to <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
           at <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">r$new_rev</a>
           </h1>
-        <h1 py:otherwise="">Changeset <a py:strip="not annotated" title="Show full changeset" href="${href.changeset(new_rev)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
+          <h1 py:otherwise="">Changeset <a 
+             py:strip="not annotated" 
+             title="Show full changeset"
+             href="${href.changeset(new_rev)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
       </div>
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
@@ -93,8 +97,9 @@
       <dl id="overview">
         <py:if test="changeset">
           <dt class="property time">Timestamp:</dt>
-          <dd class="time">${format_datetime(changeset.date)} (${(datetime.now(utc) - changeset.date) &lt; timedelta(0, 3600) and \
-                                                                 'less than one hour' or dateinfo(changeset.date)} ago)</dd>
+          <dd class="time">${format_datetime(changeset.date)}
+            (${(datetime.now(utc) - changeset.date) &lt; timedelta(0, 3600) and \
+               'less than one hour' or dateinfo(changeset.date)} ago)</dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>
           <py:for each="prop in properties" py:choose="">
@@ -113,7 +118,8 @@
             &nbsp;
             </py:when>
             <py:when test="wiki_format_messages">
-              ${wiki_to_html(context('changeset', (reponame, changeset.rev)), changeset.message, escape_newlines=True)}
+              ${wiki_to_html(context('changeset', (reponame, changeset.rev)), changeset.message, 
+                             escape_newlines=True)}
             </py:when>
             <py:otherwise><pre>${changeset.message}</pre></py:otherwise>
           </dd>
