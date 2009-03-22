@@ -84,6 +84,28 @@ class IRepositoryChangeListener(Interface):
         """Called after a changeset has been modified in a repository."""
 
 
+class DbRepositoryProvider(Component):
+    """Component providing repositories registered in the DB."""
+
+    implements(IRepositoryProvider)
+
+    # IRepositoryProvider methods
+
+    def get_repositories(self):
+        """Retrieve repositories specified in the repository DB table."""
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("SELECT id,name,value FROM repository "
+                       "WHERE name IN ('dir', 'alias', 'type')")
+        reponames = {}
+        for (id, name, value) in cursor:
+            if value is not None:
+                reponames.setdefault(id, {})[name] = value
+        
+        for reponame, info in reponames.iteritems():
+            yield (reponame, info)
+
+
 class RepositoryManager(Component):
     """Component registering the supported version control systems.
 
@@ -311,6 +333,17 @@ class RepositoryManager(Component):
                 "Skip invalid repositories"
         return repositories
 
+    def reload_repositories(self):
+        """Reload the repositories from the providers."""
+        self._lock.acquire()
+        try:
+            # FIXME: trac-admin doesn't reload the environment
+            self._cache = {}
+            self._all_repositories = None
+        finally:
+            self._lock.release()
+        self.config.touch()     # Force environment reload
+ 
     def notify(self, event, reponame, revs, authname):
         """Notify repositories and change listeners about repository events.
         

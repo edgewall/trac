@@ -35,7 +35,12 @@ priority change      Change a priority value
 priority list        Show possible ticket priorities
 priority order       Move a priority value up or down in the list
 priority remove      Remove a priority value
+repository add       Add a source repository
+repository alias     Create an alias for a repository
+repository list      List source repositories
 repository notify    Notify trac about repository events
+repository remove    Remove a source repository
+repository rename    Rename a source repository
 repository resync    Re-synchronize trac with repositories
 repository sync      Resume synchronization of repositories
 resolution add       Add a resolution value option
