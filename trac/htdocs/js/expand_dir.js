@@ -46,14 +46,19 @@
     var tr = expander.parents("tr:first");
     var folderid = tr.get(0).id;
   
-    if ( tr.filter(".expanded").length ) { // then *fold*
-      tr.removeClass("expanded").addClass("collapsed");
-      tr.siblings("tr."+folderid).hide();
+    if ( tr.hasClass("expanded") ) { // then *fold*
+      tr.removeClass("expanded");
+      if (tr.next().hasClass("error")) {
+        tr.next().remove();
+      } else {
+        tr.addClass("collapsed");
+        tr.siblings("tr."+folderid).hide();
+      }
       expander.attr("title", "Re-expand directory");
       return;
     }
   
-    if ( tr.filter(".collapsed").length ) { // then *expand*
+    if ( tr.hasClass("collapsed") ) { // then *expand*
       tr.removeClass("collapsed").addClass("expanded");
       tr.siblings("tr."+folderid).show();
       // Note that the above will show all the already fetched subtree,
@@ -107,16 +112,16 @@
             // remove "Loading ..." row
             loading_row.remove();
           } else {
-            loading_row.find("span.loading").text("").append("<i>(empty)</i>")
-              .removeClass("loading");
-            // make the (empty) row collapsible
-            enableExpandDir(tr, loading_row, qargs); 
+            loading_row.find("span.loading")
+              .text("").append("<i>(empty)</i>").removeClass("loading");
+            enableExpandDir(tr, loading_row, qargs); // make it collapsible
           }
         },
         error: function(req, err, exc) {
-          loading_row.find("span.loading").text("").append("<i>(error)</i>")
-            .removeClass("loading");
-          enableExpandDir(tr, loading_row, qargs);
+          loading_row.find("span.loading")
+            .text("").append("<i>(error)</i>").removeClass("loading");
+          loading_row.addClass("error");
+          enableExpandDir(tr, loading_row, qargs); // make it collapsible
         }
       });
     }
