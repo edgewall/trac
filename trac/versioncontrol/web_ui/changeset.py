@@ -825,22 +825,26 @@ class ChangesetModule(Component):
                 collapse_changesets = lambda c: c.rev
                 
             uids_seen = {}
-            def generate_changesets(reponame, repo):
+            def generate_changesets(reponame, repos):
                 for _, changesets in groupby(repos.get_changesets(start, stop),
                                              key=collapse_changesets):
                     viewable_changesets = []
                     for cset in changesets:
                         uid = cset.get_uid()
                         if uid:
-                            if uid in uids_seen:
+                            # uid can be seen in multiple repositories
+                            repos_for_uid = uids_seen.setdefault(uid, [])
+                            if not repos_for_uid:
+                                repos_for_uid.append(reponame)
                                 continue
-                            uids_seen[uid] = True
+                            repos_for_uid.append(reponame)
                         cset_resource = Resource('changeset', 
                                                  (reponame, cset.rev))
                         if 'CHANGESET_VIEW' in req.perm(cset_resource):
-                            viewable_changesets.append((cset, cset_resource))
+                            viewable_changesets.append((cset, cset_resource,
+                                                        repos_for_uid))
                     if viewable_changesets:
-                        cset, resource = viewable_changesets[-1]
+                        cset = viewable_changesets[-1][0]
                         yield ('changeset', cset.date, cset.author,
                                (viewable_changesets, 
                                 show_location, show_files))
@@ -851,9 +855,9 @@ class ChangesetModule(Component):
                 
     def render_timeline_event(self, context, field, event):
         changesets, show_location, show_files = event[3]
-        cset, cset_resource = changesets[0]
+        cset, cset_resource, repos_for_uid = changesets[0]
         message = cset.message or ''
-        reponame = cset_resource.id[0]
+        reponame = cset_resource.id[0] # first repo
         rev_b, rev_a = cset.rev, cset.rev
 
         if field == 'url':
@@ -910,7 +914,7 @@ class ChangesetModule(Component):
         if reponame:
             title = ngettext('Changeset in %(repo)s ',
                              'Changesets in %(repo)s ',
-                             single and 1 or 2, repo=reponame)
+                             single and 1 or 2, repo=', '.join(repos_for_uid))
         else:
             title = ngettext('Changeset ', 'Changesets ', single and 1 or 2)
         if single:
