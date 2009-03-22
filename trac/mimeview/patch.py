@@ -160,6 +160,14 @@ class PatchRenderer(Component):
                         b = newpath[:-len(commonsuffix)]
                         if len(a) < 4 and len(b) < 4:
                             shortrev = (a, b)
+                    elif oldpath == '/dev/null':
+                        common = _("new file %(new)s",
+                                   new=newpath.lstrip('b/'))
+                        shortrev = ('-', '+')
+                    elif newpath == '/dev/null':
+                        common = _("deleted file %(deleted)s", 
+                                   deleted=oldpath.lstrip('a/'))
+                        shortrev = ('+', '-')
                     else:
                         common = '(a) %s vs. (b) %s' % (oldpath, newpath)
                         shortrev = ('a', 'b')
