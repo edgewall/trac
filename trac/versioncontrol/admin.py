@@ -15,8 +15,9 @@ import sys
 
 from trac.admin import IAdminCommandProvider
 from trac.core import *
-from trac.util.text import printout
+from trac.util.text import printerr, printout
 from trac.util.translation import _, ngettext
+from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
 
 
 class VersionControlAdmin(Component):
@@ -27,36 +28,98 @@ class VersionControlAdmin(Component):
     # IAdminCommandProvider methods
     
     def get_admin_commands(self):
-        yield ('resync', '[rev]',
-               """Re-synchronize trac with the repository
+        yield ('repository notify', '<event> <repos> <rev> [rev] [...]',
+               """Notify trac about repository events
+               
+               The event "changeset_added" notifies that new changesets have
+               been added to a repository.
+               
+               The event "changeset_modified" notifies that existing changesets
+               have been modified in a repository.
+               """,
+               self._complete_notify, self._do_notify)
+        yield ('repository resync', '<repos> [rev]',
+               """Re-synchronize trac with repositories
                
                When [rev] is specified, only that revision is synchronized.
                Otherwise, the complete revision history is synchronized. Note
                that this operation can take a long time to complete.
+               
+               To synchronize all repositories, specify "*" as the repository.
                """,
-               None, self._do_resync)
+               self._complete_repos, self._do_resync)
     
-    def _do_resync(self, rev=None):
-        if rev:
-            self.env.get_repository().sync_changeset(rev)
-            printout(_('%(rev)s resynced.', rev=rev))
-            return
+    _notify_events = [each for each in IRepositoryChangeListener.__dict__
+                      if not each.startswith('_')]
+    
+    def _complete_notify(self, args):
+        if len(args) == 1:
+            return self._notify_events
+        elif len(args) == 2:
+            rm = RepositoryManager(self.env)
+            return [reponame or '(default)' for reponame
+                    in rm.get_all_repositories()]
+    
+    def _complete_repos(self, args):
+        if len(args) == 1:
+            rm = RepositoryManager(self.env)
+            return [reponame or '(default)' for reponame
+                    in rm.get_all_repositories()]
+    
+    def _do_notify(self, event, reponame, *revs):
+        if event not in self._notify_events:
+            raise TracError(_('Unknown notify event "%s"' % event))
+        rm = RepositoryManager(self.env)
+        rm.notify(event, reponame, revs, None)
+    
+    def _do_resync(self, reponame, rev=None):
+        rm = RepositoryManager(self.env)
+        if reponame == '*':
+            if rev is not None:
+                raise TracError(_('Cannot synchronize a single revision '
+                                  'on multiple repositories'))
+            repositories = rm.get_real_repositories(None)
+        else:
+            if reponame == '(default)':
+                reponame = ''
+            repos = rm.get_repository(reponame, None)
+            if repos is None:
+                raise TracError(_("Unknown repository '%(reponame)s'",
+                                  reponame=reponame or '(default)'))
+            if rev is not None:
+                repos.sync_changeset(rev)
+                printout(_('%(rev)s resynced on %(reponame)s.', rev=rev,
+                           reponame=repos.reponame or '(default)'))
+                return
+            repositories = [repos]
+        
         from trac.versioncontrol.cache import CACHE_METADATA_KEYS
-        printout(_('Resyncing repository history... '))
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("DELETE FROM revision")
-        cursor.execute("DELETE FROM node_change")
-        cursor.executemany("DELETE FROM system WHERE name=%s",
-                           [(k,) for k in CACHE_METADATA_KEYS])
-        cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
-                           [(k, '') for k in CACHE_METADATA_KEYS])
-        db.commit()
-        repos = self.env.get_repository().sync(self._resync_feedback)
-        cursor.execute("SELECT count(rev) FROM revision")
-        for cnt, in cursor:
-            printout(ngettext('%(num)s revision cached.',
-                              '%(num)s revisions cached.', num=cnt))
+        inval = False
+        for repos in sorted(repositories, key=lambda r: r.reponame):
+            reponame = repos.reponame
+            printout(_('Resyncing repository history for %(reponame)s... ',
+                       reponame=reponame or '(default)'))
+            cursor.execute("DELETE FROM revision WHERE repos=%s", (reponame,))
+            cursor.execute("DELETE FROM node_change "
+                           "WHERE repos=%s", (reponame,))
+            cursor.executemany("DELETE FROM repository "
+                               "WHERE id=%s AND name=%s",
+                               [(reponame, k) for k in CACHE_METADATA_KEYS])
+            cursor.executemany("INSERT INTO repository (id, name, value) "
+                               "VALUES (%s, %s, %s)", [(reponame, k, '') 
+                                                for k in CACHE_METADATA_KEYS])
+            db.commit()
+            if repos.sync(self._resync_feedback):
+                inval = True
+            cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
+                           (reponame,))
+            for cnt, in cursor:
+                printout(ngettext('%(num)s revision cached.',
+                                  '%(num)s revisions cached.', num=cnt))
+        if inval:
+            self.config.touch()     # FIXME: Brute force
         printout(_('Done.'))
 
     def _resync_feedback(self, rev):

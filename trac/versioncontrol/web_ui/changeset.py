@@ -908,14 +908,15 @@ class ChangesetModule(Component):
 
         single = rev_a == rev_b
         if reponame:
-            title = ngettext('Changeset in %(repo)s', 'Changesets in %(repo)s',
+            title = ngettext('Changeset in %(repo)s ',
+                             'Changesets in %(repo)s ',
                              single and 1 or 2, repo=reponame)
         else:
-            title = ngettext('Changeset', 'Changesets', single and 1 or 2)
+            title = ngettext('Changeset ', 'Changesets ', single and 1 or 2)
         if single:
-            title = tag(title, tag.em(' [%s]' % rev_a))
+            title = tag(title, tag.em('[%s]' % rev_a))
         else:
-            title = tag(title, tag.em(' [%s-%s]' % (rev_a, rev_b)))
+            title = tag(title, tag.em('[%s-%s]' % (rev_a, rev_b)))
         if field == 'title':
             return title
         elif field == 'summary':

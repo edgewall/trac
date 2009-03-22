@@ -35,12 +35,13 @@ priority change      Change a priority value
 priority list        Show possible ticket priorities
 priority order       Move a priority value up or down in the list
 priority remove      Remove a priority value
+repository notify    Notify trac about repository events
+repository resync    Re-synchronize trac with repositories
 resolution add       Add a resolution value option
 resolution change    Change a resolution value
 resolution list      Show possible ticket resolutions
 resolution order     Move a resolution value up or down in the list
 resolution remove    Remove a resolution value
-resync               Re-synchronize trac with the repository
 severity add         Add a severity value option
 severity change      Change a severity value
 severity list        Show possible ticket severities

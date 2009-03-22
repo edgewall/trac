@@ -411,12 +411,13 @@ class SubversionRepository(Repository):
         
         # Remove any trailing slash or else subversion might abort
         if isinstance(path, unicode):
-            self.path = path
             path_utf8 = path.encode('utf-8')
         else: # note that this should usually not happen (unicode arg expected)
-            self.path = to_unicode(path)
-            path_utf8 = self.path.encode('utf-8')
+            path_utf8 = to_unicode(path).encode('utf-8')
+
         path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
+        self.path = path_utf8.decode('utf-8')
+        
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
         if root_path_utf8 is None:
             raise TracError(_("%(path)s does not appear to be a Subversion "
@@ -431,7 +432,8 @@ class SubversionRepository(Repository):
         self.fs_ptr = repos.svn_repos_fs(self.repos)
         
         uuid = fs.get_uuid(self.fs_ptr, self.pool())
-        name = 'svn:%s:%s' % (uuid, _from_svn(path_utf8))
+        self.base = 'svn:%s:%s' % (uuid, _from_svn(root_path_utf8))
+        name = 'svn:%s:%s' % (uuid, self.path)
 
         Repository.__init__(self, name, authz, log)
 
@@ -484,6 +486,9 @@ class SubversionRepository(Repository):
     def close(self):
         self.repos = self.fs_ptr = self.pool = None
 
+    def get_base(self):
+        return self.base
+        
     def _get_tags_or_branches(self, paths):
         """Retrieve known branches or tags."""
         for path in self.options.get(paths, []):

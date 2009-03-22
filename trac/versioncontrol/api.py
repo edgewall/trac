@@ -55,6 +55,7 @@ class IRepositoryConnector(Interface):
         """Return a Repository instance for the given repository type and dir.
         """
 
+
 class IRepositoryProvider(Interface):
     """Provide known named instances of Repository."""
 
@@ -73,8 +74,18 @@ class IRepositoryProvider(Interface):
         """
 
 
+class IRepositoryChangeListener(Interface):
+    """Listen for changes in repositories."""
+    
+    def changeset_added(self, repos, changeset):
+        """Called after a changeset has been added to a repository."""
+
+    def changeset_modified(self, repos, changeset):
+        """Called after a changeset has been modified in a repository."""
+
+
 class RepositoryManager(Component):
-    """Component registering the supported version control systems,
+    """Component registering the supported version control systems.
 
     It provides easy access to the configured implementation.
     """
@@ -83,6 +94,7 @@ class RepositoryManager(Component):
 
     connectors = ExtensionPoint(IRepositoryConnector)
     providers = ExtensionPoint(IRepositoryProvider)
+    change_listeners = ExtensionPoint(IRepositoryChangeListener)
 
     repository_type = Option('trac', 'repository_type', 'svn',
         """Default repository connector type. (''since 0.10'')""")
@@ -103,7 +115,8 @@ class RepositoryManager(Component):
         if handler is not Chrome(self.env):
             try:
                 # FIXME: only sync the default repository - this is bogus
-                self.get_repository('', req.authname).sync()
+                if self.get_repository('', req.authname).sync():
+                    self.config.touch()     # FIXME: Brute force
             except TracError, e:
                 add_warning(req, _("Can't synchronize with the repository "
                               "(%(error)s). Look in the Trac log for more "
@@ -184,7 +197,7 @@ class RepositoryManager(Component):
     # Public API methods
 
     def get_repository(self, reponame, authname):
-        """Retrieve the appropriate Repository for the given name
+        """Retrieve the appropriate Repository for the given name.
 
            :param reponame: the key for specifying the repository.
                             If no name is given, take the the default 
@@ -195,7 +208,8 @@ class RepositoryManager(Component):
         """
         repoinfo = self.get_all_repositories().get(reponame, {})
         if repoinfo and 'alias' in repoinfo:
-            repoinfo = self.get_all_repositories().get(repoinfo['alias'])
+            reponame = repoinfo['alias']
+            repoinfo = self.get_all_repositories().get(reponame)
         if repoinfo:
             rdir = repoinfo.get('dir')
             rtype = repoinfo.get('type', self.repository_type)
@@ -251,7 +265,7 @@ class RepositoryManager(Component):
         return (reponame, self.get_repository(reponame, authname), path or '/')
 
     def get_default_repository(self, context):
-        """Recover the appropriatet repository from the current context.
+        """Recover the appropriate repository from the current context.
 
         Lookup the closest source or changeset resource in the context 
         hierarchy and return the name of its associated repository.
@@ -273,7 +287,58 @@ class RepositoryManager(Component):
                     else:
                         self._all_repositories[reponame] = info
         return self._all_repositories
+    
+    def get_real_repositories(self, authname):
+        """Return a list of all real repositories (i.e. excluding aliases)."""
+        repositories = set()
+        for reponame in self.get_all_repositories():
+            try:
+                repos = self.get_repository(reponame, authname)
+                if repos is not None:
+                    repositories.add(repos)
+            except TracError:
+                "Skip invalid repositories"
+        return repositories
 
+    def notify(self, event, reponame, revs, authname):
+        """Notify repositories and change listeners about repository events.
+        
+        The supported events are the names of the methods defined in the
+        `IRepositoryChangeListener` interface.
+        """
+        self.log.debug('Event %s on %s for changesets %r'
+                       % (event, reponame, revs))
+        
+        # Notify a repository by name, and all repositories with the same
+        # base, or all repositories by base
+        repos = self.get_repository(reponame, None)
+        if repos:
+            base = repos.get_base()
+        else:
+            base = reponame
+        repositories = [each for each in self.get_real_repositories(authname)
+                        if each.get_base() == base]
+        inval = False
+        for repos in sorted(repositories, key=lambda r: r.reponame):
+            if repos.sync():
+                inval = True
+            for rev in revs:
+                if event == 'changeset_modified':
+                    repos.sync_changeset(rev)
+                try:
+                    changeset = repos.get_changeset(rev)
+                except NoSuchChangeset:
+                    continue
+                inval = inval or (event == 'changeset_modified')
+                self.log.debug('Event %s on %s for revision %s'
+                               % (event, repos.reponame, rev))
+                for listener in self.change_listeners:
+                    getattr(listener, event)(repos, changeset)
+        
+        if inval:
+            self.log.debug('Invalidating youngest_rev cache')
+            self.config.touch()     # FIXME: Brute force method
+    
     def shutdown(self, tid=None):
         if tid:
             assert tid == threading._get_ident()
@@ -345,6 +410,15 @@ class Repository(object):
         """Close the connection to the repository."""
         raise NotImplementedError
 
+    def get_base(self):
+        """Return the name of the base repository for this repository.
+        
+        This function returns the name of the base repository to which scoped
+        repositories belong. For non-scoped repositories, it returns the 
+        repository name.
+        """
+        return self.name
+        
     def clear(self, youngest_rev=None):
         """Clear any data that may have been cached in instance properties.
 
@@ -360,12 +434,14 @@ class Repository(object):
         The backend will call this function for each `rev` it decided to
         synchronize, once the synchronization changes are committed to the 
         cache.
+        
+        Return True if any changes have been committed to the cache.
         """
-        pass
+        return False
 
     def sync_changeset(self, rev):
         """Resync the repository cache for the given `rev`, if relevant."""
-        raise NotImplementedError
+        pass
 
     def get_quickjump_entries(self, rev):
         """Generate a list of interesting places in the repository.
@@ -378,7 +454,7 @@ class Repository(object):
         return []
     
     def get_changeset(self, rev):
-        """Retrieve a Changeset corresponding to the  given revision `rev`."""
+        """Retrieve a Changeset corresponding to the given revision `rev`."""
         raise NotImplementedError
 
     def get_changesets(self, start, stop):
@@ -457,7 +533,7 @@ class Repository(object):
         return row and row[0] or None
 
     def get_path_history(self, path, rev=None, limit=None):
-        """Retrieve all the revisions containing this path
+        """Retrieve all the revisions containing this path.
 
         If given, `rev` is used as a starting point (i.e. no revision
         ''newer'' than `rev` should be returned).
@@ -636,7 +712,7 @@ class Changeset(object):
         return []
         
     def get_changes(self):
-        """Generator that produces a tuple for every change in the changeset
+        """Generator that produces a tuple for every change in the changeset.
 
         The tuple will contain `(path, kind, change, base_path, base_rev)`,
         where `change` can be one of Changeset.ADD, Changeset.COPY,

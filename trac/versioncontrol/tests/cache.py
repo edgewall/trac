@@ -32,8 +32,9 @@ class CacheTestCase(unittest.TestCase):
         self.db = InMemoryDatabase()
         self.log = logger_factory('test')
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO system (name, value) VALUES (%s,%s)",
-                       ('youngest_rev', ''))
+        cursor.execute("INSERT INTO repository (id, name, value) "
+                       "VALUES (%s,%s,%s)",
+                       ('test-repos', 'youngest_rev', ''))
 
     def test_initial_sync_with_empty_repos(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
@@ -91,16 +92,19 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO revision (rev,time,author,message) "
-                       "VALUES (0,%s,'','')", (to_timestamp(t1),))
-        cursor.execute("INSERT INTO revision (rev,time,author,message) "
-                       "VALUES (1,%s,'joe','Import')", (to_timestamp(t2),))
-        cursor.executemany("INSERT INTO node_change (rev,path,node_type,"
-                           "change_type,base_path,base_rev) "
-                           "VALUES ('1',%s,%s,%s,%s,%s)",
+        cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
+                       "VALUES ('test-repos',0,%s,'','')",
+                       (to_timestamp(t1),))
+        cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
+                       "VALUES ('test-repos',1,%s,'joe','Import')",
+                       (to_timestamp(t2),))
+        cursor.executemany("INSERT INTO node_change (repos,rev,path,"
+                           "node_type,change_type,base_path,base_rev) "
+                           "VALUES ('test-repos','1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
-        cursor.execute("UPDATE system SET value='1' WHERE name='youngest_rev'")
+        cursor.execute("UPDATE repository SET value='1' "
+                       "WHERE id='test-repos' AND name='youngest_rev'")
 
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
         changeset = Mock(Changeset, 2, 'Update', 'joe', t3,
@@ -128,16 +132,19 @@ class CacheTestCase(unittest.TestCase):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO revision (rev,time,author,message) "
-                       "VALUES (0,%s,'','')", (to_timestamp(t1),))
-        cursor.execute("INSERT INTO revision (rev,time,author,message) "
-                       "VALUES (1,%s,'joe','Import')", (to_timestamp(t2),))
-        cursor.executemany("INSERT INTO node_change (rev,path,node_type,"
-                           "change_type,base_path,base_rev) "
-                           "VALUES ('1',%s,%s,%s,%s,%s)",
+        cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
+                       "VALUES ('test-repos',0,%s,'','')",
+                       (to_timestamp(t1),))
+        cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
+                       "VALUES ('test-repos',1,%s,'joe','Import')",
+                       (to_timestamp(t2),))
+        cursor.executemany("INSERT INTO node_change (repos,rev,path,"
+                           "node_type,change_type,base_path,base_rev) "
+                           "VALUES ('test-repos','1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
-        cursor.execute("UPDATE system SET value='1' WHERE name='youngest_rev'")
+        cursor.execute("UPDATE repository SET value='1' "
+                       "WHERE id='test-repos' AND name='youngest_rev'")
 
         repos = Mock(Repository, 'test-repos', None, self.log,
                      get_changeset=lambda x: None,

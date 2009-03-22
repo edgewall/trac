@@ -17,7 +17,7 @@
 from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 21
+db_version = 22
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -82,20 +82,26 @@ schema = [
         Index(['time'])],
 
     # Version control cache
-    Table('revision', key='rev')[
+    Table('repository', key=('id', 'name'))[
+        Column('id'),
+        Column('name'),
+        Column('value')],
+    Table('revision', key=('repos', 'rev'))[
+        Column('repos'),
         Column('rev'),
         Column('time', type='int'),
         Column('author'),
         Column('message'),
-        Index(['time'])],
-    Table('node_change', key=('rev', 'path', 'change_type'))[
+        Index(['repos', 'time'])],
+    Table('node_change', key=('repos', 'rev', 'path', 'change_type'))[
+        Column('repos'),
         Column('rev'),
         Column('path'),
         Column('node_type', size=1),
         Column('change_type', size=1),
         Column('base_path'),
         Column('base_rev'),
-        Index(['rev'])],
+        Index(['repos', 'rev'])],
 
     # Ticket system
     Table('ticket', key='id')[
@@ -384,8 +390,7 @@ def get_data(db):
            ('system',
              ('name', 'value'),
                (('database_version', str(db_version)),
-                ('initial_database_version', str(db_version)),
-                ('youngest_rev', ''))),
+                ('initial_database_version', str(db_version)))),
            ('report',
              ('author', 'title', 'query', 'description'),
                __mkreports(get_reports(db))))

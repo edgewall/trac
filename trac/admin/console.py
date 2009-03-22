@@ -51,7 +51,7 @@ class TracAdmin(cmd.Cmd):
         try:
             import readline
             delims = readline.get_completer_delims()
-            for c in '-/:':
+            for c in '-/:()':
                 delims = delims.replace(c, '')
             readline.set_completer_delims(delims)
         except ImportError:
