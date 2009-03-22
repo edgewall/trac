@@ -143,8 +143,6 @@ class RepositoryManager(Component):
                 if default_repo:
                     default_repo.sync()
             except TracError, e:
-                import traceback
-                traceback.print_exc(e)
                 add_warning(req, _("Can't synchronize with the repository "
                               "(%(error)s). Look in the Trac log for more "
                               "information.", error=to_unicode(e.message)))
