@@ -2,7 +2,7 @@
   
   $.fn.addAnchor = function(title) {
     title = title || "Link here";
-    return this.filter("*[@id]").each(function() {
+    return this.filter("*[id]").each(function() {
       $("<a class='anchor'> \u00B6</a>").attr("href", "#" + this.id)
         .attr("title", title).appendTo(this);
     });
@@ -25,7 +25,7 @@
       this.disabled = !enabled;
       var label = $(this).parents("label");
       if (!label.length && this.id) {
-        label = $("label[@for='" + this.id + "']");
+        label = $("label[for='" + this.id + "']");
       }
       if (!enabled) {
         label.addClass("disabled");
@@ -47,6 +47,10 @@
     });
   }
   
+  $.template = function(str, dict) { 
+    return str.replace(/\${?(\w+)}?/g, function(_, k) { return dict[k]; }); 
+  }
+
   // Used for dynamically updating the height of a textarea
   window.resizeTextArea = function (id, rows) {
     var textarea = $("#" + id).get(0);
