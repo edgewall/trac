@@ -11,13 +11,23 @@
   //  - `parent_tr`, the logical parent row (`null` if there's no ancestor)
   //  - a `rows` jQuery object matching the newly created entry rows
   //  - `qargs`, additional parameters to send to the server when expanding
+  //  - `autoexpand`, an optional array corresponding to a splitted sub-path
+  //    of entries that will be expanded automatically.
   
-  window.enableExpandDir = function(parent_tr, rows, qargs) {
+  window.enableExpandDir = function(parent_tr, rows, qargs, autoexpand) {
     // the ancestors folder ids are present in the parent_tr class attribute
     var ancestor_folderids = [];
-    if (parent_tr)
+
+    if (parent_tr) // rows are logical children of the parent_tr row
       ancestor_folderids = $.grep(parent_tr.attr("class").split(" "), 
                                   function(c) { return c.match(/^f\d+$/)});
+    else { // rows are toplevel rows, this is the initial call
+      var anchor = window.location.hash.substr(1);
+      if (anchor)
+        autoexpand = anchor.split("/");
+    }
+
+    var autoexpand_expander = null;
     rows.each(function () {
       var a = $(this).find("a.dir");
   
@@ -28,21 +38,25 @@
         $(this).addClass(folderid);
   
         // add the expander icon
-        a.wrap('<div></div>').before(
-          $('<span class="expander">&nbsp;</span>')
+        var expander = $('<span class="expander">&nbsp;</span>')
           .attr("title", "Expand sub-directory in place")
           .click(function() { toggleDir($(this), qargs); })
-        );
+        a.wrap('<div></div>').before(expander);
+        if (autoexpand && a.text() == autoexpand[0])
+          autoexpand_expander = expander;
       }
   
       // tie that row to ancestor folders
       if (parent_tr)
         $(this).addClass(ancestor_folderids.join(" "));
     });
+    
+    if ( autoexpand_expander )
+      toggleDir(autoexpand_expander, qargs, autoexpand.slice(1));
   }
   
   // handler for click event on the expander icons
-  window.toggleDir = function(expander, qargs) {
+  window.toggleDir = function(expander, qargs, autoexpand) {
     var tr = expander.parents("tr:first");
     var folderid = tr.get(0).id;
   
@@ -58,11 +72,12 @@
       return;
     }
 
-    // update location
+    // update location, unless autoexpand in progress
     var a = expander.next("a");
-    window.location.hash = a.attr("href")
-      .substr(window.location.pathname.length+1)
-      .replace(/([^?]*)(\?.*)?$/, '$1');    
+    if ( !autoexpand )
+      window.location.hash = a.attr("href")
+        .substr(window.location.pathname.length+1)
+        .replace(/([^?]*)(\?.*)?$/, '$1');    
 
     if ( tr.hasClass("collapsed") ) { // then *expand*
       tr.removeClass("collapsed").addClass("expanded");
@@ -111,8 +126,8 @@
               row = $(this+"</tr>");
               row.children("td."+td_class).css("padding-left", depth);
               // make all entry rows collapsible but only subdir rows expandable
-              enableExpandDir(tr, row, qargs); 
               loading_row.before(row);
+              enableExpandDir(tr, row, qargs, autoexpand); 
             });
             // remove "Loading ..." row
             loading_row.remove();
