@@ -306,8 +306,8 @@ class RepositoryManager(Component):
         The supported events are the names of the methods defined in the
         `IRepositoryChangeListener` interface.
         """
-        self.log.debug('Event %s on %s for changesets %r'
-                       % (event, reponame, revs))
+        self.log.debug("Event %s on %s for changesets %r",
+                       event, reponame, revs)
         
         # Notify a repository by name, and all repositories with the same
         # base, or all repositories by base
@@ -318,6 +318,9 @@ class RepositoryManager(Component):
             base = reponame
         repositories = [each for each in self.get_real_repositories(authname)
                         if each.get_base() == base]
+        if not repositories:
+            self.log.warn("Found no repositories matching '%s' base.", base)
+            return
         inval = False
         for repos in sorted(repositories, key=lambda r: r.reponame):
             if repos.sync():
@@ -330,13 +333,13 @@ class RepositoryManager(Component):
                 except NoSuchChangeset:
                     continue
                 inval = inval or (event == 'changeset_modified')
-                self.log.debug('Event %s on %s for revision %s'
-                               % (event, repos.reponame, rev))
+                self.log.debug("Event %s on %s for revision %s",
+                               event, repos.reponame, rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset)
         
         if inval:
-            self.log.debug('Invalidating youngest_rev cache')
+            self.log.debug("Invalidating youngest_rev cache")
             self.config.touch()     # FIXME: Brute force method
     
     def shutdown(self, tid=None):
