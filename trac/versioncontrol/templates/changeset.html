@@ -38,7 +38,7 @@
           <h1 py:otherwise="">Changeset <a 
              py:strip="not annotated" 
              title="Show full changeset"
-             href="${href.changeset(new_rev)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
+             href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
       </div>
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or

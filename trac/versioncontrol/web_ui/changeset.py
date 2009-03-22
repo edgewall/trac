@@ -620,8 +620,8 @@ class ChangesetModule(Component):
                                   path=new_node.path)
                     else:
                         href = req.href.changeset(
-                            new_node.created_rev, 
-                            reponame, new_node.created_path,
+                            new_node.created_rev, reponame, 
+                            new_node.created_path,
                             old=old_node.created_rev,
                             old_path=posixpath.join(reponame, 
                                                     old_node.created_path))
@@ -1024,12 +1024,12 @@ class ChangesetModule(Component):
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
         cursor = db.cursor()
-        cursor.execute("SELECT rev,time,author,message "
+        cursor.execute("SELECT repos,rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
-        for rev, ts, author, log in cursor:
+        for reponame, rev, ts, author, log in cursor:
             if not repos.authz.has_permission_for_changeset(rev):
                 continue
-            yield (req.href.changeset(rev),
+            yield (req.href.changeset(rev, reponame),
                    '[%s]: %s' % (rev, shorten_line(log)),
                    datetime.fromtimestamp(ts, utc), author,
                    shorten_result(log, terms))
