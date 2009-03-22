@@ -200,8 +200,10 @@ class RepositoryManager(Component):
         """Retrieve the appropriate Repository for the given name.
 
            :param reponame: the key for specifying the repository.
-                            If no name is given, take the the default 
-                            repository 
+                            If no name is given, take the default 
+                            repository.
+                            The `reponame` can also be directly the
+                            directory corresponding to the repository.
            :param authname: deprecated (use fine grained permissions)
            :return: if no corresponding repository was defined, 
                     simply return `None`.
@@ -210,6 +212,11 @@ class RepositoryManager(Component):
         if repoinfo and 'alias' in repoinfo:
             reponame = repoinfo['alias']
             repoinfo = self.get_all_repositories().get(reponame)
+        if not repoinfo: # reponame could be directory
+            dir = os.path.normcase(reponame)
+            by_dir = self._repositories_by_dir.get(dir)
+            if by_dir:
+                reponame, repoinfo = by_dir
         if repoinfo:
             rdir = repoinfo.get('dir')
             rtype = repoinfo.get('type', self.repository_type)
@@ -279,6 +286,7 @@ class RepositoryManager(Component):
         """Return a dictionary of repository information, indexed by name."""
         if not self._all_repositories:
             self._all_repositories = {}
+            self._repositories_by_dir = {}
             for provider in self.providers:
                 for reponame, info in provider.get_repositories():
                     if reponame in self._all_repositories:
@@ -286,6 +294,9 @@ class RepositoryManager(Component):
                                       reponame)
                     else:
                         self._all_repositories[reponame] = info
+                        if 'dir' in info:
+                            dir = os.path.normcase(info['dir'])
+                            self._repositories_by_dir[dir] = (reponame, info)
         return self._all_repositories
     
     def get_real_repositories(self, authname):
@@ -325,6 +336,8 @@ class RepositoryManager(Component):
         for repos in sorted(repositories, key=lambda r: r.reponame):
             if repos.sync():
                 inval = True
+            else:
+                self.log.debug("Repository %s already up-to-date.", repos.name)
             for rev in revs:
                 if event == 'changeset_modified':
                     repos.sync_changeset(rev)
