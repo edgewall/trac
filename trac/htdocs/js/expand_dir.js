@@ -57,7 +57,13 @@
       expander.attr("title", "Re-expand directory");
       return;
     }
-  
+
+    // update location
+    var a = expander.next("a");
+    window.location.hash = a.attr("href")
+      .substr(window.location.pathname.length+1)
+      .replace(/([^?]*)(\?.*)?$/, '$1');    
+
     if ( tr.hasClass("collapsed") ) { // then *expand*
       tr.removeClass("collapsed").addClass("expanded");
       tr.siblings("tr."+folderid).show();
@@ -69,7 +75,6 @@
     } else {                                // then *fetch*
       var td = expander.parents("td");
       var td_class = td.attr("class");
-      var a = expander.next("a");
       var depth = 
         parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) + 
         SUBFOLDER_INDENT;
