@@ -975,8 +975,10 @@ class ChangesetModule(Component):
                              href=href + params + fragment)
             except TracError, e:
                 errmsg = to_unicode(e)
-        else:
+        elif reponame:
             errmsg = _("Repository %(repos)s not found", repos=reponame)
+        else:
+            errmsg = _("No default repository defined")
         return tag.a(label, class_="missing changeset", title=errmsg)
 
     def _format_diff_link(self, formatter, ns, target, label):

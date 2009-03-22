@@ -136,10 +136,12 @@ class RepositoryManager(Component):
         from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
             try:
-                # FIXME: only sync the default repository - this is bogus
-                if self.get_repository('', req.authname).sync():
-                    self.config.touch()     # FIXME: Brute force
+                default_repo = self.get_repository('', req.authname)
+                if default_repo:
+                    default_repo.sync()
             except TracError, e:
+                import traceback
+                traceback.print_exc(e)
                 add_warning(req, _("Can't synchronize with the repository "
                               "(%(error)s). Look in the Trac log for more "
                               "information.", error=to_unicode(e.message)))
@@ -210,7 +212,7 @@ class RepositoryManager(Component):
                     if alias in reponames:
                         reponames[option] = {'alias': alias}
         # eventually add pre-0.12 default repository
-        if '' not in reponames:
+        if '' not in reponames and self.repository_dir:
             reponames[''] = {'dir': self.repository_dir}
 
         for reponame, info in reponames.iteritems():
@@ -249,6 +251,10 @@ class RepositoryManager(Component):
         else:
             reponame = '' # normalize the name for the default repository
             rdir, rtype = self.repository_dir, self.repository_type
+
+        # don't try to lookup default repository if not set
+        if not reponame and not self.repository_dir:
+            return None
 
         # get a Repository for the reponame (use a thread-level cache)
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465

@@ -344,26 +344,25 @@ class BrowserModule(Component):
             else:
                 all_repositories = None
 
-        if not repos:
-            if reponame:
-                msg = _("No repository '%(repo)s' found", repo=reponame)
-            else:
-                msg = _("No default repository found")
-            raise ResourceNotFound(msg)
+        if not repos and reponame:
+            raise ResourceNotFound(_("No repository '%(repo)s' found",
+                                   repo=reponame))
 
         # Find node for the requested path/rev
-        try:
-            if rev:
-                rev = repos.normalize_rev(rev)
-            # If `rev` is `None`, we'll try to reuse `None` consistently,
-            # as a special shortcut to the latest revision.
-            rev_or_latest = rev or repos.youngest_rev
-            node = get_existing_node(req, repos, path, rev_or_latest)
-        except NoSuchChangeset, e:
-            raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
+        context = Context.from_request(req)
+        node = None
+        if repos:
+            try:
+                if rev:
+                    rev = repos.normalize_rev(rev)
+                # If `rev` is `None`, we'll try to reuse `None` consistently,
+                # as a special shortcut to the latest revision.
+                rev_or_latest = rev or repos.youngest_rev
+                node = get_existing_node(req, repos, path, rev_or_latest)
+            except NoSuchChangeset, e:
+                raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
-        context = Context.from_request(req, 'source', (reponame, path), 
-                                       node.created_rev)
+            context = context('source', (reponame, path), node.created_rev)
 
         path_links = get_path_links(req.href, reponame, path, rev, order, desc)
         if len(path_links) > 1:
@@ -371,48 +370,54 @@ class BrowserModule(Component):
 
         data = {
             'context': context, 'reponame': reponame or None,
-            'path': path, 'rev': node.rev, 'stickyrev': rev,
-            'created_path': node.created_path,
-            'created_rev': node.created_rev,
-            'properties': xhr or self.render_properties('browser', context,
-                                                        node.get_properties()),
+            'path': path, 'rev': node and node.rev, 'stickyrev': rev,
+            'created_path': node and node.created_path,
+            'created_rev': node and node.created_rev,
+            'properties': xhr or node and \
+                    self.render_properties('browser', context,
+                                           node.get_properties()),
             'path_links': path_links,
             'order': order, 'desc': desc and 1 or None,
             'repo': all_repositories and \
                     self._render_repository_index(context, all_repositories,
                                                   order, desc),
-            'dir': node.isdir and self._render_dir(req, reponame, repos, 
-                                                   node, rev, order, desc),
-            'file': node.isfile and self._render_file(req, context, reponame,
-                                                      repos, node, rev),
-            'quickjump_entries': xhr or list(repos.get_quickjump_entries(rev)),
+            'dir': node and node.isdir and \
+                    self._render_dir(req, reponame, repos, node, rev, order,
+                                     desc),
+            'file': node and node.isfile and \
+                    self._render_file(req, context, reponame, repos, node, rev),
+            'quickjump_entries': xhr or node and \
+                    list(repos.get_quickjump_entries(rev)),
             'wiki_format_messages':
-            self.config['changeset'].getbool('wiki_format_messages')
+                self.config['changeset'].getbool('wiki_format_messages')
         }
         if xhr: # render and return the content only
             data['xhr'] = True
             return 'dir_entries.html', data, None
 
         # Links for contextual navigation
-        add_ctxtnav(req, tag.a(_('Last Change'), 
-                    href=req.href.changeset(node.rev, reponame,
-                                            node.created_path)))
-        if node.isfile:
-            if data['file']['annotate']:
-                add_ctxtnav(req, _('Normal'), 
-                            title=_('View file without annotations'), 
-                            href=req.href.browser(reponame, node.created_path, 
-                                                  rev=node.rev))
-            else:
-                add_ctxtnav(req, _('Annotate'), 
-                            title=_('Annotate each line with the last '
-                                    'changed revision '
-                                    '(this can be time consuming...)'), 
-                            href=req.href.browser(reponame, node.created_path, 
-                                                  rev=node.rev,
-                                                  annotate='blame'))
-        add_ctxtnav(req, _('Revision Log'), 
-                    href=req.href.log(reponame, path, rev=rev))
+        if node:
+            add_ctxtnav(req, tag.a(_('Last Change'), 
+                        href=req.href.changeset(node.rev, reponame,
+                                                node.created_path)))
+            if node.isfile:
+                if data['file']['annotate']:
+                    add_ctxtnav(req, _('Normal'), 
+                                title=_('View file without annotations'), 
+                                href=req.href.browser(reponame,
+                                                      node.created_path, 
+                                                      rev=node.rev))
+                else:
+                    add_ctxtnav(req, _('Annotate'), 
+                                title=_('Annotate each line with the last '
+                                        'changed revision '
+                                        '(this can be time consuming...)'), 
+                                href=req.href.browser(reponame,
+                                                      node.created_path, 
+                                                      rev=node.rev,
+                                                      annotate='blame'))
+            add_ctxtnav(req, _('Revision Log'), 
+                        href=req.href.log(reponame, path, rev=rev))
 
         add_stylesheet(req, 'common/css/browser.css')
         return 'browser.html', data, None
@@ -432,13 +437,16 @@ class BrowserModule(Component):
         for reponame, repoinfo in all_repositories:
             try:
                 repos = rm.get_repository(reponame, context.perm.username)
-                youngest = repos.get_changeset(repos.youngest_rev)
-                if self.color_scale and youngest:
-                    if not timerange:
-                        timerange = TimeRange(youngest.date)
-                    else:
-                        timerange.insert(youngest.date)
-                entry = (reponame, repoinfo, youngest, None)
+                if repos:
+                    youngest = repos.get_changeset(repos.youngest_rev)
+                    if self.color_scale and youngest:
+                        if not timerange:
+                            timerange = TimeRange(youngest.date)
+                        else:
+                            timerange.insert(youngest.date)
+                    entry = (reponame, repoinfo, youngest, None)
+                else:
+                    entry = (reponame, repoinfo, None, "XXX")
             except TracError, err:
                 entry = (reponame, repoinfo, None, err)
             repositories.append(entry)

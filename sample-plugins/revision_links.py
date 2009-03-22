@@ -42,12 +42,15 @@ class RevisionLinks(Component):
                               fullmatch=None):
         rev, params, fragment = formatter.split_link(rev)
         try:
-            changeset = self.env.get_repository(reponame).get_changeset(rev)
-            return tag.a(label, class_="changeset",
-                         title=shorten_line(changeset.message),
-                         href=(formatter.href.changeset(rev) +
-                               params + fragment))
+            repos = self.env.get_repository(reponame)
+            if repos:
+                changeset = repos.get_changeset(rev)
+                return tag.a(label, class_="changeset",
+                             title=shorten_line(changeset.message),
+                             href=(formatter.href.changeset(rev) +
+                                   params + fragment))
         except NoSuchChangeset:
-            return tag.a(label, class_="missing changeset",
-                         href=formatter.href.changeset(rev),
-                         rel="nofollow")
+            pass
+        return tag.a(label, class_="missing changeset", rel="nofollow",
+                     href=formatter.href.changeset(rev))
+        
