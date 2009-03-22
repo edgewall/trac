@@ -15,7 +15,8 @@
 ::
 :: 3. Verify that the hook is working:
 ::
-::      - enable DEBUG level logging to a file, e.g. trac.log (see TracLogging)
+::      - enable DEBUG level logging to a file and to the console 
+::        (see TracLogging)
 ::
 ::      - call the trac-post-commit-hook.cmd from a cmd.exe shell:
 ::
@@ -26,9 +27,11 @@
 ::
 ::          post-commit.bat <REPOS> 123
 ::
-::      - verify in the trac.log that you see something like:
+::      - in each case, verify that you actually see the logging from Trac
+::        and in particular that you see something like (near the end):
 ::
 ::          DEBUG: Event changeset_added on <REPOS> for revision 123
+::
 
 
 :: ----------------------------------------------------------
@@ -76,6 +79,6 @@ set REV=%2
 
 %TRAC_ADMIN% "%TRAC_ENV%" repository notify changeset_added "%REPOS%" "%REV%"
 
-:: In the case of a scoped repository, one has to specify "%REPOS%/scoped/path"
-:: but using the name of the repository in the targeted environment is maybe
-:: simpler in this case.
+:: Based on either the symbolic name or the %REPOS% information, 
+:: Trac will figure out which repository (or which scoped repositories)
+:: it has to synchronize.

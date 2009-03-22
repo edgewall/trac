@@ -223,14 +223,30 @@ class RepositoryManager(Component):
 
     # Public API methods
 
+    def get_repositories_by_dir(self, directory, authname):
+        """Retrieve the repositories based on the given directory.
+
+           :param directory: the key for identifying the repositories.
+           :return: list of Repository instances.
+        """
+        directory = os.path.join(os.path.normcase(directory), '')
+        repositories = []
+        for reponame, repoinfo in self.get_all_repositories().iteritems():
+            dir = repoinfo.get('dir')
+            if dir:
+                dir = os.path.join(os.path.normcase(dir), '')
+                if dir.startswith(directory):
+                    repos = self.get_repository(reponame, authname)
+                    if repos:
+                        repositories.append(repos)
+        return repositories
+
     def get_repository(self, reponame, authname):
         """Retrieve the appropriate Repository for the given name.
 
            :param reponame: the key for specifying the repository.
                             If no name is given, take the default 
                             repository.
-                            The `reponame` can also be directly the
-                            directory corresponding to the repository.
            :param authname: deprecated (use fine grained permissions)
            :return: if no corresponding repository was defined, 
                     simply return `None`.
@@ -239,11 +255,6 @@ class RepositoryManager(Component):
         if repoinfo and 'alias' in repoinfo:
             reponame = repoinfo['alias']
             repoinfo = self.get_all_repositories().get(reponame)
-        if not repoinfo: # reponame could be directory
-            dir = os.path.normcase(reponame)
-            by_dir = self._repositories_by_dir.get(dir)
-            if by_dir:
-                reponame, repoinfo = by_dir
         if repoinfo:
             rdir = repoinfo.get('dir')
             rtype = repoinfo.get('type', self.repository_type)
@@ -317,7 +328,6 @@ class RepositoryManager(Component):
         """Return a dictionary of repository information, indexed by name."""
         if not self._all_repositories:
             self._all_repositories = {}
-            self._repositories_by_dir = {}
             for provider in self.providers:
                 for reponame, info in provider.get_repositories():
                     if reponame in self._all_repositories:
@@ -325,9 +335,6 @@ class RepositoryManager(Component):
                                       reponame)
                     else:
                         self._all_repositories[reponame] = info
-                        if 'dir' in info:
-                            dir = os.path.normcase(info['dir'])
-                            self._repositories_by_dir[dir] = (reponame, info)
         return self._all_repositories
     
     def get_real_repositories(self, authname):
@@ -363,16 +370,23 @@ class RepositoryManager(Component):
                        event, reponame, revs)
         
         # Notify a repository by name, and all repositories with the same
-        # base, or all repositories by base
+        # base, or all repositories by base or by repository dir
         repos = self.get_repository(reponame, None)
+        repositories = []
         if repos:
             base = repos.get_base()
         else:
-            base = reponame
-        repositories = [each for each in self.get_real_repositories(authname)
-                        if each.get_base() == base]
+            repositories = self.get_repositories_by_dir(reponame, None)
+            if repositories:
+                base = None
+            else:
+                base = reponame
+        if base:
+            repositories = [r for r in self.get_real_repositories(authname)
+                            if r.get_base() == base]
         if not repositories:
-            self.log.warn("Found no repositories matching '%s' base.", base)
+            self.log.warn("Found no repositories matching '%s' base.",
+                          base or reponame)
             return
         inval = False
         for repos in sorted(repositories, key=lambda r: r.reponame):
