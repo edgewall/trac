@@ -830,17 +830,17 @@ class ChangesetModule(Component):
                                              key=collapse_changesets):
                     viewable_changesets = []
                     for cset in changesets:
-                        uid = cset.get_uid()
-                        if uid:
-                            # uid can be seen in multiple repositories
-                            repos_for_uid = uids_seen.setdefault(uid, [])
-                            if not repos_for_uid:
-                                repos_for_uid.append(reponame)
-                                continue
-                            repos_for_uid.append(reponame)
                         cset_resource = Resource('changeset', 
                                                  (reponame, cset.rev))
                         if 'CHANGESET_VIEW' in req.perm(cset_resource):
+                            repos_for_uid = [reponame]
+                            uid = cset.get_uid()
+                            if uid:
+                                # uid can be seen in multiple repositories
+                                if uid in uids_seen:
+                                    uids_seen[uid].append(reponame)
+                                    continue # already viewable, simply append
+                                uids_seen[uid] = repos_for_uid
                             viewable_changesets.append((cset, cset_resource,
                                                         repos_for_uid))
                     if viewable_changesets:
@@ -880,7 +880,7 @@ class ChangesetModule(Component):
                 files = []
                 if show_location:
                     filestats = self._prepare_filestats()
-                    for c,r in changesets:
+                    for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
                             filestats[chg[2]] += 1
                             files.append(chg[0])
