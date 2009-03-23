@@ -84,6 +84,11 @@ class VersionControlAdmin(Component):
                 for (type_, prio) in connector.get_supported_types()
                 if prio >= 0]
     
+    def get_reponames(self):
+        rm = RepositoryManager(self.env)
+        return [reponame or '(default)' for reponame
+                in rm.get_all_repositories()]
+    
     def _complete_add(self, args):
         if len(args) == 2:
             return get_dir_list(args[-1], True)
@@ -94,15 +99,11 @@ class VersionControlAdmin(Component):
         if len(args) == 1:
             return self._notify_events
         elif len(args) == 2:
-            rm = RepositoryManager(self.env)
-            return [reponame or '(default)' for reponame
-                    in rm.get_all_repositories()]
+            return self.get_reponames()
     
     def _complete_repos(self, args):
         if len(args) == 1:
-            rm = RepositoryManager(self.env)
-            return [reponame or '(default)' for reponame
-                    in rm.get_all_repositories()]
+            return self.get_reponames()
     
     def _do_add(self, reponame, dir, type_=None):
         if reponame == '(default)':
@@ -177,7 +178,7 @@ class VersionControlAdmin(Component):
         db.commit()
         RepositoryManager(self.env).reload_repositories()
     
-    def _do_resync(self, reponame, rev=None, clean=True):
+    def _sync(self, reponame, rev, clean):
         rm = RepositoryManager(self.env)
         if reponame == '*':
             if rev is not None:
@@ -217,9 +218,9 @@ class VersionControlAdmin(Component):
                 cursor.executemany("INSERT INTO repository (id, name, value) "
                                    "VALUES (%s, %s, %s)", 
                                    [(reponame, k, '') 
-                                       for k in CACHE_METADATA_KEYS])
+                                    for k in CACHE_METADATA_KEYS])
                 db.commit()
-            if repos.sync(self._resync_feedback):
+            if repos.sync(self._sync_feedback):
                 inval = True
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
                            (reponame,))
@@ -230,10 +231,13 @@ class VersionControlAdmin(Component):
             self.config.touch()     # FIXME: Brute force
         printout(_('Done.'))
 
-    def _resync_feedback(self, rev):
+    def _sync_feedback(self, rev):
         sys.stdout.write(' [%s]\r' % rev)
         sys.stdout.flush()
 
+    def _do_resync(self, reponame, rev=None):
+        self._sync(reponame, rev, clean=True)
+
     def _do_sync(self, reponame, rev=None):
-        self._do_resync(reponame, rev, clean=False)
+        self._sync(reponame, rev, clean=False)
 
