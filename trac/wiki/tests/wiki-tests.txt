@@ -284,7 +284,8 @@ Relative links are supported:
 [... nothing to see] [...]
 [//docs See documentation]
 [//images/logo.png Our logo]
-[/] Note: "" is an Href("/") artifact
+[/]
+[/?param=value#anchor]
 [/newticket?component=test new ticket]
 [#title]
 [#title see Title]
@@ -296,7 +297,8 @@ Relative links are supported:
 [... nothing to see] [...]
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
-<a href="/">/</a> Note: "" is an Href("/") artifact
+<a href="/">/</a>
+<a href="/?param=value#anchor">/?param=value#anchor</a>
 <a href="/newticket?component=test">new ticket</a>
 <a class="wiki" href="/wiki/WikiStart#title">#title</a>
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
