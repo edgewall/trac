@@ -339,10 +339,8 @@ class BrowserModule(Component):
         all_repositories = None
         if not reponame and path == '/':
             all_repositories = rm.get_all_repositories().items()
-            if len(all_repositories) > 1:
+            if all_repositories:
                 repos = rm.get_repository('', req.authname)
-            else:
-                all_repositories = None
 
         if not repos and reponame:
             raise ResourceNotFound(_("No repository '%(repo)s' found",
