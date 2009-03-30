@@ -1,16 +1,12 @@
-Release Notes for Trac 0.11.4rc2 Genshi Release
-===============================================
-March 25, 2009
+Release Notes for Trac 0.11.4 Genshi Release
+============================================
+March 30, 2009
 
-Trac 0.11.4rc2 addresses one regression found in rc1. Trac 0.11.4 (final) is
-schedule for release on Monday, 03/30.
+Trac 0.11.3 contains a number of bug fixes and minor enhancements.
 
-Changes in 0.11.4rc2
+Changes in 0.11.4
 --------------------
  * Custom mainnav links regression (#8153)
-
-Highlights in 0.11.4rc1
------------------------
  * Fixed Python 2.3 incompatibility (#8061)
  * Fixed Python 2.6 notification issue (#8083)
  * Fixed PostgreSQL multi column index issue (#7600)
