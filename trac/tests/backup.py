@@ -1,13 +1,7 @@
-import trac
-from trac import db_default
-from trac.db import sqlite_backend
-from trac.env import Environment
-
 import os.path
 import unittest
-import tempfile
-import shutil
 
+import trac
 from trac.tests.functional.testenv import FunctionalTestEnvironment
 
 class DatabaseBackupTestCase(unittest.TestCase):
