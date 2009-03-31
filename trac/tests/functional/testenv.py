@@ -39,7 +39,6 @@ class FunctionalTestEnvironment(object):
         self.url = url
         self.command_cwd = os.path.normpath(os.path.join(dirname, '..'))
         self.dirname = os.path.abspath(dirname)
-        self.repodir = os.path.join(self.dirname, "repo")
         self.tracdir = os.path.join(self.dirname, "trac")
         self.htpasswd = os.path.join(self.dirname, "htpasswd")
         self.port = port
@@ -48,22 +47,116 @@ class FunctionalTestEnvironment(object):
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
+    def get_repodir(self):
+        return os.path.join(self.dirname, "repo")
+    repodir = property(get_repodir)
+
+    # FIXME clarify repourl vs repo_url, and remove properties which are more
+    # trouble than they're worth.
+    def get_repourl(self):
+        return None
+    repourl = property(get_repourl)
+
+    def get_dburi(self):
+        if os.environ.has_key('TRAC_TEST_DB_URI'):
+            dburi = os.environ['TRAC_TEST_DB_URI']
+
+            # Assume the schema 'tractest' for Postgres
+            if dburi.startswith("postgres") and "?schema=" not in dburi:
+                dburi += "?schema=tractest"
+            return dburi
+        return 'sqlite:db/trac.db'
+    dburi = property(get_dburi)
+
+    def get_repodir(self):
+        return os.path.join(self.dirname, "repo")
+    repodir = property(get_repodir)
+
+    # FIXME clarify repourl vs repo_url, and remove properties which are more
+    # trouble than they're worth.
+    def get_repourl(self):
+        return None
+    repourl = property(get_repourl)
+
+    def get_dburi(self):
+        if os.environ.has_key('TRAC_TEST_DB_URI'):
+            dburi = os.environ['TRAC_TEST_DB_URI']
+
+            # Assume the schema 'tractest' for Postgres
+            if dburi.startswith("postgres") and "?schema=" not in dburi:
+                dburi += "?schema=tractest"
+            return dburi
+        return 'sqlite:db/trac.db'
+    dburi = property(get_dburi)
+
     def destroy(self):
         """Remove all of the test environment data."""
+        if self.dburi.startswith("postgres"):
+            # We'll remove the schema automatically for Postgres if it exists.
+            # With this, you can run functional tests multiple times without
+            # running external tools (just like when running against sqlite)
+            import trac.db.api as db_api
+            env = self.get_trac_environment()
+            env_db = env.get_db_cnx()
+            if env_db.schema:
+                cursor = env_db.cursor()
+                try:
+                    cursor.execute('DROP SCHEMA %s CASCADE'%(env_db.schema))
+                    env_db.commit()
+                except: #TODO decide if this can swallow important errors
+                    env_db.rollback()
+
+        self.destroy_repo()
         if os.path.exists(self.dirname):
             rmtree(self.dirname)
 
-    def create(self):
-        """Create a new test environment; Trac, Subversion,
-        authentication."""
-        if os.mkdir(self.dirname):
-            raise Exception('unable to create test environment')
+    repotype = 'svn'
+
+    def create_repo(self):
+        """
+        Initialize a repo of the type :attr:`self.repotype`.
+        """
         if call(["svnadmin", "create", self.repodir], stdout=logfile,
                 stderr=logfile, close_fds=close_fds):
             raise Exception('unable to create subversion repository')
+
+    def destroy_repo(self):
+        """Hook for removing the repository.  For :term:`SVN`, this exists in
+        the testenv directory and will be removed by the main :meth:`destroy`
+        already.
+        """
+        pass
+
+    def post_create(self, env):
+        """Hook for modifying the environment after creation.  For example, to
+        set configuration like::
+
+            def post_create(self, env):
+                env.config.set('git', 'path', '/usr/bin/git')
+                env.config.save()
+        """
+        pass
+
+    def get_enabled_components(self):
+        """Return a list of components that should be enabled after
+        environment creation.  For anything more complicated, use the
+        :meth:`post_create` method.
+        """
+        return []
+
+    def create(self):
+        """Create a new test environment.
+        This sets up Trac, calls :meth:`create_repo` and sets up
+        authentication.
+        """
+        if os.mkdir(self.dirname):
+            raise Exception('unable to create test environment')
+        self.create_repo()
+
         self._tracadmin('initenv', 'testenv%s' % self.port,
-                        'sqlite:db/trac.db', 'svn', self.repodir)
-        if call([sys.executable, "./contrib/htpasswd.py", "-c", "-b",
+                        self.dburi, self.repotype,
+                        self.repourl or self.repodir)
+        if call([sys.executable, './contrib/htpasswd.py', "-c", "-b",
                  self.htpasswd, "admin", "admin"], close_fds=close_fds,
                  cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
@@ -72,10 +165,14 @@ class FunctionalTestEnvironment(object):
         # Setup Trac logging
         env = self.get_trac_environment()
         env.config.set('logging', 'log_type', 'file')
+        for component in self.get_enabled_components():
+            env.config.set('components', component, 'enabled')
         env.config.save()
+        self.post_create(env)
 
     def adduser(self, user):
-        """Add a user to the environment.  Password is the username."""
+        """Add a user to the environment.  The password will be set to the
+        same as username."""
         if call([sys.executable, './contrib/htpasswd.py', '-b', self.htpasswd,
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
@@ -151,4 +248,13 @@ class FunctionalTestEnvironment(object):
         """Returns a Trac environment object"""
         return open_environment(self.tracdir, use_cache=True)
 
+    def call_in_repo(self, args):
+        proc = Popen(args, stdout=PIPE, stderr=logfile,
+                     close_fds=close_fds, cwd=self.repodir)
+        (data, _) = proc.communicate()
+        if proc.wait():
+            raise Exception('unable to run git command %s' % (args,))
+
+        logfile.write(data)
+        return data
 

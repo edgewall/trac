@@ -102,6 +102,8 @@ if twill and subprocess:
         FunctionalTestEnvironment and a FunctionalTester.
         """
 
+        env_class = FunctionalTestEnvironment
+
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory
             'testenv'; but if a port is specified, use that port and
@@ -115,7 +117,7 @@ if twill and subprocess:
             dirname = os.path.join(trac_source_tree, dirname)
 
             baseurl = "http://127.0.0.1:%s" % port
-            self._testenv = FunctionalTestEnvironment(dirname, port, baseurl)
+            self._testenv = self.env_class(dirname, port, baseurl)
             self._testenv.start()
             self._tester = FunctionalTester(baseurl, self._testenv.repo_url())
             self.fixture = (self._testenv, self._tester)
