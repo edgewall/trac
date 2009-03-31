@@ -555,12 +555,8 @@ class SubversionRepository(Repository):
     
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
-            try:
-                for _, prev in self._history(path, 0, rev-1, pool or self.pool):
-                    return prev
-            except (SystemError, # "null arg to internal routine" in 1.2.x
-                    core.SubversionException): # in 1.3.x
-                pass
+            for _, prev in self._history(path, 0, rev-1, pool or self.pool):
+                return prev
         return None
     
 
@@ -593,12 +589,11 @@ class SubversionRepository(Repository):
         subpool = Pool(self.pool)
         while next <= youngest:
             subpool.clear()            
-            try:
-                for _, next in self._history(path, rev+1, next, subpool):
-                    return next
-            except (SystemError, # "null arg to internal routine" in 1.2.x
-                    core.SubversionException): # in 1.3.x
-                if not find_initial_rev:
+            for _, next in self._history(path, rev+1, next, subpool):
+                return next
+            else:
+                if not find_initial_rev and \
+                         not self.has_node(path, next, subpool):
                     return next # a 'delete' event is also interesting...
             next += 1
         return None
