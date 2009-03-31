@@ -530,6 +530,9 @@ class SubversionRepository(Repository):
         if start < end:
             start, end = end, start
         root = fs.revision_root(self.fs_ptr, start, pool())
+        # fs.node_history leaks when path doesn't exist (#6588)
+        if fs.check_path(root, path_utf8, pool()) == core.svn_node_none:
+            return
         tmp1 = Pool(pool)
         tmp2 = Pool(pool)
         history_ptr = fs.node_history(root, path_utf8, tmp1())
