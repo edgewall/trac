@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """Object for creating and destroying a Trac environment for testing purposes.
 Provides some Trac environment-wide utility functions, and a way to call
-trac-admin."""
+:command:`trac-admin` without it being on the path."""
 
 import os
 import time
@@ -27,15 +27,18 @@ from trac.env import open_environment
 # (those need to test search escaping, among many other things like long
 # paths in browser and unicode chars being allowed/translating...)
 class FunctionalTestEnvironment(object):
-    """Provides a way to work with a test environment in a simpler way."""
-    # TODO: Need to see if we can remove the limitation that the tests have
-    # to have the cwd be the top of the trac source tree... that limits the
-    # places we can put the test environment data.
+    """Common location for convenience functions that work with the test
+    environment on Trac.  Subclass this and override some methods if you are
+    using a different :term:`VCS`.
+    
+    :class:`FunctionalTestEnvironment` requires a `dirname` in which the test
+    repository and Trac environment will be created, `port` for the
+    :command:`tracd` webserver to run on, and the `url` which can
+    access this (usually ``localhost``)."""
 
     def __init__(self, dirname, port, url):
-        """A functional test environment requires a directory name in which
-        to create the test repository and Trac environment, and a port
-        number to use for the webserver."""
+        """Create a :class:`FunctionalTestEnvironment`, see the class itself
+        for parameter information."""
         self.url = url
         self.command_cwd = os.path.normpath(os.path.join(dirname, '..'))
         self.dirname = os.path.abspath(dirname)
@@ -46,27 +49,6 @@ class FunctionalTestEnvironment(object):
         self.destroy()
         self.create()
         locale.setlocale(locale.LC_ALL, '')
-
-    def get_repodir(self):
-        return os.path.join(self.dirname, "repo")
-    repodir = property(get_repodir)
-
-    # FIXME clarify repourl vs repo_url, and remove properties which are more
-    # trouble than they're worth.
-    def get_repourl(self):
-        return None
-    repourl = property(get_repourl)
-
-    def get_dburi(self):
-        if os.environ.has_key('TRAC_TEST_DB_URI'):
-            dburi = os.environ['TRAC_TEST_DB_URI']
-
-            # Assume the schema 'tractest' for Postgres
-            if dburi.startswith("postgres") and "?schema=" not in dburi:
-                dburi += "?schema=tractest"
-            return dburi
-        return 'sqlite:db/trac.db'
-    dburi = property(get_dburi)
 
     def get_repodir(self):
         return os.path.join(self.dirname, "repo")
@@ -187,7 +169,7 @@ class FunctionalTestEnvironment(object):
                             'with %r' % (retval, args))
 
     def start(self):
-        """Starts the webserver"""
+        """Starts the webserver, and waits for it to come up."""
         if 'FIGLEAF' in os.environ:
             exe = os.environ['FIGLEAF']
         else:
@@ -216,7 +198,7 @@ class FunctionalTestEnvironment(object):
         tc.url(self.url)
 
     def stop(self):
-        """Stops the webserver"""
+        """Stops the webserver, if running"""
         if self.pid:
             if os.name == 'nt':
                 # Untested
@@ -257,4 +239,5 @@ class FunctionalTestEnvironment(object):
 
         logfile.write(data)
         return data
+
 
