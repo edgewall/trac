@@ -175,6 +175,38 @@ class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
         # new configurability.
 
 
+class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/7209"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.create_ticket()
+        self._tester.add_comment(ticketid)
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.txt',
+                                           description='Preserved Descr')
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Preserved Descr')
+        # Now replace the existing attachment, and the description should come
+        # through.
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.txt',
+                                           description='', replace=True)
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Preserved Descr')
+
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='blah.txt',
+                                           description='Second Attachment')
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Second Attachment')
+
+        # This one should get a new description when it's replaced
+        # (Second->Other)
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='blah.txt',
+                                           description='Other Attachment',
+                                           replace=True)
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Other Attachment')
+        tc.notfind('Second Attachment')
+
 def functionalSuite():
     suite = FunctionalTestSuite()
     # These basic tests of the repository need to occur before other things so
@@ -192,6 +224,7 @@ def suite():
     suite.addTest(RegressionTestTicket3833b())
     suite.addTest(RegressionTestTicket3833c())
     suite.addTest(RegressionTestTicket5572())
+    suite.addTest(RegressionTestTicket7209())
 
     import trac.versioncontrol.tests
     trac.versioncontrol.tests.functionalSuite(suite)
