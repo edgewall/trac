@@ -1,6 +1,12 @@
 import os.path
 import unittest
 
+try:
+    from svn import core, repos
+    has_svn = True
+except:
+    has_svn = False
+
 import trac
 from trac.tests.functional.testenv import FunctionalTestEnvironment
 
@@ -28,9 +34,14 @@ class DatabaseBackupTestCase(unittest.TestCase):
         env.backup()
 
 
-
 def suite():
-    return unittest.makeSuite(DatabaseBackupTestCase,'test')
+    suite = unittest.TestSuite()
+    if has_svn:
+        suite.addTest(unittest.makeSuite(DatabaseBackupTestCase,'test'))
+    else:
+        print "SKIP: db/tests/backup.py (no svn bindings)"
+    return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')
