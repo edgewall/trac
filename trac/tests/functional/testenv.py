@@ -15,6 +15,7 @@ from trac.tests.functional.compat import rmtree, close_fds
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.env import open_environment
+from trac.db.api import _parse_db_str
 
 # TODO: refactor to support testing multiple frontends, backends (and maybe
 # repositories and authentication).
@@ -71,22 +72,50 @@ class FunctionalTestEnvironment(object):
         return 'sqlite:db/trac.db'
     dburi = property(get_dburi)
 
+    def destroy_mysqldb(self):
+        # NOTE: mysqldump and mysql must be on path
+        # for mysql, we'll drop all the tables in the database and reuse
+        # the same database
+        # mysqldump -u[USERNAME] -p[PASSWORD] --add-drop-table --no-data [DATABASE] | grep ^DROP | mysql -u[USERNAME] -p[PASSWORD] [DATABASE]
+        import sys
+        scheme, db_prop = _parse_db_str(self.dburi)
+        db_prop['dbname'] = os.path.basename(db_prop['path'])
+        cmd = "mysqldump -u%(user)s -h%(host)s -P%(port)s --add-drop-table --no-data %(dbname)s | grep ^DROP | mysql -u%(user)s -h%(host)s -P%(port)s %(dbname)s" \
+              % db_prop
+        print cmd
+        if sys.platform == 'win':
+            # XXX TODO verify on windows
+            args = ['cmd', '/c', cmd]
+        else:
+            args = ['bash', '-c', cmd]
+        
+        environ = os.environ.copy()
+        environ['MYSQL_PWD'] = db_prop['password']
+        print >> sys.stderr, "command %r" % (args,)
+        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=True)
+        p.wait()
+        p.stdout.close()
+        p.stderr.close()
+
     def destroy(self):
         """Remove all of the test environment data."""
-        if self.dburi.startswith("postgres"):
-            # We'll remove the schema automatically for Postgres if it exists.
-            # With this, you can run functional tests multiple times without
-            # running external tools (just like when running against sqlite)
-            import trac.db.api as db_api
-            env = self.get_trac_environment()
-            env_db = env.get_db_cnx()
-            if env_db.schema:
-                cursor = env_db.cursor()
-                try:
-                    cursor.execute('DROP SCHEMA %s CASCADE'%(env_db.schema))
-                    env_db.commit()
-                except: #TODO decide if this can swallow important errors
-                    env_db.rollback()
+        if os.path.exists(self.dirname):
+            if self.dburi.startswith("postgres"):
+                # We'll remove the schema automatically for Postgres if it exists.
+                # With this, you can run functional tests multiple times without
+                # running external tools (just like when running against sqlite)
+                import trac.db.api as db_api
+                env = self.get_trac_environment()
+                env_db = env.get_db_cnx()
+                if env_db.schema:
+                    cursor = env_db.cursor()
+                    try:
+                        cursor.execute('DROP SCHEMA %s CASCADE'%(env_db.schema))
+                        env_db.commit()
+                    except: #TODO decide if this can swallow important errors
+                        env_db.rollback()
+            elif self.dburi.startswith("mysql"):
+                self.destroy_mysqldb()
 
         self.destroy_repo()
         if os.path.exists(self.dirname):

@@ -414,15 +414,7 @@ class Environment(Component, ComponentManager):
         @param dest: Destination file; if not specified, the backup is stored in
                      a file called db_name.trac_version.bak
         """
-        import shutil
-
-        db_str = self.config.get('trac', 'database')
-        if not db_str.startswith('sqlite:'):
-            raise TracError(_('Can only backup sqlite databases'))
-        db_name = os.path.join(self.path, db_str[7:])
-        if not dest:
-            dest = '%s.%i.bak' % (db_name, self.get_version())
-        shutil.copy (db_name, dest)
+        DatabaseManager(self).backup(dest)
 
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""
