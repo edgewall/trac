@@ -8,7 +8,7 @@ unit-test: Trac.egg-info
 	PYTHONPATH=$$PWD:$$PYTHONPATH ./trac/test.py --skip-functional-tests
 
 functional-test: Trac.egg-info
-	PYTHONPATH=$$PWD:$$PYTHONPATH python trac/tests/functional/testcases.py -v
+	PYTHONPATH=$$PWD:$$PYTHONPATH python trac/tests/functional/__init__.py -v
 
 .PHONY: coverage
 coverage: html/index.html
@@ -17,7 +17,7 @@ html/index.html: .figleaf.functional .figleaf.unittests
 	figleaf2html --exclude-patterns=trac/tests/figleaf-exclude .figleaf.functional .figleaf.unittests
 
 .figleaf.functional: Trac.egg-info
-	PYTHONPATH=$$PWD:$$PYTHONPATH FIGLEAF=figleaf python trac/tests/functional/testcases.py -v
+	PYTHONPATH=$$PWD:$$PYTHONPATH FIGLEAF=figleaf python trac/tests/functional/__init__.py -v
 	mv .figleaf .figleaf.functional
 
 .figleaf.unittests: Trac.egg-info
