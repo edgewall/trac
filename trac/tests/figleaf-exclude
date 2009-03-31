@@ -1,0 +1,7 @@
+/usr/lib/python.*/.*.py
+/System/Library/*
+/Library/*
+/opt/subversion/*
+genshi/
+pygments/
+.*.html
