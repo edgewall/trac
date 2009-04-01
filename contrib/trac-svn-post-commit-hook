@@ -72,17 +72,6 @@
 #
 #
 #
-# Custom setup
-# ------------
-# The trac-svn-post-commit-hook is located next to the post-commit hook,
-# in the repository hooks directory.
-#
-#   export TRAC_ENV=/srv/trac/the_trac_env
-#   export LD_LIBRARY_PATH=$PYTHON_HOME/lib:/opt/sqlite-3.3.8/lib:$LD_LIBRARY_PATH
-#   $REPOS/hooks/trac-svn-post-commit-hook $REPOS $REV
-#
-#
-#
 # Virtualenv setup
 # ----------------
 # Here we're using a Trac installation set up using virtualenv
