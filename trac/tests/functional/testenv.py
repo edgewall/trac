@@ -65,8 +65,9 @@ class FunctionalTestEnvironment(object):
         if os.environ.has_key('TRAC_TEST_DB_URI'):
             dburi = os.environ['TRAC_TEST_DB_URI']
 
+            scheme, db_prop = _parse_db_str(self.dburi)
             # Assume the schema 'tractest' for Postgres
-            if dburi.startswith("postgres") and "schema=" not in dburi:
+            if scheme == 'postgres' and db_prop.get('schema'):
                 if '?' in dburi:
                     dburi += "&schema=tractest"
                 else:
@@ -105,7 +106,8 @@ class FunctionalTestEnvironment(object):
         if os.path.exists(self.dirname):
             env = self.get_trac_environment()
             dburi = DatabaseManager(env).connection_uri
-            if dburi.startswith("postgres"):
+            scheme, db_prop = _parse_db_str(self.dburi)
+            if scheme == 'postgres':
                 # We'll remove the schema automatically for Postgres if it exists.
                 # With this, you can run functional tests multiple times without
                 # running external tools (just like when running against sqlite)
@@ -113,11 +115,11 @@ class FunctionalTestEnvironment(object):
                 if env_db.schema:
                     cursor = env_db.cursor()
                     try:
-                        cursor.execute('DROP SCHEMA %s CASCADE'%(env_db.schema))
+                        cursor.execute('DROP SCHEMA "%s" CASCADE'%(env_db.schema))
                         env_db.commit()
                     except: #TODO decide if this can swallow important errors
                         env_db.rollback()
-            elif dburi.startswith("mysql"):
+            elif scheme == 'mysql':
                 self.destroy_mysqldb()
 
         self.destroy_repo()
