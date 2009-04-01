@@ -10,7 +10,7 @@ import sys
 import errno
 import locale
 
-from subprocess import call, Popen, PIPE
+from subprocess import call, Popen, PIPE, STDOUT
 from trac.tests.functional.compat import rmtree, close_fds
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
@@ -190,12 +190,15 @@ class FunctionalTestEnvironment(object):
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
-        retval = call([sys.executable, "./trac/admin/console.py", self.tracdir]
-                      + list(args), stdout=logfile, stderr=logfile,
+        proc = Popen([sys.executable, "./trac/admin/console.py", self.tracdir]
+                      + list(args), stdout=PIPE, stderr=STDOUT,
                       close_fds=close_fds, cwd=self.command_cwd)
-        if retval:
+        out = proc.communicate()[0]
+        if proc.returncode:
+            print(out)
+            logfile.write(out)
             raise Exception('Failed with exitcode %s running trac-admin ' \
-                            'with %r' % (retval, args))
+                            'with %r' % (proc.returncode, args))
 
     def start(self):
         """Starts the webserver, and waits for it to come up."""
