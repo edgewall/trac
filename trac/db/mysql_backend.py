@@ -180,6 +180,7 @@ class MySQLConnector(Component):
         p.stderr.close()
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
+        return dest_file
 
 class MySQLConnection(ConnectionWrapper):
     """Connection wrapper for MySQL."""

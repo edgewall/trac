@@ -139,6 +139,8 @@ class PostgreSQLConnector(Component):
         p.stderr.close()
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
+        return dest_file
+
 
 class PostgreSQLConnection(ConnectionWrapper):
     """Connection wrapper for PostgreSQL."""

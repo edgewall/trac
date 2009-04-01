@@ -149,8 +149,7 @@ class SQLiteConnector(Component):
     def backup(self, dest_file):
         """Simple SQLite-specific backup of the database.
 
-        @param dest: Destination file; if not specified, the backup is stored in
-                     a file called db_name.trac_version.bak
+        @param dest_file: Destination file basename
         """
         import shutil
         db_str = self.config.get('trac', 'database')
@@ -158,6 +157,7 @@ class SQLiteConnector(Component):
         shutil.copy(db_name, dest_file)
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
+        return dest_file
 
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""

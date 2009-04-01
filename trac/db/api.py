@@ -90,6 +90,11 @@ class DatabaseManager(Component):
                 self._cnx_pool = None
                 
     def backup(self, dest=None):
+        """Save a backup of the database.
+
+        @param dest: base filename to write to.
+        Returns the file actually written.
+        """
         connector, args = self._get_connector()
         if not dest:
             backup_dir = self.backup_dir
@@ -103,8 +108,7 @@ class DatabaseManager(Component):
             backup_dir = os.path.dirname(dest)
         if not os.path.exists(backup_dir):
             os.makedirs(backup_dir)
-        connector.backup(dest)
-        return dest
+        return connector.backup(dest)
 
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)
