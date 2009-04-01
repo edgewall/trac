@@ -106,9 +106,14 @@ class PostgreSQLConnector(Component):
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
         args = [self.pg_dump_bin, '-C', '-d', '-x', '-Z', self.compression,
-                '-U', db_prop['user'],
-                '-h', db_prop['host'],
-                '-p', str(db_prop['port'])]
+                '-U', db_prop['user'],]
+        port = db_prop.get('port', '5432')
+        host = db_prop.get('host', 'localhost')
+        args.append('-h')
+        args.append(host)
+        if '/' not in host:
+            args.append('-p')
+            args.append(str(port))
 
         if 'schema' in db_prop['params']:
             args.extend(['-n', db_prop['params']['schema'], db_name])

@@ -15,7 +15,7 @@ from trac.tests.functional.compat import rmtree, close_fds
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.env import open_environment
-from trac.db.api import _parse_db_str
+from trac.db.api import _parse_db_str, DatabaseManager
 
 # TODO: refactor to support testing multiple frontends, backends (and maybe
 # repositories and authentication).
@@ -100,12 +100,12 @@ class FunctionalTestEnvironment(object):
     def destroy(self):
         """Remove all of the test environment data."""
         if os.path.exists(self.dirname):
-            if self.dburi.startswith("postgres"):
+            env = self.get_trac_environment()
+            dburi = DatabaseManager(env).connection_uri
+            if dburi.startswith("postgres"):
                 # We'll remove the schema automatically for Postgres if it exists.
                 # With this, you can run functional tests multiple times without
                 # running external tools (just like when running against sqlite)
-                import trac.db.api as db_api
-                env = self.get_trac_environment()
                 env_db = env.get_db_cnx()
                 if env_db.schema:
                     cursor = env_db.cursor()
@@ -114,7 +114,7 @@ class FunctionalTestEnvironment(object):
                         env_db.commit()
                     except: #TODO decide if this can swallow important errors
                         env_db.rollback()
-            elif self.dburi.startswith("mysql"):
+            elif dburi.startswith("mysql"):
                 self.destroy_mysqldb()
 
         self.destroy_repo()

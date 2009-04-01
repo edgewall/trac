@@ -82,12 +82,12 @@ from trac.test import TestSetup, TestCaseSetup
 internal_error = 'Trac detected an internal error:'
 trac_error = 'Trac Error'
 
-if twill and subprocess:
-    trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..',
-                                                     '..'))
+trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..', '..'))
 
-    # testing.log gets any unused output from subprocesses
-    logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
+# testing.log gets any unused output from subprocesses
+logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
+
+if twill and subprocess:
     # functional-testing.log gets the twill output
     twill.set_output(open(os.path.join(trac_source_tree,
                                        'functional-testing.log'), 'w'))
