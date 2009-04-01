@@ -65,7 +65,7 @@ class FunctionalTestEnvironment(object):
         if os.environ.has_key('TRAC_TEST_DB_URI'):
             dburi = os.environ['TRAC_TEST_DB_URI']
 
-            scheme, db_prop = _parse_db_str(self.dburi)
+            scheme, db_prop = _parse_db_str(dburi)
             # Assume the schema 'tractest' for Postgres
             if scheme == 'postgres' and db_prop.get('schema'):
                 if '?' in dburi:
