@@ -1,0 +1,152 @@
+#!/bin/sh
+#
+# This is a script that should be called from a Subversion post-commit hook
+# for notifying Trac about new changesets.
+#
+# Usage: insert the following snippet:
+#
+#   export TRAC_ENV=...
+#   export PATH=...:$PATH
+#   export LD_LIBRARY_PATH=...:$LD_LIBRARY_PATH
+#   /path/to/trac-svn-post-commit-hook $REPOS $REV
+#
+# in the <subversion_repository>/hooks/post-commit hook file, 
+# then fill in the ... parts according to the following configuration notes.
+#
+#
+# Configuration Notes
+# ===================
+#
+# As a preliminary remark, you should be aware that Subversion usually
+# runs the post-commit hook in a very minimal environment.
+# This is why we have to be very explicit about where to find things.
+# 
+# According to http://subversion.tigris.org/faq.html#hook-debugging 
+# one useful method for getting the post-commit hook to work is to test
+# the call from the user(s) which will end up running the hook (e.g. wwwrun,
+# nobody, etc.) and with the following command:
+#
+#   env - /path/to/repos/hooks/post-commit /path/to/repos 1234
+#
+#
+# TRAC_ENV is the path to the Trac environment which has to be notified.
+#
+# In case you need to maintain more than one environment in sync with
+# the repository (using a different scope or not), simply specify more
+# than one path, using the ":" path separator.
+#
+# PATH
+#
+#  - the folder containing the trac-svn-post-commit-hook has to be in the PATH,
+#    or alternatively you have to use the full path when calling the script,
+#  - the folder containing the trac-admin script has to be in the PATH.
+#    This is typically the same as your Python installation bin/ folder.
+#    If this is /usr/bin, then you don't probably don't need to put it in the
+#    PATH. 
+#
+# Note that if you're using a python program installed in a non-default 
+# location (such as /usr/local), then you need to add it to the PATH as 
+# well. You certainly also need to setup the LD_LIBRARY_PATH accordingly. 
+# The same goes for any custom dependency, such as SQLite libraries or
+# SVN libraries, make sure everything is reachable.
+# For example, if you get errors like "global name 'sqlite' is not defined"
+# or similar, then make sure the LD_LIBRARY_PATH contains the path to all
+# the required libraries (libsqlite3.so in the above example).
+#
+#
+# See http://trac.edgewall.org/wiki/0.12/RepositoryAdmin for more details
+# about managing repositories in Trac.
+
+# -----------------------------------------------------------------------------
+#
+# Examples
+# ========
+#
+# Minimal setup
+# -------------
+# Everything is installed in /usr/bin, the trac-svn-post-commit-hook is 
+# located next to the post-commit hook in the repository's hooks directory.
+#
+#   export TRAC_ENV=/srv/trac/the_trac_env
+#   $REPOS/hooks/trac-svn-post-commit-hook $REPOS $REV
+#
+#
+#
+# Custom setup
+# ------------
+# The trac-svn-post-commit-hook is located next to the post-commit hook,
+# in the repository hooks directory.
+#
+#   export TRAC_ENV=/srv/trac/the_trac_env
+#   export LD_LIBRARY_PATH=$PYTHON_HOME/lib:/opt/sqlite-3.3.8/lib:$LD_LIBRARY_PATH
+#   $REPOS/hooks/trac-svn-post-commit-hook $REPOS $REV
+#
+#
+#
+# Virtualenv setup
+# ----------------
+# Here we're using a Trac installation set up using virtualenv
+# (http://pypi.python.org/pypi/virtualenv), based off a custom
+# Python installation. We're also using a custom SQLite build. 
+#
+# Note that virtualenv's activate script doesn't seem to care
+# about LD_LIBRARY_PATH and the only other thing it does and that
+# we need is to set the PATH, so we can as well do that ourselves.
+#
+# The trac-svn-post-commit-hook is located next to the post-commit hook,
+# in the repository hooks directory.
+#
+#   export TRAC_ENV=/srv/trac/the_trac_env
+#   export PATH=/packages/trac/branches/trac-multirepos/bin:$PATH
+#   export LD_LIBRARY_PATH=/opt/python-2.4.4/lib:/opt/sqlite-3.3.8/lib:$LD_LIBRARY_PATH
+#   $REPOS/hooks/trac-svn-post-commit-hook $REPOS $REV
+
+
+
+# -----------------------------------------------------------------------------
+#
+# This is the script itself, mostly troubleshooting checks...
+
+# -- Command line arguments (cf. usage)
+
+REPOS="$1"
+REV="$2"
+
+# -- Foolproofing
+
+if [ -z $REPOS -o -z $REV ]; then
+    echo "Usage: $0 REPOS REV"
+    exit 2
+fi
+
+if ! python -V 2>/dev/null; then
+    echo "python is not in the PATH ($PATH), check PATH and LD_LIBRARY_PATH."
+    exit 2
+fi
+
+if [ -z $TRAC_ENV ]; then
+    echo "TRAC_ENV is not set."
+    exit 2
+fi
+
+# -- `trac-admin ... repository notify changeset_add ...` on each environment
+
+ifs=$IFS
+IFS=:
+for env in $TRAC_ENV; do
+    if [ -e "$env/VERSION" ]; then
+        trac-admin $env repository notify changeset_added $REPOS $REV && \
+        echo "$env successfully notified of new changeset $REV in $REPOS"
+    else
+        echo "$env doesn't seem to be a Trac environment, skipping..."
+    fi
+done
+IFS=$ifs
+
+
+# Final Note: in case everything is setup correctly and you don't need 
+# all those troubleshooting checks anymore, the command:
+#
+#   trac-admin /path/to/env repository notify changeset_add $REPOS $REV
+#
+# could be called directly from the post-commit hook itself, of course.
