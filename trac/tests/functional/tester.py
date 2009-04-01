@@ -138,7 +138,7 @@ class FunctionalTester(object):
     def go_to_admin(self):
         """Surf to the webadmin page."""
         self.go_to_front()
-        tc.follow('Admin')
+        tc.follow('\\bAdmin\\b')
 
     def go_to_roadmap(self):
         """Surf to the roadmap page."""
