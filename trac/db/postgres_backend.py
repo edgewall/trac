@@ -134,7 +134,9 @@ class PostgreSQLConnector(Component):
             environ['PGPASSWORD'] = db_prop['password']
         p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None,
                   stdout=PIPE, stderr=PIPE, close_fds=close_fds)
-        p.wait()
+        err = p.wait()
+        if err:
+            raise TracError("Backup attempt exited with error code %s." % err)
         p.stdout.close()
         p.stderr.close()
         if not os.path.exists(dest_file):
