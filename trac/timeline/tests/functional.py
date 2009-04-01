@@ -38,13 +38,8 @@ class RegressionTestTicket5819(FunctionalTwillTestCaseSetup):
         files = ['a', 'b', 'c', 'd']
         for filename in files:
             # We do a mkdir because it's easy.
-            if call(['svn', '--username=admin', 'mkdir', '-m',
-                     'Create component1/%s' % filename,
-                     self._tester.repo_url + '/component1/trunk/' +
-                     filename],
-                    stdout=logfile, stderr=logfile, close_fds=close_fds):
-                raise Exception('Failed to create component1 %s under %s' %
-                                (filename, self._tester.repo_url))
+            self._testenv.svn_mkdir(['component1/trunk/' + filename],
+                     'Create component1/%s' % filename)
         self._tester.go_to_timeline()
         # They are supposed to show up in d, c, b, a order.
         components = '.*'.join(['Create component1/%s' % f for f in

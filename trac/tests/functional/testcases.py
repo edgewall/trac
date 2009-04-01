@@ -31,7 +31,7 @@ class TestRepoCreation(FunctionalTwillTestCaseSetup):
             for subdir in ('branches', 'tags', 'trunk'):
                 directories.append('/'.join([component, subdir]))
         commit_message = 'Create component trees.'
-        self._tester.svn_mkdir(directories, commit_message)
+        self._testenv.svn_mkdir(directories, commit_message)
 
         browser_url = self._tester.url + '/browser'
         tc.go(browser_url)

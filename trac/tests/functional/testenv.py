@@ -124,19 +124,11 @@ class FunctionalTestEnvironment(object):
     repotype = 'svn'
 
     def create_repo(self):
-        """
-        Initialize a repo of the type :attr:`self.repotype`.
-        """
-        if call(["svnadmin", "create", self.repodir], stdout=logfile,
-                stderr=logfile, close_fds=close_fds):
-            raise Exception('unable to create subversion repository')
+        raise NotImplementedError()
 
     def destroy_repo(self):
-        """Hook for removing the repository.  For :term:`SVN`, this exists in
-        the testenv directory and will be removed by the main :meth:`destroy`
-        already.
-        """
-        pass
+        """Hook for removing the repository."""
+        raise NotImplementedError()
 
     def post_create(self, env):
         """Hook for modifying the environment after creation.  For example, to
@@ -166,7 +158,7 @@ class FunctionalTestEnvironment(object):
 
         self._tracadmin('initenv', 'testenv%s' % self.port,
                         self.dburi, self.repotype,
-                        self.repourl or self.repodir)
+                        self.repo_path_for_initenv())
         if call([sys.executable, './contrib/htpasswd.py', "-c", "-b",
                  self.htpasswd, "admin", "admin"], close_fds=close_fds,
                  cwd=self.command_cwd):
@@ -249,25 +241,16 @@ class FunctionalTestEnvironment(object):
         self.stop()
         self.start()
 
-    def repo_url(self):
-        """Returns the url of the Subversion repository for this test
-        environment.
-        """
-        if os.name == 'nt':
-            return 'file:///' + self.repodir.replace("\\", "/")
-        else:
-            return 'file://' + self.repodir
-
     def get_trac_environment(self):
         """Returns a Trac environment object"""
         return open_environment(self.tracdir, use_cache=True)
 
-    def call_in_repo(self, args):
+    def call_in_workdir(self, args):
         proc = Popen(args, stdout=PIPE, stderr=logfile,
-                     close_fds=close_fds, cwd=self.repodir)
+                     close_fds=close_fds, cwd=self.work_dir())
         (data, _) = proc.communicate()
         if proc.wait():
-            raise Exception('unable to run git command %s' % (args,))
+            raise Exception('Unable to run command %s in %s' % (args, self.work_dir()))
 
         logfile.write(data)
         return data

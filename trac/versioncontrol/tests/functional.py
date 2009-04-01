@@ -4,12 +4,13 @@ from trac.util.datefmt import format_date, utc
 
 
 class TestRepoBrowse(FunctionalTwillTestCaseSetup):
+    # TODO: move this out to a subversion-specific testing module
     def runTest(self):
         """Add a file to the repository and verify it is in the browser"""
         # Add a file to Subversion
         tempfilename = random_word()
-        revision = self._tester.svn_add('/component1/trunk', tempfilename,
-                                        random_page())
+        fulltempfilename = 'component1/trunk/' + tempfilename
+        revision = self._testenv.svn_add(fulltempfilename, random_page())
 
         # Verify that it appears in the browser view:
         browser_url = self._tester.url + '/browser'
@@ -22,20 +23,22 @@ class TestRepoBrowse(FunctionalTwillTestCaseSetup):
         self._tester.quickjump('[%s]' % revision)
         tc.find('Changeset %s' % revision)
         tc.find('admin')
-        tc.find('Add %s' % tempfilename)
+        tc.find('Add %s' % fulltempfilename)
         tc.find('1 added')
         tc.follow('Timeline')
-        tc.find('Add %s' % tempfilename)
+        tc.find('Add %s' % fulltempfilename)
 
 
 class TestNewFileLog(FunctionalTwillTestCaseSetup):
+    # TODO: move this out to a subversion-specific testing module
     def runTest(self):
         """Verify browser log for a new file"""
         tempfilename = random_word()
-        revision = self._tester.svn_add('/component1/trunk', tempfilename, '')
-        tc.go(self._tester.url + '/log/component1/trunk/' + tempfilename)
+        fulltempfilename = 'component1/trunk/' + tempfilename
+        revision = self._testenv.svn_add(fulltempfilename, '')
+        tc.go(self._tester.url + '/log/' + fulltempfilename)
         tc.find('@%d' % revision)
-        tc.find('Add %s' % tempfilename)
+        tc.find('Add %s' % fulltempfilename)
 
 
 class RegressionTestRev5877(FunctionalTwillTestCaseSetup):

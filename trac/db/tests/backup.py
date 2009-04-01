@@ -9,10 +9,11 @@ except:
 
 import trac
 from trac.tests.functional.testenv import FunctionalTestEnvironment
+from trac.tests.functional.svntestenv import SvnFunctionalTestEnvironment
 
 class DatabaseBackupTestCase(unittest.TestCase):
 
-    env_class = FunctionalTestEnvironment
+    env_class = SvnFunctionalTestEnvironment
 
     def setUp(self):
         trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..',

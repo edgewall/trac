@@ -29,11 +29,10 @@ class FunctionalTester(object):
     avoid doing things manually in :class:`FunctionalTestCase`s when you can.
     """
 
-    def __init__(self, url, repo_url):
+    def __init__(self, url):
         """Create a :class:`FunctionalTester` for the given Trac URL and
         Subversion URL"""
         self.url = url
-        self.repo_url = repo_url
         self.ticketcount = 0
 
         # Connect, and login so we can run tests.
@@ -367,58 +366,3 @@ class FunctionalTester(object):
         tc.formvalue('propertyform', 'milestone', milestone)
         tc.submit('submit')
         # TODO: verify the change occurred.
-
-    def svn_mkdir(self, paths, msg):
-        """Subversion helper to create a new directory within the main
-        repository.  Operates directly on the repository url, so a working
-        copy need not exist.
-
-        Example::
-
-            self._tester.svn_mkdir(["/abc", "/def"], "Add dirs")
-
-        """
-        if call(['svn', '--username=admin', 'mkdir', '-m', msg]
-                + [self.repo_url + '/' + d for d in paths],
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('Failed to create directories')
-
-    def svn_add(self, path, filename, data):
-        """Subversion helper to add a file to the given path within the main
-        repository.
-
-        Example::
-
-            self._tester.svn_add("/", "root.txt", "Hello World")
-
-        """
-        tempdir = mkdtemp()
-        working_copy = os.path.join(tempdir, 'wc')
-
-        if call(['svn', 'co', self.repo_url + path,
-                 working_copy], stdout=logfile, stderr=logfile,
-                 close_fds=close_fds):
-            raise Exception('Checkout from %s failed.' % self.repo_url)
-        temppathname = os.path.join(working_copy, filename)
-        f = open(temppathname, 'w')
-        f.write(data)
-        f.close()
-        if call(['svn', 'add', filename], cwd=working_copy,
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('Add of %s failed.' % filename)
-        commit = Popen(['svn', '--username=admin', 'commit', '-m',
-                        'Add %s' % filename, filename],
-                       cwd=working_copy, stdout=PIPE, stderr=logfile,
-                       close_fds=close_fds)
-        output = commit.stdout.read()
-        if commit.wait():
-            raise Exception('Commit failed.')
-        try:
-            revision = re.search(r'Committed revision ([0-9]+)\.',
-                                 output).group(1)
-        except Exception, e:
-            args = e.args + (output, )
-            raise Exception(*args)
-        rmtree(tempdir) # Cleanup
-        return int(revision)
-

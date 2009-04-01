@@ -93,6 +93,7 @@ if twill and subprocess:
                                        'functional-testing.log'), 'w'))
 
     from trac.tests.functional.testenv import FunctionalTestEnvironment
+    from trac.tests.functional.svntestenv import SvnFunctionalTestEnvironment
 
     from trac.tests.functional.tester import FunctionalTester
 
@@ -102,7 +103,7 @@ if twill and subprocess:
         FunctionalTestEnvironment and a FunctionalTester.
         """
 
-        env_class = FunctionalTestEnvironment
+        env_class = SvnFunctionalTestEnvironment
 
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory
@@ -119,7 +120,7 @@ if twill and subprocess:
             baseurl = "http://127.0.0.1:%s" % port
             self._testenv = self.env_class(dirname, port, baseurl)
             self._testenv.start()
-            self._tester = FunctionalTester(baseurl, self._testenv.repo_url())
+            self._tester = FunctionalTester(baseurl)
             self.fixture = (self._testenv, self._tester)
 
         def tearDown(self):
