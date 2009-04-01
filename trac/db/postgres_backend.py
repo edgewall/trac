@@ -109,7 +109,10 @@ class PostgreSQLConnector(Component):
         args = [self.pg_dump_bin, '-C', '-d', '-x', '-Z', self.compression,
                 '-U', db_prop['user'],]
         port = db_prop.get('port', '5432')
-        host = db_prop.get('host', 'localhost')
+        if 'host' in db_prop['params']:
+            host = db_prop['params']['host']
+        else:
+            host = db_prop.get('host', 'localhost')
         args.append('-h')
         args.append(host)
         if '/' not in host:
