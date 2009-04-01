@@ -23,6 +23,7 @@ from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from trac.util.translation import _
 from subprocess import Popen, PIPE
+from trac.util.compat import close_fds
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -155,8 +156,10 @@ class MySQLConnector(Component):
         db_name = os.path.basename(db_prop['path'])
         args = [self.dump_bin, 
                 '-u%s' % db_prop['user'],
-                '-h%s' % db_prop['host'],
-                '-P%s' % str(db_prop['port']), db_name]
+                '-h%s' % db_prop['host']]
+        if db_prop['port']:
+            args.append('-P%s' % str(db_prop['port']))
+        args.append(db_name)
         
         args.extend(['>', dest_file])
         if sys.platform == 'win':
@@ -170,7 +173,8 @@ class MySQLConnector(Component):
         #print >> sys.stderr, "backup command %r" % (args,)
         #print >> sys.stderr, "backup props %r" % (db_prop,)
         #print >> sys.stderr, "backup to %s" % dest_file
-        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=True)
+        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None,
+                  stdout=PIPE, stderr=PIPE, close_fds=close_fds)
         p.wait()
         p.stdout.close()
         p.stderr.close()

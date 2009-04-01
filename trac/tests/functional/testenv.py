@@ -16,6 +16,7 @@ from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.env import open_environment
 from trac.db.api import _parse_db_str, DatabaseManager
+from trac.util.compat import close_fds
 
 # TODO: refactor to support testing multiple frontends, backends (and maybe
 # repositories and authentication).
@@ -76,7 +77,6 @@ class FunctionalTestEnvironment(object):
         db_prop['dbname'] = os.path.basename(db_prop['path'])
         cmd = "mysqldump -u%(user)s -h%(host)s -P%(port)s --add-drop-table --no-data %(dbname)s | grep ^DROP | mysql -u%(user)s -h%(host)s -P%(port)s %(dbname)s" \
               % db_prop
-        print cmd
         if sys.platform == 'win':
             # XXX TODO verify on windows
             args = ['cmd', '/c', cmd]
@@ -86,7 +86,7 @@ class FunctionalTestEnvironment(object):
         environ = os.environ.copy()
         environ['MYSQL_PWD'] = db_prop['password']
         print >> sys.stderr, "command %r" % (args,)
-        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=True)
+        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=close_fds)
         p.wait()
         p.stdout.close()
         p.stderr.close()

@@ -22,6 +22,7 @@ from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from subprocess import Popen, PIPE
+from trac.util.compat import close_fds
 
 psycopg = None
 PgSQL = None
@@ -131,7 +132,8 @@ class PostgreSQLConnector(Component):
         environ = os.environ.copy()
         if 'password' in db_prop:
             environ['PGPASSWORD'] = db_prop['password']
-        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=True)
+        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None,
+                  stdout=PIPE, stderr=PIPE, close_fds=close_fds)
         p.wait()
         p.stdout.close()
         p.stderr.close()
