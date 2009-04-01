@@ -66,8 +66,11 @@ class FunctionalTestEnvironment(object):
             dburi = os.environ['TRAC_TEST_DB_URI']
 
             # Assume the schema 'tractest' for Postgres
-            if dburi.startswith("postgres") and "?schema=" not in dburi:
-                dburi += "?schema=tractest"
+            if dburi.startswith("postgres") and "schema=" not in dburi:
+                if '?' in dburi:
+                    dburi += "&schema=tractest"
+                else:
+                    dburi += "?schema=tractest"
             return dburi
         return 'sqlite:db/trac.db'
     dburi = property(get_dburi)
