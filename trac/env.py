@@ -414,7 +414,7 @@ class Environment(Component, ComponentManager):
         @param dest: Destination file; if not specified, the backup is stored in
                      a file called db_name.trac_version.bak
         """
-        DatabaseManager(self).backup(dest)
+        return DatabaseManager(self).backup(dest)
 
     def needs_upgrade(self):
         """Return whether the environment needs to be upgraded."""

@@ -104,6 +104,7 @@ class DatabaseManager(Component):
         if not os.path.exists(backup_dir):
             os.makedirs(backup_dir)
         connector.backup(dest)
+        return dest
 
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)

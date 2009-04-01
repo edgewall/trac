@@ -56,6 +56,7 @@ class RegressionTestTicket3833a(FunctionalTestCaseSetup):
         self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1,
             'Logging off when it should have been on.\n%r' % debug1)
 
+
 class RegressionTestTicket3833b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 b"""
@@ -77,6 +78,7 @@ class RegressionTestTicket3833b(FunctionalTestCaseSetup):
                             'Logging at info failed.\n%r' % debug2)
         self.assertEqual(debug2.find("RegressionTestTicket3833 debug2"), -1,
             'Logging still on when it should have been off.\n%r' % debug2)
+
 
 class RegressionTestTicket3833c(FunctionalTestCaseSetup):
     def runTest(self):
@@ -151,6 +153,7 @@ class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
         tc.find('Other Attachment')
         tc.notfind('Second Attachment')
 
+
 def functionalSuite():
     suite = FunctionalTestSuite()
     return suite
@@ -176,6 +179,9 @@ def suite():
     trac.wiki.tests.functionalSuite(suite)
     import trac.timeline.tests
     trac.timeline.tests.functionalSuite(suite)
+    # The db tests should be last since the backup test occurs there.
+    import trac.db.tests
+    trac.db.tests.functionalSuite(suite)
 
     return suite
 
