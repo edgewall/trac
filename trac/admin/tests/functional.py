@@ -11,13 +11,28 @@ class TestBasicSettings(FunctionalTwillTestCaseSetup):
         tc.find('https://my.example.com/something')
 
 
-class TestLoggingSettings(FunctionalTwillTestCaseSetup):
+class TestLoggingNone(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Check logging settings."""
+        """Turn off logging."""
         # For now, we just check that it shows up.
         self._tester.go_to_admin()
         tc.follow('Logging')
         tc.find('trac.log')
+        tc.formvalue('modlog', 'log_type', 'None')
+        tc.formvalue('modlog', 'log_level', 'INFO')
+        tc.submit()
+
+
+class TestLoggingToFile(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Turn logging back on."""
+        # For now, we just check that it shows up.
+        self._tester.go_to_admin()
+        tc.follow('Logging')
+        tc.find('trac.log')
+        tc.formvalue('modlog', 'log_type', 'File')
+        tc.formvalue('modlog', 'log_level', 'DEBUG')
+        tc.submit()
 
 
 class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
@@ -47,7 +62,8 @@ def functionalSuite(suite=None):
         import trac.tests.functional.testcases
         suite = trac.tests.functional.testcases.functionalSuite()
     suite.addTest(TestBasicSettings())
-    suite.addTest(TestLoggingSettings())
+    suite.addTest(TestLoggingNone())
+    suite.addTest(TestLoggingToFile())
     suite.addTest(TestCreatePermissionGroup())
     suite.addTest(TestPluginSettings())
     return suite
