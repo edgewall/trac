@@ -1,6 +1,11 @@
 .PHONY: all
 all:
 
+.PHONY: clean
+clean:
+	find -name \*.py[co] | xargs -d"\n" --no-run-if-empty rm -f
+	rm -rf .figleaf* html
+
 .PHONY: test unit-test functional-test
 test: unit-test functional-test
 
