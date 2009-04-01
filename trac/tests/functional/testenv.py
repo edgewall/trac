@@ -51,16 +51,6 @@ class FunctionalTestEnvironment(object):
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
-    def get_repodir(self):
-        return os.path.join(self.dirname, "repo")
-    repodir = property(get_repodir)
-
-    # FIXME clarify repourl vs repo_url, and remove properties which are more
-    # trouble than they're worth.
-    def get_repourl(self):
-        return None
-    repourl = property(get_repourl)
-
     def get_dburi(self):
         if os.environ.has_key('TRAC_TEST_DB_URI'):
             dburi = os.environ['TRAC_TEST_DB_URI']
@@ -129,11 +119,12 @@ class FunctionalTestEnvironment(object):
     repotype = 'svn'
 
     def create_repo(self):
-        raise NotImplementedError()
+        """Hook for creating the repository."""
+        # The default test environment does not include a source repo
 
     def destroy_repo(self):
         """Hook for removing the repository."""
-        raise NotImplementedError()
+        # The default test environment does not include a source repo
 
     def post_create(self, env):
         """Hook for modifying the environment after creation.  For example, to
@@ -249,6 +240,10 @@ class FunctionalTestEnvironment(object):
     def get_trac_environment(self):
         """Returns a Trac environment object"""
         return open_environment(self.tracdir, use_cache=True)
+
+    def repo_path_for_initenv(self):
+        """Default to no repository"""
+        return ''
 
     def call_in_workdir(self, args):
         proc = Popen(args, stdout=PIPE, stderr=logfile,

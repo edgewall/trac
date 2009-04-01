@@ -70,8 +70,9 @@ try:
     # This is the first indicator of whether the subversion bindings are
     # correctly installed.
     from svn import core
+    has_svn = True
 except ImportError:
-    core = None
+    has_svn = False
 
 from datetime import datetime, timedelta
 
@@ -103,7 +104,10 @@ if twill and subprocess:
         FunctionalTestEnvironment and a FunctionalTester.
         """
 
-        env_class = SvnFunctionalTestEnvironment
+        if has_svn:
+            env_class = SvnFunctionalTestEnvironment
+        else:
+            env_class = FunctionalTestEnvironment
 
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory
@@ -151,7 +155,7 @@ def regex_owned_by(username):
 
 
 def suite():
-    if twill and subprocess and core:
+    if twill and subprocess:
         from trac.tests.functional.testcases import suite
         suite = suite()
     else:
@@ -160,8 +164,6 @@ def suite():
             diagnostic += " (no twill installed)"
         if not subprocess:
             diagnostic += " (no subprocess installed)"
-        if not core:
-            diagnostic += " (no Subversion bindings installed)"
         print diagnostic
         # No tests to run, provide an empty suite.
         suite = unittest.TestSuite()

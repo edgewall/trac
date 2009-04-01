@@ -6,62 +6,6 @@ from trac.tests.functional import *
 from trac.util.datefmt import format_date, utc
 
 
-class TestEmptyRepo(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Check empty repository"""
-        browser_url = self._tester.url + '/browser'
-        tc.go(browser_url)
-        tc.url(browser_url)
-        # This tests the current behavior; I'm not sure it's the best
-        # behavior.
-        tc.follow('Last Change')
-        tc.find('Error: No such changeset')
-        tc.back()
-        tc.follow('Revision Log')
-        tc.notfind('Error: Nonexistent path')
-
-
-class TestRepoCreation(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Create a directory tree in the repository"""
-        # This should probably use the svn bindings...
-        directories = []
-        for component in ('component1', 'component2'):
-            directories.append(component)
-            for subdir in ('branches', 'tags', 'trunk'):
-                directories.append('/'.join([component, subdir]))
-        commit_message = 'Create component trees.'
-        self._testenv.svn_mkdir(directories, commit_message)
-
-        browser_url = self._tester.url + '/browser'
-        tc.go(browser_url)
-        tc.url(browser_url)
-        tc.find('component1')
-        tc.find('component2')
-        tc.follow('Last Change')
-        tc.url(self._tester.url + '/changeset/1/')
-        tc.find(commit_message)
-        for directory in directories:
-            tc.find(directory)
-        tc.back()
-        tc.follow('Revision Log')
-        # (Note that our commit log message is short enough to avoid
-        # truncation.)
-        tc.find(commit_message)
-        tc.follow('Timeline')
-        # (Note that our commit log message is short enough to avoid
-        # truncation.)
-        tc.find(commit_message)
-        tc.formvalue('prefs', 'ticket', False)
-        tc.formvalue('prefs', 'milestone', False)
-        tc.formvalue('prefs', 'wiki', False)
-        tc.submit()
-        tc.find('by.*admin')
-        # (Note that our commit log message is short enough to avoid
-        # truncation.)
-        tc.find(commit_message)
-
-
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
@@ -209,10 +153,6 @@ class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
 
 def functionalSuite():
     suite = FunctionalTestSuite()
-    # These basic tests of the repository need to occur before other things so
-    # that we have a repository to work with.
-    suite.addTest(TestEmptyRepo())
-    suite.addTest(TestRepoCreation())
     return suite
 
 
