@@ -2,7 +2,6 @@ import unittest
 
 from trac.db.tests import api
 from trac.db.tests import postgres_test
-from trac.db.tests import backup
 
 from trac.db.tests.functional import functionalSuite
 
