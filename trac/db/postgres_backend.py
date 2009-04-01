@@ -129,10 +129,8 @@ class PostgreSQLConnector(Component):
             args = ['bash', '-c', ' '.join(args)]
         
         environ = os.environ.copy()
-        environ['PGPASSWORD'] = db_prop['password']
-        #print >> sys.stderr, "backup command %r" % (args,)
-        #print >> sys.stderr, "backup props %r" % (db_prop,)
-        #print >> sys.stderr, "backup to %s" % dest_file
+        if 'password' in db_prop:
+            environ['PGPASSWORD'] = db_prop['password']
         p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=True)
         p.wait()
         p.stdout.close()
