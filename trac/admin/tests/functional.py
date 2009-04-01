@@ -18,8 +18,9 @@ class TestLoggingNone(FunctionalTwillTestCaseSetup):
         self._tester.go_to_admin()
         tc.follow('Logging')
         tc.find('trac.log')
-        tc.formvalue('modlog', 'log_type', 'None')
+        tc.formvalue('modlog', 'log_file', 'nothing.log')
         tc.formvalue('modlog', 'log_level', 'INFO')
+        tc.formvalue('modlog', 'log_type', 'None')
         tc.submit()
 
 
@@ -31,6 +32,7 @@ class TestLoggingToFile(FunctionalTwillTestCaseSetup):
         tc.follow('Logging')
         tc.find('trac.log')
         tc.formvalue('modlog', 'log_type', 'File')
+        tc.formvalue('modlog', 'log_file', 'trac.log')
         tc.formvalue('modlog', 'log_level', 'DEBUG')
         tc.submit()
 
@@ -44,7 +46,44 @@ class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
         tc.formvalue('addperm', 'gp_subject', 'somegroup')
         tc.formvalue('addperm', 'action', 'REPORT_CREATE')
         tc.submit()
-        tc.find('somegroup')
+        tc.find('somegroup:REPORT_CREATE')
+
+
+class TestAddUserToGroup(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Add a user to a permissions group"""
+        self._tester.go_to_admin()
+        tc.follow('Permissions')
+        tc.find('Manage Permissions')
+        tc.formvalue('addsubj', 'sg_subject', 'authenticated')
+        tc.formvalue('addsubj', 'sg_group', 'somegroup')
+        tc.submit()
+        tc.find('authenticated:somegroup')
+
+
+class TestRemoveUserFromGroup(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Remove a user from a permissions group"""
+        self._tester.go_to_admin()
+        tc.follow('Permissions')
+        tc.find('Manage Permissions')
+        tc.find('authenticated:somegroup')
+        tc.formvalue('revokeform', 'sel', 'authenticated:somegroup')
+        tc.submit()
+        tc.notfind('authenticated:somegroup')
+
+
+class TestRemovePermissionGroup(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Remove a permissions group"""
+        self._tester.go_to_admin()
+        tc.follow('Permissions')
+        tc.find('Manage Permissions')
+        tc.find('somegroup:REPORT_CREATE')
+        tc.formvalue('revokeform', 'sel', 'somegroup:REPORT_CREATE')
+        tc.submit()
+        tc.notfind('somegroup:REPORT_CREATE')
+        tc.notfind('somegroup')
 
 
 class TestPluginSettings(FunctionalTwillTestCaseSetup):
@@ -56,7 +95,6 @@ class TestPluginSettings(FunctionalTwillTestCaseSetup):
         tc.find('Install Plugin')
 
 
-
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -65,6 +103,9 @@ def functionalSuite(suite=None):
     suite.addTest(TestLoggingNone())
     suite.addTest(TestLoggingToFile())
     suite.addTest(TestCreatePermissionGroup())
+    suite.addTest(TestAddUserToGroup())
+    suite.addTest(TestRemoveUserFromGroup())
+    suite.addTest(TestRemovePermissionGroup())
     suite.addTest(TestPluginSettings())
     return suite
 
