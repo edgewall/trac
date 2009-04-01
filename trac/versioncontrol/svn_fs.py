@@ -435,7 +435,8 @@ class SubversionRepository(Repository):
             self.scope = '/'
         assert self.scope[0] == '/'
         # we keep root_path_utf8 for  RA 
-        self.ra_url_utf8 = 'file:///' + root_path_utf8
+        ra_prefix = os.name == 'nt' and 'file:///' or 'file://'
+        self.ra_url_utf8 = ra_prefix + root_path_utf8
         self.clear()
 
     def clear(self, youngest_rev=None):
