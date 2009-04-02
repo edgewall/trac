@@ -18,10 +18,9 @@ class TestLoggingNone(FunctionalTwillTestCaseSetup):
         self._tester.go_to_admin()
         tc.follow('Logging')
         tc.find('trac.log')
-        tc.formvalue('modlog', 'log_file', 'nothing.log')
-        tc.formvalue('modlog', 'log_level', 'INFO')
-        tc.formvalue('modlog', 'log_type', 'None')
+        tc.formvalue('modlog', 'log_type', 'none')
         tc.submit()
+        tc.find('selected="selected">None</option')
 
 
 class TestLoggingToFile(FunctionalTwillTestCaseSetup):
@@ -31,10 +30,28 @@ class TestLoggingToFile(FunctionalTwillTestCaseSetup):
         self._tester.go_to_admin()
         tc.follow('Logging')
         tc.find('trac.log')
-        tc.formvalue('modlog', 'log_type', 'File')
+        tc.formvalue('modlog', 'log_type', 'file')
+        tc.formvalue('modlog', 'log_file', 'trac.log2')
+        tc.formvalue('modlog', 'log_level', 'INFO')
+        tc.submit()
+        tc.find('selected="selected">File</option')
+        tc.find('id="log_file".*value="trac.log2"')
+        tc.find('selected="selected">INFO</option>')
+
+
+class TestLoggingToFileNormal(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Setting logging back to normal."""
+        # For now, we just check that it shows up.
+        self._tester.go_to_admin()
+        tc.follow('Logging')
+        tc.find('trac.log')
         tc.formvalue('modlog', 'log_file', 'trac.log')
         tc.formvalue('modlog', 'log_level', 'DEBUG')
         tc.submit()
+        tc.find('selected="selected">File</option')
+        tc.find('id="log_file".*value="trac.log"')
+        tc.find('selected="selected">DEBUG</option>')
 
 
 class TestCreatePermissionGroup(FunctionalTwillTestCaseSetup):
@@ -102,6 +119,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestBasicSettings())
     suite.addTest(TestLoggingNone())
     suite.addTest(TestLoggingToFile())
+    suite.addTest(TestLoggingToFileNormal())
     suite.addTest(TestCreatePermissionGroup())
     suite.addTest(TestAddUserToGroup())
     suite.addTest(TestRemoveUserFromGroup())

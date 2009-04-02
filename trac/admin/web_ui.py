@@ -217,7 +217,7 @@ class LoggingAdminPanel(Component):
         log_dir = os.path.join(self.env.path, 'log')
 
         log_types = [
-            dict(name='', label=_('None'), selected=False, disabled=False),
+            dict(name='none', label=_('None'), selected=log_type == 'none', disabled=False),
             dict(name='stderr', label=_('Console'),
                  selected=log_type == 'stderr', disabled=False),
             dict(name='file', label=_('File'), selected=log_type == 'file',
@@ -235,38 +235,37 @@ class LoggingAdminPanel(Component):
             changed = False
 
             new_type = req.args.get('log_type')
-            if new_type and new_type not in ('stderr', 'file', 'syslog',
-                                             'eventlog'):
+            if new_type not in [t['name'] for t in log_types]:
                 raise TracError(
                     _('Unknown log type %(type)s', type=new_type),
                     _('Invalid log type')
                 )
             if new_type != log_type:
-                self.config.set('logging', 'log_type', new_type or 'none')
+                self.config.set('logging', 'log_type', new_type)
                 changed = True
                 log_type = new_type
 
-            if log_type:
+            if log_type == 'none':
+                self.config.remove('logging', 'log_level')
+                changed = True
+            else:
                 new_level = req.args.get('log_level')
-                if new_level and new_level not in log_levels:
+                if new_level not in log_levels:
                     raise TracError(
                         _('Unknown log level %(level)s', level=new_level),
                         _('Invalid log level'))
-                if new_level and new_level != log_level:
+                if new_level != log_level:
                     self.config.set('logging', 'log_level', new_level)
                     changed = True
-                    log_evel = new_level
-            else:
-                self.config.remove('logging', 'log_level')
-                changed = True
+                    log_level = new_level
 
             if log_type == 'file':
                 new_file = req.args.get('log_file', 'trac.log')
                 if new_file != log_file:
-                    self.config.set('logging', 'log_file', new_file or '')
+                    self.config.set('logging', 'log_file', new_file)
                     changed = True
                     log_file = new_file
-                if log_type == 'file' and not log_file:
+                if not log_file:
                     raise TracError(_('You must specify a log file'),
                                     _('Missing field'))
             else:
