@@ -358,6 +358,7 @@ class RoadmapModule(Component):
             'queries': queries,
             'showall': showall,
         }
+        add_stylesheet(req, 'common/css/roadmap.css')
         return 'roadmap.html', data, None
 
     # Internal methods
