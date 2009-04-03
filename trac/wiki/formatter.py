@@ -623,7 +623,7 @@ class Formatter(object):
     # Definition Lists
 
     def _definition_formatter(self, match, fullmatch):
-        tmp = self.in_def_list and '</dd>' or '<dl>'
+        tmp = self.in_def_list and '</dd>' or '<dl class="wiki">'
         definition = match[:match.find('::')]
         tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.env, self.context,
                                                       definition)

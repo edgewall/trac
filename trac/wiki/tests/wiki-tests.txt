@@ -1076,28 +1076,28 @@ Paragraph
 ============================== Simple definition list
  term:: definition
 ------------------------------
-<dl><dt>term</dt><dd>definition
+<dl class="wiki"><dt>term</dt><dd>definition
 </dd></dl>
 ------------------------------
 term:: definition
 ============================== Tricky definition list
  term:: definition:: text
 ------------------------------
-<dl><dt>term</dt><dd>definition:: text
+<dl class="wiki"><dt>term</dt><dd>definition:: text
 </dd></dl>
 ------------------------------
 term:: definition:: text
 ============================== Verbatim term in definition list
  `term`:: definition
 ------------------------------
-<dl><dt><tt>term</tt></dt><dd>definition
+<dl class="wiki"><dt><tt>term</tt></dt><dd>definition
 </dd></dl>
 ------------------------------
 <tt>term</tt>:: definition
 ============================== Another verbatim term in definition list
  {{{term}}}:: definition
 ------------------------------
-<dl><dt><tt>term</tt></dt><dd>definition
+<dl class="wiki"><dt><tt>term</tt></dt><dd>definition
 </dd></dl>
 ------------------------------
 <tt>term</tt>:: definition
@@ -1106,7 +1106,7 @@ term:: definition:: text
                  ''formatted''
                  definition
 ------------------------------
-<dl><dt>complex topic</dt><dd>multiline
+<dl class="wiki"><dt>complex topic</dt><dd>multiline
 <i>formatted</i>
 definition
 </dd></dl>
@@ -1138,7 +1138,7 @@ term::definition
  complex topic:: multiline
                  `not:: a dl`
 ------------------------------
-<dl><dt>complex topic</dt><dd>multiline
+<dl class="wiki"><dt>complex topic</dt><dd>multiline
 <tt>not:: a dl</tt>
 </dd></dl>
 ------------------------------
@@ -1148,7 +1148,7 @@ complex topic:: multiline
  complex topic:: multiline
                  {{{not:: a dl}}}
 ------------------------------
-<dl><dt>complex topic</dt><dd>multiline
+<dl class="wiki"><dt>complex topic</dt><dd>multiline
 <tt>not:: a dl</tt>
 </dd></dl>
 ------------------------------
