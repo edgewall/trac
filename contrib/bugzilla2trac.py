@@ -99,6 +99,10 @@ IGNORE_PRODUCTS = []
 # These milestones are ignored
 IGNORE_MILESTONES = ["---"]
 
+# Don't import user names and passwords into htpassword if
+# user is disabled in bugzilla? (i.e. profiles.DisabledText<>'')
+IGNORE_DISABLED_USERS = True
+
 # These logins are converted to these user ids
 LOGIN_MAP = {
     #'some.user@example.com': 'someuser',
@@ -137,6 +141,13 @@ KEYWORDS_MAPPING = {
 # even if not mentionned in KEYWORDS_MAPPING.
 MAP_ALL_KEYWORDS = True
 
+# Custom field mappings
+CUSTOMFIELD_MAP = {
+    #'Bugzilla_field_name': 'Trac_customfield_name',
+    #'op_sys': 'os',
+    #'cf_featurewantedby': 'wanted_by',
+    #'product': 'product'
+}
 
 # Bug comments that should not be imported.  Each entry in list should
 # be a regular expression.
@@ -179,7 +190,9 @@ STATUS_KEYWORDS = {
 IGNORED_ACTIVITY_FIELDS = ["everconfirmed"]
 
 # Regular expression and its replacement
-BUG_NO_RE = re.compile(r"\b(bug #?)([0-9])")
+# this expression will update references to bugs 1 - 99999 that
+# have the form "bug 1" or "bug #1"
+BUG_NO_RE = re.compile(r"\b(bug #?)([0-9]{1,5})\b", re.I)
 BUG_NO_REPL = r"#\2"
 
 ###
@@ -309,7 +322,7 @@ class TracDatabase(object):
 
     def addTicket(self, id, time, changetime, component, severity, priority,
                   owner, reporter, cc, version, milestone, status, resolution,
-                  summary, description, keywords):
+                  summary, description, keywords, customfields):
         c = self.db().cursor()
 
         desc = description.encode('utf-8')
@@ -346,7 +359,25 @@ class TracDatabase(object):
                    keywords))
 
         self.db().commit()
-        return self.db().get_last_id(c, 'ticket')
+        ticket_id = self.db().get_last_id(c, 'ticket')
+
+        # add all custom fields to ticket
+        for name, value in customfields.iteritems():
+            self.addTicketCustomField(ticket_id, name, value)
+
+        return ticket_id
+
+    def addTicketCustomField(self, ticket_id, field_name, field_value):
+        c = self.db().cursor()
+
+        if field_value == None:
+            return
+
+        c.execute("""INSERT INTO ticket_custom (ticket, name, value)
+                                 VALUES (%s, %s, %s)""",
+                  (ticket_id, field_name.encode('utf-8'), field_value.encode('utf-8')))
+
+        self.db().commit()
 
     def addTicketComment(self, ticket, time, author, value):
         comment = value.encode('utf-8')
@@ -490,6 +521,9 @@ def convert(_db, _host, _user, _password, _env, _force):
         c.execute("DELETE FROM ticket")
         trac.db().commit()
 
+        c.execute("DELETE FROM ticket_custom")
+        trac.db().commit()
+
         c.execute("DELETE FROM attachment")
 	attachments_dir = os.path.join(os.path.normpath(trac.env.path),
                                 "attachments")
@@ -612,6 +646,7 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print "\n7. Import bugs and bug activity..."
     for bug in bugs:
+
         bugid = bug['bug_id']
 
         ticket = {}
@@ -629,12 +664,19 @@ def convert(_db, _host, _user, _password, _env, _force):
         ticket['owner'] = trac.getLoginName(mysql_cur, bug['assigned_to'])
         ticket['reporter'] = trac.getLoginName(mysql_cur, bug['reporter'])
 
+        # pack bugzilla fields into dictionary of trac custom field
+        # names and values
+        customfields = {}
+        for bugfield, customfield in CUSTOMFIELD_MAP.iteritems():
+            customfields[customfield] = bug[bugfield]
+        ticket['customfields'] = customfields
+
         mysql_cur.execute("SELECT * FROM cc WHERE bug_id = %s", bugid)
         cc_records = mysql_cur.fetchall()
         cc_list = []
         for cc in cc_records:
             cc_list.append(trac.getLoginName(mysql_cur, cc['who']))
-        cc_list = [cc for cc in cc_list if '@' in cc and cc not in IGNORE_CC]
+        cc_list = [cc for cc in cc_list if cc not in IGNORE_CC]  
         ticket['cc'] = string.join(cc_list, ', ')
 
         ticket['version'] = bug['version']
@@ -836,7 +878,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print "\n8. Importing users and passwords..."
     if BZ_VERSION >= 2180:
-        mysql_cur.execute("SELECT login_name, cryptpassword FROM profiles")
+        selectlogins = "SELECT login_name, cryptpassword FROM profiles";
+        if IGNORE_DISABLED_USERS:
+            selectlogins = selectlogins + " WHERE disabledtext=''"
+        mysql_cur.execute(selectlogins)
         users = mysql_cur.fetchall()
     htpasswd = file("htpasswd", 'w')
     for user in users:
@@ -844,6 +889,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             login = LOGIN_MAP[user['login_name']]
         else:
             login = user['login_name']
+        
         htpasswd.write(login + ":" + user['cryptpassword'] + "\n")
 
     htpasswd.close()
