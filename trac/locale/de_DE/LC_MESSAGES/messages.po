@@ -2100,7 +2100,7 @@ msgstr "Mögliche Werte"
 #: trac/ticket/admin.py:698
 #, python-format
 msgid "Invalid up/down value: %(value)s"
-msgstr "Ungültiger Wert für up/down: %(value)s"
+msgstr "Ungültiger Wert für hoch/runter: %(value)s"
 
 #: trac/ticket/admin.py:764
 msgid "<number> must be a number"
@@ -2142,7 +2142,7 @@ msgstr "%(current_owner)s wird von der Verantwortlichkeit für das Ticket befrei
 #: trac/ticket/default_workflow.py:248
 #, python-format
 msgid "The owner will change from %(current_owner)s to %(selected_owner)s"
-msgstr "Die Verantwortlichkeit für das Ticket wird von %(current_owner)s an %(selected_owner)s übertragen"
+msgstr "Die Verantwortung für das Ticket wird von %(current_owner)s an %(selected_owner)s übertragen"
 
 #: trac/ticket/default_workflow.py:253
 msgid "to "
