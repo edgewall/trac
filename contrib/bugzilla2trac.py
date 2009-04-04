@@ -28,7 +28,8 @@ import re
 # Bugzilla version.  You can find this in Bugzilla's globals.pl file.
 #
 # Currently, the following bugzilla versions are known to work:
-#   2.11 (2110), 2.16.5 (2165), 2.18.3 (2183), 2.19.1 (2191), 2.23.3 (2233)
+#   2.11 (2110), 2.16.5 (2165), 2.16.7 (2167),  2.18.3 (2183), 2.19.1 (2191),
+#   2.23.3 (2233)
 #
 # If you run this script on a version not listed here and it is successful,
 # please file a ticket at http://trac.edgewall.org/ and assign it to
@@ -328,12 +329,18 @@ class TracDatabase(object):
         desc = description.encode('utf-8')
         type = "defect"
 
-        if severity.lower() == "enhancement":
+        if SEVERITIES:
+            if severity.lower() == "enhancement":
                 severity = "minor"
                 type = "enhancement"
 
+        else:
+            if priority.lower() == "enhancement":
+                priority = "minor"
+                type = "enhancement"
+
         if PREFORMAT_COMMENTS:
-          desc = '{{{\n%s\n}}}' % desc
+            desc = '{{{\n%s\n}}}' % desc
 
         if REPLACE_BUG_NO:
             if BUG_NO_RE.search(desc):
@@ -634,12 +641,20 @@ def convert(_db, _host, _user, _password, _env, _force):
     trac.setMilestoneList(milestones, 'value')
 
     print "\n6. Retrieving bugs..."
-    sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
-                        FROM bugs AS b, components AS c, products AS p """
-    sql += " WHERE (" + makeWhereClause('p.name', PRODUCTS)
-    sql += ") AND b.product_id = p.id"
-    sql += " AND b.component_id = c.id"
-    sql += " ORDER BY b.bug_id"
+    if BZ_VERSION >= 2180: 
+        sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
+                            FROM bugs AS b, components AS c, products AS p """
+        sql += " WHERE (" + makeWhereClause('p.name', PRODUCTS)
+        sql += ") AND b.product_id = p.id"
+        sql += " AND b.component_id = c.id"
+        sql += " ORDER BY b.bug_id"
+    else:
+        sql = """SELECT DISTINCT b.*, c.value AS component, p.product AS product
+                            FROM bugs AS b, components AS c, products AS p """
+        sql += " WHERE (" + makeWhereClause('p.product', PRODUCTS)
+        sql += ") AND b.product = p.product"
+        sql += " AND b.component = c.value"
+        sql += " ORDER BY b.bug_id"
     mysql_cur.execute(sql)
     bugs = mysql_cur.fetchall()
 
@@ -658,9 +673,16 @@ def convert(_db, _host, _user, _password, _env, _force):
             ticket['component'] = bug['product']
         else:
             ticket['component'] = bug['component']
-        ticket['severity'] = bug['bug_severity']
-        ticket['priority'] = bug['priority'].lower()
 
+        if SEVERITIES:
+            ticket['severity'] = bug['bug_severity']
+            ticket['priority'] = bug['priority'].lower()
+        else:
+            # use bugzilla severities as trac priorities, and ignore bugzilla
+            # priorities
+            ticket['severity'] = ''
+            ticket['priority'] = bug['bug_severity']
+        
         ticket['owner'] = trac.getLoginName(mysql_cur, bug['assigned_to'])
         ticket['reporter'] = trac.getLoginName(mysql_cur, bug['reporter'])
 
@@ -749,7 +771,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
             # convert bugzilla field names...
             if field_name == "bug_severity":
-                field_name = "severity"
+                if SEVERITIES:
+                    field_name = "severity"
+                else:
+                    field_name = "priority"
             elif field_name == "assigned_to":
                 field_name = "owner"
             elif field_name == "bug_status":
@@ -877,7 +902,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             trac.addAttachment(author, a)
 
     print "\n8. Importing users and passwords..."
-    if BZ_VERSION >= 2180:
+    if BZ_VERSION >= 2167:
         selectlogins = "SELECT login_name, cryptpassword FROM profiles";
         if IGNORE_DISABLED_USERS:
             selectlogins = selectlogins + " WHERE disabledtext=''"
@@ -917,6 +942,8 @@ Available Options:
   -p | --passwd <MySQL password>   - Bugzilla's user password
   -c | --clean                     - Remove current Trac tickets before
                                      importing
+  -n | --noseverities              - import Bugzilla severities as Trac 
+                                     priorities and forget Bugzilla priorities
   --help | help                    - This help info
 
 Additional configuration options can be defined directly in the script.
@@ -925,6 +952,7 @@ Additional configuration options can be defined directly in the script.
 
 def main():
     global BZ_DB, BZ_HOST, BZ_USER, BZ_PASSWORD, TRAC_ENV, TRAC_CLEAN
+    global SEVERITIES, PRIORITIES, PRIORITIES_MAP
     if len (sys.argv) > 1:
     	if sys.argv[1] in ['--help','help'] or len(sys.argv) < 4:
     	    usage()
@@ -947,6 +975,11 @@ def main():
     	        iter = iter + 1
     	    elif sys.argv[iter] in ['-c', '--clean']:
     	        TRAC_CLEAN = 1
+            elif sys.argv[iter] in ['-n', '--noseverities']:
+                # treat Bugzilla severites as Trac priorities
+                PRIORITIES = SEVERITIES
+                SEVERITIES = []
+                PRIORITIES_MAP = {}
     	    else:
     	        print "Error: unknown parameter: " + sys.argv[iter]
     	        sys.exit(0)
