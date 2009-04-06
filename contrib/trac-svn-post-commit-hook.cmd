@@ -3,7 +3,7 @@
 :: Trac post-commit-hook script for Windows
 ::
 :: Contributed by markus, modified by cboos.
-:: Modified for the multirepos branch to use the `repository notify` command.
+:: Modified for the multirepos branch to use the `changeset` command.
 
 :: Usage:
 ::
@@ -59,7 +59,7 @@ set TRAC_ADMIN=trac-admin.exe
 if not %PYTHON_PATH%.==. set TRAC_ADMIN="%PYTHON_PATH%/Scripts/trac-admin.exe"
 
 :: ... or take it from the specified Trac source checkout
-if not %TRAC_PATH%.==. set TRAC_ADMIN="%PYTHON_PATH%/python.exe" "%TRAC_PATH%/trac/admin/console.py"
+if not %TRAC_PATH%.==. set TRAC_ADMIN=python.exe "%TRAC_PATH%/trac/admin/console.py"
 
 :: -- Setup the environment
 set PATH=%PYTHON_PATH%;%PATH%
@@ -69,15 +69,15 @@ set PYTHONPATH=%TRAC_PATH%;%PYTHONPATH%
 set REPOS=%1
 set REV=%2
 
-:: Now we're about to call trac-admin's repository notify command.
+:: Now we're about to call trac-admin's changeset added command.
 :: We have to call it like that:
 ::
-::   repository notify <event> <repos> <rev>
+::   repository changeset added <repos> <rev>
 ::
 :: where <repos> can be the repository symbolic name or directly
 :: the repository directory, which we happen to have in %REPOS%.
 
-%TRAC_ADMIN% "%TRAC_ENV%" repository notify changeset_added "%REPOS%" "%REV%"
+%TRAC_ADMIN% "%TRAC_ENV%" changeset added "%REPOS%" "%REV%"
 
 :: Based on either the symbolic name or the %REPOS% information, 
 :: Trac will figure out which repository (or which scoped repositories)

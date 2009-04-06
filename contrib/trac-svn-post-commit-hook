@@ -118,13 +118,13 @@ if [ -z $TRAC_ENV ]; then
     exit 2
 fi
 
-# -- `trac-admin ... repository notify changeset_add ...` on each environment
+# Call "trac-admin ... changeset added $REPOS $REV" for each Trac environment
 
 ifs=$IFS
 IFS=:
 for env in $TRAC_ENV; do
     if [ -e "$env/VERSION" ]; then
-        trac-admin $env repository notify changeset_added $REPOS $REV && \
+        trac-admin $env changeset added $REPOS $REV && \
         echo "$env successfully notified of new changeset $REV in $REPOS"
     else
         echo "$env doesn't seem to be a Trac environment, skipping..."

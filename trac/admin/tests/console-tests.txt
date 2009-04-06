@@ -11,6 +11,8 @@ attachment add       Attach a file to a resource
 attachment export    Export an attachment from a resource to a file or stdout
 attachment list      List attachments of a resource
 attachment remove    Remove an attachment from a resource
+changeset added      Notify trac about changesets added to a repository
+changeset modified   Notify trac about changesets modified in a repository
 component add        Add a new component
 component chown      Change component ownership
 component list       Show available components
@@ -38,7 +40,6 @@ priority remove      Remove a priority value
 repository add       Add a source repository
 repository alias     Create an alias for a repository
 repository list      List source repositories
-repository notify    Notify trac about repository events
 repository remove    Remove a source repository
 repository rename    Rename a source repository
 repository resync    Re-synchronize trac with repositories

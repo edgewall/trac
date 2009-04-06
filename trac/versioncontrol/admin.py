@@ -17,7 +17,7 @@ from trac.admin import IAdminCommandProvider, get_dir_list
 from trac.core import *
 from trac.util.text import print_table, printerr, printout
 from trac.util.translation import _, ngettext
-from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
+from trac.versioncontrol import RepositoryManager
 
 
 class VersionControlAdmin(Component):
@@ -28,6 +28,22 @@ class VersionControlAdmin(Component):
     # IAdminCommandProvider methods
     
     def get_admin_commands(self):
+        yield ('changeset added', '<repos> <rev> [rev] [...]',
+               """Notify trac about changesets added to a repository
+               
+               This command should be called from a post-commit hook. It will
+               trigger a cache update and notify components about the addition.
+               """,
+               self._complete_repos, self._do_changeset_added)
+        yield ('changeset modified', '<repos> <rev> [rev] [...]',
+               """Notify trac about changesets modified in a repository
+               
+               This command should be called from a post-revprop hook after
+               revision properties like the commit message, author or date
+               have been changed. It will trigger a cache update for the given
+               revisions and notify components about the change.
+               """,
+               self._complete_repos, self._do_changeset_modified)
         yield ('repository add', '<repos> <dir> [type]',
                'Add a source repository',
                self._complete_add, self._do_add)
@@ -37,16 +53,6 @@ class VersionControlAdmin(Component):
         yield ('repository list', '',
                'List source repositories',
                None, self._do_list)
-        yield ('repository notify', '<event> <repos> <rev> [rev] [...]',
-               """Notify trac about repository events
-               
-               The event "changeset_added" notifies that new changesets have
-               been added to a repository.
-               
-               The event "changeset_modified" notifies that existing changesets
-               have been modified in a repository.
-               """,
-               self._complete_notify, self._do_notify)
         yield ('repository remove', '<repos>',
                'Remove a source repository',
                self._complete_repos, self._do_remove)
@@ -75,9 +81,6 @@ class VersionControlAdmin(Component):
                """,
                self._complete_repos, self._do_sync)
     
-    _notify_events = [each for each in IRepositoryChangeListener.__dict__
-                      if not each.startswith('_')]
-    
     def get_supported_types(self):
         rm = RepositoryManager(self.env)
         return [type_ for connector in rm.connectors
@@ -95,15 +98,17 @@ class VersionControlAdmin(Component):
         elif len(args) == 3:
             return self.get_supported_types()
     
-    def _complete_notify(self, args):
-        if len(args) == 1:
-            return self._notify_events
-        elif len(args) == 2:
-            return self.get_reponames()
-    
     def _complete_repos(self, args):
         if len(args) == 1:
             return self.get_reponames()
+    
+    def _do_changeset_added(self, reponame, *revs):
+        rm = RepositoryManager(self.env)
+        rm.notify('changeset_added', reponame, revs, None)
+    
+    def _do_changeset_modified(self, reponame, *revs):
+        rm = RepositoryManager(self.env)
+        rm.notify('changeset_modified', reponame, revs, None)
     
     def _do_add(self, reponame, dir, type_=None):
         if reponame == '(default)':
@@ -142,12 +147,6 @@ class VersionControlAdmin(Component):
             values.append((reponame or '(default)', info.get('type', ''),
                            alias, info.get('dir', '')))
         print_table(values, [_('Name'), _('Type'), _('Alias'), _('Directory')])
-    
-    def _do_notify(self, event, reponame, *revs):
-        if event not in self._notify_events:
-            raise TracError(_('Unknown notify event "%s"' % event))
-        rm = RepositoryManager(self.env)
-        rm.notify(event, reponame, revs, None)
     
     def _do_remove(self, reponame):
         if reponame == '(default)':
