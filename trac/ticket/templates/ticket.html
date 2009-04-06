@@ -397,7 +397,7 @@ ${comment}</textarea></p>
             <input type="hidden" name="cnum" value="${cnum}" />
           </py:if>
           <input type="submit" name="preview" value="${_('Preview')}" accesskey="r" />&nbsp;
-          <input type="submit" name="submit" value="${ticket.exists and 'Submit changes' or 'Create ticket'}" />
+          <input type="submit" name="submit" value="${ticket.exists and _('Submit changes') or _('Create ticket')}" />
         </div>
 
       </form>

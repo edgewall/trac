@@ -1,5 +1,5 @@
 # Czech (Czech Republic) translations for Trac.
-# Copyright (C) 2007-2008 Edgewall Software
+# Copyright (C) 2007-2009 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Radek Bartoň <xbarto33@stud.fit.vutbr.cz>, 2007.
 #
@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2008-07-14 00:56+0200\n"
+"PO-Revision-Date: 2009-04-05 12:31+0200\n"
 "Last-Translator: Tomas Kopecek <permonik@mesias.brnonet.cz>\n"
 "Language-Team: cs_CZ <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -16,109 +16,147 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 1.0dev-r426\n"
+"Generated-By: Babel 0.9.4\n"
 
-#: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:26
+#: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:28
 msgid "About Trac"
 msgstr "O systému Trac"
 
-#: trac/attachment.py:144
+#: trac/attachment.py:149
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "Příloha '%(title)s' neexistuje."
 
-#: trac/attachment.py:145
+#: trac/attachment.py:150
 msgid "Invalid Attachment"
 msgstr "Vadná příloha"
 
-#: trac/attachment.py:187
+#: trac/attachment.py:192
 msgid "Could not delete attachment"
 msgstr "Přílohu nelze odstranit"
 
-#: trac/attachment.py:291
+#: trac/attachment.py:298
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "Příloha '%(filename)s' nenalezena"
 
-#: trac/attachment.py:365
+#: trac/attachment.py:372
 msgid "Bad request"
 msgstr "Špatný požadavek"
 
-#: trac/attachment.py:382
+#: trac/attachment.py:389
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "Zpět na %(parent)s"
 
-#: trac/attachment.py:474
+#: trac/attachment.py:481
 msgid " attached to "
 msgstr " připojeno k "
 
-#: trac/attachment.py:513
+#: trac/attachment.py:542
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "Příloha '%(id)s' k %(parent)s"
 
-#: trac/attachment.py:516
+#: trac/attachment.py:545
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "Přílohy k %(parent)s"
 
-#: trac/attachment.py:529 trac/attachment.py:552 trac/admin/web_ui.py:407
+#: trac/attachment.py:558 trac/attachment.py:581 trac/admin/web_ui.py:407
 #: trac/admin/web_ui.py:410 trac/admin/web_ui.py:414
 msgid "No file uploaded"
 msgstr "Nebyl nahrán žádný soubor"
 
-#: trac/attachment.py:537
+#: trac/attachment.py:566
 msgid "Can't upload empty file"
 msgstr "Nelze nahrát prázdný soubor"
 
-#: trac/attachment.py:542
+#: trac/attachment.py:571
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "Maximální velikost přílohy: %(num)s bytů"
 
-#: trac/attachment.py:543
+#: trac/attachment.py:572
 msgid "Upload failed"
 msgstr "Nahrávání selhalo"
 
-#: trac/attachment.py:564
+#: trac/attachment.py:593
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "Položka %(field)s přílohy je vadná: %(message)s"
 
-#: trac/attachment.py:568
+#: trac/attachment.py:597
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "Vadná příloha: %(message)s"
 
-#: trac/attachment.py:602
+#: trac/attachment.py:631
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (smazat)"
 
-#: trac/attachment.py:664 trac/versioncontrol/web_ui/browser.py:511
-#: trac/wiki/web_ui.py:66
+#: trac/attachment.py:693 trac/versioncontrol/web_ui/browser.py:510
+#: trac/wiki/web_ui.py:70
 msgid "Plain Text"
 msgstr "Čistý text"
 
-#: trac/attachment.py:670 trac/versioncontrol/web_ui/browser.py:516
+#: trac/attachment.py:699 trac/versioncontrol/web_ui/browser.py:515
 msgid "Original Format"
 msgstr "Původní formát"
 
-#: trac/env.py:404
+#: trac/attachment.py:831
+#, python-format
+msgid "Invalid resource identifier '%(id)s'"
+msgstr ""
+
+#: trac/attachment.py:867 trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_enums.html:47
+#: trac/admin/templates/admin_milestones.html:100
+#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:68
+#: trac/templates/error.html:167 trac/ticket/admin.py:181
+#: trac/ticket/admin.py:356 trac/ticket/admin.py:509
+msgid "Name"
+msgstr "Jméno"
+
+#: trac/attachment.py:867
+msgid "Size"
+msgstr ""
+
+#: trac/attachment.py:867 trac/templates/history_view.html:28
+#: trac/versioncontrol/templates/revisionlog.html:95
+msgid "Author"
+msgstr "Autor"
+
+#: trac/attachment.py:867 trac/templates/history_view.html:27
+#: trac/versioncontrol/templates/revisionlog.html:94
+msgid "Date"
+msgstr "Datum"
+
+#: trac/attachment.py:868 trac/templates/attachment.html:86
+#: trac/ticket/api.py:233 trac/ticket/templates/ticket.html:170
+msgid "Description"
+msgstr "Popis"
+
+#: trac/attachment.py:893 trac/wiki/admin.py:74
+#, fuzzy, python-format
+msgid "File '%(name)s' exists"
+msgstr "Soubor %(name)s již existuje."
+
+#: trac/env.py:421
 msgid "Can only backup sqlite databases"
 msgstr "Zálohovat lze pouze sqlite databáze"
 
-#: trac/env.py:489
+#: trac/env.py:506
 msgid "Database newer than Trac version"
 msgstr "Databáze je novější než verze Tracu"
 
-#: trac/env.py:501
+#: trac/env.py:518
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Neexistuje upgrade modulu pro verzi %(num)i (%(version)s.py)"
 
-#: trac/env.py:546
+#: trac/env.py:563
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -126,7 +164,7 @@ msgstr ""
 "Chybí proměnná prostředí \"TRAC_ENV\". Trac potřebuje, aby tato proměnná "
 "ukazovala na funkční prostředí Tracu."
 
-#: trac/env.py:578
+#: trac/env.py:597
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -137,51 +175,283 @@ msgstr ""
 "\n"
 "Spusťte \"trac-admin %(path)s upgrade\""
 
-#: trac/notification.py:216
+#: trac/env.py:631
+msgid "Copying resources from:"
+msgstr ""
+
+#: trac/env.py:647
+msgid "Creating scripts."
+msgstr ""
+
+#: trac/env.py:664
+#, python-format
+msgid "hotcopy can't overwrite existing '%(dest)s'"
+msgstr "hotcopy nemůže přepsat existující '%(dest)s'"
+
+#: trac/env.py:674
+#, python-format
+msgid "Hotcopying %(src)s to %(dst)s ..."
+msgstr ""
+
+#: trac/env.py:689
+msgid "The following errors happened while copying the environment:"
+msgstr ""
+
+#: trac/env.py:700
+msgid "Hotcopy done."
+msgstr ""
+
+#: trac/env.py:705 trac/admin/api.py:126
+msgid "Invalid arguments"
+msgstr ""
+
+#: trac/env.py:708
+msgid "Database is up to date, no upgrade necessary."
+msgstr ""
+
+#: trac/env.py:716
+#, python-format
+msgid ""
+"Backup failed with '%(msg)s'.\n"
+"Use '--no-backup' to upgrade without doing a backup."
+msgstr ""
+
+#: trac/env.py:721
+msgid "Upgrade done."
+msgstr ""
+
+#: trac/notification.py:155
+msgid "TLS enabled but server does not support TLS"
+msgstr "Nastaveno použití TLS, ale server TLS nepodporuje"
+
+#: trac/notification.py:309
 #, python-format
 msgid "Invalid email encoding setting: %s"
 msgstr "Nastaveno nesprávné kódování e-mailů: %s"
 
-#: trac/notification.py:248
+#: trac/notification.py:335
 msgid "Header length is too short"
 msgstr "Délka hlavičky je příliš krátká"
 
-#: trac/notification.py:318
-msgid "TLS enabled but server does not support TLS"
-msgstr "Nastaveno použití TLS, ale server TLS nepodporuje"
-
-#: trac/notification.py:390
+#: trac/notification.py:464
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
 msgstr "Ohlášení obsahuje neASCII znaky. Prosím změňte nastavení kódování"
 
-#: trac/perm.py:47
+#: trac/perm.py:49
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
 msgstr "Pro provedení této operace na %(resource)s je potřeba oprávnění %(perm)s"
 
-#: trac/perm.py:49
+#: trac/perm.py:51
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation"
 msgstr "Pro provedení této operace je potřeba oprávnění %(perm)s"
 
-#: trac/perm.py:52
+#: trac/perm.py:54
 msgid "Insufficient privileges to perform this operation."
 msgstr "Nedostatečná oprávnění pro tuto operaci."
 
-#: trac/perm.py:318
+#: trac/perm.py:320
 #, python-format
 msgid "%(name)s is not a valid action."
 msgstr "Akce %(name)s neexistuje."
 
-#: trac/resource.py:329
+#: trac/perm.py:616
+msgid "User"
+msgstr ""
+
+#: trac/perm.py:616 trac/admin/templates/admin_perms.html:69
+#: trac/ticket/templates/ticket.html:376
+msgid "Action"
+msgstr "Akce"
+
+#: trac/perm.py:618
+msgid "Available actions:"
+msgstr ""
+
+#: trac/perm.py:631
+msgid "Group names must be in lower case and actions in upper case"
+msgstr ""
+
+#: trac/resource.py:328
 #, python-format
 msgid " at version %(version)s"
 msgstr " ve verzi %(version)s"
 
-#: trac/admin/console.py:1149
+#: trac/admin/api.py:130
+msgid "Command not found"
+msgstr ""
+
+#: trac/admin/console.py:81 trac/ticket/templates/report_edit.html:34
+msgid "Error:"
+msgstr "Chyba:"
+
+#: trac/admin/console.py:99
 #, python-format
-msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr "hotcopy nemůže přepsat existující '%(dest)s'"
+msgid ""
+"Welcome to trac-admin %(version)s\n"
+"Interactive Trac administration console.\n"
+"Copyright (c) 2003-2009 Edgewall Software\n"
+"\n"
+"Type:  '?' or 'help' for help on commands.\n"
+"        "
+msgstr ""
+
+#: trac/admin/console.py:131
+msgid "Failed to open environment."
+msgstr ""
+
+#: trac/admin/console.py:198
+msgid "Completion error:"
+msgstr ""
+
+#: trac/admin/console.py:249
+#, python-format
+msgid "No documentation found for '%(cmd)s'"
+msgstr ""
+
+#: trac/admin/console.py:251
+#, python-format
+msgid "trac-admin - The Trac Administration Console %(version)s"
+msgstr ""
+
+#: trac/admin/console.py:255
+msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
+msgstr ""
+
+#: trac/admin/console.py:258
+msgid "Invoking trac-admin without command starts interactive mode.\n"
+msgstr ""
+
+#: trac/admin/console.py:296
+#, python-format
+msgid "Creating a new Trac environment at %(envname)s"
+msgstr ""
+
+#: trac/admin/console.py:298
+msgid ""
+"\n"
+"Trac will first ask a few questions about your environment \n"
+"in order to initialize and prepare the project database.\n"
+"\n"
+" Please enter the name of your project.\n"
+" This name will be used in page titles and descriptions.\n"
+msgstr ""
+
+#: trac/admin/console.py:306
+#, python-format
+msgid "Project Name [%(default)s]> "
+msgstr ""
+
+#: trac/admin/console.py:308
+msgid ""
+" \n"
+" Please specify the connection string for the database to use.\n"
+" By default, a local SQLite database is created in the environment\n"
+" directory. It is also possible to use an already existing\n"
+" PostgreSQL database (check the Trac documentation for the exact\n"
+" connection string syntax).\n"
+msgstr ""
+
+#: trac/admin/console.py:316
+#, python-format
+msgid "Database connection string [%(default)s]> "
+msgstr ""
+
+#: trac/admin/console.py:318
+msgid ""
+" \n"
+" Please specify the type of version control system,\n"
+" By default, it will be svn.\n"
+"\n"
+" If you don't want to use Trac with version control integration,\n"
+" choose the default here and don't specify a repository directory.\n"
+" in the next question.\n"
+msgstr ""
+
+#: trac/admin/console.py:327
+#, python-format
+msgid "Repository type [%(default)s]> "
+msgstr ""
+
+#: trac/admin/console.py:329
+msgid ""
+"\n"
+" Please specify the absolute path to the version control\n"
+" repository, or leave it blank to use Trac without a repository.\n"
+" You can also set the repository location later.\n"
+msgstr ""
+
+#: trac/admin/console.py:334
+msgid "Path to repository [/path/to/repos]> "
+msgstr ""
+
+#: trac/admin/console.py:341
+#, python-format
+msgid "Initenv for '%(env)s' failed."
+msgstr ""
+
+#: trac/admin/console.py:370
+msgid "Creating and Initializing Project"
+msgstr ""
+
+#: trac/admin/console.py:389
+msgid " Installing default wiki pages"
+msgstr ""
+
+#: trac/admin/console.py:401
+msgid " Indexing repository"
+msgstr ""
+
+#: trac/admin/console.py:404
+msgid ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Warning: couldn't index the repository.\n"
+"\n"
+"This can happen for a variety of reasons: wrong repository type, \n"
+"no appropriate third party library for this repository type,\n"
+"no actual repository at the specified repository path...\n"
+"\n"
+"You can nevertheless start using your Trac environment, but \n"
+"you'll need to check again your trac.ini file and the [trac] \n"
+"repository_type and repository_path settings in order to enable\n"
+"the Trac repository browser.\n"
+msgstr ""
+
+#: trac/admin/console.py:448
+#, python-format
+msgid ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Project environment for '%(project_name)s' created.\n"
+"\n"
+"You may now configure the environment by editing the file:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"If you'd like to take this new project environment for a test drive,\n"
+"try running the Trac standalone web server `tracd`:\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Then point your browser to http://localhost:8000/%(project_dir)s.\n"
+"There you can also browse the documentation for your installed\n"
+"version of Trac, including information on further setup (such as\n"
+"deploying Trac to a real web server).\n"
+"\n"
+"The latest documentation can also always be found on the project\n"
+"website:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"Congratulations!\n"
+msgstr ""
+
+#: trac/admin/console.py:508
+#, python-format
+msgid "non-ascii environment path '%(path)s' not supported."
+msgstr ""
 
 #: trac/admin/web_ui.py:66
 msgid "Admin"
@@ -200,7 +470,7 @@ msgid "Unknown administration panel"
 msgstr "Neexistující administrační panel"
 
 #: trac/admin/web_ui.py:184 trac/admin/web_ui.py:211 trac/admin/web_ui.py:300
-#: trac/admin/web_ui.py:383 trac/prefs/web_ui.py:89
+#: trac/admin/web_ui.py:383 trac/prefs/web_ui.py:88
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Obecné"
@@ -214,7 +484,7 @@ msgstr "Základní nastavení"
 msgid "Logging"
 msgstr "Protokolování"
 
-#: trac/admin/web_ui.py:220 trac/ticket/templates/milestone_delete.html:29
+#: trac/admin/web_ui.py:220 trac/ticket/templates/milestone_delete.html:30
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
 msgstr "Žádný"
@@ -223,8 +493,8 @@ msgstr "Žádný"
 msgid "Console"
 msgstr "Konzole"
 
-#: trac/admin/web_ui.py:223 trac/templates/attachment.html:20
-#: trac/templates/attachment.html:81 trac/versioncontrol/api.py:105
+#: trac/admin/web_ui.py:223 trac/templates/attachment.html:28
+#: trac/templates/attachment.html:89 trac/versioncontrol/api.py:114
 msgid "File"
 msgstr "Soubor"
 
@@ -326,7 +596,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:291
+#: trac/ticket/templates/ticket.html:299
 msgid "Description:"
 msgstr "Popis:"
 
@@ -334,8 +604,8 @@ msgstr "Popis:"
 #: trac/admin/templates/admin_components.html:99
 #: trac/admin/templates/admin_enums.html:69
 #: trac/admin/templates/admin_logging.html:53
-#: trac/admin/templates/admin_milestones.html:124
-#: trac/admin/templates/admin_plugins.html:102
+#: trac/admin/templates/admin_milestones.html:125
+#: trac/admin/templates/admin_plugins.html:103
 #: trac/admin/templates/admin_versions.html:94
 msgid "Apply changes"
 msgstr "Aplikovat změny"
@@ -367,14 +637,13 @@ msgstr "Popis (můžete zde použít [1:WikiFormatting]):"
 #: trac/admin/templates/admin_enums.html:23
 #: trac/admin/templates/admin_milestones.html:65
 #: trac/admin/templates/admin_versions.html:45
-#: trac/templates/attachment.html:49 trac/templates/attachment.html:62
-#: trac/ticket/templates/milestone_delete.html:34
-#: trac/ticket/templates/milestone_edit.html:91
+#: trac/templates/attachment.html:57 trac/templates/attachment.html:70
+#: trac/ticket/templates/milestone_delete.html:39
+#: trac/ticket/templates/milestone_edit.html:94
 #: trac/ticket/templates/report_delete.html:20
 #: trac/ticket/templates/report_edit.html:42
 #: trac/wiki/templates/wiki_delete.html:36
-#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
-#: trac/wiki/templates/wiki_edit.html:133
+#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:126
 msgid "Cancel"
 msgstr "Zrušit"
 
@@ -399,15 +668,7 @@ msgstr "Přídat komponentu:"
 msgid "Add"
 msgstr "Přidat"
 
-#: trac/admin/templates/admin_components.html:80
-#: trac/admin/templates/admin_enums.html:47
-#: trac/admin/templates/admin_milestones.html:100
-#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:66
-#: trac/templates/error.html:162
-msgid "Name"
-msgstr "Jméno"
-
-#: trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:181
 msgid "Owner"
 msgstr "Vlastník"
 
@@ -420,7 +681,7 @@ msgstr "Výchozí"
 
 #: trac/admin/templates/admin_components.html:98
 #: trac/admin/templates/admin_enums.html:68
-#: trac/admin/templates/admin_milestones.html:123
+#: trac/admin/templates/admin_milestones.html:124
 #: trac/admin/templates/admin_perms.html:87
 #: trac/admin/templates/admin_versions.html:93
 msgid "Remove selected items"
@@ -428,7 +689,7 @@ msgstr "Odstranit vybrané položky"
 
 #: trac/admin/templates/admin_components.html:101
 #: trac/admin/templates/admin_enums.html:71
-#: trac/admin/templates/admin_milestones.html:126
+#: trac/admin/templates/admin_milestones.html:127
 #: trac/admin/templates/admin_versions.html:96
 msgid ""
 "You can remove all items from this list to completely hide this\n"
@@ -439,7 +700,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:77
-#: trac/admin/templates/admin_milestones.html:132
+#: trac/admin/templates/admin_milestones.html:133
 #: trac/admin/templates/admin_versions.html:102
 msgid ""
 "As long as you don't add any items to the list, this field\n"
@@ -460,7 +721,7 @@ msgstr "Upravit"
 msgid "Order"
 msgstr "Seřadit"
 
-#: trac/admin/templates/admin_logging.html:25 trac/templates/about.html:61
+#: trac/admin/templates/admin_logging.html:25 trac/templates/about.html:63
 msgid "Configuration"
 msgstr "Nastavení"
 
@@ -488,7 +749,7 @@ msgstr "protokol"
 msgid "directory of the project environment ("
 msgstr "v prostředí projektu. ("
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:503
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:828
 msgid "Milestones"
 msgstr "Etapy"
 
@@ -523,7 +784,7 @@ msgstr "Splněno:"
 
 #: trac/admin/templates/admin_milestones.html:55
 #: trac/admin/templates/admin_versions.html:35
-#: trac/ticket/templates/milestone_edit.html:82
+#: trac/ticket/templates/milestone_edit.html:85
 msgid "Description (you may use [1:WikiFormatting] here):"
 msgstr "Popis (Můžete zde použít [1:WikiFormatting]):"
 
@@ -531,15 +792,19 @@ msgstr "Popis (Můžete zde použít [1:WikiFormatting]):"
 msgid "Add Milestone:"
 msgstr "Přidat etapu:"
 
-#: trac/admin/templates/admin_milestones.html:100
+#: trac/admin/templates/admin_milestones.html:100 trac/ticket/admin.py:356
 msgid "Due"
 msgstr "Termín"
 
-#: trac/admin/templates/admin_milestones.html:100
+#: trac/admin/templates/admin_milestones.html:100 trac/ticket/admin.py:356
 #: trac/ticket/templates/milestone_view.html:25
-#: trac/ticket/templates/roadmap.html:38
+#: trac/ticket/templates/roadmap.html:36
 msgid "Completed"
 msgstr "Splněno"
+
+#: trac/admin/templates/admin_milestones.html:100
+msgid "Tickets"
+msgstr ""
 
 #: trac/admin/templates/admin_perms.html:13
 msgid "Manage Permissions"
@@ -583,16 +848,11 @@ msgstr "Přidat uživatele nebo skupinu do existující skupiny oprávnění."
 msgid "Subject"
 msgstr "Subjekt"
 
-#: trac/admin/templates/admin_perms.html:69
-#: trac/ticket/templates/ticket.html:365
-msgid "Action"
-msgstr "Akce"
-
 #: trac/admin/templates/admin_perms.html:91
 msgid "Note that"
 msgstr "Poznámka: "
 
-#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:60
+#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:61
 msgid "or"
 msgstr "a"
 
@@ -601,11 +861,10 @@ msgid "Group"
 msgstr "skupina"
 
 #: trac/admin/templates/admin_perms.html:92
-#, fuzzy
 msgid ""
 "names can't be all upper-case,\n"
 "      as that is reserved for permission names."
-msgstr "Všechna slova velkými písmeny jsou rezervována pro názvy oprávnění"
+msgstr ""
 
 #: trac/admin/templates/admin_plugins.html:17
 msgid "Manage Plugins"
@@ -635,28 +894,24 @@ msgstr "Poslat balíček s modulem ve formátu <tt>.egg</tt> na server."
 msgid "Install"
 msgstr "Instalovat"
 
-#: trac/admin/templates/admin_plugins.html:49
-msgid "Uninstall"
-msgstr "Odinstalovat"
-
-#: trac/admin/templates/admin_plugins.html:59 trac/templates/diff_view.html:43
+#: trac/admin/templates/admin_plugins.html:60 trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:97
 msgid "Author:"
 msgstr "Autor:"
 
-#: trac/admin/templates/admin_plugins.html:68
+#: trac/admin/templates/admin_plugins.html:69
 msgid "Home page:"
 msgstr "Domovská stránka:"
 
-#: trac/admin/templates/admin_plugins.html:75
+#: trac/admin/templates/admin_plugins.html:76
 msgid "License:"
 msgstr "Licence:"
 
-#: trac/admin/templates/admin_plugins.html:82
+#: trac/admin/templates/admin_plugins.html:83
 msgid "Component"
 msgstr "Komponenta"
 
-#: trac/admin/templates/admin_plugins.html:82
+#: trac/admin/templates/admin_plugins.html:83
 msgid "Enabled"
 msgstr "Zapnuto"
 
@@ -697,7 +952,7 @@ msgstr "Nepodporovaný typ databáze \"%(scheme)s\""
 msgid "Database connection string must start with scheme:/"
 msgstr "Řetězec pro připojení k databázi musí začínat: /"
 
-#: trac/db/pool.py:113
+#: trac/db/pool.py:120
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
 msgstr "Za %(time)d vteřin se nepodařilo připojit k databázi"
@@ -721,14 +976,33 @@ msgstr ""
 "Uživatel %(user)s vyžaduje čtecí _i_ zapisovací právo k databázovému "
 "souboru %(path)s a adresáři v kterém je umístěn."
 
-#: trac/mimeview/api.py:553 trac/mimeview/api.py:563
+#: trac/mimeview/api.py:634 trac/mimeview/api.py:644
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "Nejsou dostupné žádné MIME konverze z %(old)s na %(new)s"
 
+#: trac/mimeview/api.py:746
+#, python-format
+msgid "HTML preview using %(renderer)s failed (%(err)s)"
+msgstr ""
+
 #: trac/mimeview/patch.py:55
 msgid "Invalid unified diff content"
 msgstr "Neplatný sjednocený formát změn (unified diff)"
+
+#: trac/mimeview/patch.py:165
+#, python-format
+msgid "new file %(new)s"
+msgstr ""
+
+#: trac/mimeview/patch.py:169
+#, python-format
+msgid "deleted file %(deleted)s"
+msgstr ""
+
+#: trac/mimeview/patch.py:241
+msgid "this hunk was shorter than expected"
+msgstr ""
 
 #: trac/mimeview/php.py:98
 msgid ""
@@ -749,27 +1023,28 @@ msgstr ""
 "Jsou vyžadovány Docutils ve verzi stejné nebo vyšší než %(version)s. Byla"
 " nalezena pouze verze %(found)s"
 
-#: trac/prefs/web_ui.py:54 trac/prefs/templates/prefs.html:16
+#: trac/prefs/web_ui.py:53 trac/prefs/templates/prefs.html:16
+#: trac/ticket/templates/ticket.html:260 trac/wiki/templates/wiki_edit.html:99
 msgid "Preferences"
 msgstr "Předvolby"
 
-#: trac/prefs/web_ui.py:77
+#: trac/prefs/web_ui.py:76
 msgid "Unknown preference panel"
 msgstr "Neznámý panel předvoleb"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_datetime.html:9
+#: trac/prefs/web_ui.py:89 trac/prefs/templates/prefs_datetime.html:9
 msgid "Date & Time"
 msgstr "Datum a čas"
 
-#: trac/prefs/web_ui.py:91 trac/prefs/templates/prefs_keybindings.html:9
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_keybindings.html:9
 msgid "Keyboard Shortcuts"
 msgstr "Klávesové zkratky"
 
-#: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
+#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_language.html:9
 msgid "Language"
 msgstr "Jazyk"
 
-#: trac/prefs/web_ui.py:95 trac/prefs/templates/prefs_advanced.html:9
+#: trac/prefs/web_ui.py:94 trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
 msgstr "Pokročilé"
 
@@ -975,37 +1250,37 @@ msgstr "Téma:"
 msgid "Preview:"
 msgstr "Náhled:"
 
-#: trac/search/web_ui.py:58 trac/search/templates/search.html:10
+#: trac/search/web_ui.py:64 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
 #: trac/templates/theme.html:28
 msgid "Search"
 msgstr "Hledat"
 
-#: trac/search/web_ui.py:100
+#: trac/search/web_ui.py:107
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "Vyhledávací fráze je příliš krátká. Dotaz musí mít nejméně %(num)s znaků."
 
-#: trac/search/web_ui.py:102
+#: trac/search/web_ui.py:109
 msgid "Search Error"
 msgstr "Chyba při vyhledávání"
 
-#: trac/search/web_ui.py:137 trac/ticket/query.py:654 trac/ticket/report.py:316
+#: trac/search/web_ui.py:144 trac/ticket/query.py:677 trac/ticket/report.py:321
 msgid "Next Page"
 msgstr "Další strana"
 
-#: trac/search/web_ui.py:143 trac/ticket/query.py:659 trac/ticket/report.py:320
+#: trac/search/web_ui.py:150 trac/ticket/query.py:682 trac/ticket/report.py:325
 msgid "Previous Page"
 msgstr "Předchozí strana"
 
-#: trac/search/web_ui.py:185
+#: trac/search/web_ui.py:192
 #, python-format
 msgid "Browse repository path %(path)s"
 msgstr "Procházet cestu repozitáře %(path)s"
 
 #: trac/search/templates/search.html:10 trac/search/templates/search.html:40
 #: trac/ticket/templates/query_results.html:21
-#: trac/ticket/templates/report_view.html:44
+#: trac/ticket/templates/report_view.html:86
 msgid "Results"
 msgstr "Výsledky"
 
@@ -1018,39 +1293,39 @@ msgid "By"
 msgstr "po"
 
 #: trac/search/templates/search.html:65
-#: trac/ticket/templates/report_view.html:166
+#: trac/ticket/templates/report_view.html:215
 msgid "No matches found."
 msgstr "Prázdný výsledek hledání."
 
 #: trac/search/templates/search.html:70
-#: trac/ticket/templates/milestone_delete.html:39
-#: trac/ticket/templates/milestone_edit.html:95
-#: trac/ticket/templates/milestone_view.html:96
-#: trac/ticket/templates/query.html:238
+#: trac/ticket/templates/milestone_delete.html:44
+#: trac/ticket/templates/milestone_edit.html:98
+#: trac/ticket/templates/milestone_view.html:105
+#: trac/ticket/templates/query.html:249
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
-#: trac/ticket/templates/report_view.html:169
-#: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:395
-#: trac/timeline/templates/timeline.html:53
-#: trac/versioncontrol/templates/browser.html:142
+#: trac/ticket/templates/report_view.html:218
+#: trac/ticket/templates/roadmap.html:69 trac/ticket/templates/ticket.html:406
+#: trac/timeline/templates/timeline.html:55
+#: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
-#: trac/versioncontrol/templates/revisionlog.html:168
+#: trac/versioncontrol/templates/revisionlog.html:176
 msgid "Note:"
 msgstr "Poznámka:"
 
 #: trac/search/templates/search.html:70
-#: trac/ticket/templates/milestone_delete.html:39
-#: trac/ticket/templates/milestone_edit.html:95
-#: trac/ticket/templates/milestone_view.html:96
-#: trac/ticket/templates/query.html:238
+#: trac/ticket/templates/milestone_delete.html:44
+#: trac/ticket/templates/milestone_edit.html:98
+#: trac/ticket/templates/milestone_view.html:105
+#: trac/ticket/templates/query.html:249
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:49
-#: trac/ticket/templates/report_view.html:169
-#: trac/ticket/templates/roadmap.html:71 trac/ticket/templates/ticket.html:395
-#: trac/timeline/templates/timeline.html:53
-#: trac/versioncontrol/templates/browser.html:142
+#: trac/ticket/templates/report_view.html:218
+#: trac/ticket/templates/roadmap.html:69 trac/ticket/templates/ticket.html:406
+#: trac/timeline/templates/timeline.html:55
+#: trac/versioncontrol/templates/browser.html:151
 #: trac/versioncontrol/templates/diff_form.html:62
-#: trac/versioncontrol/templates/revisionlog.html:168
+#: trac/versioncontrol/templates/revisionlog.html:176
 msgid "See"
 msgstr "Viz. "
 
@@ -1062,11 +1337,11 @@ msgstr "TracSearch "
 msgid "for help on searching."
 msgstr "pro nápovědu k vyhledávání."
 
-#: trac/templates/about.html:23
+#: trac/templates/about.html:25
 msgid "Trac: Integrated SCM & Project Management"
 msgstr "Trac: Integrovaný systém pro správu projektu a zdrojových souborů."
 
-#: trac/templates/about.html:27
+#: trac/templates/about.html:29
 msgid ""
 "Trac is a web-based software project management and bug/issue\n"
 "        tracking system emphasizing ease of use and low ceremony.\n"
@@ -1081,51 +1356,51 @@ msgstr ""
 "dalších pomůcek pro snadnou organizaci činností spojených se správou "
 "projektu."
 
-#: trac/templates/about.html:33
+#: trac/templates/about.html:35
 msgid "Trac is distributed under the modified BSD License."
 msgstr "Trac je šířen pod podmínkami upravené BSD licence."
 
-#: trac/templates/about.html:33
+#: trac/templates/about.html:35
 msgid "The complete text of the license can be found"
 msgstr "Úplný text licenční smlouvy lze naléz "
 
-#: trac/templates/about.html:35
+#: trac/templates/about.html:37
 msgid "online"
 msgstr "na webu"
 
-#: trac/templates/about.html:35
+#: trac/templates/about.html:37
 msgid "as well as in the"
 msgstr "nebo také v souboru "
 
-#: trac/templates/about.html:36
+#: trac/templates/about.html:38
 msgid "COPYING"
 msgstr "<tt>COPYING</tt> "
 
-#: trac/templates/about.html:36
+#: trac/templates/about.html:38
 msgid "file included in the distribution."
 msgstr "přiloženém v distibučním archívu."
 
-#: trac/templates/about.html:38
+#: trac/templates/about.html:40
 msgid "python powered"
 msgstr "používá Python"
 
-#: trac/templates/about.html:41
+#: trac/templates/about.html:43
 msgid "Please visit the Trac open source project:"
 msgstr "Navštivte, prosím, stránku Open-Source projektu Trac:"
 
-#: trac/templates/about.html:42
+#: trac/templates/about.html:44
 msgid "http://trac.edgewall.org/"
 msgstr "http://trac.edgewall.org/"
 
-#: trac/templates/about.html:51
+#: trac/templates/about.html:53
 msgid "System Information"
 msgstr "Systémové informace"
 
-#: trac/templates/about.html:65
+#: trac/templates/about.html:67
 msgid "Section"
 msgstr "Sekce"
 
-#: trac/templates/about.html:67 trac/templates/error.html:162
+#: trac/templates/about.html:69 trac/templates/error.html:167
 msgid "Value"
 msgstr "Hodnota"
 
@@ -1133,74 +1408,73 @@ msgstr "Hodnota"
 msgid "Attachment"
 msgstr "Příloha"
 
-#: trac/templates/attachment.html:17
+#: trac/templates/attachment.html:25
 msgid "Add Attachment to"
 msgstr "Přidat přílohu k "
 
-#: trac/templates/attachment.html:20
+#: trac/templates/attachment.html:28
 msgid "(size limit"
 msgstr "(velikostní limt"
 
-#: trac/templates/attachment.html:25
+#: trac/templates/attachment.html:33
 msgid "Attachment Info"
 msgstr "Informace o příloze"
 
-#: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:246
-#: trac/wiki/templates/wiki_edit.html:105
+#: trac/templates/attachment.html:36 trac/ticket/templates/ticket.html:251
+#: trac/wiki/templates/wiki_edit.html:95
 msgid "Your email or username:"
 msgstr "Váš e-mail nebo přihlašovací jméno:"
 
-#: trac/templates/attachment.html:34
+#: trac/templates/attachment.html:42
 msgid "Description of the file (optional):"
 msgstr "Popis souboru (volitelně):"
 
-#: trac/templates/attachment.html:39
+#: trac/templates/attachment.html:47
 msgid "Replace existing attachment of the same name"
 msgstr "Nahradit existující přílohu téhož jména."
 
-#: trac/templates/attachment.html:48
+#: trac/templates/attachment.html:56
 msgid "Add attachment"
 msgstr "Přiložit soubor"
 
-#: trac/templates/attachment.html:56
+#: trac/templates/attachment.html:64
 msgid "Are you sure you want to delete this attachment?"
 msgstr "Opravdu chcete smazat tuto přílohu?"
 
-#: trac/templates/attachment.html:56 trac/wiki/templates/wiki_delete.html:32
+#: trac/templates/attachment.html:64 trac/wiki/templates/wiki_delete.html:32
 msgid "This is an irreversible operation."
 msgstr "Tato operace je nevratná."
 
-#: trac/templates/attachment.html:63 trac/templates/attachment.html:103
+#: trac/templates/attachment.html:71 trac/templates/attachment.html:111
 msgid "Delete attachment"
 msgstr "Smazat přílohu"
 
-#: trac/templates/attachment.html:78 trac/ticket/api.py:212
-#: trac/ticket/templates/ticket.html:165
-msgid "Description"
-msgstr "Popis"
+#: trac/templates/attachment.html:80
+msgid "Attach another file"
+msgstr ""
 
-#: trac/templates/attachment.html:82
+#: trac/templates/attachment.html:90
 msgid "(added by"
 msgstr "(přidal "
 
-#: trac/templates/attachment.html:83 trac/templates/diff_view.html:40
-#: trac/versioncontrol/templates/browser.html:104
+#: trac/templates/attachment.html:91 trac/templates/diff_view.html:40
+#: trac/versioncontrol/templates/browser.html:113
 #: trac/versioncontrol/templates/changeset.html:96
-#: trac/wiki/templates/wiki_view.html:26
+#: trac/wiki/templates/wiki_view.html:33
 msgid "ago)"
 msgstr "před)"
 
-#: trac/templates/diff_div.html:53
-#: trac/versioncontrol/templates/browser.html:124
+#: trac/templates/diff_div.html:58
+#: trac/versioncontrol/templates/browser.html:133
 msgid "Property"
 msgstr "Vlastnost"
 
-#: trac/templates/diff_div.html:64 trac/ticket/templates/ticket.html:61
+#: trac/templates/diff_div.html:69 trac/ticket/templates/ticket.html:61
 #: trac/versioncontrol/templates/changeset.html:32
 msgid "to"
 msgstr "do"
 
-#: trac/templates/diff_div.html:69
+#: trac/templates/diff_div.html:74
 msgid "Differences"
 msgstr "Rozdíly"
 
@@ -1209,22 +1483,23 @@ msgid "Changes"
 msgstr "Změny"
 
 #: trac/templates/diff_view.html:18 trac/templates/diff_view.html:21
+#: trac/ticket/templates/query.html:103
 msgid "between"
 msgstr "mezi"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:25
-#: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:98
-#: trac/wiki/web_ui.py:519 trac/wiki/templates/wiki_view.html:25
+#: trac/templates/history_view.html:26 trac/ticket/templates/ticket.html:100
+#: trac/wiki/web_ui.py:538 trac/wiki/templates/wiki_view.html:32
 msgid "Version"
 msgstr "verzí"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
-#: trac/timeline/templates/timeline.html:20
+#: trac/ticket/templates/query.html:105
 msgid "and"
 msgstr "a"
 
-#: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:719
-#: trac/ticket/templates/ticket.html:95
+#: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:765
+#: trac/ticket/templates/ticket.html:97
 msgid "Initial Version"
 msgstr "původní verzí"
 
@@ -1243,44 +1518,44 @@ msgid "Timestamp:"
 msgstr "Časové razítko:"
 
 #: trac/templates/diff_view.html:39 trac/templates/diff_view.html:45
-#: trac/templates/diff_view.html:50
+#: trac/templates/diff_view.html:51
 msgid "(multiple changes)"
 msgstr "(mnohonásobné změny)"
 
-#: trac/templates/diff_view.html:46
+#: trac/templates/diff_view.html:47
 msgid "(IP:"
 msgstr "(IP:"
 
-#: trac/templates/diff_view.html:48
+#: trac/templates/diff_view.html:49
 msgid "Comment:"
 msgstr "Komentář:"
 
-#: trac/templates/diff_view.html:56
+#: trac/templates/diff_view.html:57
 #: trac/versioncontrol/templates/changeset.html:151
 #: trac/versioncontrol/templates/revisionlog.html:70
 msgid "Legend:"
 msgstr "Legenda:"
 
-#: trac/templates/diff_view.html:58
+#: trac/templates/diff_view.html:59
 #: trac/versioncontrol/templates/changeset.html:153
 msgid "Unmodified"
 msgstr "Nezměněno"
 
-#: trac/templates/diff_view.html:59
+#: trac/templates/diff_view.html:60
 #: trac/versioncontrol/templates/changeset.html:154
 #: trac/versioncontrol/templates/revisionlog.html:72
 msgid "Added"
 msgstr "Přidáno"
 
-#: trac/templates/diff_view.html:60
+#: trac/templates/diff_view.html:61
 #: trac/versioncontrol/templates/changeset.html:155
 #: trac/versioncontrol/templates/revisionlog.html:74
 msgid "Removed"
 msgstr "Odstraněno"
 
-#: trac/templates/diff_view.html:61 trac/ticket/query.py:583
+#: trac/templates/diff_view.html:62 trac/ticket/api.py:269
 #: trac/versioncontrol/templates/changeset.html:157
-#: trac/versioncontrol/templates/revisionlog.html:76
+#: trac/versioncontrol/templates/revisionlog.html:76 trac/wiki/admin.py:154
 msgid "Modified"
 msgstr "Změněno"
 
@@ -1362,66 +1637,77 @@ msgid "To that end, you could"
 msgstr "Můžete také vytvořit záznám o chybě"
 
 #: trac/templates/error.html:114
-msgid ""
-"a ticket at this\n"
-"                  site."
-msgstr "v tomto systému."
+msgid "a ticket."
+msgstr ""
 
-#: trac/templates/error.html:118
+#: trac/templates/error.html:116
 msgid "The action that triggered the error was:"
 msgstr "Údálost, která vyvolala chybu, byla:"
 
-#: trac/templates/error.html:124
+#: trac/templates/error.html:121
+msgid "This is probably a local installation issue."
+msgstr ""
+
+#: trac/templates/error.html:122
+msgid "You should"
+msgstr ""
+
+#: trac/templates/error.html:123
 msgid ""
-"If you think this should work you can reproduce the problem,\n"
+"a ticket at the admin Trac to report\n"
+"                    the issue."
+msgstr ""
+
+#: trac/templates/error.html:128
+msgid "Found a bug in Trac?"
+msgstr ""
+
+#: trac/templates/error.html:129
+msgid ""
+"If you think this should work and you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
 msgstr ""
-"Pokud si myslíte, že chyba není v nastavení systému a dokážete situaci "
-"opětovně navodit, lze uvažovat o nahlášení chyby vývojovému týmu Tracu."
 
-#: trac/templates/error.html:126
+#: trac/templates/error.html:131
 msgid ""
-"Before you do that, though, please first try\n"
-"                [1:searching]\n"
-"                for similar issues, as it is quite likely that this "
+"Before you do that, though, [1:please first try\n"
+"                [2:searching]\n"
+"                for similar issues], as it is quite likely that this "
 "problem\n"
 "                has been reported before. For questions about "
 "installation\n"
 "                and configuration of Trac, please try the\n"
-"                [2:mailing list]\n"
+"                [3:mailing list]\n"
 "                instead of filing a ticket."
 msgstr ""
-"Než to však uděláte, zkuste nejprve [1:nalézt] jestli podobný problém už "
-"není evidován, což bývá časté. Otázky ohledně instalace a nastavení "
-"systému Trac směřujte do [2:e-mailového fóra] místo vytváření ohlášení."
 
-#: trac/templates/error.html:136
+#: trac/templates/error.html:141
 msgid "Otherwise, please"
 msgstr "Opravdové chyby, prosím, "
 
-#: trac/templates/error.html:136
+#: trac/templates/error.html:141
 msgid ""
 "a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
 " and\n"
 "                explain how to reproduce it."
 msgstr ""
-"hlaste vyplněním nového ohlášení na stránkách projektu Trac, kde podrobně "
-"popište probém a vysvětlete způsob, jak ho znovu navodit."
+"hlaste vyplněním nového ohlášení na stránkách projektu Trac, kde podrobně"
+" popište probém a vysvětlete způsob, jak ho znovu navodit."
 
-#: trac/templates/error.html:141
+#: trac/templates/error.html:146
 msgid "Python Traceback"
 msgstr "Výpis Pythonu"
 
-#: trac/templates/error.html:142
+#: trac/templates/error.html:147
 msgid "Most recent call last:"
 msgstr "Nejnovější volání funkce jako poslední:"
 
-#: trac/templates/error.html:147 trac/templates/error.html:174
+#: trac/templates/error.html:152 trac/templates/error.html:179
 msgid "File \""
 msgstr "Soubor \""
 
-#: trac/templates/error.html:147
+#: trac/templates/error.html:152
 msgid ""
 "\",\n"
 "                        line"
@@ -1429,35 +1715,35 @@ msgstr ""
 "\",\n"
 "                        řádek"
 
-#: trac/templates/error.html:148 trac/templates/error.html:174
+#: trac/templates/error.html:153 trac/templates/error.html:179
 msgid ", in"
 msgstr ", v"
 
-#: trac/templates/error.html:152
+#: trac/templates/error.html:157
 msgid "Code fragment:"
 msgstr "Zlomek kódu:"
 
-#: trac/templates/error.html:160
+#: trac/templates/error.html:165
 msgid "Local variables:"
 msgstr "Lokální proměnné:"
 
-#: trac/templates/error.html:174
+#: trac/templates/error.html:179
 msgid "\", line"
 msgstr "\" řádek"
 
-#: trac/templates/error.html:177
+#: trac/templates/error.html:182
 msgid "Switch to plain text view"
 msgstr "Přepnout na zobrazení prostého textu"
 
-#: trac/templates/error.html:180
+#: trac/templates/error.html:185
 msgid "System Information:"
 msgstr "Systémové informace:"
 
-#: trac/templates/error.html:192
+#: trac/templates/error.html:197
 msgid "TracGuide"
 msgstr "TracGuide"
 
-#: trac/templates/error.html:192
+#: trac/templates/error.html:197
 msgid "— The Trac User and Administration Guide"
 msgstr "— Uživatelská a administrátorská příručka systému Trac."
 
@@ -1468,23 +1754,13 @@ msgstr "Historie změn pro"
 #: trac/templates/history_view.html:20 trac/templates/history_view.html:51
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
-#: trac/versioncontrol/templates/revisionlog.html:162
+#: trac/versioncontrol/templates/revisionlog.html:170
 msgid "View changes"
 msgstr "Prohlížet změny"
 
 #: trac/templates/history_view.html:22
 msgid "Change history"
 msgstr "Historie změn"
-
-#: trac/templates/history_view.html:27
-#: trac/versioncontrol/templates/revisionlog.html:94
-msgid "Date"
-msgstr "Datum"
-
-#: trac/templates/history_view.html:28
-#: trac/versioncontrol/templates/revisionlog.html:95
-msgid "Author"
-msgstr "Autor"
 
 #: trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket_notify_email.txt:21
@@ -1503,7 +1779,7 @@ msgstr "Dostupné projekty"
 msgid "Error"
 msgstr "Chyba"
 
-#: trac/templates/layout.html:43
+#: trac/templates/layout.html:42
 msgid "Download in other formats:"
 msgstr "Stáhnutí v jiných formátech:"
 
@@ -1556,85 +1832,72 @@ msgid "White space changes"
 msgstr "Změny prázdných znaků."
 
 #: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:53
-#: trac/ticket/templates/query.html:179 trac/ticket/templates/roadmap.html:26
-#: trac/timeline/templates/timeline.html:30
+#: trac/ticket/templates/query.html:190
+#: trac/ticket/templates/report_view.html:32
+#: trac/ticket/templates/roadmap.html:24
+#: trac/timeline/templates/timeline.html:32
 #: trac/versioncontrol/templates/revisionlog.html:64
 msgid "Update"
 msgstr "Aktualizovat"
 
-#: trac/templates/macros.html:138 trac/templates/macros.html:151
+#: trac/templates/macros.html:138
+msgid "(The file is empty)"
+msgstr ""
+
+#: trac/templates/macros.html:141
 msgid "HTML preview not available"
 msgstr "HTML náhled není dostupný "
 
-#: trac/templates/macros.html:140
+#: trac/templates/macros.html:143
 msgid "since the file size exceeds"
 msgstr ", protože velikost souboru překročila limit"
 
-#: trac/templates/macros.html:141
+#: trac/templates/macros.html:144
 msgid "bytes."
 msgstr "bytů."
 
-#: trac/templates/macros.html:143
+#: trac/templates/macros.html:146
 msgid "since no preview renderer could handle it."
 msgstr ", protože neexistuje zobrazovač náhledů pro tento typ souborů."
 
-#: trac/templates/macros.html:146
+#: trac/templates/macros.html:149
 msgid "Try"
 msgstr "Zkuste místo toho"
 
-#: trac/templates/macros.html:147
+#: trac/templates/macros.html:150
 msgid "downloading"
 msgstr "soubor"
 
-#: trac/templates/macros.html:147
+#: trac/templates/macros.html:150
 msgid "the file instead."
 msgstr "stáhnout."
 
-#: trac/templates/macros.html:151
-msgid ""
-".\n"
-"          To view,"
-msgstr ""
-".\n"
-"         Pro zobrazení"
-
-#: trac/templates/macros.html:152
-msgid "download"
-msgstr "soubor"
-
-#: trac/templates/macros.html:152
-msgid "the file."
-msgstr "stáhněte."
-
-#: trac/templates/macros.html:154
-msgid "found:"
-msgstr "nalezeno:"
-
-#: trac/templates/macros.html:171
+#: trac/templates/macros.html:163
 msgid "View attachment"
 msgstr "Zobrazit přílohu"
 
-#: trac/templates/macros.html:172
+#: trac/templates/macros.html:164
 msgid ") - added by"
 msgstr ") - přidal"
 
-#: trac/templates/macros.html:173 trac/ticket/templates/query_results.html:70
+#: trac/templates/macros.html:165 trac/ticket/templates/query_results.html:77
 msgid "ago."
 msgstr "před."
 
-#: trac/templates/macros.html:178 trac/templates/macros.html:189
+#: trac/templates/macros.html:170 trac/templates/macros.html:181
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: trac/templates/macros.html:214
+#: trac/templates/macros.html:206
 msgid "Attach file"
 msgstr "Připojit soubor"
 
-#: trac/templates/macros.html:238 trac/templates/macros.html:242
+#: trac/templates/macros.html:234 trac/templates/macros.html:235
+#: trac/templates/macros.html:243
 msgid "s:"
 msgstr ":"
 
-#: trac/templates/macros.html:242
+#: trac/templates/macros.html:243
 msgid "Total"
 msgstr "Celkem"
 
@@ -1646,303 +1909,348 @@ msgstr "Hledat:"
 msgid "Context Navigation"
 msgstr "Kontextová navigace"
 
-#: trac/templates/theme.html:46
+#: trac/templates/theme.html:47
 msgid "Warning:"
 msgstr "Varování:"
 
-#: trac/templates/theme.html:49
+#: trac/templates/theme.html:50
 msgid "Warnings:"
 msgstr "Varování:"
 
-#: trac/templates/theme.html:57
+#: trac/templates/theme.html:58
 msgid "Notice:"
 msgstr "Poznámka:"
 
-#: trac/templates/theme.html:60
+#: trac/templates/theme.html:61
 msgid "Notices:"
 msgstr "Poznámky:"
 
-#: trac/ticket/admin.py:87
+#: trac/ticket/admin.py:90
 #, python-format
 msgid "Component %(name)s already exists."
 msgstr "Součást %(name)s již existuje."
 
-#: trac/ticket/admin.py:94
+#: trac/ticket/admin.py:97
 msgid "No component selected"
 msgstr "Není vybrána žádná součást"
 
-#: trac/ticket/admin.py:157 trac/ticket/roadmap.py:632
+#: trac/ticket/admin.py:234 trac/ticket/roadmap.py:641
 msgid "Completion date may not be in the future"
 msgstr "Datum dokončení nemůže být v budoucnosti"
 
-#: trac/ticket/admin.py:159
+#: trac/ticket/admin.py:236
 msgid "Invalid Completion Date"
 msgstr "Chybné datum dokončení"
 
-#: trac/ticket/admin.py:185
+#: trac/ticket/admin.py:262
 #, python-format
 msgid "Milestone %(name)s already exists."
 msgstr "Etapa %(name)s již existuje."
 
-#: trac/ticket/admin.py:192
+#: trac/ticket/admin.py:269
 msgid "No milestone selected"
 msgstr "Není vybrána žádná etapa."
 
-#: trac/ticket/admin.py:267
+#: trac/ticket/admin.py:436
 #, python-format
 msgid "Version %(name)s already exists."
 msgstr "Verze %(name)s již existuje."
 
-#: trac/ticket/admin.py:274
+#: trac/ticket/admin.py:443
 msgid "No version selected"
 msgstr "Není vybrána žádná verze"
 
-#: trac/ticket/admin.py:348
+#: trac/ticket/admin.py:509
+msgid "Time"
+msgstr ""
+
+#: trac/ticket/admin.py:582
 #, python-format
 msgid "%(type)s %(name)s already exists"
 msgstr "%(type)s %(name)s již existuje"
 
-#: trac/ticket/admin.py:354
+#: trac/ticket/admin.py:588
 #, python-format
 msgid "No %s selected"
 msgstr "Není vybrán %s"
 
-#: trac/ticket/admin.py:383
+#: trac/ticket/admin.py:617
 msgid "Order numbers must be unique"
 msgstr "Pořadí musí být unikátní"
 
-#: trac/ticket/api.py:362
+#: trac/ticket/admin.py:676
+msgid "Possible Values"
+msgstr ""
+
+#: trac/ticket/admin.py:698
+#, python-format
+msgid "Invalid up/down value: %(value)s"
+msgstr ""
+
+#: trac/ticket/admin.py:764
+msgid "<number> must be a number"
+msgstr ""
+
+#: trac/ticket/admin.py:769
+#, python-format
+msgid "Ticket %(num)s and all associated data removed."
+msgstr ""
+
+#: trac/ticket/api.py:267
+msgid "Created"
+msgstr "Vytvořeno"
+
+#: trac/ticket/api.py:428
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "Komentář %(cnum)s pro ohlášení #%(id)s"
 
-#: trac/ticket/api.py:383
+#: trac/ticket/api.py:449
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "Ohlášení #%(shortname)s"
 
-#: trac/ticket/default_workflow.py:226
+#: trac/ticket/default_workflow.py:222
 msgid "Current state no longer exists"
 msgstr "Současný stav již neexistuje"
 
-#: trac/ticket/default_workflow.py:228
+#: trac/ticket/default_workflow.py:224
 msgid "The ticket will be disowned"
 msgstr "Ohlášení bude zbaveno majitele"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
-msgid "The owner will change"
-msgstr "Majitel se změní"
-
-#: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
+#: trac/ticket/default_workflow.py:243 trac/ticket/default_workflow.py:257
 #, python-format
-msgid "The owner will change to %(name)s"
-msgstr "Majitel se změní na %(name)s"
+msgid "The owner will change from %(current_owner)s"
+msgstr ""
 
-#: trac/ticket/default_workflow.py:254
+#: trac/ticket/default_workflow.py:248
+#, python-format
+msgid "The owner will change from %(current_owner)s to %(selected_owner)s"
+msgstr ""
+
+#: trac/ticket/default_workflow.py:253
 msgid "to "
 msgstr "do"
 
-#: trac/ticket/default_workflow.py:271
+#: trac/ticket/default_workflow.py:261
+#, python-format
+msgid "The owner will change from %(current_owner)s to %(authname)s"
+msgstr ""
+
+#: trac/ticket/default_workflow.py:272
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:276
+#: trac/ticket/default_workflow.py:277
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "Vyřešení bude nastaveno na %(name)s"
 
-#: trac/ticket/default_workflow.py:286
+#: trac/ticket/default_workflow.py:287
 msgid "The resolution will be set"
 msgstr "Vyřešení bude nastaveno"
 
-#: trac/ticket/default_workflow.py:291
+#: trac/ticket/default_workflow.py:293
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Další stav bude '%(name)s'"
 
-#: trac/ticket/model.py:128
+#: trac/ticket/model.py:140
 msgid "Multi-values fields not supported yet"
 msgstr "Pole s více možnostmi ještě nejsou podporována"
 
-#: trac/ticket/model.py:363
+#: trac/ticket/model.py:391
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s neexistuje."
 
-#: trac/ticket/model.py:507
+#: trac/ticket/model.py:539
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "Součást %(name)s neexistuje."
 
-#: trac/ticket/model.py:737
+#: trac/ticket/model.py:772
+msgid "Open (by due date)"
+msgstr ""
+
+#: trac/ticket/model.py:773
+msgid "Open (no due date)"
+msgstr ""
+
+#: trac/ticket/model.py:776
+msgid "Closed"
+msgstr "Zavřeno"
+
+#: trac/ticket/model.py:792
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "Verze %(name)s neexistuje."
 
-#: trac/ticket/query.py:73
+#: trac/ticket/query.py:75
 #, python-format
 msgid "Query page %(page)s is invalid."
 msgstr "Stránka %(page)s dotazu je neplatná."
 
-#: trac/ticket/query.py:88
+#: trac/ticket/query.py:90
 #, python-format
 msgid "Query max %(max)s is invalid."
 msgstr "Max dotazu %(max)s je neplatný."
 
-#: trac/ticket/query.py:130
+#: trac/ticket/query.py:128
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr "Filtr dotazu vyžaduje pole a omezení oddělená \"=\""
 
-#: trac/ticket/query.py:134
+#: trac/ticket/query.py:141
 msgid "Query filter requires field name"
 msgstr "Filtr dotazu vyžaduje jméno pole"
 
-#: trac/ticket/query.py:266
+#: trac/ticket/query.py:270
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "Strana %(page)s je mimo rozsah stran v dotazu"
 
-#: trac/ticket/query.py:584
-msgid "Created"
-msgstr "Vytvořeno"
-
-#: trac/ticket/query.py:587 trac/ticket/web_ui.py:551
+#: trac/ticket/query.py:604 trac/ticket/web_ui.py:601
 msgid "Ticket"
 msgstr "Ohlášení"
 
-#: trac/ticket/query.py:603
+#: trac/ticket/query.py:622 trac/ticket/query.py:630
 msgid "contains"
 msgstr "obsahuje"
 
-#: trac/ticket/query.py:604
+#: trac/ticket/query.py:623 trac/ticket/query.py:631
 msgid "doesn't contain"
 msgstr "neobsahuje"
 
-#: trac/ticket/query.py:605
+#: trac/ticket/query.py:624
 msgid "begins with"
 msgstr "začíná na"
 
-#: trac/ticket/query.py:606
+#: trac/ticket/query.py:625
 msgid "ends with"
 msgstr "končí s"
 
-#: trac/ticket/query.py:607 trac/ticket/query.py:611
+#: trac/ticket/query.py:626 trac/ticket/query.py:634
 msgid "is"
 msgstr "je"
 
-#: trac/ticket/query.py:608 trac/ticket/query.py:612
+#: trac/ticket/query.py:627 trac/ticket/query.py:635
 msgid "is not"
 msgstr "není"
 
-#: trac/ticket/query.py:667 trac/ticket/report.py:327
+#: trac/ticket/query.py:690 trac/ticket/report.py:332
 #, python-format
 msgid "Page %(num)d"
 msgstr "Strana %(num)d"
 
-#: trac/ticket/query.py:708 trac/ticket/report.py:511 trac/ticket/web_ui.py:116
-#: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
+#: trac/ticket/query.py:739 trac/ticket/report.py:523 trac/ticket/web_ui.py:151
+#: trac/timeline/web_ui.py:216 trac/versioncontrol/web_ui/log.py:240
 msgid "RSS Feed"
 msgstr "RSS kanál"
 
-#: trac/ticket/query.py:710 trac/ticket/report.py:514 trac/ticket/web_ui.py:112
+#: trac/ticket/query.py:741 trac/ticket/report.py:526 trac/ticket/web_ui.py:147
 msgid "Comma-delimited Text"
 msgstr "Text oddělený čárkami"
 
-#: trac/ticket/query.py:712 trac/ticket/report.py:516 trac/ticket/web_ui.py:114
+#: trac/ticket/query.py:743 trac/ticket/report.py:528 trac/ticket/web_ui.py:149
 msgid "Tab-delimited Text"
 msgstr "Text oddělený tabelátory"
 
-#: trac/ticket/query.py:734 trac/ticket/report.py:62
+#: trac/ticket/query.py:765 trac/ticket/report.py:63
 msgid "View Tickets"
 msgstr "Zobrazit ohlášení"
 
-#: trac/ticket/query.py:888 trac/ticket/query.py:899 trac/ticket/report.py:120
+#: trac/ticket/query.py:943 trac/ticket/query.py:954 trac/ticket/report.py:121
 msgid "Custom Query"
 msgstr "Vlastní dotaz"
 
-#: trac/ticket/query.py:898 trac/ticket/report.py:110 trac/ticket/report.py:111
-#: trac/ticket/report.py:113 trac/ticket/report.py:230
+#: trac/ticket/query.py:953 trac/ticket/report.py:111 trac/ticket/report.py:112
+#: trac/ticket/report.py:114 trac/ticket/report.py:226
 msgid "Available Reports"
 msgstr "Dostupné zprávy"
 
-#: trac/ticket/query.py:985
+#: trac/ticket/query.py:1041
 #, python-format
 msgid "[Error: %(error)s]"
 msgstr "[Chyba: %(error)s]"
 
-#: trac/ticket/query.py:1082
+#: trac/ticket/query.py:1138
 msgid "No results"
 msgstr "Žádné výsledky"
 
-#: trac/ticket/query.py:1120
+#: trac/ticket/query.py:1156
+#, python-format
+msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
+msgstr ""
+
+#: trac/ticket/query.py:1178
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "%(groupvalue)s %(groupname)s ohlášení:"
 
-#: trac/ticket/report.py:177
+#: trac/ticket/report.py:178
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "Smazat výpis {%(num)s} %(title)s"
 
-#: trac/ticket/report.py:182 trac/ticket/report.py:194
-#: trac/ticket/report.py:242
+#: trac/ticket/report.py:183 trac/ticket/report.py:195
+#: trac/ticket/report.py:238
 #, python-format
 msgid "Report %(num)s does not exist."
 msgstr "Výpis %(num)s neexistuje."
 
-#: trac/ticket/report.py:183 trac/ticket/report.py:195
-#: trac/ticket/report.py:243
+#: trac/ticket/report.py:184 trac/ticket/report.py:196
+#: trac/ticket/report.py:239
 msgid "Invalid Report Number"
 msgstr "Neplatné číslo výpisu"
 
-#: trac/ticket/report.py:207
+#: trac/ticket/report.py:208
 msgid "Create New Report"
 msgstr "Vytvořit nový výpis"
 
-#: trac/ticket/report.py:211
+#: trac/ticket/report.py:212
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
 msgstr "Upravit výpis {%(num)d} %(title)s"
 
-#: trac/ticket/report.py:225
+#: trac/ticket/report.py:229
+msgid "This is a list of available reports."
+msgstr "Seznam dostupných výpisů."
+
+#: trac/ticket/report.py:244
 #, python-format
 msgid "Report failed: %(error)s"
 msgstr "Výpis selhal: %(error)s"
 
-#: trac/ticket/report.py:233
-msgid "This is a list of available reports."
-msgstr "Seznam dostupných výpisů."
-
-#: trac/ticket/report.py:258
+#: trac/ticket/report.py:259
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
 msgstr "Pokud je použito, tak by číslo výpisu mělo být \"%(num)s\"."
 
-#: trac/ticket/report.py:305
+#: trac/ticket/report.py:310
 #, python-format
 msgid "Report execution failed: %(error)s"
 msgstr "Probíhající výpis selhal: %(error)s"
 
-#: trac/ticket/report.py:518
+#: trac/ticket/report.py:511
+#, python-format
+msgid "The following arguments are missing: %(args)s"
+msgstr ""
+
+#: trac/ticket/report.py:530
 msgid "SQL Query"
 msgstr "SQL dotaz"
 
-#: trac/ticket/report.py:532
+#: trac/ticket/report.py:544
 #, python-format
 msgid "Report %(num)s has no SQL query."
 msgstr "Výpis %(num)s neobsahuje SQL dotaz."
 
-#: trac/ticket/report.py:562
+#: trac/ticket/report.py:574
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
 msgstr "Parametr dotazu \"sort=%(sort_col)s\" je neplatný"
-
-#: trac/ticket/report.py:605
-#, python-format
-msgid "Dynamic variable '%(name)s' not defined."
-msgstr "Dynamická proměnná '%(name)s' není definována."
 
 #: trac/ticket/roadmap.py:213
 #, python-format
@@ -1962,122 +2270,126 @@ msgstr ""
 "'%(groupname)s' skupina etap používá stav '%(status)s', který je již "
 "použit jinými skupinami. Prosím, zkontrolujte svoje nastavení."
 
-#: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:419
-#: trac/ticket/roadmap.py:549 trac/ticket/templates/roadmap.html:10
-#: trac/ticket/templates/roadmap.html:17
+#: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:422
+#: trac/ticket/roadmap.py:551 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
 msgstr "Plán práce"
 
-#: trac/ticket/roadmap.py:350
+#: trac/ticket/roadmap.py:352
 msgid "iCalendar"
 msgstr "iCalendar"
 
-#: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
+#: trac/ticket/roadmap.py:431 trac/ticket/roadmap.py:818
 #, python-format
 msgid "Milestone %(name)s"
 msgstr "Etapa %(name)s"
 
-#: trac/ticket/roadmap.py:447
+#: trac/ticket/roadmap.py:450
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr "Ohlášení #%(num)s: %(summary)s"
 
-#: trac/ticket/roadmap.py:621
+#: trac/ticket/roadmap.py:506
+msgid "Milestones reached"
+msgstr ""
+
+#: trac/ticket/roadmap.py:630
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
 msgstr "Etapa \"%(name)s\" již existuje. Prosím, zvolte jiné jméno"
 
-#: trac/ticket/roadmap.py:626
+#: trac/ticket/roadmap.py:635
 msgid "You must provide a name for the milestone."
 msgstr "Etapa musí obsahovat jméno."
 
-#: trac/ticket/web_ui.py:138 trac/ticket/templates/ticket.html:17
+#: trac/ticket/web_ui.py:173 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
 msgstr "Nové ohlášení"
 
-#: trac/ticket/web_ui.py:154
+#: trac/ticket/web_ui.py:189
 msgid "id can't be set for a new ticket request."
 msgstr "Pro nové ohlášení nemůžete zadat id."
 
-#: trac/ticket/web_ui.py:205
-msgid "Ticket changes"
-msgstr "Změny ohlášení"
+#: trac/ticket/web_ui.py:247
+msgid "Opened and closed tickets"
+msgstr ""
 
-#: trac/ticket/web_ui.py:207
-msgid "Ticket details"
-msgstr "Detaily ohlášení"
+#: trac/ticket/web_ui.py:249
+msgid "Ticket updates"
+msgstr ""
 
-#: trac/ticket/web_ui.py:213
+#: trac/ticket/web_ui.py:255
 msgid "created"
 msgstr "vytvořeno"
 
-#: trac/ticket/web_ui.py:214
+#: trac/ticket/web_ui.py:256
 msgid "reopened"
 msgstr "znovuotevřeno"
 
-#: trac/ticket/web_ui.py:215
+#: trac/ticket/web_ui.py:257
 msgid "closed"
 msgstr "uzavřeno"
 
-#: trac/ticket/web_ui.py:216
+#: trac/ticket/web_ui.py:258
 msgid "updated"
 msgstr "aktualizováno"
 
-#: trac/ticket/web_ui.py:312
+#: trac/ticket/web_ui.py:354
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "Ohlášení %(ticketref)s (%(summary)s) %(verb)s"
 
-#: trac/ticket/web_ui.py:440
+#: trac/ticket/web_ui.py:482
 #, python-format
 msgid "Invalid action \"%(name)s\""
 msgstr "Chybná akce \"%(name)s\""
 
-#: trac/ticket/web_ui.py:551
+#: trac/ticket/web_ui.py:601
 msgid "Back to Query"
 msgstr "Zpět na dotaz"
 
-#: trac/ticket/web_ui.py:631 trac/ticket/web_ui.py:781
+#: trac/ticket/web_ui.py:677 trac/ticket/web_ui.py:827
 msgid "Ticket History"
 msgstr "Historie ohlášení"
 
-#: trac/ticket/web_ui.py:676
+#: trac/ticket/web_ui.py:722
 msgid "No differences to show"
 msgstr "Žádné rozdíly"
 
-#: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:771
-#: trac/ticket/web_ui.py:779 trac/wiki/web_ui.py:355 trac/wiki/web_ui.py:361
-#: trac/wiki/web_ui.py:507 trac/wiki/web_ui.py:515
+#: trac/ticket/web_ui.py:762 trac/ticket/web_ui.py:817
+#: trac/ticket/web_ui.py:825 trac/wiki/web_ui.py:367 trac/wiki/web_ui.py:373
+#: trac/wiki/web_ui.py:520 trac/wiki/web_ui.py:534
 #, python-format
 msgid "Version %(num)s"
 msgstr "Verze %(num)s"
 
-#: trac/ticket/web_ui.py:719
+#: trac/ticket/web_ui.py:765
 msgid "initial"
 msgstr "výchozí"
 
-#: trac/ticket/web_ui.py:781 trac/versioncontrol/web_ui/changeset.py:342
-#: trac/wiki/web_ui.py:374
+#: trac/ticket/web_ui.py:827 trac/versioncontrol/web_ui/changeset.py:343
+#: trac/wiki/web_ui.py:386
 msgid "Change"
 msgstr "Změna"
 
-#: trac/ticket/web_ui.py:786
+#: trac/ticket/web_ui.py:832
 msgid "Ticket Diff"
 msgstr "Rozdíl ohlášení"
 
-#: trac/ticket/web_ui.py:854
+#: trac/ticket/web_ui.py:904
 msgid "No permission to change ticket fields."
 msgstr "Nemáte oprávnění ke změně polí ohlášení."
 
-#: trac/ticket/web_ui.py:862
+#: trac/ticket/web_ui.py:912
 msgid "No permissions to change ticket fields."
 msgstr "Nemáte oprávnění ke změně polí ohlášení."
 
-#: trac/ticket/web_ui.py:871
+#: trac/ticket/web_ui.py:921
 msgid "No permissions to add a comment."
 msgstr "Nemáte oprávnění přidat komentář."
 
-#: trac/ticket/web_ui.py:877
+#: trac/ticket/web_ui.py:927
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -2085,61 +2397,58 @@ msgstr ""
 "Promiňte, nelze uložit vaše změny. Toto ohlášení bylo během vaší práce "
 "někým upraveno"
 
-#: trac/ticket/web_ui.py:884
+#: trac/ticket/web_ui.py:934
 msgid "Tickets must contain a summary."
 msgstr "Ohlášení musí obsahovat shrnutí."
 
-#: trac/ticket/web_ui.py:907
+#: trac/ticket/web_ui.py:957
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "Popis ohlášení je příliš dlouhý (musí být kratší než %(num)s znaků)"
 
-#: trac/ticket/web_ui.py:922
+#: trac/ticket/web_ui.py:964
+#, python-format
+msgid "Ticket comment is too long (must be less than %(num)s characters)"
+msgstr ""
+
+#: trac/ticket/web_ui.py:979
 msgid "Invalid comment threading identifier"
 msgstr "Chybný identifikátor vlákna komentáře"
 
-#: trac/ticket/web_ui.py:929
+#: trac/ticket/web_ui.py:986
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "Pole ohlášení '%(field)s' je chybné: %(message)s"
 
-#: trac/ticket/web_ui.py:1046
+#: trac/ticket/web_ui.py:1136
 msgid "Assign to"
 msgstr "Přidělit"
 
-#: trac/ticket/web_ui.py:1062
-msgid "Open"
-msgstr "Otevřít"
-
-#: trac/ticket/web_ui.py:1063
-msgid "Closed"
-msgstr "Zavřeno"
-
-#: trac/ticket/web_ui.py:1078
+#: trac/ticket/web_ui.py:1166
 msgid "Add to Cc"
 msgstr "Přidat do kopie"
 
-#: trac/ticket/web_ui.py:1079
+#: trac/ticket/web_ui.py:1167
 msgid "Remove from Cc"
 msgstr "Odstranit z kopie"
 
-#: trac/ticket/web_ui.py:1080
+#: trac/ticket/web_ui.py:1168
 msgid "Add/Remove from Cc"
 msgstr "Přidat/Odstranit z kopie"
 
-#: trac/ticket/web_ui.py:1081
+#: trac/ticket/web_ui.py:1169
 msgid "<Author field>"
 msgstr "<Pole autora>"
 
-#: trac/ticket/web_ui.py:1101 trac/ticket/templates/query.html:89
+#: trac/ticket/web_ui.py:1190 trac/ticket/templates/query.html:90
 msgid "yes"
 msgstr "ano"
 
-#: trac/ticket/web_ui.py:1101 trac/ticket/templates/query.html:92
+#: trac/ticket/web_ui.py:1190 trac/ticket/templates/query.html:93
 msgid "no"
 msgstr "ne"
 
-#: trac/ticket/web_ui.py:1271 trac/versioncontrol/templates/changeset.html:130
+#: trac/ticket/web_ui.py:1383 trac/versioncontrol/templates/changeset.html:130
 msgid "modified"
 msgstr "upraveno"
 
@@ -2148,27 +2457,27 @@ msgstr "upraveno"
 msgid "Delete Milestone"
 msgstr "Smazat etapu"
 
-#: trac/ticket/templates/milestone_delete.html:25
+#: trac/ticket/templates/milestone_delete.html:26
 msgid "Are you sure you want to delete this milestone?"
 msgstr "Opravdu chcete smazat tuto etapu?"
 
-#: trac/ticket/templates/milestone_delete.html:27
+#: trac/ticket/templates/milestone_delete.html:28
 msgid "Retarget associated tickets to milestone"
 msgstr "Změnit přiřazení ohlášení k etapě."
 
-#: trac/ticket/templates/milestone_delete.html:35
-#: trac/ticket/templates/milestone_view.html:91
+#: trac/ticket/templates/milestone_delete.html:40
+#: trac/ticket/templates/milestone_view.html:99
 msgid "Delete milestone"
 msgstr "Smazat etapu"
 
-#: trac/ticket/templates/milestone_delete.html:40
-#: trac/ticket/templates/milestone_edit.html:96
-#: trac/ticket/templates/milestone_view.html:97
-#: trac/ticket/templates/roadmap.html:72
+#: trac/ticket/templates/milestone_delete.html:45
+#: trac/ticket/templates/milestone_edit.html:99
+#: trac/ticket/templates/milestone_view.html:106
+#: trac/ticket/templates/roadmap.html:70
 msgid "TracRoadmap"
 msgstr "TracRoadmap"
 
-#: trac/ticket/templates/milestone_delete.html:40
+#: trac/ticket/templates/milestone_delete.html:45
 msgid ""
 "for help on using\n"
 "      the roadmap."
@@ -2196,19 +2505,19 @@ msgstr "Naplánovat"
 msgid "Retarget associated open tickets to milestone:"
 msgstr "Změnit přiřazení otevřených ohlášení k etapě:"
 
-#: trac/ticket/templates/milestone_edit.html:89
-#: trac/wiki/templates/wiki_edit.html:126
-#: trac/wiki/templates/wiki_edit.html:131
+#: trac/ticket/templates/milestone_edit.html:92
+#: trac/ticket/templates/ticket.html:400 trac/wiki/templates/wiki_edit.html:119
+#: trac/wiki/templates/wiki_edit.html:124
 msgid "Submit changes"
 msgstr "Uložit změny"
 
-#: trac/ticket/templates/milestone_edit.html:90
+#: trac/ticket/templates/milestone_edit.html:93
 msgid "Add milestone"
 msgstr "Přidat etapu"
 
-#: trac/ticket/templates/milestone_edit.html:96
-#: trac/ticket/templates/milestone_view.html:97
-#: trac/ticket/templates/roadmap.html:72
+#: trac/ticket/templates/milestone_edit.html:99
+#: trac/ticket/templates/milestone_view.html:106
+#: trac/ticket/templates/roadmap.html:70
 msgid ""
 "for help on using\n"
 "        the roadmap."
@@ -2226,139 +2535,149 @@ msgid ""
 msgstr "před ("
 
 #: trac/ticket/templates/milestone_view.html:30
-#: trac/ticket/templates/roadmap.html:43
+#: trac/ticket/templates/roadmap.html:41
 msgid "late"
 msgstr "zpožděna"
 
 #: trac/ticket/templates/milestone_view.html:33
-#: trac/ticket/templates/roadmap.html:46
+#: trac/ticket/templates/roadmap.html:44
 msgid "Due in"
 msgstr "Splnit do"
 
 #: trac/ticket/templates/milestone_view.html:37
-#: trac/ticket/templates/roadmap.html:50
+#: trac/ticket/templates/roadmap.html:48
 msgid "No date set"
 msgstr "Datum nenastaveno"
 
 #: trac/ticket/templates/milestone_view.html:47
-#: trac/timeline/templates/timeline.html:42
+#: trac/timeline/templates/timeline.html:44
 msgid "by"
 msgstr "od"
 
-#: trac/ticket/templates/milestone_view.html:58
+#: trac/ticket/templates/milestone_view.html:61
 msgid "(none)"
 msgstr "(žádný)"
 
-#: trac/ticket/templates/milestone_view.html:87
+#: trac/ticket/templates/milestone_view.html:93
 msgid "Edit milestone"
 msgstr "Upravit etapu"
 
 #: trac/ticket/templates/query.html:28
 #: trac/ticket/templates/query_results.html:29
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
-msgstr[0] "%(num)s odpovídající"
-msgstr[1] "%(num)s odpovídajících"
-msgstr[2] "%(num)s odpovídajících"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
-#: trac/ticket/templates/query.html:37
+#: trac/ticket/templates/query.html:38
 msgid "Filters"
 msgstr "Filtry"
 
-#: trac/ticket/templates/query.html:38
+#: trac/ticket/templates/query.html:39
 msgid "Query filters"
 msgstr "Filtry dotazu"
 
-#: trac/ticket/templates/query.html:113
+#: trac/ticket/templates/query.html:123
 msgid "Add filter"
 msgstr "Přidat filtr"
 
-#: trac/ticket/templates/query.html:133
+#: trac/ticket/templates/query.html:143
 msgid "Columns"
 msgstr "Sloupce"
 
-#: trac/ticket/templates/query.html:147
+#: trac/ticket/templates/query.html:157
 msgid "Group results by"
 msgstr "Seskupit výsledky podle"
 
-#: trac/ticket/templates/query.html:157
+#: trac/ticket/templates/query.html:168
 msgid "descending"
 msgstr "sestupně"
 
-#: trac/ticket/templates/query.html:161
+#: trac/ticket/templates/query.html:172
 msgid "Show under each result:"
 msgstr "Pod každým výsledkem zobrazit:"
 
-#: trac/ticket/templates/query.html:171
+#: trac/ticket/templates/query.html:182
+#: trac/ticket/templates/report_view.html:26
 msgid "Max items per page"
 msgstr "Max. počet položek na stránce"
 
-#: trac/ticket/templates/query.html:214
+#: trac/ticket/templates/query.html:225
 msgid "Edit query"
 msgstr "Upravit dotaz"
 
-#: trac/ticket/templates/query.html:222
+#: trac/ticket/templates/query.html:233
 msgid "Save query"
 msgstr "Uložit dotaz"
 
-#: trac/ticket/templates/query.html:222
+#: trac/ticket/templates/query.html:233
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "Uložit upravený dotaz ve výpisu {%(id)s}"
 
-#: trac/ticket/templates/query.html:222
+#: trac/ticket/templates/query.html:233
 msgid "Create new report from current query"
 msgstr "Vytvořit nový výpis z aktuálního dotazu"
 
-#: trac/ticket/templates/query.html:231
+#: trac/ticket/templates/query.html:242
 msgid "Delete query"
 msgstr "Smazat dotaz"
 
-#: trac/ticket/templates/query.html:238
+#: trac/ticket/templates/query.html:249
 #: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
 msgstr "TracQuery"
 
-#: trac/ticket/templates/query.html:238
+#: trac/ticket/templates/query.html:249
 msgid "for help on using queries."
 msgstr "k zobrazení nápovědy o používání dotazů."
 
-#: trac/ticket/templates/query_results.html:53
-#: trac/ticket/templates/query_results.html:55
+#: trac/ticket/templates/query_results.html:44
+msgid "No tickets found"
+msgstr ""
+
+#: trac/ticket/templates/query_results.html:58
+#: trac/ticket/templates/query_results.html:60
 msgid "View ticket"
 msgstr "Zobrazit ohlášení"
 
-#: trac/ticket/templates/query_results.html:69
+#: trac/ticket/templates/query_results.html:65
+#: trac/ticket/templates/report_view.html:182
+msgid "View milestone"
+msgstr ""
+
+#: trac/ticket/templates/query_results.html:76
 msgid "Reported by"
 msgstr "Nahlásil"
 
-#: trac/ticket/templates/query_results.html:76
+#: trac/ticket/templates/query_results.html:83
 msgid "(this ticket)"
 msgstr "(toto ohlášení)"
 
-#: trac/ticket/templates/query_results.html:92
+#: trac/ticket/templates/query_results.html:99
 msgid "(more results for this group on next page)"
 msgstr "(více výsledků pro tuto skupinu na další straně)"
 
-#: trac/ticket/templates/report_delete.html:18
+#: trac/ticket/templates/report_delete.html:16
 msgid "Are you sure you want to delete this report?"
 msgstr "Opravdu chcete smazat tento výpis?"
 
 #: trac/ticket/templates/report_delete.html:21
-#: trac/ticket/templates/report_view.html:39
+#: trac/ticket/templates/report_view.html:81
 msgid "Delete report"
 msgstr "Smazat výpis"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
-#: trac/ticket/templates/report_view.html:170
+#: trac/ticket/templates/report_view.html:219
 msgid "TracReports"
 msgstr "TracReports"
 
 #: trac/ticket/templates/report_delete.html:27
 #: trac/ticket/templates/report_edit.html:50
-#: trac/ticket/templates/report_view.html:170
+#: trac/ticket/templates/report_view.html:219
 msgid "for help on using and creating reports."
 msgstr "k zobrazení nápovědy o používání a vytváření zpráv."
 
@@ -2369,10 +2688,6 @@ msgstr "Titulek zprávy:"
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr "Popis: (zde můžete použít [1:WikiFormatting] here)"
-
-#: trac/ticket/templates/report_edit.html:34
-msgid "Error:"
-msgstr "Chyba:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "Query for Report: (can be either SQL or, if starting with"
@@ -2394,46 +2709,54 @@ msgstr " výrazem)"
 msgid "Save report"
 msgstr "Uložit výpis"
 
-#: trac/ticket/templates/report_view.html:16
+#: trac/ticket/templates/report_view.html:20
 msgid "matches)"
 msgstr "nalezených)"
 
-#: trac/ticket/templates/report_view.html:27
+#: trac/ticket/templates/report_view.html:41
+msgid "Arguments"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:42
+msgid "Report arguments"
+msgstr ""
+
+#: trac/ticket/templates/report_view.html:69
 msgid "Edit report"
 msgstr "Upravit výpis"
 
-#: trac/ticket/templates/report_view.html:33
+#: trac/ticket/templates/report_view.html:75
 msgid "Copy report"
 msgstr "Kopírovat výpis"
 
-#: trac/ticket/templates/report_view.html:51
+#: trac/ticket/templates/report_view.html:93
 msgid "match"
 msgstr "souhlasí"
 
-#: trac/ticket/templates/report_view.html:85
-#: trac/ticket/templates/report_view.html:92
+#: trac/ticket/templates/report_view.html:127
+#: trac/ticket/templates/report_view.html:134
 msgid "View report"
 msgstr "Zobrazit zprávu"
 
-#: trac/ticket/templates/report_view.html:160
+#: trac/ticket/templates/report_view.html:209
 msgid "Create new report"
 msgstr "Vytvořit nový výpis"
 
-#: trac/ticket/templates/roadmap.html:23
+#: trac/ticket/templates/roadmap.html:21
 msgid "Show already completed milestones"
 msgstr "Zobrazit dokončené etapy."
 
-#: trac/ticket/templates/roadmap.html:34
+#: trac/ticket/templates/roadmap.html:32
 msgid "Milestone:"
 msgstr "Etapa:"
 
-#: trac/ticket/templates/roadmap.html:39
+#: trac/ticket/templates/roadmap.html:37
 msgid ""
 "ago\n"
 "                ("
 msgstr "před ("
 
-#: trac/ticket/templates/roadmap.html:67
+#: trac/ticket/templates/roadmap.html:65
 msgid "Add new milestone"
 msgstr "Nová etapa"
 
@@ -2447,142 +2770,150 @@ msgid "changed from"
 msgstr "změněno z"
 
 #: trac/ticket/templates/ticket.html:63
-#: trac/versioncontrol/templates/browser.html:125
+#: trac/versioncontrol/templates/browser.html:134
 msgid "set to"
 msgstr "nastaveno na"
 
-#: trac/ticket/templates/ticket.html:66
+#: trac/ticket/templates/ticket.html:67
 msgid "deleted"
 msgstr "smazáno"
 
-#: trac/ticket/templates/ticket.html:79
+#: trac/ticket/templates/ticket.html:81
 msgid "Ticket #"
 msgstr "Ohlášení č. "
 
-#: trac/ticket/templates/ticket.html:83
+#: trac/ticket/templates/ticket.html:85
 msgid "Create New Ticket"
 msgstr "Vytvořit nové ohlášení"
 
-#: trac/ticket/templates/ticket.html:94 trac/ticket/templates/ticket.html:97
+#: trac/ticket/templates/ticket.html:96 trac/ticket/templates/ticket.html:99
 msgid "— at"
 msgstr "— v"
 
-#: trac/ticket/templates/ticket.html:108
+#: trac/ticket/templates/ticket.html:110
 msgid "Preview ("
 msgstr "Náhled ("
 
-#: trac/ticket/templates/ticket.html:108 trac/wiki/templates/wiki_edit.html:62
+#: trac/ticket/templates/ticket.html:110 trac/wiki/templates/wiki_edit.html:52
 msgid "skip"
 msgstr "přeskočit"
 
-#: trac/ticket/templates/ticket.html:113 trac/ticket/templates/ticket.html:209
+#: trac/ticket/templates/ticket.html:115 trac/ticket/templates/ticket.html:214
 msgid "in reply to:"
 msgstr "odpověď na:"
 
-#: trac/ticket/templates/ticket.html:115
+#: trac/ticket/templates/ticket.html:117
 msgid "Changed by"
 msgstr "Změnil "
 
-#: trac/ticket/templates/ticket.html:126
+#: trac/ticket/templates/ticket.html:128
 msgid "Opened"
 msgstr "Otevřen"
 
-#: trac/ticket/templates/ticket.html:126 trac/ticket/templates/ticket.html:127
+#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:129
 msgid "ago"
 msgstr "před"
 
-#: trac/ticket/templates/ticket.html:127
+#: trac/ticket/templates/ticket.html:129
 msgid "Last modified"
 msgstr "Naposledy změněn"
 
-#: trac/ticket/templates/ticket.html:128
+#: trac/ticket/templates/ticket.html:130
 msgid "(ticket not yet created)"
 msgstr "(ohlášení ještě nebylo vytvořeno)"
 
-#: trac/ticket/templates/ticket.html:137
+#: trac/ticket/templates/ticket.html:139
 msgid "Reported by:"
 msgstr "Nahlásil/a:"
 
-#: trac/ticket/templates/ticket.html:139
+#: trac/ticket/templates/ticket.html:143
 msgid "Owned by:"
 msgstr "Vlastník:"
 
-#: trac/ticket/templates/ticket.html:168
+#: trac/ticket/templates/ticket.html:173
 msgid "(last modified by"
 msgstr "(naposledy změnil/a"
 
-#: trac/ticket/templates/ticket.html:170
+#: trac/ticket/templates/ticket.html:175
 msgid "diff"
 msgstr "rozdíl"
 
-#: trac/ticket/templates/ticket.html:181 trac/ticket/templates/ticket.html:223
+#: trac/ticket/templates/ticket.html:186 trac/ticket/templates/ticket.html:228
 msgid "Reply"
 msgstr "Odpovědět"
 
-#: trac/ticket/templates/ticket.html:181
+#: trac/ticket/templates/ticket.html:186
 msgid "Reply, quoting this description"
 msgstr "Odpovědět citováním tohoto popisu"
 
-#: trac/ticket/templates/ticket.html:200
+#: trac/ticket/templates/ticket.html:205
 msgid "Change History"
 msgstr "Historie změn"
 
-#: trac/ticket/templates/ticket.html:213
+#: trac/ticket/templates/ticket.html:218
 msgid "follow-up"
 msgstr "návazuje na"
 
-#: trac/ticket/templates/ticket.html:218
+#: trac/ticket/templates/ticket.html:223
 msgid "Changed"
 msgstr "Změnen před "
 
-#: trac/ticket/templates/ticket.html:219
+#: trac/ticket/templates/ticket.html:224
 msgid "ago by"
 msgstr "uživatelem"
 
-#: trac/ticket/templates/ticket.html:238
+#: trac/ticket/templates/ticket.html:243
 msgid "Add/Change #"
 msgstr "Pridat/změnít č. "
 
-#: trac/ticket/templates/ticket.html:258
+#: trac/ticket/templates/ticket.html:259 trac/wiki/templates/wiki_edit.html:98
+msgid "E-mail address and user name can be saved in the"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:266
 msgid ""
 "Comment (you may use\n"
 "              [1:WikiFormatting]\n"
 "              here):"
 msgstr "Komentář (můžete zde použít [1:WikiFormatting]):"
 
-#: trac/ticket/templates/ticket.html:271
+#: trac/ticket/templates/ticket.html:279
 msgid "Properties"
 msgstr "Vlastnosti"
 
-#: trac/ticket/templates/ticket.html:274
+#: trac/ticket/templates/ticket.html:282
 msgid "Summary:"
 msgstr "Přehled:"
 
-#: trac/ticket/templates/ticket.html:282
+#: trac/ticket/templates/ticket.html:290
 msgid "Reporter:"
 msgstr "Nahlásil/a:"
 
-#: trac/ticket/templates/ticket.html:339
+#: trac/ticket/templates/ticket.html:350
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "Tato volba vám umožní přidat se do (či odebrat z) kopie."
 
-#: trac/ticket/templates/ticket.html:345
+#: trac/ticket/templates/ticket.html:356
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "Povoleny jsou e-mailové adresy oddělené mezerami či čárkami."
 
-#: trac/ticket/templates/ticket.html:377
+#: trac/ticket/templates/ticket.html:388
 msgid "I have files to attach to this ticket"
 msgstr "Mám soubory, které chci přiložit k tomuto ohlášení."
 
-#: trac/ticket/templates/ticket.html:388 trac/wiki/templates/wiki_edit.html:124
+#: trac/ticket/templates/ticket.html:399 trac/wiki/templates/wiki_edit.html:117
 msgid "Preview"
 msgstr "Náhled"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:400
+msgid "Create ticket"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:407
 msgid "TracTickets"
 msgstr "TracTickets"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:407
 msgid ""
 "for help on using\n"
 "        tickets."
@@ -2604,37 +2935,44 @@ msgstr ""
 "-- \n"
 "URL ohlášení: <"
 
-#: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
-#: trac/timeline/templates/timeline.html:16
+#: trac/timeline/web_ui.py:77 trac/timeline/templates/timeline.html:11
+#: trac/timeline/templates/timeline.html:17
 msgid "Timeline"
 msgstr "Historie"
 
-#: trac/timeline/web_ui.py:202
+#: trac/timeline/web_ui.py:229
 msgid "Previous period"
 msgstr "Předchozí období"
 
-#: trac/timeline/web_ui.py:208
+#: trac/timeline/web_ui.py:236
 msgid "Next period"
 msgstr "Následující období"
 
-#: trac/timeline/web_ui.py:269
+#: trac/timeline/web_ui.py:297
 #, python-format
 msgid "%(date)s in Timeline"
 msgstr "%(date)s v historii"
 
 #: trac/timeline/templates/timeline.html:20
-msgid "View changes from"
-msgstr "Zobrazit změny z"
+msgid ""
+"[1:View changes from [2:]] [3:]\n"
+"        and [4:[5:] days back][6:]\n"
+"        [7:done by [8:]]"
+msgstr ""
 
-#: trac/timeline/templates/timeline.html:21
-msgid "days back"
-msgstr "dnů nazpět"
+#: trac/timeline/templates/timeline.html:37
+msgid "Today"
+msgstr ""
 
-#: trac/timeline/templates/timeline.html:53
+#: trac/timeline/templates/timeline.html:37
+msgid "Yesterday"
+msgstr ""
+
+#: trac/timeline/templates/timeline.html:55
 msgid "TracTimeline"
 msgstr "TracTimeline"
 
-#: trac/timeline/templates/timeline.html:53
+#: trac/timeline/templates/timeline.html:55
 msgid "for information about the timeline view."
 msgstr "pro zobrazení informací o historii."
 
@@ -2648,88 +2986,119 @@ msgstr "%(last)d z %(total)d"
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr "%(start)d - %(stop)d z %(total)d"
 
-#: trac/versioncontrol/api.py:81
+#: trac/versioncontrol/admin.py:42
 #, python-format
-msgid "Can't synchronize with the repository (%(error)s)"
+msgid "%(rev)s resynced."
+msgstr ""
+
+#: trac/versioncontrol/admin.py:45
+msgid "Resyncing repository history... "
+msgstr ""
+
+#: trac/versioncontrol/admin.py:58
+#, python-format
+msgid "%(num)s revision cached."
+msgid_plural "%(num)s revisions cached."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: trac/versioncontrol/admin.py:60
+msgid "Done."
+msgstr ""
+
+#: trac/versioncontrol/api.py:90
+#, python-format
+msgid ""
+"Can't synchronize with the repository (%(error)s). Look in the Trac log "
+"for more information."
 msgstr "Nelze synchronizovat s repozitářem (%(error)s)"
 
-#: trac/versioncontrol/api.py:96
+#: trac/versioncontrol/api.py:105
 #, python-format
 msgid "Changeset %(rev)s"
 msgstr "Soubor změn %(rev)s"
 
-#: trac/versioncontrol/api.py:103
+#: trac/versioncontrol/api.py:112
 msgid "Directory"
 msgstr "Adresář"
 
-#: trac/versioncontrol/api.py:107
+#: trac/versioncontrol/api.py:116
 #, python-format
 msgid "at version %(rev)s"
 msgstr "ve verzi %(rev)s"
 
-#: trac/versioncontrol/api.py:109
+#: trac/versioncontrol/api.py:118
 msgid "Path"
 msgstr "Cesta"
 
-#: trac/versioncontrol/api.py:131
+#: trac/versioncontrol/api.py:142
+#, python-format
+msgid "Unsupported version control system \"%(name)s\": \"%(error)s\" "
+msgstr ""
+
+#: trac/versioncontrol/api.py:146
 #, python-format
 msgid ""
-"Unsupported version control system \"%(name)s\". Check that the Python "
-"support libraries for \"%(name)s\" are correctly installed."
+"Unsupported version control system \"%(name)s\": Can't find an "
+"appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
-"Nepodporovaný systém správy verzí \"%(name)s\". Zkontrolujte, že jsou "
-"nainstalovány knihovny Pythonu pro podporu \"%(name)s\"."
 
-#: trac/versioncontrol/api.py:163
+#: trac/versioncontrol/api.py:178
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "V repozitáři není soubor změn %(rev)s"
 
-#: trac/versioncontrol/api.py:165
+#: trac/versioncontrol/api.py:180
 msgid "No such changeset"
 msgstr "Neexistující soubor změn"
 
-#: trac/versioncontrol/api.py:171
+#: trac/versioncontrol/api.py:186
 msgid "No such node"
 msgstr "Neexistující uzel"
 
-#: trac/versioncontrol/api.py:509
+#: trac/versioncontrol/api.py:524
 #, python-format
 msgid "Insufficient permissions to access %(path)s"
 msgstr "Nedostatečná práva pro přístup k %(path)s"
 
-#: trac/versioncontrol/api.py:514
+#: trac/versioncontrol/api.py:529
 #, python-format
 msgid "Insufficient permissions to access changeset %(id)s"
 msgstr "Nedostatečná práva pro přístup k souboru změn %(id)s"
 
-#: trac/versioncontrol/cache.py:95
+#: trac/versioncontrol/cache.py:102
 msgid ""
 "The 'repository_dir' has changed, a 'trac-admin resync' operation is "
 "needed."
 msgstr "'repository_dir' byl změněn, je potřeba spustit 'trac-admin resync'."
 
-#: trac/versioncontrol/cache.py:114
+#: trac/versioncontrol/cache.py:121
 msgid "Missing \"youngest_rev\" in cache metadata"
 msgstr "Chybí \"youngest_rev\" v cache metadat"
 
-#: trac/versioncontrol/svn_fs.py:294
+#: trac/versioncontrol/svn_fs.py:305
 #, python-format
 msgid "Subversion >= 1.0 required: Found %(version)s"
 msgstr ""
 "Je vyžadován Subversion ve verzi minimálně 1.0. Nalezená verze je "
 "%(version)s"
 
-#: trac/versioncontrol/svn_fs.py:371
+#: trac/versioncontrol/svn_fs.py:387
 msgid "No svn:externals configured in trac.ini"
 msgstr "V trac.ini nebyly nakonfigurovány svn:externals"
 
-#: trac/versioncontrol/svn_fs.py:395
+#: trac/versioncontrol/svn_fs.py:422
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
 msgstr "%(path)s zřejmě není cestou k Subversion repozitáři."
 
-#: trac/versioncontrol/svn_fs.py:652
+#: trac/versioncontrol/svn_fs.py:429
+#, python-format
+msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
+msgstr ""
+
+#: trac/versioncontrol/svn_fs.py:684
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
@@ -2738,75 +3107,79 @@ msgstr ""
 "Chyba v rozdílu: Základ je %(oldnode)s (%(oldpath)s v revizi %(oldrev)s) "
 "a cíl je %(newnode)s (%(newpath)s v revizi %(newrev)s)."
 
-#: trac/versioncontrol/svn_fs.py:803
+#: trac/versioncontrol/svn_fs.py:837
 #, python-format
-msgid "svn blame failed: %(error)s"
+msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/browser.html:45
+#: trac/versioncontrol/templates/browser.html:49
 msgid "View revision:"
 msgstr "Zobrazit revizi:"
 
-#: trac/versioncontrol/templates/browser.html:55
+#: trac/versioncontrol/templates/browser.html:59
 msgid "Visit:"
 msgstr "Navštívit:"
 
-#: trac/versioncontrol/templates/browser.html:63
+#: trac/versioncontrol/templates/browser.html:67
 msgid "Go!"
 msgstr "Přejít!"
 
-#: trac/versioncontrol/templates/browser.html:63
+#: trac/versioncontrol/templates/browser.html:67
 msgid "Jump to the chosen preselected path"
 msgstr "Přejít na předvybranou cestu."
 
-#: trac/versioncontrol/templates/browser.html:82
+#: trac/versioncontrol/templates/browser.html:86
 #: trac/versioncontrol/templates/revisionlog.html:92
-#: trac/versioncontrol/web_ui/browser.py:622
+#: trac/versioncontrol/web_ui/browser.py:621
 msgid "Rev"
 msgstr "Revize"
 
-#: trac/versioncontrol/templates/browser.html:84
-#: trac/versioncontrol/web_ui/browser.py:373 trac/wiki/web_ui.py:520
-#: trac/wiki/web_ui.py:544
+#: trac/versioncontrol/templates/browser.html:88
+#: trac/versioncontrol/web_ui/browser.py:372 trac/wiki/web_ui.py:539
+#: trac/wiki/web_ui.py:565
 msgid "Last Change"
 msgstr "Poslední změna"
 
-#: trac/versioncontrol/templates/browser.html:91
+#: trac/versioncontrol/templates/browser.html:95
 msgid "Parent Directory"
 msgstr "Rodičovský adresář"
 
-#: trac/versioncontrol/templates/browser.html:100
-#: trac/wiki/templates/wiki_edit.html:51 trac/wiki/templates/wiki_view.html:23
+#: trac/versioncontrol/templates/browser.html:101
+msgid "No files found"
+msgstr ""
+
+#: trac/versioncontrol/templates/browser.html:109
+#: trac/wiki/templates/wiki_edit.html:41 trac/wiki/templates/wiki_view.html:30
 msgid "Revision info"
 msgstr "Informace o revizi"
 
-#: trac/versioncontrol/templates/browser.html:102
+#: trac/versioncontrol/templates/browser.html:111
 msgid "Revision"
 msgstr "Revize"
 
-#: trac/versioncontrol/templates/browser.html:103
+#: trac/versioncontrol/templates/browser.html:112
 msgid "(checked in by"
 msgstr "(zaregistroval/a "
 
-#: trac/versioncontrol/templates/browser.html:142
+#: trac/versioncontrol/templates/browser.html:151
 msgid "TracBrowser"
 msgstr "TracBrowser"
 
-#: trac/versioncontrol/templates/browser.html:142
+#: trac/versioncontrol/templates/browser.html:151
 msgid "for help on using the browser."
 msgstr "pro zobrazení nápovědy o používání protokolu revizí."
 
-#: trac/versioncontrol/templates/browser.html:153
+#: trac/versioncontrol/templates/browser.html:162
 msgid "View changes..."
 msgstr "Zobrazit změny..."
 
-#: trac/versioncontrol/templates/browser.html:153
+#: trac/versioncontrol/templates/browser.html:162
 msgid "Select paths and revs for Diff"
 msgstr "Vybrat cestu a revizi pro zobrazení rozdílů."
 
 #: trac/versioncontrol/templates/changeset.html:21
 #: trac/versioncontrol/templates/changeset.html:36
-#: trac/versioncontrol/web_ui/changeset.py:344
+#: trac/versioncontrol/web_ui/changeset.py:345
 msgid "Changeset"
 msgstr "Soubor změn"
 
@@ -2991,23 +3364,27 @@ msgstr "Přehled změn"
 msgid "Log Message"
 msgstr "Zpráva protokolu"
 
-#: trac/versioncontrol/templates/revisionlog.html:107
+#: trac/versioncontrol/templates/revisionlog.html:103
+msgid "No revisions found"
+msgstr ""
+
+#: trac/versioncontrol/templates/revisionlog.html:115
 msgid "copied from"
 msgstr "zkopírováno z"
 
-#: trac/versioncontrol/templates/revisionlog.html:121
+#: trac/versioncontrol/templates/revisionlog.html:129
 msgid "View log starting at this revision"
 msgstr "Zobrazit záznam začínající revizí"
 
-#: trac/versioncontrol/templates/revisionlog.html:162
+#: trac/versioncontrol/templates/revisionlog.html:170
 msgid "Diff from Old Revision to New Revision (select them above)"
 msgstr "Rozdíl mezi starou a novou revizí (vyberte výše)"
 
-#: trac/versioncontrol/templates/revisionlog.html:168
+#: trac/versioncontrol/templates/revisionlog.html:176
 msgid "TracRevisionLog"
 msgstr "TracRevisionLog"
 
-#: trac/versioncontrol/templates/revisionlog.html:168
+#: trac/versioncontrol/templates/revisionlog.html:176
 msgid "for help on using the revision log."
 msgstr "pro zobrazení nápovědy o používání protokolu revizí."
 
@@ -3031,29 +3408,29 @@ msgstr ""
 msgid "Browse Source"
 msgstr "Prohlížeč repozitáře"
 
-#: trac/versioncontrol/web_ui/browser.py:345
-#: trac/versioncontrol/web_ui/changeset.py:240
+#: trac/versioncontrol/web_ui/browser.py:344
+#: trac/versioncontrol/web_ui/changeset.py:241
 msgid "Invalid Changeset Number"
 msgstr "Neexistující číslo souboru změn"
 
-#: trac/versioncontrol/web_ui/browser.py:351
-#: trac/versioncontrol/web_ui/log.py:98
+#: trac/versioncontrol/web_ui/browser.py:350
+#: trac/versioncontrol/web_ui/log.py:97
 msgid "Parent directory"
 msgstr "Rodičovský adresář"
 
-#: trac/versioncontrol/web_ui/browser.py:377
+#: trac/versioncontrol/web_ui/browser.py:376
 msgid "Normal"
 msgstr "Normální"
 
-#: trac/versioncontrol/web_ui/browser.py:378
+#: trac/versioncontrol/web_ui/browser.py:377
 msgid "View file without annotations"
 msgstr "Zobrazit soubor bez označení."
 
-#: trac/versioncontrol/web_ui/browser.py:382
+#: trac/versioncontrol/web_ui/browser.py:381
 msgid "Annotate"
 msgstr "Označit"
 
-#: trac/versioncontrol/web_ui/browser.py:383
+#: trac/versioncontrol/web_ui/browser.py:382
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
@@ -3061,63 +3438,63 @@ msgstr ""
 "Označit každý řádek číslem poslední revize. (Toto může být časově "
 "náročné...)"
 
-#: trac/versioncontrol/web_ui/browser.py:389
+#: trac/versioncontrol/web_ui/browser.py:388
 msgid "Revision Log"
 msgstr "Protokol revizí"
 
-#: trac/versioncontrol/web_ui/browser.py:455
-#: trac/versioncontrol/web_ui/changeset.py:334
+#: trac/versioncontrol/web_ui/browser.py:454
+#: trac/versioncontrol/web_ui/changeset.py:335
 msgid "Zip Archive"
 msgstr "Zip archív"
 
-#: trac/versioncontrol/web_ui/browser.py:622
+#: trac/versioncontrol/web_ui/browser.py:621
 msgid "Revision in which the line changed"
 msgstr "Revize, v které se řádek změnil"
 
-#: trac/versioncontrol/web_ui/changeset.py:333
+#: trac/versioncontrol/web_ui/changeset.py:334
 msgid "Unified Diff"
 msgstr "Sjednocené změny (unified diff)"
 
-#: trac/versioncontrol/web_ui/changeset.py:348
+#: trac/versioncontrol/web_ui/changeset.py:349
 msgid "Reverse Diff"
 msgstr "Inverzní rozdíly"
 
-#: trac/versioncontrol/web_ui/changeset.py:379
+#: trac/versioncontrol/web_ui/changeset.py:380
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
 msgstr "Soubor změn %(id)s pro %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:382
-#: trac/versioncontrol/web_ui/changeset.py:404
-#: trac/versioncontrol/web_ui/changeset.py:422
+#: trac/versioncontrol/web_ui/changeset.py:383
+#: trac/versioncontrol/web_ui/changeset.py:405
+#: trac/versioncontrol/web_ui/changeset.py:423
 #, python-format
 msgid "Changeset %(id)s"
 msgstr "Soubor změn %(id)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:452
+#: trac/versioncontrol/web_ui/changeset.py:453
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
 msgstr "Zobrazit v prohlížeči revizi %(rev)s tohoto souboru."
 
-#: trac/versioncontrol/web_ui/changeset.py:595
+#: trac/versioncontrol/web_ui/changeset.py:596
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr "Zobrazit soubor změn %(id)s omezený na %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:605
+#: trac/versioncontrol/web_ui/changeset.py:606
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "Zobrazit %(range)s změn omezených na %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:784
+#: trac/versioncontrol/web_ui/changeset.py:785
 msgid "Repository checkins"
 msgstr "Vklady do repozitáře"
 
-#: trac/versioncontrol/web_ui/changeset.py:956
+#: trac/versioncontrol/web_ui/changeset.py:960
 msgid "Changesets"
 msgstr "Soubory změn"
 
-#: trac/versioncontrol/web_ui/log.py:170
+#: trac/versioncontrol/web_ui/log.py:169
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
@@ -3126,151 +3503,233 @@ msgstr ""
 "Soubor či adresář '%(path)s' v revizi %(rev)s ani v žádné předchozí "
 "neexistuje."
 
-#: trac/versioncontrol/web_ui/log.py:172
+#: trac/versioncontrol/web_ui/log.py:171
 msgid "Nonexistent path"
 msgstr "Neexistující cesta"
 
-#: trac/versioncontrol/web_ui/log.py:188
+#: trac/versioncontrol/web_ui/log.py:187
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr "Záznam revizí (restartováno v %(path)s, rev. %(rev)s)"
 
-#: trac/versioncontrol/web_ui/log.py:245
+#: trac/versioncontrol/web_ui/log.py:244
 msgid "ChangeLog"
 msgstr "Historie změn"
 
-#: trac/versioncontrol/web_ui/log.py:247
+#: trac/versioncontrol/web_ui/log.py:246
 msgid "View Latest Revision"
 msgstr "Zobrazit"
 
-#: trac/versioncontrol/web_ui/log.py:251
+#: trac/versioncontrol/web_ui/log.py:250
 msgid "Older Revisions"
 msgstr "Starší revize"
 
-#: trac/web/auth.py:89
+#: trac/web/auth.py:88
 #, python-format
 msgid "logged in as %(user)s"
 msgstr "přihlášen jako %(user)s"
 
-#: trac/web/auth.py:92
+#: trac/web/auth.py:91
 msgid "Logout"
 msgstr "Odhlásit"
 
-#: trac/web/auth.py:95
+#: trac/web/auth.py:94
 msgid "Login"
 msgstr "Přihlásit"
 
-#: trac/web/auth.py:137
+#: trac/web/auth.py:136
 #, python-format
 msgid "Already logged in as %(user)s."
 msgstr "Již přihlášen jako %(user)s."
 
-#: trac/web/chrome.py:160 trac/web/chrome.py:168
+#: trac/web/chrome.py:177 trac/web/chrome.py:185
 #, python-format
 msgid "Previous %(label)s"
 msgstr "Předchozí %(label)s"
 
-#: trac/web/chrome.py:180 trac/web/chrome.py:187
+#: trac/web/chrome.py:197 trac/web/chrome.py:204
 #, python-format
 msgid "Next %(label)s"
 msgstr "Následující %(label)s"
 
-#: trac/wiki/api.py:325
+#: trac/web/chrome.py:790
+msgid "(unknown template location)"
+msgstr ""
+
+#: trac/web/chrome.py:791
+#, python-format
+msgid "Genshi %(error)s error while rendering template %(location)s"
+msgstr ""
+
+#. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+#: trac/web/main.py:488
+msgid "do so"
+msgstr ""
+
+#: trac/web/main.py:490
+#, python-format
+msgid "You are currently not logged in. You may want to %(do_so)s now."
+msgstr ""
+
+#: trac/wiki/admin.py:84
+#, python-format
+msgid "'%(name)s' is not a file"
+msgstr ""
+
+#: trac/wiki/admin.py:128
+#, python-format
+msgid " %(page)s imported from %(filename)s"
+msgstr ""
+
+#: trac/wiki/admin.py:154
+#, fuzzy
+msgid "Title"
+msgstr "Titul"
+
+#: trac/wiki/admin.py:154
+msgid "Edits"
+msgstr ""
+
+#: trac/wiki/admin.py:164
+msgid "Deleted pages"
+msgstr ""
+
+#: trac/wiki/admin.py:182
+#, python-format
+msgid "'%(name)s' is not a directory"
+msgstr ""
+
+#: trac/wiki/api.py:343 trac/wiki/templates/wiki_view.html:53
 msgid "no permission to view this wiki page"
 msgstr "nemáte oprávnění ke čtení této wiki stránky"
 
-#: trac/wiki/formatter.py:133
+#: trac/wiki/formatter.py:140
 #, python-format
 msgid "HTML parsing error: %(message)s"
 msgstr "Chyba při procházení HTML: %(message)s"
 
-#: trac/wiki/intertrac.py:51
+#: trac/wiki/formatter.py:144
+msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
+msgstr ""
+
+#: trac/wiki/intertrac.py:50
 #, python-format
 msgid "Can't view %(link)s:"
 msgstr "Nemohu zobrazit %(link)s:"
 
-#: trac/wiki/macros.py:467
+#: trac/wiki/macros.py:468
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "Chyba: Nemohu načíst popis pro makro %(name)s"
 
-#: trac/wiki/macros.py:550
+#: trac/wiki/macros.py:551
 msgid "Table of Contents"
 msgstr "Obsah"
 
-#: trac/wiki/model.py:146
+#: trac/wiki/model.py:147
 msgid "Page not modified"
 msgstr "Stránka nebyla změněna"
 
-#: trac/wiki/web_ui.py:85 trac/wiki/web_ui.py:596
+#: trac/wiki/web_ui.py:89 trac/wiki/web_ui.py:616
 msgid "Wiki"
 msgstr "Wiki"
 
-#: trac/wiki/web_ui.py:87
+#: trac/wiki/web_ui.py:91
 msgid "Help/Guide"
 msgstr "Nápověda/Průvodce"
 
-#: trac/wiki/web_ui.py:122
+#: trac/wiki/web_ui.py:126
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr "Stránka wiki \"%(name)s\" nemá verzi \"%(num)s\""
 
-#: trac/wiki/web_ui.py:181
+#: trac/wiki/web_ui.py:183
+#, python-format
+msgid "The wiki page is too long (must be less than %(num)s characters)"
+msgstr "Popis ohlášení je příliš dlouhý (musí být kratší než %(num)s znaků)"
+
+#: trac/wiki/web_ui.py:193
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr "Položka '%(field)s' wiki stránky je neplatná: %(message)s"
 
-#: trac/wiki/web_ui.py:185
+#: trac/wiki/web_ui.py:197
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr "Chybná wiki stránka: %(message)s"
 
-#: trac/wiki/web_ui.py:271
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:224
+msgid "currently edited"
+msgstr ""
+
+#: trac/wiki/web_ui.py:283
 msgid "Page not modified, showing latest version."
 msgstr "Stránka nebyla změněna, zobrazuji poslední verzi."
 
-#: trac/wiki/web_ui.py:303
+#: trac/wiki/web_ui.py:315
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "Verze %(num)s stránky \"%(name)s\" neexistuje"
 
-#: trac/wiki/web_ui.py:357
+#: trac/wiki/web_ui.py:369
 msgid "Page history"
 msgstr "Historie stránky"
 
-#: trac/wiki/web_ui.py:374
+#: trac/wiki/web_ui.py:386
 msgid "Wiki History"
 msgstr "Historie wiki"
 
-#: trac/wiki/web_ui.py:439
+#: trac/wiki/web_ui.py:451
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "Stránka %(name)s neexistuje"
 
-#: trac/wiki/web_ui.py:476
+#: trac/wiki/web_ui.py:489
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "Stránka %(name)s nebyla nalezena"
 
-#: trac/wiki/web_ui.py:510 trac/wiki/web_ui.py:519
+#: trac/wiki/web_ui.py:525
+msgid "View latest version"
+msgstr ""
+
+#: trac/wiki/web_ui.py:529
+msgid "View parent page"
+msgstr ""
+
+#: trac/wiki/web_ui.py:538
 msgid "View Latest Version"
 msgstr "Zobrazit poslední verzi"
 
-#: trac/wiki/web_ui.py:539
+#: trac/wiki/web_ui.py:544
+msgid "Up"
+msgstr ""
+
+#: trac/wiki/web_ui.py:560
 msgid "Start Page"
 msgstr "Úvodní stránka"
 
-#: trac/wiki/web_ui.py:540
+#: trac/wiki/web_ui.py:561
 msgid "Index"
 msgstr "Index"
 
-#: trac/wiki/web_ui.py:542
+#: trac/wiki/web_ui.py:563
 msgid "History"
 msgstr "Historie"
 
-#: trac/wiki/web_ui.py:552
+#: trac/wiki/web_ui.py:573
 msgid "Wiki changes"
 msgstr "Změny wiki"
+
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:602
+msgid " edited"
+msgstr ""
+
+#: trac/wiki/web_ui.py:602
+msgid " created"
+msgstr ""
 
 #: trac/wiki/templates/wiki_delete.html:22
 msgid "Delete"
@@ -3294,12 +3753,12 @@ msgstr ""
 "Toto je jediná verze stránky, jejím smazáním bude stránka odstraněna "
 "úplně!"
 
-#: trac/wiki/templates/wiki_diff.html:16
+#: trac/wiki/templates/wiki_diff.html:17
 #, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
 msgstr "Vrátit verzi %(old_version)d na verzi %(version)d"
 
-#: trac/wiki/templates/wiki_diff.html:17
+#: trac/wiki/templates/wiki_diff.html:18
 #, python-format
 msgid "Delete version %(version)d"
 msgstr "Smazat verzi %(version)d"
@@ -3312,43 +3771,39 @@ msgstr "Editace"
 msgid "Someone else has modified that page since you started your edits."
 msgstr "Někdo upravil stránku v průběhu vaší editace."
 
-#: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
+#: trac/wiki/templates/wiki_edit.html:31
 msgid "If you save right away, you risk to revert those changes"
 msgstr "Pokud nyní uložíte, riskujete, že přepíšete tyto změny"
 
-#: trac/wiki/templates/wiki_edit.html:31 trac/wiki/templates/wiki_edit.html:41
+#: trac/wiki/templates/wiki_edit.html:31
 msgid "(highlighted below as deletions)."
 msgstr "(níže zvýrazněno jako mazání)."
 
-#: trac/wiki/templates/wiki_edit.html:33 trac/wiki/templates/wiki_edit.html:42
+#: trac/wiki/templates/wiki_edit.html:33
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
 msgstr "Prosím, zkontrolujte tyto změny a ručně je slučte s vašimi vlastními."
 
-#: trac/wiki/templates/wiki_edit.html:34 trac/wiki/templates/wiki_edit.html:44
+#: trac/wiki/templates/wiki_edit.html:34
 msgid "If you're unsure about what you're doing, please press"
 msgstr "Pokud si nejste jistí, co děláte, tak stiskněte"
 
-#: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:45
+#: trac/wiki/templates/wiki_edit.html:35
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
 msgstr "(ztratíte vaše změny) a znovu začnete editovat poslední verzi stránky."
 
-#: trac/wiki/templates/wiki_edit.html:39
-msgid "Someone else modified that page since you started your edits."
-msgstr "Někdo upravil stránku v průběhu vaší editace."
-
-#: trac/wiki/templates/wiki_edit.html:53
+#: trac/wiki/templates/wiki_edit.html:43
 msgid "Change information for future version"
 msgstr "Změnit informace pro příští verze"
 
-#: trac/wiki/templates/wiki_edit.html:54 trac/wiki/templates/wiki_view.html:26
+#: trac/wiki/templates/wiki_edit.html:44 trac/wiki/templates/wiki_view.html:33
 msgid "(modified by"
 msgstr "(změnil/a"
 
-#: trac/wiki/templates/wiki_edit.html:72
+#: trac/wiki/templates/wiki_edit.html:62
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
@@ -3356,11 +3811,11 @@ msgstr ""
 "Omlouváme se! Stránka byla v průběhu editace změněna někým jiným. Vaše "
 "změny nemohou být uloženy."
 
-#: trac/wiki/templates/wiki_edit.html:85
+#: trac/wiki/templates/wiki_edit.html:75
 msgid "Adjust edit area height:"
 msgstr "Změnit výšku editační plochy:"
 
-#: trac/wiki/templates/wiki_edit.html:97
+#: trac/wiki/templates/wiki_edit.html:87
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
@@ -3368,59 +3823,63 @@ msgstr ""
 "[1:Note:] Přečtěte si [2:WikiFormatting] a [3:TracWiki] nápovědu o "
 "editování obsahu wiki."
 
-#: trac/wiki/templates/wiki_edit.html:102
+#: trac/wiki/templates/wiki_edit.html:92
 msgid "Change information"
 msgstr "Změnit informace"
 
-#: trac/wiki/templates/wiki_edit.html:110
+#: trac/wiki/templates/wiki_edit.html:103
 msgid "Comment about this change (optional):"
 msgstr "Komentář ke změně (volitelně):"
 
-#: trac/wiki/templates/wiki_edit.html:117
+#: trac/wiki/templates/wiki_edit.html:110
 msgid "Page is read-only"
 msgstr "Stránka je pouze pro čtení."
 
-#: trac/wiki/templates/wiki_edit.html:125
+#: trac/wiki/templates/wiki_edit.html:118
 msgid "Merge changes"
 msgstr "Sloučit změny"
 
-#: trac/wiki/templates/wiki_edit.html:129
+#: trac/wiki/templates/wiki_edit.html:122
 msgid "Preview Page"
 msgstr "Náhled stránky"
 
-#: trac/wiki/templates/wiki_edit.html:130
+#: trac/wiki/templates/wiki_edit.html:123
 msgid "Review Changes"
 msgstr "Revidovat změny"
 
-#: trac/wiki/templates/wiki_view.html:39
+#: trac/wiki/templates/wiki_view.html:47
 msgid "Describe"
 msgstr "Zde napište obsah stránky "
 
-#: trac/wiki/templates/wiki_view.html:40
+#: trac/wiki/templates/wiki_view.html:47
 msgid "here."
 msgstr "."
 
-#: trac/wiki/templates/wiki_view.html:57
+#: trac/wiki/templates/wiki_view.html:49
+msgid "Alternatively, you can also create the page higher in the hierarchy:"
+msgstr ""
+
+#: trac/wiki/templates/wiki_view.html:74
 msgid "Edit this page"
 msgstr "Upravit tuto stránku"
 
-#: trac/wiki/templates/wiki_view.html:60
+#: trac/wiki/templates/wiki_view.html:77
 msgid "Create this page"
 msgstr "Vytvořit tuto stránku"
 
-#: trac/wiki/templates/wiki_view.html:62
+#: trac/wiki/templates/wiki_view.html:79
 msgid "Using the template:"
 msgstr "Použitím šablony:"
 
-#: trac/wiki/templates/wiki_view.html:65
+#: trac/wiki/templates/wiki_view.html:82
 msgid "(blank page)"
 msgstr "(prázdná stránka)"
 
-#: trac/wiki/templates/wiki_view.html:84
+#: trac/wiki/templates/wiki_view.html:101
 msgid "Delete this version"
 msgstr "Smazat tuto verzi"
 
-#: trac/wiki/templates/wiki_view.html:86
+#: trac/wiki/templates/wiki_view.html:103
 msgid "Delete page"
 msgstr "Smazat stránku"
 

@@ -42,8 +42,11 @@ class HrefTestCase(unittest.TestCase):
     def test_empty_base(self):
         """Build URLs with an empty base."""
         href = trac.web.href.Href('')
-        self.assertEqual('/', href())
-        self.assertEqual('/', href('/'))
+        # The two following href calls don't result in a valid local URL.
+        # This is relied upon by existing code (see #8153).
+        self.assertEqual('', href())
+        self.assertEqual('', href('/'))
+        
         self.assertEqual('/sub', href('sub'))
         self.assertEqual('/sub', href('/sub/'))
         self.assertEqual('/sub/other', href('sub', 'other'))

@@ -91,7 +91,8 @@ def load_py_files():
                     if path == auto_enable:
                         _enable_plugin(env, plugin_name)
                 except Exception, e:
-                    env.log.error('Failed to load plugin from %s', plugin_file,
+                    env.log.error('Failed to load plugin from %s: %s',
+                                  plugin_file,
                                   exception_to_unicode(e, traceback=True))
 
     return _load_py_files

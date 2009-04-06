@@ -146,7 +146,7 @@ label.disabled { color: #d7d7d7 }
 
 /* Main navigation bar */
 #mainnav {
- background: #f7f7f7 url(../topbar_gradient.png) 0 0;
+ background: #fff url(../topbar_gradient.png) 0 0;
  border: 1px solid #000;
  font: normal 10px verdana,'Bitstream Vera Sans',helvetica,arial,sans-serif;
  margin: .66em 0 .33em;
@@ -167,7 +167,7 @@ label.disabled { color: #d7d7d7 }
  border-right: 1px solid #ddd;
 }
 #mainnav .active :link, #mainnav .active :visited {
- background: #333 url(../topbar_gradient2.png) 0 0 repeat-x;
+ background: #000 url(../topbar_gradient2.png) 0 0 repeat-x;
  border-top: none;
  border-right: 1px solid #000;
  color: #eee;

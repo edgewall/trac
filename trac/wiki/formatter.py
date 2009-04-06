@@ -377,7 +377,7 @@ class Formatter(object):
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')
             elif path.startswith('/'):
-                path = self.href(path)
+                path = self.href(path) or '/'
             else:
                 resource = get_relative_resource(self.resource, path)
                 path = get_resource_url(self.env, resource, self.href)
@@ -623,7 +623,7 @@ class Formatter(object):
     # Definition Lists
 
     def _definition_formatter(self, match, fullmatch):
-        tmp = self.in_def_list and '</dd>' or '<dl>'
+        tmp = self.in_def_list and '</dd>' or '<dl class="wiki">'
         definition = match[:match.find('::')]
         tmp += '<dt>%s</dt><dd>' % format_to_oneliner(self.env, self.context,
                                                       definition)
