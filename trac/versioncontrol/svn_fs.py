@@ -444,7 +444,8 @@ class SubversionRepository(Repository):
             self.scope = '/'
         assert self.scope[0] == '/'
         # we keep root_path_utf8 for  RA 
-        self.ra_url_utf8 = 'file:///' + root_path_utf8
+        ra_prefix = os.name == 'nt' and 'file:///' or 'file://'
+        self.ra_url_utf8 = ra_prefix + root_path_utf8
         self.clear()
 
     def clear(self, youngest_rev=None):
@@ -539,6 +540,9 @@ class SubversionRepository(Repository):
         if start < end:
             start, end = end, start
         root = fs.revision_root(self.fs_ptr, start, pool())
+        # fs.node_history leaks when path doesn't exist (#6588)
+        if fs.check_path(root, path_utf8, pool()) == core.svn_node_none:
+            return
         tmp1 = Pool(pool)
         tmp2 = Pool(pool)
         history_ptr = fs.node_history(root, path_utf8, tmp1())
@@ -561,12 +565,8 @@ class SubversionRepository(Repository):
     
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
-            try:
-                for _, prev in self._history(path, 0, rev-1, pool or self.pool):
-                    return prev
-            except (SystemError, # "null arg to internal routine" in 1.2.x
-                    core.SubversionException): # in 1.3.x
-                pass
+            for _, prev in self._history(path, 0, rev-1, pool or self.pool):
+                return prev
         return None
     
 
@@ -599,12 +599,11 @@ class SubversionRepository(Repository):
         subpool = Pool(self.pool)
         while next <= youngest:
             subpool.clear()            
-            try:
-                for _, next in self._history(path, rev+1, next, subpool):
-                    return next
-            except (SystemError, # "null arg to internal routine" in 1.2.x
-                    core.SubversionException): # in 1.3.x
-                if not find_initial_rev:
+            for _, next in self._history(path, rev+1, next, subpool):
+                return next
+            else:
+                if not find_initial_rev and \
+                         not self.has_node(path, next, subpool):
                     return next # a 'delete' event is also interesting...
             next += 1
         return None
