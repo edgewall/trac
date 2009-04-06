@@ -106,7 +106,7 @@ class Resource(object):
                 name += ':' + unicode(r.id) # id can be numerical
             if r.version is not None:
                 name += '@' + unicode(r.version)
-            path.append(name)
+            path.append(name or '')
             r = r.parent
         return '<Resource %r>' % (', '.join(reversed(path)))
 
@@ -205,6 +205,9 @@ class Resource(object):
         """Retrieve a child resource for a secondary `realm`.
 
         Same as `__call__`, except that this one sets the parent to `self`.
+
+        >>> repr(Resource(None).child('attachment', 'file.txt'))
+        "<Resource u', attachment:file.txt'>"
         """
         return self.__call__(realm, id, version, self)
     
