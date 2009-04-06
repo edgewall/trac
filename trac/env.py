@@ -25,6 +25,7 @@ from urlparse import urlsplit
 
 from trac import db_default
 from trac.admin import AdminCommandError, IAdminCommandProvider
+from trac.cache import CacheManager
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
@@ -583,6 +584,8 @@ def open_environment(env_path=None, use_cache=False):
                 env = None
             if env is None:
                 env = env_cache.setdefault(env_path, open_environment(env_path))
+            else:
+                CacheManager(env).reset_metadata()
         finally:
             env_cache_lock.release()
     else:

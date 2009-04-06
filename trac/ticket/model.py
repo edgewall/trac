@@ -418,12 +418,12 @@ class AbstractEnum(object):
                     enum.update(db=db)
             except ValueError:
                 pass # Ignore cast error for this non-essential operation
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
         self.value = self._old_value = None
         self.name = self._old_name = None
-        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing %s' % self.type
@@ -444,12 +444,12 @@ class AbstractEnum(object):
             self.value = int(float(cursor.fetchone()[0])) + 1
         cursor.execute("INSERT INTO enum (type,name,value) VALUES (%s,%s,%s)",
                        (self.type, self.name, self.value))
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
         self._old_name = self.name
         self._old_value = self.value
-        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent %s' % self.type
@@ -471,12 +471,12 @@ class AbstractEnum(object):
             cursor.execute("UPDATE ticket SET %s=%%s WHERE %s=%%s" %
                            (self.ticket_col, self.ticket_col),
                            (self.name, self._old_name))
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
         self._old_name = self.name
         self._old_value = self.value
-        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
@@ -561,10 +561,10 @@ class Component(object):
         cursor.execute("DELETE FROM component WHERE name=%s", (self.name,))
 
         self.name = self._old_name = None
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing component'
@@ -581,10 +581,10 @@ class Component(object):
         cursor.execute("INSERT INTO component (name,owner,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, self.owner, self.description))
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent component'
@@ -607,10 +607,10 @@ class Component(object):
             cursor.execute("UPDATE ticket SET component=%s WHERE component=%s",
                            (self.name, self._old_name))
             self._old_name = self.name
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
@@ -688,10 +688,10 @@ class Milestone(object):
             ticket['milestone'] = retarget_to
             ticket.save_changes(author, 'Milestone %s deleted' % self.name,
                                 now, db=db)
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert self.name, 'Cannot create milestone with no name'
@@ -708,10 +708,10 @@ class Milestone(object):
                        "VALUES (%s,%s,%s,%s)",
                        (self.name, to_timestamp(self.due), to_timestamp(self.completed),
                         self.description))
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.name, 'Cannot update milestone with no name'
@@ -734,10 +734,10 @@ class Milestone(object):
         cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
                        (self.name, self._old_name))
         self._old_name = self.name
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, include_completed=True, db=None):
@@ -814,10 +814,10 @@ class Version(object):
         cursor.execute("DELETE FROM version WHERE name=%s", (self.name,))
 
         self.name = self._old_name = None
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing version'
@@ -834,10 +834,10 @@ class Version(object):
         cursor.execute("INSERT INTO version (name,time,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, to_timestamp(self.time), self.description))
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent version'
@@ -860,10 +860,10 @@ class Version(object):
             cursor.execute("UPDATE ticket SET version=%s WHERE version=%s",
                            (self.name, self._old_name))
             self._old_name = self.name
+        TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
-        TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
