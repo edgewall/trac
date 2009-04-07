@@ -16,13 +16,10 @@
 
 import re
 from datetime import datetime
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
 
 from genshi.builder import tag
 
+from trac.cache import cached, cached_value
 from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
@@ -157,13 +154,9 @@ class TicketSystem(Component):
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
         (''since 0.9'').""")
 
-    _fields = None
-    _custom_fields = None
-
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' % 
                 [c.__class__.__name__ for c in self.action_controllers])
-        self._fields_lock = threading.RLock()
 
     # Public API
 
@@ -192,29 +185,17 @@ class TicketSystem(Component):
 
     def get_ticket_fields(self):
         """Returns the list of fields available for tickets."""
-        # This is now cached - as it makes quite a number of things faster,
-        # e.g. #6436
-        if self._fields is None:
-            self._fields_lock.acquire()
-            try:
-                if self._fields is None: # double-check (race after 1st check)
-                    self._fields = self._get_ticket_fields()
-            finally:
-                self._fields_lock.release()
-        return [f.copy() for f in self._fields]
+        return [f.copy() for f in self.fields.get()]
 
-    def reset_ticket_fields(self):
-        self._fields_lock.acquire()
-        try:
-            self._fields = None
-            self.config.touch() # brute force approach for now
-        finally:
-            self._fields_lock.release()
+    def reset_ticket_fields(self, db=None):
+        """Invalidate ticket field cache."""
+        self.fields.invalidate(db)
 
-    def _get_ticket_fields(self):
+    @cached
+    def fields(self, db):
+        """Return the list of fields available for tickets."""
         from trac.ticket import model
 
-        db = self.env.get_db_cnx()
         fields = []
 
         # Basic text fields
@@ -290,16 +271,11 @@ class TicketSystem(Component):
                             'col', 'row', 'format', 'max', 'page', 'verbose']
 
     def get_custom_fields(self):
-        if self._custom_fields is None:
-            self._fields_lock.acquire()
-            try:
-                if self._custom_fields is None: # double-check
-                    self._custom_fields = self._get_custom_fields()
-            finally:
-                self._fields_lock.release()
-        return [f.copy() for f in self._custom_fields]
+        return [f.copy() for f in self.custom_fields]
 
-    def _get_custom_fields(self):
+    @cached_value
+    def custom_fields(self, db):
+        """Return the list of custom ticket fields available for tickets."""
         fields = []
         config = self.config['ticket-custom']
         for name in [option for option, value in config.options()
