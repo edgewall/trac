@@ -1,18 +1,25 @@
 #!/bin/sh
 #
+# trac-svn-post-commit-hook
+# =========================
+#
 # This is a script that should be called from a Subversion post-commit hook
 # for notifying Trac about new changesets.
 #
-# Usage: insert the following snippet:
+# Usage: copy this file somewhere (e.g. in your TRAC_ENV or TRAC_PARENT_ENV 
+#        folder), then insert the following snippet in the
+#        $REPOS/hooks/post-commit script, for all Subversion repositories
+#        that have to be monitored by your Trac environment(s).
 #
-#   export TRAC_ENV=...
-#   export PATH=...:$PATH
-#   export LD_LIBRARY_PATH=...:$LD_LIBRARY_PATH
-#   /path/to/trac-svn-post-commit-hook $REPOS $REV
+#        /path/to/trac-svn-post-commit-hook $REPOS $REV
 #
-# in the <subversion_repository>/hooks/post-commit hook file, 
-# then fill in the ... parts according to the following configuration notes.
+# First read the Configuration Notes below and then fill in the Configuration
+# section as appropriate.
 #
+# -----------------------------------------------------------------------------
+
+
+# -----------------------------------------------------------------------------
 #
 # Configuration Notes
 # ===================
@@ -28,6 +35,9 @@
 #
 #   env - /path/to/repos/hooks/post-commit /path/to/repos 1234
 #
+# 
+# The environment variables that have to be set in the script are
+# TRAC_ENV and PATH, and also eventually LD_LIBRARY_PATH.
 #
 # TRAC_ENV is the path to the Trac environment which has to be notified.
 #
@@ -39,9 +49,10 @@
 #
 #  - the folder containing the trac-svn-post-commit-hook has to be in the PATH,
 #    or alternatively you have to use the full path when calling the script,
+#
 #  - the folder containing the trac-admin script has to be in the PATH.
 #    This is typically the same as your Python installation bin/ folder.
-#    If this is /usr/bin, then you don't probably don't need to put it in the
+#    If this is /usr/bin, then you probably don't need to put it in the
 #    PATH. 
 #
 # Note that if you're using a python program installed in a non-default 
@@ -56,6 +67,17 @@
 #
 # See http://trac.edgewall.org/wiki/0.12/RepositoryAdmin for more details
 # about managing repositories in Trac.
+#
+# -----------------------------------------------------------------------------
+
+# Configuration
+# =============
+
+######
+#export TRAC_ENV=/path/to/trac-env
+#export PATH=/path/to/python/bin:$PATH
+#export LD_LIBRARY_PATH=/path/to/python/lib:$LD_LIBRARY_PATH
+######
 
 # -----------------------------------------------------------------------------
 #
@@ -64,16 +86,18 @@
 #
 # Minimal setup
 # -------------
-# Everything is installed in /usr/bin, the trac-svn-post-commit-hook is 
-# located next to the post-commit hook in the repository's hooks directory.
 #
+# Everything is installed in /usr/bin
+#
+#   ######
 #   export TRAC_ENV=/srv/trac/the_trac_env
-#   $REPOS/hooks/trac-svn-post-commit-hook $REPOS $REV
+#   ######
 #
 #
 #
 # Virtualenv setup
 # ----------------
+#
 # Here we're using a Trac installation set up using virtualenv
 # (http://pypi.python.org/pypi/virtualenv), based off a custom
 # Python installation. We're also using a custom SQLite build. 
@@ -82,13 +106,13 @@
 # about LD_LIBRARY_PATH and the only other thing it does and that
 # we need is to set the PATH, so we can as well do that ourselves.
 #
-# The trac-svn-post-commit-hook is located next to the post-commit hook,
-# in the repository hooks directory.
-#
+#   ######
 #   export TRAC_ENV=/srv/trac/the_trac_env
 #   export PATH=/packages/trac/branches/trac-multirepos/bin:$PATH
 #   export LD_LIBRARY_PATH=/opt/python-2.4.4/lib:/opt/sqlite-3.3.8/lib:$LD_LIBRARY_PATH
-#   $REPOS/hooks/trac-svn-post-commit-hook $REPOS $REV
+#   ######
+#
+# -----------------------------------------------------------------------------
 
 
 
