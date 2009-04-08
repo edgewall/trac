@@ -18,7 +18,7 @@
           this.parentNode.parentNode.submit();
         })
 
-        <py:if test="dir">
+        <py:if test="dir or repo">
           /* browsers using old WebKits have issues with expandDir... */
           var webkit_rev = /AppleWebKit\/(\d+)/.exec(navigator.userAgent);
           if ( !webkit_rev || (521 - webkit_rev[1]).toString()[0] == "-" )

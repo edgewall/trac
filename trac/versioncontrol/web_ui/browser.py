@@ -393,6 +393,10 @@ class BrowserModule(Component):
             data['xhr'] = True
             return 'dir_entries.html', data, None
 
+        if data['dir'] or data['repo']:
+            add_script(req, 'common/js/expand_dir.js')
+            add_script(req, 'common/js/keyboard_nav.js')
+
         # Links for contextual navigation
         if node:
             add_ctxtnav(req, tag.a(_('Last Change'), 
@@ -521,9 +525,6 @@ class BrowserModule(Component):
                                           format='zip')
             add_link(req, 'alternate', zip_href, _('Zip Archive'),
                      'application/zip', 'zip')
-
-        add_script(req, 'common/js/expand_dir.js')
-        add_script(req, 'common/js/keyboard_nav.js')
 
         return {'entries': entries, 'changes': changes,
                 'timerange': timerange, 'colorize_age': custom_colorizer,
