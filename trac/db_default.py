@@ -57,9 +57,9 @@ schema = [
         Column('authenticated', type='int'),
         Column('name'),
         Column('value')],
-    Table('cache', key='key')[
-        Column('key'),
-        Column('generation')],
+    Table('cache', key='id')[
+        Column('id'),
+        Column('generation', type='int')],
 
     # Attachments
     Table('attachment', key=('type', 'id', 'filename'))[

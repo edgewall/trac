@@ -50,16 +50,16 @@ class cached_value(object):
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        key = owner.__module__ + '.' + owner.__name__ \
-              + '.' + self.retriever.__name__
-        return CacheManager(instance.env).get(key,
+        id = owner.__module__ + '.' + owner.__name__ \
+             + '.' + self.retriever.__name__
+        return CacheManager(instance.env).get(id,
                 partial(self.retriever, instance))
         
     def __delete__(self, instance):
-        key = instance.__class__.__module__ \
-              + '.' + instance.__class__.__name__ \
-              + '.' + self.retriever.__name__
-        CacheManager(instance.env).invalidate(key)
+        id = instance.__class__.__module__ \
+             + '.' + instance.__class__.__name__ \
+             + '.' + self.retriever.__name__
+        CacheManager(instance.env).invalidate(id)
 
 
 class cached(cached_value):
@@ -78,9 +78,9 @@ class cached(cached_value):
     def __get__(self, instance, owner):
         if instance is None:
             return self
-        key = owner.__module__ + '.' + owner.__name__ \
-              + '.' + self.retriever.__name__
-        return CacheProxy(key, partial(self.retriever, instance),
+        id = owner.__module__ + '.' + owner.__name__ \
+             + '.' + self.retriever.__name__
+        return CacheProxy(id, partial(self.retriever, instance),
                           instance.env)
 
 
@@ -91,22 +91,22 @@ class CacheProxy(object):
     cached with the `cached` decorator.
     
     It can also be instantiated explicitly to cache attributes of
-    non-`Component` objects. In this case, the cache identifier key must be
+    non-`Component` objects. In this case, the cache identifier `id` must be
     provided, and the data retrieval function is a normal callable (not an
     unbound method).
     """
-    __slots__ = ["key", "retriever", "env"]
+    __slots__ = ["id", "retriever", "env"]
     
-    def __init__(self, key, retriever, env):
-        self.key = key
+    def __init__(self, id, retriever, env):
+        self.id = id
         self.retriever = retriever
         self.env = env
     
     def get(self, db=None):
-        return CacheManager(self.env).get(self.key, self.retriever, db)
+        return CacheManager(self.env).get(self.id, self.retriever, db)
     
     def invalidate(self, db=None):
-        CacheManager(self.env).invalidate(self.key, db)
+        CacheManager(self.env).invalidate(self.id, db)
 
 
 class CacheManager(Component):
@@ -127,8 +127,8 @@ class CacheManager(Component):
         except AttributeError:
             pass
 
-    def get(self, key, retriever, db=None):
-        """Get cached or fresh data for the given key."""
+    def get(self, id, retriever, db=None):
+        """Get cached or fresh data for the given id."""
         # Get cache metadata
         try:
             local_meta = self._local.meta
@@ -139,15 +139,15 @@ class CacheManager(Component):
             if db is None:
                 db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT key, generation FROM cache")
+            cursor.execute("SELECT id,generation FROM cache")
             self._local.meta = local_meta = dict(cursor)
             self._local.cache = local_cache = self._cache.copy()
         
-        db_generation = local_meta.get(key, -1)
+        db_generation = local_meta.get(id, -1)
         
         # Try the thread-local copy first
         try:
-            (data, generation) = local_cache[key]
+            (data, generation) = local_cache[id]
             if generation == db_generation:
                 return data
         except KeyError:
@@ -157,7 +157,7 @@ class CacheManager(Component):
         try:
             # Get data from the process cache
             try:
-                (data, generation) = local_cache[key] = self._cache[key]
+                (data, generation) = local_cache[id] = self._cache[id]
                 if generation == db_generation:
                     return data
             except KeyError:
@@ -168,7 +168,7 @@ class CacheManager(Component):
             if db is None:
                 db = self.env.get_db_cnx()
             cursor = db.cursor()
-            cursor.execute("SELECT generation FROM cache WHERE key=%s", (key,))
+            cursor.execute("SELECT generation FROM cache WHERE id=%s", (id,))
             row = cursor.fetchone()
             db_generation = row and row[0] or -1
             if db_generation == generation:
@@ -176,14 +176,14 @@ class CacheManager(Component):
             
             # Retrieve data from the database
             data = retriever(db)
-            local_cache[key] = self._cache[key] = (data, db_generation)
-            local_meta[key] = db_generation
+            local_cache[id] = self._cache[id] = (data, db_generation)
+            local_meta[id] = db_generation
             return data
         finally:
             self._lock.release()
         
-    def invalidate(self, key, db=None):
-        """Invalidate cached data for the given key."""
+    def invalidate(self, id, db=None):
+        """Invalidate cached data for the given id."""
         self._lock.acquire()
         try:
             # Invalidate in other processes
@@ -200,19 +200,19 @@ class CacheManager(Component):
             #    a transaction. The SELECT then returns nothing, and we can
             #    safely INSERT a new row.
             cursor.execute("UPDATE cache SET generation=generation+1 "
-                           "WHERE key=%s", (key,))
-            cursor.execute("SELECT generation FROM cache WHERE key=%s", (key,))
+                           "WHERE id=%s", (id,))
+            cursor.execute("SELECT generation FROM cache WHERE id=%s", (id,))
             if not cursor.fetchone():
-                cursor.execute("INSERT INTO cache VALUES (%s, %s)", (key, 0))
+                cursor.execute("INSERT INTO cache VALUES (%s, %s)", (id, 0))
             if handle_ta:
                 db.commit()
             
             # Invalidate in this process
-            self._cache.pop(key, None)
+            self._cache.pop(id, None)
             
             # Invalidate in this thread
             try:
-                del self._local.cache[key]
+                del self._local.cache[id]
             except (AttributeError, KeyError):
                 pass
         finally:
