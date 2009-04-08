@@ -362,38 +362,47 @@ class BrowserModule(Component):
 
             context = context('source', (reponame, path), node.created_rev)
 
+        # Prepare template data
         path_links = get_path_links(req.href, reponame, path, rev, order, desc)
         if len(path_links) > 1:
             add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
+
+        repo_data = dir_data = file_data = None
+        if all_repositories:
+            repo_data = self._render_repository_index(
+                    context, all_repositories, order, desc)
+        if node:
+            if node.isdir:
+                dir_data = self._render_dir(
+                        req, reponame, repos, node, rev, order, desc)
+            elif node.isfile:
+                file_data = self._render_file(
+                        req, context, reponame, repos, node, rev)
+
+        quickjump_data = properties_data = None
+        if node and not xhr:
+            properties_data = self.render_properties(
+                    'browser', context, node.get_properties())
+            quickjump_data = list(repos.get_quickjump_entries(rev))
 
         data = {
             'context': context, 'reponame': reponame or None,
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
             'created_path': node and node.created_path,
             'created_rev': node and node.created_rev,
-            'properties': xhr or node and \
-                    self.render_properties('browser', context,
-                                           node.get_properties()),
+            'properties': properties_data,
             'path_links': path_links,
             'order': order, 'desc': desc and 1 or None,
-            'repo': all_repositories and \
-                    self._render_repository_index(context, all_repositories,
-                                                  order, desc),
-            'dir': node and node.isdir and \
-                    self._render_dir(req, reponame, repos, node, rev, order,
-                                     desc),
-            'file': node and node.isfile and \
-                    self._render_file(req, context, reponame, repos, node, rev),
-            'quickjump_entries': xhr or node and \
-                    list(repos.get_quickjump_entries(rev)),
-            'wiki_format_messages':
-                self.config['changeset'].getbool('wiki_format_messages')
-        }
+            'repo': repo_data, 'dir': dir_data, 'file': file_data,
+            'quickjump_entries': quickjump_data,
+            'wiki_format_messages': \
+                self.config['changeset'].getbool('wiki_format_messages'),
+            'xhr': xhr,
+        }                   
         if xhr: # render and return the content only
-            data['xhr'] = True
             return 'dir_entries.html', data, None
 
-        if data['dir'] or data['repo']:
+        if dir_data or repo_data:
             add_script(req, 'common/js/expand_dir.js')
             add_script(req, 'common/js/keyboard_nav.js')
 
