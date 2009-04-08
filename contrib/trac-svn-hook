@@ -1,23 +1,42 @@
 #!/bin/sh
 #
-# trac-svn-post-commit-hook
-# =========================
+# trac-svn-hook
+# =============
 #
-# This is a script that should be called from a Subversion post-commit hook
-# for notifying Trac about new changesets.
+# This script should be called from Subversion hooks, for notifying Trac
+# about new changesets and changeset modifications.
 #
-# Usage: copy this file somewhere (e.g. in your TRAC_ENV or TRAC_PARENT_ENV 
-#        folder), then insert the following snippet in the
-#        $REPOS/hooks/post-commit script, for all Subversion repositories
-#        that have to be monitored by your Trac environment(s).
+# Usage: copy this script to some central place, for example in your
+#        TRAC_ENV or TRAC_PARENT_ENV folder, then fill in the CONFIGURATION
+#        section below. Be sure to read the Configuration Notes first.
 #
-#        /path/to/trac-svn-post-commit-hook $REPOS $REV
+#        For each Subversion repository $REPOS that has to be monitored by 
+#        your Trac environment(s), you need to modify the hooks in order to
+#        call the present script:
 #
-# First read the Configuration Notes below and then fill in the Configuration
-# section as appropriate.
+#  Add this to your $REPOS/hooks/post-revprop-change script:
+#
+#      /path/to/trac-svn-hook $REPOS $REV
+#
+#
+#  If you allow revision property editing in $REPOS/hooks/pre-revprop-change,
+#  then let Trac know about the modification by adding this to your
+#  $REPOS/hooks/post-revprop-change script:
+#
+#      if [ "$PROPNAME" = "svn:log" -o "$PROPNAME" = "svn:author" ]; then
+#          /path/to/trac-svn-hook $REPOS $REV $USER $PROPNAME
+#      fi
 #
 # -----------------------------------------------------------------------------
 
+# CONFIGURATION
+# =============
+
+######
+#export TRAC_ENV=/path/to/trac-env:/path/to/another/trac-env
+#export PATH=/path/to/python/bin:$PATH
+#export LD_LIBRARY_PATH=/path/to/python/lib:$LD_LIBRARY_PATH
+######
 
 # -----------------------------------------------------------------------------
 #
@@ -25,18 +44,22 @@
 # ===================
 #
 # As a preliminary remark, you should be aware that Subversion usually
-# runs the post-commit hook in a very minimal environment.
+# run the hooks in a very minimal environment.
 # This is why we have to be very explicit about where to find things.
 # 
 # According to http://subversion.tigris.org/faq.html#hook-debugging 
 # one useful method for getting the post-commit hook to work is to test
 # the call from the user(s) which will end up running the hook (e.g. wwwrun,
-# nobody, etc.) and with the following command:
+# nobody, etc.) using the following commands:
 #
-#   env - /path/to/repos/hooks/post-commit /path/to/repos 1234
+#   env - $REPOS/hooks/post-commit $REPOS 1234
+#
+# or:
+#
+#   env - $REPOS/hooks/post-revprop-change $REPOS 1234 nobody svn:log
 #
 # 
-# The environment variables that have to be set in the script are
+# The environment variables that have to be set in this script are
 # TRAC_ENV and PATH, and also eventually LD_LIBRARY_PATH.
 #
 # TRAC_ENV is the path to the Trac environment which has to be notified.
@@ -47,11 +70,8 @@
 #
 # PATH
 #
-#  - the folder containing the trac-svn-post-commit-hook has to be in the PATH,
-#    or alternatively you have to use the full path when calling the script,
-#
 #  - the folder containing the trac-admin script has to be in the PATH.
-#    This is typically the same as your Python installation bin/ folder.
+#    This folder is typically the same as your Python installation bin/ folder.
 #    If this is /usr/bin, then you probably don't need to put it in the
 #    PATH. 
 #
@@ -59,7 +79,7 @@
 # location (such as /usr/local), then you need to add it to the PATH as 
 # well. You certainly also need to setup the LD_LIBRARY_PATH accordingly. 
 # The same goes for any custom dependency, such as SQLite libraries or
-# SVN libraries, make sure everything is reachable.
+# SVN libraries: make sure everything is reachable.
 # For example, if you get errors like "global name 'sqlite' is not defined"
 # or similar, then make sure the LD_LIBRARY_PATH contains the path to all
 # the required libraries (libsqlite3.so in the above example).
@@ -70,24 +90,16 @@
 #
 # -----------------------------------------------------------------------------
 
-# Configuration
-# =============
-
-######
-#export TRAC_ENV=/path/to/trac-env
-#export PATH=/path/to/python/bin:$PATH
-#export LD_LIBRARY_PATH=/path/to/python/lib:$LD_LIBRARY_PATH
-######
 
 # -----------------------------------------------------------------------------
 #
 # Examples
 # ========
 #
-# Minimal setup
-# -------------
+# Minimal setup example
+# ---------------------
 #
-# Everything is installed in /usr/bin
+# Python is installed in /usr/bin, Trac was easy-installed.
 #
 #   ######
 #   export TRAC_ENV=/srv/trac/the_trac_env
@@ -95,12 +107,13 @@
 #
 #
 #
-# Virtualenv setup
-# ----------------
+# Virtualenv setup example
+# ------------------------
 #
 # Here we're using a Trac installation set up using virtualenv
 # (http://pypi.python.org/pypi/virtualenv), based off a custom
-# Python installation. We're also using a custom SQLite build. 
+# Python installation (/opt/python-2.4.4). 
+# We're also using a custom SQLite build (/opt/sqlite-3.3.8). 
 #
 # Note that virtualenv's activate script doesn't seem to care
 # about LD_LIBRARY_PATH and the only other thing it does and that
@@ -118,12 +131,14 @@
 
 # -----------------------------------------------------------------------------
 #
-# This is the script itself, mostly troubleshooting checks...
+# This is the script itself, you shouldn't need to modify this part.
 
 # -- Command line arguments (cf. usage)
 
 REPOS="$1"
 REV="$2"
+USER="$3"
+PROPNAME="$4"
 
 # -- Foolproofing
 
@@ -142,24 +157,27 @@ if [ -z $TRAC_ENV ]; then
     exit 2
 fi
 
-# Call "trac-admin ... changeset added $REPOS $REV" for each Trac environment
+# -- Feedback
+
+if [ -z $USER -a -z $PROPNAME ]; then
+    EVENT="added"
+    echo "Changeset $REV was added in $REPOS"
+else
+    EVENT="modified"
+    echo "Changeset $REV was modified by $USER in $REPOS"
+fi
+
+# -- Call "trac-admin ... changeset ... $REPOS $REV" for each Trac environment
 
 ifs=$IFS
 IFS=:
 for env in $TRAC_ENV; do
     if [ -e "$env/VERSION" ]; then
-        trac-admin $env changeset added $REPOS $REV && \
-        echo "$env successfully notified of new changeset $REV in $REPOS"
+        trac-admin $env changeset $EVENT $REPOS $REV && \
+        echo "$env has been successfully notified"
     else
         echo "$env doesn't seem to be a Trac environment, skipping..."
     fi
 done
 IFS=$ifs
 
-
-# Final Note: in case everything is setup correctly and you don't need 
-# all those troubleshooting checks anymore, the command:
-#
-#   trac-admin /path/to/env repository notify changeset_add $REPOS $REV
-#
-# could be called directly from the post-commit hook itself, of course.
