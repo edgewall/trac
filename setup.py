@@ -94,6 +94,7 @@ facilities.
         trac.versioncontrol.svn_fs = trac.versioncontrol.svn_fs
         trac.versioncontrol.web_ui = trac.versioncontrol.web_ui
         trac.web.auth = trac.web.auth
+        trac.wiki.interwiki = trac.wiki.interwiki
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
     """,
