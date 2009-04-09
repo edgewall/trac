@@ -125,8 +125,11 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
 
     def setup_environ(self):
         self.raw_requestline = self.rfile.readline()
-        if not self.parse_request(): # An error code has been sent, just exit
+        if (self.rfile.closed or              # disconnect
+                not self.raw_requestline or   # empty request
+                not self.parse_request()):    # invalid request
             self.close_connection = 1
+            # note that in the latter case, an error code has already been sent
             return
 
         environ = self.server.environ.copy()
@@ -171,8 +174,10 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
 
     def handle_one_request(self):
         environ = self.setup_environ()
-        gateway = self.server.gateway(self, environ)
-        gateway.run(self.server.application)
+        if environ: 
+            gateway = self.server.gateway(self, environ)
+            gateway.run(self.server.application)
+        # else we had no request or a bad request: we simply exit (#3043)
 
     def finish(self):
         """We need to help the garbage collector a little."""
@@ -190,6 +195,8 @@ class WSGIServerGateway(WSGIGateway):
 
     def _write(self, data):
         assert self.headers_set, 'Response not started'
+        if self.handler.wfile.closed:
+            return # don't write to an already closed file (fix for #1183)
 
         if not self.headers_sent:
             status, headers = self.headers_sent = self.headers_set
