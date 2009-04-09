@@ -32,7 +32,7 @@ from trac.resource import ResourceNotFound, Resource
 from trac.util import embedded_numbers
 from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
-from trac.util.text import shorten_line
+from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
@@ -459,7 +459,11 @@ class BrowserModule(Component):
                 else:
                     entry = (reponame, repoinfo, None, "XXX")
             except TracError, err:
-                entry = (reponame, repoinfo, None, err)
+                class InvalidRepo(tuple):
+                    message = lambda self: self[0]
+                    date = lambda self: self[1]
+                entry = (reponame, repoinfo, None, 
+                         InvalidRepo((exception_to_unicode(err), 0)))
             repositories.append(entry)
 
         # Ordering of repositories
