@@ -166,7 +166,8 @@ try:
             kwargs = kwargs.copy()
             kwargs.setdefault('num', num)
             def _ngettext():
-                return safefmt(self.active.ungettext(singular, plural, num))
+                trans = self.active.ungettext(singular, plural, num)
+                return safefmt(trans, kwargs)
             if not self.isactive:
                 return LazyProxy(_ngettext)
             return _ngettext()
