@@ -285,16 +285,17 @@ class ImageMacro(WikiMacroBase):
     and style of the rendered `<img>` element:
      * digits and unit are interpreted as the size (ex. 120, 25%)
        for the image
-     * `right`, `left`, `top` or `bottom` are interpreted as the alignment for
-       the image
+     * `right`, `left`, `center`, `top`, `bottom` and `middle` are interpreted 
+       as the alignment for the image (alternatively, the first three can be
+       specified using `align=...` and the last three using `valign=...`)
      * `link=some TracLinks...` replaces the link to the image source by the
        one specified using a TracLinks. If no value is specified, the link is
        simply removed.
      * `nolink` means without link to image source (deprecated, use `link=`)
      * `key=value` style are interpreted as HTML attributes or CSS style
        indications for the image. Valid keys are:
-        * align, border, width, height, alt, title, longdesc, class, id
-          and usemap
+        * align, valign, border, width, height, alt, title, longdesc, class, 
+          id and usemap
         * `border` can only be a number
     
     Examples:
@@ -333,7 +334,7 @@ class ImageMacro(WikiMacroBase):
 
         # style information
         size_re = re.compile('[0-9]+(%|px)?$')
-        attr_re = re.compile('(align|border|width|height|alt'
+        attr_re = re.compile('(align|valign|border|width|height|alt'
                              '|title|longdesc|class|id|usemap)=(.+)')
         quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
@@ -355,8 +356,11 @@ class ImageMacro(WikiMacroBase):
                 if isinstance(elt, Element):
                     link = elt.attrib.get('href')
                 continue
-            if arg in ('left', 'right', 'top', 'bottom'):
+            if arg in ('left', 'right'):
                 style['float'] = arg
+                continue
+            elif arg in ('top', 'bottom', 'middle'):
+                style['vertical-align'] = arg
                 continue
             match = attr_re.match(arg)
             if match:
@@ -370,6 +374,8 @@ class ImageMacro(WikiMacroBase):
                         style['display'] = 'block'
                     else:
                         style['float'] = val
+                elif key == 'valign' and val in ('top', 'middle', 'bottom'):
+                        style['vertical-align'] = val
                 elif key == 'border':
                     style['border'] = ' %dpx solid' % int(val);
                 else:
