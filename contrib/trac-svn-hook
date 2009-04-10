@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# trac-svn-hook
+# trac-svn-hook (Unix or Cygwin)
 # =============
 #
 # This script should be called from Subversion hooks, for notifying Trac
@@ -14,7 +14,7 @@
 #        your Trac environment(s), you need to modify the hooks in order to
 #        call the present script:
 #
-#  Add this to your $REPOS/hooks/post-revprop-change script:
+#  Add this to your $REPOS/hooks/post-commit script:
 #
 #      /path/to/trac-svn-hook $REPOS $REV
 #
@@ -26,6 +26,13 @@
 #      if [ "$PROPNAME" = "svn:log" -o "$PROPNAME" = "svn:author" ]; then
 #          /path/to/trac-svn-hook $REPOS $REV $USER $PROPNAME
 #      fi
+#
+#
+#  Note: on Windows, if you have Cygwin installed, you can also use this
+#        script instead of trac-svn-hook.cmd, calling it that way from 
+#        within the post-commit.bat and post-revprop-change.bat scripts:
+#
+#      bash /path/to/trac-svn-hook ...
 #
 # -----------------------------------------------------------------------------
 
@@ -66,7 +73,9 @@
 #
 # In case you need to maintain more than one environment in sync with
 # the repository (using a different scope or not), simply specify more
-# than one path, using the ":" path separator.
+# than one path, using the ":" path separator (or ";" if the script is
+# run on Windows using Cygwin's bash - don't forget to enclose the path
+# list in quotes, e.g. TRAC_ENV="path1;path2").
 #
 # PATH
 #
@@ -171,6 +180,11 @@ fi
 
 ifs=$IFS
 IFS=:
+if [ -n $BASH_VERSION ]; then # we can use Bash syntax
+    if [[ ${BASH_VERSINFO[5]} = *cygwin ]]; then
+        IFS=";"
+    fi
+fi
 for env in $TRAC_ENV; do
     if [ -e "$env/VERSION" ]; then
         trac-admin $env changeset $EVENT $REPOS $REV && \
