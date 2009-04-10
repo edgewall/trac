@@ -527,7 +527,7 @@ class Request(object):
         """
         header = self.get_header('Accept-Language') or 'en-us'
         langs = []
-        for lang in header.split(','):
+        for i, lang in enumerate(header.split(',')):
             code, params = cgi.parse_header(lang)
             q = 1
             if 'q' in params:
@@ -535,9 +535,9 @@ class Request(object):
                     q = float(params['q'])
                 except ValueError:
                     q = 0
-            langs.append((-q, code))
+            langs.append((-q, i, code))
         langs.sort()
-        return [code for q, code in langs]
+        return [code for q, i, code in langs]
 
     def _reconstruct_url(self):
         """Reconstruct the absolute base URL of the application."""

@@ -63,7 +63,7 @@ from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
-                           javascript_quote
+                           javascript_quote, exception_to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date, utc
 from trac.util.translation import _
@@ -358,9 +358,10 @@ class Chrome(Component):
         try:
             import babel
             babel_version = get_pkginfo(babel).get('version')
-            self.env.systeminfo.append(('Babel', babel_version))
-        except ImportError:
-            pass
+        except ImportError, e:
+            self.log.debug("Babel not found: %s", exception_to_unicode(e))
+            babel_version = '-'
+        self.env.systeminfo.append(('Babel', babel_version))
 
     # IEnvironmentSetupParticipant methods
 

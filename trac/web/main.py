@@ -288,7 +288,10 @@ class RequestDispatcher(Component):
             preferred = req.session.get('language', req.languages)
             if not isinstance(preferred, list):
                 preferred = [preferred]
-            return Locale.negotiate(preferred, available, sep='-')
+            negociated = Locale.negotiate(preferred, available, sep='-') 
+            self.log.debug("Negociated locale: %s -> %s", 
+                           preferred, negociated) 
+            return negociated 
 
     def _get_timezone(self, req):
         try:
