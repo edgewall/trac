@@ -785,7 +785,7 @@ class Formatter(object):
                 args = WikiParser._processor_param_re.split(line[len(name):])
                 del args[::3]
                 keys = [str(k) for k in args[::2]] # used as keyword parameters
-                values = [v and v[0] in '"\'' and v[1:-1] or v
+                values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
                           for v in args[1::2]]
                 args = dict(zip(keys, values))
                 if 'class' not in args:
