@@ -365,7 +365,11 @@ class ImageMacro(WikiMacroBase):
                 if m:
                     val = m.group(1)
                 if key == 'align':
-                    style['float'] = val
+                    if val == 'center':
+                        style['margin-left'] = style['margin-right'] = 'auto'
+                        style['display'] = 'block'
+                    else:
+                        style['float'] = val
                 elif key == 'border':
                     style['border'] = ' %dpx solid' % int(val);
                 else:
