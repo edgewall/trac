@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-11 01:25+0200\n"
+"PO-Revision-Date: 2009-04-11 01:32+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -199,8 +199,8 @@ msgstr "Copie à chaud the %(src)s vers %(dst)s ..."
 #: trac/env.py:692
 msgid "The following errors happened while copying the environment:"
 msgstr ""
-"Les erreurs suivantes sont survenues au cours de la copie de \"\n"
-"\"l'environnement :"
+"Les erreurs suivantes sont survenues au cours de la copie de \n"
+"l'environnement :"
 
 #: trac/env.py:703
 msgid "Hotcopy done."
@@ -282,8 +282,8 @@ msgstr "Actions disponibles :"
 #: trac/perm.py:631
 msgid "Group names must be in lower case and actions in upper case"
 msgstr ""
-"Les noms de groupes doivent être écrits en minuscules et les \"\n"
-"\"actions en majuscules"
+"Les noms de groupes doivent être écrits en minuscules et les \n"
+"actions en majuscules"
 
 #: trac/resource.py:329
 #, python-format
@@ -1255,8 +1255,8 @@ msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
 msgstr ""
-"Le Temps Universel Coordonné (UTC) correspond au fuseau horaire de \"\n"
-"\"Greenwich (GMT)."
+"Le Temps Universel Coordonné (UTC) correspond au fuseau horaire de \n"
+"Greenwich (GMT)."
 
 #: trac/prefs/templates/prefs_datetime.html:36
 msgid ""
@@ -1377,8 +1377,8 @@ msgstr "Recherche"
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr ""
-"La requête de recherche est trop courte. Elle doit contenir au moins\"\n"
-"\"%(num)s caractères."
+"La requête de recherche est trop courte. Elle doit contenir au moins\n"
+"%(num)s caractères."
 
 #: trac/search/web_ui.py:109
 msgid "Search Error"
@@ -2545,15 +2545,15 @@ msgstr "Les Tickets doivent avoir un résumé"
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr ""
-"La description du ticket est trop longue (elle doit être inférieure\"\n"
-"\"à %(num)s caractères)"
+"La description du ticket est trop longue (elle doit être inférieure\n"
+"à %(num)s caractères)"
 
 #: trac/ticket/web_ui.py:964
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr ""
-"Le commentaire du ticket est trop long (il doit être inférieure\"\n"
-"\"à %(num)s caractères)"
+"Le commentaire du ticket est trop long (il doit être inférieure\n"
+"à %(num)s caractères)"
 
 #: trac/ticket/web_ui.py:979
 msgid "Invalid comment threading identifier"
@@ -3166,8 +3166,8 @@ msgid ""
 "Can't synchronize with the repository (%(error)s). Look in the Trac log "
 "for more information."
 msgstr ""
-"Impossible de se synchroniser avec le dépôt (%(error)s). \"\n"
-"\"Regardez dans le log de Trac pour plus d'informations."
+"Impossible de se synchroniser avec le dépôt (%(error)s). \n"
+"Regardez dans le log de Trac pour plus d'informations."
 
 #: trac/versioncontrol/api.py:105
 #, python-format
@@ -3198,9 +3198,8 @@ msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
-"Système de contrôle de versions \"%(name)s\" non supporté : pas de \"\n"
-"\"module approprié, peut-être le plugin correspondant n'est-il pas activé"
-" ?"
+"Système de contrôle de versions \"%(name)s\" non supporté : pas de \n"
+"module approprié, peut-être le plugin correspondant n'est-il pas activé ?"
 
 #: trac/versioncontrol/api.py:178
 #, python-format
@@ -3811,8 +3810,8 @@ msgstr "Pas de version \"%(num)s\" pour la page Wiki \"%(name)s\""
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
 msgstr ""
-"La page wiki est trop longue (elle doit être inférieure\"\n"
-"\"à %(num)s caractères)"
+"La page wiki est trop longue (elle doit être inférieure\n"
+"à %(num)s caractères)"
 
 #: trac/wiki/web_ui.py:193
 #, python-format
@@ -3916,8 +3915,8 @@ msgstr "de cette page"
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
 msgstr ""
-"Cette page ne contenant aucune autre version, elle sera totalement \"\n"
-"\"supprimée !"
+"Cette page ne contenant aucune autre version, elle sera totalement \n"
+"supprimée !"
 
 #: trac/wiki/templates/wiki_diff.html:17
 #, python-format
