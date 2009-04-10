@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-11 00:49+0200\n"
+"PO-Revision-Date: 2009-04-11 01:11+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -180,7 +180,7 @@ msgstr ""
 
 #: trac/env.py:631
 msgid "Copying resources from:"
-msgstr "Copie des resources depuis :"
+msgstr "Copie des resources depuis :"
 
 #: trac/env.py:647
 msgid "Creating scripts."
@@ -200,7 +200,7 @@ msgstr "Copie à chaud the %(src)s vers %(dst)s ..."
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 "Les erreurs suivantes sont survenues au cours de la copie de \"\n"
-"\"l'environnement :"
+"\"l'environnement :"
 
 #: trac/env.py:700
 msgid "Hotcopy done."
@@ -220,7 +220,7 @@ msgid ""
 "Backup failed with '%(msg)s'.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
-"Erreur lors de la copie de sauvegarde : '%(msg)s.\n"
+"Erreur lors de la copie de sauvegarde : '%(msg)s.\n"
 "Utilisez '--no-backup' pour effectuer une mise à jour sans faire de copie"
 " de sauvegarde."
 
@@ -277,7 +277,7 @@ msgstr "Action"
 
 #: trac/perm.py:618
 msgid "Available actions:"
-msgstr "Actions disponibles :"
+msgstr "Actions disponibles :"
 
 #: trac/perm.py:631
 msgid "Group names must be in lower case and actions in upper case"
@@ -299,7 +299,7 @@ msgid "Error:"
 msgstr "Erreur :"
 
 #: trac/admin/console.py:99
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Welcome to trac-admin %(version)s\n"
 "Interactive Trac administration console.\n"
@@ -312,7 +312,7 @@ msgstr ""
 "Console d'administration pour Trac.\n"
 "Copyright (c) 2003-2008 Edgewall Software\n"
 "\n"
-"Entrez :   '?' ou 'help' pour obtenir une aide sur les commandes.\n"
+"Entrez :   '?' ou 'help' pour obtenir une aide sur les commandes.\n"
 
 #: trac/admin/console.py:131
 msgid "Failed to open environment."
@@ -320,7 +320,7 @@ msgstr "Erreur lors de l'ouverture de l'environnement."
 
 #: trac/admin/console.py:198
 msgid "Completion error:"
-msgstr "Erreur lors du complétement automatique de la commande :"
+msgstr "Erreur lors du complétement automatique de la commande :"
 
 #: trac/admin/console.py:249
 #, python-format
@@ -335,7 +335,7 @@ msgstr "trac-admin - La console d'administration de Trac %(version)s"
 #: trac/admin/console.py:255
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
-"Utilisation : trac-admin </chemin/vers/env_du_projet> [commande [sous-"
+"Utilisation : trac-admin </chemin/vers/env_du_projet> [commande [sous-"
 "command] [option ...]]\n"
 
 #: trac/admin/console.py:258
@@ -467,9 +467,9 @@ msgid ""
 msgstr ""
 "\n"
 "---------------------------------------------------------------------\n"
-"Attention : indexation du dépôt impossible.\n"
+"Attention : indexation du dépôt impossible.\n"
 "\n"
-"Ceci peut survenir pour une quantité de raisons : type de système de\n"
+"Ceci peut survenir pour une quantité de raisons : type de système de\n"
 "contrôle de version invalide, librairie Python d'interfaçage requise non\n"
 "installée ou incorrectement installée, pas de dépôt au chemin spécifié, "
 "...\n"
@@ -519,7 +519,7 @@ msgstr ""
 "  %(config_path)s\n"
 "\n"
 "Si vous voulez tester rapidement cet environnement,\n"
-"essayez de lancer le serveur web dédié `tracd` :\n"
+"essayez de lancer le serveur web dédié `tracd` :\n"
 "\n"
 "  tracd --port 8000 %(project_path)s\n"
 "\n"
@@ -532,7 +532,7 @@ msgstr ""
 "web).\n"
 "\n"
 "La documentation la plus récente peut également être trouvée sur le site\n"
-"web du projet Trac :\n"
+"web du projet Trac :\n"
 "\n"
 "  http://trac.edgewall.org/\n"
 "\n"
@@ -659,7 +659,7 @@ msgstr "L'extension %(name)s est déjà installée"
 
 #: trac/admin/templates/admin.html:10
 msgid "Administration:"
-msgstr "Administration :"
+msgstr "Administration :"
 
 #: trac/admin/templates/admin_basics.html:9
 msgid "Basics"
@@ -848,17 +848,17 @@ msgstr "Jalons"
 
 #: trac/admin/templates/admin_milestones.html:14
 msgid "Manage Milestones"
-msgstr "Gestion des Jalons"
+msgstr "Gestion des jalons"
 
 #: trac/admin/templates/admin_milestones.html:19
 msgid "Modify Milestone:"
-msgstr "Modifier le Jalon :"
+msgstr "Modifier le jalon :"
 
 #: trac/admin/templates/admin_milestones.html:24
 #: trac/admin/templates/admin_milestones.html:82
 #: trac/ticket/templates/milestone_edit.html:51
 msgid "Due:"
-msgstr "Date limite :"
+msgstr "Date d'échéance :"
 
 #: trac/admin/templates/admin_milestones.html:27
 #: trac/admin/templates/admin_milestones.html:41
@@ -873,7 +873,7 @@ msgstr "Format :"
 #: trac/admin/templates/admin_milestones.html:33
 #: trac/ticket/templates/milestone_edit.html:59
 msgid "Completed:"
-msgstr "Livraison :"
+msgstr "Atteint le :"
 
 #: trac/admin/templates/admin_milestones.html:55
 #: trac/admin/templates/admin_versions.html:35
@@ -883,7 +883,7 @@ msgstr "Description (l'utilisation du [1:WikiFormatting] est possible ici) :"
 
 #: trac/admin/templates/admin_milestones.html:75
 msgid "Add Milestone:"
-msgstr "Ajouter un Jalon :"
+msgstr "Créér un jalon :"
 
 #: trac/admin/templates/admin_milestones.html:100 trac/ticket/admin.py:356
 msgid "Due"
@@ -1090,9 +1090,9 @@ msgid "Invalid unified diff content"
 msgstr "Le contenu n'est pas conforme au format \"unified diff\""
 
 #: trac/mimeview/patch.py:165
-#, fuzzy, python-format
+#, python-format
 msgid "new file %(new)s"
-msgstr "Echec du svn blame: %(error)s"
+msgstr "Nouveau fichier %(new)s"
 
 #: trac/mimeview/patch.py:169
 #, python-format
@@ -1147,7 +1147,7 @@ msgstr "Avancé"
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
-msgstr "Préférences :"
+msgstr "Préférences :"
 
 #: trac/prefs/templates/prefs.html:17
 msgid ""
@@ -1571,9 +1571,8 @@ msgid "Delete attachment"
 msgstr "Supprimer le fichier joint"
 
 #: trac/templates/attachment.html:80
-#, fuzzy
 msgid "Attach another file"
-msgstr "Joindre le fichier"
+msgstr "Joindre un autre fichier"
 
 #: trac/templates/attachment.html:90
 msgid "(added by"
@@ -1710,7 +1709,7 @@ msgid ""
 "Request parameters:\n"
 "{{{"
 msgstr ""
-"Paramètres de la Requête :\n"
+"Paramètres de la Requête :\n"
 "{{{"
 
 #: trac/templates/error.html:73
@@ -1766,9 +1765,8 @@ msgid "To that end, you could"
 msgstr "A cette fin, il est possible"
 
 #: trac/templates/error.html:114
-#, fuzzy
 msgid "a ticket."
-msgstr "Voir le Ticket"
+msgstr "un ticket"
 
 #: trac/templates/error.html:116
 msgid "The action that triggered the error was:"
@@ -1783,7 +1781,6 @@ msgid "You should"
 msgstr ""
 
 #: trac/templates/error.html:123
-#, fuzzy
 msgid ""
 "a ticket at the admin Trac to report\n"
 "                    the issue."
@@ -1796,13 +1793,12 @@ msgid "Found a bug in Trac?"
 msgstr ""
 
 #: trac/templates/error.html:129
-#, fuzzy
 msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
 msgstr ""
 "Si vous pensez que ceci aurait du fonctionner et que vous pouvez\n"
-"reproduire le problème, il vous est possible de soumettre ce problème à\n"
+"reproduire le problème, il vous est possible d'en informer\n"
 "l'équipe de développement de Trac"
 
 #: trac/templates/error.html:131
@@ -1919,7 +1915,7 @@ msgstr "Erreur"
 
 #: trac/templates/layout.html:42
 msgid "Download in other formats:"
-msgstr "Télécharger en d'autres formats :"
+msgstr "Télécharger en d'autres formats :"
 
 #: trac/templates/macros.html:40
 msgid "anonymous"
@@ -1955,7 +1951,7 @@ msgstr "lignes autour de chaque différence"
 
 #: trac/templates/macros.html:107
 msgid "Ignore:"
-msgstr "Ignorer :"
+msgstr "Ignorer :"
 
 #: trac/templates/macros.html:111
 msgid "Blank lines"
@@ -2032,9 +2028,8 @@ msgstr "Joindre le fichier"
 
 #: trac/templates/macros.html:234 trac/templates/macros.html:235
 #: trac/templates/macros.html:243
-#, fuzzy
 msgid "s:"
-msgstr "s :"
+msgstr "s :"
 
 #: trac/templates/macros.html:243
 msgid "Total"
@@ -2042,7 +2037,7 @@ msgstr "Total"
 
 #: trac/templates/theme.html:26
 msgid "Search:"
-msgstr "Recherche :"
+msgstr "Recherche :"
 
 #: trac/templates/theme.html:37
 msgid "Context Navigation"
@@ -2050,11 +2045,11 @@ msgstr "Navigation contextuelle"
 
 #: trac/templates/theme.html:47
 msgid "Warning:"
-msgstr "Attention :"
+msgstr "Attention :"
 
 #: trac/templates/theme.html:50
 msgid "Warnings:"
-msgstr "Attention :"
+msgstr "Attention :"
 
 #: trac/templates/theme.html:58
 msgid "Notice:"
@@ -2215,15 +2210,15 @@ msgstr "Composant %(name)s n'existe pas."
 
 #: trac/ticket/model.py:772
 msgid "Open (by due date)"
-msgstr "Ouvert (par date de délivrance)"
+msgstr "Non atteints (par date d'échéance)"
 
 #: trac/ticket/model.py:773
 msgid "Open (no due date)"
-msgstr "Ouvert (sans date de délivrance)"
+msgstr "Non atteints (sans date d'échéance)"
 
 #: trac/ticket/model.py:776
 msgid "Closed"
-msgstr "Fermé"
+msgstr "Atteints"
 
 #: trac/ticket/model.py:792
 #, python-format
@@ -2324,7 +2319,7 @@ msgid "No results"
 msgstr "Aucun résultat"
 
 #: trac/ticket/query.py:1156
-#, fuzzy, python-format
+#, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "Tickets de %(groupname)s %(groupvalue)s :"
 
@@ -2380,7 +2375,7 @@ msgstr "Echec de l'exécution du Rapport : %(error)s"
 #: trac/ticket/report.py:511
 #, python-format
 msgid "The following arguments are missing: %(args)s"
-msgstr "Les paramétres suivants manquent : %(args)s"
+msgstr "Les paramétres suivants manquent : %(args)s"
 
 #: trac/ticket/report.py:530
 msgid "SQL Query"
@@ -2402,8 +2397,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
-"Les groupes de jalons '%(group1)s' et '%(group2)s' sont déclarés tous les"
-" deux comme des groupes \"catch-all\". Merci de vérifier votre "
+"Les groupes de statuts '%(group1)s' et '%(group2)s' sont déclarés tous "
+"les deux comme des groupes par défaut. Merci de vérifier votre "
 "configuration."
 
 #: trac/ticket/roadmap.py:229
@@ -2412,8 +2407,8 @@ msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
-"Le groupe de jalons '%(groupname)s' réutilise le statut '%(status)s' déjà"
-" utilisé par d'autres groupes. Merci de vérifier votre configuration."
+"Le groupe de statuts '%(groupname)s' réutilise le statut '%(status)s' "
+"déjà utilisé par d'autres groupes. Merci de vérifier votre configuration."
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:422
 #: trac/ticket/roadmap.py:551 trac/ticket/templates/roadmap.html:10
@@ -2442,11 +2437,11 @@ msgstr "Jalons atteints"
 #: trac/ticket/roadmap.py:630
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
-msgstr "Le Jalon \"%(name)s\" existe déjà, merci de choisir un nom différent"
+msgstr "Le jalon \"%(name)s\" existe déjà, merci de choisir un nom différent"
 
 #: trac/ticket/roadmap.py:635
 msgid "You must provide a name for the milestone."
-msgstr "Aucun nom n'a été défini pour ce Jalon."
+msgstr "Aucun nom n'a été défini pour ce jalon."
 
 #: trac/ticket/web_ui.py:173 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
@@ -2461,7 +2456,6 @@ msgid "Opened and closed tickets"
 msgstr ""
 
 #: trac/ticket/web_ui.py:249
-#, fuzzy
 msgid "Ticket updates"
 msgstr "Toutes modifications des tickets"
 
@@ -2572,7 +2566,7 @@ msgstr "Le champ du ticket '%(field)s' est invalide : %(message)s"
 
 #: trac/ticket/web_ui.py:1136
 msgid "Assign to"
-msgstr "Assigner à :"
+msgstr "Assigner à :"
 
 #: trac/ticket/web_ui.py:1166
 msgid "Add to Cc"
@@ -2613,7 +2607,7 @@ msgstr "Confirmer la suppression du jalon ?"
 
 #: trac/ticket/templates/milestone_delete.html:28
 msgid "Retarget associated tickets to milestone"
-msgstr "Mettre à jour les tickets associés au jalon"
+msgstr "Mettre à jour les tickets associés au jalon :"
 
 #: trac/ticket/templates/milestone_delete.html:40
 #: trac/ticket/templates/milestone_view.html:99
@@ -2638,16 +2632,16 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
 msgid "Edit Milestone"
-msgstr "Edition du Jalon"
+msgstr "Edition du jalon"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
 msgid "New Milestone"
-msgstr "Nouveau Jalon"
+msgstr "Nouveau jalon"
 
 #: trac/ticket/templates/milestone_edit.html:45
 msgid "Name of the milestone:"
-msgstr "Nom du Jalon :"
+msgstr "Nom du jalon :"
 
 #: trac/ticket/templates/milestone_edit.html:50
 msgid "Schedule"
@@ -2655,7 +2649,7 @@ msgstr "Calendrier"
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
-msgstr "Mettre à jour les tickets ouverts associés au jalon"
+msgstr "Mettre à jour les tickets ouverts associés au jalon :"
 
 #: trac/ticket/templates/milestone_edit.html:92
 #: trac/ticket/templates/ticket.html:400 trac/wiki/templates/wiki_edit.html:119
@@ -2665,7 +2659,7 @@ msgstr "Enregistrer"
 
 #: trac/ticket/templates/milestone_edit.html:93
 msgid "Add milestone"
-msgstr "Ajouter un Jalon :"
+msgstr "Ajouter un jalon :"
 
 #: trac/ticket/templates/milestone_edit.html:99
 #: trac/ticket/templates/milestone_view.html:106
@@ -2698,12 +2692,12 @@ msgstr "en retard"
 #: trac/ticket/templates/milestone_view.html:33
 #: trac/ticket/templates/roadmap.html:44
 msgid "Due in"
-msgstr "Livraison prévue dans"
+msgstr "Date d'échéance"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:48
 msgid "No date set"
-msgstr "Pas de date définie"
+msgstr "Pas de date d'échéance"
 
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:44
@@ -2716,7 +2710,7 @@ msgstr "Aucun"
 
 #: trac/ticket/templates/milestone_view.html:93
 msgid "Edit milestone"
-msgstr "Edition du Jalon"
+msgstr "Editer le jalon"
 
 #: trac/ticket/templates/query.html:28
 #: trac/ticket/templates/query_results.html:29
@@ -2800,9 +2794,8 @@ msgstr "Voir le Ticket"
 
 #: trac/ticket/templates/query_results.html:65
 #: trac/ticket/templates/report_view.html:182
-#, fuzzy
 msgid "View milestone"
-msgstr "Nouveau Jalon"
+msgstr "Nouveau jalon"
 
 #: trac/ticket/templates/query_results.html:76
 msgid "Reported by"
@@ -2918,7 +2911,7 @@ msgstr ""
 
 #: trac/ticket/templates/roadmap.html:65
 msgid "Add new milestone"
-msgstr "Nouveau Jalon"
+msgstr "Ajouter un nouveau jalon"
 
 #: trac/ticket/templates/ticket.html:57
 #: trac/versioncontrol/templates/changeset.html:128
@@ -2984,7 +2977,7 @@ msgstr "(ticket pas encore créé)"
 
 #: trac/ticket/templates/ticket.html:139
 msgid "Reported by:"
-msgstr "Rapporté par :"
+msgstr "Rapporté par :"
 
 #: trac/ticket/templates/ticket.html:143
 msgid "Owned by:"
@@ -3073,9 +3066,8 @@ msgid "Preview"
 msgstr "Aperçu"
 
 #: trac/ticket/templates/ticket.html:400
-#, fuzzy
 msgid "Create ticket"
-msgstr "Création d'un Nouveau Ticket"
+msgstr "Création d'un nouveau ticket"
 
 #: trac/ticket/templates/ticket.html:407
 msgid "TracTickets"
@@ -3103,7 +3095,7 @@ msgid ""
 "Ticket URL: <"
 msgstr ""
 "-- \n"
-"Ticket URL : <"
+"Ticket URL : <"
 
 #: trac/timeline/web_ui.py:77 trac/timeline/templates/timeline.html:11
 #: trac/timeline/templates/timeline.html:17
@@ -3131,7 +3123,7 @@ msgid ""
 msgstr ""
 "[1:Afficher les modifications entre le [2:]] [3:]\n"
 "        et les [4:[5:] jours précédents][6:]\n"
-"        [7:Auteur : [8:]]"
+"        [7:Auteur : [8:]]"
 
 #: trac/timeline/templates/timeline.html:37
 msgid "Today"
@@ -3209,7 +3201,7 @@ msgstr "Chemin"
 #: trac/versioncontrol/api.py:142
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": \"%(error)s\" "
-msgstr "Système de contrôle de versions \"%(name)s\" non supporté : \"%(error)s\" "
+msgstr "Système de contrôle de versions \"%(name)s\" non supporté : \"%(error)s\" "
 
 #: trac/versioncontrol/api.py:146
 #, python-format
@@ -3217,7 +3209,7 @@ msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
-"Système de contrôle de versions \"%(name)s\" non supporté : pas de \"\n"
+"Système de contrôle de versions \"%(name)s\" non supporté : pas de \"\n"
 "\"module approprié, peut-être le plugin correspondant n'est-il pas activé"
 " ?"
 
@@ -3281,14 +3273,14 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-"Discordance de comparaison : La Base est %(oldnode)s (%(oldpath)s dans la"
+"Discordance de comparaison : La Base est %(oldnode)s (%(oldpath)s dans la"
 " révision %(oldrev)s) et la Destination est %(newnode)s (%(newpath)s dans"
 " la révision %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:837
-#, fuzzy, python-format
+#, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
-msgstr "Echec du svn blame: %(error)s"
+msgstr "Echec de l'annotation de %(path)s : %(error)s"
 
 #: trac/versioncontrol/templates/browser.html:49
 msgid "View revision:"
@@ -3735,9 +3727,8 @@ msgid "Next %(label)s"
 msgstr "Suivant %(label)s"
 
 #: trac/web/chrome.py:790
-#, fuzzy
 msgid "(unknown template location)"
-msgstr "Action inconnue"
+msgstr "(position indéterminée dans le template)"
 
 #: trac/web/chrome.py:791
 #, python-format
@@ -3750,7 +3741,7 @@ msgid "do so"
 msgstr "le faire"
 
 #: trac/web/main.py:490
-#, fuzzy, python-format
+#, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "Vous n'êtes pas connecté actuellement. Vous pouvez %(do_so)s maintenant."
 
@@ -3793,7 +3784,7 @@ msgstr "Page Wiki invalide : %(message)s"
 #: trac/wiki/formatter.py:144
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
 msgstr ""
-"Erreur : séquence de caractères \"--\" non autorisée dans un bloc de type"
+"Erreur : séquence de caractères \"--\" non autorisée dans un bloc de type"
 " 'htmlcomment'"
 
 #: trac/wiki/intertrac.py:50
@@ -4051,7 +4042,7 @@ msgstr "ici."
 msgid "Alternatively, you can also create the page higher in the hierarchy:"
 msgstr ""
 "Il vous est également possible de créer la page plus haut dans la "
-"hiérarchie :"
+"hiérarchie :"
 
 #: trac/wiki/templates/wiki_view.html:74
 msgid "Edit this page"
