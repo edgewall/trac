@@ -28,9 +28,17 @@ from genshi.builder import tag
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop', 
            'tgettext', 'tgettext_noop', 'tngettext', 'tngettext_noop']
 
+def safefmt(string, kwargs):
+    if kwargs:
+        try:
+            return string % kwargs
+        except KeyError:
+            pass
+    return string
+
 
 def gettext_noop(string, **kwargs):
-    return kwargs and string % kwargs or string
+    return safefmt(string, kwargs)
 
 def dgettext_noop(domain, string, **kwargs):
     return gettext_noop(string, **kwargs)
@@ -40,7 +48,7 @@ N_ = gettext_noop
 def ngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
     kwargs.setdefault('num', num)
-    return string % kwargs
+    return safefmt(string, kwargs)
 
 def dngettext_noop(domain, singular, plural, num, **kwargs):
     return ngettext_noop(singular, plural, num, **kwargs)
@@ -142,16 +150,14 @@ try:
 
         def gettext(self, string, **kwargs):
             def _gettext():
-                trans = self.active.ugettext(string)
-                return kwargs and trans % kwargs or trans
+                return safefmt(self.active.ugettext(string), kwargs)
             if not self.isactive:
                 return LazyProxy(_gettext)
             return _gettext()
 
         def dgettext(self, domain, string, **kwargs):
             def _dgettext():
-                trans = self.active.dugettext(domain, string)
-                return kwargs and trans % kwargs or trans
+                return safefmt(self.active.dugettext(string), kwargs)
             if not self.isactive:
                 return LazyProxy(_dgettext)
             return _dgettext()
@@ -160,8 +166,7 @@ try:
             kwargs = kwargs.copy()
             kwargs.setdefault('num', num)
             def _ngettext():
-                trans = self.active.ungettext(singular, plural, num)
-                return trans % kwargs
+                return safefmt(self.active.ungettext(singular, plural, num))
             if not self.isactive:
                 return LazyProxy(_ngettext)
             return _ngettext()
@@ -171,7 +176,7 @@ try:
             kwargs.setdefault('num', num)
             def _dngettext():
                 trans = self.active.dungettext(domain, singular, plural, num)
-                return trans % kwargs
+                return safefmt(trans, kwargs)
             if not self.isactive:
                 return LazyProxy(_dngettext)
             return _dngettext()
