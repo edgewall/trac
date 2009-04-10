@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-04-04 11:46+0200\n"
+"POT-Creation-Date: 2009-04-11 01:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,7 +133,7 @@ msgid "Date"
 msgstr ""
 
 #: trac/attachment.py:868 trac/templates/attachment.html:86
-#: trac/ticket/api.py:233 trac/ticket/templates/ticket.html:170
+#: trac/ticket/api.py:214 trac/ticket/templates/ticket.html:170
 msgid "Description"
 msgstr ""
 
@@ -142,26 +142,26 @@ msgstr ""
 msgid "File '%(name)s' exists"
 msgstr ""
 
-#: trac/env.py:421
+#: trac/env.py:422
 msgid "Can only backup sqlite databases"
 msgstr ""
 
-#: trac/env.py:506
+#: trac/env.py:507
 msgid "Database newer than Trac version"
 msgstr ""
 
-#: trac/env.py:518
+#: trac/env.py:519
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr ""
 
-#: trac/env.py:563
+#: trac/env.py:564
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
 
-#: trac/env.py:597
+#: trac/env.py:600
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -169,48 +169,48 @@ msgid ""
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
 
-#: trac/env.py:631
+#: trac/env.py:634
 msgid "Copying resources from:"
 msgstr ""
 
-#: trac/env.py:647
+#: trac/env.py:650
 msgid "Creating scripts."
 msgstr ""
 
-#: trac/env.py:664
+#: trac/env.py:667
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr ""
 
-#: trac/env.py:674
+#: trac/env.py:677
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr ""
 
-#: trac/env.py:689
+#: trac/env.py:692
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 
-#: trac/env.py:700
+#: trac/env.py:703
 msgid "Hotcopy done."
 msgstr ""
 
-#: trac/env.py:705 trac/admin/api.py:126
+#: trac/env.py:708 trac/admin/api.py:126
 msgid "Invalid arguments"
 msgstr ""
 
-#: trac/env.py:708
+#: trac/env.py:711
 msgid "Database is up to date, no upgrade necessary."
 msgstr ""
 
-#: trac/env.py:716
+#: trac/env.py:719
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
 
-#: trac/env.py:721
+#: trac/env.py:724
 msgid "Upgrade done."
 msgstr ""
 
@@ -267,7 +267,7 @@ msgstr ""
 msgid "Group names must be in lower case and actions in upper case"
 msgstr ""
 
-#: trac/resource.py:328
+#: trac/resource.py:329
 #, python-format
 msgid " at version %(version)s"
 msgstr ""
@@ -1500,7 +1500,7 @@ msgstr ""
 msgid "Removed"
 msgstr ""
 
-#: trac/templates/diff_view.html:62 trac/ticket/api.py:269
+#: trac/templates/diff_view.html:62 trac/ticket/api.py:250
 #: trac/versioncontrol/templates/changeset.html:157
 #: trac/versioncontrol/templates/revisionlog.html:76 trac/wiki/admin.py:154
 msgid "Modified"
@@ -1930,16 +1930,16 @@ msgstr ""
 msgid "Ticket %(num)s and all associated data removed."
 msgstr ""
 
-#: trac/ticket/api.py:267
+#: trac/ticket/api.py:248
 msgid "Created"
 msgstr ""
 
-#: trac/ticket/api.py:428
+#: trac/ticket/api.py:404
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr ""
 
-#: trac/ticket/api.py:449
+#: trac/ticket/api.py:425
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr ""
@@ -2553,7 +2553,6 @@ msgid "Delete query"
 msgstr ""
 
 #: trac/ticket/templates/query.html:249
-#: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
 msgstr ""
 
@@ -2617,19 +2616,9 @@ msgid "Description: (you may use [1:WikiFormatting] here)"
 msgstr ""
 
 #: trac/ticket/templates/report_edit.html:36
-msgid "Query for Report: (can be either SQL or, if starting with"
-msgstr ""
-
-#: trac/ticket/templates/report_edit.html:36
-msgid "query:"
-msgstr ""
-
-#: trac/ticket/templates/report_edit.html:36
-msgid ", a"
-msgstr ""
-
-#: trac/ticket/templates/report_edit.html:36
-msgid "expression)"
+msgid ""
+"Query for Report: (can be either SQL or, if starting with [1:query:], a "
+"[2:TracQuery] expression)"
 msgstr ""
 
 #: trac/ticket/templates/report_edit.html:41
@@ -3020,14 +3009,14 @@ msgstr ""
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:684
+#: trac/versioncontrol/svn_fs.py:683
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:837
+#: trac/versioncontrol/svn_fs.py:836
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr ""
@@ -3460,21 +3449,21 @@ msgstr ""
 msgid "Next %(label)s"
 msgstr ""
 
-#: trac/web/chrome.py:790
+#: trac/web/chrome.py:791
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:791
+#: trac/web/chrome.py:792
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:488
+#: trac/web/main.py:491
 msgid "do so"
 msgstr ""
 
-#: trac/web/main.py:490
+#: trac/web/main.py:493
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr ""
@@ -3506,7 +3495,7 @@ msgstr ""
 msgid "'%(name)s' is not a directory"
 msgstr ""
 
-#: trac/wiki/api.py:343 trac/wiki/templates/wiki_view.html:53
+#: trac/wiki/api.py:317 trac/wiki/templates/wiki_view.html:53
 msgid "no permission to view this wiki page"
 msgstr ""
 
@@ -3524,12 +3513,12 @@ msgstr ""
 msgid "Can't view %(link)s:"
 msgstr ""
 
-#: trac/wiki/macros.py:468
+#: trac/wiki/macros.py:478
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr ""
 
-#: trac/wiki/macros.py:551
+#: trac/wiki/macros.py:561
 msgid "Table of Contents"
 msgstr ""
 

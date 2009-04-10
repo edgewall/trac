@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-11 01:11+0200\n"
+"PO-Revision-Date: 2009-04-11 01:25+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -135,7 +135,7 @@ msgid "Date"
 msgstr "Date"
 
 #: trac/attachment.py:868 trac/templates/attachment.html:86
-#: trac/ticket/api.py:233 trac/ticket/templates/ticket.html:170
+#: trac/ticket/api.py:214 trac/ticket/templates/ticket.html:170
 msgid "Description"
 msgstr "Description"
 
@@ -144,22 +144,22 @@ msgstr "Description"
 msgid "File '%(name)s' exists"
 msgstr "Le fichier %(name)s existe déjà."
 
-#: trac/env.py:421
+#: trac/env.py:422
 msgid "Can only backup sqlite databases"
 msgstr "Seules les base de données sqlite peuvent être sauvegardées"
 
-#: trac/env.py:506
+#: trac/env.py:507
 msgid "Database newer than Trac version"
 msgstr ""
 "La version de la base de données est plus récente que la version de Trac "
 "utilisée"
 
-#: trac/env.py:518
+#: trac/env.py:519
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Pas de module de mise à jour pour la version %(num)i (%(version)s.py)"
 
-#: trac/env.py:563
+#: trac/env.py:564
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -167,7 +167,7 @@ msgstr ""
 " Il manque la variable d'environnement \"TRAC_ENV\". Trac a besoin de "
 "cette variable pour pointer sur un environnement Trac valide."
 
-#: trac/env.py:597
+#: trac/env.py:600
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -178,43 +178,43 @@ msgstr ""
 "\n"
 "Exécutez la commande: \"trac-admin %(path)s upgrade\""
 
-#: trac/env.py:631
+#: trac/env.py:634
 msgid "Copying resources from:"
 msgstr "Copie des resources depuis :"
 
-#: trac/env.py:647
+#: trac/env.py:650
 msgid "Creating scripts."
 msgstr "Création des scripts."
 
-#: trac/env.py:664
+#: trac/env.py:667
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "la copie à chaud ne peut pas écraser la précédente '%(dest)s'"
 
-#: trac/env.py:674
+#: trac/env.py:677
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Copie à chaud the %(src)s vers %(dst)s ..."
 
-#: trac/env.py:689
+#: trac/env.py:692
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 "Les erreurs suivantes sont survenues au cours de la copie de \"\n"
 "\"l'environnement :"
 
-#: trac/env.py:700
+#: trac/env.py:703
 msgid "Hotcopy done."
 msgstr "Copie à chaud terminée."
 
-#: trac/env.py:705 trac/admin/api.py:126
+#: trac/env.py:708 trac/admin/api.py:126
 msgid "Invalid arguments"
 msgstr "Paramètres invalides"
 
-#: trac/env.py:708
+#: trac/env.py:711
 msgid "Database is up to date, no upgrade necessary."
 msgstr "Base de données à jour"
 
-#: trac/env.py:716
+#: trac/env.py:719
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
@@ -224,7 +224,7 @@ msgstr ""
 "Utilisez '--no-backup' pour effectuer une mise à jour sans faire de copie"
 " de sauvegarde."
 
-#: trac/env.py:721
+#: trac/env.py:724
 msgid "Upgrade done."
 msgstr "Mise à jour terminée."
 
@@ -285,7 +285,7 @@ msgstr ""
 "Les noms de groupes doivent être écrits en minuscules et les \"\n"
 "\"actions en majuscules"
 
-#: trac/resource.py:328
+#: trac/resource.py:329
 #, python-format
 msgid " at version %(version)s"
 msgstr " dans la version %(version)s"
@@ -1674,7 +1674,7 @@ msgstr "Ajouté"
 msgid "Removed"
 msgstr "Supprimé"
 
-#: trac/templates/diff_view.html:62 trac/ticket/api.py:269
+#: trac/templates/diff_view.html:62 trac/ticket/api.py:250
 #: trac/versioncontrol/templates/changeset.html:157
 #: trac/versioncontrol/templates/revisionlog.html:76 trac/wiki/admin.py:154
 msgid "Modified"
@@ -2130,16 +2130,16 @@ msgstr "<number> doit être un numéro"
 msgid "Ticket %(num)s and all associated data removed."
 msgstr "Ticket %(num)s et données attenantes supprimées."
 
-#: trac/ticket/api.py:267
+#: trac/ticket/api.py:248
 msgid "Created"
 msgstr "Créé"
 
-#: trac/ticket/api.py:428
+#: trac/ticket/api.py:404
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
 msgstr "Commentaire %(cnum)s pour le Ticket #%(id)s"
 
-#: trac/ticket/api.py:449
+#: trac/ticket/api.py:425
 #, python-format
 msgid "Ticket #%(shortname)s"
 msgstr "Ticket #%(shortname)s"
@@ -2337,21 +2337,21 @@ msgstr "Supprimer le rapport {%(num)s} %(title)s"
 #: trac/ticket/report.py:238
 #, python-format
 msgid "Report %(num)s does not exist."
-msgstr "Le Rapport %(num)s n'existe pas."
+msgstr "Le rapport %(num)s n'existe pas."
 
 #: trac/ticket/report.py:184 trac/ticket/report.py:196
 #: trac/ticket/report.py:239
 msgid "Invalid Report Number"
-msgstr "Numéro de Rapport invalide"
+msgstr "Numéro de rapport invalide"
 
 #: trac/ticket/report.py:208
 msgid "Create New Report"
-msgstr "Création d'un Nouveau Rapport"
+msgstr "Création d'un nouveau rapport"
 
 #: trac/ticket/report.py:212
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr "Edition du Rapport {%(num)d} %(title)s"
+msgstr "Edition du rapport {%(num)d} %(title)s"
 
 #: trac/ticket/report.py:229
 msgid "This is a list of available reports."
@@ -2360,17 +2360,17 @@ msgstr "Liste des rapports disponibles"
 #: trac/ticket/report.py:244
 #, python-format
 msgid "Report failed: %(error)s"
-msgstr "Echec du Rapport : %(error)s"
+msgstr "Echec du rapport : %(error)s"
 
 #: trac/ticket/report.py:259
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
-msgstr "Lorsque spécifié, le numéro du Rapport doit être \"%(num)s\"."
+msgstr "Lorsque spécifié, le numéro du rapport doit être \"%(num)s\"."
 
 #: trac/ticket/report.py:310
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr "Echec de l'exécution du Rapport : %(error)s"
+msgstr "Echec de l'exécution du rapport : %(error)s"
 
 #: trac/ticket/report.py:511
 #, python-format
@@ -2384,7 +2384,7 @@ msgstr "Requête SQL"
 #: trac/ticket/report.py:544
 #, python-format
 msgid "Report %(num)s has no SQL query."
-msgstr "Aucune requête SQL associée au Rapport %(num)s"
+msgstr "Aucune requête SQL associée au rapport %(num)s"
 
 #: trac/ticket/report.py:574
 #, python-format
@@ -2775,7 +2775,6 @@ msgid "Delete query"
 msgstr "Supprimer la requête"
 
 #: trac/ticket/templates/query.html:249
-#: trac/ticket/templates/report_edit.html:36
 msgid "TracQuery"
 msgstr "TracQuery"
 
@@ -2832,29 +2831,19 @@ msgstr "pour de l'aide sur l'utilisation et la création des rapports"
 
 #: trac/ticket/templates/report_edit.html:21
 msgid "Report Title:"
-msgstr "Titre du Rapport :"
+msgstr "Titre du rapport :"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr "Description: (l'utilisation du [1:WikiFormatting] est possible ici)"
+msgstr "Description : (l'utilisation du [1:WikiFormatting] est possible ici)"
 
 #: trac/ticket/templates/report_edit.html:36
-msgid "Query for Report: (can be either SQL or, if starting with"
+msgid ""
+"Query for Report: (can be either SQL or, if starting with [1:query:], a "
+"[2:TracQuery] expression)"
 msgstr ""
-"Requête pour le Rapport: (il peut être soit en SQL, soit s'il \"\n"
-"\"commence par"
-
-#: trac/ticket/templates/report_edit.html:36
-msgid "query:"
-msgstr "requête :"
-
-#: trac/ticket/templates/report_edit.html:36
-msgid ", a"
-msgstr ", une"
-
-#: trac/ticket/templates/report_edit.html:36
-msgid "expression)"
-msgstr "expression)"
+"Requête pour le rapport: (il peut être soit en SQL, soit s'il commence "
+"par [1:query:], une expression [2:TracQuery])"
 
 #: trac/ticket/templates/report_edit.html:41
 msgid "Save report"
@@ -2878,7 +2867,7 @@ msgstr "Editer le rapport"
 
 #: trac/ticket/templates/report_view.html:75
 msgid "Copy report"
-msgstr "Voir le rapport"
+msgstr "Copier le rapport"
 
 #: trac/ticket/templates/report_view.html:93
 msgid "match"
@@ -2891,7 +2880,7 @@ msgstr "Voir le rapport"
 
 #: trac/ticket/templates/report_view.html:209
 msgid "Create new report"
-msgstr "Création d'un Nouveau Rapport"
+msgstr "Créer d'un nouveau rapport"
 
 #: trac/ticket/templates/roadmap.html:21
 msgid "Show already completed milestones"
@@ -3267,7 +3256,7 @@ msgstr "%(path)s n'est apparemment pas un dépôt Subversion."
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
 msgstr ""
 
-#: trac/versioncontrol/svn_fs.py:684
+#: trac/versioncontrol/svn_fs.py:683
 #, python-format
 msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
@@ -3277,7 +3266,7 @@ msgstr ""
 " révision %(oldrev)s) et la Destination est %(newnode)s (%(newpath)s dans"
 " la révision %(newrev)s)."
 
-#: trac/versioncontrol/svn_fs.py:837
+#: trac/versioncontrol/svn_fs.py:836
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
 msgstr "Echec de l'annotation de %(path)s : %(error)s"
@@ -3726,21 +3715,21 @@ msgstr "Précédent %(label)s"
 msgid "Next %(label)s"
 msgstr "Suivant %(label)s"
 
-#: trac/web/chrome.py:790
+#: trac/web/chrome.py:791
 msgid "(unknown template location)"
 msgstr "(position indéterminée dans le template)"
 
-#: trac/web/chrome.py:791
+#: trac/web/chrome.py:792
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:488
+#: trac/web/main.py:491
 msgid "do so"
 msgstr "le faire"
 
-#: trac/web/main.py:490
+#: trac/web/main.py:493
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "Vous n'êtes pas connecté actuellement. Vous pouvez %(do_so)s maintenant."
@@ -3772,7 +3761,7 @@ msgstr "Supprimer la page"
 msgid "'%(name)s' is not a directory"
 msgstr "%(name)s n'est pas un répertoire valide"
 
-#: trac/wiki/api.py:343 trac/wiki/templates/wiki_view.html:53
+#: trac/wiki/api.py:317 trac/wiki/templates/wiki_view.html:53
 msgid "no permission to view this wiki page"
 msgstr "pas le droit de voir cette page wiki"
 
@@ -3792,12 +3781,12 @@ msgstr ""
 msgid "Can't view %(link)s:"
 msgstr "Impossible de voir %(link)s :"
 
-#: trac/wiki/macros.py:468
+#: trac/wiki/macros.py:478
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "Erreur : Impossible d'obtenir une description pour la macro %(name)s"
 
-#: trac/wiki/macros.py:551
+#: trac/wiki/macros.py:561
 msgid "Table of Contents"
 msgstr "Table des Matières"
 
