@@ -87,11 +87,20 @@ class CachedRepository(Repository):
         cset = self.repos.get_changeset(rev)
         db = self.getdb()
         cursor = db.cursor()
+        cursor.execute("SELECT time,author,message FROM revision "
+                       "WHERE repos=%s AND rev=%s",
+                       (self.reponame, str(cset.rev)))
+        old_changeset = None
+        for time, author, message in cursor:
+            date = datetime.fromtimestamp(time, utc)
+            old_changeset = Changeset(cset.rev, message, author, date)
+        
         cursor.execute("UPDATE revision SET time=%s, author=%s, message=%s "
                        "WHERE repos=%s AND rev=%s",
                        (to_timestamp(cset.date), cset.author, cset.message,
                         self.reponame, str(cset.rev)))
         db.commit()
+        return old_changeset
         
     # @cached? => move to RepositoryManager
     def metadata(self, db=None):

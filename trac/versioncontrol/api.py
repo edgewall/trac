@@ -80,8 +80,13 @@ class IRepositoryChangeListener(Interface):
     def changeset_added(self, repos, changeset):
         """Called after a changeset has been added to a repository."""
 
-    def changeset_modified(self, repos, changeset):
-        """Called after a changeset has been modified in a repository."""
+    def changeset_modified(self, repos, changeset, old_changeset):
+        """Called after a changeset has been modified in a repository.
+        
+        The `old_changeset` argument contains the metadata of the changeset
+        prior to the modification. It is `None` if the old metadata cannot
+        be retrieved.
+        """
 
 
 class DbRepositoryProvider(Component):
@@ -393,8 +398,9 @@ class RepositoryManager(Component):
             else:
                 self.log.debug("Repository %s already up-to-date.", repos.name)
             for rev in revs:
+                args = []
                 if event == 'changeset_modified':
-                    repos.sync_changeset(rev)
+                    args.append(repos.sync_changeset(rev))
                 try:
                     changeset = repos.get_changeset(rev)
                 except NoSuchChangeset:
@@ -403,7 +409,7 @@ class RepositoryManager(Component):
                 self.log.debug("Event %s on %s for revision %s",
                                event, repos.reponame, rev)
                 for listener in self.change_listeners:
-                    getattr(listener, event)(repos, changeset)
+                    getattr(listener, event)(repos, changeset, *args)
         
         if inval:
             self.log.debug("Invalidating youngest_rev cache")
@@ -510,8 +516,13 @@ class Repository(object):
         return False
 
     def sync_changeset(self, rev):
-        """Resync the repository cache for the given `rev`, if relevant."""
-        pass
+        """Resync the repository cache for the given `rev`, if relevant.
+        
+        Returns a "metadata-only" changeset containing the metadata prior to
+        the resync, or `None` if the old values cannot be retrieved (typically
+        when the repository is not cached).
+        """
+        return None
 
     def get_quickjump_entries(self, rev):
         """Generate a list of interesting places in the repository.
