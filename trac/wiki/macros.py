@@ -330,7 +330,7 @@ class ImageMacro(WikiMacroBase):
         args = content.split(',')
         if len(args) == 0:
             raise Exception("No argument.")
-        filespec = args[0]
+        filespec = args.pop(0)
 
         # style information
         size_re = re.compile('[0-9]+(%|px)?$')
@@ -340,46 +340,42 @@ class ImageMacro(WikiMacroBase):
         attr = {}
         style = {}
         link = ''
-        for arg in args[1:]:
-            arg = arg.strip()
+        while args:
+            arg = args.pop(0).strip()
             if size_re.match(arg):
                 # 'width' keyword
                 attr['width'] = arg
-                continue
-            if arg == 'nolink':
+            elif arg == 'nolink':
                 link = None
-                continue
-            if arg.startswith('link='):
+            elif arg.startswith('link='):
                 val = arg.split('=', 1)[1]
                 elt = extract_link(self.env, formatter.context, val.strip())
                 link = None
                 if isinstance(elt, Element):
                     link = elt.attrib.get('href')
-                continue
-            if arg in ('left', 'right'):
+            elif arg in ('left', 'right'):
                 style['float'] = arg
-                continue
+            elif arg == 'center':
+                style['margin-left'] = style['margin-right'] = 'auto'
+                style['display'] = 'block'
             elif arg in ('top', 'bottom', 'middle'):
                 style['vertical-align'] = arg
-                continue
-            match = attr_re.match(arg)
-            if match:
-                key, val = match.groups()
-                m = quoted_re.search(val) # unquote "..." and '...'
-                if m:
-                    val = m.group(1)
-                if key == 'align':
-                    if val == 'center':
-                        style['margin-left'] = style['margin-right'] = 'auto'
-                        style['display'] = 'block'
+            else:
+                match = attr_re.match(arg)
+                if match:
+                    key, val = match.groups()
+                    if (key == 'align' and 
+                            val in ('left', 'right', 'center')) or \
+                        (key == 'valign' and \
+                            val in ('top', 'middle', 'bottom')):
+                        args.append(val)
+                    elif key == 'border':
+                        style['border'] = ' %dpx solid' % int(val);
                     else:
-                        style['float'] = val
-                elif key == 'valign' and val in ('top', 'middle', 'bottom'):
-                        style['vertical-align'] = val
-                elif key == 'border':
-                    style['border'] = ' %dpx solid' % int(val);
-                else:
-                    attr[str(key)] = val # will be used as a __call__ keyword
+                        m = quoted_re.search(val) # unquote "..." and '...'
+                        if m:
+                            val = m.group(1)
+                        attr[str(key)] = val # will be used as a __call__ kwd
 
         # parse filespec argument to get realm and id if contained.
         parts = filespec.split(':')
