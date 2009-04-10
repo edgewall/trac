@@ -1017,7 +1017,7 @@ class ChangesetModule(Component):
 
     # ISearchSource methods 
     
-    ### FIXME: move to the Repository connector level
+    ### FIXME: move this specific implementation into cache.py
 
     def get_search_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:
@@ -1026,19 +1026,27 @@ class ChangesetModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'changeset' in filters:
             return
-        repos = self.env.get_repository('', req.authname)
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT repos,rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
         for reponame, rev, ts, author, log in cursor:
+            repos = self.env.get_repository(reponame)
+            if not repos:
+                continue # revisions for a no longer active repository
             if not repos.authz.has_permission_for_changeset(rev):
                 continue
-            yield (req.href.changeset(rev, reponame),
-                   '[%s]: %s' % (rev, shorten_line(log)),
-                   datetime.fromtimestamp(ts, utc), author,
-                   shorten_result(log, terms))
+            # FIXME get rid of .authz and use only the normal Permission system
+            #cset = Resource('repository', reponame).child('changeset' , rev)
+            #cset = repos.resource.child('changeset' , rev)
+            #cset = repos.changeset_resource(rev)
+            cset = Resource('changeset', (reponame, rev))
+            if 'CHANGESET_VIEW' in req.perm(cset):
+                yield (req.href.changeset(rev, reponame),
+                       '[%s]: %s' % (rev, shorten_line(log)),
+                       datetime.fromtimestamp(ts, utc), author,
+                       shorten_result(log, terms))
 
 
 class AnyDiffModule(Component):
