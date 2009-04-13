@@ -157,7 +157,7 @@ try:
 
         def dgettext(self, domain, string, **kwargs):
             def _dgettext():
-                return safefmt(self.active.dugettext(string), kwargs)
+                return safefmt(self.active.dugettext(domain, string), kwargs)
             if not self.isactive:
                 return LazyProxy(_dgettext)
             return _dgettext()
