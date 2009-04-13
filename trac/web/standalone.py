@@ -141,6 +141,12 @@ def main():
                                    % (opt_str, '|'.join(valid_values), value))
         setattr(parser.values, option.dest, value)
 
+    def _octal(option, opt_str, value, parser):
+        try:
+            setattr(parser.values, option.dest, int(value, 8))
+        except ValueError:
+            raise OptionValueError('Invalid octal umask value: %r' % value)
+    
     parser.add_option('-a', '--auth', action='callback', type='string',
                       metavar='DIGESTAUTH', callback=_auth_callback,
                       callback_args=(DigestAuthentication,),
@@ -183,10 +189,10 @@ def main():
         parser.add_option('--pidfile', action='store',
                           dest='pidfile',
                           help='When daemonizing, file to which to write pid')
-        parser.add_option('--umask', action='store', type='int', dest='umask',
-                          metavar='MASK',
+        parser.add_option('--umask', action='callback', type='string',
+                          dest='umask', metavar='MASK', callback=_octal,
                           help='When daemonizing, file mode creation mask '
-                          'to use (default 022)')
+                          'to use, in octal notation (default 022)')
 
     parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
                         protocol='http', umask=022)
