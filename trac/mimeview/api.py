@@ -73,7 +73,7 @@ from trac.util.translation import _
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',
-           'content_to_unicode', 'Context']
+           'content_to_unicode', 'ct_mimetype', 'Context']
 
 class Context(object):
     """Rendering context.
@@ -414,6 +414,10 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP):
                     return 'application/octet-stream'
         return mimetype
 
+def ct_mimetype(content_type):
+    """Return the mimetype part of a content type."""
+    return content_type.split(';')[0].strip()
+
 def is_binary(data):
     """Detect binary content by checking the first thousand bytes for zeroes.
 
@@ -579,17 +583,23 @@ class Mimeview(Component):
         """Charset to be used when in doubt.""")
 
     tab_width = IntOption('mimeviewer', 'tab_width', 8,
-        """Displayed tab width in file preview (''since 0.9'').""")
+        """Displayed tab width in file preview. (''since 0.9'')""")
 
     max_preview_size = IntOption('mimeviewer', 'max_preview_size', 262144,
-        """Maximum file size for HTML preview. (''since 0.9'').""")
+        """Maximum file size for HTML preview. (''since 0.9'')""")
 
     mime_map = ListOption('mimeviewer', 'mime_map',
         'text/x-dylan:dylan,text/x-idl:ice,text/x-ada:ads:adb',
         doc="""List of additional MIME types and keyword mappings.
         Mappings are comma-separated, and for each MIME type,
         there's a colon (":") separated list of associated keywords
-        or file extensions. (''since 0.10'').""")
+        or file extensions. (''since 0.10'')""")
+
+    treat_as_binary = ListOption('mimeviewer', 'treat_as_binary',
+        'application/octet-stream,application/pdf,application/postscript,'
+        'application/rtf',
+        doc="""Comma-separated list of MIME types that should be treated as
+        binary data. (''since 0.11.5'')""")
 
     def __init__(self):
         self._mime_map = None
@@ -623,7 +633,7 @@ class Mimeview(Component):
                 content = content.read(self.max_preview_size)
             full_mimetype = self.get_mimetype(filename, content)
         if full_mimetype:
-            mimetype = full_mimetype.split(';')[0].strip() # split off charset
+            mimetype = ct_mimetype(full_mimetype)   # split off charset
         else:
             mimetype = full_mimetype = 'text/plain' # fallback if not binary
 
@@ -677,7 +687,7 @@ class Mimeview(Component):
                 content = content.read(self.max_preview_size)
             full_mimetype = self.get_mimetype(filename, content)
         if full_mimetype:
-            mimetype = full_mimetype.split(';')[0].strip() # split off charset
+            mimetype = ct_mimetype(full_mimetype)   # split off charset
         else:
             mimetype = full_mimetype = 'text/plain' # fallback if not binary
 
@@ -1028,14 +1038,8 @@ class PlainTextRenderer(Component):
     expand_tabs = True
     returns_source = True
 
-    TREAT_AS_BINARY = [
-        'application/pdf',
-        'application/postscript',
-        'application/rtf'
-    ]
-
     def get_quality_ratio(self, mimetype):
-        if mimetype in self.TREAT_AS_BINARY:
+        if mimetype in Mimeview(self.env).treat_as_binary:
             return 0
         return 1
 
