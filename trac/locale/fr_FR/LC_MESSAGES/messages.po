@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-11 01:32+0200\n"
+"PO-Revision-Date: 2009-04-11 01:46+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -2024,7 +2024,7 @@ msgstr "Fichiers joints"
 
 #: trac/templates/macros.html:206
 msgid "Attach file"
-msgstr "Joindre le fichier"
+msgstr "Joindre un fichier"
 
 #: trac/templates/macros.html:234 trac/templates/macros.html:235
 #: trac/templates/macros.html:243
@@ -2164,7 +2164,7 @@ msgstr "Le propriétaire changera de %(current_owner)s à %(selected_owner)s"
 
 #: trac/ticket/default_workflow.py:253
 msgid "to "
-msgstr "ā"
+msgstr "à "
 
 #: trac/ticket/default_workflow.py:261
 #, python-format
@@ -2192,7 +2192,7 @@ msgstr "La résolution sera définie"
 #: trac/ticket/default_workflow.py:293
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "Le prochain status sera '%(name)s'"
+msgstr "Le prochain statut sera '%(name)s'"
 
 #: trac/ticket/model.py:140
 msgid "Multi-values fields not supported yet"
@@ -2950,15 +2950,25 @@ msgstr "Modifié par"
 
 #: trac/ticket/templates/ticket.html:128
 msgid "Opened"
-msgstr "ouvert"
+msgstr "Ouvert"
 
 #: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:129
 msgid "ago"
 msgstr "auparavant."
 
+#: trac/ticket/templates/ticket.html:128
+#, python-format
+msgid "Opened %(created)s ago"
+msgstr "Ouvert il y a %(created)s"
+
 #: trac/ticket/templates/ticket.html:129
 msgid "Last modified"
 msgstr "Dernière modification"
+
+#: trac/ticket/templates/ticket.html:129
+#, python-format
+msgid "Last modified %(modified)s ago"
+msgstr "Dernière modification il y a %(modified)s"
 
 #: trac/ticket/templates/ticket.html:130
 msgid "(ticket not yet created)"
@@ -3102,7 +3112,7 @@ msgstr "Période suivante"
 #: trac/timeline/web_ui.py:297
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr "%(date)s dans l'Historique"
+msgstr "%(date)s dans l'historique"
 
 #: trac/timeline/templates/timeline.html:20
 msgid ""
