@@ -368,14 +368,8 @@ class Request(object):
                 if env:
                     from trac.web.chrome import Chrome
                     from trac.util import translation
-                    if hasattr(self, 'locale'):
-                        translation.activate(self.locale, env.path)
-                    try:
-                        data = Chrome(env).render_template(self, template,
-                                                           data, 'text/html')
-                    finally:
-                        if hasattr(self, 'locale'):
-                            translation.deactivate()
+                    data = Chrome(env).render_template(self, template, data,
+                                                       'text/html')
                 else:
                     content_type = 'text/plain'
                     data = '%s\n\n%s: %s' % (data.get('title'),
