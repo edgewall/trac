@@ -393,7 +393,15 @@ def dispatch_request(environ, start_response):
         env = open_environment(env_path, use_cache=not run_once)
         if env.base_url_for_redirect:
             environ['trac.base_url'] = env.base_url
+
+        # Web front-end type and version information
         if not hasattr(env, 'webfrontend'):
+            mod_wsgi_version = environ.get('mod_wsgi.version')
+            if mod_wsgi_version:
+                environ.update({
+                    'trac.web.frontend': 'mod_wsgi',
+                    'trac.web.version': '.'.join([str(x) for x in 
+                                                  mod_wsgi_version])})
             env.webfrontend = environ.get('trac.web.frontend')
             if env.webfrontend:
                 env.systeminfo.append((env.webfrontend, 
