@@ -192,6 +192,14 @@ class RepositoryManager(Component):
                 in_repo = _(" in %(repo)s", repo=reponame)
             return ''.join([kind, ' ', id, version, in_repo])
 
+    def get_resource_url(self, resource, href, **kwargs):
+        if resource and resource.realm in ('source', 'changeset'):
+            repos, id = resource.id
+            if resource.realm == 'source':
+                return href.source(repos, id)
+            else:
+                return href.changeset(id, repos)
+
     # IRepositoryProvider methods
 
     def get_repositories(self):
