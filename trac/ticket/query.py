@@ -43,7 +43,7 @@ from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
 from trac.wiki.api import IWikiSyntaxProvider, parse_args
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
-class QuerySyntaxError(Exception):
+class QuerySyntaxError(TracError):
     """Exception raised when a ticket query cannot be parsed from a string."""
 
 
@@ -1038,7 +1038,8 @@ class QueryModule(Component):
                              href=query.get_href(formatter.context.href),
                              class_='query')
             except QuerySyntaxError, e:
-                return tag.em(_('[Error: %(error)s]', error=e), class_='error')
+                return tag.em(_('[Error: %(error)s]', error=unicode(e)), 
+                              class_='error')
 
 
 class TicketQueryMacro(WikiMacroBase):
