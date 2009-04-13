@@ -3341,7 +3341,7 @@ msgstr "Aucun fichier trouvé."
 #: trac/versioncontrol/templates/browser.html:109
 #: trac/wiki/templates/wiki_edit.html:41 trac/wiki/templates/wiki_view.html:30
 msgid "Revision info"
-msgstr "Info Révision"
+msgstr "Info révision"
 
 #: trac/versioncontrol/templates/browser.html:111
 msgid "Revision"
@@ -3508,7 +3508,7 @@ msgstr "(journal)"
 
 #: trac/versioncontrol/templates/revisionlog.html:22
 msgid "Revision Log Mode:"
-msgstr "Options du Journal des Révisions"
+msgstr "Options du journal des révisions"
 
 #: trac/versioncontrol/templates/revisionlog.html:26
 msgid "Stop on copy"
@@ -3556,7 +3556,7 @@ msgstr "Rév"
 
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Log Message"
-msgstr "Message du Journal"
+msgstr "Message de la révision"
 
 #: trac/versioncontrol/templates/revisionlog.html:103
 msgid "No revisions found"
@@ -3605,7 +3605,7 @@ msgstr "Explorateur de Source"
 #: trac/versioncontrol/web_ui/browser.py:344
 #: trac/versioncontrol/web_ui/changeset.py:241
 msgid "Invalid Changeset Number"
-msgstr "Numéro de Révision invalide"
+msgstr "Numéro de révision invalide"
 
 #: trac/versioncontrol/web_ui/browser.py:350
 #: trac/versioncontrol/web_ui/log.py:97
@@ -3634,7 +3634,7 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:388
 msgid "Revision Log"
-msgstr "Journal des Révisions"
+msgstr "Journal des révisions"
 
 #: trac/versioncontrol/web_ui/browser.py:454
 #: trac/versioncontrol/web_ui/changeset.py:335
@@ -3704,15 +3704,15 @@ msgstr "Chemin inexistant"
 #: trac/versioncontrol/web_ui/log.py:187
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
-msgstr "Journal des Révisions (ā partir de %(path)s, en révision %(rev)s)"
+msgstr "Journal des révisions (à partir de %(path)s, en révision %(rev)s)"
 
 #: trac/versioncontrol/web_ui/log.py:244
 msgid "ChangeLog"
-msgstr "Journal des Révisions"
+msgstr "Journal des révisions"
 
 #: trac/versioncontrol/web_ui/log.py:246
 msgid "View Latest Revision"
-msgstr "Afficher la Dernière Révision"
+msgstr "Afficher la dernière révision"
 
 #: trac/versioncontrol/web_ui/log.py:250
 msgid "Older Revisions"
