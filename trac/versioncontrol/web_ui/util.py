@@ -25,6 +25,7 @@ from trac.core import TracError
 from trac.resource import ResourceNotFound 
 from trac.util.datefmt import pretty_timedelta
 from trac.util.text import shorten_line
+from trac.util.translation import tag_, _
 from trac.versioncontrol.api import NoSuchNode, NoSuchChangeset
 
 __all__ = ['get_changes', 'get_path_links', 'get_existing_node']
@@ -57,10 +58,10 @@ def get_existing_node(req, repos, path, rev):
     try: 
         return repos.get_node(path, rev) 
     except NoSuchNode, e:
+        search_a = tag.a(_("search"), 
+                         href=req.href.log(path, rev=rev, mode='path_history'))
         raise ResourceNotFound(tag(
             tag.p(e.message, class_="message"), 
-            tag.p("You can ",
-                  tag.a("search",
-                        href=req.href.log(path, rev=rev, mode='path_history')),
-                  " in the repository history to see if that path existed but"
-                  " was later removed")))
+            tag.p(tag_("You can %(search)s in the repository history to see "
+                       "if that path existed but was later removed",
+                       search=search_a))))

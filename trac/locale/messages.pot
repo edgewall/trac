@@ -3444,6 +3444,17 @@ msgstr ""
 msgid "Older Revisions"
 msgstr ""
 
+#: trac/versioncontrol/web_ui/util.py:61
+msgid "search"
+msgstr ""
+
+#: trac/versioncontrol/web_ui/util.py:65
+#, python-format
+msgid ""
+"You can %(search)s in the repository history to see if that path existed "
+"but was later removed"
+msgstr ""
+
 #: trac/web/auth.py:88
 #, python-format
 msgid "logged in as %(user)s"

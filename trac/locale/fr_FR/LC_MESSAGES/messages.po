@@ -3718,6 +3718,19 @@ msgstr "Afficher la dernière révision"
 msgid "Older Revisions"
 msgstr "Révisions antérieures"
 
+#: trac/versioncontrol/web_ui/util.py:61
+msgid "search"
+msgstr "chercher"
+
+#: trac/versioncontrol/web_ui/util.py:65
+#, python-format
+msgid ""
+"You can %(search)s in the repository history to see if that path existed "
+"but was later removed"
+msgstr ""
+"Vous pouvez %(search)s dans le dépôt si un tel chemin a existé avant "
+"d'avoir été supprimé"
+
 #: trac/web/auth.py:88
 #, python-format
 msgid "logged in as %(user)s"
