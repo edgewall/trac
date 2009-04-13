@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://genshi.edgewall.org/"
-    xmlns:xi="http://www.w3.org/2001/XInclude">
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
@@ -108,7 +109,7 @@
 
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
-          <th scope="col">
+          <th scope="col" i18n:msg="rev, size, author, date">
             Revision <a href="${href.changeset(rev)}">$rev</a>, ${sizeinfo(file.size)}
             (checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago)
           </th>
