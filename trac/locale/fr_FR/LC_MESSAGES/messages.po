@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-13 18:50+0200\n"
+"PO-Revision-Date: 2009-04-13 20:01+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -109,7 +109,7 @@ msgstr "Format Original"
 #: trac/attachment.py:831
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
-msgstr ""
+msgstr "Identifiant de resource invalide '%(id)s'"
 
 #: trac/attachment.py:867 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:47
@@ -122,7 +122,7 @@ msgstr "Nom"
 
 #: trac/attachment.py:867
 msgid "Size"
-msgstr ""
+msgstr "Taille"
 
 #: trac/attachment.py:867 trac/templates/history_view.html:28
 #: trac/versioncontrol/templates/revisionlog.html:95
@@ -1083,7 +1083,7 @@ msgstr "Pas de conversion MIME disponible de %(old)s à %(new)s"
 #: trac/mimeview/api.py:746
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr ""
+msgstr "L'aperçu HTML avec %(renderer)s a échoué (%(err)s)"
 
 #: trac/mimeview/patch.py:55
 msgid "Invalid unified diff content"
@@ -1097,11 +1097,11 @@ msgstr "Nouveau fichier %(new)s"
 #: trac/mimeview/patch.py:169
 #, python-format
 msgid "deleted file %(deleted)s"
-msgstr ""
+msgstr "ancien fichier %(deleted)s"
 
 #: trac/mimeview/patch.py:241
 msgid "this hunk was shorter than expected"
-msgstr ""
+msgstr "ce fragment de différence est trop court"
 
 #: trac/mimeview/php.py:98
 msgid ""
@@ -2339,16 +2339,16 @@ msgstr "Rapports disponibles"
 msgid "[Error: %(error)s]"
 msgstr "[Erreur : %(error)s]"
 
-#: trac/ticket/query.py:1138
+#: trac/ticket/query.py:1139
 msgid "No results"
 msgstr "Aucun résultat"
 
-#: trac/ticket/query.py:1156
+#: trac/ticket/query.py:1157
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
 msgstr "Tickets de %(groupname)s %(groupvalue)s :"
 
-#: trac/ticket/query.py:1178
+#: trac/ticket/query.py:1179
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
 msgstr "Tickets de %(groupname)s %(groupvalue)s :"
@@ -2478,7 +2478,7 @@ msgstr "L'id d'un nouveau ticket ne peut être changé."
 
 #: trac/ticket/web_ui.py:247
 msgid "Opened and closed tickets"
-msgstr ""
+msgstr "Tickets ouverts et fermés"
 
 #: trac/ticket/web_ui.py:249
 msgid "Ticket updates"
@@ -3042,7 +3042,7 @@ msgstr "Ajouter/Modifier #"
 
 #: trac/ticket/templates/ticket.html:259 trac/wiki/templates/wiki_edit.html:98
 msgid "E-mail address and user name can be saved in the"
-msgstr ""
+msgstr "L'adresse e-mail et le nom d'utilisateur peuvent être sauvés dans les"
 
 #: trac/ticket/templates/ticket.html:266
 msgid ""
@@ -3285,7 +3285,7 @@ msgstr "%(path)s n'est apparemment pas un dépôt Subversion."
 #: trac/versioncontrol/svn_fs.py:429
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
-msgstr ""
+msgstr "Impossible d'ouvrir le dépôt Subversion %(path)s : %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:683
 #, python-format
@@ -3766,7 +3766,7 @@ msgstr "(position indéterminée dans le template)"
 #: trac/web/chrome.py:792
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
-msgstr ""
+msgstr "Erreur impliquant Genshi (%(error)s - %(location)s)"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
 #: trac/web/main.py:491
