@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-04-13 18:27+0200\n"
+"POT-Creation-Date: 2009-04-13 18:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,7 +113,7 @@ msgstr ""
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:100
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:68
-#: trac/templates/error.html:167 trac/ticket/admin.py:181
+#: trac/templates/error.html:166 trac/ticket/admin.py:181
 #: trac/ticket/admin.py:356 trac/ticket/admin.py:509
 msgid "Name"
 msgstr ""
@@ -1347,7 +1347,7 @@ msgstr ""
 msgid "Section"
 msgstr ""
 
-#: trac/templates/about.html:69 trac/templates/error.html:167
+#: trac/templates/about.html:69 trac/templates/error.html:166
 msgid "Value"
 msgstr ""
 
@@ -1554,20 +1554,11 @@ msgstr ""
 
 #: trac/templates/error.html:106
 msgid ""
-"There was an internal error in Trac. It is recommended\n"
-"              that you inform your local"
-msgstr ""
-
-#: trac/templates/error.html:108
-msgid ""
-"Trac\n"
-"              administrator"
-msgstr ""
-
-#: trac/templates/error.html:109
-msgid ""
-"and give him all the information he needs to\n"
-"              reproduce the issue."
+"There was an internal error in Trac. \n"
+"                It is recommended that you notify your local \n"
+"                [1:\n"
+"                    Trac administrator] with the information needed to \n"
+"                reproduce the issue."
 msgstr ""
 
 #: trac/templates/error.html:114
@@ -1607,9 +1598,37 @@ msgid ""
 msgstr ""
 
 #: trac/templates/error.html:131
+msgid "Before you do that, though, please first try"
+msgstr ""
+
+#: trac/templates/error.html:132
+msgid "searching"
+msgstr ""
+
+#: trac/templates/error.html:132
+msgid "for similar issues"
+msgstr ""
+
+#: trac/templates/error.html:133
 msgid ""
-"Before you do that, though, [1:please first try\n"
-"                [2:searching]\n"
+", as it is quite likely that this problem\n"
+"                has been reported before. For questions about "
+"installation\n"
+"                and configuration of Trac, please try the"
+msgstr ""
+
+#: trac/templates/error.html:136
+msgid "mailing list"
+msgstr ""
+
+#: trac/templates/error.html:136
+msgid "instead of filing a ticket."
+msgstr ""
+
+#: trac/templates/error.html:131
+msgid ""
+"Before you do that, though, please first try\n"
+"                [1:[2:searching]\n"
 "                for similar issues], as it is quite likely that this "
 "problem\n"
 "                has been reported before. For questions about "
@@ -1619,65 +1638,62 @@ msgid ""
 "                instead of filing a ticket."
 msgstr ""
 
-#: trac/templates/error.html:141
-msgid "Otherwise, please"
-msgstr ""
-
-#: trac/templates/error.html:141
+#: trac/templates/error.html:140
+#, python-format
 msgid ""
-"a new ticket at\n"
+"Otherwise, please %(create)s a new ticket at\n"
 "                the Trac project site, where you can describe the problem"
 " and\n"
 "                explain how to reproduce it."
 msgstr ""
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:145
 msgid "Python Traceback"
 msgstr ""
 
-#: trac/templates/error.html:147
+#: trac/templates/error.html:146
 msgid "Most recent call last:"
 msgstr ""
 
-#: trac/templates/error.html:152 trac/templates/error.html:179
+#: trac/templates/error.html:151 trac/templates/error.html:178
 msgid "File \""
 msgstr ""
 
-#: trac/templates/error.html:152
+#: trac/templates/error.html:151
 msgid ""
 "\",\n"
 "                        line"
 msgstr ""
 
-#: trac/templates/error.html:153 trac/templates/error.html:179
+#: trac/templates/error.html:152 trac/templates/error.html:178
 msgid ", in"
 msgstr ""
 
-#: trac/templates/error.html:157
+#: trac/templates/error.html:156
 msgid "Code fragment:"
 msgstr ""
 
-#: trac/templates/error.html:165
+#: trac/templates/error.html:164
 msgid "Local variables:"
 msgstr ""
 
-#: trac/templates/error.html:179
+#: trac/templates/error.html:178
 msgid "\", line"
 msgstr ""
 
-#: trac/templates/error.html:182
+#: trac/templates/error.html:181
 msgid "Switch to plain text view"
 msgstr ""
 
-#: trac/templates/error.html:185
+#: trac/templates/error.html:184
 msgid "System Information:"
 msgstr ""
 
-#: trac/templates/error.html:197
+#: trac/templates/error.html:196
 msgid "TracGuide"
 msgstr ""
 
-#: trac/templates/error.html:197
+#: trac/templates/error.html:196
 msgid "— The Trac User and Administration Guide"
 msgstr ""
 

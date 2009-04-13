@@ -103,11 +103,11 @@ ${traceback}
           </div>
           <py:choose>
             <py:when test="'TRAC_ADMIN' not in perm">
-              <p>There was an internal error in Trac. It is recommended
-              that you inform your local
-              <a py:strip="not project.admin" href="mailto:${project.admin}">Trac
-              administrator</a> and give him all the information he needs to
-              reproduce the issue.
+              <p i18n:msg="">There was an internal error in Trac. 
+                It is recommended that you notify your local 
+                <a py:strip="not project.admin" href="mailto:${project.admin}">
+                    Trac administrator</a> with the information needed to 
+                reproduce the issue.
               </p>
               <form py:if="project.admin_href"
                     class="newticket" method="get" action="${project.admin_href.newticket()}#">
@@ -128,9 +128,8 @@ ${traceback}
               <h2>Found a bug in Trac?</h2>
               <p>If you think this should work and you can reproduce the problem,
               you should consider reporting this to the Trac team.</p>
-              <p i18n:msg="">Before you do that, though, <strong>please first try
-                <a py:with="q = quote_plus(message[:80])"
-                   href="${trac.homepage}search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
+              <p i18n:msg="" py:with="q = quote_plus(message[:80])">Before you do that, though, please first try
+                <strong><a href="${trac.homepage}search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
                 for similar issues</strong>, as it is quite likely that this problem
                 has been reported before. For questions about installation
                 and configuration of Trac, please try the
@@ -138,7 +137,7 @@ ${traceback}
                 instead of filing a ticket.
               </p>
               <form class="newticket" method="get" action="${trac.homepage}newticket">
-                <p>Otherwise, please ${create_ticket(True)} a new ticket at
+                <p i18n:msg="create">Otherwise, please ${create_ticket(True)} a new ticket at
                 the Trac project site, where you can describe the problem and
                 explain how to reproduce it.</p>
               </form>
