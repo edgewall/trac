@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
@@ -172,7 +173,7 @@
         </div>
       </form>
 
-      <div id="help">
+      <div id="help" i18n:msg="">
         <strong>Note:</strong> See <a href="${href.wiki('TracRevisionLog')}">TracRevisionLog</a>
         for help on using the revision log.
       </div>

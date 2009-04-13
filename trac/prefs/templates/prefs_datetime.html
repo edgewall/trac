@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="prefs.html" />
   <head>
@@ -25,6 +26,7 @@
       dates and times displayed on this site to use your time zone
       instead of that of the server.</p>
 
+      <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
       <p class="hint" py:with="now = datetime.now(utc)">
         Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
         <br />
