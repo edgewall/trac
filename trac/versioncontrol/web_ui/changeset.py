@@ -29,7 +29,7 @@ from genshi.builder import tag
 
 from trac.config import Option, BoolOption, IntOption
 from trac.core import *
-from trac.mimeview import Mimeview, is_binary, Context
+from trac.mimeview import Context, Mimeview, ct_mimetype, is_binary
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
@@ -506,15 +506,20 @@ class ChangesetModule(Component):
             The list is empty when no differences between comparable files
             are detected, but the return value is None for non-comparable files.
             """
+            mview = Mimeview(self.env)
+            treat_as_binary = mview.treat_as_binary
+            if ct_mimetype(old_node.content_type) in treat_as_binary:
+                return None
+            if ct_mimetype(new_node.content_type) in treat_as_binary:
+                return None
+            
             old_content = old_node.get_content().read()
             if is_binary(old_content):
                 return None
-
             new_content = new_node.get_content().read()
             if is_binary(new_content):
                 return None
 
-            mview = Mimeview(self.env)
             old_content = mview.to_unicode(old_content, old_node.content_type)
             new_content = mview.to_unicode(new_content, new_node.content_type)
 
@@ -648,8 +653,11 @@ class ChangesetModule(Component):
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
             mimeview = Mimeview(self.env)
+            treat_as_binary = mimeview.treat_as_binary
 
             if old_node:
+                if ct_mimetype(old_node.content_type) in treat_as_binary:
+                    continue
                 old_content = old_node.get_content().read()
                 if is_binary(old_content):
                     continue
@@ -657,6 +665,8 @@ class ChangesetModule(Component):
                 old_content = mimeview.to_unicode(old_content,
                                                   old_node.content_type)
             if new_node:
+                if ct_mimetype(new_node.content_type) in treat_as_binary:
+                    continue
                 new_content = new_node.get_content().read()
                 if is_binary(new_content):
                     continue
