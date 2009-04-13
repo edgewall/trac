@@ -221,7 +221,7 @@
                         </py:for></py:if>
                     </py:if>
                   </span>
-                  Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
+                  <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
                 </h3>
                 <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(ticket.resource)" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />

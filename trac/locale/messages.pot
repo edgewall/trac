@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-04-11 01:42+0200\n"
+"POT-Creation-Date: 2009-04-13 18:27+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2780,12 +2780,9 @@ msgstr ""
 msgid "follow-up"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:223
-msgid "Changed"
-msgstr ""
-
 #: trac/ticket/templates/ticket.html:224
-msgid "ago by"
+#, python-format
+msgid "%(date)s ago by"
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:243

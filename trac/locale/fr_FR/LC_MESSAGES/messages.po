@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-11 01:46+0200\n"
+"PO-Revision-Date: 2009-04-13 18:28+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3006,13 +3006,10 @@ msgstr "Historique des modifications"
 msgid "follow-up"
 msgstr "suivi"
 
-#: trac/ticket/templates/ticket.html:223
-msgid "Changed"
-msgstr "Modifié"
-
 #: trac/ticket/templates/ticket.html:224
-msgid "ago by"
-msgstr "auparavant par"
+#, python-format
+msgid "%(date)s ago by"
+msgstr "il y a %(date)s par"
 
 #: trac/ticket/templates/ticket.html:243
 msgid "Add/Change #"
