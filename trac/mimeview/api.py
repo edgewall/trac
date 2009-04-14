@@ -416,7 +416,7 @@ def get_mimetype(filename, content=None, mime_map=MIME_MAP):
 
 def ct_mimetype(content_type):
     """Return the mimetype part of a content type."""
-    return content_type.split(';')[0].strip()
+    return (content_type or '').split(';')[0].strip()
 
 def is_binary(data):
     """Detect binary content by checking the first thousand bytes for zeroes.
