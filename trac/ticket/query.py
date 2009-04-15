@@ -52,7 +52,7 @@ class Query(object):
 
     def __init__(self, env, report=None, constraints=None, cols=None,
                  order=None, desc=0, group=None, groupdesc=0, verbose=0,
-                 rows=None, page=None, max=None):
+                 rows=None, page=None, max=None, format=None):
         self.env = env
         self.id = report # if not None, it's the corresponding saved query
         self.constraints = constraints or {}
@@ -61,6 +61,7 @@ class Query(object):
         self.desc = desc
         self.group = group
         self.groupdesc = groupdesc
+        self.format = format
         self.default_page = 1
         self.items_per_page = QueryModule(self.env).items_per_page
 
@@ -116,9 +117,10 @@ class Query(object):
     @classmethod
     def from_string(cls, env, string, **kw):
         filters = string.split('&')
-        kw_strs = ['order', 'group', 'page', 'max']
+        kw_strs = ['order', 'group', 'page', 'max', 'format']
         kw_arys = ['rows']
         kw_bools = ['desc', 'groupdesc', 'verbose']
+        kw_synonyms = {'row': 'rows'}
         synonyms = TicketSystem(env).get_field_synonyms()
         constraints = {}
         cols = []
@@ -139,6 +141,7 @@ class Query(object):
                 field = field[:-1]
             if not field:
                 raise QuerySyntaxError(_('Query filter requires field name'))
+            field = kw_synonyms.get(field, field)
             processed_values = []
             for val in values.split('|'):
                 val = mode + val # add mode of comparison
@@ -326,6 +329,8 @@ class Query(object):
         if not isinstance(href, Href):
             href = href.href # compatibility with the `req` of the 0.10 API
 
+        if format is None:
+            format = self.format
         if format == 'rss':
             max = self.items_per_page
             page = self.default_page
