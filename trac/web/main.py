@@ -556,6 +556,7 @@ def send_project_index(environ, start_response, parent_dir=None,
                 env = open_environment(env_path,
                                        use_cache=not environ['wsgi.run_once'])
                 proj = {
+                    'env': env,
                     'name': env.project_name,
                     'description': env.project_description,
                     'href': href(env_name)
