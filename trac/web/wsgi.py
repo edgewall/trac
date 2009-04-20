@@ -20,6 +20,11 @@ from SocketServer import ForkingMixIn, ThreadingMixIn
 import urllib
 
 
+# In Python 2.3, the file objects associated to sockets always return 'True' 
+# when asked for their 'closed' status.
+_trust_closed = sys.version_info[:2] >= (2,4)
+
+
 class _ErrorsWrapper(object):
 
     def __init__(self, logfunc):
@@ -125,9 +130,9 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
 
     def setup_environ(self):
         self.raw_requestline = self.rfile.readline()
-        if (self.rfile.closed or              # disconnect
-                not self.raw_requestline or   # empty request
-                not self.parse_request()):    # invalid request
+        if ((_trust_closed and self.rfile.closed) or # disconnect
+                not self.raw_requestline or          # empty request
+                not self.parse_request()):           # invalid request
             self.close_connection = 1
             # note that in the latter case, an error code has already been sent
             return
@@ -195,7 +200,7 @@ class WSGIServerGateway(WSGIGateway):
 
     def _write(self, data):
         assert self.headers_set, 'Response not started'
-        if self.handler.wfile.closed:
+        if _trust_closed and self.handler.wfile.closed:
             return # don't write to an already closed file (fix for #1183)
 
         if not self.headers_sent:
