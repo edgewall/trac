@@ -111,6 +111,7 @@ class FunctionalTestEnvironment(object):
                         env_db.rollback()
             elif scheme == 'mysql':
                 self.destroy_mysqldb()
+            env.shutdown()
 
         self.destroy_repo()
         if os.path.exists(self.dirname):

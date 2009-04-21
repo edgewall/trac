@@ -273,10 +273,17 @@ class Environment(Component, ComponentManager):
         """Return a database connection from the connection pool."""
         return DatabaseManager(self).get_connection()
 
-    def shutdown(self, tid=None):
+    def shutdown(self, tid=None, except_logging=False):
         """Close the environment."""
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
+        if tid is None and not except_logging and \
+                hasattr(self.log, '_trac_handler'):
+            hdlr = self.log._trac_handler
+            self.log.removeHandler(hdlr)
+            hdlr.flush()
+            hdlr.close()
+            del self.log._trac_handler
 
     def get_repository(self, authname=None):
         """Return the version control repository configured for this
@@ -452,7 +459,7 @@ class Environment(Component, ComponentManager):
         db.commit()
 
         # Database schema may have changed, so close all connections
-        self.shutdown()
+        self.shutdown(except_logging=True)
 
         return True
 
@@ -567,10 +574,6 @@ def open_environment(env_path=None, use_cache=False):
                 env.log.info('Reloading environment due to configuration '
                              'change')
                 env.shutdown()
-                if hasattr(env.log, '_trac_handler'):
-                    hdlr = env.log._trac_handler
-                    env.log.removeHandler(hdlr)
-                    hdlr.close()
                 del env_cache[env_path]
                 env = None
             if env is None:
