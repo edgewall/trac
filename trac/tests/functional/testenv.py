@@ -244,7 +244,7 @@ class FunctionalTestEnvironment(object):
 
     def repo_path_for_initenv(self):
         """Default to no repository"""
-        return ''
+        return "''" # needed for Python 2.3 and 2.4 on win32
 
     def call_in_workdir(self, args):
         proc = Popen(args, stdout=PIPE, stderr=logfile,
