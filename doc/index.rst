@@ -14,6 +14,7 @@ Contents:
    admin/index.rst
    install/index.rst
    api/env
+   dev/testing.rst
 
 Indices and tables
 ==================

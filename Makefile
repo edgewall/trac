@@ -1,17 +1,34 @@
 .PHONY: all
 all:
 
-.PHONY: test
-test:
-	./trac/test.py -v
+.PHONY: clean
+clean:
+	find -name \*.py[co] | xargs -d"\n" --no-run-if-empty rm -f
+	rm -rf .figleaf* html
+
+.PHONY: test unit-test functional-test
+test: unit-test functional-test
+
+unit-test: Trac.egg-info
+	PYTHONPATH=$$PWD:$$PYTHONPATH ./trac/test.py --skip-functional-tests
+
+functional-test: Trac.egg-info
+	PYTHONPATH=$$PWD:$$PYTHONPATH python trac/tests/functional/__init__.py -v
 
 .PHONY: coverage
-coverage:
-	rm -f .figleaf .figleaf.unittests
-	figleaf ./trac/test.py -v --skip-functional-tests
-	mv .figleaf .figleaf.unittests
-	FIGLEAF=figleaf python trac/tests/functional/testcases.py -v
+coverage: html/index.html
+
+html/index.html: .figleaf.functional .figleaf.unittests
+	figleaf2html --exclude-patterns=trac/tests/figleaf-exclude .figleaf.functional .figleaf.unittests
+
+.figleaf.functional: Trac.egg-info
+	PYTHONPATH=$$PWD:$$PYTHONPATH FIGLEAF=figleaf python trac/tests/functional/__init__.py -v
 	mv .figleaf .figleaf.functional
-	figleaf2html --exclude-patterns=../figleaf-exclude .figleaf.functional .figleaf.unit tests
 
+.figleaf.unittests: Trac.egg-info
+	rm -f .figleaf .figleaf.unittests
+	PYTHONPATH=$$PWD:$$PYTHONPATH figleaf ./trac/test.py --skip-functional-tests
+	mv .figleaf .figleaf.unittests
 
+Trac.egg-info:
+	python setup.py egg_info

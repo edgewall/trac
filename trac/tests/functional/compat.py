@@ -2,10 +2,7 @@
 import os
 import shutil
 
-# Closing FDs not supported with subprocess on Windows
-close_fds = True
-if os.name == 'nt':
-    close_fds = False # not supported :(
+from trac.util.compat import close_fds
 
 # On Windows, shutil.rmtree doesn't remove files with the read-only
 # attribute set, so this function explicitly removes it on every error

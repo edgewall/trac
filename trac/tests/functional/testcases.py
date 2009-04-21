@@ -6,62 +6,6 @@ from trac.tests.functional import *
 from trac.util.datefmt import format_date, utc
 
 
-class TestEmptyRepo(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Check empty repository"""
-        browser_url = self._tester.url + '/browser'
-        tc.go(browser_url)
-        tc.url(browser_url)
-        # This tests the current behavior; I'm not sure it's the best
-        # behavior.
-        tc.follow('Last Change')
-        tc.find('Error: No such changeset')
-        tc.back()
-        tc.follow('Revision Log')
-        tc.notfind('Error: Nonexistent path')
-
-
-class TestRepoCreation(FunctionalTwillTestCaseSetup):
-    def runTest(self):
-        """Create a directory tree in the repository"""
-        # This should probably use the svn bindings...
-        directories = []
-        for component in ('component1', 'component2'):
-            directories.append(component)
-            for subdir in ('branches', 'tags', 'trunk'):
-                directories.append('/'.join([component, subdir]))
-        commit_message = 'Create component trees.'
-        self._tester.svn_mkdir(directories, commit_message)
-
-        browser_url = self._tester.url + '/browser'
-        tc.go(browser_url)
-        tc.url(browser_url)
-        tc.find('component1')
-        tc.find('component2')
-        tc.follow('Last Change')
-        tc.url(self._tester.url + '/changeset/1/')
-        tc.find(commit_message)
-        for directory in directories:
-            tc.find(directory)
-        tc.back()
-        tc.follow('Revision Log')
-        # (Note that our commit log message is short enough to avoid
-        # truncation.)
-        tc.find(commit_message)
-        tc.follow('Timeline')
-        # (Note that our commit log message is short enough to avoid
-        # truncation.)
-        tc.find(commit_message)
-        tc.formvalue('prefs', 'ticket', False)
-        tc.formvalue('prefs', 'milestone', False)
-        tc.formvalue('prefs', 'wiki', False)
-        tc.submit()
-        tc.find('by.*admin')
-        # (Note that our commit log message is short enough to avoid
-        # truncation.)
-        tc.find(commit_message)
-
-
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of the plugin reload fix in r6017"""
@@ -112,6 +56,7 @@ class RegressionTestTicket3833a(FunctionalTestCaseSetup):
         self.assertNotEqual(debug1.find("RegressionTestTicket3833 debug1"), -1,
             'Logging off when it should have been on.\n%r' % debug1)
 
+
 class RegressionTestTicket3833b(FunctionalTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/3833 b"""
@@ -133,6 +78,7 @@ class RegressionTestTicket3833b(FunctionalTestCaseSetup):
                             'Logging at info failed.\n%r' % debug2)
         self.assertEqual(debug2.find("RegressionTestTicket3833 debug2"), -1,
             'Logging still on when it should have been off.\n%r' % debug2)
+
 
 class RegressionTestTicket3833c(FunctionalTestCaseSetup):
     def runTest(self):
@@ -175,12 +121,41 @@ class RegressionTestTicket5572(FunctionalTwillTestCaseSetup):
         # new configurability.
 
 
+class RegressionTestTicket7209(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/7209"""
+        summary = random_sentence(5)
+        ticketid = self._tester.create_ticket(summary)
+        self._tester.create_ticket()
+        self._tester.add_comment(ticketid)
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.txt',
+                                           description='Preserved Descr')
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Preserved Descr')
+        # Now replace the existing attachment, and the description should come
+        # through.
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='hello.txt',
+                                           description='', replace=True)
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Preserved Descr')
+
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='blah.txt',
+                                           description='Second Attachment')
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Second Attachment')
+
+        # This one should get a new description when it's replaced
+        # (Second->Other)
+        self._tester.attach_file_to_ticket(ticketid, tempfilename='blah.txt',
+                                           description='Other Attachment',
+                                           replace=True)
+        self._tester.go_to_ticket(ticketid)
+        tc.find('Other Attachment')
+        tc.notfind('Second Attachment')
+
+
 def functionalSuite():
     suite = FunctionalTestSuite()
-    # These basic tests of the repository need to occur before other things so
-    # that we have a repository to work with.
-    suite.addTest(TestEmptyRepo())
-    suite.addTest(TestRepoCreation())
     return suite
 
 
@@ -192,6 +167,7 @@ def suite():
     suite.addTest(RegressionTestTicket3833b())
     suite.addTest(RegressionTestTicket3833c())
     suite.addTest(RegressionTestTicket5572())
+    suite.addTest(RegressionTestTicket7209())
 
     import trac.versioncontrol.tests
     trac.versioncontrol.tests.functionalSuite(suite)
@@ -203,6 +179,11 @@ def suite():
     trac.wiki.tests.functionalSuite(suite)
     import trac.timeline.tests
     trac.timeline.tests.functionalSuite(suite)
+    import trac.admin.tests
+    trac.admin.tests.functionalSuite(suite)
+    # The db tests should be last since the backup test occurs there.
+    import trac.db.tests
+    trac.db.tests.functionalSuite(suite)
 
     return suite
 

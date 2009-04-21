@@ -17,6 +17,8 @@
 previous versions of Python from 2.4 onward.
 """
 
+import os
+
 # Import symbols previously defined here for Python 2.3 compatibility from
 # __builtin__ so that plugins importing them don't suddenly stop working
 set = set
@@ -84,3 +86,10 @@ try:
 except ImportError:
     from md5 import md5
     from sha import new as sha1
+
+# An error is raised by subprocess if we ever pass close_fds=True on Windows.
+# We want it to be True on all other platforms to not leak file descriptors.
+close_fds = True
+if os.name == 'nt':
+    close_fds = False
+
