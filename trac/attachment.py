@@ -602,6 +602,9 @@ class AttachmentModule(Component):
                 if not (old_attachment.author and req.authname \
                         and old_attachment.author == req.authname):
                     req.perm(attachment.resource).require('ATTACHMENT_DELETE')
+                if (not attachment.description.strip() and
+                    old_attachment.description):
+                    attachment.description = old_attachment.description
                 old_attachment.delete()
             except TracError:
                 pass # don't worry if there's nothing to replace

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """Object for creating and destroying a Trac environment for testing purposes.
 Provides some Trac environment-wide utility functions, and a way to call
-trac-admin."""
+:command:`trac-admin` without it being on the path."""
 
 import os
 import time
@@ -10,11 +10,13 @@ import sys
 import errno
 import locale
 
-from subprocess import call, Popen, PIPE
+from subprocess import call, Popen, PIPE, STDOUT
 from trac.tests.functional.compat import rmtree, close_fds
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.env import open_environment
+from trac.db.api import _parse_db_str, DatabaseManager
+from trac.util.compat import close_fds
 
 # TODO: refactor to support testing multiple frontends, backends (and maybe
 # repositories and authentication).
@@ -27,19 +29,21 @@ from trac.env import open_environment
 # (those need to test search escaping, among many other things like long
 # paths in browser and unicode chars being allowed/translating...)
 class FunctionalTestEnvironment(object):
-    """Provides a way to work with a test environment in a simpler way."""
-    # TODO: Need to see if we can remove the limitation that the tests have
-    # to have the cwd be the top of the trac source tree... that limits the
-    # places we can put the test environment data.
+    """Common location for convenience functions that work with the test
+    environment on Trac.  Subclass this and override some methods if you are
+    using a different :term:`VCS`.
+    
+    :class:`FunctionalTestEnvironment` requires a `dirname` in which the test
+    repository and Trac environment will be created, `port` for the
+    :command:`tracd` webserver to run on, and the `url` which can
+    access this (usually ``localhost``)."""
 
     def __init__(self, dirname, port, url):
-        """A functional test environment requires a directory name in which
-        to create the test repository and Trac environment, and a port
-        number to use for the webserver."""
+        """Create a :class:`FunctionalTestEnvironment`, see the class itself
+        for parameter information."""
         self.url = url
         self.command_cwd = os.path.normpath(os.path.join(dirname, '..'))
         self.dirname = os.path.abspath(dirname)
-        self.repodir = os.path.join(self.dirname, "repo")
         self.tracdir = os.path.join(self.dirname, "trac")
         self.htpasswd = os.path.join(self.dirname, "htpasswd")
         self.port = port
@@ -48,22 +52,111 @@ class FunctionalTestEnvironment(object):
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
+    def get_dburi(self):
+        if os.environ.has_key('TRAC_TEST_DB_URI'):
+            dburi = os.environ['TRAC_TEST_DB_URI']
+
+            scheme, db_prop = _parse_db_str(dburi)
+            # Assume the schema 'tractest' for Postgres
+            if scheme == 'postgres' and db_prop.get('schema'):
+                if '?' in dburi:
+                    dburi += "&schema=tractest"
+                else:
+                    dburi += "?schema=tractest"
+            return dburi
+        return 'sqlite:db/trac.db'
+    dburi = property(get_dburi)
+
+    def destroy_mysqldb(self):
+        # NOTE: mysqldump and mysql must be on path
+        # for mysql, we'll drop all the tables in the database and reuse
+        # the same database
+        # mysqldump -u[USERNAME] -p[PASSWORD] --add-drop-table --no-data [DATABASE] | grep ^DROP | mysql -u[USERNAME] -p[PASSWORD] [DATABASE]
+        import sys
+        scheme, db_prop = _parse_db_str(self.dburi)
+        db_prop['dbname'] = os.path.basename(db_prop['path'])
+        cmd = "mysqldump -u%(user)s -h%(host)s -P%(port)s --add-drop-table --no-data %(dbname)s | grep ^DROP | mysql -u%(user)s -h%(host)s -P%(port)s %(dbname)s" \
+              % db_prop
+        if sys.platform == 'win':
+            # XXX TODO verify on windows
+            args = ['cmd', '/c', cmd]
+        else:
+            args = ['bash', '-c', cmd]
+        
+        environ = os.environ.copy()
+        environ['MYSQL_PWD'] = db_prop['password']
+        print >> sys.stderr, "command %r" % (args,)
+        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+        p.wait()
+        p.stdout.close()
+        p.stderr.close()
+
     def destroy(self):
         """Remove all of the test environment data."""
         if os.path.exists(self.dirname):
+            env = self.get_trac_environment()
+            dburi = DatabaseManager(env).connection_uri
+            scheme, db_prop = _parse_db_str(self.dburi)
+            if scheme == 'postgres':
+                # We'll remove the schema automatically for Postgres if it exists.
+                # With this, you can run functional tests multiple times without
+                # running external tools (just like when running against sqlite)
+                env_db = env.get_db_cnx()
+                if env_db.schema:
+                    cursor = env_db.cursor()
+                    try:
+                        cursor.execute('DROP SCHEMA "%s" CASCADE'%(env_db.schema))
+                        env_db.commit()
+                    except: #TODO decide if this can swallow important errors
+                        env_db.rollback()
+            elif scheme == 'mysql':
+                self.destroy_mysqldb()
+            env.shutdown()
+
+        self.destroy_repo()
+        if os.path.exists(self.dirname):
             rmtree(self.dirname)
 
+    repotype = 'svn'
+
+    def create_repo(self):
+        """Hook for creating the repository."""
+        # The default test environment does not include a source repo
+
+    def destroy_repo(self):
+        """Hook for removing the repository."""
+        # The default test environment does not include a source repo
+
+    def post_create(self, env):
+        """Hook for modifying the environment after creation.  For example, to
+        set configuration like::
+
+            def post_create(self, env):
+                env.config.set('git', 'path', '/usr/bin/git')
+                env.config.save()
+        """
+        pass
+
+    def get_enabled_components(self):
+        """Return a list of components that should be enabled after
+        environment creation.  For anything more complicated, use the
+        :meth:`post_create` method.
+        """
+        return []
+
     def create(self):
-        """Create a new test environment; Trac, Subversion,
-        authentication."""
+        """Create a new test environment.
+        This sets up Trac, calls :meth:`create_repo` and sets up
+        authentication.
+        """
         if os.mkdir(self.dirname):
             raise Exception('unable to create test environment')
-        if call(["svnadmin", "create", self.repodir], stdout=logfile,
-                stderr=logfile, close_fds=close_fds):
-            raise Exception('unable to create subversion repository')
+        self.create_repo()
+
         self._tracadmin('initenv', 'testenv%s' % self.port,
-                        'sqlite:db/trac.db', 'svn', self.repodir)
-        if call([sys.executable, "./contrib/htpasswd.py", "-c", "-b",
+                        self.dburi, self.repotype,
+                        self.repo_path_for_initenv())
+        if call([sys.executable, './contrib/htpasswd.py', "-c", "-b",
                  self.htpasswd, "admin", "admin"], close_fds=close_fds,
                  cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
@@ -72,25 +165,32 @@ class FunctionalTestEnvironment(object):
         # Setup Trac logging
         env = self.get_trac_environment()
         env.config.set('logging', 'log_type', 'file')
+        for component in self.get_enabled_components():
+            env.config.set('components', component, 'enabled')
         env.config.save()
+        self.post_create(env)
 
     def adduser(self, user):
-        """Add a user to the environment.  Password is the username."""
+        """Add a user to the environment.  The password will be set to the
+        same as username."""
         if call([sys.executable, './contrib/htpasswd.py', '-b', self.htpasswd,
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
-        retval = call([sys.executable, "./trac/admin/console.py", self.tracdir]
-                      + list(args), stdout=logfile, stderr=logfile,
+        proc = Popen([sys.executable, "./trac/admin/console.py", self.tracdir]
+                      + list(args), stdout=PIPE, stderr=STDOUT,
                       close_fds=close_fds, cwd=self.command_cwd)
-        if retval:
+        out = proc.communicate()[0]
+        if proc.returncode:
+            print(out)
+            logfile.write(out)
             raise Exception('Failed with exitcode %s running trac-admin ' \
-                            'with %r' % (retval, args))
+                            'with %r' % (proc.returncode, args))
 
     def start(self):
-        """Starts the webserver"""
+        """Starts the webserver, and waits for it to come up."""
         if 'FIGLEAF' in os.environ:
             exe = os.environ['FIGLEAF']
         else:
@@ -119,7 +219,7 @@ class FunctionalTestEnvironment(object):
         tc.url(self.url)
 
     def stop(self):
-        """Stops the webserver"""
+        """Stops the webserver, if running"""
         if self.pid:
             if os.name == 'nt':
                 # Untested
@@ -138,17 +238,22 @@ class FunctionalTestEnvironment(object):
         self.stop()
         self.start()
 
-    def repo_url(self):
-        """Returns the url of the Subversion repository for this test
-        environment.
-        """
-        if os.name == 'nt':
-            return 'file:///' + self.repodir.replace("\\", "/")
-        else:
-            return 'file://' + self.repodir
-
     def get_trac_environment(self):
         """Returns a Trac environment object"""
         return open_environment(self.tracdir, use_cache=True)
+
+    def repo_path_for_initenv(self):
+        """Default to no repository"""
+        return "''" # needed for Python 2.3 and 2.4 on win32
+
+    def call_in_workdir(self, args):
+        proc = Popen(args, stdout=PIPE, stderr=logfile,
+                     close_fds=close_fds, cwd=self.work_dir())
+        (data, _) = proc.communicate()
+        if proc.wait():
+            raise Exception('Unable to run command %s in %s' % (args, self.work_dir()))
+
+        logfile.write(data)
+        return data
 
 

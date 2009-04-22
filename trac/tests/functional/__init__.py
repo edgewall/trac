@@ -70,8 +70,9 @@ try:
     # This is the first indicator of whether the subversion bindings are
     # correctly installed.
     from svn import core
+    has_svn = True
 except ImportError:
-    core = None
+    has_svn = False
 
 from datetime import datetime, timedelta
 
@@ -83,17 +84,18 @@ from trac.test import TestSetup, TestCaseSetup
 internal_error = 'Trac detected an internal error:'
 trac_error = 'Trac Error'
 
-if twill and subprocess:
-    trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..',
-                                                     '..'))
+trac_source_tree = os.path.normpath(os.path.join(trac.__file__, '..', '..'))
 
-    # testing.log gets any unused output from subprocesses
-    logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
+# testing.log gets any unused output from subprocesses
+logfile = open(os.path.join(trac_source_tree, 'testing.log'), 'w')
+
+if twill and subprocess:
     # functional-testing.log gets the twill output
     twill.set_output(open(os.path.join(trac_source_tree,
                                        'functional-testing.log'), 'w'))
 
     from trac.tests.functional.testenv import FunctionalTestEnvironment
+    from trac.tests.functional.svntestenv import SvnFunctionalTestEnvironment
 
     from trac.tests.functional.tester import FunctionalTester
 
@@ -102,6 +104,11 @@ if twill and subprocess:
         """TestSuite that provides a test fixture containing a
         FunctionalTestEnvironment and a FunctionalTester.
         """
+
+        if has_svn:
+            env_class = SvnFunctionalTestEnvironment
+        else:
+            env_class = FunctionalTestEnvironment
 
         def setUp(self, port=None):
             """If no port is specified, use a semi-random port and subdirectory
@@ -116,9 +123,9 @@ if twill and subprocess:
             dirname = os.path.join(trac_source_tree, dirname)
 
             baseurl = "http://127.0.0.1:%s" % port
-            self._testenv = FunctionalTestEnvironment(dirname, port, baseurl)
+            self._testenv = self.env_class(dirname, port, baseurl)
             self._testenv.start()
-            self._tester = FunctionalTester(baseurl, self._testenv.repo_url())
+            self._tester = FunctionalTester(baseurl)
             self.fixture = (self._testenv, self._tester)
 
         def tearDown(self):
@@ -149,7 +156,7 @@ def regex_owned_by(username):
 
 
 def suite():
-    if twill and subprocess and core:
+    if twill and subprocess:
         from trac.tests.functional.testcases import suite
         suite = suite()
     else:
@@ -158,8 +165,6 @@ def suite():
             diagnostic += " (no twill installed)"
         if not subprocess:
             diagnostic += " (no subprocess installed)"
-        if not core:
-            diagnostic += " (no Subversion bindings installed)"
         print diagnostic
         # No tests to run, provide an empty suite.
         suite = unittest.TestSuite()

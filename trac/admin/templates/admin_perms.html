@@ -63,7 +63,7 @@
     </form>
     </py:if>
 
-    <form method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm" action="">
+    <form id="revokeform" method="post" py:with="revoke_perm = 'PERMISSION_REVOKE' in perm" action="">
       <table class="listing" id="permlist">
         <thead>
           <tr><th>Subject</th><th>Action</th></tr>

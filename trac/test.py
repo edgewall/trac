@@ -269,6 +269,13 @@ def suite():
 if __name__ == '__main__':
     import doctest, sys
     doctest.testmod(sys.modules[__name__])
+
+    # Clean up after doctest or spambayes gets unhappy
+    try:
+        del __builtins__._
+    except NameError:
+        pass
+
     #FIXME: this is a bit inelegant
     if '--skip-functional-tests' in sys.argv:
         sys.argv.remove('--skip-functional-tests')

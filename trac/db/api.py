@@ -16,6 +16,7 @@
 
 import os
 import urllib
+import time
 
 from trac.config import Option, IntOption
 from trac.core import *
@@ -47,6 +48,9 @@ class IDatabaseConnector(Interface):
     def to_sql(table):
         """Return the DDL statements necessary to create the specified table,
         including indices."""
+        
+    def backup(dest):
+        """Backup the database to a location defined by trac.backup_dir"""
 
 
 class DatabaseManager(Component):
@@ -57,6 +61,9 @@ class DatabaseManager(Component):
         """Database connection
         [wiki:TracEnvironment#DatabaseConnectionStrings string] for this
         project""")
+
+    backup_dir = Option('trac', 'backup_dir', 'db',
+        """Database backup location""")
 
     timeout = IntOption('trac', 'timeout', '20',
         """Timeout value for database connection, in seconds.
@@ -80,6 +87,27 @@ class DatabaseManager(Component):
             self._cnx_pool.shutdown(tid)
             if not tid:
                 self._cnx_pool = None
+                
+    def backup(self, dest=None):
+        """Save a backup of the database.
+
+        @param dest: base filename to write to.
+        Returns the file actually written.
+        """
+        connector, args = self._get_connector()
+        if not dest:
+            backup_dir = self.backup_dir
+            if backup_dir[0] != "/":
+                backup_dir = os.path.join(self.env.path, backup_dir)
+            db_str = self.config.get('trac', 'database')
+            db_name, db_path = db_str.split(":",1)
+            dest_name = '%s.%i.%d.bak' % (db_name, self.env.get_version(),int(time.time()))
+            dest = os.path.join(backup_dir, dest_name)
+        else:
+            backup_dir = os.path.dirname(dest)
+        if not os.path.exists(backup_dir):
+            os.makedirs(backup_dir)
+        return connector.backup(dest)
 
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)

@@ -14,12 +14,15 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import re
+import re, sys, os, time
 
 from trac.core import *
-from trac.db.api import IDatabaseConnector
+from trac.config import Option
+from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
+from subprocess import Popen, PIPE
+from trac.util.compat import close_fds
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -54,6 +57,9 @@ class MySQLConnector(Component):
     """
 
     implements(IDatabaseConnector)
+
+    dump_bin = Option('trac', 'mysqldump_bin', 'mysqldump',
+        """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
         self._version = None
@@ -141,6 +147,41 @@ class MySQLConnector(Component):
                   '_'.join(index.columns), table.name,
                   self._collist(table, index.columns))
 
+
+    def backup(self, dest_file):
+        # msyqldump -n schemaname dbname | gzip > filename.gz
+        db_url = self.env.config.get('trac', 'database')
+        scheme, db_prop = _parse_db_str(db_url)
+        db_name = os.path.basename(db_prop['path'])
+        args = [self.dump_bin, 
+                '-u%s' % db_prop['user'],
+                '-h%s' % db_prop['host']]
+        if db_prop['port']:
+            args.append('-P%s' % str(db_prop['port']))
+        args.append(db_name)
+        
+        args.extend(['>', dest_file])
+        if sys.platform == 'win':
+            # XXX TODO verify on windows
+            args = ['cmd', '/c', ' '.join(args)]
+        else:
+            args = ['bash', '-c', ' '.join(args)]
+        
+        environ = os.environ.copy()
+        environ['MYSQL_PWD'] = db_prop['password']
+        #print >> sys.stderr, "backup command %r" % (args,)
+        #print >> sys.stderr, "backup props %r" % (db_prop,)
+        #print >> sys.stderr, "backup to %s" % dest_file
+        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None,
+                  stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+        err = p.wait()
+        if err:
+            raise TracError("Backup attempt exited with error code %s." % err)
+        p.stdout.close()
+        p.stderr.close()
+        if not os.path.exists(dest_file):
+            raise TracError("Backup attempt failed")
+        return dest_file
 
 class MySQLConnection(ConnectionWrapper):
     """Connection wrapper for MySQL."""

@@ -144,6 +144,18 @@ class SQLiteConnector(Component):
     def to_sql(cls, table):
         return _to_sql(table)
 
+    def backup(self, dest_file):
+        """Simple SQLite-specific backup of the database.
+
+        @param dest_file: Destination file basename
+        """
+        import shutil
+        db_str = self.config.get('trac', 'database')
+        db_name = os.path.join(self.env.path, db_str[7:])
+        shutil.copy(db_name, dest_file)
+        if not os.path.exists(dest_file):
+            raise TracError("Backup attempt failed")
+        return dest_file
 
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
