@@ -71,25 +71,29 @@ class FunctionalTestEnvironment(object):
         # NOTE: mysqldump and mysql must be on path
         # for mysql, we'll drop all the tables in the database and reuse
         # the same database
-        # mysqldump -u[USERNAME] -p[PASSWORD] --add-drop-table --no-data [DATABASE] | grep ^DROP | mysql -u[USERNAME] -p[PASSWORD] [DATABASE]
+        #   mysqldump -u[USERNAME] -p[PASSWORD] \
+        #     --add-drop-table --no-data [DATABASE] \
+        #   | grep ^DROP | mysql -u[USERNAME] -p[PASSWORD] [DATABASE]
         import sys
         scheme, db_prop = _parse_db_str(self.dburi)
         db_prop['dbname'] = os.path.basename(db_prop['path'])
-        cmd = "mysqldump -u%(user)s -h%(host)s -P%(port)s --add-drop-table --no-data %(dbname)s | grep ^DROP | mysql -u%(user)s -h%(host)s -P%(port)s %(dbname)s" \
-              % db_prop
-        if sys.platform == 'win':
-            # XXX TODO verify on windows
+        db_prop.setdefault('port', 3306)
+        # well, there *must* be a simpler way to do this...
+        cmd = ("mysqldump -u%(user)s -h%(host)s -P%(port)s "
+                "--add-drop-table --no-data %(dbname)s "
+                "| grep ^DROP "
+                "| mysql -u%(user)s -h%(host)s -P%(port)s %(dbname)s" % db_prop)
+        
+        if sys.platform == 'win32':
             args = ['cmd', '/c', cmd]
-        else:
+        else: 
             args = ['bash', '-c', cmd]
         
         environ = os.environ.copy()
-        environ['MYSQL_PWD'] = db_prop['password']
+        environ['MYSQL_PWD'] = str(db_prop['password'])
         print >> sys.stderr, "command %r" % (args,)
-        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None, stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+        p = Popen(args, env=environ, close_fds=close_fds)
         p.wait()
-        p.stdout.close()
-        p.stderr.close()
 
     def destroy(self):
         """Remove all of the test environment data."""

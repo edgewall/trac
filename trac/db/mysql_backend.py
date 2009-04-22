@@ -157,29 +157,25 @@ class MySQLConnector(Component):
         args = [self.dump_bin, 
                 '-u%s' % db_prop['user'],
                 '-h%s' % db_prop['host']]
-        if db_prop['port']:
+        if 'port' in db_prop:
             args.append('-P%s' % str(db_prop['port']))
         args.append(db_name)
         
         args.extend(['>', dest_file])
-        if sys.platform == 'win':
-            # XXX TODO verify on windows
+        if sys.platform == 'win32':
             args = ['cmd', '/c', ' '.join(args)]
         else:
             args = ['bash', '-c', ' '.join(args)]
         
         environ = os.environ.copy()
-        environ['MYSQL_PWD'] = db_prop['password']
+        environ['MYSQL_PWD'] = str(db_prop['password'])
         #print >> sys.stderr, "backup command %r" % (args,)
         #print >> sys.stderr, "backup props %r" % (db_prop,)
         #print >> sys.stderr, "backup to %s" % dest_file
-        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None,
-                  stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+        p = Popen(args, env=environ, close_fds=close_fds)
         err = p.wait()
         if err:
             raise TracError("Backup attempt exited with error code %s." % err)
-        p.stdout.close()
-        p.stderr.close()
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
         return dest_file

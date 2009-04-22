@@ -66,7 +66,7 @@ MySQL
 Create the database and user as you normally would.  See the MySqlDb_ page for
 more information.
 
-.. _MySqlDb: http://twill.idyll.org/commands.html
+.. _MySqlDb: http://trac.edgewall.org/wiki/MySqlDb
 
 Example::
 
