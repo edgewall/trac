@@ -15,14 +15,15 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re, sys, os, time
+from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
-from subprocess import Popen, PIPE
 from trac.util.compat import close_fds
+from trac.util.text import to_unicode
 
 psycopg = None
 PgSQL = None
@@ -36,10 +37,8 @@ class PostgreSQLConnector(Component):
 
     implements(IDatabaseConnector)
 
-    pg_dump_bin = Option('trac', 'pg_dump_bin', 'pg_dump',
+    pg_dump_path = Option('trac', 'pg_dump_path', 'pg_dump',
         """Location of pg_dump for Postgres database backups""")
-    compression = Option('trac', 'backup_compression', '8',
-        """Gzip backup compression level (if supported by backend)""")
 
     def __init__(self):
         self._version = None
@@ -104,11 +103,10 @@ class PostgreSQLConnector(Component):
                      '","'.join(index.columns))
 
     def backup(self, dest_file):
-        # pg_dump -n schemaname dbname | gzip > filename.gz
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
-        args = [self.pg_dump_bin, '-C', '-d', '-x', '-Z', self.compression,
+        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8',
                 '-U', db_prop['user'],]
         port = db_prop.get('port', '5432')
         if 'host' in db_prop['params']:
@@ -124,23 +122,19 @@ class PostgreSQLConnector(Component):
         if 'schema' in db_prop['params']:
             args.extend(['-n', db_prop['params']['schema']])
 
-        dest_file = "%s.gz" % (dest_file,)
+        dest_file += ".gz"
         args.extend(['-f', dest_file])
 
         args.append(db_name)
 
-        if sys.platform == 'win32':
-            args = ['cmd', '/c', ' '.join(args)]
-        else:
-            args = ['bash', '-c', ' '.join(args)]
-        
         environ = os.environ.copy()
         if 'password' in db_prop:
             environ['PGPASSWORD'] = str(db_prop['password'])
-        p = Popen(args, env=environ, close_fds=close_fds)
-        err = p.wait()
-        if err:
-            raise TracError("Backup attempt exited with error code %s." % err)
+        p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
+        ret = p.wait()
+        if ret != 0:
+            errmsg = p.communicate()[1]
+            raise TracError("Backup attempt failed (%s)" % to_unicode(errmsg))
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
         return dest_file

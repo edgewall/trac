@@ -15,15 +15,15 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import re, sys, os, time
+from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
-from trac.util.translation import _
-from subprocess import Popen, PIPE
 from trac.util.compat import close_fds
+from trac.util.text import to_unicode
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -59,7 +59,7 @@ class MySQLConnector(Component):
 
     implements(IDatabaseConnector)
 
-    dump_bin = Option('trac', 'mysqldump_bin', 'mysqldump',
+    mysqldump_path = Option('trac', 'mysqldump_path', 'mysqldump',
         """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
@@ -150,32 +150,29 @@ class MySQLConnector(Component):
 
 
     def backup(self, dest_file):
-        # msyqldump -n schemaname dbname | gzip > filename.gz
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
-        args = [self.dump_bin, 
+        args = [self.mysqldump_path,
                 '-u%s' % db_prop['user'],
                 '-h%s' % db_prop['host']]
         if 'port' in db_prop:
             args.append('-P%s' % str(db_prop['port']))
         args.append(db_name)
         
-        args.extend(['>', dest_file])
-        if sys.platform == 'win32':
-            args = ['cmd', '/c', ' '.join(args)]
-        else:
-            args = ['bash', '-c', ' '.join(args)]
-        
         environ = os.environ.copy()
         environ['MYSQL_PWD'] = str(db_prop['password'])
-        #print >> sys.stderr, "backup command %r" % (args,)
-        #print >> sys.stderr, "backup props %r" % (db_prop,)
-        #print >> sys.stderr, "backup to %s" % dest_file
-        p = Popen(args, env=environ, close_fds=close_fds)
-        err = p.wait()
-        if err:
-            raise TracError("Backup attempt exited with error code %s." % err)
+        out = open(dest_file, "wb")
+        ret = -1
+        try:
+            p = Popen(args, env=environ, stdout=out, stderr=PIPE,
+                      close_fds=close_fds)
+            ret = p.wait()
+        finally:
+            out.close()
+        if ret != 0:
+            errmsg = p.communicate()[1]
+            raise TracError("Backup attempt failed (%s)" % to_unicode(errmsg))
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
         return dest_file
