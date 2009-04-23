@@ -102,16 +102,20 @@ class FunctionalTestEnvironment(object):
             dburi = DatabaseManager(env).connection_uri
             scheme, db_prop = _parse_db_str(self.dburi)
             if scheme == 'postgres':
-                # We'll remove the schema automatically for Postgres if it exists.
+                # We'll remove the schema automatically for Postgres, if it
+                # exists.
                 # With this, you can run functional tests multiple times without
                 # running external tools (just like when running against sqlite)
                 env_db = env.get_db_cnx()
                 if env_db.schema:
                     cursor = env_db.cursor()
                     try:
-                        cursor.execute('DROP SCHEMA "%s" CASCADE'%(env_db.schema))
+                        cursor.execute('DROP SCHEMA "%s" CASCADE' %
+                                       env_db.schema)
                         env_db.commit()
-                    except: #TODO decide if this can swallow important errors
+                    except: 
+                        # if drop schema fails, either it's already gone
+                        # or a manual drop will be needed
                         env_db.rollback()
             elif scheme == 'mysql':
                 self.destroy_mysqldb()

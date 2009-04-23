@@ -98,8 +98,10 @@ class PostgreSQLConnector(Component):
         yield '\n'.join(sql)
         for index in table.indices:
             unique = index.unique and 'UNIQUE' or ''
-            yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % (unique, table.name, 
-                   '_'.join(index.columns), table.name, '","'.join(index.columns))
+            yield 'CREATE %s INDEX "%s_%s_idx" ON "%s" ("%s")' % \
+                    (unique, table.name, 
+                     '_'.join(index.columns), table.name,
+                     '","'.join(index.columns))
 
     def backup(self, dest_file):
         # pg_dump -n schemaname dbname | gzip > filename.gz
@@ -120,28 +122,25 @@ class PostgreSQLConnector(Component):
             args.append(str(port))
 
         if 'schema' in db_prop['params']:
-            args.extend(['-n', db_prop['params']['schema'], db_name])
-        else:
-            args.extend([db_name])
+            args.extend(['-n', db_prop['params']['schema']])
 
         dest_file = "%s.gz" % (dest_file,)
-        args.extend(['>', dest_file])
-        if sys.platform == 'win':
-            # XXX TODO verify on windows
+        args.extend(['-f', dest_file])
+
+        args.append(db_name)
+
+        if sys.platform == 'win32':
             args = ['cmd', '/c', ' '.join(args)]
         else:
             args = ['bash', '-c', ' '.join(args)]
         
         environ = os.environ.copy()
         if 'password' in db_prop:
-            environ['PGPASSWORD'] = db_prop['password']
-        p = Popen(args, env=environ, shell=False, bufsize=0, stdin=None,
-                  stdout=PIPE, stderr=PIPE, close_fds=close_fds)
+            environ['PGPASSWORD'] = str(db_prop['password'])
+        p = Popen(args, env=environ, close_fds=close_fds)
         err = p.wait()
         if err:
             raise TracError("Backup attempt exited with error code %s." % err)
-        p.stdout.close()
-        p.stderr.close()
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
         return dest_file
