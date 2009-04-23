@@ -11,7 +11,7 @@ class DatabaseBackupTestCase(FunctionalTestCaseSetup):
         env = self._testenv.get_trac_environment()
         # raises TracError if backup fails
         backup_file = env.backup()
-        self.assertTrue(os.path.exists(backup_file), 'Backup file was not created.')
+        self.assert_(os.path.exists(backup_file), 'Backup file was not created.')
         self.assertNotEqual(os.path.getsize(backup_file), 0, 'Backup file is zero length.')
 
 
