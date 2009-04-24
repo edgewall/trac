@@ -106,6 +106,7 @@ class PostgreSQLConnector(Component):
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
+
         args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8',
                 '-U', db_prop['user'],]
         port = db_prop.get('port', '5432')
@@ -123,17 +124,14 @@ class PostgreSQLConnector(Component):
             args.extend(['-n', db_prop['params']['schema']])
 
         dest_file += ".gz"
-        args.extend(['-f', dest_file])
-
-        args.append(db_name)
+        args.extend(['-f', dest_file, db_name])
 
         environ = os.environ.copy()
         if 'password' in db_prop:
             environ['PGPASSWORD'] = str(db_prop['password'])
         p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
-        ret = p.wait()
-        if ret != 0:
-            errmsg = p.communicate()[1]
+        errmsg = p.communicate()[1]
+        if p.returncode != 0:
             raise TracError("Backup attempt failed (%s)" % to_unicode(errmsg))
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")

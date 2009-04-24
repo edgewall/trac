@@ -50,6 +50,7 @@ try:
 except ImportError:
     has_mysqldb = False
 
+
 class MySQLConnector(Component):
     """MySQL database support for version 4.1 and greater.
     
@@ -148,34 +149,27 @@ class MySQLConnector(Component):
                   '_'.join(index.columns), table.name,
                   self._collist(table, index.columns))
 
-
     def backup(self, dest_file):
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
-        args = [self.mysqldump_path,
-                '-u%s' % db_prop['user'],
-                '-h%s' % db_prop['host']]
+
+        args = [self.mysqldump_path, '-u', db_prop['user'],
+                '-h', db_prop['host']]
         if 'port' in db_prop:
-            args.append('-P%s' % str(db_prop['port']))
-        args.append(db_name)
+            args.extend(['-P', str(db_prop['port'])])
+        args.extend(['-r', dest_file, db_name])
         
         environ = os.environ.copy()
         environ['MYSQL_PWD'] = str(db_prop['password'])
-        out = open(dest_file, "wb")
-        ret = -1
-        try:
-            p = Popen(args, env=environ, stdout=out, stderr=PIPE,
-                      close_fds=close_fds)
-            ret = p.wait()
-        finally:
-            out.close()
-        if ret != 0:
-            errmsg = p.communicate()[1]
+        p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
+        errmsg = p.communicate()[1]
+        if p.returncode != 0:
             raise TracError("Backup attempt failed (%s)" % to_unicode(errmsg))
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
         return dest_file
+
 
 class MySQLConnection(ConnectionWrapper):
     """Connection wrapper for MySQL."""
