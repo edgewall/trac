@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
-import os
+import os.path
 import pkg_resources
 import pprint
 import re
@@ -345,14 +345,17 @@ class Chrome(Component):
             if not os.path.exists(templates_dir):
                 os.mkdir(templates_dir)
 
-            fileobj = open(os.path.join(templates_dir, 'site.html'), 'w')
-            try:
-                fileobj.write("""<html xmlns="http://www.w3.org/1999/xhtml"
+            if not self.shared_templates_dir or not os.path.exists(
+                        os.path.join(self.shared_templates_dir, "site.html")):
+                fileobj = open(os.path.join(templates_dir, 'site.html'), 'w')
+                try:
+                    fileobj.write("""\
+<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/" py:strip="">
   <!--! Custom match templates go here -->
 </html>""")
-            finally:
-                fileobj.close()
+                finally:
+                    fileobj.close()
 
     def environment_needs_upgrade(self, db):
         return False
