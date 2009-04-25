@@ -9,8 +9,9 @@ p.path .pathentry { float: left }
 /* Styles for the page editing form */
 #edit #rows { float: right; font-size: 80% }
 #edit #rows select { font-size: 90% }
-#edit #text { clear: both; width: 100% }
-#edit .wikitoolbar { float: left; }
+#edit fieldset { margin-left: 1px; margin-right: 1px }
+#edit #text { clear: both; margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
+#edit .wikitoolbar { float: left; margin-left: -1px }
 #changeinfo { padding: .5em }
 #changeinfo .field { float: left; margin: 0 1em .5em 0 }
 #changeinfo br { clear: left }

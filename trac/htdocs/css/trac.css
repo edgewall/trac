@@ -347,6 +347,7 @@ table.wiki {
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 
 .wikitoolbar {
+ margin-left: 2px;
  border: solid #d7d7d7;
  border-width: 1px 1px 1px 0;
  height: 18px;
