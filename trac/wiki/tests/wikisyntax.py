@@ -11,6 +11,7 @@ TEST_CASES=u"""
 ============================== wiki: link resolver
 wiki:TestPage
 wiki:TestPage/
+wiki:/TestPage
 wiki:"Space 1 23"
 wiki:"C'est l'\xe9t\xe9"
 wiki:MissingPage
@@ -20,6 +21,7 @@ wiki:abc
 <p>
 <a class="wiki" href="/wiki/TestPage">wiki:TestPage</a>
 <a class="wiki" href="/wiki/TestPage">wiki:TestPage/</a>
+<a class="wiki" href="/wiki/TestPage">wiki:/TestPage</a>
 <a class="wiki" href="/wiki/Space%201%2023">wiki:"Space 1 23"</a>
 <a class="wiki" href="/wiki/C%27est%20l%27%C3%A9t%C3%A9">wiki:"C'est l'\xe9t\xe9"</a>
 <a class="missing wiki" href="/wiki/MissingPage" rel="nofollow">wiki:MissingPage?</a>
