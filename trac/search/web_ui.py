@@ -103,7 +103,8 @@ class SearchModule(Component):
             terms = self._get_search_terms(query)
 
             # Refuse queries that obviously would result in a huge result set
-            if len(terms) == 1 and len(terms[0]) < self.min_query_length:
+            if not terms or \
+                    len(terms) == 1 and len(terms[0]) < self.min_query_length:
                 raise TracError(_('Search query too short. Query must be at '
                                   'least %(num)s characters long.',
                                   num=self.min_query_length), _('Search Error'))
