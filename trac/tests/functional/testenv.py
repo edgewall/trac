@@ -95,6 +95,21 @@ class FunctionalTestEnvironment(object):
         p = Popen(args, env=environ, close_fds=close_fds)
         p.wait()
 
+    def destroy_postgresql(self, db):
+        # We'll remove the schema automatically for Postgres, if it
+        # exists.
+        # With this, you can run functional tests multiple times without
+        # running external tools (just like when running against sqlite)
+        if db.schema:
+            cursor = db.cursor()
+            try:
+                cursor.execute('DROP SCHEMA "%s" CASCADE' % db.schema)
+                db.commit()
+            except: 
+                # if drop schema fails, either it's already gone
+                # or a manual drop will be needed
+                db.rollback()
+
     def destroy(self):
         """Remove all of the test environment data."""
         if os.path.exists(self.dirname):
@@ -102,21 +117,8 @@ class FunctionalTestEnvironment(object):
             dburi = DatabaseManager(env).connection_uri
             scheme, db_prop = _parse_db_str(self.dburi)
             if scheme == 'postgres':
-                # We'll remove the schema automatically for Postgres, if it
-                # exists.
-                # With this, you can run functional tests multiple times without
-                # running external tools (just like when running against sqlite)
-                env_db = env.get_db_cnx()
-                if env_db.schema:
-                    cursor = env_db.cursor()
-                    try:
-                        cursor.execute('DROP SCHEMA "%s" CASCADE' %
-                                       env_db.schema)
-                        env_db.commit()
-                    except: 
-                        # if drop schema fails, either it's already gone
-                        # or a manual drop will be needed
-                        env_db.rollback()
+                db = env.get_db_cnx()
+                self.destroy_postgresql(db)
             elif scheme == 'mysql':
                 self.destroy_mysqldb()
             env.shutdown()
