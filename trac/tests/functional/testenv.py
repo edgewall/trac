@@ -67,33 +67,19 @@ class FunctionalTestEnvironment(object):
         return 'sqlite:db/trac.db'
     dburi = property(get_dburi)
 
-    def destroy_mysqldb(self):
-        # NOTE: mysqldump and mysql must be on path
-        # for mysql, we'll drop all the tables in the database and reuse
-        # the same database
-        #   mysqldump -u[USERNAME] -p[PASSWORD] \
-        #     --add-drop-table --no-data [DATABASE] \
-        #   | grep ^DROP | mysql -u[USERNAME] -p[PASSWORD] [DATABASE]
-        import sys
-        scheme, db_prop = _parse_db_str(self.dburi)
-        db_prop['dbname'] = os.path.basename(db_prop['path'])
-        db_prop.setdefault('port', 3306)
-        # well, there *must* be a simpler way to do this...
-        cmd = ("mysqldump -u%(user)s -h%(host)s -P%(port)s "
-                "--add-drop-table --no-data %(dbname)s "
-                "| grep ^DROP "
-                "| mysql -u%(user)s -h%(host)s -P%(port)s %(dbname)s" % db_prop)
-        
-        if sys.platform == 'win32':
-            args = ['cmd', '/c', cmd]
-        else: 
-            args = ['bash', '-c', cmd]
-        
-        environ = os.environ.copy()
-        environ['MYSQL_PWD'] = str(db_prop['password'])
-        print >> sys.stderr, "command %r" % (args,)
-        p = Popen(args, env=environ, close_fds=close_fds)
-        p.wait()
+    def destroy_mysqldb(self, db, db_prop):
+        dbname = os.path.basename(db_prop['path'])
+        try:
+            cursor = db.cursor()
+            cursor.execute('SELECT table_name FROM information_schema.tables '
+                           'WHERE table_schema=%s', (dbname,))
+            tables = cursor.fetchall()
+            for t in tables:
+                cursor.execute('DROP TABLE IF EXISTS `%s`' % t)
+            db.commit()
+        except Exception, e:
+            print e
+            db.rollback()
 
     def destroy_postgresql(self, db):
         # We'll remove the schema automatically for Postgres, if it
@@ -101,8 +87,8 @@ class FunctionalTestEnvironment(object):
         # With this, you can run functional tests multiple times without
         # running external tools (just like when running against sqlite)
         if db.schema:
-            cursor = db.cursor()
             try:
+                cursor = db.cursor()
                 cursor.execute('DROP SCHEMA "%s" CASCADE' % db.schema)
                 db.commit()
             except: 
@@ -116,11 +102,11 @@ class FunctionalTestEnvironment(object):
             env = self.get_trac_environment()
             dburi = DatabaseManager(env).connection_uri
             scheme, db_prop = _parse_db_str(self.dburi)
+            db = env.get_db_cnx()
             if scheme == 'postgres':
-                db = env.get_db_cnx()
                 self.destroy_postgresql(db)
             elif scheme == 'mysql':
-                self.destroy_mysqldb()
+                self.destroy_mysqldb(db, db_prop)
             env.shutdown()
 
         self.destroy_repo()
