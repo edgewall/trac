@@ -16,6 +16,8 @@ from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.env import open_environment
 from trac.db.api import _parse_db_str, DatabaseManager
+from trac.db.mysql_backend import MySQLConnection
+from trac.db.postgres_backend import PostgreSQLConnection
 from trac.util.compat import close_fds
 
 # TODO: refactor to support testing multiple frontends, backends (and maybe
@@ -98,16 +100,13 @@ class FunctionalTestEnvironment(object):
 
     def destroy(self):
         """Remove all of the test environment data."""
-        if os.path.exists(self.dirname):
-            env = self.get_trac_environment()
-            dburi = DatabaseManager(env).connection_uri
-            scheme, db_prop = _parse_db_str(self.dburi)
-            db = env.get_db_cnx()
-            if scheme == 'postgres':
-                self.destroy_postgresql(db)
-            elif scheme == 'mysql':
-                self.destroy_mysqldb(db, db_prop)
-            env.shutdown()
+        scheme, db_prop = _parse_db_str(self.dburi)
+        if scheme == 'postgres':
+            db = PostgreSQLConnection(**db_prop)
+            self.destroy_postgresql(db)
+        elif scheme == 'mysql':
+            db = MySQLConnection(**db_prop)
+            self.destroy_mysqldb(db, db_prop)
 
         self.destroy_repo()
         if os.path.exists(self.dirname):
