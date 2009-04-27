@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2009-02-17 14:10+0900\n"
-"PO-Revision-Date: 2009-04-09 06:10+0900\n"
+"PO-Revision-Date: 2009-04-25 14:10+0900\n"
 "Last-Translator: IWAI, Masaharu <iwai@alib.jp>\n"
 "Language-Team: ja_JP <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -119,9 +119,8 @@ msgid "Name"
 msgstr "名称"
 
 #: trac/attachment.py:867
-#, fuzzy
 msgid "Size"
-msgstr "Size"
+msgstr "サイズ"
 
 #: trac/attachment.py:867 trac/templates/history_view.html:28
 #: trac/versioncontrol/templates/revisionlog.html:95
@@ -266,14 +265,12 @@ msgid "Action"
 msgstr "アクション"
 
 #: trac/perm.py:618
-#, fuzzy
 msgid "Available actions:"
-msgstr ""
+msgstr "利用できるアクション:"
 
 #: trac/perm.py:631
-#, fuzzy
 msgid "Group names must be in lower case and actions in upper case"
-msgstr ""
+msgstr "グループ名はすべて小文字にする必要があります。アクションは大文字です。"
 
 #: trac/resource.py:328
 #, python-format
@@ -3540,7 +3537,7 @@ msgstr "(ファイル名不明)"
 #: trac/web/chrome.py:791
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
-msgstr ""
+msgstr "テンプレート %(location)s のレンダリング中にGenshi %(error)s エラーが発生"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
 #: trac/web/main.py:488
@@ -3560,7 +3557,7 @@ msgstr "%(name)s はファイルではありません。"
 #: trac/wiki/admin.py:128
 #, python-format
 msgid " %(page)s imported from %(filename)s"
-msgstr ""
+msgstr " %(filename)s からインポートされた %(page)s"
 
 #: trac/wiki/admin.py:154
 msgid "Title"
