@@ -90,7 +90,9 @@ h1 .status { color: #444; }
 #preview .comment, #changelog .comment { margin-left: 2em }
 
 form .field { margin-top: .75em; width: 100% }
-form #comment { width: 100% }
+form .field fieldset.iefix { margin-left: 1px; margin-right: 1px }
+form .field #comment { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
+form .field .wikitoolbar { margin-left: -1px }
 
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
 #properties table { border-spacing: 0; width: 100%; }
