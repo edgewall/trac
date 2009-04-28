@@ -87,4 +87,6 @@ li.milestone { list-style: none; margin-bottom: 4em }
 #edit .disabled em { color: #d7d7d7 }
 #edit .field { margin-top: 1.3em }
 #edit label { padding-left: .2em }
-#edit textarea#description { width: 97% }
+#edit fieldset.iefix { margin-left: 1px; margin-right: 1px }
+#edit textarea#description { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
+#edit .wikitoolbar { margin-left: -1px }
