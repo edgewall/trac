@@ -1274,6 +1274,26 @@ class RegressionTestTicket6912b(FunctionalTwillTestCaseSetup):
                 '<td class="owner"></td>', 's')
 
 
+class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/8247
+        Author field of ticket comment corresponding to the milestone removal
+        was always 'anonymous'."""
+        name = "MilestoneRemove"
+        self._tester.create_milestone(name)
+        id = self._tester.create_ticket(info={'milestone': name})
+        ticket_url = self._tester.url + "/ticket/%d" % id
+        tc.go(ticket_url)
+        tc.find(name)
+        tc.go(self._tester.url + "/admin/ticket/milestones")
+        tc.formvalue('milestone_table', 'sel', name)
+        tc.submit('remove')
+        tc.go(ticket_url)
+        tc.find('<strong>milestone</strong>[ \n\t]*<em>%s</em> deleted' % name)
+        tc.find('Changed <a.*</a> ago by admin')
+        tc.notfind('anonymous')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1357,6 +1377,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket6879b())
     suite.addTest(RegressionTestTicket6912a())
     suite.addTest(RegressionTestTicket6912b())
+    suite.addTest(RegressionTestTicket8247())
 
     return suite
 

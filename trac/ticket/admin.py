@@ -193,7 +193,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     db = self.env.get_db_cnx()
                     for name in sel:
                         mil = model.Milestone(self.env, name, db=db)
-                        mil.delete(db=db)
+                        mil.delete(db=db, author=req.authname)
                     db.commit()
                     req.redirect(req.href.admin(cat, page))
 
