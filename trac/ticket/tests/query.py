@@ -11,9 +11,11 @@ import unittest
 import difflib
 
 if sqlite_version < 30203:
-    EXPECTED_VAL = "1*priority.value"
+    def exp(var):
+        return "1*%s" % var
 else:
-    EXPECTED_VAL = "CAST(priority.value AS int)"
+    def exp(var):
+        return "CAST(%s AS int)" % var
 
 class QueryTestCase(unittest.TestCase):
 
@@ -79,7 +81,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(priority.value,'')='',""" + EXPECTED_VAL + """,t.id""")
+ORDER BY COALESCE(priority.value,'')='',""" + exp("priority.value") + """,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -90,7 +92,7 @@ ORDER BY COALESCE(priority.value,'')='',""" + EXPECTED_VAL + """,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(priority.value,'')='' DESC,""" + EXPECTED_VAL + """ DESC,t.id""")
+ORDER BY COALESCE(priority.value,'')='' DESC,""" + exp("priority.value") + """ DESC,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -161,7 +163,7 @@ ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.milestone AS milestone,t.component AS component,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(priority.value,'')='',""" + EXPECTED_VAL + """,t.id""")
+ORDER BY COALESCE(priority.value,'')='',""" + exp("priority.value") + """,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -344,7 +346,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE (CAST(t.time AS int)>=%s AND CAST(t.time AS int)<%s)
+WHERE (""" + exp("t.time") + ">=%s AND " + exp("t.time") + """<%s)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
@@ -356,7 +358,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE NOT (CAST(t.time AS int)>=%s AND CAST(t.time AS int)<%s)
+WHERE NOT (""" + exp("t.time") + ">=%s AND " + exp("t.time") + """<%s)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
@@ -368,7 +370,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE CAST(t.time AS int)>=%s
+WHERE """ + exp("t.time") + """>=%s
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800], args)
         tickets = query.execute(self.req)
@@ -380,7 +382,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE CAST(t.time AS int)<%s
+WHERE """ + exp("t.time") + """<%s
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1220227200], args)
         tickets = query.execute(self.req)
@@ -392,7 +394,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.changetime AS changetime,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE (CAST(t.changetime AS int)>=%s AND CAST(t.changetime AS int)<%s)
+WHERE (""" + exp("t.changetime") + ">=%s AND " + exp("t.changetime") + """<%s)
 ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
