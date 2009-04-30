@@ -202,7 +202,7 @@ msgstr "Ongeldige argumenten"
 
 #: trac/env.py:708
 msgid "Database is up to date, no upgrade necessary."
-msgstr ""
+msgstr "Database is up to date, geen upgrade nodig."
 
 #: trac/env.py:716
 #, python-format
