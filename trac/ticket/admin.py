@@ -134,16 +134,24 @@ class MilestoneAdminPanel(TicketAdminPanel):
     _type = 'milestones'
     _label = ('Milestone', 'Milestones')
 
+    # IAdminPanelProvider methods
+
+    def get_admin_panels(self, req):
+        if 'MILESTONE_VIEW' in req.perm:
+            return TicketAdminPanel.get_admin_panels(self, req)
+        return iter([])
+
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, milestone):
-        req.perm.require('TICKET_ADMIN')
-
+        req.perm.require('MILESTONE_VIEW')
+        
         # Detail view?
         if milestone:
             mil = model.Milestone(self.env, milestone)
             if req.method == 'POST':
                 if req.args.get('save'):
+                    req.perm.require('MILESTONE_MODIFY')
                     mil.name = req.args.get('name')
                     mil.due = mil.completed = None
                     due = req.args.get('duedate', '')
@@ -169,6 +177,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
             if req.method == 'POST':
                 # Add Milestone
                 if req.args.get('add') and req.args.get('name'):
+                    req.perm.require('MILESTONE_CREATE')
                     name = req.args.get('name')
                     try:
                         model.Milestone(self.env, name=name)
@@ -185,6 +194,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
                 # Remove milestone
                 elif req.args.get('remove'):
+                    req.perm.require('MILESTONE_DELETE')
                     sel = req.args.get('sel')
                     if not sel:
                         raise TracError(_('No milestone selected'))
@@ -319,7 +329,6 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, path_info):
-        req.perm.require('TICKET_ADMIN')
         data = {'label_singular': self._label[0],
                 'label_plural': self._label[1]}
 
