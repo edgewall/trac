@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="prefs.html" />
   <head>
@@ -17,8 +18,8 @@
                checked="${settings.session.get('accesskeys') or None}" />
         Enable access keys
       </label>
-      <p class="hint">This site provides keyboard shortcuts for faster
-      access to certain functions of this site. As these shortcuts can
+      <p class="hint" i18n:msg="">This site provides keyboard shortcuts for
+      faster access to certain functions of this site. As these shortcuts can
       cause conflicts with shortcuts provided by the desktop system or
       web browser, they are disabled by default. See
       <a href="${href.wiki('TracAccessibility')}">TracAccessibility</a>

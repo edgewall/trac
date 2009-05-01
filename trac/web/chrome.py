@@ -15,7 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
-import os
+import os.path
 import pkg_resources
 import pprint
 import re
@@ -63,7 +63,7 @@ from trac.util.compat import partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
-                           javascript_quote
+                           javascript_quote, exception_to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
                               format_time, http_date, utc
 from trac.util.translation import _
@@ -358,9 +358,10 @@ class Chrome(Component):
         try:
             import babel
             babel_version = get_pkginfo(babel).get('version')
-            self.env.systeminfo.append(('Babel', babel_version))
-        except ImportError:
-            pass
+        except ImportError, e:
+            self.log.debug("Babel not found: %s", exception_to_unicode(e))
+            babel_version = '-'
+        self.env.systeminfo.append(('Babel', babel_version))
 
     # IEnvironmentSetupParticipant methods
 
@@ -371,14 +372,17 @@ class Chrome(Component):
             if not os.path.exists(templates_dir):
                 os.mkdir(templates_dir)
 
-            fileobj = open(os.path.join(templates_dir, 'site.html'), 'w')
-            try:
-                fileobj.write("""<html xmlns="http://www.w3.org/1999/xhtml"
+            if not self.shared_templates_dir or not os.path.exists(
+                        os.path.join(self.shared_templates_dir, "site.html")):
+                fileobj = open(os.path.join(templates_dir, 'site.html'), 'w')
+                try:
+                    fileobj.write("""\
+<html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/" py:strip="">
   <!--! Custom match templates go here -->
 </html>""")
-            finally:
-                fileobj.close()
+                finally:
+                    fileobj.close()
 
     def environment_needs_upgrade(self, db):
         return False

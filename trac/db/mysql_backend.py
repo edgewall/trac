@@ -14,13 +14,16 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import re
+import re, sys, os, time
+from subprocess import Popen, PIPE
 
 from trac.core import *
-from trac.db.api import IDatabaseConnector
+from trac.config import Option
+from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
-from trac.util.translation import _
+from trac.util.compat import close_fds
+from trac.util.text import to_unicode
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -47,6 +50,7 @@ try:
 except ImportError:
     has_mysqldb = False
 
+
 class MySQLConnector(Component):
     """MySQL database support for version 4.1 and greater.
     
@@ -55,6 +59,9 @@ class MySQLConnector(Component):
     """
 
     implements(IDatabaseConnector)
+
+    mysqldump_path = Option('trac', 'mysqldump_path', 'mysqldump',
+        """Location of mysqldump for MySQL database backups""")
 
     def __init__(self):
         self._version = None
@@ -141,6 +148,27 @@ class MySQLConnector(Component):
             yield 'CREATE %s INDEX %s_%s_idx ON %s (%s);' % (unique, table.name,
                   '_'.join(index.columns), table.name,
                   self._collist(table, index.columns))
+
+    def backup(self, dest_file):
+        db_url = self.env.config.get('trac', 'database')
+        scheme, db_prop = _parse_db_str(db_url)
+        db_name = os.path.basename(db_prop['path'])
+
+        args = [self.mysqldump_path, '-u', db_prop['user'],
+                '-h', db_prop['host']]
+        if 'port' in db_prop:
+            args.extend(['-P', str(db_prop['port'])])
+        args.extend(['-r', dest_file, db_name])
+        
+        environ = os.environ.copy()
+        environ['MYSQL_PWD'] = str(db_prop['password'])
+        p = Popen(args, env=environ, stderr=PIPE, close_fds=close_fds)
+        errmsg = p.communicate()[1]
+        if p.returncode != 0:
+            raise TracError("Backup attempt failed (%s)" % to_unicode(errmsg))
+        if not os.path.exists(dest_file):
+            raise TracError("Backup attempt failed")
+        return dest_file
 
 
 class MySQLConnection(ConnectionWrapper):

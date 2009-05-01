@@ -1,7 +1,7 @@
 # Romanian (Romania) translations for Trac.
 # Copyright (C) 2009 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# alexxed <alexxed@gmail.com>, 2009.
+# Alexandru Szasz <alexxed@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-11-22 13:02+0100\n"
 "PO-Revision-Date: 2009-03-10 09:39+0200\n"
-"Last-Translator: alexxed <alexxed@gmail.com>\n"
+"Last-Translator: Alexandru Szasz <alexxed@gmail.com>\n"
 "Language-Team: ro_RO <trac-dev@googlegroups.com>\n"
 "Plural-Forms:  nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"

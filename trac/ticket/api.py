@@ -268,7 +268,8 @@ class TicketSystem(Component):
         return fields
 
     reserved_field_names = ['report', 'order', 'desc', 'group', 'groupdesc',
-                            'col', 'row', 'format', 'max', 'page', 'verbose']
+                            'col', 'row', 'format', 'max', 'page', 'verbose',
+                            'comment']
 
     def get_custom_fields(self):
         return [f.copy() for f in self.custom_fields]

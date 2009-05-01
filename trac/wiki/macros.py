@@ -285,17 +285,19 @@ class ImageMacro(WikiMacroBase):
     and style of the rendered `<img>` element:
      * digits and unit are interpreted as the size (ex. 120, 25%)
        for the image
-     * `right`, `left`, `top` or `bottom` are interpreted as the alignment for
-       the image
+     * `right`, `left`, `center`, `top`, `bottom` and `middle` are interpreted 
+       as the alignment for the image (alternatively, the first three can be
+       specified using `align=...` and the last three using `valign=...`)
      * `link=some TracLinks...` replaces the link to the image source by the
        one specified using a TracLinks. If no value is specified, the link is
        simply removed.
      * `nolink` means without link to image source (deprecated, use `link=`)
      * `key=value` style are interpreted as HTML attributes or CSS style
        indications for the image. Valid keys are:
-        * align, border, width, height, alt, title, longdesc, class, id
-          and usemap
-        * `border` can only be a number
+        * align, valign, border, width, height, alt, title, longdesc, class, 
+          margin, id and usemap
+        * `border` and `margin` can only be a number
+        * `margin` is superseded by `center` which uses auto margins 
     
     Examples:
     {{{
@@ -329,47 +331,55 @@ class ImageMacro(WikiMacroBase):
         args = content.split(',')
         if len(args) == 0:
             raise Exception("No argument.")
-        filespec = args[0]
+        filespec = args.pop(0)
 
         # style information
         size_re = re.compile('[0-9]+(%|px)?$')
-        attr_re = re.compile('(align|border|width|height|alt'
+        attr_re = re.compile('(align|valign|border|margin|width|height|alt'
                              '|title|longdesc|class|id|usemap)=(.+)')
         quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
         style = {}
         link = ''
-        for arg in args[1:]:
-            arg = arg.strip()
+        while args:
+            arg = args.pop(0).strip()
             if size_re.match(arg):
                 # 'width' keyword
                 attr['width'] = arg
-                continue
-            if arg == 'nolink':
+            elif arg == 'nolink':
                 link = None
-                continue
-            if arg.startswith('link='):
+            elif arg.startswith('link='):
                 val = arg.split('=', 1)[1]
                 elt = extract_link(self.env, formatter.context, val.strip())
                 link = None
                 if isinstance(elt, Element):
                     link = elt.attrib.get('href')
-                continue
-            if arg in ('left', 'right', 'top', 'bottom'):
+            elif arg in ('left', 'right'):
                 style['float'] = arg
-                continue
-            match = attr_re.match(arg)
-            if match:
-                key, val = match.groups()
-                m = quoted_re.search(val) # unquote "..." and '...'
-                if m:
-                    val = m.group(1)
-                if key == 'align':
-                    style['float'] = val
-                elif key == 'border':
-                    style['border'] = ' %dpx solid' % int(val);
-                else:
-                    attr[str(key)] = val # will be used as a __call__ keyword
+            elif arg == 'center':
+                style['margin-left'] = style['margin-right'] = 'auto'
+                style['display'] = 'block'
+                style.pop('margin', '')
+            elif arg in ('top', 'bottom', 'middle'):
+                style['vertical-align'] = arg
+            else:
+                match = attr_re.match(arg)
+                if match:
+                    key, val = match.groups()
+                    if (key == 'align' and 
+                            val in ('left', 'right', 'center')) or \
+                        (key == 'valign' and \
+                            val in ('top', 'middle', 'bottom')):
+                        args.append(val)
+                    elif key == 'margin' and 'margin-left' not in style:
+                        style['margin'] = ' %dpx' % int(val);
+                    elif key == 'border':
+                        style['border'] = ' %dpx solid' % int(val);
+                    else:
+                        m = quoted_re.search(val) # unquote "..." and '...'
+                        if m:
+                            val = m.group(1)
+                        attr[str(key)] = val # will be used as a __call__ kwd
 
         # parse filespec argument to get realm and id if contained.
         parts = filespec.split(':')

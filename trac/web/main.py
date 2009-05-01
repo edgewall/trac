@@ -164,107 +164,102 @@ class RequestDispatcher(Component):
 
         try:
             try:
+                # Select the component that should handle the request
+                chosen_handler = None
                 try:
                     translation.activate(req.locale, self.env.path)
-
-                    # Select the component that should handle the request
-                    chosen_handler = None
-                    try:
-                        for handler in self.handlers:
-                            if handler.match_request(req):
-                                chosen_handler = handler
-                                break
-                        if not chosen_handler:
-                            if not req.path_info or req.path_info == '/':
-                                chosen_handler = self.default_handler
-                        # pre-process any incoming request, whether a handler
-                        # was found or not
-                        chosen_handler = self._pre_process_request(req,
-                                                                chosen_handler)
-                    except TracError, e:
-                        raise HTTPInternalError(e)
+                    for handler in self.handlers:
+                        if handler.match_request(req):
+                            chosen_handler = handler
+                            break
                     if not chosen_handler:
-                        if req.path_info.endswith('/'):
-                            # Strip trailing / and redirect
-                            target = req.path_info.rstrip('/').encode('utf-8')
-                            if req.query_string:
-                                target += '?' + req.query_string
-                            req.redirect(req.href() + target, permanent=True)
-                        raise HTTPNotFound('No handler matched request to %s',
-                                           req.path_info)
+                        if not req.path_info or req.path_info == '/':
+                            chosen_handler = self.default_handler
+                    # pre-process any incoming request, whether a handler
+                    # was found or not
+                    chosen_handler = self._pre_process_request(req,
+                                                            chosen_handler)
+                except TracError, e:
+                    raise HTTPInternalError(e)
+                if not chosen_handler:
+                    if req.path_info.endswith('/'):
+                        # Strip trailing / and redirect
+                        target = req.path_info.rstrip('/').encode('utf-8')
+                        if req.query_string:
+                            target += '?' + req.query_string
+                        req.redirect(req.href() + target, permanent=True)
+                    raise HTTPNotFound('No handler matched request to %s',
+                                       req.path_info)
 
-                    req.callbacks['chrome'] = partial(chrome.prepare_request,
-                                                      handler=chosen_handler)
+                req.callbacks['chrome'] = partial(chrome.prepare_request,
+                                                  handler=chosen_handler)
 
-                    # Protect against CSRF attacks: we validate the form token
-                    # for all POST requests with a content-type corresponding
-                    # to form submissions
-                    if req.method == 'POST':
-                        ctype = req.get_header('Content-Type')
-                        if ctype:
-                            ctype, options = cgi.parse_header(ctype)
-                        if ctype in ('application/x-www-form-urlencoded',
-                                     'multipart/form-data') and \
-                                req.args.get('__FORM_TOKEN') != req.form_token:
-                            raise HTTPBadRequest('Missing or invalid form '
-                                                 'token. Do you have cookies '
-                                                 'enabled?')
+                # Protect against CSRF attacks: we validate the form token
+                # for all POST requests with a content-type corresponding
+                # to form submissions
+                if req.method == 'POST':
+                    ctype = req.get_header('Content-Type')
+                    if ctype:
+                        ctype, options = cgi.parse_header(ctype)
+                    if ctype in ('application/x-www-form-urlencoded',
+                                 'multipart/form-data') and \
+                            req.args.get('__FORM_TOKEN') != req.form_token:
+                        raise HTTPBadRequest('Missing or invalid form '
+                                             'token. Do you have cookies '
+                                             'enabled?')
 
-                    # Process the request and render the template
-                    resp = chosen_handler.process_request(req)
-                    if resp:
-                        if len(resp) == 2: # Clearsilver
-                            chrome.populate_hdf(req)
-                            template, content_type = \
-                                      self._post_process_request(req, *resp)
+                # Process the request and render the template
+                resp = chosen_handler.process_request(req)
+                if resp:
+                    if len(resp) == 2: # Clearsilver
+                        chrome.populate_hdf(req)
+                        template, content_type = \
+                                  self._post_process_request(req, *resp)
+                        # Give the session a chance to persist changes
+                        if req.session:
+                            req.session.save()
+                        req.display(template, content_type or 'text/html')
+                    else: # Genshi
+                        template, data, content_type = \
+                                  self._post_process_request(req, *resp)
+                        if 'hdfdump' in req.args:
+                            req.perm.require('TRAC_ADMIN')
+                            # debugging helper - no need to render first
+                            from pprint import pprint
+                            out = StringIO()
+                            pprint(data, out)
+                            req.send(out.getvalue(), 'text/plain')
+                        else:
+                            output = chrome.render_template(req, template,
+                                                            data,
+                                                            content_type)
                             # Give the session a chance to persist changes
                             if req.session:
                                 req.session.save()
-                            req.display(template, content_type or 'text/html')
-                        else: # Genshi
-                            template, data, content_type = \
-                                      self._post_process_request(req, *resp)
-                            if 'hdfdump' in req.args:
-                                req.perm.require('TRAC_ADMIN')
-                                # debugging helper - no need to render first
-                                from pprint import pprint
-                                out = StringIO()
-                                pprint(data, out)
-                                req.send(out.getvalue(), 'text/plain')
-                            else:
-                                output = chrome.render_template(req, template,
-                                                                data,
-                                                                content_type)
-                                # Give the session a chance to persist changes
-                                if req.session:
-                                    req.session.save()
 
-                                req.send(output, content_type or 'text/html')
-                    else:
-                        self._post_process_request(req)
+                            req.send(output, content_type or 'text/html')
+                else:
+                    self._post_process_request(req)
+            except RequestDone:
+                raise
+            except:
+                # post-process the request in case of errors
+                err = sys.exc_info()
+                try:
+                    self._post_process_request(req)
                 except RequestDone:
                     raise
-                except:
-                    # post-process the request in case of errors
-                    err = sys.exc_info()
-                    try:
-                        self._post_process_request(req)
-                    except RequestDone:
-                        raise
-                    except Exception, e:
-                        self.log.error("Exception caught while post-processing"
-                                       " request: %s",
-                                       exception_to_unicode(e, traceback=True))
-                    raise err[0], err[1], err[2]
-            except PermissionError, e:
-                raise HTTPForbidden(to_unicode(e))
-            except ResourceNotFound, e:
-                raise HTTPNotFound(e)
-            except TracError, e:
-                raise HTTPInternalError(e)
-
-        finally:
-            translation.deactivate()
+                except Exception, e:
+                    self.log.error("Exception caught while post-processing"
+                                   " request: %s",
+                                   exception_to_unicode(e, traceback=True))
+                raise err[0], err[1], err[2]
+        except PermissionError, e:
+            raise HTTPForbidden(to_unicode(e))
+        except ResourceNotFound, e:
+            raise HTTPNotFound(e)
+        except TracError, e:
+            raise HTTPInternalError(e)
 
     # Internal methods
 
@@ -283,12 +278,15 @@ class RequestDispatcher(Component):
         global Locale
         if Locale:
             available = [locale_id.replace('_', '-') for locale_id in
-                translation.get_available_locales()]
+                         translation.get_available_locales()]
 
             preferred = req.session.get('language', req.languages)
             if not isinstance(preferred, list):
                 preferred = [preferred]
-            return Locale.negotiate(preferred, available, sep='-')
+            negociated = Locale.negotiate(preferred, available, sep='-') 
+            self.log.debug("Negociated locale: %s -> %s", 
+                           preferred, negociated) 
+            return negociated 
 
     def _get_timezone(self, req):
         try:
@@ -417,7 +415,15 @@ def dispatch_request(environ, start_response):
         env = open_environment(env_path, use_cache=not run_once)
         if env.base_url_for_redirect:
             environ['trac.base_url'] = env.base_url
+
+        # Web front-end type and version information
         if not hasattr(env, 'webfrontend'):
+            mod_wsgi_version = environ.get('mod_wsgi.version')
+            if mod_wsgi_version:
+                environ.update({
+                    'trac.web.frontend': 'mod_wsgi',
+                    'trac.web.version': '.'.join([str(x) for x in 
+                                                  mod_wsgi_version])})
             env.webfrontend = environ.get('trac.web.frontend')
             if env.webfrontend:
                 env.systeminfo.append((env.webfrontend, 
@@ -429,6 +435,7 @@ def dispatch_request(environ, start_response):
     try:
         return _dispatch_request(req, env, env_error)
     finally:
+        translation.deactivate()
         if env and not run_once:
             env.shutdown(threading._get_ident())
             # Now it's a good time to do some clean-ups
@@ -574,6 +581,7 @@ def send_project_index(environ, start_response, parent_dir=None,
                 env = open_environment(env_path,
                                        use_cache=not environ['wsgi.run_once'])
                 proj = {
+                    'env': env,
                     'name': env.project_name,
                     'description': env.project_description,
                     'href': href(env_name)

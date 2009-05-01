@@ -170,7 +170,7 @@ class CacheManager(Component):
             cursor = db.cursor()
             cursor.execute("SELECT generation FROM cache WHERE id=%s", (id,))
             row = cursor.fetchone()
-            db_generation = row and row[0] or -1
+            db_generation = not row and -1 or row[0]
             if db_generation == generation:
                 return data
             

@@ -1,6 +1,6 @@
 #!/usr/bin/python
-"""The FunctionalTester object provides a higher-level interface to working
-with a Trac environment to make test cases more succinct.
+"""The :class:`FunctionalTester` object provides a higher-level interface to
+working with a Trac environment to make test cases more succinct.
 """
 
 import os
@@ -26,14 +26,13 @@ class FunctionalTester(object):
     test environment.
 
     It makes assumptions such as knowing what ticket number is next, so
-    avoid doing things manually in testcases when you can.
+    avoid doing things manually in :class:`FunctionalTestCase`s when you can.
     """
 
-    def __init__(self, url, repo_url):
-        """Create a FunctionalTester for the given Trac URL and Subversion
-        URL"""
+    def __init__(self, url):
+        """Create a :class:`FunctionalTester` for the given Trac URL and
+        Subversion URL"""
         self.url = url
-        self.repo_url = repo_url
         self.ticketcount = 0
 
         # Connect, and login so we can run tests.
@@ -61,11 +60,14 @@ class FunctionalTester(object):
     def create_ticket(self, summary=None, info=None):
         """Create a new (random) ticket in the test environment.  Returns
         the new ticket number.
-        summary may optionally be set to the desired summary
-        info may optionally be set to a dictionary of field value pairs for
-        populating the ticket.
-        info['summary'] overrides summary.
-        summary and description default to randomly generated values.
+
+        :summary:
+            may optionally be set to the desired summary
+        :info:
+            may optionally be set to a dictionary of field value pairs for
+            populating the ticket.  ``info['summary']`` overrides summary.
+
+        `summary` and `description` default to randomly-generated values.
         """
         self.go_to_front()
         tc.follow('New Ticket')
@@ -121,7 +123,7 @@ class FunctionalTester(object):
         tc.url(wiki_url)
 
     def go_to_timeline(self):
-        """Surf to the timeine page."""
+        """Surf to the timeline page."""
         self.go_to_front()
         tc.follow('Timeline')
         tc.url(self.url + '/timeline')
@@ -136,7 +138,7 @@ class FunctionalTester(object):
     def go_to_admin(self):
         """Surf to the webadmin page."""
         self.go_to_front()
-        tc.follow('Admin')
+        tc.follow('\\bAdmin\\b')
 
     def go_to_roadmap(self):
         """Surf to the roadmap page."""
@@ -155,12 +157,18 @@ class FunctionalTester(object):
         tc.url(self.url + '/ticket/%s#comment:.*' % ticketid)
         return comment
 
-    def attach_file_to_ticket(self, ticketid, data=None):
-        """Attaches a file to the given ticket id.  Assumes the ticket
-        exists.
+    def attach_file_to_ticket(self, ticketid, data=None, tempfilename=None,
+                              description=None, replace=False):
+        """Attaches a file to the given ticket id, with random data if none is
+        provided.  Assumes the ticket exists.
         """
-        if data == None:
+        if data is None:
             data = random_page()
+        if description is None:
+            description = random_sentence()
+        if tempfilename is None:
+            tempfilename = random_word()
+
         self.go_to_ticket(ticketid)
         # set the value to what it already is, so that twill will know we
         # want this form.
@@ -168,10 +176,11 @@ class FunctionalTester(object):
         tc.submit()
         tc.url(self.url + "/attachment/ticket/" \
                "%s/\\?action=new&attachfilebutton=Attach\\+file" % ticketid)
-        tempfilename = random_word()
         fp = StringIO(data)
         tc.formfile('attachment', 'attachment', tempfilename, fp=fp)
-        tc.formvalue('attachment', 'description', random_sentence())
+        tc.formvalue('attachment', 'description', description)
+        if replace:
+            tc.formvalue('attachment', 'replace', True)
         tc.submit()
         tc.url(self.url + '/attachment/ticket/%s/$' % ticketid)
 
@@ -212,8 +221,8 @@ class FunctionalTester(object):
         tc.find(page + ".*created")
 
     def attach_file_to_wiki(self, name, data=None):
-        """Attaches a file to the given wiki page.  Assumes the wiki page
-        exists.
+        """Attaches a file to the given wiki page, with random content if none
+        is provided.  Assumes the wiki page exists.
         """
         if data == None:
             data = random_page()
@@ -232,8 +241,8 @@ class FunctionalTester(object):
         tc.url(self.url + '/attachment/wiki/%s/$' % name)
 
     def create_milestone(self, name=None, due=None):
-        """Creates the specified milestone.  Returns the name of the
-        milestone.
+        """Creates the specified milestone, with a random name if none is
+        provided.  Returns the name of the milestone.
         """
         find = False
         if name == None:
@@ -264,7 +273,8 @@ class FunctionalTester(object):
         return name
 
     def create_component(self, name=None, user=None):
-        """Creates the specified component"""
+        """Creates the specified component, with a random camel-cased name if
+        none is provided.  Returns the name."""
         if name == None:
             name = random_unique_camel()
         component_url = self.url + "/admin/ticket/components"
@@ -279,11 +289,11 @@ class FunctionalTester(object):
         tc.find(name)
         tc.notfind(internal_error)
         # TODO: verify the component shows up in the newticket page
+        return name
 
     def create_enum(self, kind, name=None):
-        """Creates the specified enum.
-        kind is 'priority', 'severity', etc.
-        If no name is given, a unique random word is used.
+        """Helper to create the specified enum (used for ``priority``,
+        ``severity``, etc). If no name is given, a unique random word is used.
         The name is returned.
         """
         if name == None:
@@ -315,7 +325,8 @@ class FunctionalTester(object):
         return self.create_enum('type', name)
 
     def create_version(self, name=None, releasetime=None):
-        """Create a new version"""
+        """Create a new version.  The name defaults to a random camel-cased
+        word if not provided."""
         version_admin = self.url + "/admin/ticket/versions"
         if name == None:
             name = random_unique_camel()
@@ -350,47 +361,8 @@ class FunctionalTester(object):
         return reportnum
 
     def ticket_set_milestone(self, ticketid, milestone):
-        """Set the milestone on a given ticket"""
+        """Set the milestone on a given ticket."""
         self.go_to_ticket(ticketid)
         tc.formvalue('propertyform', 'milestone', milestone)
         tc.submit('submit')
         # TODO: verify the change occurred.
-
-    def svn_mkdir(self, paths, msg):
-        # This happens with a url so no need for a working copy
-        if call(['svn', '--username=admin', 'mkdir', '-m', msg]
-                + [self.repo_url + '/' + d for d in paths],
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('Failed to create directories')
- 
-    def svn_add(self, path, filename, data):
-        tempdir = mkdtemp()
-        working_copy = os.path.join(tempdir, 'wc')
-
-        if call(['svn', 'co', self.repo_url + path,
-                 working_copy], stdout=logfile, stderr=logfile,
-                 close_fds=close_fds):
-            raise Exception('Checkout from %s failed.' % self.repo_url)
-        temppathname = os.path.join(working_copy, filename)
-        f = open(temppathname, 'w')
-        f.write(data)
-        f.close()
-        if call(['svn', 'add', filename], cwd=working_copy,
-                stdout=logfile, stderr=logfile, close_fds=close_fds):
-            raise Exception('Add of %s failed.' % filename)
-        commit = Popen(['svn', '--username=admin', 'commit', '-m',
-                        'Add %s' % filename, filename],
-                       cwd=working_copy, stdout=PIPE, stderr=logfile,
-                       close_fds=close_fds)
-        output = commit.stdout.read()
-        if commit.wait():
-            raise Exception('Commit failed.')
-        try:
-            revision = re.search(r'Committed revision ([0-9]+)\.',
-                                 output).group(1)
-        except Exception, e:
-            args = e.args + (output, )
-            raise Exception(*args)
-        rmtree(tempdir) # Cleanup
-        return int(revision)
-

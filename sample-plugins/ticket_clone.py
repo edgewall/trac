@@ -43,8 +43,9 @@ class SimpleTicketCloneButton(Component):
             tag.div(
                 tag.input(type="submit", name="clone", value="Clone",
                     title="Create a copy of this ticket"),
-                [tag.input(type="hidden", name=n, value=v) for n, v in
+                [tag.input(type="hidden", name='field_'+n, value=v) for n, v in
                     fields.items()],
+                tag.input(type="hidden", name='preview', value=''),
                 class_="inlinebuttons"),
-            method="get", action=req.href.newticket())
+            method="post", action=req.href.newticket())
 
