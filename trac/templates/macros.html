@@ -160,7 +160,9 @@
   -->
   <py:def function="list_of_attachments(alist, compact=False, add_button_title=None)">
     <py:def function="show_one_attachment(attachment)">
-      <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
+      <a href="${url_of(attachment.resource)}" title="${_('View attachment')}">$attachment.filename</a>
+      <a href="${url_of(attachment.resource, format='raw')}"
+         title="${_('Download')}" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="${_('Download')}"/></a>
       (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
       ${dateinfo(attachment.date)} ago.
     </py:def>
