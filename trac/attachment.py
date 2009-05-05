@@ -730,13 +730,23 @@ class AttachmentModule(Component):
         if attachment and 'ATTACHMENT_VIEW' in formatter.perm(attachment):
             try:
                 model = Attachment(self.env, attachment)
-                format = None
+                raw_href = get_resource_url(self.env, attachment,
+                                            formatter.href, format='raw')
                 if ns.startswith('raw'):
-                    format = 'raw'
-                href = get_resource_url(self.env, attachment, formatter.href,
-                                        format=format)
-                return tag.a(label, class_='attachment', href=href + params,
-                             title=get_resource_name(self.env, attachment))
+                    return tag.a(label, class_='attachment',
+                                 href=raw_href + params,
+                                 title=get_resource_name(self.env, attachment))
+                href = get_resource_url(self.env, attachment, formatter.href)
+                title = get_resource_name(self.env, attachment)
+                img = tag.img(src=formatter.href.chrome('common/download.png'),
+                              alt=_("Download"))
+                return tag(tag.a(label, class_='attachment', title=title,
+                                 href=href + params),
+                           tag.span(" ",
+                                    tag.a(img, class_='trac-rawlink',
+                                          href=raw_href + params,
+                                          title=_("Download")),
+                                    class_="noprint"))
             except ResourceNotFound, e:
                 pass
             # FIXME: should be either:

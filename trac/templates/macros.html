@@ -173,7 +173,7 @@
     <py:def function="show_one_attachment(attachment)">
       <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
       <a href="${url_of(attachment.resource, format='raw')}"
-         title="Original format" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Original format"/></a>
+         title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
       (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
       ${dateinfo(attachment.date)} ago.
     </py:def>

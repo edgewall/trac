@@ -57,7 +57,7 @@
             <py:when test="field_name == 'attachment'">
               <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a> 
               <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
-                 title="Original format" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Original format"/></a> 
+                 title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a> 
               added
             </py:when>
             <py:when test="'rendered' in field">${field.rendered}</py:when>
