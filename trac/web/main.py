@@ -420,9 +420,10 @@ def dispatch_request(environ, start_response):
             # Note: enable the '##' lines as soon as there's a suspicion
             #       of memory leak due to uncollectable objects (typically
             #       objects with a __del__ method caught in a cycle)
+            #
             ##gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
             unreachable = gc.collect()
-            env.log.debug("%d unreachable objects found.", unreachable)
+            ##env.log.debug("%d unreachable objects found.", unreachable)
             ##uncollectable = len(gc.garbage)
             ##if uncollectable:
             ##    del gc.garbage[:]
