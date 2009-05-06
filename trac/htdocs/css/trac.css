@@ -33,6 +33,7 @@ h1 :link, h1 :visited ,h2 :link, h2 :visited, h3 :link, h3 :visited,
 h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  color: inherit;
 }
+.trac-rawlink { border-bottom: none }
 
 /* Heading anchors */
 .anchor:link, .anchor:visited {
@@ -567,7 +568,8 @@ div.system-message p.system-message-title { font-weight: bold; }
 
 @media print {
  #header, #altlinks, #footer, #help { display: none }
- .nav, form, .buttons form, form .buttons, form .inlinebuttons, .noprint {
+ .nav, form, .buttons form, form .buttons, form .inlinebuttons,
+ .noprint, .trac-rawlink {
    display: none;
  }
  form.printableform { display: block }
