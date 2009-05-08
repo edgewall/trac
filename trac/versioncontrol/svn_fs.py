@@ -61,6 +61,7 @@ from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.util import sorted, embedded_numbers, reversed
+from trac.util.compat import any
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.util.datefmt import utc
@@ -506,8 +507,26 @@ class SubversionRepository(Repository):
 
     def get_changeset(self, rev):
         rev = self.normalize_rev(rev)
-        return SubversionChangeset(rev, self.authz, self.scope,
+        cset = SubversionChangeset(rev, self.authz, self.scope,
                                    self.fs_ptr, self.pool)
+        if rev == 0 or any(cset.get_changes()):
+            return cset
+        raise NoSuchChangeset(rev)
+
+    def get_changesets(self, start, stop):
+        # Overrides Repository.get_changesets() to avoid calling
+        # get_changeset() twice for every changeset
+        rev = self.youngest_rev
+        while rev:
+            try:
+                chgset = self.get_changeset(rev)
+                if chgset.date < start:
+                    return
+                if chgset.date < stop:
+                    yield chgset
+            except NoSuchChangeset:
+                pass
+            rev = self.previous_rev(rev)
 
     def get_node(self, path, rev=None):
         path = path or ''
@@ -544,6 +563,8 @@ class SubversionRepository(Repository):
             tmp1, tmp2 = tmp2, tmp1
             if history_ptr:
                 path_utf8, rev = fs.history_location(history_ptr, tmp2())
+                if not self.authz.has_permission_for_changeset(rev):
+                    continue
                 tmp2.clear()
                 if rev < end:
                     break
@@ -560,7 +581,6 @@ class SubversionRepository(Repository):
                 return prev
         return None
     
-
     def get_oldest_rev(self):
         if self.oldest is None:
             self.oldest = 1
