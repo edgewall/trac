@@ -79,7 +79,7 @@ class WikiAdmin(Component):
             finally:
                 f.close()
     
-    def import_page(self, filename, title, cursor=None, create_only=[]):
+    def import_page(self, filename, title, db=None, create_only=[]):
         if not os.path.isfile(filename):
             raise AdminCommandError(_("'%(name)s' is not a file",
                                       name=filename))
@@ -91,11 +91,10 @@ class WikiAdmin(Component):
             f.close()
         
         # Make sure we don't insert the exact same page twice
-        if not cursor:
+        handle_ta = not db
+        if handle_ta:
             db = self.env.get_db_cnx()
-            cursor = db.cursor()
-        else:
-            db = None
+        cursor = db.cursor()
         cursor.execute("SELECT text FROM wiki WHERE name=%s "
                        "ORDER BY version DESC LIMIT 1",
                        (title,))
@@ -112,11 +111,12 @@ class WikiAdmin(Component):
                        " 'trac','127.0.0.1',%s FROM wiki "
                        " WHERE name=%s",
                        (title, int(time.time()), data, title))
-        if db is not None:
+        WikiSystem(self.env).pages.invalidate(db)
+        if handle_ta:
             db.commit()
         return True
 
-    def load_pages(self, dir, cursor=None, ignore=[], create_only=[]):
+    def load_pages(self, dir, db=None, ignore=[], create_only=[]):
         cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         for page in os.listdir(dir):
             if page in ignore:
@@ -124,8 +124,8 @@ class WikiAdmin(Component):
             filename = os.path.join(dir, page)
             page = unicode_unquote(page.encode('utf-8'))
             if os.path.isfile(filename):
-                if self.import_page(filename, page, cursor, create_only):
-                    printout(_(" %(page)s imported from %(filename)s",
+                if self.import_page(filename, page, db, create_only):
+                    printout(_("  %(page)s imported from %(filename)s",
                                filename=filename, page=page))
     
     def _complete_remove(self, args):
@@ -189,10 +189,14 @@ class WikiAdmin(Component):
             self.export_page(p, dst, cursor)
     
     def _do_load(self, directory):
-        self.load_pages(directory)
+        db = self.env.get_db_cnx()
+        self.load_pages(directory, db)
+        db.commit()
     
     def _do_upgrade(self):
+        db = self.env.get_db_cnx()
         self.load_pages(pkg_resources.resource_filename('trac.wiki', 
                                                         'default-pages'),
-                        ignore=['WikiStart', 'checkwiki.py'],
+                        db, ignore=['WikiStart', 'checkwiki.py'],
                         create_only=['InterMapTxt'])
+        db.commit()
