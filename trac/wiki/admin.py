@@ -111,7 +111,8 @@ class WikiAdmin(Component):
                        " 'trac','127.0.0.1',%s FROM wiki "
                        " WHERE name=%s",
                        (title, int(time.time()), data, title))
-        WikiSystem(self.env).pages.invalidate(db)
+        if not old:
+            WikiSystem(self.env).pages.invalidate(db)
         if handle_ta:
             db.commit()
         return True
