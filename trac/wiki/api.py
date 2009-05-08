@@ -154,7 +154,7 @@ def parse_args(args, strict=True):
 class WikiSystem(Component):
     """Represents the wiki system."""
 
-    implements(IWikiChangeListener, IWikiSyntaxProvider, IResourceManager)
+    implements(IWikiSyntaxProvider, IResourceManager)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
@@ -198,20 +198,6 @@ class WikiSystem(Component):
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
         return pagename.rstrip('/') in self.pages.get()
-
-    # IWikiChangeListener methods
-
-    def wiki_page_added(self, page):
-        del self.pages
-
-    def wiki_page_changed(self, page, version, t, comment, author, ipnr):
-        pass
-
-    def wiki_page_deleted(self, page):
-        del self.pages
-
-    def wiki_page_version_deleted(self, page):
-        pass
 
     # IWikiSyntaxProvider methods
 

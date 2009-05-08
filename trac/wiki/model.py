@@ -103,8 +103,10 @@ class WikiPage(object):
             self._fetch(self.name, None, db)
 
         if not self.exists:
-            from trac.attachment import Attachment
+            # Invalidate page name cache
+            WikiSystem(self.env).pages.invalidate(db)
             # Delete orphaned attachments
+            from trac.attachment import Attachment
             Attachment.delete_all(self.env, 'wiki', self.name, db)
 
         if handle_ta:
@@ -146,6 +148,10 @@ class WikiPage(object):
         else:
             raise TracError(_('Page not modified'))
 
+        if self.version == 1:
+            # Invalidate page name cache
+            WikiSystem(self.env).pages.invalidate(db)
+        
         if handle_ta:
             db.commit()
 
