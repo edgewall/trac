@@ -202,15 +202,13 @@ class WikiSystem(Component):
     # IWikiChangeListener methods
 
     def wiki_page_added(self, page):
-        if not self.has_page(page.name):
-            del self.pages
+        del self.pages
 
     def wiki_page_changed(self, page, version, t, comment, author, ipnr):
         pass
 
     def wiki_page_deleted(self, page):
-        if self.has_page(page.name):
-            del self.pages
+        del self.pages
 
     def wiki_page_version_deleted(self, page):
         pass
