@@ -1,28 +1,8 @@
+# Makefile for testing Trac (see doc/dev/testing.rst)
 # ----------------------------------------------------------------------------
-# Python Installations (select with `python=` on the `make` command line)
 
-python.23 =
-python.24 =
-python.25 = C:/Dev/Python254
-python.26 = C:/Dev/Python261
-python.27 =
-
-# default Python version (if not defined, pick the one from the path)
-.python =
-
-# ----------------------------------------------------------------------------
-# Database Backends (select with `db=` on the `make` command line)
-
-# db URIs 
-mysql.uri = mysql://tracuser:tracpassword@localhost/trac
-postgres.uri = postgres://tracuser:tracpassword@localhost:5432/trac?schema=tractest
-
-# default db backend (if not defined, use in-memory sqlite)
-.uri =
-
-# default Python versions to use when `db` is specified
-mysql.python = 25
-postgres.python = 26
+# copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment.
+-include Makefile.cfg
 
 # ----------------------------------------------------------------------------
 ifeq "$(OS)" "Windows_NT"
@@ -43,7 +23,7 @@ all: status
 	python $(test)
 else
 all:
-	@echo make test|unit-test|functional-test|test=... [db=...] [python=...]
+	@echo "make test|unit-test|functional-test|test=... [db=...] [python=...]"
 endif
 
 .PHONY: status
