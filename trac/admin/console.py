@@ -36,7 +36,7 @@ from trac.util import arity
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
-                           print_table, console_print
+                           print_table, console_print, raw_input
 from trac.util.translation import _, ngettext
 from trac.wiki import WikiPage
 from trac.wiki.api import WikiSystem
