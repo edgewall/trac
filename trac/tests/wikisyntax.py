@@ -117,6 +117,7 @@ def attachment_setup(tc):
 
 def attachment_teardown(tc):
     shutil.rmtree(tc.env.path)
+    tc.env.reset_db()
 
 def suite():
     suite = unittest.TestSuite()

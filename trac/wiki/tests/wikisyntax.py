@@ -364,10 +364,16 @@ nolink          http://noweb
     imt.save('joe', 'test InterWiki links', '::1', now)
 
 
+def wiki_teardown(tc):
+    tc.env.reset_db()
+
+
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__))
+    suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__,
+                                  wiki_teardown))
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
+                                  wiki_teardown,
                                   context=('wiki', 'Main/Sub')))
     return suite
 

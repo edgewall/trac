@@ -26,7 +26,10 @@ from fnmatch import fnmatch
 from trac.config import Configuration
 from trac.core import Component, ComponentManager, ExtensionPoint
 from trac.env import Environment
+from trac.db.api import _parse_db_str, DatabaseManager
 from trac.db.sqlite_backend import SQLiteConnection
+import trac.db.postgres_backend
+import trac.db.mysql_backend
 from trac.ticket.default_workflow import load_workflow_config_snippet
 
 
@@ -139,6 +142,61 @@ class TestCaseSetup(unittest.TestCase):
         self.fixture = fixture
 
 
+# -- Database utilities
+
+def get_dburi():
+    if os.environ.has_key('TRAC_TEST_DB_URI'):
+        dburi = os.environ['TRAC_TEST_DB_URI']
+        if dburi:
+            scheme, db_prop = _parse_db_str(dburi)
+            # Assume the schema 'tractest' for Postgres
+            if scheme == 'postgres' and \
+                    not db_prop.get('params', {}).get('schema'):
+                if '?' in dburi:
+                    dburi += "&schema=tractest"
+                else:
+                    dburi += "?schema=tractest"
+            return dburi
+    return 'sqlite:db/trac.db'
+
+
+def reset_postgres_db(db, db_prop):
+    dbname = db.schema
+    if dbname:
+        cursor = db.cursor()
+        # reset sequences
+        cursor.execute('SELECT sequence_name '
+                       'FROM information_schema.sequences '
+                       'WHERE sequence_schema=%s', (dbname,))
+        for seq in cursor.fetchall():
+            cursor.execute('ALTER SEQUENCE %s RESTART WITH 1' % seq)
+        # clear tables
+        cursor.execute('SELECT table_name FROM information_schema.tables '
+                       'WHERE table_schema=%s', (dbname,))
+        tables = cursor.fetchall()
+        for table in tables:
+            # PostgreSQL supports TRUNCATE TABLE as well 
+            # (see http://www.postgresql.org/docs/8.1/static/sql-truncate.html)
+            # but on the small tables used here, DELETE is actually much faster
+            cursor.execute('DELETE FROM %s' % table)
+        db.commit()
+        return tables
+
+def reset_mysql_db(db, db_prop):
+    dbname = os.path.basename(db_prop['path'])
+    if dbname:
+        cursor = db.cursor()
+        cursor.execute('SELECT table_name FROM information_schema.tables '
+                       'WHERE table_schema=%s', (dbname,))
+        tables = cursor.fetchall()
+        for table in tables:
+            # TRUNCATE TABLE is prefered to DELETE FROM, as we need to reset
+            # the auto_increment in MySQL.
+            cursor.execute('TRUNCATE TABLE %s' % table)
+        db.commit()
+        return tables
+
+
 class InMemoryDatabase(SQLiteConnection):
     """
     DB-API connection object for an SQLite in-memory database, containing all
@@ -157,10 +215,13 @@ class InMemoryDatabase(SQLiteConnection):
         self.cnx.commit()
 
 
+# -- Environment stub
+
 class EnvironmentStub(Environment):
     """A stub of the trac.env.Environment object for testing."""
 
     href = abs_href = None
+    dbenv = db = None
 
     def __init__(self, default_data=False, enable=None):
         """Construct a new Environment stub object.
@@ -172,7 +233,6 @@ class EnvironmentStub(Environment):
         ComponentManager.__init__(self)
         Component.__init__(self)
         self.enabled_components = enable or ['trac.*']
-        self.db = InMemoryDatabase()
         self.systeminfo = [('Python', sys.version)]
 
         import trac
@@ -180,29 +240,31 @@ class EnvironmentStub(Environment):
         if not os.path.isabs(self.path):
             self.path = os.path.join(os.getcwd(), self.path)
 
+        # -- configuration
         self.config = Configuration(None)
         # We have to have a ticket-workflow config for ''lots'' of things to
         # work.  So insert the basic-workflow config here.  There may be a
         # better solution than this.
         load_workflow_config_snippet(self.config, 'basic-workflow.ini')
+        self.config.set('logging', 'log_level', 'DEBUG')
+        self.config.set('logging', 'log_type', 'stderr')
 
+        # -- logging
         from trac.log import logger_factory
         self.log = logger_factory('test')
+
+        # -- database
+        self.dburi = get_dburi()
+        if self.dburi.startswith('sqlite'):
+            self.db = InMemoryDatabase()
+
+        if default_data:
+            self.reset_db(default_data)
 
         from trac.web.href import Href
         self.href = Href('/trac.cgi')
         self.abs_href = Href('http://example.org/trac.cgi')
 
-        from trac import db_default
-        if default_data:
-            cursor = self.db.cursor()
-            for table, cols, vals in db_default.get_data(self.db):
-                cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
-                                   % (table, ','.join(cols),
-                                      ','.join(['%s' for c in cols])),
-                                   vals)
-            self.db.commit()
-            
         self.known_users = []
 
     def is_component_enabled(self, cls):
@@ -215,7 +277,54 @@ class EnvironmentStub(Environment):
         return False
 
     def get_db_cnx(self):
-        return self.db
+        if self.db:
+            return self.db # in-memory SQLite
+
+        # As most of the EnvironmentStubs are built at startup during
+        # the test suite formation and the creation of test cases, we can't
+        # afford to create a real db connection for each instance.
+        # So we create a special EnvironmentStub instance in charge of
+        # getting the db connections for all the other instances.
+        dbenv = EnvironmentStub.dbenv
+        if not dbenv:
+            dbenv = EnvironmentStub.dbenv = EnvironmentStub()
+            dbenv.config.set('trac', 'database', self.dburi)
+            self.reset_db() # make sure we get rid of garbage from previous run
+        return DatabaseManager(dbenv).get_connection()
+
+    def reset_db(self, default_data=None):
+        """Remove all data from Trac tables, keeping the tables themselves.
+        :param default_data: after clean-up, initialize with default data
+        :return: True upon success
+        """
+        if EnvironmentStub.dbenv:
+            db = self.get_db_cnx()
+            scheme, db_prop = _parse_db_str(self.dburi)
+
+            tables = []
+            db.rollback() # make sure there's no transaction in progress
+            try:
+                m = sys.modules[__name__]
+                reset_fn = 'reset_%s_db' % scheme
+                if hasattr(m, reset_fn):
+                    tables = getattr(m, reset_fn)(db, db_prop)
+            except:
+                db.rollback() # tables are likely missing
+
+            if not tables:
+                del db
+                DatabaseManager(EnvironmentStub.dbenv).init_db()
+
+        from trac import db_default
+        if default_data:
+            db = self.get_db_cnx()
+            cursor = db.cursor()
+            for table, cols, vals in db_default.get_data(db):
+                cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
+                                   % (table, ','.join(cols),
+                                      ','.join(['%s' for c in cols])),
+                                   vals)
+            db.commit()
 
     def get_known_users(self, cnx=None):
         return self.known_users

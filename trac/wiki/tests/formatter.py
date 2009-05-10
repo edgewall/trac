@@ -104,11 +104,6 @@ class WikiTestCase(unittest.TestCase):
         self._setup = setup
         self._teardown = teardown
 
-        self.env = EnvironmentStub()
-        wiki = WikiPage(self.env)
-        wiki.name = 'WikiStart'
-        wiki.text = '--'
-        wiki.save('joe', 'Entry page', '::1', datetime.now(utc))
         req = Mock(href=Href('/'), abs_href=Href('http://www.example.com/'),
                    authname='anonymous', perm=MockPerm(), args={})
         if context:
@@ -118,6 +113,7 @@ class WikiTestCase(unittest.TestCase):
             context = Context.from_request(req, 'wiki', 'WikiStart')
         self.context = context
 
+        self.env = EnvironmentStub()
         # -- macros support
         self.env.path = ''
         # -- intertrac support
@@ -137,10 +133,15 @@ class WikiTestCase(unittest.TestCase):
         self.env.abs_href = req.abs_href
 
     def setUp(self):
+        wiki = WikiPage(self.env)
+        wiki.name = 'WikiStart'
+        wiki.text = '--'
+        wiki.save('joe', 'Entry page', '::1', datetime.now(utc))
         if self._setup:
             self._setup(self)
 
     def tearDown(self):
+        self.env.reset_db()
         if self._teardown:
             self._teardown(self)
 

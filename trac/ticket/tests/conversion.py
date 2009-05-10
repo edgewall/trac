@@ -25,6 +25,9 @@ class TicketConversionTestCase(unittest.TestCase):
                         environ={}, perm=[], authname='-', args={}, tz=None,
                         session=None, form_token=None)
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def _create_a_ticket(self):
         # 1. Creating ticket
         ticket = Ticket(self.env)

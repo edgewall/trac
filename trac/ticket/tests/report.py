@@ -33,12 +33,13 @@ class ReportTestCase(unittest.TestCase):
 
     def test_sub_var_quotes(self):
         sql, args = self.report_module.sql_sub_vars("'$VAR'", {'VAR': 'value'})
-        self.assertEqual("''||%s||''", sql)
+        self.assertEqual(self.env.get_db_cnx().concat("''", '%s', "''"), sql)
         self.assertEqual(['value'], args)
 
+    # Probably not needed anymore
     def test_sub_var_mysql(self):
         env = EnvironmentStub()
-        env.db = MockMySQLConnection()
+        env.db = MockMySQLConnection() # ditto
         sql, args = ReportModule(env).sql_sub_vars("'$VAR'", {'VAR': 'value'})
         self.assertEqual("concat('', %s, '')", sql)
         self.assertEqual(['value'], args)

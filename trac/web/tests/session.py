@@ -16,6 +16,9 @@ class SessionTestCase(unittest.TestCase):
         self.env = EnvironmentStub()
         self.db = self.env.get_db_cnx()
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_new_session(self):
         """
         Verify that a session cookie gets sent back to the client for a new
