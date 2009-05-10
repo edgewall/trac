@@ -86,6 +86,9 @@ def ticket_setup(tc):
                           'status': 'new'})
     ticket.insert()
 
+def ticket_teardown(tc):
+    tc.env.reset_db()
+
 
 
 REPORT_TEST_CASES=u"""
@@ -172,6 +175,10 @@ def milestone_setup(tc):
     roo.due = None
     roo.insert()
 
+def milestone_teardown(tc):
+    tc.env.reset_db()
+
+
 
 QUERY_TEST_CASES="""
 ============================== query: link resolver
@@ -249,10 +256,11 @@ comment:2:ticket:123
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(TICKET_TEST_CASES, ticket_setup, __file__))
+    suite.addTest(formatter.suite(TICKET_TEST_CASES, ticket_setup, __file__,
+                                  ticket_teardown))
     suite.addTest(formatter.suite(REPORT_TEST_CASES, report_setup, __file__))
     suite.addTest(formatter.suite(MILESTONE_TEST_CASES, milestone_setup,
-                                  __file__))
+                                  __file__, milestone_teardown))
     suite.addTest(formatter.suite(QUERY_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(COMMENT_TEST_CASES, file=__file__))
     return suite

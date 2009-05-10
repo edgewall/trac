@@ -36,6 +36,9 @@ class QueryTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
         
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
         sql, args = query.get_sql()
@@ -432,6 +435,9 @@ class QueryLinksTestCase(unittest.TestCase):
         self.query_module = QueryModule(self.env)
         req = Mock(perm=MockPerm(), args={}, href=Href('/'))
         self.formatter = LinkFormatter(self.env, Context.from_request(req))
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def _format_link(self, query, label):
         return str(self.query_module._format_link(self.formatter, 'query',

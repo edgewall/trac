@@ -12,6 +12,9 @@ class DefaultPermissionStoreTestCase(unittest.TestCase):
                                            perm.DefaultPermissionGroupProvider])
         self.store = perm.DefaultPermissionStore(self.env)
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_simple_actions(self):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -92,6 +95,9 @@ class PermissionSystemTestCase(unittest.TestCase):
                                            TestPermissionRequestor])
         self.perm = perm.PermissionSystem(self.env)
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_all_permissions(self):
         self.assertEqual({'EMAIL_VIEW': True, 'TRAC_ADMIN': True,
                           'TEST_CREATE': True, 'TEST_DELETE': True,
@@ -144,6 +150,9 @@ class PermissionCacheTestCase(unittest.TestCase):
         self.perm_system.grant_permission('testuser', 'TEST_MODIFY')
         self.perm_system.grant_permission('testuser', 'TEST_ADMIN')
         self.perm = perm.PermissionCache(self.env, 'testuser')
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_contains(self):
         self.assertEqual(True, 'TEST_MODIFY' in self.perm)
@@ -213,6 +222,9 @@ class PermissionPolicyTestCase(unittest.TestCase):
         self.env.config.set('trac', 'permission_policies', 'TestPermissionPolicy')
         self.policy = TestPermissionPolicy(self.env)
         self.perm = perm.PermissionCache(self.env, 'testuser')
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_no_permissions(self):
         self.assertRaises(perm.PermissionError,

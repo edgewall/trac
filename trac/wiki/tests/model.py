@@ -34,6 +34,9 @@ class WikiPageTestCase(unittest.TestCase):
         self.env = EnvironmentStub()
         self.db = self.env.get_db_cnx()
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_new_page(self):
         page = WikiPage(self.env)
         self.assertEqual(False, page.exists)
