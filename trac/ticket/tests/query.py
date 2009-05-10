@@ -10,12 +10,8 @@ from trac.db.sqlite_backend import sqlite_version
 import unittest
 import difflib
 
-if sqlite_version < 30203:
-    def exp(var):
-        return "1*%s" % var
-else:
-    def exp(var):
-        return "CAST(%s AS int)" % var
+# Note: we don't want to replicate 1:1 all the SQL dialect abstraction
+#       methods from the trac.db layer here. 
 
 class QueryTestCase(unittest.TestCase):
 
@@ -40,6 +36,8 @@ class QueryTestCase(unittest.TestCase):
         self.env = EnvironmentStub(default_data=True)
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
         
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_all_ordered_by_id(self):
         query = Query(self.env, order='id')
@@ -81,7 +79,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(priority.value,'')='',""" + exp("priority.value") + """,t.id""")
+ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
+          'cast_priority': self.env.get_db_cnx().cast('priority.value', 'int')})
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -92,7 +91,8 @@ ORDER BY COALESCE(priority.value,'')='',""" + exp("priority.value") + """,t.id""
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(priority.value,'')='' DESC,""" + exp("priority.value") + """ DESC,t.id""")
+ORDER BY COALESCE(priority.value,'')='' DESC,%(cast_priority)s DESC,t.id""" % {
+          'cast_priority': self.env.get_db_cnx().cast('priority.value', 'int')})
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -163,7 +163,8 @@ ORDER BY COALESCE(t.milestone,'')='' DESC,COALESCE(milestone.completed,0)=0 DESC
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.milestone AS milestone,t.component AS component,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(priority.value,'')='',""" + exp("priority.value") + """,t.id""")
+ORDER BY COALESCE(priority.value,'')='',%(cast_priority)s,t.id""" % {
+          'cast_priority': self.env.get_db_cnx().cast('priority.value', 'int')})
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -199,8 +200,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') LIKE %s ESCAPE '/'
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE COALESCE(t.owner,'') %(like)s
+ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(self.req)
 
@@ -211,8 +212,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') NOT LIKE %s ESCAPE '/'
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE COALESCE(t.owner,'') NOT %(like)s
+ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(self.req)
 
@@ -223,8 +224,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') LIKE %s ESCAPE '/'
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE COALESCE(t.owner,'') %(like)s
+ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['someone%'], args)
         tickets = query.execute(self.req)
 
@@ -235,8 +236,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE COALESCE(t.owner,'') LIKE %s ESCAPE '/'
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE COALESCE(t.owner,'') %(like)s
+ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%someone'], args)
         tickets = query.execute(self.req)
 
@@ -302,8 +303,8 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE (COALESCE(t.owner,'') LIKE %s ESCAPE '/' OR COALESCE(t.owner,'') LIKE %s ESCAPE '/')
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE (COALESCE(t.owner,'') %(like)s OR COALESCE(t.owner,'') %(like)s)
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         tickets = query.execute(self.req)
 
     def test_constrained_by_empty_value_contains(self):
@@ -346,8 +347,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE (""" + exp("t.time") + ">=%s AND " + exp("t.time") + """<%s)
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE (%(cast_time)s>=%%s AND %(cast_time)s<%%s)
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
 
@@ -358,8 +360,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE NOT (""" + exp("t.time") + ">=%s AND " + exp("t.time") + """<%s)
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE NOT (%(cast_time)s>=%%s AND %(cast_time)s<%%s)
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
 
@@ -370,8 +373,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE """ + exp("t.time") + """>=%s
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE %(cast_time)s>=%%s
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
         self.assertEqual([1217548800], args)
         tickets = query.execute(self.req)
 
@@ -382,8 +386,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE """ + exp("t.time") + """<%s
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE %(cast_time)s<%%s
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
         self.assertEqual([1220227200], args)
         tickets = query.execute(self.req)
 
@@ -394,8 +399,9 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 """SELECT t.id AS id,t.summary AS summary,t.changetime AS changetime,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,priority.value AS priority_value
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE (""" + exp("t.changetime") + ">=%s AND " + exp("t.changetime") + """<%s)
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE (%(cast_changetime)s>=%%s AND %(cast_changetime)s<%%s)
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {
+          'cast_changetime': self.env.get_db_cnx().cast('t.changetime', 'int')})
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
 
@@ -423,11 +429,15 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 
 
 class QueryLinksTestCase(unittest.TestCase):
+
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.query_module = QueryModule(self.env)
         req = Mock(perm=MockPerm(), args={}, href=Href('/'))
         self.formatter = LinkFormatter(self.env, Context.from_request(req))
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def _format_link(self, query, label):
         return str(self.query_module._format_link(self.formatter, 'query',

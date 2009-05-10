@@ -41,10 +41,18 @@ Just run :command:`make test` in the Trac tree once you have everything installe
 This will run the unit tests first, then the functional tests (if you have the
 dependencies) against sqlite.  On a reasonably fast machine, the former takes
 10 seconds and the latter a couple of minutes.  If you're running them on
-Windows, you'll need to manually run the tests using :command:`python
-trac\\test.py`, but this will run all the tests interleaved.  Examine the
-:file:`Makefile` if you want more control.
+Windows and don't have cygwin, you'll need to manually run the tests using 
+:command:`python trac\\test.py`, but this will run all the tests interleaved.
+Examine the :file:`Makefile` if you want more control.
+Other possible usages::
+  
+  make test=trac/tests/allwiki.py # run all the Wiki formatter tests
+  
+  make unit-test db=postgres # run only the unit tests with PostgreSQL
 
+  make functional-test db=mysql # run only the functional tests with MySQL
+
+  make test python=24 # run all the tests using Python 2.4
 
 
 

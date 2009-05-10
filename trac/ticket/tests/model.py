@@ -37,6 +37,9 @@ class TicketTestCase(unittest.TestCase):
         self.env.config.set('ticket-custom', 'cbon', 'checkbox')
         self.env.config.set('ticket-custom', 'cboff', 'checkbox')
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
         ticket = Ticket(self.env)
@@ -305,6 +308,9 @@ class EnumTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_priority_fetch(self):
         prio = Priority(self.env, 'major')
         self.assertEqual(prio.name, 'major')
@@ -353,6 +359,9 @@ class MilestoneTestCase(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
         self.db = self.env.get_db_cnx()
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_new_milestone(self):
         milestone = Milestone(self.env)
@@ -490,8 +499,12 @@ class MilestoneTestCase(unittest.TestCase):
 
 
 class ComponentTestCase(unittest.TestCase):
+
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_exists_negative(self):
         def get_fake_component():
@@ -510,6 +523,9 @@ class VersionTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+
+    def tearDown(self):
+        self.env.reset_db()
 
     def test_exists_negative(self):
         def get_fake_version():

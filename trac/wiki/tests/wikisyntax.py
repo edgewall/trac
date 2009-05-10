@@ -418,13 +418,19 @@ nolink          http://noweb
     w.text = '--'
     w.save('joe', 'other third level of hierarchy', '::1', now)
 
+def wiki_teardown(tc):
+    tc.env.reset_db()
+
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__))
+    suite.addTest(formatter.suite(TEST_CASES, wiki_setup, __file__,
+                                  wiki_teardown))
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
+                                  wiki_teardown,
                                   context=('wiki', 'Main/Sub')))
     suite.addTest(formatter.suite(SCOPED_LINKS_TESTS, wiki_setup, __file__,
+                                  wiki_teardown,
                                   context=('wiki', 
                                       'FirstLevel/SecondLevel/ThirdLevel')))
     return suite

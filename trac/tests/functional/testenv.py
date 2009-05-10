@@ -1,4 +1,6 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
 """Object for creating and destroying a Trac environment for testing purposes.
 Provides some Trac environment-wide utility functions, and a way to call
 :command:`trac-admin` without it being on the path."""
@@ -9,13 +11,14 @@ import signal
 import sys
 import errno
 import locale
-
 from subprocess import call, Popen, PIPE, STDOUT
+
+from trac.db.api import _parse_db_str
+from trac.env import open_environment
+from trac.test import EnvironmentStub, get_dburi
 from trac.tests.functional.compat import rmtree, close_fds
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
-from trac.env import open_environment
-from trac.db.api import _parse_db_str, DatabaseManager
 from trac.db.mysql_backend import MySQLConnection
 from trac.db.postgres_backend import PostgreSQLConnection
 from trac.util.compat import close_fds
@@ -54,59 +57,32 @@ class FunctionalTestEnvironment(object):
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
-    def get_dburi(self):
-        if os.environ.has_key('TRAC_TEST_DB_URI'):
-            dburi = os.environ['TRAC_TEST_DB_URI']
+    dburi = property(lambda x: get_dburi())
 
-            scheme, db_prop = _parse_db_str(dburi)
-            # Assume the schema 'tractest' for Postgres
-            if scheme == 'postgres' and db_prop.get('schema'):
-                if '?' in dburi:
-                    dburi += "&schema=tractest"
-                else:
-                    dburi += "?schema=tractest"
-            return dburi
-        return 'sqlite:db/trac.db'
-    dburi = property(get_dburi)
+    def destroy_db(self, db):
+        scheme, db_prop = _parse_db_str(self.dburi)
 
-    def destroy_mysqldb(self, db, db_prop):
-        dbname = os.path.basename(db_prop['path'])
+        cursor = db.cursor()
         try:
-            cursor = db.cursor()
-            cursor.execute('SELECT table_name FROM information_schema.tables '
-                           'WHERE table_schema=%s', (dbname,))
-            tables = cursor.fetchall()
-            for t in tables:
-                cursor.execute('DROP TABLE IF EXISTS `%s`' % t)
+            if scheme == 'postgres' and db.schema:
+                cursor.execute('DROP SCHEMA "%s" CASCADE' % db.schema)
+            elif scheme == 'mysql':
+                dbname = os.path.basename(db_prop['path'])
+                cursor = db.cursor()
+                cursor.execute('SELECT table_name FROM information_schema.tables '
+                               'WHERE table_schema=%s', (dbname,))
+                tables = cursor.fetchall()
+                for t in tables:
+                    cursor.execute('DROP TABLE IF EXISTS `%s`' % t)
             db.commit()
         except Exception, e:
-            print e
             db.rollback()
-
-    def destroy_postgresql(self, db):
-        # We'll remove the schema automatically for Postgres, if it
-        # exists.
-        # With this, you can run functional tests multiple times without
-        # running external tools (just like when running against sqlite)
-        if db.schema:
-            try:
-                cursor = db.cursor()
-                cursor.execute('DROP SCHEMA "%s" CASCADE' % db.schema)
-                db.commit()
-            except: 
-                # if drop schema fails, either it's already gone
-                # or a manual drop will be needed
-                db.rollback()
 
     def destroy(self):
         """Remove all of the test environment data."""
-        scheme, db_prop = _parse_db_str(self.dburi)
-        if scheme == 'postgres':
-            db = PostgreSQLConnection(**db_prop)
-            self.destroy_postgresql(db)
-        elif scheme == 'mysql':
-            db = MySQLConnection(**db_prop)
-            self.destroy_mysqldb(db, db_prop)
+        env = EnvironmentStub()
+        self.destroy_db(env.get_db_cnx())
+        env.shutdown()
 
         self.destroy_repo()
         if os.path.exists(self.dirname):
@@ -246,7 +222,8 @@ class FunctionalTestEnvironment(object):
                      close_fds=close_fds, cwd=self.work_dir())
         (data, _) = proc.communicate()
         if proc.wait():
-            raise Exception('Unable to run command %s in %s' % (args, self.work_dir()))
+            raise Exception('Unable to run command %s in %s' %
+                            (args, self.work_dir()))
 
         logfile.write(data)
         return data

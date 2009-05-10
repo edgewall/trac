@@ -93,6 +93,9 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
         prov.config = self.env.config
         self.stats = prov.get_ticket_group_stats([tkt1.id, tkt2.id, tkt3.id])
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_stats(self):
         self.assertEquals(self.stats.title, 'ticket status', 'title incorrect')
         self.assertEquals(self.stats.unit, 'ticket', 'unit incorrect')

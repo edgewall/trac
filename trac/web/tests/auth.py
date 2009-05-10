@@ -14,6 +14,9 @@ class LoginModuleTestCase(unittest.TestCase):
         self.db = self.env.get_db_cnx()
         self.module = LoginModule(self.env)
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_anonymous_access(self):
         req = Mock(incookie=Cookie(), href=Href('/trac.cgi'),
                    remote_addr='127.0.0.1', remote_user=None,
