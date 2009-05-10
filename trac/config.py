@@ -18,6 +18,7 @@ import os
 from trac.core import ExtensionPoint, TracError
 from trac.util.compat import set, sorted
 from trac.util.text import to_unicode, CRLF
+from trac.util.translation import _
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
            'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
@@ -28,6 +29,7 @@ _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
 class ConfigurationError(TracError):
     """Exception raised when a value in the configuration file is not valid."""
+    title = 'Configuration Error'
 
 
 class Configuration(object):
@@ -317,7 +319,9 @@ class Section(object):
         try:
             return int(value)
         except ValueError:
-            raise ConfigurationError('expected integer, got %s' % repr(value))
+            raise ConfigurationError(
+                    _('[%(section)s] %(entry)s: expected integer, got %(value)s',
+                      section=self.name, entry=name, value=repr(value)))
 
     def getlist(self, name, default='', sep=',', keep_empty=True):
         """Return a list of values that have been specified as a single
