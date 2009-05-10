@@ -28,7 +28,7 @@ from trac.env import Environment
 from trac.util import translation
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
-                           printerr, to_unicode
+                           printerr, raw_input, to_unicode
 from trac.util.translation import _
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
