@@ -20,7 +20,7 @@ import os.path
 
 from trac.config import Option
 from trac.core import *
-from trac.versioncontrol import Authorizer, NoSuchChangeset
+from trac.versioncontrol import Authorizer
 
 
 class SvnAuthzOptions(Component):
@@ -105,11 +105,12 @@ class RealSubversionAuthorizer(Authorizer):
         return 0
 
     def has_permission_for_changeset(self, rev):
-        try:
-            changeset = self.repos.get_changeset(rev)
+        changeset = self.repos.get_changeset(rev)
+        for change in changeset.get_changes():
+            # the repository checks permissions for each change, so just check
+            # if any changes can be accessed
             return 1
-        except NoSuchChangeset:
-            return 0
+        return 0
 
     # Internal API
 

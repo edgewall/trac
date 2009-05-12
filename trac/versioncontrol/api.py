@@ -230,7 +230,7 @@ class Repository(object):
         return []
     
     def get_changeset(self, rev):
-        """Retrieve a Changeset corresponding to the given revision `rev`."""
+        """Retrieve a Changeset corresponding to the  given revision `rev`."""
         raise NotImplementedError
 
     def get_changesets(self, start, stop):

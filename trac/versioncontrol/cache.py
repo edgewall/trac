@@ -19,7 +19,6 @@ import posixpath
 from datetime import datetime
 
 from trac.core import TracError
-from trac.util.compat import any
 from trac.util.datefmt import utc, to_timestamp
 from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
@@ -57,11 +56,8 @@ class CachedRepository(Repository):
             yield category, name, path, rev
 
     def get_changeset(self, rev):
-        cset = CachedChangeset(self.repos, self.repos.normalize_rev(rev),
+        return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
                                self.getdb, self.authz)
-        if rev == 0 or any(cset.get_changes()):
-            return cset
-        raise NoSuchChangeset(rev)
 
     def get_changesets(self, start, stop):
         db = self.getdb()
@@ -72,11 +68,10 @@ class CachedRepository(Repository):
                        (to_timestamp(start), to_timestamp(stop)))
         for rev, in cursor:
             try:
-                yield self.get_changeset(rev)
+                if self.authz.has_permission_for_changeset(rev):
+                    yield self.get_changeset(rev)
             except NoSuchChangeset:
-                # Skip unauthorized changesets and changesets currently being
-                # resync'ed
-                pass
+                pass # skip changesets currently being resync'ed
 
     def sync_changeset(self, rev):
         cset = self.repos.get_changeset(rev)
@@ -275,7 +270,7 @@ class CachedRepository(Repository):
             args.append(path)
             sql += " OR "
             # changes on path children
-            sql += "path " + db.like()
+            sql += "path "+db.like()
             args.append(db.like_escape(path+'/') + '%')
             sql += " OR "
             # deletion of path ancestors
@@ -287,13 +282,12 @@ class CachedRepository(Repository):
             sql += ")"
 
         sql += " ORDER BY " + db.cast('rev', 'int') + \
-                (direction == '<' and " DESC" or "")
+                (direction == '<' and " DESC" or "") + " LIMIT 1"
         
         cursor = db.cursor()
         cursor.execute(sql, args)
         for rev, in cursor:
-            if self.authz.has_permission_for_changeset(rev):
-                return rev
+            return rev
 
     def rev_older_than(self, rev1, rev2):
         return self.repos.rev_older_than(rev1, rev2)
