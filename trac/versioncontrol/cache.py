@@ -18,6 +18,7 @@ import os
 import posixpath
 from datetime import datetime
 
+from trac.cache import CacheProxy
 from trac.core import TracError
 from trac.util.datefmt import utc, to_timestamp
 from trac.util.translation import _
@@ -40,16 +41,20 @@ class CachedRepository(Repository):
 
     has_linear_changesets = False
 
-    def __init__(self, getdb, repos, authz, log):
+    def __init__(self, env, repos, authz, log):
+        self.env = env
         self.repos = repos
+        self.metadata = CacheProxy(self.__class__.__module__ + '.'
+                                   + self.__class__.__name__ + '.metadata:'
+                                   + self.repos.reponame, self._metadata,
+                                   self.env)
         Repository.__init__(self, repos.name, authz, log)
-        if callable(getdb):
-            self.getdb = getdb
-        else:
-            self.getdb = lambda: getdb
 
     def _set_reponame(self, value):
         self.repos.reponame = value
+        self.metadata.id = self.__class__.__module__ + '.' \
+                           + self.__class__.__name__ + '.metadata:' \
+                           + value
     
     reponame = property(fget=lambda self: self.repos.reponame,
                         fset=_set_reponame)
@@ -66,10 +71,10 @@ class CachedRepository(Repository):
 
     def get_changeset(self, rev):
         return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
-                               self.getdb, self.authz)
+                               self.env, self.authz)
 
     def get_changesets(self, start, stop):
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT rev FROM revision "
                        "WHERE repos=%s AND time >= %s AND time < %s"
@@ -85,7 +90,7 @@ class CachedRepository(Repository):
 
     def sync_changeset(self, rev):
         cset = self.repos.get_changeset(rev)
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
@@ -102,24 +107,20 @@ class CachedRepository(Repository):
         db.commit()
         return old_changeset
         
-    # @cached? => move to RepositoryManager
-    def metadata(self, db=None):
-        if not db:
-            db = self.getdb()
+    def _metadata(self, db):
+        """Retrieve data for the cached `metadata` attribute."""
         cursor = db.cursor()
         cursor.execute("SELECT name, value FROM repository "
                        "WHERE id=%%s AND name IN (%s)" % 
                        ','.join(['%s'] * len(CACHE_METADATA_KEYS)),
                        (self.reponame,) + CACHE_METADATA_KEYS)
-        metadata = {}
-        for name, value in cursor:
-            metadata[name] = value
-        return metadata
+        return dict(cursor)
 
     def sync(self, feedback=None):
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
-        metadata = self.metadata(db)
+        metadata = self.metadata.get(db)
+        do_commit = False
         
         # -- check that we're populating the cache for the correct repository
         repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
@@ -135,41 +136,46 @@ class CachedRepository(Repository):
             cursor.execute("INSERT INTO repository (id,name,value) "
                            "VALUES (%s,%s,%s)",
                            (self.reponame, CACHE_REPOSITORY_DIR, self.name))
+            do_commit = True
         else: # 'repository_dir' cleared by a resync
             self.log.info('Resetting "repository_dir": %s' % self.name)
             cursor.execute("UPDATE repository SET value=%s "
                            "WHERE id=%s AND name=%s",
                            (self.name, self.reponame, CACHE_REPOSITORY_DIR))
+            do_commit = True
 
         # -- retrieve the youngest revision in the repository
         self.repos.clear()
         repos_youngest = self.repos.youngest_rev
 
         # -- retrieve the youngest revision cached so far
-        self.youngest = metadata.get(CACHE_YOUNGEST_REV)
-        if self.youngest is None:
+        youngest = metadata.get(CACHE_YOUNGEST_REV)
+        if youngest is None:
             cursor.execute("INSERT INTO repository (id,name,value) "
                            "VALUES (%s,%s,%s)",
                            (self.reponame, CACHE_YOUNGEST_REV, ''))
+            do_commit = True
 
-        db.commit() # save metadata changes made up to now
+        if do_commit:
+            self.metadata.invalidate(db)
+            db.commit() # save metadata changes made up to now
 
-        if self.youngest:
-            self.youngest = self.repos.normalize_rev(self.youngest)
-            if not self.youngest:
+        if youngest:
+            youngest = self.repos.normalize_rev(youngest)
+            if not youngest:
                 self.log.debug('normalize_rev failed (youngest_rev=%r)' %
                                self.youngest_rev)
         else:
             self.log.debug('cache metadata undefined (youngest_rev=%r)' %
                            self.youngest_rev)
-            self.youngest = None
+            youngest = None
 
         # -- compare them and try to resync if different
-        if self.youngest != repos_youngest:
+        if youngest != repos_youngest:
             self.log.info("repos rev [%s] != cached rev [%s]" %
-                          (repos_youngest, self.youngest))
-            if self.youngest:
-                next_youngest = self.repos.next_rev(self.youngest)
+                          (repos_youngest, youngest))
+            if youngest:
+                next_youngest = self.repos.next_rev(youngest)
             else:
                 next_youngest = None
                 try:
@@ -183,10 +189,10 @@ class CachedRepository(Repository):
                     next_youngest = self.repos.normalize_rev(next_youngest)
                 except TracError:
                     # can't normalize oldest_rev: repository was empty
-                    return False
+                    return
 
             if next_youngest is None: # nothing to cache yet
-                return False
+                return
 
             # 0. first check if there's no (obvious) resync in progress
             cursor.execute("SELECT rev FROM revision "
@@ -195,8 +201,8 @@ class CachedRepository(Repository):
             for rev, in cursor:
                 # already there, but in progress, so keep ''previous''
                 # notion of 'youngest'
-                self.repos.clear(youngest_rev=self.youngest)
-                return False
+                self.repos.clear(youngest_rev=youngest)
+                return
 
             # 1. prepare for resyncing
             #    (there still might be a race condition at this point)
@@ -226,9 +232,9 @@ class CachedRepository(Repository):
                                          (next_youngest, e))
                         # also potentially in progress, so keep ''previous''
                         # notion of 'youngest'
-                        self.repos.clear(youngest_rev=self.youngest)
+                        self.repos.clear(youngest_rev=youngest)
                         db.rollback()
-                        return False
+                        return
 
                     # 1.2. now *only* one process was able to get there
                     #      (i.e. there *shouldn't* be any race condition here)
@@ -247,22 +253,21 @@ class CachedRepository(Repository):
                                         path, kind, action, bpath, brev))
 
                     # 1.3. iterate (1.1 should always succeed now)
-                    self.youngest = next_youngest                    
+                    youngest = next_youngest                    
                     next_youngest = self.repos.next_rev(next_youngest)
 
                     # 1.4. update 'youngest_rev' metadata 
                     #      (minimize possibility of failures at point 0.)
                     cursor.execute("UPDATE repository SET value=%s "
                                    "WHERE id=%s AND name=%s",
-                                   (str(self.youngest), self.reponame,
+                                   (str(youngest), self.reponame,
                                     CACHE_YOUNGEST_REV))
+                    self.metadata.invalidate(db)
                     db.commit()
 
                     # 1.5. provide some feedback
                     if feedback:
-                        feedback(self.youngest)
-                
-                return True
+                        feedback(youngest)
             finally:
                 # 3. restore permission checking (after 1.)
                 self.repos.authz = authz
@@ -277,10 +282,7 @@ class CachedRepository(Repository):
         return self.repos.oldest_rev
 
     def get_youngest_rev(self):
-        if not hasattr(self, 'youngest'):
-            metadata = self.metadata()
-            self.youngest = metadata.get(CACHE_YOUNGEST_REV)
-        return self.youngest
+        return self.metadata.get().get(CACHE_YOUNGEST_REV)
 
     def previous_rev(self, rev, path=''):
         if self.has_linear_changesets:
@@ -295,7 +297,7 @@ class CachedRepository(Repository):
             return self.repos.next_rev(rev, path)
 
     def _next_prev_rev(self, direction, rev, path=''):
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE repos=%s AND " + \
               db.cast('rev', 'int') + " " + direction + " %s"
@@ -348,11 +350,11 @@ class CachedRepository(Repository):
 
 class CachedChangeset(Changeset):
 
-    def __init__(self, repos, rev, getdb, authz):
+    def __init__(self, repos, rev, env, authz):
         self.repos = repos
-        self.getdb = getdb
+        self.env = env
         self.authz = authz
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
@@ -367,7 +369,7 @@ class CachedChangeset(Changeset):
         self.scope = getattr(repos, 'scope', '')
 
     def get_changes(self):
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE repos=%s AND rev=%s "

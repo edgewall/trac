@@ -201,7 +201,6 @@ class VersionControlAdmin(Component):
         from trac.versioncontrol.cache import CACHE_METADATA_KEYS
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        inval = False
         for repos in sorted(repositories, key=lambda r: r.reponame):
             reponame = repos.reponame
             printout(_('Resyncing repository history for %(reponame)s... ',
@@ -219,15 +218,12 @@ class VersionControlAdmin(Component):
                                    [(reponame, k, '') 
                                     for k in CACHE_METADATA_KEYS])
                 db.commit()
-            if repos.sync(self._sync_feedback):
-                inval = True
+            repos.sync(self._sync_feedback)
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
                            (reponame,))
             for cnt, in cursor:
                 printout(ngettext('%(num)s revision cached.',
                                   '%(num)s revisions cached.', num=cnt))
-        if inval:
-            self.config.touch()     # FIXME: Brute force
         printout(_('Done.'))
 
     def _sync_feedback(self, rev):

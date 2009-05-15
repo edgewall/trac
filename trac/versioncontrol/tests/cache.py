@@ -17,7 +17,7 @@
 from datetime import datetime
 
 from trac.log import logger_factory
-from trac.test import Mock, InMemoryDatabase
+from trac.test import EnvironmentStub, Mock
 from trac.util.datefmt import to_timestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository
@@ -29,8 +29,9 @@ import unittest
 class CacheTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.db = InMemoryDatabase()
-        self.log = logger_factory('test')
+        self.env = EnvironmentStub()
+        self.db = self.env.get_db_cnx()
+        self.log = self.env.log
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO repository (id, name, value) "
                        "VALUES (%s,%s,%s)",
@@ -47,7 +48,7 @@ class CacheTestCase(unittest.TestCase):
                      get_youngest_rev=lambda: 0,
                      normalize_rev=no_changeset,
                      next_rev=lambda x: None)
-        cache = CachedRepository(self.db, repos, None, self.log)
+        cache = CachedRepository(self.env, repos, None, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
@@ -71,7 +72,7 @@ class CacheTestCase(unittest.TestCase):
                      get_youngest_rev=lambda: 1,
                      normalize_rev=lambda x: x,
                      next_rev=lambda x: int(x) == 0 and 1 or None)
-        cache = CachedRepository(self.db, repos, None, self.log)
+        cache = CachedRepository(self.env, repos, None, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
@@ -115,7 +116,7 @@ class CacheTestCase(unittest.TestCase):
                      get_oldest_rev=lambda: 0,
                      normalize_rev=lambda x: x,                    
                      next_rev=lambda x: x and int(x) == 1 and 2 or None)
-        cache = CachedRepository(self.db, repos, None, self.log)
+        cache = CachedRepository(self.env, repos, None, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
@@ -152,7 +153,7 @@ class CacheTestCase(unittest.TestCase):
                      get_oldest_rev=lambda: 0,
                      next_rev=lambda x: None,
                      normalize_rev=lambda rev: rev)
-        cache = CachedRepository(self.db, repos, None, self.log)
+        cache = CachedRepository(self.env, repos, None, self.log)
         self.assertEqual('1', cache.youngest_rev)
         changeset = cache.get_changeset(1)
         self.assertEqual('joe', changeset.author)

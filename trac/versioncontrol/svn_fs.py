@@ -289,8 +289,7 @@ class SubversionConnector(Component):
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
-            repos = CachedRepository(self.env.get_db_cnx, fs_repos, None,
-                                     self.log)
+            repos = CachedRepository(self.env, fs_repos, None, self.log)
             repos.has_linear_changesets = True
         # FIXME: convert SubversionAuthorizer to a PermissionPolicy
         if 'authname' in options:

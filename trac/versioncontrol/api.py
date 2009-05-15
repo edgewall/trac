@@ -399,12 +399,8 @@ class RepositoryManager(Component):
             self.log.warn("Found no repositories matching '%s' base.",
                           base or reponame)
             return
-        inval = False
         for repos in sorted(repositories, key=lambda r: r.reponame):
-            if repos.sync():
-                inval = True
-            else:
-                self.log.debug("Repository %s already up-to-date.", repos.name)
+            repos.sync()
             for rev in revs:
                 args = []
                 if event == 'changeset_modified':
@@ -413,15 +409,10 @@ class RepositoryManager(Component):
                     changeset = repos.get_changeset(rev)
                 except NoSuchChangeset:
                     continue
-                inval = inval or (event == 'changeset_modified')
                 self.log.debug("Event %s on %s for revision %s",
-                               event, repos.reponame, rev)
+                               event, repos.reponame or '(default)', rev)
                 for listener in self.change_listeners:
                     getattr(listener, event)(repos, changeset, *args)
-        
-        if inval:
-            self.log.debug("Invalidating youngest_rev cache")
-            self.config.touch()     # FIXME: Brute force method
     
     def shutdown(self, tid=None):
         if tid:
@@ -518,10 +509,8 @@ class Repository(object):
         The backend will call this function for each `rev` it decided to
         synchronize, once the synchronization changes are committed to the 
         cache.
-        
-        Return True if any changes have been committed to the cache.
         """
-        return False
+        pass
 
     def sync_changeset(self, rev):
         """Resync the repository cache for the given `rev`, if relevant.
