@@ -13,17 +13,18 @@
 
 import sys
 
-from trac.admin import IAdminCommandProvider, get_dir_list
+from trac.admin import IAdminCommandProvider, IAdminPanelProvider, get_dir_list
 from trac.core import *
 from trac.util.text import print_table, printerr, printout
 from trac.util.translation import _, ngettext
-from trac.versioncontrol import RepositoryManager
+from trac.versioncontrol import DbRepositoryProvider, RepositoryManager
+from trac.web.chrome import add_warning
 
 
 class VersionControlAdmin(Component):
     """Version control administration component."""
 
-    implements(IAdminCommandProvider)
+    implements(IAdminCommandProvider, IAdminPanelProvider)
 
     # IAdminCommandProvider methods
     
@@ -44,21 +45,9 @@ class VersionControlAdmin(Component):
                revisions and notify components about the change.
                """,
                self._complete_repos, self._do_changeset_modified)
-        yield ('repository add', '<repos> <dir> [type]',
-               'Add a source repository',
-               self._complete_add, self._do_add)
-        yield ('repository alias', '<repos> <alias>',
-               'Create an alias for a repository',
-               self._complete_repos, self._do_alias)
         yield ('repository list', '',
                'List source repositories',
                None, self._do_list)
-        yield ('repository remove', '<repos>',
-               'Remove a source repository',
-               self._complete_repos, self._do_remove)
-        yield ('repository rename', '<repos> <newname>',
-               'Rename a source repository',
-               self._complete_repos, self._do_rename)
         yield ('repository resync', '<repos> [rev]',
                """Re-synchronize trac with repositories
                
@@ -81,22 +70,10 @@ class VersionControlAdmin(Component):
                """,
                self._complete_repos, self._do_sync)
     
-    def get_supported_types(self):
-        rm = RepositoryManager(self.env)
-        return [type_ for connector in rm.connectors
-                for (type_, prio) in connector.get_supported_types()
-                if prio >= 0]
-    
     def get_reponames(self):
         rm = RepositoryManager(self.env)
         return [reponame or '(default)' for reponame
                 in rm.get_all_repositories()]
-    
-    def _complete_add(self, args):
-        if len(args) == 2:
-            return get_dir_list(args[-1], True)
-        elif len(args) == 3:
-            return self.get_supported_types()
     
     def _complete_repos(self, args):
         if len(args) == 1:
@@ -110,33 +87,6 @@ class VersionControlAdmin(Component):
         rm = RepositoryManager(self.env)
         rm.notify('changeset_modified', reponame, revs, None)
     
-    def _do_add(self, reponame, dir, type_=None):
-        if reponame == '(default)':
-            reponame = ''
-        if type_ is not None and type_ not in self.get_supported_types():
-            raise TracError(_("The repository type '%(type)s' is not "
-                              "supported", type=type_))
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.executemany("INSERT INTO repository (id, name, value) "
-                           "VALUES (%s, %s, %s)",
-                           [(reponame, 'dir', dir), (reponame, 'type', type_)])
-        db.commit()
-        RepositoryManager(self.env).reload_repositories()
-    
-    def _do_alias(self, reponame, alias):
-        if reponame == '(default)':
-            reponame = ''
-        if alias in ('', '(default)'):
-            raise TracError(_("Invalid alias name '%(alias)s'", alias=alias))
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.executemany("INSERT INTO repository (id, name, value) "
-                           "VALUES (%s, %s, %s)",
-                           [(alias, 'dir', None), (alias, 'alias', reponame)])
-        db.commit()
-        RepositoryManager(self.env).reload_repositories()
-    
     def _do_list(self):
         rm = RepositoryManager(self.env)
         values = []
@@ -147,35 +97,6 @@ class VersionControlAdmin(Component):
             values.append((reponame or '(default)', info.get('type', ''),
                            alias, info.get('dir', '')))
         print_table(values, [_('Name'), _('Type'), _('Alias'), _('Directory')])
-    
-    def _do_remove(self, reponame):
-        if reponame == '(default)':
-            reponame = ''
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM repository "
-                       "WHERE id=%s AND name IN ('dir', 'type', 'alias')",
-                       (reponame,))
-        cursor.execute("DELETE FROM revision WHERE repos=%s", (reponame,))
-        cursor.execute("DELETE FROM node_change WHERE repos=%s", (reponame,))
-        db.commit()
-        RepositoryManager(self.env).reload_repositories()
-    
-    def _do_rename(self, reponame, newname):
-        if reponame == '(default)':
-            reponame = ''
-        if newname == '(default)':
-            newname = ''
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("UPDATE repository SET id=%s WHERE id=%s",
-                       (newname, reponame))
-        cursor.execute("UPDATE revision SET repos=%s WHERE repos=%s",
-                       (newname, reponame))
-        cursor.execute("UPDATE node_change SET repos=%s WHERE repos=%s",
-                       (newname, reponame))
-        db.commit()
-        RepositoryManager(self.env).reload_repositories()
     
     def _sync(self, reponame, rev, clean):
         rm = RepositoryManager(self.env)
@@ -236,3 +157,113 @@ class VersionControlAdmin(Component):
     def _do_sync(self, reponame, rev=None):
         self._sync(reponame, rev, clean=False)
 
+    # IAdminPanelProvider methods
+
+    def get_admin_panels(self, req):
+        if 'TICKET_ADMIN' in req.perm:
+            yield ('versioncontrol', 'Version Control', 'repository',
+                   _('Repositories'))
+    
+    def render_admin_panel(self, req, category, page, path_info):
+        req.perm.require('TICKET_ADMIN')
+        
+        # Retrieve info for all repositories
+        rm = RepositoryManager(self.env)
+        all_repos = rm.get_all_repositories()
+        db_provider = DbRepositoryProvider(self.env)
+        
+        if path_info:
+            # Detail view
+            reponame = path_info != '(default)' and path_info or ''
+            info = all_repos.get(reponame)
+            if info is None:
+                raise TracError(_('Repository %(name)s does not exist.',
+                                  name=path_info))
+            if req.method == 'POST':
+                if req.args.get('cancel'):
+                    req.redirect(req.href.admin(category, page))
+                
+                elif db_provider and req.args.get('save'):
+                    # Modify repository
+                    changes = {}
+                    for field in ['alias', 'dir', 'type']:
+                        value = req.args.get(field)
+                        if value is not None and value != info.get(field):
+                            changes[field] = value
+                    if changes:
+                        db_provider.modify_repository(reponame, changes)
+                    # Rename repository
+                    name = req.args.get('name')
+                    if name and name != path_info:
+                        db_provider.rename_repository(reponame, name)
+                    req.redirect(req.href.admin(category, page))
+            
+            data = {'view': 'detail', 'reponame': reponame}
+        
+        else:
+            # List view
+            if req.method == 'POST':
+                # Add a repository
+                if db_provider and req.args.get('add_repos'):
+                    name = req.args.get('name')
+                    type_ = req.args.get('type')
+                    dir = req.args.get('dir')
+                    if name is not None and type_ is not None and dir:
+                        db_provider.add_repository(name, dir, type_)
+                        req.redirect(req.href.admin(category, page))
+                    add_warning(req, _("Missing arguments to add a "
+                                       "repository."))
+                
+                # Add a repository alias
+                elif db_provider and req.args.get('add_alias'):
+                    name = req.args.get('name')
+                    target = req.args.get('target')
+                    if name and target:
+                        db_provider.add_alias(name, target)
+                        req.redirect(req.href.admin(category, page))
+                    add_warning(req, _("Missing arguments to add an "
+                                       "alias."))
+                
+                # Refresh the list of repositories
+                elif req.args.get('refresh'):
+                    req.redirect(req.href.admin(category, page))
+                
+                # Remove repositories
+                elif db_provider and req.args.get('remove'):
+                    sel = req.args.getlist('sel')
+                    if sel:
+                        for name in sel:
+                            db_provider.remove_repository(name)
+                        req.redirect(req.href.admin(category, page))
+                    add_warning(req, _('No repositories were selected.'))
+            
+            data = {'view': 'list'}
+
+        # Find repositories that are editable
+        db_repos = {}
+        if db_provider is not None:
+            db_repos = dict(db_provider.get_repositories())
+        
+        # Prepare common rendering data
+        repositories = dict((reponame, self._extend_info(reponame, info.copy(),
+                                                         reponame in db_repos))
+                            for (reponame, info) in all_repos.iteritems())
+        types = sorted([''] + rm.get_supported_types())
+        data.update({'types': types, 'default_type': rm.repository_type,
+                     'repositories': repositories})
+        
+        return 'admin_repositories.html', data
+
+    def _extend_info(self, reponame, info, editable):
+        """Extend repository info for rendering."""
+        info['name'] = reponame or '(default)'
+        if info.get('alias') == '':
+            info['alias'] = '(default)'
+        info['editable'] = editable
+        if not info.get('alias'):
+            try:
+                repos = RepositoryManager(self.env).get_repository(reponame, None)
+                info['rev'] = repos.get_youngest_rev()
+            except Exception:
+                pass
+        return info

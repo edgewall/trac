@@ -22,6 +22,7 @@ except ImportError:
     import dummy_threading as threading
     threading._get_ident = lambda: 0
 
+from trac.admin import IAdminCommandProvider
 from trac.config import Option
 from trac.core import *
 from trac.perm import PermissionError
@@ -92,7 +93,7 @@ class IRepositoryChangeListener(Interface):
 class DbRepositoryProvider(Component):
     """Component providing repositories registered in the DB."""
 
-    implements(IRepositoryProvider)
+    implements(IRepositoryProvider, IAdminCommandProvider)
 
     # IRepositoryProvider methods
 
@@ -109,6 +110,129 @@ class DbRepositoryProvider(Component):
         
         for reponame, info in reponames.iteritems():
             yield (reponame, info)
+
+    # IAdminCommandProvider methods
+    
+    def get_admin_commands(self):
+        yield ('repository add', '<repos> <dir> [type]',
+               'Add a source repository',
+               self._complete_add, self._do_add)
+        yield ('repository alias', '<name> <target>',
+               'Create an alias for a repository',
+               self._complete_alias, self._do_alias)
+        yield ('repository remove', '<repos>',
+               'Remove a source repository',
+               self._complete_repos, self._do_remove)
+        yield ('repository rename', '<repos> <newname>',
+               'Rename a source repository',
+               self._complete_repos, self._do_rename)
+    
+    def get_reponames(self):
+        rm = RepositoryManager(self.env)
+        return [reponame or '(default)' for reponame
+                in rm.get_all_repositories()]
+    
+    def _complete_add(self, args):
+        if len(args) == 2:
+            return get_dir_list(args[-1], True)
+        elif len(args) == 3:
+            return RepositoryManager(self.env).get_supported_types()
+    
+    def _complete_alias(self, args):
+        if len(args) == 2:
+            return self.get_reponames()
+    
+    def _complete_repos(self, args):
+        if len(args) == 1:
+            return self.get_reponames()
+    
+    def _do_add(self, reponame, dir, type_=None):
+        self.add_repository(reponame, dir, type_)
+    
+    def _do_alias(self, reponame, target):
+        self.add_alias(reponame, target)
+    
+    def _do_remove(self, reponame):
+        self.remove_repository(reponame)
+    
+    def _do_rename(self, reponame, newname):
+        self.rename_repository(reponame, newname)
+    
+    # Public interface
+    
+    def add_repository(self, reponame, dir, type_=None):
+        """Add a repository."""
+        if reponame == '(default)':
+            reponame = ''
+        rm = RepositoryManager(self.env)
+        if type_ and type_ not in rm.get_supported_types():
+            raise TracError(_("The repository type '%(type)s' is not "
+                              "supported", type=type_))
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.executemany("INSERT INTO repository (id, name, value) "
+                           "VALUES (%s, %s, %s)",
+                           [(reponame, 'dir', dir),
+                            (reponame, 'type', type_ or None)])
+        db.commit()
+        rm.reload_repositories()
+    
+    def add_alias(self, reponame, target):
+        """Create an alias repository."""
+        if not reponame or reponame == '(default)':
+            raise TracError(_("Invalid alias name '%(reponame)s'",
+                              reponame=reponame))
+        if target == '(default)':
+            target = ''
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.executemany("INSERT INTO repository (id, name, value) "
+                           "VALUES (%s, %s, %s)",
+                           [(reponame, 'dir', None),
+                            (reponame, 'alias', target)])
+        db.commit()
+        RepositoryManager(self.env).reload_repositories()
+    
+    def remove_repository(self, reponame):
+        """Remove a repository."""
+        if reponame == '(default)':
+            reponame = ''
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("DELETE FROM repository WHERE id=%s", (reponame,))
+        cursor.execute("DELETE FROM revision WHERE repos=%s", (reponame,))
+        cursor.execute("DELETE FROM node_change WHERE repos=%s", (reponame,))
+        db.commit()
+        RepositoryManager(self.env).reload_repositories()
+    
+    def rename_repository(self, reponame, newname):
+        """Rename a repository."""
+        if reponame == '(default)':
+            reponame = ''
+        if newname == '(default)':
+            newname = ''
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("UPDATE repository SET id=%s WHERE id=%s",
+                       (newname, reponame))
+        cursor.execute("UPDATE revision SET repos=%s WHERE repos=%s",
+                       (newname, reponame))
+        cursor.execute("UPDATE node_change SET repos=%s WHERE repos=%s",
+                       (newname, reponame))
+        db.commit()
+        RepositoryManager(self.env).reload_repositories()
+    
+    def modify_repository(self, reponame, changes):
+        """Modify attributes of a repository."""
+        if reponame == '(default)':
+            reponame = ''
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        for (k, v) in changes.iteritems():
+            cursor.execute("UPDATE repository SET value=%s "
+                           "WHERE id=%s AND name=%s", (v, reponame, k))
+        db.commit()
+        RepositoryManager(self.env).reload_repositories()
 
 
 class RepositoryManager(Component):
@@ -234,6 +358,13 @@ class RepositoryManager(Component):
 
     # Public API methods
 
+    def get_supported_types(self):
+        """Return the list of supported repository types."""
+        types = set(type_ for connector in self.connectors
+                    for (type_, prio) in connector.get_supported_types()
+                    if prio >= 0)
+        return list(types)
+    
     def get_repositories_by_dir(self, directory, authname):
         """Retrieve the repositories based on the given directory.
 
