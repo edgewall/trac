@@ -459,11 +459,7 @@ class BrowserModule(Component):
                 else:
                     entry = (reponame, repoinfo, None, "XXX")
             except TracError, err:
-                class InvalidRepo(tuple):
-                    message = lambda self: self[0]
-                    date = lambda self: self[1]
-                entry = (reponame, repoinfo, None, 
-                         InvalidRepo((exception_to_unicode(err), 0)))
+                entry = (reponame, repoinfo, None, exception_to_unicode(err))
             repositories.append(entry)
 
         # Ordering of repositories

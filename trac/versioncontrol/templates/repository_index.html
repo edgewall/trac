@@ -15,8 +15,10 @@
           </td>
           <td class="size" />
           <td class="rev">
-            <a title="View Revision Log" href="${href.log(reponame)}">$change.rev</a>
-            <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
+            <py:if test="not err">
+              <a title="View Revision Log" href="${href.log(reponame)}">$change.rev</a>
+              <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
+            </py:if>
           </td>
           <td class="age" style="${change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
             repo.colorize_age(repo.timerange.relative(change.date)) or None}">
