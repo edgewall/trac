@@ -57,6 +57,7 @@ class NotificationTestCase(unittest.TestCase):
     def tearDown(self):
         """Signal the notification test suite that a test is over"""
         notifysuite.tear_down()
+        self.env.reset_db()
 
     def test_recipients(self):
         """To/Cc recipients"""

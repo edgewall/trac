@@ -82,7 +82,8 @@ class InterWikiMap(Component):
     # IWikiChangeListener methods
 
     def wiki_page_added(self, page):
-        pass
+        if page.name == InterWikiMap._page_name:
+            del self.interwiki_map
 
     def wiki_page_changed(self, page, version, t, comment, author, ipnr):
         if page.name == InterWikiMap._page_name:

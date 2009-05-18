@@ -54,6 +54,8 @@ class SubversionRepositoryTestSetup(TestSetup):
         pool = core.svn_pool_create(None)
         dumpstream = None
         try:
+            if os.path.exists(REPOS_PATH):
+                print 'trouble ahead with db/rep-cache.db... see #8278'
             r = repos.svn_repos_create(REPOS_PATH, '', '', None, None, pool)
             if hasattr(repos, 'svn_repos_load_fs2'):
                 repos.svn_repos_load_fs2(r, dumpfile, StringIO(),

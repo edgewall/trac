@@ -22,7 +22,7 @@ from StringIO import StringIO
 
 from genshi.builder import tag
 
-from trac.cache import cached_value
+from trac.cache import cached
 from trac.config import BoolOption
 from trac.core import *
 from trac.resource import IResourceManager
@@ -154,7 +154,7 @@ def parse_args(args, strict=True):
 class WikiSystem(Component):
     """Represents the wiki system."""
 
-    implements(IWikiChangeListener, IWikiSyntaxProvider, IResourceManager)
+    implements(IWikiSyntaxProvider, IResourceManager)
 
     change_listeners = ExtensionPoint(IWikiChangeListener)
     macro_providers = ExtensionPoint(IWikiMacroProvider)
@@ -176,7 +176,7 @@ class WikiSystem(Component):
         For public sites where anonymous users can edit the wiki it is
         recommended to leave this option disabled (which is the default).""")
 
-    @cached_value
+    @cached
     def pages(self, db):
         """Return the names of all existing wiki pages."""
         cursor = db.cursor()
@@ -191,29 +191,13 @@ class WikiSystem(Component):
         If the `prefix` parameter is given, only names that start with that
         prefix are included.
         """
-        for page in self.pages:
+        for page in self.pages.get():
             if not prefix or page.startswith(prefix):
                 yield page
 
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
-        return pagename.rstrip('/') in self.pages
-
-    # IWikiChangeListener methods
-
-    def wiki_page_added(self, page):
-        if not self.has_page(page.name):
-            del self.pages
-
-    def wiki_page_changed(self, page, version, t, comment, author, ipnr):
-        pass
-
-    def wiki_page_deleted(self, page):
-        if self.has_page(page.name):
-            del self.pages
-
-    def wiki_page_version_deleted(self, page):
-        pass
+        return pagename.rstrip('/') in self.pages.get()
 
     # IWikiSyntaxProvider methods
 

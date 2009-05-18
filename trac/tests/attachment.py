@@ -40,6 +40,7 @@ class AttachmentTestCase(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.env.path)
+        self.env.reset_db()
 
     def test_get_path(self):
         attachment = Attachment(self.env, 'ticket', 42)

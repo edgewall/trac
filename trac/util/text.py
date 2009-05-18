@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 #         Christian Boos <cboos@neuf.fr>
 
+import __builtin__
 import locale
 import os
 import sys
@@ -126,19 +127,25 @@ class unicode_passwd(unicode):
     def __repr__(self):
         return '*******'
 
-def console_print(out, *args):
+def console_print(out, *args, **kwargs):
     cons_charset = getattr(out, 'encoding', None)
     # Windows returns 'cp0' to indicate no encoding
     if cons_charset in (None, 'cp0'):
         cons_charset = 'utf-8'
     out.write(' '.join([to_unicode(a).encode(cons_charset, 'replace') 
-                        for a in args])+ '\n')
+                        for a in args]))
+    if kwargs.get('newline', True):
+        out.write('\n')
 
-def printout(*args):
-    console_print(sys.stdout, *args)
+def printout(*args, **kwargs):
+    console_print(sys.stdout, *args, **kwargs)
 
-def printerr(*args):
-    console_print(sys.stderr, *args)
+def printerr(*args, **kwargs):
+    console_print(sys.stderr, *args, **kwargs)
+
+def raw_input(prompt):
+    printout(prompt, newline=False)
+    return to_unicode(__builtin__.raw_input(), sys.stdin.encoding)
 
 # -- Plain text formatting
 

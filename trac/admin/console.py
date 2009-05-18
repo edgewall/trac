@@ -28,7 +28,7 @@ from trac.env import Environment
 from trac.util import translation
 from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
-                           printerr, to_unicode
+                           printerr, raw_input, to_unicode
 from trac.util.translation import _
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
@@ -388,10 +388,9 @@ in order to initialize and prepare the project database.
             # Add a few default wiki pages
             printout(_(" Installing default wiki pages"))
             cnx = self.__env.get_db_cnx()
-            cursor = cnx.cursor()
             pages_dir = pkg_resources.resource_filename('trac.wiki', 
                                                         'default-pages') 
-            WikiAdmin(self.__env).load_pages(pages_dir, cursor)
+            WikiAdmin(self.__env).load_pages(pages_dir, cnx)
             cnx.commit()
 
             if repository_dir:

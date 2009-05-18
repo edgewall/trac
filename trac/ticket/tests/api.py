@@ -14,6 +14,9 @@ class TicketSystemTestCase(unittest.TestCase):
         self.ticket_system = TicketSystem(self.env)
         self.req = Mock()
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def _ts_get_available_actions(self, ts, ticket_dict):
         ticket = Ticket(self.env)
         ticket.populate(ticket_dict)
