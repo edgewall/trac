@@ -59,29 +59,10 @@ class FunctionalTestEnvironment(object):
 
     dburi = property(lambda x: get_dburi())
 
-    def destroy_db(self, db):
-        scheme, db_prop = _parse_db_str(self.dburi)
-
-        cursor = db.cursor()
-        try:
-            if scheme == 'postgres' and db.schema:
-                cursor.execute('DROP SCHEMA "%s" CASCADE' % db.schema)
-            elif scheme == 'mysql':
-                dbname = os.path.basename(db_prop['path'])
-                cursor = db.cursor()
-                cursor.execute('SELECT table_name FROM information_schema.tables '
-                               'WHERE table_schema=%s', (dbname,))
-                tables = cursor.fetchall()
-                for t in tables:
-                    cursor.execute('DROP TABLE IF EXISTS `%s`' % t)
-            db.commit()
-        except Exception, e:
-            db.rollback()
-
     def destroy(self):
         """Remove all of the test environment data."""
         env = EnvironmentStub()
-        self.destroy_db(env.get_db_cnx())
+        env.destroy_db()
         env.shutdown()
 
         self.destroy_repo()

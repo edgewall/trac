@@ -297,6 +297,7 @@ class EnvironmentStub(Environment):
         :param default_data: after clean-up, initialize with default data
         :return: True upon success
         """
+        from trac import db_default
         if EnvironmentStub.dbenv:
             db = self.get_db_cnx()
             scheme, db_prop = _parse_db_str(self.dburi)
@@ -304,27 +305,65 @@ class EnvironmentStub(Environment):
             tables = []
             db.rollback() # make sure there's no transaction in progress
             try:
-                m = sys.modules[__name__]
-                reset_fn = 'reset_%s_db' % scheme
-                if hasattr(m, reset_fn):
-                    tables = getattr(m, reset_fn)(db, db_prop)
+                # check the database version
+                cursor = db.cursor()
+                cursor.execute("SELECT value FROM system "
+                               "WHERE name='database_version'")
+                database_version = cursor.fetchone()
+                if database_version:
+                    database_version = int(database_version[0])
+                if database_version == db_default.db_version:
+                    # same version, simply clear the tables (faster)
+                    m = sys.modules[__name__]
+                    reset_fn = 'reset_%s_db' % scheme
+                    if hasattr(m, reset_fn):
+                        tables = getattr(m, reset_fn)(db, db_prop)
+                else:
+                    # different version or version unknown, drop the tables
+                    self.destroy_db(scheme, db_prop)
             except:
-                db.rollback() # tables are likely missing
+                db.rollback()
+                # tables are likely missing
 
             if not tables:
                 del db
                 DatabaseManager(EnvironmentStub.dbenv).init_db()
 
-        from trac import db_default
+        db = self.get_db_cnx()
+        cursor = db.cursor()
         if default_data:
-            db = self.get_db_cnx()
-            cursor = db.cursor()
             for table, cols, vals in db_default.get_data(db):
                 cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
                                    % (table, ','.join(cols),
                                       ','.join(['%s' for c in cols])),
                                    vals)
+        elif EnvironmentStub.dbenv:
+            cursor.execute("INSERT INTO system (name, value) "
+                           "VALUES (%s, %s)",
+                           ('database_version', str(db_default.db_version)))
+        db.commit()
+
+    def destroy_db(self, scheme=None, db_prop=None):
+        if not (scheme and db_prop):
+            scheme, db_prop = _parse_db_str(self.dburi)
+
+        db = self.get_db_cnx()
+        cursor = db.cursor()
+        try:
+            if scheme == 'postgres' and db.schema:
+                cursor.execute('DROP SCHEMA "%s" CASCADE' % db.schema)
+            elif scheme == 'mysql':
+                dbname = os.path.basename(db_prop['path'])
+                cursor = db.cursor()
+                cursor.execute('SELECT table_name FROM '
+                               '  information_schema.tables '
+                               'WHERE table_schema=%s', (dbname,))
+                tables = cursor.fetchall()
+                for t in tables:
+                    cursor.execute('DROP TABLE IF EXISTS `%s`' % t)
             db.commit()
+        except Exception, e:
+            db.rollback()
 
     def get_known_users(self, cnx=None):
         return self.known_users
