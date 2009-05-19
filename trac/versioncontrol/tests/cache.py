@@ -37,6 +37,9 @@ class CacheTestCase(unittest.TestCase):
                        "VALUES (%s,%s,%s)",
                        ('test-repos', 'youngest_rev', ''))
 
+    def tearDown(self):
+        self.env.reset_db()
+
     def test_initial_sync_with_empty_repos(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         def no_changeset(rev):
