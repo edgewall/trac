@@ -473,6 +473,7 @@ class SubversionRepository(Repository):
             raise NoSuchChangeset(rev)
 
     def close(self):
+        self.pool.destroy()
         self.repos = self.fs_ptr = self.pool = None
 
     def _get_tags_or_branches(self, paths):
