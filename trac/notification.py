@@ -79,13 +79,13 @@ class NotificationSystem(Component):
         """Comma-separated list of domains that should be considered as
         valid for email addresses (such as localdomain)""")
            
-    mime_encoding = Option('notification', 'mime_encoding', 'base64',
+    mime_encoding = Option('notification', 'mime_encoding', 'none',
         """Specifies the MIME encoding scheme for emails.
         
         Valid options are 'base64' for Base64 encoding, 'qp' for
-        Quoted-Printable, and 'none' for no encoding. Note that the no encoding
-        means that non-ASCII characters in text are going to cause problems
-        with notifications (''since 0.10'').""")
+        Quoted-Printable, and 'none' for no encoding, in which case mails will
+        be sent as 7bit if the content is all ASCII, or 8bit otherwise.
+        (''since 0.10'')""")
 
     use_public_cc = BoolOption('notification', 'use_public_cc', 'false',
         """Recipients can see email addresses of other CC'ed recipients.
@@ -196,27 +196,22 @@ class NotifyEmail(Notify):
                 self.email_map[username] = email
                 
     def _init_pref_encoding(self):
-        from email.Charset import Charset, QP, BASE64
+        from email.Charset import Charset, QP, BASE64, SHORTEST
         self._charset = Charset()
         self._charset.input_charset = 'utf-8'
+        self._charset.output_charset = 'utf-8'
+        self._charset.input_codec = 'utf-8'
+        self._charset.output_codec = 'utf-8'
         pref = self.env.config.get('notification', 'mime_encoding').lower()
         if pref == 'base64':
             self._charset.header_encoding = BASE64
             self._charset.body_encoding = BASE64
-            self._charset.output_charset = 'utf-8'
-            self._charset.input_codec = 'utf-8'
-            self._charset.output_codec = 'utf-8'
         elif pref in ['qp', 'quoted-printable']:
             self._charset.header_encoding = QP
             self._charset.body_encoding = QP
-            self._charset.output_charset = 'utf-8'
-            self._charset.input_codec = 'utf-8'
-            self._charset.output_codec = 'utf-8'
         elif pref == 'none':
-            self._charset.header_encoding = None
+            self._charset.header_encoding = SHORTEST
             self._charset.body_encoding = None
-            self._charset.input_codec = None
-            self._charset.output_charset = 'ascii'
         else:
             raise TracError(_('Invalid email encoding setting: %s' % pref))
 
@@ -388,13 +383,6 @@ class NotifyEmail(Notify):
         if pcc:
             headers['Cc'] = ', '.join(pcc)
         headers['Date'] = formatdate()
-        # sanity check
-        if not self._charset.body_encoding:
-            try:
-                dummy = body.encode('ascii')
-            except UnicodeDecodeError:
-                raise TracError(_("Ticket contains non-ASCII chars. " \
-                                  "Please change encoding setting"))
         msg = MIMEText(body, 'plain')
         # Message class computes the wrong type from MIMEText constructor,
         # which does not take a Charset object as initializer. Reset the

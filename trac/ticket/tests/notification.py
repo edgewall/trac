@@ -412,14 +412,24 @@ class NotificationTestCase(unittest.TestCase):
         self._validate_mimebody((quopri, 'quoted-printable', 'utf-8'),
                                 ticket, True)
 
-    def test_mimebody_none(self):
-        """MIME None/ascii encoding"""
+    def test_mimebody_none_7bit(self):
+        """MIME None encoding resulting in 7bit"""
         self.env.config.set('notification','mime_encoding', 'none')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user'
         ticket['summary'] = u'This is a summary'
         ticket.insert()
-        self._validate_mimebody((None, '7bit', 'ascii'), \
+        self._validate_mimebody((None, '7bit', 'utf-8'), \
+                                ticket, True)
+
+    def test_mimebody_none_8bit(self):
+        """MIME None encoding resulting in 8bit"""
+        self.env.config.set('notification','mime_encoding', 'none')
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'joe.user'
+        ticket['summary'] = u'This is a summary for Jöe Usèr'
+        ticket.insert()
+        self._validate_mimebody((None, '8bit', 'utf-8'), \
                                 ticket, True)
 
     def test_md5_digest(self):
