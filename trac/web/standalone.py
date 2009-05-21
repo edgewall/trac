@@ -102,9 +102,11 @@ class TracEnvironMiddleware(object):
 
 class TracHTTPServer(ThreadingMixIn, WSGIServer):
 
-    def __init__(self, server_address, application, env_parent_dir, env_paths):
+    def __init__(self, server_address, application, env_parent_dir, env_paths,
+                 use_http_11=False):
+        request_handlers = (TracHTTPRequestHandler, TracHTTP11RequestHandler)
         WSGIServer.__init__(self, server_address, application,
-                            request_handler=TracHTTPRequestHandler)
+                            request_handler=request_handlers[bool(use_http_11)])
 
 
 class TracHTTPRequestHandler(WSGIRequestHandler):
@@ -114,6 +116,9 @@ class TracHTTPRequestHandler(WSGIRequestHandler):
     def address_string(self):
         # Disable reverse name lookups
         return self.client_address[:2][0]
+
+class TracHTTP11RequestHandler(TracHTTPRequestHandler):
+    protocol_version = 'HTTP/1.1'
 
 
 def main():
@@ -167,6 +172,8 @@ def main():
     parser.add_option('-q', '--unquote', action='store_true',
                       dest='unquote',
                       help='unquote PATH_INFO (may be needed when using ajp')
+    parser.add_option('--http11', action='store_true', dest='http11',
+                      help='use HTTP/1.1 protocol version instead of HTTP/1.0')
     parser.add_option('-e', '--env-parent-dir', action='store',
                       dest='env_parent_dir', metavar='PARENTDIR',
                       help='parent directory of the project environments')
@@ -243,7 +250,9 @@ def main():
     if options.protocol == 'http':
         def serve():
             httpd = TracHTTPServer(server_address, wsgi_app,
-                                   options.env_parent_dir, args)
+                                   options.env_parent_dir, args,
+                                   use_http_11=options.http11)
+
             print 'Server starting in PID %i.' % os.getpid()
             addr, port = server_address
             if not addr or addr == '0.0.0.0':
@@ -251,6 +260,8 @@ def main():
                        % (port, port, base_path)
             else:
                 print 'Serving on http://%s:%s/%s' % (addr, port, base_path)
+            if options.http11:
+                print 'Using HTTP/1.1 protocol version'
             httpd.serve_forever()
     elif options.protocol in ('scgi', 'ajp'):
         def serve():

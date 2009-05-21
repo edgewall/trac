@@ -15,6 +15,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from StringIO import StringIO
 from datetime import datetime
 import re
 from time import localtime, strftime, time
@@ -38,7 +39,7 @@ from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider
-from trac.web import IRequestHandler
+from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_stylesheet, add_warning, \
                             INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
@@ -366,7 +367,7 @@ class RoadmapModule(Component):
     def render_ics(self, req, db, milestones):
         req.send_response(200)
         req.send_header('Content-Type', 'text/calendar;charset=utf-8')
-        req.end_headers()
+        buf = StringIO()
 
         from trac.ticket import Priority
         priorities = {}
@@ -399,7 +400,7 @@ class RoadmapModule(Component):
             while text:
                 if not firstline: text = ' ' + text
                 else: firstline = 0
-                req.write(text[:75] + CRLF)
+                buf.write(text[:75] + CRLF)
                 text = text[75:]
 
         def write_date(name, value, params={}):
@@ -468,6 +469,12 @@ class RoadmapModule(Component):
                         write_utctime('COMPLETED', to_datetime(row[0], utc))
                 write_prop('END', 'VTODO')
         write_prop('END', 'VCALENDAR')
+
+        ics_str = buf.getvalue().encode('utf-8')
+        req.send_header('Content-Length', len(ics_str))
+        req.end_headers()
+        req.write(ics_str)
+        raise RequestDone
 
 
 

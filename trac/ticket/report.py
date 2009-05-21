@@ -638,12 +638,6 @@ class ReportModule(Component):
 
     def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',
                   filename=None):
-        req.send_response(200)
-        req.send_header('Content-Type', mimetype + ';charset=utf-8')
-        if filename:
-            req.send_header('Content-Disposition', 'filename=' + filename)
-        req.end_headers()
-
         def iso_time(t):
             return format_time(t, 'iso8601')
 
@@ -664,29 +658,43 @@ class ReportModule(Component):
 
         converters = [col_conversions.get(c.strip('_'), string) for c in cols]
 
-        writer = csv.writer(req, delimiter=sep)
+        out = StringIO()
+        writer = csv.writer(out, delimiter=sep)
         writer.writerow([unicode(c).encode('utf-8') for c in cols])
         for row in rows:
             row = list(row)
             for i in xrange(len(row)):
                 row[i] = converters[i](row[i]).encode('utf-8')
             writer.writerow(row)
+        data = out.getvalue()
 
+        req.send_response(200)
+        req.send_header('Content-Type', mimetype + ';charset=utf-8')
+        req.send_header('Content-Length', len(data))
+        if filename:
+            req.send_header('Content-Disposition', 'filename=' + filename)
+        req.end_headers()
+        req.write(data)
         raise RequestDone
 
     def _send_sql(self, req, id, title, description, sql):
         req.perm.require('REPORT_SQL_VIEW')
+
+        out = StringIO()
+        out.write('-- ## %s: %s ## --\n\n' % (id, title))
+        if description:
+            out.write('-- %s\n\n' % '\n-- '.join(description.splitlines()))
+        out.write(sql)
+        data = out.getvalue()
+
         req.send_response(200)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.send_header('Content-Length', len(data))
         if id:
             req.send_header('Content-Disposition',
                             'filename=report_%s.sql' % id)
         req.end_headers()
-
-        req.write('-- ## %s: %s ## --\n\n' % (id, title))
-        if description:
-            req.write('-- %s\n\n' % '\n-- '.join(description.splitlines()))
-        req.write(sql)
+        req.write(data)
         raise RequestDone
         
     # IWikiSyntaxProvider methods

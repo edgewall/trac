@@ -282,6 +282,7 @@ class Request(object):
             self.send_header('ETag', etag)
         else:
             self.send_response(304)
+            self.send_header('Content-Length', 0)
             self.end_headers()
             raise RequestDone
 
@@ -307,13 +308,12 @@ class Request(object):
 
         self.send_header('Location', url)
         self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Length', 0)
         self.send_header('Pragma', 'no-cache')
         self.send_header('Cache-control', 'no-cache')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.end_headers()
 
-        if self.method != 'HEAD':
-            self.write('Redirecting...')
         raise RequestDone
 
     def display(self, template, content_type='text/html', status=200):
@@ -405,6 +405,7 @@ class Request(object):
         last_modified = http_date(mtime)
         if last_modified == self.get_header('If-Modified-Since'):
             self.send_response(304)
+            self.send_header('Content-Length', 0)
             self.end_headers()
             raise RequestDone
 

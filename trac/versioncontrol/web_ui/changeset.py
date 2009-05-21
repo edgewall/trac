@@ -40,7 +40,8 @@ from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import unicode_urlencode, shorten_line, CRLF
 from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
-from trac.versioncontrol.diff import get_diff_options, diff_blocks, unified_diff
+from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
+                                     unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule, \
                                                DefaultPropertyRenderer
 from trac.web import IRequestHandler, RequestDone
@@ -627,7 +628,10 @@ class ChangesetModule(Component):
             stream = Chrome(self.env).render_template(req, 'changeset.html',
                                                       data, fragment=True)
             content = stream.select('//div[@id="content"]')
-            req.write(content.render('xhtml'))
+            str_content = content.render('xhtml')
+            req.send_header('Content-Length', len(str_content))
+            req.end_headers()
+            req.write(str_content)
             raise RequestDone
 
         return data
@@ -638,9 +642,9 @@ class ChangesetModule(Component):
         req.send_header('Content-Type', 'text/x-patch;charset=utf-8')
         req.send_header('Content-Disposition',
                         content_disposition('inline;', filename + '.diff'))
-        req.end_headers()
-
+        buf = StringIO()
         mimeview = Mimeview(self.env)
+
         for old_node, new_node, kind, change in repos.get_changes(
             new_path=data['new_path'], new_rev=data['new_rev'],
             old_path=data['old_path'], old_rev=data['old_rev']):
@@ -690,16 +694,21 @@ class ChangesetModule(Component):
                 ignore_space = options.get('ignorewhitespace')
                 if not old_node_info[0]:
                     old_node_info = new_node_info # support for 'A'dd changes
-                req.write('Index: ' + new_path + CRLF)
-                req.write('=' * 67 + CRLF)
-                req.write('--- %s (revision %s)' % old_node_info + CRLF)
-                req.write('+++ %s (revision %s)' % new_node_info + CRLF)
+                buf.write('Index: ' + new_path + CRLF)
+                buf.write('=' * 67 + CRLF)
+                buf.write('--- %s (revision %s)' % old_node_info + CRLF)
+                buf.write('+++ %s (revision %s)' % new_node_info + CRLF)
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
                                          ignore_blank_lines=ignore_blank_lines,
                                          ignore_case=ignore_case,
                                          ignore_space_changes=ignore_space):
-                    req.write(line + CRLF)
+                    buf.write(line + CRLF)
+                    
+        diff_str = buf.getvalue().encode('utf-8')
+        req.send_header('Content-Length', len(diff_str))
+        req.end_headers()
+        req.write(diff_str)
         raise RequestDone
 
     def _render_zip(self, req, filename, repos, data):
@@ -723,18 +732,17 @@ class ChangesetModule(Component):
                 zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 # Note: unicode filenames are not supported by zipfile.
                 # UTF-8 is not supported by all Zip tools either,
-                # but as some does, I think UTF-8 is the best option here.
+                # but as some do, I think UTF-8 is the best option here.
                 zipinfo.date_time = new_node.last_modified.utctimetuple()[:6]
                 zipinfo.external_attr = 0644 << 16L # needed since Python 2.5
                 zipinfo.compress_type = ZIP_DEFLATED
                 zipfile.writestr(zipinfo, new_node.get_content().read())
         zipfile.close()
 
-        buf.seek(0, 2) # be sure to be at the end
-        req.send_header("Content-Length", buf.tell())
+        zip_str = buf.getvalue()
+        req.send_header("Content-Length", len(zip_str))
         req.end_headers()
-
-        req.write(buf.getvalue())
+        req.write(zip_str)
         raise RequestDone
 
     def title_for_diff(self, data):

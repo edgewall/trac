@@ -924,6 +924,7 @@ class Mimeview(Component):
                                                          content, selector)
         req.send_response(200)
         req.send_header('Content-Type', output_type)
+        req.send_header('Content-Length', len(content))
         if filename:
             req.send_header('Content-Disposition', 'filename=%s.%s' % 
                         (filename, ext))
