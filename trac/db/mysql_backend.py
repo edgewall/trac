@@ -74,8 +74,8 @@ class MySQLConnector(Component):
             return []
 
     def get_connection(self, path, user=None, password=None, host=None,
-                       port=None, params={}):
-        cnx = MySQLConnection(path, user, password, host, port, params)
+                       port=None, params={}, log=None):
+        cnx = MySQLConnection(path, user, password, host, port, params, log)
         if not self._version:
             self._version = get_pkginfo(MySQLdb).get('version',
                                                      MySQLdb.__version__)
@@ -177,7 +177,7 @@ class MySQLConnection(ConnectionWrapper):
     poolable = True
 
     def __init__(self, path, user=None, password=None, host=None,
-                 port=None, params={}):
+                 port=None, params={}, log=None):
         if path.startswith('/'):
             path = path[1:]
         if password == None:
@@ -186,7 +186,7 @@ class MySQLConnection(ConnectionWrapper):
             port = 3306
         cnx = MySQLdb.connect(db=path, user=user, passwd=password,
                               host=host, port=port, charset='utf8')
-        ConnectionWrapper.__init__(self, cnx)
+        ConnectionWrapper.__init__(self, cnx, log)
         self._is_closed = False
 
     def cast(self, column, type):

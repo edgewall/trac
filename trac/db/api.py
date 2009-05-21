@@ -18,7 +18,7 @@ import os
 import urllib
 import time
 
-from trac.config import Option, IntOption
+from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.db.pool import ConnectionPool
 from trac.util.text import unicode_passwd
@@ -69,6 +69,10 @@ class DatabaseManager(Component):
         """Timeout value for database connection, in seconds.
         Use '0' to specify ''no timeout''. ''(Since 0.11)''""")
 
+    debug_sql = BoolOption('trac', 'debug_sql', False,
+        """Show the SQL queries in the Trac log, at DEBUG level.
+        ''(Since 0.11.5)''""")
+
     def __init__(self):
         self._cnx_pool = None
 
@@ -101,7 +105,8 @@ class DatabaseManager(Component):
                 backup_dir = os.path.join(self.env.path, backup_dir)
             db_str = self.config.get('trac', 'database')
             db_name, db_path = db_str.split(":",1)
-            dest_name = '%s.%i.%d.bak' % (db_name, self.env.get_version(),int(time.time()))
+            dest_name = '%s.%i.%d.bak' % (db_name, self.env.get_version(),
+                                          int(time.time()))
             dest = os.path.join(backup_dir, dest_name)
         else:
             backup_dir = os.path.dirname(dest)
@@ -132,6 +137,8 @@ class DatabaseManager(Component):
                 args['path'] = os.path.join(self.env.path,
                                             args['path'].lstrip('/'))
 
+        if self.debug_sql:
+            args['log'] = self.log
         return connector, args
 
 
