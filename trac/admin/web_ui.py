@@ -33,8 +33,9 @@ from trac.util.compat import partial
 from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.web.chrome import add_script, add_stylesheet, add_warning, Chrome, \
-                            INavigationContributor, ITemplateProvider
+from trac.web.chrome import add_notice, add_script, add_stylesheet, \
+                            add_warning, Chrome, INavigationContributor, \
+                            ITemplateProvider
 
 try:
     from webadmin import IAdminPageProvider
@@ -190,6 +191,7 @@ class BasicsAdminPanel(Component):
             for option in ('name', 'url', 'descr'):
                 self.config.set('project', option, req.args.get(option))
             self.config.save()
+            add_notice(req, _('Your changes have been saved.'))
             req.redirect(req.href.admin(cat, page))
 
         data = {
@@ -274,6 +276,7 @@ class LoggingAdminPanel(Component):
 
             if changed:
                 self.config.save()
+            add_notice(req, _('Your changes have been saved.'))
             req.redirect(req.href.admin(cat, page))
 
         data = {
@@ -321,12 +324,14 @@ class PermissionAdminPanel(Component):
                 req.perm.require(action)
                 if (subject, action) not in all_permissions:
                     perm.grant_permission(subject, action)
+                    add_notice(req, _('The user %(subject)s has been granted '
+                                      'the permission %(action)s.',
+                                      subject=subject, action=action))
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    add_warning(req,
-                            _('Permission "%(action)s" was already granted '
-                            'to "%(subject)s"', action=action,
-                            subject=subject))
+                    add_warning(req, _('The permission %(action)s was already '
+                                       'granted to %(subject)s.',
+                                       action=action, subject=subject))
 
             # Add subject to group
             elif req.args.get('add') and subject and group:
@@ -338,13 +343,16 @@ class PermissionAdminPanel(Component):
                             % (subject, group, action))
                     else:
                         req.perm.require(action)
-                if (subject,group) not in all_permissions:
+                if (subject, group) not in all_permissions:
                     perm.grant_permission(subject, group)
+                    add_notice(req, _('The user %(subject)s has been added to '
+                                      'the group %(group)s.', subject=subject,
+                                      group=group))
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    add_warning(req, 
-                                _('"%(subject)s" was already added to group '
-                                '"%(group)s"', subject=subject, group=group))
+                    add_warning(req, _('The user %(subject)s was already '
+                                       'added to the group %(group)s.',
+                                       subject=subject, group=group))
 
             # Remove permissions action
             elif req.args.get('remove') and req.args.get('sel'):
@@ -355,6 +363,8 @@ class PermissionAdminPanel(Component):
                     subject, action = key.split(':', 1)
                     if (subject, action) in perm.get_all_permissions():
                         perm.revoke_permission(subject, action)
+                add_notice(req, _('The selected permissions have been '
+                                  'revoked.'))
                 req.redirect(req.href.admin(cat, page))
 
         return 'admin_perms.html', {

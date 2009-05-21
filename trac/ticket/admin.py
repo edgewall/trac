@@ -21,7 +21,7 @@ from trac.ticket import model
 from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint
 from trac.util.translation import _
-from trac.web.chrome import add_link, add_script
+from trac.web.chrome import add_link, add_notice, add_script
 
 
 class TicketAdminPanel(Component):
@@ -62,6 +62,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                     comp.owner = req.args.get('owner')
                     comp.description = req.args.get('description')
                     comp.update()
+                    add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
@@ -82,6 +83,8 @@ class ComponentAdminPanel(TicketAdminPanel):
                         if req.args.get('owner'):
                             comp.owner = req.args.get('owner')
                         comp.insert()
+                        add_notice(req, _('The component "%(name)s" has been '
+                                          'added.', name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
                         raise TracError(_('Component %s already exists.') % name)
@@ -98,6 +101,8 @@ class ComponentAdminPanel(TicketAdminPanel):
                         comp = model.Component(self.env, name, db=db)
                         comp.delete(db=db)
                     db.commit()
+                    add_notice(req, _('The selected components have been '
+                                      'removed.'))
                     req.redirect(req.href.admin(cat, page))
 
                 # Set default component
@@ -107,6 +112,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         self.log.info('Setting default component to %s', name)
                         self.config.set('ticket', 'default_component', name)
                         self.config.save()
+                        add_notice(req, _('Your changes have been saved.'))
                         req.redirect(req.href.admin(cat, page))
 
             default = self.config.get('ticket', 'default_component')
@@ -166,6 +172,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                             _('Invalid Completion Date'))
                     mil.description = req.args.get('description', '')
                     mil.update()
+                    add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
@@ -188,6 +195,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                             mil.due = parse_date(req.args.get('duedate'),
                                                  req.tz)
                         mil.insert()
+                        add_notice(req, _('The milestone "%(name)s" has been '
+                                          'added.', name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
                         raise TracError(_('Milestone %s already exists.') % name)
@@ -205,6 +214,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         mil = model.Milestone(self.env, name, db=db)
                         mil.delete(db=db, author=req.authname)
                     db.commit()
+                    add_notice(req, _('The selected milestones have been '
+                                      'removed.'))
                     req.redirect(req.href.admin(cat, page))
 
                 # Set default milestone
@@ -214,6 +225,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         self.log.info('Setting default milestone to %s', name)
                         self.config.set('ticket', 'default_milestone', name)
                         self.config.save()
+                        add_notice(req, _('Your changes have been saved.'))
                         req.redirect(req.href.admin(cat, page))
 
             # Get ticket count
@@ -258,6 +270,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver.time = None # unset
                     ver.description = req.args.get('description')
                     ver.update()
+                    add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
@@ -279,6 +292,8 @@ class VersionAdminPanel(TicketAdminPanel):
                             ver.time = parse_date(req.args.get('time'),
                                                   req.tz)
                         ver.insert()
+                        add_notice(req, _('The version "%(name)s" has been '
+                                          'added.', name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
                         raise TracError(_('Version %s already exists.') % name)
@@ -295,6 +310,8 @@ class VersionAdminPanel(TicketAdminPanel):
                         ver = model.Version(self.env, name, db=db)
                         ver.delete(db=db)
                     db.commit()
+                    add_notice(req, _('The selected versions have been '
+                                      'removed.'))
                     req.redirect(req.href.admin(cat, page))
 
                 # Set default version
@@ -304,6 +321,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         self.log.info('Setting default version to %s', name)
                         self.config.set('ticket', 'default_version', name)
                         self.config.save()
+                        add_notice(req, _('Your changes have been saved.'))
                         req.redirect(req.href.admin(cat, page))
 
             data = {
@@ -339,6 +357,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                 if req.args.get('save'):
                     enum.name = req.args.get('name')
                     enum.update()
+                    add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
@@ -357,6 +376,10 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         enum = self._enum_cls(self.env)
                         enum.name = name
                         enum.insert()
+                        add_notice(req, _('The %(field)s "%(name)s" has been '
+                                          'added.',
+                                          field=self._label[0].lower(),
+                                          name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
                         raise TracError(_('%s %s already exists') % (self._type.title(), name))
@@ -373,6 +396,9 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         enum = self._enum_cls(self.env, name, db=db)
                         enum.delete(db=db)
                     db.commit()
+                    add_notice(req, _('The selected %(fields)s have been '
+                                      'removed.',
+                                      fields=self._label[1].lower()))
                     req.redirect(req.href.admin(cat, page))
 
                 # Appy changes
@@ -403,6 +429,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                             enum.update(db=db)
                     db.commit()
 
+                    add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),

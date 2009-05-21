@@ -25,8 +25,8 @@ from trac.prefs.api import IPreferencePanelProvider
 from trac.util.datefmt import all_timezones, get_timezone, localtz
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.web.chrome import add_stylesheet, INavigationContributor, \
-                            ITemplateProvider
+from trac.web.chrome import add_notice, add_stylesheet, \
+                            INavigationContributor, ITemplateProvider
 
 
 class PreferencesModule(Component):
@@ -125,6 +125,7 @@ class PreferencesModule(Component):
             elif field in req.session and (field in req.args or
                                            field + '_cb' in req.args):
                 del req.session[field]
+        add_notice(req, _('Your preferences have been saved.'))
 
     def _do_load(self, req):
         if req.authname == 'anonymous':

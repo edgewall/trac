@@ -40,10 +40,11 @@ from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import Query
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_stylesheet, add_warning, \
-                            INavigationContributor
+from trac.web.chrome import add_link, add_notice, add_stylesheet, \
+                            add_warning, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
+
 
 class ITicketGroupStatsProvider(Interface):
     def get_ticket_group_stats(ticket_ids):
@@ -592,6 +593,8 @@ class MilestoneModule(Component):
             retarget_to = req.args.get('target') or None
         milestone.delete(retarget_to, req.authname)
         db.commit()
+        add_notice(req, _('The milestone "%(name)s" has been deleted.',
+                          name=milestone.name))
         req.redirect(req.href.roadmap())
 
     def _do_save(self, req, db, milestone):
@@ -662,6 +665,7 @@ class MilestoneModule(Component):
             milestone.insert()
         db.commit()
 
+        add_notice(req, _('Your changes have been saved.'))
         req.redirect(req.href.milestone(milestone.name))
 
     def _render_confirm(self, req, db, milestone):

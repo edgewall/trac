@@ -180,6 +180,7 @@ class Request(object):
             'incookie': Request._parse_cookies,
             '_inheaders': Request._parse_headers
         }
+        self.redirect_listeners = []
 
         self.base_url = self.environ.get('trac.base_url')
         if not self.base_url:
@@ -222,6 +223,13 @@ class Request(object):
                            doc='Name of the server')
     server_port = property(fget=lambda self: int(self.environ['SERVER_PORT']),
                            doc='Port number the server is bound to')
+
+    def add_redirect_listener(self, listener):
+        """Add a callable to be called prior to executing a redirect.
+        
+        The callable is passed the arguments to the `redirect()` call.
+        """
+        self.redirect_listeners.append(listener)
 
     def get_header(self, name):
         """Return the value of the specified HTTP header, or `None` if there's
@@ -291,6 +299,9 @@ class Request(object):
         `url` may be relative or absolute, relative URLs will be translated
         appropriately.
         """
+        for listener in self.redirect_listeners:
+            listener(self, url, permanent)
+        
         self.session.save() # has to be done before the redirect is sent
 
         if permanent:

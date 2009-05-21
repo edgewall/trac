@@ -36,8 +36,8 @@ from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web.chrome import add_link, add_script, add_stylesheet, \
-                            add_ctxtnav, add_warning, prevnext_nav, \
+from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
+                            add_stylesheet, add_warning, prevnext_nav, \
                             INavigationContributor, ITemplateProvider
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
@@ -254,8 +254,18 @@ class WikiModule(Component):
         db.commit()
 
         if not page.exists:
+            add_notice(req, _('The page %(name)s has been deleted.',
+                              name=page.name))
             req.redirect(req.href.wiki())
         else:
+            if version and old_version and version > old_version:
+                add_notice(req, _('The versions %(from_)d to %(to)d of the '
+                                  'page %(name)s have been deleted.',
+                                  from_=old_version + 1, to=version))
+            else:
+                add_notice(req, _('The version %(version)d of the page '
+                                  '%(name)s has been deleted.',
+                                  version=version, name=page.name))
             req.redirect(req.href.wiki(page.name))
 
     def _do_save(self, req, page):
@@ -276,6 +286,7 @@ class WikiModule(Component):
             page.save(get_reporter_id(req, 'author'),
                             req.args.get('comment'),
                             req.remote_addr)
+            add_notice(req, _('Your changes have been saved.'))
             req.redirect(get_resource_url(self.env, page.resource, req.href,
                                           version=None))
         except TracError:

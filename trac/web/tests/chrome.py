@@ -56,13 +56,15 @@ class ChromeTestCase(unittest.TestCase):
 
     def test_htdocs_location(self):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='')
+                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
+                   add_redirect_listener=lambda listener: None)
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/common/', info['htdocs_location'])
 
     def test_logo(self):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='')
+                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
+                   add_redirect_listener=lambda listener: None)
 
         # Verify that no logo data is put in the HDF if no logo is configured
         self.env.config.set('header_logo', 'src', '')
@@ -99,7 +101,8 @@ class ChromeTestCase(unittest.TestCase):
 
     def test_default_links(self):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='')
+                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
+                   add_redirect_listener=lambda listener: None)
         links = Chrome(self.env).prepare_request(req)['links']
         self.assertEqual('/trac.cgi/wiki', links['start'][0]['href'])
         self.assertEqual('/trac.cgi/search', links['search'][0]['href'])
@@ -109,7 +112,8 @@ class ChromeTestCase(unittest.TestCase):
 
     def test_icon_links(self):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='')
+                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
+                   add_redirect_listener=lambda listener: None)
         chrome = Chrome(self.env)
 
         # No icon set in config, so no icon links
@@ -148,7 +152,8 @@ class ChromeTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test', 'Test'
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi')
+                   href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi',
+                   add_redirect_listener=lambda listener: None)
         nav = Chrome(self.env).prepare_request(req)['nav']
         self.assertEqual({'name': 'test', 'label': 'Test', 'active': False},
                          nav['metanav'][0])
@@ -161,7 +166,8 @@ class ChromeTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test', 'Test'
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi')
+                   href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi',
+                   add_redirect_listener=lambda listener: None)
         handler = TestNavigationContributor(self.env)
         nav = Chrome(self.env).prepare_request(req, handler)['nav']
         self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
@@ -181,7 +187,8 @@ class ChromeTestCase(unittest.TestCase):
             def get_navigation_items(self, req):
                 yield 'metanav', 'test2', 'Test 2'
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='/')
+                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='/',
+                   add_redirect_listener=lambda listener: None)
         chrome = Chrome(self.env)
 
         # Test with both items set in the order option

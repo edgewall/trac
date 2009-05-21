@@ -34,8 +34,8 @@ from trac.util.presentation import Paginator
 from trac.util.text import to_unicode, unicode_urlencode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
-from trac.web.chrome import add_ctxtnav, add_link, add_stylesheet, \
-                            INavigationContributor, Chrome
+from trac.web.chrome import add_ctxtnav, add_link, add_notice, \
+                            add_stylesheet, INavigationContributor, Chrome
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -141,6 +141,7 @@ class ReportModule(Component):
                        "VALUES (%s,%s,%s)", (title, query, description))
         id = db.get_last_id(cursor, 'report')
         db.commit()
+        add_notice(req, _('The report has been created.'))
         req.redirect(req.href.report(id))
 
     def _do_delete(self, req, db, id):
@@ -152,6 +153,7 @@ class ReportModule(Component):
         cursor = db.cursor()
         cursor.execute("DELETE FROM report WHERE id=%s", (id,))
         db.commit()
+        add_notice(req, _('The report {%(id)d} has been deleted.', id=id))
         req.redirect(req.href.report())
 
     def _do_save(self, req, db, id):
@@ -166,6 +168,7 @@ class ReportModule(Component):
             cursor.execute("UPDATE report SET title=%s,query=%s,description=%s "
                            "WHERE id=%s", (title, query, description, id))
             db.commit()
+            add_notice(req, _('Your changes have been saved.'))
         req.redirect(req.href.report(id))
 
     def _render_confirm_delete(self, req, db, id):
