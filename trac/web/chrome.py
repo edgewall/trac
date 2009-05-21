@@ -728,7 +728,7 @@ class Chrome(Component):
         if doctype:
             if req.form_token:
                 stream |= self._add_form_token(req.form_token)
-            if not req.session or not int(req.session.get('accesskeys', 0)):
+            if not int(req.session.get('accesskeys', 0)):
                 stream |= self._strip_accesskeys
 
         links = req.chrome.get('links')

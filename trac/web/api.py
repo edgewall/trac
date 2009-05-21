@@ -290,8 +290,7 @@ class Request(object):
         `url` may be relative or absolute, relative URLs will be translated
         appropriately.
         """
-        if self.session:
-            self.session.save() # has to be done before the redirect is sent
+        self.session.save() # has to be done before the redirect is sent
 
         if permanent:
             status = 301 # 'Moved Permanently'
