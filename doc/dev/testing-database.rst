@@ -1,3 +1,5 @@
+.. _testing-database:
+
 Using an alternate database backend
 ===================================
 
