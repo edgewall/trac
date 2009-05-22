@@ -78,10 +78,10 @@ class IRepositoryProvider(Interface):
 class IRepositoryChangeListener(Interface):
     """Listen for changes in repositories."""
     
-    def changeset_added(self, repos, changeset):
+    def changeset_added(repos, changeset):
         """Called after a changeset has been added to a repository."""
 
-    def changeset_modified(self, repos, changeset, old_changeset):
+    def changeset_modified(repos, changeset, old_changeset):
         """Called after a changeset has been modified in a repository.
         
         The `old_changeset` argument contains the metadata of the changeset
