@@ -171,7 +171,7 @@ def main():
                       help='http|scgi|ajp')
     parser.add_option('-q', '--unquote', action='store_true',
                       dest='unquote',
-                      help='unquote PATH_INFO (may be needed when using ajp')
+                      help='unquote PATH_INFO (may be needed when using ajp)')
     parser.add_option('--http10', action='store_false', dest='http11',
                       help='use HTTP/1.0 protocol version (default)')
     parser.add_option('--http11', action='store_true', dest='http11',
