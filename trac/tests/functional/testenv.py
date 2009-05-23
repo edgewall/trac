@@ -147,11 +147,12 @@ class FunctionalTestEnvironment(object):
             exe = os.environ['FIGLEAF']
         else:
             exe = sys.executable
-        server = Popen([exe, "./trac/web/standalone.py",
-                        "--port=%s" % self.port, "-s",
-                        "--hostname=127.0.0.1",
-                        "--basic-auth=trac,%s," % self.htpasswd,
-                        self.tracdir],
+        options = ["--port=%s" % self.port, "-s", "--hostname=127.0.0.1",
+                   "--basic-auth=trac,%s," % self.htpasswd]
+        if 'TRAC_TEST_TRACD_OPTIONS' in os.environ:
+            options += os.environ['TRAC_TEST_TRACD_OPTIONS'].split()
+        server = Popen([exe, "./trac/web/standalone.py"] + options +
+                       [self.tracdir],
                        stdout=logfile, stderr=logfile,
                        close_fds=close_fds,
                        cwd=self.command_cwd,

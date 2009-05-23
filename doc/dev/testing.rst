@@ -37,13 +37,22 @@ Additionally, if you're on Windows, you need to get fcrypt.  See
 Invoking the tests
 ------------------
 
-Just run :command:`make test` in the Trac tree once you have everything installed.
+Just run :command:`make test` in the Trac tree once you have everything
+installed.
 This will run the unit tests first, then the functional tests (if you have the
 dependencies) against sqlite.  On a reasonably fast machine, the former takes
-10 seconds and the latter a couple of minutes.  If you're running them on
-Windows and don't have cygwin, you'll need to manually run the tests using 
-:command:`python trac\\test.py`, but this will run all the tests interleaved.
-Examine the :file:`Makefile` if you want more control.
+10 seconds and the latter a couple of minutes.
+
+A few environment variables will influence the way tests are executed:
+
+:TRAC_TEST_DB_URI: Use another database backend than the default in-memory
+ SQLite database. see :ref:`Using an alternate database backend <testing-database>` for more.
+:TRAC_TEST_TRACD_OPTIONS: Provide additional options to the standalone
+ :command:`tracd` server used for the functional tests.
+
+The :file:`Makefile` is actually written in a way that allow you to get more
+control, if you want.
+
 Other possible usages::
   
   make test=trac/tests/allwiki.py # run all the Wiki formatter tests
@@ -54,6 +63,9 @@ Other possible usages::
 
   make test python=24 # run all the tests using Python 2.4
 
+If you're running the tests on Windows and don't have cygwin, you'll need to
+manually run the tests using :command:`python trac\\test.py`, but this will
+run all the tests interleaved.
 
 
 Understanding failures

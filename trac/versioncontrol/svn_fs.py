@@ -484,6 +484,8 @@ class SubversionRepository(Repository):
             raise NoSuchChangeset(rev)
 
     def close(self):
+        if self.pool:
+            self.pool.destroy()
         self.repos = self.fs_ptr = self.pool = None
 
     def get_base(self):

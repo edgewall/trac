@@ -17,7 +17,8 @@
 
 def sql_escape_percent(sql):
     import re
-    return re.sub("'((?:[^']|(?:''))*)'", lambda m: m.group(0).replace('%', '%%'), sql)
+    return re.sub("'((?:[^']|(?:''))*)'",
+                  lambda m: m.group(0).replace('%', '%%'), sql)
 
 
 class IterableCursor(object):
@@ -27,10 +28,11 @@ class IterableCursor(object):
     
     Iteration will generate the rows of a SELECT query one by one.
     """
-    __slots__ = ['cursor']
+    __slots__ = ['cursor', 'log']
 
-    def __init__(self, cursor):
+    def __init__(self, cursor, log=None):
         self.cursor = cursor
+        self.log = log
 
     def __getattr__(self, name):
         return getattr(self.cursor, name)
@@ -43,17 +45,33 @@ class IterableCursor(object):
             yield row
 
     def execute(self, sql, args=None):
-        # -- In case of SQL errors, uncomment the following 'print' statements
-        # print 'execute', repr(sql)
+        if self.log:
+            self.log.debug('SQL: %r', sql)
+            try:
+                if args:
+                    self.log.debug('args: %r', args)
+                    return self.cursor.execute(sql_escape_percent(sql), args)
+                return self.cursor.execute(sql)
+            except Exception, e:
+                self.log.debug('execute exception: %r', e)
+                raise
         if args:
-            # print repr(args)
             return self.cursor.execute(sql_escape_percent(sql), args)
         return self.cursor.execute(sql)
 
     def executemany(self, sql, args=None):
-        # print 'executemany', repr(sql)
+        if self.log:
+            self.log.debug('SQL: %r', sql)
+            try:
+                if args:
+                    self.log.debug('args: %r', args)
+                    return self.cursor.executemany(sql_escape_percent(sql),
+                                                   args)
+                return self.cursor.execute(sql)
+            except Exception, e:
+                self.log.debug('executemany exception: %r', e)
+                raise
         if args:
-            # print repr(args)
             return self.cursor.executemany(sql_escape_percent(sql), args)
         return self.cursor.executemany(sql)
 
@@ -64,10 +82,11 @@ class ConnectionWrapper(object):
     This wrapper makes cursors produced by the connection iterable using
     `IterableCursor`.
     """
-    __slots__ = ['cnx']
+    __slots__ = ['cnx', 'log']
 
-    def __init__(self, cnx):
+    def __init__(self, cnx, log=None):
         self.cnx = cnx
+        self.log = log
 
     def __getattr__(self, name):
         if hasattr(self, 'cnx'):
@@ -75,4 +94,4 @@ class ConnectionWrapper(object):
         return object.__getattr__(self, name)
 
     def cursor(self):
-        return IterableCursor(self.cnx.cursor())
+        return IterableCursor(self.cnx.cursor(), self.log)

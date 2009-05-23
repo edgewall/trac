@@ -47,10 +47,11 @@ class PostgreSQLConnector(Component):
         return [('postgres', 1)]
 
     def get_connection(self, path, user=None, password=None, host=None,
-                       port=None, params={}):
+                       port=None, params={}, log=None):
         global psycopg
         global PgSQL
-        cnx = PostgreSQLConnection(path, user, password, host, port, params)
+        cnx = PostgreSQLConnection(path, user, password, host, port, params,
+                                   log)
         if not self._version:
             if psycopg:
                 self._version = get_pkginfo(psycopg).get('version',
@@ -144,7 +145,7 @@ class PostgreSQLConnection(ConnectionWrapper):
     poolable = True
 
     def __init__(self, path, user=None, password=None, host=None, port=None,
-                 params={}):
+                 params={}, log=None):
         if path.startswith('/'):
             path = path[1:]
         # We support both psycopg and PgSQL but prefer psycopg
@@ -192,7 +193,7 @@ class PostgreSQLConnection(ConnectionWrapper):
                 cnx.commit()
         except PGSchemaError:
             cnx.rollback()
-        ConnectionWrapper.__init__(self, cnx)
+        ConnectionWrapper.__init__(self, cnx, log)
 
     def cast(self, column, type):
         # Temporary hack needed for the union of selects in the search module

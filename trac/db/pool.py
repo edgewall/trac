@@ -36,8 +36,8 @@ class PooledConnection(ConnectionWrapper):
     to the pool.
     """
 
-    def __init__(self, pool, cnx, key, tid):
-        ConnectionWrapper.__init__(self, cnx)
+    def __init__(self, pool, cnx, key, tid, log=None):
+        ConnectionWrapper.__init__(self, cnx, log)
         self._pool = pool
         self._key = key
         self._tid = tid
@@ -46,6 +46,7 @@ class PooledConnection(ConnectionWrapper):
         if self.cnx:
             self._pool._return_cnx(self.cnx, self._key, self._tid)
             self.cnx = None
+            self.log = None
 
     def __del__(self):
         self.close()
@@ -79,6 +80,7 @@ class ConnectionPoolBackend(object):
     def get_cnx(self, connector, kwargs, timeout=None):
         num = 1
         cnx = None
+        log = kwargs.get('log')
         key = unicode(kwargs)
         start = time.time()
         tid = threading._get_ident()
@@ -114,7 +116,7 @@ class ConnectionPoolBackend(object):
                     cnx = connector.get_connection(**kwargs)
                 if cnx:
                     self._active[(tid, key)] = (cnx, num)
-                    return PooledConnection(self, cnx, key, tid)
+                    return PooledConnection(self, cnx, key, tid, log)
                 # Worst option: wait until a connection pool slot is available
                 if timeout and (time.time() - start) > timeout:
                     raise TimeoutError(_('Unable to get database '

@@ -58,7 +58,7 @@ class IAdminCommandProvider(Interface):
     administration interface `trac-admin`.
     """
     
-    def get_admin_commands(self):
+    def get_admin_commands():
         """Return a list of available admin commands.
         
         The items returned by this function must be tuples of the form

@@ -77,7 +77,7 @@ class CachedRepository(Repository):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT rev FROM revision "
-                       "WHERE repos=%s AND time >= %s AND time < %s"
+                       "WHERE repos=%s AND time >= %s AND time < %s "
                        "ORDER BY time DESC, rev DESC",
                        (self.reponame, to_timestamp(start),
                         to_timestamp(stop)))
