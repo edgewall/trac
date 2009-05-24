@@ -462,7 +462,7 @@ class MacroListMacro(WikiMacroBase):
                     try:
                         descr = macro_provider.get_macro_description(macro_name)
                         descr = format_to_html(self.env, formatter.context,
-                                               descr or '')
+                                               to_unicode(descr) or '')
                     except Exception, e:
                         descr = system_message(_("Error: Can't get description "
                                                  "for macro %(name)s",
