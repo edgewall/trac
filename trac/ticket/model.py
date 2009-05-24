@@ -241,7 +241,8 @@ class Ticket(object):
                     current_owner = self.values.get('owner') or ''
                     if old_owner == current_owner:
                         new_comp = Component(self.env, self['component'], db)
-                        self['owner'] = new_comp.owner
+                        if new_comp.owner:
+                            self['owner'] = new_comp.owner
                 except TracError, e:
                     # If the old component has been removed from the database we
                     # just leave the owner as is.
