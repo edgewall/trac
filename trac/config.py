@@ -13,6 +13,7 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 from ConfigParser import ConfigParser
+from copy import deepcopy
 import os
 
 from trac.core import ExtensionPoint, TracError
@@ -42,6 +43,7 @@ class Configuration(object):
     def __init__(self, filename):
         self.filename = filename
         self.parser = ConfigParser()
+        self._old_sections = {}
         self.parent = None
         self._lastmtime = 0
         self._sections = {}
@@ -188,20 +190,27 @@ class Configuration(object):
             if options:
                 sections.append((section, sorted(options)))
 
-        fileobj = open(self.filename, 'w')
         try:
-            fileobj.write('# -*- coding: utf-8 -*-\n\n')
-            for section, options in sections:
-                fileobj.write('[%s]\n' % section)
-                for key, val in options:
-                    if key in self[section].overridden:
-                        fileobj.write('# %s = <inherited>\n' % key)
-                    else:
-                        val = val.replace(CRLF, '\n').replace('\n', '\n ')
-                        fileobj.write('%s = %s\n' % (key, val.encode('utf-8')))
-                fileobj.write('\n')
-        finally:
-            fileobj.close()
+            fileobj = open(self.filename, 'w')
+            try:
+                fileobj.write('# -*- coding: utf-8 -*-\n\n')
+                for section, options in sections:
+                    fileobj.write('[%s]\n' % section)
+                    for key, val in options:
+                        if key in self[section].overridden:
+                            fileobj.write('# %s = <inherited>\n' % key)
+                        else:
+                            val = val.replace(CRLF, '\n').replace('\n', '\n ')
+                            fileobj.write('%s = %s\n' % (key,
+                                                         val.encode('utf-8')))
+                    fileobj.write('\n')
+            finally:
+                fileobj.close()
+            self._old_sections = deepcopy(self.parser._sections)
+        except Exception:
+            # Revert all changes to avoid inconsistencies
+            self.parser._sections = deepcopy(self._old_sections)
+            raise
 
     def parse_if_needed(self):
         if not self.filename or not os.path.isfile(self.filename):
@@ -213,6 +222,7 @@ class Configuration(object):
             self.parser._sections = {}
             self.parser.read(self.filename)
             self._lastmtime = modtime
+            self._old_sections = deepcopy(self.parser._sections)
             changed = True
 
         if self.parser.has_option('inherit', 'file'):

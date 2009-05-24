@@ -20,8 +20,9 @@ from trac.resource import ResourceNotFound
 from trac.ticket import model
 from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint
+from trac.util.text import exception_to_unicode
 from trac.util.translation import _
-from trac.web.chrome import add_link, add_notice, add_script
+from trac.web.chrome import add_link, add_notice, add_script, add_warning
 
 
 class TicketAdminPanel(Component):
@@ -43,6 +44,22 @@ class TicketAdminPanel(Component):
             return self._render_admin_panel(req, cat, page, version)
         except AssertionError, e:
             raise TracError(e)
+
+
+def _save_config(config, req, log, failure=None):
+    """Try to save the config, and display either a success notice or a
+    failure warning.
+    """
+    try:
+        config.save()
+        add_notice(req, _('Your changes have been saved.'))
+        return True
+    except Exception, e:
+        log.error('Error writing to trac.ini: %s', exception_to_unicode(e))
+        add_warning(req, failure or _('Error writing to trac.ini, make sure '
+                                      'it is writable by the web server. Your '
+                                      'changes have not been saved.'))
+        return False
 
 
 class ComponentAdminPanel(TicketAdminPanel):
@@ -71,6 +88,7 @@ class ComponentAdminPanel(TicketAdminPanel):
             data = {'view': 'detail', 'component': comp}
 
         else:
+            default = self.config.get('ticket', 'default_component')
             if req.method == 'POST':
                 # Add Component
                 if req.args.get('add') and req.args.get('name'):
@@ -107,15 +125,13 @@ class ComponentAdminPanel(TicketAdminPanel):
 
                 # Set default component
                 elif req.args.get('apply'):
-                    if req.args.get('default'):
-                        name = req.args.get('default')
+                    name = req.args.get('default')
+                    if name and name != default:
                         self.log.info('Setting default component to %s', name)
                         self.config.set('ticket', 'default_component', name)
-                        self.config.save()
-                        add_notice(req, _('Your changes have been saved.'))
+                        _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
 
-            default = self.config.get('ticket', 'default_component')
             data = {'view': 'list',
                     'components': model.Component.select(self.env),
                     'default': default}
@@ -181,6 +197,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
             data = {'view': 'detail', 'milestone': mil}
 
         else:
+            default = self.config.get('ticket', 'default_milestone')
             if req.method == 'POST':
                 # Add Milestone
                 if req.args.get('add') and req.args.get('name'):
@@ -220,12 +237,11 @@ class MilestoneAdminPanel(TicketAdminPanel):
 
                 # Set default milestone
                 elif req.args.get('apply'):
-                    if req.args.get('default'):
-                        name = req.args.get('default')
+                    name = req.args.get('default')
+                    if name and name != default:
                         self.log.info('Setting default milestone to %s', name)
                         self.config.set('ticket', 'default_milestone', name)
-                        self.config.save()
-                        add_notice(req, _('Your changes have been saved.'))
+                        _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
 
             # Get ticket count
@@ -237,11 +253,9 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                "WHERE milestone=%s", (milestone.name, ))
                 milestones.append((milestone, cursor.fetchone()[0]))
             
-            data = {
-                'view': 'list',
-                'milestones': milestones,
-                'default': self.config.get('ticket', 'default_milestone'),
-            }
+            data = {'view': 'list',
+                    'milestones': milestones,
+                    'default': default}
 
         data.update({
             'date_hint': get_date_format_hint(),
@@ -279,6 +293,7 @@ class VersionAdminPanel(TicketAdminPanel):
             data = {'view': 'detail', 'version': ver}
 
         else:
+            default = self.config.get('ticket', 'default_version')
             if req.method == 'POST':
                 # Add Version
                 if req.args.get('add') and req.args.get('name'):
@@ -316,19 +331,16 @@ class VersionAdminPanel(TicketAdminPanel):
 
                 # Set default version
                 elif req.args.get('apply'):
-                    if req.args.get('default'):
-                        name = req.args.get('default')
+                    name = req.args.get('default')
+                    if name and name != default:
                         self.log.info('Setting default version to %s', name)
                         self.config.set('ticket', 'default_version', name)
-                        self.config.save()
-                        add_notice(req, _('Your changes have been saved.'))
+                        _save_config(self.config, req, self.log)
                         req.redirect(req.href.admin(cat, page))
 
-            data = {
-                'view': 'list',
-                'versions': model.Version.select(self.env),
-                'default': self.config.get('ticket', 'default_version'),
-            }
+            data = {'view': 'list',
+                    'versions': model.Version.select(self.env),
+                    'default': default}
 
         data.update({
             'datetime_hint': get_datetime_format_hint()
@@ -365,7 +377,6 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
         else:
             default = self.config.get('ticket', 'default_%s' % self._type)
-
             if req.method == 'POST':
                 # Add enum
                 if req.args.get('add') and req.args.get('name'):
@@ -403,15 +414,26 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
                 # Appy changes
                 elif req.args.get('apply'):
+                    changed = False
+                    
                     # Set default value
-                    if req.args.get('default'):
-                        name = req.args.get('default')
-                        if name != default:
-                            self.log.info('Setting default %s to %s',
-                                          self._type, name)
-                            self.config.set('ticket', 'default_%s' % self._type,
-                                            name)
+                    name = req.args.get('default')
+                    if name and name != default:
+                        self.log.info('Setting default %s to %s',
+                                      self._type, name)
+                        self.config.set('ticket', 'default_%s' % self._type,
+                                        name)
+                        try:
                             self.config.save()
+                            changed = True
+                        except Exception, e:
+                            self.log.error('Error writing to trac.ini: %s',
+                                           exception_to_unicode(e))
+                            add_warning(req,
+                                        _('Error writing to trac.ini, make '
+                                          'sure it is writable by the web '
+                                          'server. The default value has not '
+                                          'been saved.'))
 
                     # Change enum values
                     order = dict([(str(int(key[6:])), 
@@ -427,9 +449,11 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         if new_value != enum.value:
                             enum.value = new_value
                             enum.update(db=db)
+                            changed = True
                     db.commit()
 
-                    add_notice(req, _('Your changes have been saved.'))
+                    if changed:
+                        add_notice(req, _('Your changes have been saved.'))
                     req.redirect(req.href.admin(cat, page))
 
             data.update(dict(enums=list(self._enum_cls.select(self.env)),
