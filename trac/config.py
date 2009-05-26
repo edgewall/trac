@@ -143,10 +143,10 @@ class Configuration(object):
     def sections(self):
         """Return a list of section names."""
         sections = set(self.parser.sections())
-        parent = self.parent
-        while parent:
-            sections |= set(parent.parser.sections())
-            parent = parent.parent
+        if self.parent:
+            sections.update(self.parent.sections())
+        else:
+            sections.update(self.defaults().keys())
         return sorted(sections)
 
     def has_option(self, section, option):
@@ -155,20 +155,13 @@ class Configuration(object):
         
         (since Trac 0.11)
         """
-        # Check project trac.ini
-        for file_option, val in self.options(section):
-            if file_option == option:
+        if self.parser.has_section(section):
+            if option in self.parser.options(section):
                 return True
-        # Check parent trac.ini
         if self.parent:
-            for parent_option, val in self.parent.options(section):
-                if parent_option == option:
-                    return True
-        # Check the registry
-        if (section, option) in Option.registry:
-            return True
-        # Not found
-        return False
+            return self.parent.has_option(section, option)
+        else:
+            return (section, option) in Option.registry
 
     def save(self):
         """Write the configuration options to the primary file."""
@@ -264,7 +257,7 @@ class Section(object):
             return True
         if self.config.parent:
             return name in self.config.parent[self.name]
-        return False
+        return Option.registry.has_key((self.name, name))
 
     def __iter__(self):
         options = set()
@@ -275,6 +268,10 @@ class Section(object):
         if self.config.parent:
             for option in self.config.parent[self.name]:
                 if option.lower() not in options:
+                    yield option
+        else:
+            for section, option in Option.registry.keys():
+                if section == self.name and option.lower() not in options:
                     yield option
 
     def __repr__(self):
