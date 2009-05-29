@@ -217,9 +217,9 @@ class VersionControlAdmin(Component):
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
                     name = req.args.get('name')
-                    target = req.args.get('target')
-                    if name and target:
-                        db_provider.add_alias(name, target)
+                    alias = req.args.get('alias')
+                    if name and alias:
+                        db_provider.add_alias(name, alias)
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _("Missing arguments to add an "
                                        "alias."))
