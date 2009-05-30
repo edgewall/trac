@@ -244,6 +244,14 @@ class ChangesetModule(Component):
                                       "repositories: %(old)s vs. %(new)s",
                                       old=old_reponame, new=reponame))
 
+        if not repos:
+            if reponame or (new_path and new_path != '/'):
+                raise TracError(_("No repository found for '%(reponame)s'",
+                                  reponame=reponame or new_path.strip('/')))
+            else:
+                raise TracError(_("No repository specified and no default "
+                                  "repository configured."))
+
         # -- normalize and check for special case
         try:
             new_path = repos.normalize_path(new_path)
