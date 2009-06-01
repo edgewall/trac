@@ -192,6 +192,11 @@ class ConfigurationTestCase(unittest.TestCase):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
         self.assertEquals(['a', 'b'], config.sections())
+        
+        class Foo(object):
+            option_c = Option('c', 'option', 'value')
+        
+        self.assertEquals(['a', 'b', 'c'], config.sections())
 
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
@@ -199,6 +204,12 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(('option', 'x'), iter(config.options('a')).next())
         self.assertEquals(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
+        
+        class Foo(object):
+            option_a = Option('a', 'b', 'c')
+        
+        self.assertEquals([('option', 'x'), ('b', 'c')],
+                                list(config.options('a')))
 
     def test_has_option(self):
         config = self._read()
@@ -206,6 +217,11 @@ class ConfigurationTestCase(unittest.TestCase):
         self._write(['[a]', 'option = x'])
         config = self._read()
         self.assertEquals(True, config.has_option('a', 'option'))
+
+        class Foo(object):
+            option_a = Option('a', 'option2', 'x2')
+        
+        self.assertEquals(True, config.has_option('a', 'option2'))
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])

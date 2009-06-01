@@ -19,30 +19,32 @@
   color: #000;
 }
 
-#tabcontent { padding: 0.4em 2em; margin-left: 12em; min-height: 300px; }
+#tabcontent { padding: 0.4em 0 0.4em 2em; margin-left: 12em; min-height: 300px; }
 #tabcontent h2 { color: #333; margin-top: 0; }
+#tabcontent form { overflow: auto; padding: 0 1px; }
 p.help { color: #666; font-size: 90%; margin: 1em .5em .5em; }
 
 #enumlist tbody td { vertical-align: middle; }
 
-form.addnew { clear: right; float: right; margin: -2em 0 4em; width: 33% }
-form.mod { margin-top: 1em; }
+#tabcontent form.addnew { clear: right; float: right; margin: -2em 0 2em 2em; width: 33%; overflow: visible; padding: 0 }
+#tabcontent form.mod { margin-top: 1em; overflow: visible; padding: 0 }
+form.mod fieldset { margin: 0 }
 form.mod .field { margin: .5em 0; }
 form .field em { color: #888; font-size: smaller }
 form .field .disabled em { color: #d7d7d7 }
 
-table.listing { clear: none; width: 64% }
+table.listing { clear: none; }
 table.listing .sel, table.listing .default { text-align: center; width: 1% }
 table.listing .num { text-align: right; width: 1% }
 
 /* Plugins panel */
 form#addplug { width: 35% }
 .plugin { background: #f7f7f7; border: 1px solid #d7d7d7; margin: 0 0 2em;
-  padding: 2px .5em; text-align: left; width: 60%;
+  padding: 2px .5em; text-align: left;
 }
 .plugin h3 { margin: .5em 0; color: #bb0000;}
 .plugin h3 a { 
- padding: 2px .5em; text-align: left; width: 60%;
+ padding: 2px .5em; text-align: left;
 }
 .plugin h3 a { background: url(../expanded.png) 0 50% no-repeat;
  padding-left: 16px;
