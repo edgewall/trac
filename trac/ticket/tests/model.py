@@ -212,6 +212,33 @@ class TicketTestCase(unittest.TestCase):
         ticket.save_changes('jane', 'Testing')
         self.assertEqual('kate', ticket['owner'])
 
+    def test_no_disown_from_changed_component(self):
+        """
+        Verify that a ticket is not disowned when the component is changed to
+        a non-assigned component.
+        """
+        component1 = Component(self.env)
+        component1.name = 'test1'
+        component1.owner = 'joe'
+        component1.insert()
+
+        component2 = Component(self.env)
+        component2.name = 'test2'
+        component2.owner = ''
+        component2.insert()
+
+        ticket = Ticket(self.env)
+        ticket['reporter'] = 'santa'
+        ticket['summary'] = 'Foo'
+        ticket['component'] = 'test1'
+        ticket['status'] = 'new'
+        tktid = ticket.insert()
+
+        ticket = Ticket(self.env, tktid)
+        ticket['component'] = 'test2'
+        ticket.save_changes('jane', 'Testing')
+        self.assertEqual('joe', ticket['owner'])
+
     def test_populate_ticket(self):
         data = {'summary': 'Hello world', 'reporter': 'john', 'foo': 'bar',
                 'foo': 'bar', 'checkbox_cbon': '', 'cbon': 'on',
