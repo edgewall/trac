@@ -216,8 +216,7 @@ class RequestDispatcher(Component):
                         template, content_type = \
                                   self._post_process_request(req, *resp)
                         # Give the session a chance to persist changes
-                        if req.session:
-                            req.session.save()
+                        req.session.save()
                         req.display(template, content_type or 'text/html')
                     else: # Genshi
                         template, data, content_type = \
@@ -234,9 +233,7 @@ class RequestDispatcher(Component):
                                                             data,
                                                             content_type)
                             # Give the session a chance to persist changes
-                            if req.session:
-                                req.session.save()
-
+                            req.session.save()
                             req.send(output, content_type or 'text/html')
                 else:
                     self._post_process_request(req)
