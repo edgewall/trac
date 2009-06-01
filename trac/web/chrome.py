@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import datetime
+import itertools
 import os.path
 import pkg_resources
 import pprint
@@ -203,6 +204,14 @@ def prevnext_nav(req, label, uplabel=None):
         add_ctxtnav(req, 
             tag.span(_('Next %(label)s', label=label),
                      Markup(' &rarr;'), class_='missing'))
+
+
+def _save_messages(req, url, permanent):
+    """Save warnings and notices in case of redirect, so that they can
+    be displayed after the redirect."""
+    for type_ in ['warnings', 'notices']:
+        for (i, message) in enumerate(req.chrome[type_]):
+            req.session['chrome.%s.%d' % (type_, i)] = message
 
 
 class INavigationContributor(Interface):
@@ -463,6 +472,7 @@ class Chrome(Component):
 
         chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': [],
                   'notices': []}
+        req.add_redirect_listener(_save_messages)
 
         # This is ugly... we can't pass the real Request object to the
         # add_xxx methods, because it doesn't yet have the chrome attribute
@@ -743,6 +753,16 @@ class Chrome(Component):
         method = {'text/html': 'xhtml',
                   'text/plain': 'text'}.get(content_type, 'xml')
 
+        if method == "xhtml":
+            # Retrieve post-redirect messages saved in session
+            for type_ in ['warnings', 'notices']:
+                try:
+                    for i in itertools.count():
+                        req.chrome[type_].append(
+                            req.session.pop('chrome.%s.%d' % (type_, i)))
+                except KeyError:
+                    pass
+
         template = self.load_template(filename, method=method)
         data = self.populate_data(req, data)
 
@@ -764,7 +784,7 @@ class Chrome(Component):
         if doctype:
             if req.form_token:
                 stream |= self._add_form_token(req.form_token)
-            if not req.session or not int(req.session.get('accesskeys', 0)):
+            if not int(req.session.get('accesskeys', 0)):
                 stream |= self._strip_accesskeys
 
         links = req.chrome.get('links')
