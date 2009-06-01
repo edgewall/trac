@@ -15,7 +15,7 @@ import sys
 
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider, get_dir_list
 from trac.core import *
-from trac.util.text import print_table, printerr, printout
+from trac.util.text import breakable_path, print_table, printerr, printout
 from trac.util.translation import _, ngettext
 from trac.versioncontrol import DbRepositoryProvider, RepositoryManager
 from trac.web.chrome import add_warning
@@ -257,6 +257,8 @@ class VersionControlAdmin(Component):
     def _extend_info(self, reponame, info, editable):
         """Extend repository info for rendering."""
         info['name'] = reponame or '(default)'
+        if info.get('dir') is not None:
+            info['prettydir'] = breakable_path(info['dir'])
         if info.get('alias') == '':
             info['alias'] = '(default)'
         info['editable'] = editable

@@ -220,6 +220,19 @@ def obfuscate_email_address(address):
                    (address[-1] == '>' and '>' or '')
     return address
 
+def breakable_path(path):
+    """Make a path breakable after path separators, and conversely, avoid
+    breaking at spaces.
+    """
+    if not path:
+        return ''
+    prefix = ''
+    if path.startswith('/'):    # Avoid breaking after a leading /
+        prefix = '/'
+        path = path[1:]
+    return prefix + path.replace('/', u'/\u200b').replace('\\', u'\\\u200b') \
+                        .replace(' ', u'\u00a0')
+
 # -- Conversion
 
 def pretty_size(size, format='%.1f'):
