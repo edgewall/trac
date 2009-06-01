@@ -173,7 +173,7 @@ class DbRepositoryProvider(Component):
         cursor.executemany("INSERT INTO repository (id, name, value) "
                            "VALUES (%s, %s, %s)",
                            [(reponame, 'dir', dir),
-                            (reponame, 'type', type_ or None)])
+                            (reponame, 'type', type_ or '')])
         db.commit()
         rm.reload_repositories()
     
@@ -399,7 +399,7 @@ class RepositoryManager(Component):
             repoinfo = self.get_all_repositories().get(reponame)
         if repoinfo:
             rdir = repoinfo.get('dir')
-            rtype = repoinfo.get('type', self.repository_type)
+            rtype = repoinfo.get('type') or self.repository_type
             if not rdir:
                 return None
         elif reponame:

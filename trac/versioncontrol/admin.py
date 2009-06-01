@@ -18,7 +18,7 @@ from trac.core import *
 from trac.util.text import breakable_path, print_table, printerr, printout
 from trac.util.translation import _, ngettext
 from trac.versioncontrol import DbRepositoryProvider, RepositoryManager
-from trac.web.chrome import add_warning
+from trac.web.chrome import add_notice, add_warning
 
 
 class VersionControlAdmin(Component):
@@ -185,6 +185,7 @@ class VersionControlAdmin(Component):
                 
                 elif db_provider and req.args.get('save'):
                     # Modify repository
+                    changed = False
                     changes = {}
                     for field in ['alias', 'dir', 'type']:
                         value = req.args.get(field)
@@ -192,10 +193,29 @@ class VersionControlAdmin(Component):
                             changes[field] = value
                     if changes:
                         db_provider.modify_repository(reponame, changes)
+                        changed = True
                     # Rename repository
                     name = req.args.get('name')
                     if name and name != path_info:
                         db_provider.rename_repository(reponame, name)
+                        changed = True
+                    if changed:
+                        add_notice(req, _('Your changes have been saved.'))
+                    if 'dir' in changes:
+                        msg = _('You should now run "trac-admin $ENV '
+                                'repository resync %(name)s" to synchronize '
+                                'Trac with the repository.', name=name)
+                        add_notice(req, msg)
+                    elif 'type' in changes:
+                        msg = _('You may have to run "trac-admin $ENV '
+                                'repository resync %(name)s" to synchronize '
+                                'Trac with the repository.', name=name)
+                        add_notice(req, msg)
+                    if name and name != path_info and not 'alias' in info:
+                        msg = _('You will need to update your post-commit '
+                                'hook to call "trac-admin $ENV changeset '
+                                'added" with the new repository name.')
+                        add_notice(req, msg)
                     req.redirect(req.href.admin(category, page))
             
             data = {'view': 'detail', 'reponame': reponame}
@@ -210,9 +230,21 @@ class VersionControlAdmin(Component):
                     dir = req.args.get('dir')
                     if name is not None and type_ is not None and dir:
                         db_provider.add_repository(name, dir, type_)
+                        add_notice(req, _('The repository "%(name)s" has been '
+                                          'added.', name=name))
+                        msg = _('You should now run "trac-admin $ENV '
+                                'repository resync %(name)s" to synchronize '
+                                'Trac with the repository.',
+                                name=name or '(default)')
+                        add_notice(req, msg)
+                        msg = _('You should also set up a post-commit hook '
+                                'on the repository to call "trac-admin $ENV '
+                                'changeset added %(name)s $REV" for each '
+                                'committed changeset.', name=name)
+                        add_notice(req, msg)
                         req.redirect(req.href.admin(category, page))
-                    add_warning(req, _("Missing arguments to add a "
-                                       "repository."))
+                    add_warning(req, _('Missing arguments to add a '
+                                       'repository.'))
                 
                 # Add a repository alias
                 elif db_provider and req.args.get('add_alias'):
@@ -220,9 +252,11 @@ class VersionControlAdmin(Component):
                     alias = req.args.get('alias')
                     if name and alias:
                         db_provider.add_alias(name, alias)
+                        add_notice(req, _('The alias "%(name)s" has been '
+                                          'added.', name=name))
                         req.redirect(req.href.admin(category, page))
-                    add_warning(req, _("Missing arguments to add an "
-                                       "alias."))
+                    add_warning(req, _('Missing arguments to add an '
+                                       'alias.'))
                 
                 # Refresh the list of repositories
                 elif req.args.get('refresh'):
@@ -234,6 +268,8 @@ class VersionControlAdmin(Component):
                     if sel:
                         for name in sel:
                             db_provider.remove_repository(name)
+                        add_notice(req, _('The selected repositories have '
+                                          'been removed.'))
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _('No repositories were selected.'))
             
