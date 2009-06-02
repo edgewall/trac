@@ -137,6 +137,7 @@ if twill:
             args = e.args + (filename,)
             raise twill.errors.TwillAssertionError(*args)
     tc.formvalue = better_formvalue
+    tc.fv = better_formvalue
 
     # Twill's formfile function leaves a filehandle open which prevents the
     # file from being deleted on Windows.  Since we would just assume use a
