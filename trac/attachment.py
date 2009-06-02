@@ -36,7 +36,7 @@ from trac.mimeview import *
 from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
-from trac.util import get_reporter_id, create_unique_file, content_disposition
+from trac.util import get_reporter_id, create_unique_file
 from trac.util.datefmt import format_datetime, to_timestamp, utc
 from trac.util.text import exception_to_unicode, pretty_size, print_table, \
                            unicode_quote, unicode_unquote
