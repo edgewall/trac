@@ -12,7 +12,7 @@ else
 endif
 
 export TRAC_TEST_DB_URI = $($(db).uri)
-export PATH := $(python.$(if $(python),$(python),$($(db).python)))$(SEP)$(PATH)
+export PATH := $(python.$(if $(python),$(python),$($(db).python))):$(PATH)
 export PYTHONPATH := .$(SEP)$(PYTHONPATH)
 # ----------------------------------------------------------------------------
 
