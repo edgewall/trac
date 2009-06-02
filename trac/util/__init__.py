@@ -482,9 +482,11 @@ class Ranges(object):
 
 def content_disposition(type, filename=None):
     """Generate a properly escaped Content-Disposition header"""
-    if isinstance(filename, unicode):
-        filename = filename.encode('utf-8')
-    return type + '; filename=' + quote(filename, safe='')
+    if filename is not None:
+        if isinstance(filename, unicode):
+            filename = filename.encode('utf-8')
+        type += '; filename=' + quote(filename, safe='')
+    return type
 
 def pairwise(iterable):
     """s -> (s0,s1), (s1,s2), (s2, s3), ...

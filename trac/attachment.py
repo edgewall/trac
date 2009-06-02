@@ -33,7 +33,7 @@ from trac.mimeview import *
 from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
-from trac.util import get_reporter_id, create_unique_file, content_disposition
+from trac.util import get_reporter_id, create_unique_file
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import exception_to_unicode, unicode_quote, \
                            unicode_unquote, pretty_size
