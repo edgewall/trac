@@ -54,6 +54,15 @@ def get_reporter_id(req, arg_name=None):
         return '%s <%s>' % (name, email)
     return name or email or req.authname # == 'anonymous'
 
+if os.name == 'nt':
+    from getpass import getuser
+else:
+    import pwd
+    def getuser():
+        try:
+            return pwd.getpwuid(os.geteuid())[0]
+        except KeyError:
+            return 'unknown'
 
 # -- algorithmic utilities
 

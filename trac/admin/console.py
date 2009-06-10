@@ -32,7 +32,7 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
-from trac.util import arity
+from trac.util import arity, getuser
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
@@ -1067,7 +1067,7 @@ Congratulations!
 
     def _do_milestone_remove(self, name):
         milestone = Milestone(self.env_open(), name)
-        milestone.delete(author=getpass.getuser())
+        milestone.delete(author=getuser())
 
     def _do_milestone_set_due(self, name, t):
         milestone = Milestone(self.env_open(), name)

@@ -21,7 +21,7 @@ import weakref
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper
-from trac.util import get_pkginfo
+from trac.util import get_pkginfo, getuser
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -173,9 +173,8 @@ class SQLiteConnection(ConnectionWrapper):
             dbdir = os.path.dirname(path)
             if not os.access(path, os.R_OK + os.W_OK) or \
                    not os.access(dbdir, os.R_OK + os.W_OK):
-                from getpass import getuser
                 raise TracError('The user %s requires read _and_ write ' \
-                                'permission to the database file %s and the ' \
+                                'permissions to the database file %s and the ' \
                                 'directory it is located in.' \
                                 % (getuser(), path))
 
