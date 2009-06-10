@@ -32,7 +32,7 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
-from trac.util import arity, getuser
+from trac.util import getuser
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \
@@ -1230,8 +1230,9 @@ Congratulations!
         os.makedirs(target)
         os.makedirs(chrome_target)
         from trac.web.chrome import Chrome
+        env = self.env_open()
         printout(_("Copying resources from:"))
-        for provider in Chrome(self.env_open()).template_providers:
+        for provider in Chrome(env).template_providers:
             paths = list(provider.get_htdocs_dirs())
             if not len(paths):
                 continue
@@ -1247,17 +1248,13 @@ Congratulations!
         # Create and copy scripts
         os.makedirs(script_target)
         printout(_("Creating scripts."))
-        data = {'env': self.env_open(), 'executable': sys.executable}
+        data = {'env': env, 'executable': sys.executable}
         for script in ('cgi', 'fcgi', 'wsgi'):
             dest = os.path.join(script_target, 'trac.'+script)
-            template = Chrome(self.env_open()).load_template('deploy_trac.'+script, 'text')
+            template = Chrome(env).load_template('deploy_trac.'+script, 'text')
             stream = template.generate(**data)
             out = open(dest, 'w')
-            if arity(stream.render) == 3:
-                # TODO: remove this when we depend on Genshi >= 0.5
-                out.write(stream.render('text'))
-            else:
-                stream.render('text', out=out)
+            stream.render('text', out=out)
             out.close()
 
 
