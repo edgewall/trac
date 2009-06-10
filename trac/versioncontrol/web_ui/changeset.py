@@ -922,7 +922,7 @@ class ChangesetModule(Component):
                                tag.strong(self._get_location(files) or '/')),
                         markup, class_="changes")
                 elif show_files:
-                    for c,r in changesets:
+                    for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
                             if show_files > 0 and len(files) > show_files:
                                 break
