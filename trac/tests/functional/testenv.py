@@ -53,10 +53,12 @@ class FunctionalTestEnvironment(object):
         self.htpasswd = os.path.join(self.dirname, "htpasswd")
         self.port = port
         self.pid = None
+        self.init()
         self.destroy()
         self.create()
         locale.setlocale(locale.LC_ALL, '')
 
+    trac_src = '.'
     dburi = property(lambda x: get_dburi())
 
     def destroy(self):
@@ -70,6 +72,11 @@ class FunctionalTestEnvironment(object):
             rmtree(self.dirname)
 
     repotype = 'svn'
+
+    def init(self):
+        """ Hook for modifying settings or class attributes before
+        any methods are called. """
+        pass 
 
     def create_repo(self):
         """Hook for creating the repository."""
@@ -108,8 +115,9 @@ class FunctionalTestEnvironment(object):
         self._tracadmin('initenv', 'testenv%s' % self.port,
                         self.dburi, self.repotype,
                         self.repo_path_for_initenv())
-        if call([sys.executable, './contrib/htpasswd.py', "-c", "-b",
-                 self.htpasswd, "admin", "admin"], close_fds=close_fds,
+        if call([sys.executable,
+                 os.path.join(self.trac_src, 'contrib', 'htpasswd.py'), "-c",
+                 "-b", self.htpasswd, "admin", "admin"], close_fds=close_fds,
                  cwd=self.command_cwd):
             raise Exception('Unable to setup admin password')
         self.adduser('user')
@@ -125,13 +133,15 @@ class FunctionalTestEnvironment(object):
     def adduser(self, user):
         """Add a user to the environment.  The password will be set to the
         same as username."""
-        if call([sys.executable, './contrib/htpasswd.py', '-b', self.htpasswd,
+        if call([sys.executable, os.path.join(self.trac_src, 'contrib',
+                 'htpasswd.py'), '-b', self.htpasswd,
                  user, user], close_fds=close_fds, cwd=self.command_cwd):
             raise Exception('Unable to setup password for user "%s"' % user)
 
     def _tracadmin(self, *args):
         """Internal utility method for calling trac-admin"""
-        proc = Popen([sys.executable, "./trac/admin/console.py", self.tracdir]
+        proc = Popen([sys.executable, os.path.join(self.trac_src, 'trac',
+                      'admin', 'console.py'), self.tracdir]
                       + list(args), stdout=PIPE, stderr=STDOUT,
                       close_fds=close_fds, cwd=self.command_cwd)
         out = proc.communicate()[0]
@@ -151,8 +161,8 @@ class FunctionalTestEnvironment(object):
                    "--basic-auth=trac,%s," % self.htpasswd]
         if 'TRAC_TEST_TRACD_OPTIONS' in os.environ:
             options += os.environ['TRAC_TEST_TRACD_OPTIONS'].split()
-        server = Popen([exe, "./trac/web/standalone.py"] + options +
-                       [self.tracdir],
+        server = Popen([exe, os.path.join(self.trac_src, 'trac', 'web',
+                       'standalone.py')] + options + [self.tracdir],
                        stdout=logfile, stderr=logfile,
                        close_fds=close_fds,
                        cwd=self.command_cwd,
