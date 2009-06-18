@@ -374,8 +374,11 @@ def dispatch_request(environ, start_response):
                 env_path = get_environments(environ).get(env_name)
 
             if not env_path or not os.path.isdir(env_path):
-                start_response('404 Not Found', [])
-                return ['Environment not found']
+                errmsg = 'Environment not found'
+                start_response('404 Not Found', 
+                               [('Content-Type', 'text/plain'),
+                                ('Content-Length', len(errmsg))])
+                return [errmsg]
 
     if not env_path:
         raise EnvironmentError('The environment options "TRAC_ENV" or '
