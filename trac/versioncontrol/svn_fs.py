@@ -60,9 +60,10 @@ from trac.versioncontrol import Changeset, Node, Repository, \
 from trac.versioncontrol.cache import CachedRepository
 from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
-from trac.util import embedded_numbers
+from trac.versioncontrol.web_ui.changeset import IPropertyDiffRenderer
+from trac.util import Ranges, embedded_numbers, to_ranges
 from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.util.datefmt import utc
 
 
@@ -308,7 +309,7 @@ class SubversionConnector(Component):
 
 
 class SubversionPropertyRenderer(Component):
-    implements(IPropertyRenderer)
+    implements(IPropertyRenderer, IPropertyDiffRenderer)
 
     def __init__(self):
         self._externals_map = {}
@@ -323,7 +324,7 @@ class SubversionPropertyRenderer(Component):
         if name == 'svn:externals':
             return self._render_externals(props[name])
         elif name == 'svn:mergeinfo' or name.startswith('svnmerge-'):
-            return self._render_mergeinfo(props[name])
+            return self._render_mergeinfo(name, mode, context, props)
         elif name == 'svn:needs-lock':
             return self._render_needslock(context)
 
@@ -389,15 +390,155 @@ class SubversionPropertyRenderer(Component):
         return tag.ul([tag.li(tag.a(label, href=href, title=title))
                        for label, href, title in externals_data])
 
-    def _render_mergeinfo(self, prop):
-        prop = prop.rsplit(':', 1)
-        if len(prop) == 2:
-            prop[1] = prop[1].replace(',', u',\u200b')
-        return ':'.join(prop)
+    def _render_mergeinfo(self, name, mode, context, props):
+        """Parse svn:mergeinfo and svnmerge-* properties, converting branch
+        names to links and providing links to the revision log for merged
+        and eligible revisions.
+        """
+        has_eligible = name in ('svnmerge-integrated', 'svn:mergeinfo')
+        revs_label = (_('merged'), _('blocked'))[name.endswith('blocked')]
+        revs_cols = has_eligible and 2 or None
+        repos = self.env.get_repository()
+        rows = []
+        for line in props[name].splitlines():
+            path, revs = line.split(':', 1)
+            spath = path.strip('/')
+            revs = revs.strip()
+            deleted = False
+            if 'LOG_VIEW' in context.perm('source', spath):
+                try:
+                    node = repos.get_node(spath, context.resource.version)
+                    row = [tag.a(path, title=_('View dir'),
+                                 href=context.href.browser(spath,
+                                                rev=context.resource.version))]
+                    row.append(self._get_revs_link(revs_label, context, spath,
+                                                   revs))
+                    if has_eligible:
+                        eligible = set(repos._get_node_revs(spath,
+                                                    context.resource.version))
+                        eligible -= set(Ranges(revs))
+                        blocked = self._get_blocked_revs(props, name, spath)
+                        eligible -= set(Ranges(blocked))
+                        if eligible:
+                            eligible = to_ranges(eligible)
+                            row.append(tag.a(_('eligible'),
+                                             title=eligible.replace(',', ', '),
+                                             href=context.href.log(spath,
+                                                            revs=eligible)))
+                        else:
+                            row.append(tag.span(_('eligible'),
+                                            title=_('No eligible revisions')))
+                    rows.append((False, spath, [tag.td(each) for each in row]))
+                    continue
+                except NoSuchNode:
+                    deleted = True
+            revs = revs.replace(',', u',\u200b')
+            rows.append((deleted, spath,
+                         [tag.td(path), tag.td(revs, colspan=revs_cols)]))
+        has_deleted = any(row[0] for row in rows) or None
+        return tag(has_deleted and tag.a(_('(toggle deleted branches)'),
+                                         class_='trac-toggledeleted',
+                                         href='#'),
+                   tag.table(tag.tbody(
+                       tag.tr(row, class_=deleted and 'trac-deleted' or None)
+                       for (deleted, spath, row) in sorted(rows))))
+
+    def _get_blocked_revs(self, props, name, path):
+        """Return the revisions blocked from merging for the given property
+        name and path.
+        """
+        if name == 'svnmerge-integrated':
+            prop = props.get('svnmerge-blocked', '')
+        else:
+            return ""
+        for line in prop.splitlines():
+            try:
+                p, revs = line.split(':', 1)
+                if p.strip('/') == path:
+                    return revs
+            except Exception:
+                pass
+        return ""
+
+    def _get_revs_link(self, label, context, spath, revs):
+        """Return a link to the revision log when more than one revision is
+        given, to the revision itself for a single revision, or a `<span>`
+        with "no revision" for none.
+        """
+        if not revs:
+            return tag.span(label, title=_('No revisions'))
+        elif ',' in revs or '-' in revs:
+            revs_href = context.href.log(spath, revs=revs)
+        else:
+            revs_href = context.href.changeset(revs, spath)
+        return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
 
     def _render_needslock(self, context):
         return tag.img(src=context.href.chrome('common/lock-locked.png'),
                        alt="needs lock", title="needs lock")
+
+    # IPropertyDiffRenderer methods
+
+    def match_property_diff(self, name):
+        return (name == 'svn:mergeinfo' or name.startswith('svnmerge-')) and \
+                4 or 0
+
+    def render_property_diff(self, name, old_context, old_props,
+                             new_context, new_props, options):
+        # build 3 columns table showing modifications on merge sources
+        # || source (added|modified|removed) || added revs || removed revs ||
+        def parse_sources(props):
+            sources = {}
+            for line in props[name].splitlines():
+                path, revs = line.split(':', 1)
+                spath = path.strip('/')
+                sources[spath] = set(Ranges(revs.strip()))
+            return sources
+        old_sources = parse_sources(old_props)
+        new_sources = parse_sources(new_props)
+        # go through new sources, detect modified ones or added ones
+        blocked = name.endswith('blocked')
+        added_label = [_('merged: '), _('blocked: ')][blocked]
+        removed_lable = [_('un-merged: '), _('un-blocked: ')][blocked]
+        def revs_link(revs, context):
+            if revs:
+                revs = to_ranges(revs)
+                return self._get_revs_link(revs.replace(',', u',\u200b'),
+                                           context, spath, revs)
+        repos = self.env.get_repository()
+        modified_and_added_sources = []
+        for spath, new_revs in new_sources.iteritems():
+            if spath in old_sources:
+                old_revs = old_sources.pop(spath)
+                status = None
+            else:
+                old_revs = set()
+                status = _(' (added)')
+            all_revs = set(repos._get_node_revs(spath))
+            source_href = new_context.href.browser(spath,
+                                              rev=new_context.resource.version)
+            added = revs_link((new_revs - old_revs) & all_revs, new_context)
+            removed = revs_link((old_revs - new_revs) & all_revs, old_context)
+            if added or removed:
+                modified_and_added_sources.append([
+                    [tag.a(spath, title=_('View dir'), href=source_href),
+                     status],
+                    added and tag(added_label, added),
+                    removed and tag(removed_label, removed)]) 
+        # go through remaining old sources, those were deleted
+        removed_sources = []
+        for spath, old_revs in old_sources.iteritems():
+            removed_sources.append(
+                    tag.a(_("Source %(source)s removed", source=spath),
+                           title=_('View dir'),
+                           href=old_context.href.browser(spath,
+                                            rev=old_context.resource.version)))
+        return tag.li(tag_("Property %(prop)s changed", prop=tag.strong(name)),
+                tag.table(tag.tbody(
+                    [tag.tr(tag.td(dir), tag.td(added), tag.td(removed))
+                     for dir, added, removed in modified_and_added_sources],
+                    [tag.tr(tag.td(dir, colspan=3)) 
+                     for dir in removed_sources]), class_='props'))
 
 
 class SubversionRepository(Repository):
@@ -530,6 +671,18 @@ class SubversionRepository(Repository):
         rev = self.normalize_rev(rev) or self.youngest_rev
 
         return SubversionNode(path, rev, self, self.pool)
+
+    def _get_node_revs(self, path, rev=None):
+        """Return the revisions affecting `path` between its creation and
+        `rev`.
+        """
+        node = self.get_node(path, rev)
+        revs = []
+        for (p, r, chg) in node.get_history():
+            if p != path:
+                break
+            revs.append(r)
+        return revs
 
     def _history(self, path, start, end, pool):
         """`path` is a unicode path in the scope.
@@ -734,7 +887,7 @@ class SubversionRepository(Repository):
 
 class SubversionNode(Node):
 
-    def __init__(self, path, rev, repos, pool=None, parent=None):
+    def __init__(self, path, rev, repos, pool=None, parent_root=None):
         self.repos = repos
         self.fs_ptr = repos.fs_ptr
         self.authz = repos.authz
@@ -744,8 +897,8 @@ class SubversionNode(Node):
         self._requested_rev = rev
         pool = self.pool()
 
-        if parent and parent._requested_rev == self._requested_rev:
-            self.root = parent.root
+        if parent_root:
+            self.root = parent_root
         else:
             self.root = fs.revision_root(self.fs_ptr, rev, self.pool())
         node_type = fs.check_path(self.root, self._scoped_path_utf8, pool)
@@ -791,7 +944,7 @@ class SubversionNode(Node):
                                                             path.strip('/'))):
                 continue
             yield SubversionNode(path, self._requested_rev, self.repos,
-                                 self.pool, self)
+                                 self.pool, self.root)
 
     def get_history(self, limit=None):
         newer = None # 'newer' is the previously seen history tuple

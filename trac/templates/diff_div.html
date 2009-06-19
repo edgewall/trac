@@ -71,7 +71,7 @@
             </py:with>
           </py:for>
         </ul>
-        <table py:if="item.diffs" class="$diff.style" summary="Differences" cellspacing="0"
+        <table py:if="item.diffs" class="trac-diff $diff.style" summary="Differences" cellspacing="0"
                py:with="fromline = item.diffs[0][0].base.offset+1;
                         toline = item.diffs[0][0].changed.offset+1">
           <py:choose test="diff.style">
