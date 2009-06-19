@@ -30,7 +30,7 @@ from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
-from trac.util import arity, copytree, get_pkginfo, makedirs
+from trac.util import copytree, get_pkginfo, makedirs
 from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
@@ -650,11 +650,7 @@ class EnvironmentAdmin(Component):
                                                       'text')
             stream = template.generate(**data)
             out = open(dest, 'w')
-            if arity(stream.render) == 3:
-                # TODO: remove this when we depend on Genshi >= 0.5
-                out.write(stream.render('text'))
-            else:
-                stream.render('text', out=out)
+            stream.render('text', out=out)
             out.close()
     
     def _do_hotcopy(self, dest):
