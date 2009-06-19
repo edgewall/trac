@@ -91,7 +91,7 @@
 .diff h2 .switch span.active { color: #333; cursor: default; }
 
 /* Styles for the actual diff tables (side-by-side and inline) */
-.diff table {
+.diff table.trac-diff {
  border: 1px solid #ddd;
  border-spacing: 0;
  border-top: 0;
@@ -103,13 +103,13 @@
  table-layout: fixed;
  width: 100%;
 }
-.diff table col.lineno { width: 4em }
-.diff table th {
+.diff table.trac-diff col.lineno { width: 4em }
+.diff table.trac-diff th {
  border-right: 1px solid #d7d7d7;
  border-bottom: 1px solid #998;
  font-size: 11px;
 }
-.diff table thead th {
+.diff table.trac-diff thead th {
  background: #eee;
  border-top: 1px solid #d7d7d7;
  color: #999;
@@ -117,7 +117,7 @@
  text-align: center;
  white-space: nowrap;
 }
-.diff table tbody th {
+.diff table.trac-diff tbody th {
  background: #eed;
  color: #886;
  font-weight: normal;
@@ -125,14 +125,14 @@
  text-align: right;
  vertical-align: top;
 }
-.diff table td {
+.diff table.trac-diff td {
  background: #fff;
  font: normal 11px monospace;
  overflow: visible;
  padding: 1px 2px;
  vertical-align: top;
 }
-.diff table tbody.skipped td, .diff table thead td {
+.diff table.trac-diff tbody.skipped td, .diff table.trac-diff thead td {
  background: #f7f7f7;
  border: 1px solid #d7d7d7;
 }
@@ -186,3 +186,6 @@ pre.diff .add { background: #dfd; }
 .diff pre { background: #fff; border: 1px solid #ddd; font-size: 85%;
   margin: 0;
 }
+
+/* Styles for the property diffs */
+table.props th, table.props td { padding: 2px 0.5em }

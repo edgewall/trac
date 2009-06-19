@@ -12,18 +12,17 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 from datetime import datetime
-import getpass
 
 from trac.admin import *
 from trac.core import *
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
+from trac.util import getuser
 from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint, format_date, \
                               format_datetime
-from trac.util.text import print_table, printout
-from trac.util.text import exception_to_unicode
+from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _
 from trac.web.chrome import add_link, add_notice, add_script, add_warning
 
@@ -420,7 +419,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
     def _do_remove(self, name):
         db = self.env.get_db_cnx()
         milestone = model.Milestone(self.env, name, db=db)
-        milestone.delete(author=getpass.getuser(), db=db)
+        milestone.delete(author=getuser(), db=db)
         db.commit()
 
 

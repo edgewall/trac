@@ -40,7 +40,7 @@ class TicketNotificationSystem(Component):
     always_notify_updater = BoolOption('notification', 'always_notify_updater',
                                        'true',
         """Always send notifications to the person who causes the ticket 
-        property change.""")
+        property change and to any previous updater of that ticket.""")
         
     ticket_subject_template = Option('notification', 'ticket_subject_template', 
                                      '$prefix #$ticket.id: $summary',

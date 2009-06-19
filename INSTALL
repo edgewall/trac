@@ -2,8 +2,8 @@ Trac Installation Guide
 =======================
 Trac is a lightweight project management tool that is implemented as a
 web-based application. Trac is written in the Python programming language and
-can use SQLite or PostgreSQL as  database. For HTML rendering, Trac uses the
-Genshi templating system.
+can use SQLite, PostgreSQL or MySQL as database. For HTML rendering, Trac uses 
+the Genshi templating system.
 
 
 Note that you should also read the trac/wiki/default-pages/TracInstall 
@@ -17,11 +17,20 @@ To install Trac, the following software packages must be installed:
  * Python, version >= 2.3.
    + Please keep in mind, that for RPM-based systems you will also need
    python-devel and python-xml packages.
+ * setuptools, version >= 0.6
  * Genshi, version >= 0.5
- * Optionally, Subversion, version >= 1.0. (>= 1.1.x recommended)and Subversion SWIG Python bindings (not PySVN).
- * PySQLite, version 2.x for SQLite 3.x
+ * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python bindings (not PySVN).
+ * PySQLite version 2.x for SQLite 3.x, or psycopg2 version 2.0.x for the PostgreSQL database, or  MySQLdb, version 1.2.2 for the MySQL database
  * A web server capable of executing CGI/FastCGI scripts, or Apache HTTPD with
-   mod_python. (Trac also comes with a standalone server)
+   mod_python or mod_wsgi. (Trac also comes with a standalone server, tracd)
+
+Any of the above python library can usually be installed using easy_install,
+which itself can be installed using the following bootstrap script:
+
+  wget http://peak.telecommunity.com/dist/ez_setup.py
+  python ez_setup.py
+
+After that, you can do for example: easy_install Genshi
 
 
 Installing Trac

@@ -55,6 +55,15 @@ def get_reporter_id(req, arg_name=None):
         return '%s <%s>' % (name, email)
     return name or email or req.authname # == 'anonymous'
 
+if os.name == 'nt':
+    from getpass import getuser
+else:
+    import pwd
+    def getuser():
+        try:
+            return pwd.getpwuid(os.geteuid())[0]
+        except KeyError:
+            return 'unknown'
 
 # -- algorithmic utilities
 
@@ -541,6 +550,33 @@ class Ranges(object):
             return self.b - self.a + 1
         else:
             return 0
+
+def to_ranges(revs):
+    """Converts a list of revisions to a minimal set of ranges.
+    
+    >>> to_ranges([2, 12, 3, 6, 9, 1, 5, 11])
+    '1-3,5-6,9,11-12'
+    >>> to_ranges([])
+    ''
+    """
+    ranges = []
+    begin = end = None
+    def store():
+        if end == begin:
+            ranges.append(str(begin))
+        else:
+            ranges.append('%d-%d' % (begin, end))
+    for rev in sorted(revs):
+        if begin is None:
+            begin = end = rev
+        elif rev == end + 1:
+            end = rev
+        else:
+            store()
+            begin = end = rev
+    if begin is not None:
+        store()
+    return ','.join(ranges)
 
 def content_disposition(type, filename=None):
     """Generate a properly escaped Content-Disposition header"""
