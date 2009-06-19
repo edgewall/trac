@@ -492,7 +492,7 @@ class SubversionPropertyRenderer(Component):
             for line in props[name].splitlines():
                 path, revs = line.split(':', 1)
                 spath = path.strip('/')
-                sources[spath] = set(Ranges(revs.strip()))
+                sources[spath] = (path, set(Ranges(revs.strip())))
             return sources
         old_sources = parse_sources(old_props)
         new_sources = parse_sources(new_props)
@@ -507,24 +507,30 @@ class SubversionPropertyRenderer(Component):
                                            context, spath, revs)
         repos = self.env.get_repository()
         modified_and_added_sources = []
-        for spath, new_revs in new_sources.iteritems():
+        for spath, (path, new_revs) in new_sources.iteritems():
             if spath in old_sources:
-                old_revs = old_sources.pop(spath)
+                old_revs = old_sources.pop(spath)[1]
                 status = None
             else:
                 old_revs = set()
                 status = _(' (added)')
-            all_revs = set(repos._get_node_revs(spath))
-            source_href = new_context.href.browser(spath,
-                                              rev=new_context.resource.version)
-            added = revs_link((new_revs - old_revs) & all_revs, new_context)
-            removed = revs_link((old_revs - new_revs) & all_revs, old_context)
+            added = new_revs - old_revs
+            removed = old_revs - new_revs
+            try:
+                all_revs = set(repos._get_node_revs(spath))
+                added &= all_revs
+                removed &= all_revs
+            except NoSuchNode:
+                pass
             if added or removed:
+                source = tag.a(path, title=_('View dir'),
+                               href=new_context.href.browser(spath,
+                                            rev=new_context.resource.version))
                 modified_and_added_sources.append([
-                    [tag.a(spath, title=_('View dir'), href=source_href),
-                     status],
-                    added and tag(added_label, added),
-                    removed and tag(removed_label, removed)]) 
+                    path, [source, status],
+                    added and tag(added_label, revs_link(added, new_context)),
+                    removed and tag(removed_label,
+                                    revs_link(removed, old_context))])
         # go through remaining old sources, those were deleted
         removed_sources = []
         for spath, old_revs in old_sources.iteritems():
@@ -533,12 +539,14 @@ class SubversionPropertyRenderer(Component):
                            title=_('View dir'),
                            href=old_context.href.browser(spath,
                                             rev=old_context.resource.version)))
+        modified_and_added_sources.sort()
+        removed_sources.sort()
         return tag.li(tag_("Property %(prop)s changed", prop=tag.strong(name)),
                 tag.table(tag.tbody(
                     [tag.tr(tag.td(dir), tag.td(added), tag.td(removed))
-                     for dir, added, removed in modified_and_added_sources],
+                     for p, dir, added, removed in modified_and_added_sources],
                     [tag.tr(tag.td(dir, colspan=3)) 
-                     for dir in removed_sources]), class_='props'))
+                     for p, dir in removed_sources]), class_='props'))
 
 
 class SubversionRepository(Repository):
