@@ -775,7 +775,7 @@ class ChangesetModule(Component):
                 self.log.warning('Diff rendering failed for property %s with '
                                  'renderer %s: %s', name,
                                  renderer.__class__.__name__,
-                                 exception_to_unicode(e))
+                                 exception_to_unicode(e, traceback=True))
 
     def _get_location(self, files):
         """Return the deepest common path for the given files.

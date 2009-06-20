@@ -572,7 +572,7 @@ class BrowserModule(Component):
                 self.log.warning('Rendering failed for property %s with '
                                  'renderer %s: %s', name,
                                  renderer.__class__.__name__,
-                                 exception_to_unicode(e))
+                                 exception_to_unicode(e, traceback=True))
 
     # IWikiSyntaxProvider methods
 
