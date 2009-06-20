@@ -63,7 +63,7 @@ from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.versioncontrol.web_ui.changeset import IPropertyDiffRenderer
 from trac.util import Ranges, embedded_numbers, to_ranges
 from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _, tag_
+from trac.util.translation import _, tag_, ngettext
 from trac.util.datefmt import utc
 
 
@@ -493,7 +493,7 @@ class SubversionPropertyRenderer(Component):
         # go through new sources, detect modified ones or added ones
         blocked = name.endswith('blocked')
         added_label = [_('merged: '), _('blocked: ')][blocked]
-        removed_lable = [_('un-merged: '), _('un-blocked: ')][blocked]
+        removed_label = [_('un-merged: '), _('un-blocked: ')][blocked]
         def revs_link(revs, context):
             if revs:
                 revs = to_ranges(revs)
@@ -512,19 +512,28 @@ class SubversionPropertyRenderer(Component):
             removed = old_revs - new_revs
             try:
                 all_revs = set(repos._get_node_revs(spath))
-                added &= all_revs
-                removed &= all_revs
+                s_added = added & all_revs
+                s_removed = removed & all_revs
             except NoSuchNode:
-                pass
-            if added or removed:
-                source = tag.a(path, title=_('View dir'),
-                               href=new_context.href.browser(spath,
+                (s_added, s_removed) = (added, removed)
+            source = tag.a(path, title=_('View dir'),
+                           href=new_context.href.browser(spath,
                                             rev=new_context.resource.version))
-                modified_and_added_sources.append([
-                    path, [source, status],
-                    added and tag(added_label, revs_link(added, new_context)),
-                    removed and tag(removed_label,
-                                    revs_link(removed, old_context))])
+            cols = [[source, status], None, None]
+            if s_added:
+                cols[1] = tag(added_label, revs_link(s_added, new_context))
+            if s_removed:
+                cols[2] = tag(removed_label, revs_link(s_removed, old_context))
+            if not (s_added or s_removed):
+                # warn if we only have added/removed revs outside of source
+                for i, revs in enumerate([added, removed]):
+                    if revs:
+                        cols[1+i] = tag.em(ngettext(
+                            "revision %(revs)s doesn't belong to this path",
+                            "revisions %(revs)s don't belong to this path",
+                            len(revs), revs=to_ranges(revs)))
+            if cols[1] or cols[2]:
+                modified_and_added_sources.append([path, cols])
         # go through remaining old sources, those were deleted
         removed_sources = []
         for spath, old_revs in old_sources.iteritems():
@@ -538,7 +547,7 @@ class SubversionPropertyRenderer(Component):
         return tag.li(tag_("Property %(prop)s changed", prop=tag.strong(name)),
                 tag.table(tag.tbody(
                     [tag.tr(tag.td(dir), tag.td(added), tag.td(removed))
-                     for p, dir, added, removed in modified_and_added_sources],
+                     for p, (dir,added,removed) in modified_and_added_sources],
                     [tag.tr(tag.td(dir, colspan=3)) 
                      for p, dir in removed_sources]), class_='props'))
 
