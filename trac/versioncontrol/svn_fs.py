@@ -419,15 +419,9 @@ class SubversionPropertyRenderer(Component):
                         eligible -= set(Ranges(revs))
                         blocked = self._get_blocked_revs(props, name, spath)
                         eligible -= set(Ranges(blocked))
-                        if eligible:
-                            eligible = to_ranges(eligible)
-                            row.append(tag.a(_('eligible'),
-                                             title=eligible.replace(',', ', '),
-                                             href=context.href.log(spath,
-                                                            revs=eligible)))
-                        else:
-                            row.append(tag.span(_('eligible'),
-                                            title=_('No eligible revisions')))
+                        eligible = to_ranges(eligible)
+                        row.append(self._get_revs_link(_('eligible'), context,
+                                                       spath, eligible))
                     rows.append((False, spath, [tag.td(each) for each in row]))
                     continue
                 except NoSuchNode:
