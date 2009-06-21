@@ -63,7 +63,7 @@ from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.versioncontrol.web_ui.changeset import IPropertyDiffRenderer
 from trac.util import Ranges, embedded_numbers, to_ranges
 from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _, tag_, ngettext
+from trac.util.translation import _, tag_
 from trac.util.datefmt import utc
 
 
@@ -408,11 +408,9 @@ class SubversionPropertyRenderer(Component):
             if 'LOG_VIEW' in context.perm('source', spath):
                 try:
                     node = repos.get_node(spath, context.resource.version)
-                    row = [tag.a(path, title=_('View dir'),
-                                 href=context.href.browser(spath,
-                                                rev=context.resource.version))]
-                    row.append(self._get_revs_link(revs_label, context, spath,
-                                                   revs))
+                    row = [self._get_source_link(path, context),
+                           self._get_revs_link(revs_label, context,
+                                               spath, revs)]
                     if has_eligible:
                         eligible = set(repos._get_node_revs(spath,
                                                     context.resource.version))
@@ -429,13 +427,14 @@ class SubversionPropertyRenderer(Component):
             revs = revs.replace(',', u',\u200b')
             rows.append((deleted, spath,
                          [tag.td(path), tag.td(revs, colspan=revs_cols)]))
-        has_deleted = any(row[0] for row in rows) or None
+        rows.sort()
+        has_deleted = rows and rows[-1][0] or None
         return tag(has_deleted and tag.a(_('(toggle deleted branches)'),
                                          class_='trac-toggledeleted',
                                          href='#'),
                    tag.table(tag.tbody(
                        tag.tr(row, class_=deleted and 'trac-deleted' or None)
-                       for (deleted, spath, row) in sorted(rows))))
+                       for deleted, p, row in rows)))
 
     def _get_blocked_revs(self, props, name, path):
         """Return the revisions blocked from merging for the given property
@@ -453,6 +452,12 @@ class SubversionPropertyRenderer(Component):
             except Exception:
                 pass
         return ""
+
+    def _get_source_link(self, path, context):
+        """Return a link to a merge source."""
+        return tag.a(path, title=_('View merge source'),
+                     href=context.href.browser(path,
+                                               rev=context.resource.version))
 
     def _get_revs_link(self, label, context, spath, revs):
         """Return a link to the revision log when more than one revision is
@@ -479,8 +484,9 @@ class SubversionPropertyRenderer(Component):
 
     def render_property_diff(self, name, old_context, old_props,
                              new_context, new_props, options):
-        # build 3 columns table showing modifications on merge sources
-        # || source (added|modified|removed) || added revs || removed revs ||
+        # Build 3 columns table showing modifications on merge sources
+        # || source || added revs || removed revs ||
+        # || source || removed                    ||
         def parse_sources(props):
             sources = {}
             for line in props[name].splitlines():
@@ -490,66 +496,53 @@ class SubversionPropertyRenderer(Component):
             return sources
         old_sources = parse_sources(old_props)
         new_sources = parse_sources(new_props)
-        # go through new sources, detect modified ones or added ones
+        # Go through new sources, detect modified ones or added ones
         blocked = name.endswith('blocked')
         added_label = [_('merged: '), _('blocked: ')][blocked]
-        removed_label = [_('un-merged: '), _('un-blocked: ')][blocked]
+        removed_label = [_('reverse-merged: '), _('un-blocked: ')][blocked]
         def revs_link(revs, context):
             if revs:
                 revs = to_ranges(revs)
                 return self._get_revs_link(revs.replace(',', u',\u200b'),
                                            context, spath, revs)
         repos = self.env.get_repository()
-        modified_and_added_sources = []
+        modified_sources = []
         for spath, (path, new_revs) in new_sources.iteritems():
             if spath in old_sources:
-                old_revs = old_sources.pop(spath)[1]
-                status = None
+                old_revs, status = old_sources.pop(spath)[1], None
             else:
-                old_revs = set()
-                status = _(' (added)')
+                old_revs, status = set(), _(' (added)')
             added = new_revs - old_revs
             removed = old_revs - new_revs
             try:
                 all_revs = set(repos._get_node_revs(spath))
-                s_added = added & all_revs
-                s_removed = removed & all_revs
+                added &= all_revs
+                removed &= all_revs
             except NoSuchNode:
-                (s_added, s_removed) = (added, removed)
-            source = tag.a(path, title=_('View dir'),
-                           href=new_context.href.browser(spath,
-                                            rev=new_context.resource.version))
-            cols = [[source, status], None, None]
-            if s_added:
-                cols[1] = tag(added_label, revs_link(s_added, new_context))
-            if s_removed:
-                cols[2] = tag(removed_label, revs_link(s_removed, old_context))
-            if not (s_added or s_removed):
-                # warn if we only have added/removed revs outside of source
-                for i, revs in enumerate([added, removed]):
-                    if revs:
-                        cols[1+i] = tag.em(ngettext(
-                            "revision %(revs)s doesn't belong to this path",
-                            "revisions %(revs)s don't belong to this path",
-                            len(revs), revs=to_ranges(revs)))
-            if cols[1] or cols[2]:
-                modified_and_added_sources.append([path, cols])
-        # go through remaining old sources, those were deleted
+                pass
+            if added or removed:
+                modified_sources.append((
+                    path, [self._get_source_link(path, new_context), status],
+                    added and tag(added_label, revs_link(added, new_context)),
+                    removed and tag(removed_label,
+                                    revs_link(removed, old_context))))
+        # Go through remaining old sources, those were deleted
         removed_sources = []
-        for spath, old_revs in old_sources.iteritems():
-            removed_sources.append(
-                    tag.a(_("Source %(source)s removed", source=spath),
-                           title=_('View dir'),
-                           href=old_context.href.browser(spath,
-                                            rev=old_context.resource.version)))
-        modified_and_added_sources.sort()
-        removed_sources.sort()
-        return tag.li(tag_("Property %(prop)s changed", prop=tag.strong(name)),
-                tag.table(tag.tbody(
-                    [tag.tr(tag.td(dir), tag.td(added), tag.td(removed))
-                     for p, (dir,added,removed) in modified_and_added_sources],
-                    [tag.tr(tag.td(dir, colspan=3)) 
-                     for p, dir in removed_sources]), class_='props'))
+        for spath, (path, old_revs) in old_sources.iteritems():
+            removed_sources.append((path,
+                                    self._get_source_link(path, old_context)))
+        if modified_sources or removed_sources:
+            modified_sources.sort()
+            removed_sources.sort()
+            changes = tag.table(tag.tbody(
+                [tag.tr(tag.td(src), tag.td(added), tag.td(removed))
+                 for p, src, added, removed in modified_sources],
+                [tag.tr(tag.td(src), tag.td(_('removed'), colspan=2))
+                 for p, src in removed_sources]), class_='props')
+        else:
+            changes = tag.em(_(' (with no actual effect on merging)'))
+        return tag.li(tag_('Property %(prop)s changed', prop=tag.strong(name)),
+                      changes)
 
 
 class SubversionRepository(Repository):
