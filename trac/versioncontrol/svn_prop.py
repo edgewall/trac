@@ -153,8 +153,8 @@ class SubversionPropertyRenderer(Component):
                                          class_='trac-toggledeleted',
                                          href='#'),
                    tag.table(tag.tbody(
-                       tag.tr(row, class_=deleted and 'trac-deleted' or None)
-                       for deleted, p, row in rows)))
+                       [tag.tr(row, class_=deleted and 'trac-deleted' or None)
+                        for deleted, p, row in rows])))
 
     def _get_blocked_revs(self, props, name, path):
         """Return the revisions blocked from merging for the given property
@@ -199,8 +199,8 @@ class SubversionPropertyRenderer(Component):
     # IPropertyDiffRenderer methods
 
     def match_property_diff(self, name):
-        return (name == 'svn:mergeinfo' or name.startswith('svnmerge-')) and \
-                4 or 0
+        return name in ('svn:mergeinfo', 'svnmerge-blocked',
+                        'svnmerge-integrated') and 4 or 0
 
     def render_property_diff(self, name, old_context, old_props,
                              new_context, new_props, options):

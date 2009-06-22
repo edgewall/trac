@@ -245,7 +245,7 @@ class CachedRepository(Repository):
                        "WHERE (path = %%s OR path %s) "
                        "  AND %s <= %%s" % (db.like(), db.cast('rev', 'int')),
                        (path, db.like_escape(path + '/') + '%', rev))
-        revs = list(int(row[0]) for row in cursor)
+        revs = [int(row[0]) for row in cursor]
         revs.sort()
         cursor.execute("SELECT rev FROM node_change "
                        "WHERE path = %%s "
