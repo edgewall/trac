@@ -12,10 +12,14 @@
     <meta py:if="dir" name="ROBOTS" content="NOINDEX" />
     <script type="text/javascript">
       jQuery(document).ready(function($) {
+        $(".trac-toggledeleted").show().click(function() {
+                  $(this).siblings().find(".trac-deleted").toggle();
+                  return false;
+        }).click();
         $("#jumploc input").hide();
         $("#jumploc select").change(function () {
           this.parentNode.parentNode.submit();
-        })
+        });
 
         <py:if test="dir">
           /* browsers using old WebKits have issues with expandDir... */

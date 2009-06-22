@@ -32,7 +32,7 @@ from trac.resource import ResourceNotFound, Resource
 from trac.util import sorted, embedded_numbers
 from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
-from trac.util.text import shorten_line
+from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
@@ -554,10 +554,13 @@ class BrowserModule(Component):
             quality = renderer.match_property(name, mode)
             if quality > 0:
                 candidates.append((quality, renderer))
-        if candidates:
-            renderer = sorted(candidates, reverse=True)[0][1]
-            rendered = renderer.render_property(name, mode, context, props)
-            if rendered:
+        candidates.sort()
+        candidates.reverse()
+        for (quality, renderer) in candidates:
+            try:
+                rendered = renderer.render_property(name, mode, context, props)
+                if not rendered:
+                    return rendered
                 if isinstance(rendered, RenderedProperty):
                     value = rendered.content
                     rendered = rendered
@@ -566,6 +569,11 @@ class BrowserModule(Component):
                     rendered = None
                 prop = {'name': name, 'value': value, 'rendered': rendered}
                 return prop
+            except Exception, e:
+                self.log.warning('Rendering failed for property %s with '
+                                 'renderer %s: %s', name,
+                                 renderer.__class__.__name__,
+                                 exception_to_unicode(e, traceback=True))
 
     # IWikiSyntaxProvider methods
 

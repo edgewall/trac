@@ -14,9 +14,10 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import bisect
+from datetime import datetime
 import os
 import posixpath
-from datetime import datetime
 
 from trac.core import TracError
 from trac.util.datefmt import utc, to_timestamp
@@ -231,6 +232,32 @@ class CachedRepository(Repository):
 
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, rev)
+
+    def _get_node_revs(self, path, rev=None):
+        """Return the revisions affecting `path` between its creation and
+        `rev`.
+        """
+        rev = self.normalize_rev(rev)
+        node = self.get_node(path, rev)     # Check node existence and perms
+        db = self.getdb()
+        cursor = db.cursor()
+        cursor.execute("SELECT DISTINCT rev FROM node_change "
+                       "WHERE (path = %%s OR path %s) "
+                       "  AND %s <= %%s" % (db.like(), db.cast('rev', 'int')),
+                       (path, db.like_escape(path + '/') + '%', rev))
+        revs = [int(row[0]) for row in cursor]
+        revs.sort()
+        cursor.execute("SELECT rev FROM node_change "
+                       "WHERE path = %%s "
+                       "  AND change_type IN ('A', 'C', 'M') "
+                       "  AND %s <= %%s "
+                       "ORDER BY %s DESC "
+                       "LIMIT 1" % ((db.cast('rev', 'int'),) * 2),
+                       (path, rev))
+        created = 0
+        for row in cursor:
+            created = int(row[0])
+        return revs[bisect.bisect_left(revs, created):]
 
     def has_node(self, path, rev=None):
         return self.repos.has_node(path, rev)

@@ -92,6 +92,7 @@ facilities.
         trac.ticket.web_ui = trac.ticket.web_ui
         trac.timeline = trac.timeline.web_ui
         trac.versioncontrol.svn_fs = trac.versioncontrol.svn_fs
+        trac.versioncontrol.svn_prop = trac.versioncontrol.svn_prop
         trac.versioncontrol.web_ui = trac.versioncontrol.web_ui
         trac.web.auth = trac.web.auth
         trac.wiki.interwiki = trac.wiki.interwiki

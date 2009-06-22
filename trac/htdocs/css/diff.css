@@ -184,3 +184,17 @@
 .diff pre { background: #fff; border: 1px solid #ddd; font-size: 85%;
   margin: 0;
 }
+
+/* Styles for the property diffs */
+/* WARNING: This is a compatibility hack. 0.12 has a cleaner but non-compatible solution. */
+.diff table.props {
+ border: 0;
+ font-size: 13px;
+ margin: inherit;
+ width: inherit;
+}
+.diff table.props td {
+ padding: 2px 0.5em;
+ background: inherit;
+ font: inherit;
+}

@@ -37,7 +37,8 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any, sorted, groupby
 from trac.util.datefmt import pretty_timedelta, utc
-from trac.util.text import unicode_urlencode, shorten_line, CRLF
+from trac.util.text import exception_to_unicode, unicode_urlencode, \
+                           shorten_line, CRLF
 from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
@@ -763,12 +764,18 @@ class ChangesetModule(Component):
             quality = renderer.match_property_diff(name)
             if quality > 0:
                 candidates.append((quality, renderer))
-        if candidates:
-            renderer = sorted(candidates, reverse=True)[0][1]
-            return renderer.render_property_diff(name, old_node, old_props,
-                                                 new_node, new_props, options)
-        else:
-            return None
+        candidates.sort()
+        candidates.reverse()
+        for (quality, renderer) in candidates:
+            try:
+                return renderer.render_property_diff(name, old_node, old_props,
+                                                     new_node, new_props,
+                                                     options)
+            except Exception, e:
+                self.log.warning('Diff rendering failed for property %s with '
+                                 'renderer %s: %s', name,
+                                 renderer.__class__.__name__,
+                                 exception_to_unicode(e, traceback=True))
 
     def _get_location(self, files):
         """Return the deepest common path for the given files.
