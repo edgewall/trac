@@ -188,4 +188,4 @@ pre.diff .add { background: #dfd; }
 }
 
 /* Styles for the property diffs */
-table.props th, table.props td { padding: 2px 0.5em }
+.diff table.props td { padding: 2px 0.5em }
