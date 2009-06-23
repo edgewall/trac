@@ -54,7 +54,7 @@ class SubversionPropertyRenderer(Component):
             for dummykey, value in self.config.options('svn:externals'):
                 value = value.split()
                 if len(value) != 2:
-                    self.env.warn("svn:externals entry %s doesn't contain "
+                    self.log.warn("svn:externals entry %s doesn't contain "
                             "a space-separated key value pair, skipping.", 
                             label)
                     continue
@@ -155,7 +155,7 @@ class SubversionPropertyRenderer(Component):
                                          href='#'),
                    tag.table(tag.tbody(
                        [tag.tr(row, class_=deleted and 'trac-deleted' or None)
-                        for deleted, p, row in rows])))
+                        for deleted, p, row in rows]), class_='props'))
 
     def _get_blocked_revs(self, props, name, path):
         """Return the revisions blocked from merging for the given property

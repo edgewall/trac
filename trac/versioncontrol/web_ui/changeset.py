@@ -474,7 +474,7 @@ class ChangesetModule(Component):
             new_ctx = Context.from_request(req, new_source)
             changed_properties = []
             if old_props != new_props:
-                for k,v in old_props.items():
+                for k, v in sorted(old_props.items()):
                     new = old = diff = None
                     if not k in new_props:
                         old = v # won't be displayed, no need to render it
@@ -489,7 +489,7 @@ class ChangesetModule(Component):
                     if new or old or diff:
                         changed_properties.append({'name': k, 'old': old,
                                                    'new': new, 'diff': diff})
-                for k,v in new_props.items():
+                for k, v in sorted(new_props.items()):
                     if not k in old_props:
                         new = browser.render_property(k, 'changeset',
                                                       new_ctx, new_props)

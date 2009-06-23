@@ -187,6 +187,7 @@
 
 /* Styles for the property diffs */
 /* WARNING: This is a compatibility hack. 0.12 has a cleaner but non-compatible solution. */
+.diff .props { color: #666 }
 .diff table.props {
  border: 0;
  font-size: 13px;
