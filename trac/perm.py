@@ -38,7 +38,7 @@ class PermissionError(StandardError):
         self.resource = resource
         self.env = env
 
-    def __str__ (self):
+    def __unicode__ (self):
         if self.action:
             if self.resource:
                 return _('%(perm)s privileges are required to perform '
