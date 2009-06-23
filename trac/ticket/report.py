@@ -283,6 +283,7 @@ class ReportModule(Component):
             title = '{%i} %s' % (id, title)
 
         report_resource = Resource('report', id)
+        req.perm.require('REPORT_VIEW', report_resource)
         context = Context.from_request(req, report_resource)
         data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
