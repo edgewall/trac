@@ -73,7 +73,6 @@ def _import_svn():
                 core.svn_node_file: Node.FILE}
     # Protect svn.core methods from GC
     Pool.apr_pool_clear = staticmethod(core.apr_pool_clear)
-    Pool.apr_terminate = staticmethod(core.apr_terminate)
     Pool.apr_pool_destroy = staticmethod(core.apr_pool_destroy)
 
 def _to_svn(*args):
@@ -196,7 +195,6 @@ class Pool(object):
         # Clear application pool and terminate APR if necessary
         if not self._parent_pool:
             application_pool = None
-            self.apr_terminate()
 
         self._mark_invalid()
 
