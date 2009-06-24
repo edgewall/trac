@@ -118,7 +118,8 @@ class SubversionPropertyRenderer(Component):
         has_eligible = name in ('svnmerge-integrated', 'svn:mergeinfo')
         revs_label = (_('merged'), _('blocked'))[name.endswith('blocked')]
         revs_cols = has_eligible and 2 or None
-        repos = self.env.get_repository()
+        (reponame, target_path) = context.resource.id
+        repos = self.env.get_repository(reponame)
         rows = []
         for line in props[name].splitlines():
             path, revs = line.split(':', 1)
@@ -175,8 +176,9 @@ class SubversionPropertyRenderer(Component):
 
     def _get_source_link(self, path, context):
         """Return a link to a merge source."""
+        reponame = context.resource.id[0]
         return tag.a(path, title=_('View merge source'),
-                     href=context.href.browser(path,
+                     href=context.href.browser(reponame, path,
                                                rev=context.resource.version))
 
     def _get_revs_link(self, label, context, spath, revs):
@@ -184,12 +186,13 @@ class SubversionPropertyRenderer(Component):
         given, to the revision itself for a single revision, or a `<span>`
         with "no revision" for none.
         """
+        reponame = context.resource.id[0]
         if not revs:
             return tag.span(label, title=_('No revisions'))
         elif ',' in revs or '-' in revs:
-            revs_href = context.href.log(spath, revs=revs)
+            revs_href = context.href.log(reponame, spath, revs=revs)
         else:
-            revs_href = context.href.changeset(revs, spath)
+            revs_href = context.href.changeset(revs, reponame, spath)
         return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
 
     def _render_needslock(self, context):

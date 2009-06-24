@@ -282,7 +282,7 @@ class CachedRepository(Repository):
         """
         rev = self.normalize_rev(rev)
         node = self.get_node(path, rev)     # Check node existence and perms
-        db = self.getdb()
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT rev FROM node_change "
                        "WHERE (path = %%s OR path %s) "
