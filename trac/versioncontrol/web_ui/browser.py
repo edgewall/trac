@@ -624,7 +624,7 @@ class BrowserModule(Component):
     def render_properties(self, mode, context, props):
         """Prepare rendering of a collection of properties."""
         return filter(None, [self.render_property(name, mode, context, props)
-                             for name in props])
+                             for name in sorted(props)])
 
     def render_property(self, name, mode, context, props):
         """Renders a node property to HTML."""
@@ -633,10 +633,12 @@ class BrowserModule(Component):
             quality = renderer.match_property(name, mode)
             if quality > 0:
                 candidates.append((quality, renderer))
-        if candidates:
-            renderer = sorted(candidates, reverse=True)[0][1]
-            rendered = renderer.render_property(name, mode, context, props)
-            if rendered:
+        candidates.sort(reverse=True)
+        for (quality, renderer) in candidates:
+            try:
+                rendered = renderer.render_property(name, mode, context, props)
+                if not rendered:
+                    return rendered
                 if isinstance(rendered, RenderedProperty):
                     value = rendered.content
                     rendered = rendered
@@ -645,6 +647,11 @@ class BrowserModule(Component):
                     rendered = None
                 prop = {'name': name, 'value': value, 'rendered': rendered}
                 return prop
+            except Exception, e:
+                self.log.warning('Rendering failed for property %s with '
+                                 'renderer %s: %s', name,
+                                 renderer.__class__.__name__,
+                                 exception_to_unicode(e, traceback=True))
 
     # IWikiSyntaxProvider methods
 

@@ -38,7 +38,8 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers, content_disposition
 from trac.util.compat import any
 from trac.util.datefmt import pretty_timedelta, utc
-from trac.util.text import to_unicode, unicode_urlencode, shorten_line, CRLF
+from trac.util.text import exception_to_unicode, to_unicode, \
+                           unicode_urlencode, shorten_line, CRLF
 from trac.util.translation import _, ngettext
 from trac.versioncontrol.api import RepositoryManager, Changeset, Node, \
                                     NoSuchChangeset
@@ -503,7 +504,7 @@ class ChangesetModule(Component):
             new_ctx = Context.from_request(req, new_source)
             changed_properties = []
             if old_props != new_props:
-                for k,v in old_props.items():
+                for k, v in sorted(old_props.items()):
                     new = old = diff = None
                     if not k in new_props:
                         old = v # won't be displayed, no need to render it
@@ -518,7 +519,7 @@ class ChangesetModule(Component):
                     if new or old or diff:
                         changed_properties.append({'name': k, 'old': old,
                                                    'new': new, 'diff': diff})
-                for k,v in new_props.items():
+                for k, v in sorted(new_props.items()):
                     if not k in old_props:
                         new = browser.render_property(k, 'changeset',
                                                       new_ctx, new_props)
@@ -796,12 +797,17 @@ class ChangesetModule(Component):
             quality = renderer.match_property_diff(name)
             if quality > 0:
                 candidates.append((quality, renderer))
-        if candidates:
-            renderer = sorted(candidates, reverse=True)[0][1]
-            return renderer.render_property_diff(name, old_node, old_props,
-                                                 new_node, new_props, options)
-        else:
-            return None
+        candidates.sort(reverse=True)
+        for (quality, renderer) in candidates:
+            try:
+                return renderer.render_property_diff(name, old_node, old_props,
+                                                     new_node, new_props,
+                                                     options)
+            except Exception, e:
+                self.log.warning('Diff rendering failed for property %s with '
+                                 'renderer %s: %s', name,
+                                 renderer.__class__.__name__,
+                                 exception_to_unicode(e, traceback=True))
 
     def _get_location(self, files):
         """Return the deepest common path for the given files.

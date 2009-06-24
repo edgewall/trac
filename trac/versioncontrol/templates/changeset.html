@@ -10,6 +10,10 @@
     <title>$title</title>
     <script type="text/javascript">
       jQuery(document).ready(function($) {
+        $(".trac-toggledeleted").show().click(function() {
+                  $(this).siblings().find(".trac-deleted").toggle();
+                  return false;
+        }).click();
         $("#content").find("li.entry h2 a").parent().addAnchor("Link to this diff");
       });
     </script>
