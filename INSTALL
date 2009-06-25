@@ -8,6 +8,9 @@ the Genshi templating system.
 
 Note that you should also read the trac/wiki/default-pages/TracInstall 
 documentation file present in the source distribution.
+If you're upgrading an already installed environment, please also read
+trac/wiki/default-pages/TracUpgrade.
+
 
 
 Requirements
@@ -15,12 +18,13 @@ Requirements
 To install Trac, the following software packages must be installed:
 
  * Python, version >= 2.3.
-   + Please keep in mind, that for RPM-based systems you will also need
-   python-devel and python-xml packages.
  * setuptools, version >= 0.6
  * Genshi, version >= 0.5
- * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python bindings (not PySVN).
- * PySQLite version 2.x for SQLite 3.x, or psycopg2 version 2.0.x for the PostgreSQL database, or  MySQLdb, version 1.2.2 for the MySQL database
+ * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python bindings (not PySVN, that's something different).
+ * One of the following Python bindings, depending on the database used:
+   * PySQLite version 2.x for SQLite 3.x (is part of the standard library starting with Python 2.5)
+   * psycopg2 version 2.0.x for the PostgreSQL database
+   * MySQLdb, version 1.2.2 for the MySQL database
  * A web server capable of executing CGI/FastCGI scripts, or Apache HTTPD with
    mod_python or mod_wsgi. (Trac also comes with a standalone server, tracd)
 
