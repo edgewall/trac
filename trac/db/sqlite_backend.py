@@ -116,16 +116,16 @@ class SQLiteConnector(Component):
     def get_supported_schemes(self):
         return [('sqlite', 1)]
 
-    def get_connection(self, path, params={}, log=None):
+    def get_connection(self, path, log=None, params={}):
         if not self._version:
             global sqlite_version_string
             self._version = get_pkginfo(sqlite).get(
                 'version', '%d.%d.%s' % sqlite.version_info)
             self.env.systeminfo.extend([('SQLite', sqlite_version_string),
                                         ('pysqlite', self._version)])
-        return SQLiteConnection(path, params, log)
+        return SQLiteConnection(path, log, params)
 
-    def init_db(cls, path, params={}, log=None):
+    def init_db(cls, path, log=None, params={}):
         if path != ':memory:':
             # make the directory to hold the database
             if os.path.exists(path):
@@ -163,7 +163,7 @@ class SQLiteConnection(ConnectionWrapper):
     __slots__ = ['_active_cursors']
     poolable = have_pysqlite and os.name == 'nt' and sqlite_version >= 30301
 
-    def __init__(self, path, params={}, log=None):
+    def __init__(self, path, log=None, params={}):
         assert have_pysqlite > 0
         self.cnx = None
         if path != ':memory:':

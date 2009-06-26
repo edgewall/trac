@@ -73,9 +73,9 @@ class MySQLConnector(Component):
         else:
             return []
 
-    def get_connection(self, path, user=None, password=None, host=None,
-                       port=None, params={}, log=None):
-        cnx = MySQLConnection(path, user, password, host, port, params, log)
+    def get_connection(self, path, log=None, user=None, password=None,
+                       host=None, port=None, params={}):
+        cnx = MySQLConnection(path, log, user, password, host, port, params)
         if not self._version:
             self._version = get_pkginfo(MySQLdb).get('version',
                                                      MySQLdb.__version__)
@@ -87,10 +87,10 @@ class MySQLConnector(Component):
                                         ('MySQLdb', self._version)])
         return cnx
     
-    def init_db(self, path, user=None, password=None, host=None, port=None,
-                params={}, log=None):
-        cnx = self.get_connection(path, user, password, host, port, params,
-                                  log)
+    def init_db(self, path, log=None, user=None, password=None, host=None,
+                port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
         cursor = cnx.cursor()
         from trac.db_default import schema
         for table in schema:
@@ -180,8 +180,8 @@ class MySQLConnection(ConnectionWrapper):
 
     poolable = True
 
-    def __init__(self, path, user=None, password=None, host=None,
-                 port=None, params={}, log=None):
+    def __init__(self, path, log, user=None, password=None, host=None,
+                 port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
         if password == None:
