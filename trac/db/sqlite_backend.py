@@ -125,7 +125,7 @@ class SQLiteConnector(Component):
                                         ('pysqlite', self._version)])
         return SQLiteConnection(path, params, log)
 
-    def init_db(cls, path, params={}):
+    def init_db(cls, path, params={}, log=None):
         if path != ':memory:':
             # make the directory to hold the database
             if os.path.exists(path):

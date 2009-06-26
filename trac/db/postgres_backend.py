@@ -69,8 +69,9 @@ class PostgreSQLConnector(Component):
         return cnx
 
     def init_db(self, path, user=None, password=None, host=None, port=None,
-                params={}):
-        cnx = self.get_connection(path, user, password, host, port, params)
+                params={}, log=None):
+        cnx = self.get_connection(path, user, password, host, port, params,
+                                  log)
         cursor = cnx.cursor()
         if cnx.schema:
             cursor.execute('CREATE SCHEMA "%s"' % cnx.schema)

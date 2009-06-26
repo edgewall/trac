@@ -39,10 +39,10 @@ class IDatabaseConnector(Interface):
         their relative priorities as an iterable of `(scheme, priority)` tuples.
         """
 
-    def get_connection(**kwargs):
+    def get_connection(path, log=None, **kwargs):
         """Create a new connection to the database."""
         
-    def init_db(**kwargs):
+    def init_db(path, log=None, **kwargs):
         """Initialize the database."""
 
     def to_sql(table):

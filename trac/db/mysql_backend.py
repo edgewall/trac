@@ -88,8 +88,9 @@ class MySQLConnector(Component):
         return cnx
     
     def init_db(self, path, user=None, password=None, host=None, port=None,
-                params={}):
-        cnx = self.get_connection(path, user, password, host, port, params)
+                params={}, log=None):
+        cnx = self.get_connection(path, user, password, host, port, params,
+                                  log)
         cursor = cnx.cursor()
         from trac.db_default import schema
         for table in schema:
