@@ -155,10 +155,13 @@ class MySQLConnector(Component):
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.mysqldump_path, '-u', db_prop['user'],
-                '-h', db_prop['host']]
+        args = [self.mysqldump_path]
+        if 'host' in db_prop:
+            args.extend(['-h', db_prop['host']])
         if 'port' in db_prop:
             args.extend(['-P', str(db_prop['port'])])
+        if 'user' in db_prop:
+            args.extend(['-u', db_prop['user']])
         args.extend(['-r', dest_file, db_name])
         
         environ = os.environ.copy()

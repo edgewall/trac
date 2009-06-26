@@ -107,20 +107,19 @@ class PostgreSQLConnector(Component):
     def backup(self, dest_file):
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
+        db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8',
-                '-U', db_prop['user'],]
-        port = db_prop.get('port', '5432')
+        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8']
+        if 'user' in db_prop:
+            args.extend(['-U', db_prop['user']])
         if 'host' in db_prop['params']:
             host = db_prop['params']['host']
         else:
             host = db_prop.get('host', 'localhost')
-        args.append('-h')
-        args.append(host)
+        args.extend(['-h', host])
         if '/' not in host:
-            args.append('-p')
-            args.append(str(port))
+            args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_prop['params']:
             args.extend(['-n', db_prop['params']['schema']])
