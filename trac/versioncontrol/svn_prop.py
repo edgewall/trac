@@ -120,6 +120,15 @@ class SubversionPropertyRenderer(Component):
         revs_label = (_('merged'), _('blocked'))[name.endswith('blocked')]
         revs_cols = has_eligible and 2 or None
         repos = self.env.get_repository()
+        target_path = context.resource.id
+        target_rev = context.resource.version
+        if has_eligible:
+            branch_starts = {}
+            node = repos.get_node(target_path, target_rev)
+            while node:
+                node = node.get_copy_origin()
+                if node and node.path != target_path:
+                    branch_starts[node.path] = node.rev + 1
         rows = []
         for line in props[name].splitlines():
             path, revs = line.split(':', 1)
@@ -128,13 +137,14 @@ class SubversionPropertyRenderer(Component):
             deleted = False
             if 'LOG_VIEW' in context.perm('source', spath):
                 try:
-                    node = repos.get_node(spath, context.resource.version)
+                    node = repos.get_node(spath, target_rev)
                     row = [self._get_source_link(path, context),
                            self._get_revs_link(revs_label, context,
                                                spath, revs)]
                     if has_eligible:
-                        eligible = set(repos._get_node_revs(spath,
-                                                    context.resource.version))
+                        first_rev = branch_starts.get(path)
+                        eligible = set(repos._get_node_revs(spath, target_rev,
+                                                            first_rev))
                         eligible -= set(Ranges(revs))
                         blocked = self._get_blocked_revs(props, name, spath)
                         eligible -= set(Ranges(blocked))
@@ -237,6 +247,8 @@ class SubversionPropertyRenderer(Component):
             removed = old_revs - new_revs
             try:
                 all_revs = set(repos._get_node_revs(spath))
+                # TODO: also pass first_rev here, for getting smaller a set
+                #       (this is an optmization fix, result is already correct)
                 added &= all_revs
                 removed &= all_revs
             except NoSuchNode:

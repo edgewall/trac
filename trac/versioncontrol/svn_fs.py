@@ -433,14 +433,15 @@ class SubversionRepository(Repository):
 
         return SubversionNode(path, rev, self, self.pool)
 
-    def _get_node_revs(self, path, rev=None):
-        """Return the revisions affecting `path` between its creation and
-        `rev`.
+    def _get_node_revs(self, path, last=None, first=None):
+        """Return the revisions affecting `path` between `first` and `last` 
+        revs. If `first` is not given, it goes down to the revision in which
+        the branch was created.
         """
-        node = self.get_node(path, rev)
+        node = self.get_node(path, last)
         revs = []
         for (p, r, chg) in node.get_history():
-            if p != path:
+            if p != path or (first and r < first):
                 break
             revs.append(r)
         return revs
@@ -784,6 +785,15 @@ class SubversionNode(Node):
     def _get_prop(self, name):
         return fs.node_prop(self.root, self._scoped_path_utf8, name,
                             self.pool())
+
+    def get_copy_origin(self):
+        root_and_path = fs.closest_copy(self.root, self._scoped_path_utf8)
+        if root_and_path:
+            root, path = root_and_path
+            rev = fs.revision_root_revision(root)
+            if (path, rev) == (self.path, self.rev):
+                rev, path = fs.copied_from(root, path)
+            return SubversionNode(path, rev, self.repos, self.pool, root)
 
 
 class SubversionChangeset(Changeset):
