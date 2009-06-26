@@ -45,6 +45,7 @@ class Configuration(object):
         self.parser = ConfigParser()
         self._old_sections = {}
         self.parent = None
+        self._base_filename = None
         self._lastmtime = 0
         self._sections = {}
         self.parse_if_needed()
@@ -108,6 +109,19 @@ class Configuration(object):
         (since Trac 0.10)
         """
         return self[section].getlist(name, default, sep, keep_empty)
+
+    def getpath(self, section, name, default=''):
+        """Return a configuration value as an absolute path.
+        
+        Relative paths are made absolute relative to the location of the file
+        the option is read from. A value read from defaults use location of
+        first configuration file as base.
+
+        Valid default input is a string. Returns a string as correct path.
+        
+        (enabled since Trac 0.11.5)
+        """
+        return self[section].getpath(name, default)
 
     def set(self, section, name, value):
         """Change a configuration value.
@@ -225,6 +239,8 @@ class Configuration(object):
                                         filename)
             if not self.parent or self.parent.filename != filename:
                 self.parent = Configuration(filename)
+                self.parent._base_filename = self._base_filename \
+                                                or self.filename
                 changed = True
             else:
                 changed |= self.parent.parse_if_needed()
@@ -368,7 +384,12 @@ class Section(object):
         elif self.config.parent:
             return self.config.parent[self.name].getpath(name, default)
         else:
-            return default
+            base = self.config._base_filename or self.config.filename
+            path_opt = Option.registry.get((self.name, name), None)
+            path = path_opt and path_opt.default or default
+            if path and not os.path.isabs(path):
+                path = os.path.join(os.path.dirname(base), path)
+            return path
 
     def options(self):
         """Return `(name, value)` tuples for every option in the section."""
