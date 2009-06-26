@@ -24,6 +24,9 @@ from trac.test import Configuration
 
 class ConfigurationTestCase(unittest.TestCase):
 
+    if not hasattr(unittest.TestCase, "assertTrue"):
+        assertTrue = unittest.TestCase.failUnless   # Python 2.3 compatibility
+
     def setUp(self):
         self.filename = os.path.join(tempfile.gettempdir(), 'trac-test.ini')
         self._write([])
