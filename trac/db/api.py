@@ -151,8 +151,8 @@ def _parse_db_str(db_str):
             host = None
             path = rest
         else:
-            raise TracError('Database connection string must start with '
-                            'scheme:/')
+            raise TracError('Unknown scheme "%s"; database connection string '
+                            'must start with {scheme}:/' % scheme)
     else:
         if not rest.startswith('//'):
             host = None
