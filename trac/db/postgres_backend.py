@@ -46,12 +46,12 @@ class PostgreSQLConnector(Component):
     def get_supported_schemes(self):
         return [('postgres', 1)]
 
-    def get_connection(self, path, user=None, password=None, host=None,
-                       port=None, params={}, log=None):
+    def get_connection(self, path, log=None, user=None, password=None,
+                       host=None, port=None, params={}):
         global psycopg
         global PgSQL
-        cnx = PostgreSQLConnection(path, user, password, host, port, params,
-                                   log)
+        cnx = PostgreSQLConnection(path, log, user, password, host, port,
+                                   params)
         if not self._version:
             if psycopg:
                 self._version = get_pkginfo(psycopg).get('version',
@@ -68,10 +68,10 @@ class PostgreSQLConnector(Component):
             self.env.systeminfo.append((name, self._version))
         return cnx
 
-    def init_db(self, path, user=None, password=None, host=None, port=None,
-                params={}, log=None):
-        cnx = self.get_connection(path, user, password, host, port, params,
-                                  log)
+    def init_db(self, path, log=None, user=None, password=None, host=None,
+                port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
         cursor = cnx.cursor()
         if cnx.schema:
             cursor.execute('CREATE SCHEMA "%s"' % cnx.schema)
@@ -144,8 +144,8 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     poolable = True
 
-    def __init__(self, path, user=None, password=None, host=None, port=None,
-                 params={}, log=None):
+    def __init__(self, path, log=None, user=None, password=None, host=None,
+                 port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
         # We support both psycopg and PgSQL but prefer psycopg
