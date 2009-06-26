@@ -84,9 +84,11 @@ class ConfigurationTestCase(unittest.TestCase):
             option_b = PathOption('a', 'opt2', '/somewhere/file.ini')
         self.assertEquals('file.ini', config.get('a', 'opt1'))
         self.assertNotEquals('file.ini', config.getpath('a', 'opt1'))
-        self.assertTrue(config.getpath('a', 'opt1').startswith('/'))
-        self.assertEquals('/somewhere/file.ini', config.getpath('a', 'opt2'))
-        self.assertEquals('/none.ini', config.getpath('a', 'opt3', '/none.ini'))
+        self.assertTrue(os.path.isabs(config.getpath('a', 'opt1')))
+        self.assertEquals('/somewhere/file.ini', os.path.splitdrive(
+                config.getpath('a', 'opt2'))[1].replace('\\', '/'))
+        self.assertEquals('/none.ini', os.path.splitdrive(
+                config.getpath('a', 'opt3', '/none.ini'))[1].replace('\\', '/'))
         self.assertNotEquals('none.ini', config.getpath('a', 'opt3', 'none.ini'))
 
     def test_read_and_get(self):
@@ -144,7 +146,8 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set('a', 'path_a', '/somewhere/file.txt')
         config.set('a', 'path_b', 'file.txt')
         config.set('a', 'path_c', './file.txt')
-        self.assertEquals('/somewhere/file.txt', config.getpath('a', 'path_a'))
+        self.assertEquals('/somewhere/file.txt', os.path.splitdrive(
+                config.getpath('a', 'path_a'))[1].replace('\\', '/'))
         self.assertNotEquals('file.txt', config.getpath('a', 'path_b'))
         self.assertEquals(config.getpath('a', 'path_b'),
                           config.getpath('a', 'path_c'))
