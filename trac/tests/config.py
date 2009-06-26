@@ -77,6 +77,18 @@ class ConfigurationTestCase(unittest.TestCase):
 
         self.assertEquals(2, config.getint('a', 'option'))
 
+    def test_default_path(self):
+        config = self._read()
+        class Foo(object):
+            option_a = PathOption('a', 'opt1', 'file.ini')
+            option_b = PathOption('a', 'opt2', '/somewhere/file.ini')
+        self.assertEquals('file.ini', config.get('a', 'opt1'))
+        self.assertNotEquals('file.ini', config.getpath('a', 'opt1'))
+        self.assertTrue(config.getpath('a', 'opt1').startswith('/'))
+        self.assertEquals('/somewhere/file.ini', config.getpath('a', 'opt2'))
+        self.assertEquals('/none.ini', config.getpath('a', 'opt3', '/none.ini'))
+        self.assertNotEquals('none.ini', config.getpath('a', 'opt3', 'none.ini'))
+
     def test_read_and_get(self):
         self._write(['[a]', 'option = x'])
         config = self._read()
@@ -126,6 +138,16 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(['bar', 'baz'], config.getlist('a', 'option'))
         self.assertEquals(['', 'bar', 'baz'],
                           config.getlist('a', 'option', keep_empty=True))
+
+    def test_getpath(self):
+        config = self._read()
+        config.set('a', 'path_a', '/somewhere/file.txt')
+        config.set('a', 'path_b', 'file.txt')
+        config.set('a', 'path_c', './file.txt')
+        self.assertEquals('/somewhere/file.txt', config.getpath('a', 'path_a'))
+        self.assertNotEquals('file.txt', config.getpath('a', 'path_b'))
+        self.assertEquals(config.getpath('a', 'path_b'),
+                          config.getpath('a', 'path_c'))
 
     def test_set_and_save(self):
         config = self._read()
