@@ -786,14 +786,34 @@ class SubversionNode(Node):
         return fs.node_prop(self.root, self._scoped_path_utf8, name,
                             self.pool())
 
-    def get_copy_origin(self):
-        root_and_path = fs.closest_copy(self.root, self._scoped_path_utf8)
-        if root_and_path:
-            root, path = root_and_path
-            rev = fs.revision_root_revision(root)
-            if (path, rev) == (self.path, self.rev):
-                rev, path = fs.copied_from(root, path)
-            return SubversionNode(path, rev, self.repos, self.pool, root)
+    def get_copy_ancestry(self):
+        ancestors = []
+        previous = (self._scoped_path_utf8, self._requested_rev, self.root)
+        while previous:
+            (previous_path, previous_rev, previous_root) = previous
+            previous = None
+            root_path = fs.closest_copy(previous_root, previous_path)
+            if root_path:
+                (root, path) = root_path
+                path = path.lstrip('/')
+                rev = fs.revision_root_revision(root)
+                relpath = None
+                if path != previous_path:
+                    # `previous_path` is a subfolder of `path` and didn't
+                    # change since `path` was copied
+                    relpath = previous_path[len(path):].strip('/')
+                copied_from = fs.copied_from(root, path)
+                if copied_from:
+                    (rev, path) = fs.copied_from(root, path)
+                    path = path.lstrip('/')
+                    root = fs.revision_root(self.fs_ptr, rev, self.pool())
+                    if relpath:
+                        path += '/' + relpath
+                    ui_path = _path_within_scope(self.scope, _from_svn(path))
+                    if ui_path:
+                        ancestors.append((ui_path, rev))
+                    previous = (path, rev, root)
+        return ancestors
 
 
 class SubversionChangeset(Changeset):

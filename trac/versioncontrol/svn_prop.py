@@ -123,12 +123,11 @@ class SubversionPropertyRenderer(Component):
         target_path = context.resource.id
         target_rev = context.resource.version
         if has_eligible:
-            branch_starts = {}
             node = repos.get_node(target_path, target_rev)
-            while node:
-                node = node.get_copy_origin()
-                if node and node.path != target_path:
-                    branch_starts[node.path] = node.rev + 1
+            branch_starts = {}
+            for path, rev in node.get_copy_ancestry(): 
+                if path not in branch_starts:
+                    branch_starts[path] = rev + 1
         rows = []
         for line in props[name].splitlines():
             path, revs = line.split(':', 1)
@@ -142,7 +141,7 @@ class SubversionPropertyRenderer(Component):
                            self._get_revs_link(revs_label, context,
                                                spath, revs)]
                     if has_eligible:
-                        first_rev = branch_starts.get(path)
+                        first_rev = branch_starts.get(spath)
                         eligible = set(repos._get_node_revs(spath, target_rev,
                                                             first_rev))
                         eligible -= set(Ranges(revs))
