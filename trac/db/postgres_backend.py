@@ -15,7 +15,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re, sys, os, time
-from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
@@ -105,6 +104,11 @@ class PostgreSQLConnector(Component):
                      '","'.join(index.columns))
 
     def backup(self, dest_file):
+        try:
+            from subprocess import Popen, PIPE
+        except ImportError:
+            raise TracError('Python >= 2.4 or the subprocess module '
+                            'is required for pre-upgrade backup support')
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_prop.setdefault('params', {})
