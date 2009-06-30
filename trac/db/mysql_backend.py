@@ -204,7 +204,7 @@ class MySQLConnection(ConnectionWrapper):
         return 'concat(%s)' % ', '.join(args)
 
     def like(self):
-        return "LIKE %s ESCAPE '/'"
+        return "LIKE %s COLLATE utf8_general_ci ESCAPE '/'"
 
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
