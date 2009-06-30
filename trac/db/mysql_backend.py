@@ -15,7 +15,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import re, sys, os, time
-from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
@@ -151,6 +150,11 @@ class MySQLConnector(Component):
                   self._collist(table, index.columns))
 
     def backup(self, dest_file):
+        try:
+            from subprocess import Popen, PIPE
+        except ImportError:
+            raise TracError('Python >= 2.4 or the subprocess module '
+                            'is required for pre-upgrade backup support')
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
