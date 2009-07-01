@@ -261,7 +261,7 @@ class WikiModule(Component):
             if version and old_version and version > old_version:
                 add_notice(req, _('The versions %(from_)d to %(to)d of the '
                                   'page %(name)s have been deleted.',
-                                  from_=old_version + 1, to=version))
+                            from_=old_version+1, to=version, name=page.name))
             else:
                 add_notice(req, _('The version %(version)d of the page '
                                   '%(name)s has been deleted.',
