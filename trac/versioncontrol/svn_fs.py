@@ -787,6 +787,11 @@ class SubversionNode(Node):
                             self.pool())
 
     def get_copy_ancestry(self):
+        """Retrieve the list of `(path,rev)` copy ancestors of this node.
+        Most recent ancestor first. Each ancestor `(path, rev)` corresponds 
+        to the path and revision of the source at the time the copy or move
+        operation was performed.
+        """
         ancestors = []
         previous = (self._scoped_path_utf8, self._requested_rev, self.root)
         while previous:

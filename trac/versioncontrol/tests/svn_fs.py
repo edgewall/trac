@@ -241,6 +241,36 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual((u'tête/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
 
+    def test_get_copy_ancestry(self):
+        node = self.repos.get_node('/tags/v1/README.txt')
+        ancestry = node.get_copy_ancestry()
+        self.assertEqual([(u'tête/README.txt', 6)], ancestry)
+        for path, rev in ancestry:
+            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+
+        node = self.repos.get_node(u'/tête/README3.txt')
+        ancestry = node.get_copy_ancestry()
+        self.assertEqual([(u'tête/README2.txt', 13), 
+                          (u'tête/README.txt', 3)], ancestry)
+        for path, rev in ancestry:
+            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+
+        node = self.repos.get_node('/branches/v1x')
+        ancestry = node.get_copy_ancestry()
+        self.assertEqual([(u'tags/v1.1', 11),
+                          (u'branches/v1x', 9), 
+                          (u'tags/v1', 7), 
+                          (u'tête', 6)], ancestry)
+        for path, rev in ancestry:
+            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+
+    def test_get_copy_ancestry_for_move(self):
+        node = self.repos.get_node(u'/tête/dir1/dir2', 5)
+        ancestry = node.get_copy_ancestry()
+        self.assertEqual([(u'tête/dir2', 4)], ancestry)
+        for path, rev in ancestry:
+            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+
     # Revision Log / path history 
 
     def test_get_path_history(self):
@@ -582,6 +612,21 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(('dir1/dir3', 5, 'copy'), history.next())
         self.assertEqual(('dir3', 4, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
+
+    def test_get_copy_ancestry(self):
+        node = self.repos.get_node(u'/README3.txt')
+        ancestry = node.get_copy_ancestry()
+        self.assertEqual([(u'README2.txt', 13), 
+                          (u'README.txt', 3)], ancestry)
+        for path, rev in ancestry:
+            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+
+    def test_get_copy_ancestry_for_move(self):
+        node = self.repos.get_node(u'/dir1/dir2', 5)
+        ancestry = node.get_copy_ancestry()
+        self.assertEqual([(u'dir2', 4)], ancestry)
+        for path, rev in ancestry:
+            self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
 
     # Revision Log / path history 
 
