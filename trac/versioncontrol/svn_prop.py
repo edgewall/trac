@@ -31,7 +31,7 @@ from trac.util.translation import _
 
 
 class SubversionPropertyRenderer(Component):
-    implements(IPropertyRenderer, IPropertyDiffRenderer)
+    implements(IPropertyRenderer)
 
     def __init__(self):
         self._externals_map = {}
@@ -39,16 +39,18 @@ class SubversionPropertyRenderer(Component):
     # IPropertyRenderer methods
 
     def match_property(self, name, mode):
-        return name in ('svn:externals', 'svn:mergeinfo', 'svn:needs-lock',
-                        'svnmerge-blocked', 'svnmerge-integrated') and 4 or 0
+        if name in ('svn:externals', 'svn:needs-lock'):
+            return 4
+        return name in ('svn:mergeinfo', 'svnmerge-blocked',
+                        'svnmerge-integrated') and 2 or 0
     
     def render_property(self, name, mode, context, props):
         if name == 'svn:externals':
             return self._render_externals(props[name])
-        elif name == 'svn:mergeinfo' or name.startswith('svnmerge-'):
-            return self._render_mergeinfo(name, mode, context, props)
         elif name == 'svn:needs-lock':
             return self._render_needslock(context)
+        elif name == 'svn:mergeinfo' or name.startswith('svnmerge-'):
+            return self._render_mergeinfo(name, mode, context, props)
 
     def _render_externals(self, prop):
         if not self._externals_map:
@@ -112,7 +114,33 @@ class SubversionPropertyRenderer(Component):
         return tag.ul([tag.li(tag.a(label, href=href, title=title))
                        for label, href, title in externals_data])
 
+    def _render_needslock(self, context):
+        return tag.img(src=context.href.chrome('common/lock-locked.png'),
+                       alt="needs lock", title="needs lock")
+
     def _render_mergeinfo(self, name, mode, context, props):
+        rows = []
+        for row in props[name].splitlines():
+            try:
+                (path, revs) = row.rsplit(':', 1)
+                rows.append([tag.td(path),
+                             tag.td(revs.replace(',', u',\u200b'))])
+            except ValueError:
+                rows.append(tag.td(row, colspan=2))
+        return tag.table(tag.tbody([tag.tr(row) for row in rows]),
+                         class_='props')
+
+
+class SubversionMergePropertyRenderer(Component):
+    implements(IPropertyRenderer)
+
+    # IPropertyRenderer methods
+
+    def match_property(self, name, mode):
+        return name in ('svn:mergeinfo', 'svnmerge-blocked',
+                        'svnmerge-integrated') and 4 or 0
+    
+    def render_property(self, name, mode, context, props):
         """Parse svn:mergeinfo and svnmerge-* properties, converting branch
         names to links and providing links to the revision log for merged
         and eligible revisions.
@@ -137,29 +165,29 @@ class SubversionPropertyRenderer(Component):
                 continue
             revs = revs.strip()
             deleted = False
-            if 'LOG_VIEW' in context.perm('source', spath):
-                try:
-                    node = repos.get_node(spath, target_rev)
-                    row = [self._get_source_link(spath, context),
-                           self._get_revs_link(revs_label, context,
-                                               spath, revs)]
+            try:
+                node = repos.get_node(spath, target_rev)
+                if 'LOG_VIEW' in context.perm('source', spath):
+                    row = [_get_source_link(spath, context),
+                           _get_revs_link(revs_label, context, spath, revs)]
                     if has_eligible:
                         first_rev = branch_starts.get(spath)
                         eligible = set(repos._get_node_revs(spath, target_rev,
                                                             first_rev))
                         eligible -= set(Ranges(revs))
-                        blocked = self._get_blocked_revs(props, name, spath)
+                        blocked = _get_blocked_revs(props, name, spath)
                         eligible -= set(Ranges(blocked))
                         eligible = to_ranges(eligible)
-                        row.append(self._get_revs_link(_('eligible'), context,
-                                                       spath, eligible))
+                        row.append(_get_revs_link(_('eligible'), context,
+                                                  spath, eligible))
                     rows.append((False, spath, [tag.td(each) for each in row]))
                     continue
-                except NoSuchNode:
-                    deleted = True
+            except NoSuchNode:
+                deleted = True
             revs = revs.replace(',', u',\u200b')
             rows.append((deleted, spath,
-                         [tag.td(path), tag.td(revs, colspan=revs_cols)]))
+                         [tag.td('/' + spath),
+                          tag.td(revs, colspan=revs_cols)]))
         if not rows:
             return None
         rows.sort()
@@ -171,45 +199,46 @@ class SubversionPropertyRenderer(Component):
                        [tag.tr(row, class_=deleted and 'trac-deleted' or None)
                         for deleted, spath, row in rows]), class_='props'))
 
-    def _get_blocked_revs(self, props, name, path):
-        """Return the revisions blocked from merging for the given property
-        name and path.
-        """
-        if name == 'svnmerge-integrated':
-            prop = props.get('svnmerge-blocked', '')
-        else:
-            return ""
-        for line in prop.splitlines():
-            try:
-                p, revs = line.split(':', 1)
-                if p.strip('/') == path:
-                    return revs
-            except Exception:
-                pass
+
+def _get_blocked_revs(props, name, path):
+    """Return the revisions blocked from merging for the given property
+    name and path.
+    """
+    if name == 'svnmerge-integrated':
+        prop = props.get('svnmerge-blocked', '')
+    else:
         return ""
+    for line in prop.splitlines():
+        try:
+            p, revs = line.split(':', 1)
+            if p.strip('/') == path:
+                return revs
+        except Exception:
+            pass
+    return ""
 
-    def _get_source_link(self, spath, context):
-        """Return a link to a merge source."""
-        return tag.a('/' + spath, title=_('View merge source'),
-                     href=context.href.browser(spath,
-                                               rev=context.resource.version))
+def _get_source_link(spath, context):
+    """Return a link to a merge source."""
+    return tag.a('/' + spath, title=_('View merge source'),
+                 href=context.href.browser(spath,
+                                           rev=context.resource.version))
 
-    def _get_revs_link(self, label, context, spath, revs):
-        """Return a link to the revision log when more than one revision is
-        given, to the revision itself for a single revision, or a `<span>`
-        with "no revision" for none.
-        """
-        if not revs:
-            return tag.span(label, title=_('No revisions'))
-        elif ',' in revs or '-' in revs:
-            revs_href = context.href.log(spath, revs=revs)
-        else:
-            revs_href = context.href.changeset(revs, spath)
-        return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
+def _get_revs_link(label, context, spath, revs):
+    """Return a link to the revision log when more than one revision is
+    given, to the revision itself for a single revision, or a `<span>`
+    with "no revision" for none.
+    """
+    if not revs:
+        return tag.span(label, title=_('No revisions'))
+    elif ',' in revs or '-' in revs:
+        revs_href = context.href.log(spath, revs=revs)
+    else:
+        revs_href = context.href.changeset(revs, spath)
+    return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
 
-    def _render_needslock(self, context):
-        return tag.img(src=context.href.chrome('common/lock-locked.png'),
-                       alt="needs lock", title="needs lock")
+
+class SubversionMergePropertyDiffRenderer(Component):
+    implements(IPropertyDiffRenderer)
 
     # IPropertyDiffRenderer methods
 
@@ -240,8 +269,8 @@ class SubversionPropertyRenderer(Component):
         def revs_link(revs, context):
             if revs:
                 revs = to_ranges(revs)
-                return self._get_revs_link(revs.replace(',', u',\u200b'),
-                                           context, spath, revs)
+                return _get_revs_link(revs.replace(',', u',\u200b'),
+                                      context, spath, revs)
         modified_sources = []
         for spath, new_revs in new_sources.iteritems():
             if spath in old_sources:
@@ -260,15 +289,15 @@ class SubversionPropertyRenderer(Component):
                 pass
             if added or removed:
                 modified_sources.append((
-                    spath, [self._get_source_link(spath, new_context), status],
+                    spath, [_get_source_link(spath, new_context), status],
                     added and tag(added_label, revs_link(added, new_context)),
                     removed and tag(removed_label,
                                     revs_link(removed, old_context))))
         # Go through remaining old sources, those were deleted
         removed_sources = []
-        for spath, (path, old_revs) in old_sources.iteritems():
+        for spath, old_revs in old_sources.iteritems():
             removed_sources.append((spath,
-                                    self._get_source_link(spath, old_context)))
+                                    _get_source_link(spath, old_context)))
         if modified_sources or removed_sources:
             modified_sources.sort()
             removed_sources.sort()
