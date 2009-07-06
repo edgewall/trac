@@ -1023,14 +1023,16 @@ class AnyDiffModule(Component):
                     return embedded_numbers(entry.name)
                 return entry.isfile, name_order(entry)
 
-            html = tag.ul(
+            elem = tag.ul(
                 [tag.li(is_dir and tag.b(path) or path)
                  for e in sorted(node.get_entries(), key=kind_order)
                  for is_dir, path in [(e.isdir, '/' + e.path.lstrip('/'))]
                  if e.name.lower().startswith(prefix)]
             )
 
-            req.write(html.generate().render('xhtml'))
+            xhtml = elem.generate().render('xhtml')
+            req.send_header('Content-Length', len(xhtml))
+            req.write(xhtml)
             return
 
         # -- retrieve arguments
