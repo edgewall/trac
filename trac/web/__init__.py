@@ -3,8 +3,9 @@
 # PYTHON_EGG_CACHE variable is set from there
 #
 # TODO: Remove this once the Genshi zip_safe issue has been resolved.
-from pkg_resources import get_provider, ZipProvider
-if isinstance(get_provider('genshi'), ZipProvider):
+import os
+from pkg_resources import get_distribution
+if not os.path.isdir(get_distribution('genshi').location):
     try:
         import mod_python.apache
         import sys
