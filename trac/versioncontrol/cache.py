@@ -40,6 +40,8 @@ class CachedRepository(Repository):
 
     has_linear_changesets = False
 
+    scope = property(lambda self: self.repos.scope)
+    
     def __init__(self, getdb, repos, authz, log):
         Repository.__init__(self, repos.name, authz, log)
         if callable(getdb):
