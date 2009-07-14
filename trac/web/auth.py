@@ -296,7 +296,7 @@ class BasicAuthentication(PasswordFileAuthentication):
 
         start_response('401 Unauthorized',
                        [('WWW-Authenticate', 'Basic realm="%s"' % self.realm),
-                        ('Content-Length', 0)])('')
+                        ('Content-Length', '0')])('')
 
 
 class DigestAuthentication(PasswordFileAuthentication):
@@ -352,7 +352,7 @@ class DigestAuthentication(PasswordFileAuthentication):
                        [('WWW-Authenticate',
                         'Digest realm="%s", nonce="%s", qop="auth", stale="%s"'
                         % (self.realm, nonce, stale)),
-                        ('Content-Length', 0)])('')
+                        ('Content-Length', '0')])('')
 
     def do_auth(self, environ, start_response):
         header = environ.get('HTTP_AUTHORIZATION')
