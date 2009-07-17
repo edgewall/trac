@@ -1,3 +1,9 @@
+Trac 0.11.5 (July 17, 2009)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11.5
+
+ Trac 0.11.5 is identical to 0.11.5rc2 except for fixing a minor
+ incompatibility issue when using IIS via AJP as frontend (#8475).
+
 Trac 0.11.5rc2 (July 11, 2009)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.5rc2
 
