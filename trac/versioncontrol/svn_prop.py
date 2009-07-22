@@ -158,7 +158,11 @@ class SubversionMergePropertyRenderer(Component):
                 if path not in branch_starts:
                     branch_starts[path] = rev + 1
         rows = []
-        for line in props[name].splitlines():
+        if name.startswith('svnmerge-'):
+            sources = props[name].split()
+        else:
+            sources = props[name].splitlines()
+        for line in sources:
             path, revs = line.split(':', 1)
             spath = _path_within_scope(repos.scope, path)
             if spath is None:
