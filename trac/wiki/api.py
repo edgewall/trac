@@ -82,8 +82,16 @@ class IWikiMacroProvider(Interface):
     def render_macro(req, name, content):
         """Return the HTML output of the macro (deprecated)"""
 
-    def expand_macro(formatter, name, content):
+    def expand_macro(formatter, name, content, args={}):
         """Called by the formatter when rendering the parsed wiki text.
+
+        `content` is the content of the macro call. When called using macro
+        syntax (`[[Macro(content)]]`), this is the string contained between
+        parentheses, usually containing macro arguments. When called using wiki
+        processor syntax (`{{{!#Macro ...}}}`), it is the content of the
+        processor block, that is, the text starting on the line following the
+        macro name. In this case, `args` contains the named arguments passed on
+        the same line as the macro name.
 
         (since 0.11)
         """
