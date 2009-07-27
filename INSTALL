@@ -17,7 +17,7 @@ Requirements
 ------------
 To install Trac, the following software packages must be installed:
 
- * Python, version >= 2.3.
+ * Python, version >= 2.4.
  * setuptools, version >= 0.6
  * Genshi, version >= 0.5
  * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python bindings (not PySVN, that's something different).

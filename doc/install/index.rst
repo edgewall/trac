@@ -45,7 +45,7 @@ __ install-index-environment_
 Requirements
 ============
 
-:Python: >= 2.3 *(If using mod_python or mod_wsgi, 2.5 is preferred.)*
+:Python: >= 2.4 *(If using mod_python or mod_wsgi, 2.5 is preferred.)*
 :setuptools: >= 0.6
 :Genshi: >= 0.4.1
 :Database: See below
