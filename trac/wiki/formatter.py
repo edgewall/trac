@@ -158,6 +158,8 @@ class WikiProcessor(object):
         return elt
 
     def _div_processor(self, text):
+        if 'class' not in self.args:
+            self.args['class'] = 'wikipage'
         return self._elt_processor('div', format_to_html, text, self.args)
     
     def _span_processor(self, text):
@@ -807,8 +809,6 @@ class Formatter(object):
                 values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
                           for v in args[1::2]]
                 args = dict(zip(keys, values))
-                if 'class' not in args:
-                    args['class'] = 'wikipage'
                 self.code_processor = WikiProcessor(self, name, args)
             else:
                 self.code_buf.append(line)
