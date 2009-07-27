@@ -186,7 +186,7 @@ class CommitTicketUpdate(Component):
         return """\
 In [%s]:
 {{{
-#!ChangesetMessage repository="%s" revision="%s" hide_noref=1
+#!CommitTicketReference repository="%s" revision="%s"
 %s
 }}}""" % (revstring, repos.reponame, changeset.rev, changeset.message.strip())
         
@@ -245,29 +245,26 @@ In [%s]:
         pass
 
 
-class ChangesetMessageMacro(WikiMacroBase):
+class CommitTicketReferenceMacro(WikiMacroBase):
     """Insert a changeset message into the output.
     
     This macro must be called using wiki processor syntax as follows:
     {{{
     {{{
-    #!ChangesetMessage repository="reponame" revision="rev" hide_noref=b
+    #!CommitTicketReference repository="reponame" revision="rev"
     }}}
     }}}
     where the arguments are the following:
      - `repository`: the repository containing the changeset
      - `revision`: the revision of the desired changeset
-     - `hide_noref`: if 1, hide the message if it doesn't reference the ticket
-       on which the comment is placed
     """
     
     def expand_macro(self, formatter, name, content, args={}):
         reponame = args.get('repository')
         rev = args.get('revision')
-        hide_noref = bool(args.get('hide_noref', False))
         repos = RepositoryManager(self.env).get_repository(reponame, None)
         changeset = repos.get_changeset(rev)
-        if hide_noref and formatter.context.resource.realm == 'ticket':
+        if formatter.context.resource.realm == 'ticket':
             ticket_re = CommitTicketUpdate.ticket_re
             if not any(int(tkt_id) == formatter.context.resource.id
                        for tkt_id in ticket_re.findall(changeset.message)):
