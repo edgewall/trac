@@ -482,7 +482,7 @@ class Request(object):
         # FieldStorage where QUERY_STRING is no longer ignored for POST
         # requests. We'll keep the pre 2.6 behaviour for now...
         if self.method == 'POST':
-            qs_on_post = self.environ.pop('QUERY_STRING')
+            qs_on_post = self.environ.pop('QUERY_STRING', '')
         fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
         if self.method == 'POST':
             self.environ['QUERY_STRING'] = qs_on_post
