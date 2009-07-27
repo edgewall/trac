@@ -15,7 +15,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import re, sys, os, time
-from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
@@ -73,9 +72,9 @@ class MySQLConnector(Component):
         else:
             return []
 
-    def get_connection(self, path, user=None, password=None, host=None,
-                       port=None, params={}, log=None):
-        cnx = MySQLConnection(path, user, password, host, port, params, log)
+    def get_connection(self, path, log=None, user=None, password=None,
+                       host=None, port=None, params={}):
+        cnx = MySQLConnection(path, log, user, password, host, port, params)
         if not self._version:
             self._version = get_pkginfo(MySQLdb).get('version',
                                                      MySQLdb.__version__)
@@ -87,9 +86,10 @@ class MySQLConnector(Component):
                                         ('MySQLdb', self._version)])
         return cnx
     
-    def init_db(self, path, user=None, password=None, host=None, port=None,
-                params={}):
-        cnx = self.get_connection(path, user, password, host, port, params)
+    def init_db(self, path, log=None, user=None, password=None, host=None,
+                port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
         cursor = cnx.cursor()
         from trac.db_default import schema
         for table in schema:
@@ -150,14 +150,22 @@ class MySQLConnector(Component):
                   self._collist(table, index.columns))
 
     def backup(self, dest_file):
+        try:
+            from subprocess import Popen, PIPE
+        except ImportError:
+            raise TracError('Python >= 2.4 or the subprocess module '
+                            'is required for pre-upgrade backup support')
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.mysqldump_path, '-u', db_prop['user'],
-                '-h', db_prop['host']]
+        args = [self.mysqldump_path]
+        if 'host' in db_prop:
+            args.extend(['-h', db_prop['host']])
         if 'port' in db_prop:
             args.extend(['-P', str(db_prop['port'])])
+        if 'user' in db_prop:
+            args.extend(['-u', db_prop['user']])
         args.extend(['-r', dest_file, db_name])
         
         environ = os.environ.copy()
@@ -176,8 +184,8 @@ class MySQLConnection(ConnectionWrapper):
 
     poolable = True
 
-    def __init__(self, path, user=None, password=None, host=None,
-                 port=None, params={}, log=None):
+    def __init__(self, path, log, user=None, password=None, host=None,
+                 port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
         if password == None:
@@ -200,7 +208,7 @@ class MySQLConnection(ConnectionWrapper):
         return 'concat(%s)' % ', '.join(args)
 
     def like(self):
-        return "LIKE %s ESCAPE '/'"
+        return "LIKE %s COLLATE utf8_general_ci ESCAPE '/'"
 
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)

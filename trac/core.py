@@ -33,10 +33,13 @@ class TracError(Exception):
         error message.
         """
         Exception.__init__(self, message)
-        self.message = message
+        self._message = message
         if title:
             self.title = title
         self.show_traceback = show_traceback
+
+    message = property(lambda self: self._message, 
+                       lambda self, v: setattr(self, '_message', v))
 
     def __unicode__(self):
         return unicode(self.message)

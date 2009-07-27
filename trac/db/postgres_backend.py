@@ -15,7 +15,6 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import re, sys, os, time
-from subprocess import Popen, PIPE
 
 from trac.core import *
 from trac.config import Option
@@ -46,12 +45,12 @@ class PostgreSQLConnector(Component):
     def get_supported_schemes(self):
         return [('postgres', 1)]
 
-    def get_connection(self, path, user=None, password=None, host=None,
-                       port=None, params={}, log=None):
+    def get_connection(self, path, log=None, user=None, password=None,
+                       host=None, port=None, params={}):
         global psycopg
         global PgSQL
-        cnx = PostgreSQLConnection(path, user, password, host, port, params,
-                                   log)
+        cnx = PostgreSQLConnection(path, log, user, password, host, port,
+                                   params)
         if not self._version:
             if psycopg:
                 self._version = get_pkginfo(psycopg).get('version',
@@ -68,9 +67,10 @@ class PostgreSQLConnector(Component):
             self.env.systeminfo.append((name, self._version))
         return cnx
 
-    def init_db(self, path, user=None, password=None, host=None, port=None,
-                params={}):
-        cnx = self.get_connection(path, user, password, host, port, params)
+    def init_db(self, path, log=None, user=None, password=None, host=None,
+                port=None, params={}):
+        cnx = self.get_connection(path, log, user, password, host, port,
+                                  params)
         cursor = cnx.cursor()
         if cnx.schema:
             cursor.execute('CREATE SCHEMA "%s"' % cnx.schema)
@@ -104,22 +104,26 @@ class PostgreSQLConnector(Component):
                      '","'.join(index.columns))
 
     def backup(self, dest_file):
+        try:
+            from subprocess import Popen, PIPE
+        except ImportError:
+            raise TracError('Python >= 2.4 or the subprocess module '
+                            'is required for pre-upgrade backup support')
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
+        db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8',
-                '-U', db_prop['user'],]
-        port = db_prop.get('port', '5432')
+        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8']
+        if 'user' in db_prop:
+            args.extend(['-U', db_prop['user']])
         if 'host' in db_prop['params']:
             host = db_prop['params']['host']
         else:
             host = db_prop.get('host', 'localhost')
-        args.append('-h')
-        args.append(host)
+        args.extend(['-h', host])
         if '/' not in host:
-            args.append('-p')
-            args.append(str(port))
+            args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_prop['params']:
             args.extend(['-n', db_prop['params']['schema']])
@@ -144,8 +148,8 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     poolable = True
 
-    def __init__(self, path, user=None, password=None, host=None, port=None,
-                 params={}, log=None):
+    def __init__(self, path, log=None, user=None, password=None, host=None,
+                 port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
         # We support both psycopg and PgSQL but prefer psycopg

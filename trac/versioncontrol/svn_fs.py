@@ -438,14 +438,15 @@ class SubversionRepository(Repository):
 
         return SubversionNode(path, rev, self, self.pool)
 
-    def _get_node_revs(self, path, rev=None):
-        """Return the revisions affecting `path` between its creation and
-        `rev`.
+    def _get_node_revs(self, path, last=None, first=None):
+        """Return the revisions affecting `path` between `first` and `last` 
+        revs. If `first` is not given, it goes down to the revision in which
+        the branch was created.
         """
-        node = self.get_node(path, rev)
+        node = self.get_node(path, last)
         revs = []
         for (p, r, chg) in node.get_history():
-            if p != path:
+            if p != path or (first and r < first):
                 break
             revs.append(r)
         return revs
@@ -789,6 +790,40 @@ class SubversionNode(Node):
     def _get_prop(self, name):
         return fs.node_prop(self.root, self._scoped_path_utf8, name,
                             self.pool())
+
+    def get_copy_ancestry(self):
+        """Retrieve the list of `(path,rev)` copy ancestors of this node.
+        Most recent ancestor first. Each ancestor `(path, rev)` corresponds 
+        to the path and revision of the source at the time the copy or move
+        operation was performed.
+        """
+        ancestors = []
+        previous = (self._scoped_path_utf8, self._requested_rev, self.root)
+        while previous:
+            (previous_path, previous_rev, previous_root) = previous
+            previous = None
+            root_path = fs.closest_copy(previous_root, previous_path)
+            if root_path:
+                (root, path) = root_path
+                path = path.lstrip('/')
+                rev = fs.revision_root_revision(root)
+                relpath = None
+                if path != previous_path:
+                    # `previous_path` is a subfolder of `path` and didn't
+                    # change since `path` was copied
+                    relpath = previous_path[len(path):].strip('/')
+                copied_from = fs.copied_from(root, path)
+                if copied_from:
+                    (rev, path) = fs.copied_from(root, path)
+                    path = path.lstrip('/')
+                    root = fs.revision_root(self.fs_ptr, rev, self.pool())
+                    if relpath:
+                        path += '/' + relpath
+                    ui_path = _path_within_scope(self.scope, _from_svn(path))
+                    if ui_path:
+                        ancestors.append((ui_path, rev))
+                    previous = (path, rev, root)
+        return ancestors
 
 
 class SubversionChangeset(Changeset):

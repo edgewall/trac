@@ -40,10 +40,10 @@ class IDatabaseConnector(Interface):
         their relative priorities as an iterable of `(scheme, priority)` tuples.
         """
 
-    def get_connection(**kwargs):
+    def get_connection(path, log=None, **kwargs):
         """Create a new connection to the database."""
         
-    def init_db(**kwargs):
+    def init_db(path, log=None, **kwargs):
         """Initialize the database."""
 
     def to_sql(table):
@@ -153,8 +153,9 @@ def _parse_db_str(db_str):
             host = None
             path = rest
         else:
-            raise TracError(_('Database connection string must start with '
-                              'scheme:/'))
+            raise TracError(_('Unknown scheme "%(scheme)s"; database '
+                              'connection string must start with {scheme}:/',
+                              scheme=scheme))
     else:
         if not rest.startswith('//'):
             host = None

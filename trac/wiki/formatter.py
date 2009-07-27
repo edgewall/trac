@@ -34,6 +34,7 @@ from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
+from trac.util import arity
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 from trac.util.html import TracHTMLSanitizer
@@ -175,8 +176,12 @@ class WikiProcessor(object):
     def _macro_processor(self, text):
         self.env.log.debug('Executing Wiki macro %s by provider %s'
                            % (self.name, self.macro_provider))
-        return self.macro_provider.expand_macro(self.formatter, self.name,
-                                                text)
+        if arity(self.macro_provider.expand_macro) == 5:
+            return self.macro_provider.expand_macro(self.formatter, self.name,
+                                                    text, self.args)
+        else:
+            return self.macro_provider.expand_macro(self.formatter, self.name,
+                                                    text)
 
     def _mimeview_processor(self, text):
         return Mimeview(self.env).render(self.formatter.context,
@@ -796,7 +801,7 @@ class Formatter(object):
             match = WikiParser._processor_re.match(line)
             if match:
                 name = match.group(1)
-                args = WikiParser._processor_param_re.split(line[len(name):])
+                args = WikiParser._processor_param_re.split(line[2+len(name):])
                 del args[::3]
                 keys = [str(k) for k in args[::2]] # used as keyword parameters
                 values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
