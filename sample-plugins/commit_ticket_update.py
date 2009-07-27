@@ -38,6 +38,8 @@
 from datetime import datetime
 import re
 
+from genshi.builder import tag
+
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
 from trac.ticket import Ticket
@@ -45,7 +47,10 @@ from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
-from trac.versioncontrol import IRepositoryChangeListener
+from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
+from trac.versioncontrol.web_ui.changeset import ChangesetModule
+from trac.wiki.formatter import format_to_html
+from trac.wiki.macros import WikiMacroBase
 
 
 class CommitTicketUpdate(Component):
@@ -103,7 +108,10 @@ class CommitTicketUpdate(Component):
     
     commands_refs = Option('ticket', 'commit_ticket_update_commands.refs',
         'addresses re references refs see',
-        """Commands that add a reference, as a space-separated list.""")
+        """Commands that add a reference, as a space-separated list.
+        
+        If set to the special value <ALL>, all tickets referenced by the
+        message will get a reference to the changeset.""")
     
     notify = BoolOption('ticket', 'commit_ticket_update_notify', 'true',
         """Send ticket change notification when updating a ticket.""")
@@ -163,9 +171,11 @@ class CommitTicketUpdate(Component):
         tickets = {}
         for cmd, tkts in cmd_groups:
             func = functions.get(cmd.lower())
+            if not func and self.commands_refs.strip() == '<ALL>':
+                func = self.cmd_refs
             if func:
                 for tkt_id in self.ticket_re.findall(tkts):
-                    tickets.setdefault(tkt_id, []).append(func)
+                    tickets.setdefault(int(tkt_id), []).append(func)
         return tickets
     
     def make_ticket_comment(self, repos, changeset):
@@ -173,15 +183,20 @@ class CommitTicketUpdate(Component):
         revstring = str(changeset.rev)
         if repos.reponame:
             revstring += '/' + repos.reponame
-        return 'In [%s]:\n\n%s' % (revstring, changeset.message.strip())
+        return """\
+In [%s]:
+{{{
+#!ChangesetMessage repository="%s" revision="%s" hide_noref=1
+%s
+}}}""" % (revstring, repos.reponame, changeset.rev, changeset.message.strip())
         
     def _update_tickets(self, tickets, author, comment, date):
         """Update the tickets with the given comment."""
         db = self.env.get_db_cnx()
         for tkt_id, cmds in tickets.iteritems():
             try:
-                self.log.debug("Updating ticket #%s", tkt_id)
-                ticket = Ticket(self.env, int(tkt_id), db)
+                self.log.debug("Updating ticket #%d", tkt_id)
+                ticket = Ticket(self.env, tkt_id, db)
                 for cmd in cmds:
                     cmd(ticket)
                 
@@ -228,3 +243,39 @@ class CommitTicketUpdate(Component):
 
     def cmd_refs(self, ticket):
         pass
+
+
+class ChangesetMessageMacro(WikiMacroBase):
+    """Insert a changeset message into the output.
+    
+    This macro must be called using wiki processor syntax as follows:
+    {{{
+    {{{
+    #!ChangesetMessage repository="reponame" revision="rev" hide_noref=b
+    }}}
+    }}}
+    where the arguments are the following:
+     - `repository`: the repository containing the changeset
+     - `revision`: the revision of the desired changeset
+     - `hide_noref`: if 1, hide the message if it doesn't reference the ticket
+       on which the comment is placed
+    """
+    
+    def expand_macro(self, formatter, name, content, args={}):
+        reponame = args.get('repository')
+        rev = args.get('revision')
+        hide_noref = bool(args.get('hide_noref', False))
+        repos = RepositoryManager(self.env).get_repository(reponame, None)
+        changeset = repos.get_changeset(rev)
+        if hide_noref and formatter.context.resource.realm == 'ticket':
+            ticket_re = CommitTicketUpdate.ticket_re
+            if not any(int(tkt_id) == formatter.context.resource.id
+                       for tkt_id in ticket_re.findall(changeset.message)):
+                return tag.p("(The changeset message doesn't reference this "
+                             "ticket)", class_='hint')
+        if ChangesetModule(self.env).wiki_format_messages:
+            return tag.div(format_to_html(self.env,
+                formatter.context('changeset', (reponame, changeset.rev)),
+                changeset.message, escape_newlines=True), class_='message')
+        else:
+            return tag.pre(changeset.message, class_='message')
