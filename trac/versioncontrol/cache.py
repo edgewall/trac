@@ -68,11 +68,10 @@ class CachedRepository(Repository):
         return self.repos.get_base()
         
     def get_quickjump_entries(self, rev):
-        for category, name, path, rev in self.repos.get_quickjump_entries(rev):
-            yield category, name, path, rev
+        return self.repos.get_quickjump_entries(self.normalize_rev(rev))
 
     def get_changeset(self, rev):
-        return CachedChangeset(self.repos, self.repos.normalize_rev(rev),
+        return CachedChangeset(self.repos, self.normalize_rev(rev),
                                self.env, self.authz)
 
     def get_changesets(self, start, stop):
@@ -275,7 +274,7 @@ class CachedRepository(Repository):
                 self.repos.authz = authz
 
     def get_node(self, path, rev=None):
-        return self.repos.get_node(path, rev)
+        return self.repos.get_node(path, self.normalize_rev(rev))
 
     def _get_node_revs(self, path, last=None, first=None):
         """Return the revisions affecting `path` between `first` and `last`
@@ -305,7 +304,7 @@ class CachedRepository(Repository):
         return [int(row[0]) for row in cursor]
 
     def has_node(self, path, rev=None):
-        return self.repos.has_node(path, rev)
+        return self.repos.has_node(path, self.normalize_rev(rev))
 
     def get_oldest_rev(self):
         return self.repos.oldest_rev
@@ -317,13 +316,13 @@ class CachedRepository(Repository):
         if self.has_linear_changesets:
             return self._next_prev_rev('<', rev, path)
         else:
-            return self.repos.previous_rev(rev, path)
+            return self.repos.previous_rev(self.normalize_rev(rev), path)
 
     def next_rev(self, rev, path=''):
         if self.has_linear_changesets:
             return self._next_prev_rev('>', rev, path)
         else:
-            return self.repos.next_rev(rev, path)
+            return self.repos.next_rev(self.normalize_rev(rev), path)
 
     def _next_prev_rev(self, direction, rev, path=''):
         db = self.env.get_db_cnx()
@@ -360,21 +359,34 @@ class CachedRepository(Repository):
             return rev
 
     def rev_older_than(self, rev1, rev2):
-        return self.repos.rev_older_than(rev1, rev2)
+        return self.repos.rev_older_than(self.normalize_rev(rev1),
+                                         self.normalize_rev(rev2))
 
     def get_path_history(self, path, rev=None, limit=None):
-        return self.repos.get_path_history(path, rev, limit)
+        return self.repos.get_path_history(path, self.normalize_rev(rev),
+                                           limit)
 
     def normalize_path(self, path):
         return self.repos.normalize_path(path)
 
     def normalize_rev(self, rev):
-        return self.repos.normalize_rev(rev)
+        if rev is None or isinstance(rev, basestring) and \
+               rev.lower() in ('', 'head', 'latest', 'youngest'):
+            return self.youngest_rev
+        else:
+            try:
+                rev = int(rev)
+                if rev <= self.youngest_rev:
+                    return rev
+            except (ValueError, TypeError):
+                pass
+            raise NoSuchChangeset(rev)
 
     def get_changes(self, old_path, old_rev, new_path, new_rev, 
-            ignore_ancestry=1):
-        return self.repos.get_changes(old_path, old_rev, new_path, new_rev, 
-                ignore_ancestry)
+                    ignore_ancestry=1):
+        return self.repos.get_changes(old_path, self.normalize_rev(old_rev),
+                                      new_path, self.normalize_rev(new_rev), 
+                                      ignore_ancestry)
 
 
 class CachedChangeset(Changeset):
