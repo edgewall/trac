@@ -276,7 +276,7 @@ class EnvironmentStub(Environment):
                 return True
         return False
 
-    def get_db_cnx(self):
+    def get_db_cnx(self, destroying=False):
         if self.db:
             return self.db # in-memory SQLite
 
@@ -289,7 +289,8 @@ class EnvironmentStub(Environment):
         if not dbenv:
             dbenv = EnvironmentStub.dbenv = EnvironmentStub()
             dbenv.config.set('trac', 'database', self.dburi)
-            self.reset_db() # make sure we get rid of garbage from previous run
+            if not destroying:
+                self.reset_db() # make sure we get rid of previous garbage
         return DatabaseManager(dbenv).get_connection()
 
     def reset_db(self, default_data=None):
@@ -347,7 +348,7 @@ class EnvironmentStub(Environment):
         if not (scheme and db_prop):
             scheme, db_prop = _parse_db_str(self.dburi)
 
-        db = self.get_db_cnx()
+        db = self.get_db_cnx(destroying=True)
         cursor = db.cursor()
         try:
             if scheme == 'postgres' and db.schema:
