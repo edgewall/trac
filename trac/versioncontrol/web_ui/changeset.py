@@ -1091,24 +1091,30 @@ class AnyDiffModule(Component):
         return req.path_info == '/diff'
 
     def process_request(self, req):
-        repos = self.env.get_repository('', req.authname)
+        rm = RepositoryManager(self.env)
 
         if req.get_header('X-Requested-With') == 'XMLHttpRequest':
             dirname, prefix = posixpath.split(req.args.get('q'))
             prefix = prefix.lower()
-            node = repos.get_node(dirname)
-
+            reponame, repos, path = rm.get_repository_by_path(dirname,
+                                                              req.authname)
+            # an entry is a (isdir, name, path) tuple
             def kind_order(entry):
-                def name_order(entry):
-                    return embedded_numbers(entry.name)
-                return entry.isfile, name_order(entry)
+                return (not entry[0], embedded_numbers(entry[1]))
+
+            if repos:
+                node = repos.get_node(path)
+                entries = [(e.isdir, e.name, 
+                            '/' + posixpath.join(reponame, e.path))
+                           for e in repos.get_node(path).get_entries()]
+            else:
+                entries = [(True, r, '/' + r)
+                           for r in rm.get_all_repositories()]
 
             elem = tag.ul(
-                [tag.li(is_dir and tag.b(path) or path)
-                 for e in sorted(node.get_entries(), key=kind_order)
-                 for is_dir, path in [(e.isdir, '/' + e.path.lstrip('/'))]
-                 if e.name.lower().startswith(prefix)]
-            )
+                [tag.li(isdir and tag.b(path) or path)
+                 for (isdir, name, path) in sorted(entries, key=kind_order)
+                 if name.lower().startswith(prefix)])
 
             xhtml = elem.generate().render('xhtml')
             req.send_header('Content-Length', len(xhtml))
@@ -1122,21 +1128,22 @@ class AnyDiffModule(Component):
         old_rev = req.args.get('old_rev')
 
         # -- normalize
-        new_path = repos.normalize_path(new_path)
-        if not new_path.startswith('/'):
-            new_path = '/' + new_path
-        new_rev = repos.normalize_rev(new_rev)
-        old_path = repos.normalize_path(old_path)
-        if not old_path.startswith('/'):
-            old_path = '/' + old_path
-        old_rev = repos.normalize_rev(old_rev)
+        new_reponame, new_repos, new_path = \
+            rm.get_repository_by_path(new_path, req.authname)
+        old_reponame, old_repos, old_path = \
+            rm.get_repository_by_path(old_path, req.authname)
+        new_rev = new_repos.normalize_rev(new_rev)
+        old_rev = old_repos.normalize_rev(old_rev)
 
-        repos.authz.assert_permission_for_changeset(new_rev)
-        repos.authz.assert_permission_for_changeset(old_rev)
+        # FIXME: replace by fine grained permission checks
+        new_repos.authz.assert_permission_for_changeset(new_rev)
+        old_repos.authz.assert_permission_for_changeset(old_rev)
 
         # -- prepare rendering
-        data = {'new_path': new_path, 'new_rev': new_rev,
-                'old_path': old_path, 'old_rev': old_rev}
+        data = {'new_path': posixpath.join(new_reponame, new_path),
+                'new_rev': new_rev,
+                'old_path': posixpath.join(old_reponame, old_path),
+                'old_rev': old_rev}
 
         add_script(req, 'common/js/suggest.js')
         return 'diff_form.html', data, None
