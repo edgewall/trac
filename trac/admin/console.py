@@ -1154,7 +1154,7 @@ Congratulations!
             self.__env.upgrade(backup=do_backup)
         except TracError, e:
             msg = unicode(e)
-            if 'backup' in msg:
+            if 'backup' in msg.lower():
                 raise TracError("Backup failed '%s'.\nUse `--no-backup' to "
                                 "upgrade without doing a backup." % msg)
             else:
