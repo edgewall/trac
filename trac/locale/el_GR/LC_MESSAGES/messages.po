@@ -1,5 +1,5 @@
 # Greek (Greece) translations for Trac.
-# Copyright (C) 2008 Edgewall Software
+# Copyright (C) 2008-2009 Edgewall Software
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2008.
 #
@@ -124,8 +124,8 @@ msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr ""
-"Λείπει η μεταβλητή περιβάλλοντος \"TRAC_ENV\". Το Trac χρειάζεται τη μεταβλητή αυτή"
-" για να εντοπίσει ένα έγκυρο περιβάλλον Trac."
+"Λείπει η μεταβλητή περιβάλλοντος \"TRAC_ENV\". Το Trac χρειάζεται τη "
+"μεταβλητή αυτή για να εντοπίσει ένα έγκυρο περιβάλλον Trac."
 
 #: trac/env.py:578
 #, python-format
@@ -153,12 +153,16 @@ msgstr "Το TLS είναι ενεργοποιημένο αλλά ο εξυπη�
 
 #: trac/notification.py:395
 msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-msgstr "Η εργασία περιέχει χαρακτήρες που δεν περιλαμβάνονται στο ASCII.Παρακαλώ, αλλάξτε κωδικοποίηση"
+msgstr ""
+"Η εργασία περιέχει χαρακτήρες που δεν περιλαμβάνονται στο ASCII. Παρακαλώ,"
+" αλλάξτε κωδικοποίηση"
 
 #: trac/perm.py:46
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr "Απαιτούνται προνόμια %(perm)s για την επιτέλεση της λειτουργίας αυτής στο %(resource)s"
+msgstr ""
+"Απαιτούνται προνόμια %(perm)s για την επιτέλεση της λειτουργίας αυτής στο"
+" %(resource)s"
 
 #: trac/perm.py:48
 #, python-format
@@ -449,8 +453,8 @@ msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
 msgstr ""
-"Μπορείς να διαγράψεις όλα τα αντικείμενα από αυτή τη λίστα για να "
-"	 κρύψεις εντελώς αυτό το πεδίο από τη διεπαφή χρήστη."
+"Μπορείς να διαγράψεις όλα τα αντικείμενα από αυτή τη λίστα για να\n"
+"κρύψεις εντελώς αυτό το πεδίο από τη διεπαφή χρήστη."
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:77
@@ -461,14 +465,13 @@ msgid ""
 "            will remain completely hidden from the user interface."
 msgstr ""
 "Εφόσον δεν προσθέσετε κανένα αντικείμενο στη λίστα, αυτό το πεδίο\n"
-"			θα παραμείνει εντελώς κρυμμένο από τη διεπαφή χρήστη."
+"θα παραμείνει εντελώς κρυμμένο από τη διεπαφή χρήστη."
 
 #: trac/admin/templates/admin_enums.html:13
 msgid "Manage"
 msgstr "Διαχείριση"
 
 #: trac/admin/templates/admin_enums.html:18
-#, fuzzy
 msgid "Modify"
 msgstr "Τροποποιήσετε"
 
@@ -494,7 +497,9 @@ msgstr "αρχείο ημερολογίου:"
 
 #: trac/admin/templates/admin_logging.html:47
 msgid "If you specify a relative path, the log file will be stored inside the"
-msgstr "Αν προσδιορίσετε ένα σχετικό μονοπάτι, το αρχείο ημερολογίου θα αποθηκευτεί μέσα στο"
+msgstr ""
+"Αν προσδιορίσετε ένα σχετικό μονοπάτι, το αρχείο ημερολογίου θα "
+"αποθηκευτεί μέσα στο"
 
 #: trac/admin/templates/admin_logging.html:49
 msgid "log"
@@ -545,7 +550,7 @@ msgstr "Ολοκληρώθηκε:"
 #: trac/admin/templates/admin_versions.html:35
 #: trac/ticket/templates/milestone_edit.html:81
 msgid "Description (you may use [1:WikiFormatting] here):"
-msgstr "Περιγραφή (μπορείτε να χρησιμοποιήσετε [1:Μορφοποίηση Wiki] εδώ"
+msgstr "Περιγραφή (μπορείτε να χρησιμοποιήσετε [1:WikiFormatting] εδώ):"
 
 #: trac/admin/templates/admin_milestones.html:75
 #, fuzzy
@@ -589,7 +594,7 @@ msgid ""
 "          or a group."
 msgstr ""
 "Παραχώρηση δικαιώματος για μία εντολή σε ένα θέμα, το οποίο μπορεί να είναι\n"
-"	 	είτε ένας χρήστης,είτε μία ομάδα"
+"είτε ένας χρήστης, είτε μία ομάδα."
 
 #: trac/admin/templates/admin_perms.html:45
 #, fuzzy
@@ -633,7 +638,7 @@ msgid ""
 "      as that is reserved for permission names."
 msgstr ""
 "τα ονόματα δεν πρέπει να είναι μόνο στα κεφαλαία,\n"
-"	διότι αυτά προορίζονται για ονόματα δικαιωμάτων."
+"διότι αυτά προορίζονται για ονόματα δικαιωμάτων."
 
 #: trac/admin/templates/admin_plugins.html:17
 msgid "Manage Plugins"
@@ -653,7 +658,7 @@ msgid ""
 "            the environment plugins directory."
 msgstr ""
 "Ο εξυπηρετητής διαδικτύου δεν έχει επαρκή δικαιώματα να αποθηκεύσει αρχεία\n"
-"		στο κατάλογο επεκτάσεων του περιβάλλοντος."
+"στο κατάλογο επεκτάσεων του περιβάλλοντος."
 
 #: trac/admin/templates/admin_plugins.html:32
 msgid "Upload a plugin packaged as Python egg."
@@ -727,7 +732,9 @@ msgstr "Μη υποστηριζόμενος τύπος βάσης δεδομέν
 
 #: trac/db/api.py:121
 msgid "Database connection string must start with scheme:/"
-msgstr "Το αλφαριθμητικό σύνδεσης με τη βάσης δεδομένων πρέπει να ξεκινάει με το σχήμα:"
+msgstr ""
+"Το αλφαριθμητικό σύνδεσης με τη βάσης δεδομένων πρέπει να ξεκινάει με το "
+"σχήμα:"
 
 #: trac/db/pool.py:113
 #, python-format
@@ -819,11 +826,12 @@ msgid ""
 " be\n"
 "      restored on subsequent visits."
 msgstr ""
-"Αυτή η σελίδα σας επιτρέπει να προσαρμόσετε τις προσωπικές σας ρυθμίσεις για αυτό τον ιστότοπο.\n"
-"		Αυτές οι ρυθμίσεις αποθηκεύονται στον εξυπηρετητή και είναι αναγνωρίσιμοι "
+"Αυτή η σελίδα σας επιτρέπει να προσαρμόσετε τις προσωπικές σας ρυθμίσεις "
+"για αυτό τον ιστότοπο.\n"
+"Αυτές οι ρυθμίσεις αποθηκεύονται στον εξυπηρετητή και είναι αναγνωρίσιμοι "
 "από ένα \n"
-"		κλειδί συνόδου που είναι αποθηκευμένο σε ένα cookie του φυλλομετρητή. Αυτό το cookie"
-"επιτρέπει\n"
+"κλειδί συνόδου που είναι αποθηκευμένο σε ένα cookie του φυλλομετρητή. Αυτό "
+"το cookie επιτρέπει\n"
 "την διατήρηση των ρυθμίσεων σας σε επόμενες επισκέψεις."	
 
 #: trac/prefs/templates/prefs.html:33
@@ -843,10 +851,10 @@ msgid ""
 "      in a different web browser."
 msgstr ""
 "Το κλειδί συνόδου χρησιμοποιείται για την αναγνώριση αποθηκευμένων\n"
-"	εξατομκευμένων ρυθμίσεων και δεδομένων συνόδου στον εξυπηρετητή.\n"
-"	Αν και παράγεται αυτόματα. μπορείτε να το αλλάξετε σε κάτι πιο\n"
-"	εύκολο για να το θυμάστε σε περίπτωση που επιθυμείτε να φορτώσετε\n"
-"	τις ρυθμίσεις σας σε διαφορετικό φυλλομετρητή"
+"εξατομκευμένων ρυθμίσεων και δεδομένων συνόδου στον εξυπηρετητή.\n"
+"Αν και παράγεται αυτόματα. μπορείτε να το αλλάξετε σε κάτι πιο\n"
+"εύκολο για να το θυμάστε σε περίπτωση που επιθυμείτε να φορτώσετε\n"
+"τις ρυθμίσεις σας σε διαφορετικό φυλλομετρητή"
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -864,9 +872,9 @@ msgid ""
 "      multiple computers and web browsers."
 msgstr ""
 "Μπορείτε να φορτώσετε μία προηγουμένως δημιουργημένη σύνοδο\n"
-"		εισάγοντας το αντίστοιχο κλειδί συνόδου παρακάτω. Αυτό σας\n"
-"		επιτρέπει να μοιράζεται τις ρυθμίσεις σας μεταξύ πολλαπλών\n"
-"		υπολογιστών και φυλλομετρητών."
+"εισάγοντας το αντίστοιχο κλειδί συνόδου παρακάτω. Αυτό σας\n"
+"επιτρέπει να μοιράζεται τις ρυθμίσεις σας μεταξύ πολλαπλών\n"
+"υπολογιστών και φυλλομετρητών."
 
 #: trac/prefs/templates/prefs_datetime.html:15
 msgid "Time zone:"
@@ -883,8 +891,8 @@ msgid ""
 "      instead of that of the server."
 msgstr ""
 "Η ρύθμιση της ζώνης ώρας σας θα έχει σαν αποτέλεσμα\n"
-"		οι ημερομηνίες και ώρες που εμφανίζονται στον ιστότοπο να χρησιμοποιούν\n"
-"		τη δικιά σας ζώνη ώρας αντί αυτή του εξυπηρετητή."
+"οι ημερομηνίες και ώρες που εμφανίζονται στον ιστότοπο να χρησιμοποιούν\n"
+"τη δικιά σας ζώνη ώρας αντί αυτή του εξυπηρετητή."
 
 #: trac/prefs/templates/prefs_datetime.html:28
 msgid "Example: The current time is"
@@ -936,7 +944,7 @@ msgid ""
 "        on this site with your contact details."
 msgstr ""
 "Αυτές οι πληροφορίες χρησιμοποιούνται για την αυτόματη συμπλήρωση\n"
-"		των στοιχείων σας σε ορισμένες φόρμες στον ιστότοπο αυτό."
+"των στοιχείων σας σε ορισμένες φόρμες στον ιστότοπο αυτό."
 
 #: trac/prefs/templates/prefs_general.html:30
 msgid ""
@@ -945,9 +953,9 @@ msgid ""
 "        notification and RSS feeds, for example."
 msgstr ""
 "Αυτές οι πληροφορίες χρησιμοποιούνται για τη συσχέτιση του ονόματος\n"
-"		σύνδεσής σας με τη διεύθυνση ηλ. ταχυδρομείου και το πλήρες όνομα, τα\n"
-"		οποία χρησιμοποιόυνται για ειδοποιήσεις μέσω ηλ. ταχυδρομείου και"
-"		 RSS feed για παράδειγμα."
+"σύνδεσής σας με τη διεύθυνση ηλ. ταχυδρομείου και το πλήρες όνομα, τα\n"
+"οποία χρησιμοποιόυνται για ειδοποιήσεις μέσω ηλ. ταχυδρομείου και"
+"RSS feed για παράδειγμα."
 
 #: trac/prefs/templates/prefs_keybindings.html:17
 msgid "Enable access keys"
@@ -961,9 +969,10 @@ msgid ""
 "      web browser, they are disabled by default. See"
 msgstr ""
 "Αυτός ο ιστότοπος παρέχει συντομεύσεις πληκτρολογίου για γρηγορότερη\n"
-"	πρόσβαση σε ορισμένες λειτουργίες αυτού του ιστότοπου. Επειδή οι\n"
-"	συντομεύσεις αυτές μπορεί να προκαλέσουν συγκρούσεις με συντομεύσεις\n"
-"	του λειτουργικού συστήματος ή του φυλλομετρητή, είναι αρχικά απενεργοποιημένοι."
+"πρόσβαση σε ορισμένες λειτουργίες αυτού του ιστότοπου. Επειδή οι\n"
+"συντομεύσεις αυτές μπορεί να προκαλέσουν συγκρούσεις με συντομεύσεις\n"
+"του λειτουργικού συστήματος ή του φυλλομετρητή, είναι αρχικά "
+"απενεργοποιημένοι."
 
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "TracAccessibility"
@@ -979,7 +988,7 @@ msgstr "Γλώσσα:"
 
 #: trac/prefs/templates/prefs_language.html:16
 msgid "default language"
-msgstr Προεπιλεγμένη γλώσσα""
+msgstr "ροεπιλεγμένη γλώσσα"
 
 #: trac/prefs/templates/prefs_language.html:21
 msgid ""
@@ -988,7 +997,7 @@ msgid ""
 "      server."
 msgstr ""
 "Η ρύθμιση της γλώσσας θα έχει σαν αποτέλεσμα την εμφάνιση όλων των κειμένων "
-"	   του ιστότοπου στη γλώσσα που ορίσατε αντί σε αυτή του εξυπηρετητή." 
+"του ιστότοπου στη γλώσσα που ορίσατε αντί σε αυτή του εξυπηρετητή." 
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid ""
@@ -996,8 +1005,7 @@ msgid ""
 "        language negotiation feature to select the appropriate language."
 msgstr ""
 "Η επιλογή 'Προεπιλεγμένη γλώσσα' χρησιμοποιεί το χαρακτηριστικό\n"
-"		διαπραγμάτευσης γλώσσας του φυλλομετρητή για την επιλογή της
-"		γλώσσας."
+"διαπραγμάτευσης γλώσσας του φυλλομετρητή για την επιλογή της γλώσσας."
 
 #: trac/prefs/templates/prefs_pygments.html:9
 msgid "Pygments Theme"
@@ -1118,10 +1126,10 @@ msgid ""
 "        and changes within a project."
 msgstr ""
 "Το Trac είναι ένα λογισμικό διαχείρισης έργων βασισμένο στο διαδίκτυο\n"
-"		με έμφαση στην ευκολία χρήσης.Παρέχει ένα ολοκληρωμένο Wiki, μία\n"
-"		διεπαφή για συστήματα έλεγχου εκδόσεων και έναν αριθμό από άνετους\n"
-"		τρόπους για να μένετε ενήμερος για όλα τα γεγονότα και αλλαγές στο\n"
-"		έργο." 
+"με έμφαση στην ευκολία χρήσης.Παρέχει ένα ολοκληρωμένο Wiki, μία\n"
+"διεπαφή για συστήματα έλεγχου εκδόσεων και έναν αριθμό από άνετους\n"
+"τρόπους για να μένετε ενήμερος για όλα τα γεγονότα και αλλαγές στο\n"
+"έργο." 
 
 #: trac/templates/about.html:35
 msgid "Trac is distributed under the modified BSD License."
@@ -1223,7 +1231,7 @@ msgstr "Διαγραφή συνημμένου"
 #: trac/templates/attachment.html:78 trac/ticket/api.py:211
 #: trac/ticket/templates/ticket.html:167
 msgid "Description"
-msgstr "Περιγράφη"
+msgstr "Περιγραφή"
 
 #: trac/templates/attachment.html:82
 msgid "(added by"
@@ -1391,7 +1399,7 @@ msgid ""
 "              that you inform your local"
 msgstr ""
 "Υπήρξε ένα εσωτερικό σφάλμα στο Trac. Συστήνεται\n"
-"              να πληροφορήσετε τον τοπικό"
+"να πληροφορήσετε τον τοπικό"
 
 #: trac/templates/error.html:108
 msgid ""
@@ -1407,7 +1415,7 @@ msgid ""
 "              reproduce the issue."
 msgstr ""
 "και δώστε του όλες τις πληροφορίες που χρειάζεται\n"
-"              για να αναπαράγει το πρόβλημα."
+"για να αναπαράγει το πρόβλημα."
 
 #: trac/templates/error.html:114
 msgid "To that end, you could"
@@ -1419,7 +1427,7 @@ msgid ""
 "                  site."
 msgstr ""
 "μία εργασία σε αυτό\n"
-"                  ιστότοπο."
+"ιστότοπο."
 
 #: trac/templates/error.html:118
 msgid "The action that triggered the error was:"
@@ -1431,7 +1439,7 @@ msgid ""
 "              you should consider reporting this to the Trac team."
 msgstr ""
 "Αν νομίζετε οτι αυτό θα έπρεπε να λειτουργεί, μπορείτε να αναπαράγετε το πρόβλημα\n"
-"              θα πρέπει να το αναφέρετε στην ομάδα του Trac."
+"θα πρέπει να το αναφέρετε στην ομάδα του Trac."
 
 #: trac/templates/error.html:126
 msgid ""
@@ -1447,13 +1455,11 @@ msgid ""
 msgstr ""
 "Πριν κάνετε αυτό, όμως, δοκιμάστε πρώτα\n"
 "                [1:searching]\n"
-"                για παρόμοια θέματα, εφόσον είναι πιθανόν ότι έχει "
-"problem\n"
-"                αναφερθεί προηγουμένως. Για ερωτήματα σχετικά με "
-"εγκατάσταση\n"
-"                και ρυθμίσεις του Trac, παρακαλώ δοκιμάστε τη\n"
-"                [2:mailing list]\n"
-"                αντί να συμπληρώσετε μία εργασία."
+"για παρόμοια θέματα, εφόσον είναι πιθανόν ότι έχει problem\n"
+"αναφερθεί προηγουμένως. Για ερωτήματα σχετικά με εγκατάσταση\n"
+"και ρυθμίσεις του Trac, παρακαλώ δοκιμάστε τη\n"
+"[2:mailing list]\n"
+"αντί να συμπληρώσετε μία εργασία."
 
 #: trac/templates/error.html:136
 msgid "Otherwise, please"
@@ -1467,9 +1473,9 @@ msgid ""
 "                explain how to reproduce it."
 msgstr ""
 "μία νέα εργασία\n"
-"                στον ιστότοπο του Trac project, όπου μπορείτε να περιγράψετε το πρόβλημα"
+"στον ιστότοπο του Trac project, όπου μπορείτε να περιγράψετε το πρόβλημα"
 " και\n"
-"                να εξηγήσετε με ποιο τρόπο θα αναπαραχθεί."
+"να εξηγήσετε με ποιο τρόπο θα αναπαραχθεί."
 
 #: trac/templates/error.html:141
 msgid "Python Traceback"
@@ -1490,7 +1496,7 @@ msgid ""
 "                        line"
 msgstr ""
 "\",\n"
-"                        γραμμή"
+"γραμμή"
 
 #: trac/templates/error.html:148 trac/templates/error.html:174
 msgid ", in"
@@ -2774,9 +2780,9 @@ msgstr ""
 "ημερολόγιο του Trac για περισσότερες πληροφορίες."
 
 #: trac/versioncontrol/api.py:105
-#, python-format
+#, fuzzy, python-format
 msgid "Changeset %(rev)s"
-msgstr "Changeset %(rev)s"
+msgstr "Σύνολα αλλαγώ %(rev)s"
 
 #: trac/versioncontrol/api.py:112
 msgid "Directory"
@@ -2935,8 +2941,9 @@ msgstr "Επιλέξτε τα μονοπάτια και τις αναθεωρή�
 #: trac/versioncontrol/templates/changeset.html:21
 #: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/web_ui/changeset.py:345
+#, fuzzy
 msgid "Changeset"
-msgstr ""
+msgstr "Σύνολα αλλαγώ"
 
 #: trac/versioncontrol/templates/changeset.html:22
 #: trac/versioncontrol/templates/changeset.html:32
@@ -3166,8 +3173,9 @@ msgstr "Πλοήγηση στο Αποθετήριο"
 
 #: trac/versioncontrol/web_ui/browser.py:345
 #: trac/versioncontrol/web_ui/changeset.py:241
+#, fuzzy
 msgid "Invalid Changeset Number"
-msgstr "Άκυρος αριθμός Changeset"
+msgstr "Άκυρος αριθμός Σύνολα αλλαγώ"
 
 #: trac/versioncontrol/web_ui/browser.py:351
 #: trac/versioncontrol/web_ui/log.py:98
@@ -3216,16 +3224,16 @@ msgid "Reverse Diff"
 msgstr "Αναστροφή Diff"
 
 #: trac/versioncontrol/web_ui/changeset.py:380
-#, python-format
+#, fuzzy, python-format
 msgid "Changeset %(id)s for %(path)s"
-msgstr "Changeset %(id)s για %(path)s"
+msgstr "Σύνολα αλλαγώ %(id)s για %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:383
 #: trac/versioncontrol/web_ui/changeset.py:405
 #: trac/versioncontrol/web_ui/changeset.py:423
-#, python-format
+#, fuzzy, python-format
 msgid "Changeset %(id)s"
-msgstr ""
+msgstr "Σύνολα αλλαγώ %(id)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:453
 #, python-format
@@ -3248,7 +3256,7 @@ msgstr "Checkins Αποθετηρίου"
 
 #: trac/versioncontrol/web_ui/changeset.py:957
 msgid "Changesets"
-msgstr ""
+msgstr "Σύνολα αλλαγών"
 
 #: trac/versioncontrol/web_ui/log.py:170
 #, python-format
