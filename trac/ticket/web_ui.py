@@ -1133,7 +1133,7 @@ class TicketModule(Component):
                 type_ = field['type']
                 field['skip'] = True
                 if not ticket.exists:
-                    field['label'] = _('Assign to')
+                    field['label'] = _('Owner')
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
                         owner_field = field
