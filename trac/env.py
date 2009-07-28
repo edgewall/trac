@@ -706,7 +706,7 @@ class EnvironmentAdmin(Component):
             self.env.upgrade(backup=no_backup is None)
         except TracError, e:
             msg = unicode(e)
-            if 'backup' in msg:
+            if 'backup' in msg.lower():
                 raise TracError(_("Backup failed with '%(msg)s'.\nUse "
                                   "'--no-backup' to upgrade without doing a "
                                   "backup.", msg=msg))
