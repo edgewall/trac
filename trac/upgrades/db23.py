@@ -1,20 +1,6 @@
 from trac.db import Table, Column, Index, DatabaseManager
 
 def do_upgrade(env, ver, cursor):
-    # ---- begin MultiRepos compatibility code -- remove on trunk ----
-    try:
-        cursor.execute("SELECT * FROM repository")
-        # it worked, which means we previously executed this upgrade as 
-        # db22.py. 
-        # So let's execute the "new" db22.py which introduced the cache.
-        from trac.upgrades import db22
-        db22.do_upgrade(env, ver, cursor)
-    except Exception, e:
-        # no repository table yet, do the actual repository cache upgrade
-        _do_upgrade(env, ver, cursor)
-
-def _do_upgrade(env, ver, cursor):
-    # ---- end MultiRepos compatibility code -- remove on trunk ----
     # Make changeset cache multi-repository aware
     cursor.execute("CREATE TEMPORARY TABLE rev_old "
                    "AS SELECT * FROM revision")
