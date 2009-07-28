@@ -52,7 +52,7 @@ class WikiPage(object):
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
-        if version:
+        if version is not None:
             cursor.execute("SELECT version,time,author,text,comment,readonly "
                            "FROM wiki "
                            "WHERE name=%s AND version=%s",

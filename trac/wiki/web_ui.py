@@ -341,7 +341,6 @@ class WikiModule(Component):
 
         date = author = comment = ipnr = None
         num_changes = 0
-        old_page = None
         prev_version = next_version = None
         for version, t, a, c, i in latest_page.get_history():
             if version == new_version:
@@ -354,19 +353,18 @@ class WikiModule(Component):
                     num_changes += 1
                     if not prev_version:
                         prev_version = version
-                    if (old_version and version == old_version) or \
-                            not old_version:
+                    if old_version is None or version == old_version:
                         old_version = version
-                        old_page = WikiPage(self.env, page.name, old_version)
-                        req.perm(old_page.resource).require('WIKI_VIEW')
                         break
                 else:
                     next_version = version
         if not old_version:
             old_version = 0
+        old_page = WikiPage(self.env, page.name, old_version)
+        req.perm(old_page.resource).require('WIKI_VIEW')
 
         # -- text diffs
-        old_text = old_page and old_page.text.splitlines() or []
+        old_text = old_page.text.splitlines()
         new_text = page.text.splitlines()
         diff_data, changes = self._prepare_diff(req, page, old_text, new_text,
                                                 old_version, new_version)
