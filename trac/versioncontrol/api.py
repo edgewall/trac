@@ -480,7 +480,7 @@ class RepositoryManager(Component):
         return self._all_repositories
     
     def get_real_repositories(self, authname):
-        """Return a list of all real repositories (i.e. excluding aliases)."""
+        """Return a set of all real repositories (i.e. excluding aliases)."""
         repositories = set()
         for reponame in self.get_all_repositories():
             try:
