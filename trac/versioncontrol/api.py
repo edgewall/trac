@@ -23,7 +23,7 @@ except ImportError:
     threading._get_ident = lambda: 0
 
 from trac.admin import IAdminCommandProvider
-from trac.config import Option
+from trac.config import ListOption, Option
 from trac.core import *
 from trac.perm import PermissionError
 from trac.resource import IResourceManager, ResourceSystem, ResourceNotFound
@@ -249,12 +249,26 @@ class RepositoryManager(Component):
 
     repository_type = Option('trac', 'repository_type', 'svn',
         """Default repository connector type. (''since 0.10'')""")
+
     repository_dir = Option('trac', 'repository_dir', '',
         """Path to the default repository. This can also be a relative path
         (''since 0.11''). If this entry is specified (even when left empty),
         this will auto-enable the trac.versioncontrol.* components. 
         This means that if you want to use Trac without the source browser,
         simply remove that entry from the [trac] section.""")
+
+    repository_sync_per_request = ListOption('trac',
+        'repository_sync_per_request', '(default)',
+        doc="""List of repositories that should be synchronized on every page
+        request.
+        
+        Leave this option empty if you have set up post-commit hooks calling
+        `trac-admin $ENV changeset added` on all your repositories
+        (recommended). Otherwise, set it to a comma-separated list of
+        repository names. Note that this will negatively affect performance,
+        and will prevent changeset listeners from receiving events from the
+        repositories specified here. The default is to synchronize the default
+        repository, for backward compatibility. (''since 0.12'')""")
 
     def __init__(self):
         self._cache = {}
@@ -267,15 +281,20 @@ class RepositoryManager(Component):
     def pre_process_request(self, req, handler):
         from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
-            try:
-                default_repo = self.get_repository('', req.authname)
-                if default_repo:
-                    default_repo.sync()
-            except TracError, e:
-                add_warning(req, _("Can't synchronize with the repository "
-                              "(%(error)s). Look in the Trac log for more "
-                              "information.", error=to_unicode(e.message)))
-                          
+            for reponame in self.repository_sync_per_request:
+                print "*** Trying %s" % reponame
+                if reponame == '(default)':
+                    reponame = ''
+                try:
+                    repo = self.get_repository(reponame, req.authname)
+                    if repo:
+                        repo.sync()
+                except TracError, e:
+                    add_warning(req,
+                        _("Can't synchronize with repository \"%(name)s\" "
+                          "(%(error)s). Look in the Trac log for more "
+                          "information.", name=reponame or '(default)',
+                          error=to_unicode(e.message)))
         return handler
 
     def post_process_request(self, req, template, data, content_type):
