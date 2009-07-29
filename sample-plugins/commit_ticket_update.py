@@ -139,7 +139,7 @@ class CommitTicketUpdate(Component):
             return
         tickets = self._parse_message(changeset.message)
         comment = self.make_ticket_comment(repos, changeset)
-        self._update_tickets(tickets, changeset.author, comment,
+        self._update_tickets(tickets, changeset, comment,
                              datetime.now(utc))
     
     def changeset_modified(self, repos, changeset, old_changeset):
@@ -152,7 +152,7 @@ class CommitTicketUpdate(Component):
         tickets = dict(each for each in tickets.iteritems()
                        if each[0] not in old_tickets)
         comment = self.make_ticket_comment(repos, changeset)
-        self._update_tickets(tickets, changeset.author, comment,
+        self._update_tickets(tickets, changeset, comment,
                              datetime.now(utc))
     
     def _is_duplicate(self, changeset):
@@ -190,7 +190,7 @@ In [%s]:
 %s
 }}}""" % (revstring, repos.reponame, changeset.rev, changeset.message.strip())
         
-    def _update_tickets(self, tickets, author, comment, date):
+    def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""
         db = self.env.get_db_cnx()
         for tkt_id, cmds in tickets.iteritems():
@@ -198,7 +198,7 @@ In [%s]:
                 self.log.debug("Updating ticket #%d", tkt_id)
                 ticket = Ticket(self.env, tkt_id, db)
                 for cmd in cmds:
-                    cmd(ticket)
+                    cmd(ticket, changeset)
                 
                 # Determine sequence number
                 cnum = 0
@@ -207,7 +207,8 @@ In [%s]:
                     if change['permanent']:
                         cnum += 1
                 
-                ticket.save_changes(author, comment, date, db, cnum + 1)
+                ticket.save_changes(changeset.author, comment, date, db,
+                                    cnum + 1)
                 db.commit()
                 self._notify(ticket, date)
             except Exception, e:
@@ -237,11 +238,13 @@ In [%s]:
                 functions[cmd] = func
         return functions
     
-    def cmd_close(self, ticket):
+    def cmd_close(self, ticket, changeset):
         ticket['status'] = 'closed'
         ticket['resolution'] = 'fixed'
+        if not ticket['owner']:
+            ticket['owner'] = changeset.author
 
-    def cmd_refs(self, ticket):
+    def cmd_refs(self, ticket, changeset):
         pass
 
 
