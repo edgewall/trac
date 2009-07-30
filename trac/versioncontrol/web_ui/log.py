@@ -76,15 +76,18 @@ class LogModule(Component):
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
         stop_rev = req.args.get('stop_rev')
-        revs = req.args.get('revs', rev)
+        revs = req.args.get('revs')
         format = req.args.get('format')
         verbose = req.args.get('verbose')
         limit = int(req.args.get('limit') or self.default_log_limit)
 
         repos = self.env.get_repository(req.authname)
         normpath = repos.normalize_path(path)
+        # if `revs` parameter is given, then we're restricted to the 
+        # corresponding revision ranges.
+        # If not, then we're considering all revisions since `rev`, 
+        # on that path, in which case `revranges` will be None.
         revranges = None
-        rev = revs
         if revs:
             try:
                 revranges = Ranges(revs)
@@ -92,6 +95,7 @@ class LogModule(Component):
             except ValueError:
                 pass
         rev = unicode(repos.normalize_rev(rev))    
+
         path_links = get_path_links(req.href, path, rev)
         if path_links:
             add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
@@ -102,33 +106,31 @@ class LogModule(Component):
         #  * for ''show only add, delete'' we're using
         #   `Repository.get_path_history()` 
         if mode == 'path_history':
-            rev = revranges.b
             def history(limit):
                 for h in repos.get_path_history(path, rev, limit):
                     yield h
+        elif revranges and revranges.a != revranges.b:
+            def history(limit):
+                prevpath = path
+                ranges = list(revranges.pairs)
+                ranges.reverse()
+                for (a,b) in ranges:
+                    while b >= a:
+                        rev = repos.normalize_rev(b)
+                        node = get_existing_node(req, repos, prevpath, rev)
+                        node_history = list(node.get_history(2))
+                        p, rev, chg = node_history[0]
+                        if rev < a:
+                            yield (p, rev, None) # separator
+                            break
+                        yield node_history[0]
+                        prevpath = node_history[-1][0] # follow copy
+                        b = rev-1
+                        if b < a and len(node_history) > 1:
+                            p, rev, chg = node_history[1]
+                            yield (p, rev, None)
         else:
-            if not revranges or revranges.a == revranges.b:
-                history = get_existing_node(req, repos, path, rev).get_history
-            else:
-                def history(limit):
-                    prevpath = path
-                    ranges = list(revranges.pairs)
-                    ranges.reverse()
-                    for (a,b) in ranges:
-                        while b >= a:
-                            rev = repos.normalize_rev(b)
-                            node = get_existing_node(req, repos, prevpath, rev)
-                            node_history = list(node.get_history(2))
-                            p, rev, chg = node_history[0]
-                            if rev < a:
-                                yield (p, rev, None) # separator
-                                break
-                            yield node_history[0]
-                            prevpath = node_history[-1][0] # follow copy
-                            b = rev-1
-                            if b < a and len(node_history) > 1:
-                                p, rev, chg = node_history[1]
-                                yield (p, rev, None)
+            history = get_existing_node(req, repos, path, rev).get_history
 
         # -- retrieve history, asking for limit+1 results
         info = []
