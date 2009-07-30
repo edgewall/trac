@@ -87,7 +87,7 @@
         <table id="chglist" class="listing">
           <thead>
             <tr>
-              <th class="diff"></th>
+              <th class="diff" title="Old / New">Diff</th>
               <th class="change"></th>
               <th class="rev">Rev</th>
               <th class="chgset">Chgset</th>
@@ -120,9 +120,9 @@
                 <tr class="$odd_even" py:choose="">
                   <td class="diff" rowspan="${verbose and 2 or None}">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
-                           checked="${idx == (len(items) - 1) or None}" />
+                           checked="${idx == (len(items) - 1) or None}" title="From r${item.rev}" />
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
-                           checked="${idx == 0 or None}" />
+                           checked="${idx == 0 or None}" title="To r${item.rev}" />
                   </td>
                   <py:when test="item.change">
                     <td class="change" style="padding-left: ${item.depth}em">
