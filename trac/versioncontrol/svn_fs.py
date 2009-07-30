@@ -788,6 +788,12 @@ class SubversionNode(Node):
         return fs.node_prop(self.root, self._scoped_path_utf8, name,
                             self.pool())
 
+    def get_branch_origin(self):
+        """Return the revision in which the node's path was created"""
+        root_and_path = fs.closest_copy(self.root, self._scoped_path_utf8)
+        if root_and_path:
+            return fs.revision_root_revision(root_and_path[0])
+
     def get_copy_ancestry(self):
         """Retrieve the list of `(path,rev)` copy ancestors of this node.
         Most recent ancestor first. Each ancestor `(path, rev)` corresponds 
