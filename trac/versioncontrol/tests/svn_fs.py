@@ -271,6 +271,16 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         for path, rev in ancestry:
             self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
 
+    def test_get_branch_origin(self):
+        node = self.repos.get_node('/tags/v1/README.txt')
+        self.assertEqual(7, node.get_branch_origin())
+        node = self.repos.get_node(u'/tête/README3.txt')
+        self.assertEqual(14, node.get_branch_origin())
+        node = self.repos.get_node('/branches/v1x')
+        self.assertEqual(12, node.get_branch_origin())
+        node = self.repos.get_node(u'/tête/dir1/dir2', 5)
+        self.assertEqual(5, node.get_branch_origin())
+
     # Revision Log / path history 
 
     def test_get_path_history(self):
@@ -627,6 +637,12 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual([(u'dir2', 4)], ancestry)
         for path, rev in ancestry:
             self.repos.get_node(path, rev) # shouldn't raise NoSuchNode
+
+    def test_get_branch_origin(self):
+        node = self.repos.get_node(u'/README3.txt')
+        self.assertEqual(14, node.get_branch_origin())
+        node = self.repos.get_node(u'/dir1/dir2', 5)
+        self.assertEqual(5, node.get_branch_origin())
 
     # Revision Log / path history 
 
