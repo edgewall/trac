@@ -130,10 +130,12 @@ LOG_TEST_CASES=u"""
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
 [1:2/trunk]
+[2:1/trunk] reversed
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=1-2">[1:2]</a>, <a class="source" href="/log/?revs=1-2">r1:2</a>, <a class="source" href="/log/?revs=12-23">[12:23]</a>, <a class="source" href="/log/?revs=12-23">r12:23</a>
 <a class="source" href="/log/trunk?revs=1-2">[1:2/trunk]</a>
+<a class="source" href="/log/trunk?revs=1-2">[2:1/trunk]</a> reversed
 </p>
 ------------------------------
 ============================== Escaping Log range TracLinks

@@ -324,7 +324,7 @@ class LogModule(Component):
         ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
-            return Ranges(ranges) 
+            return Ranges(ranges, reorder=True) 
         except ValueError:
             # slow path, normalize each rev
             repos = self.env.get_repository(req.authname)

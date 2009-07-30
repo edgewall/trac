@@ -396,13 +396,23 @@ class Ranges(object):
     [1, 2, 3, 5, 6, 7, 8, 9]
 
     ''Code contributed by Tim Hatch''
+
+    Reversed ranges are ignored, unless the Ranges has the `reorder` property 
+    set.
+
+    >>> str(Ranges("20-10"))
+    ''
+    >>> str(Ranges("20-10", reorder=True))
+    '10-20'
+
     """
 
     RE_STR = r"""\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*"""
     
-    def __init__(self, r=None):
+    def __init__(self, r=None, reorder=False):
         self.pairs = []
         self.a = self.b = None
+        self.reorder = reorder
         self.appendrange(r)
 
     def appendrange(self, r):
@@ -417,6 +427,8 @@ class Ranges(object):
                 a, b = int(x), int(x)
             if b >= a:
                 p.append((a, b))
+            elif self.reorder:
+                p.append((b, a))
         self._reduce()
 
     def _reduce(self):
