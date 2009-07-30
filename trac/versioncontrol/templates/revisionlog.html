@@ -108,11 +108,12 @@
             
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
+                             is_separator = item.change is None;
                              chgset_context = context('changeset', change.rev);
                              chgset_view = 'CHANGESET_VIEW' in perm(chgset_context.resource);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
-                <tr py:if="item.change and item.get('copyfrom_path')" class="$odd_even">
+                <tr py:if="not is_separator and item.get('copyfrom_path')" class="$odd_even">
                   <td />
                   <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
                     copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
@@ -126,7 +127,7 @@
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
                            checked="${idx == 0 or None}" title="To r${item.rev}" />
                   </td>
-                  <py:when test="item.change">
+                  <py:when test="not is_separator">
                     <td class="change" style="padding-left: ${item.depth}em">
                       <a title="View log starting at this revision" href="${href.log(item.path, rev=item.rev)}">
                         <span class="$item.change"></span>
@@ -157,7 +158,7 @@
                 </tr>
 
                 <tr py:if="verbose" class="$odd_even verbose">
-                  <td py:if="item.change and chgset_view" class="summary" colspan="6" py:choose="" xml:space="preserve">
+                  <td py:if="not is_separator and chgset_view" class="summary" colspan="6" py:choose="" xml:space="preserve">
                     <py:when test="wiki_format_messages">
                       ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
                     </py:when>
