@@ -17,6 +17,7 @@
       <form id="prefs" action="" method="get">
         <div>
           <input type="hidden" name="action" value="$mode" />
+          <input type="hidden" name="revs" value="${str(revranges)}" py:if="revranges" />
           <div class="choice">
             <fieldset>
               <legend>Revision Log Mode:</legend>

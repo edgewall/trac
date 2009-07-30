@@ -133,6 +133,7 @@ class LogModule(Component):
         info = []
         depth = 1
         previous_path = normpath
+        count = 0
         for old_path, old_rev, old_chg in history(limit+1):
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
@@ -156,7 +157,12 @@ class LogModule(Component):
                     break
                 elif mode == 'path_history':
                     depth -= 1
-            if len(info) > limit: # we want limit+1 entries
+            if old_chg is None: # separator entry
+                stop_limit = limit
+            else:
+                count += 1
+                stop_limit = limit + 1
+            if count >= stop_limit:
                 break
             previous_path = old_path
         if info == []:
@@ -177,12 +183,18 @@ class LogModule(Component):
                 params['verbose'] = verbose
             return req.href.log(path, **params)
 
-        if len(info) == limit+1: # limit+1 reached, there _might_ be some more
+        if count >= limit: # stop_limit reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
-            add_link(req, 'next', make_log_href(next_path, rev=next_rev),
-                     _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
-                       path=next_path, rev=next_rev))
+            next_revranges = None
+            if revranges:
+                next_revranges = str(revranges.truncate(next_rev))
+            if next_revranges or not revranges:
+                older_revisions_href = make_log_href(next_path, rev=next_rev,
+                                                     revs=next_revranges)
+                add_link(req, 'next', older_revisions_href,
+                    _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
+                    path=next_path, rev=next_rev))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
         
@@ -215,6 +227,8 @@ class LogModule(Component):
         data = {
             'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
+            'path': path, 'rev': rev, 'stop_rev': stop_rev, 
+            'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
             'items': info, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,

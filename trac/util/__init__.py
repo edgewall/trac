@@ -501,6 +501,37 @@ class Ranges(object):
         else:
             return 0
 
+    def truncate(self, max):
+        """Truncate the Ranges by setting a maximal allowed value.
+
+        Note that this `max` can be a value in a gap, so the only guarantee 
+        is that `self.b` will be lesser than or equal to `max`.
+
+        >>> r = Ranges("10-20,25-45")
+        >>> str(r.truncate(30))
+        '10-20,25-30'
+
+        >>> str(r.truncate(22))
+        '10-20'
+
+        >>> str(r.truncate(10))
+        '10'
+        """
+        r = Ranges()
+        r.a, r.b, r.reorder = self.a, self.b, self.reorder
+        r.pairs = []
+        for a, b in self.pairs:
+            if a <= max:
+                if b > max:
+                    r.pairs.append((a, max))
+                    r.b = max
+                    break
+                r.pairs.append((a, b))
+            else:
+                break
+        return r
+
+
 def to_ranges(revs):
     """Converts a list of revisions to a minimal set of ranges.
     
