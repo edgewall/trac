@@ -183,7 +183,11 @@ class LogModule(Component):
                 params['verbose'] = verbose
             return req.href.log(path, **params)
 
-        if count >= limit: # stop_limit reached, there _might_ be some more
+        if format in ('rss', 'changelog'):
+            info = [i for i in info if i['change']] # drop separators
+            if count > limit:
+                del info[-1]
+        elif count >= limit: # stop_limit reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
             next_revranges = None
