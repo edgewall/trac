@@ -132,11 +132,13 @@
                       </a>
                     </td>
                     <td class="rev">
-                      <a title="Browse at revision $item.rev" href="${href.browser(item.path, rev=item.existing_rev)}">
+                      <a title="Browse at revision $item.existing_rev" href="${href.browser(item.path, rev=item.existing_rev)}">
                         @$item.existing_rev</a>
                     </td>
-                    <td class="chgset">
-                      <a title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, item.path)}">
+                    <td class="chgset" py:choose="item.change">
+                      <a py:when="'delete'" title="View removal changeset [$item.rev]" href="${href.changeset(item.rev)}">
+                        [$item.rev]</a>
+                      <a py:otherwise="" title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, item.path)}">
                         [$item.rev]</a>
                     </td>
                     <td class="date" py:content="dateinfo(change.date)" />

@@ -133,12 +133,8 @@ class LogModule(Component):
         # -- retrieve history, asking for limit+1 results
         info = []
         depth = 1
-        fix_deleted_rev = False
         previous_path = normpath
         for old_path, old_rev, old_chg in history(limit+1):
-            if fix_deleted_rev:
-                fix_deleted_rev['existing_rev'] = old_rev
-                fix_deleted_rev = False
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
             old_path = repos.normalize_path(old_path)
@@ -149,7 +145,7 @@ class LogModule(Component):
             }
             
             if old_chg == Changeset.DELETE:
-                fix_deleted_rev = item
+                item['existing_rev'] = repos.previous_rev(old_rev, old_path)
             if not (mode == 'path_history' and old_chg == Changeset.EDIT):
                 info.append(item)
             if old_path and old_path != previous_path and \
