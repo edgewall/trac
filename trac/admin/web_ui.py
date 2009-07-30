@@ -532,7 +532,21 @@ class PluginAdminPanel(Component):
                             if k == 'home_page' or k == 'url':
                                 k = 'home_page'
                                 v = v.replace('$', '').replace('URL: ', '') 
+                            if k == 'author':
+                                v = to_unicode(v)
                             info[k] = v
+                else:
+                    # Info found; set all those fields to "None" that have the 
+                    # value "UNKNOWN" as this is the value for fields that
+                    # aren't specified in "setup.py"
+                    for k in info:
+                        if info[k] == 'UNKNOWN':
+                            info[k] = None
+                        elif k == 'author':
+                            # Must be encoded as unicode as otherwise Genshi 
+                            # may raise a "UnicodeDecodeError".
+                            info[k] = to_unicode(info[k])
+
                 # retrieve plugin version info
                 version = dist.version
                 if not version:
