@@ -132,10 +132,12 @@ LOG_TEST_CASES=u"""
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
 [1:2/trunk]
+[2:1/trunk] reversed
 ------------------------------
 <p>
 <a class="source" href="/log/?revs=1-2">[1:2]</a>, <a class="source" href="/log/?revs=1-2">r1:2</a>, <a class="source" href="/log/?revs=12-23">[12:23]</a>, <a class="source" href="/log/?revs=12-23">r12:23</a>
 <a class="source" href="/log/trunk?revs=1-2">[1:2/trunk]</a>
+<a class="source" href="/log/trunk?revs=1-2">[2:1/trunk]</a> reversed
 </p>
 ------------------------------
 ============================== Escaping Log range TracLinks
@@ -158,9 +160,9 @@ log:trunk:12-head
 log:trunk:12@23 (bad, but shouldn't error out)
 ------------------------------
 <p>
-<a class="source" href="/log/?revs=12">log:@12</a>
+<a class="source" href="/log/?rev=12">log:@12</a>
 <a class="source" href="/log/trunk">log:trunk</a>
-<a class="source" href="/log/trunk?revs=12">log:trunk@12</a>
+<a class="source" href="/log/trunk?rev=12">log:trunk@12</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
@@ -179,9 +181,9 @@ log:trunk@12?limit=10
 ------------------------------
 <p>
 <a class="source" href="/log/?limit=10">log:?limit=10</a>
-<a class="source" href="/log/?revs=12&amp;limit=10">log:@12?limit=10</a>
+<a class="source" href="/log/?rev=12&amp;limit=10">log:@12?limit=10</a>
 <a class="source" href="/log/trunk?limit=10">log:trunk?limit=10</a>
-<a class="source" href="/log/trunk?revs=12&amp;limit=10">log:trunk@12?limit=10</a>
+<a class="source" href="/log/trunk?rev=12&amp;limit=10">log:trunk@12?limit=10</a>
 <a class="source" href="/log/?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20?verbose=yes&amp;format=changelog]</a>
 <a class="source" href="/log/trunk?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20/trunk?verbose=yes&amp;format=changelog]</a>
 </p>

@@ -77,7 +77,7 @@ class LogModule(Component):
         path = req.args.get('path', '/')
         rev = req.args.get('rev')
         stop_rev = req.args.get('stop_rev')
-        revs = req.args.get('revs', rev)
+        revs = req.args.get('revs')
         format = req.args.get('format')
         verbose = req.args.get('verbose')
         limit = int(req.args.get('limit') or self.default_log_limit)
@@ -86,8 +86,11 @@ class LogModule(Component):
                 get_repository_by_path(path, req.authname)
 
         normpath = repos.normalize_path(path)
+        # if `revs` parameter is given, then we're restricted to the 
+        # corresponding revision ranges.
+        # If not, then we're considering all revisions since `rev`, 
+        # on that path, in which case `revranges` will be None.
         revranges = None
-        rev = revs
         if revs:
             try:
                 revranges = Ranges(revs)
@@ -95,9 +98,6 @@ class LogModule(Component):
             except ValueError:
                 pass
         rev = unicode(repos.normalize_rev(rev))    
-        path_links = get_path_links(req.href, reponame, path, rev)
-        if path_links:
-            add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
 
         # The `history()` method depends on the mode:
         #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
@@ -105,43 +105,38 @@ class LogModule(Component):
         #  * for ''show only add, delete'' we're using
         #   `Repository.get_path_history()` 
         if mode == 'path_history':
-            rev = revranges.b
             def history(limit):
                 for h in repos.get_path_history(path, rev, limit):
                     yield h
+        elif revranges:
+            def history(limit):
+                prevpath = path
+                ranges = list(revranges.pairs)
+                ranges.reverse()
+                for (a,b) in ranges:
+                    while b >= a:
+                        rev = repos.normalize_rev(b)
+                        node = get_existing_node(req, repos, prevpath, rev)
+                        node_history = list(node.get_history(2))
+                        p, rev, chg = node_history[0]
+                        if rev < a:
+                            yield (p, rev, None) # separator
+                            break
+                        yield node_history[0]
+                        prevpath = node_history[-1][0] # follow copy
+                        b = rev-1
+                        if b < a and len(node_history) > 1:
+                            p, rev, chg = node_history[1]
+                            yield (p, rev, None)
         else:
-            if not revranges or revranges.a == revranges.b:
-                history = get_existing_node(req, repos, path, rev).get_history
-            else:
-                def history(limit):
-                    prevpath = path
-                    ranges = list(revranges.pairs)
-                    ranges.reverse()
-                    for (a,b) in ranges:
-                        while b >= a:
-                            rev = repos.normalize_rev(b)
-                            node = get_existing_node(req, repos, prevpath, rev)
-                            node_history = list(node.get_history(2))
-                            p, rev, chg = node_history[0]
-                            if rev < a:
-                                yield (p, rev, None) # separator
-                                break
-                            yield node_history[0]
-                            prevpath = node_history[-1][0] # follow copy
-                            b = rev-1
-                            if b < a and len(node_history) > 1:
-                                p, rev, chg = node_history[1]
-                                yield (p, rev, None)
+            history = get_existing_node(req, repos, path, rev).get_history
 
         # -- retrieve history, asking for limit+1 results
         info = []
         depth = 1
-        fix_deleted_rev = False
         previous_path = normpath
+        count = 0
         for old_path, old_rev, old_chg in history(limit+1):
-            if fix_deleted_rev:
-                fix_deleted_rev['existing_rev'] = old_rev
-                fix_deleted_rev = False
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
             old_path = repos.normalize_path(old_path)
@@ -152,17 +147,24 @@ class LogModule(Component):
             }
             
             if old_chg == Changeset.DELETE:
-                fix_deleted_rev = item
+                item['existing_rev'] = repos.previous_rev(old_rev, old_path)
             if not (mode == 'path_history' and old_chg == Changeset.EDIT):
                 info.append(item)
-            if old_path and old_path != previous_path \
-               and not (mode == 'path_history' and old_path == normpath):
+            if old_path and old_path != previous_path and \
+                    not (mode == 'path_history' and old_path == normpath):
                 depth += 1
                 item['depth'] = depth
                 item['copyfrom_path'] = old_path
                 if mode == 'stop_on_copy':
                     break
-            if len(info) > limit: # we want limit+1 entries
+                elif mode == 'path_history':
+                    depth -= 1
+            if old_chg is None: # separator entry
+                stop_limit = limit
+            else:
+                count += 1
+                stop_limit = limit + 1
+            if count >= stop_limit:
                 break
             previous_path = old_path
         if info == []:
@@ -183,17 +185,27 @@ class LogModule(Component):
                 params['verbose'] = verbose
             return req.href.log(reponame, path, **params)
 
-        if len(info) == limit+1: # limit+1 reached, there _might_ be some more
+        if format in ('rss', 'changelog'):
+            info = [i for i in info if i['change']] # drop separators
+            if count > limit:
+                del info[-1]
+        elif count >= limit: # stop_limit reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
-            add_link(req, 'next', make_log_href(next_path, rev=next_rev),
-                     _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
-                       path=next_path, rev=next_rev))
+            next_revranges = None
+            if revranges:
+                next_revranges = str(revranges.truncate(next_rev))
+            if next_revranges or not revranges:
+                older_revisions_href = make_log_href(next_path, rev=next_rev,
+                                                     revs=next_revranges)
+                add_link(req, 'next', older_revisions_href,
+                    _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
+                    path=next_path, rev=next_rev))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
         
-        revs = [i['rev'] for i in info]
-        changes = get_changes(repos, revs)
+        revisions = [i['rev'] for i in info]
+        changes = get_changes(repos, revisions)
         extra_changes = {}
         email_map = {}
         
@@ -204,7 +216,7 @@ class LogModule(Component):
                     if email:
                         email_map[username] = email
         elif format == 'changelog':
-            for rev in revs:
+            for rev in revisions:
                 changeset = changes[rev]
                 cs = {}
                 cs['message'] = wrap(changeset.message, 70,
@@ -222,8 +234,9 @@ class LogModule(Component):
             'context': Context.from_request(req, 'source', (reponame, path)),
             'reponame': reponame, 
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
-            'mode': mode, 'verbose': verbose,
-            'path_links': path_links, 'limit' : limit,
+            'path': path, 'rev': rev, 'stop_rev': stop_rev, 
+            'revranges': revranges,
+            'mode': mode, 'verbose': verbose, 'limit' : limit,
             'items': info, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
@@ -241,10 +254,17 @@ class LogModule(Component):
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/browser.css')
 
-        rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
+        path_links = get_path_links(req.href, reponame, path, rev)
+        if path_links:
+            data['path_links'] = path_links
+        if len(path_links) > 1:
+            add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
+
+        rss_href = make_log_href(path, format='rss', revs=revs,
+                                 stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, _('RSS Feed'),
                  'application/rss+xml', 'rss')
-        changelog_href = make_log_href(path, format='changelog',
+        changelog_href = make_log_href(path, format='changelog', revs=revs,
                                        stop_rev=stop_rev)
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
@@ -302,15 +322,23 @@ class LogModule(Component):
                 indexes = [sep in match and match.index(sep) for sep in ':@']
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
-        try:
-            revs = self._normalize_ranges(formatter.req, path, revs)
-        except NoSuchChangeset:
+        revranges = None
+        if any(c for c in ':-,' if c in revs):
+            revranges = self._normalize_ranges(formatter.req, path, revs)
             revs = None
-        if revs and query:
-            query = '&' + query[1:]
-        href = formatter.href.log(path or '/', revs=revs) + query + fragment
         if 'LOG_VIEW' in formatter.perm:
-            return html.A(label, class_='source', href=href)
+            if revranges:
+                href = formatter.href.log(path or '/', revs=str(revranges)) 
+            else:
+                repos = self.env.get_repository(formatter.req.authname)
+                try:
+                    rev = repos.normalize_rev(revs)
+                except NoSuchChangeset:
+                    rev = None
+                href = formatter.href.log(path or '/', rev=rev)
+            if query and (revranges or revs):
+                query = '&' + query[1:]
+            return html.A(label, class_='source', href=href + query + fragment)
         else:
             return html.A(label, class_='missing source')
 
@@ -320,15 +348,16 @@ class LogModule(Component):
         ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
-            revranges = Ranges(ranges) 
+            return Ranges(ranges, reorder=True) 
         except ValueError:
             # slow path, normalize each rev
             reponame, repos, path = RepositoryManager(self.env).\
                 get_repository_by_path(path, req.authname)
             splitted_ranges = re.split(r'([-,])', ranges)
-            revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
+            try:
+                revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
+            except NoSuchChangeset:
+                return None
             seps = splitted_ranges[1::2]+['']
             ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
-            revranges = Ranges(ranges)
-        return str(revranges) or None
-               
+            return Ranges(ranges)

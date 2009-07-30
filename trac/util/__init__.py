@@ -458,13 +458,23 @@ class Ranges(object):
     [1, 2, 3, 5, 6, 7, 8, 9]
 
     ''Code contributed by Tim Hatch''
+
+    Reversed ranges are ignored, unless the Ranges has the `reorder` property 
+    set.
+
+    >>> str(Ranges("20-10"))
+    ''
+    >>> str(Ranges("20-10", reorder=True))
+    '10-20'
+
     """
 
     RE_STR = r"""\d+(?:[-:]\d+)?(?:,\d+(?:[-:]\d+)?)*"""
     
-    def __init__(self, r=None):
+    def __init__(self, r=None, reorder=False):
         self.pairs = []
         self.a = self.b = None
+        self.reorder = reorder
         self.appendrange(r)
 
     def appendrange(self, r):
@@ -479,6 +489,8 @@ class Ranges(object):
                 a, b = int(x), int(x)
             if b >= a:
                 p.append((a, b))
+            elif self.reorder:
+                p.append((b, a))
         self._reduce()
 
     def _reduce(self):
@@ -550,6 +562,37 @@ class Ranges(object):
             return self.b - self.a + 1
         else:
             return 0
+
+    def truncate(self, max):
+        """Truncate the Ranges by setting a maximal allowed value.
+
+        Note that this `max` can be a value in a gap, so the only guarantee 
+        is that `self.b` will be lesser than or equal to `max`.
+
+        >>> r = Ranges("10-20,25-45")
+        >>> str(r.truncate(30))
+        '10-20,25-30'
+
+        >>> str(r.truncate(22))
+        '10-20'
+
+        >>> str(r.truncate(10))
+        '10'
+        """
+        r = Ranges()
+        r.a, r.b, r.reorder = self.a, self.b, self.reorder
+        r.pairs = []
+        for a, b in self.pairs:
+            if a <= max:
+                if b > max:
+                    r.pairs.append((a, max))
+                    r.b = max
+                    break
+                r.pairs.append((a, b))
+            else:
+                break
+        return r
+
 
 def to_ranges(revs):
     """Converts a list of revisions to a minimal set of ranges.
