@@ -252,8 +252,9 @@ class LogModule(Component):
 
         path_links = get_path_links(req.href, path, rev)
         if path_links:
-            add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
             data['path_links'] = path_links
+        if len(path_links) > 1:
+            add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
 
         rss_href = make_log_href(path, format='rss', revs=revs,
                                  stop_rev=stop_rev)
