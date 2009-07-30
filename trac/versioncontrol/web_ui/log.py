@@ -96,10 +96,6 @@ class LogModule(Component):
                 pass
         rev = unicode(repos.normalize_rev(rev))    
 
-        path_links = get_path_links(req.href, path, rev)
-        if path_links:
-            add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
-
         # The `history()` method depends on the mode:
         #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
         #    unless explicit ranges have been specified
@@ -136,6 +132,7 @@ class LogModule(Component):
         info = []
         depth = 1
         previous_path = normpath
+        count = 0
         for old_path, old_rev, old_chg in history(limit+1):
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
@@ -159,7 +156,12 @@ class LogModule(Component):
                     break
                 elif mode == 'path_history':
                     depth -= 1
-            if len(info) > limit: # we want limit+1 entries
+            if old_chg is None: # separator entry
+                stop_limit = limit
+            else:
+                count += 1
+                stop_limit = limit + 1
+            if count >= stop_limit:
                 break
             previous_path = old_path
         if info == []:
@@ -180,17 +182,27 @@ class LogModule(Component):
                 params['verbose'] = verbose
             return req.href.log(path, **params)
 
-        if len(info) == limit+1: # limit+1 reached, there _might_ be some more
+        if format in ('rss', 'changelog'):
+            info = [i for i in info if i['change']] # drop separators
+            if count > limit:
+                del info[-1]
+        elif count >= limit: # stop_limit reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
-            add_link(req, 'next', make_log_href(next_path, rev=next_rev),
-                     _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
-                       path=next_path, rev=next_rev))
+            next_revranges = None
+            if revranges:
+                next_revranges = str(revranges.truncate(next_rev))
+            if next_revranges or not revranges:
+                older_revisions_href = make_log_href(next_path, rev=next_rev,
+                                                     revs=next_revranges)
+                add_link(req, 'next', older_revisions_href,
+                    _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
+                    path=next_path, rev=next_rev))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
         
-        revs = [i['rev'] for i in info]
-        changes = get_changes(repos, revs)
+        revisions = [i['rev'] for i in info]
+        changes = get_changes(repos, revisions)
         extra_changes = {}
         email_map = {}
         
@@ -201,7 +213,7 @@ class LogModule(Component):
                     if email:
                         email_map[username] = email
         elif format == 'changelog':
-            for rev in revs:
+            for rev in revisions:
                 changeset = changes[rev]
                 cs = {}
                 cs['message'] = wrap(changeset.message, 70,
@@ -218,8 +230,9 @@ class LogModule(Component):
         data = {
             'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
-            'mode': mode, 'verbose': verbose,
-            'path_links': path_links, 'limit' : limit,
+            'path': path, 'rev': rev, 'stop_rev': stop_rev, 
+            'revranges': revranges,
+            'mode': mode, 'verbose': verbose, 'limit' : limit,
             'items': info, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
@@ -236,10 +249,17 @@ class LogModule(Component):
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/browser.css')
 
-        rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
+        path_links = get_path_links(req.href, path, rev)
+        if path_links:
+            data['path_links'] = path_links
+        if len(path_links) > 1:
+            add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
+
+        rss_href = make_log_href(path, format='rss', revs=revs,
+                                 stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, _('RSS Feed'),
                  'application/rss+xml', 'rss')
-        changelog_href = make_log_href(path, format='changelog',
+        changelog_href = make_log_href(path, format='changelog', revs=revs,
                                        stop_rev=stop_rev)
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
@@ -323,7 +343,7 @@ class LogModule(Component):
         ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
-            return Ranges(ranges) 
+            return Ranges(ranges, reorder=True) 
         except ValueError:
             # slow path, normalize each rev
             repos = self.env.get_repository(req.authname)
