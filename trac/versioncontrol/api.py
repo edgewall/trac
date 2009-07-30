@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import os.path
+import time
 
 try:
     import threading
@@ -282,7 +283,7 @@ class RepositoryManager(Component):
         from trac.web.chrome import Chrome, add_warning
         if handler is not Chrome(self.env):
             for reponame in self.repository_sync_per_request:
-                print "*** Trying %s" % reponame
+                start = time.time()
                 if reponame == '(default)':
                     reponame = ''
                 try:
@@ -295,6 +296,8 @@ class RepositoryManager(Component):
                           "(%(error)s). Look in the Trac log for more "
                           "information.", name=reponame or '(default)',
                           error=to_unicode(e.message)))
+                self.log.info("Synchronized %s repository in %0.2f seconds",
+                              reponame or 'default', time.time() - start)
         return handler
 
     def post_process_request(self, req, template, data, content_type):

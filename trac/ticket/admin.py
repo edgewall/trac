@@ -94,7 +94,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                 if req.args.get('add') and req.args.get('name'):
                     name = req.args.get('name')
                     try:
-                        model.Component(self.env, name=name)
+                        comp = model.Component(self.env, name=name)
                     except ResourceNotFound:
                         comp = model.Component(self.env)
                         comp.name = name
@@ -105,6 +105,8 @@ class ComponentAdminPanel(TicketAdminPanel):
                                           'added.', name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
+                        if comp.name is None:
+                            raise TracError(_('Invalid component name.'))
                         raise TracError(_('Component %(name)s already exists.',
                                           name=name))
 
@@ -279,7 +281,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     req.perm.require('MILESTONE_CREATE')
                     name = req.args.get('name')
                     try:
-                        model.Milestone(self.env, name=name)
+                        mil = model.Milestone(self.env, name=name)
                     except ResourceNotFound:
                         mil = model.Milestone(self.env)
                         mil.name = name
@@ -291,6 +293,8 @@ class MilestoneAdminPanel(TicketAdminPanel):
                                           'added.', name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
+                        if mil.name is None:
+                            raise TracError(_('Invalid milestone name.'))
                         raise TracError(_('Milestone %(name)s already exists.',
                                           name=name))
 
@@ -458,7 +462,7 @@ class VersionAdminPanel(TicketAdminPanel):
                 if req.args.get('add') and req.args.get('name'):
                     name = req.args.get('name')
                     try:
-                        model.Version(self.env, name=name)
+                        ver = model.Version(self.env, name=name)
                     except ResourceNotFound:
                         ver = model.Version(self.env)
                         ver.name = name
@@ -470,6 +474,8 @@ class VersionAdminPanel(TicketAdminPanel):
                                           'added.', name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
+                        if ver.name is None:
+                            raise TracError(_('Invalid version name.'))
                         raise TracError(_('Version %(name)s already exists.',
                                           name=name))
                          
@@ -607,7 +613,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                 if req.args.get('add') and req.args.get('name'):
                     name = req.args.get('name')
                     try:
-                        self._enum_cls(self.env, name=name)
+                        enum = self._enum_cls(self.env, name=name)
                     except:
                         enum = self._enum_cls(self.env)
                         enum.name = name
@@ -618,6 +624,9 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                                           name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
+                        if enum.name is None:
+                            raise TracError(_('Invalid %(type)s name.',
+                                              type=self._label[0].lower()))
                         raise TracError(_('%(type)s %(name)s already exists',
                                           type=self._type.title(), name=name))
                          

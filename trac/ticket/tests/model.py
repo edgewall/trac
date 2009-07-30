@@ -434,7 +434,7 @@ class MilestoneTestCase(unittest.TestCase):
 
     def test_create_milestone_without_name(self):
         milestone = Milestone(self.env)
-        self.assertRaises(AssertionError, milestone.insert)
+        self.assertRaises(TracError, milestone.insert)
 
     def test_delete_milestone(self):
         cursor = self.db.cursor()
@@ -491,7 +491,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.name = None
-        self.assertRaises(AssertionError, milestone.update)
+        self.assertRaises(TracError, milestone.update)
 
     def test_update_milestone_update_tickets(self):
         cursor = self.db.cursor()

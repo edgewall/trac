@@ -37,6 +37,8 @@ class WikiPage(object):
             self.resource = name
             name = self.resource.id
         else:
+            if version:
+                version = int(version) # must be a number or None
             self.resource = Resource('wiki', name, version)
         self.name = name
         if name:
@@ -52,7 +54,7 @@ class WikiPage(object):
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
-        if version:
+        if version is not None:
             cursor.execute("SELECT version,time,author,text,comment,readonly "
                            "FROM wiki "
                            "WHERE name=%s AND version=%s",
