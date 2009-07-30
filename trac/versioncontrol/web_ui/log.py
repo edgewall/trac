@@ -97,10 +97,6 @@ class LogModule(Component):
                 pass
         rev = unicode(repos.normalize_rev(rev))    
 
-        path_links = get_path_links(req.href, path, rev)
-        if path_links:
-            add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
-
         # The `history()` method depends on the mode:
         #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
         #    unless explicit ranges have been specified
@@ -219,8 +215,7 @@ class LogModule(Component):
         data = {
             'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
-            'mode': mode, 'verbose': verbose,
-            'path_links': path_links, 'limit' : limit,
+            'mode': mode, 'verbose': verbose, 'limit' : limit,
             'items': info, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
@@ -236,6 +231,11 @@ class LogModule(Component):
 
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/browser.css')
+
+        path_links = get_path_links(req.href, path, rev)
+        if path_links:
+            add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
+            data['path_links'] = path_links
 
         rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, _('RSS Feed'),
