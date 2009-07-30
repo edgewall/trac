@@ -61,7 +61,7 @@
               <dd>
                 <a py:strip="not plugin.info.get('author_email')"
                    href="mailto:${plugin.info.author_email}">
-                  ${plugin.info.author_email or plugin.info.author}
+                  ${plugin.info.author or plugin.info.author_email}
                 </a>
               </dd>
             </py:if>
