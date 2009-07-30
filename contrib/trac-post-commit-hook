@@ -54,8 +54,8 @@
 # In addition, the ':' character can be omitted and issue or bug can be used
 # instead of ticket.
 #
-# You can have more then one command in a message. The following commands
-# are supported. There is more then one spelling for each command, to make
+# You can have more than one command in a message. The following commands
+# are supported. There is more than one spelling for each command, to make
 # this as user-friendly as possible.
 #
 #   close, closed, closes, fix, fixed, fixes
