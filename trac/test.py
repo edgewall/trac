@@ -328,7 +328,11 @@ class EnvironmentStub(Environment):
 
             if not tables:
                 del db
-                DatabaseManager(EnvironmentStub.dbenv).init_db()
+                dm = DatabaseManager(EnvironmentStub.dbenv)
+                dm.init_db()
+                # we need to make sure the next get_db_cnx() will re-create 
+                # a new connection aware of the new data model - see #8518.
+                dm.shutdown() 
 
         db = self.get_db_cnx()
         cursor = db.cursor()
