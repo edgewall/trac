@@ -817,7 +817,7 @@ class SubversionNode(Node):
                     relpath = previous_path[len(path):].strip('/')
                 copied_from = fs.copied_from(root, path)
                 if copied_from:
-                    (rev, path) = fs.copied_from(root, path)
+                    (rev, path) = copied_from
                     path = path.lstrip('/')
                     root = fs.revision_root(self.fs_ptr, rev, self.pool())
                     if relpath:
