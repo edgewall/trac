@@ -251,10 +251,11 @@ class LogModule(Component):
             add_link(req, 'up', path_links[-1]['href'], _('Parent directory'))
             data['path_links'] = path_links
 
-        rss_href = make_log_href(path, format='rss', stop_rev=stop_rev)
+        rss_href = make_log_href(path, format='rss', revs=revs,
+                                 stop_rev=stop_rev)
         add_link(req, 'alternate', rss_href, _('RSS Feed'),
                  'application/rss+xml', 'rss')
-        changelog_href = make_log_href(path, format='changelog',
+        changelog_href = make_log_href(path, format='changelog', revs=revs,
                                        stop_rev=stop_rev)
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
