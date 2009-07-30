@@ -190,8 +190,8 @@ class LogModule(Component):
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
         
-        revs = [i['rev'] for i in info]
-        changes = get_changes(repos, revs)
+        revisions = [i['rev'] for i in info]
+        changes = get_changes(repos, revisions)
         extra_changes = {}
         email_map = {}
         
@@ -202,7 +202,7 @@ class LogModule(Component):
                     if email:
                         email_map[username] = email
         elif format == 'changelog':
-            for rev in revs:
+            for rev in revisions:
                 changeset = changes[rev]
                 cs = {}
                 cs['message'] = wrap(changeset.message, 70,
