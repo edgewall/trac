@@ -156,9 +156,9 @@ log:trunk:12-head
 log:trunk:12@23 (bad, but shouldn't error out)
 ------------------------------
 <p>
-<a class="source" href="/log/?revs=12">log:@12</a>
+<a class="source" href="/log/?rev=12">log:@12</a>
 <a class="source" href="/log/trunk">log:trunk</a>
-<a class="source" href="/log/trunk?revs=12">log:trunk@12</a>
+<a class="source" href="/log/trunk?rev=12">log:trunk@12</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12:23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk@12-23</a>
 <a class="source" href="/log/trunk?revs=12-23">log:trunk:12:23</a>
@@ -177,9 +177,9 @@ log:trunk@12?limit=10
 ------------------------------
 <p>
 <a class="source" href="/log/?limit=10">log:?limit=10</a>
-<a class="source" href="/log/?revs=12&amp;limit=10">log:@12?limit=10</a>
+<a class="source" href="/log/?rev=12&amp;limit=10">log:@12?limit=10</a>
 <a class="source" href="/log/trunk?limit=10">log:trunk?limit=10</a>
-<a class="source" href="/log/trunk?revs=12&amp;limit=10">log:trunk@12?limit=10</a>
+<a class="source" href="/log/trunk?rev=12&amp;limit=10">log:trunk@12?limit=10</a>
 <a class="source" href="/log/?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20?verbose=yes&amp;format=changelog]</a>
 <a class="source" href="/log/trunk?revs=10-20&amp;verbose=yes&amp;format=changelog">[10:20/trunk?verbose=yes&amp;format=changelog]</a>
 </p>

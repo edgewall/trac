@@ -109,7 +109,7 @@ class LogModule(Component):
             def history(limit):
                 for h in repos.get_path_history(path, rev, limit):
                     yield h
-        elif revranges and revranges.a != revranges.b:
+        elif revranges:
             def history(limit):
                 prevpath = path
                 ranges = list(revranges.pairs)
@@ -297,15 +297,23 @@ class LogModule(Component):
                 indexes = [sep in match and match.index(sep) for sep in ':@']
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
-        try:
-            revs = self._normalize_ranges(formatter.req, revs)
-        except NoSuchChangeset:
+        revranges = None
+        if any(c for c in ':-,' if c in revs):
+            revranges = self._normalize_ranges(formatter.req, revs)
             revs = None
-        if revs and query:
-            query = '&' + query[1:]
-        href = formatter.href.log(path or '/', revs=revs) + query + fragment
         if 'LOG_VIEW' in formatter.perm:
-            return html.A(label, class_='source', href=href)
+            if revranges:
+                href = formatter.href.log(path or '/', revs=str(revranges)) 
+            else:
+                repos = self.env.get_repository(formatter.req.authname)
+                try:
+                    rev = repos.normalize_rev(revs)
+                except NoSuchChangeset:
+                    rev = None
+                href = formatter.href.log(path or '/', rev=rev)
+            if query and (revranges or revs):
+                query = '&' + query[1:]
+            return html.A(label, class_='source', href=href + query + fragment)
         else:
             return html.A(label, class_='missing source')
 
@@ -315,14 +323,15 @@ class LogModule(Component):
         ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
-            revranges = Ranges(ranges) 
+            return Ranges(ranges) 
         except ValueError:
             # slow path, normalize each rev
             repos = self.env.get_repository(req.authname)
             splitted_ranges = re.split(r'([-,])', ranges)
-            revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
+            try:
+                revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
+            except NoSuchChangeset:
+                return None
             seps = splitted_ranges[1::2]+['']
             ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
-            revranges = Ranges(ranges)
-        return str(revranges) or None
-               
+            return Ranges(ranges)
