@@ -368,7 +368,9 @@ class Ticket(object):
 
 def simplify_whitespace(name):
     """Strip spaces and remove duplicate spaces within names"""
-    return ' '.join(name.split())
+    if name:
+        return ' '.join(name.split())
+    return name
         
 
 class AbstractEnum(object):
@@ -379,8 +381,7 @@ class AbstractEnum(object):
         if not self.ticket_col:
             self.ticket_col = self.type
         self.env = env
-        if name:
-            name = simplify_whitespace(name)
+        name = simplify_whitespace(name)
         if name:
             if not db:
                 db = self.env.get_db_cnx()
@@ -429,7 +430,8 @@ class AbstractEnum(object):
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing %s' % self.type
         self.name = simplify_whitespace(self.name)
-        assert self.name, 'Cannot create %s with no name' % self.type
+        if not self.name:
+            raise TracError(_('Invalid %(type)s name.', type=self.type))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -455,7 +457,8 @@ class AbstractEnum(object):
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent %s' % self.type
         self.name = simplify_whitespace(self.name)
-        assert self.name, 'Cannot update %s with no name' % self.type
+        if not self.name:
+            raise TracError(_('Invalid %(type)s name.', type=self.type))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -527,8 +530,7 @@ class Component(object):
 
     def __init__(self, env, name=None, db=None):
         self.env = env
-        if name:
-            name = simplify_whitespace(name)
+        name = simplify_whitespace(name)
         if name:
             if not db:
                 db = self.env.get_db_cnx()
@@ -570,7 +572,8 @@ class Component(object):
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing component'
         self.name = simplify_whitespace(self.name)
-        assert self.name, 'Cannot create component with no name'
+        if not self.name:
+            raise TracError(_('Invalid component name.'))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -590,7 +593,8 @@ class Component(object):
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent component'
         self.name = simplify_whitespace(self.name)
-        assert self.name, 'Cannot update component with no name'
+        if not self.name:
+            raise TracError(_('Invalid component name.'))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -632,6 +636,7 @@ class Milestone(object):
 
     def __init__(self, env, name=None, db=None):
         self.env = env
+        name = simplify_whitespace(name)
         if name:
             self._fetch(name, db)
             self._old_name = name
@@ -695,14 +700,15 @@ class Milestone(object):
             db.commit()
 
     def insert(self, db=None):
-        assert self.name, 'Cannot create milestone with no name'
+        self.name = simplify_whitespace(self.name)
+        if not self.name:
+            raise TracError(_('Invalid milestone name.'))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
         else:
             handle_ta = False
 
-        self.name = simplify_whitespace(self.name)
         cursor = db.cursor()
         self.env.log.debug("Creating new milestone '%s'" % self.name)
         cursor.execute("INSERT INTO milestone (name,due,completed,description) "
@@ -715,14 +721,15 @@ class Milestone(object):
             db.commit()
 
     def update(self, db=None):
-        assert self.name, 'Cannot update milestone with no name'
+        self.name = simplify_whitespace(self.name)
+        if not self.name:
+            raise TracError(_('Invalid milestone name.'))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
         else:
             handle_ta = False
 
-        self.name = simplify_whitespace(self.name)
         cursor = db.cursor()
         self.env.log.info('Updating milestone "%s"' % self.name)
         cursor.execute("UPDATE milestone SET name=%s,due=%s,"
@@ -782,6 +789,7 @@ class Version(object):
 
     def __init__(self, env, name=None, db=None):
         self.env = env
+        name = simplify_whitespace(name)
         if name:
             if not db:
                 db = self.env.get_db_cnx()
@@ -823,7 +831,8 @@ class Version(object):
     def insert(self, db=None):
         assert not self.exists, 'Cannot insert existing version'
         self.name = simplify_whitespace(self.name)
-        assert self.name, 'Cannot create version with no name'
+        if not self.name:
+            raise TracError(_('Invalid version name.'))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True
@@ -843,7 +852,8 @@ class Version(object):
     def update(self, db=None):
         assert self.exists, 'Cannot update non-existent version'
         self.name = simplify_whitespace(self.name)
-        assert self.name, 'Cannot update version with no name'
+        if not self.name:
+            raise TracError(_('Invalid version name.'))
         if not db:
             db = self.env.get_db_cnx()
             handle_ta = True

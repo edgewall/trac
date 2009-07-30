@@ -629,20 +629,22 @@ class MilestoneModule(Component):
             warnings.append(msg)
 
         # -- check the name
-        if new_name:
-            if new_name != old_name:
-                # check that the milestone doesn't already exists
-                # FIXME: the whole .exists business needs to be clarified
-                #        (#4130) and should behave like a WikiPage does in
-                #        this respect.
-                try:
-                    other_milestone = Milestone(self.env, new_name, db)
-                    warn(_('Milestone "%(name)s" already exists, please '
-                           'choose another name', name=new_name))
-                except ResourceNotFound:
-                    pass
-        else:
-            warn(_('You must provide a name for the milestone.'))
+        # If the name has changed, check that the milestone doesn't already
+        # exist
+        # FIXME: the whole .exists business needs to be clarified
+        #        (#4130) and should behave like a WikiPage does in
+        #        this respect.
+        try:
+            new_milestone = Milestone(self.env, new_name, db)
+            if new_milestone.name == old_name:
+                pass        # Creation or no name change
+            elif new_milestone.name:
+                warn(_('Milestone "%(name)s" already exists, please '
+                       'choose another name.', name=new_milestone.name))
+            else:
+                warn(_('You must provide a name for the milestone.'))
+        except ResourceNotFound:
+            pass
 
         # -- check completed date
         if 'completed' in req.args:
