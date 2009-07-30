@@ -152,13 +152,15 @@ class LogModule(Component):
                 fix_deleted_rev = item
             if not (mode == 'path_history' and old_chg == Changeset.EDIT):
                 info.append(item)
-            if old_path and old_path != previous_path \
-               and not (mode == 'path_history' and old_path == normpath):
+            if old_path and old_path != previous_path and \
+                    not (mode == 'path_history' and old_path == normpath):
                 depth += 1
                 item['depth'] = depth
                 item['copyfrom_path'] = old_path
                 if mode == 'stop_on_copy':
                     break
+                elif mode == 'path_history':
+                    depth -= 1
             if len(info) > limit: # we want limit+1 entries
                 break
             previous_path = old_path
