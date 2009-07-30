@@ -456,6 +456,8 @@ class SubversionRepository(Repository):
         path_utf8 = _to_svn(self.scope, path)
         if start < end:
             start, end = end, start
+        if (start, end) == (1, 0): # only happens for empty repos
+            return
         root = fs.revision_root(self.fs_ptr, start, pool())
         # fs.node_history leaks when path doesn't exist (#6588)
         if fs.check_path(root, path_utf8, pool()) == core.svn_node_none:
@@ -482,7 +484,7 @@ class SubversionRepository(Repository):
     
     def _previous_rev(self, rev, path='', pool=None):
         if rev > 1: # don't use oldest here, as it's too expensive
-            for _, prev in self._history(path, 0, rev-1, pool or self.pool):
+            for _, prev in self._history(path, 1, rev-1, pool or self.pool):
                 return prev
         return None
     
@@ -500,7 +502,7 @@ class SubversionRepository(Repository):
         if not self.youngest:
             self.youngest = fs.youngest_rev(self.fs_ptr, self.pool())
             if self.scope != '/':
-                for path, rev in self._history('', 0, self.youngest, self.pool):
+                for path, rev in self._history('', 1, self.youngest, self.pool):
                     self.youngest = rev
                     break
         return self.youngest
@@ -557,7 +559,7 @@ class SubversionRepository(Repository):
                     yield path, rev+1, Changeset.DELETE
                 newer = None # 'newer' is the previously seen history tuple
                 older = None # 'older' is the currently examined history tuple
-                for p, r in self._history(path, 0, rev, subpool):
+                for p, r in self._history(path, 1, rev, subpool):
                     older = (_path_within_scope(self.scope, p), r,
                              Changeset.ADD)
                     rev = self._previous_rev(r, pool=subpool)
@@ -713,7 +715,7 @@ class SubversionNode(Node):
         older = None # 'older' is the currently examined history tuple
         pool = Pool(self.pool)
         numrevs = 0
-        for path, rev in self.repos._history(self.path, 0, self._requested_rev,
+        for path, rev in self.repos._history(self.path, 1, self._requested_rev,
                                              pool):
             path = _path_within_scope(self.scope, path)
             if rev > 0 and path:
