@@ -156,7 +156,7 @@
                 </tr>
 
                 <tr py:if="verbose" class="$odd_even verbose">
-                  <td class="summary" colspan="6" py:choose="" xml:space="preserve">
+                  <td py:if="item.change" class="summary" colspan="6" py:choose="" xml:space="preserve">
                     <py:when test="wiki_format_messages">
                       ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
                     </py:when>
