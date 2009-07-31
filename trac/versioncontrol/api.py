@@ -267,9 +267,6 @@ class RepositoryManager(Component):
         This means that if you want to use Trac without the source browser,
         simply remove that entry from the [trac] section.""")
 
-    repository_url = Option('trac', 'repository_url', '',
-        """Base URL of the default repository. (''since 0.12'')""")
-
     repository_sync_per_request = ListOption('trac',
         'repository_sync_per_request', '(default)',
         doc="""List of repositories that should be synchronized on every page
@@ -385,8 +382,7 @@ class RepositoryManager(Component):
                         reponames[option] = {'alias': alias}
         # eventually add pre-0.12 default repository
         if '' not in reponames and self.repository_dir:
-            reponames[''] = {'dir': self.repository_dir,
-                             'url': self.repository_url}
+            reponames[''] = {'dir': self.repository_dir}
 
         for reponame, info in reponames.iteritems():
             yield (reponame, info)
