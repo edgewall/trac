@@ -15,7 +15,8 @@ import sys
 
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider, get_dir_list
 from trac.core import *
-from trac.util.text import breakable_path, print_table, printerr, printout
+from trac.util.text import breakable_path, normalize_whitespace, print_table, \
+                           printerr, printout
 from trac.util.translation import _, ngettext
 from trac.versioncontrol import DbRepositoryProvider, RepositoryManager
 from trac.web.chrome import add_notice, add_warning
@@ -188,7 +189,7 @@ class VersionControlAdmin(Component):
                     changed = False
                     changes = {}
                     for field in db_provider.repository_attrs:
-                        value = req.args.get(field)
+                        value = normalize_whitespace(req.args.get(field))
                         if value is not None and value != info.get(field):
                             changes[field] = value
                     if changes:
@@ -229,6 +230,8 @@ class VersionControlAdmin(Component):
                     type_ = req.args.get('type')
                     dir = req.args.get('dir')
                     if name is not None and type_ is not None and dir:
+                        # Avoid errors when copy/pasting paths
+                        dir = normalize_whitespace(dir)
                         db_provider.add_repository(name, dir, type_)
                         add_notice(req, _('The repository "%(name)s" has been '
                                           'added.', name=name))
@@ -294,7 +297,7 @@ class VersionControlAdmin(Component):
         """Extend repository info for rendering."""
         info['name'] = reponame or '(default)'
         if info.get('dir') is not None:
-            info['prettydir'] = breakable_path(info['dir'])
+            info['prettydir'] = breakable_path(info['dir']) or ''
         if info.get('alias') == '':
             info['alias'] = '(default)'
         info['editable'] = editable
