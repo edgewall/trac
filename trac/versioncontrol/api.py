@@ -181,9 +181,8 @@ class DbRepositoryProvider(Component):
     
     def add_alias(self, reponame, target):
         """Create an alias repository."""
-        if not reponame or reponame == '(default)':
-            raise TracError(_("Invalid alias name '%(reponame)s'",
-                              reponame=reponame))
+        if reponame == '(default)':
+            reponame = ''
         if target == '(default)':
             target = ''
         db = self.env.get_db_cnx()
@@ -233,6 +232,8 @@ class DbRepositoryProvider(Component):
         for (k, v) in changes.iteritems():
             if k not in self.repository_attrs:
                 continue
+            if k == 'alias' and v == '(default)':
+                v = ''
             cursor.execute("UPDATE repository SET value=%s "
                            "WHERE id=%s AND name=%s", (v, reponame, k))
             cursor.execute("SELECT value FROM repository "
@@ -441,10 +442,9 @@ class RepositoryManager(Component):
         else:
             reponame = '' # normalize the name for the default repository
             rdir, rtype = self.repository_dir, self.repository_type
-
-        # don't try to lookup default repository if not set
-        if not reponame and not self.repository_dir:
-            return None
+            # don't try to lookup default repository if not set
+            if not rdir:
+                return None
 
         # get a Repository for the reponame (use a thread-level cache)
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
