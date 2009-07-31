@@ -138,6 +138,7 @@ class WikiModule(Component):
                     if a in req.args:
                         action = a
                         break
+                versioned_page.text = req.args.get('text')
                 valid = self._validate(req, versioned_page)
                 if action == 'edit' and not has_collision and valid:
                     return self._do_save(req, versioned_page)
@@ -277,7 +278,6 @@ class WikiModule(Component):
         else:
             req.perm(page.resource).require('WIKI_MODIFY')
 
-        page.text = req.args.get('text')
         if 'WIKI_ADMIN' in req.perm(page.resource):
             # Modify the read-only flag if it has been changed and the user is
             # WIKI_ADMIN
