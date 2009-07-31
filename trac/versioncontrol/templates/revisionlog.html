@@ -8,7 +8,7 @@
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
-    <title>$path (log)</title>
+    <title>${'/'.join(part.name for part in path_links[1:]) or '/'} (log)</title>
   </head>
 
   <body>

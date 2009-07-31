@@ -8,7 +8,7 @@
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
-    <title>$path</title>
+    <title>${'/'.join(part.name for part in path_links[1:]) or '/'}</title>
     <meta py:if="file and file.annotate" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
     <meta py:if="dir" name="ROBOTS" content="NOINDEX" />
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
