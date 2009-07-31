@@ -408,6 +408,11 @@ class BrowserModule(Component):
 
         # Links for contextual navigation
         if node:
+            path_url = repos.get_path_url(path, rev)
+            if path_url:
+                if path_url.startswith('//'):
+                    path_url = req.scheme + ':' + path_url
+                add_ctxtnav(req, _('Repository URL'), href=path_url)
             add_ctxtnav(req, tag.a(_('Last Change'), 
                         href=req.href.changeset(node.rev, reponame,
                                                 node.created_path)))

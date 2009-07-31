@@ -187,7 +187,7 @@ class VersionControlAdmin(Component):
                     # Modify repository
                     changed = False
                     changes = {}
-                    for field in ['alias', 'dir', 'type']:
+                    for field in db_provider.repository_attrs:
                         value = req.args.get(field)
                         if value is not None and value != info.get(field):
                             changes[field] = value

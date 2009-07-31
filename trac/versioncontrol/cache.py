@@ -70,6 +70,9 @@ class CachedRepository(Repository):
     def get_quickjump_entries(self, rev):
         return self.repos.get_quickjump_entries(self.normalize_rev(rev))
 
+    def get_path_url(self, path, rev):
+        return self.repos.get_path_url(path, rev)
+
     def get_changeset(self, rev):
         return CachedChangeset(self.repos, self.normalize_rev(rev),
                                self.env, self.authz)

@@ -280,7 +280,8 @@ class SubversionConnector(Component):
             self.env.systeminfo.append(('Subversion', self._version))
         fs_repos = SubversionRepository(dir, None, self.log,
                                         {'tags': self.tags,
-                                         'branches': self.branches})
+                                         'branches': self.branches,
+                                         'url': options.get('url')})
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
@@ -422,6 +423,13 @@ class SubversionRepository(Repository):
         for n in self._get_tags_or_branches('tags'):
             yield 'tags', n.path, n.created_path, n.created_rev
 
+    def get_path_url(self, path, rev):
+        url = self.options.get('url', '').rstrip('/')
+        if url:
+            if not path or path == '/':
+                return url
+            return url + '/' + path.lstrip('/')
+    
     def get_changeset(self, rev):
         rev = self.normalize_rev(rev)
         return SubversionChangeset(rev, self.authz, self.scope,

@@ -96,6 +96,8 @@ class DbRepositoryProvider(Component):
 
     implements(IRepositoryProvider, IAdminCommandProvider)
 
+    repository_attrs = ('alias', 'dir', 'type', 'url')
+    
     # IRepositoryProvider methods
 
     def get_repositories(self):
@@ -103,14 +105,13 @@ class DbRepositoryProvider(Component):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT id,name,value FROM repository "
-                       "WHERE name IN ('dir', 'alias', 'type')")
+                       "WHERE name IN (%s)" % ",".join(
+                           "'%s'" % each for each in self.repository_attrs))
         reponames = {}
         for (id, name, value) in cursor:
             if value is not None:
                 reponames.setdefault(id, {})[name] = value
-        
-        for reponame, info in reponames.iteritems():
-            yield (reponame, info)
+        return reponames.iteritems()
 
     # IAdminCommandProvider methods
     
@@ -230,8 +231,15 @@ class DbRepositoryProvider(Component):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         for (k, v) in changes.iteritems():
+            if k not in self.repository_attrs:
+                continue
             cursor.execute("UPDATE repository SET value=%s "
                            "WHERE id=%s AND name=%s", (v, reponame, k))
+            cursor.execute("SELECT value FROM repository "
+                           "WHERE id=%s AND name=%s", (reponame, k))
+            if not cursor.fetchone():
+                cursor.execute("INSERT INTO repository VALUES (%s, %s, %s)",
+                               (reponame, k, v))
         db.commit()
         RepositoryManager(self.env).reload_repositories()
 
@@ -257,6 +265,9 @@ class RepositoryManager(Component):
         this will auto-enable the trac.versioncontrol.* components. 
         This means that if you want to use Trac without the source browser,
         simply remove that entry from the [trac] section.""")
+
+    repository_url = Option('trac', 'repository_url', '',
+        """Base URL of the default repository. (''since 0.12'')""")
 
     repository_sync_per_request = ListOption('trac',
         'repository_sync_per_request', '(default)',
@@ -367,13 +378,14 @@ class RepositoryManager(Component):
                 name, detail = option[:dotindex], option[dotindex+1:]
                 if name in reponames:
                     reponames[name][detail] = repositories.get(option)
-                else: # alias?
+                elif detail == 'alias':
                     alias = repositories.get(option)
                     if alias in reponames:
                         reponames[option] = {'alias': alias}
         # eventually add pre-0.12 default repository
         if '' not in reponames and self.repository_dir:
-            reponames[''] = {'dir': self.repository_dir}
+            reponames[''] = {'dir': self.repository_dir,
+                             'url': self.repository_url}
 
         for reponame, info in reponames.iteritems():
             yield (reponame, info)
@@ -464,9 +476,9 @@ class RepositoryManager(Component):
                  been truncated, if needed.
         """
         matches = []
-        path = path and path.strip('/')+'/' or '/'
+        path = path and path.strip('/') + '/' or '/'
         for reponame in self.get_all_repositories().keys():
-            stripped_reponame = reponame.strip('/')+'/'
+            stripped_reponame = reponame.strip('/') + '/'
             if path.startswith(stripped_reponame):
                 matches.append((len(stripped_reponame), reponame))
         if matches:
@@ -475,7 +487,8 @@ class RepositoryManager(Component):
             path = path[length:]
         else:
             reponame = ''
-        return (reponame, self.get_repository(reponame, authname), path or '/')
+        return (reponame, self.get_repository(reponame, authname),
+                path.rstrip('/') or '/')
 
     def get_default_repository(self, context):
         """Recover the appropriate repository from the current context.
@@ -683,6 +696,15 @@ class Repository(object):
         The generated results must be of the form (category, name, path, rev).
         """
         return []
+    
+    def get_path_url(self, path, rev):
+        """Return the repository URL for the given path and revision.
+        
+        The returned URL can be `None`, meaning that no URL has been specified
+        for the repository, an absolute URL, or a scheme-relative URL starting
+        with `//`, in which case the scheme of the request should be prepended.
+        """
+        return None
     
     def get_changeset(self, rev):
         """Retrieve a Changeset corresponding to the given revision `rev`."""
