@@ -27,6 +27,7 @@ from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.util import Ranges
+from trac.util.compat import any
 from trac.util.datefmt import http_date
 from trac.util.html import html
 from trac.util.text import wrap
