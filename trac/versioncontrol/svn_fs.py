@@ -333,9 +333,9 @@ class SubversionRepository(Repository):
                               svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
         
-        uuid = fs.get_uuid(self.fs_ptr, self.pool())
-        self.base = 'svn:%s:%s' % (uuid, _from_svn(root_path_utf8))
-        name = 'svn:%s:%s' % (uuid, self.path)
+        self.uuid = fs.get_uuid(self.fs_ptr, self.pool())
+        self.base = 'svn:%s:%s' % (self.uuid, _from_svn(root_path_utf8))
+        name = 'svn:%s:%s' % (self.uuid, self.path)
 
         Repository.__init__(self, name, authz, log)
 
@@ -434,6 +434,9 @@ class SubversionRepository(Repository):
         rev = self.normalize_rev(rev)
         return SubversionChangeset(rev, self.authz, self.scope,
                                    self.fs_ptr, self.pool)
+
+    def get_changeset_uid(self, rev):
+        return (self.uuid, rev)
 
     def get_node(self, path, rev=None):
         path = path or ''

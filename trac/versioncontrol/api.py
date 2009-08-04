@@ -706,6 +706,13 @@ class Repository(object):
         """Retrieve a Changeset corresponding to the given revision `rev`."""
         raise NotImplementedError
 
+    def get_changeset_uid(self, rev):
+        """Return a globally unique identifier for the ''rev'' changeset.
+
+        Two changesets from different repositories can sometimes refer to
+        the ''very same'' changeset (e.g. the repositories are clones).
+        """
+
     def get_changesets(self, start, stop):
         """Generate Changeset belonging to the given time period (start, stop).
         """
@@ -974,12 +981,6 @@ class Changeset(object):
         """
         raise NotImplementedError
 
-    def get_uid(self):
-        """Return a globally unique identifier for this changesets.
-
-        Two changesets from different repositories can sometimes refer to
-        the ''very same'' changesets (e.g. two different clones)
-        """
 
 
 class PermissionDenied(PermissionError):

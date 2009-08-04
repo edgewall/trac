@@ -77,6 +77,9 @@ class CachedRepository(Repository):
         return CachedChangeset(self.repos, self.normalize_rev(rev),
                                self.env, self.authz)
 
+    def get_changeset_uid(self, rev):
+        return self.repos.get_changeset_uid(rev)
+
     def get_changesets(self, start, stop):
         db = self.env.get_db_cnx()
         cursor = db.cursor()

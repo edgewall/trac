@@ -866,7 +866,7 @@ class ChangesetModule(Component):
                                                  (reponame, cset.rev))
                         if 'CHANGESET_VIEW' in req.perm(cset_resource):
                             repos_for_uid = [reponame]
-                            uid = cset.get_uid()
+                            uid = repos.get_changeset_uid(cset.rev)
                             if uid:
                                 # uid can be seen in multiple repositories
                                 if uid in uids_seen:
