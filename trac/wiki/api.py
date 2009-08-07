@@ -309,13 +309,16 @@ class WikiSystem(Component):
                 return name
         if self.has_page(pagename):
             return pagename
-        # If any common prefix between pagename and referrer exists, resolve
-        # as absolute (http://trac.edgewall.org/ticket/4507#comment:12)
-        for (i, (re, pn)) in enumerate(zip(referrer_el, pagename.split('/'))):
-            if re != pn:
-                break
-            if self.has_page('/'.join(referrer_el[:i + 1])):
-                return pagename
+        # If we are on First/Second/Third, and pagename is Second/Other,
+        # resolve to First/Second/Other instead of First/Second/Second/Other
+        # See http://trac.edgewall.org/ticket/4507#comment:12
+        if '/' in pagename:
+            (first, rest) = pagename.split('/', 1)
+            for (i, part) in enumerate(referrer_el):
+                if first == part:
+                    anchor = '/'.join(referrer_el[:i + 1])
+                    if self.has_page(anchor):
+                        return anchor + '/' + rest
         # Assume the user wants a sibling of referrer
         return '/'.join(referrer_el[:-1]) + '/' + pagename
 

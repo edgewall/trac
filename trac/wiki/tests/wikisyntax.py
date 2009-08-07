@@ -329,6 +329,8 @@ ThirdLevel
 [wiki:ThirdLevel]
 OtherThirdLevel
 [wiki:OtherThirdLevel]
+SecondLevel/OtherThirdLevel
+[wiki:SecondLevel/OtherThirdLevel]
 SecondLevel
 [wiki:SecondLevel]
 FirstLevel
@@ -339,6 +341,8 @@ MissingPage
 [wiki:MissingPage]
 FirstLevel/MissingPage
 [wiki:FirstLevel/MissingPage]
+SecondLevel/MissingPage
+[wiki:SecondLevel/MissingPage]
 MissingFirstLevel/MissingPage
 [wiki:MissingFirstLevel/MissingPage]
 ["/OtherThirdLevel"]
@@ -349,6 +353,8 @@ MissingFirstLevel/MissingPage
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/ThirdLevel">ThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">OtherThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">OtherThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">SecondLevel/OtherThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">SecondLevel/OtherThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel">SecondLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel">SecondLevel</a>
 <a class="wiki" href="/wiki/FirstLevel">FirstLevel</a>
@@ -359,6 +365,8 @@ MissingFirstLevel/MissingPage
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
 <a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
 <a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage?</a>
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
 <a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
