@@ -9,8 +9,10 @@
         <tr class="${idx % 2 and 'even' or 'odd'}">
           <td class="name">
             <em py:strip="not err">
-              <a class="dir" title="View Root Directory"
-                href="${href.browser(reponame, order=(order != 'name' and order or None), desc=desc)}" py:choose="reponame"><b py:when="''">(default)</b><py:otherwise>$reponame</py:otherwise></a>
+              <b py:strip="repoinfo.alias != ''">
+                <a class="dir" title="View Root Directory"
+                  href="${href.browser(reponame, order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
+              </b>
             </em>
           </td>
           <td class="size" />

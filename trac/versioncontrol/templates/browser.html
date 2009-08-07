@@ -47,24 +47,9 @@
   <body>
     <div id="content" class="browser">
 
-      <py:if test="repo">
-        <h1>Repository Index</h1>
-        <py:with vars="repoindex = 'repoindex'">
-          <xi:include href="repository_index.html" />
-        </py:with>
-      </py:if>
-
       <py:if test="dir or file">
         <py:choose>
-          <py:when test="repo">
-            <hr />
-            <h1>Default Repository</h1>
-            <p class="hint">The entries in that repository are reachable directly, 
-            without a repository prefix. <br />
-            However, a repository name will always take precedence over a similarly 
-            named entry in the default repository. <br />
-            If this is a problem, add a separate explicit entry for that repository.</p>
-          </py:when>
+          <h1 py:when="repo">Default Repository</h1>
           <h1 py:otherwise=""><xi:include href="path_links.html" /></h1>
         </py:choose>
   
@@ -152,6 +137,14 @@
           </td>
         </tr>
       </table>
+
+      <py:if test="repo and repo.repositories">
+        <hr py:if="dir"/>
+        <h1>Repository Index</h1>
+        <py:with vars="repoindex = 'repoindex'">
+          <xi:include href="repository_index.html" />
+        </py:with>
+      </py:if>
 
       <div py:if="file and file.preview" id="preview" class="searchable">
         ${preview_file(file.preview)}

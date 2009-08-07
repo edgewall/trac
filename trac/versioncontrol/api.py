@@ -96,7 +96,7 @@ class DbRepositoryProvider(Component):
 
     implements(IRepositoryProvider, IAdminCommandProvider)
 
-    repository_attrs = ('alias', 'dir', 'type', 'url')
+    repository_attrs = ('alias', 'dir', 'hidden', 'type', 'url')
     
     # IRepositoryProvider methods
 
@@ -258,14 +258,20 @@ class RepositoryManager(Component):
     change_listeners = ExtensionPoint(IRepositoryChangeListener)
 
     repository_type = Option('trac', 'repository_type', 'svn',
-        """Default repository connector type. (''since 0.10'')""")
+        """Default repository connector type. (''since 0.10'')
+        
+        This is also used as the default repository type for repositories
+        defined in [[TracIni#repositories-section repositories]] or using the
+        "Repositories" admin panel. (''since 0.12'')
+        """)
 
     repository_dir = Option('trac', 'repository_dir', '',
         """Path to the default repository. This can also be a relative path
-        (''since 0.11''). If this entry is specified (even when left empty),
-        this will auto-enable the trac.versioncontrol.* components. 
-        This means that if you want to use Trac without the source browser,
-        simply remove that entry from the [trac] section.""")
+        (''since 0.11'').
+        
+        This option is deprecated, and repositories should be defined in the
+        [[TracIni#repositories-section repositories]] section, or using the
+        "Repositories" admin panel. (''since 0.12'')""")
 
     repository_sync_per_request = ListOption('trac',
         'repository_sync_per_request', '(default)',
@@ -369,17 +375,18 @@ class RepositoryManager(Component):
         for option in repositories:
             if option.endswith('.dir'):
                 reponames[option[:-4]] = {}
-        # second pass to gather the <name>.<detail> entries or <alias> ones
+        # second pass to gather aliases
+        for option in repositories:
+            if '.' not in option:
+                alias = repositories.get(option)
+                if reponames.get(alias) == {}:
+                    reponames[option] = {'alias': alias}
+        # third pass to gather the <name>.<detail> entries
         for option in repositories:
             if '.' in option:
-                dotindex = option.rindex('.')
-                name, detail = option[:dotindex], option[dotindex+1:]
+                name, detail = option.rsplit('.', 1)
                 if name in reponames:
                     reponames[name][detail] = repositories.get(option)
-                elif detail == 'alias':
-                    alias = repositories.get(option)
-                    if alias in reponames:
-                        reponames[option] = {'alias': alias}
         # eventually add pre-0.12 default repository
         if '' not in reponames and self.repository_dir:
             reponames[''] = {'dir': self.repository_dir}
@@ -612,7 +619,7 @@ class RepositoryManager(Component):
             else:
                 raise TracError(
                     _('Unsupported version control system "%(name)s"'
-                      ': "%(error)s" ', name=rtype, 
+                      ': %(error)s', name=rtype, 
                       error=to_unicode(connector.error)))
         else:
             raise TracError(

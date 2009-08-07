@@ -14,6 +14,7 @@
 import sys
 
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider, get_dir_list
+from trac.config import _TRUE_VALUES
 from trac.core import *
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printerr, printout
@@ -190,7 +191,8 @@ class VersionControlAdmin(Component):
                     changes = {}
                     for field in db_provider.repository_attrs:
                         value = normalize_whitespace(req.args.get(field))
-                        if value is not None and value != info.get(field):
+                        if (value is not None or field == 'hidden') \
+                                and value != info.get(field):
                             changes[field] = value
                     if changes:
                         db_provider.modify_repository(reponame, changes)
@@ -300,6 +302,7 @@ class VersionControlAdmin(Component):
             info['prettydir'] = breakable_path(info['dir']) or ''
         if info.get('alias') == '':
             info['alias'] = '(default)'
+        info['hidden'] = info.get('hidden') in _TRUE_VALUES
         info['editable'] = editable
         if not info.get('alias'):
             try:

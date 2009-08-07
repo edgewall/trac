@@ -23,7 +23,7 @@ import urllib
 
 from genshi.builder import tag
 
-from trac.config import ListOption, BoolOption, Option
+from trac.config import ListOption, BoolOption, Option, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
                               IHTMLPreviewAnnotator, Context
@@ -295,8 +295,11 @@ class BrowserModule(Component):
 
     def get_navigation_items(self, req):
         if 'BROWSER_VIEW' in req.perm:
-            yield ('mainnav', 'browser',
-                   tag.a(_('Browse Source'), href=req.href.browser()))
+            all_repos = RepositoryManager(self.env).get_all_repositories()
+            if all_repos and not all(info.get('hidden', False)
+                                     for info in all_repos.itervalues()):
+                yield ('mainnav', 'browser',
+                       tag.a(_('Browse Source'), href=req.href.browser()))
 
     # IPermissionRequestor methods
 
@@ -338,9 +341,10 @@ class BrowserModule(Component):
         # Repository index
         all_repositories = None
         if not reponame and path == '/':
-            all_repositories = rm.get_all_repositories().items()
-            if all_repositories:
-                repos = rm.get_repository('', req.authname)
+            all_repositories = rm.get_all_repositories()
+            if all_repositories and repos \
+                    and all_repositories[''].get('hidden') in _TRUE_VALUES:
+                repos = None
 
         if not repos and reponame:
             raise ResourceNotFound(_("No repository '%(repo)s' found",
@@ -450,7 +454,9 @@ class BrowserModule(Component):
 
         rm = RepositoryManager(self.env)
         repositories = []
-        for reponame, repoinfo in all_repositories:
+        for reponame, repoinfo in all_repositories.items():
+            if not reponame or repoinfo.get('hidden') in _TRUE_VALUES:
+                continue
             try:
                 repos = rm.get_repository(reponame, context.perm.username)
                 if repos:

@@ -62,6 +62,11 @@
               </div>
             </py:otherwise>
           </py:choose>
+          <div class="field">
+            <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}"/>
+              Hide from repository index
+            </label>
+          </div>
           <div class="buttons">
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
             <input py:if="info.editable" type="submit" name="save" value="${_('Save')}"/>
