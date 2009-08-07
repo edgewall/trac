@@ -276,18 +276,8 @@ class WikiSystem(Component):
         pagename = pagename.rstrip('/') or 'WikiStart'
         if formatter.resource and formatter.resource.realm == 'wiki' \
                               and not pagename.startswith('/'):
-            prefix = formatter.resource.id
-            if '/' in prefix:
-                while '/' in prefix:
-                    prefix = prefix.rsplit('/', 1)[0]
-                    name = prefix + '/' + pagename
-                    if self.has_page(name):
-                        pagename = name
-                        break
-                else:
-                    if not self.has_page(pagename):
-                        pagename = formatter.resource.id.rsplit('/', 1)[0] \
-                                   + '/' + pagename
+            pagename = self._resolve_relative_name(pagename,
+                                                   formatter.resource.id)
         pagename = pagename.lstrip('/')
         if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
@@ -307,6 +297,27 @@ class WikiSystem(Component):
         else:
             return tag.a(label, class_='forbidden wiki',
                          title=_("no permission to view this wiki page"))
+
+    def _resolve_relative_name(self, pagename, referrer):
+        referrer_el = referrer.split('/')
+        if len(referrer_el) == 1:           # Non-hierarchical referrer
+            return pagename
+        # Test for pages with same name, higher in the hierarchy
+        for i in range(len(referrer_el) - 1, 0, -1):
+            name = '/'.join(referrer_el[:i]) + '/' + pagename
+            if self.has_page(name):
+                return name
+        if self.has_page(pagename):
+            return pagename
+        # If any common prefix between pagename and referrer exists, resolve
+        # as absolute (http://trac.edgewall.org/ticket/4507#comment:12)
+        for (i, (re, pn)) in enumerate(zip(referrer_el, pagename.split('/'))):
+            if re != pn:
+                break
+            if self.has_page('/'.join(referrer_el[:i + 1])):
+                return pagename
+        # Assume the user wants a sibling of referrer
+        return '/'.join(referrer_el[:-1]) + '/' + pagename
 
     # IResourceManager methods
 

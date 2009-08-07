@@ -337,6 +337,10 @@ TestPage
 [wiki:TestPage]
 MissingPage
 [wiki:MissingPage]
+FirstLevel/MissingPage
+[wiki:FirstLevel/MissingPage]
+MissingFirstLevel/MissingPage
+[wiki:MissingFirstLevel/MissingPage]
 ["/OtherThirdLevel"]
 [wiki:/OtherThirdLevel]
 ------------------------------
@@ -353,6 +357,10 @@ MissingPage
 <a class="wiki" href="/wiki/TestPage">TestPage</a>
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
 <a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
 <a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
 </p>
