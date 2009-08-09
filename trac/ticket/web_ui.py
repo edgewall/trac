@@ -1341,7 +1341,7 @@ class TicketModule(Component):
                     'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
                 render_elt = obfuscate_email_address
         elif field == 'keywords':
-            old_list, new_list = old.split(), new.split()
+            old_list, new_list = (old or '').split(), new.split()
             sep = ' '
         if (old_list, new_list) != (None, None):
             added = [tag.em(render_elt(x)) for x in new_list 
