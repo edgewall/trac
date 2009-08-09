@@ -533,9 +533,10 @@ class TicketModule(Component):
         mime = Mimeview(self.env)
         format = req.args.get('format')
         if format:
-            # FIXME: mime.send_converted(context, ticket, 'ticket_x')
+            # FIXME: mime.send_converted(context, ticket, 'ticket_x') (#3332)
+            filename = ('t%d' % ticket.id, None)[format == 'rss']
             mime.send_converted(req, 'trac.ticket.Ticket', ticket,
-                                format, filename=None)
+                                format, filename=filename)
 
         def add_ticket_link(css_class, id):
             t = ticket.resource(id=id, version=None)
