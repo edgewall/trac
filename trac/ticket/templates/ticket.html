@@ -334,8 +334,8 @@ ${ticket.description}</textarea>
                     </select>
                     <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                               cols="${field.width}" rows="${field.height}"
-                              class="${field.format == 'wiki' and 'wikitext' or None}"
-                              py:content="value"></textarea>
+                              class="${field.format == 'wiki' and 'wikitext' or None}">
+${value}</textarea>
                     <span py:when="'checkbox'">
                       <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
                              checked="${value == '1' and 'checked' or None}" value="1" />
