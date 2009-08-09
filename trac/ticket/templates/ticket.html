@@ -78,7 +78,14 @@
       </div>
     </py:def>
 
-    <div id="content" class="ticket" py:with="preview_mode = 'preview' in req.args">
+    <div id="content" class="ticket" 
+        py:with="preview_mode = 'preview' in req.args;
+                 can_append = 'TICKET_APPEND' in perm(ticket.resource);
+                 can_create = 'TICKET_CREATE' in perm(ticket.resource) and not ticket.exists;
+                 can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
+                 can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource);
+                 only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource);
+                ">
       <h1>
         <py:choose>
           <py:when test="ticket.exists">
@@ -178,8 +185,7 @@
               </h3>
 
               <!--! Quote the description (only for existing tickets) -->
-              <form py:if="ticket.exists and ticket.description and
-                           'TICKET_APPEND' in perm(ticket.resource)"
+              <form py:if="ticket.exists and ticket.description and can_append"
                 id="addreply"
                 method="get" action="#comment">
                 <div class="inlinebuttons">
@@ -224,7 +230,7 @@
                   </span>
                   Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}
                 </h3>
-                <div py:if="'cnum' in change and 'TICKET_APPEND' in perm(ticket.resource)" class="inlinebuttons">
+                <div py:if="'cnum' in change and can_append" class="inlinebuttons">
                   <input type="hidden" name="replyto" value="${change.cnum}" />
                   <input type="submit" value="Reply" title="Reply to comment ${change.cnum}" />
                 </div>
@@ -236,10 +242,7 @@
       </py:if>
       <!--! End of the section we don't show on initial new tickets -->
 
-      <form py:if="not version and version != 0 and
-                   ('TICKET_APPEND' in perm(ticket.resource) or
-                    'TICKET_CHGPROP' in perm(ticket.resource) or
-                    ('TICKET_CREATE' in perm(ticket.resource) and not ticket.id))"
+      <form py:if="not version and version != 0 and (can_append or can_modify or can_edit or can_create)"
             action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" id="propertyform">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} ($ticket.summary)</a></h3>
@@ -262,7 +265,7 @@
             </p>
           </fieldset>
         </div>
-        <div py:if="ticket.exists" class="field">
+        <div py:if="ticket.exists and can_append" class="field">
           <fieldset class="iefix">
             <label for="comment">Comment (you may use
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
@@ -272,21 +275,21 @@
 ${comment}</textarea></p>
           </fieldset>
         </div>
-
-        <fieldset id="properties"
-                  py:if="'TICKET_CHGPROP' in perm(ticket.resource) or
-                         (not ticket.exists and 'TICKET_CREATE' in perm)"
+        <fieldset id="properties" py:if="can_modify or can_edit or can_create"
                   py:with="fields = [f for f in fields if not f.skip]">
-          <legend>${ticket.exists and 'Change ' or ''}Properties</legend>
+          <legend py:choose="">
+              <py:when test="ticket.exists">Change Properties</py:when>
+              <py:otherwise>Properties</py:otherwise>
+          </legend>
           <table>
-            <tr>
+            <tr py:if="can_modify or can_create">
               <th><label for="field-summary">Summary:</label></th>
               <td class="fullrow" colspan="3">
                 <input type="text" id="field-summary" name="field_summary"
                        value="$ticket.summary" size="70" />
               </td>
             </tr>
-            <py:if test="'TICKET_ADMIN' in perm(ticket.resource)">
+            <py:if test="only_for_admin">
               <tr>
                 <th><label for="field-reporter">Reporter:</label></th>
                 <td class="fullrow" colspan="3">
@@ -295,17 +298,17 @@ ${comment}</textarea></p>
                 </td>
               </tr>
             </py:if>
-            <py:if test="'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource) or not ticket.exists">
+            <py:if test="can_edit or can_create">
               <tr>
                 <th><label for="field-description">Description:</label></th>
                 <td class="fullrow" colspan="3">
-                  <textarea id="field-description" name="field_description"
-                            class="wikitext" rows="10" cols="68"
-                            py:content="ticket.description"></textarea>
+                  <textarea id="field-description" name="field_description" class="wikitext" rows="10" cols="68">
+${ticket.description}</textarea>
                 </td>
               </tr>
             </py:if>
             <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea' and f.name != 'owner')"
+                py:if="can_modify or can_create"
                 py:with="fullrow = len(row) == 1">
               <py:for each="idx, field in enumerate(row)"
                       py:with="value = ticket.get_value_or_default(field.name)">
@@ -373,15 +376,22 @@ ${comment}</textarea></p>
 
         <!--! Workflow support -->
         <py:if test="ticket.id"> <!--! do not display the actions for New tickets -->
-          <fieldset id="action">
-            <legend>Action</legend>
-            <div py:for="key, label, controls, hints in action_controls">
-              <input type="radio" id="action_$key" name="action" value="$key" checked="${action == key or None}" />
-                <label for="action_$key">$label</label>
-                $controls
-                <span class="hint" py:for="hint in hints">$hint</span>
-            </div>
-          </fieldset>
+          <py:choose>
+            <fieldset py:when="can_append or can_modify" id="action">
+              <legend>Action</legend>
+              <div py:for="key, label, controls, hints in action_controls">
+                  <input type="radio" id="action_$key" name="action" value="$key" checked="${key == action or None}" />
+                  <label for="action_$key">$label</label>
+                  $controls
+                  <span class="hint" py:for="hint in hints">$hint</span>
+              </div>
+            </fieldset>
+            <py:otherwise>
+              <py:for each="key, label, controls, hints in action_controls">
+                <input py:if="key == action" type="hidden" name="action" value="$action" />
+              </py:for>
+            </py:otherwise>
+          </py:choose>
         </py:if>
 
         <p py:if="not ticket.exists and 'ATTACHMENT_CREATE' in perm(ticket.resource.child('attachment'))">
