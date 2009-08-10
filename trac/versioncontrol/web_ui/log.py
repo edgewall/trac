@@ -332,7 +332,7 @@ class LogModule(Component):
                 href = formatter.href.log(path or '/', revs=str(revranges)) 
             else:
                 reponame, repos, relpath = RepositoryManager(self.env). \
-                    get_repository_by_path(path, req.authname)
+                    get_repository_by_path(path, formatter.req.authname)
                 try:
                     rev = repos.normalize_rev(revs)
                 except NoSuchChangeset:
