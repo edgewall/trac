@@ -331,7 +331,8 @@ class LogModule(Component):
             if revranges:
                 href = formatter.href.log(path or '/', revs=str(revranges)) 
             else:
-                repos = self.env.get_repository(formatter.req.authname)
+                reponame, repos, relpath = RepositoryManager(self.env). \
+                    get_repository_by_path(path, req.authname)
                 try:
                     rev = repos.normalize_rev(revs)
                 except NoSuchChangeset:
@@ -352,7 +353,7 @@ class LogModule(Component):
             return Ranges(ranges, reorder=True) 
         except ValueError:
             # slow path, normalize each rev
-            reponame, repos, path = RepositoryManager(self.env).\
+            reponame, repos, path = RepositoryManager(self.env). \
                 get_repository_by_path(path, req.authname)
             splitted_ranges = re.split(r'([-,])', ranges)
             try:
