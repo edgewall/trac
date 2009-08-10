@@ -43,7 +43,7 @@ class ConfigurationTestCase(unittest.TestCase):
     def _write(self, lines):
         fileobj = open(self.filename, 'w')
         try:
-            fileobj.write('\n'.join(lines + ['']))
+            fileobj.write(('\n'.join(lines + [''])).encode('utf-8'))
         finally:
             fileobj.close()
 
@@ -101,6 +101,13 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals('x', config.get('a', 'option', 'y'))
         self.assertEquals('y', config.get('b', 'option2', 'y'))
 
+    def test_read_and_get_unicode(self):
+        self._write([u'[ä]', u'öption = x'])
+        config = self._read()
+        self.assertEquals('x', config.get(u'ä', u'öption'))
+        self.assertEquals('x', config.get(u'ä', u'öption', 'y'))
+        self.assertEquals('y', config.get('b', u'öption2', 'y'))
+
     def test_read_and_getbool(self):
         self._write(['[a]', 'option = yes'])
         config = self._read()
@@ -157,35 +164,35 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_set_and_save(self):
         config = self._read()
-        config.set('b', 'option0', 'y')
-        config.set('a', 'option0', 'x')
-        config.set('a', 'option2', "Voilà l'été")  # UTF-8
-        config.set('a', 'option1', u"Voilà l'été") # unicode
+        config.set('b', u'öption0', 'y')
+        config.set(u'aä', 'öption0', 'x')
+        config.set('aä', 'option2', "Voilà l'été")  # UTF-8
+        config.set(u'aä', 'option1', u"Voilà l'été") # unicode
         # Note: the following would depend on the locale.getpreferredencoding()
         # config.set('a', 'option3', "Voil\xe0 l'\xe9t\xe9") # latin-1
-        self.assertEquals('x', config.get('a', 'option0'))
-        self.assertEquals(u"Voilà l'été", config.get('a', 'option1'))
-        self.assertEquals(u"Voilà l'été", config.get('a', 'option2'))
+        self.assertEquals('x', config.get(u'aä', u'öption0'))
+        self.assertEquals(u"Voilà l'été", config.get(u'aä', 'option1'))
+        self.assertEquals(u"Voilà l'été", config.get(u'aä', 'option2'))
         config.save()
 
         configfile = open(self.filename, 'r')
         self.assertEquals(['# -*- coding: utf-8 -*-\n',
                            '\n',
-                           '[a]\n',
-                           'option0 = x\n', 
+                           '[aä]\n',
                            "option1 = Voilà l'été\n", 
                            "option2 = Voilà l'été\n", 
+                           'öption0 = x\n', 
                            # "option3 = VoilÃ  l'Ã©tÃ©\n", 
                            '\n',
                            '[b]\n',
-                           'option0 = y\n', 
+                           'öption0 = y\n', 
                            '\n'],
                           configfile.readlines())
         configfile.close()
         config2 = Configuration(self.filename)
-        self.assertEquals('x', config2.get('a', 'option0'))
-        self.assertEquals(u"Voilà l'été", config2.get('a', 'option1'))
-        self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
+        self.assertEquals('x', config2.get(u'aä', u'öption0'))
+        self.assertEquals(u"Voilà l'été", config2.get(u'aä', 'option1'))
+        self.assertEquals(u"Voilà l'été", config2.get(u'aä', 'option2'))
         # self.assertEquals(u"Voilà l'été", config2.get('a', 'option3'))
 
     def test_set_and_save_inherit(self):
@@ -226,12 +233,25 @@ class ConfigurationTestCase(unittest.TestCase):
         
         self.assertEquals(['a', 'b', 'c'], config.sections())
 
+    def test_sections_unicode(self):
+        self._write([u'[aä]', u'öption = x', '[b]', 'option = y'])
+        config = self._read()
+        self.assertEquals([u'aä', 'b'], config.sections())
+        
+        class Foo(object):
+            option_c = Option(u'cä', 'option', 'value')
+        
+        self.assertEquals([u'aä', 'b', u'cä'], config.sections())
+
     def test_options(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
         self.assertEquals(('option', 'x'), iter(config.options('a')).next())
         self.assertEquals(('option', 'y'), iter(config.options('b')).next())
         self.assertRaises(StopIteration, iter(config.options('c')).next)
+        self.assertEquals('option', iter(config['a']).next())
+        self.assertEquals('option', iter(config['b']).next())
+        self.assertRaises(StopIteration, iter(config['c']).next)
         
         class Foo(object):
             option_a = Option('a', 'b', 'c')
@@ -239,17 +259,47 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals([('option', 'x'), ('b', 'c')],
                                 list(config.options('a')))
 
+    def test_options_unicode(self):
+        self._write([u'[ä]', u'öption = x', '[b]', 'option = y'])
+        config = self._read()
+        self.assertEquals((u'öption', 'x'), iter(config.options(u'ä')).next())
+        self.assertEquals(('option', 'y'), iter(config.options('b')).next())
+        self.assertRaises(StopIteration, iter(config.options('c')).next)
+        self.assertEquals(u'öption', iter(config['ä']).next())
+        
+        class Foo(object):
+            option_a = Option(u'ä', u'öption2', 'c')
+        
+        self.assertEquals([(u'öption', 'x'), (u'öption2', 'c')],
+                                list(config.options(u'ä')))
+
     def test_has_option(self):
         config = self._read()
         self.assertEquals(False, config.has_option('a', 'option'))
+        self.assertEquals(False, 'option' in config['a'])
         self._write(['[a]', 'option = x'])
         config = self._read()
         self.assertEquals(True, config.has_option('a', 'option'))
+        self.assertEquals(True, 'option' in config['a'])
 
         class Foo(object):
             option_a = Option('a', 'option2', 'x2')
         
         self.assertEquals(True, config.has_option('a', 'option2'))
+
+    def test_has_option_unicode(self):
+        config = self._read()
+        self.assertEquals(False, config.has_option(u'ä', u'öption'))
+        self.assertEquals(False, u'öption' in config[u'ä'])
+        self._write([u'[ä]', u'öption = x'])
+        config = self._read()
+        self.assertEquals(True, config.has_option(u'ä', u'öption'))
+        self.assertEquals(True, u'öption' in config[u'ä'])
+
+        class Foo(object):
+            option_a = Option(u'ä', u'öption2', 'x2')
+        
+        self.assertEquals(True, config.has_option(u'ä', u'öption2'))
 
     def test_reparse(self):
         self._write(['[a]', 'option = x'])
