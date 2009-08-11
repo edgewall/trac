@@ -185,7 +185,7 @@ class TicketSystem(Component):
 
     def get_ticket_fields(self):
         """Returns the list of fields available for tickets."""
-        return [f.copy() for f in self.fields.get()]
+        return [f.copy() for f in self.fields()]
 
     def reset_ticket_fields(self, db=None):
         """Invalidate ticket field cache."""
