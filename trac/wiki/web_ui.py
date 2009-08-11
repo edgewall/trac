@@ -41,7 +41,7 @@ from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
                             INavigationContributor, ITemplateProvider
 from trac.web import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
-from trac.wiki.formatter import format_to
+from trac.wiki.formatter import format_to, OneLinerFormatter
 from trac.wiki.model import WikiPage
  
 class InvalidWikiPage(TracError):
@@ -493,10 +493,28 @@ class WikiModule(Component):
         if page.name == 'WikiStart':
             data['title'] = ''
 
+        ws = WikiSystem(self.env)
+        context = Context.from_request(req, page.resource)
+        higher, related = [], []
         if not page.exists:
             if 'WIKI_CREATE' not in req.perm(page.resource):
                 raise ResourceNotFound(_('Page %(name)s not found',
                                          name=page.name))
+            formatter = OneLinerFormatter(self.env, context)
+            if '/' in page.name:
+                parts = page.name.split('/')
+                for i in range(len(parts) - 2, -1, -1):
+                    name = '/'.join(parts[:i] + [parts[-1]])
+                    if not ws.has_page(name):
+                        higher.append(ws._format_link(formatter, 'wiki',
+                                                    '/' + name, name, False))
+            else:
+                name = page.name
+            name = name.lower()
+            related = [each for each in ws.pages() if name in each.lower()]
+            related.sort()
+            related = [ws._format_link(formatter, 'wiki', '/' + each, each, False)
+                       for each in related]
 
         latest_page = WikiPage(self.env, page.name, version=None)
         req.perm(latest_page.resource).require('WIKI_VIEW')
@@ -518,9 +536,9 @@ class WikiModule(Component):
                 version = None
             
         prefix = self.PAGE_TEMPLATES_PREFIX
-        templates = [template[len(prefix):] for template in
-                     WikiSystem(self.env).get_pages(prefix) if
-                     'WIKI_VIEW' in req.perm('wiki', template)]
+        templates = [template[len(prefix):]
+                     for template in ws.get_pages(prefix)
+                     if 'WIKI_VIEW' in req.perm('wiki', template)]
 
         # -- prev/up/next links
         if prev_version:
@@ -553,14 +571,14 @@ class WikiModule(Component):
                 add_ctxtnav(req, _('Up'), req.href.wiki(parent))
             self._wiki_ctxtnav(req, page)
 
-        context = Context.from_request(req, page.resource)
         data.update({
             'context': context,
             'latest_version': latest_page.version,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
             'templates': templates,
-            'version': version
+            'version': version,
+            'higher': higher, 'related': related,
         })
         return 'wiki_view.html', data, None
     

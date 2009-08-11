@@ -205,7 +205,7 @@ class FunctionalTester(object):
         page_url = self.url + "/wiki/" + page
         tc.go(page_url)
         tc.url(page_url)
-        tc.find("Describe %s here." % page)
+        tc.find("The page %s does not exist." % page)
         tc.formvalue('modifypage', 'action', 'edit')
         tc.submit()
         tc.url(page_url + '\\?action=edit')
