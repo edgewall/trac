@@ -371,15 +371,19 @@ class Formatter(object):
         label = fullmatch.group('label')
         if not label: # e.g. `[http://target]` or `[wiki:target]`
             if target:
-                if target.startswith('//'): # for `[http://target]`
-                    label = ns+':'+target   #  use `http://target`
-                else:                       # for `wiki:target`
-                    label = target          #  use only `target`
+                if target.startswith('//'):     # for `[http://target]`
+                    label = ns+':'+target       #  use `http://target`
+                else:                           # for `wiki:target`
+                    label = target.lstrip('/')  #  use only `target`
             else: # e.g. `[search:]` 
                 label = ns
         else:
             label = self._unquote(label)
         if rel:
+            if not label:
+                label = rel
+                while label.startswith('./') or label.startswith('../'):
+                    label = label.split('/', 1)[1]
             path, query, fragment = self.split_link(rel)
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')
@@ -399,10 +403,10 @@ class Formatter(object):
                     if resource.realm == 'wiki':
                         target = '/' + target   # Avoid wiki page scoping
                     return self._make_link(resource.realm, target, match,
-                                           label or rel, fullmatch)
+                                           label, fullmatch)
                 if '?' in path and query:
                     query = '&' + query.lstrip('?')
-            return tag.a(label or rel, href=path + query + fragment)
+            return tag.a(label, href=path + query + fragment)
         else:
             return self._make_link(ns, target, match, label, fullmatch)
 

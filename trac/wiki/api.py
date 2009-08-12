@@ -257,7 +257,8 @@ class WikiSystem(Component):
 
         # MoinMoin's ["internal free link"] 
         def internal_free_link(fmt, m, fullmatch): 
-            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2], False) 
+            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2].lstrip('/'),
+                                     False) 
         yield (r"!?\[(?:%s)\]" % WikiParser.QUOTED_STRING, internal_free_link) 
 
     def get_link_resolvers(self):
@@ -293,7 +294,7 @@ class WikiSystem(Component):
                 else:
                     return tag.a(label + '?', class_='missing wiki')
         elif ignore_missing and not self.has_page(pagename):
-            return label
+            return original_label or label
         else:
             return tag.a(label, class_='forbidden wiki',
                          title=_("no permission to view this wiki page"))
