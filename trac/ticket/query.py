@@ -33,7 +33,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import Ranges
 from trac.util.datefmt import format_datetime, parse_date, to_timestamp, utc
 from trac.util.presentation import Paginator
-from trac.util.text import shorten_line
+from trac.util.text import shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import parse_query_string, IRequestHandler
 from trac.web.href import Href
@@ -374,7 +374,7 @@ class Query(object):
         Note: for now, this is an "exploded" query href, but ideally should be
         expressed in TracQuery language.
         """
-        query_string = self.get_href(Href(''))
+        query_string = unicode_unquote(self.get_href(Href('')))
         if query_string and '?' in query_string:
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
