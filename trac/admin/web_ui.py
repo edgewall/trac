@@ -84,7 +84,11 @@ class AdminModule(Component):
             raise HTTPNotFound(_('No administration panels available'))
 
         def _panel_order(p1, p2):
-            if p1[0] == 'general':
+            if p1[::2] == ('general', 'basics'):
+                return -1
+            elif p2[::2] == ('general', 'basics'):
+                return 1
+            elif p1[0] == 'general':
                 if p2[0] == 'general':
                     return cmp(p1[1:], p2[1:])
                 return -1
