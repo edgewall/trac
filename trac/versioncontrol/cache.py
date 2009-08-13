@@ -137,7 +137,8 @@ class CachedRepository(Repository):
                 self.log.info("'repository_dir' has changed from %r to %r"
                               % (repository_dir, self.name))
                 raise TracError(_("The 'repository_dir' has changed, a "
-                                  "'trac-admin resync' operation is needed."))
+                                  "'trac-admin $ENV repository resync' "
+                                  "operation is needed."))
         elif repository_dir is None: # 
             self.log.info('Storing initial "repository_dir": %s' % self.name)
             cursor.execute("INSERT INTO repository (id,name,value) "
