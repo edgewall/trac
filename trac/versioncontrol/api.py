@@ -23,12 +23,12 @@ except ImportError:
     import dummy_threading as threading
     threading._get_ident = lambda: 0
 
-from trac.admin import IAdminCommandProvider
+from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ListOption, Option
 from trac.core import *
 from trac.perm import PermissionError
 from trac.resource import IResourceManager, ResourceSystem, ResourceNotFound
-from trac.util.text import to_unicode
+from trac.util.text import printout, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
 
@@ -128,6 +128,12 @@ class DbRepositoryProvider(Component):
         yield ('repository rename', '<repos> <newname>',
                'Rename a source repository',
                self._complete_repos, self._do_rename)
+        yield ('repository set', '<repos> <key> <value>',
+               """Set an attribute of a repository
+               
+               The following keys are supported: %s
+               """ % ', '.join(self.repository_attrs),
+               self._complete_set, self._do_set)
     
     def get_reponames(self):
         rm = RepositoryManager(self.env)
@@ -148,6 +154,12 @@ class DbRepositoryProvider(Component):
         if len(args) == 1:
             return self.get_reponames()
     
+    def _complete_set(self, args):
+        if len(args) == 1:
+            return self.get_reponames()
+        elif len(args) == 2:
+            return self.repository_attrs
+            
     def _do_add(self, reponame, dir, type_=None):
         self.add_repository(reponame, dir, type_)
     
@@ -159,6 +171,17 @@ class DbRepositoryProvider(Component):
     
     def _do_rename(self, reponame, newname):
         self.rename_repository(reponame, newname)
+    
+    def _do_set(self, reponame, key, value):
+        if key not in self.repository_attrs:
+            raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
+        self.modify_repository(reponame, {key: value})
+        if key == 'dir':
+            printout(_('You should now run "repository resync %(name)s".',
+                       name=reponame or '(default)'))
+        elif key == 'type':
+            printout(_('You may have to run "repository resync %(name)s".',
+                       name=reponame or '(default)'))
     
     # Public interface
     
