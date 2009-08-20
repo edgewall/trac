@@ -75,6 +75,12 @@ class Href(object):
 
     >>> href('timeline', {'from': '02/24/05', 'daysback': 30})
     '/trac/timeline?daysback=30&from=02%2F24%2F05'
+    >>> href('timeline', {})
+    '/trac/timeline'
+    >>> href('timeline', [('from', '02/24/05')])
+    '/trac/timeline?from=02%2F24%2F05'
+    >>> href('timeline', ()) == href('timeline', []) == href('timeline', {})
+    True
 
     The usual way of quoting arguments that would otherwise be interpreted
     as Python keywords is supported too:
@@ -134,11 +140,11 @@ class Href(object):
 
         if args:
             lastp = args[-1]
-            if lastp and type(lastp) is dict:
+            if type(lastp) is dict:
                 for k,v in lastp.items():
                     add_param(k, v)
                 args = args[:-1]
-            elif lastp and type(lastp) in (list, tuple):
+            elif type(lastp) in (list, tuple):
                 for k,v in lastp:
                     add_param(k, v)
                 args = args[:-1]
