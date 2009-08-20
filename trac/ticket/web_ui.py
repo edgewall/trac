@@ -1100,7 +1100,7 @@ class TicketModule(Component):
                         self.ticketlink_query[1:] or self.ticketlink_query
         args = parse_query_string(default_query)
         args[name] = value
-        return tag.a(text or value, href=req.href.query(**args))
+        return tag.a(text or value, href=req.href.query(args))
 
     def _query_link_words(self, req, name, value):
         """Splits a list of words and makes a query link to each separately"""
@@ -1116,7 +1116,7 @@ class TicketModule(Component):
             elif word:
                 word_args = args.copy()
                 word_args[name] = '~' + word
-                items.append(tag.a(word, href=req.href.query(**word_args)))
+                items.append(tag.a(word, href=req.href.query(word_args)))
         return tag(items)
 
     def _prepare_fields(self, req, ticket):

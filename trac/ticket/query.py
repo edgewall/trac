@@ -121,6 +121,7 @@ class Query(object):
         kw_arys = ['rows']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         kw_synonyms = {'row': 'rows'}
+        # i18n TODO - keys will be unicode
         synonyms = TicketSystem(env).get_field_synonyms()
         constraints = {}
         cols = []
@@ -147,8 +148,6 @@ class Query(object):
                 val = mode + val # add mode of comparison
                 processed_values.append(val)
             try:
-                if isinstance(field, unicode):
-                    field = field.encode('utf-8')
                 if field in kw_strs:
                     kw[field] = processed_values[0]
                 elif field in kw_arys:
@@ -358,7 +357,8 @@ class Query(object):
         if max == self.items_per_page:
             max = None
 
-        return href.query(report=id,
+        return href.query(self.constraints,
+                          report=id,
                           order=order, desc=desc and 1 or None,
                           group=self.group or None,
                           groupdesc=self.groupdesc and 1 or None,
@@ -366,7 +366,7 @@ class Query(object):
                           row=self.rows,
                           max=max,
                           page=page,
-                          format=format, **self.constraints)
+                          format=format)
 
     def to_string(self):
         """Return a user readable and editable representation of the query.
@@ -1010,13 +1010,13 @@ class QueryModule(Component):
             query.rows.append('description')
         db = self.env.get_db_cnx()
         results = query.execute(req, db)
-        query_href = req.abs_href.query(group=query.group,
+        query_href = req.abs_href.query(query.constraints,
+                                        group=query.group,
                                         groupdesc=(query.groupdesc and 1
                                                    or None),
                                         row=query.rows,
                                         page=req.args.get('page'), 
-                                        max=req.args.get('max'),
-                                        **query.constraints)
+                                        max=req.args.get('max'))
         data = {
             'context': Context.from_request(req, 'query', absurls=True),
             'results': results,

@@ -320,19 +320,20 @@ class ReportModule(Component):
             paginator = Paginator(results, page - 1, limit, num_items)
             data['paginator'] = paginator
             if paginator.has_next_page:
-                next_href = req.href.report(id, asc=asc, sort=sort_col,
-                                            max=limit, page=page + 1, **args)
+                next_href = req.href.report(id, args, asc=asc, sort=sort_col,
+                                            max=limit, page=page + 1)
                 add_link(req, 'next', next_href, _('Next Page'))
             if paginator.has_previous_page:
-                prev_href = req.href.report(id, asc=asc, sort=sort_col,
-                                            max=limit, page=page - 1, **args)
+                prev_href = req.href.report(id, args, asc=asc, sort=sort_col,
+                                            max=limit, page=page - 1)
                 add_link(req, 'prev', prev_href, _('Previous Page'))
 
             pagedata = []
             shown_pages = paginator.get_shown_pages(21)
             for p in shown_pages:
-                pagedata.append([req.href.report(id, asc=asc, sort=sort_col, 
-                                                 max=limit, page=p, **args),
+                pagedata.append([req.href.report(id, args, asc=asc, 
+                                                 sort=sort_col, 
+                                                 max=limit, page=p),
                                  None, str(p), _('Page %(num)d', num=p)])          
             fields = ['href', 'class', 'string', 'title']
             paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
@@ -496,9 +497,10 @@ class ReportModule(Component):
                         ' '.join([str(int(row['id']))
                                   for rg in row_groups for row in rg[1]])
                     req.session['query_href'] = \
-                        req.href.report(id, asc=req.args.get('asc', None),
+                        req.href.report(id, args,
+                                        asc=req.args.get('asc', None),
                                         sort=req.args.get('sort', None),
-                                        max=limit, page=page, **args)
+                                        max=limit, page=page)
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
@@ -598,6 +600,7 @@ class ReportModule(Component):
         return cols, info, num_items, missing_args
 
     def get_var_args(self, req):
+        # FIXME unicode: req.args keys are likely not unicode but str (UTF-8?)
         report_args = {}
         for arg in req.args.keys():
             if not arg.isupper():

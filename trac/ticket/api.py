@@ -307,6 +307,7 @@ class TicketSystem(Component):
     def get_field_synonyms(self):
         """Return a mapping from field name synonyms to field names.
         The synonyms are supposed to be more intuitive for custom queries."""
+        # i18n TODO - translated keys
         return {'created': 'time', 'modified': 'changetime'}
 
     def eventually_restrict_owner(self, field, ticket=None):

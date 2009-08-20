@@ -147,6 +147,7 @@ class WikiProcessor(object):
         return Markup('<!--\n%s-->\n' % text)
         
     def _elt_processor(self, eltname, format_to, text, args):
+        # Note: as long as _processor_param_re is not re.UNICODE, **args is OK
         elt = getattr(tag, eltname)(**args)
         if not WikiSystem(self.env).render_unsafe_content:
             sanitized_elt = getattr(tag, eltname)
