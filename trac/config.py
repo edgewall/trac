@@ -27,6 +27,9 @@ __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
 
 _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
+def _to_utf8(basestr):
+    return to_unicode(basestr).encode('utf-8')
+
 
 class ConfigurationError(TracError):
     """Exception raised when a value in the configuration file is not valid."""
@@ -65,14 +68,14 @@ class Configuration(object):
     def __repr__(self):
         return '<%s %r>' % (self.__class__.__name__, self.filename)
 
-    def get(self, section, name, default=''):
+    def get(self, section, key, default=''):
         """Return the value of the specified option.
         
         Valid default input is a string. Returns a string.
         """
-        return self[section].get(name, default)
+        return self[section].get(key, default)
 
-    def getbool(self, section, name, default=''):
+    def getbool(self, section, key, default=''):
         """Return the specified option as boolean value.
         
         If the value of the option is one of "yes", "true", "enabled", "on",
@@ -82,9 +85,9 @@ class Configuration(object):
         
         (since Trac 0.9.3, "enabled" added in 0.11)
         """
-        return self[section].getbool(name, default)
+        return self[section].getbool(key, default)
 
-    def getint(self, section, name, default=''):
+    def getint(self, section, key, default=''):
         """Return the value of the specified option as integer.
         
         If the specified option can not be converted to an integer, a
@@ -94,9 +97,9 @@ class Configuration(object):
         
         (since Trac 0.10)
         """
-        return self[section].getint(name, default)
+        return self[section].getint(key, default)
 
-    def getlist(self, section, name, default='', sep=',', keep_empty=False):
+    def getlist(self, section, key, default='', sep=',', keep_empty=False):
         """Return a list of values that have been specified as a single
         comma-separated option.
         
@@ -108,9 +111,9 @@ class Configuration(object):
         
         (since Trac 0.10)
         """
-        return self[section].getlist(name, default, sep, keep_empty)
+        return self[section].getlist(key, default, sep, keep_empty)
 
-    def getpath(self, section, name, default=''):
+    def getpath(self, section, key, default=''):
         """Return a configuration value as an absolute path.
         
         Relative paths are made absolute relative to the location of the file
@@ -121,14 +124,14 @@ class Configuration(object):
         
         (enabled since Trac 0.11.5)
         """
-        return self[section].getpath(name, default)
+        return self[section].getpath(key, default)
 
-    def set(self, section, name, value):
+    def set(self, section, key, value):
         """Change a configuration value.
         
         These changes are not persistent unless saved with `save()`.
         """
-        self[section].set(name, value)
+        self[section].set(key, value)
 
     def defaults(self):
         """Returns a dictionary of the default configuration values.
@@ -136,8 +139,8 @@ class Configuration(object):
         (since Trac 0.10)
         """
         defaults = {}
-        for (section, name), option in Option.registry.items():
-            defaults.setdefault(section, {})[name] = option.default
+        for (section, key), option in Option.registry.items():
+            defaults.setdefault(section, {})[key] = option.default
         return defaults
 
     def options(self, section):
@@ -149,14 +152,16 @@ class Configuration(object):
         """
         return self[section].options()
 
-    def remove(self, section, name):
+    def remove(self, section, key):
         """Remove the specified option."""
-        if self.parser.has_section(section):
-            self.parser.remove_option(section, name)
+        section_str = _to_utf8(section)
+        key_str = _to_utf8(key)
+        if self.parser.has_section(section_str):
+            self.parser.remove_option(section_str, key_str)
 
     def sections(self):
         """Return a list of section names."""
-        sections = set(self.parser.sections())
+        sections = set([to_unicode(s) for s in self.parser.sections()])
         if self.parent:
             sections.update(self.parent.sections())
         else:
@@ -169,8 +174,9 @@ class Configuration(object):
         
         (since Trac 0.11)
         """
-        if self.parser.has_section(section):
-            if option in self.parser.options(section):
+        section_str = _to_utf8(section)
+        if self.parser.has_section(section_str):
+            if _to_utf8(option) in self.parser.options(section_str):
                 return True
         if self.parent:
             return self.parent.has_option(section, option)
@@ -185,31 +191,35 @@ class Configuration(object):
         # Only save options that differ from the defaults
         sections = []
         for section in self.sections():
+            section_str = _to_utf8(section)
             options = []
             for option in self[section]:
-                default = None
+                default_str = None
                 if self.parent:
-                    default = self.parent.get(section, option)
-                current = self.parser.has_option(section, option) and \
-                          to_unicode(self.parser.get(section, option))
-                if current is not False and current != default:
-                    options.append((option, current))
+                    default_str = _to_utf8(self.parent.get(section, option))
+                option_str = _to_utf8(option)
+                current_str = False
+                if self.parser.has_option(section_str, option_str):
+                    current_str = self.parser.get(section_str, option_str)
+                if current_str is not False and current_str != default_str:
+                    options.append((option_str, current_str))
             if options:
-                sections.append((section, sorted(options)))
+                sections.append((section_str, sorted(options)))
 
+        # At this point, all the strings in `sections` are UTF-8 encoded `str`
         try:
             fileobj = open(self.filename, 'w')
             try:
                 fileobj.write('# -*- coding: utf-8 -*-\n\n')
                 for section, options in sections:
                     fileobj.write('[%s]\n' % section)
-                    for key, val in options:
-                        if key in self[section].overridden:
-                            fileobj.write('# %s = <inherited>\n' % key)
+                    for key_str, val_str in options:
+                        if to_unicode(key_str) in self[section].overridden:
+                            fileobj.write('# %s = <inherited>\n' % key_str)
                         else:
-                            val = val.replace(CRLF, '\n').replace('\n', '\n ')
-                            fileobj.write('%s = %s\n' % (key,
-                                                         val.encode('utf-8')))
+                            val_str = val_str.replace(CRLF, '\n') \
+                                             .replace('\n', '\n ')
+                            fileobj.write('%s = %s\n' % (key_str, val_str))
                     fileobj.write('\n')
             finally:
                 fileobj.close()
@@ -233,7 +243,7 @@ class Configuration(object):
             changed = True
 
         if self.parser.has_option('inherit', 'file'):
-            filename = self.parser.get('inherit', 'file')
+            filename = to_unicode(self.parser.get('inherit', 'file'))
             if not os.path.isabs(filename):
                 filename = os.path.join(os.path.dirname(self.filename),
                                         filename)
@@ -268,17 +278,19 @@ class Section(object):
         self.name = name
         self.overridden = {}
 
-    def __contains__(self, name):
-        if self.config.parser.has_option(self.name, name):
+    def __contains__(self, key):
+        if self.config.parser.has_option(_to_utf8(self.name), _to_utf8(key)):
             return True
         if self.config.parent:
-            return name in self.config.parent[self.name]
-        return Option.registry.has_key((self.name, name))
+            return key in self.config.parent[self.name]
+        return Option.registry.has_key((self.name, key))
 
     def __iter__(self):
         options = set()
-        if self.config.parser.has_section(self.name):
-            for option in self.config.parser.options(self.name):
+        name_str = _to_utf8(self.name)
+        if self.config.parser.has_section(name_str):
+            for option_str in self.config.parser.options(name_str):
+                option = to_unicode(option_str)
                 options.add(option.lower())
                 yield option
         if self.config.parent:
@@ -293,17 +305,19 @@ class Section(object):
     def __repr__(self):
         return '<Section [%s]>' % (self.name)
 
-    def get(self, name, default=''):
+    def get(self, key, default=''):
         """Return the value of the specified option.
         
         Valid default input is a string. Returns a string.
         """
-        if self.config.parser.has_option(self.name, name):
-            value = self.config.parser.get(self.name, name)
+        name_str = _to_utf8(self.name)
+        key_str = _to_utf8(key)
+        if self.config.parser.has_option(name_str, key_str):
+            value = self.config.parser.get(name_str, key_str)
         elif self.config.parent:
-            value = self.config.parent[self.name].get(name, default)
+            value = self.config.parent[self.name].get(key, default)
         else:
-            option = Option.registry.get((self.name, name))
+            option = Option.registry.get((self.name, key))
             if option:
                 value = option.default or default
             else:
@@ -315,7 +329,7 @@ class Section(object):
         else:
             return value
 
-    def getbool(self, name, default=''):
+    def getbool(self, key, default=''):
         """Return the value of the specified option as boolean.
         
         This method returns `True` if the option value is one of "yes", "true",
@@ -323,12 +337,12 @@ class Section(object):
 
         Valid default input is a string or a bool. Returns a bool.
         """
-        value = self.get(name, default)
+        value = self.get(key, default)
         if isinstance(value, basestring):
             value = value.lower() in _TRUE_VALUES
         return bool(value)
 
-    def getint(self, name, default=''):
+    def getint(self, key, default=''):
         """Return the value of the specified option as integer.
         
         If the specified option can not be converted to an integer, a
@@ -336,7 +350,7 @@ class Section(object):
         
         Valid default input is a string or an int. Returns an int.
         """
-        value = self.get(name, default)
+        value = self.get(key, default)
         if not value:
             return 0
         try:
@@ -344,9 +358,9 @@ class Section(object):
         except ValueError:
             raise ConfigurationError(
                     _('[%(section)s] %(entry)s: expected integer, got %(value)s',
-                      section=self.name, entry=name, value=repr(value)))
+                      section=self.name, entry=key, value=repr(value)))
 
-    def getlist(self, name, default='', sep=',', keep_empty=True):
+    def getlist(self, key, default='', sep=',', keep_empty=True):
         """Return a list of values that have been specified as a single
         comma-separated option.
         
@@ -356,7 +370,7 @@ class Section(object):
         
         Valid default input is a string or a list. Returns a list.
         """
-        value = self.get(name, default)
+        value = self.get(key, default)
         if not value:
             return []
         if isinstance(value, basestring):
@@ -367,14 +381,16 @@ class Section(object):
             items = filter(None, items)
         return items
 
-    def getpath(self, name, default=''):
+    def getpath(self, key, default=''):
         """Return the value of the specified option as a path name, relative to
         the location of the configuration file the option is defined in.
 
         Valid default input is a string. Returns a string with normalised path.
         """
-        if self.config.parser.has_option(self.name, name):
-            path = self.config.parser.get(self.name, name)
+        name_str = _to_utf8(self.name)
+        key_str = _to_utf8(key)
+        if self.config.parser.has_option(name_str, key_str):
+            path = to_unicode(self.config.parser.get(name_str, key_str))
             if not path:
                 return default
             if not os.path.isabs(path):
@@ -382,33 +398,35 @@ class Section(object):
                                     path)
             return os.path.normcase(os.path.realpath(path))
         elif self.config.parent:
-            return self.config.parent[self.name].getpath(name, default)
+            return self.config.parent[self.name].getpath(key, default)
         else:
             base = self.config._base_filename or self.config.filename
-            path_opt = Option.registry.get((self.name, name), None)
+            path_opt = Option.registry.get((self.name, key), None)
             path = path_opt and path_opt.default or default
             if path and not os.path.isabs(path):
                 path = os.path.join(os.path.dirname(base), path)
             return path
 
     def options(self):
-        """Return `(name, value)` tuples for every option in the section."""
-        for name in self:
-            yield name, self.get(name)
+        """Return `(key, value)` tuples for every option in the section."""
+        for key in self:
+            yield key, self.get(key)
 
-    def set(self, name, value):
+    def set(self, key, value):
         """Change a configuration value.
         
         These changes are not persistent unless saved with `save()`.
         """
-        if not self.config.parser.has_section(self.name):
-            self.config.parser.add_section(self.name)
+        name_str = _to_utf8(self.name)
+        key_str = _to_utf8(key)
+        if not self.config.parser.has_section(name_str):
+            self.config.parser.add_section(name_str)
         if value is None:
-            self.overridden[name] = True
-            value = ''
+            self.overridden[key] = True
+            value_str = ''
         else:
-            value = to_unicode(value).encode('utf-8')
-        return self.config.parser.set(self.name, name, value)
+            value_str = _to_utf8(value)
+        return self.config.parser.set(name_str, key_str, value_str)
 
 
 class Option(object):

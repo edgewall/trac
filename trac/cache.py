@@ -105,6 +105,8 @@ class CacheProxy(object):
     def get(self, db=None):
         return CacheManager(self.env).get(self.id, self.retriever, db)
     
+    __call__ = get
+    
     def invalidate(self, db=None):
         CacheManager(self.env).invalidate(self.id, db)
 

@@ -44,15 +44,11 @@
           ${wiki_to_html(context, page.text)}
         </py:when>
         <py:otherwise>
-          <p>Describe ${name_of(page.resource)} here.</p>
-          <py:if test="'/' in page.name" py:with="parts = page.name.split('/')">
-            <p>Alternatively, you can also create the page higher in the hierarchy:</p>
+          <p>The page ${name_of(page.resource)} does not exist. You can create it here.</p>
+          <py:if test="higher">
+            <p>You could also create the same page higher in the hierarchy:</p>
             <ul>
-              <li py:for="i in range(len(parts) - 2, -1, -1)"
-                  py:with="name = '/'.join(parts[:i] + [parts[-1]]); has_perm = 'WIKI_VIEW' in perm('wiki', name)">
-                <a href="${href.wiki(name)}" class="${has_perm and 'missing' or 'forbidden'} wiki" rel="nofollow"
-                   title="${not has_perm and _('no permission to view this wiki page') or None}">${name}?</a>
-              </li>
+              <li py:for="markup in higher">${markup}</li>
             </ul>
           </py:if>
         </py:otherwise>
@@ -108,6 +104,13 @@
         </py:if>
       </py:with>
 
+      <div class="wikipage searchable" py:if="not page.exists and related">
+        <p>The following pages have a name similar to this page, and may be related:</p>
+        <ul>
+          <li py:for="markup in related">${markup}</li>
+        </ul>
+      </div>
+      
     </div>
   </body>
 </html>

@@ -12,6 +12,8 @@ TEST_CASES=u"""
 wiki:TestPage
 wiki:TestPage/
 wiki:/TestPage
+[wiki:/TestPage]
+[wiki:/TestPage /TestPage]
 wiki:"Space 1 23"
 wiki:"C'est l'\xe9t\xe9"
 wiki:MissingPage
@@ -22,6 +24,8 @@ wiki:abc
 <a class="wiki" href="/wiki/TestPage">wiki:TestPage</a>
 <a class="wiki" href="/wiki/TestPage">wiki:TestPage/</a>
 <a class="wiki" href="/wiki/TestPage">wiki:/TestPage</a>
+<a class="wiki" href="/wiki/TestPage">TestPage</a>
+<a class="wiki" href="/wiki/TestPage">/TestPage</a>
 <a class="wiki" href="/wiki/Space%201%2023">wiki:"Space 1 23"</a>
 <a class="wiki" href="/wiki/C%27est%20l%27%C3%A9t%C3%A9">wiki:"C'est l'\xe9t\xe9"</a>
 <a class="missing wiki" href="/wiki/MissingPage" rel="nofollow">wiki:MissingPage?</a>
@@ -291,13 +295,23 @@ RELATIVE_LINKS_TESTS=u"""
 ------------------------------
 ============================== Relative to the current page
 [./Detail see detail]
+[./Detail]
+[./Detail ./Detail]
 [.. see parent]
 [../Other see other]
+[../Other]
+[../Other ../Other]
+[.././../Other]
 ------------------------------
 <p>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
 <a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent?</a>
 <a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other?</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">../Other?</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
 </p>
 ------------------------------
 ============================== Relative to the current page with anchors
@@ -329,6 +343,8 @@ ThirdLevel
 [wiki:ThirdLevel]
 OtherThirdLevel
 [wiki:OtherThirdLevel]
+SecondLevel/OtherThirdLevel
+[wiki:SecondLevel/OtherThirdLevel]
 SecondLevel
 [wiki:SecondLevel]
 FirstLevel
@@ -337,14 +353,23 @@ TestPage
 [wiki:TestPage]
 MissingPage
 [wiki:MissingPage]
+FirstLevel/MissingPage
+[wiki:FirstLevel/MissingPage]
+SecondLevel/MissingPage
+[wiki:SecondLevel/MissingPage]
+MissingFirstLevel/MissingPage
+[wiki:MissingFirstLevel/MissingPage]
 ["/OtherThirdLevel"]
 [wiki:/OtherThirdLevel]
+[wiki:/OtherThirdLevel /OtherThirdLevel]
 ------------------------------
 <p>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/ThirdLevel">ThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/ThirdLevel">ThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">OtherThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">OtherThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">SecondLevel/OtherThirdLevel</a>
+<a class="wiki" href="/wiki/FirstLevel/SecondLevel/OtherThirdLevel">SecondLevel/OtherThirdLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel">SecondLevel</a>
 <a class="wiki" href="/wiki/FirstLevel/SecondLevel">SecondLevel</a>
 <a class="wiki" href="/wiki/FirstLevel">FirstLevel</a>
@@ -353,7 +378,14 @@ MissingPage
 <a class="wiki" href="/wiki/TestPage">TestPage</a>
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
 <a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">MissingPage?</a>
-<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/MissingPage" rel="nofollow">FirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingPage" rel="nofollow">SecondLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/FirstLevel/SecondLevel/MissingFirstLevel/MissingPage" rel="nofollow">MissingFirstLevel/MissingPage?</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">OtherThirdLevel?</a>
+<a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">OtherThirdLevel?</a>
 <a class="missing wiki" href="/wiki/OtherThirdLevel" rel="nofollow">/OtherThirdLevel?</a>
 </p>
 ------------------------------

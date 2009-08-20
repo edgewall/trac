@@ -33,7 +33,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import Ranges
 from trac.util.datefmt import format_datetime, parse_date, to_timestamp, utc
 from trac.util.presentation import Paginator
-from trac.util.text import shorten_line
+from trac.util.text import shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
 from trac.web import parse_query_string, IRequestHandler
 from trac.web.href import Href
@@ -121,6 +121,7 @@ class Query(object):
         kw_arys = ['rows']
         kw_bools = ['desc', 'groupdesc', 'verbose']
         kw_synonyms = {'row': 'rows'}
+        # i18n TODO - keys will be unicode
         synonyms = TicketSystem(env).get_field_synonyms()
         constraints = {}
         cols = []
@@ -147,8 +148,6 @@ class Query(object):
                 val = mode + val # add mode of comparison
                 processed_values.append(val)
             try:
-                if isinstance(field, unicode):
-                    field = field.encode('utf-8')
                 if field in kw_strs:
                     kw[field] = processed_values[0]
                 elif field in kw_arys:
@@ -358,7 +357,8 @@ class Query(object):
         if max == self.items_per_page:
             max = None
 
-        return href.query(report=id,
+        return href.query(self.constraints,
+                          report=id,
                           order=order, desc=desc and 1 or None,
                           group=self.group or None,
                           groupdesc=self.groupdesc and 1 or None,
@@ -366,7 +366,7 @@ class Query(object):
                           row=self.rows,
                           max=max,
                           page=page,
-                          format=format, **self.constraints)
+                          format=format)
 
     def to_string(self):
         """Return a user readable and editable representation of the query.
@@ -374,7 +374,7 @@ class Query(object):
         Note: for now, this is an "exploded" query href, but ideally should be
         expressed in TracQuery language.
         """
-        query_string = self.get_href(Href(''))
+        query_string = unicode_unquote(self.get_href(Href('')))
         if query_string and '?' in query_string:
             query_string = query_string.split('?', 1)[1]
         return 'query:?' + query_string.replace('&', '\n&\n')
@@ -740,6 +740,7 @@ class QueryModule(Component):
         by default (''since 0.11'')""")
 
     # IContentConverter methods
+
     def get_supported_conversions(self):
         yield ('rss', _('RSS Feed'), 'xml',
                'trac.ticket.Query', 'application/rss+xml', 8)
@@ -847,8 +848,9 @@ class QueryModule(Component):
                      conversion[1], conversion[4], conversion[0])
 
         if format:
+            filename = ('query', None)[format == 'rss']
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
-                                              format, filename=None)
+                                              format, filename=filename)
 
         return self.display_html(req, query)
 
@@ -1008,13 +1010,13 @@ class QueryModule(Component):
             query.rows.append('description')
         db = self.env.get_db_cnx()
         results = query.execute(req, db)
-        query_href = req.abs_href.query(group=query.group,
+        query_href = req.abs_href.query(query.constraints,
+                                        group=query.group,
                                         groupdesc=(query.groupdesc and 1
                                                    or None),
                                         row=query.rows,
                                         page=req.args.get('page'), 
-                                        max=req.args.get('max'),
-                                        **query.constraints)
+                                        max=req.args.get('max'))
         data = {
             'context': Context.from_request(req, 'query', absurls=True),
             'results': results,

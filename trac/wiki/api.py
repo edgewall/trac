@@ -189,7 +189,7 @@ class WikiSystem(Component):
         """Return the names of all existing wiki pages."""
         cursor = db.cursor()
         cursor.execute("SELECT DISTINCT name FROM wiki")
-        return [name for (name,) in cursor]
+        return set(row[0] for row in cursor)
 
     # Public API
 
@@ -199,13 +199,13 @@ class WikiSystem(Component):
         If the `prefix` parameter is given, only names that start with that
         prefix are included.
         """
-        for page in self.pages.get():
+        for page in self.pages():
             if not prefix or page.startswith(prefix):
                 yield page
 
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
-        return pagename.rstrip('/') in self.pages.get()
+        return pagename.rstrip('/') in self.pages()
 
     # IWikiSyntaxProvider methods
 
@@ -257,7 +257,8 @@ class WikiSystem(Component):
 
         # MoinMoin's ["internal free link"] 
         def internal_free_link(fmt, m, fullmatch): 
-            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2], False) 
+            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2].lstrip('/'),
+                                     False) 
         yield (r"!?\[(?:%s)\]" % WikiParser.QUOTED_STRING, internal_free_link) 
 
     def get_link_resolvers(self):
@@ -276,18 +277,8 @@ class WikiSystem(Component):
         pagename = pagename.rstrip('/') or 'WikiStart'
         if formatter.resource and formatter.resource.realm == 'wiki' \
                               and not pagename.startswith('/'):
-            prefix = formatter.resource.id
-            if '/' in prefix:
-                while '/' in prefix:
-                    prefix = prefix.rsplit('/', 1)[0]
-                    name = prefix + '/' + pagename
-                    if self.has_page(name):
-                        pagename = name
-                        break
-                else:
-                    if not self.has_page(pagename):
-                        pagename = formatter.resource.id.rsplit('/', 1)[0] \
-                                   + '/' + pagename
+            pagename = self._resolve_relative_name(pagename,
+                                                   formatter.resource.id)
         pagename = pagename.lstrip('/')
         if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
@@ -303,10 +294,34 @@ class WikiSystem(Component):
                 else:
                     return tag.a(label + '?', class_='missing wiki')
         elif ignore_missing and not self.has_page(pagename):
-            return label
+            return original_label or label
         else:
             return tag.a(label, class_='forbidden wiki',
                          title=_("no permission to view this wiki page"))
+
+    def _resolve_relative_name(self, pagename, referrer):
+        referrer_el = referrer.split('/')
+        if len(referrer_el) == 1:           # Non-hierarchical referrer
+            return pagename
+        # Test for pages with same name, higher in the hierarchy
+        for i in range(len(referrer_el) - 1, 0, -1):
+            name = '/'.join(referrer_el[:i]) + '/' + pagename
+            if self.has_page(name):
+                return name
+        if self.has_page(pagename):
+            return pagename
+        # If we are on First/Second/Third, and pagename is Second/Other,
+        # resolve to First/Second/Other instead of First/Second/Second/Other
+        # See http://trac.edgewall.org/ticket/4507#comment:12
+        if '/' in pagename:
+            (first, rest) = pagename.split('/', 1)
+            for (i, part) in enumerate(referrer_el):
+                if first == part:
+                    anchor = '/'.join(referrer_el[:i + 1])
+                    if self.has_page(anchor):
+                        return anchor + '/' + rest
+        # Assume the user wants a sibling of referrer
+        return '/'.join(referrer_el[:-1]) + '/' + pagename
 
     # IResourceManager methods
 

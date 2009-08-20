@@ -15,30 +15,34 @@
     </image>
     <generator>Trac v${trac.version}</generator>
 
-    <item py:for="row in [r for (_, row_group) in row_groups for r in row_group]">
-      <py:for each="cell in [c for cell_group in row.cell_groups for c in cell_group]">
-        <py:with vars="col = cell.header.col.strip('_')">
-          <py:choose>
-            <py:when test="col == 'reporter'">
-              ${author_or_creator(cell.author, email_map)}
-            </py:when>
-            <py:when test="col in ('time', 'changetime', 'created', 'modified')">
-              <!-- FIXME: we end up with multiple pubDate -->
-              <pubDate py:if="cell.value != 'None'">${http_date(fromtimestamp(int(cell.value)))}</pubDate>
-            </py:when>
-            <py:when test="col == 'summary'">
-              <title>#$row.id: $cell.value</title>
-            </py:when>
-            <py:when test="col == 'description'">
-              <description>${unicode(wiki_to_html(context(row.resource), cell.value))}</description>
-            </py:when>
-          </py:choose>
-        </py:with>
-      </py:for>
-      <link py:if="row.id">${abs_url_of(row.resource)}</link>
-      <guid isPermaLink="false" py:if="row.id">${abs_url_of(row.resource)}</guid>
-      <category>Report</category>
-    </item>
+    <py:for each="row_group in [rg for (_, rg) in row_groups]">
+      <item py:for="row in row_group">
+        <py:for each="cell_group in row.cell_groups">
+          <py:for each="cell in cell_group">
+            <py:with vars="col = cell.header.col.strip('_')">
+              <py:choose>
+                <py:when test="col == 'reporter'">
+                  ${author_or_creator(cell.author, email_map)}
+                </py:when>
+                <py:when test="col in ('time', 'changetime', 'created', 'modified')">
+                  <!-- FIXME: we end up with multiple pubDate -->
+                  <pubDate py:if="cell.value != 'None'">${http_date(fromtimestamp(int(cell.value)))}</pubDate>
+                </py:when>
+                <py:when test="col == 'summary'">
+                  <title>#$row.id: $cell.value</title>
+                </py:when>
+                <py:when test="col == 'description'">
+                  <description>${unicode(wiki_to_html(context(row.resource), cell.value))}</description>
+                </py:when>
+              </py:choose>
+            </py:with>
+          </py:for>
+        </py:for>
+        <link py:if="row.id">${abs_url_of(row.resource)}</link>
+        <guid isPermaLink="false" py:if="row.id">${abs_url_of(row.resource)}</guid>
+        <category>Report</category>
+      </item>
+    </py:for>
 
   </channel>
 </rss>
