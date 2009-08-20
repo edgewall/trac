@@ -697,8 +697,8 @@ class ChangesetModule(Component):
                     old_node_info = new_node_info # support for 'A'dd changes
                 buf.write('Index: ' + new_path + CRLF)
                 buf.write('=' * 67 + CRLF)
-                buf.write('--- %s (revision %s)' % old_node_info + CRLF)
-                buf.write('+++ %s (revision %s)' % new_node_info + CRLF)
+                buf.write('--- %s\t(revision %s)' % old_node_info + CRLF)
+                buf.write('+++ %s\t(revision %s)' % new_node_info + CRLF)
                 for line in unified_diff(old_content.splitlines(),
                                          new_content.splitlines(), context,
                                          ignore_blank_lines=ignore_blank_lines,
