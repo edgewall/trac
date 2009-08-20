@@ -542,9 +542,10 @@ class TicketModule(Component):
         mime = Mimeview(self.env)
         format = req.args.get('format')
         if format:
-            # FIXME: mime.send_converted(context, ticket, 'ticket_x')
+            # FIXME: mime.send_converted(context, ticket, 'ticket_x') (#3332)
+            filename = ('t%d' % ticket.id, None)[format == 'rss']
             mime.send_converted(req, 'trac.ticket.Ticket', ticket,
-                                format, filename=None)
+                                format, filename=filename)
 
         def add_ticket_link(css_class, id):
             t = ticket.resource(id=id, version=None)
@@ -898,21 +899,27 @@ class TicketModule(Component):
         valid = True
         resource = ticket.resource
 
-        # If the ticket has been changed, check the proper permission
+        # If the ticket has been changed, check the proper permissions
         if ticket.exists and ticket._old:
-            if 'TICKET_CHGPROP' not in req.perm(resource):
-                add_warning(req, _("No permission to change ticket fields."))
-                ticket.values.update(ticket._old)
-                valid = False
-            else: # TODO: field based checking
-                if ('description' in ticket._old and \
-                       'TICKET_EDIT_DESCRIPTION' not in req.perm(resource)) or \
-                   ('reporter' in ticket._old and \
-                       'TICKET_ADMIN' not in req.perm(resource)):
-                    add_warning(req, _("No permissions to change ticket "
-                                       "fields."))
-                    ticket.values.update(ticket._old)
+            cnt = 0
+            # EDIT_DESCRIPTION and CHGPROP are independent permissions
+            if 'description' in ticket._old:
+                cnt = 1
+                if 'TICKET_EDIT_DESCRIPTION' not in req.perm(resource):
+                    add_warning(req, _("No permission to edit description."))
                     valid = False
+            if len(ticket._old) > cnt:
+                errmsg = _("No permission to change ticket fields.")
+                if 'TICKET_CHGPROP' not in req.perm(resource):
+                    add_warning(req, errmsg)
+                    valid = False
+                else: # per-field additional checks
+                   if 'reporter' in ticket._old and \
+                       'TICKET_ADMIN' not in req.perm(resource):
+                    add_warning(req, errmsg)
+                    valid = False
+            if not valid:
+                ticket.values.update(ticket._old)
 
         comment = req.args.get('comment')
         if comment:
@@ -1397,7 +1404,7 @@ class TicketModule(Component):
                     'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
                 render_elt = obfuscate_email_address
         elif field == 'keywords':
-            old_list, new_list = old.split(), new.split()
+            old_list, new_list = (old or '').split(), new.split()
             sep = ' '
         if (old_list, new_list) != (None, None):
             added = [tag.em(render_elt(x)) for x in new_list 

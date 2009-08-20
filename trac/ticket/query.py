@@ -740,6 +740,7 @@ class QueryModule(Component):
         by default (''since 0.11'')""")
 
     # IContentConverter methods
+
     def get_supported_conversions(self):
         yield ('rss', _('RSS Feed'), 'xml',
                'trac.ticket.Query', 'application/rss+xml', 8)
@@ -847,8 +848,9 @@ class QueryModule(Component):
                      conversion[1], conversion[4], conversion[0])
 
         if format:
+            filename = ('query', None)[format == 'rss']
             Mimeview(self.env).send_converted(req, 'trac.ticket.Query', query,
-                                              format, filename=None)
+                                              format, filename=filename)
 
         return self.display_html(req, query)
 
