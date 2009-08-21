@@ -109,6 +109,7 @@ class LogModule(Component):
         elif revranges:
             def history(limit):
                 prevpath = path
+                separator = None
                 ranges = list(revranges.pairs)
                 ranges.reverse()
                 for (a,b) in ranges:
@@ -118,14 +119,19 @@ class LogModule(Component):
                         node_history = list(node.get_history(2))
                         p, rev, chg = node_history[0]
                         if rev < a:
-                            yield (p, rev, None) # separator
+                            if separator is None:
+                                separator = rev
+                                yield (p, rev, None) # separator
                             break
+                        separator = None
                         yield node_history[0]
                         prevpath = node_history[-1][0] # follow copy
                         b = rev-1
                         if b < a and len(node_history) > 1:
                             p, rev, chg = node_history[1]
-                            yield (p, rev, None)
+                            if separator is None:
+                                separator = rev
+                                yield (p, rev, None)
         else:
             history = get_existing_node(req, repos, path, rev).get_history
 
