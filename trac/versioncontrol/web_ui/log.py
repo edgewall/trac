@@ -109,7 +109,7 @@ class LogModule(Component):
         elif revranges:
             def history(limit):
                 prevpath = path
-                next_item = None
+                expected_next_item = None
                 ranges = list(revranges.pairs)
                 ranges.reverse()
                 for (a,b) in ranges:
@@ -119,26 +119,21 @@ class LogModule(Component):
                         node_history = list(node.get_history(2))
                         p, rev, chg = node_history[0]
                         if rev < a:
-                            # premature end of range, we need a separator
-                            yield (p, rev, None)
-                            break
-                        if next_item:
+                            break # simply skip, no separator
+                        if expected_next_item:
                             # check whether we're continuing previous range
-                            np, nrev, nchg = next_item
+                            np, nrev, nchg = expected_next_item
                             if rev != nrev: # no, we need a separator
                                 yield (np, nrev, None)
-                        next_item = None
                         yield node_history[0]
                         prevpath = node_history[-1][0] # follow copy
                         b = rev-1
-                        if b < a and len(node_history) > 1:
-                            # range ends here, but there are more revisions,
-                            # so we might need a separator unless the next 
-                            # range restarts at that next revision
-                            next_item = node_history[1]
-                if next_item:
-                    yield (next_item[0], next_item[1], None)
-
+                        if len(node_history) > 1:
+                            expected_next_item = node_history[-1]
+                        else:
+                            expected_next_item = None
+                if expected_next_item:
+                    yield (expected_next_item[0], expected_next_item[1], None)
         else:
             history = get_existing_node(req, repos, path, rev).get_history
 
