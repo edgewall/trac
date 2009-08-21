@@ -397,6 +397,8 @@ class Node(object):
         that), which will be indicated by the first element of the tuple
         (i.e. the path) changing.
         Starts with an entry for the current revision.
+
+        :param limit: if given, yield at most ``limit`` results.
         """
         raise NotImplementedError
 

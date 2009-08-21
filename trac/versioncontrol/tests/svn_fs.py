@@ -233,6 +233,13 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual((u'tête/README.txt', 2, 'add'), history.next())
         self.assertRaises(StopIteration, history.next)
 
+    def test_get_node_history_limit(self):
+        node = self.repos.get_node(u'/tête/README3.txt')
+        history = node.get_history(2)
+        self.assertEqual((u'tête/README3.txt', 14, 'copy'), history.next())
+        self.assertEqual((u'tête/README2.txt', 6, 'copy'), history.next())
+        self.assertRaises(StopIteration, history.next)
+
     def test_get_node_history_follow_copy(self):
         node = self.repos.get_node('/tags/v1/README.txt')
         history = node.get_history()
