@@ -80,12 +80,13 @@
         </div>
       </div>
 
-      <form  class="printableform" action="${href.changeset()}" method="get">
+
+      <form py:for="items in item_ranges" class="printableform" action="${href.changeset()}" method="get">
         <div class="buttons">
           <input type="submit" value="View changes"
             title="Diff from Old Revision to New Revision (select them below)" />
         </div>
-        <table id="chglist" class="listing">
+        <table class="listing chglist">
           <thead>
             <tr>
               <th class="diff" title="Old / New">Diff</th>
@@ -171,7 +172,7 @@
           </tbody>
         </table>
 
-        <div py:if="len(items) &gt; 10" class="buttons">
+        <div py:if="len(items) &gt; 10 and len(item_ranges) == 1" class="buttons">
           <input type="submit" value="View changes"
             title="Diff from Old Revision to New Revision (select them above)" />
         </div>

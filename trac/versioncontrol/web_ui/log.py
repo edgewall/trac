@@ -234,13 +234,22 @@ class LogModule(Component):
                 cs['files'] = files
                 cs['actions'] = actions
                 extra_changes[rev] = cs
+
+        item_ranges = [[]]
+        for item in info:
+            if item['change'] is None:
+                if item_ranges[-1]:
+                    item_ranges[-1].append(item)
+                    item_ranges.append([])
+            else:
+                item_ranges[-1].append(item)
         data = {
             'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'path': path, 'rev': rev, 'stop_rev': stop_rev, 
             'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
-            'items': info, 'changes': changes,
+            'item_ranges': item_ranges, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')
