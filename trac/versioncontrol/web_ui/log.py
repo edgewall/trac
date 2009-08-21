@@ -109,6 +109,7 @@ class LogModule(Component):
         elif revranges:
             def history(limit):
                 prevpath = path
+                expected_next_item = None
                 ranges = list(revranges.pairs)
                 ranges.reverse()
                 for (a,b) in ranges:
@@ -118,14 +119,21 @@ class LogModule(Component):
                         node_history = list(node.get_history(2))
                         p, rev, chg = node_history[0]
                         if rev < a:
-                            yield (p, rev, None) # separator
-                            break
+                            break # simply skip, no separator
+                        if expected_next_item:
+                            # check whether we're continuing previous range
+                            np, nrev, nchg = expected_next_item
+                            if rev != nrev: # no, we need a separator
+                                yield (np, nrev, None)
                         yield node_history[0]
                         prevpath = node_history[-1][0] # follow copy
                         b = rev-1
-                        if b < a and len(node_history) > 1:
-                            p, rev, chg = node_history[1]
-                            yield (p, rev, None)
+                        if len(node_history) > 1:
+                            expected_next_item = node_history[-1]
+                        else:
+                            expected_next_item = None
+                if expected_next_item:
+                    yield (expected_next_item[0], expected_next_item[1], None)
         else:
             history = get_existing_node(req, repos, path, rev).get_history
 
@@ -228,13 +236,26 @@ class LogModule(Component):
                 cs['files'] = files
                 cs['actions'] = actions
                 extra_changes[rev] = cs
+
+        item_ranges = []
+        range = []
+        for item in info:
+            if item['change'] is None: # separator
+                if range: # start new range
+                    range.append(item)
+                    item_ranges.append(range)
+                    range = []
+            else:
+                range.append(item)
+        if range:
+            item_ranges.append(range)
         data = {
             'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'path': path, 'rev': rev, 'stop_rev': stop_rev, 
             'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
-            'items': info, 'changes': changes,
+            'item_ranges': item_ranges, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,
             'wiki_format_messages':
             self.config['changeset'].getbool('wiki_format_messages')

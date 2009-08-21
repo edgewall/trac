@@ -731,7 +731,7 @@ class SubversionNode(Node):
                 newer = older
             if limit and numrevs >= limit:
                 break
-        if newer:
+        if newer and (not limit or numrevs < limit):
             yield newer
 
     def get_annotations(self):

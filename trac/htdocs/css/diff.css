@@ -18,12 +18,12 @@
 #overview dd.message pre { margin-bottom: 1em; margin-top: 0; }
 
 /* Colors for change types */
-#chglist .edit, #overview .mod, .diff .legend .mod { background: #fd8 }
-#chglist .delete, #overview .rem, .diff .legend .rem { background: #f88 }
-#chglist .add, #overview .add, .diff .legend .add { background: #bfb }
-#chglist .copy, #overview .cp, .diff .legend .cp { background: #88f }
-#chglist .move, #overview .mv, .diff .legend .mv { background: #ccc }
-#chglist .unknown { background: #fff }
+.chglist .edit, #overview .mod, .diff .legend .mod { background: #fd8 }
+.chglist .delete, #overview .rem, .diff .legend .rem { background: #f88 }
+.chglist .add, #overview .add, .diff .legend .add { background: #bfb }
+.chglist .copy, #overview .cp, .diff .legend .cp { background: #88f }
+.chglist .move, #overview .mv, .diff .legend .mv { background: #ccc }
+.chglist .unknown { background: #fff }
 
 /* Legend for diff and file colors */
 .legend {
