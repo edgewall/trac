@@ -109,7 +109,7 @@ class LogModule(Component):
         elif revranges:
             def history(limit):
                 prevpath = path
-                separator = None
+                next_item = None
                 ranges = list(revranges.pairs)
                 ranges.reverse()
                 for (a,b) in ranges:
@@ -119,19 +119,26 @@ class LogModule(Component):
                         node_history = list(node.get_history(2))
                         p, rev, chg = node_history[0]
                         if rev < a:
-                            if separator is None:
-                                separator = rev
-                                yield (p, rev, None) # separator
+                            # premature end of range, we need a separator
+                            yield (p, rev, None)
                             break
-                        separator = None
+                        if next_item:
+                            # check whether we're continuing previous range
+                            np, nrev, nchg = next_item
+                            if rev != nrev: # no, we need a separator
+                                yield (np, nrev, None)
+                        next_item = None
                         yield node_history[0]
                         prevpath = node_history[-1][0] # follow copy
                         b = rev-1
                         if b < a and len(node_history) > 1:
-                            p, rev, chg = node_history[1]
-                            if separator is None:
-                                separator = rev
-                                yield (p, rev, None)
+                            # range ends here, but there are more revisions,
+                            # so we might need a separator unless the next 
+                            # range restarts at that next revision
+                            next_item = node_history[1]
+                if next_item:
+                    yield (next_item[0], next_item[1], None)
+
         else:
             history = get_existing_node(req, repos, path, rev).get_history
 
@@ -235,14 +242,18 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
 
-        item_ranges = [[]]
+        item_ranges = []
+        range = []
         for item in info:
-            if item['change'] is None:
-                if item_ranges[-1]:
-                    item_ranges[-1].append(item)
-                    item_ranges.append([])
+            if item['change'] is None: # separator
+                if range: # start new range
+                    range.append(item)
+                    item_ranges.append(range)
+                    range = []
             else:
-                item_ranges[-1].append(item)
+                range.append(item)
+        if range:
+            item_ranges.append(range)
         data = {
             'context': Context.from_request(req, 'source', path),
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
