@@ -125,7 +125,7 @@ tr.diff input { padding: 0 1em; margin: 0 }
 }
 
 /* Styles for the revision log table (extends the styles for "table.listing") */
-.chglist { margin-top: 0 }
+table.chglist { margin-top: 0 }
 .chglist td.change span { 
  border: 1px solid #999;
  display: block;
