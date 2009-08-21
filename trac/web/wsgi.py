@@ -14,6 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+import errno
 import sys
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ForkingMixIn, ThreadingMixIn
@@ -178,7 +179,14 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
         return environ
 
     def handle_one_request(self):
-        environ = self.setup_environ()
+        try:
+            environ = self.setup_environ()
+        except IOError, e:
+            environ = None
+            if e.errno in (errno.EPIPE, 10053, 10054): # client disconnect
+                self.close_connection = 1
+            else:
+                raise
         if environ: 
             gateway = self.server.gateway(self, environ)
             gateway.run(self.server.application)
@@ -203,13 +211,19 @@ class WSGIServerGateway(WSGIGateway):
         if _trust_closed and self.handler.wfile.closed:
             return # don't write to an already closed file (fix for #1183)
 
-        if not self.headers_sent:
-            status, headers = self.headers_sent = self.headers_set
-            self.handler.send_response(int(status[:3]))
-            for name, value in headers:
-                self.handler.send_header(name, value)
-            self.handler.end_headers()
-        self.handler.wfile.write(data)
+        try:
+            if not self.headers_sent:
+                status, headers = self.headers_sent = self.headers_set
+                self.handler.send_response(int(status[:3]))
+                for name, value in headers:
+                    self.handler.send_header(name, value)
+                self.handler.end_headers()
+            self.handler.wfile.write(data)
+        except IOError, e:
+            if e.errno in (errno.EPIPE, 10053, 10054): # client disconnect
+                self.handler.close_connection = 1
+            else:
+                raise
 
 
 class WSGIServer(HTTPServer):
