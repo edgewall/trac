@@ -131,33 +131,33 @@ tr.diff input { padding: 0 1em; margin: 0 }
 }
 
 /* Styles for the revision log table (extends the styles for "table.listing") */
-#chglist { margin-top: 0 }
-#chglist td.diff, #chglist td.rev, #chglist td.age, 
-#chglist td.author, #chglist td.change {
+table.chglist { margin-top: 0 }
+.chglist td.diff, .chglist td.rev, .chglist td.age, 
+.chglist td.author, .chglist td.change {
  white-space: nowrap;
  vertical-align: middle;
 }
-#chglist td.change span { 
+.chglist td.change span { 
  border: 1px solid #999;
  display: block;
  margin: .2em .5em 0 0;
  width: .8em; height: .8em;
 }
-#chglist td.diff { padding: 1px }
-#chglist td.change .comment { display: none }
-#chglist td.age {
+.chglist td.diff { padding: 1px }
+.chglist td.change .comment { display: none }
+.chglist td.age {
  font-size: 85%;
  padding-top: 0.55em;
 }
-#chglist td.author { font-size: 85%; vertical-align: top; padding-top: 0.55em }
-#chglist td.rev { 
+.chglist td.author { font-size: 85%; }
+.chglist td.rev { 
  font-family: monospace;  
  letter-spacing: -0.08em;
  font-size: 90%;
  text-align: right; 
 }
-#chglist td.rev a { border-bottom: none }
-#chglist td.rev a.chgset {  /* TODO: table.revinfo class */
+.chglist td.rev a { border-bottom: none }
+.chglist td.rev a.chgset {
   background-repeat: no-repeat;
   background-image: url(../changeset.png); 
   background-position: 100% 50%;
@@ -165,20 +165,20 @@ tr.diff input { padding: 0 1em; margin: 0 }
   margin: 0 5px 0 0; 
 }
 
-#chglist td.summary, #chglist td.log { 
+.chglist td.summary, .chglist td.log { 
  width: 100%; 
  font-size: 85%; 
  vertical-align: middle; 
 }
-#chglist td.summary *, #chglist td.log * { margin-top: 0 }
+.chglist td.summary *, .chglist td.log * { margin-top: 0 }
 /* verbose mode */
-#chglist tr.verbose { border-top: none }
-#chglist tr.verbose td.log {
+.chglist tr.verbose { border-top: none }
+.chglist tr.verbose td.log {
  border: none;
  border-bottom: 1px solid #ddd;
  color: #333;
 }
-#chglist tr.verbose td { border: none; }
+.chglist tr.verbose td { border: none; }
 
 #paging { margin: 1em 0 }
 
