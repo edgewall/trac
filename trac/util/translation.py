@@ -119,8 +119,8 @@ try:
                 self._plugin_domains_lock.release()
 
         def activate(self, locale, env_path=None):
-            locale_dir = pkg_resources.resource_filename(__name__, '../locale')
-            t = Translations.load(locale_dir, locale)
+            locale_dir = pkg_resources.resource_filename('trac', 'locale')
+            t = Translations.load(locale_dir, locale)# or 'en_US')
             if env_path:
                 self._plugin_domains_lock.acquire()
                 try:
@@ -266,7 +266,7 @@ try:
         translations are available.
         """
         return [dirname for dirname
-                in pkg_resources.resource_listdir(__name__, '../locale')
+                in pkg_resources.resource_listdir('trac', 'locale')
                 if '.' not in dirname]
 
 except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
