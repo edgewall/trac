@@ -173,7 +173,7 @@ table.chglist { margin-top: 0 }
 .chglist td.summary *, .chglist td.log * { margin-top: 0 }
 /* verbose mode */
 .chglist tr.verbose { border-top: none }
-.chglist tr.verbose td.log {
+.chglist tr.verbose td.filler, .chglist tr.verbose td.log {
  border: none;
  border-bottom: 1px solid #ddd;
  color: #333;
