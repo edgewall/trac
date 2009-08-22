@@ -179,6 +179,12 @@ table.chglist { margin-top: 0 }
  color: #333;
 }
 .chglist tr.verbose td { border: none; }
+.chglist tr.verbose td.diff, .chglist tr.verbose td.filler {
+ border-left: 1px solid #ddd; 
+}
+.chglist tr.verbose td.summary, .chglist tr.verbose td.log {
+ border-right: 1px solid #ddd; 
+}
 
 #paging { margin: 1em 0 }
 
