@@ -99,6 +99,11 @@ try:
         """Delegate Translations calls to the currently active Translations.
 
         If there's none, wrap those calls in LazyProxy objects.
+
+        Activation is controlled by `activate` and `deactivate` methods.
+        However, if retrieving the locale information is costly, it's also
+        possible to enable activation on demand only, by providing a callable
+        to `make_activable`.
         """
 
         def __init__(self):
@@ -118,6 +123,9 @@ try:
             finally:
                 self._plugin_domains_lock.release()
 
+        def make_activable(self, get_locale, env_path=None):
+            self._current.args = (get_locale, env_path)
+
         def activate(self, locale, env_path=None):
             locale_dir = pkg_resources.resource_filename('trac', 'locale')
             t = Translations.load(locale_dir, locale) # or 'en_US')
@@ -134,7 +142,9 @@ try:
             self._current.translations = t
          
         def deactivate(self):
-            if self.isactive:
+            if hasattr(self._current, 'args'):
+                del self._current.args
+            if hasattr(self._current, 'translations'):
                 del self._current.translations
     
         @property
@@ -144,6 +154,10 @@ try:
 
         @property
         def isactive(self):
+            if hasattr(self._current, 'args'):
+                get_locale, env_path = self._current.args
+                del self._current.args
+                self.activate(get_locale(), env_path)
             return hasattr(self._current, 'translations')
 
         # Delegated methods
@@ -254,6 +268,13 @@ try:
     
     def deactivate():
         translations.deactivate()
+
+    def make_activable(get_locale, env_path=None):
+        """Defer activation of translations.
+        :param get_locale: a callable returning a Babel Locale object
+        :param env_path: the environment to use for looking up catalogs
+        """
+        translations.make_activable(get_locale, env_path)
 
     def activate(locale, env_path=None):
         translations.activate(locale, env_path)

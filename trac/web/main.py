@@ -167,7 +167,6 @@ class RequestDispatcher(Component):
                 # Select the component that should handle the request
                 chosen_handler = None
                 try:
-                    translation.activate(req.locale, self.env.path)
                     for handler in self.handlers:
                         if handler.match_request(req):
                             chosen_handler = handler
@@ -432,6 +431,7 @@ def dispatch_request(environ, start_response):
         env_error = e
 
     req = Request(environ, start_response)
+    translation.make_activable(lambda: req.locale, env.path)
     try:
         return _dispatch_request(req, env, env_error)
     finally:
