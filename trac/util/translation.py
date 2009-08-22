@@ -120,7 +120,9 @@ try:
 
         def activate(self, locale, env_path=None):
             locale_dir = pkg_resources.resource_filename('trac', 'locale')
-            t = Translations.load(locale_dir, locale)# or 'en_US')
+            t = Translations.load(locale_dir, locale) # or 'en_US')
+            if not t or t.__class__ is NullTranslations:
+                return
             if env_path:
                 self._plugin_domains_lock.acquire()
                 try:
@@ -132,7 +134,8 @@ try:
             self._current.translations = t
          
         def deactivate(self):
-            del self._current.translations
+            if self.isactive:
+                del self._current.translations
     
         @property
         def active(self):
