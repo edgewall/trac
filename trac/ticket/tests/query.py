@@ -72,6 +72,17 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
+    def test_all_ordered_by_id_from_unicode(self):
+        query = Query.from_string(self.env, u'order=id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual([], args)
+        tickets = query.execute(self.req)
+
     def test_all_ordered_by_priority(self):
         query = Query(self.env) # priority is default order
         sql, args = query.get_sql()
