@@ -180,7 +180,7 @@ def milestone_teardown(tc):
 
 
 
-QUERY_TEST_CASES="""
+QUERY_TEST_CASES=u"""
 ============================== query: link resolver
 query:?order=priority
 
@@ -262,6 +262,45 @@ New tickets: <span><a class="new" href="/ticket/1" title="This is the summary">#
 ------------------------------
 """
 
+QUERY2_TEST_CASES=u"""
+============================== TicketQuery macro: two results, list form
+New tickets: [[TicketQuery(status=new, order=reporter)]]
+------------------------------
+<p>
+New tickets: </p><div><dl class="wiki compact"><dt><a class="new" href="/ticket/2" title="This is another summary">#2</a></dt><dd>This is another summary</dd><dt><a class="new" href="/ticket/1" title="This is the summary">#1</a></dt><dd>This is the summary</dd></dl></div><p>
+</p>
+------------------------------
+============================== TicketQuery macro: two results, count 2
+New tickets: [[TicketQuery(status=new, order=reporter, format=count)]]
+------------------------------
+<p>
+New tickets: <span class="query_count" title="2 tickets for which status=new&amp;max=0&amp;order=reporter">2</span>
+</p>
+------------------------------
+============================== TicketQuery macro: two results, compact form
+New tickets: [[TicketQuery(status=new, order=reporter, format=compact)]]
+------------------------------
+<p>
+New tickets: <span><a class="new" href="/ticket/2" title="This is another summary">#2</a>, <a class="new" href="/ticket/1" title="This is the summary">#1</a></span>
+</p>
+------------------------------
+"""
+
+def query2_setup(tc):
+    ticket = Ticket(tc.env)
+    ticket.values.update({'reporter': 'santa',
+                          'summary': 'This is the summary',
+                          'status': 'new'})
+    ticket.insert()
+    ticket = Ticket(tc.env)
+    ticket.values.update({'reporter': 'claus',
+                          'summary': 'This is another summary',
+                          'status': 'new'})
+    ticket.insert()
+
+def query2_teardown(tc):
+    tc.env.reset_db()
+
 
 COMMENT_TEST_CASES="""
 ============================== comment: link resolver (deprecated)
@@ -306,6 +345,8 @@ def suite():
                                   __file__, milestone_teardown))
     suite.addTest(formatter.suite(QUERY_TEST_CASES, ticket_setup, __file__,
                                   ticket_teardown))
+    suite.addTest(formatter.suite(QUERY2_TEST_CASES, query2_setup, __file__,
+                                  query2_teardown))
     suite.addTest(formatter.suite(COMMENT_TEST_CASES, file=__file__))
     return suite
 
