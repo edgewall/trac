@@ -309,6 +309,9 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     def deactivate():
         pass
 
+    def make_activable(get_locale, env_path=None):
+        pass
+
     def get_translations():
         # for correctness we should return a NullTranslations subclass,
         # like the DummyTranslations one can find in genshi/filters/i18n.py, 
