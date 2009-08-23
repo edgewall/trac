@@ -95,6 +95,16 @@ try:
     from babel.support import LazyProxy, Translations
     from gettext import NullTranslations
 
+    class NullTranslationsBabel(NullTranslations):
+        """NullTranslations doesn't have the domain related methods."""
+
+        def dugettext(domain, string):
+            return self.ugettext(string)
+
+        def dungettext(domain, singular, plural, num):
+            return self.ungettext(singular, plural, num)
+
+
     class TranslationsProxy(object):
         """Delegate Translations calls to the currently active Translations.
 
@@ -108,7 +118,7 @@ try:
 
         def __init__(self):
             self._current = threading.local()
-            self._null_translations = NullTranslations()
+            self._null_translations = NullTranslationsBabel()
             self._plugin_domains = {}
             self._plugin_domains_lock = threading.RLock()
 
@@ -128,10 +138,10 @@ try:
 
         def activate(self, locale, env_path=None):
             locale_dir = pkg_resources.resource_filename('trac', 'locale')
-            t = Translations.load(locale_dir, locale) # or 'en_US')
+            t = Translations.load(locale_dir, locale or 'en_US')
             if not t or t.__class__ is NullTranslations:
-                return
-            if env_path:
+                t = self._null_translations
+            elif env_path:
                 self._plugin_domains_lock.acquire()
                 try:
                     domains = list(self._plugin_domains.get(env_path, []))
