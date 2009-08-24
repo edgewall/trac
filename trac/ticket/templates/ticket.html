@@ -30,8 +30,8 @@
 
         function updateActionFields() {
           actions.each(function () {
-            $(this).siblings().find("*[@id]").enable($(this).checked());
-            $(this).siblings().filter("*[@id]").enable($(this).checked());
+            $(this).siblings().find("*[id]").enable($(this).checked());
+            $(this).siblings().filter("*[id]").enable($(this).checked());
           });
         }
         actions.click(updateActionFields);
