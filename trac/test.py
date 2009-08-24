@@ -93,14 +93,15 @@ def Mock(bases=(), *initargs, **kw):
 class MockPerm(object):
     """Fake permission class. Necessary as Mock can not be used with operator
     overloading."""
-    def has_permission(self, x):
+    def has_permission(self, action, realm_or_resource=None, id=False,
+                       version=False):
         return True
     __contains__ = has_permission
 
-    def __call__(self, *a, **kw):
+    def __call__(self, realm_or_resource, id=False, version=False):
         return self
 
-    def require(self, *a, **kw):
+    def require(self, action, realm_or_resource=None, id=False, version=False):
         pass
     assert_permission = require
 
