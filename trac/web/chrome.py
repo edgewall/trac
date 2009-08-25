@@ -472,7 +472,6 @@ class Chrome(Component):
 
         chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': [],
                   'notices': []}
-        req.add_redirect_listener(_save_messages)
 
         # This is ugly... we can't pass the real Request object to the
         # add_xxx methods, because it doesn't yet have the chrome attribute
@@ -563,6 +562,9 @@ class Chrome(Component):
         
         # Default theme file
         chrome['theme'] = 'theme.html'
+
+        # Avoid recursion by registering as late as possible (#8583)
+        req.add_redirect_listener(_save_messages)
 
         return chrome
 
