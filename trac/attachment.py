@@ -599,7 +599,7 @@ class AttachmentModule(Component):
             try:
                 old_attachment = Attachment(self.env,
                                             attachment.resource(id=filename))
-                if not (old_attachment.author and req.authname \
+                if not (req.authname and req.authname != 'anonymous' \
                         and old_attachment.author == req.authname):
                     req.perm(attachment.resource).require('ATTACHMENT_DELETE')
                 if (not attachment.description.strip() and

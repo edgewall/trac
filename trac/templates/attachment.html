@@ -35,11 +35,13 @@
                 <input type="text" name="description" size="60" /></label>
             </div>
             <br />
-            <div class="options">
-              <label><input type="checkbox" name="replace" />
-                Replace existing attachment of the same name</label>
-            </div>
-            <br />
+            <py:if test="authname and authname != 'anonymous'">
+              <div class="options">
+                <label><input type="checkbox" name="replace" />
+                  Replace existing attachment of the same name</label>
+              </div>
+              <br />
+            </py:if>
           </fieldset>
           <div class="buttons">
             <input type="hidden" name="action" value="new" />
