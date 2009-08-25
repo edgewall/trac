@@ -121,7 +121,8 @@ class RequestDispatcher(Component):
         """Name of the component that handles requests to the base URL.
         
         Options include `TimelineModule`, `RoadmapModule`, `BrowserModule`,
-        `QueryModule`, `ReportModule` and `TicketModule` (''since 0.9'').""")
+        `QueryModule`, `ReportModule`, `TicketModule` and `WikiModule`. The
+        default is `WikiModule`. (''since 0.9'')""")
 
     default_timezone = Option('trac', 'default_timezone', '',
         """The default timezone to use""")
