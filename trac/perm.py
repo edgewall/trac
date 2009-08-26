@@ -32,11 +32,12 @@ __all__ = ['IPermissionRequestor', 'IPermissionStore',
 class PermissionError(StandardError):
     """Insufficient permissions to complete the operation"""
 
-    def __init__ (self, action=None, resource=None, env=None):
+    def __init__ (self, action=None, resource=None, env=None, msg=None):
         StandardError.__init__(self)
         self.action = action
         self.resource = resource
         self.env = env
+        self.msg = msg
 
     def __unicode__ (self):
         if self.action:
@@ -48,6 +49,8 @@ class PermissionError(StandardError):
             else:
                 return _('%(perm)s privileges are required to perform '
                          'this operation', perm=self.action)
+        elif self.msg:
+            return self.msg
         else:
             return _('Insufficient privileges to perform this operation.')
 

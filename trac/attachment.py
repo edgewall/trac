@@ -600,8 +600,14 @@ class AttachmentModule(Component):
                 old_attachment = Attachment(self.env,
                                             attachment.resource(id=filename))
                 if not (req.authname and req.authname != 'anonymous' \
-                        and old_attachment.author == req.authname):
-                    req.perm(attachment.resource).require('ATTACHMENT_DELETE')
+                        and old_attachment.author == req.authname) \
+                   and 'ATTACHMENT_DELETE' \
+                                        not in req.perm(attachment.resource):
+                    raise PermissionError(msg=_("You don't have permission to "
+                        "replace the attachment %(name)s. You can only "
+                        "replace your own attachments. Replacing other's "
+                        "attachments requires ATTACHMENT_DELETE permission.",
+                        name=filename))
                 if (not attachment.description.strip() and
                     old_attachment.description):
                     attachment.description = old_attachment.description
