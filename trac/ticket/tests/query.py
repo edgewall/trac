@@ -416,6 +416,19 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         self.assertEqual([1217548800, 1220227200], args)
         tickets = query.execute(self.req)
 
+    def test_constrained_by_keywords(self):
+        query = Query.from_string(self.env, 'keywords~=foo -bar baz',
+                                  order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.keywords AS keywords,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE (COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)
+ORDER BY COALESCE(t.id,0)=0,t.id"""  % {'like': self.env.get_db_cnx().like()})
+        self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
+        tickets = query.execute(self.req)
+
     def test_repeated_constraint_field(self):
         like_query = Query.from_string(self.env, 'owner!=someone|someone_else',
                                        order='id')

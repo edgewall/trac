@@ -457,6 +457,24 @@ class Query(object):
                 else:
                     return None
                 
+            if mode == '~' and name == 'keywords':
+                words = value.split()
+                clauses, args = [], []
+                for word in words:
+                    cneg = ''
+                    if word.startswith('-'):
+                        cneg = 'NOT '
+                        word = word[1:]
+                        if not word:
+                            continue
+                    clauses.append("COALESCE(%s,'') %s%s" % (col, cneg,
+                                                             db.like()))
+                    args.append('%' + db.like_escape(word) + '%')
+                if not clauses:
+                    return None
+                return ((neg and 'NOT ' or '')
+                        + '(' + ' AND '.join(clauses) + ')', args)
+
             if mode == '':
                 return ("COALESCE(%s,'')%s=%%s" % (col, neg and '!' or ''),
                         (value, ))
