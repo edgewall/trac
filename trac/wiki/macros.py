@@ -484,12 +484,17 @@ class TracIniMacro(WikiMacroBase):
     options whose section and name start with the filters are output.
     """
 
-    def expand_macro(self, formatter, name, filter):
+    def expand_macro(self, formatter, name, args):
         from trac.config import Option
-        filter = filter or ''
+        section_filter = key_filter = ''
+        args, kw = parse_args(args)
+        if args:
+            section_filter = args.pop(0).strip()
+        if args:
+            key_filter = args.pop(0).strip()
 
         sections = set([section for section, option in Option.registry.keys()
-                        if section.startswith(filter)])
+                        if section.startswith(section_filter)])
 
         return tag.div(class_='tracini')(
             [(tag.h2('[%s]' % section, id='%s-section' % section),
@@ -500,7 +505,8 @@ class TracIniMacro(WikiMacroBase):
                                             to_unicode(option.__doc__))))
                        for option in sorted(Option.registry.values(),
                                             key=lambda o: o.name)
-                       if option.section == section])))
+                       if option.section == section and
+                           option.name.startswith(key_filter)])))
              for section in sorted(sections)])
 
 
