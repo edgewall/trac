@@ -195,7 +195,7 @@ class WikiProcessor(object):
                     interrupt_paragraph = True
             else:
                 # FIXME: do something smarter for Streams
-                text = to_unicode(text)
+                text = _markup_to_unicode(text)
                 match = re.match(self._code_block_re, text)
                 if match:
                     if match.group(1) and 'code' in match.group(1):
@@ -207,7 +207,7 @@ class WikiProcessor(object):
             if content_for_span:
                 text = tag.span(class_='code-block')(*content_for_span)
             elif interrupt_paragraph:
-                text = "</p>%s<p>" % to_unicode(text)
+                text = "</p>%s<p>" % _markup_to_unicode(text)
         return text
 
 
