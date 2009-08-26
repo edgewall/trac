@@ -47,7 +47,7 @@
               href = selection.find('a.parent').attr('href');
             if (href) {
               if (event.keyCode == 65)
-                href += '?annotate=blame';
+                href += (href.indexOf("?")>-1?'&':'?') + 'annotate=blame';
               window.location = href;
             }
           }
