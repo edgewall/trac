@@ -125,6 +125,10 @@ class Query(object):
         synonyms = TicketSystem(env).get_field_synonyms()
         constraints = {}
         cols = []
+        def as_str(s):
+            if isinstance(s, unicode):
+                return s.encode('utf-8')
+            return s
         for filter_ in filters:
             filter_ = filter_.split('=')
             if len(filter_) != 2:
@@ -147,21 +151,18 @@ class Query(object):
             for val in values.split('|'):
                 val = mode + val # add mode of comparison
                 processed_values.append(val)
-            try:
-                if field in kw_strs:
-                    kw[field] = processed_values[0]
-                elif field in kw_arys:
-                    kw.setdefault(field, []).extend(processed_values)
-                elif field in kw_bools:
-                    kw[field] = True
-                elif field == 'col':
-                    cols.extend(synonyms.get(value, value)
-                                for value in processed_values)
-                else:
-                    constraints.setdefault(synonyms.get(field, field), 
-                                           []).extend(processed_values)
-            except UnicodeError:
-                pass # field must be a str, see `get_href()`
+            if field in kw_strs:
+                kw[as_str(field)] = processed_values[0]
+            elif field in kw_arys:
+                kw.setdefault(as_str(field), []).extend(processed_values)
+            elif field in kw_bools:
+                kw[as_str(field)] = True
+            elif field == 'col':
+                cols.extend(synonyms.get(value, value)
+                            for value in processed_values)
+            else:
+                constraints.setdefault(synonyms.get(field, field), 
+                                       []).extend(processed_values)
         report = constraints.pop('report', None)
         report = kw.pop('report', report)
         return cls(env, report, constraints=constraints, cols=cols, **kw)
@@ -456,6 +457,24 @@ class Query(object):
                 else:
                     return None
                 
+            if mode == '~' and name == 'keywords':
+                words = value.split()
+                clauses, args = [], []
+                for word in words:
+                    cneg = ''
+                    if word.startswith('-'):
+                        cneg = 'NOT '
+                        word = word[1:]
+                        if not word:
+                            continue
+                    clauses.append("COALESCE(%s,'') %s%s" % (col, cneg,
+                                                             db.like()))
+                    args.append('%' + db.like_escape(word) + '%')
+                if not clauses:
+                    return None
+                return ((neg and 'NOT ' or '')
+                        + '(' + ' AND '.join(clauses) + ')', args)
+
             if mode == '':
                 return ("COALESCE(%s,'')%s=%%s" % (col, neg and '!' or ''),
                         (value, ))

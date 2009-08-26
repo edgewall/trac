@@ -288,9 +288,10 @@ class ReportModule(Component):
         context = Context.from_request(req, report_resource)
 
         page = int(req.args.get('page', '1'))
-        max = as_int(req.args.get('max'), self.items_per_page, min=0)
-        limit = {'rss': self.items_per_page_rss,
-                 'csv': 0, 'tab': 0}.get(format, max)
+        default_max = {'rss': self.items_per_page_rss,
+                       'csv': 0, 'tab': 0}.get(format, self.items_per_page)
+        max = req.args.get('max')
+        limit = as_int(max, default_max, min=0) # explict max takes precedence
         offset = (page - 1) * limit
         user = req.args.get('USER', None)
 
@@ -313,38 +314,48 @@ class ReportModule(Component):
             data['message'] = _('Report execution failed: %(error)s',
                                 error=to_unicode(e))
             return 'report_view.html', data, None
+
+        sort_col = req.args.get('sort', '')
+        asc = req.args.get('asc', 1)
+        asc = bool(int(asc)) # string '0' or '1' to int/boolean
+
+        def report_href(**kwargs):
+            """Generate links to this report preserving user variables, 
+            and sorting and paging variables.
+            """
+            params = args.copy()
+            if asc:
+                params['asc'] = asc and '1' or '0'
+            if sort_col:
+                params['sort'] = sort_col
+            params['page'] = page
+            if max:
+                params['max'] = max
+            params.update(kwargs)
+            return req.href.report(id, params)
+
         paginator = None
         if id != -1 and limit > 0:
-            asc = req.args.get('asc', None)
-            sort_col = req.args.get('sort', None)
             paginator = Paginator(results, page - 1, limit, num_items)
             data['paginator'] = paginator
             if paginator.has_next_page:
-                next_href = req.href.report(id, args, asc=asc, sort=sort_col,
-                                            max=limit, page=page + 1)
-                add_link(req, 'next', next_href, _('Next Page'))
+                add_link(req, 'next', report_href(page=page + 1),
+                         _('Next Page'))
             if paginator.has_previous_page:
-                prev_href = req.href.report(id, args, asc=asc, sort=sort_col,
-                                            max=limit, page=page - 1)
-                add_link(req, 'prev', prev_href, _('Previous Page'))
+                add_link(req, 'prev', report_href(page=page - 1),
+                         _('Previous Page'))
 
             pagedata = []
             shown_pages = paginator.get_shown_pages(21)
             for p in shown_pages:
-                pagedata.append([req.href.report(id, args, asc=asc, 
-                                                 sort=sort_col, 
-                                                 max=limit, page=p),
-                                 None, str(p), _('Page %(num)d', num=p)])          
+                pagedata.append([report_href(page=p), None, str(p),
+                                 _('Page %(num)d', num=p)])
             fields = ['href', 'class', 'string', 'title']
             paginator.shown_pages = [dict(zip(fields, p)) for p in pagedata]
             paginator.current_page = {'href': None, 'class': 'current',
                                     'string': str(paginator.page + 1),
                                     'title': None}
             numrows = paginator.num_items
-
-        sort_col = req.args.get('sort', '')
-        asc = req.args.get('asc', 1)
-        asc = bool(int(asc)) # string '0' or '1' to int/boolean
 
         # Place retrieved columns in groups, according to naming conventions
         #  * _col_ means fullrow, i.e. a group with one header
@@ -471,9 +482,6 @@ class ReportModule(Component):
                      'sorting_enabled': len(row_groups)==1,
                      'email_map': email_map})
 
-        if id and id != -1:
-            self.add_alternate_links(req, args)
-
         if format == 'rss':
             data['context'] = Context.from_request(req, report_resource,
                                                    absurls=True)
@@ -489,6 +497,19 @@ class ReportModule(Component):
                            filename=filename)
         else:
             if id != -1:
+                p = max is not None and page or None
+                add_link(req, 'alternate', 
+                         report_href(format='rss', page=None),
+                         _('RSS Feed'), 'application/rss+xml', 'rss')
+                add_link(req, 'alternate', report_href(format='csv', page=p),
+                         _('Comma-delimited Text'), 'text/plain')
+                add_link(req, 'alternate', report_href(format='tab', page=p),
+                         _('Tab-delimited Text'), 'text/plain')
+                if 'REPORT_SQL_VIEW' in req.perm:
+                    add_link(req, 'alternate', 
+                             req.href.report(id=id, format='sql'),
+                             _('SQL Query'), 'text/plain')
+
                 # reuse the session vars of the query module so that
                 # the query navigation links on the ticket can be used to 
                 # navigate report results as well
@@ -497,10 +518,7 @@ class ReportModule(Component):
                         ' '.join([str(int(row['id']))
                                   for rg in row_groups for row in rg[1]])
                     req.session['query_href'] = \
-                        req.href.report(id, args,
-                                        asc=req.args.get('asc', None),
-                                        sort=req.args.get('sort', None),
-                                        max=limit, page=page)
+                        req.session['query_href'] = report_href()
                     # Kludge: we have to clear the other query session
                     # variables, but only if the above succeeded 
                     for var in ('query_constraints', 'query_time'):
@@ -516,25 +534,6 @@ class ReportModule(Component):
                     'The following arguments are missing: %(args)s',
                     args=", ".join(missing_args)))
             return 'report_view.html', data, None
-
-    def add_alternate_links(self, req, args):
-        params = args.copy()
-        if 'sort' in req.args:
-            params['sort'] = req.args['sort']
-        if 'asc' in req.args:
-            params['asc'] = req.args['asc']
-        href = ''
-        if params:
-            href = '&' + unicode_urlencode(params)
-        add_link(req, 'alternate', '?format=rss' + href, _('RSS Feed'),
-                 'application/rss+xml', 'rss')
-        add_link(req, 'alternate', '?format=csv' + href,
-                 _('Comma-delimited Text'), 'text/plain')
-        add_link(req, 'alternate', '?format=tab' + href,
-                 _('Tab-delimited Text'), 'text/plain')
-        if 'REPORT_SQL_VIEW' in req.perm:
-            add_link(req, 'alternate', '?format=sql', _('SQL Query'),
-                     'text/plain')
 
     def execute_report(self, req, db, id, sql, args):
         """Execute given sql report (0.10 backward compatibility method)
