@@ -113,7 +113,7 @@
         </py:if>
       </h1>
 
-      <!-- Do not show the ticket (pre)view when the user first comes to the "New Ticket" page.
+      <!--! Do not show the ticket (pre)view when the user first comes to the "New Ticket" page.
            Wait until they hit preview. -->
       <fieldset id="preview" py:strip="not preview_mode">
         <py:if test="preview_mode">
@@ -139,7 +139,7 @@
             <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${dateinfo(ticket.changetime)} ago</p>
             <p py:if="not ticket.exists"><i>(ticket not yet created)</i></p>
           </div>
-          <!-- use a placeholder if it's a new ticket -->
+          <!--! use a placeholder if it's a new ticket -->
           <h2 class="summary searchable">$ticket.summary</h2>
 
           <table class="properties"
