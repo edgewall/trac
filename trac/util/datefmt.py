@@ -21,7 +21,7 @@ import locale
 import re
 import sys
 import time
-from datetime import tzinfo, timedelta, datetime
+from datetime import tzinfo, timedelta, datetime, date
 
 from trac.core import TracError
 from trac.util.text import to_unicode
@@ -45,6 +45,8 @@ def to_datetime(t, tzinfo=None):
         return datetime.now(tzinfo or localtz)
     elif isinstance(t, datetime):
         return t
+    elif isinstance(t, date):
+        return datetime(t.year, t.month, t.day, tzinfo=tzinfo or localtz)
     elif isinstance(t, (int,long,float)):
         return datetime.fromtimestamp(t, tzinfo or localtz)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
