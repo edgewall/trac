@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-04-13 20:46+0200\n"
+"PO-Revision-Date: 2009-08-28 10:08+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -125,12 +125,12 @@ msgid "Size"
 msgstr "Taille"
 
 #: trac/attachment.py:867 trac/templates/history_view.html:28
-#: trac/versioncontrol/templates/revisionlog.html:95
+#: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Author"
 msgstr "Auteur"
 
 #: trac/attachment.py:867 trac/templates/history_view.html:27
-#: trac/versioncontrol/templates/revisionlog.html:94
+#: trac/versioncontrol/templates/revisionlog.html:95
 msgid "Date"
 msgstr "Date"
 
@@ -569,12 +569,12 @@ msgstr "Général"
 msgid "Basic Settings"
 msgstr "Réglages de base"
 
-#: trac/admin/web_ui.py:211 trac/admin/templates/admin_logging.html:9
-#: trac/admin/templates/admin_logging.html:21
+#: trac/admin/web_ui.py:211 trac/admin/templates/admin_logging.html:10
+#: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "Journal"
 
-#: trac/admin/web_ui.py:220 trac/ticket/templates/milestone_delete.html:30
+#: trac/admin/web_ui.py:220 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
 msgstr "Aucun"
@@ -693,7 +693,7 @@ msgstr "Description :"
 #: trac/admin/templates/admin_basics.html:36
 #: trac/admin/templates/admin_components.html:99
 #: trac/admin/templates/admin_enums.html:69
-#: trac/admin/templates/admin_logging.html:53
+#: trac/admin/templates/admin_logging.html:54
 #: trac/admin/templates/admin_milestones.html:125
 #: trac/admin/templates/admin_plugins.html:103
 #: trac/admin/templates/admin_versions.html:94
@@ -731,9 +731,9 @@ msgstr ""
 #: trac/admin/templates/admin_milestones.html:65
 #: trac/admin/templates/admin_versions.html:45
 #: trac/templates/attachment.html:57 trac/templates/attachment.html:70
-#: trac/ticket/templates/milestone_delete.html:39
+#: trac/ticket/templates/milestone_delete.html:40
 #: trac/ticket/templates/milestone_edit.html:94
-#: trac/ticket/templates/report_delete.html:20
+#: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_edit.html:42
 #: trac/wiki/templates/wiki_delete.html:36
 #: trac/wiki/templates/wiki_edit.html:35 trac/wiki/templates/wiki_edit.html:126
@@ -814,33 +814,30 @@ msgstr "Modifier"
 msgid "Order"
 msgstr "Ordre"
 
-#: trac/admin/templates/admin_logging.html:25 trac/templates/about.html:63
+#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:63
 msgid "Configuration"
 msgstr "Configuration"
 
-#: trac/admin/templates/admin_logging.html:27
+#: trac/admin/templates/admin_logging.html:28
 msgid "Type:"
 msgstr "Type :"
 
-#: trac/admin/templates/admin_logging.html:36
+#: trac/admin/templates/admin_logging.html:37
 msgid "Log level:"
 msgstr "Niveau du journal :"
 
-#: trac/admin/templates/admin_logging.html:44
+#: trac/admin/templates/admin_logging.html:45
 msgid "Log file:"
 msgstr "Fichier du journal :"
 
-#: trac/admin/templates/admin_logging.html:47
-msgid "If you specify a relative path, the log file will be stored inside the"
-msgstr "Si le chemin est relatif, le fichier du journal sera crée dans le"
-
-#: trac/admin/templates/admin_logging.html:49
-msgid "log"
-msgstr "journal"
-
-#: trac/admin/templates/admin_logging.html:49
-msgid "directory of the project environment ("
-msgstr "répertoire du projet ("
+#: trac/admin/templates/admin_logging.html:48
+#, python-format
+msgid ""
+"If you specify a relative path, the log file will be stored inside the\n"
+"            [1:log] directory of the project environment ([2:%(dir)s])."
+msgstr ""
+"Si le chemin est relatif, le fichier du journal sera créé dans le\n"
+" [1:log] sous-répertoire du projet ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:828
 msgid "Milestones"
@@ -890,8 +887,8 @@ msgid "Due"
 msgstr "Date limite"
 
 #: trac/admin/templates/admin_milestones.html:100 trac/ticket/admin.py:356
-#: trac/ticket/templates/milestone_view.html:25
-#: trac/ticket/templates/roadmap.html:36
+#: trac/ticket/templates/milestone_view.html:26
+#: trac/ticket/templates/roadmap.html:37
 msgid "Completed"
 msgstr "Atteint le"
 
@@ -946,7 +943,7 @@ msgstr "Sujet"
 msgid "Note that"
 msgstr "Notez que pour un"
 
-#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:61
+#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:62
 msgid "or"
 msgstr "ou"
 
@@ -1129,11 +1126,11 @@ msgstr "Préférences"
 msgid "Unknown preference panel"
 msgstr "Page de préférence inconnu"
 
-#: trac/prefs/web_ui.py:89 trac/prefs/templates/prefs_datetime.html:9
+#: trac/prefs/web_ui.py:89 trac/prefs/templates/prefs_datetime.html:10
 msgid "Date & Time"
 msgstr "Date & Heure"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_keybindings.html:9
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_keybindings.html:10
 msgid "Keyboard Shortcuts"
 msgstr "Raccourcis Clavier"
 
@@ -1210,15 +1207,15 @@ msgstr ""
 "Cette fonctionnalité permet de conserver les même réglages sur de "
 "multiples      machines et/ou navigateurs web."
 
-#: trac/prefs/templates/prefs_datetime.html:15
+#: trac/prefs/templates/prefs_datetime.html:16
 msgid "Time zone:"
 msgstr "Fuseau horaire :"
 
-#: trac/prefs/templates/prefs_datetime.html:17
+#: trac/prefs/templates/prefs_datetime.html:18
 msgid "Default time zone"
 msgstr "Fuseau horaire par défaut"
 
-#: trac/prefs/templates/prefs_datetime.html:24
+#: trac/prefs/templates/prefs_datetime.html:25
 msgid ""
 "Configuring your time zone will result in all\n"
 "      dates and times displayed on this site to use your time zone\n"
@@ -1230,27 +1227,27 @@ msgstr ""
 "plutôt\n"
 "      que celle du serveur."
 
-#: trac/prefs/templates/prefs_datetime.html:28
+#: trac/prefs/templates/prefs_datetime.html:30
 msgid "Example: The current time is"
 msgstr "Exemple : L'heure courante est"
 
-#: trac/prefs/templates/prefs_datetime.html:29
+#: trac/prefs/templates/prefs_datetime.html:31
 msgid "(UTC)."
 msgstr "(UTC)."
 
-#: trac/prefs/templates/prefs_datetime.html:30
+#: trac/prefs/templates/prefs_datetime.html:32
 msgid "In"
 msgstr "Dans"
 
-#: trac/prefs/templates/prefs_datetime.html:31
+#: trac/prefs/templates/prefs_datetime.html:33
 msgid "time zone"
 msgstr "le fuseau horaire"
 
-#: trac/prefs/templates/prefs_datetime.html:31
+#: trac/prefs/templates/prefs_datetime.html:33
 msgid ", this would be displayed as"
 msgstr ", le temps serait affiché comme ceci"
 
-#: trac/prefs/templates/prefs_datetime.html:35
+#: trac/prefs/templates/prefs_datetime.html:37
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
@@ -1258,7 +1255,7 @@ msgstr ""
 "Le Temps Universel Coordonné (UTC) correspond au fuseau horaire de \n"
 "Greenwich (GMT)."
 
-#: trac/prefs/templates/prefs_datetime.html:36
+#: trac/prefs/templates/prefs_datetime.html:38
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
@@ -1292,16 +1289,19 @@ msgstr ""
 "        de courriel et le nom complet qui sont utilisés, par exemple,\n"
 "        pour l'envoi des notifications et les flux RSS"
 
-#: trac/prefs/templates/prefs_keybindings.html:17
+#: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
 msgstr "Activation des raccourcis clavier"
 
-#: trac/prefs/templates/prefs_keybindings.html:20
+#: trac/prefs/templates/prefs_keybindings.html:21
 msgid ""
-"This site provides keyboard shortcuts for faster\n"
-"      access to certain functions of this site. As these shortcuts can\n"
+"This site provides keyboard shortcuts for\n"
+"      faster access to certain functions of this site. As these shortcuts"
+" can\n"
 "      cause conflicts with shortcuts provided by the desktop system or\n"
-"      web browser, they are disabled by default. See"
+"      web browser, they are disabled by default. See\n"
+"      [1:TracAccessibility]\n"
+"      for more information on access keys."
 msgstr ""
 "Ce site permet l'utilisation de raccourcis clavier pour accèder plus\n"
 "      rapidement à certaines fonctions du site. Néanmoins comme ces\n"
@@ -1309,15 +1309,8 @@ msgstr ""
 "les\n"
 "      raccourcis du système d'exploitation ou du navigateur web, ils sont"
 "\n"
-"      désactivés par défaut. Voir"
-
-#: trac/prefs/templates/prefs_keybindings.html:24
-msgid "TracAccessibility"
-msgstr "TracAccessibility"
-
-#: trac/prefs/templates/prefs_keybindings.html:24
-msgid "for more information on access keys."
-msgstr "pour de plus amples information sur les raccourcis clavier."
+"      désactivés par défaut. Voir [1:TracAccessibility] pour de plus "
+"amples information sur les raccourcis clavier."
 
 #: trac/prefs/templates/prefs_language.html:14
 msgid "Language:"
@@ -1367,8 +1360,8 @@ msgstr "Thème :"
 msgid "Preview:"
 msgstr "Aperçu :"
 
-#: trac/search/web_ui.py:64 trac/search/templates/search.html:10
-#: trac/search/templates/search.html:23 trac/search/templates/search.html:28
+#: trac/search/web_ui.py:64 trac/search/templates/search.html:11
+#: trac/search/templates/search.html:24 trac/search/templates/search.html:29
 #: trac/templates/theme.html:28
 msgid "Search"
 msgstr "Recherche"
@@ -1397,64 +1390,32 @@ msgstr "Page précédente"
 msgid "Browse repository path %(path)s"
 msgstr "Explorer le chemin du dépot %(path)s"
 
-#: trac/search/templates/search.html:10 trac/search/templates/search.html:40
+#: trac/search/templates/search.html:11 trac/search/templates/search.html:41
 #: trac/ticket/templates/query_results.html:21
-#: trac/ticket/templates/report_view.html:86
+#: trac/ticket/templates/report_view.html:87
 msgid "Results"
 msgstr "Résultats"
 
-#: trac/search/templates/search.html:48
+#: trac/search/templates/search.html:49
 msgid "Quickjump to"
 msgstr "Accès direct à"
 
-#: trac/search/templates/search.html:56
+#: trac/search/templates/search.html:57
 msgid "By"
 msgstr "Par"
 
-#: trac/search/templates/search.html:65
-#: trac/ticket/templates/report_view.html:215
+#: trac/search/templates/search.html:66
+#: trac/ticket/templates/report_view.html:216
 msgid "No matches found."
 msgstr "Aucun résultat trouvé."
 
 #: trac/search/templates/search.html:70
-#: trac/ticket/templates/milestone_delete.html:44
-#: trac/ticket/templates/milestone_edit.html:98
-#: trac/ticket/templates/milestone_view.html:105
-#: trac/ticket/templates/query.html:249
-#: trac/ticket/templates/report_delete.html:26
-#: trac/ticket/templates/report_edit.html:49
-#: trac/ticket/templates/report_view.html:218
-#: trac/ticket/templates/roadmap.html:69 trac/ticket/templates/ticket.html:406
-#: trac/timeline/templates/timeline.html:55
-#: trac/versioncontrol/templates/browser.html:152
-#: trac/versioncontrol/templates/diff_form.html:62
-#: trac/versioncontrol/templates/revisionlog.html:176
-msgid "Note:"
-msgstr "Note :"
-
-#: trac/search/templates/search.html:70
-#: trac/ticket/templates/milestone_delete.html:44
-#: trac/ticket/templates/milestone_edit.html:98
-#: trac/ticket/templates/milestone_view.html:105
-#: trac/ticket/templates/query.html:249
-#: trac/ticket/templates/report_delete.html:26
-#: trac/ticket/templates/report_edit.html:49
-#: trac/ticket/templates/report_view.html:218
-#: trac/ticket/templates/roadmap.html:69 trac/ticket/templates/ticket.html:406
-#: trac/timeline/templates/timeline.html:55
-#: trac/versioncontrol/templates/browser.html:152
-#: trac/versioncontrol/templates/diff_form.html:62
-#: trac/versioncontrol/templates/revisionlog.html:176
-msgid "See"
-msgstr "Voir"
-
-#: trac/search/templates/search.html:70
-msgid "TracSearch"
-msgstr "TracSearch"
-
-#: trac/search/templates/search.html:70
-msgid "for help on searching."
-msgstr "pour de l'aide sur la recherche"
+msgid ""
+"[1:Note:] See [2:TracSearch]\n"
+"        for help on searching."
+msgstr ""
+"[1:Note :] Voir [2:TracSearch]\n"
+"        pour de l'aide sur les modalités de recherche."
 
 #: trac/templates/about.html:25
 msgid "Trac: Integrated SCM & Project Management"
@@ -1603,7 +1564,7 @@ msgid "Changes"
 msgstr "Modifications"
 
 #: trac/templates/diff_view.html:18 trac/templates/diff_view.html:21
-#: trac/ticket/templates/query.html:103
+#: trac/ticket/templates/query.html:104
 msgid "between"
 msgstr "entre"
 
@@ -1614,7 +1575,7 @@ msgid "Version"
 msgstr "Version"
 
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
-#: trac/ticket/templates/query.html:105
+#: trac/ticket/templates/query.html:106
 msgid "and"
 msgstr "et"
 
@@ -1652,7 +1613,7 @@ msgstr "Commentaire :"
 
 #: trac/templates/diff_view.html:57
 #: trac/versioncontrol/templates/changeset.html:151
-#: trac/versioncontrol/templates/revisionlog.html:70
+#: trac/versioncontrol/templates/revisionlog.html:71
 msgid "Legend:"
 msgstr "Légende :"
 
@@ -1663,19 +1624,19 @@ msgstr "Sans modification"
 
 #: trac/templates/diff_view.html:60
 #: trac/versioncontrol/templates/changeset.html:154
-#: trac/versioncontrol/templates/revisionlog.html:72
+#: trac/versioncontrol/templates/revisionlog.html:73
 msgid "Added"
 msgstr "Ajouté"
 
 #: trac/templates/diff_view.html:61
 #: trac/versioncontrol/templates/changeset.html:155
-#: trac/versioncontrol/templates/revisionlog.html:74
+#: trac/versioncontrol/templates/revisionlog.html:75
 msgid "Removed"
 msgstr "Supprimé"
 
 #: trac/templates/diff_view.html:62 trac/ticket/api.py:250
 #: trac/versioncontrol/templates/changeset.html:157
-#: trac/versioncontrol/templates/revisionlog.html:76 trac/wiki/admin.py:154
+#: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:154
 msgid "Modified"
 msgstr "Modifié"
 
@@ -1910,9 +1871,9 @@ msgid "Change History for"
 msgstr "Historique des modification pour"
 
 #: trac/templates/history_view.html:20 trac/templates/history_view.html:51
-#: trac/versioncontrol/templates/diff_form.html:57
-#: trac/versioncontrol/templates/revisionlog.html:84
-#: trac/versioncontrol/templates/revisionlog.html:170
+#: trac/versioncontrol/templates/diff_form.html:58
+#: trac/versioncontrol/templates/revisionlog.html:85
+#: trac/versioncontrol/templates/revisionlog.html:171
 msgid "View changes"
 msgstr "Voir les différences"
 
@@ -1989,12 +1950,12 @@ msgstr "Changements minuscules/majuscules"
 msgid "White space changes"
 msgstr "Changements dans les espaces"
 
-#: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:53
-#: trac/ticket/templates/query.html:190
-#: trac/ticket/templates/report_view.html:32
-#: trac/ticket/templates/roadmap.html:24
+#: trac/templates/macros.html:125 trac/ticket/templates/milestone_view.html:54
+#: trac/ticket/templates/query.html:191
+#: trac/ticket/templates/report_view.html:33
+#: trac/ticket/templates/roadmap.html:25
 #: trac/timeline/templates/timeline.html:32
-#: trac/versioncontrol/templates/revisionlog.html:64
+#: trac/versioncontrol/templates/revisionlog.html:65
 msgid "Update"
 msgstr "Mise à jour"
 
@@ -2435,8 +2396,8 @@ msgstr ""
 "déjà utilisé par d'autres groupes. Merci de vérifier votre configuration."
 
 #: trac/ticket/roadmap.py:308 trac/ticket/roadmap.py:422
-#: trac/ticket/roadmap.py:551 trac/ticket/templates/roadmap.html:10
-#: trac/ticket/templates/roadmap.html:15
+#: trac/ticket/roadmap.py:551 trac/ticket/templates/roadmap.html:11
+#: trac/ticket/templates/roadmap.html:16
 msgid "Roadmap"
 msgstr "Feuille de Route"
 
@@ -2608,11 +2569,11 @@ msgstr "Ajouter/Supprimer en Copie"
 msgid "<Author field>"
 msgstr "<Champ auteur>"
 
-#: trac/ticket/web_ui.py:1190 trac/ticket/templates/query.html:90
+#: trac/ticket/web_ui.py:1190 trac/ticket/templates/query.html:91
 msgid "yes"
 msgstr "oui"
 
-#: trac/ticket/web_ui.py:1190 trac/ticket/templates/query.html:93
+#: trac/ticket/web_ui.py:1190 trac/ticket/templates/query.html:94
 msgid "no"
 msgstr "non"
 
@@ -2620,37 +2581,31 @@ msgstr "non"
 msgid "modified"
 msgstr "modifié"
 
-#: trac/ticket/templates/milestone_delete.html:9
-#: trac/ticket/templates/milestone_delete.html:21
+#: trac/ticket/templates/milestone_delete.html:10
+#: trac/ticket/templates/milestone_delete.html:22
 msgid "Delete Milestone"
 msgstr "Supprimer le jalon"
 
-#: trac/ticket/templates/milestone_delete.html:26
+#: trac/ticket/templates/milestone_delete.html:27
 msgid "Are you sure you want to delete this milestone?"
 msgstr "Confirmer la suppression du jalon ?"
 
-#: trac/ticket/templates/milestone_delete.html:28
+#: trac/ticket/templates/milestone_delete.html:29
 msgid "Retarget associated tickets to milestone"
 msgstr "Mettre à jour les tickets associés au jalon :"
 
-#: trac/ticket/templates/milestone_delete.html:40
-#: trac/ticket/templates/milestone_view.html:99
+#: trac/ticket/templates/milestone_delete.html:41
+#: trac/ticket/templates/milestone_view.html:100
 msgid "Delete milestone"
 msgstr "Supprimer le jalon"
 
 #: trac/ticket/templates/milestone_delete.html:45
-#: trac/ticket/templates/milestone_edit.html:99
-#: trac/ticket/templates/milestone_view.html:106
-#: trac/ticket/templates/roadmap.html:70
-msgid "TracRoadmap"
-msgstr "TracRoadmap"
-
-#: trac/ticket/templates/milestone_delete.html:45
 msgid ""
-"for help on using\n"
+"[1:Note:] See\n"
+"      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
 msgstr ""
-"pour de l'aide sur l'utilisation\n"
+"[1:Note :] Voir [2:TracRoadmap] pour de l'aide sur l'utilisation\n"
 "      des feuilles de route."
 
 #: trac/ticket/templates/milestone_edit.html:11
@@ -2685,22 +2640,23 @@ msgstr "Enregistrer"
 msgid "Add milestone"
 msgstr "Ajouter un jalon :"
 
-#: trac/ticket/templates/milestone_edit.html:99
+#: trac/ticket/templates/milestone_edit.html:98
 #: trac/ticket/templates/milestone_view.html:106
 #: trac/ticket/templates/roadmap.html:70
 msgid ""
-"for help on using\n"
+"[1:Note:] See\n"
+"        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
 msgstr ""
 "pour de l'aide sur l'utilisation\n"
 "      des feuilles de route."
 
-#: trac/ticket/templates/milestone_view.html:10
-#: trac/ticket/templates/milestone_view.html:22
+#: trac/ticket/templates/milestone_view.html:11
+#: trac/ticket/templates/milestone_view.html:23
 msgid "Milestone"
 msgstr "Jalon"
 
-#: trac/ticket/templates/milestone_view.html:26
+#: trac/ticket/templates/milestone_view.html:27
 msgid ""
 "ago\n"
 "            ("
@@ -2708,35 +2664,35 @@ msgstr ""
 "avant\n"
 "            ("
 
-#: trac/ticket/templates/milestone_view.html:30
-#: trac/ticket/templates/roadmap.html:41
+#: trac/ticket/templates/milestone_view.html:31
+#: trac/ticket/templates/roadmap.html:42
 msgid "late"
 msgstr "en retard"
 
-#: trac/ticket/templates/milestone_view.html:33
-#: trac/ticket/templates/roadmap.html:44
+#: trac/ticket/templates/milestone_view.html:34
+#: trac/ticket/templates/roadmap.html:45
 msgid "Due in"
 msgstr "Date d'échéance"
 
-#: trac/ticket/templates/milestone_view.html:37
-#: trac/ticket/templates/roadmap.html:48
+#: trac/ticket/templates/milestone_view.html:38
+#: trac/ticket/templates/roadmap.html:49
 msgid "No date set"
 msgstr "Pas de date d'échéance"
 
-#: trac/ticket/templates/milestone_view.html:47
+#: trac/ticket/templates/milestone_view.html:48
 #: trac/timeline/templates/timeline.html:44
 msgid "by"
 msgstr "par"
 
-#: trac/ticket/templates/milestone_view.html:61
+#: trac/ticket/templates/milestone_view.html:62
 msgid "(none)"
 msgstr "Aucun"
 
-#: trac/ticket/templates/milestone_view.html:93
+#: trac/ticket/templates/milestone_view.html:94
 msgid "Edit milestone"
 msgstr "Editer le jalon"
 
-#: trac/ticket/templates/query.html:28
+#: trac/ticket/templates/query.html:29
 #: trac/ticket/templates/query_results.html:29
 #, python-format
 msgid "%(num)s match"
@@ -2744,67 +2700,67 @@ msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s résultat"
 msgstr[1] "%(num)s résultats"
 
-#: trac/ticket/templates/query.html:38
+#: trac/ticket/templates/query.html:39
 msgid "Filters"
 msgstr "Filtres"
 
-#: trac/ticket/templates/query.html:39
+#: trac/ticket/templates/query.html:40
 msgid "Query filters"
 msgstr "Filtres de requête"
 
-#: trac/ticket/templates/query.html:123
+#: trac/ticket/templates/query.html:124
 msgid "Add filter"
 msgstr "Ajouter un filtre"
 
-#: trac/ticket/templates/query.html:143
+#: trac/ticket/templates/query.html:144
 msgid "Columns"
 msgstr "Colonnes"
 
-#: trac/ticket/templates/query.html:157
+#: trac/ticket/templates/query.html:158
 msgid "Group results by"
 msgstr "Grouper les résultats par"
 
-#: trac/ticket/templates/query.html:168
+#: trac/ticket/templates/query.html:169
 msgid "descending"
 msgstr "décroissant"
 
-#: trac/ticket/templates/query.html:172
+#: trac/ticket/templates/query.html:173
 msgid "Show under each result:"
 msgstr "Afficher sous chaque résultat :"
 
-#: trac/ticket/templates/query.html:182
-#: trac/ticket/templates/report_view.html:26
+#: trac/ticket/templates/query.html:183
+#: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
 msgstr "Nombre maximum d'objets par page"
 
-#: trac/ticket/templates/query.html:225
+#: trac/ticket/templates/query.html:226
 msgid "Edit query"
 msgstr "Editer la requête :"
 
-#: trac/ticket/templates/query.html:233
+#: trac/ticket/templates/query.html:234
 msgid "Save query"
 msgstr "Enregistrer la requête :"
 
-#: trac/ticket/templates/query.html:233
+#: trac/ticket/templates/query.html:234
 #, python-format
 msgid "Save updated query in report {%(id)s}"
 msgstr "Sauvegarder dans le rapport {%(id)s} la requête mise à jour"
 
-#: trac/ticket/templates/query.html:233
+#: trac/ticket/templates/query.html:234
 msgid "Create new report from current query"
 msgstr "Créer un nouveau rapport à partir de la requête courante"
 
-#: trac/ticket/templates/query.html:242
+#: trac/ticket/templates/query.html:243
 msgid "Delete query"
 msgstr "Supprimer la requête"
 
 #: trac/ticket/templates/query.html:249
-msgid "TracQuery"
-msgstr "TracQuery"
-
-#: trac/ticket/templates/query.html:249
-msgid "for help on using queries."
-msgstr "pour de l'aide sur l'utilisation des requêtes."
+msgid ""
+"[1:Note:] See [2:TracQuery]\n"
+"        for help on using queries."
+msgstr ""
+"[1:Note :] Voir [2:TracQuery]\n"
+"        pour de l'aide sur l'utilisation des requêtes."
 
 #: trac/ticket/templates/query_results.html:44
 msgid "No tickets found"
@@ -2816,7 +2772,7 @@ msgid "View ticket"
 msgstr "Voir le Ticket"
 
 #: trac/ticket/templates/query_results.html:65
-#: trac/ticket/templates/report_view.html:182
+#: trac/ticket/templates/report_view.html:183
 msgid "View milestone"
 msgstr "Nouveau jalon"
 
@@ -2832,26 +2788,25 @@ msgstr "(futur ticket)"
 msgid "(more results for this group on next page)"
 msgstr "(suite des résultats pour ce groupe sur la page suivante)"
 
-#: trac/ticket/templates/report_delete.html:16
+#: trac/ticket/templates/report_delete.html:17
 msgid "Are you sure you want to delete this report?"
 msgstr "Confirmer la suppression du rapport ?"
 
-#: trac/ticket/templates/report_delete.html:21
-#: trac/ticket/templates/report_view.html:81
+#: trac/ticket/templates/report_delete.html:22
+#: trac/ticket/templates/report_view.html:82
 msgid "Delete report"
 msgstr "Supprimer le rapport"
 
-#: trac/ticket/templates/report_delete.html:27
-#: trac/ticket/templates/report_edit.html:50
-#: trac/ticket/templates/report_view.html:219
-msgid "TracReports"
-msgstr "TracReports"
-
-#: trac/ticket/templates/report_delete.html:27
-#: trac/ticket/templates/report_edit.html:50
-#: trac/ticket/templates/report_view.html:219
-msgid "for help on using and creating reports."
-msgstr "pour de l'aide sur l'utilisation et la création des rapports"
+#: trac/ticket/templates/report_delete.html:26
+#: trac/ticket/templates/report_edit.html:48
+#: trac/ticket/templates/report_view.html:218
+msgid ""
+"[1:Note:]\n"
+"        See [2:TracReports] for help on using and creating reports."
+msgstr ""
+"[1:Note :]\n"
+"        Voir [2:TracReports] pour de l'aide sur l'utilisation et la \n"
+"création des rapports."
 
 #: trac/ticket/templates/report_edit.html:21
 msgid "Report Title:"
@@ -2873,48 +2828,48 @@ msgstr ""
 msgid "Save report"
 msgstr "Sauvegarder le rapport"
 
-#: trac/ticket/templates/report_view.html:20
+#: trac/ticket/templates/report_view.html:21
 msgid "matches)"
 msgstr "correspondantes)"
 
-#: trac/ticket/templates/report_view.html:41
+#: trac/ticket/templates/report_view.html:42
 msgid "Arguments"
 msgstr "Paramètres"
 
-#: trac/ticket/templates/report_view.html:42
+#: trac/ticket/templates/report_view.html:43
 msgid "Report arguments"
 msgstr "Paramètres du rapport"
 
-#: trac/ticket/templates/report_view.html:69
+#: trac/ticket/templates/report_view.html:70
 msgid "Edit report"
 msgstr "Editer le rapport"
 
-#: trac/ticket/templates/report_view.html:75
+#: trac/ticket/templates/report_view.html:76
 msgid "Copy report"
 msgstr "Copier le rapport"
 
-#: trac/ticket/templates/report_view.html:93
+#: trac/ticket/templates/report_view.html:94
 msgid "match"
 msgstr "correspondance"
 
-#: trac/ticket/templates/report_view.html:127
-#: trac/ticket/templates/report_view.html:134
+#: trac/ticket/templates/report_view.html:128
+#: trac/ticket/templates/report_view.html:135
 msgid "View report"
 msgstr "Voir le rapport"
 
-#: trac/ticket/templates/report_view.html:209
+#: trac/ticket/templates/report_view.html:210
 msgid "Create new report"
 msgstr "Créer d'un nouveau rapport"
 
-#: trac/ticket/templates/roadmap.html:21
+#: trac/ticket/templates/roadmap.html:22
 msgid "Show already completed milestones"
 msgstr "Afficher les jalons déjà atteints"
 
-#: trac/ticket/templates/roadmap.html:32
+#: trac/ticket/templates/roadmap.html:33
 msgid "Milestone:"
 msgstr "Jalon :"
 
-#: trac/ticket/templates/roadmap.html:37
+#: trac/ticket/templates/roadmap.html:38
 msgid ""
 "ago\n"
 "                ("
@@ -2922,7 +2877,7 @@ msgstr ""
 "avant\n"
 "                ("
 
-#: trac/ticket/templates/roadmap.html:65
+#: trac/ticket/templates/roadmap.html:66
 msgid "Add new milestone"
 msgstr "Ajouter un nouveau jalon"
 
@@ -3089,16 +3044,14 @@ msgstr "Aperçu"
 msgid "Create ticket"
 msgstr "Création d'un nouveau ticket"
 
-#: trac/ticket/templates/ticket.html:407
-msgid "TracTickets"
-msgstr "TracTickets"
-
-#: trac/ticket/templates/ticket.html:407
+#: trac/ticket/templates/ticket.html:405
 msgid ""
-"for help on using\n"
+"[1:Note:] See\n"
+"        [2:TracTickets] for help on using\n"
 "        tickets."
 msgstr ""
-"pour de l'aide sur l'utilisation\n"
+"[1:Note :] Voir\n"
+"         [2:TracTickets] pour de l'aide sur l'utilisation\n"
 "         des tickets."
 
 #: trac/ticket/templates/ticket_notify_email.txt:9
@@ -3153,13 +3106,13 @@ msgstr "Aujourd'hui"
 msgid "Yesterday"
 msgstr "Hier"
 
-#: trac/timeline/templates/timeline.html:55
-msgid "TracTimeline"
-msgstr "TracTimeline"
-
-#: trac/timeline/templates/timeline.html:55
-msgid "for information about the timeline view."
-msgstr "pour des informations sur l'Historique"
+#: trac/timeline/templates/timeline.html:54
+msgid ""
+"[1:Note:] See [2:TracTimeline]\n"
+"        for information about the timeline view."
+msgstr ""
+"[1:Note :] Voir [2:TracTimeline]\n"
+"pour l'aide relative à l'historique."
 
 #: trac/util/presentation.py:254
 #, python-format
@@ -3318,7 +3271,7 @@ msgid "Jump to the chosen preselected path"
 msgstr "Saut direct au chemin préselectionné"
 
 #: trac/versioncontrol/templates/browser.html:87
-#: trac/versioncontrol/templates/revisionlog.html:92
+#: trac/versioncontrol/templates/revisionlog.html:93
 #: trac/versioncontrol/web_ui/browser.py:621
 msgid "Rev"
 msgstr "Rév."
@@ -3351,13 +3304,13 @@ msgstr ""
 "Révision [1:%(rev)s], %(size)s\n"
 "            (produite par %(author)s, il y a %(date)s)"
 
-#: trac/versioncontrol/templates/browser.html:152
-msgid "TracBrowser"
-msgstr "TracBrowser"
-
-#: trac/versioncontrol/templates/browser.html:152
-msgid "for help on using the browser."
-msgstr "pour de l'aide sur l'utilisation du Navigateur"
+#: trac/versioncontrol/templates/browser.html:151
+msgid ""
+"[1:Note:] See [2:TracBrowser]\n"
+"        for help on using the browser."
+msgstr ""
+"[1:Note :] Voir [2:TracBrowser]\n"
+"        pour de l'aide sur l'utilisation de l'explorateur de sources."
 
 #: trac/versioncontrol/templates/browser.html:163
 msgid "View changes..."
@@ -3451,29 +3404,29 @@ msgstr "copié"
 msgid "moved"
 msgstr "deplacé"
 
-#: trac/versioncontrol/templates/diff_form.html:9
-#: trac/versioncontrol/templates/diff_form.html:20
+#: trac/versioncontrol/templates/diff_form.html:10
+#: trac/versioncontrol/templates/diff_form.html:21
 msgid "Prepare Diff"
 msgstr "Préparation des Diffs"
 
-#: trac/versioncontrol/templates/diff_form.html:26
+#: trac/versioncontrol/templates/diff_form.html:27
 msgid "Select the base and the target for the diff:"
 msgstr "Sélection de la base et de la cible pour les différences :"
 
-#: trac/versioncontrol/templates/diff_form.html:29
+#: trac/versioncontrol/templates/diff_form.html:30
 msgid "From:"
 msgstr "Depuis :"
 
-#: trac/versioncontrol/templates/diff_form.html:33
-#: trac/versioncontrol/templates/diff_form.html:43
+#: trac/versioncontrol/templates/diff_form.html:34
+#: trac/versioncontrol/templates/diff_form.html:44
 msgid "at revision:"
 msgstr "à la révision :"
 
-#: trac/versioncontrol/templates/diff_form.html:39
+#: trac/versioncontrol/templates/diff_form.html:40
 msgid "To:"
 msgstr "A :"
 
-#: trac/versioncontrol/templates/diff_form.html:49
+#: trac/versioncontrol/templates/diff_form.html:50
 msgid ""
 "For either path, you can start typing the path and will be\n"
 "              presented a list of existing directories and files to "
@@ -3490,97 +3443,100 @@ msgstr ""
 "              en utilisation les touches haut/bas de déplacement et en "
 "utilisant              la touche de tabulation."
 
-#: trac/versioncontrol/templates/diff_form.html:63
-msgid "TracChangeset"
-msgstr "TracChangeset"
-
-#: trac/versioncontrol/templates/diff_form.html:63
-msgid "for help on using the diff feature."
-msgstr "pour de l'aide sur les fonctionnalités de diff."
+#: trac/versioncontrol/templates/diff_form.html:62
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracChangeset]\n"
+"        for help on using the diff feature."
+msgstr ""
+"[1:Note :] Voir\n"
+"        [2:TracChangeset]\n"
+"        pour l'aide concernant l'utilisation des options de visualisation"
+"         des différences."
 
 #: trac/versioncontrol/templates/dir_entries.html:17
 msgid "View Revision Log"
 msgstr "Journal des révisions"
 
-#: trac/versioncontrol/templates/revisionlog.html:10
+#: trac/versioncontrol/templates/revisionlog.html:11
 msgid "(log)"
 msgstr "(journal)"
 
-#: trac/versioncontrol/templates/revisionlog.html:22
+#: trac/versioncontrol/templates/revisionlog.html:23
 msgid "Revision Log Mode:"
 msgstr "Options du journal des révisions"
 
-#: trac/versioncontrol/templates/revisionlog.html:26
+#: trac/versioncontrol/templates/revisionlog.html:27
 msgid "Stop on copy"
 msgstr "Arrêt sur copie"
 
-#: trac/versioncontrol/templates/revisionlog.html:32
+#: trac/versioncontrol/templates/revisionlog.html:33
 msgid "Follow copies"
 msgstr "Suivre les copies"
 
-#: trac/versioncontrol/templates/revisionlog.html:38
+#: trac/versioncontrol/templates/revisionlog.html:39
 msgid "Show only adds and deletes"
 msgstr "Afficher uniquement les ajouts et suppressions"
 
-#: trac/versioncontrol/templates/revisionlog.html:43
+#: trac/versioncontrol/templates/revisionlog.html:44
 msgid "View log starting at"
 msgstr "Afficher le journal à partir de"
 
-#: trac/versioncontrol/templates/revisionlog.html:47
+#: trac/versioncontrol/templates/revisionlog.html:48
 msgid "and back to"
 msgstr "et jusqu'à"
 
-#: trac/versioncontrol/templates/revisionlog.html:52
+#: trac/versioncontrol/templates/revisionlog.html:53
 msgid "Show at most"
 msgstr "Afficher au plus"
 
-#: trac/versioncontrol/templates/revisionlog.html:54
+#: trac/versioncontrol/templates/revisionlog.html:55
 msgid "revisions per page."
 msgstr "révisions par page."
 
-#: trac/versioncontrol/templates/revisionlog.html:59
+#: trac/versioncontrol/templates/revisionlog.html:60
 msgid "Show full log messages"
 msgstr "Afficher tous les messages"
 
-#: trac/versioncontrol/templates/revisionlog.html:77
+#: trac/versioncontrol/templates/revisionlog.html:78
 msgid "Copied or renamed"
 msgstr "Copié ou renommé"
 
-#: trac/versioncontrol/templates/revisionlog.html:84
+#: trac/versioncontrol/templates/revisionlog.html:85
 msgid "Diff from Old Revision to New Revision (select them below)"
 msgstr "Diff d'une ancienne révision à une nouvelle (selection ci-dessous)"
 
-#: trac/versioncontrol/templates/revisionlog.html:93
+#: trac/versioncontrol/templates/revisionlog.html:94
 msgid "Chgset"
 msgstr "Rév"
 
-#: trac/versioncontrol/templates/revisionlog.html:96
+#: trac/versioncontrol/templates/revisionlog.html:97
 msgid "Log Message"
 msgstr "Message de la révision"
 
-#: trac/versioncontrol/templates/revisionlog.html:103
+#: trac/versioncontrol/templates/revisionlog.html:104
 msgid "No revisions found"
 msgstr "Aucone révision trouvée"
 
-#: trac/versioncontrol/templates/revisionlog.html:115
+#: trac/versioncontrol/templates/revisionlog.html:116
 msgid "copied from"
 msgstr "copié de"
 
-#: trac/versioncontrol/templates/revisionlog.html:129
+#: trac/versioncontrol/templates/revisionlog.html:130
 msgid "View log starting at this revision"
 msgstr "Voir le journal en débutant à cette révision"
 
-#: trac/versioncontrol/templates/revisionlog.html:170
+#: trac/versioncontrol/templates/revisionlog.html:171
 msgid "Diff from Old Revision to New Revision (select them above)"
 msgstr "Diff d'une ancienne révision à une nouvelle (selection ci-dessous)"
 
 #: trac/versioncontrol/templates/revisionlog.html:176
-msgid "TracRevisionLog"
-msgstr "TracRevisionLog"
-
-#: trac/versioncontrol/templates/revisionlog.html:176
-msgid "for help on using the revision log."
-msgstr "pour de l'aide sur le journal des révisions"
+msgid ""
+"[1:Note:] See [2:TracRevisionLog]\n"
+"        for help on using the revision log."
+msgstr ""
+"[1:Note :] Voir [2:TracRevisionLog]\n"
+"        pour l'aide relative au journal des révisions."
 
 #: trac/versioncontrol/templates/revisionlog.txt:1
 msgid ""
@@ -3769,11 +3725,11 @@ msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Erreur impliquant Genshi (%(error)s - %(location)s)"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:491
+#: trac/web/main.py:487
 msgid "do so"
 msgstr "le faire"
 
-#: trac/web/main.py:493
+#: trac/web/main.py:489
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "Vous n'êtes pas connecté actuellement. Vous pouvez %(do_so)s maintenant."
@@ -4036,7 +3992,7 @@ msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "          [3:TracWiki] for help on editing wiki content."
 msgstr ""
-"[1:Note:] Voir [2:WikiFormatting] et\n"
+"[1:Note :] Voir [2:WikiFormatting] et\n"
 "          [3:TracWiki] pour de l'aide sur l'édition de contenus Wiki."
 
 #: trac/wiki/templates/wiki_edit.html:92
