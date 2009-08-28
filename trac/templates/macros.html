@@ -1,5 +1,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
-     xmlns:py="http://genshi.edgewall.org/" py:strip="">
+     xmlns:py="http://genshi.edgewall.org/" 
+     xmlns:i18n="http://genshi.edgewall.org/i18n"
+     py:strip="">
 
   <!--! 
      
@@ -160,11 +162,13 @@
   -->
   <py:def function="list_of_attachments(alist, compact=False, add_button_title=None)">
     <py:def function="show_one_attachment(attachment)">
-      <a href="${url_of(attachment.resource)}" title="${_('View attachment')}">$attachment.filename</a>
-      <a href="${url_of(attachment.resource, format='raw')}"
-         title="${_('Download')}" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="${_('Download')}"/></a>
-      (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
-      ${dateinfo(attachment.date)} ago.
+      <i18n:msg params="file, size, author, date">
+        <a href="${url_of(attachment.resource)}" title="${_('View attachment')}">$attachment.filename</a>
+        <a href="${url_of(attachment.resource, format='raw')}"
+           title="${_('Download')}" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="${_('Download')}"/></a>
+        (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
+        ${dateinfo(attachment.date)} ago.
+      </i18n:msg>
     </py:def>
     <py:if test="alist.attachments or alist.can_create">
       <py:choose test="">

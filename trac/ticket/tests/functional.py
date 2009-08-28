@@ -1172,7 +1172,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         tc.submit('submit')
 
         self._tester.go_to_ticket(ticket_id)
-        tc.find('Error: Invalid Ticket Number')
+        tc.find('Error: Invalid ticket number')
         tc.find('Ticket %s does not exist.' % ticket_id)
 
         # Remove the DeleteTicket plugin

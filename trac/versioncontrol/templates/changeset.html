@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
@@ -96,8 +97,8 @@
       <dl id="overview">
         <py:if test="changeset">
           <dt class="property time">Timestamp:</dt>
-          <dd class="time">${format_datetime(changeset.date)} (${(datetime.now(utc) - changeset.date) &lt; timedelta(0, 3600) and \
-                                                                 'less than one hour' or dateinfo(changeset.date)} ago)</dd>
+          <dd class="time" i18n:msg="date, duration">${format_datetime(changeset.date)} (${(datetime.now(utc) - changeset.date) &lt; timedelta(0, 3600) and \
+                                                                 _('less than one hour') or dateinfo(changeset.date)} ago)</dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>
           <py:for each="prop in properties" py:choose="">

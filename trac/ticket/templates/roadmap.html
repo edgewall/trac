@@ -35,16 +35,22 @@
             </a></h2>
             <py:choose>
               <p py:when="milestone.completed" class="date">
-                Completed ${dateinfo(milestone.completed)} ago
-                (${format_date(milestone.completed)})
+                <i18n:msg params="duration, date">
+                  Completed ${dateinfo(milestone.completed)} ago
+                  (${format_date(milestone.completed)})
+                </i18n:msg>
               </p>
               <p py:when="milestone.is_late" class="date">
-                <strong>${dateinfo(milestone.due)} late</strong>
-                (${format_date(milestone.due)})
+                <i18n:msg params="duration, date">
+                  <strong>${dateinfo(milestone.due)} late</strong>
+                  (${format_date(milestone.due)})
+                </i18n:msg>
               </p>
               <p py:when="milestone.due" class="date">
-                Due in ${dateinfo(milestone.due)}
-                (${format_date(milestone.due)})
+                <i18n:msg params="duration, date">
+                  Due in ${dateinfo(milestone.due)}
+                  (${format_date(milestone.due)})
+                </i18n:msg>
               </p>
               <p py:otherwise="" class="date">
                 No date set

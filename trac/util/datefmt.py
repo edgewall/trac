@@ -25,6 +25,7 @@ from datetime import tzinfo, timedelta, datetime
 
 from trac.core import TracError
 from trac.util.text import to_unicode
+from trac.util.translation import ngettext
 
 # Date/time utilities
 
@@ -61,6 +62,14 @@ def to_timestamp(dt):
 
 # -- formatting
 
+_units = (
+    (3600*24*365, lambda r: ngettext('%(num)d year', '%(num)d years', r)),
+    (3600*24*30,  lambda r: ngettext('%(num)d month', '%(num)d months', r)),
+    (3600*24*7,   lambda r: ngettext('%(num)d week', '%(num)d weeks', r)),
+    (3600*24,     lambda r: ngettext('%(num)d day', '%(num)d days', r)),
+    (3600,        lambda r: ngettext('%(num)d hour', '%(num)d hours', r)),
+    (60,          lambda r: ngettext('%(num)d minute', '%(num)d minutes', r)))
+
 def pretty_timedelta(time1, time2=None, resolution=None):
     """Calculate time delta between two `datetime` objects.
     (the result is somewhat imprecise, only use for prettyprinting).
@@ -72,24 +81,20 @@ def pretty_timedelta(time1, time2=None, resolution=None):
     time2 = to_datetime(time2)
     if time1 > time2:
         time2, time1 = time1, time2
-    units = ((3600 * 24 * 365, 'year',   'years'),
-             (3600 * 24 * 30,  'month',  'months'),
-             (3600 * 24 * 7,   'week',   'weeks'),
-             (3600 * 24,       'day',    'days'),
-             (3600,            'hour',   'hours'),
-             (60,              'minute', 'minutes'))
+    
     diff = time2 - time1
     age_s = int(diff.days * 86400 + diff.seconds)
     if resolution and age_s < resolution:
         return ''
     if age_s <= 60 * 1.9:
-        return '%i second%s' % (age_s, age_s != 1 and 's' or '')
-    for u, unit, unit_plural in units:
+        return ngettext('%(num)i second', '%(num)i seconds', age_s)
+    for u, format_units in _units:
         r = float(age_s) / float(u)
         if r >= 1.9:
             r = int(round(r))
-            return '%d %s' % (r, r == 1 and unit or unit_plural)
+            return format_units(r)
     return ''
+
     
 def format_datetime(t=None, format='%x %X', tzinfo=None):
     """Format the `datetime` object `t` into an `unicode` string
