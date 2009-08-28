@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-08-28 16:21+0200\n"
+"PO-Revision-Date: 2009-08-28 16:49+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:28
 msgid "About Trac"
-msgstr "A propos de Trac"
+msgstr "À propos de Trac"
 
 #: trac/attachment.py:149
 #, python-format
@@ -30,7 +30,7 @@ msgstr "Le fichier joint '%(title)s' n'existe pas"
 
 #: trac/attachment.py:150
 msgid "Invalid Attachment"
-msgstr "Fichier joint invalide"
+msgstr "Fichier joint non valide"
 
 #: trac/attachment.py:192
 msgid "Could not delete attachment"
@@ -43,7 +43,7 @@ msgstr "Fichier joint '%(filename)s' introuvable"
 
 #: trac/attachment.py:372
 msgid "Bad request"
-msgstr "Requête invalide"
+msgstr "Requête non valide"
 
 #: trac/attachment.py:389
 #, python-format
@@ -85,12 +85,12 @@ msgstr "L'envoi a echoué"
 #: trac/attachment.py:593
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
-msgstr "Le champ %(field)s du fichier joint est invalide : %(message)s"
+msgstr "Le champ %(field)s du fichier joint n'est pas valide : %(message)s"
 
 #: trac/attachment.py:597
 #, python-format
 msgid "Invalid attachment: %(message)s"
-msgstr "Fichier joint invalide : %(message)s"
+msgstr "Fichier joint non valide : %(message)s"
 
 #: trac/attachment.py:608
 #, python-format
@@ -127,7 +127,7 @@ msgstr "Télécharger"
 #: trac/attachment.py:850
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
-msgstr "Identifiant de resource invalide '%(id)s'"
+msgstr "Identifiant de resource non valide '%(id)s'"
 
 #: trac/attachment.py:886 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:47
@@ -229,7 +229,7 @@ msgstr "Copie à chaud terminée."
 
 #: trac/env.py:699 trac/admin/api.py:126
 msgid "Invalid arguments"
-msgstr "Paramètres invalides"
+msgstr "Paramètres non valides"
 
 #: trac/env.py:702
 msgid "Database is up to date, no upgrade necessary."
@@ -256,7 +256,7 @@ msgstr "TLS activé mais le serveur ne gère pas le TLS"
 #: trac/notification.py:304
 #, python-format
 msgid "Invalid email encoding setting: %s"
-msgstr "Réglage de l'encodage du courriel invalide : %s"
+msgstr "Réglage de l'encodage du courriel non valide : %s"
 
 #: trac/notification.py:330
 msgid "Header length is too short"
@@ -329,7 +329,7 @@ msgstr ""
 "Console d'administration pour Trac.\n"
 "Copyright (c) 2003-2008 Edgewall Software\n"
 "\n"
-"Entrez :   '?' ou 'help' pour obtenir une aide sur les commandes.\n"
+"Saisissez :  « ? » ou « help » pour obtenir une aide sur les commandes.\n"
 
 #: trac/admin/console.py:134
 msgid "Failed to open environment."
@@ -378,7 +378,7 @@ msgstr ""
 "votre environnement de façon à pouvoir préparer la base de donnée du \n"
 "projet.\n"
 "\n"
-" Veuillez entrer le nom du projet.\n"
+" Saisissez le nom du projet.\n"
 " Ce nom sera utilisé dans les titres et descriptions de pages.\n"
 
 #: trac/admin/console.py:309
@@ -395,7 +395,7 @@ msgid ""
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
 msgstr ""
-" Veuillez spécifier la connection à la base de donnée qui devra être \n"
+" Spécifiez la connection à la base de donnée qui devra être \n"
 " utilisée. Par défaut, une base de donnée de type SQLite sera crée dans\n"
 " le répertoire correspondant à cet environnement. Il est également "
 "possible\n"
@@ -419,13 +419,12 @@ msgid ""
 " in the next question.\n"
 msgstr ""
 " \n"
-" Veuillez spécifier le type du système de contrôle de versions,\n"
+" Spécifiez le type du système de contrôle de versions,\n"
 " par défaut ce sera svn.\n"
 "\n"
 " Si Trac ne doit pas être interfacé à un système de contrôle de versions,"
 "\n"
-" veuillez accepter la valeur par défaut et ne pas spécifier de répertoire"
-"\n"
+" acceptez la valeur par défaut et ne pas spécifier de répertoire\n"
 " pour le dépôt à la question suivante.\n"
 
 #: trac/admin/console.py:330
@@ -441,7 +440,7 @@ msgid ""
 " You can also set the repository location later.\n"
 msgstr ""
 "\n"
-" Veuillez spécifier le chemin absolu du répertoire contenant le dépôt.\n"
+" Spécifiez le chemin absolu du répertoire contenant le dépôt.\n"
 " Ne rien indiquer pour utiliser Trac sans système de contrôle de "
 "versions.\n"
 " Un dépôt pourra également être spécifié ultérieurement.\n"
@@ -487,7 +486,8 @@ msgstr ""
 "Attention : indexation du dépôt impossible.\n"
 "\n"
 "Ceci peut survenir pour une quantité de raisons : type de système de\n"
-"contrôle de version invalide, librairie Python d'interfaçage requise non\n"
+"contrôle de version non valide, librairie Python d'interfaçage requise "
+"non\n"
 "installée ou incorrectement installée, pas de dépôt au chemin spécifié, "
 "...\n"
 "\n"
@@ -541,7 +541,7 @@ msgstr ""
 "  tracd --port 8000 %(project_path)s\n"
 "\n"
 "Ensuite, visitez l'adresse http://localhost:8000/%(project_dir)s\n"
-"avec votre navigateur web. A cette adresse vous pourrez également lire\n"
+"avec votre navigateur web. À cette adresse vous pourrez également lire\n"
 "la documentation correspondant à la version de Trac que vous venez\n"
 "d'installer, incluant des informations pour une configuration plus\n"
 "poussée (comme celle requise pour déployer Trac dans un véritable serveur"
@@ -1745,7 +1745,7 @@ msgstr ""
 
 #: trac/templates/error.html:84
 msgid "Create"
-msgstr "Créer"
+msgstr "Créez"
 
 #: trac/templates/error.html:99
 msgid "Oops…"
@@ -1823,13 +1823,13 @@ msgid ""
 "                [3:mailing list]\n"
 "                instead of filing a ticket."
 msgstr ""
-"Avant de faire cela, [1:veuillez au préalable essayer de\n"
+"Avant de faire cela, [1:essayez au préalable de\n"
 "                [2:trouver]\n"
 "                d'éventuels rapports similaires], car il est probable que"
 " ce problème\n"
 "                ait déjà été reporté. Pour des questions concernant "
 "l'installation\n"
-"                et la configuration de Trac, veuillez utiliser la\n"
+"                et la configuration de Trac, utilisez la\n"
 "                [3:liste de diffusion]\n"
 "                plutôt que de créer un ticket."
 
@@ -1841,7 +1841,7 @@ msgid ""
 " and\n"
 "                explain how to reproduce it."
 msgstr ""
-"Autrement, veuillez %(create)s un nouveau ticket sur\n"
+"Autrement, %(create)s un nouveau ticket sur\n"
 "le site du projet Trac, dans lequel vous pourrez décrire précisément le \n"
 "problème et expliquer comment le reproduire."
 
@@ -2072,7 +2072,7 @@ msgstr "Le composant %(name)s a été ajouté."
 #: trac/ticket/admin.py:109 trac/ticket/model.py:576 trac/ticket/model.py:597
 #, 
 msgid "Invalid component name."
-msgstr "Nom de composant invalide"
+msgstr "Nom de composant non valide"
 
 #: trac/ticket/admin.py:110
 #, python-format
@@ -2093,7 +2093,7 @@ msgstr "La date de fin ne peut pas être dans le futur"
 
 #: trac/ticket/admin.py:265
 msgid "Invalid Completion Date"
-msgstr "Date de fin invalide"
+msgstr "Date de fin non valide"
 
 #: trac/ticket/admin.py:292
 #, python-format
@@ -2103,7 +2103,7 @@ msgstr "Le jalon \"%(name)s\" a été ajouté."
 #: trac/ticket/admin.py:297 trac/ticket/model.py:705 trac/ticket/model.py:726
 #, 
 msgid "Invalid milestone name."
-msgstr "Nom de jalon invalide"
+msgstr "Nom de jalon non valide"
 
 #: trac/ticket/admin.py:298
 #, python-format
@@ -2125,7 +2125,7 @@ msgstr "La version %(name)s n'existe pas"
 
 #: trac/ticket/admin.py:478 trac/ticket/model.py:835 trac/ticket/model.py:856
 msgid "Invalid version name."
-msgstr "Action invalide."
+msgstr "Action non valide."
 
 #: trac/ticket/admin.py:479
 #, python-format
@@ -2152,7 +2152,7 @@ msgstr "La valeur \"%(name)s\" pour la propriété %(field)s a été rajoutée."
 #: trac/ticket/admin.py:629 trac/ticket/model.py:434 trac/ticket/model.py:461
 #, python-format
 msgid "Invalid %(type)s name."
-msgstr "Nom invalide pour la propriété %(type)s."
+msgstr "Nom incorrect pour la propriété %(type)s."
 
 #: trac/ticket/admin.py:631
 #, python-format
@@ -2189,7 +2189,7 @@ msgstr "Valeurs possibles"
 #: trac/ticket/admin.py:764
 #, python-format
 msgid "Invalid up/down value: %(value)s"
-msgstr "Valeur invalide pour haut/bas: %(value)s"
+msgstr "Valeur non valide pour haut/bas: %(value)s"
 
 #: trac/ticket/admin.py:830
 msgid "<number> must be a number"
@@ -2288,8 +2288,8 @@ msgid ""
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
 "Le \"workflow\" essaye d'attribuer une résolution mais aucune n'est "
-"définie (problème de configuration, veuillez contacter votre "
-"administrateur(ice) Trac)."
+"définie (problème de configuration, contactez votre administrateur(ice) "
+"Trac)."
 
 #: trac/ticket/default_workflow.py:277
 #, python-format
@@ -2312,7 +2312,7 @@ msgstr "Le ticket %(id)s n'existe pas."
 
 #: trac/ticket/model.py:107
 msgid "Invalid ticket number"
-msgstr "Numéro de ticket invalide"
+msgstr "Numéro de ticket non valide"
 
 #: trac/ticket/model.py:140
 msgid "Multi-values fields not supported yet"
@@ -2335,7 +2335,7 @@ msgstr "Le jalon %(name)s n'existe pas"
 
 #: trac/ticket/model.py:661
 msgid "Invalid milestone name"
-msgstr "Nom de jalon invalide"
+msgstr "Nom de jalon non valide"
 
 #: trac/ticket/model.py:780
 msgid "Open (by due date)"
@@ -2357,12 +2357,12 @@ msgstr "La version %(name)s n'existe pas"
 #: trac/ticket/query.py:76
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr "Cette page de requête %(page)s est invalide"
+msgstr "Cette page de requête %(page)s n'est pas valide."
 
 #: trac/ticket/query.py:91
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr "Le paramètre requête max %(max)s est invalide"
+msgstr "Le paramètre requête max %(max)s est non valide"
 
 #: trac/ticket/query.py:135
 msgid "Query filter requires field and constraints separated by a \"=\""
@@ -2480,7 +2480,7 @@ msgstr "Le rapport %(num)s n'existe pas."
 #: trac/ticket/report.py:188 trac/ticket/report.py:200
 #: trac/ticket/report.py:243
 msgid "Invalid Report Number"
-msgstr "Numéro de rapport invalide"
+msgstr "Numéro de rapport non valide"
 
 #: trac/ticket/report.py:212
 msgid "Create New Report"
@@ -2489,7 +2489,7 @@ msgstr "Création d'un nouveau rapport"
 #: trac/ticket/report.py:216
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr "Edition du rapport {%(num)d} %(title)s"
+msgstr "Édition du rapport {%(num)d} %(title)s"
 
 #: trac/ticket/report.py:233
 msgid "This is a list of available reports."
@@ -2498,7 +2498,7 @@ msgstr "Liste des rapports disponibles"
 #: trac/ticket/report.py:248
 #, python-format
 msgid "Report failed: %(error)s"
-msgstr "Echec du rapport : %(error)s"
+msgstr "Échec du rapport : %(error)s"
 
 #: trac/ticket/report.py:263
 #, python-format
@@ -2508,7 +2508,7 @@ msgstr "Lorsque spécifié, le numéro du rapport doit être \"%(num)s\"."
 #: trac/ticket/report.py:316
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr "Echec de l'exécution du rapport : %(error)s"
+msgstr "Échec de l'exécution du rapport : %(error)s"
 
 #: trac/ticket/report.py:519
 msgid "SQL Query"
@@ -2527,7 +2527,7 @@ msgstr "Aucune requête SQL associée au rapport %(num)s"
 #: trac/ticket/report.py:587
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr "Le paramètre de la requête \"sort=%(sort_col)s\" est invalide"
+msgstr "Le paramètre de la requête \"sort=%(sort_col)s\" est n'est pas valide"
 
 #: trac/ticket/roadmap.py:215
 #, python-format
@@ -2633,7 +2633,7 @@ msgstr "Le ticket %(ticketref)s (%(summary)s) a été %(verb)s"
 #: trac/ticket/web_ui.py:486
 #, python-format
 msgid "Invalid action \"%(name)s\""
-msgstr "Action invalide \"%(name)s\""
+msgstr "Action non valide \"%(name)s\""
 
 #: trac/ticket/web_ui.py:606
 msgid "Back to Query"
@@ -2708,12 +2708,12 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:994
 msgid "Invalid comment threading identifier"
-msgstr "Identifiant du commentaire invalide"
+msgstr "Identifiant du commentaire non valide"
 
 #: trac/ticket/web_ui.py:1001
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
-msgstr "Le champ du ticket '%(field)s' est invalide : %(message)s"
+msgstr "Le champ du ticket '%(field)s' n'est pas valide : %(message)s"
 
 #: trac/ticket/web_ui.py:1181
 msgid "Add to Cc"
@@ -2773,7 +2773,7 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:37
 msgid "Edit Milestone"
-msgstr "Edition du jalon"
+msgstr "Édition du jalon"
 
 #: trac/ticket/templates/milestone_edit.html:12
 #: trac/ticket/templates/milestone_edit.html:38
@@ -2856,7 +2856,7 @@ msgstr "Aucun"
 
 #: trac/ticket/templates/milestone_view.html:100
 msgid "Edit milestone"
-msgstr "Editer le jalon"
+msgstr "Éditer le jalon"
 
 #: trac/ticket/templates/query.html:29
 #: trac/ticket/templates/query_results.html:30
@@ -2901,7 +2901,7 @@ msgstr "Nombre maximum d'objets par page"
 
 #: trac/ticket/templates/query.html:226
 msgid "Edit query"
-msgstr "Editer la requête :"
+msgstr "Éditer la requête :"
 
 #: trac/ticket/templates/query.html:234
 msgid "Save query"
@@ -3014,7 +3014,7 @@ msgstr "Paramètres du rapport"
 
 #: trac/ticket/templates/report_view.html:70
 msgid "Edit report"
-msgstr "Editer le rapport"
+msgstr "Éditer le rapport"
 
 #: trac/ticket/templates/report_view.html:76
 msgid "Copy report"
@@ -3481,7 +3481,7 @@ msgstr ""
 #: trac/versioncontrol/svn_fs.py:755
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
-msgstr "Echec de l'annotation de %(path)s : %(error)s"
+msgstr "Échec de l'annotation de %(path)s : %(error)s"
 
 #: trac/versioncontrol/svn_prop.py:111
 msgid "No svn:externals configured in trac.ini"
@@ -3711,7 +3711,7 @@ msgstr "à la révision :"
 
 #: trac/versioncontrol/templates/diff_form.html:40
 msgid "To:"
-msgstr "A :"
+msgstr "À :"
 
 #: trac/versioncontrol/templates/diff_form.html:50
 msgid ""
@@ -3856,7 +3856,7 @@ msgstr "Explorateur de source"
 #: trac/versioncontrol/web_ui/browser.py:344
 #: trac/versioncontrol/web_ui/changeset.py:243
 msgid "Invalid Changeset Number"
-msgstr "Numéro de révision invalide"
+msgstr "Numéro de révision non valide"
 
 #: trac/versioncontrol/web_ui/browser.py:350
 #: trac/versioncontrol/web_ui/log.py:278
@@ -4063,7 +4063,7 @@ msgstr "pas le droit de voir cette page wiki"
 #: trac/wiki/formatter.py:141
 #, python-format
 msgid "HTML parsing error: %(message)s"
-msgstr "Page Wiki invalide : %(message)s"
+msgstr "Page Wiki non valide : %(message)s"
 
 #: trac/wiki/formatter.py:145
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
@@ -4112,12 +4112,12 @@ msgstr ""
 #: trac/wiki/web_ui.py:194
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
-msgstr "Le champ '%(field)s' de la page Wiki est invalide : %(message)s"
+msgstr "Le champ '%(field)s' de la page Wiki est n'est pas valide : %(message)s"
 
 #: trac/wiki/web_ui.py:198
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
-msgstr "Page Wiki invalide : %(message)s"
+msgstr "Page Wiki non valide : %(message)s"
 
 #. TRANSLATOR: wiki page
 #: trac/wiki/web_ui.py:225
@@ -4243,7 +4243,7 @@ msgstr "Supprimer la version %(version)d"
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
-msgstr "Edition"
+msgstr "Édition"
 
 #: trac/wiki/templates/wiki_edit.html:30
 msgid "Someone else has modified that page since you started your edits."
@@ -4352,7 +4352,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:71
 msgid "Edit this page"
-msgstr "Edition de cette page"
+msgstr "Éditer la page"
 
 #: trac/wiki/templates/wiki_view.html:74
 msgid "Create this page"
