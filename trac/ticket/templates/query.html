@@ -49,7 +49,7 @@
                     <tr class="${field_name}" py:if="multiline or constraint_idx == 0">
                       <py:choose test="constraint_idx">
                         <py:when test="0">
-                          <th scope="row"><label id="label_${field_name}">$field.label</label></th>
+                          <th scope="row"><label id="label_${field_name}">${labels[field_name]}</label></th>
                           <td py:if="field.type not in ('radio', 'checkbox', 'time')" class="mode">
                             <select name="${field_name}_mode">
                               <option py:for="mode in modes[field.type]" value="$mode.value"
@@ -129,7 +129,7 @@
                             disabled="${(field.type == 'radio' and
                                          field_name in constraints and
                                          len(constraints[field_name])) or None}">
-                      ${field.label}
+                      ${labels[field_name]}
                     </option>
                   </select>
                   <input type="submit" name="add" value="+" />

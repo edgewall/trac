@@ -620,7 +620,7 @@ class Query(object):
             constraints[k] = constraint
 
         cols = self.get_columns()
-        labels = dict([(f['name'], f['label']) for f in self.fields])
+        labels = TicketSystem(self.env).get_ticket_field_labels()
         wikify = set(f['name'] for f in self.fields 
                      if f['type'] == 'text' and f.get('format') == 'wiki')
 
