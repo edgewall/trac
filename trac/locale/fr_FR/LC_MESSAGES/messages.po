@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-08-28 14:20+0200\n"
+"PO-Revision-Date: 2009-08-28 14:21+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -112,11 +112,11 @@ msgstr "%(attachment)s (suppression)"
 #: trac/attachment.py:702 trac/versioncontrol/web_ui/browser.py:510
 #: trac/wiki/web_ui.py:70
 msgid "Plain Text"
-msgstr "Texte Brut"
+msgstr "Texte brut"
 
 #: trac/attachment.py:708 trac/versioncontrol/web_ui/browser.py:515
 msgid "Original Format"
-msgstr "Format Original"
+msgstr "Format original"
 
 #: trac/attachment.py:750 trac/attachment.py:756 trac/templates/macros.html:164
 #: trac/templates/macros.html:165 trac/ticket/templates/ticket.html:58
@@ -196,7 +196,7 @@ msgid ""
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
-"L'Environnement Trac a besoin d'être mis à jour.\n"
+"L'environnement Trac a besoin d'être mis à jour.\n"
 "\n"
 "Exécutez la commande: \"trac-admin %(path)s upgrade\""
 
@@ -458,7 +458,7 @@ msgstr "Initenv pour '%(env)s' à échoué."
 
 #: trac/admin/console.py:373
 msgid "Creating and Initializing Project"
-msgstr "Création et initialisation du Projet"
+msgstr "Création et initialisation du projet"
 
 #: trac/admin/console.py:392
 msgid " Installing default wiki pages"
@@ -754,7 +754,7 @@ msgstr "Composants"
 
 #: trac/admin/templates/admin_components.html:14
 msgid "Manage Components"
-msgstr "Gestion des Composants"
+msgstr "Gestion des composants"
 
 #: trac/admin/templates/admin_components.html:18
 msgid "Owner:"
@@ -762,7 +762,7 @@ msgstr "Propriétaire :"
 
 #: trac/admin/templates/admin_components.html:35
 msgid "Modify Component:"
-msgstr "Modifier le Composant :"
+msgstr "Modifier le composant :"
 
 #: trac/admin/templates/admin_components.html:42
 msgid ""
@@ -797,7 +797,7 @@ msgstr "Sauvegarder"
 
 #: trac/admin/templates/admin_components.html:64
 msgid "Add Component:"
-msgstr "Ajouter un Composant :"
+msgstr "Ajouter un composant :"
 
 #: trac/admin/templates/admin_components.html:70
 #: trac/admin/templates/admin_enums.html:32
@@ -947,7 +947,7 @@ msgstr "Tickets"
 
 #: trac/admin/templates/admin_perms.html:13
 msgid "Manage Permissions"
-msgstr "Gestion des Permissions"
+msgstr "Gestion des permissions"
 
 #: trac/admin/templates/admin_perms.html:18
 msgid "Grant Permission:"
@@ -1008,11 +1008,11 @@ msgstr "Les caractères majuscules sont réservés aux noms de permissions"
 
 #: trac/admin/templates/admin_plugins.html:17
 msgid "Manage Plugins"
-msgstr "Gestion des Extensions"
+msgstr "Gestion des extensions"
 
 #: trac/admin/templates/admin_plugins.html:21
 msgid "Install Plugin:"
-msgstr "Ajouter une Extension :"
+msgstr "Ajouter une extension :"
 
 #: trac/admin/templates/admin_plugins.html:23
 msgid "File:"
@@ -1181,11 +1181,11 @@ msgstr "Page de préférence inconnu"
 
 #: trac/prefs/web_ui.py:89 trac/prefs/templates/prefs_datetime.html:10
 msgid "Date & Time"
-msgstr "Date & Heure"
+msgstr "Date et heure"
 
 #: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_keybindings.html:10
 msgid "Keyboard Shortcuts"
-msgstr "Raccourcis Clavier"
+msgstr "Raccourcis clavier"
 
 #: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_language.html:9
 msgid "Language"
@@ -1286,7 +1286,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_datetime.html:30
 msgid "Example: The current time is"
-msgstr "Exemple : L'heure courante est"
+msgstr "Exemple : l'heure courante est"
 
 #: trac/prefs/templates/prefs_datetime.html:31
 msgid "(UTC)."
@@ -1309,7 +1309,7 @@ msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
 msgstr ""
-"Le Temps Universel Coordonné (UTC) correspond au fuseau horaire de \n"
+"Le Temps universel coordonné (UTC) correspond au fuseau horaire de \n"
 "Greenwich (GMT)."
 
 #: trac/prefs/templates/prefs_datetime.html:38
@@ -1318,7 +1318,7 @@ msgid ""
 "Greenwich, i.e. ahead of Universal Time."
 msgstr ""
 "Un décalage positif est utilisé pour indiquer un fuseau horaire situé à "
-"l'Est de Greenwich, c.à.d. en avance sur l'Heure Universelle."
+"l'est de Greenwich, c.à.d. en avance sur l'heure universelle."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1472,7 +1472,7 @@ msgid ""
 "        for help on searching."
 msgstr ""
 "[1:Note :] Voir [2:TracSearch]\n"
-"        pour de l'aide sur les modalités de recherche."
+"        pour l'aide concernant les modalités de recherche."
 
 #: trac/templates/about.html:25
 msgid "Trac: Integrated SCM & Project Management"
@@ -1533,7 +1533,7 @@ msgstr "http://trac.edgewall.org/"
 
 #: trac/templates/about.html:53
 msgid "System Information"
-msgstr "Informations Système"
+msgstr "Informations système"
 
 #: trac/templates/about.html:67
 msgid "Section"
@@ -1640,7 +1640,7 @@ msgstr "et"
 #: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:773
 #: trac/ticket/templates/ticket.html:107
 msgid "Initial Version"
-msgstr "Version Initiale"
+msgstr "Version initiale"
 
 #: trac/templates/diff_view.html:24
 #: trac/versioncontrol/templates/changeset.html:75
@@ -1727,12 +1727,12 @@ msgid ""
 "Request parameters:\n"
 "{{{"
 msgstr ""
-"Paramètres de la Requête :\n"
+"Paramètres de la requête :\n"
 "{{{"
 
 #: trac/templates/error.html:73
 msgid "==== System Information ===="
-msgstr "==== Information Système ===="
+msgstr "==== Information système ===="
 
 #: trac/templates/error.html:76
 msgid ""
@@ -1870,7 +1870,7 @@ msgstr ", dans"
 
 #: trac/templates/error.html:156
 msgid "Code fragment:"
-msgstr "Fragment du Code :"
+msgstr "Fragment du code :"
 
 #: trac/templates/error.html:164
 msgid "Local variables:"
@@ -1886,7 +1886,7 @@ msgstr "Basculer en vue texte brut"
 
 #: trac/templates/error.html:184
 msgid "System Information:"
-msgstr "Information Système :"
+msgstr "Information système :"
 
 #: trac/templates/error.html:196
 msgid "TracGuide"
@@ -1894,7 +1894,7 @@ msgstr "TracGuide"
 
 #: trac/templates/error.html:196
 msgid "— The Trac User and Administration Guide"
-msgstr "- Manuel d'Utilisation et d'Administration de Trac"
+msgstr "- Manuel d'utilisation et d'administration de Trac"
 
 #: trac/templates/history_view.html:15
 msgid "Change History for"
@@ -2246,7 +2246,7 @@ msgstr "Créé"
 #: trac/ticket/api.py:420
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
-msgstr "Commentaire %(cnum)s pour le Ticket #%(id)s"
+msgstr "Commentaire %(cnum)s pour le ticket #%(id)s"
 
 #: trac/ticket/api.py:441
 #, python-format
@@ -2425,11 +2425,11 @@ msgstr "Texte (séparateur : tabulation)"
 
 #: trac/ticket/query.py:790 trac/ticket/report.py:64
 msgid "View Tickets"
-msgstr "Voir les Tickets"
+msgstr "Voir les tickets"
 
 #: trac/ticket/query.py:969 trac/ticket/query.py:980 trac/ticket/report.py:122
 msgid "Custom Query"
-msgstr "Requête personnalisé"
+msgstr "Requête personnalisée"
 
 #: trac/ticket/query.py:979 trac/ticket/report.py:112 trac/ticket/report.py:113
 #: trac/ticket/report.py:115 trac/ticket/report.py:230
@@ -2550,7 +2550,7 @@ msgstr ""
 #: trac/ticket/roadmap.py:559 trac/ticket/templates/roadmap.html:11
 #: trac/ticket/templates/roadmap.html:16
 msgid "Roadmap"
-msgstr "Feuille de Route"
+msgstr "Feuille de route"
 
 #: trac/ticket/roadmap.py:354
 msgid "iCalendar"
@@ -2586,7 +2586,7 @@ msgstr "Aucun nom n'a été défini pour ce jalon."
 
 #: trac/ticket/web_ui.py:173 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
-msgstr "Nouveau Ticket"
+msgstr "Nouveau ticket"
 
 #: trac/ticket/web_ui.py:189
 msgid "id can't be set for a new ticket request."
@@ -2639,7 +2639,7 @@ msgstr "Retour à"
 
 #: trac/ticket/web_ui.py:682 trac/ticket/web_ui.py:836
 msgid "Ticket History"
-msgstr "Historique des Tickets"
+msgstr "Historique des tickets"
 
 #: trac/ticket/web_ui.py:727
 msgid "No differences to show"
@@ -2663,7 +2663,7 @@ msgstr "Modifications"
 
 #: trac/ticket/web_ui.py:841
 msgid "Ticket Diff"
-msgstr "Différence sur le Ticket"
+msgstr "Différence sur le ticket"
 
 #: trac/ticket/web_ui.py:917
 #, 
@@ -2688,7 +2688,7 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:949
 msgid "Tickets must contain a summary."
-msgstr "Les Tickets doivent avoir un résumé"
+msgstr "Les tickets doivent avoir un résumé"
 
 #: trac/ticket/web_ui.py:972
 #, python-format
@@ -2715,15 +2715,15 @@ msgstr "Le champ du ticket '%(field)s' est invalide : %(message)s"
 
 #: trac/ticket/web_ui.py:1181
 msgid "Add to Cc"
-msgstr "Ajouter en Copie"
+msgstr "Ajouter en copie"
 
 #: trac/ticket/web_ui.py:1182
 msgid "Remove from Cc"
-msgstr "Supprimer de Copie"
+msgstr "Supprimer de copie"
 
 #: trac/ticket/web_ui.py:1183
 msgid "Add/Remove from Cc"
-msgstr "Ajouter/Supprimer en Copie"
+msgstr "Ajouter/Supprimer en copie"
 
 #: trac/ticket/web_ui.py:1184
 msgid "<Author field>"
@@ -2924,7 +2924,7 @@ msgstr "Aucun ticket trouvé."
 #: trac/ticket/templates/query_results.html:58
 #: trac/ticket/templates/query_results.html:60
 msgid "View ticket"
-msgstr "Voir le Ticket"
+msgstr "Voir le ticket"
 
 #: trac/ticket/templates/query_results.html:65
 #: trac/ticket/templates/report_view.html:183
@@ -2976,8 +2976,8 @@ msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:], a "
 "[2:TracQuery] expression)"
 msgstr ""
-"Requête pour le rapport: (il peut être soit en SQL, soit s'il commence "
-"par [1:query:], une expression [2:TracQuery])"
+"Requête pour le rapport: (il peut être soit en SQL, ou bien s'il commence"
+" par [1:query:], une expression [2:TracQuery])"
 
 #: trac/ticket/templates/report_edit.html:41
 msgid "Save report"
@@ -3060,7 +3060,7 @@ msgstr "Ticket #"
 
 #: trac/ticket/templates/ticket.html:95
 msgid "Create New Ticket"
-msgstr "Création d'un Nouveau Ticket"
+msgstr "Création d'un nouveau ticket"
 
 #: trac/ticket/templates/ticket.html:106 trac/ticket/templates/ticket.html:109
 msgid "— at"
@@ -3370,7 +3370,7 @@ msgstr "Il manque \"youngest_rev\" dans le cache metadata"
 #: trac/versioncontrol/svn_fs.py:300
 #, python-format
 msgid "Subversion >= 1.0 required: Found %(version)s"
-msgstr "Subversion >=1.0 nécessaire : %(version)s trouvé"
+msgstr "Subversion >=1.0 nécessaire : version %(version)s trouvée"
 
 #: trac/versioncontrol/svn_fs.py:324
 #, python-format
@@ -3388,8 +3388,8 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-"Discordance de comparaison : La Base est %(oldnode)s (%(oldpath)s dans la"
-" révision %(oldrev)s) et la Destination est %(newnode)s (%(newpath)s dans"
+"Discordance de comparaison : la base est %(oldnode)s (%(oldpath)s dans la"
+" révision %(oldrev)s) et la destination est %(newnode)s (%(newpath)s dans"
 " la révision %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:755
@@ -3489,7 +3489,7 @@ msgstr "Dernière modification"
 
 #: trac/versioncontrol/templates/browser.html:100
 msgid "Parent Directory"
-msgstr "Répertoire Parent"
+msgstr "Répertoire parent"
 
 #: trac/versioncontrol/templates/browser.html:106
 msgid "No files found"
@@ -3608,7 +3608,7 @@ msgstr "deplacé"
 #: trac/versioncontrol/templates/diff_form.html:10
 #: trac/versioncontrol/templates/diff_form.html:21
 msgid "Prepare Diff"
-msgstr "Préparation des Diffs"
+msgstr "Préparation des diffs"
 
 #: trac/versioncontrol/templates/diff_form.html:27
 msgid "Select the base and the target for the diff:"
@@ -3753,7 +3753,7 @@ msgid ""
 "# ChangeLog for"
 msgstr ""
 "#\n"
-"# ChangeLog for"
+"# ChangeLog pour"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 msgid ""
@@ -3761,11 +3761,11 @@ msgid ""
 "# Generated by Trac"
 msgstr ""
 "# \n"
-"# Generated by Trac"
+"# Généré par Trac"
 
 #: trac/versioncontrol/web_ui/browser.py:297
 msgid "Browse Source"
-msgstr "Explorateur de Source"
+msgstr "Explorateur de source"
 
 #: trac/versioncontrol/web_ui/browser.py:344
 #: trac/versioncontrol/web_ui/changeset.py:243
@@ -3804,7 +3804,7 @@ msgstr "Journal des révisions"
 #: trac/versioncontrol/web_ui/browser.py:454
 #: trac/versioncontrol/web_ui/changeset.py:337
 msgid "Zip Archive"
-msgstr "Archive Zip"
+msgstr "Archive zip"
 
 #: trac/versioncontrol/web_ui/browser.py:628
 msgid "Revision in which the line changed"
@@ -3993,11 +3993,11 @@ msgstr "Impossible de voir %(link)s :"
 #: trac/wiki/macros.py:478
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
-msgstr "Erreur : Impossible d'obtenir une description pour la macro %(name)s"
+msgstr "Erreur : impossible d'obtenir une description pour la macro %(name)s"
 
 #: trac/wiki/macros.py:567
 msgid "Table of Contents"
-msgstr "Table des Matières"
+msgstr "Table des matières"
 
 #: trac/wiki/model.py:151
 msgid "Page not modified"
@@ -4009,7 +4009,7 @@ msgstr "Wiki"
 
 #: trac/wiki/web_ui.py:91
 msgid "Help/Guide"
-msgstr "Aide/Guide"
+msgstr "Aide / Guide"
 
 #: trac/wiki/web_ui.py:126
 #, python-format
