@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-08-28 12:02+0200\n"
+"PO-Revision-Date: 2009-08-28 13:24+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -167,6 +167,8 @@ msgstr "Le fichier %(name)s existe déjà."
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr ""
+"[%(section)s] %(entry)s: valeur numérique entière attendue,  au lieu de "
+"%(value)s"
 
 #: trac/env.py:506
 msgid "Database newer than Trac version"
@@ -580,7 +582,7 @@ msgstr "Page d'administration inconnu"
 #: trac/ticket/admin.py:691 trac/ticket/report.py:173
 #: trac/ticket/roadmap.py:676 trac/wiki/web_ui.py:290
 msgid "Your changes have been saved."
-msgstr ""
+msgstr "Vos modifications ont été enregistrées."
 
 #: trac/admin/web_ui.py:190 trac/ticket/admin.py:60
 msgid ""
@@ -669,7 +671,7 @@ msgstr "Action inconnue"
 #: trac/admin/web_ui.py:343
 #, python-format
 msgid "The user %(subject)s has been granted the permission %(action)s."
-msgstr ""
+msgstr "L'utilisateur %(subject)s a reçu la permission %(action)s."
 
 #: trac/admin/web_ui.py:348
 #, python-format
@@ -1195,7 +1197,7 @@ msgstr "Avancé"
 
 #: trac/prefs/web_ui.py:146
 msgid "Your preferences have been saved."
-msgstr ""
+msgstr "Vos préférences ont été enregistrées."
 
 #: trac/prefs/templates/prefs.html:10
 msgid "Preferences:"
@@ -2081,7 +2083,7 @@ msgstr "Pas de composant sélectionné"
 
 #: trac/ticket/admin.py:125
 msgid "The selected components have been removed."
-msgstr ""
+msgstr "Les composants sélectionnés ont été supprimés."
 
 #: trac/ticket/admin.py:263 trac/ticket/roadmap.py:653
 msgid "Completion date may not be in the future"
@@ -2094,7 +2096,7 @@ msgstr "Date de fin invalide"
 #: trac/ticket/admin.py:292
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
-msgstr ""
+msgstr "Le jalon \"%(name)s\" a été ajouté."
 
 #: trac/ticket/admin.py:297 trac/ticket/model.py:705 trac/ticket/model.py:726
 #, 
@@ -2112,7 +2114,7 @@ msgstr "Pas de jalon sélectionné"
 
 #: trac/ticket/admin.py:314
 msgid "The selected milestones have been removed."
-msgstr ""
+msgstr "Les jalons sélectionnés ont été supprimés."
 
 #: trac/ticket/admin.py:473
 #, python-format
@@ -2134,7 +2136,7 @@ msgstr "Pas de version sélectionnée"
 
 #: trac/ticket/admin.py:494
 msgid "The selected versions have been removed."
-msgstr ""
+msgstr "Les versions sélectionnées ont été supprimées."
 
 #: trac/ticket/admin.py:552
 msgid "Time"
@@ -2143,12 +2145,12 @@ msgstr "Date"
 #: trac/ticket/admin.py:623
 #, python-format
 msgid "The %(field)s \"%(name)s\" has been added."
-msgstr ""
+msgstr "La valeur \"%(name)s\" pour la propriété %(field)s a été rajoutée."
 
 #: trac/ticket/admin.py:629 trac/ticket/model.py:434 trac/ticket/model.py:461
 #, python-format
 msgid "Invalid %(type)s name."
-msgstr ""
+msgstr "Nom invalide pour la propriété %(type)s."
 
 #: trac/ticket/admin.py:631
 #, python-format
@@ -4027,11 +4029,13 @@ msgstr "Cette page %(name)s a été supprimée."
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr ""
+"Les versions allant de %(from_)d à %(to)d de la page %(name)s ont été "
+"supprimées."
 
 #: trac/wiki/web_ui.py:268
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
-msgstr ""
+msgstr "La version %(version)d de la page %(name)s à été supprimée."
 
 #: trac/wiki/web_ui.py:294
 msgid "Page not modified, showing latest version."
