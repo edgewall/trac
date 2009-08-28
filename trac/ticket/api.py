@@ -27,7 +27,7 @@ from trac.resource import IResourceManager
 from trac.util import Ranges
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line, obfuscate_email_address
-from trac.util.translation import _, N_
+from trac.util.translation import _, N_, gettext
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -184,8 +184,21 @@ class TicketSystem(Component):
         return sorted(valid_states)
 
     def get_ticket_fields(self):
-        """Returns the list of fields available for tickets."""
+        """Returns list of fields available for tickets.
+
+        Each field is a dict with at least the 'name', 'label' and 'type' keys.
+        Note that 'label' value is *not* localized here, see
+        `get_ticket_field_labels` for that.
+        It may in addition contain the 'custom' key, the 'optional' and the
+        'options' keys. When present 'custom' and 'optional' are always `True`.
+        """
         return [f.copy() for f in self.fields()]
+
+    def get_ticket_field_labels(self):
+        """Return a mapping of localized labels for ticket field names"""
+        label = 'label' # workaround gettext extraction bug
+        return dict((f['name'], gettext(f[label]))
+                    for f in self.get_ticket_fields())
 
     def reset_ticket_fields(self, db=None):
         """Invalidate ticket field cache."""

@@ -259,8 +259,7 @@ class TicketModule(Component):
 
         ticket_realm = Resource('ticket')
 
-        field_labels = dict([(f['name'], f['label']) for f in
-                             TicketSystem(self.env).get_ticket_fields()])
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         def label(fname):
             if fname in field_labels:
@@ -763,8 +762,7 @@ class TicketModule(Component):
         new_ticket = dict(old_ticket)
         replay_changes(new_ticket, old_ticket, old_version+1, new_version)
 
-        field_labels = dict([(f['name'], f['label']) for f in
-                             TicketSystem(self.env).get_ticket_fields()])
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         changes = []
 
@@ -1245,9 +1243,7 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket)
-        # This is kind of redundant, but it's an easier change than making
-        # fields itself a dict.
-        field_labels = dict([(f['name'], f['label']) for f in fields])
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         # -- Ticket Change History
 

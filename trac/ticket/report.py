@@ -361,8 +361,9 @@ class ReportModule(Component):
         # Place retrieved columns in groups, according to naming conventions
         #  * _col_ means fullrow, i.e. a group with one header
         #  * col_ means finish the current group and start a new one
-        field_labels = dict([(f['name'], f['label']) for f in
-                             TicketSystem(self.env).get_ticket_fields()])
+
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
+
         header_groups = [[]]
         for idx, col in enumerate(cols):
             if col in field_labels:
