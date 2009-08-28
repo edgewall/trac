@@ -808,7 +808,7 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:202
-#: trac/ticket/api.py:222 trac/ticket/web_ui.py:1150
+#: trac/ticket/api.py:222 trac/ticket/web_ui.py:1151
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -1635,7 +1635,7 @@ msgstr "Version"
 msgid "and"
 msgstr "et"
 
-#: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:772
+#: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:773
 #: trac/ticket/templates/ticket.html:107
 msgid "Initial Version"
 msgstr "Version Initiale"
@@ -2357,7 +2357,7 @@ msgstr "La requête requiert le nom du champ"
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr "La page %(page)s dépasse le nombre de pages de la requête"
 
-#: trac/ticket/query.py:628 trac/ticket/web_ui.py:605
+#: trac/ticket/query.py:628 trac/ticket/web_ui.py:606
 msgid "Ticket"
 msgstr "Ticket"
 
@@ -2596,67 +2596,69 @@ msgstr "fermé"
 msgid "updated"
 msgstr "modifié"
 
-#: trac/ticket/web_ui.py:277
+#: trac/ticket/web_ui.py:278
 #, python-format
 msgid "%(labels)s changed"
-msgstr "%(labels)s modifié(s)"
+msgid_plural "%(labels)s changed"
+msgstr[0] "%(labels)s modifié"
+msgstr[1] "%(labels)s modifiés"
 
-#: trac/ticket/web_ui.py:357
+#: trac/ticket/web_ui.py:358
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "Le ticket %(ticketref)s (%(summary)s) a été %(verb)s"
 
-#: trac/ticket/web_ui.py:485
+#: trac/ticket/web_ui.py:486
 #, python-format
 msgid "Invalid action \"%(name)s\""
 msgstr "Action invalide \"%(name)s\""
 
-#: trac/ticket/web_ui.py:605
+#: trac/ticket/web_ui.py:606
 msgid "Back to Query"
 msgstr "Retour à"
 
-#: trac/ticket/web_ui.py:681 trac/ticket/web_ui.py:835
+#: trac/ticket/web_ui.py:682 trac/ticket/web_ui.py:836
 msgid "Ticket History"
 msgstr "Historique des Tickets"
 
-#: trac/ticket/web_ui.py:726
+#: trac/ticket/web_ui.py:727
 msgid "No differences to show"
 msgstr "Pas de différences"
 
-#: trac/ticket/web_ui.py:769 trac/ticket/web_ui.py:825
-#: trac/ticket/web_ui.py:833 trac/wiki/web_ui.py:376 trac/wiki/web_ui.py:382
+#: trac/ticket/web_ui.py:770 trac/ticket/web_ui.py:826
+#: trac/ticket/web_ui.py:834 trac/wiki/web_ui.py:376 trac/wiki/web_ui.py:382
 #: trac/wiki/web_ui.py:547 trac/wiki/web_ui.py:561
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
 
-#: trac/ticket/web_ui.py:772
+#: trac/ticket/web_ui.py:773
 msgid "initial"
 msgstr "initial"
 
-#: trac/ticket/web_ui.py:835 trac/versioncontrol/web_ui/changeset.py:345
+#: trac/ticket/web_ui.py:836 trac/versioncontrol/web_ui/changeset.py:345
 #: trac/wiki/web_ui.py:395
 msgid "Change"
 msgstr "Modifications"
 
-#: trac/ticket/web_ui.py:840
+#: trac/ticket/web_ui.py:841
 msgid "Ticket Diff"
 msgstr "Différence sur le Ticket"
 
-#: trac/ticket/web_ui.py:916
+#: trac/ticket/web_ui.py:917
 #, 
 msgid "No permission to edit description."
 msgstr "Pas le droit de modifier la description."
 
-#: trac/ticket/web_ui.py:919
+#: trac/ticket/web_ui.py:920
 msgid "No permission to change ticket fields."
 msgstr "Pas le droit de changer les champs du ticket."
 
-#: trac/ticket/web_ui.py:935
+#: trac/ticket/web_ui.py:936
 msgid "No permissions to add a comment."
 msgstr "Pas le droit d'ajouter un commentaire."
 
-#: trac/ticket/web_ui.py:941
+#: trac/ticket/web_ui.py:942
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -2664,58 +2666,58 @@ msgstr ""
 "Desolé, les changements ne peuvent pas étre enregistrés. Ce ticket a été "
 "modifié par un autre utilisateur depuis que l'édition a debuté"
 
-#: trac/ticket/web_ui.py:948
+#: trac/ticket/web_ui.py:949
 msgid "Tickets must contain a summary."
 msgstr "Les Tickets doivent avoir un résumé"
 
-#: trac/ticket/web_ui.py:971
+#: trac/ticket/web_ui.py:972
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr ""
 "La description du ticket est trop longue (elle doit être inférieure\n"
 "à %(num)s caractères)"
 
-#: trac/ticket/web_ui.py:978
+#: trac/ticket/web_ui.py:979
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr ""
 "Le commentaire du ticket est trop long (il doit être inférieure\n"
 "à %(num)s caractères)"
 
-#: trac/ticket/web_ui.py:993
+#: trac/ticket/web_ui.py:994
 msgid "Invalid comment threading identifier"
 msgstr "Identifiant du commentaire invalide"
 
-#: trac/ticket/web_ui.py:1000
+#: trac/ticket/web_ui.py:1001
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "Le champ du ticket '%(field)s' est invalide : %(message)s"
 
-#: trac/ticket/web_ui.py:1180
+#: trac/ticket/web_ui.py:1181
 msgid "Add to Cc"
 msgstr "Ajouter en Copie"
 
-#: trac/ticket/web_ui.py:1181
+#: trac/ticket/web_ui.py:1182
 msgid "Remove from Cc"
 msgstr "Supprimer de Copie"
 
-#: trac/ticket/web_ui.py:1182
+#: trac/ticket/web_ui.py:1183
 msgid "Add/Remove from Cc"
 msgstr "Ajouter/Supprimer en Copie"
 
-#: trac/ticket/web_ui.py:1183
+#: trac/ticket/web_ui.py:1184
 msgid "<Author field>"
 msgstr "<Champ auteur>"
 
-#: trac/ticket/web_ui.py:1204 trac/ticket/templates/query.html:91
+#: trac/ticket/web_ui.py:1205 trac/ticket/templates/query.html:91
 msgid "yes"
 msgstr "oui"
 
-#: trac/ticket/web_ui.py:1204 trac/ticket/templates/query.html:94
+#: trac/ticket/web_ui.py:1205 trac/ticket/templates/query.html:94
 msgid "no"
 msgstr "non"
 
-#: trac/ticket/web_ui.py:1398 trac/versioncontrol/templates/changeset.html:134
+#: trac/ticket/web_ui.py:1399 trac/versioncontrol/templates/changeset.html:134
 msgid "modified"
 msgstr "modifié"
 

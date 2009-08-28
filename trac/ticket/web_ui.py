@@ -43,7 +43,7 @@ from trac.util.datefmt import format_datetime, to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address, \
                            exception_to_unicode
 from trac.util.presentation import separated
-from trac.util.translation import _, tag_, N_, gettext
+from trac.util.translation import _, tag_, tagn_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import parse_query_string, IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -273,7 +273,8 @@ class TicketModule(Component):
                     if len(fields) > 0:
                         labels = [tag.i(field_labels.get(k, k.capitalize()))
                                   for k in fields.keys()]
-                        info = tag_('%(labels)s changed',
+                        info = tagn_('%(labels)s changed',
+                                     '%(labels)s changed', len(labels),
                                     labels=separated(labels, ', ')) + tag.br()
                 else:
                     return None
