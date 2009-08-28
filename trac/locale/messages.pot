@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-08-28 12:01+0200\n"
+"POT-Creation-Date: 2009-08-28 13:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2070,6 +2070,15 @@ msgstr ""
 msgid "Next status will be '%(name)s'"
 msgstr ""
 
+#: trac/ticket/model.py:106
+#, python-format
+msgid "Ticket %(id)s does not exist."
+msgstr ""
+
+#: trac/ticket/model.py:107
+msgid "Invalid ticket number"
+msgstr ""
+
 #: trac/ticket/model.py:140
 msgid "Multi-values fields not supported yet"
 msgstr ""
@@ -2082,6 +2091,15 @@ msgstr ""
 #: trac/ticket/model.py:542
 #, python-format
 msgid "Component %(name)s does not exist."
+msgstr ""
+
+#: trac/ticket/model.py:660
+#, python-format
+msgid "Milestone %(name)s does not exist."
+msgstr ""
+
+#: trac/ticket/model.py:661
+msgid "Invalid milestone name"
 msgstr ""
 
 #: trac/ticket/model.py:780

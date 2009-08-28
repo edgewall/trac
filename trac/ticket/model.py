@@ -103,8 +103,8 @@ class Ticket(object):
                            % ','.join(std_fields), (tkt_id,))
             row = cursor.fetchone()
         if not row:
-            raise ResourceNotFound('Ticket %s does not exist.' % tkt_id,
-                                   'Invalid Ticket Number')
+            raise ResourceNotFound(_('Ticket %(id)s does not exist.', 
+                                     id=tkt_id), _('Invalid ticket number'))
 
         self.id = tkt_id
         for i in range(len(std_fields)):
@@ -657,8 +657,8 @@ class Milestone(object):
                        "FROM milestone WHERE name=%s", (name,))
         row = cursor.fetchone()
         if not row:
-            raise ResourceNotFound('Milestone %s does not exist.' % name,
-                                   'Invalid Milestone Name')
+            raise ResourceNotFound(_('Milestone %(name)s does not exist.',
+                                   name=name), _('Invalid milestone name'))
         self._from_database(row)
 
     exists = property(fget=lambda self: self._old_name is not None)

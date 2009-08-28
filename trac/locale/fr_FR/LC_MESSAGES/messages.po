@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-08-28 13:24+0200\n"
+"PO-Revision-Date: 2009-08-28 14:20+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -2303,6 +2303,15 @@ msgstr "La résolution sera définie"
 msgid "Next status will be '%(name)s'"
 msgstr "Le prochain statut sera '%(name)s'"
 
+#: trac/ticket/model.py:106
+#, python-format
+msgid "Ticket %(id)s does not exist."
+msgstr "Le ticket %(id)s n'existe pas."
+
+#: trac/ticket/model.py:107
+msgid "Invalid ticket number"
+msgstr "Numéro de ticket invalide"
+
 #: trac/ticket/model.py:140
 msgid "Multi-values fields not supported yet"
 msgstr "Champs à valeurs multiples non supportés"
@@ -2310,12 +2319,21 @@ msgstr "Champs à valeurs multiples non supportés"
 #: trac/ticket/model.py:393
 #, python-format
 msgid "%(type)s %(name)s does not exist."
-msgstr "%(type)s %(name)s n'existe pas"
+msgstr "La valeur %(name)s de la propriété %(type)s n'existe pas"
 
 #: trac/ticket/model.py:542
 #, python-format
 msgid "Component %(name)s does not exist."
-msgstr "Composant %(name)s n'existe pas."
+msgstr "Le composant %(name)s n'existe pas."
+
+#: trac/ticket/model.py:660
+#, python-format
+msgid "Milestone %(name)s does not exist."
+msgstr "Le jalon %(name)s n'existe pas"
+
+#: trac/ticket/model.py:661
+msgid "Invalid milestone name"
+msgstr "Nom de jalon invalide"
 
 #: trac/ticket/model.py:780
 msgid "Open (by due date)"
@@ -2332,7 +2350,7 @@ msgstr "Atteints"
 #: trac/ticket/model.py:801
 #, python-format
 msgid "Version %(name)s does not exist."
-msgstr "Version %(name)s n'existe pas"
+msgstr "La version %(name)s n'existe pas"
 
 #: trac/ticket/query.py:76
 #, python-format
