@@ -261,12 +261,6 @@ class TicketModule(Component):
 
         field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
-        def label(fname):
-            if fname in field_labels:
-                return field_labels[fname]
-            else:
-                return fname.capitalize()
-
         def produce_event((id, ts, author, type, summary, description),
                           status, fields, comment, cid):
             ticket = ticket_realm(id=id)
@@ -277,11 +271,10 @@ class TicketModule(Component):
             if status == 'edit':
                 if 'ticket_details' in filters:
                     if len(fields) > 0:
-                        keys = fields.keys()
-                        info = tag([[tag.i(label(f)), ', ']
-                                    for f in keys[:-1]],
-                                   tag.i(label(keys[-1])), ' changed',
-                                   tag.br())
+                        labels = [tag.i(field_labels.get(k, k.capitalize()))
+                                  for k in fields.keys()]
+                        info = tag_('%(labels)s changed',
+                                    labels=separated(labels, ', ')) + tag.br()
                 else:
                     return None
             elif 'ticket' in filters:
