@@ -28,6 +28,7 @@ from trac.db import get_column_names
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
+from trac.ticket.api import TicketSystem
 from trac.util import as_int
 from trac.util.datefmt import format_datetime, format_time
 from trac.util.presentation import Paginator
@@ -360,11 +361,17 @@ class ReportModule(Component):
         # Place retrieved columns in groups, according to naming conventions
         #  * _col_ means fullrow, i.e. a group with one header
         #  * col_ means finish the current group and start a new one
+        field_labels = dict([(f['name'], f['label']) for f in
+                             TicketSystem(self.env).get_ticket_fields()])
         header_groups = [[]]
         for idx, col in enumerate(cols):
+            if col in field_labels:
+                title = field_labels[col]
+            else:
+                title = col.strip('_').capitalize()
             header = {
                 'col': col,
-                'title': col.strip('_').capitalize(),
+                'title': title,
                 'hidden': False,
                 'asc': False
             }

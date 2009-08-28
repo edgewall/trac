@@ -183,9 +183,9 @@ class TicketNotifyEmail(NotifyEmail):
             if fname in ['owner', 'reporter']:
                 fval = obfuscate_email_address(fval)
             if f['type'] == 'textarea' or '\n' in unicode(fval):
-                big.append((fname.capitalize(), CRLF.join(fval.splitlines())))
+                big.append((f['label'], CRLF.join(fval.splitlines())))
             else:
-                txt += format[i % 2] % (fname.capitalize(), fval)
+                txt += format[i % 2] % (f['label'], fval)
                 i += 1
         if i % 2:
             txt += CRLF

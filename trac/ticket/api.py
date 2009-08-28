@@ -27,7 +27,7 @@ from trac.resource import IResourceManager
 from trac.util import Ranges
 from trac.util.datefmt import utc
 from trac.util.text import shorten_line, obfuscate_email_address
-from trac.util.translation import _
+from trac.util.translation import _, N_
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
@@ -199,36 +199,37 @@ class TicketSystem(Component):
         fields = []
 
         # Basic text fields
-        for name in ('summary', 'reporter'):
-            field = {'name': name, 'type': 'text', 'label': name.title()}
-            fields.append(field)
+        fields.append({'name': 'summary', 'type': 'text',
+                       'label': N_('Summary')})
+        fields.append({'name': 'reporter', 'type': 'text',
+                       'label': N_('Reporter')})
 
         # Owner field, by default text but can be changed dynamically 
         # into a drop-down depending on configuration (restrict_owner=true)
-        field = {'name': 'owner', 'label': 'Owner'}
+        field = {'name': 'owner', 'label': N_('Owner')}
         field['type'] = 'text'
         fields.append(field)
 
         # Description
         fields.append({'name': 'description', 'type': 'textarea',
-                       'label': _('Description')})
+                       'label': N_('Description')})
 
         # Default select and radio fields
-        selects = [('type', model.Type),
-                   ('status', model.Status),
-                   ('priority', model.Priority),
-                   ('milestone', model.Milestone),
-                   ('component', model.Component),
-                   ('version', model.Version),
-                   ('severity', model.Severity),
-                   ('resolution', model.Resolution)]
-        for name, cls in selects:
+        selects = [('type', N_('Type'), model.Type),
+                   ('status', N_('Status'), model.Status),
+                   ('priority', N_('Priority'), model.Priority),
+                   ('milestone', N_('Milestone'), model.Milestone),
+                   ('component', N_('Component'), model.Component),
+                   ('version', N_('Version'), model.Version),
+                   ('severity', N_('Severity'), model.Severity),
+                   ('resolution', N_('Resolution'), model.Resolution)]
+        for name, label, cls in selects:
             options = [val.name for val in cls.select(self.env, db=db)]
             if not options:
                 # Fields without possible values are treated as if they didn't
                 # exist
                 continue
-            field = {'name': name, 'type': 'select', 'label': name.title(),
+            field = {'name': name, 'type': 'select', 'label': label,
                      'value': self.config.get('ticket', 'default_' + name),
                      'options': options}
             if name in ('status', 'resolution'):
@@ -239,15 +240,15 @@ class TicketSystem(Component):
             fields.append(field)
 
         # Advanced text fields
-        for name in ('keywords', 'cc', ):
-            field = {'name': name, 'type': 'text', 'label': name.title()}
-            fields.append(field)
+        fields.append({'name': 'keywords', 'type': 'text',
+                       'label': N_('Keywords')})
+        fields.append({'name': 'cc', 'type': 'text', 'label': N_('Cc')})
 
         # Date/time fields
         fields.append({'name': 'time', 'type': 'time',
-                       'label': _('Created')})
+                       'label': N_('Created')})
         fields.append({'name': 'changetime', 'type': 'time',
-                       'label': _('Modified')})
+                       'label': N_('Modified')})
 
         for field in self.get_custom_fields():
             if field['name'] in [f['name'] for f in fields]:

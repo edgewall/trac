@@ -259,6 +259,15 @@ class TicketModule(Component):
 
         ticket_realm = Resource('ticket')
 
+        field_labels = dict([(f['name'], f['label']) for f in
+                             TicketSystem(self.env).get_ticket_fields()])
+
+        def label(fname):
+            if fname in field_labels:
+                return field_labels[fname]
+            else:
+                return fname.capitalize()
+
         def produce_event((id, ts, author, type, summary, description),
                           status, fields, comment, cid):
             ticket = ticket_realm(id=id)
@@ -270,8 +279,10 @@ class TicketModule(Component):
                 if 'ticket_details' in filters:
                     if len(fields) > 0:
                         keys = fields.keys()
-                        info = tag([[tag.i(f), ', '] for f in keys[:-1]],
-                                   tag.i(keys[-1]), ' changed', tag.br())
+                        info = tag([[tag.i(label(f)), ', ']
+                                    for f in keys[:-1]],
+                                   tag.i(label(keys[-1])), ' changed',
+                                   tag.br())
                 else:
                     return None
             elif 'ticket' in filters:
@@ -752,13 +763,17 @@ class TicketModule(Component):
         new_ticket = dict(old_ticket)
         replay_changes(new_ticket, old_ticket, old_version+1, new_version)
 
+        field_labels = dict([(f['name'], f['label']) for f in
+                             TicketSystem(self.env).get_ticket_fields()])
+
         changes = []
 
         def version_info(t, field=None):
             path = 'Ticket #%s' % ticket.id
             # TODO: field info should probably be part of the Resource as well
             if field:
-                path = tag(path, Markup(' &ndash; '), field)
+                path = tag(path, Markup(' &ndash; '),
+                           field_labels.get(field, field.capitalize()))
             if t.version:
                 rev = _('Version %(num)s', num=t.version)
                 shortrev = 'v%d' % t.version
@@ -773,13 +788,14 @@ class TicketModule(Component):
             if k not in text_fields:
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
-                    prop = {'name': k,
-                            'old': {'name': k, 'value': old},
-                            'new': {'name': k, 'value': new}}
+                    label = field_labels.get(k, k.capitalize())
+                    prop = {'name': label,
+                            'old': {'name': label, 'value': old},
+                            'new': {'name': label, 'value': new}}
                     rendered = self._render_property_diff(req, ticket, k,
                                                           old, new, tnew)
                     if rendered:
-                        prop['diff'] = tag.li('Property ', tag.strong(k),
+                        prop['diff'] = tag.li('Property ', tag.strong(label),
                                                    ' ', rendered)
                     props.append(prop)
         changes.append({'props': props, 'diffs': [],
@@ -1229,6 +1245,9 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket)
+        # This is kind of redundant, but it's an easier change than making
+        # fields itself a dict.
+        field_labels = dict([(f['name'], f['label']) for f in fields])
 
         # -- Ticket Change History
 
@@ -1340,7 +1359,7 @@ class TicketModule(Component):
 
         data.update({
             'context': context,
-            'fields': fields, 'changes': changes,
+            'fields': fields, 'field_labels': field_labels, 'changes': changes,
             'replies': replies, 'cnum': cnum + 1,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls,

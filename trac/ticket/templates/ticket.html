@@ -51,7 +51,7 @@
     <py:def function="display_change(change)">
       <ul py:if="change.fields" class="changes">
         <li py:for="field_name, field in change.fields.items()">
-          <strong>${field_name}</strong>
+          <strong>${field_labels[field_name]}</strong>
           <py:choose>
             <py:when test="field_name == 'attachment'">
               <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a> 
