@@ -2600,8 +2600,8 @@ msgstr "modifié"
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
-msgstr[0] "%(labels)s modifié"
-msgstr[1] "%(labels)s modifiés"
+msgstr[0] "Propriété %(labels)s modifiée"
+msgstr[1] "Propriétés %(labels)s modifiées"
 
 #: trac/ticket/web_ui.py:358
 #, python-format
