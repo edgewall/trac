@@ -21,7 +21,6 @@ import os
 import unittest
 import sys
 import pkg_resources
-from fnmatch import fnmatch
 
 try:
     from babel import Locale
@@ -233,7 +232,6 @@ class EnvironmentStub(Environment):
         """
         ComponentManager.__init__(self)
         Component.__init__(self)
-        self.enabled_components = enable or ['trac.*']
         self.systeminfo = [('Python', sys.version)]
 
         import trac
@@ -249,6 +247,11 @@ class EnvironmentStub(Environment):
         load_workflow_config_snippet(self.config, 'basic-workflow.ini')
         self.config.set('logging', 'log_level', 'DEBUG')
         self.config.set('logging', 'log_type', 'stderr')
+        if enable is not None:
+            self.config.set('components', 'trac.*', 'disabled')
+        for name_or_class in enable or ():
+            config_key = self._component_name(name_or_class)
+            self.config.set('components', config_key, 'enabled')
 
         # -- logging
         from trac.log import logger_factory
@@ -268,15 +271,6 @@ class EnvironmentStub(Environment):
 
         self.known_users = []
         translation.activate(Locale and Locale('en', 'US'))
-
-    def is_component_enabled(self, cls):
-        for component in self.enabled_components:
-            if component is cls:
-                return True
-            if isinstance(component, basestring) and \
-                fnmatch(cls.__module__ + '.' + cls.__name__, component):
-                return True
-        return False
 
     def get_db_cnx(self, destroying=False):
         if self.db:

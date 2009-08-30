@@ -221,6 +221,12 @@ class Environment(Component, ComponentManager):
         component.config = self.config
         component.log = self.log
 
+    def _component_name(self, name_or_class):
+        name = name_or_class
+        if not isinstance(name_or_class, basestring):
+            name = name_or_class.__module__ + '.' + name_or_class.__name__
+        return name.lower()
+
     def is_component_enabled(self, cls):
         """Implemented to only allow activation of components that are not
         disabled in the configuration.
@@ -228,10 +234,7 @@ class Environment(Component, ComponentManager):
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns false, the component does
         not get activated."""
-        if not isinstance(cls, basestring):
-            component_name = (cls.__module__ + '.' + cls.__name__).lower()
-        else:
-            component_name = cls.lower()
+        component_name = self._component_name(cls)
 
         rules = [(name.lower(), value.lower() in ('enabled', 'on'))
                  for name, value in self.config.options('components')]
