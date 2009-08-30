@@ -611,13 +611,12 @@ class NotificationTestCase(unittest.TestCase):
                 self.failIf(footer > 3)
                 # check ticket link
                 if line[:11] == 'Ticket URL:':
-                    self.assertEqual(line[12:].strip(),
-                                     "<%s>" % ticket['link'].strip())
+                    ticket_link = self.env.abs_href.ticket(ticket.id)
+                    self.assertEqual(line[12:].strip(), "<%s>" % ticket_link)
                 # note project title / URL are not validated yet
 
         # ticket properties which are not expected in the banner
-        xlist = ['summary', 'description', 'link', 'comment', 'new',
-                 'time', 'changetime']
+        xlist = ['summary', 'description', 'comment', 'time', 'changetime']
         # check banner content (field exists, msg value matches ticket value)
         for p in [prop for prop in ticket.values.keys() if prop not in xlist]:
             self.failIf(not props.has_key(p))
@@ -626,6 +625,20 @@ class NotificationTestCase(unittest.TestCase):
                 self.failIf(props[p].split('@')[0] != ticket[p].split('@')[0])
             else:
                 self.failIf(props[p] != ticket[p])
+
+    def test_notification_does_not_alter_ticket_instance(self):
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'My Summary'
+        ticket['description'] = 'Some description'
+        ticket.insert()
+        tn = TicketNotifyEmail(self.env)
+        tn.notify(ticket, newticket=True)
+        self.assertNotEqual(None, notifysuite.smtpd.get_message())
+        self.assertEqual('My Summary', ticket['summary'])
+        self.assertEqual('Some description', ticket['description'])
+        valid_fieldnames = set([f['name'] for f in ticket.fields])
+        current_fieldnames = set(ticket.values.keys())
+        self.assertEqual(set(), current_fieldnames - valid_fieldnames)
 
 
 class NotificationTestSuite(unittest.TestSuite):

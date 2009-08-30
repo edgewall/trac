@@ -129,12 +129,13 @@ class TicketNotifyEmail(NotifyEmail):
                         changes_body += '  * %s:  %s%s' % (field, chg, CRLF)
                     if newv:
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
-            
-        self.ticket['description'] = wrap(
-            self.ticket.values.get('description', ''), self.COLS,
+        
+        ticket_values = ticket.values.copy()
+        ticket_values['description'] = wrap(
+            ticket_values.get('description', ''), self.COLS,
             initial_indent=' ', subsequent_indent=' ', linesep=CRLF)
-        self.ticket['new'] = self.newticket
-        self.ticket['link'] = link
+        ticket_values['new'] = self.newticket
+        ticket_values['link'] = link
         
         subject = self.format_subj(summary)
         if not self.newticket:
@@ -143,7 +144,7 @@ class TicketNotifyEmail(NotifyEmail):
             'ticket_props': self.format_props(),
             'ticket_body_hdr': self.format_hdr(),
             'subject': subject,
-            'ticket': ticket.values,
+            'ticket': ticket_values,
             'changes_body': changes_body,
             'changes_descr': changes_descr,
             'change': change_data
@@ -301,7 +302,7 @@ class TicketNotifyEmail(NotifyEmail):
         hdrs = {}
         hdrs['Message-ID'] = self.get_message_id(dest, self.modtime)
         hdrs['X-Trac-Ticket-ID'] = str(self.ticket.id)
-        hdrs['X-Trac-Ticket-URL'] = self.ticket['link']
+        hdrs['X-Trac-Ticket-URL'] = self.data['ticket']['link']
         if not self.newticket:
             msgid = self.get_message_id(dest)
             hdrs['In-Reply-To'] = msgid
