@@ -118,7 +118,7 @@ class TicketTestCase(unittest.TestCase):
 
     def test_ticket_id_is_always_int(self):
         ticket_id = self._insert_ticket('Foo')
-        self.assert_(isinstance(ticket_id, int))
+        self.assertEqual(ticket_id, int(ticket_id))
         ticket = Ticket(self.env, str(ticket_id))
         self.assertEqual(ticket_id, ticket.id)
         self.assertEqual(ticket.resource.id, ticket_id)
