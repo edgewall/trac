@@ -126,7 +126,7 @@ class SQLiteConnector(Component):
                                         ('pysqlite', self._version)])
         return SQLiteConnection(path, log, params)
 
-    def init_db(cls, path, log=None, params={}):
+    def init_db(self, path, log=None, params={}):
         if path != ':memory:':
             # make the directory to hold the database
             if os.path.exists(path):
@@ -139,11 +139,11 @@ class SQLiteConnector(Component):
         cursor = cnx.cursor()
         from trac.db_default import schema
         for table in schema:
-            for stmt in cls.to_sql(table):
+            for stmt in self.to_sql(table):
                 cursor.execute(stmt)
         cnx.commit()
 
-    def to_sql(cls, table):
+    def to_sql(self, table):
         return _to_sql(table)
 
     def backup(self, dest_file):
