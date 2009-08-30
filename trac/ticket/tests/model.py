@@ -116,6 +116,13 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(len(log), 0)
         self.assertRaises(TracError, Ticket, self.env, 1)
 
+    def test_ticket_id_is_always_int(self):
+        ticket_id = self._insert_ticket('Foo')
+        self.assert_(isinstance(ticket_id, int))
+        ticket = Ticket(self.env, str(ticket_id))
+        self.assertEqual(ticket_id, ticket.id)
+        self.assertEqual(ticket.resource.id, ticket_id)
+
     def test_ticket_default_values(self):
         """
         Verify that a ticket uses default values specified in the configuration

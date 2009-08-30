@@ -46,6 +46,8 @@ class Ticket(object):
     
     def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
+        if tkt_id is not None:
+            tkt_id = int(tkt_id)
         self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.time_fields = [f['name'] for f in self.fields
