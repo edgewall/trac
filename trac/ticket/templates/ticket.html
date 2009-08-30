@@ -72,8 +72,9 @@
           </py:choose>
         </li>
       </ul>
-      <div py:if="'comment' in change" class="comment searchable" xml:space="preserve">
-        ${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}
+      <div py:if="'comment' in change and (str(change.cnum) != cnum_edit or edited_comment is not None)"
+           class="comment searchable ${str(change.cnum) == cnum_edit and 'ticketdraft' or None}" xml:space="preserve">
+        ${wiki_to_html(context, [change.comment, edited_comment][str(change.cnum) == cnum_edit], escape_newlines=preserve_newlines)}
       </div>
     </py:def>
 
@@ -84,6 +85,7 @@
                  can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
                  can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource);
                  only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource);
+                 can_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
                 ">
       <h1>
         <py:choose>
@@ -213,7 +215,7 @@
         <py:if test="ticket.exists and changes">
           <h2>Change History</h2>
           <div id="changelog">
-            <form py:for="change in changes" method="get" action="#comment" class="printableform">
+            <py:for each="change in changes">
               <div class="change">
                 <h3 class="change">
                   <span class="threading" py:if="'cnum' in change"
@@ -232,13 +234,35 @@
                   </span>
                   <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
                 </h3>
-                <div py:if="'cnum' in change and can_append" class="inlinebuttons">
-                  <input type="hidden" name="replyto" value="${change.cnum}" />
-                  <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}" />
+                <div py:if="not (can_edit_comment and str(change.cnum) == cnum_edit)" class="inlinebuttons">
+                  <form py:if="'cnum' in change and can_append" 
+                        method="get" action="#comment" class="inlinebuttons">
+                    <div>
+                      <input type="hidden" name="replyto" value="${change.cnum}"/>
+                      <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
+                    </div>
+                  </form>
+                  <form py:if="'cnum' in change and can_edit_comment"
+                        method="get" action="#comment:${change.cnum}" class="inlinebuttons">
+                    <div>
+                      <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
+                      <input type="submit" value="${_('Edit')}" title="Edit comment ${change.cnum}"/>
+                    </div>
+                  </form>              
                 </div>
                 ${display_change(change)}
+                <form py:if="can_edit_comment and str(change.cnum) == cnum_edit" method="post" action="#comment:${change.cnum}">
+                  <div>
+                    <textarea id="trac-edited_comment" name="edited_comment" class="wikitext" rows="10" cols="78">
+${[edited_comment, change.comment][edited_comment is None]}</textarea>
+                    <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
+                    <input type="submit" name="preview_comment" value="${_('Preview')}" title='Preview changes to comment ${change.cnum}'/>
+                    <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
+                    <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
+                  </div>
+                </form>
               </div>
-            </form>
+            </py:for>
           </div>
         </py:if>
       </py:if>

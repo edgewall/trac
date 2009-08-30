@@ -76,6 +76,8 @@ h1 .status { color: #444; }
 }
 
 #changelog { border: 1px outset #996; padding: 1em }
+#trac-edited_comment { margin-left: -1px; margin-right: -1px; width: 100% }
+#changelog .wikitoolbar { margin-left: -1px }
 #preview { border: 1px solid #d7d7d7; padding: 1em }
 #preview h3, #changelog h3 {
  border-bottom: 1px solid #d7d7d7;
@@ -91,7 +93,7 @@ h1 .status { color: #444; }
 
 form .field { margin-top: .75em; width: 100% }
 form .field fieldset.iefix { margin-left: 1px; margin-right: 1px }
-form .field #comment { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
+#comment { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
 form .field .wikitoolbar { margin-left: -1px }
 
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }

@@ -365,6 +365,18 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
 
+    def modify_comment(self, cnum, comment, db=None):
+        db, handle_ta = self._get_db_for_write(db)
+        cursor = db.cursor()
+        cursor.execute("UPDATE ticket_change SET newvalue=%%s "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)"
+                       % db.like(),
+                       (comment, self.id, str(cnum),
+                        '%.' + db.like_escape(str(cnum))))
+        if handle_ta:
+            db.commit()  
+
 
 def simplify_whitespace(name):
     """Strip spaces and remove duplicate spaces within names"""

@@ -464,8 +464,9 @@ class TicketModule(Component):
                                          'view'))
 
         data = self._prepare_data(req, ticket)
-        data['comment'] = None
-        
+        data.update({'comment': None,
+                     'cnum_edit': req.args.get('cnum_edit'),
+                     'edited_comment': req.args.get('edited_comment')})
 
         if action in ('history', 'diff'):
             field = req.args.get('field')
@@ -478,7 +479,22 @@ class TicketModule(Component):
                 return self._render_history(req, ticket, data, text_fields)
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
+        elif 'preview_comment' in req.args:
+            field_changes = {}
+            data.update({'action': None,
+                         'reassign_owner': req.authname,
+                         'resolve_resolution': None,
+                         'timestamp': str(ticket['changetime'])})
         elif req.method == 'POST': # 'Preview' or 'Submit'
+            if 'cancel_comment' in req.args:
+                req.redirect(req.href.ticket(ticket.id))
+            elif 'edit_comment' in req.args:
+                req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
+                comment = req.args.get('edited_comment')
+                cnum = req.args.get('cnum_edit')
+                ticket.modify_comment(cnum, comment)
+                req.redirect(req.href.ticket(ticket.id))
+
             # Do any action on the ticket?
             actions = TicketSystem(self.env).get_available_actions(
                 req, ticket)
