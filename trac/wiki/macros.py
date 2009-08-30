@@ -100,7 +100,8 @@ class TitleIndexMacro(WikiMacroBase):
 
         wiki = formatter.wiki
         pages = sorted([page for page in wiki.get_pages(prefix) \
-                        if 'WIKI_VIEW' in formatter.perm('wiki', page)])
+                        if (depth < 0 or depth >= page.count('/') - start) and
+                            'WIKI_VIEW' in formatter.perm('wiki', page)])
 
         # the function definitions for the different format styles
 
@@ -108,13 +109,11 @@ class TitleIndexMacro(WikiMacroBase):
         def split_pages_group(pages):
             return [(self.SPLIT_RE.split(
                         wiki.format_page_name(page, split=True)), page)
-                    for page in pages
-                    if depth < 0 or depth >= page.count('/') - start]
+                    for page in pages]
 
         def split_pages_hierarchy(pages):
             return [(wiki.format_page_name(page).split("/"), page)
-                    for page in pages
-                    if depth < 0 or depth >= page.count('/') - start]
+                    for page in pages]
 
         # the different rendering formats
         def render_group(group, classattribute=None):
@@ -153,17 +152,17 @@ class TitleIndexMacro(WikiMacroBase):
                         groups.append(elt[1])
             return groups
 
-        format = {'group': (split_pages_group, render_group),
+        format = {'group':     (split_pages_group,     render_group),
                   'hierarchy': (split_pages_hierarchy, render_hierarchy)
-                 }.get(kw.get('format',''), None)
+                 }.get(kw.get('format', ''), None)
 
         if format:
             return format[1](split_in_groups(format[0](pages)), "titleindex")
         else:
-            return tag.ul([tag.li(tag.a(wiki.format_page_name(page), 
+            return tag.ul(tag.li(tag.a(wiki.format_page_name(page), 
                                         href=formatter.href.wiki(page)))
-                           for page in pages
-                           if depth < 0 or depth >= page.count('/') - start])
+                          for page in pages)
+
 
 class RecentChangesMacro(WikiMacroBase):
     """Lists all pages that have recently been modified, grouping them by the
