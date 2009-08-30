@@ -170,29 +170,30 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         # once and get really confused.
         status = ticket._old.get('status', ticket['status']) or 'new'
 
+        ticket_perm = req.perm(ticket.resource)
         allowed_actions = []
         for action_name, action_info in self.actions.items():
             oldstates = action_info['oldstates']
             if oldstates == ['*'] or status in oldstates:
                 # This action is valid in this state.  Check permissions.
-                allowed = 0
                 required_perms = action_info['permissions']
-                if required_perms:
-                    for permission in required_perms:
-                        if permission in req.perm(ticket.resource):
-                            allowed = 1
-                            break
-                else:
-                    allowed = 1
-                if allowed:
+                if self._is_action_allowed(ticket_perm, required_perms):
                     allowed_actions.append((action_info['default'],
                                             action_name))
         if not (status in ['new', 'closed'] or \
                     status in TicketSystem(self.env).get_all_status()) \
-                and 'TICKET_ADMIN' in req.perm(ticket.resource):
+                and 'TICKET_ADMIN' in ticket_perm:
             # State no longer exists - add a 'reset' action if admin.
             allowed_actions.append((0, '_reset'))
         return allowed_actions
+
+    def _is_action_allowed(self, ticket_perm, required_perms):
+        if not required_perms:
+            return True
+        for permission in required_perms:
+            if permission in ticket_perm:
+                return True
+        return False
 
     def get_all_status(self):
         """Return a list of all states described by the configuration.
