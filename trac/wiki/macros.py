@@ -77,9 +77,12 @@ class TitleIndexMacro(WikiMacroBase):
     parameter is omitted, all pages are listed.
 
     Alternate `format` and `depth` can be specified:
-     - `format=group`: The list of page will be structured in groups
+     - `format=group`: The list of pages will be structured in groups
        according to common prefix. This format also supports a `min=n`
        argument, where `n` is the minimal number of pages for a group.
+     - `format=hierarchy`: The list of pages will be structured according
+       to the page name path hierarchy. This format also supports a `min=n`
+       argument, where higher `n` flatten the display hierarchy
      - `depth=n`: limit the depth of the pages to list. If set to 0,
        only toplevel pages will be shown, if set to 1, only immediate
        children pages will be shown, etc. If not set, or set to -1,
@@ -91,7 +94,6 @@ class TitleIndexMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
         prefix = args and args[0] or None
-        format = kw.get('format', '')
         minsize = max(int(kw.get('min', 2)), 2)
         depth = int(kw.get('depth', -1))
         start = prefix and prefix.count('/') or 0
@@ -100,16 +102,40 @@ class TitleIndexMacro(WikiMacroBase):
         pages = sorted([page for page in wiki.get_pages(prefix) \
                         if 'WIKI_VIEW' in formatter.perm('wiki', page)])
 
-        if format != 'group':
-            return tag.ul([tag.li(tag.a(wiki.format_page_name(page),
-                                        href=formatter.href.wiki(page)))
-                           for page in pages
-                           if depth < 0 or depth >= page.count('/') - start])
-        
-        # Group by Wiki word and/or Wiki hierarchy
-        pages = [(self.SPLIT_RE.split(wiki.format_page_name(page, split=True)),
-                  page) for page in pages
-                 if depth < 0 or depth >= page.count('/') - start]
+        # the function definitions for the different format styles
+
+        # the different page split formats, each corresponding to its rendering
+        def split_pages_group(pages):
+            return [(self.SPLIT_RE.split(
+                        wiki.format_page_name(page, split=True)), page)
+                    for page in pages
+                    if depth < 0 or depth >= page.count('/') - start]
+
+        def split_pages_hierarchy(pages):
+            return [(wiki.format_page_name(page).split("/"), page)
+                    for page in pages
+                    if depth < 0 or depth >= page.count('/') - start]
+
+        # the different rendering formats
+        def render_group(group, classattribute=None):
+            return tag.ul(
+                [tag.li(isinstance(elt, tuple) and 
+                        tag(tag.strong(elt[0]), render_group(elt[1])) or
+                        tag.a(wiki.format_page_name(elt),
+                              href=formatter.href.wiki(elt)))
+                 for elt in group],
+                class_=classattribute)
+        def render_hierarchy(group, classattribute=None):
+            return tag.ul(
+                [tag.li(isinstance(elt, tuple) and 
+                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[1][0])),
+                            render_hierarchy(elt[1][1:])) or
+                        tag.a(elt.rpartition("/")[2], 
+                              href=formatter.href.wiki(elt)))
+                 for elt in group],
+                class_=classattribute)
+
+        # create the group hierarchy, that's the same for every format
         def split_in_groups(group):
             """Return list of pagename or (key, sublist) elements"""
             groups = []
@@ -127,15 +153,17 @@ class TitleIndexMacro(WikiMacroBase):
                         groups.append(elt[1])
             return groups
 
-        def render_groups(groups):
-            return tag.ul(
-                [tag.li(isinstance(elt, tuple) and 
-                        tag(tag.strong(elt[0]), render_groups(elt[1])) or
-                        tag.a(wiki.format_page_name(elt),
-                              href=formatter.href.wiki(elt)))
-                 for elt in groups])
-        return render_groups(split_in_groups(pages))
+        format = {'group': (split_pages_group, render_group),
+                  'hierarchy': (split_pages_hierarchy, render_hierarchy)
+                 }.get(kw.get('format',''), None)
 
+        if format:
+            return format[1](split_in_groups(format[0](pages)), "titleindex")
+        else:
+            return tag.ul([tag.li(tag.a(wiki.format_page_name(page), 
+                                        href=formatter.href.wiki(page)))
+                           for page in pages
+                           if depth < 0 or depth >= page.count('/') - start])
 
 class RecentChangesMacro(WikiMacroBase):
     """Lists all pages that have recently been modified, grouping them by the
