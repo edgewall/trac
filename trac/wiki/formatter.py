@@ -365,7 +365,7 @@ class Formatter(object):
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')
             elif path.startswith('/'):
-                path = self.href(path) or '/'
+                path = self.href + path
             else:
                 resource = get_relative_resource(self.resource, path)
                 path = get_resource_url(self.env, resource, self.href)

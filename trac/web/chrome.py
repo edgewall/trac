@@ -496,7 +496,7 @@ class Chrome(Component):
                     href = category_section.get(name + '.href')
                     if href:
                         if href.startswith('/'):
-                            href = req.href() + href
+                            href = req.href + href
                         if label:
                             item = tag.a(label) # create new label
                         elif not item:

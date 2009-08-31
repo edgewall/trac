@@ -116,41 +116,39 @@ class Href(object):
     """
 
     def __init__(self, base):
-        self.base = base
+        self.base = base.rstrip('/')
         self._derived = {}
 
     def __call__(self, *args, **kw):
         href = self.base
-        if href and href[-1] == '/':
-            href = href[:-1]
         params = []
 
         def add_param(name, value):
             if type(value) in (list, tuple):
-                for i in [i for i in value if i != None]:
+                for i in [i for i in value if i is not None]:
                     params.append((name, i))
-            elif value != None:
+            elif value is not None:
                 params.append((name, value))
 
         if args:
             lastp = args[-1]
             if lastp and type(lastp) is dict:
-                for k,v in lastp.items():
+                for k, v in lastp.items():
                     add_param(k, v)
                 args = args[:-1]
             elif lastp and type(lastp) in (list, tuple):
-                for k,v in lastp:
+                for k, v in lastp:
                     add_param(k, v)
                 args = args[:-1]
 
         # build the path
         path = '/'.join([unicode_quote(unicode(arg).strip('/')) for arg in args
-                         if arg != None])
+                         if arg is not None])
         if path:
             href += '/' + path
 
         # assemble the query string
-        for k,v in kw.items():
+        for k, v in kw.items():
             add_param(k.endswith('_') and k[:-1] or k, v)
 
         if params:
@@ -159,9 +157,16 @@ class Href(object):
         return href
 
     def __getattr__(self, name):
-        if not self._derived.has_key(name):
+        if name not in self._derived:
             self._derived[name] = lambda *args, **kw: self(name, *args, **kw)
         return self._derived[name]
+
+    def __add__(self, rhs):
+        if rhs.startswith('/'):
+            return self.base + rhs
+        if rhs:
+            return self.base + '/' + rhs
+        return self.base or '/'
 
 
 if __name__ == '__main__':

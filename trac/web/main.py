@@ -182,7 +182,7 @@ class RequestDispatcher(Component):
                         target = req.path_info.rstrip('/').encode('utf-8')
                         if req.query_string:
                             target += '?' + req.query_string
-                        req.redirect(req.href() + target, permanent=True)
+                        req.redirect(req.href + target, permanent=True)
                     raise HTTPNotFound('No handler matched request to %s',
                                        req.path_info)
 

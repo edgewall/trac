@@ -38,7 +38,23 @@ class HrefTestCase(unittest.TestCase):
             '/base/page?other=other+value&param=value']
         self.assertEqual('/base/page?param=multiple&param=values',
                          href('page', param=['multiple', 'values']))
+        
+        self.assertEqual('/base/path/to/file/', href + '/path/to/file/')
+        self.assertEqual('/base/path/to/file', href + 'path/to/file')
+        self.assertEqual('/base', href + '')
 
+    def test_base_with_trailing_slash(self):
+        """Build URLs with a base with a trailing slash."""
+        href = trac.web.href.Href('/base/')
+        self.assertEqual('/base', href())
+        self.assertEqual('/base', href('/'))
+        self.assertEqual('/base/sub', href('sub'))
+        self.assertEqual('/base/sub', href('/sub/'))
+        
+        self.assertEqual('/base/path/to/file/', href + '/path/to/file/')
+        self.assertEqual('/base/path/to/file', href + 'path/to/file')
+        self.assertEqual('/base', href + '')
+        
     def test_empty_base(self):
         """Build URLs with an empty base."""
         href = trac.web.href.Href('')
@@ -59,6 +75,10 @@ class HrefTestCase(unittest.TestCase):
             '/page?other=other+value&param=value']
         self.assertEqual('/page?param=multiple&param=values',
                          href('page', param=['multiple', 'values']))
+        
+        self.assertEqual('/path/to/file/', href + '/path/to/file/')
+        self.assertEqual('/path/to/file', href + 'path/to/file')
+        self.assertEqual('/', href + '')
 
 
 def suite():
