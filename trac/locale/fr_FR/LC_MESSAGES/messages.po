@@ -1595,7 +1595,7 @@ msgid ""
 "File %(file)s, %(size)s\n"
 "                (added by %(author)s,  %(date)s ago)"
 msgstr ""
-"Pièce jointe [1:%(file)s], %(size)s\n"
+"Pièce jointe %(file)s, %(size)s\n"
 "            (ajoutée par %(author)s, il y a %(date)s)"
 
 #: trac/templates/diff_div.html:58
