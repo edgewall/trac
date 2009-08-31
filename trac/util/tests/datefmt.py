@@ -49,6 +49,10 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(23), expected)
         self.assertEqual(datefmt.to_datetime(23L), expected)
         self.assertEqual(datefmt.to_datetime(23.0), expected)
+    
+    def test_to_datetime_can_convert_dates(self):
+        expected = datetime.datetime(2009, 5, 2, tzinfo=datefmt.localtz)
+        self.assertEqual(datefmt.to_datetime(expected.date()), expected)
 
     def test_to_datetime_tz(self):
         tz = datefmt.timezone('GMT +1:00')
@@ -83,7 +87,12 @@ class DateFormatTestCase(unittest.TestCase):
                                                  expected.split('T')[0])
         self.assertEqual(datefmt.format_datetime(t, 'iso8601time', gmt01),
                                                  expected.split('T')[1])
-        
+    
+    def test_format_date_accepts_date_instances(self):
+        a_date = datetime.date(2009, 8, 20)
+        self.assertEqual('2009-08-20', 
+                         datefmt.format_date(a_date, format='%Y-%m-%d'))
+
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
