@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
@@ -37,7 +38,8 @@
         <dt class="property time">Timestamp:</dt>
         <dd class="time" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
-          <py:when test="change.date">${format_datetime(change.date)} (${dateinfo(change.date)} ago)</py:when>
+          <py:when test="change.date">
+            <i18n:msg params="date, duration">${format_datetime(change.date)} (${dateinfo(change.date)} ago)</i18n:msg></py:when>
           <py:otherwise>--</py:otherwise>
         </dd>
         <dt class="property author">Author:</dt>

@@ -171,7 +171,7 @@ class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
         tc.formvalue
         tc.formvalue('propertyform', 'description', random_sentence(6))
         tc.submit('submit')
-        tc.find('description<[^>]*>\\s*modified \\(<[^>]*>diff', 's')
+        tc.find('Description<[^>]*>\\s*modified \\(<[^>]*>diff', 's')
         tc.follow('diff')
         tc.find('Changes\\s*between\\s*<[^>]*>Initial Version<[^>]*>\\s*and' \
                 '\\s*<[^>]*>Version 1<[^>]*>\\s*of\\s*<[^>]*>Ticket #' , 's')
@@ -1172,7 +1172,7 @@ class RegressionTestTicket6048(FunctionalTwillTestCaseSetup):
         tc.submit('submit')
 
         self._tester.go_to_ticket(ticket_id)
-        tc.find('Error: Invalid Ticket Number')
+        tc.find('Error: Invalid ticket number')
         tc.find('Ticket %s does not exist.' % ticket_id)
 
         # Remove the DeleteTicket plugin
@@ -1289,7 +1289,7 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.formvalue('milestone_table', 'sel', name)
         tc.submit('remove')
         tc.go(ticket_url)
-        tc.find('<strong>milestone</strong>[ \n\t]*<em>%s</em> deleted' % name)
+        tc.find('<strong>Milestone</strong>[ \n\t]*<em>%s</em> deleted' % name)
         tc.find('Changed <a.*</a> ago by admin')
         tc.notfind('anonymous')
 

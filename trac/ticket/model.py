@@ -46,6 +46,8 @@ class Ticket(object):
     
     def __init__(self, env, tkt_id=None, db=None, version=None):
         self.env = env
+        if tkt_id is not None:
+            tkt_id = int(tkt_id)
         self.resource = Resource('ticket', tkt_id, version)
         self.fields = TicketSystem(self.env).get_ticket_fields()
         self.time_fields = [f['name'] for f in self.fields
@@ -103,8 +105,8 @@ class Ticket(object):
                            % ','.join(std_fields), (tkt_id,))
             row = cursor.fetchone()
         if not row:
-            raise ResourceNotFound('Ticket %s does not exist.' % tkt_id,
-                                   'Invalid Ticket Number')
+            raise ResourceNotFound(_('Ticket %(id)s does not exist.', 
+                                     id=tkt_id), _('Invalid ticket number'))
 
         self.id = tkt_id
         for i in range(len(std_fields)):
@@ -364,6 +366,18 @@ class Ticket(object):
 
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
+
+    def modify_comment(self, cnum, comment, db=None):
+        db, handle_ta = self._get_db_for_write(db)
+        cursor = db.cursor()
+        cursor.execute("UPDATE ticket_change SET newvalue=%%s "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)"
+                       % db.like(),
+                       (comment, self.id, str(cnum),
+                        '%.' + db.like_escape(str(cnum))))
+        if handle_ta:
+            db.commit()  
 
 
 def simplify_whitespace(name):
@@ -657,8 +671,8 @@ class Milestone(object):
                        "FROM milestone WHERE name=%s", (name,))
         row = cursor.fetchone()
         if not row:
-            raise ResourceNotFound('Milestone %s does not exist.' % name,
-                                   'Invalid Milestone Name')
+            raise ResourceNotFound(_('Milestone %(name)s does not exist.',
+                                   name=name), _('Invalid milestone name'))
         self._from_database(row)
 
     exists = property(fget=lambda self: self._old_name is not None)

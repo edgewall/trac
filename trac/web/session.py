@@ -42,6 +42,9 @@ class DetachedSession(dict):
         else:
             self.authenticated = False
 
+    def __setitem__(self, key, value):
+        dict.__setitem__(self, key, unicode(value))
+
     def get_session(self, sid, authenticated=False):
         self.env.log.debug('Retrieving session for ID %r', sid)
 

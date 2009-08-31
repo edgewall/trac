@@ -86,6 +86,7 @@ def domain_functions(domain, *symbols):
       'tgettext': tgettext_noop,
       'tag_': tgettext_noop,
       'tngettext': tngettext_noop,
+      'tagn_': tngettext_noop,
       'add_domain': lambda env_path, locale_dir: None,
       }
     return [_functions[s] for s in symbols]
@@ -257,6 +258,7 @@ try:
           'tgettext': translations.dtgettext,
           'tag_': translations.dtgettext,
           'tngettext': translations.dtngettext,
+          'tagn_': translations.dtngettext,
           'add_domain': translations.add_domain,
           }
         def wrapdomain(symbol):
@@ -274,6 +276,7 @@ try:
     tag_ = tgettext 
     dtgettext = translations.dtgettext 
     tngettext = translations.tngettext 
+    tagn_ = tngettext 
     dtngettext = translations.dtngettext 
     
     def deactivate():
@@ -310,7 +313,7 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     dngettext = dngettext_noop
     tgettext = tag_ = tgettext_noop
     dtgettext = dtgettext_noop
-    tngettext = tngettext_noop
+    tngettext = tagn_ = tngettext_noop
     dtngettext = dtngettext_noop
 
     def activate(locale, env_path=None):

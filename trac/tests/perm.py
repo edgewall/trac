@@ -88,8 +88,6 @@ class TestPermissionRequestor(Component):
 class PermissionSystemTestCase(unittest.TestCase):
 
     def setUp(self):
-        from trac.core import ComponentMeta
-
         self.env = EnvironmentStub(enable=[perm.PermissionSystem,
                                            perm.DefaultPermissionStore,
                                            TestPermissionRequestor])

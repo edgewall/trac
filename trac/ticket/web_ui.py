@@ -43,7 +43,7 @@ from trac.util.datefmt import format_datetime, to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address, \
                            exception_to_unicode
 from trac.util.presentation import separated
-from trac.util.translation import _, tag_, N_, gettext
+from trac.util.translation import _, tag_, tagn_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import parse_query_string, IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
@@ -259,6 +259,8 @@ class TicketModule(Component):
 
         ticket_realm = Resource('ticket')
 
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
+
         def produce_event((id, ts, author, type, summary, description),
                           status, fields, comment, cid):
             ticket = ticket_realm(id=id)
@@ -269,9 +271,11 @@ class TicketModule(Component):
             if status == 'edit':
                 if 'ticket_details' in filters:
                     if len(fields) > 0:
-                        keys = fields.keys()
-                        info = tag([[tag.i(f), ', '] for f in keys[:-1]],
-                                   tag.i(keys[-1]), ' changed', tag.br())
+                        labels = [tag.i(field_labels.get(k, k.capitalize()))
+                                  for k in fields.keys()]
+                        info = tagn_('%(labels)s changed',
+                                     '%(labels)s changed', len(labels),
+                                    labels=separated(labels, ', ')) + tag.br()
                 else:
                     return None
             elif 'ticket' in filters:
@@ -460,8 +464,9 @@ class TicketModule(Component):
                                          'view'))
 
         data = self._prepare_data(req, ticket)
-        data['comment'] = None
-        
+        data.update({'comment': None,
+                     'cnum_edit': req.args.get('cnum_edit'),
+                     'edited_comment': req.args.get('edited_comment')})
 
         if action in ('history', 'diff'):
             field = req.args.get('field')
@@ -474,7 +479,22 @@ class TicketModule(Component):
                 return self._render_history(req, ticket, data, text_fields)
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
+        elif 'preview_comment' in req.args:
+            field_changes = {}
+            data.update({'action': None,
+                         'reassign_owner': req.authname,
+                         'resolve_resolution': None,
+                         'timestamp': str(ticket['changetime'])})
         elif req.method == 'POST': # 'Preview' or 'Submit'
+            if 'cancel_comment' in req.args:
+                req.redirect(req.href.ticket(ticket.id))
+            elif 'edit_comment' in req.args:
+                req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
+                comment = req.args.get('edited_comment')
+                cnum = req.args.get('cnum_edit')
+                ticket.modify_comment(cnum, comment)
+                req.redirect(req.href.ticket(ticket.id))
+
             # Do any action on the ticket?
             actions = TicketSystem(self.env).get_available_actions(
                 req, ticket)
@@ -752,13 +772,16 @@ class TicketModule(Component):
         new_ticket = dict(old_ticket)
         replay_changes(new_ticket, old_ticket, old_version+1, new_version)
 
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
+
         changes = []
 
         def version_info(t, field=None):
             path = 'Ticket #%s' % ticket.id
             # TODO: field info should probably be part of the Resource as well
             if field:
-                path = tag(path, Markup(' &ndash; '), field)
+                path = tag(path, Markup(' &ndash; '),
+                           field_labels.get(field, field.capitalize()))
             if t.version:
                 rev = _('Version %(num)s', num=t.version)
                 shortrev = 'v%d' % t.version
@@ -773,13 +796,14 @@ class TicketModule(Component):
             if k not in text_fields:
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
-                    prop = {'name': k,
-                            'old': {'name': k, 'value': old},
-                            'new': {'name': k, 'value': new}}
+                    label = field_labels.get(k, k.capitalize())
+                    prop = {'name': label,
+                            'old': {'name': label, 'value': old},
+                            'new': {'name': label, 'value': new}}
                     rendered = self._render_property_diff(req, ticket, k,
                                                           old, new, tnew)
                     if rendered:
-                        prop['diff'] = tag.li('Property ', tag.strong(k),
+                        prop['diff'] = tag.li('Property ', tag.strong(label),
                                                    ' ', rendered)
                     props.append(prop)
         changes.append({'props': props, 'diffs': [],
@@ -1229,6 +1253,7 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket)
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         # -- Ticket Change History
 
@@ -1340,7 +1365,7 @@ class TicketModule(Component):
 
         data.update({
             'context': context,
-            'fields': fields, 'changes': changes,
+            'fields': fields, 'field_labels': field_labels, 'changes': changes,
             'replies': replies, 'cnum': cnum + 1,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls,

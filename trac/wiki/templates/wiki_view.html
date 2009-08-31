@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
@@ -29,7 +30,7 @@
       <py:if test="version">
         <table id="info" summary="Revision info">
           <tbody>
-            <tr><th scope="row">
+            <tr><th scope="row" i18n:msg="version, author, date">
                 Version $page.version (modified by ${authorinfo(page.author)}, ${dateinfo(page.time)} ago)
             </th></tr>
             <tr><td class="message" xml:space="preserve">
