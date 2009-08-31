@@ -111,22 +111,22 @@ class PostgreSQLConnector(Component):
                             'is required for pre-upgrade backup support')
         db_url = self.env.config.get('trac', 'database')
         scheme, db_prop = _parse_db_str(db_url)
-        db_prop.setdefault('params', {})
+        db_params = db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
         args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8']
         if 'user' in db_prop:
             args.extend(['-U', db_prop['user']])
-        if 'host' in db_prop['params']:
-            host = db_prop['params']['host']
+        if 'host' in db_params:
+            host = db_params['host']
         else:
             host = db_prop.get('host', 'localhost')
         args.extend(['-h', host])
         if '/' not in host:
             args.extend(['-p', str(db_prop.get('port', '5432'))])
 
-        if 'schema' in db_prop['params']:
-            args.extend(['-n', '"%s"' % db_prop['params']['schema']])
+        if 'schema' in db_params:
+            args.extend(['-n', '"%s"' % db_params['schema']])
 
         dest_file += ".gz"
         args.extend(['-f', dest_file, db_name])
