@@ -166,7 +166,7 @@ msgstr "Le fichier %(name)s existe déjà."
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr ""
-"[%(section)s] %(entry)s: valeur numérique entière attendue,  au lieu de "
+"[%(section)s] %(entry)s : valeur numérique entière attendue,  au lieu de "
 "%(value)s"
 
 #: trac/env.py:506
@@ -2067,7 +2067,7 @@ msgstr "Attention :"
 #: trac/ticket/admin.py:104
 #, python-format
 msgid "The component \"%(name)s\" has been added."
-msgstr "Le composant %(name)s a été ajouté."
+msgstr "Le composant \"%(name)s\" a été ajouté."
 
 #: trac/ticket/admin.py:109 trac/ticket/model.py:576 trac/ticket/model.py:597
 #, 
@@ -2536,7 +2536,7 @@ msgid ""
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
 "Les groupes de statuts '%(group1)s' et '%(group2)s' sont déclarés tous "
-"les deux comme des groupes par défaut. Merci de vérifier votre "
+"les deux comme étant des groupes par défaut. Merci de vérifier votre "
 "configuration."
 
 #: trac/ticket/roadmap.py:231
@@ -2949,8 +2949,7 @@ msgid ""
 "                      %(date)s ago."
 msgstr ""
 "Rapporté par [1:%(author)s],\n"
-"\"\n"
-"\"               il y a %(date)s."
+"               il y a %(date)s."
 
 #: trac/ticket/templates/query_results.html:84
 msgid "(this ticket)"
@@ -2986,7 +2985,7 @@ msgstr "Titre du rapport :"
 
 #: trac/ticket/templates/report_edit.html:25
 msgid "Description: (you may use [1:WikiFormatting] here)"
-msgstr "Description : (l'utilisation du [1:WikiFormatting] est possible ici)"
+msgstr "Description : (l'utilisation du [1:WikiFormatting] est possible ici)"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid ""
@@ -3517,7 +3516,7 @@ msgstr "fusionné :"
 
 #: trac/versioncontrol/svn_prop.py:276
 msgid "blocked: "
-msgstr "bloqué :"
+msgstr "bloqué :"
 
 #: trac/versioncontrol/svn_prop.py:277
 msgid "reverse-merged: "
