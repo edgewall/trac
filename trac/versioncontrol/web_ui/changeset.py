@@ -43,8 +43,7 @@ from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
                                      unified_diff
-from trac.versioncontrol.web_ui.browser import BrowserModule, \
-                                               DefaultPropertyRenderer
+from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             prevnext_nav, INavigationContributor, Chrome
@@ -88,10 +87,7 @@ class DefaultPropertyDiffRenderer(Component):
     implements(IPropertyDiffRenderer)
 
     def match_property_diff(self, name):
-        # Support everything but hidden properties.
-        hidden_properties = DefaultPropertyRenderer(self.env).hidden_properties
-        return name not in hidden_properties and 1 or 0
-
+        return 1
 
     def render_property_diff(self, name, old_context, old_props,
                              new_context, new_props, options):
@@ -493,8 +489,9 @@ class ChangesetModule(Component):
                     if not k in old_props:
                         new = browser.render_property(k, 'changeset',
                                                       new_ctx, new_props)
-                        changed_properties.append({'name': k, 'new': new,
-                                                   'old': None})
+                        if new is not None:
+                            changed_properties.append({'name': k, 'new': new,
+                                                       'old': None})
             return changed_properties
 
         def _estimate_changes(old_node, new_node):
@@ -759,6 +756,8 @@ class ChangesetModule(Component):
     def render_property_diff(self, name, old_node, old_props,
                              new_node, new_props, options):
         """Renders diffs of a node property to HTML."""
+        if name in BrowserModule(self.env).hidden_properties:
+            return
         candidates = []
         for renderer in self.property_diff_renderers:
             quality = renderer.match_property_diff(name)
