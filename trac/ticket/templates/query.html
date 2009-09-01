@@ -82,8 +82,8 @@
                           <py:for each="option in field.options">
                             <input type="checkbox" id="${field_name}_$option" name="${field_name}"
                               value="$option"
-                              checked="${any([(value == option) == (constraint.mode == '')
-                                              for value in constraint['values']]) and 'checked' or None}" />
+                              checked="${((constraint['mode'] == '') == (option in constraint['values']))
+                                       and 'checked' or None}" />
                             <label for="${field_name}_$option">${option or 'none'}</label>
                           </py:for>
                         </py:when>
