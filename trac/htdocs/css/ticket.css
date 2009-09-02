@@ -73,11 +73,13 @@ h1 .status { color: #444; }
  float: right;
  position: relative;
  bottom: 0.3em;
+ margin-left: 0.2em;
 }
 
 #changelog { border: 1px outset #996; padding: 1em }
-#trac-edited_comment { margin-left: -1px; margin-right: -1px; width: 100% }
-#changelog .wikitoolbar { margin-left: -1px }
+#trac-comment-editor { margin-top: 1em; margin-left: 2em }
+#trac-comment-editor textarea { margin-left: -1px; margin-right: -1px; width: 100% }
+#trac-comment-editor .wikitoolbar { margin-left: -1px }
 #preview { border: 1px solid #d7d7d7; padding: 1em }
 #preview h3, #changelog h3 {
  border-bottom: 1px solid #d7d7d7;
@@ -85,8 +87,14 @@ h1 .status { color: #444; }
  font-size: 100%;
  font-weight: normal;
 }
-.threading, #changelog .inlinebuttons { float: right; }
+.threading, #changelog .inlinebuttons { float: right; margin-left: 0.2em }
 .threading { font-size: 85%; }
+#changelog .trac-lastedit {
+ margin-left: 2.5em;
+ color: #999;
+ font-size: 80%;
+}
+#changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
 
 #preview .changes, #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
 #preview .comment, #changelog .comment { margin-left: 2em }

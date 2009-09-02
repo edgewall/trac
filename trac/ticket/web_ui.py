@@ -492,7 +492,7 @@ class TicketModule(Component):
                 req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
                 comment = req.args.get('edited_comment')
                 cnum = req.args.get('cnum_edit')
-                ticket.modify_comment(cnum, comment)
+                ticket.modify_comment(cnum, req.authname, comment)
                 req.redirect(req.href.ticket(ticket.id))
 
             # Do any action on the ticket?
@@ -1468,7 +1468,8 @@ class TicketModule(Component):
                     yield current
                 last_uid = uid
                 current = {'date': date, 'author': author, 'fields': {},
-                           'permanent': permanent, 'comment': ''}
+                           'permanent': permanent, 'comment': '',
+                           'last_edit': {'rev': -1}}
                 if permanent and not when:
                     autonum += 1
                     current['cnum'] = autonum
@@ -1482,6 +1483,12 @@ class TicketModule(Component):
                     else:
                         this_num = old
                     current['cnum'] = int(this_num)
+            elif field.startswith('_comment'):      # Comment edits
+                rev = int(field[8:])
+                if rev > current['last_edit']['rev']:
+                    last_edit = datetime.fromtimestamp(int(new), utc)
+                    current['last_edit'] = {'rev': rev, 'author': author,
+                                            'date': last_edit}
             elif old or new:
                 current['fields'][field] = {'old': old, 'new': new}
         if current:

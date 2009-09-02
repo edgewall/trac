@@ -367,15 +367,35 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
 
-    def modify_comment(self, cnum, comment, db=None):
+    def modify_comment(self, cnum, author, comment, when=None, db=None):
+        scnum = str(cnum)
+        if when is None:
+            when = datetime.now(utc)
+        when_ts = to_timestamp(when)
+        
         db, handle_ta = self._get_db_for_write(db)
+        like = db.like()
         cursor = db.cursor()
-        cursor.execute("UPDATE ticket_change SET newvalue=%%s "
+        cursor.execute("SELECT time,newvalue FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)"
-                       % db.like(),
-                       (comment, self.id, str(cnum),
-                        '%.' + db.like_escape(str(cnum))))
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
+                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+        for (ts, old_comment) in cursor:
+            if comment == old_comment:
+                return
+            cursor.execute("SELECT COUNT(ticket) FROM ticket_change "
+                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           (self.id, ts, db.like_escape('_comment') + '%'))
+            rev = cursor.fetchone()[0]
+            cursor.execute("INSERT INTO ticket_change "
+                           "(ticket,time,author,field,oldvalue,newvalue) "
+                           "VALUES (%s,%s,%s,%s,%s,%s)",
+                           (self.id, ts, author, '_comment%d' % rev,
+                            old_comment, str(when_ts)))
+            cursor.execute("UPDATE ticket_change SET newvalue=%s "
+                           "WHERE ticket=%s AND time=%s AND field='comment'",
+                           (comment, self.id, ts))
+            break
         if handle_ta:
             db.commit()  
 
