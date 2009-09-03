@@ -130,7 +130,7 @@ class Href(object):
         params = []
 
         def add_param(name, value):
-            if type(value) in (list, tuple):
+            if isinstance(value, (list, tuple)):
                 for i in [i for i in value if i is not None]:
                     params.append((name, i))
             elif value is not None:
@@ -138,11 +138,11 @@ class Href(object):
 
         if args:
             lastp = args[-1]
-            if type(lastp) is dict:
+            if isinstance(lastp, dict):
                 for k, v in lastp.items():
                     add_param(k, v)
                 args = args[:-1]
-            elif type(lastp) in (list, tuple):
+            elif isinstance(lastp, (list, tuple)):
                 for k, v in lastp:
                     add_param(k, v)
                 args = args[:-1]
