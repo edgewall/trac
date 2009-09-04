@@ -12,11 +12,12 @@
 
   <body>
     <div id="content" class="ticket">
-      <h1>Change History for <a href="${url_of(resource)}">${name_of(resource)}</a></h1>
+      <h1>Change History for <a href="${url or url_of(resource)}">${name or name_of(resource)}</a></h1>
 
       <form py:if="history" class="printableform" method="get" action="">
         <div class="buttons">
-          <input type="hidden" name="action" value="diff" />
+          <input type="hidden" name="action" value="${diff_action or 'diff'}" />
+          <input py:for="k, v in diff_args or []" type="hidden" name="$k" value="$v"/>
           <input type="submit" value="${_('View changes')}" />
         </div>
         <table id="fieldhist" class="listing" summary="Change history">
@@ -38,7 +39,7 @@
                        checked="${idx == 0 or None}" />
               </td>
               <td class="version">
-                <a href="${url_of(resource, version=item.version)}" title="View this version">$item.version</a>
+                <a href="${item.url or url_of(resource, version=item.version)}" title="View this version">$item.version</a>
               </td>
               <td class="date">${dateinfo(item.date)}</td>
               <td class="author" title="${show_ip_addresses and item.ipnr and 'IP-Address: ' + item.ipnr or None}">${authorinfo(item.author)}</td>

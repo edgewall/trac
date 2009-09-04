@@ -323,30 +323,33 @@ class Ticket(object):
         """
         db = self._get_db(db)
         cursor = db.cursor()
+        sid = str(self.id)
         when_ts = when and to_timestamp(when) or 0
         if when_ts:
-            cursor.execute("SELECT time,author,field,oldvalue,newvalue,1 "
-                           "FROM ticket_change WHERE ticket=%s AND time=%s "
+            cursor.execute("SELECT time,author,field,oldvalue,newvalue,"
+                           "1 AS permanent FROM ticket_change "
+                           "WHERE ticket=%s AND time=%s "
                            "UNION "
-                           "SELECT time,author,'attachment',null,filename,0 "
-                           "FROM attachment WHERE id=%s AND time=%s "
+                           "SELECT time,author,'attachment',null,filename,"
+                           "0 AS permanent FROM attachment "
+                           "WHERE id=%s AND time=%s "
                            "UNION "
-                           "SELECT time,author,'comment',null,description,0 "
-                           "FROM attachment WHERE id=%s AND time=%s "
-                           "ORDER BY time",
-                           (self.id, when_ts, str(self.id), when_ts, 
-                           str(self.id), when_ts))
+                           "SELECT time,author,'comment',null,description,"
+                           "0 AS permanent FROM attachment "
+                           "WHERE id=%s AND time=%s "
+                           "ORDER BY permanent,time,author",
+                           (self.id, when_ts, sid, when_ts, sid, when_ts))
         else:
-            cursor.execute("SELECT time,author,field,oldvalue,newvalue,1 "
-                           "FROM ticket_change WHERE ticket=%s "
+            cursor.execute("SELECT time,author,field,oldvalue,newvalue,"
+                           "1 AS permanent FROM ticket_change WHERE ticket=%s "
                            "UNION "
-                           "SELECT time,author,'attachment',null,filename,0 "
-                           "FROM attachment WHERE id=%s "
+                           "SELECT time,author,'attachment',null,filename,"
+                           "0 AS permanent FROM attachment WHERE id=%s "
                            "UNION "
-                           "SELECT time,author,'comment',null,description,0 "
-                           "FROM attachment WHERE id=%s "
-                           "ORDER BY time", (self.id,  str(self.id), 
-                           str(self.id)))
+                           "SELECT time,author,'comment',null,description,"
+                           "0 AS permanent FROM attachment WHERE id=%s "
+                           "ORDER BY permanent,time,author",
+                           (self.id, sid, sid))
         log = []
         for t, author, field, oldvalue, newvalue, permanent in cursor:
             log.append((datetime.fromtimestamp(int(t), utc), author, field,
@@ -397,7 +400,33 @@ class Ticket(object):
                            (comment, self.id, ts))
             break
         if handle_ta:
-            db.commit()  
+            db.commit()
+
+    def get_comment_history(self, cnum, db=None):
+        scnum = str(cnum)
+        db = self._get_db(db)
+        like = db.like()
+        history = []
+        cursor = db.cursor()
+        cursor.execute("SELECT time,author,newvalue FROM ticket_change "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
+                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+        for (ts0, author0, last_comment) in cursor:
+            cursor.execute("SELECT field,author,oldvalue,newvalue "
+                           "FROM ticket_change "
+                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           (self.id, ts0, db.like_escape('_comment') + '%'))
+            for field, author, comment, ts in cursor:
+                rev = int(field[8:])
+                history.append((rev, datetime.fromtimestamp(int(ts0), utc),
+                                author0, comment))
+                ts0, author0 = ts, author
+            history.sort()
+            rev = history and (history[-1][0] + 1) or 0
+            history.append((rev, datetime.fromtimestamp(int(ts), utc),
+                            author, last_comment))
+        return history
 
 
 def simplify_whitespace(name):

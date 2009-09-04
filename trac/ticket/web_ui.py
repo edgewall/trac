@@ -464,9 +464,6 @@ class TicketModule(Component):
                                          'view'))
 
         data = self._prepare_data(req, ticket)
-        data.update({'comment': None,
-                     'cnum_edit': req.args.get('cnum_edit'),
-                     'edited_comment': req.args.get('edited_comment')})
 
         if action in ('history', 'diff'):
             field = req.args.get('field')
@@ -479,6 +476,12 @@ class TicketModule(Component):
                 return self._render_history(req, ticket, data, text_fields)
             elif action == 'diff':
                 return self._render_diff(req, ticket, data, text_fields)
+        elif action == 'comment-history':
+            cnum = int(req.args['cnum'])
+            return self._render_comment_history(req, ticket, data, cnum)
+        elif action == 'comment-diff':
+            cnum = int(req.args['cnum'])
+            return self._render_comment_diff(req, ticket, data, cnum)
         elif 'preview_comment' in req.args:
             field_changes = {}
             data.update({'action': None,
@@ -545,7 +548,6 @@ class TicketModule(Component):
                 'reassign_owner': (req.args.get('reassign_choice') 
                                    or req.authname),
                 'resolve_resolution': req.args.get('resolve_choice'),
-                'comment': req.args.get('comment'),
                 'valid': valid
                 })
         else: # simply 'View'ing the ticket
@@ -555,6 +557,12 @@ class TicketModule(Component):
                          'resolve_resolution': None,
                          # Store a timestamp for detecting "mid air collisions"
                          'timestamp': str(ticket['changetime'])})
+
+        data.update({'comment': req.args.get('comment'),
+                     'cnum_edit': req.args.get('cnum_edit'),
+                     'edited_comment': req.args.get('edited_comment'),
+                     'cnum_hist': req.args.get('cnum_hist'),
+                     'cversion': req.args.get('cversion')})
 
         self._insert_ticket_data(req, ticket, data,
                                  get_reporter_id(req, 'author'), field_changes)
@@ -699,7 +707,8 @@ class TicketModule(Component):
                      'resource': ticket.resource,
                      'history': history})
 
-        add_ctxtnav(req, 'Back to Ticket #%s'%ticket.id, req.href.ticket(ticket.id))
+        add_ctxtnav(req, _('Back to Ticket #%(num)s', num=ticket.id),
+                           req.href.ticket(ticket.id))
         return 'history_view.html', data, None
 
     def _render_diff(self, req, ticket, data, text_fields):
@@ -842,7 +851,7 @@ class TicketModule(Component):
                      _('Version %(num)s', num=prev_version))
         add_link(req, 'up', get_resource_url(self.env, ticket.resource,
                                              req.href, action='history'),
-                 'Ticket History')
+                 _('Ticket History'))
         if next_version:
             add_link(req, 'next', get_resource_url(self.env, ticket.resource,
                                                    req.href, action='diff',
@@ -860,6 +869,130 @@ class TicketModule(Component):
             'changes': changes, 'diff': diff_data,
             'num_changes': num_changes, 'change': new_change,
             'old_ticket': old_ticket, 'new_ticket': new_ticket,
+            'longcol': '', 'shortcol': ''
+        })
+
+        return 'diff_view.html', data, None
+
+    def _make_comment_url(self, req, ticket, cnum, version=None):
+        return req.href.ticket(ticket.id,
+                               cnum_hist=version is not None and cnum or None,
+                               cversion=version) + '#comment:%d' % cnum
+
+    def _get_comment_history(self, req, ticket, cnum):
+        history = []
+        for version, date, author, comment in ticket.get_comment_history(cnum):
+            history.append({
+                'version': version, 'date': date, 'author': author,
+                'comment': version == 0 and "''Initial version''" or '',
+                'value': comment,
+                'url': self._make_comment_url(req, ticket, cnum, version)
+            })
+        return history
+        
+    def _render_comment_history(self, req, ticket, data, cnum):
+        """Extract the history for a ticket comment."""
+        req.perm(ticket.resource).require('TICKET_VIEW')
+        history = self._get_comment_history(req, ticket, cnum)
+        history.reverse()
+        url = self._make_comment_url(req, ticket, cnum)
+        data.update({
+            'title': _('Ticket Comment History'),
+            'resource': ticket.resource,
+            'name': _('Ticket #%(num)s, comment %(cnum)d',
+                      num=ticket.id, cnum=cnum),
+            'url': url,
+            'diff_action': 'comment-diff', 'diff_args': [('cnum', cnum)],
+            'history': history,
+        })
+        add_ctxtnav(req, _('Back to Ticket #%(num)s', num=ticket.id), url)
+        return 'history_view.html', data, None
+
+    def _render_comment_diff(self, req, ticket, data, cnum):
+        """Show differences between two versions of a ticket comment."""
+        req.perm(ticket).require('TICKET_VIEW')
+        new_version = int(req.args.get('version', 1))
+        old_version = int(req.args.get('old_version', new_version))
+        if old_version > new_version:
+            old_version, new_version = new_version, old_version
+        elif old_version == new_version:
+            old_version = new_version - 1
+
+        history = {}
+        for change in self._get_comment_history(req, ticket, cnum):
+            history[change['version']] = change
+
+        def version_info(version):
+            path = _('Ticket #%(num)s, comment %(cnum)d',
+                     num=ticket.id, cnum=cnum)
+            if version:
+                rev = _('Version %(num)s', num=version)
+                shortrev = 'v%d' % version
+            else:
+                rev, shortrev = _('Initial Version'), _('initial')
+            return {'path':  path, 'rev': rev, 'shortrev': shortrev}
+
+        diff_style, diff_options, diff_data = get_diff_options(req)
+        diff_context = 3
+        for option in diff_options:
+            if option.startswith('-U'):
+                diff_context = int(option[2:])
+                break
+        if diff_context < 0:
+            diff_context = None
+
+        old_text = history[old_version]['value']
+        old_text = old_text and old_text.splitlines() or []
+        new_text = history[new_version]['value']
+        new_text = new_text and new_text.splitlines() or []
+        diffs = diff_blocks(old_text, new_text, context=diff_context,
+                            ignore_blank_lines='-B' in diff_options,
+                            ignore_case='-i' in diff_options,
+                            ignore_space_changes='-b' in diff_options)
+
+        changes = [{'diffs': diffs, 'props': [],
+                    'new': version_info(new_version),
+                    'old': version_info(old_version)}]
+
+        # -- prev/up/next links
+        prev_version = old_version
+        next_version = None
+        if new_version < len(history) - 1:
+            next_version = new_version + 1
+
+        if prev_version:
+            url = req.href.ticket(ticket.id, cnum=cnum, action='comment-diff',
+                                  version=prev_version)
+            add_link(req, 'prev', url, _('Version %(num)s', num=prev_version))
+        add_link(req, 'up', req.href.ticket(ticket.id, cnum=cnum,
+                                            action='comment-history'),
+                 _('Ticket Comment History'))
+        if next_version:
+            url = req.href.ticket(ticket.id, cnum=cnum, action='comment-diff',
+                                  version=next_version)
+            add_link(req, 'next', url, _('Version %(num)s', num=next_version))
+
+        prevnext_nav(req, _('Change'), _('Ticket Comment History'))
+        add_stylesheet(req, 'common/css/diff.css')
+        add_script(req, 'common/js/diff.js')
+
+        data.update({
+            'title': _('Ticket Comment Diff'),
+            'resource': ticket.resource,
+            'name': _('Ticket #%(num)s, comment %(cnum)d',
+                      num=ticket.id, cnum=cnum),
+            'url': self._make_comment_url(req, ticket, cnum),
+            'old_url': self._make_comment_url(req, ticket, cnum, old_version),
+            'new_url': self._make_comment_url(req, ticket, cnum, new_version),
+            'diff_url': req.href.ticket(ticket.id, cnum=cnum,
+                                        action='comment-diff',
+                                        version=new_version),
+            'diff_action': 'comment-diff', 'diff_args': [('cnum', cnum)],
+            'old_version': old_version, 'new_version': new_version,
+            'changes': changes, 'diff': diff_data,
+            'num_changes': new_version - old_version,
+            'change': history[new_version],
+            'ticket': ticket, 'cnum': cnum,
             'longcol': '', 'shortcol': ''
         })
 
@@ -1462,14 +1595,17 @@ class TicketModule(Component):
         autonum = 0 # used for "root" numbers
         last_uid = current = None
         for date, author, field, old, new, permanent in changelog:
-            uid = date, author, permanent
+            uid = permanent and (date,) or (date, author)
             if uid != last_uid:
                 if current:
+                    last_comment = comment_history[max(comment_history)]
+                    last_comment['comment'] = current['comment']
                     yield current
                 last_uid = uid
+                comment_history = {0: {'date': date, 'author': author}}
                 current = {'date': date, 'author': author, 'fields': {},
                            'permanent': permanent, 'comment': '',
-                           'last_edit': {'rev': -1}}
+                           'comment_history': comment_history}
                 if permanent and not when:
                     autonum += 1
                     current['cnum'] = autonum
@@ -1485,11 +1621,12 @@ class TicketModule(Component):
                     current['cnum'] = int(this_num)
             elif field.startswith('_comment'):      # Comment edits
                 rev = int(field[8:])
-                if rev > current['last_edit']['rev']:
-                    last_edit = datetime.fromtimestamp(int(new), utc)
-                    current['last_edit'] = {'rev': rev, 'author': author,
-                                            'date': last_edit}
+                comment_history.setdefault(rev, {}).update({'comment': old})
+                comment_history.setdefault(rev + 1, {}).update(
+                                            {'date': date, 'author': author})
             elif old or new:
                 current['fields'][field] = {'old': old, 'new': new}
         if current:
+            last_comment = comment_history[max(comment_history)]
+            last_comment['comment'] = current['comment']
             yield current
