@@ -370,7 +370,29 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
 
+    def get_change(self, cnum, db=None):
+        """Return a ticket change by its number."""
+        scnum = str(cnum)
+        db = self._get_db(db)
+        cursor = db.cursor()
+        cursor.execute("SELECT time,author FROM ticket_change "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % db.like(),
+                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+        for ts, author in cursor:
+            cursor.execute("SELECT field,author,oldvalue,newvalue "
+                           "FROM ticket_change "
+                           "WHERE ticket=%s AND time=%s",
+                           (self.id, ts))
+            fields = {}
+            change = {'date': datetime.fromtimestamp(int(ts), utc),
+                      'author': author, 'fields': fields}
+            for field, author, old, new in cursor:
+                fields[field] = {'author': author, 'old': old, 'new': new}
+            return change
+
     def modify_comment(self, cnum, author, comment, when=None, db=None):
+        """Modify a ticket change comment, while keeping a history of edits."""
         scnum = str(cnum)
         if when is None:
             when = datetime.now(utc)

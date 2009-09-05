@@ -492,9 +492,12 @@ class TicketModule(Component):
             if 'cancel_comment' in req.args:
                 req.redirect(req.href.ticket(ticket.id))
             elif 'edit_comment' in req.args:
-                req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
-                comment = req.args.get('edited_comment')
-                cnum = req.args.get('cnum_edit')
+                comment = req.args.get('edited_comment', '')
+                cnum = int(req.args['cnum_edit'])
+                change = ticket.get_change(cnum)
+                if not (req.authname and req.authname != 'anonymous'
+                        and change and change['author'] == req.authname):
+                    req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
                 ticket.modify_comment(cnum, req.authname, comment)
                 req.redirect(req.href.ticket(ticket.id))
 
@@ -1622,7 +1625,6 @@ class TicketModule(Component):
             elif field.startswith('_comment'):      # Comment edits
                 rev = int(field[8:])
                 comment_history.setdefault(rev, {}).update({'comment': old})
-                comment_history[rev].setdefault('date', date)
                 comment_history.setdefault(rev + 1, {}).update(
                         {'author': author,
                          'date': datetime.fromtimestamp(int(new), utc)})
