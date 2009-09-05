@@ -317,7 +317,7 @@ class TicketModule(Component):
                     cid = oldvalue and oldvalue.split('.')[-1]
                 elif field == 'status' and newvalue in ('reopened', 'closed'):
                     status = newvalue
-                else:
+                elif field[0] != '_': # properties like _comment{n} are hidden
                     fields[field] = newvalue
             if previous_update:
                 ev = produce_event(previous_update, status, fields,
@@ -1622,8 +1622,10 @@ class TicketModule(Component):
             elif field.startswith('_comment'):      # Comment edits
                 rev = int(field[8:])
                 comment_history.setdefault(rev, {}).update({'comment': old})
+                comment_history[rev].setdefault('date', date)
                 comment_history.setdefault(rev + 1, {}).update(
-                                            {'date': date, 'author': author})
+                        {'author': author,
+                         'date': datetime.fromtimestamp(int(new), utc)})
             elif old or new:
                 current['fields'][field] = {'old': old, 'new': new}
         if current:
