@@ -24,9 +24,15 @@ from trac.util import get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import to_unicode
 
-psycopg = None
-PgSQL = None
-PGSchemaError = None
+has_psycopg = False
+try:
+    import psycopg2 as psycopg
+    import psycopg2.extensions
+    from psycopg2 import ProgrammingError as PGSchemaError
+    psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+    has_psycopg = True
+except ImportError:
+    pass
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -47,24 +53,12 @@ class PostgreSQLConnector(Component):
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
-        global psycopg
-        global PgSQL
         cnx = PostgreSQLConnection(path, log, user, password, host, port,
                                    params)
         if not self._version:
-            if psycopg:
-                self._version = get_pkginfo(psycopg).get('version',
-                                                         psycopg.__version__)
-                name = 'psycopg2'
-            elif PgSQL:
-                import pyPgSQL
-                self._version = get_pkginfo(pyPgSQL).get('version',
-                                                         pyPgSQL.__version__)
-                name = 'pyPgSQL'
-            else:
-                name = 'unknown postgreSQL driver'
-                self._version = '?'
-            self.env.systeminfo.append((name, self._version))
+            self._version = get_pkginfo(psycopg).get('version',
+                                                     psycopg.__version__)
+            self.env.systeminfo.append(('psycopg2', self._version))
         return cnx
 
     def init_db(self, path, log=None, user=None, password=None, host=None,
@@ -152,43 +146,21 @@ class PostgreSQLConnection(ConnectionWrapper):
                  port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
-        # We support both psycopg and PgSQL but prefer psycopg
-        global psycopg
-        global PgSQL
-        global PGSchemaError
-        
-        if not psycopg and not PgSQL:
-            try:
-                import psycopg2 as psycopg
-                import psycopg2.extensions
-                from psycopg2 import ProgrammingError as PGSchemaError
-                psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-            except ImportError:
-                from pyPgSQL import PgSQL
-                from pyPgSQL.libpq import OperationalError as PGSchemaError
         if 'host' in params:
             host = params['host']
-        if psycopg:
-            dsn = []
-            if path:
-                dsn.append('dbname=' + path)
-            if user:
-                dsn.append('user=' + user)
-            if password:
-                dsn.append('password=' + password)
-            if host:
-                dsn.append('host=' + host)
-            if port:
-                dsn.append('port=' + str(port))
-            cnx = psycopg.connect(' '.join(dsn))
-            cnx.set_client_encoding('UNICODE')
-        else:
-            # Don't use chatty, inefficient server-side cursors.
-            # http://pypgsql.sourceforge.net/pypgsql-faq.html#id2787367
-            PgSQL.fetchReturnsList = 1
-            PgSQL.noPostgresCursor = 1
-            cnx = PgSQL.connect('', user, password, host, path, port, 
-                                client_encoding='utf-8', unicode_results=True)
+        dsn = []
+        if path:
+            dsn.append('dbname=' + path)
+        if user:
+            dsn.append('user=' + user)
+        if password:
+            dsn.append('password=' + password)
+        if host:
+            dsn.append('host=' + host)
+        if port:
+            dsn.append('port=' + str(port))
+        cnx = psycopg.connect(' '.join(dsn))
+        cnx.set_client_encoding('UNICODE')
         try:
             self.schema = None
             if 'schema' in params:
