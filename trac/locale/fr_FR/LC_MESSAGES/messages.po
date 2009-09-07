@@ -1900,7 +1900,7 @@ msgstr "- Manuel d'utilisation et d'administration de Trac"
 
 #: trac/templates/history_view.html:15
 msgid "Change History for"
-msgstr "Historique des modification pour"
+msgstr "Historique des modifications pour"
 
 #: trac/templates/history_view.html:21 trac/templates/history_view.html:52
 #: trac/versioncontrol/templates/diff_form.html:58
@@ -2638,12 +2638,12 @@ msgstr "Action non valide \"%(name)s\""
 
 #: trac/ticket/web_ui.py:630
 msgid "Back to Query"
-msgstr "Retour à"
+msgstr "Retour à la liste"
 
 #: trac/ticket/web_ui.py:706 trac/ticket/web_ui.py:854
 #: trac/ticket/web_ui.py:861
 msgid "Ticket History"
-msgstr "Historique des tickets"
+msgstr "Historique du ticket"
 
 #: trac/ticket/web_ui.py:710 trac/ticket/web_ui.py:908
 #, python-format
