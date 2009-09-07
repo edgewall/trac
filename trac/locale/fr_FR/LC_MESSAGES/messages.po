@@ -3204,7 +3204,7 @@ msgid ""
 "                      by %(author)s"
 msgstr ""
 "Version %(version)s, éditée il y a %(date)s\n"
-"                      par %(author)s)"
+"                      par %(author)s"
 
 #: trac/ticket/templates/ticket.html:270
 #, python-format
