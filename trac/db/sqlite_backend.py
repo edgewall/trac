@@ -118,11 +118,16 @@ class SQLiteConnector(Component):
 
     def get_connection(self, path, log=None, params={}):
         if not self._version:
-            global sqlite_version_string
+            global sqlite_version_string, have_pysqlite
             self._version = get_pkginfo(sqlite).get(
                 'version', '%d.%d.%s' % sqlite.version_info)
             self.env.systeminfo.extend([('SQLite', sqlite_version_string),
                                         ('pysqlite', self._version)])
+            if have_pysqlite == 1:
+                self.log.warning("Support for SQLite v2 and PySqlite 1.0.x "
+                                 "will be dropped in version 0.12, see "
+                                 "http://trac.edgewall.org/wiki/"
+                                 "PySqlite#UpgradingSQLitefrom2.xto3.x")
         return SQLiteConnection(path, log, params)
 
     def init_db(cls, path, log=None, params={}):
