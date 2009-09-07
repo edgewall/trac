@@ -323,30 +323,33 @@ class Ticket(object):
         """
         db = self._get_db(db)
         cursor = db.cursor()
+        sid = str(self.id)
         when_ts = when and to_timestamp(when) or 0
         if when_ts:
-            cursor.execute("SELECT time,author,field,oldvalue,newvalue,1 "
-                           "FROM ticket_change WHERE ticket=%s AND time=%s "
+            cursor.execute("SELECT time,author,field,oldvalue,newvalue,"
+                           "1 AS permanent FROM ticket_change "
+                           "WHERE ticket=%s AND time=%s "
                            "UNION "
-                           "SELECT time,author,'attachment',null,filename,0 "
-                           "FROM attachment WHERE id=%s AND time=%s "
+                           "SELECT time,author,'attachment',null,filename,"
+                           "0 AS permanent FROM attachment "
+                           "WHERE id=%s AND time=%s "
                            "UNION "
-                           "SELECT time,author,'comment',null,description,0 "
-                           "FROM attachment WHERE id=%s AND time=%s "
-                           "ORDER BY time",
-                           (self.id, when_ts, str(self.id), when_ts, 
-                           str(self.id), when_ts))
+                           "SELECT time,author,'comment',null,description,"
+                           "0 AS permanent FROM attachment "
+                           "WHERE id=%s AND time=%s "
+                           "ORDER BY permanent,time,author",
+                           (self.id, when_ts, sid, when_ts, sid, when_ts))
         else:
-            cursor.execute("SELECT time,author,field,oldvalue,newvalue,1 "
-                           "FROM ticket_change WHERE ticket=%s "
+            cursor.execute("SELECT time,author,field,oldvalue,newvalue,"
+                           "1 AS permanent FROM ticket_change WHERE ticket=%s "
                            "UNION "
-                           "SELECT time,author,'attachment',null,filename,0 "
-                           "FROM attachment WHERE id=%s "
+                           "SELECT time,author,'attachment',null,filename,"
+                           "0 AS permanent FROM attachment WHERE id=%s "
                            "UNION "
-                           "SELECT time,author,'comment',null,description,0 "
-                           "FROM attachment WHERE id=%s "
-                           "ORDER BY time", (self.id,  str(self.id), 
-                           str(self.id)))
+                           "SELECT time,author,'comment',null,description,"
+                           "0 AS permanent FROM attachment WHERE id=%s "
+                           "ORDER BY permanent,time,author",
+                           (self.id, sid, sid))
         log = []
         for t, author, field, oldvalue, newvalue, permanent in cursor:
             log.append((datetime.fromtimestamp(int(t), utc), author, field,
@@ -367,17 +370,85 @@ class Ticket(object):
         for listener in TicketSystem(self.env).change_listeners:
             listener.ticket_deleted(self)
 
-    def modify_comment(self, cnum, comment, db=None):
-        db, handle_ta = self._get_db_for_write(db)
+    def get_change(self, cnum, db=None):
+        """Return a ticket change by its number."""
+        scnum = str(cnum)
+        db = self._get_db(db)
         cursor = db.cursor()
-        cursor.execute("UPDATE ticket_change SET newvalue=%%s "
+        cursor.execute("SELECT time,author FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)"
-                       % db.like(),
-                       (comment, self.id, str(cnum),
-                        '%.' + db.like_escape(str(cnum))))
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % db.like(),
+                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+        for ts, author in cursor:
+            cursor.execute("SELECT field,author,oldvalue,newvalue "
+                           "FROM ticket_change "
+                           "WHERE ticket=%s AND time=%s",
+                           (self.id, ts))
+            fields = {}
+            change = {'date': datetime.fromtimestamp(int(ts), utc),
+                      'author': author, 'fields': fields}
+            for field, author, old, new in cursor:
+                fields[field] = {'author': author, 'old': old, 'new': new}
+            return change
+
+    def modify_comment(self, cnum, author, comment, when=None, db=None):
+        """Modify a ticket change comment, while keeping a history of edits."""
+        scnum = str(cnum)
+        if when is None:
+            when = datetime.now(utc)
+        when_ts = to_timestamp(when)
+        
+        db, handle_ta = self._get_db_for_write(db)
+        like = db.like()
+        cursor = db.cursor()
+        cursor.execute("SELECT time,newvalue FROM ticket_change "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
+                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+        for (ts, old_comment) in cursor:
+            if comment == old_comment:
+                return
+            cursor.execute("SELECT COUNT(ticket) FROM ticket_change "
+                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           (self.id, ts, db.like_escape('_comment') + '%'))
+            rev = cursor.fetchone()[0]
+            cursor.execute("INSERT INTO ticket_change "
+                           "(ticket,time,author,field,oldvalue,newvalue) "
+                           "VALUES (%s,%s,%s,%s,%s,%s)",
+                           (self.id, ts, author, '_comment%d' % rev,
+                            old_comment, str(when_ts)))
+            cursor.execute("UPDATE ticket_change SET newvalue=%s "
+                           "WHERE ticket=%s AND time=%s AND field='comment'",
+                           (comment, self.id, ts))
+            break
         if handle_ta:
-            db.commit()  
+            db.commit()
+
+    def get_comment_history(self, cnum, db=None):
+        scnum = str(cnum)
+        db = self._get_db(db)
+        like = db.like()
+        history = []
+        cursor = db.cursor()
+        cursor.execute("SELECT time,author,newvalue FROM ticket_change "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
+                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+        for (ts0, author0, last_comment) in cursor:
+            cursor.execute("SELECT field,author,oldvalue,newvalue "
+                           "FROM ticket_change "
+                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           (self.id, ts0, db.like_escape('_comment') + '%'))
+            for field, author, comment, ts in cursor:
+                rev = int(field[8:])
+                history.append((rev, datetime.fromtimestamp(int(ts0), utc),
+                                author0, comment))
+                ts0, author0 = ts, author
+            history.sort()
+            rev = history and (history[-1][0] + 1) or 0
+            history.append((rev, datetime.fromtimestamp(int(ts), utc),
+                            author, last_comment))
+        return history
 
 
 def simplify_whitespace(name):

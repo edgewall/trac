@@ -72,10 +72,17 @@
           </py:choose>
         </li>
       </ul>
-      <div py:if="'comment' in change and (str(change.cnum) != cnum_edit or edited_comment is not None)"
-           class="comment searchable ${str(change.cnum) == cnum_edit and 'ticketdraft' or None}" xml:space="preserve">
-        ${wiki_to_html(context, [change.comment, edited_comment][str(change.cnum) == cnum_edit], escape_newlines=preserve_newlines)}
-      </div>
+      <py:with vars="comment_is_edited = str(change.cnum) == cnum_edit">
+        <div py:if="'comment' in change and (not comment_is_edited or edited_comment is not None or show_history)"
+             py:choose="" xml:space="preserve"
+             class="comment searchable ${comment_is_edited and 'ticketdraft' or None}">
+          <py:when test="comment_is_edited">${wiki_to_html(context, edited_comment,
+                                                           escape_newlines=preserve_newlines) or u'\xa0'}</py:when>
+          <py:when test="show_history">${wiki_to_html(context, change.comment_history[int(cversion)].comment,
+                                                      escape_newlines=preserve_newlines)}</py:when>
+          <py:otherwise>${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}</py:otherwise>
+        </div>
+      </py:with>
     </py:def>
 
     <div id="content" class="ticket" 
@@ -85,7 +92,7 @@
                  can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
                  can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource);
                  only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource);
-                 can_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
+                 has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
                 ">
       <h1>
         <py:choose>
@@ -215,7 +222,13 @@
         <py:if test="ticket.exists and changes">
           <h2>Change History</h2>
           <div id="changelog">
-            <py:for each="change in changes">
+            <py:for each="change in changes"
+                    py:with="can_edit_comment = has_edit_comment or (authname and authname != 'anonymous'
+                                                                     and authname == change.author);
+                             show_editor = can_edit_comment and str(change.cnum) == cnum_edit;
+                             show_history = str(change.cnum) == cnum_hist;
+                             max_version = max(change.comment_history);
+                             comment_version = (max_version, int(cversion or 0))[show_history]">
               <div class="change">
                 <h3 class="change">
                   <span class="threading" py:if="'cnum' in change"
@@ -234,29 +247,47 @@
                   </span>
                   <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
                 </h3>
-                <div py:if="not (can_edit_comment and str(change.cnum) == cnum_edit)" class="inlinebuttons">
-                  <form py:if="'cnum' in change and can_append" 
-                        method="get" action="#comment" class="inlinebuttons">
-                    <div>
+                <py:if test="not show_editor and comment_version == max_version">
+                  <form py:if="'cnum' in change and can_append" method="get" action="#comment">
+                    <div class="inlinebuttons">
                       <input type="hidden" name="replyto" value="${change.cnum}"/>
                       <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
                     </div>
                   </form>
-                  <form py:if="'cnum' in change and can_edit_comment"
-                        method="get" action="#comment:${change.cnum}" class="inlinebuttons">
-                    <div>
+                  <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${change.cnum}">
+                    <div class="inlinebuttons">
                       <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
                       <input type="submit" value="${_('Edit')}" title="Edit comment ${change.cnum}"/>
                     </div>
-                  </form>              
-                </div>
+                  </form>
+                </py:if>           
                 ${display_change(change)}
-                <form py:if="can_edit_comment and str(change.cnum) == cnum_edit" method="post" action="#comment:${change.cnum}">
+                <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
+                     class="trac-lastedit ${comment_version != max_version and 'trac-shade' or None}">
+                  <i18n:msg params="version, date, author" py:when="comment_version != max_version">
+                      Version ${comment_version}, edited ${dateinfo(change.comment_history[comment_version].date)} ago
+                      by ${authorinfo(change.comment_history[comment_version].author)}
+                  </i18n:msg>
+                  <i18n:msg params="date, author" py:otherwise="">
+                      Last edited ${dateinfo(change.comment_history[comment_version].date)} ago
+                      by ${authorinfo(change.comment_history[comment_version].author)}
+                  </i18n:msg>
+                  <py:if test="comment_version > 0">
+                    (<a href="${href.ticket(ticket.id, cnum_hist=change.cnum, cversion=comment_version - 1)}#comment:${change.cnum}">previous</a>)
+                  </py:if>
+                  <py:if test="comment_version &lt; max_version">
+                    (<a href="${href.ticket(ticket.id, cnum_hist=change.cnum, cversion=comment_version + 1)}#comment:${change.cnum}">next</a>)
+                  </py:if>
+                  <py:if test="comment_version > 0">
+                    (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=change.cnum, version=comment_version)}">diff</a>)
+                  </py:if>
+                </div>
+                <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
                   <div>
-                    <textarea id="trac-edited_comment" name="edited_comment" class="wikitext" rows="10" cols="78">
-${[edited_comment, change.comment][edited_comment is None]}</textarea>
+                    <textarea name="edited_comment" class="wikitext" rows="10" cols="78">
+${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                     <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
-                    <input type="submit" name="preview_comment" value="${_('Preview')}" title='Preview changes to comment ${change.cnum}'/>
+                    <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
                     <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
                     <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
                   </div>
@@ -268,7 +299,8 @@ ${[edited_comment, change.comment][edited_comment is None]}</textarea>
       </py:if>
       <!--! End of the section we don't show on initial new tickets -->
 
-      <form py:if="not version and version != 0 and (can_append or can_modify or can_edit or can_create)"
+      <form py:if="not version and version != 0 and not cnum_edit
+                   and (can_append or can_modify or can_edit or can_create)"
             action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" id="propertyform">
         <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
             Add/Change #${ticket.id} ($ticket.summary)</a></h3>

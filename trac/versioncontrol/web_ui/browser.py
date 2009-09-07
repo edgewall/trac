@@ -100,15 +100,8 @@ class DefaultPropertyRenderer(Component):
 
     implements(IPropertyRenderer)
 
-    hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
-        doc="""Comma-separated list of version control properties to hide from
-        the repository browser.
-
-        (''since 0.9'')""")
-
     def match_property(self, name, mode):
-        # Support everything but hidden properties.
-        return name not in self.hidden_properties and 1 or 0
+        return 1
 
     def render_property(self, name, mode, context, props):
         # No special treatment besides respecting newlines in values.
@@ -247,6 +240,11 @@ class BrowserModule(Component):
         
         For open repositories where anyone can check-in a file, it is
         recommended to leave this option disabled (which is the default).""")
+
+    hidden_properties = ListOption('browser', 'hide_properties', 'svk:merge',
+        doc="""Comma-separated list of version control properties to hide from
+        the repository browser.
+        (''since 0.9'')""")
 
     # public methods
 
@@ -640,6 +638,8 @@ class BrowserModule(Component):
 
     def render_property(self, name, mode, context, props):
         """Renders a node property to HTML."""
+        if name in self.hidden_properties:
+            return
         candidates = []
         for renderer in self.property_renderers:
             quality = renderer.match_property(name, mode)
@@ -653,7 +653,6 @@ class BrowserModule(Component):
                     return rendered
                 if isinstance(rendered, RenderedProperty):
                     value = rendered.content
-                    rendered = rendered
                 else:
                     value = rendered
                     rendered = None

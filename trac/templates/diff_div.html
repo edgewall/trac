@@ -41,11 +41,11 @@
       class="diff">
 
   <ul py:if="any([item.diffs or item.props for item in changes])" class="entries">
-    <py:for each="idx, item in enumerate(changes)">
+    <py:for each="idx, item in enumerate(changes)" py:with="old = item.old; new = item.new">
       <li py:if="item and (item.diffs or item.props or 'comments' in item)" class="entry" py:with="comments = item.get('comments')">
         <h2 id="${not no_id and 'file%s' % idx or None}" py:choose="">
-          <a py:when="item.new.path" title="${item.get('title', item.new.get('title'))}"
-             href="${item.get('href', item.new.get('href'))}">$item.new.path</a>
+          <a py:when="new.path" title="${item.get('title', new.get('title'))}"
+             href="${item.get('href', new.get('href'))}">$new.path</a>
           <py:otherwise>&nbsp;</py:otherwise>
         </h2>
         <pre py:if="comments">$comments</pre>
@@ -81,12 +81,12 @@
               <thead>
                 <tr>
                   <th colspan="2">
-                    <a title="${item.old.get('title')}" href="${item.old.get('href')}#L$fromline"
-                       py:strip="'href' not in item.old">$longcol $item.old.rev</a>
+                    <a title="${old.get('title')}" href="${old.get('href')}#L$fromline"
+                       py:strip="'href' not in old">$longcol $old.rev</a>
                   </th>
                   <th colspan="2">
-                    <a title="${item.new.get('title')}" href="${item.new.get('href')}#L$toline"
-                       py:strip="'href' not in item.new">$longcol $item.new.rev</a>
+                    <a title="${new.get('title')}" href="${new.get('href')}#L$toline"
+                       py:strip="'href' not in new">$longcol $new.rev</a>
                   </th>
                 </tr>
               </thead>
@@ -95,15 +95,15 @@
               <colgroup><col class="lineno" /><col class="lineno" /><col class="content" /></colgroup>
               <thead>
                 <tr>
-                  <th title="$longcol $item.old.rev">
-                    <a title="${item.old.get('title')}" href="${item.old.get('href')}#L$fromline"
-                       py:strip="'href' not in item.old">
-                      $shortcol$item.old.shortrev</a>
+                  <th title="$longcol $old.rev">
+                    <a title="${old.get('title')}" href="${old.get('href')}#L$fromline"
+                       py:strip="'href' not in old">
+                      $shortcol$old.shortrev</a>
                   </th>
-                  <th title="$longcol $item.new.rev">
-                    <a title="${item.new.get('title')}" href="${item.new.get('href')}#L$toline"
-                       py:strip="'href' not in item.new">
-                      $shortcol$item.new.shortrev</a>
+                  <th title="$longcol $new.rev">
+                    <a title="${new.get('title')}" href="${new.get('href')}#L$toline"
+                       py:strip="'href' not in new">
+                      $shortcol$new.shortrev</a>
                   </th>
                   <td><em py:if="'diffs_title' in item">${item.diffs_title[0]}</em>&nbsp;</td>
                 </tr>
@@ -213,12 +213,12 @@
                 py:with="fromline = item.diffs[idx+1][0].base.offset+1;
                          toline = item.diffs[idx+1][0].changed.offset+1">
                 <tr py:when="'sidebyside'">
-                  <th><a href="$item.old.href#L$fromline">&hellip;</a></th><td>&nbsp;</td>
-                  <th><a href="$item.new.href#L$toline">&hellip;</a></th><td>&nbsp;</td>
+                  <th><a href="$old.href#L$fromline">&hellip;</a></th><td>&nbsp;</td>
+                  <th><a href="$new.href#L$toline">&hellip;</a></th><td>&nbsp;</td>
                 </tr>
                 <tr py:when="'inline'">
-                  <th><a href="$item.old.href#L$fromline">&hellip;</a></th>
-                  <th><a href="$item.new.href#L$toline">&hellip;</a></th>
+                  <th><a href="$old.href#L$fromline">&hellip;</a></th>
+                  <th><a href="$new.href#L$toline">&hellip;</a></th>
                   <td><em py:if="'diffs_title' in item">${item.diffs_title[idx+1]}</em>&nbsp;</td>
                 </tr>
               </tbody>

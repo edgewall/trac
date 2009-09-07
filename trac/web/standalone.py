@@ -173,9 +173,9 @@ def main():
                       dest='unquote',
                       help='unquote PATH_INFO (may be needed when using ajp)')
     parser.add_option('--http10', action='store_false', dest='http11',
-                      help='use HTTP/1.0 protocol version (default)')
+                      help='use HTTP/1.0 protocol version instead of HTTP/1.1')
     parser.add_option('--http11', action='store_true', dest='http11',
-                      help='use HTTP/1.1 protocol version instead of HTTP/1.0')
+                      help='use HTTP/1.1 protocol version (default)')
     parser.add_option('-e', '--env-parent-dir', action='store',
                       dest='env_parent_dir', metavar='PARENTDIR',
                       help='parent directory of the project environments')
@@ -204,7 +204,7 @@ def main():
                           'to use, in octal notation (default 022)')
 
     parser.set_defaults(port=None, hostname='', base_path='', daemonize=False,
-                        protocol='http', umask=022)
+                        protocol='http', http11=True, umask=022)
     options, args = parser.parse_args()
 
     if not args and not options.env_parent_dir:
