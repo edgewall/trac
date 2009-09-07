@@ -1253,9 +1253,11 @@ Congratulations!
             dest = os.path.join(script_target, 'trac.'+script)
             template = Chrome(env).load_template('deploy_trac.'+script, 'text')
             stream = template.generate(**data)
-            out = open(dest, 'w')
-            stream.render('text', out=out)
-            out.close()
+            out = os.fdopen(os.open(dest, os.O_CREAT | os.O_WRONLY), 'w')
+            try:
+                stream.render('text', out=out)
+            finally:
+                out.close()
 
 
 class TracAdminHelpMacro(WikiMacroBase):
