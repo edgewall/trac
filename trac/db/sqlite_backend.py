@@ -34,11 +34,7 @@ except ImportError:
         import sqlite3 as sqlite
         have_pysqlite = 2
     except ImportError:
-        try:
-            import sqlite
-            have_pysqlite = 1
-        except ImportError:
-            have_pysqlite = 0
+        have_pysqlite = 0
 
 if have_pysqlite == 2:
     _ver = sqlite.sqlite_version_info
@@ -62,27 +58,6 @@ if have_pysqlite == 2:
                 sql = sql % (('?',) * len(args[0]))
             return self._rollback_on_error(sqlite.Cursor.executemany, sql,
                                            args or [])
-
-elif have_pysqlite == 1:
-    _ver = sqlite._sqlite.sqlite_version_info()
-    sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
-    sqlite_version_string = '%d.%d.%d' % _ver
-
-    class SQLiteUnicodeCursor(sqlite.Cursor):
-        def _convert_row(self, row):
-            return tuple([(isinstance(v, str) and [v.decode('utf-8')] or [v])[0]
-                          for v in row])
-        def fetchone(self):
-            row = sqlite.Cursor.fetchone(self)
-            return row and self._convert_row(row) or None
-        def fetchmany(self, num):
-            rows = sqlite.Cursor.fetchmany(self, num)
-            return rows != None and [self._convert_row(row)
-                                     for row in rows] or []
-        def fetchall(self):
-            rows = sqlite.Cursor.fetchall(self)
-            return rows != None and [self._convert_row(row)
-                                     for row in rows] or []
 
 
 def _to_sql(table):
@@ -180,36 +155,26 @@ class SQLiteConnection(ConnectionWrapper):
                                   'and the directory it is located in.',
                                   user=getuser(), path=path))
 
-        if have_pysqlite == 2:
-            self._active_cursors = weakref.WeakKeyDictionary()
-            timeout = int(params.get('timeout', 10.0))
-            if isinstance(path, unicode): # needed with 2.4.0
-                path = path.encode('utf-8')
-            cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
-                                 check_same_thread=sqlite_version < 30301,
-                                 timeout=timeout)
-        else:
-            timeout = int(params.get('timeout', 10000))
-            cnx = sqlite.connect(path, timeout=timeout, encoding='utf-8')
+        self._active_cursors = weakref.WeakKeyDictionary()
+        timeout = int(params.get('timeout', 10.0))
+        if isinstance(path, unicode): # needed with 2.4.0
+            path = path.encode('utf-8')
+        cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
+                             check_same_thread=sqlite_version < 30301,
+                             timeout=timeout)
             
         ConnectionWrapper.__init__(self, cnx, log)
 
-    if have_pysqlite == 2:
-        def cursor(self):
-            cursor = self.cnx.cursor(PyFormatCursor)
-            self._active_cursors[cursor] = True
-            cursor.cnx = self
-            return cursor
+    def cursor(self):
+        cursor = self.cnx.cursor(PyFormatCursor)
+        self._active_cursors[cursor] = True
+        cursor.cnx = self
+        return cursor
 
-        def rollback(self):
-            for cursor in self._active_cursors.keys():
-                cursor.close()
-            self.cnx.rollback()
-
-    else:
-        def cursor(self):
-            self.cnx._checkNotClosed("cursor")
-            return SQLiteUnicodeCursor(self.cnx, self.cnx.rowclass)
+    def rollback(self):
+        for cursor in self._active_cursors.keys():
+            cursor.close()
+        self.cnx.rollback()
 
     def cast(self, column, type):
         if sqlite_version >= 30203:
@@ -235,9 +200,5 @@ class SQLiteConnection(ConnectionWrapper):
         else:
             return text
 
-    if have_pysqlite == 2:
-        def get_last_id(self, cursor, table, column='id'):
-            return cursor.lastrowid
-    else:
-        def get_last_id(self, cursor, table, column='id'):
-            return self.cnx.db.sqlite_last_insert_rowid()
+    def get_last_id(self, cursor, table, column='id'):
+        return cursor.lastrowid
