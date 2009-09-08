@@ -847,7 +847,7 @@ class Mimeview(Component):
         """
         # Extend default extension to MIME type mappings with configured ones
         if not self._mime_map:
-            self._mime_map = MIME_MAP
+            self._mime_map = MIME_MAP.copy()
             for mapping in self.config['mimeviewer'].getlist('mime_map'):
                 if ':' in mapping:
                     assocations = mapping.split(':')
@@ -861,6 +861,18 @@ class Mimeview(Component):
         if mimetype and charset and not 'charset' in mimetype:
             mimetype += '; charset=' + charset
         return mimetype
+
+    def is_binary(self, mimetype=None, filename=None, content=None):
+        """Check if a file must be considered as binary."""
+        if not mimetype and filename:
+            mimetype = self.get_mimetype(filename, content)
+        if mimetype:
+            mimetype = ct_mimetype(mimetype)
+            if mimetype in self.treat_as_binary:
+                return True
+        if content is not None and is_binary(content):
+            return True
+        return False
 
     def to_utf8(self, content, mimetype=None):
         """Convert an encoded `content` to utf-8.
