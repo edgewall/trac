@@ -23,10 +23,25 @@ from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import to_unicode
+from trac.util.translation import _
 
-psycopg = None
-PgSQL = None
+has_psycopg = False
+has_pgsql = False
 PGSchemaError = None
+try:
+    import psycopg2 as psycopg
+    import psycopg2.extensions
+    from psycopg2 import ProgrammingError as PGSchemaError
+    psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+    has_psycopg = True
+except ImportError:
+    try:
+        from pyPgSQL import PgSQL
+        from pyPgSQL.libpq import OperationalError as PGSchemaError
+        has_pgsql = True
+    except ImportError:
+        pass
+
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -41,22 +56,23 @@ class PostgreSQLConnector(Component):
 
     def __init__(self):
         self._version = None
+        self.error = None
 
     def get_supported_schemes(self):
-        return [('postgres', 1)]
+        if not (has_psycopg or has_pgsql):
+            self.error = _("Cannot load Python bindings for PostgreSQL")
+        yield ('postgres', self.error and -1 or 1)
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
-        global psycopg
-        global PgSQL
         cnx = PostgreSQLConnection(path, log, user, password, host, port,
                                    params)
         if not self._version:
-            if psycopg:
+            if has_psycopg:
                 self._version = get_pkginfo(psycopg).get('version',
                                                          psycopg.__version__)
                 name = 'psycopg2'
-            elif PgSQL:
+            elif has_pgsql:
                 import pyPgSQL
                 self._version = get_pkginfo(pyPgSQL).get('version',
                                                          pyPgSQL.__version__)
@@ -152,23 +168,9 @@ class PostgreSQLConnection(ConnectionWrapper):
                  port=None, params={}):
         if path.startswith('/'):
             path = path[1:]
-        # We support both psycopg and PgSQL but prefer psycopg
-        global psycopg
-        global PgSQL
-        global PGSchemaError
-        
-        if not psycopg and not PgSQL:
-            try:
-                import psycopg2 as psycopg
-                import psycopg2.extensions
-                from psycopg2 import ProgrammingError as PGSchemaError
-                psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
-            except ImportError:
-                from pyPgSQL import PgSQL
-                from pyPgSQL.libpq import OperationalError as PGSchemaError
         if 'host' in params:
             host = params['host']
-        if psycopg:
+        if has_psycopg:
             dsn = []
             if path:
                 dsn.append('dbname=' + path)
@@ -182,7 +184,7 @@ class PostgreSQLConnection(ConnectionWrapper):
                 dsn.append('port=' + str(port))
             cnx = psycopg.connect(' '.join(dsn))
             cnx.set_client_encoding('UNICODE')
-        else:
+        elif has_pgsql:
             # Don't use chatty, inefficient server-side cursors.
             # http://pypgsql.sourceforge.net/pypgsql-faq.html#id2787367
             PgSQL.fetchReturnsList = 1

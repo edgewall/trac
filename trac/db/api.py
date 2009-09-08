@@ -36,7 +36,12 @@ class IDatabaseConnector(Interface):
 
     def get_supported_schemes():
         """Return the connection URL schemes supported by the connector, and
-        their relative priorities as an iterable of `(scheme, priority)` tuples.
+        their relative priorities as an iterable of `(scheme, priority)`
+        tuples.
+        
+        If `priority` is a negative number, this is indicative of an
+        error  condition with the connector. An error message should be 
+        attached to the `error` attribute of the connector.
         """
 
     def get_connection(path, log=None, **kwargs):
@@ -116,18 +121,17 @@ class DatabaseManager(Component):
 
     def _get_connector(self): ### FIXME: Make it public?
         scheme, args = _parse_db_str(self.connection_uri)
-        candidates = {}
-        for connector in self.connectors:
-            for scheme_, priority in connector.get_supported_schemes():
-                if scheme_ != scheme:
-                    continue
-                highest = candidates.get(scheme_, (None, 0))[1]
-                if priority > highest:
-                    candidates[scheme] = (connector, priority)
-
-        connector = candidates.get(scheme, [None])[0]
-        if not connector:
+        candidates = [
+            (priority, connector)
+            for connector in self.connectors
+            for scheme_, priority in connector.get_supported_schemes()
+            if scheme_ == scheme
+        ]
+        if not candidates:
             raise TracError('Unsupported database type "%s"' % scheme)
+        priority, connector = max(candidates)
+        if priority < 0:
+            raise TracError(connector.error)
 
         if scheme == 'sqlite':
             # Special case for SQLite to support a path relative to the
