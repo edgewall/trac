@@ -651,7 +651,6 @@ class ChangesetModule(Component):
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
             mimeview = Mimeview(self.env)
-            treat_as_binary = mimeview.treat_as_binary
 
             if old_node:
                 old_content = old_node.get_content().read()
