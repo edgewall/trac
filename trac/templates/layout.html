@@ -10,6 +10,7 @@
     <title py:with="title = list(select('title/text()'))">
       <py:if test="title">${title} – </py:if>${project.name or 'Trac'}
     </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <py:if test="chrome.links">
       <py:for each="rel, links in chrome.links.items()">
         <link rel="${rel}" py:for="link in links" py:attrs="link" />
