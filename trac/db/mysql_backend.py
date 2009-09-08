@@ -23,6 +23,7 @@ from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import to_unicode
+from trac.util.translation import _
 
 _like_escape_re = re.compile(r'([/_%])')
 
@@ -64,13 +65,12 @@ class MySQLConnector(Component):
 
     def __init__(self):
         self._version = None
+        self.error = None
 
     def get_supported_schemes(self):
-        global has_mysqldb
-        if has_mysqldb:
-            return [('mysql', 1)]
-        else:
-            return []
+        if not has_mysqldb:
+            self.error = _("Cannot load Python bindings for MySQL")
+        yield ('mysql', self.error and -1 or 1)
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):

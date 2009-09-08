@@ -88,13 +88,19 @@ class SQLiteConnector(Component):
 
     def __init__(self):
         self._version = None
+        self.error = None
 
     def get_supported_schemes(self):
-        return [('sqlite', 1)]
+        if not have_pysqlite:
+            self.error = _("Cannot load Python bindings for SQLite")
+        elif sqlite.sqlite_version_info >= (3, 3, 3):
+            if sqlite.version_info[0] == 2 and \
+                    sqlite.version_info < (2, 0, 7):
+                self.error = _("Need at least PySqlite 2.0.7 or higher")
+        yield ('sqlite', self.error and -1 or 1)
 
     def get_connection(self, path, log=None, params={}):
         if not self._version:
-            global sqlite_version_string
             self._version = get_pkginfo(sqlite).get(
                 'version', '%d.%d.%s' % sqlite.version_info)
             self.env.systeminfo.extend([('SQLite', sqlite_version_string),

@@ -23,6 +23,7 @@ from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import to_unicode
+from trac.util.translation import _
 
 has_psycopg = False
 try:
@@ -47,9 +48,12 @@ class PostgreSQLConnector(Component):
 
     def __init__(self):
         self._version = None
+        self.error = None
 
     def get_supported_schemes(self):
-        return [('postgres', 1)]
+        if not has_psycopg:
+            self.error = _("Cannot load Python bindings for PostgreSQL")
+        yield ('postgres', self.error and -1 or 1)
 
     def get_connection(self, path, log=None, user=None, password=None,
                        host=None, port=None, params={}):
