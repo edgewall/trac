@@ -506,13 +506,15 @@ class ChangesetModule(Component):
             are detected, but the return value is None for non-comparable files.
             """
             mview = Mimeview(self.env)
+            if mview.is_binary(old_node.content_type, old_node.path):
+                return None
+            if mview.is_binary(new_node.content_type, new_node.path):
+                return None
             old_content = old_node.get_content().read()
-            if mview.is_binary(old_node.content_type, old_node.path,
-                               old_content):
+            if mview.is_binary(content=old_content):
                 return None
             new_content = new_node.get_content().read()
-            if mview.is_binary(new_node.content_type, new_node.path,
-                               new_content):
+            if mview.is_binary(content=new_content):
                 return None
 
             old_content = mview.to_unicode(old_content, old_node.content_type)
@@ -653,17 +655,19 @@ class ChangesetModule(Component):
             mimeview = Mimeview(self.env)
 
             if old_node:
+                if mimeview.is_binary(old_node.content_type, old_node.path):
+                    continue
                 old_content = old_node.get_content().read()
-                if mimeview.is_binary(old_node.content_type, old_node.path,
-                                      old_content):
+                if mimeview.is_binary(content=old_content):
                     continue
                 old_node_info = (old_node.path, old_node.rev)
                 old_content = mimeview.to_unicode(old_content,
                                                   old_node.content_type)
             if new_node:
+                if mimeview.is_binary(new_node.content_type, new_node.path):
+                    continue
                 new_content = new_node.get_content().read()
-                if mimeview.is_binary(new_node.content_type, new_node.path,
-                                      new_content):
+                if mimeview.is_binary(content=new_content):
                     continue
                 new_node_info = (new_node.path, new_node.rev)
                 new_path = new_node.path
