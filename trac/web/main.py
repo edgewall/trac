@@ -272,7 +272,6 @@ class RequestDispatcher(Component):
         return Session(self.env, req)
 
     def _get_locale(self, req):
-        global Locale
         if Locale:
             available = [locale_id.replace('_', '-') for locale_id in
                          translation.get_available_locales()]

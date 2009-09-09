@@ -55,7 +55,6 @@ class ReStructuredTextRenderer(Component):
         return 0
 
     def render(self, context, mimetype, content, filename=None, rev=None):
-        global has_docutils
         if not has_docutils:
             raise TracError(_('Docutils not found'))
         if StrictVersion(__version__) < StrictVersion('0.3.9'):

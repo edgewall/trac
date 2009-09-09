@@ -811,7 +811,6 @@ class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
 
 
 def suite():
-    global has_svn
     suite = unittest.TestSuite()
     if has_svn:
         suite.addTest(unittest.makeSuite(SubversionRepositoryTestCase,

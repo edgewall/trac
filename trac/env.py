@@ -558,8 +558,6 @@ def open_environment(env_path=None, use_cache=False):
                       invocations of this function
     @return: the `Environment` object
     """
-    global env_cache, env_cache_lock
-
     if not env_path:
         env_path = os.getenv('TRAC_ENV')
     if not env_path:
