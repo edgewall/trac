@@ -226,15 +226,15 @@ class TimelineModule(Component):
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 authors=authors,
                                                 daysback=daysback),
-                 _('Previous period'))
+                 _('Previous Period'))
         if today - fromdate > timedelta(days=0):
             next_start = format_date(fromdate + timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     authors=authors,
                                                     daysback=daysback),
-                     _('Next period'))
-        prevnext_nav(req, _('Previous period'), _('Next period'))
+                     _('Next Period'))
+        prevnext_nav(req, _('Previous Period'), _('Next Period'))
         
         return 'timeline.html', data, None
 

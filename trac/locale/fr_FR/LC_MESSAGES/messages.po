@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-09-10 20:14+0200\n"
+"PO-Revision-Date: 2009-09-10 20:29+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3344,11 +3344,11 @@ msgid "Timeline"
 msgstr "Historique"
 
 #: trac/timeline/web_ui.py:229 trac/timeline/web_ui.py:237
-msgid "Previous period"
+msgid "Previous Period"
 msgstr "Période précédente"
 
 #: trac/timeline/web_ui.py:236 trac/timeline/web_ui.py:237
-msgid "Next period"
+msgid "Next Period"
 msgstr "Période suivante"
 
 #: trac/timeline/web_ui.py:297
