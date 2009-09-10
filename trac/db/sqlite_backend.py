@@ -63,6 +63,45 @@ if have_pysqlite == 2:
             return self._rollback_on_error(sqlite.Cursor.executemany, sql,
                                            args or [])
 
+    # EagerCursor taken from the example in pysqlite's repository:
+    #
+    #   http://oss.itsystementwicklung.de/hg/pysqlite/raw-file/0a726720f540/misc/eager.py
+    #
+    # Only change is to subclass it from PyFormatCursor instead of
+    # sqlite.Cursor.
+
+    class EagerCursor(PyFormatCursor):
+        def __init__(self, con):
+            PyFormatCursor.__init__(self, con)
+            self.rows = []
+            self.pos = 0
+
+        def execute(self, *args):
+            PyFormatCursor.execute(self, *args)
+            self.rows = PyFormatCursor.fetchall(self)
+            self.pos = 0
+
+        def fetchone(self):
+            try:
+                row = self.rows[self.pos]
+                self.pos += 1
+                return row
+            except IndexError:
+                return None
+
+        def fetchmany(self, num=None):
+            if num is None:
+                num = self.arraysize
+
+            result = self.rows[self.pos:self.pos+num]
+            self.pos += num
+            return result
+
+        def fetchall(self):
+            result = self.rows[self.pos:]
+            self.pos = len(self.rows)
+            return result
+
 elif have_pysqlite == 1:
     _ver = sqlite._sqlite.sqlite_version_info()
     sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
@@ -174,7 +213,7 @@ class SQLiteConnector(Component):
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
-    __slots__ = ['_active_cursors']
+    __slots__ = ['_active_cursors', '_eager']
     poolable = have_pysqlite and os.name == 'nt' and sqlite_version >= 30301
 
     def __init__(self, path, log=None, params={}):
@@ -195,6 +234,8 @@ class SQLiteConnection(ConnectionWrapper):
         if have_pysqlite == 2:
             self._active_cursors = weakref.WeakKeyDictionary()
             timeout = int(params.get('timeout', 10.0))
+            self._eager = params.get('cursor', 'eager') == 'eager'
+            # eager is default, can be turned off by specifying ?cursor=
             if isinstance(path, unicode): # needed with 2.4.0
                 path = path.encode('utf-8')
             cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
@@ -208,7 +249,7 @@ class SQLiteConnection(ConnectionWrapper):
 
     if have_pysqlite == 2:
         def cursor(self):
-            cursor = self.cnx.cursor(PyFormatCursor)
+            cursor = self.cnx.cursor((PyFormatCursor, EagerCursor)[self._eager])
             self._active_cursors[cursor] = True
             cursor.cnx = self
             return cursor
