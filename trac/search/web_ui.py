@@ -29,8 +29,8 @@ from trac.util.datefmt import format_datetime
 from trac.util.presentation import Paginator
 from trac.util.translation import _
 from trac.web import IRequestHandler
-from trac.web.chrome import add_link, add_stylesheet, INavigationContributor, \
-                            ITemplateProvider
+from trac.web.chrome import add_link, add_stylesheet, add_warning, \
+                            INavigationContributor, ITemplateProvider
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import extract_link
 
@@ -102,17 +102,21 @@ class SearchModule(Component):
                 query = query[1:]
             terms = self._get_search_terms(query)
 
-            # Refuse queries that obviously would result in a huge result set
-            if not terms or \
-                    len(terms) == 1 and len(terms[0]) < self.min_query_length:
-                raise TracError(_('Search query too short. Query must be at '
-                                  'least %(num)s characters long.',
-                                  num=self.min_query_length), _('Search Error'))
-
             results = []
-            for source in self.search_sources:
-                results += list(source.get_search_results(req, terms, filters))
-            results.sort(lambda x,y: cmp(y[2], x[2]))
+
+            # Refuse queries that obviously would result in a huge result set
+            query_too_short = not terms or \
+                    (len(terms) == 1 and len(terms[0]) < self.min_query_length)
+            if query_too_short:
+                add_warning(req, _('Search query too short. Query must be at '
+                                   'least %(num)s characters long.',
+                                   num=self.min_query_length))
+
+            else:
+                for source in self.search_sources:
+                    results += list(source.get_search_results(req, terms,
+                                                              filters))
+                results.sort(lambda x,y: cmp(y[2], x[2]))
 
             page = int(req.args.get('page', '1'))
             results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
