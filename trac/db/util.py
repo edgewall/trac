@@ -50,8 +50,13 @@ class IterableCursor(object):
             try:
                 if args:
                     self.log.debug('args: %r', args)
-                    return self.cursor.execute(sql_escape_percent(sql), args)
-                return self.cursor.execute(sql)
+                    r = self.cursor.execute(sql_escape_percent(sql), args)
+                else:
+                    r = self.cursor.execute(sql)
+                rows = getattr(self.cursor, 'rows', None)
+                if rows is not None:
+                    self.log.debug("prefetch: %d rows", len(rows))
+                return r
             except Exception, e:
                 self.log.debug('execute exception: %r', e)
                 raise

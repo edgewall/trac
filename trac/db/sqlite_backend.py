@@ -102,6 +102,16 @@ if have_pysqlite == 2:
             self.pos = len(self.rows)
             return result
 
+        # needed for the tests (InMemoryDatabase doesn't use IterableCursor)
+
+        def __iter__(self):
+            while True:
+                row = self.fetchone()
+                if not row:
+                    return
+                yield row
+
+
 elif have_pysqlite == 1:
     _ver = sqlite._sqlite.sqlite_version_info()
     sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + _ver[2]
