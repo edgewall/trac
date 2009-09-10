@@ -33,7 +33,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import add_link, add_stylesheet, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
@@ -341,9 +341,12 @@ class TimelineModule(Component):
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args+[(f, 'on') for f in other_filters])
+        other_events = _('other kind of events') # help extraction
         raise TracError(tag(
-            tag.p(', '.join(guilty_kinds),
-                  ' event provider (', tag.tt(ep_name), ') failed:', tag.br(),
+            tag.p(tag_("%(kinds)s event provider (%(name)s) failed:",
+                       kinds=', '.join(guilty_kinds), name=tag.tt(ep_name)),
+                  tag.br(),
                   exc_name, ': ', to_unicode(exc), class_='message'),
-            tag.p('You may want to see the other kind of events from the ',
-                  tag.a('Timeline', href=href))))
+            tag.p(tag_('You may want to see the %(other_events)s from the '
+                       'Timeline.',
+                       other_events=tag.a(other_events, href=href)))))

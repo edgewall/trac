@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-09-10 19:35+0200\n"
+"PO-Revision-Date: 2009-09-10 19:38+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3342,6 +3342,22 @@ msgstr "Période suivante"
 #, python-format
 msgid "%(date)s in Timeline"
 msgstr "%(date)s dans l'historique"
+
+#: trac/timeline/web_ui.py:344
+msgid "other kind of events"
+msgstr "autres types d'évènements"
+
+#: trac/timeline/web_ui.py:347
+#, python-format
+msgid "%(kinds)s event provider (%(name)s) failed:"
+msgstr ""
+"La source d'évènement pour les %(kinds)s (%(name)s) a subie \n"
+"une erreur :"
+
+#: trac/timeline/web_ui.py:352
+#, python-format
+msgid "You may want to see the %(other_events)s from the Timeline."
+msgstr "Vous pouvez voir les %(other_events)s de l'historique."
 
 #: trac/timeline/templates/timeline.html:20
 msgid ""
