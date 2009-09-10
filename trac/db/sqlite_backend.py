@@ -214,7 +214,9 @@ class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
 
     __slots__ = ['_active_cursors', '_eager']
-    poolable = have_pysqlite and os.name == 'nt' and sqlite_version >= 30301
+
+    poolable = have_pysqlite and sqlite.sqlite_version_info >= (3,3,8) \
+                             and sqlite.version_info >= (2,5,0)
 
     def __init__(self, path, log=None, params={}):
         assert have_pysqlite > 0
