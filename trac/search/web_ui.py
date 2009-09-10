@@ -80,83 +80,23 @@ class SearchModule(Component):
             return ('opensearch.xml', {},
                     'application/opensearchdescription+xml')
 
+        query = req.args.get('q')
         available_filters = []
         for source in self.search_sources:
             available_filters += source.get_search_filters(req)
-        filters = [f[0] for f in available_filters if req.args.has_key(f[0])]
-        if not filters:
-            filters = [f[0] for f in available_filters
-                       if f[0] not in self.default_disabled_filters and
-                       (len(f) < 3 or len(f) > 2 and f[2])]
-        data = {'filters': [{'name': f[0], 'label': f[1],
-                             'active': f[0] in filters}
-                            for f in available_filters],
-                'quickjump': None,
-                'results': []}
-
-        query = req.args.get('q')
-        data['query'] = query
+        
+        filters = self._get_selected_filters(req, available_filters)
+        data = self._prepare_data(req, query, available_filters, filters)
         if query:
             data['quickjump'] = self._check_quickjump(req, query)
             if query.startswith('!'):
                 query = query[1:]
-            terms = self._get_search_terms(query)
 
-            results = []
-
-            # Refuse queries that obviously would result in a huge result set
-            query_too_short = not terms or \
-                    (len(terms) == 1 and len(terms[0]) < self.min_query_length)
-            if query_too_short:
-                add_warning(req, _('Search query too short. Query must be at '
-                                   'least %(num)s characters long.',
-                                   num=self.min_query_length))
-
-            else:
-                for source in self.search_sources:
-                    results += list(source.get_search_results(req, terms,
-                                                              filters))
-                results.sort(lambda x,y: cmp(y[2], x[2]))
-
-            page = int(req.args.get('page', '1'))
-            results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
-            for idx, result in enumerate(results):
-                results[idx] = {'href': result[0], 'title': result[1],
-                                'date': format_datetime(result[2]),
-                                'author': result[3], 'excerpt': result[4]}
-            
-            pagedata = []    
-            data['results'] = results
-            shown_pages = results.get_shown_pages(21)
-            for shown_page in shown_pages:
-                page_href = req.href.search([(f, 'on') for f in filters],
-                                            q=req.args.get('q'),
-                                            page=shown_page, noquickjump=1)
-                pagedata.append([page_href, None, str(shown_page),
-                                 'page ' + str(shown_page)])
-
-            fields = ['href', 'class', 'string', 'title']
-            results.shown_pages = [dict(zip(fields, p)) for p in pagedata]
-            
-            results.current_page = {'href': None, 'class': 'current',
-                                    'string': str(results.page + 1),
-                                    'title':None}
-
-            if results.has_next_page:
-                next_href = req.href.search(zip(filters, ['on'] * len(filters)),
-                                            q=req.args.get('q'), page=page + 1,
-                                            noquickjump=1)
-                add_link(req, 'next', next_href, _('Next Page'))
-
-            if results.has_previous_page:
-                prev_href = req.href.search(zip(filters, ['on'] * len(filters)),
-                                            q=req.args.get('q'), page=page - 1,
-                                            noquickjump=1)
-                add_link(req, 'prev', prev_href, _('Previous Page'))
-
-            data['page_href'] = req.href.search(
-                zip(filters, ['on'] * len(filters)), q=req.args.get('q'),
-                noquickjump=1)
+            terms = self._parse_query(req, query)
+            if terms:
+                results = self._do_search(req, terms, filters)
+                if results:
+                    data.update(self._prepare_results(req, filters, results))
 
         add_stylesheet(req, 'common/css/search.css')
         return 'search.html', data, None
@@ -185,11 +125,28 @@ class SearchModule(Component):
             href = formatter.href.search(q=path)
         return tag.a(label, class_='search', href=href)
 
-    # Internal methods
+    # IRequestHandler helper methods
+
+    def _get_selected_filters(self, req, available_filters):
+        """Return selected filters or the default filters if none was selected.
+        """
+        filters = [f[0] for f in available_filters if f[0] in req.args]
+        if not filters:
+            filters = [f[0] for f in available_filters
+                       if f[0] not in self.default_disabled_filters and
+                       (len(f) < 3 or len(f) > 2 and f[2])]
+        return filters
+        
+    def _prepare_data(self, req, query, available_filters, filters):
+        return {'filters': [{'name': f[0], 'label': f[1],
+                             'active': f[0] in filters}
+                            for f in available_filters],
+                'query': query, 'quickjump': None, 'results': []}
 
     def _check_quickjump(self, req, kwd):
+        """Look for search shortcuts"""
         noquickjump = int(req.args.get('noquickjump', '0'))
-        # Source quickjump
+        # Source quickjump   FIXME: delegate to ISearchSource.search_quickjump
         quickjump_href = None
         if kwd[0] == '/':
             quickjump_href = req.href.browser(kwd)
@@ -218,10 +175,69 @@ class SearchModule(Component):
         Terms are grouped implicitly by word boundary, or explicitly by (single
         or double) quotes.
         """
-        results = []
+        terms = []
         for term in re.split('(".*?")|(\'.*?\')|(\s+)', query):
-            if term != None and term.strip() != '':
-                if term[0] == term[-1] == "'" or term[0] == term[-1] == '"':
+            if term is not None and term.strip():
+                if term[0] == term[-1] and term[0] in "'\"":
                     term = term[1:-1]
-                results.append(term)
-        return results
+                terms.append(term)
+        return terms
+
+    def _parse_query(self, req, query):
+        """Parse query and refuse those which would result in a huge result set
+        """
+        terms = self._get_search_terms(query)
+        if terms and (len(terms) > 1 or
+                      len(terms[0]) >= self.min_query_length):
+            return terms
+        
+        add_warning(req, _('Search query too short. '
+                           'Query must be at least %(num)s characters long.',
+                           num=self.min_query_length))
+
+    def _do_search(self, req, terms, filters):
+        results = []
+        for source in self.search_sources:
+            results += list(source.get_search_results(req, terms, filters))
+        return sorted(results, key=lambda x: x[2])
+
+    def _prepare_results(self, req, filters, results):
+        page = int(req.args.get('page', '1'))
+        results = Paginator(results, page - 1, self.RESULTS_PER_PAGE)
+        for idx, result in enumerate(results):
+            results[idx] = {'href': result[0], 'title': result[1],
+                            'date': format_datetime(result[2]),
+                            'author': result[3], 'excerpt': result[4]}
+
+        pagedata = []    
+        shown_pages = results.get_shown_pages(21)
+        for shown_page in shown_pages:
+            page_href = req.href.search([(f, 'on') for f in filters],
+                                        q=req.args.get('q'),
+                                        page=shown_page, noquickjump=1)
+            pagedata.append([page_href, None, str(shown_page),
+                             'page ' + str(shown_page)])
+
+        fields = ['href', 'class', 'string', 'title']
+        results.shown_pages = [dict(zip(fields, p)) for p in pagedata]
+
+        results.current_page = {'href': None, 'class': 'current',
+                                'string': str(results.page + 1),
+                                'title':None}
+
+        if results.has_next_page:
+            next_href = req.href.search(zip(filters, ['on'] * len(filters)),
+                                        q=req.args.get('q'), page=page + 1,
+                                        noquickjump=1)
+            add_link(req, 'next', next_href, _('Next Page'))
+
+        if results.has_previous_page:
+            prev_href = req.href.search(zip(filters, ['on'] * len(filters)),
+                                        q=req.args.get('q'), page=page - 1,
+                                        noquickjump=1)
+            add_link(req, 'prev', prev_href, _('Previous Page'))
+
+        page_href = req.href.search(
+            zip(filters, ['on'] * len(filters)), q=req.args.get('q'),
+            noquickjump=1)
+        return {'results': results, 'page_href': page_href}
