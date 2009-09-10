@@ -392,7 +392,8 @@ class WikiModule(Component):
             'changes': changes,
             'diff': diff_data,
         })
-        prevnext_nav(req, _('Change'), _('Wiki History'))
+        prevnext_nav(req, _('Previous Change'), _('Next Change'), 
+                     _('Wiki History'))
         return 'wiki_diff.html', data, None
 
     def _render_editor(self, req, page, action='edit', has_collision=False):
@@ -562,7 +563,8 @@ class WikiModule(Component):
 
         # Add ctxtnav entries
         if version:
-            prevnext_nav(req, _('Version'), _('View Latest Version'))
+            prevnext_nav(req, _('Previous Version'), _('Next Version'),
+                         _('View Latest Version'))
             add_ctxtnav(req, _('Last Change'),
                         req.href.wiki(page.name, action='diff',
                                       version=page.version))

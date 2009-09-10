@@ -33,7 +33,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_timestamp, utc, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
 from trac.web.chrome import add_link, add_stylesheet, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
@@ -226,15 +226,15 @@ class TimelineModule(Component):
         add_link(req, 'prev', req.href.timeline(from_=previous_start,
                                                 authors=authors,
                                                 daysback=daysback),
-                 _('Previous period'))
+                 _('Previous Period'))
         if today - fromdate > timedelta(days=0):
             next_start = format_date(fromdate + timedelta(days=daysback+1),
                                      format='%Y-%m-%d', tzinfo=req.tz)
             add_link(req, 'next', req.href.timeline(from_=next_start,
                                                     authors=authors,
                                                     daysback=daysback),
-                     _('Next period'))
-        prevnext_nav(req, 'Period')
+                     _('Next Period'))
+        prevnext_nav(req, _('Previous Period'), _('Next Period'))
         
         return 'timeline.html', data, None
 
@@ -341,9 +341,12 @@ class TimelineModule(Component):
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args+[(f, 'on') for f in other_filters])
+        other_events = _('other kind of events') # help extraction
         raise TracError(tag(
-            tag.p(', '.join(guilty_kinds),
-                  ' event provider (', tag.tt(ep_name), ') failed:', tag.br(),
+            tag.p(tag_("%(kinds)s event provider (%(name)s) failed:",
+                       kinds=', '.join(guilty_kinds), name=tag.tt(ep_name)),
+                  tag.br(),
                   exc_name, ': ', to_unicode(exc), class_='message'),
-            tag.p('You may want to see the other kind of events from the ',
-                  tag.a('Timeline', href=href))))
+            tag.p(tag_('You may want to see the %(other_events)s from the '
+                       'Timeline.',
+                       other_events=tag.a(other_events, href=href)))))

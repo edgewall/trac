@@ -261,7 +261,6 @@ class NotifyEmail(Notify):
     addrsep_re = re.compile(r'[;\s,]+')
 
     def __init__(self, env):
-        global EMAIL_LOOKALIKE_PATTERN
         Notify.__init__(self, env)
 
         addrfmt = EMAIL_LOOKALIKE_PATTERN

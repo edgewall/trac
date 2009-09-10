@@ -84,7 +84,6 @@ class PreferencesModule(Component):
     # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
-        global Locale
         yield (None, _('General'))
         yield ('datetime', _('Date & Time'))
         yield ('keybindings', _('Keyboard Shortcuts'))
@@ -94,7 +93,6 @@ class PreferencesModule(Component):
             yield ('advanced', _('Advanced'))
 
     def render_preference_panel(self, req, panel):
-        global Locale
         if req.method == 'POST':
             if 'restore' in req.args:
                 self._do_load(req)
