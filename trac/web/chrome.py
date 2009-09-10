@@ -155,55 +155,39 @@ def add_ctxtnav(req, elm_or_label, href=None, title=None):
         elm = elm_or_label
     req.chrome.setdefault('ctxtnav', []).append(elm)
 
-# ???: Does this belong in trac.util somewhere? <NPK>
-def prevnext_nav(req, label, uplabel=None):
-    """Add Previous/Up/Next navigation links
-       
-       `req` a Request object
-       `label` the label to use after the Previous/Next words
-       `uplabel` the label to use for the Up link
+def prevnext_nav(req, prev_label, next_label, up_label=None):
+    """Add Previous/Up/Next navigation links.
+
+       @param req        a `Request` object
+       @param prev_label the label to use for left (previous) link
+       @param up_label   the label to use for the middle (up) link
+       @param next_label the label to use for right (next) link
     """
     links = req.chrome['links']
+    prev_link = next_link = None
     
-    if 'prev' not in links and \
-       'up' not in links and \
-       'next' not in links:
-        # Short circuit
+    if not any(lnk in links for lnk in ('prev', 'up', 'next')): # Short circuit
         return
     
     if 'prev' in links:
-        link = links['prev'][0]
-        add_ctxtnav(req, 
-            tag.span(Markup('&larr; '),
-                     tag.a(_('Previous %(label)s', label=label),
-                            href=link['href'],
-                            title=link['title'],
-                            class_='prev'
-                           )))
-    else:
-        add_ctxtnav(req, 
-            tag.span(Markup('&larr; '),
-                     _('Previous %(label)s', label=label), 
-                     class_='missing'))
+        prev = links['prev'][0]
+        prev_link = tag.a(prev_label, href=prev['href'], title=prev['title'],
+                          class_='prev')
+        
+    add_ctxtnav(req, tag.span(Markup('&larr; '), prev_link or prev_label,
+                              class_=prev_link or 'missing'))
 
-    if uplabel and 'up' in links:
-        link = links['up'][0]
-        add_ctxtnav(req, tag.a(uplabel, 
-                               href=link['href'], 
-                               title=link['title']))
+    if up_label and 'up' in links:
+        up = links['up'][0]
+        add_ctxtnav(req, tag.a(up_label, href=up['href'], title=up['title']))
 
     if 'next' in links:
-        link = links['next'][0]
-        add_ctxtnav(req, 
-            tag.span(tag.a(_('Next %(label)s', label=label),
-                           href=link['href'],
-                           title=link['title'],
-                           class_='next'),
-                     Markup(' &rarr;')))
-    else:
-        add_ctxtnav(req, 
-            tag.span(_('Next %(label)s', label=label),
-                     Markup(' &rarr;'), class_='missing'))
+        next_ = links['next'][0]
+        next_link = tag.a(next_label, href=next_['href'], title=next_['title'],
+                          class_='next')
+
+    add_ctxtnav(req, tag.span(next_link or next_label, Markup(' &rarr;'),
+                              class_=next_link or 'missing'))
 
 
 def _save_messages(req, url, permanent):

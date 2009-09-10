@@ -234,7 +234,7 @@ class TimelineModule(Component):
                                                     authors=authors,
                                                     daysback=daysback),
                      _('Next period'))
-        prevnext_nav(req, 'Period')
+        prevnext_nav(req, _('Previous period'), _('Next period'))
         
         return 'timeline.html', data, None
 

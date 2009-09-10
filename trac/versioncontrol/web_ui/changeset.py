@@ -338,9 +338,9 @@ class ChangesetModule(Component):
         add_stylesheet(req, 'common/css/code.css')
         if chgset:
             if restricted:
-                prevnext_nav(req, _('Change'))
+                prevnext_nav(req, _('Previous Change'), _('Next Change'))
             else:
-                prevnext_nav(req, _('Changeset'))
+                prevnext_nav(req, _('Previous Changeset'), _('Next Changeset'))
         else:
             rev_href = req.href.changeset(old, old_path, old=new, 
                                           old_path=new_path)

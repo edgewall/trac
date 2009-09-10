@@ -630,7 +630,8 @@ class TicketModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[4], format)
                      
-        prevnext_nav(req, _('Ticket'), _('Back to Query'))
+        prevnext_nav(req, _('Previous Ticket'), _('Next Ticket'), 
+                     _('Back to Query'))
 
         return 'ticket.html', data, None
 
@@ -861,7 +862,8 @@ class TicketModule(Component):
                                                    version=next_version),
                      _('Version %(num)s', num=next_version))
 
-        prevnext_nav(req, _('Change'), _('Ticket History'))
+        prevnext_nav(req, _('Previous Change'), _('Next Change'), 
+                     _('Ticket History'))
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
 
@@ -975,7 +977,8 @@ class TicketModule(Component):
                                   version=next_version)
             add_link(req, 'next', url, _('Version %(num)s', num=next_version))
 
-        prevnext_nav(req, _('Change'), _('Ticket Comment History'))
+        prevnext_nav(req, _('Previous Change'), _('Next Change'),
+                     _('Ticket Comment History'))
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
 
