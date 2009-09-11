@@ -60,7 +60,7 @@ from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       get_module_path, translation
-from trac.util.compat import partial
+from trac.util.compat import any, partial
 from trac.util.html import plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
