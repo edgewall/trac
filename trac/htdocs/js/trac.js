@@ -50,6 +50,10 @@
   $.template = function(str, dict) { 
     return str.replace(/\${?(\w+)}?/g, function(_, k) { return dict[k]; }); 
   }
+  
+  $.create = function(tag) {
+    return $(document.createElement(tag));
+  }
 
   // Used for dynamically updating the height of a textarea
   window.resizeTextArea = function (id, rows) {
