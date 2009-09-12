@@ -33,7 +33,7 @@
       </div>
 
       <form id="query" method="post" action="${href.query()}"
-            py:with="field_names = sorted(fields.iterkeys(), key=lambda name: labels[name].lower())">
+            py:with="field_names = sorted(fields.iterkeys(), key=lambda name: fields[name].label.lower())">
         <fieldset id="filters">
           <input py:if="'id' in query.constraints" type="hidden" name="id" value="${query.constraints['id']}" />
           <legend class="foldable">Filters</legend>
@@ -49,7 +49,7 @@
                     <tr class="${field_name}" py:if="multiline or constraint_idx == 0">
                       <py:choose test="constraint_idx">
                         <py:when test="0">
-                          <th scope="row"><label id="label_${field_name}">${labels[field_name]}</label></th>
+                          <th scope="row"><label id="label_${field_name}">${fields[field_name].label}</label></th>
                           <td py:if="field.type not in ('radio', 'checkbox', 'time')" class="mode">
                             <select name="${field_name}_mode">
                               <option py:for="mode in modes[field.type]" value="$mode.value"
@@ -128,7 +128,7 @@
                             value="$field_name"
                             disabled="${((field.type == 'radio' or field.type == 'checkbox') and
                                          field_name in constraints and
-                                         len(constraints[field_name])) or None}">${labels[field_name]}</option>
+                                         len(constraints[field_name])) or None}">${fields[field_name].label}</option>
                   </select>
                   <input type="submit" name="add" value="+" />
                 </td>
@@ -146,7 +146,7 @@
                 <input type="checkbox" name="col" value="$column"
                        checked="${any([(value == column) for value in col])
                                   and 'checked' or None}" />
-                ${labels.get(column, column or 'none')}
+                ${fields.get(column, {'label': column or 'none'}).label}
               </label>
             </py:for>
           </div>
@@ -168,12 +168,12 @@
         </p>
 
         <p class="option">
-          <!--! Allow the user to decide what columns to include in the output of the query -->
+          <!--! Allow the user to decide what rows to include in the output of the query -->
           Show under each result:
           <py:for each="column in all_textareas">
             <label><input type="checkbox" name="row" value="$column"
                 checked="${any([(value == column) for value in row]) and 'checked' or None}" />
-            ${labels.get(column, column or 'none')}</label>
+            ${fields.get(column, {'label': column or 'none'}).label}</label>
           </py:for>
         </p>
 

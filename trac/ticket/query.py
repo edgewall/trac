@@ -633,13 +633,13 @@ class Query(object):
 
         fields = {}
         for field in self.fields:
-            if field['name'] == 'owner' and field['type'] == 'select':
+            name = field['name']
+            field = field.copy()
+            field['label'] = labels[name]
+            if name == 'owner' and field['type'] == 'select':
                 # Make $USER work when restrict_owner = true
                 field['options'].insert(0, '$USER')
-            field_data = {}
-            field_data.update(field)
-            del field_data['name']
-            fields[field['name']] = field_data
+            fields[name] = field
 
         modes = {}
         modes['text'] = [
@@ -724,7 +724,6 @@ class Query(object):
                 'col': cols,
                 'row': self.rows,
                 'constraints': constraints,
-                'labels': labels,
                 'headers': headers,
                 'fields': fields,
                 'modes': modes,
