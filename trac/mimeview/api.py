@@ -934,6 +934,8 @@ class Mimeview(Component):
         from trac.web import RequestDone
         content, output_type, ext = self.convert_content(req, in_type,
                                                          content, selector)
+        if isinstance(content, unicode):
+            content = content.encode('utf-8')
         req.send_response(200)
         req.send_header('Content-Type', output_type)
         req.send_header('Content-Length', len(content))
