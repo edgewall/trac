@@ -2,294 +2,206 @@
 (function($){
   
   window.initializeFilters = function() {
-  
-    // Bail early for Konqueror and IE5.2/Mac, which don't fully support dynamic
-    // creation of form controls
-    try {
-      var test = document.createElement("input");
-      test.type = "button";
-      if (test.type != "button") throw Error();
-    } catch (e) {
-      return;
-    }
-  
-    // Removes an existing row from the filters table
+    // Remove an existing row from the filters table
     function removeRow(button, propertyName) {
-      var tr = getAncestorByTagName(button, "tr");
-      var label = document.getElementById("label_" + propertyName);
-      if (label && (getAncestorByTagName(label, "tr") == tr)) {
+      var tr = $(button).closest("tr");
+      var label = $("#label_" + propertyName);
+      if (label.length && (label.closest("tr")[0] == tr[0])) {
         // Check whether there are more 'or' rows for this filter
-        var next = $(tr).next()[0];
-        if (next && (next.className == propertyName)) {
-          function getChildElementAt(e, idx) {
-            e = e.firstChild;
-            var cur = 0;
-            while (cur <= idx) {
-              while (e && e.nodeType != 1) e = e.nextSibling;
-              if (cur++ == idx) break;
-              e = e.nextSibling;
-            }
-            return e;
-          }
-  
-          var thisTh = getChildElementAt(tr, 0);
-          var nextTh = getChildElementAt(next, 0);
+        var next = tr.next("." + propertyName);
+        if (next.length) {
+          var thisTh = tr.children()[0];
+          var nextTh = next.children()[0];
           if (nextTh.colSpan == 1) {
-            next.replaceChild(thisTh, nextTh);
+            $(nextTh).replaceWith(thisTh);
           } else {
-            next.insertBefore(thisTh, nextTh);
+            $(nextTh).before(thisTh);
             nextTh.colSpan = 1;
-            thisTd = getChildElementAt(tr, 0);
-            nextTd = getChildElementAt(next, 1);
-            next.replaceChild(thisTd, nextTd);
+            var thisTd = tr.children()[0];
+            var nextTd = next.children()[1];
+            $(nextTd).replaceWith(thisTd);
           }
         }
-      }
-  
-      var tBody = tr.parentNode;
-      tBody.deleteRow(tr.sectionRowIndex);
-      if (!tBody.rows.length) {
-          tBody.parentNode.removeChild(tBody);
       }
       
-      if (propertyName) {
-        var select = document.forms["query"].elements["add_filter"];
-        for (var i = 0; i < select.options.length; i++) {
-          var option = select.options[i];
-          if (option.value == propertyName) option.disabled = false;
-        }
-      }
+      var tbody = tr.closest("tbody");
+      if (tbody.children("tr").length > 1)
+        tr.remove();
+      else
+        tbody.remove();
+      
+      if (propertyName)
+        $("#add_filter option[value='" + propertyName + "']").enable();
     }
-  
-    // Initializes a filter row, the 'input' parameter is the submit
-    // button for removing the filter
-    function initializeFilter(input) {
-      var removeButton = document.createElement("input");
-      removeButton.type = "button";
-      removeButton.value = input.value;
-      if (input.name.substr(0, 10) == "rm_filter_") {
-        removeButton.onclick = function() {
-          var endIndex = input.name.search(/_\d+$/);
-          if (endIndex < 0) endIndex = input.name.length;
-          removeRow(removeButton, input.name.substring(10, endIndex));
-          return false;
-        }
-      } else {
-        removeButton.onclick = function() {
-          removeRow(removeButton);
-          return false;
-        }
-      }
-      input.parentNode.replaceChild(removeButton, input);
-    }
-  
+    
     // Make the submit buttons for removing filters client-side triggers
-    var filters = document.getElementById("filters");
-    var inputs = filters.getElementsByTagName("input");
-    for (var i = 0; i < inputs.length; i++) {
-      var input = inputs[i];
-      if (input.type == "submit" && input.name
-       && input.name.match(/^rm_filter_/)) {
-        initializeFilter(input);
-      }
+    $("#filters input[type='submit'][name^='rm_filter_']").each(function() {
+      var removeButton = $.create("input").attr("type", "button")
+                           .val(this.value);
+      var endIndex = this.name.search(/_\d+$/);
+      if (endIndex < 0)
+        endIndex = this.name.length;
+      var propertyName = this.name.substring(10, endIndex);
+      removeButton.click(function() {
+        removeRow(this, propertyName);
+        return false;
+      });
+      $(this).replaceWith(removeButton);
+    });
+    
+    // Convenience function for creating a <label>
+    function createLabel(text, htmlFor) {
+      var label = $.create("label").text(text);
+      if (htmlFor)
+        label.attr("for", htmlFor).addClass("control");
+      return label;
     }
-  
+    
+    // Convenience function for creating an <input type="text">
+    function createText(name, size) {
+      return $.create("input").attr("type", "text").attr("name", name)
+               .attr("size", size);
+    }
+    
+    // Convenience function for creating an <input type="checkbox">
+    function createCheckbox(name, value, id) {
+      return $.create("input").attr("type", "checkbox").attr("id", id)
+               .attr("name", name).val(value);
+    }
+    
+    // Convenience function for creating an <input type="radio">
+    function createRadio(name, value, id) {
+      // Workaround for IE, otherwise the radio buttons are not selectable
+      return $('<input type="radio" name="' + name + '"/>')
+               .attr("id", id).val(value);
+    }
+    
+    // Convenience function for creating a <select>
+    function createSelect(name, options, optional) {
+      var e = $.create("select").attr("name", name);
+      if (optional)
+        $.create("option").appendTo(e);
+      for (var i = 0; i < options.length; i++) {
+        if (typeof(options[i]) == "object")
+          $.create("option").val(options[i].value).text(options[i].text)
+            .appendTo(e);
+        else
+          $.create("option").val(options[i]).text(options[i]).appendTo(e);
+      }
+      return e;
+    }
+    
     // Make the drop-down menu for adding a filter a client-side trigger
-    var addButton = document.forms["query"].elements["add"];
-    addButton.parentNode.removeChild(addButton);
-    var select = document.getElementById("add_filter");
-    select.onchange = function() {
-      if (select.selectedIndex < 1) return;
+    $("#query input[name='add']").remove();
+    $("#add_filter").change(function() {
+      if (this.selectedIndex < 1)
+        return;
   
-      if (select.options[select.selectedIndex].disabled) {
-        // Neither IE nor Safari supported disabled options at the time this was
-        // written, so alert the user
+      if (this.options[this.selectedIndex].disabled) {
+        // IE doesn't support disabled options
         alert("A filter already exists for that property");
+        this.selectedIndex = 0;
         return;
       }
   
-      // Convenience function for creating a <label>
-      function createLabel(text, htmlFor) {
-        var label = document.createElement("label");
-        if (text) label.appendChild(document.createTextNode(text));
-        if (htmlFor) {
-          label.htmlFor = htmlFor;
-          label.className = "control";
-        }
-        return label;
-      }
-  
-      // Convenience function for creating an <input type="text">
-      function createText(name, size) {
-        var input = document.createElement("input");
-        input.type = "text";
-        if (name) input.name = name;
-        if (size) input.size = size;
-        return input;
-      }
-      
-      // Convenience function for creating an <input type="checkbox">
-      function createCheckbox(name, value, id) {
-        var input = document.createElement("input");
-        input.type = "checkbox";
-        if (name) input.name = name;
-        if (value) input.value = value;
-        if (id) input.id = id;
-        return input;
-      }
-  
-      // Convenience function for creating an <input type="radio">
-      function createRadio(name, value, id) {
-        var str = '<input type="radio"';
-        if (name) str += ' name="' + name + '"';
-        if (value) str += ' value="' + value + '"';
-        if (id) str += ' id="' + id + '"'; 
-        str += '/>';
-        var span = document.createElement('span');
-        // create radio button with innerHTML to avoid IE mangling it.
-        span.innerHTML = str; 
-        return span;
-      }
-  
-      // Convenience function for creating a <select>
-      function createSelect(name, options, optional) {
-        var e = document.createElement("select");
-        if (name) e.name = name;
-        if (optional) e.options[0] = new Option();
-        if (options) {
-          for (var i = 0; i < options.length; i++) {
-            var option;
-            if (typeof(options[i]) == "object") {
-              option = new Option(options[i].text, options[i].value);
-            } else {
-              option = new Option(options[i], options[i]);
-            }
-            e.options[e.options.length] = option;
-          }
-        }
-        return e;
-      }
-  
-      var propertyName = select.options[select.selectedIndex].value;
+      var propertyName = this.options[this.selectedIndex].value;
       var property = properties[propertyName];
-      var table = document.getElementById("filters").getElementsByTagName("table")[0];
-      var tr = document.createElement("tr");
-      tr.className = propertyName;
-  
-      var alreadyPresent = false;
-      for (var i = 0; i < table.rows.length; i++) {
-        if (table.rows[i].className == propertyName) {
-          var existingTBody = table.rows[i].parentNode;
-          alreadyPresent = true;
-          break;
-        }
-      }
-  
+      var table = $("#filters table")[0];
+      var tbody = $("tr." + propertyName, table).closest("tbody").eq(0);
+      var tr = $.create("tr").addClass(propertyName);
+      
       // Add the row header
-      var th = document.createElement("th");
-      th.scope = "row";
-      if (!alreadyPresent) {
-        var label = createLabel(property.label);
-        label.id = "label_" + propertyName;
-        th.appendChild(label);
+      var th = $.create("th").attr("scope", "row");
+      if (!tbody.length) {
+        th.append(createLabel(property.label)
+                    .attr("id", "label_" + propertyName));
       } else {
-        th.colSpan = property.type == "time"? 1: 2;
-        th.appendChild(createLabel("or"));
+        th.attr("colSpan", property.type == "time"? 1: 2)   // colSpan for IE
+          .append(createLabel("or"))
       }
-      tr.appendChild(th);
-  
-      var td = document.createElement("td");
+      tr.append(th);
+      
+      var td = $.create("td");
       var focusElement = null;
-      if (property.type == "radio" || property.type == "checkbox" || property.type == "time") {
-        td.colSpan = 2;
-        td.className = "filter";
+      if (property.type == "radio" || property.type == "checkbox"
+          || property.type == "time") {
+        td.addClass("filter").attr("colSpan", 2);   // colSpan for IE
         if (property.type == "radio") {
           for (var i = 0; i < property.options.length; i++) {
             var option = property.options[i];
-            td.appendChild(createCheckbox(propertyName, option,
-              propertyName + "_" + option));
-            td.appendChild(createLabel(option ? option : "none",
-              propertyName + "_" + option));
+            td.append(createCheckbox(propertyName, option, 
+                                     propertyName + "_" + option)).append(" ")
+              .append(createLabel(option ? option : "none",
+                                  propertyName + "_" + option));
           }
         } else if (property.type == "checkbox") {
-          td.appendChild(createRadio(propertyName, "1", propertyName + "_on"));
-          td.appendChild(document.createTextNode(" "));
-          td.appendChild(createLabel("yes", propertyName + "_on"));
-          td.appendChild(createRadio(propertyName, "0", propertyName + "_off"));
-          td.appendChild(document.createTextNode(" "));
-          td.appendChild(createLabel("no", propertyName + "_off"));
+          td.append(createRadio(propertyName, "1", propertyName + "_on"))
+            .append(" ").append(createLabel("yes", propertyName + "_on"))
+            .append(createRadio(propertyName, "0", propertyName + "_off"))
+            .append(" ").append(createLabel("no", propertyName + "_off"));
         } else if (property.type == "time") {
-          td.appendChild(createLabel("between"));
-          td.appendChild(document.createTextNode(" "));
-          focusElement = createText(propertyName, 14);
-          td.appendChild(focusElement);
-          td.appendChild(document.createTextNode(" "));
-          td.appendChild(createLabel("and"));
-          td.appendChild(document.createTextNode(" "));
-          td.appendChild(createText(propertyName + "_end", 14));
+          focusElement = createText(propertyName, 14)
+          td.append(createLabel("between")).append(" ")
+            .append(focusElement).append(" ")
+            .append(createLabel("and")).append(" ")
+            .append(createText(propertyName + "_end", 14));
         }
-        tr.appendChild(td);
+        tr.append(td);
       } else {
-        if (!alreadyPresent) {
+        if (!tbody.length) {
           // Add the mode selector
-          td.className = "mode";
-          var modeSelect = createSelect(propertyName + "_mode",
-                                        modes[property.type]);
-          td.appendChild(modeSelect);
-          tr.appendChild(td);
+          td.addClass("mode")
+            .append(createSelect(propertyName + "_mode", modes[property.type]))
+            .appendTo(tr);
         }
-  
+        
         // Add the selector or text input for the actual filter value
-        td = document.createElement("td");
-        td.className = "filter";
+        td = $.create("td").addClass("filter");
         if (property.type == "select") {
           focusElement = createSelect(propertyName, property.options, true);
-        } else if ((property.type == "text") || (property.type == "textarea")) {
+        } else if ((property.type == "text")
+                   || (property.type == "textarea")) {
           focusElement = createText(propertyName, 42);
         }
-        td.appendChild(focusElement);
-        tr.appendChild(td);
+        td.append(focusElement).appendTo(tr);
       }
-  
-      // Add the add and remove buttons
-      td = document.createElement("td");
-      td.className = "actions";
-      var removeButton = document.createElement("input");
-      removeButton.type = "button";
-      removeButton.value = "-";
-      removeButton.onclick = function() { removeRow(removeButton, propertyName) };
-      td.appendChild(removeButton);
-      tr.appendChild(td);
-  
-      if (alreadyPresent) {
-        existingTBody.appendChild(tr);
-      } else {
-        // Find the insertion point for the new row. We try to keep the filter rows
-        // in the same order as the options in the 'Add filter' drop-down, because
-        // that's the order they'll appear in when submitted.
-        var insertionPoint = getAncestorByTagName(select, "tbody");
-        outer: for (var i = select.selectedIndex + 1; i < select.options.length; i++) {
+      
+      // Add the remove button
+      td = $.create("td").addClass("actions");
+      $.create("input").attr("type", "button").val("-")
+        .click(function() { removeRow(this, propertyName); })
+        .appendTo(td);
+      tr.append(td);
+      
+      if (!tbody.length) {
+        tbody = $.create("tbody");
+        
+        // Find the insertion point for the new row. We try to keep the filter
+        // rows in the same order as the options in the 'Add filter' drop-down,
+        // because that's the order they'll appear in when submitted
+        var insertionPoint = $(this).closest("tbody");
+        outer:
+        for (var i = this.selectedIndex + 1; i < this.options.length; i++) {
           for (var j = 0; j < table.tBodies.length; j++) {
-            if (table.tBodies[j].rows[0].className == select.options[i].value) {
-              insertionPoint = table.tBodies[j];
+            if (table.tBodies[j].rows[0].className == this.options[i].value) {
+              insertionPoint = $(table.tBodies[j]);
               break outer;
             }
           }
         }
-        // Finally add the new row to the table
-        var tbody = document.createElement("tbody");
-        tbody.appendChild(tr);
-        insertionPoint.parentNode.insertBefore(tbody, insertionPoint);
+        insertionPoint.before(tbody);
       }
+      tbody.append(tr);
+      
       if(focusElement)
           focusElement.focus();
-  
+      
       // Disable the add filter in the drop-down list
-      if (property.type == "radio" || property.type == "checkbox") {
-        select.options[select.selectedIndex].disabled = true;
-      }
-      select.selectedIndex = 0;
-    }
+      if (property.type == "radio" || property.type == "checkbox")
+        this.options[this.selectedIndex].disabled = true;
+      
+      this.selectedIndex = 0;
+    });
   }
 
 })(jQuery);

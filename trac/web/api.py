@@ -259,6 +259,8 @@ class Request(object):
             ctpos = value.find('charset=')
             if ctpos >= 0:
                 self._outcharset = value[ctpos + 8:].strip()
+        elif name.lower() == 'content-length':
+            self._content_length = int(value)
         self._outheaders.append((name, unicode(value).encode('utf-8')))
 
     def end_headers(self):
@@ -456,15 +458,21 @@ class Request(object):
     def write(self, data):
         """Write the given data to the response body.
 
-        `data` can be either a `str` or an `unicode` string.
-        If it's the latter, the unicode string will be encoded
-        using the charset specified in the ''Content-Type'' header
+        `data` *must* be a `str` string, encoded with the charset
+        which has been specified in the ''Content-Type'' header
         or 'utf-8' otherwise.
+
+        Note that the ''Content-Length'' header must have been specified. 
+        Its value either corresponds to the length of `data`, or, if there 
+        are multiple calls to `write`, to the cumulated length of the `data`
+        arguments.
         """
         if not self._write:
             self.end_headers()
+        if not hasattr(self, '_content_length'):
+            raise RuntimeError("No Content-Length header set")
         if isinstance(data, unicode):
-            data = data.encode(self._outcharset or 'utf-8')
+            raise ValueError("Can't send unicode content")
         self._write(data)
 
     # Internal methods

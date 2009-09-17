@@ -14,6 +14,7 @@
 #
 # Author: Jonas Borgström <jonas@edgewall.com>
 
+import copy
 import re
 from datetime import datetime
 
@@ -192,7 +193,7 @@ class TicketSystem(Component):
         It may in addition contain the 'custom' key, the 'optional' and the
         'options' keys. When present 'custom' and 'optional' are always `True`.
         """
-        return [f.copy() for f in self.fields()]
+        return copy.deepcopy(self.fields())
 
     def get_ticket_field_labels(self):
         """Return a mapping of localized labels for ticket field names"""
@@ -286,7 +287,7 @@ class TicketSystem(Component):
                             'comment']
 
     def get_custom_fields(self):
-        return [f.copy() for f in self.custom_fields]
+        return copy.deepcopy(self.custom_fields)
 
     @cached_value
     def custom_fields(self, db):
