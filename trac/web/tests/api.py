@@ -101,8 +101,14 @@ class RequestTestCase(unittest.TestCase):
         environ = self._make_environ(method='HEAD')
         req = Request(environ, start_response)
         req.send_header('Content-Type', 'text/plain;charset=utf-8')
-        req.write(u'Föö')
-        self.assertEqual('Föö', buf.getvalue())
+        # we didn't set Content-Length, so we get a RuntimeError for that
+        self.assertRaises(RuntimeError, req.write, u'Föö')
+
+        req = Request(environ, start_response)
+        req.send_header('Content-Type', 'text/plain;charset=utf-8')
+        req.send_header('Content-Length', 0)
+        # anyway we're not supposed to send unicode, so we get a ValueError
+        self.assertRaises(ValueError, req.write, u'Föö')
 
     def test_invalid_cookies(self):
         environ = self._make_environ(HTTP_COOKIE='bad:key=value;')
