@@ -27,6 +27,14 @@ from urllib import quote, quote_plus, unquote, urlencode
 
 CRLF = '\r\n'
 
+class Empty(unicode):
+    """A special tag object evaluating to the empty string"""
+    __slots__ = []
+
+empty = Empty()
+del Empty
+
+
 # -- Unicode
 
 def to_unicode(text, charset=None):
@@ -96,11 +104,23 @@ def unicode_unquote(value):
     return unquote(value).decode('utf-8')
 
 def unicode_urlencode(params):
-    """A unicode aware version of urllib.urlencode"""
+    """A unicode aware version of urllib.urlencode.
+    
+    Values set to `empty` are converted to the key alone, without the
+    equal sign.
+    """
     if isinstance(params, dict):
-        params = params.items()
-    return urlencode([(k, isinstance(v, unicode) and v.encode('utf-8') or v)
-                      for k, v in params])
+        params = params.iteritems()
+    l = []
+    for k, v in params:
+        k = quote_plus(str(k))
+        if v is empty:
+            l.append(k)
+        elif isinstance(v, unicode):
+            l.append(k + '=' + quote_plus(v.encode('utf-8')))
+        else:
+            l.append(k + '=' + quote_plus(str(v)))
+    return '&'.join(l)
 
 def to_utf8(text, charset='iso-8859-15'):
     """Convert a string to UTF-8, assuming the encoding is either UTF-8, ISO

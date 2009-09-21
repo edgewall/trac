@@ -4,49 +4,63 @@
   window.initializeFilters = function() {
     // Remove an existing row from the filters table
     function removeRow(button, propertyName) {
+      var m = propertyName.match(/^(\d+)_(.*)$/);
+      var clauseNum = m[1], field = m[2];
       var tr = $(button).closest("tr");
+      
+      // Keep the filter label when removing the first row
       var label = $("#label_" + propertyName);
       if (label.length && (label.closest("tr")[0] == tr[0])) {
-        // Check whether there are more 'or' rows for this filter
-        var next = tr.next("." + propertyName);
+        var next = tr.next("." + field);
         if (next.length) {
-          var thisTh = tr.children()[0];
-          var nextTh = next.children()[0];
-          if (nextTh.colSpan == 1) {
-            $(nextTh).replaceWith(thisTh);
+          var thisTh = tr.children().eq(0);
+          var nextTh = next.children().eq(0);
+          if (nextTh.attr("colSpan") == 1) {
+            nextTh.replaceWith(thisTh);
           } else {
-            $(nextTh).before(thisTh);
-            nextTh.colSpan = 1;
-            var thisTd = tr.children()[0];
-            var nextTd = next.children()[1];
-            $(nextTd).replaceWith(thisTd);
+            nextTh.attr("colSpan", 1).before(thisTh);
+            next.children().eq(1).replaceWith(tr.children().eq(0));
           }
         }
       }
       
+      // Remove the row, filter tbody or clause tbody
       var tbody = tr.closest("tbody");
-      if (tbody.children("tr").length > 1)
+      if (tbody.children("tr").length > 1) {
         tr.remove();
-      else
-        tbody.remove();
+      } else {
+        var table = tbody.closest("table.trac-clause");
+        var ctbody = table.closest("tbody");
+        if (table.children().length > 3 || !ctbody.siblings().length) {
+          tbody.remove();
+        } else {
+          var add_clause = $("#add_clause", ctbody);
+          if (add_clause.length)
+            $("tr.actions td.actions", ctbody.prev()).attr("colSpan", 2)
+              .before(add_clause.closest("td"));
+          if (ctbody.prev().length == 0)
+            ctbody.next().children("tr:first").attr("style", "display: none");
+          ctbody.remove();
+          return;
+        }
+      }
       
-      if (propertyName)
-        $("#add_filter option[value='" + propertyName + "']").enable();
+      // Re-enable non-multiline filter
+      $("#add_filter_" + clauseNum + " option[value='" + field + "']")
+        .enable();
     }
     
     // Make the submit buttons for removing filters client-side triggers
     $("#filters input[type='submit'][name^='rm_filter_']").each(function() {
-      var removeButton = $.create("input").attr("type", "button")
-                           .val(this.value);
-      var endIndex = this.name.search(/_\d+$/);
-      if (endIndex < 0)
-        endIndex = this.name.length;
-      var propertyName = this.name.substring(10, endIndex);
-      removeButton.click(function() {
+      var idx = this.name.search(/_\d+$/);
+      if (idx < 0)
+        idx = this.name.length;
+      var propertyName = this.name.substring(10, idx);
+      $(this).replaceWith($.create("input").attr("type", "button")
+                           .val(this.value).click(function() {
         removeRow(this, propertyName);
         return false;
-      });
-      $(this).replaceWith(removeButton);
+      }));
     });
     
     // Convenience function for creating a <label>
@@ -92,23 +106,25 @@
     }
     
     // Make the drop-down menu for adding a filter a client-side trigger
-    $("#query input[name='add']").remove();
-    $("#add_filter").change(function() {
+    $("#filters select[name^=add_filter_]").change(function() {
       if (this.selectedIndex < 1)
         return;
-  
+      
       if (this.options[this.selectedIndex].disabled) {
         // IE doesn't support disabled options
         alert("A filter already exists for that property");
         this.selectedIndex = 0;
         return;
       }
-  
+      
       var propertyName = this.options[this.selectedIndex].value;
       var property = properties[propertyName];
-      var table = $("#filters table")[0];
+      var table = $(this).closest("table.trac-clause")[0];
       var tbody = $("tr." + propertyName, table).closest("tbody").eq(0);
       var tr = $.create("tr").addClass(propertyName);
+      
+      var clauseNum = $(this).attr("name").split("_").pop();
+      propertyName = clauseNum + "_" + propertyName;
       
       // Add the row header
       var th = $.create("th").attr("scope", "row");
@@ -116,7 +132,7 @@
         th.append(createLabel(property.label)
                     .attr("id", "label_" + propertyName));
       } else {
-        th.attr("colSpan", property.type == "time"? 1: 2)   // colSpan for IE
+        th.attr("colSpan", property.type == "time"? 1: 2)
           .append(createLabel("or"))
       }
       tr.append(th);
@@ -125,18 +141,19 @@
       var focusElement = null;
       if (property.type == "radio" || property.type == "checkbox"
           || property.type == "time") {
-        td.addClass("filter").attr("colSpan", 2);   // colSpan for IE
+        td.addClass("filter").attr("colSpan", 2);
         if (property.type == "radio") {
           for (var i = 0; i < property.options.length; i++) {
             var option = property.options[i];
             td.append(createCheckbox(propertyName, option, 
                                      propertyName + "_" + option)).append(" ")
               .append(createLabel(option ? option : "none",
-                                  propertyName + "_" + option));
+                                  propertyName + "_" + option)).append(" ");
           }
         } else if (property.type == "checkbox") {
           td.append(createRadio(propertyName, "1", propertyName + "_on"))
             .append(" ").append(createLabel("yes", propertyName + "_on"))
+            .append(" ")
             .append(createRadio(propertyName, "0", propertyName + "_off"))
             .append(" ").append(createLabel("no", propertyName + "_off"));
         } else if (property.type == "time") {
@@ -159,7 +176,7 @@
         td = $.create("td").addClass("filter");
         if (property.type == "select") {
           focusElement = createSelect(propertyName, property.options, true);
-        } else if ((property.type == "text")
+        } else if ((property.type == "text") || (property.type == "id")
                    || (property.type == "textarea")) {
           focusElement = createText(propertyName, 42);
         }
@@ -197,11 +214,38 @@
           focusElement.focus();
       
       // Disable the add filter in the drop-down list
-      if (property.type == "radio" || property.type == "checkbox")
+      if (property.type == "radio" || property.type == "checkbox"
+          || property.type == "id")
         this.options[this.selectedIndex].disabled = true;
       
       this.selectedIndex = 0;
-    });
+    }).next("input[name^=add_]").remove();
+    
+    // Add a new empty clause at the end by cloning the current last clause
+    function addClause(button) {
+      var tbody = $(button).closest("tbody");
+      var clauseNum = parseInt($("select[name^=add_filter_]", tbody)
+                               .attr("name").split("_").pop()) + 1;
+      tbody = tbody.parents("tbody").eq(0);
+      var copy = tbody.clone(true);
+      $(button).closest("td").next().attr("colSpan", 4).end().remove();
+      $("td.trac-clause-sep", copy).parent().removeAttr("style");
+      $("tr tbody:not(:last)", copy).remove();
+      var newId = "add_filter_" + clauseNum;
+      $("select", copy).attr("id", newId).attr("name", newId)
+        .children().enable().end()
+        .prev().attr("for", newId);
+      tbody.after(copy);
+    }
+    
+    // Make the button for adding a clause a client-side trigger
+    var add_clause = $("#filters input[name=add_clause]");
+    add_clause.replaceWith($.create("input").attr("type", "button")
+                            .attr("id", "add_clause").val(add_clause.val())
+                            .click(function() {
+      addClause(this);
+      return false;
+    }));
   }
 
 })(jQuery);

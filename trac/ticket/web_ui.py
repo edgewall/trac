@@ -45,7 +45,7 @@ from trac.util.text import CRLF, shorten_line, obfuscate_email_address, \
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
-from trac.web import parse_query_string, IRequestHandler
+from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.chrome import add_link, add_script, add_stylesheet, \
                             add_warning, add_ctxtnav, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
@@ -1261,7 +1261,7 @@ class TicketModule(Component):
         """Return a link to /query with the appropriate name and value"""
         default_query = self.ticketlink_query.startswith('?') and \
                         self.ticketlink_query[1:] or self.ticketlink_query
-        args = parse_query_string(default_query)
+        args = arg_list_to_args(parse_arg_list(default_query))
         args[name] = value
         return tag.a(text or value, href=req.href.query(args))
 
@@ -1271,7 +1271,7 @@ class TicketModule(Component):
             return value
         default_query = self.ticketlink_query.startswith('?') and \
                         self.ticketlink_query[1:] or self.ticketlink_query
-        args = parse_query_string(default_query)
+        args = arg_list_to_args(parse_arg_list(default_query))
         items = []
         for (i, word) in enumerate(re.split(r'(\s*(?:\s|[,;])\s*)', value)):
             if i % 2:
