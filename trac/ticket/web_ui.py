@@ -1077,10 +1077,10 @@ class TicketModule(Component):
                     add_warning(req, errmsg)
                     valid = False
                 else: # per-field additional checks
-                   if 'reporter' in ticket._old and \
+                    if 'reporter' in ticket._old and \
                        'TICKET_ADMIN' not in req.perm(resource):
-                    add_warning(req, errmsg)
-                    valid = False
+                        add_warning(req, errmsg)
+                        valid = False
             if not valid:
                 ticket.values.update(ticket._old)
 
