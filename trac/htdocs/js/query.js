@@ -36,7 +36,7 @@
         } else {
           var add_clause = $("#add_clause", ctbody);
           if (add_clause.length)
-            $("tr.actions td.actions", ctbody.prev()).attr("colSpan", 2)
+            $("tr.actions td.and", ctbody.prev()).attr("colSpan", 2)
               .after(add_clause.closest("td"));
           if (ctbody.prev().length == 0)
             ctbody.next().children("tr:first").attr("style", "display: none");

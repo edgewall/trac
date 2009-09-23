@@ -37,7 +37,7 @@ h2.report-result {
 #filters td.trac-clause { padding: 0 }
 #filters td.trac-clause-sep {
  border-top: 1px solid #d7d7d7;
- text-align: right;
+ text-align: center;
 }
 #filters tr { height: 2em }
 #filters th, #filters td { padding: 0 .2em; vertical-align: middle }
