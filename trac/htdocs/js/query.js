@@ -13,13 +13,13 @@
       if (label.length && (label.closest("tr")[0] == tr[0])) {
         var next = tr.next("." + field);
         if (next.length) {
-          var thisTh = tr.children().eq(0);
-          var nextTh = next.children().eq(0);
+          var thisTh = tr.children().eq(1);
+          var nextTh = next.children().eq(1);
           if (nextTh.attr("colSpan") == 1) {
             nextTh.replaceWith(thisTh);
           } else {
             nextTh.attr("colSpan", 1).before(thisTh);
-            next.children().eq(1).replaceWith(tr.children().eq(0));
+            next.children().eq(2).replaceWith(tr.children().eq(1));
           }
         }
       }
@@ -31,13 +31,13 @@
       } else {
         var table = tbody.closest("table.trac-clause");
         var ctbody = table.closest("tbody");
-        if (table.children().length > 3 || !ctbody.siblings().length) {
+        if (table.children().length > 2 || !ctbody.siblings().length) {
           tbody.remove();
         } else {
           var add_clause = $("#add_clause", ctbody);
           if (add_clause.length)
             $("tr.actions td.actions", ctbody.prev()).attr("colSpan", 2)
-              .before(add_clause.closest("td"));
+              .after(add_clause.closest("td"));
           if (ctbody.prev().length == 0)
             ctbody.next().children("tr:first").attr("style", "display: none");
           ctbody.remove();
@@ -65,7 +65,7 @@
     
     // Convenience function for creating a <label>
     function createLabel(text, htmlFor) {
-      var label = $.create("label").text(text);
+      var label = $("<label>").text(text);
       if (htmlFor)
         label.attr("for", htmlFor).addClass("control");
       return label;
@@ -126,6 +126,12 @@
       var clauseNum = $(this).attr("name").split("_").pop();
       propertyName = clauseNum + "_" + propertyName;
       
+      // Add the remove button
+      tr.append($('<td>')
+          .append($('<div class="inlinebuttons">')
+              .append($('<input type="button" value="-">')
+                  .click(function() { removeRow(this, propertyName); }))));
+      
       // Add the row header
       var th = $.create("th").attr("scope", "row");
       if (!tbody.length) {
@@ -183,13 +189,6 @@
         td.append(focusElement).appendTo(tr);
       }
       
-      // Add the remove button
-      td = $.create("td").addClass("actions");
-      $.create("input").attr("type", "button").val("-")
-        .click(function() { removeRow(this, propertyName); })
-        .appendTo(td);
-      tr.append(td);
-      
       if (!tbody.length) {
         tbody = $.create("tbody");
         
@@ -219,7 +218,7 @@
         this.options[this.selectedIndex].disabled = true;
       
       this.selectedIndex = 0;
-    }).next("input[name^=add_]").remove();
+    }).next("div.inlinebuttons").remove();
     
     // Add a new empty clause at the end by cloning the current last clause
     function addClause(button) {

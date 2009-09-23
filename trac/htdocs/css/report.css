@@ -35,7 +35,10 @@ h2.report-result {
 
 #filters table { width: 100% }
 #filters td.trac-clause { padding: 0 }
-#filters td.trac-clause-sep { border-top: 1px solid #d7d7d7 }
+#filters td.trac-clause-sep {
+ border-top: 1px solid #d7d7d7;
+ text-align: right;
+}
 #filters tr { height: 2em }
 #filters th, #filters td { padding: 0 .2em; vertical-align: middle }
 #filters th { font-size: 11px; text-align: right; white-space: nowrap; }
@@ -43,7 +46,9 @@ h2.report-result {
 #filters td.mode { text-align: right }
 #filters td.filter { width: 100% }
 #filters td.filter label.control { padding-right: 1em }
-#filters td.actions { text-align: right; white-space: nowrap }
+#filters td.and { white-space: nowrap }
+#filters td.or { text-align: right; white-space: nowrap }
+#filters div.inlinebuttons { display: inline }
 
 #columns div label { 
  display: block;

@@ -39,16 +39,22 @@
           <table summary="Query filters">
             <tbody py:for="clause_num, constraints in enumerate(clauses or [{}])"
                    py:with="clause_pre = '%d_' % clause_num">
-              <tr style="${clause_num == 0 and 'display: none' or None}"><td class="trac-clause-sep">&mdash; OR &mdash;</td></tr>
+              <tr style="${clause_num == 0 and 'display: none' or None}">
+                <td class="trac-clause-sep">&mdash; OR &mdash;</td>
+              </tr>
               <tr><td class="trac-clause">
                 <table class="trac-clause">
-                  <tbody><tr style="height: 1px"><td colspan="4"></td></tr></tbody>
                   <tbody py:for="field_name in field_names" py:if="field_name in constraints"
                          py:with="field = fields[field_name]; n_field_name = clause_pre + field_name;
                                   constraint = constraints[field_name];
                                   multiline = field.type in ('select', 'text', 'textarea', 'time')">
                     <tr py:for="constraint_idx, constraint_value in enumerate(constraint['values'])"
                         class="${field_name}" py:if="multiline or constraint_idx == 0">
+                      <td>
+                        <div class="inlinebuttons">
+                          <input type="submit" name="rm_filter_${n_field_name}_${constraint_idx}" value="-" />
+                        </div>
+                      </td>
                       <py:choose test="constraint_idx">
                         <py:when test="0">
                           <th scope="row"><label id="label_${n_field_name}">${fields[field_name].label}</label></th>
@@ -108,21 +114,14 @@
                           <label>and</label>
                           <input type="text" name="${n_field_name}_end" value="$end" size="14" />
                         </py:when>
-
                       </td>
-                      <td class="actions"><input
-                          type="submit" name="rm_filter_${n_field_name}_${constraint_idx}" value="-" /></td>
                     </tr>
                   </tbody>
 
                   <tbody py:with="last_clause = clause_num == len(clauses) - 1">
                     <tr class="actions">
-                      <td py:if="last_clause" class="actions" colspan="2" style="text-align: left">
-                        <input type="submit" name="add_clause" id="add_clause" value="+"/>&nbsp;
-                        <label for="add_clause">Also include...</label>
-                      </td>
-                      <td class="actions" colspan="${last_clause and 2 or 4}">
-                        <label for="add_filter_${clause_num}">Add filter</label>&nbsp;
+                      <td class="and" colspan="2">
+                        &nbsp;<label for="add_filter_${clause_num}">And</label>&nbsp;
                         <select name="add_filter_${clause_num}" id="add_filter_${clause_num}">
                           <option></option>
                           <option py:for="field_name in field_names" py:with="field = fields[field_name]"
@@ -131,7 +130,14 @@
                                                field_name in constraints and
                                                len(constraints[field_name])) or None}">${fields[field_name].label}</option>
                         </select>
-                        <input type="submit" name="add_${clause_num}" value="+" />
+                        <div class="inlinebuttons">
+                          <input type="submit" name="add_${clause_num}" value="+" />
+                        </div>
+                      </td>
+                      <td py:if="last_clause" class="or" colspan="2">
+                        <div class="inlinebuttons">
+                          <input type="submit" name="add_clause" id="add_clause" value="Or..." />
+                        </div>
                       </td>
                     </tr>
                   </tbody>
