@@ -751,6 +751,7 @@ class Chrome(Component):
 
         template = self.load_template(filename, method=method)
         data = self.populate_data(req, data)
+        data['chrome']['content_type'] = content_type
 
         stream = template.generate(**data)
 
@@ -784,6 +785,8 @@ class Chrome(Component):
 
         try:
             buffer = cStringIO()
+            if method == 'xml':
+                buffer.write('<?xml version="1.0" encoding="utf-8" ?>\n')
             stream.render(method, doctype=doctype, out=buffer)
             return buffer.getvalue().translate(_translate_nop,
                                                _invalid_control_chars)
