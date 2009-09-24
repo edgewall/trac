@@ -40,7 +40,11 @@
             <tbody py:for="clause_num, constraints in enumerate(clauses or [{}])"
                    py:with="clause_pre = '%d_' % clause_num">
               <tr style="${clause_num == 0 and 'display: none' or None}">
-                <td class="trac-clause-sep">&mdash; OR &mdash;</td>
+                <td>
+		  <div class="trac-clause-lsep">&nbsp;<hr /></div>
+		  <div class="trac-clause-msep">Or</div>
+		  <div class="trac-clause-rsep">&nbsp;<hr /></div>
+		</td>
               </tr>
               <tr><td class="trac-clause">
                 <table class="trac-clause">
