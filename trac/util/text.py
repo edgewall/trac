@@ -72,7 +72,7 @@ def to_unicode(text, charset=None):
         except UnicodeError:
             return unicode(text, locale.getpreferredencoding(), 'replace')
 
-def exception_to_unicode(e, traceback=""):
+def exception_to_unicode(e, traceback=False):
     message = '%s: %s' % (e.__class__.__name__, to_unicode(e))
     if traceback:
         from trac.util import get_last_traceback

@@ -55,7 +55,8 @@ def load_eggs(entry_point_name):
             elif isinstance(e, ImportError):
                 env.log.error('Skipping "%s": (can\'t import "%s")', item, ue)
             else:
-                env.log.error('Skipping "%s": (error "%s")', item, ue)
+                env.log.error('Skipping "%s": %s)', item,
+                              exception_to_unicode(e, traceback=True))
 
         for dist, e in errors.iteritems():
             _log_error(dist, e)
@@ -65,8 +66,7 @@ def load_eggs(entry_point_name):
                           entry.dist.location)
             try:
                 entry.load(require=True)
-            except (ImportError, DistributionNotFound, VersionConflict,
-                    UnknownExtra), e:
+            except Exception, e:
                 _log_error(entry, e)
             else:
                 if os.path.dirname(entry.dist.location) == auto_enable:
