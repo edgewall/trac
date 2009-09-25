@@ -306,6 +306,7 @@ class Context(object):
 # Some common MIME types and their associated keywords and/or file extensions
 
 KNOWN_MIME_TYPES = {
+    'application/javascript': ['js'],
     'application/pdf':        ['pdf'],
     'application/postscript': ['ps'],
     'application/rtf':        ['rtf'],
@@ -339,7 +340,6 @@ KNOWN_MIME_TYPES = {
     'text/x-fortran':         ['f'],
     'text/x-haskell':         ['hs'],
     'text/x-ini':             ['ini', 'cfg'],
-    'text/x-javascript':      ['js'],
     'text/x-objc':            ['m', 'mm'],
     'text/x-ocaml':           ['ml', 'mli'],
     'text/x-makefile':        ['make', 'mk',
