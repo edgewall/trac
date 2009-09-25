@@ -252,10 +252,8 @@
           <a py:otherwise="">${interval.count}</a>
         </dd>
       </py:for>
-      <py:if test="stats_href">
-        <dt>/ <a href="${stats_href}">Total ${stats.unit}s:</a></dt>
-        <dd><a href="${stats_href}">${sum([x.count for x in stats.intervals], 0)}</a></dd>
-      </py:if>
+      <dt>/ <a href="${stats_href}">Total ${stats.unit}s:</a></dt>
+      <dd><a href="${stats_href}">${sum([x.count for x in stats.intervals], 0)}</a></dd>
     </dl>
 </py:def>
 

@@ -41,7 +41,7 @@
         <py:if test="stats.count">${progress_bar(stats, interval_hrefs, stats_href=stats_href)}</py:if>
       </div>
 
-      <form py:if="available_groups" id="stats" action="">
+      <form py:if="available_groups and stats.count" id="stats" action="">
         <fieldset>
           <legend>
             <label for="by">${stats.title.capitalize()} by</label>

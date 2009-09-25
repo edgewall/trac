@@ -37,7 +37,7 @@ from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
 from trac.util.text import shorten_line, CRLF, to_unicode
 from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
-from trac.ticket.query import Query
+from trac.ticket.query import Query, QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_notice, add_stylesheet, \
@@ -278,8 +278,12 @@ def apply_ticket_permissions(env, req, tickets):
     return [t for t in tickets
             if 'TICKET_VIEW' in req.perm('ticket', t['id'])]
 
-def milestone_stats_data(req, stat, name, grouped_by='component', group=None):
+def milestone_stats_data(env, req, stat, name, grouped_by='component',
+                         group=None):
+    has_query = env[QueryModule] is not None
     def query_href(extra_args):
+        if not has_query:
+            return None
         args = {'milestone': name, grouped_by: group, 'group': 'status'}
         args.update(extra_args)
         return req.href.query(args)
@@ -339,7 +343,8 @@ class RoadmapModule(Component):
                                                 'owner')
             tickets = apply_ticket_permissions(self.env, req, tickets)
             stat = get_ticket_stats(self.stats_provider, tickets)
-            stats.append(milestone_stats_data(req, stat, milestone.name))
+            stats.append(milestone_stats_data(self.env, req, stat,
+                                              milestone.name))
             #milestone['tickets'] = tickets # for the iCalendar view
 
         if req.args.get('format') == 'ics':
@@ -737,7 +742,7 @@ class MilestoneModule(Component):
             'grouped_by': by,
             'groups': milestone_groups
             }
-        data.update(milestone_stats_data(req, stat, milestone.name))
+        data.update(milestone_stats_data(self.env, req, stat, milestone.name))
 
         if by:
             groups = []
@@ -766,8 +771,8 @@ class MilestoneModule(Component):
                 group_stats.append(gstat) 
 
                 gs_dict = {'name': group}
-                gs_dict.update(milestone_stats_data(req, gstat, milestone.name,
-                                                    by, group))
+                gs_dict.update(milestone_stats_data(self.env, req, gstat,
+                                                    milestone.name, by, group))
                 milestone_groups.append(gs_dict)
 
             for idx, gstat in enumerate(group_stats):

@@ -193,7 +193,7 @@ class ComponentManager(object):
 
     def __getitem__(self, cls):
         """Activate the component instance for the given class, or return the
-        existing the instance if the component has already been activated.
+        existing instance if the component has already been activated.
         """
         if cls not in self.enabled:
             self.enabled[cls] = self.is_component_enabled(cls)
