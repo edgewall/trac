@@ -785,8 +785,6 @@ class Chrome(Component):
 
         try:
             buffer = cStringIO()
-            if method == 'xml':
-                buffer.write('<?xml version="1.0" encoding="utf-8" ?>\n')
             stream.render(method, doctype=doctype, out=buffer)
             return buffer.getvalue().translate(_translate_nop,
                                                _invalid_control_chars)
