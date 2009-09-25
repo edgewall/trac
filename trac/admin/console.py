@@ -50,7 +50,12 @@ def printout(*args):
 def printerr(*args):
     console_print(sys.stderr, *args)
 
-def copytree(src, dst, symlinks=False, skip=[]):
+def makedirs(path, overwrite=False):
+    if overwrite and os.path.exists(path):
+        return
+    os.makedirs(path)
+
+def copytree(src, dst, symlinks=False, skip=[], overwrite=True):
     """Recursively copy a directory tree using copy2() (from shutil.copytree.)
 
     Added a `skip` parameter consisting of absolute paths
@@ -64,7 +69,7 @@ def copytree(src, dst, symlinks=False, skip=[]):
     skip = [str_path(f) for f in skip]
     def copytree_rec(src, dst):
         names = os.listdir(src)
-        os.mkdir(dst)
+        makedirs(dst, overwrite=overwrite)
         errors = []
         for name in names:
             srcname = os.path.join(src, name)
@@ -1243,7 +1248,7 @@ Congratulations!
                 printout('   ', source)
                 if os.path.exists(source):
                     dest = os.path.join(chrome_target, key)
-                    copytree(source, dest)
+                    copytree(source, dest, overwrite=True)
         
         # Create and copy scripts
         os.makedirs(script_target)
