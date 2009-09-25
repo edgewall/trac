@@ -552,7 +552,9 @@ class TracIniMacro(WikiMacroBase):
 class TracGuideTocMacro(WikiMacroBase):
     """
     This macro shows a quick and dirty way to make a table-of-contents
-    for a set of wiki pages.
+    for the Help/Guide. The table of contents will contain the Trac* and 
+    WikiFormatting pages, and can't be customized. Search for TocMacro for a
+    a more customizable table of contents.
     """
 
     TOC = [('TracGuide',                    'Index'),
