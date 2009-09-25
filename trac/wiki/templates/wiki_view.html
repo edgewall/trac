@@ -43,6 +43,9 @@
       <div class="wikipage searchable" py:choose="" xml:space="preserve">
         <py:when test="page.exists" xml:space="preserve">
           ${wiki_to_html(context, page.text)}
+          <div py:if="not version" class="trac-modifiedby" i18n:msg="author, datetime, reldate">
+            Last modified by ${format_author(page.author)} on ${format_datetime(page.time)} (${dateinfo(page.time)} ago)
+          </div>
         </py:when>
         <py:otherwise>
           <p>The page ${name_of(page.resource)} does not exist. You can create it here.</p>
