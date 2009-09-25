@@ -66,7 +66,7 @@
     
     // Convenience function for creating a <label>
     function createLabel(text, htmlFor) {
-      var label = $("<label>").text(text);
+      var label = $("<label>" + text + "</label>");
       if (htmlFor)
         label.attr("for", htmlFor).addClass("control");
       return label;
