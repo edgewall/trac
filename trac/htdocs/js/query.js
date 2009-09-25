@@ -56,10 +56,11 @@
       if (idx < 0)
         idx = this.name.length;
       var propertyName = this.name.substring(10, idx);
-      $(this).replaceWith($.create("input").attr("type", "button")
-                           .val(this.value).click(function() {
-        removeRow(this, propertyName);
-        return false;
+      $(this).replaceWith(
+        $($.template('<input type="button" value="$1">', this.value))
+          .click(function() { 
+                   removeRow(this, propertyName);
+                   return false;
       }));
     });
     
@@ -73,34 +74,34 @@
     
     // Convenience function for creating an <input type="text">
     function createText(name, size) {
-      return $.create("input").attr("type", "text").attr("name", name)
-               .attr("size", size);
+      return $($.template('<input type="text" name="$1" size="$2">', 
+                          name, size));
     }
     
     // Convenience function for creating an <input type="checkbox">
     function createCheckbox(name, value, id) {
-      return $.create("input").attr("type", "checkbox").attr("id", id)
-               .attr("name", name).val(value);
+      return $($.template('<input type="checkbox"'+
+                          '  id="$1" name="$2" value="$3">',
+                          id, name, value));
     }
     
     // Convenience function for creating an <input type="radio">
     function createRadio(name, value, id) {
       // Workaround for IE, otherwise the radio buttons are not selectable
-      return $('<input type="radio" name="' + name + '"/>')
-               .attr("id", id).val(value);
+      return $($.template('<input type="radio" id="$1" name="$2" value"$3">',
+                          id, name, value));
     }
     
     // Convenience function for creating a <select>
     function createSelect(name, options, optional) {
-      var e = $.create("select").attr("name", name);
+      var e = $($.template('<select name="$1">', name));
       if (optional)
-        $.create("option").appendTo(e);
+        $("<option>").appendTo(e);
       for (var i = 0; i < options.length; i++) {
-        if (typeof(options[i]) == "object")
-          $.create("option").val(options[i].value).text(options[i].text)
-            .appendTo(e);
-        else
-          $.create("option").val(options[i]).text(options[i]).appendTo(e);
+        var opt = options[i], v = opt, t = opt;
+        if (typeof opt == "object") 
+          v = opt.value, t = opt.text;
+        $($.template('<option value="$1">$2</option>', v, t)).appendTo(e);
       }
       return e;
     }
@@ -121,19 +122,19 @@
       var property = properties[propertyName];
       var table = $(this).closest("table.trac-clause")[0];
       var tbody = $("tr." + propertyName, table).closest("tbody").eq(0);
-      var tr = $.create("tr").addClass(propertyName);
+      var tr = $("<tr>").addClass(propertyName);
       
       var clauseNum = $(this).attr("name").split("_").pop();
       propertyName = clauseNum + "_" + propertyName;
       
       // Add the remove button
       tr.append($('<td>')
-          .append($('<div class="inlinebuttons">')
-              .append($('<input type="button" value="-">')
-                  .click(function() { removeRow(this, propertyName); }))));
+        .append($('<div class="inlinebuttons">')
+          .append($('<input type="button" value="-">')
+            .click(function() { removeRow(this, propertyName); }))));
       
       // Add the row header
-      var th = $.create("th").attr("scope", "row");
+      var th = $('<th scope="row">');
       if (!tbody.length) {
         th.append(createLabel(property.label)
                     .attr("id", "label_" + propertyName));
@@ -143,7 +144,7 @@
       }
       tr.append(th);
       
-      var td = $.create("td");
+      var td = $("<td>");
       var focusElement = null;
       if (property.type == "radio" || property.type == "checkbox"
           || property.type == "time") {
@@ -179,7 +180,7 @@
         }
         
         // Add the selector or text input for the actual filter value
-        td = $.create("td").addClass("filter");
+        td = $("<td>").addClass("filter");
         if (property.type == "select") {
           focusElement = createSelect(propertyName, property.options, true);
         } else if ((property.type == "text") || (property.type == "id")
@@ -190,7 +191,7 @@
       }
       
       if (!tbody.length) {
-        tbody = $.create("tbody");
+        tbody = $("<tbody>");
         
         // Find the insertion point for the new row. We try to keep the filter
         // rows in the same order as the options in the 'Add filter' drop-down,
@@ -239,9 +240,9 @@
     
     // Make the button for adding a clause a client-side trigger
     var add_clause = $("#filters input[name=add_clause]");
-    add_clause.replaceWith($.create("input").attr("type", "button")
-                            .attr("id", "add_clause").val(add_clause.val())
-                            .click(function() {
+    add_clause.replaceWith(
+      $($.template('<input type="button" id="add_clause" value="$1">', 
+                   add_clause.val())).click(function() {
       addClause(this);
       return false;
     }));
