@@ -47,14 +47,16 @@
     });
   }
   
-  $.template = function(str, dict) { 
-    return str.replace(/\${?(\w+)}?/g, function(_, k) { return dict[k]; }); 
+  $.template = function(str) { 
+    var args = arguments, kwargs = arguments[arguments.length-1];
+    return str.replace(/\${?(\w+)}?/g, function(_, k) {
+      if (k.length == 1 && k >= '0' && k <= '9')
+        return args[k-'0'];
+      else
+        return kwargs[k];
+    }); 
   }
   
-  $.create = function(tag) {
-    return $(document.createElement(tag));
-  }
-
   // Used for dynamically updating the height of a textarea
   window.resizeTextArea = function (id, rows) {
     var textarea = $("#" + id).get(0);

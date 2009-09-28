@@ -752,6 +752,7 @@ class Chrome(Component):
 
         template = self.load_template(filename, method=method)
         data = self.populate_data(req, data)
+        data['chrome']['content_type'] = content_type
 
         stream = template.generate(**data)
 

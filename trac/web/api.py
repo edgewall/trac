@@ -28,6 +28,7 @@ import urlparse
 from trac.core import Interface, TracError
 from trac.util import get_last_traceback, md5, unquote
 from trac.util.datefmt import http_date, localtz
+from trac.util.text import empty
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
 
@@ -100,9 +101,9 @@ class _RequestArgs(dict):
         return val
 
 
-def parse_query_string(query_string):
-    """Parse a query string into a _RequestArgs."""
-    args = _RequestArgs()
+def parse_arg_list(query_string):
+    """Parse a query string into a list of `(name, value)` tuples."""
+    args = []
     if not query_string:
         return args
     for arg in query_string.split('&'):
@@ -110,13 +111,21 @@ def parse_query_string(query_string):
         if len(nv) == 2:
             (name, value) = nv
         else:
-            (name, value) = (nv[0], '')
+            (name, value) = (nv[0], empty)
         name = unquote(name.replace('+', ' '))
         if isinstance(name, unicode):
             name = name.encode('utf-8')
         value = unquote(value.replace('+', ' '))
         if not isinstance(value, unicode):
             value = unicode(value, 'utf-8')
+        args.append((name, value))
+    return args
+
+
+def arg_list_to_args(arg_list):
+    """Convert a list of `(name, value)` tuples into into a `_RequestArgs`."""
+    args = _RequestArgs()
+    for name, value in arg_list:
         if name in args:
             if isinstance(args[name], list):
                 args[name].append(value)
@@ -179,7 +188,8 @@ class Request(object):
         self.outcookie = Cookie()
 
         self.callbacks = {
-            'args': Request._parse_args,
+            'arg_list': Request._parse_arg_list,
+            'args': lambda req: arg_list_to_args(req.arg_list),
             'languages': Request._parse_languages,
             'incookie': Request._parse_cookies,
             '_inheaders': Request._parse_headers
@@ -477,10 +487,10 @@ class Request(object):
 
     # Internal methods
 
-    def _parse_args(self):
-        """Parse the supplied request parameters into a dictionary."""
-        args = _RequestArgs()
-
+    def _parse_arg_list(self):
+        """Parse the supplied request parameters into a list of
+        `(name, value)` tuples.
+        """
         fp = self.environ['wsgi.input']
 
         # Avoid letting cgi.FieldStorage consume the input stream when the
@@ -491,6 +501,7 @@ class Request(object):
         if ctype not in ('application/x-www-form-urlencoded',
                          'multipart/form-data'):
             fp = StringIO('')
+        
         # Python 2.6 introduced a backwards incompatible change for
         # FieldStorage where QUERY_STRING is no longer ignored for POST
         # requests. We'll keep the pre 2.6 behaviour for now...
@@ -499,22 +510,13 @@ class Request(object):
         fs = cgi.FieldStorage(fp, environ=self.environ, keep_blank_values=True)
         if self.method == 'POST':
             self.environ['QUERY_STRING'] = qs_on_post
-        if fs.list:
-            for name in fs.keys():
-                values = fs[name]
-                if not isinstance(values, list):
-                    values = [values]
-                for value in values:
-                    if not value.filename:
-                        value = unicode(value.value, 'utf-8')
-                    if name in args:
-                        if isinstance(args[name], list):
-                            args[name].append(value)
-                        else:
-                            args[name] = [args[name], value]
-                    else:
-                        args[name] = value
-
+        
+        args = []
+        for value in fs.list:
+            name = value.name
+            if not value.filename:
+                value = unicode(value.value, 'utf-8')
+            args.append((name, value))
         return args
 
     def _parse_cookies(self):

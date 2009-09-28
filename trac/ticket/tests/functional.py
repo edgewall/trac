@@ -116,7 +116,7 @@ class TestTicketRSSFormat(FunctionalTestCaseSetup):
 class TestTicketSearch(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test ticket search"""
-        summary = random_sentence(5)
+        summary = random_sentence(4)
         ticketid = self._tester.create_ticket(summary)
         self._tester.go_to_front()
         tc.follow('Search')
@@ -187,11 +187,11 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
         self._tester.go_to_query()
         # We don't have the luxury of javascript, so this is a multi-step
         # process
-        tc.formvalue('query', 'add_filter', 'summary')
-        tc.submit('add')
-        tc.formvalue('query', 'owner', 'nothing')
-        tc.submit('rm_filter_owner_0')
-        tc.formvalue('query', 'summary', 'TestTicketQueryLinks')
+        tc.formvalue('query', 'add_filter_0', 'summary')
+        tc.submit('add_0')
+        tc.formvalue('query', '0_owner', 'nothing')
+        tc.submit('rm_filter_0_owner_0')
+        tc.formvalue('query', '0_summary', 'TestTicketQueryLinks')
         tc.submit('update')
         query_url = b.get_url()
         for i in range(count):
@@ -210,6 +210,30 @@ class TestTicketQueryLinks(FunctionalTwillTestCaseSetup):
 
         tc.find('title="Ticket #%s">Previous Ticket' % ticket_ids[1])
         tc.find('class="missing">Next Ticket &rarr;')
+
+
+class TestTicketQueryOrClause(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test ticket query with an or clauses"""
+        count = 3
+        ticket_ids = [self._tester.create_ticket(
+                        summary='TestTicketQueryOrClause%s' % i,
+                        info={'keywords': str(i)})
+                      for i in range(count)]
+        self._tester.go_to_query()
+        tc.formvalue('query', '0_owner', '')
+        tc.submit('rm_filter_0_owner_0')
+        tc.formvalue('query', 'add_filter_0', 'summary')
+        tc.submit('add_0')
+        tc.formvalue('query', '0_summary', 'TestTicketQueryOrClause1')
+        tc.submit('add_clause')
+        tc.formvalue('query', 'add_filter_1', 'keywords')
+        tc.submit('add_1')
+        tc.formvalue('query', '1_keywords', '2')
+        tc.submit('update')
+        tc.notfind('TestTicketQueryOrClause0')
+        for i in [1, 2]:
+            tc.find('TestTicketQueryOrClause%s' % i)
 
 
 class TestTimelineTicketDetails(FunctionalTwillTestCaseSetup):
@@ -1310,6 +1334,7 @@ def functionalSuite(suite=None):
     suite.addTest(TestTicketHistory())
     suite.addTest(TestTicketHistoryDiff())
     suite.addTest(TestTicketQueryLinks())
+    suite.addTest(TestTicketQueryOrClause())
     suite.addTest(TestTimelineTicketDetails())
     suite.addTest(TestAdminComponent())
     suite.addTest(TestAdminComponentDuplicates())
