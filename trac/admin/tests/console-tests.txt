@@ -58,7 +58,7 @@ version list         Show versions
 version remove       Remove version
 version rename       Rename version
 version time         Set version date
-wiki dump            Export all wiki pages to files named by title
+wiki dump            Export wiki pages to files named by title
 wiki export          Export wiki page to file or stdout
 wiki import          Import wiki page from file or stdin
 wiki list            List wiki pages
