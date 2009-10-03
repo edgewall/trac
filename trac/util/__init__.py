@@ -19,7 +19,7 @@
 
 import errno
 import locale
-import os
+import os.path
 import re
 import sys
 import time
@@ -76,6 +76,130 @@ def embedded_numbers(s):
 
 
 # -- os utilities
+
+try:
+    WindowsError = WindowsError
+except NameError:
+    class WindowsError(OSError):
+        """Dummy exception replacing WindowsError on non-Windows platforms"""
+
+
+if os.name == 'nt':
+    try:
+        import ctypes
+        MOVEFILE_REPLACE_EXISTING = 0x1
+        MOVEFILE_WRITE_THROUGH = 0x8
+        
+        try:
+            MoveFileTransacted = ctypes.windll.kernel32.MoveFileTransactedA
+            CreateTransaction = ctypes.windll.ktmw32.CreateTransaction
+            CommitTransaction = ctypes.windll.ktmw32.CommitTransaction
+            CloseHandle = ctypes.windll.kernel32.CloseHandle
+            
+            def rename(src, dst):
+                ta = CreateTransaction(None, 0, 0, 0, 0, 1000,
+                                       'Rename "%s" to "%s"' % (src, dst))
+                try:
+                    if not (MoveFileTransacted(src, dst, None, None,
+                                               MOVEFILE_REPLACE_EXISTING
+                                               | MOVEFILE_WRITE_THROUGH, ta) \
+                            and CommitTransaction(ta)):
+                        raise ctypes.WinError()
+                finally:
+                    CloseHandle(ta)
+        except AttributeError:
+            MoveFileEx = ctypes.windll.kernel32.MoveFileExA
+            
+            def rename(src, dst):
+                if not MoveFileEx(src, dst, MOVEFILE_REPLACE_EXISTING
+                                            | MOVEFILE_WRITE_THROUGH):
+                    raise ctypes.WinError()
+    except Exception:
+        import random
+        
+        def rename(src, dst):
+            try:
+                os.rename(src, dst)
+            except WindowsError, e:
+                if e.errno != errno.EEXIST:
+                    raise
+                old = "%s-%08x" % (dst, random.randint(0, 0xffffffff))
+                os.rename(dst, old)
+                os.rename(src, dst)
+                try:
+                    os.unlink(old)
+                except Exception:
+                    pass
+else:
+    rename = os.rename
+
+
+class AtomicFile(object):
+    """A file that appears atomically with its full content.
+    
+    This file-like object writes to a temporary file in the same directory
+    as the final file. If the file is committed, the temporary file is renamed
+    atomically (on Unix, at least) to its final name. If it is rolled back,
+    the temporary file is removed.
+    """
+    def __init__(self, path, mode='w', bufsize=-1):
+        self._path = path
+        (dir, name) = os.path.split(path)
+        (fd, self._temp) = tempfile.mkstemp(prefix=name + '-', dir=dir)
+        self._file = os.fdopen(fd, mode, bufsize)
+        
+        # Try to preserve permissions and group ownership, but failure
+        # should not be fatal
+        try:
+            st = os.stat(path)
+            if hasattr(os, 'chmod'):
+                os.chmod(self._temp, st.st_mode)
+            if hasattr(os, 'chflags') and hasattr(st, 'st_flags'):
+                os.chflags(self._temp, st.st_flags)
+            if hasattr(os, 'chown'):
+                os.chown(self._temp, -1, st.st_gid)
+        except OSError:
+            pass
+    
+    def __getattr__(self, name):
+        return getattr(self._file, name)
+    
+    def commit(self):
+        if self._file is None:
+            return
+        try:
+            f, self._file = self._file, None
+            f.close()
+            rename(self._temp, self._path)
+        except Exception:
+            os.unlink(self._temp)
+            raise
+    
+    def rollback(self):
+        if self._file is None:
+            return
+        try:
+            f, self._file = self._file, None
+            f.close()
+        finally:
+            try:
+                os.unlink(self._temp)
+            except:
+                pass
+    
+    close = commit
+    __del__ = rollback
+
+
+def create_file(path, data='', mode='w'):
+    """Create a new file with the given data."""
+    f = open(path, mode)
+    try:
+        if data:
+            f.write(data)
+    finally:
+        f.close()
+
 
 def create_unique_file(path):
     """Create a new file. An index is added if the path exists"""

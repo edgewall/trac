@@ -32,7 +32,7 @@ from trac.core import TracError
 from trac.env import Environment
 from trac.perm import PermissionSystem
 from trac.ticket.model import *
-from trac.util import getuser
+from trac.util import WindowsError, getuser
 from trac.util.datefmt import parse_date, format_date, format_datetime, utc
 from trac.util.html import html
 from trac.util.text import to_unicode, wrap, unicode_quote, unicode_unquote, \

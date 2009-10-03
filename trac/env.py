@@ -28,7 +28,7 @@ from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
-from trac.util import get_pkginfo
+from trac.util import create_file, get_pkginfo
 from trac.util.text import exception_to_unicode
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
@@ -299,12 +299,6 @@ class Environment(Component, ComponentManager):
         If options contains ('inherit', 'file'), default values will not be
         loaded; they are expected to be provided by that file or other options.
         """
-        def _create_file(fname, data=None):
-            fd = open(fname, 'w')
-            if data:
-                fd.write(data)
-            fd.close()
-
         # Create the directory structure
         if not os.path.exists(self.path):
             os.mkdir(self.path)
@@ -313,15 +307,16 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'plugins'))
 
         # Create a few files
-        _create_file(os.path.join(self.path, 'VERSION'),
-                     'Trac Environment Version 1\n')
-        _create_file(os.path.join(self.path, 'README'),
-                     'This directory contains a Trac environment.\n'
-                     'Visit http://trac.edgewall.org/ for more information.\n')
+        create_file(os.path.join(self.path, 'VERSION'),
+                    'Trac Environment Version 1\n')
+        create_file(os.path.join(self.path, 'README'),
+                    'This directory contains a Trac environment.\n'
+                    'Visit http://trac.edgewall.org/ for more information.\n')
 
         # Setup the default configuration
         os.mkdir(os.path.join(self.path, 'conf'))
-        _create_file(os.path.join(self.path, 'conf', 'trac.ini'))
+        create_file(os.path.join(self.path, 'conf', 'trac.ini'))
+        create_file(os.path.join(self.path, 'conf', 'trac.ini.sample'))
         skip_defaults = options and ('inherit', 'file') in [(section, option) \
                 for (section, option, value) in options]
         self.setup_config(load_defaults=not skip_defaults)
@@ -526,6 +521,8 @@ class EnvironmentSetup(Component):
 
     def _update_sample_config(self):
         filename = os.path.join(self.env.path, 'conf', 'trac.ini.sample')
+        if not os.path.isfile(filename):
+            return
         config = Configuration(filename)
         for section, default_options in config.defaults().iteritems():
             for name, value in default_options.iteritems():

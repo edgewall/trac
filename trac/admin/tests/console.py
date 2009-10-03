@@ -54,6 +54,12 @@ def load_expected_results(file, pattern):
     return expected
 
 
+class InMemoryConfiguration(Configuration):
+    """A subclass of Configuration that doesn't save to disk."""
+    def save(self):
+        pass
+
+
 class InMemoryEnvironment(Environment):
     """
     A subclass of Environment that keeps its' DB in memory.
@@ -79,10 +85,7 @@ class InMemoryEnvironment(Environment):
                cls.__module__.find('.tests.') == -1
 
     def setup_config(self, load_defaults=None):
-        self.config = Configuration(None)
-
-    def save_config(self):
-        pass
+        self.config = InMemoryConfiguration(None)
 
 
 class TracadminTestCase(unittest.TestCase):
