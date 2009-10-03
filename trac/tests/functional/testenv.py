@@ -209,9 +209,9 @@ class FunctionalTestEnvironment(object):
         """Default to no repository"""
         return "''" # needed for Python 2.3 and 2.4 on win32
 
-    def call_in_workdir(self, args):
+    def call_in_workdir(self, args, environ=None):
         proc = Popen(args, stdout=PIPE, stderr=logfile,
-                     close_fds=close_fds, cwd=self.work_dir())
+                     close_fds=close_fds, cwd=self.work_dir(), env=environ)
         (data, _) = proc.communicate()
         if proc.wait():
             raise Exception('Unable to run command %s in %s' %
