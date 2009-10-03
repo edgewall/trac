@@ -16,7 +16,6 @@
 
 import copy
 import re
-from datetime import datetime
 
 from genshi.builder import tag
 
@@ -26,8 +25,7 @@ from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
 from trac.resource import IResourceManager
 from trac.util import Ranges
-from trac.util.datefmt import utc
-from trac.util.text import shorten_line, obfuscate_email_address
+from trac.util.text import shorten_line
 from trac.util.translation import _, N_, gettext
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
