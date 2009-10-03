@@ -25,6 +25,7 @@ from trac.perm import PermissionSystem
 from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
 from trac.ticket.api import ITicketActionController, TicketSystem
+from trac.ticket.model import Resolution
 from trac.util.translation import _
 
 # -- Utilities for the ConfigurableTicketWorkflow
@@ -207,7 +208,6 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         return all_status
         
     def render_ticket_action_control(self, req, ticket, action):
-        from trac.ticket import model
 
         self.log.debug('render_ticket_action_control: action "%s"' % action)
 
@@ -267,8 +267,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 resolutions = [x.strip() for x in
                                this_action['set_resolution'].split(',')]
             else:
-                resolutions = [val.name for val in
-                               model.Resolution.select(self.env)]
+                resolutions = [val.name for val in Resolution.select(self.env)]
             if not resolutions:
                 raise TracError(_("Your workflow attempts to set a resolution "
                                   "but none is defined (configuration issue, "
