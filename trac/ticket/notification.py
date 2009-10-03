@@ -219,7 +219,7 @@ class TicketNotifyEmail(NotifyEmail):
                                                 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__': 
-            prefix = '[%s]' % self.config.get('project', 'name')
+            prefix = '[%s]' % self.env.project_name
         
         data = {
             'prefix': prefix,
@@ -289,7 +289,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
-        s = '%s.%08d.%d.%s' % (self.config.get('project', 'url'),
+        s = '%s.%08d.%d.%s' % (self.env.project_url,
                                int(self.ticket.id), to_timestamp(modtime),
                                rcpt.encode('ascii', 'ignore'))
         dig = md5(s).hexdigest()

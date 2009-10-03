@@ -426,7 +426,7 @@ class RoadmapModule(Component):
                    % __version__)
         write_prop('METHOD', 'PUBLISH')
         write_prop('X-WR-CALNAME',
-                   self.config.get('project', 'name') + ' - ' + _('Roadmap'))
+                   self.env.project_name + ' - ' + _('Roadmap'))
         for milestone in milestones:
             uid = '<%s/milestone/%s@%s>' % (req.base_path, milestone.name,
                                             host)
