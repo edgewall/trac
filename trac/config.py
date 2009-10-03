@@ -14,10 +14,11 @@
 
 from ConfigParser import ConfigParser
 from copy import deepcopy
-import os
+import os.path
 
 from trac.admin import IAdminCommandProvider
 from trac.core import *
+from trac.util import AtomicFile
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _
 
@@ -208,7 +209,7 @@ class Configuration(object):
 
         # At this point, all the strings in `sections` are UTF-8 encoded `str`
         try:
-            fileobj = open(self.filename, 'w')
+            fileobj = AtomicFile(self.filename, 'w')
             try:
                 fileobj.write('# -*- coding: utf-8 -*-\n\n')
                 for section, options in sections:
