@@ -344,21 +344,30 @@ class LogModule(Component):
                 indexes = [sep in match and match.index(sep) for sep in ':@']
                 idx = min([i for i in indexes if i is not False])
                 path, revs = match[:idx], match[idx+1:]
+        
+        rm = RepositoryManager(self.env)
+        authname = formatter.perm.username
+        reponame = rm.get_default_repository(formatter.context)
+        if reponame is not None:
+            repos = rm.get_repository(reponame, authname)
+        else:
+            reponame, repos, path = rm.get_repository_by_path(path, authname)
+
         revranges = None
         if any(c for c in ':-,' if c in revs):
-            revranges = self._normalize_ranges(formatter.req, path, revs)
+            revranges = self._normalize_ranges(repos, path, revs)
             revs = None
         if 'LOG_VIEW' in formatter.perm:
             if revranges:
-                href = formatter.href.log(path or '/', revs=str(revranges)) 
+                href = formatter.href.log(reponame or None, path or '/',
+                                          revs=str(revranges)) 
             else:
-                reponame, repos, relpath = RepositoryManager(self.env). \
-                    get_repository_by_path(path, formatter.req.authname)
                 try:
                     rev = repos.normalize_rev(revs)
                 except NoSuchChangeset:
                     rev = None
-                href = formatter.href.log(path or '/', rev=rev)
+                href = formatter.href.log(reponame or None, path or '/',
+                                          rev=rev)
             if query and (revranges or revs):
                 query = '&' + query[1:]
             return html.A(label, class_='source', href=href + query + fragment)
@@ -367,20 +376,18 @@ class LogModule(Component):
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
-    def _normalize_ranges(self, req, path, revs):
+    def _normalize_ranges(self, repos, path, revs):
         ranges = revs.replace(':', '-')
         try:
             # fast path; only numbers
             return Ranges(ranges, reorder=True) 
         except ValueError:
             # slow path, normalize each rev
-            reponame, repos, path = RepositoryManager(self.env). \
-                get_repository_by_path(path, req.authname)
             splitted_ranges = re.split(r'([-,])', ranges)
             try:
                 revs = [repos.normalize_rev(r) for r in splitted_ranges[::2]]
             except NoSuchChangeset:
                 return None
-            seps = splitted_ranges[1::2]+['']
+            seps = splitted_ranges[1::2] + ['']
             ranges = ''.join([str(rev)+sep for rev, sep in zip(revs, seps)])
             return Ranges(ranges)
