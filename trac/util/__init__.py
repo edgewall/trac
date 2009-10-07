@@ -120,7 +120,7 @@ if os.name == 'nt':
         def rename(src, dst):
             try:
                 os.rename(src, dst)
-            except WindowsError, e:
+            except OSError, e:
                 if e.errno != errno.EEXIST:
                     raise
                 old = "%s-%08x" % (dst, random.randint(0, 0xffffffff))
@@ -189,6 +189,15 @@ class AtomicFile(object):
     
     close = commit
     __del__ = rollback
+
+
+def read_file(path, mode='r'):
+    """Read a file and return its content."""
+    f = open(path, mode)
+    try:
+        return f.read()
+    finally:
+        f.close()
 
 
 def create_file(path, data='', mode='w'):
