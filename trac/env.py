@@ -226,30 +226,39 @@ class Environment(Component, ComponentManager):
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns false, the component does
         not get activated."""
+        if not hasattr(self, 'rules'):
+            self._rules = {}
+            for name, value in self.config.options('components'):
+                if name.endswith('.*'):
+                    name = name[:-2]
+                self._rules[name.lower()] = value.lower() in ('enabled', 'on')
+
         if not isinstance(cls, basestring):
             component_name = (cls.__module__ + '.' + cls.__name__).lower()
         else:
             component_name = cls.lower()
 
-        rules = [(name.lower(), value.lower() in ('enabled', 'on'))
-                 for name, value in self.config.options('components')]
-        rules.sort(lambda a, b: -cmp(len(a[0]), len(b[0])))
-
-        for pattern, enabled in rules:
-            if component_name == pattern or pattern.endswith('*') \
-                    and component_name.startswith(pattern[:-1]):
-                # Disable the pre-0.11 WebAdmin plugin
-                # Please note that there's no recommendation to uninstall the
-                # plugin because doing so would obviously break the backwards
-                # compatibility that the new integration administration
-                # interface tries to provide for old WebAdmin extensions
-                if component_name.startswith('webadmin.'):
-                    self.log.info('The legacy TracWebAdmin plugin has been '
-                                  'automatically disabled, and the integrated '
-                                  'administration interface will be used '
-                                  'instead.')
-                    return False
+        # Disable the pre-0.11 WebAdmin plugin
+        # Please note that there's no recommendation to uninstall the
+        # plugin because doing so would obviously break the backwards
+        # compatibility that the new integration administration
+        # interface tries to provide for old WebAdmin extensions
+        if component_name.startswith('webadmin.'):
+            self.log.info('The legacy TracWebAdmin plugin has been '
+                          'automatically disabled, and the integrated '
+                          'administration interface will be used '
+                          'instead.')
+            return False
+        
+        cname = component_name
+        while cname:
+            enabled = self._rules.get(cname)
+            if enabled is not None:
                 return enabled
+            idx = cname.rfind('.')
+            if idx < 0:
+                break
+            cname = cname[:idx]
 
         # versioncontrol components are enabled if the repository is configured
         # FIXME: this shouldn't be hardcoded like this
