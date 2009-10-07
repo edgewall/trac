@@ -990,11 +990,15 @@ class ChangesetModule(Component):
         sep = chgset.find('/')
         if sep > 0:
             rev, path = chgset[:sep], chgset[sep:]
-            reponame, repos, path = rm.get_repository_by_path(path, authname)
         else:
-            rev, path = chgset, None
-            reponame = rm.get_default_repository(formatter.context)
+            rev, path = chgset, '/'
+        reponame = rm.get_default_repository(formatter.context)
+        if reponame is not None:
             repos = rm.get_repository(reponame, authname)
+        else:
+            reponame, repos, path = rm.get_repository_by_path(path, authname)
+        if path == '/':
+            path = None
 
         # rendering changeset link
         if repos and 'CHANGESET_VIEW' in formatter.perm('changeset', 
