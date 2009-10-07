@@ -226,7 +226,7 @@ class Environment(Component, ComponentManager):
         This is called by the `ComponentManager` base class when a component is
         about to be activated. If this method returns false, the component does
         not get activated."""
-        if not hasattr(self, 'rules'):
+        if not hasattr(self, '_rules'):
             self._rules = {}
             for name, value in self.config.options('components'):
                 if name.endswith('.*'):
