@@ -97,8 +97,10 @@ if os.name == 'nt':
             CloseHandle = ctypes.windll.kernel32.CloseHandle
             
             def rename(src, dst):
-                ta = CreateTransaction(None, 0, 0, 0, 0, 1000,
-                                       'Rename "%s" to "%s"' % (src, dst))
+                ta = CreateTransaction(None, 0, 0, 0, 0, 1000, 
+                                       'Trac forced rename')
+                if ta == -1:
+                    raise ctypes.WinError()
                 try:
                     if not (MoveFileTransacted(src, dst, None, None,
                                                MOVEFILE_REPLACE_EXISTING
