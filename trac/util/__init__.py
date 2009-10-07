@@ -123,7 +123,7 @@ if os.name == 'nt':
             except OSError, e:
                 if e.errno != errno.EEXIST:
                     raise
-                old = "%s-%08x" % (dst, random.randint(0, 0xffffffff))
+                old = "%s-%08x" % (dst, random.randint(0, sys.maxint))
                 os.rename(dst, old)
                 os.rename(src, dst)
                 try:
