@@ -512,7 +512,7 @@ class Request(object):
             self.environ['QUERY_STRING'] = qs_on_post
         
         args = []
-        for value in fs.list:
+        for value in fs.list or ():
             name = value.name
             if not value.filename:
                 value = unicode(value.value, 'utf-8')
