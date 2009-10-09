@@ -111,7 +111,8 @@
         <tr py:if="file">
           <td class="message searchable" py:choose="">
             <py:when test="wiki_format_messages" xml:space="preserve">
-              ${wiki_to_html(context('changeset', (reponame, file.changeset.rev)), file.changeset.message, escape_newlines=True)}
+              ${wiki_to_html(context('changeset', file.changeset.rev, parent=repos_resource),
+                             file.changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise>${file.changeset.message}</py:otherwise>
           </td>

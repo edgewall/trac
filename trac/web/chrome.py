@@ -666,6 +666,7 @@ class Chrome(Component):
 
         d.update({
             'context': req and Context.from_request(req) or None,
+            'Resource': Resource,
             'url_of': get_rel_url,
             'abs_url_of': get_abs_url,
             'name_of': partial(get_resource_name, self.env),

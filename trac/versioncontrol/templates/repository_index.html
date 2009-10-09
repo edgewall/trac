@@ -28,7 +28,8 @@
           </td>
           <td class="change">
             <span class="author" py:if="change">${authorinfo(change.author)}:</span>
-            <span class="change" py:choose="" py:with="chgset_context = context('changeset', (reponame, change.rev))">
+            <span class="change" py:choose=""
+                  py:with="chgset_context = context('changeset', change.rev, parent=Resource('repository', reponame))">
               <em py:when="err" py:content="err" />
               <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
               <py:when test="wiki_format_messages">

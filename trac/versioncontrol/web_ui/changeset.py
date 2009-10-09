@@ -307,7 +307,8 @@ class ChangesetModule(Component):
         data['wiki_format_messages'] = self.wiki_format_messages
 
         if chgset:
-            req.perm('changeset', new).require('CHANGESET_VIEW')
+            resource = Resource('repository', reponame).child('changeset', new)
+            req.perm(resource).require('CHANGESET_VIEW')
             chgset = repos.get_changeset(new)
 
             # TODO: find a cheaper way to reimplement r2636
@@ -408,8 +409,10 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
 
             # Support for revision properties (#2545)
-            context = Context.from_request(req, 'changeset', 
-                                           (reponame, chgset.rev))
+            repos_resource = Resource('repository', reponame)
+            data['repos_resource'] = repos_resource
+            context = Context.from_request(req, 'changeset', chgset.rev,
+                                           parent=repos_resource)
             revprops = chgset.get_properties()
             data['properties'] = browser.render_properties('revprop', context,
                                                            revprops)
@@ -485,12 +488,15 @@ class ChangesetModule(Component):
         #           with _that_ node specific history...
 
         options = data['diff']['options']
+        repos_resource = Resource('repository', reponame)
 
         def _prop_changes(old_node, new_node):
-            old_source = Resource('source', (reponame, old_node.created_path),
-                                  version=old_node.created_rev)
-            new_source = Resource('source', (reponame, new_node.created_path),
-                                  version=new_node.created_rev)
+            old_source = Resource('source', old_node.created_path,
+                                  version=old_node.created_rev,
+                                  parent=repos_resource)
+            new_source = Resource('source', new_node.created_path,
+                                  version=new_node.created_rev,
+                                  parent=repos_resource)
             old_props = new_props = []
             if 'FILE_VIEW' in req.perm(old_source):
                 old_props = old_node.get_properties()
@@ -854,12 +860,13 @@ class ChangesetModule(Component):
                 
             uids_seen = {}
             def generate_changesets(reponame, repos):
+                repos_resource = Resource('repository', reponame)
                 for _, changesets in groupby(repos.get_changesets(start, stop),
                                              key=collapse_changesets):
                     viewable_changesets = []
                     for cset in changesets:
-                        cset_resource = Resource('changeset', 
-                                                 (reponame, cset.rev))
+                        cset_resource = Resource('changeset', cset.rev,
+                                                 parent=repos_resource)
                         if 'CHANGESET_VIEW' in req.perm(cset_resource):
                             repos_for_uid = [reponame]
                             uid = repos.get_changeset_uid(cset.rev)
@@ -885,7 +892,7 @@ class ChangesetModule(Component):
         changesets, show_location, show_files = event[3]
         cset, cset_resource, repos_for_uid = changesets[0]
         message = cset.message or ''
-        reponame = cset_resource.id[0] # first repo
+        reponame = cset_resource.parent.id
         rev_b, rev_a = cset.rev, cset.rev
 
         if field == 'url':
@@ -1001,8 +1008,8 @@ class ChangesetModule(Component):
             path = None
 
         # rendering changeset link
-        if repos and 'CHANGESET_VIEW' in formatter.perm('changeset', 
-                                                        (reponame, rev)):
+        resource = Resource('repository', reponame).child('changeset', rev)
+        if repos and 'CHANGESET_VIEW' in formatter.perm(resource):
             try:
                 changeset = repos.get_changeset(rev)
                 href = formatter.href.changeset(rev, reponame or None, path)
@@ -1073,7 +1080,7 @@ class ChangesetModule(Component):
             #cset = Resource('repository', reponame).child('changeset' , rev)
             #cset = repos.resource.child('changeset' , rev)
             #cset = repos.changeset_resource(rev)
-            cset = Resource('changeset', (reponame, rev))
+            cset = Resource('repository', reponame).child('changeset', rev)
             if 'CHANGESET_VIEW' in req.perm(cset):
                 yield (req.href.changeset(rev, reponame),
                        '[%s]: %s' % (rev, shorten_line(log)),

@@ -26,6 +26,7 @@ from trac.config import IntOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
+from trac.resource import Resource
 from trac.util import Ranges
 from trac.util.compat import any
 from trac.util.datefmt import http_date
@@ -85,6 +86,7 @@ class LogModule(Component):
 
         reponame, repos, path = RepositoryManager(self.env).\
                 get_repository_by_path(path, req.authname)
+        repos_resource = Resource('repository', reponame)
 
         normpath = repos.normalize_path(path)
         # if `revs` parameter is given, then we're restricted to the 
@@ -253,8 +255,9 @@ class LogModule(Component):
         if range:
             item_ranges.append(range)
         data = {
-            'context': Context.from_request(req, 'source', (reponame, path)),
-            'reponame': reponame, 
+            'context': Context.from_request(req, 'source', path,
+                                            parent=repos_resource),
+            'reponame': reponame, 'repos_resource': repos_resource,
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'path': path, 'rev': rev, 'stop_rev': stop_rev, 
             'revranges': revranges,
@@ -269,7 +272,7 @@ class LogModule(Component):
             return 'revisionlog.txt', data, 'text/plain'
         elif req.args.get('format') == 'rss':
             data['context'] = Context.from_request(req, 'source', 
-                                                   (reponame, path),
+                                                   path, parent=repos_resource,
                                                    absurls=True)
             return 'revisionlog.rss', data, 'application/rss+xml'
 

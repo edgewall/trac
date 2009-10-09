@@ -17,7 +17,7 @@
 
     <item py:for="item in items" 
           py:with="change = changes[item.rev]; 
-                   item_context = context('changeset', (reponame, change.rev))">
+                   item_context = context('changeset', change.rev, parent=repos_resource))">
       ${author_or_creator(change.author, email_map)}
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: ${shorten_line(change.message)}</title>

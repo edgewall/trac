@@ -343,21 +343,20 @@ class RepositoryManager(Component):
 
     # IResourceManager methods
 
-    # Note: with multiple repository support, the repository name becomes
-    #       part of the 'id', which becomes a `(reponame, rev or path)` pair.
-
     def get_resource_realms(self):
         yield 'changeset'
         yield 'source'
+        yield 'repository'
 
     def get_resource_description(self, resource, format=None, **kwargs):
-        reponame, id = resource.id
         if resource.realm == 'changeset':
+            reponame, id = resource.parent.id, resource.id
             if reponame:
                 return _("Changeset %(rev)s in %(repo)s", rev=id, repo=reponame)
             else:
                 return _("Changeset %(rev)s", rev=id)
         elif resource.realm == 'source':
+            reponame, id = resource.parent.id, resource.id
             version = in_repo = ''
             if format == 'summary':
                 repos = resource.env.get_repository(reponame)
@@ -375,14 +374,16 @@ class RepositoryManager(Component):
             if reponame:
                 in_repo = _(" in %(repo)s", repo=reponame)
             return ''.join([kind, ' ', id, version, in_repo])
+        elif resource.realm == 'repository':
+            return _("Repository %(repo)s", repo=resource.id)
 
     def get_resource_url(self, resource, href, **kwargs):
-        if resource and resource.realm in ('source', 'changeset'):
-            repos, id = resource.id
-            if resource.realm == 'source':
-                return href.source(repos, id)
-            else:
-                return href.changeset(id, repos)
+        if resource.realm == 'changeset':
+            return href.changeset(resource.id, resource.parent.id)
+        elif resource.realm == 'source':
+            return href.source(resource.parent.id, resource.id)
+        elif resource.realm == 'repository':
+            return href.source(resource.id)
 
     # IRepositoryProvider methods
 
@@ -524,7 +525,7 @@ class RepositoryManager(Component):
         """
         while context:
             if context.resource.realm in ('source', 'changeset'):
-                return context.resource.id[0]
+                return context.resource.parent.id
             context = context.parent
 
     def get_all_repositories(self):

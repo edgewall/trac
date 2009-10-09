@@ -275,7 +275,8 @@ class CommitTicketReferenceMacro(WikiMacroBase):
                              "ticket)", class_='hint')
         if ChangesetModule(self.env).wiki_format_messages:
             return tag.div(format_to_html(self.env,
-                formatter.context('changeset', (reponame, changeset.rev)),
+                formatter.context('changeset', changeset.rev,
+                                  parent=Resource('repository', reponame)),
                 changeset.message, escape_newlines=True), class_='message')
         else:
             return tag.pre(changeset.message, class_='message')

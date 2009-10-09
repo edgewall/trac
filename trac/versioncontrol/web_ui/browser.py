@@ -28,7 +28,7 @@ from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
                               IHTMLPreviewAnnotator, Context
 from trac.perm import IPermissionRequestor
-from trac.resource import ResourceNotFound, Resource
+from trac.resource import Resource, ResourceNotFound
 from trac.util import embedded_numbers
 from trac.util.compat import all
 from trac.util.datefmt import http_date, utc
@@ -361,9 +361,12 @@ class BrowserModule(Component):
                 rev_or_latest = rev or repos.youngest_rev
                 node = get_existing_node(req, repos, path, rev_or_latest)
             except NoSuchChangeset, e:
-                raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
+                raise ResourceNotFound(e.message,
+                                       _('Invalid changeset number'))
 
-            context = context('source', (reponame, path), node.created_rev)
+            repos_resource = Resource('repository', reponame)
+            context = context(repos_resource.child('source', path,
+                                                   version=node.created_rev))
 
         # Prepare template data
         path_links = get_path_links(req.href, reponame, path, rev, order, desc)
@@ -390,6 +393,7 @@ class BrowserModule(Component):
 
         data = {
             'context': context, 'reponame': reponame or None,
+            'repos_resource': repos and repos_resource,
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
             'created_path': node and node.created_path,
             'created_rev': node and node.created_rev,
@@ -789,11 +793,10 @@ class BlameAnnotator(object):
     def __init__(self, env, context):
         self.env = env
         self.context = context
-        # `context`'s resource is ('source', (reponame, path), version=rev)
-        r = context.resource
-        self.reponame, self.path = r.id
+        self.reponame = context.resource.parent.id
+        self.path = context.resource.id
         self.repos = env.get_repository(self.reponame)
-        self.rev = r.version
+        self.rev = context.resource.version
         # maintain state
         self.prev_chgset = None
         self.chgset_data = {}
