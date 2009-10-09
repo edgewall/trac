@@ -85,6 +85,7 @@ except NameError:
         """Dummy exception replacing WindowsError on non-Windows platforms"""
 
 
+can_rename_open_file = False
 if os.name == 'nt':
     try:
         import ctypes
@@ -96,10 +97,13 @@ if os.name == 'nt':
             CreateTransaction = ctypes.windll.ktmw32.CreateTransaction
             CommitTransaction = ctypes.windll.ktmw32.CommitTransaction
             CloseHandle = ctypes.windll.kernel32.CloseHandle
+            can_rename_open_file = True
             
             def rename(src, dst):
-                ta = CreateTransaction(None, 0, 0, 0, 0, 1000,
-                                       'Rename "%s" to "%s"' % (src, dst))
+                ta = CreateTransaction(None, 0, 0, 0, 0, 1000, 
+                                       'Trac forced rename')
+                if ta == -1:
+                    raise ctypes.WinError()
                 try:
                     if not (MoveFileTransacted(src, dst, None, None,
                                                MOVEFILE_REPLACE_EXISTING
@@ -121,10 +125,10 @@ if os.name == 'nt':
         def rename(src, dst):
             try:
                 os.rename(src, dst)
-            except WindowsError, e:
+            except OSError, e:
                 if e.errno != errno.EEXIST:
                     raise
-                old = "%s-%08x" % (dst, random.randint(0, 0xffffffff))
+                old = "%s-%08x" % (dst, random.randint(0, sys.maxint))
                 os.rename(dst, old)
                 os.rename(src, dst)
                 try:
@@ -133,6 +137,7 @@ if os.name == 'nt':
                     pass
 else:
     rename = os.rename
+    can_rename_open_file = True
 
 
 class AtomicFile(object):
@@ -190,6 +195,15 @@ class AtomicFile(object):
     
     close = commit
     __del__ = rollback
+
+
+def read_file(path, mode='r'):
+    """Read a file and return its content."""
+    f = open(path, mode)
+    try:
+        return f.read()
+    finally:
+        f.close()
 
 
 def create_file(path, data='', mode='w'):
