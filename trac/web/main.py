@@ -431,7 +431,7 @@ def dispatch_request(environ, start_response):
         env_error = e
 
     req = Request(environ, start_response)
-    translation.make_activable(lambda: req.locale, env.path)
+    translation.make_activable(lambda: req.locale, env and env.path or None)
     try:
         return _dispatch_request(req, env, env_error)
     finally:
