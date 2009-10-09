@@ -12,11 +12,58 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import doctest
+import os.path
+import tempfile
 import unittest
 
 from trac import util
 from trac.util.tests import datefmt, presentation, text
 
+
+class AtomicFileTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        self.path = os.path.join(tempfile.gettempdir(), 'trac-tempfile')
+    
+    def tearDown(self):
+        try:
+            os.unlink(self.path)
+        except OSError:
+            pass
+    
+    def test_non_existing(self):
+        f = util.AtomicFile(self.path)
+        try:
+            f.write('test content')
+        finally:
+            f.close()
+        self.assertEqual('test content', util.read_file(self.path))
+    
+    def test_existing(self):
+        util.create_file(self.path, 'Some content')
+        self.assertEqual('Some content', util.read_file(self.path))
+        f = util.AtomicFile(self.path)
+        try:
+            f.write('Some new content')
+        finally:
+            f.close()
+        self.assertEqual('Some new content', util.read_file(self.path))
+    
+    if os.name != 'nt':     # Windows cannot replace an open file
+        def test_existing_open_for_reading(self):
+            util.create_file(self.path, 'Initial file content')
+            self.assertEqual('Initial file content', util.read_file(self.path))
+            rf = open(self.path)
+            try:
+                f = util.AtomicFile(self.path)
+                try:
+                    f.write('Replaced content')
+                finally:
+                    f.close()
+            finally:
+                rf.close()
+            self.assertEqual('Replaced content', util.read_file(self.path))
+        
 
 class ContentDispositionTestCase(unittest.TestCase):
 
@@ -33,6 +80,7 @@ class ContentDispositionTestCase(unittest.TestCase):
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(AtomicFileTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase, 'test'))
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())
