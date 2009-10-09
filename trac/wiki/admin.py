@@ -21,6 +21,7 @@ from trac.admin import *
 from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem
+from trac.util.compat import any
 from trac.util.datefmt import format_datetime, utc
 from trac.util.text import to_unicode, unicode_quote, unicode_unquote, \
                            print_table, printout
@@ -47,12 +48,17 @@ class WikiAdmin(Component):
         yield ('wiki import', '<page> [file]',
                'Import wiki page from file or stdin',
                self._complete_import_export, self._do_import)
-        yield ('wiki dump', '<directory>',
-               'Export all wiki pages to files named by title',
-               self._complete_dump_load, self._do_dump)
+        yield ('wiki dump', '<directory> [name] [...]',
+               """Export wiki pages to files named by title
+               
+               Individual wiki page names can be specified after the directory.
+               A name ending with a * means that all wiki pages starting with
+               that prefix should be dumped. If no name is specified, all wiki
+               pages are dumped.""",
+               self._complete_dump, self._do_dump)
         yield ('wiki load', '<directory>',
                'Import all wiki pages from directory',
-               self._complete_dump_load, self._do_load)
+               self._complete_load, self._do_load)
         yield ('wiki upgrade', '',
                'Upgrade default wiki pages to current version',
                None, self._do_upgrade)
@@ -139,7 +145,13 @@ class WikiAdmin(Component):
         elif len(args) == 2:
             return get_dir_list(args[-1])
     
-    def _complete_dump_load(self, args):
+    def _complete_dump(self, args):
+        if len(args) == 1:
+            return get_dir_list(args[-1], True)
+        elif len(args) == 2:
+            return self.get_wiki_list()
+    
+    def _complete_load(self, args):
         if len(args) == 1:
             return get_dir_list(args[-1], True)
     
@@ -174,7 +186,9 @@ class WikiAdmin(Component):
     def _do_import(self, page, filename=None):
         self.import_page(filename, page)
     
-    def _do_dump(self, directory):
+    def _do_dump(self, directory, *names):
+        if not names:
+            names = ['*']
         pages = self.get_wiki_list()
         if not os.path.isdir(directory):
             if not os.path.exists(directory):
@@ -185,9 +199,12 @@ class WikiAdmin(Component):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         for p in pages:
-            dst = os.path.join(directory, unicode_quote(p, ''))
-            printout(' %s => %s' % (p, dst))
-            self.export_page(p, dst, cursor)
+            if any(p == name or (name.endswith('*')
+                                 and p.startswith(name[:-1]))
+                   for name in names):
+                dst = os.path.join(directory, unicode_quote(p, ''))
+                printout(' %s => %s' % (p, dst))
+                self.export_page(p, dst, cursor)
     
     def _do_load(self, directory):
         db = self.env.get_db_cnx()

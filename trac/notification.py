@@ -395,13 +395,13 @@ class NotifyEmail(Notify):
         from email.Utils import formatdate
         stream = self.template.generate(**self.data)
         body = stream.render('text')
-        projname = self.config.get('project', 'name')
+        projname = self.env.project_name
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {}
         headers['X-Mailer'] = 'Trac %s, by Edgewall Software' % __version__
         headers['X-Trac-Version'] =  __version__
         headers['X-Trac-Project'] =  projname
-        headers['X-URL'] = self.config.get('project', 'url')
+        headers['X-URL'] = self.env.project_url
         headers['Precedence'] = 'bulk'
         headers['Auto-Submitted'] = 'auto-generated'
         headers['Subject'] = self.subject

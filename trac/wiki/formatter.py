@@ -482,7 +482,7 @@ class Formatter(object):
             return None
 
     def _make_ext_link(self, url, text, title=''):
-        local_url = self.env.config.get('project', 'url') or \
+        local_url = self.env.project_url or \
                     (self.req or self.env).abs_href.base
         if not url.startswith(local_url):
             return tag.a(tag.span(u'\xa0', class_="icon"), text,

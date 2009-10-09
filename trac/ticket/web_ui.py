@@ -16,7 +16,6 @@
 
 import csv
 from datetime import datetime
-import os
 import pkg_resources
 import re
 from StringIO import StringIO
@@ -26,21 +25,20 @@ from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
-from trac.config import BoolOption, Option, IntOption, ListOption, _TRUE_VALUES
+from trac.config import BoolOption, Option, IntOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource, get_resource_url, \
                          render_resource_link, get_resource_shortname
 from trac.search import ISearchSource, search_to_sql, shorten_result
-from trac.ticket.api import TicketSystem, ITicketManipulator, \
-                            ITicketActionController
+from trac.ticket.api import TicketSystem, ITicketManipulator
 from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, to_timestamp, utc
-from trac.util.text import CRLF, shorten_line, obfuscate_email_address, \
+from trac.util.text import shorten_line, obfuscate_email_address, \
                            exception_to_unicode
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext

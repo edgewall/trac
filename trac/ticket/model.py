@@ -18,7 +18,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import re
-import sys
 import time
 from datetime import date, datetime
 
@@ -186,7 +185,7 @@ class Ticket(object):
                 component = Component(self.env, self['component'], db=db)
                 if component.owner:
                     self['owner'] = component.owner
-            except ResourceNotFound, e:
+            except ResourceNotFound:
                 # No such component exists
                 pass
 
@@ -260,7 +259,7 @@ class Ticket(object):
                         new_comp = Component(self.env, self['component'], db)
                         if new_comp.owner:
                             self['owner'] = new_comp.owner
-                except TracError, e:
+                except TracError:
                     # If the old component has been removed from the database we
                     # just leave the owner as is.
                     pass
