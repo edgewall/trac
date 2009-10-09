@@ -84,6 +84,7 @@ except NameError:
         """Dummy exception replacing WindowsError on non-Windows platforms"""
 
 
+can_rename_open_file = False
 if os.name == 'nt':
     try:
         import ctypes
@@ -95,6 +96,7 @@ if os.name == 'nt':
             CreateTransaction = ctypes.windll.ktmw32.CreateTransaction
             CommitTransaction = ctypes.windll.ktmw32.CommitTransaction
             CloseHandle = ctypes.windll.kernel32.CloseHandle
+            can_rename_open_file = True
             
             def rename(src, dst):
                 ta = CreateTransaction(None, 0, 0, 0, 0, 1000, 
@@ -134,6 +136,7 @@ if os.name == 'nt':
                     pass
 else:
     rename = os.rename
+    can_rename_open_file = True
 
 
 class AtomicFile(object):

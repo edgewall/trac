@@ -49,7 +49,7 @@ class AtomicFileTestCase(unittest.TestCase):
             f.close()
         self.assertEqual('Some new content', util.read_file(self.path))
     
-    if os.name != 'nt':     # Windows cannot replace an open file
+    if util.can_rename_open_file:
         def test_existing_open_for_reading(self):
             util.create_file(self.path, 'Initial file content')
             self.assertEqual('Initial file content', util.read_file(self.path))
