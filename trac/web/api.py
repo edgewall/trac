@@ -401,6 +401,9 @@ class Request(object):
             data = get_last_traceback()
             content_type = 'text/plain'
 
+        if isinstance(data, unicode):
+            data = data.encode('utf-8')
+
         self.send_response(status)
         self._outheaders = []
         self.send_header('Cache-control', 'must-revalidate')

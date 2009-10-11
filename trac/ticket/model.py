@@ -26,6 +26,7 @@ from trac.core import TracError
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import embedded_numbers, partition
+from trac.util.text import empty
 from trac.util.datefmt import utc, utcmax, to_timestamp
 from trac.util.translation import _
 
@@ -108,22 +109,25 @@ class Ticket(object):
                                      id=tkt_id), _('Invalid ticket number'))
 
         self.id = tkt_id
-        for i in range(len(std_fields)):
+        for i, field in enumerate(std_fields):
             value = row[i]
-            if value is not None:
-                field = std_fields[i]
-                if field in self.time_fields:
-                    self.values[field] = datetime.fromtimestamp(value, utc)
-                else:
-                    self.values[field] = value
+            if field in self.time_fields:
+                self.values[field] = datetime.fromtimestamp(value or 0, utc)
+            elif value is None:
+                self.values[field] = empty
+            else:
+                self.values[field] = value
 
         # Fetch custom fields if available
         custom_fields = [f['name'] for f in self.fields if f.get('custom')]
         cursor.execute("SELECT name,value FROM ticket_custom WHERE ticket=%s",
                        (tkt_id,))
         for name, value in cursor:
-            if name in custom_fields and value is not None:
-                self.values[name] = value
+            if name in custom_fields:
+                if value is None:
+                    self.values[name] = empty
+                else:
+                    self.values[name] = value
 
     def __getitem__(self, name):
         return self.values.get(name)
@@ -148,12 +152,14 @@ class Ticket(object):
         """Return the value of a field or the default value if it is
         undefined"""
         try:
-            return self.values[name]
-        except KeyError:
+            value = self.values[name]
+            if value is not empty:
+                return value
             field = [field for field in self.fields if field['name'] == name]
             if field:
-                return field[0].get('value')
-            return None
+                return field[0].get('value', '')
+        except KeyError:
+            pass
         
     def populate(self, values):
         """Populate the ticket with 'suitable' values from a dictionary"""
