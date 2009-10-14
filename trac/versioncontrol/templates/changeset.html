@@ -83,9 +83,9 @@
             </py:when>
             <py:when test="ndiffs + nprops &gt; 0">
               (<a title="Show differences" href="#file$idx">${
-                 plural(ndiffs,'diff')}${
+                 ndiffs and ngettext('%(num)d diff', '%(num)d diffs', ndiffs) or None}${
                  (ndiffs and nprops) and ', ' or ''
-                }${plural(nprops, 'prop')}</a>)
+                }${nprops and ngettext('%(num)d prop', '%(num)d props', nprops) or None}</a>)
             </py:when>
           </py:choose>
           <py:if test="cl == 'mod' and item.diffs is None">
