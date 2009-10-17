@@ -33,7 +33,7 @@ class PatchRendererTestCase(unittest.TestCase):
 
     def setUp(self):
         env = EnvironmentStub(enable=[Chrome, PatchRenderer])
-        req = Mock(base_path='',chrome={}, args={},
+        req = Mock(base_path='', chrome={}, args={}, session={},
                    abs_href=Href('/'), href=Href('/'),
                    perm=MockPerm(), authname=None, tz=None)
         self.context = Context.from_request(req)

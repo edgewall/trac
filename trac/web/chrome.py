@@ -41,7 +41,7 @@ from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
                       get_module_path, translation
 from trac.util.compat import partial, set
-from trac.util.html import plaintext
+from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
                            javascript_quote
@@ -191,7 +191,7 @@ def _save_messages(req, url, permanent):
     be displayed after the redirect."""
     for type_ in ['warnings', 'notices']:
         for (i, message) in enumerate(req.chrome[type_]):
-            req.session['chrome.%s.%d' % (type_, i)] = message
+            req.session['chrome.%s.%d' % (type_, i)] = escape(message)
 
 
 class INavigationContributor(Interface):
@@ -724,8 +724,8 @@ class Chrome(Component):
             for type_ in ['warnings', 'notices']:
                 try:
                     for i in itertools.count():
-                        req.chrome[type_].append(
-                            req.session.pop('chrome.%s.%d' % (type_, i)))
+                        message = req.session.pop('chrome.%s.%d' % (type_, i))
+                        req.chrome[type_].append(Markup(message))
                 except KeyError:
                     pass
 
