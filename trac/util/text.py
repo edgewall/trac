@@ -32,7 +32,6 @@ class Empty(unicode):
     __slots__ = []
 
 empty = Empty()
-del Empty
 
 
 # -- Unicode

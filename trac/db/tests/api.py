@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import os
 import unittest
 
 from trac.db.api import _parse_db_str
+from trac.test import EnvironmentStub
 
 
 class ParseConnectionStringTestCase(unittest.TestCase):
@@ -66,8 +69,50 @@ class ParseConnectionStringTestCase(unittest.TestCase):
                                     'path': '/trac'}),
                      _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
 
+
+class StringsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_insert_unicode(self):
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO system (name,value) VALUES (%s,%s)',
+                       ('test-unicode', u'ünicöde'))
+        db.commit()
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name='test-unicode'")
+        self.assertEqual([(u'ünicöde',)], cursor.fetchall())
+
+    def test_insert_empty(self):
+        from trac.util.text import empty
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO system (name,value) VALUES (%s,%s)',
+                       ('test-empty', empty))
+        db.commit()
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name='test-empty'")
+        self.assertEqual([(u'',)], cursor.fetchall())
+
+    def test_insert_markup(self):
+        from genshi.core import Markup
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO system (name,value) VALUES (%s,%s)',
+                       ('test-markup', Markup(u'<em>märkup</em>')))
+        db.commit()
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name='test-markup'")
+        self.assertEqual([(u'<em>märkup</em>',)], cursor.fetchall())
+
+
 def suite():
-    return unittest.makeSuite(ParseConnectionStringTestCase,'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(StringsTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main()
