@@ -278,7 +278,8 @@ class SubversionConnector(Component):
         if not self._version:
             self._version = self._get_version()
             self.env.systeminfo.append(('Subversion', self._version))
-        fs_repos = SubversionRepository(dir, None, self.log,
+        fs_repos = SubversionRepository(options['name'], options['id'],
+                                        dir, None, self.log,
                                         {'tags': self.tags,
                                          'branches': self.branches,
                                          'url': options.get('url') or ''})
@@ -306,7 +307,7 @@ class SubversionConnector(Component):
 class SubversionRepository(Repository):
     """Repository implementation based on the svn.fs API."""
 
-    def __init__(self, path, authz, log, options={}):
+    def __init__(self, reponame, id, path, authz, log, options={}):
         self.log = log
         self.options = options
         self.pool = Pool()
@@ -337,7 +338,7 @@ class SubversionRepository(Repository):
         self.base = 'svn:%s:%s' % (self.uuid, _from_svn(root_path_utf8))
         name = 'svn:%s:%s' % (self.uuid, self.path)
 
-        Repository.__init__(self, name, authz, log)
+        Repository.__init__(self, reponame, id, name, authz, log)
 
         # if root_path_utf8 is shorter than the path_utf8, the difference is
         # this scope (which always starts with a '/')

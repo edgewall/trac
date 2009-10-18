@@ -91,7 +91,8 @@
           </fieldset>
         </form>
 
-        <form class="addnew" id="trac-addalias" method="post" action="">
+        <form py:if="any(not info.alias for info in repositories.itervalues())"
+              class="addnew" id="trac-addalias" method="post" action="">
           <fieldset>
             <legend>Add Alias:</legend>
             <div class="field">

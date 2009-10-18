@@ -451,7 +451,7 @@ class Environment(Component, ComponentManager):
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
         
-        Each db version should have its own upgrade module, names
+        Each db version should have its own upgrade module, named
         upgrades/dbN.py, where 'N' is the version number (int).
 
         @param backup: whether or not to backup before upgrading

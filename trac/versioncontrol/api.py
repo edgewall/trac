@@ -55,6 +55,10 @@ class IRepositoryConnector(Interface):
 
     def get_repository(repos_type, repos_dir, options):
         """Return a Repository instance for the given repository type and dir.
+        
+        The `reponame` and `id` to be passed to the repository constructor are
+        passed in the `options` dictionary, for the keys "name" and "id",
+        respectively.
         """
 
 
@@ -96,7 +100,7 @@ class DbRepositoryProvider(Component):
 
     implements(IRepositoryProvider, IAdminCommandProvider)
 
-    repository_attrs = ('alias', 'dir', 'hidden', 'type', 'url')
+    repository_attrs = ('alias', 'dir', 'hidden', 'name', 'type', 'url')
     
     # IRepositoryProvider methods
 
@@ -107,10 +111,15 @@ class DbRepositoryProvider(Component):
         cursor.execute("SELECT id,name,value FROM repository "
                        "WHERE name IN (%s)" % ",".join(
                            "'%s'" % each for each in self.repository_attrs))
-        reponames = {}
-        for (id, name, value) in cursor:
+        repos = {}
+        for id, name, value in cursor:
             if value is not None:
-                reponames.setdefault(id, {})[name] = value
+                repos.setdefault(id, {})[name] = value
+        reponames = {}
+        for id, info in repos.iteritems():
+            if 'name' in info and ('dir' in info or 'alias' in info):
+                info['id'] = id
+                reponames[info['name']] = info
         return reponames.iteritems()
 
     # IAdminCommandProvider methods
@@ -125,9 +134,6 @@ class DbRepositoryProvider(Component):
         yield ('repository remove', '<repos>',
                'Remove a source repository',
                self._complete_repos, self._do_remove)
-        yield ('repository rename', '<repos> <newname>',
-               'Rename a source repository',
-               self._complete_repos, self._do_rename)
         yield ('repository set', '<repos> <key> <value>',
                """Set an attribute of a repository
                
@@ -169,9 +175,6 @@ class DbRepositoryProvider(Component):
     def _do_remove(self, reponame):
         self.remove_repository(reponame)
     
-    def _do_rename(self, reponame, newname):
-        self.rename_repository(reponame, newname)
-    
     def _do_set(self, reponame, key, value):
         if key not in self.repository_attrs:
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
@@ -194,11 +197,12 @@ class DbRepositoryProvider(Component):
             raise TracError(_("The repository type '%(type)s' is not "
                               "supported", type=type_))
         db = self.env.get_db_cnx()
+        id = rm.get_repository_id(reponame, db)
         cursor = db.cursor()
         cursor.executemany("INSERT INTO repository (id, name, value) "
                            "VALUES (%s, %s, %s)",
-                           [(reponame, 'dir', dir),
-                            (reponame, 'type', type_ or '')])
+                           [(id, 'dir', dir),
+                            (id, 'type', type_ or '')])
         db.commit()
         rm.reload_repositories()
     
@@ -208,64 +212,53 @@ class DbRepositoryProvider(Component):
             reponame = ''
         if target == '(default)':
             target = ''
+        rm = RepositoryManager(self.env)
         db = self.env.get_db_cnx()
+        id = rm.get_repository_id(reponame, db)
         cursor = db.cursor()
         cursor.executemany("INSERT INTO repository (id, name, value) "
                            "VALUES (%s, %s, %s)",
-                           [(reponame, 'dir', None),
-                            (reponame, 'alias', target)])
+                           [(id, 'dir', None),
+                            (id, 'alias', target)])
         db.commit()
-        RepositoryManager(self.env).reload_repositories()
+        rm.reload_repositories()
     
     def remove_repository(self, reponame):
         """Remove a repository."""
         if reponame == '(default)':
             reponame = ''
+        rm = RepositoryManager(self.env)
         db = self.env.get_db_cnx()
+        id = rm.get_repository_id(reponame, db)
         cursor = db.cursor()
-        cursor.execute("DELETE FROM repository WHERE id=%s", (reponame,))
-        cursor.execute("DELETE FROM revision WHERE repos=%s", (reponame,))
-        cursor.execute("DELETE FROM node_change WHERE repos=%s", (reponame,))
+        cursor.execute("DELETE FROM repository WHERE id=%s", (id,))
+        cursor.execute("DELETE FROM revision WHERE repos=%s", (id,))
+        cursor.execute("DELETE FROM node_change WHERE repos=%s", (id,))
         db.commit()
-        RepositoryManager(self.env).reload_repositories()
-    
-    def rename_repository(self, reponame, newname):
-        """Rename a repository."""
-        if reponame == '(default)':
-            reponame = ''
-        if newname == '(default)':
-            newname = ''
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("UPDATE repository SET id=%s WHERE id=%s",
-                       (newname, reponame))
-        cursor.execute("UPDATE revision SET repos=%s WHERE repos=%s",
-                       (newname, reponame))
-        cursor.execute("UPDATE node_change SET repos=%s WHERE repos=%s",
-                       (newname, reponame))
-        db.commit()
-        RepositoryManager(self.env).reload_repositories()
+        rm.reload_repositories()
     
     def modify_repository(self, reponame, changes):
         """Modify attributes of a repository."""
         if reponame == '(default)':
             reponame = ''
+        rm = RepositoryManager(self.env)
         db = self.env.get_db_cnx()
+        id = rm.get_repository_id(reponame, db)
         cursor = db.cursor()
         for (k, v) in changes.iteritems():
             if k not in self.repository_attrs:
                 continue
-            if k == 'alias' and v == '(default)':
+            if k in('alias', 'name') and v == '(default)':
                 v = ''
             cursor.execute("UPDATE repository SET value=%s "
-                           "WHERE id=%s AND name=%s", (v, reponame, k))
+                           "WHERE id=%s AND name=%s", (v, id, k))
             cursor.execute("SELECT value FROM repository "
-                           "WHERE id=%s AND name=%s", (reponame, k))
+                           "WHERE id=%s AND name=%s", (id, k))
             if not cursor.fetchone():
-                cursor.execute("INSERT INTO repository VALUES (%s, %s, %s)",
-                               (reponame, k, v))
+                cursor.execute("INSERT INTO repository (id, name, value) "
+                               "VALUES (%s, %s, %s)", (id, k, v))
         db.commit()
-        RepositoryManager(self.env).reload_repositories()
+        rm.reload_repositories()
 
 
 class RepositoryManager(Component):
@@ -445,6 +438,25 @@ class RepositoryManager(Component):
                         repositories.append(repos)
         return repositories
 
+    def get_repository_id(self, reponame, db=None):
+        """Return a unique id for the given repository name."""
+        handle_ta = False
+        if db is None:
+            db = self.env.get_db_cnx()
+            handle_ta = True
+        cursor = db.cursor()
+        cursor.execute("SELECT id FROM repository "
+                       "WHERE name='name' AND value=%s", (reponame,))
+        for id, in cursor:
+            return id
+        cursor.execute("SELECT COALESCE(MAX(id),0) FROM repository")
+        id = cursor.fetchone()[0] + 1
+        cursor.execute("INSERT INTO repository (id, name, value) "
+                       "VALUES (%s,%s,%s)", (id, 'name', reponame))
+        if handle_ta:
+            db.commit()
+        return id
+    
     def get_repository(self, reponame, authname):
         """Retrieve the appropriate Repository for the given name.
 
@@ -455,6 +467,7 @@ class RepositoryManager(Component):
            :return: if no corresponding repository was defined, 
                     simply return `None`.
         """
+        reponame = reponame or ''
         repoinfo = self.get_all_repositories().get(reponame, {})
         if repoinfo and 'alias' in repoinfo:
             reponame = repoinfo['alias']
@@ -488,7 +501,6 @@ class RepositoryManager(Component):
                     rdir = os.path.join(self.env.path, rdir)
                 connector = self._get_connector(rtype)
                 repos = connector.get_repository(rtype, rdir, repoinfo)
-                repos.reponame = reponame
                 repositories[reponame] = repos
             return repos
         finally:
@@ -538,6 +550,9 @@ class RepositoryManager(Component):
                         self.log.warn("Discarding duplicate repository '%s'",
                                       reponame)
                     else:
+                        info['name'] = reponame
+                        if 'id' not in info:
+                            info['id'] = self.get_repository_id(reponame)
                         self._all_repositories[reponame] = info
         return self._all_repositories
     
@@ -668,11 +683,24 @@ class NoSuchNode(ResourceNotFound):
 class Repository(object):
     """Base class for a repository provided by a version control system."""
 
-    def __init__(self, name, authz, log):
+    def __init__(self, reponame, id, name, authz, log):
+        """Initialize a repository.
+        
+           :param reponame: the name of the repository, as it appears in the
+                            repository browser.
+           :param id: a surrogate key for the repository, used to identify the
+                      repository uniquely in the database tables.
+           :param name: a unique name identifying the repository, usually a
+                        type-specific prefix followed by the path to the
+                        repository.
+           :param authz: a repository authorizer (deprecated).
+           :param log: a logger instance.
+        """
+        self.reponame = reponame
+        self.id = id
         self.name = name
         self.authz = authz or Authorizer()
         self.log = log
-        self.reponame = name # overriden by the reponame key used to create it
 
     def close(self):
         """Close the connection to the repository."""
@@ -695,13 +723,13 @@ class Repository(object):
         """
         pass
 
-    def sync(self, rev_callback=None):
+    def sync(self, rev_callback=None, clean=False):
         """Perform a sync of the repository cache, if relevant.
         
         If given, `rev_callback` must be a callable taking a `rev` parameter.
         The backend will call this function for each `rev` it decided to
         synchronize, once the synchronization changes are committed to the 
-        cache.
+        cache. When `clean` is `True`, the cache is cleaned first.
         """
         pass
 

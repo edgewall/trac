@@ -121,29 +121,14 @@ class VersionControlAdmin(Component):
                 return
             repositories = [repos]
         
-        from trac.versioncontrol.cache import CACHE_METADATA_KEYS
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         for repos in sorted(repositories, key=lambda r: r.reponame):
-            reponame = repos.reponame
             printout(_('Resyncing repository history for %(reponame)s... ',
-                       reponame=reponame or '(default)'))
-            if clean:
-                cursor.execute("DELETE FROM revision WHERE repos=%s",
-                               (reponame,))
-                cursor.execute("DELETE FROM node_change "
-                               "WHERE repos=%s", (reponame,))
-                cursor.executemany("DELETE FROM repository "
-                                   "WHERE id=%s AND name=%s",
-                                   [(reponame, k) for k in CACHE_METADATA_KEYS])
-                cursor.executemany("INSERT INTO repository (id, name, value) "
-                                   "VALUES (%s, %s, %s)", 
-                                   [(reponame, k, '') 
-                                    for k in CACHE_METADATA_KEYS])
-                db.commit()
-            repos.sync(self._sync_feedback)
+                       reponame=repos.reponame or '(default)'))
+            repos.sync(self._sync_feedback, clean=clean)
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
-                           (reponame,))
+                           (repos.id,))
             for cnt, in cursor:
                 printout(ngettext('%(num)s revision cached.',
                                   '%(num)s revisions cached.', num=cnt))
@@ -187,7 +172,6 @@ class VersionControlAdmin(Component):
                 
                 elif db_provider and req.args.get('save'):
                     # Modify repository
-                    changed = False
                     changes = {}
                     for field in db_provider.repository_attrs:
                         value = normalize_whitespace(req.args.get(field))
@@ -196,14 +180,8 @@ class VersionControlAdmin(Component):
                             changes[field] = value
                     if changes:
                         db_provider.modify_repository(reponame, changes)
-                        changed = True
-                    # Rename repository
-                    name = req.args.get('name')
-                    if name and name != path_info:
-                        db_provider.rename_repository(reponame, name)
-                        changed = True
-                    if changed:
                         add_notice(req, _('Your changes have been saved.'))
+                    name = req.args.get('name')
                     if 'dir' in changes:
                         msg = _('You should now run "trac-admin $ENV '
                                 'repository resync %(name)s" to synchronize '

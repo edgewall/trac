@@ -41,7 +41,6 @@ repository add       Add a source repository
 repository alias     Create an alias for a repository
 repository list      List source repositories
 repository remove    Remove a source repository
-repository rename    Rename a source repository
 repository resync    Re-synchronize trac with repositories
 repository set       Set an attribute of a repository
 repository sync      Resume synchronization of repositories

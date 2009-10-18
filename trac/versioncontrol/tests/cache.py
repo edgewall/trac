@@ -33,9 +33,10 @@ class CacheTestCase(unittest.TestCase):
         self.db = self.env.get_db_cnx()
         self.log = self.env.log
         cursor = self.db.cursor()
-        cursor.execute("INSERT INTO repository (id, name, value) "
-                       "VALUES (%s,%s,%s)",
-                       ('test-repos', 'youngest_rev', ''))
+        cursor.executemany("INSERT INTO repository (id,name,value) "
+                           "VALUES (%s,%s,%s)",
+                           [(1, 'name', 'test-repos'),
+                            (1, 'youngest_rev', '')])
 
     def tearDown(self):
         self.env.reset_db()
@@ -45,7 +46,7 @@ class CacheTestCase(unittest.TestCase):
         def no_changeset(rev):
             raise NoSuchChangeset(rev)
             
-        repos = Mock(Repository, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
                      get_changeset=no_changeset,
                      get_oldest_rev=lambda: 1,
                      get_youngest_rev=lambda: 0,
@@ -69,7 +70,7 @@ class CacheTestCase(unittest.TestCase):
                            get_changes=lambda: []),
                       Mock(Changeset, 1, 'Import', 'joe', t2,
                            get_changes=lambda: iter(changes))]
-        repos = Mock(Repository, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
                      get_changeset=lambda x: changesets[int(x)],
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
@@ -97,23 +98,23 @@ class CacheTestCase(unittest.TestCase):
         t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
-                       "VALUES ('test-repos',0,%s,'','')",
+                       "VALUES (1,0,%s,'','')",
                        (to_timestamp(t1),))
         cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
-                       "VALUES ('test-repos',1,%s,'joe','Import')",
+                       "VALUES (1,1,%s,'joe','Import')",
                        (to_timestamp(t2),))
         cursor.executemany("INSERT INTO node_change (repos,rev,path,"
                            "node_type,change_type,base_path,base_rev) "
-                           "VALUES ('test-repos','1',%s,%s,%s,%s,%s)",
+                           "VALUES (1,'1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
         cursor.execute("UPDATE repository SET value='1' "
-                       "WHERE id='test-repos' AND name='youngest_rev'")
+                       "WHERE id=1 AND name='youngest_rev'")
 
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
         changeset = Mock(Changeset, 2, 'Update', 'joe', t3,
                          get_changes=lambda: iter(changes))
-        repos = Mock(Repository, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
                      get_changeset=lambda x: changeset,
                      get_youngest_rev=lambda: 2,
                      get_oldest_rev=lambda: 0,
@@ -137,20 +138,20 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
-                       "VALUES ('test-repos',0,%s,'','')",
+                       "VALUES (1,0,%s,'','')",
                        (to_timestamp(t1),))
         cursor.execute("INSERT INTO revision (repos,rev,time,author,message) "
-                       "VALUES ('test-repos',1,%s,'joe','Import')",
+                       "VALUES (1,1,%s,'joe','Import')",
                        (to_timestamp(t2),))
         cursor.executemany("INSERT INTO node_change (repos,rev,path,"
                            "node_type,change_type,base_path,base_rev) "
-                           "VALUES ('test-repos','1',%s,%s,%s,%s,%s)",
+                           "VALUES (1,'1',%s,%s,%s,%s,%s)",
                            [('trunk', 'D', 'A', None, None),
                             ('trunk/README', 'F', 'A', None, None)])
         cursor.execute("UPDATE repository SET value='1' "
-                       "WHERE id='test-repos' AND name='youngest_rev'")
+                       "WHERE id=1 AND name='youngest_rev'")
 
-        repos = Mock(Repository, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
                      get_changeset=lambda x: None,
                      get_youngest_rev=lambda: 1,
                      get_oldest_rev=lambda: 0,

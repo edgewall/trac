@@ -48,19 +48,11 @@ class CachedRepository(Repository):
         self.repos = repos
         self.metadata = CacheProxy(self.__class__.__module__ + '.'
                                    + self.__class__.__name__ + '.metadata:'
-                                   + self.repos.reponame, self._metadata,
+                                   + str(self.repos.id), self._metadata,
                                    self.env)
-        Repository.__init__(self, repos.name, authz, log)
+        Repository.__init__(self, repos.reponame, repos.id, repos.name, authz,
+                            log)
 
-    def _set_reponame(self, value):
-        self.repos.reponame = value
-        self.metadata.id = self.__class__.__module__ + '.' \
-                           + self.__class__.__name__ + '.metadata:' \
-                           + value
-    
-    reponame = property(fget=lambda self: self.repos.reponame,
-                        fset=_set_reponame)
-    
     def close(self):
         self.repos.close()
 
@@ -86,7 +78,7 @@ class CachedRepository(Repository):
         cursor.execute("SELECT rev FROM revision "
                        "WHERE repos=%s AND time >= %s AND time < %s "
                        "ORDER BY time DESC, rev DESC",
-                       (self.reponame, to_timestamp(start),
+                       (self.id, to_timestamp(start),
                         to_timestamp(stop)))
         for rev, in cursor:
             try:
@@ -101,7 +93,7 @@ class CachedRepository(Repository):
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
-                       (self.reponame, str(cset.rev)))
+                       (self.id, str(cset.rev)))
         old_changeset = None
         for time, author, message in cursor:
             date = datetime.fromtimestamp(time, utc)
@@ -110,7 +102,7 @@ class CachedRepository(Repository):
         cursor.execute("UPDATE revision SET time=%s, author=%s, message=%s "
                        "WHERE repos=%s AND rev=%s",
                        (to_timestamp(cset.date), cset.author, cset.message,
-                        self.reponame, str(cset.rev)))
+                        self.id, str(cset.rev)))
         db.commit()
         return old_changeset
         
@@ -120,12 +112,26 @@ class CachedRepository(Repository):
         cursor.execute("SELECT name, value FROM repository "
                        "WHERE id=%%s AND name IN (%s)" % 
                        ','.join(['%s'] * len(CACHE_METADATA_KEYS)),
-                       (self.reponame,) + CACHE_METADATA_KEYS)
+                       (self.id,) + CACHE_METADATA_KEYS)
         return dict(cursor)
 
-    def sync(self, feedback=None):
+    def sync(self, feedback=None, clean=False):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
+        if clean:
+            self.log.info('Cleaning cache')
+            cursor.execute("DELETE FROM revision WHERE repos=%s", (self.id,))
+            cursor.execute("DELETE FROM node_change WHERE repos=%s",
+                           (self.id,))
+            cursor.executemany("DELETE FROM repository "
+                               "WHERE id=%s AND name=%s",
+                               [(self.id, k) for k in CACHE_METADATA_KEYS])
+            cursor.executemany("INSERT INTO repository (id, name, value) "
+                               "VALUES (%s, %s, %s)", 
+                               [(self.id, k, '') for k in CACHE_METADATA_KEYS])
+            self.metadata.invalidate(db)
+            db.commit()
+            
         metadata = self.metadata.get(db)
         do_commit = False
         
@@ -143,13 +149,13 @@ class CachedRepository(Repository):
             self.log.info('Storing initial "repository_dir": %s' % self.name)
             cursor.execute("INSERT INTO repository (id,name,value) "
                            "VALUES (%s,%s,%s)",
-                           (self.reponame, CACHE_REPOSITORY_DIR, self.name))
+                           (self.id, CACHE_REPOSITORY_DIR, self.name))
             do_commit = True
         else: # 'repository_dir' cleared by a resync
             self.log.info('Resetting "repository_dir": %s' % self.name)
             cursor.execute("UPDATE repository SET value=%s "
                            "WHERE id=%s AND name=%s",
-                           (self.name, self.reponame, CACHE_REPOSITORY_DIR))
+                           (self.name, self.id, CACHE_REPOSITORY_DIR))
             do_commit = True
 
         # -- retrieve the youngest revision in the repository
@@ -161,7 +167,7 @@ class CachedRepository(Repository):
         if youngest is None:
             cursor.execute("INSERT INTO repository (id,name,value) "
                            "VALUES (%s,%s,%s)",
-                           (self.reponame, CACHE_YOUNGEST_REV, ''))
+                           (self.id, CACHE_YOUNGEST_REV, ''))
             do_commit = True
 
         if do_commit:
@@ -205,7 +211,7 @@ class CachedRepository(Repository):
             # 0. first check if there's no (obvious) resync in progress
             cursor.execute("SELECT rev FROM revision "
                            "WHERE repos=%s AND rev=%s",
-                           (self.reponame, str(next_youngest)))
+                           (self.id, str(next_youngest)))
             for rev, in cursor:
                 # already there, but in progress, so keep ''previous''
                 # notion of 'youngest'
@@ -232,7 +238,7 @@ class CachedRepository(Repository):
                         cursor.execute("INSERT INTO revision "
                                        " (repos,rev,time,author,message) "
                                        "VALUES (%s,%s,%s,%s,%s)",
-                                       (self.reponame, str(next_youngest),
+                                       (self.id, str(next_youngest),
                                         to_timestamp(cset.date),
                                         cset.author, cset.message))
                     except Exception, e: # *another* 1.1. resync attempt won 
@@ -257,7 +263,7 @@ class CachedRepository(Repository):
                                        " (repos,rev,path,node_type,"
                                        "  change_type,base_path,base_rev) "
                                        "VALUES (%s,%s,%s,%s,%s,%s,%s)",
-                                       (self.reponame, str(next_youngest),
+                                       (self.id, str(next_youngest),
                                         path, kind, action, bpath, brev))
 
                     # 1.3. iterate (1.1 should always succeed now)
@@ -268,7 +274,7 @@ class CachedRepository(Repository):
                     #      (minimize possibility of failures at point 0.)
                     cursor.execute("UPDATE repository SET value=%s "
                                    "WHERE id=%s AND name=%s",
-                                   (str(youngest), self.reponame,
+                                   (str(youngest), self.id,
                                     CACHE_YOUNGEST_REV))
                     self.metadata.invalidate(db)
                     db.commit()
@@ -336,7 +342,7 @@ class CachedRepository(Repository):
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE repos=%s AND " + \
               db.cast('rev', 'int') + " " + direction + " %s"
-        args = [self.reponame, rev]
+        args = [self.id, rev]
 
         if path:
             path = path.lstrip('/')
@@ -406,7 +412,7 @@ class CachedChangeset(Changeset):
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
-                       (self.repos.reponame, str(rev)))
+                       (self.repos.id, str(rev)))
         row = cursor.fetchone()
         if row:
             _date, author, message = row
@@ -421,7 +427,7 @@ class CachedChangeset(Changeset):
         cursor = db.cursor()
         cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE repos=%s AND rev=%s "
-                       "ORDER BY path", (self.repos.reponame, str(self.rev)))
+                       "ORDER BY path", (self.repos.id, str(self.rev)))
         for path, kind, change, base_path, base_rev in cursor:
             if not self.authz.has_permission(posixpath.join(self.scope,
                                                             path.strip('/'))):
