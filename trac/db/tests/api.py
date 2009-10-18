@@ -1,7 +1,7 @@
-from trac.db.api import _parse_db_str
-
 import os
 import unittest
+
+from trac.db.api import _parse_db_str
 
 
 class ParseConnectionStringTestCase(unittest.TestCase):
@@ -49,22 +49,22 @@ class ParseConnectionStringTestCase(unittest.TestCase):
         self.assertEqual(('postgres', {'user': 'john', 'password': 'letmein',
                                        'host': 'localhost', 'port': 9431,
                                        'path': '/trac'}),
-                         _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
+                 _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
 
     def test_postgres_with_quoted_password(self):
         self.assertEqual(('postgres', {'user': 'john', 'password': ':@/',
                                        'host': 'localhost', 'path': '/trac'}),
-                         _parse_db_str('postgres://john:%3a%40%2f@localhost/trac'))
+                     _parse_db_str('postgres://john:%3a%40%2f@localhost/trac'))
 
     def test_mysql_simple(self):
         self.assertEqual(('mysql', {'host': 'localhost', 'path': '/trac'}),
-                         _parse_db_str('mysql://localhost/trac'))
+                     _parse_db_str('mysql://localhost/trac'))
 
     def test_mysql_with_creds(self):
         self.assertEqual(('mysql', {'user': 'john', 'password': 'letmein',
                                     'host': 'localhost', 'port': 3306,
                                     'path': '/trac'}),
-                         _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
+                     _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
 
 def suite():
     return unittest.makeSuite(ParseConnectionStringTestCase,'test')
