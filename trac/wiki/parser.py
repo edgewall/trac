@@ -106,7 +106,7 @@ class WikiParser(Component):
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
         r"(?P<last_table_cell>\|\|\s*$)",
-        r"(?P<table_cell>\|\|)"]
+        r"(?P<table_cell>!?\|\|)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _processor_param_re = re.compile(r'''(\w+)=(".*?"|'.*?'|\w+)''')
