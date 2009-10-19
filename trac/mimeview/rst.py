@@ -49,20 +49,23 @@ class ReStructuredTextRenderer(Component):
     """
     implements(IHTMLPreviewRenderer)
 
+    can_render = False
+    
+    def __init__(self):
+        if has_docutils:
+            if StrictVersion(__version__) < StrictVersion('0.3.9'):
+                self.log.warning('Docutils version >= %s required, '
+                                 '%s found' % ('0.3.9', __version__))
+            else:
+                self.can_render = True
+                self.env.systeminfo.append(('Docutils', __version__))
+        
     def get_quality_ratio(self, mimetype):
-        if mimetype == 'text/x-rst':
+        if self.can_render and mimetype == 'text/x-rst':
             return 8
         return 0
 
     def render(self, context, mimetype, content, filename=None, rev=None):
-        global has_docutils
-        if not has_docutils:
-            raise TracError(_('Docutils not found'))
-        if StrictVersion(__version__) < StrictVersion('0.3.9'):
-            raise TracError(_('Docutils version >= %(version)s required, '
-                              '%(found)s found', version='0.3.9',
-                              found=__version__))
-
         def trac_get_reference(rawtext, target, text):
             fulltext = text and target+' '+text or target
             link = extract_link(self.env, context, fulltext)
