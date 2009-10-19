@@ -86,8 +86,9 @@ class SubversionRepositoryTestSetup(TestSetup):
 class SubversionRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository('repo', 1, REPOS_PATH, None,
-                                          logger_factory('test'))
+        self.repos = SubversionRepository(REPOS_PATH,
+                                          {'name': 'repo', 'id': 1},
+                                          None, logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
@@ -508,7 +509,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
 class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository('repo', 1, REPOS_PATH + u'/tête',
+        self.repos = SubversionRepository(REPOS_PATH + u'/tête',
+                                          {'name': 'repo', 'id': 1},
                                           None, logger_factory('test'))
 
     def tearDown(self):
@@ -757,9 +759,9 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 class RecentPathScopedRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository('repo', 1,
-                                          REPOS_PATH + u'/tête/dir1', None,
-                                          logger_factory('test'))
+        self.repos = SubversionRepository(REPOS_PATH + u'/tête/dir1',
+                                          {'name': 'repo', 'id': 1},
+                                          None, logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
@@ -778,7 +780,8 @@ class RecentPathScopedRepositoryTestCase(unittest.TestCase):
 class NonSelfContainedScopedTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository('repo', 1, REPOS_PATH + '/tags/v1',
+        self.repos = SubversionRepository(REPOS_PATH + '/tags/v1',
+                                          {'name': 'repo', 'id': 1},
                                           None, logger_factory('test'))
 
     def tearDown(self):
@@ -796,7 +799,8 @@ class NonSelfContainedScopedTestCase(unittest.TestCase):
 class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository('repo', 1, REPOS_PATH + '/branches',
+        self.repos = SubversionRepository(REPOS_PATH + '/branches',
+                                          {'name': 'repo', 'id': 1},
                                           None, logger_factory('test'))
 
     def tearDown(self):

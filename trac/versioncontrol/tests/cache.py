@@ -46,7 +46,8 @@ class CacheTestCase(unittest.TestCase):
         def no_changeset(rev):
             raise NoSuchChangeset(rev)
             
-        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
+                     None, self.log,
                      get_changeset=no_changeset,
                      get_oldest_rev=lambda: 1,
                      get_youngest_rev=lambda: 0,
@@ -70,7 +71,8 @@ class CacheTestCase(unittest.TestCase):
                            get_changes=lambda: []),
                       Mock(Changeset, 1, 'Import', 'joe', t2,
                            get_changes=lambda: iter(changes))]
-        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
+                     None, self.log,
                      get_changeset=lambda x: changesets[int(x)],
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
@@ -114,7 +116,8 @@ class CacheTestCase(unittest.TestCase):
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
         changeset = Mock(Changeset, 2, 'Update', 'joe', t3,
                          get_changes=lambda: iter(changes))
-        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
+                     None, self.log,
                      get_changeset=lambda x: changeset,
                      get_youngest_rev=lambda: 2,
                      get_oldest_rev=lambda: 0,
@@ -151,7 +154,8 @@ class CacheTestCase(unittest.TestCase):
         cursor.execute("UPDATE repository SET value='1' "
                        "WHERE id=1 AND name='youngest_rev'")
 
-        repos = Mock(Repository, 'test-repos', 1, 'test-repos', None, self.log,
+        repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
+                     None, self.log,
                      get_changeset=lambda x: None,
                      get_youngest_rev=lambda: 1,
                      get_oldest_rev=lambda: 0,

@@ -50,8 +50,7 @@ class CachedRepository(Repository):
                                    + self.__class__.__name__ + '.metadata:'
                                    + str(self.repos.id), self._metadata,
                                    self.env)
-        Repository.__init__(self, repos.reponame, repos.id, repos.name, authz,
-                            log)
+        Repository.__init__(self, repos.name, repos.params, authz, log)
 
     def close(self):
         self.repos.close()

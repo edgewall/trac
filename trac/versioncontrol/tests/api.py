@@ -21,7 +21,8 @@ from trac.versioncontrol.api import Repository
 class ApiTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repo_base = Repository('testrepo', 1, 'testrepo', None, None)
+        self.repo_base = Repository('testrepo', {'name': 'testrepo', 'id': 1},
+                                    None, None)
 
     def test_raise_NotImplementedError_close(self):
         self.failUnlessRaises(NotImplementedError, self.repo_base.close)

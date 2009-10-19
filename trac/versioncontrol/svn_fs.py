@@ -269,7 +269,7 @@ class SubversionConnector(Component):
         yield ("svnfs", prio*4)
         yield ("svn", prio*2)
 
-    def get_repository(self, type, dir, options):
+    def get_repository(self, type, dir, params):
         """Return a `SubversionRepository`.
 
         The repository is wrapped in a `CachedRepository`, unless `type` is
@@ -278,20 +278,17 @@ class SubversionConnector(Component):
         if not self._version:
             self._version = self._get_version()
             self.env.systeminfo.append(('Subversion', self._version))
-        fs_repos = SubversionRepository(options['name'], options['id'],
-                                        dir, None, self.log,
-                                        {'tags': self.tags,
-                                         'branches': self.branches,
-                                         'url': options.get('url') or ''})
+        params.update(tags=self.tags, branches=self.branches)
+        fs_repos = SubversionRepository(dir, params, None, self.log)
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
             repos = CachedRepository(self.env, fs_repos, None, self.log)
             repos.has_linear_changesets = True
         # FIXME: convert SubversionAuthorizer to a PermissionPolicy
-        if 'authname' in options:
+        if 'authname' in params:
             authz = SubversionAuthorizer(self.env, weakref.proxy(repos),
-                                         options['authname'])
+                                         params['authname'])
             repos.authz = fs_repos.authz = authz
         return repos
 
@@ -307,9 +304,8 @@ class SubversionConnector(Component):
 class SubversionRepository(Repository):
     """Repository implementation based on the svn.fs API."""
 
-    def __init__(self, reponame, id, path, authz, log, options={}):
+    def __init__(self, path, params, authz, log):
         self.log = log
-        self.options = options
         self.pool = Pool()
         
         # Remove any trailing slash or else subversion might abort
@@ -338,7 +334,7 @@ class SubversionRepository(Repository):
         self.base = 'svn:%s:%s' % (self.uuid, _from_svn(root_path_utf8))
         name = 'svn:%s:%s' % (self.uuid, self.path)
 
-        Repository.__init__(self, reponame, id, name, authz, log)
+        Repository.__init__(self, name, params, authz, log)
 
         # if root_path_utf8 is shorter than the path_utf8, the difference is
         # this scope (which always starts with a '/')
@@ -397,7 +393,7 @@ class SubversionRepository(Repository):
         
     def _get_tags_or_branches(self, paths):
         """Retrieve known branches or tags."""
-        for path in self.options.get(paths, []):
+        for path in self.params.get(paths, []):
             if path.endswith('*'):
                 folder = posixpath.dirname(path)
                 try:
@@ -425,7 +421,7 @@ class SubversionRepository(Repository):
             yield 'tags', n.path, n.created_path, n.created_rev
 
     def get_path_url(self, path, rev):
-        url = self.options['url'].rstrip('/')
+        url = self.params.get('url', '').rstrip('/')
         if url:
             if not path or path == '/':
                 return url

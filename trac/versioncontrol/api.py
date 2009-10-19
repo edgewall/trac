@@ -53,12 +53,8 @@ class IRepositoryConnector(Interface):
         store an error message or exception relevant to the problem detected.
         """
 
-    def get_repository(repos_type, repos_dir, options):
+    def get_repository(repos_type, repos_dir, params):
         """Return a Repository instance for the given repository type and dir.
-        
-        The `reponame` and `id` to be passed to the repository constructor are
-        passed in the `options` dictionary, for the keys "name" and "id",
-        respectively.
         """
 
 
@@ -683,22 +679,23 @@ class NoSuchNode(ResourceNotFound):
 class Repository(object):
     """Base class for a repository provided by a version control system."""
 
-    def __init__(self, reponame, id, name, authz, log):
+    def __init__(self, name, params, authz, log):
         """Initialize a repository.
         
-           :param reponame: the name of the repository, as it appears in the
-                            repository browser.
-           :param id: a surrogate key for the repository, used to identify the
-                      repository uniquely in the database tables.
            :param name: a unique name identifying the repository, usually a
                         type-specific prefix followed by the path to the
                         repository.
+           :param params: a `dict` of parameters for the repository. Contains
+                          the name of the repository under the key "name" and
+                          the surrogate key that identifies the repository in
+                          the database under the key "id".
            :param authz: a repository authorizer (deprecated).
            :param log: a logger instance.
         """
-        self.reponame = reponame
-        self.id = id
         self.name = name
+        self.params = params
+        self.reponame = params['name']
+        self.id = params['id']
         self.authz = authz or Authorizer()
         self.log = log
 
