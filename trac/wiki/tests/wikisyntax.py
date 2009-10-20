@@ -198,9 +198,11 @@ This is a <a class="missing wiki" href="/wiki/Wiki?version=12" rel="nofollow">Wi
 ------------------------------
 ============================== WikiPageName with label
 See details of the [WikiPageNames wiki page name] syntax.
+Here's a [BadExample\fbad] example with special whitespace.
 ------------------------------
 <p>
 See details of the <a class="missing wiki" href="/wiki/WikiPageNames" rel="nofollow">wiki page name?</a> syntax.
+Here's a <a class="missing wiki" href="/wiki/BadExample" rel="nofollow">bad?</a> example with special whitespace.
 </p>
 ------------------------------
 ============================== WikiPageName with label should be strict...

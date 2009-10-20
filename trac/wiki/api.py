@@ -281,13 +281,14 @@ class WikiSystem(Component):
 
         # [WikiPageNames with label]
         def wikipagename_with_label_link(formatter, match, fullmatch):
-            page, label = match[1:-1].split(' ', 1)
+            page = fullmatch.group('wiki_page')
+            label = fullmatch.group('wiki_label')
             if not _check_unicode_camelcase(page):
                 return label
             return self._format_link(formatter, 'wiki', page, label.strip(),
                                      self.ignore_missing_pages, match)
-        yield (r"!?\[%s\s+(?:%s|[^\]]+)\]" % (wiki_page_name,
-                                              WikiParser.QUOTED_STRING),
+        yield (r"!?\[(?P<wiki_page>%s)\s+(?P<wiki_label>%s|[^\]]+)\]"
+               % (wiki_page_name, WikiParser.QUOTED_STRING),
                wikipagename_with_label_link)
 
         # MoinMoin's ["internal free link"] 
