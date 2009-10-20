@@ -130,7 +130,7 @@ class PostgreSQLConnector(Component):
         db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8']
+        args = [self.pg_dump_path, '-C', '--inserts', '-x', '-Z', '8']
         if 'user' in db_prop:
             args.extend(['-U', db_prop['user']])
         if 'host' in db_prop['params']:
