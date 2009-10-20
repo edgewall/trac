@@ -468,19 +468,10 @@ class RepositoryManager(Component):
         if 'alias' in repoinfo:
             reponame = repoinfo['alias']
             repoinfo = self.get_all_repositories().get(reponame, {})
-        if repoinfo:
-            rdir = repoinfo.get('dir')
-            rtype = repoinfo.get('type') or self.repository_type
-            if not rdir:
-                return None
-        elif reponame:
+        rdir = repoinfo.get('dir')
+        if not rdir:
             return None
-        else:
-            reponame = '' # normalize the name for the default repository
-            rdir, rtype = self.repository_dir, self.repository_type
-            # don't try to lookup default repository if not set
-            if not rdir:
-                return None
+        rtype = repoinfo.get('type') or self.repository_type
 
         # get a Repository for the reponame (use a thread-level cache)
         db = self.env.get_db_cnx() # prevent possible deadlock, see #4465
