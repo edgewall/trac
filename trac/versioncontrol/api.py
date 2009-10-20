@@ -465,9 +465,9 @@ class RepositoryManager(Component):
         """
         reponame = reponame or ''
         repoinfo = self.get_all_repositories().get(reponame, {})
-        if repoinfo and 'alias' in repoinfo:
+        if 'alias' in repoinfo:
             reponame = repoinfo['alias']
-            repoinfo = self.get_all_repositories().get(reponame)
+            repoinfo = self.get_all_repositories().get(reponame, {})
         if repoinfo:
             rdir = repoinfo.get('dir')
             rtype = repoinfo.get('type') or self.repository_type
@@ -496,7 +496,7 @@ class RepositoryManager(Component):
                 if not os.path.isabs(rdir):
                     rdir = os.path.join(self.env.path, rdir)
                 connector = self._get_connector(rtype)
-                repos = connector.get_repository(rtype, rdir, repoinfo)
+                repos = connector.get_repository(rtype, rdir, repoinfo.copy())
                 repositories[reponame] = repos
             return repos
         finally:
