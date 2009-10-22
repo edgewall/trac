@@ -363,11 +363,13 @@ class Environment(Component, ComponentManager):
 
     def setup_config(self, load_defaults=False):
         """Load the configuration file."""
-        self.config = Configuration(os.path.join(self.path, 'conf', 'trac.ini'))
+        self.config = Configuration(os.path.join(self.path, 'conf',
+                                                 'trac.ini'))
         if load_defaults:
-            for section, default_options in self.config.defaults().items():
+            for section, default_options in self.config.defaults(self).items():
                 for name, value in default_options.items():
-                    if self.config.parent and name in self.config.parent[section]:
+                    parent = self.config.parent
+                    if parent and name in parent[section]:
                         value = None
                     self.config.set(section, name, value)
 

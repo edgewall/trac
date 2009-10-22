@@ -531,8 +531,11 @@ class TracIniMacro(WikiMacroBase):
         if args:
             key_filter = args.pop(0).strip()
 
-        sections = set([section for section, option in Option.registry.keys()
-                        if section.startswith(section_filter)])
+        registry = Option.get_registry(self.compmgr)
+        sections = {}
+        for (section, key), option in registry.iteritems():
+            if section.startswith(section_filter):
+                sections.setdefault(section, {})[key] = option
 
         return tag.div(class_='tracini')(
             [(tag.h2('[%s]' % section, id='%s-section' % section),
@@ -541,10 +544,9 @@ class TracIniMacro(WikiMacroBase):
                               tag.td(format_to_oneliner(
                                             self.env, formatter.context,
                                             to_unicode(option.__doc__))))
-                       for option in sorted(Option.registry.values(),
+                       for option in sorted(sections[section].itervalues(),
                                             key=lambda o: o.name)
-                       if option.section == section and
-                           option.name.startswith(key_filter)])))
+                       if option.name.startswith(key_filter)])))
              for section in sorted(sections)])
 
 

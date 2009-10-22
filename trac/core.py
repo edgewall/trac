@@ -193,9 +193,7 @@ class ComponentManager(object):
         """Activate the component instance for the given class, or return the
         existing instance if the component has already been activated.
         """
-        if cls not in self.enabled:
-            self.enabled[cls] = self.is_component_enabled(cls)
-        if not self.enabled[cls]:
+        if not self.is_enabled(cls):
             return None
         component = self.components.get(cls)
         if not component:
@@ -208,6 +206,12 @@ class ComponentManager(object):
                                 (cls, e))
         return component
 
+    def is_enabled(self, cls):
+        """Return whether the given component class is enabled."""
+        if cls not in self.enabled:
+            self.enabled[cls] = self.is_component_enabled(cls)
+        return self.enabled[cls]
+    
     def disable_component(self, component):
         """Force a component to be disabled.
         
