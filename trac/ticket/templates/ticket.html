@@ -97,9 +97,7 @@
       <h1>
         <py:choose>
           <py:when test="ticket.exists">
-            <a py:strip="not version and version != 0" href="${href.ticket(ticket.id)}">
-              Ticket #${ticket.id}
-            </a>
+            <a href="${href.ticket(ticket.id)}">Ticket #${ticket.id}</a>
           </py:when>
           <py:otherwise>
             Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
