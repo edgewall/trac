@@ -44,7 +44,7 @@ from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
-from trac.web.chrome import add_link, add_script, add_stylesheet, \
+from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
                             add_warning, add_ctxtnav, prevnext_nav, Chrome, \
                             INavigationContributor, ITemplateProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
@@ -1174,6 +1174,11 @@ class TicketModule(Component):
             req.redirect(req.href.attachment('ticket', ticket.id,
                                              action='new'))
         if 'TICKET_VIEW' not in req.perm('ticket', ticket.id):
+            ticket_href = req.href.ticket(ticket.id)
+            add_notice(req, tag_("Your ticket %(ticketref)s has been created, "
+                                 "but you don't have permission to view it.",
+                                 ticketref=tag.a('#', ticket.id,
+                                                 href=ticket_href)))
             req.redirect(req.href.newticket())
         req.redirect(req.href.ticket(ticket.id))
 

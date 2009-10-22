@@ -134,24 +134,27 @@ class Configuration(object):
         """
         self[section].set(key, value)
 
-    def defaults(self):
-        """Returns a dictionary of the default configuration values.
+    def defaults(self, compmgr=None):
+        """Returns a dictionary of the default configuration values
+        (''since 0.10'').
         
-        (since Trac 0.10)
+        If `compmgr` is specified, return only options declared in components
+        that are enabled in the given `ComponentManager`.
         """
         defaults = {}
-        for (section, key), option in Option.registry.items():
+        for (section, key), option in Option.get_registry(compmgr).items():
             defaults.setdefault(section, {})[key] = option.default
         return defaults
 
-    def options(self, section):
+    def options(self, section, compmgr=None):
         """Return a list of `(name, value)` tuples for every option in the
         specified section.
         
         This includes options that have default values that haven't been
-        overridden.
+        overridden. If `compmgr` is specified, only return default option
+        values for components that are enabled in the given `ComponentManager`.
         """
-        return self[section].options()
+        return self[section].options(compmgr)
 
     def remove(self, section, key):
         """Remove the specified option."""
@@ -160,13 +163,18 @@ class Configuration(object):
         if self.parser.has_section(section_str):
             self.parser.remove_option(section_str, key_str)
 
-    def sections(self):
-        """Return a list of section names."""
+    def sections(self, compmgr=None):
+        """Return a list of section names.
+        
+        If `compmgr` is specified, only the section names corresponding to
+        options declared in components that are enabled in the given
+        `ComponentManager` are returned.
+        """
         sections = set([to_unicode(s) for s in self.parser.sections()])
         if self.parent:
-            sections.update(self.parent.sections())
+            sections.update(self.parent.sections(compmgr))
         else:
-            sections.update(self.defaults().keys())
+            sections.update(self.defaults(compmgr))
         return sorted(sections)
 
     def has_option(self, section, option):
@@ -287,6 +295,14 @@ class Section(object):
         return Option.registry.has_key((self.name, key))
 
     def __iter__(self):
+        return self.iterate()
+    
+    def iterate(self, compmgr=None):
+        """Iterate over the options in this section.
+        
+        If `compmgr` is specified, only return default option values for
+        components that are enabled in the given `ComponentManager`.
+        """
         options = set()
         name_str = _to_utf8(self.name)
         if self.config.parser.has_section(name_str):
@@ -299,7 +315,7 @@ class Section(object):
                 if option.lower() not in options:
                     yield option
         else:
-            for section, option in Option.registry.keys():
+            for section, option in Option.get_registry(compmgr).keys():
                 if section == self.name and option.lower() not in options:
                     yield option
 
@@ -408,9 +424,14 @@ class Section(object):
                 path = os.path.join(os.path.dirname(base), path)
             return path
 
-    def options(self):
-        """Return `(key, value)` tuples for every option in the section."""
-        for key in self:
+    def options(self, compmgr=None):
+        """Return `(key, value)` tuples for every option in the section.
+        
+        This includes options that have default values that haven't been
+        overridden. If `compmgr` is specified, only return default option
+        values for components that are enabled in the given `ComponentManager`.
+        """
+        for key in self.iterate(compmgr):
             yield key, self.get(key)
 
     def set(self, key, value):
@@ -436,8 +457,28 @@ class Option(object):
     registry = {}
     accessor = Section.get
 
+    @staticmethod
+    def get_registry(compmgr=None):
+        """Return the option registry, as a `dict` mapping `(section, key)`
+        tuples to `Option` objects.
+        
+        If `compmgr` is specified, only return options for components that are
+        enabled in the given `ComponentManager`.
+        """
+        if compmgr is None:
+            return Option.registry
+        
+        from trac.core import ComponentMeta
+        components = {}
+        for cls in ComponentMeta._components:
+            for attr in cls.__dict__.itervalues():
+                if isinstance(attr, Option):
+                    components[attr] = cls
+        return dict(each for each in Option.registry.items()
+                    if compmgr.is_enabled(components[each[1]]))
+    
     def __init__(self, section, name, default=None, doc=''):
-        """Create the extension point.
+        """Create the configuration option.
         
         @param section: the name of the configuration section this option
             belongs to

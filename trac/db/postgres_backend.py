@@ -16,13 +16,15 @@
 
 import re, sys, os, time
 
+from genshi import Markup
+
 from trac.core import *
 from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
-from trac.util.text import to_unicode
+from trac.util.text import to_unicode, Empty
 from trac.util.translation import _
 
 has_psycopg = False
@@ -30,7 +32,13 @@ try:
     import psycopg2 as psycopg
     import psycopg2.extensions
     from psycopg2 import ProgrammingError as PGSchemaError
-    psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
+    from psycopg2.extensions import register_type, UNICODE, \
+                                    register_adapter, AsIs, QuotedString
+
+    register_type(UNICODE)
+    register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
+    register_adapter(Empty, lambda empty: AsIs("''"))
+
     has_psycopg = True
 except ImportError:
     pass
@@ -112,7 +120,7 @@ class PostgreSQLConnector(Component):
         db_params = db_prop.setdefault('params', {})
         db_name = os.path.basename(db_prop['path'])
 
-        args = [self.pg_dump_path, '-C', '-d', '-x', '-Z', '8']
+        args = [self.pg_dump_path, '-C', '--inserts', '-x', '-Z', '8']
         if 'user' in db_prop:
             args.extend(['-U', db_prop['user']])
         if 'host' in db_params:

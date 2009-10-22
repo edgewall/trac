@@ -121,10 +121,8 @@ class ComponentMeta(type):
 
         ComponentMeta._components.append(new_class)
         registry = ComponentMeta._registry
-        for interface in d.get('_implements', []):
-            registry.setdefault(interface, []).append(new_class)
-        for base in [base for base in bases if hasattr(base, '_implements')]:
-            for interface in base._implements:
+        for cls in new_class.__mro__:
+            for interface in cls.__dict__.get('_implements', ()):
                 registry.setdefault(interface, []).append(new_class)
 
         return new_class
@@ -195,9 +193,7 @@ class ComponentManager(object):
         """Activate the component instance for the given class, or return the
         existing instance if the component has already been activated.
         """
-        if cls not in self.enabled:
-            self.enabled[cls] = self.is_component_enabled(cls)
-        if not self.enabled[cls]:
+        if not self.is_enabled(cls):
             return None
         component = self.components.get(cls)
         if not component:
@@ -210,6 +206,12 @@ class ComponentManager(object):
                                 (cls, e))
         return component
 
+    def is_enabled(self, cls):
+        """Return whether the given component class is enabled."""
+        if cls not in self.enabled:
+            self.enabled[cls] = self.is_component_enabled(cls)
+        return self.enabled[cls]
+    
     def disable_component(self, component):
         """Force a component to be disabled.
         

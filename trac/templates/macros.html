@@ -11,19 +11,6 @@
               See http://trac.edgewall.org/ticket/6374
   -->
 
-  <!--!  Display the plural or singular form of a noun depending on a given
-  -      number.
-  -
-  -      'cnt'       corresponding quantity
-  -      'noun'
-  -      'keepzero'  If True, 0 gets pluralized, otherwise nothing gets generated.
-  -
-  -      We take care to not insert any extra space.
-  -->
-  <py:def function="plural(cnt,noun,keepzero=False)"><py:if
-      test="cnt != 0 or keepzero"
-      >${cnt == 1 and ('1 '+noun) or '%d %ss' % (cnt, noun)}</py:if></py:def>
-
   <!--!  Display size of a content in human friendly format (think -H)
   -
   -      We take care to not insert any extra space.

@@ -157,7 +157,7 @@ class VersionControlAdmin(Component):
         # Retrieve info for all repositories
         rm = RepositoryManager(self.env)
         all_repos = rm.get_all_repositories()
-        db_provider = DbRepositoryProvider(self.env)
+        db_provider = self.env[DbRepositoryProvider]
         
         if path_info:
             # Detail view

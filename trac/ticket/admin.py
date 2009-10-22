@@ -580,7 +580,7 @@ class VersionAdminPanel(TicketAdminPanel):
 
 
 class AbstractEnumAdminPanel(TicketAdminPanel):
-    implements(IAdminPanelProvider, IAdminCommandProvider)
+
     abstract = True
 
     _type = 'unknown'

@@ -1,7 +1,10 @@
-from trac.db.api import _parse_db_str
+# -*- coding: utf-8 -*-
 
 import os
 import unittest
+
+from trac.db.api import _parse_db_str
+from trac.test import EnvironmentStub
 
 
 class ParseConnectionStringTestCase(unittest.TestCase):
@@ -49,25 +52,67 @@ class ParseConnectionStringTestCase(unittest.TestCase):
         self.assertEqual(('postgres', {'user': 'john', 'password': 'letmein',
                                        'host': 'localhost', 'port': 9431,
                                        'path': '/trac'}),
-                         _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
+                 _parse_db_str('postgres://john:letmein@localhost:9431/trac'))
 
     def test_postgres_with_quoted_password(self):
         self.assertEqual(('postgres', {'user': 'john', 'password': ':@/',
                                        'host': 'localhost', 'path': '/trac'}),
-                         _parse_db_str('postgres://john:%3a%40%2f@localhost/trac'))
+                     _parse_db_str('postgres://john:%3a%40%2f@localhost/trac'))
 
     def test_mysql_simple(self):
         self.assertEqual(('mysql', {'host': 'localhost', 'path': '/trac'}),
-                         _parse_db_str('mysql://localhost/trac'))
+                     _parse_db_str('mysql://localhost/trac'))
 
     def test_mysql_with_creds(self):
         self.assertEqual(('mysql', {'user': 'john', 'password': 'letmein',
                                     'host': 'localhost', 'port': 3306,
                                     'path': '/trac'}),
-                         _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
+                     _parse_db_str('mysql://john:letmein@localhost:3306/trac'))
+
+
+class StringsTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub()
+
+    def test_insert_unicode(self):
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO system (name,value) VALUES (%s,%s)',
+                       ('test-unicode', u'ünicöde'))
+        db.commit()
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name='test-unicode'")
+        self.assertEqual([(u'ünicöde',)], cursor.fetchall())
+
+    def test_insert_empty(self):
+        from trac.util.text import empty
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO system (name,value) VALUES (%s,%s)',
+                       ('test-empty', empty))
+        db.commit()
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name='test-empty'")
+        self.assertEqual([(u'',)], cursor.fetchall())
+
+    def test_insert_markup(self):
+        from genshi.core import Markup
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute('INSERT INTO system (name,value) VALUES (%s,%s)',
+                       ('test-markup', Markup(u'<em>märkup</em>')))
+        db.commit()
+        cursor = db.cursor()
+        cursor.execute("SELECT value FROM system WHERE name='test-markup'")
+        self.assertEqual([(u'<em>märkup</em>',)], cursor.fetchall())
+
 
 def suite():
-    return unittest.makeSuite(ParseConnectionStringTestCase,'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(StringsTestCase, 'test'))
+    return suite
 
 if __name__ == '__main__':
     unittest.main()

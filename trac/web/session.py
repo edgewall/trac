@@ -61,7 +61,7 @@ class DetachedSession(dict):
         if not row:
             return
         self._new = False
-        self.last_visit = int(row[0])
+        self.last_visit = int(row[0] or 0)
 
         cursor.execute("SELECT name,value FROM session_attribute "
                        "WHERE sid=%s and authenticated=%s",
