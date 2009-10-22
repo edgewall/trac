@@ -121,10 +121,8 @@ class ComponentMeta(type):
 
         ComponentMeta._components.append(new_class)
         registry = ComponentMeta._registry
-        for interface in d.get('_implements', []):
-            registry.setdefault(interface, []).append(new_class)
-        for base in [base for base in bases if hasattr(base, '_implements')]:
-            for interface in base._implements:
+        for cls in new_class.__mro__:
+            for interface in cls.__dict__.get('_implements', ()):
                 registry.setdefault(interface, []).append(new_class)
 
         return new_class

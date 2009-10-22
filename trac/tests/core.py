@@ -24,6 +24,11 @@ class ITest(Interface):
         """Dummy function."""
 
 
+class IOtherTest(Interface):
+    def other_test():
+        """Other dummy function."""
+
+
 class ComponentTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -244,8 +249,25 @@ class ComponentTestCase(unittest.TestCase):
         class ConcreteComponent(BaseComponent):
             pass
         from trac.core import ComponentMeta
-        assert ConcreteComponent in ComponentMeta._registry[ITest]
+        assert ConcreteComponent in ComponentMeta._registry.get(ITest, [])
 
+    def test_inherited_implements_multilevel(self):
+        """
+        Verify that extension point interfaces are inherited for more than
+        one level of inheritance.
+        """
+        class BaseComponent(Component):
+            implements(ITest)
+            abstract = True
+        class ChildComponent(BaseComponent):
+            implements(IOtherTest)
+            abstract = True
+        class ConcreteComponent(ChildComponent):
+            pass
+        from trac.core import ComponentMeta
+        assert ConcreteComponent in ComponentMeta._registry.get(ITest, [])
+        assert ConcreteComponent in ComponentMeta._registry.get(IOtherTest, [])
+        
     def test_component_manager_component(self):
         """
         Verify that a component manager can itself be a component with its own
