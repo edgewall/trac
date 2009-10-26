@@ -746,11 +746,16 @@ class Formatter(object):
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
+        colspan = len(match)/2
+        if colspan > 1:
+            td = '<td colspan="%d">' % int(colspan)
+        else:
+            td = '<td>'
         if self.in_table_cell:
-            return '</td><td>'
+            return '</td>'+td
         else:
             self.in_table_cell = 1
-            return '<td>'
+            return td
 
     def open_table(self):
         if not self.in_table:

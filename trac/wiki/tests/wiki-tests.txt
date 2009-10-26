@@ -1223,6 +1223,28 @@ in:
 out:
 || RPC# || parameter len || ..... parameter ..... ||
 ----
+============================== Simple Table with colspan
+in:
+|| name |||| parameter info ||
+|| RPC# || parameter len || ..... parameter ..... ||
+|||||| end ||
+----
+------------------------------
+<p>
+in:
+</p>
+<table class="wiki">
+<tr><td> name </td><td colspan="2"> parameter info 
+</td></tr><tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
+</td></tr><tr><td colspan="3"> end 
+</td></tr></table>
+<hr />
+------------------------------
+in:
+|| name |||| parameter info ||
+|| RPC# || parameter len || ..... parameter ..... ||
+|||||| end ||
+----
 ============================== Indented tables, multiple columns
 || a || b ||
 
