@@ -152,6 +152,25 @@ link:1
 Thing [link:1 number 1], CS[link:1], [link:bar]
 </p>
 ------------------------------
+============================== Link resolvers, alternative short form
+<link:1>
+
+Thing<link:2 and (3)>
+------------------------------
+<p>
+&lt;<a class="odd resolver" href="/thing/1">link:1</a>&gt;
+</p>
+<p>
+Thing&lt;<a class="text resolver" href="/stuff/2%20and%20%283%29">link:2 and (3)</a>&gt;
+</p>
+------------------------------
+============================== Escaping links resolvers, alternative short form
+!<link:1>
+------------------------------
+<p>
+&lt;link:1&gt;
+</p>
+------------------------------
 ============================== Link resolvers, long form with label
 [link:1 thing one], [http://www.edgewall.com/ edgewall]
 ------------------------------

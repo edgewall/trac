@@ -77,10 +77,12 @@ class WikiParser(Component):
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
         # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
+        # <wiki:Trac links>
+        r"(?P<shref>!?<(?P<sns>%s):(?P<stgt>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
         # wiki:TracLinks
-        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
+        r"(?P<shref2>!?((?P<sns2>%s):(?P<stgt2>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # [wiki:TracLinks with optional label] or [/relative label]

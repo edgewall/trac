@@ -363,6 +363,13 @@ class Formatter(object):
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = self._unquote(fullmatch.group('stgt'))
+        match = match[1:-1]
+        return '&lt;%s&gt;' % \
+                self._make_link(ns, target, match, match, fullmatch)
+
+    def _shref2_formatter(self, match, fullmatch):
+        ns = fullmatch.group('sns2')
+        target = self._unquote(fullmatch.group('stgt2'))
         return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
