@@ -132,22 +132,30 @@ class ComponentTestCase(unittest.TestCase):
         """
         try:
             implements()
-            self.fail('Expected AssertionError')
         except AssertionError:
             pass
+        else:
+            self.fail('Expected AssertionError')
 
-    def test_implements_called_twice(self):
+    def test_implements_multiple(self):
         """
-        Verify that calling implements() twice in a class definition raises an
-        `AssertionError`.
+        Verify that a component "implementing" an interface more than once
+        (e.g. through inheritance) is not called more than once from an
+        extension point.
         """
-        try:
-            class ComponentA(Component):
-                implements()
-                implements()
-            self.fail('Expected AssertionError')
-        except AssertionError:
-            pass
+        log = []
+        class Parent(Component):
+            abstract = True
+            implements(ITest)
+        class Child(Parent):
+            implements(ITest)
+            def test(self):
+                log.append("call")
+        class Other(Component):
+            tests = ExtensionPoint(ITest)
+        for test in Other(self.compmgr).tests:
+            test.test()
+        self.assertEqual(["call"], log)
 
     def test_attribute_access(self):
         """
@@ -218,10 +226,8 @@ class ComponentTestCase(unittest.TestCase):
         class ComponentC(Component):
             implements(ITest)
             def test(self): return 'y'
-        tests = iter(ComponentA(self.compmgr).tests)
-        self.assertEquals('x', tests.next().test())
-        self.assertEquals('y', tests.next().test())
-        self.assertRaises(StopIteration, tests.next)
+        results = [test.test() for test in ComponentA(self.compmgr).tests]
+        self.assertEquals(['x', 'y'], sorted(results))
 
     def test_inherited_extension_point(self):
         """

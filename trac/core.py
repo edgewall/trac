@@ -66,7 +66,7 @@ class ExtensionPoint(property):
         """Return a list of components that declare to implement the extension
         point interface.
         """
-        extensions = ComponentMeta._registry.get(self.interface, [])
+        extensions = ComponentMeta._registry.get(self.interface, ())
         return filter(None, [component.compmgr[cls] for cls in extensions])
 
     def __repr__(self):
@@ -123,7 +123,9 @@ class ComponentMeta(type):
         registry = ComponentMeta._registry
         for cls in new_class.__mro__:
             for interface in cls.__dict__.get('_implements', ()):
-                registry.setdefault(interface, []).append(new_class)
+                classes = registry.setdefault(interface, [])
+                if new_class not in classes:
+                    classes.append(new_class)
 
         return new_class
 
