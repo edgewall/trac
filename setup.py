@@ -117,6 +117,7 @@ facilities.
         trac.wiki.interwiki = trac.wiki.interwiki
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
+        tracopt.perm.authz_policy = tracopt.perm.authz_policy
     """,
 
     **extra

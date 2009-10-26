@@ -14,9 +14,6 @@
 #
 # Author: Alec Thomas <alec@swapoff.org>
 
-revision = "$Rev$"
-url = "$URL$"
-
 """Permission policy enforcement through an authz-like configuration file.
 
 Refer to SVN documentation for syntax of the authz file. Groups are supported.
@@ -115,17 +112,21 @@ Example configuration:
     anonymous = BROWSER_VIEW, CHANGESET_VIEW, FILE_VIEW, LOG_VIEW, MILESTONE_VIEW, POLL_VIEW, REPORT_SQL_VIEW, REPORT_VIEW, ROADMAP_VIEW, SEARCH_VIEW, TICKET_CREATE, TICKET_MODIFY, TICKET_VIEW, TIMELINE_VIEW, WIKI_CREATE, WIKI_MODIFY, WIKI_VIEW
     # Give authenticated users some extra permissions
     authenticated = REPO_SEARCH, XML_RPC
-
-
 """
 
+from fnmatch import fnmatch
 from itertools import groupby
 import os
-from fnmatch import fnmatch
+
 from trac.core import *
 from trac.config import Option
 from trac.perm import PermissionSystem, IPermissionPolicy
-from configobj import ConfigObj
+
+ConfigObj = None
+try:
+    from configobj import ConfigObj
+except ImportError:
+    pass
 
 
 class AuthzPolicy(Component):
@@ -141,6 +142,10 @@ class AuthzPolicy(Component):
     # IPermissionPolicy methods
     
     def check_permission(self, action, username, resource, perm):
+        if ConfigObj is None:
+            self.log.error('configobj package not found')
+            return None
+        
         if self.authz_file and not self.authz_mtime or \
                 os.path.getmtime(self.get_authz_file()) > self.authz_mtime:
             self.parse_authz()
@@ -155,7 +160,7 @@ class AuthzPolicy(Component):
         # FIXME: expand all permissions once for all
         ps = PermissionSystem(self.env)
         for deny, perms in groupby(permissions,
-                                    key=lambda p: p.startswith('!')):
+                                   key=lambda p: p.startswith('!')):
             if deny and action in ps.expand_actions([p[1:] for p in perms]):
                 return False            # action is explicitly denied
             elif action in ps.expand_actions(perms):
