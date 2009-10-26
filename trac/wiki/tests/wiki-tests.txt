@@ -323,6 +323,15 @@ Relative links are supported:
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
 </p>
 ------------------------------
+==============================  Wiki anchors
+This is the [=#init] initialization routine: ...
+Look for [=#extra ''additional explanations''] here.
+------------------------------
+<p>
+This is the <span class="wikianchor" id="init"></span> initialization routine: ...
+Look for <span class="wikianchor" id="extra"><i>additional explanations</i></span> here.
+</p>
+------------------------------
 ==============================  Image links are now regular external links
 http://example.com/img.png?foo=bar
 ------------------------------

@@ -91,6 +91,9 @@ class WikiParser(Component):
          r"(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*))" % \
          (LINK_SCHEME, QUOTED_STRING) + # wiki:TracLinks or wiki:"trac links"
          r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # optional label
+        # [=#anchor] creation
+        (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +
+         "(?P<anchorlabel>\s+[^\]]*)?\])"),
         # [[macro]] call
         (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),

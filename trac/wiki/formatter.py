@@ -501,6 +501,15 @@ class Formatter(object):
         return tag.a(tag.span(u'\xa0', class_="icon"), text,
                       class_="mail-link", href=url, title=title or None)
 
+    # Anchors
+    
+    def _anchor_formatter(self, match, fullmatch):
+        anchor = fullmatch.group('anchorname')
+        label = fullmatch.group('anchorlabel') or ''
+        if label:
+            label = format_to_oneliner(self.env, self.context, label)
+        return '<span class="wikianchor" id="%s">%s</span>' % (anchor, label)
+
     # WikiMacros
     
     def _macro_formatter(self, match, fullmatch):
