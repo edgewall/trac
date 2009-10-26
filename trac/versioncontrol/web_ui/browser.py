@@ -603,7 +603,7 @@ class BrowserModule(Component):
             path, rev = export.split('@', 1)
         else:
             rev, path = self.env.get_repository().youngest_rev, export
-        return tag.a(label, class_='source',
+        return tag.a(label, class_='export',
                      href=formatter.href.export(rev, path) + fragment)
 
     def _format_browser_link(self, formatter, ns, path, label):

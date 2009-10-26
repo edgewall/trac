@@ -303,16 +303,16 @@ export:123:/foo/pict.gif
 export:/foo/pict.gif@123
 ------------------------------
 <p>
-<a class="source" href="/export/200/foo/bar.html">export:/foo/bar.html</a>
-<a class="source" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
-<a class="source" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
+<a class="export" href="/export/200/foo/bar.html">export:/foo/bar.html</a>
+<a class="export" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
+<a class="export" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
 </p>
 ------------------------------
 ============================== export: link resolver + fragment
 export:/foo/bar.html#header
 ------------------------------
 <p>
-<a class="source" href="/export/200/foo/bar.html#header">export:/foo/bar.html#header</a>
+<a class="export" href="/export/200/foo/bar.html#header">export:/foo/bar.html#header</a>
 </p>
 ------------------------------
 """ # " (be Emacs friendly...)
