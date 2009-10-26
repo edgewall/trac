@@ -746,16 +746,22 @@ class Formatter(object):
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
-        colspan = len(match)/2
+        numpipes = len(match)
+        cell = 'td'
+        if match[0] == '=':
+            numpipes -= 1
+        if match[-1] == '=':
+            numpipes -= 1
+            cell = 'th'
+        colspan = numpipes/2
         if colspan > 1:
-            td = '<td colspan="%d">' % int(colspan)
+            td = '<%s colspan="%d">' % (cell, int(colspan))
         else:
-            td = '<td>'
+            td = '<%s>' % cell
         if self.in_table_cell:
-            return '</td>'+td
-        else:
-            self.in_table_cell = 1
-            return td
+            td = '</%s>' % self.in_table_cell + td
+        self.in_table_cell = cell
+        return td
 
     def open_table(self):
         if not self.in_table:
@@ -775,9 +781,8 @@ class Formatter(object):
         if self.in_table_row:
             self.in_table_row = 0
             if self.in_table_cell:
-                self.in_table_cell = 0
-                self.out.write('</td>')
-
+                self.out.write('</%s>' % self.in_table_cell)
+                self.in_table_cell = ''
             self.out.write('</tr>')
 
     def close_table(self):
@@ -881,7 +886,7 @@ class Formatter(object):
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
-        self.in_table_cell = 0
+        self.in_table_cell = ''
         self.paragraph_open = 0
 
     def format(self, text, out=None, escape_newlines=False):

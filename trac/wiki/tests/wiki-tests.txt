@@ -1245,6 +1245,15 @@ in:
 || RPC# || parameter len || ..... parameter ..... ||
 |||||| end ||
 ----
+============================== Table headings (plus colspan)
+||= this is a header =||||= another header =|| not a header ||
+||= also a header =|| some non- || header cells ||= header =||
+------------------------------
+<table class="wiki">
+<tr><th> this is a header </th><th colspan="2"> another header </th><td> not a header 
+</td></tr><tr><th> also a header </th><td> some non- </td><td> header cells </td><th> header 
+</th></tr></table>
+------------------------------
 ============================== Indented tables, multiple columns
 || a || b ||
 
