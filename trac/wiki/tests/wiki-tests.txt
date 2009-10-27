@@ -9,6 +9,13 @@ This should be '''''bold and italic'''''
 This should be <strong><i>bold and italic</i></strong>
 </p>
 ------------------------------
+============================== Problematic markup: comma-separated list with a time + bold markup
+23:59,'''test''',123
+------------------------------
+<p>
+23:59,<strong>test</strong>,123
+</p>
+------------------------------
 ============================== Consecutive bold + italic markup
 '''''one''''', '''''two''''', '''''three''''', '''''four'''''
 ------------------------------

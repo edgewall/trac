@@ -41,8 +41,8 @@ class WikiParser(Component):
     ENDBLOCK_TOKEN = r"\}\}\}"
     ENDBLOCK = "}}}"
     
-    LINK_SCHEME = r"[\w.+-]+" # as per RFC 2396
-    INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (support for shorthand links)
+    LINK_SCHEME = r"[a-zA-Z][a-zA-Z0-9+-.]*" # as per RFC 2396
+    INTERTRAC_SCHEME = r"[a-zA-Z.+-]*?" # no digits (for shorthand links)
 
     QUOTED_STRING = r"'[^']+'|\"[^\"]+\""
 
