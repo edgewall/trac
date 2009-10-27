@@ -685,10 +685,11 @@ class ReportModule(Component):
         req.perm.require('REPORT_SQL_VIEW')
 
         out = StringIO()
-        out.write('-- ## %s: %s ## --\n\n' % (id, title))
+        out.write('-- ## %s: %s ## --\n\n' % (id, title.encode('utf-8')))
         if description:
-            out.write('-- %s\n\n' % '\n-- '.join(description.splitlines()))
-        out.write(sql)
+            lines = description.encode('utf-8').splitlines()
+            out.write('-- %s\n\n' % '\n-- '.join(lines))
+        out.write(sql.encode('utf-8'))
         data = out.getvalue()
 
         req.send_response(200)
