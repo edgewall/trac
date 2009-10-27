@@ -14,7 +14,7 @@
 
 import cmd
 import locale
-import os
+import os.path
 import pkg_resources
 import shlex
 import StringIO
@@ -385,7 +385,7 @@ in order to initialize and prepare the project database.
         inherit_file = ''
         for num, item in enumerate(arg):
             if item.startswith('--inherit='):
-                inherit_file = arg.pop(num)[10:]
+                inherit_file = os.path.abspath(arg.pop(num)[10:])
         arg = arg or [''] # Reset to usual empty in case we popped the only one
         project_name = None
         db_str = None
