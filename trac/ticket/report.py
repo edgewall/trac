@@ -103,6 +103,9 @@ class ReportModule(Component):
         elif action == 'delete':
             template = 'report_delete.html'
             data = self._render_confirm_delete(req, db, id)
+        elif id == -1:
+            template = 'report_list.html'
+            data = self._render_list(req, db)
         else:
             template, data, content_type = self._render_view(req, db, id)
             if content_type: # i.e. alternate format
@@ -222,25 +225,32 @@ class ReportModule(Component):
                           'sql': query, 'description': description}
         return data
 
+    def _render_list(self, req, db):
+        """Render the list of available reports."""
+        sort = req.args.get('sort', 'report')
+        asc = bool(int(req.args.get('asc', 1)))
+        
+        cursor = db.cursor()
+        cursor.execute("SELECT id, title FROM report ORDER BY %s%s"
+                       % (sort == 'title' and 'title' or 'id',
+                          not asc and ' DESC' or ''))
+        reports = [(id, title, 'REPORT_MODIFY' in req.perm('report', id),
+                    'REPORT_DELETE' in req.perm('report', id))
+                   for id, title in cursor]
+        
+        return {'reports': reports, 'sort': sort, 'asc': asc}
+
     def _render_view(self, req, db, id):
         """Retrieve the report results and pre-process them for rendering."""
-        if id == -1:
-            # If no particular report was requested, display
-            # a list of available reports instead
-            title = _('Available Reports')
-            sql = ("SELECT id AS report, title, 'report' as _realm "
-                   "FROM report ORDER BY report")
-            description = _('This is a list of available reports.')
+        cursor = db.cursor()
+        cursor.execute("SELECT title,query,description from report "
+                       "WHERE id=%s", (id,))
+        for title, sql, description in cursor:
+            break
         else:
-            cursor = db.cursor()
-            cursor.execute("SELECT title,query,description from report "
-                           "WHERE id=%s", (id,))
-            for title, sql, description in cursor:
-                break
-            else:
-                raise ResourceNotFound(
-                    _('Report %(num)s does not exist.', num=id),
-                    _('Invalid Report Number'))
+            raise ResourceNotFound(
+                _('Report %(num)s does not exist.', num=id),
+                _('Invalid Report Number'))
 
         try:
             args = self.get_var_args(req)
@@ -281,8 +291,7 @@ class ReportModule(Component):
         if format == 'sql':
             self._send_sql(req, id, title, description, sql)
 
-        if id > 0:
-            title = '{%i} %s' % (id, title)
+        title = '{%i} %s' % (id, title)
 
         report_resource = Resource('report', id)
         req.perm.require('REPORT_VIEW', report_resource)
@@ -336,7 +345,7 @@ class ReportModule(Component):
             return req.href.report(id, params)
 
         paginator = None
-        if id != -1 and limit > 0:
+        if limit > 0:
             paginator = Paginator(results, page - 1, limit, num_items)
             data['paginator'] = paginator
             if paginator.has_next_page:
@@ -505,39 +514,38 @@ class ReportModule(Component):
                            mimetype='text/tab-separated-values',
                            filename=filename)
         else:
-            if id != -1:
-                p = max is not None and page or None
+            p = max is not None and page or None
+            add_link(req, 'alternate', 
+                     report_href(format='rss', page=None),
+                     _('RSS Feed'), 'application/rss+xml', 'rss')
+            add_link(req, 'alternate', report_href(format='csv', page=p),
+                     _('Comma-delimited Text'), 'text/plain')
+            add_link(req, 'alternate', report_href(format='tab', page=p),
+                     _('Tab-delimited Text'), 'text/plain')
+            if 'REPORT_SQL_VIEW' in req.perm:
                 add_link(req, 'alternate', 
-                         report_href(format='rss', page=None),
-                         _('RSS Feed'), 'application/rss+xml', 'rss')
-                add_link(req, 'alternate', report_href(format='csv', page=p),
-                         _('Comma-delimited Text'), 'text/plain')
-                add_link(req, 'alternate', report_href(format='tab', page=p),
-                         _('Tab-delimited Text'), 'text/plain')
-                if 'REPORT_SQL_VIEW' in req.perm:
-                    add_link(req, 'alternate', 
-                             req.href.report(id=id, format='sql'),
-                             _('SQL Query'), 'text/plain')
+                         req.href.report(id=id, format='sql'),
+                         _('SQL Query'), 'text/plain')
 
-                # reuse the session vars of the query module so that
-                # the query navigation links on the ticket can be used to 
-                # navigate report results as well
-                try:
-                    req.session['query_tickets'] = \
-                        ' '.join([str(int(row['id']))
-                                  for rg in row_groups for row in rg[1]])
-                    req.session['query_href'] = \
-                        req.session['query_href'] = report_href()
-                    # Kludge: we have to clear the other query session
-                    # variables, but only if the above succeeded 
-                    for var in ('query_constraints', 'query_time'):
-                        if var in req.session:
-                            del req.session[var]
-                except (ValueError, KeyError):
-                    pass
-                if set(data['args']) - set(['USER']):
-                    data['show_args_form'] = True
-                    add_script(req, 'common/js/folding.js')
+            # reuse the session vars of the query module so that
+            # the query navigation links on the ticket can be used to 
+            # navigate report results as well
+            try:
+                req.session['query_tickets'] = \
+                    ' '.join([str(int(row['id']))
+                              for rg in row_groups for row in rg[1]])
+                req.session['query_href'] = \
+                    req.session['query_href'] = report_href()
+                # Kludge: we have to clear the other query session
+                # variables, but only if the above succeeded 
+                for var in ('query_constraints', 'query_time'):
+                    if var in req.session:
+                        del req.session[var]
+            except (ValueError, KeyError):
+                pass
+            if set(data['args']) - set(['USER']):
+                data['show_args_form'] = True
+                add_script(req, 'common/js/folding.js')
             if missing_args:
                 add_warning(req, _(
                     'The following arguments are missing: %(args)s',
@@ -715,10 +723,11 @@ class ReportModule(Component):
         req.perm.require('REPORT_SQL_VIEW')
 
         out = StringIO()
-        out.write('-- ## %s: %s ## --\n\n' % (id, title))
+        out.write('-- ## %s: %s ## --\n\n' % (id, title.encode('utf-8')))
         if description:
-            out.write('-- %s\n\n' % '\n-- '.join(description.splitlines()))
-        out.write(sql)
+            lines = description.encode('utf-8').splitlines()
+            out.write('-- %s\n\n' % '\n-- '.join(lines))
+        out.write(sql.encode('utf-8'))
         data = out.getvalue()
 
         req.send_response(200)

@@ -18,11 +18,11 @@
   <body>
     <div id="content" class="report">
       <h1>$title
-        <span py:if="numrows and report.id != -1" class="numrows">($numrows matches)</span>
+        <span py:if="numrows" class="numrows">($numrows matches)</span>
       </h1>
 
       <form method="get" action="">
-        <div id="prefs" py:if="report.id != -1">
+        <div id="prefs">
           <div>
             <label>
               Max items per page
@@ -63,7 +63,7 @@
         </fieldset>
       </form>
 
-      <div py:if="report.id != -1" class="buttons">
+      <div class="buttons">
         <form py:if="'REPORT_MODIFY' in perm(report.resource)" action="" method="get">
           <div>
             <input type="hidden" name="action" value="edit" />
@@ -83,17 +83,15 @@
           </div>
         </form>
       </div>
-      <py:if test="report.id != -1">
-        <h2 class="report-result" py:if="paginator.has_more_pages">
-          Results <span class="numresults">(${paginator.displayed_items()})</span>
-        </h2>
-        <xi:include href="page_index.html" />
-      </py:if>
+      <h2 class="report-result" py:if="paginator.has_more_pages">
+        Results <span class="numresults">(${paginator.displayed_items()})</span>
+      </h2>
+      <xi:include href="page_index.html" />
       <py:for each="value_for_group, row_group in row_groups">
         <h2 class="report-result" py:if="value_for_group"><a py:strip="'__grouplink__' not in row_group[0]"
                                                              href="${row_group[0]['__grouplink__']}">$value_for_group</a>
         <span class="numrows" py:with="cnt = len(row_group)">(${cnt or 'No'} match${cnt != 1 and 'es' or ''})</span></h2>
-        <table class="listing ${report.id == -1 and 'reports' or 'tickets'}">
+        <table class="listing tickets">
           <thead>
             <tr py:for="header_group in header_groups">
               <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
@@ -123,7 +121,6 @@
                     <py:with vars="col = cell.header.col.strip('_')">
                       <py:choose>
 
-                        <!--! for the report listing -->
                         <py:when test="col == 'report'">
                           <td class="$col" py:attrs="td_attrs">
                             <a title="View report" href="${href.report(cell.value)}">{$cell.value}</a>
@@ -131,14 +128,6 @@
                           </td>
                         </py:when>
 
-                        <py:when test="col == 'title' and report.id == -1">
-                          <td class="$col" py:attrs="td_attrs">
-                            <a title="View report" href="${href.report(row.id)}">$cell.value</a>
-                            <hr py:if="fullrow"/>
-                          </td>
-                        </py:when>
-
-                        <!--! for the ticket listing -->
                         <py:when test="col in ('ticket', 'id')">
                           <td class="ticket" py:attrs="td_attrs">
                             <a title="View ${row.resource.realm}" href="${url_of(row.resource)}">#$cell.value</a>
@@ -201,17 +190,7 @@
           </tbody>
         </table>
       </py:for>
-      <py:if test="report.id != -1">
-        <xi:include href="page_index.html" />
-      </py:if>
-      <div py:if="report.id == -1 and 'REPORT_CREATE' in perm(report.resource)" class="buttons">
-        <form action="" method="get" id="create_report">
-          <div>
-            <input type="hidden" name="action" value="new" />
-            <input type="submit" value="${_('Create new report')}" />
-          </div>
-        </form>
-      </div>
+      <xi:include href="page_index.html" />
 
       <div py:if="message" class="system-message">$message</div>
       <div py:if="numrows == 0" id="report-notfound">No matches found.</div>
