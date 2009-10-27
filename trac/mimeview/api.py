@@ -701,6 +701,7 @@ class Mimeview(Component):
 
         # First candidate which renders successfully wins.
         # Also, we don't want to expand tabs more than once.
+        content = content_to_unicode(self.env, content, full_mimetype)
         expanded_content = None
         errors = []
         for qr, renderer in candidates:
@@ -716,8 +717,6 @@ class Mimeview(Component):
                 rendered_content = content
                 if getattr(renderer, 'expand_tabs', False):
                     if expanded_content is None:
-                        content = content_to_unicode(self.env, content,
-                                                     full_mimetype)
                         expanded_content = content.expandtabs(self.tab_width)
                     rendered_content = expanded_content
 
