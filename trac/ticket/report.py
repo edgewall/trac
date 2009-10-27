@@ -448,7 +448,8 @@ class ReportModule(Component):
                     # Other row properties
                     row['__idx__'] = row_idx
                     if col in ('__style__', '__color__',
-                               '__fgcolor__', '__bgcolor__'):
+                               '__fgcolor__', '__bgcolor__',
+                               '__grouplink__'):
                         row[col] = value
                     if col in ('report', 'ticket', 'id', '_id'):
                         row['id'] = value
