@@ -155,16 +155,19 @@
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </td>
                   </py:when>
-                  <td colspan="6" py:otherwise="" />
+                  <td colspan="6" class="separator" py:otherwise="" />
                 </tr>
 
-                <tr py:if="verbose" class="$odd_even verbose">
-                  <td py:if="not is_separator and chgset_view" class="summary" colspan="6" py:choose="" xml:space="preserve">
-                    <py:when test="wiki_format_messages">
-                      ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
-                    </py:when>
-                    <py:otherwise><pre>${change.message}</pre></py:otherwise>
-                  </td>
+                <tr py:if="verbose and not is_separator" class="$odd_even verbose">
+                  <py:choose> 
+                    <td py:when="chgset_view" class="summary" colspan="6"
+                        py:choose="" xml:space="preserve">
+                      <py:when test="wiki_format_messages">
+                        ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
+                      </py:when>
+                      <py:otherwise><pre>${change.message}</pre></py:otherwise>
+                    </td>
+                  </py:choose>
                 </tr>
 
               </py:with>
