@@ -77,10 +77,12 @@ class WikiParser(Component):
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
         # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
+        # <wiki:Trac links>
+        r"(?P<shref>!?<(?P<sns>%s):(?P<stgt>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
         # wiki:TracLinks
-        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
+        r"(?P<shref2>!?((?P<sns2>%s):(?P<stgt2>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # [wiki:TracLinks with optional label] or [/relative label]
@@ -89,6 +91,9 @@ class WikiParser(Component):
          r"(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*))" % \
          (LINK_SCHEME, QUOTED_STRING) + # wiki:TracLinks or wiki:"trac links"
          r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # optional label
+        # [=#anchor] creation
+        (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +
+         "(?P<anchorlabel>\s+[^\]]*)?\])"),
         # [[macro]] call
         (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
@@ -105,8 +110,8 @@ class WikiParser(Component):
         # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
-        r"(?P<last_table_cell>\|\|\s*$)",
-        r"(?P<table_cell>!?\|\|)"]
+        r"(?P<last_table_cell>=?\|\|\s*$)",
+        r"(?P<table_cell>!?=?(?:\|\|)+=?)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
     _processor_param_re = re.compile(r'''(\w+)=(".*?"|'.*?'|\w+)''')

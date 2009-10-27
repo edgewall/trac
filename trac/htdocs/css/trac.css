@@ -46,7 +46,8 @@ h4 :link, h4 :visited, h5 :link, h5 :visited, h6 :link, h6 :visited {
  visibility: hidden;
 }
 h1:hover .anchor, h2:hover .anchor, h3:hover .anchor,
-h4:hover .anchor, h5:hover .anchor, h6:hover .anchor {
+h4:hover .anchor, h5:hover .anchor, h6:hover .anchor,
+span:hover .anchor {
  visibility: visible;
 }
 
@@ -346,6 +347,7 @@ table.wiki {
  border-spacing: 0;
 }
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
+table.wiki th { border: 2px solid #bbb;  padding: .1em .8em; }
 
 .wikitoolbar {
  margin-top: 0.3em;

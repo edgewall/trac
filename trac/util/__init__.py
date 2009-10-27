@@ -250,7 +250,7 @@ class NaivePopen:
     def __init__(self, command, input=None, capturestderr=None):
         outfile = tempfile.mktemp()
         command = '( %s ) > %s' % (command, outfile)
-        if input:
+        if input is not None:
             infile = tempfile.mktemp()
             tmp = open(infile, 'w')
             tmp.write(input)

@@ -7,6 +7,13 @@ A simple MTA filter to create Trac tickets from inbound emails.
 Copyright 2005, Daniel Lundin <daniel@edgewall.com>
 Copyright 2005, Edgewall Software
 
+Please note: 
+
+This is only a starting point. See
+ * http://trac.edgewall.org/ticket/5327 and
+ * http://trac-hacks.org/intertrac/EmailtoTracScript
+for more complete and advanced examples.
+
 The scripts reads emails from stdin and inserts directly into a Trac database.
 MIME headers are mapped as follows:
 

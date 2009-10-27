@@ -363,6 +363,13 @@ class Formatter(object):
     def _shref_formatter(self, match, fullmatch):
         ns = fullmatch.group('sns')
         target = self._unquote(fullmatch.group('stgt'))
+        match = match[1:-1]
+        return '&lt;%s&gt;' % \
+                self._make_link(ns, target, match, match, fullmatch)
+
+    def _shref2_formatter(self, match, fullmatch):
+        ns = fullmatch.group('sns2')
+        target = self._unquote(fullmatch.group('stgt2'))
         return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
@@ -493,6 +500,15 @@ class Formatter(object):
     def _make_mail_link(self, url, text, title=''):
         return tag.a(tag.span(u'\xa0', class_="icon"), text,
                       class_="mail-link", href=url, title=title or None)
+
+    # Anchors
+    
+    def _anchor_formatter(self, match, fullmatch):
+        anchor = fullmatch.group('anchorname')
+        label = fullmatch.group('anchorlabel') or ''
+        if label:
+            label = format_to_oneliner(self.env, self.context, label)
+        return '<span class="wikianchor" id="%s">%s</span>' % (anchor, label)
 
     # WikiMacros
     
@@ -730,11 +746,22 @@ class Formatter(object):
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
-        if self.in_table_cell:
-            return '</td><td>'
+        numpipes = len(match)
+        cell = 'td'
+        if match[0] == '=':
+            numpipes -= 1
+        if match[-1] == '=':
+            numpipes -= 1
+            cell = 'th'
+        colspan = numpipes/2
+        if colspan > 1:
+            td = '<%s colspan="%d">' % (cell, int(colspan))
         else:
-            self.in_table_cell = 1
-            return '<td>'
+            td = '<%s>' % cell
+        if self.in_table_cell:
+            td = '</%s>' % self.in_table_cell + td
+        self.in_table_cell = cell
+        return td
 
     def open_table(self):
         if not self.in_table:
@@ -754,9 +781,8 @@ class Formatter(object):
         if self.in_table_row:
             self.in_table_row = 0
             if self.in_table_cell:
-                self.in_table_cell = 0
-                self.out.write('</td>')
-
+                self.out.write('</%s>' % self.in_table_cell)
+                self.in_table_cell = ''
             self.out.write('</tr>')
 
     def close_table(self):
@@ -860,7 +886,7 @@ class Formatter(object):
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
-        self.in_table_cell = 0
+        self.in_table_cell = ''
         self.paragraph_open = 0
 
     def format(self, text, out=None, escape_newlines=False):

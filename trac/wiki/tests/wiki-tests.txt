@@ -152,6 +152,25 @@ link:1
 Thing [link:1 number 1], CS[link:1], [link:bar]
 </p>
 ------------------------------
+============================== Link resolvers, alternative short form
+<link:1>
+
+Thing<link:2 and (3)>
+------------------------------
+<p>
+&lt;<a class="odd resolver" href="/thing/1">link:1</a>&gt;
+</p>
+<p>
+Thing&lt;<a class="text resolver" href="/stuff/2%20and%20%283%29">link:2 and (3)</a>&gt;
+</p>
+------------------------------
+============================== Escaping links resolvers, alternative short form
+!<link:1>
+------------------------------
+<p>
+&lt;link:1&gt;
+</p>
+------------------------------
 ============================== Link resolvers, long form with label
 [link:1 thing one], [http://www.edgewall.com/ edgewall]
 ------------------------------
@@ -302,6 +321,15 @@ Relative links are supported:
 <a href="/newticket?component=test">new ticket</a>
 <a class="wiki" href="/wiki/WikiStart#title">#title</a>
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
+</p>
+------------------------------
+==============================  Wiki anchors
+This is the [=#init] initialization routine: ...
+Look for [=#extra ''additional explanations''] here.
+------------------------------
+<p>
+This is the <span class="wikianchor" id="init"></span> initialization routine: ...
+Look for <span class="wikianchor" id="extra"><i>additional explanations</i></span> here.
 </p>
 ------------------------------
 ==============================  Image links are now regular external links
@@ -1195,6 +1223,37 @@ in:
 out:
 || RPC# || parameter len || ..... parameter ..... ||
 ----
+============================== Simple Table with colspan
+in:
+|| name |||| parameter info ||
+|| RPC# || parameter len || ..... parameter ..... ||
+|||||| end ||
+----
+------------------------------
+<p>
+in:
+</p>
+<table class="wiki">
+<tr><td> name </td><td colspan="2"> parameter info 
+</td></tr><tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
+</td></tr><tr><td colspan="3"> end 
+</td></tr></table>
+<hr />
+------------------------------
+in:
+|| name |||| parameter info ||
+|| RPC# || parameter len || ..... parameter ..... ||
+|||||| end ||
+----
+============================== Table headings (plus colspan)
+||= this is a header =||||= another header =|| not a header ||
+||= also a header =|| some non- || header cells ||= header =||
+------------------------------
+<table class="wiki">
+<tr><th> this is a header </th><th colspan="2"> another header </th><td> not a header 
+</td></tr><tr><th> also a header </th><td> some non- </td><td> header cells </td><th> header 
+</th></tr></table>
+------------------------------
 ============================== Indented tables, multiple columns
 || a || b ||
 
