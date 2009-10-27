@@ -119,6 +119,7 @@ facilities.
         trac.wiki.web_ui = trac.wiki.web_ui
         tracopt.perm.authz_policy = tracopt.perm.authz_policy
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
+        tracopt.ticket.commit_updater = tracopt.ticket.commit_updater
     """,
 
     **extra

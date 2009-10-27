@@ -5,11 +5,11 @@
 #
 # This software is licensed as described in the file COPYING, which
 # you should have received as part of this distribution. The terms
-# are also available at http://trac.edgewall.com/license.html.
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
 #
 # This software consists of voluntary contributions made by many
 # individuals. For the exact contribution history, see the revision
-# history and logs, available at http://trac.edgewall.org/.
+# history and logs, available at http://trac.edgewall.org/log/.
 
 # This plugin was based on the contrib/trac-post-commit-hook script, which
 # had the following copyright notice:
@@ -42,9 +42,11 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
+from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
+from trac.util.compat import any
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
 from trac.versioncontrol import IRepositoryChangeListener, RepositoryManager
@@ -53,36 +55,41 @@ from trac.wiki.formatter import format_to_html
 from trac.wiki.macros import WikiMacroBase
 
 
-class CommitTicketUpdate(Component):
+class CommitTicketUpdater(Component):
     """Update tickets based on commit messages.
     
     This component hooks into changeset notifications and searches commit
     messages for text in the form of:
-        command #1
-        command #1, #2
-        command #1 & #2 
-        command #1 and #2
+    {{{
+    command #1
+    command #1, #2
+    command #1 & #2 
+    command #1 and #2
+    }}}
     
     Instead of the short-hand syntax "#1", "ticket:1" can be used as well,
     e.g.:
-        command ticket:1
-        command ticket:1, ticket:2
-        command ticket:1 & ticket:2 
-        command ticket:1 and ticket:2
+    {{{
+    command ticket:1
+    command ticket:1, ticket:2
+    command ticket:1 & ticket:2 
+    command ticket:1 and ticket:2
+    }}}
     
     In addition, the ':' character can be omitted and issue or bug can be used
     instead of ticket.
     
-    You can have more then one command in a message. The following commands
-    are supported. There is more then one spelling for each command, to make
+    You can have more than one command in a message. The following commands
+    are supported. There is more than one spelling for each command, to make
     this as user-friendly as possible.
     
-        close, closed, closes, fix, fixed, fixes
-             The specified issue numbers are closed with the contents of this
-             commit message being added to it. 
-        references, refs, addresses, re, see 
-             The specified issue numbers are left in their current status, but 
-             the contents of this commit message are added to their notes. 
+      close, closed, closes, fix, fixed, fixes::
+        The specified tickets are closed, and the commit message is added to
+        them as a comment.
+    
+      references, refs, addresses, re, see::
+        The specified tickets are left in their current status, and the commit
+        message is added to them as a comment. 
     
     A fairly complicated example of what you can do is with a commit message
     of:
@@ -268,7 +275,7 @@ class CommitTicketReferenceMacro(WikiMacroBase):
         repos = RepositoryManager(self.env).get_repository(reponame, None)
         changeset = repos.get_changeset(rev)
         if formatter.context.resource.realm == 'ticket':
-            ticket_re = CommitTicketUpdate.ticket_re
+            ticket_re = CommitTicketUpdater.ticket_re
             if not any(int(tkt_id) == formatter.context.resource.id
                        for tkt_id in ticket_re.findall(changeset.message)):
                 return tag.p("(The changeset message doesn't reference this "
