@@ -1160,7 +1160,8 @@ class TicketQueryMacro(WikiMacroBase):
     If the key is the name of a field, the value must use the syntax 
     of a filter specifier as defined in TracQuery#QueryLanguage.
     Note that this is ''not'' the same as the simplified URL syntax 
-    used for `query:` links starting with a `?` character.
+    used for `query:` links starting with a `?` character. Commas (`,`)
+    can be included in field values by escaping them with a backslash (`\`).
 
     Groups of field constraints to be OR-ed together can be separated by a
     litteral `or` argument.
