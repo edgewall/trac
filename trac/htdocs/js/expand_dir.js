@@ -94,7 +94,7 @@
         tr.siblings("tr."+this.id).not(this).hide();
       });
     } else {                                // then *fetch*
-      var td = expander.parents("td");
+      var td = expander.parents("td:first");
       var td_class = td.attr("class");
       var depth = 
         parseFloat(td.css("padding-left").replace(/^(\d*\.\d*).*$/, "$1")) + 
