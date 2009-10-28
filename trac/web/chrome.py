@@ -261,7 +261,7 @@ class Chrome(Component):
         
         (''since 0.11'')""")
 
-    auto_reload = Option('trac', 'auto_reload', False,
+    auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
