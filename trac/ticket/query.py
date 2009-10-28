@@ -131,6 +131,9 @@ class Query(object):
                 constraint_cols.setdefault(k, []).append(v)
         self.constraint_cols = constraint_cols
 
+    _clause_splitter = re.compile(r'(?<!\\)&')
+    _item_splitter = re.compile(r'(?<!\\)\|')
+    
     @classmethod
     def from_string(cls, env, string, **kw):
         kw_strs = ['order', 'group', 'page', 'max', 'format']
@@ -146,11 +149,11 @@ class Query(object):
             if isinstance(s, unicode):
                 return s.encode('utf-8')
             return s
-        for filter_ in string.split('&'):
+        for filter_ in cls._clause_splitter.split(string):
             if filter_ == 'or':
                 constraints.append({})
                 continue
-            filter_ = filter_.split('=')
+            filter_ = filter_.replace(r'\&', '&').split('=', 1)
             if len(filter_) != 2:
                 raise QuerySyntaxError(_('Query filter requires field and ' 
                                          'constraints separated by a "="'))
@@ -167,10 +170,9 @@ class Query(object):
             if not field:
                 raise QuerySyntaxError(_('Query filter requires field name'))
             field = kw_synonyms.get(field, field)
-            processed_values = []
-            for val in values.split('|'):
-                val = mode + val # add mode of comparison
-                processed_values.append(val)
+            # add mode of comparison and remove escapes
+            processed_values = [mode + val.replace(r'\|', '|')
+                                for val in cls._item_splitter.split(values)]
             if field in kw_strs:
                 kw[as_str(field)] = processed_values[0]
             elif field in kw_arys:
@@ -1203,19 +1205,21 @@ class TicketQueryMacro(WikiMacroBase):
     Also, using "&" as a field separator still works but is deprecated.
     """
 
-    def expand_macro(self, formatter, name, content):
-        req = formatter.req
-        query_string = ''
+    _comma_splitter = re.compile(r'(?<!\\),')
+    
+    @staticmethod
+    def parse_args(content):
+        """Parse macro arguments and translate them to a query string."""
         clauses = [{}]
         argv = []
         kwargs = {}
-        for arg in re.split(r'(?<!\\),', content):
+        for arg in TicketQueryMacro._comma_splitter.split(content):
             arg = arg.replace(r'\,', ',')
             m = re.match(r'\s*[^=]+=', arg)
             if m:
-                kw = arg[:m.end()-1].strip()
+                kw = arg[:m.end() - 1].strip()
                 value = arg[m.end():]
-                if kw in ('order', 'max', 'format'):
+                if kw in ('order', 'max', 'format', 'col'):
                     kwargs[kw] = value
                 else:
                     clauses[-1][kw] = value
@@ -1234,12 +1238,19 @@ class TicketQueryMacro(WikiMacroBase):
 
         format = kwargs.pop('format', 'list').strip().lower()
         if format in ('list', 'compact'): # we need 'status' and 'summary'
-            kwargs['col'] = '|'.join(['status', 'summary', 
-                                      kwargs.get('col', '')])
+            if 'col' in kwargs:
+                kwargs['col'] = 'status|summary|' + kwargs['col']
+            else:
+                kwargs['col'] = 'status|summary'
 
         query_string = '&or&'.join('&'.join('%s=%s' % item
                                             for item in clause.iteritems())
                                    for clause in clauses)
+        return query_string, kwargs, format
+    
+    def expand_macro(self, formatter, name, content):
+        req = formatter.req
+        query_string, kwargs, format = self.parse_args(content)
         if query_string:
             query_string += '&'
         query_string += '&'.join('%s=%s' % item

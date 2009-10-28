@@ -1,7 +1,7 @@
 from trac.log import logger_factory
 from trac.mimeview import Context
 from trac.test import Mock, EnvironmentStub, MockPerm
-from trac.ticket.query import Query, QueryModule
+from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
@@ -441,6 +441,32 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.assertEqual(['milestone1', 'version1'], args)
         tickets = query.execute(self.req)
 
+    def test_equal_in_value(self):
+        query = Query.from_string(self.env, r'status=this=that&version=version1',
+                                  order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.priority AS priority,t.milestone AS milestone,t.component AS component,t.status AS status,t.time AS time,t.changetime AS changetime,t.version AS version,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE ((COALESCE(t.status,'')=%s) AND (COALESCE(t.version,'')=%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual(['this=that', 'version1'], args)
+        tickets = query.execute(self.req)
+
+    def test_special_character_escape(self):
+        query = Query.from_string(self.env, r'status=here\&now|maybe\|later|back\slash',
+                                  order='id')
+        sql, args = query.get_sql()
+        self.assertEqualSQL(sql,
+"""SELECT t.id AS id,t.summary AS summary,t.status AS status,t.owner AS owner,t.type AS type,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value
+FROM ticket AS t
+  LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
+WHERE (COALESCE(t.status,'') IN (%s,%s,%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""")
+        self.assertEqual(['here&now', 'maybe|later', 'back\\slash'], args)
+        tickets = query.execute(self.req)
+
     def test_repeated_constraint_field(self):
         like_query = Query.from_string(self.env, 'owner!=someone|someone_else',
                                        order='id')
@@ -485,10 +511,48 @@ class QueryLinksTestCase(unittest.TestCase):
                          'field and constraints separated by a "="]</em>')
 
 
+class TicketQueryMacroTestCase(unittest.TestCase):
+
+    def assertQueryIs(self, content, query, kwargs, format):
+        qs, kw, f = TicketQueryMacro.parse_args(content)
+        self.assertEqual(query, qs)
+        self.assertEqual(kwargs, kw)
+        self.assertEqual(format, f)
+    
+    def test_owner_and_milestone(self):
+        self.assertQueryIs('owner=joe, milestone=milestone1',
+                           'owner=joe&milestone=milestone1',
+                           dict(col='status|summary', max='0', order='id'),
+                           'list')
+
+    def test_owner_or_milestone(self):
+        self.assertQueryIs('owner=joe, or, milestone=milestone1',
+                           'owner=joe&or&milestone=milestone1',
+                           dict(col='status|summary', max='0', order='id'),
+                           'list')
+    
+    def test_format_arguments(self):
+        self.assertQueryIs('owner=joe, milestone=milestone1, col=component|severity, max=15, order=component, format=compact',
+                           'owner=joe&milestone=milestone1',
+                           dict(col='status|summary|component|severity', max='15', order='component'),
+                           'compact')
+        self.assertQueryIs('owner=joe, milestone=milestone1, col=id|summary|component, max=30, order=component, format=table',
+                           'owner=joe&milestone=milestone1',
+                           dict(col='id|summary|component', max='30', order='component'),
+                           'table')
+
+    def test_special_char_escaping(self):
+        self.assertQueryIs(r'owner=joe|jack, milestone=this\&that\|here\,now',
+                           r'owner=joe|jack&milestone=this\&that\|here,now',
+                           dict(col='status|summary', max='0', order='id'),
+                           'list')
+        
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(QueryTestCase, 'test'))
     suite.addTest(unittest.makeSuite(QueryLinksTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(TicketQueryMacroTestCase, 'text'))
     return suite
 
 if __name__ == '__main__':
