@@ -276,11 +276,15 @@ class WikiSystem(Component):
         if version and query:
             query = '&' + query[1:]
         pagename = pagename.rstrip('/') or 'WikiStart'
-        if formatter.resource and formatter.resource.realm == 'wiki' \
-                              and not pagename.startswith('/'):
-            pagename = self._resolve_relative_name(pagename,
-                                                   formatter.resource.id)
-        pagename = pagename.lstrip('/')
+        referrer = ''
+        if formatter.resource and formatter.resource.realm == 'wiki':
+            referrer = formatter.resource.id
+        if pagename.startswith('/'):
+            pagename = pagename.lstrip('/')
+        elif pagename.startswith('.'):
+            pagename = self._resolve_relative_name(pagename, referrer)
+        else:
+            pagename = self._resolve_scoped_name(pagename, referrer)
         if 'WIKI_VIEW' in formatter.perm('wiki', pagename, version):
             href = formatter.href.wiki(pagename, version=version) + query \
                    + fragment
@@ -301,12 +305,24 @@ class WikiSystem(Component):
                          title=_("no permission to view this wiki page"))
 
     def _resolve_relative_name(self, pagename, referrer):
-        referrer_el = referrer.split('/')
-        if len(referrer_el) == 1:           # Non-hierarchical referrer
+        base = referrer.split('/')
+        components = pagename.split('/')
+        for i, comp in enumerate(components):
+            if comp == '..':
+                if base:
+                    base.pop()
+            elif comp and comp != '.':
+                base.extend(components[i:])
+                break
+        return '/'.join(base)
+    
+    def _resolve_scoped_name(self, pagename, referrer):
+        referrer = referrer.split('/')
+        if len(referrer) == 1:           # Non-hierarchical referrer
             return pagename
         # Test for pages with same name, higher in the hierarchy
-        for i in range(len(referrer_el) - 1, 0, -1):
-            name = '/'.join(referrer_el[:i]) + '/' + pagename
+        for i in range(len(referrer) - 1, 0, -1):
+            name = '/'.join(referrer[:i]) + '/' + pagename
             if self.has_page(name):
                 return name
         if self.has_page(pagename):
@@ -316,13 +332,13 @@ class WikiSystem(Component):
         # See http://trac.edgewall.org/ticket/4507#comment:12
         if '/' in pagename:
             (first, rest) = pagename.split('/', 1)
-            for (i, part) in enumerate(referrer_el):
+            for (i, part) in enumerate(referrer):
                 if first == part:
-                    anchor = '/'.join(referrer_el[:i + 1])
+                    anchor = '/'.join(referrer[:i + 1])
                     if self.has_page(anchor):
                         return anchor + '/' + rest
         # Assume the user wants a sibling of referrer
-        return '/'.join(referrer_el[:-1]) + '/' + pagename
+        return '/'.join(referrer[:-1]) + '/' + pagename
 
     # IResourceManager methods
 

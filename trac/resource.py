@@ -350,12 +350,10 @@ def get_relative_resource(resource, path=''):
     else:
         base = unicode(path[0] != '/' and resource.id or '').split('/')
         for comp in path.split('/'):
-            if comp in ('.', ''):
-                continue
-            elif comp == '..':
+            if comp == '..':
                 if base:
                     base.pop()
-            elif comp:
+            elif comp and comp != '.':
                 base.append(comp)
         return resource(id=base and '/'.join(base) or None)
 
