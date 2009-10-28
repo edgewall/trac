@@ -59,7 +59,7 @@
         tr.siblings("tr."+this.id).not(this).hide();
       });
     } else {                                // then *fetch*
-      var td = expander.parents("td");
+      var td = expander.parents("td:first");
       var td_class = td.attr("class");
       var a = expander.next("a");
       var depth = 
