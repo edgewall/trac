@@ -267,6 +267,12 @@ class Chrome(Component):
 
     auto_reload = Option('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
+    
+    genshi_cache_size = IntOption('trac', 'genshi_cache_size', 25,
+        """The maximum number of templates that the template loader will cache
+        in memory. The default value is 25. You may want to choose a higher
+        value if your site uses a larger number of templates, and you have
+        enough memory to spare.""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
         """Base URL of the core static resources.""")
@@ -714,10 +720,10 @@ class Chrome(Component):
                 else: # pre-[G1003], remove once advanced-i18n hits trunk
                     setup_i18n(template, translator)
 
-            self.templates = TemplateLoader(self.get_all_templates_dirs(),
-                                            auto_reload=self.auto_reload,
-                                            variable_lookup='lenient',
-                                            callback=_template_loaded)
+            self.templates = TemplateLoader(
+                self.get_all_templates_dirs(), auto_reload=self.auto_reload,
+                max_cache_size=self.genshi_cache_size,
+                variable_lookup='lenient', callback=_template_loaded)
         if method == 'text':
             cls = TextTemplate
         else:
