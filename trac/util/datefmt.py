@@ -105,7 +105,7 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
     
     The formatting will be done using the given `format`, which consist
     of conventional `strftime` keys. In addition the format can be 'iso8601'
-    to specify the international date format.
+    to specify the international date format (compliant with RFC 3339).
 
     `tzinfo` will default to the local timezone if left to `None`.
     """
@@ -113,23 +113,19 @@ def format_datetime(t=None, format='%x %X', tzinfo=None):
     t = to_datetime(t, tzinfo).astimezone(tz)
     normalize_Z = False
     if format.lower().startswith('iso8601'):
-        date_only = time_only = False
         if 'date' in format:
-            date_only = True
-        elif 'time' in format:
-            time_only = True
-        if date_only:
             format = '%Y-%m-%d'
-        elif time_only:
-            format = '%H:%M:%S'
+        elif 'time' in format:
+            format = '%H:%M:%S%z'
+            normalize_Z = True
         else:
-            format = '%Y-%m-%dT%H:%M:%S'
-        if not date_only:
-            format += '%z'
+            format = '%Y-%m-%dT%H:%M:%S%z'
             normalize_Z = True
     text = t.strftime(format)
     if normalize_Z:
         text = text.replace('+0000', 'Z')
+        if not text.endswith('Z'):
+            text = text[:-2] + ":" + text[-2:]
     encoding = locale.getpreferredencoding() or sys.getdefaultencoding()
     if sys.platform != 'win32' or sys.version_info[:2] > (2, 3):
         encoding = locale.getlocale(locale.LC_TIME)[1] or encoding
