@@ -265,7 +265,7 @@ class Chrome(Component):
         
         (''since 0.11'')""")
 
-    auto_reload = Option('trac', 'auto_reload', False,
+    auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
     
     genshi_cache_size = IntOption('trac', 'genshi_cache_size', 25,
