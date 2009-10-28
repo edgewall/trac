@@ -28,6 +28,8 @@ __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
 
 _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
+_use_default = object()
+
 def _to_utf8(basestr):
     return to_unicode(basestr).encode('utf-8')
 
@@ -237,6 +239,7 @@ class Configuration(object):
         changed = False
         modtime = os.path.getmtime(self.filename)
         if modtime > self._lastmtime:
+            self._sections = {}
             self.parser._sections = {}
             self.parser.read(self.filename)
             self._lastmtime = modtime
@@ -272,12 +275,13 @@ class Section(object):
     
     Objects of this class should not be instantiated directly.
     """
-    __slots__ = ['config', 'name', 'overridden']
+    __slots__ = ['config', 'name', 'overridden', '_cache']
 
     def __init__(self, config, name):
         self.config = config
         self.name = name
         self.overridden = {}
+        self._cache = {}
 
     def __contains__(self, key):
         if self.config.parser.has_option(_to_utf8(self.name), _to_utf8(key)):
@@ -311,6 +315,9 @@ class Section(object):
         
         Valid default input is a string. Returns a string.
         """
+        cached = self._cache.get(key, _use_default)
+        if cached is not _use_default:
+            return cached
         name_str = _to_utf8(self.name)
         key_str = _to_utf8(key)
         if self.config.parser.has_option(name_str, key_str):
@@ -320,15 +327,17 @@ class Section(object):
         else:
             option = Option.registry.get((self.name, key))
             if option:
-                value = option.default or default
+                value = option.default or _use_default
             else:
-                value = default
+                value = _use_default
+        if value is _use_default:
+            return default
         if not value:
-            return u''
+            value = u''
         elif isinstance(value, basestring):
-            return to_unicode(value)
-        else:
-            return value
+            value = to_unicode(value)
+        self._cache[key] = value
+        return value
 
     def getbool(self, key, default=''):
         """Return the value of the specified option as boolean.
@@ -418,6 +427,7 @@ class Section(object):
         
         These changes are not persistent unless saved with `save()`.
         """
+        self._cache.pop(key, None)
         name_str = _to_utf8(self.name)
         key_str = _to_utf8(key)
         if not self.config.parser.has_section(name_str):
