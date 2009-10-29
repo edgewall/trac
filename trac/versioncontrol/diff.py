@@ -120,7 +120,7 @@ def _group_opcodes(opcodes, n=3):
             yield group
             group = []
             i1, j1 = max(i1, i2 - n), max(j1, j2 - n)
-        group.append((tag, i1, i2, j1 ,j2))
+        group.append((tag, i1, i2, j1, j2))
 
     if group and not (len(group) == 1 and group[0][0] == 'equal'):
         if group[-1][0] == 'equal': # Fixup trailing unchanged block

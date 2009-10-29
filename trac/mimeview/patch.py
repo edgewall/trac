@@ -46,8 +46,6 @@ class PatchRenderer(Component):
 
     def render(self, context, mimetype, content, filename=None, rev=None):
         req = context.req
-        from trac.web.chrome import Chrome
-
         content = content_to_unicode(self.env, content, mimetype)
         changes = self._diff_to_hdf(content.splitlines(),
                                     Mimeview(self.env).tab_width)
@@ -200,7 +198,7 @@ class PatchRenderer(Component):
                     fromline, fromend, toline, toend = \
                             [int(x or 1) for x in r.groups()[:4]]
                     groups_title.append(r.group(5))
-                    last_type = last_change = extra = None
+                    last_type = extra = None
 
                     fromend += fromline
                     toend += toline

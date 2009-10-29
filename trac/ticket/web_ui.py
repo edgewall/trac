@@ -19,7 +19,6 @@ from datetime import datetime
 import pkg_resources
 import re
 from StringIO import StringIO
-import time
 
 from genshi.core import Markup
 from genshi.builder import tag
@@ -375,7 +374,7 @@ class TicketModule(Component):
     def _get_action_controllers(self, req, ticket, action):
         """Generator yielding the controllers handling the given `action`"""
         for controller in TicketSystem(self.env).action_controllers:
-            actions = [a for w,a in
+            actions = [a for w, a in
                        controller.get_ticket_actions(req, ticket)]
             if action in actions:
                 yield controller
@@ -673,7 +672,7 @@ class TicketModule(Component):
     def _populate(self, req, ticket, plain_fields=False):
         fields = req.args
         if not plain_fields:
-            fields = dict([(k[6:],v) for k,v in fields.items()
+            fields = dict([(k[6:], v) for k, v in fields.items()
                            if k.startswith('field_')])
         ticket.populate(fields)
         # special case for updating the Cc: field

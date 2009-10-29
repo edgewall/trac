@@ -41,7 +41,7 @@ from trac import __version__ as TRAC_VERSION
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
-from trac.perm import PermissionCache, PermissionError, PermissionSystem
+from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
                       arity, translation

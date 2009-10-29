@@ -13,7 +13,6 @@
 # history and logs, available at http://trac.edgewall.org/log/.
 
 import os
-from StringIO import StringIO
 import tempfile
 import time
 import unittest

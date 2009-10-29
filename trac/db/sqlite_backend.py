@@ -45,7 +45,7 @@ if have_pysqlite == 2:
         def _rollback_on_error(self, function, *args, **kwargs):
             try:
                 return function(self, *args, **kwargs)
-            except sqlite.DatabaseError, e:
+            except sqlite.DatabaseError:
                 self.cnx.rollback()
                 raise
         def execute(self, sql, args=None):
@@ -193,8 +193,8 @@ class SQLiteConnection(ConnectionWrapper):
 
     __slots__ = ['_active_cursors', '_eager']
 
-    poolable = have_pysqlite and sqlite.sqlite_version_info >= (3,3,8) \
-                             and sqlite.version_info >= (2,5,0)
+    poolable = have_pysqlite and sqlite.sqlite_version_info >= (3, 3, 8) \
+                             and sqlite.version_info >= (2, 5, 0)
 
     def __init__(self, path, log=None, params={}):
         assert have_pysqlite > 0

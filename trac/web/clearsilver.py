@@ -134,7 +134,7 @@ class HDFWrapper:
             import neo_util
             self.hdf = neo_util.HDF()
             self.has_clearsilver = True
-        except ImportError, e:
+        except ImportError:
             self.has_clearsilver = False
         
         self['hdf.loadpaths'] = loadpaths

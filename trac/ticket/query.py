@@ -40,7 +40,7 @@ from trac.web.href import Href
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             add_warning, INavigationContributor, Chrome
 
-from trac.wiki.api import IWikiSyntaxProvider, parse_args
+from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.macros import WikiMacroBase # TODO: should be moved in .api
 
 class QuerySyntaxError(TracError):
@@ -273,7 +273,7 @@ class Query(object):
 
         cnt = 0
         try:
-            cursor.execute(count_sql, args);
+            cursor.execute(count_sql, args)
         except:
             db.rollback()
             raise
@@ -390,7 +390,7 @@ class Query(object):
             max = None
 
         constraints = []
-        for i, clause in enumerate(self.constraints):
+        for clause in self.constraints:
             constraints.extend(clause.iteritems())
             constraints.append(("or", empty))
         del constraints[-1:]
@@ -447,8 +447,8 @@ class Query(object):
 
         # Join with ticket_custom table as necessary
         for k in [k for k in cols if k in custom_fields]:
-           sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
-                      "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
+            sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
+                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -559,7 +559,7 @@ class Query(object):
                                             '%(value)s', value=r))
                     ids = []
                     id_clauses = []
-                    for a,b in ranges.pairs:
+                    for a, b in ranges.pairs:
                         if a == b:
                             ids.append(str(a))
                         else:

@@ -20,7 +20,6 @@
 
 import re
 import os
-import urllib
 
 from StringIO import StringIO
 
@@ -151,7 +150,7 @@ class WikiProcessor(object):
         elt = getattr(tag, eltname)(**args)
         if not WikiSystem(self.env).render_unsafe_content:
             sanitized_elt = getattr(tag, eltname)
-            for (k,data,pos) in (Stream(elt) | self._sanitizer):
+            for (k, data, pos) in (Stream(elt) | self._sanitizer):
                 sanitized_elt.attrib = data[1]
                 break # only look at START (elt,attrs)
             elt = sanitized_elt
@@ -875,7 +874,8 @@ class Formatter(object):
     def reset(self, source, out=None):
         self.source = source
         class NullOut(object):
-            def write(self, data): pass
+            def write(self, data):
+                pass
         self.out = out or NullOut()
         self._open_tags = []
         self._list_stack = []
@@ -964,16 +964,20 @@ class OneLinerFormatter(Formatter):
         Formatter.__init__(self, env, context)
 
     # Override a few formatters to disable some wiki syntax in "oneliner"-mode
-    def _list_formatter(self, match, fullmatch): return match
-    def _indent_formatter(self, match, fullmatch): return match
+    def _list_formatter(self, match, fullmatch):
+        return match
+    def _indent_formatter(self, match, fullmatch):
+        return match
     def _citation_formatter(self, match, fullmatch):
         return escape(match, False)
     def _heading_formatter(self, match, fullmatch):
         return escape(match, False)
     def _definition_formatter(self, match, fullmatch):
         return escape(match, False)
-    def _table_cell_formatter(self, match, fullmatch): return match
-    def _last_table_cell_formatter(self, match, fullmatch): return match
+    def _table_cell_formatter(self, match, fullmatch):
+        return match
+    def _last_table_cell_formatter(self, match, fullmatch):
+        return match
 
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
@@ -1096,7 +1100,7 @@ class LinkFormatter(OutlineFormatter):
         OutlineFormatter.__init__(self, env, context)
 
     def _heading_formatter(self, match, fullmatch):
-         return ''
+        return ''
 
     def match(self, wikitext):
         """Return the Wiki match found at the beginning of the `wikitext`"""

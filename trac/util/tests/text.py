@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import doctest
 import unittest
 
 from trac.util.text import to_unicode, expandtabs

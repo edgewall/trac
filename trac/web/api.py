@@ -389,7 +389,6 @@ class Request(object):
             if template.endswith('.html'):
                 if env:
                     from trac.web.chrome import Chrome
-                    from trac.util import translation
                     data = Chrome(env).render_template(self, template, data,
                                                        'text/html')
                 else:

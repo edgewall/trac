@@ -272,7 +272,7 @@ class NotifyEmail(Notify):
             addrfmt = r'%s@(?:(?:%s)|%s)' % (addrfmt[:pos], addrfmt[pos+1:], 
                                               domains)
         self.shortaddr_re = re.compile(r'%s$' % addrfmt)
-        self.longaddr_re = re.compile(r'^\s*(.*)\s+<(%s)>\s*$' % addrfmt);
+        self.longaddr_re = re.compile(r'^\s*(.*)\s+<(%s)>\s*$' % addrfmt)
         self._init_pref_encoding()
         domains = self.env.config.get('notification', 'ignore_domains', '')
         self._ignore_domains = [x.strip() for x in domains.lower().split(',')]
@@ -456,7 +456,7 @@ class NotifyEmail(Notify):
         # encoding type to force a new, valid evaluation
         del msg['Content-Transfer-Encoding']
         msg.set_charset(self._charset)
-        self.add_headers(msg, headers);
-        self.add_headers(msg, mime_headers);
+        self.add_headers(msg, headers)
+        self.add_headers(msg, mime_headers)
         NotificationSystem(self.env).send_email(self.from_email, recipients,
                                                 msg.as_string())

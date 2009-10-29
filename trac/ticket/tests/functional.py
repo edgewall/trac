@@ -168,7 +168,6 @@ class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
         name = 'TestTicketHistoryDiff'
         ticketid = self._tester.create_ticket(name)
         self._tester.go_to_ticket(ticketid)
-        tc.formvalue
         tc.formvalue('propertyform', 'description', random_sentence(6))
         tc.submit('submit')
         tc.find('Description<[^>]*>\\s*modified \\(<[^>]*>diff', 's')
@@ -969,7 +968,7 @@ class RegressionTestTicket5022(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Test for regression of http://trac.edgewall.org/ticket/5022
         """
-        summary='RegressionTestTicket5022'
+        summary = 'RegressionTestTicket5022'
         ticket_id = self._tester.create_ticket(summary=summary)
         tc.go(self._tester.url + '/newticket?id=%s' % ticket_id)
         tc.notfind(summary)

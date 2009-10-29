@@ -21,7 +21,7 @@ from trac.mimeview import api
 from trac.mimeview.api import get_mimetype, IContentConverter, Mimeview, \
                               _group_lines
 from genshi import Stream, Namespace
-from genshi.core import Attrs, TEXT, START, END, START_NS, END_NS
+from genshi.core import Attrs, TEXT, START, END
 from genshi.input import HTMLParser
 
 

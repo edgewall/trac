@@ -1,6 +1,6 @@
 from trac.db.mysql_backend import MySQLConnection
 from trac.ticket.report import ReportModule
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub
 from trac.web.api import Request, RequestDone
 
 import unittest

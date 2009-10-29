@@ -1,9 +1,6 @@
 #!/usr/bin/python
 import os
-from subprocess import call
-from tempfile import mkdtemp
 from trac.tests.functional import *
-from trac.util.datefmt import format_date, utc
 
 
 class RegressionTestRev6017(FunctionalTwillTestCaseSetup):

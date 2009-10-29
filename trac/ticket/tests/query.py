@@ -1,11 +1,9 @@
-from trac.log import logger_factory
 from trac.mimeview import Context
 from trac.test import Mock, EnvironmentStub, MockPerm
 from trac.ticket.query import Query, QueryModule, TicketQueryMacro
 from trac.util.datefmt import utc
 from trac.web.href import Href
 from trac.wiki.formatter import LinkFormatter
-from trac.db.sqlite_backend import sqlite_version
 
 import unittest
 import difflib

@@ -24,7 +24,7 @@ from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               format_datetime
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _
-from trac.web.chrome import add_link, add_notice, add_script, add_warning
+from trac.web.chrome import add_notice, add_script, add_warning
 
 
 class TicketAdminPanel(Component):
@@ -156,7 +156,6 @@ class ComponentAdminPanel(TicketAdminPanel):
     # IAdminCommandProvider methods
     
     def get_admin_commands(self):
-        label = tuple(each.lower() for each in self._label)
         yield ('component list', '',
                'Show available components',
                None, self._do_list)

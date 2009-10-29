@@ -9,7 +9,8 @@ def suite():
         return DocTestSuite(clearsilver)
     except ImportError:
         import sys
-        print>>sys.stderr, "WARNING: DocTestSuite required to run these tests"
+        print >> sys.stderr, "WARNING: DocTestSuite required to run these " \
+                             "tests"
     return unittest.TestSuite()
 
 if __name__ == '__main__':

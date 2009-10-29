@@ -55,13 +55,13 @@ except NameError:
     def any(S):
         for x in S:
             if x:
-               return True
+                return True
         return False
 
     def all(S):
         for x in S:
             if not x:
-               return False
+                return False
         return True
 
 try:

@@ -16,7 +16,6 @@
 
 import pkg_resources
 import re
-import time
 
 from genshi.builder import tag, Element
 

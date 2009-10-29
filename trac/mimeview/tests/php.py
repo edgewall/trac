@@ -60,9 +60,9 @@ class PhpRendererTestCase(unittest.TestCase):
         env = EnvironmentStub(enable=[PHPRenderer])
         m = Mimeview(env)
         r = m.renderers[0]
-        if type=="string":
+        if type == "string":
             s = stuff
-        elif type=="file":
+        elif type == "file":
             s = StringIO(stuff)
         else:
             raise NotImplementedException(

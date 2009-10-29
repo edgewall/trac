@@ -20,7 +20,6 @@ from datetime import datetime
 import pkg_resources
 import re
 
-from genshi.core import Markup
 from genshi.builder import tag
 
 from trac.attachment import AttachmentModule
@@ -310,8 +309,8 @@ class WikiModule(Component):
                      'num_versions': 0})
         if version is not None:
             num_versions = 0
-            for v,t,author,comment,ipnr in page.get_history():
-                num_versions += 1;
+            for v, t, author, comment, ipnr in page.get_history():
+                num_versions += 1
                 if num_versions > 1:
                     break
             data.update({'new_version': version, 'old_version': old_version,
@@ -609,7 +608,7 @@ class WikiModule(Component):
             cursor.execute("SELECT time,name,comment,author,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
                            (to_timestamp(start), to_timestamp(stop)))
-            for ts,name,comment,author,version in cursor:
+            for ts, name, comment, author, version in cursor:
                 wiki_page = wiki_realm(id=name, version=version)
                 if 'WIKI_VIEW' not in req.perm(wiki_page):
                     continue

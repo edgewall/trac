@@ -26,14 +26,13 @@ import unicodedata
 
 from genshi.builder import tag
 
-from trac import perm, util
 from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
                        console_datetime_format, get_dir_list
 from trac.config import BoolOption, IntOption
 from trac.core import *
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
-from trac.perm import PermissionError, PermissionSystem, IPermissionPolicy
+from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import get_reporter_id, create_unique_file
@@ -261,7 +260,7 @@ class Attachment(object):
         cursor.execute("SELECT filename,description,size,time,author,ipnr "
                        "FROM attachment WHERE type=%s AND id=%s ORDER BY time",
                        (parent_realm, unicode(parent_id)))
-        for filename,description,size,time,author,ipnr in cursor:
+        for filename, description, size, time, author, ipnr in cursor:
             attachment = Attachment(env, parent_realm, parent_id)
             attachment.filename = filename
             attachment.description = description
@@ -647,7 +646,6 @@ class AttachmentModule(Component):
             'attachment': attachment, 'max_size': self.max_size}
 
     def _render_list(self, req, parent):
-        attachment = parent.child('attachment')
         data = {
             'mode': 'list',
             'attachment': None, # no specific attachment
@@ -685,7 +683,7 @@ class AttachmentModule(Component):
                     # XSS attacks
                     req.send_header('Content-Disposition', 'attachment')
                 if format == 'txt':
-                      mime_type = 'text/plain'
+                    mime_type = 'text/plain'
                 elif not mime_type:
                     mime_type = 'application/octet-stream'
                 if 'charset=' not in mime_type:
@@ -755,7 +753,7 @@ class AttachmentModule(Component):
                                           href=raw_href + params,
                                           title=_("Download")),
                                     class_="noprint"))
-            except ResourceNotFound, e:
+            except ResourceNotFound:
                 pass
             # FIXME: should be either:
             #

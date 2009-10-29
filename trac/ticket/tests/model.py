@@ -43,7 +43,7 @@ class TicketTestCase(unittest.TestCase):
     def _insert_ticket(self, summary, **kw):
         """Helper for inserting a ticket into the database"""
         ticket = Ticket(self.env)
-        for k,v in kw.items():
+        for k, v in kw.items():
             ticket[k] = v
         return ticket.insert()
 
@@ -479,8 +479,8 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.close()
 
         milestone = Milestone(self.env, 'Test')
-        t1 = datetime(2001,01,01, tzinfo=utc)
-        t2 = datetime(2002,02,02, tzinfo=utc)
+        t1 = datetime(2001, 01, 01, tzinfo=utc)
+        t2 = datetime(2002, 02, 02, tzinfo=utc)
         milestone.due = t1
         milestone.completed = t2
         milestone.description = 'Foo bar'

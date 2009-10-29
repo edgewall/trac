@@ -16,7 +16,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from urllib import quote, urlencode
 from trac.util.text import unicode_quote, unicode_urlencode
 
 

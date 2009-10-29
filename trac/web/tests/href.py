@@ -79,9 +79,12 @@ class HrefTestCase(unittest.TestCase):
     
     def test_params_subclasses(self):
         """Parameters passed using subclasses of dict, list and tuple."""
-        class MyDict(dict): pass
-        class MyList(list): pass
-        class MyTuple(tuple): pass
+        class MyDict(dict):
+            pass
+        class MyList(list):
+            pass
+        class MyTuple(tuple):
+            pass
         href = trac.web.href.Href('/base')
         self.assertEqual('/base?param=test&param=other',
                          href(param=MyList(['test', 'other'])))

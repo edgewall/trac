@@ -14,7 +14,6 @@
 """Utilities for text translation with gettext."""
 
 import re
-import sys 
 try:
     import threading
 except ImportError:

@@ -20,8 +20,6 @@
 from datetime import datetime, timedelta
 import pkg_resources
 import re
-import time
-from urlparse import urlparse
 
 from genshi.builder import tag
 

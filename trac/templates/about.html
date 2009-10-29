@@ -70,7 +70,7 @@
               </tr>
             </thead>
             <tbody>
-              <div py:for="section in config" py:strip="">
+              <py:for each="section in config">
                 <tr py:for="idx,option in enumerate(section.options)"
                     class="${option.modified and 'modified' or None}">
                   <th py:if="idx == 0" class="section"
@@ -78,7 +78,7 @@
                   <td class="name">${option.name}</td>
                   <td class="value">${option.value}</td>
                 </tr>
-              </div>
+              </py:for>
             </tbody>
           </table>
         </div>

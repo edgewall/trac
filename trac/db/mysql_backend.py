@@ -14,7 +14,7 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import os, re, sys, time, types
+import os, re, types
 
 from genshi.core import Markup
 

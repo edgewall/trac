@@ -14,7 +14,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-import re, sys, os, time
+import re, os
 
 from genshi import Markup
 

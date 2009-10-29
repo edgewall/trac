@@ -71,7 +71,8 @@ class ComponentTestCase(unittest.TestCase):
         Make sure the component manager refuses to manage classes not derived
         from `Component`.
         """
-        class NoComponent(object): pass
+        class NoComponent(object):
+            pass
         self.assertRaises(TracError, self.compmgr.__getitem__, NoComponent)
 
     def test_component_registration(self):
@@ -208,7 +209,8 @@ class ComponentTestCase(unittest.TestCase):
             tests = ExtensionPoint(ITest)
         class ComponentB(Component):
             implements(ITest)
-            def test(self): return 'x'
+            def test(self):
+                return 'x'
         tests = iter(ComponentA(self.compmgr).tests)
         self.assertEquals('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
@@ -222,10 +224,12 @@ class ComponentTestCase(unittest.TestCase):
             tests = ExtensionPoint(ITest)
         class ComponentB(Component):
             implements(ITest)
-            def test(self): return 'x'
+            def test(self):
+                return 'x'
         class ComponentC(Component):
             implements(ITest)
-            def test(self): return 'y'
+            def test(self):
+                return 'y'
         results = [test.test() for test in ComponentA(self.compmgr).tests]
         self.assertEquals(['x', 'y'], sorted(results))
 
@@ -239,7 +243,8 @@ class ComponentTestCase(unittest.TestCase):
             pass
         class ExtendingComponent(Component):
             implements(ITest)
-            def test(self): return 'x'
+            def test(self):
+                return 'x'
         tests = iter(ConcreteComponent(self.compmgr).tests)
         self.assertEquals('x', tests.next().test())
         self.assertRaises(StopIteration, tests.next)
@@ -287,7 +292,8 @@ class ComponentTestCase(unittest.TestCase):
                 self.foo, self.bar = foo, bar
         class Extender(Component):
             implements(ITest)
-            def test(self): return 'x'
+            def test(self):
+                return 'x'
         mgr = ManagerComponent('Test', 42)
         assert id(mgr) == id(mgr[ManagerComponent])
         tests = iter(mgr.tests)

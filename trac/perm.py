@@ -202,8 +202,6 @@ class DefaultPermissionStore(Component):
         # get_user_permissions() takes care of the magic 'authenticated' group.
         # The optimized loop we had before didn't.  This is very inefficient,
         # but it works.
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
         result = set()
         users = set([u[0] for u in self.env.get_known_users()])
         for user in users:

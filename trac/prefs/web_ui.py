@@ -14,7 +14,6 @@
 #
 # Author: Daniel Lundin <daniel@edgewall.com>
 
-from datetime import datetime
 import pkg_resources
 import re
 

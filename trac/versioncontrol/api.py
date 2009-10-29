@@ -27,7 +27,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ListOption, Option
 from trac.core import *
 from trac.perm import PermissionError
-from trac.resource import IResourceManager, ResourceSystem, ResourceNotFound
+from trac.resource import IResourceManager, ResourceNotFound
 from trac.util.text import printout, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter

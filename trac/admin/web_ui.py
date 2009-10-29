@@ -33,8 +33,8 @@ from trac.util.compat import partial
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
-from trac.web.chrome import add_notice, add_script, add_stylesheet, \
-                            add_warning, Chrome, INavigationContributor, \
+from trac.web.chrome import add_notice, add_stylesheet, \
+                            add_warning, INavigationContributor, \
                             ITemplateProvider
 
 try:

@@ -16,13 +16,12 @@
 # Author: Daniel Lundin <daniel@edgewall.com>
 #
 
-from trac import __version__
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
 from trac.util import md5
 from trac.util.datefmt import to_timestamp
-from trac.util.text import CRLF, wrap, to_unicode, obfuscate_email_address
+from trac.util.text import CRLF, wrap, obfuscate_email_address
 
 from genshi.template.text import TextTemplate
 
@@ -259,7 +258,7 @@ class TicketNotifyEmail(NotifyEmail):
         if notify_updater:
             cursor.execute("SELECT DISTINCT author,ticket FROM ticket_change "
                            "WHERE ticket=%s", (tktid,))
-            for author,ticket in cursor:
+            for author, ticket in cursor:
                 torecipients.append(author)
 
         # Suppress the updater from the recipients

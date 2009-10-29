@@ -16,7 +16,6 @@
 
 from datetime import datetime
 from itertools import groupby
-import imp
 import inspect
 import os
 import re
@@ -28,15 +27,12 @@ from genshi.core import Markup
 from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.datefmt import format_date, utc
-from trac.util.compat import any
 from trac.util.html import escape
 from trac.util.text import unquote, to_unicode
 from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
                                 extract_link, OutlineFormatter
-from trac.wiki.model import WikiPage
-from trac.web.chrome import add_stylesheet
 
 
 class WikiMacroBase(Component):
@@ -138,8 +134,8 @@ class TitleIndexMacro(WikiMacroBase):
         def split_in_groups(group):
             """Return list of pagename or (key, sublist) elements"""
             groups = []
-            for key, subgrp in groupby(group, lambda (k,p): k and k[0] or ''):
-                subgrp = [(k[1:],p) for k,p in subgrp]
+            for key, subgrp in groupby(group, lambda (k, p): k and k[0] or ''):
+                subgrp = [(k[1:], p) for k, p in subgrp]
                 if key and len(subgrp) >= minsize:
                     sublist = split_in_groups(sorted(subgrp))
                     if len(sublist) == 1:
@@ -399,9 +395,9 @@ class ImageMacro(WikiMacroBase):
                             val in ('top', 'middle', 'bottom')):
                         args.append(val)
                     elif key == 'margin' and 'margin-left' not in style:
-                        style['margin'] = ' %dpx' % int(val);
+                        style['margin'] = ' %dpx' % int(val)
                     elif key == 'border':
-                        style['border'] = ' %dpx solid' % int(val);
+                        style['border'] = ' %dpx solid' % int(val)
                     else:
                         m = quoted_re.search(val) # unquote "..." and '...'
                         if m:
@@ -507,7 +503,7 @@ class MacroListMacro(WikiMacroBase):
                                                  name=macro_name), e)
                     yield (macro_name, descr)
 
-        return tag.dl([(tag.dt(tag.code('[[',macro_name,']]'),
+        return tag.dl([(tag.dt(tag.code('[[', macro_name, ']]'),
                                id='%s-macro' % macro_name),
                         tag.dd(description))
                        for macro_name, description in get_macro_descr()])

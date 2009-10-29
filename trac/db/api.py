@@ -110,7 +110,7 @@ class DatabaseManager(Component):
             if backup_dir[0] != "/":
                 backup_dir = os.path.join(self.env.path, backup_dir)
             db_str = self.config.get('trac', 'database')
-            db_name, db_path = db_str.split(":",1)
+            db_name, db_path = db_str.split(":", 1)
             dest_name = '%s.%i.%d.bak' % (db_name, self.env.get_version(),
                                           int(time.time()))
             dest = os.path.join(backup_dir, dest_name)

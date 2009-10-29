@@ -4,15 +4,11 @@ import os
 import shutil
 import tempfile
 import unittest
-import time
 
-from trac.attachment import Attachment, AttachmentModule, \
-                            LegacyAttachmentPolicy
+from trac.attachment import Attachment
 from trac.core import Component, implements
-from trac.log import logger_factory
 from trac.perm import IPermissionPolicy, PermissionCache
-from trac.test import EnvironmentStub, Mock
-from trac.wiki.formatter import Formatter
+from trac.test import EnvironmentStub
 
 
 class TicketOnlyViewsTicket(Component):

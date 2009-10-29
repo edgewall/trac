@@ -33,7 +33,7 @@ def repository_setup(tc):
     setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
 
 
-CHANGESET_TEST_CASES=u"""
+CHANGESET_TEST_CASES = u"""
 ============================== changeset: link resolver
 changeset:1
 changeset:12
@@ -128,7 +128,7 @@ T:r2081
 """ #"
 
 
-LOG_TEST_CASES=u"""
+LOG_TEST_CASES = u"""
 ============================== Log range TracLinks
 [1:2], r1:2, [12:23], r12:23
 [1:2/trunk]
@@ -220,7 +220,7 @@ rfc:4180 should not be a log link
 """
 
 
-DIFF_TEST_CASES="""
+DIFF_TEST_CASES = """
 ============================== diff: link resolver
 diff:trunk//branch
 diff:trunk@12//branch@23
@@ -251,7 +251,7 @@ diff://
 """
 
 
-SOURCE_TEST_CASES="""
+SOURCE_TEST_CASES = """
 ============================== source: link resolver
 source:/foo/bar
 source:/foo/bar#42   # no long works as rev spec

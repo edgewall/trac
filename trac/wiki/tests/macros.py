@@ -1,9 +1,8 @@
 import unittest
 
-import trac.wiki.macros
 from trac.wiki.tests import formatter
 
-IMAGE_MACRO_TEST_CASES=u"""
+IMAGE_MACRO_TEST_CASES = u"""
 ============================== source: Image, no other arguments
 [[Image(source:test.png)]]
 ------------------------------
