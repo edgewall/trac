@@ -254,7 +254,7 @@ class ReportModule(Component):
 
         try:
             args = self.get_var_args(req)
-        except ValueError,e:
+        except ValueError, e:
             raise TracError(_('Report failed: %(error)s', error=e))
 
         # If this is a saved custom query. redirect to the query module
