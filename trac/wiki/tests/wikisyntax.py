@@ -316,6 +316,31 @@ RELATIVE_LINKS_TESTS=u"""
 <a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
 </p>
 ------------------------------
+============================== Relative to the current page, in wiki realm
+[wiki:. this page]
+[wiki:./Detail see detail]
+[wiki:.. see parent]
+[wiki:../Other see other]
+[wiki:.././../Other]
+["."]
+["./Detail"]
+[".."]
+["../Other"]
+[".././../Other"]
+------------------------------
+<p>
+<a class="wiki" href="/wiki/Main/Sub">this page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent?</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">.././../Other?</a>
+<a class="wiki" href="/wiki/Main/Sub">.</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">..?</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">../Other?</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">.././../Other?</a>
+</p>
+------------------------------
 ============================== Relative to the current page with anchors
 [#topic see topic]
 [.#topic see topic]
