@@ -552,7 +552,7 @@ class RepositoryManager(Component):
                 if repos is not None:
                     repositories.add(repos)
             except TracError:
-                "Skip invalid repositories"
+                pass # Skip invalid repositories
         return repositories
 
     def reload_repositories(self):
@@ -634,8 +634,8 @@ class RepositoryManager(Component):
                 for type_, prio in connector.get_supported_types():
                     keep = (connector, prio)
                     if type_ in self._connectors and \
-                        prio <= self._connectors[type_][1]:
-                            keep = None
+                            prio <= self._connectors[type_][1]:
+                        keep = None
                     if keep:
                         self._connectors[type_] = keep
         if rtype in self._connectors:

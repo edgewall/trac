@@ -13,11 +13,11 @@
 
 import sys
 
-from trac.admin import IAdminCommandProvider, IAdminPanelProvider, get_dir_list
+from trac.admin import IAdminCommandProvider, IAdminPanelProvider
 from trac.config import _TRUE_VALUES
 from trac.core import *
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
-                           printerr, printout
+                           printout
 from trac.util.translation import _, ngettext
 from trac.versioncontrol import DbRepositoryProvider, RepositoryManager
 from trac.web.chrome import add_notice, add_warning

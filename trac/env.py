@@ -311,7 +311,7 @@ class Environment(Component, ComponentManager):
             try:
                 yield (reponame, rm.get_repository(reponame, authname))
             except TracError:
-                "only yield valid repositories"
+                pass # only yield valid repositories
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize
