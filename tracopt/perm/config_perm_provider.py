@@ -46,8 +46,9 @@ class ExtraPermissionsProvider(Component):
         permissions = {}
         for meta, perms in self.config.options('extra-permissions'):
             perms = [each.strip().upper() for each in perms.split(',')]
-            permissions.update((each, None) for each in perms)
+            for perm in perms:
+                permissions.setdefault(perm, [])
             meta = meta.strip().upper()
             if meta and not meta.startswith('_'):
-                permissions[meta] = perms
+                permissions.setdefault(meta, []).extend(perms)
         return [v and (k, v) or k for k, v in permissions.iteritems()]
