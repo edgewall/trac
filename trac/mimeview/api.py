@@ -697,7 +697,7 @@ class Mimeview(Component):
             qr = renderer.get_quality_ratio(mimetype)
             if qr > 0:
                 candidates.append((qr, renderer))
-        candidates.sort(lambda x,y: cmp(y[0], x[0]))
+        candidates.sort(lambda x, y: cmp(y[0], x[0]))
 
         # First candidate which renders successfully wins.
         # Also, we don't want to expand tabs more than once.

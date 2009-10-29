@@ -1,5 +1,3 @@
-from trac.versioncontrol import svn_authz
-
 import unittest
 import sys
 
@@ -215,7 +213,8 @@ def suite():
         from doctest import DocTestSuite
         return DocTestSuite(sys.modules[__name__])
     except ImportError:
-        print>>sys.stderr, "WARNING: DocTestSuite required to run these tests"
+        print >> sys.stderr, "WARNING: DocTestSuite required to run these " \
+                             "tests"
     return unittest.TestSuite()
 
 if __name__ == '__main__':

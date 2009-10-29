@@ -32,7 +32,7 @@ from trac.ticket.api import TicketSystem
 from trac.util import as_int
 from trac.util.datefmt import format_datetime, format_time
 from trac.util.presentation import Paginator
-from trac.util.text import to_unicode, unicode_urlencode
+from trac.util.text import to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
@@ -109,7 +109,7 @@ class ReportModule(Component):
         else:
             template, data, content_type = self._render_view(req, db, id)
             if content_type: # i.e. alternate format
-               return template, data, content_type
+                return template, data, content_type
 
         if id != -1 or action == 'new':
             add_ctxtnav(req, _('Available Reports'), href=req.href.report())
@@ -303,7 +303,6 @@ class ReportModule(Component):
         max = req.args.get('max')
         limit = as_int(max, default_max, min=0) # explict max takes precedence
         offset = (page - 1) * limit
-        user = req.args.get('USER', None)
 
         data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
@@ -604,7 +603,7 @@ class ReportModule(Component):
                 order = ', '.join(order_cols)
                 order_by = " ".join([' ORDER BY', order, asc_str])
             sql = " ".join(['SELECT * FROM (', sql, ') AS tab', order_by])
-            sql =" ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
+            sql = " ".join([sql, 'LIMIT', str(limit), 'OFFSET', str(offset)])
             self.log.debug("Query SQL: " + sql)
         cursor.execute(sql, args)
         # FIXME: fetchall should probably not be used.

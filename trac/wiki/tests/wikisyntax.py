@@ -7,7 +7,7 @@ from trac.util.datefmt import utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
-TEST_CASES=u"""
+TEST_CASES = u"""
 ============================== wiki: link resolver
 wiki:TestPage
 wiki:TestPage/
@@ -276,7 +276,7 @@ NoLink:ignored
 """ #" Emacs likes it that way better
 
 
-RELATIVE_LINKS_TESTS=u"""
+RELATIVE_LINKS_TESTS = u"""
 ============================== Relative to the project url
 [//docs Documentation]
 [// Home]
@@ -364,7 +364,7 @@ RELATIVE_LINKS_TESTS=u"""
 ------------------------------
 """ # "
 
-SCOPED_LINKS_TESTS=u"""
+SCOPED_LINKS_TESTS = u"""
 ============================== Scoped links for hierarchical pages
 ThirdLevel
 [wiki:ThirdLevel]

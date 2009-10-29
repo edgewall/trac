@@ -16,9 +16,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-import urllib
 import re
-from StringIO import StringIO
 
 from genshi.builder import tag
 
@@ -26,7 +24,6 @@ from trac.cache import cached
 from trac.config import BoolOption
 from trac.core import *
 from trac.resource import IResourceManager
-from trac.util.html import html
 from trac.util.translation import _
 from trac.wiki.parser import WikiParser
 
@@ -221,7 +218,6 @@ class WikiSystem(Component):
         return page
 
     def get_wiki_syntax(self):
-        from trac.wiki.formatter import Formatter
         lower = r'(?<![A-Z0-9_])' # No Upper case when looking behind
         upper = r'(?<![a-z0-9_])' # No Lower case when looking behind
         wiki_page_name = (

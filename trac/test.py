@@ -20,7 +20,6 @@
 import os
 import unittest
 import sys
-import pkg_resources
 
 try:
     from babel import Locale
@@ -28,7 +27,7 @@ except ImportError:
     Locale = None
 
 from trac.config import Configuration
-from trac.core import Component, ComponentManager, ExtensionPoint
+from trac.core import Component, ComponentManager
 from trac.env import Environment
 from trac.db.api import _parse_db_str, DatabaseManager
 from trac.db.sqlite_backend import SQLiteConnection
@@ -90,7 +89,7 @@ def Mock(bases=(), *initargs, **kw):
         bases = (bases,)
     cls = type('Mock', bases, {})
     mock = cls(*initargs)
-    for k,v in kw.items():
+    for k, v in kw.items():
         setattr(mock, k, v)
     return mock
 
@@ -363,7 +362,7 @@ class EnvironmentStub(Environment):
                 for t in tables:
                     cursor.execute('DROP TABLE IF EXISTS `%s`' % t)
             db.commit()
-        except Exception, e:
+        except Exception:
             db.rollback()
 
     def get_known_users(self, cnx=None):
@@ -375,7 +374,6 @@ def locate(fn):
 
     Returns the fully-qualified path, or None.
     """
-    import os
     exec_suffix = os.name == 'nt' and '.exe' or ''
     
     for p in ["."] + os.environ['PATH'].split(os.pathsep):
@@ -416,7 +414,7 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    import doctest, sys
+    import doctest
     doctest.testmod(sys.modules[__name__])
 
     # Clean up after doctest or spambayes gets unhappy

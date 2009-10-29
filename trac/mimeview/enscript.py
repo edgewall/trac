@@ -21,7 +21,7 @@ from trac.config import Option, ListOption
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.util import NaivePopen
-from trac.util.html import escape, Deuglifier
+from trac.util.html import Deuglifier
 
 __all__ = ['EnscriptRenderer']
 

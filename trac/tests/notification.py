@@ -110,8 +110,8 @@ class SMTPServerEngine:
     ST_QUIT = 5
     
     def __init__(self, socket, impl):
-        self.impl = impl;
-        self.socket = socket;
+        self.impl = impl
+        self.socket = socket
         self.state = SMTPServerEngine.ST_INIT
 
     def chug(self):
@@ -130,7 +130,7 @@ class SMTPServerEngine:
             # this out.
             while not completeLine:
                 try:
-                    lump = self.socket.recv(1024);
+                    lump = self.socket.recv(1024)
                     if len(lump):
                         data += lump
                         if (len(data) >= 2) and data[-2:] == '\r\n':
@@ -319,7 +319,7 @@ class SMTPThreadedServer(threading.Thread):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             s.connect(('127.0.0.1', self.port))
-            r = s.send("QUIT\r\n");
+            r = s.send("QUIT\r\n")
         except socket.error:
             pass
         s.close()
@@ -415,7 +415,7 @@ def parse_smtp_message(msg):
                         headers[lh][-1] = headers[lh][-1] + val
                 else:
                     # splits header name from value
-                    (h,v) = line.split(':',1)
+                    (h, v) = line.split(':', 1)
                     val = decode_header(v.strip())
                     if headers.has_key(h):
                         if isinstance(headers[h], tuple):

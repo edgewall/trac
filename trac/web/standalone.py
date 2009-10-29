@@ -95,7 +95,7 @@ class TracEnvironMiddleware(object):
             self.environ['trac.env_paths'] = env_paths
 
     def __call__(self, environ, start_response):
-        for k,v in self.environ.iteritems():
+        for k, v in self.environ.iteritems():
             environ.setdefault(k, v)
         return self.application(environ, start_response)
 
@@ -135,8 +135,8 @@ def main():
 
         env_name, filename, realm = info
         if env_name in auths:
-            print >>sys.stderr, 'Ignoring duplicate authentication option for ' \
-                                'project: %s' % env_name
+            print >> sys.stderr, 'Ignoring duplicate authentication option ' \
+                                 'for project: %s' % env_name
         else:
             auths[env_name] = cls(os.path.abspath(filename), realm)
 
@@ -283,8 +283,8 @@ def main():
 
         if options.autoreload:
             def modification_callback(file):
-                print>>sys.stderr, 'Detected modification of %s, restarting.' \
-                                   % file
+                print >> sys.stderr, 'Detected modification of %s, ' \
+                                     'restarting.' % file
             autoreload.main(serve, modification_callback)
         else:
             serve()

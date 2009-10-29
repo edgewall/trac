@@ -1,6 +1,5 @@
 #!/usr/bin/python
 from trac.tests.functional import *
-from trac.util.datefmt import format_date, utc
 
 
 class TestEmptySvnRepo(FunctionalTwillTestCaseSetup):

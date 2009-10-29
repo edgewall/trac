@@ -1,6 +1,4 @@
 import os
-import inspect
-import StringIO
 import unittest
 import difflib
 from datetime import datetime

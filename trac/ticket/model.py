@@ -18,7 +18,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 
 import re
-import time
 from datetime import date, datetime
 
 from trac.attachment import Attachment

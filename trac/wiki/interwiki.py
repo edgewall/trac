@@ -20,7 +20,6 @@ from genshi.builder import tag
 
 from trac.cache import cached_value
 from trac.core import *
-from trac.wiki.formatter import Formatter
 from trac.wiki.parser import WikiParser
 from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
 

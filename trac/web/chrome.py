@@ -21,9 +21,9 @@ import pkg_resources
 import pprint
 import re
 try: 
-    from cStringIO import StringIO as cStringIO 
+    from cStringIO import StringIO
 except ImportError: 
-    cStringIO = StringIO 
+    from StringIO import StringIO
 
 from genshi import Markup
 from genshi.builder import tag, Element
@@ -43,11 +43,10 @@ try:
 except ImportError:
     def setup_i18n(template, translator):
         # another compatibility hack for Genshi trunk, we need a FunctionType
-        def gettext(*args,**kwargs):
+        def gettext(*args, **kwargs):
             return translation.gettext(*args, **kwargs)
         template.filters.insert(0, Translator(gettext))
 
-from genshi.input import HTML, ParseError
 from genshi.core import Attrs, START
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
@@ -59,7 +58,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      get_module_path, translation
+                      translation
 from trac.util.compat import any, partial
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -769,7 +768,7 @@ class Chrome(Component):
             return stream
 
         if method == 'text':
-            buffer = cStringIO()
+            buffer = StringIO()
             stream.render('text', out=buffer)
             return buffer.getvalue()
 
@@ -790,7 +789,7 @@ class Chrome(Component):
         })
 
         try:
-            buffer = cStringIO()
+            buffer = StringIO()
             stream.render(method, doctype=doctype, out=buffer)
             return buffer.getvalue().translate(_translate_nop,
                                                _invalid_control_chars)
@@ -858,7 +857,7 @@ class Chrome(Component):
     def _strip_accesskeys(self, stream, ctxt=None):
         for kind, data, pos in stream:
             if kind is START and 'accesskey' in data[1]:
-                data = data[0], Attrs([(k,v) for k,v in data[1]
+                data = data[0], Attrs([(k, v) for k, v in data[1]
                                        if k != 'accesskey'])
             yield kind, data, pos
 

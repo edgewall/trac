@@ -160,7 +160,7 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
 
         for name, value in [header.split(':', 1) for header
                             in self.headers.headers]:
-            name = name.replace('-', '_').upper();
+            name = name.replace('-', '_').upper()
             value = value.strip()
             if name in environ:
                 # skip content length, type, etc.

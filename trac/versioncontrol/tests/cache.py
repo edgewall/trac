@@ -22,7 +22,6 @@ from trac.util.datefmt import to_timestamp, utc
 from trac.versioncontrol import Repository, Changeset, Node, NoSuchChangeset
 from trac.versioncontrol.cache import CachedRepository
 
-import time
 import unittest
 
 
@@ -36,7 +35,6 @@ class CacheTestCase(unittest.TestCase):
                        ('youngest_rev', ''))
 
     def test_initial_sync_with_empty_repos(self):
-        t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         def no_changeset(rev):
             raise NoSuchChangeset(rev)
             

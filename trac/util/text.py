@@ -258,8 +258,10 @@ def pretty_size(size, format='%.1f'):
     return (format + ' %s') % (size, units[i - 1])
 
 def expandtabs(s, tabstop=8, ignoring=None):
-    if '\t' not in s: return s
-    if ignoring is None: return s.expandtabs(tabstop)
+    if '\t' not in s:
+        return s
+    if ignoring is None:
+        return s.expandtabs(tabstop)
 
     outlines = []
     for line in s.split('\n'):
@@ -270,9 +272,9 @@ def expandtabs(s, tabstop=8, ignoring=None):
         s = []
         for c in line:
             if c == '\t':
-                n = tabstop-p%tabstop
-                s.append(' '*n)
-                p+=n
+                n = tabstop - p % tabstop
+                s.append(' ' * n)
+                p += n
             elif not ignoring or c not in ignoring:
                 p += 1
                 s.append(c)

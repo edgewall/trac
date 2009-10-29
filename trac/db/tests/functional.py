@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import os
-from trac.core import TracError
 from trac.tests.functional import *
 
 

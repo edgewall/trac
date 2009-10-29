@@ -1,5 +1,4 @@
 from trac import db_default
-from trac.db import sqlite_backend
 from trac.env import Environment
 
 import os.path
@@ -36,7 +35,7 @@ class EnvironmentTestCase(unittest.TestCase):
                             ('joe', 1, 'email', 'joe@example.com'),
                             ('jane', 1, 'name', 'Jane')])
         users = {}
-        for username,name,email in self.env.get_known_users(self.db):
+        for username, name, email in self.env.get_known_users(self.db):
             users[username] = (name, email)
 
         assert not users.has_key('anonymous')

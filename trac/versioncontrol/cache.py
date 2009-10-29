@@ -201,7 +201,7 @@ class CachedRepository(Repository):
                     # 1.2. now *only* one process was able to get there
                     #      (i.e. there *shouldn't* be any race condition here)
 
-                    for path,kind,action,bpath,brev in cset.get_changes():
+                    for path, kind, action, bpath, brev in cset.get_changes():
                         self.log.debug("Caching node change in [%s]: %s"
                                        % (next_youngest,
                                           (path,kind,action,bpath,brev)))

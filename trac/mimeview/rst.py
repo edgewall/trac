@@ -25,7 +25,6 @@
 __docformat__ = 'reStructuredText'
 
 from distutils.version import StrictVersion
-import re
 try:
     from docutils import nodes
     from docutils.core import publish_parts
@@ -38,8 +37,6 @@ except ImportError:
 from trac.core import *
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Markup
-from trac.util.translation import _
-from trac.web.href import Href
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import WikiProcessor, Formatter, extract_link
 
@@ -85,7 +82,7 @@ class ReStructuredTextRenderer(Component):
                 missing = not WikiSystem(self.env).has_page(target)
             if uri:                    
                 reference = nodes.reference(rawtext, text or target)
-                reference['refuri']= uri
+                reference['refuri'] = uri
                 if missing:
                     reference['classes'].append('missing')
                 return reference
@@ -131,9 +128,9 @@ class ReStructuredTextRenderer(Component):
 
         def trac_role(name, rawtext, text, lineno, inliner, options={},
                       content=[]):
-            args  = text.split(" ",1)
+            args  = text.split(" ", 1)
             link = args[0]
-            if len(args)==2:
+            if len(args) == 2:
                 text = args[1]
             else:
                 text = None
@@ -145,7 +142,7 @@ class ReStructuredTextRenderer(Component):
             return warning, []
 
         # 1 required arg, 1 optional arg, spaces allowed in last arg
-        trac.arguments = (1,1,1)
+        trac.arguments = (1, 1, 1)
         trac.options = None
         trac.content = None
         rst.directives.register_directive('trac', trac)

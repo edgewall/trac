@@ -16,7 +16,6 @@
 # (lsmithson@open-networks.co.uk) extensible Python SMTP Server
 #
 
-from trac.core import TracError
 from trac.util.datefmt import utc
 from trac.ticket.model import Ticket
 from trac.ticket.notification import TicketNotifyEmail
@@ -29,7 +28,6 @@ from datetime import datetime
 import os
 import quopri
 import re
-import time
 import unittest
 
 SMTP_TEST_PORT = 7000 + os.getpid() % 1000
@@ -42,7 +40,7 @@ class NotificationTestCase(unittest.TestCase):
     
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
-        self.env.config.set('project','name', 'TracTest')
+        self.env.config.set('project', 'name', 'TracTest')
         self.env.config.set('notification', 'smtp_enabled', 'true')
         self.env.config.set('notification', 'always_notify_owner', 'true')
         self.env.config.set('notification', 'always_notify_reporter', 'true')
@@ -149,10 +147,11 @@ class NotificationTestCase(unittest.TestCase):
                    r"((?P<tz>\w{2,3})|(?P<offset>[+\-]\d{4}))$"
         date_re = re.compile(date_str)
         # python time module does not detect incorrect time values
-        days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
-        months = ['Jan','Feb','Mar','Apr','May','Jun', \
-                  'Jul','Aug','Sep','Oct','Nov','Dec']
-        tz = ['UT','GMT','EST','EDT','CST','CDT','MST','MDT''PST','PDT']
+        days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', \
+                  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        tz = ['UT', 'GMT', 'EST', 'EDT', 'CST', 'CDT', 'MST', 'MDT',
+              'PST', 'PDT']
         ticket = Ticket(self.env)
         ticket['reporter'] = '"Joe User" <joe.user@example.org>'
         ticket['summary'] = 'This is a summary'
@@ -166,9 +165,9 @@ class NotificationTestCase(unittest.TestCase):
         self.failIf(not mo)
         if mo.group('day'):
             self.failIf(mo.group('day') not in days)
-        self.failIf(int(mo.group('dm')) not in range(1,32))
+        self.failIf(int(mo.group('dm')) not in range(1, 32))
         self.failIf(mo.group('month') not in months)
-        self.failIf(int(mo.group('hour')) not in range(0,24))
+        self.failIf(int(mo.group('hour')) not in range(0, 24))
         if mo.group('tz'):
             self.failIf(mo.group('tz') not in tz)
 
@@ -375,7 +374,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_multiline_header(self):
         """Encoded headers split into multiple lines"""
-        self.env.config.set('notification','mime_encoding', 'qp')
+        self.env.config.set('notification', 'mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
         # Forces non-ascii characters
@@ -392,7 +391,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_mimebody_b64(self):
         """MIME Base64/utf-8 encoding"""
-        self.env.config.set('notification','mime_encoding', 'base64')
+        self.env.config.set('notification', 'mime_encoding', 'base64')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
         ticket['summary'] = u'This is a long enough summary to cause Trac ' \
@@ -403,7 +402,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_mimebody_qp(self):
         """MIME QP/utf-8 encoding"""
-        self.env.config.set('notification','mime_encoding', 'qp')
+        self.env.config.set('notification', 'mime_encoding', 'qp')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user@example.org'
         ticket['summary'] = u'This is a long enough summary to cause Trac ' \
@@ -414,7 +413,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_mimebody_none_7bit(self):
         """MIME None encoding resulting in 7bit"""
-        self.env.config.set('notification','mime_encoding', 'none')
+        self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user'
         ticket['summary'] = u'This is a summary'
@@ -424,7 +423,7 @@ class NotificationTestCase(unittest.TestCase):
 
     def test_mimebody_none_8bit(self):
         """MIME None encoding resulting in 8bit"""
-        self.env.config.set('notification','mime_encoding', 'none')
+        self.env.config.set('notification', 'mime_encoding', 'none')
         ticket = Ticket(self.env)
         ticket['reporter'] = 'joe.user'
         ticket['summary'] = u'This is a summary for Jöe Usèr'
@@ -450,7 +449,7 @@ class NotificationTestCase(unittest.TestCase):
         """No-self-notification option"""
         def _test_updater(disable):
             if disable:
-                self.env.config.set('notification','always_notify_updater',
+                self.env.config.set('notification', 'always_notify_updater',
                                     'false')
             ticket = Ticket(self.env)
             ticket['reporter'] = 'joe.user@example.org'

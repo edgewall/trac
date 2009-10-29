@@ -101,7 +101,7 @@ if twill:
                 return
             etree.clear_error_log()
             try:
-                doc = etree.parse(StringIO(page), base_url=b.get_url())
+                etree.parse(StringIO(page), base_url=b.get_url())
             except etree.XMLSyntaxError, e:
                 raise twill.errors.TwillAssertionError(
                     _format_error_log(page, e.error_log))

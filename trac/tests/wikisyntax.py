@@ -4,10 +4,9 @@ import tempfile
 import unittest
 
 from trac.attachment import Attachment
-from trac.search.web_ui import SearchModule
 from trac.wiki.tests import formatter
 
-SEARCH_TEST_CASES="""
+SEARCH_TEST_CASES = """
 ============================== search: link resolver
 search:foo
 search:"foo bar"
@@ -36,7 +35,7 @@ search:"?q=foo bar&wiki=on"
 ------------------------------
 """
 
-ATTACHMENT_TEST_CASES="""
+ATTACHMENT_TEST_CASES = """
 ============================== attachment: link resolver (deprecated)
 attachment:wiki:WikiStart:file.txt (deprecated)
 attachment:ticket:123:file.txt (deprecated)

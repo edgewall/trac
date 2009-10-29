@@ -17,7 +17,6 @@
 #         Christian Boos <cboos@neuf.fr>
 
 import re
-import urllib
 
 from genshi.core import Markup
 from genshi.builder import tag
@@ -28,7 +27,6 @@ from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.util import Ranges
 from trac.util.compat import any
-from trac.util.datefmt import http_date
 from trac.util.html import html
 from trac.util.text import wrap
 from trac.util.translation import _
@@ -112,7 +110,7 @@ class LogModule(Component):
                 expected_next_item = None
                 ranges = list(revranges.pairs)
                 ranges.reverse()
-                for (a,b) in ranges:
+                for (a, b) in ranges:
                     while b >= a:
                         rev = repos.normalize_rev(b)
                         node = get_existing_node(req, repos, prevpath, rev)
@@ -218,7 +216,7 @@ class LogModule(Component):
         if format == 'rss':
             # Get the email addresses of all known users
             if Chrome(self.env).show_email_addresses:
-                for username,name,email in self.env.get_known_users():
+                for username, name, email in self.env.get_known_users():
                     if email:
                         email_map[username] = email
         elif format == 'changelog':

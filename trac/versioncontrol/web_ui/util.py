@@ -16,12 +16,8 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christian Boos <cboos@neuf.fr>
 
-import re
-import urllib
-
 from genshi.builder import tag
 
-from trac.core import TracError
 from trac.resource import ResourceNotFound 
 from trac.util.datefmt import pretty_timedelta
 from trac.util.text import shorten_line

@@ -2,10 +2,7 @@ from Cookie import SimpleCookie as Cookie
 import time
 import unittest
 
-from trac.core import TracError
-from trac.log import logger_factory
 from trac.test import EnvironmentStub, Mock
-from trac.web.href import Href
 from trac.web.session import DetachedSession, Session, PURGE_AGE, UPDATE_INTERVAL
 
 

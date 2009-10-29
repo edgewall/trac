@@ -78,7 +78,7 @@ def daemonize(pidfile=None, progname=None, stdin='/dev/null',
         # process exits
         def remove_pidfile():
             if os.path.exists(pidfile):
-                   os.remove(pidfile)
+                os.remove(pidfile)
         atexit.register(remove_pidfile)
         fileobj = open(pidfile, 'w')
         try:

@@ -20,6 +20,7 @@
 import errno
 import locale
 import os.path
+import random
 import re
 import shutil
 import sys
@@ -120,8 +121,6 @@ if os.name == 'nt':
                                             | MOVEFILE_WRITE_THROUGH):
                     raise ctypes.WinError()
     except Exception:
-        import random
-        
         def rename(src, dst):
             try:
                 os.rename(src, dst)
@@ -466,7 +465,6 @@ def get_pkginfo(dist):
 # -- crypto utils
 
 def hex_entropy(bytes=32):
-    import random
     return sha1(str(random.random())).hexdigest()[:bytes]
 
 
@@ -529,11 +527,13 @@ def md5crypt(password, salt, magic='$1$'):
     for a, b, c in ((0, 6, 12), (1, 7, 13), (2, 8, 14), (3, 9, 15), (4, 10, 5)):
         v = ord(final[a]) << 16 | ord(final[b]) << 8 | ord(final[c])
         for i in range(4):
-            rearranged += itoa64[v & 0x3f]; v >>= 6
+            rearranged += itoa64[v & 0x3f]
+            v >>= 6
 
     v = ord(final[11])
     for i in range(2):
-        rearranged += itoa64[v & 0x3f]; v >>= 6
+        rearranged += itoa64[v & 0x3f]
+        v >>= 6
 
     return magic + salt + '$' + rearranged
 

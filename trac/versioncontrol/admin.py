@@ -52,7 +52,7 @@ class VersionControlAdmin(Component):
         cursor.executemany("INSERT INTO system (name, value) VALUES (%s, %s)",
                            [(k, '') for k in CACHE_METADATA_KEYS])
         db.commit()
-        repos = self.env.get_repository().sync(self._resync_feedback)
+        self.env.get_repository().sync(self._resync_feedback)
         cursor.execute("SELECT count(rev) FROM revision")
         for cnt, in cursor:
             printout(ngettext('%(num)s revision cached.',

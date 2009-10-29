@@ -4,11 +4,9 @@ import unittest
 
 from trac.ticket.model import Ticket
 from trac.ticket.roadmap import Milestone
-from trac.ticket.query import QueryModule
-from trac.ticket.report import ReportModule
 from trac.wiki.tests import formatter
 
-TICKET_TEST_CASES=u"""
+TICKET_TEST_CASES = u"""
 ============================== ticket: link resolver
 ticket:1
 ticket:12
@@ -91,7 +89,7 @@ def ticket_teardown(tc):
 
 
 
-REPORT_TEST_CASES=u"""
+REPORT_TEST_CASES = u"""
 ============================== report link shorthand form
 {1}, {2}
 {12}, {abc}
@@ -139,7 +137,7 @@ def report_setup(tc):
     # TBD
 
 
-MILESTONE_TEST_CASES="""
+MILESTONE_TEST_CASES = """
 ============================== milestone: link resolver
 milestone:foo
 [milestone:boo Milestone Boo]
@@ -180,7 +178,7 @@ def milestone_teardown(tc):
 
 
 
-QUERY_TEST_CASES=u"""
+QUERY_TEST_CASES = u"""
 ============================== query: link resolver
 query:?order=priority
 
@@ -262,7 +260,7 @@ New tickets: <span><a class="new" href="/ticket/1" title="This is the summary">#
 ------------------------------
 """
 
-QUERY2_TEST_CASES=u"""
+QUERY2_TEST_CASES = u"""
 ============================== TicketQuery macro: two results, list form
 New tickets: [[TicketQuery(status=new, order=reporter)]]
 ------------------------------
@@ -302,7 +300,7 @@ def query2_teardown(tc):
     tc.env.reset_db()
 
 
-COMMENT_TEST_CASES="""
+COMMENT_TEST_CASES = """
 ============================== comment: link resolver (deprecated)
 comment:ticket:123:2 (deprecated)
 [comment:ticket:123:2 see above] (deprecated)

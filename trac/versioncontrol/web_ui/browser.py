@@ -18,17 +18,15 @@
 from datetime import datetime, timedelta
 from fnmatch import fnmatchcase
 import re
-import os
-import urllib
 
 from genshi.builder import tag
 
 from trac.config import ListOption, BoolOption, Option
 from trac.core import *
-from trac.mimeview.api import Mimeview, is_binary, get_mimetype, \
+from trac.mimeview.api import Mimeview, is_binary, \
                               IHTMLPreviewAnnotator, Context
 from trac.perm import IPermissionRequestor
-from trac.resource import ResourceNotFound, Resource
+from trac.resource import ResourceNotFound
 from trac.util import embedded_numbers
 from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
@@ -39,7 +37,7 @@ from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html, format_to_oneliner
-from trac.versioncontrol.api import NoSuchChangeset, NoSuchNode
+from trac.versioncontrol.api import NoSuchChangeset
 from trac.versioncontrol.web_ui.util import *
 
 
@@ -196,7 +194,7 @@ class BrowserModule(Component):
         blue is older, red is newer.
         (''since 0.11'')""")
 
-    NEWEST_COLOR = (255,136,136)
+    NEWEST_COLOR = (255, 136, 136)
 
     newest_color = Option('browser', 'newest_color', repr(NEWEST_COLOR),
         doc="""(r,g,b) color triple to use for the color corresponding
@@ -204,7 +202,7 @@ class BrowserModule(Component):
         the browser ''age'' column if `color_scale` is enabled.
         (''since 0.11'')""")
 
-    OLDEST_COLOR = (136,136,255)
+    OLDEST_COLOR = (136, 136, 255)
 
     oldest_color = Option('browser', 'oldest_color', repr(OLDEST_COLOR),
         doc="""(r,g,b) color triple to use for the color corresponding
@@ -251,7 +249,7 @@ class BrowserModule(Component):
         def interpolate(old, new, value):
             # Provides a linearly interpolated color triple for `value`
             # which must be a floating point value between 0.0 and 1.0
-            return tuple([int(b+(a-b)*value) for a,b in zip(new,old)])
+            return tuple([int(b + (a - b) * value) for a, b in zip(new, old)])
 
         def parse_color(rgb, default):
             # Get three ints out of a `rgb` string or return `default`
@@ -270,7 +268,7 @@ class BrowserModule(Component):
         if intermediate:
             intermediate_color = parse_color(self.intermediate_color, None)
             if not intermediate_color:
-                intermediate_color = tuple([(a+b)/2 for a,b in
+                intermediate_color = tuple([(a + b) / 2 for a, b in
                                             zip(newest_color, oldest_color)])
             def colorizer(value):
                 if value <= intermediate:

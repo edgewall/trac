@@ -422,7 +422,7 @@ class Environment(Component, ComponentManager):
                        " LEFT JOIN session_attribute AS e ON (e.sid=s.sid "
                        "  AND e.authenticated=1 AND e.name = 'email') "
                        "WHERE s.authenticated=1 ORDER BY s.sid")
-        for username,name,email in cursor:
+        for username, name, email in cursor:
             yield username, name, email
 
     def backup(self, dest=None):

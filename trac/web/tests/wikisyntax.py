@@ -1,9 +1,8 @@
 import unittest
 
-from trac.web.chrome import Chrome
 from trac.wiki.tests import formatter
 
-TEST_CASES="""
+TEST_CASES = """
 ============================== htdocs: links resolver
 htdocs:release-1.0.tar.gz
 
@@ -19,7 +18,7 @@ htdocs:release-1.0.tar.gz
 """
 
 def suite():
-    return formatter.suite(TEST_CASES,file=__file__)
+    return formatter.suite(TEST_CASES, file=__file__)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

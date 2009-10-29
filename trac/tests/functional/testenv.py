@@ -13,14 +13,11 @@ import errno
 import locale
 from subprocess import call, Popen, PIPE, STDOUT
 
-from trac.db.api import _parse_db_str
 from trac.env import open_environment
 from trac.test import EnvironmentStub, get_dburi
 from trac.tests.functional.compat import rmtree, close_fds
 from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
-from trac.db.mysql_backend import MySQLConnection
-from trac.db.postgres_backend import PostgreSQLConnection
 from trac.util.compat import close_fds
 
 # TODO: refactor to support testing multiple frontends, backends (and maybe

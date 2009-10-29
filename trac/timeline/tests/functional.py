@@ -1,6 +1,4 @@
 #!/usr/bin/python
-import sys
-from subprocess import call
 from trac.tests.functional import *
 
 

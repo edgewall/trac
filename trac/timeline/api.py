@@ -17,12 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from urlparse import urljoin
-
 from trac.core import *
-from trac.resource import get_resource_url
-from trac.util.datefmt import to_timestamp
-from trac.web.href import Href
 
 
 class ITimelineEventProvider(Interface):

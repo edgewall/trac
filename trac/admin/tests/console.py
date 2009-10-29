@@ -13,15 +13,11 @@
 #
 # Author: Tim Moloney <t.moloney@verizon.net>
 
-import ConfigParser
 import difflib
 import os
 import re
-import shlex
 import sys
-import time
 import unittest
-import traceback
 from StringIO import StringIO
 
 from trac.config import Configuration

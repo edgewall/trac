@@ -24,7 +24,6 @@ import os
 import posixpath
 import re
 from StringIO import StringIO
-import time
 
 from genshi.builder import tag
 
@@ -709,7 +708,6 @@ class ChangesetModule(Component):
 
     def _render_zip(self, req, filename, repos, data):
         """ZIP archive with all the added and/or modified files."""
-        new_rev = data['new_rev']
         req.send_response(200)
         req.send_header('Content-Type', 'application/zip')
         req.send_header('Content-Disposition',

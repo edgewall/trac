@@ -2,9 +2,7 @@
 
 from trac.test import Mock
 from trac.web.api import Request, RequestDone
-from trac.web.clearsilver import HDFWrapper
 
-from Cookie import SimpleCookie as Cookie
 from StringIO import StringIO
 import unittest
 

@@ -58,7 +58,7 @@ class SubversionPropertyRenderer(Component):
                 if len(value) != 2:
                     self.log.warn("svn:externals entry %s doesn't contain "
                             "a space-separated key value pair, skipping.", 
-                            label)
+                            dummykey)
                     continue
                 key, value = value
                 self._externals_map[key] = value.replace('%', '%%') \
@@ -80,7 +80,7 @@ class SubversionPropertyRenderer(Component):
             prefix = []
             base_url = url
             while base_url:
-                if base_url in self._externals_map or base_url==u'/':
+                if base_url in self._externals_map or base_url == u'/':
                     break
                 base_url, pref = posixpath.split(base_url)
                 prefix.append(pref)

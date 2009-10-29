@@ -48,7 +48,7 @@ def to_datetime(t, tzinfo=None):
         return t
     elif isinstance(t, date):
         return datetime(t.year, t.month, t.day, tzinfo=tzinfo or localtz)
-    elif isinstance(t, (int,long,float)):
+    elif isinstance(t, (int, long, float)):
         return datetime.fromtimestamp(t, tzinfo or localtz)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))

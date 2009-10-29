@@ -18,7 +18,7 @@
 from StringIO import StringIO
 from datetime import datetime
 import re
-from time import localtime, strftime, time
+from time import time
 
 from genshi.builder import tag
 
@@ -33,10 +33,10 @@ from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
                               get_date_format_hint, get_datetime_format_hint, \
                               format_date, format_datetime
-from trac.util.text import shorten_line, CRLF, to_unicode
+from trac.util.text import CRLF
 from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
-from trac.ticket.query import Query, QueryModule
+from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_notice, add_stylesheet, \
@@ -326,7 +326,6 @@ class RoadmapModule(Component):
         return req.path_info == '/roadmap'
 
     def process_request(self, req):
-        milestone_realm = Resource('milestone')
         req.perm.require('MILESTONE_VIEW')
 
         showall = req.args.get('show') == 'all'
@@ -391,7 +390,8 @@ class RoadmapModule(Component):
             elif status == 'assigned' or status == 'reopened':
                 return 'IN-PROCESS'
             elif status == 'closed':
-                if ticket['resolution'] == 'fixed': return 'COMPLETED'
+                if ticket['resolution'] == 'fixed':
+                    return 'COMPLETED'
                 else: return 'CANCELLED'
             else: return ''
 
@@ -404,7 +404,8 @@ class RoadmapModule(Component):
                  + ':' + escape_value(value)
             firstline = 1
             while text:
-                if not firstline: text = ' ' + text
+                if not firstline:
+                    text = ' ' + text
                 else: firstline = 0
                 buf.write(text[:75] + CRLF)
                 text = text[75:]

@@ -82,10 +82,10 @@ class ComponentMeta(type):
     _components = []
     _registry = {}
 
-    def __new__(cls, name, bases, d):
+    def __new__(mcs, name, bases, d):
         """Create the component class."""
 
-        new_class = type.__new__(cls, name, bases, d)
+        new_class = type.__new__(mcs, name, bases, d)
         if name == 'Component':
             # Don't put the Component base class in the registry
             return new_class
