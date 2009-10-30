@@ -344,6 +344,14 @@ DSTDIFF = DSTOFFSET - STDOFFSET
 
 class LocalTimezone(tzinfo):
     """A 'local' time zone implementation"""
+    
+    def __str__(self):
+        return self.tzname(datetime.now())
+    
+    def __repr__(self):
+        return '<LocalTimezone "%s" %s "%s" %s>' % (
+            time.tzname[False], STDOFFSET,
+            time.tzname[True], DSTOFFSET)
 
     def utcoffset(self, dt):
         if self._isdst(dt):

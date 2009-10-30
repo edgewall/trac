@@ -45,11 +45,11 @@ def random_sentence(word_count=None):
 def random_paragraph(sentence_count=None):
     if sentence_count == None:
         sentence_count = random.randint(1, 10)
-    sentences = [random_sentence(random.randint(2,15)) for x in range(sentence_count)]
+    sentences = [random_sentence(random.randint(2, 15)) for x in range(sentence_count)]
     return '  '.join(sentences)
 
 def random_page(paragraph_count=None):
     if paragraph_count == None:
         paragraph_count = random.randint(1, 10)
-    paragraphs = [random_paragraph(random.randint(1,5)) for x in range(paragraph_count)]
+    paragraphs = [random_paragraph(random.randint(1, 5)) for x in range(paragraph_count)]
     return '\r\n\r\n'.join(paragraphs)

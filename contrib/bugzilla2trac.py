@@ -495,7 +495,7 @@ def makeWhereClause(fieldName, values, negative=False):
         connector, op = ' OR ', '='
     clause = connector.join(["%s %s '%s'" % (fieldName, op, value) 
                              for value in values])
-    return ' ' + clause
+    return ' (' + clause + ')'
 
 def convert(_db, _host, _user, _password, _env, _force):
     activityFields = FieldTranslator()
@@ -586,7 +586,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             sql = ("SELECT p.name AS product, c.name AS comp, "
                    " c.initialowner AS owner "
                    "FROM components c, products p "
-                   "WHERE c.product_id = p.id and " + 
+                   "WHERE c.product_id = p.id AND" + 
                    makeWhereClause('p.name', PRODUCTS))
         else:
             sql = ("SELECT program AS product, value AS comp, "
@@ -623,9 +623,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print "\n4. Import versions..."
     if BZ_VERSION >= 2180:
-        sql = """SELECT DISTINCTROW versions.value AS value
-                               FROM products, versions"""
-        sql += " WHERE" + makeWhereClause('products.name', PRODUCTS)
+        sql = """SELECT DISTINCTROW v.value AS value
+                               FROM products p, versions v"""
+        sql += " WHERE v.product_id = p.id AND"
+        sql += makeWhereClause('p.name', PRODUCTS)
     else:
         sql = "SELECT DISTINCTROW value FROM versions"
         sql += " WHERE" + makeWhereClause('program', PRODUCTS)
@@ -644,15 +645,15 @@ def convert(_db, _host, _user, _password, _env, _force):
     if BZ_VERSION >= 2180: 
         sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
                             FROM bugs AS b, components AS c, products AS p """
-        sql += " WHERE (" + makeWhereClause('p.name', PRODUCTS)
-        sql += ") AND b.product_id = p.id"
+        sql += " WHERE" + makeWhereClause('p.name', PRODUCTS)
+        sql += " AND b.product_id = p.id"
         sql += " AND b.component_id = c.id"
         sql += " ORDER BY b.bug_id"
     else:
         sql = """SELECT DISTINCT b.*, c.value AS component, p.product AS product
                             FROM bugs AS b, components AS c, products AS p """
-        sql += " WHERE (" + makeWhereClause('p.product', PRODUCTS)
-        sql += ") AND b.product = p.product"
+        sql += " WHERE" + makeWhereClause('p.product', PRODUCTS)
+        sql += " AND b.product = p.product"
         sql += " AND b.component = c.value"
         sql += " ORDER BY b.bug_id"
     mysql_cur.execute(sql)

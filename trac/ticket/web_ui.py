@@ -37,8 +37,8 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, to_timestamp, utc
-from trac.util.text import shorten_line, obfuscate_email_address, \
-                           exception_to_unicode
+from trac.util.text import exception_to_unicode, obfuscate_email_address,  \
+                           shorten_line, to_unicode
 from trac.util.presentation import separated
 from trac.util.translation import _, tag_, tagn_, N_, gettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
@@ -1167,6 +1167,9 @@ class TicketModule(Component):
         except Exception, e:
             self.log.error("Failure sending notification on creation of "
                     "ticket #%s: %s", ticket.id, exception_to_unicode(e))
+            add_warning(req, _('The ticket has been created, but an error '
+                               'occurred while sending notifications: '
+                               '%(message)s', message=to_unicode(e)))
 
         # Redirect the user to the newly created ticket or add attachment
         if 'attachment' in req.args:
@@ -1194,16 +1197,27 @@ class TicketModule(Component):
 
         # -- Save changes
 
+        fragment = ''
         now = datetime.now(utc)
         if ticket.save_changes(get_reporter_id(req, 'author'),
                                      req.args.get('comment'), when=now,
                                      cnum=internal_cnum):
+            fragment = cnum and '#comment:' + cnum or ''
             try:
                 tn = TicketNotifyEmail(self.env)
                 tn.notify(ticket, newticket=False, modtime=now)
             except Exception, e:
                 self.log.error("Failure sending notification on change to "
                         "ticket #%s: %s", ticket.id, exception_to_unicode(e))
+                # TRANSLATOR: The 'change' has been saved... (link)
+                change = _('change')
+                if fragment:
+                    change = tag.a(change, href=fragment)
+                add_warning(req, tag_('The %(change)s has been saved, but an '
+                                      'error occurred while sending '
+                                      'notifications: %(message)s',
+                                      change=change, message=to_unicode(e)))
+                fragment = ''
 
         # After saving the changes, apply the side-effects.
         for controller in controllers:
@@ -1211,7 +1225,6 @@ class TicketModule(Component):
                                controller.__class__.__name__)
             controller.apply_action_side_effects(req, ticket, action)
 
-        fragment = cnum and '#comment:'+cnum or ''
         req.redirect(req.href.ticket(ticket.id) + fragment)
 
     def get_ticket_changes(self, req, ticket, selected_action):
