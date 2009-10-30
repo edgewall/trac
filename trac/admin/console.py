@@ -313,10 +313,12 @@ Type:  '?' or 'help' for help on commands.
          If no arguments are given, then the required parameters are requested
          interactively.
          
-         An optional argument --inherit can be used to specify the "[inherit]
-         file" option at environment creation time so that only the options
-         not already specified in the global configuration file are written to
-         the conf/trac.ini file of the newly created environment.
+         An optional argument --inherit=PATH can be used to specify the
+         "[inherit] file" option at environment creation time, so that only the
+         options not already specified in the global configuration file are
+         written to the conf/trac.ini file of the newly created environment.
+         Relative paths are resolved relative to the "conf" directory of the
+         new environment.
          """)]
 
     def do_initdb(self, line):
@@ -383,7 +385,7 @@ in order to initialize and prepare the project database.
         inherit_file = ''
         for num, item in enumerate(arg):
             if item.startswith('--inherit='):
-                inherit_file = os.path.abspath(arg.pop(num)[10:])
+                inherit_file = arg.pop(num)[10:]
         arg = arg or [''] # Reset to usual empty in case we popped the only one
         project_name = None
         db_str = None
