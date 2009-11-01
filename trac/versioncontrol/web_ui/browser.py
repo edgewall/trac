@@ -35,7 +35,7 @@ from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
-                            INavigationContributor
+                            prevnext_nav, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider, IWikiMacroProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 from trac.versioncontrol.api import RepositoryManager, NoSuchChangeset
@@ -367,8 +367,6 @@ class BrowserModule(Component):
 
         # Prepare template data
         path_links = get_path_links(req.href, reponame, path, rev, order, desc)
-        if len(path_links) > 1:
-            add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
 
         repo_data = dir_data = file_data = None
         if all_repositories:
@@ -412,11 +410,30 @@ class BrowserModule(Component):
 
         # Links for contextual navigation
         if node:
-            path_url = repos.get_path_url(path, rev)
-            if path_url:
-                if path_url.startswith('//'):
-                    path_url = req.scheme + ':' + path_url
-                add_ctxtnav(req, _('Repository URL'), href=path_url)
+            if node.isfile:
+                prev_rev = repos.previous_rev(rev=node.rev,
+                                              path=node.created_path)
+                if prev_rev:
+                    href = req.href.browser(reponame or None,
+                                            node.created_path, rev=prev_rev)
+                    add_link(req, 'prev', href,
+                             _('Revision %(num)s', num=prev_rev))
+                if rev is not None:
+                    add_link(req, 'up', req.href.browser(reponame or None,
+                                                         node.created_path))
+                next_rev = repos.next_rev(rev=node.rev,
+                                          path=node.created_path)
+                if next_rev:
+                    href = req.href.browser(reponame or None,
+                                            node.created_path, rev=next_rev)
+                    add_link(req, 'next', href,
+                             _('Revision %(num)s', num=next_rev))
+                prevnext_nav(req, _('Previous Revision'), _('Next Revision'),
+                             _('Latest Revision'))
+            else:
+                if len(path_links) > 1:
+                    add_link(req, 'up', path_links[-2]['href'],
+                             _('Parent directory'))
             add_ctxtnav(req, tag.a(_('Last Change'), 
                         href=req.href.changeset(node.rev, reponame,
                                                 node.created_path)))
@@ -438,6 +455,11 @@ class BrowserModule(Component):
                                                       annotate='blame'))
             add_ctxtnav(req, _('Revision Log'), 
                         href=req.href.log(reponame, path, rev=rev))
+            path_url = repos.get_path_url(path, rev)
+            if path_url:
+                if path_url.startswith('//'):
+                    path_url = req.scheme + ':' + path_url
+                add_ctxtnav(req, _('Repository URL'), href=path_url)
 
         add_stylesheet(req, 'common/css/browser.css')
         return 'browser.html', data, None
