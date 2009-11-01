@@ -34,7 +34,7 @@ from trac.util.text import exception_to_unicode, shorten_line
 from trac.util.translation import _
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
-                            INavigationContributor
+                            prevnext_nav, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to_html, format_to_oneliner
 from trac.versioncontrol.api import NoSuchChangeset
@@ -342,8 +342,6 @@ class BrowserModule(Component):
         context = Context.from_request(req, 'source', path, rev_or_latest)
 
         path_links = get_path_links(req.href, path, rev, order, desc)
-        if len(path_links) > 1:
-            add_link(req, 'up', path_links[-2]['href'], _('Parent directory'))
 
         data = {
             'context': context,
@@ -365,6 +363,27 @@ class BrowserModule(Component):
             return 'dir_entries.html', data, None
 
         # Links for contextual navigation
+        if node.isfile:
+            prev_rev = repos.previous_rev(rev=node.rev,
+                                          path=node.created_path)
+            if prev_rev:
+                href = req.href.browser(node.created_path, rev=prev_rev)
+                add_link(req, 'prev', href,
+                         _('Revision %(num)s', num=prev_rev))
+            if rev is not None:
+                add_link(req, 'up', req.href.browser(node.created_path))
+            next_rev = repos.next_rev(rev=node.rev,
+                                      path=node.created_path)
+            if next_rev:
+                href = req.href.browser(node.created_path, rev=next_rev)
+                add_link(req, 'next', href,
+                         _('Revision %(num)s', num=next_rev))
+            prevnext_nav(req, _('Previous Revision'), _('Next Revision'),
+                         _('Latest Revision'))
+        else:
+            if len(path_links) > 1:
+                add_link(req, 'up', path_links[-2]['href'],
+                         _('Parent directory'))
         add_ctxtnav(req, tag.a(_('Last Change'), 
                     href=req.href.changeset(node.rev, node.created_path)))
         if node.isfile:
