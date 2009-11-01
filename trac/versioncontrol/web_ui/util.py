@@ -51,7 +51,7 @@ def get_path_links(href, reponame, path, rev, order=None, desc=None):
         partial_path += part + '/'
         links.append({
             'name': part,
-            'href': href.browser(reponame, partial_path, rev=rev, 
+            'href': href.browser(reponame or None, partial_path, rev=rev,
                                  order=order, desc=desc)
             })
     return links

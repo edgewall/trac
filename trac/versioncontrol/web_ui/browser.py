@@ -435,13 +435,13 @@ class BrowserModule(Component):
                     add_link(req, 'up', path_links[-2]['href'],
                              _('Parent directory'))
             add_ctxtnav(req, tag.a(_('Last Change'), 
-                        href=req.href.changeset(node.rev, reponame,
+                        href=req.href.changeset(node.rev, reponame or None,
                                                 node.created_path)))
             if node.isfile:
                 if data['file']['annotate']:
                     add_ctxtnav(req, _('Normal'), 
                                 title=_('View file without annotations'), 
-                                href=req.href.browser(reponame,
+                                href=req.href.browser(reponame or None,
                                                       node.created_path, 
                                                       rev=node.rev))
                 else:
@@ -449,12 +449,12 @@ class BrowserModule(Component):
                                 title=_('Annotate each line with the last '
                                         'changed revision '
                                         '(this can be time consuming...)'), 
-                                href=req.href.browser(reponame,
+                                href=req.href.browser(reponame or None,
                                                       node.created_path, 
                                                       rev=node.rev,
                                                       annotate='blame'))
             add_ctxtnav(req, _('Revision Log'), 
-                        href=req.href.log(reponame, path, rev=rev))
+                        href=req.href.log(reponame or None, path, rev=rev))
             path_url = repos.get_path_url(path, rev)
             if path_url:
                 if path_url.startswith('//'):
@@ -616,8 +616,8 @@ class BrowserModule(Component):
 
             # add ''Plain Text'' alternate link if needed
             if not is_binary(chunk) and mime_type != 'text/plain':
-                plain_href = req.href.browser(reponame, node.path, rev=rev, 
-                                              format='txt')
+                plain_href = req.href.browser(reponame or None, node.path,
+                                              rev=rev, format='txt')
                 add_link(req, 'alternate', plain_href, _('Plain Text'),
                          'text/plain')
 
@@ -793,7 +793,7 @@ class BrowserModule(Component):
         def repolink(reponame):
             return Markup(tag.a(reponame, 
                           title=_('View repository %(repo)s', repo=reponame),
-                          href=formatter.href.browser(reponame)))
+                          href=formatter.href.browser(reponame or None)))
 
         if format == 'list':
             return tag.dl([
@@ -868,7 +868,9 @@ class BlameAnnotator(object):
         
         # -- compute anchor and style once per revision
         if rev not in self.chgset_data:
-            chgset_href = self.context.href.changeset(rev, self.reponame, path)
+            chgset_href = self.context.href.changeset(rev,
+                                                      self.reponame or None,
+                                                      path)
             short_author = chgset.author.split(' ', 1)[0]
             title = shorten_line('%s: %s' % (short_author, chgset.message))
             anchor = tag.a('[%s]' % self.repos.short_rev(rev), # shortname

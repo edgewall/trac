@@ -276,12 +276,14 @@ class ChangesetModule(Component):
         if req.args.has_key('update'):
             if chgset:
                 if restricted:
-                    req.redirect(req.href.changeset(new, reponame, new_path))
+                    req.redirect(req.href.changeset(new, reponame or None,
+                                                    new_path))
                 else:
-                    req.redirect(req.href.changeset(new, reponame))
+                    req.redirect(req.href.changeset(new, reponame or None))
             else:
-                req.redirect(req.href.changeset(new, reponame, new_path, 
-                                                old=old, old_path=full_old_path))
+                req.redirect(req.href.changeset(new, reponame or None,
+                                                new_path, old=old,
+                                                old_path=full_old_path))
 
         # -- preparing the data
         if chgset:
@@ -422,18 +424,20 @@ class ChangesetModule(Component):
                     if prev:
                         prev_path, prev_rev = prev[:2]
                         if prev_rev:
-                            prev_href = req.href.changeset(prev_rev, reponame,
+                            prev_href = req.href.changeset(prev_rev,
+                                                           reponame or None,
                                                            prev_path)
                     else:
                         prev_path = prev_rev = None
                 else:
                     add_link(req, 'first', 
-                             req.href.changeset(oldest_rev, reponame),
+                             req.href.changeset(oldest_rev, reponame or None),
                              _('Changeset %(id)s', id=oldest_rev))
                     prev_path = data['old_path']
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
-                        prev_href = req.href.changeset(prev_rev, reponame)
+                        prev_href = req.href.changeset(prev_rev,
+                                                       reponame or None)
                 if prev_rev:
                     add_link(req, 'prev', prev_href, _changeset_title(prev_rev))
             youngest_rev = repos.youngest_rev
@@ -442,17 +446,21 @@ class ChangesetModule(Component):
                     next_rev = repos.next_rev(chgset.rev, path)
                     if next_rev:
                         if repos.has_node(path, next_rev):
-                            next_href = req.href.changeset(next_rev, reponame, 
+                            next_href = req.href.changeset(next_rev,
+                                                           reponame or None,
                                                            path)
                         else: # must be a 'D'elete or 'R'ename, show full cset
-                            next_href = req.href.changeset(next_rev, reponame)
+                            next_href = req.href.changeset(next_rev,
+                                                           reponame or None)
                 else:
                     add_link(req, 'last', 
-                             req.href.changeset(youngest_rev, reponame),
+                             req.href.changeset(youngest_rev,
+                                                reponame or None),
                              _('Changeset %(id)s', id=youngest_rev))
                     next_rev = repos.next_rev(chgset.rev)
                     if next_rev:
-                        next_href = req.href.changeset(next_rev, reponame)
+                        next_href = req.href.changeset(next_rev,
+                                                       reponame or None)
                 if next_rev:
                     add_link(req, 'next', next_href, _changeset_title(next_rev))
 
@@ -475,7 +483,8 @@ class ChangesetModule(Component):
             return {'path': node.path,
                     'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
-                    'href': req.href.browser(reponame, node.created_path,
+                    'href': req.href.browser(reponame or None,
+                                             node.created_path,
                                              rev=node.created_rev,
                                              annotate=annotated and 'blame' or \
                                                       None),
@@ -628,14 +637,15 @@ class ChangesetModule(Component):
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
-                        href = req.href.changeset(new_node.rev, reponame, 
+                        href = req.href.changeset(new_node.rev,
+                                                  reponame or None, 
                                                   new_node.path)
                         title = _('Show the changeset %(id)s restricted to '
                                   '%(path)s', id=new_node.rev,
                                   path=new_node.path)
                     else:
                         href = req.href.changeset(
-                            new_node.created_rev, reponame, 
+                            new_node.created_rev, reponame or None,
                             new_node.created_path,
                             old=old_node.created_rev,
                             old_path=posixpath.join(reponame, 
@@ -895,9 +905,10 @@ class ChangesetModule(Component):
 
         if field == 'url':
             if rev_a == rev_b:
-                return context.href.changeset(rev_a, reponame)
+                return context.href.changeset(rev_a, reponame or None)
             else:
-                return context.href.log(reponame, rev=rev_b, stop_rev=rev_a) 
+                return context.href.log(reponame or None, rev=rev_b,
+                                        stop_rev=rev_a)
             
         elif field == 'description':
             if self.wiki_format_messages:
@@ -1080,7 +1091,7 @@ class ChangesetModule(Component):
             #cset = repos.changeset_resource(rev)
             cset = Resource('repository', reponame).child('changeset', rev)
             if 'CHANGESET_VIEW' in req.perm(cset):
-                yield (req.href.changeset(rev, reponame),
+                yield (req.href.changeset(rev, reponame or None),
                        '[%s]: %s' % (rev, shorten_line(log)),
                        datetime.fromtimestamp(ts, utc), author,
                        shorten_result(log, terms))

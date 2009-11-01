@@ -368,11 +368,11 @@ class RepositoryManager(Component):
 
     def get_resource_url(self, resource, href, **kwargs):
         if resource.realm == 'changeset':
-            return href.changeset(resource.id, resource.parent.id)
+            return href.changeset(resource.id, resource.parent.id or None)
         elif resource.realm == 'source':
-            return href.source(resource.parent.id, resource.id)
+            return href.source(resource.parent.id or None, resource.id)
         elif resource.realm == 'repository':
-            return href.source(resource.id)
+            return href.source(resource.id or None)
 
     # IRepositoryProvider methods
 

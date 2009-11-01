@@ -232,7 +232,7 @@ def _get_source_link(spath, context):
     """Return a link to a merge source."""
     reponame = context.resource.parent.id
     return tag.a('/' + spath, title=_('View merge source'),
-                 href=context.href.browser(reponame, spath,
+                 href=context.href.browser(reponame or None, spath,
                                            rev=context.resource.version))
 
 def _get_revs_link(label, context, spath, revs):
@@ -244,9 +244,9 @@ def _get_revs_link(label, context, spath, revs):
     if not revs:
         return tag.span(label, title=_('No revisions'))
     elif ',' in revs or '-' in revs:
-        revs_href = context.href.log(reponame, spath, revs=revs)
+        revs_href = context.href.log(reponame or None, spath, revs=revs)
     else:
-        revs_href = context.href.changeset(revs, reponame, spath)
+        revs_href = context.href.changeset(revs, reponame or None, spath)
     return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
 
 

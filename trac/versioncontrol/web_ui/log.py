@@ -192,7 +192,7 @@ class LogModule(Component):
             params.update(args)
             if verbose:
                 params['verbose'] = verbose
-            return req.href.log(reponame, path, **params)
+            return req.href.log(reponame or None, path, **params)
 
         if format in ('rss', 'changelog'):
             info = [i for i in info if i['change']] # drop separators
@@ -255,7 +255,7 @@ class LogModule(Component):
         data = {
             'context': Context.from_request(req, 'source', path,
                                             parent=repos_resource),
-            'reponame': reponame, 'repos_resource': repos_resource,
+            'reponame': reponame or None, 'repos_resource': repos_resource,
             'path': path, 'rev': rev, 'stop_rev': stop_rev,
             'path': path, 'rev': rev, 'stop_rev': stop_rev, 
             'revranges': revranges,
@@ -292,7 +292,7 @@ class LogModule(Component):
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
         add_ctxtnav(req, _('View Latest Revision'), 
-                    href=req.href.browser(reponame, path))
+                    href=req.href.browser(reponame or None, path))
         if 'next' in req.chrome['links']:
             next = req.chrome['links']['next'][0]
             add_ctxtnav(req, tag.span(tag.a(_('Older Revisions'), 
