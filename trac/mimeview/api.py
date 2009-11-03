@@ -572,6 +572,25 @@ class IContentConverter(Interface):
         output_mime_type) or None if conversion is not possible."""
 
 
+class Content(object):
+    """A lazy file-like object that only reads `input` if necessary."""
+    def __init__(self, input, max_size):
+        self.input = input
+        self.max_size = max_size
+        self.content = None
+    
+    def read(self, size=-1):
+        if size == 0:
+            return ''
+        if self.content is None:
+            self.content = StringIO(self.input.read(self.max_size))
+        return self.content.read(size)
+    
+    def reset(self):
+        if self.content is not None:
+            self.content.seek(0)
+
+
 class Mimeview(Component):
     """A generic class to prettify data, typically source code."""
 
@@ -698,15 +717,20 @@ class Mimeview(Component):
             if qr > 0:
                 candidates.append((qr, renderer))
         candidates.sort(lambda x,y: cmp(y[0], x[0]))
+        
+        # Wrap file-like object so that it can be read multiple times
+        if hasattr(content, 'read'):
+            content = Content(content, self.max_preview_size)
 
         # First candidate which renders successfully wins.
         # Also, we don't want to expand tabs more than once.
-        content = content_to_unicode(self.env, content, full_mimetype)
         expanded_content = None
         errors = []
         for qr, renderer in candidates:
             if force_source and not getattr(renderer, 'returns_source', False):
                 continue # skip non-source renderers in force_source mode
+            if isinstance(content, Content):
+                content.reset()
             try:
                 ann_names = annotations and ', '.join(annotations) or \
                            'No annotations'
@@ -717,6 +741,8 @@ class Mimeview(Component):
                 rendered_content = content
                 if getattr(renderer, 'expand_tabs', False):
                     if expanded_content is None:
+                        content = content_to_unicode(self.env, content,
+                                                     full_mimetype)
                         expanded_content = content.expandtabs(self.tab_width)
                     rendered_content = expanded_content
 
