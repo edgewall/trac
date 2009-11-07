@@ -16,6 +16,7 @@
         $("#content").find(".wikianchor").each(function() {
           $(this).addAnchor("Link to #"+$(this).attr('id')) 
         });
+        $(".foldable").enableFolding(true);
       });
     </script>
   </head>
@@ -61,7 +62,7 @@
         </py:otherwise>
       </div>
 
-      ${list_of_attachments(attachments, compact=True)}
+      ${list_of_attachments(attachments, compact=True, foldable=True)}
 
       <py:with vars="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
                      delete_perm = 'WIKI_DELETE' in perm(page.resource);

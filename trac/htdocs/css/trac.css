@@ -256,6 +256,22 @@ label.disabled { color: #d7d7d7 }
 #help :link, #help :visited { cursor: help }
 #help hr { display: none }
 
+/* Section folding */
+.foldable :link, .foldable :visited {
+ background: url(../expanded.png) 0 50% no-repeat;
+ border: none;
+ padding-left: 16px;
+}
+.foldable :link:hover, .foldable :visited:hover { background-color: transparent }
+.collapsed > .foldable :link, .collapsed > .foldable :visited {
+ background-image: url(../collapsed.png);
+}
+.collapsed > div, .collapsed > table, .collapsed > ul { display: none }
+fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
+ color: #666;
+ font-size: 110%;
+}
+
 /* Page preferences form */
 #prefs {
  background: #f7f7f0;

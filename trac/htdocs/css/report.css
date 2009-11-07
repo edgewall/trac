@@ -109,22 +109,6 @@ h2.report-result {
 .tickets .fullrow .meta { color: #999; }
 .tickets .fullrow hr { display: none }
 
-fieldset legend.foldable :link, fieldset legend.foldable :visited { 
- background: url(../expanded.png) 0 50% no-repeat;
- border: none;
- color: #666;
- font-size: 110%;
- padding-left: 16px;
-}
-fieldset legend.foldable :link:hover, fieldset legend.foldable :visited:hover {
-  background-color: transparent;
-}
-
-fieldset.collapsed legend.foldable :link, fieldset.collapsed legend.foldable :visited { 
- background-image: url(../collapsed.png);  
-}
-fieldset.collapsed table, fieldset.collapsed div { display: none }
-
 /* Query results table */
 
 table.tickets tbody tr.added td { font-weight: bold }

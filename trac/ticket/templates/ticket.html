@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:i18n="http://genshi.edgewall.org/i18n">
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:with="preview_mode = 'preview' in req.args">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
 
@@ -19,11 +20,13 @@
         </py:otherwise>
       </py:choose>
     </title>
-    <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript" py:choose="">
       jQuery(document).ready(function($) {
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
+        $(".foldable").enableFolding(false);
       <py:when test="ticket.exists">
+        $("#modify").parent().toggleClass("collapsed");
+        
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
 
@@ -39,6 +42,11 @@
       <py:otherwise>
         $("#field-summary").focus();
       </py:otherwise>
+      <py:if test="preview_mode">
+        $("#changelog").parent().toggleClass("collapsed");
+        $("#attachments").parent().toggleClass("collapsed");
+        $("#trac-add-comment").scrollToTop();
+      </py:if>
       });
     </script>
   </head>
@@ -86,25 +94,20 @@
     </py:def>
 
     <div id="content" class="ticket" 
-        py:with="preview_mode = 'preview' in req.args;
-                 can_append = 'TICKET_APPEND' in perm(ticket.resource);
+        py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
                  can_create = 'TICKET_CREATE' in perm(ticket.resource) and not ticket.exists;
                  can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
                  can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource);
                  only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource);
                  has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
-                ">
-      <h1>
-        <py:choose>
-          <py:when test="ticket.exists">
-            <a href="${href.ticket(ticket.id)}">Ticket #${ticket.id}</a>
-          </py:when>
-          <py:otherwise>
-            Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
-          </py:otherwise>
-        </py:choose>
-
-        <py:if test="ticket.exists">
+                 has_property_editor = not version and version != 0 and not cnum_edit
+                                       and (can_append or can_modify or can_edit or can_create)">
+      <div class="trac-nav" py:if="(ticket.exists or preview_mode) and has_property_editor">
+        <a href="#propertyform" title="Go to the ticket editor">modify</a> &darr;
+      </div>
+      <h1 id="trac-ticket-title" py:choose="">
+        <py:when test="ticket.exists">
+          <a href="${href.ticket(ticket.id)}">Ticket #${ticket.id}</a>
           <span class="status">(${ticket.status}<py:if
               test="ticket.type"> ${ticket.type}</py:if><py:if
               test="ticket.resolution">: ${ticket.resolution}</py:if>)</span>
@@ -117,26 +120,11 @@
               &mdash; at <a href="#comment:$version">Version $version</a>
             </py:otherwise>
           </py:choose>
-        </py:if>
+        </py:when>
+        <py:otherwise>
+          Create New Ticket <span py:if="preview_mode and ticket.type" class="status">(${ticket.type})</span>
+        </py:otherwise>
       </h1>
-
-      <!--! Do not show the ticket (pre)view when the user first comes to the "New Ticket" page.
-           Wait until they hit preview. -->
-      <fieldset id="preview" py:strip="not preview_mode">
-        <py:if test="preview_mode">
-          <legend>Preview (<a href="#${ticket.exists and 'edit' or 'properties'}">skip</a>)</legend>
-
-          <!-- Preview of ticket changes -->
-          <div py:if="change_preview" id="ticketchange" class="ticketdraft">
-            <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
-              <span class="threading" py:if="'replyto' in change_preview">
-                in reply to: ${commentref('&darr;&nbsp;', change_preview.replyto)}
-              </span>
-              Changed by ${authorinfo(change_preview.author)}
-            </h3>
-            ${display_change(change_preview)}
-          </div>
-        </py:if>
 
         <!-- Ticket Box (ticket fields along with description) -->
         <div id="ticket" py:if="ticket.exists or preview_mode"
@@ -208,17 +196,16 @@
               <br py:if="not ticket.description" style="clear: both" />
             </div>
         </div>
-      </fieldset>
       <!--! End of ticket box -->
 
       <py:if test="ticket.exists">
         <!--! do not show attachments for old versions of this ticket or for new tickets -->
         <py:if test="not version and version != 0 and ticket.exists">
-          ${list_of_attachments(attachments)}
+          ${list_of_attachments(attachments, foldable=True)}
         </py:if>
 
-        <py:if test="ticket.exists and changes">
-          <h2>Change History</h2>
+        <div py:if="ticket.exists and changes">
+          <h2 class="foldable">Change History</h2>
           <div id="changelog">
             <py:for each="change in changes"
                     py:with="can_edit_comment = has_edit_comment or (authname and authname != 'anonymous'
@@ -293,44 +280,48 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
               </div>
             </py:for>
           </div>
-        </py:if>
+        </div>
       </py:if>
       <!--! End of the section we don't show on initial new tickets -->
 
-      <form py:if="not version and version != 0 and not cnum_edit
-                   and (can_append or can_modify or can_edit or can_create)"
-            action="${ticket.exists and href.ticket(ticket.id) or href.newticket()}" method="post" id="propertyform">
-        <h3 py:if="ticket.exists"><a id="edit" onfocus="$('#comment').get(0).focus()">
-            Add/Change #${ticket.id} ($ticket.summary)</a></h3>
-        <div py:if="authname == 'anonymous'" class="field">
-          <fieldset>
-            <legend>${ticket.exists and 'Author' or 'Reporter'}</legend>
-            <table>
-              <tr>
-                <th>
-                  <label for="author">Your email or username:</label><br />
-                </th>
-                <td>
-                  <input type="text" id="author" name="author" size="40" value="$author_id" />
-                  <br />
-                </td>
-              </tr>
-            </table>
-            <p py:if="author_id == 'anonymous'" class="hint">
-              E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.
-            </p>
-          </fieldset>
-        </div>
-        <div py:if="ticket.exists and can_append" class="field">
+      <form py:if="has_property_editor" method="post" id="propertyform"
+            action="${ticket.exists and href.ticket(ticket.id) + '#trac-add-comment' or href.newticket()}">
+        <!--! Add comment -->
+        <div py:if="ticket.exists and can_append" class="field"
+            py:with="show_comment_preview = change_preview and cnum_edit is None">
+          <div class="trac-nav">
+            <a href="#content" title="Go to the top of the ticket">top</a> &uarr;
+          </div>
+          <h2 id="trac-add-comment">
+            <a id="edit" onfocus="$('#comment').get(0).focus()">Add a comment</a>
+          </h2>
+          <!--! Preview of ticket changes -->
+          <py:if test="show_comment_preview">
+            <div id="ticketchange" class="ticketdraft">
+              <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
+                <span class="threading" py:if="'replyto' in change_preview">
+                  in reply to: ${commentref('&uarr;&nbsp;', change_preview.replyto)}
+                </span>
+                Changed by ${authorinfo(change_preview.author)}
+              </h3>
+              ${display_change(change_preview)}
+            </div>
+          </py:if>
+          <!--! Comment field -->
           <fieldset class="iefix">
-            <label for="comment" i18n:msg="">Comment (you may use
+            <label for="comment" i18n:msg="">You may use
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
-              here):
-            </label><br />
-            <p><textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
-${comment}</textarea></p>
+              here.
+            </label>
+            <textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
+${comment}</textarea>
           </fieldset>
         </div>
+        
+        <div>
+          <h2 py:if="ticket.exists" class="foldable">Modify Ticket</h2>
+          <div id="modify">
+            <!--! Properties -->
         <fieldset id="properties" py:if="can_modify or can_edit or can_create"
                   py:with="fields = [f for f in fields if not f.skip]">
           <legend py:choose="">
@@ -431,7 +422,7 @@ ${value}</textarea>
         </fieldset>
 
         <!--! Workflow support -->
-        <py:if test="ticket.id"> <!--! do not display the actions for New tickets -->
+        <py:if test="ticket.exists"> <!--! do not display the actions for New tickets -->
           <py:choose>
             <fieldset py:when="can_append or can_modify" id="action">
               <legend>Action</legend>
@@ -449,13 +440,38 @@ ${value}</textarea>
             </py:otherwise>
           </py:choose>
         </py:if>
+      </div>
+    </div>
 
+        <!--! Author or Reporter -->
+        <div py:if="authname == 'anonymous'" class="field">
+          <fieldset>
+            <legend>${ticket.exists and 'Author' or 'Reporter'}</legend>
+            <table>
+              <tr>
+                <th>
+                  <label for="author">Your email or username:</label><br />
+                </th>
+                <td>
+                  <input type="text" id="author" name="author" size="40" value="$author_id" />
+                  <br />
+                </td>
+              </tr>
+            </table>
+            <p py:if="author_id == 'anonymous'" class="hint">
+              E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.
+            </p>
+          </fieldset>
+        </div>
+
+        <!--! Attachment on creation checkbox -->
         <p py:if="not ticket.exists and 'ATTACHMENT_CREATE' in perm(ticket.resource.child('attachment'))">
           <label>
             <input type="checkbox" name="attachment" checked="${'attachment' in req.args or None}" />
             I have files to attach to this ticket
           </label>
         </p>
+
         <div class="buttons">
           <input py:if="not ticket.exists" type="hidden" name="field_status" value="new" />
           <py:if test="ticket.exists">

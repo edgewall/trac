@@ -147,7 +147,7 @@
   -     'compact' is used to switch between a compact list of attachments (e.g. as used for
   -       the wiki view) and an expanded list (e.g. as used for the ticket view)
   -->
-  <py:def function="list_of_attachments(alist, compact=False, add_button_title=None)">
+  <py:def function="list_of_attachments(alist, compact=False, add_button_title=None, foldable=False)">
     <py:def function="show_one_attachment(attachment)">
       <i18n:msg params="file, size, author, date">
         <a href="${url_of(attachment.resource)}" title="${_('View attachment')}">$attachment.filename</a>
@@ -158,9 +158,9 @@
       </i18n:msg>
     </py:def>
     <py:if test="alist.attachments or alist.can_create">
-      <py:choose test="">
+      <div py:choose="">
         <py:when test="compact and alist.attachments">
-          <h3>Attachments</h3>
+          <h3 class="${foldable and 'foldable' or None}">Attachments</h3>
           <ul>
             <py:for each="attachment in alist.attachments">
               <li>
@@ -171,7 +171,7 @@
           </ul>
         </py:when>
         <py:when test="not compact">
-          <h2>Attachments</h2>
+          <h2 class="${foldable and 'foldable' or None}">Attachments</h2>
           <div py:if="alist.attachments or alist.can_create" id="attachments">
             <dl py:if="alist.attachments" class="attachments">
               <py:for each="attachment in alist.attachments">
@@ -184,7 +184,7 @@
             ${attach_file_form(alist, add_button_title)}
           </div>
         </py:when>
-      </py:choose>
+      </div>
     </py:if>
   </py:def>
 

@@ -444,6 +444,8 @@ class TicketModule(Component):
         data['fields'] = fields
 
         add_stylesheet(req, 'common/css/ticket.css')
+        add_script(req, 'common/js/folding.js')
+        add_script(req, 'common/js/wikitoolbar.js')
         return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
@@ -618,6 +620,8 @@ class TicketModule(Component):
                 break
 
         add_stylesheet(req, 'common/css/ticket.css')
+        add_script(req, 'common/js/folding.js')
+        add_script(req, 'common/js/wikitoolbar.js')
 
         # Add registered converters
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):
