@@ -581,6 +581,7 @@ class WikiModule(Component):
             'version': version,
             'higher': higher, 'related': related,
         })
+        add_script(req, 'common/js/folding.js')
         return 'wiki_view.html', data, None
     
     def _wiki_ctxtnav(self, req, page):

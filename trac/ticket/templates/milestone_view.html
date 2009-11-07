@@ -12,10 +12,9 @@
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
+        $(".foldable").enableFolding(true);
       });
     </script>
-    <link rel="stylesheet" type="text/css"
-          href="${chrome.htdocs_location}css/roadmap.css" />
   </head>
 
   <body>
@@ -88,7 +87,7 @@
         ${wiki_to_html(context, milestone.description)}
       </div>
 
-      ${list_of_attachments(attachments, compact=True)}
+      ${list_of_attachments(attachments, compact=True, foldable=True)}
 
       <div py:if="'MILESTONE_MODIFY' in perm(milestone.resource) or
                   'MILESTONE_DELETE' in perm(milestone.resource) or

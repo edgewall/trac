@@ -35,6 +35,27 @@
     });
   }
   
+  $.fn.getAbsolutePos = function() {
+    return this.map(function() {
+      var left = this.offsetLeft;
+      var top = this.offsetTop;
+      var parent = this.offsetParent;
+      while (parent) {
+        left += parent.offsetLeft;
+        top += parent.offsetTop;
+        parent = parent.offsetParent;
+      }
+      return {left: left, top: top};
+    });
+  }
+  
+  $.fn.scrollToTop = function() {
+    return this.each(function() {
+      scrollTo(0, $(this).getAbsolutePos()[0].top);
+      return false;
+    });
+  }
+  
   $.loadStyleSheet = function(href, type) {
     type = type || "text/css";
     $(document).ready(function() {

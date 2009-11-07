@@ -39,7 +39,7 @@ from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_link, add_notice, add_stylesheet, \
+from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
                             add_warning, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
@@ -791,6 +791,8 @@ class MilestoneModule(Component):
                     percent = float(gstat.count) / float(max_count) * 100
                 gs_dict['percent_of_max_total'] = percent
 
+        add_stylesheet(req, 'common/css/roadmap.css')
+        add_script(req, 'common/js/folding.js')
         return 'milestone_view.html', data, None
 
     # IWikiSyntaxProvider methods
