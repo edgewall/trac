@@ -94,14 +94,14 @@
     </py:def>
 
     <div id="content" class="ticket" 
-        py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
-                 can_create = 'TICKET_CREATE' in perm(ticket.resource) and not ticket.exists;
-                 can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
-                 can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource);
-                 only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource);
-                 has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
-                 has_property_editor = not version and version != 0 and not cnum_edit
-                                       and (can_append or can_modify or can_edit or can_create)">
+         py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
+                  can_create = 'TICKET_CREATE' in perm(ticket.resource) and not ticket.exists;
+                  can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
+                  can_edit = 'TICKET_EDIT_DESCRIPTION' in perm(ticket.resource);
+                  only_for_admin = 'TICKET_ADMIN' in perm(ticket.resource);
+                  has_edit_comment = 'TICKET_EDIT_COMMENT' in perm(ticket.resource);
+                  has_property_editor = not version and version != 0 and not cnum_edit
+                                        and (can_append or can_modify or can_edit or can_create)">
       <div class="trac-nav" py:if="(ticket.exists or preview_mode) and has_property_editor">
         <a href="#propertyform" title="Go to the ticket editor">modify</a> &darr;
       </div>
@@ -126,76 +126,73 @@
         </py:otherwise>
       </h1>
 
-        <!-- Ticket Box (ticket fields along with description) -->
-        <div id="ticket" py:if="ticket.exists or preview_mode"
-          class="${preview_mode and 'ticketdraft' or None}">
-          <div class="date">
-            <p i18n:msg="created" py:if="ticket.exists">Opened ${dateinfo(ticket.time)} ago</p>
-            <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${dateinfo(ticket.changetime)} ago</p>
-            <p py:if="not ticket.exists"><i>(ticket not yet created)</i></p>
-          </div>
-          <!--! use a placeholder if it's a new ticket -->
-          <h2 class="summary searchable">$ticket.summary</h2>
-
-          <table class="properties"
-                 py:with="fields = [f for f in fields if not f.skip and f.name
-                                    not in ('type', 'owner')]">
-            <tr>
-              <th id="h_reporter">Reported by:</th>
-              <td headers="h_reporter" class="searchable">
-                ${defined('reporter_link') and reporter_link or authorinfo(ticket.reporter)}
-              </td>
-              <th id="h_owner">Owned by:</th>
-              <td headers="h_owner">
-                ${defined('owner_link') and owner_link or authorinfo(ticket.owner)}
-              </td>
-            </tr>
-            <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
-              py:with="fullrow = len(row) == 1">
-              <py:for each="idx, field in enumerate(row)">
-                <th py:if="idx == 0 or not fullrow"
-                    id="${field and 'h_'+field.name or None}">
-                  <py:if test="field">${field.label or field.name}:</py:if>
-                </th>
-                <td py:if="idx == 0 or not fullrow"
-                    headers="${field and 'h_'+field.name or None}"
-                    class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
-                    colspan="${fullrow and 3 or None}">
-                  <py:if test="field">
-                    <py:choose test="">
-                      <py:when test="'rendered' in field">${field.rendered}</py:when>
-                      <py:otherwise>${ticket[field.name]}</py:otherwise>
-                    </py:choose>
-                  </py:if>
-                </td>
-              </py:for>
-            </tr>
-          </table>
-            <div class="description">
-              <h3 id="comment:description">
-                Description
-                <span py:if="description_change" class="lastmod"
-                      title="$description_change.date">
-                  (last modified by ${authorinfo(description_change.author)})
-                  (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
-                </span>
-              </h3>
-
-              <!--! Quote the description (only for existing tickets) -->
-              <form py:if="ticket.exists and ticket.description and can_append"
-                id="addreply"
-                method="get" action="#comment">
-                <div class="inlinebuttons">
-                  <input type="hidden" name="replyto" value="description" />
-                  <input type="submit" name="reply" value="${_('Reply')}" title="${_('Reply, quoting this description')}" />
-                </div>
-              </form>
-              <div py:if="ticket.description" class="searchable" xml:space="preserve">
-                ${wiki_to_html(context, ticket.description, escape_newlines=preserve_newlines)}
-              </div>
-              <br py:if="not ticket.description" style="clear: both" />
-            </div>
+      <!-- Ticket Box (ticket fields along with description) -->
+      <div id="ticket" py:if="ticket.exists or preview_mode" class="${preview_mode and 'ticketdraft' or None}">
+        <div class="date">
+          <p i18n:msg="created" py:if="ticket.exists">Opened ${dateinfo(ticket.time)} ago</p>
+          <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${dateinfo(ticket.changetime)} ago</p>
+          <p py:if="not ticket.exists"><i>(ticket not yet created)</i></p>
         </div>
+        <!--! use a placeholder if it's a new ticket -->
+        <h2 class="summary searchable">$ticket.summary</h2>
+
+        <table class="properties"
+               py:with="fields = [f for f in fields if not f.skip and f.name not in ('type', 'owner')]">
+          <tr>
+            <th id="h_reporter">Reported by:</th>
+            <td headers="h_reporter" class="searchable">
+              ${defined('reporter_link') and reporter_link or authorinfo(ticket.reporter)}
+            </td>
+            <th id="h_owner">Owned by:</th>
+            <td headers="h_owner">
+              ${defined('owner_link') and owner_link or authorinfo(ticket.owner)}
+            </td>
+          </tr>
+          <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
+            py:with="fullrow = len(row) == 1">
+            <py:for each="idx, field in enumerate(row)">
+              <th py:if="idx == 0 or not fullrow"
+                  id="${field and 'h_'+field.name or None}">
+                <py:if test="field">${field.label or field.name}:</py:if>
+              </th>
+              <td py:if="idx == 0 or not fullrow"
+                  headers="${field and 'h_'+field.name or None}"
+                  class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
+                  colspan="${fullrow and 3 or None}">
+                <py:if test="field">
+                  <py:choose test="">
+                    <py:when test="'rendered' in field">${field.rendered}</py:when>
+                    <py:otherwise>${ticket[field.name]}</py:otherwise>
+                  </py:choose>
+                </py:if>
+              </td>
+            </py:for>
+          </tr>
+        </table>
+        <div class="description">
+          <h3 id="comment:description">
+            Description
+            <span py:if="description_change" class="lastmod"
+                  title="$description_change.date">
+              (last modified by ${authorinfo(description_change.author)})
+              (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
+            </span>
+          </h3>
+
+          <!--! Quote the description (only for existing tickets) -->
+          <form py:if="ticket.exists and ticket.description and can_append"
+            id="addreply" method="get" action="#comment">
+            <div class="inlinebuttons">
+              <input type="hidden" name="replyto" value="description" />
+              <input type="submit" name="reply" value="${_('Reply')}" title="${_('Reply, quoting this description')}" />
+            </div>
+          </form>
+          <div py:if="ticket.description" class="searchable" xml:space="preserve">
+            ${wiki_to_html(context, ticket.description, escape_newlines=preserve_newlines)}
+          </div>
+          <br py:if="not ticket.description" style="clear: both" />
+        </div>
+      </div>
       <!--! End of ticket box -->
 
       <py:if test="ticket.exists">
@@ -317,131 +314,130 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
 ${comment}</textarea>
           </fieldset>
         </div>
-        
+
         <div>
           <h2 py:if="ticket.exists" class="foldable">Modify Ticket</h2>
           <div id="modify">
             <!--! Properties -->
-        <fieldset id="properties" py:if="can_modify or can_edit or can_create"
-                  py:with="fields = [f for f in fields if not f.skip]">
-          <legend py:choose="">
-              <py:when test="ticket.exists">Change Properties</py:when>
-              <py:otherwise>Properties</py:otherwise>
-          </legend>
-          <table>
-            <tr py:if="can_modify or can_create">
-              <th><label for="field-summary">Summary:</label></th>
-              <td class="fullrow" colspan="3">
-                <input type="text" id="field-summary" name="field_summary"
-                       value="$ticket.summary" size="70" />
-              </td>
-            </tr>
-            <py:if test="only_for_admin">
-              <tr>
-                <th><label for="field-reporter">Reporter:</label></th>
-                <td class="fullrow" colspan="3">
-                  <input type="text" id="field-reporter" name="field_reporter"
-                         value="${ticket.reporter}" size="70" />
-                </td>
-              </tr>
-            </py:if>
-            <py:if test="can_edit or can_create">
-              <tr>
-                <th><label for="field-description">Description:</label></th>
-                <td class="fullrow" colspan="3">
-                  <textarea id="field-description" name="field_description" class="wikitext" rows="10" cols="68">
+            <fieldset id="properties" py:if="can_modify or can_edit or can_create"
+                      py:with="fields = [f for f in fields if not f.skip]">
+              <legend py:choose="">
+                  <py:when test="ticket.exists">Change Properties</py:when>
+                  <py:otherwise>Properties</py:otherwise>
+              </legend>
+              <table>
+                <tr py:if="can_modify or can_create">
+                  <th><label for="field-summary">Summary:</label></th>
+                  <td class="fullrow" colspan="3">
+                    <input type="text" id="field-summary" name="field_summary"
+                           value="$ticket.summary" size="70" />
+                  </td>
+                </tr>
+                <py:if test="only_for_admin">
+                  <tr>
+                    <th><label for="field-reporter">Reporter:</label></th>
+                    <td class="fullrow" colspan="3">
+                      <input type="text" id="field-reporter" name="field_reporter"
+                             value="${ticket.reporter}" size="70" />
+                    </td>
+                  </tr>
+                </py:if>
+                <py:if test="can_edit or can_create">
+                  <tr>
+                    <th><label for="field-description">Description:</label></th>
+                    <td class="fullrow" colspan="3">
+                      <textarea id="field-description" name="field_description" class="wikitext" rows="10" cols="68">
 ${ticket.description}</textarea>
-                </td>
-              </tr>
-            </py:if>
-            <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea' and f.name != 'owner')"
-                py:if="can_modify or can_create"
-                py:with="fullrow = len(row) == 1">
-              <py:for each="idx, field in enumerate(row)"
-                      py:with="value = ticket.get_value_or_default(field.name)">
-                <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
-                  <label for="field-${field.name}" py:if="field"
-                         py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
-                </th>
-                <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
-                    colspan="${fullrow and 3 or None}">
-                  <py:choose test="field.type" py:if="field">
-                    <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
-                      <option py:if="field.optional"></option>
-                      <option py:for="option in field.options"
-                              selected="${value == option or None}"
-                              py:content="option"></option>
-                      <optgroup py:for="optgroup in field.optgroups"
-                                py:if="optgroup.options"
-                                label="${optgroup.label}">
-                        <option py:for="option in optgroup.options"
-                                selected="${value == option or None}"
-                                py:content="option"></option>
-                      </optgroup>
-                    </select>
-                    <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
-                              cols="${field.width}" rows="${field.height}"
-                              class="${field.format == 'wiki' and 'wikitext' or None}">
+                    </td>
+                  </tr>
+                </py:if>
+                <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea' and f.name != 'owner')"
+                    py:if="can_modify or can_create"
+                    py:with="fullrow = len(row) == 1">
+                  <py:for each="idx, field in enumerate(row)"
+                          py:with="value = ticket.get_value_or_default(field.name)">
+                    <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
+                      <label for="field-${field.name}" py:if="field"
+                             py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
+                    </th>
+                    <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
+                        colspan="${fullrow and 3 or None}">
+                      <py:choose test="field.type" py:if="field">
+                        <select py:when="'select'" id="field-${field.name}" name="field_${field.name}">
+                          <option py:if="field.optional"></option>
+                          <option py:for="option in field.options"
+                                  selected="${value == option or None}"
+                                  py:content="option"></option>
+                          <optgroup py:for="optgroup in field.optgroups"
+                                    py:if="optgroup.options"
+                                    label="${optgroup.label}">
+                            <option py:for="option in optgroup.options"
+                                    selected="${value == option or None}"
+                                    py:content="option"></option>
+                          </optgroup>
+                        </select>
+                        <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
+                                  cols="${field.width}" rows="${field.height}"
+                                  class="${field.format == 'wiki' and 'wikitext' or None}">
 ${value}</textarea>
-                    <span py:when="'checkbox'">
-                      <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
-                             checked="${value == '1' and 'checked' or None}" value="1" />
-                      <input type="hidden" name="field_checkbox_${field.name}" value="1" />
-                    </span>
-                    <label py:when="'radio'"
-                           py:for="idx, option in enumerate(field.options)">
-                      <input type="radio" name="field_${field.name}" value="${option}"
-                             checked="${value == option or None}" />
-                      ${option}
-                    </label>
-                    <py:otherwise><!--! Text input fields -->
-                      <py:choose>
-                        <span py:when="field.cc_entry"><!--! Special case for Cc: field -->
-                          <em>${field.cc_entry}</em>
-                          <input type="checkbox" id="field-cc" name="cc_update"
-                            title="This checkbox allows you to add or remove yourself from the CC list."
-                            checked="${field.cc_update}" />
+                        <span py:when="'checkbox'">
+                          <input type="checkbox" id="field-${field.name}" name="field_${field.name}"
+                                 checked="${value == '1' and 'checked' or None}" value="1" />
+                          <input type="hidden" name="field_checkbox_${field.name}" value="1" />
                         </span>
-                        <!--! Cc: when TICKET_EDIT_CC is allowed -->
-                        <span py:when="field.name == 'cc'">
-                          <input  type="text" id="field-${field.name}"
-                            title="Space or comma delimited email addresses and usernames are accepted."
-                            name="field_${field.name}" value="${value}" />
-                        </span>
-                        <!--! All the other text input fields -->
-                        <input py:otherwise="" type="text" id="field-${field.name}"
-                          name="field_${field.name}" value="${value}" />
+                        <label py:when="'radio'"
+                               py:for="idx, option in enumerate(field.options)">
+                          <input type="radio" name="field_${field.name}" value="${option}"
+                                 checked="${value == option or None}" />
+                          ${option}
+                        </label>
+                        <py:otherwise><!--! Text input fields -->
+                          <py:choose>
+                            <span py:when="field.cc_entry"><!--! Special case for Cc: field -->
+                              <em>${field.cc_entry}</em>
+                              <input type="checkbox" id="field-cc" name="cc_update"
+                                title="This checkbox allows you to add or remove yourself from the CC list."
+                                checked="${field.cc_update}" />
+                            </span>
+                            <!--! Cc: when TICKET_EDIT_CC is allowed -->
+                            <span py:when="field.name == 'cc'">
+                              <input  type="text" id="field-${field.name}"
+                                title="Space or comma delimited email addresses and usernames are accepted."
+                                name="field_${field.name}" value="${value}" />
+                            </span>
+                            <!--! All the other text input fields -->
+                            <input py:otherwise="" type="text" id="field-${field.name}"
+                              name="field_${field.name}" value="${value}" />
+                          </py:choose>
+                        </py:otherwise>
                       </py:choose>
-                    </py:otherwise>
-                  </py:choose>
-                </td>
-              </py:for>
-            </tr>
-          </table>
-
-        </fieldset>
-
-        <!--! Workflow support -->
-        <py:if test="ticket.exists"> <!--! do not display the actions for New tickets -->
-          <py:choose>
-            <fieldset py:when="can_append or can_modify" id="action">
-              <legend>Action</legend>
-              <div py:for="key, label, controls, hints in action_controls">
-                  <input type="radio" id="action_$key" name="action" value="$key" checked="${key == action or None}" />
-                  <label for="action_$key">$label</label>
-                  $controls
-                  <span class="hint" py:for="hint in hints">$hint</span>
-              </div>
+                    </td>
+                  </py:for>
+                </tr>
+              </table>
             </fieldset>
-            <py:otherwise>
-              <py:for each="key, label, controls, hints in action_controls">
-                <input py:if="key == action" type="hidden" name="action" value="$action" />
-              </py:for>
-            </py:otherwise>
-          </py:choose>
-        </py:if>
-      </div>
-    </div>
+
+            <!--! Workflow support -->
+            <py:if test="ticket.exists"> <!--! do not display the actions for New tickets -->
+              <py:choose>
+                <fieldset py:when="can_append or can_modify" id="action">
+                  <legend>Action</legend>
+                  <div py:for="key, label, controls, hints in action_controls">
+                      <input type="radio" id="action_$key" name="action" value="$key" checked="${key == action or None}" />
+                      <label for="action_$key">$label</label>
+                      $controls
+                      <span class="hint" py:for="hint in hints">$hint</span>
+                  </div>
+                </fieldset>
+                <py:otherwise>
+                  <py:for each="key, label, controls, hints in action_controls">
+                    <input py:if="key == action" type="hidden" name="action" value="$action" />
+                  </py:for>
+                </py:otherwise>
+              </py:choose>
+            </py:if>
+          </div>
+        </div>
 
         <!--! Author or Reporter -->
         <div py:if="authname == 'anonymous'" class="field">
