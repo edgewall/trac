@@ -341,7 +341,7 @@ class Ticket(object):
                            "SELECT time,author,'comment',null,description,"
                            "0 AS permanent FROM attachment "
                            "WHERE id=%s AND time=%s "
-                           "ORDER BY permanent,time,author",
+                           "ORDER BY time,permanent,author",
                            (self.id, when_ts, sid, when_ts, sid, when_ts))
         else:
             cursor.execute("SELECT time,author,field,oldvalue,newvalue,"
@@ -352,7 +352,7 @@ class Ticket(object):
                            "UNION "
                            "SELECT time,author,'comment',null,description,"
                            "0 AS permanent FROM attachment WHERE id=%s "
-                           "ORDER BY permanent,time,author",
+                           "ORDER BY time,permanent,author",
                            (self.id, sid, sid))
         log = []
         for t, author, field, oldvalue, newvalue, permanent in cursor:

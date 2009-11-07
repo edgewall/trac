@@ -287,6 +287,31 @@ class TicketTestCase(unittest.TestCase):
                 self.fail('Unexpected change (%s)'
                           % ((t, author, field, old, new),))
 
+    def test_changelog_with_attachment(self):
+        """Verify ordering of attachments and comments in the changelog."""
+        tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
+        ticket = Ticket(self.env, tkt_id)
+        t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        ticket.save_changes('jane', 'Testing', t1)
+        t2 = datetime(2001, 1, 1, 1, 1, 2, 0, utc)
+        db = self.env.get_db_cnx()
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO attachment (type,id,filename,size,time,"
+                       "                        description,author,ipnr) "
+                       "VALUES ('ticket',%s,'file.txt',1234,%s,"
+                       "        'My file','mark','')",
+                       (str(tkt_id), to_timestamp(t2)))
+        db.commit()
+        t3 = datetime(2001, 1, 1, 1, 1, 3, 0, utc)
+        ticket.save_changes('jim', 'Other', t3)
+        log = ticket.get_changelog()
+        self.assertEqual(4, len(log))
+        self.assertEqual((t1, 'jane', 'comment', '', 'Testing', True), log[0])
+        self.assertEqual([(t2, 'mark', 'attachment', '', 'file.txt', False),
+                          (t2, 'mark', 'comment', '', 'My file', False)],
+                          sorted(log[1:3]))
+        self.assertEqual((t3, 'jim', 'comment', '', 'Other', True), log[3])
+
     def test_changelog_with_reverted_change(self):
         tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
         ticket = Ticket(self.env, tkt_id)
