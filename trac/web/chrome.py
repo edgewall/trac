@@ -461,38 +461,31 @@ class Chrome(Component):
 
         chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': [],
                   'notices': []}
-
-        # This is ugly... we can't pass the real Request object to the
-        # add_xxx methods, because it doesn't yet have the chrome attribute
-        class FakeRequest(object):
-            def __init__(self, req):
-                self.base_path = req.base_path
-                self.chrome = chrome
-        fakereq = FakeRequest(req)
+        setattr(req, 'chrome', chrome)
 
         htdocs_location = self.htdocs_location or req.href.chrome('common')
         chrome['htdocs_location'] = htdocs_location.rstrip('/') + '/'
 
         # HTML <head> links
-        add_link(fakereq, 'start', req.href.wiki())
-        add_link(fakereq, 'search', req.href.search())
-        add_link(fakereq, 'help', req.href.wiki('TracGuide'))
-        add_stylesheet(fakereq, 'common/css/trac.css')
-        add_script(fakereq, 'common/js/jquery.js')
+        add_link(req, 'start', req.href.wiki())
+        add_link(req, 'search', req.href.search())
+        add_link(req, 'help', req.href.wiki('TracGuide'))
+        add_stylesheet(req, 'common/css/trac.css')
+        add_script(req, 'common/js/jquery.js')
         # Only activate noConflict mode if requested to by the handler
         if handler is not None and \
            getattr(handler.__class__, 'jquery_noconflict', False):
-            add_script(fakereq, 'common/js/noconflict.js')
-        add_script(fakereq, 'common/js/trac.js')
-        add_script(fakereq, 'common/js/search.js')
+            add_script(req, 'common/js/noconflict.js')
+        add_script(req, 'common/js/trac.js')
+        add_script(req, 'common/js/search.js')
 
         # Shortcut icon
         chrome['icon'] = self.get_icon_data(req)
         if chrome['icon']:
             src = chrome['icon']['src']
             mimetype = chrome['icon']['mimetype']
-            add_link(fakereq, 'icon', src, mimetype=mimetype)
-            add_link(fakereq, 'shortcut icon', src, mimetype=mimetype)
+            add_link(req, 'icon', src, mimetype=mimetype)
+            add_link(req, 'shortcut icon', src, mimetype=mimetype)
 
         # Logo image
         chrome['logo'] = self.get_logo_data(req.href, req.abs_href)
@@ -529,9 +522,9 @@ class Chrome(Component):
                 if contributor is handler:
                     active = contributor.get_active_navigation_item(req)
             except TracError, e:
-                add_warning(fakereq, _("Error with navigation contributor "
-                                       '"%(name)s"', 
-                                       name=contributor.__class__.__name__))
+                add_warning(req, _("Error with navigation contributor "
+                                   '"%(name)s"', 
+                                   name=contributor.__class__.__name__))
 
         nav = {}
         for category, items in [(k, v.items()) for k, v in allitems.items()]:
