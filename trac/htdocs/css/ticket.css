@@ -92,6 +92,7 @@ h1 .status { color: #444; }
 }
 .threading, #changelog .inlinebuttons { float: right; margin-left: 0.2em }
 .threading { font-size: 85%; }
+.threading :link, .threading :visited { border-bottom: 0 }
 #changelog .trac-lastedit {
  padding-left: 2.5em;
  color: #999;
