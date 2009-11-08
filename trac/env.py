@@ -431,7 +431,7 @@ class Environment(Component, ComponentManager):
         db = self.get_db_cnx()
         for participant in self.setup_participants:
             if participant.environment_needs_upgrade(db):
-                self.log.warning('Component %s requires environment upgrade',
+                self.log.warning('Component %s requires environmet upgrade',
                                  participant)
                 return True
         return False
@@ -506,6 +506,8 @@ class EnvironmentSetup(Component):
             return False
         elif dbver > db_default.db_version:
             raise TracError(_('Database newer than Trac version'))
+        self.log.info("Database version is %d, current is %d",
+                      dbver, db_default.db_version)
         return True
 
     def upgrade_environment(self, db):
