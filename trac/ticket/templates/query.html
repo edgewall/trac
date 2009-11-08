@@ -122,7 +122,7 @@
                     </tr>
                   </tbody>
 
-                  <tbody py:with="last_clause = clause_num == len(clauses) - 1">
+                  <tbody py:with="last_clause = clause_num == (len(clauses) or 1) - 1">
                     <tr class="actions">
                       <td class="and" colspan="2">
                         &nbsp;<label for="add_filter_${clause_num}">And</label>&nbsp;
@@ -132,15 +132,22 @@
                                   value="$field_name"
                                   disabled="${(field.type in ('radio', 'checkbox', 'id') and
                                                field_name in constraints and
-                                               len(constraints[field_name])) or None}">${fields[field_name].label}</option>
+                                               len(constraints[field_name])) or None}">${field.label}</option>
                         </select>
                         <div class="inlinebuttons">
                           <input type="submit" name="add_${clause_num}" value="+" />
                         </div>
                       </td>
                       <td py:if="last_clause" class="or" colspan="2">
+                        <label for="add_clause">Or</label>&nbsp;
+                        <select name="add_clause_${clause_num + 1}" id="add_clause">
+                          <option></option>
+                          <option py:for="field_name in field_names" value="$field_name">
+                            ${fields[field_name].label}
+                          </option>
+                        </select>
                         <div class="inlinebuttons">
-                          <input type="submit" name="add_clause" id="add_clause" value="Or..." />
+                          <input type="submit" name="add_${clause_num + 1}" value="+" />
                         </div>
                       </td>
                     </tr>

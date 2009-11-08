@@ -955,7 +955,7 @@ class QueryModule(Component):
                         index = int(match.group(2))
                     remove_constraints[k[10:match.end(1)]] = index
             
-            # Get constraints from form fields, and add a coonstraint if
+            # Get constraints from form fields, and add a constraint if
             # requested for clients without JavaScript
             add_num = None
             constraints = {}
@@ -994,7 +994,8 @@ class QueryModule(Component):
                     clause = constraints.setdefault(clause_num, {})
                     clause.setdefault(field, []).extend(vals)
             if add_num is not None:
-                field = req.args.get('add_filter_' + add_num)
+                field = req.args.get('add_filter_' + add_num,
+                                     req.args.get('add_clause_' + add_num))
                 if field:
                     clause = constraints.setdefault(int(add_num), {})
                     modes = Query.get_modes().get(fields[field]['type'])
@@ -1010,10 +1011,6 @@ class QueryModule(Component):
             elif field in fields:
                 clauses[-1].setdefault(field, []).append(val)
         clauses = filter(None, clauses)
-        
-        # Add a new empty clause for non-JavaScript clients if requested
-        if req is not None and req.args.get('add_clause'):
-            clauses.append({})
         
         return clauses
 
