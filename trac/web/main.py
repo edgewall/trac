@@ -55,6 +55,17 @@ from trac.web.clearsilver import HDFWrapper
 from trac.web.href import Href
 from trac.web.session import Session
 
+class FakeSession(dict):
+    sid = None
+    def save(self):
+        pass
+
+class FakePerm(dict):
+    def require(self, *args):
+        return False
+    def __call__(self, *args):
+        return self
+
 def populate_hdf(hdf, env, req=None):
     """Populate the HDF data set with various information, such as common URLs,
     project information and request-related information.
@@ -266,10 +277,18 @@ class RequestDispatcher(Component):
         return hdf
 
     def _get_perm(self, req):
-        return PermissionCache(self.env, self.authenticate(req))
+        if isinstance(req.session, FakeSession):
+            return FakePerm()
+        else:
+            return PermissionCache(self.env, self.authenticate(req))
 
     def _get_session(self, req):
-        return Session(self.env, req)
+        try:
+            return Session(self.env, req)
+        except TracError, e:
+            self.log.error("can't retrieve session: %s",
+                           exception_to_unicode(e))
+            return FakeSession()
 
     def _get_locale(self, req):
         if Locale:
