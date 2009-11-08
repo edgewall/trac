@@ -33,6 +33,9 @@
         var ctbody = table.closest("tbody");
         if (table.children().length > 2 || !ctbody.siblings().length) {
           tbody.remove();
+          if (!ctbody.siblings().length && table.children().length == 1) {
+            $("#add_clause").attr("disabled", true);
+          }
         } else {
           var add_clause = $("#add_clause", ctbody);
           if (add_clause.length)
@@ -110,7 +113,7 @@
     $("#filters select[name^=add_filter_]").change(function() {
       if (this.selectedIndex < 1)
         return;
-      
+
       if (this.options[this.selectedIndex].disabled) {
         // IE doesn't support disabled options
         alert("A filter already exists for that property");
@@ -219,33 +222,43 @@
         this.options[this.selectedIndex].disabled = true;
       
       this.selectedIndex = 0;
+
+      // Enable the Or... button if it's been disabled
+      $("#add_clause").attr("disabled", false);
     }).next("div.inlinebuttons").remove();
     
     // Add a new empty clause at the end by cloning the current last clause
-    function addClause(button) {
-      var tbody = $(button).closest("tbody");
-      var clauseNum = parseInt($("select[name^=add_filter_]", tbody)
-                               .attr("name").split("_").pop()) + 1;
-      tbody = tbody.parents("tbody").eq(0);
+    function addClause(select) {
+      var tbody = $(select).closest("tbody");
+      var clauseNum = parseInt($(select).attr("name").split("_").pop());
+      var tbody = $(select).closest("tbody").parents("tbody").eq(0);
       var copy = tbody.clone(true);
-      $(button).closest("td").next().attr("colSpan", 4).end().remove();
-      $("td.trac-clause-sep", copy).parent().removeAttr("style");
+      $(select).closest("td").next().attr("colSpan", 4).end().remove();
+      $("tr:first", copy).removeAttr("style");
       $("tr tbody:not(:last)", copy).remove();
       var newId = "add_filter_" + clauseNum;
-      $("select", copy).attr("id", newId).attr("name", newId)
+      $("select[name^=add_filter_]", copy).attr("id", newId)
+        .attr("name", newId)
         .children().enable().end()
         .prev().attr("for", newId);
+      $("select[name^=add_clause_]", copy)
+        .attr("name", "add_clause_" + (clauseNum + 1));
       tbody.after(copy);
     }
     
-    // Make the button for adding a clause a client-side trigger
-    var add_clause = $("#filters input[name=add_clause]");
-    add_clause.replaceWith(
-      $($.template('<input type="button" id="add_clause" value="$1">', 
-                   add_clause.val())).click(function() {
+    var add_clause = $("#add_clause");
+    add_clause.change(function() {
+      // Add a new clause and fire a change event on the new clause's
+      // add_filter select.
+      var field = $(this).val();
       addClause(this);
-      return false;
-    }));
+      $("#add_clause").closest("tr").find("select[name^=add_filter_]")
+        .val(field).change();
+    }).next("div.inlinebuttons").remove();
+    if (!add_clause.closest("tbody").siblings().length) {
+      // That is, if there are no filters added to this clause
+      add_clause.attr("disabled", true);
+    }
   }
 
 })(jQuery);
