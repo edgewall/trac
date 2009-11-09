@@ -41,7 +41,8 @@ def get_changes(repos, revs):
 def get_path_links(href, reponame, path, rev, order=None, desc=None):
     desc = desc or None
     links = [{'name': 'root',
-              'href': href.browser(rev=rev, order=order, desc=desc)}]
+              'href': href.browser(rev=reponame == '' and rev or None,
+                                   order=order, desc=desc)}]
     if reponame:
         links.append({
             'name': reponame, 
