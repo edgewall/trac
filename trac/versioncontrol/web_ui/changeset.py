@@ -36,7 +36,7 @@ from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import embedded_numbers, content_disposition
-from trac.util.compat import any
+from trac.util.compat import any, set
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
                            unicode_urlencode, shorten_line, CRLF
@@ -849,16 +849,28 @@ class ChangesetModule(Component):
 
     def get_timeline_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:
+            # non-'hidden' repositories will be listed as additional
+            # repository filters.
+            # '(default)' will be shown for the default repository,
+            # unless it has a visible alias, or when it is itself an
+            # alias to a visible repository, or when it would be the
+            # only repository filter.
             filters = []
             rm = RepositoryManager(self.env)
             repositories = rm.get_all_repositories()
+            visible_repos = set(name for name, info in repositories.items()
+                                if not info.get('hidden', False))
+            default_is_aliased = any(info.get('alias') == '' and
+                                     name in visible_repos
+                                     for name, info in repositories.items())
+            default_is_alias = repositories.get('', {}).get('alias') \
+                               in visible_repos
             default_is_alone = repositories.keys() == ['']
-            default_is_aliased = any(repoinfo.get('alias') == '' 
-                                     for repoinfo in repositories.values())
             for reponame, repoinfo in repositories.iteritems():
                 if reponame:
                     label = reponame
-                elif default_is_aliased or default_is_alone:
+                elif default_is_aliased or default_is_alone or \
+                     default_is_alias:
                     continue
                 else:
                     reponame = '(default)'
