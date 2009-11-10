@@ -26,6 +26,7 @@ import re
 from StringIO import StringIO
 
 from genshi.builder import tag
+from genshi.core import Markup
 
 from trac.config import Option, BoolOption, IntOption
 from trac.core import *
@@ -848,7 +849,15 @@ class ChangesetModule(Component):
 
     def get_timeline_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:
-            yield ('changeset', _('Repository checkins'))
+            filters = []
+            rm = RepositoryManager(self.env)
+            for reponame, repoinfo in rm.get_all_repositories().iteritems():
+                if reponame and not repoinfo.get('hidden', False):
+                    filters.append((reponame,
+                                    Markup("&nbsp;&sdot;&nbsp;") + reponame))
+            filters.sort()
+            filters.insert(0, ('changeset', _('Repository checkins')))
+            return filters
 
     def get_timeline_events(self, req, start, stop, filters):
         if 'changeset' in filters:
@@ -893,9 +902,10 @@ class ChangesetModule(Component):
                                 show_location, show_files))
 
             for reponame, repos in self.env.get_all_repositories(req.authname):
-                for event in generate_changesets(reponame, repos):
-                    yield event
-                
+                if reponame in filters:
+                    for event in generate_changesets(reponame, repos):
+                        yield event
+
     def render_timeline_event(self, context, field, event):
         changesets, show_location, show_files = event[3]
         cset, cset_resource, repos_for_uid = changesets[0]
