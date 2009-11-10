@@ -851,10 +851,21 @@ class ChangesetModule(Component):
         if 'CHANGESET_VIEW' in req.perm:
             filters = []
             rm = RepositoryManager(self.env)
-            for reponame, repoinfo in rm.get_all_repositories().iteritems():
-                if reponame and not repoinfo.get('hidden', False):
+            repositories = rm.get_all_repositories()
+            default_is_alone = repositories.keys() == ['']
+            default_is_aliased = any(repoinfo.get('alias') == '' 
+                                     for repoinfo in repositories.values())
+            for reponame, repoinfo in repositories.iteritems():
+                if reponame:
+                    label = reponame
+                elif default_is_aliased or default_is_alone:
+                    continue
+                else:
+                    reponame = '(default)'
+                    label = _('(default)')
+                if not repoinfo.get('hidden', False):
                     filters.append((reponame,
-                                    Markup("&nbsp;&sdot;&nbsp;") + reponame))
+                                    Markup("&nbsp;&sdot;&nbsp;") + label))
             filters.sort()
             filters.insert(0, ('changeset', _('Repository checkins')))
             return filters
@@ -902,9 +913,10 @@ class ChangesetModule(Component):
                                 show_location, show_files))
 
             rm = RepositoryManager(self.env)
-            repositories = rm.get_all_repositories().keys()
+            repositories = rm.get_all_repositories()
+            default_is_alone = repositories.keys() == ['']
             for reponame in repositories:
-                if reponame in filters or repositories == ['']:
+                if default_is_alone or (reponame or '(default)') in filters:
                     repos = rm.get_repository(reponame, req.authname)
                     for event in generate_changesets(reponame, repos):
                         yield event
