@@ -301,18 +301,6 @@ class Environment(Component, ComponentManager):
         """
         return RepositoryManager(self).get_repository(reponame, authname)
 
-    def get_all_repositories(self, authname=None):
-        """Iterate through all known repositories
-        
-        Each element is `(reponame, repository)` pair.
-        """
-        rm = RepositoryManager(self)
-        for reponame in rm.get_all_repositories().keys():
-            try:
-                yield (reponame, rm.get_repository(reponame, authname))
-            except TracError:
-                pass # only yield valid repositories
-
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize
         the database and populate the configuration file with default values.
