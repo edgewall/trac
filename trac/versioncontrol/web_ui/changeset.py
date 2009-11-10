@@ -866,17 +866,16 @@ class ChangesetModule(Component):
             default_is_alias = repositories.get('', {}).get('alias') \
                                in visible_repos
             default_is_alone = repositories.keys() == ['']
-            for reponame, repoinfo in repositories.iteritems():
+            for reponame in repositories.keys():
                 if reponame:
                     label = reponame
                 elif default_is_aliased or default_is_alone or \
                      default_is_alias:
                     continue
                 else:
-                    reponame = '(default)'
                     label = _('(default)')
-                if not repoinfo.get('hidden', False):
-                    filters.append((reponame,
+                if reponame in visible_repos:
+                    filters.append((reponame or '(default)',
                                     Markup("&nbsp;&sdot;&nbsp;") + label))
             filters.sort()
             filters.insert(0, ('changeset', _('Repository checkins')))
