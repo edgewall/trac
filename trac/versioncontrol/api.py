@@ -384,6 +384,9 @@ class RepositoryManager(Component):
         """
         repositories = self.config['repositories']
         reponames = {}
+        # eventually add pre-0.12 default repository
+        if self.repository_dir:
+            reponames[''] = {'dir': self.repository_dir}
         # first pass to gather the <name>.dir entries
         for option in repositories:
             if option.endswith('.dir'):
@@ -392,17 +395,14 @@ class RepositoryManager(Component):
         for option in repositories:
             if '.' not in option:
                 alias = repositories.get(option)
-                if reponames.get(alias) == {}:
-                    reponames[option] = {'alias': alias}
+                if alias in reponames:
+                    reponames.setdefault(option, {})['alias'] = alias
         # third pass to gather the <name>.<detail> entries
         for option in repositories:
             if '.' in option:
                 name, detail = option.rsplit('.', 1)
                 if name in reponames:
                     reponames[name][detail] = repositories.get(option)
-        # eventually add pre-0.12 default repository
-        if '' not in reponames and self.repository_dir:
-            reponames[''] = {'dir': self.repository_dir}
 
         for reponame, info in reponames.iteritems():
             yield (reponame, info)
