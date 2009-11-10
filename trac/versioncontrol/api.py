@@ -33,6 +33,11 @@ from trac.util.translation import _
 from trac.web.api import IRequestFilter
 
 
+def is_default(reponame):
+    """Check whether `reponame` is the default repository."""
+    return not reponame or reponame in ('(default)', _('(default)'))
+
+
 class IRepositoryConnector(Interface):
     """Provide support for a specific version control system."""
 
@@ -139,7 +144,7 @@ class DbRepositoryProvider(Component):
     
     def get_reponames(self):
         rm = RepositoryManager(self.env)
-        return [reponame or '(default)' for reponame
+        return [reponame or _('(default)') for reponame
                 in rm.get_all_repositories()]
     
     def _complete_add(self, args):
@@ -175,18 +180,20 @@ class DbRepositoryProvider(Component):
         if key not in self.repository_attrs:
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
         self.modify_repository(reponame, {key: value})
+        if not reponame:
+            reponame = _('(default)')
         if key == 'dir':
             printout(_('You should now run "repository resync %(name)s".',
-                       name=reponame or '(default)'))
+                       name=reponame))
         elif key == 'type':
             printout(_('You may have to run "repository resync %(name)s".',
-                       name=reponame or '(default)'))
+                       name=reponame))
     
     # Public interface
     
     def add_repository(self, reponame, dir, type_=None):
         """Add a repository."""
-        if reponame == '(default)':
+        if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
         if type_ and type_ not in rm.get_supported_types():
@@ -204,9 +211,9 @@ class DbRepositoryProvider(Component):
     
     def add_alias(self, reponame, target):
         """Create an alias repository."""
-        if reponame == '(default)':
+        if is_default(reponame):
             reponame = ''
-        if target == '(default)':
+        if is_default(target):
             target = ''
         rm = RepositoryManager(self.env)
         db = self.env.get_db_cnx()
@@ -221,7 +228,7 @@ class DbRepositoryProvider(Component):
     
     def remove_repository(self, reponame):
         """Remove a repository."""
-        if reponame == '(default)':
+        if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
         db = self.env.get_db_cnx()
@@ -235,7 +242,7 @@ class DbRepositoryProvider(Component):
     
     def modify_repository(self, reponame, changes):
         """Modify attributes of a repository."""
-        if reponame == '(default)':
+        if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
         db = self.env.get_db_cnx()
@@ -244,7 +251,7 @@ class DbRepositoryProvider(Component):
         for (k, v) in changes.iteritems():
             if k not in self.repository_attrs:
                 continue
-            if k in('alias', 'name') and v == '(default)':
+            if k in('alias', 'name') and is_default(v):
                 v = ''
             cursor.execute("UPDATE repository SET value=%s "
                            "WHERE id=%s AND name=%s", (v, id, k))
@@ -311,20 +318,22 @@ class RepositoryManager(Component):
         if handler is not Chrome(self.env):
             for reponame in self.repository_sync_per_request:
                 start = time.time()
-                if reponame == '(default)':
+                if is_default(reponame):
                     reponame = ''
                 try:
                     repo = self.get_repository(reponame, req.authname)
                     if repo:
                         repo.sync()
                 except TracError, e:
+                    if not reponame:
+                        reponame = _('(default)')
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
                           "(%(error)s). Look in the Trac log for more "
-                          "information.", name=reponame or '(default)',
+                          "information.", name=reponame,
                           error=to_unicode(e.message)))
                 self.log.info("Synchronized %s repository in %0.2f seconds",
-                              reponame or 'default', time.time() - start)
+                              reponame, time.time() - start)
         return handler
 
     def post_process_request(self, req, template, data, content_type):
