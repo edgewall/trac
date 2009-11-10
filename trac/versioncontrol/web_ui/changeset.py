@@ -901,8 +901,11 @@ class ChangesetModule(Component):
                                (viewable_changesets, 
                                 show_location, show_files))
 
-            for reponame, repos in self.env.get_all_repositories(req.authname):
-                if reponame in filters:
+            rm = RepositoryManager(self.env)
+            repositories = rm.get_all_repositories().keys()
+            for reponame in repositories:
+                if reponame in filters or repositories == ['']:
+                    repos = rm.get_repository(reponame, req.authname)
                     for event in generate_changesets(reponame, repos):
                         yield event
 
