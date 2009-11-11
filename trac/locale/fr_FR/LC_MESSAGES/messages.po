@@ -3508,7 +3508,7 @@ msgid ""
 "for more information."
 msgstr ""
 "Impossible de se synchroniser avec le dépôt (%(error)s). \n"
-"Consultez le journel de Trac pour plus d'informations."
+"Consultez le journal de Trac pour plus d'informations."
 
 #: trac/versioncontrol/api.py:105
 #, python-format
