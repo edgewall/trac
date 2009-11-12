@@ -211,7 +211,7 @@ class AuthzPolicy(Component):
         # ticket, remove TICKET_MODIFY"
         valid_users = ['*', 'anonymous']
         if username and username != 'anonymous':
-            valid_users += ['authenticated', username]
+            valid_users = ['*', 'authenticated', username]
         for resource_section in [a for a in self.authz.sections
                                  if a != 'groups']:
             resource_glob = resource_section
