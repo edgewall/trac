@@ -27,7 +27,7 @@
         <form id="attachment" method="post" enctype="multipart/form-data" action="">
           <div class="field">
             <label>File<py:if test="max_size >= 0"> (size limit
-                  ${pretty_size(max_size, format='%d')})</py:if>:<br />
+                  ${pretty_size(max_size)})</py:if>:<br />
               <input type="file" name="attachment" /></label>
           </div>
           <fieldset>

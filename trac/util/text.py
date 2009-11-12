@@ -245,7 +245,7 @@ def pretty_size(size, format='%.1f'):
     if size is None:
         return ''
 
-    jump = 512
+    jump = 1024
     if size < jump:
         return '%d bytes' % size
 
