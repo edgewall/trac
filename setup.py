@@ -66,7 +66,7 @@ facilities.
     },
 
     test_suite = 'trac.test.suite',
-    zip_safe = False,
+    zip_safe = True,
 
     install_requires = [
         'setuptools>=0.6b1',
