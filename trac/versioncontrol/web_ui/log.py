@@ -193,9 +193,10 @@ class LogModule(Component):
 
         if format in ('rss', 'changelog'):
             info = [i for i in info if i['change']] # drop separators
-            if count > limit:
+            if info and count > limit:
                 del info[-1]
-        elif count >= limit: # stop_limit reached, there _might_ be some more
+        elif info and count >= limit:
+            # stop_limit reached, there _might_ be some more
             next_rev = info[-1]['rev']
             next_path = info[-1]['path']
             next_revranges = None
