@@ -32,7 +32,7 @@
        $("#traceback ul").show();
        $("#traceback pre").hide();
        $("#tbtoggle").parent().show();
-       
+
        $("#systeminfo").append("<tr><th>jQuery:</th><td>"+$().jquery+"</td></tr>");
        $("#systeminfo").before("<p>User Agent: <tt>"+navigator.userAgent+"</tt></p>");
       });
@@ -102,11 +102,11 @@ ${traceback}
             <pre>$message</pre>
           </div>
           <py:choose>
-            <py:when test="'TRAC_ADMIN' not in perm">
-              <p i18n:msg="">There was an internal error in Trac. 
-                It is recommended that you notify your local 
+            <py:when test="not defined('trac_error_rendering') and 'TRAC_ADMIN' not in perm">
+              <p i18n:msg="">There was an internal error in Trac.
+                It is recommended that you notify your local
                 <a py:strip="not project.admin" href="mailto:${project.admin}">
-                    Trac administrator</a> with the information needed to 
+                    Trac administrator</a> with the information needed to
                 reproduce the issue.
               </p>
               <form py:if="project.admin_href"

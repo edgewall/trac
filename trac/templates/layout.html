@@ -16,7 +16,7 @@
         <link rel="${rel}" py:for="link in links" py:attrs="link" />
       </py:for>
     </py:if>
-    <py:if test="'SEARCH_VIEW' in perm" id="search">
+    <py:if test="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm" id="search">
       <link type="application/opensearchdescription+xml" rel="search"
             href="${href.search('opensearch')}" title="Search $project.name"/>
     </py:if>

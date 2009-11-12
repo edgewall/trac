@@ -521,10 +521,16 @@ class Chrome(Component):
                         allitems.setdefault(category, {})[name] = item
                 if contributor is handler:
                     active = contributor.get_active_navigation_item(req)
-            except TracError, e:
+            except Exception, e:
+                name = contributor.__class__.__name__
+                if isinstance(e, TracError):
+                    self.log.warning("Error with navigation contributor %s",
+                                     name)
+                else:
+                    self.log.error("Error with navigation contributor %s: %s",
+                                   name, exception_to_unicode(e))
                 add_warning(req, _("Error with navigation contributor "
-                                   '"%(name)s"', 
-                                   name=contributor.__class__.__name__))
+                                   '"%(name)s"', name=name))
 
         nav = {}
         for category, items in [(k, v.items()) for k, v in allitems.items()]:
@@ -653,8 +659,15 @@ class Chrome(Component):
                 'logo': self.get_logo_data(self.env.abs_href),
             })
 
-        show_email_addresses = (self.show_email_addresses or not req or \
+        try:
+            show_email_addresses = (self.show_email_addresses or not req or \
                                 'EMAIL_VIEW' in req.perm)
+        except Exception, e:
+            # simply log the exception here, as we might already be rendering
+            # the error page
+            self.log.error("Error during check of EMAIL_VIEW: %s", 
+                           exception_to_unicode(e))
+            show_email_addresses = False
         tzinfo = None
         if req:
             tzinfo = req.tz
@@ -738,6 +751,9 @@ class Chrome(Component):
         used (TextTemplate if `'text/plain'`, MarkupTemplate otherwise), and
         tweak the rendering process (use of XHTML Strict doctype if
         `'text/html'` is given).
+
+        When `fragment` is specified, the (filtered) Genshi stream is
+        returned.
         """
         if content_type is None:
             content_type = 'text/html'
