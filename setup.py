@@ -70,7 +70,7 @@ facilities.
 
     install_requires = [
         'setuptools>=0.6b1',
-        'Genshi>=0.6dev'
+        'Genshi>=0.6dev-r1072'
     ],
     extras_require = {
         'Babel': ['Babel>=0.9.4'],
