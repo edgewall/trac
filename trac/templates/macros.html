@@ -158,7 +158,7 @@
       </i18n:msg>
     </py:def>
     <py:if test="alist.attachments or alist.can_create">
-      <div py:choose="">
+      <div id="attachments" py:choose="">
         <py:when test="compact and alist.attachments">
           <h3 class="${foldable and 'foldable' or None}">Attachments</h3>
           <ul>
@@ -172,7 +172,7 @@
         </py:when>
         <py:when test="not compact">
           <h2 class="${foldable and 'foldable' or None}">Attachments</h2>
-          <div py:if="alist.attachments or alist.can_create" id="attachments">
+          <div py:if="alist.attachments or alist.can_create">
             <dl py:if="alist.attachments" class="attachments">
               <py:for each="attachment in alist.attachments">
                 <dt>${show_one_attachment(attachment)}</dt>
