@@ -566,6 +566,7 @@ class Component(object):
         cursor.execute("INSERT INTO component (name,owner,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, self.owner, self.description))
+        self._old_name = self.name
 
         if handle_ta:
             db.commit()
@@ -673,6 +674,7 @@ class Milestone(object):
             ticket['milestone'] = retarget_to
             ticket.save_changes(author, 'Milestone %s deleted' % self.name,
                                 now, db=db)
+        self.name = self._old_name = None
 
         if handle_ta:
             db.commit()
@@ -693,6 +695,7 @@ class Milestone(object):
                        "VALUES (%s,%s,%s,%s)",
                        (self.name, to_timestamp(self.due), to_timestamp(self.completed),
                         self.description))
+        self._old_name = self.name
 
         if handle_ta:
             db.commit()
@@ -819,6 +822,7 @@ class Version(object):
         cursor.execute("INSERT INTO version (name,time,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, to_timestamp(self.time), self.description))
+        self._old_name = self.name
 
         if handle_ta:
             db.commit()

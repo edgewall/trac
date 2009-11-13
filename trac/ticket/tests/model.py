@@ -422,7 +422,7 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual(None, milestone.completed)
         self.assertEqual('', milestone.description)
 
-    def test_create_milestone(self):
+    def test_create_and_update_milestone(self):
         milestone = Milestone(self.env)
         milestone.name = 'Test'
         milestone.insert()
@@ -431,6 +431,13 @@ class MilestoneTestCase(unittest.TestCase):
         cursor.execute("SELECT name,due,completed,description FROM milestone "
                        "WHERE name='Test'")
         self.assertEqual(('Test', 0, 0, ''), cursor.fetchone())
+        
+        # Use the same model object to update the milestone
+        milestone.description = 'Some text'
+        milestone.update()
+        cursor.execute("SELECT name,due,completed,description FROM milestone "
+                       "WHERE name='Test'")
+        self.assertEqual(('Test', 0, 0, 'Some text'), cursor.fetchone())
 
     def test_create_milestone_without_name(self):
         milestone = Milestone(self.env)
@@ -529,6 +536,7 @@ class ComponentTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.db = self.env.get_db_cnx()
 
     def tearDown(self):
         self.env.reset_db()
@@ -545,11 +553,29 @@ class ComponentTestCase(unittest.TestCase):
         for c in Component.select(self.env):
             self.assertEqual(c.exists, True)
 
+    def test_create_and_update(self):
+        component = Component(self.env)
+        component.name = 'Test'
+        component.insert()
+        
+        cursor = self.db.cursor()
+        cursor.execute("SELECT name,owner,description FROM component "
+                       "WHERE name='Test'")
+        self.assertEqual(('Test', None, None), cursor.fetchone())
+        
+        # Use the same model object to update the component
+        component.owner = 'joe'
+        component.update()
+        cursor.execute("SELECT name,owner,description FROM component "
+                       "WHERE name='Test'")
+        self.assertEqual(('Test', 'joe', None), cursor.fetchone())
+
 
 class VersionTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.db = self.env.get_db_cnx()
 
     def tearDown(self):
         self.env.reset_db()
@@ -565,6 +591,24 @@ class VersionTestCase(unittest.TestCase):
         """
         for v in Version.select(self.env):
             self.assertEqual(v.exists, True)
+
+    def test_create_and_update(self):
+        version = Version(self.env)
+        version.name = 'Test'
+        version.insert()
+        
+        cursor = self.db.cursor()
+        cursor.execute("SELECT name,time,description FROM version "
+                       "WHERE name='Test'")
+        self.assertEqual(('Test', 0, None), cursor.fetchone())
+        
+        # Use the same model object to update the version
+        version.description = 'Some text'
+        version.update()
+        cursor.execute("SELECT name,time,description FROM version "
+                       "WHERE name='Test'")
+        self.assertEqual(('Test', 0, 'Some text'), cursor.fetchone())
+
 
 def suite():
     suite = unittest.TestSuite()
