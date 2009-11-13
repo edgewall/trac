@@ -23,6 +23,7 @@ from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
 from trac.util import get_pkginfo
 from trac.util.datefmt import http_date, localtz
+from trac.util.translation import _
 from trac.web import IRequestHandler
 from trac.web.chrome import add_stylesheet
 
@@ -119,7 +120,7 @@ class PygmentsRenderer(Component):
     # IPreferencePanelProvider implementation
 
     def get_preference_panels(self, req):
-        yield ('pygments', 'Syntax Highlighting')
+        yield ('pygments', _('Syntax Highlighting'))
 
     def render_preference_panel(self, req, panel):
         styles = list(get_all_styles())
