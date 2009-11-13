@@ -413,7 +413,7 @@ table.wiki th {
 .attachment #preview { margin-top: 1em }
 
 /* Styles for the list of attachments. */
-#attachments { border: 1px outset #996; padding: 1em }
+#attachments > div { border: 1px outset #996; padding: 1em }
 #attachments .attachments { margin-left: 2em; padding: 0 }
 #attachments dt { display: list-item; list-style: square; }
 #attachments dd { font-style: italic; margin-left: 0; padding-left: 0; }

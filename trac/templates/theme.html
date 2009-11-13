@@ -22,7 +22,7 @@
         <h1 py:otherwise=""><a href="${chrome.logo.link}">${project.name}</a></h1>
       </div>
       <form id="search" action="${href.search()}" method="get">
-        <div py:if="'SEARCH_VIEW' in perm">
+        <div py:if="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm">
           <label for="proj-search">Search:</label>
           <input type="text" id="proj-search" name="q" size="18" accesskey="f" value="" />
           <input type="submit" value="${_('Search')}" />

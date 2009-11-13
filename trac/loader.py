@@ -40,8 +40,9 @@ def load_eggs(entry_point_name):
             pkg_resources.Environment(search_path)
         )
         for dist in distributions:
-            env.log.debug('Adding plugin %s from %s', dist, dist.location)
-            working_set.add(dist)
+            if dist not in working_set:
+                env.log.debug('Adding plugin %s from %s', dist, dist.location)
+                working_set.add(dist)
 
         def _log_error(item, e):
             ue = exception_to_unicode(e)

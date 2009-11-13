@@ -11,12 +11,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import unittest
-from trac.test import EnvironmentStub, locate
 from StringIO import StringIO
+import unittest
 
 from trac.mimeview.api import Mimeview
-from trac.mimeview.php import PhpDeuglifier, PHPRenderer
+from trac.test import EnvironmentStub, locate
+from tracopt.mimeview.php import PhpDeuglifier, PHPRenderer
+
 
 class PhpDeuglifierTestCase(unittest.TestCase):
 
@@ -53,6 +54,7 @@ class PhpDeuglifierTestCase(unittest.TestCase):
         self.assertEqual('<span class="code-lang"></span><br /><br />',
             PhpDeuglifier().format(
                 '<span style="color: #0000BB"><br /><br /></span>'))
+
 
 class PhpRendererTestCase(unittest.TestCase):
 
@@ -133,6 +135,7 @@ class PhpRendererTestCase(unittest.TestCase):
         self.assertEqual('&lt;p /&gt;', result[1])
         self.assertEqual(2, len(result))
 
+
 def suite():
     suite = unittest.TestSuite()
     php = locate("php")
@@ -140,8 +143,10 @@ def suite():
         suite.addTest(unittest.makeSuite(PhpDeuglifierTestCase, 'test'))
         suite.addTest(unittest.makeSuite(PhpRendererTestCase, 'test'))
     else:
-        print "SKIP: mimeview/tests/php.py (php cli binary, 'php', not found)"
+        print("SKIP: tracopt/mimeview/tests/php.py (php cli binary, 'php', "
+              "not found)")
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

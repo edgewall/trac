@@ -66,11 +66,11 @@ facilities.
     },
 
     test_suite = 'trac.test.suite',
-    zip_safe = False,
+    zip_safe = True,
 
     install_requires = [
         'setuptools>=0.6b1',
-        'Genshi>=0.6dev'
+        'Genshi>=0.6dev-r1072'
     ],
     extras_require = {
         'Babel': ['Babel>=0.9.4'],
@@ -93,9 +93,7 @@ facilities.
         trac.db.mysql = trac.db.mysql_backend
         trac.db.postgres = trac.db.postgres_backend
         trac.db.sqlite = trac.db.sqlite_backend
-        trac.mimeview.enscript = trac.mimeview.enscript
         trac.mimeview.patch = trac.mimeview.patch
-        trac.mimeview.php = trac.mimeview.php
         trac.mimeview.pygments = trac.mimeview.pygments[Pygments]
         trac.mimeview.rst = trac.mimeview.rst[reST]
         trac.mimeview.silvercity = trac.mimeview.silvercity[SilverCity]
@@ -117,6 +115,8 @@ facilities.
         trac.wiki.interwiki = trac.wiki.interwiki
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
+        tracopt.mimeview.enscript = tracopt.mimeview.enscript
+        tracopt.mimeview.php = tracopt.mimeview.php
         tracopt.perm.authz_policy = tracopt.perm.authz_policy
         tracopt.perm.config_perm_provider = tracopt.perm.config_perm_provider
         tracopt.ticket.commit_updater = tracopt.ticket.commit_updater

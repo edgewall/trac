@@ -389,8 +389,14 @@ class Request(object):
             if template.endswith('.html'):
                 if env:
                     from trac.web.chrome import Chrome
-                    data = Chrome(env).render_template(self, template, data,
-                                                       'text/html')
+                    try:
+                        data = Chrome(env).render_template(self, template, data,
+                                                           'text/html')
+                    except Exception:
+                        # second chance rendering, in "safe" mode
+                        data['trac_error_rendering'] = True
+                        data = Chrome(env).render_template(self, template, data,
+                                                           'text/html')
                 else:
                     content_type = 'text/plain'
                     data = '%s\n\n%s: %s' % (data.get('title'),

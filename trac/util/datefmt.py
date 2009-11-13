@@ -445,6 +445,7 @@ try:
                     _pytz_zones[_gmt_index:]
  
 except ImportError:
+    pytz = None
 
     def timezone(tzname):
         """Fetch timezone instance by name or raise `KeyError`"""

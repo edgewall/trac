@@ -153,6 +153,43 @@ class TicketSystem(Component):
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
         (''since 0.9'').""")
 
+    default_version = Option('ticket', 'default_version', '',
+        """Default version for newly created tickets.""")
+
+    default_type = Option('ticket', 'default_type', 'defect',
+        """Default type for newly created tickets (''since 0.9'').""")
+
+    default_priority = Option('ticket', 'default_priority', 'major',
+        """Default priority for newly created tickets.""")
+
+    default_milestone = Option('ticket', 'default_milestone', '',
+        """Default milestone for newly created tickets.""")
+
+    default_component = Option('ticket', 'default_component', '',
+        """Default component for newly created tickets.""")
+
+    default_severity = Option('ticket', 'default_severity', '',
+        """Default severity for newly created tickets.""")
+
+    default_summary = Option('ticket', 'default_summary', '',
+        """Default summary (title) for newly created tickets.""")
+
+    default_description = Option('ticket', 'default_description', '',
+        """Default description for newly created tickets.""")
+
+    default_keywords = Option('ticket', 'default_keywords', '',
+        """Default keywords for newly created tickets.""")
+
+    default_owner = Option('ticket', 'default_owner', '',
+        """Default owner for newly created tickets.""")
+
+    default_cc = Option('ticket', 'default_cc', '',
+        """Default cc: list for newly created tickets.""")
+
+    default_resolution = Option('ticket', 'default_resolution', 'fixed',
+        """Default resolution for resolving (closing) tickets
+        (''since 0.11'').""")
+
     def __init__(self):
         self.log.debug('action controllers for ticket workflow: %r' % 
                 [c.__class__.__name__ for c in self.action_controllers])
@@ -242,7 +279,7 @@ class TicketSystem(Component):
                 # exist
                 continue
             field = {'name': name, 'type': 'select', 'label': label,
-                     'value': self.config.get('ticket', 'default_' + name),
+                     'value': getattr(self, 'default_' + name, ''),
                      'options': options}
             if name in ('status', 'resolution'):
                 field['type'] = 'radio'

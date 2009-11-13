@@ -195,7 +195,10 @@ class Environment(Component, ComponentManager):
             ('Trac', get_pkginfo(core).get('version', VERSION)),
             ('Python', sys.version),
             ('setuptools', setuptools.__version__),
-            ]
+        ]
+        from trac.util.datefmt import pytz
+        if pytz is not None:
+            self.systeminfo.append(('pytz', pytz.__version__))
         self._href = self._abs_href = None
 
         from trac.loader import load_components
