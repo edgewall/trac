@@ -651,7 +651,6 @@ class Component(object):
         cursor = db.cursor()
         self.env.log.info('Deleting component %s' % self.name)
         cursor.execute("DELETE FROM component WHERE name=%s", (self.name,))
-
         self.name = self._old_name = None
         TicketSystem(self.env).reset_ticket_fields(db)
 
@@ -674,6 +673,7 @@ class Component(object):
         cursor.execute("INSERT INTO component (name,owner,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, self.owner, self.description))
+        self._old_name = self.name
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
@@ -783,6 +783,7 @@ class Milestone(object):
             ticket['milestone'] = retarget_to
             ticket.save_changes(author, 'Milestone %s deleted' % self.name,
                                 now, db=db)
+        self.name = self._old_name = None
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
@@ -804,6 +805,7 @@ class Milestone(object):
                        "VALUES (%s,%s,%s,%s)",
                        (self.name, to_timestamp(self.due), to_timestamp(self.completed),
                         self.description))
+        self._old_name = self.name
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
@@ -910,7 +912,6 @@ class Version(object):
         cursor = db.cursor()
         self.env.log.info('Deleting version %s' % self.name)
         cursor.execute("DELETE FROM version WHERE name=%s", (self.name,))
-
         self.name = self._old_name = None
         TicketSystem(self.env).reset_ticket_fields(db)
 
@@ -933,6 +934,7 @@ class Version(object):
         cursor.execute("INSERT INTO version (name,time,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, to_timestamp(self.time), self.description))
+        self._old_name = self.name
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
