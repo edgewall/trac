@@ -189,11 +189,14 @@ class Environment(Component, ComponentManager):
         self.setup_log()
 
         from trac import core, __version__ as VERSION
+        trac_version = get_pkginfo(core).get('version', VERSION)
         self.systeminfo = [
-            ('Trac', get_pkginfo(core).get('version', VERSION)),
+            ('Trac', trac_version),
             ('Python', sys.version),
             ('setuptools', setuptools.__version__),
             ]
+        self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
+                      trac_version)
         self._href = self._abs_href = None
 
         from trac.loader import load_components
