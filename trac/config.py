@@ -484,8 +484,10 @@ class Option(object):
             for attr in cls.__dict__.itervalues():
                 if isinstance(attr, Option):
                     components[attr] = cls
+        
         return dict(each for each in Option.registry.items()
-                    if compmgr.is_enabled(components[each[1]]))
+                    if each[1] not in components
+                       or compmgr.is_enabled(components[each[1]]))
     
     def __init__(self, section, name, default=None, doc=''):
         """Create the configuration option.
