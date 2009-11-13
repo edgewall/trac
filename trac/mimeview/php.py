@@ -79,6 +79,11 @@ class PHPRenderer(Component):
         return 0
 
     def render(self, context, mimetype, content, filename=None, rev=None):
+        if not getattr(self, '_deprecation_shown', False):
+            self.log.warning('The PHP highlighter is deprecated and will be '
+                             'disabled by default in 0.12')
+            self._deprecation_shown = True
+        
         # -n to ignore php.ini so we're using default colors
         cmdline = '%s -sn' % self.path
         self.env.log.debug("PHP command line: %s" % cmdline)

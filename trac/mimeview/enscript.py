@@ -132,6 +132,11 @@ class EnscriptRenderer(Component):
         return self._types.get(mimetype, (None, 0))[1]
 
     def render(self, context, mimetype, content, filename=None, rev=None):
+        if not getattr(self, '_deprecation_shown', False):
+            self.log.warning('The Enscript highlighter is deprecated and '
+                             'will be disabled by default in 0.12')
+            self._deprecation_shown = True
+
         cmdline = self.path
         mimetype = mimetype.split(';', 1)[0] # strip off charset
         mode = self._types[mimetype][0]
