@@ -278,8 +278,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                name=resolutions[0]))
             else:
                 id = 'action_%s_resolve_resolution' % action
-                selected_option = req.args.get(id,
-                        self.config.get('ticket', 'default_resolution'))
+                selected_option = req.args.get(id, 
+                        TicketSystem(self.env).default_resolution)
                 control.append(tag(['as ', tag.select(
                     [tag.option(x, selected=(x == selected_option or None))
                      for x in resolutions],

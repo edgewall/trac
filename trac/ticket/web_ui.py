@@ -60,43 +60,6 @@ class TicketModule(Component):
 
     ticket_manipulators = ExtensionPoint(ITicketManipulator)
 
-    default_version = Option('ticket', 'default_version', '',
-        """Default version for newly created tickets.""")
-
-    default_type = Option('ticket', 'default_type', 'defect',
-        """Default type for newly created tickets (''since 0.9'').""")
-
-    default_priority = Option('ticket', 'default_priority', 'major',
-        """Default priority for newly created tickets.""")
-
-    default_milestone = Option('ticket', 'default_milestone', '',
-        """Default milestone for newly created tickets.""")
-
-    default_component = Option('ticket', 'default_component', '',
-        """Default component for newly created tickets.""")
-
-    default_severity = Option('ticket', 'default_severity', '',
-        """Default severity for newly created tickets.""")
-
-    default_summary = Option('ticket', 'default_summary', '',
-        """Default summary (title) for newly created tickets.""")
-
-    default_description = Option('ticket', 'default_description', '',
-        """Default description for newly created tickets.""")
-
-    default_keywords = Option('ticket', 'default_keywords', '',
-        """Default keywords for newly created tickets.""")
-
-    default_owner = Option('ticket', 'default_owner', '',
-        """Default owner for newly created tickets.""")
-
-    default_cc = Option('ticket', 'default_cc', '',
-        """Default cc: list for newly created tickets.""")
-
-    default_resolution = Option('ticket', 'default_resolution', 'fixed',
-        """Default resolution for resolving (closing) tickets
-        (''since 0.11'').""")
-
     timeline_details = BoolOption('timeline', 'ticket_show_details', 'false',
         """Enable the display of all ticket changes in the timeline, not only
         open / close operations (''since 0.9'').""")
@@ -130,6 +93,24 @@ class TicketModule(Component):
             string starting with `?` as used in `query:`
             [TracQuery#UsingTracLinks Trac links].
             (''since 0.12'')""")
+
+    def __init__(self):
+        self._warn_for_default_attr = set()
+
+    def __getattr__(self, name):
+        """Delegate access to ticket default Options which were move to
+        TicketSystem.
+
+        .. todo:: remove in 0.13
+        """
+        if name.startswith('default_'):
+            warn_flag = '_warn_'+name
+            if warn_flag not in self._warn_for_default_attr:
+                self.log.warning('%s option should be accessed via '
+                                 'TicketSystem component', name)
+                self._warn_for_default_attr.add(warn_flag)
+            return getattr(TicketSystem(self.env), name)
+        raise AttributeError("TicketModule has no attribute '%s'" % name)
 
     def _must_preserve_newlines(self):
         preserve_newlines = self.preserve_newlines
