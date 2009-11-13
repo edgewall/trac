@@ -119,7 +119,7 @@ class PygmentsRenderer(Component):
     # IPreferencePanelProvider implementation
 
     def get_preference_panels(self, req):
-        yield ('pygments', 'Pygments Theme')
+        yield ('pygments', 'Syntax Highlighting')
 
     def render_preference_panel(self, req, panel):
         styles = list(get_all_styles())

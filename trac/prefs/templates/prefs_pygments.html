@@ -6,7 +6,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="prefs.html" />
   <head>
-    <title>Pygments Theme</title>
+    <title>Syntax Highligting</title>
     <style type="text/css">
       div.code pre { border: 1px solid #999; font-size: 90%; margin: 1em 2em;
         padding: 5px; width: 60%;
@@ -34,8 +34,8 @@
 
     <div class="field">
       <p class="hint">The Pygments syntax highlighter can be used with
-      different coloring themes.</p>
-      <p><label>Theme:
+      different coloring styles.</p>
+      <p><label>Style:
         <select id="pygment_theme" name="style">
           <option py:for="style in sorted(styles)" value="${style}"
                   selected="${selection == style or None}">${style.title()}</option>
