@@ -191,14 +191,17 @@ class Environment(Component, ComponentManager):
         self.setup_log()
 
         from trac import core, __version__ as VERSION
+        trac_version = get_pkginfo(core).get('version', VERSION)
         self.systeminfo = [
-            ('Trac', get_pkginfo(core).get('version', VERSION)),
+            ('Trac', trac_version),
             ('Python', sys.version),
             ('setuptools', setuptools.__version__),
         ]
         from trac.util.datefmt import pytz
         if pytz is not None:
             self.systeminfo.append(('pytz', pytz.__version__))
+        self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
+                      trac_version)
         self._href = self._abs_href = None
 
         from trac.loader import load_components
@@ -516,6 +519,8 @@ class EnvironmentSetup(Component):
             return False
         elif dbver > db_default.db_version:
             raise TracError(_('Database newer than Trac version'))
+        self.log.info("Trac database schema version is %d, should be %d",
+                      dbver, db_default.db_version)
         return True
 
     def upgrade_environment(self, db):

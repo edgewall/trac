@@ -740,7 +740,7 @@ class SubversionNode(Node):
             def blame_receiver(line_no, revision, author, date, line, pool):
                 annotations.append(revision)
             try:
-                rev = _svn_rev(self.rev)
+                rev = _svn_rev(self._requested_rev)
                 start = _svn_rev(0)
                 file_url_utf8 = posixpath.join(self.repos.ra_url_utf8,
                                                self._scoped_path_utf8)
