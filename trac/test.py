@@ -396,6 +396,7 @@ def suite():
     import trac.versioncontrol.web_ui.tests
     import trac.web.tests
     import trac.wiki.tests
+    import tracopt.mimeview.tests
 
     suite = unittest.TestSuite()
     suite.addTest(trac.tests.basicSuite())
@@ -410,6 +411,7 @@ def suite():
     suite.addTest(trac.versioncontrol.web_ui.tests.suite())
     suite.addTest(trac.web.tests.suite())
     suite.addTest(trac.wiki.tests.suite())
+    suite.addTest(tracopt.mimeview.tests.suite())
 
     return suite
 

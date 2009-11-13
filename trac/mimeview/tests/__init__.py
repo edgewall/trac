@@ -1,4 +1,4 @@
-from trac.mimeview.tests import api, patch, php, pygments
+from trac.mimeview.tests import api, patch, pygments
 
 import unittest
 
@@ -6,7 +6,6 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(api.suite())
     suite.addTest(patch.suite())
-    suite.addTest(php.suite())
     suite.addTest(pygments.suite())
     return suite
 
