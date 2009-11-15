@@ -43,6 +43,24 @@ from trac.web.href import Href
 from trac.wiki.api import WikiSystem
 from trac.wiki.formatter import WikiProcessor, Formatter, extract_link
 
+if has_docutils and StrictVersion(__version__) < StrictVersion('0.6'):
+    # Monkey-patch "raw" role handler in docutils to add a missing check
+    # See docutils bug #2845002 on SourceForge
+    def raw_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
+        if not inliner.document.settings.raw_enabled:
+            msg = inliner.reporter.warning('raw (and derived) roles disabled')
+            prb = inliner.problematic(rawtext, rawtext, msg)
+            return [prb], [msg]
+        return _raw_role(role, rawtext, text, lineno, inliner, options,
+                         content)
+    
+    from docutils.parsers.rst import roles
+    raw_role.options = roles.raw_role.options
+    _raw_role = roles.raw_role
+    roles.raw_role = raw_role
+    roles.register_canonical_role('raw', raw_role)
+
+
 class ReStructuredTextRenderer(Component):
     """
     Renders plain text in reStructuredText format as HTML.
