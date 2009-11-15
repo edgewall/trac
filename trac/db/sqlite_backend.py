@@ -167,7 +167,7 @@ class SQLiteConnector(Component):
     def get_supported_schemes(self):
         if not have_pysqlite:
             self.error = _("Cannot load Python bindings for SQLite")
-        elif sqlite.sqlite_version_info >= (3, 3, 3):
+        elif sqlite_version >= 30303:
             if sqlite.version_info < (1, 0, 7):
                 self.error = _("Need at least PySqlite 1.0.7 or higher")
             elif sqlite.version_info[0] == 2 and \
@@ -225,7 +225,7 @@ class SQLiteConnection(ConnectionWrapper):
 
     __slots__ = ['_active_cursors', '_eager']
 
-    poolable = have_pysqlite and sqlite.sqlite_version_info >= (3,3,8) \
+    poolable = have_pysqlite and sqlite_version >= 30308 \
                              and sqlite.version_info >= (2,5,0)
 
     def __init__(self, path, log=None, params={}):
