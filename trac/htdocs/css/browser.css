@@ -175,7 +175,11 @@ table.chglist { margin-top: 0 }
  padding: 0;
 }
 #info .props > li { padding: 2px 0; overflow: auto; }
-.trac-toggledeleted { display: none }
+.trac-toggledeleted {
+ display: none;
+ float: right;
+ margin: 0 1em;
+}
 
 /* Styles for the HTML preview */
 #preview { background: #fff; clear: both; margin: 0 }
