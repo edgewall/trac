@@ -400,6 +400,7 @@ class ReportModule(Component):
         #  - group rows according to __group__ value, if defined
         #  - group cells the same way headers are grouped
         row_groups = []
+        authorized_results = [] 
         prev_group_value = None
         for row_idx, result in enumerate(results):
             col_idx = 0
@@ -439,6 +440,7 @@ class ReportModule(Component):
             # FIXME: for now, we still need to hardcode the realm in the action
             if resource.realm.upper()+'_VIEW' not in req.perm(resource):
                 continue
+            authorized_results.append(result)
             if email_cells:
                 for cell in email_cells:
                     emails = Chrome(self.env).format_emails(context(resource),
@@ -474,11 +476,11 @@ class ReportModule(Component):
             return 'report.rss', data, 'application/rss+xml'
         elif format == 'csv':
             filename = id and 'report_%s.csv' % id or 'report.csv'
-            self._send_csv(req, cols, results, mimetype='text/csv',
+            self._send_csv(req, cols, authorized_results, mimetype='text/csv',
                            filename=filename)
         elif format == 'tab':
             filename = id and 'report_%s.tsv' % id or 'report.tsv'
-            self._send_csv(req, cols, results, '\t',
+            self._send_csv(req, cols, authorized_results, '\t',
                            mimetype='text/tab-separated-values',
                            filename=filename)
         else:
