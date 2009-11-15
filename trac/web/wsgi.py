@@ -183,7 +183,8 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
             environ = self.setup_environ()
         except IOError, e:
             environ = None
-            if e.errno in (errno.EPIPE, 10053, 10054): # client disconnect
+            if e.errno in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
+                # client disconnect
                 self.close_connection = 1
             else:
                 raise
