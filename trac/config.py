@@ -157,10 +157,7 @@ class Configuration(object):
 
     def remove(self, section, key):
         """Remove the specified option."""
-        section_str = _to_utf8(section)
-        key_str = _to_utf8(key)
-        if self.parser.has_section(section_str):
-            self.parser.remove_option(section_str, key_str)
+        self[section].remove(key)
 
     def sections(self):
         """Return a list of section names."""
@@ -438,6 +435,16 @@ class Section(object):
         else:
             value_str = _to_utf8(value)
         return self.config.parser.set(name_str, key_str, value_str)
+
+    def remove(self, key):
+        """Delete a key from this section.
+
+        Like for `set()`, the changes won't persist until `save()` gets called.
+        """
+        name_str = _to_utf8(self.name)
+        if self.config.parser.has_section(name_str):
+            self._cache.pop(key, None)
+            self.config.parser.remove_option(_to_utf8(self.name), _to_utf8(key))
 
 
 class Option(object):

@@ -223,6 +223,18 @@ class ConfigurationTestCase(unittest.TestCase):
             self.assertEquals(u"Voilà l'été", config2.get('a', 'option2'))
         self._test_with_inherit(testcb)
 
+    def test_simple_remove(self):
+        self._write(['[a]', 'option = x'])
+        config = self._read()
+        config.get('a', 'option') # populates the cache
+        config.set(u'aä', u'öption', u'öne')
+        config.remove('a', 'option')
+        self.assertEquals('', config.get('a', 'option'))
+        config.remove(u'aä', u'öption')
+        self.assertEquals('', config.get('aä', 'öption'))
+        config.remove('a', 'option2') # shouldn't fail
+        config.remove('b', 'option2') # shouldn't fail
+
     def test_sections(self):
         self._write(['[a]', 'option = x', '[b]', 'option = y'])
         config = self._read()
