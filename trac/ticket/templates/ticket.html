@@ -44,7 +44,7 @@
       </py:otherwise>
       <py:if test="preview_mode">
         $("#changelog").parent().toggleClass("collapsed");
-        $("#attachments").parent().toggleClass("collapsed");
+        $("#attachments").toggleClass("collapsed");
         $("#trac-add-comment").scrollToTop();
       </py:if>
       });
