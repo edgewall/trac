@@ -579,8 +579,12 @@ class Request(object):
         if __debug__: _debug(1, 'protocolStatus = %d, appStatus = %d' %
                              (protocolStatus, appStatus))
 
-        self._flush()
-        self._end(appStatus, protocolStatus)
+        try: 
+            self._flush() 
+            self._end(appStatus, protocolStatus) 
+        except socket.error, e: 
+            if e[0] != errno.EPIPE: 
+                raise 
 
     def _end(self, appStatus=0L, protocolStatus=FCGI_REQUEST_COMPLETE):
         self._conn.end_request(self, appStatus, protocolStatus)
