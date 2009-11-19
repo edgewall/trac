@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-11-18 17:24+0100\n"
+"POT-Creation-Date: 2009-11-19 11:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.4\n"
+
+#: tracopt/mimeview/php.py:98
+msgid ""
+"You appear to be using the PHP CGI binary. Trac requires the CLI version "
+"for syntax highlighting."
+msgstr ""
 
 #: trac/about.py:43 trac/templates/about.html:9 trac/templates/about.html:28
 msgid "About Trac"

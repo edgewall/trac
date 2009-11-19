@@ -26,6 +26,9 @@ try:
                 'template_class': 'genshi.template:TextTemplate'
             })
         ],
+        'tracopt': [
+            ('**.py', 'python', None)
+        ]
     }
 except ImportError:
     pass
