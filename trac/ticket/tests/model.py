@@ -2,7 +2,7 @@ from trac import core
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
-from trac.ticket.api import ITicketChangeListener
+from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener
 from trac.test import EnvironmentStub
 from trac.util.datefmt import utc, to_timestamp
 
@@ -413,6 +413,23 @@ class EnumTestCase(unittest.TestCase):
         Type(self.env, 'foo')
 
 
+class TestMilestoneChangeListener(core.Component):
+    implements(IMilestoneChangeListener)
+
+    def milestone_created(self, milestone):
+        self.action = 'created'
+        self.milestone = milestone
+
+    def milestone_changed(self, milestone, old_values):
+        self.action = 'changed'
+        self.milestone = milestone
+        self.old_values = old_values
+        
+    def milestone_deleted(self, milestone):
+        self.action = 'deleted'
+        self.milestone = milestone
+
+
 class MilestoneTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -421,6 +438,12 @@ class MilestoneTestCase(unittest.TestCase):
 
     def tearDown(self):
         self.env.reset_db()
+
+    def _create_milestone(self, **values):
+        milestone = Milestone(self.env)
+        for k, v in values.iteritems():
+            setattr(milestone, k, v)
+        return milestone
 
     def test_new_milestone(self):
         milestone = Milestone(self.env)
@@ -482,6 +505,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete()
+        self.assertEqual(False, milestone.exists)
 
         cursor = self.db.cursor()
         cursor.execute("SELECT * FROM milestone WHERE name='Test'")
@@ -501,6 +525,7 @@ class MilestoneTestCase(unittest.TestCase):
 
         milestone = Milestone(self.env, 'Test')
         milestone.delete(retarget_to='Other')
+        self.assertEqual(False, milestone.exists)
 
         self.assertEqual('Other', Ticket(self.env, tkt1.id)['milestone'])
         self.assertEqual('Other', Ticket(self.env, tkt2.id)['milestone'])
@@ -562,6 +587,43 @@ class MilestoneTestCase(unittest.TestCase):
         assert milestones[0].exists
         self.assertEqual('2.0', milestones[1].name)
         assert milestones[1].exists
+
+    def test_change_listener_created(self):
+        listener = TestMilestoneChangeListener(self.env)
+        milestone = self._create_milestone(name='Milestone 1')
+        milestone.insert()
+        self.assertEqual('created', listener.action)
+        self.assertEqual(milestone, listener.milestone)
+
+    def test_change_listener_changed(self):
+        listener = TestMilestoneChangeListener(self.env)
+        milestone = self._create_milestone(
+            name='Milestone 1',
+            due=datetime(2001, 01, 01, tzinfo=utc),
+            description='The milestone description')
+        milestone.insert()
+        
+        milestone.name = 'Milestone 2'
+        milestone.completed = datetime(2001, 02, 03, tzinfo=utc)
+        milestone.description = 'The changed description'
+        milestone.update()
+        
+        self.assertEqual('changed', listener.action)
+        self.assertEqual(milestone, listener.milestone)
+        self.assertEqual({'name': 'Milestone 1', 'completed': None,
+                          'description': 'The milestone description'},
+                         listener.old_values)
+
+    def test_change_listener_deleted(self):
+        listener = TestMilestoneChangeListener(self.env)
+        milestone = self._create_milestone(name='Milestone 1')
+        milestone.insert()
+        self.assertEqual(True, milestone.exists)
+        milestone.delete()
+        self.assertEqual('Milestone 1', milestone.name)
+        self.assertEqual(False, milestone.exists)
+        self.assertEqual('deleted', listener.action)
+        self.assertEqual(milestone, listener.milestone)
 
 
 class ComponentTestCase(unittest.TestCase):
