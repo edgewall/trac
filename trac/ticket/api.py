@@ -138,10 +138,31 @@ class ITicketManipulator(Interface):
         ticket. Therefore, a return value of `[]` means everything is OK."""
 
 
+class IMilestoneChangeListener(Interface):
+    """Extension point interface for components that require notification
+    when milestones are created, modified, or deleted."""
+
+    def milestone_created(milestone):
+        """Called when a milestone is created."""
+
+    def milestone_changed(milestone, old_values):
+        """Called when a milestone is modified.
+
+        `old_values` is a dictionary containing the previous values of the
+        milestone properties that changed. Currently those properties can be
+        'name', 'due', 'completed', or 'description'.
+        """
+
+    def milestone_deleted(milestone):
+        """Called when a milestone is deleted."""
+
+
 class TicketSystem(Component):
     implements(IPermissionRequestor, IWikiSyntaxProvider, IResourceManager)
 
     change_listeners = ExtensionPoint(ITicketChangeListener)
+    milestone_change_listeners = ExtensionPoint(IMilestoneChangeListener)
+    
     action_controllers = OrderedExtensionsOption('ticket', 'workflow',
         ITicketActionController, default='ConfigurableTicketWorkflow',
         include_missing=False,

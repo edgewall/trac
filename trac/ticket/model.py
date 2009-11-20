@@ -651,7 +651,6 @@ class Component(object):
         cursor = db.cursor()
         self.env.log.info('Deleting component %s' % self.name)
         cursor.execute("DELETE FROM component WHERE name=%s", (self.name,))
-
         self.name = self._old_name = None
         TicketSystem(self.env).reset_ticket_fields(db)
 
@@ -674,6 +673,7 @@ class Component(object):
         cursor.execute("INSERT INTO component (name,owner,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, self.owner, self.description))
+        self._old_name = self.name
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
@@ -728,11 +728,11 @@ class Milestone(object):
         name = simplify_whitespace(name)
         if name:
             self._fetch(name, db)
-            self._old_name = name
         else:
-            self.name = self._old_name = None
+            self.name = None
             self.due = self.completed = None
             self.description = ''
+            self._to_old()
 
     def _get_resource(self):
         return Resource('milestone', self.name) ### .version !!!
@@ -750,18 +750,24 @@ class Milestone(object):
                                    name=name), _('Invalid milestone name'))
         self._from_database(row)
 
-    exists = property(fget=lambda self: self._old_name is not None)
+    exists = property(fget=lambda self: self._old['name'] is not None)
     is_completed = property(fget=lambda self: self.completed is not None)
     is_late = property(fget=lambda self: self.due and \
                                          self.due.date() < date.today())
 
     def _from_database(self, row):
         name, due, completed, description = row
-        self.name = self._old_name = name
+        self.name = name
         self.due = due and datetime.fromtimestamp(int(due), utc) or None
         self.completed = completed and \
                          datetime.fromtimestamp(int(completed), utc) or None
         self.description = description or ''
+        self._to_old()
+
+    def _to_old(self):
+        self._old = {'name': self.name, 'due': self.due,
+                     'completed': self.completed,
+                     'description': self.description}
 
     def delete(self, retarget_to=None, author=None, db=None):
         if not db:
@@ -783,10 +789,14 @@ class Milestone(object):
             ticket['milestone'] = retarget_to
             ticket.save_changes(author, 'Milestone %s deleted' % self.name,
                                 now, db=db)
+        self._old['name'] = None
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
+
+        for listener in TicketSystem(self.env).milestone_change_listeners:
+            listener.milestone_deleted(self)
 
     def insert(self, db=None):
         self.name = simplify_whitespace(self.name)
@@ -804,10 +814,14 @@ class Milestone(object):
                        "VALUES (%s,%s,%s,%s)",
                        (self.name, to_timestamp(self.due), to_timestamp(self.completed),
                         self.description))
+        self._to_old()
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
+
+        for listener in TicketSystem(self.env).milestone_change_listeners:
+            listener.milestone_created(self)
 
     def update(self, db=None):
         self.name = simplify_whitespace(self.name)
@@ -824,17 +838,21 @@ class Milestone(object):
         cursor.execute("UPDATE milestone SET name=%s,due=%s,"
                        "completed=%s,description=%s WHERE name=%s",
                        (self.name, to_timestamp(self.due), to_timestamp(self.completed),
-                        self.description,
-                        self._old_name))
+                        self.description, self._old['name']))
         self.env.log.info('Updating milestone field of all tickets '
                           'associated with milestone "%s"' % self.name)
         cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
-                       (self.name, self._old_name))
-        self._old_name = self.name
+                       (self.name, self._old['name']))
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
             db.commit()
+
+        old_values = dict((k, v) for k, v in self._old.iteritems()
+                          if getattr(self, k) != v)
+        self._to_old()
+        for listener in TicketSystem(self.env).milestone_change_listeners:
+            listener.milestone_changed(self, old_values)
 
     @classmethod
     def select(cls, env, include_completed=True, db=None):
@@ -910,7 +928,6 @@ class Version(object):
         cursor = db.cursor()
         self.env.log.info('Deleting version %s' % self.name)
         cursor.execute("DELETE FROM version WHERE name=%s", (self.name,))
-
         self.name = self._old_name = None
         TicketSystem(self.env).reset_ticket_fields(db)
 
@@ -933,6 +950,7 @@ class Version(object):
         cursor.execute("INSERT INTO version (name,time,description) "
                        "VALUES (%s,%s,%s)",
                        (self.name, to_timestamp(self.time), self.description))
+        self._old_name = self.name
         TicketSystem(self.env).reset_ticket_fields(db)
 
         if handle_ta:
