@@ -42,14 +42,15 @@ def to_datetime(t, tzinfo=None):
 
     Any other input will trigger a `TypeError`.
     """
+    tzinfo = tzinfo or localtz
     if t is None:
-        return datetime.now(tzinfo or localtz)
+        return tzinfo.localize(datetime.now())
     elif isinstance(t, datetime):
         return t
     elif isinstance(t, date):
-        return datetime(t.year, t.month, t.day, tzinfo=tzinfo or localtz)
+        return tzinfo.localize(datetime(t.year, t.month, t.day))
     elif isinstance(t, (int, long, float)):
-        return datetime.fromtimestamp(t, tzinfo or localtz)
+        return tzinfo.localize(datetime.fromtimestamp(t))
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
 
@@ -216,7 +217,7 @@ def parse_date(text, tzinfo=None):
             tm = time.strptime('%s ' * 6 % (years, months, days,
                                             hours, minutes, seconds),
                                '%Y %m %d %H %M %S ')
-            dt = datetime(*(tm[0:6] + (0, tzinfo)))
+            dt = tzinfo.localize(datetime(*tm[0:6]))
         except ValueError:
             pass
     if dt is None:
@@ -224,7 +225,7 @@ def parse_date(text, tzinfo=None):
                        '%b %d, %Y']:
             try:
                 tm = time.strptime(text, format)
-                dt = datetime(*(tm[0:6] + (0, tzinfo)))
+                dt = tzinfo.localize(datetime(*tm[0:6]))
                 break
             except ValueError:
                 continue
@@ -280,7 +281,7 @@ _time_starts = dict(
 )
 
 def _parse_relative_time(text, tzinfo):
-    now = datetime.now(tzinfo)
+    now = tzinfo.localize(datetime.now())
     if text == 'now':
         return now
     if text == 'today':
@@ -332,6 +333,11 @@ class FixedOffset(tzinfo):
     def dst(self, dt):
         return _zero
 
+    def localize(self, dt, is_dst=False):
+        if dt.tzinfo is not None:
+            raise ValueError('Not naive datetime (tzinfo is already set)')
+        return dt.replace(tzinfo=self)
+
 
 STDOFFSET = timedelta(seconds=-time.timezone)
 if time.daylight:
@@ -378,6 +384,11 @@ class LocalTimezone(tzinfo):
             return tt.tm_isdst > 0
         except OverflowError:
             return False
+
+    def localize(self, dt, is_dst=False):
+        if dt.tzinfo is not None:
+            raise ValueError('Not naive datetime (tzinfo is already set)')
+        return dt.replace(tzinfo=self)
 
 
 utc = FixedOffset(0, 'UTC')
