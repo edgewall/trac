@@ -20,21 +20,37 @@ To install Trac, the following software packages must be installed:
  * Python, version >= 2.3.
  * setuptools, version >= 0.6
  * Genshi, version >= 0.5
- * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python bindings (not PySVN, that's something different).
+ * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python 
+   bindings (not PySVN, that's something different).
  * One of the following Python bindings, depending on the database used:
-   * PySQLite version 2.x for SQLite 3.x (is part of the standard library starting with Python 2.5)
-   * psycopg2 version 2.0.x for the PostgreSQL database
-   * MySQLdb, version 1.2.2 for the MySQL database
+    * pysqlite version 2.x for SQLite 3.x (is part of the standard library 
+      starting with Python 2.5)
+    * psycopg2 version 2.0.x for the PostgreSQL database
+    * MySQLdb, version 1.2.2 for the MySQL database
  * A web server capable of executing CGI/FastCGI scripts, or Apache HTTPD with
    mod_python or mod_wsgi. (Trac also comes with a standalone server, tracd)
 
 Any of the above python library can usually be installed using easy_install,
 which itself can be installed using the following bootstrap script:
 
-  wget http://peak.telecommunity.com/dist/ez_setup.py
-  python ez_setup.py
+  $ wget http://peak.telecommunity.com/dist/ez_setup.py
+
+  $ python ez_setup.py
 
 After that, you can do for example: easy_install Genshi
+
+If you're using Python 2.3 or 2.4 and need pysqlite, you can download from
+http://code.google.com/p/pysqlite/downloads/list the Windows installers or the
+tar.gz archive for building from source:
+
+  $ tar xvfz <version>.tar.gz
+
+  $ cd <version>
+
+  $ python setup.py build_static install
+
+That way, the latest SQLite version will be downloaded and built into the
+bindings.
 
 
 Installing Trac
