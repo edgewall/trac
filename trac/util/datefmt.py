@@ -41,14 +41,15 @@ def to_datetime(t, tzinfo=None):
 
     Any other input will trigger a `TypeError`.
     """
+    tzinfo = tzinfo or localtz
     if t is None:
-        return datetime.now(tzinfo or localtz)
+        return tzinfo.localize(datetime.now())
     elif isinstance(t, datetime):
         return t
     elif isinstance(t, date):
-        return datetime(t.year, t.month, t.day, tzinfo=tzinfo or localtz)
+        return tzinfo.localize(datetime(t.year, t.month, t.day))
     elif isinstance(t, (int,long,float)):
-        return datetime.fromtimestamp(t, tzinfo or localtz)
+        return tzinfo.localize(datetime.fromtimestamp(t))
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
 
@@ -232,7 +233,7 @@ def parse_date(text, tzinfo=None):
         raise TracError('"%s" is an invalid date, or the date format '
                         'is not known. Try "%s" instead.' % (text, hint),
                         'Invalid Date')
-    dt = datetime(*(tm[0:6] + (0, tzinfo)))
+    dt = tzinfo.localize(datetime(*tm[0:6]))
     # Make sure we can convert it to a timestamp and back - fromtimestamp()
     # may raise ValueError if larger than platform C localtime() or gmtime()
     try:
@@ -267,6 +268,11 @@ class FixedOffset(tzinfo):
 
     def dst(self, dt):
         return _zero
+
+    def localize(self, dt, is_dst=False):
+        if dt.tzinfo is not None:
+            raise ValueError('Not naive datetime (tzinfo is already set)')
+        return dt.replace(tzinfo=self)
 
 
 STDOFFSET = timedelta(seconds=-time.timezone)
@@ -306,6 +312,11 @@ class LocalTimezone(tzinfo):
             return tt.tm_isdst > 0
         except OverflowError:
             return False
+
+    def localize(self, dt, is_dst=False):
+        if dt.tzinfo is not None:
+            raise ValueError('Not naive datetime (tzinfo is already set)')
+        return dt.replace(tzinfo=self)
 
 
 utc = FixedOffset(0, 'UTC')

@@ -42,6 +42,19 @@ else:
                              tz.utcoffset(None))
             self.assertEqual('GMT +4:00', tz.zone)
 
+        def test_parse_date(self):
+            tz = datefmt.get_timezone('Europe/Zurich')
+            t = datefmt.parse_date('2009-12-01T12:00:00', tz)
+            t_utc = datetime.datetime(2009, 12, 1, 11, 0, 0, 0, datefmt.utc)
+            self.assertEqual(t_utc, t)
+
+        def test_parse_date_dst(self):
+            tz = datefmt.get_timezone('Europe/Zurich')
+            t = datefmt.parse_date('2009-08-01T12:00:00', tz)
+            t_utc = datetime.datetime(2009, 8, 1, 10, 0, 0, 0, datefmt.utc)
+            self.assertEqual(t_utc, t)
+
+
 class DateFormatTestCase(unittest.TestCase):
 
     def test_to_datetime(self):
@@ -92,6 +105,7 @@ class DateFormatTestCase(unittest.TestCase):
         a_date = datetime.date(2009, 8, 20)
         self.assertEqual('2009-08-20', 
                          datefmt.format_date(a_date, format='%Y-%m-%d'))
+
 
 def suite():
     suite = unittest.TestSuite()
