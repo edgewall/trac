@@ -154,7 +154,9 @@ class TicketSystem(Component):
             (''since 0.11'').""")
 
     restrict_owner = BoolOption('ticket', 'restrict_owner', 'false',
-        """Make the owner field of tickets use a drop-down menu. See
+        """Make the owner field of tickets use a drop-down menu.
+        Be sure to understand the performance implications before activating
+        this option. See
         [TracTickets#Assign-toasDrop-DownList Assign-to as Drop-Down List]
         (''since 0.9'').""")
 

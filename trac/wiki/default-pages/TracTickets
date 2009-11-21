@@ -90,6 +90,8 @@ To appear in the dropdown list, a user needs be registered with the project, ''i
 
 '''Note 2:''' If you need serious flexibility and aren't afraid of a little plugin coding of your own, see [http://trac-hacks.org/wiki/FlexibleAssignToPlugin FlexibleAssignTo] (disclosure: I'm the author)
 
+'''Note 3:''' Activating this option may cause some performance degradation, read more about this in the [trac:TracPerformance#Configuration Trac performance] page.
+
 == Preset Values for New Tickets ==
 
 To create a link to the new-ticket form filled with preset values, you need to call the `/newticket?` URL with variable=value separated by &. 

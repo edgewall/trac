@@ -164,13 +164,13 @@ class Environment(Component, ComponentManager):
          - $(basename)s the last path component of the current environment
          - $(project)s  the project name
 
-         Note the usage of `$(...)s` instead of `%(...)s` as the latter form
-         would be interpreted by the ConfigParser itself.
+        Note the usage of `$(...)s` instead of `%(...)s` as the latter form
+        would be interpreted by the ConfigParser itself.
 
-         Example:
-         ($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s
+        Example:
+        `($(thread)d) Trac[$(basename)s:$(module)s] $(levelname)s: $(message)s`
 
-         (since 0.10.5)""")
+        ''(since 0.10.5)''""")
 
     def __init__(self, path, create=False, options=[]):
         """Initialize the Trac environment.
