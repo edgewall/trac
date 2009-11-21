@@ -1,6 +1,8 @@
 = Email Notification of Ticket Changes =
 [[TracGuideToc]]
 
+[[PageOutline]]
+
 Trac supports notification about ticket changes via email. 
 
 Email notification is useful to keep users up-to-date on tickets/issues of interest, and also provides a convenient way to post all ticket changes to a dedicated mailing list. For example, this is how the [http://lists.edgewall.com/archive/trac-tickets/ Trac-tickets] mailing list is set up.
@@ -8,11 +10,19 @@ Email notification is useful to keep users up-to-date on tickets/issues of inter
 Disabled by default, notification can be activated and configured in [wiki:TracIni trac.ini].
 
 == Receiving Notification Mails ==
-When reporting a new ticket or adding a comment, enter a valid email address in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket (depending on how notification is configured).
+When reporting a new ticket or adding a comment, enter a valid email address or your username in the ''reporter'', ''assigned to/owner'' or ''cc'' field. Trac will automatically send you an email when changes are made to the ticket (depending on how notification is configured).
 
 This is useful to keep up-to-date on an issue or enhancement request that interests you.
 
+=== How to use your username to receive notification mails ===
+
+To receive notification mails, you can either enter a full email address or your username. To get notified with a simple username or login, you need to specify a valid email address in the ''Preferences'' page. 
+
+Alternatively, a default domain name ('''`smtp_default_domain`''') can be set in the TracIni file (see [#ConfigurationOptions Configuration Options] below). In this case, the default domain will be appended to the username, which can be useful for an "Intranet" kind of installation.
+
 == Configuring SMTP Notification ==
+
+'''Important:''' For TracNotification to work correctly, the `[trac] base_url` option must be set in [wiki:TracIni trac.ini]. 
 
 === Configuration Options ===
 These are the available options for the `[notification]` section in trac.ini.
@@ -69,6 +79,44 @@ The following variables are available in the template:
  * `summary`: The ticket summary, with the old value if the summary was edited.
  * `ticket`: The ticket model object (see [trac:source:/trunk/trac/ticket/model.py model.py]). Individual ticket fields can be addressed by appending the field name separated by a dot, e.g. `$ticket.milestone`.
 
+=== Customizing the e-mail content ===
+
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  The default looks like this:
+
+{{{
+$ticket_body_hdr
+$ticket_props
+#choose ticket.new
+  #when True
+$ticket.description
+  #end
+  #otherwise
+    #if changes_body
+Changes (by $change.author):
+
+$changes_body
+    #end
+    #if changes_descr
+      #if not changes_body and not change.comment and change.author
+Description changed by $change.author:
+      #end
+$changes_descr
+--
+    #end
+    #if change.comment
+
+Comment${not changes_body and '(by %s)' % change.author or ''}:
+
+$change.comment
+    #end
+  #end
+#end
+
+-- 
+Ticket URL: <$ticket.link>
+$project.name <${project.url or abs_href()}>
+$project.descr
+}}}
 == Sample Email ==
 {{{
 #42: testing
@@ -121,6 +169,11 @@ In Gmail, use the filter:
 from:(<smtp_from>) (("Reporter: <username>" -Changes) OR "Changes (by <username>)")
 }}}
 
+For Trac .10, use the filter:
+{{{
+from:(<smtp_from>) (("Reporter: <username>" -Changes -Comment) OR "Changes (by <username>)" OR "Comment (by <username>)")
+}}}
+
 to delete these notifications.
 
 In Thunderbird, there is no such solution if you use IMAP
@@ -163,7 +216,11 @@ In such a case, you need to configure your server so that the web server is auth
 
 Relevant ML threads:
  * SELinux: http://article.gmane.org/gmane.comp.version-control.subversion.trac.general/7518
- 
+
+For SELinux in Fedora 10:
+{{{
+$ setsebool -P httpd_can_sendmail 1
+}}}
 === ''Suspected spam'' error ===
 
 Some SMTP servers may reject the notification email sent by Trac.
@@ -171,6 +228,15 @@ Some SMTP servers may reject the notification email sent by Trac.
 The default Trac configuration uses Base64 encoding to send emails to the recipients. The whole body of the email is encoded, which sometimes trigger ''false positive'' SPAM detection on sensitive email servers. In such an event, it is recommended to change the default encoding to "quoted-printable" using the `mime_encoding` option.
 
 Quoted printable encoding works better with languages that use one of the Latin charsets. For Asian charsets, it is recommended to stick with the Base64 encoding.
+
+=== ''501, 5.5.4 Invalid Address'' error ===
+
+On IIS 6.0 you could get a 
+{{{
+Failure sending notification on change to ticket #1: SMTPHeloError: (501, '5.5.4 Invalid Address')
+}}}
+in the trac log. Have a look [http://support.microsoft.com/kb/291828 here] for instructions on resolving it.
+
 
 ----
 See also: TracTickets, TracIni, TracGuide

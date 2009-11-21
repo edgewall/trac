@@ -7,7 +7,7 @@ Trac macros are plugins to extend the Trac engine with custom 'functions' writte
 Another kind of macros are WikiProcessors. They typically deal with alternate markup formats and representation of larger blocks of information (like source code highlighting).
 
 == Using Macros ==
-Macro calls are enclosed in two ''square brackets''. Like Python functions, macros can also have arguments, a comma separated list within parentheses. 
+Macro calls are enclosed in two ''square brackets''. Like Python functions, macros can also have arguments, a comma separated list within parentheses.
 
 Trac macros can also be written as TracPlugins. This gives them some capabilities that macros do not have, such as being able to directly access the HTTP request.
 
@@ -45,7 +45,7 @@ Here are 2 simple examples showing how to create a Macro with Trac 0.11.
 Also, have a look at [trac:source:tags/trac-0.11/sample-plugins/Timestamp.py Timestamp.py] for an example that shows the difference between old style and new style macros and at the [trac:source:tags/trac-0.11/wiki-macros/README macros/README] which provides a little more insight about the transition.
 
 === Macro without arguments ===
-It should be saved as `TimeStamp.py` as Trac will use the module name as the Macro name
+It should be saved as `TimeStamp.py` (in the TracEnvironment's `plugins/` directory) as Trac will use the module name as the Macro name.
 {{{
 #!python
 from datetime import datetime
@@ -68,7 +68,7 @@ class TimeStampMacro(WikiMacroBase):
 }}}
 
 === Macro with arguments ===
-It should be saved as `HelloWorld.py` (in the plugins/ directory) as Trac will use the module name as the Macro name
+It should be saved as `HelloWorld.py` (in the TracEnvironment's `plugins/` directory) as Trac will use the module name as the Macro name.
 {{{
 #!python
 from trac.wiki.macros import WikiMacroBase

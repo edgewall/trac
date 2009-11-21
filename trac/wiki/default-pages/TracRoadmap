@@ -5,7 +5,7 @@ The roadmap provides a view on the [wiki:TracTickets ticket system] that helps p
 
 == The Roadmap View ==
 
-Basically, the roadmap is just a list of future milestones. You can add a description to milestones (using WikiFormatting) describing main objectives, for example. In addition, tickets targeted for a milestone are aggregated, and the ratio between active and resolved tickets is displayed as a milestone progress bar.
+Basically, the roadmap is just a list of future milestones. You can add a description to milestones (using WikiFormatting) describing main objectives, for example. In addition, tickets targeted for a milestone are aggregated, and the ratio between active and resolved tickets is displayed as a milestone progress bar.  It is possible to further [wiki:TracRoadmapCustomGroups customise the ticket grouping] and have multiple ticket statuses shown on the progress bar.
 
 == The Milestone View ==
 
@@ -27,4 +27,4 @@ To subscribe to the roadmap, copy the iCalendar link from the roadmap (found at 
 
 More information about iCalendar can be found at [http://en.wikipedia.org/wiki/ICalendar Wikipedia].
 ----
-See also: TracTickets, TracReports, TracQuery, TracGuide
+See also: TracRoadmapCustomGroups, TracTickets, TracReports, TracQuery, TracGuide

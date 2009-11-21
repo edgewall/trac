@@ -11,7 +11,7 @@ Currently Trac supports syntax coloring using one or more of the following packa
 
 To activate syntax coloring, simply install either one (or more) of these packages. No additional configuration is required, however to modify the colors, have a look at `trac/htdocs/css/code.css`.
 
-If you don't know why trac isnt detecting an installed library, try turning on Trac logging. It actually appears that Trac is broken with SilverCity 0.9.6. Either use the current 0.9.7 or the older 0.9.5 http://trac.edgewall.org/wiki/TracFaq#why-is-my-css-code-not-being-highlighted-even-though-i-have-silvercity-installed
+If you don't know why trac isnt detecting an installed library, try turning on Trac logging. It actually appears that Trac is broken with !SilverCity 0.9.6. Either use the current 0.9.7 or the older 0.9.5 http://trac.edgewall.org/wiki/TracFaq#why-is-my-css-code-not-being-highlighted-even-though-i-have-silvercity-installed
 
 When in use, Trac will automatically prioritize !SilverCity highlighting over Enscript if possible, (see note below). 
 
@@ -26,7 +26,9 @@ If neither package is available, Trac will display the data as plain text.
 
 Starting with trac 0.11 [http://pygments.org/ pygments] will be the new default highlighter. It's a highlighting library implemented in pure python, very fast, easy to extend and [http://pygments.org/docs/ well documented]. While it does not support as many languages as Enscript or Scintilla the overall output quality is much better.
 
-To use pygments in trac 0.11 you just have to install pygments 0.6 or higher (pygments_default_style = colorful under [mimeviewer] options has to be added).If you want to use it in trac 0.10 too you have to install the [http://trac-hacks.org/wiki/TracPygmentsPlugin TracPygmentsPlugin] from trac hacks. If you encounter any bugs, please file tickets regarding Pygments in [http://dev.pocoo.org/projects/pygments/ the pygments trac].
+To use pygments in trac 0.11 you just have to install pygments 0.6 or higher.  If you want to use it in trac 0.10 too you have to install the [th:TracPygmentsPlugin TracPygmentsPlugin] from trac hacks. If you encounter any bugs, please file tickets regarding Pygments at [http://dev.pocoo.org/projects/pygments/ the Pygments Trac site].
+
+The Pygments default style can specified in the [TracIni#mimeviewer-section mime-viewer] section of trac.ini. The default style can be over-ridden by setting a Style preference on the [/prefs/pygments preferences page]. 
 
 It's very likely that the list below is outdated because the list of supported pygments lexers is growing weekly. Just have a look at the page of [http://pygments.org/docs/lexers/ supported lexers] on the pygments webpage.
 
@@ -49,7 +51,7 @@ It's very likely that the list below is outdated because the list of supported p
 || Diff     ||   || X || X ||
 || Eiffel   ||   || X || ||
 || Elisp    ||   || X || ||
-|| Fortran  ||   || X(3) || ||
+|| Fortran  ||   || X(3) || X ||
 || Haskell  ||   || X || X ||
 || Genshi || || || X ||
 || HTML     || X || X || X ||
@@ -62,7 +64,7 @@ It's very likely that the list below is outdated because the list of supported p
 || Mako || || || X ||
 || Matlab   ||   || X (5) || ||
 || Mygthy || || || X ||
-|| Objective-C|| || X || ||
+|| Objective-C|| || X ||X ||
 || OCaml    ||   ||   || X ||
 || Pascal   ||   || X || X ||
 || * Perl   || X || X || X ||

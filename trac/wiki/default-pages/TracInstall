@@ -5,35 +5,55 @@ Trac is written in the Python programming language and needs a database, [http:/
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you can find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
-== Short - Install a released version ==
-For the quick install, make sure you have [http://python.org Python-2.5], [http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install easy_install] and SQlite-3.3.4 installed (or above). (You also might want to install python-dev to build genshi)
+See TracUpgrade for instructions on how to upgrade an existing installation.
+
+
+== Quick Install a Released Version ==
+For a quick install, first make sure you have [http://python.org/download Python] (2.3-2.6) and [http://peak.telecommunity.com/DevCenter/EasyInstall#installing-easy-install easy_install].
+
+Then enter (''omitting 'sudo' if not applicable'')
 {{{
 sudo easy_install Trac
 }}}
+to install Trac, SQLite, and Genshi.
+
 
 == Requirements ==
 The hardware requirements for running Trac obviously depend on the expected data volume (number of wiki pages, tickets, revisions) and traffic. Very small projects will run fine with a 500MHz processor and 128MB RAM using SQLite. In general, the more RAM, the better. A fast hard disk also helps.
 
 To install Trac, the following software packages must be installed:
 
- * [http://www.python.org/ Python], version >= 2.3
+ * [http://www.python.org/ Python], version >=2.3 (<3.0)
    * if using mod_python together with xml-related things, use python-2.5. expat is namespaced there and does not cause apache to crash any more(see [http://www.dscpl.com.au/wiki/ModPython/Articles/ExpatCausingApacheCrash here] for details).
    * For RPM-based systems you might also need the `python-devel` and `python-xml` packages.
-   * See instructions in ["TracOnWindows/Python2.5"]
- * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
+   * See instructions in [trac:wiki:TracOnWindows/Python2.5 TracOnWindows/Python2.5]
+ * [wiki:setuptools], version >= 0.6
  * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.5 (was version >= 0.4.1 on previous 0.11 release candidates)
  * You also need a database system and the corresponding python drivers for it.
-   The database can be either SQLite, PostgreSQL or ''MySQL (experimental)''.
+   The database can be either SQLite, PostgreSQL or ''MySQL/MariaDB (experimental)''.
  * Optional if some plugins require it: [http://www.clearsilver.net/ ClearSilver]
 
 ==== For SQLite ====
 
- * [http://www.sqlite.org/ SQLite], version 3.3.4 and above preferred (note: it is preinstalled in Python 2.5.2).
- * If not using Python-2.5: [http://pysqlite.org/ PySQLite], version 1.x (for SQLite 2.x) or version 2.x (for SQLite 3.x), version 2.3.2 preferred. For details see [trac:PySqlite PySqlite]
+If you're using Python 2.5 or 2.6, you already have everything you need.
 
-''Note: It appears that PySQLite 2.x is required for Trac 0.9+/SQLite 3.x if you plan to use the 'trac-post-commit-hook.py' script available from the 'contrib' section of the source repository.''
+If you're using Python 2.3 or 2.4 and need pysqlite, you can download from 
+[http://code.google.com/p/pysqlite/downloads/list google code] the Windows
+installers or the tar.gz archive for building from source: 
+{{{
+$ tar xvfz <version>.tar.gz 
+$ cd <version> 
+$ python setup.py build_static install 
+}}}
+ 
+That way, the latest SQLite version will be downloaded and built into the 
+bindings. 
 
-''Note: Users of Mac OS X please take care; the Apple-supplied SQLite contains additional code to support file locking on network filesystems like AFP or SMB. This is not presently (3.3.6) in the mainline sources, so if you build your own SQLite from source it will not function correctly on such filesystems - typically it gives the error "{{{database is locked}}}". [http://www.alastairs-place.net/2006/07/sqlite_and_mac/ A patch] is available for version 3.3.6, based on Apple's code, otherwise you're probably best off using the Apple supplied version (presently 3.1.3).''
+If you're still using SQLite 2.x, you'll need pysqlite 1.0.x, although this 
+package is not easy to find anymore. For SQLite 3.x, try not to use
+pysqlite 1.1.x, which has been deprecated in favor of pysqlite 2.x.
+
+See additional information in [trac:PySqlite PySqlite].
 
 ==== For PostgreSQL ====
 
@@ -43,9 +63,9 @@ To install Trac, the following software packages must be installed:
 
 '''Warning''': PostgreSQL 8.3 uses a strict type checking mechanism. To use Trac with the 8.3 Version of PostgreSQL, you will need [http://trac.edgewall.org/changeset/6512 trac-0.11] or later.
 
-==== For MySQL ====
+==== For MySQL/MariaDB ====
 
-'''Warning''': MySQL support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See [trac:MySqlDb MySqlDb] for more detailed information.
+'''Warning''': MySQL/MariaDB support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See [trac:MySqlDb MySqlDb/MariaDB] for more detailed information.
 
  * [http://mysql.com/ MySQL], version 4.1 or later
  * [http://sf.net/projects/mysql-python MySQLdb], version 1.2.1 or later
@@ -54,7 +74,7 @@ To install Trac, the following software packages must be installed:
 
 ==== Version Control System ====
 
-'''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently not supported.
+'''Please note:''' if using Subversion, Trac must be installed on the '''same machine'''. Remote repositories are currently not supported (although Windows UNC paths such as {{{\\machine_name\path\to\svn}}} do work).
 
  * [http://subversion.tigris.org/ Subversion], version >= 1.0. (versions recommended: 1.2.4, 1.3.2 or 1.4.2) and the '''''corresponding''''' Python bindings. For troubleshooting, check [trac:TracSubversion TracSubversion]
    * Trac uses the [http://svnbook.red-bean.com/svnbook-1.1/ch08s02.html#svn-ch-8-sect-2.3 SWIG] bindings included in the Subversion distribution, '''not''' [http://pysvn.tigris.org/ PySVN] (which is sometimes confused with the standard SWIG bindings).
@@ -66,12 +86,12 @@ To install Trac, the following software packages must be installed:
  * A CGI-capable web server (see TracCgi), or
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi), or
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp]), or
- * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI] or http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac)
+ * [http://httpd.apache.org/ Apache] with [http://code.google.com/p/modwsgi/ mod_wsgi] (see [wiki:TracModWSGI] or http://code.google.com/p/modwsgi/wiki/IntegrationWithTrac) or
     * This should work with Apache 1.3, 2.0 or 2.2 and promises to deliver more performance than using mod_python. A little less mature than mod_python.
  * [http://httpd.apache.org/ Apache] with [http://www.modpython.org/ mod_python 3.1.3+] (see TracModPython)
     * When installing mod_python the development versions of Python and Apache are required (actually the libraries and header files)
 
-For those stuck with Apache 1.3, it is also possible to get Trac working with [http://www.modpython.org/ mod_python 2.7] (see [wiki:TracModPython2.7 TracModPython2.7]). This guide hasn't been updated since 0.84, so it may or may not work.
+For those stuck with Apache 1.3, it is also possible to get Trac working with [http://www.modpython.org/ mod_python 2.7] (see [trac:wiki:TracModPython2.7 TracModPython2.7]). This guide hasn't been updated since 0.84, so it may or may not work.
 
 ==== Other Python Utilities ====
  * [http://docutils.sourceforge.net/ docutils], version >= 0.3.9 for WikiRestructuredText.
@@ -140,8 +160,6 @@ Also note that the values you specify here can be changed later by directly edit
 
   chown -R apache.apache /path/to/myproject
 
-'''Warning: If the trac.cgi files are not installed where you expect, then the current documentation is insufficient; it might be necessary to use the 'deploy' command in trac-admin.  See tickets http://trac.edgewall.org/ticket/7312 and possibly http://trac.edgewall.org/ticket/6827'''
-
 == Running the Standalone Server ==
 
 After having created a Trac environment, you can easily try the web interface by running the standalone server [wiki:TracStandalone tracd]:
@@ -154,7 +172,6 @@ Then, fire up a browser and visit `http://localhost:8000/`. You should get a sim
 $ tracd -s --port 8000 /path/to/myproject
 }}}
 
-
 == Running Trac on a Web Server ==
 
 Trac provides three options for connecting to a "real" web server: [wiki:TracCgi CGI], [wiki:TracFastCgi FastCGI] and [wiki:TracModPython mod_python]. For decent performance, it is recommended that you use either FastCGI or mod_python.
@@ -162,6 +179,18 @@ Trac provides three options for connecting to a "real" web server: [wiki:TracCgi
 If you're not afraid of running newer code, you can also try running Trac on [wiki:TracModWSGI mod_wsgi]. This should deliver even better performance than mod_python, but the module isn't as extensively tested as mod_python.
 
 Trac also supports [trac:TracOnWindowsIisAjp AJP] which may be your choice if you want to connect to IIS.
+
+==== Generating the Trac cgi-bin directory ====
+
+In order for Trac to function properly with FastCGI or mod_python, you need to have a trac.cgi file. This is an executable which loads the appropriate Python code. It can be generated using the `deploy` option of [wiki:TracAdmin trac-admin].
+
+There is, however, a bit of a chicken-and-egg problem. The [wiki:TracAdmin trac-admin] command requires an existing environment to function, but complains if the deploy directory already exists. This is a problem, because environments are often stored in a subdirectory of the deploy. The solution is to do something like this:
+{{{
+mkdir -p /usr/share/trac/projects/my-project
+trac-admin /usr/share/trac/projects/my-project initenv
+trac-admin /usr/share/trac/projects/my-project deploy /tmp/deploy
+mv /tmp/deploy/* /usr/share/trac
+}}}
 
 ==== Setting up the Plugin Cache ====
 
@@ -220,4 +249,5 @@ Keep in mind that anonymous (not logged in) users can by default access most but
 [trac:TracTeam The Trac Team]
 
 ----
-See also:  TracInstallPlatforms, TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions
+See also: [trac:TracInstallPlatforms TracInstallPlatforms], TracGuide, TracCgi, TracFastCgi, TracModPython, [wiki:TracModWSGI], TracUpgrade, TracPermissions
+

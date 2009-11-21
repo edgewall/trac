@@ -20,6 +20,8 @@ Trac is eventually using, although Trac will only require read access as long
 as you're not using the BDB file system. Also, it seems that project names
 with spaces can be problematic for authentication (see [trac:#7163]).''
 
+''Note: "initenv" when using svn repository does not imply that trac-admin will perform "svnadmin create" for the specified repository path. You need to perform the "svnadmin create" prior to trac-admin initenv if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.''
+
 == Database Connection Strings ==
 
 Since version 0.9, Trac supports both [http://sqlite.org/ SQLite] and

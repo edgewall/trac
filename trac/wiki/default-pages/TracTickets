@@ -62,17 +62,15 @@ to understand.
 
 The option selected by default for the various drop-down fields can be set in [wiki:TracIni trac.ini], in the `[ticket]` section:
 
-
-
-
  * `default_component`: Name of the component selected by default
  * `default_milestone`: Name of the default milestone
  * `default_priority`: Default priority value
  * `default_severity`: Default severity value
  * `default_type`: Default ticket type
  * `default_version`: Name of the default version
+ * `default_owner`: Name of the default owner, ''if no owner for the component has been set''
 
-If any of these options are omitted, the default value will either be the first in the list, or an empty value, depending on whether the field in question is required to be set.
+If any of these options are omitted, the default value will either be the first in the list, or an empty value, depending on whether the field in question is required to be set.  Some of these can be chosen through the [trac:WebAdmin WebAdmin] plugin in the "Ticket System" section (others in the "trac.ini" section).  The default owner for a ticket will be the component owner, if that is set, or `default_owner`, if not.
 
 
 == Hiding Fields and Adding Custom Fields ==

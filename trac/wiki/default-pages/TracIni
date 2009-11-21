@@ -3,10 +3,11 @@
 
 Trac configuration is done by editing the '''`trac.ini`''' config file, located in `<projectenv>/conf/trac.ini`.  Changes to the configuration are usually reflected immediately, though changes to the `[components]` or `[logging]` sections will require restarting the web server. You may also need to restart the web server after creating a global configuration file when none was previously present.
 
+The `trac.ini` configuration file should be writable by the web server, as Trac currently relies on the possibility to trigger a complete environment reload to flush its caches.
+
 == Global Configuration ==
 
-In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or sometimes /etc/trac/trac.ini depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.
-Literally, when you're upgrading to 0.11, you have to add an `inherit`-section to your project's `trac.ini` file. Additionally you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
+In versions prior to 0.11, the global configuration was by default located in `$prefix/share/trac/conf/trac.ini` or /etc/trac/trac.ini, depending on the distribution. If you're upgrading, you may want to specify that file to inherit from.  Literally, when you're upgrading to 0.11, you have to add an `[inherit]` section to your project's `trac.ini` file. Additionally, you have to move your customized templates and common images from `$prefix/share/trac/...` to the new location.
 
 Global options will be merged with the environment-specific options, where local options override global options. The options file is specified as follows:
 {{{
@@ -14,11 +15,7 @@ Global options will be merged with the environment-specific options, where local
 file = /usr/share/trac/conf/trac.ini
 }}}
 
-Note that you can also specify a global option file when creating a new project,  by adding the option
-`--inherit=/path/to/global/options` to [TracAdmin trac-admin]'s `initenv` command.
-If you would not do this but nevertheless intend to use a global option file with your new environment, 
-you would have to go through the newly generated conf/trac.ini file and delete the entries that would
-otherwise override those set in the global file.
+Note that you can also specify a global option file when creating a new project,  by adding the option `--inherit=/path/to/global/options` to [TracAdmin trac-admin]'s `initenv` command.  If do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated conf/trac.ini file and delete the entries that will otherwise override those set in the global file.
 
 
 == Reference ==
@@ -66,7 +63,7 @@ and simply displaying closed tickets vs. all the others is maybe not appropriate
 in all cases. This section enables one to easily create ''groups'' of states 
 that will be shown in different colors in the milestone progress bar.
 
-Example configuration (the default only has closed and active):
+Example configuration (the default only has closed and active, and you will need to remove the comments, or else you get a syntax error):
 {{{
 closed = closed
 closed.order = 0                     # sequence number in the progress bar

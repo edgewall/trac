@@ -24,7 +24,7 @@ Graphically, it looks like this:
 
 == Additional Ticket Workflows ==
 
-There are several example workflows provided in the Trac source tree; look in [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections.  One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file.
+There are several example workflows provided in the Trac source tree; look in [trac:source:trunk/contrib/workflow contrib/workflow] for `.ini` config sections.  One of those may be a good match for what you want. They can be pasted into the `[ticket-workflow]` section of your `trac.ini` file. However if you have existing tickets then there may be issues if those tickets have states that are not in the new workflow. 
 
 Here are some [http://trac.edgewall.org/wiki/WorkFlow/Examples diagrams] of the above examples.
 
@@ -92,6 +92,8 @@ cd /var/local/trac_devel/contrib/workflow/
 sudo ./showworkflow /srv/trac/PlannerSuite/conf/trac.ini
 }}}
 And then open up the resulting `trac.pdf` file created by the script (it will be in the same directory as the `trac.ini` file).
+
+An online copy of the workflow parser is available at http://foss.wush.net/cgi-bin/visual-workflow.pl
 
 After you have changed a workflow, you need to restart apache for the changes to take effect. This is important, because the changes will still show up when you run your script, but all the old workflow steps will still be there until the server is restarted.
 

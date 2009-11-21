@@ -87,11 +87,13 @@ The following processors are included in the Trac distribution:
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
  * '''textile''' -- Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference].
  * '''comment''' -- Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page).
+ * '''diff''' -- Pretty print patches and diffs.
 
 === Code Highlighting Support ===
 Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for the following languages:
  * '''c''' -- C
  * '''cpp''' -- C++
+ * '''csharp''' --- C# (''use #!text/x-csharp'')
  * '''python''' -- Python
  * '''perl''' -- Perl
  * '''ruby''' -- Ruby

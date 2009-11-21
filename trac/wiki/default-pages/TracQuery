@@ -84,6 +84,16 @@ You can also customize the columns displayed in the table format (''format=table
 This is displayed as:
 [[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter)]]
 
+==== Full rows ====
+In ''table'' format you can also have full rows by using ''rows=<field>'' like below:
+
+{{{
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
+}}}
+
+This is displayed as:
+[[TicketQuery(max=3,status=closed,order=id,desc=1,format=table,col=resolution|summary|owner|reporter,rows=description)]]
+
 
 === Query Language ===
 

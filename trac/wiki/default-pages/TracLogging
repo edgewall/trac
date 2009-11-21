@@ -25,9 +25,11 @@ The verbosity level of logged messages can be set using the `log_level` option i
  '''INFO''':: Diagnostic information, log information about all processing.
  '''DEBUG''':: Trace messages, profiling, etc.
 
+Note that starting with Trac 0.11.5 you can in addition enable logging of SQL statements, at debug level. This is turned off by default, as it's very verbose (set `[trac] debug_sql = yes` in TracIni to activate).
+
 == Log Format ==
 
-Starting with Trac 0.10.4 (see #2844), it is possible to set the output format for log entries. This can be done through the `log_format` option in [wiki:TracIni#logging-section trac.ini]. The format is a string which can contain any of the [http://docs.python.org/lib/node422.html Python logging Formatter variables]. Additonally, the following Trac-specific variables can be used:
+Starting with Trac 0.10.4 (see [trac:#2844 #2844]), it is possible to set the output format for log entries. This can be done through the `log_format` option in [wiki:TracIni#logging-section trac.ini]. The format is a string which can contain any of the [http://docs.python.org/lib/node422.html Python logging Formatter variables]. Additonally, the following Trac-specific variables can be used:
  '''$(basename)s''':: The last path component of the current environment.
  '''$(path)s''':: The absolute path for the current environment.
  '''$(project)s''':: The originating project's name.
