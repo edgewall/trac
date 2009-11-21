@@ -1,7 +1,8 @@
 = Trac Installation Guide for 0.11 = 
 [[TracGuideToc]]
 
-Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
+
+Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://postgresql.org/ PostgreSQL], [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you can find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
@@ -30,7 +31,7 @@ To install Trac, the following software packages must be installed:
  * [wiki:setuptools], version >= 0.6
  * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.5 (was version >= 0.4.1 on previous 0.11 release candidates)
  * You also need a database system and the corresponding python drivers for it.
-   The database can be either SQLite, PostgreSQL or ''MySQL/MariaDB (experimental)''.
+   The database can be either SQLite, PostgreSQL or MySQL.
  * Optional if some plugins require it: [http://www.clearsilver.net/ ClearSilver]
 
 ==== For SQLite ====
@@ -63,12 +64,13 @@ See additional information in [trac:PySqlite PySqlite].
 
 '''Warning''': PostgreSQL 8.3 uses a strict type checking mechanism. To use Trac with the 8.3 Version of PostgreSQL, you will need [http://trac.edgewall.org/changeset/6512 trac-0.11] or later.
 
-==== For MySQL/MariaDB ====
+==== For MySQL ====
 
-'''Warning''': MySQL/MariaDB support is currently ''still'' experimental. That means it works for some people, but several issues remain, in particular regarding the use of unicode and the key length in the repository cache. See [trac:MySqlDb MySqlDb/MariaDB] for more detailed information.
-
- * [http://mysql.com/ MySQL], version 4.1 or later
+ * [http://mysql.com/ MySQL], version 4.1 or later ([http://askmonty.org/wiki/index.php/MariaDB MariaDB] might work as well)
  * [http://sf.net/projects/mysql-python MySQLdb], version 1.2.1 or later
+
+See [trac:MySqlDb MySqlDb] for more detailed information.
+It is ''very'' important to read carefully that page before creating the database.
 
 == Optional Requirements ==
 

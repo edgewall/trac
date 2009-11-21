@@ -22,6 +22,8 @@ Note that you can also specify a global option file when creating a new project,
 
 This is a brief reference of available configuration options.
 
+ ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
+
 [[TracIni()]]
 
 
@@ -63,22 +65,28 @@ and simply displaying closed tickets vs. all the others is maybe not appropriate
 in all cases. This section enables one to easily create ''groups'' of states 
 that will be shown in different colors in the milestone progress bar.
 
-Example configuration (the default only has closed and active, and you will need to remove the comments, or else you get a syntax error):
+Example configuration (the default only has closed and active):
 {{{
 closed = closed
-closed.order = 0                     # sequence number in the progress bar
-closed.query_args = group=resolution # optional extra param for the query
-closed.overall_completion = true     # indicates groups that count for overall completion percentage
+# sequence number in the progress bar
+closed.order = 0
+# optional extra param for the query (two additional columns: created and modified and sort on created)
+group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime
+# indicates groups that count for overall completion 
+closed.overall_completion = truepercentage
 
 new = new
 new.order = 1
 new.css_class = new
 new.label = new
 
-active = *                           # one catch-all group is allowed
-active.order = 1
-active.css_class = open              # CSS class for this interval
-active.label = in progress           # Displayed label for this group
+# one catch-all group is allowed
+active = *
+active.order = 2
+# CSS class for this interval
+active.css_class = open
+# Displayed label for this group
+active.label = in progress
 }}}
 
 The definition consists in a comma-separated list of accepted status.
@@ -93,7 +101,7 @@ selector:  `table.progress td.<class>`
 ''(since 0.11)''
 
 The TracBrowser for Subversion can interpret the `svn:externals` property of folders out of the box.
-However, if those externals are ''not'' using the `http:` protocol, or if a link to a different repository browser (such another Trac or [http://www.viewvc.org/ ViewVC]) is desired, then Trac needs to be able to map an external prefix to this other URL.
+However, if those externals are ''not'' using the `http:` or `https:` protocol, or if a link to a different repository browser such as another Trac or [http://www.viewvc.org/ ViewVC] is desired, then Trac needs to be able to map an external prefix to this other URL.
 
 This mapping is done in the `[svn:externals]` section of the TracIni
 
@@ -103,11 +111,13 @@ Example:
 1 = svn://server/repos1 http://trac/proj1/browser/$path?rev=$rev
 2 = svn://server/repos2 http://trac/proj2/browser/$path?rev=$rev
 3 = http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
-4 = svn://anotherserver.com/tools_repository  http://ourserver/trac/support/browser/$path?rev=$rev
+4 = svn://anotherserver.com/tools_repository  http://ourserver/tracs/tools/browser/$path?rev=$rev
 }}}
-With the above, the `svn://anotherserver.com/tools_repository/tags/1.1/tools` external will be mapped to `http://ourserver/trac/support/browser/tags/1.1/tools?rev=` (and `rev` will be set to the appropriate revision number if the external additionally specifies a revision, see the [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals] for more details).
+With the above, the `svn://anotherserver.com/tools_repository/tags/1.1/tools` external will be mapped to `http://ourserver/tracs/tools/browser/tags/1.1/tools?rev=` (and `rev` will be set to the appropriate revision number if the external additionally specifies a revision, see the [http://svnbook.red-bean.com/en/1.4/svn.advanced.externals.html SVN Book on externals] for more details).
 
 Note that the number used as a key in the above section is purely used as a place holder, as the URLs themselves can't be used as a key due to various limitations in the configuration file parser.
+
+Finally, the relative URLs introduced in [http://subversion.tigris.org/svn_1.5_releasenotes.html#externals Subversion 1.5] are not yet supported.
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

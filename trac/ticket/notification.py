@@ -45,6 +45,9 @@ class TicketNotificationSystem(Component):
     ticket_subject_template = Option('notification', 'ticket_subject_template', 
                                      '$prefix #$ticket.id: $summary',
         """A Genshi text template snippet used to get the notification subject.
+
+        By default, the subject template is `$prefix #$ticket.id: $summary`.
+        `$prefix` being the value of the smtp_subject_prefix option.
         (since 0.11)""")
 
 

@@ -236,15 +236,18 @@ class SubversionConnector(Component):
     implements(IRepositoryConnector)
 
     branches = ListOption('svn', 'branches', 'trunk,branches/*', doc=
-        """List of paths categorized as ''branches''.
-        If a path ends with '*', then all the directory entries found
-        below that path will be included.
+        """Comma separated list of paths categorized as branches.
+        If a path ends with '*', then all the directory entries found below 
+        that path will be included. 
+        Example: `/trunk, /branches/*, /projectAlpha/trunk, /sandbox/*`
         """)
 
     tags = ListOption('svn', 'tags', 'tags/*', doc=
-        """List of paths categorized as ''tags''.
-        If a path ends with '*', then all the directory entries found
-        below that path will be included.
+        """Comma separated list of paths categorized as tags.
+        
+        If a path ends with '*', then all the directory entries found below
+        that path will be included.
+        Example: `/tags/*, /projectAlpha/tags/A-1.0, /projectAlpha/tags/A-v1.1`
         """)
 
     error = None

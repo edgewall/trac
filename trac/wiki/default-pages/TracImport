@@ -39,15 +39,6 @@ The script provides a number of features to ease the conversion, such as:
 
 For more details on the available options, see the configuration section at the top of the script.
 
-=== Known Issues ===
-{{{
-#!comment
-                   Don't merge this section in the default page
-}}}
-[[TicketQuery(keywords=~bugzilla,status=!closed)]]
-
-The adequate milestone for valid bugzilla2trac issue is usually ''not applicable'', which means that fixes to the contributed script are not planned for a particular Trac release but can happen anytime.
-
 == Sourceforge ==
 
 Ticket data can be imported from Sourceforge using the [http://trac.edgewall.org/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
