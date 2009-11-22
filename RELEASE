@@ -1,17 +1,20 @@
-Release Notes for Trac 0.11.5 Genshi Release
-============================================
-July 17, 2009
+Release Notes for Trac 0.11.6rc1 Genshi Release
+===============================================
+November 22, 2009
 
-Trac 0.11.5 contains a number of bug fixes and minor enhancements.
+Trac 0.11.6rc1 contains two security fixes and a number of bug fixes,
+performance improvements and minor enhancements.
 
-Changes in 0.11.5
------------------
-
- * Implemented pre-upgrade backup support for PostgreSQL and MySQL (#2304)
- * Fixed PostgreSQL upgrade issue (#8378)
- * More robust diff parsing (#2672)
- * Avoid intermittent hangs by not calling apr_terminate explicitly (#7785)
- * Fixed display of merge properties for scoped repositories #7715.
+Changes in 0.11.6rc1
+--------------------
+ * Fixed the policy checks in report results when using alternate formats.
+ * Added a check for the "raw" role that is missing in docutils < 0.6.
+ * Re-enabled connection pooling with SQLite (#3446).
+ * Added caching of configuration options (#8510).
+ * Fixed the "database is locked" issue with SQLite (#3446, #8468).
+ * Deprecated SQLite 2.x support (#8625).
+ * Fixed hanlding of times in timezones with DST (#8240).
+ * Avoid corruption of trac.ini during write (#8623).
 
 Highlights in 0.11
 ------------------
