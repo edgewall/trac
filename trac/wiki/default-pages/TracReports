@@ -183,6 +183,7 @@ Columns whose names begin and end with 2 underscores (Example: '''`__color__`'''
 assumed to be ''formatting hints'', affecting the appearance of the row.
  
  * '''`__group__`''' -- Group results based on values in this column. Each group will have its own header and table.
+ * '''`__grouplink__`''' -- Make the header of each group a link to the specified URL. The URL is taken from the first row of each group.
  * '''`__color__`''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
 {{{
 #!html
@@ -196,10 +197,11 @@ assumed to be ''formatting hints'', affecting the appearance of the row.
 }}}
  * '''`__style__`''' -- A custom CSS style expression to use for the current row. 
 
-'''Example:''' ''List active tickets, grouped by milestone, colored by priority''
+'''Example:''' ''List active tickets, grouped by milestone, group header linked to milestone page, colored by priority''
 {{{
 SELECT p.value AS __color__,
      t.milestone AS __group__,
+     '../milestone/' || t.milestone AS __grouplink__,
      (CASE owner WHEN 'daniel' THEN 'font-weight: bold; background: red;' ELSE '' END) AS __style__,
        t.id AS ticket, summary
   FROM ticket t,enum p

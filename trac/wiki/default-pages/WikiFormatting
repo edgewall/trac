@@ -202,6 +202,34 @@ Display:
 ||Cell 1||Cell 2||Cell 3||
 ||Cell 4||Cell 5||Cell 6||
 
+
+Cell headings can be specified by wrapping the content in a pair of '=' characters.
+Note that the '=' characters have to stick to the cell separators, like this:
+{{{
+||        ||= stable =||= latest =||
+||= 0.10 =||  0.10.5  || 0.10.6dev||
+||= 0.11 =||  0.11.6  || 0.11.7dev||
+}}}
+
+Display:
+||        ||= stable =||= latest =||
+||= 0.10 =||  0.10.5  || 0.10.6dev||
+||= 0.11 =||  0.11.6  || 0.11.7dev||
+
+Finally, specifying an empty cell means that the next non empty cell will span the empty cells. For example:
+{{{
+|| 1 || 2 || 3 ||
+|||| 1 2 || 3 ||
+|| 1 |||| 2 3 ||
+|||||| 1 2 3 ||
+}}}
+
+Display:
+|| 1 || 2 || 3 ||
+|||| 1 2 || 3 ||
+|| 1 |||| 2 3 ||
+|||||| 1 2 3 ||
+
 Note that more complex tables can be created using
 [wiki:WikiRestructuredText#BiggerReSTExample reStructuredText].
 

@@ -1,17 +1,17 @@
 = Tracd =
 
-Tracd is a lightweight standalone Trac web server. In most cases it's easier to setup and runs faster than the [wiki:TracCgi CGI script].
+Tracd is a lightweight standalone Trac web server.
+It can be used in a variety of situations, from a test or development server to a multiprocess setup behind another web server used as a load balancer.
 
 == Pros ==
 
  * Fewer dependencies: You don't need to install apache or any other web-server.
- * Fast: Should be almost as fast as the [wiki:TracModPython mod_python] version (and much faster than the [wiki:TracCgi CGI]).
+ * Fast: Should be almost as fast as the [wiki:TracModPython mod_python] version (and much faster than the [wiki:TracCgi CGI]), even more so since version 0.12 where the HTTP/1.1 version of the protocol is enabled by default
  * Automatic reloading: For development, Tracd can be used in ''auto_reload'' mode, which will automatically restart the server whenever you make a change to the code (in Trac itself or in a plugin).
-  * Options for tracd: `-r, --auto-reload`
 
 == Cons ==
 
- * Fewer features: Tracd implements a very simple web-server and is not as configurable or as scalable as Apache HTTPD.
+ * Fewer features: Tracd implements a very simple web-server and is not as configurable or as scalable as Apache httpd.
  * No native HTTPS support: [http://www.rickk.com/sslwrap/ sslwrap] can be used instead,
    or [http://trac.edgewall.org/wiki/STunnelTracd stunnel -- a tutorial on how to use stunnel with tracd] or Apache with mod_proxy.
 
@@ -203,4 +203,4 @@ Tracd supports serving projects with different base urls than /<project>. The pa
 }}}
 
 ----
-See also: TracInstall, TracCgi, TracModPython, TracGuide, [trac:TracOnWindowsStandalone?version=13#RunningTracdasservice Running tracd.exe as a Windows service]
+See also: TracInstall, TracCgi, TracModPython, TracGuide, [trac:TracOnWindowsStandalone?version=13#RunningTracdasservice Running tracd.exe as a Windows service], [trac:TracOnWindowsIisAjp], [trac:TracNginxRecipe]

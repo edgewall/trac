@@ -40,7 +40,7 @@ Results in:
 This is the ''only'' way to go in Trac 0.11
 }}}
 
-Note that if you don't specify a CSS class, the `wikipage` class will be added, so that the special layout of headers is respected in the <div>. If you specify explicitly the padding property, you have to take this into account (tip: [http://getfirebug.com/ get FireBug]!).
+Note that the contents of a `#!div` block are contained in one or more paragraphs, which have a non-zero top and bottom margin by default. This leads to the top and bottom padding in the example above. To remove the top and bottom margin of the contents, add the `compact` class to the `#!div`.
 
 For spans, you should rather use the Macro call syntax:
 {{{

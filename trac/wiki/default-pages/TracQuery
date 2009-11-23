@@ -97,7 +97,7 @@ This is displayed as:
 
 === Query Language ===
 
-`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values.
+`query:` TracLinks and the `[[TicketQuery]]` macro both use a mini “query language” for specifying query filters. Basically, the filters are separated by ampersands (`&`). Each filter then consists of the ticket field name, an operator, and one or more values. More than one value are separated by a pipe (`|`), meaning that the filter matches any of the values. To include a litteral `&` or `|` in a value, escape the character with a backslash (`\`).
 
 The available operators are:
 || '''`=`''' || the field content exactly matches the one of the values ||
@@ -111,7 +111,7 @@ All of these operators can also be negated:
 || '''`!^=`''' || the field content does not start with any of the values ||
 || '''`!$=`''' || the field content does not end with any of the values ||
 
-Since 0.12, the date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by a semicolon (`;`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be left out to avoid having to quote the query string. 
+The date fields `created` and `modified` can be constrained by using the `=` operator and specifying a value containing two dates separated by a semicolon (`;`). Either end of the date range can be left empty, meaning that the corresponding end of the range is open. The date parser understands a few natural date specifications like "3 weeks ago", "last month" and "now", as well as Bugzilla-style date specifications like "1d", "2w", "3m" or "4y" for 1 day, 2 weeks, 3 months and 4 years, respectively. Spaces in date specifications can be left out to avoid having to quote the query string. 
 || '''`created=2007-01-01;2008-01-01`''' || query tickets created in 2007 ||
 || '''`created=lastmonth;thismonth`''' || query tickets created during the previous month ||
 || '''`modified=1weekago;`''' || query tickets that have been modified in the last week ||
