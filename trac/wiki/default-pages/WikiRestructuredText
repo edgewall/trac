@@ -5,6 +5,8 @@ Trac supports using ''reStructuredText'' (RST) as an alternative to wiki markup 
 From the reStucturedText webpage:
  "''reStructuredText is an easy-to-read, what-you-see-is-what-you-get plaintext markup syntax and parser   system. It is useful for in-line program documentation (such as Python docstrings), for quickly creating  simple web pages, and for standalone documents. reStructuredText is designed for extensibility for  specific application domains. ''"
 
+If you want a file from your Subversion repository be displayed as reStructuredText in Trac's source browser, set `text/x-rst` as value for the Subversion property `svn:mime-type`. See [trac:source:/trunk/INSTALL this example].
+
 === Requirements ===
 Note that to activate RST support in Trac, the python docutils package must be installed. 
 If not already available on your operating system, you can download it at the [http://docutils.sourceforge.net/rst.html RST Website].

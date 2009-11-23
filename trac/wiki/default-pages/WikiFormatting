@@ -280,7 +280,6 @@ In addition to the current page, it is possible to refer to other resources:
 
 Example display: [[Image(htdocs:../common/trac_logo_mini.png)]]
 
-
 See WikiMacros for further documentation on the `[[Image()]]` macro.
 
 

@@ -7,6 +7,7 @@ Tracd is a lightweight standalone Trac web server. In most cases it's easier to 
  * Fewer dependencies: You don't need to install apache or any other web-server.
  * Fast: Should be almost as fast as the [wiki:TracModPython mod_python] version (and much faster than the [wiki:TracCgi CGI]).
  * Automatic reloading: For development, Tracd can be used in ''auto_reload'' mode, which will automatically restart the server whenever you make a change to the code (in Trac itself or in a plugin).
+  * Options for tracd: `-r, --auto-reload`
 
 == Cons ==
 
@@ -64,23 +65,22 @@ Using tracd with Apache .htpasswd files:
 To create a .htpasswd file using htpasswd:
 
 {{{
-sudo htpasswd -c /path/to/env/.htpasswd username
+ $ sudo htpasswd -c /path/to/env/.htpasswd username
 }}}
 then for additional users:
 {{{
-sudo htpasswd /path/to/env/.htpasswd username2
+ $ sudo htpasswd /path/to/env/.htpasswd username2
 }}}
-then for starting the tracd:
+then for starting the tracd (on windows skip the "=" after --basic-auth):
 {{{
-tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
+ $ tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
 }}}
-
 
 Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
 
   ''Support for Basic authentication was added in version 0.9.''
 
-The general format for using authentication is:
+The general format for using authentication is (on windows skip the "=" after --auth):
 
 {{{
  $ tracd -p port --auth=base_project_dir,password_file_path,realm project_path
@@ -93,7 +93,7 @@ where:
  * '''realm''' realm
  * '''project_path''' path of the project
 
-Example:
+Example (on windows skip the "=" after --auth):
 
 {{{
  $ tracd -p 8080 \
@@ -161,8 +161,8 @@ print ':'.join((options.username, realm, kd([options.username, realm, options.pa
 Note: If you use the above script you must use the --auth option to tracd, not --basic-auth, and you must set the realm in the --auth value to 'trac' (without the quotes). Example usage (assuming you saved the script as trac-digest.py):
 
 {{{
-python trac-digest.py -u username -p password >> c:\digest.txt
-tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
+ $ python trac-digest.py -u username -p password >> c:\digest.txt
+ $ tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
 
 Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). When using on Windows make sure to use -m option for it (did not tested it on *nix, so not sure if that is the case there).  If you do not have Apache, [trac:source:/tags/trac-0.11b2/contrib/htpasswd.py htpasswd.py] may help.  (Note that it requires a `crypt` or `fcrypt` module; see the source comments for details.)
@@ -189,7 +189,7 @@ the corresponding relative URL would be `/<project_name>/chrome/site/software-0.
 which in turn can be written using the relative link syntax
 in the Wiki: `[/<project_name>/chrome/site/software-0.1.tar.gz]` 
 
-The development version of Trac supports a new `htdocs:` TracLinks 
+Since 0.10, Trac supports a new `htdocs:` TracLinks 
 syntax for the above. With this, the example link above can be written simply 
 `htdocs:software-0.1.tar.gz`. 
 

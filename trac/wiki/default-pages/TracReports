@@ -16,7 +16,6 @@ Rather than have its own report definition format, TracReports relies on standar
   }}}
   ''This will make the query module the default handler for the “View Tickets” navigation item. We encourage you to try this configuration and report back what kind of features of reports you are missing, if any.''
 
-  '''''You will almost definitely need to restart your httpd at this point.'''''
 
 A report consists of these basic parts:
  * '''ID''' -- Unique (sequential) identifier 
@@ -42,6 +41,8 @@ Changing the ID changes the shown order and number in the ''Available Reports'' 
 update report set id=5 where id=3;
 }}}
 Keep in mind that the integrity has to be maintained (i.e., ID has to be unique, and you don't want to exceed the max, since that's managed by SQLite someplace).
+
+You may also need to update or remove the report number stored in the report or query.
 
 == Navigating Tickets ==
 Clicking on one of the report results will take you to that ticket. You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Report'' link to return to the report page.
@@ -165,14 +166,17 @@ final report.
 
 === Automatically formatted columns ===
  * '''ticket''' -- Ticket ID number. Becomes a hyperlink to that ticket. 
+ * '''id''' -- same as '''ticket''' above when '''realm''' is not set
+ * '''realm''' -- together with '''id''', can be used to create links to other resources than tickets (e.g. a realm of ''wiki'' and an ''id'' to a page name will create a link to that wiki page)
  * '''created, modified, date, time''' -- Format cell as a date and/or time.
-
  * '''description''' -- Ticket description field, parsed through the wiki engine.
 
 '''Example:'''
 {{{
 SELECT id as ticket, created, status, summary FROM ticket 
 }}}
+
+Those columns can also be defined but marked as hidden, see [#column-syntax below].
 
 === Custom formatting columns ===
 Columns whose names begin and end with 2 underscores (Example: '''`__color__`''') are
@@ -207,7 +211,7 @@ SELECT p.value AS __color__,
 '''Note:''' A table join is used to match ''ticket'' priorities with their
 numeric representation from the ''enum'' table.
 
-=== Changing layout of report rows ===
+=== Changing layout of report rows === #column-syntax
 By default, all columns on each row are display on a single row in the HTML
 report, possibly formatted according to the descriptions above. However, it's
 also possible to create multi-line report entries.
@@ -217,6 +221,7 @@ also possible to create multi-line report entries.
  * '''`_column_`''' -- ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
 
  * '''`_column`'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
+   This can be used to hide any kind of column, even important ones required for identifying the resource, e.g. `id as _id` will hide the '''Id''' column but the link to the ticket will be present.
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout''
 

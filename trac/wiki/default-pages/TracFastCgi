@@ -1,18 +1,16 @@
 = Trac with FastCGI =
 
-Since version 0.9, Trac supports being run through the [http://www.fastcgi.com/ FastCGI] interface. Like [wiki:TracModPython mod_python], this allows Trac to remain resident, and is faster than external CGI interfaces which must start a new process for each request. However, unlike mod_python, it is able to support [http://httpd.apache.org/docs/suexec.html SuEXEC]. Additionally, it is supported by much wider variety of web servers.
+[http://www.fastcgi.com/ FastCGI] interface allows Trac to remain resident much like with [wiki:TracModPython mod_python]. It is faster than external CGI interfaces which must start a new process for each request. However, unlike mod_python, FastCGI supports [http://httpd.apache.org/docs/suexec.html Apache SuEXEC], i.e. run with different permissions than web server. Additionally, it is supported by much wider variety of web servers.
 
-'''Note for Windows:''' Trac's FCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, your choice may be [trac:TracOnWindowsIisAjp AJP].
+'''Note for Windows:''' Trac's FastCGI does not run under Windows, as Windows does not implement `Socket.fromfd`, which is used by `_fcgi.py`. If you want to connect to IIS, you may want to try [trac:TracOnWindowsIisAjp AJP].
 
 == Simple Apache configuration ==
 
 There are two FastCGI modules commonly available for Apache: `mod_fastcgi` and
-`mod_fcgid`.  The `FastCgiIpcDir` and `FastCgiConfig` directives discussed
-below are `mod_fastcgi` directives; the `DefaultInitEnv` is a `mod_fcgid`
-directive.
+`mod_fcgid` (preferred). The latter is more up-to-date.
 
-For `mod_fastcgi`, add the following to an appropriate Apache configuration
-file:
+==== setup with `mod_fastcgi` ====
+`mod_fastcgi` uses `FastCgiIpcDir` and `FastCgiConfig` directives that should be added to an appropriate Apache configuration file:
 {{{
 # Enable fastcgi for .fcgi files
 # (If you're using a distro package for mod_fcgi, something like
@@ -38,17 +36,27 @@ Or you can serve multiple Trac projects in a directory like:
 FastCgiConfig -initial-env TRAC_ENV_PARENT_DIR=/parent/dir/of/projects
 }}}
 
-But neither of these will work for `mod_fcgid`.  A similar but partial
-solution for `mod_fcgid` is:
+==== setup with `mod_fcgid` ====
+Configure `ScriptAlias` (see TracCgi for details), but call `trac.fcgi`
+instead of `trac.cgi`. Note that slash at the end - it is important.
 {{{
-DefaultInitEnv TRAC_ENV /path/to/env/trac/
+ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.fcgi/
 }}}
-But this cannot be used in `Directory` or `Location` context, which makes it
-difficult to support multiple projects.
 
-A better method which works for both of these modules (and for  [http://www.lighttpd.net/ lighttpd] and CGI as well), because it involves
-no server configuration settings for environment variables, is to set one
-of the variables in `trac.fcgi`, e.g.:
+To setup Trac environment for `mod_fcgid` it is necessary to use
+`FCGIDDefaultInitEnv` directive. It cannot be used in `Directory` or
+`Location` context, so if you need to support multiple projects, try
+alternative environment setup below.
+
+{{{
+FCGIDDefaultInitEnv TRAC_ENV /path/to/env/trac/
+}}}
+
+==== alternative environment setup ====
+A better method to specify path to Trac environment it to embed the path
+into `trac.fcgi` script itself. That doesn't require configuration of server
+environment variables, works for both FastCgi modules
+(and for [http://www.lighttpd.net/ lighttpd] and CGI as well):
 {{{
 import os
 os.environ['TRAC_ENV'] = "/path/to/projectenv"
@@ -59,9 +67,8 @@ import os
 os.environ['TRAC_ENV_PARENT_DIR'] = "/path/to/project/parent/dir"
 }}}
 
-Using this method, different projects can be supported by using different
-`.fcgi` scripts with different `ScriptAliases`, copying and appropriately
-renaming `trac.fcgi` and adding the above code to create each such script.
+With this method different projects can be supported by using different
+`.fcgi` scripts with different `ScriptAliases`.
 
 See [https://coderanger.net/~coderanger/httpd/fcgi_example.conf this fcgid example config] which uses a !ScriptAlias directive with trac.fcgi with a trailing / like this:
 {{{
@@ -96,7 +103,7 @@ environments.  It has a very low memory footprint compared to other web servers 
 
 For using `trac.fcgi`(prior to 0.11) / fcgi_frontend.py (0.11) with lighttpd add the following to your lighttpd.conf:
 {{{
-#var.fcgi_binary="/path/to/fcgi_frontend.py" # 0.11 if installed with easy_setup, it is inside the egg directory
+#var.fcgi_binary="/usr/bin/python /path/to/fcgi_frontend.py" # 0.11 if installed with easy_setup, it is inside the egg directory
 var.fcgi_binary="/path/to/cgi-bin/trac.fcgi" # 0.10 name of prior fcgi executable
 fastcgi.server = ("/trac" =>
    
