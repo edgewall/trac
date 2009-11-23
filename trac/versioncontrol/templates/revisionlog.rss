@@ -15,8 +15,9 @@
       <link>$log_href</link>
     </image>
 
-    <item py:for="item in items" 
-          py:with="change = changes[item.rev]; 
+    <py:for each="items in item_ranges">
+    <item py:for="item in items"
+          py:with="change = changes[item.rev];
                    item_context = context('changeset', change.rev)">
       ${author_or_creator(change.author, email_map)}
       <pubDate>${http_date(change.date)}</pubDate>
@@ -30,6 +31,7 @@
         }</description>
       <category>Log</category>
     </item>
+    </py:for>
 
  </channel>
 </rss>
