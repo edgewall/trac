@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 import errno
+import socket
 import sys
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 from SocketServer import ForkingMixIn, ThreadingMixIn
@@ -181,9 +182,9 @@ class WSGIRequestHandler(BaseHTTPRequestHandler):
     def handle_one_request(self):
         try:
             environ = self.setup_environ()
-        except IOError, e:
+        except (IOError, socket.error), e:
             environ = None
-            if e.errno in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
+            if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
                 # client disconnect
                 self.close_connection = 1
             else:
@@ -220,8 +221,9 @@ class WSGIServerGateway(WSGIGateway):
                     self.handler.send_header(name, value)
                 self.handler.end_headers()
             self.handler.wfile.write(data)
-        except IOError, e:
-            if e.errno in (errno.EPIPE, 10053, 10054): # client disconnect
+        except (IOError, socket.error), e:
+            if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
+                # client disconnect
                 self.handler.close_connection = 1
             else:
                 raise
