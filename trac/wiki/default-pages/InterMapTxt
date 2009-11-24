@@ -38,8 +38,10 @@ Also note that !InterWiki prefixes are case insensitive.
 == Prefix Definitions ==
 
 {{{
-PEP     http://www.python.org/peps/pep-$1.html                                       # Python Enhancement Proposal 
-PythonBug http://bugs.python.org/issue$1                                             # Python Issue #$1
+PEP     http://www.python.org/peps/pep-$1.html    # Python Enhancement Proposal 
+PythonBug    http://bugs.python.org/issue$1       # Python Issue #$1
+Python-issue http://bugs.python.org/issue$1       # Python Issue #$1
+
 Trac-ML  http://thread.gmane.org/gmane.comp.version-control.subversion.trac.general/ # Message $1 in Trac Mailing List
 trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.devel/   # Message $1 in Trac Development Mailing List
 
@@ -73,6 +75,6 @@ MetaWikiPedia    http://meta.wikipedia.org/wiki/
 MoinMoin         http://moinmoin.wikiwikiweb.de/
 WhoIs            http://www.whois.sc/
 Why              http://clublet.com/c/c/why?
-c2Wiki             http://c2.com/cgi/wiki?
+c2Wiki           http://c2.com/cgi/wiki?
 WikiPedia        http://en.wikipedia.org/wiki/
 }}}

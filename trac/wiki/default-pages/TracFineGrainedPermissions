@@ -15,17 +15,22 @@ An example policy based on an Authz-style system has been added. See
  - Copy authz_policy.py into your plugins directory.
  - Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere (preferably on a secured location on the server, not readable for others than the webuser.
  - Update your `trac.ini`:
+   1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section
 {{{
 [trac]
 ...
 permission_policies = AuthzPolicy, DefaultPermissionPolicy, LegacyAttachmentPolicy
-
+}}}
+   2. add a new `[authz_policy]` section
+{{{
 [authz_policy]
 authz_file = /some/trac/env/conf/authzpolicy.conf
-
+}}}
+   3. enable the single file plugin
+{{{
 [components]
 ...
-authz_policy = enabled
+authz_policy.* = enabled
 }}}
 
 Note that the order in which permission policies are specified is quite critical, 
@@ -63,7 +68,7 @@ Then:
 At the time of this writing, the old fine grained permissions system from Trac 0.10 and before used for restricting access to the repository has not yet been converted to a permission policy component, but from the user point of view, this makes little if no difference.
 
 That kind of fine-grained permission control needs a definition file, which is the one used by Subversion's mod_authz_svn. 
-More information about this file format and about its usage in Subversion is available in the [http://svnbook.red-bean.com/svnbook/book.html#svn-ch-6-sect-4.4.2 Subversion Book (Per-Directory Access Control)].
+More information about this file format and about its usage in Subversion is available in the  [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html Path-Based Authorization] section in the Server Configuration chapter of the svn book.
 
 Example:
 {{{

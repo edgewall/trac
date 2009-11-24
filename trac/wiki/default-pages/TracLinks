@@ -136,7 +136,7 @@ or a relative link from the URL of the current page (''Changed in 0.11''):
 [/ home]
 }}}
 
-Display: [/newticket newticket] [/ home]
+Display: [/newticket Create a new ticket] [/ home]
 
 To link to another location on the server (outside the project), use the '//location' link syntax (''Changed in 0.11''):
 
@@ -229,7 +229,8 @@ Links to the timeline can be created by specifying a date in the ISO:8601 format
 Examples:
  - `timeline:2008-01-29`
  - `timeline:2008-01-29T15:48`
- - `timeline:2008-01-29T16:48Z+01`
+ - `timeline:2008-01-29T15:48Z`
+ - `timeline:2008-01-29T16:48+01`
 
 ''(since Trac 0.11)''
 

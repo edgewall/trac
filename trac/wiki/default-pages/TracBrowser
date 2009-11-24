@@ -1,9 +1,8 @@
 = The Trac Repository Browser =
 [[TracGuideToc]]
 
-The Trac repository browser can be used to browse directories 
-and specific revisions of files stored in the repository of the configured
-version control system.
+The Trac repository browser can be used to browse specific revisions of directories 
+and files stored in the repository of the configured version control system.
 
 Directory entries are displayed in a list with sortable columns. The list 
 entries can be sorted by ''name'', ''size'' or ''age'' by clicking on the column
@@ -32,12 +31,12 @@ At the top of the browser page, there's a drop-down menu which you can use
 to select some interesting places in the repository, for example branches or tags. 
 This is sometimes referred to as the ''browser quickjump'' facility.
 The precise meaning and content of this menu depends on your backend.
-For Subversion, this list contains by default a few branches (`trunk` and any sub-folder of the latest `branches` top-level folder) and a few tags (any sub-folder of the latest `tags` top-level folder). This can be [TracIni#svn-section configured] for more advanced cases.
+For Subversion, this list contains by default the top-level trunk directory and sub-directories of the top-level branches and tags directories (`/trunk`, `/branches/*`, and `/tags/*`).  This can be [TracIni#svn-section configured] for more advanced cases.
 
-If you're using a Javascript enabled brower, you'll be able to expand and collapse folders in-place by clicking on the arrow head at the right side of a folder. Alternatively, the [trac:TracKeys keyboard] can also be used for this: use 'j' and 'k' to go to the next or previous entry, and 'o' (or 'Enter') to toggle between expanded and collapsed state of the selected folder or for visiting the selected file.
+If you're using a Javascript enabled browser, you'll be able to expand and collapse folders in-place by clicking on the arrow head at the right side of a folder. Alternatively, the [trac:TracKeys keyboard] can also be used for this: use 'j' and 'k' to go to the next or previous entry, and 'o' (or 'Enter') to toggle between expanded and collapsed state of the selected folder or for visiting the selected file.
 
 For the Subversion backend, some additional features are available:
- - Support for the `svn:needs-lock` property
+ - Displays the `svn:needs-lock` property
  - Support for the `svn:externals` property (which can be [TracIni#svn:externals-section configured])
  - The `svn:mime-type` property is used to select the syntax highlighter for rendering the file. For example, setting `svn:mime-type` to `text/html` will ensure the file is highlighted as HTML, regardless of the file extension. It also allows selecting the character encoding used in the file content. For example, if the file content is encoded in UTF-8, set `svn:mime-type` to `text/html;charset=utf-8`. The `charset=` specification overrides the default encoding defined in the `default_charset` option of the `[trac]` section of [TracIni#trac-section trac.ini].
 

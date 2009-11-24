@@ -29,6 +29,8 @@ environment, or an alias for it.
 The aliases are defined in `trac.ini` (see below).
 The prefix is case insensitive.
 
+When a TracLink is enclosed in brackets, the alias is expanded.  That is, `[th:ticket:1]` is displayed as `trachacks:ticket:1`, since `th` is an alias for `trachacks`.  If the TracLink is not enclosed in brackets, then the alias is displayed as it is typed.
+
 For convenience, there's also some alternative short-hand form, 
 where one can use an alias as an immediate prefix 
 for the identifier of a ticket, changeset or report:

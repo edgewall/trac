@@ -18,7 +18,7 @@ To access this tab, a user must have `TRAC_ADMIN privileges`. This can be perfor
   $ trac-admin /path/to/projenv permission add bob TRAC_ADMIN
 }}}
 
-Then, the user will be able to see the Admin tab, and can then access the permissions menu. This menu will allow you to perform all the following actions, but from the browser without requiring root access to the server (just the correct permissions for your user account).
+Then, the user `bob` will be able to see the Admin tab, and can then access the permissions menu. This menu will allow you to perform all the following actions, but from the browser without requiring root access to the server (just the correct permissions for your user account).
 
 
 An easy way to quickly secure a new Trac install is to run the above command on the anonymous user, install the [http://trac-hacks.org/wiki/AccountManagerPlugin AccountManagerPlugin], create a new admin account graphically and then remove the TRAC_ADMIN permission from the anonymous user.
@@ -41,23 +41,23 @@ Otherwise, individual privileges can be assigned to users for the various differ
 || `TICKET_VIEW` || View existing [wiki:TracTickets tickets] and perform [wiki:TracQuery ticket queries] ||
 || `TICKET_CREATE` || Create new [wiki:TracTickets tickets] ||
 || `TICKET_APPEND` || Add comments or attachments to [wiki:TracTickets tickets] ||
-|| `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties (priority, assignment, keywords, etc.) except description field, cc field add/remove when logged in or set email to pref ||
-|| `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets] ||
+|| `TICKET_CHGPROP` || Modify [wiki:TracTickets ticket] properties (priority, assignment, keywords, etc.) with the following exceptions: edit description field, add/remove other users from cc field when logged in, and set email to pref ||
+|| `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets]. Tickets can be assigned to users through a [TracTickets#Assign-toasDrop-DownList drop-down list] when the list of possible owners has been restricted. ||
 || `TICKET_EDIT_CC` || Full modify cc field ||
 || `TICKET_EDIT_DESCRIPTION` || Modify description field ||
-|| `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the description field ||
+|| `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the reporter and description fields. It also allows managing ticket properties in the WebAdmin panel. ||
 
 Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 
 === Roadmap ===
 
-|| `MILESTONE_VIEW` || View a milestone ||
+|| `MILESTONE_VIEW` || View milestones and assign tickets to milestones. ||
 || `MILESTONE_CREATE` || Create a new milestone ||
 || `MILESTONE_MODIFY` || Modify existing milestones ||
 || `MILESTONE_DELETE` || Delete milestones ||
 || `MILESTONE_ADMIN` || All `MILESTONE_*` permissions ||
-|| `ROADMAP_VIEW` || View the [wiki:TracRoadmap roadmap] page, is not (yet) the same as MILESTONE_VIEW, see #4292 ||
-|| `ROADMAP_ADMIN` || to be removed with #3022, replaced by MILESTONE_ADMIN ||
+|| `ROADMAP_VIEW` || View the [wiki:TracRoadmap roadmap] page, is not (yet) the same as MILESTONE_VIEW, see [trac:#4292 #4292] ||
+|| `ROADMAP_ADMIN` || to be removed with [trac:#3022 #3022], replaced by MILESTONE_ADMIN ||
 
 === Reports ===
 
@@ -88,7 +88,7 @@ Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.
 || `TIMELINE_VIEW` || View the [wiki:TracTimeline timeline] page ||
 || `SEARCH_VIEW` || View and execute [wiki:TracSearch search] queries ||
 || `CONFIG_VIEW` || Enables additional pages on ''About Trac'' that show the current configuration or the list of installed plugins ||
-|| `EMAIL_VIEW` || Shows email addresses even if [wiki:0.11/TracIni `trac show_email_addresses` configuration option is `false`] ||
+|| `EMAIL_VIEW` || Shows email addresses even if [trac:wiki:0.11/TracIni trac show_email_addresses configuration option is false] ||
 
 == Granting Privileges ==
 
@@ -169,7 +169,8 @@ Or one privilege for all users:
 By default on a new Trac installation, the `anonymous` user will have ''view'' access to everything in Trac, but will not be able to create or modify anything.
 On the other hand, the `authenticated` users will have the permissions to ''create and modify tickets and wiki pages''.
 
- '''anonymous'''::
+'''anonymous'''
+{{{
  BROWSER_VIEW 
  CHANGESET_VIEW 
  FILE_VIEW 
@@ -181,13 +182,15 @@ On the other hand, the `authenticated` users will have the permissions to ''crea
  SEARCH_VIEW 
  TICKET_VIEW 
  TIMELINE_VIEW
- WIKI_VIEW 
+ WIKI_VIEW
+}}}
 
- '''authenticated'''::
+'''authenticated'''
+{{{
  TICKET_CREATE 
  TICKET_MODIFY 
  WIKI_CREATE 
  WIKI_MODIFY  
-
+}}}
 ----
 See also: TracAdmin, TracGuide and TracFineGrainedPermissions
