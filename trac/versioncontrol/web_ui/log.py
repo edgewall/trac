@@ -238,6 +238,25 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
 
+        data = {
+            'context': Context.from_request(req, 'source', path),
+            'path': path, 'rev': rev, 'stop_rev': stop_rev,
+            'path': path, 'rev': rev, 'stop_rev': stop_rev, 
+            'revranges': revranges,
+            'mode': mode, 'verbose': verbose, 'limit' : limit,
+            'items': info, 'changes': changes,
+            'email_map': email_map, 'extra_changes': extra_changes,
+            'wiki_format_messages':
+            self.config['changeset'].getbool('wiki_format_messages')
+        }
+
+        if req.args.get('format') == 'changelog':
+            return 'revisionlog.txt', data, 'text/plain'
+        elif req.args.get('format') == 'rss':
+            data['context'] = Context.from_request(req, 'source', path,
+                                                   absurls=True)
+            return 'revisionlog.rss', data, 'application/rss+xml'
+
         item_ranges = []
         range = []
         for item in info:
@@ -250,24 +269,7 @@ class LogModule(Component):
                 range.append(item)
         if range:
             item_ranges.append(range)
-        data = {
-            'context': Context.from_request(req, 'source', path),
-            'path': path, 'rev': rev, 'stop_rev': stop_rev,
-            'path': path, 'rev': rev, 'stop_rev': stop_rev, 
-            'revranges': revranges,
-            'mode': mode, 'verbose': verbose, 'limit' : limit,
-            'item_ranges': item_ranges, 'changes': changes,
-            'email_map': email_map, 'extra_changes': extra_changes,
-            'wiki_format_messages':
-            self.config['changeset'].getbool('wiki_format_messages')
-        }
-
-        if req.args.get('format') == 'changelog':
-            return 'revisionlog.txt', data, 'text/plain'
-        elif req.args.get('format') == 'rss':
-            data['context'] = Context.from_request(req, 'source', path,
-                                                   absurls=True)
-            return 'revisionlog.rss', data, 'application/rss+xml'
+        data['item_ranges'] = item_ranges
 
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/browser.css')
