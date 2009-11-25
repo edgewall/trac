@@ -986,7 +986,6 @@ class TicketModule(Component):
 
     def _do_create(self, req, ticket):
         ticket.insert()
-        req.perm(ticket.resource).require('TICKET_VIEW')
 
         # Notify
         try:
@@ -1000,6 +999,8 @@ class TicketModule(Component):
         if 'attachment' in req.args:
             req.redirect(req.href.attachment('ticket', ticket.id,
                                              action='new'))
+        if 'TICKET_VIEW' not in req.perm('ticket', ticket.id):
+            req.redirect(req.href.newticket())
         req.redirect(req.href.ticket(ticket.id))
 
     def _do_save(self, req, ticket, action):
