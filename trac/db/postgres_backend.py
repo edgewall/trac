@@ -24,7 +24,7 @@ from trac.db.api import IDatabaseConnector, _parse_db_str
 from trac.db.util import ConnectionWrapper
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
-from trac.util.text import to_unicode, Empty
+from trac.util.text import to_unicode, empty
 from trac.util.translation import _
 
 has_psycopg = False
@@ -37,7 +37,7 @@ try:
 
     register_type(UNICODE)
     register_adapter(Markup, lambda markup: QuotedString(unicode(markup)))
-    register_adapter(Empty, lambda empty: AsIs("''"))
+    register_adapter(type(empty), lambda empty: AsIs("''"))
 
     has_psycopg = True
 except ImportError:
