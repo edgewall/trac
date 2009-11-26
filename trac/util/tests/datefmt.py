@@ -73,8 +73,13 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(23, tz), expected)
         self.assertEqual(datefmt.to_datetime(23L, tz), expected)
         self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
+        tz = datefmt.timezone('GMT +4:00')
+        expected = datetime.datetime(1970, 1, 1, 4, 0, 23, 0, tz)
+        self.assertEqual(datefmt.to_datetime(23, tz), expected)
+        self.assertEqual(datefmt.to_datetime(23L, tz), expected)
+        self.assertEqual(datefmt.to_datetime(23.0, tz), expected)
 
-    def test_format_datetime_gmt01(self):
+    def test_format_datetime_utc(self):
         t = datetime.datetime(1970,1,1,1,0,23,0,datefmt.utc)
         expected = '1970-01-01T01:00:23Z'
         self.assertEqual(datefmt.format_datetime(t, '%Y-%m-%dT%H:%M:%SZ',
@@ -88,7 +93,7 @@ class DateFormatTestCase(unittest.TestCase):
                                                  datefmt.utc), 
                                                  expected.split('T')[1])
 
-    def test_format_datetime_utc(self):
+    def test_format_datetime_gmt01(self):
         gmt01 = datefmt.FixedOffset(60, 'GMT +1:00')
         t = datetime.datetime(1970,1,1,1,0,23,0,gmt01)
         expected = '1970-01-01T01:00:23+0100'

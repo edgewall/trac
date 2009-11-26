@@ -41,15 +41,14 @@ def to_datetime(t, tzinfo=None):
 
     Any other input will trigger a `TypeError`.
     """
-    tzinfo = tzinfo or localtz
     if t is None:
-        return tzinfo.localize(datetime.now())
+        return datetime.now(tzinfo or localtz)
     elif isinstance(t, datetime):
         return t
     elif isinstance(t, date):
-        return tzinfo.localize(datetime(t.year, t.month, t.day))
+        return (tzinfo or localtz).localize(datetime(t.year, t.month, t.day))
     elif isinstance(t, (int,long,float)):
-        return tzinfo.localize(datetime.fromtimestamp(t))
+        return datetime.fromtimestamp(t, tzinfo or localtz)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
 
