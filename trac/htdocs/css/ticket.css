@@ -82,7 +82,6 @@ h1 .status { color: #444; }
 #trac-comment-editor { margin-top: 1em; margin-left: 2em }
 #trac-comment-editor textarea { margin-left: -1px; margin-right: -1px; width: 100% }
 #trac-comment-editor .wikitoolbar { margin-left: -1px }
-#preview { border: 1px solid #d7d7d7; padding: 1em }
 #trac-add-comment :link, #trac-add-comment :visited { color: #b00 }
 #changelog h3, #ticketchange h3 {
  border-bottom: 1px solid #d7d7d7;
@@ -100,8 +99,8 @@ h1 .status { color: #444; }
 }
 #changelog .trac-lastedit :link, #changelog .trac-lastedit :visited { color: inherit }
 
-#preview .changes, #changelog .changes { list-style: square; margin-left: 2em; padding: 0 }
-#preview .comment, #changelog .comment { margin-left: 2em }
+#changelog .changes, #ticketchange .changes { list-style: square; margin-left: 2em; padding: 0 }
+#changelog .comment, #ticketchange .comment { margin-left: 2em }
 
 form .field { margin-top: .75em; width: 100% }
 form .field fieldset.iefix { margin-left: 1px; margin-right: 1px }
