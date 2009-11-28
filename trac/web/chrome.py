@@ -298,6 +298,12 @@ class Chrome(Component):
         """Show email addresses instead of usernames. If false, we obfuscate
         email addresses (''since 0.11'').""")
 
+    never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto', 
+        'false',
+        """Never obfuscate `mailto:` links explicitly written in the wiki, 
+        even if `show_email_addresses` is false or the user has not the 
+        EMAIL_VIEW permission (''since 0.11.6'').""")
+
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
         """Show IP addresses for resource edits (e.g. wiki).
         (''since 0.11.3'').""")

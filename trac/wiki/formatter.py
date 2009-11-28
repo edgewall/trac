@@ -395,8 +395,12 @@ class Formatter(object):
             return self._make_ext_link(ns+':'+target, label)
         elif ns == "mailto":
             from trac.web.chrome import Chrome
-            otarget = Chrome(self.env).format_emails(self.context, target)
-            olabel = Chrome(self.env).format_emails(self.context, label)
+            chrome = Chrome(self.env)
+            if chrome.never_obfuscate_mailto:
+                otarget, olabel = target, label
+            else:
+                otarget = chrome.format_emails(self.context, target)
+                olabel = chrome.format_emails(self.context, label)
             if (otarget, olabel) == (target, label):
                 return self._make_mail_link('mailto:'+target, label)
             else:

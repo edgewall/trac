@@ -4,7 +4,11 @@ import tempfile
 import unittest
 
 from trac.attachment import Attachment
+from trac.mimeview.api import Context
+from trac.resource import Resource
 from trac.search.web_ui import SearchModule
+from trac.test import MockPerm
+from trac.web.href import Href
 from trac.wiki.tests import formatter
 
 SEARCH_TEST_CASES="""
@@ -119,6 +123,48 @@ def attachment_teardown(tc):
     shutil.rmtree(tc.env.path)
     tc.env.reset_db()
 
+
+EMAIL_TEST_CASE_DEFAULT = u"""
+============================== mailto: obfuscated by default, like plain email
+user@example.org vs. mailto:user@example.org
+and [mailto:user@example.org Joe User]
+------------------------------
+<p>
+user@\u2026 vs. mailto:user@\u2026
+and Joe User
+</p>
+------------------------------
+"""
+
+def email_default_context():
+    class NoEmailViewPerm(MockPerm):
+        def has_permission(self, action, realm_or_resource=None, id=False,
+                           version=False):
+            return action != 'EMAIL_VIEW'
+        __contains__ = has_permission
+
+    context = Context(Resource('wiki', 'WikiStart'), href=Href('/'), 
+                      perm=NoEmailViewPerm())
+    context.req = None # 0.12 FIXME .req shouldn't be required by formatter
+    return context
+
+
+EMAIL_TEST_CASE_NEVER_OBFUSCATE = u"""
+============================== mailto: not obfuscated, unlike plain email
+user@example.org vs. mailto:user@example.org
+and [mailto:user@example.org Joe User]
+------------------------------
+<p>
+user@\u2026 vs. <a class="mail-link" href="mailto:user@example.org"><span class="icon">\xa0</span>mailto:user@example.org</a>
+and <a class="mail-link" href="mailto:user@example.org"><span class="icon">\xa0</span>Joe User</a>
+</p>
+------------------------------
+"""
+
+def email_never_obfuscate_setup(tc):
+    tc.env.config.set('trac', 'never_obfuscate_mailto', True)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(SEARCH_TEST_CASES, file=__file__))
@@ -126,6 +172,12 @@ def suite():
                                   context=('wiki', 'WikiStart'),
                                   setup=attachment_setup,
                                   teardown=attachment_teardown))
+    suite.addTest(formatter.suite(EMAIL_TEST_CASE_DEFAULT, file=__file__, 
+                                  context=email_default_context()))
+    suite.addTest(formatter.suite(EMAIL_TEST_CASE_NEVER_OBFUSCATE, 
+                                  file=__file__,
+                                  context=email_default_context(),
+                                  setup=email_never_obfuscate_setup))
     return suite
 
 if __name__ == '__main__':
