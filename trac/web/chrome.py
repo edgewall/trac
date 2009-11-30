@@ -146,8 +146,7 @@ def add_notice(req, msg, *args):
     req.chrome['notices'].append(msg)
 
 def add_ctxtnav(req, elm_or_label, href=None, title=None):
-    """Add an entry to the current page's ctxtnav bar.
-    """
+    """Add an entry to the current page's ctxtnav bar."""
     if href:
         elm = tag.a(elm_or_label, href=href, title=title)
     else:
@@ -305,7 +304,7 @@ class Chrome(Component):
 
     show_email_addresses = BoolOption('trac', 'show_email_addresses', 'false',
         """Show email addresses instead of usernames. If false, we obfuscate
-        email addresses (''since 0.11'').""")
+        email addresses. (''since 0.11'')""")
 
     never_obfuscate_mailto = BoolOption('trac', 'never_obfuscate_mailto', 
         'false',
@@ -315,7 +314,11 @@ class Chrome(Component):
 
     show_ip_addresses = BoolOption('trac', 'show_ip_addresses', 'false',
         """Show IP addresses for resource edits (e.g. wiki).
-        (''since 0.11.3'').""")
+        (''since 0.11.3'')""")
+
+    resizable_textareas = BoolOption('trac', 'resizable_textareas', 'true',
+        """Make `<textarea>` fields resizable. Requires !JavaScript.
+        (''since 0.12'')""")
 
     templates = None
 
@@ -858,6 +861,19 @@ class Chrome(Component):
             return author
         else:
             return obfuscate_email_address(author)
+
+    # Element modifiers
+
+    def add_textarea_grips(self, req):
+        """Make `<textarea class="trac-resizable">` fields resizable if enabled
+        by configuration."""
+        if self.resizable_textareas:
+            add_script(req, 'common/js/resizer.js')
+
+    def add_wiki_toolbars(self, req):
+        """Add wiki toolbars to `<textarea class="wikitext">` fields."""
+        add_script(req, 'common/js/wikitoolbar.js')
+        self.add_textarea_grips(req)
 
     # Template filters
 

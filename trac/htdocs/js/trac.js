@@ -82,6 +82,7 @@
   window.resizeTextArea = function (id, rows) {
     var textarea = $("#" + id).get(0);
     if (!textarea || textarea.rows == undefined) return;
+    $(textarea).height("");
     textarea.rows = rows;
   }
   

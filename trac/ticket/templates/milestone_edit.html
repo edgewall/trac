@@ -13,7 +13,6 @@
     </py:choose>
     <link rel="stylesheet" type="text/css"
           href="${chrome.htdocs_location}css/roadmap.css" />
-    <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
         function updateCompletedDate() {
@@ -84,7 +83,7 @@
           <fieldset class="iefix">
             <label for="description" i18n:msg="">Description (you may use <a tabindex="42"
                    href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):</label>
-            <p><textarea id="description" name="description" class="wikitext" rows="10" cols="78">
+            <p><textarea id="description" name="description" class="wikitext trac-resizable" rows="10" cols="78">
 ${milestone.description}</textarea></p>
           </fieldset>
         </div>

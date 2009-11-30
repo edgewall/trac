@@ -26,7 +26,7 @@
               Description: (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here)
             </label>
             <br />
-            <textarea id="description" name="description" class="wikitext" rows="10" cols="78">
+            <textarea id="description" name="description" class="wikitext trac-resizable" rows="10" cols="78">
 $report.description</textarea>
           </div>
           <div class="field">
@@ -34,7 +34,7 @@ $report.description</textarea>
               <strong>Error:</strong> $error
             </div>
             <label for="query" i18n:msg="">Query for Report: (can be either SQL or, if starting with <tt>query:</tt>, a <a tabindex="42" href="${href.wiki('TracQuery') + '#QueryLanguage'}">TracQuery</a> expression)</label><br />
-            <textarea id="query" name="query" cols="85" rows="20">
+            <textarea id="query" name="query" class="trac-resizable" cols="85" rows="20">
 $report.sql</textarea>
           </div>
           <div class="buttons">
@@ -42,7 +42,6 @@ $report.sql</textarea>
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
           </div>
         </div>
-        <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
       </form>
 
       <div id="help" i18n:msg="">

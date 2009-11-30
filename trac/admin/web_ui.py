@@ -34,7 +34,7 @@ from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
-                            add_warning, INavigationContributor, \
+                            add_warning, Chrome, INavigationContributor, \
                             ITemplateProvider
 
 try:
@@ -216,6 +216,7 @@ class BasicsAdminPanel(Component):
             'description': self.env.project_description,
             'url': self.env.project_url
         }
+        Chrome(self.env).add_textarea_grips(req)
         return 'admin_basics.html', {'project': data}
 
 

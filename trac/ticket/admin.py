@@ -24,7 +24,7 @@ from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               format_datetime
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _
-from trac.web.chrome import add_notice, add_script, add_warning
+from trac.web.chrome import add_notice, add_script, add_warning, Chrome
 
 
 class TicketAdminPanel(Component):
@@ -84,7 +84,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
-            add_script(req, 'common/js/wikitoolbar.js')
+            Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail', 'component': comp}
 
         else:
@@ -269,7 +269,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
-            add_script(req, 'common/js/wikitoolbar.js')
+            Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail', 'milestone': mil}
 
         else:
@@ -451,7 +451,7 @@ class VersionAdminPanel(TicketAdminPanel):
                 elif req.args.get('cancel'):
                     req.redirect(req.href.admin(cat, page))
 
-            add_script(req, 'common/js/wikitoolbar.js')
+            Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail', 'version': ver}
 
         else:
