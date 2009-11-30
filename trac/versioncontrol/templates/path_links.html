@@ -12,11 +12,13 @@
   -       * rev, the optional revision information to show
   -       * reponame, the optional repository name
   -->
-<py:for each="idx, part in enumerate(path_links)"><py:with 
-        vars="first = idx == 0; last = idx == len(path_links) - 1"><a 
-          class="${classes('pathentry', first=first)}"
-          title="${first and 'Go to root directory' or 'View ' + part.name}"
-          href="$part.href">$part.name</a><py:if 
+<a class="pathentry first"
+   title="${(_('Go to repository root'), _('Go to repository index'))[reponame]}"
+   href="${path_links[0].href}">${path_links[0].name}</a>
+<py:for each="idx, part in enumerate(path_links[1:])"><py:with
+        vars="last = idx == len(path_links) - 2"><a
+          class="pathentry" title="${_('View %(name)s', name=part.name)}"
+          href="$part.href">$part.name</a><py:if
         test="not last"><span class="pathentry sep">/</span></py:if></py:with></py:for>
 <py:if test="rev"><span class="pathentry sep">@</span>
   <a class="pathentry" href="${href.changeset(rev, reponame)}" title="View changeset $rev">$rev</a>
