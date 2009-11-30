@@ -33,6 +33,8 @@ class Empty(unicode):
 
 empty = Empty()
 
+del Empty # shouldn't be used outside of Trac core
+
 
 # -- Unicode
 
