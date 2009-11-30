@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from trac.tests.functional import *
 from trac.mimeview.rst import has_docutils
+from trac.util import get_pkginfo
 
 class TestWiki(FunctionalTwillTestCaseSetup):
     def runTest(self):
@@ -64,8 +65,12 @@ def functionalSuite(suite=None):
     suite.addTest(TestWiki())
     suite.addTest(RegressionTestTicket4812())
     if has_docutils:
-        suite.addTest(ReStructuredTextWikiTest())
-        suite.addTest(ReStructuredTextCodeBlockTest())
+        import docutils
+        if get_pkginfo(docutils):
+            suite.addTest(ReStructuredTextWikiTest())
+            suite.addTest(ReStructuredTextCodeBlockTest())
+        else:
+            print "SKIP: reST wiki tests (docutils has no setuptools metadata)"
     else:
         print "SKIP: reST wiki tests (no docutils)"
     return suite

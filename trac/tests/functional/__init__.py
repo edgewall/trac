@@ -17,7 +17,7 @@ Secondarily, the cost of setting up a new Trac environment and Subversion
 repository is significant, so recreating the fixture for each test would be
 very costly.
 
-There are two primary objects invovled in the testing, the
+There are two primary objects involved in the testing, the
 FunctionalTestEnvironment and the FunctionalTester.
 
 FunctionalTestEnvironment represents the Trac environment, the Subversion
