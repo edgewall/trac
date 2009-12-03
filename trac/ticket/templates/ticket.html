@@ -266,9 +266,11 @@
                 </div>
                 <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
                   <div>
-                    <textarea name="edited_comment" class="wikitext" rows="10" cols="78">
+                    <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                     <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
+                  </div>
+                  <div class="buttons">
                     <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
                     <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
                     <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
@@ -310,7 +312,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
               <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a>
               here.
             </label>
-            <textarea id="comment" name="comment" class="wikitext" rows="10" cols="78">
+            <textarea id="comment" name="comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${comment}</textarea>
           </fieldset>
         </div>
@@ -346,7 +348,7 @@ ${comment}</textarea>
                   <tr>
                     <th><label for="field-description">Description:</label></th>
                     <td class="fullrow" colspan="3">
-                      <textarea id="field-description" name="field_description" class="wikitext" rows="10" cols="68">
+                      <textarea id="field-description" name="field_description" class="wikitext trac-resizable" rows="10" cols="68">
 ${ticket.description}</textarea>
                     </td>
                   </tr>
@@ -378,7 +380,7 @@ ${ticket.description}</textarea>
                         </select>
                         <textarea py:when="'textarea'" id="field-${field.name}" name="field_${field.name}"
                                   cols="${field.width}" rows="${field.height}"
-                                  class="${field.format == 'wiki' and 'wikitext' or None}">
+                                  class="${field.format == 'wiki' and 'wikitext ' or None}trac-resizable">
 ${value}</textarea>
                         <span py:when="'checkbox'">
                           <input type="checkbox" id="field-${field.name}" name="field_${field.name}"

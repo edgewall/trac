@@ -13,6 +13,7 @@ p.path .pathentry { float: left }
 #edit fieldset { margin-left: 1px; margin-right: 1px }
 #edit #text { clear: both; margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
 #edit .wikitoolbar { float: left; margin-left: -1px }
+#edit div.trac-resizable { clear: both; width: 100% }
 #changeinfo { padding: .5em }
 #changeinfo .field { float: left; margin: 0 1em .5em 0 }
 #changeinfo br { clear: left }

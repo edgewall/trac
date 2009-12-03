@@ -1,7 +1,7 @@
-Trac 0.11.6rc1 (November 22, 2009)
-http://svn.edgewall.org/repos/trac/tags/trac-0.11.6rc1
+Trac 0.11.6 (November 28, 2009)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11.6
 
- Trac 0.11.6rc1 contains two security fixes and a number of bug fixes,
+ Trac 0.11.6 contains two security fixes and a number of bug fixes,
  performance improvements and minor enhancements. The following list
  contains only a few highlights:
 
@@ -18,6 +18,7 @@ Bug fixes:
  * Deprecated SQLite 2.x support (#8625).
  * Fixed hanlding of times in timezones with DST (#8240).
  * Avoid corruption of trac.ini during write (#8623).
+ * Improved support for revision ranges in revision log view (#8349)
 
 Trac 0.11.5 (July 17, 2009)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.5

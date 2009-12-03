@@ -40,7 +40,7 @@ from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
 from trac.web import IRequestHandler, RequestDone
 from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
-                            add_warning, INavigationContributor
+                            add_warning, Chrome, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to
 
@@ -713,6 +713,7 @@ class MilestoneModule(Component):
         else:
             req.perm(milestone.resource).require('MILESTONE_CREATE')
 
+        Chrome(self.env).add_wiki_toolbars(req)
         return 'milestone_edit.html', data, None
 
     def _render_view(self, req, db, milestone):

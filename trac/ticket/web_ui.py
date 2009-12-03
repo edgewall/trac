@@ -425,7 +425,7 @@ class TicketModule(Component):
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
-        add_script(req, 'common/js/wikitoolbar.js')
+        Chrome(self.env).add_wiki_toolbars(req)
         return 'ticket.html', data, None
 
     def _process_ticket_request(self, req):
@@ -601,7 +601,7 @@ class TicketModule(Component):
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
-        add_script(req, 'common/js/wikitoolbar.js')
+        Chrome(self.env).add_wiki_toolbars(req)
 
         # Add registered converters
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):

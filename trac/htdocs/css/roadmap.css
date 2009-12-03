@@ -90,3 +90,4 @@ li.milestone { list-style: none; margin-bottom: 4em }
 #edit fieldset.iefix { margin-left: 1px; margin-right: 1px }
 #edit textarea#description { margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
 #edit .wikitoolbar { margin-left: -1px }
+#edit div.trac-resizable { width: 100% }

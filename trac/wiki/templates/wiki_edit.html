@@ -9,7 +9,6 @@
   <xi:include href="macros.html" />
   <head>
     <title>$title</title>
-    <script type="text/javascript" src="${chrome.htdocs_location}js/wikitoolbar.js"></script>
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#text").blur(function() {
@@ -80,7 +79,7 @@
               </option>
             </select>
           </div>
-          <p><textarea id="text" class="wikitext" name="text" cols="80" rows="$edit_rows">
+          <p><textarea id="text" class="wikitext trac-resizable" name="text" cols="80" rows="$edit_rows">
 $page.text</textarea>
           </p>
         </fieldset>

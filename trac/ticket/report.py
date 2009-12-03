@@ -100,6 +100,7 @@ class ReportModule(Component):
         elif action in ('copy', 'edit', 'new'):
             template = 'report_edit.html'
             data = self._render_editor(req, db, id, action=='copy')
+            Chrome(self.env).add_wiki_toolbars(req)
         elif action == 'delete':
             template = 'report_delete.html'
             data = self._render_confirm_delete(req, db, id)

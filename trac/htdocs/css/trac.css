@@ -403,6 +403,19 @@ table.wiki th {
 .wikitoolbar a#br { background-position: 0 -112px }
 .wikitoolbar a#img { background-position: 0 -128px }
 
+/* Textarea resizer */
+div.trac-resizable { display: table; width: 1px }
+div.trac-resizable > div { display: table-cell }
+div.trac-resizable textarea { display: block; margin-bottom: 0 }
+div.trac-grip {
+ height: 5px;
+ overflow: hidden;
+ background: #eee url(../grip.png) no-repeat center 1px;
+ border: 1px solid #ddd;
+ border-top-width: 0;
+ cursor: s-resize;
+}
+
 /* Styles for the form for adding attachments. */
 #attachment .field { margin-top: 1.3em }
 #attachment label { padding-left: .2em }

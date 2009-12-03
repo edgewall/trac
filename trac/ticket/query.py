@@ -1200,7 +1200,8 @@ class TicketQueryMacro(WikiMacroBase):
 
     For compatibility with Trac 0.10, if there's a last positional parameter
     given to the macro, it will be used to specify the `format`.
-    Also, using "&" as a field separator still works but is deprecated.
+    Also, using "&" as a field separator still works (except for `order`)
+    but is deprecated.
     """
 
     _comma_splitter = re.compile(r'(?<!\\),')
