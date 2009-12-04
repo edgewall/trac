@@ -874,19 +874,19 @@ class ChangesetModule(Component):
                     else:
                         label = _('(default)')
                     if reponame in visible_repos:
-                        filters.append(('repo:' + reponame,
+                        filters.append(('repo-' + reponame,
                                         u"\xa0\xa0-\xa0" + label))
                 filters.sort()
                 add_script(req, 'common/js/timeline_multirepos.js')
-                changeset_label = _('Checkins from all repositories')
+                changeset_label = _('Changesets in all repositories')
             else:
-                changeset_label = _('Repository checkins')
+                changeset_label = _('Repository changesets')
             filters.insert(0, ('changeset', changeset_label))
             return filters
 
     def get_timeline_events(self, req, start, stop, filters):
         all_repos = 'changeset' in filters
-        repo_filters = set(f for f in filters if f.startswith('repo:'))
+        repo_filters = set(f for f in filters if f.startswith('repo-'))
         if all_repos or repo_filters:
             show_files = self.timeline_show_files
             show_location = show_files == 'location'
@@ -930,7 +930,7 @@ class ChangesetModule(Component):
 
             rm = RepositoryManager(self.env)
             for reponame in rm.get_all_repositories():
-                if all_repos or ('repo:' + reponame) in repo_filters:
+                if all_repos or ('repo-' + reponame) in repo_filters:
                     try:
                         repos = rm.get_repository(reponame, req.authname)
                         for event in generate_changesets(reponame, repos):
