@@ -164,7 +164,7 @@ class TestTicketHistory(FunctionalTwillTestCaseSetup):
 
 class TestTicketHistoryDiff(FunctionalTwillTestCaseSetup):
     def runTest(self):
-        """Test ticket history"""
+        """Test ticket history (diff)"""
         name = 'TestTicketHistoryDiff'
         ticketid = self._tester.create_ticket(name)
         self._tester.go_to_ticket(ticketid)
