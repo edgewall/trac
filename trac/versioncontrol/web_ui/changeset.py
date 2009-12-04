@@ -28,7 +28,7 @@ from StringIO import StringIO
 from genshi.builder import tag
 from genshi.core import Markup
 
-from trac.config import Option, BoolOption, IntOption
+from trac.config import Option, BoolOption, IntOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview import Context, Mimeview
 from trac.perm import IPermissionRequestor
@@ -858,31 +858,36 @@ class ChangesetModule(Component):
             filters = []
             rm = RepositoryManager(self.env)
             repositories = rm.get_all_repositories()
-            visible_repos = set(name for name, info in repositories.items()
-                                if not info.get('hidden', False))
-            default_is_aliased = any(info.get('alias') == '' and
-                                     name in visible_repos
-                                     for name, info in repositories.items())
-            default_is_alias = repositories.get('', {}).get('alias') \
-                               in visible_repos
-            default_is_alone = repositories.keys() == ['']
-            for reponame in repositories.keys():
-                if reponame:
-                    label = reponame
-                elif default_is_aliased or default_is_alone or \
-                     default_is_alias:
-                    continue
-                else:
-                    label = _('(default)')
-                if reponame in visible_repos:
-                    filters.append((reponame or '(default)',
-                                    Markup("&nbsp;&sdot;&nbsp;") + label))
-            filters.sort()
-            filters.insert(0, ('changeset', _('Repository checkins')))
+            if len(repositories) > 1:
+                visible_repos = set(name for name, info in repositories.items()
+                                    if info.get('hidden') not in _TRUE_VALUES)
+                default_is_aliased = any(info.get('alias') == '' and
+                                         name in visible_repos
+                                         for name, info in repositories.items())
+                default_is_alias = repositories.get('', {}).get('alias') \
+                                   in visible_repos
+                for reponame in repositories.keys():
+                    if reponame:
+                        label = reponame
+                    elif default_is_aliased or default_is_alias:
+                        continue
+                    else:
+                        label = _('(default)')
+                    if reponame in visible_repos:
+                        filters.append(('repo:' + reponame,
+                                        u"\xa0\xa0-\xa0" + label))
+                filters.sort()
+                add_script(req, 'common/js/timeline_multirepos.js')
+                changeset_label = _('Checkins from all repositories')
+            else:
+                changeset_label = _('Repository checkins')
+            filters.insert(0, ('changeset', changeset_label))
             return filters
 
     def get_timeline_events(self, req, start, stop, filters):
-        if 'changeset' in filters:
+        all_repos = 'changeset' in filters
+        repo_filters = set(f for f in filters if f.startswith('repo:'))
+        if all_repos or repo_filters:
             show_files = self.timeline_show_files
             show_location = show_files == 'location'
             if show_files in ('-1', 'unlimited'):
@@ -924,13 +929,16 @@ class ChangesetModule(Component):
                                 show_location, show_files))
 
             rm = RepositoryManager(self.env)
-            repositories = rm.get_all_repositories()
-            default_is_alone = repositories.keys() == ['']
-            for reponame in repositories:
-                if default_is_alone or (reponame or '(default)') in filters:
-                    repos = rm.get_repository(reponame, req.authname)
-                    for event in generate_changesets(reponame, repos):
-                        yield event
+            for reponame in rm.get_all_repositories():
+                if all_repos or ('repo:' + reponame) in repo_filters:
+                    try:
+                        repos = rm.get_repository(reponame, req.authname)
+                        for event in generate_changesets(reponame, repos):
+                            yield event
+                    except TracError, e:
+                        self.log.error("Timeline event provider for repository"
+                                       " '%s' failed: %r", 
+                                       reponame, exception_to_unicode(e))
 
     def render_timeline_event(self, context, field, event):
         changesets, show_location, show_files = event[3]
