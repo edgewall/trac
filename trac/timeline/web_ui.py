@@ -327,24 +327,28 @@ class TimelineModule(Component):
         At the same time, the message will contain a link to the timeline
         without the filters corresponding to the guilty event provider `ep`.
         """
-        ep_name, exc_name = [i.__class__.__name__ for i in (ep, exc)]
         self.log.error('Timeline event provider failed: %s', 
                        exception_to_unicode(exc, traceback=True))
 
-        guilty_filters = [f[0] for f in ep.get_timeline_filters(req)]
-        guilty_kinds = [f[1] for f in ep.get_timeline_filters(req)]
-        other_filters = [f for f in current_filters if not f in guilty_filters]
+        ep_kinds = dict((f[0], f[1]) for f in ep.get_timeline_filters(req))
+        ep_filters = set(ep_kinds.keys())
+        current_filters = set(current_filters)
+        other_filters = set(current_filters) - ep_filters
         if not other_filters:
-            other_filters = [f for f in all_filters if not f in guilty_filters]
+            other_filters = set(all_filters) -  ep_filters
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
         href = req.href.timeline(args+[(f, 'on') for f in other_filters])
+        # TRANSLATOR: other_events
         other_events = _('other kind of events') # help extraction
         raise TracError(tag(
-            tag.p(tag_("%(kinds)s event provider (%(name)s) failed:",
-                       kinds=', '.join(guilty_kinds), name=tag.tt(ep_name)),
-                  tag.br(),
-                  exc_name, ': ', to_unicode(exc), class_='message'),
-            tag.p(tag_('You may want to see the %(other_events)s from the '
-                       'Timeline.',
-                       other_events=tag.a(other_events, href=href)))))
+            tag.p(tag_("Event provider %(name)s for filters %(kinds)s failed: ",
+                       kinds=', '.join(ep_kinds[f] for f in 
+                                       current_filters & ep_filters),
+                       name=tag.tt(ep.__class__.__name__)),
+                  tag.b(exception_to_unicode(exc)), class_='message'),
+            tag.p(tag_("""
+              You may want to see the %(other_events)s from the Timeline or 
+              notify your Trac administrator about the error (detailed
+              informations were written to the log).
+            """, other_events=tag.a(other_events, href=href)))))
