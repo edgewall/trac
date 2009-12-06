@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-04 10:54+0100\n"
+"POT-Creation-Date: 2009-12-05 22:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -482,7 +482,7 @@ msgstr ""
 #: trac/admin/web_ui.py:187 trac/ticket/admin.py:57 trac/ticket/admin.py:82
 #: trac/ticket/admin.py:267 trac/ticket/admin.py:449 trac/ticket/admin.py:602
 #: trac/ticket/admin.py:690 trac/ticket/report.py:177
-#: trac/ticket/roadmap.py:682 trac/wiki/web_ui.py:289
+#: trac/ticket/roadmap.py:683 trac/wiki/web_ui.py:289
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -779,7 +779,7 @@ msgid ""
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:850
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:851
 msgid "Milestones"
 msgstr ""
 
@@ -1859,7 +1859,7 @@ msgstr ""
 msgid "The selected components have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:262 trac/ticket/roadmap.py:659
+#: trac/ticket/admin.py:262 trac/ticket/roadmap.py:660
 msgid "Completion date may not be in the future"
 msgstr ""
 
@@ -2300,55 +2300,55 @@ msgstr ""
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
 msgstr ""
 
-#: trac/ticket/roadmap.py:215
+#: trac/ticket/roadmap.py:216
 #, python-format
 msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:231
+#: trac/ticket/roadmap.py:232
 #, python-format
 msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:430
-#: trac/ticket/roadmap.py:565 trac/ticket/templates/roadmap.html:11
+#: trac/ticket/roadmap.py:315 trac/ticket/roadmap.py:431
+#: trac/ticket/roadmap.py:566 trac/ticket/templates/roadmap.html:11
 #: trac/ticket/templates/roadmap.html:16
 msgid "Roadmap"
 msgstr ""
 
-#: trac/ticket/roadmap.py:358
+#: trac/ticket/roadmap.py:359
 msgid "iCalendar"
 msgstr ""
 
-#: trac/ticket/roadmap.py:439 trac/ticket/roadmap.py:840
+#: trac/ticket/roadmap.py:440 trac/ticket/roadmap.py:841
 #, python-format
 msgid "Milestone %(name)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:458
+#: trac/ticket/roadmap.py:459
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:520
+#: trac/ticket/roadmap.py:521
 msgid "Milestones reached"
 msgstr ""
 
-#: trac/ticket/roadmap.py:608
+#: trac/ticket/roadmap.py:609
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
 msgstr ""
 
-#: trac/ticket/roadmap.py:648
+#: trac/ticket/roadmap.py:649
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
 msgstr ""
 
-#: trac/ticket/roadmap.py:651
+#: trac/ticket/roadmap.py:652
 msgid "You must provide a name for the milestone."
 msgstr ""
 
@@ -3132,18 +3132,25 @@ msgstr ""
 msgid "%(date)s in Timeline"
 msgstr ""
 
-#: trac/timeline/web_ui.py:342
+#. TRANSLATOR: other_events
+#: trac/timeline/web_ui.py:343
 msgid "other kind of events"
 msgstr ""
 
-#: trac/timeline/web_ui.py:345
+#: trac/timeline/web_ui.py:348
 #, python-format
-msgid "%(kinds)s event provider (%(name)s) failed:"
+msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr ""
 
-#: trac/timeline/web_ui.py:350
+#: trac/timeline/web_ui.py:354
 #, python-format
-msgid "You may want to see the %(other_events)s from the Timeline."
+msgid ""
+"\n"
+"              You may want to see the %(other_events)s from the Timeline "
+"or \n"
+"              notify your Trac administrator about the error (detailed\n"
+"              informations were written to the log).\n"
+"            "
 msgstr ""
 
 #: trac/timeline/templates/timeline.html:20

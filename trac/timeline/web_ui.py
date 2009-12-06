@@ -342,7 +342,7 @@ class TimelineModule(Component):
         # TRANSLATOR: other_events
         other_events = _('other kind of events') # help extraction
         raise TracError(tag(
-            tag.p(tag_("Event provider %(name)s for filters %(kinds)s failed: ",
+            tag.p(tag_("Event provider %(name)s failed for filters %(kinds)s: ",
                        kinds=', '.join(ep_kinds[f] for f in 
                                        current_filters & ep_filters),
                        name=tag.tt(ep.__class__.__name__)),
