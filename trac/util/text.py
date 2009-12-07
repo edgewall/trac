@@ -21,6 +21,7 @@
 import __builtin__
 import locale
 import os
+import re
 import sys
 from urllib import quote, quote_plus, unquote, urlencode
 
@@ -81,13 +82,19 @@ def exception_to_unicode(e, traceback=False):
         message = '\n%s\n%s' % (to_unicode('\n'.join(traceback_only)), message)
     return message
 
+_js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
+             '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
+for i in range(0x20):
+    _js_quote.setdefault(chr(i), '\\u%04x' % i)
+_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\']')
+
 def javascript_quote(text):
     """Quote strings for inclusion in javascript"""
     if not text:
         return ''
-    return text.replace('\\', '\\\\').replace('\r', '\\r') \
-               .replace('\n', '\\n').replace('"', '\\"') \
-               .replace("'", "\\'")
+    def replace(match):
+        return _js_quote[match.group(0)]
+    return _js_quote_re.sub(replace, text)
 
 def unicode_quote(value, safe='/'):
     """A unicode aware version of urllib.quote"""

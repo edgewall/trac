@@ -25,6 +25,22 @@
         $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
         $(".foldable").enableFolding(false);
       <py:when test="ticket.exists">
+        var args = {realm: "ticket", id: ${ticket.id}, escape_newlines: ${int(preserve_newlines)}}
+        $("#comment").autoPreview("${href.wiki_render()}", args, function(textarea, text, rendered) {
+            $("#ticketchange div.comment").html(rendered);
+            if (rendered)
+              $("#ticketchange").show();
+            else if ($("#ticketchange ul.changes").length == 0)
+              $("#ticketchange").hide();
+        });
+        $("#trac-comment-editor textarea").autoPreview("${href.wiki_render()}", args, function(textarea, text, rendered) {
+          var comment = $("#trac-comment-editor").next("div.comment");
+          comment.html(rendered);
+          if (rendered)
+            comment.show();
+          else
+            comment.hide();
+        });
         $("#modify").parent().toggleClass("collapsed");
         
         /* only enable control elements for the currently selected action */
@@ -56,7 +72,7 @@
       <a href="#comment:$cnum">$prefix$cnum</a>
     </py:def>
 
-    <py:def function="display_change(change)">
+    <py:def function="display_change(change, show_editor=False)">
       <ul py:if="change.fields" class="changes">
         <li py:for="field_name, field in change.fields.items()">
           <strong>${field_labels[field_name]}</strong>
@@ -80,17 +96,29 @@
           </py:choose>
         </li>
       </ul>
-      <py:with vars="comment_is_edited = str(change.cnum) == cnum_edit">
-        <div py:if="'comment' in change and (not comment_is_edited or edited_comment is not None or show_history)"
-             py:choose="" xml:space="preserve"
-             class="comment searchable ${comment_is_edited and 'ticketdraft' or None}">
-          <py:when test="comment_is_edited">${wiki_to_html(context, edited_comment,
-                                                           escape_newlines=preserve_newlines) or u'\xa0'}</py:when>
+      <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
+        <div>
+          <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
+${(edited_comment, change.comment)[edited_comment is None]}</textarea>
+          <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
+        </div>
+        <div class="buttons">
+          <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
+          <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
+          <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
+        </div>
+      </form>
+      <py:choose>
+        <div py:when="str(change.cnum) == cnum_edit" py:with="text = (edited_comment, change.comment)[edited_comment is None]"
+             class="comment searchable ticketdraft" style="${not text and 'display: none' or None}" xml:space="preserve">
+          ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
+        </div>
+        <div py:otherwise="" py:choose="" class="comment searchable" xml:space="preserve">
           <py:when test="show_history">${wiki_to_html(context, change.comment_history[int(cversion)].comment,
                                                       escape_newlines=preserve_newlines)}</py:when>
           <py:otherwise>${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}</py:otherwise>
         </div>
-      </py:with>
+      </py:choose>
     </py:def>
 
     <div id="content" class="ticket" 
@@ -243,7 +271,7 @@
                     </div>
                   </form>
                 </py:if>           
-                ${display_change(change)}
+                ${display_change(change, show_editor)}
                 <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
                      class="trac-lastedit ${comment_version != max_version and 'trac-shade' or None}">
                   <i18n:msg params="version, date, author" py:when="comment_version != max_version">
@@ -264,18 +292,6 @@
                     (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=change.cnum, version=comment_version)}">diff</a>)
                   </py:if>
                 </div>
-                <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
-                  <div>
-                    <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
-${(edited_comment, change.comment)[edited_comment is None]}</textarea>
-                    <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
-                  </div>
-                  <div class="buttons">
-                    <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
-                    <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
-                    <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
-                  </div>
-                </form>
               </div>
             </py:for>
           </div>
@@ -287,25 +303,13 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             action="${ticket.exists and href.ticket(ticket.id) + '#trac-add-comment' or href.newticket()}">
         <!--! Add comment -->
         <div py:if="ticket.exists and can_append" class="field"
-            py:with="show_comment_preview = change_preview and cnum_edit is None">
+             py:with="show_comment_preview = (change_preview.fields or change_preview.comment) and cnum_edit is None">
           <div class="trac-nav">
             <a href="#content" title="Go to the top of the ticket">top</a> &uarr;
           </div>
           <h2 id="trac-add-comment">
             <a id="edit" onfocus="$('#comment').get(0).focus()">Add a comment</a>
           </h2>
-          <!--! Preview of ticket changes -->
-          <py:if test="show_comment_preview">
-            <div id="ticketchange" class="ticketdraft">
-              <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
-                <span class="threading" py:if="'replyto' in change_preview">
-                  in reply to: ${commentref('&uarr;&nbsp;', change_preview.replyto)}
-                </span>
-                Changed by ${authorinfo(change_preview.author)}
-              </h3>
-              ${display_change(change_preview)}
-            </div>
-          </py:if>
           <!--! Comment field -->
           <fieldset class="iefix">
             <label for="comment" i18n:msg="">You may use
@@ -315,6 +319,16 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             <textarea id="comment" name="comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${comment}</textarea>
           </fieldset>
+          <!--! Preview of ticket changes -->
+          <div id="ticketchange" class="ticketdraft" style="${not show_comment_preview and 'display: none' or None}">
+            <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
+              <span class="threading" py:if="'replyto' in change_preview">
+                in reply to: ${commentref('&uarr;&nbsp;', change_preview.replyto)}
+              </span>
+              Changed by ${authorinfo(change_preview.author)}
+            </h3>
+            ${display_change(change_preview)}
+          </div>
         </div>
 
         <div>

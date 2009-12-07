@@ -38,7 +38,7 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
                             add_stylesheet, add_warning, prevnext_nav, \
                             Chrome, INavigationContributor, ITemplateProvider
-from trac.web import IRequestHandler
+from trac.web.api import IRequestHandler
 from trac.wiki.api import IWikiPageManipulator, WikiSystem
 from trac.wiki.formatter import format_to, OneLinerFormatter
 from trac.wiki.model import WikiPage

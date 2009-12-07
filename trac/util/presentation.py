@@ -277,3 +277,36 @@ def separated(items, sep=','):
         yield last, sep
         last = i
     yield last, None
+
+
+try:
+    from json import dumps
+    
+    def to_json(value):
+        """Encode `value` to JSON."""
+        return dumps(value, sort_keys=True, separators=(',', ':'))
+
+except ImportError:
+    from trac.util.text import javascript_quote
+    
+    def to_json(value):
+        """Encode `value` to JSON."""
+        if isinstance(value, basestring):
+            return '"%s"' % javascript_quote(value)
+        elif value is None:
+            return 'null'
+        elif value is False:
+            return 'false'
+        elif value is True:
+            return 'true'
+        elif isinstance(value, (int, long)):
+            return str(value)
+        elif isinstance(value, float):
+            return repr(value)
+        elif isinstance(value, (list, tuple)):
+            return '[%s]' % ','.join(to_json(each) for each in value)
+        elif isinstance(value, dict):
+            return '{%s}' % ','.join('%s:%s' % (to_json(k), to_json(v))
+                                     for k, v in sorted(value.iteritems()))
+        else:
+            raise TypeError('Cannot encode type %s' % value.__class__.__name__)

@@ -18,10 +18,31 @@ import unittest
 from trac.util import presentation
 
 
+class ToJsonTestCase(unittest.TestCase):
+
+    def test_simple_types(self):
+        self.assertEqual('42', presentation.to_json(42))
+        self.assertEqual('123.456', presentation.to_json(123.456))
+        self.assertEqual('true', presentation.to_json(True))
+        self.assertEqual('false', presentation.to_json(False))
+        self.assertEqual('null', presentation.to_json(None))
+        self.assertEqual('"String"', presentation.to_json('String'))
+        self.assertEqual(r'"a \" quote"', presentation.to_json('a " quote'))
+
+    def test_compound_types(self):
+        self.assertEqual('[1,2,[true,false]]',
+                         presentation.to_json([1, 2, [True, False]]))
+        self.assertEqual('{"one":1,"other":[null,0],"two":2}',
+                         presentation.to_json({"one": 1, "two": 2,
+                                               "other": [None, 0]}))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(doctest.DocTestSuite(presentation))
+    suite.addTest(unittest.makeSuite(ToJsonTestCase))
     return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

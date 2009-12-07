@@ -72,6 +72,7 @@ from trac.web.href import Href
 from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
+
 def add_link(req, rel, href, title=None, mimetype=None, classname=None):
     """Add a link to the chrome info that will be inserted as <link> element in
     the <head> of the generated HTML
@@ -126,6 +127,14 @@ def add_script(req, filename, mimetype='text/javascript'):
 
     req.chrome.setdefault('scripts', []).append(script)
     scriptset.add(filename)
+
+def add_script_data(req, data):
+    """Add data to be made available in javascript scripts as global variables.
+    
+    The keys in `data` provide the names of the global variables. The values
+    are converted to JSON and assigned to the corresponding variables.
+    """
+    req.chrome.setdefault('script_data', {}).update(data)
 
 def add_javascript(req, filename):
     """Deprecated: use `add_script()` instead."""
@@ -320,6 +329,11 @@ class Chrome(Component):
         """Make `<textarea>` fields resizable. Requires !JavaScript.
         (''since 0.12'')""")
 
+    auto_preview_timeout = IntOption('trac', 'auto_preview_timeout', 2,
+        """Inactivity timeout in seconds after which the automatic wiki preview
+        triggers an update. Set this to 0 to disable automatic preview.
+        (''since 0.12'')""")
+
     templates = None
 
     # A dictionary of default context data for templates
@@ -354,6 +368,7 @@ class Chrome(Component):
         'sorted': sorted,
         'time': datetime.time,
         'timedelta': datetime.timedelta,
+        'to_json': presentation.to_json,
         'to_unicode': to_unicode,
         'utc': utc,
     }
@@ -468,8 +483,8 @@ class Chrome(Component):
         """
         self.log.debug('Prepare chrome data for request')
 
-        chrome = {'links': {}, 'scripts': [], 'ctxtnav': [], 'warnings': [],
-                  'notices': []}
+        chrome = {'links': {}, 'scripts': [], 'script_data': {}, 'ctxtnav': [],
+                  'warnings': [], 'notices': []}
         setattr(req, 'chrome', chrome)
 
         htdocs_location = self.htdocs_location or req.href.chrome('common')
@@ -874,6 +889,13 @@ class Chrome(Component):
         """Add wiki toolbars to `<textarea class="wikitext">` fields."""
         add_script(req, 'common/js/wikitoolbar.js')
         self.add_textarea_grips(req)
+
+    def add_auto_preview(self, req):
+        """Setup auto-preview for `<textarea>` fields."""
+        add_script(req, 'common/js/auto_preview.js')
+        add_script_data(req, {
+            'auto_preview_timeout': self.auto_preview_timeout,
+            'form_token': req.form_token})
 
     # Template filters
 

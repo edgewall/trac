@@ -1,0 +1,51 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2009 Edgewall Software
+# All rights reserved.
+#
+# This software is licensed as described in the file COPYING, which
+# you should have received as part of this distribution. The terms
+# are also available at http://trac.edgewall.org/wiki/TracLicense.
+#
+# This software consists of voluntary contributions made by many
+# individuals. For the exact contribution history, see the revision
+# history and logs, available at http://trac.edgewall.org/log/.
+
+from trac.core import *
+from trac.mimeview.api import Context
+from trac.resource import Resource
+from trac.web.api import IRequestHandler
+from trac.wiki.formatter import format_to
+ 
+
+class WikiRenderer(Component):
+    """Wiki text renderer."""
+
+    implements(IRequestHandler)
+
+    # IRequestHandler methods
+
+    def match_request(self, req):
+        return req.path_info == '/wiki_render'
+
+    def process_request(self, req):
+        realm = req.args.get('realm', 'wiki')
+        id = req.args.get('id')
+        version = req.args.get('version')
+        if version is not None:
+            try:
+                version = int(version)
+            except ValueError:
+                version = None
+        text = req.args.get('text', '')
+        flavor = req.args.get('flavor')
+        options = {}
+        if 'escape_newlines' in req.args:
+            options['escape_newlines'] = bool(req.args['escape_newlines'])
+        if 'shorten' in req.args:
+            options['shorten'] = bool(req.args['shorten'])
+        
+        resource = Resource(realm, id=id, version=version)
+        context = Context.from_request(req, resource)
+        rendered = format_to(self.env, flavor, context, text, **options)
+        req.send(rendered.encode('utf-8'))
