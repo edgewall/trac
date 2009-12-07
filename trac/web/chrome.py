@@ -329,7 +329,7 @@ class Chrome(Component):
         """Make `<textarea>` fields resizable. Requires !JavaScript.
         (''since 0.12'')""")
 
-    auto_preview_timeout = IntOption('trac', 'auto_preview_timeout', 2,
+    auto_preview_timeout = IntOption('trac', 'auto_preview_timeout', 1,
         """Inactivity timeout in seconds after which the automatic wiki preview
         triggers an update. Set this to 0 to disable automatic preview.
         (''since 0.12'')""")
