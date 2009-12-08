@@ -1,6 +1,11 @@
 @import url(code.css);
 
-#content.ticket { width: 700px; max-width: 100% }
+#content.ticket { 
+ width: 58em; 
+ max-width: 100%;
+ margin-left: auto;
+ margin-right: auto;
+}
 
 #newticket #field-description { width: 100% }
 #newticket #properties { width: 100% }
