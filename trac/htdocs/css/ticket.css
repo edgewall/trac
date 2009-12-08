@@ -76,7 +76,9 @@ h1 .status { color: #444; }
  margin-left: 0.2em;
 }
 
-.trac-nav { float: right }
+#propertyform .trac-nav {
+ margin-top: .5em;
+}
 #changelog { border: 1px outset #996; padding: 1em }
 .trac-shade { background-color: #eee }
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }

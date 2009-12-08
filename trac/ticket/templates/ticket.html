@@ -42,7 +42,7 @@
             comment.hide();
         });
         $("#modify").parent().toggleClass("collapsed");
-        
+
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
 
@@ -78,9 +78,9 @@
           <strong>${field_labels[field_name]}</strong>
           <py:choose>
             <py:when test="field_name == 'attachment'">
-              <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a> 
+              <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
               <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
-                 title="${_('Download')}" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="${_('Download')}"/></a> 
+                 title="${_('Download')}" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="${_('Download')}"/></a>
               added
             </py:when>
             <py:when test="'rendered' in field">${field.rendered}</py:when>
@@ -121,7 +121,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
       </py:choose>
     </py:def>
 
-    <div id="content" class="ticket" 
+    <div id="content" class="ticket"
          py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
                   can_create = 'TICKET_CREATE' in perm(ticket.resource) and not ticket.exists;
                   can_modify = 'TICKET_CHGPROP' in perm(ticket.resource);
@@ -270,7 +270,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                       <input type="submit" value="${_('Edit')}" title="Edit comment ${change.cnum}"/>
                     </div>
                   </form>
-                </py:if>           
+                </py:if>
                 ${display_change(change, show_editor)}
                 <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
                      class="trac-lastedit ${comment_version != max_version and 'trac-shade' or None}">
@@ -305,7 +305,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
         <div py:if="ticket.exists and can_append" class="field"
              py:with="show_comment_preview = (change_preview.fields or change_preview.comment) and cnum_edit is None">
           <div class="trac-nav">
-            <a href="#content" title="Go to the top of the ticket">top</a> &uarr;
+            <a href="#content" title="View ticket fields and description">View</a> &uarr;
           </div>
           <h2 id="trac-add-comment">
             <a id="edit" onfocus="$('#comment').get(0).focus()">Add a comment</a>
