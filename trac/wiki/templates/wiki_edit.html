@@ -17,6 +17,18 @@
         $("#editrows").change(function() {
           resizeTextArea("text", this.options[this.selectedIndex].value);
         });
+        <py:if test="not sidebyside and (action == 'preview' or diff)">
+          $("#info").scrollToTop();
+        </py:if>
+        <py:if test="sidebyside">
+          function autoResizeText() {
+            var preview_height = $("#preview").height();
+            if (preview_height)
+              $("#text").height(preview_height);
+          }
+          autoResizeText();
+          $(window).resize(autoResizeText);
+        </py:if>
       });
     </script>
   </head>
@@ -35,6 +47,32 @@
         (losing your changes) and start editing the latest version of the page
         again.</p>
       </div>
+
+      <!--!
+
+      Normal preview mode, edit form followed by preview:
+
+       | [xi:include "wiki_edit_form.html"                  ]
+       |
+       | == Preview ==
+       |
+       | [.Revision #info...................................]
+       |
+       | [.....#preview.....................................]
+
+
+      Side-by-side edit/preview mode:
+
+       | [.Revision #info...................................]
+       |
+       | == Preview ==
+       |                               [......#preview......]
+       | [xi:include "wiki_edit_form.html"]
+
+      (the  #preview will float at the right of the edit form's textarea)
+
+      -->
+      <py:if test="not sidebyside"><xi:include href="wiki_edit_form.html" /></py:if>
       <py:choose test="action">
         <py:when test="'preview'">
           <table id="info" summary="Revision info">
@@ -47,15 +85,21 @@
               </td></tr>
             </tbody>
           </table>
-          <fieldset id="preview" py:choose="">
-            <legend>${diff and 'Review Changes' or 'Preview'} (<a href="#edit">skip</a>)</legend>
-            <div py:when="diff" class="diff">
-              <xi:include href="diff_div.html" py:with="no_id=True" />
+          <div class="${sidebyside and 'sidebyside preview-right'}" py:choose="">
+            <div class="trac-nav" py:choose="">
+              <py:when test="sidebyside">&darr; <a href="#changeinfo">action</a></py:when>
+              <py:otherwise>&uarr; <a href="#content">edit</a></py:otherwise>
             </div>
-            <div py:otherwise="" class="wikipage" xml:space="preserve">
-              ${wiki_to_html(context(page.resource), page.text)}
+            <h2>${diff and _('Review Changes') or _('Preview')}</h2>
+            <div id="preview">
+              <div py:when="diff" class="diff">
+                <xi:include href="diff_div.html" py:with="no_id=True" />
+              </div>
+              <div py:otherwise="" class="wikipage" xml:space="preserve">
+                ${wiki_to_html(context(page.resource), page.text)}
+              </div>
             </div>
-          </fieldset>
+          </div>
         </py:when>
         <py:when test="'collision'">
           <div class="system-message">
@@ -64,67 +108,7 @@
           </div>
         </py:when>
       </py:choose>
-      <form id="edit" action="${href.wiki(page.name)}" method="post">
-        <fieldset class="iefix">
-          <input type="hidden" name="action" value="edit" />
-          <input type="hidden" name="version" value="$page.version" />
-          <input type="hidden" id="scroll_bar_pos" name="scroll_bar_pos"
-                 value="$scroll_bar_pos" />
-          <div id="rows">
-            <label for="editrows">Adjust edit area height:</label>
-            <select size="1" name="editrows" id="editrows" tabindex="43">
-              <option py:for="rows in range(8, 42, 4)" value="$rows"
-                      selected="${str(rows) == edit_rows or None}">
-                $rows
-              </option>
-            </select>
-          </div>
-          <p><textarea id="text" class="wikitext trac-resizable" name="text" cols="80" rows="$edit_rows">
-$page.text</textarea>
-          </p>
-        </fieldset>
-        <div id="help" i18n:msg="">
-          <b>Note:</b> See <a href="${href.wiki('WikiFormatting')}">WikiFormatting</a> and
-          <a href="${href.wiki('TracWiki')}">TracWiki</a> for help on editing wiki content.
-        </div>
-        <fieldset id="changeinfo">
-          <legend>Change information</legend>
-          <div id="changeinfo1">
-            <div py:if="authname == 'anonymous'" class="field">
-              <label>Your email or username:<br />
-                <input id="author" type="text" name="author" size="30" value="$author" />
-              </label>
-              <p py:if="author == 'anonymous'" class="hint">
-                E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.
-              </p>
-            </div>
-            <div class="field">
-              <label>Comment about this change (optional):<br />
-                <input id="comment" type="text" name="comment" size="60" value="$comment" />
-              </label>
-            </div>
-          </div>
-          <div py:if="'WIKI_ADMIN' in perm(page.resource)" id="changeinfo2" class="options">
-            <label><input type="checkbox" name="readonly" id="readonly"
-                          checked="${page.readonly or None}" />
-              Page is read-only
-            </label>
-          </div>
-        </fieldset>
-        <div class="buttons" py:choose="action">
-          <py:when test="'collision'">
-            <input type="submit" name="preview" value="${_('Preview')}" disabled="disabled" />&nbsp;
-            <input type="submit" name="merge" value="${_('Merge changes')}" accesskey="r" />&nbsp;
-            <input type="submit" name="save" value="${_('Submit changes')}" disabled="disabled" />&nbsp;
-          </py:when>
-          <py:otherwise>
-            <input type="submit" name="preview" value="${_('Preview Page')}" accesskey="r" />&nbsp;
-            <input type="submit" name="diff" value="${_('Review Changes')}" />&nbsp;
-            <input type="submit" id="save" name="save" value="${_('Submit changes')}" />&nbsp;
-          </py:otherwise>
-          <input type="submit" name="cancel" value="${_('Cancel')}" />
-        </div>
-      </form>
+      <py:if test="sidebyside"><xi:include href="wiki_edit_form.html" /></py:if>
     </div>
   </body>
 </html>

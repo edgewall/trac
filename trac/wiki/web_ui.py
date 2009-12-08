@@ -421,20 +421,37 @@ class WikiModule(Component):
 
         author = get_reporter_id(req, 'author')
         comment = req.args.get('comment', '')
-        editrows = req.args.get('editrows')
-        
-        if editrows:
-            pref = req.session.get('wiki_editrows', '20')
-            if editrows != pref:
-                req.session['wiki_editrows'] = editrows
+
+        defaults = {'editrows': 20}
+        prefs = dict((key, req.session.get('wiki_%s' % key, defaults.get(key)))
+                     for key in ('editrows', 'sidebyside'))
+
+        if 'from_editor' in req.args:
+            sidebyside = req.args.get('sidebyside') or None
+            if sidebyside != prefs['sidebyside']:
+                if sidebyside:
+                    req.session['wiki_sidebyside'] = '1'
+                else:
+                    del req.session['wiki_sidebyside']
         else:
-            editrows = req.session.get('wiki_editrows', '20')
+            sidebyside = prefs['sidebyside']
+
+        if sidebyside:
+            editrows = max(int(prefs['editrows']), 
+                           len(page.text.splitlines()) + 1)
+        else:
+            editrows = req.args.get('editrows')
+            if editrows:
+                if editrows != prefs['editrows']:
+                    req.session['wiki_editrows'] = editrows
+            else:
+                editrows = prefs['editrows']
 
         data = self._page_data(req, page, action)
         data.update({
             'author': author,
             'comment': comment,
-            'edit_rows': editrows,
+            'edit_rows': editrows, 'sidebyside': sidebyside,
             'scroll_bar_pos': req.args.get('scroll_bar_pos', ''),
             'diff': None,
         })
@@ -446,6 +463,8 @@ class WikiModule(Component):
             data.update({'diff': diff_data, 'changes': changes,
                          'action': 'preview', 'merge': action == 'merge',
                          'longcol': 'Version', 'shortcol': 'v'})
+        elif sidebyside and action != 'collision':
+            data['action'] = 'preview'
         
         self._wiki_ctxtnav(req, page)
         Chrome(self.env).add_wiki_toolbars(req)
