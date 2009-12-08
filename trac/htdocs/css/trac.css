@@ -196,6 +196,12 @@ label.disabled { color: #d7d7d7 }
  color: #fff;
 }
 
+.trac-nav {
+ float: right;
+ font-size: 80%;
+ margin-top: 1.5em;
+}
+
 /* Alternate links */
 #altlinks { clear: both; text-align: center }
 #altlinks h3 { font-size: 12px; letter-spacing: normal; margin: 0 }

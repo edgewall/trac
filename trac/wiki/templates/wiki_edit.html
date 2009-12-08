@@ -36,6 +36,12 @@
   <body>
     <div id="content" class="wiki">
 
+      <div class="trac-nav" py:choose="">
+        <a py:when="sidebyside" href="#changeinfo"
+          title="Go to Save, Preview, Review or Cancel buttons">Edit</a>
+        <a py:otherwise="" href="#info" title="Go to preview">Preview</a>
+        &darr;
+      </div>
       <h1>Editing ${name_of(page.resource)}</h1>
       <div py:if="merge" class="system-message">
         <p>Someone else has modified that page since you started your edits.</p><br />
@@ -86,9 +92,8 @@
             </tbody>
           </table>
           <div class="${sidebyside and 'sidebyside preview-right'}" py:choose="">
-            <div class="trac-nav" py:choose="">
-              <py:when test="sidebyside">&darr; <a href="#changeinfo">action</a></py:when>
-              <py:otherwise>&uarr; <a href="#content">edit</a></py:otherwise>
+            <div class="trac-nav" py:if="not sidebyside">
+              <a href="#content" title="Go to the editor">edit</a> &uarr;
             </div>
             <h2>${diff and _('Review Changes') or _('Preview')}</h2>
             <div id="preview">
