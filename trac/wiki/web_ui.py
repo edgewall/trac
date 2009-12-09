@@ -468,6 +468,7 @@ class WikiModule(Component):
         
         self._wiki_ctxtnav(req, page)
         Chrome(self.env).add_wiki_toolbars(req)
+        Chrome(self.env).add_auto_preview(req)
         return 'wiki_edit.html', data, None
 
     def _render_history(self, req, page):

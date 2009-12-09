@@ -29,6 +29,14 @@
           autoResizeText();
           $(window).resize(autoResizeText);
         </py:if>
+        <py:if test="sidebyside and not diff">
+          $("#text").autoPreview("${href.wiki_render()}", {
+              realm: "${page.resource.realm}", id: "${page.resource.id}"
+            }, function(textarea, text, rendered) {
+              $("#preview div.wikipage").html(rendered);
+              autoResizeText();
+          });
+        </py:if>
       });
     </script>
   </head>
