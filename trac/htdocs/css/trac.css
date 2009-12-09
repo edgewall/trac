@@ -180,7 +180,7 @@ label.disabled { color: #d7d7d7 }
 }
 
 /* Context-dependent navigation links */
-#ctxtnav { height: 1em }
+#ctxtnav { min-height: 1em }
 #ctxtnav li ul {
  background: #f7f7f7;
  color: #ccc;
@@ -196,10 +196,12 @@ label.disabled { color: #d7d7d7 }
  color: #fff;
 }
 
-.trac-nav {
+.trac-nav, .trac-topnav {
  float: right;
  font-size: 80%;
- margin-top: 1.5em;
+}
+.trac-topnav {
+ margin-top: 14px;
 }
 
 /* Alternate links */
