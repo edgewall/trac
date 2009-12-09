@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-12-05 22:03+0100\n"
+"PO-Revision-Date: 2009-12-09 22:12+0100\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -129,7 +129,7 @@ msgid "Original Format"
 msgstr "Format original"
 
 #: trac/attachment.py:748 trac/attachment.py:754
-#: trac/ticket/templates/ticket.html:66 trac/ticket/templates/ticket.html:67
+#: trac/ticket/templates/ticket.html:82 trac/ticket/templates/ticket.html:83
 msgid "Download"
 msgstr "Télécharger"
 
@@ -162,7 +162,7 @@ msgid "Date"
 msgstr "Date"
 
 #: trac/attachment.py:885 trac/templates/attachment.html:89
-#: trac/ticket/api.py:287 trac/ticket/templates/ticket.html:173
+#: trac/ticket/api.py:287 trac/ticket/templates/ticket.html:201
 msgid "Description"
 msgstr "Description"
 
@@ -297,7 +297,7 @@ msgid "User"
 msgstr "Utilisateur"
 
 #: trac/perm.py:617 trac/admin/templates/admin_perms.html:69
-#: trac/ticket/templates/ticket.html:426
+#: trac/ticket/templates/ticket.html:440
 msgid "Action"
 msgstr "Action"
 
@@ -746,7 +746,7 @@ msgid "URL:"
 msgstr "URL :"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:349
+#: trac/ticket/templates/ticket.html:363
 msgid "Description:"
 msgstr "Description :"
 
@@ -795,9 +795,10 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit.html:93
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_edit.html:42
-#: trac/ticket/templates/ticket.html:276
+#: trac/ticket/templates/ticket.html:108
 #: trac/wiki/templates/wiki_delete.html:36
-#: trac/wiki/templates/wiki_edit.html:34 trac/wiki/templates/wiki_edit.html:125
+#: trac/wiki/templates/wiki_edit.html:60
+#: trac/wiki/templates/wiki_edit_form.html:70
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -823,7 +824,7 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:201
-#: trac/ticket/api.py:281 trac/ticket/web_ui.py:1305
+#: trac/ticket/api.py:281 trac/ticket/web_ui.py:1307
 msgid "Owner"
 msgstr "Propriétaire"
 
@@ -1187,7 +1188,8 @@ msgid "Syntax Highlighting"
 msgstr "Coloration syntaxique"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
-#: trac/ticket/templates/ticket.html:460 trac/wiki/templates/wiki_edit.html:98
+#: trac/ticket/templates/ticket.html:474
+#: trac/wiki/templates/wiki_edit_form.html:43
 msgid "Preferences"
 msgstr "Préférences"
 
@@ -1571,8 +1573,8 @@ msgstr "(taille limite"
 msgid "Attachment Info"
 msgstr "Informations sur la pièce jointe"
 
-#: trac/templates/attachment.html:37 trac/ticket/templates/ticket.html:451
-#: trac/wiki/templates/wiki_edit.html:94
+#: trac/templates/attachment.html:37 trac/ticket/templates/ticket.html:465
+#: trac/wiki/templates/wiki_edit_form.html:39
 msgid "Your email or username:"
 msgstr "Adresse électronique ou nom d'utilisateur :"
 
@@ -1618,7 +1620,7 @@ msgstr ""
 msgid "Property"
 msgstr "Propriété"
 
-#: trac/templates/diff_div.html:69 trac/ticket/templates/ticket.html:72
+#: trac/templates/diff_div.html:69 trac/ticket/templates/ticket.html:88
 #: trac/versioncontrol/templates/changeset.html:37
 msgid "to"
 msgstr "à"
@@ -1638,7 +1640,7 @@ msgstr "entre"
 
 #: trac/templates/diff_view.html:20 trac/templates/diff_view.html:26
 #: trac/templates/history_view.html:27 trac/ticket/api.py:295
-#: trac/ticket/templates/ticket.html:120
+#: trac/ticket/templates/ticket.html:148
 msgid "Version"
 msgstr "Version"
 
@@ -1647,8 +1649,8 @@ msgstr "Version"
 msgid "and"
 msgstr "et"
 
-#: trac/templates/diff_view.html:23 trac/ticket/web_ui.py:783
-#: trac/ticket/web_ui.py:918 trac/ticket/templates/ticket.html:117
+#: trac/templates/diff_view.html:23 trac/ticket/web_ui.py:785
+#: trac/ticket/web_ui.py:920 trac/ticket/templates/ticket.html:145
 msgid "Initial Version"
 msgstr "Version initiale"
 
@@ -1944,7 +1946,7 @@ msgstr "Projets accessibles"
 msgid "Error"
 msgstr "Erreur"
 
-#: trac/templates/layout.html:43
+#: trac/templates/layout.html:48
 msgid "Download in other formats:"
 msgstr "Télécharger en d'autres formats :"
 
@@ -2435,16 +2437,16 @@ msgstr "Ticket"
 msgid "Page %(num)d"
 msgstr "Page %(num)d"
 
-#: trac/ticket/query.py:821 trac/ticket/report.py:522 trac/ticket/web_ui.py:128
+#: trac/ticket/query.py:821 trac/ticket/report.py:522 trac/ticket/web_ui.py:129
 #: trac/timeline/web_ui.py:214 trac/versioncontrol/web_ui/log.py:283
 msgid "RSS Feed"
 msgstr "Flux RSS"
 
-#: trac/ticket/query.py:823 trac/ticket/report.py:524 trac/ticket/web_ui.py:124
+#: trac/ticket/query.py:823 trac/ticket/report.py:524 trac/ticket/web_ui.py:125
 msgid "Comma-delimited Text"
 msgstr "Texte (séparateur : virgules)"
 
-#: trac/ticket/query.py:825 trac/ticket/report.py:526 trac/ticket/web_ui.py:126
+#: trac/ticket/query.py:825 trac/ticket/report.py:526 trac/ticket/web_ui.py:127
 msgid "Tab-delimited Text"
 msgstr "Texte (séparateur : tabulation)"
 
@@ -2609,135 +2611,135 @@ msgstr "Le jalon « %(name)s » existe déjà, veuillez choisir un nom différ
 msgid "You must provide a name for the milestone."
 msgstr "Aucun nom n'a été défini pour ce jalon."
 
-#: trac/ticket/web_ui.py:150 trac/ticket/templates/ticket.html:18
+#: trac/ticket/web_ui.py:151 trac/ticket/templates/ticket.html:18
 msgid "New Ticket"
 msgstr "Nouveau ticket"
 
-#: trac/ticket/web_ui.py:166
+#: trac/ticket/web_ui.py:167
 msgid "id can't be set for a new ticket request."
 msgstr "L'ID d'un nouveau ticket ne peut pas être changé."
 
-#: trac/ticket/web_ui.py:224
+#: trac/ticket/web_ui.py:225
 msgid "Opened and closed tickets"
 msgstr "Tickets ouverts et fermés"
 
-#: trac/ticket/web_ui.py:226
+#: trac/ticket/web_ui.py:227
 msgid "Ticket updates"
 msgstr "Toute modification des tickets"
 
-#: trac/ticket/web_ui.py:232
+#: trac/ticket/web_ui.py:233
 msgid "created"
 msgstr "créé"
 
-#: trac/ticket/web_ui.py:233
+#: trac/ticket/web_ui.py:234
 msgid "reopened"
 msgstr "réouvert"
 
-#: trac/ticket/web_ui.py:234
+#: trac/ticket/web_ui.py:235
 msgid "closed"
 msgstr "fermé"
 
-#: trac/ticket/web_ui.py:235
+#: trac/ticket/web_ui.py:236
 msgid "updated"
 msgstr "modifié"
 
-#: trac/ticket/web_ui.py:255
+#: trac/ticket/web_ui.py:256
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "Propriété %(labels)s modifiée"
 msgstr[1] "Propriétés %(labels)s modifiées"
 
-#: trac/ticket/web_ui.py:335
+#: trac/ticket/web_ui.py:336
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "Le ticket %(ticketref)s (%(summary)s) a été %(verb)s"
 
-#: trac/ticket/web_ui.py:487
+#: trac/ticket/web_ui.py:488
 #, python-format
 msgid "Invalid action \"%(name)s\""
 msgstr "Action non valide \"%(name)s\""
 
-#: trac/ticket/web_ui.py:614
+#: trac/ticket/web_ui.py:616
 msgid "Previous Ticket"
 msgstr "Ticket précédent"
 
-#: trac/ticket/web_ui.py:614
+#: trac/ticket/web_ui.py:616
 msgid "Next Ticket"
 msgstr "Ticket suivant"
 
-#: trac/ticket/web_ui.py:615
+#: trac/ticket/web_ui.py:617
 msgid "Back to Query"
 msgstr "Retour à la liste"
 
-#: trac/ticket/web_ui.py:691 trac/ticket/web_ui.py:839
-#: trac/ticket/web_ui.py:847
+#: trac/ticket/web_ui.py:693 trac/ticket/web_ui.py:841
+#: trac/ticket/web_ui.py:849
 msgid "Ticket History"
 msgstr "Historique du ticket"
 
-#: trac/ticket/web_ui.py:695 trac/ticket/web_ui.py:894
+#: trac/ticket/web_ui.py:697 trac/ticket/web_ui.py:896
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "Retour au ticket #%(num)s"
 
-#: trac/ticket/web_ui.py:737
+#: trac/ticket/web_ui.py:739
 msgid "No differences to show"
 msgstr "Aucune différence à afficher"
 
-#: trac/ticket/web_ui.py:780 trac/ticket/web_ui.py:836
-#: trac/ticket/web_ui.py:844 trac/ticket/web_ui.py:915
-#: trac/ticket/web_ui.py:952 trac/ticket/web_ui.py:959 trac/wiki/web_ui.py:375
-#: trac/wiki/web_ui.py:381 trac/wiki/web_ui.py:548 trac/wiki/web_ui.py:562
+#: trac/ticket/web_ui.py:782 trac/ticket/web_ui.py:838
+#: trac/ticket/web_ui.py:846 trac/ticket/web_ui.py:917
+#: trac/ticket/web_ui.py:954 trac/ticket/web_ui.py:961 trac/wiki/web_ui.py:375
+#: trac/wiki/web_ui.py:381 trac/wiki/web_ui.py:568 trac/wiki/web_ui.py:582
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
 
-#: trac/ticket/web_ui.py:783 trac/ticket/web_ui.py:918
+#: trac/ticket/web_ui.py:785 trac/ticket/web_ui.py:920
 msgid "initial"
 msgstr "initial"
 
-#: trac/ticket/web_ui.py:846 trac/ticket/web_ui.py:961
+#: trac/ticket/web_ui.py:848 trac/ticket/web_ui.py:963
 #: trac/versioncontrol/web_ui/changeset.py:340 trac/wiki/web_ui.py:394
 msgid "Previous Change"
 msgstr "Modification précédente"
 
-#: trac/ticket/web_ui.py:846 trac/ticket/web_ui.py:961
+#: trac/ticket/web_ui.py:848 trac/ticket/web_ui.py:963
 #: trac/versioncontrol/web_ui/changeset.py:340 trac/wiki/web_ui.py:394
 msgid "Next Change"
 msgstr "Modification suivante"
 
-#: trac/ticket/web_ui.py:852
+#: trac/ticket/web_ui.py:854
 msgid "Ticket Diff"
 msgstr "Différence sur le ticket"
 
-#: trac/ticket/web_ui.py:886 trac/ticket/web_ui.py:955
-#: trac/ticket/web_ui.py:962
+#: trac/ticket/web_ui.py:888 trac/ticket/web_ui.py:957
+#: trac/ticket/web_ui.py:964
 msgid "Ticket Comment History"
 msgstr "Historique du commentaire"
 
-#: trac/ticket/web_ui.py:888 trac/ticket/web_ui.py:912
-#: trac/ticket/web_ui.py:969
+#: trac/ticket/web_ui.py:890 trac/ticket/web_ui.py:914
+#: trac/ticket/web_ui.py:971
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "Ticket #%(num)s : commentaire %(cnum)d"
 
-#: trac/ticket/web_ui.py:967
+#: trac/ticket/web_ui.py:969
 msgid "Ticket Comment Diff"
 msgstr "Modification du commentaire"
 
-#: trac/ticket/web_ui.py:1053
+#: trac/ticket/web_ui.py:1055
 msgid "No permission to edit description."
 msgstr "Aucun droit pour modifier la description."
 
-#: trac/ticket/web_ui.py:1056
+#: trac/ticket/web_ui.py:1058
 msgid "No permission to change ticket fields."
 msgstr "Aucun droit pour modifier les champs du ticket."
 
-#: trac/ticket/web_ui.py:1072
+#: trac/ticket/web_ui.py:1074
 msgid "No permissions to add a comment."
 msgstr "Aucun droit pour ajouter un commentaire."
 
-#: trac/ticket/web_ui.py:1078
+#: trac/ticket/web_ui.py:1080
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -2745,34 +2747,34 @@ msgstr ""
 "Desolé, les changements ne peuvent pas être enregistrés. Ce ticket a été "
 "modifié par un autre utilisateur depuis que l'édition a débutée."
 
-#: trac/ticket/web_ui.py:1085
+#: trac/ticket/web_ui.py:1087
 msgid "Tickets must contain a summary."
 msgstr "Les tickets doivent avoir un résumé"
 
-#: trac/ticket/web_ui.py:1108
+#: trac/ticket/web_ui.py:1110
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr ""
 "La description du ticket est trop longue (elle doit être inférieure\n"
 "à %(num)s caractères)"
 
-#: trac/ticket/web_ui.py:1115
+#: trac/ticket/web_ui.py:1117
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr ""
 "Le commentaire du ticket est trop long (il doit être inférieure\n"
 "à %(num)s caractères)"
 
-#: trac/ticket/web_ui.py:1130
+#: trac/ticket/web_ui.py:1132
 msgid "Invalid comment threading identifier"
 msgstr "Identifiant du commentaire non valide"
 
-#: trac/ticket/web_ui.py:1137
+#: trac/ticket/web_ui.py:1139
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "Le champ du ticket « %(field)s » n'est pas valide : %(message)s"
 
-#: trac/ticket/web_ui.py:1156
+#: trac/ticket/web_ui.py:1158
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
@@ -2781,7 +2783,7 @@ msgstr ""
 "Le ticket a été créé, mais une erreur est survenue lors de l'envoi des "
 "notifications: %(message)s"
 
-#: trac/ticket/web_ui.py:1166
+#: trac/ticket/web_ui.py:1168
 #, python-format
 msgid ""
 "Your ticket %(ticketref)s has been created, but you don't have permission"
@@ -2791,11 +2793,11 @@ msgstr ""
 "le voir."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1197
+#: trac/ticket/web_ui.py:1199
 msgid "change"
 msgstr "modification"
 
-#: trac/ticket/web_ui.py:1203
+#: trac/ticket/web_ui.py:1205
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
@@ -2804,31 +2806,31 @@ msgstr ""
 "Les modifications ont été sauvegardées, mais une erreur est survenue lors"
 " de l'envoi des notifications: %(message)s"
 
-#: trac/ticket/web_ui.py:1335
+#: trac/ticket/web_ui.py:1337
 msgid "Add to Cc"
 msgstr "Ajouter en copie (CC)"
 
-#: trac/ticket/web_ui.py:1336
+#: trac/ticket/web_ui.py:1338
 msgid "Remove from Cc"
 msgstr "Supprimer de la copie (CC)"
 
-#: trac/ticket/web_ui.py:1337
+#: trac/ticket/web_ui.py:1339
 msgid "Add/Remove from Cc"
 msgstr "Ajouter/supprimer de la copie (CC)"
 
-#: trac/ticket/web_ui.py:1338
+#: trac/ticket/web_ui.py:1340
 msgid "<Author field>"
 msgstr "<Champ auteur>"
 
-#: trac/ticket/web_ui.py:1359 trac/ticket/templates/query.html:103
+#: trac/ticket/web_ui.py:1361 trac/ticket/templates/query.html:103
 msgid "yes"
 msgstr "oui"
 
-#: trac/ticket/web_ui.py:1359 trac/ticket/templates/query.html:106
+#: trac/ticket/web_ui.py:1361 trac/ticket/templates/query.html:106
 msgid "no"
 msgstr "non"
 
-#: trac/ticket/web_ui.py:1553 trac/versioncontrol/templates/changeset.html:135
+#: trac/ticket/web_ui.py:1552 trac/versioncontrol/templates/changeset.html:135
 msgid "modified"
 msgstr "modifié"
 
@@ -2882,9 +2884,9 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "Déplacer les tickets ouverts associés au jalon :"
 
 #: trac/ticket/templates/milestone_edit.html:91
-#: trac/ticket/templates/ticket.html:275 trac/ticket/templates/ticket.html:481
-#: trac/wiki/templates/wiki_edit.html:118
-#: trac/wiki/templates/wiki_edit.html:123
+#: trac/ticket/templates/ticket.html:107 trac/ticket/templates/ticket.html:495
+#: trac/wiki/templates/wiki_edit_form.html:63
+#: trac/wiki/templates/wiki_edit_form.html:68
 msgid "Submit changes"
 msgstr "Enregistrer les modifications"
 
@@ -3122,7 +3124,7 @@ msgid "Edit report"
 msgstr "Modifier le rapport"
 
 #: trac/ticket/templates/report_list.html:35
-#: trac/ticket/templates/ticket.html:242
+#: trac/ticket/templates/ticket.html:270 trac/wiki/templates/wiki_edit.html:49
 msgid "Edit"
 msgstr "Modifier"
 
@@ -3199,100 +3201,110 @@ msgstr ""
 msgid "Add new milestone"
 msgstr "Ajouter un nouveau jalon"
 
-#: trac/ticket/templates/ticket.html:67
+#: trac/ticket/templates/ticket.html:83
 #: trac/versioncontrol/templates/changeset.html:133
 msgid "added"
 msgstr "ajouté"
 
-#: trac/ticket/templates/ticket.html:71
+#: trac/ticket/templates/ticket.html:87
 msgid "changed from"
 msgstr "modifié de"
 
-#: trac/ticket/templates/ticket.html:74
+#: trac/ticket/templates/ticket.html:90
 #: trac/versioncontrol/templates/browser.html:139
 msgid "set to"
 msgstr "défini à"
 
-#: trac/ticket/templates/ticket.html:78
+#: trac/ticket/templates/ticket.html:94
 msgid "deleted"
 msgstr "supprimé"
 
-#: trac/ticket/templates/ticket.html:106
+#: trac/ticket/templates/ticket.html:106 trac/ticket/templates/ticket.html:494
+#: trac/wiki/templates/wiki_edit.html:50 trac/wiki/templates/wiki_edit.html:106
+#: trac/wiki/templates/wiki_edit_form.html:61
+msgid "Preview"
+msgstr "Aperçu"
+
+#: trac/ticket/templates/ticket.html:108
+msgid "Cancel comment edit"
+msgstr "Annuler"
+
+#: trac/ticket/templates/ticket.html:134
 msgid "Go to the ticket editor"
 msgstr "Éditer le ticket"
 
-#: trac/ticket/templates/ticket.html:106
+#: trac/ticket/templates/ticket.html:134
 msgid "modify"
 msgstr "Modifier"
 
-#: trac/ticket/templates/ticket.html:110
+#: trac/ticket/templates/ticket.html:138
 msgid "Ticket #"
 msgstr "Ticket #"
 
-#: trac/ticket/templates/ticket.html:116 trac/ticket/templates/ticket.html:119
+#: trac/ticket/templates/ticket.html:144 trac/ticket/templates/ticket.html:147
 msgid "— at"
 msgstr "— à"
 
-#: trac/ticket/templates/ticket.html:124
+#: trac/ticket/templates/ticket.html:152
 msgid "Create New Ticket"
 msgstr "Création d'un nouveau ticket"
 
-#: trac/ticket/templates/ticket.html:132
+#: trac/ticket/templates/ticket.html:160
 #, python-format
 msgid "Opened %(created)s ago"
 msgstr "Ouvert il y a %(created)s"
 
-#: trac/ticket/templates/ticket.html:133
+#: trac/ticket/templates/ticket.html:161
 #, python-format
 msgid "Last modified %(modified)s ago"
 msgstr "Dernière modification il y a %(modified)s"
 
-#: trac/ticket/templates/ticket.html:134
+#: trac/ticket/templates/ticket.html:162
 msgid "(ticket not yet created)"
 msgstr "(ticket pas encore créé)"
 
-#: trac/ticket/templates/ticket.html:142
+#: trac/ticket/templates/ticket.html:170
 msgid "Reported by:"
 msgstr "Rapporté par :"
 
-#: trac/ticket/templates/ticket.html:146
+#: trac/ticket/templates/ticket.html:174
 msgid "Owned by:"
 msgstr "Responsable :"
 
-#: trac/ticket/templates/ticket.html:176
+#: trac/ticket/templates/ticket.html:204
 msgid "(last modified by"
 msgstr "(modifié par"
 
-#: trac/ticket/templates/ticket.html:178 trac/ticket/templates/ticket.html:264
+#: trac/ticket/templates/ticket.html:206 trac/ticket/templates/ticket.html:292
 msgid "diff"
 msgstr "modification"
 
-#: trac/ticket/templates/ticket.html:187 trac/ticket/templates/ticket.html:236
+#: trac/ticket/templates/ticket.html:215 trac/ticket/templates/ticket.html:264
 msgid "Reply"
 msgstr "Répondre"
 
-#: trac/ticket/templates/ticket.html:187
+#: trac/ticket/templates/ticket.html:215
 msgid "Reply, quoting this description"
 msgstr "Répondre, en citant cette description"
 
-#: trac/ticket/templates/ticket.html:205
+#: trac/ticket/templates/ticket.html:233
 msgid "Change History"
 msgstr "Historique des modifications"
 
-#: trac/ticket/templates/ticket.html:220 trac/ticket/templates/ticket.html:301
+#: trac/ticket/templates/ticket.html:248 trac/ticket/templates/ticket.html:325
 msgid "in reply to:"
 msgstr "en réponse à :"
 
-#: trac/ticket/templates/ticket.html:224
+#: trac/ticket/templates/ticket.html:252
 msgid "follow-up"
 msgstr "suivi"
 
-#: trac/ticket/templates/ticket.html:230
+#: trac/ticket/templates/ticket.html:258
 #, python-format
 msgid "Changed %(date)s ago by %(author)s"
 msgstr "Modifié il y a %(date)s par %(author)s"
 
-#: trac/ticket/templates/ticket.html:249
+#: trac/ticket/templates/ticket.html:277
 #, python-format
 msgid ""
 "Version %(version)s, edited %(date)s ago\n"
@@ -3301,7 +3313,7 @@ msgstr ""
 "Version %(version)s, modifiée il y a %(date)s\n"
 "                      par %(author)s"
 
-#: trac/ticket/templates/ticket.html:253
+#: trac/ticket/templates/ticket.html:281
 #, python-format
 msgid ""
 "Last edited %(date)s ago\n"
@@ -3310,41 +3322,28 @@ msgstr ""
 "Dernière modification il y a %(date)s\n"
 "                      par %(author)s"
 
-#: trac/ticket/templates/ticket.html:258
+#: trac/ticket/templates/ticket.html:286
 #: trac/versioncontrol/templates/changeset.html:92
 msgid "previous"
 msgstr "précédente"
 
-#: trac/ticket/templates/ticket.html:261
+#: trac/ticket/templates/ticket.html:289
 msgid "next"
 msgstr "suivante"
 
-#: trac/ticket/templates/ticket.html:274 trac/ticket/templates/ticket.html:480
-#: trac/wiki/templates/wiki_edit.html:116
-msgid "Preview"
-msgstr "Aperçu"
+#: trac/ticket/templates/ticket.html:308
+msgid "View ticket fields and description"
+msgstr ""
 
-#: trac/ticket/templates/ticket.html:276
-msgid "Cancel comment edit"
-msgstr "Annuler"
+#: trac/ticket/templates/ticket.html:308
+msgid "View"
+msgstr "Voir"
 
-#: trac/ticket/templates/ticket.html:292
-msgid "Go to the top of the ticket"
-msgstr "Voir le début du ticket"
-
-#: trac/ticket/templates/ticket.html:292
-msgid "top"
-msgstr "Haut de page"
-
-#: trac/ticket/templates/ticket.html:295
+#: trac/ticket/templates/ticket.html:311
 msgid "Add a comment"
 msgstr "Ajouter un commentaire"
 
-#: trac/ticket/templates/ticket.html:303
-msgid "Changed by"
-msgstr "Modifié par"
-
-#: trac/ticket/templates/ticket.html:311
+#: trac/ticket/templates/ticket.html:315
 msgid ""
 "You may use\n"
 "              [1:WikiFormatting]\n"
@@ -3354,53 +3353,58 @@ msgstr ""
 "                [1:WikiFormatting]\n"
 "                est possible ici :"
 
-#: trac/ticket/templates/ticket.html:321
+#: trac/ticket/templates/ticket.html:327
+msgid "Changed by"
+msgstr "Modifié par"
+
+#: trac/ticket/templates/ticket.html:335
 msgid "Modify Ticket"
 msgstr "Modifier le ticket"
 
-#: trac/ticket/templates/ticket.html:327
+#: trac/ticket/templates/ticket.html:341
 msgid "Change Properties"
 msgstr "Modification des propriétés"
 
-#: trac/ticket/templates/ticket.html:328
+#: trac/ticket/templates/ticket.html:342
 msgid "Properties"
 msgstr "Propriétés"
 
-#: trac/ticket/templates/ticket.html:332
+#: trac/ticket/templates/ticket.html:346
 msgid "Summary:"
 msgstr "Résumé :"
 
-#: trac/ticket/templates/ticket.html:340
+#: trac/ticket/templates/ticket.html:354
 msgid "Reporter:"
 msgstr "Rapporteur :"
 
-#: trac/ticket/templates/ticket.html:400
+#: trac/ticket/templates/ticket.html:414
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 "Vous pouvez vous ajouter ou vous retirer de la liste des utilisateurs en "
 "copie (CC)."
 
-#: trac/ticket/templates/ticket.html:406
+#: trac/ticket/templates/ticket.html:420
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 "Sont acceptés, les noms d'utilisateur ou adresses électroniques séparés "
 "par des espaces ou des virgules."
 
-#: trac/ticket/templates/ticket.html:459 trac/wiki/templates/wiki_edit.html:97
+#: trac/ticket/templates/ticket.html:473
+#: trac/wiki/templates/wiki_edit_form.html:42
 msgid "E-mail address and user name can be saved in the"
 msgstr ""
 "L'adresse électronique et le nom d'utilisateur peuvent être enregistrés "
 "dans les"
 
-#: trac/ticket/templates/ticket.html:468
+#: trac/ticket/templates/ticket.html:482
 msgid "I have files to attach to this ticket"
 msgstr "Joindre des fichiers à ce ticket"
 
-#: trac/ticket/templates/ticket.html:481
+#: trac/ticket/templates/ticket.html:495
 msgid "Create ticket"
 msgstr "Création d'un nouveau ticket"
 
-#: trac/ticket/templates/ticket.html:486
+#: trac/ticket/templates/ticket.html:500
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -3765,8 +3769,8 @@ msgid "Rev"
 msgstr "Rév."
 
 #: trac/versioncontrol/templates/browser.html:93
-#: trac/versioncontrol/web_ui/browser.py:387 trac/wiki/web_ui.py:568
-#: trac/wiki/web_ui.py:595
+#: trac/versioncontrol/web_ui/browser.py:387 trac/wiki/web_ui.py:588
+#: trac/wiki/web_ui.py:615
 msgid "Last Change"
 msgstr "Dernière modification"
 
@@ -3779,7 +3783,7 @@ msgid "No files found"
 msgstr "Aucun fichier trouvé"
 
 #: trac/versioncontrol/templates/browser.html:114
-#: trac/wiki/templates/wiki_edit.html:40 trac/wiki/templates/wiki_view.html:37
+#: trac/wiki/templates/wiki_edit.html:92 trac/wiki/templates/wiki_view.html:37
 msgid "Revision info"
 msgstr "Info révision"
 
@@ -4231,16 +4235,16 @@ msgstr "Connexion"
 msgid "Already logged in as %(user)s."
 msgstr "Connecté en tant qu'utilisateur %(user)s"
 
-#: trac/web/chrome.py:541
+#: trac/web/chrome.py:556
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Erreur survenue dans le 'navigation contributor' \"%(name)s\""
 
-#: trac/web/chrome.py:831
+#: trac/web/chrome.py:846
 msgid "(unknown template location)"
 msgstr "(position indéterminée dans le template)"
 
-#: trac/web/chrome.py:832
+#: trac/web/chrome.py:847
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Erreur impliquant Genshi (%(error)s - %(location)s)"
@@ -4311,7 +4315,7 @@ msgstr "Table des matières"
 msgid "Page not modified"
 msgstr "Page non modifiée"
 
-#: trac/wiki/web_ui.py:88 trac/wiki/web_ui.py:646
+#: trac/wiki/web_ui.py:88 trac/wiki/web_ui.py:666
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -4380,62 +4384,62 @@ msgstr "Historique de la page"
 msgid "Wiki History"
 msgstr "Historique de la page"
 
-#: trac/wiki/web_ui.py:461
+#: trac/wiki/web_ui.py:481
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "La page %(name)s n'existe pas"
 
-#: trac/wiki/web_ui.py:502
+#: trac/wiki/web_ui.py:522
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "La page %(name)s est introuvable"
 
-#: trac/wiki/web_ui.py:553
+#: trac/wiki/web_ui.py:573
 msgid "View latest version"
 msgstr "Voir la dernière version"
 
-#: trac/wiki/web_ui.py:557
+#: trac/wiki/web_ui.py:577
 msgid "View parent page"
 msgstr "Voir la page parente"
 
-#: trac/wiki/web_ui.py:566
+#: trac/wiki/web_ui.py:586
 msgid "Previous Version"
 msgstr "Version précédente"
 
-#: trac/wiki/web_ui.py:566
+#: trac/wiki/web_ui.py:586
 msgid "Next Version"
 msgstr "Version suivante"
 
-#: trac/wiki/web_ui.py:567
+#: trac/wiki/web_ui.py:587
 msgid "View Latest Version"
 msgstr "Voir la dernière version"
 
-#: trac/wiki/web_ui.py:573
+#: trac/wiki/web_ui.py:593
 msgid "Up"
 msgstr "Remonter"
 
-#: trac/wiki/web_ui.py:590
+#: trac/wiki/web_ui.py:610
 msgid "Start Page"
 msgstr "Page d'accueil"
 
-#: trac/wiki/web_ui.py:591
+#: trac/wiki/web_ui.py:611
 msgid "Index"
 msgstr "Index"
 
-#: trac/wiki/web_ui.py:593
+#: trac/wiki/web_ui.py:613
 msgid "History"
 msgstr "Historique"
 
-#: trac/wiki/web_ui.py:603
+#: trac/wiki/web_ui.py:623
 msgid "Wiki changes"
 msgstr "Modifications des pages Wiki"
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:632
+#: trac/wiki/web_ui.py:652
 msgid " edited"
 msgstr " modifiée"
 
-#: trac/wiki/web_ui.py:632
+#: trac/wiki/web_ui.py:652
 msgid " created"
 msgstr ", page créée"
 
@@ -4467,23 +4471,31 @@ msgstr "Supprimer de la version %(old_version)d à la version %(version)d"
 msgid "Delete version %(version)d"
 msgstr "Supprimer la version %(version)d"
 
-#: trac/wiki/templates/wiki_edit.html:27
+#: trac/wiki/templates/wiki_edit.html:48
+msgid "Go to Save, Preview, Review or Cancel buttons"
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit.html:50
+msgid "Go to preview"
+msgstr "Voir l'aperçu"
+
+#: trac/wiki/templates/wiki_edit.html:53
 msgid "Editing"
 msgstr "Modification"
 
-#: trac/wiki/templates/wiki_edit.html:29
+#: trac/wiki/templates/wiki_edit.html:55
 msgid "Someone else has modified that page since you started your edits."
 msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
 
-#: trac/wiki/templates/wiki_edit.html:30
+#: trac/wiki/templates/wiki_edit.html:56
 msgid "If you save right away, you risk to revert those changes"
 msgstr "Une sauvegarde directe écraserait ces modifications"
 
-#: trac/wiki/templates/wiki_edit.html:30
+#: trac/wiki/templates/wiki_edit.html:56
 msgid "(highlighted below as deletions)."
 msgstr "(mises en évidence ci-dessous en tant que suppressions)"
 
-#: trac/wiki/templates/wiki_edit.html:32
+#: trac/wiki/templates/wiki_edit.html:58
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
@@ -4492,11 +4504,11 @@ msgstr ""
 "manuellement\n"
 "avec les changements locaux."
 
-#: trac/wiki/templates/wiki_edit.html:33
+#: trac/wiki/templates/wiki_edit.html:59
 msgid "If you're unsure about what you're doing, please press"
 msgstr "Si vous avez des doutes sur ce que vous faites, merci d'appuyer sur"
 
-#: trac/wiki/templates/wiki_edit.html:34
+#: trac/wiki/templates/wiki_edit.html:60
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
@@ -4505,19 +4517,28 @@ msgstr ""
 "la\n"
 "toute dernière version de cette page"
 
-#: trac/wiki/templates/wiki_edit.html:42
+#: trac/wiki/templates/wiki_edit.html:94
 msgid "Change information for future version"
 msgstr "Commentaire concernant la future version"
 
-#: trac/wiki/templates/wiki_edit.html:43
+#: trac/wiki/templates/wiki_edit.html:95
 msgid "(modified by"
 msgstr "(modifié par"
 
-#: trac/wiki/templates/wiki_edit.html:51
-msgid "skip"
-msgstr "sauter"
+#: trac/wiki/templates/wiki_edit.html:104
+msgid "Go to the editor"
+msgstr "Éditer le ticket"
 
-#: trac/wiki/templates/wiki_edit.html:61
+#: trac/wiki/templates/wiki_edit.html:104
+msgid "edit"
+msgstr "Modifier"
+
+#: trac/wiki/templates/wiki_edit.html:106
+#: trac/wiki/templates/wiki_edit_form.html:67
+msgid "Review Changes"
+msgstr "Passer en revue les modifications"
+
+#: trac/wiki/templates/wiki_edit.html:118
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
@@ -4525,41 +4546,41 @@ msgstr ""
 "Désolé, cette page a été modifiée par un autre utilisateur depuis\n"
 "le début de l'édition. Les modifications ne peuvent être enregistrées."
 
-#: trac/wiki/templates/wiki_edit.html:74
+#: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
 msgstr "Ajustement de la hauteur de la zone d'édition :"
 
-#: trac/wiki/templates/wiki_edit.html:86
+#: trac/wiki/templates/wiki_edit_form.html:24
+msgid "Edit side-by-side"
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit_form.html:30
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
-"          [3:TracWiki] for help on editing wiki content."
+"        [3:TracWiki] for help on editing wiki content."
 msgstr ""
 "[1:Note :] consultez [2:WikiFormatting] et [3:TracWiki] pour obtenir de "
 "l'aide sur l'édition de contenus Wiki."
 
-#: trac/wiki/templates/wiki_edit.html:91
+#: trac/wiki/templates/wiki_edit_form.html:36
 msgid "Change information"
 msgstr "Modification des informations"
 
-#: trac/wiki/templates/wiki_edit.html:102
+#: trac/wiki/templates/wiki_edit_form.html:47
 msgid "Comment about this change (optional):"
 msgstr "Commentaires sur cette modification (optionnel)"
 
-#: trac/wiki/templates/wiki_edit.html:109
+#: trac/wiki/templates/wiki_edit_form.html:54
 msgid "Page is read-only"
 msgstr "La page est en lecture seule"
 
-#: trac/wiki/templates/wiki_edit.html:117
+#: trac/wiki/templates/wiki_edit_form.html:62
 msgid "Merge changes"
 msgstr "Fusionner les modifications"
 
-#: trac/wiki/templates/wiki_edit.html:121
+#: trac/wiki/templates/wiki_edit_form.html:66
 msgid "Preview Page"
 msgstr "Afficher l'aperçu"
-
-#: trac/wiki/templates/wiki_edit.html:122
-msgid "Review Changes"
-msgstr "Passer en revue les modifications"
 
 #: trac/wiki/templates/wiki_view.html:28
 msgid "View WikiStart"
@@ -4623,4 +4644,5 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
+
 
