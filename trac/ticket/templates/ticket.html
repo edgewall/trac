@@ -131,7 +131,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                   has_property_editor = not version and version != 0 and not cnum_edit
                                         and (can_append or can_modify or can_edit or can_create)">
       <div class="trac-topnav" py:if="(ticket.exists or preview_mode) and has_property_editor">
-        <a href="#propertyform" title="Go to the ticket editor">modify</a> &darr;
+        <a href="#propertyform" title="Go to the ticket editor">Modify</a> &darr;
       </div>
       <h1 id="trac-ticket-title" py:choose="">
         <py:when test="ticket.exists">
