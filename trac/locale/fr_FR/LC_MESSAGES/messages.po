@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-12-09 22:12+0100\n"
+"PO-Revision-Date: 2009-12-10 09:14+0100\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3333,7 +3333,7 @@ msgstr "suivante"
 
 #: trac/ticket/templates/ticket.html:308
 msgid "View ticket fields and description"
-msgstr ""
+msgstr "Voir les champs et la description du ticket"
 
 #: trac/ticket/templates/ticket.html:308
 msgid "View"
@@ -4473,7 +4473,7 @@ msgstr "Supprimer la version %(version)d"
 
 #: trac/wiki/templates/wiki_edit.html:48
 msgid "Go to Save, Preview, Review or Cancel buttons"
-msgstr ""
+msgstr "Aller aux boutons Enregistrer, Aperçu, ... Annuler"
 
 #: trac/wiki/templates/wiki_edit.html:50
 msgid "Go to preview"
@@ -4552,7 +4552,7 @@ msgstr "Ajustement de la hauteur de la zone d'édition :"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
-msgstr ""
+msgstr "Éditer côte à côte"
 
 #: trac/wiki/templates/wiki_edit_form.html:30
 msgid ""
@@ -4644,5 +4644,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
-
 
