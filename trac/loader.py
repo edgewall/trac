@@ -62,9 +62,9 @@ def load_eggs(entry_point_name):
         for dist, e in errors.iteritems():
             _log_error(dist, e)
 
-        for entry in working_set.iter_entry_points(entry_point_name):
-            env.log.debug('Loading %s from %s', entry.name,
-                          entry.dist.location)
+        for entry in sorted(working_set.iter_entry_points(entry_point_name),
+                            key=lambda entry: entry.name):
+            env.log.debug('Loading %s from %s', entry.name, entry.dist.location)
             try:
                 entry.load(require=True)
             except Exception, e:
