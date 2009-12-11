@@ -57,10 +57,7 @@ class IRepositoryConnector(Interface):
 
 
 class RepositoryManager(Component):
-    """Component registering the supported version control systems,
-
-    It provides easy access to the configured implementation.
-    """
+    """Version control system manager."""
 
     implements(IRequestFilter, IResourceManager)
 

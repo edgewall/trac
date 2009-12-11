@@ -112,7 +112,7 @@ class CacheProxy(object):
 
 
 class CacheManager(Component):
-    """Cache manager component."""
+    """Cache manager."""
     
     def __init__(self):
         self._cache = {}

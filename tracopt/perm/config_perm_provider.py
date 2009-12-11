@@ -16,7 +16,7 @@ from trac.perm import IPermissionRequestor
 
 
 class ExtraPermissionsProvider(Component):
-    """Extra permission provider
+    """Extra permission provider.
     
     This component provides a way to add arbitrary permissions to a Trac
     environment. This can be useful for adding new permissions to use for

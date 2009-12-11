@@ -66,7 +66,7 @@ class WikiMacroBase(Component):
 
 
 class TitleIndexMacro(WikiMacroBase):
-    """Inserts an alphabetic list of all wiki pages into the output.
+    """Insert an alphabetic list of all wiki pages into the output.
 
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
@@ -161,7 +161,7 @@ class TitleIndexMacro(WikiMacroBase):
 
 
 class RecentChangesMacro(WikiMacroBase):
-    """Lists all pages that have recently been modified, grouping them by the
+    """List all pages that have recently been modified, grouping them by the
     day they were last modified.
 
     This macro accepts two parameters. The first is a prefix string: if
@@ -232,7 +232,7 @@ class RecentChangesMacro(WikiMacroBase):
 
 
 class PageOutlineMacro(WikiMacroBase):
-    """Displays a structural outline of the current wiki page, each item in the
+    """Display a structural outline of the current wiki page, each item in the
     outline being a link to the corresponding heading.
 
     This macro accepts three optional parameters:
@@ -475,7 +475,7 @@ class ImageMacro(WikiMacroBase):
 
 
 class MacroListMacro(WikiMacroBase):
-    """Displays a list of all installed Wiki macros, including documentation if
+    """Display a list of all installed Wiki macros, including documentation if
     available.
     
     Optionally, the name of a specific macro can be provided as an argument. In
@@ -510,7 +510,7 @@ class MacroListMacro(WikiMacroBase):
 
 
 class TracIniMacro(WikiMacroBase):
-    """Produce documentation for Trac configuration file.
+    """Produce documentation for the Trac configuration file.
 
     Typically, this will be used in the TracIni page.
     Optional arguments are a configuration section filter,
@@ -548,7 +548,8 @@ class TracIniMacro(WikiMacroBase):
 
 
 class TracGuideTocMacro(WikiMacroBase):
-    """
+    """Display a table of content for the Trac guide.
+    
     This macro shows a quick and dirty way to make a table-of-contents
     for the Help/Guide. The table of contents will contain the Trac* and 
     WikiFormatting pages, and can't be customized. Search for TocMacro for a

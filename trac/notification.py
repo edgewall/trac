@@ -120,7 +120,7 @@ class NotificationSystem(Component):
 
 
 class SmtpEmailSender(Component):
-    """SMTP e-mail sender."""
+    """E-mail sender connecting to an SMTP server."""
     
     implements(IEmailSender)
     
@@ -178,7 +178,7 @@ class SmtpEmailSender(Component):
 
 
 class SendmailEmailSender(Component):
-    """Sendmail e-mail sender."""
+    """E-mail sender using a locally-installed sendmail program."""
     
     implements(IEmailSender)
     

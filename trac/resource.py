@@ -211,11 +211,10 @@ class Resource(object):
 
 
 class ResourceSystem(Component):
-    """Resource identification and description.
+    """Resource identification and description manager.
 
     This component makes the link between `Resource` identifiers and their
     corresponding manager `Component`.
-
     """
 
     resource_managers = ExtensionPoint(IResourceManager)

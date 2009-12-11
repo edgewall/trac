@@ -82,7 +82,7 @@ class IPropertyDiffRenderer(Interface):
 
 
 class DefaultPropertyDiffRenderer(Component):
-    """Implement default behavior for rendering property differences."""
+    """Default version control property difference renderer."""
 
     implements(IPropertyDiffRenderer)
 
@@ -104,14 +104,15 @@ class DefaultPropertyDiffRenderer(Component):
 
 
 class ChangesetModule(Component):
-    """Provide flexible functionality for showing sets of differences.
+    """Renderer providing flexible functionality for showing sets of
+    differences.
 
     If the differences shown are coming from a specific changeset,
     then that changeset informations can be shown too.
 
     In addition, it is possible to show only a subset of the changeset:
-    Only the changes affecting a given path will be shown.
-    This is called the ''restricted'' changeset.
+    Only the changes affecting a given path will be shown. This is called
+    the ''restricted'' changeset.
 
     But the differences can also be computed in a more general way,
     between two arbitrary paths and/or between two arbitrary revisions.

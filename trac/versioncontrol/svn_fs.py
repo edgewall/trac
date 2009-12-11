@@ -16,32 +16,31 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
-"""
-Note about Unicode:
-    
-  The Subversion bindings are not unicode-aware and they expect to
-  receive UTF-8 encoded `string` parameters,
+"""Filesystem access to Subversion repositories.
 
-  On the other hand, all paths manipulated by Trac are `unicode` objects.
+'''Note about Unicode:'''
 
-  Therefore:
+The Subversion bindings are not unicode-aware and they expect to
+receive UTF-8 encoded `string` parameters,
 
-   * before being handed out to SVN, the Trac paths have to be encoded to
-     UTF-8, using `_to_svn()`
-   * before being handed out to Trac, a SVN path has to be decoded from
-     UTF-8, using `_from_svn()`
+On the other hand, all paths manipulated by Trac are `unicode` objects.
 
-  Whenever a value has to be stored as utf8, we explicitly mark the
-  variable name with "_utf8", in order to avoid any possible confusion.
+Therefore:
 
-  Warning: `SubversionNode.get_content` returns an object from which one
-           can read a stream of bytes.
-           NO guarantees can be given about what that stream of bytes
-           represents.
-           It might be some text, encoded in some way or another.
-           SVN properties __might__ give some hints about the content,
-           but they actually only reflect the beliefs of whomever set
-           those properties...
+ * before being handed out to SVN, the Trac paths have to be encoded to
+   UTF-8, using `_to_svn()`
+ * before being handed out to Trac, a SVN path has to be decoded from
+   UTF-8, using `_from_svn()`
+
+Whenever a value has to be stored as utf8, we explicitly mark the
+variable name with "_utf8", in order to avoid any possible confusion.
+
+Warning:
+  `SubversionNode.get_content()` returns an object from which one can read
+  a stream of bytes. NO guarantees can be given about what that stream of
+  bytes represents. It might be some text, encoded in some way or another.
+  SVN properties __might__ give some hints about the content, but they
+  actually only reflect the beliefs of whomever set those properties...
 """
 
 import os.path

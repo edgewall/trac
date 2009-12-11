@@ -157,7 +157,7 @@ def parse_args(args, strict=True):
 
 
 class WikiSystem(Component):
-    """Represents the wiki system."""
+    """Wiki system manager."""
 
     implements(IWikiSyntaxProvider, IResourceManager)
 

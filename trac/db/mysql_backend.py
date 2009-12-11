@@ -54,12 +54,13 @@ except ImportError:
 
 
 class MySQLConnector(Component):
-    """MySQL database support for version 4.1 and greater.
+    """Database connector for MySQL version 4.1 and greater.
     
-    Database urls should be of the form:
-        mysql://user[:password]@host[:port]/database
+    Database URLs should be of the form:
+    {{{
+    mysql://user[:password]@host[:port]/database
+    }}}
     """
-
     implements(IDatabaseConnector)
 
     mysqldump_path = Option('trac', 'mysqldump_path', 'mysqldump',

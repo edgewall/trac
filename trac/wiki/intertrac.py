@@ -28,7 +28,7 @@ from trac.wiki.formatter import extract_link
 
 
 class InterTracDispatcher(Component):
-    """Implements support for InterTrac dispatching."""
+    """InterTrac dispatcher."""
 
     implements(IRequestHandler, IWikiMacroProvider)
 

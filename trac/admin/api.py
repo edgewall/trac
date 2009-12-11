@@ -73,8 +73,7 @@ class IAdminCommandProvider(Interface):
 
 
 class AdminCommandManager(Component):
-    """Component registering the supported admin commands.
-    """
+    """trac-admin command manager."""
     
     providers = ExtensionPoint(IAdminCommandProvider)
     

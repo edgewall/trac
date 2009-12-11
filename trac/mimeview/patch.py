@@ -30,7 +30,7 @@ __all__ = ['PatchRenderer']
 
 
 class PatchRenderer(Component):
-    """Structured display of patches in unified diff format.
+    """HTML renderer for patches in unified diff format.
 
     This uses the same layout as in the wiki diff view or the changeset view.
     """

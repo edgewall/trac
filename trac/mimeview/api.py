@@ -18,26 +18,9 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
-"""
-----
-NOTE: for plugin developers
+"""File metadata management.
 
- The Mimeview API is quite complex and many things there are currently
- a bit difficult to work with (e.g. what an actual `content` might be,
- see last paragraph of this docstring).
-
- So this area is mainly in a ''work in progress'' state, which will
- be improved upon in the near future
- (see http://trac.edgewall.org/ticket/3332).
-
- In particular, if you are interested in writing IContentConverter
- and IHTMLPreviewRenderer components, note that those interfaces
- will be merged into a new style IContentConverter.
- Feel free to contribute remarks and suggestions for improvements
- to the corresponding ticket (#3332).
-----
-
-The `trac.mimeview` module centralize the intelligence related to
+The `trac.mimeview` package centralizes the intelligence related to
 file metadata, principally concerning the `type` (MIME type) of the content
 and, if relevant, concerning the text encoding (charset) used by the content.
 
@@ -54,6 +37,22 @@ needed, that's why we avoid to read the file's content when it's not needed.
 The actual `content` to be converted might be a `unicode` object,
 but it can also be the raw byte string (`str`) object, or simply
 an object that can be `read()`.
+
+----
+NOTE: for plugin developers
+
+  The Mimeview API is quite complex and many things there are currently
+  a bit difficult to work with (e.g. what an actual `content` might be,
+  see the last paragraph of this description).
+
+  So this area is mainly in a ''work in progress'' state, which will
+  be improved upon in the near future (see [trac:ticket:3332 #3332]).
+
+  In particular, if you are interested in writing `IContentConverter`
+  and `IHTMLPreviewRenderer` components, note that those interfaces
+  will be merged into a new style `IContentConverter`.
+  Feel free to contribute remarks and suggestions for improvements
+  to the corresponding ticket ([trac:ticket:3332 #3332]).
 """
 
 import re
@@ -592,7 +591,7 @@ class Content(object):
 
 
 class Mimeview(Component):
-    """A generic class to prettify data, typically source code."""
+    """Generic HTML renderer for data, typically source code."""
 
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
@@ -1093,7 +1092,10 @@ class PlainTextRenderer(Component):
 
 
 class ImageRenderer(Component):
-    """Inline image display. Here we don't need the `content` at all."""
+    """Inline image display.
+    
+    This component doesn't need the `content` at all.
+    """
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):
@@ -1108,7 +1110,7 @@ class ImageRenderer(Component):
 
 
 class WikiTextRenderer(Component):
-    """Render files containing Trac's own Wiki formatting markup."""
+    """HTML renderer for files containing Trac's own Wiki formatting markup."""
     implements(IHTMLPreviewRenderer)
 
     def get_quality_ratio(self, mimetype):

@@ -485,7 +485,7 @@ Congratulations!
         
 
 class TracAdminHelpMacro(WikiMacroBase):
-    """Displays help for trac-admin commands.
+    """Display help for trac-admin commands.
 
     Examples:
     {{{

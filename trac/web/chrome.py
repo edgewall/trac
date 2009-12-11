@@ -254,8 +254,9 @@ _invalid_control_chars = "".join([chr(i) for i in range(32)
 
     
 class Chrome(Component):
-    """Responsible for assembling the web site chrome, i.e. everything that
-    is not actual page content.
+    """Web site chrome assembly manager.
+    
+    Chrome is everything that is not actual page content.
     """
     implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider,
                IWikiSyntaxProvider)

@@ -274,7 +274,7 @@ label.disabled { color: #d7d7d7 }
 .collapsed > .foldable :link, .collapsed > .foldable :visited {
  background-image: url(../collapsed.png);
 }
-.collapsed > div, .collapsed > table, .collapsed > ul { display: none }
+.collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { display: none }
 fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  color: #666;
  font-size: 110%;

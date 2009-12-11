@@ -13,14 +13,10 @@
       trigger.text(t);
       
       trigger.click(function() {
-        if (fragId == count) {
-          fragId = 0;
-          return;
-        }
         $(this.parentNode.parentNode).toggleClass("collapsed");
       });
-      if (autofold)
-        trigger.click();
+      if (autofold && (count != fragId))
+        trigger.parents().eq(1).addClass("collapsed");
       count++;
     }).css("cursor", "pointer");
   }

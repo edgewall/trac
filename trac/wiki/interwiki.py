@@ -25,7 +25,7 @@ from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
 
 
 class InterWikiMap(Component):
-    """Implements support for InterWiki maps."""
+    """InterWiki map manager."""
 
     implements(IWikiChangeListener, IWikiMacroProvider)
 

@@ -59,9 +59,7 @@ if has_docutils and StrictVersion(__version__) < StrictVersion('0.6'):
 
 
 class ReStructuredTextRenderer(Component):
-    """
-    Renders plain text in reStructuredText format as HTML.
-    """
+    """HTML renderer for plain text in reStructuredText format."""
     implements(IHTMLPreviewRenderer)
 
     can_render = False

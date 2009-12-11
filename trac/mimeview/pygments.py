@@ -10,8 +10,6 @@
 #
 # Author: Matthew Good <matt@matt-good.net>
 
-"""Syntax highlighting based on Pygments."""
-
 from datetime import datetime
 import os
 from pkg_resources import resource_filename
@@ -43,7 +41,7 @@ __all__ = ['PygmentsRenderer']
 
 
 class PygmentsRenderer(Component):
-    """Syntax highlighting based on Pygments."""
+    """HTML renderer for syntax highlighting based on Pygments."""
 
     implements(IHTMLPreviewRenderer, IPreferencePanelProvider, IRequestHandler)
 

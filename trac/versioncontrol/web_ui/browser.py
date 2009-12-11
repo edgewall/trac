@@ -92,7 +92,7 @@ class RenderedProperty(object):
 
 
 class DefaultPropertyRenderer(Component):
-    """Implement default (pre-0.11) behavior for rendering properties."""
+    """Default version control property renderer."""
 
     implements(IPropertyRenderer)
 
@@ -109,7 +109,7 @@ class DefaultPropertyRenderer(Component):
 
 
 class WikiPropertyRenderer(Component):
-    """Render properties as wiki text."""
+    """Wiki text property renderer."""
 
     implements(IPropertyRenderer)
 

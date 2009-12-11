@@ -98,8 +98,10 @@ def load_workflow_config_snippet(config, filename):
 
 class ConfigurableTicketWorkflow(Component):
     """Ticket action controller which provides actions according to a
-    workflow defined in the TracIni configuration file, inside the
-    [ticket-workflow] section.
+    workflow defined in trac.ini.
+    
+    The workflow is idefined in the `[ticket-workflow]` section of the
+    [wiki:TracIni#ticket-workflow-section trac.ini] configuration file.
     """
     
     def __init__(self, *args, **kwargs):

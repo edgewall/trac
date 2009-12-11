@@ -64,15 +64,15 @@ class IEnvironmentSetupParticipant(Interface):
 
 
 class Environment(Component, ComponentManager):
-    """Trac stores project information in a Trac environment.
+    """Trac environment manager.
 
-    A Trac environment consists of a directory structure containing among other
-    things:
-     * a configuration file.
+    Trac stores project information in a Trac environment. It consists of a
+    directory structure containing among other things:
+     * a configuration file
      * an SQLite database (stores tickets, wiki pages...)
-     * Project specific templates and plugins.
-     * wiki and ticket attachments.
-    """   
+     * project-specific templates and plugins
+     * wiki and ticket attachments
+    """
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
@@ -617,7 +617,7 @@ def open_environment(env_path=None, use_cache=False):
 
 
 class EnvironmentAdmin(Component):
-    """Component representing the project environment administration."""
+    """trac-admin command provider for environment administration."""
     
     implements(IAdminCommandProvider)
     

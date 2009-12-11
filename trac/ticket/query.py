@@ -1149,7 +1149,7 @@ class QueryModule(Component):
 
 
 class TicketQueryMacro(WikiMacroBase):
-    """Macro that lists tickets that match certain criteria.
+    """Wiki macro listing tickets that match certain criteria.
     
     This macro accepts a comma-separated list of keyed parameters,
     in the form "key=value".

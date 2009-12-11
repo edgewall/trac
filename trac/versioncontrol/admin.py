@@ -20,7 +20,7 @@ from trac.util.translation import _, ngettext
 
 
 class VersionControlAdmin(Component):
-    """Version control administration component."""
+    """trac-admin command provider for version control administration."""
 
     implements(IAdminCommandProvider)
 
