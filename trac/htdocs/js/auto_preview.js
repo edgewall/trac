@@ -26,16 +26,19 @@
       // Request a preview through XHR
       function request() {
         var text = textarea.value;
-        if (text != data["text"]) {
-          data["text"] = text;
+        if (!updating && (text != data["text"])) {
           updating = true;
+          data["text"] = text;
           $.ajax({
             type: "POST", url: href, data: data, dataType: "html",
             success: function(data) {
               updating = false;
               update(textarea, text, data);
-              if (textarea.value != text)
+              if (textarea.value != text) {
+                if (timer)
+                  clearTimeout(timer);
                 timer = setTimeout(request, timeout);
+              }
             },
             error: function(req, err, exc) {
               updating = false;
@@ -46,15 +49,13 @@
       
       // Trigger a request after the given timeout
       function trigger() {
-        if (!updating) {
-          if (timer)
-            clearTimeout(timer);
-          timer = setTimeout(request, timeout);
-        }
+        if (timer)
+          clearTimeout(timer);
+        timer = setTimeout(request, timeout);
         return true;
       }
       
-      $(this).keydown(trigger).keypress(trigger).change(trigger).blur(trigger);
+      $(this).keydown(trigger).keypress(trigger).blur(request);
     });
   }
 })(jQuery);
