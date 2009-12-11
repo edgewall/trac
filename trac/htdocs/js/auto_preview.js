@@ -34,11 +34,8 @@
             success: function(data) {
               updating = false;
               update(textarea, text, data);
-              if (textarea.value != text) {
-                if (timer)
-                  clearTimeout(timer);
+              if (textarea.value != text)
                 timer = setTimeout(request, timeout);
-              }
             },
             error: function(req, err, exc) {
               updating = false;
@@ -49,9 +46,11 @@
       
       // Trigger a request after the given timeout
       function trigger() {
-        if (timer)
-          clearTimeout(timer);
-        timer = setTimeout(request, timeout);
+        if (!updating) {
+          if (timer)
+            clearTimeout(timer);
+          timer = setTimeout(request, timeout);
+        }
         return true;
       }
       
