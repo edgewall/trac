@@ -3193,7 +3193,6 @@ msgid ""
 "Due in %(duration)s\n"
 "                  (%(date)s)"
 msgstr ""
-"Atteint il y a %(duration)s\n"
 "Échéance dans %(duration)s\n"
 "                (%(date)s)"
 
