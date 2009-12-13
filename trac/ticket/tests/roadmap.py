@@ -7,7 +7,7 @@ import unittest
 class TicketGroupStatsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.stats = TicketGroupStats('title', 'unit')
+        self.stats = TicketGroupStats('title', 'unit', 'units')
 
     def test_init(self):
         self.assertEquals('title', self.stats.title, 'title incorrect')

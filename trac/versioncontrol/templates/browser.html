@@ -51,7 +51,7 @@
       <div id="jumprev">
         <form action="" method="get">
           <div>
-            <label for="rev" title="${stickyrev and 'Hint: clear the field to view latest revision' or None}">
+            <label for="rev" title="${stickyrev and _('Hint: clear the field to view latest revision') or None}">
               View revision:</label>
             <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
           </div>
@@ -69,7 +69,7 @@
                 <option py:for="_, name, path, rev in locations" value="${href.browser(path, rev=rev)}">$name</option>
               </optgroup>
             </select>
-            <input type="submit" value="${_('Go!')}" title="${_('Jump to the chosen preselected path')}" />
+            <input type="submit" value="${_('Go!')}" title="Jump to the chosen preselected path" />
           </div>
         </form>
       </div>

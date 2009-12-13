@@ -80,7 +80,7 @@
             <py:when test="field_name == 'attachment'">
               <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
               <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
-                 title="${_('Download')}" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="${_('Download')}"/></a>
+                 title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
               added
             </py:when>
             <py:when test="'rendered' in field">${field.rendered}</py:when>
@@ -200,8 +200,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
         <div class="description">
           <h3 id="comment:description">
             Description
-            <span py:if="description_change" class="lastmod"
-                  title="$description_change.date">
+            <span py:if="description_change" class="lastmod" title="$description_change.date">
               (last modified by ${authorinfo(description_change.author)})
               (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
             </span>
@@ -212,7 +211,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             id="addreply" method="get" action="#comment">
             <div class="inlinebuttons">
               <input type="hidden" name="replyto" value="description" />
-              <input type="submit" name="reply" value="${_('Reply')}" title="${_('Reply, quoting this description')}" />
+              <input type="submit" name="reply" value="${_('Reply')}" title="Reply, quoting this description" />
             </div>
           </form>
           <div py:if="ticket.description" class="searchable" xml:space="preserve">
