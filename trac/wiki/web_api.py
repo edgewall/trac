@@ -26,7 +26,7 @@ class WikiRenderer(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return req.path_info == '/wiki_render'
+        return req.path_info == '/wiki_render' and req.method == 'POST'
 
     def process_request(self, req):
         realm = req.args.get('realm', 'wiki')
