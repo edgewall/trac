@@ -29,7 +29,7 @@ from trac.util.translation import _
 
 
 class WikiAdmin(Component):
-    """Wiki administration component."""
+    """trac-admin command provider for wiki administration."""
 
     implements(IAdminCommandProvider)
 

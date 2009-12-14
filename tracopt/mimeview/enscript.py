@@ -95,7 +95,7 @@ class EnscriptDeuglifier(Deuglifier):
 
 
 class EnscriptRenderer(Component):
-    """Syntax highlighting using GNU Enscript."""
+    """Syntax highlighter using GNU Enscript."""
 
     implements(IHTMLPreviewRenderer)
 

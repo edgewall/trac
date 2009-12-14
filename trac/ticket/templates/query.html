@@ -251,9 +251,8 @@
             <input type="hidden" name="action" value="${edit and 'edit' or 'new'}" />
             <input type="hidden" name="query" value="${query.to_string()}" />
             <input type="submit" value="${_('Save query')}"
-                   title="${edit and _('Save updated query in report {%(id)s}',
-                                       id=report_resource.id) or
-                            _('Create new report from current query')}" />
+                   title="${edit and _('Save updated query in report {%(id)s}', id=report_resource.id) or
+                                     _('Create new report from current query')}" />
           </div>
         </form>
         <form py:if="delete" method="get" action="${url_of(report_resource)}">

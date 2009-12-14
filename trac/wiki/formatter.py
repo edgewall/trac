@@ -285,6 +285,11 @@ class Formatter(object):
                 break
         return tmp
 
+    def flush_tags(self):
+        while self._open_tags != []:
+            self.out.write(self._open_tags.pop()[1])
+
+
     def open_tag(self, open, close):
         self._open_tags.append((open, close))
 
@@ -622,9 +627,13 @@ class Formatter(object):
             class_attr = (list_class and ' class="%s"' % list_class) or ''
             start_attr = (start and ' start="%s"' % start) or ''
             self.out.write('<'+new_type+class_attr+start_attr+'><li>')
+        def close_item():
+            self.flush_tags()
+            self.out.write('</li>')
         def close_list(tp):
             self._list_stack.pop()
-            self.out.write('</li></%s>' % tp)
+            close_item()
+            self.out.write('</%s>' % tp)
 
         # depending on the indent/dedent, open or close lists
         if depth > self._get_list_depth():
@@ -644,7 +653,8 @@ class Formatter(object):
                     else:
                         if old_offset != depth: # adjust last depth
                             self._list_stack[-1] = (old_type, depth)
-                        self.out.write('</li><li>')
+                        close_item()
+                        self.out.write('<li>')
                 else:
                     open_list()
 
@@ -802,9 +812,8 @@ class Formatter(object):
             self.paragraph_open = 1
 
     def close_paragraph(self):
+        self.flush_tags()
         if self.paragraph_open:
-            while self._open_tags != []:
-                self.out.write(self._open_tags.pop()[1])
             self.out.write('</p>' + os.linesep)
             self.paragraph_open = 0
 
@@ -1028,12 +1037,12 @@ class OneLinerFormatter(Formatter):
         if result.endswith('...'):
             result = result[:-3] + u'\u2026'
 
+        self.out.write(result)
         # Close all open 'one line'-tags
-        result += self.close_tag(None)
+        self.flush_tags()
         # Flush unterminated code blocks
         if in_code_block > 0:
-            result += u'[\u2026]'
-        out.write(result)
+            self.out.write(u'[\u2026]')
 
 
 class OutlineFormatter(Formatter):

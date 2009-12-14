@@ -807,7 +807,7 @@ class LegacyAttachmentPolicy(Component):
 
 
 class AttachmentAdmin(Component):
-    """Component representing the attachment system administration."""
+    """trac-admin command provider for attachment administration."""
     
     implements(IAdminCommandProvider)
     

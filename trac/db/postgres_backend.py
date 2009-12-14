@@ -47,8 +47,13 @@ _like_escape_re = re.compile(r'([/_%])')
 
 
 class PostgreSQLConnector(Component):
-    """PostgreSQL database support."""
-
+    """Database connector for PostgreSQL.
+    
+    Database URLs should be of the form:
+    {{{
+    postgres://user[:password]@host[:port]/database[?schema=my_schema]
+    }}}
+    """
     implements(IDatabaseConnector)
 
     pg_dump_path = Option('trac', 'pg_dump_path', 'pg_dump',

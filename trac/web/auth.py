@@ -39,9 +39,11 @@ from trac.util.translation import _
 
 
 class LoginModule(Component):
-    """Implements user authentication based on HTTP authentication provided by
-    the web-server, combined with cookies for communicating the login
-    information across the whole site.
+    """User authentication manager.
+    
+    This component implements user authentication based on HTTP authentication
+    provided by the web-server, combined with cookies for communicating the
+    login information across the whole site.
 
     This mechanism expects that the web-server is setup so that a request to the
     path '/login' requires authentication (such as Basic or Digest). The login

@@ -1108,6 +1108,34 @@ item iii.
 Paragraph
 </p>
 ------------------------------
+============================== Lists and partial inline markup (#3232)
+This line ''does not close italic.
+
+No problems though as it resets. Lists won't though:
+ * '''Not closing bold...
+ * Bold Continues here...
+
+This will be bold too as will the rest of the page.
+------------------------------
+<p>
+This line <i>does not close italic.
+</i></p>
+<p>
+No problems though as it resets. Lists won't though:
+</p>
+<ul><li><strong>Not closing bold...
+</strong></li><li>Bold Continues here...
+</li></ul><p>
+This will be bold too as will the rest of the page.
+</p>
+------------------------------
+This line <i>does not close italic.
+
+No problems though as it resets. Lists won't though:
+ * <strong>Not closing bold...
+ * Bold Continues here...
+
+This will be bold too as will the rest of the page.</strong></i>
 ============================== Simple definition list
  term:: definition
 ------------------------------

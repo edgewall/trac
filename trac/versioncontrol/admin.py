@@ -24,7 +24,7 @@ from trac.web.chrome import add_notice, add_warning
 
 
 class VersionControlAdmin(Component):
-    """Version control administration component."""
+    """trac-admin command provider for version control administration."""
 
     implements(IAdminCommandProvider, IAdminPanelProvider)
 

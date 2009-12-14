@@ -20,6 +20,11 @@
       <link type="application/opensearchdescription+xml" rel="search"
             href="${href.search('opensearch')}" title="Search $project.name"/>
     </py:if>
+    <script py:if="chrome.script_data" type="text/javascript">
+      <py:for each="key, value in chrome.script_data.iteritems()">
+      var ${key}=${to_json(value)};
+      </py:for>
+    </script>
     <script py:for="script in chrome.scripts"
             type="${script.type}" src="${script.href}"></script>
     ${Markup('&lt;!--[if lt IE 7]&gt;')}

@@ -29,7 +29,8 @@ from trac.web.chrome import INavigationContributor
 
 
 class AboutModule(Component):
-    """Provides various about pages."""
+    """"About Trac" page provider, showing version information from
+    third-party packages, as well as configuration information."""
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 

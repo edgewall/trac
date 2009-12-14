@@ -611,7 +611,7 @@ class OrderedExtensionsOption(ListOption):
 
 
 class ConfigurationAdmin(Component):
-    """Component representing the project configuration administration."""
+    """trac-admin command provider for trac.ini administration."""
     
     implements(IAdminCommandProvider)
     

@@ -118,6 +118,7 @@ facilities.
         trac.wiki.interwiki = trac.wiki.interwiki
         trac.wiki.macros = trac.wiki.macros
         trac.wiki.web_ui = trac.wiki.web_ui
+        trac.wiki.web_api = trac.wiki.web_api
         tracopt.mimeview.enscript = tracopt.mimeview.enscript
         tracopt.mimeview.php = tracopt.mimeview.php
         tracopt.perm.authz_policy = tracopt.perm.authz_policy

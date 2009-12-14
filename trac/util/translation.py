@@ -98,10 +98,10 @@ try:
     class NullTranslationsBabel(NullTranslations):
         """NullTranslations doesn't have the domain related methods."""
 
-        def dugettext(domain, string):
+        def dugettext(self, domain, string):
             return self.ugettext(string)
 
-        def dungettext(domain, singular, plural, num):
+        def dungettext(self, domain, singular, plural, num):
             return self.ungettext(singular, plural, num)
 
 

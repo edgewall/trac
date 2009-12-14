@@ -811,7 +811,7 @@ class TicketTypeAdminPanel(AbstractEnumAdminPanel):
 
 
 class TicketAdmin(Component):
-    """Ticket administration component."""
+    """trac-admin command provider for ticket administration."""
 
     implements(IAdminCommandProvider)
 

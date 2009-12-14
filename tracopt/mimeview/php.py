@@ -61,8 +61,7 @@ class PhpDeuglifier(Deuglifier):
 
 
 class PHPRenderer(Component):
-    """Syntax highlighting using the PHP executable if available.
-    """
+    """Syntax highlighter using the PHP executable."""
 
     implements(IHTMLPreviewRenderer)
 

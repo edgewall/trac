@@ -9,7 +9,31 @@
     <title>Plugins</title>
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
     <script type="text/javascript">
-      jQuery(document).ready(function($){ $("div.plugin h3").enableFolding(true) });
+      jQuery(document).ready(function($){
+        $(".foldable").enableFolding(true);
+        $("tbody .trac-toggler a").each(function() {
+          $(this).attr("href", "").click(function() {
+            var a = $(this);
+            a.closest("td").toggleClass("collapsed");
+            a.text(a.text() == "+"? "&ndash;": "+");
+            return false;
+          });
+        });
+        $("thead .trac-toggler a").each(function() {
+          $(this).attr("href", "").click(function() {
+            var td = $(this).closest("table").find("tbody td");
+            var a = td.find(".trac-toggler a");
+            if ($(this).text() == "+") {
+              td.removeClass("collapsed");
+              a.text("&ndash;");
+            } else {
+              td.addClass("collapsed");
+              a.text("+");
+            }
+            return false;
+          });
+        });
+      });
     </script>
   </head>
 
@@ -41,8 +65,8 @@
     </form>
 
     <form py:for="idx, plugin in enumerate(plugins)" method="post" action="">
-      <div class="plugin">
-        <h3>${plugin.name} ${plugin.version}</h3>
+      <div class="plugin" id="trac-plugin-${plugin.name}">
+        <h3 class="foldable">${plugin.name} ${plugin.version}</h3>
         <!--! FIXME: Plugin uninstall disabled as it is unreliable (#3545)
         <div class="uninstall buttons">
           <input type="hidden" name="plugin_filename"
@@ -80,25 +104,62 @@
         </py:if>
         <table class="listing">
           <thead>
-            <tr><th>Component</th><th class="sel">Enabled</th></tr>
+            <tr>
+              <th>
+                <span class="trac-toggler">
+                  [<a title="Show all descriptions" href="${href.admin('general', 'plugin', show=plugin.name)
+                                                            + '#trac-plugin-' + plugin.name}">+</a>]
+                  [<a title="Hide all descriptions" href="${href.admin('general', 'plugin')
+                                                            + '#trac-plugin-' + plugin.name}">&ndash;</a>]
+                </span>
+                Component
+              </th>
+              <th class="sel">Enabled</th>
+            </tr>
           </thead>
-          <tbody>
-            <tr py:for="component in plugin.components">
-              <td class="name" title="${component.description}">
-                ${component.name}<p class="module">${component.module}</p>
+          <tbody py:for="module_name, module in sorted(plugin.modules.iteritems())">
+            <tr>
+              <td py:with="show_doc = show == plugin.name or show == module_name" id="trac-mod-${module_name}"
+                  class="trac-module${not show_doc and ' collapsed' or None}">
+                <p class="trac-heading">
+                  <span py:if="module.description" class="trac-toggler">
+                    [<a title="Toggle the module description"
+                        href="${href.admin('general', 'plugin', show=not show_doc and module_name or None)
+                                + '#trac-mod-' + module_name}">${show_doc and '&ndash;' or '+'}</a>]
+                  </span>
+                  <span class="trac-name">${module_name}.*</span>
+                  <span py:if="module.summary" class="trac-summary"> &mdash; ${module.summary}</span>
+                </p>
+                <div py:if="module.description" xml:space="preserve">${wiki_to_html(context, module.description)}</div>
+              </td>
+              <td class="sel"></td>
+            </tr>
+            <tr py:for="component_name, component in sorted(module.components.iteritems())">
+              <td py:with="show_doc = show == plugin.name or show == component.full_name" id="trac-comp-${component.full_name}"
+                  class="trac-component${not show_doc and ' collapsed' or None}">
+                <p class="trac-heading">
+                  <span py:if="component.description" class="trac-toggler">
+                    [<a title="Toggle the component description"
+                        href="${href.admin('general', 'plugin', show=not show_doc and component.full_name or None)
+                                + '#trac-comp-' + component.full_name}">${show_doc and '&ndash;' or '+'}</a>]
+                  </span>
+                  <span class="trac-name">${component_name}</span>
+                  <span py:if="component.summary" class="trac-summary"> &mdash; ${component.summary}</span>
+                </p>
+                <div py:if="component.description" xml:space="preserve">${wiki_to_html(context, component.description)}</div>
               </td>
               <td class="sel">
                 <input py:if="not component.required" type="hidden" name="component"
-                       value="${component.module}.${component.name}" />
+                       value="${module_name}.${component_name}" />
                 <input type="checkbox" name="enable"
-                       value="${component.module}.${component.name}"
+                       value="${module_name}.${component_name}"
                        checked="${component.enabled or None}"
                        disabled="${component.required or None}" />
               </td>
             </tr>
           </tbody>
         </table>
-        <div class="update buttons">
+        <div class="buttons">
           <input type="hidden" name="plugin" value="$idx" />
           <input type="submit" name="update" value="${_('Apply changes')}" />
         </div>

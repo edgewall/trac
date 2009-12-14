@@ -180,7 +180,7 @@ label.disabled { color: #d7d7d7 }
 }
 
 /* Context-dependent navigation links */
-#ctxtnav { height: 1em }
+#ctxtnav { min-height: 1em }
 #ctxtnav li ul {
  background: #f7f7f7;
  color: #ccc;
@@ -194,6 +194,14 @@ label.disabled { color: #d7d7d7 }
 #ctxtnav li li :link:hover, #ctxtnav li li :visited:hover {
  background: #bba;
  color: #fff;
+}
+
+.trac-nav, .trac-topnav {
+ float: right;
+ font-size: 80%;
+}
+.trac-topnav {
+ margin-top: 14px;
 }
 
 /* Alternate links */
@@ -266,7 +274,7 @@ label.disabled { color: #d7d7d7 }
 .collapsed > .foldable :link, .collapsed > .foldable :visited {
  background-image: url(../collapsed.png);
 }
-.collapsed > div, .collapsed > table, .collapsed > ul { display: none }
+.collapsed > div, .collapsed > table, .collapsed > ul, .collapsed > dl { display: none }
 fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
  color: #666;
  font-size: 110%;

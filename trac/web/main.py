@@ -122,7 +122,10 @@ def populate_hdf(hdf, env, req=None):
 
 
 class RequestDispatcher(Component):
-    """Component responsible for dispatching requests to registered handlers."""
+    """Web request dispatcher.
+    
+    This component dispatches incoming requests to registered handlers.
+    """
 
     authenticators = ExtensionPoint(IAuthenticator)
     handlers = ExtensionPoint(IRequestHandler)

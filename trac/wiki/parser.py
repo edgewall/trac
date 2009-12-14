@@ -24,7 +24,7 @@ from trac.core import *
 from trac.notification import EMAIL_LOOKALIKE_PATTERN
 
 class WikiParser(Component):
-    """wiki subsystem dedicated to the Wiki text parsing."""
+    """Wiki text parser."""
 
     # Some constants used for clarifying the Wiki regexps:
 

@@ -2,7 +2,8 @@
 
 import unittest
 
-from trac.util.text import to_unicode, expandtabs
+from trac.util.text import expandtabs, javascript_quote, to_unicode
+
 
 class ToUnicodeTestCase(unittest.TestCase):
 
@@ -47,10 +48,22 @@ class ExpandtabsTestCase(unittest.TestCase):
         self.assertEquals('        ', expandtabs('       \t'))
         self.assertEquals('                ', expandtabs('\t\t'))
 
+
+class JavascriptQuoteTestCase(unittest.TestCase):
+    def test_quoting(self):
+        self.assertEqual(r'Quote \" in text',
+                         javascript_quote('Quote " in text'))
+        self.assertEqual(r'\\\"\b\f\n\r\t\'',
+                         javascript_quote('\\"\b\f\n\r\t\''))
+        self.assertEqual(r'\u0002\u001e',
+                         javascript_quote('\x02\x1e'))
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ToUnicodeTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ExpandtabsTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(JavascriptQuoteTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':

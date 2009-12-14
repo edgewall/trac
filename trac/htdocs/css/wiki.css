@@ -8,14 +8,36 @@ p.path .sep { color: #666; padding: 0 .1em }
 p.path .pathentry { float: left }
 
 /* Styles for the page editing form */
-#edit #rows { float: right; font-size: 80% }
+.preview-right { 
+ float: right;
+ width: 50%;
+ display: block;
+ margin: 0 0 0 1em;
+}
+.sidebyside h2 { margin: .4em 0; }
+.sidebyside #preview { margin: 0 0 1em 0; }
+
+#edit { margin-top: .5em }
+#edit #rows { 
+ float: right;
+ font-size: 80%;
+ margin: .4em 0 0 0;
+}
 #edit #rows select { font-size: 90% }
 #edit fieldset { margin-left: 1px; margin-right: 1px }
-#edit #text { clear: both; margin-left: -1px; margin-right: -1px; padding: 0; width: 100% }
+#edit #text {
+ clear: both;
+ margin-left: -1px;
+ margin-right: -1px;
+ padding: 0;
+ width: 100%;
+ resize: vertical;
+}
 #edit .wikitoolbar { float: left; margin-left: -1px }
 #edit div.trac-resizable { clear: both; width: 100% }
 #changeinfo { padding: .5em }
 #changeinfo .field { float: left; margin: 0 1em .5em 0 }
+#changeinfo { clear: both }
 #changeinfo br { clear: left }
 #changeinfo .options { padding: 0 0 1em 1em }
 #changeinfo .options, #changeinfo .buttons { clear: left }

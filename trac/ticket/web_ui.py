@@ -48,6 +48,7 @@ from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
                             INavigationContributor, ITemplateProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
+
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
     title = "Invalid Ticket"
@@ -533,7 +534,7 @@ class TicketModule(Component):
                 'valid': valid
                 })
         else: # simply 'View'ing the ticket
-            field_changes = None
+            field_changes = {}
             data.update({'action': None,
                          'reassign_owner': req.authname,
                          'resolve_resolution': None,
@@ -602,6 +603,7 @@ class TicketModule(Component):
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
         Chrome(self.env).add_wiki_toolbars(req)
+        Chrome(self.env).add_auto_preview(req)
 
         # Add registered converters
         for conversion in mime.get_supported_conversions('trac.ticket.Ticket'):
@@ -1472,22 +1474,19 @@ class TicketModule(Component):
                 selected_action = action_controls[0][0]
 
         # Insert change preview
-        change_preview = None
+        change_preview = {
+            'date': datetime.now(utc),
+            'author': author_id,
+            'fields': field_changes,
+            'preview': True,
+            'comment': req.args.get('comment', data.get('comment')),
+        }
+        replyto = req.args.get('replyto')
+        if replyto:
+            change_preview['replyto'] = replyto
         if req.method == 'POST':
             self._apply_ticket_changes(ticket, field_changes)
             self._render_property_changes(req, ticket, field_changes)
-            change_preview = {
-                'date': datetime.now(utc),
-                'author': author_id,
-                'fields': field_changes,
-                'preview': True,
-            }
-            comment = req.args.get('comment')
-            if comment:
-                change_preview['comment'] = comment
-            replyto = req.args.get('replyto')
-            if replyto:
-                change_preview['replyto'] = replyto
 
         if ticket.resource.version is not None: ### FIXME
             ticket.values.update(values)

@@ -43,8 +43,22 @@ except ImportError:
     IAdminPageProvider = None
 
 
+def get_doc(obj):
+    """Return the docstring of an object as a tuple `(summary, description)`,
+    where `summary` is the first paragraph and `description` is the remaining
+    text.
+    """
+    doc = inspect.getdoc(obj)
+    if not doc:
+        return (None, None)
+    doc = to_unicode(doc).split('\n\n', 1)
+    summary = doc[0].replace('\n', ' ')
+    description = len(doc) > 1 and doc[1] or None
+    return (summary, description)
+
+
 class AdminModule(Component):
-    """Web administration interface."""
+    """Web administration interface provider and panel manager."""
 
     implements(INavigationContributor, IRequestHandler, ITemplateProvider)
 
@@ -395,9 +409,17 @@ class PluginAdminPanel(Component):
     implements(IAdminPanelProvider)
 
     # Ideally, this wouldn't be hard-coded like this
-    required_components = ('AboutModule', 'DefaultPermissionGroupProvider',
-        'Environment', 'EnvironmentSetup', 'PermissionSystem',
-        'RequestDispatcher', 'Mimeview', 'Chrome')
+    required_components = (
+        'trac.about.AboutModule',
+        'trac.cache.CacheManager',
+        'trac.env.Environment',
+        'trac.env.EnvironmentSetup',
+        'trac.mimeview.api.Mimeview',
+        'trac.perm.DefaultPermissionGroupProvider',
+        'trac.perm.PermissionSystem',
+        'trac.web.chrome.Chrome',
+        'trac.web.main.RequestDispatcher',
+    )
 
     def __init__(self):
         self.trac_path = get_module_path(sys.modules['trac.core'])
@@ -529,7 +551,7 @@ class PluginAdminPanel(Component):
                 # retrieve plugin metadata
                 info = get_pkginfo(dist)
                 if not info:
-                    info = {'summary': description}
+                    info = {}
                     for k in ('author author_email home_page url license trac'
                               .split()):
                         v = getattr(module, k, '')
@@ -561,26 +583,24 @@ class PluginAdminPanel(Component):
                     version = version.replace('$', '').replace('Rev: ', 'r') 
                 plugins[dist.project_name] = {
                     'name': dist.project_name, 'version': version,
-                    'path': dist.location, 'description': description,
-                    'plugin_filename': plugin_filename, 'readonly': readonly,
-                    'info': info, 'components': []
+                    'path': dist.location, 'plugin_filename': plugin_filename,
+                    'readonly': readonly, 'info': info, 'modules': {},
                 }
-            plugins[dist.project_name]['components'].append({
-                'name': component.__name__, 'module': module.__name__,
-                'description': description,
+            modules = plugins[dist.project_name]['modules']
+            if module.__name__ not in modules:
+                summary, description = get_doc(module)
+                plugins[dist.project_name]['modules'][module.__name__] = {
+                    'summary': summary, 'description': description,
+                    'components': {},
+                }
+            full_name = module.__name__ + '.' + component.__name__
+            summary, description = get_doc(component)
+            modules[module.__name__]['components'][component.__name__] = {
+                'full_name': full_name,
+                'summary': summary, 'description': description,
                 'enabled': self.env.is_component_enabled(component),
-                'required': component.__name__ in self.required_components,
-            })
-
-        def component_order(a, b):
-            c = cmp(len(a['module'].split('.')), len(b['module'].split('.')))
-            if c == 0:
-                c = cmp(a['module'].lower(), b['module'].lower())
-                if c == 0:
-                    c = cmp(a['name'].lower(), b['name'].lower())
-            return c
-        for category in plugins:
-            plugins[category]['components'].sort(component_order)
+                'required': full_name in self.required_components,
+            }
 
         plugin_list = [plugins['Trac']]
         addons = [key for key in plugins.keys() if key != 'Trac']
@@ -588,8 +608,8 @@ class PluginAdminPanel(Component):
         plugin_list += [plugins[category] for category in addons]
 
         data = {
-            'plugins': plugin_list,
-            'readonly': not os.access(plugins_dir, os.F_OK + os.W_OK)
+            'plugins': plugin_list, 'show': req.args.get('show'),
+            'readonly': not os.access(plugins_dir, os.F_OK + os.W_OK),
         }
         return 'admin_plugins.html', data
 

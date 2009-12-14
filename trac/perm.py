@@ -16,8 +16,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-"""Management of permissions."""
-
 from time import time
 
 from trac.admin import AdminCommandError, IAdminCommandProvider
@@ -154,7 +152,7 @@ class IPermissionPolicy(Interface):
 class DefaultPermissionStore(Component):
     """Default implementation of permission storage and simple group management.
     
-    This component uses the `PERMISSION` table in the database to store both
+    This component uses the `permission` table in the database to store both
     permissions and groups.
     """
     implements(IPermissionStore)
@@ -241,8 +239,8 @@ class DefaultPermissionStore(Component):
 
 
 class DefaultPermissionGroupProvider(Component):
-    """Provides the basic builtin permission groups 'anonymous' and
-    'authenticated'."""
+    """Permission group provider providing the basic builtin permission groups
+    'anonymous' and 'authenticated'."""
 
     implements(IPermissionGroupProvider)
 
@@ -290,7 +288,7 @@ class DefaultPermissionPolicy(Component):
 
 
 class PermissionSystem(Component):
-    """Sub-system that manages user permissions."""
+    """Permission management sub-system."""
 
     implements(IPermissionRequestor)
 
@@ -560,7 +558,7 @@ class PermissionCache(object):
 
 
 class PermissionAdmin(Component):
-    """Component representing the permission system administration."""
+    """trac-admin command provider for permission system administration."""
     
     implements(IAdminCommandProvider)
     

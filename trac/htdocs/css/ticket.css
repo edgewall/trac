@@ -1,6 +1,11 @@
 @import url(code.css);
 
-#content.ticket { width: 700px; max-width: 100% }
+#content.ticket { 
+ width: 58em; 
+ max-width: 100%;
+ margin-left: auto;
+ margin-right: auto;
+}
 
 #newticket #field-description { width: 100% }
 #newticket #properties { width: 100% }
@@ -76,10 +81,9 @@ h1 .status { color: #444; }
  margin-left: 0.2em;
 }
 
-.trac-nav { float: right }
 #changelog { border: 1px outset #996; padding: 1em }
 .trac-shade { background-color: #eee }
-#trac-comment-editor { margin-top: 1em; margin-left: 2em }
+#trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
 #trac-comment-editor div.trac-resizable { width: 100% }
 #trac-comment-editor textarea { margin-left: -1px; margin-right: -1px; width: 100% }
 #trac-comment-editor .wikitoolbar { margin-left: -1px }

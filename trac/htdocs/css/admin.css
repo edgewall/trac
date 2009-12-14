@@ -39,17 +39,17 @@ table.listing .num { text-align: right; width: 1% }
 
 /* Plugins panel */
 form#addplug { width: 35% }
-.plugin { background: #f7f7f7; border: 1px solid #d7d7d7; margin: 0 0 2em;
-  padding: 2px .5em; text-align: left;
+.plugin {
+ background: #f7f7f7;
+ border: 1px solid #d7d7d7;
+ margin: 0 0 2em;
+ padding: 2px .5em;
+ text-align: left;
 }
-.plugin h3 { margin: .5em 0; color: #bb0000;}
-.plugin h3 a { 
- padding: 2px .5em; text-align: left;
-}
-.plugin h3 a { background: url(../expanded.png) 0 50% no-repeat;
- padding-left: 16px;
-}
-.collapsed h3 a { background-image: url(../collapsed.png); }
+.plugin > h3 {
+   margin: .5em 0;
+   color: #bb0000
+ }
 .plugin .buttons { margin-top: 0; text-align: right }
 .plugin .uninstall { margin-top: -2.6em; padding: 0 }
 .plugin .summary, .plugin .info { color: #999; font-size: 80%;
@@ -60,9 +60,20 @@ form#addplug { width: 35% }
 .plugin .info dt { float: left; width: 7em; }
 .plugin .info dd { padding: 0; margin: 0; }
 .plugin .listing { width: 100% }
-.collapsed .info, .collapsed .listing, .collapsed .update { display: none }
 .plugin .listing td { background: #fff }
-.plugin .listing .name p { color: #999; font-size: 80%; margin: 0 }
+.trac-heading { margin: 0 }
+.trac-name { font-family: monospace }
+.trac-toggler { float: right; color: #000; font-weight: normal }
+.trac-toggler :link, .trac-toggler :visited,
+.trac-toggler :link:hover, .trac-toggler :visited:hover {
+  border: none;
+  padding: 0;
+}
+.trac-module .trac-heading { color: #888 }
+.trac-module > div { margin-left: 1em }
+.trac-component .trac-heading { padding-left: 2em }
+.trac-component > div { margin-left: 3em }
+.trac-summary { color: #888 }
 
 /* Perm Panel */
 #permlist div { float: left; min-width: 13em; max-width: 33%;

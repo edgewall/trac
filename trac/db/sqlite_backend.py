@@ -131,7 +131,13 @@ def _to_sql(table):
 
 
 class SQLiteConnector(Component):
-    """SQLite database support."""
+    """Database connector for SQLite.
+    
+    Database URLs should be of the form:
+    {{{
+    sqlite:path/to/trac.db
+    }}}
+    """
     implements(IDatabaseConnector)
 
     def __init__(self):
