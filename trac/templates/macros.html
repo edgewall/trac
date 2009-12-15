@@ -224,7 +224,7 @@
         <py:with vars="href = interval_hrefs and interval_hrefs[idx] or None">
           <dt>
             <a href="${href}">
-             ${ngettext('%(title)s %(unit)s', '%(title)s %(units)s', interval.count,
+             ${ngettext('%(title)s %(unit)s:', '%(title)s %(units)s:', interval.count,
                         title=interval.title.capitalize(),
                         unit=stats.unit, units=stats.units)}</a>
           </dt>
@@ -234,7 +234,7 @@
       <py:with vars="num = sum([x.count for x in stats.intervals], 0)">
         <dt>/
           <a href="${stats_href}">
-            ${ngettext('Total %(unit)s', 'Total %(units)s', num,
+            ${ngettext('Total %(unit)s:', 'Total %(units)s:', num,
                        unit=stats.unit, units=stats.units)}</a>
         </dt>
         <dd><a href="${stats_href}">${num}</a></dd>

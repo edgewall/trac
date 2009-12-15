@@ -1130,7 +1130,7 @@ class RegressionTestTicket5602(FunctionalTwillTestCaseSetup):
         tc.go(self._tester.url + "/roadmap")
         tc.follow(milestone)
 
-        tc.follow("Closed tickets:")
+        tc.follow("Closed ticket:")
         tc.find("Resolution:[ \t\n]+fixed")
 
         tc.back()
