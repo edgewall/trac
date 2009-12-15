@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-12-15 15:43+0100\n"
+"PO-Revision-Date: 2009-12-15 17:22+0100\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -797,7 +797,7 @@ msgstr ""
 #: trac/ticket/templates/report_edit.html:42
 #: trac/ticket/templates/ticket.html:108
 #: trac/wiki/templates/wiki_delete.html:36
-#: trac/wiki/templates/wiki_edit.html:60
+#: trac/wiki/templates/wiki_edit.html:79
 #: trac/wiki/templates/wiki_edit_form.html:70
 msgid "Cancel"
 msgstr "Annuler"
@@ -3196,6 +3196,7 @@ msgid "Title"
 msgstr "Titre"
 
 #: trac/ticket/templates/report_list.html:27
+#: trac/wiki/templates/wiki_edit.html:67
 msgid "Actions"
 msgstr "Actions"
 
@@ -3211,8 +3212,7 @@ msgid "Edit report"
 msgstr "Modifier le rapport"
 
 #: trac/ticket/templates/report_list.html:35
-#: trac/ticket/templates/ticket.html:269 trac/wiki/templates/wiki_edit.html:49
-#: trac/wiki/templates/wiki_edit.html:104
+#: trac/ticket/templates/ticket.html:269 trac/wiki/templates/wiki_edit.html:123
 msgid "Edit"
 msgstr "Modifier"
 
@@ -3307,7 +3307,8 @@ msgid "deleted"
 msgstr "supprimé"
 
 #: trac/ticket/templates/ticket.html:106 trac/ticket/templates/ticket.html:493
-#: trac/wiki/templates/wiki_edit.html:50 trac/wiki/templates/wiki_edit.html:106
+#: trac/wiki/templates/wiki_edit.html:69 trac/wiki/templates/wiki_edit.html:125
+#: trac/wiki/templates/wiki_edit.html:136
 #: trac/wiki/templates/wiki_edit_form.html:61
 msgid "Preview"
 msgstr "Aperçu"
@@ -3870,7 +3871,7 @@ msgid "No files found"
 msgstr "Aucun fichier trouvé"
 
 #: trac/versioncontrol/templates/browser.html:114
-#: trac/wiki/templates/wiki_edit.html:92 trac/wiki/templates/wiki_view.html:37
+#: trac/wiki/templates/wiki_edit.html:111 trac/wiki/templates/wiki_view.html:37
 msgid "Revision info"
 msgstr "Info révision"
 
@@ -4558,31 +4559,39 @@ msgstr "Supprimer de la version %(old_version)d à la version %(version)d"
 msgid "Delete version %(version)d"
 msgstr "Supprimer la version %(version)d"
 
-#: trac/wiki/templates/wiki_edit.html:48
+#: trac/wiki/templates/wiki_edit.html:66
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr "Aller aux boutons Enregistrer, Aperçu, ... Annuler"
 
-#: trac/wiki/templates/wiki_edit.html:50
-msgid "Go to preview"
+#: trac/wiki/templates/wiki_edit.html:68
+msgid "See the diffs"
+msgstr "Voir les différences"
+
+#: trac/wiki/templates/wiki_edit.html:68 trac/wiki/templates/wiki_edit.html:135
+msgid "Review"
+msgstr "Passer en revue"
+
+#: trac/wiki/templates/wiki_edit.html:69
+msgid "See the preview"
 msgstr "Voir l'aperçu"
 
-#: trac/wiki/templates/wiki_edit.html:53
+#: trac/wiki/templates/wiki_edit.html:72
 msgid "Editing"
 msgstr "Modification"
 
-#: trac/wiki/templates/wiki_edit.html:55
+#: trac/wiki/templates/wiki_edit.html:74
 msgid "Someone else has modified that page since you started your edits."
 msgstr "Un autre utilisateur a modifié cette page pendant votre édition."
 
-#: trac/wiki/templates/wiki_edit.html:56
+#: trac/wiki/templates/wiki_edit.html:75
 msgid "If you save right away, you risk to revert those changes"
 msgstr "Une sauvegarde directe écraserait ces modifications"
 
-#: trac/wiki/templates/wiki_edit.html:56
+#: trac/wiki/templates/wiki_edit.html:75
 msgid "(highlighted below as deletions)."
 msgstr "(mises en évidence ci-dessous en tant que suppressions)"
 
-#: trac/wiki/templates/wiki_edit.html:58
+#: trac/wiki/templates/wiki_edit.html:77
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
@@ -4591,11 +4600,11 @@ msgstr ""
 "manuellement\n"
 "avec les changements locaux."
 
-#: trac/wiki/templates/wiki_edit.html:59
+#: trac/wiki/templates/wiki_edit.html:78
 msgid "If you're unsure about what you're doing, please press"
 msgstr "Si vous avez des doutes sur ce que vous faites, merci d'appuyer sur"
 
-#: trac/wiki/templates/wiki_edit.html:60
+#: trac/wiki/templates/wiki_edit.html:79
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
@@ -4604,24 +4613,32 @@ msgstr ""
 "la\n"
 "toute dernière version de cette page"
 
-#: trac/wiki/templates/wiki_edit.html:94
+#: trac/wiki/templates/wiki_edit.html:113
 msgid "Change information for future version"
 msgstr "Commentaire concernant la future version"
 
-#: trac/wiki/templates/wiki_edit.html:95
+#: trac/wiki/templates/wiki_edit.html:114
 msgid "(modified by"
 msgstr "(modifié par"
 
-#: trac/wiki/templates/wiki_edit.html:104
+#: trac/wiki/templates/wiki_edit.html:123
 msgid "Go to the editor"
 msgstr "Éditer le ticket"
 
-#: trac/wiki/templates/wiki_edit.html:106
+#: trac/wiki/templates/wiki_edit.html:125
 #: trac/wiki/templates/wiki_edit_form.html:67
 msgid "Review Changes"
 msgstr "Passer en revue les modifications"
 
-#: trac/wiki/templates/wiki_edit.html:118
+#: trac/wiki/templates/wiki_edit.html:135
+msgid "See the start of the diffs"
+msgstr "Voir le début des différences"
+
+#: trac/wiki/templates/wiki_edit.html:136
+msgid "See the start of the preview"
+msgstr "Voir le début de l'aperçu"
+
+#: trac/wiki/templates/wiki_edit.html:142
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
