@@ -23,7 +23,7 @@ from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               get_datetime_format_hint, format_date, \
                               format_datetime
 from trac.util.text import print_table, printout, exception_to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, N_, gettext
 from trac.web.chrome import add_notice, add_script, add_warning, Chrome
 
 
@@ -33,11 +33,19 @@ class TicketAdminPanel(Component):
 
     abstract = True
 
+    _label = (N_('(Undefined)'), N_('(Undefined)'))
+
+    # i18n note: use gettext() whenever refering to the above as text labels,
+    #            and don't use it whenever using them as field names (after
+    #            a call to `.lower()`)
+
+
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
         if 'TICKET_ADMIN' in req.perm:
-            yield ('ticket', 'Ticket System', self._type, self._label[1])
+            yield ('ticket', _('Ticket System'), self._type,
+                   gettext(self._label[1]))
 
     def render_admin_panel(self, req, cat, page, version):
         req.perm.require('TICKET_ADMIN')
@@ -65,7 +73,7 @@ def _save_config(config, req, log):
 class ComponentAdminPanel(TicketAdminPanel):
 
     _type = 'components'
-    _label = ('Component', 'Components')
+    _label = (N_('Component'), N_('Components'))
 
     # TicketAdminPanel methods
 
@@ -230,7 +238,7 @@ class ComponentAdminPanel(TicketAdminPanel):
 class MilestoneAdminPanel(TicketAdminPanel):
 
     _type = 'milestones'
-    _label = ('Milestone', 'Milestones')
+    _label = (N_('Milestone'), N_('Milestones'))
 
     # IAdminPanelProvider methods
 
@@ -429,7 +437,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
 class VersionAdminPanel(TicketAdminPanel):
 
     _type = 'versions'
-    _label = ('Version', 'Versions')
+    _label = (N_('Version'), N_('Versions'))
 
     # TicketAdminPanel methods
 
@@ -584,13 +592,12 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 
     _type = 'unknown'
     _enum_cls = None
-    _label = ('(Undefined)', '(Undefined)')
 
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, path_info):
-        data = {'label_singular': self._label[0],
-                'label_plural': self._label[1]}
+        data = {'label_singular': gettext(self._label[0]),
+                'label_plural': gettext(self._label[1])}
 
         # Detail view?
         if path_info:
@@ -780,25 +787,25 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
 class PriorityAdminPanel(AbstractEnumAdminPanel):
     _type = 'priority'
     _enum_cls = model.Priority
-    _label = ('Priority', 'Priorities')
+    _label = (N_('Priority'), N_('Priorities'))
 
 
 class ResolutionAdminPanel(AbstractEnumAdminPanel):
     _type = 'resolution'
     _enum_cls = model.Resolution
-    _label = ('Resolution', 'Resolutions')
+    _label = (N_('Resolution'), N_('Resolutions'))
 
 
 class SeverityAdminPanel(AbstractEnumAdminPanel):
     _type = 'severity'
     _enum_cls = model.Severity
-    _label = ('Severity', 'Severities')
+    _label = (N_('Severity'), N_('Severities'))
 
 
 class TicketTypeAdminPanel(AbstractEnumAdminPanel):
     _type = 'type'
     _enum_cls = model.Type
-    _label = ('Ticket Type', 'Ticket Types')
+    _label = (N_('Ticket Type'), N_('Ticket Types'))
 
     _command_type = 'ticket_type'
     _command_help = {

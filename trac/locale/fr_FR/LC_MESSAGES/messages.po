@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-12-15 15:24+0100\n"
+"PO-Revision-Date: 2009-12-15 15:43+0100\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -142,8 +142,8 @@ msgstr "Identifiant de resource non valide « %(id)s »"
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:103
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:68
-#: trac/templates/error.html:166 trac/ticket/admin.py:201
-#: trac/ticket/admin.py:392 trac/ticket/admin.py:551
+#: trac/templates/error.html:166 trac/ticket/admin.py:209
+#: trac/ticket/admin.py:400 trac/ticket/admin.py:559
 msgid "Name"
 msgstr "Nom"
 
@@ -589,14 +589,14 @@ msgstr "Les pages d'administration ne sont pas disponibles"
 msgid "Unknown administration panel"
 msgstr "Page d'administration inconnue"
 
-#: trac/admin/web_ui.py:201 trac/ticket/admin.py:57 trac/ticket/admin.py:82
-#: trac/ticket/admin.py:267 trac/ticket/admin.py:449 trac/ticket/admin.py:602
-#: trac/ticket/admin.py:690 trac/ticket/report.py:177
+#: trac/admin/web_ui.py:201 trac/ticket/admin.py:65 trac/ticket/admin.py:90
+#: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
+#: trac/ticket/admin.py:697 trac/ticket/report.py:177
 #: trac/ticket/roadmap.py:685 trac/wiki/web_ui.py:289
 msgid "Your changes have been saved."
 msgstr "Vos modifications ont été enregistrées."
 
-#: trac/admin/web_ui.py:204 trac/ticket/admin.py:60
+#: trac/admin/web_ui.py:204 trac/ticket/admin.py:68
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
@@ -760,7 +760,7 @@ msgstr "Description :"
 msgid "Apply changes"
 msgstr "Enregistrer les changements"
 
-#: trac/admin/templates/admin_components.html:10
+#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:76
 msgid "Components"
 msgstr "Composants"
 
@@ -823,7 +823,7 @@ msgstr "Ajouter un composant :"
 msgid "Add"
 msgstr "Ajouter"
 
-#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:201
+#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
 #: trac/ticket/api.py:281 trac/ticket/web_ui.py:1307
 msgid "Owner"
 msgstr "Propriétaire"
@@ -903,7 +903,8 @@ msgstr ""
 "Si le chemin est relatif, le fichier du journal sera créé dans le\n"
 " [1:log] sous-répertoire du projet ([2:%(dir)s])."
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/roadmap.py:853
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
+#: trac/ticket/roadmap.py:853
 msgid "Milestones"
 msgstr "Jalons"
 
@@ -946,11 +947,11 @@ msgstr "Description (l'utilisation du [1:WikiFormatting] est possible ici) :"
 msgid "Add Milestone:"
 msgstr "Créér un jalon :"
 
-#: trac/admin/templates/admin_milestones.html:103 trac/ticket/admin.py:392
+#: trac/admin/templates/admin_milestones.html:103 trac/ticket/admin.py:400
 msgid "Due"
 msgstr "Date limite"
 
-#: trac/admin/templates/admin_milestones.html:103 trac/ticket/admin.py:392
+#: trac/admin/templates/admin_milestones.html:103 trac/ticket/admin.py:400
 msgid "Completed"
 msgstr "Atteint le"
 
@@ -1071,7 +1072,8 @@ msgstr "Montrer toutes les descriptions"
 msgid "Hide all descriptions"
 msgstr "Cacher toutes les descriptions"
 
-#: trac/admin/templates/admin_plugins.html:114 trac/ticket/api.py:294
+#: trac/admin/templates/admin_plugins.html:114 trac/ticket/admin.py:76
+#: trac/ticket/api.py:294
 msgid "Component"
 msgstr "Composant"
 
@@ -1087,7 +1089,7 @@ msgstr "Description du module"
 msgid "Toggle the component description"
 msgstr "Description du componsant"
 
-#: trac/admin/templates/admin_versions.html:10
+#: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
 msgid "Versions"
 msgstr "Versions"
 
@@ -1656,8 +1658,8 @@ msgid "between"
 msgstr "entre"
 
 #: trac/templates/diff_view.html:20 trac/templates/diff_view.html:26
-#: trac/templates/history_view.html:27 trac/ticket/api.py:295
-#: trac/ticket/templates/ticket.html:148
+#: trac/templates/history_view.html:27 trac/ticket/admin.py:440
+#: trac/ticket/api.py:295 trac/ticket/templates/ticket.html:148
 msgid "Version"
 msgstr "Version"
 
@@ -2124,111 +2126,125 @@ msgstr "Navigation contextuelle"
 msgid "Warning:"
 msgstr "Attention :"
 
-#: trac/ticket/admin.py:104
+#: trac/ticket/admin.py:36
+msgid "(Undefined)"
+msgstr "(indéfini)"
+
+#: trac/ticket/admin.py:47
+msgid "Ticket System"
+msgstr "Gestion des tickets"
+
+#: trac/ticket/admin.py:112
 #, python-format
 msgid "The component \"%(name)s\" has been added."
 msgstr "Le composant « %(name)s » a été ajouté."
 
-#: trac/ticket/admin.py:109 trac/ticket/model.py:664 trac/ticket/model.py:686
+#: trac/ticket/admin.py:117 trac/ticket/model.py:664 trac/ticket/model.py:686
 msgid "Invalid component name."
 msgstr "Nom de composant non valide."
 
-#: trac/ticket/admin.py:110
+#: trac/ticket/admin.py:118
 #, python-format
 msgid "Component %(name)s already exists."
 msgstr "Le composant %(name)s existe déjà."
 
-#: trac/ticket/admin.py:117
+#: trac/ticket/admin.py:125
 msgid "No component selected"
 msgstr "Aucun composant sélectionné"
 
-#: trac/ticket/admin.py:125
+#: trac/ticket/admin.py:133
 msgid "The selected components have been removed."
 msgstr "Les composants sélectionnés ont été supprimés."
 
-#: trac/ticket/admin.py:262 trac/ticket/roadmap.py:662
+#: trac/ticket/admin.py:241 trac/ticket/api.py:293
+#: trac/ticket/templates/milestone_view.html:11
+#: trac/ticket/templates/milestone_view.html:22
+msgid "Milestone"
+msgstr "Jalon"
+
+#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:662
 msgid "Completion date may not be in the future"
 msgstr "La date de fin ne peut pas être dans le futur"
 
-#: trac/ticket/admin.py:264
+#: trac/ticket/admin.py:272
 msgid "Invalid Completion Date"
 msgstr "Date de fin non valide"
 
-#: trac/ticket/admin.py:291
+#: trac/ticket/admin.py:299
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "Le jalon « %(name)s » a été ajouté."
 
-#: trac/ticket/admin.py:296 trac/ticket/model.py:804 trac/ticket/model.py:829
+#: trac/ticket/admin.py:304 trac/ticket/model.py:804 trac/ticket/model.py:829
 #, 
 msgid "Invalid milestone name."
 msgstr "Le nom de jalon est non valide"
 
-#: trac/ticket/admin.py:297
+#: trac/ticket/admin.py:305
 #, python-format
 msgid "Milestone %(name)s already exists."
 msgstr "Le jalon %(name)s existe déjà."
 
-#: trac/ticket/admin.py:305
+#: trac/ticket/admin.py:313
 msgid "No milestone selected"
 msgstr "Pas de jalon sélectionné"
 
-#: trac/ticket/admin.py:313
+#: trac/ticket/admin.py:321
 msgid "The selected milestones have been removed."
 msgstr "Les jalons sélectionnés ont été supprimés."
 
-#: trac/ticket/admin.py:472
+#: trac/ticket/admin.py:480
 #, python-format
 msgid "The version \"%(name)s\" has been added."
 msgstr "La version « %(name)s » a été ajoutée."
 
-#: trac/ticket/admin.py:477 trac/ticket/model.py:941 trac/ticket/model.py:963
+#: trac/ticket/admin.py:485 trac/ticket/model.py:941 trac/ticket/model.py:963
 msgid "Invalid version name."
 msgstr "Nom de version non valide."
 
-#: trac/ticket/admin.py:478
+#: trac/ticket/admin.py:486
 #, python-format
 msgid "Version %(name)s already exists."
 msgstr "La version %(name)s existe déjà."
 
-#: trac/ticket/admin.py:485
+#: trac/ticket/admin.py:493
 msgid "No version selected"
 msgstr "Aucune version sélectionnée"
 
-#: trac/ticket/admin.py:493
+#: trac/ticket/admin.py:501
 msgid "The selected versions have been removed."
 msgstr "Les versions sélectionnées ont été supprimées."
 
-#: trac/ticket/admin.py:551
+#: trac/ticket/admin.py:559
 msgid "Time"
 msgstr "Date"
 
-#: trac/ticket/admin.py:622
+#: trac/ticket/admin.py:629
 #, python-format
 msgid "The %(field)s \"%(name)s\" has been added."
 msgstr "La valeur « %(name)s » pour la propriété %(field)s a été ajoutée."
 
-#: trac/ticket/admin.py:628 trac/ticket/model.py:523 trac/ticket/model.py:550
+#: trac/ticket/admin.py:635 trac/ticket/model.py:523 trac/ticket/model.py:550
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Nom incorrect pour la propriété %(type)s."
 
-#: trac/ticket/admin.py:630
+#: trac/ticket/admin.py:637
 #, python-format
 msgid "%(type)s %(name)s already exists"
 msgstr "%(type)s %(name)s existe déjà"
 
-#: trac/ticket/admin.py:636
+#: trac/ticket/admin.py:643
 #, python-format
 msgid "No %s selected"
 msgstr "Aucun %s sélectionné"
 
-#: trac/ticket/admin.py:646
+#: trac/ticket/admin.py:653
 #, python-format
 msgid "The selected %(fields)s have been removed."
 msgstr "Les %(fields)s sélectionnés ont été supprimés."
 
-#: trac/ticket/admin.py:667
+#: trac/ticket/admin.py:674
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
@@ -2237,24 +2253,56 @@ msgstr ""
 " Web dispose des droits en écriture. La valeur par défaut n'a pas été "
 "enregistrée."
 
-#: trac/ticket/admin.py:679
+#: trac/ticket/admin.py:686
 msgid "Order numbers must be unique"
 msgstr "Les numéros doivent être uniques"
 
-#: trac/ticket/admin.py:741
+#: trac/ticket/admin.py:748
 msgid "Possible Values"
 msgstr "Valeurs possibles"
 
-#: trac/ticket/admin.py:763
+#: trac/ticket/admin.py:770
 #, python-format
 msgid "Invalid up/down value: %(value)s"
 msgstr "Valeur non valide pour haut/bas : %(value)s"
 
-#: trac/ticket/admin.py:829
+#: trac/ticket/admin.py:790 trac/ticket/api.py:292
+msgid "Priority"
+msgstr "Priorité"
+
+#: trac/ticket/admin.py:790
+msgid "Priorities"
+msgstr "Priorités"
+
+#: trac/ticket/admin.py:796 trac/ticket/api.py:297
+msgid "Resolution"
+msgstr "Résolution"
+
+#: trac/ticket/admin.py:796
+msgid "Resolutions"
+msgstr "Résolutions"
+
+#: trac/ticket/admin.py:802 trac/ticket/api.py:296
+msgid "Severity"
+msgstr "Sévérité"
+
+#: trac/ticket/admin.py:802
+msgid "Severities"
+msgstr "Sévérités"
+
+#: trac/ticket/admin.py:808
+msgid "Ticket Type"
+msgstr "Type de ticket"
+
+#: trac/ticket/admin.py:808
+msgid "Ticket Types"
+msgstr "Types de tickets"
+
+#: trac/ticket/admin.py:836
 msgid "<number> must be a number"
 msgstr "<number> doit être un numéro"
 
-#: trac/ticket/admin.py:834
+#: trac/ticket/admin.py:841
 #, python-format
 msgid "Ticket %(num)s and all associated data removed."
 msgstr "Le ticket %(num)s et les données associées ont été supprimés."
@@ -2274,23 +2322,6 @@ msgstr "Type"
 #: trac/ticket/api.py:291
 msgid "Status"
 msgstr "Status"
-
-#: trac/ticket/api.py:292
-msgid "Priority"
-msgstr "Priorité"
-
-#: trac/ticket/api.py:293 trac/ticket/templates/milestone_view.html:11
-#: trac/ticket/templates/milestone_view.html:22
-msgid "Milestone"
-msgstr "Jalon"
-
-#: trac/ticket/api.py:296
-msgid "Severity"
-msgstr "Sévérité"
-
-#: trac/ticket/api.py:297
-msgid "Resolution"
-msgstr "Résolution"
 
 #: trac/ticket/api.py:316
 msgid "Keywords"
@@ -4696,7 +4727,4 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
-
-#~ msgid "match"
-#~ msgstr "correspondance"
 
