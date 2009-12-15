@@ -26,9 +26,14 @@ class WikiRenderer(Component):
     # IRequestHandler methods
 
     def match_request(self, req):
-        return req.path_info == '/wiki_render' and req.method == 'POST'
+        return req.path_info == '/wiki_render'
 
     def process_request(self, req):
+        # Allow all POST requests (with a valid __FORM_TOKEN, ensuring that
+        # the client has at least some permission). Additionally, allow GET
+        # requests from TRAC_ADMIN for testing purposes.
+        if req.method != 'POST':
+            req.perm.require('TRAC_ADMIN')
         realm = req.args.get('realm', 'wiki')
         id = req.args.get('id')
         version = req.args.get('version')
