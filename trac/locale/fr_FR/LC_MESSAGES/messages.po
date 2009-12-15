@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2009-12-15 06:51+0100\n"
+"PO-Revision-Date: 2009-12-15 15:24+0100\n"
 "Last-Translator: Stéphane Raimbault <stephane.raimbault@gmail.com>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -1491,7 +1491,7 @@ msgid "By"
 msgstr "Par"
 
 #: trac/search/templates/search.html:66
-#: trac/ticket/templates/report_view.html:196
+#: trac/ticket/templates/report_view.html:199
 msgid "No matches found."
 msgstr "Aucun résultat trouvé."
 
@@ -3007,6 +3007,7 @@ msgstr "Modifier le jalon"
 
 #: trac/ticket/templates/query.html:29
 #: trac/ticket/templates/query_results.html:30
+#: trac/ticket/templates/report_view.html:94
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
@@ -3089,7 +3090,7 @@ msgid "View ticket"
 msgstr "Voir le ticket"
 
 #: trac/ticket/templates/query_results.html:66
-#: trac/ticket/templates/report_view.html:173
+#: trac/ticket/templates/report_view.html:176
 msgid "View milestone"
 msgstr "Voir le jalon"
 
@@ -3123,7 +3124,7 @@ msgstr "Supprimer le rapport"
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:47
 #: trac/ticket/templates/report_list.html:54
-#: trac/ticket/templates/report_view.html:198
+#: trac/ticket/templates/report_view.html:201
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
@@ -3169,7 +3170,7 @@ msgstr "Actions"
 
 #: trac/ticket/templates/report_list.html:32
 #: trac/ticket/templates/report_list.html:33
-#: trac/ticket/templates/report_view.html:126
+#: trac/ticket/templates/report_view.html:129
 msgid "View report"
 msgstr "Voir le rapport"
 
@@ -3213,9 +3214,9 @@ msgstr "Paramètres du rapport"
 msgid "Copy report"
 msgstr "Copier le rapport"
 
-#: trac/ticket/templates/report_view.html:93
-msgid "match"
-msgstr "correspondance"
+#: trac/ticket/templates/report_view.html:94
+msgid "No matches"
+msgstr "Aucun résultat"
 
 #: trac/ticket/templates/roadmap.html:22
 msgid "Show already completed milestones"
@@ -4695,4 +4696,7 @@ msgid "The following pages have a name similar to this page, and may be related:
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
 "peut-être en rapport :"
+
+#~ msgid "match"
+#~ msgstr "correspondance"
 

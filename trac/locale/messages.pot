@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-15 06:51+0100\n"
+"POT-Creation-Date: 2009-12-15 14:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1301,7 +1301,7 @@ msgid "By"
 msgstr ""
 
 #: trac/search/templates/search.html:66
-#: trac/ticket/templates/report_view.html:196
+#: trac/ticket/templates/report_view.html:199
 msgid "No matches found."
 msgstr ""
 
@@ -2728,6 +2728,7 @@ msgstr ""
 
 #: trac/ticket/templates/query.html:29
 #: trac/ticket/templates/query_results.html:30
+#: trac/ticket/templates/report_view.html:94
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
@@ -2808,7 +2809,7 @@ msgid "View ticket"
 msgstr ""
 
 #: trac/ticket/templates/query_results.html:66
-#: trac/ticket/templates/report_view.html:173
+#: trac/ticket/templates/report_view.html:176
 msgid "View milestone"
 msgstr ""
 
@@ -2840,7 +2841,7 @@ msgstr ""
 #: trac/ticket/templates/report_delete.html:26
 #: trac/ticket/templates/report_edit.html:47
 #: trac/ticket/templates/report_list.html:54
-#: trac/ticket/templates/report_view.html:198
+#: trac/ticket/templates/report_view.html:201
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
@@ -2882,7 +2883,7 @@ msgstr ""
 
 #: trac/ticket/templates/report_list.html:32
 #: trac/ticket/templates/report_list.html:33
-#: trac/ticket/templates/report_view.html:126
+#: trac/ticket/templates/report_view.html:129
 msgid "View report"
 msgstr ""
 
@@ -2926,8 +2927,8 @@ msgstr ""
 msgid "Copy report"
 msgstr ""
 
-#: trac/ticket/templates/report_view.html:93
-msgid "match"
+#: trac/ticket/templates/report_view.html:94
+msgid "No matches"
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:22
