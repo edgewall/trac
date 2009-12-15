@@ -53,6 +53,13 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('text/css', links[0]['type'])
         self.assertEqual('/trac.cgi/chrome/common/css/trac.css',
                          links[0]['href'])
+    
+    def test_add_stylesheet_media(self):
+        req = Mock(base_path='/trac.cgi', chrome={}, href=Href('/trac.cgi'))
+        add_stylesheet(req, 'foo.css', media='print')
+        links = req.chrome['links']['stylesheet']
+        self.assertEqual(1, len(links))
+        self.assertEqual('print', links[0]['media'])
 
     def test_htdocs_location(self):
         req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),

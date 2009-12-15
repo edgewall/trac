@@ -73,7 +73,8 @@ from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
-def add_link(req, rel, href, title=None, mimetype=None, classname=None):
+def add_link(req, rel, href, title=None, mimetype=None, classname=None,
+             **attrs):
     """Add a link to the chrome info that will be inserted as <link> element in
     the <head> of the generated HTML
     """
@@ -83,11 +84,12 @@ def add_link(req, rel, href, title=None, mimetype=None, classname=None):
         return # Already added that link
 
     link = {'href': href, 'title': title, 'type': mimetype, 'class': classname}
+    link.update(attrs)
     links = req.chrome.setdefault('links', {})
     links.setdefault(rel, []).append(link)
     linkset.add(linkid)
 
-def add_stylesheet(req, filename, mimetype='text/css'):
+def add_stylesheet(req, filename, mimetype='text/css', media=None):
     """Add a link to a style sheet to the chrome info so that it gets included
     in the generated HTML page.
     
@@ -102,7 +104,7 @@ def add_stylesheet(req, filename, mimetype='text/css'):
         href = req.href
         if not filename.startswith('/'):
             href = href.chrome
-    add_link(req, 'stylesheet', href(filename), mimetype=mimetype)
+    add_link(req, 'stylesheet', href(filename), mimetype=mimetype, media=media)
 
 def add_script(req, filename, mimetype='text/javascript'):
     """Add a reference to an external javascript file to the template.
