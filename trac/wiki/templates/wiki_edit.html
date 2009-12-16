@@ -23,7 +23,8 @@
         - "wiki preview" or "diff preview" (`diff` is true in the second mode)
           When the preview is shown, it can be either an actual preview of the rendered wiki
           text, or it can be a diff view on the changes that have been made (a.k.a. "review mode").
-          In the latter case, `changes.diffs` contains the data for the diffs, if any.
+          In the latter case, `changes[0].diffs` contains the data for the diffs, if any.
+          See `preview_or_review` below.
     -->
   <head>
     <title>$title</title>
@@ -60,9 +61,9 @@
   </head>
 
   <body>
-    <div id="content" class="wiki">
-
-      <div class="trac-topnav" py:choose="">
+    <div id="content" class="wiki"
+       py:with="preview_or_review = action == 'preview' and (not diff or changes[0].diffs)">
+      <div class="trac-topnav" py:if="sidebyside or preview_or_review" py:choose="">
         <a py:when="sidebyside" href="#changeinfo"
           title="Go to Save, Preview, Review or Cancel buttons">Actions</a>
         <a py:when="diff" href="#info" title="See the diffs">Review</a>
@@ -119,10 +120,14 @@
             </tbody>
           </table>
           <div class="${sidebyside and 'sidebyside preview-right'}" py:choose="">
-            <div class="trac-nav" py:if="not sidebyside">
+            <div class="trac-nav" py:if="not sidebyside and preview_or_review">
               <a href="#content" title="Go to the editor">Edit</a> &uarr;
             </div>
-            <h2>${diff and _('Review Changes') or _('Preview')}</h2>
+            <h2 py:choose="">
+              <py:when test="preview_or_review and diff">Review Changes</py:when>
+              <py:when test="preview_or_review">Preview</py:when>
+              <py:otherwise>No changes</py:otherwise>
+            </h2>
             <div id="preview">
               <div py:when="diff" class="diff">
                 <xi:include href="diff_div.html" py:with="no_id=True" />
@@ -130,11 +135,6 @@
               <div py:otherwise="" class="wikipage" xml:space="preserve">
                 ${wiki_to_html(context(page.resource), page.text)}
               </div>
-            </div>
-            <div class="trac-nav" py:if="sidebyside and (not diff or changes.diffs)" py:choose="">
-              <a py:when="diff" href="#content" title="See the start of the diffs">Review</a>
-              <a py:otherwise="" href="#content" title="See the start of the preview">Preview</a>
-              &uarr;
             </div>
           </div>
         </py:when>

@@ -32,6 +32,11 @@ $page.text</textarea>
         <a href="${href.wiki('TracWiki')}">TracWiki</a> for help on editing wiki content.
       </div>
     </fieldset>
+    <div class="trac-nav" py:if="sidebyside" py:choose="">
+      <a py:when="diff" href="#content" title="See the start of the diffs">Review</a>
+      <a py:otherwise="" href="#content" title="See the start of the preview">Preview</a>
+      &uarr;
+    </div>
     <fieldset id="changeinfo">
       <legend>Change information</legend>
       <div id="changeinfo1">
