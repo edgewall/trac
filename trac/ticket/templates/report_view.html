@@ -88,9 +88,12 @@
       </h2>
       <xi:include href="page_index.html" />
       <py:for each="value_for_group, row_group in row_groups">
-        <h2 class="report-result" py:if="value_for_group"><a py:strip="'__grouplink__' not in row_group[0]"
-                                                             href="${row_group[0]['__grouplink__']}">$value_for_group</a>
-        <span class="numrows" py:with="cnt = len(row_group)">(${cnt or 'No'} match${cnt != 1 and 'es' or ''})</span></h2>
+        <h2 class="report-result" py:if="value_for_group">
+          <a py:strip="'__grouplink__' not in row_group[0]" href="${row_group[0]['__grouplink__']}">$value_for_group</a>
+          <span class="numrows" py:with="cnt = len(row_group)">
+            (${cnt and ngettext('%(num)s match', '%(num)s matches', cnt) or _('No matches')})
+          </span>
+        </h2>
         <table class="listing tickets">
           <thead>
             <tr py:for="header_group in header_groups">

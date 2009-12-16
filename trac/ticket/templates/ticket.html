@@ -483,6 +483,9 @@ ${value}</textarea>
           </label>
         </p>
 
+        <div py:if="ticket.exists" class="trac-nav">
+          <a href="#attachments" title="Go to the list of attachments">Attachments</a> &uarr;
+        </div>
         <div class="buttons">
           <input py:if="not ticket.exists" type="hidden" name="field_status" value="new" />
           <py:if test="ticket.exists">

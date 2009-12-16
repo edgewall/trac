@@ -21,7 +21,9 @@
             </option>
           </select>
         </py:if>
-        <label for="sidebyside">Edit side-by-side</label>
+        <label for="sidebyside" title="Selecting and pressing 'Preview' enters a two-column [edit|preview] mode">
+          Edit side-by-side
+        </label>
         <input type="checkbox" name="sidebyside" id="sidebyside" checked="$sidebyside" />
       </div>
       <p><textarea id="text" class="wikitext${not sidebyside and ' trac-resizable' or ''}" name="text" cols="80" rows="$edit_rows">
@@ -32,6 +34,11 @@ $page.text</textarea>
         <a href="${href.wiki('TracWiki')}">TracWiki</a> for help on editing wiki content.
       </div>
     </fieldset>
+    <div class="trac-nav" py:if="sidebyside" py:choose="">
+      <a py:when="diff" href="#content" title="See the start of the diffs">Review</a>
+      <a py:otherwise="" href="#content" title="See the start of the preview">Preview</a>
+      &uarr;
+    </div>
     <fieldset id="changeinfo">
       <legend>Change information</legend>
       <div id="changeinfo1">

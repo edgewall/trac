@@ -44,22 +44,34 @@ class WikiPageTestCase(unittest.TestCase):
         self.assertEqual(0, page.version)
         self.assertEqual('', page.text)
         self.assertEqual(0, page.readonly)
+        self.assertEqual('', page.author)
+        self.assertEqual('', page.comment)
+        self.assertEqual(None, page.time)
 
     def test_existing_page(self):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 0, to_timestamp(t), 'joe', '::1', 'Bla bla',
-                        'Testing', 0))
+                       ('TestPage', 1, to_timestamp(t), 'joe', '::1',
+                        'Bla bla', 'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
+        self.assertEqual(True, page.exists)
         self.assertEqual('TestPage', page.name)
-        self.assertEqual(0, page.version)
+        self.assertEqual(1, page.version)
+        self.assertEqual(None, page.resource.version)   # FIXME: Intentional?
         self.assertEqual('Bla bla', page.text)
-        self.assertEqual(False, page.readonly)
+        self.assertEqual(0, page.readonly)
+        self.assertEqual('joe', page.author)
+        self.assertEqual('Testing', page.comment)
+        self.assertEqual(t, page.time)
+        
         history = list(page.get_history())
         self.assertEqual(1, len(history))
-        self.assertEqual((0, t, 'joe', 'Testing', '::1'), history[0])
+        self.assertEqual((1, t, 'joe', 'Testing', '::1'), history[0])
+        
+        page = WikiPage(self.env, 'TestPage', 1)
+        self.assertEqual(1, page.resource.version)
 
     def test_create_page(self):
         page = WikiPage(self.env)
@@ -67,11 +79,20 @@ class WikiPageTestCase(unittest.TestCase):
         page.text = 'Bla bla'
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         page.save('joe', 'Testing', '::1', t)
+        
+        self.assertEqual(True, page.exists)
+        self.assertEqual(1, page.version)
+        self.assertEqual(1, page.resource.version)
+        self.assertEqual(0, page.readonly)
+        self.assertEqual('joe', page.author)
+        self.assertEqual('Testing', page.comment)
+        self.assertEqual(t, page.time)
 
         cursor = self.db.cursor()
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla',
+                          'Testing', 0),
                          cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)
@@ -82,17 +103,24 @@ class WikiPageTestCase(unittest.TestCase):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 1, to_timestamp(t), 'joe', '::1', 'Bla bla',
-                        'Testing', 0))
+                       ('TestPage', 1, to_timestamp(t), 'joe', '::1',
+                        'Bla bla', 'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
         page.text = 'Bla'
         page.save('kate', 'Changing', '192.168.0.101', t2)
+
+        self.assertEqual(2, page.version)
         self.assertEqual(2, page.resource.version)
+        self.assertEqual(0, page.readonly)
+        self.assertEqual('kate', page.author)
+        self.assertEqual('Changing', page.comment)
+        self.assertEqual(t2, page.time)
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla', 'Testing', 0),
+        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla',
+                          'Testing', 0),
                          cursor.fetchone())
         self.assertEqual((2, to_timestamp(t2), 'kate', '192.168.0.101', 'Bla',
                           'Changing', 0), cursor.fetchone())

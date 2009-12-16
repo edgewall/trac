@@ -44,7 +44,8 @@ class WikiPage(object):
             self._fetch(name, version, db)
         else:
             self.version = 0
-            self.text = ''
+            self.text = self.comment = self.author = ''
+            self.time = None
             self.readonly = 0
         self.old_text = self.text
         self.old_readonly = self.readonly
@@ -122,7 +123,6 @@ class WikiPage(object):
                 if hasattr(listener, 'wiki_page_version_deleted'):
                     listener.wiki_page_version_deleted(self)
 
-
     def save(self, author, comment, remote_addr, t=None, db=None):
         if not db:
             db = self.env.get_db_cnx()
@@ -155,6 +155,10 @@ class WikiPage(object):
         
         if handle_ta:
             db.commit()
+        
+        self.author = author
+        self.comment = comment
+        self.time = t
 
         for listener in WikiSystem(self.env).change_listeners:
             if self.version == 1:
