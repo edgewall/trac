@@ -337,7 +337,7 @@ class Request(object):
         self.send_header('Content-Type', 'text/plain')
         self.send_header('Content-Length', 0)
         self.send_header('Pragma', 'no-cache')
-        self.send_header('Cache-control', 'no-cache')
+        self.send_header('Cache-Control', 'no-cache')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.end_headers()
 
@@ -366,7 +366,7 @@ class Request(object):
 
     def send(self, content, content_type='text/html', status=200):
         self.send_response(status)
-        self.send_header('Cache-control', 'must-revalidate')
+        self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(content))
         self.end_headers()
@@ -411,7 +411,7 @@ class Request(object):
 
         self.send_response(status)
         self._outheaders = []
-        self.send_header('Cache-control', 'must-revalidate')
+        self.send_header('Cache-Control', 'must-revalidate')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.send_header('Content-Type', content_type + ';charset=utf-8')
         self.send_header('Content-Length', len(data))
