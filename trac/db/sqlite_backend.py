@@ -77,9 +77,10 @@ if have_pysqlite == 2:
             self.pos = 0
 
         def execute(self, *args):
-            PyFormatCursor.execute(self, *args)
+            result = PyFormatCursor.execute(self, *args)
             self.rows = PyFormatCursor.fetchall(self)
             self.pos = 0
+            return result
 
         def fetchone(self):
             try:
