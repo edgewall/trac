@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-16 10:57+0100\n"
+"POT-Creation-Date: 2009-12-16 11:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -682,7 +682,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:108
 #: trac/wiki/templates/wiki_delete.html:36
 #: trac/wiki/templates/wiki_edit.html:80
-#: trac/wiki/templates/wiki_edit_form.html:75
+#: trac/wiki/templates/wiki_edit_form.html:77
 msgid "Cancel"
 msgstr ""
 
@@ -1071,7 +1071,7 @@ msgstr ""
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 #: trac/ticket/templates/ticket.html:473
-#: trac/wiki/templates/wiki_edit_form.html:48
+#: trac/wiki/templates/wiki_edit_form.html:50
 msgid "Preferences"
 msgstr ""
 
@@ -1392,7 +1392,7 @@ msgid "Attachment Info"
 msgstr ""
 
 #: trac/templates/attachment.html:37 trac/ticket/templates/ticket.html:464
-#: trac/wiki/templates/wiki_edit_form.html:44
+#: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr ""
 
@@ -2701,8 +2701,8 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:91
 #: trac/ticket/templates/ticket.html:107 trac/ticket/templates/ticket.html:497
-#: trac/wiki/templates/wiki_edit_form.html:68
-#: trac/wiki/templates/wiki_edit_form.html:73
+#: trac/wiki/templates/wiki_edit_form.html:70
+#: trac/wiki/templates/wiki_edit_form.html:75
 msgid "Submit changes"
 msgstr ""
 
@@ -3016,8 +3016,8 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:106 trac/ticket/templates/ticket.html:496
 #: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
-#: trac/wiki/templates/wiki_edit_form.html:37
-#: trac/wiki/templates/wiki_edit_form.html:66
+#: trac/wiki/templates/wiki_edit_form.html:39
+#: trac/wiki/templates/wiki_edit_form.html:68
 msgid "Preview"
 msgstr ""
 
@@ -3171,7 +3171,7 @@ msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:472
-#: trac/wiki/templates/wiki_edit_form.html:47
+#: trac/wiki/templates/wiki_edit_form.html:49
 msgid "E-mail address and user name can be saved in the"
 msgstr ""
 
@@ -4209,7 +4209,7 @@ msgid "See the diffs"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:69
-#: trac/wiki/templates/wiki_edit_form.html:36
+#: trac/wiki/templates/wiki_edit_form.html:38
 msgid "Review"
 msgstr ""
 
@@ -4262,7 +4262,7 @@ msgid "Go to the editor"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:127
-#: trac/wiki/templates/wiki_edit_form.html:72
+#: trac/wiki/templates/wiki_edit_form.html:74
 msgid "Review Changes"
 msgstr ""
 
@@ -4281,40 +4281,44 @@ msgid "Adjust edit area height:"
 msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:24
+msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
+msgstr ""
+
+#: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:30
+#: trac/wiki/templates/wiki_edit_form.html:32
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "        [3:TracWiki] for help on editing wiki content."
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:36
+#: trac/wiki/templates/wiki_edit_form.html:38
 msgid "See the start of the diffs"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:37
+#: trac/wiki/templates/wiki_edit_form.html:39
 msgid "See the start of the preview"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:41
+#: trac/wiki/templates/wiki_edit_form.html:43
 msgid "Change information"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:52
+#: trac/wiki/templates/wiki_edit_form.html:54
 msgid "Comment about this change (optional):"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:59
+#: trac/wiki/templates/wiki_edit_form.html:61
 msgid "Page is read-only"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:67
+#: trac/wiki/templates/wiki_edit_form.html:69
 msgid "Merge changes"
 msgstr ""
 
-#: trac/wiki/templates/wiki_edit_form.html:71
+#: trac/wiki/templates/wiki_edit_form.html:73
 msgid "Preview Page"
 msgstr ""
 
