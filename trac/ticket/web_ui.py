@@ -401,6 +401,7 @@ class TicketModule(Component):
         })
 
         fields = self._prepare_fields(req, ticket)
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         # setup default values for the new ticket
         
@@ -423,6 +424,7 @@ class TicketModule(Component):
                 del ticket.fields[curr_idx]
 
         data['fields'] = fields
+        data['field_labels'] = field_labels
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')

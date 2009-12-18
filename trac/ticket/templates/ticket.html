@@ -181,7 +181,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             <py:for each="idx, field in enumerate(row)">
               <th py:if="idx == 0 or not fullrow"
                   id="${field and 'h_'+field.name or None}">
-                <py:if test="field">${field.label or field.name}:</py:if>
+                <py:if test="field">${field_labels.get(field.name) or field.label or field.name}:</py:if>
               </th>
               <td py:if="idx == 0 or not fullrow"
                   headers="${field and 'h_'+field.name or None}"
@@ -373,7 +373,7 @@ ${ticket.description}</textarea>
                           py:with="value = ticket.get_value_or_default(field.name)">
                     <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                       <label for="field-${field.name}" py:if="field"
-                             py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
+                             py:strip="field.type == 'radio'">${field_labels.get(field.name) or field.edit_label or field.label or field.name}:</label>
                     </th>
                     <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
                         colspan="${fullrow and 3 or None}">
