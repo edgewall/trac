@@ -131,10 +131,11 @@ class PostgreSQLConnector(Component):
         if 'host' in db_params:
             host = db_params['host']
         else:
-            host = db_prop.get('host', 'localhost')
-        args.extend(['-h', host])
-        if '/' not in host:
-            args.extend(['-p', str(db_prop.get('port', '5432'))])
+            host = db_prop.get('host')
+        if host:
+            args.extend(['-h', host])
+            if '/' not in host:
+                args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_params:
             args.extend(['-n', '"%s"' % db_params['schema']])
