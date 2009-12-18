@@ -42,6 +42,7 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
+from trac.perm import PermissionCache
 from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
@@ -200,12 +201,13 @@ In [%s]:
     def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""
         db = self.env.get_db_cnx()
+        perm = PermissionCache(self.env, changeset.author)
         for tkt_id, cmds in tickets.iteritems():
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
                 ticket = Ticket(self.env, tkt_id, db)
                 for cmd in cmds:
-                    cmd(ticket, changeset)
+                    cmd(ticket, changeset, perm(ticket.resource))
                 
                 # Determine sequence number
                 cnum = 0
@@ -245,13 +247,14 @@ In [%s]:
                 functions[cmd] = func
         return functions
     
-    def cmd_close(self, ticket, changeset):
-        ticket['status'] = 'closed'
-        ticket['resolution'] = 'fixed'
-        if not ticket['owner']:
-            ticket['owner'] = changeset.author
+    def cmd_close(self, ticket, changeset, perm):
+        if 'TICKET_MODIFY' in perm:
+            ticket['status'] = 'closed'
+            ticket['resolution'] = 'fixed'
+            if not ticket['owner']:
+                ticket['owner'] = changeset.author
 
-    def cmd_refs(self, ticket, changeset):
+    def cmd_refs(self, ticket, changeset, perm):
         pass
 
 
