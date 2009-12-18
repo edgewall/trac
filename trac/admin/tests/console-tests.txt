@@ -62,8 +62,9 @@ wiki dump            Export wiki pages to files named by title
 wiki export          Export wiki page to file or stdout
 wiki import          Import wiki page from file or stdin
 wiki list            List wiki pages
-wiki load            Import all wiki pages from directory
+wiki load            Import wiki pages from files
 wiki remove          Remove wiki page
+wiki replace         Replace the content of wiki pages from files (DANGEROUS!)
 wiki upgrade         Upgrade default wiki pages to current version
 ===== test_attachment_list_empty =====
 

@@ -21,6 +21,7 @@ from trac.admin import *
 from trac.core import *
 from trac.wiki import model
 from trac.wiki.api import WikiSystem
+from trac.util import read_file
 from trac.util.compat import any
 from trac.util.datefmt import format_datetime, utc
 from trac.util.text import to_unicode, unicode_quote, unicode_unquote, \
@@ -48,7 +49,7 @@ class WikiAdmin(Component):
         yield ('wiki import', '<page> [file]',
                'Import wiki page from file or stdin',
                self._complete_import_export, self._do_import)
-        yield ('wiki dump', '<directory> [name] [...]',
+        yield ('wiki dump', '<directory> [page] [...]',
                """Export wiki pages to files named by title
                
                Individual wiki page names can be specified after the directory.
@@ -56,9 +57,29 @@ class WikiAdmin(Component):
                that prefix should be dumped. If no name is specified, all wiki
                pages are dumped.""",
                self._complete_dump, self._do_dump)
-        yield ('wiki load', '<directory>',
-               'Import all wiki pages from directory',
-               self._complete_load, self._do_load)
+        yield ('wiki load', '<path> [...]',
+               """Import wiki pages from files
+               
+               If a given path is a file, it is imported as a page with the
+               name of the file. If a path is a directory, all files in that
+               directory are imported.""",
+               self._complete_load_replace, self._do_load)
+        yield ('wiki replace', '<path> [...]',
+               """Replace the content of wiki pages from files (DANGEROUS!)
+               
+               This command replaces the content of the last version of one
+               or more wiki pages with new content. The previous content is
+               lost, and no new entry is created in the page history. The
+               metadata of the page (time, author) is not changed either.
+               
+               If a given path is a file, it is imported as a page with the
+               name of the file. If a path is a directory, all files in that
+               directory are imported.
+               
+               WARNING: This operation results in the loss of the previous
+               content and cannot be undone. It may be advisable to backup
+               the current content using "wiki dump" beforehand.""",
+               self._complete_load_replace, self._do_replace)
         yield ('wiki upgrade', '',
                'Upgrade default wiki pages to current version',
                None, self._do_upgrade)
@@ -85,16 +106,16 @@ class WikiAdmin(Component):
             finally:
                 f.close()
     
-    def import_page(self, filename, title, db=None, create_only=[]):
-        if not os.path.isfile(filename):
-            raise AdminCommandError(_("'%(name)s' is not a file",
-                                      name=filename))
-        
-        f = open(filename, 'r')
-        try:
-            data = to_unicode(f.read(), 'utf-8')
-        finally:
-            f.close()
+    def import_page(self, filename, title, db=None, create_only=[],
+                    replace=False):
+        if filename:
+            if not os.path.isfile(filename):
+                raise AdminCommandError(_("'%(name)s' is not a file",
+                                          name=filename))
+            data = read_file(filename)
+        else:
+            data = sys.stdin.read()
+        data = to_unicode(data, 'utf-8')
         
         # Make sure we don't insert the exact same page twice
         handle_ta = not db
@@ -112,18 +133,26 @@ class WikiAdmin(Component):
             printout('  %s already up to date.' % title)
             return False
         
-        cursor.execute("INSERT INTO wiki(version,name,time,author,ipnr,text) "
-                       " SELECT 1+COALESCE(max(version),0),%s,%s,"
-                       " 'trac','127.0.0.1',%s FROM wiki "
-                       " WHERE name=%s",
-                       (title, int(time.time()), data, title))
+        if replace and old:
+            cursor.execute("UPDATE wiki SET text=%s WHERE name=%s "
+                           "  AND version=(SELECT max(version) FROM wiki "
+                           "               WHERE name=%s)",
+                           (data, title, title))
+        else:
+            cursor.execute("INSERT INTO wiki(version,name,time,author,ipnr,"
+                           "                 text) "
+                           "SELECT 1+COALESCE(max(version),0),%s,%s,"
+                           "       'trac','127.0.0.1',%s FROM wiki "
+                           "WHERE name=%s",
+                           (title, int(time.time()), data, title))
         if not old:
             WikiSystem(self.env).pages.invalidate(db)
         if handle_ta:
             db.commit()
         return True
 
-    def load_pages(self, dir, db=None, ignore=[], create_only=[]):
+    def load_pages(self, dir, db=None, ignore=[], create_only=[],
+                   replace=False):
         cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
         for page in os.listdir(dir):
             if page in ignore:
@@ -131,7 +160,7 @@ class WikiAdmin(Component):
             filename = os.path.join(dir, page)
             page = unicode_unquote(page.encode('utf-8'))
             if os.path.isfile(filename):
-                if self.import_page(filename, page, db, create_only):
+                if self.import_page(filename, page, db, create_only, replace):
                     printout(_("  %(page)s imported from %(filename)s",
                                filename=filename, page=page))
     
@@ -147,13 +176,13 @@ class WikiAdmin(Component):
     
     def _complete_dump(self, args):
         if len(args) == 1:
-            return get_dir_list(args[-1], True)
-        elif len(args) == 2:
+            return get_dir_list(args[-1], dirs_only=True)
+        elif len(args) >= 2:
             return self.get_wiki_list()
     
-    def _complete_load(self, args):
-        if len(args) == 1:
-            return get_dir_list(args[-1], True)
+    def _complete_load_replace(self, args):
+        if len(args) >= 1:
+            return get_dir_list(args[-1])
     
     def _do_list(self):
         db = self.env.get_db_cnx()
@@ -206,10 +235,24 @@ class WikiAdmin(Component):
                 printout(' %s => %s' % (p, dst))
                 self.export_page(p, dst, cursor)
     
-    def _do_load(self, directory):
+    def _load_or_replace(self, paths, replace):
         db = self.env.get_db_cnx()
-        self.load_pages(directory, db)
+        for path in paths:
+            if os.path.isdir(path):
+                self.load_pages(path, db, replace=replace)
+            else:
+                page = os.path.basename(path)
+                page = unicode_unquote(page.encode('utf-8'))
+                if self.import_page(path, page, db, replace=replace):
+                    printout(_("  %(page)s imported from %(filename)s",
+                               filename=path, page=page))
         db.commit()
+    
+    def _do_load(self, *paths):
+        self._load_or_replace(paths, replace=False)
+    
+    def _do_replace(self, *paths):
+        self._load_or_replace(paths, replace=True)
     
     def _do_upgrade(self):
         db = self.env.get_db_cnx()
