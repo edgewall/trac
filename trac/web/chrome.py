@@ -73,6 +73,12 @@ from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
+def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
+    """Add a `<meta>` tag into the `<head>` of the generated HTML."""
+    meta = {'content': content, 'http-equiv': http_equiv, 'name': name,
+            'scheme': scheme, 'lang': lang, 'xml:lang': lang}
+    req.chrome.setdefault('metas', []).append(meta)
+
 def add_link(req, rel, href, title=None, mimetype=None, classname=None,
              **attrs):
     """Add a link to the chrome info that will be inserted as <link> element in
@@ -486,8 +492,8 @@ class Chrome(Component):
         """
         self.log.debug('Prepare chrome data for request')
 
-        chrome = {'links': {}, 'scripts': [], 'script_data': {}, 'ctxtnav': [],
-                  'warnings': [], 'notices': []}
+        chrome = {'metas': [], 'links': {}, 'scripts': [], 'script_data': {},
+                  'ctxtnav': [], 'warnings': [], 'notices': []}
         setattr(req, 'chrome', chrome)
 
         htdocs_location = self.htdocs_location or req.href.chrome('common')

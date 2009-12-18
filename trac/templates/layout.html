@@ -11,6 +11,7 @@
       <py:if test="title">${title} – </py:if>${project.name or 'Trac'}
     </title>
     <meta py:if="chrome.content_type == 'text/html'" http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta py:for="meta in chrome.metas" py:attrs="meta"/>
     <py:if test="chrome.links">
       <py:for each="rel, links in chrome.links.items()">
         <link rel="${rel}" py:for="link in links" py:attrs="link" />
