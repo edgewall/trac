@@ -364,16 +364,16 @@ class Formatter(object):
         else:
             return text
 
-    def _shref_formatter(self, match, fullmatch):
-        ns = fullmatch.group('sns')
-        target = self._unquote(fullmatch.group('stgt'))
+    def _shrefbr_formatter(self, match, fullmatch):
+        ns = fullmatch.group('snsbr')
+        target = self._unquote(fullmatch.group('stgtbr'))
         match = match[1:-1]
         return '&lt;%s&gt;' % \
                 self._make_link(ns, target, match, match, fullmatch)
 
-    def _shref2_formatter(self, match, fullmatch):
-        ns = fullmatch.group('sns2')
-        target = self._unquote(fullmatch.group('stgt2'))
+    def _shref_formatter(self, match, fullmatch):
+        ns = fullmatch.group('sns')
+        target = self._unquote(fullmatch.group('stgt'))
         return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
