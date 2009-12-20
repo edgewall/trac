@@ -35,7 +35,7 @@ class WikiParser(Component):
     STRIKE_TOKEN = "~~"
     SUBSCRIPT_TOKEN = ",,"
     SUPERSCRIPT_TOKEN = r"\^"
-    INLINE_TOKEN = "`"
+    INLINE_TOKEN = "`" # must be a single char (see P<definition> below)
     STARTBLOCK_TOKEN = r"\{\{\{"
     STARTBLOCK = "{{{"
     ENDBLOCK_TOKEN = r"\}\}\}"
@@ -103,7 +103,8 @@ class WikiParser(Component):
         #  * list
         r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         # definition:: 
-        r"(?P<definition>^\s+((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
+        r"(?P<definition>^\s+"
+        r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
            STARTBLOCK_TOKEN, ENDBLOCK[0], ENDBLOCK[0], ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
