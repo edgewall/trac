@@ -111,7 +111,7 @@ class WikiParser(Component):
         # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
-        r"(?P<last_table_cell>=?\|\|\s*$)",
+        r"(?P<last_table_cell>=?\|\|\s*\\?$)",
         r"(?P<table_cell>!?=?(?:\|\|)+=?)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')

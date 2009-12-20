@@ -754,6 +754,8 @@ class Formatter(object):
     # Table
     
     def _last_table_cell_formatter(self, match, fullmatch):
+        if match[-1] == '\\':
+            self.continue_table_row = 1
         return ''
 
     def _table_cell_formatter(self, match, fullmatch):
@@ -790,17 +792,18 @@ class Formatter(object):
             self.in_table_row = 1
             self.out.write('<tr>')
 
-    def close_table_row(self):
-        if self.in_table_row:
+    def close_table_row(self, force=False):
+        if self.in_table_row and (not self.continue_table_row or force):
             self.in_table_row = 0
             if self.in_table_cell:
                 self.out.write('</%s>' % self.in_table_cell)
                 self.in_table_cell = ''
             self.out.write('</tr>')
+        self.continue_table_row = 0
 
     def close_table(self):
         if self.in_table:
-            self.close_table_row()
+            self.close_table_row(True)
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
@@ -899,6 +902,7 @@ class Formatter(object):
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
+        self.continue_table_row = 0
         self.in_table_cell = ''
         self.paragraph_open = 0
 
