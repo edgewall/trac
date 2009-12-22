@@ -19,7 +19,7 @@ $changes_descr
     #end
     #if change.comment
 
-Comment${not changes_body and '(by %s)' % change.author or ''}:
+Comment${not changes_body and ' (by %s)' % change.author or ''}:
 
 $change.comment
     #end
