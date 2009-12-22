@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-12-22 11:36+0100\n"
+"POT-Creation-Date: 2009-12-22 11:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2944,8 +2944,11 @@ msgid "Create new report"
 msgstr ""
 
 #: trac/ticket/templates/report_view.html:21
-msgid "matches)"
-msgstr ""
+#, python-format
+msgid "%(num)d match"
+msgid_plural "%(num)d matches"
+msgstr[0] ""
+msgstr[1] ""
 
 #: trac/ticket/templates/report_view.html:42
 msgid "Arguments"
