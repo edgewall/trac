@@ -24,7 +24,7 @@ from trac import __version__
 from trac.config import BoolOption, ExtensionOption, IntOption, Option
 from trac.core import *
 from trac.util.text import CRLF
-from trac.util.translation import _
+from trac.util.translation import _, deactivate, reactivate
 
 MAXHEADERLEN = 76
 EMAIL_LOOKALIKE_PATTERN = (
@@ -394,7 +394,12 @@ class NotifyEmail(Notify):
         from email.MIMEText import MIMEText
         from email.Utils import formatdate
         stream = self.template.generate(**self.data)
-        body = stream.render('text')
+        # don't translate the e-mail stream
+        t = deactivate()
+        try:
+            body = stream.render('text')
+        finally:
+            reactivate(t)
         projname = self.env.project_name
         public_cc = self.config.getbool('notification', 'use_public_cc')
         headers = {}
