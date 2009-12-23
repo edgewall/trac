@@ -253,6 +253,7 @@ class SQLiteConnection(ConnectionWrapper):
         return '||'.join(args)
 
     def like(self):
+        """Return a case-insensitive LIKE clause."""
         if sqlite_version >= 30100:
             return "LIKE %s ESCAPE '/'"
         else:

@@ -197,8 +197,7 @@ class PostgreSQLConnection(ConnectionWrapper):
         return '||'.join(args)
 
     def like(self):
-        # Temporary hack needed for the case-insensitive string matching in the
-        # search module
+        """Return a case-insensitive LIKE clause."""
         return "ILIKE %s ESCAPE '/'"
 
     def like_escape(self, text):

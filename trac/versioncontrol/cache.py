@@ -245,9 +245,9 @@ class CachedRepository(Repository):
         rev_as_int = db.cast('rev', 'int')
         if first is None:
             cursor.execute("SELECT rev FROM node_change "
-                           "WHERE path = %%s "
+                           "WHERE %s <= %%s "
+                           "  AND path = %%s "
                            "  AND change_type IN ('A', 'C', 'M') "
-                           "  AND %s <= %%s "
                            "ORDER BY %s DESC "
                            "LIMIT 1" % ((rev_as_int,) * 2),
                            (path, last))
@@ -255,10 +255,10 @@ class CachedRepository(Repository):
             for row in cursor:
                 first = int(row[0])
         cursor.execute("SELECT DISTINCT rev FROM node_change "
-                       "WHERE (path = %%s OR path %s) "
-                       " AND %s >= %%s AND %s <= %%s" % 
-                       (db.like(), rev_as_int, rev_as_int),
-                       (path, db.like_escape(path + '/') + '%', first, last))
+                       "WHERE %s >= %%s AND %s <= %%s "
+                       "  AND (path = %%s OR (path >= %%s AND path < %%s))" %
+                       (rev_as_int, rev_as_int),
+                       (first, last, path, path + '/', path + '0'))
         return [int(row[0]) for row in cursor]
 
     def has_node(self, path, rev=None):
@@ -293,22 +293,15 @@ class CachedRepository(Repository):
 
         if path:
             path = path.lstrip('/')
-            sql += " AND ("
-            # changes on path itself
-            sql += "path=%s "
-            args.append(path)
-            sql += " OR "
-            # changes on path children
-            sql += "path "+db.like()
-            args.append(db.like_escape(path+'/') + '%')
-            sql += " OR "
+            # changes on path itself or its children
+            sql += " AND (path = %s OR (path >= %s AND path < %s)"
+            args.extend((path, path + '/', path + '0'))
             # deletion of path ancestors
             components = path.lstrip('/').split('/')
-            for i in range(1, len(components)+1):
+            parents = ','.join(('%s',) * len(components))
+            sql += " OR (path IN (" + parents + ") AND change_type = 'D'))"
+            for i in range(1, len(components) + 1):
                 args.append('/'.join(components[:i]))
-            parent_insert = ','.join(('%s',) * len(components))
-            sql += " (path in (" + parent_insert + ") and change_type='D')"
-            sql += ")"
 
         sql += " ORDER BY " + db.cast('rev', 'int') + \
                 (direction == '<' and " DESC" or "") + " LIMIT 1"
