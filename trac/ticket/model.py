@@ -35,6 +35,9 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
 
 class Ticket(object):
 
+    # Fields that must not be modified directly by the user
+    protected_fields = ('resolution', 'status', 'time', 'changetime')
+
     @staticmethod
     def id_is_valid(num):
         return 0 < int(num) <= 1L << 31
@@ -73,7 +76,7 @@ class Ticket(object):
     def _init_defaults(self, db=None):
         for field in self.fields:
             default = None
-            if field['name'] in ['resolution', 'status', 'time', 'changetime']:
+            if field['name'] in self.protected_fields:
                 # Ignore for new - only change through workflow
                 pass
             elif not field.get('custom'):

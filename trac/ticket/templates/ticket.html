@@ -487,7 +487,6 @@ ${value}</textarea>
           <a href="#attachments" title="Go to the list of attachments">Attachments</a> &uarr;
         </div>
         <div class="buttons">
-          <input py:if="not ticket.exists" type="hidden" name="field_status" value="new" />
           <py:if test="ticket.exists">
             <input type="hidden" name="ts" value="${timestamp}" />
             <input type="hidden" name="replyto" value="${replyto}" />
