@@ -72,8 +72,10 @@ class TitleIndexMacro(WikiMacroBase):
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
     parameter is omitted, all pages are listed.
+    If the prefix is specified, a second argument of value 'hideprefix'
+    can be given as well, in order to remove that prefix from the output.
 
-    Alternate `format` and `depth` can be specified:
+    Alternate `format` and `depth` named parameters can be specified:
      - `format=compact`: The pages are displayed as comma-separated links.
      - `format=group`: The list of pages will be structured in groups
        according to common prefix. This format also supports a `min=n`
@@ -92,10 +94,16 @@ class TitleIndexMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
         prefix = args and args[0] or None
+        hideprefix = args and len(args) > 1 and args[1] == 'hideprefix'
         minsize = max(int(kw.get('min', 2)), 2)
         depth = int(kw.get('depth', -1))
         start = prefix and prefix.count('/') or 0
         format = kw.get('format', '')
+
+        if hideprefix:
+            omitprefix = lambda page: page[len(prefix):]
+        else:
+            omitprefix = lambda page: page
 
         wiki = formatter.wiki
         pages = sorted([page for page in wiki.get_pages(prefix) \
@@ -107,12 +115,12 @@ class TitleIndexMacro(WikiMacroBase):
         # the different page split formats, each corresponding to its rendering
         def split_pages_group(pages):
             return [([elt for elt in self.SPLIT_RE.split(
-                            wiki.format_page_name(page, split=True))
+                            wiki.format_page_name(omitprefix(page), split=True))
                       if elt != '/'], page)
                     for page in pages]
 
         def split_pages_hierarchy(pages):
-            return [(wiki.format_page_name(page).split("/"), page)
+            return [(wiki.format_page_name(omitprefix(page)).split("/"), page)
                     for page in pages]
 
         # the different rendering formats
@@ -162,11 +170,11 @@ class TitleIndexMacro(WikiMacroBase):
             return renderer(split_in_groups(splitter(pages)), "titleindex")
         elif format == 'compact':
             return tag(
-                separated((tag.a(wiki.format_page_name(p), 
+                separated((tag.a(wiki.format_page_name(omitprefix(p)),
                                  href=formatter.href.wiki(p)) for p in pages),
                           ', '))
         else:
-            return tag.ul(tag.li(tag.a(wiki.format_page_name(page), 
+            return tag.ul(tag.li(tag.a(wiki.format_page_name(omitprefix(page)), 
                                         href=formatter.href.wiki(page)))
                           for page in pages)
 

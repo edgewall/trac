@@ -108,6 +108,38 @@ TITLEINDEX2_MACRO_TEST_CASES = u"""
 </p>
 ------------------------------
 [[TitleIndex(...)]]
+============================== TitleIndex, default format with prefix
+[[TitleIndex(Wiki)]]
+------------------------------
+<p>
+<ul><li><a href="/wiki/WikiEnd">WikiEnd</a></li><li><a href="/wiki/WikiStart">WikiStart</a></li></ul>
+</p>
+------------------------------
+[[TitleIndex(...)]]
+============================== TitleIndex, compact format with prefix
+[[TitleIndex(Wiki,format=compact)]]
+------------------------------
+<p>
+<a href="/wiki/WikiEnd">WikiEnd</a>, <a href="/wiki/WikiStart">WikiStart</a>
+</p>
+------------------------------
+[[TitleIndex(...)]]
+============================== TitleIndex, default format with prefix hidden
+[[TitleIndex(Wiki,hideprefix)]]
+------------------------------
+<p>
+<ul><li><a href="/wiki/WikiEnd">End</a></li><li><a href="/wiki/WikiStart">Start</a></li></ul>
+</p>
+------------------------------
+[[TitleIndex(...)]]
+============================== TitleIndex, compact format with prefix hidden
+[[TitleIndex(Wiki,hideprefix,format=compact)]]
+------------------------------
+<p>
+<a href="/wiki/WikiEnd">End</a>, <a href="/wiki/WikiStart">Start</a>
+</p>
+------------------------------
+[[TitleIndex(...)]]
 """
 
 def titleindex2_setup(tc):
@@ -132,6 +164,20 @@ TITLEINDEX3_MACRO_TEST_CASES = u"""
 ------------------------------
 <p>
 <ul class="titleindex"><li><a href="/wiki/WikiStart">WikiStart</a><ul><li><a href="/wiki/WikiStart/First">First</a></li><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></li></ul>
+</p>
+------------------------------
+============================== TitleIndex, group format, prefix hidden
+[[TitleIndex(Wiki,hideprefix,format=group)]]
+------------------------------
+<p>
+<ul class="titleindex"><li><strong>End</strong><ul><li><a href="/wiki/WikiEnd/First">WikiEnd/First</a></li><li><a href="/wiki/WikiEnd/Second">WikiEnd/Second</a></li></ul></li><li><strong>Start</strong><ul><li><a href="/wiki/WikiStart">WikiStart</a></li><li><a href="/wiki/WikiStart/First">WikiStart/First</a></li><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li><li><a href="/wiki/WikiStart/Third">WikiStart/Third</a></li></ul></li></ul>
+</p>
+------------------------------
+============================== TitleIndex, hierarchy format, prefix hidden
+[[TitleIndex(WikiStart/,hideprefix,format=hierarchy)]]
+------------------------------
+<p>
+<ul class="titleindex"><li><a href="/wiki/WikiStart/First">First</a></li><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul>
 </p>
 ------------------------------
 """
