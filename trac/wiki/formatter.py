@@ -524,7 +524,11 @@ class Formatter(object):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
             return '<br />'
-        args = fullmatch.group('macroargs')
+        if name and name[-1] == '?': # Macro?() shortcut for MacroList(Macro)
+            args = name[:-1]
+            name = 'MacroList'
+        else:
+            args = fullmatch.group('macroargs')
         try:
             macro = WikiProcessor(self, name)
             return macro.process(args, in_paragraph=True)

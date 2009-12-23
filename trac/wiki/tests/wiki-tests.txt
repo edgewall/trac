@@ -719,6 +719,28 @@ Done.
 
         Wiki Macros
 
+============================== Macro help shortcut (with content)
+[[HelloWorld?(hej hopp)]]
+------------------------------
+<p>
+<dl><dt id="HelloWorld-macro"><code>[[HelloWorld]]</code></dt><dd><p>
+A dummy macro used by the unit test.
+</p>
+</dd></dl>
+</p>
+------------------------------
+[[HelloWorld?(...)]]
+============================== Macro help shortcut (no content)
+[[HelloWorld?]]
+------------------------------
+<p>
+<dl><dt id="HelloWorld-macro"><code>[[HelloWorld]]</code></dt><dd><p>
+A dummy macro used by the unit test.
+</p>
+</dd></dl>
+</p>
+------------------------------
+[[HelloWorld?]]
 ============================== Macro with arguments (leading)
 [[HelloWorld(hej hopp)]]
 ------------------------------
