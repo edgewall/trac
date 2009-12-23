@@ -123,11 +123,12 @@ class TitleIndexMacro(WikiMacroBase):
                               href=formatter.href.wiki(elt)))
                  for elt in group],
                 class_=classattribute)
+
         def render_hierarchy(group, classattribute=None):
             return tag.ul(
                 [tag.li(isinstance(elt, tuple) and 
-                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[1][0])),
-                            render_hierarchy(elt[1][1:])) or
+                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
+                            render_hierarchy(elt[1][0:])) or
                         tag.a(elt.rpartition("/")[2], 
                               href=formatter.href.wiki(elt)))
                  for elt in group],

@@ -131,7 +131,7 @@ TITLEINDEX3_MACRO_TEST_CASES = u"""
 [[TitleIndex(WikiStart/, format=hierarchy)]]
 ------------------------------
 <p>
-<ul class="titleindex"><li><a href="/wiki/WikiStart/First">WikiStart</a><ul><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></li></ul>
+<ul class="titleindex"><li><a href="/wiki/WikiStart">WikiStart</a><ul><li><a href="/wiki/WikiStart/First">First</a></li><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></li></ul>
 </p>
 ------------------------------
 """
