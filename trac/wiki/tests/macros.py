@@ -110,23 +110,59 @@ TITLEINDEX2_MACRO_TEST_CASES = u"""
 [[TitleIndex(...)]]
 """
 
-def title_index_setup(tc):
+def titleindex2_setup(tc):
     w = WikiPage(tc.env)
     w.name = 'WikiEnd'
     w.text = '--'
     w.save('joe', 'the second page', '::1', datetime.now(utc))
 
-
-def title_index_teardown(tc):
+def titleindex2_teardown(tc):
     tc.env.reset_db()    
+
+TITLEINDEX3_MACRO_TEST_CASES = u"""
+============================== TitleIndex, group format
+[[TitleIndex(Wiki,format=group)]]
+------------------------------
+<p>
+<ul class="titleindex"><li><strong>Wiki </strong><ul><li><strong>End/</strong><ul><li><a href="/wiki/WikiEnd/First">WikiEnd/First</a></li><li><a href="/wiki/WikiEnd/Second">WikiEnd/Second</a></li></ul></li><li><strong>Start</strong><ul><li><a href="/wiki/WikiStart">WikiStart</a></li><li><strong>/</strong><ul><li><a href="/wiki/WikiStart/First">WikiStart/First</a></li><li><a href="/wiki/WikiStart/Second">WikiStart/Second</a></li><li><a href="/wiki/WikiStart/Third">WikiStart/Third</a></li></ul></li></ul></li></ul></li></ul>
+</p>
+------------------------------
+============================== TitleIndex, hierarchy format
+[[TitleIndex(WikiStart/, format=hierarchy)]]
+------------------------------
+<p>
+<ul class="titleindex"><li><a href="/wiki/WikiStart/First">WikiStart</a><ul><li><a href="/wiki/WikiStart/Second">Second</a></li><li><a href="/wiki/WikiStart/Third">Third</a></li></ul></li></ul>
+</p>
+------------------------------
+"""
+
+def titleindex3_setup(tc):
+    now = datetime.now(utc)
+    def add_page(name):
+        w = WikiPage(tc.env)
+        w.name = name
+        w.text = '--'
+        w.save('joe', 'the page ' + name, '::1', now)
+    add_page('WikiStart/First')
+    add_page('WikiStart/Second')
+    add_page('WikiStart/Third')
+    add_page('WikiEnd/First')
+    add_page('WikiEnd/Second')
+
+def titleindex3_teardown(tc):
+    tc.env.reset_db()    
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
-                                  setup=title_index_setup, 
-                                  teardown=title_index_teardown))
+                                  setup=titleindex2_setup, 
+                                  teardown=titleindex2_teardown))
+    suite.addTest(formatter.suite(TITLEINDEX3_MACRO_TEST_CASES, file=__file__,
+                                  setup=titleindex3_setup, 
+                                  teardown=titleindex3_teardown))
     return suite
 
 if __name__ == '__main__':
