@@ -28,6 +28,7 @@ from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.datefmt import format_date, utc
 from trac.util.html import escape
+from trac.util.presentation import separated
 from trac.util.text import unquote, to_unicode
 from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
@@ -73,6 +74,7 @@ class TitleIndexMacro(WikiMacroBase):
     parameter is omitted, all pages are listed.
 
     Alternate `format` and `depth` can be specified:
+     - `format=compact`: The pages are displayed as comma-separated links.
      - `format=group`: The list of pages will be structured in groups
        according to common prefix. This format also supports a `min=n`
        argument, where `n` is the minimal number of pages for a group.
@@ -93,6 +95,7 @@ class TitleIndexMacro(WikiMacroBase):
         minsize = max(int(kw.get('min', 2)), 2)
         depth = int(kw.get('depth', -1))
         start = prefix and prefix.count('/') or 0
+        format = kw.get('format', '')
 
         wiki = formatter.wiki
         pages = sorted([page for page in wiki.get_pages(prefix) \
@@ -148,12 +151,18 @@ class TitleIndexMacro(WikiMacroBase):
                         groups.append(elt[1])
             return groups
 
-        format = {'group':     (split_pages_group,     render_group),
-                  'hierarchy': (split_pages_hierarchy, render_hierarchy)
-                 }.get(kw.get('format', ''), None)
+        splitter, renderer = {
+            'group':     (split_pages_group,     render_group),
+            'hierarchy': (split_pages_hierarchy, render_hierarchy),
+            }.get(format, (None, None))
 
-        if format:
-            return format[1](split_in_groups(format[0](pages)), "titleindex")
+        if splitter and renderer:
+            return renderer(split_in_groups(splitter(pages)), "titleindex")
+        elif format == 'compact':
+            return tag(
+                separated((tag.a(wiki.format_page_name(p), 
+                                 href=formatter.href.wiki(p)) for p in pages),
+                          ', '))
         else:
             return tag.ul(tag.li(tag.a(wiki.format_page_name(page), 
                                         href=formatter.href.wiki(page)))

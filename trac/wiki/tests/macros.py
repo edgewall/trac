@@ -1,5 +1,8 @@
+from datetime import datetime
 import unittest
 
+from trac.util.datefmt import utc
+from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
 IMAGE_MACRO_TEST_CASES = u"""
@@ -69,10 +72,61 @@ IMAGE_MACRO_TEST_CASES = u"""
 ------------------------------
 """
 
+TITLEINDEX1_MACRO_TEST_CASES = u"""
+============================== TitleIndex, default format
+[[TitleIndex()]]
+------------------------------
+<p>
+<ul><li><a href="/wiki/WikiStart">WikiStart</a></li></ul>
+</p>
+------------------------------
+[[TitleIndex]]
+============================== TitleIndex, compact format
+[[TitleIndex(format=compact)]]
+------------------------------
+<p>
+<a href="/wiki/WikiStart">WikiStart</a>
+</p>
+------------------------------
+[[TitleIndex(...)]]
+"""
+
+TITLEINDEX2_MACRO_TEST_CASES = u"""
+============================== TitleIndex, default format
+[[TitleIndex()]]
+------------------------------
+<p>
+<ul><li><a href="/wiki/WikiEnd">WikiEnd</a></li><li><a href="/wiki/WikiStart">WikiStart</a></li></ul>
+</p>
+------------------------------
+[[TitleIndex]]
+============================== TitleIndex, compact format
+[[TitleIndex(format=compact)]]
+------------------------------
+<p>
+<a href="/wiki/WikiEnd">WikiEnd</a>, <a href="/wiki/WikiStart">WikiStart</a>
+</p>
+------------------------------
+[[TitleIndex(...)]]
+"""
+
+def title_index_setup(tc):
+    w = WikiPage(tc.env)
+    w.name = 'WikiEnd'
+    w.text = '--'
+    w.save('joe', 'the second page', '::1', datetime.now(utc))
+
+
+def title_index_teardown(tc):
+    tc.env.reset_db()    
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(formatter.suite(IMAGE_MACRO_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
+    suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
+                                  setup=title_index_setup, 
+                                  teardown=title_index_teardown))
     return suite
 
 if __name__ == '__main__':
