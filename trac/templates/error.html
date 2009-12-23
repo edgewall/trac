@@ -39,14 +39,12 @@
     /*]]>*/</script>
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
-       var descr = $("#description").text();
-       descr = descr.replace(/==== System Information ====\s+/m,
-         "User Agent was: `" + navigator.userAgent + "`\n\n$&"
-       );
-       descr = descr.replace(/\|\|\s+==== Python Traceback ====/m,
-         "||\n|| '''jQuery:''' || `" + $().jquery + "` $&"
-       );
-       $("#description").text(descr);
+        var desc = $("form.newticket textarea");
+        desc.text(desc.text()
+                  .replace(/==== System Information ====\s+/m,
+                           "User Agent was: `" + navigator.userAgent + "`\n\n$&")
+                  .replace(/\|\|\s+==== Python Traceback ====/m,
+                           "||\n|| '''jQuery:''' || `" + $().jquery + "` $&"));
       });
     /*]]>*/</script>
   </head>
@@ -56,7 +54,7 @@
     <input py:if="teo" type="hidden" name="version"
            value="${'dev' in trac.version and 'devel' or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
-    <textarea id="description" name="description" rows="3" cols="10">
+    <textarea name="description" rows="3" cols="10">
 
 ==== How to Reproduce ====
 
@@ -154,11 +152,15 @@ ${traceback}
                       </a>
                       <div py:if="frame.line" class="source" style="display: none">
                         <h3>Code fragment:</h3>
-                        <ol start="${frame.lineno + 1 - len(frame.lines_before)}">
-                          <li py:for="line in frame.lines_before"><code>${line or u'\xa0'}</code></li>
-                          <li class="current"><code>${frame.line or u'\xa0'}</code></li>
-                          <li py:for="line in frame.lines_after"><code>${line or u'\xa0'}</code></li>
-                        </ol>
+                        <table class="code">
+                          <thead><tr><th class="lineno">Line</th><th class="content"></th></tr></thead>
+                          <tbody>
+                            <tr py:for="i, line in enumerate(frame.lines_before + [frame.line] + frame.lines_after)"
+                                class="${i == len(frame.lines_before) and 'current' or None}">
+                              <th>${frame.lineno + i + 1 - len(frame.lines_before)}</th><td>${line or u'\xa0'}</td>
+                            </tr>
+                          </tbody>
+                        </table>
                       </div>
                       <div py:if="frame.vars" class="vars" style="display: none">
                         <h3>Local variables:</h3>

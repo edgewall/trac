@@ -563,6 +563,8 @@ div.system-message p.system-message-title { font-weight: bold; }
 #content.error #traceback ol li.current { background: #e6e6e6; color: #333; }
 #content.error #traceback ol li code { color: #666; }
 #content.error #traceback ol li.current code { color: #000; }
+#content.error #traceback table.code td { white-space: pre; }
+#content.error #traceback table.code tr.current td { background: #e6e6e6; }
 #content.error #traceback table { margin: .5em 0 1em;  }
 #content.error #traceback th, #content.error #traceback td {
   font-size: 85%; padding: 1px;
