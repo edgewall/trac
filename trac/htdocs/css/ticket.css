@@ -85,7 +85,12 @@ h1 .status { color: #444; }
 .trac-shade { background-color: #eee }
 #trac-comment-editor { margin-left: 2em; margin-bottom: 1em }
 #trac-comment-editor div.trac-resizable { width: 100% }
-#trac-comment-editor textarea { margin-left: -1px; margin-right: -1px; width: 100% }
+#trac-comment-editor textarea { 
+ background: #ffffe0;
+ margin-left: -1px;
+ margin-right: -1px;
+ width: 100%;
+}
 #trac-comment-editor .wikitoolbar { margin-left: -1px }
 #trac-add-comment :link, #trac-add-comment :visited { color: #b00 }
 #changelog h3, #ticketchange h3 {

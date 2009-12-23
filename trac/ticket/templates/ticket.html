@@ -257,16 +257,16 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                   <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
                 </h3>
                 <py:if test="not show_editor and comment_version == max_version">
-                  <form py:if="'cnum' in change and can_append" method="get" action="#comment">
-                    <div class="inlinebuttons">
-                      <input type="hidden" name="replyto" value="${change.cnum}"/>
-                      <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
-                    </div>
-                  </form>
                   <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${change.cnum}">
                     <div class="inlinebuttons">
                       <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
                       <input type="submit" value="${_('Edit')}" title="Edit comment ${change.cnum}"/>
+                    </div>
+                  </form>
+                  <form py:if="'cnum' in change and can_append" method="get" action="#comment">
+                    <div class="inlinebuttons">
+                      <input type="hidden" name="replyto" value="${change.cnum}"/>
+                      <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
                     </div>
                   </form>
                 </py:if>
