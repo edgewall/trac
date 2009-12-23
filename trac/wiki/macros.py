@@ -491,12 +491,18 @@ class MacroListMacro(WikiMacroBase):
         def get_macro_descr():
             for macro_provider in formatter.wiki.macro_providers:
                 for macro_name in macro_provider.get_macros():
-                    if content and macro_name != content:
+                    if content and content != '*' and macro_name != content:
                         continue
                     try:
                         descr = macro_provider.get_macro_description(macro_name)
-                        descr = format_to_html(self.env, formatter.context,
-                                               to_unicode(descr) or '')
+                        descr = to_unicode(descr) or ''
+                        if content == '*':
+                            descr = format_to_oneliner(
+                                self.env, formatter.context, descr, 
+                                shorten=True)
+                        else:
+                            descr = format_to_html(
+                                self.env, formatter.context, descr)
                     except Exception, e:
                         descr = system_message(_("Error: Can't get description "
                                                  "for macro %(name)s",

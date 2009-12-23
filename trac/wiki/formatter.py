@@ -525,7 +525,7 @@ class Formatter(object):
         if name.lower() == 'br':
             return '<br />'
         if name and name[-1] == '?': # Macro?() shortcut for MacroList(Macro)
-            args = name[:-1]
+            args = name[:-1] or '*'
             name = 'MacroList'
         else:
             args = fullmatch.group('macroargs')

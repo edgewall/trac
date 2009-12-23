@@ -95,7 +95,7 @@ class WikiParser(Component):
         (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +
          "(?P<anchorlabel>\s+[^\]]*)?\])"),
         # [[macro]] call
-        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+\??)"
+        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+\??|\?)"
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # == heading == #hanchor
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*"
