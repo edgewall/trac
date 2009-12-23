@@ -106,8 +106,9 @@ class TitleIndexMacro(WikiMacroBase):
 
         # the different page split formats, each corresponding to its rendering
         def split_pages_group(pages):
-            return [(self.SPLIT_RE.split(
-                        wiki.format_page_name(page, split=True)), page)
+            return [([elt for elt in self.SPLIT_RE.split(
+                            wiki.format_page_name(page, split=True))
+                      if elt != '/'], page)
                     for page in pages]
 
         def split_pages_hierarchy(pages):
@@ -134,7 +135,7 @@ class TitleIndexMacro(WikiMacroBase):
                  for elt in group],
                 class_=classattribute)
 
-        # create the group hierarchy, that's the same for every format
+        # create the group hierarchy (same for group and hierarchy formats)
         def split_in_groups(group):
             """Return list of pagename or (key, sublist) elements"""
             groups = []
