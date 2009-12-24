@@ -90,12 +90,12 @@ class TitleIndexMacro(WikiMacroBase):
        all pages in the hierarchy will be shown.
     """
 
-    SPLIT_RE = re.compile(r"( |/|[0-9])")
+    SPLIT_RE = re.compile(r"([/ 0-9.]+)")
 
     def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
-        prefix = args and args[0] or None
-        hideprefix = args and len(args) > 1 and args[1] == 'hideprefix'
+        prefix = args and args[0].strip() or None
+        hideprefix = args and len(args) > 1 and args[1].strip() == 'hideprefix'
         minsize = max(int(kw.get('min', 2)), 2)
         depth = int(kw.get('depth', -1))
         start = prefix and prefix.count('/') or 0
@@ -115,10 +115,12 @@ class TitleIndexMacro(WikiMacroBase):
 
         # the different page split formats, each corresponding to its rendering
         def split_pages_group(pages):
-            return [([elt for elt in self.SPLIT_RE.split(
-                            wiki.format_page_name(omitprefix(page), split=True))
-                      if elt != '/'], page)
-                    for page in pages]
+            page_paths = []
+            for page in pages:
+                path = [elt.rstrip('/').strip() for elt in self.SPLIT_RE.split(
+                        wiki.format_page_name(omitprefix(page), split=True))]
+                page_paths.append(([elt for elt in path if elt], page))
+            return page_paths
 
         def split_pages_hierarchy(pages):
             return [(wiki.format_page_name(omitprefix(page)).split("/"), page)
