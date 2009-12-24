@@ -250,7 +250,7 @@ class CachedRepository(Repository):
                            "  AND change_type IN ('A', 'C', 'M') "
                            "ORDER BY %s DESC "
                            "LIMIT 1" % ((rev_as_int,) * 2),
-                           (path, last))
+                           (last, path))
             first = 0
             for row in cursor:
                 first = int(row[0])
