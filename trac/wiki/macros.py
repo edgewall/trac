@@ -26,6 +26,7 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
+from trac.util.compat import rpartition
 from trac.util.datefmt import format_date, utc
 from trac.util.html import escape
 from trac.util.presentation import separated
@@ -138,7 +139,7 @@ class TitleIndexMacro(WikiMacroBase):
                 [tag.li(isinstance(elt, tuple) and 
                         tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
                             render_hierarchy(elt[1][0:])) or
-                        tag.a(elt.rpartition("/")[2], 
+                        tag.a(rpartition(elt, '/')[2], 
                               href=formatter.href.wiki(elt)))
                  for elt in group],
                 class_=classattribute)
