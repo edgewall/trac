@@ -318,6 +318,9 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             <textarea id="comment" name="comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${comment}</textarea>
           </fieldset>
+          <div py:if="preview_mode and chrome.warnings" i18n:msg="" class="warning system-message">
+            The ticket validation has <a href="#warning">failed</a>.
+          </div>
           <!--! Preview of ticket changes -->
           <div id="ticketchange" class="ticketdraft" style="${not show_comment_preview and 'display: none' or None}">
             <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">

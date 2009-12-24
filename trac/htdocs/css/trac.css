@@ -526,10 +526,10 @@ table.listing tbody tr.focus { background: #ddf !important }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
-#warning.system-message { background: #ffb; border: 1px solid #000; }
+#warning.system-message, .warning.system-message { background: #ffb; border: 1px solid #000; }
 #warning.system-message li { list-style-type: square; }
 
-#notice.system-message { background: #dfd; border: 1px solid #000; }
+#notice.system-message, .notice.system-message { background: #dfd; border: 1px solid #000; }
 #notice.system-message li { list-style-type: square; }
 
 #content.error form.newticket { display: inline; }
