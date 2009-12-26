@@ -406,19 +406,19 @@ class Ticket(object):
         when_ts = to_timestamp(when)
         
         db, handle_ta = self._get_db_for_write(db)
+        like = db.like()
         cursor = db.cursor()
         cursor.execute("SELECT time,newvalue FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)" % db.like(),
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
                        (self.id, scnum, '%' + db.like_escape('.' + scnum)))
         for (ts, old_comment) in cursor:
             if comment == old_comment:
                 return
             # Comment history is stored in fields named "_comment%d"
             cursor.execute("SELECT COUNT(ticket) FROM ticket_change "
-                           "WHERE ticket=%s AND time=%s "
-                           "  AND field>='_comment0' and field<'_comment:'",
-                           (self.id, ts))
+                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           (self.id, ts, db.like_escape('_comment') + '%'))
             rev = cursor.fetchone()[0]
             cursor.execute("INSERT INTO ticket_change "
                            "(ticket,time,author,field,oldvalue,newvalue) "
@@ -435,19 +435,19 @@ class Ticket(object):
     def get_comment_history(self, cnum, db=None):
         scnum = str(cnum)
         db = self._get_db(db)
+        like = db.like()
         history = []
         cursor = db.cursor()
         cursor.execute("SELECT time,author,newvalue FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)" % db.like(),
+                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
                        (self.id, scnum, '%' + db.like_escape('.' + scnum)))
         for (ts0, author0, last_comment) in cursor:
             # Get all fields of the form "_comment%d"
             cursor.execute("SELECT field,author,oldvalue,newvalue "
                            "FROM ticket_change "
-                           "WHERE ticket=%s AND time=%s "
-                           "  AND field>='_comment0' and field<'_comment:'",
-                           (self.id, ts0))
+                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           (self.id, ts0, db.like_escape('_comment') + '%'))
             for field, author, comment, ts in cursor:
                 rev = int(field[8:])
                 history.append((rev, datetime.fromtimestamp(int(ts0), utc),
