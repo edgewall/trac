@@ -18,7 +18,7 @@
   <body>
     <div id="content" class="report">
       <h1>$title
-        <span py:if="numrows" class="numrows">($numrows matches)</span>
+        <span py:if="numrows" class="numrows">(${ngettext('%(num)d match', '%(num)d matches', numrows)})</span>
       </h1>
 
       <form method="get" action="">

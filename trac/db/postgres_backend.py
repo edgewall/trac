@@ -131,10 +131,11 @@ class PostgreSQLConnector(Component):
         if 'host' in db_params:
             host = db_params['host']
         else:
-            host = db_prop.get('host', 'localhost')
-        args.extend(['-h', host])
-        if '/' not in host:
-            args.extend(['-p', str(db_prop.get('port', '5432'))])
+            host = db_prop.get('host')
+        if host:
+            args.extend(['-h', host])
+            if '/' not in host:
+                args.extend(['-p', str(db_prop.get('port', '5432'))])
 
         if 'schema' in db_params:
             args.extend(['-n', '"%s"' % db_params['schema']])
@@ -196,8 +197,7 @@ class PostgreSQLConnection(ConnectionWrapper):
         return '||'.join(args)
 
     def like(self):
-        # Temporary hack needed for the case-insensitive string matching in the
-        # search module
+        """Return a case-insensitive LIKE clause."""
         return "ILIKE %s ESCAPE '/'"
 
     def like_escape(self, text):

@@ -534,7 +534,8 @@ class WikiModule(Component):
             name = name.lower()
             related = [each for each in ws.pages() if name in each.lower()]
             related.sort()
-            related = [ws._format_link(formatter, 'wiki', '/' + each, each, False)
+            related = [ws._format_link(formatter, 'wiki', '/' + each, each,
+                                       False)
                        for each in related]
 
         latest_page = WikiPage(self.env, page.name, version=None)

@@ -64,6 +64,17 @@ except NameError:
                 return False
         return True
 
+if hasattr('', 'rpartition'):
+    def rpartition(s, sep):
+        return s.rpartition(sep)
+else:
+    def rpartition(s, sep):
+        idx = s.rfind(sep)
+        if idx < 0:
+            return ('', '', s)
+        else:
+            return (s[:idx], sep, s[idx+len(sep):])
+
 try:
     from functools import partial
 except ImportError:

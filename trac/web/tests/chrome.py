@@ -1,7 +1,7 @@
 from trac.core import Component, implements
 from trac.test import EnvironmentStub, Mock
-from trac.web.chrome import add_link, add_script, add_stylesheet, Chrome, \
-                            INavigationContributor
+from trac.web.chrome import add_link, add_meta, add_script, add_script_data, \
+                            add_stylesheet, Chrome, INavigationContributor
 from trac.web.href import Href
 
 import unittest
@@ -18,6 +18,22 @@ class ChromeTestCase(unittest.TestCase):
     def tearDown(self):
         from trac.core import ComponentMeta
         ComponentMeta._registry = self._old_registry
+
+    def test_add_meta(self):
+        req = Mock(chrome={}, href=Href('/trac.cgi'))
+        add_meta(req, 'Jim Smith', name='Author', scheme='test', lang='en-us')
+        add_meta(req, 'Tue, 20 Aug 1996 14:25:27 GMT', http_equiv='Expires')
+        metas = req.chrome['metas']
+        self.assertEqual(2, len(metas))
+        meta = metas[0]
+        self.assertEqual('Jim Smith', meta['content'])
+        self.assertEqual('Author', meta['name'])
+        self.assertEqual('test', meta['scheme'])
+        self.assertEqual('en-us', meta['lang'])
+        self.assertEqual('en-us', meta['xml:lang'])
+        meta = metas[1]
+        self.assertEqual('Tue, 20 Aug 1996 14:25:27 GMT', meta['content'])
+        self.assertEqual('Expires', meta['http-equiv'])
 
     def test_add_link_simple(self):
         req = Mock(chrome={}, href=Href('/trac.cgi'))
@@ -44,6 +60,13 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('/trac.cgi/chrome/common/js/trac.js',
                          scripts[0]['href'])
 
+    def test_add_script_data(self):
+        req = Mock(chrome={}, href=Href('/trac.cgi'))
+        add_script_data(req, {'var1': 1, 'var2': 'Testing'})
+        add_script_data(req, {'var2': 'More testing', 'var3': 3})
+        self.assertEqual({'var1': 1, 'var2': 'More testing', 'var3': 3},
+                         req.chrome['script_data'])
+
     def test_add_stylesheet(self):
         req = Mock(base_path='/trac.cgi', chrome={}, href=Href('/trac.cgi'))
         add_stylesheet(req, 'common/css/trac.css')
@@ -53,7 +76,7 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('text/css', links[0]['type'])
         self.assertEqual('/trac.cgi/chrome/common/css/trac.css',
                          links[0]['href'])
-    
+
     def test_add_stylesheet_media(self):
         req = Mock(base_path='/trac.cgi', chrome={}, href=Href('/trac.cgi'))
         add_stylesheet(req, 'foo.css', media='print')

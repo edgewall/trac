@@ -152,10 +152,17 @@ try:
             self._current.translations = t
          
         def deactivate(self):
+            t = None
             if hasattr(self._current, 'args'):
                 del self._current.args
             if hasattr(self._current, 'translations'):
+                t = self._current.translations
                 del self._current.translations
+            return t
+         
+        def reactivate(self, t):
+            if t:
+                self._current.translations = t
     
         @property
         def active(self):
@@ -279,7 +286,16 @@ try:
     dtngettext = translations.dtngettext 
     
     def deactivate():
-        translations.deactivate()
+        """Deactivate translations.
+        :return: the current Translations, if any
+        """
+        return translations.deactivate()
+
+    def reactivate(t):
+        """Reactivate previously deactivated translations.
+        :param t: the Translations, as returned by `deactivate`
+        """
+        return translations.reactivate(t)
 
     def make_activable(get_locale, env_path=None):
         """Defer activation of translations.
@@ -319,6 +335,9 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
         pass
 
     def deactivate():
+        pass
+
+    def reactivate(t):
         pass
 
     def make_activable(get_locale, env_path=None):

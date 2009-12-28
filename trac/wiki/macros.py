@@ -26,8 +26,10 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
+from trac.util.compat import rpartition
 from trac.util.datefmt import format_date, utc
 from trac.util.html import escape
+from trac.util.presentation import separated
 from trac.util.text import unquote, to_unicode
 from trac.util.translation import _
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
@@ -71,8 +73,11 @@ class TitleIndexMacro(WikiMacroBase):
     Accepts a prefix string as parameter: if provided, only pages with names
     that start with the prefix are included in the resulting list. If this
     parameter is omitted, all pages are listed.
+    If the prefix is specified, a second argument of value 'hideprefix'
+    can be given as well, in order to remove that prefix from the output.
 
-    Alternate `format` and `depth` can be specified:
+    Alternate `format` and `depth` named parameters can be specified:
+     - `format=compact`: The pages are displayed as comma-separated links.
      - `format=group`: The list of pages will be structured in groups
        according to common prefix. This format also supports a `min=n`
        argument, where `n` is the minimal number of pages for a group.
@@ -85,14 +90,21 @@ class TitleIndexMacro(WikiMacroBase):
        all pages in the hierarchy will be shown.
     """
 
-    SPLIT_RE = re.compile(r"( |/|[0-9])")
+    SPLIT_RE = re.compile(r"([/ 0-9.]+)")
 
     def expand_macro(self, formatter, name, content):
         args, kw = parse_args(content)
-        prefix = args and args[0] or None
+        prefix = args and args[0].strip() or None
+        hideprefix = args and len(args) > 1 and args[1].strip() == 'hideprefix'
         minsize = max(int(kw.get('min', 2)), 2)
         depth = int(kw.get('depth', -1))
         start = prefix and prefix.count('/') or 0
+        format = kw.get('format', '')
+
+        if hideprefix:
+            omitprefix = lambda page: page[len(prefix):]
+        else:
+            omitprefix = lambda page: page
 
         wiki = formatter.wiki
         pages = sorted([page for page in wiki.get_pages(prefix) \
@@ -103,12 +115,15 @@ class TitleIndexMacro(WikiMacroBase):
 
         # the different page split formats, each corresponding to its rendering
         def split_pages_group(pages):
-            return [(self.SPLIT_RE.split(
-                        wiki.format_page_name(page, split=True)), page)
-                    for page in pages]
+            page_paths = []
+            for page in pages:
+                path = [elt.rstrip('/').strip() for elt in self.SPLIT_RE.split(
+                        wiki.format_page_name(omitprefix(page), split=True))]
+                page_paths.append(([elt for elt in path if elt], page))
+            return page_paths
 
         def split_pages_hierarchy(pages):
-            return [(wiki.format_page_name(page).split("/"), page)
+            return [(wiki.format_page_name(omitprefix(page)).split("/"), page)
                     for page in pages]
 
         # the different rendering formats
@@ -120,17 +135,18 @@ class TitleIndexMacro(WikiMacroBase):
                               href=formatter.href.wiki(elt)))
                  for elt in group],
                 class_=classattribute)
+
         def render_hierarchy(group, classattribute=None):
             return tag.ul(
                 [tag.li(isinstance(elt, tuple) and 
-                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[1][0])),
-                            render_hierarchy(elt[1][1:])) or
-                        tag.a(elt.rpartition("/")[2], 
+                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
+                            render_hierarchy(elt[1][0:])) or
+                        tag.a(rpartition(elt, '/')[2], 
                               href=formatter.href.wiki(elt)))
                  for elt in group],
                 class_=classattribute)
 
-        # create the group hierarchy, that's the same for every format
+        # create the group hierarchy (same for group and hierarchy formats)
         def split_in_groups(group):
             """Return list of pagename or (key, sublist) elements"""
             groups = []
@@ -148,14 +164,20 @@ class TitleIndexMacro(WikiMacroBase):
                         groups.append(elt[1])
             return groups
 
-        format = {'group':     (split_pages_group,     render_group),
-                  'hierarchy': (split_pages_hierarchy, render_hierarchy)
-                 }.get(kw.get('format', ''), None)
+        splitter, renderer = {
+            'group':     (split_pages_group,     render_group),
+            'hierarchy': (split_pages_hierarchy, render_hierarchy),
+            }.get(format, (None, None))
 
-        if format:
-            return format[1](split_in_groups(format[0](pages)), "titleindex")
+        if splitter and renderer:
+            return renderer(split_in_groups(splitter(pages)), "titleindex")
+        elif format == 'compact':
+            return tag(
+                separated((tag.a(wiki.format_page_name(omitprefix(p)),
+                                 href=formatter.href.wiki(p)) for p in pages),
+                          ', '))
         else:
-            return tag.ul(tag.li(tag.a(wiki.format_page_name(page), 
+            return tag.ul(tag.li(tag.a(wiki.format_page_name(omitprefix(page)), 
                                         href=formatter.href.wiki(page)))
                           for page in pages)
 
@@ -491,12 +513,18 @@ class MacroListMacro(WikiMacroBase):
         def get_macro_descr():
             for macro_provider in formatter.wiki.macro_providers:
                 for macro_name in macro_provider.get_macros():
-                    if content and macro_name != content:
+                    if content and content != '*' and macro_name != content:
                         continue
                     try:
                         descr = macro_provider.get_macro_description(macro_name)
-                        descr = format_to_html(self.env, formatter.context,
-                                               to_unicode(descr) or '')
+                        descr = to_unicode(descr) or ''
+                        if content == '*':
+                            descr = format_to_oneliner(
+                                self.env, formatter.context, descr, 
+                                shorten=True)
+                        else:
+                            descr = format_to_html(
+                                self.env, formatter.context, descr)
                     except Exception, e:
                         descr = system_message(_("Error: Can't get description "
                                                  "for macro %(name)s",

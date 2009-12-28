@@ -1,7 +1,7 @@
 (function($){
   
   function convertDiff(name, table, pre) {
-    var inline = table.className == 'inline';
+    var inline = $(table).hasClass('inline');
     var ths = table.tHead.rows[0].cells;
     var afile, bfile;
     if ( inline ) {

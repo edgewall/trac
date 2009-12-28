@@ -35,7 +35,7 @@ class WikiParser(Component):
     STRIKE_TOKEN = "~~"
     SUBSCRIPT_TOKEN = ",,"
     SUPERSCRIPT_TOKEN = r"\^"
-    INLINE_TOKEN = "`"
+    INLINE_TOKEN = "`" # must be a single char (see P<definition> below)
     STARTBLOCK_TOKEN = r"\{\{\{"
     STARTBLOCK = "{{{"
     ENDBLOCK_TOKEN = r"\}\}\}"
@@ -77,12 +77,12 @@ class WikiParser(Component):
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
         # > ...
         r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
-        # <wiki:Trac links>
-        r"(?P<shref>!?<(?P<sns>%s):(?P<stgt>[^>]+)>)" % LINK_SCHEME,
+        # <wiki:Trac bracket links>
+        r"(?P<shrefbr>!?<(?P<snsbr>%s):(?P<stgtbr>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
         # wiki:TracLinks
-        r"(?P<shref2>!?((?P<sns2>%s):(?P<stgt2>%s|%s(?:%s*%s)?)))" \
+        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
         % (LINK_SCHEME, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # [wiki:TracLinks with optional label] or [/relative label]
@@ -95,7 +95,7 @@ class WikiParser(Component):
         (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +
          "(?P<anchorlabel>\s+[^\]]*)?\])"),
         # [[macro]] call
-        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+)"
+        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+\??|\?)"
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # == heading == #hanchor
         r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*"
@@ -103,14 +103,15 @@ class WikiParser(Component):
         #  * list
         r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         # definition:: 
-        r"(?P<definition>^\s+((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
+        r"(?P<definition>^\s+"
+        r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
         % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
            STARTBLOCK_TOKEN, ENDBLOCK[0], ENDBLOCK[0], ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
         # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
-        r"(?P<last_table_cell>=?\|\|\s*$)",
+        r"(?P<last_table_cell>=?\|\|\s*\\?$)",
         r"(?P<table_cell>!?=?(?:\|\|)+=?)"]
 
     _processor_re = re.compile('#\!([\w+-][\w+-/]*)')

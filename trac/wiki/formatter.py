@@ -364,16 +364,16 @@ class Formatter(object):
         else:
             return text
 
-    def _shref_formatter(self, match, fullmatch):
-        ns = fullmatch.group('sns')
-        target = self._unquote(fullmatch.group('stgt'))
+    def _shrefbr_formatter(self, match, fullmatch):
+        ns = fullmatch.group('snsbr')
+        target = self._unquote(fullmatch.group('stgtbr'))
         match = match[1:-1]
         return '&lt;%s&gt;' % \
                 self._make_link(ns, target, match, match, fullmatch)
 
-    def _shref2_formatter(self, match, fullmatch):
-        ns = fullmatch.group('sns2')
-        target = self._unquote(fullmatch.group('stgt2'))
+    def _shref_formatter(self, match, fullmatch):
+        ns = fullmatch.group('sns')
+        target = self._unquote(fullmatch.group('stgt'))
         return self._make_link(ns, target, match, match, fullmatch)
 
     def _lhref_formatter(self, match, fullmatch):
@@ -524,7 +524,11 @@ class Formatter(object):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
             return '<br />'
-        args = fullmatch.group('macroargs')
+        if name and name[-1] == '?': # Macro?() shortcut for MacroList(Macro)
+            args = name[:-1] or '*'
+            name = 'MacroList'
+        else:
+            args = fullmatch.group('macroargs')
         try:
             macro = WikiProcessor(self, name)
             return macro.process(args, in_paragraph=True)
@@ -754,6 +758,8 @@ class Formatter(object):
     # Table
     
     def _last_table_cell_formatter(self, match, fullmatch):
+        if match[-1] == '\\':
+            self.continue_table_row = 1
         return ''
 
     def _table_cell_formatter(self, match, fullmatch):
@@ -790,17 +796,18 @@ class Formatter(object):
             self.in_table_row = 1
             self.out.write('<tr>')
 
-    def close_table_row(self):
-        if self.in_table_row:
+    def close_table_row(self, force=False):
+        if self.in_table_row and (not self.continue_table_row or force):
             self.in_table_row = 0
             if self.in_table_cell:
                 self.out.write('</%s>' % self.in_table_cell)
                 self.in_table_cell = ''
             self.out.write('</tr>')
+        self.continue_table_row = 0
 
     def close_table(self):
         if self.in_table:
-            self.close_table_row()
+            self.close_table_row(True)
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
@@ -899,6 +906,7 @@ class Formatter(object):
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
+        self.continue_table_row = 0
         self.in_table_cell = ''
         self.paragraph_open = 0
 

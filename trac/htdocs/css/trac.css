@@ -526,10 +526,10 @@ table.listing tbody tr.focus { background: #ddf !important }
 div.system-message p { margin: 0; }
 div.system-message p.system-message-title { font-weight: bold; }
 
-#warning.system-message { background: #ffb; border: 1px solid #000; }
+#warning.system-message, .warning.system-message { background: #ffb; border: 1px solid #000; }
 #warning.system-message li { list-style-type: square; }
 
-#notice.system-message { background: #dfd; border: 1px solid #000; }
+#notice.system-message, .notice.system-message { background: #dfd; border: 1px solid #000; }
 #notice.system-message li { list-style-type: square; }
 
 #content.error form.newticket { display: inline; }
@@ -552,17 +552,8 @@ div.system-message p.system-message-title { font-weight: bold; }
 }
 #content.error #traceback span.file { color: #666; font-size: 85%; }
 #content.error #traceback ul { list-style: none; margin: .5em 0; padding: 0; }
-#content.error #traceback ol {
-  border: 1px dotted #d7d7d7;
-  color: #999;
-  font-size: 85%;
-  line-height: 1;
-  margin: .5em 0;
-}
-#content.error #traceback ol li { white-space: pre; }
-#content.error #traceback ol li.current { background: #e6e6e6; color: #333; }
-#content.error #traceback ol li code { color: #666; }
-#content.error #traceback ol li.current code { color: #000; }
+#content.error #traceback table.code td { white-space: pre; font-size: 90%; }
+#content.error #traceback table.code tr.current td { background: #e6e6e6; }
 #content.error #traceback table { margin: .5em 0 1em;  }
 #content.error #traceback th, #content.error #traceback td {
   font-size: 85%; padding: 1px;

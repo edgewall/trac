@@ -181,7 +181,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             <py:for each="idx, field in enumerate(row)">
               <th py:if="idx == 0 or not fullrow"
                   id="${field and 'h_'+field.name or None}">
-                <py:if test="field">${field.label or field.name}:</py:if>
+                <py:if test="field">${field_labels.get(field.name) or field.label or field.name}:</py:if>
               </th>
               <td py:if="idx == 0 or not fullrow"
                   headers="${field and 'h_'+field.name or None}"
@@ -257,16 +257,16 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                   <i18n:msg params="date, author">Changed ${dateinfo(change.date)} ago by ${authorinfo(change.author)}</i18n:msg>
                 </h3>
                 <py:if test="not show_editor and comment_version == max_version">
-                  <form py:if="'cnum' in change and can_append" method="get" action="#comment">
-                    <div class="inlinebuttons">
-                      <input type="hidden" name="replyto" value="${change.cnum}"/>
-                      <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
-                    </div>
-                  </form>
                   <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${change.cnum}">
                     <div class="inlinebuttons">
                       <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
                       <input type="submit" value="${_('Edit')}" title="Edit comment ${change.cnum}"/>
+                    </div>
+                  </form>
+                  <form py:if="'cnum' in change and can_append" method="get" action="#comment">
+                    <div class="inlinebuttons">
+                      <input type="hidden" name="replyto" value="${change.cnum}"/>
+                      <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
                     </div>
                   </form>
                 </py:if>
@@ -318,6 +318,9 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             <textarea id="comment" name="comment" class="wikitext trac-resizable" rows="10" cols="78">
 ${comment}</textarea>
           </fieldset>
+          <div py:if="preview_mode and chrome.warnings" i18n:msg="" class="warning system-message">
+            The ticket validation has <a href="#warning">failed</a>.
+          </div>
           <!--! Preview of ticket changes -->
           <div id="ticketchange" class="ticketdraft" style="${not show_comment_preview and 'display: none' or None}">
             <h3 class="change" id="${'cnum' in change_preview and 'comment:%d' % change_preview.cnum or None}">
@@ -373,7 +376,7 @@ ${ticket.description}</textarea>
                           py:with="value = ticket.get_value_or_default(field.name)">
                     <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                       <label for="field-${field.name}" py:if="field"
-                             py:strip="field.type == 'radio'">${field.edit_label or field.label or field.name}:</label>
+                             py:strip="field.type == 'radio'">${field_labels.get(field.name) or field.edit_label or field.label or field.name}:</label>
                     </th>
                     <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
                         colspan="${fullrow and 3 or None}">
@@ -487,7 +490,6 @@ ${value}</textarea>
           <a href="#attachments" title="Go to the list of attachments">Attachments</a> &uarr;
         </div>
         <div class="buttons">
-          <input py:if="not ticket.exists" type="hidden" name="field_status" value="new" />
           <py:if test="ticket.exists">
             <input type="hidden" name="ts" value="${timestamp}" />
             <input type="hidden" name="replyto" value="${replyto}" />

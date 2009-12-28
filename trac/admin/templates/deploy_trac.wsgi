@@ -17,7 +17,7 @@
 import os
 
 def application(environ, start_request):
-    if not 'trac.env_path_parent_dir' in environ:
+    if not 'trac.env_parent_dir' in environ:
         environ.setdefault('trac.env_path', '${env.path}')
     if 'PYTHON_EGG_CACHE' in environ:                                           
         os.environ['PYTHON_EGG_CACHE'] = environ['PYTHON_EGG_CACHE']

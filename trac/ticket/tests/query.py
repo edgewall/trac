@@ -210,7 +210,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((COALESCE(t.owner,'') %(like)s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(self.req)
 
@@ -222,7 +222,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((COALESCE(t.owner,'') NOT %(like)s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%someone%'], args)
         tickets = query.execute(self.req)
 
@@ -234,7 +234,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((COALESCE(t.owner,'') %(like)s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['someone%'], args)
         tickets = query.execute(self.req)
 
@@ -246,7 +246,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((COALESCE(t.owner,'') %(like)s))
-ORDER BY COALESCE(t.id,0)=0,t.id""" %  {'like': self.env.get_db_cnx().like()})
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%someone'], args)
         tickets = query.execute(self.req)
 
@@ -423,7 +423,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
 FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE (((COALESCE(t.keywords,'') %(like)s AND COALESCE(t.keywords,'') NOT %(like)s AND COALESCE(t.keywords,'') %(like)s)))
-ORDER BY COALESCE(t.id,0)=0,t.id"""  % {'like': self.env.get_db_cnx().like()})
+ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         self.assertEqual(['%foo%', '%bar%', '%baz%'], args)
         tickets = query.execute(self.req)
 

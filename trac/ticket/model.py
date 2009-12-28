@@ -35,6 +35,9 @@ __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
 
 class Ticket(object):
 
+    # Fields that must not be modified directly by the user
+    protected_fields = ('resolution', 'status', 'time', 'changetime')
+
     @staticmethod
     def id_is_valid(num):
         return 0 < int(num) <= 1L << 31
@@ -73,7 +76,7 @@ class Ticket(object):
     def _init_defaults(self, db=None):
         for field in self.fields:
             default = None
-            if field['name'] in ['resolution', 'status', 'time', 'changetime']:
+            if field['name'] in self.protected_fields:
                 # Ignore for new - only change through workflow
                 pass
             elif not field.get('custom'):
@@ -382,7 +385,7 @@ class Ticket(object):
         cursor.execute("SELECT time,author FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
                        "  AND (oldvalue=%%s OR oldvalue %s)" % db.like(),
-                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
         for ts, author in cursor:
             cursor.execute("SELECT field,author,oldvalue,newvalue "
                            "FROM ticket_change "
@@ -408,10 +411,11 @@ class Ticket(object):
         cursor.execute("SELECT time,newvalue FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
                        "  AND (oldvalue=%%s OR oldvalue %s)" % like,
-                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
         for (ts, old_comment) in cursor:
             if comment == old_comment:
                 return
+            # Comment history is stored in fields named "_comment%d"
             cursor.execute("SELECT COUNT(ticket) FROM ticket_change "
                            "WHERE ticket=%%s AND time=%%s AND field %s" % like,
                            (self.id, ts, db.like_escape('_comment') + '%'))
@@ -437,8 +441,9 @@ class Ticket(object):
         cursor.execute("SELECT time,author,newvalue FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
                        "  AND (oldvalue=%%s OR oldvalue %s)" % like,
-                       (self.id, scnum, '%.' + db.like_escape(scnum)))
+                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
         for (ts0, author0, last_comment) in cursor:
+            # Get all fields of the form "_comment%d"
             cursor.execute("SELECT field,author,oldvalue,newvalue "
                            "FROM ticket_change "
                            "WHERE ticket=%%s AND time=%%s AND field %s" % like,

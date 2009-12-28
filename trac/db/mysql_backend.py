@@ -214,6 +214,7 @@ class MySQLConnection(ConnectionWrapper):
         return 'concat(%s)' % ', '.join(args)
 
     def like(self):
+        """Return a case-insensitive LIKE clause."""
         return "LIKE %s COLLATE utf8_general_ci ESCAPE '/'"
 
     def like_escape(self, text):

@@ -73,6 +73,12 @@ from trac.wiki import IWikiSyntaxProvider
 from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 
+def add_meta(req, content, http_equiv=None, name=None, scheme=None, lang=None):
+    """Add a `<meta>` tag into the `<head>` of the generated HTML."""
+    meta = {'content': content, 'http-equiv': http_equiv, 'name': name,
+            'scheme': scheme, 'lang': lang, 'xml:lang': lang}
+    req.chrome.setdefault('metas', []).append(meta)
+
 def add_link(req, rel, href, title=None, mimetype=None, classname=None,
              **attrs):
     """Add a link to the chrome info that will be inserted as <link> element in
@@ -397,17 +403,28 @@ class Chrome(Component):
             if not os.path.exists(templates_dir):
                 os.mkdir(templates_dir)
 
-            if not self.shared_templates_dir or not os.path.exists(
-                        os.path.join(self.shared_templates_dir, "site.html")):
-                fileobj = open(os.path.join(templates_dir, 'site.html'), 'w')
-                try:
-                    fileobj.write("""\
+            site_path = os.path.join(templates_dir, 'site.html.sample')
+            fileobj = open(site_path, 'w')
+            try:
+                fileobj.write("""\
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:py="http://genshi.edgewall.org/" py:strip="">
-  <!--! Custom match templates go here -->
-</html>""")
-                finally:
-                    fileobj.close()
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      py:strip="">
+  <!--!
+    This file allows customizing the appearance of the Trac installation.
+    Add your customizations here and rename the file to site.html. Note that
+    it will take precedence over a global site.html placed in the directory
+    specified by [inherit] templates_dir.
+    
+    More information about site appearance customization can be found here:
+    
+      http://trac.edgewall.org/wiki/TracInterfaceCustomization#SiteAppearance
+  -->
+</html>
+""")
+            finally:
+                fileobj.close()
 
     def environment_needs_upgrade(self, db):
         return False
@@ -486,8 +503,8 @@ class Chrome(Component):
         """
         self.log.debug('Prepare chrome data for request')
 
-        chrome = {'links': {}, 'scripts': [], 'script_data': {}, 'ctxtnav': [],
-                  'warnings': [], 'notices': []}
+        chrome = {'metas': [], 'links': {}, 'scripts': [], 'script_data': {},
+                  'ctxtnav': [], 'warnings': [], 'notices': []}
         setattr(req, 'chrome', chrome)
 
         htdocs_location = self.htdocs_location or req.href.chrome('common')
