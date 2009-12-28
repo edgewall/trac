@@ -299,20 +299,21 @@ class CachedRepository(Repository):
         rev_as_int = db.cast('rev', 'int')
         if first is None:
             cursor.execute("SELECT rev FROM node_change "
-                           "WHERE %s <= %%s "
-                           "  AND path = %%s "
+                           "WHERE repos=%%s AND %s<=%%s "
+                           "  AND path=%%s "
                            "  AND change_type IN ('A', 'C', 'M') "
                            "ORDER BY %s DESC "
                            "LIMIT 1" % ((rev_as_int,) * 2),
-                           (last, path))
+                           (self.id, last, path))
             first = 0
             for row in cursor:
                 first = int(row[0])
         cursor.execute("SELECT DISTINCT rev FROM node_change "
-                       "WHERE %s >= %%s AND %s <= %%s "
-                       " AND (path = %%s OR path %s)" % 
+                       "WHERE repos=%%s AND %s>=%%s AND %s<=%%s "
+                       " AND (path=%%s OR path %s)" % 
                        (rev_as_int, rev_as_int, db.like()),
-                       (first, last, path, db.like_escape(path + '/') + '%'))
+                       (self.id, first, last, path,
+                        db.like_escape(path + '/') + '%'))
         return [int(row[0]) for row in cursor]
 
     def has_node(self, path, rev=None):
@@ -340,18 +341,18 @@ class CachedRepository(Repository):
         db = self.env.get_db_cnx()
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE repos=%s AND " + \
-              db.cast('rev', 'int') + " " + direction + " %s"
+              db.cast('rev', 'int') + direction + "%s"
         args = [self.id, rev]
 
         if path:
             path = path.lstrip('/')
             # changes on path itself or its children
-            sql += " AND (path = %s OR path " + db.like()
+            sql += " AND (path=%s OR path " + db.like()
             args.extend((path, db.like_escape(path + '/') + '%'))
             # deletion of path ancestors
             components = path.lstrip('/').split('/')
             parents = ','.join(('%s',) * len(components))
-            sql += " OR (path IN (" + parents + ") AND change_type = 'D'))"
+            sql += " OR (path IN (" + parents + ") AND change_type='D'))"
             for i in range(1, len(components) + 1):
                 args.append('/'.join(components[:i]))
 
