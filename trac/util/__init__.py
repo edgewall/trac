@@ -403,7 +403,7 @@ def safe__import__(module_name):
 # -- setuptools utils
 
 def get_module_path(module):
-    # Determine the plugin that this component belongs to
+    """Determine the plugin that this component belongs to"""
     path = module.__file__
     module_name = module.__name__
     if path.endswith('.pyc') or path.endswith('.pyo'):
