@@ -38,7 +38,7 @@ from trac.ticket.model import Milestone, Ticket, group_milestones
 from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
-from trac.util.compat import any
+from trac.util.compat import any, set
 from trac.util.datefmt import to_timestamp, utc
 from trac.util.text import CRLF, shorten_line, obfuscate_email_address, \
                            exception_to_unicode
@@ -383,6 +383,7 @@ class TicketModule(Component):
                 del req.args['field_owner']
 
         self._populate(req, ticket, plain_fields)
+        ticket.values['status'] = 'new'     # Force initial status
         reporter_id = req.args.get(field_reporter) or \
                       get_reporter_id(req, 'author')
         ticket.values['reporter'] = reporter_id
@@ -489,14 +490,14 @@ class TicketModule(Component):
             if problems:
                 for problem in problems:
                     add_warning(req, problem)
-                    add_warning(req,
-                                tag(tag.p('Please review your configuration, '
-                                          'probably starting with'),
-                                    tag.pre('[trac]\nworkflow = ...\n'),
-                                    tag.p('in your ', tag.tt('trac.ini'), '.'))
-                                )
+                add_warning(req,
+                            tag(tag.p('Please review your configuration, '
+                                      'probably starting with'),
+                                tag.pre('[trac]\nworkflow = ...\n'),
+                                tag.p('in your ', tag.tt('trac.ini'), '.')))
 
-            self._apply_ticket_changes(ticket, field_changes) # Apply changes made by the workflow
+            # Apply changes made by the workflow
+            self._apply_ticket_changes(ticket, field_changes)
             # Unconditionally run the validation so that the user gets
             # information any and all problems.  But it's only valid if it
             # validates and there were no problems with the workflow side of
@@ -632,10 +633,16 @@ class TicketModule(Component):
         return (action, entry, cc_list)
         
     def _populate(self, req, ticket, plain_fields=False):
-        fields = req.args
         if not plain_fields:
-            fields = dict([(k[6:],v) for k,v in fields.items()
+            fields = dict([(k[6:], v) for k, v in req.args.iteritems()
                            if k.startswith('field_')])
+        else:
+            fields = req.args.copy()
+        # Prevent direct changes to protected fields (status and resolution are
+        # set in the workflow, in get_ticket_changes())
+        for each in Ticket.protected_fields:
+            fields.pop(each, None)
+            fields.pop('checkbox_' + each, None)    # See Ticket.populate()
         ticket.populate(fields)
         # special case for updating the Cc: field
         if 'cc_update' in req.args:
@@ -888,23 +895,24 @@ class TicketModule(Component):
 
         # If the ticket has been changed, check the proper permissions
         if ticket.exists and ticket._old:
-            cnt = 0
-            # EDIT_DESCRIPTION and CHGPROP are independent permissions
-            if 'description' in ticket._old:
-                cnt = 1
-                if 'TICKET_EDIT_DESCRIPTION' not in req.perm(resource):
-                    add_warning(req, _("No permission to edit description."))
-                    valid = False
-            if len(ticket._old) > cnt:
-                errmsg = _("No permission to change ticket fields.")
-                if 'TICKET_CHGPROP' not in req.perm(resource):
-                    add_warning(req, errmsg)
-                    valid = False
-                else: # per-field additional checks
-                   if 'reporter' in ticket._old and \
-                       'TICKET_ADMIN' not in req.perm(resource):
-                    add_warning(req, errmsg)
-                    valid = False
+            # Status and resolution can be modified by the workflow even
+            # without having TICKET_CHGPROP
+            changed = set(ticket._old) - set(['status', 'resolution'])
+            if 'description' in changed \
+                    and 'TICKET_EDIT_DESCRIPTION' not in req.perm(resource):
+                add_warning(req, _("No permission to edit the ticket "
+                                   "description."))
+                valid = False
+            changed.discard('description')
+            if 'reporter' in changed \
+                    and 'TICKET_ADMIN' not in req.perm(resource):
+                add_warning(req, _("No permission to change the ticket "
+                                   "reporter."))
+                valid = False
+            changed.discard('reporter')
+            if changed and 'TICKET_CHGPROP' not in req.perm(resource):
+                add_warning(req, _("No permission to change ticket fields."))
+                valid = False
             if not valid:
                 ticket.values.update(ticket._old)
 

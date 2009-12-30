@@ -401,7 +401,6 @@ ${value}</textarea>
           </label>
         </p>
         <div class="buttons">
-          <input py:if="not ticket.exists" type="hidden" name="field_status" value="new" />
           <py:if test="ticket.exists">
             <input type="hidden" name="ts" value="${timestamp}" />
             <input type="hidden" name="replyto" value="${replyto}" />
