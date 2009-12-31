@@ -355,8 +355,8 @@ class PermissionAdminPanel(Component):
                 req.perm.require(action)
                 if (subject, action) not in all_permissions:
                     perm.grant_permission(subject, action)
-                    add_notice(req, _('The user %(subject)s has been granted '
-                                      'the permission %(action)s.',
+                    add_notice(req, _('The subject %(subject)s has been '
+                                      'granted the permission %(action)s.',
                                       subject=subject, action=action))
                     req.redirect(req.href.admin(cat, page))
                 else:
@@ -376,12 +376,12 @@ class PermissionAdminPanel(Component):
                         req.perm.require(action)
                 if (subject, group) not in all_permissions:
                     perm.grant_permission(subject, group)
-                    add_notice(req, _('The user %(subject)s has been added to '
-                                      'the group %(group)s.', subject=subject,
-                                      group=group))
+                    add_notice(req, _('The subject %(subject)s has been added '
+                                      'to the group %(group)s.',
+                                      subject=subject, group=group))
                     req.redirect(req.href.admin(cat, page))
                 else:
-                    add_warning(req, _('The user %(subject)s was already '
+                    add_warning(req, _('The subject %(subject)s was already '
                                        'added to the group %(group)s.',
                                        subject=subject, group=group))
 

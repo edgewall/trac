@@ -63,7 +63,16 @@ class AtomicFileTestCase(unittest.TestCase):
             finally:
                 rf.close()
             self.assertEqual('Replaced content', util.read_file(self.path))
-        
+    
+    def test_unicode_path(self):
+        self.path = os.path.join(tempfile.gettempdir(), u'träc-témpfilè')
+        f = util.AtomicFile(self.path)
+        try:
+            f.write('test content')
+        finally:
+            f.close()
+        self.assertEqual('test content', util.read_file(self.path))
+
 
 class ContentDispositionTestCase(unittest.TestCase):
 
