@@ -723,10 +723,10 @@ Done.
 [[HelloWorld?(hej hopp)]]
 ------------------------------
 <p>
-<dl><dt id="HelloWorld-macro"><code>[[HelloWorld]]</code></dt><dd><p>
+</p><div class="trac-macrolist"><h3 id="HelloWorld-macro"><code>[[HelloWorld]]</code></h3><p>
 A dummy macro used by the unit test.
 </p>
-</dd></dl>
+</div><p>
 </p>
 ------------------------------
 [[HelloWorld?(...)]]
@@ -734,10 +734,10 @@ A dummy macro used by the unit test.
 [[HelloWorld?]]
 ------------------------------
 <p>
-<dl><dt id="HelloWorld-macro"><code>[[HelloWorld]]</code></dt><dd><p>
+</p><div class="trac-macrolist"><h3 id="HelloWorld-macro"><code>[[HelloWorld]]</code></h3><p>
 A dummy macro used by the unit test.
 </p>
-</dd></dl>
+</div><p>
 </p>
 ------------------------------
 [[HelloWorld?]]
