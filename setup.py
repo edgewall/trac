@@ -18,17 +18,15 @@ extra = {}
 
 try:
     import babel
+    extractors = [
+        ('**.py',                'python', None),
+        ('**/templates/**.html', 'genshi', None),
+        ('**/templates/**.txt',  'genshi',
+         {'template_class': 'genshi.template:NewTextTemplate'}),
+    ]
     extra['message_extractors'] = {
-        'trac': [
-            ('**.py',                'python', None),
-            ('**/templates/**.html', 'genshi', None),
-            ('**/templates/**.txt',  'genshi', {
-                'template_class': 'genshi.template:TextTemplate'
-            })
-        ],
-        'tracopt': [
-            ('**.py', 'python', None)
-        ]
+        'trac': extractors,
+        'tracopt': extractors,
     }
 except ImportError:
     pass

@@ -49,7 +49,7 @@ except ImportError:
 
 from genshi.core import Attrs, START
 from genshi.output import DocType
-from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
+from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
 from trac import __version__ as VERSION
 from trac.config import *
@@ -766,7 +766,8 @@ class Chrome(Component):
         """Retrieve a Template and optionally preset the template data.
 
         Also, if the optional `method` argument is set to `'text'`, a
-        TextTemplate instance will be created instead of a MarkupTemplate.
+        `NewTextTemplate` instance will be created instead of a
+        `MarkupTemplate`.
         """
         if not self.templates:
             def _template_loaded(template):
@@ -781,7 +782,7 @@ class Chrome(Component):
                 max_cache_size=self.genshi_cache_size,
                 variable_lookup='lenient', callback=_template_loaded)
         if method == 'text':
-            cls = TextTemplate
+            cls = NewTextTemplate
         else:
             cls = MarkupTemplate
 
@@ -792,8 +793,8 @@ class Chrome(Component):
         """Render the `filename` using the `data` for the context.
 
         The `content_type` argument is used to choose the kind of template
-        used (TextTemplate if `'text/plain'`, MarkupTemplate otherwise), and
-        tweak the rendering process (use of XHTML Strict doctype if
+        used (`NewTextTemplate` if `'text/plain'`, `MarkupTemplate` otherwise),
+        and tweak the rendering process (use of XHTML Strict doctype if
         `'text/html'` is given).
 
         When `fragment` is specified, the (filtered) Genshi stream is
