@@ -46,15 +46,27 @@
         <a href="http://www.edgewall.org/">Edgewall Software</a>
       </p>
 
-      <py:if test="systeminfo or config">
+      <py:if test="systeminfo or plugins or config">
         <hr />
 
         <div py:if="systeminfo" id="systeminfo">
           <h2>System Information</h2>
           <table class="listing">
             <tr py:for="name, value in systeminfo">
-              <th>$name:</th>
+              <th>$name</th>
               <td>$value</td>
+            </tr>
+          </table>
+        </div>
+
+        <div py:if="plugins" id="plugins">
+          <h2>Installed Plugins</h2>
+          <table class="listing">
+            <tr py:for="name, plugin in sorted(plugins.iteritems())"
+                class="${all(not component.enabled for module in plugin.modules.itervalues()
+                             for component in module.components.itervalues()) and 'disabled' or None}">
+              <th>$name</th>
+              <td>${plugin.version or _('N/A')}</td>
             </tr>
           </table>
         </div>

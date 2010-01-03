@@ -6,6 +6,9 @@ from trac.resource import ResourceNotFound
 from trac.ticket.api import IMilestoneChangeListener
 from trac.ticket.model import Version
 
+revision = "$Rev$"
+url = "$URL$"
+
 
 class MilestoneToVersion(Component):
     """Automatically create a version when a milestone is completed.

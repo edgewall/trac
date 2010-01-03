@@ -16,15 +16,31 @@
 
 from glob import glob
 import imp
+import inspect
+import os.path
 import pkg_resources
 from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
                           UnknownExtra
-import os
 import sys
 
-from trac.util.text import exception_to_unicode
+from trac import __version__ as TRAC_VERSION
+from trac.util import get_doc, get_module_path, get_pkginfo
+from trac.util.text import exception_to_unicode, to_unicode
 
 __all__ = ['load_components']
+
+# Ideally, this wouldn't be hard-coded like this
+required_components = (
+    'trac.about.AboutModule',
+    'trac.cache.CacheManager',
+    'trac.env.Environment',
+    'trac.env.EnvironmentSetup',
+    'trac.mimeview.api.Mimeview',
+    'trac.perm.DefaultPermissionGroupProvider',
+    'trac.perm.PermissionSystem',
+    'trac.web.chrome.Chrome',
+    'trac.web.main.RequestDispatcher',
+)
 
 def _enable_plugin(env, module):
     """Enable the given plugin module by adding an entry to the configuration.
@@ -98,15 +114,109 @@ def load_py_files():
 
     return _load_py_files
 
+def get_plugins_dir(env):
+    """Return the path to the `plugins` directory of the environment."""
+    plugins_dir = os.path.realpath(os.path.join(env.path, 'plugins'))
+    return os.path.normcase(plugins_dir)
+
 def load_components(env, extra_path=None, loaders=(load_eggs('trac.plugins'),
                                                    load_py_files())):
     """Load all plugin components found on the given search path."""
-    plugins_dir = os.path.normcase(os.path.realpath(
-        os.path.join(env.path, 'plugins')
-    ))
+    plugins_dir = get_plugins_dir(env)
     search_path = [plugins_dir]
     if extra_path:
         search_path += list(extra_path)
 
     for loadfunc in loaders:
         loadfunc(env, search_path, auto_enable=plugins_dir)
+
+def get_plugin_info(env):
+    """Return package information about Trac core and installed plugins."""
+    plugins_dir = get_plugins_dir(env)
+    plugins = {}
+    from trac.core import ComponentMeta
+    for component in ComponentMeta._components:
+        module = sys.modules[component.__module__]
+
+        dist = _find_distribution(env, module)
+        plugin_filename = None
+        if os.path.realpath(os.path.dirname(dist.location)) == plugins_dir:
+            plugin_filename = os.path.basename(dist.location)
+
+        description = inspect.getdoc(component)
+        if description:
+            description = to_unicode(description).split('.', 1)[0] + '.'
+
+        if dist.project_name not in plugins:
+            readonly = True
+            if plugin_filename and os.access(dist.location,
+                                             os.F_OK + os.W_OK):
+                readonly = False
+            # retrieve plugin metadata
+            info = get_pkginfo(dist)
+            if not info:
+                info = {}
+                for k in ('author author_email home_page url license trac'
+                          .split()):
+                    v = getattr(module, k, '')
+                    if v:
+                        if k == 'home_page' or k == 'url':
+                            k = 'home_page'
+                            v = v.replace('$', '').replace('URL: ', '') 
+                        if k == 'author':
+                            v = to_unicode(v)
+                        info[k] = v
+            else:
+                # Info found; set all those fields to "None" that have the 
+                # value "UNKNOWN" as this is the value for fields that
+                # aren't specified in "setup.py"
+                for k in info:
+                    if info[k] == 'UNKNOWN':
+                        info[k] = None
+                    elif k == 'author':
+                        # Must be encoded as unicode as otherwise Genshi 
+                        # may raise a "UnicodeDecodeError".
+                        info[k] = to_unicode(info[k])
+
+            # retrieve plugin version info
+            version = dist.version
+            if not version:
+                version = (getattr(module, 'version', '') or
+                           getattr(module, 'revision', ''))
+                # special handling for "$Rev$" strings
+                version = version.replace('$', '').replace('Rev: ', 'r') 
+            plugins[dist.project_name] = {
+                'name': dist.project_name, 'version': version,
+                'path': dist.location, 'plugin_filename': plugin_filename,
+                'readonly': readonly, 'info': info, 'modules': {},
+            }
+        modules = plugins[dist.project_name]['modules']
+        if module.__name__ not in modules:
+            summary, description = get_doc(module)
+            plugins[dist.project_name]['modules'][module.__name__] = {
+                'summary': summary, 'description': description,
+                'components': {},
+            }
+        full_name = module.__name__ + '.' + component.__name__
+        summary, description = get_doc(component)
+        modules[module.__name__]['components'][component.__name__] = {
+            'full_name': full_name,
+            'summary': summary, 'description': description,
+            'enabled': env.is_component_enabled(component),
+            'required': full_name in required_components,
+        }
+    return plugins
+
+def _find_distribution(env, module):
+    path = get_module_path(module)
+    if path == env.trac_path:
+        return pkg_resources.Distribution(project_name='Trac',
+                                          version=TRAC_VERSION,
+                                          location=path)
+    for dist in pkg_resources.find_distributions(path, only=True):
+        return dist
+    else:
+        # This is a plain Python source file, not an egg
+        return pkg_resources.Distribution(project_name=module.__name__,
+                                          version='',
+                                          location=module.__file__)

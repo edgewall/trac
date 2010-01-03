@@ -22,6 +22,7 @@ import re
 from genshi.builder import tag
 
 from trac.core import *
+from trac.loader import get_plugin_info
 from trac.perm import IPermissionRequestor
 from trac.util.translation import _
 from trac.web import IRequestHandler
@@ -54,11 +55,17 @@ class AboutModule(Component):
         return re.match(r'/about(?:_trac)?(?:/.+)?$', req.path_info)
 
     def process_request(self, req):
-        data = {}
+        data = {'systeminfo': None, 'plugins': None, 'config': None}
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
             data['systeminfo'] = self.env.systeminfo
+
+        if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
+            # Collect plugin information
+            plugins = get_plugin_info(self.env)
+            plugins.pop('Trac', None)
+            data['plugins'] = plugins
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information

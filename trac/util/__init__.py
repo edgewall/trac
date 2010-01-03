@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import errno
+import inspect
 import locale
 import os.path
 import random
@@ -471,6 +472,19 @@ def get_pkginfo(dist):
         for attr in attrs:
             info[normalize(attr)] = err
     return info
+
+def get_doc(obj):
+    """Return the docstring of an object as a tuple `(summary, description)`,
+    where `summary` is the first paragraph and `description` is the remaining
+    text.
+    """
+    doc = inspect.getdoc(obj)
+    if not doc:
+        return (None, None)
+    doc = to_unicode(doc).split('\n\n', 1)
+    summary = doc[0].replace('\n', ' ')
+    description = len(doc) > 1 and doc[1] or None
+    return (summary, description)
 
 # -- crypto utils
 

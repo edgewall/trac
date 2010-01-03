@@ -3,16 +3,11 @@
 #content.about h2 { margin-top: 2em; }
 #content.about table { margin-top: 0; width: auto; }
 #content.about table th, #content.about table td { font-size: 90%; }
+#content.about table th { background: #f7f7f0; font-weight: bold; vertical-align: top; white-space: nowrap; }
 
-#content.about th { background: #f7f7f0; font-weight: bold; text-align: right;
-  vertical-align: top;
-}
+#content.about #plugins tr.disabled th, #content.about #plugins tr.disabled td { color: #999; }
 
-#content.about #config th { text-align: left; }
-#content.about #config th.section { text-align: right; }
-#content.about #config th, #content.about #config td { border: 1px solid #ddd;
-  padding: 3px;
-}
+#content.about #config th, #content.about #config td { border: 1px solid #ddd; padding: 3px; }
 #content.about #config tr.modified { background: #ffd; }
 #content.about #config tr.modified td.value { font-style: italic; }
 #content.about #config td.doc { padding: 3px 1em; }
