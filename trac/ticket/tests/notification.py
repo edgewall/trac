@@ -143,7 +143,7 @@ class NotificationTestCase(unittest.TestCase):
         """Date format compliance (RFC822) 
            we do not support 'military' format""" 
         date_str = r"^((?P<day>\w{3}),\s*)*(?P<dm>\d{2})\s+" \
-                   r"(?P<month>\w{3})\s+(?P<year>200\d)\s+" \
+                   r"(?P<month>\w{3})\s+(?P<year>\d{4})\s+" \
                    r"(?P<hour>\d{2}):(?P<min>[0-5][0-9])" \
                    r"(:(?P<sec>[0-5][0-9]))*\s" \
                    r"((?P<tz>\w{2,3})|(?P<offset>[+\-]\d{4}))$"
