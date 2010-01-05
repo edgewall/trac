@@ -535,8 +535,10 @@ div.system-message p.system-message-title { font-weight: bold; }
 #content.error form.newticket { display: inline; }
 #content.error form.newticket textarea { display: none; }
 
-#content.error #systeminfo { margin: 1em; width: auto; }
-#content.error #systeminfo th { font-weight: bold; text-align: right; }
+#content.error #systeminfo, #content.error #plugins { margin: 1em; width: auto; }
+#content.error #systeminfo th, #content.error #systeminfo td,
+#content.error #plugins th, #content.error #plugins td { font-size: 90%; }
+#content.error #systeminfo th, #content.error #plugins th { background: #f7f7f7; font-weight: bold; }
 
 #content.error #traceback { margin-left: 1em; }
 #content.error #traceback :link, #content.error #traceback :visited {

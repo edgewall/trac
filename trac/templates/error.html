@@ -34,18 +34,18 @@
        $("#traceback pre").hide();
        $("#tbtoggle").parent().show();
 
-       $("#systeminfo").append("<tr><th>jQuery:</th><td>"+$().jquery+"</td></tr>");
-       $("#systeminfo").before("<p>User Agent: <tt>"+navigator.userAgent+"</tt></p>");
+       $("#systeminfo").append("<tr><th>jQuery</th><td>" + $().jquery + "</td></tr>");
+       $("#systeminfo").before("<p>User Agent: <tt>" + navigator.userAgent + "</tt></p>");
       });
     /*]]>*/</script>
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
         var desc = $("form.newticket textarea");
-        desc.text(desc.text()
+        desc.text(desc.eq(0).text()
                   .replace(/==== System Information ====\s+/m,
                            "User Agent was: `" + navigator.userAgent + "`\n\n$&")
-                  .replace(/\|\|\s+==== Python Traceback ====/m,
-                           "||\n|| '''jQuery:''' || `" + $().jquery + "` $&"));
+                  .replace(/\|\|\s+==== Enabled Plugins ====/m,
+                           "||\n|| '''`jQuery`''' || `" + $().jquery + "` $&"));
       });
     /*]]>*/</script>
   </head>
@@ -56,7 +56,6 @@
            value="${'dev' in trac.version and 'devel' or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
     <textarea name="description" rows="3" cols="10">
-
 ==== How to Reproduce ====
 
 While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
@@ -72,13 +71,16 @@ ${pprint(req.args)}
 
 ==== System Information ====
 <py:for each="k, v in trac.systeminfo">
-|| '''$k''' || ${'`%s`' % (v and v.replace('\n', '` [[br]] `'))} ||</py:for>
+|| '''`$k`''' || ${'`%s`' % (v and v.replace('\n', '` [[br]] `'))} ||</py:for>
+
+==== Enabled Plugins ====
+<py:for each="plugin in plugins">
+|| '''`${plugin.name}`''' || `${plugin.version or _('N/A')}` ||</py:for>
 
 ==== Python Traceback ====
 {{{
 ${traceback}
-}}}
-    </textarea>
+}}}</textarea>
     <span class="inlinebuttons">
       <input type="submit" name="create" value="${_('Create')}" />
     </span>
@@ -187,10 +189,19 @@ ${traceback}
               <h2>System Information:</h2>
               <table class="listing" id="systeminfo">
                 <tr py:for="name, value in trac.systeminfo">
-                  <th>$name:</th>
+                  <th>$name</th>
                   <td>$value</td>
                 </tr>
               </table>
+              <py:if test="plugins">
+                <h2>Enabled Plugins:</h2>
+                <table class="listing" id="plugins">
+                  <tr py:for="plugin in plugins">
+                    <th>${plugin.name}</th>
+                    <td>${plugin.version or _('N/A')}</td>
+                  </tr>
+                </table>
+              </py:if>
             </py:otherwise>
           </py:choose>
         </py:when>

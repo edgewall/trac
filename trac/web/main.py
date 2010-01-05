@@ -41,11 +41,12 @@ from trac import __version__ as TRAC_VERSION
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
+from trac.loader import get_plugin_info
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
                       arity, translation
-from trac.util.compat import partial
+from trac.util.compat import any, partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import tag_, _
@@ -564,10 +565,21 @@ def _dispatch_request(req, env, env_error):
                                     'vars': tb.tb_frame.f_locals}]
                     tb = tb.tb_next
 
+            plugins = []
+            if env:
+                for name, plugin in get_plugin_info(env).iteritems():
+                    if name == 'Trac':
+                        continue
+                    if any(component['enabled']
+                           for module in plugin['modules'].itervalues()
+                           for component in module['components'].itervalues()):
+                        plugins.append(plugin)
+                plugins.sort(key=lambda plugin: plugin['name'])
+
             data = {'title': 'Internal Error',
                     'type': 'internal', 'message': message,
                     'traceback': traceback, 'frames': frames,
-                    'shorten_line': shorten_line}
+                    'shorten_line': shorten_line, 'plugins': plugins}
 
             try:
                 req.send_error(exc_info, status=500, env=env, data=data)

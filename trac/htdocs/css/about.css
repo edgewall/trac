@@ -3,7 +3,7 @@
 #content.about h2 { margin-top: 2em; }
 #content.about table { margin-top: 0; width: auto; }
 #content.about table th, #content.about table td { font-size: 90%; }
-#content.about table th { background: #f7f7f0; font-weight: bold; vertical-align: top; white-space: nowrap; }
+#content.about table th { background: #f7f7f7; font-weight: bold; vertical-align: top; white-space: nowrap; }
 
 #content.about #plugins tr.disabled th, #content.about #plugins tr.disabled td { color: #999; }
 
