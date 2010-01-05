@@ -343,7 +343,7 @@ msgstr "用法: trac-admin </path/to/projenv> [command [subcommand] [option ...]
 
 #: trac/admin/console.py:289
 msgid "Invoking trac-admin without command starts interactive mode.\n"
-msgstr "不带命令调用trac-admin将启动交互模式。"
+msgstr "不带命令调用trac-admin将启动交互模式。\n"
 
 #: trac/admin/console.py:329
 #, python-format
@@ -359,10 +359,11 @@ msgid ""
 " Please enter the name of your project.\n"
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
+"\n"
 "Trac先要询问一些和环境相关的问题，以初始化和准备项目数据库。\n"
 "\n"
 "请输入您项目的名称。\n"
-"此名称将在页面标题和描述中使用。"
+"此名称将在页面标题和描述中使用。\n"
 
 #: trac/admin/console.py:339
 #, python-format
@@ -378,10 +379,11 @@ msgid ""
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
 msgstr ""
+" \n"
 "请指定所用数据库的连接字符串。缺省情况下，\n"
 "将在环境目录中创建一个本地SQLite数据库。\n"
 "使用一个已存在的PostgreSQL数据库也是可行的\n"
-"(具体的连接字符串语法请查看Trac文档)。"
+"(具体的连接字符串语法请查看Trac文档)。\n"
 
 #: trac/admin/console.py:349
 #, python-format
@@ -398,11 +400,12 @@ msgid ""
 " choose the default here and don't specify a repository directory.\n"
 " in the next question.\n"
 msgstr ""
+" \n"
 "请指定版本控制系统的类型，缺省使用svn。\n"
 "\n"
 "如果您不想使用Trac与版本控制系统的集成，\n"
 "请在此选择缺省值，并在下一个问题中不要\n"
-"指定版本库目录。"
+"指定版本库目录。\n"
 
 #: trac/admin/console.py:360
 #, python-format
@@ -416,9 +419,10 @@ msgid ""
 " repository, or leave it blank to use Trac without a repository.\n"
 " You can also set the repository location later.\n"
 msgstr ""
+"\n"
 "请指定版本控制库的绝对路径，或者不输入\n"
 "表明在无版本库模式下使用Trac。\n"
-"您也可以在以后再指定版本库位置。"
+"您也可以在以后再指定版本库位置。\n"
 
 #: trac/admin/console.py:367
 msgid "Path to repository [/path/to/repos]> "
@@ -456,6 +460,7 @@ msgid ""
 "repository_type and repository_path settings in order to enable\n"
 "the Trac repository browser.\n"
 msgstr ""
+"\n"
 "警告：无法建立版本库索引。\n"
 "\n"
 "发生这种情况的原因有多种：错误的版本库类型，\n"
@@ -464,7 +469,7 @@ msgstr ""
 "\n"
 "尽管您可以开始使用Trac环境，但您将需要再次检查\n"
 "您的trac.ini文件以及[trac] repository_type\n"
-"和repository_path 设置以启用Trac版本库浏览器。"
+"和repository_path 设置以启用Trac版本库浏览器。\n"
 
 #: trac/admin/console.py:480
 #, python-format
@@ -1205,7 +1210,7 @@ msgid ""
 msgstr ""
 "该会话标志用于标识存储在服务器上的定制设置和会话数据.\n"
 "      虽然默认情况下是自动生成的, 您可以将其修改成比较任意记忆的字符串,\n"
-"      以使您可以在不同的浏览器中重新载入您的这些设置.\n"
+"      以使您可以在不同的浏览器中重新载入您的这些设置."
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -3407,7 +3412,6 @@ msgid ""
 "        and [4:[5:] days back][6:]\n"
 "        [7:done by [8:]]"
 msgstr ""
-"\n"
 "[1:查看[2:]] [3:]之前\n"
 "[4:[5:]天][6:]\n"
 "[7:由[8:]]进行的变更"
