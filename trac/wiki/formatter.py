@@ -773,10 +773,21 @@ class Formatter(object):
             numpipes -= 1
             cell = 'th'
         colspan = numpipes/2
+        attrs = ''
         if colspan > 1:
-            td = '<%s colspan="%d">' % (cell, int(colspan))
+            attrs = ' colspan="%d"' % int(colspan)
+        # alignment: ||left || right||default|| default ||
+        end = fullmatch.end()
+        alignleft = self.line[end] != ' '
+        # lookahead next || (FIXME: this fails on ` || ` inside the cell)
+        next_sep = re.search(r'([^!])=?\|\|', self.line[end:])
+        if next_sep and next_sep.group(1) != ' ':
+            textalign = not alignleft and 'right'
         else:
-            td = '<%s>' % cell
+            textalign = alignleft and 'left'
+        if textalign:
+            attrs += ' style="text-align: %s"' % textalign
+        td = '<%s%s>' % (cell, attrs)
         if self.in_table_cell:
             td = '</%s>' % self.in_table_cell + td
         self.in_table_cell = cell
@@ -942,6 +953,7 @@ class Formatter(object):
             self.in_list_item = False
             self.in_quote = False
             # Throw a bunch of regexps on the problem
+            self.line = line
             result = re.sub(self.wikiparser.rules, self.replace, line)
 
             if not self.in_list_item:
