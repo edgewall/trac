@@ -333,7 +333,7 @@ msgstr "Gebruik: trac-admin </pad/naar/projectomgeving> [commando [subcommando] 
 
 #: trac/admin/console.py:258
 msgid "Invoking trac-admin without command starts interactive mode.\n"
-msgstr "Het starten van trac-admin zonder extra opties start de interactieve omgeving"
+msgstr "Het starten van trac-admin zonder extra opties start de interactieve omgeving\n"
 
 #: trac/admin/console.py:296
 #, python-format
@@ -1709,7 +1709,6 @@ msgid ""
 "Trac\n"
 "              administrator"
 msgstr ""
-"\n"
 "              Trac-beheerder"
 
 #: trac/templates/error.html:109
@@ -1809,7 +1808,7 @@ msgstr "Meest recente aanroep:"
 
 #: trac/templates/error.html:152 trac/templates/error.html:179
 msgid "File \""
-msgstr ""Bestand \""
+msgstr "Bestand \""
 
 #: trac/templates/error.html:152
 msgid ""
