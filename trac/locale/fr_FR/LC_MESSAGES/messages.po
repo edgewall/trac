@@ -681,9 +681,9 @@ msgid "Unknown action"
 msgstr "Action inconnue"
 
 #: trac/admin/web_ui.py:341
-#, fuzzy, python-format
+#, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
-msgstr "L'utilisateur %(subject)s a obtenu la permission %(action)s."
+msgstr "Le sujet %(subject)s a obtenu la permission %(action)s."
 
 #: trac/admin/web_ui.py:346
 #, python-format
@@ -691,14 +691,14 @@ msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "La permission %(action)s a déjà été attribuée à %(subject)s"
 
 #: trac/admin/web_ui.py:362
-#, fuzzy, python-format
+#, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
-msgstr "L'utilisateur %(subject)s a été ajouté au groupe %(group)s"
+msgstr "Le sujet %(subject)s a été ajouté au groupe %(group)s"
 
 #: trac/admin/web_ui.py:367
-#, fuzzy, python-format
+#, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
-msgstr "L'utilisateur %(subject)s a déjà été ajouté au groupe %(group)s."
+msgstr "Le sujet %(subject)s a déjà été ajouté au groupe %(group)s."
 
 #: trac/admin/web_ui.py:380
 msgid "The selected permissions have been revoked."
@@ -1569,14 +1569,13 @@ msgid "System Information"
 msgstr "Informations système"
 
 #: trac/templates/about.html:63
-#, fuzzy
 msgid "Installed Plugins"
-msgstr "Ajouter une extension :"
+msgstr "Extensions installées"
 
 #: trac/templates/about.html:69 trac/templates/error.html:78
 #: trac/templates/error.html:201
 msgid "N/A"
-msgstr ""
+msgstr "Non disponible"
 
 #: trac/templates/about.html:79
 msgid "Section"
@@ -1783,7 +1782,7 @@ msgstr "==== Information système ===="
 
 #: trac/templates/error.html:75
 msgid "==== Enabled Plugins ===="
-msgstr ""
+msgstr "==== Extensions activées ===="
 
 #: trac/templates/error.html:78
 msgid ""
@@ -1924,9 +1923,8 @@ msgid "Code fragment:"
 msgstr "Fragment du code :"
 
 #: trac/templates/error.html:159
-#, fuzzy
 msgid "Line"
-msgstr "en ligne"
+msgstr "Ligne"
 
 #: trac/templates/error.html:169
 msgid "Local variables:"
@@ -1945,9 +1943,8 @@ msgid "System Information:"
 msgstr "Information système :"
 
 #: trac/templates/error.html:197
-#, fuzzy
 msgid "Enabled Plugins:"
-msgstr "Gestion des extensions"
+msgstr "Extensions activées :"
 
 #: trac/templates/error.html:210
 msgid "TracGuide"
@@ -2839,14 +2836,12 @@ msgid "Ticket Comment Diff"
 msgstr "Modification du commentaire"
 
 #: trac/ticket/web_ui.py:1068
-#, fuzzy
 msgid "No permission to edit the ticket description."
 msgstr "Aucun droit pour modifier la description."
 
 #: trac/ticket/web_ui.py:1074
-#, fuzzy
 msgid "No permission to change the ticket reporter."
-msgstr "Aucun droit pour modifier les champs du ticket."
+msgstr "Aucun droit pour changer le rapporteur du ticket."
 
 #: trac/ticket/web_ui.py:1079
 msgid "No permission to change ticket fields."
@@ -2898,7 +2893,7 @@ msgid ""
 "notifications: %(message)s"
 msgstr ""
 "Le ticket a été créé, mais une erreur est survenue lors de l'envoi des "
-"notifications: %(message)s"
+"notifications : %(message)s"
 
 #: trac/ticket/web_ui.py:1182
 #, python-format
@@ -2921,7 +2916,7 @@ msgid ""
 "notifications: %(message)s"
 msgstr ""
 "Les modifications ont été sauvegardées, mais une erreur est survenue lors"
-" de l'envoi des notifications: %(message)s"
+" de l'envoi des notifications : %(message)s"
 
 #: trac/ticket/web_ui.py:1351
 msgid "Add to Cc"
@@ -3473,7 +3468,7 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:321
 msgid "The ticket validation has [1:failed]."
-msgstr ""
+msgstr "La validation du ticket a [1:échouée]."
 
 #: trac/ticket/templates/ticket.html:329
 msgid "Changed by"
