@@ -925,6 +925,32 @@ Inline  comment
 <h2 id="a10tips">10 tips</h2>
 ------------------------------
 == 10 tips ==
+============================== Relaxed heading
+= Title
+== Chapter
+=== Section
+==== Subsection
+===== Subsubsection #h5
+====== h6
+======== but no h7
+------------------------------
+<h1 id="Title">Title</h1>
+<h2 id="Chapter">Chapter</h2>
+<h3 id="Section">Section</h3>
+<h4 id="Subsection">Subsection</h4>
+<h5 id="h5">Subsubsection</h5>
+<h6 id="h6">h6</h6>
+<p>
+======== but no h7
+</p>
+------------------------------
+= Title
+== Chapter
+=== Section
+==== Subsection
+===== Subsubsection #h5
+====== h6
+======== but no h7
 ============================================================
 
              Lists

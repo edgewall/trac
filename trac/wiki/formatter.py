@@ -543,11 +543,13 @@ class Formatter(object):
     def _parse_heading(self, match, fullmatch, shorten):
         match = match.strip()
 
-        depth = min(len(fullmatch.group('hdepth')), 5)
+        hdepth = fullmatch.group('hdepth')
+        depth = len(hdepth)
         anchor = fullmatch.group('hanchor') or ''
-        heading_text = match[depth+1:-depth-1-len(anchor)]
-        heading = format_to_oneliner(self.env, self.context, heading_text,
-                                     False)
+        htext = fullmatch.group('htext').strip()
+        if htext.endswith(hdepth):
+            htext = htext[:-depth]
+        heading = format_to_oneliner(self.env, self.context, htext, False)
         if anchor:
             anchor = anchor[1:]
         else:
@@ -563,8 +565,7 @@ class Formatter(object):
             i += 1
         self._anchors[anchor] = True
         if shorten:
-            heading = format_to_oneliner(self.env, self.context, heading_text,
-                                         True)
+            heading = format_to_oneliner(self.env, self.context, htext, True)
         return (depth, heading, anchor)
 
     def _heading_formatter(self, match, fullmatch):
