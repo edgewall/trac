@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2009-12-25 08:23+0800\n"
-"Last-Translator: Hong Shuning <hongshuning@gmail.com>, Zeng Jie <zengjie@gmail.com>\n"
+"PO-Revision-Date: 2010-01-06 22:59+0100\n"
+"Last-Translator: Hong Shuning <hongshuning@gmail.com>, Zeng Jie "
+"<zengjie@gmail.com>\n"
 "Language-Team: zh_CN <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +24,7 @@ msgid ""
 "for syntax highlighting."
 msgstr "你使用的是PHP CGI的二进制版本, Trac需要使用CLI版本以提供语法高亮."
 
-#: trac/about.py:44 trac/templates/about.html:9 trac/templates/about.html:28
+#: trac/about.py:45 trac/templates/about.html:9 trac/templates/about.html:28
 msgid "About Trac"
 msgstr "关于Trac"
 
@@ -68,8 +69,8 @@ msgstr "在 %(parent)s 中的附件 '%(id)s'"
 msgid "Attachments of %(parent)s"
 msgstr "在 %(parent)s 中的附件"
 
-#: trac/attachment.py:557 trac/attachment.py:580 trac/admin/web_ui.py:455
-#: trac/admin/web_ui.py:458 trac/admin/web_ui.py:462
+#: trac/attachment.py:557 trac/attachment.py:580 trac/admin/web_ui.py:422
+#: trac/admin/web_ui.py:425 trac/admin/web_ui.py:429
 msgid "No file uploaded"
 msgstr "没有文件被上传"
 
@@ -133,8 +134,8 @@ msgstr "资源标示符'%(id)s'无效"
 #: trac/attachment.py:884 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:47
 #: trac/admin/templates/admin_milestones.html:103
-#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:68
-#: trac/templates/error.html:166 trac/ticket/admin.py:209
+#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:80
+#: trac/templates/error.html:171 trac/ticket/admin.py:209
 #: trac/ticket/admin.py:400 trac/ticket/admin.py:559
 msgid "Name"
 msgstr "名称"
@@ -168,22 +169,22 @@ msgstr "文件 '%(name)s' 已经存在."
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr "[%(section)s] %(entry)s: 期望是整数, 却得到 %(value)s"
 
-#: trac/env.py:521
+#: trac/env.py:523
 msgid "Database newer than Trac version"
 msgstr "数据库的版本比Trac使用的版本新"
 
-#: trac/env.py:535
+#: trac/env.py:537
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "版本%(num)i 没有升级模块 (%(version)s.py)"
 
-#: trac/env.py:580
+#: trac/env.py:582
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
 msgstr "没有环境变量\"TRAC_ENV\". Trac要求使用该变量以指向一个有效的Trac环境."
 
-#: trac/env.py:612
+#: trac/env.py:614
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -194,41 +195,41 @@ msgstr ""
 "\n"
 "请执行\"trac-admin %(path)s upgrade\""
 
-#: trac/env.py:646
+#: trac/env.py:648
 msgid "Copying resources from:"
 msgstr "正在复制资源自："
 
-#: trac/env.py:662
+#: trac/env.py:664
 msgid "Creating scripts."
 msgstr "正在创建脚本。"
 
-#: trac/env.py:677
+#: trac/env.py:679
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "热备无法覆盖已存在的 '%(dest)s'"
 
-#: trac/env.py:687
+#: trac/env.py:689
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "正在将 %(src)s 热备至 %(dst)s ..."
 
-#: trac/env.py:702
+#: trac/env.py:704
 msgid "The following errors happened while copying the environment:"
 msgstr "当复制环境时发生以下错误："
 
-#: trac/env.py:713
+#: trac/env.py:715
 msgid "Hotcopy done."
 msgstr "热备结束。"
 
-#: trac/env.py:718 trac/admin/api.py:125
+#: trac/env.py:720 trac/admin/api.py:125
 msgid "Invalid arguments"
 msgstr "无效参数"
 
-#: trac/env.py:721
+#: trac/env.py:723
 msgid "Database is up to date, no upgrade necessary."
 msgstr "数据库是最新的，无需升级。"
 
-#: trac/env.py:729
+#: trac/env.py:731
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
@@ -237,7 +238,7 @@ msgstr ""
 "备份失败：'%(msg)s'.\n"
 "使用 '--no-backup' 执行不做备份的升级。"
 
-#: trac/env.py:734
+#: trac/env.py:736
 msgid "Upgrade done."
 msgstr "升级完成。"
 
@@ -278,7 +279,7 @@ msgid "User"
 msgstr "用户"
 
 #: trac/perm.py:615 trac/admin/templates/admin_perms.html:69
-#: trac/ticket/templates/ticket.html:439
+#: trac/ticket/templates/ticket.html:442
 msgid "Action"
 msgstr "动作"
 
@@ -526,30 +527,30 @@ msgstr ""
 msgid "non-ascii environment path '%(path)s' not supported."
 msgstr "不支持非ASCII环境路径 '%(path)s'。"
 
-#: trac/admin/web_ui.py:81
+#: trac/admin/web_ui.py:64
 msgid "Admin"
 msgstr "管理"
 
-#: trac/admin/web_ui.py:82 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:65 trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "管理"
 
-#: trac/admin/web_ui.py:98
+#: trac/admin/web_ui.py:81
 msgid "No administration panels available"
 msgstr "没有可用的管理面板"
 
-#: trac/admin/web_ui.py:124 trac/admin/web_ui.py:128
+#: trac/admin/web_ui.py:107 trac/admin/web_ui.py:111
 msgid "Unknown administration panel"
 msgstr "未知管理面板"
 
-#: trac/admin/web_ui.py:201 trac/ticket/admin.py:65 trac/ticket/admin.py:90
+#: trac/admin/web_ui.py:184 trac/ticket/admin.py:65 trac/ticket/admin.py:90
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
 #: trac/ticket/admin.py:697 trac/ticket/report.py:177
 #: trac/ticket/roadmap.py:685 trac/wiki/web_ui.py:289
 msgid "Your changes have been saved."
 msgstr "您的修改已保存"
 
-#: trac/admin/web_ui.py:204 trac/ticket/admin.py:68
+#: trac/admin/web_ui.py:187 trac/ticket/admin.py:68
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
@@ -557,114 +558,114 @@ msgstr ""
 "写入trac.ini错误，请确保它能被Web服务器写入。\n"
 "您的修改没有保存。"
 
-#: trac/admin/web_ui.py:217 trac/admin/web_ui.py:245 trac/admin/web_ui.py:333
-#: trac/admin/web_ui.py:431 trac/prefs/web_ui.py:86
+#: trac/admin/web_ui.py:200 trac/admin/web_ui.py:228 trac/admin/web_ui.py:316
+#: trac/admin/web_ui.py:398 trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "一般"
 
-#: trac/admin/web_ui.py:217 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:200 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "基础设置"
 
-#: trac/admin/web_ui.py:245 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:228 trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "日志"
 
-#: trac/admin/web_ui.py:254 trac/ticket/templates/milestone_delete.html:31
+#: trac/admin/web_ui.py:237 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:72
 msgid "None"
 msgstr "无"
 
-#: trac/admin/web_ui.py:255
+#: trac/admin/web_ui.py:238
 msgid "Console"
 msgstr "控制台"
 
-#: trac/admin/web_ui.py:257 trac/templates/attachment.html:29
+#: trac/admin/web_ui.py:240 trac/templates/attachment.html:29
 #: trac/versioncontrol/api.py:111
 msgid "File"
 msgstr "文件"
 
-#: trac/admin/web_ui.py:259
+#: trac/admin/web_ui.py:242
 msgid "Syslog"
 msgstr "系统日志"
 
-#: trac/admin/web_ui.py:261
+#: trac/admin/web_ui.py:244
 msgid "Windows event log"
 msgstr "Windows事件日志"
 
-#: trac/admin/web_ui.py:274
+#: trac/admin/web_ui.py:257
 #, python-format
 msgid "Unknown log type %(type)s"
 msgstr "未知日志类型 %(type)s"
 
-#: trac/admin/web_ui.py:275
+#: trac/admin/web_ui.py:258
 msgid "Invalid log type"
 msgstr "无效日志类型"
 
-#: trac/admin/web_ui.py:289
+#: trac/admin/web_ui.py:272
 #, python-format
 msgid "Unknown log level %(level)s"
 msgstr "未知日志级别 %(level)s"
 
-#: trac/admin/web_ui.py:290
+#: trac/admin/web_ui.py:273
 msgid "Invalid log level"
 msgstr "无效日志级别"
 
-#: trac/admin/web_ui.py:303
+#: trac/admin/web_ui.py:286
 msgid "You must specify a log file"
 msgstr "必须指定一个日志文件"
 
-#: trac/admin/web_ui.py:304
+#: trac/admin/web_ui.py:287
 msgid "Missing field"
 msgstr "缺少字段"
 
-#: trac/admin/web_ui.py:333 trac/admin/templates/admin_perms.html:9
+#: trac/admin/web_ui.py:316 trac/admin/templates/admin_perms.html:9
 msgid "Permissions"
 msgstr "权限"
 
-#: trac/admin/web_ui.py:347
+#: trac/admin/web_ui.py:330
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "全部大写的标记已保留为权限名称"
 
-#: trac/admin/web_ui.py:354
+#: trac/admin/web_ui.py:337
 msgid "Unknown action"
 msgstr "未知动作"
 
-#: trac/admin/web_ui.py:358
-#, python-format
-msgid "The user %(subject)s has been granted the permission %(action)s."
+#: trac/admin/web_ui.py:341
+#, fuzzy, python-format
+msgid "The subject %(subject)s has been granted the permission %(action)s."
 msgstr "用户 %(subject)s 已分配权限 %(action)s。"
 
-#: trac/admin/web_ui.py:363
+#: trac/admin/web_ui.py:346
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
 msgstr "权限 \"%(action)s\" 已分配给 \"%(subject)s\""
 
-#: trac/admin/web_ui.py:379
-#, python-format
-msgid "The user %(subject)s has been added to the group %(group)s."
+#: trac/admin/web_ui.py:362
+#, fuzzy, python-format
+msgid "The subject %(subject)s has been added to the group %(group)s."
 msgstr "\"%(subject)s\" 已增加到用户组 \"%(group)s\""
 
-#: trac/admin/web_ui.py:384
-#, python-format
-msgid "The user %(subject)s was already added to the group %(group)s."
+#: trac/admin/web_ui.py:367
+#, fuzzy, python-format
+msgid "The subject %(subject)s was already added to the group %(group)s."
 msgstr "\"%(subject)s\" 已增加到用户组 \"%(group)s\""
 
-#: trac/admin/web_ui.py:397
+#: trac/admin/web_ui.py:380
 msgid "The selected permissions have been revoked."
 msgstr "所选权限已收回。"
 
-#: trac/admin/web_ui.py:431 trac/admin/templates/admin_plugins.html:9
+#: trac/admin/web_ui.py:398 trac/admin/templates/admin_plugins.html:9
 msgid "Plugins"
 msgstr "插件s"
 
-#: trac/admin/web_ui.py:465
+#: trac/admin/web_ui.py:432
 msgid "Uploaded file is not a Python source file or egg"
 msgstr "上传的文件不是Python源文件或者egg包"
 
-#: trac/admin/web_ui.py:470
+#: trac/admin/web_ui.py:437
 #, python-format
 msgid "Plugin %(name)s already installed"
 msgstr "插件 %(name)s 已安装"
@@ -698,7 +699,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:362
+#: trac/ticket/templates/ticket.html:365
 msgid "Description:"
 msgstr "描述:"
 
@@ -776,7 +777,7 @@ msgid "Add"
 msgstr "增加"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
-#: trac/ticket/api.py:281 trac/ticket/web_ui.py:1309
+#: trac/ticket/api.py:281 trac/ticket/web_ui.py:1321
 msgid "Owner"
 msgstr "属主"
 
@@ -830,7 +831,7 @@ msgstr "修改"
 msgid "Order"
 msgstr "排序"
 
-#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:63
+#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:75
 msgid "Configuration"
 msgstr "配置"
 
@@ -1088,25 +1089,25 @@ msgstr "无法在 %(time)d 秒内获得数据库连接"
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "无法加载 Python 的 PostgreSQL 访问模块"
 
-#: trac/db/sqlite_backend.py:149
+#: trac/db/sqlite_backend.py:150
 msgid "Cannot load Python bindings for SQLite"
 msgstr "无法加载 Python 的 SQLite 访问模块"
 
-#: trac/db/sqlite_backend.py:153
+#: trac/db/sqlite_backend.py:154
 msgid "Need at least PySqlite 2.0.7 or higher"
 msgstr "至少需要 PySqlite 2.0.7 或以上版本"
 
-#: trac/db/sqlite_backend.py:168
+#: trac/db/sqlite_backend.py:169
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "数据库已经存在于 %(path)s"
 
-#: trac/db/sqlite_backend.py:210
+#: trac/db/sqlite_backend.py:211
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "数据库 \"%(path)s\" 未找到."
 
-#: trac/db/sqlite_backend.py:218
+#: trac/db/sqlite_backend.py:219
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1146,7 +1147,7 @@ msgid "Syntax Highlighting"
 msgstr "语法高亮"
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
-#: trac/ticket/templates/ticket.html:473
+#: trac/ticket/templates/ticket.html:476
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "Preferences"
 msgstr "个人设置"
@@ -1466,11 +1467,21 @@ msgstr "http://trac.edgewall.org/"
 msgid "System Information"
 msgstr "系统信息"
 
-#: trac/templates/about.html:67
+#: trac/templates/about.html:63
+#, fuzzy
+msgid "Installed Plugins"
+msgstr "安装插件:"
+
+#: trac/templates/about.html:69 trac/templates/error.html:78
+#: trac/templates/error.html:201
+msgid "N/A"
+msgstr ""
+
+#: trac/templates/about.html:79
 msgid "Section"
 msgstr "部分"
 
-#: trac/templates/about.html:69 trac/templates/error.html:166
+#: trac/templates/about.html:81 trac/templates/error.html:171
 msgid "Value"
 msgstr "值"
 
@@ -1490,7 +1501,7 @@ msgstr "(大小限制"
 msgid "Attachment Info"
 msgstr "附件信息"
 
-#: trac/templates/attachment.html:37 trac/ticket/templates/ticket.html:464
+#: trac/templates/attachment.html:37 trac/ticket/templates/ticket.html:467
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr "您的email或用户名:"
@@ -1566,8 +1577,8 @@ msgstr "版本"
 msgid "and"
 msgstr "和"
 
-#: trac/templates/diff_view.html:23 trac/ticket/web_ui.py:787
-#: trac/ticket/web_ui.py:922 trac/ticket/templates/ticket.html:145
+#: trac/templates/diff_view.html:23 trac/ticket/web_ui.py:798
+#: trac/ticket/web_ui.py:933 trac/ticket/templates/ticket.html:145
 msgid "Initial Version"
 msgstr "初始版本"
 
@@ -1633,7 +1644,7 @@ msgstr "删除"
 msgid "Modified"
 msgstr "修改"
 
-#: trac/templates/error.html:60
+#: trac/templates/error.html:59
 msgid ""
 "==== How to Reproduce ====\n"
 "\n"
@@ -1643,11 +1654,11 @@ msgstr ""
 "\n"
 "当进行"
 
-#: trac/templates/error.html:64
+#: trac/templates/error.html:62
 msgid "operation on `"
 msgstr "操作于 `"
 
-#: trac/templates/error.html:64
+#: trac/templates/error.html:62
 msgid ""
 "`, Trac issued an internal error.\n"
 "\n"
@@ -1657,7 +1668,7 @@ msgstr ""
 "\n"
 "''(请在此附加详细情况)''"
 
-#: trac/templates/error.html:68
+#: trac/templates/error.html:66
 msgid ""
 "Request parameters:\n"
 "{{{"
@@ -1665,11 +1676,15 @@ msgstr ""
 "请求参数:\n"
 "{{{"
 
-#: trac/templates/error.html:73
+#: trac/templates/error.html:71
 msgid "==== System Information ===="
 msgstr "==== 系统信息 ===="
 
-#: trac/templates/error.html:76
+#: trac/templates/error.html:75
+msgid "==== Enabled Plugins ===="
+msgstr ""
+
+#: trac/templates/error.html:78
 msgid ""
 "==== Python Traceback ====\n"
 "{{{"
@@ -1677,19 +1692,19 @@ msgstr ""
 "==== Python Traceback ====\n"
 "{{{"
 
-#: trac/templates/error.html:84
+#: trac/templates/error.html:85
 msgid "Create"
 msgstr "创建"
 
-#: trac/templates/error.html:99
+#: trac/templates/error.html:100
 msgid "Oops…"
 msgstr "糟了…"
 
-#: trac/templates/error.html:101
+#: trac/templates/error.html:102
 msgid "Trac detected an internal error:"
 msgstr "Trac检测到一个内部错误:"
 
-#: trac/templates/error.html:106
+#: trac/templates/error.html:107
 msgid ""
 "There was an internal error in Trac.\n"
 "                It is recommended that you notify your local\n"
@@ -1698,37 +1713,37 @@ msgid ""
 "                reproduce the issue."
 msgstr "Trac发生了内部错误。建议您向本地[1:Trac 管理员]提供重现问题所需要的信息。"
 
-#: trac/templates/error.html:114
+#: trac/templates/error.html:115
 msgid "To that end, you could"
 msgstr "为此目的, 您可以"
 
-#: trac/templates/error.html:114
+#: trac/templates/error.html:115
 msgid "a ticket."
 msgstr "一个任务单。"
 
-#: trac/templates/error.html:116
+#: trac/templates/error.html:117
 msgid "The action that triggered the error was:"
 msgstr "触发此错误的动作是:"
 
-#: trac/templates/error.html:121
+#: trac/templates/error.html:122
 msgid "This is probably a local installation issue."
 msgstr "这可能是一个本地安装问题。"
 
-#: trac/templates/error.html:122
+#: trac/templates/error.html:123
 msgid "You should"
 msgstr "您应该在管理用Trac上"
 
-#: trac/templates/error.html:123
+#: trac/templates/error.html:124
 msgid ""
 "a ticket at the admin Trac to report\n"
 "                    the issue."
 msgstr "一个任务单报告问题。"
 
-#: trac/templates/error.html:128
+#: trac/templates/error.html:129
 msgid "Found a bug in Trac?"
 msgstr "发现了一个Trac的Bug？"
 
-#: trac/templates/error.html:129
+#: trac/templates/error.html:130
 msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider reporting this to the Trac team."
@@ -1736,7 +1751,7 @@ msgstr ""
 "如果认为此项功能本应可用，并能重现该问题，\n"
 "              应考虑向Trac开发团队报告这个问题。"
 
-#: trac/templates/error.html:131
+#: trac/templates/error.html:132
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:[2:searching]\n"
@@ -1755,7 +1770,7 @@ msgstr ""
 "                [3:邮件列表]\n"
 "                而不是填写任务单。"
 
-#: trac/templates/error.html:140
+#: trac/templates/error.html:141
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new ticket at\n"
@@ -1764,19 +1779,19 @@ msgid ""
 "                explain how to reproduce it."
 msgstr "如果不是，就请在Trac项目网站上%(create)s一个新任务单，描述问题并说明如何重现。"
 
-#: trac/templates/error.html:145
+#: trac/templates/error.html:146
 msgid "Python Traceback"
 msgstr "Python Traceback"
 
-#: trac/templates/error.html:146
+#: trac/templates/error.html:147
 msgid "Most recent call last:"
 msgstr "最多最近调用的:"
 
-#: trac/templates/error.html:151 trac/templates/error.html:178
+#: trac/templates/error.html:152 trac/templates/error.html:183
 msgid "File \""
 msgstr "文件 \""
 
-#: trac/templates/error.html:151
+#: trac/templates/error.html:152
 msgid ""
 "\",\n"
 "                        line"
@@ -1784,35 +1799,45 @@ msgstr ""
 "\",\n"
 "                        行"
 
-#: trac/templates/error.html:152 trac/templates/error.html:178
+#: trac/templates/error.html:153 trac/templates/error.html:183
 msgid ", in"
 msgstr ", 于"
 
-#: trac/templates/error.html:156
+#: trac/templates/error.html:157
 msgid "Code fragment:"
 msgstr "部分代码:"
 
-#: trac/templates/error.html:164
+#: trac/templates/error.html:159
+#, fuzzy
+msgid "Line"
+msgstr "在线版本"
+
+#: trac/templates/error.html:169
 msgid "Local variables:"
 msgstr "局部变量:"
 
-#: trac/templates/error.html:178
+#: trac/templates/error.html:183
 msgid "\", line"
 msgstr "\", 行"
 
-#: trac/templates/error.html:181
+#: trac/templates/error.html:186
 msgid "Switch to plain text view"
 msgstr "切换到纯文本视图"
 
-#: trac/templates/error.html:184
+#: trac/templates/error.html:189
 msgid "System Information:"
 msgstr "系统信息:"
 
-#: trac/templates/error.html:196
+#: trac/templates/error.html:197
+#, fuzzy
+msgid "Enabled Plugins:"
+msgstr "管理插件"
+
+#: trac/templates/error.html:210
 msgid "TracGuide"
 msgstr "TracGuide"
 
-#: trac/templates/error.html:196
+#: trac/templates/error.html:210
 msgid "— The Trac User and Administration Guide"
 msgstr "— Trac用户及管理员指南"
 
@@ -1969,7 +1994,7 @@ msgstr ""
 "            (由[4:%(author)s]在%(date)s前添加)"
 
 #: trac/templates/macros.html:163 trac/templates/macros.html:174
-#: trac/ticket/templates/ticket.html:487
+#: trac/ticket/templates/ticket.html:490
 msgid "Attachments"
 msgstr "附件"
 
@@ -1982,21 +2007,18 @@ msgstr "附加文件"
 msgid "%(num)s of %(total)s %(unit)s %(title)s"
 msgid_plural "%(num)s of %(total)s %(units)s %(title)s"
 msgstr[0] "%(num)s / %(total)s %(unit)s %(title)s"
-msgstr[1] "%(num)s / %(total)s %(units)s %(title)s"
 
 #: trac/templates/macros.html:227
 #, python-format
 msgid "%(title)s %(unit)s:"
 msgid_plural "%(title)s %(units)s:"
 msgstr[0] "%(title)s %(unit)s:"
-msgstr[1] "%(title)s %(units)s:"
 
 #: trac/templates/macros.html:237
 #, python-format
 msgid "Total %(unit)s:"
 msgid_plural "Total %(units)s:"
 msgstr[0] "总计 %(unit)s:"
-msgstr[1] "总计 %(units)s:"
 
 #: trac/templates/theme.html:26
 msgid "Search:"
@@ -2023,7 +2045,7 @@ msgstr "任务单系统"
 msgid "The component \"%(name)s\" has been added."
 msgstr "组件 '%(name)s' 已添加。"
 
-#: trac/ticket/admin.py:117 trac/ticket/model.py:664 trac/ticket/model.py:686
+#: trac/ticket/admin.py:117 trac/ticket/model.py:669 trac/ticket/model.py:691
 msgid "Invalid component name."
 msgstr "无效的组件名称。"
 
@@ -2059,7 +2081,7 @@ msgstr "无效完成日期"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "里程碑 \"%(name)s\" 已添加。"
 
-#: trac/ticket/admin.py:304 trac/ticket/model.py:804 trac/ticket/model.py:829
+#: trac/ticket/admin.py:304 trac/ticket/model.py:809 trac/ticket/model.py:834
 msgid "Invalid milestone name."
 msgstr "无效的里程碑名称。"
 
@@ -2081,7 +2103,7 @@ msgstr "选定里程碑已删除。"
 msgid "The version \"%(name)s\" has been added."
 msgstr "版本 '%(name)s' 已添加。"
 
-#: trac/ticket/admin.py:485 trac/ticket/model.py:941 trac/ticket/model.py:963
+#: trac/ticket/admin.py:485 trac/ticket/model.py:946 trac/ticket/model.py:968
 msgid "Invalid version name."
 msgstr "无效的版本名称。"
 
@@ -2107,7 +2129,7 @@ msgstr "时间"
 msgid "The %(field)s \"%(name)s\" has been added."
 msgstr "%(field)s \"%(name)s\" 已添加。"
 
-#: trac/ticket/admin.py:635 trac/ticket/model.py:523 trac/ticket/model.py:550
+#: trac/ticket/admin.py:635 trac/ticket/model.py:528 trac/ticket/model.py:555
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "无效的%(type)s名称。"
@@ -2276,51 +2298,51 @@ msgstr "处理结果将设置为"
 msgid "Next status will be '%(name)s'"
 msgstr "下一个状态将是 '%(name)s'"
 
-#: trac/ticket/model.py:107
+#: trac/ticket/model.py:110
 #, python-format
 msgid "Ticket %(id)s does not exist."
 msgstr "任务单 %(id)s 不存在."
 
-#: trac/ticket/model.py:108
+#: trac/ticket/model.py:111
 msgid "Invalid ticket number"
 msgstr "无效的任务单编号"
 
-#: trac/ticket/model.py:144
+#: trac/ticket/model.py:147
 msgid "Multi-values fields not supported yet"
 msgstr "尚不支持多值字段"
 
-#: trac/ticket/model.py:482
+#: trac/ticket/model.py:487
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s 不存在."
 
-#: trac/ticket/model.py:631
+#: trac/ticket/model.py:636
 #, python-format
 msgid "Component %(name)s does not exist."
 msgstr "组件 '%(name)s' 不存在."
 
-#: trac/ticket/model.py:749
+#: trac/ticket/model.py:754
 #, python-format
 msgid "Milestone %(name)s does not exist."
 msgstr "里程碑 '%(name)s' 不存在."
 
-#: trac/ticket/model.py:750
+#: trac/ticket/model.py:755
 msgid "Invalid milestone name"
 msgstr "无效的里程碑名称"
 
-#: trac/ticket/model.py:887
+#: trac/ticket/model.py:892
 msgid "Open (by due date)"
 msgstr "开启(有期限)"
 
-#: trac/ticket/model.py:888
+#: trac/ticket/model.py:893
 msgid "Open (no due date)"
 msgstr "开启(无期限)"
 
-#: trac/ticket/model.py:891
+#: trac/ticket/model.py:896
 msgid "Closed"
 msgstr "关闭"
 
-#: trac/ticket/model.py:908
+#: trac/ticket/model.py:913
 #, python-format
 msgid "Version %(name)s does not exist."
 msgstr "版本 '%(name)s' 不存在."
@@ -2578,163 +2600,168 @@ msgstr "新建任务单"
 msgid "id can't be set for a new ticket request."
 msgstr "id不能设置给新任务单请求."
 
-#: trac/ticket/web_ui.py:225
+#: trac/ticket/web_ui.py:229
 msgid "Opened and closed tickets"
 msgstr "开启和关闭的任务单"
 
-#: trac/ticket/web_ui.py:227
+#: trac/ticket/web_ui.py:231
 msgid "Ticket updates"
 msgstr "任务单更新"
 
-#: trac/ticket/web_ui.py:233
+#: trac/ticket/web_ui.py:237
 msgid "created"
 msgstr "已创建"
 
-#: trac/ticket/web_ui.py:234
+#: trac/ticket/web_ui.py:238
 msgid "reopened"
 msgstr "已重新打开"
 
-#: trac/ticket/web_ui.py:235
+#: trac/ticket/web_ui.py:239
 msgid "closed"
 msgstr "已关闭"
 
-#: trac/ticket/web_ui.py:236
+#: trac/ticket/web_ui.py:240
 msgid "updated"
 msgstr "已升级"
 
-#: trac/ticket/web_ui.py:256
+#: trac/ticket/web_ui.py:260
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s 已变更"
-msgstr[1] "%(labels)s 已变更"
 
-#: trac/ticket/web_ui.py:336
+#: trac/ticket/web_ui.py:340
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "任务单 %(ticketref)s (%(summary)s) %(verb)s"
 
-#: trac/ticket/web_ui.py:490
+#: trac/ticket/web_ui.py:495
 #, python-format
 msgid "Invalid action \"%(name)s\""
 msgstr "无效动作: \"%(name)s\""
 
-#: trac/ticket/web_ui.py:618
+#: trac/ticket/web_ui.py:623
 msgid "Previous Ticket"
 msgstr "上一个任务单"
 
-#: trac/ticket/web_ui.py:618
+#: trac/ticket/web_ui.py:623
 msgid "Next Ticket"
 msgstr "下一个任务单"
 
-#: trac/ticket/web_ui.py:619
+#: trac/ticket/web_ui.py:624
 msgid "Back to Query"
 msgstr "返回查询"
 
-#: trac/ticket/web_ui.py:695 trac/ticket/web_ui.py:843
-#: trac/ticket/web_ui.py:851
+#: trac/ticket/web_ui.py:706 trac/ticket/web_ui.py:854
+#: trac/ticket/web_ui.py:862
 msgid "Ticket History"
 msgstr "任务单历史"
 
-#: trac/ticket/web_ui.py:699 trac/ticket/web_ui.py:898
+#: trac/ticket/web_ui.py:710 trac/ticket/web_ui.py:909
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "回到任务单 #%(num)s"
 
-#: trac/ticket/web_ui.py:741
+#: trac/ticket/web_ui.py:752
 msgid "No differences to show"
 msgstr "没有差异"
 
-#: trac/ticket/web_ui.py:784 trac/ticket/web_ui.py:840
-#: trac/ticket/web_ui.py:848 trac/ticket/web_ui.py:919
-#: trac/ticket/web_ui.py:956 trac/ticket/web_ui.py:963 trac/wiki/web_ui.py:375
+#: trac/ticket/web_ui.py:795 trac/ticket/web_ui.py:851
+#: trac/ticket/web_ui.py:859 trac/ticket/web_ui.py:930
+#: trac/ticket/web_ui.py:967 trac/ticket/web_ui.py:974 trac/wiki/web_ui.py:375
 #: trac/wiki/web_ui.py:381 trac/wiki/web_ui.py:569 trac/wiki/web_ui.py:583
 #, python-format
 msgid "Version %(num)s"
 msgstr "版本 %(num)s"
 
-#: trac/ticket/web_ui.py:787 trac/ticket/web_ui.py:922
+#: trac/ticket/web_ui.py:798 trac/ticket/web_ui.py:933
 msgid "initial"
 msgstr "初始"
 
-#: trac/ticket/web_ui.py:850 trac/ticket/web_ui.py:965
+#: trac/ticket/web_ui.py:861 trac/ticket/web_ui.py:976
 #: trac/versioncontrol/web_ui/changeset.py:341 trac/wiki/web_ui.py:394
 msgid "Previous Change"
 msgstr "上一个更改"
 
-#: trac/ticket/web_ui.py:850 trac/ticket/web_ui.py:965
+#: trac/ticket/web_ui.py:861 trac/ticket/web_ui.py:976
 #: trac/versioncontrol/web_ui/changeset.py:341 trac/wiki/web_ui.py:394
 msgid "Next Change"
 msgstr "下一个更改"
 
-#: trac/ticket/web_ui.py:856
+#: trac/ticket/web_ui.py:867
 msgid "Ticket Diff"
 msgstr "任务单差异"
 
-#: trac/ticket/web_ui.py:890 trac/ticket/web_ui.py:959
-#: trac/ticket/web_ui.py:966
+#: trac/ticket/web_ui.py:901 trac/ticket/web_ui.py:970
+#: trac/ticket/web_ui.py:977
 msgid "Ticket Comment History"
 msgstr "任务单评论历史"
 
-#: trac/ticket/web_ui.py:892 trac/ticket/web_ui.py:916
-#: trac/ticket/web_ui.py:973
+#: trac/ticket/web_ui.py:903 trac/ticket/web_ui.py:927
+#: trac/ticket/web_ui.py:984
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "任务单 #%(num)s, 评论 %(cnum)d"
 
-#: trac/ticket/web_ui.py:971
+#: trac/ticket/web_ui.py:982
 msgid "Ticket Comment Diff"
 msgstr "任务单评论差异"
 
-#: trac/ticket/web_ui.py:1057
-msgid "No permission to edit description."
+#: trac/ticket/web_ui.py:1068
+#, fuzzy
+msgid "No permission to edit the ticket description."
 msgstr "无权修改描述。"
 
-#: trac/ticket/web_ui.py:1060
+#: trac/ticket/web_ui.py:1074
+#, fuzzy
+msgid "No permission to change the ticket reporter."
+msgstr "无权修改任务单字段."
+
+#: trac/ticket/web_ui.py:1079
 msgid "No permission to change ticket fields."
 msgstr "无权修改任务单字段."
 
-#: trac/ticket/web_ui.py:1076
+#: trac/ticket/web_ui.py:1088
 msgid "No permissions to add a comment."
 msgstr "无权增加评论."
 
-#: trac/ticket/web_ui.py:1082
+#: trac/ticket/web_ui.py:1094
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr "对不起, 无法保存您的修改. 该任务单已经被其他人修改"
 
-#: trac/ticket/web_ui.py:1089
+#: trac/ticket/web_ui.py:1101
 msgid "Tickets must contain a summary."
 msgstr "任务单必须有概述."
 
-#: trac/ticket/web_ui.py:1112
+#: trac/ticket/web_ui.py:1124
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "任务单描述太长(必须少于 %(num)s 个字符)"
 
-#: trac/ticket/web_ui.py:1119
+#: trac/ticket/web_ui.py:1131
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr "任务单评论太长(必须少于 %(num)s 个字符)"
 
-#: trac/ticket/web_ui.py:1134
+#: trac/ticket/web_ui.py:1146
 msgid "Invalid comment threading identifier"
 msgstr "无效评论线索标识"
 
-#: trac/ticket/web_ui.py:1141
+#: trac/ticket/web_ui.py:1153
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "任务单字段 '%(field)s' 无效: %(message)s"
 
-#: trac/ticket/web_ui.py:1160
+#: trac/ticket/web_ui.py:1172
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "该任务单已创建，但在发送邮件通知时发生错误： %(message)s"
 
-#: trac/ticket/web_ui.py:1170
+#: trac/ticket/web_ui.py:1182
 #, python-format
 msgid ""
 "Your ticket %(ticketref)s has been created, but you don't have permission"
@@ -2742,42 +2769,42 @@ msgid ""
 msgstr "你的任务单 %(ticketref)s 已经创建，但你没有权限查看它。"
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1201
+#: trac/ticket/web_ui.py:1213
 msgid "change"
 msgstr "变更"
 
-#: trac/ticket/web_ui.py:1207
+#: trac/ticket/web_ui.py:1219
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr "%(change)s已保存，但在发送邮件通知时发生错误： %(message)s"
 
-#: trac/ticket/web_ui.py:1339
+#: trac/ticket/web_ui.py:1351
 msgid "Add to Cc"
 msgstr "增加抄送"
 
-#: trac/ticket/web_ui.py:1340
+#: trac/ticket/web_ui.py:1352
 msgid "Remove from Cc"
 msgstr "删除抄送"
 
-#: trac/ticket/web_ui.py:1341
+#: trac/ticket/web_ui.py:1353
 msgid "Add/Remove from Cc"
 msgstr "增加/删除抄送"
 
-#: trac/ticket/web_ui.py:1342
+#: trac/ticket/web_ui.py:1354
 msgid "<Author field>"
 msgstr "<Author field>"
 
-#: trac/ticket/web_ui.py:1363 trac/ticket/templates/query.html:103
+#: trac/ticket/web_ui.py:1375 trac/ticket/templates/query.html:103
 msgid "yes"
 msgstr "是"
 
-#: trac/ticket/web_ui.py:1363 trac/ticket/templates/query.html:106
+#: trac/ticket/web_ui.py:1375 trac/ticket/templates/query.html:106
 msgid "no"
 msgstr "否"
 
-#: trac/ticket/web_ui.py:1554 trac/versioncontrol/templates/changeset.html:135
+#: trac/ticket/web_ui.py:1566 trac/versioncontrol/templates/changeset.html:135
 msgid "modified"
 msgstr "已修改"
 
@@ -2829,7 +2856,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "重指定关联活动任务单到里程碑"
 
 #: trac/ticket/templates/milestone_edit.html:91
-#: trac/ticket/templates/ticket.html:107 trac/ticket/templates/ticket.html:497
+#: trac/ticket/templates/ticket.html:107 trac/ticket/templates/ticket.html:499
 #: trac/wiki/templates/wiki_edit_form.html:70
 #: trac/wiki/templates/wiki_edit_form.html:75
 msgid "Submit changes"
@@ -2900,7 +2927,6 @@ msgstr "编辑里程碑"
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s处匹配"
-msgstr[1] "%(num)s处匹配"
 
 #: trac/ticket/templates/query.html:38
 msgid "Filters"
@@ -3063,7 +3089,7 @@ msgid "Edit report"
 msgstr "编辑报表"
 
 #: trac/ticket/templates/report_list.html:35
-#: trac/ticket/templates/ticket.html:269 trac/wiki/templates/wiki_edit.html:124
+#: trac/ticket/templates/ticket.html:263 trac/wiki/templates/wiki_edit.html:124
 msgid "Edit"
 msgstr "编辑"
 
@@ -3085,7 +3111,6 @@ msgstr "新建报表"
 msgid "%(num)d match"
 msgid_plural "%(num)d matches"
 msgstr[0] "%(num)d个匹配"
-msgstr[1] "%(num)d个匹配"
 
 #: trac/ticket/templates/report_view.html:42
 msgid "Arguments"
@@ -3160,7 +3185,7 @@ msgstr "设置为"
 msgid "deleted"
 msgstr "删除"
 
-#: trac/ticket/templates/ticket.html:106 trac/ticket/templates/ticket.html:496
+#: trac/ticket/templates/ticket.html:106 trac/ticket/templates/ticket.html:498
 #: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
 #: trac/wiki/templates/wiki_edit_form.html:68
@@ -3217,7 +3242,7 @@ msgstr "(最新修改者"
 msgid "diff"
 msgstr "差异"
 
-#: trac/ticket/templates/ticket.html:214 trac/ticket/templates/ticket.html:263
+#: trac/ticket/templates/ticket.html:214 trac/ticket/templates/ticket.html:269
 msgid "Reply"
 msgstr "回复"
 
@@ -3229,7 +3254,7 @@ msgstr "回复, 引用此描述"
 msgid "Change History"
 msgstr "变更历史"
 
-#: trac/ticket/templates/ticket.html:247 trac/ticket/templates/ticket.html:324
+#: trac/ticket/templates/ticket.html:247 trac/ticket/templates/ticket.html:327
 msgid "in reply to:"
 msgstr "回复到:"
 
@@ -3291,56 +3316,60 @@ msgstr ""
 "\"\n"
 "\"              [1:WikiFormatting]。"
 
-#: trac/ticket/templates/ticket.html:326
+#: trac/ticket/templates/ticket.html:321
+msgid "The ticket validation has [1:failed]."
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:329
 msgid "Changed by"
 msgstr "修改者"
 
-#: trac/ticket/templates/ticket.html:334
+#: trac/ticket/templates/ticket.html:337
 msgid "Modify Ticket"
 msgstr "修改任务单"
 
-#: trac/ticket/templates/ticket.html:340
+#: trac/ticket/templates/ticket.html:343
 msgid "Change Properties"
 msgstr "改变属性"
 
-#: trac/ticket/templates/ticket.html:341
+#: trac/ticket/templates/ticket.html:344
 msgid "Properties"
 msgstr "属性"
 
-#: trac/ticket/templates/ticket.html:345
+#: trac/ticket/templates/ticket.html:348
 msgid "Summary:"
 msgstr "概述:"
 
-#: trac/ticket/templates/ticket.html:353
+#: trac/ticket/templates/ticket.html:356
 msgid "Reporter:"
 msgstr "报告人:"
 
-#: trac/ticket/templates/ticket.html:413
+#: trac/ticket/templates/ticket.html:416
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "您可以使用此复选框将自己加入到抄送列表中或从中移除。"
 
-#: trac/ticket/templates/ticket.html:419
+#: trac/ticket/templates/ticket.html:422
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "可以接受使用空格或逗号隔开的email地址或用户名。"
 
-#: trac/ticket/templates/ticket.html:472
+#: trac/ticket/templates/ticket.html:475
 #: trac/wiki/templates/wiki_edit_form.html:49
 msgid "E-mail address and user name can be saved in the"
 msgstr "E-mail地址和用户名可以保存在"
 
-#: trac/ticket/templates/ticket.html:481
+#: trac/ticket/templates/ticket.html:484
 msgid "I have files to attach to this ticket"
 msgstr "我有文件需要附加到任务单"
 
-#: trac/ticket/templates/ticket.html:487
+#: trac/ticket/templates/ticket.html:490
 msgid "Go to the list of attachments"
 msgstr "转到附件列表"
 
-#: trac/ticket/templates/ticket.html:497
+#: trac/ticket/templates/ticket.html:499
 msgid "Create ticket"
 msgstr "创建新任务单"
 
-#: trac/ticket/templates/ticket.html:502
+#: trac/ticket/templates/ticket.html:504
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -3435,49 +3464,42 @@ msgstr "[1:注意:] 时间线视图的相关信息参见[2:TracTimeline]。"
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d 年"
-msgstr[1] "%(num)d 年"
 
 #: trac/util/datefmt.py:69
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d 个月"
-msgstr[1] "%(num)d 个月"
 
 #: trac/util/datefmt.py:70
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d 周"
-msgstr[1] "%(num)d 周"
 
 #: trac/util/datefmt.py:71
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d 天"
-msgstr[1] "%(num)d 天"
 
 #: trac/util/datefmt.py:72
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d 小时"
-msgstr[1] "%(num)d 小时"
 
 #: trac/util/datefmt.py:73
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d 分"
-msgstr[1] "%(num)d 分"
 
 #: trac/util/datefmt.py:92
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i 秒"
-msgstr[1] "%(num)i 秒"
 
 #: trac/util/presentation.py:254
 #, python-format
@@ -3503,7 +3525,6 @@ msgstr "重新同步版本库历史..."
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
 msgstr[0] "%(num)s个修订已缓存"
-msgstr[1] "%(num)s个修订已缓存"
 
 #: trac/versioncontrol/admin.py:60
 msgid "Done."
@@ -3798,14 +3819,12 @@ msgstr "查看差异"
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] "%(num)d个差异"
-msgstr[1] "%(num)d个差异"
 
 #: trac/versioncontrol/templates/changeset.html:88
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] "%(num)d个属性"
-msgstr[1] "%(num)d个属性"
 
 #: trac/versioncontrol/templates/changeset.html:92
 msgid "Show previous version in browser"
@@ -4149,21 +4168,21 @@ msgstr "已经登录为 %(user)s."
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "导航贡献者 \"%(name)s\" 错误"
 
-#: trac/web/chrome.py:866
+#: trac/web/chrome.py:867
 msgid "(unknown template location)"
 msgstr "(未知模板路径)"
 
-#: trac/web/chrome.py:867
+#: trac/web/chrome.py:868
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi在渲染模板%(location)s时，发生错误%(error)s。"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:523
+#: trac/web/main.py:524
 msgid "do so"
 msgstr "这样做"
 
-#: trac/web/main.py:525
+#: trac/web/main.py:526
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "您现在没有登录，您也许想要现在就%(do_so)s。"
@@ -4209,12 +4228,12 @@ msgstr "错误: htmlcomment wiki代码块中存在非法字符序列 \"--\" "
 msgid "Can't view %(link)s:"
 msgstr "无法查看 %(link)s:"
 
-#: trac/wiki/macros.py:501
+#: trac/wiki/macros.py:529
 #, python-format
 msgid "Error: Can't get description for macro %(name)s"
 msgstr "错误: 无法得到宏 %(name)s 的描述"
 
-#: trac/wiki/macros.py:595
+#: trac/wiki/macros.py:623
 msgid "Table of Contents"
 msgstr "内容索引"
 
