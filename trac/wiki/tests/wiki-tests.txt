@@ -1158,6 +1158,26 @@ No problems though as it resets. Lists won't though:
  * Bold Continues here...
 
 This will be bold too as will the rest of the page.</strong></i>
+============================== Lists starting at beginning of line
+- item 1
+- item 2
+  - sub 2.1
+  - sub 2.2
+
+a. item A
+b. item B
+Paragraph
+------------------------------
+<ul><li>item 1
+</li><li>item 2
+<ul><li>sub 2.1
+</li><li>sub 2.2
+</li></ul></li></ul><ol class="loweralpha"><li>item A
+</li><li>item B
+</li></ol><p>
+Paragraph
+</p>
+------------------------------
 ============================== Simple definition list
  term:: definition
 ------------------------------

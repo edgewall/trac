@@ -606,7 +606,7 @@ class Formatter(object):
         else:
             type_ = 'ol'
             idx = '01iI'.find(listid)
-            if idx >= 0:
+            if idx > -1:
                 class_ = ('arabiczero', None, 'lowerroman', 'upperroman')[idx]
             elif listid.isdigit():
                 start = match[ldepth:match.find('.')]
@@ -619,7 +619,9 @@ class Formatter(object):
         
     def _get_list_depth(self):
         """Return the space offset associated to the deepest opened list."""
-        return self._list_stack and self._list_stack[-1][1] or 0
+        if self._list_stack:
+            return self._list_stack[-1][1]
+        return -1
 
     def _set_list_depth(self, depth, new_type, list_class, start):
         def open_list():
@@ -648,7 +650,7 @@ class Formatter(object):
                 if depth >= deepest_offset:
                     break
                 close_list(deepest_type)
-            if depth > 0:
+            if depth >= 0:
                 if self._list_stack:
                     old_type, old_offset = self._list_stack[-1]
                     if new_type and old_type != new_type:
@@ -663,7 +665,7 @@ class Formatter(object):
                     open_list()
 
     def close_list(self):
-        self._set_list_depth(0, None, None, None)
+        self._set_list_depth(-1, None, None, None)
 
     # Definition Lists
 
