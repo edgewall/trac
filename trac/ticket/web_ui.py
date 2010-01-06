@@ -201,18 +201,22 @@ class TicketModule(Component):
             return
         ticket_realm = Resource('ticket')
         db = self.env.get_db_cnx()
-        sql, args = search_to_sql(db, ['b.newvalue'], terms)
-        sql2, args2 = search_to_sql(db, ['summary', 'keywords', 'description',
+        sql, args = search_to_sql(db, ['summary', 'keywords', 'description',
                                          'reporter', 'cc', 
                                          db.cast('id', 'text')], terms)
-        sql3, args3 = search_to_sql(db, ['c.value'], terms)
+        sql2, args2 = search_to_sql(db, ['newvalue'], terms)
+        sql3, args3 = search_to_sql(db, ['value'], terms)
         cursor = db.cursor()
-        cursor.execute("SELECT DISTINCT a.summary,a.description,a.reporter, "
-                       "a.type,a.id,a.time,a.status,a.resolution "
-                       "FROM ticket a "
-                       "LEFT JOIN ticket_change b ON a.id = b.ticket "
-                       "LEFT OUTER JOIN ticket_custom c ON (a.id = c.ticket) "
-                       "WHERE (b.field='comment' AND %s) OR %s OR %s" % 
+        cursor.execute("SELECT summary,description,reporter, "
+                       "       type,id,time,status,resolution "
+                       "FROM ticket "
+                       "WHERE id IN ("
+                       "    SELECT id FROM ticket WHERE %s "
+                       "  UNION "
+                       "    SELECT ticket FROM ticket_change "
+                       "    WHERE field='comment' AND %s "
+                       "  UNION "
+                       "    SELECT ticket FROM ticket_custom WHERE %s)" %
                        (sql, sql2, sql3), args + args2 + args3)
         ticketsystem = TicketSystem(self.env)
         for summary, desc, author, type, tid, ts, status, resolution in cursor:
