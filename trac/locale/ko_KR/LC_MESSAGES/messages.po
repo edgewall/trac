@@ -2658,7 +2658,6 @@ msgstr "마일스톤 편집하기"
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s 개 일치함"
-msgstr[1] ""
 
 #: trac/ticket/templates/query.html:39
 msgid "Filters"
@@ -3085,7 +3084,6 @@ msgstr "저장소 히스토리 동기화..."
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
 msgstr[0] "%(num)s 개 리비전 캐시됨."
-msgstr[1] "%(num)s 개 리비전 캐시됨."
 
 #: trac/versioncontrol/admin.py:60
 msgid "Done."
