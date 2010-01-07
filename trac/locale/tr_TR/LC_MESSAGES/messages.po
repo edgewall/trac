@@ -781,7 +781,7 @@ msgstr "Tamamlandı"
 #: trac/admin/templates/admin_versions.html:35
 #: trac/ticket/templates/milestone_edit.html:85
 msgid "Description (you may use [1:WikiFormatting] here):"
-msgstr "Tanım (Burada [1:WikiFormatting] kullanabilirsiniz):
+msgstr "Tanım (Burada [1:WikiFormatting] kullanabilirsiniz):"
 
 #: trac/admin/templates/admin_milestones.html:75
 msgid "Add Milestone:"
@@ -823,7 +823,7 @@ msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr ""
-"Bir konu için bir kullanıcı yada gruba yetki ver\n"
+"Bir konu için bir kullanıcı yada gruba yetki ver"
 
 #: trac/admin/templates/admin_perms.html:45
 msgid "Add Subject to Group:"
@@ -967,7 +967,7 @@ msgid ""
 "The user %(user)s requires read _and_ write permission to the database "
 "file %(path)s and the directory it is located in."
 msgstr ""
- %(user)s kullanıcısı  burdaki \"%(path)\" veritabanı dosyasına"
+" %(user)s kullanıcısı  burdaki \"%(path)s\" veritabanı dosyasına"
 " okuma yazma hakkı olmalı."
 
 #: trac/mimeview/api.py:634 trac/mimeview/api.py:644
@@ -1115,7 +1115,7 @@ msgid ""
 "      instead of that of the server."
 msgstr ""
 "Zaman dilimi ayarı ile  gördüğünüz zamanlar, sunucun zaman dilimi yerine\n"
-"      belirtiğiniz zaman dilimine göre görünür.\n"
+"      belirtiğiniz zaman dilimine göre görünür."
 
 #: trac/prefs/templates/prefs_datetime.html:30
 msgid "Example: The current time is"
@@ -2920,7 +2920,7 @@ msgstr ""
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr "Toplam %(total)d son %(last)"
+msgstr "Toplam %(total)d son %(last)d"
 
 #: trac/util/presentation.py:256
 #, python-format
@@ -3422,7 +3422,7 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
-"Bu dosya veya dizin '%(path)s'  %(rev) ve "
+"Bu dosya veya dizin '%(path)s'  %(rev)s ve "
 " önceki revizyonların içinde bulunmuyor. ."
 
 #: trac/versioncontrol/web_ui/log.py:171

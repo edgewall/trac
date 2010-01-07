@@ -281,7 +281,7 @@ msgstr "El permiso \"%(action)s\" se garantizó anteriormente a \"%(subject)s\""
 #: trac/admin/web_ui.py:343
 #, python-format
 msgid "\"%(subject)s\" was already added to group \"%(group)s\""
-msgstr "\"%(subject)s\" ya estaba añadido anteriormente al grupo \"%(group)s\"
+msgstr "\"%(subject)s\" ya estaba añadido anteriormente al grupo \"%(group)s\""
 
 #: trac/admin/web_ui.py:379 trac/admin/templates/admin_plugins.html:9
 msgid "Plugins"

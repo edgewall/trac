@@ -25,7 +25,7 @@ msgstr "Nói về Trac"
 #: trac/attachment.py:144
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
-msgstr "Đính kèm '%(title)' không tồn tại"
+msgstr "Đính kèm '%(title)s' không tồn tại"
 
 #: trac/attachment.py:145
 msgid "Invalid Attachment"
@@ -597,7 +597,7 @@ msgstr "Hành động:"
 msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
-msgstr "Cấp quyền trên hành động cho một chủ thể, chủ thể có thể hoặc là một người dùng\n"
+msgstr "Cấp quyền trên hành động cho một chủ thể, chủ thể có thể hoặc là một người dùng"
 
 #: trac/admin/templates/admin_perms.html:51
 msgid "Add Subject to Group:"
@@ -890,8 +890,8 @@ msgstr "Ghi chú: Universal Co-ordinated Time (UTC) còn được biết với t
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
-msgstr "Một độ lệch dương được dùng để chỉ thị một múi giờ ở phía đông của ""
-""Greenwich, nghĩa là trước giờ Universal"
+msgstr "Một độ lệch dương được dùng để chỉ thị một múi giờ ở phía đông của "
+"Greenwich, nghĩa là trước giờ Universal"
 #I don't know how to translate the word 'Universal' into Vietnamese
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1013,7 +1013,7 @@ msgid "Previous Page"
 msgstr "Trang trước"
 
 #: trac/search/web_ui.py:185
-#, python-format
+#, fuzzy, python-format
 msgid "Browse repository path %(path)s"
 msgstr "Duyệt đường dẫn kho"
 
@@ -3247,9 +3247,9 @@ msgid "Help/Guide"
 msgstr "Giúp đõ/Hướng dẫn"
 
 #: trac/wiki/web_ui.py:122
-#, python-format
+#, fuzzy, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
-msgstr "Không có phiên bản %(name)s cho trang Wiki \"%(name)s\""
+msgstr "Không có phiên bản %(num)s cho trang Wiki \"%(name)s\""
 
 #: trac/wiki/web_ui.py:181
 #, python-format

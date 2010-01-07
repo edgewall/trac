@@ -1646,8 +1646,8 @@ msgid ""
 ".\n"
 "          To view,"
 msgstr ""
-"\n"
-". Para verlo,"
+".\n"
+" Para verlo,"
 
 #: trac/templates/macros.html:152
 msgid "download"

@@ -1735,7 +1735,7 @@ msgstr "til"
 #: trac/ticket/default_workflow.py:273
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr "Avslutningsgrunn vil settes til $(name)s"
+msgstr "Avslutningsgrunn vil settes til %(name)s"
 
 #: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
