@@ -156,8 +156,8 @@ def get_plugin_info(env):
             info = get_pkginfo(dist)
             if not info:
                 info = {}
-                for k in ('author author_email home_page url license trac'
-                          .split()):
+                for k in ('author', 'author_email', 'home_page', 'url',
+                          'license', 'trac'):
                     v = getattr(module, k, '')
                     if v:
                         if k == 'home_page' or k == 'url':
@@ -172,7 +172,7 @@ def get_plugin_info(env):
                 # aren't specified in "setup.py"
                 for k in info:
                     if info[k] == 'UNKNOWN':
-                        info[k] = None
+                        info[k] = ''
                     elif k == 'author':
                         # Must be encoded as unicode as otherwise Genshi 
                         # may raise a "UnicodeDecodeError".
@@ -220,3 +220,33 @@ def _find_distribution(env, module):
         return pkg_resources.Distribution(project_name=module.__name__,
                                           version='',
                                           location=module.__file__)
+
+def match_plugins_to_frames(plugins, frames):
+    """Add a `frame_idx` element to plugin information as returned by
+    `get_plugin_info()`, containing the index of the highest frame in the
+    list that was located in the plugin.
+    """
+    egg_frames = [(i, f) for i, f in enumerate(frames)
+                  if f['filename'].startswith('build/')]
+    
+    def find_egg_frame_index(plugin):
+        for dist in pkg_resources.find_distributions(plugin['path'],
+                                                     only=True):
+            sources = dist.get_metadata('SOURCES.txt')
+            for src in sources.splitlines():
+                if src.endswith('.py'):
+                    nsrc = os.path.normpath(src)
+                    for i, f in egg_frames:
+                        if f['filename'].endswith(nsrc):
+                            plugin['frame_idx'] = i
+                            return
+    
+    for plugin in plugins.itervalues():
+        base, ext = os.path.splitext(plugin['path'])
+        if ext == '.egg' and egg_frames:
+            find_egg_frame_index(plugin)
+        else:
+            for i, f in enumerate(frames):
+                if f['filename'].startswith(base):
+                    plugin['frame_idx'] = i
+                    break

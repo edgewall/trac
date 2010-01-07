@@ -65,7 +65,9 @@
             <tr py:for="name, plugin in sorted(plugins.iteritems())"
                 class="${all(not component.enabled for module in plugin.modules.itervalues()
                              for component in module.components.itervalues()) and 'disabled' or None}">
-              <th>$name</th>
+              <th py:with="url = plugin.info.home_page or plugin.info.author_email and 'mailto:' + plugin.info.author_email">
+                <a py:strip="not url" href="$url">$name</a>
+              </th>
               <td>${plugin.version or _('N/A')}</td>
             </tr>
           </table>

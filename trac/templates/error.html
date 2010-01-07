@@ -15,6 +15,11 @@
           $("div", this.parentNode).slideToggle("fast");
           return false;
         });
+        $("#plugins span.file a").click(function() {
+          var idx = parseInt($(this).attr("href").substring(6));
+          $("#traceback li").eq(idx).children("div").slideDown("fast");
+          return true;
+        });
         $("#tbtoggle").click(function() {
           if (this.value.indexOf("interactive") < 0) {
             this.value = "Switch to interactive view";
@@ -50,9 +55,9 @@
     /*]]>*/</script>
   </head>
 
-  <py:def function="create_ticket(teo=False)">
+  <py:def function="create_ticket(url=None)">
     <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
-    <input py:if="teo" type="hidden" name="version"
+    <input py:if="url == trac.homepage.strip('/')" type="hidden" name="version"
            value="${'dev' in trac.version and 'devel' or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
     <textarea name="description" rows="3" cols="10">
@@ -75,7 +80,7 @@ ${pprint(req.args)}
 
 ==== Enabled Plugins ====
 <py:for each="plugin in plugins">
-|| '''`${plugin.name}`''' || `${plugin.version or _('N/A')}` ||</py:for>
+|| '''`$plugin.name`''' || `${plugin.version or _('N/A')}` || ${('frame_idx' in plugin and "'''`%s`'''" or "`%s`") % plugin.path} ||</py:for>
 
 ==== Python Traceback ====
 {{{
@@ -128,19 +133,28 @@ ${traceback}
               </form>
               <h2>Found a bug in Trac?</h2>
               <p>If you think this should work and you can reproduce the problem,
-              you should consider reporting this to the Trac team.</p>
+              you should consider creating a bug report.</p>
+              <p py:if="faulty_plugins" py:choose="len(faulty_plugins)">
+                <py:when test="1">
+                  Note that the ${faulty_plugins[0].name} plugin seems to be involved.
+                </py:when>
+                <py:otherwise>
+                  Note that the following plugins seem to be involved:
+                  ${', '.join([p.name for p in faulty_plugins])}
+                </py:otherwise>
+                <strong>Please report this issue to the plugin maintainer.</strong>
+              </p>
               <p i18n:msg="" py:with="q = quote_plus(message[:80])">Before you do that, though, please first try
-                <strong><a href="${trac.homepage}search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
+                <strong><a href="${tracker}/search?ticket=yes&amp;noquickjump=1&amp;q=$q">searching</a>
                 for similar issues</strong>, as it is quite likely that this problem
                 has been reported before. For questions about installation
-                and configuration of Trac, please try the
+                and configuration of Trac or its plugins, please try the
                 <a href="${trac.homepage}wiki/MailingList">mailing list</a>
-                instead of filing a ticket.
+                instead of creating a ticket.
               </p>
-              <form class="newticket" method="get" action="${trac.homepage}newticket">
-                <p i18n:msg="create">Otherwise, please ${create_ticket(True)} a new ticket at
-                the Trac project site, where you can describe the problem and
-                explain how to reproduce it.</p>
+              <form class="newticket" method="get" action="${tracker}/newticket">
+                <p i18n:msg="create, tracker_name">Otherwise, please ${create_ticket(tracker)} a new bug report
+                describing the problem and explain how to reproduce it.</p>
               </form>
               <py:if test="traceback">
                 <h2>Python Traceback</h2>
@@ -197,8 +211,13 @@ ${traceback}
                 <h2>Enabled Plugins:</h2>
                 <table class="listing" id="plugins">
                   <tr py:for="plugin in plugins">
-                    <th>${plugin.name}</th>
+                    <th py:with="url = plugin.info.home_page or plugin.info.author_email and 'mailto:' + plugin.info.author_email">
+                      <a py:strip="not url" href="$url">$plugin.name</a>
+                    </th>
                     <td>${plugin.version or _('N/A')}</td>
+                    <td>
+                      <span class="file"><a py:strip="'frame_idx' not in plugin" href="#frame$plugin.frame_idx">$plugin.path</a></span>
+                    </td>
                   </tr>
                 </table>
               </py:if>

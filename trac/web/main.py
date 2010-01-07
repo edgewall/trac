@@ -41,12 +41,12 @@ from trac import __version__ as TRAC_VERSION
 from trac.config import ExtensionOption, Option, OrderedExtensionsOption
 from trac.core import *
 from trac.env import open_environment
-from trac.loader import get_plugin_info
+from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
-from trac.util import get_lines_from_file, get_last_traceback, hex_entropy, \
-                      arity, translation
-from trac.util.compat import any, partial
+from trac.util import get_frame_info, get_last_traceback, hex_entropy, arity, \
+                      translation
+from trac.util.compat import all, partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import tag_, _
@@ -540,46 +540,45 @@ def _dispatch_request(req, env, env_error):
             message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
             traceback = get_last_traceback()
 
-            frames = []
+            frames, plugins, faulty_plugins = [], [], []
+            tracker = 'http://trac.edgewall.org'
+            th = 'http://trac-hacks.org'
             has_admin = False
             try:
                 has_admin = 'TRAC_ADMIN' in req.perm
             except Exception, e:
                 pass
             if has_admin and not isinstance(e, MemoryError):
-                tb = exc_info[2]
-                while tb:
-                    tb_hide = tb.tb_frame.f_locals.get('__traceback_hide__')
-                    if tb_hide in ('before', 'before_and_this'):
-                        del frames[:]
-                        tb_hide = tb_hide[6:]
-                    if not tb_hide:
-                        filename = tb.tb_frame.f_code.co_filename
-                        lineno = tb.tb_lineno - 1
-                        before, line, after = get_lines_from_file(filename,
-                                                                  lineno, 5)
-                        frames += [{'traceback': tb, 'filename': filename,
-                                    'lineno': lineno, 'line': line,
-                                    'lines_before': before, 'lines_after': after,
-                                    'function': tb.tb_frame.f_code.co_name,
-                                    'vars': tb.tb_frame.f_locals}]
-                    tb = tb.tb_next
-
-            plugins = []
-            if env:
-                for name, plugin in get_plugin_info(env).iteritems():
-                    if name == 'Trac':
-                        continue
-                    if any(component['enabled']
-                           for module in plugin['modules'].itervalues()
-                           for component in module['components'].itervalues()):
-                        plugins.append(plugin)
-                plugins.sort(key=lambda plugin: plugin['name'])
+                # Collect frame and plugin information
+                frames = get_frame_info(exc_info[2])
+                if env:
+                    plugin_info = get_plugin_info(env)
+                    plugin_info.pop('Trac', None)
+                    for name, plugin in plugin_info.items():
+                        if all(not c['enabled']
+                               for m in plugin['modules'].itervalues()
+                               for c in m['components'].itervalues()):
+                            plugin_info.pop(name)
+                    match_plugins_to_frames(plugin_info, frames)
+                    plugins = sorted(plugin_info.itervalues(),
+                                     key=lambda plugin: plugin['name'])
+                
+                    # Identify the tracker where the bug should be reported
+                    faulty_plugins = [p for p in plugins if 'frame_idx' in p]
+                    faulty_plugins.sort(key=lambda p: p['frame_idx'])
+                    if faulty_plugins:
+                        info = faulty_plugins[0]['info']
+                        if 'trac' in info:
+                            tracker = info['trac']
+                        elif info.get('home_page', '').startswith(th):
+                            tracker = th
 
             data = {'title': 'Internal Error',
                     'type': 'internal', 'message': message,
                     'traceback': traceback, 'frames': frames,
-                    'shorten_line': shorten_line, 'plugins': plugins}
+                    'shorten_line': shorten_line,
+                    'plugins': plugins, 'faulty_plugins': faulty_plugins,
+                    'tracker': tracker}
 
             try:
                 req.send_error(exc_info, status=500, env=env, data=data)

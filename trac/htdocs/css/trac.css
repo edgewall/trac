@@ -552,7 +552,8 @@ div.system-message p.system-message-title { font-weight: bold; }
   font-style: normal;
   font-weight: bold;
 }
-#content.error #traceback span.file { color: #666; font-size: 85%; }
+#content.error #traceback span.file,
+#content.error #plugins span.file { color: #666; font-size: 85%; }
 #content.error #traceback ul { list-style: none; margin: .5em 0; padding: 0; }
 #content.error #traceback table.code td { white-space: pre; font-size: 90%; }
 #content.error #traceback table.code tr.current td { background: #e6e6e6; }
