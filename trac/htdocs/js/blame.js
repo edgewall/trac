@@ -77,8 +77,8 @@
                 .append($('<div>').html(data || "<strong>(no changeset information)</strong>"))
               .appendTo("body");
 
-            // workaround non-clickable "Close" issue in Firefox
-            if ($.browser.mozilla)
+            // workaround non-clickable "Close" issue in Firefox and WebKit
+            if ($.browser.mozilla || $.browser.safari)
               message.find("div.inlinebuttons").next().css("clear", "right");
   
             show();
