@@ -6,6 +6,7 @@
 #content.about table th { background: #f7f7f7; font-weight: bold; vertical-align: top; white-space: nowrap; }
 
 #content.about #plugins tr.disabled th, #content.about #plugins tr.disabled td { color: #999; }
+#content.about #plugins td.file { color: #666; }
 
 #content.about #config th, #content.about #config td { border: 1px solid #ddd; padding: 3px; }
 #content.about #config tr.modified { background: #ffd; }

@@ -15,7 +15,7 @@
           $("div", this.parentNode).slideToggle("fast");
           return false;
         });
-        $("#plugins span.file a").click(function() {
+        $("#plugins td.file a").click(function() {
           var idx = parseInt($(this).attr("href").substring(6));
           $("#traceback li").eq(idx).children("div").slideDown("fast");
           return true;
@@ -80,7 +80,7 @@ ${pprint(req.args)}
 
 ==== Enabled Plugins ====
 <py:for each="plugin in plugins">
-|| '''`$plugin.name`''' || `${plugin.version or _('N/A')}` || ${('frame_idx' in plugin and "'''`%s`'''" or "`%s`") % plugin.path} ||</py:for>
+|| '''`$plugin.name`''' || `${plugin.version or _('N/A')}` ||</py:for>
 
 ==== Python Traceback ====
 {{{
@@ -215,9 +215,7 @@ ${traceback}
                       <a py:strip="not url" href="$url">$plugin.name</a>
                     </th>
                     <td>${plugin.version or _('N/A')}</td>
-                    <td>
-                      <span class="file"><a py:strip="'frame_idx' not in plugin" href="#frame$plugin.frame_idx">$plugin.path</a></span>
-                    </td>
+                    <td class="file"><a py:strip="'frame_idx' not in plugin" href="#frame$plugin.frame_idx">$plugin.path</a></td>
                   </tr>
                 </table>
               </py:if>
