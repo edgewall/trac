@@ -1298,7 +1298,8 @@ class TicketQueryMacro(WikiMacroBase):
                           "%(query)s", groupvalue=v, groupname=query.group,
                           query=q.to_string())
                 # produce the href for the query corresponding to the group
-                q.constraints[str(query.group)] = v
+                for constraint in q.constraints:
+                    constraint[str(query.group)] = v
                 q.order = order
                 href = q.get_href(formatter.context)
                 groups.append((v, [t for t in g], href, title))
