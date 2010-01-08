@@ -403,6 +403,7 @@ def get_frame_info(tb):
             tb_hide = tb_hide[6:]
         if not tb_hide:
             filename = tb.tb_frame.f_code.co_filename
+            filename = filename.replace('\\', '/')
             lineno = tb.tb_lineno - 1
             before, line, after = get_lines_from_file(filename, lineno, 5)
             frames.append({'traceback': tb, 'filename': filename,

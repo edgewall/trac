@@ -235,7 +235,7 @@ def match_plugins_to_frames(plugins, frames):
             sources = dist.get_metadata('SOURCES.txt')
             for src in sources.splitlines():
                 if src.endswith('.py'):
-                    nsrc = os.path.normpath(src)
+                    nsrc = src.replace('\\', '/')
                     for i, f in egg_frames:
                         if f['filename'].endswith(nsrc):
                             plugin['frame_idx'] = i
