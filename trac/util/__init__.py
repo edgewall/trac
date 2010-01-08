@@ -18,6 +18,7 @@
 #         Matthew Good <trac@matt-good.net>
 
 import errno
+import inspect
 import locale
 import os.path
 import random
@@ -392,6 +393,27 @@ def get_lines_from_file(filename, lineno, context=0):
             fileobj.close()
     return (), None, ()
 
+def get_frame_info(tb):
+    """Return frame information for a traceback."""
+    frames = []
+    while tb:
+        tb_hide = tb.tb_frame.f_locals.get('__traceback_hide__')
+        if tb_hide in ('before', 'before_and_this'):
+            del frames[:]
+            tb_hide = tb_hide[6:]
+        if not tb_hide:
+            filename = tb.tb_frame.f_code.co_filename
+            filename = filename.replace('\\', '/')
+            lineno = tb.tb_lineno - 1
+            before, line, after = get_lines_from_file(filename, lineno, 5)
+            frames.append({'traceback': tb, 'filename': filename,
+                           'lineno': lineno, 'line': line,
+                           'lines_before': before, 'lines_after': after,
+                           'function': tb.tb_frame.f_code.co_name,
+                           'vars': tb.tb_frame.f_locals})
+        tb = tb.tb_next
+    return frames
+
 def safe__import__(module_name):
     """
     Safe imports: rollback after a failed import.
@@ -409,6 +431,19 @@ def safe__import__(module_name):
             if not already_imported.has_key(modname):
                 del(sys.modules[modname])
         raise e
+
+def get_doc(obj):
+    """Return the docstring of an object as a tuple `(summary, description)`,
+    where `summary` is the first paragraph and `description` is the remaining
+    text.
+    """
+    doc = inspect.getdoc(obj)
+    if not doc:
+        return (None, None)
+    doc = to_unicode(doc).split('\n\n', 1)
+    summary = doc[0].replace('\n', ' ')
+    description = len(doc) > 1 and doc[1] or None
+    return (summary, description)
 
 # -- setuptools utils
 

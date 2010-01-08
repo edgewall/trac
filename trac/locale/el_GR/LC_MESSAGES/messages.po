@@ -256,7 +256,7 @@ msgid "Invalid log type"
 msgstr "Άκυρος τύπος ημερολογίου"
 
 #: trac/admin/web_ui.py:253
-#, python-format
+#, fuzzy, python-format
 msgid "Unknown log level %(level)s"
 msgstr "Άγνωστο επίπεδο ημερολογίου"
 
@@ -3200,7 +3200,7 @@ msgid ""
 "consuming...)"
 msgstr ""
 "Επισημειώστε κάθε γραμμή με τη τελευταίως αλλαγμένη αναθεώρηση (αυτό "
-"μπορεί να χρειαστεί πολλή ώρα...")
+"μπορεί να χρειαστεί πολλή ώρα...)"
 
 #: trac/versioncontrol/web_ui/browser.py:389
 msgid "Revision Log"

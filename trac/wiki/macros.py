@@ -531,10 +531,10 @@ class MacroListMacro(WikiMacroBase):
                                                  name=macro_name), e)
                     yield (macro_name, descr)
 
-        return tag.dl([(tag.dt(tag.code('[[', macro_name, ']]'),
-                               id='%s-macro' % macro_name),
-                        tag.dd(description))
-                       for macro_name, description in get_macro_descr()])
+        return tag.div(class_='trac-macrolist')(
+            [(tag.h3(tag.code('[[', macro_name, ']]'),
+                              id='%s-macro' % macro_name), description)
+             for macro_name, description in get_macro_descr()])
 
 
 class TracIniMacro(WikiMacroBase):
@@ -562,7 +562,7 @@ class TracIniMacro(WikiMacroBase):
                 sections.setdefault(section, {})[key] = option
 
         return tag.div(class_='tracini')(
-            [(tag.h2('[%s]' % section, id='%s-section' % section),
+            [(tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
               tag.table(class_='wiki')(
             tag.tbody([tag.tr(tag.td(tag.tt(option.name)),
                               tag.td(format_to_oneliner(

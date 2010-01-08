@@ -1140,7 +1140,7 @@ msgstr ""
 "      Einstellungen und Sitzungsdaten auf dem Server zu identifizieren.\n"
 "      Obwohl er normalerweise automatisch generiert wird, können Sie ihn\n"
 "      jederzeit so abändern, daß Sie sich später leichter daran erinnern können,\n"
-"      wenn Sie Ihre Einstellungen in einem anderen Web-Browser laden möchten.\n"
+"      wenn Sie Ihre Einstellungen in einem anderen Web-Browser laden möchten."
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"

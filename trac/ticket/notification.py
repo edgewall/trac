@@ -23,7 +23,7 @@ from trac.util import md5
 from trac.util.datefmt import to_timestamp
 from trac.util.text import CRLF, wrap, obfuscate_email_address
 
-from genshi.template.text import TextTemplate
+from genshi.template.text import NewTextTemplate
 
 class TicketNotificationSystem(Component):
 
@@ -217,7 +217,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def format_subj(self, summary):
         template = self.config.get('notification','ticket_subject_template')
-        template = TextTemplate(template.encode('utf8'))
+        template = NewTextTemplate(template.encode('utf8'))
                                                 
         prefix = self.config.get('notification', 'smtp_subject_prefix')
         if prefix == '__default__': 

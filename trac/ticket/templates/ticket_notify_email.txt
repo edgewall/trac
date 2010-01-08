@@ -1,30 +1,30 @@
 $ticket_body_hdr
 $ticket_props
-#choose ticket.new
-  #when True
+{% choose ticket.new %}\
+{%   when True %}\
 $ticket.description
-  #end
-  #otherwise
-    #if changes_body
+{%   end %}\
+{%   otherwise %}\
+{%     if changes_body %}\
 Changes (by $change.author):
 
 $changes_body
-    #end
-    #if changes_descr
-      #if not changes_body and not change.comment and change.author
+{%     end %}\
+{%     if changes_descr %}\
+{%       if not changes_body and not change.comment and change.author %}\
 Description changed by $change.author:
-      #end
+{%       end %}\
 $changes_descr
 --
-    #end
-    #if change.comment
+{%     end %}\
+{%     if change.comment %}\
 
 Comment${not changes_body and ' (by %s)' % change.author or ''}:
 
 $change.comment
-    #end
-  #end
-#end
+{%     end %}\
+{%   end %}\
+{% end %}\
 
 -- 
 Ticket URL: <$ticket.link>

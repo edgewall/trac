@@ -3678,7 +3678,7 @@ msgstr ""
 #: trac/wiki/templates/wiki_diff.html:17
 #, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
-msgstr "Șterge de la _versiunea %(oldversion)d la %(version)d"
+msgstr "Șterge de la _versiunea %(old_version)d la %(version)d"
 
 #: trac/wiki/templates/wiki_diff.html:18
 #, python-format

@@ -41,6 +41,7 @@ Hello
         tc.follow("Some Link")
         tc.url(self._tester.url + "/wiki/WikiStart")
 
+
 class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Render reStructured code block"""
@@ -57,6 +58,7 @@ class ReStructuredTextCodeBlockTest(FunctionalTwillTestCaseSetup):
         tc.notfind("code-block")
         tc.find('print')
         tc.find('"123"')
+
 
 def functionalSuite(suite=None):
     if not suite:

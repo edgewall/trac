@@ -98,10 +98,10 @@ class WikiParser(Component):
         (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+\??|\?)"
          r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
         # == heading == #hanchor
-        r"(?P<heading>^\s*(?P<hdepth>=+)\s.*\s(?P=hdepth)\s*"
-        r"(?P<hanchor>#%s)?(?:\s|$))" % XML_NAME,
+        r"(?P<heading>^\s*(?P<hdepth>={1,6})\s(?P<htext>.*?)"
+        r"(?P<hanchor>#%s)?\s*$)" % XML_NAME,
         #  * list
-        r"(?P<list>^(?P<ldepth>\s+)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
+        r"(?P<list>^(?P<ldepth>\s*)(?:[-*]|\d+\.|[a-zA-Z]\.|[ivxIVX]{1,5}\.) )",
         # definition:: 
         r"(?P<definition>^\s+"
         r"((?:%s[^%s]*%s|%s(?:%s{,2}[^%s])*?%s|[^%s%s:]|:[^:])+::)(?:\s+|$))"
