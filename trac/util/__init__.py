@@ -19,8 +19,10 @@
 
 import errno
 import inspect
+from itertools import izip, tee
 import locale
 import os.path
+from pkg_resources import find_distributions
 import random
 import re
 import shutil
@@ -28,11 +30,10 @@ import sys
 import time
 import tempfile
 from urllib import quote, unquote, urlencode
-from itertools import izip, tee
 
 # Imports for backward compatibility
 from trac.core import TracError
-from trac.util.compat import md5, reversed, sha1, sorted
+from trac.util.compat import any, md5, reversed, sha1, sorted
 from trac.util.html import escape, unescape, Markup, Deuglifier
 from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
                            wrap, pretty_size
@@ -463,6 +464,20 @@ def get_module_path(module):
             break
     return base_path
 
+def get_sources(path):
+    """Return a dictionary mapping Python module source paths to the
+    distributions that contain them.
+    """
+    sources = {}
+    for dist in find_distributions(path, only=True):
+        toplevels = dist.get_metadata('top_level.txt').splitlines()
+        toplevels = [each + '/' for each in toplevels]
+        files = dist.get_metadata('SOURCES.txt').splitlines()
+        sources.update((src, dist) for src in files
+                       if any(src.startswith(toplevel)
+                              for toplevel in toplevels))
+    return sources
+
 def get_pkginfo(dist):
     """Get a dictionary containing package information for a package
 
@@ -475,17 +490,13 @@ def get_pkginfo(dist):
     """
     import types
     if isinstance(dist, types.ModuleType):
-        try:
-            from pkg_resources import find_distributions
-            module = dist
-            module_path = get_module_path(module)
-            for dist in find_distributions(module_path, only=True):
-                if os.path.isfile(module_path) or \
-                       dist.key == module.__name__.lower():
-                    break
-            else:
-                return {}
-        except ImportError:
+        module = dist
+        module_path = get_module_path(module)
+        for dist in find_distributions(module_path, only=True):
+            if os.path.isfile(module_path) or \
+                   dist.key == module.__name__.lower():
+                break
+        else:
             return {}
     import email
     attrs = ('author', 'author-email', 'license', 'home-page', 'summary',

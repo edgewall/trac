@@ -16,15 +16,13 @@
 
 from glob import glob
 import imp
-import inspect
 import os.path
 import pkg_resources
 from pkg_resources import working_set, DistributionNotFound, VersionConflict, \
                           UnknownExtra
 import sys
 
-from trac import __version__ as TRAC_VERSION
-from trac.util import get_doc, get_module_path, get_pkginfo
+from trac.util import get_doc, get_module_path, get_sources, get_pkginfo
 from trac.util.text import exception_to_unicode, to_unicode
 
 __all__ = ['load_components']
@@ -130,22 +128,37 @@ def load_components(env, extra_path=None, loaders=(load_eggs('trac.plugins'),
     for loadfunc in loaders:
         loadfunc(env, search_path, auto_enable=plugins_dir)
 
+
 def get_plugin_info(env):
     """Return package information about Trac core and installed plugins."""
+    path_sources = {}
+    
+    def find_distribution(module):
+        name = module.__name__
+        path = get_module_path(module)
+        sources = path_sources.get(path)
+        if sources is None:
+            sources = path_sources[path] = get_sources(path)
+        dist = sources.get(name.replace('.', '/') + '.py')
+        if dist is None:
+            dist = sources.get(name.replace('.', '/') + '/__init__.py')
+        if dist is None:
+            # This is a plain Python source file, not an egg
+            dist = pkg_resources.Distribution(project_name=name,
+                                              version='',
+                                              location=module.__file__)
+        return dist
+        
     plugins_dir = get_plugins_dir(env)
     plugins = {}
     from trac.core import ComponentMeta
     for component in ComponentMeta._components:
         module = sys.modules[component.__module__]
 
-        dist = _find_distribution(env, module)
+        dist = find_distribution(module)
         plugin_filename = None
         if os.path.realpath(os.path.dirname(dist.location)) == plugins_dir:
             plugin_filename = os.path.basename(dist.location)
-
-        description = inspect.getdoc(component)
-        if description:
-            description = to_unicode(description).split('.', 1)[0] + '.'
 
         if dist.project_name not in plugins:
             readonly = True
@@ -159,7 +172,7 @@ def get_plugin_info(env):
                 for k in ('author', 'author_email', 'home_page', 'url',
                           'license', 'trac'):
                     v = getattr(module, k, '')
-                    if v:
+                    if v and isinstance(v, basestring):
                         if k == 'home_page' or k == 'url':
                             k = 'home_page'
                             v = v.replace('$', '').replace('URL: ', '') 
@@ -207,19 +220,6 @@ def get_plugin_info(env):
         }
     return plugins
 
-def _find_distribution(env, module):
-    path = get_module_path(module)
-    if path == env.trac_path:
-        return pkg_resources.Distribution(project_name='Trac',
-                                          version=TRAC_VERSION,
-                                          location=path)
-    for dist in pkg_resources.find_distributions(path, only=True):
-        return dist
-    else:
-        # This is a plain Python source file, not an egg
-        return pkg_resources.Distribution(project_name=module.__name__,
-                                          version='',
-                                          location=module.__file__)
 
 def match_plugins_to_frames(plugins, frames):
     """Add a `frame_idx` element to plugin information as returned by

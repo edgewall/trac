@@ -30,8 +30,7 @@ from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
-from trac.util import copytree, create_file, get_module_path, get_pkginfo, \
-                      makedirs
+from trac.util import copytree, create_file, get_pkginfo, makedirs
 from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
@@ -187,7 +186,6 @@ class Environment(Component, ComponentManager):
         """
         ComponentManager.__init__(self)
 
-        self.trac_path = get_module_path(sys.modules['trac.core'])
         self.path = path
         self.setup_config(load_defaults=create)
         self.setup_log()
