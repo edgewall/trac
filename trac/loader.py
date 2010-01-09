@@ -41,10 +41,9 @@ required_components = (
 )
 
 def _enable_plugin(env, module):
-    """Enable the given plugin module by adding an entry to the configuration.
-    """
-    if module + '.*' not in env.config['components']:
-        env.config['components'].set(module + '.*', 'enabled')
+    """Enable the given plugin module if it wasn't disabled explicitly."""
+    if env.is_component_enabled(module) is None:
+        env.enable_component(module)
 
 def load_eggs(entry_point_name):
     """Loader that loads any eggs on the search path and `sys.path`."""

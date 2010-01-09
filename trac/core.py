@@ -233,7 +233,9 @@ class ComponentManager(object):
         """Can be overridden by sub-classes to veto the activation of a
         component.
 
-        If this method returns False, the component with the given class will
-        not be available.
+        If this method returns `False`, the component was disabled explicitly.
+        If it returns `None`, the component was neither enabled nor disabled
+        explicitly. In both cases, the component with the given class will not
+        be available.
         """
         return True

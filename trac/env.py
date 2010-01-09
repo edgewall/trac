@@ -233,20 +233,28 @@ class Environment(Component, ComponentManager):
             name = name_or_class.__module__ + '.' + name_or_class.__name__
         return name.lower()
 
-    def is_component_enabled(self, cls):
-        """Implemented to only allow activation of components that are not
-        disabled in the configuration.
-        
-        This is called by the `ComponentManager` base class when a component is
-        about to be activated. If this method returns false, the component does
-        not get activated."""
-        if not hasattr(self, '_rules'):
+    @property
+    def _component_rules(self):
+        try:
+            return self._rules
+        except AttributeError:
             self._rules = {}
             for name, value in self.config.options('components'):
                 if name.endswith('.*'):
                     name = name[:-2]
                 self._rules[name.lower()] = value.lower() in ('enabled', 'on')
-
+            return self._rules
+        
+    def is_component_enabled(self, cls):
+        """Implemented to only allow activation of components that are not
+        disabled in the configuration.
+        
+        This is called by the `ComponentManager` base class when a component is
+        about to be activated. If this method returns `False`, the component
+        does not get activated. If it returns `None`, the component only gets
+        activated if it is located in the `plugins` directory of the
+        enironment.
+        """
         component_name = self._component_name(cls)
 
         # Disable the pre-0.11 WebAdmin plugin
@@ -261,9 +269,10 @@ class Environment(Component, ComponentManager):
                           'instead.')
             return False
         
+        rules = self._component_rules
         cname = component_name
         while cname:
-            enabled = self._rules.get(cname)
+            enabled = rules.get(cname)
             if enabled is not None:
                 return enabled
             idx = cname.rfind('.')
@@ -277,7 +286,11 @@ class Environment(Component, ComponentManager):
             return self.config.get('trac', 'repository_dir') != ''
 
         # By default, all components in the trac package are enabled
-        return component_name.startswith('trac.')
+        return component_name.startswith('trac.') or None
+
+    def enable_component(self, cls):
+        """Enable a component or module."""
+        self._component_rules[self._component_name(cls)] = True
 
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
