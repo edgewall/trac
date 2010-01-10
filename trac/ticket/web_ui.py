@@ -1630,6 +1630,8 @@ class TicketModule(Component):
             # some common processing for fields
             if field == 'comment':
                 current['comment'] = new
+                # Always take the author from the comment field
+                current['author'] = comment_history[0]['author'] = author
                 if old:
                     if '.' in old: # retrieve parent.child relationship
                         parent_num, this_num = old.split('.', 1)
