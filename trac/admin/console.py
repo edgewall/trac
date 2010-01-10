@@ -313,12 +313,12 @@ Type:  '?' or 'help' for help on commands.
          If no arguments are given, then the required parameters are requested
          interactively.
          
-         An optional argument --inherit=PATH can be used to specify the
-         "[inherit] file" option at environment creation time, so that only the
-         options not already specified in the global configuration file are
-         written to the conf/trac.ini file of the newly created environment.
-         Relative paths are resolved relative to the "conf" directory of the
-         new environment.
+         One or more optional arguments --inherit=PATH can be used to specify
+         the "[inherit] file" option at environment creation time, so that only
+         the options not already specified in one of the global configuration
+         files are written to the conf/trac.ini file of the newly created
+         environment. Relative paths are resolved relative to the "conf"
+         directory of the new environment.
          """)]
 
     def do_initdb(self, line):
@@ -382,10 +382,14 @@ in order to initialize and prepare the project database.
             return 2
 
         arg = self.arg_tokenize(line)
-        inherit_file = ''
-        for num, item in enumerate(arg):
+        inherit_paths = []
+        i = 0
+        while i < len(arg):
+            item = arg[i]
             if item.startswith('--inherit='):
-                inherit_file = arg.pop(num)[10:]
+                inherit_paths.append(arg.pop(i)[10:])
+            else:
+                i += 1
         arg = arg or [''] # Reset to usual empty in case we popped the only one
         project_name = None
         db_str = None
@@ -407,8 +411,9 @@ in order to initialize and prepare the project database.
                 ('trac', 'repository_dir', repository_dir),
                 ('project', 'name', project_name),
             ]
-            if inherit_file:
-                options.append(('inherit', 'file', inherit_file))
+            if inherit_paths:
+                options.append(('inherit', 'file',
+                                ",\n      ".join(inherit_paths)))
             try:
                 self.__env = Environment(self.envname, create=True,
                                          options=options)

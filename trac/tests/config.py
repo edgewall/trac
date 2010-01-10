@@ -19,6 +19,7 @@ import unittest
 
 from trac.config import *
 from trac.test import Configuration
+from trac.util import create_file
 
 
 class ConfigurationTestCase(unittest.TestCase):
@@ -148,14 +149,16 @@ class ConfigurationTestCase(unittest.TestCase):
                           config.getlist('a', 'option', keep_empty=True))
 
     def test_getpath(self):
+        base = os.path.dirname(self.filename)
         config = self._read()
-        config.set('a', 'path_a', '/somewhere/file.txt')
-        config.set('a', 'path_b', 'file.txt')
-        config.set('a', 'path_c', './file.txt')
-        self.assertEquals('/somewhere/file.txt', os.path.splitdrive(
-                config.getpath('a', 'path_a'))[1].replace('\\', '/'))
-        self.assertNotEquals('file.txt', config.getpath('a', 'path_b'))
-        self.assertEquals(config.getpath('a', 'path_b'),
+        config.set('a', 'path_a', os.path.join(base, 'here', 'absolute.txt'))
+        config.set('a', 'path_b', 'thisdir.txt')
+        config.set('a', 'path_c', os.path.join(os.pardir, 'parentdir.txt'))
+        self.assertEquals(os.path.join(base, 'here', 'absolute.txt'),
+                          config.getpath('a', 'path_a'))
+        self.assertEquals(os.path.join(base, 'thisdir.txt'),
+                          config.getpath('a', 'path_b'))
+        self.assertEquals(os.path.join(os.path.dirname(base), 'parentdir.txt'),
                           config.getpath('a', 'path_c'))
 
     def test_set_and_save(self):
@@ -331,6 +334,40 @@ class ConfigurationTestCase(unittest.TestCase):
             self.assertEqual(True, 'a' in config)
         self._test_with_inherit(testcb)
 
+    def test_inherit_multiple(self):
+        base = os.path.dirname(self.filename)
+        relsite1 = os.path.join('sub1', 'trac-site1.ini')
+        site1 = os.path.join(base, relsite1)
+        relsite2 = os.path.join('sub2', 'trac-site2.ini')
+        site2 = os.path.join(base, relsite2)
+        os.mkdir(os.path.dirname(site1))
+        create_file(site1, '[a]\noption1 = x\n'
+                           '[c]\noption = 1\npath1 = site1\n')
+        try:
+            os.mkdir(os.path.dirname(site2))
+            create_file(site2, '[b]\noption2 = y\n'
+                               '[c]\noption = 2\npath2 = site2\n')
+            try:
+                self._write(['[inherit]',
+                             'file = %s, %s' % (relsite1, relsite2)])
+                config = self._read()
+                self.assertEqual('x', config.get('a', 'option1'))
+                self.assertEqual('y', config.get('b', 'option2'))
+                self.assertEqual('1', config.get('c', 'option'))
+                self.assertEqual(os.path.join(base, 'site1'),
+                                 config.getpath('c', 'path1'))
+                self.assertEqual(os.path.join(base, 'site2'),
+                                 config.getpath('c', 'path2'))
+                self.assertEqual('',
+                                 config.getpath('c', 'path3'))
+                self.assertEqual(os.path.join(base, 'site4'),
+                                 config.getpath('c', 'path4', 'site4'))
+            finally:
+                os.remove(site2)
+                os.rmdir(os.path.dirname(site2))
+        finally:
+            os.remove(site1)
+            os.rmdir(os.path.dirname(site1))
 
     def _test_with_inherit(self, testcb):
         sitename = os.path.join(tempfile.gettempdir(), 'trac-site.ini')

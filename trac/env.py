@@ -31,6 +31,7 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
 from trac.util import copytree, create_file, get_pkginfo, makedirs
+from trac.util.compat import any
 from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
@@ -350,13 +351,14 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'conf'))
         create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         create_file(os.path.join(self.path, 'conf', 'trac.ini.sample'))
-        skip_defaults = options and ('inherit', 'file') in [(section, option) \
-                for (section, option, value) in options]
+        skip_defaults = any((section, option) == ('inherit', 'file')
+                            for section, option, value in options)
         self.setup_config(load_defaults=not skip_defaults)
         for section, name, value in options:
             self.config.set(section, name, value)
         self.config.save()
-        self.config.parse_if_needed() # Full reload to get 'inherit' working
+        # Full reload to get 'inherit' working
+        self.config.parse_if_needed(force=True)
 
         # Create the database
         DatabaseManager(self).init_db()
@@ -387,8 +389,8 @@ class Environment(Component, ComponentManager):
         if load_defaults:
             for section, default_options in self.config.defaults(self).items():
                 for name, value in default_options.items():
-                    parent = self.config.parent
-                    if parent and name in parent[section]:
+                    if any(parent[section].contains(name, defaults=False)
+                           for parent in self.config.parents):
                         value = None
                     self.config.set(section, name, value)
 
