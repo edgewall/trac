@@ -305,7 +305,8 @@ class TestAdminComponentDefault(FunctionalTwillTestCaseSetup):
         tc.find('type="radio" name="default" value="%s" checked="checked"' % \
                 name)
         tc.go(self._tester.url + '/newticket')
-        tc.find('<option selected="selected">%s</option>' % name)
+        tc.find('<option selected="selected" value="%s">%s</option>'
+                % (name, name))
 
 
 class TestAdminComponentDetail(FunctionalTwillTestCaseSetup):
@@ -511,7 +512,8 @@ class TestAdminMilestoneDefault(FunctionalTwillTestCaseSetup):
                 name)
         # verify it is the default on the newticket page.
         tc.go(self._tester.url + '/newticket')
-        tc.find('<option selected="selected">%s</option>' % name)
+        tc.find('<option selected="selected" value="%s">%s</option>'
+                % (name, name))
 
 
 class TestAdminPriority(FunctionalTwillTestCaseSetup):
@@ -846,7 +848,8 @@ class TestAdminVersionDefault(FunctionalTwillTestCaseSetup):
                 name)
         # verify it is the default on the newticket page.
         tc.go(self._tester.url + '/newticket')
-        tc.find('<option selected="selected">%s</option>' % name)
+        tc.find('<option selected="selected" value="%s">%s</option>'
+                % (name, name))
 
 
 class TestNewReport(FunctionalTwillTestCaseSetup):

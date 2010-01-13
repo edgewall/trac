@@ -16,7 +16,7 @@
       <label>Time zone:
       <select name="tz">
         <option>Default time zone</option>
-        <option py:for="tzname in timezones"
+        <option py:for="tzname in timezones" value="$tzname"
                 selected="${session_tzname != None and
                             session_tzname.startswith('Etc/') and
                             selected_tz == timezone(tzname) or

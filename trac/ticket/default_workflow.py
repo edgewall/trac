@@ -255,7 +255,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                    selected_owner=owners[0]))
             else:
                 control.append(tag([_("to "), tag.select(
-                    [tag.option(x, selected=(x == selected_owner or None))
+                    [tag.option(x, value=x,
+                                selected=(x == selected_owner or None))
                      for x in owners],
                     id=id, name=id)]))
                 hints.append(_("The owner will be changed from "
@@ -285,7 +286,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 selected_option = req.args.get(id, 
                         TicketSystem(self.env).default_resolution)
                 control.append(tag(['as ', tag.select(
-                    [tag.option(x, selected=(x == selected_option or None))
+                    [tag.option(x, value=x,
+                                selected=(x == selected_option or None))
                      for x in resolutions],
                     id=id, name=id)]))
                 hints.append(_("The resolution will be set"))

@@ -19,9 +19,9 @@
           <py:choose>
             <select py:when="owners" size="1" id="owner" name="owner">
               <option py:for="owner in owners"
-                      selected="${owner==default_owner or None}">$owner</option>
+                      selected="${owner==default_owner or None}" value="$owner">$owner</option>
               <option py:if="default_owner and default_owner not in owners"
-                      selected="selected">$default_owner</option>
+                      selected="selected" value="$default_owner">$default_owner</option>
             </select>
             <input py:otherwise="" type="text" name="owner" value="$default_owner" />
           </py:choose>

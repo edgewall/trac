@@ -65,8 +65,7 @@
                           <td py:if="field.type not in ('radio', 'checkbox', 'time')" class="mode">
                             <select name="${n_field_name}_mode">
                               <option py:for="mode in modes[field.type]" value="$mode.value"
-                                selected="${mode.value == constraint.mode and 'selected' or None}">$mode.name
-                              </option>
+                                selected="${mode.value == constraint.mode and 'selected' or None}">$mode.name</option>
                             </select>
                           </td>
                         </py:when>
@@ -82,8 +81,8 @@
                           <select name="${n_field_name}">
                             <option></option>
                             <option py:for="option in field.options"
-                              selected="${option == constraint_value and 'selected' or None}">$option
-                            </option>
+                              selected="${option == constraint_value and 'selected' or None}"
+                              value="$option" py:content="option"></option>
                           </select>
                         </py:when>
 
@@ -142,9 +141,7 @@
                         <label for="add_clause">Or</label>&nbsp;
                         <select name="add_clause_${clause_num + 1}" id="add_clause">
                           <option></option>
-                          <option py:for="field_name in field_names" value="$field_name">
-                            ${fields[field_name].label}
-                          </option>
+                          <option py:for="field_name in field_names" value="$field_name">${fields[field_name].label}</option>
                         </select>
                         <div class="inlinebuttons">
                           <input type="submit" name="add_${clause_num + 1}" value="+" />

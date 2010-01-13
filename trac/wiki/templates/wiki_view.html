@@ -86,7 +86,7 @@
                         <select name="template">
                           <option selected="${not default_template in templates and 'selected' or None}"
                                   value="">(blank page)</option>
-                          <option py:for="t in templates"
+                          <option py:for="t in templates" value="$t"
                                   selected="${t == default_template or None}">$t</option>
                         </select>
                       </div>
