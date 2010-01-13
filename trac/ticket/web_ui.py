@@ -485,8 +485,8 @@ class TicketModule(Component):
                 if not (req.authname and req.authname != 'anonymous'
                         and change and change['author'] == req.authname):
                     req.perm(ticket.resource).require('TICKET_EDIT_COMMENT')
-                ticket.modify_comment(cnum, req.authname, comment)
-                req.redirect(req.href.ticket(ticket.id))
+                ticket.modify_comment(change['date'], req.authname, comment)
+                req.redirect(req.href.ticket(ticket.id) + '#comment:%d' % cnum)
 
             # Do any action on the ticket?
             actions = TicketSystem(self.env).get_available_actions(
@@ -1638,7 +1638,7 @@ class TicketModule(Component):
                         current['replyto'] = parent_num
                     else:
                         this_num = old
-                    current['cnum'] = int(this_num)
+                    current['cnum'] = autonum = int(this_num)
             elif field.startswith('_comment'):      # Comment edits
                 rev = int(field[8:])
                 comment_history.setdefault(rev, {}).update({'comment': old})
