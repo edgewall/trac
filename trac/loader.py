@@ -231,14 +231,17 @@ def match_plugins_to_frames(plugins, frames):
     def find_egg_frame_index(plugin):
         for dist in pkg_resources.find_distributions(plugin['path'],
                                                      only=True):
-            sources = dist.get_metadata('SOURCES.txt')
-            for src in sources.splitlines():
-                if src.endswith('.py'):
-                    nsrc = src.replace('\\', '/')
-                    for i, f in egg_frames:
-                        if f['filename'].endswith(nsrc):
-                            plugin['frame_idx'] = i
-                            return
+            try:
+                sources = dist.get_metadata('SOURCES.txt')
+                for src in sources.splitlines():
+                    if src.endswith('.py'):
+                        nsrc = src.replace('\\', '/')
+                        for i, f in egg_frames:
+                            if f['filename'].endswith(nsrc):
+                                plugin['frame_idx'] = i
+                                return
+            except KeyError:
+                pass    # Metadata not found
     
     for plugin in plugins.itervalues():
         base, ext = os.path.splitext(plugin['path'])

@@ -470,12 +470,15 @@ def get_sources(path):
     """
     sources = {}
     for dist in find_distributions(path, only=True):
-        toplevels = dist.get_metadata('top_level.txt').splitlines()
-        toplevels = [each + '/' for each in toplevels]
-        files = dist.get_metadata('SOURCES.txt').splitlines()
-        sources.update((src, dist) for src in files
-                       if any(src.startswith(toplevel)
-                              for toplevel in toplevels))
+        try:
+            toplevels = dist.get_metadata('top_level.txt').splitlines()
+            toplevels = [each + '/' for each in toplevels]
+            files = dist.get_metadata('SOURCES.txt').splitlines()
+            sources.update((src, dist) for src in files
+                           if any(src.startswith(toplevel)
+                                  for toplevel in toplevels))
+        except KeyError:
+            pass    # Metadata not found
     return sources
 
 def get_pkginfo(dist):
