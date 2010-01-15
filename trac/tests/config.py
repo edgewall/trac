@@ -25,7 +25,8 @@ from trac.util import create_file
 class ConfigurationTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.filename = os.path.join(tempfile.gettempdir(), 'trac-test.ini')
+        tmpdir = os.path.realpath(tempfile.gettempdir())
+        self.filename = os.path.join(tmpdir, 'trac-test.ini')
         self._write([])
         self._orig_registry = Option.registry
         Option.registry = {}
@@ -154,16 +155,11 @@ class ConfigurationTestCase(unittest.TestCase):
         config.set('a', 'path_a', os.path.join(base, 'here', 'absolute.txt'))
         config.set('a', 'path_b', 'thisdir.txt')
         config.set('a', 'path_c', os.path.join(os.pardir, 'parentdir.txt'))
-
-        self.assertEquals(os.path.realpath(os.path.join(base, 'here',
-                                                        'absolute.txt')),
+        self.assertEquals(os.path.join(base, 'here', 'absolute.txt'),
                           config.getpath('a', 'path_a'))
-
-        self.assertEquals(os.path.realpath(os.path.join(base, 'thisdir.txt')),
+        self.assertEquals(os.path.join(base, 'thisdir.txt'),
                           config.getpath('a', 'path_b'))
-
-        self.assertEquals(os.path.realpath(os.path.join(os.path.dirname(base),
-                                                        'parentdir.txt')),
+        self.assertEquals(os.path.join(os.path.dirname(base), 'parentdir.txt'),
                           config.getpath('a', 'path_c'))
 
     def test_set_and_save(self):
@@ -359,13 +355,13 @@ class ConfigurationTestCase(unittest.TestCase):
                 self.assertEqual('x', config.get('a', 'option1'))
                 self.assertEqual('y', config.get('b', 'option2'))
                 self.assertEqual('1', config.get('c', 'option'))
-                self.assertEqual(os.path.realpath(os.path.join(base, 'site1')),
+                self.assertEqual(os.path.join(base, 'site1'),
                                  config.getpath('c', 'path1'))
-                self.assertEqual(os.path.realpath(os.path.join(base, 'site2')),
+                self.assertEqual(os.path.join(base, 'site2'),
                                  config.getpath('c', 'path2'))
                 self.assertEqual('',
                                  config.getpath('c', 'path3'))
-                self.assertEqual(os.path.realpath(os.path.join(base, 'site4')),
+                self.assertEqual(os.path.join(base, 'site4'),
                                  config.getpath('c', 'path4', 'site4'))
             finally:
                 os.remove(site2)
