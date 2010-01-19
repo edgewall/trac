@@ -611,7 +611,6 @@ class MilestoneModule(Component):
         old_name = milestone.name
         new_name = req.args.get('name')
         
-        milestone.name = new_name
         milestone.description = req.args.get('description', '')
 
         due = req.args.get('duedate', '')
@@ -639,7 +638,7 @@ class MilestoneModule(Component):
                     warn(_('Milestone "%(name)s" already exists, please '
                            'choose another name', name=new_name))
                 except ResourceNotFound:
-                    pass
+                    milestone.name = new_name
         else:
             warn(_('You must provide a name for the milestone.'))
 

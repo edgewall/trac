@@ -1294,6 +1294,26 @@ class RegressionTestTicket8247(FunctionalTwillTestCaseSetup):
         tc.notfind('anonymous')
 
 
+class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/8816
+        When creating a milestone with an already existing name, you get
+        a warning. After changing the name you will find that the original
+        milestone with that name is renamed instead of a new one being
+        created."""
+        name = "8861Milestone"
+        self._tester.create_milestone(name)
+        tc.go(self._tester.url + "/milestone?action=new")
+        tc.formvalue('edit', 'name', name)
+        tc.submit('Add milestone')
+        tc.find('Milestone "%s" already exists' % name)
+        tc.formvalue('edit', 'name', name + '__')
+        tc.submit('Add milestone')
+        tc.go(self._tester.url + "/roadmap")
+        tc.find('Milestone: <em>%s</em>' % name)
+        tc.find('Milestone: <em>%s</em>' % (name + '__'))
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1378,6 +1398,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket6912a())
     suite.addTest(RegressionTestTicket6912b())
     suite.addTest(RegressionTestTicket8247())
+    suite.addTest(RegressionTestTicket8861())
 
     return suite
 
