@@ -760,30 +760,33 @@ class Formatter(object):
 
     # Table
     
-    def _last_table_cell_formatter(self, match, fullmatch):
-        if match[-1] == '\\':
-            self.continue_table_row = 1
-        return ''
-
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
-        numpipes = len(match)
+        separator = fullmatch.group('table_cell_sep')
+        is_last = fullmatch.group('table_cell_last')
+        numpipes = len(separator)
         cell = 'td'
-        if match[0] == '=':
+        if separator[0] == '=':
             numpipes -= 1
-        if match[-1] == '=':
+        if separator[-1] == '=':
             numpipes -= 1
             cell = 'th'
         colspan = numpipes/2
+        if is_last is not None:
+            if is_last and is_last[-1] == '\\':
+                self.continue_table_row = 1
+            colspan -= 1
+            if not colspan:
+                return ''
         attrs = ''
         if colspan > 1:
             attrs = ' colspan="%d"' % int(colspan)
         # alignment: ||left || right||default|| default ||
-        end = fullmatch.end()
-        alignleft = self.line[end] != ' '
+        after_sep = fullmatch.end('table_cell_sep')
+        alignleft = after_sep < len(self.line) and self.line[after_sep] != ' '
         # lookahead next || (FIXME: this fails on ` || ` inside the cell)
-        next_sep = re.search(r'([^!])=?\|\|', self.line[end:])
+        next_sep = re.search(r'([^!])=?\|\|', self.line[after_sep:])
         if next_sep and next_sep.group(1) != ' ':
             textalign = not alignleft and 'right'
         else:
