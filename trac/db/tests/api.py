@@ -108,10 +108,34 @@ class StringsTestCase(unittest.TestCase):
         self.assertEqual([(u'<em>märkup</em>',)], cursor.fetchall())
 
 
+class ConnectionTestCase(unittest.TestCase):
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.db = self.env.get_db_cnx()
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_get_last_id(self):
+        c = self.db.cursor()
+        q = "INSERT INTO report (author) VALUES ('anonymous')"
+        c.execute(q)
+        # Row ID correct before...
+        id1 = self.db.get_last_id(c, 'report')
+        self.assertNotEqual(0, id1)
+        self.db.commit()
+        c.execute(q)
+        self.db.commit()
+        # ... and after commit()
+        id2 = self.db.get_last_id(c, 'report')
+        self.assertEqual(id1 + 1, id2)
+
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ParseConnectionStringTestCase, 'test'))
     suite.addTest(unittest.makeSuite(StringsTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ConnectionTestCase, 'test'))
     return suite
 
 if __name__ == '__main__':
