@@ -221,7 +221,7 @@ class MySQLConnection(ConnectionWrapper):
         return _like_escape_re.sub(r'/\1', text)
 
     def get_last_id(self, cursor, table, column='id'):
-        return self.cnx.insert_id()
+        return cursor.lastrowid
 
     def rollback(self):
         self.cnx.ping()

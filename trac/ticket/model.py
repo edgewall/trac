@@ -379,14 +379,11 @@ class Ticket(object):
 
     def get_change(self, cnum, db=None):
         """Return a ticket change by its number."""
-        scnum = str(cnum)
         db = self._get_db(db)
         cursor = db.cursor()
-        cursor.execute("SELECT time,author FROM ticket_change "
-                       "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)" % db.like(),
-                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
-        for ts, author in cursor:
+        row = self._find_comment(cnum, 'time,author', db)
+        if row:
+            ts, author = row
             cursor.execute("SELECT field,author,oldvalue,newvalue "
                            "FROM ticket_change "
                            "WHERE ticket=%s AND time=%s",
@@ -398,26 +395,27 @@ class Ticket(object):
                 fields[field] = {'author': author, 'old': old, 'new': new}
             return change
 
-    def modify_comment(self, cnum, author, comment, when=None, db=None):
-        """Modify a ticket change comment, while keeping a history of edits."""
-        scnum = str(cnum)
+    def modify_comment(self, cdate, author, comment, when=None, db=None):
+        """Modify a ticket comment specified by its date, while keeping a
+        history of edits.
+        """
+        ts = to_timestamp(cdate)
         if when is None:
             when = datetime.now(utc)
         when_ts = to_timestamp(when)
         
         db, handle_ta = self._get_db_for_write(db)
-        like = db.like()
         cursor = db.cursor()
-        cursor.execute("SELECT time,newvalue FROM ticket_change "
-                       "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
-                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
-        for (ts, old_comment) in cursor:
+        cursor.execute("SELECT newvalue FROM ticket_change "
+                       "WHERE ticket=%s AND time=%s AND field='comment'",
+                       (self.id, ts))
+        for old_comment, in cursor:
             if comment == old_comment:
                 return
             # Comment history is stored in fields named "_comment%d"
             cursor.execute("SELECT COUNT(ticket) FROM ticket_change "
-                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           "WHERE ticket=%%s AND time=%%s AND field %s"
+                           % db.like(),
                            (self.id, ts, db.like_escape('_comment') + '%'))
             rev = cursor.fetchone()[0]
             cursor.execute("INSERT INTO ticket_change "
@@ -428,25 +426,21 @@ class Ticket(object):
             cursor.execute("UPDATE ticket_change SET newvalue=%s "
                            "WHERE ticket=%s AND time=%s AND field='comment'",
                            (comment, self.id, ts))
-            break
-        if handle_ta:
-            db.commit()
+            if handle_ta:
+                db.commit()
 
     def get_comment_history(self, cnum, db=None):
-        scnum = str(cnum)
         db = self._get_db(db)
-        like = db.like()
         history = []
         cursor = db.cursor()
-        cursor.execute("SELECT time,author,newvalue FROM ticket_change "
-                       "WHERE ticket=%%s AND field='comment' "
-                       "  AND (oldvalue=%%s OR oldvalue %s)" % like,
-                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
-        for (ts0, author0, last_comment) in cursor:
+        row = self._find_comment(cnum, 'time,author,newvalue', db)
+        if row:
+            ts0, author0, last_comment = row
             # Get all fields of the form "_comment%d"
             cursor.execute("SELECT field,author,oldvalue,newvalue "
                            "FROM ticket_change "
-                           "WHERE ticket=%%s AND time=%%s AND field %s" % like,
+                           "WHERE ticket=%%s AND time=%%s AND field %s"
+                           % db.like(),
                            (self.id, ts0, db.like_escape('_comment') + '%'))
             for field, author, comment, ts in cursor:
                 rev = int(field[8:])
@@ -455,9 +449,36 @@ class Ticket(object):
                 ts0, author0 = ts, author
             history.sort()
             rev = history and (history[-1][0] + 1) or 0
-            history.append((rev, datetime.fromtimestamp(int(ts), utc),
-                            author, last_comment))
+            history.append((rev, datetime.fromtimestamp(int(ts0), utc),
+                            author0, last_comment))
         return history
+
+    def _find_comment(self, cnum, fields, db):
+        """Find a comment by its number."""
+        scnum = str(cnum)
+        cursor = db.cursor()
+        cursor.execute("SELECT %s FROM ticket_change "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "  AND (oldvalue=%%s OR oldvalue %s)"
+                       % (fields, db.like()),
+                       (self.id, scnum, '%' + db.like_escape('.' + scnum)))
+        for row in cursor:
+            return row
+        
+        # Fallback when comment number is not available in oldvalue
+        num = 0
+        cursor.execute("SELECT oldvalue,%s FROM ticket_change "
+                       "WHERE ticket=%%s AND field='comment' "
+                       "ORDER BY time" % fields,
+                       (self.id,))
+        for row in cursor:
+            # Use oldvalue if available, else count comments
+            try:
+                num = int((row[0] or '').rsplit('.', 1)[-1])
+            except ValueError:
+                num += 1
+            if num == cnum:
+                return row[1:]
 
 
 def simplify_whitespace(name):

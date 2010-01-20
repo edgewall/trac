@@ -50,11 +50,10 @@ class Configuration(object):
         self.filename = filename
         self.parser = ConfigParser()
         self._old_sections = {}
-        self.parent = None
-        self._base_filename = None
+        self.parents = []
         self._lastmtime = 0
         self._sections = {}
-        self.parse_if_needed()
+        self.parse_if_needed(force=True)
 
     def __contains__(self, name):
         """Return whether the configuration contains a section of the given
@@ -119,12 +118,11 @@ class Configuration(object):
     def getpath(self, section, key, default=''):
         """Return a configuration value as an absolute path.
         
-        Relative paths are made absolute relative to the location of the file
-        the option is read from. A value read from defaults use location of
-        first configuration file as base.
-
-        Valid default input is a string. Returns a string as correct path.
+        Relative paths are resolved relative to the location of this
+        configuration file.
         
+        Valid default input is a string. Returns a normalized path.
+
         (enabled since Trac 0.11.5)
         """
         return self[section].getpath(key, default)
@@ -162,7 +160,7 @@ class Configuration(object):
         """Remove the specified option."""
         self[section].remove(key)
 
-    def sections(self, compmgr=None):
+    def sections(self, compmgr=None, defaults=True):
         """Return a list of section names.
         
         If `compmgr` is specified, only the section names corresponding to
@@ -170,15 +168,16 @@ class Configuration(object):
         `ComponentManager` are returned.
         """
         sections = set([to_unicode(s) for s in self.parser.sections()])
-        if self.parent:
-            sections.update(self.parent.sections(compmgr))
-        else:
+        for parent in self.parents:
+            sections.update(parent.sections(compmgr, defaults=False))
+        if defaults:
             sections.update(self.defaults(compmgr))
         return sorted(sections)
 
-    def has_option(self, section, option):
-        """Returns True if option exists in section in either project or
-        parent trac.ini, or available through the Option registry.
+    def has_option(self, section, option, defaults=True):
+        """Returns True if option exists in section in either the project
+        trac.ini or one of the parents, or is available through the Option
+        registry.
         
         (since Trac 0.11)
         """
@@ -186,10 +185,10 @@ class Configuration(object):
         if self.parser.has_section(section_str):
             if _to_utf8(option) in self.parser.options(section_str):
                 return True
-        if self.parent:
-            return self.parent.has_option(section, option)
-        else:
-            return (section, option) in Option.registry
+        for parent in self.parents:
+            if parent.has_option(section, option, defaults=False):
+                return True
+        return defaults and (section, option) in Option.registry
 
     def save(self):
         """Write the configuration options to the primary file."""
@@ -203,8 +202,10 @@ class Configuration(object):
             options = []
             for option in self[section]:
                 default_str = None
-                if self.parent:
-                    default_str = _to_utf8(self.parent.get(section, option))
+                for parent in self.parents:
+                    if parent.has_option(section, option, defaults=False):
+                        default_str = _to_utf8(parent.get(section, option))
+                        break
                 option_str = _to_utf8(option)
                 current_str = False
                 if self.parser.has_option(section_str, option_str):
@@ -237,36 +238,35 @@ class Configuration(object):
             self.parser._sections = deepcopy(self._old_sections)
             raise
 
-    def parse_if_needed(self):
+    def parse_if_needed(self, force=False):
         if not self.filename or not os.path.isfile(self.filename):
             return False
 
         changed = False
         modtime = os.path.getmtime(self.filename)
-        if modtime > self._lastmtime:
+        if force or modtime > self._lastmtime:
             self._sections = {}
             self.parser._sections = {}
             self.parser.read(self.filename)
             self._lastmtime = modtime
             self._old_sections = deepcopy(self.parser._sections)
             changed = True
-
-        if self.parser.has_option('inherit', 'file'):
-            filename = to_unicode(self.parser.get('inherit', 'file'))
-            if not os.path.isabs(filename):
-                filename = os.path.join(os.path.dirname(self.filename),
-                                        filename)
-            if not self.parent or self.parent.filename != filename:
-                self.parent = Configuration(filename)
-                self.parent._base_filename = self._base_filename \
-                                                or self.filename
-                changed = True
-            else:
-                changed |= self.parent.parse_if_needed()
-        elif self.parent:
-            changed = True
-            self.parent = None
-
+        
+        if changed:
+            self.parents = []
+            if self.parser.has_option('inherit', 'file'):
+                for filename in self.parser.get('inherit', 'file').split(','):
+                    filename = to_unicode(filename.strip())
+                    if not os.path.isabs(filename):
+                        filename = os.path.join(os.path.dirname(self.filename),
+                                                filename)
+                    self.parents.append(Configuration(filename))
+        else:
+            for parent in self.parents:
+                changed |= parent.parse_if_needed(force=force)
+        
+        if changed:
+            self._cache = {}
         return changed
 
     def touch(self):
@@ -288,17 +288,17 @@ class Section(object):
         self.overridden = {}
         self._cache = {}
 
-    def __contains__(self, key):
+    def contains(self, key, defaults=True):
         if self.config.parser.has_option(_to_utf8(self.name), _to_utf8(key)):
             return True
-        if self.config.parent:
-            return key in self.config.parent[self.name]
-        return Option.registry.has_key((self.name, key))
-
-    def __iter__(self):
-        return self.iterate()
+        for parent in self.config.parents:
+            if parent[self.name].contains(key, defaults=False):
+                return True
+        return defaults and Option.registry.has_key((self.name, key))
     
-    def iterate(self, compmgr=None):
+    __contains__ = contains
+
+    def iterate(self, compmgr=None, defaults=True):
         """Iterate over the options in this section.
         
         If `compmgr` is specified, only return default option values for
@@ -311,15 +311,19 @@ class Section(object):
                 option = to_unicode(option_str)
                 options.add(option.lower())
                 yield option
-        if self.config.parent:
-            for option in self.config.parent[self.name]:
-                if option.lower() not in options:
+        for parent in self.config.parents:
+            for option in parent[self.name].iterate(defaults=False):
+                loption = option.lower()
+                if loption not in options:
+                    options.add(loption)
                     yield option
-        else:
+        if defaults:
             for section, option in Option.get_registry(compmgr).keys():
                 if section == self.name and option.lower() not in options:
                     yield option
 
+    __iter__ = iterate
+    
     def __repr__(self):
         return '<Section [%s]>' % (self.name)
 
@@ -335,14 +339,14 @@ class Section(object):
         key_str = _to_utf8(key)
         if self.config.parser.has_option(name_str, key_str):
             value = self.config.parser.get(name_str, key_str)
-        elif self.config.parent:
-            value = self.config.parent[self.name].get(key, default)
         else:
-            option = Option.registry.get((self.name, key))
-            if option:
-                value = option.default or _use_default
+            for parent in self.config.parents:
+                value = parent[self.name].get(key, _use_default)
+                if value is not _use_default:
+                    break
             else:
-                value = _use_default
+                option = Option.registry.get((self.name, key))
+                value = option and option.default or _use_default
         if value is _use_default:
             return default
         if not value:
@@ -405,30 +409,17 @@ class Section(object):
         return items
 
     def getpath(self, key, default=''):
-        """Return the value of the specified option as a path name, relative to
-        the location of the configuration file the option is defined in.
+        """Return the value of the specified option as a path, relative to
+        the location of this configuration file.
 
-        Valid default input is a string. Returns a string with normalised path.
+        Valid default input is a string. Returns a normalized path.
         """
-        name_str = _to_utf8(self.name)
-        key_str = _to_utf8(key)
-        if self.config.parser.has_option(name_str, key_str):
-            path = to_unicode(self.config.parser.get(name_str, key_str))
-            if not path:
-                return default
-            if not os.path.isabs(path):
-                path = os.path.join(os.path.dirname(self.config.filename),
-                                    path)
-            return os.path.normcase(os.path.realpath(path))
-        elif self.config.parent:
-            return self.config.parent[self.name].getpath(key, default)
-        else:
-            base = self.config._base_filename or self.config.filename
-            path_opt = Option.registry.get((self.name, key), None)
-            path = path_opt and path_opt.default or default
-            if path and not os.path.isabs(path):
-                path = os.path.join(os.path.dirname(base), path)
-            return path
+        path = self.get(key, default)
+        if not path:
+            return default
+        if not os.path.isabs(path):
+            path = os.path.join(os.path.dirname(self.config.filename), path)
+        return os.path.normcase(os.path.realpath(path))
 
     def options(self, compmgr=None):
         """Return `(key, value)` tuples for every option in the section.
@@ -641,10 +632,10 @@ class ConfigurationAdmin(Component):
         self.config.set(section, option, value)
         self.config.save()
         if section == 'inherit' and option == 'file':
-            self.config.parse_if_needed()   # Full reload
+            self.config.parse_if_needed(force=True) # Full reload
 
     def _do_remove(self, section, option):
         self.config.remove(section, option)
         self.config.save()
         if section == 'inherit' and option == 'file':
-            self.config.parse_if_needed()   # Full reload
+            self.config.parse_if_needed(force=True) # Full reload

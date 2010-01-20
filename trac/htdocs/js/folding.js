@@ -1,19 +1,24 @@
 (function($){
 
-  $.fn.enableFolding = function(autofold) {
+  $.fn.enableFolding = function(autofold, snap) {
     var fragId = document.location.hash;
     if (fragId && /^#no\d+$/.test(fragId))
       fragId = parseInt(fragId.substr(3));
+    if (snap == undefined)
+      snap = false;
     
     var count = 1;
     return this.each(function() {
       var t = $(this).text();
       $(this).text("");
-      var trigger = $(this).append("<a href='#no" + count + "'></a>").children();
+      var trigger = $(this).append("<a" + (snap? " id='no" + count + "'": "")
+                                   + " href='#no" + count + "'></a>")
+                           .children();
       trigger.text(t);
       
       trigger.click(function() {
-        $(this.parentNode.parentNode).toggleClass("collapsed");
+        var div = $(this.parentNode.parentNode).toggleClass("collapsed");
+        return snap && !div.hasClass("collapsed");
       });
       if (autofold && (count != fragId))
         trigger.parents().eq(1).addClass("collapsed");

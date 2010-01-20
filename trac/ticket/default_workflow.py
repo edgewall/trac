@@ -243,25 +243,28 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 owner = req.args.get(id, req.authname)
                 control.append(tag(['to ', tag.input(type='text', id=id,
                                                      name=id, value=owner)]))
-                hints.append(_("The owner will change from %(current_owner)s",
+                hints.append(_("The owner will be changed from "
+                               "%(current_owner)s",
                                current_owner=current_owner))
             elif len(owners) == 1:
                 control.append(tag('to %s ' % owners[0]))
                 if ticket['owner'] != owners[0]:
-                    hints.append(_("The owner will change from "
+                    hints.append(_("The owner will be changed from "
                                    "%(current_owner)s to %(selected_owner)s",
                                    current_owner=current_owner,
                                    selected_owner=owners[0]))
             else:
                 control.append(tag([_("to "), tag.select(
-                    [tag.option(x, selected=(x == selected_owner or None))
+                    [tag.option(x, value=x,
+                                selected=(x == selected_owner or None))
                      for x in owners],
                     id=id, name=id)]))
-                hints.append(_("The owner will change from %(current_owner)s",
+                hints.append(_("The owner will be changed from "
+                               "%(current_owner)s",
                                current_owner=current_owner))
         if 'set_owner_to_self' in operations and \
                 ticket._old.get('owner', ticket['owner']) != req.authname:
-            hints.append(_("The owner will change from %(current_owner)s "
+            hints.append(_("The owner will be changed from %(current_owner)s "
                            "to %(authname)s", current_owner=current_owner,
                            authname=req.authname))
         if 'set_resolution' in operations:
@@ -283,7 +286,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 selected_option = req.args.get(id, 
                         TicketSystem(self.env).default_resolution)
                 control.append(tag(['as ', tag.select(
-                    [tag.option(x, selected=(x == selected_option or None))
+                    [tag.option(x, value=x,
+                                selected=(x == selected_option or None))
                      for x in resolutions],
                     id=id, name=id)]))
                 hints.append(_("The resolution will be set"))

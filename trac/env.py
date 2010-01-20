@@ -30,8 +30,8 @@ from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
-from trac.util import copytree, create_file, get_module_path, get_pkginfo, \
-                      makedirs
+from trac.util import copytree, create_file, get_pkginfo, makedirs
+from trac.util.compat import any
 from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _
 from trac.versioncontrol import RepositoryManager
@@ -187,7 +187,6 @@ class Environment(Component, ComponentManager):
         """
         ComponentManager.__init__(self)
 
-        self.trac_path = get_module_path(sys.modules['trac.core'])
         self.path = path
         self.setup_config(load_defaults=create)
         self.setup_log()
@@ -235,20 +234,28 @@ class Environment(Component, ComponentManager):
             name = name_or_class.__module__ + '.' + name_or_class.__name__
         return name.lower()
 
-    def is_component_enabled(self, cls):
-        """Implemented to only allow activation of components that are not
-        disabled in the configuration.
-        
-        This is called by the `ComponentManager` base class when a component is
-        about to be activated. If this method returns false, the component does
-        not get activated."""
-        if not hasattr(self, '_rules'):
+    @property
+    def _component_rules(self):
+        try:
+            return self._rules
+        except AttributeError:
             self._rules = {}
             for name, value in self.config.options('components'):
                 if name.endswith('.*'):
                     name = name[:-2]
                 self._rules[name.lower()] = value.lower() in ('enabled', 'on')
-
+            return self._rules
+        
+    def is_component_enabled(self, cls):
+        """Implemented to only allow activation of components that are not
+        disabled in the configuration.
+        
+        This is called by the `ComponentManager` base class when a component is
+        about to be activated. If this method returns `False`, the component
+        does not get activated. If it returns `None`, the component only gets
+        activated if it is located in the `plugins` directory of the
+        enironment.
+        """
         component_name = self._component_name(cls)
 
         # Disable the pre-0.11 WebAdmin plugin
@@ -263,9 +270,10 @@ class Environment(Component, ComponentManager):
                           'instead.')
             return False
         
+        rules = self._component_rules
         cname = component_name
         while cname:
-            enabled = self._rules.get(cname)
+            enabled = rules.get(cname)
             if enabled is not None:
                 return enabled
             idx = cname.rfind('.')
@@ -274,7 +282,11 @@ class Environment(Component, ComponentManager):
             cname = cname[:idx]
 
         # By default, all components in the trac package are enabled
-        return component_name.startswith('trac.')
+        return component_name.startswith('trac.') or None
+
+    def enable_component(self, cls):
+        """Enable a component or module."""
+        self._component_rules[self._component_name(cls)] = True
 
     def verify(self):
         """Verify that the provided path points to a valid Trac environment
@@ -334,13 +346,14 @@ class Environment(Component, ComponentManager):
         os.mkdir(os.path.join(self.path, 'conf'))
         create_file(os.path.join(self.path, 'conf', 'trac.ini'))
         create_file(os.path.join(self.path, 'conf', 'trac.ini.sample'))
-        skip_defaults = options and ('inherit', 'file') in [(section, option) \
-                for (section, option, value) in options]
+        skip_defaults = any((section, option) == ('inherit', 'file')
+                            for section, option, value in options)
         self.setup_config(load_defaults=not skip_defaults)
         for section, name, value in options:
             self.config.set(section, name, value)
         self.config.save()
-        self.config.parse_if_needed() # Full reload to get 'inherit' working
+        # Full reload to get 'inherit' working
+        self.config.parse_if_needed(force=True)
 
         # Create the database
         DatabaseManager(self).init_db()
@@ -371,8 +384,8 @@ class Environment(Component, ComponentManager):
         if load_defaults:
             for section, default_options in self.config.defaults(self).items():
                 for name, value in default_options.items():
-                    parent = self.config.parent
-                    if parent and name in parent[section]:
+                    if any(parent[section].contains(name, defaults=False)
+                           for parent in self.config.parents):
                         value = None
                     self.config.set(section, name, value)
 

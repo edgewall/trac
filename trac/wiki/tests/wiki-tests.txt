@@ -1331,6 +1331,7 @@ in:
 || name |||| parameter info ||
 || RPC# || parameter len || ..... parameter ..... ||
 |||||| end ||
+|| !#8977 || this should also work ||||
 ----
 ------------------------------
 <p>
@@ -1340,6 +1341,7 @@ in:
 <tr><td> name </td><td colspan="2"> parameter info 
 </td></tr><tr><td> RPC# </td><td> parameter len </td><td> ..... parameter ..... 
 </td></tr><tr><td colspan="3"> end 
+</td></tr><tr><td> #8977 </td><td> this should also work </td><td>
 </td></tr></table>
 <hr />
 ------------------------------
@@ -1347,6 +1349,7 @@ in:
 || name |||| parameter info ||
 || RPC# || parameter len || ..... parameter ..... ||
 |||||| end ||
+|| #8977 || this should also work ||||
 ----
 ============================== Table headings (plus colspan)
 ||= this is a header =||||= another header =|| not a header ||
@@ -1419,18 +1422,22 @@ in:
 || a very long cell, with lots of content || \
 || a second cell, on the same row ||
 || normal || row ||
+|||| \
+|| this should also work ||
 ------------------------------
 <table class="wiki">
 <tr><td> a very long cell, with lots of content 
 
 </td><td> a second cell, on the same row 
-</td></tr>
-<tr><td> Another row 
+</td></tr><tr>
+</tr><tr><td> Another row 
 </td><td> Another row 
 </td></tr><tr><td> normal </td><td> row 
 </td></tr><tr><td> a very long cell, with lots of content 
 </td><td> a second cell, on the same row 
 </td></tr><tr><td> normal </td><td> row 
+</td></tr><tr><td>
+</td><td> this should also work 
 </td></tr></table>
 ------------------------------
 ============================================================

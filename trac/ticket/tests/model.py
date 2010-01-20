@@ -74,6 +74,7 @@ class TicketTestCase(unittest.TestCase):
     def test_create_ticket_2(self):
         ticket = self._create_a_ticket()
         ticket.insert()
+        self.assertEqual(1, ticket.id)
         # Retrieving ticket
         ticket2 = Ticket(self.env, 1)
         self.assertEqual(1, ticket2.id)

@@ -133,7 +133,7 @@
       // Add the remove button
       tr.append($('<td>')
         .append($('<div class="inlinebuttons">')
-          .append($('<input type="button" value="-">')
+          .append($('<input type="button" value="&ndash;">')
             .click(function() { removeRow(this, propertyName); }))));
       
       // Add the row header

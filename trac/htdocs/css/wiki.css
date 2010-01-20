@@ -31,6 +31,7 @@ p.path .pathentry { float: left }
  margin-right: -1px;
  padding: 0;
  width: 100%;
+ min-height: 10em;
  resize: vertical;
 }
 #edit .wikitoolbar { float: left; margin-left: -1px }

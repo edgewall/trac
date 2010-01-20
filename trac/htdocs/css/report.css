@@ -21,6 +21,7 @@ h2.report-result {
 
 #query { clear: right }
 #query fieldset, #query fieldset input, #query fieldset select { font-size: 11px }
+#query fieldset input[type="button"] { padding: 0.1em 0.5em }
 #query fieldset { margin-top: 1em }
 #query fieldset.collapsed { 
  border-width: 0;
