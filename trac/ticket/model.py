@@ -428,6 +428,7 @@ class Ticket(object):
                            (comment, self.id, ts))
             if handle_ta:
                 db.commit()
+            break
 
     def get_comment_history(self, cnum, db=None):
         db = self._get_db(db)
