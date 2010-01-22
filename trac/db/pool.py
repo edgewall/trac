@@ -50,6 +50,9 @@ class PooledConnection(ConnectionWrapper):
 
     def __del__(self):
         self.close()
+    
+    def cursor(self):
+        return self.cnx.cursor()
 
 
 def try_rollback(cnx):

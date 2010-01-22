@@ -94,9 +94,7 @@ class ConnectionWrapper(object):
         self.log = log
 
     def __getattr__(self, name):
-        if hasattr(self, 'cnx'):
-            return getattr(self.cnx, name)
-        return object.__getattr__(self, name)
+        return getattr(self.cnx, name)
 
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
