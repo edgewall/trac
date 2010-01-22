@@ -21,7 +21,7 @@ from genshi.core import Markup
 from trac.core import *
 from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
-from trac.db.util import ConnectionWrapper
+from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import to_unicode
@@ -239,4 +239,4 @@ class MySQLConnection(ConnectionWrapper):
             self._is_closed = True
 
     def cursor(self):
-        return MySQLUnicodeCursor(self.cnx)
+        return IterableCursor(MySQLUnicodeCursor(self.cnx), self.log)
