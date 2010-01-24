@@ -1069,7 +1069,7 @@ boo baz
 <ul><li>nested item 1
 </li><li>nested item 2
 nested item 2 continued
-</li></ul></li><li>Subitem 1 continued
+</li></ul>Subitem 1 continued
 </li></ul></li><li>Subitem 2
 Subitem 2 continued
 </li><li>Subitem 3

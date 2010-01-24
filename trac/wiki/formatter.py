@@ -657,14 +657,14 @@ class Formatter(object):
             return self._list_stack[-1][1]
         return -1
 
-    def _set_list_depth(self, depth, new_type, list_class, start):
+    def _set_list_depth(self, depth, new_type=None, lclass=None, start=None):
         def open_list():
             self.close_table()
             self.close_paragraph()
             self.close_indentation() # FIXME: why not lists in quotes?
             self._list_stack.append((new_type, depth))
             self._set_tab(depth)
-            class_attr = (list_class and ' class="%s"' % list_class) or ''
+            class_attr = (lclass and ' class="%s"' % lclass) or ''
             start_attr = (start and ' start="%s"' % start) or ''
             self.out.write('<'+new_type+class_attr+start_attr+'><li>')
         def close_item():
@@ -684,7 +684,7 @@ class Formatter(object):
                 if depth >= deepest_offset:
                     break
                 close_list(deepest_type)
-            if depth >= 0:
+            if new_type and depth >= 0:
                 if self._list_stack:
                     old_type, old_offset = self._list_stack[-1]
                     if new_type and old_type != new_type:
@@ -699,7 +699,7 @@ class Formatter(object):
                     open_list()
 
     def close_list(self):
-        self._set_list_depth(-1, None, None, None)
+        self._set_list_depth(-1)
 
     # Definition Lists
 
@@ -726,7 +726,7 @@ class Formatter(object):
                 for _, ldepth in self._list_stack:
                     if idepth > ldepth:
                         self.in_list_item = True
-                        self._set_list_depth(idepth, None, None, None)
+                        self._set_list_depth(idepth)
                         return ''
             elif idepth <= ldepth + (ltype == 'ol' and 3 or 2):
                 self.in_list_item = True
