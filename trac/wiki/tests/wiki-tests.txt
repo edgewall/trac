@@ -1361,12 +1361,12 @@ in:
 </th></tr></table>
 ------------------------------
 ============================== Table headings (plus alignment)
-||=left align =||=default=||= default =||= right align=||
-||left align ||default|| default || right align||
+||=left align =||=default=||= default =||= right align=||=  center  =||
+||left align ||default|| default || right align||  center  ||
 ------------------------------
 <table class="wiki">
-<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align
-</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align
+<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align</th><th style="text-align: center">  center  
+</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align</td><td style="text-align: center">  center  
 </td></tr></table>
 ------------------------------
 ============================== Indented tables, multiple columns

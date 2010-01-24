@@ -782,15 +782,24 @@ class Formatter(object):
         attrs = ''
         if colspan > 1:
             attrs = ' colspan="%d"' % int(colspan)
-        # alignment: ||left || right||default|| default ||
+        # alignment: ||left || right||default|| default ||  center  ||
         after_sep = fullmatch.end('table_cell_sep')
         alignleft = after_sep < len(self.line) and self.line[after_sep] != ' '
         # lookahead next || (FIXME: this fails on ` || ` inside the cell)
         next_sep = re.search(r'([^!])=?\|\|', self.line[after_sep:])
-        if next_sep and next_sep.group(1) != ' ':
-            textalign = not alignleft and 'right'
-        else:
-            textalign = alignleft and 'left'
+        alignright = next_sep and next_sep.group(1) != ' '
+        textalign = None
+        if alignleft:
+            if not alignright:
+                textalign = 'left'
+        elif alignright:
+            textalign = 'right'
+        elif next_sep: # check for the extra spaces specifying a center align
+            first_extra = after_sep + 1
+            last_extra = after_sep + next_sep.start() - 1
+            if first_extra < last_extra and \
+                   self.line[first_extra] == self.line[last_extra] == ' ':
+                textalign = 'center'                
         if textalign:
             attrs += ' style="text-align: %s"' % textalign
         td = '<%s%s>' % (cell, attrs)
