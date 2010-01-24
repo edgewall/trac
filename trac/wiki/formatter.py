@@ -86,7 +86,10 @@ class WikiProcessor(object):
                               'comment': self._comment_processor,
                               'div': self._div_processor,
                               'span': self._span_processor,
-                              'Span': self._span_processor}
+                              'Span': self._span_processor,
+                              'td': self._td_processor,
+                              'th': self._th_processor,
+                              }
 
         self._sanitizer = TracHTMLSanitizer()
         
@@ -167,6 +170,16 @@ class WikiProcessor(object):
         return self._elt_processor('span', format_to_oneliner, ', '.join(args),
                                    kwargs)
 
+    def _td_processor(self, text):
+        return self._tablecell_processor('td', text)
+    
+    def _th_processor(self, text):
+        return self._tablecell_processor('th', text)
+    
+    def _tablecell_processor(self, eltname, text):
+        self.formatter.open_table_row()
+        return self._elt_processor(eltname, format_to_html, text, self.args)
+    
     # generic processors
 
     def _legacy_macro_processor(self, text): # TODO: remove in 0.12
@@ -865,14 +878,14 @@ class Formatter(object):
         elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
-                self.close_table()
+                if self.code_processor.name not in ('th', 'td'):
+                    self.close_table()
                 self.close_paragraph()
                 if self.code_buf:
                     self.code_buf.append('')
                 code_text = os.linesep.join(self.code_buf)
                 processed = self.code_processor.process(code_text)
                 self.out.write(_markup_to_unicode(processed))
-
             else:
                 self.code_buf.append(line)
         elif not self.code_processor:
@@ -954,6 +967,7 @@ class Formatter(object):
                 continue
             # Handle new paragraph
             elif line == '':
+                self.close_table()
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
@@ -992,12 +1006,12 @@ class Formatter(object):
             self.out.write(result + sep)
             self.close_table_row()
 
+        self.close_code_blocks()
         self.close_table()
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
         self.close_def_list()
-        self.close_code_blocks()
 
 
 class OneLinerFormatter(Formatter):

@@ -1440,6 +1440,104 @@ in:
 </td><td> this should also work 
 </td></tr></table>
 ------------------------------
+============================== Table with !#th and !#td wiki processors
+{{{
+#!th style="text-align: left"
+ - some header
+}}}
+{{{
+#!th
+ - another header
+ - with more rows
+}}}
+||
+{{{
+#!td rowspan=2
+
+Arbitrarily big content (even an embedded table of course):
+|| A || B ||
+
+ {{{
+#!div class=important
+or better, an embedded wiki paragraph, itself with a big table
+||= A =||= B =||
+  {{{
+#!td colspan=2
+   {{{
+#!python
+def hello():
+  print "A and B!"
+   }}}
+  }}}
+ }}}
+
+}}}
+{{{
+#!td
+
+Second cell, first row
+}}}
+||
+{{{
+#!td
+
+Second cell, second row...
+}}}
+------------------------------
+<table class="wiki">
+<tr><th style="text-align: left"><ul><li>some header
+</li></ul></th><th><ul><li>another header
+</li><li>with more rows
+</li></ul></th>
+</tr><tr><td rowspan="2"><p>
+Arbitrarily big content (even an embedded table of course):
+</p>
+<table class="wiki">
+<tr><td> A </td><td> B 
+</td></tr></table>
+<div class="important"><p>
+or better, an embedded wiki paragraph, itself with a big table
+</p>
+<table class="wiki">
+<tr><th> A </th><th> B 
+</th></tr><tr><td colspan="2"><div class="code"><pre>def hello():
+  print "A and B!"
+</pre></div></td></tr></table>
+</div></td><td><p>
+Second cell, first row
+</p>
+</td>
+</tr><tr><td><p>
+Second cell, second row...
+</p>
+</td></tr></table>
+------------------------------
+============================== Table with wiki processors, unfinished block
+{{{
+#!td style="vertical-align: top"
+ - some header
+}}}
+{{{
+#!td
+ - another header
+ - with more rows
+||
+{{{
+#!td rowspan=2
+not another cell, but an embedded table...
+------------------------------
+<table class="wiki">
+<tr><td style="vertical-align: top"><ul><li>some header
+</li></ul></td><td><ul><li>another header
+</li><li>with more rows
+</li></ul><table class="wiki">
+<tr>
+</tr><tr><td rowspan="2"><p>
+not another cell, but an embedded table...
+</p>
+</td></tr></table>
+</td></tr></table>
+------------------------------
 ============================================================
 
          Mixed examples
