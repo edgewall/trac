@@ -192,8 +192,12 @@ class WikiProcessor(object):
             out = StringIO()
             row_formatter.format(text, out)
             text = out.getvalue()
-            text = Markup(text[len('<table class="wiki">\n<tr>') + 1:
-                               -len('</tr></table>\n') - 1])
+            # we must deal with either \n or \r\n as element separators:
+            #  len('<table class="wiki">') == 20
+            inner_tr_start = text.find('>', 20) + 1
+            #  len('</tr></table>\r\n') == 15
+            inner_tr_end = text.find('<', len(text) - 15)
+            text = Markup(text[inner_tr_start:inner_tr_end])
         return text
     
     # generic processors
