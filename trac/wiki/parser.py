@@ -54,6 +54,9 @@ class WikiParser(Component):
 
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
 
+    PROCESSOR = r"(\s*)#\!([\w+-][\w+-/]*)"
+    PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|\w+)'''
+
     # Sequence of regexps used by the engine
 
     _pre_rules = [
@@ -112,13 +115,16 @@ class WikiParser(Component):
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
         r"(?P<table_cell>!?(?P<table_cell_sep>=?(?:\|\|)+=?)"
-        r"(?P<table_cell_last>\s*\\?$)?)"]
+        r"(?P<table_cell_last>\s*\\?$)?)",
+        # |- row separator
+        r"(?P<table_row_sep>!?\|-+\s*"
+        r"(?P<table_row_params>%s\s*)*)" % PROCESSOR_PARAM,
+        ]
 
-    _processor_pattern = r"(\s*)#\!([\w+-][\w+-/]*)"
-    _processor_re = re.compile(_processor_pattern)
+    _processor_re = re.compile(PROCESSOR)
     _startblock_re = re.compile(r"\s*%s(?:%s|\s*$)" %
-                                (STARTBLOCK, _processor_pattern))
-    _processor_param_re = re.compile(r'''(\w+)=(".*?"|'.*?'|\w+)''')
+                                (STARTBLOCK, PROCESSOR))
+    _processor_param_re = re.compile(PROCESSOR_PARAM)
     _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
     def __init__(self):

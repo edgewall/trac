@@ -1576,6 +1576,102 @@ not another cell, but an embedded table...
 </td></tr></table>
 </td></tr></table>
 ------------------------------
+============================== Table with wiki processors, wikimedia row sep
+{{{#!th   ........... 11
+Heading A
+}}}
+{{{#!th   ...........    12
+Heading B
+}}}
+|--------------------------- style="background: grey"
+{{{#!td   ........... 21
+Content A
+}}}
+{{{#!td   ...........    22
+Content B
+}}}
+------------------------------
+<table class="wiki">
+<tr><th><p>
+Heading A
+</p>
+</th><th><p>
+Heading B
+</p>
+</th></tr><tr style="background: grey">
+<td><p>
+Content A
+</p>
+</td><td><p>
+Content B
+</p>
+</td></tr></table>
+------------------------------
+ […]
+ […]
+[…]
+ […]
+============================== Table with wiki processors (tr, th and td)
+A very nice table:
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++
+    {{{#!th .......................................... style="background: #dfd"
+
+    Header A
+
+    }}}
+    {{{#!th .......................................... style="background: #dfd"
+
+    Header B
+
+    }}}
+}}}
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++ style="background: #fdf"
+    {{{#!td .......................................... 
+
+    Content A
+
+    }}}
+    {{{#!td .......................................... 
+
+    Content B
+
+    }}}
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<table class="wiki">
+<tr><th style="background: #dfd"><blockquote>
+<p>
+Header A
+</p>
+</blockquote>
+</th><th style="background: #dfd"><blockquote>
+<p>
+Header B
+</p>
+</blockquote>
+</th></tr><tr style="background: #fdf"><td><blockquote>
+<p>
+Content A
+</p>
+</blockquote>
+</td><td><blockquote>
+<p>
+Content B
+</p>
+</blockquote>
+</td></tr></table>
+<p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+ […]
+Paragraph
 ============================================================
 
          Mixed examples

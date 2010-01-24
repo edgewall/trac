@@ -90,6 +90,7 @@ class WikiProcessor(object):
                               'Span': self._span_processor,
                               'td': self._td_processor,
                               'th': self._th_processor,
+                              'tr': self._tr_processor,
                               }
 
         self._sanitizer = TracHTMLSanitizer()
@@ -177,9 +178,23 @@ class WikiProcessor(object):
     def _th_processor(self, text):
         return self._tablecell_processor('th', text)
     
+    def _tr_processor(self, text):
+        self.formatter.open_table()
+        return self._elt_processor('tr', self._format_row, text, self.args)
+    
     def _tablecell_processor(self, eltname, text):
         self.formatter.open_table_row()
         return self._elt_processor(eltname, format_to_html, text, self.args)
+
+    def _format_row(self, env, context, text):
+        if text:
+            row_formatter = Formatter(env, context)
+            out = StringIO()
+            row_formatter.format(text, out)
+            text = out.getvalue()
+            text = Markup(text[len('<table class="wiki">\n<tr>') + 1:
+                               -len('</tr></table>\n') - 1])
+        return text
     
     # generic processors
 
@@ -777,6 +792,7 @@ class Formatter(object):
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
+        self.continue_table = 1
         separator = fullmatch.group('table_cell_sep')
         is_last = fullmatch.group('table_cell_last')
         numpipes = len(separator)
@@ -822,6 +838,18 @@ class Formatter(object):
         self.in_table_cell = cell
         return td
 
+    def _table_row_sep_formatter(self, match, fullmatch):
+        self.open_table()
+        self.close_table_row(force=True)
+        params = fullmatch.group('table_row_params')
+        if params:
+            tr = WikiProcessor(self, 'tr', self.parse_processor_args(params))
+            processed = _markup_to_unicode(tr.process(''))
+            params = processed[3:processed.find('>')]
+        self.open_table_row(params or '')
+        self.continue_table = 1
+        self.continue_table_row = 1
+
     def open_table(self):
         if not self.in_table:
             self.close_paragraph()
@@ -830,11 +858,11 @@ class Formatter(object):
             self.in_table = 1
             self.out.write('<table class="wiki">' + os.linesep)
 
-    def open_table_row(self):
+    def open_table_row(self, params=''):
         if not self.in_table_row:
             self.open_table()
             self.in_table_row = 1
-            self.out.write('<tr>')
+            self.out.write('<tr%s>' % params)
 
     def close_table_row(self, force=False):
         if self.in_table_row and (not self.continue_table_row or force):
@@ -847,7 +875,7 @@ class Formatter(object):
 
     def close_table(self):
         if self.in_table:
-            self.close_table_row(True)
+            self.close_table_row(force=True)
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
@@ -893,7 +921,7 @@ class Formatter(object):
         elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
-                if self.code_processor.name not in ('th', 'td'):
+                if self.code_processor.name not in ('th', 'td', 'tr'):
                     self.close_table()
                 self.close_paragraph()
                 if self.code_buf:
@@ -961,6 +989,7 @@ class Formatter(object):
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
+        self.continue_table = 0
         self.continue_table_row = 0
         self.in_table_cell = ''
         self.paragraph_open = 0
@@ -1012,8 +1041,9 @@ class Formatter(object):
             if self.in_def_list and not line.startswith(' '):
                 self.close_def_list()
 
-            if self.in_table and not line.lstrip().startswith('||'):
+            if self.in_table and not self.continue_table:
                 self.close_table()
+            self.continue_table = 0
 
             sep = os.linesep
             if not(self.in_list_item or self.in_def_list or self.in_table):
@@ -1056,8 +1086,8 @@ class OneLinerFormatter(Formatter):
         return escape(match, False)
     def _table_cell_formatter(self, match, fullmatch):
         return match
-    def _last_table_cell_formatter(self, match, fullmatch):
-        return match
+    def _table_row_sep_formatter(self, match, fullmatch):
+        return ''
 
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
