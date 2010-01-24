@@ -78,8 +78,6 @@ class WikiParser(Component):
     _post_rules = [
         # e-mails
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
-        # > ...
-        r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # <wiki:Trac bracket links>
         r"(?P<shrefbr>!?<(?P<snsbr>%s):(?P<stgtbr>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;

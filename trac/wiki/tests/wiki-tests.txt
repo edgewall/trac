@@ -1848,7 +1848,7 @@ Continue on level 2.
 Paragraph.
 </p>
 ------------------------------
-============================== Citations
+============================== Citations (mail style, no consistent space)
 > This is the quoted text
 >> a nested quote
 A comment on the above
@@ -1857,30 +1857,75 @@ A comment on the above
 ------------------------------
 <blockquote class="citation">
 <p>
- This is the quoted text
-</p>
+This is the quoted text
 <blockquote class="citation">
 <p>
- a nested quote
+a nested quote
 </p>
 </blockquote>
+</p>
 </blockquote>
 <p>
 A comment on the above
-</p>
 <blockquote class="citation">
 <blockquote class="citation">
 <p>
- start 2nd level
+start 2nd level
 </p>
 </blockquote>
 <p>
- first level
+first level
 </p>
 </blockquote>
+</p>
 ------------------------------
 &gt; This is the quoted text
 &gt;&gt; a nested quote
 A comment on the above
 &gt;&gt; start 2nd level
 &gt; first level
+============================== Citations of arbitrary wiki content
+ - First level
+   - second level
+ > - This is the quoted list, in first level item
+ >   - subitem
+ >
+ > > a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+ > > {{{
+ > > block
+ > > }}}
+ > > > || nested || table ||
+Paragraph
+------------------------------
+<ul><li>First level
+<ul><li>second level
+</li></ul><blockquote class="citation">
+<ul><li>This is the quoted list, in first level item
+<ul><li>subitem
+</li></ul></li></ul><blockquote class="citation">
+<p>
+a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+</p>
+<pre class="wiki">block
+</pre><blockquote class="citation">
+<table class="wiki">
+<tr><td> nested </td><td> table 
+</td></tr></table>
+</blockquote>
+</blockquote>
+</blockquote>
+</li></ul><p>
+Paragraph
+</p>
+------------------------------
+- First level
+   - second level
+ &gt; - This is the quoted list, in first level item
+ &gt;   - subitem
+ &gt;
+ &gt; &gt; a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+ &gt; &gt; {{{
+ &gt; &gt; block
+ &gt; &gt; }}}
+ &gt; &gt; &gt; || nested || table ||
+Paragraph

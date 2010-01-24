@@ -698,8 +698,8 @@ class Formatter(object):
                 else:
                     open_list()
 
-    def close_list(self):
-        self._set_list_depth(-1)
+    def close_list(self, depth=-1):
+        self._set_list_depth(depth)
 
     # Definition Lists
 
@@ -733,11 +733,6 @@ class Formatter(object):
                 return ''
         if not self.in_def_list:
             self._set_quote_depth(idepth)
-        return ''
-
-    def _citation_formatter(self, match, fullmatch):
-        cdepth = len(fullmatch.group('cdepth').replace(' ', ''))
-        self._set_quote_depth(cdepth, True)
         return ''
 
     def close_indentation(self):
@@ -957,6 +952,34 @@ class Formatter(object):
         while self.in_code_block > 0:
             self.handle_code_block(WikiParser.ENDBLOCK)
 
+    # > quotes
+
+    def handle_quote_block(self, line):
+        idx = line.find('>') + 1
+        # Close lists up to current level:
+        #
+        #  - first level item
+        #    - second level item
+        #    > citation part of first level item
+        #
+        #     idx == 4, depth == 3
+        #     _list_stack == [1, 3]
+        depth = idx - 1
+        if not self._quote_buffer and depth < self._get_list_depth():
+            self.close_list(depth)
+        # avoid an extra <blockquote>, as one space indent is enough for that
+        if idx < len(line) and line[idx] == ' ':
+            idx += 1
+        self._quote_buffer.append(line[idx:])
+        
+    def close_quote_block(self, escape_newlines):
+        if self._quote_buffer:
+            self.out.write('<blockquote class="citation">\n')
+            Formatter(self.env, self.context).format(self._quote_buffer,
+                                                     self.out, escape_newlines)
+            self.out.write('</blockquote>\n')
+            self._quote_buffer = []
+
     # -- Wiki engine
     
     def handle_match(self, fullmatch):
@@ -988,6 +1011,7 @@ class Formatter(object):
         self._list_stack = []
         self._quote_stack = []
         self._tabstops = []
+        self._quote_buffer = []
 
         self.in_code_block = 0
         self.in_table = 0
@@ -997,16 +1021,27 @@ class Formatter(object):
         self.continue_table_row = 0
         self.in_table_cell = ''
         self.paragraph_open = 0
+        
 
     def format(self, text, out=None, escape_newlines=False):
         self.reset(text, out)
-        for line in text.splitlines():
+        if isinstance(text, basestring):
+            text = text.splitlines()
+            
+        for line in text:
             # Handle code block
             if self.in_code_block or WikiParser.ENDBLOCK not in line:
                 match = WikiParser._startblock_re.match(line)
                 if match or self.in_code_block:
                     self.handle_code_block(line, match)
                     continue
+            # Handle > quotes
+            if line.strip().startswith('>'):
+                self.handle_quote_block(line)
+                continue
+            if self._quote_buffer:
+                self.close_quote_block(escape_newlines)
+
             # Handle Horizontal ruler
             if line[0:4] == '----':
                 self.close_table()
@@ -1017,7 +1052,7 @@ class Formatter(object):
                 self.out.write('<hr />' + os.linesep)
                 continue
             # Handle new paragraph
-            elif line == '':
+            if line == '':
                 self.close_table()
                 self.close_paragraph()
                 self.close_indentation()
@@ -1059,6 +1094,7 @@ class Formatter(object):
             self.close_table_row()
 
         self.close_code_blocks()
+        self.close_quote_block(escape_newlines)
         self.close_table()
         self.close_paragraph()
         self.close_indentation()
