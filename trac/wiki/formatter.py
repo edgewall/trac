@@ -955,25 +955,25 @@ class Formatter(object):
     # > quotes
 
     def handle_quote_block(self, line):
-        idx = line.find('>') + 1
+        depth = line.find('>')
         # Close lists up to current level:
         #
         #  - first level item
         #    - second level item
         #    > citation part of first level item
         #
-        #     idx == 4, depth == 3
-        #     _list_stack == [1, 3]
-        depth = idx - 1
+        #  (depth == 3, _list_stack == [1, 3])
         if not self._quote_buffer and depth < self._get_list_depth():
             self.close_list(depth)
-        # avoid an extra <blockquote>, as one space indent is enough for that
-        if idx < len(line) and line[idx] == ' ':
-            idx += 1
-        self._quote_buffer.append(line[idx:])
+        self._quote_buffer.append(line[depth + 1:])
         
     def close_quote_block(self, escape_newlines):
         if self._quote_buffer:
+            # avoid an extra <blockquote> when there's consistently one space
+            # after the '>' 
+            if all(not line or line[0] in '> ' for line in self._quote_buffer):
+                self._quote_buffer = [line[bool(line and line[0] == ' '):]
+                                      for line in self._quote_buffer]
             self.out.write('<blockquote class="citation">\n')
             Formatter(self.env, self.context).format(self._quote_buffer,
                                                      self.out, escape_newlines)

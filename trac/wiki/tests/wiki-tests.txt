@@ -1884,6 +1884,65 @@ first level
 A comment on the above
 &gt;&gt; start 2nd level
 &gt; first level
+============================== Citations (reply to style, consistent space)
+ A quote
+A paragraph
+ definition :: term
+
+> A quote
+>A paragraph
+> definition :: term
+
+>  A quote
+> A paragraph
+>  definition :: term
+------------------------------
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+<dl class="wiki"><dt>definition</dt><dd>term
+</p>
+</dd></dl>
+<blockquote class="citation">
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+<dl class="wiki"><dt>definition</dt><dd>term
+</p>
+</dd></dl>
+</blockquote>
+<blockquote class="citation">
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+<dl class="wiki"><dt>definition</dt><dd>term
+</p>
+</dd></dl>
+</blockquote>
+------------------------------
+A quote
+A paragraph
+ definition :: term
+
+&gt; A quote
+&gt;A paragraph
+&gt; definition :: term
+
+&gt;  A quote
+&gt; A paragraph
+&gt;  definition :: term
 ============================== Citations of arbitrary wiki content
  - First level
    - second level
