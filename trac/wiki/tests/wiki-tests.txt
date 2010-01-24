@@ -562,6 +562,29 @@ Paragraph
  […]
 Paragraph
 <tt>#!default</tt> just normal inline code.
+============================== Wiki processor, prefix removal
+  {{{
+  Here we keep the space prefix, as there's at least one line not having it.
+Preformatted text.
+  }}}
+Paragraph
+  {{{#!default
+  Here we remove the space prefix, as all lines have it.
+  Preformatted text.
+  }}}
+Paragraph
+------------------------------
+<pre class="wiki">  Here we keep the space prefix, as there's at least one line not having it.
+Preformatted text.
+</pre><p>
+Paragraph
+</p>
+<pre class="wiki">Here we remove the space prefix, as all lines have it.
+Preformatted text.
+</pre><p>
+Paragraph
+</p>
+------------------------------
 ============================== Wiki processor counter example
 {{{
 #!/bin/sh

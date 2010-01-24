@@ -34,6 +34,7 @@ from trac.resource import get_relative_resource, get_resource_url
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util import arity
+from trac.util.compat import all
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 from trac.util.html import TracHTMLSanitizer
@@ -896,12 +897,12 @@ class Formatter(object):
                     self.close_table()
                 self.close_paragraph()
                 if self.code_buf:
+                    if self.code_prefix and all(l.startswith(self.code_prefix)
+                                                for l in self.code_buf):
+                        code_indent = len(self.code_prefix)
+                        self.code_buf = [l[code_indent:]
+                                         for l in self.code_buf]
                     self.code_buf.append('')
-                if self.code_prefix:
-                    code_indent = len(self.code_prefix)
-                    for idx, line in enumerate(self.code_buf):
-                        if line.startswith(self.code_prefix):
-                            self.code_buf[idx] = line[code_indent:]
                 code_text = os.linesep.join(self.code_buf)
                 processed = self.code_processor.process(code_text)
                 self.out.write(_markup_to_unicode(processed))
