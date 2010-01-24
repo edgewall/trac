@@ -871,6 +871,7 @@ class Formatter(object):
             if self.in_code_block == 1:
                 self.code_processor = None
                 self.code_buf = []
+                self.code_prefix = ''
             else:
                 self.code_buf.append(line)
                 if not self.code_processor:
@@ -883,6 +884,11 @@ class Formatter(object):
                 self.close_paragraph()
                 if self.code_buf:
                     self.code_buf.append('')
+                if self.code_prefix:
+                    code_indent = len(self.code_prefix)
+                    for idx, line in enumerate(self.code_buf):
+                        if line.startswith(self.code_prefix):
+                            self.code_buf[idx] = line[code_indent:]
                 code_text = os.linesep.join(self.code_buf)
                 processed = self.code_processor.process(code_text)
                 self.out.write(_markup_to_unicode(processed))
@@ -891,7 +897,8 @@ class Formatter(object):
         elif not self.code_processor:
             match = WikiParser._processor_re.match(line)
             if match:
-                name = match.group(1)
+                self.code_prefix = match.group(1)
+                name = match.group(2)
                 args = WikiParser._processor_param_re.split(line[2+len(name):])
                 del args[::3]
                 keys = [str(k) for k in args[::2]] # used as keyword parameters

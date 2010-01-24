@@ -654,10 +654,10 @@ And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
 #!div ; class=important
 Go ahead, edit it freely.
 
-{{{
-#!div; style="border: 2pt solid blue; margin: 1em; padding: .5em"; class=demo
-And now it's [[span('''TIME FOR BED! ''',class=important)]]. Really.
-}}}
+ {{{
+ #!div; style="border: 2pt solid blue; margin: 1em; padding: .5em"; class=demo
+ And now it's [[span('''TIME FOR BED! ''',class=important)]]. Really.
+ }}}
 etc.
 }}}
 Done.
@@ -1458,15 +1458,15 @@ Arbitrarily big content (even an embedded table of course):
 || A || B ||
 
  {{{
-#!div class=important
-or better, an embedded wiki paragraph, itself with a big table
-||= A =||= B =||
+ #!div class=important
+ or better, an embedded wiki paragraph, itself with a big table
+ ||= A =||= B =||
   {{{
-#!td colspan=2
+  #!td colspan=2
    {{{
-#!python
-def hello():
-  print "A and B!"
+   #!python
+   def hello():
+     print "A and B!"
    }}}
   }}}
  }}}

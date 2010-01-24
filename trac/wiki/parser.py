@@ -114,7 +114,7 @@ class WikiParser(Component):
         r"(?P<table_cell>!?(?P<table_cell_sep>=?(?:\|\|)+=?)"
         r"(?P<table_cell_last>\s*\\?$)?)"]
 
-    _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
+    _processor_re = re.compile('(\s*)#\!([\w+-][\w+-/]*)')
     _processor_param_re = re.compile(r'''(\w+)=(".*?"|'.*?'|\w+)''')
     _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
