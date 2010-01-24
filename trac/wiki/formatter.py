@@ -1159,7 +1159,7 @@ class OutlineFormatter(Formatter):
     def _macro_formatter(self, match, fullmatch):
         return ''
 
-    def handle_code_block(self, line):
+    def handle_code_block(self, line, startmatch=None):
         if WikiParser.ENDBLOCK not in line and \
                WikiParser._startblock_re.match(line):
             self.in_code_block += 1
