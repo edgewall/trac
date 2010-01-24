@@ -864,14 +864,27 @@ class Formatter(object):
             self.paragraph_open = 0
 
     # Code blocks
-    
-    def handle_code_block(self, line):
-        if line.strip() == WikiParser.STARTBLOCK:
+
+    def parse_processor_args(self, line):
+        args = WikiParser._processor_param_re.split(line)
+        del args[::3]
+        keys = [str(k) for k in args[::2]] # used as keyword parameters
+        values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
+                  for v in args[1::2]]
+        return dict(zip(keys, values))
+
+    def handle_code_block(self, line, startmatch=None):
+        if startmatch:
             self.in_code_block += 1
             if self.in_code_block == 1:
-                self.code_processor = None
+                name = startmatch.group(2)
+                if name:
+                    args = self.parse_processor_args(line[startmatch.end():])
+                    self.code_processor = WikiProcessor(self, name, args)
+                else:
+                    self.code_processor = None
                 self.code_buf = []
-                self.code_prefix = ''
+                self.code_prefix = line[:line.find(WikiParser.STARTBLOCK)]
             else:
                 self.code_buf.append(line)
                 if not self.code_processor:
@@ -899,12 +912,7 @@ class Formatter(object):
             if match:
                 self.code_prefix = match.group(1)
                 name = match.group(2)
-                args = WikiParser._processor_param_re.split(line[2+len(name):])
-                del args[::3]
-                keys = [str(k) for k in args[::2]] # used as keyword parameters
-                values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
-                          for v in args[1::2]]
-                args = dict(zip(keys, values))
+                args = self.parse_processor_args(line[match.end():])
                 self.code_processor = WikiProcessor(self, name, args)
             else:
                 self.code_buf.append(line)
@@ -960,11 +968,13 @@ class Formatter(object):
         self.reset(text, out)
         for line in text.splitlines():
             # Handle code block
-            if self.in_code_block or line.strip() == WikiParser.STARTBLOCK:
-                self.handle_code_block(line)
-                continue
+            if self.in_code_block or WikiParser.ENDBLOCK not in line:
+                match = WikiParser._startblock_re.match(line)
+                if match or self.in_code_block:
+                    self.handle_code_block(line, match)
+                    continue
             # Handle Horizontal ruler
-            elif line[0:4] == '----':
+            if line[0:4] == '----':
                 self.close_table()
                 self.close_paragraph()
                 self.close_indentation()
@@ -1068,7 +1078,8 @@ class OneLinerFormatter(Formatter):
         processor = None
         buf = StringIO()
         for line in text.strip().splitlines():
-            if line.strip() == WikiParser.STARTBLOCK:
+            if WikiParser.ENDBLOCK not in line and \
+                   WikiParser._startblock_re.match(line):
                 in_code_block += 1
             elif line.strip() == WikiParser.ENDBLOCK:
                 if in_code_block:
@@ -1114,7 +1125,8 @@ class OutlineFormatter(Formatter):
         return ''
 
     def handle_code_block(self, line):
-        if line.strip() == WikiParser.STARTBLOCK:
+        if WikiParser.ENDBLOCK not in line and \
+               WikiParser._startblock_re.match(line):
             self.in_code_block += 1
         elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1

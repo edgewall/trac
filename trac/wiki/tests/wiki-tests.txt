@@ -546,6 +546,22 @@ Paragraph
 ------------------------------
  […]
 Paragraph
+============================== Wiki processor, compact declaration
+{{{#!default
+Preformatted text.
+}}}
+Paragraph
+{{{#!default}}} just normal inline code.
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre><p>
+Paragraph
+<tt>#!default</tt> just normal inline code.
+</p>
+------------------------------
+ […]
+Paragraph
+<tt>#!default</tt> just normal inline code.
 ============================== Wiki processor counter example
 {{{
 #!/bin/sh
