@@ -1480,7 +1480,6 @@ Arbitrarily big content (even an embedded table of course):
   {{{
   #!td colspan=2
    {{{
-   #!python
    def hello():
      print "A and B!"
    }}}
@@ -1516,9 +1515,9 @@ or better, an embedded wiki paragraph, itself with a big table
 </p>
 <table class="wiki">
 <tr><th> A </th><th> B 
-</th></tr><tr><td colspan="2"><div class="code"><pre>def hello():
+</th></tr><tr><td colspan="2"><pre class="wiki">def hello():
   print "A and B!"
-</pre></div></td></tr></table>
+</pre></td></tr></table>
 </div></td><td><p>
 Second cell, first row
 </p>
