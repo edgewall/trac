@@ -257,5 +257,9 @@ class SQLiteConnection(ConnectionWrapper):
         else:
             return text
 
+    def quote(self, identifier):
+        """Return the quoted identifier."""
+        return "`%s`" % identifier
+
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid

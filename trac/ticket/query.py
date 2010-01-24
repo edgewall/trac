@@ -420,6 +420,7 @@ class Query(object):
     def get_sql(self, req=None, cached_ids=None):
         """Return a (sql, params) tuple for the query."""
         self.get_columns()
+        db = self.env.get_db_cnx()
 
         enum_columns = ('resolution', 'priority', 'severity')
         # Build the list of actual columns to query
@@ -441,14 +442,15 @@ class Query(object):
         sql.append("SELECT " + ",".join(['t.%s AS %s' % (c, c) for c in cols
                                          if c not in custom_fields]))
         sql.append(",priority.value AS priority_value")
-        for k in [k for k in cols if k in custom_fields]:
+        for k in [db.quote(k) for k in cols if k in custom_fields]:
             sql.append(",%s.value AS %s" % (k, k))
         sql.append("\nFROM ticket AS t")
 
         # Join with ticket_custom table as necessary
         for k in [k for k in cols if k in custom_fields]:
+            qk = db.quote(k)
             sql.append("\n  LEFT OUTER JOIN ticket_custom AS %s ON " \
-                       "(id=%s.ticket AND %s.name='%s')" % (k, k, k, k))
+                       "(id=%s.ticket AND %s.name='%s')" % (qk, qk, qk, k))
 
         # Join with the enum table for proper sorting
         for col in [c for c in enum_columns
@@ -475,7 +477,7 @@ class Query(object):
             if name not in custom_fields:
                 col = 't.' + name
             else:
-                col = name + '.value'
+                col = '%s.value' % db.quote(name)
             value = value[len(mode) + neg:]
 
             if name in self.time_fields:
@@ -536,6 +538,7 @@ class Query(object):
                     (value, ))
 
         def get_clause_sql(constraints):
+            db = self.env.get_db_cnx()
             clauses = []
             for k, v in constraints.iteritems():
                 if req:
@@ -576,7 +579,7 @@ class Query(object):
                     if k not in custom_fields:
                         col = 't.' + k
                     else:
-                        col = k + '.value'
+                        col = '%s.value' % db.quote(k)
                     clauses.append("COALESCE(%s,'') %sIN (%s)"
                                    % (col, neg and 'NOT ' or '',
                                       ','.join(['%s' for val in v])))
@@ -597,7 +600,6 @@ class Query(object):
                         args.extend(item[1])
             return " AND ".join(clauses)
 
-        db = self.env.get_db_cnx()
         args = []
         errors = []
         clauses = filter(None, (get_clause_sql(c) for c in self.constraints))
@@ -606,8 +608,8 @@ class Query(object):
             sql.append(" OR ".join('(%s)' % c for c in clauses))
             if cached_ids:
                 sql.append(" OR ")
-                sql.append("id in (%s)" % (','.join(
-                                                [str(id) for id in cached_ids])))
+                sql.append("id in (%s)" %
+                           (','.join([str(id) for id in cached_ids])))
             
         sql.append("\nORDER BY ")
         order_cols = [(self.order, self.desc)]
@@ -615,8 +617,10 @@ class Query(object):
             order_cols.insert(0, (self.group, self.groupdesc))
 
         for name, desc in order_cols:
-            if name in custom_fields or name in enum_columns:
+            if name in enum_columns:
                 col = name + '.value'
+            elif name in custom_fields:
+                col = '%s.value' % db.quote(name)
             else:
                 col = 't.' + name
             desc = desc and ' DESC' or ''

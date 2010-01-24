@@ -203,6 +203,10 @@ class PostgreSQLConnection(ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def quote(self, identifier):
+        """Return the quoted identifier."""
+        return '"%s"' % identifier
+
     def get_last_id(self, cursor, table, column='id'):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]

@@ -32,6 +32,7 @@ class QueryTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.db = self.env.get_db_cnx()
         self.req = Mock(href=self.env.href, authname='anonymous', tz=utc)
         
     def tearDown(self):
@@ -254,13 +255,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {'like': self.env.get_db_cnx().like()})
         self.env.config.set('ticket-custom', 'foo', 'text')
         query = Query.from_string(self.env, 'foo=something', order='id')
         sql, args = query.get_sql()
+        foo = self.db.quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,foo.value AS foo
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,%s.value AS %s
 FROM ticket AS t
-  LEFT OUTER JOIN ticket_custom AS foo ON (id=foo.ticket AND foo.name='foo')
+  LEFT OUTER JOIN ticket_custom AS %s ON (id=%s.ticket AND %s.name='foo')
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-WHERE ((COALESCE(foo.value,'')=%s))
-ORDER BY COALESCE(t.id,0)=0,t.id""")
+WHERE ((COALESCE(%s.value,'')=%%s))
+ORDER BY COALESCE(t.id,0)=0,t.id""" % ((foo,) * 6))
         self.assertEqual(['something'], args)
         tickets = query.execute(self.req)
 
@@ -268,12 +270,14 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         self.env.config.set('ticket-custom', 'foo', 'text')
         query = Query(self.env, group='foo', order='id')
         sql, args = query.get_sql()
+        foo = self.db.quote('foo')
         self.assertEqualSQL(sql,
-"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,foo.value AS foo
+"""SELECT t.id AS id,t.summary AS summary,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.milestone AS milestone,t.time AS time,t.changetime AS changetime,priority.value AS priority_value,%s.value AS %s
 FROM ticket AS t
-  LEFT OUTER JOIN ticket_custom AS foo ON (id=foo.ticket AND foo.name='foo')
+  LEFT OUTER JOIN ticket_custom AS %s ON (id=%s.ticket AND %s.name='foo')
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
-ORDER BY COALESCE(foo.value,'')='',foo.value,COALESCE(t.id,0)=0,t.id""")
+ORDER BY COALESCE(%s.value,'')='',%s.value,COALESCE(t.id,0)=0,t.id""" %
+        ((foo,) * 7))
         self.assertEqual([], args)
         tickets = query.execute(self.req)
 
@@ -554,4 +558,4 @@ def suite():
     return suite
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='suite')
