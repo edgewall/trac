@@ -84,10 +84,10 @@ class IterableCursor(object):
 class ConnectionWrapper(object):
     """Generic wrapper around connection objects.
     
-    This wrapper makes cursors produced by the connection iterable using
-    `IterableCursor`.
+    :since 0.12: This wrapper no longer makes cursors produced by the
+    connection iterable using `IterableCursor`.
     """
-    __slots__ = ['cnx', 'log']
+    __slots__ = ('cnx', 'log')
 
     def __init__(self, cnx, log=None):
         self.cnx = cnx
@@ -95,6 +95,3 @@ class ConnectionWrapper(object):
 
     def __getattr__(self, name):
         return getattr(self.cnx, name)
-
-    def cursor(self):
-        return IterableCursor(self.cnx.cursor(), self.log)
