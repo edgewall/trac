@@ -111,14 +111,14 @@ class WikiParser(Component):
         % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
            STARTBLOCK_TOKEN, ENDBLOCK[0], ENDBLOCK[0], ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
+        # |- row separator
+        r"(?P<table_row_sep>!?\s*\|-+\s*"
+        r"(?P<table_row_params>%s\s*)*)" % PROCESSOR_PARAM,
         # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
         r"(?P<table_cell>!?(?P<table_cell_sep>=?(?:\|\|)+=?)"
         r"(?P<table_cell_last>\s*\\?$)?)",
-        # |- row separator
-        r"(?P<table_row_sep>!?\|-+\s*"
-        r"(?P<table_row_params>%s\s*)*)" % PROCESSOR_PARAM,
         ]
 
     _processor_re = re.compile(PROCESSOR)

@@ -1608,8 +1608,7 @@ Content B
 </td></tr></table>
 ------------------------------
  […]
- […]
-[…]
+ […][…]
  […]
 ============================== Table with wiki processors (tr, th and td)
 A very nice table:
@@ -1672,6 +1671,47 @@ A very nice table:
  […]
  […]
 Paragraph
+============================== Table with wiki processors within div
+{{{#!div
+  {{{#!td rowspan=2
+  A cell can now contain any markup:
+   - lists
+   - blocks
+   - etc.
+  }}}
+  {{{#!td
+  Another cell with rich content,
+  on the same row
+  }}}
+  |-
+  {{{#!td
+  Another cell with rich content,
+  on the next row
+  }}}
+}}}
+Paragraph
+------------------------------
+<div class="wikipage"><table class="wiki">
+<tr><td rowspan="2"><p>
+A cell can now contain any markup:
+</p>
+<ul><li>lists
+</li><li>blocks
+</li><li>etc.
+</li></ul></td><td><p>
+Another cell with rich content,
+on the same row
+</p>
+</td></tr><tr>
+<td><p>
+Another cell with rich content,
+on the next row
+</p>
+</td></tr></table>
+</div><p>
+Paragraph
+</p>
+------------------------------
 ============================================================
 
          Mixed examples
