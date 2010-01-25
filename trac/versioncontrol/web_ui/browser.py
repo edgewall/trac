@@ -28,7 +28,7 @@ from trac.mimeview.api import Mimeview, is_binary, \
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.util import embedded_numbers
-from trac.util.compat import all
+from trac.util.compat import any
 from trac.util.datefmt import http_date, utc
 from trac.util.html import escape, Markup
 from trac.util.text import exception_to_unicode, shorten_line
@@ -290,12 +290,13 @@ class BrowserModule(Component):
         return 'browser'
 
     def get_navigation_items(self, req):
-        if 'BROWSER_VIEW' in req.perm:
-            all_repos = RepositoryManager(self.env).get_all_repositories()
-            if all_repos and not all(info.get('hidden', False)
-                                     for info in all_repos.itervalues()):
-                yield ('mainnav', 'browser',
-                       tag.a(_('Browse Source'), href=req.href.browser()))
+        rm = RepositoryManager(self.env)
+        all_repos = rm.get_all_repositories()
+        if any(info.get('hidden') not in _TRUE_VALUES
+               and rm.get_repository(reponame).can_view(req.perm)
+               for reponame, info in all_repos.iteritems()):
+            yield ('mainnav', 'browser',
+                   tag.a(_('Browse Source'), href=req.href.browser()))
 
     # IPermissionRequestor methods
 
@@ -332,14 +333,14 @@ class BrowserModule(Component):
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
         
         rm = RepositoryManager(self.env)
-        reponame, repos, path = rm.get_repository_by_path(path, req.authname)
+        reponame, repos, path = rm.get_repository_by_path(path)
 
         # Repository index
         all_repositories = None
         if not reponame and path == '/':
             all_repositories = rm.get_all_repositories()
-            if all_repositories and repos \
-                    and all_repositories[''].get('hidden') in _TRUE_VALUES:
+            if repos and (all_repositories[''].get('hidden') in _TRUE_VALUES
+                          or not repos.can_view(req.perm)):
                 repos = None
 
         if not repos and reponame:
@@ -467,8 +468,6 @@ class BrowserModule(Component):
     # Internal methods
 
     def _render_repository_index(self, context, all_repositories, order, desc):
-        context.perm.require('BROWSER_VIEW')
-
         # Color scale for the age column
         timerange = custom_colorizer = None
         if self.color_scale:
@@ -480,8 +479,10 @@ class BrowserModule(Component):
             if not reponame or repoinfo.get('hidden') in _TRUE_VALUES:
                 continue
             try:
-                repos = rm.get_repository(reponame, context.perm.username)
+                repos = rm.get_repository(reponame)
                 if repos:
+                    if not repos.can_view(context.perm):
+                        continue
                     youngest = repos.get_changeset(repos.youngest_rev)
                     if self.color_scale and youngest:
                         if not timerange:
@@ -509,7 +510,7 @@ class BrowserModule(Component):
                 'timerange': timerange, 'colorize_age': custom_colorizer}
 
     def _render_dir(self, req, reponame, repos, node, rev, order, desc):
-        req.perm.require('BROWSER_VIEW')
+        req.perm(node.resource).require('BROWSER_VIEW')
 
         # Entries metadata
         class entry(object):
@@ -518,7 +519,8 @@ class BrowserModule(Component):
                 for f in entry.__slots__:
                     setattr(self, f, getattr(node, f))
                 
-        entries = [entry(n) for n in node.get_entries()]
+        entries = [entry(n) for n in node.get_entries()
+                   if n.can_view(req.perm)]
         changes = get_changes(repos, [i.rev for i in entries])
 
         if rev:
@@ -577,7 +579,7 @@ class BrowserModule(Component):
                 }
 
     def _render_file(self, req, context, reponame, repos, node, rev=None):
-        req.perm(context.resource).require('FILE_VIEW')
+        req.perm(node.resource).require('FILE_VIEW')
 
         mimeview = Mimeview(self.env)
 
@@ -777,12 +779,13 @@ class BrowserModule(Component):
         order = kwargs.get('order')
         desc = kwargs.get('desc', 0)
 
-        all_repositories = [rdata for rdata in RepositoryManager(self.env). 
-                                               get_all_repositories().items()
-                            if fnmatchcase(rdata[0], glob)]
+        rm = RepositoryManager(self.env)
+        all_repos = dict(rdata for rdata in rm.get_all_repositories().items()
+                         if fnmatchcase(rdata[0], glob))
+
         if format == 'table':
             data = self._render_repository_index(
-                    formatter.context, all_repositories, order, desc)
+                    formatter.context, all_repos, order, desc)
 
             add_stylesheet(formatter.req, 'common/css/browser.css')
             from trac.web.chrome import Chrome
@@ -791,19 +794,24 @@ class BrowserModule(Component):
                     {'repo': data}, None, fragment=True)
 
         def repolink(reponame):
-            return Markup(tag.a(reponame, 
-                          title=_('View repository %(repo)s', repo=reponame),
+            label = reponame or _('(default)')
+            return Markup(tag.a(label, 
+                          title=_('View repository %(repo)s', repo=label),
                           href=formatter.href.browser(reponame or None)))
+
+        all_repos = sorted(
+            (reponame, info) for reponame, info in all_repos.iteritems()
+            if info.get('hidden') not in _TRUE_VALUE
+               and rm.get_repository(reponame).can_view(formatter.perm))
 
         if format == 'list':
             return tag.dl([
                 tag(tag.dt(repolink(reponame)),
                     tag.dd(repoinfo.get('description')))
-                for reponame, repoinfo in all_repositories])
+                for reponame, repoinfo in all_repos])
         else: # compact
-            return Markup(', ').join([
-                repolink(reponame) for reponame, repoinfo in all_repositories 
-                if reponame])
+            return Markup(', ').join([repolink(reponame)
+                                      for reponame, repoinfo in all_repos])
 
         
 

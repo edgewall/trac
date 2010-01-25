@@ -26,8 +26,7 @@ except ImportError:
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ListOption, Option
 from trac.core import *
-from trac.perm import PermissionError
-from trac.resource import IResourceManager, ResourceNotFound
+from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util.text import printout, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
@@ -318,7 +317,7 @@ class RepositoryManager(Component):
                 if is_default(reponame):
                     reponame = ''
                 try:
-                    repo = self.get_repository(reponame, req.authname)
+                    repo = self.get_repository(reponame)
                     if repo:
                         repo.sync()
                 except TracError, e:
@@ -422,7 +421,7 @@ class RepositoryManager(Component):
                     if prio >= 0)
         return list(types)
     
-    def get_repositories_by_dir(self, directory, authname):
+    def get_repositories_by_dir(self, directory):
         """Retrieve the repositories based on the given directory.
 
            :param directory: the key for identifying the repositories.
@@ -435,7 +434,7 @@ class RepositoryManager(Component):
             if dir:
                 dir = os.path.join(os.path.normcase(dir), '')
                 if dir.startswith(directory):
-                    repos = self.get_repository(reponame, authname)
+                    repos = self.get_repository(reponame)
                     if repos:
                         repositories.append(repos)
         return repositories
@@ -459,13 +458,12 @@ class RepositoryManager(Component):
             db.commit()
         return id
     
-    def get_repository(self, reponame, authname):
+    def get_repository(self, reponame):
         """Retrieve the appropriate Repository for the given name.
 
            :param reponame: the key for specifying the repository.
                             If no name is given, take the default 
                             repository.
-           :param authname: deprecated (use fine grained permissions)
            :return: if no corresponding repository was defined, 
                     simply return `None`.
         """
@@ -499,7 +497,7 @@ class RepositoryManager(Component):
         finally:
             self._lock.release()
 
-    def get_repository_by_path(self, path, authname):
+    def get_repository_by_path(self, path):
         """Retrieve a matching Repository for the given path.
         
         :param path: the eventually scoped repository-scoped path
@@ -519,7 +517,7 @@ class RepositoryManager(Component):
             path = path[length:]
         else:
             reponame = ''
-        return (reponame, self.get_repository(reponame, authname),
+        return (reponame, self.get_repository(reponame),
                 path.rstrip('/') or '/')
 
     def get_default_repository(self, context):
@@ -549,12 +547,12 @@ class RepositoryManager(Component):
                         self._all_repositories[reponame] = info
         return self._all_repositories
     
-    def get_real_repositories(self, authname):
+    def get_real_repositories(self):
         """Return a set of all real repositories (i.e. excluding aliases)."""
         repositories = set()
         for reponame in self.get_all_repositories():
             try:
-                repos = self.get_repository(reponame, authname)
+                repos = self.get_repository(reponame)
                 if repos is not None:
                     repositories.add(repos)
             except TracError:
@@ -572,7 +570,7 @@ class RepositoryManager(Component):
             self._lock.release()
         self.config.touch()     # Force environment reload
  
-    def notify(self, event, reponame, revs, authname):
+    def notify(self, event, reponame, revs):
         """Notify repositories and change listeners about repository events.
         
         The supported events are the names of the methods defined in the
@@ -583,18 +581,18 @@ class RepositoryManager(Component):
         
         # Notify a repository by name, and all repositories with the same
         # base, or all repositories by base or by repository dir
-        repos = self.get_repository(reponame, None)
+        repos = self.get_repository(reponame)
         repositories = []
         if repos:
             base = repos.get_base()
         else:
-            repositories = self.get_repositories_by_dir(reponame, None)
+            repositories = self.get_repositories_by_dir(reponame)
             if repositories:
                 base = None
             else:
                 base = reponame
         if base:
-            repositories = [r for r in self.get_real_repositories(authname)
+            repositories = [r for r in self.get_real_repositories()
                             if r.get_base() == base]
         if not repositories:
             self.log.warn("Found no repositories matching '%s' base.",
@@ -676,7 +674,7 @@ class NoSuchNode(ResourceNotFound):
 class Repository(object):
     """Base class for a repository provided by a version control system."""
 
-    def __init__(self, name, params, authz, log):
+    def __init__(self, name, params, log):
         """Initialize a repository.
         
            :param name: a unique name identifying the repository, usually a
@@ -686,15 +684,14 @@ class Repository(object):
                           the name of the repository under the key "name" and
                           the surrogate key that identifies the repository in
                           the database under the key "id".
-           :param authz: a repository authorizer (deprecated).
            :param log: a logger instance.
         """
         self.name = name
         self.params = params
         self.reponame = params['name']
         self.id = params['id']
-        self.authz = authz or Authorizer()
         self.log = log
+        self.resource = Resource('repository', self.reponame)
 
     def close(self):
         """Close the connection to the repository."""
@@ -771,12 +768,11 @@ class Repository(object):
         """
         rev = self.youngest_rev
         while rev:
-            if self.authz.has_permission_for_changeset(rev):
-                chgset = self.get_changeset(rev)
-                if chgset.date < start:
-                    return
-                if chgset.date < stop:
-                    yield chgset
+            chgset = self.get_changeset(rev)
+            if chgset.date < start:
+                return
+            if chgset.date < stop:
+                yield chgset
             rev = self.previous_rev(rev)
 
     def has_node(self, path, rev=None):
@@ -883,12 +879,20 @@ class Repository(object):
         """
         raise NotImplementedError
 
+    def can_view(self, perm):
+        """Return True if view permission is granted on the repository."""
+        return 'BROWSER_VIEW' in perm(self.resource.child('source', '/'))
+        
 
 class Node(object):
     """Represents a directory or file in the repository at a given revision."""
 
     DIRECTORY = "dir"
     FILE = "file"
+
+    resource = property(lambda self: Resource('source', self.created_path,
+                                              version=self.created_rev,
+                                              parent=self.repos.resource))
 
     # created_path and created_rev properties refer to the Node "creation"
     # in the Subversion meaning of a Node in a versioned tree (see #3340).
@@ -898,9 +902,10 @@ class Node(object):
     created_rev = None   
     created_path = None
 
-    def __init__(self, path, rev, kind):
+    def __init__(self, repos, path, rev, kind):
         assert kind in (Node.DIRECTORY, Node.FILE), \
                "Unknown node kind %s" % kind
+        self.repos = repos
         self.path = to_unicode(path)
         self.rev = rev
         self.kind = kind
@@ -990,6 +995,11 @@ class Node(object):
     isdir = property(lambda x: x.kind == Node.DIRECTORY)
     isfile = property(lambda x: x.kind == Node.FILE)
 
+    def can_view(self, perm):
+        """Return True if view permission is granted on the node."""
+        return (self.isdir and 'BROWSER_VIEW' or 'FILE_VIEW') \
+               in perm(self.resource)
+        
 
 class Changeset(object):
     """Represents a set of changes committed at once in a repository."""
@@ -1005,7 +1015,11 @@ class Changeset(object):
     OTHER_CHANGES = (ADD, DELETE)
     ALL_CHANGES = DIFF_CHANGES + OTHER_CHANGES
 
-    def __init__(self, rev, message, author, date):
+    resource = property(lambda self: Resource('changeset', self.rev,
+                                              parent=self.repos.resource))
+
+    def __init__(self, repos, rev, message, author, date):
+        self.repos = repos
         self.rev = rev
         self.message = message or ''
         self.author = author or ''
@@ -1036,37 +1050,12 @@ class Changeset(object):
         """
         raise NotImplementedError
 
+    def can_view(self, perm):
+        """Return True if view permission is granted on the changeset."""
+        return 'CHANGESET_VIEW' in perm(self.resource)
 
 
-class PermissionDenied(PermissionError):
-    """Exception raised by an authorizer.
-
-    This exception is raise if the user has insufficient permissions
-    to view a specific part of the repository.
-    """
-    def __str__(self):
-        return self.action
-
-
-class Authorizer(object):
-    """Controls the view access to parts of the repository.
-    
-    Base class for authorizers that are responsible to granting or denying
-    access to view certain parts of a repository.
-    """
-
-    def assert_permission(self, path):
-        if not self.has_permission(path):
-            raise PermissionDenied(_('Insufficient permissions to access '
-                                     '%(path)s', path=path))
-
-    def assert_permission_for_changeset(self, rev):
-        if not self.has_permission_for_changeset(rev):
-            raise PermissionDenied(_('Insufficient permissions to access '
-                                     'changeset %(id)s', id=rev))
-
-    def has_permission(self, path):
-        return True
-
-    def has_permission_for_changeset(self, rev):
-        return True
+# Note: Since Trac 0.12, Exception PermissionDenied class is gone,
+# and class Authorizer is gone as well.
+#
+# Fine-grained permissions are now handled via normal permission policies.

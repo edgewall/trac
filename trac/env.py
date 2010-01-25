@@ -319,7 +319,7 @@ class Environment(Component, ComponentManager):
         
         @param authname: user name for authorization
         """
-        return RepositoryManager(self).get_repository(reponame, authname)
+        return RepositoryManager(self).get_repository(reponame)
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize

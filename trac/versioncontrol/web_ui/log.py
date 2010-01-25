@@ -71,7 +71,7 @@ class LogModule(Component):
             return True
 
     def process_request(self, req):
-        req.perm.assert_permission('LOG_VIEW')
+        req.perm.require('LOG_VIEW')
 
         mode = req.args.get('mode', 'stop_on_copy')
         path = req.args.get('path', '/')
@@ -83,8 +83,7 @@ class LogModule(Component):
         limit = int(req.args.get('limit') or self.default_log_limit)
 
         reponame, repos, path = RepositoryManager(self.env).\
-                get_repository_by_path(path, req.authname)
-        repos_resource = Resource('repository', reponame)
+                get_repository_by_path(path)
 
         normpath = repos.normalize_path(path)
         # if `revs` parameter is given, then we're restricted to the 
@@ -105,12 +104,14 @@ class LogModule(Component):
         #    unless explicit ranges have been specified
         #  * for ''show only add, delete'' we're using
         #   `Repository.get_path_history()` 
+        cset_resource = repos.resource.child('changeset')
         if mode == 'path_history':
-            def history(limit):
-                for h in repos.get_path_history(path, rev, limit):
-                    yield h
+            def history():
+                for h in repos.get_path_history(path, rev):
+                    if 'CHANGESET_VIEW' in req.perm(cset_resource(id=h[1])):
+                        yield h
         elif revranges:
-            def history(limit):
+            def history():
                 prevpath = path
                 expected_next_item = None
                 ranges = list(revranges.pairs)
@@ -123,14 +124,15 @@ class LogModule(Component):
                         p, rev, chg = node_history[0]
                         if rev < a:
                             break # simply skip, no separator
-                        if expected_next_item:
-                            # check whether we're continuing previous range
-                            np, nrev, nchg = expected_next_item
-                            if rev != nrev: # no, we need a separator
-                                yield (np, nrev, None)
-                        yield node_history[0]
+                        if 'CHANGESET_VIEW' in req.perm(cset_resource(id=rev)):
+                            if expected_next_item:
+                                # check whether we're continuing previous range
+                                np, nrev, nchg = expected_next_item
+                                if rev != nrev: # no, we need a separator
+                                    yield (np, nrev, None)
+                            yield node_history[0]
                         prevpath = node_history[-1][0] # follow copy
-                        b = rev-1
+                        b = rev - 1
                         if len(node_history) > 1:
                             expected_next_item = node_history[-1]
                         else:
@@ -138,14 +140,18 @@ class LogModule(Component):
                 if expected_next_item:
                     yield (expected_next_item[0], expected_next_item[1], None)
         else:
-            history = get_existing_node(req, repos, path, rev).get_history
+            def history():
+                node = get_existing_node(req, repos, path, rev)
+                for h in node.get_history():
+                    if 'CHANGESET_VIEW' in req.perm(cset_resource(id=h[1])):
+                        yield h
 
         # -- retrieve history, asking for limit+1 results
         info = []
         depth = 1
         previous_path = normpath
         count = 0
-        for old_path, old_rev, old_chg in history(limit+1):
+        for old_path, old_rev, old_chg in history():
             if stop_rev and repos.rev_older_than(old_rev, stop_rev):
                 break
             old_path = repos.normalize_path(old_path)
@@ -241,11 +247,11 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
 
+        repos_resource = Resource('repository', reponame)
         data = {
             'context': Context.from_request(req, 'source', path,
                                             parent=repos_resource),
-            'reponame': reponame or None, 'repos_resource': repos_resource,
-            'path': path, 'rev': rev, 'stop_rev': stop_rev,
+            'reponame': reponame or None, 'repos': repos,
             'path': path, 'rev': rev, 'stop_rev': stop_rev, 
             'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
@@ -350,12 +356,11 @@ class LogModule(Component):
                 path, revs = match[:idx], match[idx+1:]
         
         rm = RepositoryManager(self.env)
-        authname = formatter.perm.username
         reponame = rm.get_default_repository(formatter.context)
         if reponame is not None:
-            repos = rm.get_repository(reponame, authname)
+            repos = rm.get_repository(reponame)
         else:
-            reponame, repos, path = rm.get_repository_by_path(path, authname)
+            reponame, repos, path = rm.get_repository_by_path(path)
 
         revranges = None
         if any(c for c in ':-,' if c in revs):

@@ -108,6 +108,7 @@ facilities.
         trac.ticket.web_ui = trac.ticket.web_ui
         trac.timeline = trac.timeline.web_ui
         trac.versioncontrol.admin = trac.versioncontrol.admin
+        trac.versioncontrol.svn_authz = trac.versioncontrol.svn_authz
         trac.versioncontrol.svn_fs = trac.versioncontrol.svn_fs
         trac.versioncontrol.svn_prop = trac.versioncontrol.svn_prop
         trac.versioncontrol.web_ui = trac.versioncontrol.web_ui

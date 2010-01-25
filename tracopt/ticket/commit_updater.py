@@ -275,7 +275,7 @@ class CommitTicketReferenceMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content, args={}):
         reponame = args.get('repository')
         rev = args.get('revision')
-        repos = RepositoryManager(self.env).get_repository(reponame, None)
+        repos = RepositoryManager(self.env).get_repository(reponame)
         changeset = repos.get_changeset(rev)
         if formatter.context.resource.realm == 'ticket':
             ticket_re = CommitTicketUpdater.ticket_re

@@ -49,7 +49,7 @@
 
       <py:if test="dir or file">
         <py:choose>
-          <h1 py:when="repo">Default Repository</h1>
+          <h1 py:when="repo and repo.repositories">Default Repository</h1>
           <h1 py:otherwise=""><xi:include href="path_links.html" /></h1>
         </py:choose>
   

@@ -110,8 +110,7 @@
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
                              is_separator = item.change is None;
-                             chgset_context = context('changeset', change.rev, parent=repos_resource);
-                             chgset_view = 'CHANGESET_VIEW' in perm(chgset_context.resource);
+                             chgset_context = context('changeset', change.rev, parent=context.resource.parent);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="not is_separator and item.get('copyfrom_path')" class="$odd_even">
@@ -148,7 +147,7 @@
                     <td class="age" py:content="dateinfo(change.date)" />
                     <td class="author" py:content="authorinfo(change.author)" />
                     <td class="summary" py:choose="">
-                      <py:when test="verbose or not chgset_view"></py:when>
+                      <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
                         ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
                       </py:when>

@@ -18,33 +18,16 @@
 
 import os.path
 
-from trac.config import Option
+from trac.config import Option, PathOption
 from trac.core import *
-from trac.versioncontrol import Authorizer
+from trac.perm import IPermissionPolicy
+from trac.resource import Resource
+from trac.util import read_file
+from trac.util.compat import any
+from trac.util.text import exception_to_unicode, to_unicode
+from trac.util.translation import _
+from trac.versioncontrol.api import RepositoryManager
 
-
-class SvnAuthzOptions(Component):
-
-    authz_file = Option('trac', 'authz_file', '',
-        """Path to Subversion
-        [http://svnbook.red-bean.com/en/1.1/ch06s04.html#svn-ch-6-sect-4.4.2 authorization (authz) file]
-        """)
-
-    authz_module_name = Option('trac', 'authz_module_name', '',
-        """The module prefix used in the authz_file.""")
-
-
-def SubversionAuthorizer(env, repos, authname):
-    authz_file = env.config.get('trac', 'authz_file')
-    if not authz_file:
-        return Authorizer()
-    if not os.path.isabs(authz_file):
-        authz_file = os.path.join(env.path, authz_file)
-    if not os.path.exists(authz_file):
-        env.log.error('[trac] authz_file (%s) does not exist.' % authz_file)
-
-    module_name = env.config.get('trac', 'authz_module_name')
-    return RealSubversionAuthorizer(repos, authname, module_name, authz_file)
 
 def parent_iter(path):
     path = path.strip('/')
@@ -56,114 +39,167 @@ def parent_iter(path):
     while 1:
         yield path
         if path == '/':
-            raise StopIteration()
+            return
         path = path[:-1]
         yield path
         idx = path.rfind('/')
         path = path[:idx + 1]
 
 
-class RealSubversionAuthorizer(Authorizer):
-    """FIXME: this should become a IPermissionPolicy, of course.
+class ParseError(Exception):
+    """Exception thrown for parse errors in authz files"""
 
-    `check_permission(username, action, resource)` should be able to
-    replace `has_permission(path)` when resource is a `('source', path)`
-    and `has_permission_for_changeset` when resource is a `('changeset', rev)`.
+
+def parse(authz):
+    """Parse a Subversion authorization file.
+    
+    Return a dict of modules, each containing a dict of paths, each containing
+    a dict mapping users to permissions.
+    """
+    groups = {}
+    aliases = {}
+    sections = {}
+    section = None
+    lineno = 0
+    for line in authz.splitlines():
+        lineno += 1
+        line = to_unicode(line.strip())
+        if not line or line.startswith('#') or line.startswith(';'):
+            continue
+        if line.startswith('[') and line.endswith(']'):
+            section = line[1:-1]
+            continue
+        if section is None:
+            raise ParseError(_('Line %(lineno)d: Entry before first '
+                               'section header', lineno=lineno))
+        parts = line.split('=', 1)
+        if len(parts) != 2:
+            raise ParseError(_('Line %(lineno)d: Invalid entry',
+                               lineno=lineno))
+        name, value = parts
+        name = name.strip()
+        if section == 'groups':
+            group = groups.setdefault(name, set())
+            group.update(each.strip() for each in value.split(','))
+        elif section == 'aliases':
+            aliases[name] = value.strip()
+        else:
+            sections.setdefault(section, []).append((name.strip(), value))
+
+    def resolve(subject, done):
+        if subject.startswith('@'):
+            done.add(subject)
+            for members in groups[subject[1:]] - done:
+                for each in resolve(members, done):
+                    yield each
+        elif subject.startswith('&'):
+            yield aliases[subject[1:]]
+        else:
+            yield subject
+    
+    authz = {}
+    for name, items in sections.iteritems():
+        parts = name.split(':', 1)
+        module = authz.setdefault(len(parts) > 1 and parts[0] or '', {})
+        section = module.setdefault(parts[-1], {})
+        for subject, perms in items:
+            for user in resolve(subject, set()):
+                section.setdefault(user, 'r' in perms)  # The first match wins
+    
+    return authz
+
+
+class AuthzSourcePolicy(Component):
+    """Permission policy for `source:` and `changeset:` resources using a
+    Subversion authz file.
+    
+    `FILE_VIEW` and `BROWSER_VIEW` permissions are granted as specified in the
+    authz file.
+    
+    `CHANGESET_VIEW` permission is granted for changesets where `FILE_VIEW` is
+    granted on at least one modified file, as well as empty for changesets.
     """
 
-    auth_name = ''
-    module_name = ''
-    conf_authz = None
+    implements(IPermissionPolicy)
+    
+    authz_file = PathOption('trac', 'authz_file', '',
+        """The path to the Subversion
+        [http://svnbook.red-bean.com/en/1.5/svn.serverconfig.pathbasedauthz.html authorization (authz) file].
+        To enable authz permission checking, the `AuthzSourcePolicy` permission
+        policy must be added to `[trac] permission_policies`.
+        """)
 
-    def __init__(self, repos, auth_name, module_name, cfg_file, cfg_fp=None):
-        self.repos = repos
-        self.auth_name = auth_name
-        self.module_name = module_name
-                                
-        from ConfigParser import ConfigParser
-        self.conf_authz = ConfigParser()
-        if cfg_fp:
-            self.conf_authz.readfp(cfg_fp, cfg_file)
-        elif cfg_file:
-            self.conf_authz.read(cfg_file)
+    authz_module_name = Option('trac', 'authz_module_name', '',
+        """The module prefix used in the `authz_file` for the default
+        repository. If left empty, the global sections will be used.
+        """)
 
-        self.groups = self._groups()
+    _mtime = 0
+    _authz = {}
+    _users = set()
+    
+    # IPermissionPolicy methods
 
-    def has_permission(self, path):
-        if path is None:
-            return 1
+    def check_permission(self, action, username, resource, perm):
+        if action == 'FILE_VIEW' or action == 'BROWSER_VIEW':
+            authz, users = self._get_authz_info()
+            if authz is None:
+                return False
+            if resource is None:
+                return users is True or username in users
+            if resource.realm == 'source':
+                modules = [resource.parent.id or self.authz_module_name]
+                if modules[0]:
+                    modules.append('')
+                for p in parent_iter(resource.id):
+                    for module in modules:
+                        section = authz.get(module, {}).get(p, {})
+                        result = section.get(username)
+                        if result is not None:
+                            return result
+                        result = section.get('*')
+                        if result is not None:
+                            return result
+                return False
+        elif action == 'CHANGESET_VIEW':
+            authz, users = self._get_authz_info()
+            if authz is None:
+                return False
+            if resource is None:
+                return users is True or username in users
+            if resource.realm == 'changeset':
+                rm = RepositoryManager(self.env)
+                repos = rm.get_repository(resource.parent.id)
+                changes = list(repos.get_changeset(resource.id).get_changes())
+                if not changes:
+                    return True
+                source = Resource('source', version=resource.id,
+                                  parent=resource.parent)
+                return any('FILE_VIEW' in perm(source(id=change[0]))
+                           for change in changes)
 
-        for p in parent_iter(path):
-            if self.module_name:
-                for perm in self._get_section(self.module_name + ':' + p):
-                    if perm is not None:
-                        return perm
-            for perm in self._get_section(p):
-                if perm is not None:
-                    return perm
-
-        return 0
-
-    def has_permission_for_changeset(self, rev):
-        changeset = self.repos.get_changeset(rev)
-        for change in changeset.get_changes():
-            # the repository checks permissions for each change, so just check
-            # if any changes can be accessed
-            return 1
-        return 0
-
-    # Internal API
-
-    def _groups(self):
-        if not self.conf_authz.has_section('groups'):
-            return []
-
-        grp_parents = {}
-        usr_grps = []
-
-        for group in self.conf_authz.options('groups'):
-            for member in self.conf_authz.get('groups', group).split(','):
-                member = member.strip()
-                if member == self.auth_name:
-                    usr_grps.append(group)
-                elif member.startswith('@'):
-                    grp_parents.setdefault(member[1:], []).append(group)
-
-        expanded = {}
-
-        def expand_group(group):
-            if group in expanded:
-                return
-            expanded[group] = True
-            for parent in grp_parents.get(group, []):
-                expand_group(parent)
-
-        for g in usr_grps:
-            expand_group(g)
-
-        # expand groups
-        return expanded.keys()
-
-    def _get_section(self, section):
-        if not self.conf_authz.has_section(section):
-            return
-
-        yield self._get_permission(section, self.auth_name)
-
-        group_perm = None
-        for g in self.groups:
-            p = self._get_permission(section, '@' + g)
-            if p is not None:
-                group_perm = p
-
-            if group_perm:
-                yield 1
-
-        yield group_perm
-
-        yield self._get_permission(section, '*')
-
-    def _get_permission(self, section, subject):
-        if self.conf_authz.has_option(section, subject):
-            return 'r' in self.conf_authz.get(section, subject)
-        return None
+    def _get_authz_info(self):
+        try:
+            mtime = os.path.getmtime(self.authz_file)
+        except OSError, e:
+            if self._authz is not None:
+                self.log.error('Error accessing authz file: %s',
+                               exception_to_unicode(e))
+            self._mtime = mtime = 0
+            self._authz = None
+            self._users = set()
+        if mtime > self._mtime:
+            self._mtime = mtime
+            self.log.info('Parsing authz file: %s' % self.authz_file)
+            try:
+                self._authz = parse(read_file(self.authz_file))
+                users = set(user for module in self._authz.itervalues()
+                            for path in module.itervalues()
+                            for user, result in path.iteritems() if result)
+                self._users = '*' in users or users
+            except Exception, e:
+                self._authz = None
+                self._users = set()
+                self.log.error('Error parsing authz file: %s',
+                               exception_to_unicode(e))
+        return self._authz, self._users

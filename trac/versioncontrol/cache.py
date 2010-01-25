@@ -16,14 +16,12 @@
 
 from datetime import datetime
 import os
-import posixpath
 
 from trac.cache import CacheProxy
 from trac.core import TracError
 from trac.util.datefmt import utc, to_timestamp
 from trac.util.translation import _
-from trac.versioncontrol import Changeset, Node, Repository, Authorizer, \
-                                NoSuchChangeset
+from trac.versioncontrol import Changeset, Node, Repository, NoSuchChangeset
 
 
 _kindmap = {'D': Node.DIRECTORY, 'F': Node.FILE}
@@ -43,14 +41,14 @@ class CachedRepository(Repository):
 
     scope = property(lambda self: self.repos.scope)
     
-    def __init__(self, env, repos, authz, log):
+    def __init__(self, env, repos, log):
         self.env = env
         self.repos = repos
         self.metadata = CacheProxy(self.__class__.__module__ + '.'
                                    + self.__class__.__name__ + '.metadata:'
                                    + str(self.repos.id), self._metadata,
                                    self.env)
-        Repository.__init__(self, repos.name, repos.params, authz, log)
+        Repository.__init__(self, repos.name, repos.params, log)
 
     def close(self):
         self.repos.close()
@@ -65,8 +63,7 @@ class CachedRepository(Repository):
         return self.repos.get_path_url(path, rev)
 
     def get_changeset(self, rev):
-        return CachedChangeset(self.repos, self.normalize_rev(rev),
-                               self.env, self.authz)
+        return CachedChangeset(self.repos, self.normalize_rev(rev), self.env)
 
     def get_changeset_uid(self, rev):
         return self.repos.get_changeset_uid(rev)
@@ -81,8 +78,7 @@ class CachedRepository(Repository):
                         to_timestamp(stop)))
         for rev, in cursor:
             try:
-                if self.authz.has_permission_for_changeset(rev):
-                    yield self.get_changeset(rev)
+                yield self.get_changeset(rev)
             except NoSuchChangeset:
                 pass # skip changesets currently being resync'ed
 
@@ -220,70 +216,63 @@ class CachedRepository(Repository):
             # 1. prepare for resyncing
             #    (there still might be a race condition at this point)
 
-            authz = self.repos.authz
-            self.repos.authz = Authorizer() # remove permission checking
-
             kindmap = dict(zip(_kindmap.values(), _kindmap.keys()))
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
 
-            try:
-                while next_youngest is not None:
-                    
-                    # 1.1 Attempt to resync the 'revision' table
-                    self.log.info("Trying to sync revision [%s]" %
-                                  next_youngest)
-                    cset = self.repos.get_changeset(next_youngest)
-                    try:
-                        cursor.execute("INSERT INTO revision "
-                                       " (repos,rev,time,author,message) "
-                                       "VALUES (%s,%s,%s,%s,%s)",
-                                       (self.id, str(next_youngest),
-                                        to_timestamp(cset.date),
-                                        cset.author, cset.message))
-                    except Exception, e: # *another* 1.1. resync attempt won 
-                        self.log.warning('Revision %s already cached: %s' %
-                                         (next_youngest, e))
-                        # also potentially in progress, so keep ''previous''
-                        # notion of 'youngest'
-                        self.repos.clear(youngest_rev=youngest)
-                        db.rollback()
-                        return
+            while next_youngest is not None:
+                
+                # 1.1 Attempt to resync the 'revision' table
+                self.log.info("Trying to sync revision [%s]" %
+                              next_youngest)
+                cset = self.repos.get_changeset(next_youngest)
+                try:
+                    cursor.execute("INSERT INTO revision "
+                                   " (repos,rev,time,author,message) "
+                                   "VALUES (%s,%s,%s,%s,%s)",
+                                   (self.id, str(next_youngest),
+                                    to_timestamp(cset.date),
+                                    cset.author, cset.message))
+                except Exception, e: # *another* 1.1. resync attempt won 
+                    self.log.warning('Revision %s already cached: %s' %
+                                     (next_youngest, e))
+                    # also potentially in progress, so keep ''previous''
+                    # notion of 'youngest'
+                    self.repos.clear(youngest_rev=youngest)
+                    db.rollback()
+                    return
 
-                    # 1.2. now *only* one process was able to get there
-                    #      (i.e. there *shouldn't* be any race condition here)
+                # 1.2. now *only* one process was able to get there
+                #      (i.e. there *shouldn't* be any race condition here)
 
-                    for path, kind, action, bpath, brev in cset.get_changes():
-                        self.log.debug("Caching node change in [%s]: %s"
-                                       % (next_youngest,
-                                          (path,kind,action,bpath,brev)))
-                        kind = kindmap[kind]
-                        action = actionmap[action]
-                        cursor.execute("INSERT INTO node_change "
-                                       " (repos,rev,path,node_type,"
-                                       "  change_type,base_path,base_rev) "
-                                       "VALUES (%s,%s,%s,%s,%s,%s,%s)",
-                                       (self.id, str(next_youngest),
-                                        path, kind, action, bpath, brev))
+                for path, kind, action, bpath, brev in cset.get_changes():
+                    self.log.debug("Caching node change in [%s]: %s"
+                                   % (next_youngest,
+                                      (path,kind,action,bpath,brev)))
+                    kind = kindmap[kind]
+                    action = actionmap[action]
+                    cursor.execute("INSERT INTO node_change "
+                                   " (repos,rev,path,node_type,"
+                                   "  change_type,base_path,base_rev) "
+                                   "VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                                   (self.id, str(next_youngest),
+                                    path, kind, action, bpath, brev))
 
-                    # 1.3. iterate (1.1 should always succeed now)
-                    youngest = next_youngest                    
-                    next_youngest = self.repos.next_rev(next_youngest)
+                # 1.3. iterate (1.1 should always succeed now)
+                youngest = next_youngest                    
+                next_youngest = self.repos.next_rev(next_youngest)
 
-                    # 1.4. update 'youngest_rev' metadata 
-                    #      (minimize possibility of failures at point 0.)
-                    cursor.execute("UPDATE repository SET value=%s "
-                                   "WHERE id=%s AND name=%s",
-                                   (str(youngest), self.id,
-                                    CACHE_YOUNGEST_REV))
-                    self.metadata.invalidate(db)
-                    db.commit()
+                # 1.4. update 'youngest_rev' metadata 
+                #      (minimize possibility of failures at point 0.)
+                cursor.execute("UPDATE repository SET value=%s "
+                               "WHERE id=%s AND name=%s",
+                               (str(youngest), self.id,
+                                CACHE_YOUNGEST_REV))
+                self.metadata.invalidate(db)
+                db.commit()
 
-                    # 1.5. provide some feedback
-                    if feedback:
-                        feedback(youngest)
-            finally:
-                # 3. restore permission checking (after 1.)
-                self.repos.authz = authz
+                # 1.5. provide some feedback
+                if feedback:
+                    feedback(youngest)
 
     def get_node(self, path, rev=None):
         return self.repos.get_node(path, self.normalize_rev(rev))
@@ -397,20 +386,18 @@ class CachedRepository(Repository):
 
 class CachedChangeset(Changeset):
 
-    def __init__(self, repos, rev, env, authz):
-        self.repos = repos
+    def __init__(self, repos, rev, env):
         self.env = env
-        self.authz = authz
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
-                       (self.repos.id, str(rev)))
+                       (repos.id, str(rev)))
         row = cursor.fetchone()
         if row:
             _date, author, message = row
             date = datetime.fromtimestamp(_date, utc)
-            Changeset.__init__(self, rev, message, author, date)
+            Changeset.__init__(self, repos, rev, message, author, date)
         else:
             raise NoSuchChangeset(rev)
         self.scope = getattr(repos, 'scope', '')
@@ -422,10 +409,6 @@ class CachedChangeset(Changeset):
                        "FROM node_change WHERE repos=%s AND rev=%s "
                        "ORDER BY path", (self.repos.id, str(self.rev)))
         for path, kind, change, base_path, base_rev in cursor:
-            if not self.authz.has_permission(posixpath.join(self.scope,
-                                                            path.strip('/'))):
-                # FIXME: what about the base_path?
-                continue
             kind = _kindmap[kind]
             change = _actionmap[change]
             yield path, kind, change, base_path, base_rev

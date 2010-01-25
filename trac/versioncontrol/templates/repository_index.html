@@ -5,7 +5,9 @@
   <table class="listing dirlist" id="${repoindex or None}">
     <xi:include href="dirlist_thead.html" />
     <tbody>
-      <py:for each="idx, (reponame, repoinfo, change, err) in enumerate(repo.repositories)">
+      <py:for each="idx, (reponame, repoinfo, change, err) in enumerate(repo.repositories)"
+              py:with="chgset_context = change and context('changeset', change.rev, parent=Resource('repository', reponame));
+                       chgset_view = change and change.can_view(perm)">
         <tr class="${idx % 2 and 'even' or 'odd'}">
           <td class="name">
             <em py:strip="not err">
@@ -22,21 +24,22 @@
               <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
             </py:if>
           </td>
-          <td class="age" style="${change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
-            repo.colorize_age(repo.timerange.relative(change.date)) or None}">
-            ${change and dateinfo(change.date) or '-'}
+          <td class="age" style="${chgset_view and change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
+                                   repo.colorize_age(repo.timerange.relative(change.date)) or None}">
+            ${('&ndash;', dateinfo(change.date))[chgset_view]}
           </td>
-          <td class="change">
-            <span class="author" py:if="change">${authorinfo(change.author)}:</span>
-            <span class="change" py:choose=""
-                  py:with="chgset_context = context('changeset', change.rev, parent=Resource('repository', reponame))">
-              <em py:when="err" py:content="err" />
-              <py:when test="not change or 'CHANGESET_VIEW' not in perm(chgset_context.resource)">-</py:when>
-              <py:when test="wiki_format_messages">
-                ${change and wiki_to_oneliner(chgset_context, change.message, shorten=True)}
-              </py:when>
-              <py:otherwise>${change and shorten_line(change.message)}</py:otherwise>
-            </span>
+          <td class="change" py:choose="">
+            <span py:when="err" class="change"><em py:content="err"></em></span>
+            <py:when test="chgset_view">
+              <span class="author">${authorinfo(change.author)}:</span>
+              <span class="change" py:choose="">
+                <py:when test="wiki_format_messages">
+                  ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
+                </py:when>
+                <py:otherwise>${shorten_line(change.message)}</py:otherwise>
+              </span>
+            </py:when>
+            <py:otherwise>&ndash;</py:otherwise>
           </td>
         </tr>
         <tr class="${idx % 2 and 'even' or 'odd'}" py:if="repoinfo.description">

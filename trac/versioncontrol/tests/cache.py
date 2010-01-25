@@ -44,13 +44,13 @@ class CacheTestCase(unittest.TestCase):
             raise NoSuchChangeset(rev)
             
         repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
-                     None, self.log,
+                     self.log,
                      get_changeset=no_changeset,
                      get_oldest_rev=lambda: 1,
                      get_youngest_rev=lambda: 0,
                      normalize_rev=no_changeset,
                      next_rev=lambda x: None)
-        cache = CachedRepository(self.env, repos, None, self.log)
+        cache = CachedRepository(self.env, repos, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
@@ -64,18 +64,18 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         changes = [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
                    ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
-        changesets = [Mock(Changeset, 0, '', '', t1,
-                           get_changes=lambda: []),
-                      Mock(Changeset, 1, 'Import', 'joe', t2,
-                           get_changes=lambda: iter(changes))]
         repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
-                     None, self.log,
+                     self.log,
                      get_changeset=lambda x: changesets[int(x)],
                      get_oldest_rev=lambda: 0,
                      get_youngest_rev=lambda: 1,
                      normalize_rev=lambda x: x,
                      next_rev=lambda x: int(x) == 0 and 1 or None)
-        cache = CachedRepository(self.env, repos, None, self.log)
+        changesets = [Mock(Changeset, repos, 0, '', '', t1,
+                           get_changes=lambda: []),
+                      Mock(Changeset, repos, 1, 'Import', 'joe', t2,
+                           get_changes=lambda: iter(changes))]
+        cache = CachedRepository(self.env, repos, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
@@ -111,16 +111,16 @@ class CacheTestCase(unittest.TestCase):
                        "WHERE id=1 AND name='youngest_rev'")
 
         changes = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README', 1)]
-        changeset = Mock(Changeset, 2, 'Update', 'joe', t3,
-                         get_changes=lambda: iter(changes))
         repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
-                     None, self.log,
+                     self.log,
                      get_changeset=lambda x: changeset,
                      get_youngest_rev=lambda: 2,
                      get_oldest_rev=lambda: 0,
                      normalize_rev=lambda x: x,                    
                      next_rev=lambda x: x and int(x) == 1 and 2 or None)
-        cache = CachedRepository(self.env, repos, None, self.log)
+        changeset = Mock(Changeset, repos, 2, 'Update', 'joe', t3,
+                         get_changes=lambda: iter(changes))
+        cache = CachedRepository(self.env, repos, self.log)
         cache.sync()
 
         cursor = self.db.cursor()
@@ -152,13 +152,13 @@ class CacheTestCase(unittest.TestCase):
                        "WHERE id=1 AND name='youngest_rev'")
 
         repos = Mock(Repository, 'test-repos', {'name': 'test-repos', 'id': 1},
-                     None, self.log,
+                     self.log,
                      get_changeset=lambda x: None,
                      get_youngest_rev=lambda: 1,
                      get_oldest_rev=lambda: 0,
                      next_rev=lambda x: None,
                      normalize_rev=lambda rev: rev)
-        cache = CachedRepository(self.env, repos, None, self.log)
+        cache = CachedRepository(self.env, repos, self.log)
         self.assertEqual('1', cache.youngest_rev)
         changeset = cache.get_changeset(1)
         self.assertEqual('joe', changeset.author)

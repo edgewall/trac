@@ -87,7 +87,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
     def setUp(self):
         self.repos = SubversionRepository(REPOS_PATH,
                                           {'name': 'repo', 'id': 1},
-                                          None, logger_factory('test'))
+                                          logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
@@ -510,7 +510,7 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
     def setUp(self):
         self.repos = SubversionRepository(REPOS_PATH + u'/tête',
                                           {'name': 'repo', 'id': 1},
-                                          None, logger_factory('test'))
+                                          logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
@@ -760,7 +760,7 @@ class RecentPathScopedRepositoryTestCase(unittest.TestCase):
     def setUp(self):
         self.repos = SubversionRepository(REPOS_PATH + u'/tête/dir1',
                                           {'name': 'repo', 'id': 1},
-                                          None, logger_factory('test'))
+                                          logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
@@ -781,7 +781,7 @@ class NonSelfContainedScopedTestCase(unittest.TestCase):
     def setUp(self):
         self.repos = SubversionRepository(REPOS_PATH + '/tags/v1',
                                           {'name': 'repo', 'id': 1},
-                                          None, logger_factory('test'))
+                                          logger_factory('test'))
 
     def tearDown(self):
         self.repos = None
@@ -800,7 +800,7 @@ class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
     def setUp(self):
         self.repos = SubversionRepository(REPOS_PATH + '/branches',
                                           {'name': 'repo', 'id': 1},
-                                          None, logger_factory('test'))
+                                          logger_factory('test'))
 
     def tearDown(self):
         self.repos = None

@@ -26,7 +26,6 @@ import re
 from StringIO import StringIO
 
 from genshi.builder import tag
-from genshi.core import Markup
 
 from trac.config import Option, BoolOption, IntOption, _TRUE_VALUES
 from trac.core import *
@@ -229,14 +228,13 @@ class ChangesetModule(Component):
 
         rm = RepositoryManager(self.env)
         if reponame:
-            repos = rm.get_repository(reponame, req.authname)
+            repos = rm.get_repository(reponame)
         else:
-            reponame, repos, new_path = rm.get_repository_by_path(
-                    new_path, req.authname)
+            reponame, repos, new_path = rm.get_repository_by_path(new_path)
 
             if old_path:
-                old_reponame, old_repos, old_path = rm.get_repository_by_path(
-                        old_path, req.authname)
+                old_reponame, old_repos, old_path = \
+                    rm.get_repository_by_path(old_path)
                 if old_repos != repos:
                     raise TracError(_("Can't compare across different "
                                       "repositories: %(old)s vs. %(new)s",
@@ -254,9 +252,6 @@ class ChangesetModule(Component):
         try:
             new_path = repos.normalize_path(new_path)
             new = repos.normalize_rev(new)
-            
-            repos.authz.assert_permission_for_changeset(new)
-            
             old_path = repos.normalize_path(old_path or new_path)
             old = repos.normalize_rev(old or new)
         except NoSuchChangeset, e:
@@ -310,9 +305,8 @@ class ChangesetModule(Component):
         data['wiki_format_messages'] = self.wiki_format_messages
 
         if chgset:
-            resource = Resource('repository', reponame).child('changeset', new)
-            req.perm(resource).require('CHANGESET_VIEW')
             chgset = repos.get_changeset(new)
+            req.perm(chgset.resource).require('CHANGESET_VIEW')
 
             # TODO: find a cheaper way to reimplement r2636
             req.check_modified(chgset.date, [
@@ -324,7 +318,6 @@ class ChangesetModule(Component):
         format = req.args.get('format')
 
         if format in ['diff', 'zip']:
-            req.perm.require('FILE_VIEW')
             # choosing an appropriate filename
             rpath = new_path.replace('/','_')
             if chgset:
@@ -413,9 +406,9 @@ class ChangesetModule(Component):
 
             # Support for revision properties (#2545)
             repos_resource = Resource('repository', reponame)
-            data['repos_resource'] = repos_resource
             context = Context.from_request(req, 'changeset', chgset.rev,
                                            parent=repos_resource)
+            data['context'] = context
             revprops = chgset.get_properties()
             data['properties'] = browser.render_properties('revprop', context,
                                                            revprops)
@@ -498,22 +491,12 @@ class ChangesetModule(Component):
         #           with _that_ node specific history...
 
         options = data['diff']['options']
-        repos_resource = Resource('repository', reponame)
 
         def _prop_changes(old_node, new_node):
-            old_source = Resource('source', old_node.created_path,
-                                  version=old_node.created_rev,
-                                  parent=repos_resource)
-            new_source = Resource('source', new_node.created_path,
-                                  version=new_node.created_rev,
-                                  parent=repos_resource)
-            old_props = new_props = []
-            if 'FILE_VIEW' in req.perm(old_source):
-                old_props = old_node.get_properties()
-            if 'FILE_VIEW' in req.perm(new_source):
-                new_props = new_node.get_properties()
-            old_ctx = Context.from_request(req, old_source)
-            new_ctx = Context.from_request(req, new_source)
+            old_props = old_node.get_properties()
+            new_props = new_node.get_properties()
+            old_ctx = Context.from_request(req, old_node.resource)
+            new_ctx = Context.from_request(req, new_node.resource)
             changed_properties = []
             if old_props != new_props:
                 for k, v in sorted(old_props.items()):
@@ -584,20 +567,19 @@ class ChangesetModule(Component):
             else:
                 return []
 
-        if 'FILE_VIEW' in req.perm:
-            diff_bytes = diff_files = 0
-            if self.max_diff_bytes or self.max_diff_files:
-                for old_node, new_node, kind, change in get_changes():
-                    if change in Changeset.DIFF_CHANGES and kind == Node.FILE:
-                        diff_files += 1
-                        diff_bytes += _estimate_changes(old_node, new_node)
-            show_diffs = (not self.max_diff_files or \
-                          diff_files <= self.max_diff_files) and \
-                         (not self.max_diff_bytes or \
-                          diff_bytes <= self.max_diff_bytes or \
-                          diff_files == 1)
-        else:
-            show_diffs = False
+        diff_bytes = diff_files = 0
+        if self.max_diff_bytes or self.max_diff_files:
+            for old_node, new_node, kind, change in get_changes():
+                if change in Changeset.DIFF_CHANGES and kind == Node.FILE \
+                        and old_node.can_view(req.perm) \
+                        and new_node.can_view(req.perm):
+                    diff_files += 1
+                    diff_bytes += _estimate_changes(old_node, new_node)
+        show_diffs = (not self.max_diff_files or \
+                      0 < diff_files <= self.max_diff_files) and \
+                     (not self.max_diff_bytes or \
+                      diff_bytes <= self.max_diff_bytes or \
+                      diff_files == 1)
 
         # XHR is used for blame support: display the changeset view without
         # the navigation and with the changes concerning the annotated file
@@ -613,10 +595,12 @@ class ChangesetModule(Component):
         for old_node, new_node, kind, change in get_changes():
             props = []
             diffs = []
+            show_old = old_node and old_node.can_view(req.perm)
+            show_new = new_node and new_node.can_view(req.perm)
             show_entry = change != Changeset.EDIT
             show_diff = show_diffs or (new_node and new_node.path == annotated)
 
-            if change in Changeset.DIFF_CHANGES and 'FILE_VIEW' in req.perm:
+            if change in Changeset.DIFF_CHANGES and show_old and show_new:
                 assert old_node and new_node
                 props = _prop_changes(old_node, new_node)
                 if props:
@@ -628,7 +612,7 @@ class ChangesetModule(Component):
                             has_diffs = True
                         # elif None (means: manually compare to (previous))
                         show_entry = True
-            if show_entry or not show_diff:
+            if (show_old or show_new) and (show_entry or not show_diff):
                 info = {'change': change,
                         'old': old_node and node_info(old_node, annotated),
                         'new': new_node and node_info(new_node, annotated),
@@ -692,8 +676,8 @@ class ChangesetModule(Component):
         mimeview = Mimeview(self.env)
 
         for old_node, new_node, kind, change in repos.get_changes(
-            new_path=data['new_path'], new_rev=data['new_rev'],
-            old_path=data['old_path'], old_rev=data['old_rev']):
+                new_path=data['new_path'], new_rev=data['new_rev'],
+                old_path=data['old_path'], old_rev=data['old_rev']):
             # TODO: Property changes
 
             # Content changes
@@ -702,9 +686,10 @@ class ChangesetModule(Component):
 
             new_content = old_content = ''
             new_node_info = old_node_info = ('','')
-            mimeview = Mimeview(self.env)
 
             if old_node:
+                if not old_node.can_view(req.perm):
+                    continue
                 if mimeview.is_binary(old_node.content_type, old_node.path):
                     continue
                 old_content = old_node.get_content().read()
@@ -714,6 +699,8 @@ class ChangesetModule(Component):
                 old_content = mimeview.to_unicode(old_content,
                                                   old_node.content_type)
             if new_node:
+                if not new_node.can_view(req.perm):
+                    continue
                 if mimeview.is_binary(new_node.content_type, new_node.path):
                     continue
                 new_content = new_node.get_content().read()
@@ -770,8 +757,8 @@ class ChangesetModule(Component):
         for old_node, new_node, kind, change in repos.get_changes(
             new_path=data['new_path'], new_rev=data['new_rev'],
             old_path=data['old_path'], old_rev=data['old_rev']):
-            if kind == Node.FILE and change != Changeset.DELETE:
-                assert new_node
+            if kind == Node.FILE and change != Changeset.DELETE \
+                    and new_node.can_view(req.perm):
                 zipinfo = ZipInfo()
                 zipinfo.filename = new_node.path.strip('/').encode('utf-8')
                 # Note: unicode filenames are not supported by zipfile.
@@ -860,8 +847,10 @@ class ChangesetModule(Component):
             rm = RepositoryManager(self.env)
             repositories = rm.get_all_repositories()
             if len(repositories) > 1:
-                visible_repos = set(name for name, info in repositories.items()
-                                    if info.get('hidden') not in _TRUE_VALUES)
+                visible_repos = set(
+                    name for name, info in repositories.items()
+                    if info.get('hidden') not in _TRUE_VALUES
+                    and rm.get_repository(name).can_view(req.perm))
                 default_is_aliased = any(info.get('alias') == '' and
                                          name in visible_repos
                                          for name, info in repositories.items())
@@ -912,7 +901,7 @@ class ChangesetModule(Component):
                     for cset in changesets:
                         cset_resource = Resource('changeset', cset.rev,
                                                  parent=repos_resource)
-                        if 'CHANGESET_VIEW' in req.perm(cset_resource):
+                        if cset.can_view(req.perm):
                             repos_for_uid = [reponame]
                             uid = repos.get_changeset_uid(cset.rev)
                             if uid:
@@ -933,7 +922,7 @@ class ChangesetModule(Component):
             for reponame in rm.get_all_repositories():
                 if all_repos or ('repo-' + reponame) in repo_filters:
                     try:
-                        repos = rm.get_repository(reponame, req.authname)
+                        repos = rm.get_repository(reponame)
                         for event in generate_changesets(reponame, repos):
                             yield event
                     except TracError, e:
@@ -971,6 +960,10 @@ class ChangesetModule(Component):
                     filestats = self._prepare_filestats()
                     for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
+                            resource = c.resource.parent.child('source',
+                                                        chg[0] or '/', r.id)
+                            if not 'FILE_VIEW' in context.perm(resource):
+                                continue
                             filestats[chg[2]] += 1
                             files.append(chg[0])
                     stats = [(tag.div(class_=kind),
@@ -987,6 +980,10 @@ class ChangesetModule(Component):
                 elif show_files:
                     for c, r, repos_for_c in changesets:
                         for chg in c.get_changes():
+                            resource = c.resource.parent.child('source',
+                                                        chg[0] or '/', r.id)
+                            if not 'FILE_VIEW' in context.perm(resource):
+                                continue
                             if show_files > 0 and len(files) > show_files:
                                 break
                             files.append(tag.li(tag.div(class_=chg[2]),
@@ -1046,7 +1043,6 @@ class ChangesetModule(Component):
 
         # identifying repository
         rm = RepositoryManager(self.env)
-        authname = formatter.perm.username
         chgset, params, fragment = formatter.split_link(chgset)
         sep = chgset.find('/')
         if sep > 0:
@@ -1055,21 +1051,25 @@ class ChangesetModule(Component):
             rev, path = chgset, '/'
         reponame = rm.get_default_repository(formatter.context)
         if reponame is not None:
-            repos = rm.get_repository(reponame, authname)
+            repos = rm.get_repository(reponame)
         else:
-            reponame, repos, path = rm.get_repository_by_path(path, authname)
+            reponame, repos, path = rm.get_repository_by_path(path)
         if path == '/':
             path = None
 
         # rendering changeset link
-        resource = Resource('repository', reponame).child('changeset', rev)
-        if repos and 'CHANGESET_VIEW' in formatter.perm(resource):
+        if repos:
             try:
                 changeset = repos.get_changeset(rev)
-                href = formatter.href.changeset(rev, reponame or None, path)
-                return tag.a(label, class_="changeset",
-                             title=shorten_line(changeset.message),
-                             href=href + params + fragment)
+                if changeset.can_view(formatter.perm):
+                    href = formatter.href.changeset(rev, reponame or None,
+                                                    path)
+                    return tag.a(label, class_="changeset",
+                                 title=shorten_line(changeset.message),
+                                 href=href + params + fragment)
+                errmsg = _("No permission to view changset %(rev)s "
+                           "on %(repos)s", rev=rev,
+                           repos=reponame or _('(default)'))
             except TracError, e:
                 errmsg = to_unicode(e)
         elif reponame:
@@ -1128,13 +1128,8 @@ class ChangesetModule(Component):
             repos = self.env.get_repository(reponame)
             if not repos:
                 continue # revisions for a no longer active repository
-            if not repos.authz.has_permission_for_changeset(rev):
-                continue
-            # FIXME get rid of .authz and use only the normal Permission system
-            #cset = Resource('repository', reponame).child('changeset' , rev)
-            #cset = repos.resource.child('changeset' , rev)
-            #cset = repos.changeset_resource(rev)
-            cset = Resource('repository', reponame).child('changeset', rev)
+            cset = Resource('repository', repos.reponame).child('changeset',
+                                                                rev)
             if 'CHANGESET_VIEW' in req.perm(cset):
                 yield (req.href.changeset(rev, reponame or None),
                        '[%s]: %s' % (rev, shorten_line(log)),
@@ -1157,20 +1152,20 @@ class AnyDiffModule(Component):
         if req.get_header('X-Requested-With') == 'XMLHttpRequest':
             dirname, prefix = posixpath.split(req.args.get('q'))
             prefix = prefix.lower()
-            reponame, repos, path = rm.get_repository_by_path(dirname,
-                                                              req.authname)
+            reponame, repos, path = rm.get_repository_by_path(dirname)
             # an entry is a (isdir, name, path) tuple
             def kind_order(entry):
                 return (not entry[0], embedded_numbers(entry[1]))
 
             if repos:
-                node = repos.get_node(path)
                 entries = [(e.isdir, e.name, 
                             '/' + posixpath.join(reponame, e.path))
-                           for e in repos.get_node(path).get_entries()]
-            else:
-                entries = [(True, r, '/' + r)
-                           for r in rm.get_all_repositories()]
+                           for e in repos.get_node(path).get_entries()
+                           if e.can_view(req.perm)]
+            if not reponame:
+                entries.extend((True, name, '/' + name)
+                               for name in rm.get_all_repositories()
+                               if rm.get_repository(name).can_view(req.perm))
 
             elem = tag.ul(
                 [tag.li(isdir and tag.b(path) or path)
@@ -1190,15 +1185,11 @@ class AnyDiffModule(Component):
 
         # -- normalize
         new_reponame, new_repos, new_path = \
-            rm.get_repository_by_path(new_path, req.authname)
+            rm.get_repository_by_path(new_path)
         old_reponame, old_repos, old_path = \
-            rm.get_repository_by_path(old_path, req.authname)
+            rm.get_repository_by_path(old_path)
         new_rev = new_repos.normalize_rev(new_rev)
         old_rev = old_repos.normalize_rev(old_rev)
-
-        # FIXME: replace by fine grained permission checks
-        new_repos.authz.assert_permission_for_changeset(new_rev)
-        old_repos.authz.assert_permission_for_changeset(old_rev)
 
         # -- prepare rendering
         data = {'new_path': posixpath.join(new_reponame, new_path),

@@ -83,11 +83,11 @@ class VersionControlAdmin(Component):
     
     def _do_changeset_added(self, reponame, *revs):
         rm = RepositoryManager(self.env)
-        rm.notify('changeset_added', reponame, revs, None)
+        rm.notify('changeset_added', reponame, revs)
     
     def _do_changeset_modified(self, reponame, *revs):
         rm = RepositoryManager(self.env)
-        rm.notify('changeset_modified', reponame, revs, None)
+        rm.notify('changeset_modified', reponame, revs)
     
     def _do_list(self):
         rm = RepositoryManager(self.env)
@@ -106,11 +106,11 @@ class VersionControlAdmin(Component):
             if rev is not None:
                 raise TracError(_('Cannot synchronize a single revision '
                                   'on multiple repositories'))
-            repositories = rm.get_real_repositories(None)
+            repositories = rm.get_real_repositories()
         else:
             if reponame == '(default)':
                 reponame = ''
-            repos = rm.get_repository(reponame, None)
+            repos = rm.get_repository(reponame)
             if repos is None:
                 raise TracError(_("Unknown repository '%(reponame)s'",
                                   reponame=reponame or '(default)'))
@@ -284,7 +284,7 @@ class VersionControlAdmin(Component):
         info['editable'] = editable
         if not info.get('alias'):
             try:
-                repos = RepositoryManager(self.env).get_repository(reponame, None)
+                repos = RepositoryManager(self.env).get_repository(reponame)
                 info['rev'] = repos.get_youngest_rev()
             except Exception:
                 pass
