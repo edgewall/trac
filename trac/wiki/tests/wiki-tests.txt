@@ -2010,3 +2010,20 @@ c
 &gt; a
  […]
 &gt; c
+============================== Block and follow-up citation
+{{{
+> a
+b
+}}}
+> c
+------------------------------
+<pre class="wiki">&gt; a
+b
+</pre><blockquote class="citation">
+<p>
+c
+</p>
+</blockquote>
+------------------------------
+ […]
+&gt; c

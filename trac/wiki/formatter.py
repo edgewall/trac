@@ -1029,18 +1029,24 @@ class Formatter(object):
             text = text.splitlines()
             
         for line in text:
-            # Handle > quotes
+            # Detect start of code block (new block or embedded block)
+            block_start_match = None
+            if WikiParser.ENDBLOCK not in line:
+                block_start_match = WikiParser._startblock_re.match(line)
+            # Handle content or end of code block
+            if self.in_code_block:
+                self.handle_code_block(line, block_start_match)
+                continue
+            # Handle citation quotes '> ...'
             if line.strip().startswith('>'):
                 self.handle_quote_block(line)
                 continue
-            if self._quote_buffer:
-                self.close_quote_block(escape_newlines)
-            # Handle code block
-            if self.in_code_block or WikiParser.ENDBLOCK not in line:
-                match = WikiParser._startblock_re.match(line)
-                if match or self.in_code_block:
-                    self.handle_code_block(line, match)
-                    continue
+            # Handle end of citation quotes
+            self.close_quote_block(escape_newlines)
+            # Handle start of a new block
+            if block_start_match:
+                self.handle_code_block(line, block_start_match)
+                continue
             # Handle Horizontal ruler
             if line[0:4] == '----':
                 self.close_table()
