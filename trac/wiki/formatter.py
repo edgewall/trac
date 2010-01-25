@@ -34,6 +34,7 @@ from trac.resource import get_relative_resource, get_resource_url
 from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util import arity
+from trac.util.compat import all
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode, \
                            unicode_quote, unicode_quote_plus
 from trac.util.html import TracHTMLSanitizer
@@ -86,7 +87,11 @@ class WikiProcessor(object):
                               'comment': self._comment_processor,
                               'div': self._div_processor,
                               'span': self._span_processor,
-                              'Span': self._span_processor}
+                              'Span': self._span_processor,
+                              'td': self._td_processor,
+                              'th': self._th_processor,
+                              'tr': self._tr_processor,
+                              }
 
         self._sanitizer = TracHTMLSanitizer()
         
@@ -167,6 +172,34 @@ class WikiProcessor(object):
         return self._elt_processor('span', format_to_oneliner, ', '.join(args),
                                    kwargs)
 
+    def _td_processor(self, text):
+        return self._tablecell_processor('td', text)
+    
+    def _th_processor(self, text):
+        return self._tablecell_processor('th', text)
+    
+    def _tr_processor(self, text):
+        self.formatter.open_table()
+        return self._elt_processor('tr', self._format_row, text, self.args)
+    
+    def _tablecell_processor(self, eltname, text):
+        self.formatter.open_table_row()
+        return self._elt_processor(eltname, format_to_html, text, self.args)
+
+    def _format_row(self, env, context, text):
+        if text:
+            row_formatter = Formatter(env, context)
+            out = StringIO()
+            row_formatter.format(text, out)
+            text = out.getvalue()
+            # we must deal with either \n or \r\n as element separators:
+            #  len('<table class="wiki">') == 20
+            inner_tr_start = text.find('>', 20) + 1
+            #  len('</tr></table>\r\n') == 15
+            inner_tr_end = text.find('<', len(text) - 15)
+            text = Markup(text[inner_tr_start:inner_tr_end])
+        return text
+    
     # generic processors
 
     def _legacy_macro_processor(self, text): # TODO: remove in 0.12
@@ -624,14 +657,14 @@ class Formatter(object):
             return self._list_stack[-1][1]
         return -1
 
-    def _set_list_depth(self, depth, new_type, list_class, start):
+    def _set_list_depth(self, depth, new_type=None, lclass=None, start=None):
         def open_list():
             self.close_table()
             self.close_paragraph()
             self.close_indentation() # FIXME: why not lists in quotes?
             self._list_stack.append((new_type, depth))
             self._set_tab(depth)
-            class_attr = (list_class and ' class="%s"' % list_class) or ''
+            class_attr = (lclass and ' class="%s"' % lclass) or ''
             start_attr = (start and ' start="%s"' % start) or ''
             self.out.write('<'+new_type+class_attr+start_attr+'><li>')
         def close_item():
@@ -651,7 +684,7 @@ class Formatter(object):
                 if depth >= deepest_offset:
                     break
                 close_list(deepest_type)
-            if depth >= 0:
+            if new_type and depth >= 0:
                 if self._list_stack:
                     old_type, old_offset = self._list_stack[-1]
                     if new_type and old_type != new_type:
@@ -665,8 +698,8 @@ class Formatter(object):
                 else:
                     open_list()
 
-    def close_list(self):
-        self._set_list_depth(-1, None, None, None)
+    def close_list(self, depth=-1):
+        self._set_list_depth(depth)
 
     # Definition Lists
 
@@ -693,18 +726,13 @@ class Formatter(object):
                 for _, ldepth in self._list_stack:
                     if idepth > ldepth:
                         self.in_list_item = True
-                        self._set_list_depth(idepth, None, None, None)
+                        self._set_list_depth(idepth)
                         return ''
             elif idepth <= ldepth + (ltype == 'ol' and 3 or 2):
                 self.in_list_item = True
                 return ''
         if not self.in_def_list:
             self._set_quote_depth(idepth)
-        return ''
-
-    def _citation_formatter(self, match, fullmatch):
-        cdepth = len(fullmatch.group('cdepth').replace(' ', ''))
-        self._set_quote_depth(cdepth, True)
         return ''
 
     def close_indentation(self):
@@ -763,6 +791,7 @@ class Formatter(object):
     def _table_cell_formatter(self, match, fullmatch):
         self.open_table()
         self.open_table_row()
+        self.continue_table = 1
         separator = fullmatch.group('table_cell_sep')
         is_last = fullmatch.group('table_cell_last')
         numpipes = len(separator)
@@ -782,15 +811,24 @@ class Formatter(object):
         attrs = ''
         if colspan > 1:
             attrs = ' colspan="%d"' % int(colspan)
-        # alignment: ||left || right||default|| default ||
+        # alignment: ||left || right||default|| default ||  center  ||
         after_sep = fullmatch.end('table_cell_sep')
         alignleft = after_sep < len(self.line) and self.line[after_sep] != ' '
         # lookahead next || (FIXME: this fails on ` || ` inside the cell)
         next_sep = re.search(r'([^!])=?\|\|', self.line[after_sep:])
-        if next_sep and next_sep.group(1) != ' ':
-            textalign = not alignleft and 'right'
-        else:
-            textalign = alignleft and 'left'
+        alignright = next_sep and next_sep.group(1) != ' '
+        textalign = None
+        if alignleft:
+            if not alignright:
+                textalign = 'left'
+        elif alignright:
+            textalign = 'right'
+        elif next_sep: # check for the extra spaces specifying a center align
+            first_extra = after_sep + 1
+            last_extra = after_sep + next_sep.start() - 1
+            if first_extra < last_extra and \
+                   self.line[first_extra] == self.line[last_extra] == ' ':
+                textalign = 'center'                
         if textalign:
             attrs += ' style="text-align: %s"' % textalign
         td = '<%s%s>' % (cell, attrs)
@@ -798,6 +836,18 @@ class Formatter(object):
             td = '</%s>' % self.in_table_cell + td
         self.in_table_cell = cell
         return td
+
+    def _table_row_sep_formatter(self, match, fullmatch):
+        self.open_table()
+        self.close_table_row(force=True)
+        params = fullmatch.group('table_row_params')
+        if params:
+            tr = WikiProcessor(self, 'tr', self.parse_processor_args(params))
+            processed = _markup_to_unicode(tr.process(''))
+            params = processed[3:processed.find('>')]
+        self.open_table_row(params or '')
+        self.continue_table = 1
+        self.continue_table_row = 1
 
     def open_table(self):
         if not self.in_table:
@@ -807,11 +857,11 @@ class Formatter(object):
             self.in_table = 1
             self.out.write('<table class="wiki">' + os.linesep)
 
-    def open_table_row(self):
+    def open_table_row(self, params=''):
         if not self.in_table_row:
             self.open_table()
             self.in_table_row = 1
-            self.out.write('<tr>')
+            self.out.write('<tr%s>' % params)
 
     def close_table_row(self, force=False):
         if self.in_table_row and (not self.continue_table_row or force):
@@ -824,7 +874,7 @@ class Formatter(object):
 
     def close_table(self):
         if self.in_table:
-            self.close_table_row(True)
+            self.close_table_row(force=True)
             self.out.write('</table>' + os.linesep)
             self.in_table = 0
 
@@ -842,13 +892,27 @@ class Formatter(object):
             self.paragraph_open = 0
 
     # Code blocks
-    
-    def handle_code_block(self, line):
-        if line.strip() == WikiParser.STARTBLOCK:
+
+    def parse_processor_args(self, line):
+        args = WikiParser._processor_param_re.split(line)
+        del args[::3]
+        keys = [str(k) for k in args[::2]] # used as keyword parameters
+        values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
+                  for v in args[1::2]]
+        return dict(zip(keys, values))
+
+    def handle_code_block(self, line, startmatch=None):
+        if startmatch:
             self.in_code_block += 1
             if self.in_code_block == 1:
-                self.code_processor = None
+                name = startmatch.group(2)
+                if name:
+                    args = self.parse_processor_args(line[startmatch.end():])
+                    self.code_processor = WikiProcessor(self, name, args)
+                else:
+                    self.code_processor = None
                 self.code_buf = []
+                self.code_prefix = line[:line.find(WikiParser.STARTBLOCK)]
             else:
                 self.code_buf.append(line)
                 if not self.code_processor:
@@ -856,26 +920,28 @@ class Formatter(object):
         elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1
             if self.in_code_block == 0 and self.code_processor:
-                self.close_table()
+                if self.code_processor.name not in ('th', 'td', 'tr'):
+                    self.close_table()
                 self.close_paragraph()
                 if self.code_buf:
+                    if self.code_prefix and all(not l or
+                                                l.startswith(self.code_prefix)
+                                                for l in self.code_buf):
+                        code_indent = len(self.code_prefix)
+                        self.code_buf = [l[code_indent:]
+                                         for l in self.code_buf]
                     self.code_buf.append('')
                 code_text = os.linesep.join(self.code_buf)
                 processed = self.code_processor.process(code_text)
                 self.out.write(_markup_to_unicode(processed))
-
             else:
                 self.code_buf.append(line)
         elif not self.code_processor:
             match = WikiParser._processor_re.match(line)
             if match:
-                name = match.group(1)
-                args = WikiParser._processor_param_re.split(line[2+len(name):])
-                del args[::3]
-                keys = [str(k) for k in args[::2]] # used as keyword parameters
-                values = [(v and v[0] in '"\'' and [v[1:-1]] or [v])[0]
-                          for v in args[1::2]]
-                args = dict(zip(keys, values))
+                self.code_prefix = match.group(1)
+                name = match.group(2)
+                args = self.parse_processor_args(line[match.end():])
                 self.code_processor = WikiProcessor(self, name, args)
             else:
                 self.code_buf.append(line)
@@ -886,6 +952,34 @@ class Formatter(object):
     def close_code_blocks(self):
         while self.in_code_block > 0:
             self.handle_code_block(WikiParser.ENDBLOCK)
+
+    # > quotes
+
+    def handle_quote_block(self, line):
+        depth = line.find('>')
+        # Close lists up to current level:
+        #
+        #  - first level item
+        #    - second level item
+        #    > citation part of first level item
+        #
+        #  (depth == 3, _list_stack == [1, 3])
+        if not self._quote_buffer and depth < self._get_list_depth():
+            self.close_list(depth)
+        self._quote_buffer.append(line[depth + 1:])
+        
+    def close_quote_block(self, escape_newlines):
+        if self._quote_buffer:
+            # avoid an extra <blockquote> when there's consistently one space
+            # after the '>' 
+            if all(not line or line[0] in '> ' for line in self._quote_buffer):
+                self._quote_buffer = [line[bool(line and line[0] == ' '):]
+                                      for line in self._quote_buffer]
+            self.out.write('<blockquote class="citation">\n')
+            Formatter(self.env, self.context).format(self._quote_buffer,
+                                                     self.out, escape_newlines)
+            self.out.write('</blockquote>\n')
+            self._quote_buffer = []
 
     # -- Wiki engine
     
@@ -918,24 +1012,44 @@ class Formatter(object):
         self._list_stack = []
         self._quote_stack = []
         self._tabstops = []
+        self._quote_buffer = []
 
         self.in_code_block = 0
         self.in_table = 0
         self.in_def_list = 0
         self.in_table_row = 0
+        self.continue_table = 0
         self.continue_table_row = 0
         self.in_table_cell = ''
         self.paragraph_open = 0
+        
 
     def format(self, text, out=None, escape_newlines=False):
         self.reset(text, out)
-        for line in text.splitlines():
-            # Handle code block
-            if self.in_code_block or line.strip() == WikiParser.STARTBLOCK:
-                self.handle_code_block(line)
+        if isinstance(text, basestring):
+            text = text.splitlines()
+            
+        for line in text:
+            # Detect start of code block (new block or embedded block)
+            block_start_match = None
+            if WikiParser.ENDBLOCK not in line:
+                block_start_match = WikiParser._startblock_re.match(line)
+            # Handle content or end of code block
+            if self.in_code_block:
+                self.handle_code_block(line, block_start_match)
+                continue
+            # Handle citation quotes '> ...'
+            if line.strip().startswith('>'):
+                self.handle_quote_block(line)
+                continue
+            # Handle end of citation quotes
+            self.close_quote_block(escape_newlines)
+            # Handle start of a new block
+            if block_start_match:
+                self.handle_code_block(line, block_start_match)
                 continue
             # Handle Horizontal ruler
-            elif line[0:4] == '----':
+            if line[0:4] == '----':
                 self.close_table()
                 self.close_paragraph()
                 self.close_indentation()
@@ -944,7 +1058,8 @@ class Formatter(object):
                 self.out.write('<hr />' + os.linesep)
                 continue
             # Handle new paragraph
-            elif line == '':
+            if line == '':
+                self.close_table()
                 self.close_paragraph()
                 self.close_indentation()
                 self.close_list()
@@ -971,8 +1086,9 @@ class Formatter(object):
             if self.in_def_list and not line.startswith(' '):
                 self.close_def_list()
 
-            if self.in_table and not line.lstrip().startswith('||'):
+            if self.in_table and not self.continue_table:
                 self.close_table()
+            self.continue_table = 0
 
             sep = os.linesep
             if not(self.in_list_item or self.in_def_list or self.in_table):
@@ -983,12 +1099,13 @@ class Formatter(object):
             self.out.write(result + sep)
             self.close_table_row()
 
+        self.close_code_blocks()
+        self.close_quote_block(escape_newlines)
         self.close_table()
         self.close_paragraph()
         self.close_indentation()
         self.close_list()
         self.close_def_list()
-        self.close_code_blocks()
 
 
 class OneLinerFormatter(Formatter):
@@ -1015,8 +1132,8 @@ class OneLinerFormatter(Formatter):
         return escape(match, False)
     def _table_cell_formatter(self, match, fullmatch):
         return match
-    def _last_table_cell_formatter(self, match, fullmatch):
-        return match
+    def _table_row_sep_formatter(self, match, fullmatch):
+        return ''
 
     def _macro_formatter(self, match, fullmatch):
         name = fullmatch.group('macroname')
@@ -1038,7 +1155,8 @@ class OneLinerFormatter(Formatter):
         processor = None
         buf = StringIO()
         for line in text.strip().splitlines():
-            if line.strip() == WikiParser.STARTBLOCK:
+            if WikiParser.ENDBLOCK not in line and \
+                   WikiParser._startblock_re.match(line):
                 in_code_block += 1
             elif line.strip() == WikiParser.ENDBLOCK:
                 if in_code_block:
@@ -1083,8 +1201,9 @@ class OutlineFormatter(Formatter):
     def _macro_formatter(self, match, fullmatch):
         return ''
 
-    def handle_code_block(self, line):
-        if line.strip() == WikiParser.STARTBLOCK:
+    def handle_code_block(self, line, startmatch=None):
+        if WikiParser.ENDBLOCK not in line and \
+               WikiParser._startblock_re.match(line):
             self.in_code_block += 1
         elif line.strip() == WikiParser.ENDBLOCK:
             self.in_code_block -= 1

@@ -546,6 +546,45 @@ Paragraph
 ------------------------------
  […]
 Paragraph
+============================== Wiki processor, compact declaration
+{{{#!default
+Preformatted text.
+}}}
+Paragraph
+{{{#!default}}} just normal inline code.
+------------------------------
+<pre class="wiki">Preformatted text.
+</pre><p>
+Paragraph
+<tt>#!default</tt> just normal inline code.
+</p>
+------------------------------
+ […]
+Paragraph
+<tt>#!default</tt> just normal inline code.
+============================== Wiki processor, prefix removal
+  {{{
+  Here we keep the space prefix, as there's at least one line not having it.
+Preformatted text.
+  }}}
+Paragraph
+  {{{#!default
+  Here we remove the space prefix, as all lines have it.
+  Preformatted text.
+  }}}
+Paragraph
+------------------------------
+<pre class="wiki">  Here we keep the space prefix, as there's at least one line not having it.
+Preformatted text.
+</pre><p>
+Paragraph
+</p>
+<pre class="wiki">Here we remove the space prefix, as all lines have it.
+Preformatted text.
+</pre><p>
+Paragraph
+</p>
+------------------------------
 ============================== Wiki processor counter example
 {{{
 #!/bin/sh
@@ -654,10 +693,10 @@ And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
 #!div ; class=important
 Go ahead, edit it freely.
 
-{{{
-#!div; style="border: 2pt solid blue; margin: 1em; padding: .5em"; class=demo
-And now it's [[span('''TIME FOR BED! ''',class=important)]]. Really.
-}}}
+ {{{
+ #!div; style="border: 2pt solid blue; margin: 1em; padding: .5em"; class=demo
+ And now it's [[span('''TIME FOR BED! ''',class=important)]]. Really.
+ }}}
 etc.
 }}}
 Done.
@@ -1030,7 +1069,7 @@ boo baz
 <ul><li>nested item 1
 </li><li>nested item 2
 nested item 2 continued
-</li></ul></li><li>Subitem 1 continued
+</li></ul>Subitem 1 continued
 </li></ul></li><li>Subitem 2
 Subitem 2 continued
 </li><li>Subitem 3
@@ -1361,12 +1400,12 @@ in:
 </th></tr></table>
 ------------------------------
 ============================== Table headings (plus alignment)
-||=left align =||=default=||= default =||= right align=||
-||left align ||default|| default || right align||
+||=left align =||=default=||= default =||= right align=||=  center  =||
+||left align ||default|| default || right align||  center  ||
 ------------------------------
 <table class="wiki">
-<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align
-</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align
+<tr><th style="text-align: left">left align </th><th>default</th><th> default </th><th style="text-align: right"> right align</th><th style="text-align: center">  center  
+</th></tr><tr><td style="text-align: left">left align </td><td>default</td><td> default </td><td style="text-align: right"> right align</td><td style="text-align: center">  center  
 </td></tr></table>
 ------------------------------
 ============================== Indented tables, multiple columns
@@ -1439,6 +1478,231 @@ in:
 </td></tr><tr><td>
 </td><td> this should also work 
 </td></tr></table>
+------------------------------
+============================== Table with !#th and !#td wiki processors
+{{{
+#!th style="text-align: left"
+ - some header
+}}}
+{{{
+#!th
+ - another header
+ - with more rows
+}}}
+||
+{{{
+#!td rowspan=2
+
+Arbitrarily big content (even an embedded table of course):
+|| A || B ||
+
+ {{{
+ #!div class=important
+ or better, an embedded wiki paragraph, itself with a big table
+ ||= A =||= B =||
+  {{{
+  #!td colspan=2
+   {{{
+   def hello():
+     print "A and B!"
+   }}}
+  }}}
+ }}}
+
+}}}
+{{{
+#!td
+
+Second cell, first row
+}}}
+||
+{{{
+#!td
+
+Second cell, second row...
+}}}
+------------------------------
+<table class="wiki">
+<tr><th style="text-align: left"><ul><li>some header
+</li></ul></th><th><ul><li>another header
+</li><li>with more rows
+</li></ul></th>
+</tr><tr><td rowspan="2"><p>
+Arbitrarily big content (even an embedded table of course):
+</p>
+<table class="wiki">
+<tr><td> A </td><td> B 
+</td></tr></table>
+<div class="important"><p>
+or better, an embedded wiki paragraph, itself with a big table
+</p>
+<table class="wiki">
+<tr><th> A </th><th> B 
+</th></tr><tr><td colspan="2"><pre class="wiki">def hello():
+  print "A and B!"
+</pre></td></tr></table>
+</div></td><td><p>
+Second cell, first row
+</p>
+</td>
+</tr><tr><td><p>
+Second cell, second row...
+</p>
+</td></tr></table>
+------------------------------
+============================== Table with wiki processors, unfinished block
+{{{
+#!td style="vertical-align: top"
+ - some header
+}}}
+{{{
+#!td
+ - another header
+ - with more rows
+||
+{{{
+#!td rowspan=2
+not another cell, but an embedded table...
+------------------------------
+<table class="wiki">
+<tr><td style="vertical-align: top"><ul><li>some header
+</li></ul></td><td><ul><li>another header
+</li><li>with more rows
+</li></ul><table class="wiki">
+<tr>
+</tr><tr><td rowspan="2"><p>
+not another cell, but an embedded table...
+</p>
+</td></tr></table>
+</td></tr></table>
+------------------------------
+============================== Table with wiki processors, wikimedia row sep
+{{{#!th   ........... 11
+Heading A
+}}}
+{{{#!th   ...........    12
+Heading B
+}}}
+|--------------------------- style="background: grey"
+{{{#!td   ........... 21
+Content A
+}}}
+{{{#!td   ...........    22
+Content B
+}}}
+------------------------------
+<table class="wiki">
+<tr><th><p>
+Heading A
+</p>
+</th><th><p>
+Heading B
+</p>
+</th></tr><tr style="background: grey">
+<td><p>
+Content A
+</p>
+</td><td><p>
+Content B
+</p>
+</td></tr></table>
+------------------------------
+ […]
+ […][…]
+ […]
+============================== Table with wiki processors (tr, th and td)
+A very nice table:
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++
+    {{{#!th .......................................... style="background: #dfd"
+
+    Header A
+
+    }}}
+    {{{#!th .......................................... style="background: #dfd"
+
+    Header B
+
+    }}}
+}}}
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++ style="background: #fdf"
+    {{{#!td .......................................... 
+
+    Content A
+
+    }}}
+    {{{#!td .......................................... 
+
+    Content B
+
+    }}}
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<table class="wiki">
+<tr><th style="background: #dfd"><p>
+Header A
+</p>
+</th><th style="background: #dfd"><p>
+Header B
+</p>
+</th></tr><tr style="background: #fdf"><td><p>
+Content A
+</p>
+</td><td><p>
+Content B
+</p>
+</td></tr></table>
+<p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+ […]
+Paragraph
+============================== Table with wiki processors within div
+{{{#!div
+  {{{#!td rowspan=2
+  A cell can now contain any markup:
+   - lists
+   - blocks
+   - etc.
+  }}}
+  {{{#!td
+  Another cell with rich content,
+  on the same row
+  }}}
+  |-
+  {{{#!td
+  Another cell with rich content,
+  on the next row
+  }}}
+}}}
+Paragraph
+------------------------------
+<div class="wikipage"><table class="wiki">
+<tr><td rowspan="2"><p>
+A cell can now contain any markup:
+</p>
+<ul><li>lists
+</li><li>blocks
+</li><li>etc.
+</li></ul></td><td><p>
+Another cell with rich content,
+on the same row
+</p>
+</td></tr><tr>
+<td><p>
+Another cell with rich content,
+on the next row
+</p>
+</td></tr></table>
+</div><p>
+Paragraph
+</p>
 ------------------------------
 ============================================================
 
@@ -1576,7 +1840,7 @@ Continue on level 2.
 Paragraph.
 </p>
 ------------------------------
-============================== Citations
+============================== Citations (mail style, no consistent space)
 > This is the quoted text
 >> a nested quote
 A comment on the above
@@ -1585,30 +1849,173 @@ A comment on the above
 ------------------------------
 <blockquote class="citation">
 <p>
- This is the quoted text
-</p>
+This is the quoted text
 <blockquote class="citation">
 <p>
- a nested quote
+a nested quote
 </p>
 </blockquote>
+</p>
 </blockquote>
 <p>
 A comment on the above
-</p>
 <blockquote class="citation">
 <blockquote class="citation">
 <p>
- start 2nd level
+start 2nd level
 </p>
 </blockquote>
 <p>
- first level
+first level
 </p>
 </blockquote>
+</p>
 ------------------------------
 &gt; This is the quoted text
 &gt;&gt; a nested quote
 A comment on the above
 &gt;&gt; start 2nd level
 &gt; first level
+============================== Citations (reply to style, consistent space)
+ A quote
+A paragraph
+ definition :: term
+
+> A quote
+>A paragraph
+> definition :: term
+
+>  A quote
+> A paragraph
+>  definition :: term
+------------------------------
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+<dl class="wiki"><dt>definition</dt><dd>term
+</p>
+</dd></dl>
+<blockquote class="citation">
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+<dl class="wiki"><dt>definition</dt><dd>term
+</p>
+</dd></dl>
+</blockquote>
+<blockquote class="citation">
+<blockquote>
+<p>
+A quote
+</p>
+</blockquote>
+<p>
+A paragraph
+<dl class="wiki"><dt>definition</dt><dd>term
+</p>
+</dd></dl>
+</blockquote>
+------------------------------
+A quote
+A paragraph
+ definition :: term
+
+&gt; A quote
+&gt;A paragraph
+&gt; definition :: term
+
+&gt;  A quote
+&gt; A paragraph
+&gt;  definition :: term
+============================== Citations of arbitrary wiki content
+ - First level
+   - second level
+ > - This is the quoted list, in first level item
+ >   - subitem
+ >
+ > > a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+ > > {{{
+ > > block
+ > > }}}
+ > > > || nested || table ||
+Paragraph
+------------------------------
+<ul><li>First level
+<ul><li>second level
+</li></ul><blockquote class="citation">
+<ul><li>This is the quoted list, in first level item
+<ul><li>subitem
+</li></ul></li></ul><blockquote class="citation">
+<p>
+a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+</p>
+<pre class="wiki">block
+</pre><blockquote class="citation">
+<table class="wiki">
+<tr><td> nested </td><td> table 
+</td></tr></table>
+</blockquote>
+</blockquote>
+</blockquote>
+</li></ul><p>
+Paragraph
+</p>
+------------------------------
+- First level
+   - second level
+ &gt; - This is the quoted list, in first level item
+ &gt;   - subitem
+ &gt;
+ &gt; &gt; a nested paragraph with a block (outside of the quoted list above as there's a paragraph sep)
+ &gt; &gt; {{{
+ &gt; &gt; block
+ &gt; &gt; }}}
+ &gt; &gt; &gt; || nested || table ||
+Paragraph
+============================== Citation and follow-up block
+> a
+{{{
+b
+}}}
+> c
+------------------------------
+<blockquote class="citation">
+<p>
+a
+</p>
+</blockquote>
+<pre class="wiki">b
+</pre><blockquote class="citation">
+<p>
+c
+</p>
+</blockquote>
+------------------------------
+&gt; a
+ […]
+&gt; c
+============================== Block and follow-up citation
+{{{
+> a
+b
+}}}
+> c
+------------------------------
+<pre class="wiki">&gt; a
+b
+</pre><blockquote class="citation">
+<p>
+c
+</p>
+</blockquote>
+------------------------------
+ […]
+&gt; c

@@ -20,7 +20,7 @@ import weakref
 
 from trac.core import *
 from trac.db.api import IDatabaseConnector
-from trac.db.util import ConnectionWrapper
+from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo, getuser
 from trac.util.translation import _
 
@@ -98,15 +98,6 @@ if have_pysqlite == 2:
             result = self.rows[self.pos:]
             self.pos = len(self.rows)
             return result
-
-        # needed for the tests (InMemoryDatabase doesn't use IterableCursor)
-
-        def __iter__(self):
-            while True:
-                row = self.fetchone()
-                if not row:
-                    return
-                yield row
 
 
 def _to_sql(table):
@@ -234,7 +225,7 @@ class SQLiteConnection(ConnectionWrapper):
         cursor = self.cnx.cursor((PyFormatCursor, EagerCursor)[self._eager])
         self._active_cursors[cursor] = True
         cursor.cnx = self
-        return cursor
+        return IterableCursor(cursor, self.log)
 
     def rollback(self):
         for cursor in self._active_cursors.keys():
@@ -265,6 +256,10 @@ class SQLiteConnection(ConnectionWrapper):
             return _like_escape_re.sub(r'/\1', text)
         else:
             return text
+
+    def quote(self, identifier):
+        """Return the quoted identifier."""
+        return "`%s`" % identifier
 
     def get_last_id(self, cursor, table, column='id'):
         return cursor.lastrowid

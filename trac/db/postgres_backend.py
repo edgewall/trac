@@ -21,7 +21,7 @@ from genshi import Markup
 from trac.core import *
 from trac.config import Option
 from trac.db.api import IDatabaseConnector, _parse_db_str
-from trac.db.util import ConnectionWrapper
+from trac.db.util import ConnectionWrapper, IterableCursor
 from trac.util import get_pkginfo
 from trac.util.compat import close_fds
 from trac.util.text import to_unicode, empty
@@ -203,6 +203,13 @@ class PostgreSQLConnection(ConnectionWrapper):
     def like_escape(self, text):
         return _like_escape_re.sub(r'/\1', text)
 
+    def quote(self, identifier):
+        """Return the quoted identifier."""
+        return '"%s"' % identifier
+
     def get_last_id(self, cursor, table, column='id'):
         cursor.execute("SELECT CURRVAL('%s_%s_seq')" % (table, column))
         return cursor.fetchone()[0]
+
+    def cursor(self):
+        return IterableCursor(self.cnx.cursor(), self.log)

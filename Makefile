@@ -30,6 +30,7 @@ endif
 status:
 	@python -V
 	@echo PYTHONPATH=$$PYTHONPATH
+	@echo TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI
 
 .PHONY: clean
 clean:

@@ -54,6 +54,9 @@ class WikiParser(Component):
 
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
 
+    PROCESSOR = r"(\s*)#\!([\w+-][\w+-/]*)"
+    PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|\w+)'''
+
     # Sequence of regexps used by the engine
 
     _pre_rules = [
@@ -75,8 +78,6 @@ class WikiParser(Component):
     _post_rules = [
         # e-mails
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
-        # > ...
-        r"(?P<citation>^(?P<cdepth>>(?: *>)*))",
         # <wiki:Trac bracket links>
         r"(?P<shrefbr>!?<(?P<snsbr>%s):(?P<stgtbr>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;
@@ -108,14 +109,20 @@ class WikiParser(Component):
         % (INLINE_TOKEN, INLINE_TOKEN, INLINE_TOKEN,
            STARTBLOCK_TOKEN, ENDBLOCK[0], ENDBLOCK[0], ENDBLOCK_TOKEN,
            INLINE_TOKEN, STARTBLOCK[0]),
+        # |- row separator
+        r"(?P<table_row_sep>!?\s*\|-+\s*"
+        r"(?P<table_row_params>%s\s*)*)" % PROCESSOR_PARAM,
         # (leading space)
         r"(?P<indent>^(?P<idepth>\s+)(?=\S))",
         # || table ||
         r"(?P<table_cell>!?(?P<table_cell_sep>=?(?:\|\|)+=?)"
-        r"(?P<table_cell_last>\s*\\?$)?)"]
+        r"(?P<table_cell_last>\s*\\?$)?)",
+        ]
 
-    _processor_re = re.compile('#\!([\w+-][\w+-/]*)')
-    _processor_param_re = re.compile(r'''(\w+)=(".*?"|'.*?'|\w+)''')
+    _processor_re = re.compile(PROCESSOR)
+    _startblock_re = re.compile(r"\s*%s(?:%s|\s*$)" %
+                                (STARTBLOCK, PROCESSOR))
+    _processor_param_re = re.compile(PROCESSOR_PARAM)
     _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
 
     def __init__(self):
