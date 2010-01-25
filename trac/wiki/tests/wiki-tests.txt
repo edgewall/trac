@@ -1642,26 +1642,18 @@ Paragraph
 A very nice table:
 </p>
 <table class="wiki">
-<tr><th style="background: #dfd"><blockquote>
-<p>
+<tr><th style="background: #dfd"><p>
 Header A
 </p>
-</blockquote>
-</th><th style="background: #dfd"><blockquote>
-<p>
+</th><th style="background: #dfd"><p>
 Header B
 </p>
-</blockquote>
-</th></tr><tr style="background: #fdf"><td><blockquote>
-<p>
+</th></tr><tr style="background: #fdf"><td><p>
 Content A
 </p>
-</blockquote>
-</td><td><blockquote>
-<p>
+</td><td><p>
 Content B
 </p>
-</blockquote>
 </td></tr></table>
 <p>
 Paragraph

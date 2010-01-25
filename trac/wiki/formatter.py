@@ -924,7 +924,8 @@ class Formatter(object):
                     self.close_table()
                 self.close_paragraph()
                 if self.code_buf:
-                    if self.code_prefix and all(l.startswith(self.code_prefix)
+                    if self.code_prefix and all(not l or
+                                                l.startswith(self.code_prefix)
                                                 for l in self.code_buf):
                         code_indent = len(self.code_prefix)
                         self.code_buf = [l[code_indent:]
