@@ -1988,3 +1988,25 @@ Paragraph
  &gt; &gt; }}}
  &gt; &gt; &gt; || nested || table ||
 Paragraph
+============================== Citation and follow-up block
+> a
+{{{
+b
+}}}
+> c
+------------------------------
+<blockquote class="citation">
+<p>
+a
+</p>
+</blockquote>
+<pre class="wiki">b
+</pre><blockquote class="citation">
+<p>
+c
+</p>
+</blockquote>
+------------------------------
+&gt; a
+ […]
+&gt; c

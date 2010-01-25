@@ -1029,19 +1029,18 @@ class Formatter(object):
             text = text.splitlines()
             
         for line in text:
-            # Handle code block
-            if self.in_code_block or WikiParser.ENDBLOCK not in line:
-                match = WikiParser._startblock_re.match(line)
-                if match or self.in_code_block:
-                    self.handle_code_block(line, match)
-                    continue
             # Handle > quotes
             if line.strip().startswith('>'):
                 self.handle_quote_block(line)
                 continue
             if self._quote_buffer:
                 self.close_quote_block(escape_newlines)
-
+            # Handle code block
+            if self.in_code_block or WikiParser.ENDBLOCK not in line:
+                match = WikiParser._startblock_re.match(line)
+                if match or self.in_code_block:
+                    self.handle_code_block(line, match)
+                    continue
             # Handle Horizontal ruler
             if line[0:4] == '----':
                 self.close_table()
