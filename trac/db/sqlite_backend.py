@@ -18,6 +18,7 @@ import os
 import re
 import weakref
 
+from trac.config import ListOption
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper, IterableCursor
@@ -132,9 +133,13 @@ class SQLiteConnector(Component):
     """
     implements(IDatabaseConnector)
 
+    extensions = ListOption('sqlite', 'extensions', 
+        doc="""Paths to sqlite extensions. Relative to env directory or absolute.""")
+
     def __init__(self):
         self._version = None
         self.error = None
+        self._extensions = None
 
     def get_supported_schemes(self):
         if not have_pysqlite:
@@ -151,6 +156,15 @@ class SQLiteConnector(Component):
                 'version', '%d.%d.%s' % sqlite.version_info)
             self.env.systeminfo.extend([('SQLite', sqlite_version_string),
                                         ('pysqlite', self._version)])
+        # construct list of sqlite extension libraries
+        if not self._extensions:
+            self._extensions = []
+            for extpath in self.extensions:
+                if os.path.isabs(extpath):
+                    self._extensions += [extpath]
+                else:
+                    self._extensions += [os.path.join(self.env.path, extpath)]
+        params['extensions'] = self._extensions
         return SQLiteConnection(path, log, params)
 
     def init_db(self, path, log=None, params={}):
@@ -218,7 +232,14 @@ class SQLiteConnection(ConnectionWrapper):
         cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                              check_same_thread=sqlite_version < 30301,
                              timeout=timeout)
-            
+        # load extensions
+        extensions = params.get('extensions', [])
+        if len(extensions) > 0:
+            cnx.enable_load_extension(True)
+            for ext in extensions:
+                cnx.load_extension(ext)
+            cnx.enable_load_extension(False)
+       
         ConnectionWrapper.__init__(self, cnx, log)
 
     def cursor(self):
