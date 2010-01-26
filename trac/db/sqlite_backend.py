@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C)2005-2009 Edgewall Software
+# Copyright (C)2005-2010 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -62,7 +62,7 @@ if have_pysqlite == 2:
 
     # EagerCursor taken from the example in pysqlite's repository:
     #
-    #   http://oss.itsystementwicklung.de/hg/pysqlite/raw-file/0a726720f540/misc/eager.py
+    #   http://code.google.com/p/pysqlite/source/browse/misc/eager.py
     #
     # Only change is to subclass it from PyFormatCursor instead of
     # sqlite.Cursor.
@@ -134,7 +134,8 @@ class SQLiteConnector(Component):
     implements(IDatabaseConnector)
 
     extensions = ListOption('sqlite', 'extensions', 
-        doc="""Paths to sqlite extensions. Relative to env directory or absolute.""")
+        doc="""Paths to sqlite extensions, relative to Trac environment's
+        directory or absolute. (''since 0.12'')""")
 
     def __init__(self):
         self._version = None
@@ -160,10 +161,9 @@ class SQLiteConnector(Component):
         if not self._extensions:
             self._extensions = []
             for extpath in self.extensions:
-                if os.path.isabs(extpath):
-                    self._extensions += [extpath]
-                else:
-                    self._extensions += [os.path.join(self.env.path, extpath)]
+                if not os.path.isabs(extpath):
+                    extpath = os.path.join(self.env.path, extpath)
+                self._extensions.append(extpath)
         params['extensions'] = self._extensions
         return SQLiteConnection(path, log, params)
 
@@ -218,10 +218,11 @@ class SQLiteConnection(ConnectionWrapper):
             dbdir = os.path.dirname(path)
             if not os.access(path, os.R_OK + os.W_OK) or \
                    not os.access(dbdir, os.R_OK + os.W_OK):
-                raise TracError(_('The user %(user)s requires read _and_ write '
-                                  'permissions to the database file %(path)s '
-                                  'and the directory it is located in.',
-                                  user=getuser(), path=path))
+                raise TracError(
+                    _('The user %(user)s requires read _and_ write '
+                      'permissions to the database file %(path)s '
+                      'and the directory it is located in.',
+                      user=getuser(), path=path))
 
         self._active_cursors = weakref.WeakKeyDictionary()
         timeout = int(params.get('timeout', 10.0))
