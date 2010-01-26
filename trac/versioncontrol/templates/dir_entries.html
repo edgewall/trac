@@ -22,7 +22,7 @@
         </td>
         <td class="age" style="${chgset_view and dir.timerange and 'border-color: rgb(%s,%s,%s)' %
                                  dir.colorize_age(dir.timerange.relative(change.date)) or None}">
-          ${('&ndash;', dateinfo(change.date))[chgset_view]}
+          ${chgset_view and dateinfo(change.date) or '&ndash;'}
         </td>
         <td class="change" py:choose="">
           <py:when test="chgset_view">
