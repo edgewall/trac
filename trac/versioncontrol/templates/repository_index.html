@@ -26,7 +26,7 @@
           </td>
           <td class="age" style="${chgset_view and change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %
                                    repo.colorize_age(repo.timerange.relative(change.date)) or None}">
-            ${('&ndash;', dateinfo(change.date))[chgset_view]}
+            ${chgset_view and dateinfo(change.date) or '&ndash;'}
           </td>
           <td class="change" py:choose="">
             <span py:when="err" class="change"><em py:content="err"></em></span>
