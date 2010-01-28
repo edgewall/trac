@@ -492,7 +492,8 @@ class WikiModule(Component):
                 'ipnr': ipnr
             })
         data.update({'history': history, 'resource': page.resource})
-        add_ctxtnav(req, 'Back to '+page.name, req.href.wiki(page.name))
+        add_ctxtnav(req, _("Back to %(wikipage)s", wikipage=page.name),
+                           req.href.wiki(page.name))
         return 'history_view.html', data, None
 
     def _render_view(self, req, page):
@@ -586,9 +587,6 @@ class WikiModule(Component):
         if version:
             prevnext_nav(req, _('Previous Version'), _('Next Version'),
                          _('View Latest Version'))
-            add_ctxtnav(req, _('Last Change'),
-                        req.href.wiki(page.name, action='diff',
-                                      version=page.version))
         else:
             if parent:
                 add_ctxtnav(req, _('Up'), req.href.wiki(parent))
@@ -613,9 +611,6 @@ class WikiModule(Component):
         if page.exists:
             add_ctxtnav(req, _('History'), req.href.wiki(page.name, 
                                                          action='history'))
-            add_ctxtnav(req, _('Last Change'),
-                        req.href.wiki(page.name, action='diff',
-                                      version=page.version))
 
     # ITimelineEventProvider methods
 
