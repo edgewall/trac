@@ -136,6 +136,10 @@
                 ${wiki_to_html(context(page.resource), page.text)}
               </div>
             </div>
+            <div py:if="not sidebyside and page.text" class="trac-nav">
+              <a href="#changeinfo"
+                title="Go to Save, Preview, Review or Cancel buttons">Actions</a> &uarr;
+            </div>
           </div>
         </py:when>
         <py:when test="'collision'">
