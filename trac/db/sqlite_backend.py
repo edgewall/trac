@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C)2005-2009 Edgewall Software
+# Copyright (C)2005-2010 Edgewall Software
 # Copyright (C) 2005 Christopher Lenz <cmlenz@gmx.de>
 # All rights reserved.
 #
@@ -18,6 +18,7 @@ import os
 import re
 import weakref
 
+from trac.config import ListOption
 from trac.core import *
 from trac.db.api import IDatabaseConnector
 from trac.db.util import ConnectionWrapper, IterableCursor
@@ -61,7 +62,7 @@ if have_pysqlite == 2:
 
     # EagerCursor taken from the example in pysqlite's repository:
     #
-    #   http://oss.itsystementwicklung.de/hg/pysqlite/raw-file/0a726720f540/misc/eager.py
+    #   http://code.google.com/p/pysqlite/source/browse/misc/eager.py
     #
     # Only change is to subclass it from PyFormatCursor instead of
     # sqlite.Cursor.
@@ -132,9 +133,14 @@ class SQLiteConnector(Component):
     """
     implements(IDatabaseConnector)
 
+    extensions = ListOption('sqlite', 'extensions', 
+        doc="""Paths to sqlite extensions, relative to Trac environment's
+        directory or absolute. (''since 0.12'')""")
+
     def __init__(self):
         self._version = None
         self.error = None
+        self._extensions = None
 
     def get_supported_schemes(self):
         if not have_pysqlite:
@@ -151,6 +157,14 @@ class SQLiteConnector(Component):
                 'version', '%d.%d.%s' % sqlite.version_info)
             self.env.systeminfo.extend([('SQLite', sqlite_version_string),
                                         ('pysqlite', self._version)])
+        # construct list of sqlite extension libraries
+        if not self._extensions:
+            self._extensions = []
+            for extpath in self.extensions:
+                if not os.path.isabs(extpath):
+                    extpath = os.path.join(self.env.path, extpath)
+                self._extensions.append(extpath)
+        params['extensions'] = self._extensions
         return SQLiteConnection(path, log, params)
 
     def init_db(self, path, log=None, params={}):
@@ -204,10 +218,11 @@ class SQLiteConnection(ConnectionWrapper):
             dbdir = os.path.dirname(path)
             if not os.access(path, os.R_OK + os.W_OK) or \
                    not os.access(dbdir, os.R_OK + os.W_OK):
-                raise TracError(_('The user %(user)s requires read _and_ write '
-                                  'permissions to the database file %(path)s '
-                                  'and the directory it is located in.',
-                                  user=getuser(), path=path))
+                raise TracError(
+                    _('The user %(user)s requires read _and_ write '
+                      'permissions to the database file %(path)s '
+                      'and the directory it is located in.',
+                      user=getuser(), path=path))
 
         self._active_cursors = weakref.WeakKeyDictionary()
         timeout = int(params.get('timeout', 10.0))
@@ -218,7 +233,14 @@ class SQLiteConnection(ConnectionWrapper):
         cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
                              check_same_thread=sqlite_version < 30301,
                              timeout=timeout)
-            
+        # load extensions
+        extensions = params.get('extensions', [])
+        if len(extensions) > 0:
+            cnx.enable_load_extension(True)
+            for ext in extensions:
+                cnx.load_extension(ext)
+            cnx.enable_load_extension(False)
+       
         ConnectionWrapper.__init__(self, cnx, log)
 
     def cursor(self):

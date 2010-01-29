@@ -22,22 +22,23 @@
   </head>
 
   <body>
-    <div id="content" class="wiki">
+    <div id="pagepath" class="noprint" py:with="parts = page.name.split('/')">
+      <a class="pathentry first" title="View WikiStart" href="${href.wiki()}">wiki:</a>
+      <py:for each="idx, part in enumerate(parts)"><a
+        class="pathentry" title="View ${'/'.join(parts[:idx + 1])}"
+        href="${href.wiki(*parts[:idx + 1])}">${part}</a><span
+        class="pathentry sep" py:if="idx != len(parts) - 1">/</span></py:for>
+    </div>
+    <br style="clear: both" />
 
-      <p class="path noprint" py:with="parts = page.name.split('/')">
-        <a class="pathentry first" title="View WikiStart" href="${href.wiki()}">wiki:</a>
-        <py:for each="idx, part in enumerate(parts)"><a
-          class="pathentry" title="View ${'/'.join(parts[:idx + 1])}"
-          href="${href.wiki(*parts[:idx + 1])}">${part}</a><span
-          class="pathentry sep" py:if="idx != len(parts) - 1">/</span></py:for>
-        <br style="clear: both" />
-      </p>
+    <div id="content" class="wiki">
 
       <py:if test="version">
         <table id="info" summary="Revision info">
           <tbody>
             <tr><th scope="row" i18n:msg="version, author, date">
-                Version $page.version (modified by ${authorinfo(page.author)}, ${dateinfo(page.time)} ago)
+               Version $page.version (modified by ${authorinfo(page.author)}, ${dateinfo(page.time)} ago)
+               (<a href="${href.wiki(page.name, action='diff', version=page.version)}">diff</a>)
             </th></tr>
             <tr><td class="message" xml:space="preserve">
               ${wiki_to_html(context, page.comment or '--')}
@@ -50,7 +51,9 @@
         <py:when test="page.exists" xml:space="preserve">
           ${wiki_to_html(context, page.text)}
           <div py:if="not version" class="trac-modifiedby" i18n:msg="author, datetime, reldate">
-            Last modified by ${format_author(page.author)} on ${format_datetime(page.time)} (${dateinfo(page.time)} ago)
+            <a href="${href.wiki(page.name, action='diff', version=page.version)}"
+               title="${page.comment}">Last modified</a>
+            by ${format_author(page.author)} on ${format_datetime(page.time)} (${dateinfo(page.time)} ago)
           </div>
         </py:when>
         <py:otherwise>

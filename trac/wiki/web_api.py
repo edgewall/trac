@@ -46,9 +46,10 @@ class WikiRenderer(Component):
         flavor = req.args.get('flavor')
         options = {}
         if 'escape_newlines' in req.args:
-            options['escape_newlines'] = bool(req.args['escape_newlines'])
+            options['escape_newlines'] = bool(int(req.args['escape_newlines']
+                                                  or 0))
         if 'shorten' in req.args:
-            options['shorten'] = bool(req.args['shorten'])
+            options['shorten'] = bool(int(req.args['shorten'] or 0))
         
         resource = Resource(realm, id=id, version=version)
         context = Context.from_request(req, resource)

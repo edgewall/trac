@@ -1,11 +1,11 @@
 @import url(code.css);
 
 /* Styles for the path of hierarchical pages */
-p.path { margin: 0; padding: 0 0 .5em; font-size: .75em }
-p.path :link, p.path :visited { margin: 0 .2em }
-p .first:link, p .first:visited { color: #998 }
-p.path .sep { color: #666; padding: 0 .1em }
-p.path .pathentry { float: left }
+#pagepath { margin: -1.2em 0 0; padding: 0 0 1em; font-size: .75em; }
+#pagepath :link, #pagepath :visited { margin: 0 .2em }
+#pagepath .first:link, #pagepath .first:visited { color: #998 }
+#pagepath .sep { color: #666; padding: 0 .1em }
+#pagepath .pathentry { float: left }
 
 /* Styles for the page editing form */
 .preview-right { 

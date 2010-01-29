@@ -42,6 +42,7 @@
             comment.hide();
         });
         $("#modify").parent().toggleClass("collapsed");
+        $(".trac-topnav a").click(function() { $("#modify").parent().removeClass("collapsed"); });
 
         /* only enable control elements for the currently selected action */
         var actions = $("#action input[name='action']");
