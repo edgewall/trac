@@ -6,8 +6,9 @@ from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener
 from trac.test import EnvironmentStub
 from trac.util.datefmt import utc, to_timestamp
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import unittest
+
 
 class TestTicketChangeListener(core.Component):
     implements(ITicketChangeListener)
@@ -363,6 +364,195 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(ticket, listener.ticket)
 
 
+class TicketCommentEditTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.db = self.env.get_db_cnx()
+        self.created = datetime(2001, 1, 1, 1, 0, 0, 0, utc)
+        self._insert_ticket('Test ticket', self.created,
+                            owner='john', keywords='a, b, c')
+        self.t1 = self.created + timedelta(seconds=1)
+        self._modify_ticket('jack', 'Comment 1', self.t1, '1')
+        self.t2 = self.created + timedelta(seconds=2)
+        self._modify_ticket('john', 'Comment 2', self.t2, '1.2',
+                            owner='jack')
+        self.t3 = self.created + timedelta(seconds=3)
+        self._modify_ticket('jim', 'Comment 3', self.t3, '3',
+                            keywords='a, b')
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def _insert_ticket(self, summary, when, **kwargs):
+        ticket = Ticket(self.env)
+        for k, v in kwargs.iteritems():
+            ticket[k] = v
+        self.id = ticket.insert(when)
+
+    def _modify_ticket(self, author, comment, when, cnum, **kwargs):
+        ticket = Ticket(self.env, self.id)
+        for k, v in kwargs.iteritems():
+            ticket[k] = v
+        ticket.save_changes(author, comment, when, cnum=cnum)
+    
+    def _find_comment(self, ticket, cnum):
+        (ts, author, comment) = ticket._find_comment(cnum, self.db)
+        return datetime.fromtimestamp(ts, utc)
+    
+    def assertChange(self, ticket, cnum, date, author, **fields):
+        change = ticket.get_change(cnum)
+        self.assertEqual(dict(date=date, author=author, fields=fields), change)
+    
+    def test_modify_comment(self):
+        """Check modification of a "standalone" comment"""
+        ticket = Ticket(self.env, self.id)
+        self.assertChange(ticket, 1, self.t1, 'jack',
+            comment=dict(author='jack', old='1', new='Comment 1'))
+        self.assertChange(ticket, 2, self.t2, 'john',
+            owner=dict(author='john', old='john', new='jack'),
+            comment=dict(author='john', old='1.2', new='Comment 2'))
+        self.assertChange(ticket, 3, self.t3, 'jim',
+            keywords=dict(author='jim', old='a, b, c', new='a, b'),
+            comment=dict(author='jim', old='3', new='Comment 3'))
+        
+        t = self.created + timedelta(seconds=10)
+        ticket.modify_comment(self._find_comment(ticket, 1),
+                              'joe', 'New comment 1', t)
+        self.assertChange(ticket, 1, self.t1, 'jack',
+            comment=dict(author='jack', old='1', new='New comment 1'),
+            _comment0=dict(author='joe', old='Comment 1',
+                           new=str(to_timestamp(t))))
+
+    def test_threading(self):
+        """Check modification of a "threaded" comment"""
+        ticket = Ticket(self.env, self.id)
+        t = self.created + timedelta(seconds=20)
+        ticket.modify_comment(self._find_comment(ticket, 2),
+                              'joe', 'New comment 2', t)
+        self.assertChange(ticket, 2, self.t2, 'john',
+            owner=dict(author='john', old='john', new='jack'),
+            comment=dict(author='john', old='1.2', new='New comment 2'),
+            _comment0=dict(author='joe', old='Comment 2',
+                           new=str(to_timestamp(t))))
+        
+    def test_modify_missing_cnum(self):
+        """Editing a comment with no cnum in oldvalue"""
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE ticket_change SET oldvalue='' "
+                       "WHERE oldvalue='3'")
+        self.db.commit()
+
+        ticket = Ticket(self.env, self.id)
+        t = self.created + timedelta(seconds=30)
+        ticket.modify_comment(self._find_comment(ticket, 3),
+                              'joe', 'New comment 3', t)
+        self.assertChange(ticket, 3, self.t3, 'jim',
+            keywords=dict(author='jim', old='a, b, c', new='a, b'),
+            comment=dict(author='jim', old='', new='New comment 3'),
+            _comment0=dict(author='joe', old='Comment 3',
+                           new=str(to_timestamp(t))))
+        
+    def test_modify_missing_comment(self):
+        """Editing a comment where the comment field is missing"""
+        cursor = self.db.cursor()
+        cursor.execute("DELETE FROM ticket_change "
+                       "WHERE field='comment' AND oldvalue='1.2'")
+        self.db.commit()
+
+        ticket = Ticket(self.env, self.id)
+        t = self.created + timedelta(seconds=40)
+        ticket.modify_comment(self._find_comment(ticket, 2),
+                              'joe', 'New comment 2', t)
+        self.assertChange(ticket, 2, self.t2, 'john',
+            owner=dict(author='john', old='john', new='jack'),
+            comment=dict(author='john', old='', new='New comment 2'),
+            _comment0=dict(author='joe', old='',
+                           new=str(to_timestamp(t))))
+        
+    def test_modify_missing_cnums_and_comment(self):
+        """Editing a comments when all cnums are missing and one comment
+        field is missing
+        """
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE ticket_change SET oldvalue='' "
+                       "WHERE oldvalue='1'")
+        cursor.execute("DELETE FROM ticket_change "
+                       "WHERE field='comment' AND oldvalue='1.2'")
+        cursor.execute("UPDATE ticket_change SET oldvalue='' "
+                       "WHERE oldvalue='3'")
+        self.db.commit()
+
+        # Modify after missing comment
+        ticket = Ticket(self.env, self.id)
+        t = self.created + timedelta(seconds=50)
+        ticket.modify_comment(self._find_comment(ticket, 3),
+                              'joe', 'New comment 3', t)
+        self.assertChange(ticket, 3, self.t3, 'jim',
+            keywords=dict(author='jim', old='a, b, c', new='a, b'),
+            comment=dict(author='jim', old='', new='New comment 3'),
+            _comment0=dict(author='joe', old='Comment 3',
+                           new=str(to_timestamp(t))))
+
+        # Modify missing comment
+        t = self.created + timedelta(seconds=60)
+        ticket.modify_comment(self._find_comment(ticket, 2),
+                              'joe', 'New comment 2', t)
+        self.assertChange(ticket, 2, self.t2, 'john',
+            owner=dict(author='john', old='john', new='jack'),
+            comment=dict(author='john', old='', new='New comment 2'),
+            _comment0=dict(author='joe', old='',
+                           new=str(to_timestamp(t))))
+
+    def test_missing_comment_edit(self):
+        """Modify a comment where one edit is missing"""
+        ticket = Ticket(self.env, self.id)
+        t1 = self.created + timedelta(seconds=70)
+        ticket.modify_comment(self._find_comment(ticket, 1),
+                              'joe', 'New comment 1', t1)
+        t2 = self.created + timedelta(seconds=80)
+        ticket.modify_comment(self._find_comment(ticket, 1),
+                              'joe', 'Other comment 1', t2)
+
+        self.assertChange(ticket, 1, self.t1, 'jack',
+            comment=dict(author='jack', old='1', new='Other comment 1'),
+            _comment0=dict(author='joe', old='Comment 1',
+                           new=str(to_timestamp(t1))),
+            _comment1=dict(author='joe', old='New comment 1',
+                           new=str(to_timestamp(t2))))
+        
+        cursor = self.db.cursor()
+        cursor.execute("DELETE FROM ticket_change "
+                       "WHERE field='_comment0'")
+        self.db.commit()
+
+        t3 = self.created + timedelta(seconds=90)
+        ticket.modify_comment(self._find_comment(ticket, 1),
+                              'joe', 'Newest comment 1', t3)
+        
+        self.assertChange(ticket, 1, self.t1, 'jack',
+            comment=dict(author='jack', old='1', new='Newest comment 1'),
+            _comment1=dict(author='joe', old='New comment 1',
+                           new=str(to_timestamp(t2))),
+            _comment2=dict(author='joe', old='Other comment 1',
+                           new=str(to_timestamp(t3))))
+
+    def test_comment_history(self):
+        """Check the generation of the comment history"""
+        ticket = Ticket(self.env, self.id)
+        t = [self.t1]
+        for i in range(1, 32):
+            t.append(self.created + timedelta(minutes=i))
+            ticket.modify_comment(self._find_comment(ticket, 1),
+                                  'joe (%d)' % i,
+                                  'Comment 1 (%d)' % i, t[-1])
+        history = ticket.get_comment_history(1)
+        self.assertEqual((0, t[0], 'jack', 'Comment 1'), history[0])
+        for i in range(1, len(history)):
+            self.assertEqual((i, t[i], 'joe (%d)' % i,
+                             'Comment 1 (%d)' % i), history[i])
+
+
 class EnumTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -708,6 +898,7 @@ class VersionTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(TicketCommentEditTestCase, 'test'))
     suite.addTest(unittest.makeSuite(EnumTestCase, 'test'))
     suite.addTest(unittest.makeSuite(MilestoneTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ComponentTestCase, 'test'))
