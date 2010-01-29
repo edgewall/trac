@@ -25,7 +25,6 @@ from trac.config import IntOption
 from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
-from trac.resource import Resource
 from trac.util import Ranges
 from trac.util.compat import any
 from trac.util.html import html
@@ -82,8 +81,17 @@ class LogModule(Component):
         verbose = req.args.get('verbose')
         limit = int(req.args.get('limit') or self.default_log_limit)
 
-        reponame, repos, path = RepositoryManager(self.env).\
-                get_repository_by_path(path)
+        rm = RepositoryManager(self.env)
+        reponame, repos, path = rm.get_repository_by_path(path)
+        
+        if not repos:
+            raise ResourceNotFound(_("No repository '%(repo)s' found",
+                                   repo=reponame))
+
+        if reponame != repos.reponame:  # Redirect alias
+            qs = req.query_string
+            req.redirect(req.href.log(repos.reponame or None, path)
+                         + (qs and '?' + qs or ''))
 
         normpath = repos.normalize_path(path)
         # if `revs` parameter is given, then we're restricted to the 
@@ -198,7 +206,7 @@ class LogModule(Component):
             params.update(args)
             if verbose:
                 params['verbose'] = verbose
-            return req.href.log(reponame or None, path, **params)
+            return req.href.log(repos.reponame or None, path, **params)
 
         if format in ('rss', 'changelog'):
             info = [i for i in info if i['change']] # drop separators
@@ -247,11 +255,10 @@ class LogModule(Component):
                 cs['actions'] = actions
                 extra_changes[rev] = cs
 
-        repos_resource = Resource('repository', reponame)
         data = {
             'context': Context.from_request(req, 'source', path,
-                                            parent=repos_resource),
-            'reponame': reponame or None, 'repos': repos,
+                                            parent=repos.resource),
+            'reponame': repos.reponame or None, 'repos': repos,
             'path': path, 'rev': rev, 'stop_rev': stop_rev, 
             'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
@@ -265,7 +272,7 @@ class LogModule(Component):
             return 'revisionlog.txt', data, 'text/plain'
         elif req.args.get('format') == 'rss':
             data['context'] = Context.from_request(req, 'source', 
-                                                   path, parent=repos_resource,
+                                                   path, parent=repos.resource,
                                                    absurls=True)
             return 'revisionlog.rss', data, 'application/rss+xml'
 
@@ -286,7 +293,7 @@ class LogModule(Component):
         add_stylesheet(req, 'common/css/diff.css')
         add_stylesheet(req, 'common/css/browser.css')
 
-        path_links = get_path_links(req.href, reponame, path, rev)
+        path_links = get_path_links(req.href, repos.reponame, path, rev)
         if path_links:
             data['path_links'] = path_links
         if len(path_links) > 1:
@@ -301,7 +308,7 @@ class LogModule(Component):
         add_link(req, 'alternate', changelog_href, _('ChangeLog'), 'text/plain')
 
         add_ctxtnav(req, _('View Latest Revision'), 
-                    href=req.href.browser(reponame or None, path))
+                    href=req.href.browser(repos.reponame or None, path))
         if 'next' in req.chrome['links']:
             next = req.chrome['links']['next'][0]
             add_ctxtnav(req, tag.span(tag.a(_('Older Revisions'), 
@@ -368,14 +375,14 @@ class LogModule(Component):
             revs = None
         if 'LOG_VIEW' in formatter.perm:
             if revranges:
-                href = formatter.href.log(reponame or None, path or '/',
+                href = formatter.href.log(repos.reponame or None, path or '/',
                                           revs=str(revranges)) 
             else:
                 try:
                     rev = repos.normalize_rev(revs)
                 except NoSuchChangeset:
                     rev = None
-                href = formatter.href.log(reponame or None, path or '/',
+                href = formatter.href.log(repos.reponame or None, path or '/',
                                           rev=rev)
             if query and (revranges or revs):
                 query = '&' + query[1:]

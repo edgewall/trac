@@ -111,7 +111,7 @@
         <tr py:if="file">
           <td class="message searchable" py:choose="">
             <py:when test="wiki_format_messages" xml:space="preserve">
-              ${wiki_to_html(context('changeset', file.changeset.rev, parent=repos_resource),
+              ${wiki_to_html(context('changeset', file.changeset.rev, parent=repos.resource),
                              file.changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise>${file.changeset.message}</py:otherwise>
@@ -159,8 +159,8 @@
       <div id="anydiff">
         <form action="${href.diff()}" method="get">
           <div class="buttons">
-            <input type="hidden" name="new_path" value="$reponame/$path" />
-            <input type="hidden" name="old_path" value="$reponame/$path" />
+            <input type="hidden" name="new_path" value="${'/' + pathjoin(reponame, path)}" />
+            <input type="hidden" name="old_path" value="${'/' + pathjoin(reponame, path)}" />
             <input type="hidden" name="new_rev" value="$stickyrev" />
             <input type="hidden" name="old_rev" value="$stickyrev" />
             <input type="submit" value="${_('View changes...')}" title="${_('Select paths and revs for Diff')}" />

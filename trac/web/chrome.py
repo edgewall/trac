@@ -58,7 +58,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      translation
+                      pathjoin, translation
 from trac.util.compat import any, partial
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -366,6 +366,7 @@ class Chrome(Component):
         'ngettext': translation.ngettext,
         'paginate': presentation.paginate,
         'partial': partial,
+        'pathjoin': pathjoin,
         'plaintext': plaintext,
         'pprint': pprint.pformat,
         'pretty_size': pretty_size,

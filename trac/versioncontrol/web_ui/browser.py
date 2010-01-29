@@ -26,7 +26,7 @@ from trac.core import *
 from trac.mimeview.api import Mimeview, is_binary, \
                               IHTMLPreviewAnnotator, Context
 from trac.perm import IPermissionRequestor
-from trac.resource import Resource, ResourceNotFound
+from trac.resource import ResourceNotFound
 from trac.util import embedded_numbers
 from trac.util.compat import any
 from trac.util.datefmt import http_date, utc
@@ -291,10 +291,9 @@ class BrowserModule(Component):
 
     def get_navigation_items(self, req):
         rm = RepositoryManager(self.env)
-        all_repos = rm.get_all_repositories()
-        if any(info.get('hidden') not in _TRUE_VALUES
-               and rm.get_repository(reponame).can_view(req.perm)
-               for reponame, info in all_repos.iteritems()):
+        if any(repos and repos.params.get('hidden') not in _TRUE_VALUES
+               and repos.can_view(req.perm)
+               for repos in rm.get_real_repositories()):
             yield ('mainnav', 'browser',
                    tag.a(_('Browse Source'), href=req.href.browser()))
 
@@ -347,6 +346,12 @@ class BrowserModule(Component):
             raise ResourceNotFound(_("No repository '%(repo)s' found",
                                    repo=reponame))
 
+        if reponame and reponame != repos.reponame: # Redirect alias
+            qs = req.query_string
+            req.redirect(req.href.browser(repos.reponame or None, path)
+                         + (qs and '?' + qs or ''))
+        reponame = repos and repos.reponame or None
+        
         # Find node for the requested path/rev
         context = Context.from_request(req)
         node = None
@@ -362,12 +367,12 @@ class BrowserModule(Component):
                 raise ResourceNotFound(e.message,
                                        _('Invalid changeset number'))
 
-            repos_resource = Resource('repository', reponame)
-            context = context(repos_resource.child('source', path,
+            context = context(repos.resource.child('source', path,
                                                    version=node.created_rev))
 
         # Prepare template data
-        path_links = get_path_links(req.href, reponame, path, rev, order, desc)
+        path_links = get_path_links(req.href, reponame, path, rev,
+                                    order, desc)
 
         repo_data = dir_data = file_data = None
         if all_repositories:
@@ -375,11 +380,9 @@ class BrowserModule(Component):
                     context, all_repositories, order, desc)
         if node:
             if node.isdir:
-                dir_data = self._render_dir(
-                        req, reponame, repos, node, rev, order, desc)
+                dir_data = self._render_dir(req, repos, node, rev, order, desc)
             elif node.isfile:
-                file_data = self._render_file(
-                        req, context, reponame, repos, node, rev)
+                file_data = self._render_file(req, context, repos, node, rev)
 
         quickjump_data = properties_data = None
         if node and not xhr:
@@ -388,8 +391,7 @@ class BrowserModule(Component):
             quickjump_data = list(repos.get_quickjump_entries(rev))
 
         data = {
-            'context': context, 'reponame': reponame or None,
-            'repos_resource': repos and repos_resource,
+            'context': context, 'reponame': reponame, 'repos': repos,
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
             'created_path': node and node.created_path,
             'created_rev': node and node.created_rev,
@@ -415,18 +417,18 @@ class BrowserModule(Component):
                 prev_rev = repos.previous_rev(rev=node.rev,
                                               path=node.created_path)
                 if prev_rev:
-                    href = req.href.browser(reponame or None,
+                    href = req.href.browser(reponame,
                                             node.created_path, rev=prev_rev)
                     add_link(req, 'prev', href,
                              _('Revision %(num)s', num=prev_rev))
                 if rev is not None:
-                    add_link(req, 'up', req.href.browser(reponame or None,
+                    add_link(req, 'up', req.href.browser(reponame,
                                                          node.created_path))
                 next_rev = repos.next_rev(rev=node.rev,
                                           path=node.created_path)
                 if next_rev:
-                    href = req.href.browser(reponame or None,
-                                            node.created_path, rev=next_rev)
+                    href = req.href.browser(reponame, node.created_path,
+                                            rev=next_rev)
                     add_link(req, 'next', href,
                              _('Revision %(num)s', num=next_rev))
                 prevnext_nav(req, _('Previous Revision'), _('Next Revision'),
@@ -436,13 +438,13 @@ class BrowserModule(Component):
                     add_link(req, 'up', path_links[-2]['href'],
                              _('Parent directory'))
             add_ctxtnav(req, tag.a(_('Last Change'), 
-                        href=req.href.changeset(node.rev, reponame or None,
+                        href=req.href.changeset(node.rev, reponame,
                                                 node.created_path)))
             if node.isfile:
                 if data['file']['annotate']:
                     add_ctxtnav(req, _('Normal'), 
                                 title=_('View file without annotations'), 
-                                href=req.href.browser(reponame or None,
+                                href=req.href.browser(reponame,
                                                       node.created_path, 
                                                       rev=node.rev))
                 else:
@@ -450,12 +452,12 @@ class BrowserModule(Component):
                                 title=_('Annotate each line with the last '
                                         'changed revision '
                                         '(this can be time consuming...)'), 
-                                href=req.href.browser(reponame or None,
+                                href=req.href.browser(reponame,
                                                       node.created_path, 
                                                       rev=node.rev,
                                                       annotate='blame'))
             add_ctxtnav(req, _('Revision Log'), 
-                        href=req.href.log(reponame or None, path, rev=rev))
+                        href=req.href.log(reponame, path, rev=rev))
             path_url = repos.get_path_url(path, rev)
             if path_url:
                 if path_url.startswith('//'):
@@ -489,19 +491,20 @@ class BrowserModule(Component):
                             timerange = TimeRange(youngest.date)
                         else:
                             timerange.insert(youngest.date)
-                    entry = (reponame, repoinfo, youngest, None)
+                    entry = (reponame, repoinfo, repos, youngest, None)
                 else:
-                    entry = (reponame, repoinfo, None, "XXX")
+                    entry = (reponame, repoinfo, None, None, "XXX")
             except TracError, err:
-                entry = (reponame, repoinfo, None, exception_to_unicode(err))
+                entry = (reponame, repoinfo, None, None,
+                         exception_to_unicode(err))
             repositories.append(entry)
 
         # Ordering of repositories
         if order == 'date':
-            def repo_order((reponame, repoinfo, repos, youngest)):
+            def repo_order((reponame, repoinfo, repos, youngest, err)):
                 return youngest and youngest.date
         else:
-            def repo_order((reponame, repoinfo, repos, youngest)):
+            def repo_order((reponame, repoinfo, repos, youngest, err)):
                 return embedded_numbers(reponame.lower())
 
         repositories = sorted(repositories, key=repo_order, reverse=desc)
@@ -509,7 +512,7 @@ class BrowserModule(Component):
         return {'repositories' : repositories,
                 'timerange': timerange, 'colorize_age': custom_colorizer}
 
-    def _render_dir(self, req, reponame, repos, node, rev, order, desc):
+    def _render_dir(self, req, repos, node, rev, order, desc):
         req.perm(node.resource).require('BROWSER_VIEW')
 
         # Entries metadata
@@ -564,8 +567,9 @@ class BrowserModule(Component):
         if node.path and patterns and \
                filter(None, [fnmatchcase(node.path, p) for p in patterns]):
             zip_href = req.href.changeset(rev or repos.youngest_rev, 
-                                          reponame, node.path, old=rev, 
-                                          old_path=reponame or '/', 
+                                          repos.reponame or None, node.path,
+                                          old=rev,
+                                          old_path=repos.reponame or '/',
                                           format='zip')
             add_link(req, 'alternate', zip_href, _('Zip Archive'),
                      'application/zip', 'zip')
@@ -578,7 +582,7 @@ class BrowserModule(Component):
                                    timerange.to_seconds(timerange.oldest)),
                 }
 
-    def _render_file(self, req, context, reponame, repos, node, rev=None):
+    def _render_file(self, req, context, repos, node, rev=None):
         req.perm(node.resource).require('FILE_VIEW')
 
         mimeview = Mimeview(self.env)
@@ -618,14 +622,14 @@ class BrowserModule(Component):
 
             # add ''Plain Text'' alternate link if needed
             if not is_binary(chunk) and mime_type != 'text/plain':
-                plain_href = req.href.browser(reponame or None, node.path,
-                                              rev=rev, format='txt')
+                plain_href = req.href.browser(repos.reponame or None,
+                                              node.path, rev=rev, format='txt')
                 add_link(req, 'alternate', plain_href, _('Plain Text'),
                          'text/plain')
 
             # add ''Original Format'' alternate link (always)
             raw_href = req.href.export(rev or repos.youngest_rev, 
-                                       reponame, node.path)
+                                       repos.reponame or None, node.path)
             add_link(req, 'alternate', raw_href, _('Original Format'),
                      mime_type)
 
@@ -784,34 +788,38 @@ class BrowserModule(Component):
                          if fnmatchcase(rdata[0], glob))
 
         if format == 'table':
-            data = self._render_repository_index(
-                    formatter.context, all_repos, order, desc)
+            repo = self._render_repository_index(formatter.context, all_repos,
+                                                 order, desc)
 
             add_stylesheet(formatter.req, 'common/css/browser.css')
+            data = {'repo': repo, 'desc': desc and 1 or None,
+                    'reponame': None, 'path': '/', 'stickyrev': None}
             from trac.web.chrome import Chrome
             return Chrome(self.env).render_template(
-                    formatter.req, 'repository_index.html', 
-                    {'repo': data}, None, fragment=True)
+                    formatter.req, 'repository_index.html', data, None,
+                    fragment=True)
 
-        def repolink(reponame):
+        def repolink(reponame, repos):
             label = reponame or _('(default)')
             return Markup(tag.a(label, 
                           title=_('View repository %(repo)s', repo=label),
-                          href=formatter.href.browser(reponame or None)))
+                          href=formatter.href.browser(repos.reponame or None)))
 
-        all_repos = sorted(
-            (reponame, info) for reponame, info in all_repos.iteritems()
-            if info.get('hidden') not in _TRUE_VALUE
-               and rm.get_repository(reponame).can_view(formatter.perm))
+        all_repos = dict((reponame, rm.get_repository(reponame))
+                         for reponame in all_repos)
+        all_repos = sorted((reponame, repos) for reponame, repos in all_repos
+                           if repos
+                           and repos.params.get('hidden') not in _TRUE_VALUE
+                           and repos.can_view(formatter.perm))
 
         if format == 'list':
             return tag.dl([
-                tag(tag.dt(repolink(reponame)),
-                    tag.dd(repoinfo.get('description')))
-                for reponame, repoinfo in all_repos])
+                tag(tag.dt(repolink(reponame, repos)),
+                    tag.dd(repos.params.get('description')))
+                for reponame, repos in all_repos])
         else: # compact
-            return Markup(', ').join([repolink(reponame)
-                                      for reponame, repoinfo in all_repos])
+            return Markup(', ').join([repolink(reponame, repos)
+                                      for reponame, repos in all_repos])
 
         
 
@@ -820,9 +828,8 @@ class BlameAnnotator(object):
     def __init__(self, env, context):
         self.env = env
         self.context = context
-        self.reponame = context.resource.parent.id
+        self.repos = env.get_repository(context.resource.parent.id)
         self.path = context.resource.id
-        self.repos = env.get_repository(self.reponame)
         self.rev = context.resource.version
         # maintain state
         self.prev_chgset = None
@@ -876,9 +883,9 @@ class BlameAnnotator(object):
         
         # -- compute anchor and style once per revision
         if rev not in self.chgset_data:
-            chgset_href = self.context.href.changeset(rev,
-                                                      self.reponame or None,
-                                                      path)
+            chgset_href = \
+                self.context.href.changeset(rev, self.repos.reponame or None,
+                                            path)
             short_author = chgset.author.split(' ', 1)[0]
             title = shorten_line('%s: %s' % (short_author, chgset.message))
             anchor = tag.a('[%s]' % self.repos.short_rev(rev), # shortname

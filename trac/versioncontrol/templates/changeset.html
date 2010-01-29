@@ -51,8 +51,8 @@
         id="prefs" action="">
         <div>
           <py:if test="not changeset">
-            <input type="hidden" name="old_path" value="$reponame/$old_path" />
-            <input type="hidden" name="new_path" value="$reponame/$new_path" />
+            <input type="hidden" name="old_path" value="${'/' + pathjoin(reponame, old_path)}" />
+            <input type="hidden" name="new_path" value="${'/' + pathjoin(reponame, new_path)}" />
             <input type="hidden" name="old" value="$old_rev" />
             <input type="hidden" name="new" value="$new_rev" />
           </py:if>

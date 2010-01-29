@@ -870,3 +870,7 @@ def as_int(s, default, min=None, max=None):
     if max is not None and value > max:
         value = max
     return value
+
+def pathjoin(*args):
+    """Strip `/` from the arguments and join them with a single `/`."""
+    return '/'.join(filter(None, (each.strip('/') for each in args if each)))

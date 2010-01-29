@@ -100,7 +100,9 @@ class DbRepositoryProvider(Component):
 
     implements(IRepositoryProvider, IAdminCommandProvider)
 
-    repository_attrs = ('alias', 'dir', 'hidden', 'name', 'type', 'url')
+    repository_attrs = ('alias', 'description', 'dir', 'hidden', 'name',
+                        'type', 'url')
+    # TODO: Description editor in the admin panel
     
     # IRepositoryProvider methods
 
@@ -321,14 +323,12 @@ class RepositoryManager(Component):
                     if repo:
                         repo.sync()
                 except TracError, e:
-                    if not reponame:
-                        reponame = _('(default)')
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
                           "(%(error)s). Look in the Trac log for more "
-                          "information.", name=reponame,
+                          "information.", name=reponame or _('(default)'),
                           error=to_unicode(e.message)))
-                self.log.info("Synchronized %s repository in %0.2f seconds",
+                self.log.info("Synchronized '%s' repository in %0.2f seconds",
                               reponame, time.time() - start)
         return handler
 

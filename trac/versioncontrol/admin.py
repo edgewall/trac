@@ -19,7 +19,8 @@ from trac.core import *
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
 from trac.util.translation import _, ngettext
-from trac.versioncontrol import DbRepositoryProvider, RepositoryManager
+from trac.versioncontrol import DbRepositoryProvider, RepositoryManager, \
+                                is_default
 from trac.web.chrome import add_notice, add_warning
 
 
@@ -74,7 +75,7 @@ class VersionControlAdmin(Component):
     
     def get_reponames(self):
         rm = RepositoryManager(self.env)
-        return [reponame or '(default)' for reponame
+        return [reponame or _('(default)') for reponame
                 in rm.get_all_repositories()]
     
     def _complete_repos(self, args):
@@ -82,10 +83,14 @@ class VersionControlAdmin(Component):
             return self.get_reponames()
     
     def _do_changeset_added(self, reponame, *revs):
+        if is_default(reponame):
+            reponame = ''
         rm = RepositoryManager(self.env)
         rm.notify('changeset_added', reponame, revs)
     
     def _do_changeset_modified(self, reponame, *revs):
+        if is_default(reponame):
+            reponame = ''
         rm = RepositoryManager(self.env)
         rm.notify('changeset_modified', reponame, revs)
     
@@ -95,8 +100,8 @@ class VersionControlAdmin(Component):
         for (reponame, info) in sorted(rm.get_all_repositories().iteritems()):
             alias = ''
             if 'alias' in info:
-                alias = info['alias'] or '(default)'
-            values.append((reponame or '(default)', info.get('type', ''),
+                alias = info['alias'] or _('(default)')
+            values.append((reponame or _('(default)'), info.get('type', ''),
                            alias, info.get('dir', '')))
         print_table(values, [_('Name'), _('Type'), _('Alias'), _('Directory')])
     
@@ -108,16 +113,16 @@ class VersionControlAdmin(Component):
                                   'on multiple repositories'))
             repositories = rm.get_real_repositories()
         else:
-            if reponame == '(default)':
+            if is_default(reponame):
                 reponame = ''
             repos = rm.get_repository(reponame)
             if repos is None:
                 raise TracError(_("Unknown repository '%(reponame)s'",
-                                  reponame=reponame or '(default)'))
+                                  reponame=reponame or _('(default)')))
             if rev is not None:
                 repos.sync_changeset(rev)
                 printout(_('%(rev)s resynced on %(reponame)s.', rev=rev,
-                           reponame=repos.reponame or '(default)'))
+                           reponame=repos.reponame or _('(default)')))
                 return
             repositories = [repos]
         
@@ -125,7 +130,7 @@ class VersionControlAdmin(Component):
         cursor = db.cursor()
         for repos in sorted(repositories, key=lambda r: r.reponame):
             printout(_('Resyncing repository history for %(reponame)s... ',
-                       reponame=repos.reponame or '(default)'))
+                       reponame=repos.reponame or _('(default)')))
             repos.sync(self._sync_feedback, clean=clean)
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
                            (repos.id,))
@@ -161,7 +166,7 @@ class VersionControlAdmin(Component):
         
         if path_info:
             # Detail view
-            reponame = path_info != '(default)' and path_info or ''
+            reponame = not is_default(path_info) and path_info or ''
             info = all_repos.get(reponame)
             if info is None:
                 raise TracError(_('Repository %(name)s does not exist.',
@@ -218,7 +223,7 @@ class VersionControlAdmin(Component):
                         msg = _('You should now run "trac-admin $ENV '
                                 'repository resync %(name)s" to synchronize '
                                 'Trac with the repository.',
-                                name=name or '(default)')
+                                name=name or _('(default)'))
                         add_notice(req, msg)
                         msg = _('You should also set up a post-commit hook '
                                 'on the repository to call "trac-admin $ENV '
@@ -275,11 +280,11 @@ class VersionControlAdmin(Component):
 
     def _extend_info(self, reponame, info, editable):
         """Extend repository info for rendering."""
-        info['name'] = reponame or '(default)'
+        info['name'] = reponame or _('(default)')
         if info.get('dir') is not None:
             info['prettydir'] = breakable_path(info['dir']) or ''
         if info.get('alias') == '':
-            info['alias'] = '(default)'
+            info['alias'] = _('(default)')
         info['hidden'] = info.get('hidden') in _TRUE_VALUES
         info['editable'] = editable
         if not info.get('alias'):

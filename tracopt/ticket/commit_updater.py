@@ -43,7 +43,6 @@ from genshi.builder import tag
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
 from trac.perm import PermissionCache
-from trac.resource import Resource
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
 from trac.ticket.web_ui import TicketModule
@@ -276,17 +275,21 @@ class CommitTicketReferenceMacro(WikiMacroBase):
         reponame = args.get('repository')
         rev = args.get('revision')
         repos = RepositoryManager(self.env).get_repository(reponame)
-        changeset = repos.get_changeset(rev)
+        if repos:
+            changeset = repos.get_changeset(rev)
+            message = changeset.message
+            rev = changeset.rev
+        else:
+            message = content
         if formatter.context.resource.realm == 'ticket':
             ticket_re = CommitTicketUpdater.ticket_re
             if not any(int(tkt_id) == formatter.context.resource.id
-                       for tkt_id in ticket_re.findall(changeset.message)):
+                       for tkt_id in ticket_re.findall(message)):
                 return tag.p("(The changeset message doesn't reference this "
                              "ticket)", class_='hint')
         if ChangesetModule(self.env).wiki_format_messages:
             return tag.div(format_to_html(self.env,
-                formatter.context('changeset', changeset.rev,
-                                  parent=Resource('repository', reponame)),
-                changeset.message, escape_newlines=True), class_='message')
+                formatter.context('changeset', rev, parent=repos.resource),
+                message, escape_newlines=True), class_='message')
         else:
-            return tag.pre(changeset.message, class_='message')
+            return tag.pre(message, class_='message')

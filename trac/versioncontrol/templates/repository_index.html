@@ -5,23 +5,23 @@
   <table class="listing dirlist" id="${repoindex or None}">
     <xi:include href="dirlist_thead.html" />
     <tbody>
-      <py:for each="idx, (reponame, repoinfo, change, err) in enumerate(repo.repositories)"
-              py:with="chgset_context = change and context('changeset', change.rev, parent=Resource('repository', reponame));
+      <py:for each="idx, (reponame, repoinfo, repos, change, err) in enumerate(repo.repositories)"
+              py:with="chgset_context = change and context('changeset', change.rev, parent=repos.resource);
                        chgset_view = change and change.can_view(perm)">
         <tr class="${idx % 2 and 'even' or 'odd'}">
           <td class="name">
             <em py:strip="not err">
               <b py:strip="repoinfo.alias != ''">
                 <a class="dir" title="View Root Directory"
-                  href="${href.browser(reponame, order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
+                  href="${href.browser(repos.reponame, order=(order != 'name' and order or None), desc=desc)}">$reponame</a>
               </b>
             </em>
           </td>
           <td class="size" />
           <td class="rev">
             <py:if test="not err">
-              <a title="View Revision Log" href="${href.log(reponame)}">$change.rev</a>
-              <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
+              <a title="View Revision Log" href="${href.log(repos.reponame)}">$change.rev</a>
+              <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, repos.reponame)}">&nbsp;</a>
             </py:if>
           </td>
           <td class="age" style="${chgset_view and change and repo.timerange and 'border-color: rgb(%s,%s,%s)' %

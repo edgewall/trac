@@ -3,10 +3,10 @@
 import unittest
 
 from trac.test import Mock
-from trac.wiki.tests import formatter
 from trac.versioncontrol import NoSuchChangeset
 from trac.versioncontrol.api import *
 from trac.versioncontrol.web_ui import *
+from trac.wiki.tests import formatter
 
 
 def _get_changeset(rev):
@@ -25,7 +25,8 @@ def _normalize_rev(rev):
             raise NoSuchChangeset(rev)
     
 def _get_repository(reponame):
-    return Mock(get_changeset=_get_changeset, youngest_rev='200',
+    return Mock(reponame=reponame, youngest_rev='200',
+                get_changeset=_get_changeset,
                 normalize_rev=_normalize_rev)
 
 def repository_setup(tc):

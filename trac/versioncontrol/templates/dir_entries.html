@@ -7,7 +7,7 @@
   </py:if>
   <py:for each="idx, entry in enumerate(dir.entries)">
     <py:with vars="change = dir.changes[entry.rev];
-                   chgset_context = change and context('changeset', change.rev, parent=repos_resource);
+                   chgset_context = change and context('changeset', change.rev, parent=repos.resource);
                    chgset_view = change and change.can_view(perm)">
       <tr class="${idx % 2 and 'even' or 'odd'}">
         <td class="name">

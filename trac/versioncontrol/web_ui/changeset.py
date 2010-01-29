@@ -34,7 +34,7 @@ from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
-from trac.util import embedded_numbers, content_disposition
+from trac.util import content_disposition, embedded_numbers, pathjoin
 from trac.util.compat import any, set
 from trac.util.datefmt import pretty_timedelta, utc
 from trac.util.text import exception_to_unicode, to_unicode, \
@@ -252,8 +252,10 @@ class ChangesetModule(Component):
         try:
             new_path = repos.normalize_path(new_path)
             new = repos.normalize_rev(new)
+            full_new_path = '/' + pathjoin(repos.reponame, new_path)
             old_path = repos.normalize_path(old_path or new_path)
             old = repos.normalize_rev(old or new)
+            full_old_path = '/' + pathjoin(repos.reponame, old_path)
         except NoSuchChangeset, e:
             raise ResourceNotFound(e.message, _('Invalid Changeset Number'))
 
@@ -269,16 +271,16 @@ class ChangesetModule(Component):
         else:
             restricted = old_path == new_path # (same path or not)
 
-        # -- redirect if changing the diff options
-        if req.args.has_key('update'):
+        # -- redirect if changing the diff options or alias requested
+        if req.args.has_key('update') or reponame != repos.reponame:
+            reponame = repos.reponame or None
             if chgset:
                 if restricted:
-                    req.redirect(req.href.changeset(new, reponame or None,
-                                                    new_path))
+                    req.redirect(req.href.changeset(new, reponame, new_path))
                 else:
-                    req.redirect(req.href.changeset(new, reponame or None))
+                    req.redirect(req.href.changeset(new, reponame))
             else:
-                req.redirect(req.href.changeset(new, reponame or None,
+                req.redirect(req.href.changeset(new, reponame,
                                                 new_path, old=old,
                                                 old_path=full_old_path))
 
@@ -300,9 +302,9 @@ class ChangesetModule(Component):
                 old_path = new_path
             data = {'old_path': old_path, 'old_rev': old,
                     'new_path': new_path, 'new_rev': new}
-        data['reponame'] = reponame or None
-        data['diff'] = diff_data
-        data['wiki_format_messages'] = self.wiki_format_messages
+        data.update({'repos': repos, 'reponame': repos.reponame or None,
+                     'diff': diff_data,
+                     'wiki_format_messages': self.wiki_format_messages})
 
         if chgset:
             chgset = repos.get_changeset(new)
@@ -340,19 +342,17 @@ class ChangesetModule(Component):
                 self._render_zip(req, filename, repos, data)
 
         # -- HTML format
-        self._render_html(req, reponame, repos, chgset, restricted, xhr, data)
+        self._render_html(req, repos, chgset, restricted, xhr, data)
         
         if chgset:
             diff_params = 'new=%s' % new
         else:
-            diff_params = unicode_urlencode({'new_path': new_path,
-                                             'new': new,
-                                             'old_path': old_path,
-                                             'old': old})
-        add_link(req, 'alternate', '?format=diff&'+diff_params,
+            diff_params = unicode_urlencode({'new_path': new_path, 'new': new,
+                                             'old_path': old_path, 'old': old})
+        add_link(req, 'alternate', '?format=diff&' + diff_params,
                  _('Unified Diff'), 'text/plain', 'diff')
-        add_link(req, 'alternate', '?format=zip&'+diff_params, _('Zip Archive'),
-                 'application/zip', 'zip')
+        add_link(req, 'alternate', '?format=zip&' + diff_params,
+                 _('Zip Archive'), 'application/zip', 'zip')
         add_script(req, 'common/js/diff.js')
         add_stylesheet(req, 'common/css/changeset.css')
         add_stylesheet(req, 'common/css/diff.css')
@@ -371,10 +371,11 @@ class ChangesetModule(Component):
 
     # Internal methods
 
-    def _render_html(self, req, reponame, repos, chgset, restricted, xhr, data):
+    def _render_html(self, req, repos, chgset, restricted, xhr, data):
         """HTML version"""
         data['restricted'] = restricted
         browser = BrowserModule(self.env)
+        reponame = repos.reponame or None
 
         if chgset: # Changeset Mode (possibly restricted on a path)
             path, rev = data['new_path'], data['new_rev']
@@ -405,9 +406,8 @@ class ChangesetModule(Component):
             title = _changeset_title(rev)
 
             # Support for revision properties (#2545)
-            repos_resource = Resource('repository', reponame)
             context = Context.from_request(req, 'changeset', chgset.rev,
-                                           parent=repos_resource)
+                                           parent=repos.resource)
             data['context'] = context
             revprops = chgset.get_properties()
             data['properties'] = browser.render_properties('revprop', context,
@@ -419,20 +419,18 @@ class ChangesetModule(Component):
                     if prev:
                         prev_path, prev_rev = prev[:2]
                         if prev_rev:
-                            prev_href = req.href.changeset(prev_rev,
-                                                           reponame or None,
+                            prev_href = req.href.changeset(prev_rev, reponame,
                                                            prev_path)
                     else:
                         prev_path = prev_rev = None
                 else:
                     add_link(req, 'first', 
-                             req.href.changeset(oldest_rev, reponame or None),
+                             req.href.changeset(oldest_rev, reponame),
                              _('Changeset %(id)s', id=oldest_rev))
                     prev_path = data['old_path']
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
-                        prev_href = req.href.changeset(prev_rev,
-                                                       reponame or None)
+                        prev_href = req.href.changeset(prev_rev, reponame)
                 if prev_rev:
                     add_link(req, 'prev', prev_href, _changeset_title(prev_rev))
             youngest_rev = repos.youngest_rev
@@ -441,21 +439,17 @@ class ChangesetModule(Component):
                     next_rev = repos.next_rev(chgset.rev, path)
                     if next_rev:
                         if repos.has_node(path, next_rev):
-                            next_href = req.href.changeset(next_rev,
-                                                           reponame or None,
+                            next_href = req.href.changeset(next_rev, reponame,
                                                            path)
                         else: # must be a 'D'elete or 'R'ename, show full cset
-                            next_href = req.href.changeset(next_rev,
-                                                           reponame or None)
+                            next_href = req.href.changeset(next_rev, reponame)
                 else:
                     add_link(req, 'last', 
-                             req.href.changeset(youngest_rev,
-                                                reponame or None),
+                             req.href.changeset(youngest_rev, reponame),
                              _('Changeset %(id)s', id=youngest_rev))
                     next_rev = repos.next_rev(chgset.rev)
                     if next_rev:
-                        next_href = req.href.changeset(next_rev,
-                                                       reponame or None)
+                        next_href = req.href.changeset(next_rev, reponame)
                 if next_rev:
                     add_link(req, 'next', next_href, _changeset_title(next_rev))
 
@@ -478,7 +472,7 @@ class ChangesetModule(Component):
             return {'path': node.path,
                     'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
-                    'href': req.href.browser(reponame or None,
+                    'href': req.href.browser(reponame,
                                              node.created_path,
                                              rev=node.created_rev,
                                              annotate=annotated and 'blame' or \
@@ -623,19 +617,18 @@ class ChangesetModule(Component):
                 filestats[change] += 1
                 if change in Changeset.DIFF_CHANGES:
                     if chgset:
-                        href = req.href.changeset(new_node.rev,
-                                                  reponame or None, 
+                        href = req.href.changeset(new_node.rev, reponame,
                                                   new_node.path)
                         title = _('Show the changeset %(id)s restricted to '
                                   '%(path)s', id=new_node.rev,
                                   path=new_node.path)
                     else:
                         href = req.href.changeset(
-                            new_node.created_rev, reponame or None,
+                            new_node.created_rev, reponame,
                             new_node.created_path,
                             old=old_node.created_rev,
-                            old_path=posixpath.join(reponame, 
-                                                    old_node.created_path))
+                            old_path=pathjoin(repos.reponame, 
+                                              old_node.created_path))
                         title = _('Show the %(range)s differences restricted '
                                   'to %(path)s',
                                   range='r%s:%s' % (old_node.rev, new_node.rev),
@@ -713,8 +706,8 @@ class ChangesetModule(Component):
             else:
                 old_node_path = repos.normalize_path(old_node.path)
                 diff_old_path = repos.normalize_path(data['old_path'])
-                new_path = posixpath.join(data['new_path'],
-                                          old_node_path[len(diff_old_path)+1:])
+                new_path = pathjoin(data['new_path'],
+                                    old_node_path[len(diff_old_path) + 1:])
 
             if old_content != new_content:
                 options = data['diff']['options']
@@ -845,27 +838,14 @@ class ChangesetModule(Component):
             # only repository filter.
             filters = []
             rm = RepositoryManager(self.env)
-            repositories = rm.get_all_repositories()
+            repositories = rm.get_real_repositories()
             if len(repositories) > 1:
-                visible_repos = set(
-                    name for name, info in repositories.items()
-                    if info.get('hidden') not in _TRUE_VALUES
-                    and rm.get_repository(name).can_view(req.perm))
-                default_is_aliased = any(info.get('alias') == '' and
-                                         name in visible_repos
-                                         for name, info in repositories.items())
-                default_is_alias = repositories.get('', {}).get('alias') \
-                                   in visible_repos
-                for reponame in repositories.keys():
-                    if reponame:
-                        label = reponame
-                    elif default_is_aliased or default_is_alias:
-                        continue
-                    else:
-                        label = _('(default)')
-                    if reponame in visible_repos:
-                        filters.append(('repo-' + reponame,
-                                        u"\xa0\xa0-\xa0" + label))
+                filters = [
+                    ('repo-' + repos.reponame,
+                     u"\xa0\xa0-\xa0" + (repos.reponame or _('(default)')))
+                    for repos in repositories
+                    if repos.params.get('hidden') not in _TRUE_VALUES
+                    and repos.can_view(req.perm)]
                 filters.sort()
                 add_script(req, 'common/js/timeline_multirepos.js')
                 changeset_label = _('Changesets in all repositories')
@@ -893,21 +873,20 @@ class ChangesetModule(Component):
                 collapse_changesets = lambda c: c.rev
                 
             uids_seen = {}
-            def generate_changesets(reponame, repos):
-                repos_resource = Resource('repository', reponame)
+            def generate_changesets(repos):
                 for _, changesets in groupby(repos.get_changesets(start, stop),
                                              key=collapse_changesets):
                     viewable_changesets = []
                     for cset in changesets:
                         cset_resource = Resource('changeset', cset.rev,
-                                                 parent=repos_resource)
+                                                 parent=repos.resource)
                         if cset.can_view(req.perm):
-                            repos_for_uid = [reponame]
+                            repos_for_uid = [repos.reponame]
                             uid = repos.get_changeset_uid(cset.rev)
                             if uid:
                                 # uid can be seen in multiple repositories
                                 if uid in uids_seen:
-                                    uids_seen[uid].append(reponame)
+                                    uids_seen[uid].append(repos.reponame)
                                     continue # already viewable, simply append
                                 uids_seen[uid] = repos_for_uid
                             viewable_changesets.append((cset, cset_resource,
@@ -919,16 +898,16 @@ class ChangesetModule(Component):
                                 show_location, show_files))
 
             rm = RepositoryManager(self.env)
-            for reponame in rm.get_all_repositories():
-                if all_repos or ('repo-' + reponame) in repo_filters:
+            for repos in sorted(rm.get_real_repositories(),
+                                key=lambda repos: repos.reponame):
+                if all_repos or ('repo-' + repos.reponame) in repo_filters:
                     try:
-                        repos = rm.get_repository(reponame)
-                        for event in generate_changesets(reponame, repos):
+                        for event in generate_changesets(repos):
                             yield event
                     except TracError, e:
                         self.log.error("Timeline event provider for repository"
                                        " '%s' failed: %r", 
-                                       reponame, exception_to_unicode(e))
+                                       repos.reponame, exception_to_unicode(e))
 
     def render_timeline_event(self, context, field, event):
         changesets, show_location, show_files = event[3]
@@ -997,7 +976,9 @@ class ChangesetModule(Component):
             return markup
 
         single = rev_a == rev_b
-        if reponame:
+        if not repos_for_uid[0]:
+            repos_for_uid[0] = _('(default)')
+        if reponame or len(repos_for_uid) > 1:
             title = ngettext('Changeset in %(repo)s ',
                              'Changesets in %(repo)s ',
                              single and 1 or 2, repo=', '.join(repos_for_uid))
@@ -1062,7 +1043,8 @@ class ChangesetModule(Component):
             try:
                 changeset = repos.get_changeset(rev)
                 if changeset.can_view(formatter.perm):
-                    href = formatter.href.changeset(rev, reponame or None,
+                    href = formatter.href.changeset(rev,
+                                                    repos.reponame or None,
                                                     path)
                     return tag.a(label, class_="changeset",
                                  title=shorten_line(changeset.message),
@@ -1119,19 +1101,21 @@ class ChangesetModule(Component):
     def get_search_results(self, req, terms, filters):
         if not 'changeset' in filters:
             return
+        rm = RepositoryManager(self.env)
+        repositories = dict((repos.params['id'], repos)
+                            for repos in rm.get_real_repositories())
         db = self.env.get_db_cnx()
         sql, args = search_to_sql(db, ['rev', 'message', 'author'], terms)
         cursor = db.cursor()
         cursor.execute("SELECT repos,rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
-        for reponame, rev, ts, author, log in cursor:
-            repos = self.env.get_repository(reponame)
+        for id, rev, ts, author, log in cursor:
+            repos = repositories.get(id)
             if not repos:
                 continue # revisions for a no longer active repository
-            cset = Resource('repository', repos.reponame).child('changeset',
-                                                                rev)
+            cset = repos.resource.child('changeset', rev)
             if 'CHANGESET_VIEW' in req.perm(cset):
-                yield (req.href.changeset(rev, reponame or None),
+                yield (req.href.changeset(rev, repos.reponame or None),
                        '[%s]: %s' % (rev, shorten_line(log)),
                        datetime.fromtimestamp(ts, utc), author,
                        shorten_result(log, terms))
@@ -1159,13 +1143,13 @@ class AnyDiffModule(Component):
 
             if repos:
                 entries = [(e.isdir, e.name, 
-                            '/' + posixpath.join(reponame, e.path))
+                            '/' + pathjoin(repos.reponame, e.path))
                            for e in repos.get_node(path).get_entries()
                            if e.can_view(req.perm)]
             if not reponame:
-                entries.extend((True, name, '/' + name)
-                               for name in rm.get_all_repositories()
-                               if rm.get_repository(name).can_view(req.perm))
+                entries.extend((True, repos.reponame, '/' + repos.reponame)
+                               for repos in rm.get_real_repositories()
+                               if repos.can_view(req.perm))
 
             elem = tag.ul(
                 [tag.li(isdir and tag.b(path) or path)
@@ -1192,9 +1176,9 @@ class AnyDiffModule(Component):
         old_rev = old_repos.normalize_rev(old_rev)
 
         # -- prepare rendering
-        data = {'new_path': posixpath.join(new_reponame, new_path),
+        data = {'new_path': '/' + pathjoin(new_repos.reponame, new_path),
                 'new_rev': new_rev,
-                'old_path': posixpath.join(old_reponame, old_path),
+                'old_path': '/' + pathjoin(old_repos.reponame, old_path),
                 'old_rev': old_rev}
 
         add_script(req, 'common/js/suggest.js')
