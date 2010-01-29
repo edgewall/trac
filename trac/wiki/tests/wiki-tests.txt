@@ -1612,7 +1612,8 @@ Content B
  […]
 ============================== Table with wiki processors (tr, th and td)
 A very nice table:
-{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++
+{{{#!table style="border: none"
+{{{#!tr ++++++++++++++++++++++++++++++++++++++++++++++ style="background: #ffd"
     {{{#!th .......................................... style="background: #dfd"
 
     Header A
@@ -1636,13 +1637,13 @@ A very nice table:
 
     }}}
 }}}
+}}}
 Paragraph
 ------------------------------
 <p>
 A very nice table:
 </p>
-<table class="wiki">
-<tr><th style="background: #dfd"><p>
+<table style="border: none" class="wiki"><tr style="background: #ffd"><th style="background: #dfd"><p>
 Header A
 </p>
 </th><th style="background: #dfd"><p>
@@ -1654,13 +1655,70 @@ Content A
 </td><td><p>
 Content B
 </p>
-</td></tr></table>
-<p>
+</td></tr></table><p>
 Paragraph
 </p>
 ------------------------------
 A very nice table:
  […]
+Paragraph
+============================== Table with wiki processors (table but no cells)
+A very nice table:
+{{{#!table style="border: none"
+
+This table processor doesn't contain any cell, this is an error.
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<div class="system-message"><strong>!#table must contain at least one table cell (and table cells only)</strong></div><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+Paragraph
+============================== Table with wiki processors (tr but no cells)
+A very nice table:
+{{{#!table style="border: none"
+
+{{{#!tr
+This tr processor doesn't contain any cell, this is an error.
+}}}
+
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<div class="system-message"><strong>!#table must contain at least one table cell (and table cells only)</strong></div><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
+ […]
+Paragraph
+============================== Table with wiki processors (table + multiple embedded tables)
+A very nice table:
+{{{#!table style="border: none"
+
+|| only one table ||
+
+|| extra table is an error||
+}}}
+Paragraph
+------------------------------
+<p>
+A very nice table:
+</p>
+<div class="system-message"><strong>!#table must contain at most one table</strong></div><p>
+Paragraph
+</p>
+------------------------------
+A very nice table:
  […]
 Paragraph
 ============================== Table with wiki processors within div
