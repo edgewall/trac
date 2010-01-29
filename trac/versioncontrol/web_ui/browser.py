@@ -384,8 +384,7 @@ class BrowserModule(Component):
             if len(path_links) > 1:
                 add_link(req, 'up', path_links[-2]['href'],
                          _('Parent directory'))
-        add_ctxtnav(req, tag.a(_('Last Change'), 
-                    href=req.href.changeset(node.rev, node.created_path)))
+
         if node.isfile:
             if data['file']['annotate']:
                 add_ctxtnav(req, _('Normal'), 

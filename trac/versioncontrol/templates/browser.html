@@ -37,7 +37,7 @@
           <py:if test="file.annotate">
             enableBlame("${href.changeset()}/", "${path}");
           </py:if>
-          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content')); 
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
         </py:if>
       });
     </script>
@@ -115,7 +115,8 @@
         <tr py:if="file">
           <th scope="col" i18n:msg="rev, size, author, date">
             Revision <a href="${href.changeset(rev)}">$rev</a>, ${sizeinfo(file.size)}
-            (checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago)
+            checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago
+            (<a href="${href.changeset(rev, created_path)}">diff</a>)
           </th>
         </tr>
         <tr py:if="file">
