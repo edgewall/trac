@@ -113,7 +113,7 @@ table.dirlist td span.loading {
   font-style: italic 
 }
 
-div.description { padding: 0 0.5em }
+#content.browser div.description { padding: 0 0.5em }
 
 /* Style for the ''View Changes'' button and the diff preparation form */
 #anydiff { margin: 0 0 1em; float: left }
