@@ -96,11 +96,7 @@ table.dirlist tr.expanded span.expander:hover {
 table.dirlist td.name a.dir { background-image: url(../folder.png) }
 table.dirlist td.name a.file { background-image: url(../file.png); display: block }
 table.dirlist td.name a, table.dirlist td.rev a { border-bottom: none }
-table.dirlist td.change { 
-  font-size: 85%; 
-  vertical-align: middle; 
-  white-space: nowrap 
-}
+table.dirlist td.change { font-size: 85% }
 table.dirlist td.rev a.chgset { 
   background-repeat: no-repeat;
   background-image: url(../changeset.png); 
@@ -108,11 +104,16 @@ table.dirlist td.rev a.chgset {
   padding: 0 0 0 5px; 
   margin: 0 5px 0 0; 
 }
+table.dirlist td.description { padding-left: 2em }
+table.dirlist td.description > :first-child { margin-top: 0 }
+table.dirlist td.description > :last-child { margin-bottom: 0 }
 
 table.dirlist td span.loading { 
   background-image: url(../loading.gif); 
   font-style: italic 
 }
+
+div.description { padding: 0 0.5em }
 
 /* Style for the ''View Changes'' button and the diff preparation form */
 #anydiff { margin: 0 0 1em; float: left }

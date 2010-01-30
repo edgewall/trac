@@ -63,9 +63,21 @@
             </py:otherwise>
           </py:choose>
           <div class="field">
-            <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}"/>
+            <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}" disabled="$readonly"/>
               Hide from repository index
             </label>
+          </div>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="description" i18n:msg="">
+                Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
+              </label>
+              <p>
+                <textarea id="description" name="description" class="wikitext trac-resizable"
+                          rows="6" cols="60" readonly="$readonly">
+$info.description</textarea>
+              </p>
+            </fieldset>
           </div>
           <div class="buttons">
             <input type="submit" name="cancel" value="${_('Cancel')}"/>

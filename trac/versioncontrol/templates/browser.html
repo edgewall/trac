@@ -139,6 +139,10 @@
         </tr>
       </table>
 
+      <div py:if="dir and path == '/'" class="description">
+        ${wiki_to_html(context('source', '/', parent=repos.resource), repos.params.description)}
+      </div>
+      
       <py:if test="repo and repo.repositories">
         <hr py:if="dir"/>
         <h1>Repository Index</h1>

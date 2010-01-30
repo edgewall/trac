@@ -21,7 +21,7 @@ from trac.util.text import breakable_path, normalize_whitespace, print_table, \
 from trac.util.translation import _, ngettext
 from trac.versioncontrol import DbRepositoryProvider, RepositoryManager, \
                                 is_default
-from trac.web.chrome import add_notice, add_warning
+from trac.web.chrome import Chrome, add_notice, add_warning
 
 
 class VersionControlAdmin(Component):
@@ -204,6 +204,7 @@ class VersionControlAdmin(Component):
                         add_notice(req, msg)
                     req.redirect(req.href.admin(category, page))
             
+            Chrome(self.env).add_wiki_toolbars(req)
             data = {'view': 'detail', 'reponame': reponame}
         
         else:

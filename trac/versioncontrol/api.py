@@ -102,7 +102,6 @@ class DbRepositoryProvider(Component):
 
     repository_attrs = ('alias', 'description', 'dir', 'hidden', 'name',
                         'type', 'url')
-    # TODO: Description editor in the admin panel
     
     # IRepositoryProvider methods
 

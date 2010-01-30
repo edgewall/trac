@@ -24,7 +24,7 @@ from trac.util.datefmt import utc, parse_date, get_date_format_hint, \
                               format_datetime
 from trac.util.text import print_table, printout, exception_to_unicode
 from trac.util.translation import _, N_, gettext
-from trac.web.chrome import add_notice, add_script, add_warning, Chrome
+from trac.web.chrome import Chrome, add_notice, add_warning
 
 
 class TicketAdminPanel(Component):
