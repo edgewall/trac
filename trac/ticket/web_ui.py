@@ -1620,17 +1620,20 @@ class TicketModule(Component):
                     last_comment['comment'] = current['comment']
                     yield current
                 last_uid = uid
-                comment_history = {0: {'date': date, 'author': author}}
-                current = {'date': date, 'author': author, 'fields': {},
+                comment_history = {0: {'date': date}}
+                current = {'date': date, 'fields': {},
                            'permanent': permanent, 'comment': '',
                            'comment_history': comment_history}
                 if permanent and not when:
                     autonum += 1
                     current['cnum'] = autonum
             # some common processing for fields
+            if not field.startswith('_'):
+                current.setdefault('author', author)
+                comment_history[0].setdefault('author', author)
             if field == 'comment':
                 current['comment'] = new
-                # Always take the author from the comment field
+                # Always take the author from the comment field if available
                 current['author'] = comment_history[0]['author'] = author
                 if old:
                     if '.' in old: # retrieve parent.child relationship

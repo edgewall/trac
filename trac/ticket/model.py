@@ -381,9 +381,9 @@ class Ticket(object):
         """Return a ticket change by its number."""
         db = self._get_db(db)
         cursor = db.cursor()
-        row = self._find_comment(cnum, 'time,author', db)
+        row = self._find_comment(cnum, db)
         if row:
-            ts, author = row
+            ts, author, comment = row
             cursor.execute("SELECT field,author,oldvalue,newvalue "
                            "FROM ticket_change "
                            "WHERE ticket=%s AND time=%s",
@@ -406,35 +406,56 @@ class Ticket(object):
         
         db, handle_ta = self._get_db_for_write(db)
         cursor = db.cursor()
+        
+        # Find the current value of the comment
         cursor.execute("SELECT newvalue FROM ticket_change "
                        "WHERE ticket=%s AND time=%s AND field='comment'",
                        (self.id, ts))
+        old_comment = False
         for old_comment, in cursor:
-            if comment == old_comment:
-                return
-            # Comment history is stored in fields named "_comment%d"
-            cursor.execute("SELECT COUNT(ticket) FROM ticket_change "
-                           "WHERE ticket=%%s AND time=%%s AND field %s"
-                           % db.like(),
-                           (self.id, ts, db.like_escape('_comment') + '%'))
-            rev = cursor.fetchone()[0]
+            break
+        if comment == (old_comment or ''):
+            return
+        
+        # Comment history is stored in fields named "_comment%d"
+        # Find the next edit number
+        cursor.execute("SELECT field FROM ticket_change "
+                       "WHERE ticket=%%s AND time=%%s AND field %s"
+                       % db.like(),
+                       (self.id, ts, db.like_escape('_comment') + '%'))
+        fields = list(cursor)
+        rev = fields and max(int(field[8:]) for field, in fields) + 1 or 0
+        cursor.execute("INSERT INTO ticket_change "
+                       "(ticket,time,author,field,oldvalue,newvalue) "
+                       "VALUES (%s,%s,%s,%s,%s,%s)",
+                       (self.id, ts, author, '_comment%d' % rev,
+                        old_comment or '', str(when_ts)))
+        if old_comment is False:
+            # There was no comment field, add one and find the original author
+            # in one of the other changed fields
+            cursor.execute("SELECT author FROM ticket_change "
+                           "WHERE ticket=%%s AND time=%%s AND NOT field %s "
+                           "LIMIT 1" % db.like(),
+                           (self.id, ts, db.like_escape('_') + '%'))
+            old_author = None
+            for old_author, in cursor:
+                break
             cursor.execute("INSERT INTO ticket_change "
-                           "(ticket,time,author,field,oldvalue,newvalue) "
-                           "VALUES (%s,%s,%s,%s,%s,%s)",
-                           (self.id, ts, author, '_comment%d' % rev,
-                            old_comment, str(when_ts)))
+                           "  (ticket,time,author,field,oldvalue,newvalue) "
+                           "VALUES (%s,%s,%s,'comment','',%s)",
+                           (self.id, ts, old_author, comment))
+        else:
             cursor.execute("UPDATE ticket_change SET newvalue=%s "
                            "WHERE ticket=%s AND time=%s AND field='comment'",
                            (comment, self.id, ts))
-            if handle_ta:
-                db.commit()
-            break
+        if handle_ta:
+            db.commit()
 
     def get_comment_history(self, cnum, db=None):
         db = self._get_db(db)
         history = []
         cursor = db.cursor()
-        row = self._find_comment(cnum, 'time,author,newvalue', db)
+        row = self._find_comment(cnum, db)
         if row:
             ts0, author0, last_comment = row
             # Get all fields of the form "_comment%d"
@@ -443,8 +464,9 @@ class Ticket(object):
                            "WHERE ticket=%%s AND time=%%s AND field %s"
                            % db.like(),
                            (self.id, ts0, db.like_escape('_comment') + '%'))
-            for field, author, comment, ts in cursor:
-                rev = int(field[8:])
+            rows = sorted((int(field[8:]), author, old, new)
+                          for field, author, old, new in cursor)
+            for rev, author, comment, ts in rows:
                 history.append((rev, datetime.fromtimestamp(int(ts0), utc),
                                 author0, comment))
                 ts0, author0 = ts, author
@@ -454,32 +476,52 @@ class Ticket(object):
                             author0, last_comment))
         return history
 
-    def _find_comment(self, cnum, fields, db):
+    def _find_comment(self, cnum, db):
         """Find a comment by its number."""
         scnum = str(cnum)
         cursor = db.cursor()
-        cursor.execute("SELECT %s FROM ticket_change "
+        cursor.execute("SELECT time,author,newvalue FROM ticket_change "
                        "WHERE ticket=%%s AND field='comment' "
                        "  AND (oldvalue=%%s OR oldvalue %s)"
-                       % (fields, db.like()),
+                       % db.like(),
                        (self.id, scnum, '%' + db.like_escape('.' + scnum)))
         for row in cursor:
             return row
         
         # Fallback when comment number is not available in oldvalue
         num = 0
-        cursor.execute("SELECT oldvalue,%s FROM ticket_change "
-                       "WHERE ticket=%%s AND field='comment' "
-                       "ORDER BY time" % fields,
+        cursor.execute("SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,''), "
+                       "                tc2.author,COALESCE(tc2.newvalue,'') "
+                       "FROM ticket_change AS tc1 "
+                       " LEFT OUTER JOIN "
+                       "   (SELECT time,author,oldvalue,newvalue "
+                       "    FROM ticket_change "
+                       "    WHERE field='comment') AS tc2 "
+                       " ON (tc1.time = tc2.time) "
+                       "WHERE ticket=%s "
+                       "ORDER BY tc1.time",
                        (self.id,))
-        for row in cursor:
-            # Use oldvalue if available, else count comments
+        for ts, old, author, comment in cursor:
+            # Use oldvalue if available, else count edits
             try:
-                num = int((row[0] or '').rsplit('.', 1)[-1])
+                num = int(old.rsplit('.', 1)[-1])
             except ValueError:
                 num += 1
             if num == cnum:
-                return row[1:]
+                break
+        else:
+            return
+        
+        # Find author if NULL
+        if author is None:
+            cursor.execute("SELECT author FROM ticket_change "
+                           "WHERE ticket=%%s AND time=%%s "
+                           "      AND NOT field %s "
+                           "LIMIT 1" % db.like(),
+                           (self.id, ts, db.like_escape('_') + '%'))
+            for author, in cursor:
+                break
+        return (ts, author, comment)
 
 
 def simplify_whitespace(name):

@@ -58,6 +58,8 @@ def _markup_to_unicode(markup):
         markup = stream.render('xhtml', encoding=None, strip_whitespace=False)
     return to_unicode(markup)
 
+class ProcessorError(TracError):
+    pass
 
 class WikiProcessor(object):
 
@@ -91,6 +93,7 @@ class WikiProcessor(object):
                               'td': self._td_processor,
                               'th': self._th_processor,
                               'tr': self._tr_processor,
+                              'table': self._table_processor,
                               }
 
         self._sanitizer = TracHTMLSanitizer()
@@ -179,25 +182,63 @@ class WikiProcessor(object):
         return self._tablecell_processor('th', text)
     
     def _tr_processor(self, text):
-        self.formatter.open_table()
-        return self._elt_processor('tr', self._format_row, text, self.args)
+        try:
+            elt = self._elt_processor('tr', self._format_row, text, self.args)
+            self.formatter.open_table()
+            return elt
+        except ProcessorError, e:
+            return system_message(e)
+    
+    def _table_processor(self, text):
+        if 'class' not in self.args:
+            self.args['class'] = 'wiki'
+        try:
+            return self._elt_processor('table', self._format_table, text,
+                                       self.args)
+        except ProcessorError, e:
+            return system_message(e)
     
     def _tablecell_processor(self, eltname, text):
         self.formatter.open_table_row()
         return self._elt_processor(eltname, format_to_html, text, self.args)
 
+    _has_multiple_tables_re = re.compile(r"</table>.*?<table",
+                                         re.MULTILINE | re.DOTALL)
+    
+    _inner_table_re = re.compile(r"""\s*
+      <table[^>]*>\s*
+        ((?:<tr[^>]*>)?
+          (.*?)
+        (?:</tr>)?)\s*
+      </table>\s*$
+      """, re.MULTILINE | re.DOTALL | re.VERBOSE)
+    
+    # Note: the need for "parsing" that crude way the formatted content
+    #       will go away as soon as we have a WikiDOM to manipulate...
+
+    def _parse_inner_table(self, text):
+        if self._has_multiple_tables_re.search(text):
+            raise ProcessorError(_("!#%(name)s must contain at most one table",
+                                   name=self.name))
+        match = self._inner_table_re.match(text)
+        if not match:
+            raise ProcessorError(_("!#%(name)s must contain at least one table"
+                                   " cell (and table cells only)",
+                                   name=self.name))
+        return Markup(match.group(self.name == 'table' and 1 or 2))
+
     def _format_row(self, env, context, text):
         if text:
-            row_formatter = Formatter(env, context)
             out = StringIO()
-            row_formatter.format(text, out)
-            text = out.getvalue()
-            # we must deal with either \n or \r\n as element separators:
-            #  len('<table class="wiki">') == 20
-            inner_tr_start = text.find('>', 20) + 1
-            #  len('</tr></table>\r\n') == 15
-            inner_tr_end = text.find('<', len(text) - 15)
-            text = Markup(text[inner_tr_start:inner_tr_end])
+            Formatter(env, context).format(text, out)
+            text = self._parse_inner_table(out.getvalue())
+        return text
+
+    def _format_table(self, env, context, text):
+        if text:
+            out = StringIO()
+            Formatter(env, context).format(text, out)
+            text = self._parse_inner_table(out.getvalue())
         return text
     
     # generic processors
