@@ -6,7 +6,7 @@
       if (node.nodeType == 3) { // Node.TEXT_NODE
         var val = node.nodeValue;
         var pos = val.toLowerCase().indexOf(text);
-        if (pos >= 0 && !$.className.has(node.parentNode, className)) {
+        if (pos >= 0 && !$(node.parentNode).hasClass(className)) {
           var span = document.createElement("span");
           span.className = className;
           var txt = document.createTextNode(val.substr(pos, text.length));
