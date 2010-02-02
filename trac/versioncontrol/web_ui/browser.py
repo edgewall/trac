@@ -335,9 +335,10 @@ class BrowserModule(Component):
         reponame, repos, path = rm.get_repository_by_path(path)
 
         # Repository index
-        all_repositories = None
+        all_repositories, repoinfo = None, None
         if not reponame and path == '/':
             all_repositories = rm.get_all_repositories()
+            repoinfo = all_repositories.get(reponame)
             if repos and (all_repositories[''].get('hidden') in _TRUE_VALUES
                           or not repos.can_view(req.perm)):
                 repos = None
@@ -392,6 +393,7 @@ class BrowserModule(Component):
 
         data = {
             'context': context, 'reponame': reponame, 'repos': repos,
+            'repoinfo': repoinfo,
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
             'created_path': node and node.created_path,
             'created_rev': node and node.created_rev,

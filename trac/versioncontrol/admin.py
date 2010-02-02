@@ -239,7 +239,7 @@ class VersionControlAdmin(Component):
                 elif db_provider and req.args.get('add_alias'):
                     name = req.args.get('name')
                     alias = req.args.get('alias')
-                    if name and alias:
+                    if name is not None and alias is not None:
                         db_provider.add_alias(name, alias)
                         add_notice(req, _('The alias "%(name)s" has been '
                                           'added.', name=name))
@@ -281,7 +281,7 @@ class VersionControlAdmin(Component):
 
     def _extend_info(self, reponame, info, editable):
         """Extend repository info for rendering."""
-        info['name'] = reponame or _('(default)')
+        info['name'] = reponame
         if info.get('dir') is not None:
             info['prettydir'] = breakable_path(info['dir']) or ''
         if info.get('alias') == '':

@@ -397,15 +397,16 @@ class RepositoryManager(Component):
                 reponames[option[:-4]] = {}
         # second pass to gather aliases
         for option in repositories:
-            if '.' not in option:
-                alias = repositories.get(option)
-                if alias in reponames:
-                    reponames.setdefault(option, {})['alias'] = alias
+            alias = repositories.get(option)
+            if '.' not in option:   # Support <alias> = <repo> syntax
+                option += '.alias'
+            if option.endswith('.alias') and alias in reponames:
+                reponames.setdefault(option[:-6], {})['alias'] = alias
         # third pass to gather the <name>.<detail> entries
         for option in repositories:
             if '.' in option:
                 name, detail = option.rsplit('.', 1)
-                if name in reponames:
+                if name in reponames and detail != 'alias':
                     reponames[name][detail] = repositories.get(option)
 
         for reponame, info in reponames.iteritems():
