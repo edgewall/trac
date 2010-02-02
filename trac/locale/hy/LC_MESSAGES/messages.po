@@ -243,7 +243,7 @@ msgid ""
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
 "Արխիվացումը խափանվեց '%(msg)s'-ով.\n"
-"Օգտագործեք \"--no-backup\" առանց արխիվացման թարմացնելու համար։\n"
+"Օգտագործեք \"--no-backup\" առանց արխիվացման թարմացնելու համար։"
 
 #: trac/env.py:749
 msgid "Upgrade done."
@@ -358,7 +358,7 @@ msgstr ""
 
 #: trac/admin/console.py:289
 msgid "Invoking trac-admin without command starts interactive mode.\n"
-msgstr "Կանչելով trac-admin-ը առանց հրամանների՝ սկսվում է դիալոգային ռեժիմը։"
+msgstr "Կանչելով trac-admin-ը առանց հրամանների՝ սկսվում է դիալոգային ռեժիմը։\n"
 
 #: trac/admin/console.py:329
 #, python-format
@@ -374,6 +374,7 @@ msgid ""
 " Please enter the name of your project.\n"
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
+"\n"
 "Նախ և առաջ Trac-ը կտա մի քանի հարցեր Ձեր միջավայրի մասին, \n"
 "որպեսզի ինիցիալիզացնի և պատրաստի պրոյեկտի տվյալների բազան։\n"
 "\n"
@@ -2074,22 +2075,22 @@ msgstr "Կցել ֆայլը"
 #, python-format
 msgid "%(num)s of %(total)s %(unit)s %(title)s"
 msgid_plural "%(num)s of %(total)s %(units)s %(title)s"
-msgstr[0] "%(total)s %(unit)s %(title)s-ի %(num)s"
-msgstr[1] "%(total)s %(units)s %(title)s-ի %(num)s"
+msgstr[0] ""
+msgstr[1] ""
 
 #: trac/templates/macros.html:227
 #, python-format
 msgid "%(title)s %(unit)s:"
 msgid_plural "%(title)s %(units)s:"
-msgstr[0] "(title)s-ի %(unit)s․"
-msgstr[1] "%(title)s-ի %(units)s-ներ․"
+msgstr[0] ""
+msgstr[1] ""
 
 #: trac/templates/macros.html:237
 #, python-format
 msgid "Total %(unit)s:"
 msgid_plural "Total %(units)s:"
-msgstr[0] "Ընդհանուր %(unit)s․"
-msgstr[1] "Ընդհանուր %(units)s-ներ․"
+msgstr[0] ""
+msgstr[1] ""
 
 #: trac/templates/theme.html:26
 msgid "Search:"

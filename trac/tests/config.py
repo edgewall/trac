@@ -336,6 +336,8 @@ class ConfigurationTestCase(unittest.TestCase):
         self._test_with_inherit(testcb)
 
     def test_inherit_multiple(self):
+        class Foo(object):
+            option_b = Option('b', 'option2', 'default')
         base = os.path.dirname(self.filename)
         relsite1 = os.path.join('sub1', 'trac-site1.ini')
         site1 = os.path.join(base, relsite1)
