@@ -436,7 +436,7 @@ class BrowserModule(Component):
                 prevnext_nav(req, _('Previous Revision'), _('Next Revision'),
                              _('Latest Revision'))
             else:
-                if len(path_links) > 1:
+                if path != '/':
                     add_link(req, 'up', path_links[-2]['href'],
                              _('Parent directory'))
                 add_ctxtnav(req, tag.a(_('Last Change'), 
