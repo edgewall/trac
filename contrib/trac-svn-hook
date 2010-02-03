@@ -1,92 +1,101 @@
 #!/bin/sh
 #
-# trac-svn-hook (Unix or Cygwin)
-# =============
+# = trac-svn-hook =
+# 
+#  Purpose:: this script is meant to be called from the Subversion hooks 
+#            for notifying Trac when changesets are added or modified.
 #
-# This script should be called from Subversion hooks, for notifying Trac
-# about new changesets and changeset modifications.
+#  Scope:: The http://trac.edgewall.org/wiki/0.12/TracRepositoryAdmin page
+#          describes how to directly call the relevant trac-admin commands
+#          from the Subversion hooks. In most cases this should be enough,
+#          however this script should make troubleshooting easier and 
+#          has support for notifying multiple Trac environments.
 #
-# Usage: copy this script to some central place, for example in your
-#        TRAC_ENV or TRAC_PARENT_ENV folder, then fill in the CONFIGURATION
-#        section below. Be sure to read the Configuration Notes first.
+#  Usage:: copy this script to some central place, for example in your
+#          TRAC_ENV or TRAC_PARENT_ENV folder
+#          **Be sure to read the Configuration Notes section below first**
+#          then fill in the variables listed below the Configuration section.
 #
-#        For each Subversion repository $REPOS that has to be monitored by 
-#        your Trac environment(s), you need to modify the hooks in order to
-#        call the present script:
+# For each Subversion repository $REPOS that has to be monitored by 
+# your Trac environment(s), you need to modify the hooks in order to
+# call the present script:
 #
-#  Add this to your $REPOS/hooks/post-commit script:
+# Add this to your `$REPOS/hooks/post-commit` script:
 #
-#      /path/to/trac-svn-hook $REPOS $REV
+#     /path/to/trac-svn-hook $REPOS $REV
 #
+# If you allow revision property editing in `$REPOS/hooks/pre-revprop-change`,
+# then you can let Trac know about modified changesets by adding the following
+# lines to the `$REPOS/hooks/post-revprop-change` script:
 #
-#  If you allow revision property editing in $REPOS/hooks/pre-revprop-change,
-#  then let Trac know about the modification by adding this to your
-#  $REPOS/hooks/post-revprop-change script:
+#     if [ "$PROPNAME" = "svn:log" -o "$PROPNAME" = "svn:author" ]; then
+#         /path/to/trac-svn-hook $REPOS $REV $USER $PROPNAME
+#     fi
 #
-#      if [ "$PROPNAME" = "svn:log" -o "$PROPNAME" = "svn:author" ]; then
-#          /path/to/trac-svn-hook $REPOS $REV $USER $PROPNAME
-#      fi
+# See also http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks
 #
+#  Platform:: Unix or Cygwin.
+# 
+# On Windows, if you have Cygwin installed, you can also use this
+# script instead of the `trac-svn-hook.cmd`.
+# In your `post-commit.bat` and `post-revprop-change.bat` hooks, call
+# this script using:
 #
-#  Note: on Windows, if you have Cygwin installed, you can also use this
-#        script instead of trac-svn-hook.cmd, calling it that way from 
-#        within the post-commit.bat and post-revprop-change.bat scripts:
-#
-#      bash /path/to/trac-svn-hook ...
+#     bash /path/to/trac-svn-hook "%1" "%2" "%3" "%4"
 #
 # -----------------------------------------------------------------------------
-
-# CONFIGURATION
-# =============
-
-######
-#export TRAC_ENV=/path/to/trac-env:/path/to/another/trac-env
-#export PATH=/path/to/python/bin:$PATH
-#export LD_LIBRARY_PATH=/path/to/python/lib:$LD_LIBRARY_PATH
-######
-
+#
+# == Configuration
+#
+# Uncomment and adapt to your local setup:
+#
+# export TRAC_ENV=/path/to/trac-env:/path/to/another/trac-env
+# export PATH=/path/to/python/bin:$PATH
+# export LD_LIBRARY_PATH=/path/to/python/lib:$LD_LIBRARY_PATH
+#
 # -----------------------------------------------------------------------------
 #
-# Configuration Notes
-# ===================
+# == Configuration Notes
 #
 # As a preliminary remark, you should be aware that Subversion usually
 # run the hooks in a very minimal environment.
 # This is why we have to be very explicit about where to find things.
 # 
-# According to http://subversion.tigris.org/faq.html#hook-debugging 
-# one useful method for getting the post-commit hook to work is to test
-# the call from the user(s) which will end up running the hook (e.g. wwwrun,
-# nobody, etc.) using the following commands:
+# According to http://subversion.apache.org/faq.html#hook-debugging,
+# one useful method for getting the post-commit hook to work is to call
+# the hook manually from a shell, as the user(s) which will end up running 
+# the hook (e.g. wwwrun, www-data, nobody). For example:
 #
-#   env - $REPOS/hooks/post-commit $REPOS 1234
+#     env - $REPOS/hooks/post-commit $REPOS 1234
 #
 # or:
 #
-#   env - $REPOS/hooks/post-revprop-change $REPOS 1234 nobody svn:log
+#     env - $REPOS/hooks/post-revprop-change $REPOS 1234 nobody svn:log
 #
 # 
 # The environment variables that have to be set in this script are
-# TRAC_ENV and PATH, and also eventually LD_LIBRARY_PATH.
+# TRAC_ENV, PATH and eventually LD_LIBRARY_PATH.
 #
-# TRAC_ENV is the path to the Trac environment which has to be notified.
+#  TRAC_ENV:: the path(s) to the Trac environment(s)
 #
 # In case you need to maintain more than one environment in sync with
 # the repository (using a different scope or not), simply specify more
 # than one path, using the ":" path separator (or ";" if the script is
-# run on Windows using Cygwin's bash - don't forget to enclose the path
-# list in quotes, e.g. TRAC_ENV="path1;path2").
+# used on Windows with Cygwin's bash - in this case also don't forget to 
+# enclose the list of paths in quotes, e.g. TRAC_ENV="path1;path2").
 #
-# PATH
+#  PATH:: the folder containing the trac-admin script
 #
-#  - the folder containing the trac-admin script has to be in the PATH.
-#    This folder is typically the same as your Python installation bin/ folder.
-#    If this is /usr/bin, then you probably don't need to put it in the
-#    PATH. 
+# This folder is typically the same as your Python installation bin/ folder.
+# If this is /usr/bin, then you probably don't need to put it in the PATH. 
 #
 # Note that if you're using a python program installed in a non-default 
-# location (such as /usr/local), then you need to add it to the PATH as 
-# well. You certainly also need to setup the LD_LIBRARY_PATH accordingly. 
+# location (such as /usr/local or a virtual environment), then you need 
+# to add it to the PATH as well.
+#
+#  LD_LIBRARY_PATH:: folder(s) containing additional required libraries
+#
+# You may also need to setup the LD_LIBRARY_PATH accordingly. 
 # The same goes for any custom dependency, such as SQLite libraries or
 # SVN libraries: make sure everything is reachable.
 # For example, if you get errors like "global name 'sqlite' is not defined"
@@ -94,50 +103,50 @@
 # the required libraries (libsqlite3.so in the above example).
 #
 #
-# See http://trac.edgewall.org/wiki/0.12/RepositoryAdmin for more details
-# about managing repositories in Trac.
-#
-# -----------------------------------------------------------------------------
-
-
 # -----------------------------------------------------------------------------
 #
-# Examples
-# ========
+# == Examples
 #
-# Minimal setup example
-# ---------------------
+# === Minimal setup example ===
 #
-# Python is installed in /usr/bin, Trac was easy-installed.
+# Python is installed in /usr/bin, Trac was easy_install'ed.
 #
-#   ######
-#   export TRAC_ENV=/srv/trac/the_trac_env
-#   ######
+# {{{
+# export TRAC_ENV=/srv/trac/the_trac_env
+# }}}
 #
 #
-#
-# Virtualenv setup example
-# ------------------------
+# === Virtualenv setup example ===
 #
 # Here we're using a Trac installation set up using virtualenv
-# (http://pypi.python.org/pypi/virtualenv), based off a custom
-# Python installation (/opt/python-2.4.4). 
+# (http://pypi.python.org/pypi/virtualenv).
+#
+# In this example, the virtualenv is located in
+# /packages/trac/branches/trac-multirepos
+# and is based off a custom Python installation (/opt/python-2.4.4). 
 # We're also using a custom SQLite build (/opt/sqlite-3.3.8). 
 #
 # Note that virtualenv's activate script doesn't seem to care
 # about LD_LIBRARY_PATH and the only other thing it does and that
-# we need is to set the PATH, so we can as well do that ourselves.
+# we need here is to set the PATH, we can as well do that ourselves:
 #
-#   ######
-#   export TRAC_ENV=/srv/trac/the_trac_env
-#   export PATH=/packages/trac/branches/trac-multirepos/bin:$PATH
-#   export LD_LIBRARY_PATH=/opt/python-2.4.4/lib:/opt/sqlite-3.3.8/lib:$LD_LIBRARY_PATH
-#   ######
+# We also want to notify two Trac instances:
 #
-# -----------------------------------------------------------------------------
-
-
-
+# {{{
+# export TRAC_ENV=/srv/trac/the_trac_env:/srv/trac/trac_other_trac_env
+# export PATH=/packages/trac/branches/trac-multirepos/bin:$PATH
+# export LD_LIBRARY_PATH=/opt/python-2.4.4/lib:/opt/sqlite-3.3.8/lib:$LD_LIBRARY_PATH
+# }}}
+#
+#
+# === Cygwin setup example ===
+#
+# {{{
+# export TRAC_ENV=C:/Workspace/local/trac/devel
+# export PYTHONPATH=C:/Workspace/src/trac/repos/multirepos
+# export PATH=/C/Dev/Python261/Scripts:$PATH
+# }}}
+#
 # -----------------------------------------------------------------------------
 #
 # This is the script itself, you shouldn't need to modify this part.
@@ -151,7 +160,7 @@ PROPNAME="$4"
 
 # -- Foolproofing
 
-if [ -z $REPOS -o -z $REV ]; then
+if [ -z "$REPOS" -o -z "$REV" ]; then
     echo "Usage: $0 REPOS REV"
     exit 2
 fi
@@ -161,14 +170,16 @@ if ! python -V 2>/dev/null; then
     exit 2
 fi
 
-if [ -z $TRAC_ENV ]; then
+if [ -z "$TRAC_ENV" ]; then
     echo "TRAC_ENV is not set."
     exit 2
 fi
 
 # -- Feedback
 
-if [ -z $USER -a -z $PROPNAME ]; then
+echo "----"
+
+if [ -z "$USER" -a -z "$PROPNAME" ]; then
     EVENT="added"
     echo "Changeset $REV was added in $REPOS"
 else
@@ -188,7 +199,8 @@ fi
 for env in $TRAC_ENV; do
     if [ -e "$env/VERSION" ]; then
         trac-admin $env changeset $EVENT $REPOS $REV && \
-        echo "$env has been successfully notified"
+        echo "$env has been successfully notified" || \
+        echo "ERROR: $env has not been notified"
     else
         echo "$env doesn't seem to be a Trac environment, skipping..."
     fi
