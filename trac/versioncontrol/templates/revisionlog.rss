@@ -3,10 +3,10 @@
                    xmlns:dc="http://purl.org/dc/elements/1.1/"
                    xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="macros.rss" />
-  <channel py:with="log_href = abs_href.log(path, rev=rev)">
+  <channel py:with="log_href = abs_href.log(reponame, path, rev=rev)">
     <title>Revisions of $path</title>
     <link>$log_href</link>
-    <description>Trac Log - Revisions of $path</description>
+    <description>Trac Log - Revisions of $path<py:if test="reponame"> in $reponame</py:if></description>
     <language>en-US</language>
     <generator>Trac ${trac.version}</generator>
     <image py:if="chrome.logo.src_abs">
@@ -17,12 +17,12 @@
 
     <item py:for="item in items" 
           py:with="change = changes[item.rev]; 
-                   item_context = context('changeset', change.rev)">
+                   item_context = context('changeset', change.rev, parent=repos.resource)">
       ${author_or_creator(change.author, email_map)}
       <pubDate>${http_date(change.date)}</pubDate>
       <title>Revision $item.rev: ${shorten_line(change.message)}</title>
-      <link>${abs_href.changeset(item.rev, item.path)}</link>
-      <guid isPermaLink="false">${abs_href.changeset(item.rev, item.path)}</guid>
+      <link>${abs_href.changeset(item.rev, reponame, item.path)}</link>
+      <guid isPermaLink="false">${abs_href.changeset(item.rev, reponame, item.path)}</guid>
       <description py:with="m = change.message">${
         unicode(wiki_format_messages and (verbose and wiki_to_html(item_context, m) \
                                                    or wiki_to_oneliner(item_context, m)) \

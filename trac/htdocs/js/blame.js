@@ -1,7 +1,7 @@
 
 (function($){
 
-  window.enableBlame = function(url, original_path) {
+  window.enableBlame = function(url, reponame, original_path) {
     var message = null;
     var message_rev = null;
   
@@ -17,6 +17,8 @@
       if ( href ) {
         a.removeAttr("href");
         href = href.slice(href.indexOf("changeset/") + 10);
+        if (reponame)
+            href = href.substr(reponame.length);
         var sep = href.indexOf("/");
         if ( sep > 0 )
           path = href.slice(sep+1);
@@ -71,7 +73,8 @@
           message_rev = rev;
           highlight_rev = message_rev;
   
-          $.get(url + rev.substr(1), {annotate: annotate_path}, function(data) {
+          $.get(url + [rev.substr(1), reponame].join("/"), 
+                {annotate: annotate_path}, function(data) {
             // remove former message panel if any
             if (message)
               message.remove();

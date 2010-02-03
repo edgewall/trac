@@ -187,7 +187,6 @@ class Resource(object):
         resource.parent = parent
         return resource
 
-
     def __call__(self, realm=False, id=False, version=False, parent=False):
         """Create a new Resource using the current resource as a template.
 
@@ -206,8 +205,7 @@ class Resource(object):
         >>> repr(Resource(None).child('attachment', 'file.txt'))
         "<Resource u', attachment:file.txt'>"
         """
-        return self.__call__(realm, id, version, self)
-    
+        return Resource(realm, id, version, self)
 
 
 class ResourceSystem(Component):

@@ -85,7 +85,8 @@ class SubversionRepositoryTestSetup(TestSetup):
 class SubversionRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH, None,
+        self.repos = SubversionRepository(REPOS_PATH,
+                                          {'name': 'repo', 'id': 1},
                                           logger_factory('test'))
 
     def tearDown(self):
@@ -507,7 +508,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
 class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + u'/tête', None,
+        self.repos = SubversionRepository(REPOS_PATH + u'/tête',
+                                          {'name': 'repo', 'id': 1},
                                           logger_factory('test'))
 
     def tearDown(self):
@@ -756,7 +758,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 class RecentPathScopedRepositoryTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + u'/tête/dir1', None,
+        self.repos = SubversionRepository(REPOS_PATH + u'/tête/dir1',
+                                          {'name': 'repo', 'id': 1},
                                           logger_factory('test'))
 
     def tearDown(self):
@@ -776,7 +779,8 @@ class RecentPathScopedRepositoryTestCase(unittest.TestCase):
 class NonSelfContainedScopedTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + '/tags/v1', None,
+        self.repos = SubversionRepository(REPOS_PATH + '/tags/v1',
+                                          {'name': 'repo', 'id': 1},
                                           logger_factory('test'))
 
     def tearDown(self):
@@ -794,7 +798,8 @@ class NonSelfContainedScopedTestCase(unittest.TestCase):
 class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + '/branches', None,
+        self.repos = SubversionRepository(REPOS_PATH + '/branches',
+                                          {'name': 'repo', 'id': 1},
                                           logger_factory('test'))
 
     def tearDown(self):

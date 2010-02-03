@@ -70,7 +70,7 @@ class TracAdmin(cmd.Cmd):
         try:
             import readline
             delims = readline.get_completer_delims()
-            for c in '-/:':
+            for c in '-/:()':
                 delims = delims.replace(c, '')
             readline.set_completer_delims(delims)
             
@@ -307,7 +307,7 @@ Type:  '?' or 'help' for help on commands.
 
     ## Initenv
     _help_initenv = [
-        ('initenv', '[<projectname> <db> <repostype> <repospath>]',
+        ('initenv', '[<projectname> <db> [<repostype> <repospath>]]',
          """Create and initialize a new environment
          
          If no arguments are given, then the required parameters are requested
@@ -348,24 +348,6 @@ in order to initialize and prepare the project database.
         ddb = 'sqlite:db/trac.db'
         prompt = _("Database connection string [%(default)s]> ", default=ddb)
         returnvals.append(raw_input(prompt).strip() or ddb)
-        printout(_(""" 
- Please specify the type of version control system,
- By default, it will be svn.
-
- If you don't want to use Trac with version control integration,
- choose the default here and don\'t specify a repository directory.
- in the next question.
-"""))
-        drpt = 'svn'
-        prompt = _("Repository type [%(default)s]> ", default=drpt)
-        returnvals.append(raw_input(prompt).strip() or drpt)
-        printout(_("""
- Please specify the absolute path to the version control
- repository, or leave it blank to use Trac without a repository.
- You can also set the repository location later.
-"""))
-        prompt = _("Path to repository [/path/to/repos]> ")
-        returnvals.append(raw_input(prompt).strip())
         print
         return returnvals
 
@@ -393,24 +375,29 @@ in order to initialize and prepare the project database.
         arg = arg or [''] # Reset to usual empty in case we popped the only one
         project_name = None
         db_str = None
+        repository_type = None
         repository_dir = None
         if len(arg) == 1 and not arg[0]:
-            returnvals = self.get_initenv_args()
-            project_name, db_str, repository_type, repository_dir = returnvals
-        elif len(arg) != 4:
+            project_name, db_str = self.get_initenv_args()
+        elif len(arg) == 2:
+            project_name, db_str = arg
+        elif len(arg) == 4:
+            project_name, db_str, repository_type, repository_dir = arg
+        else:
             initenv_error('Wrong number of arguments: %d' % len(arg))
             return 2
-        else:
-            project_name, db_str, repository_type, repository_dir = arg[:4]
 
         try:
             printout(_("Creating and Initializing Project"))
             options = [
-                ('trac', 'database', db_str),
-                ('trac', 'repository_type', repository_type),
-                ('trac', 'repository_dir', repository_dir),
                 ('project', 'name', project_name),
+                ('trac', 'database', db_str),
             ]
+            if repository_dir:
+                options.extend([
+                    ('trac', 'repository_type', repository_type),
+                    ('trac', 'repository_dir', repository_dir),
+                ])
             if inherit_paths:
                 options.append(('inherit', 'file',
                                 ",\n      ".join(inherit_paths)))
@@ -435,12 +422,12 @@ in order to initialize and prepare the project database.
                 try:
                     repos = self.__env.get_repository()
                     if repos:
-                        printout(_(" Indexing repository"))
+                        printout(_(" Indexing default repository"))
                         repos.sync(self._resync_feedback)
                 except TracError, e:
                     printerr(_("""
 ---------------------------------------------------------------------
-Warning: couldn't index the repository.
+Warning: couldn't index the default repository.
 
 This can happen for a variety of reasons: wrong repository type, 
 no appropriate third party library for this repository type,
@@ -448,8 +435,7 @@ no actual repository at the specified repository path...
 
 You can nevertheless start using your Trac environment, but 
 you'll need to check again your trac.ini file and the [trac] 
-repository_type and repository_path settings in order to enable
-the Trac repository browser.
+repository_type and repository_path settings.
 """))
         except Exception, e:
             initenv_error(to_unicode(e))

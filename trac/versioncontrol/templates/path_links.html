@@ -1,0 +1,28 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:py="http://genshi.edgewall.org/" py:strip="">
+  <!--!  Display a sequence of path components.
+  -
+  -      Each component is a link to the corresponding location in the browser.
+  -
+  -      We expect the following variables to be available in the calling
+  -      context:
+  -       * path_links, a list of dicts each having the following keys:
+  -         * name, the path component name
+  -         * href, a link pointing to this path
+  -       * rev, the optional revision information to show
+  -       * reponame, the optional repository name
+  -->
+<a class="pathentry first"
+   title="${(_('Go to repository root'), _('Go to repository index'))[bool(reponame)]}"
+   href="${path_links[0].href}">${path_links[0].name}</a>
+<py:for each="idx, part in enumerate(path_links[1:])"><py:with
+        vars="last = idx == len(path_links) - 2"><a
+          class="pathentry" title="${_('View %(name)s', name=part.name)}"
+          href="$part.href">$part.name</a><py:if
+        test="not last"><span class="pathentry sep">/</span></py:if></py:with></py:for>
+<py:if test="rev"><span class="pathentry sep">@</span>
+  <a class="pathentry" href="${href.changeset(rev, reponame)}" title="View changeset $rev">$rev</a>
+</py:if>
+<br style="clear: both" />
+
+</div>

@@ -1,0 +1,151 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
+  <xi:include href="admin.html"/>
+  <head>
+    <title>Repositories</title>
+  </head>
+
+  <body>
+    <h2>Manage Repositories</h2>
+
+    <py:def function="type_field(editable, selected=None)">
+      <div class="field">
+        <label>Type:<br/>
+          <select size="1" id="trac-type" name="type" disabled="${not editable or None}">
+            <option py:for="type in types" value="$type" selected="${type == selected or None}">${type or _('(default)')}</option>
+            <option py:if="selected and selected not in types" selected="selected">$selected</option>
+          </select>
+        </label>
+        <span class="hint">Default: $default_type</span>
+      </div>
+    </py:def>
+
+    <py:def function="alias_field(editable, selected=None)">
+      <div class="field">
+        <label>Repository:<br/>
+          <select size="1" id="trac-repository" name="alias" disabled="${not editable or None}">
+            <option py:for="(reponame, info) in sorted(repositories.iteritems())" py:if="not info.alias"
+                    value="$info.name" selected="${info.name == selected or None}">${info.name or _('(default)')}</option>
+            <option py:if="selected is not None and selected not in repositories" selected="selected">$selected</option>
+          </select>
+        </label>
+      </div>
+    </py:def>
+
+    <py:choose test="view">
+      <form py:when="'detail'" py:with="info = repositories[reponame]" class="mod" id="trac-modrepos" method="post" action="">
+        <fieldset py:choose="" py:with="readonly = not info.editable or None">
+          <legend py:when="info.editable">Modify Repository:</legend>
+          <legend py:otherwise="">View Repository:</legend>
+          <p py:if="not info.editable" class="hint" i18n:msg=""><strong>Note:</strong>
+            This repository is defined in <code><a href="${href.wiki('TracIni')}">trac.ini</a></code> and cannot be edited on this page.
+          </p>
+          <div class="field">
+            <label>Name:<br/><input type="text" name="name" value="$info.name" readonly="$readonly"/></label>
+          </div>
+          <py:choose>
+            <py:when test="'alias' in info">
+              ${alias_field(info.editable, info.alias)}
+            </py:when>
+            <py:otherwise>
+              ${type_field(info.editable, info.type)}
+              <div class="field">
+                <label>Directory:<br/><input type="text" name="dir" size="48" value="$info.dir" readonly="$readonly"/></label>
+              </div>
+              <div class="field">
+                <label>URL:<br/><input type="text" name="url" size="48" value="$info.url" readonly="$readonly"/></label>
+              </div>
+            </py:otherwise>
+          </py:choose>
+          <div class="field">
+            <label><input type="checkbox" name="hidden" value="1" checked="${info.hidden or None}" disabled="$readonly"/>
+              Hide from repository index
+            </label>
+          </div>
+          <div class="field">
+            <fieldset class="iefix">
+              <label for="description" i18n:msg="">
+                Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
+              </label>
+              <p>
+                <textarea id="description" name="description" class="wikitext trac-resizable"
+                          rows="6" cols="60" readonly="$readonly">
+$info.description</textarea>
+              </p>
+            </fieldset>
+          </div>
+          <div class="buttons">
+            <input type="submit" name="cancel" value="${_('Cancel')}"/>
+            <input py:if="info.editable" type="submit" name="save" value="${_('Save')}"/>
+          </div>
+        </fieldset>
+      </form>
+
+      <py:otherwise>
+        <form class="addnew" id="trac-addrepos" method="post" action="">
+          <fieldset>
+            <legend>Add Repository:</legend>
+            <div class="field">
+              <label>Name:<br/><input type="text" name="name"/></label>
+            </div>
+            ${type_field(True)}
+            <div class="field">
+              <label>Directory:<br/><input type="text" name="dir"/></label>
+            </div>
+            <div class="buttons">
+              <input type="submit" name="add_repos" value="${_('Add')}"/>
+            </div>
+          </fieldset>
+        </form>
+
+        <form py:if="any(not info.alias for info in repositories.itervalues())"
+              class="addnew" id="trac-addalias" method="post" action="">
+          <fieldset>
+            <legend>Add Alias:</legend>
+            <div class="field">
+              <label>Name:<br/><input type="text" name="name"/></label>
+            </div>
+            ${alias_field(True)}
+            <div class="buttons">
+              <input type="submit" name="add_alias" value="${_('Add')}"/>
+            </div>
+          </fieldset>
+        </form>
+
+        <form id="trac-repository_table" method="post" action="">
+          <table class="listing" id="trac-reposlist">
+            <thead>
+              <tr><th class="sel">&nbsp;</th>
+                <th>Name</th><th>Type</th><th>Directory</th><th>Revision</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr py:for="(reponame, info) in sorted(repositories.iteritems())">
+                <td class="sel"><input py:if="info.editable" type="checkbox" name="sel" value="$info.name"/></td>
+                <td class="name">
+                  <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
+                </td>
+                <td>${not info.alias and (info.type or _('(default)')) or None}</td>
+                <td py:choose="">
+                  <py:when test="info.dir">$info.prettydir</py:when>
+                  <em py:otherwise="">Alias of $info.alias</em>
+                </td>
+                <td><a py:if="info.rev" href="${href.changeset(info.rev, reponame) or None}">$info.rev</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="buttons">
+            <input type="submit" name="refresh" value="${_('Refresh')}"/>
+            <input type="submit" name="remove" value="${_('Remove selected items')}"/>
+          </div>
+        </form>
+      </py:otherwise>
+    </py:choose>
+  </body>
+
+</html>

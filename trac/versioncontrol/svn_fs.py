@@ -54,7 +54,6 @@ from trac.versioncontrol import Changeset, Node, Repository, \
                                 IRepositoryConnector, \
                                 NoSuchChangeset, NoSuchNode
 from trac.versioncontrol.cache import CachedRepository
-from trac.versioncontrol.svn_authz import SubversionAuthorizer
 from trac.util import embedded_numbers
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
@@ -270,7 +269,7 @@ class SubversionConnector(Component):
         yield ("svnfs", prio*4)
         yield ("svn", prio*2)
 
-    def get_repository(self, type, dir, authname):
+    def get_repository(self, type, dir, params):
         """Return a `SubversionRepository`.
 
         The repository is wrapped in a `CachedRepository`, unless `type` is
@@ -279,19 +278,13 @@ class SubversionConnector(Component):
         if not self._version:
             self._version = self._get_version()
             self.env.systeminfo.append(('Subversion', self._version))
-        fs_repos = SubversionRepository(dir, None, self.log,
-                                        {'tags': self.tags,
-                                         'branches': self.branches})
+        params.update(tags=self.tags, branches=self.branches)
+        fs_repos = SubversionRepository(dir, params, self.log)
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
-            repos = CachedRepository(self.env.get_db_cnx, fs_repos, None,
-                                     self.log)
+            repos = CachedRepository(self.env, fs_repos, self.log)
             repos.has_linear_changesets = True
-        if authname:
-            authz = SubversionAuthorizer(self.env, weakref.proxy(repos),
-                                         authname)
-            repos.authz = fs_repos.authz = authz
         return repos
 
     def _get_version(self):
@@ -306,19 +299,19 @@ class SubversionConnector(Component):
 class SubversionRepository(Repository):
     """Repository implementation based on the svn.fs API."""
 
-    def __init__(self, path, authz, log, options={}):
+    def __init__(self, path, params, log):
         self.log = log
-        self.options = options
         self.pool = Pool()
         
         # Remove any trailing slash or else subversion might abort
         if isinstance(path, unicode):
-            self.path = path
             path_utf8 = path.encode('utf-8')
         else: # note that this should usually not happen (unicode arg expected)
-            self.path = to_unicode(path)
-            path_utf8 = self.path.encode('utf-8')
+            path_utf8 = to_unicode(path).encode('utf-8')
+
         path_utf8 = os.path.normpath(path_utf8).replace('\\', '/')
+        self.path = path_utf8.decode('utf-8')
+        
         root_path_utf8 = repos.svn_repos_find_root_path(path_utf8, self.pool())
         if root_path_utf8 is None:
             raise TracError(_("%(path)s does not appear to be a Subversion "
@@ -332,10 +325,11 @@ class SubversionRepository(Repository):
                               svn_error=exception_to_unicode(e)))
         self.fs_ptr = repos.svn_repos_fs(self.repos)
         
-        uuid = fs.get_uuid(self.fs_ptr, self.pool())
-        name = 'svn:%s:%s' % (uuid, _from_svn(path_utf8))
+        self.uuid = fs.get_uuid(self.fs_ptr, self.pool())
+        self.base = 'svn:%s:%s' % (self.uuid, _from_svn(root_path_utf8))
+        name = 'svn:%s:%s' % (self.uuid, self.path)
 
-        Repository.__init__(self, name, authz, log)
+        Repository.__init__(self, name, params, log)
 
         # if root_path_utf8 is shorter than the path_utf8, the difference is
         # this scope (which always starts with a '/')
@@ -389,9 +383,12 @@ class SubversionRepository(Repository):
             self.pool.destroy()
         self.repos = self.fs_ptr = self.pool = None
 
+    def get_base(self):
+        return self.base
+        
     def _get_tags_or_branches(self, paths):
         """Retrieve known branches or tags."""
-        for path in self.options.get(paths, []):
+        for path in self.params.get(paths, []):
             if path.endswith('*'):
                 folder = posixpath.dirname(path)
                 try:
@@ -418,15 +415,22 @@ class SubversionRepository(Repository):
         for n in self._get_tags_or_branches('tags'):
             yield 'tags', n.path, n.created_path, n.created_rev
 
+    def get_path_url(self, path, rev):
+        url = self.params.get('url', '').rstrip('/')
+        if url:
+            if not path or path == '/':
+                return url
+            return url + '/' + path.lstrip('/')
+    
     def get_changeset(self, rev):
         rev = self.normalize_rev(rev)
-        return SubversionChangeset(rev, self.authz, self.scope,
-                                   self.fs_ptr, self.pool)
+        return SubversionChangeset(self, rev, self.scope, self.pool)
+
+    def get_changeset_uid(self, rev):
+        return (self.uuid, rev)
 
     def get_node(self, path, rev=None):
         path = path or ''
-        self.authz.assert_permission(posixpath.join(self.scope,
-                                                    path.strip('/')))
         if path and path[-1] == '/':
             path = path[:-1]
 
@@ -477,8 +481,6 @@ class SubversionRepository(Repository):
                 if rev < end:
                     break
                 path = _from_svn(path_utf8)
-                if not self.authz.has_permission(path):
-                    break
                 yield path, rev
         del tmp1
         del tmp2
@@ -654,9 +656,7 @@ class SubversionRepository(Repository):
 class SubversionNode(Node):
 
     def __init__(self, path, rev, repos, pool=None, parent_root=None):
-        self.repos = repos
         self.fs_ptr = repos.fs_ptr
-        self.authz = repos.authz
         self.scope = repos.scope
         self._scoped_path_utf8 = _to_svn(self.scope, path)
         self.pool = Pool(pool)
@@ -687,7 +687,7 @@ class SubversionNode(Node):
             self.created_rev, self.created_path = rev, path
         self.rev = self.created_rev
         # TODO: check node id
-        Node.__init__(self, path, self.rev, _kindmap[node_type])
+        Node.__init__(self, repos, path, self.rev, _kindmap[node_type])
 
     def get_content(self):
         if self.isdir:
@@ -706,9 +706,6 @@ class SubversionNode(Node):
         entries = fs.dir_entries(self.root, self._scoped_path_utf8, pool())
         for item in entries.keys():
             path = posixpath.join(self.path, _from_svn(item))
-            if not self.authz.has_permission(posixpath.join(self.scope,
-                                                            path.strip('/'))):
-                continue
             yield SubversionNode(path, self._requested_rev, self.repos,
                                  self.pool, self.root)
 
@@ -833,11 +830,10 @@ class SubversionNode(Node):
 
 class SubversionChangeset(Changeset):
 
-    def __init__(self, rev, authz, scope, fs_ptr, pool=None):
+    def __init__(self, repos, rev, scope, pool=None):
         self.rev = rev
-        self.authz = authz
         self.scope = scope
-        self.fs_ptr = fs_ptr
+        self.fs_ptr = repos.fs_ptr
         self.pool = Pool(pool)
         try:
             message = self._get_prop(core.SVN_PROP_REVISION_LOG)
@@ -853,7 +849,7 @@ class SubversionChangeset(Changeset):
             date = datetime.fromtimestamp(ts, utc)
         else:
             date = None
-        Changeset.__init__(self, rev, message, author, date)
+        Changeset.__init__(self, repos, rev, message, author, date)
 
     def get_properties(self):
         props = fs.revision_proplist(self.fs_ptr, self.rev, self.pool())
@@ -883,8 +879,7 @@ class SubversionChangeset(Changeset):
             path = _from_svn(path_utf8)
 
             # Filtering on `path`
-            if not (_is_path_within_scope(self.scope, path) and
-                    self.authz.has_permission(path)):
+            if not _is_path_within_scope(self.scope, path):
                 continue
 
             path_utf8 = change.path
@@ -894,8 +889,7 @@ class SubversionChangeset(Changeset):
             base_rev = change.base_rev
 
             # Ensure `base_path` is within the scope
-            if not (_is_path_within_scope(self.scope, base_path) and
-                    self.authz.has_permission(base_path)):
+            if not _is_path_within_scope(self.scope, base_path):
                 base_path, base_rev = None, -1
 
             # Determine the action

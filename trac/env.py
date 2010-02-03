@@ -281,11 +281,6 @@ class Environment(Component, ComponentManager):
                 break
             cname = cname[:idx]
 
-        # versioncontrol components are enabled if the repository is configured
-        # FIXME: this shouldn't be hardcoded like this
-        if component_name.startswith('trac.versioncontrol.'):
-            return self.config.get('trac', 'repository_dir') != ''
-
         # By default, all components in the trac package are enabled
         return component_name.startswith('trac.') or None
 
@@ -318,13 +313,13 @@ class Environment(Component, ComponentManager):
             hdlr.close()
             del self.log._trac_handler
 
-    def get_repository(self, authname=None):
+    def get_repository(self, reponame=None, authname=None):
         """Return the version control repository configured for this
         environment.
         
         @param authname: user name for authorization
         """
-        return RepositoryManager(self).get_repository(authname)
+        return RepositoryManager(self).get_repository(reponame)
 
     def create(self, options=[]):
         """Create the basic directory structure of the environment, initialize
@@ -467,7 +462,7 @@ class Environment(Component, ComponentManager):
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
         
-        Each db version should have its own upgrade module, names
+        Each db version should have its own upgrade module, named
         upgrades/dbN.py, where 'N' is the version number (int).
 
         @param backup: whether or not to backup before upgrading

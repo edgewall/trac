@@ -24,21 +24,26 @@
     <div id="content" class="changeset">
       <div id="title" py:choose="">
         <h1 py:when="changeset and restricted">
-          Changeset <a title="Show full changeset" href="${href.changeset(new_rev)}">$new_rev</a>
-          for <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
+          Changeset <a title="Show full changeset" 
+                       href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if>
+          for <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
         </h1>
         <h1 py:when="not changeset and restricted">
-          Changes in <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
-          <a title="Show revision log" href="${href.log(new_path, rev=new_rev, stop_rev=old_rev)}">
-            [$old_rev:$new_rev]</a>
+          Changes in <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
+          <a title="Show revision log" href="${href.log(reponame, new_path, rev=new_rev, stop_rev=old_rev)}">
+            [$old_rev:$new_rev]</a><py:if test="reponame"> in $reponame</py:if>
         </h1>
         <h1 py:when="not changeset and not restricted">
-          Changes from <a title="Show entry in browser" href="${href.browser(old_path, rev=old_rev)}">$old_path</a>
-          at <a title="Show full changeset" href="${href.changeset(old_rev)}">r$old_rev</a>
-          to <a title="Show entry in browser" href="${href.browser(new_path, rev=new_rev)}">$new_path</a>
-          at <a title="Show full changeset" href="${href.changeset(new_rev)}">r$new_rev</a>
+            Changes<py:if test="reponame"> in $reponame</py:if>
+            from <a title="Show entry in browser" href="${href.browser(reponame, old_path, rev=old_rev)}">$old_path</a>
+          at <a title="Show full changeset" href="${href.changeset(old_rev, reponame)}">r$old_rev</a>
+          to <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
+          at <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">r$new_rev</a>
           </h1>
-        <h1 py:otherwise="">Changeset <a py:strip="not annotated" title="Show full changeset" href="${href.changeset(new_rev)}">$new_rev</a></h1>
+          <h1 py:otherwise="">Changeset <a 
+             py:strip="not annotated" 
+             title="Show full changeset"
+             href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
       </div>
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
@@ -46,12 +51,12 @@
         id="prefs" action="">
         <div>
           <py:if test="not changeset">
-            <input type="hidden" name="old_path" value="$old_path" />
-            <input type="hidden" name="new_path" value="$new_path" />
+            <input type="hidden" name="old_path" value="${'/' + pathjoin(reponame, old_path)}" />
+            <input type="hidden" name="new_path" value="${'/' + pathjoin(reponame, new_path)}" />
             <input type="hidden" name="old" value="$old_rev" />
             <input type="hidden" name="new" value="$new_rev" />
           </py:if>
-          ${diff_options_fields(diff)}
+          <xi:include href="diff_options.html" />
         </div>
       </form>
 
@@ -117,14 +122,14 @@
             &nbsp;
             </py:when>
             <py:when test="wiki_format_messages">
-              ${wiki_to_html(context('changeset', changeset.rev), changeset.message, escape_newlines=True)}
+              ${wiki_to_html(context, changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise><pre>${changeset.message}</pre></py:otherwise>
           </dd>
         </py:if>
         <py:if test="location">
           <dt class="property location">Location:</dt>
-          <dd class="searchable"><a href="${req.href.browser(location, rev=new_rev)}">$location</a></dd>
+          <dd class="searchable"><a href="${req.href.browser(reponame, location, rev=new_rev)}">$location</a></dd>
         </py:if>
         <dt class="property files">${files and 'Files:' or '(No files)'}</dt>
         <dd class="files">

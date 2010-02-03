@@ -11,6 +11,8 @@ attachment add       Attach a file to a resource
 attachment export    Export an attachment from a resource to a file or stdout
 attachment list      List attachments of a resource
 attachment remove    Remove an attachment from a resource
+changeset added      Notify trac about changesets added to a repository
+changeset modified   Notify trac about changesets modified in a repository
 component add        Add a new component
 component chown      Change component ownership
 component list       Show available components
@@ -35,12 +37,18 @@ priority change      Change a priority value
 priority list        Show possible ticket priorities
 priority order       Move a priority value up or down in the list
 priority remove      Remove a priority value
+repository add       Add a source repository
+repository alias     Create an alias for a repository
+repository list      List source repositories
+repository remove    Remove a source repository
+repository resync    Re-synchronize trac with repositories
+repository set       Set an attribute of a repository
+repository sync      Resume synchronization of repositories
 resolution add       Add a resolution value option
 resolution change    Change a resolution value
 resolution list      Show possible ticket resolutions
 resolution order     Move a resolution value up or down in the list
 resolution remove    Remove a resolution value
-resync               Re-synchronize trac with the repository
 severity add         Add a severity value option
 severity change      Change a severity value
 severity list        Show possible ticket severities

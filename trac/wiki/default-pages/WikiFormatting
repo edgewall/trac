@@ -4,80 +4,144 @@
 Wiki markup is a core feature in Trac, tightly integrating all the other parts of Trac into a flexible and powerful whole.
 
 Trac has a built in small and powerful wiki rendering engine. This wiki engine implements an ever growing subset of the commands from other popular Wikis,
-especially [http://moinmoin.wikiwikiweb.de/ MoinMoin]. 
+especially [http://moinmo.in/ MoinMoin] and [trac:WikiCreole].
 
 
 This page demonstrates the formatting syntax available anywhere WikiFormatting is allowed.
 
 
+[[PageOutline(2,Markup Categories,inline)]]
+
+
 == Font Styles ==
 
 The Trac wiki supports the following font styles:
-{{{
- * '''bold''', '''!''' can be bold too''', and '''! '''
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+   * '''bold''', 
+     ''' triple quotes !''' 
+     can be bold too if prefixed by ! ''', 
+   * ''italic''
+   * '''''bold italic''''' or ''italic and
+     ''' italic bold ''' ''
+   * __underline__
+   * {{{monospace}}} or `monospace`
+     (hence `{{{` or {{{`}}} quoting)
+   * ~~strike-through~~
+   * ^superscript^ 
+   * ,,subscript,,
+  }}}
+}}}
+{{{#!td
+ * '''bold''', 
+   ''' triple quotes !''' 
+   can be bold too if prefixed by ! ''', 
  * ''italic''
- * '''''bold italic'''''
+ * '''''bold italic''''' or ''italic and
+   ''' italic bold ''' ''
  * __underline__
  * {{{monospace}}} or `monospace`
+   (hence `{{{` or {{{`}}} quoting)
  * ~~strike-through~~
  * ^superscript^ 
  * ,,subscript,,
 }}}
-
-Display:
- * '''bold''', '''!''' can be bold too''', and '''! '''
- * ''italic''
- * '''''bold italic'''''
- * __underline__
- * {{{monospace}}} or `monospace`
- * ~~strike-through~~
- * ^superscript^ 
- * ,,subscript,,
 
 Notes:
  * `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
  * {{{ ! }}} tells wiki parser to not take the following characters as wiki format, so pay attention to put a space after !, e.g. when ending bold.
+ * all the font styles marks have to be used in opening/closing pairs, 
+   and they must nest properly
 
 == Headings ==
 
-You can create heading by starting a line with one up to five ''equal'' characters ("=")
-followed by a single space and the headline text. The line should end with a space 
-followed by the same number of ''='' characters.
+You can create heading by starting a line with one up to six ''equal'' characters ("=")
+followed by a single space and the headline text. The headline text can be 
+followed by the same number of ''='' characters, but this is no longer mandatory.
 The heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
 
-Example:
-{{{
-= Heading =
-== Subheading ==
-=== About ''this'' ===
-=== Explicit id === #using-explicit-id-in-heading
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  = Heading =
+  == Subheading
+  === About ''this'' ===
+  === Explicit id === #using-explicit-id-in-heading
+  == Subheading #sub2
 }}}
-
-Display:
-= Heading =
-== Subheading ==
-=== About ''this'' ===
-=== Explicit id === #using-explicit-id-in-heading
+}}}
+{{{#!td style="padding: 1em;"
+  {{{
+  #!div
+  == Subheading
+  === About ''this'' ===
+  === Explicit id === #using-explicit-id-in-heading
+  == Subheading #sub2
+  }}}
+}}}
 
 == Paragraphs ==
 
 A new text paragraph is created whenever two blocks of text are separated by one or more empty lines.
 
 A forced line break can also be inserted, using:
-{{{
-Line 1[[BR]]Line 2
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  Line 1[[BR]]Line 2
+  }}}
+  {{{
+  Paragraph
+  one
+
+  Paragraph 
+  two
+  }}}
 }}}
-Display:
+{{{#!td
+  Line 1[[BR]]Line 2
 
-Line 1[[BR]]Line 2
+  Paragraph 
+  one
 
+  Paragraph 
+  two
+}}}
 
 == Lists ==
 
 The wiki supports both ordered/numbered and unordered lists.
 
 Example:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+   * Item 1
+     * Item 1.1
+        * Item 1.1.1   
+        * Item 1.1.2
+        * Item 1.1.3
+     * Item 1.2
+   * Item 2
+  - items can start at the beginning of a line
+    and they can span multiple lines
+    - be careful though to continue the line 
+    with the appropriate indentation, otherwise
+  that will start a new paragraph...
+  
+   1. Item 1
+     a. Item 1.a
+     a. Item 1.b
+        i. Item 1.b.i
+        i. Item 1.b.ii
+   1. Item 2
+  And numbered lists can also be restarted
+  with an explicit number:
+   3. Item 3
+  }}}
+}}}
+{{{#!td
  * Item 1
    * Item 1.1
       * Item 1.1.1   
@@ -85,6 +149,11 @@ Example:
       * Item 1.1.3
    * Item 1.2
  * Item 2
+- items can start at the beginning of a line
+  and they can span multiple lines
+  - be careful though to continue the line 
+  with the appropriate indentation, otherwise
+that will start a new paragraph...
 
  1. Item 1
    a. Item 1.a
@@ -92,51 +161,32 @@ Example:
       i. Item 1.b.i
       i. Item 1.b.ii
  1. Item 2
-And numbered lists can also be given an explicit number:
+And numbered lists can also be restarted with an explicit number:
  3. Item 3
 }}}
-
-Display:
- * Item 1
-   * Item 1.1
-      * Item 1.1.1
-      * Item 1.1.2
-      * Item 1.1.3
-   * Item 1.2
- * Item 2
-
- 1. Item 1
-   a. Item 1.a
-   a. Item 1.b
-      i. Item 1.b.i
-      i. Item 1.b.ii
- 1. Item 2
-And numbered lists can also be given an explicit number:
- 3. Item 3
-
-Note that there must be one or more spaces preceding the list item markers, otherwise the list will be treated as a normal paragraph.
 
 
 == Definition Lists ==
 
-
 The wiki also supports definition lists.
 
-Example:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+   llama::
+     some kind of mammal, with hair
+   ppython::
+     some kind of reptile, without hair
+     (can you spot the typo?)
+  }}}
+}}}
+{{{#!td
  llama::
    some kind of mammal, with hair
  ppython::
    some kind of reptile, without hair
    (can you spot the typo?)
 }}}
-
-Display:
- llama::
-   some kind of mammal, with hair
- ppython::
-   some kind of reptile, without hair
-   (can you spot the typo?)
 
 Note that you need a space in front of the defined term.
 
@@ -145,136 +195,206 @@ Note that you need a space in front of the defined term.
 
 Block containing preformatted text are suitable for source code snippets, notes and examples. Use three ''curly braces'' wrapped around the text to define a block quote. The curly braces need to be on a separate line.
   
-Example:
-{{{
- {{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  {{{
   def HelloWorld():
-      print "Hello World"
- }}}
+      print '''Hello World'''
+  }}}
+  }}}
+}}}
+{{{#!td
+  {{{
+  def HelloWorld():
+      print '''Hello World'''
+  }}}
 }}}
 
-Display:
-{{{
- def HelloWorld():
-     print "Hello World"
-}}}
-
+Note that this kind of block is also used for selecting lines that should be processed through WikiProcessors.
 
 == Blockquotes ==
 
 In order to mark a paragraph as blockquote, indent that paragraph with two spaces.
 
-Example:
+||= Wiki Markup =||= Display =||
+{{{#!td
 {{{
+Paragraph
   This text is a quote from someone else.
 }}}
-
-Display:
+}}}
+{{{#!td
+Paragraph
   This text is a quote from someone else.
+}}}
 
 == Discussion Citations ==
 
 To delineate a citation in an ongoing discussion thread, such as the ticket comment area, e-mail-like citation marks (">", ">>", etc.) may be used.  
 
-Example:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  >> Someone's original text
+  > Someone else's reply text
+  >  - which can be any kind of Wiki markup
+  My reply text
+  }}}
+}}}
+{{{#!td
 >> Someone's original text
 > Someone else's reply text
+>  - which can be any kind of Wiki markup
 My reply text
 }}}
 
-Display:
->> Someone's original text
-> Someone else's reply text
-My reply text
-
-''Note: Some WikiFormatting elements, such as lists and preformatted text, are  lost in the citation area.  Some reformatting may be necessary to create a clear citation.''
 
 == Tables ==
-
+=== Simple Tables ===
 Simple tables can be created like this:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  ||Cell 1||Cell 2||Cell 3||
+  ||Cell 4||Cell 5||Cell 6||
+  }}}
+}}}
+{{{#!td style="padding: 2em;"
 ||Cell 1||Cell 2||Cell 3||
 ||Cell 4||Cell 5||Cell 6||
 }}}
-
-Display:
-||Cell 1||Cell 2||Cell 3||
-||Cell 4||Cell 5||Cell 6||
-
 
 Cell headings can be specified by wrapping the content in a pair of '=' characters.
 Note that the '=' characters have to stick to the cell separators, like this:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  ||        ||= stable =||= latest =||
+  ||= 0.10 =||  0.10.5  || 0.10.6dev||
+  ||= 0.11 =||  0.11.6  || 0.11.7dev||
+  }}}
+}}}
+{{{#!td style="padding: 2em;"
 ||        ||= stable =||= latest =||
 ||= 0.10 =||  0.10.5  || 0.10.6dev||
 ||= 0.11 =||  0.11.6  || 0.11.7dev||
 }}}
-
-Display:
-||        ||= stable =||= latest =||
-||= 0.10 =||  0.10.5  || 0.10.6dev||
-||= 0.11 =||  0.11.6  || 0.11.7dev||
 
 Finally, specifying an empty cell means that the next non empty cell will span the empty cells. For example:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  || 1 || 2 || 3 ||
+  |||| 1-2 || 3 ||
+  || 1 |||| 2-3 ||
+  |||||| 1-2-3 ||
+  }}}
+}}}
+{{{#!td style="padding: 2em;"
 || 1 || 2 || 3 ||
-|||| 1 2 || 3 ||
-|| 1 |||| 2 3 ||
-|||||| 1 2 3 ||
+|||| 1-2 || 3 ||
+|| 1 |||| 2-3 ||
+|||||| 1-2-3 ||
 }}}
 
-Display:
-|| 1 || 2 || 3 ||
-|||| 1 2 || 3 ||
-|| 1 |||| 2 3 ||
-|||||| 1 2 3 ||
+Note that if the content of a cell "sticks" to one side of the cell and only one, then the text will be aligned on that side. Example:
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  ||=Text =||= Numbers =||
+  ||left align    ||        1.0||
+  ||  center      ||        4.5||
+  ||      right align||     4.5||
+  || default alignment ||   2.5||
+  ||default||         2.5||
+  ||  default ||      2.5||
+  || default ||       2.5||
+  }}}
+}}}
+{{{#!td style="padding: 2em;"
+||=Text =||= Numbers =||
+||left align    ||        1.0||
+||  center      ||        4.5||
+||      right align||     4.5||
+|| default alignment ||   2.5||
+||default||         2.5||
+||  default ||      2.5||
+|| default ||       2.5||
+}}}
 
-Note that more complex tables can be created using
-[wiki:WikiRestructuredText#BiggerReSTExample reStructuredText].
+If contrary to the example above, the cells in your table contain more text, it might be convenient to spread a table row over multiple lines of markup. The `\` character placed at the end of a line after a cell separator tells Trac to not start a new row for the cells on the next line.
+
+||= Wiki Markup =||
+{{{#!td
+  {{{
+  || this is column 1 [http://trac.edgewall.org/newticket new ticket] || \
+  || this is column 2 [http://trac.edgewall.org/roadmap the road ahead] || \
+  || that's column 3 and last one ||
+  }}}
+}}}
+|-------------
+||= Display =||
+{{{#!td style="padding: 2em;"
+|| this is column 1 [http://trac.edgewall.org/newticket new ticket] || \
+|| this is column 2 [http://trac.edgewall.org/roadmap the road ahead] || \
+|| that's column 3 and last one ||
+}}}
+
+=== Complex Tables ===
+
+If the possibilities offered by the simple "pipe"-based markup for tables described above are not enough for your needs, you can create more elaborated tables by using [#Processors-example-tables WikiProcessor based tables].
 
 
 == Links ==
 
 Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks can be disabled by prepending an exclamation mark "!" character, such as {{{!WikiPageLink}}}.
 
-Example:
-{{{
- TitleIndex, http://www.edgewall.com/, !NotAlink
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  TitleIndex, http://www.edgewall.com/, !NotAlink
+  }}}
 }}}
-
-Display:
- TitleIndex, http://www.edgewall.com/, !NotAlink
+{{{#!td
+TitleIndex, http://www.edgewall.com/, !NotAlink
+}}}
 
 Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets.  If the descriptive title is omitted, then the explicit prefix is discarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
 
-Example:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+   * [http://www.edgewall.com/ Edgewall Software]
+   * [wiki:TitleIndex Title Index]
+   * [wiki:ISO9000]
+  }}}
+}}}
+{{{#!td
  * [http://www.edgewall.com/ Edgewall Software]
  * [wiki:TitleIndex Title Index]
  * [wiki:ISO9000]
 }}}
-
-Display:
- * [http://www.edgewall.com/ Edgewall Software]
- * [wiki:TitleIndex Title Index]
- * [wiki:ISO9000]
 
 == Trac Links ==
 
 Wiki pages can link directly to other parts of the Trac system. Pages can refer to tickets, reports, changesets, milestones, source files and other Wiki pages using the following notations:
-{{{
- * Tickets: #1 or ticket:1
- * Reports: {1} or report:1
- * Changesets: r1, [1] or changeset:1
- * ...
-}}}
 
-Display:
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+   * Tickets: #1 or ticket:1
+   * Reports: {1} or report:1
+   * Changesets: r1, [1] or changeset:1
+   * ...
+  }}}
+}}}
+{{{#!td
  * Tickets: #1 or ticket:1
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
  * ... 
+}}}
 
 There are many more flavors of Trac links, see TracLinks for more in-depth information.
 
@@ -283,16 +403,17 @@ There are many more flavors of Trac links, see TracLinks for more in-depth infor
 
 You may avoid making hyperlinks out of TracLinks by preceding an expression with a single "!" (exclamation mark).
 
-Example:
-{{{
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+   !NoHyperLink
+   !#42 is not a link
+  }}}
+}}}
+{{{#!td
  !NoHyperLink
  !#42 is not a link
 }}}
-
-Display:
- !NoHyperLink
- !#42 is not a link
-
 
 == Images ==
 
@@ -306,7 +427,15 @@ In addition to the current page, it is possible to refer to other resources:
  * `[[Image(htdocs:picture.gif)]]` (referring to a file inside project htdocs)
  * `[[Image(source:/trunk/trac/htdocs/trac_logo_mini.png)]]` (a file in repository)
 
-Example display: [[Image(htdocs:../common/trac_logo_mini.png)]]
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  [[Image(htdocs:../common/trac_logo_mini.png)]]
+  }}}
+}}}
+{{{#!td
+[[Image(htdocs:../common/trac_logo_mini.png)]]
+}}}
 
 See WikiMacros for further documentation on the `[[Image()]]` macro.
 
@@ -315,15 +444,29 @@ See WikiMacros for further documentation on the `[[Image()]]` macro.
 
 Macros are ''custom functions'' to insert dynamic content in a page.
 
-Example:
-{{{
- [[RecentChanges(Trac,3)]]
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  [[RecentChanges(Trac,3)]]
+  }}}
+}}}
+{{{#!td style="padding-left: 2em"
+[[RecentChanges(Trac,3)]]
 }}}
 
-Display:
- [[RecentChanges(Trac,3)]]
-
 See WikiMacros for more information, and a list of installed macros.
+
+The detailed help for a specific macro can also be obtained more directly by appending a "?" to the macro name.
+
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  [[MacroList?]]
+  }}}
+}}}
+{{{#!td style="padding-left: 2em"
+[[MacroList?]]
+}}}
 
 
 == Processors ==
@@ -331,52 +474,134 @@ See WikiMacros for more information, and a list of installed macros.
 Trac supports alternative markup formats using WikiProcessors. For example, processors are used to write pages in 
 [wiki:WikiRestructuredText reStructuredText] or [wiki:WikiHtml HTML]. 
 
-Example 1:
-{{{
-#!html
-<pre class="wiki">{{{
-#!html
-&lt;h1 style="text-align: right; color: blue"&gt;HTML Test&lt;/h1&gt;
-}}}</pre>
-}}}
+||= Wiki Markup =||= Display =||
+|--------------------------------------------------------
+{{{#!td align="center" colspan=2 style="border: 0px; font-size: 90%"
 
-Display:
+   [=#Processors-example-html Example 1:] HTML
+
+}}}
+|--------------------------------------------------------
+{{{#!td style="border: 0px"
+  {{{
+  {{{
+  #!html
+  <h1 style="text-align: right; color: blue">
+   HTML Test
+  </h1>
+  }}}
+  }}}
+}}}
+{{{#!td valign="top"  style="border: 0px"
+
 {{{
 #!html
 <h1 style="text-align: right; color: blue">HTML Test</h1>
 }}}
 
-Example:
+}}}
+|--------------------------------------------------------
+{{{#!td align="center" colspan=2 style="border: 0px; font-size: 90%"
+
+   [=#Processors-example-highlight Example 2:] Code Highlighting
+
+}}}
+|--------------------------------------------------------
+{{{#!td style="border: 0px"
+  {{{
+  {{{
+  #!python
+  class Test:
+  
+      def __init__(self):
+          print "Hello World"
+  if __name__ == '__main__':
+     Test()
+  }}}
+  }}}
+}}}
 {{{
-#!html
-<pre class="wiki">{{{
+#!td valign="top"  style="border: 0px"
+
+{{{
 #!python
 class Test:
-
     def __init__(self):
         print "Hello World"
 if __name__ == '__main__':
    Test()
-}}}</pre>
 }}}
 
-Display:
-{{{
-#!python
-class Test:
-    def __init__(self):
-        print "Hello World"
-if __name__ == '__main__':
-   Test()
 }}}
+|--------------------------------------------------------
+{{{#!td align="center" colspan=2 style="border: 0px; font-size: 90%"
 
-Perl:
+       [=#Processors-example-tables Example 3:] Complex Tables
+
+}}}
+|--------------------------------------------------------
+{{{#!td style="border: 0px"
+  {{{
+  {{{#!th rowspan=4 align=justify
+  With the `#td` and `#th` processors,
+  table cells can contain any content:
+  }}}
+  |----------------
+  {{{#!td
+    - lists
+    - embedded tables
+    - simple multiline content
+  }}}
+  |----------------
+  {{{#!td
+  As processors can be easily nested, 
+  so can be tables:
+    {{{#!th
+    Example:
+    }}}
+    {{{#!td style="background: #eef"
+    || must be at the third level now... ||
+    }}}
+  }}}
+  |----------------
+  {{{#!td
+  Even when you don't have complex markup,
+  this form of table cells can be convenient
+  to write content on multiple lines.
+  }}}
+  }}}
+}}}
 {{{
-#!perl
-my ($test) = 0;
-if ($test > 0) {
-    print "hello";
-}
+#!td  valign="top"  style="border: 0px"
+
+  {{{#!th rowspan=4 align=justify
+  With the `#td` and `#th` processors,
+  table cells can contain any content:
+  }}}
+  |----------------
+  {{{#!td
+    - lists
+    - embedded tables
+    - simple multiline content
+  }}}
+  |----------------
+  {{{#!td
+  As processors can be easily nested, 
+  so can be tables:
+    {{{#!th
+    Example:
+    }}}
+    {{{#!td style="background: #eef"
+    || must be at the third level now... ||
+    }}}
+  }}}
+  |----------------
+  {{{#!td
+  Even when you don't have complex markup,
+  this form of table cells can be convenient
+  to write content on multiple lines.
+  }}}
+
 }}}
 
 See WikiProcessors for more information.
@@ -385,26 +610,46 @@ See WikiProcessors for more information.
 == Comments ==
 
 Comments can be added to the plain text. These will not be rendered and will not display in any other format than plain text.
-{{{
-{{{
-#!comment
-Your comment here
-}}}
-}}}
 
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  Nothing to
+  {{{
+  #!comment
+  Your comment for editors here
+  }}}
+  see ;-)
+  }}}
+}}}
+{{{#!td
+  Nothing to
+  {{{
+  #!comment
+  Your comment for editors here
+  }}}
+  see ;-)
+}}}
 
 == Miscellaneous ==
 
-Four or more dashes will be replaced by a horizontal line (<HR>)
+An horizontal line can be used to separated different parts of your page:
 
-Example:
-{{{
- ----
+||= Wiki Markup =||= Display =||
+{{{#!td
+  {{{
+  Four or more dashes will be replaced 
+  by a horizontal line (<HR>)
+  ----
+  See?
+  }}}
 }}}
-
-Display:
+{{{#!td
+Four or more dashes will be replaced
+by a horizontal line (<HR>)
 ----
-
+See?
+}}}
 
 
 ----

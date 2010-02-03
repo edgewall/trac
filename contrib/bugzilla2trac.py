@@ -16,7 +16,7 @@ Many enhancements, Bill Soudan <bill@soudan.net>
 Other enhancements, Florent Guillaume <fg@nuxeo.com>
 Reworked, Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
 
-$Id$
+$Id: bugzilla2trac.py 8743 2009-10-30 21:49:24Z rblank $
 """
 
 import re

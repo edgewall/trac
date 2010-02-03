@@ -127,7 +127,7 @@ class Context(object):
 
     @classmethod
     def from_request(cls, req, resource=None, id=False, version=False,
-                     absurls=False):
+                     parent=False, absurls=False):
         """Create a rendering context from a request.
 
         The `perm` and `href` properties of the context will be initialized
@@ -157,8 +157,8 @@ class Context(object):
         else:
             href = None
             perm = None
-        self = cls(Resource(resource, id=id, version=version), href=href,
-                   perm=perm)
+        self = cls(Resource(resource, id=id, version=version, parent=parent),
+                   href=href, perm=perm)
         self.req = req
         return self
 
@@ -171,7 +171,7 @@ class Context(object):
             context = context.parent
         return '<%s %s>' % (type(self).__name__, ' - '.join(reversed(path)))
 
-    def __call__(self, resource=None, id=False, version=False):
+    def __call__(self, resource=None, id=False, version=False, parent=False):
         """Create a nested rendering context.
 
         `self` will be the parent for the new nested context.
@@ -195,7 +195,8 @@ class Context(object):
         True
         """
         if resource:
-            resource = Resource(resource, id=id, version=version)
+            resource = Resource(resource, id=id, version=version,
+                                parent=parent)
         else:
             resource = self.resource
         context = Context(resource, href=self.href, perm=self.perm)

@@ -32,7 +32,7 @@
           <input py:for="k, v in diff_args or []" type="hidden" name="$k" value="$v"/>
           <input type="hidden" name="version" value="$new_version" />
           <input type="hidden" name="old_version" value="$old_version" />
-          ${diff_options_fields(diff)}
+          <xi:include href="diff_options.html" />
         </div>
       </form>
       <dl id="overview" py:with="multi = num_changes &gt; 1">

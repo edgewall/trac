@@ -87,7 +87,7 @@ input[type=text]:focus, input.textwidget:focus, textarea:focus {
 }
 option { border-bottom: 1px dotted #d7d7d7 }
 fieldset { border: 1px solid #d7d7d7; padding: .5em; margin: 1em 0 }
-form p.hint, form span.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
+p.hint, span.hint { color: #666; font-size: 85%; font-style: italic; margin: .5em 0;
   padding-left: 1em;
 }
 fieldset.iefix {

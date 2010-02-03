@@ -8,7 +8,7 @@
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
-    <title>$path</title>
+    <title>${'/'.join(part.name for part in path_links[1:]) or '/'}</title>
     <meta py:if="file and file.annotate" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
     <meta py:if="dir" name="ROBOTS" content="NOINDEX" />
     <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
@@ -23,11 +23,11 @@
           this.parentNode.parentNode.submit();
         });
 
-        <py:if test="dir">
+        <py:if test="dir or repo">
           /* browsers using old WebKits have issues with expandDir... */
           var webkit_rev = /AppleWebKit\/(\d+)/.exec(navigator.userAgent);
           if ( !webkit_rev || (521 - webkit_rev[1]).toString()[0] == "-" )
-            enableExpandDir(null, $("#dirlist tr"), {
+            enableExpandDir(null, $("table.dirlist tr"), {
                 action: 'inplace',
                 range_min_secs: '$dir.range_min_secs',
                 range_max_secs: '$dir.range_max_secs'
@@ -35,6 +35,7 @@
         </py:if>
         <py:if test="file">
           <py:if test="file.annotate">
+            enableBlame("${href.changeset()}/", "${reponame}", "${path}");
             enableBlame("${href.changeset()}/", "${path}");
           </py:if>
           $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
@@ -46,53 +47,42 @@
   <body>
     <div id="content" class="browser">
 
-      <h1>${browser_path_links(path_links, stickyrev)}</h1>
-
-      <div id="jumprev">
-        <form action="" method="get">
-          <div>
-            <label for="rev" title="${stickyrev and _('Hint: clear the field to view latest revision') or None}">
-              View revision:</label>
-            <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
-          </div>
-        </form>
-      </div>
-
-      <div py:if="quickjump_entries" id="jumploc">
-        <form action="" method="get">
-          <div class="buttons">
-            <label for="preselected">Visit:</label>
-            <select id="preselected" name="preselected">
-              <option selected="selected" />
-              <optgroup py:for="category, locations in groupby(quickjump_entries, key=lambda q: q[0])"
-                label="${category}">
-                <option py:for="_, name, path, rev in locations" value="${href.browser(path, rev=rev)}">$name</option>
-              </optgroup>
-            </select>
-            <input type="submit" value="${_('Go!')}" title="Jump to the chosen preselected path" />
-          </div>
-        </form>
-      </div>
+      <py:if test="dir or file">
+        <py:choose>
+          <h1 py:when="repo and repo.repositories">Default Repository</h1>
+          <h1 py:otherwise=""><xi:include href="path_links.html" /></h1>
+        </py:choose>
+  
+        <div id="jumprev">
+          <form action="" method="get">
+            <div>
+              <label for="rev" title="${stickyrev and _('Hint: clear the field to view latest revision') or None}">
+                View revision:</label>
+              <input type="text" id="rev" name="rev" value="$stickyrev" size="6" />
+            </div>
+          </form>
+        </div>
+  
+        <div py:if="quickjump_entries" id="jumploc">
+          <form action="" method="get">
+            <div class="buttons">
+              <label for="preselected">Visit:</label>
+              <select id="preselected" name="preselected">
+                <option selected="selected" />
+                <optgroup py:for="category, locations in groupby(quickjump_entries, key=lambda q: q[0])"
+                  label="${category}">
+                  <option py:for="_, name, path, rev in locations" value="${href.browser(reponame, path, rev=rev)}">$name</option>
+                </optgroup>
+              </select>
+              <input type="submit" value="${_('Go!')}" title="Jump to the chosen preselected path" />
+            </div>
+          </form>
+        </div>
+      </py:if>
 
       <py:if test="dir">
-        <table class="listing" id="dirlist">
-          <thead>
-            <tr>
-              <py:def function="sortable_th(order, desc, class_, title)">
-                <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
-                  <a title="Sort by $class_${order == class_ and not desc and
-                                             ' (descending)' or ''}"
-                    href="${href.browser(path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
-                    desc=(class_ == order and not desc and 1 or None))}">$title</a>
-                </th>
-              </py:def>
-              ${sortable_th(dir.order, dir.desc, 'name', 'Name')}
-              ${sortable_th(dir.order, dir.desc, 'size', 'Size')}
-              <th class="rev">Rev</th>
-              ${sortable_th(dir.order, dir.desc, 'date', 'Age')}
-              <th class="change">Last Change</th>
-            </tr>
-          </thead>
+        <table class="listing dirlist" id="dirlist">
+          <xi:include href="dirlist_thead.html" />
           <tbody>
             <py:if test="'up' in chrome.links">
               <tr class="even">
@@ -114,7 +104,7 @@
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
           <th scope="col" i18n:msg="rev, size, author, date">
-            Revision <a href="${href.changeset(rev)}">$rev</a>, ${sizeinfo(file.size)}
+            Revision <a href="${href.changeset(rev, reponame)}">$rev</a>, ${sizeinfo(file.size)}
             checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago
             (<a href="${href.changeset(rev, created_path)}">diff</a>)
           </th>
@@ -122,7 +112,8 @@
         <tr py:if="file">
           <td class="message searchable" py:choose="">
             <py:when test="wiki_format_messages" xml:space="preserve">
-              ${wiki_to_html(context('changeset', file.changeset.rev), file.changeset.message, escape_newlines=True)}
+              ${wiki_to_html(context('changeset', file.changeset.rev, parent=repos.resource),
+                             file.changeset.message, escape_newlines=True)}
             </py:when>
             <py:otherwise>${file.changeset.message}</py:otherwise>
           </td>
@@ -149,6 +140,18 @@
         </tr>
       </table>
 
+      <div py:if="dir and path == '/' and repoinfo" class="description">
+        ${wiki_to_html(context('source', '/', parent=repos.resource), repoinfo.description)}
+      </div>
+      
+      <py:if test="repo and repo.repositories">
+        <hr py:if="dir"/>
+        <h1>Repository Index</h1>
+        <py:with vars="repoindex = 'repoindex'">
+          <xi:include href="repository_index.html" />
+        </py:with>
+      </py:if>
+
       <div py:if="file and file.preview" id="preview" class="searchable">
         ${preview_file(file.preview)}
       </div>
@@ -161,8 +164,8 @@
       <div id="anydiff">
         <form action="${href.diff()}" method="get">
           <div class="buttons">
-            <input type="hidden" name="new_path" value="$path" />
-            <input type="hidden" name="old_path" value="$path" />
+            <input type="hidden" name="new_path" value="${'/' + pathjoin(reponame, path)}" />
+            <input type="hidden" name="old_path" value="${'/' + pathjoin(reponame, path)}" />
             <input type="hidden" name="new_rev" value="$stickyrev" />
             <input type="hidden" name="old_rev" value="$stickyrev" />
             <input type="submit" value="${_('View changes...')}" title="${_('Select paths and revs for Diff')}" />

@@ -3,14 +3,15 @@
 import unittest
 
 from trac.test import Mock
-from trac.wiki.tests import formatter
 from trac.versioncontrol import NoSuchChangeset
+from trac.versioncontrol.api import *
 from trac.versioncontrol.web_ui import *
+from trac.wiki.tests import formatter
 
 
 def _get_changeset(rev):
     if rev == '1':
-        return Mock(message="start")
+        return Mock(message="start", can_view=lambda perm: True)
     else:
         raise NoSuchChangeset(rev)
 
@@ -23,12 +24,14 @@ def _normalize_rev(rev):
         else:
             raise NoSuchChangeset(rev)
     
-def _get_repository(authname=None):
-    return Mock(get_changeset=_get_changeset, youngest_rev='200',
+def _get_repository(reponame):
+    return Mock(reponame=reponame, youngest_rev='200',
+                get_changeset=_get_changeset,
                 normalize_rev=_normalize_rev)
 
 def repository_setup(tc):
     setattr(tc.env, 'get_repository', _get_repository)
+    setattr(RepositoryManager(tc.env), 'get_repository', _get_repository)
 
 
 CHANGESET_TEST_CASES = u"""
@@ -303,7 +306,7 @@ export:123:/foo/pict.gif
 export:/foo/pict.gif@123
 ------------------------------
 <p>
-<a class="export" href="/export/200/foo/bar.html">export:/foo/bar.html</a>
+<a class="export" href="/export//foo/bar.html">export:/foo/bar.html</a>
 <a class="export" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
 <a class="export" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
 </p>
@@ -312,7 +315,7 @@ export:/foo/pict.gif@123
 export:/foo/bar.html#header
 ------------------------------
 <p>
-<a class="export" href="/export/200/foo/bar.html#header">export:/foo/bar.html#header</a>
+<a class="export" href="/export//foo/bar.html#header">export:/foo/bar.html#header</a>
 </p>
 ------------------------------
 """ # " (be Emacs friendly...)

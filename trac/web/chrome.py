@@ -58,7 +58,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
-                      translation
+                      pathjoin, translation
 from trac.util.compat import any, partial
 from trac.util.html import escape, plaintext
 from trac.util.text import pretty_size, obfuscate_email_address, \
@@ -366,6 +366,7 @@ class Chrome(Component):
         'ngettext': translation.ngettext,
         'paginate': presentation.paginate,
         'partial': partial,
+        'pathjoin': pathjoin,
         'plaintext': plaintext,
         'pprint': pprint.pformat,
         'pretty_size': pretty_size,
@@ -728,6 +729,7 @@ class Chrome(Component):
 
         d.update({
             'context': req and Context.from_request(req) or None,
+            'Resource': Resource,
             'url_of': get_rel_url,
             'abs_url_of': get_abs_url,
             'name_of': partial(get_resource_name, self.env),
@@ -741,6 +743,7 @@ class Chrome(Component):
             'locale': req and req.locale,
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
+            'authorinfo': partial(self.authorinfo, req),
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
 
@@ -892,6 +895,14 @@ class Chrome(Component):
             all_cc = [obfuscate_email_address(cc) for cc in all_cc]
         return sep.join(all_cc)
     
+    def authorinfo(self, req, author, email_map=None):
+        if author:
+            return self.format_author(req, 
+                    email_map and '@' not in author and
+                    email_map.get(author) or author)
+        else:
+            return 'anonymous'
+
     def format_author(self, req, author):
         if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
             return author

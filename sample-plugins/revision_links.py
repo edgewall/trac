@@ -22,26 +22,35 @@ class RevisionLinks(Component):
 
     def get_wiki_syntax(self):
         def revlink(f, match, fullmatch):
-            rev = match.split(' ', 1)[1] # ignore keyword
-            return self._format_revision_link(f, 'revision', rev, rev,
+            elts = match.split()
+            rev = elts[1] # ignore keyword
+            reponame = ''
+            if len(elts) > 2: # reponame specified
+                reponame = elts[-1]
+            return self._format_revision_link(f, 'revision', reponame, rev, rev,
                                               fullmatch)
 
-        yield (r"!?(?:%s)\s+%s" % ("|".join(self.KEYWORDS),
-                                   ChangesetModule.CHANGESET_ID),
-               revlink)
+        yield (r"!?(?:%s)\s+%s(?:\s+in\s+\w+)?" % 
+               ("|".join(self.KEYWORDS), ChangesetModule.CHANGESET_ID), revlink)
 
     def get_link_resolvers(self):
-        yield ('revision', self._format_revision_link)
+        def resolverev(f, ns, rev, label, fullmatch):
+            return self._format_revision_link(f, ns, '', rev, label, fullmatch)
+        yield ('revision', resolverev)
 
-    def _format_revision_link(self, formatter, ns, rev, label, fullmatch=None):
+    def _format_revision_link(self, formatter, ns, reponame, rev, label, 
+                              fullmatch=None):
         rev, params, fragment = formatter.split_link(rev)
         try:
-            changeset = self.env.get_repository().get_changeset(rev)
-            return tag.a(label, class_="changeset",
-                         title=shorten_line(changeset.message),
-                         href=(formatter.href.changeset(rev) +
-                               params + fragment))
+            repos = self.env.get_repository(reponame)
+            if repos:
+                changeset = repos.get_changeset(rev)
+                return tag.a(label, class_="changeset",
+                             title=shorten_line(changeset.message),
+                             href=(formatter.href.changeset(rev) +
+                                   params + fragment))
         except NoSuchChangeset:
-            return tag.a(label, class_="missing changeset",
-                         href=formatter.href.changeset(rev),
-                         rel="nofollow")
+            pass
+        return tag.a(label, class_="missing changeset", rel="nofollow",
+                     href=formatter.href.changeset(rev))
+        

@@ -147,8 +147,9 @@ class SubversionMergePropertyRenderer(Component):
         has_eligible = name in ('svnmerge-integrated', 'svn:mergeinfo')
         revs_label = (_('merged'), _('blocked'))[name.endswith('blocked')]
         revs_cols = has_eligible and 2 or None
-        repos = self.env.get_repository()
+        reponame = context.resource.parent.id
         target_path = context.resource.id
+        repos = self.env.get_repository(reponame)
         target_rev = context.resource.version
         if has_eligible:
             node = repos.get_node(target_path, target_rev)
@@ -170,7 +171,8 @@ class SubversionMergePropertyRenderer(Component):
             deleted = False
             try:
                 node = repos.get_node(spath, target_rev)
-                if 'LOG_VIEW' in context.perm('source', spath):
+                resource = context.resource.parent.child('source', spath)
+                if 'LOG_VIEW' in context.perm(resource):
                     row = [_get_source_link(spath, context),
                            _get_revs_link(revs_label, context, spath, revs)]
                     if has_eligible:
@@ -228,8 +230,9 @@ def _get_blocked_revs(props, name, path):
 
 def _get_source_link(spath, context):
     """Return a link to a merge source."""
+    reponame = context.resource.parent.id
     return tag.a('/' + spath, title=_('View merge source'),
-                 href=context.href.browser(spath,
+                 href=context.href.browser(reponame or None, spath,
                                            rev=context.resource.version))
 
 def _get_revs_link(label, context, spath, revs):
@@ -237,12 +240,13 @@ def _get_revs_link(label, context, spath, revs):
     given, to the revision itself for a single revision, or a `<span>`
     with "no revision" for none.
     """
+    reponame = context.resource.parent.id
     if not revs:
         return tag.span(label, title=_('No revisions'))
     elif ',' in revs or '-' in revs:
-        revs_href = context.href.log(spath, revs=revs)
+        revs_href = context.href.log(reponame or None, spath, revs=revs)
     else:
-        revs_href = context.href.changeset(revs, spath)
+        revs_href = context.href.changeset(revs, reponame or None, spath)
     return tag.a(label, title=revs.replace(',', ', '), href=revs_href)
 
 
@@ -260,7 +264,7 @@ class SubversionMergePropertyDiffRenderer(Component):
         # Build 3 columns table showing modifications on merge sources
         # || source || added revs || removed revs ||
         # || source || removed                    ||
-        repos = self.env.get_repository()
+        repos = self.env.get_repository(old_context.resource.parent.id)
         def parse_sources(props):
             sources = {}
             for line in props[name].splitlines():

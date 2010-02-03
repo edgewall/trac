@@ -8,12 +8,12 @@
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
-    <title>$path (log)</title>
+    <title>${'/'.join(part.name for part in path_links[1:]) or '/'} (log)</title>
   </head>
 
   <body>
     <div id="content" class="log">
-      <h1>${browser_path_links(path_links)}</h1>
+      <h1><xi:include href="path_links.html" /></h1>
 
       <form id="prefs" action="" method="get">
         <div>
@@ -81,11 +81,11 @@
         </div>
       </div>
 
-
       <form py:for="items in item_ranges" class="printableform" action="${href.changeset()}" method="get">
         <div class="buttons">
-          <input type="submit" value="${_('View changes')}"
-            title="${_('Diff from Old Revision to New Revision (select them below)')}" />
+          <input type="hidden" name="reponame" value="$reponame" />
+          <input type="submit" value="View changes"
+            title="${_('Diff from Old Revision to New Revision (as selected in the Diff column)')}" />
         </div>
         <table class="listing chglist">
           <thead>
@@ -93,8 +93,7 @@
               <th class="diff" title="Old / New">Diff</th>
               <th class="change"></th>
               <th class="rev">Rev</th>
-              <th class="chgset">Chgset</th>
-              <th class="date">Date</th>
+              <th class="age">Age</th>
               <th class="author">Author</th>
               <th class="summary"><py:if test="not verbose">Log Message</py:if></th>
             </tr>
@@ -111,19 +110,18 @@
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
                              is_separator = item.change is None;
-                             chgset_context = context('changeset', change.rev);
-                             chgset_view = 'CHANGESET_VIEW' in perm(chgset_context.resource);
+                             chgset_context = context('changeset', change.rev, parent=repos.resource);
                              odd_even = idx % 2 and 'odd' or 'even'">
                 <!--! highlight copy or rename operations -->
                 <tr py:if="not is_separator and item.get('copyfrom_path')" class="$odd_even">
                   <td />
-                  <td class="copyfrom_path" colspan="7" style="padding-left: ${item.depth - 1}em">
-                    copied from <a href="${href.browser(item.path, rev=item.rev)}">$item.copyfrom_path</a>:
+                  <td class="copyfrom_path" colspan="6" style="padding-left: ${item.depth - 1}em">
+                    copied from <a href="${href.browser(reponame, item.path, rev=item.rev)}">$item.copyfrom_path</a>:
                   </td>
                 </tr>
 
-                <tr class="$odd_even" py:choose="">
-                  <td class="diff" rowspan="${verbose and 2 or None}">
+                <tr class="${classes(odd_even,verbose=verbose)}" py:choose="">
+                  <td class="diff">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
                            checked="${idx == (len(items) - 1) or None}" title="From r${item.rev}" />
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
@@ -131,44 +129,42 @@
                   </td>
                   <py:when test="not is_separator">
                     <td class="change" style="padding-left: ${item.depth}em">
-                      <a title="View log starting at this revision" href="${href.log(item.path, rev=item.rev)}">
+                      <a title="View log starting at this revision" href="${href.log(reponame, item.path, rev=item.rev)}">
                         <span class="$item.change"></span>
                         <span class="comment">($item.change)</span>
                       </a>
                     </td>
                     <td class="rev">
-                      <a title="Browse at revision $item.existing_rev" href="${href.browser(item.path, rev=item.existing_rev)}">
+                      <a title="Browse at revision $item.existing_rev" href="${href.browser(reponame, item.path, rev=item.existing_rev)}">
                         @$item.existing_rev</a>
+                      <py:choose test="item.change">
+                        <a py:when="'delete'" title="View removal changeset [$item.rev]" class="chgset"
+                          href="${href.changeset(item.rev)}">&nbsp;</a>
+                        <a py:otherwise="" title="View changeset [$item.rev] for $item.path" class="chgset"
+                          href="${href.changeset(item.rev, reponame, item.path)}">&nbsp;</a>
+                      </py:choose>
                     </td>
-                    <td class="chgset" py:choose="item.change">
-                      <a py:when="'delete'" title="View removal changeset [$item.rev]" href="${href.changeset(item.rev)}">
-                        [$item.rev]</a>
-                      <a py:otherwise="" title="View changeset [$item.rev] for $item.path" href="${href.changeset(item.rev, item.path)}">
-                        [$item.rev]</a>
-                    </td>
-                    <td class="date" py:content="dateinfo(change.date)" />
+                    <td class="age" py:content="dateinfo(change.date)" />
                     <td class="author" py:content="authorinfo(change.author)" />
                     <td class="summary" py:choose="">
-                      <py:when test="verbose or not chgset_view"></py:when>
+                      <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
                         ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
                       </py:when>
                       <py:otherwise>${shorten_line(change.message)}</py:otherwise>
                     </td>
                   </py:when>
-                  <td colspan="6" class="separator" py:otherwise="" />
+                  <td colspan="5" py:otherwise="" />
                 </tr>
 
-                <tr py:if="verbose and not is_separator" class="$odd_even verbose">
-                  <py:choose> 
-                    <td py:when="chgset_view" class="summary" colspan="6"
-                        py:choose="" xml:space="preserve">
-                      <py:when test="wiki_format_messages">
-                        ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
-                      </py:when>
-                      <py:otherwise><pre>${change.message}</pre></py:otherwise>
-                    </td>
-                  </py:choose>
+                <tr py:if="verbose and not is_separator" class="summary verbose $odd_even">
+                  <td class="filler" colspan="2" />
+                  <td class="log" colspan="4" py:choose="" xml:space="preserve">
+                    <py:when test="wiki_format_messages">
+                      ${wiki_to_html(chgset_context, change.message, escape_newlines=True)}
+                    </py:when>
+                    <py:otherwise><pre>${change.message}</pre></py:otherwise>
+                  </td>
                 </tr>
 
               </py:with>
@@ -178,7 +174,7 @@
 
         <div py:if="len(items) &gt; 10 and len(item_ranges) == 1" class="buttons">
           <input type="submit" value="${_('View changes')}"
-            title="${_('Diff from Old Revision to New Revision (select them above)')}" />
+            title="${_('Diff from Old Revision to New Revision (as selected in the Diff column)')}" />
         </div>
       </form>
 

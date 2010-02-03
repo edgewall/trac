@@ -248,6 +248,26 @@ def obfuscate_email_address(address):
                    (address[-1] == '>' and '>' or '')
     return address
 
+def breakable_path(path):
+    """Make a path breakable after path separators, and conversely, avoid
+    breaking at spaces.
+    """
+    if not path:
+        return path
+    prefix = ''
+    if path.startswith('/'):    # Avoid breaking after a leading /
+        prefix = '/'
+        path = path[1:]
+    return prefix + path.replace('/', u'/\u200b').replace('\\', u'\\\u200b') \
+                        .replace(' ', u'\u00a0')
+
+def normalize_whitespace(text, to_space=u'\u00a0', remove=u'\u200b'):
+    """Normalize whitespace in a string, by replacing special spaces by normal
+    spaces and removing zero-width spaces."""
+    if not text:
+        return text
+    return text.replace(u'\u00a0', ' ').replace(u'\u200b', '')
+
 # -- Conversion
 
 def pretty_size(size, format='%.1f'):

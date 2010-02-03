@@ -21,13 +21,11 @@ from trac.versioncontrol.api import Repository
 class ApiTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.repo_base = Repository('testrepo', None, None)
+        self.repo_base = Repository('testrepo', {'name': 'testrepo', 'id': 1},
+                                    None)
 
     def test_raise_NotImplementedError_close(self):
         self.failUnlessRaises(NotImplementedError, self.repo_base.close)
-
-    def test_raise_NotImplementedError_sync_changeset(self):
-        self.failUnlessRaises(NotImplementedError, self.repo_base.sync_changeset, 1)
 
     def test_raise_NotImplementedError_get_changeset(self):
         self.failUnlessRaises(NotImplementedError, self.repo_base.get_changeset, 1)
