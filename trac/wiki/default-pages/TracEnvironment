@@ -9,9 +9,8 @@ A new Trac environment is created using  [wiki:TracAdmin trac-admin]:
 $ trac-admin /path/to/myproject initenv
 }}}
 
-[wiki:TracAdmin trac-admin] will ask you for the name of the project, the
-database connection string (explained below), and the type and path to
-your source code repository.
+[wiki:TracAdmin trac-admin] will ask you for the name of the project and the
+database connection string (explained below).
 
 ''Note: The web server user will require file system write permission to 
 the environment directory and all the files inside. Please remember to set
@@ -96,18 +95,21 @@ mysql://johndoe:letmein@localhost:3306/trac
 
 == Source Code Repository ==
 
-You'll first have to provide the ''type'' of your repository (e.g. `svn` for Subversion,
-which is the default), then the ''path'' where the repository is located.
+Since version 0.12, one Trac environment can be tied to more than one repository. There are many different ways to add repositories to an environment, see TracRepositoryAdmin. This page also details the various attributes that can be set on a repository (like `type`, `url`, `description`).
 
-If you don't want to use Trac with a source code repository, simply leave the ''path'' empty
-(the ''type'' information doesn't matter, then).
+If you don't want to use Trac with any source code repository, at creation time simply leave the ''path'' empty
+(the ''type'' information doesn't matter in this case). Then you also need to disable the `trac.versioncontrol.*` components:
+{{{
+[components]
+trac.versioncontrol.* = disabled
+}}}
 
 For some systems, it is possible to specify not only the path to the repository,
 but also a ''scope'' within the repository. Trac will then only show information
 related to the files and changesets below that scope. The Subversion backend for
 Trac supports this; for other types, check the corresponding plugin's documentation.
 
-Example of a configuration for a Subversion repository:
+Example of a configuration for a Subversion repository used as the default repository:
 {{{
 [trac]
 repository_type = svn
@@ -134,13 +136,15 @@ An environment directory will usually consist of the following files and directo
    * `trac.db` - The SQLite database (if you're using SQLite).
  * `htdocs` - directory containing web resources, which can be referenced in Genshi templates. '''''(since 0.11)'''''
  * `log` - default directory for log files, if logging is turned on and a relative path is given.
- * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs, since [trac:milestone:0.10 0.10])
+ * `plugins` - Environment-specific [wiki:TracPlugins plugins] (Python eggs or single file plugins, since [trac:milestone:0.10 0.10])
  * `templates` - Custom Genshi environment-specific templates. '''''(since 0.11)'''''
    * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
 
-  '''Note: don't confuse a Trac environment directory with the source code repository directory.
-It happens that the above structure is loosely modelled after the Subversion repository directory 
-structure, but they are not and ''must not'' be located at the same place.'''
+'''Caveat:''' ''don't confuse a Trac environment directory with the source code repository directory.''
+
+This is a common beginners' mistake.
+It happens that the structure for a Trac environment is loosely modelled after the Subversion repository directory 
+structure, but those are two disjoint entities and they are not and ''must not'' be located at the same place.
 
 ----
 See also: TracAdmin, TracBackup, TracIni, TracGuide

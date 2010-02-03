@@ -1,0 +1,149 @@
+= Repository Administration =
+[[PageOutline(2-3)]]
+
+== Quick start == #QuickStart
+
+ * Manage repositories in the "Repository" admin panel, with `trac-admin` or in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini].
+ * Set up a call to `trac-admin $ENV changeset added $REPO $REV` in the post-commit hook of each repository. Additionally, add a call to `trac-admin $ENV changeset modified $REPO $REV` in the post-revprop-change hook of repositories allowing revision property changes.
+ * Set the `[trac] repository_sync_per_request` option to an empty value to disable per-request syncing.
+
+
+== Specifying repositories == #Repositories
+Starting with 0.12, Trac can handle more than one repository per environment. The pre-0.12 way of specifying the repository with the `repository_dir` and `repository_type` options in the `[trac]` section of [wiki:TracIni trac.ini] is still supported, but two new mechanisms allow including additional repositories into an environment.
+
+It is also possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking all the links to the old name.
+
+A number of attributes can be associated with each repository, and define the location of the repository, its type, name and how it is displayed in the source browser. The following attributes are supported:
+
+||='''Attribute''' =||='''Description''' =||
+||`alias` ||\
+||A repository having an `alias` attribute is an alias to a real repository. All TracLinks referencing the alias resolve to the aliased repository. Note that multiple indirection is not supported, so an alias must always point to a real repository. The `alias` and `dir` attributes are mutually exclusive. ||
+||`description` ||\
+||The text specified in the `description` attribute is displayed below the top-level entry for the repository in the source browser. It supports WikiFormatting. ||
+||`dir` ||\
+||The `dir` attribute specifies the location of the repository in the filesystem. It corresponds to the value previously specified in the option `[trac] repository_dir`. The `alias` and `dir` attributes are mutually exclusive. ||
+||`hidden` ||When set to `true`, the repository is hidden from the repository index page in the source browser. Browsing the repository is still possible, and links referencing the repository remain valid. ||
+||`name` ||The `name` attribute specifies the leading path element to the repository. ||
+||`type` ||The `type` attribute sets the type of version control system used by the repository. Trac supports Subversion out-of-the-box, and plugins add support for many other systems. If `type` is not specified, it defaults to the value of the `[trac] repository_type` option. ||
+||`url` ||The `url` attribute specifies the root URL to be used for checking out from the repository. When specified, a "Repository URL" link is added to the context navigation links in the source browser, that can be copied into the tool used for creating the working copy. ||
+
+The `name` attribute and one of `alias` or `dir` are mandatory. All others are optional.
+
+After adding a repository, the cache for that repository must be re-synchronized once with the `trac-admin $ENV repository resync` command.
+
+ `repository resync <repos>`::
+   Re-synchronize Trac with a repository.
+
+
+=== In `trac.ini` === #ReposTracIni
+Repositories and repository attributes can be specified in the `[repositories]` section of [wiki:TracIni#repositories-section trac.ini]. Every attribute consists of a key structured as `{name}.{attribute}` and the corresponding value separated with an equal sign (`=`). The name of the default repository is empty.
+
+The main advantage of specifying repositories in `trac.ini` is that they can be inherited from a global configuration (see the [wiki:TracIni#GlobalConfiguration global configuration] section of TracIni). One drawback is that, due to limitations in the `ConfigParser` class used to parse `trac.ini`, the repository name is always all-lowercase.
+
+The following example defines two Subversion repositories named `project` and `lib`, and a hidden alias to `project` as the default repository. This is a typical use case where a Trac environment previously had a single repository (the `project` repository), and was converted to multiple repositories. The alias ensures that links predating the change continue to resolve to the `project` repository.
+{{{
+#!ini
+[repositories]
+project.dir = /var/repos/project
+project.description = This is the ''main'' project repository.
+project.type = svn
+project.url = http://example.com/svn/project
+lib.dir = /var/repos/lib
+lib.description = This is the secondary library code.
+lib.type = svn
+lib.url = http://example.com/svn/lib
+.alias = project
+.hidden = true
+}}}
+Note that `name.alias = target` makes `name` an alias for the `target` repo, not the other way around.
+
+=== In the database === #ReposDatabase
+Repositories can also be specified in the database, using either the "Repositories" admin panel under "Version Control", or the `trac-admin $ENV repository` commands.
+
+The admin panel shows the list of all repositories defined in the Trac environment. It allows adding repositories and aliases, editing repository attributes and removing repositories. Note that repositories defined in `trac.ini` are displayed but cannot be edited.
+
+The following [wiki:TracAdmin trac-admin] commands can be used to perform repository operations from the command line.
+
+ `repository add <repos> <dir> [type]`::
+   Add a repository `<repos>` located at `<dir>`, and optionally specify its type.
+
+ `repository alias <name> <target>`::
+   Create an alias `<name>` for the repository `<target>`.
+
+ `repository remove <repos>`::
+   Remove the repository `<repos>`.
+
+ `repository set <repos> <key> <value>`::
+   Set the attribute `<key>` to `<value>` for the repository `<repos>`. 
+
+Note that the default repository has an empty name, so it will likely need to be quoted when running `trac-admin` from a shell. Alternatively, the name "`(default)`" can be used instead, for example when running `trac-admin` in interactive mode.
+
+
+== Repository synchronization == #Synchronization
+Prior to 0.12, Trac synchronized its cache with the repository on every request. This approach is not practical anymore with multiple repositories. For this reason, explicit synchronization through post-commit hooks was added. This also provides new functionality in the form of a repository listener extension point that is called when a changeset is added or modified, and can be used by plugins to perform actions on commit.
+
+=== Explicit synchronization === #ExplicitSync
+This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the post-commit hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the post-revprop-change hook as well.
+
+ `changeset added <repos> <rev> [...]`::
+   Notify Trac that one or more changesets have been added to a repository.
+
+ `changeset modified <repos> <rev> [...]`::
+   Notify Trac that metadata on one or more changesets in a repository has been modified.
+
+The `<repos>` argument can be either a repository name (use "`(default)`" for the default repository) or the path to the repository.
+
+The following examples are complete post-commit and post-revprop-change scripts for Subversion. They should be edited for the specific environment, marked executable (where applicable) and placed in the `hooks` directory of each repository. On Unix (`post-commit`):
+{{{
+#!sh
+#!/bin/sh
+/usr/bin/trac-admin /path/to/env changeset added "$1" "$2"
+}}}
+On Windows (`post-commit.cmd`):
+{{{
+#!application/x-dos-batch
+@C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset added "%1" "%2"
+}}}
+
+The post-revprop-change hook for Subversion is very similar. On Unix (`post-revprop-change`):
+{{{
+#!sh
+#!/bin/sh
+/usr/bin/trac-admin /path/to/env changeset modified "$1" "$2"
+}}}
+On Windows (`post-revprop-change.cmd`):
+{{{
+#!application/x-dos-batch
+@C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset modified "%1" "%2"
+}}}
+
+See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups. Please see the plugin documentation for specific instructions.
+
+=== Per-request synchronization === #PerRequestSync
+If the post-commit hooks are not available, the environment can be set up for per-request synchronization. In that case, the `[trac] repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] must be set to a comma-separated list of repository names to be synchronized.
+
+Note that in this case, the changeset listener extension point is not called, and therefore plugins using it will not work correctly.
+
+
+== Migration from a single-repository setup == #Migration
+The following procedure illustrates a typical migration from a single-repository setup to multiple repositories.
+
+ 1. Remove the default repository specification from the `[trac] repository_dir` option.
+ 1. Add the "main" repository as a named repository.
+ 1. Re-synchronize the main repository.
+ 1. Set up post-commit and post-revprop-change hooks on the main repository, and set `[trac] repository_sync_per_request` to an empty value.
+ 1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
+ 1. Repeat steps 2, 3 and 4 to add other (named) repositories as needed.
+
+{{{#!div style="background: #eee; padding: 1px 2em"
+=== Editing Notes ===
+
+The different points that should be addressed in this page:
+ - mainly what admins need to do for adapting their repository hooks
+ - what admins can do with their default repository (setting up an alias for default, or better, "migrating" their unnamed default repository to a named repository and add an alias to the empty repo pointing to the new name)
+   - trac-admin (repository and changeset commands)
+     - trac-admin set and hidden and url attributes
+ - admin panel intro
+
+Note that the source:sandbox/multirepos/contrib/trac-svn-hook already contains some quite detailed documentation about the various ways to setup a hook (or directly call `trac-admin changeset` from the hooks), but this page should be more descriptive.
+}}}

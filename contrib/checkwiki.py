@@ -45,6 +45,7 @@ wiki_pages = [
  "TracPlugins",
  "TracQuery",
  "TracReports",
+ "TracRepositoryAdmin",
  "TracRevisionLog",
  "TracRoadmap",
  "TracRss",

@@ -18,16 +18,20 @@ file = /usr/share/trac/conf/trac.ini
 Note that you can also specify a global option file when creating a new project,  by adding the option `--inherit=/path/to/global/options` to [TracAdmin trac-admin]'s `initenv` command.  If do not do this but nevertheless intend to use a global option file with your new environment, you will have to go through the newly generated conf/trac.ini file and delete the entries that will otherwise override those set in the global file.
 
 
-== Reference ==
+== Reference for settings
 
 This is a brief reference of available configuration options.
 
  ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
 
-[[TracIni()]]
+ ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
 
+[[TracIni]]
 
-== [components] == #components-section
+== Reference for special sections
+[[PageOutline(3,,inline)]]
+
+=== [components] === #components-section
 This section is used to enable or disable components provided by plugins, as well as by Trac itself. The component to enable/disable is specified via the name of the option. Whether its enabled is determined by the option value; setting the value to `enabled` or `on` will enable the component, any other value (typically `disabled` or `off`) will disable the component.
 
 The option name is either the fully qualified name of the components or the module/package prefix of the component. The former enables/disables a specific component, while the latter enables/disables any component in the specified package/module.
@@ -45,19 +49,8 @@ See the ''Plugins'' page on ''About Trac'' to get the list of active components 
 
 See also: TracPlugins
 
-== [ticket-custom] == #ticket-custom-section
 
-In this section, you can define additional fields for tickets. See TracTicketsCustomFields for more details.
-
-== [ticket-workflow] == #ticket-workflow-section
-''(since 0.11)''
-
-The workflow for tickets is controlled by plugins. 
-By default, there's only a `ConfigurableTicketWorkflow` component in charge. 
-That component allows the workflow to be configured via this section in the trac.ini file.
-See TracWorkflow for more details.
-
-== [milestone-groups] == #milestone-groups-section
+=== [milestone-groups] === #milestone-groups-section
 ''(since 0.11)''
 
 As the workflow for tickets is now configurable, there can be many ticket states,
@@ -71,7 +64,7 @@ closed = closed
 # sequence number in the progress bar
 closed.order = 0
 # optional extra param for the query (two additional columns: created and modified and sort on created)
-group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime
+closed.query_args = group=resolution,order=time,col=id,col=summary,col=owner,col=type,col=priority,col=component,col=severity,col=time,col=changetime
 # indicates groups that count for overall completion 
 closed.overall_completion = truepercentage
 
@@ -97,19 +90,31 @@ The CSS class can be one of: new (yellow), open (no color) or
 closed (green). New styles can easily be added using the following
 selector:  `table.progress td.<class>`
 
-== [svn:externals] == #svn:externals-section
+=== [repositories] === #repositories-section
+
+(''since 0.12'' multirepos)
+
+One of the alternatives for registering new repositories is to populate the `[repositories]` section of the trac.ini.
+
+This is especially suited for setting up convenience aliases, short-lived repositories, or during the initial phases of an installation.
+
+See [TracRepositoryAdmin#Intrac.ini TracRepositoryAdmin] for details about the format adopted for this section and the rest of that page for the other alternatives.
+
+=== [svn:externals] === #svn:externals-section
 ''(since 0.11)''
 
-The TracBrowser for Subversion can interpret the `svn:externals` property of folders out of the box.
-However, if those externals are ''not'' using the `http:` or `https:` protocol, or if a link to a different repository browser such as another Trac or [http://www.viewvc.org/ ViewVC] is desired, then Trac needs to be able to map an external prefix to this other URL.
+The TracBrowser for Subversion can interpret the `svn:externals` property of folders.
+By default, it only turns the URLs into links as Trac can't browse remote repositories.
+
+However, if you have another Trac instance (or an other repository browser like [http://www.viewvc.org/ ViewVC]) configured to browse the target repository, then you can instruct Trac which other repository browser to use for which external URL.
 
 This mapping is done in the `[svn:externals]` section of the TracIni
 
 Example:
 {{{
 [svn:externals]
-1 = svn://server/repos1 http://trac/proj1/browser/$path?rev=$rev
-2 = svn://server/repos2 http://trac/proj2/browser/$path?rev=$rev
+1 = svn://server/repos1                       http://trac/proj1/browser/$path?rev=$rev
+2 = svn://server/repos2                       http://trac/proj2/browser/$path?rev=$rev
 3 = http://theirserver.org/svn/eng-soft       http://ourserver/viewvc/svn/$path/?pathrev=25914
 4 = svn://anotherserver.com/tools_repository  http://ourserver/tracs/tools/browser/$path?rev=$rev
 }}}
@@ -118,6 +123,19 @@ With the above, the `svn://anotherserver.com/tools_repository/tags/1.1/tools` ex
 Note that the number used as a key in the above section is purely used as a place holder, as the URLs themselves can't be used as a key due to various limitations in the configuration file parser.
 
 Finally, the relative URLs introduced in [http://subversion.tigris.org/svn_1.5_releasenotes.html#externals Subversion 1.5] are not yet supported.
+
+=== [ticket-custom] === #ticket-custom-section
+
+In this section, you can define additional fields for tickets. See TracTicketsCustomFields for more details.
+
+=== [ticket-workflow] === #ticket-workflow-section
+''(since 0.11)''
+
+The workflow for tickets is controlled by plugins. 
+By default, there's only a `ConfigurableTicketWorkflow` component in charge. 
+That component allows the workflow to be configured via this section in the trac.ini file.
+See TracWorkflow for more details.
+
 
 ----
 See also: TracGuide, TracAdmin, TracEnvironment

@@ -69,6 +69,10 @@ trac-admin /path/to/projenv resync
 ==== Upgrading to Trac 0.12 ====
 SQLite v2.x is no longer supported, if you happen to still use a Trac database using this format, you'll need to convert it to SQLite v3.x first. See [trac:PySqlite#UpgradingSQLitefrom2.xto3.x] for details.
 
+If you plan to add more repositories to your Trac instance, as this is now possible with the newly introduced multiple repository support, please refer to TracRepositoryAdmin#Migration.
+
+This can be of interest even if you only have one repository, as there's now a way to avoid the potentially costly resync check at every request.
+
 ==== Upgrading to Trac 0.11 ====
 ===== Site Templates =====
 The templating engine has changed in 0.11, please look at TracInterfaceCustomization for more information.
