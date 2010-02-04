@@ -256,9 +256,9 @@ msgid "Invalid log type"
 msgstr "Άκυρος τύπος ημερολογίου"
 
 #: trac/admin/web_ui.py:253
-#, python-format
+#, fuzzy, python-format
 msgid "Unknown log level %(level)s"
-msgstr "Άγνωστο επίπεδο ημερολογίου"
+msgstr ""
 
 #: trac/admin/web_ui.py:254
 msgid "Invalid log level"

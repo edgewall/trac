@@ -2699,7 +2699,6 @@ msgstr "업데이트됨"
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s 변경됨"
-msgstr[1] "%(labels)s 변경됨"
 
 #: trac/ticket/web_ui.py:340
 #, python-format
@@ -3546,49 +3545,42 @@ msgstr "[1:Note:] 시간이력에 대한 정보가 필요하다면 [2:TracTimeli
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d 년"
-msgstr[1] "%(num)d 년"
 
 #: trac/util/datefmt.py:69
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d 달"
-msgstr[1] "%(num)d 달"
 
 #: trac/util/datefmt.py:70
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d 주"
-msgstr[1] "%(num)d 주"
 
 #: trac/util/datefmt.py:71
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d 일"
-msgstr[1] "%(num)d 일"
 
 #: trac/util/datefmt.py:72
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d 시간"
-msgstr[1] "%(num)d 시간"
 
 #: trac/util/datefmt.py:73
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d 분"
-msgstr[1] "%(num)d 분"
 
 #: trac/util/datefmt.py:92
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i 초"
-msgstr[1] "%(num)i 초"
 
 #: trac/util/presentation.py:254
 #, python-format
@@ -3900,14 +3892,12 @@ msgstr "차이점 보기"
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] "%(num)d 차이점"
-msgstr[1] "%(num)d 차이점들"
 
 #: trac/versioncontrol/templates/changeset.html:88
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] "%(num)d 속성"
-msgstr[1] "%(num)d 속성들"
 
 #: trac/versioncontrol/templates/changeset.html:92
 msgid "Show previous version in browser"
