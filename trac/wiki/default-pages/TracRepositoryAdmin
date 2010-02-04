@@ -135,15 +135,3 @@ The following procedure illustrates a typical migration from a single-repository
  1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
  1. Repeat steps 2, 3 and 4 to add other (named) repositories as needed.
 
-{{{#!div style="background: #eee; padding: 1px 2em"
-=== Editing Notes ===
-
-The different points that should be addressed in this page:
- - mainly what admins need to do for adapting their repository hooks
- - what admins can do with their default repository (setting up an alias for default, or better, "migrating" their unnamed default repository to a named repository and add an alias to the empty repo pointing to the new name)
-   - trac-admin (repository and changeset commands)
-     - trac-admin set and hidden and url attributes
- - admin panel intro
-
-Note that the source:sandbox/multirepos/contrib/trac-svn-hook already contains some quite detailed documentation about the various ways to setup a hook (or directly call `trac-admin changeset` from the hooks), but this page should be more descriptive.
-}}}
