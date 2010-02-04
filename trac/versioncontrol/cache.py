@@ -89,17 +89,17 @@ class CachedRepository(Repository):
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
                        (self.id, str(cset.rev)))
-        old_changeset = None
+        old_cset = None
         for time, author, message in cursor:
             date = datetime.fromtimestamp(time, utc)
-            old_changeset = Changeset(cset.rev, message, author, date)
+            old_cset = Changeset(self.repos, cset.rev, message, author, date)
         
         cursor.execute("UPDATE revision SET time=%s, author=%s, message=%s "
                        "WHERE repos=%s AND rev=%s",
                        (to_timestamp(cset.date), cset.author, cset.message,
                         self.id, str(cset.rev)))
         db.commit()
-        return old_changeset
+        return old_cset
         
     def _metadata(self, db):
         """Retrieve data for the cached `metadata` attribute."""
