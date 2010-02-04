@@ -9,7 +9,7 @@
   <xi:include href="macros.html" />
   <head>
     <title py:if="title">$title</title>
-    <meta py:if="version" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <meta py:if="version or page.author == 'trac'" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
