@@ -397,7 +397,7 @@ msgstr ""
 #: trac/admin/console.py:360
 #, fuzzy, python-format
 msgid "Repository type [%(default)s]> "
-msgstr "Navegar el repositorio en la ruta %(path)s"
+msgstr ""
 
 #: trac/admin/console.py:362
 msgid ""
@@ -1093,7 +1093,7 @@ msgstr "El contenido del diff modo unificado es inválido"
 #: trac/mimeview/patch.py:163
 #, fuzzy, python-format
 msgid "new file %(new)s"
-msgstr "falló svn blame: %(error)s"
+msgstr ""
 
 #: trac/mimeview/patch.py:167
 #, python-format
@@ -2275,12 +2275,12 @@ msgstr "El ticket se quedará sin dueño"
 #: trac/ticket/default_workflow.py:246 trac/ticket/default_workflow.py:260
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s"
-msgstr "El dueño cambiará a %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:251
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s to %(selected_owner)s"
-msgstr "El dueño cambiará a %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:256
 msgid "to "
@@ -2289,7 +2289,7 @@ msgstr "a "
 #: trac/ticket/default_workflow.py:264
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s to %(authname)s"
-msgstr "El dueño cambiará a %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:274
 msgid ""
@@ -2314,7 +2314,7 @@ msgstr "El siguiente estado será '%(name)s'"
 #: trac/ticket/model.py:110
 #, fuzzy, python-format
 msgid "Ticket %(id)s does not exist."
-msgstr "El reporte %(num)s no existe."
+msgstr ""
 
 #: trac/ticket/model.py:111
 #, fuzzy
@@ -2392,7 +2392,7 @@ msgstr ""
 #: trac/ticket/query.py:558
 #, fuzzy, python-format
 msgid "Invalid ticket id list: %(value)s"
-msgstr "Página invalida Wiki: %(message)s"
+msgstr ""
 
 #: trac/ticket/query.py:657 trac/ticket/query.py:665
 msgid "contains"
@@ -2735,7 +2735,7 @@ msgstr "Historial del ticket"
 #: trac/ticket/web_ui.py:984
 #, fuzzy, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
-msgstr "Ticket #%(num)s: %(summary)s"
+msgstr ""
 
 #: trac/ticket/web_ui.py:982
 #, fuzzy
@@ -3331,7 +3331,7 @@ msgstr "follow-up"
 #: trac/ticket/templates/ticket.html:257
 #, fuzzy, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr "Conjunto de cambios %(id)s para %(path)s"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:276
 #, python-format

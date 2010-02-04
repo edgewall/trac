@@ -382,7 +382,7 @@ msgstr ""
 #: trac/admin/console.py:330
 #, fuzzy, python-format
 msgid "Repository type [%(default)s]> "
-msgstr "Navegar no repositório no caminho %(path)s"
+msgstr ""
 
 #: trac/admin/console.py:332
 msgid ""
@@ -1039,7 +1039,7 @@ msgstr "Conteúdo inválido no diff unificado"
 #: trac/mimeview/patch.py:165
 #, fuzzy, python-format
 msgid "new file %(new)s"
-msgstr "svn blame falhou: %(error)s"
+msgstr ""
 
 #: trac/mimeview/patch.py:169
 #, python-format
@@ -2084,12 +2084,12 @@ msgstr "O dono do ticket será removido"
 #: trac/ticket/default_workflow.py:243 trac/ticket/default_workflow.py:257
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s"
-msgstr "O responsável será mudado para %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:248
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s to %(selected_owner)s"
-msgstr "O responsável será mudado para %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:253
 msgid "to "
@@ -2098,7 +2098,7 @@ msgstr "para"
 #: trac/ticket/default_workflow.py:261
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s to %(authname)s"
-msgstr "O responsável será mudado para %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:272
 msgid ""
@@ -3875,7 +3875,7 @@ msgstr ""
 #: trac/wiki/web_ui.py:258
 #, fuzzy, python-format
 msgid "The page %(name)s has been deleted."
-msgstr "Página de consulta %(page)s inválida."
+msgstr ""
 
 #: trac/wiki/web_ui.py:263
 #, python-format

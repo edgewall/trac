@@ -389,7 +389,7 @@ msgstr ""
 #: trac/admin/console.py:360
 #, fuzzy, python-format
 msgid "Repository type [%(default)s]> "
-msgstr "Tároló útvonal böngészése %(path)s"
+msgstr ""
 
 #: trac/admin/console.py:362
 msgid ""
@@ -2174,12 +2174,12 @@ msgstr "A jegynek más tulajdonosa lesz"
 #: trac/ticket/default_workflow.py:246 trac/ticket/default_workflow.py:260
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s"
-msgstr "A tulajdonos meg fog változni %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:251
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s to %(selected_owner)s"
-msgstr "A tulajdonos meg fog változni %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:256
 #, fuzzy
@@ -2189,7 +2189,7 @@ msgstr "MIRE:"
 #: trac/ticket/default_workflow.py:264
 #, fuzzy, python-format
 msgid "The owner will change from %(current_owner)s to %(authname)s"
-msgstr "A tulajdonos meg fog változni %(name)s"
+msgstr ""
 
 #: trac/ticket/default_workflow.py:274
 msgid ""
@@ -2214,7 +2214,7 @@ msgstr "A következő állapot '%(name)s' lesz"
 #: trac/ticket/model.py:110
 #, fuzzy, python-format
 msgid "Ticket %(id)s does not exist."
-msgstr "A %(num)s számú riport nem létezik."
+msgstr ""
 
 #: trac/ticket/model.py:111
 #, fuzzy
@@ -2292,7 +2292,7 @@ msgstr ""
 #: trac/ticket/query.py:558
 #, fuzzy, python-format
 msgid "Invalid ticket id list: %(value)s"
-msgstr "Érvénytelen Wiki oldal: %(message)s"
+msgstr ""
 
 #: trac/ticket/query.py:657 trac/ticket/query.py:665
 msgid "contains"
@@ -2626,7 +2626,7 @@ msgstr "Jegy Történet"
 #: trac/ticket/web_ui.py:984
 #, fuzzy, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
-msgstr "#%(num)s jegy: %(summary)s"
+msgstr ""
 
 #: trac/ticket/web_ui.py:982
 #, fuzzy
@@ -3051,7 +3051,7 @@ msgstr "Új jelentés létrehozása"
 #, fuzzy, python-format
 msgid "%(num)d match"
 msgid_plural "%(num)d matches"
-msgstr[0] "%(num)s találat"
+msgstr[0] ""
 
 #: trac/ticket/templates/report_view.html:42
 #, fuzzy
@@ -3204,7 +3204,7 @@ msgstr "nyomon követés "
 #: trac/ticket/templates/ticket.html:257
 #, fuzzy, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr "Változtatások %(id)s ehhez az útvonalhoz %(path)s"
+msgstr ""
 
 #: trac/ticket/templates/ticket.html:276
 #, python-format
@@ -3405,13 +3405,13 @@ msgstr "Információk megjelenítése a hálózatáról"
 #, fuzzy, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
-msgstr[0] "%(num)s találat"
+msgstr[0] "%(num)d találat"
 
 #: trac/util/datefmt.py:69
 #, fuzzy, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
-msgstr[0] "%(num)s találat"
+msgstr[0] "%(num)d találat"
 
 #: trac/util/datefmt.py:70
 #, python-format
@@ -3423,19 +3423,19 @@ msgstr[0] ""
 #, fuzzy, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] "%(num)s találat"
+msgstr[0] "%(num)d találat"
 
 #: trac/util/datefmt.py:72
 #, fuzzy, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] "%(num)s találat"
+msgstr[0] "%(num)d találat"
 
 #: trac/util/datefmt.py:73
 #, fuzzy, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
-msgstr[0] "%(num)s találat"
+msgstr[0] "%(num)d találat"
 
 #: trac/util/datefmt.py:92
 #, python-format
@@ -4241,7 +4241,7 @@ msgstr ""
 #: trac/wiki/web_ui.py:258
 #, fuzzy, python-format
 msgid "The page %(name)s has been deleted."
-msgstr "A lekérdezés %(page)s oldala érvénytelen."
+msgstr ""
 
 #: trac/wiki/web_ui.py:263
 #, python-format
