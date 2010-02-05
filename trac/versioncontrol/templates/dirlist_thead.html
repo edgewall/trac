@@ -4,10 +4,11 @@
     xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
   <thead>
     <tr>
-      <py:with vars="class_ = 'name'; title = 'Name'"><xi:include href="sortable_th.html" /></py:with>
-      <py:with vars="class_ = 'size'; title = 'Size'"><xi:include href="sortable_th.html" /></py:with>
+      <xi:include href="sortable_th.html" py:with="class_ = 'name'; title = _('Name')"/>
+      <xi:include href="sortable_th.html" py:with="class_ = 'size'; title = _('Size')"/>
       <th class="rev">Rev</th>
-      <py:with vars="class_ = 'date'; title = 'Age'"><xi:include href="sortable_th.html" /></py:with>
+      <xi:include href="sortable_th.html" py:with="class_ = 'date'; title = _('Age')"/>
+      <xi:include href="sortable_th.html" py:with="class_ = 'author'; title = _('Author')"/>
       <th class="change">Last Change</th>
     </tr>
   </thead>

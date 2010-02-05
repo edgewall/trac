@@ -45,7 +45,7 @@ div.message div.inlinebuttons { float: right;  }
 /* Styles for the directory entries table
    (extends the styles for "table.listing") */
 table.dirlist { margin-top: 0 }
-table.dirlist td.rev, table.dirlist td.age, table.dirlist td.change {
+table.dirlist td.rev, table.dirlist td.age, table.dirlist td.author, table.dirlist td.change {
  color: #888;
  white-space: nowrap;
  vertical-align: middle;
@@ -96,7 +96,7 @@ table.dirlist tr.expanded span.expander:hover {
 table.dirlist td.name a.dir { background-image: url(../folder.png) }
 table.dirlist td.name a.file { background-image: url(../file.png); display: block }
 table.dirlist td.name a, table.dirlist td.rev a { border-bottom: none }
-table.dirlist td.change { font-size: 85% }
+table.dirlist td.author, table.dirlist td.change { font-size: 85% }
 table.dirlist td.rev a.chgset { 
   background-repeat: no-repeat;
   background-image: url(../changeset.png); 

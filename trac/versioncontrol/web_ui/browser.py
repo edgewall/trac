@@ -554,6 +554,9 @@ class BrowserModule(Component):
             def file_order(a):
                 return (a.content_length,
                         embedded_numbers(a.name.lower()))
+        elif order == 'author':
+            def file_order(a):
+                return changes[a.rev].author.lower()
         else:
             def file_order(a):
                 return embedded_numbers(a.name.lower())

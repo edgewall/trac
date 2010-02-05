@@ -28,16 +28,12 @@
                                    repo.colorize_age(repo.timerange.relative(change.date)) or None}">
             ${chgset_view and dateinfo(change.date) or '&ndash;'}
           </td>
+          <td class="author">${chgset_view and authorinfo(change.author) or '&ndash;'}</td>
           <td class="change" py:choose="">
-            <span py:when="err" class="change"><em py:content="err"></em></span>
-            <py:when test="chgset_view">
-              <span class="author">${authorinfo(change.author)}:</span>
-              <span class="change" py:choose="">
-                <py:when test="wiki_format_messages">
-                  ${wiki_to_oneliner(chgset_context, change.message, shorten=True)}
-                </py:when>
-                <py:otherwise>${shorten_line(change.message)}</py:otherwise>
-              </span>
+            <py:when test="err"><em py:content="err"></em></py:when>
+            <py:when test="chgset_view" py:choose="">
+              <py:when test="wiki_format_messages">${wiki_to_oneliner(chgset_context, change.message, shorten=True)}</py:when>
+              <py:otherwise>${shorten_line(change.message)}</py:otherwise>
             </py:when>
             <py:otherwise>&ndash;</py:otherwise>
           </td>
