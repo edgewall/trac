@@ -266,7 +266,11 @@ def normalize_whitespace(text, to_space=u'\u00a0', remove=u'\u200b'):
     spaces and removing zero-width spaces."""
     if not text:
         return text
-    return text.replace(u'\u00a0', ' ').replace(u'\u200b', '')
+    for each in to_space:
+        text = text.replace(each, ' ')
+    for each in remove:
+        text = text.replace(each, '')
+    return text
 
 # -- Conversion
 
