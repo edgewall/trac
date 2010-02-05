@@ -357,9 +357,9 @@ class RepositoryManager(Component):
                 return _("Changeset %(rev)s", rev=id)
         elif resource.realm == 'source':
             reponame, id = resource.parent.id, resource.id
-            version = in_repo = ''
+            version = ''
             if format == 'summary':
-                repos = resource.env.get_repository(reponame)
+                repos = self.get_repository(reponame)
                 node = repos.get_node(resource.id, resource.version)
                 if node.isdir:
                     kind = _("directory")
@@ -371,8 +371,7 @@ class RepositoryManager(Component):
                 kind = _("path")
                 if resource.version:
                     version = '@%s' % resource.version
-            if reponame:
-                in_repo = _(" in %(repo)s", repo=reponame)
+            in_repo = reponame and _(" in %(repo)s", repo=reponame) or ''
             return ''.join([kind, ' ', id, version, in_repo])
         elif resource.realm == 'repository':
             return _("Repository %(repo)s", repo=resource.id)

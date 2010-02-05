@@ -38,7 +38,7 @@ from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
                             prevnext_nav, INavigationContributor
 from trac.wiki.api import IWikiSyntaxProvider, IWikiMacroProvider, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner
-from trac.versioncontrol.api import RepositoryManager, NoSuchChangeset
+from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
 from trac.versioncontrol.web_ui.util import *
 
 
@@ -830,7 +830,8 @@ class BlameAnnotator(object):
     def __init__(self, env, context):
         self.env = env
         self.context = context
-        self.repos = env.get_repository(context.resource.parent.id)
+        rm = RepositoryManager(self.env)
+        self.repos = rm.get_repository(context.resource.parent.id)
         self.path = context.resource.id
         self.rev = context.resource.version
         # maintain state

@@ -314,10 +314,16 @@ class Environment(Component, ComponentManager):
             del self.log._trac_handler
 
     def get_repository(self, reponame=None, authname=None):
-        """Return the version control repository configured for this
-        environment.
+        """Return the version control repository with the given name, or the
+        default repository if `None`.
         
-        @param authname: user name for authorization
+        The standard way of retrieving repositories is to use the methods
+        of `RepositoryManager`. This method is retained here for backward
+        compatibility.
+        
+        @param reponame: the name of the repository
+        @param authname: the user name for authorization (not used anymore,
+                         left here for compatibility with 0.11)
         """
         return RepositoryManager(self).get_repository(reponame)
 

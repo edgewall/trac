@@ -4,7 +4,7 @@ from genshi.builder import tag
 
 from trac.core import *
 from trac.util.text import shorten_line
-from trac.versioncontrol.api import NoSuchChangeset
+from trac.versioncontrol.api import NoSuchChangeset, RepositoryManager
 from trac.versioncontrol.web_ui import ChangesetModule
 from trac.wiki.api import IWikiSyntaxProvider
 
@@ -42,7 +42,7 @@ class RevisionLinks(Component):
                               fullmatch=None):
         rev, params, fragment = formatter.split_link(rev)
         try:
-            repos = self.env.get_repository(reponame)
+            repos = RepositoryManager(self.env).get_repository(reponame)
             if repos:
                 changeset = repos.get_changeset(rev)
                 return tag.a(label, class_="changeset",

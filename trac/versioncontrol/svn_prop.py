@@ -21,7 +21,7 @@ import posixpath
 from genshi.builder import tag
 
 from trac.core import *
-from trac.versioncontrol import NoSuchNode
+from trac.versioncontrol.api import NoSuchNode, RepositoryManager
 from trac.versioncontrol.svn_fs import _path_within_scope
 from trac.versioncontrol.web_ui.browser import IPropertyRenderer
 from trac.versioncontrol.web_ui.changeset import IPropertyDiffRenderer
@@ -149,7 +149,7 @@ class SubversionMergePropertyRenderer(Component):
         revs_cols = has_eligible and 2 or None
         reponame = context.resource.parent.id
         target_path = context.resource.id
-        repos = self.env.get_repository(reponame)
+        repos = RepositoryManager(self.env).get_repository(reponame)
         target_rev = context.resource.version
         if has_eligible:
             node = repos.get_node(target_path, target_rev)
@@ -264,7 +264,8 @@ class SubversionMergePropertyDiffRenderer(Component):
         # Build 3 columns table showing modifications on merge sources
         # || source || added revs || removed revs ||
         # || source || removed                    ||
-        repos = self.env.get_repository(old_context.resource.parent.id)
+        rm = RepositoryManager(self.env)
+        repos = rm.get_repository(old_context.resource.parent.id)
         def parse_sources(props):
             sources = {}
             for line in props[name].splitlines():

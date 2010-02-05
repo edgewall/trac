@@ -31,6 +31,7 @@ from trac.util.html import html
 from trac.util.text import console_print, exception_to_unicode, printout, \
                            printerr, raw_input, to_unicode
 from trac.util.translation import _
+from trac.versioncontrol.api import RepositoryManager
 from trac.wiki.admin import WikiAdmin
 from trac.wiki.macros import WikiMacroBase
 
@@ -420,7 +421,7 @@ in order to initialize and prepare the project database.
 
             if repository_dir:
                 try:
-                    repos = self.__env.get_repository()
+                    repos = RepositoryManager(self.__env).get_repository('')
                     if repos:
                         printout(_(" Indexing default repository"))
                         repos.sync(self._resync_feedback)
