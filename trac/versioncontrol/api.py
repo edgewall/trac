@@ -69,14 +69,21 @@ class IRepositoryProvider(Interface):
         """Generate repository information for known repositories.
         
         Repository information is a key,value pair, where the value is 
-        a dictionary which must contain at the very least one of the following 
-        entries:
+        a dictionary which must contain at the very least either of the
+        following entries:
          - `'dir'`: the repository directory which can be used by the 
-                    connector to create a `Repository` instance
-         - `'alias'`: if set, it is the name of another repository.
+                    connector to create a `Repository` instance. This defines
+                    a "real" repository.
+         - `'alias'`: the name of another repository. This defines an alias to
+                      another (real) repository.
         Optional entries:
          - `'type'`: the type of the repository (if not given, the default
-                     repository type will be used)
+                     repository type will be used).
+         - `'description'`: a description of the repository (can contain
+                            WikiFormatting).
+         - `'hidden'`: if set to `'true'`, the repository is hidden from the
+                       repository index.
+         - `'url'`: the base URL for checking out the repository.
         """
 
 
