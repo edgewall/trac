@@ -830,12 +830,8 @@ class ChangesetModule(Component):
 
     def get_timeline_filters(self, req):
         if 'CHANGESET_VIEW' in req.perm:
-            # non-'hidden' repositories will be listed as additional
-            # repository filters.
-            # '(default)' will be shown for the default repository,
-            # unless it has a visible alias, or when it is itself an
-            # alias to a visible repository, or when it would be the
-            # only repository filter.
+            # Non-'hidden' repositories will be listed as additional
+            # repository filters, unless there is only a single repository.
             filters = []
             rm = RepositoryManager(self.env)
             repositories = rm.get_real_repositories()
