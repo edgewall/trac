@@ -249,7 +249,7 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('joe', ticket['owner'])
 
     def test_populate_ticket(self):
-        data = {'summary': 'Hello world', 'reporter': 'john', 'foo': 'bar',
+        data = {'summary': 'Hello world', 'reporter': 'john',
                 'foo': 'bar', 'checkbox_cbon': '', 'cbon': 'on',
                 'checkbox_cboff': ''}
         ticket = Ticket(self.env)
@@ -277,17 +277,11 @@ class TicketTestCase(unittest.TestCase):
         ticket['milestone'] = 'foo'
         now = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         ticket.save_changes('jane', 'Testing', now)
-        for t, author, field, old, new, permanent in ticket.get_changelog():
-            self.assertEqual((now, 'jane', True), (t, author, permanent))
-            if field == 'component':
-                self.assertEqual(('foo', 'bar'), (old, new))
-            elif field == 'milestone':
-                self.assertEqual(('bar', 'foo'), (old, new))
-            elif field == 'comment':
-                self.assertEqual(('', 'Testing'), (old, new))
-            else:
-                self.fail('Unexpected change (%s)'
-                          % ((t, author, field, old, new),))
+        changelog = sorted(ticket.get_changelog())
+        self.assertEqual([(now, 'jane', 'comment', '1', 'Testing', True),
+                          (now, 'jane', 'component', 'foo', 'bar', True),
+                          (now, 'jane', 'milestone', 'bar', 'foo', True)],
+                         changelog)
 
     def test_changelog_with_attachment(self):
         """Verify ordering of attachments and comments in the changelog."""
@@ -308,11 +302,11 @@ class TicketTestCase(unittest.TestCase):
         ticket.save_changes('jim', 'Other', t3)
         log = ticket.get_changelog()
         self.assertEqual(4, len(log))
-        self.assertEqual((t1, 'jane', 'comment', '', 'Testing', True), log[0])
+        self.assertEqual((t1, 'jane', 'comment', '1', 'Testing', True), log[0])
         self.assertEqual([(t2, 'mark', 'attachment', '', 'file.txt', False),
                           (t2, 'mark', 'comment', '', 'My file', False)],
                           sorted(log[1:3]))
-        self.assertEqual((t3, 'jim', 'comment', '', 'Other', True), log[3])
+        self.assertEqual((t3, 'jim', 'comment', '2', 'Other', True), log[3])
 
     def test_changelog_with_reverted_change(self):
         tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
@@ -321,13 +315,8 @@ class TicketTestCase(unittest.TestCase):
         ticket['component'] = 'foo'
         now = datetime(2001, 1, 1,  1, 1, 1, 0, utc)
         ticket.save_changes('jane', 'Testing', now)
-        for t, author, field, old, new, permanent in ticket.get_changelog():
-            self.assertEqual((now, 'jane', True), (t, author, permanent))
-            if field == 'comment':
-                self.assertEqual(('', 'Testing'), (old, new))
-            else:
-                self.fail('Unexpected change (%s)'
-                          % ((t, author, field, old, new),))
+        self.assertEqual([(now, 'jane', 'comment', '1', 'Testing', True)],
+                         list(ticket.get_changelog()))
 
     def test_change_listener_created(self):
         listener = TestTicketChangeListener(self.env)

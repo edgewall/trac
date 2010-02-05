@@ -280,6 +280,28 @@ class Ticket(object):
                     cclist.append(cc)
             self.values['cc'] = ', '.join(cclist)
 
+        # find cnum if it isn't provided
+        if not cnum:
+            num = 0
+            cursor.execute("""\
+                SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,'')
+                FROM ticket_change AS tc1
+                  LEFT OUTER JOIN
+                    (SELECT time,oldvalue FROM ticket_change
+                     WHERE field='comment') AS tc2
+                  ON (tc1.time = tc2.time)
+                WHERE ticket=%s ORDER BY tc1.time DESC""",
+                (self.id,))
+            for ts, old in cursor:
+                # Use oldvalue if available, else count edits
+                try:
+                    num += int(old.rsplit('.', 1)[-1])
+                    break
+                except ValueError:
+                    num += 1
+            cnum = str(num + 1)
+
+        # store fields
         custom_fields = [f['name'] for f in self.fields if f.get('custom')]
         for name in self._old.keys():
             if name in custom_fields:
@@ -301,6 +323,7 @@ class Ticket(object):
                            "VALUES (%s, %s, %s, %s, %s, %s)",
                            (self.id, when_ts, author, name, self._old[name],
                             self[name]))
+        
         # always save comment, even if empty (numbering support for timeline)
         cursor.execute("INSERT INTO ticket_change "
                        "(ticket,time,author,field,oldvalue,newvalue) "
