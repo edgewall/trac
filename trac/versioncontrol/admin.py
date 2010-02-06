@@ -153,7 +153,7 @@ class VersionControlAdmin(Component):
 
     def get_admin_panels(self, req):
         if 'TICKET_ADMIN' in req.perm:
-            yield ('versioncontrol', 'Version Control', 'repository',
+            yield ('versioncontrol', _('Version Control'), 'repository',
                    _('Repositories'))
     
     def render_admin_panel(self, req, category, page, path_info):

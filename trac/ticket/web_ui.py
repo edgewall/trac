@@ -180,7 +180,7 @@ class TicketModule(Component):
 
     def get_search_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', 'Tickets')
+            yield ('ticket', _('Tickets'))
 
     def get_search_results(self, req, terms, filters):
         if not 'ticket' in filters:
