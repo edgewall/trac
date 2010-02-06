@@ -188,7 +188,7 @@ class ReportModule(Component):
                     'action': 'delete',
                     'report': {'id': id, 'title': title}}
         else:
-            raise TracError(_('Report %(num)s does not exist.', num=id),
+            raise TracError(_('Report {%(num)s} does not exist.', num=id),
                             _('Invalid Report Number'))
 
     def _render_editor(self, req, db, id, copy):
@@ -200,7 +200,7 @@ class ReportModule(Component):
             for title, description, query in cursor:
                 break
             else:
-                raise TracError(_('Report %(num)s does not exist.', num=id),
+                raise TracError(_('Report {%(num)s} does not exist.', num=id),
                                 _('Invalid Report Number'))
         else:
             req.perm.require('REPORT_CREATE')
@@ -250,7 +250,7 @@ class ReportModule(Component):
             break
         else:
             raise ResourceNotFound(
-                _('Report %(num)s does not exist.', num=id),
+                _('Report {%(num)s} does not exist.', num=id),
                 _('Invalid Report Number'))
 
         try:
@@ -565,7 +565,7 @@ class ReportModule(Component):
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
-            raise TracError(_('Report %(num)s has no SQL query.', num=id))
+            raise TracError(_('Report {(num)s} has no SQL query.', num=id))
         self.log.debug('Executing report with SQL "%s"' % sql)
         self.log.debug('Request args: %r' % req.args)
         cursor = db.cursor()
