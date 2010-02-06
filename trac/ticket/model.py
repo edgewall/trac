@@ -283,15 +283,15 @@ class Ticket(object):
         # find cnum if it isn't provided
         if not cnum:
             num = 0
-            cursor.execute("""\
+            cursor.execute("""
                 SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,'')
                 FROM ticket_change AS tc1
                   LEFT OUTER JOIN
                     (SELECT time,oldvalue FROM ticket_change
                      WHERE field='comment') AS tc2
                   ON (tc1.time = tc2.time)
-                WHERE ticket=%s ORDER BY tc1.time DESC""",
-                (self.id,))
+                WHERE ticket=%s ORDER BY tc1.time DESC
+                """, (self.id,))
             for ts, old in cursor:
                 # Use oldvalue if available, else count edits
                 try:
