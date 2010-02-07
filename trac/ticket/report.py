@@ -565,7 +565,7 @@ class ReportModule(Component):
                                  limit=0, offset=0):
         sql, args, missing_args = self.sql_sub_vars(sql, args, db)
         if not sql:
-            raise TracError(_('Report {(num)s} has no SQL query.', num=id))
+            raise TracError(_('Report {%(num)s} has no SQL query.', num=id))
         self.log.debug('Executing report with SQL "%s"' % sql)
         self.log.debug('Request args: %r' % req.args)
         cursor = db.cursor()
