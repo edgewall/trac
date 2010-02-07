@@ -62,11 +62,11 @@
         <div py:if="plugins" id="plugins">
           <h2>Installed Plugins</h2>
           <table class="listing">
-            <tr py:for="name, plugin in sorted(plugins.iteritems())"
+            <tr py:for="plugin in plugins"
                 class="${all(not component.enabled for module in plugin.modules.itervalues()
                              for component in module.components.itervalues()) and 'disabled' or None}">
               <th py:with="url = plugin.info.home_page or plugin.info.author_email and 'mailto:' + plugin.info.author_email">
-                <a py:strip="not url" href="$url">$name</a>
+                <a py:strip="not url" href="$url">$plugin.name</a>
               </th>
               <td>${plugin.version or _('N/A')}</td>
               <td class="file">$plugin.path</td>

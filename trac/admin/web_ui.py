@@ -493,14 +493,9 @@ class PluginAdminPanel(Component):
             _save_config(self.config, req, self.log)
 
     def _render_view(self, req):
-        plugins = get_plugin_info(self.env)
-        plugin_list = [plugins['Trac']]
-        addons = [key for key in plugins.keys() if key != 'Trac']
-        addons.sort()
-        plugin_list += [plugins[category] for category in addons]
-
+        plugins = get_plugin_info(self.env, include_core=True)
         data = {
-            'plugins': plugin_list, 'show': req.args.get('show'),
+            'plugins': plugins, 'show': req.args.get('show'),
             'readonly': not os.access(get_plugins_dir(self.env),
                                       os.F_OK + os.W_OK),
         }

@@ -63,9 +63,7 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
             # Collect plugin information
-            plugins = get_plugin_info(self.env)
-            plugins.pop('Trac', None)
-            data['plugins'] = plugins
+            data['plugins'] = get_plugin_info(self.env)
 
         if 'CONFIG_VIEW' in req.perm('config', 'ini'):
             # Collect config information

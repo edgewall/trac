@@ -128,7 +128,7 @@ def load_components(env, extra_path=None, loaders=(load_eggs('trac.plugins'),
         loadfunc(env, search_path, auto_enable=plugins_dir)
 
 
-def get_plugin_info(env):
+def get_plugin_info(env, include_core=False):
     """Return package information about Trac core and installed plugins."""
     path_sources = {}
     
@@ -217,7 +217,13 @@ def get_plugin_info(env):
             'enabled': env.is_component_enabled(component),
             'required': full_name in required_components,
         }
-    return plugins
+    if not include_core:
+        for name in plugins.keys():
+            if name.lower() == 'trac':
+                plugins.pop(name)
+    return sorted(plugins.itervalues(),
+                  key=lambda p: (p['name'].lower() != 'trac',
+                                 p['name'].lower()))
 
 
 def match_plugins_to_frames(plugins, frames):
@@ -243,7 +249,7 @@ def match_plugins_to_frames(plugins, frames):
             except KeyError:
                 pass    # Metadata not found
     
-    for plugin in plugins.itervalues():
+    for plugin in plugins:
         base, ext = os.path.splitext(plugin['path'])
         if ext == '.egg' and egg_frames:
             find_egg_frame_index(plugin)

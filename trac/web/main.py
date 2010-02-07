@@ -46,7 +46,7 @@ from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import get_frame_info, get_last_traceback, hex_entropy, arity, \
                       translation
-from trac.util.compat import all, partial
+from trac.util.compat import any, partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import tag_, _
@@ -552,16 +552,11 @@ def _dispatch_request(req, env, env_error):
                 # Collect frame and plugin information
                 frames = get_frame_info(exc_info[2])
                 if env:
-                    plugin_info = get_plugin_info(env)
-                    plugin_info.pop('Trac', None)
-                    for name, plugin in plugin_info.items():
-                        if all(not c['enabled']
-                               for m in plugin['modules'].itervalues()
-                               for c in m['components'].itervalues()):
-                            plugin_info.pop(name)
-                    match_plugins_to_frames(plugin_info, frames)
-                    plugins = sorted(plugin_info.itervalues(),
-                                     key=lambda plugin: plugin['name'])
+                    plugins = [p for p in get_plugin_info(env)
+                               if any(c['enabled']
+                                      for m in p['modules'].itervalues()
+                                      for c in m['components'].itervalues())]
+                    match_plugins_to_frames(plugins, frames)
                 
                     # Identify the tracker where the bug should be reported
                     faulty_plugins = [p for p in plugins if 'frame_idx' in p]
