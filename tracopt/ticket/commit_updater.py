@@ -45,7 +45,6 @@ from trac.core import Component, implements
 from trac.perm import PermissionCache
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
-from trac.ticket.web_ui import TicketModule
 from trac.util.compat import any
 from trac.util.datefmt import utc
 from trac.util.text import exception_to_unicode
@@ -208,15 +207,7 @@ In [%s]:
                 for cmd in cmds:
                     cmd(ticket, changeset, perm(ticket.resource))
                 
-                # Determine sequence number
-                cnum = 0
-                tm = TicketModule(self.env)
-                for change in tm.grouped_changelog_entries(ticket, db):
-                    if change['permanent']:
-                        cnum += 1
-                
-                ticket.save_changes(changeset.author, comment, date, db,
-                                    cnum + 1)
+                ticket.save_changes(changeset.author, comment, date, db)
                 db.commit()
                 self._notify(ticket, date)
             except Exception, e:
