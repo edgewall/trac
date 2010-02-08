@@ -27,7 +27,6 @@ from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.util import Ranges
 from trac.util.compat import any
-from trac.util.html import html
 from trac.util.text import wrap
 from trac.util.translation import _
 from trac.versioncontrol.api import RepositoryManager, Changeset, \
@@ -369,26 +368,32 @@ class LogModule(Component):
         else:
             reponame, repos, path = rm.get_repository_by_path(path)
 
-        revranges = None
-        if any(c for c in ':-,' if c in revs):
-            revranges = self._normalize_ranges(repos, path, revs)
-            revs = None
-        if 'LOG_VIEW' in formatter.perm:
-            if revranges:
-                href = formatter.href.log(repos.reponame or None, path or '/',
-                                          revs=str(revranges)) 
-            else:
-                try:
-                    rev = repos.normalize_rev(revs)
-                except NoSuchChangeset:
-                    rev = None
-                href = formatter.href.log(repos.reponame or None, path or '/',
-                                          rev=rev)
-            if query and (revranges or revs):
-                query = '&' + query[1:]
-            return html.A(label, class_='source', href=href + query + fragment)
+        if repos:
+            revranges = None
+            if any(c for c in ':-,' if c in revs):
+                revranges = self._normalize_ranges(repos, path, revs)
+                revs = None
+            if 'LOG_VIEW' in formatter.perm:
+                if revranges:
+                    href = formatter.href.log(repos.reponame or None,
+                                              path or '/', revs=str(revranges))
+                else:
+                    try:
+                        rev = repos.normalize_rev(revs)
+                    except NoSuchChangeset:
+                        rev = None
+                    href = formatter.href.log(repos.reponame or None,
+                                              path or '/', rev=rev)
+                if query and (revranges or revs):
+                    query = '&' + query[1:]
+                return tag.a(label, class_='source',
+                             href=href + query + fragment)
+            errmsg = _("No permission to view change log")
+        elif reponame:
+            errmsg = _("Repository %(repos)s not found", repos=reponame)
         else:
-            return html.A(label, class_='missing source')
+            errmsg = _("No default repository defined")
+        return tag.a(label, class_='missing source', title=errmsg)
 
     LOG_LINK_RE = re.compile(r"([^@:]*)[@:]%s?" % REV_RANGE)
 
