@@ -83,6 +83,13 @@
 # than one path, using the ":" path separator (or ";" if the script is
 # used on Windows with Cygwin's bash - in this case also don't forget to 
 # enclose the list of paths in quotes, e.g. TRAC_ENV="path1;path2").
+# 
+# Note that if you have to maintain multiple repositories and multiple Trac
+# environments, and you have some non-trivial mapping between repositories
+# and Trac environments, then you can leave the TRAC_ENV setting out of
+# this file and put it directly in your post-commit and post-revprop-change
+# hooks, so that the changes to each repositories are notified to the 
+# appropriate environments (don't forget to export TRAC_ENV in this case).
 #
 #  PATH:: the folder containing the trac-admin script
 #
@@ -191,7 +198,7 @@ fi
 
 ifs=$IFS
 IFS=:
-if [ -n $BASH_VERSION ]; then # we can use Bash syntax
+if [ -n "$BASH_VERSION" ]; then # we can use Bash syntax
     if [[ ${BASH_VERSINFO[5]} = *cygwin ]]; then
         IFS=";"
     fi
