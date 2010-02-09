@@ -6,6 +6,8 @@ Import a Bugzilla items into a Trac database.
 Requires:  Trac 0.9b1 from http://trac.edgewall.org/
            Python 2.3 from http://www.python.org/
            MySQL >= 3.23 from http://www.mysql.org/
+           or PostGreSQL 8.4 from http://www.postgresql.org/
+           or SQLite 3 from http://www.sqlite.org/
 
 Thanks:    Mark Rowe <mrowe@bluewire.net.nz>
             for original TracDatabase class
@@ -15,6 +17,7 @@ Copyright 2004, Dmitry Yusupov <dmitry_yus@yahoo.com>
 Many enhancements, Bill Soudan <bill@soudan.net>
 Other enhancements, Florent Guillaume <fg@nuxeo.com>
 Reworked, Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
+Jeff Moreland <hou5e@hotmail.com>
 
 $Id$
 """
@@ -28,12 +31,13 @@ import re
 # Bugzilla version.  You can find this in Bugzilla's globals.pl file.
 #
 # Currently, the following bugzilla versions are known to work:
-#   2.11 (2110), 2.16.5 (2165), 2.18.3 (2183), 2.19.1 (2191), 2.23.3 (2233)
+#   2.11 (2110), 2.16.5 (2165), 2.16.7 (2167),  2.18.3 (2183), 2.19.1 (2191),
+#   2.23.3 (2233), 3.04.4 (3044)
 #
 # If you run this script on a version not listed here and it is successful,
 # please file a ticket at http://trac.edgewall.org/ and assign it to
 # jruigrok.
-BZ_VERSION = 2180
+BZ_VERSION = 3044
 
 # MySQL connection parameters for the Bugzilla database.  These can also
 # be specified on the command line.
@@ -99,6 +103,10 @@ IGNORE_PRODUCTS = []
 # These milestones are ignored
 IGNORE_MILESTONES = ["---"]
 
+# Don't import user names and passwords into htpassword if
+# user is disabled in bugzilla? (i.e. profiles.DisabledText<>'')
+IGNORE_DISABLED_USERS = True
+
 # These logins are converted to these user ids
 LOGIN_MAP = {
     #'some.user@example.com': 'someuser',
@@ -137,6 +145,13 @@ KEYWORDS_MAPPING = {
 # even if not mentionned in KEYWORDS_MAPPING.
 MAP_ALL_KEYWORDS = True
 
+# Custom field mappings
+CUSTOMFIELD_MAP = {
+    #'Bugzilla_field_name': 'Trac_customfield_name',
+    #'op_sys': 'os',
+    #'cf_featurewantedby': 'wanted_by',
+    #'product': 'product'
+}
 
 # Bug comments that should not be imported.  Each entry in list should
 # be a regular expression.
@@ -179,7 +194,9 @@ STATUS_KEYWORDS = {
 IGNORED_ACTIVITY_FIELDS = ["everconfirmed"]
 
 # Regular expression and its replacement
-BUG_NO_RE = re.compile(r"\b(bug #?)([0-9])")
+# this expression will update references to bugs 1 - 99999 that
+# have the form "bug 1" or "bug #1"
+BUG_NO_RE = re.compile(r"\b(bug #?)([0-9]{1,5})\b", re.I)
 BUG_NO_REPL = r"#\2"
 
 ###
@@ -228,13 +245,15 @@ class TracDatabase(object):
         self._db.autocommit = False
         self.loginNameCache = {}
         self.fieldNameCache = {}
+        from trac.db.api import DatabaseManager
+	self.using_postgres = DatabaseManager(self.env).connection_uri.startswith("postgres:")
 
     def db(self):
         return self._db
 
     def hasTickets(self):
         c = self.db().cursor()
-        c.execute("SELECT count(*) FROM Ticket")
+        c.execute("SELECT count(*) FROM ticket")
         return int(c.fetchall()[0][0]) > 0
 
     def assertNoTickets(self):
@@ -309,18 +328,24 @@ class TracDatabase(object):
 
     def addTicket(self, id, time, changetime, component, severity, priority,
                   owner, reporter, cc, version, milestone, status, resolution,
-                  summary, description, keywords):
+                  summary, description, keywords, customfields):
         c = self.db().cursor()
 
         desc = description.encode('utf-8')
         type = "defect"
 
-        if severity.lower() == "enhancement":
+        if SEVERITIES:
+            if severity.lower() == "enhancement":
                 severity = "minor"
                 type = "enhancement"
 
+        else:
+            if priority.lower() == "enhancement":
+                priority = "minor"
+                type = "enhancement"
+
         if PREFORMAT_COMMENTS:
-          desc = '{{{\n%s\n}}}' % desc
+            desc = '{{{\n%s\n}}}' % desc
 
         if REPLACE_BUG_NO:
             if BUG_NO_RE.search(desc):
@@ -346,7 +371,28 @@ class TracDatabase(object):
                    keywords))
 
         self.db().commit()
-        return self.db().get_last_id(c, 'ticket')
+        if self.using_postgres:
+            c.execute("""SELECT SETVAL('ticket_id_seq', MAX(id)) FROM ticket;
+              SELECT SETVAL('report_id_seq', MAX(id)) FROM report""")
+        ticket_id = self.db().get_last_id(c, 'ticket')
+
+        # add all custom fields to ticket
+        for name, value in customfields.iteritems():
+            self.addTicketCustomField(ticket_id, name, value)
+
+        return ticket_id
+
+    def addTicketCustomField(self, ticket_id, field_name, field_value):
+        c = self.db().cursor()
+
+        if field_value == None:
+            return
+
+        c.execute("""INSERT INTO ticket_custom (ticket, name, value)
+                                 VALUES (%s, %s, %s)""",
+                  (ticket_id, field_name.encode('utf-8'), field_value.encode('utf-8')))
+
+        self.db().commit()
 
     def addTicketComment(self, ticket, time, author, value):
         comment = value.encode('utf-8')
@@ -392,20 +438,20 @@ class TracDatabase(object):
         self.db().commit()
 
     def addAttachment(self, author, a):
-        description = a['description'].encode('utf-8')
-        id = a['bug_id']
-        filename = a['filename'].encode('utf-8')
-        filedata = StringIO.StringIO(a['thedata'])
-        filesize = len(filedata.getvalue())
-        time = a['creation_ts']
-        print "    ->inserting attachment '%s' for ticket %s -- %s" % \
-                (filename, id, description)
-
-        attachment = Attachment(self.env, 'ticket', id)
-        attachment.author = author
-        attachment.description = description
-        attachment.insert(filename, filedata, filesize, datetime2epoch(time))
-        del attachment
+        if a['filename'] != '':
+            description = a['description'].encode('utf-8')
+            id = a['bug_id']
+            filename = a['filename'].encode('utf-8')
+            filedata = StringIO.StringIO(a['thedata'])
+            filesize = len(filedata.getvalue())
+            time = a['creation_ts']
+            print "    ->inserting attachment '%s' for ticket %s -- %s" % \
+                    (filename, id, description)
+            attachment = Attachment(self.env, 'ticket', id)
+            attachment.author = author
+            attachment.description = description
+            attachment.insert(filename, filedata, filesize, datetime2epoch(time))
+            del attachment
 
     def getLoginName(self, cursor, userid):
         if userid not in self.loginNameCache:
@@ -457,7 +503,7 @@ def makeWhereClause(fieldName, values, negative=False):
         connector, op = ' OR ', '='
     clause = connector.join(["%s %s '%s'" % (fieldName, op, value) 
                              for value in values])
-    return ' ' + clause
+    return ' (' + clause + ')'
 
 def convert(_db, _host, _user, _password, _env, _force):
     activityFields = FieldTranslator()
@@ -488,6 +534,9 @@ def convert(_db, _host, _user, _password, _env, _force):
         trac.db().commit()
 
         c.execute("DELETE FROM ticket")
+        trac.db().commit()
+
+        c.execute("DELETE FROM ticket_custom")
         trac.db().commit()
 
         c.execute("DELETE FROM attachment")
@@ -545,7 +594,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             sql = ("SELECT p.name AS product, c.name AS comp, "
                    " c.initialowner AS owner "
                    "FROM components c, products p "
-                   "WHERE c.product_id = p.id and " + 
+                   "WHERE c.product_id = p.id AND" + 
                    makeWhereClause('p.name', PRODUCTS))
         else:
             sql = ("SELECT program AS product, value AS comp, "
@@ -582,9 +631,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
     print "\n4. Import versions..."
     if BZ_VERSION >= 2180:
-        sql = """SELECT DISTINCTROW versions.value AS value
-                               FROM products, versions"""
-        sql += " WHERE" + makeWhereClause('products.name', PRODUCTS)
+        sql = """SELECT DISTINCTROW v.value AS value
+                               FROM products p, versions v"""
+        sql += " WHERE v.product_id = p.id AND"
+        sql += makeWhereClause('p.name', PRODUCTS)
     else:
         sql = "SELECT DISTINCTROW value FROM versions"
         sql += " WHERE" + makeWhereClause('program', PRODUCTS)
@@ -600,18 +650,27 @@ def convert(_db, _host, _user, _password, _env, _force):
     trac.setMilestoneList(milestones, 'value')
 
     print "\n6. Retrieving bugs..."
-    sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
-                        FROM bugs AS b, components AS c, products AS p """
-    sql += " WHERE (" + makeWhereClause('p.name', PRODUCTS)
-    sql += ") AND b.product_id = p.id"
-    sql += " AND b.component_id = c.id"
-    sql += " ORDER BY b.bug_id"
+    if BZ_VERSION >= 2180: 
+        sql = """SELECT DISTINCT b.*, c.name AS component, p.name AS product
+                            FROM bugs AS b, components AS c, products AS p """
+        sql += " WHERE" + makeWhereClause('p.name', PRODUCTS)
+        sql += " AND b.product_id = p.id"
+        sql += " AND b.component_id = c.id"
+        sql += " ORDER BY b.bug_id"
+    else:
+        sql = """SELECT DISTINCT b.*, c.value AS component, p.product AS product
+                            FROM bugs AS b, components AS c, products AS p """
+        sql += " WHERE" + makeWhereClause('p.product', PRODUCTS)
+        sql += " AND b.product = p.product"
+        sql += " AND b.component = c.value"
+        sql += " ORDER BY b.bug_id"
     mysql_cur.execute(sql)
     bugs = mysql_cur.fetchall()
 
 
     print "\n7. Import bugs and bug activity..."
     for bug in bugs:
+
         bugid = bug['bug_id']
 
         ticket = {}
@@ -623,18 +682,32 @@ def convert(_db, _host, _user, _password, _env, _force):
             ticket['component'] = bug['product']
         else:
             ticket['component'] = bug['component']
-        ticket['severity'] = bug['bug_severity']
-        ticket['priority'] = bug['priority'].lower()
 
+        if SEVERITIES:
+            ticket['severity'] = bug['bug_severity']
+            ticket['priority'] = bug['priority'].lower()
+        else:
+            # use bugzilla severities as trac priorities, and ignore bugzilla
+            # priorities
+            ticket['severity'] = ''
+            ticket['priority'] = bug['bug_severity']
+        
         ticket['owner'] = trac.getLoginName(mysql_cur, bug['assigned_to'])
         ticket['reporter'] = trac.getLoginName(mysql_cur, bug['reporter'])
+
+        # pack bugzilla fields into dictionary of trac custom field
+        # names and values
+        customfields = {}
+        for bugfield, customfield in CUSTOMFIELD_MAP.iteritems():
+            customfields[customfield] = bug[bugfield]
+        ticket['customfields'] = customfields
 
         mysql_cur.execute("SELECT * FROM cc WHERE bug_id = %s", bugid)
         cc_records = mysql_cur.fetchall()
         cc_list = []
         for cc in cc_records:
             cc_list.append(trac.getLoginName(mysql_cur, cc['who']))
-        cc_list = [cc for cc in cc_list if '@' in cc and cc not in IGNORE_CC]
+        cc_list = [cc for cc in cc_list if cc not in IGNORE_CC]  
         ticket['cc'] = string.join(cc_list, ', ')
 
         ticket['version'] = bug['version']
@@ -707,7 +780,10 @@ def convert(_db, _host, _user, _password, _env, _force):
 
             # convert bugzilla field names...
             if field_name == "bug_severity":
-                field_name = "severity"
+                if SEVERITIES:
+                    field_name = "severity"
+                else:
+                    field_name = "priority"
             elif field_name == "assigned_to":
                 field_name = "owner"
             elif field_name == "bug_status":
@@ -782,8 +858,9 @@ def convert(_db, _host, _user, _password, _env, _force):
                   oldChange['oldvalue'] += " " + ticketChange['oldvalue']
                   oldChange['newvalue'] += " " + ticketChange['newvalue']
                   break
-              # cc sometime appear in different activities with same time
-              if (field_name == "cc" \
+              # cc and attachments.isobsolete sometime appear 
+              # in different activities with same time
+              if ((field_name == "cc" or field_name == "attachments.isobsolete") \
                   and oldChange['time'] == ticketChange['time']):
                   oldChange['newvalue'] += ", " + ticketChange['newvalue']
                   break
@@ -821,7 +898,7 @@ def convert(_db, _host, _user, _password, _env, _force):
         ticket['keywords'] = string.join(keywords)
         ticketid = trac.addTicket(**ticket)
 
-        if BZ_VERSION >= 2180:
+        if BZ_VERSION >= 2210:
             mysql_cur.execute("SELECT attachments.*, attach_data.thedata "
                               "FROM attachments, attach_data "
                               "WHERE attachments.bug_id = %s AND "
@@ -835,8 +912,11 @@ def convert(_db, _host, _user, _password, _env, _force):
             trac.addAttachment(author, a)
 
     print "\n8. Importing users and passwords..."
-    if BZ_VERSION >= 2180:
-        mysql_cur.execute("SELECT login_name, cryptpassword FROM profiles")
+    if BZ_VERSION >= 2167:
+        selectlogins = "SELECT login_name, cryptpassword FROM profiles";
+        if IGNORE_DISABLED_USERS:
+            selectlogins = selectlogins + " WHERE disabledtext=''"
+        mysql_cur.execute(selectlogins)
         users = mysql_cur.fetchall()
     htpasswd = file("htpasswd", 'w')
     for user in users:
@@ -844,6 +924,7 @@ def convert(_db, _host, _user, _password, _env, _force):
             login = LOGIN_MAP[user['login_name']]
         else:
             login = user['login_name']
+        
         htpasswd.write(login + ":" + user['cryptpassword'] + "\n")
 
     htpasswd.close()
@@ -871,6 +952,8 @@ Available Options:
   -p | --passwd <MySQL password>   - Bugzilla's user password
   -c | --clean                     - Remove current Trac tickets before
                                      importing
+  -n | --noseverities              - import Bugzilla severities as Trac 
+                                     priorities and forget Bugzilla priorities
   --help | help                    - This help info
 
 Additional configuration options can be defined directly in the script.
@@ -879,6 +962,7 @@ Additional configuration options can be defined directly in the script.
 
 def main():
     global BZ_DB, BZ_HOST, BZ_USER, BZ_PASSWORD, TRAC_ENV, TRAC_CLEAN
+    global SEVERITIES, PRIORITIES, PRIORITIES_MAP
     if len (sys.argv) > 1:
     	if sys.argv[1] in ['--help','help'] or len(sys.argv) < 4:
     	    usage()
@@ -901,6 +985,11 @@ def main():
     	        iter = iter + 1
     	    elif sys.argv[iter] in ['-c', '--clean']:
     	        TRAC_CLEAN = 1
+            elif sys.argv[iter] in ['-n', '--noseverities']:
+                # treat Bugzilla severites as Trac priorities
+                PRIORITIES = SEVERITIES
+                SEVERITIES = []
+                PRIORITIES_MAP = {}
     	    else:
     	        print "Error: unknown parameter: " + sys.argv[iter]
     	        sys.exit(0)
