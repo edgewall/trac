@@ -507,7 +507,7 @@ def _dispatch_request(req, env, env_error):
             if 'error' in e.reason.lower():
                 title = e.reason
             else:
-                title = 'Error: %s' % e.reason
+                title = _('Error: %(message)s', message=e.reason)
         # The message is based on the e.detail, which can be an Exception
         # object, but not a TracError one: when creating HTTPException,
         # a TracError.message is directly assigned to e.detail
