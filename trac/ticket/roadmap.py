@@ -195,7 +195,8 @@ class DefaultTicketGroupStatsProvider(Component):
         for s in all_statuses:
             status_cnt[s] = 0
         if total_cnt:
-            cursor = self.env.get_db_cnx().cursor()
+            db = self.env.get_db_cnx()
+            cursor = db.cursor()
             str_ids = [str(x) for x in sorted(ticket_ids)]
             cursor.execute("SELECT status, count(status) FROM ticket "
                            "WHERE id IN (%s) GROUP BY status" %
