@@ -6,6 +6,8 @@ Import a Bugzilla items into a Trac database.
 Requires:  Trac 0.9b1 from http://trac.edgewall.org/
            Python 2.3 from http://www.python.org/
            MySQL >= 3.23 from http://www.mysql.org/
+           or PostGreSQL 8.4 from http://www.postgresql.org/
+           or SQLite 3 from http://www.sqlite.org/
 
 Thanks:    Mark Rowe <mrowe@bluewire.net.nz>
             for original TracDatabase class
@@ -15,6 +17,7 @@ Copyright 2004, Dmitry Yusupov <dmitry_yus@yahoo.com>
 Many enhancements, Bill Soudan <bill@soudan.net>
 Other enhancements, Florent Guillaume <fg@nuxeo.com>
 Reworked, Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>
+Jeff Moreland <hou5e@hotmail.com>
 
 $Id$
 """
@@ -29,12 +32,12 @@ import re
 #
 # Currently, the following bugzilla versions are known to work:
 #   2.11 (2110), 2.16.5 (2165), 2.16.7 (2167),  2.18.3 (2183), 2.19.1 (2191),
-#   2.23.3 (2233)
+#   2.23.3 (2233), 3.04.4 (3044)
 #
 # If you run this script on a version not listed here and it is successful,
 # please file a ticket at http://trac.edgewall.org/ and assign it to
 # jruigrok.
-BZ_VERSION = 2180
+BZ_VERSION = 3044
 
 # MySQL connection parameters for the Bugzilla database.  These can also
 # be specified on the command line.
@@ -242,13 +245,15 @@ class TracDatabase(object):
         self._db.autocommit = False
         self.loginNameCache = {}
         self.fieldNameCache = {}
+        from trac.db.api import DatabaseManager
+	self.using_postgres = DatabaseManager(self.env).connection_uri.startswith("postgres:")
 
     def db(self):
         return self._db
 
     def hasTickets(self):
         c = self.db().cursor()
-        c.execute("SELECT count(*) FROM Ticket")
+        c.execute("SELECT count(*) FROM ticket")
         return int(c.fetchall()[0][0]) > 0
 
     def assertNoTickets(self):
@@ -366,6 +371,9 @@ class TracDatabase(object):
                    keywords))
 
         self.db().commit()
+        if self.using_postgres:
+            c.execute("""SELECT SETVAL('ticket_id_seq', MAX(id)) FROM ticket;
+              SELECT SETVAL('report_id_seq', MAX(id)) FROM report""")
         ticket_id = self.db().get_last_id(c, 'ticket')
 
         # add all custom fields to ticket
@@ -430,20 +438,20 @@ class TracDatabase(object):
         self.db().commit()
 
     def addAttachment(self, author, a):
-        description = a['description'].encode('utf-8')
-        id = a['bug_id']
-        filename = a['filename'].encode('utf-8')
-        filedata = StringIO.StringIO(a['thedata'])
-        filesize = len(filedata.getvalue())
-        time = a['creation_ts']
-        print "    ->inserting attachment '%s' for ticket %s -- %s" % \
-                (filename, id, description)
-
-        attachment = Attachment(self.env, 'ticket', id)
-        attachment.author = author
-        attachment.description = description
-        attachment.insert(filename, filedata, filesize, datetime2epoch(time))
-        del attachment
+        if a['filename'] != '':
+            description = a['description'].encode('utf-8')
+            id = a['bug_id']
+            filename = a['filename'].encode('utf-8')
+            filedata = StringIO.StringIO(a['thedata'])
+            filesize = len(filedata.getvalue())
+            time = a['creation_ts']
+            print "    ->inserting attachment '%s' for ticket %s -- %s" % \
+                    (filename, id, description)
+            attachment = Attachment(self.env, 'ticket', id)
+            attachment.author = author
+            attachment.description = description
+            attachment.insert(filename, filedata, filesize, datetime2epoch(time))
+            del attachment
 
     def getLoginName(self, cursor, userid):
         if userid not in self.loginNameCache:
@@ -850,8 +858,9 @@ def convert(_db, _host, _user, _password, _env, _force):
                   oldChange['oldvalue'] += " " + ticketChange['oldvalue']
                   oldChange['newvalue'] += " " + ticketChange['newvalue']
                   break
-              # cc sometime appear in different activities with same time
-              if (field_name == "cc" \
+              # cc and attachments.isobsolete sometime appear 
+              # in different activities with same time
+              if ((field_name == "cc" or field_name == "attachments.isobsolete") \
                   and oldChange['time'] == ticketChange['time']):
                   oldChange['newvalue'] += ", " + ticketChange['newvalue']
                   break
