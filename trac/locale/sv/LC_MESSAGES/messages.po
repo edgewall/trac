@@ -4372,7 +4372,7 @@ msgstr "Slå samman ändringar"
 
 #: trac/wiki/templates/wiki_edit.html:122
 msgid "Preview Page"
-msgstr "Föregående Sida"
+msgstr "Förhandsgranska Sida"
 
 #: trac/wiki/templates/wiki_edit.html:123
 msgid "Review Changes"
