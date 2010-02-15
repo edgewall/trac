@@ -142,11 +142,9 @@ class CachedRepository(Repository):
             if os.path.normcase(repository_dir) != os.path.normcase(self.name):
                 self.log.info("'repository_dir' has changed from %r to %r",
                               repository_dir, self.name)
-                raise TracError(_("""
-                    The 'repository_dir' has changed, a
-                    'trac-admin $ENV repository resync'
-                    operation is needed.
-                    """))
+                raise TracError(_("The 'repository_dir' has changed, a "
+                                  "'trac-admin $ENV repository resync' "
+                                  "operation is needed."))
         elif repository_dir is None: # 
             self.log.info('Storing initial "repository_dir": %s', self.name)
             cursor.execute("""
