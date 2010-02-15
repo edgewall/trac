@@ -30,6 +30,7 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
                        console_datetime_format, get_dir_list
 from trac.config import BoolOption, IntOption
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
@@ -170,29 +171,24 @@ class Attachment(object):
 
     def delete(self, db=None):
         assert self.filename, 'Cannot delete non-existent attachment'
-        if not db:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        else:
-            handle_ta = False
 
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM attachment WHERE type=%s AND id=%s "
-                       "AND filename=%s", (self.parent_realm, self.parent_id,
-                       self.filename))
-        if os.path.isfile(self.path):
-            try:
-                os.unlink(self.path)
-            except OSError, e:
-                self.env.log.error('Failed to delete attachment file %s: %s',
-                           self.path, exception_to_unicode(e, traceback=True))
-                if handle_ta:
-                    db.rollback()
-                raise TracError(_('Could not delete attachment'))
+        @with_transaction(self.env, db)
+        def do_delete(db):
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM attachment WHERE type=%s AND id=%s "
+                           "AND filename=%s",
+                           (self.parent_realm, self.parent_id, self.filename))
+            if os.path.isfile(self.path):
+                try:
+                    os.unlink(self.path)
+                except OSError, e:
+                    self.env.log.error('Failed to delete attachment '
+                                       'file %s: %s',
+                                       self.path,
+                                       exception_to_unicode(e, traceback=True))
+                    raise TracError(_('Could not delete attachment'))
 
         self.env.log.info('Attachment removed: %s' % self.title)
-        if handle_ta:
-            db.commit()
 
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_deleted(self)
@@ -200,11 +196,6 @@ class Attachment(object):
 
     def insert(self, filename, fileobj, size, t=None, db=None):
         # FIXME: `t` should probably be switched to `datetime` too
-        if not db:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        else:
-            handle_ta = False
 
         self.size = size and int(size) or 0
         timestamp = int(t or time.time())
@@ -228,29 +219,25 @@ class Attachment(object):
             basename = os.path.basename(path).encode('ascii')
             filename = unicode_unquote(basename)
 
-            cursor = db.cursor()
-            cursor.execute("INSERT INTO attachment "
-                           "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                           (self.parent_realm, self.parent_id, filename,
-                            self.size, timestamp, self.description,
-                            self.author, self.ipnr))
-            shutil.copyfileobj(fileobj, targetfile)
-            self.resource.id = self.filename = filename
+            @with_transaction(self.env, db)
+            def do_insert(db):
+                cursor = db.cursor()
+                cursor.execute("INSERT INTO attachment "
+                               "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+                               (self.parent_realm, self.parent_id, filename,
+                                self.size, timestamp, self.description,
+                                self.author, self.ipnr))
+                shutil.copyfileobj(fileobj, targetfile)
+                self.resource.id = self.filename = filename
 
-            self.env.log.info('New attachment: %s by %s', self.title,
-                              self.author)
-
-            if handle_ta:
-                db.commit()
-
+                self.env.log.info('New attachment: %s by %s', self.title,
+                                  self.author)
+        finally:
             targetfile.close()
 
-            for listener in AttachmentModule(self.env).change_listeners:
-                listener.attachment_added(self)
+        for listener in AttachmentModule(self.env).change_listeners:
+            listener.attachment_added(self)
 
-        finally:
-            if not targetfile.closed:
-                targetfile.close()
 
     @classmethod
     def select(cls, env, parent_realm, parent_id, db=None):

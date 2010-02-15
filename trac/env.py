@@ -30,6 +30,7 @@ from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
+from trac.db.util import with_transaction
 from trac.util import copytree, create_file, get_pkginfo, makedirs
 from trac.util.compat import any
 from trac.util.text import exception_to_unicode, printerr, printout
@@ -486,9 +487,11 @@ class Environment(Component, ComponentManager):
 
         if backup:
             self.backup(backup_dest)
-        for participant in upgraders:
-            participant.upgrade_environment(db)
-        db.commit()
+
+        @with_transaction(self.env)
+        def do_upgrade(db):
+            for participant in upgraders:
+                participant.upgrade_environment(db)
 
         # Database schema may have changed, so close all connections
         self.shutdown(except_logging=True)
@@ -520,13 +523,14 @@ class EnvironmentSetup(Component):
 
     def environment_created(self):
         """Insert default data into the database."""
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        for table, cols, vals in db_default.get_data(db):
-            cursor.executemany("INSERT INTO %s (%s) VALUES (%s)" % (table,
-                               ','.join(cols), ','.join(['%s' for c in cols])),
-                               vals)
-        db.commit()
+        @with_transaction(self.env)
+        def do_db_populate(db):
+            cursor = db.cursor()
+            for table, cols, vals in db_default.get_data(db):
+                cursor.executemany("INSERT INTO %s (%s) VALUES (%s)"
+                                   % (table, ','.join(cols),
+                                      ','.join(['%s' for c in cols])),
+                                   vals)
         self._update_sample_config()
 
     def environment_needs_upgrade(self, db):

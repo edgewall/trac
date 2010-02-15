@@ -15,6 +15,31 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+def with_transaction(env, db=None):
+    """Transaction decorator for simple use-once transactions.
+    Will be replaced by a context manager once python 2.4 support is dropped.
+
+    >>> def api_method(p1, p2):
+    >>>     result[0] = value1
+    >>>     @with_transaction(env, db)
+    >>>     def implementation_method(db):
+    >>>         # implementation
+    >>>         result[0] = value2
+    """
+    def transaction_wrapper(fn):
+        if db:
+            fn(db)
+        else:
+            dbtmp = env.get_db_cnx()
+            try:
+                fn(dbtmp)
+                dbtmp.commit()
+            except:
+                dbtmp.rollback()
+                raise
+    return transaction_wrapper
+
+
 def sql_escape_percent(sql):
     import re
     return re.sub("'((?:[^']|(?:''))*)'",

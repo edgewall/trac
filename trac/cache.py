@@ -17,6 +17,7 @@ except ImportError:
     import dummy_threading as threading
 
 from trac.core import Component
+from trac.db.util import with_transaction
 from trac.util.compat import partial
 
 __all__ = ["CacheManager", "cached", "cached_value"]
@@ -189,11 +190,7 @@ class CacheManager(Component):
         self._lock.acquire()
         try:
             # Invalidate in other processes
-            handle_ta = db is None
-            if handle_ta:
-                db = self.env.get_db_cnx()
-            cursor = db.cursor()
-            
+
             # The row corresponding to the cache may not exist in the table
             # yet.
             #  - If the row exists, the UPDATE increments the generation, the
@@ -201,13 +198,15 @@ class CacheManager(Component):
             #  - If the row doesn't exist, the UPDATE does nothing, but starts
             #    a transaction. The SELECT then returns nothing, and we can
             #    safely INSERT a new row.
-            cursor.execute("UPDATE cache SET generation=generation+1 "
-                           "WHERE id=%s", (id,))
-            cursor.execute("SELECT generation FROM cache WHERE id=%s", (id,))
-            if not cursor.fetchone():
-                cursor.execute("INSERT INTO cache VALUES (%s, %s)", (id, 0))
-            if handle_ta:
-                db.commit()
+            @with_transaction(self.env, db)
+            def do_invalidate(db):
+                cursor = db.cursor()
+                cursor.execute("UPDATE cache SET generation=generation+1 "
+                               "WHERE id=%s", (id,))
+                cursor.execute("SELECT generation FROM cache WHERE id=%s",
+                               (id,))
+                if not cursor.fetchone():
+                    cursor.execute("INSERT INTO cache VALUES (%s, %s)", (id, 0))
             
             # Invalidate in this process
             self._cache.pop(id, None)

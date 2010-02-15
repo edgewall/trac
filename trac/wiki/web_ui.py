@@ -25,6 +25,7 @@ from genshi.builder import tag
 from trac.attachment import AttachmentModule
 from trac.config import IntOption
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
@@ -244,15 +245,15 @@ class WikiModule(Component):
         version = int(req.args.get('version', 0)) or None
         old_version = int(req.args.get('old_version', 0)) or version
 
-        db = self.env.get_db_cnx()
-        if version and old_version and version > old_version:
-            # delete from `old_version` exclusive to `version` inclusive:
-            for v in range(old_version, version):
-                page.delete(v + 1, db)
-        else:
-            # only delete that `version`, or the whole page if `None`
-            page.delete(version, db)
-        db.commit()
+        @with_transaction(self.env)
+        def do_transaction(db):
+            if version and old_version and version > old_version:
+                # delete from `old_version` exclusive to `version` inclusive:
+                for v in range(old_version, version):
+                    page.delete(v + 1, db)
+            else:
+                # only delete that `version`, or the whole page if `None`
+                page.delete(version, db)
 
         if not page.exists:
             add_notice(req, _('The page %(name)s has been deleted.',

@@ -19,6 +19,7 @@ import os
 
 from trac.cache import CacheProxy
 from trac.core import TracError
+from trac.db.util import with_transaction
 from trac.util.datefmt import utc, to_timestamp
 from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, Repository, NoSuchChangeset
@@ -84,22 +85,25 @@ class CachedRepository(Repository):
 
     def sync_changeset(self, rev):
         cset = self.repos.get_changeset(rev)
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("SELECT time,author,message FROM revision "
-                       "WHERE repos=%s AND rev=%s",
-                       (self.id, str(cset.rev)))
-        old_cset = None
-        for time, author, message in cursor:
-            date = datetime.fromtimestamp(time, utc)
-            old_cset = Changeset(self.repos, cset.rev, message, author, date)
-        
-        cursor.execute("UPDATE revision SET time=%s, author=%s, message=%s "
-                       "WHERE repos=%s AND rev=%s",
-                       (to_timestamp(cset.date), cset.author, cset.message,
-                        self.id, str(cset.rev)))
-        db.commit()
-        return old_cset
+        old_cset = [None]
+
+        @with_transaction(self.env)
+        def do_sync(db):
+            cursor = db.cursor()
+            cursor.execute("""
+                SELECT time,author,message FROM revision
+                WHERE repos=%s AND rev=%s
+                """, (self.id, str(cset.rev)))
+            for time, author, message in cursor:
+                date = datetime.fromtimestamp(time, utc)
+                old_cset[0] = Changeset(self.repos, cset.rev, message, author,
+                                        date)
+                cursor.execute("""
+                    UPDATE revision SET time=%s, author=%s, message=%s
+                    WHERE repos=%s AND rev=%s
+                    """, (to_timestamp(cset.date), cset.author,
+                          cset.message, self.id, str(cset.rev)))
+        return old_cset[0]
         
     def _metadata(self, db):
         """Retrieve data for the cached `metadata` attribute."""

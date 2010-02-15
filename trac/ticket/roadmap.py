@@ -26,6 +26,7 @@ from trac import __version__
 from trac.attachment import AttachmentModule
 from trac.config import ExtensionOption
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
@@ -587,7 +588,7 @@ class MilestoneModule(Component):
             elif action == 'edit':
                 return self._do_save(req, db, milestone)
             elif action == 'delete':
-                self._do_delete(req, db, milestone)
+                self._do_delete(req, milestone)
         elif action in ('new', 'edit'):
             return self._render_editor(req, db, milestone)
         elif action == 'delete':
@@ -600,14 +601,13 @@ class MilestoneModule(Component):
 
     # Internal methods
 
-    def _do_delete(self, req, db, milestone):
+    def _do_delete(self, req, milestone):
         req.perm(milestone.resource).require('MILESTONE_DELETE')
 
         retarget_to = None
         if req.args.has_key('retarget'):
             retarget_to = req.args.get('target') or None
         milestone.delete(retarget_to, req.authname)
-        db.commit()
         add_notice(req, _('The milestone "%(name)s" has been deleted.',
                           name=milestone.name))
         req.redirect(req.href.roadmap())
@@ -671,15 +671,17 @@ class MilestoneModule(Component):
             milestone.update()
             # eventually retarget opened tickets associated with the milestone
             if 'retarget' in req.args and completed:
-                cursor = db.cursor()
-                cursor.execute("UPDATE ticket SET milestone=%s WHERE "
-                               "milestone=%s and status != 'closed'",
-                                (retarget_to, old_name))
-                self.env.log.info('Tickets associated with milestone %s '
-                                  'retargeted to %s' % (old_name, retarget_to))
+                @with_transaction(self.env)
+                def retarget(db):
+                    cursor = db.cursor()
+                    cursor.execute("UPDATE ticket SET milestone=%s WHERE "
+                                   "milestone=%s and status != 'closed'",
+                                   (retarget_to, old_name))
+                    self.env.log.info('Tickets associated with milestone %s '
+                                      'retargeted to %s'
+                                      % (old_name, retarget_to))
         else:
             milestone.insert()
-        db.commit()
 
         add_notice(req, _('Your changes have been saved.'))
         req.redirect(req.href.milestone(milestone.name))

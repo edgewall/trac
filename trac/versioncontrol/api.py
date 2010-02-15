@@ -26,6 +26,7 @@ except ImportError:
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ListOption, Option
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util.text import printout, to_unicode
 from trac.util.translation import _
@@ -206,14 +207,14 @@ class DbRepositoryProvider(Component):
         if type_ and type_ not in rm.get_supported_types():
             raise TracError(_("The repository type '%(type)s' is not "
                               "supported", type=type_))
-        db = self.env.get_db_cnx()
-        id = rm.get_repository_id(reponame, db)
-        cursor = db.cursor()
-        cursor.executemany("INSERT INTO repository (id, name, value) "
-                           "VALUES (%s, %s, %s)",
-                           [(id, 'dir', dir),
-                            (id, 'type', type_ or '')])
-        db.commit()
+        @with_transaction(self.env)
+        def do_add(db):
+            id = rm.get_repository_id(reponame, db)
+            cursor = db.cursor()
+            cursor.executemany("INSERT INTO repository (id, name, value) "
+                               "VALUES (%s, %s, %s)",
+                               [(id, 'dir', dir),
+                                (id, 'type', type_ or '')])
         rm.reload_repositories()
     
     def add_alias(self, reponame, target):
@@ -223,14 +224,14 @@ class DbRepositoryProvider(Component):
         if is_default(target):
             target = ''
         rm = RepositoryManager(self.env)
-        db = self.env.get_db_cnx()
-        id = rm.get_repository_id(reponame, db)
-        cursor = db.cursor()
-        cursor.executemany("INSERT INTO repository (id, name, value) "
-                           "VALUES (%s, %s, %s)",
-                           [(id, 'dir', None),
-                            (id, 'alias', target)])
-        db.commit()
+        @with_transaction(self.env)
+        def do_add(db):
+            id = rm.get_repository_id(reponame, db)
+            cursor = db.cursor()
+            cursor.executemany("INSERT INTO repository (id, name, value) "
+                               "VALUES (%s, %s, %s)",
+                               [(id, 'dir', None),
+                                (id, 'alias', target)])
         rm.reload_repositories()
     
     def remove_repository(self, reponame):
@@ -238,13 +239,13 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        db = self.env.get_db_cnx()
-        id = rm.get_repository_id(reponame, db)
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM repository WHERE id=%s", (id,))
-        cursor.execute("DELETE FROM revision WHERE repos=%s", (id,))
-        cursor.execute("DELETE FROM node_change WHERE repos=%s", (id,))
-        db.commit()
+        @with_transaction(self.env)
+        def do_remove(db):
+            id = rm.get_repository_id(reponame, db)
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM repository WHERE id=%s", (id,))
+            cursor.execute("DELETE FROM revision WHERE repos=%s", (id,))
+            cursor.execute("DELETE FROM node_change WHERE repos=%s", (id,))
         rm.reload_repositories()
     
     def modify_repository(self, reponame, changes):
@@ -252,22 +253,22 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        db = self.env.get_db_cnx()
-        id = rm.get_repository_id(reponame, db)
-        cursor = db.cursor()
-        for (k, v) in changes.iteritems():
-            if k not in self.repository_attrs:
-                continue
-            if k in('alias', 'name') and is_default(v):
-                v = ''
-            cursor.execute("UPDATE repository SET value=%s "
-                           "WHERE id=%s AND name=%s", (v, id, k))
-            cursor.execute("SELECT value FROM repository "
-                           "WHERE id=%s AND name=%s", (id, k))
-            if not cursor.fetchone():
-                cursor.execute("INSERT INTO repository (id, name, value) "
-                               "VALUES (%s, %s, %s)", (id, k, v))
-        db.commit()
+        @with_transaction(self.env)
+        def do_modify(db):
+            cursor = db.cursor()
+            id = rm.get_repository_id(reponame, db)
+            for (k, v) in changes.iteritems():
+                if k not in self.repository_attrs:
+                    continue
+                if k in('alias', 'name') and is_default(v):
+                    v = ''
+                cursor.execute("UPDATE repository SET value=%s "
+                               "WHERE id=%s AND name=%s", (v, id, k))
+                cursor.execute("SELECT value FROM repository "
+                               "WHERE id=%s AND name=%s", (id, k))
+                if not cursor.fetchone():
+                    cursor.execute("INSERT INTO repository (id, name, value) "
+                                   "VALUES (%s, %s, %s)", (id, k, v))
         rm.reload_repositories()
 
 
@@ -460,8 +461,6 @@ class RepositoryManager(Component):
         id = cursor.fetchone()[0] + 1
         cursor.execute("INSERT INTO repository (id, name, value) "
                        "VALUES (%s,%s,%s)", (id, 'name', reponame))
-        if handle_ta:
-            db.commit()
         return id
     
     def get_repository(self, reponame):

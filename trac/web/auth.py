@@ -32,6 +32,7 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, IntOption
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5, md5crypt
@@ -146,13 +147,13 @@ class LoginModule(Component):
                _('Already logged in as %(user)s.', user=req.authname)
 
         cookie = hex_entropy()
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
-                       "VALUES (%s, %s, %s, %s)", (cookie, remote_user,
-                       req.remote_addr, int(time.time())))
-        db.commit()
-
+        @with_transaction(self.env)
+        def store_session_cookie(db):
+            cursor = db.cursor()
+            cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
+                           "VALUES (%s, %s, %s, %s)",
+                           (cookie, remote_user,
+                            req.remote_addr, int(time.time())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = req.base_path or '/'
@@ -172,11 +173,12 @@ class LoginModule(Component):
 
         # While deleting this cookie we also take the opportunity to delete
         # cookies older than 10 days
-        db = self.env.get_db_cnx()
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM auth_cookie WHERE name=%s OR time < %s",
-                       (req.authname, int(time.time()) - 86400 * 10))
-        db.commit()
+        @with_transaction(self.env)
+        def delete_session_cookie(db):
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM auth_cookie "
+                           "WHERE name=%s OR time < %s",
+                           (req.authname, int(time.time()) - 86400 * 10))
         self._expire_cookie(req)
         custom_redirect = self.config['metanav'].get('logout.redirect')
         if custom_redirect:

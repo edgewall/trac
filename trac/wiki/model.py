@@ -19,6 +19,7 @@
 from datetime import datetime
 
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.resource import Resource
 from trac.util.datefmt import utc, to_timestamp
 from trac.util.translation import _
@@ -78,41 +79,35 @@ class WikiPage(object):
             self.text = self.comment = self.author = ''
             self.time = None
             self.readonly = 0
-
+            
     exists = property(fget=lambda self: self.version > 0)
 
     def delete(self, version=None, db=None):
         assert self.exists, 'Cannot delete non-existent page'
-        if not db:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        else:
-            handle_ta = False
+        
+        @with_transaction(self.env, db)
+        def do_delete(db):
+            cursor = db.cursor()
+            if version is None:
+                # Delete a wiki page completely
+                cursor.execute("DELETE FROM wiki WHERE name=%s", (self.name,))
+                self.env.log.info('Deleted page %s' % self.name)
+            else:
+                # Delete only a specific page version
+                cursor.execute("DELETE FROM wiki WHERE name=%s and version=%s",
+                               (self.name, version))
+                self.env.log.info('Deleted version %d of page %s'
+                                  % (version, self.name))
 
-        cursor = db.cursor()
-        if version is None:
-            # Delete a wiki page completely
-            cursor.execute("DELETE FROM wiki WHERE name=%s", (self.name,))
-            self.env.log.info('Deleted page %s' % self.name)
-        else:
-            # Delete only a specific page version
-            cursor.execute("DELETE FROM wiki WHERE name=%s and version=%s",
-                           (self.name, version))
-            self.env.log.info('Deleted version %d of page %s'
-                              % (version, self.name))
+            if version is None or version == self.version:
+                self._fetch(self.name, None, db)
 
-        if version is None or version == self.version:
-            self._fetch(self.name, None, db)
-
-        if not self.exists:
-            # Invalidate page name cache
-            WikiSystem(self.env).pages.invalidate(db)
-            # Delete orphaned attachments
-            from trac.attachment import Attachment
-            Attachment.delete_all(self.env, 'wiki', self.name, db)
-
-        if handle_ta:
-            db.commit()
+            if not self.exists:
+                # Invalidate page name cache
+                WikiSystem(self.env).pages.invalidate(db)
+                # Delete orphaned attachments
+                from trac.attachment import Attachment
+                Attachment.delete_all(self.env, 'wiki', self.name, db)
 
         # Let change listeners know about the deletion
         if not self.exists:
@@ -124,37 +119,29 @@ class WikiPage(object):
                     listener.wiki_page_version_deleted(self)
 
     def save(self, author, comment, remote_addr, t=None, db=None):
-        if not db:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        else:
-            handle_ta = False
-
-        if t is None:
-            t = datetime.now(utc)
-
-        if self.text != self.old_text:
-            cursor = db.cursor()
-            cursor.execute("INSERT INTO wiki (name,version,time,author,ipnr,"
-                           "text,comment,readonly) VALUES (%s,%s,%s,%s,%s,%s,"
-                           "%s,%s)", (self.name, self.version + 1,
-                                      to_timestamp(t), author, remote_addr,
-                                      self.text, comment, self.readonly))
-            self.version += 1
-            self.resource = self.resource(version=self.version)
-        elif self.readonly != self.old_readonly:
-            cursor = db.cursor()
-            cursor.execute("UPDATE wiki SET readonly=%s WHERE name=%s",
-                           (self.readonly, self.name))
-        else:
+        new_text = self.text != self.old_text
+        if not new_text and self.readonly == self.old_readonly:
             raise TracError(_('Page not modified'))
+        t = t or datetime.now(utc)
 
-        if self.version == 1:
-            # Invalidate page name cache
-            WikiSystem(self.env).pages.invalidate(db)
-        
-        if handle_ta:
-            db.commit()
+        @with_transaction(self.env, db)
+        def do_save(db):
+            cursor = db.cursor()
+            if new_text:
+                cursor.execute("INSERT INTO wiki (name,version,time,"
+                               "author,ipnr,text,comment,readonly)"
+                               "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+                               (self.name, self.version + 1, to_timestamp(t),
+                                author, remote_addr, self.text, comment,
+                                self.readonly))
+                self.version += 1
+                self.resource = self.resource(version=self.version)
+            else:
+                cursor.execute("UPDATE wiki SET readonly=%s WHERE name=%s",
+                               (self.readonly, self.name))
+            if self.version == 1:
+                # Invalidate page name cache
+                WikiSystem(self.env).pages.invalidate(db)
         
         self.author = author
         self.comment = comment

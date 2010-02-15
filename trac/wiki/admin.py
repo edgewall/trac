@@ -19,6 +19,7 @@ import time
 
 from trac.admin import *
 from trac.core import *
+from trac.db.util import with_transaction
 from trac.wiki import model
 from trac.wiki.api import WikiSystem
 from trac.util import read_file
@@ -118,10 +119,8 @@ class WikiAdmin(Component):
         data = to_unicode(data, 'utf-8')
         
         # Make sure we don't insert the exact same page twice
-        handle_ta = not db
-        if handle_ta:
-            db = self.env.get_db_cnx()
-        cursor = db.cursor()
+        cursor = self.env.get_db_cnx().cursor()
+
         cursor.execute("SELECT text FROM wiki WHERE name=%s "
                        "ORDER BY version DESC LIMIT 1",
                        (title,))
@@ -133,22 +132,23 @@ class WikiAdmin(Component):
             printout('  %s already up to date.' % title)
             return False
         
-        if replace and old:
-            cursor.execute("UPDATE wiki SET text=%s WHERE name=%s "
-                           "  AND version=(SELECT max(version) FROM wiki "
-                           "               WHERE name=%s)",
-                           (data, title, title))
-        else:
-            cursor.execute("INSERT INTO wiki(version,name,time,author,ipnr,"
-                           "                 text) "
-                           "SELECT 1+COALESCE(max(version),0),%s,%s,"
-                           "       'trac','127.0.0.1',%s FROM wiki "
-                           "WHERE name=%s",
-                           (title, int(time.time()), data, title))
-        if not old:
-            WikiSystem(self.env).pages.invalidate(db)
-        if handle_ta:
-            db.commit()
+        @with_transaction(self.env, db)
+        def do_import(db):
+            cursor = db.cursor()
+            if replace and old:
+                cursor.execute("UPDATE wiki SET text=%s WHERE name=%s "
+                               "  AND version=(SELECT max(version) FROM wiki "
+                               "               WHERE name=%s)",
+                               (data, title, title))
+            else:
+                cursor.execute("INSERT INTO wiki(version,name,time,author,"
+                               "                 ipnr,text) "
+                               "SELECT 1+COALESCE(max(version),0),%s,%s,"
+                               "       'trac','127.0.0.1',%s FROM wiki "
+                               "WHERE name=%s",
+                               (title, int(time.time()), data, title))
+            if not old:
+                WikiSystem(self.env).pages.invalidate(db)
         return True
 
     def load_pages(self, dir, db=None, ignore=[], create_only=[],
@@ -196,18 +196,18 @@ class WikiAdmin(Component):
                     [_('Title'), _('Edits'), _('Modified')])
     
     def _do_remove(self, name):
-        db = self.env.get_db_cnx()
-        if name.endswith('*'):
-            pages = list(WikiSystem(self.env).get_pages(name.rstrip('*')
-                                                        or None))
-            for p in pages:
-                page = model.WikiPage(self.env, p, db=db)
+        @with_transaction(self.env)        
+        def do_transaction(db):
+            if name.endswith('*'):
+                pages = list(WikiSystem(self.env).get_pages(name.rstrip('*')
+                                                            or None))
+                for p in pages:
+                    page = model.WikiPage(self.env, p, db=db)
+                    page.delete(db=db)
+                print_table(((p,) for p in pages), [_('Deleted pages')])
+            else:
+                page = model.WikiPage(self.env, name, db=db)
                 page.delete(db=db)
-            print_table(((p,) for p in pages), [_('Deleted pages')])
-        else:
-            page = model.WikiPage(self.env, name, db=db)
-            page.delete(db=db)
-        db.commit()
     
     def _do_export(self, page, filename=None):
         self.export_page(page, filename)
@@ -236,17 +236,17 @@ class WikiAdmin(Component):
                 self.export_page(p, dst, cursor)
     
     def _load_or_replace(self, paths, replace):
-        db = self.env.get_db_cnx()
-        for path in paths:
-            if os.path.isdir(path):
-                self.load_pages(path, db, replace=replace)
-            else:
-                page = os.path.basename(path)
-                page = unicode_unquote(page.encode('utf-8'))
-                if self.import_page(path, page, db, replace=replace):
-                    printout(_("  %(page)s imported from %(filename)s",
-                               filename=path, page=page))
-        db.commit()
+        @with_transaction(self.env)
+        def do_transaction(db):
+            for path in paths:
+                if os.path.isdir(path):
+                    self.load_pages(path, db, replace=replace)
+                else:
+                    page = os.path.basename(path)
+                    page = unicode_unquote(page.encode('utf-8'))
+                    if self.import_page(path, page, db, replace=replace):
+                        printout(_("  %(page)s imported from %(filename)s",
+                                   filename=path, page=page))
     
     def _do_load(self, *paths):
         self._load_or_replace(paths, replace=False)
@@ -255,9 +255,9 @@ class WikiAdmin(Component):
         self._load_or_replace(paths, replace=True)
     
     def _do_upgrade(self):
-        db = self.env.get_db_cnx()
-        self.load_pages(pkg_resources.resource_filename('trac.wiki', 
-                                                        'default-pages'),
-                        db, ignore=['WikiStart', 'checkwiki.py'],
-                        create_only=['InterMapTxt'])
-        db.commit()
+        @with_transaction(self.env)
+        def do_transaction(db):
+            self.load_pages(pkg_resources.resource_filename('trac.wiki',
+                                                            'default-pages'),
+                            db, ignore=['WikiStart', 'checkwiki.py'],
+                            create_only=['InterMapTxt'])

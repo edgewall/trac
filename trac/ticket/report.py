@@ -25,6 +25,7 @@ from genshi.builder import tag
 from trac.config import IntOption
 from trac.core import *
 from trac.db import get_column_names
+from trac.db.util import with_transaction
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
@@ -92,11 +93,11 @@ class ReportModule(Component):
         data = {}
         if req.method == 'POST':
             if action == 'new':
-                self._do_create(req, db)
+                self._do_create(req)
             elif action == 'delete':
-                self._do_delete(req, db, id)
+                self._do_delete(req, id)
             elif action == 'edit':
-                self._do_save(req, db, id)
+                self._do_save(req, id)
         elif action in ('copy', 'edit', 'new'):
             template = 'report_edit.html'
             data = self._render_editor(req, db, id, action=='copy')
@@ -133,7 +134,7 @@ class ReportModule(Component):
 
     # Internal methods
 
-    def _do_create(self, req, db):
+    def _do_create(self, req):
         req.perm.require('REPORT_CREATE')
 
         if 'cancel' in req.args:
@@ -142,27 +143,30 @@ class ReportModule(Component):
         title = req.args.get('title', '')
         query = req.args.get('query', '')
         description = req.args.get('description', '')
-        cursor = db.cursor()
-        cursor.execute("INSERT INTO report (title,query,description) "
-                       "VALUES (%s,%s,%s)", (title, query, description))
-        id = db.get_last_id(cursor, 'report')
-        db.commit()
+        report_id = [ None ]
+        @with_transaction(self.env)
+        def do_create(db):
+            cursor = db.cursor()
+            cursor.execute("INSERT INTO report (title,query,description) "
+                           "VALUES (%s,%s,%s)", (title, query, description))
+            report_id[0] = db.get_last_id(cursor, 'report')
         add_notice(req, _('The report has been created.'))
-        req.redirect(req.href.report(id))
+        req.redirect(req.href.report(report_id[0]))
 
-    def _do_delete(self, req, db, id):
+    def _do_delete(self, req, id):
         req.perm.require('REPORT_DELETE')
 
         if 'cancel' in req.args:
             req.redirect(req.href.report(id))
 
-        cursor = db.cursor()
-        cursor.execute("DELETE FROM report WHERE id=%s", (id,))
-        db.commit()
+        @with_transaction(self.env)
+        def do_delete(db):
+            cursor = db.cursor()
+            cursor.execute("DELETE FROM report WHERE id=%s", (id,))
         add_notice(req, _('The report {%(id)d} has been deleted.', id=id))
         req.redirect(req.href.report())
 
-    def _do_save(self, req, db, id):
+    def _do_save(self, req, id):
         """Save report changes to the database"""
         req.perm.require('REPORT_MODIFY')
 
@@ -170,10 +174,12 @@ class ReportModule(Component):
             title = req.args.get('title', '')
             query = req.args.get('query', '')
             description = req.args.get('description', '')
-            cursor = db.cursor()
-            cursor.execute("UPDATE report SET title=%s,query=%s,description=%s "
-                           "WHERE id=%s", (title, query, description, id))
-            db.commit()
+            @with_transaction(self.env)
+            def do_save(db):
+                cursor = db.cursor()
+                cursor.execute("UPDATE report "
+                               "SET title=%s,query=%s,description=%s "
+                               "WHERE id=%s", (title, query, description, id))
             add_notice(req, _('Your changes have been saved.'))
         req.redirect(req.href.report(id))
 
