@@ -119,42 +119,45 @@ class CachedRepository(Repository):
         cursor = db.cursor()
         if clean:
             self.log.info('Cleaning cache')
-            cursor.execute("DELETE FROM revision WHERE repos=%s", (self.id,))
+            cursor.execute("DELETE FROM revision WHERE repos=%s",
+                           (self.id,))
             cursor.execute("DELETE FROM node_change WHERE repos=%s",
                            (self.id,))
-            cursor.executemany("DELETE FROM repository "
-                               "WHERE id=%s AND name=%s",
-                               [(self.id, k) for k in CACHE_METADATA_KEYS])
-            cursor.executemany("INSERT INTO repository (id, name, value) "
-                               "VALUES (%s, %s, %s)", 
-                               [(self.id, k, '') for k in CACHE_METADATA_KEYS])
+            cursor.executemany("""
+                DELETE FROM repository WHERE id=%s AND name=%s
+                """, [(self.id, k) for k in CACHE_METADATA_KEYS])
+            cursor.executemany("""
+                INSERT INTO repository (id,name,value) VALUES (%s,%s,%s)
+                """, [(self.id, k, '') for k in CACHE_METADATA_KEYS])
             self.metadata.invalidate(db)
             db.commit()
-            
+
         metadata = self.metadata.get(db)
         do_commit = False
-        
+
         # -- check that we're populating the cache for the correct repository
         repository_dir = metadata.get(CACHE_REPOSITORY_DIR)
         if repository_dir:
             # directory part of the repo name can vary on case insensitive fs
             if os.path.normcase(repository_dir) != os.path.normcase(self.name):
-                self.log.info("'repository_dir' has changed from %r to %r"
-                              % (repository_dir, self.name))
-                raise TracError(_("The 'repository_dir' has changed, a "
-                                  "'trac-admin $ENV repository resync' "
-                                  "operation is needed."))
+                self.log.info("'repository_dir' has changed from %r to %r",
+                              repository_dir, self.name)
+                raise TracError(_("""
+                    The 'repository_dir' has changed, a
+                    'trac-admin $ENV repository resync'
+                    operation is needed.
+                    """))
         elif repository_dir is None: # 
-            self.log.info('Storing initial "repository_dir": %s' % self.name)
-            cursor.execute("INSERT INTO repository (id,name,value) "
-                           "VALUES (%s,%s,%s)",
-                           (self.id, CACHE_REPOSITORY_DIR, self.name))
+            self.log.info('Storing initial "repository_dir": %s', self.name)
+            cursor.execute("""
+                INSERT INTO repository (id,name,value) VALUES (%s,%s,%s)
+                """, (self.id, CACHE_REPOSITORY_DIR, self.name))
             do_commit = True
         else: # 'repository_dir' cleared by a resync
-            self.log.info('Resetting "repository_dir": %s' % self.name)
-            cursor.execute("UPDATE repository SET value=%s "
-                           "WHERE id=%s AND name=%s",
-                           (self.name, self.id, CACHE_REPOSITORY_DIR))
+            self.log.info('Resetting "repository_dir": %s', self.name)
+            cursor.execute("""
+                UPDATE repository SET value=%s WHERE id=%s AND name=%s
+                """, (self.name, self.id, CACHE_REPOSITORY_DIR))
             do_commit = True
 
         # -- retrieve the youngest revision in the repository
@@ -164,33 +167,34 @@ class CachedRepository(Repository):
         # -- retrieve the youngest revision cached so far
         youngest = metadata.get(CACHE_YOUNGEST_REV)
         if youngest is None:
-            cursor.execute("INSERT INTO repository (id,name,value) "
-                           "VALUES (%s,%s,%s)",
-                           (self.id, CACHE_YOUNGEST_REV, ''))
+            cursor.execute("""
+                INSERT INTO repository (id,name,value) VALUES (%s,%s,%s)
+                """, (self.id, CACHE_YOUNGEST_REV, ''))
             do_commit = True
 
         if do_commit:
             self.metadata.invalidate(db)
             db.commit() # save metadata changes made up to now
 
+        # -- verify and normalize youngest revision
         if youngest:
             youngest = self.repos.normalize_rev(youngest)
             if not youngest:
-                self.log.debug('normalize_rev failed (youngest_rev=%r)' %
+                self.log.debug('normalize_rev failed (youngest_rev=%r)',
                                self.youngest_rev)
         else:
-            self.log.debug('cache metadata undefined (youngest_rev=%r)' %
+            self.log.debug('cache metadata undefined (youngest_rev=%r)',
                            self.youngest_rev)
             youngest = None
 
         # -- compare them and try to resync if different
+        next_youngest = None
         if youngest != repos_youngest:
-            self.log.info("repos rev [%s] != cached rev [%s]" %
-                          (repos_youngest, youngest))
+            self.log.info("repos rev [%s] != cached rev [%s]",
+                          repos_youngest, youngest)
             if youngest:
                 next_youngest = self.repos.next_rev(youngest)
             else:
-                next_youngest = None
                 try:
                     next_youngest = self.repos.oldest_rev
                     # Ugly hack needed because doing that everytime in 
@@ -208,9 +212,9 @@ class CachedRepository(Repository):
                 return
 
             # 0. first check if there's no (obvious) resync in progress
-            cursor.execute("SELECT rev FROM revision "
-                           "WHERE repos=%s AND rev=%s",
-                           (self.id, str(next_youngest)))
+            cursor.execute("""
+               SELECT rev FROM revision WHERE repos=%s AND rev=%s
+               """, (self.id, str(next_youngest)))
             for rev, in cursor:
                 # already there, but in progress, so keep ''previous''
                 # notion of 'youngest'
@@ -226,19 +230,20 @@ class CachedRepository(Repository):
             while next_youngest is not None:
                 
                 # 1.1 Attempt to resync the 'revision' table
-                self.log.info("Trying to sync revision [%s]" %
+                self.log.info("Trying to sync revision [%s]",
                               next_youngest)
                 cset = self.repos.get_changeset(next_youngest)
                 try:
-                    cursor.execute("INSERT INTO revision "
-                                   " (repos,rev,time,author,message) "
-                                   "VALUES (%s,%s,%s,%s,%s)",
-                                   (self.id, str(next_youngest),
-                                    to_timestamp(cset.date),
-                                    cset.author, cset.message))
+                    cursor.execute("""
+                        INSERT INTO revision
+                            (repos,rev,time,author,message)
+                        VALUES (%s,%s,%s,%s,%s)
+                        """, (self.id, str(next_youngest),
+                              to_timestamp(cset.date),
+                              cset.author, cset.message))
                 except Exception, e: # *another* 1.1. resync attempt won 
-                    self.log.warning('Revision %s already cached: %s' %
-                                     (next_youngest, e))
+                    self.log.warning('Revision %s already cached: %r',
+                                     next_youngest, e)
                     # also potentially in progress, so keep ''previous''
                     # notion of 'youngest'
                     self.repos.clear(youngest_rev=youngest)
@@ -249,28 +254,28 @@ class CachedRepository(Repository):
                 #      (i.e. there *shouldn't* be any race condition here)
 
                 for path, kind, action, bpath, brev in cset.get_changes():
-                    self.log.debug("Caching node change in [%s]: %s"
-                                   % (next_youngest,
-                                      (path,kind,action,bpath,brev)))
+                    self.log.debug("Caching node change in [%s]: %r",
+                                   next_youngest,
+                                   (path,kind,action,bpath,brev))
                     kind = kindmap[kind]
                     action = actionmap[action]
-                    cursor.execute("INSERT INTO node_change "
-                                   " (repos,rev,path,node_type,"
-                                   "  change_type,base_path,base_rev) "
-                                   "VALUES (%s,%s,%s,%s,%s,%s,%s)",
-                                   (self.id, str(next_youngest),
-                                    path, kind, action, bpath, brev))
+                    cursor.execute("""
+                        INSERT INTO node_change
+                            (repos,rev,path,node_type,
+                             change_type,base_path,base_rev)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s)
+                        """, (self.id, str(next_youngest),
+                              path, kind, action, bpath, brev))
 
                 # 1.3. iterate (1.1 should always succeed now)
-                youngest = next_youngest                    
+                youngest = next_youngest
                 next_youngest = self.repos.next_rev(next_youngest)
 
                 # 1.4. update 'youngest_rev' metadata 
                 #      (minimize possibility of failures at point 0.)
-                cursor.execute("UPDATE repository SET value=%s "
-                               "WHERE id=%s AND name=%s",
-                               (str(youngest), self.id,
-                                CACHE_YOUNGEST_REV))
+                cursor.execute("""
+                    UPDATE repository SET value=%s WHERE id=%s AND name=%s
+                    """, (str(youngest), self.id, CACHE_YOUNGEST_REV))
                 self.metadata.invalidate(db)
                 db.commit()
 
