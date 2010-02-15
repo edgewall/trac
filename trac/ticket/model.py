@@ -245,9 +245,6 @@ class Ticket(object):
             when = datetime.now(utc)
         when_ts = to_timestamp(when)
 
-        rdb = self._get_db(db)
-        cursor = rdb.cursor()
-        
         if 'component' in self.values:
             # If the component is changed on a 'new' ticket
             # then owner field is updated accordingly. (#623).
@@ -255,11 +252,11 @@ class Ticket(object):
                     and 'component' in self._old \
                     and 'owner' not in self._old:
                 try:
-                    old_comp = Component(self.env, self._old['component'], rdb)
+                    old_comp = Component(self.env, self._old['component'])
                     old_owner = old_comp.owner or ''
                     current_owner = self.values.get('owner') or ''
                     if old_owner == current_owner:
-                        new_comp = Component(self.env, self['component'], rdb)
+                        new_comp = Component(self.env, self['component'])
                         if new_comp.owner:
                             self['owner'] = new_comp.owner
                 except TracError:
@@ -275,59 +272,68 @@ class Ticket(object):
                     cclist.append(cc)
             self.values['cc'] = ', '.join(cclist)
 
-        # find cnum if it isn't provided
-        if not cnum:
-            num = 0
-            cursor.execute("""
-                SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,'')
-                FROM ticket_change AS tc1
-                  LEFT OUTER JOIN
-                    (SELECT time,oldvalue FROM ticket_change
-                     WHERE field='comment') AS tc2
-                  ON (tc1.time = tc2.time)
-                WHERE ticket=%s ORDER BY tc1.time DESC
-                """, (self.id,))
-            for ts, old in cursor:
-                # Use oldvalue if available, else count edits
-                try:
-                    num += int(old.rsplit('.', 1)[-1])
-                    break
-                except ValueError:
-                    num += 1
-            cnum = str(num + 1)
-
-        # store fields
-        custom_fields = [f['name'] for f in self.fields if f.get('custom')]
-
         @with_transaction(self.env, db)
         def do_save(db):
             cursor = db.cursor()
+
+            # find cnum if it isn't provided
+            comment_num = cnum
+            if not comment_num:
+                num = 0
+                cursor.execute("""
+                    SELECT DISTINCT tc1.time,COALESCE(tc2.oldvalue,'')
+                    FROM ticket_change AS tc1
+                      LEFT OUTER JOIN
+                        (SELECT time,oldvalue FROM ticket_change
+                         WHERE field='comment') AS tc2
+                      ON (tc1.time = tc2.time)
+                    WHERE ticket=%s ORDER BY tc1.time DESC
+                    """, (self.id,))
+                for ts, old in cursor:
+                    # Use oldvalue if available, else count edits
+                    try:
+                        num += int(old.rsplit('.', 1)[-1])
+                        break
+                    except ValueError:
+                        num += 1
+                comment_num = str(num + 1)
+
+            # store fields
+            custom_fields = [f['name'] for f in self.fields if f.get('custom')]
+
             for name in self._old.keys():
                 if name in custom_fields:
-                    cursor.execute("SELECT * FROM ticket_custom " 
-                                   "WHERE ticket=%s and name=%s", (self.id, name))
+                    cursor.execute("""
+                        SELECT * FROM ticket_custom 
+                        WHERE ticket=%s and name=%s
+                        """, (self.id, name))
                     if cursor.fetchone():
-                        cursor.execute("UPDATE ticket_custom SET value=%s "
-                                       "WHERE ticket=%s AND name=%s",
-                                       (self[name], self.id, name))
+                        cursor.execute("""
+                            UPDATE ticket_custom SET value=%s
+                            WHERE ticket=%s AND name=%s
+                            """, (self[name], self.id, name))
                     else:
-                        cursor.execute("INSERT INTO ticket_custom (ticket,name,"
-                                       "value) VALUES(%s,%s,%s)",
-                                       (self.id, name, self[name]))
+                        cursor.execute("""
+                            INSERT INTO ticket_custom (ticket,name,value)
+                            VALUES(%s,%s,%s)
+                            """, (self.id, name, self[name]))
                 else:
-                    cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s" % name,
-                                   (self[name], self.id))
-                cursor.execute("INSERT INTO ticket_change "
-                               "(ticket,time,author,field,oldvalue,newvalue) "
-                               "VALUES (%s, %s, %s, %s, %s, %s)",
-                               (self.id, when_ts, author, name, self._old[name],
-                                self[name]))
+                    cursor.execute("UPDATE ticket SET %s=%%s WHERE id=%%s" 
+                                   % name, (self[name], self.id))
+                cursor.execute("""
+                    INSERT INTO ticket_change
+                        (ticket,time,author,field,oldvalue,newvalue)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                    """, (self.id, when_ts, author, name, self._old[name],
+                          self[name]))
             
-            # always save comment, even if empty (numbering support for timeline)
-            cursor.execute("INSERT INTO ticket_change "
-                           "(ticket,time,author,field,oldvalue,newvalue) "
-                           "VALUES (%s,%s,%s,'comment',%s,%s)",
-                           (self.id, when_ts, author, cnum, comment))
+            # always save comment, even if empty 
+            # (numbering support for timeline)
+            cursor.execute("""
+                INSERT INTO ticket_change
+                    (ticket,time,author,field,oldvalue,newvalue)
+                VALUES (%s,%s,%s,'comment',%s,%s)
+                """, (self.id, when_ts, author, comment_num, comment))
     
             cursor.execute("UPDATE ticket SET changetime=%s WHERE id=%s",
                            (when_ts, self.id))
