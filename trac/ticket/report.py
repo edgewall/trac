@@ -88,8 +88,6 @@ class ReportModule(Component):
         id = int(req.args.get('id', -1))
         action = req.args.get('action', 'view')
 
-        db = self.env.get_db_cnx()
-
         data = {}
         if req.method == 'POST':
             if action == 'new':
@@ -100,16 +98,16 @@ class ReportModule(Component):
                 self._do_save(req, id)
         elif action in ('copy', 'edit', 'new'):
             template = 'report_edit.html'
-            data = self._render_editor(req, db, id, action=='copy')
+            data = self._render_editor(req, id, action=='copy')
             Chrome(self.env).add_wiki_toolbars(req)
         elif action == 'delete':
             template = 'report_delete.html'
-            data = self._render_confirm_delete(req, db, id)
+            data = self._render_confirm_delete(req, id)
         elif id == -1:
             template = 'report_list.html'
-            data = self._render_list(req, db)
+            data = self._render_list(req)
         else:
-            template, data, content_type = self._render_view(req, db, id)
+            template, data, content_type = self._render_view(req, id)
             if content_type: # i.e. alternate format
                 return template, data, content_type
 
@@ -183,9 +181,10 @@ class ReportModule(Component):
             add_notice(req, _('Your changes have been saved.'))
         req.redirect(req.href.report(id))
 
-    def _render_confirm_delete(self, req, db, id):
+    def _render_confirm_delete(self, req, id):
         req.perm.require('REPORT_DELETE')
 
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT title FROM report WHERE id=%s", (id,))
         for title, in cursor:
@@ -197,9 +196,10 @@ class ReportModule(Component):
             raise TracError(_('Report {%(num)s} does not exist.', num=id),
                             _('Invalid Report Number'))
 
-    def _render_editor(self, req, db, id, copy):
+    def _render_editor(self, req, id, copy):
         if id != -1:
             req.perm.require('REPORT_MODIFY')
+            db = self.env.get_db_cnx()
             cursor = db.cursor()
             cursor.execute("SELECT title,description,query FROM report "
                            "WHERE id=%s", (id,))
@@ -232,11 +232,12 @@ class ReportModule(Component):
                           'sql': query, 'description': description}
         return data
 
-    def _render_list(self, req, db):
+    def _render_list(self, req):
         """Render the list of available reports."""
         sort = req.args.get('sort', 'report')
         asc = bool(int(req.args.get('asc', 1)))
         
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT id, title FROM report ORDER BY %s%s"
                        % (sort == 'title' and 'title' or 'id',
@@ -247,8 +248,9 @@ class ReportModule(Component):
         
         return {'reports': reports, 'sort': sort, 'asc': asc}
 
-    def _render_view(self, req, db, id):
+    def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""
+        db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT title,query,description from report "
                        "WHERE id=%s", (id,))

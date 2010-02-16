@@ -476,22 +476,24 @@ class Environment(Component, ComponentManager):
         @param backup_dest: name of the backup file
         @return: whether the upgrade was performed
         """
-        db = self.get_db_cnx()
-
         upgraders = []
-        for participant in self.setup_participants:
-            if participant.environment_needs_upgrade(db):
-                upgraders.append(participant)
-        if not upgraders:
-            return False
-
-        if backup:
-            self.backup(backup_dest)
-
-        @with_transaction(self.env)
+        
+        @with_transaction(self)
         def do_upgrade(db):
+            for participant in self.setup_participants:
+                if participant.environment_needs_upgrade(db):
+                    upgraders.append(participant)
+            if not upgraders:
+                return
+    
+            if backup:
+                self.backup(backup_dest)
+
             for participant in upgraders:
                 participant.upgrade_environment(db)
+
+        if not upgraders:
+            return False
 
         # Database schema may have changed, so close all connections
         self.shutdown(except_logging=True)

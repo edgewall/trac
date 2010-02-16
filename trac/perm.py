@@ -227,8 +227,7 @@ class DefaultPermissionStore(Component):
             cursor = db.cursor()
             cursor.execute("INSERT INTO permission VALUES (%s, %s)",
                            (username, action))
-            self.log.info('Granted permission for %s to %s'
-                          % (action, username))
+        self.log.info('Granted permission for %s to %s' % (action, username))
 
     def revoke_permission(self, username, action):
         """Revokes a users' permission to perform the specified action."""
@@ -239,8 +238,7 @@ class DefaultPermissionStore(Component):
             cursor.execute("DELETE FROM permission WHERE username=%s "
                            "AND action=%s",
                            (username, action))
-            self.log.info('Revoked permission for %s to %s'
-                          % (action, username))
+        self.log.info('Revoked permission for %s to %s' % (action, username))
 
 
 class DefaultPermissionGroupProvider(Component):

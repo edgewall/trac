@@ -206,6 +206,7 @@ class Ticket(object):
                 else:
                     std_fields.append(fname)
 
+        tkt_id = [None]
         @with_transaction(self.env, db)
         def do_insert(db):
             cursor = db.cursor()
@@ -213,16 +214,17 @@ class Ticket(object):
                            % (','.join(std_fields),
                               ','.join(['%s'] * len(std_fields))),
                            [values[name] for name in std_fields])
-            self.id = db.get_last_id(cursor, 'ticket')
+            tkt_id[0] = db.get_last_id(cursor, 'ticket')
 
             # Insert custom fields
             if custom_fields:
                 cursor.executemany("INSERT INTO ticket_custom "
                                    "(ticket,name,value) VALUES (%s,%s,%s)",
-                                   [(self.id, name, self[name])
+                                   [(tkt_id[0], name, self[name])
                                     for name in custom_fields])
 
-        self.resource = self.resource(id=self.id)
+        self.id = tkt_id[0]
+        self.resource = self.resource(id=tkt_id[0])
         self._old = {}
 
         for listener in TicketSystem(self.env).change_listeners:
@@ -260,8 +262,8 @@ class Ticket(object):
                         if new_comp.owner:
                             self['owner'] = new_comp.owner
                 except TracError:
-                    # If the old component has been removed from the database we
-                    # just leave the owner as is.
+                    # If the old component has been removed from the database
+                    # we just leave the owner as is.
                     pass
 
         # Fix up cc list separators and remove duplicates
@@ -431,7 +433,7 @@ class Ticket(object):
         when_ts = to_timestamp(when)
 
         @with_transaction(self.env, db)
-        def do_save(db):
+        def do_modify(db):
             cursor = db.cursor()
             # Find the current value of the comment
             cursor.execute("SELECT newvalue FROM ticket_change "
@@ -592,7 +594,8 @@ class AbstractEnum(object):
             self.env.log.info('Deleting %s %s' % (self.type, self.name))
             cursor.execute("DELETE FROM enum WHERE type=%s AND value=%s",
                            (self.type, self._old_value))
-            # Re-order any enums that have higher value than deleted (close gap)
+            # Re-order any enums that have higher value than deleted
+            # (close gap)
             for enum in list(self.select(self.env, db)):
                 try:
                     if int(enum.value) > int(self._old_value):
@@ -880,7 +883,7 @@ class Milestone(object):
             raise TracError(_('Invalid milestone name.'))
 
         @with_transaction(self.env, db)
-        def do_insert(db):
+        def do_update(db):
             cursor = db.cursor()
             self.env.log.info('Updating milestone "%s"' % self.name)
             cursor.execute("UPDATE milestone SET name=%s,due=%s,"

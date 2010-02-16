@@ -152,8 +152,8 @@ class LoginModule(Component):
             cursor = db.cursor()
             cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
                            "VALUES (%s, %s, %s, %s)",
-                           (cookie, remote_user,
-                            req.remote_addr, int(time.time())))
+                           (cookie, remote_user, req.remote_addr,
+                            int(time.time())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
         req.outcookie['trac_auth']['path'] = req.base_path or '/'

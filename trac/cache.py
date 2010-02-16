@@ -206,7 +206,8 @@ class CacheManager(Component):
                 cursor.execute("SELECT generation FROM cache WHERE id=%s",
                                (id,))
                 if not cursor.fetchone():
-                    cursor.execute("INSERT INTO cache VALUES (%s, %s)", (id, 0))
+                    cursor.execute("INSERT INTO cache VALUES (%s, %s)",
+                                   (id, 0))
             
             # Invalidate in this process
             self._cache.pop(id, None)

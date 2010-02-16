@@ -188,17 +188,16 @@ class Session(DetachedSession):
         assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
             return
-        cursor = self.env.get_db_cnx().cursor()
-        cursor.execute("SELECT sid FROM session WHERE sid=%s", (new_sid,))
-        if cursor.fetchone():
-            raise TracError(Markup('Session "%s" already exists.<br />'
-                                   'Please choose a different session ID.')
-                            % new_sid, 'Error renaming session')
-        self.env.log.debug('Changing session ID %s to %s', self.sid, new_sid)
-
         @with_transaction(self.env)
         def update_session_id(db):
             cursor = db.cursor()
+            cursor.execute("SELECT sid FROM session WHERE sid=%s", (new_sid,))
+            if cursor.fetchone():
+                raise TracError(Markup('Session "%s" already exists.<br />'
+                                       'Please choose a different session ID.')
+                                % new_sid, 'Error renaming session')
+            self.env.log.debug('Changing session ID %s to %s', self.sid, new_sid)
+
             cursor.execute("UPDATE session SET sid=%s WHERE sid=%s "
                            "AND authenticated=0", (new_sid, self.sid))
             cursor.execute("UPDATE session_attribute SET sid=%s "

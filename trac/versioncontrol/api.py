@@ -260,7 +260,7 @@ class DbRepositoryProvider(Component):
             for (k, v) in changes.iteritems():
                 if k not in self.repository_attrs:
                     continue
-                if k in('alias', 'name') and is_default(v):
+                if k in ('alias', 'name') and is_default(v):
                     v = ''
                 cursor.execute("UPDATE repository SET value=%s "
                                "WHERE id=%s AND name=%s", (v, id, k))
@@ -448,20 +448,21 @@ class RepositoryManager(Component):
 
     def get_repository_id(self, reponame, db=None):
         """Return a unique id for the given repository name."""
-        handle_ta = False
-        if db is None:
-            db = self.env.get_db_cnx()
-            handle_ta = True
-        cursor = db.cursor()
-        cursor.execute("SELECT id FROM repository "
-                       "WHERE name='name' AND value=%s", (reponame,))
-        for id, in cursor:
-            return id
-        cursor.execute("SELECT COALESCE(MAX(id),0) FROM repository")
-        id = cursor.fetchone()[0] + 1
-        cursor.execute("INSERT INTO repository (id, name, value) "
-                       "VALUES (%s,%s,%s)", (id, 'name', reponame))
-        return id
+        repo_id = [None]
+        @with_transaction(self.env, db)
+        def do_get(db):
+            cursor = db.cursor()
+            cursor.execute("SELECT id FROM repository "
+                           "WHERE name='name' AND value=%s", (reponame,))
+            for id, in cursor:
+                repo_id[0] = id
+                return
+            cursor.execute("SELECT COALESCE(MAX(id),0) FROM repository")
+            id = cursor.fetchone()[0] + 1
+            cursor.execute("INSERT INTO repository (id, name, value) "
+                           "VALUES (%s,%s,%s)", (id, 'name', reponame))
+            repo_id[0] = id
+        return repo_id[0]
     
     def get_repository(self, reponame):
         """Retrieve the appropriate Repository for the given name.

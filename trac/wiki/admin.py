@@ -117,24 +117,25 @@ class WikiAdmin(Component):
         else:
             data = sys.stdin.read()
         data = to_unicode(data, 'utf-8')
-        
-        # Make sure we don't insert the exact same page twice
-        cursor = self.env.get_db_cnx().cursor()
 
-        cursor.execute("SELECT text FROM wiki WHERE name=%s "
-                       "ORDER BY version DESC LIMIT 1",
-                       (title,))
-        old = list(cursor)
-        if old and title in create_only:
-            printout('  %s already exists.' % title)
-            return False
-        if old and data == old[0][0]:
-            printout('  %s already up to date.' % title)
-            return False
-        
+        result = [True]
         @with_transaction(self.env, db)
         def do_import(db):
             cursor = db.cursor()
+            # Make sure we don't insert the exact same page twice
+            cursor.execute("SELECT text FROM wiki WHERE name=%s "
+                           "ORDER BY version DESC LIMIT 1",
+                           (title,))
+            old = list(cursor)
+            if old and title in create_only:
+                printout('  %s already exists.' % title)
+                result[0] = False
+                return
+            if old and data == old[0][0]:
+                printout('  %s already up to date.' % title)
+                result[0] = False
+                return
+        
             if replace and old:
                 cursor.execute("UPDATE wiki SET text=%s WHERE name=%s "
                                "  AND version=(SELECT max(version) FROM wiki "
@@ -149,7 +150,7 @@ class WikiAdmin(Component):
                                (title, int(time.time()), data, title))
             if not old:
                 WikiSystem(self.env).pages.invalidate(db)
-        return True
+        return result[0]
 
     def load_pages(self, dir, db=None, ignore=[], create_only=[],
                    replace=False):

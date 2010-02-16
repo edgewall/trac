@@ -25,6 +25,7 @@ def with_transaction(env, db=None):
     >>>     def implementation_method(db):
     >>>         # implementation
     >>>         result[0] = value2
+    >>>     return result[0]
     """
     def transaction_wrapper(fn):
         if db:
