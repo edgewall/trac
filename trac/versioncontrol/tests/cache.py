@@ -202,6 +202,35 @@ class CacheTestCase(unittest.TestCase):
                           cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
 
+    def test_sync_changeset(self):
+        t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
+        t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
+        self.preset_cache(
+            ((0, to_timestamp(t1), '', ''), []),
+            ((1, to_timestamp(t2), 'joe', 'Import'),
+             [('trunk', 'D', 'A', None, None),
+              ('trunk/README', 'F', 'A', None, None)]),
+            )
+        repos = self.get_repos(get_changeset=lambda x: changesets[int(x)],
+                               youngest_rev=1)
+        changesets = [
+            Mock(Changeset, repos, 0, '**empty**', 'joe', t1,
+                 get_changes=lambda: []),
+            Mock(Changeset, repos, 1, 'Initial Import', 'joe', t2,
+                 get_changes=lambda: iter(changes1)),
+            ]
+        cache = CachedRepository(self.env, repos, self.log)
+        cache.sync_changeset(0)
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT time,author,message FROM revision ORDER BY rev")
+        self.assertEquals((to_timestamp(t1), 'joe', '**empty**'),
+                          cursor.fetchone())
+        self.assertEquals((to_timestamp(t2), 'joe', 'Import'),
+                          cursor.fetchone())
+        self.assertEquals(None, cursor.fetchone())
+
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)

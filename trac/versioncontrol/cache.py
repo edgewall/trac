@@ -98,11 +98,11 @@ class CachedRepository(Repository):
                 date = datetime.fromtimestamp(time, utc)
                 old_cset[0] = Changeset(self.repos, cset.rev, message, author,
                                         date)
-                cursor.execute("""
-                    UPDATE revision SET time=%s, author=%s, message=%s
-                    WHERE repos=%s AND rev=%s
-                    """, (to_timestamp(cset.date), cset.author,
-                          cset.message, self.id, str(cset.rev)))
+            cursor.execute("""
+                UPDATE revision SET time=%s, author=%s, message=%s
+                WHERE repos=%s AND rev=%s
+                """, (to_timestamp(cset.date), cset.author, cset.message,
+                      self.id, str(cset.rev)))
         return old_cset[0]
         
     def _metadata(self, db):
