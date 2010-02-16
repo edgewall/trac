@@ -58,7 +58,7 @@ class CacheTestCase(unittest.TestCase):
     def preset_cache(self, *args):
         """Each arg is a (rev tuple, changes list of tuples) pair."""
         cursor = self.db.cursor()
-        for i, (rev, changes) in enumerate(args):
+        for rev, changes in args:
             cursor.execute("""
                 INSERT INTO revision (repos,rev,time,author,message)
                 VALUES (1,%s,%s,%s,%s)
@@ -68,10 +68,10 @@ class CacheTestCase(unittest.TestCase):
                     INSERT INTO node_change
                     (repos,rev,path,node_type,change_type,base_path,base_rev)
                     VALUES (1,%s,%s,%s,%s,%s,%s)
-                    """, [(str(i),) + change for change in changes])
+                    """, [(rev[0],) + change for change in changes])
         cursor.execute("""
             UPDATE repository SET value=%s WHERE id=1 AND name='youngest_rev'
-            """, (str(len(args) - 1),))
+            """, (args[-1][0][0],))
 
     # Tests
 
@@ -121,8 +121,8 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            ((0, to_timestamp(t1), '', ''), []),
-            ((1, to_timestamp(t2), 'joe', 'Import'),
+            (('0', to_timestamp(t1), '', ''), []),
+            (('1', to_timestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/README', 'F', 'A', None, None)]),
             )
@@ -159,8 +159,8 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            ((0, to_timestamp(t1), '', ''), []),
-            ((1, to_timestamp(t2), 'joe', 'Import'),
+            (('0', to_timestamp(t1), '', ''), []),
+            (('1', to_timestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/README', 'F', 'A', None, None)]),
             )
@@ -207,8 +207,8 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            ((0, to_timestamp(t1), '', ''), []),
-            ((1, to_timestamp(t2), 'joe', 'Import'),
+            (('0', to_timestamp(t1), '', ''), []),
+            (('1', to_timestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/README', 'F', 'A', None, None)]),
             )
@@ -235,8 +235,8 @@ class CacheTestCase(unittest.TestCase):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            ((0, to_timestamp(t1), '', ''), []),
-            ((1, to_timestamp(t2), 'joe', 'Import'),
+            (('0', to_timestamp(t1), '', ''), []),
+            (('1', to_timestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/RDME', 'F', 'A', None, None)]),
             )
