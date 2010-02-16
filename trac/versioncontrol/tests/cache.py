@@ -154,6 +154,54 @@ class CacheTestCase(unittest.TestCase):
                           cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
 
+    def test_clean_sync(self):
+        t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
+        t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
+        t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
+        self.preset_cache(
+            ((0, to_timestamp(t1), '', ''), []),
+            ((1, to_timestamp(t2), 'joe', 'Import'),
+             [('trunk', 'D', 'A', None, None),
+              ('trunk/README', 'F', 'A', None, None)]),
+            )
+        repos = self.get_repos(get_changeset=lambda x: changesets[int(x)],
+                               youngest_rev=2)
+        changes1 = [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
+                   ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
+        changes2 = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README',
+                    1)]
+        changesets = [
+            Mock(Changeset, repos, 0, '**empty**', 'joe', t1,
+                 get_changes=lambda: []),
+            Mock(Changeset, repos, 1, 'Initial Import', 'joe', t2,
+                 get_changes=lambda: iter(changes1)),
+            Mock(Changeset, repos, 2, 'Update', 'joe', t3,
+                 get_changes=lambda: iter(changes2))
+            ]
+        cache = CachedRepository(self.env, repos, self.log)
+        cache.sync(clean=True)
+
+        cursor = self.db.cursor()
+        cursor.execute("SELECT time,author,message FROM revision")
+        self.assertEquals((to_timestamp(t1), 'joe', '**empty**'),
+                          cursor.fetchone())
+        self.assertEquals((to_timestamp(t2), 'joe', 'Initial Import'),
+                          cursor.fetchone())
+        self.assertEquals((to_timestamp(t3), 'joe', 'Update'),
+                          cursor.fetchone())
+        self.assertEquals(None, cursor.fetchone())
+        cursor.execute("""
+            SELECT rev,path,node_type,change_type,base_path,base_rev
+            FROM node_change ORDER BY rev
+            """)
+        self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
+                          cursor.fetchone())
+        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
+                          cursor.fetchone())
+        self.assertEquals(('2', 'trunk/README', 'F', 'E', 'trunk/README', '1'),
+                          cursor.fetchone())
+        self.assertEquals(None, cursor.fetchone())
+
     def test_get_changes(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
