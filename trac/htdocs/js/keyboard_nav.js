@@ -1,5 +1,6 @@
 (function($){
   var SELECTED_FILE_ELEM = null;
+  var LAST_HOVERED_FILE_ELEM = null;
   var ENABLE_KEY_NAV = true;
 
   $(document).keydown(function(event) {
@@ -7,55 +8,65 @@
       return true;
     if (event.ctrlKey)
       return true; // let CTRL+R do its job
+
     var selection = SELECTED_FILE_ELEM;
-    switch (event.keyCode) {
-      case 74: // j - next line
-        if (selection == null) {
-          selection = $('#f0');
-          if ( !selection.length ) 
-            selection = $($("#dirlist tr").get(1))
-        } else {
+    function pickFirst() {
+      selection = $('#f0');
+      if ( !selection.length ) 
+        selection = $("#dirlist tr:first");
+    }
+    function pickCurrent() {
+      selection = LAST_HOVERED_FILE_ELEM;
+      if ( selection == null )
+        pickFirst();
+    }
+
+    switch (event.which) {
+      case 74: // 'j' - next line
+        if ( selection == null )
+          pickFirst();
+        else
           do {
             selection = selection.next();
-          } while (selection.length > 0 && selection.css('display') == 'none');
-        }
+          } while (selection.length > 0 && selection.css("display") == 'none');
         break;
-      case 75: // k - previous line
-        if (selection == null) {
-          selection = $('#f0');
-        } else {
+      case 75: // 'k' - previous line
+        if ( selection == null )
+          pickFirst();
+        else
           do {
             selection = selection.prev();
-          } while (selection.length > 0 && selection.css('display') == 'none');
-        }
+          } while (selection.length > 0 && selection.css("display") == 'none');
         break;
-      case 13: // Enter
-      case 65: // 'a'nnotate
+      case 13: // <Enter>
+      case 65: // 'A'nnotate
       case 79: // 'o'pen
       case 82: // 'r'eload
-        if (selection != null) {
-          var expander = selection.find('.expander');
-          if (expander.length > 0) {
-            if (event.keyCode == 82) {
-              selection.removeClass("expanded").removeClass("collapsed")
-                .siblings("tr."+selection.get(0).id).not(selection).remove();
-            }
-            expander.click();
-          } else {
-            var href = selection.find('a.file').attr('href');
-            if (!href)
-              href = selection.find('a.parent').attr('href');
-            if (href) {
-              if (event.keyCode == 65)
-                href += (href.indexOf("?")>-1?'&':'?') + 'annotate=blame';
-              window.location = href;
-            }
+      case 86: // 'v'iew
+        if (selection == null) 
+          pickCurrent();
+
+        var expander = selection.find('.expander');
+        if (expander.length > 0) {
+          if (event.keyCode == 82) { // 'r'eload
+            selection.removeClass("expanded").removeClass("collapsed")
+              .siblings("tr."+selection.get(0).id).not(selection).remove();
+          }
+          expander.click();
+        } else {
+          var href = selection.find('a.file').attr('href');
+          if (!href)
+            href = selection.find('a.parent').attr('href');
+          if (href) {
+            if (event.keyCode == 65) // 'a'nnotate also ok for now
+              href += (href.indexOf("?")>-1?'&':'?') + 'annotate=blame';
+            window.location = href;
           }
         }
         return false;
         break;
-      case 76: // 'l'og
-        if (selection != null) {
+      case 76: // 'L'og
+        if (event.shiftKey && selection != null) {
           var href = selection.find('td.rev a').attr('href');
           if (href)
             window.location = href;
@@ -74,12 +85,12 @@
   });
 
   $(function() {
-    $('a,input,select,textarea,button')
-      .focus(function(event) {
-        ENABLE_KEY_NAV = false;
-      })
-      .blur(function(event) {
-        ENABLE_KEY_NAV = true;
-      });
+    $('a,input,select,textarea,button').bind({
+      focus: function() { ENABLE_KEY_NAV = false; },
+      blur: function() { ENABLE_KEY_NAV = true; }
+    });
+    $("#dirlist tr").live('mouseenter', function() {
+      LAST_HOVERED_FILE_ELEM = $(this);
+    });
   });
 })(jQuery);
