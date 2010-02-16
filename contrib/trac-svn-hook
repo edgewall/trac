@@ -204,10 +204,13 @@ if [ -n "$BASH_VERSION" ]; then # we can use Bash syntax
     fi
 fi
 for env in $TRAC_ENV; do
-    if [ -e "$env/VERSION" ]; then
-        trac-admin $env changeset $EVENT $REPOS $REV && \
-        echo "$env has been successfully notified" || \
-        echo "ERROR: $env has not been notified"
+    if [ -r "$env/VERSION" ]; then
+        log=$env/log/svn-hooks-`basename $REPOS`.log
+        nohup sh <<EOF >> $log 2>&1 &
+            echo "Changeset $REV $EVENT"
+            trac-admin $env changeset $EVENT $REPOS $REV && \
+                echo "OK" || echo "FAILED: see the Trac log"
+EOF
     else
         echo "$env doesn't seem to be a Trac environment, skipping..."
     fi
