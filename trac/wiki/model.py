@@ -128,12 +128,13 @@ class WikiPage(object):
         def do_save(db):
             cursor = db.cursor()
             if new_text:
-                cursor.execute("INSERT INTO wiki (name,version,time,"
-                               "author,ipnr,text,comment,readonly)"
-                               "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
-                               (self.name, self.version + 1, to_timestamp(t),
-                                author, remote_addr, self.text, comment,
-                                self.readonly))
+                cursor.execute("""
+                    INSERT INTO wiki (name,version,time,author,ipnr,text,
+                                      comment,readonly)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                    """, (self.name, self.version + 1, to_timestamp(t),
+                          author, remote_addr, self.text, comment,
+                          self.readonly))
                 self.version += 1
                 self.resource = self.resource(version=self.version)
             else:
