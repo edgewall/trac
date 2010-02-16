@@ -167,9 +167,9 @@ class CacheTestCase(unittest.TestCase):
         repos = self.get_repos(get_changeset=lambda x: changesets[int(x)],
                                youngest_rev=2)
         changes1 = [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
-                   ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
+                    ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
         changes2 = [('trunk/README', Node.FILE, Changeset.EDIT, 'trunk/README',
-                    1)]
+                     1)]
         changesets = [
             Mock(Changeset, repos, 0, '**empty**', 'joe', t1,
                  get_changes=lambda: []),
@@ -205,7 +205,6 @@ class CacheTestCase(unittest.TestCase):
     def test_sync_changeset(self):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
-        t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
             (('0', to_timestamp(t1), '', ''), []),
             (('1', to_timestamp(t2), 'joe', 'Import'),
@@ -214,6 +213,8 @@ class CacheTestCase(unittest.TestCase):
             )
         repos = self.get_repos(get_changeset=lambda x: changesets[int(x)],
                                youngest_rev=1)
+        changes1 = [('trunk', Node.DIRECTORY, Changeset.ADD, None, None),
+                    ('trunk/README', Node.FILE, Changeset.ADD, None, None)]
         changesets = [
             Mock(Changeset, repos, 0, '**empty**', 'joe', t1,
                  get_changes=lambda: []),
