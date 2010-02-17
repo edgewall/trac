@@ -750,6 +750,23 @@ Done.
 ------------------------------
  […]
 Done.
+============================== span wiki processor
+{{{
+#!span style="background: #ffd"
+This is a multiline span
+ - only ''inline'' wiki formatting here, of course
+ - this is only a span after all!
+}}}
+TODO: should be expanded in inline mode
+------------------------------
+<span style="background: #ffd">This is a multiline span
+ - only <i>inline</i> wiki formatting here, of course
+ - this is only a span after all!</span><p>
+TODO: should be expanded in inline mode
+</p>
+------------------------------
+ […]
+TODO: should be expanded in inline mode
 ============================== div and Span wiki processors
 {{{
 #!div ; style="background: #aeaeae"

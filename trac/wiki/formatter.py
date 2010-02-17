@@ -153,9 +153,10 @@ class WikiProcessor(object):
                                     '"--" in htmlcomment wiki code block'))
         return Markup('<!--\n%s-->\n' % text)
         
-    def _elt_processor(self, eltname, format_to, text, args):
-        # Note: as long as _processor_param_re is not re.UNICODE, **args is OK
-        elt = getattr(tag, eltname)(**(args or {}))
+    def _elt_processor(self, eltname, format_to, text):
+        # Note: as long as _processor_param_re is not re.UNICODE, **args is OK.
+        # Also, parse_args is using strict mode when processing [[span(...)]].
+        elt = getattr(tag, eltname)(**(self.args or {}))
         if not WikiSystem(self.env).render_unsafe_content:
             sanitized_elt = getattr(tag, eltname)
             for (k, data, pos) in (Stream(elt) | self._sanitizer):
@@ -170,12 +171,13 @@ class WikiProcessor(object):
             self.args = {}
         if 'class' not in self.args:
             self.args['class'] = 'wikipage'
-        return self._elt_processor('div', format_to_html, text, self.args)
+        return self._elt_processor('div', format_to_html, text)
     
     def _span_processor(self, text):
-        args, kwargs = parse_args(text, strict=True)
-        return self._elt_processor('span', format_to_oneliner, ', '.join(args),
-                                   kwargs)
+        if self.args is None:
+            args, self.args = parse_args(text, strict=True)
+            text = ', '.join(args)
+        return self._elt_processor('span', format_to_oneliner, text)
 
     def _td_processor(self, text):
         return self._tablecell_processor('td', text)
@@ -185,7 +187,7 @@ class WikiProcessor(object):
     
     def _tr_processor(self, text):
         try:
-            elt = self._elt_processor('tr', self._format_row, text, self.args)
+            elt = self._elt_processor('tr', self._format_row, text)
             self.formatter.open_table()
             return elt
         except ProcessorError, e:
@@ -197,14 +199,13 @@ class WikiProcessor(object):
         if 'class' not in self.args:
             self.args['class'] = 'wiki'
         try:
-            return self._elt_processor('table', self._format_table, text,
-                                       self.args)
+            return self._elt_processor('table', self._format_table, text)
         except ProcessorError, e:
             return system_message(e)
     
     def _tablecell_processor(self, eltname, text):
         self.formatter.open_table_row()
-        return self._elt_processor(eltname, format_to_html, text, self.args)
+        return self._elt_processor(eltname, format_to_html, text)
 
     _has_multiple_tables_re = re.compile(r"</table>.*?<table",
                                          re.MULTILINE | re.DOTALL)
