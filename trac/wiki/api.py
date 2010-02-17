@@ -67,30 +67,49 @@ class IWikiPageManipulator(Interface):
 
 
 class IWikiMacroProvider(Interface):
-    """Extension point interface for components that provide Wiki macros."""
+    """Extension point interface for components that provide Wiki macros
+
+    New Wiki processors can also be added that way. (''since 0.12'')
+    """
 
     def get_macros():
-        """Return an iterable that provides the names of the provided macros."""
+        """Return an iterable that provides the names of the provided macros.
+        """
 
     def get_macro_description(name):
-        """Return a plain text description of the macro with the specified name.
-        """
+        """Return a plain text description of the macro with the specified
+        name."""
 
     def render_macro(req, name, content):
         """Return the HTML output of the macro (deprecated)"""
 
-    def expand_macro(formatter, name, content, args={}):
+    def expand_macro(formatter, name, content, args=None):
         """Called by the formatter when rendering the parsed wiki text.
 
+        This form is preferred over `render_macro`, as you get the
+        formatter, which knows the current `.context` (and the `.req`,
+        but ideally you shouldn't use it in your macros). (''since 0.11'')
+
+        `name` is the name by which the macro has been called; remember
+        that via `get_macros`, multiple names could be associated to this
+        macros. Note that the macro names are case sensitive.
+        
         `content` is the content of the macro call. When called using macro
         syntax (`[[Macro(content)]]`), this is the string contained between
         parentheses, usually containing macro arguments. When called using wiki
         processor syntax (`{{{!#Macro ...}}}`), it is the content of the
         processor block, that is, the text starting on the line following the
-        macro name. In this case, `args` contains the named arguments passed on
-        the same line as the macro name.
+        macro name.
 
-        (since 0.11)
+        `args` will be a dictionary containing the named parameters which you
+        can specify when calling the macro using the wiki processor syntax:
+        `{{{#!Macro arg1=value1 arg2="value 2"`. In this example, `args` will
+        be `{'arg1': 'value1', 'arg2': 'value 2'}`).
+        If no named parameters are given, `args` will be `{}`. That makes it
+        possible to differentiate with a call using the macro syntax, in which
+        case `args` will be `None` (see `parse_args` for a convenient way to
+        extract arguments and name parameters from the `content` inside the
+        parentheses, in the latter situation). (''since 0.12'')
         """
 
 

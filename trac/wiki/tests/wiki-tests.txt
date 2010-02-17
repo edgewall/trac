@@ -687,6 +687,20 @@ After
 Before
  […]
 After
+============================== WikiProcessor default arguments
+[[div(Div has 'wikipage' class.)]]
+[[table()]]
+Table must have 'wiki' class.
+------------------------------
+<p>
+</p><div class="wikipage"><p>
+Div has 'wikipage' class.
+</p>
+</div><p>
+</p><table class="wiki"></table><p>
+Table must have 'wiki' class.
+</p>
+------------------------------
 ============================== div and span wiki processors
 And now it's [[span('''TIME FOR BED!,class=important)]]. Really.
 {{{
@@ -870,6 +884,21 @@ Hello World, args = hej hopp Hello World, args = hej hopp2 # Test non greedy mat
 </p>
 ------------------------------
 [[None(...)]] nada
+============================== WikiProcessor defined as a macro
+[[WikiProcessorSample(inlined content)]]
+{{{#!WikiProcessorSample arg1=this arg2="the second argument"
+multiline
+content
+}}}
+------------------------------
+<p>
+Called as a macro: inlined content
+</p>
+Called as a processor with params: <dl><dt>arg1</dt><dd>this</dd><dt>arg2</dt><dd>the second argument</dd></dl>multiline
+content
+------------------------------
+[[WikiProcessorSample(...)]]
+ […]
 ============================== Inlined HTML wiki processor
 Inline [[html(<B> Test </B>)]] text
 ------------------------------

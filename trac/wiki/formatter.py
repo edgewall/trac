@@ -67,7 +67,7 @@ class WikiProcessor(object):
     _block_elem_re = re.compile(r'^\s*<(?:div|table)(?:\s+[^>]+)?>',
                                 re.I | re.M)
 
-    def __init__(self, formatter, name, args={}):
+    def __init__(self, formatter, name, args=None):
         """Find the processor by name
         
         :param formatter: the formatter embedding a call for this processor 
@@ -155,7 +155,7 @@ class WikiProcessor(object):
         
     def _elt_processor(self, eltname, format_to, text, args):
         # Note: as long as _processor_param_re is not re.UNICODE, **args is OK
-        elt = getattr(tag, eltname)(**args)
+        elt = getattr(tag, eltname)(**(args or {}))
         if not WikiSystem(self.env).render_unsafe_content:
             sanitized_elt = getattr(tag, eltname)
             for (k, data, pos) in (Stream(elt) | self._sanitizer):
@@ -166,6 +166,8 @@ class WikiProcessor(object):
         return elt
 
     def _div_processor(self, text):
+        if not self.args:
+            self.args = {}
         if 'class' not in self.args:
             self.args['class'] = 'wikipage'
         return self._elt_processor('div', format_to_html, text, self.args)
@@ -190,6 +192,8 @@ class WikiProcessor(object):
             return system_message(e)
     
     def _table_processor(self, text):
+        if not self.args:
+            self.args = {}
         if 'class' not in self.args:
             self.args['class'] = 'wiki'
         try:
