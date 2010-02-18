@@ -1,5 +1,7 @@
+import doctest
 import unittest
 
+import trac.ticket
 from trac.ticket.tests import api, model, query, wikisyntax, notification, \
                               conversion, report, roadmap
 from trac.ticket.tests.functional import functionalSuite
@@ -14,6 +16,7 @@ def suite():
     suite.addTest(conversion.suite())
     suite.addTest(report.suite())
     suite.addTest(roadmap.suite())
+    suite.addTest(doctest.DocTestSuite(trac.ticket.report))
     return suite
 
 if __name__ == '__main__':

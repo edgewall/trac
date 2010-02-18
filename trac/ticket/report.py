@@ -39,6 +39,14 @@ from trac.web.chrome import add_ctxtnav, add_link, add_notice, \
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 
 
+def cell_value(v):
+    """Normalize a cell value for display.
+    >>> (cell_value(None), cell_value(0), cell_value(1), cell_value('v'))
+    ('', '0', u'1', u'v')
+    """
+    return v is 0 and '0' or v and unicode(v) or ''
+
+
 class ReportModule(Component):
 
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler,
@@ -411,7 +419,7 @@ class ReportModule(Component):
             for header_group in header_groups:
                 cell_group = []
                 for header in header_group:
-                    value = unicode(result[col_idx] or '')
+                    value = cell_value(result[col_idx])
                     cell = {'value': value, 'header': header, 'index': col_idx}
                     col = header['col']
                     col_idx += 1
@@ -650,9 +658,6 @@ class ReportModule(Component):
         def iso_datetime(dt):
             return format_datetime(dt, 'iso8601')
 
-        def string(value):
-            return unicode(value or '')
-        
         col_conversions = {
             'time': iso_time,
             'datetime': iso_datetime,
@@ -662,7 +667,8 @@ class ReportModule(Component):
             'modified': iso_datetime,
         }
 
-        converters = [col_conversions.get(c.strip('_'), string) for c in cols]
+        converters = [col_conversions.get(c.strip('_'), cell_value)
+                      for c in cols]
 
         out = StringIO()
         writer = csv.writer(out, delimiter=sep)
