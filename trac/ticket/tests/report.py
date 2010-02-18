@@ -70,13 +70,13 @@ class ReportTestCase(unittest.TestCase):
             return buf.write
         environ = self._make_environ()
         req = Request(environ, start_response)
-        cols = ['TEST_COL']
-        rows = [('value, needs escaped',)]
+        cols = ['TEST_COL', 'TEST_ZERO']
+        rows = [('value, needs escaped', 0)]
         try:
             self.report_module._send_csv(req, cols, rows)
         except RequestDone:
             pass
-        self.assertEqual('TEST_COL\r\n"value, needs escaped"\r\n',
+        self.assertEqual('TEST_COL,TEST_ZERO\r\n"value, needs escaped",0\r\n',
                          buf.getvalue())
 
 
