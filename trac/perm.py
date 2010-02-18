@@ -312,6 +312,15 @@ class PermissionSystem(Component):
         LegacyAttachmentPolicy (map ATTACHMENT_* permissions to realm specific
         ones)""")
 
+    # Number of seconds a cached user permission set is valid for.
+    CACHE_EXPIRY = 5
+    # How frequently to clear the entire permission cache
+    CACHE_REAP_TIME = 60
+
+    def __init__(self):
+        self.permission_cache = {}
+        self.last_reap = time()
+
     # Public API
 
     def grant_permission(self, username, action):
@@ -380,7 +389,17 @@ class PermissionSystem(Component):
         
         Users are returned as a list of user names.
         """
-        # this should probably be cached
+        now = time()
+
+        if now - self.last_reap > self.CACHE_REAP_TIME:
+            self.permission_cache = {}
+            self.last_reap = time()
+
+        timestamp, permissions = self.permission_cache.get(permission, 
+                                                           (0, None))
+        if now - timestamp <= self.CACHE_EXPIRY:
+            return permissions
+
         parent_map = {}
         for requestor in self.requestors:
             for action in requestor.get_permission_actions():
@@ -396,7 +415,10 @@ class PermissionSystem(Component):
                 map(_append_with_parents, parent_map[action])
         _append_with_parents(permission)
 
-        return self.store.get_users_with_permissions(satisfying_perms.keys())
+        perms = self.store.get_users_with_permissions(satisfying_perms.keys())
+        self.permission_cache[permission] = (now, perms)
+
+        return perms
 
     def expand_actions(self, actions):
         """Helper method for expanding all meta actions."""
