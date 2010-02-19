@@ -123,7 +123,7 @@ class WikiTestCase(unittest.TestCase):
         all_test_components = [
                 HelloWorldMacro, DivHelloWorldMacro, TableHelloWorldMacro, 
                 DivCodeMacro, DivCodeElementMacro, DivCodeStreamMacro, 
-                NoneMacro, SampleResolver]
+                NoneMacro, WikiProcessorSampleMacro, SampleResolver]
         self.env = EnvironmentStub(enable=['trac.*'] + all_test_components)
         # -- macros support
         self.env.path = ''
