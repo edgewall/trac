@@ -7,9 +7,8 @@
  margin-right: auto;
 }
 
-#properties div.trac-resizable { width: 100% }
-#field-description { width: 100% }
 #field-description-help { float: right }
+#properties div.trac-resizable, #field-description { width: 99% }
 
 #ticket {
  background: #ffd;
@@ -19,14 +18,14 @@
  position: relative;
 }
 
-div#ticket.ticketdraft {
+#ticket.ticketdraft {
  background: #f4f4f4 url(../draft.png);
 }
-div#ticketchange.ticketdraft {
+#ticketchange.ticketdraft {
  padding: 0 1em;
  margin: 1em 0;
 }
-div#ticketchange.ticketdraft h3 {
+#ticketchange.ticketdraft h3 {
  margin-top: .5em;
 }
 .preview-notice { font-weight: bold; }
