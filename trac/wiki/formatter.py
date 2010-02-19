@@ -688,12 +688,12 @@ class Formatter(object):
             idx = '01iI'.find(listid)
             if idx > -1:
                 class_ = ('arabiczero', None, 'lowerroman', 'upperroman')[idx]
-            elif listid.isdigit():
-                start = match[ldepth:match.find('.')]
             elif listid.islower():
                 class_ = 'loweralpha'
             elif listid.isupper():
                 class_ = 'upperalpha'
+            lstart = fullmatch.group('lstart')
+            start = (len(lstart) > 1 or listid not in '01iIaA') and lstart
         self._set_list_depth(ldepth, type_, class_, start)
         return ''
         

@@ -1181,6 +1181,100 @@ Paragraph
     1. But this line at the second level, which
        is also continued on the next line, does not.
 Paragraph
+============================== List with explicit numerical start > 9
+'''First steps'''
+
+ 1. Do this
+ 2. Do that
+ ...
+ 9. Then this
+
+'''Next steps'''
+
+ 10. Now this must work
+ 11. This is ok again..
+ ...
+ 19. More steps
+
+'''And more'''
+
+ 20. This is ok
+ 21. This ok too
+
+ ...
+------------------------------
+<p>
+<strong>First steps</strong>
+</p>
+<ol><li>Do this
+</li><li>Do that
+...
+</li><li>Then this
+</li></ol><p>
+<strong>Next steps</strong>
+</p>
+<ol start="10"><li>Now this must work
+</li><li>This is ok again..
+...
+</li><li>More steps
+</li></ol><p>
+<strong>And more</strong>
+</p>
+<ol start="20"><li>This is ok
+</li><li>This ok too
+</li></ol><blockquote>
+<p>
+...
+</p>
+</blockquote>
+------------------------------
+============================== List with explicit loweralpha start > 'a.'
+'''First steps'''
+
+ a. Do this
+ b. Do that
+ ...
+ e. Then this
+
+'''Next steps'''
+
+ f. restarts at "f"
+ g. follows with "g"
+ ...
+ h. More steps
+
+'''And more'''
+
+ i. Now this is wrong
+ j. (just never restart with "i." or "I.")
+
+ ...
+------------------------------
+<p>
+<strong>First steps</strong>
+</p>
+<ol class="loweralpha"><li>Do this
+</li><li>Do that
+...
+</li><li>Then this
+</li></ol><p>
+<strong>Next steps</strong>
+</p>
+<ol class="loweralpha" start="f"><li>restarts at "f"
+</li><li>follows with "g"
+...
+</li><li>More steps
+</li></ol><p>
+<strong>And more</strong>
+</p>
+<ol class="lowerroman"><li>Now this is wrong
+</li><li>(just never restart with "i." or "I.")
+</li></ol><blockquote>
+<p>
+...
+</p>
+</blockquote>
+------------------------------
 ============================== Numbered lists counter-examples
  This will not start a new numbered
  list. There's more than one character
@@ -1198,7 +1292,7 @@ before the "."
 OTOH, the following is a roman numbered list:
 </p>
 </blockquote>
-<ol class="lowerroman"><li>start
+<ol class="lowerroman" start="iii"><li>start
 </li><li>maximal number in sequence
 </li></ol><p>
 Paragraph
