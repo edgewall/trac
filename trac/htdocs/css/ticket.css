@@ -7,8 +7,9 @@
  margin-right: auto;
 }
 
-#newticket #field-description { width: 100% }
-#newticket #properties { width: 100% }
+#properties div.trac-resizable { width: 100% }
+#field-description { width: 100% }
+#field-description-help { float: right }
 
 #ticket {
  background: #ffd;
