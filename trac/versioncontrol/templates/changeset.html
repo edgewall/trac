@@ -23,24 +23,24 @@
   <body>
     <div id="content" class="changeset">
       <div id="title" py:choose="">
-        <h1 py:when="changeset and restricted">
+        <h1 py:when="changeset and restricted" i18n:msg="new_rev, reponame, new_path">
           Changeset <a title="Show full changeset" 
                        href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if>
           for <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
         </h1>
-        <h1 py:when="not changeset and restricted">
+        <h1 py:when="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev, reponame">
           Changes in <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
           <a title="Show revision log" href="${href.log(reponame, new_path, rev=new_rev, stop_rev=old_rev)}">
             [$old_rev:$new_rev]</a><py:if test="reponame"> in $reponame</py:if>
         </h1>
-        <h1 py:when="not changeset and not restricted">
+        <h1 py:when="not changeset and not restricted" i18n:msg="reponame, old_path, old_rev, new_path, new_rev">
             Changes<py:if test="reponame"> in $reponame</py:if>
             from <a title="Show entry in browser" href="${href.browser(reponame, old_path, rev=old_rev)}">$old_path</a>
           at <a title="Show full changeset" href="${href.changeset(old_rev, reponame)}">r$old_rev</a>
           to <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
           at <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">r$new_rev</a>
           </h1>
-          <h1 py:otherwise="">Changeset <a 
+          <h1 py:otherwise="" i18n:msg="new_rev, reponame">Changeset <a 
              py:strip="not annotated" 
              title="Show full changeset"
              href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
@@ -72,12 +72,12 @@
               $path
             </a>
             <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
-              ${path or (location and '.') or '(root)'}
+              ${path or (location and '.') or _('(root)')}
             </a>
           </py:choose>
           <span class="comment">($kind)</span>
           <py:if test="item.old and item.old.get('path') and item.change == 'copy' or item.change == 'move'">
-            <small><em>
+            <small><em i18n:msg="kind, old_path">
               ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.href">
                $item.old.path</a>)
             </em></small>
@@ -102,8 +102,15 @@
       <dl id="overview">
         <py:if test="changeset">
           <dt class="property time">Timestamp:</dt>
-          <dd class="time" i18n:msg="date, duration">${format_datetime(changeset.date)} (${(datetime.now(utc) - changeset.date) &lt; timedelta(0, 3600) and \
-                                                                 _('less than one hour') or dateinfo(changeset.date)} ago)</dd>
+          <dd class="time" py:with="
+             age = (datetime.now(utc) - changeset.date);
+             one_hour = timedelta(0, 3600);
+             duration = age &lt; one_hour and
+                        _('less than one hour ago') or
+                        Markup(_('%(duration)s ago',
+                        duration=dateinfo(changeset.date)))">
+            ${format_datetime(changeset.date)} (${duration})
+          </dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>
           <py:for each="prop in properties" py:choose="">
@@ -131,15 +138,17 @@
           <dt class="property location">Location:</dt>
           <dd class="searchable"><a href="${req.href.browser(reponame, location, rev=new_rev)}">$location</a></dd>
         </py:if>
-        <dt class="property files">${files and 'Files:' or '(No files)'}</dt>
+        <dt class="property files">
+          ${files and ngettext('File:', 'Files:', num=len(files)) or _('(No files)')}
+        </dt>
         <dd class="files">
           <div class="legend" id="file-legend" py:if="filestats">
-            <dl>
-              <py:if test="filestats['add']"><dt class="add"></dt><dd>${filestats['add']} added</dd></py:if>
-              <py:if test="filestats['delete']"><dt class="rem"></dt><dd>${filestats['delete']} removed</dd></py:if>
-              <py:if test="filestats['edit']"><dt class="mod"></dt><dd>${filestats['edit']} modified</dd></py:if>
-              <py:if test="filestats['copy']"><dt class="cp"></dt><dd>${filestats['copy']} copied</dd></py:if>
-              <py:if test="filestats['move']"><dt class="mv"></dt><dd>${filestats['move']} moved</dd></py:if>
+            <dl py:with="added, deleted, edited, copied, moved = [filestats[k] for k in ('add', 'delete', 'edit', 'copy', 'move')]">
+              <py:if test="added"><dt class="add"></dt><dd>${ngettext('%(num)d added', '%(num)d added', num=added)}</dd></py:if>
+              <py:if test="deleted"><dt class="rem"></dt><dd>${ngettext('%(num)d deleted', '%(num)d deleted', num=deleted)}</dd></py:if>
+              <py:if test="edited"><dt class="mod"></dt><dd>${ngettext('%(num)d edited', '%(num)d edited', num=edited)}</dd></py:if>
+              <py:if test="copied"><dt class="cp"></dt><dd>${ngettext('%(num)d copied', '%(num)d copied', num=copied)}</dd></py:if>
+              <py:if test="moved"><dt class="mv"></dt><dd>${ngettext('%(num)d moved', '%(num)d moved', num=moved)}</dd></py:if>
             </dl>
           </div>
           <br />
