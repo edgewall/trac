@@ -16,6 +16,7 @@ import sys
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider
 from trac.config import _TRUE_VALUES
 from trac.core import *
+from trac.perm import IPermissionRequestor
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
 from trac.util.translation import _, ngettext
@@ -27,7 +28,8 @@ from trac.web.chrome import Chrome, add_notice, add_warning
 class VersionControlAdmin(Component):
     """trac-admin command provider for version control administration."""
 
-    implements(IAdminCommandProvider, IAdminPanelProvider)
+    implements(IAdminCommandProvider, IPermissionRequestor,
+               IAdminPanelProvider)
 
     # IAdminCommandProvider methods
     
@@ -149,15 +151,21 @@ class VersionControlAdmin(Component):
     def _do_sync(self, reponame, rev=None):
         self._sync(reponame, rev, clean=False)
 
+    # IPermissionRequestor methods
+
+    def get_permission_actions(self):
+        return [('VERSIONCONTROL_ADMIN', ['BROWSER_VIEW', 'CHANGESET_VIEW',
+                                          'FILE_VIEW', 'LOG_VIEW'])]
+
     # IAdminPanelProvider methods
 
     def get_admin_panels(self, req):
-        if 'TICKET_ADMIN' in req.perm:
+        if 'VERSIONCONTROL_ADMIN' in req.perm:
             yield ('versioncontrol', _('Version Control'), 'repository',
                    _('Repositories'))
     
     def render_admin_panel(self, req, category, page, path_info):
-        req.perm.require('TICKET_ADMIN')
+        req.perm.require('VERSIONCONTROL_ADMIN')
         
         # Retrieve info for all repositories
         rm = RepositoryManager(self.env)
