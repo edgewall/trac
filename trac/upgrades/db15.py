@@ -10,7 +10,7 @@ def do_upgrade(env, ver, cursor):
         Column('authenticated', type='int'),
         Column('var_name'),
         Column('var_value')]
-    db_backend, _ = DatabaseManager(env)._get_connector()
+    db_backend, _ = DatabaseManager(env).get_connector()
     for stmt in db_backend.to_sql(session_table):
         cursor.execute(stmt)
 

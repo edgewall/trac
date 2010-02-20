@@ -113,6 +113,15 @@ class DateFormatTestCase(unittest.TestCase):
                          datefmt.format_date(a_date, format='%Y-%m-%d'))
 
 
+class UTimestampTestCase(unittest.TestCase):
+    
+    def test_sub_second(self):
+        t = datetime.datetime(2001, 2, 3, 4, 5, 6, 123456, datefmt.utc)
+        ts = datefmt.to_utimestamp(t)
+        self.assertEqual(981173106123456L, ts)
+        self.assertEqual(t, datefmt.from_utimestamp(ts))
+
+
 def suite():
     suite = unittest.TestSuite()
     if PytzTestCase:
@@ -120,6 +129,7 @@ def suite():
     else:
         print "SKIP: utils/tests/datefmt.py (no pytz installed)"
     suite.addTest(unittest.makeSuite(DateFormatTestCase))
+    suite.addTest(unittest.makeSuite(UTimestampTestCase))
     return suite
 
 if __name__ == '__main__':

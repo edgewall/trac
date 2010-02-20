@@ -3,7 +3,7 @@ import unittest
 
 from trac.core import *
 from trac.test import EnvironmentStub
-from trac.util.datefmt import utc, to_timestamp
+from trac.util.datefmt import utc, to_utimestamp
 from trac.wiki import WikiPage, IWikiChangeListener
 
 
@@ -52,7 +52,7 @@ class WikiPageTestCase(unittest.TestCase):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         cursor = self.db.cursor()
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 1, to_timestamp(t), 'joe', '::1',
+                       ('TestPage', 1, to_utimestamp(t), 'joe', '::1',
                         'Bla bla', 'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
@@ -91,7 +91,7 @@ class WikiPageTestCase(unittest.TestCase):
         cursor = self.db.cursor()
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla',
+        self.assertEqual((1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
                           'Testing', 0),
                          cursor.fetchone())
 
@@ -103,7 +103,7 @@ class WikiPageTestCase(unittest.TestCase):
         t = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
-                       ('TestPage', 1, to_timestamp(t), 'joe', '::1',
+                       ('TestPage', 1, to_utimestamp(t), 'joe', '::1',
                         'Bla bla', 'Testing', 0))
 
         page = WikiPage(self.env, 'TestPage')
@@ -119,10 +119,10 @@ class WikiPageTestCase(unittest.TestCase):
 
         cursor.execute("SELECT version,time,author,ipnr,text,comment,"
                        "readonly FROM wiki WHERE name=%s", ('TestPage',))
-        self.assertEqual((1, to_timestamp(t), 'joe', '::1', 'Bla bla',
+        self.assertEqual((1, to_utimestamp(t), 'joe', '::1', 'Bla bla',
                           'Testing', 0),
                          cursor.fetchone())
-        self.assertEqual((2, to_timestamp(t2), 'kate', '192.168.0.101', 'Bla',
+        self.assertEqual((2, to_utimestamp(t2), 'kate', '192.168.0.101', 'Bla',
                           'Changing', 0), cursor.fetchone())
 
         listener = TestWikiChangeListener(self.env)

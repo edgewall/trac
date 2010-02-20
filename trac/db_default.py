@@ -17,7 +17,7 @@
 from trac.db import Table, Column, Index
 
 # Database version identifier. Used for automatic upgrades.
-db_version = 24
+db_version = 25
 
 def __mkreports(reports):
     """Utility function used to create report data in same syntax as the
@@ -67,7 +67,7 @@ schema = [
         Column('id'),
         Column('filename'),
         Column('size', type='int'),
-        Column('time', type='int'),
+        Column('time', type='int64'),
         Column('description'),
         Column('author'),
         Column('ipnr')],
@@ -76,7 +76,7 @@ schema = [
     Table('wiki', key=('name', 'version'))[
         Column('name'),
         Column('version', type='int'),
-        Column('time', type='int'),
+        Column('time', type='int64'),
         Column('author'),
         Column('ipnr'),
         Column('text'),
@@ -92,7 +92,7 @@ schema = [
     Table('revision', key=('repos', 'rev'))[
         Column('repos', type='int'),
         Column('rev'),
-        Column('time', type='int'),
+        Column('time', type='int64'),
         Column('author'),
         Column('message'),
         Index(['repos', 'time'])],
@@ -110,8 +110,8 @@ schema = [
     Table('ticket', key='id')[
         Column('id', auto_increment=True),
         Column('type'),
-        Column('time', type='int'),
-        Column('changetime', type='int'),
+        Column('time', type='int64'),
+        Column('changetime', type='int64'),
         Column('component'),
         Column('severity'),
         Column('priority'),
@@ -129,7 +129,7 @@ schema = [
         Index(['status'])],    
     Table('ticket_change', key=('ticket', 'time', 'field'))[
         Column('ticket', type='int'),
-        Column('time', type='int'),
+        Column('time', type='int64'),
         Column('author'),
         Column('field'),
         Column('oldvalue'),
@@ -150,12 +150,12 @@ schema = [
         Column('description')],
     Table('milestone', key='name')[
         Column('name'),
-        Column('due', type='int'),
-        Column('completed', type='int'),
+        Column('due', type='int64'),
+        Column('completed', type='int64'),
         Column('description')],
     Table('version', key='name')[
         Column('name'),
-        Column('time', type='int'),
+        Column('time', type='int64'),
         Column('description')],
 
     # Report system

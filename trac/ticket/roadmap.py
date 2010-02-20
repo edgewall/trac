@@ -18,7 +18,6 @@
 from StringIO import StringIO
 from datetime import datetime
 import re
-from time import time
 
 from genshi.builder import tag
 
@@ -31,9 +30,9 @@ from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
-from trac.util.datefmt import parse_date, utc, to_timestamp, to_datetime, \
+from trac.util.datefmt import parse_date, utc, to_utimestamp, \
                               get_date_format_hint, get_datetime_format_hint, \
-                              format_date, format_datetime
+                              format_date, format_datetime, from_utimestamp
 from trac.util.text import CRLF
 from trac.util.translation import _
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
@@ -476,7 +475,7 @@ class RoadmapModule(Component):
                                    (ticket.id,))
                     row = cursor.fetchone()
                     if row:
-                        write_utctime('COMPLETED', to_datetime(row[0], utc))
+                        write_utctime('COMPLETED', from_utimestamp(row[0]))
                 write_prop('END', 'VTODO')
         write_prop('END', 'VCALENDAR')
 
@@ -531,11 +530,11 @@ class MilestoneModule(Component):
             # TODO: creation and (later) modifications should also be reported
             cursor.execute("SELECT completed,name,description FROM milestone "
                            "WHERE completed>=%s AND completed<=%s",
-                           (to_timestamp(start), to_timestamp(stop)))
+                           (to_utimestamp(start), to_utimestamp(stop)))
             for completed, name, description in cursor:
                 milestone = milestone_realm(id=name)
                 if 'MILESTONE_VIEW' in req.perm(milestone):
-                    yield('milestone', datetime.fromtimestamp(completed, utc),
+                    yield('milestone', from_utimestamp(completed),
                           '', (milestone, description)) # FIXME: author?
 
             # Attachments
@@ -866,10 +865,10 @@ class MilestoneModule(Component):
         for name, due, completed, description in cursor:
             milestone = milestone_realm(id=name)
             if 'MILESTONE_VIEW' in req.perm(milestone):
+                dt = (completed and from_utimestamp(completed) or
+                      due and from_utimestamp(due) or datetime.now(utc))
                 yield (get_resource_url(self.env, milestone, req.href),
-                       get_resource_name(self.env, milestone),
-                       datetime.fromtimestamp(
-                           completed or due or time(), utc),
+                       get_resource_name(self.env, milestone), dt,
                        '', shorten_result(description, terms))
         
         # Attachments

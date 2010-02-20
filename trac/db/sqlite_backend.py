@@ -101,17 +101,23 @@ if have_pysqlite == 2:
             return result
 
 
+# Mapping from "abstract" SQL types to DB-specific types
+_type_map = {
+    'int': 'integer',
+    'int64': 'integer',
+}
+
+
 def _to_sql(table):
     sql = ["CREATE TABLE %s (" % table.name]
     coldefs = []
     for column in table.columns:
         ctype = column.type.lower()
+        ctype = _type_map.get(ctype, ctype)
         if column.auto_increment:
             ctype = "integer PRIMARY KEY"
         elif len(table.key) == 1 and column.name in table.key:
             ctype += " PRIMARY KEY"
-        elif ctype == "int":
-            ctype = "integer"
         coldefs.append("    %s %s" % (column.name, ctype))
     if len(table.key) > 1:
         coldefs.append("    UNIQUE (%s)" % ','.join(table.key))
@@ -187,6 +193,19 @@ class SQLiteConnector(Component):
     def to_sql(self, table):
         return _to_sql(table)
 
+    def alter_column_types(self, table, columns):
+        """Yield SQL statements altering the type of one or more columns of
+        a table.
+        
+        Type changes are specified as a `columns` dict mapping column names
+        to `(from, to)` SQL type tuples.
+        """
+        for name, (from_, to) in sorted(columns.iteritems()):
+            if _type_map.get(to, to) != _type_map.get(from_, from_):
+                raise NotImplementedError('Conversion from %s to %s is not '
+                                          'implemented' % (from_, to))
+        return ()
+
     def backup(self, dest_file):
         """Simple SQLite-specific backup of the database.
 
@@ -203,6 +222,7 @@ class SQLiteConnector(Component):
         if not os.path.exists(dest_file):
             raise TracError("Backup attempt failed")
         return dest_file
+
 
 class SQLiteConnection(ConnectionWrapper):
     """Connection wrapper for SQLite."""
@@ -260,7 +280,7 @@ class SQLiteConnection(ConnectionWrapper):
 
     def cast(self, column, type):
         if sqlite_version >= 30203:
-            return 'CAST(%s AS %s)' % (column, type)
+            return 'CAST(%s AS %s)' % (column, _type_map.get(type, type))
         elif type == 'int':
             # hack to force older SQLite versions to convert column to an int
             return '1*' + column

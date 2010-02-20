@@ -14,13 +14,12 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from datetime import datetime
 import os
 
 from trac.cache import CacheProxy
 from trac.core import TracError
 from trac.db.util import with_transaction
-from trac.util.datefmt import utc, to_timestamp
+from trac.util.datefmt import from_utimestamp, to_utimestamp
 from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, Repository, NoSuchChangeset
 
@@ -75,8 +74,7 @@ class CachedRepository(Repository):
         cursor.execute("SELECT rev FROM revision "
                        "WHERE repos=%s AND time >= %s AND time < %s "
                        "ORDER BY time DESC, rev DESC",
-                       (self.id, to_timestamp(start),
-                        to_timestamp(stop)))
+                       (self.id, to_utimestamp(start), to_utimestamp(stop)))
         for rev, in cursor:
             try:
                 yield self.get_changeset(rev)
@@ -95,13 +93,12 @@ class CachedRepository(Repository):
                 WHERE repos=%s AND rev=%s
                 """, (self.id, str(cset.rev)))
             for time, author, message in cursor:
-                date = datetime.fromtimestamp(time, utc)
                 old_cset[0] = Changeset(self.repos, cset.rev, message, author,
-                                        date)
+                                        from_utimestamp(time))
             cursor.execute("""
                 UPDATE revision SET time=%s, author=%s, message=%s
                 WHERE repos=%s AND rev=%s
-                """, (to_timestamp(cset.date), cset.author, cset.message,
+                """, (to_utimestamp(cset.date), cset.author, cset.message,
                       self.id, str(cset.rev)))
         return old_cset[0]
         
@@ -237,7 +234,7 @@ class CachedRepository(Repository):
                             (repos,rev,time,author,message)
                         VALUES (%s,%s,%s,%s,%s)
                         """, (self.id, str(next_youngest),
-                              to_timestamp(cset.date),
+                              to_utimestamp(cset.date),
                               cset.author, cset.message))
                 except Exception, e: # *another* 1.1. resync attempt won 
                     self.log.warning('Revision %s already cached: %r',
@@ -403,7 +400,7 @@ class CachedChangeset(Changeset):
         row = cursor.fetchone()
         if row:
             _date, author, message = row
-            date = datetime.fromtimestamp(_date, utc)
+            date = from_utimestamp(_date)
             Changeset.__init__(self, repos, rev, message, author, date)
         else:
             raise NoSuchChangeset(rev)

@@ -166,7 +166,7 @@ class SessionTestCase(unittest.TestCase):
                        (0,))
         cursor.execute("INSERT INTO session "
                        "VALUES ('987654', 0, %s)",
-                       (time.time() - PURGE_AGE - 3600,))
+                       (int(time.time() - PURGE_AGE - 3600),))
         cursor.execute("INSERT INTO session_attribute VALUES "
                        "('987654', 0, 'foo', 'bar')")
         

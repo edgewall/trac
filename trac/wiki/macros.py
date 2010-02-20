@@ -14,7 +14,6 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from datetime import datetime
 from itertools import groupby
 import inspect
 import os
@@ -27,7 +26,7 @@ from genshi.core import Markup
 from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
 from trac.util.compat import rpartition
-from trac.util.datefmt import format_date, utc
+from trac.util.datefmt import format_date, from_utimestamp
 from trac.util.html import escape
 from trac.util.presentation import separated
 from trac.util.text import unquote, to_unicode
@@ -225,8 +224,7 @@ class RecentChangesMacro(WikiMacroBase):
         for name, version, ts in cursor:
             if not 'WIKI_VIEW' in formatter.perm('wiki', name, version):
                 continue
-            time = datetime.fromtimestamp(ts, utc)
-            date = format_date(time)
+            date = format_date(from_utimestamp(ts))
             if date != prevdate:
                 prevdate = date
                 entries_per_date.append((date, []))

@@ -46,7 +46,6 @@ Warning:
 import os.path
 import weakref
 import posixpath
-from datetime import datetime
 
 from trac.config import ListOption
 from trac.core import *
@@ -57,7 +56,7 @@ from trac.versioncontrol.cache import CachedRepository
 from trac.util import embedded_numbers
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _
-from trac.util.datefmt import utc
+from trac.util.datefmt import from_utimestamp
 
 
 application_pool = None
@@ -780,8 +779,7 @@ class SubversionNode(Node):
                                  core.SVN_PROP_REVISION_DATE, self.pool())
         if not _date:
             return None
-        ts = core.svn_time_from_cstring(_date, self.pool()) / 1000000
-        return datetime.fromtimestamp(ts, utc)
+        return from_utimestamp(core.svn_time_from_cstring(_date, self.pool()))
 
     def _get_prop(self, name):
         return fs.node_prop(self.root, self._scoped_path_utf8, name,
@@ -845,8 +843,8 @@ class SubversionChangeset(Changeset):
         author = author and to_unicode(author, 'utf-8')
         _date = self._get_prop(core.SVN_PROP_REVISION_DATE)
         if _date:
-            ts = core.svn_time_from_cstring(_date, self.pool()) / 1000000
-            date = datetime.fromtimestamp(ts, utc)
+            ts = core.svn_time_from_cstring(_date, self.pool())
+            date = from_utimestamp(ts)
         else:
             date = None
         Changeset.__init__(self, repos, rev, message, author, date)

@@ -4,7 +4,7 @@ from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
 from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener
 from trac.test import EnvironmentStub
-from trac.util.datefmt import utc, to_timestamp
+from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 
 from datetime import datetime, timedelta
 import unittest
@@ -296,7 +296,7 @@ class TicketTestCase(unittest.TestCase):
                        "                        description,author,ipnr) "
                        "VALUES ('ticket',%s,'file.txt',1234,%s,"
                        "        'My file','mark','')",
-                       (str(tkt_id), to_timestamp(t2)))
+                       (str(tkt_id), to_utimestamp(t2)))
         db.commit()
         t3 = datetime(2001, 1, 1, 1, 1, 3, 0, utc)
         ticket.save_changes('jim', 'Other', t3)
@@ -307,6 +307,19 @@ class TicketTestCase(unittest.TestCase):
                           (t2, 'mark', 'comment', '', 'My file', False)],
                           sorted(log[1:3]))
         self.assertEqual((t3, 'jim', 'comment', '2', 'Other', True), log[3])
+
+    def test_subsecond_change(self):
+        """Perform two ticket changes within a second."""
+        tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
+        ticket = Ticket(self.env, tkt_id)
+        t1 = datetime(2001, 1, 1, 1, 1, 1, 123456, utc)
+        ticket.save_changes('jane', 'Testing', t1)
+        t2 = datetime(2001, 1, 1, 1, 1, 1, 123789, utc)
+        ticket.save_changes('jim', 'Other', t2)
+        log = ticket.get_changelog()
+        self.assertEqual(2, len(log))
+        self.assertEqual((t1, 'jane', 'comment', '1', 'Testing', True), log[0])
+        self.assertEqual((t2, 'jim', 'comment', '2', 'Other', True), log[1])
 
     def test_changelog_with_reverted_change(self):
         tkt_id = self._insert_ticket('Test', reporter='joe', component='foo')
@@ -387,7 +400,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
     
     def _find_comment(self, ticket, cnum):
         (ts, author, comment) = ticket._find_comment(cnum, self.db)
-        return datetime.fromtimestamp(ts, utc)
+        return from_utimestamp(ts)
     
     def assertChange(self, ticket, cnum, date, author, **fields):
         change = ticket.get_change(cnum)
@@ -411,7 +424,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
         self.assertChange(ticket, 1, self.t1, 'jack',
             comment=dict(author='jack', old='1', new='New comment 1'),
             _comment0=dict(author='joe', old='Comment 1',
-                           new=str(to_timestamp(t))))
+                           new=str(to_utimestamp(t))))
 
     def test_threading(self):
         """Check modification of a "threaded" comment"""
@@ -423,7 +436,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
             owner=dict(author='john', old='john', new='jack'),
             comment=dict(author='john', old='1.2', new='New comment 2'),
             _comment0=dict(author='joe', old='Comment 2',
-                           new=str(to_timestamp(t))))
+                           new=str(to_utimestamp(t))))
         
     def test_modify_missing_cnum(self):
         """Editing a comment with no cnum in oldvalue"""
@@ -440,7 +453,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
             keywords=dict(author='jim', old='a, b, c', new='a, b'),
             comment=dict(author='jim', old='', new='New comment 3'),
             _comment0=dict(author='joe', old='Comment 3',
-                           new=str(to_timestamp(t))))
+                           new=str(to_utimestamp(t))))
         
     def test_modify_missing_comment(self):
         """Editing a comment where the comment field is missing"""
@@ -457,7 +470,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
             owner=dict(author='john', old='john', new='jack'),
             comment=dict(author='john', old='', new='New comment 2'),
             _comment0=dict(author='joe', old='',
-                           new=str(to_timestamp(t))))
+                           new=str(to_utimestamp(t))))
         
     def test_modify_missing_cnums_and_comment(self):
         """Editing a comments when all cnums are missing and one comment
@@ -481,7 +494,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
             keywords=dict(author='jim', old='a, b, c', new='a, b'),
             comment=dict(author='jim', old='', new='New comment 3'),
             _comment0=dict(author='joe', old='Comment 3',
-                           new=str(to_timestamp(t))))
+                           new=str(to_utimestamp(t))))
 
         # Modify missing comment
         t = self.created + timedelta(seconds=60)
@@ -491,7 +504,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
             owner=dict(author='john', old='john', new='jack'),
             comment=dict(author='john', old='', new='New comment 2'),
             _comment0=dict(author='joe', old='',
-                           new=str(to_timestamp(t))))
+                           new=str(to_utimestamp(t))))
 
     def test_missing_comment_edit(self):
         """Modify a comment where one edit is missing"""
@@ -506,9 +519,9 @@ class TicketCommentEditTestCase(unittest.TestCase):
         self.assertChange(ticket, 1, self.t1, 'jack',
             comment=dict(author='jack', old='1', new='Other comment 1'),
             _comment0=dict(author='joe', old='Comment 1',
-                           new=str(to_timestamp(t1))),
+                           new=str(to_utimestamp(t1))),
             _comment1=dict(author='joe', old='New comment 1',
-                           new=str(to_timestamp(t2))))
+                           new=str(to_utimestamp(t2))))
         
         cursor = self.db.cursor()
         cursor.execute("DELETE FROM ticket_change "
@@ -522,9 +535,9 @@ class TicketCommentEditTestCase(unittest.TestCase):
         self.assertChange(ticket, 1, self.t1, 'jack',
             comment=dict(author='jack', old='1', new='Newest comment 1'),
             _comment1=dict(author='joe', old='New comment 1',
-                           new=str(to_timestamp(t2))),
+                           new=str(to_utimestamp(t2))),
             _comment2=dict(author='joe', old='Other comment 1',
-                           new=str(to_timestamp(t3))))
+                           new=str(to_utimestamp(t3))))
 
     def test_comment_history(self):
         """Check the generation of the comment history"""
@@ -725,7 +738,8 @@ class MilestoneTestCase(unittest.TestCase):
 
         cursor = self.db.cursor()
         cursor.execute("SELECT * FROM milestone WHERE name='Test'")
-        self.assertEqual(('Test', to_timestamp(t1), to_timestamp(t2), 'Foo bar'),
+        self.assertEqual(('Test', to_utimestamp(t1), to_utimestamp(t2),
+                          'Foo bar'),
                          cursor.fetchone())
 
     def test_update_milestone_without_name(self):

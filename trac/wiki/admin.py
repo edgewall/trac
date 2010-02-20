@@ -15,7 +15,6 @@ from datetime import datetime
 import os.path
 import pkg_resources
 import sys
-import time
 
 from trac.admin import *
 from trac.core import *
@@ -24,7 +23,8 @@ from trac.wiki import model
 from trac.wiki.api import WikiSystem
 from trac.util import read_file
 from trac.util.compat import any
-from trac.util.datefmt import format_datetime, utc
+from trac.util.datefmt import format_datetime, from_utimestamp, \
+                              to_utimestamp, utc
 from trac.util.text import to_unicode, unicode_quote, unicode_unquote, \
                            print_table, printout
 from trac.util.translation import _
@@ -147,7 +147,8 @@ class WikiAdmin(Component):
                                "SELECT 1+COALESCE(max(version),0),%s,%s,"
                                "       'trac','127.0.0.1',%s FROM wiki "
                                "WHERE name=%s",
-                               (title, int(time.time()), data, title))
+                               (title, to_utimestamp(datetime.now(utc)), data,
+                                title))
             if not old:
                 WikiSystem(self.env).pages.invalidate(db)
         return result[0]
@@ -191,7 +192,7 @@ class WikiAdmin(Component):
         cursor.execute("SELECT name, max(version), max(time) "
                        "FROM wiki GROUP BY name ORDER BY name")
         print_table([(r[0], int(r[1]),
-                      format_datetime(datetime.fromtimestamp(r[2], utc),
+                      format_datetime(from_utimestamp(r[2]),
                                       console_datetime_format))
                      for r in cursor],
                     [_('Title'), _('Edits'), _('Modified')])

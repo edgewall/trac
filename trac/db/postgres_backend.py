@@ -45,6 +45,11 @@ except ImportError:
 
 _like_escape_re = re.compile(r'([/_%])')
 
+# Mapping from "abstract" SQL types to DB-specific types
+_type_map = {
+    'int64': 'bigint',
+}
+
 
 class PostgreSQLConnector(Component):
     """Database connector for PostgreSQL.
@@ -97,9 +102,10 @@ class PostgreSQLConnector(Component):
         coldefs = []
         for column in table.columns:
             ctype = column.type
+            ctype = _type_map.get(ctype, ctype)
             if column.auto_increment:
                 ctype = 'SERIAL'
-            if len(table.key) == 1 and column.name in table.key:
+            elif len(table.key) == 1 and column.name in table.key:
                 ctype += ' PRIMARY KEY'
             coldefs.append('    "%s" %s' % (column.name, ctype))
         if len(table.key) > 1:
@@ -113,6 +119,23 @@ class PostgreSQLConnector(Component):
                     (unique, table.name, 
                      '_'.join(index.columns), table.name,
                      '","'.join(index.columns))
+
+    def alter_column_types(self, table, columns):
+        """Yield SQL statements altering the type of one or more columns of
+        a table.
+        
+        Type changes are specified as a `columns` dict mapping column names
+        to `(from, to)` SQL type tuples.
+        """
+        alterations = []
+        for name, (from_, to) in sorted(columns.iteritems()):
+            to = _type_map.get(to, to)
+            if to != _type_map.get(from_, from_):
+                alterations.append((name, to))
+        if alterations:
+            yield "ALTER TABLE %s %s" % (table,
+                ', '.join("ALTER COLUMN %s TYPE %s" % each
+                          for each in alterations))
 
     def backup(self, dest_file):
         try:
@@ -191,7 +214,7 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def cast(self, column, type):
         # Temporary hack needed for the union of selects in the search module
-        return 'CAST(%s AS %s)' % (column, type)
+        return 'CAST(%s AS %s)' % (column, _type_map.get(type, type))
 
     def concat(self, *args):
         return '||'.join(args)

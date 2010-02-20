@@ -26,7 +26,7 @@
                 </py:when>
                 <py:when test="col in ('time', 'changetime', 'created', 'modified')">
                   <!-- FIXME: we end up with multiple pubDate -->
-                  <pubDate py:if="cell.value != 'None'">${http_date(fromtimestamp(int(cell.value)))}</pubDate>
+                  <pubDate py:if="cell.value != 'None'">${http_date(from_utimestamp(long(cell.value)))}</pubDate>
                 </py:when>
                 <py:when test="col == 'summary'">
                   <title>#$row.id: $cell.value</title>

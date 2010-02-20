@@ -65,7 +65,7 @@ from trac.util.text import pretty_size, obfuscate_email_address, \
                            shorten_line, unicode_quote_plus, to_unicode, \
                            javascript_quote, exception_to_unicode
 from trac.util.datefmt import pretty_timedelta, format_datetime, format_date, \
-                              format_time, http_date, utc
+                              format_time, from_utimestamp, http_date, utc
 from trac.util.translation import _
 from trac.web.api import IRequestHandler, ITemplateStreamFilter, HTTPNotFound
 from trac.web.href import Href
@@ -754,6 +754,7 @@ class Chrome(Component):
             'format_time': partial(format_time, tzinfo=tzinfo),
             'fromtimestamp': partial(datetime.datetime.fromtimestamp,
                                      tz=tzinfo),
+            'from_utimestamp': from_utimestamp,
 
             # Wiki-formatting functions
             'wiki_to': partial(format_to, self.env),

@@ -11,7 +11,6 @@ from trac.test import EnvironmentStub
 class PostgresTableCreationSQLTest(unittest.TestCase):
     def setUp(self):
         self.env = EnvironmentStub()
-        self.db = self.env.get_db_cnx()
     
     def _unroll_generator(self, generator):
         items = []
@@ -82,8 +81,46 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
         self.assertEqual(index_sql, sql_commands[1])
 
 
+class PostgresTableAlterationSQLTest(unittest.TestCase):
+    def setUp(self):
+        self.env = EnvironmentStub()
+    
+    def test_alter_column_types(self):
+        connector = PostgreSQLConnector(self.env)
+        sql = connector.alter_column_types('milestone',
+                                           {'due': ('int', 'int64'),
+                                            'completed': ('int', 'int64')})
+        sql = list(sql)
+        self.assertEqual([
+            "ALTER TABLE milestone "
+                "ALTER COLUMN completed TYPE bigint, "
+                "ALTER COLUMN due TYPE bigint",
+            ], sql)
+
+    def test_alter_column_types_same(self):
+        connector = PostgreSQLConnector(self.env)
+        sql = connector.alter_column_types('milestone',
+                                           {'due': ('int', 'int'),
+                                            'completed': ('int', 'int64')})
+        sql = list(sql)
+        self.assertEqual([
+            "ALTER TABLE milestone "
+                "ALTER COLUMN completed TYPE bigint",
+            ], sql)
+
+    def test_alter_column_types_none(self):
+        connector = PostgreSQLConnector(self.env)
+        sql = connector.alter_column_types('milestone',
+                                           {'due': ('int', 'int')})
+        self.assertEqual([], list(sql))
+
+
 def suite():
-    return unittest.makeSuite(PostgresTableCreationSQLTest, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(PostgresTableCreationSQLTest, 'test'))
+    suite.addTest(unittest.makeSuite(PostgresTableAlterationSQLTest, 'test'))
+    return suite
+
 
 if __name__ == '__main__':
     unittest.main(defaultTest='suite')

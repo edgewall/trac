@@ -29,7 +29,7 @@ def do_upgrade(env, ver, cursor):
                 Index(['ticket']),
                 Index(['time'])]]
     
-    db_connector, _ = DatabaseManager(env)._get_connector()
+    db_connector, _ = DatabaseManager(env).get_connector()
     for table in tables:
         for stmt in db_connector.to_sql(table):
             cursor.execute(stmt)

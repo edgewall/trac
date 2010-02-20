@@ -21,7 +21,6 @@ import os.path
 import re
 import shutil
 import sys
-import time
 import unicodedata
 
 from genshi.builder import tag
@@ -37,7 +36,8 @@ from trac.perm import PermissionError, IPermissionPolicy
 from trac.resource import *
 from trac.search import search_to_sql, shorten_result
 from trac.util import get_reporter_id, create_unique_file
-from trac.util.datefmt import format_datetime, to_timestamp, utc
+from trac.util.datefmt import format_datetime, from_utimestamp, \
+                              to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, pretty_size, print_table, \
                            unicode_quote, unicode_unquote
 from trac.util.translation import _
@@ -151,8 +151,7 @@ class Attachment(object):
         self.filename = row[0]
         self.description = row[1]
         self.size = row[2] and int(row[2]) or 0
-        time = row[3] and int(row[3]) or 0
-        self.date = datetime.fromtimestamp(time, utc)
+        self.date = from_utimestamp(row[3])
         self.author = row[4]
         self.ipnr = row[5]
 
@@ -195,11 +194,12 @@ class Attachment(object):
 
 
     def insert(self, filename, fileobj, size, t=None, db=None):
-        # FIXME: `t` should probably be switched to `datetime` too
-
         self.size = size and int(size) or 0
-        timestamp = int(t or time.time())
-        self.date = datetime.fromtimestamp(timestamp, utc)
+        if t is None:
+            t = datetime.now(utc)
+        elif not isinstance(t, datetime): # Compatibility with 0.11
+            t = to_datetime(t, utc)
+        self.date = t
 
         # Make sure the path to the attachment is inside the environment
         # attachments directory
@@ -225,7 +225,7 @@ class Attachment(object):
                 cursor.execute("INSERT INTO attachment "
                                "VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                                (self.parent_realm, self.parent_id, filename,
-                                self.size, timestamp, self.description,
+                                self.size, to_utimestamp(t), self.description,
                                 self.author, self.ipnr))
                 shutil.copyfileobj(fileobj, targetfile)
                 self.resource.id = self.filename = filename
@@ -252,8 +252,7 @@ class Attachment(object):
             attachment.filename = filename
             attachment.description = description
             attachment.size = size and int(size) or 0
-            time = time and int(time) or 0
-            attachment.date = datetime.fromtimestamp(time, utc)
+            attachment.date = from_utimestamp(time or 0)
             attachment.author = author
             attachment.ipnr = ipnr
             yield attachment
@@ -439,9 +438,9 @@ class AttachmentModule(Component):
                        "  FROM attachment "
                        "  WHERE time > %s AND time < %s "
                        "        AND type = %s",
-                       (to_timestamp(start), to_timestamp(stop), realm))
+                       (to_utimestamp(start), to_utimestamp(stop), realm))
         for realm, id, filename, ts, description, author in cursor:
-            time = datetime.fromtimestamp(ts, utc)
+            time = from_utimestamp(ts)
             yield ('created', realm, id, filename, time, description, author)
 
     def get_timeline_events(self, req, resource_realm, start, stop):
@@ -489,7 +488,7 @@ class AttachmentModule(Component):
             if 'ATTACHMENT_VIEW' in req.perm(attachment):
                 yield (get_resource_url(self.env, attachment, req.href),
                        get_resource_shortname(self.env, attachment),
-                       datetime.fromtimestamp(time, utc), author,
+                       from_utimestamp(time), author,
                        shorten_result(desc, terms))
     
     # IResourceManager methods

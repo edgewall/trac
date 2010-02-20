@@ -52,6 +52,11 @@ try:
 except ImportError:
     has_mysqldb = False
 
+# Mapping from "abstract" SQL types to DB-specific types
+_type_map = {
+    'int64': 'bigint',
+}
+
 
 class MySQLConnector(Component):
     """Database connector for MySQL version 4.1 and greater.
@@ -134,6 +139,7 @@ class MySQLConnector(Component):
         coldefs = []
         for column in table.columns:
             ctype = column.type
+            ctype = _type_map.get(ctype, ctype)
             if column.auto_increment:
                 ctype = 'INT UNSIGNED NOT NULL AUTO_INCREMENT'
                 # Override the column type, as a text field cannot
@@ -151,6 +157,23 @@ class MySQLConnector(Component):
             yield 'CREATE %s INDEX %s_%s_idx ON %s (%s);' % (unique, table.name,
                   '_'.join(index.columns), table.name,
                   self._collist(table, index.columns))
+
+    def alter_column_types(self, table, columns):
+        """Yield SQL statements altering the type of one or more columns of
+        a table.
+        
+        Type changes are specified as a `columns` dict mapping column names
+        to `(from, to)` SQL type tuples.
+        """
+        alterations = []
+        for name, (from_, to) in sorted(columns.iteritems()):
+            to = _type_map.get(to, to)
+            if to != _type_map.get(from_, from_):
+                alterations.append((name, to))
+        if alterations:
+            yield "ALTER TABLE %s %s" % (table,
+                ', '.join("MODIFY %s %s" % each
+                          for each in alterations))
 
     def backup(self, dest_file):
         try:
@@ -204,7 +227,7 @@ class MySQLConnection(ConnectionWrapper):
         self._is_closed = False
 
     def cast(self, column, type):
-        if type == 'int':
+        if type == 'int'or type == 'int64':
             type = 'signed'
         elif type == 'text':
             type = 'char'

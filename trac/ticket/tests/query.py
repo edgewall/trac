@@ -362,8 +362,8 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE (((%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
-        self.assertEqual([1217548800, 1220227200], args)
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int64')})
+        self.assertEqual([1217548800000000L, 1220227200000000L], args)
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_exclusion(self):
@@ -375,8 +375,8 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((NOT (%(cast_time)s>=%%s AND %(cast_time)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
-        self.assertEqual([1217548800, 1220227200], args)
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int64')})
+        self.assertEqual([1217548800000000L, 1220227200000000L], args)
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_open_right(self):
@@ -388,8 +388,8 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((%(cast_time)s>=%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
-        self.assertEqual([1217548800], args)
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int64')})
+        self.assertEqual([1217548800000000L], args)
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_open_left(self):
@@ -401,8 +401,8 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE ((%(cast_time)s<%%s))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_time': self.env.get_db_cnx().cast('t.time', 'int')})
-        self.assertEqual([1220227200], args)
+          'cast_time': self.env.get_db_cnx().cast('t.time', 'int64')})
+        self.assertEqual([1220227200000000L], args)
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_modified(self):
@@ -414,8 +414,8 @@ FROM ticket AS t
   LEFT OUTER JOIN enum AS priority ON (priority.type='priority' AND priority.name=priority)
 WHERE (((%(cast_changetime)s>=%%s AND %(cast_changetime)s<%%s)))
 ORDER BY COALESCE(t.id,0)=0,t.id""" % {
-          'cast_changetime': self.env.get_db_cnx().cast('t.changetime', 'int')})
-        self.assertEqual([1217548800, 1220227200], args)
+          'cast_changetime': self.env.get_db_cnx().cast('t.changetime', 'int64')})
+        self.assertEqual([1217548800000000L, 1220227200000000L], args)
         tickets = query.execute(self.req)
 
     def test_constrained_by_keywords(self):

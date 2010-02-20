@@ -21,7 +21,7 @@ from datetime import datetime
 from trac.core import *
 from trac.db.util import with_transaction
 from trac.resource import Resource
-from trac.util.datefmt import utc, to_timestamp
+from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 from trac.util.translation import _
 from trac.wiki.api import WikiSystem
 
@@ -70,7 +70,7 @@ class WikiPage(object):
             version, time, author, text, comment, readonly = row
             self.version = int(version)
             self.author = author
-            self.time = datetime.fromtimestamp(time, utc)
+            self.time = from_utimestamp(time)
             self.text = text
             self.comment = comment
             self.readonly = readonly and int(readonly) or 0
@@ -132,7 +132,7 @@ class WikiPage(object):
                     INSERT INTO wiki (name,version,time,author,ipnr,text,
                                       comment,readonly)
                     VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
-                    """, (self.name, self.version + 1, to_timestamp(t),
+                    """, (self.name, self.version + 1, to_utimestamp(t),
                           author, remote_addr, self.text, comment,
                           self.readonly))
                 self.version += 1
@@ -166,5 +166,4 @@ class WikiPage(object):
                        "WHERE name=%s AND version<=%s "
                        "ORDER BY version DESC", (self.name, self.version))
         for version, ts, author, comment, ipnr in cursor:
-            time = datetime.fromtimestamp(ts, utc)
-            yield version, time, author, comment, ipnr
+            yield version, from_utimestamp(ts), author, comment, ipnr

@@ -18,7 +18,6 @@
 #         Christopher Lenz <cmlenz@gmx.de>
 #         Christian Boos <cboos@neuf.fr>
 
-from datetime import datetime
 from itertools import groupby
 import os
 import posixpath
@@ -35,8 +34,8 @@ from trac.resource import Resource, ResourceNotFound
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import content_disposition, embedded_numbers, pathjoin
-from trac.util.compat import any, set
-from trac.util.datefmt import pretty_timedelta, utc
+from trac.util.compat import any
+from trac.util.datefmt import from_utimestamp, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode, \
                            unicode_urlencode, shorten_line, CRLF
 from trac.util.translation import _, ngettext
@@ -1113,8 +1112,7 @@ class ChangesetModule(Component):
             if 'CHANGESET_VIEW' in req.perm(cset):
                 yield (req.href.changeset(rev, repos.reponame or None),
                        '[%s]: %s' % (rev, shorten_line(log)),
-                       datetime.fromtimestamp(ts, utc), author,
-                       shorten_result(log, terms))
+                       from_utimestamp(ts), author, shorten_result(log, terms))
 
 
 class AnyDiffModule(Component):

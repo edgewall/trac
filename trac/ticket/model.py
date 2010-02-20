@@ -27,7 +27,7 @@ from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import embedded_numbers, partition
 from trac.util.text import empty
-from trac.util.datefmt import utc, utcmax, to_timestamp
+from trac.util.datefmt import from_utimestamp, to_utimestamp, utc, utcmax
 from trac.util.translation import _
 
 __all__ = ['Ticket', 'Type', 'Status', 'Resolution', 'Priority', 'Severity',
@@ -109,7 +109,7 @@ class Ticket(object):
         for i, field in enumerate(std_fields):
             value = row[i]
             if field in self.time_fields:
-                self.values[field] = datetime.fromtimestamp(value or 0, utc)
+                self.values[field] = from_utimestamp(value)
             elif value is None:
                 self.values[field] = empty
             else:
@@ -193,7 +193,7 @@ class Ticket(object):
         values = dict(self.values)
         for field in self.time_fields:
             if field in values:
-                values[field] = to_timestamp(values[field])
+                values[field] = to_utimestamp(values[field])
         
         # Insert ticket record
         std_fields = []
@@ -245,7 +245,7 @@ class Ticket(object):
 
         if when is None:
             when = datetime.now(utc)
-        when_ts = to_timestamp(when)
+        when_ts = to_utimestamp(when)
 
         if 'component' in self.values:
             # If the component is changed on a 'new' ticket
@@ -359,7 +359,7 @@ class Ticket(object):
         db = self._get_db(db)
         cursor = db.cursor()
         sid = str(self.id)
-        when_ts = when and to_timestamp(when) or 0
+        when_ts = to_utimestamp(when)
         if when_ts:
             cursor.execute("SELECT time,author,field,oldvalue,newvalue,"
                            "1 AS permanent FROM ticket_change "
@@ -387,8 +387,8 @@ class Ticket(object):
                            (self.id, sid, sid))
         log = []
         for t, author, field, oldvalue, newvalue, permanent in cursor:
-            log.append((datetime.fromtimestamp(int(t), utc), author, field,
-                       oldvalue or '', newvalue or '', permanent))
+            log.append((from_utimestamp(t), author, field,
+                        oldvalue or '', newvalue or '', permanent))
         return log
 
     def delete(self, db=None):
@@ -417,7 +417,7 @@ class Ticket(object):
                            "WHERE ticket=%s AND time=%s",
                            (self.id, ts))
             fields = {}
-            change = {'date': datetime.fromtimestamp(int(ts), utc),
+            change = {'date': from_utimestamp(ts),
                       'author': author, 'fields': fields}
             for field, author, old, new in cursor:
                 fields[field] = {'author': author, 'old': old, 'new': new}
@@ -427,10 +427,10 @@ class Ticket(object):
         """Modify a ticket comment specified by its date, while keeping a
         history of edits.
         """
-        ts = to_timestamp(cdate)
+        ts = to_utimestamp(cdate)
         if when is None:
             when = datetime.now(utc)
-        when_ts = to_timestamp(when)
+        when_ts = to_utimestamp(when)
 
         @with_transaction(self.env, db)
         def do_modify(db):
@@ -494,13 +494,13 @@ class Ticket(object):
             rows = sorted((int(field[8:]), author, old, new)
                           for field, author, old, new in cursor)
             for rev, author, comment, ts in rows:
-                history.append((rev, datetime.fromtimestamp(int(ts0), utc),
-                                author0, comment))
+                history.append((rev, from_utimestamp(long(ts0)), author0,
+                                comment))
                 ts0, author0 = ts, author
             history.sort()
             rev = history and (history[-1][0] + 1) or 0
-            history.append((rev, datetime.fromtimestamp(int(ts0), utc),
-                            author0, last_comment))
+            history.append((rev, from_utimestamp(long(ts0)), author0,
+                            last_comment))
         return history
 
     def _find_comment(self, cnum, db):
@@ -823,9 +823,8 @@ class Milestone(object):
     def _from_database(self, row):
         name, due, completed, description = row
         self.name = name
-        self.due = due and datetime.fromtimestamp(int(due), utc) or None
-        self.completed = completed and \
-                         datetime.fromtimestamp(int(completed), utc) or None
+        self.due = due and from_utimestamp(due) or None
+        self.completed = completed and from_utimestamp(completed) or None
         self.description = description or ''
         self._to_old()
 
@@ -869,8 +868,8 @@ class Milestone(object):
             cursor.execute("INSERT INTO milestone "
                            "(name,due,completed,description) "
                            "VALUES (%s,%s,%s,%s)",
-                           (self.name, to_timestamp(self.due),
-                            to_timestamp(self.completed), self.description))
+                           (self.name, to_utimestamp(self.due),
+                            to_utimestamp(self.completed), self.description))
             self._to_old()
             TicketSystem(self.env).reset_ticket_fields(db)
 
@@ -888,8 +887,8 @@ class Milestone(object):
             self.env.log.info('Updating milestone "%s"' % self.name)
             cursor.execute("UPDATE milestone SET name=%s,due=%s,"
                            "completed=%s,description=%s WHERE name=%s",
-                           (self.name, to_timestamp(self.due),
-                            to_timestamp(self.completed),
+                           (self.name, to_utimestamp(self.due),
+                            to_utimestamp(self.completed),
                             self.description, self._old['name']))
             self.env.log.info('Updating milestone field of all tickets '
                               'associated with milestone "%s"' % self.name)
@@ -957,8 +956,7 @@ class Version(object):
                 raise ResourceNotFound(_('Version %(name)s does not exist.',
                                          name=name))
             self.name = self._old_name = name
-            self.time = row[0] and datetime.fromtimestamp(int(row[0]), utc) \
-                            or None
+            self.time = row[0] and from_utimestamp(row[0]) or None
             self.description = row[1] or ''
         else:
             self.name = self._old_name = None
@@ -990,7 +988,7 @@ class Version(object):
             self.env.log.debug("Creating new version '%s'" % self.name)
             cursor.execute("INSERT INTO version (name,time,description) "
                            "VALUES (%s,%s,%s)",
-                           (self.name, to_timestamp(self.time),
+                           (self.name, to_utimestamp(self.time),
                             self.description))
             self._old_name = self.name
             TicketSystem(self.env).reset_ticket_fields(db)
@@ -1007,7 +1005,7 @@ class Version(object):
             self.env.log.info('Updating version "%s"' % self.name)
             cursor.execute("UPDATE version SET name=%s,time=%s,description=%s "
                            "WHERE name=%s",
-                           (self.name, to_timestamp(self.time),
+                           (self.name, to_utimestamp(self.time),
                             self.description, self._old_name))
             if self.name != self._old_name:
                 # Update tickets
@@ -1026,8 +1024,7 @@ class Version(object):
         for name, time, description in cursor:
             version = cls(env)
             version.name = version._old_name = name
-            version.time = time and datetime.fromtimestamp(int(time), utc) \
-                                or None
+            version.time = time and from_utimestamp(time) or None
             version.description = description or ''
             versions.append(version)
         def version_order(v):

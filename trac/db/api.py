@@ -83,12 +83,12 @@ class DatabaseManager(Component):
         self._cnx_pool = None
 
     def init_db(self):
-        connector, args = self._get_connector()
+        connector, args = self.get_connector()
         connector.init_db(**args)
 
     def get_connection(self):
         if not self._cnx_pool:
-            connector, args = self._get_connector()
+            connector, args = self.get_connector()
             self._cnx_pool = ConnectionPool(5, connector, **args)
         return self._cnx_pool.get_cnx(self.timeout or None)
 
@@ -104,7 +104,7 @@ class DatabaseManager(Component):
         @param dest: base filename to write to.
         Returns the file actually written.
         """
-        connector, args = self._get_connector()
+        connector, args = self.get_connector()
         if not dest:
             backup_dir = self.backup_dir
             if backup_dir[0] != "/":
@@ -120,7 +120,7 @@ class DatabaseManager(Component):
             os.makedirs(backup_dir)
         return connector.backup(dest)
 
-    def _get_connector(self): ### FIXME: Make it public?
+    def get_connector(self):
         scheme, args = _parse_db_str(self.connection_uri)
         candidates = [
             (priority, connector)
@@ -146,6 +146,8 @@ class DatabaseManager(Component):
         if self.debug_sql:
             args['log'] = self.log
         return connector, args
+
+    _get_connector = get_connector  # For 0.11 compatibility
 
 
 def _parse_db_str(db_str):

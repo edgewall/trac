@@ -36,7 +36,8 @@ from trac.ticket.notification import TicketNotifyEmail
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.compat import any
-from trac.util.datefmt import format_datetime, to_timestamp, utc
+from trac.util.datefmt import format_datetime, from_utimestamp, \
+                              to_utimestamp, utc
 from trac.util.text import exception_to_unicode, obfuscate_email_address,  \
                            shorten_line, to_unicode
 from trac.util.presentation import separated
@@ -214,7 +215,7 @@ class TicketModule(Component):
                            ': ',
                            ticketsystem.format_summary(summary, status,
                                                        resolution, type)),
-                       datetime.fromtimestamp(ts, utc), author,
+                       from_utimestamp(ts), author,
                        shorten_result(desc, terms))
         
         # Attachments
@@ -231,8 +232,8 @@ class TicketModule(Component):
                 yield ('ticket_details', _('Ticket updates'), False)
 
     def get_timeline_events(self, req, start, stop, filters):
-        ts_start = to_timestamp(start)
-        ts_stop = to_timestamp(stop)
+        ts_start = to_utimestamp(start)
+        ts_stop = to_utimestamp(stop)
 
         status_map = {'new': ('newticket', N_('created')),
                       'reopened': ('reopenedticket', N_('reopened')),
@@ -268,7 +269,7 @@ class TicketModule(Component):
             else:
                 return None
             kind, verb = status_map[status]
-            return (kind, datetime.fromtimestamp(ts, utc), author,
+            return (kind, from_utimestamp(ts), author,
                     (ticket, verb, info, summary, status, resolution, type,
                      description, comment, cid))
 
@@ -1646,8 +1647,7 @@ class TicketModule(Component):
                 rev = int(field[8:])
                 comment_history.setdefault(rev, {}).update({'comment': old})
                 comment_history.setdefault(rev + 1, {}).update(
-                        {'author': author,
-                         'date': datetime.fromtimestamp(int(new), utc)})
+                        {'author': author, 'date': from_utimestamp(long(new))})
             elif old or new:
                 current['fields'][field] = {'old': old, 'new': new}
         if current:

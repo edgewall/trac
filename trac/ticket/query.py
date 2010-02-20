@@ -31,7 +31,8 @@ from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
 from trac.util import Ranges
-from trac.util.datefmt import format_datetime, parse_date, to_timestamp, utc
+from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
+                              to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
 from trac.util.text import empty, shorten_line, unicode_unquote
 from trac.util.translation import _, tag_
@@ -331,7 +332,7 @@ class Query(object):
                 elif val is None:
                     val = '--'
                 elif name in self.time_fields:
-                    val = datetime.fromtimestamp(int(val or 0), utc)
+                    val = from_utimestamp(val)
                 elif field and field['type'] == 'checkbox':
                     try:
                         val = bool(int(val))
@@ -468,7 +469,7 @@ class Query(object):
         def get_timestamp(date):
             if date:
                 try:
-                    return to_timestamp(parse_date(date, req.tz))
+                    return to_utimestamp(parse_date(date, req.tz))
                 except TracError, e:
                     errors.append(unicode(e))
             return None
@@ -486,7 +487,7 @@ class Query(object):
                                     value.split(';', 1)]
                 else:
                     (start, end) = (value.strip(), '')
-                col_cast = db.cast(col, 'int')
+                col_cast = db.cast(col, 'int64')
                 start = get_timestamp(start)
                 end = get_timestamp(end)
                 if start is not None and end is not None:

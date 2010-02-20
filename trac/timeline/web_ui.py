@@ -29,7 +29,7 @@ from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
-                              to_timestamp, utc, pretty_timedelta
+                              to_utimestamp, utc, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode
 from trac.util.translation import _, tag_
 from trac.web import IRequestHandler, IRequestFilter
@@ -106,7 +106,8 @@ class TimelineModule(Component):
                 precision = timedelta(hours=1)
             else:
                 precision = None
-        fromdate = fromdate.replace(hour=23, minute=59, second=59)
+        fromdate = fromdate.replace(hour=23, minute=59, second=59,
+                                    microsecond=999999)
         try:
             daysback = int(req.args.get('daysback', ''))
         except ValueError:
@@ -312,11 +313,9 @@ class TimelineModule(Component):
                 kind, date, author, data = event
             render = lambda field, context: \
                     provider.render_timeline_event(context, field, event)
-        if isinstance(date, datetime):
-            dateuid = to_timestamp(date)
-        else:
-            dateuid = date
+        if not isinstance(date, datetime):
             date = datetime.fromtimestamp(date, utc)
+        dateuid = to_utimestamp(date)
         return {'kind': kind, 'author': author, 'date': date,
                 'dateuid': dateuid, 'render': render, 'event': event,
                 'data': data, 'provider': provider}

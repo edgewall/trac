@@ -16,7 +16,6 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
-from datetime import datetime
 import pkg_resources
 import re
 
@@ -32,7 +31,7 @@ from trac.resource import *
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
-from trac.util.datefmt import to_timestamp, utc
+from trac.util.datefmt import from_utimestamp, to_utimestamp
 from trac.util.text import shorten_line
 from trac.util.translation import _
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
@@ -626,12 +625,12 @@ class WikiModule(Component):
             cursor = db.cursor()
             cursor.execute("SELECT time,name,comment,author,version "
                            "FROM wiki WHERE time>=%s AND time<=%s",
-                           (to_timestamp(start), to_timestamp(stop)))
+                           (to_utimestamp(start), to_utimestamp(stop)))
             for ts, name, comment, author, version in cursor:
                 wiki_page = wiki_realm(id=name, version=version)
                 if 'WIKI_VIEW' not in req.perm(wiki_page):
                     continue
-                yield ('wiki', datetime.fromtimestamp(ts, utc), author,
+                yield ('wiki', from_utimestamp(ts), author,
                        (wiki_page, comment))
 
             # Attachments
@@ -682,7 +681,7 @@ class WikiModule(Component):
             if 'WIKI_VIEW' in req.perm(page):
                 yield (get_resource_url(self.env, page, req.href),
                        '%s: %s' % (name, shorten_line(text)),
-                       datetime.fromtimestamp(ts, utc), author,
+                       from_utimestamp(ts), author,
                        shorten_result(text, terms))
         
         # Attachments

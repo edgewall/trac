@@ -6,6 +6,6 @@ def do_upgrade(env, ver, cursor):
         Column('id'),
         Column('generation', type='int')
     ]
-    db_connector, _ = DatabaseManager(env)._get_connector()
+    db_connector, _ = DatabaseManager(env).get_connector()
     for stmt in db_connector.to_sql(table):
         cursor.execute(stmt)

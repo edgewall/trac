@@ -61,6 +61,17 @@ def to_timestamp(dt):
     else:
         return 0
 
+def to_utimestamp(dt):
+    """Return a microsecond POSIX timestamp for the given `datetime`."""
+    if not dt:
+        return 0
+    diff = dt - _epoc
+    return (diff.days * 86400000000L + diff.seconds * 1000000
+            + diff.microseconds)
+
+def from_utimestamp(ts):
+    """Return the `datetime` for the given microsecond POSIX timestamp."""
+    return _epoc + timedelta(microseconds=ts or 0)
 
 # -- formatting
 
