@@ -105,7 +105,7 @@ class PostgreSQLConnector(Component):
             ctype = _type_map.get(ctype, ctype)
             if column.auto_increment:
                 ctype = 'SERIAL'
-            elif len(table.key) == 1 and column.name in table.key:
+            if len(table.key) == 1 and column.name in table.key:
                 ctype += ' PRIMARY KEY'
             coldefs.append('    "%s" %s' % (column.name, ctype))
         if len(table.key) > 1:
