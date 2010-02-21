@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-02-20 14:49+0100\n"
+"POT-Creation-Date: 2010-02-21 17:27+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1155,25 +1155,27 @@ msgstr ""
 msgid "(UTC)."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:32
-msgid "In"
+#: trac/prefs/templates/prefs_datetime.html:34
+#, python-format
+msgid ""
+"In your time zone %(tz)s, this would be displayed as\n"
+"            [1:%(formatted)s]."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:33
-msgid "time zone"
+#: trac/prefs/templates/prefs_datetime.html:40
+#, python-format
+msgid ""
+"In the default time zone, this would be displayed as\n"
+"            [1:%(formatted)s]."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:33
-msgid ", this would be displayed as"
-msgstr ""
-
-#: trac/prefs/templates/prefs_datetime.html:37
+#: trac/prefs/templates/prefs_datetime.html:47
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
 msgstr ""
 
-#: trac/prefs/templates/prefs_datetime.html:38
+#: trac/prefs/templates/prefs_datetime.html:48
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
@@ -3342,6 +3344,24 @@ msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#: trac/util/datefmt.py:247
+#, python-format
+msgid ""
+"\"%(date)s\" is an invalid date, or the date format is not known. Try "
+"\"%(hint)s\" instead."
+msgstr ""
+
+#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+msgid "Invalid Date"
+msgstr ""
+
+#: trac/util/datefmt.py:255
+#, python-format
+msgid ""
+"The date \"%(date)s\" is outside valid range. Try a date closer to "
+"present time."
+msgstr ""
 
 #: trac/util/presentation.py:254
 #, python-format
