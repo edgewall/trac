@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-02-20 14:40+0100\n"
+"PO-Revision-Date: 2010-02-21 17:27+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -1302,27 +1302,33 @@ msgstr "Exemple : l'heure actuelle est"
 msgid "(UTC)."
 msgstr "(UTC)."
 
-#: trac/prefs/templates/prefs_datetime.html:32
-msgid "In"
-msgstr "Dans"
+#: trac/prefs/templates/prefs_datetime.html:34
+#, python-format
+msgid ""
+"In your time zone %(tz)s, this would be displayed as\n"
+"            [1:%(formatted)s]."
+msgstr ""
+"Dans votre fuseau horaire %(tz)s, le temps serait affiché comme ceci\n"
+"            [1:%(formatted)s]."
 
-#: trac/prefs/templates/prefs_datetime.html:33
-msgid "time zone"
-msgstr "le fuseau horaire"
+#: trac/prefs/templates/prefs_datetime.html:40
+#, python-format
+msgid ""
+"In the default time zone, this would be displayed as\n"
+"            [1:%(formatted)s]."
+msgstr ""
+"Dans le fuseau horaire par défaut, le temps serait affiché comme ceci\n"
+"            [1:%(formatted)s]."
 
-#: trac/prefs/templates/prefs_datetime.html:33
-msgid ", this would be displayed as"
-msgstr ", le temps serait affiché comme ceci"
-
-#: trac/prefs/templates/prefs_datetime.html:37
+#: trac/prefs/templates/prefs_datetime.html:47
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
 msgstr ""
-"Le Temps universel coordonné (UTC) correspond au fuseau horaire de \n"
+"Le Temps Universel Coordonné (UTC) correspond au fuseau horaire de \n"
 "Greenwich (GMT)."
 
-#: trac/prefs/templates/prefs_datetime.html:38
+#: trac/prefs/templates/prefs_datetime.html:48
 msgid ""
 "A positive offset is used to indicate a timezone at the east of "
 "Greenwich, i.e. ahead of Universal Time."
@@ -1394,11 +1400,8 @@ msgid ""
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
 msgstr ""
-"L'utilisation d'un fuseau horaire particulier permet d'afficher toutes "
-"les\n"
-"      dates et les heures sur ce site en fonction de l'heure locale "
-"plutôt\n"
-"      que celle du serveur."
+"La sélection d'une langue permets d'afficher tous les messages\n"
+"de ce site dans cette langue plutôt que dans celle du serveur."
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid ""
@@ -3651,6 +3654,28 @@ msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i seconde"
 msgstr[1] "%(num)i secondes"
+
+#: trac/util/datefmt.py:247
+#, python-format
+msgid ""
+"\"%(date)s\" is an invalid date, or the date format is not known. Try "
+"\"%(hint)s\" instead."
+msgstr ""
+"« %(date)s » n'est pas une date valide, ou bien le format n'est pas "
+"reconnu. Essayez plutôt le format « %(hint)s »."
+
+#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+msgid "Invalid Date"
+msgstr "Date erronée"
+
+#: trac/util/datefmt.py:255
+#, python-format
+msgid ""
+"The date \"%(date)s\" is outside valid range. Try a date closer to "
+"present time."
+msgstr ""
+"La date « %(date)s » est en-dehors de l'intervalle authorisé. Essayez une"
+" date plus proche du temps présent."
 
 #: trac/util/presentation.py:254
 #, python-format
