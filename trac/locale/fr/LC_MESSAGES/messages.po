@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-02-21 17:27+0100\n"
+"PO-Revision-Date: 2010-02-21 18:51+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -1000,7 +1000,7 @@ msgid "Install Plugin:"
 msgstr "Ajouter une extension :"
 
 #: trac/admin/templates/admin_plugins.html:47
-#: trac/versioncontrol/templates/changeset.html:142
+#: trac/versioncontrol/templates/changeset.html:138
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] "Fichier :"
@@ -1024,7 +1024,7 @@ msgid "Install"
 msgstr "Installer"
 
 #: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:46
-#: trac/versioncontrol/templates/changeset.html:114
+#: trac/versioncontrol/templates/changeset.html:110
 msgid "Author:"
 msgstr "Auteur :"
 
@@ -1734,30 +1734,30 @@ msgid "Comment:"
 msgstr "Commentaire :"
 
 #: trac/templates/diff_view.html:60
-#: trac/versioncontrol/templates/changeset.html:170
+#: trac/versioncontrol/templates/changeset.html:166
 #: trac/versioncontrol/templates/revisionlog.html:72
 msgid "Legend:"
 msgstr "Légende :"
 
 #: trac/templates/diff_view.html:62
-#: trac/versioncontrol/templates/changeset.html:172
+#: trac/versioncontrol/templates/changeset.html:168
 msgid "Unmodified"
 msgstr "Sans modification"
 
 #: trac/templates/diff_view.html:63
-#: trac/versioncontrol/templates/changeset.html:173
+#: trac/versioncontrol/templates/changeset.html:169
 #: trac/versioncontrol/templates/revisionlog.html:74
 msgid "Added"
 msgstr "Ajouté"
 
 #: trac/templates/diff_view.html:64
-#: trac/versioncontrol/templates/changeset.html:174
+#: trac/versioncontrol/templates/changeset.html:170
 #: trac/versioncontrol/templates/revisionlog.html:76
 msgid "Removed"
 msgstr "Supprimé"
 
 #: trac/templates/diff_view.html:65 trac/ticket/api.py:323
-#: trac/versioncontrol/templates/changeset.html:176
+#: trac/versioncontrol/templates/changeset.html:172
 #: trac/versioncontrol/templates/revisionlog.html:78 trac/wiki/admin.py:198
 msgid "Modified"
 msgstr "Modifié"
@@ -4231,54 +4231,63 @@ msgstr[1] "%(num)d propriétés modifiés"
 msgid "Show previous version in browser"
 msgstr "Afficher la version précédente dans le navigateur"
 
-#: trac/versioncontrol/templates/changeset.html:126
+#: trac/versioncontrol/templates/changeset.html:107
+msgid "(less than one hour ago)"
+msgstr "(il y a moins d'une heure)"
+
+#: trac/versioncontrol/templates/changeset.html:108
+#, python-format
+msgid "(%(age)s ago)"
+msgstr "(il y a %(age)s)"
+
+#: trac/versioncontrol/templates/changeset.html:122
 msgid "Message:"
 msgstr "Message :"
 
-#: trac/versioncontrol/templates/changeset.html:138
+#: trac/versioncontrol/templates/changeset.html:134
 msgid "Location:"
 msgstr "Chemin :"
 
-#: trac/versioncontrol/templates/changeset.html:142
+#: trac/versioncontrol/templates/changeset.html:138
 msgid "(No files)"
 msgstr "(Pas de fichiers)"
 
-#: trac/versioncontrol/templates/changeset.html:147
+#: trac/versioncontrol/templates/changeset.html:143
 #, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
 msgstr[0] "%(num)d ajouté"
 msgstr[1] "%(num)d ajoutés"
 
-#: trac/versioncontrol/templates/changeset.html:148
+#: trac/versioncontrol/templates/changeset.html:144
 #, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
 msgstr[0] "%(num)d supprimé"
 msgstr[1] "%(num)d supprimés"
 
-#: trac/versioncontrol/templates/changeset.html:149
+#: trac/versioncontrol/templates/changeset.html:145
 #, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
 msgstr[0] "%(num)d modifié"
 msgstr[1] "%(num)d modifiés"
 
-#: trac/versioncontrol/templates/changeset.html:150
+#: trac/versioncontrol/templates/changeset.html:146
 #, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
 msgstr[0] "%(num)d copié"
 msgstr[1] "%(num)d copiés"
 
-#: trac/versioncontrol/templates/changeset.html:151
+#: trac/versioncontrol/templates/changeset.html:147
 #, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d renommé"
 msgstr[1] "%(num)d renommés"
 
-#: trac/versioncontrol/templates/changeset.html:183
+#: trac/versioncontrol/templates/changeset.html:179
 msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
