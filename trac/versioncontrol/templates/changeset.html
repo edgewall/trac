@@ -24,7 +24,7 @@
     <div id="content" class="changeset">
       <div id="title" py:choose="">
         <h1 py:when="changeset and restricted" i18n:msg="new_rev, reponame, new_path">
-          Changeset <a title="Show full changeset" 
+          Changeset <a title="Show full changeset"
                        href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if>
           for <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
         </h1>
@@ -40,8 +40,8 @@
           to <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
           at <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">r$new_rev</a>
           </h1>
-          <h1 py:otherwise="" i18n:msg="new_rev, reponame">Changeset <a 
-             py:strip="not annotated" 
+          <h1 py:otherwise="" i18n:msg="new_rev, reponame">Changeset <a
+             py:strip="not annotated"
              title="Show full changeset"
              href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
       </div>
@@ -102,14 +102,10 @@
       <dl id="overview">
         <py:if test="changeset">
           <dt class="property time">Timestamp:</dt>
-          <dd class="time" py:with="
-             age = (datetime.now(utc) - changeset.date);
-             one_hour = timedelta(0, 3600);
-             duration = age &lt; one_hour and
-                        _('less than one hour ago') or
-                        Markup(_('%(duration)s ago',
-                        duration=dateinfo(changeset.date)))">
-            ${format_datetime(changeset.date)} (${duration})
+          <dd class="time" py:choose="datetime.now(utc) - changeset.date &lt; timedelta(0, 3600)">
+             ${format_datetime(changeset.date)}
+             <py:when test="True">(less than one hour ago)</py:when>
+             <py:otherwise><i18n:msg params="age">(${dateinfo(changeset.date)} ago)</i18n:msg></py:otherwise>
           </dd>
           <dt class="property author">Author:</dt>
           <dd class="author">${authorinfo(changeset.author)}</dd>
@@ -184,7 +180,7 @@
           <strong>Note:</strong> See <a href="${href.wiki('TracChangeset')}">TracChangeset</a>
           for help on using the changeset viewer.
         </div>
-  
+
       </div>
     </div>
   </body>
