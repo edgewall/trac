@@ -25,7 +25,7 @@ from datetime import tzinfo, timedelta, datetime, date
 
 from trac.core import TracError
 from trac.util.text import to_unicode
-from trac.util.translation import ngettext
+from trac.util.translation import _, ngettext
 
 # Date/time utilities
 
@@ -196,10 +196,11 @@ def http_date(t=None):
 
 # -- parsing
 
-_ISO_8601_RE = re.compile(r'(\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?'   # date
-                          r'(?:T(\d\d)(?::?(\d\d)(?::?(\d\d))?)?)?' # time
-                          r'(Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$'      # timezone
-                          )
+_ISO_8601_RE = re.compile(r'''
+    (\d\d\d\d)(?:-?(\d\d)(?:-?(\d\d))?)?    # date
+    (?:T(\d\d)(?::?(\d\d)(?::?(\d\d))?)?)?  # time
+    (Z?(?:([-+])?(\d\d):?(\d\d)?)?)?$       # timezone
+    ''', re.VERBOSE)
 
 def parse_date(text, tzinfo=None):
     tzinfo = tzinfo or localtz
@@ -243,17 +244,17 @@ def parse_date(text, tzinfo=None):
         dt = _parse_relative_time(text, tzinfo)
     if dt is None:
         hint = get_date_format_hint()        
-        raise TracError('"%s" is an invalid date, or the date format '
-                        'is not known. Try "%s" instead.' % (text, hint),
-                        'Invalid Date')
+        raise TracError(_('"%(date)s" is an invalid date, or the date format '
+                          'is not known. Try "%(hint)s" instead.', 
+                          date=text, hint=hint), _('Invalid Date'))
     # Make sure we can convert it to a timestamp and back - fromtimestamp()
     # may raise ValueError if larger than platform C localtime() or gmtime()
     try:
         to_datetime(to_timestamp(dt), tzinfo)
     except ValueError:
-        raise TracError('The date "%s" is outside valid range. '
-                        'Try a date closer to present time.' % (text,),
-                        'Invalid Date')
+        raise TracError(_('The date "%(date)s" is outside valid range. '
+                          'Try a date closer to present time.', date=text),
+                          _('Invalid Date'))
     return dt
 
 
