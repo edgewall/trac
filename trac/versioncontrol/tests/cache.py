@@ -71,7 +71,7 @@ class CacheTestCase(unittest.TestCase):
                     """, [(rev[0],) + change for change in changes])
         cursor.execute("""
             UPDATE repository SET value=%s WHERE id=1 AND name='youngest_rev'
-            """, (args[-1][0][0],))
+            """, (str(int(args[-1][0][0])),))
 
     # Tests
 
@@ -102,17 +102,18 @@ class CacheTestCase(unittest.TestCase):
 
         cursor = self.db.cursor()
         cursor.execute("SELECT rev,time,author,message FROM revision")
-        self.assertEquals(('0', to_utimestamp(t1), '', ''), cursor.fetchone())
-        self.assertEquals(('1', to_utimestamp(t2), 'joe', 'Import'),
+        self.assertEquals(('0000000000', to_utimestamp(t1), '', ''),
+                          cursor.fetchone())
+        self.assertEquals(('0000000001', to_utimestamp(t2), 'joe', 'Import'),
                           cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
         cursor.execute("""
             SELECT rev,path,node_type,change_type,base_path,base_rev
             FROM node_change
             """)
-        self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
+        self.assertEquals(('0000000001', 'trunk', 'D', 'A', None, None),
                           cursor.fetchone())
-        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
+        self.assertEquals(('0000000001', 'trunk/README', 'F', 'A', None, None),
                           cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
 
@@ -121,8 +122,8 @@ class CacheTestCase(unittest.TestCase):
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         t3 = datetime(2003, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            (('0', to_utimestamp(t1), '', ''), []),
-            (('1', to_utimestamp(t2), 'joe', 'Import'),
+            (('0000000000', to_utimestamp(t1), '', ''), []),
+            (('0000000001', to_utimestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/README', 'F', 'A', None, None)]),
             )
@@ -141,14 +142,14 @@ class CacheTestCase(unittest.TestCase):
 
         cursor = self.db.cursor()
         cursor.execute("""
-            SELECT time,author,message FROM revision WHERE rev='2'
+            SELECT time,author,message FROM revision WHERE rev='0000000002'
             """)
         self.assertEquals((to_utimestamp(t3), 'joe', 'Update'),
                           cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
         cursor.execute("""
             SELECT path,node_type,change_type,base_path,base_rev
-            FROM node_change WHERE rev='2'
+            FROM node_change WHERE rev='0000000002'
             """)
         self.assertEquals(('trunk/README', 'F', 'E', 'trunk/README', '1'),
                           cursor.fetchone())
@@ -194,11 +195,12 @@ class CacheTestCase(unittest.TestCase):
             SELECT rev,path,node_type,change_type,base_path,base_rev
             FROM node_change ORDER BY rev
             """)
-        self.assertEquals(('1', 'trunk', 'D', 'A', None, None),
+        self.assertEquals(('0000000001', 'trunk', 'D', 'A', None, None),
                           cursor.fetchone())
-        self.assertEquals(('1', 'trunk/README', 'F', 'A', None, None),
+        self.assertEquals(('0000000001', 'trunk/README', 'F', 'A', None, None),
                           cursor.fetchone())
-        self.assertEquals(('2', 'trunk/README', 'F', 'E', 'trunk/README', '1'),
+        self.assertEquals(('0000000002', 'trunk/README', 'F', 'E',
+                           'trunk/README', '1'),
                           cursor.fetchone())
         self.assertEquals(None, cursor.fetchone())
 
@@ -206,8 +208,8 @@ class CacheTestCase(unittest.TestCase):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            (('0', to_utimestamp(t1), '', ''), []),
-            (('1', to_utimestamp(t2), 'joe', 'Import'),
+            (('0000000000', to_utimestamp(t1), '', ''), []),
+            (('0000000001', to_utimestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/README', 'F', 'A', None, None)]),
             )
@@ -236,8 +238,8 @@ class CacheTestCase(unittest.TestCase):
         t1 = datetime(2001, 1, 1, 1, 1, 1, 0, utc)
         t2 = datetime(2002, 1, 1, 1, 1, 1, 0, utc)
         self.preset_cache(
-            (('0', to_utimestamp(t1), '', ''), []),
-            (('1', to_utimestamp(t2), 'joe', 'Import'),
+            (('0000000000', to_utimestamp(t1), '', ''), []),
+            (('0000000001', to_utimestamp(t2), 'joe', 'Import'),
              [('trunk', 'D', 'A', None, None),
               ('trunk/RDME', 'F', 'A', None, None)]),
             )

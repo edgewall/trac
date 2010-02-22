@@ -83,6 +83,7 @@ class CachedRepository(Repository):
 
     def sync_changeset(self, rev):
         cset = self.repos.get_changeset(rev)
+        srev = '%010d' % cset.rev
         old_cset = [None]
 
         @with_transaction(self.env)
@@ -91,7 +92,7 @@ class CachedRepository(Repository):
             cursor.execute("""
                 SELECT time,author,message FROM revision
                 WHERE repos=%s AND rev=%s
-                """, (self.id, str(cset.rev)))
+                """, (self.id, srev))
             for time, author, message in cursor:
                 old_cset[0] = Changeset(self.repos, cset.rev, message, author,
                                         from_utimestamp(time))
@@ -99,7 +100,7 @@ class CachedRepository(Repository):
                 UPDATE revision SET time=%s, author=%s, message=%s
                 WHERE repos=%s AND rev=%s
                 """, (to_utimestamp(cset.date), cset.author, cset.message,
-                      self.id, str(cset.rev)))
+                      self.id, srev))
         return old_cset[0]
         
     def _metadata(self, db):
@@ -205,11 +206,12 @@ class CachedRepository(Repository):
 
             if next_youngest is None: # nothing to cache yet
                 return
+            srev = '%010d' % next_youngest
 
             # 0. first check if there's no (obvious) resync in progress
             cursor.execute("""
                SELECT rev FROM revision WHERE repos=%s AND rev=%s
-               """, (self.id, str(next_youngest)))
+               """, (self.id, srev))
             for rev, in cursor:
                 # already there, but in progress, so keep ''previous''
                 # notion of 'youngest'
@@ -223,6 +225,7 @@ class CachedRepository(Repository):
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
 
             while next_youngest is not None:
+                srev = '%010d' % next_youngest
                 
                 # 1.1 Attempt to resync the 'revision' table
                 self.log.info("Trying to sync revision [%s]",
@@ -233,8 +236,7 @@ class CachedRepository(Repository):
                         INSERT INTO revision
                             (repos,rev,time,author,message)
                         VALUES (%s,%s,%s,%s,%s)
-                        """, (self.id, str(next_youngest),
-                              to_utimestamp(cset.date),
+                        """, (self.id, srev, to_utimestamp(cset.date),
                               cset.author, cset.message))
                 except Exception, e: # *another* 1.1. resync attempt won 
                     self.log.warning('Revision %s already cached: %r',
@@ -251,7 +253,7 @@ class CachedRepository(Repository):
                 for path, kind, action, bpath, brev in cset.get_changes():
                     self.log.debug("Caching node change in [%s]: %r",
                                    next_youngest,
-                                   (path,kind,action,bpath,brev))
+                                   (path, kind, action, bpath, brev))
                     kind = kindmap[kind]
                     action = actionmap[action]
                     cursor.execute("""
@@ -259,8 +261,7 @@ class CachedRepository(Repository):
                             (repos,rev,path,node_type,
                              change_type,base_path,base_rev)
                         VALUES (%s,%s,%s,%s,%s,%s,%s)
-                        """, (self.id, str(next_youngest),
-                              path, kind, action, bpath, brev))
+                        """, (self.id, srev, path, kind, action, bpath, brev))
 
                 # 1.3. iterate (1.1 should always succeed now)
                 youngest = next_youngest
@@ -286,26 +287,25 @@ class CachedRepository(Repository):
         revisions.
         """
         last = self.normalize_rev(last)
-        node = self.get_node(path, last)    # Check node existence and perms
+        slast = '%010d' % last
+        node = self.get_node(path, last)    # Check node existence
         db = self.env.get_db_cnx()
         cursor = db.cursor()
-        rev_as_int = db.cast('rev', 'int')
         if first is None:
             cursor.execute("SELECT rev FROM node_change "
-                           "WHERE repos=%%s AND %s<=%%s "
-                           "  AND path=%%s "
+                           "WHERE repos=%s AND rev<=%s "
+                           "  AND path=%s "
                            "  AND change_type IN ('A', 'C', 'M') "
-                           "ORDER BY %s DESC "
-                           "LIMIT 1" % ((rev_as_int,) * 2),
-                           (self.id, last, path))
+                           "ORDER BY rev DESC LIMIT 1",
+                           (self.id, slast, path))
             first = 0
             for row in cursor:
                 first = int(row[0])
+        sfirst = '%010d' % first
         cursor.execute("SELECT DISTINCT rev FROM node_change "
-                       "WHERE repos=%%s AND %s>=%%s AND %s<=%%s "
-                       " AND (path=%%s OR path %s)" % 
-                       (rev_as_int, rev_as_int, db.like()),
-                       (self.id, first, last, path,
+                       "WHERE repos=%%s AND rev>=%%s AND rev<=%%s "
+                       " AND (path=%%s OR path %s)" % db.like(),
+                       (self.id, sfirst, slast, path,
                         db.like_escape(path + '/') + '%'))
         return [int(row[0]) for row in cursor]
 
@@ -331,11 +331,12 @@ class CachedRepository(Repository):
             return self.repos.next_rev(self.normalize_rev(rev), path)
 
     def _next_prev_rev(self, direction, rev, path=''):
+        srev = '%010d' % rev
         db = self.env.get_db_cnx()
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE repos=%s AND " + \
-              db.cast('rev', 'int') + direction + "%s"
-        args = [self.id, rev]
+              "rev" + direction + "%s"
+        args = [self.id, srev]
 
         if path:
             path = path.lstrip('/')
@@ -349,13 +350,13 @@ class CachedRepository(Repository):
             for i in range(1, len(components) + 1):
                 args.append('/'.join(components[:i]))
 
-        sql += " ORDER BY " + db.cast('rev', 'int') + \
-                (direction == '<' and " DESC" or "") + " LIMIT 1"
+        sql += " ORDER BY rev" + (direction == '<' and " DESC" or "") \
+               + " LIMIT 1"
         
         cursor = db.cursor()
         cursor.execute(sql, args)
         for rev, in cursor:
-            return rev
+            return int(rev)
 
     def rev_older_than(self, rev1, rev2):
         return self.repos.rev_older_than(self.normalize_rev(rev1),
@@ -396,7 +397,7 @@ class CachedChangeset(Changeset):
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
-                       (repos.id, str(rev)))
+                       (repos.id, '%010d' % rev))
         row = cursor.fetchone()
         if row:
             _date, author, message = row
@@ -411,7 +412,7 @@ class CachedChangeset(Changeset):
         cursor = db.cursor()
         cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE repos=%s AND rev=%s "
-                       "ORDER BY path", (self.repos.id, str(self.rev)))
+                       "ORDER BY path", (self.repos.id, '%010d' % self.rev))
         for path, kind, change, base_path, base_rev in cursor:
             kind = _kindmap[kind]
             change = _actionmap[change]
