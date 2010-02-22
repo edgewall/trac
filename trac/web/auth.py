@@ -30,7 +30,7 @@ import urllib2
 
 from genshi.builder import tag
 
-from trac.config import BoolOption, IntOption
+from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.db.util import with_transaction
 from trac.web.api import IAuthenticator, IRequestHandler
@@ -72,6 +72,10 @@ class LoginModule(Component):
         to log in again. The default value of 0 makes the cookie expire at the
         end of the browsing session. (''since 0.12'')""")
     
+    auth_cookie_path = Option('trac', 'auth_cookie_path', '',
+        """Path for the authentication cookie. Set this to the common base path
+        of several Trac instances if you want them to share the cookie.""")
+
     # IAuthenticator methods
 
     def authenticate(self, req):
@@ -156,7 +160,8 @@ class LoginModule(Component):
                             int(time.time())))
         req.authname = remote_user
         req.outcookie['trac_auth'] = cookie
-        req.outcookie['trac_auth']['path'] = req.base_path or '/'
+        req.outcookie['trac_auth']['path'] = self.auth_cookie_path \
+                                             or req.base_path or '/'
         if self.env.secure_cookies:
             req.outcookie['trac_auth']['secure'] = True
         if self.auth_cookie_lifetime > 0:
@@ -191,7 +196,8 @@ class LoginModule(Component):
         "expires" property to a date in the past.
         """
         req.outcookie['trac_auth'] = ''
-        req.outcookie['trac_auth']['path'] = req.base_path or '/'
+        req.outcookie['trac_auth']['path'] = self.auth_cookie_path \
+                                             or req.base_path or '/'
         req.outcookie['trac_auth']['expires'] = -10000
         if self.env.secure_cookies:
             req.outcookie['trac_auth']['secure'] = True
