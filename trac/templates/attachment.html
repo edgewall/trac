@@ -4,11 +4,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:i18n="http://genshi.edgewall.org/i18n">
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:with="parent = attachments and attachments.parent or attachment.resource.parent">
   <xi:include href="layout.html" />
   <xi:include href="macros.html" />
   <head>
-    <title>Attachment</title>
+    <title py:choose="mode">
+      <py:when test="'new'">${name_of(parent)} &ndash; Attachment</py:when>
+      <py:when test="'list'">${name_of(parent)} &ndash; Attachments</py:when>
+      <py:otherwise i18n:msg="">${attachment.filename} on ${name_of(parent)} &ndash; Attachment</py:otherwise>
+    </title>
     <py:if test="preview">
       <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
       <script type="text/javascript">
@@ -19,8 +24,7 @@
     </py:if>
   </head>
 
-  <body py:with="parent = attachments and attachments.parent or
-                          attachment.resource.parent">
+  <body>
     <div py:choose="mode" id="content" class="attachment">
       <py:when test="'new'">
         <h1>Add Attachment to <a href="${url_of(parent)}">${name_of(parent)}</a></h1>
