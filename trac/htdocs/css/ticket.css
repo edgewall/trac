@@ -8,7 +8,7 @@
 }
 
 #field-description-help { float: right }
-#properties div.trac-resizable, #field-description { width: 99% }
+#properties div.trac-resizable, #field-description { width: 100% }
 
 #ticket {
  background: #ffd;
@@ -120,7 +120,7 @@ form .field .wikitoolbar { margin-left: -1px }
 form .field div.trac-resizable { width: 100% }
 
 #properties { white-space: nowrap; line-height: 160%; padding: .5em }
-#properties table { border-spacing: 0; width: 100%; }
+#properties table { border-spacing: 0; width: 100%; padding: 0 .5em }
 #properties table th {
  padding: .4em;
  text-align: right;
