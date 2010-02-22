@@ -51,6 +51,14 @@ _type_map = {
 }
 
 
+def assemble_pg_dsn(path, user=None, password=None, host=None, port=None):
+    """Quote the parameters and assemble the DSN."""
+
+    dsn = {'dbname': path, 'user': user, 'password': password, 'host': host,
+           'port': port}
+    return ' '.join(["%s='%s'" % (k,v) for k,v in dsn.iteritems() if v])
+
+
 class PostgreSQLConnector(Component):
     """Database connector for PostgreSQL.
     
@@ -189,18 +197,10 @@ class PostgreSQLConnection(ConnectionWrapper):
             path = path[1:]
         if 'host' in params:
             host = params['host']
-        dsn = []
-        if path:
-            dsn.append('dbname=' + path)
-        if user:
-            dsn.append('user=' + user)
-        if password:
-            dsn.append('password=' + password)
-        if host:
-            dsn.append('host=' + host)
-        if port:
-            dsn.append('port=' + str(port))
-        cnx = psycopg.connect(' '.join(dsn))
+        
+        cnx = psycopg.connect(assemble_pg_dsn(path, user, password, host,
+                                              port))
+
         cnx.set_client_encoding('UNICODE')
         try:
             self.schema = None
@@ -236,3 +236,4 @@ class PostgreSQLConnection(ConnectionWrapper):
 
     def cursor(self):
         return IterableCursor(self.cnx.cursor(), self.log)
+
