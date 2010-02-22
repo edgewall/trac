@@ -74,7 +74,8 @@ class LoginModule(Component):
     
     auth_cookie_path = Option('trac', 'auth_cookie_path', '',
         """Path for the authentication cookie. Set this to the common base path
-        of several Trac instances if you want them to share the cookie.""")
+        of several Trac instances if you want them to share the cookie.
+        (''since 0.12'')""")
 
     # IAuthenticator methods
 
