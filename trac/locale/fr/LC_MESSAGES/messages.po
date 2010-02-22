@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-02-22 11:58+0100\n"
+"PO-Revision-Date: 2010-02-22 13:13+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -3394,8 +3394,8 @@ msgstr "en réponse à :"
 #: trac/ticket/templates/ticket.html:254
 msgid "follow-up:"
 msgid_plural "follow-ups:"
-msgstr[0] "suivi par"
-msgstr[1] "suivi par"
+msgstr[0] "suivi par :"
+msgstr[1] "suivi par :"
 
 #: trac/ticket/templates/ticket.html:263
 #, python-format

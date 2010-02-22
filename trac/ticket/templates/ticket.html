@@ -251,9 +251,9 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                         <py:if test="change_replies">; </py:if>
                       </py:if>
                       <py:if test="change_replies">
-                        <i18n:choose numeral="change_replies">
-                          <i18n:singular>follow-up:</i18n:singular>
-                          <i18n:plural>follow-ups:</i18n:plural>
+                        <i18n:choose numeral="len(change_replies)">
+                          <span i18n:singular="">follow-up:</span>
+                          <span i18n:plural="">follow-ups:</span>
                         </i18n:choose>
                         <py:for each="reply in change_replies">
                           ${commentref('&darr;&nbsp;', reply)}
