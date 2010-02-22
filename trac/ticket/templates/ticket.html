@@ -174,7 +174,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             </td>
             <th id="h_owner">Owned by:</th>
             <td headers="h_owner">
-              ${defined('owner_link') and owner_link or authorinfo(ticket.owner)}
+              ${ticket.owner and (defined('owner_link') and owner_link or authorinfo(ticket.owner)) or ''}
             </td>
           </tr>
           <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
