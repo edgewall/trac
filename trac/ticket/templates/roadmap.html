@@ -17,9 +17,14 @@
 
       <form id="prefs" method="get" action="">
         <div>
-          <input type="checkbox" id="showall" name="show" value="all"
-                 checked="${showall or None}" />
-          <label for="showall">Show already completed milestones</label>
+          <input type="checkbox" id="showcompleted" name="show" value="completed"
+                 checked="${'completed' in show or None}" />
+          <label for="showcompleted">Show completed milestones</label>
+        </div>
+        <div>
+          <input type="checkbox" id="hidenoduedate" name="show" value="noduedate"
+                 checked="${'noduedate' in show or None}" />
+          <label for="hidenoduedate">Hide milestones with no due date</label>
         </div>
         <div class="buttons">
           <input type="submit" value="${_('Update')}" />

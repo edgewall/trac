@@ -331,11 +331,18 @@ class RoadmapModule(Component):
     def process_request(self, req):
         req.perm.require('MILESTONE_VIEW')
 
-        showall = req.args.get('show') == 'all'
+        show = req.args.getlist('show')
+        if 'all' in show:
+            show = ['completed']
 
         db = self.env.get_db_cnx()
-        milestones = [m for m in Milestone.select(self.env, showall, db)
+        milestones = Milestone.select(self.env, 'completed' in show, db)
+        if 'noduedate' in show:
+            milestones = [m for m in milestones
+                          if m.due is not None or m.completed]
+        milestones = [m for m in milestones
                       if 'MILESTONE_VIEW' in req.perm(m.resource)]
+
         stats = []
         queries = []
 
@@ -356,8 +363,7 @@ class RoadmapModule(Component):
         username = None
         if req.authname and req.authname != 'anonymous':
             username = req.authname
-        icshref = req.href.roadmap(show=req.args.get('show'), user=username,
-                                   format='ics')
+        icshref = req.href.roadmap(show=show, user=username, format='ics')
         add_link(req, 'alternate', icshref, _('iCalendar'), 'text/calendar',
                  'ics')
 
@@ -365,7 +371,7 @@ class RoadmapModule(Component):
             'milestones': milestones,
             'milestone_stats': stats,
             'queries': queries,
-            'showall': showall,
+            'show': show,
         }
         add_stylesheet(req, 'common/css/roadmap.css')
         return 'roadmap.html', data, None
@@ -484,7 +490,6 @@ class RoadmapModule(Component):
         req.end_headers()
         req.write(ics_str)
         raise RequestDone
-
 
 
 class MilestoneModule(Component):
