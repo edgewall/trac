@@ -219,9 +219,13 @@ class RequestDispatcher(Component):
                     if ctype in ('application/x-www-form-urlencoded',
                                  'multipart/form-data') and \
                             req.args.get('__FORM_TOKEN') != req.form_token:
-                        raise HTTPBadRequest('Missing or invalid form '
-                                             'token. Do you have cookies '
-                                             'enabled?')
+                        if self.env.secure_cookies and req.scheme == 'http':
+                            msg = _('Secure cookies are enabled, you must '
+                                    'use https to submit forms.')
+                        else:
+                            msg = _('Do you have cookies enabled?')
+                        raise HTTPBadRequest(_('Missing or invalid form token.'
+                                               ' %(msg)s', msg=msg))
 
                 # Process the request and render the template
                 resp = chosen_handler.process_request(req)
