@@ -114,9 +114,9 @@ class Query(object):
         if verbose and 'description' not in rows: # 0.10 compatibility
             rows.append('description')
         self.fields = TicketSystem(self.env).get_ticket_fields()
-        self.time_fields = [f['name'] for f in self.fields
-                            if f['type'] == 'time']
-        field_names = [f['name'] for f in self.fields]
+        self.time_fields = set(f['name'] for f in self.fields
+                               if f['type'] == 'time')
+        field_names = set(f['name'] for f in self.fields)
         self.cols = [c for c in cols or [] if c in field_names or 
                      c == 'id']
         self.rows = [c for c in rows if c in field_names]
@@ -715,10 +715,9 @@ class Query(object):
         fields = {'id': {'type': 'id', 'label': _("Ticket")}}
         for field in self.fields:
             name = field['name']
-            field = field.copy()
-            field['label'] = labels[name]
             if name == 'owner' and field['type'] == 'select':
                 # Make $USER work when restrict_owner = true
+                field = field.copy()
                 field['options'].insert(0, '$USER')
             fields[name] = field
 

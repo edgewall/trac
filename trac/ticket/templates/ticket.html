@@ -76,7 +76,7 @@
     <py:def function="display_change(change, show_editor=False)">
       <ul py:if="change.fields" class="changes">
         <li py:for="field_name, field in change.fields.items()">
-          <strong>${field_labels[field_name]}</strong>
+          <strong>${field.label}</strong>
           <py:choose>
             <py:when test="field_name == 'attachment'">
               <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
@@ -182,7 +182,8 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
             <py:for each="idx, field in enumerate(row)">
               <th py:if="idx == 0 or not fullrow"
                   id="${field and 'h_'+field.name or None}">
-                <py:if test="field">${field_labels.get(field.name) or field.label or field.name}:</py:if>
+                <py:if test="field"><i18n:msg params="field">${
+                  field.label or field.name}:</i18n:msg></py:if>
               </th>
               <td py:if="idx == 0 or not fullrow"
                   headers="${field and 'h_'+field.name or None}"
@@ -249,7 +250,11 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                         in reply to: ${commentref('&uarr;&nbsp;', change.replyto)}
                         <py:if test="change_replies">; </py:if>
                       </py:if>
-                      <py:if test="change_replies">follow-up${len(change_replies) > 1 and 's' or ''}:
+                      <py:if test="change_replies">
+                        <i18n:choose numeral="change_replies">
+                          <i18n:singular>follow-up:</i18n:singular>
+                          <i18n:plural>follow-ups:</i18n:plural>
+                        </i18n:choose>
                         <py:for each="reply in change_replies">
                           ${commentref('&darr;&nbsp;', reply)}
                         </py:for></py:if>
@@ -382,7 +387,8 @@ ${ticket.description}</textarea>
                           py:with="value = ticket.get_value_or_default(field.name)">
                     <th class="col${idx + 1}" py:if="idx == 0 or not fullrow">
                       <label for="field-${field.name}" py:if="field"
-                             py:strip="field.type == 'radio'">${field_labels.get(field.name) or field.edit_label or field.label or field.name}:</label>
+                             py:strip="field.type == 'radio'" i18n:msg="field">${
+                        field.edit_label or field.label or field.name}:</label>
                     </th>
                     <td class="col${idx + 1}" py:if="idx == 0 or not fullrow"
                         colspan="${fullrow and 3 or None}">

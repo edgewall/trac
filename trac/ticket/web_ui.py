@@ -407,7 +407,6 @@ class TicketModule(Component):
         })
 
         fields = self._prepare_fields(req, ticket)
-        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         # setup default values for the new ticket
         
@@ -430,7 +429,6 @@ class TicketModule(Component):
                 del ticket.fields[curr_idx]
 
         data['fields'] = fields
-        data['field_labels'] = field_labels
 
         add_stylesheet(req, 'common/css/ticket.css')
         add_script(req, 'common/js/folding.js')
@@ -1234,13 +1232,15 @@ class TicketModule(Component):
         The field changes are represented as:
         `{field: {'old': oldvalue, 'new': newvalue, 'by': what}, ...}`
         """
-        # Start with user changes
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
         field_changes = {}
+        def store_change(field, old, new, author):
+            field_changes[field] = {'old': old, 'new': new, 'by': author,
+                                    'label': field_labels.get(field, field)}
+        # Start with user changes
         for field, value in ticket._old.iteritems():
-            field_changes[field] = {'old': value,
-                                    'new': ticket[field],
-                                    'by': 'user'}
-
+            store_change(field, value, ticket[field], 'user')
+            
         # Apply controller changes corresponding to the selected action
         problems = []
         for controller in self._get_action_controllers(req, ticket,
@@ -1259,7 +1259,7 @@ class TicketModule(Component):
                         problems.append('%s changed "%s" to "%s", '
                                         'but %s changed it to "%s".' %
                                         (cname, key, new, last_by, last_new))
-                field_changes[key] = {'old': old, 'new': new, 'by': cname}
+                store_change(key, old, new, cname)
 
         # Detect non-changes
         for key, item in field_changes.items():
@@ -1408,7 +1408,6 @@ class TicketModule(Component):
         # -- Ticket fields
 
         fields = self._prepare_fields(req, ticket)
-        field_labels = TicketSystem(self.env).get_ticket_field_labels()
 
         # -- Ticket Change History
 
@@ -1514,10 +1513,9 @@ class TicketModule(Component):
             if chrome.format_author(req, ticket[user]) == ticket[user]:
                 data['%s_link' % user] = self._query_link(req, user,
                                                             ticket[user])
-
         data.update({
             'context': context,
-            'fields': fields, 'field_labels': field_labels, 'changes': changes,
+            'fields': fields, 'changes': changes,
             'replies': replies, 'cnum': cnum + 1,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'action_controls': action_controls,
@@ -1610,6 +1608,7 @@ class TicketModule(Component):
         """Iterate on changelog entries, consolidating related changes
         in a `dict` object.
         """
+        field_labels = TicketSystem(self.env).get_ticket_field_labels()
         changelog = ticket.get_changelog(when=when, db=db)
         autonum = 0 # used for "root" numbers
         last_uid = current = None
@@ -1649,7 +1648,9 @@ class TicketModule(Component):
                 comment_history.setdefault(rev + 1, {}).update(
                         {'author': author, 'date': from_utimestamp(long(new))})
             elif old or new:
-                current['fields'][field] = {'old': old, 'new': new}
+                current['fields'][field] = {
+                    'old': old, 'new': new,
+                    'label': field_labels.get(field, field)}
         if current:
             last_comment = comment_history[max(comment_history)]
             last_comment['comment'] = current['comment']
