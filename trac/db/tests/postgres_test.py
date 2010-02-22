@@ -2,7 +2,6 @@
 
 import re
 import unittest
-from itertools import combinations
 
 from trac.db import Table, Column, Index
 from trac.db.postgres_backend import PostgreSQLConnector, assemble_pg_dsn
@@ -82,26 +81,35 @@ class PostgresTableCreationSQLTest(unittest.TestCase):
         self.assertEqual(index_sql, sql_commands[1])
 
     def test_assemble_dsn(self):
-        fields = ['user', 'password', 'host', 'port']  
-        for r in xrange(1,6):
-            for c in combinations(fields, r):
-                orig_values = {'path': 'test'}
-                for k in c:
-                    orig_values[k] = 'test'
-                    continue
-                dsn = assemble_pg_dsn(**orig_values)
-                for k, v in orig_values.iteritems():
-                    orig_values[k] = "'%s'" % v
-                    continue
-                orig_values['dbname'] = "'test'"
-                del orig_values['path']
-                new_values = {'dbname': "'test'"}
-                for key_value in dsn.split(' '):
-                    k, v = key_value.split('=')
-                    new_values[k] = v
-                    continue
-                self.assertEqual(new_values, orig_values)
+        values = [
+            {'path': 't', 'user': 't'},
+            {'path': 't', 'password': 't'},
+            {'path': 't', 'host': 't'},
+            {'path': 't', 'port': 't'},
+            {'path': 't', 'password': 't', 'user': 't'},
+            {'path': 't', 'host': 't', 'user': 't'},
+            {'path': 't', 'user': 't', 'port': 't'},
+            {'path': 't', 'host': 't', 'password': 't'},
+            {'path': 't', 'password': 't', 'port': 't'},
+            {'path': 't', 'host': 't', 'port': 't'},
+            {'path': 't', 'host': 't', 'password': 't', 'user': 't'},
+            {'path': 't', 'password': 't', 'user': 't', 'port': 't'},
+            {'path': 't', 'host': 't', 'user': 't', 'port': 't'},
+            {'path': 't', 'host': 't', 'password': 't', 'port': 't'},
+        ]
+        for orig in values:
+            dsn = assemble_pg_dsn(**orig)
+            for k, v in orig.iteritems():
+                orig[k] = "'%s'" % v
                 continue
+            orig['dbname'] = "'t'"
+            del orig['path']
+            new_values = {'dbname': "'t'"}
+            for key_value in dsn.split(' '):
+                k, v = key_value.split('=')
+                new_values[k] = v
+                continue
+            self.assertEqual(new_values, orig)
             continue
 
 
