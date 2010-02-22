@@ -24,7 +24,7 @@
                                  dir.colorize_age(dir.timerange.relative(change.date)) or None}">
           ${chgset_view and dateinfo(change.date) or '&ndash;'}
         </td>
-        <td class="author">${chgset_view and authorinfo(change.author) or '&ndash;'}</td>
+        <td class="author">${chgset_view and authorinfo_short(change.author) or '&ndash;'}</td>
         <td class="change" py:choose="">
           <py:when test="chgset_view" py:choose="">
             <py:when test="wiki_format_messages">${wiki_to_oneliner(chgset_context, change.message, shorten=True)}</py:when>

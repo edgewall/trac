@@ -744,6 +744,7 @@ class Chrome(Component):
             'show_email_addresses': show_email_addresses,
             'show_ip_addresses': self.show_ip_addresses,
             'authorinfo': partial(self.authorinfo, req),
+            'authorinfo_short': self.authorinfo_short,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
 
@@ -901,6 +902,17 @@ class Chrome(Component):
             return self.format_author(req, 
                     email_map and '@' not in author and
                     email_map.get(author) or author)
+        else:
+            return 'anonymous'
+
+    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*')
+    
+    def authorinfo_short(self, author):
+        if author:
+            match = self._long_author_re.match(author)
+            if match:
+                return match.group(1)
+            return author
         else:
             return 'anonymous'
 
