@@ -372,7 +372,7 @@ class CachedRepository(Repository):
     def normalize_rev(self, rev):
         if rev is None or isinstance(rev, basestring) and \
                rev.lower() in ('', 'head', 'latest', 'youngest'):
-            return self.youngest_rev
+            return self.youngest_rev or 0
         else:
             try:
                 rev = int(rev)
