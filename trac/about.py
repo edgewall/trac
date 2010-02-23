@@ -59,7 +59,7 @@ class AboutModule(Component):
 
         if 'CONFIG_VIEW' in req.perm('config', 'systeminfo'):
             # Collect system information
-            data['systeminfo'] = self.env.systeminfo
+            data['systeminfo'] = self.env.get_systeminfo()
 
         if 'CONFIG_VIEW' in req.perm('config', 'plugins'):
             # Collect plugin information

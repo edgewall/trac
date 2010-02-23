@@ -54,7 +54,7 @@ from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 from trac import __version__ as VERSION
 from trac.config import *
 from trac.core import *
-from trac.env import IEnvironmentSetupParticipant
+from trac.env import IEnvironmentSetupParticipant, ISystemInfoProvider
 from trac.mimeview import get_mimetype, Context
 from trac.resource import *
 from trac.util import compat, get_reporter_id, presentation, get_pkginfo, \
@@ -266,8 +266,8 @@ class Chrome(Component):
     
     Chrome is everything that is not actual page content.
     """
-    implements(IEnvironmentSetupParticipant, IRequestHandler, ITemplateProvider,
-               IWikiSyntaxProvider)
+    implements(ISystemInfoProvider, IEnvironmentSetupParticipant,
+               IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
 
     navigation_contributors = ExtensionPoint(INavigationContributor)
     template_providers = ExtensionPoint(ITemplateProvider)
@@ -383,17 +383,17 @@ class Chrome(Component):
         'utc': utc,
     }
 
-    def __init__(self):
+    # ISystemInfoProvider methods
+    
+    def get_system_info(self):
         import genshi
-        genshi_version = get_pkginfo(genshi).get('version')
-        self.env.systeminfo.append(('Genshi', genshi_version))
+        yield 'Genshi', get_pkginfo(genshi).get('version')
         try:
             import babel
-            babel_version = get_pkginfo(babel).get('version')
-        except ImportError, e:
-            self.log.debug("Babel not found: %s", exception_to_unicode(e))
-            babel_version = '-'
-        self.env.systeminfo.append(('Babel', babel_version))
+        except ImportError:
+            babel = None
+        if babel is not None:
+            yield 'Babel', get_pkginfo(babel).get('version')
 
     # IEnvironmentSetupParticipant methods
 
@@ -674,7 +674,6 @@ class Chrome(Component):
         d['trac'] = {
             'version': VERSION,
             'homepage': 'http://trac.edgewall.org/', # FIXME: use setup data
-            'systeminfo': self.env.systeminfo,
         }
         
         href = req and req.href
@@ -747,6 +746,7 @@ class Chrome(Component):
             'authorinfo_short': self.authorinfo_short,
             'format_author': partial(self.format_author, req),
             'format_emails': self.format_emails,
+            'get_systeminfo': self.env.get_systeminfo,
 
             # Date/time formatting
             'dateinfo': dateinfo,

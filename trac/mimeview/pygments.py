@@ -17,6 +17,7 @@ import re
 
 from trac.core import *
 from trac.config import ListOption, Option
+from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.prefs import IPreferencePanelProvider
 from trac.util import get_pkginfo
@@ -43,7 +44,8 @@ __all__ = ['PygmentsRenderer']
 class PygmentsRenderer(Component):
     """HTML renderer for syntax highlighting based on Pygments."""
 
-    implements(IHTMLPreviewRenderer, IPreferencePanelProvider, IRequestHandler)
+    implements(ISystemInfoProvider, IHTMLPreviewRenderer,
+               IPreferencePanelProvider, IRequestHandler)
 
     default_style = Option('mimeviewer', 'pygments_default_style', 'trac',
         """The default style to use for Pygments syntax highlighting.""")
@@ -81,15 +83,18 @@ class PygmentsRenderer(Component):
 </html>"""
 
     def __init__(self):
+        self._types = None
+
+    # ISystemInfoProvider methods
+    
+    def get_system_info(self):
         version = get_pkginfo(pygments).get('version')
         # if installed from source, fallback to the hardcoded version info
         if not version and hasattr(pygments, '__version__'):
             version = pygments.__version__
-        self.env.systeminfo.append(('Pygments', version))
-                                        
-        self._types = None
-
-    # IHTMLPreviewRenderer implementation
+        yield 'Pygments', version
+    
+    # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
         # Extend default MIME type to mode mappings with configured ones
@@ -115,7 +120,7 @@ class PygmentsRenderer(Component):
             raise Exception("No Pygments lexer found for mime-type '%s'."
                             % mimetype)
 
-    # IPreferencePanelProvider implementation
+    # IPreferencePanelProvider methods
 
     def get_preference_panels(self, req):
         yield ('pygments', _('Syntax Highlighting'))
@@ -136,7 +141,7 @@ class PygmentsRenderer(Component):
             'styles': styles
         }
 
-    # IRequestHandler implementation
+    # IRequestHandler methods
 
     def match_request(self, req):
         match = re.match(r'/pygments/(\w+)\.css', req.path_info)

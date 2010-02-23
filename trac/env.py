@@ -41,6 +41,16 @@ from trac.web.href import Href
 __all__ = ['Environment', 'IEnvironmentSetupParticipant', 'open_environment']
 
 
+class ISystemInfoProvider(Interface):
+    """Provider of system information, displayed in the "About Trac" page and
+    in internal error reports.
+    """
+    def get_system_info():
+        """Yield a sequence of `(name, version)` tuples describing the name and
+        version information of external packages used by a component.
+        """
+
+
 class IEnvironmentSetupParticipant(Interface):
     """Extension point interface for components that need to participate in the
     creation and upgrading of Trac environments, for example to create
@@ -75,6 +85,9 @@ class Environment(Component, ComponentManager):
      * project-specific templates and plugins
      * wiki and ticket attachments
     """
+    implements(ISystemInfoProvider)
+    
+    system_info_providers = ExtensionPoint(ISystemInfoProvider)
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
 
     shared_plugins_dir = PathOption('inherit', 'plugins_dir', '',
@@ -192,18 +205,10 @@ class Environment(Component, ComponentManager):
         self.setup_config(load_defaults=create)
         self.setup_log()
 
+        self.systeminfo = []
         from trac import core, __version__ as VERSION
-        trac_version = get_pkginfo(core).get('version', VERSION)
-        self.systeminfo = [
-            ('Trac', trac_version),
-            ('Python', sys.version),
-            ('setuptools', setuptools.__version__),
-        ]
-        from trac.util.datefmt import pytz
-        if pytz is not None:
-            self.systeminfo.append(('pytz', pytz.__version__))
         self.log.info('-' * 32 + ' environment startup [Trac %s] ' + '-' * 32,
-                      trac_version)
+                      get_pkginfo(core).get('version', VERSION))
         self._href = self._abs_href = None
 
         from trac.loader import load_components
@@ -219,6 +224,27 @@ class Environment(Component, ComponentManager):
             for setup_participant in self.setup_participants:
                 setup_participant.environment_created()
 
+    def get_systeminfo(self):
+        """Return a list of `(name, version)` tuples describing the name and
+        version information of external packages used by Trac and plugins.
+        """
+        info = self.systeminfo[:]
+        for provider in self.system_info_providers:
+            info.extend(provider.get_system_info())
+        info.sort(key=lambda (name, version): (name != 'Trac', name.lower()))
+        return info
+
+    # ISystemInfoProvider methods
+
+    def get_system_info(self):
+        from trac import core, __version__ as VERSION
+        yield 'Trac', get_pkginfo(core).get('version', VERSION)
+        yield 'Python', sys.version
+        yield 'setuptools', setuptools.__version__
+        from trac.util.datefmt import pytz
+        if pytz is not None:
+            yield 'pytz', pytz.__version__
+    
     def component_activated(self, component):
         """Initialize additional member variables for components.
         

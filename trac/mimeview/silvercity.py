@@ -26,6 +26,7 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.config import ListOption
+from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, Mimeview
 from trac.util import get_pkginfo
 
@@ -75,7 +76,7 @@ CRLF_RE = re.compile('\r$', re.MULTILINE)
 class SilverCityRenderer(Component):
     """Syntax highlighting based on SilverCity."""
 
-    implements(IHTMLPreviewRenderer)
+    implements(ISystemInfoProvider, IHTMLPreviewRenderer)
 
     silvercity_modes = ListOption('mimeviewer', 'silvercity_modes',
         '', doc=
@@ -93,15 +94,18 @@ class SilverCityRenderer(Component):
     returns_source = True
 
     def __init__(self):
-        self.log.debug("SilverCity installed? %r", have_silvercity)
+        self._types = None
+
+    # ISystemInfoProvider methods
+    
+    def get_system_info(self):
         if have_silvercity:
-            self.env.systeminfo.append(('SilverCity',
-                                        get_pkginfo(SilverCity).get('version',
-                                                                    '?')))
+            yield 'SilverCity', get_pkginfo(SilverCity).get('version', '?')
             # TODO: the above works only if setuptools was used to build
             # SilverCity, which is not yet the case by default for 0.9.7.
             # I've not been able to find an alternative way to get version.
-        self._types = None
+    
+    # IHTMLPreviewRenderer methods
 
     def get_quality_ratio(self, mimetype):
         # Extend default MIME type to mode mappings with configured ones

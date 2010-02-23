@@ -234,7 +234,7 @@ class EnvironmentStub(Environment):
         """
         ComponentManager.__init__(self)
         Component.__init__(self)
-        self.systeminfo = [('Python', sys.version)]
+        self.systeminfo = []
 
         import trac
         self.path = os.path.dirname(trac.__file__)

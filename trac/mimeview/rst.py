@@ -35,6 +35,7 @@ except ImportError:
     has_docutils = False
 
 from trac.core import *
+from trac.env import ISystemInfoProvider
 from trac.mimeview.api import IHTMLPreviewRenderer, content_to_unicode
 from trac.util.html import Element, Markup
 from trac.wiki.api import WikiSystem
@@ -60,7 +61,7 @@ if has_docutils and StrictVersion(__version__) < StrictVersion('0.6'):
 
 class ReStructuredTextRenderer(Component):
     """HTML renderer for plain text in reStructuredText format."""
-    implements(IHTMLPreviewRenderer)
+    implements(ISystemInfoProvider, IHTMLPreviewRenderer)
 
     can_render = False
     
@@ -71,8 +72,15 @@ class ReStructuredTextRenderer(Component):
                                  '%s found' % ('0.3.9', __version__))
             else:
                 self.can_render = True
-                self.env.systeminfo.append(('Docutils', __version__))
         
+    # ISystemInfoProvider methods
+    
+    def get_system_info(self):
+        if has_docutils:
+            yield 'Docutils', __version__
+
+    # IHTMLPreviewRenderer methods
+
     def get_quality_ratio(self, mimetype):
         if self.can_render and mimetype == 'text/x-rst':
             return 8

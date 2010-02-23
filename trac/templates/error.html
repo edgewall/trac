@@ -75,7 +75,7 @@ ${pprint(req.args)}
 </py:if>
 
 ==== System Information ====
-<py:for each="k, v in trac.systeminfo">
+<py:for each="k, v in get_systeminfo()">
 || '''`$k`''' || ${'`%s`' % (v and v.replace('\n', '` [[br]] `'))} ||</py:for>
 
 ==== Enabled Plugins ====
@@ -202,7 +202,7 @@ ${to_unicode(traceback)}
               </py:if>
               <h2>System Information:</h2>
               <table class="listing" id="systeminfo">
-                <tr py:for="name, value in trac.systeminfo">
+                <tr py:for="name, value in get_systeminfo()">
                   <th>$name</th>
                   <td>$value</td>
                 </tr>

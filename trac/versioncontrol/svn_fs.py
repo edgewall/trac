@@ -49,6 +49,7 @@ import posixpath
 
 from trac.config import ListOption
 from trac.core import *
+from trac.env import ISystemInfoProvider
 from trac.versioncontrol import Changeset, Node, Repository, \
                                 IRepositoryConnector, \
                                 NoSuchChangeset, NoSuchNode
@@ -229,7 +230,7 @@ class Pool(object):
 
 class SubversionConnector(Component):
 
-    implements(IRepositoryConnector)
+    implements(ISystemInfoProvider, IRepositoryConnector)
 
     branches = ListOption('svn', 'branches', 'trunk,branches/*', doc=
         """Comma separated list of paths categorized as branches.
@@ -250,7 +251,6 @@ class SubversionConnector(Component):
 
     def __init__(self):
         self._version = None
-        
         try:
             _import_svn()
             self.log.debug('Subversion bindings imported')
@@ -258,8 +258,22 @@ class SubversionConnector(Component):
             self.error = e
             self.log.info('Failed to load Subversion bindings', exc_info=True)
         else:
+            version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR,
+                       core.SVN_VER_MICRO)
+            self._version = '%d.%d.%d' % version + core.SVN_VER_TAG
+            if version[0] < 1:
+                self.error = _("Subversion >= 1.0 required, found %(version)s",
+                               version=self._version)
             Pool()
 
+    # ISystemInfoProvider methods
+    
+    def get_system_info(self):
+        if self._version is not None:
+            yield 'Subversion', self._version
+        
+    # IRepositoryConnector methods
+    
     def get_supported_types(self):
         prio = 1
         if self.error:
@@ -274,9 +288,6 @@ class SubversionConnector(Component):
         The repository is wrapped in a `CachedRepository`, unless `type` is
         'direct-svnfs'.
         """
-        if not self._version:
-            self._version = self._get_version()
-            self.env.systeminfo.append(('Subversion', self._version))
         params.update(tags=self.tags, branches=self.branches)
         fs_repos = SubversionRepository(dir, params, self.log)
         if type == 'direct-svnfs':
@@ -285,14 +296,6 @@ class SubversionConnector(Component):
             repos = CachedRepository(self.env, fs_repos, self.log)
             repos.has_linear_changesets = True
         return repos
-
-    def _get_version(self):
-        version = (core.SVN_VER_MAJOR, core.SVN_VER_MINOR, core.SVN_VER_MICRO)
-        version_string = '%d.%d.%d' % version + core.SVN_VER_TAG
-        if version[0] < 1:
-            raise TracError(_("Subversion >= 1.0 required: Found %(version)s",
-                              version=version_string))
-        return version_string
 
 
 class SubversionRepository(Repository):
