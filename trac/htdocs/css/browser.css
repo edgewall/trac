@@ -138,6 +138,7 @@ table.chglist { margin-top: 0 }
  white-space: nowrap;
  vertical-align: middle;
 }
+.chglist td.author { color: #888 }
 .chglist td.change span { 
  border: 1px solid #999;
  display: block;

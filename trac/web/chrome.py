@@ -905,13 +905,13 @@ class Chrome(Component):
         else:
             return 'anonymous'
 
-    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*')
+    _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
     
     def authorinfo_short(self, author):
         if author:
             match = self._long_author_re.match(author)
             if match:
-                return match.group(1)
+                return match.group(1) or match.group(2)
             return author
         else:
             return 'anonymous'

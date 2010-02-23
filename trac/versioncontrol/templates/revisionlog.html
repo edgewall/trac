@@ -106,7 +106,7 @@
                 No revisions found
               </td>
             </tr>
-            
+
             <py:for each="idx, item in enumerate(items)">
               <py:with vars="change = changes[item.rev];
                              is_separator = item.change is None;
@@ -145,7 +145,7 @@
                       </py:choose>
                     </td>
                     <td class="age" py:content="dateinfo(change.date)" />
-                    <td class="author" py:content="authorinfo(change.author)" />
+                    <td class="author" py:content="authorinfo_short(change.author)" />
                     <td class="summary" py:choose="">
                       <py:when test="verbose"></py:when>
                       <py:when test="wiki_format_messages">
