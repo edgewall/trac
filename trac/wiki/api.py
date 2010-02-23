@@ -230,6 +230,9 @@ class WikiSystem(Component):
     # here adapted to exclude terminal "." and ":" characters
 
     PAGE_SPLIT_RE = re.compile(r"([a-z])([A-Z])(?=[a-z])")
+
+    Lu = ''.join([unichr(c) for c in range(0, 0x10000) if unichr(c).isupper()])
+    Ll = ''.join([unichr(c) for c in range(0, 0x10000) if unichr(c).islower()])
     
     def format_page_name(self, page, split=False):
         if split or self.split_page_names:
@@ -237,21 +240,16 @@ class WikiSystem(Component):
         return page
 
     def get_wiki_syntax(self):
-        lower = r'(?<![A-Z0-9_])' # No Upper case when looking behind
-        upper = r'(?<![a-z0-9_])' # No Lower case when looking behind
         wiki_page_name = (
-            r"\w%s(?:\w%s)+(?:\w%s(?:\w%s)*[\w/]%s)+" % # wiki words
-            (upper, lower, upper, lower, lower) +
-            r"(?:@\d+)?" # optional version
-            r"(?:#%s)?" % self.XML_NAME + # optional fragment id
-            r"(?=:(?:\Z|\s)|[^:a-zA-Z]|\s|\Z)" # what should follow it
-            )
-
+            r"(?:[%(upper)s](?:[%(lower)s])+/?){2,}" # wiki words
+            r"(?:@\d+)?"                             # optional version
+            r"(?:#%(xml)s)?"                         # optional fragment id
+            r"(?=:(?:\Z|\s)|[^:%(upper)s%(lower)s]|\s|\Z)"
+            # what should follow it
+            % {'upper': self.Lu, 'lower': self.Ll, 'xml': self.XML_NAME})
         
         # Regular WikiPageNames
         def wikipagename_link(formatter, match, fullmatch):
-            if not _check_unicode_camelcase(match):
-                return match
             return self._format_link(formatter, 'wiki', match,
                                      self.format_page_name(match),
                                      self.ignore_missing_pages, match)
@@ -263,8 +261,6 @@ class WikiSystem(Component):
         def wikipagename_with_label_link(formatter, match, fullmatch):
             page = fullmatch.group('wiki_page')
             label = fullmatch.group('wiki_label')
-            if not _check_unicode_camelcase(page):
-                return label
             return self._format_link(formatter, 'wiki', page, label.strip(),
                                      self.ignore_missing_pages, match)
         yield (r"!?\[(?P<wiki_page>%s)\s+(?P<wiki_label>%s|[^\]]+)\]"
@@ -380,31 +376,3 @@ class WikiSystem(Component):
         'Wiki Start'
         """
         return self.format_page_name(resource.id)
-
-
-def _check_unicode_camelcase(pagename):
-    """A camelcase word must have at least 2 humps (well...)
-
-    >>> _check_unicode_camelcase(u"\xc9l\xe9phant")
-    False
-    >>> _check_unicode_camelcase(u"\xc9l\xe9Phant")
-    True
-    >>> _check_unicode_camelcase(u"\xe9l\xe9Phant")
-    False
-    >>> _check_unicode_camelcase(u"\xc9l\xe9PhanT")
-    False
-    """
-    if not pagename[0].isupper():
-        return False
-    pagename = pagename.split('@', 1)[0].split('#', 1)[0]
-    if not pagename[-1].islower():
-        return False
-    humps = 0
-    for i in xrange(1, len(pagename)):
-        if pagename[i-1].isupper():
-            if pagename[i].islower():
-                humps += 1
-            else:
-                return False
-    return humps > 1
-
