@@ -779,4 +779,26 @@ class EnvironmentAdmin(Component):
                                   "backup.", msg=msg))
             else:
                 raise
+
+        # Remove wiki-macros if it is empty and warn if it isn't
+        wiki_macros = os.path.join(self.env.path, 'wiki-macros')
+        try:
+            entries = os.listdir(wiki_macros)
+        except OSError:
+            pass
+        else:
+            if entries:
+                printerr(_("Warning: the wiki-macros directory in the "
+                           "environment is non-empty, but Trac\n"
+                           "doesn't load plugins from there anymore. "
+                           "Please remove it by hand."))
+            else:
+                try:
+                    os.rmdir(wiki_macros)
+                except OSError, e:
+                    printerr(_("Error while removing wiki-macros: %(err)s\n"
+                               "Trac doesn't load plugins from wiki-macros "
+                               "anymore. Please remove it by hand.",
+                               err=exception_to_unicode(e)))
+        
         printout(_("Upgrade done."))
