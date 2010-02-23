@@ -1105,6 +1105,10 @@ class ChangesetModule(Component):
         cursor.execute("SELECT repos,rev,time,author,message "
                        "FROM revision WHERE " + sql, args)
         for id, rev, ts, author, log in cursor:
+            try:
+                rev = int(rev)
+            except ValueError:
+                pass
             repos = repositories.get(id)
             if not repos:
                 continue # revisions for a no longer active repository
