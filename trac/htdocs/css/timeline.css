@@ -75,3 +75,15 @@ dd.changeset .changes .delete  { background: #f88 }
 dd.changeset .changes .edit    { background: #fd8 }
 dd.changeset .changes .copy    { background: #88f }
 dd.changeset .changes .move    { background: #ccc }
+dd.changeset .branch {
+ font-size: 85%;
+ background: #f6f6f6;
+ border: 1px solid #ddd;
+ margin: 0 .5em 0 0;
+ padding: 0 .2em;
+ float: left;
+}
+dd.changeset .head {
+ background: #d0ffd0;
+ border: 1px solid #9d9;
+}

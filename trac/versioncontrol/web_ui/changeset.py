@@ -909,7 +909,7 @@ class ChangesetModule(Component):
         cset, cset_resource, repos_for_uid = changesets[0]
         message = cset.message or ''
         reponame = cset_resource.parent.id
-        rev_b, rev_a = cset.rev, cset.rev
+        rev_b, rev_a = cset.rev, cset.rev #? FIXME
 
         if field == 'url':
             if rev_a == rev_b:
@@ -919,6 +919,12 @@ class ChangesetModule(Component):
                                         stop_rev=rev_a)
             
         elif field == 'description':
+            branch_markup = []
+            for name, head in cset.get_branches():
+                class_ = 'branch'
+                if head:
+                    class_ += ' head'
+                branch_markup.append(tag.span(name, class_=class_))
             if self.wiki_format_messages:
                 markup = ''
                 if self.timeline_long_messages: # override default flavor
@@ -968,7 +974,7 @@ class ChangesetModule(Component):
             if message:
                 markup += format_to(self.env, None, context(cset_resource),
                                     message)
-            return markup
+            return tag(branch_markup, markup)
 
         single = rev_a == rev_b
         if not repos_for_uid[0]:

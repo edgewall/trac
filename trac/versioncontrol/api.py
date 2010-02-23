@@ -888,7 +888,7 @@ class Repository(object):
     def can_view(self, perm):
         """Return True if view permission is granted on the repository."""
         return 'BROWSER_VIEW' in perm(self.resource.child('source', '/'))
-        
+
 
 class Node(object):
     """Represents a directory or file in the repository at a given revision."""
@@ -1055,6 +1055,14 @@ class Changeset(object):
         action (`None` and `-1` in the case of an ADD change).
         """
         raise NotImplementedError
+
+    def get_branches(self):
+        """Yield branches to which this changeset belong.
+        Each branch is given as a pair `(name, head)`, where `name` is
+        the branch name and `head` a flag set if the changeset is a head
+        for this branch (i.e. if it has no children changeset).
+        """
+        return []
 
     def can_view(self, perm):
         """Return True if view permission is granted on the changeset."""
