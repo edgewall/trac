@@ -116,7 +116,7 @@ if os.name == 'nt':
         can_rename_open_file = True
         
         def _rename_atomic(src, dst):
-            ta = CreateTransaction(None, 0, 0, 0, 0, 1000, 'Trac rename')
+            ta = CreateTransaction(None, 0, 0, 0, 0, 10000, 'Trac rename')
             if ta == -1:
                 return False
             try:
