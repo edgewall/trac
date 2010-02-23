@@ -284,11 +284,12 @@ class Chrome(Component):
     auto_reload = BoolOption('trac', 'auto_reload', False,
         """Automatically reload template files after modification.""")
     
-    genshi_cache_size = IntOption('trac', 'genshi_cache_size', 25,
+    genshi_cache_size = IntOption('trac', 'genshi_cache_size', 128,
         """The maximum number of templates that the template loader will cache
-        in memory. The default value is 25. You may want to choose a higher
+        in memory. The default value is 128. You may want to choose a higher
         value if your site uses a larger number of templates, and you have
-        enough memory to spare.""")
+        enough memory to spare, or you can reduce it if you are short on
+        memory.""")
 
     htdocs_location = Option('trac', 'htdocs_location', '',
         """Base URL of the core static resources.""")
