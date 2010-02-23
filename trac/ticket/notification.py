@@ -20,7 +20,7 @@ from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
 from trac.util import md5
-from trac.util.datefmt import to_timestamp
+from trac.util.datefmt import to_utimestamp
 from trac.util.text import CRLF, wrap, obfuscate_email_address
 
 from genshi.template.text import NewTextTemplate
@@ -292,7 +292,7 @@ class TicketNotifyEmail(NotifyEmail):
     def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
         s = '%s.%08d.%d.%s' % (self.env.project_url,
-                               int(self.ticket.id), to_timestamp(modtime),
+                               int(self.ticket.id), to_utimestamp(modtime),
                                rcpt.encode('ascii', 'ignore'))
         dig = md5(s).hexdigest()
         host = self.from_email[self.from_email.find('@') + 1:]
