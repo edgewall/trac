@@ -1,9 +1,68 @@
 from Cookie import SimpleCookie as Cookie
 import time
+from datetime import datetime
 import unittest
 
 from trac.test import EnvironmentStub, Mock
-from trac.web.session import DetachedSession, Session, PURGE_AGE, UPDATE_INTERVAL
+from trac.web.session import DetachedSession, Session, PURGE_AGE, \
+                             UPDATE_INTERVAL, SessionAdmin
+from trac.core import TracError
+from trac.util.datefmt import localtz
+
+
+def _prep_session_table(db, spread_visits=False):
+    """ Populate the session table with known values.
+
+    Return a tuple of lists: (auth_list, anon_list, all_list)
+    """
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM session")
+    cursor.execute("DELETE FROM session_attribute")
+    db.commit()
+    last_visit = time.mktime(datetime(2010,1,1).timetuple())
+    visit_delta = spread_visits and 86400 or 0
+    auth_list = []
+    for x in xrange(10):
+        sid = 'name%02d' % x
+        val = 'val%02d' % x
+        auth_list.append((sid, val, val))
+        continue
+    anon_list = []
+    for x in xrange(10,20):
+        sid = 'name%02d' % x
+        val = 'val%02d' % x
+        anon_list.append((sid, val, val))
+        continue
+    all_list = auth_list + anon_list 
+    for i, r in enumerate(all_list):
+        sid, name, email = r
+        authenticated = i < 10 and 1 or 0
+        cursor.execute("INSERT INTO session VALUES (%s, %s, %s)",
+                       (sid, authenticated, last_visit + (visit_delta * i)))
+        cursor.execute("INSERT INTO session_attribute VALUES "
+                       "(%s, %s, 'name', %s)",
+                       (sid, authenticated, name))
+        cursor.execute("INSERT INTO session_attribute VALUES "
+                       "(%s, %s, 'email', %s)",
+                       (sid, authenticated, email))
+        continue
+    db.commit()
+    return (auth_list, anon_list, all_list)
+
+def get_session_info(db, sid):
+    cursor = db.cursor()
+    cursor.execute("SELECT DISTINCT s.sid, n.value, e.value "
+                   "  FROM session AS s "
+                   " LEFT JOIN session_attribute AS n ON (n.sid=s.sid "
+                   "  AND n.name = 'name') "
+                   " LEFT JOIN session_attribute AS e ON (e.sid=s.sid "
+                   "  AND e.name = 'email') "
+                   "WHERE s.sid = %s", (sid,))
+    rows = [r for r in cursor]
+    if rows:
+        return rows[0]
+    else:
+        return (None, None, None)
 
 
 class SessionTestCase(unittest.TestCase):
@@ -325,9 +384,94 @@ class SessionTestCase(unittest.TestCase):
                        "WHERE sid='john' AND name='foo'")
         self.assertEqual(0, cursor.fetchone()[0])
 
+    def test_session_admin_list(self):
+        auth_list, anon_list, all_list = _prep_session_table(self.db)
+        sess_admin = SessionAdmin(self.env)
+
+        # Verify the empty case
+        self.assertRaises(StopIteration, sess_admin._get_list().next)
+
+        self.assertEqual([i for i in sess_admin._get_list('authenticated')],
+                         auth_list)
+        self.assertEqual([i for i in sess_admin._get_list('anonymous')],
+                         anon_list)
+        self.assertEqual([i for i in sess_admin._get_list('*')], all_list)
+        self.assertEqual([i for i in sess_admin._get_list('name00')][0],
+                         auth_list[0])
+        self.assertEqual([i for i in sess_admin._get_list('name10')][0],
+                         anon_list[0])
+        self.assertEqual([i for i in sess_admin._get_list('name00', 'name01',
+                         'name02')], all_list[:3])
+            
+    def test_session_admin_add(self):
+        auth_list, anon_list, all_list = _prep_session_table(self.db)
+        sess_admin = SessionAdmin(self.env)
+        self.assertRaises(Exception, sess_admin._add_session, 'name00')
+        sess_admin._add_session('john')
+        result = get_session_info(self.db, 'john')
+        self.assertEqual(result, ('john', None, None))
+        sess_admin._add_session('john1', 'John1')
+        result = get_session_info(self.db, 'john1')
+        self.assertEqual(result, ('john1', 'John1', None))
+        sess_admin._add_session('john2', 'John2', 'john2@example.org')
+        result = get_session_info(self.db, 'john2')
+        self.assertEqual(result, ('john2', 'John2', 'john2@example.org'))
+
+    def test_session_admin_set(self):
+        auth_list, anon_list, all_list = _prep_session_table(self.db)
+        sess_admin = SessionAdmin(self.env)
+        self.assertRaises(TracError, sess_admin._set_attr, 'nothere', 'name',
+                          'foo')
+        sess_admin._set_attr('name00', 'name', 'john')
+        result = get_session_info(self.db, 'name00')
+        self.assertEqual(result, ('name00', 'john', 'val00'))
+        sess_admin._set_attr('name00', 'email', 'john@example.org')
+        result = get_session_info(self.db, 'name00')
+        self.assertEqual(result, ('name00', 'john', 'john@example.org'))
+
+    def test_session_admin_delete(self):
+        auth_list, anon_list, all_list = _prep_session_table(self.db)
+        sess_admin = SessionAdmin(self.env)
+        sess_admin._delete_session('name00')
+        result = get_session_info(self.db, 'name00')
+        self.assertEqual(result, (None, None, None))
+        sess_admin._delete_session('nothere')
+        result = get_session_info(self.db, 'nothere')
+        self.assertEqual(result, (None, None, None))
+        auth_list, anon_list, all_list = _prep_session_table(self.db)
+        sess_admin._delete_session('anonymous')
+        result = [i for i in sess_admin._get_list('*')]
+        self.assertEqual(result, auth_list)
+        auth_list, anon_list, all_list = _prep_session_table(self.db)
+        sess_admin._delete_session('*')
+        result = [i for i in sess_admin._get_list('*')]
+        self.assertEqual(result, [])
+
+    def test_session_admin_purge(self):
+        sess_admin = SessionAdmin(self.env)
+
+        auth_list, anon_list, all_list = \
+            _prep_session_table(self.db, spread_visits=True)
+        sess_admin._purge_sessions()
+        result = [i for i in sess_admin._get_list('*')]
+        self.assertEqual(result, auth_list)
+
+        auth_list, anon_list, all_list = \
+            _prep_session_table(self.db, spread_visits=True)
+        sess_admin._purge_sessions(datetime(2010, 1, 2, tzinfo=localtz))
+        result = [i for i in sess_admin._get_list('*')]
+        self.assertEqual(result, auth_list + anon_list)
+
+        auth_list, anon_list, all_list = \
+            _prep_session_table(self.db, spread_visits=True)
+        sess_admin._purge_sessions(datetime(2010, 1, 12, tzinfo=localtz))
+        result = [i for i in sess_admin._get_list('*')]
+        self.assertEqual(result, auth_list + anon_list[1:])
+
 
 def suite():
     return unittest.makeSuite(SessionTestCase, 'test')
+
 
 if __name__ == '__main__':
     unittest.main()

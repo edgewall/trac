@@ -49,6 +49,11 @@ resolution change    Change a resolution value
 resolution list      Show possible ticket resolutions
 resolution order     Move a resolution value up or down in the list
 resolution remove    Remove a resolution value
+session add          Create a session for the given sid
+session delete       Delete the session of the specified sid
+session list         List the name and email for the sids specified
+session purge        Purge all anonymous sessions older than the given age
+session set          Set the name or email attribute of the given sid
 severity add         Add a severity value option
 severity change      Change a severity value
 severity list        Show possible ticket severities
@@ -636,4 +641,220 @@ Name  Time
 \
 2.0       
 1.0       
+
+===== test_session_list_no_sessions =====
+No SID found
+===== test_session_list_authenticated =====
+
+SID     Name   Email
+--------------------
+name00  val00  val00
+name01  val01  val01
+name02  val02  val02
+name03  val03  val03
+name04  val04  val04
+name05  val05  val05
+name06  val06  val06
+name07  val07  val07
+name08  val08  val08
+name09  val09  val09
+
+===== test_session_list_anonymous =====
+
+SID     Name   Email
+--------------------
+name10  val10  val10
+name11  val11  val11
+name12  val12  val12
+name13  val13  val13
+name14  val14  val14
+name15  val15  val15
+name16  val16  val16
+name17  val17  val17
+name18  val18  val18
+name19  val19  val19
+
+===== test_session_list_all =====
+
+SID     Name   Email
+--------------------
+name00  val00  val00
+name01  val01  val01
+name02  val02  val02
+name03  val03  val03
+name04  val04  val04
+name05  val05  val05
+name06  val06  val06
+name07  val07  val07
+name08  val08  val08
+name09  val09  val09
+name10  val10  val10
+name11  val11  val11
+name12  val12  val12
+name13  val13  val13
+name14  val14  val14
+name15  val15  val15
+name16  val16  val16
+name17  val17  val17
+name18  val18  val18
+name19  val19  val19
+
+===== test_session_list_authenticated_sid =====
+
+SID     Name   Email
+--------------------
+name00  val00  val00
+
+===== test_session_list_anonymous_sid =====
+
+SID     Name   Email
+--------------------
+name10  val10  val10
+
+===== test_session_list_missing_sid =====
+No SID found
+===== test_session_add_missing_sid =====
+Error: Invalid arguments
+
+session add <sid> [name] [email]
+
+    Create a session for the given sid
+
+    Populates the name and email attributes and sets the session as
+    authenticated.
+
+===== test_session_add_duplicate_sid =====
+Error: Session alread exists. Unable to add a duplicate session.
+===== test_session_add_sid_all =====
+
+SID   Name  Email
+----------------------------
+john  John  john@example.org
+
+===== test_session_add_sid =====
+
+SID   Name  Email
+-----------------
+john
+
+===== test_session_add_sid_name =====
+
+SID   Name  Email
+-----------------
+john  John
+
+===== test_session_set_attr_name =====
+
+SID   Name  Email
+----------------------------
+john  JOHN  john@example.org
+
+===== test_session_set_attr_email =====
+
+SID   Name  Email
+----------------------------
+john  John  JOHN@EXAMPLE.ORG
+
+===== test_session_set_attr_missing_attr =====
+Error: Invalid arguments
+
+session set <name|email> <sid> <value>
+
+    Set the name or email attribute of the given sid
+
+===== test_session_set_attr_missing_value =====
+Error: Invalid arguments
+
+session set <name|email> <sid> <value>
+
+    Set the name or email attribute of the given sid
+
+===== test_session_set_attr_missing_sid =====
+Error: Invalid arguments
+
+session set <name|email> <sid> <value>
+
+    Set the name or email attribute of the given sid
+
+===== test_session_set_attr_nonexistent_sid =====
+Error: Unable to set session attribute on a non-existent SID
+===== test_session_delete_sid =====
+No SID found
+===== test_session_delete_missing_params =====
+===== test_session_delete_anonymous =====
+
+SID     Name   Email
+--------------------
+name00  val00  val00
+name01  val01  val01
+name02  val02  val02
+name03  val03  val03
+name04  val04  val04
+name05  val05  val05
+name06  val06  val06
+name07  val07  val07
+name08  val08  val08
+name09  val09  val09
+
+===== test_session_delete_all =====
+No SID found
+===== test_session_delete_multiple_sids =====
+
+SID     Name   Email
+--------------------
+name04  val04  val04
+name05  val05  val05
+name06  val06  val06
+name07  val07  val07
+name08  val08  val08
+name09  val09  val09
+name10  val10  val10
+name11  val11  val11
+name12  val12  val12
+name13  val13  val13
+name14  val14  val14
+name15  val15  val15
+name16  val16  val16
+name17  val17  val17
+name18  val18  val18
+name19  val19  val19
+
+===== test_session_purge_all =====
+
+SID     Name   Email
+--------------------
+name00  val00  val00
+name01  val01  val01
+name02  val02  val02
+name03  val03  val03
+name04  val04  val04
+name05  val05  val05
+name06  val06  val06
+name07  val07  val07
+name08  val08  val08
+name09  val09  val09
+
+===== test_session_purge_age =====
+
+SID     Name   Email
+--------------------
+name00  val00  val00
+name01  val01  val01
+name02  val02  val02
+name03  val03  val03
+name04  val04  val04
+name05  val05  val05
+name06  val06  val06
+name07  val07  val07
+name08  val08  val08
+name09  val09  val09
+name11  val11  val11
+name12  val12  val12
+name13  val13  val13
+name14  val14  val14
+name15  val15  val15
+name16  val16  val16
+name17  val17  val17
+name18  val18  val18
+name19  val19  val19
 

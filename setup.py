@@ -113,6 +113,7 @@ facilities.
         trac.versioncontrol.svn_prop = trac.versioncontrol.svn_prop
         trac.versioncontrol.web_ui = trac.versioncontrol.web_ui
         trac.web.auth = trac.web.auth
+        trac.web.session = trac.web.session
         trac.wiki.admin = trac.wiki.admin
         trac.wiki.interwiki = trac.wiki.interwiki
         trac.wiki.macros = trac.wiki.macros

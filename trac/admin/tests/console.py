@@ -25,6 +25,7 @@ from trac.env import Environment
 from trac.admin import console
 from trac.test import InMemoryDatabase
 from trac.util.datefmt import get_date_format_hint
+from trac.web.tests.session import _prep_session_table
 
 STRIP_TRAILING_SPACE = re.compile(r'( +)$', re.MULTILINE)
 
@@ -1032,6 +1033,181 @@ class TracadminTestCase(unittest.TestCase):
             self._execute(r"version add '\'")
         rv, output = self._execute('version list')
         self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_no_sessions(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session list authenticated')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_authenticated(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session list authenticated')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_anonymous(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session list anonymous')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_all(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        if self._admin.interactive:
+            rv, output = self._execute("session list *")
+        else:
+            rv, output = self._execute("session list '*'")
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_authenticated_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session list name00')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_anonymous_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session list name10')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_list_missing_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session list thisdoesntexist')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_add_missing_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session add')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_add_duplicate_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session add name00')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_add_sid_all(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session add john John john@example.org')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list john')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_add_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session add john')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list john')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_add_sid_name(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session add john John')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list john')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_set_attr_name(self):
+        test_name = sys._getframe().f_code.co_name
+        self._execute('session add john John john@example.org')
+        rv, output = self._execute('session set name john JOHN')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list john')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_set_attr_email(self):
+        test_name = sys._getframe().f_code.co_name
+        self._execute('session add john John john@example.org')
+        rv, output = self._execute('session set email john JOHN@EXAMPLE.ORG')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list john')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_set_attr_missing_attr(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session set')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_set_attr_missing_value(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session set name john')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_set_attr_missing_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session set name')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_set_attr_nonexistent_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session set name john foo')
+        self.assertEqual(2, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_delete_sid(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session delete name00')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list nam00')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_delete_missing_params(self):
+        test_name = sys._getframe().f_code.co_name
+        rv, output = self._execute('session delete')
+        self.assertEqual(0, rv)
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_delete_anonymous(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session delete anonymous')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list *')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def test_session_delete_multiple_sids(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        rv, output = self._execute('session delete name00 name01 name02 '
+                                   'name03')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list *')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_delete_all(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx())
+        if self._admin.interactive:
+            rv, output = self._execute("session delete *")
+        else:
+            rv, output = self._execute("session delete '*'")
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list *')
+        self.assertEqual(self.expected_results[test_name], output)
+
+    def  test_session_purge_age(self):
+        test_name = sys._getframe().f_code.co_name
+        _prep_session_table(self.env.get_db_cnx(), spread_visits=True)
+        rv, output = self._execute('session purge 20100112')
+        self.assertEqual(0, rv)
+        rv, output = self._execute('session list *')
         self.assertEqual(self.expected_results[test_name], output)
 
 
