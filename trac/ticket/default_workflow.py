@@ -286,6 +286,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                      for x in resolutions],
                     id=id, name=id)]))
                 hints.append(_("The resolution will be set"))
+        if 'del_resolution' in operations:
+            hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
             control.append('as %s ' % ticket._old.get('status', 
                                                       ticket['status']))
