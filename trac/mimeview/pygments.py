@@ -53,7 +53,7 @@ class PygmentsRenderer(Component):
     pygments_modes = ListOption('mimeviewer', 'pygments_modes',
         '', doc=
         """List of additional MIME types known by Pygments.
-        
+
         For each, a tuple `mimetype:mode:quality` has to be
         specified, where `mimetype` is the MIME type,
         `mode` is the corresponding Pygments mode to be used
@@ -199,34 +199,42 @@ class GenshiHtmlFormatter(HtmlFormatter):
     of writing markup as strings to an output file.
     """
 
+    def _chunk(self, tokens):
+        """Groups tokens with the same CSS class in the token stream
+        and yields them one by one, along with the CSS class, with the
+        values chunked together."""
+
+        last_class = None
+        text = []
+        for ttype, value in tokens:
+            c = self._get_css_class(ttype)
+            if c == 'n':
+                c = ''
+            if c == last_class:
+                text.append(value)
+                continue
+
+            # If no value, leave the old <span> open.
+            if value:
+                yield last_class, u''.join(text)
+                text = [value]
+                last_class = c
+
+        if text:
+            yield last_class, u''.join(text)
+
     def generate(self, tokens):
         pos = (None, -1, -1)
         span = QName('span')
         class_ = QName('class')
 
         def _generate():
-            attrs = lc = None
-            text = []
-
-            for ttype, value in tokens:
-                c = self._get_css_class(ttype)
-                if c == 'n':
-                    c = ''
-                if c == lc:
-                    text.append(value)
-                elif value: # if no value, leave old span open
-                    if text:
-                        yield TEXT, u''.join(text), pos
-                    if attrs:
-                        yield END, span, pos
-                        attrs = None
-                    text = [value]
-                    lc = c
-                    if c:
-                        attrs = Attrs([(class_, c)])
-                        yield START, (span, attrs), pos
-            if text:
-                yield TEXT, u''.join(text), pos
-            if attrs:
-                yield END, span, pos
+            for c, text in self._chunk(tokens):
+                if c:
+                    attrs = Attrs([(class_, c)])
+                    yield START, (span, attrs), pos
+                    yield TEXT, text, pos
+                    yield END, span, pos
+                else:
+                    yield TEXT, text, pos
         return Stream(_generate())
