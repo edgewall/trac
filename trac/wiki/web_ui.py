@@ -148,7 +148,8 @@ class WikiModule(Component):
             elif action == 'diff':
                 get_diff_options(req)
                 req.redirect(req.href.wiki(versioned_page.name, action='diff',
-                                           old_version=old_version))
+                                           old_version=old_version,
+                                           version=version))
         elif action == 'delete':
             return self._render_confirm(req, versioned_page)
         elif action == 'edit':
