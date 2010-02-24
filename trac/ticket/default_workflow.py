@@ -319,7 +319,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         for operation in this_action['operations']:
             if operation == 'reset_workflow':
                 updated['status'] = 'new'
-            if operation == 'del_owner':
+            elif operation == 'del_owner':
                 updated['owner'] = ''
             elif operation == 'set_owner':
                 newowner = req.args.get('action_%s_reassign_owner' % action,
@@ -331,8 +331,7 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 updated['owner'] = newowner
             elif operation == 'set_owner_to_self':
                 updated['owner'] = req.authname
-
-            if operation == 'del_resolution':
+            elif operation == 'del_resolution':
                 updated['resolution'] = ''
             elif operation == 'set_resolution':
                 newresolution = req.args.get('action_%s_resolve_resolution' % \
