@@ -38,9 +38,9 @@ except ImportError:
         have_pysqlite = 0
 
 if have_pysqlite == 2:
-    _ver = sqlite.sqlite_version_info
-    sqlite_version = _ver[0] * 10000 + _ver[1] * 100 + int(_ver[2])
-    sqlite_version_string = '%d.%d.%d' % (_ver[0], _ver[1], int(_ver[2]))
+    # Force values to integers because PySQLite 2.2.0 had (2, 2, '0')
+    sqlite_version = tuple([int(x) for x in sqlite.sqlite_version_info])
+    sqlite_version_string = sqlite.sqlite_version
 
     class PyFormatCursor(sqlite.Cursor):
         def _rollback_on_error(self, function, *args, **kwargs):
@@ -151,7 +151,7 @@ class SQLiteConnector(Component):
     def get_supported_schemes(self):
         if not have_pysqlite:
             self.error = _("Cannot load Python bindings for SQLite")
-        elif sqlite_version >= 30303:
+        elif sqlite_version >= (3, 3, 3):
             if sqlite.version_info[0] == 2 and \
                     sqlite.version_info < (2, 0, 7):
                 self.error = _("Need at least PySqlite 2.0.7 or higher")
@@ -229,7 +229,7 @@ class SQLiteConnection(ConnectionWrapper):
 
     __slots__ = ['_active_cursors', '_eager']
 
-    poolable = have_pysqlite and sqlite_version >= 30308 \
+    poolable = have_pysqlite and sqlite_version >= (3, 3, 8) \
                              and sqlite.version_info >= (2, 5, 0)
 
     def __init__(self, path, log=None, params={}):
@@ -255,7 +255,7 @@ class SQLiteConnection(ConnectionWrapper):
         if isinstance(path, unicode): # needed with 2.4.0
             path = path.encode('utf-8')
         cnx = sqlite.connect(path, detect_types=sqlite.PARSE_DECLTYPES,
-                             check_same_thread=sqlite_version < 30301,
+                             check_same_thread=sqlite_version < (3, 3, 1),
                              timeout=timeout)
         # load extensions
         extensions = params.get('extensions', [])
@@ -279,7 +279,7 @@ class SQLiteConnection(ConnectionWrapper):
         self.cnx.rollback()
 
     def cast(self, column, type):
-        if sqlite_version >= 30203:
+        if sqlite_version >= (3, 2, 3):
             return 'CAST(%s AS %s)' % (column, _type_map.get(type, type))
         elif type == 'int':
             # hack to force older SQLite versions to convert column to an int
@@ -292,13 +292,13 @@ class SQLiteConnection(ConnectionWrapper):
 
     def like(self):
         """Return a case-insensitive LIKE clause."""
-        if sqlite_version >= 30100:
+        if sqlite_version >= (3, 1, 0):
             return "LIKE %s ESCAPE '/'"
         else:
             return 'LIKE %s'
 
     def like_escape(self, text):
-        if sqlite_version >= 30100:
+        if sqlite_version >= (3, 1, 0):
             return _like_escape_re.sub(r'/\1', text)
         else:
             return text
