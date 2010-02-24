@@ -1,0 +1,61 @@
+<!--!
+Render a ticket comment.
+
+Arguments:
+ - change: the change data
+ - show_editor=False: if True, show a comment editor
+ - edited_comment: the current value of the comment edito
+ - cnum_edit: the comment number being edited
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:with="show_editor = value_of('show_editor', False)" py:strip="">
+  <ul py:if="change.fields" class="changes">
+    <li py:for="field_name, field in change.fields.items()">
+      <strong>${field.label}</strong>
+      <py:choose>
+        <py:when test="field_name == 'attachment'">
+          <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
+          <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
+             title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
+          added
+        </py:when>
+        <py:when test="'rendered' in field">${field.rendered}</py:when>
+        <py:when test="field.old and field.new">
+          changed from <em>${field.old}</em> to <em>${field.new}</em>
+        </py:when>
+        <py:when test="not field.old and field.new">
+          set to <em>${field.new}</em>
+        </py:when>
+        <py:otherwise>
+          <em>${field.old}</em> deleted
+        </py:otherwise>
+      </py:choose>
+    </li>
+  </ul>
+  <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
+    <div>
+      <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
+${(edited_comment, change.comment)[edited_comment is None]}</textarea>
+      <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
+    </div>
+    <div class="buttons">
+      <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
+      <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
+      <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
+    </div>
+  </form>
+  <py:choose>
+    <div py:when="str(change.cnum) == cnum_edit" py:with="text = (edited_comment, change.comment)[edited_comment is None]"
+         class="comment searchable ticketdraft" style="${not text and 'display: none' or None}" xml:space="preserve">
+      ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
+    </div>
+    <div py:otherwise="" py:choose="" class="comment searchable" xml:space="preserve">
+      <py:when test="show_history">${wiki_to_html(context, change.comment_history[int(cversion)].comment,
+                                                  escape_newlines=preserve_newlines)}</py:when>
+      <py:otherwise>${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}</py:otherwise>
+    </div>
+  </py:choose>
+</html>

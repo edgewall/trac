@@ -392,6 +392,7 @@ class Ticket(object):
         return log
 
     def delete(self, db=None):
+        """Delete the ticket."""
         @with_transaction(self.env, db)
         def do_delete(db):
             Attachment.delete_all(self.env, 'ticket', self.id, db)
@@ -409,7 +410,7 @@ class Ticket(object):
         """Return a ticket change by its number."""
         db = self._get_db(db)
         cursor = db.cursor()
-        row = self._find_comment(cnum, db)
+        row = self._find_change(cnum, db)
         if row:
             ts, author, comment = row
             cursor.execute("SELECT field,author,oldvalue,newvalue "
@@ -422,6 +423,69 @@ class Ticket(object):
             for field, author, old, new in cursor:
                 fields[field] = {'author': author, 'old': old, 'new': new}
             return change
+
+    def delete_change(self, cnum, db=None):
+        """Delete a ticket change."""
+        @with_transaction(self.env, db)
+        def do_delete(db):
+            cursor = db.cursor()
+            row = self._find_change(cnum, db)
+            if not row:
+                return
+            ts = row[0]
+            
+            custom_fields = set(f['name'] for f in self.fields
+                                if f.get('custom'))
+
+            # Find modified fields and their previous value
+            cursor.execute("""
+                SELECT field, oldvalue, newvalue FROM ticket_change
+                WHERE ticket=%s AND time=%s
+                """, (self.id, ts))
+            fields = [(field, old, new) for field, old, new in cursor
+                      if field != 'comment' and not field.startswith('_')]
+            for field, oldvalue, newvalue in fields:
+                # Find the next change
+                cursor.execute("""
+                    SELECT time FROM ticket_change
+                    WHERE ticket=%s AND time>%s AND field=%s
+                    LIMIT 1
+                    """, (self.id, ts, field))
+                for next_ts, in cursor:
+                    # Modify the old value of the next change if it is equal
+                    # to the new value of the deleted change
+                    cursor.execute("""
+                        UPDATE ticket_change SET oldvalue=%s
+                        WHERE ticket=%s AND time=%s AND field=%s
+                              AND oldvalue=%s
+                        """, (oldvalue, self.id, next_ts, field, newvalue))
+                    break
+                else:
+                    # No next change, edit ticket field
+                    if field in custom_fields:
+                        cursor.execute("""
+                            UPDATE ticket_custom SET value=%s
+                            WHERE ticket=%s AND name=%s
+                            """, (oldvalue, self.id, field))
+                    else:
+                        cursor.execute("""
+                            UPDATE ticket SET %s=%%s WHERE id=%%s
+                            """ % field, (oldvalue, self.id))
+            
+            # Delete the change
+            cursor.execute("""
+                DELETE FROM ticket_change WHERE ticket=%s AND time=%s
+                """, (self.id, ts))
+            
+            # Fix the last modification time
+            cursor.execute("""
+                UPDATE ticket SET changetime=(
+                    SELECT time FROM ticket_change WHERE ticket=%s
+                    ORDER BY time DESC LIMIT 1)
+                WHERE id=%s
+                """, (self.id, self.id))
+        
+        self._fetch_ticket(self.id)
 
     def modify_comment(self, cdate, author, comment, when=None, db=None):
         """Modify a ticket comment specified by its date, while keeping a
@@ -482,7 +546,7 @@ class Ticket(object):
         db = self._get_db(db)
         history = []
         cursor = db.cursor()
-        row = self._find_comment(cnum, db)
+        row = self._find_change(cnum, db)
         if row:
             ts0, author0, last_comment = row
             # Get all fields of the form "_comment%d"
@@ -503,7 +567,7 @@ class Ticket(object):
                             last_comment))
         return history
 
-    def _find_comment(self, cnum, db):
+    def _find_change(self, cnum, db):
         """Find a comment by its number."""
         scnum = str(cnum)
         cursor = db.cursor()

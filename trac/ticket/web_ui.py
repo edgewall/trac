@@ -1647,7 +1647,7 @@ class TicketModule(Component):
                 comment_history.setdefault(rev, {}).update({'comment': old})
                 comment_history.setdefault(rev + 1, {}).update(
                         {'author': author, 'date': from_utimestamp(long(new))})
-            elif old or new:
+            elif (old or new) and old != new:
                 current['fields'][field] = {
                     'old': old, 'new': new,
                     'label': field_labels.get(field, field)}

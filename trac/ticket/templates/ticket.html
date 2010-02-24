@@ -9,15 +9,9 @@
   <xi:include href="layout.html" />
 
   <head>
-    <title>
-      <py:choose>
-        <py:when test="ticket.exists">
-          #${ticket.id} (${ticket.summary})
-        </py:when>
-        <py:otherwise>
-          New Ticket
-        </py:otherwise>
-      </py:choose>
+    <title py:choose="">
+      <py:when test="ticket.exists">#${ticket.id} (${ticket.summary})</py:when>
+      <py:otherwise>New Ticket</py:otherwise>
     </title>
     <script type="text/javascript" py:choose="">
       jQuery(document).ready(function($) {
@@ -72,55 +66,6 @@
       <a href="#comment:$cnum">$prefix$cnum</a>
     </py:def>
 
-    <py:def function="display_change(change, show_editor=False)">
-      <ul py:if="change.fields" class="changes">
-        <li py:for="field_name, field in change.fields.items()">
-          <strong>${field.label}</strong>
-          <py:choose>
-            <py:when test="field_name == 'attachment'">
-              <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
-              <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
-                 title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
-              added
-            </py:when>
-            <py:when test="'rendered' in field">${field.rendered}</py:when>
-            <py:when test="field.old and field.new">
-              changed from <em>${field.old}</em> to <em>${field.new}</em>
-            </py:when>
-            <py:when test="not field.old and field.new">
-              set to <em>${field.new}</em>
-            </py:when>
-            <py:otherwise>
-              <em>${field.old}</em> deleted
-            </py:otherwise>
-          </py:choose>
-        </li>
-      </ul>
-      <form py:if="show_editor" id="trac-comment-editor" method="post" action="#comment:${change.cnum}">
-        <div>
-          <textarea name="edited_comment" class="wikitext trac-resizable" rows="10" cols="78">
-${(edited_comment, change.comment)[edited_comment is None]}</textarea>
-          <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
-        </div>
-        <div class="buttons">
-          <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
-          <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
-          <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
-        </div>
-      </form>
-      <py:choose>
-        <div py:when="str(change.cnum) == cnum_edit" py:with="text = (edited_comment, change.comment)[edited_comment is None]"
-             class="comment searchable ticketdraft" style="${not text and 'display: none' or None}" xml:space="preserve">
-          ${wiki_to_html(context, text, escape_newlines=preserve_newlines)}
-        </div>
-        <div py:otherwise="" py:choose="" class="comment searchable" xml:space="preserve">
-          <py:when test="show_history">${wiki_to_html(context, change.comment_history[int(cversion)].comment,
-                                                      escape_newlines=preserve_newlines)}</py:when>
-          <py:otherwise>${wiki_to_html(context, change.comment, escape_newlines=preserve_newlines)}</py:otherwise>
-        </div>
-      </py:choose>
-    </py:def>
-
     <div id="content" class="ticket"
          py:with="can_append = 'TICKET_APPEND' in perm(ticket.resource);
                   can_create = 'TICKET_CREATE' in perm(ticket.resource) and not ticket.exists;
@@ -154,74 +99,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
         </py:otherwise>
       </h1>
 
-      <!-- Ticket Box (ticket fields along with description) -->
-      <div id="ticket" py:if="ticket.exists or preview_mode" class="${preview_mode and 'ticketdraft' or None}">
-        <div class="date">
-          <p i18n:msg="created" py:if="ticket.exists">Opened ${dateinfo(ticket.time)} ago</p>
-          <p i18n:msg="modified" py:if="ticket.changetime != ticket.time">Last modified ${dateinfo(ticket.changetime)} ago</p>
-          <p py:if="not ticket.exists"><i>(ticket not yet created)</i></p>
-        </div>
-        <!--! use a placeholder if it's a new ticket -->
-        <h2 class="summary searchable">$ticket.summary</h2>
-
-        <table class="properties"
-               py:with="fields = [f for f in fields if not f.skip and f.name not in ('type', 'owner')]">
-          <tr>
-            <th id="h_reporter">Reported by:</th>
-            <td headers="h_reporter" class="searchable">
-              ${defined('reporter_link') and reporter_link or authorinfo(ticket.reporter)}
-            </td>
-            <th id="h_owner">Owned by:</th>
-            <td headers="h_owner">
-              ${ticket.owner and (defined('owner_link') and owner_link or authorinfo(ticket.owner)) or ''}
-            </td>
-          </tr>
-          <tr py:for="row in group(fields, 2, lambda f: f.type != 'textarea')"
-            py:with="fullrow = len(row) == 1">
-            <py:for each="idx, field in enumerate(row)">
-              <th py:if="idx == 0 or not fullrow"
-                  id="${field and 'h_'+field.name or None}">
-                <py:if test="field"><i18n:msg params="field">${
-                  field.label or field.name}:</i18n:msg></py:if>
-              </th>
-              <td py:if="idx == 0 or not fullrow"
-                  headers="${field and 'h_'+field.name or None}"
-                  class="${field and field.name in ('cc', 'keywords') and 'searchable' or None}"
-                  colspan="${fullrow and 3 or None}">
-                <py:if test="field">
-                  <py:choose test="">
-                    <py:when test="'rendered' in field">${field.rendered}</py:when>
-                    <py:otherwise>${ticket[field.name]}</py:otherwise>
-                  </py:choose>
-                </py:if>
-              </td>
-            </py:for>
-          </tr>
-        </table>
-        <div class="description">
-          <h3 id="comment:description">
-            Description
-            <span py:if="description_change" class="lastmod" title="$description_change.date">
-              (last modified by ${authorinfo(description_change.author)})
-              (<a href="${href.ticket(ticket.id, action='diff', version=description_change.cnum)}">diff</a>)
-            </span>
-          </h3>
-
-          <!--! Quote the description (only for existing tickets) -->
-          <form py:if="ticket.exists and ticket.description and can_append"
-            id="addreply" method="get" action="#comment">
-            <div class="inlinebuttons">
-              <input type="hidden" name="replyto" value="description" />
-              <input type="submit" name="reply" value="${_('Reply')}" title="Reply, quoting this description" />
-            </div>
-          </form>
-          <div py:if="ticket.description" class="searchable" xml:space="preserve">
-            ${wiki_to_html(context, ticket.description, escape_newlines=preserve_newlines)}
-          </div>
-          <br py:if="not ticket.description" style="clear: both" />
-        </div>
-      </div>
-      <!--! End of ticket box -->
+      <xi:include href="ticket_box.html" py:if="ticket.exists or preview_mode"/>
 
       <py:if test="ticket.exists">
         <!--! do not show attachments for old versions of this ticket or for new tickets -->
@@ -240,7 +118,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                              show_history = str(change.cnum) == cnum_hist;
                              max_version = max(change.comment_history);
                              comment_version = (max_version, int(cversion or 0))[show_history]">
-              <div class="change">
+              <div class="change" id="${'cnum' in change and 'trac-change-%d' % change.cnum or None}">
                 <h3 class="change">
                   <span class="threading" py:if="'cnum' in change"
                         py:with="change_replies = replies.get(str(change.cnum), [])">
@@ -276,7 +154,7 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
                     </div>
                   </form>
                 </py:if>
-                ${display_change(change, show_editor)}
+                <xi:include href="ticket_change.html"/>
                 <div py:if="not show_editor and len(change.comment_history) > 1" py:choose=""
                      class="trac-lastedit ${comment_version != max_version and 'trac-shade' or None}">
                   <i18n:msg params="version, date, author" py:when="comment_version != max_version">
@@ -335,7 +213,7 @@ ${comment}</textarea>
               </span>
               Changed by ${authorinfo(change_preview.author)}
             </h3>
-            ${display_change(change_preview)}
+            <xi:include href="ticket_change.html" py:with="change = change_preview"/>
           </div>
         </div>
 

@@ -366,7 +366,30 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(ticket, listener.ticket)
 
 
-class TicketCommentEditTestCase(unittest.TestCase):
+class TicketCommentTestCase(unittest.TestCase):
+    
+    def _insert_ticket(self, summary, when, **kwargs):
+        ticket = Ticket(self.env)
+        for k, v in kwargs.iteritems():
+            ticket[k] = v
+        self.id = ticket.insert(when)
+
+    def _modify_ticket(self, author, comment, when, cnum, **kwargs):
+        ticket = Ticket(self.env, self.id)
+        for k, v in kwargs.iteritems():
+            ticket[k] = v
+        ticket.save_changes(author, comment, when, cnum=cnum)
+    
+    def _find_change(self, ticket, cnum):
+        (ts, author, comment) = ticket._find_change(cnum, self.db)
+        return from_utimestamp(ts)
+    
+    def assertChange(self, ticket, cnum, date, author, **fields):
+        change = ticket.get_change(cnum)
+        self.assertEqual(dict(date=date, author=author, fields=fields), change)
+    
+
+class TicketCommentEditTestCase(TicketCommentTestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
@@ -386,26 +409,6 @@ class TicketCommentEditTestCase(unittest.TestCase):
     def tearDown(self):
         self.env.reset_db()
 
-    def _insert_ticket(self, summary, when, **kwargs):
-        ticket = Ticket(self.env)
-        for k, v in kwargs.iteritems():
-            ticket[k] = v
-        self.id = ticket.insert(when)
-
-    def _modify_ticket(self, author, comment, when, cnum, **kwargs):
-        ticket = Ticket(self.env, self.id)
-        for k, v in kwargs.iteritems():
-            ticket[k] = v
-        ticket.save_changes(author, comment, when, cnum=cnum)
-    
-    def _find_comment(self, ticket, cnum):
-        (ts, author, comment) = ticket._find_comment(cnum, self.db)
-        return from_utimestamp(ts)
-    
-    def assertChange(self, ticket, cnum, date, author, **fields):
-        change = ticket.get_change(cnum)
-        self.assertEqual(dict(date=date, author=author, fields=fields), change)
-    
     def test_modify_comment(self):
         """Check modification of a "standalone" comment"""
         ticket = Ticket(self.env, self.id)
@@ -419,7 +422,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
             comment=dict(author='jim', old='3', new='Comment 3'))
         
         t = self.created + timedelta(seconds=10)
-        ticket.modify_comment(self._find_comment(ticket, 1),
+        ticket.modify_comment(self._find_change(ticket, 1),
                               'joe', 'New comment 1', t)
         self.assertChange(ticket, 1, self.t1, 'jack',
             comment=dict(author='jack', old='1', new='New comment 1'),
@@ -430,7 +433,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
         """Check modification of a "threaded" comment"""
         ticket = Ticket(self.env, self.id)
         t = self.created + timedelta(seconds=20)
-        ticket.modify_comment(self._find_comment(ticket, 2),
+        ticket.modify_comment(self._find_change(ticket, 2),
                               'joe', 'New comment 2', t)
         self.assertChange(ticket, 2, self.t2, 'john',
             owner=dict(author='john', old='john', new='jack'),
@@ -447,7 +450,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
 
         ticket = Ticket(self.env, self.id)
         t = self.created + timedelta(seconds=30)
-        ticket.modify_comment(self._find_comment(ticket, 3),
+        ticket.modify_comment(self._find_change(ticket, 3),
                               'joe', 'New comment 3', t)
         self.assertChange(ticket, 3, self.t3, 'jim',
             keywords=dict(author='jim', old='a, b, c', new='a, b'),
@@ -464,7 +467,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
 
         ticket = Ticket(self.env, self.id)
         t = self.created + timedelta(seconds=40)
-        ticket.modify_comment(self._find_comment(ticket, 2),
+        ticket.modify_comment(self._find_change(ticket, 2),
                               'joe', 'New comment 2', t)
         self.assertChange(ticket, 2, self.t2, 'john',
             owner=dict(author='john', old='john', new='jack'),
@@ -488,7 +491,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
         # Modify after missing comment
         ticket = Ticket(self.env, self.id)
         t = self.created + timedelta(seconds=50)
-        ticket.modify_comment(self._find_comment(ticket, 3),
+        ticket.modify_comment(self._find_change(ticket, 3),
                               'joe', 'New comment 3', t)
         self.assertChange(ticket, 3, self.t3, 'jim',
             keywords=dict(author='jim', old='a, b, c', new='a, b'),
@@ -498,7 +501,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
 
         # Modify missing comment
         t = self.created + timedelta(seconds=60)
-        ticket.modify_comment(self._find_comment(ticket, 2),
+        ticket.modify_comment(self._find_change(ticket, 2),
                               'joe', 'New comment 2', t)
         self.assertChange(ticket, 2, self.t2, 'john',
             owner=dict(author='john', old='john', new='jack'),
@@ -510,10 +513,10 @@ class TicketCommentEditTestCase(unittest.TestCase):
         """Modify a comment where one edit is missing"""
         ticket = Ticket(self.env, self.id)
         t1 = self.created + timedelta(seconds=70)
-        ticket.modify_comment(self._find_comment(ticket, 1),
+        ticket.modify_comment(self._find_change(ticket, 1),
                               'joe', 'New comment 1', t1)
         t2 = self.created + timedelta(seconds=80)
-        ticket.modify_comment(self._find_comment(ticket, 1),
+        ticket.modify_comment(self._find_change(ticket, 1),
                               'joe', 'Other comment 1', t2)
 
         self.assertChange(ticket, 1, self.t1, 'jack',
@@ -529,7 +532,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
         self.db.commit()
 
         t3 = self.created + timedelta(seconds=90)
-        ticket.modify_comment(self._find_comment(ticket, 1),
+        ticket.modify_comment(self._find_change(ticket, 1),
                               'joe', 'Newest comment 1', t3)
         
         self.assertChange(ticket, 1, self.t1, 'jack',
@@ -545,7 +548,7 @@ class TicketCommentEditTestCase(unittest.TestCase):
         t = [self.t1]
         for i in range(1, 32):
             t.append(self.created + timedelta(minutes=i))
-            ticket.modify_comment(self._find_comment(ticket, 1),
+            ticket.modify_comment(self._find_change(ticket, 1),
                                   'joe (%d)' % i,
                                   'Comment 1 (%d)' % i, t[-1])
         history = ticket.get_comment_history(1)
@@ -554,6 +557,80 @@ class TicketCommentEditTestCase(unittest.TestCase):
             self.assertEqual((i, t[i], 'joe (%d)' % i,
                              'Comment 1 (%d)' % i), history[i])
 
+
+class TicketCommentDeleteTestCase(TicketCommentTestCase):
+
+    def setUp(self):
+        self.env = EnvironmentStub(default_data=True)
+        self.env.config.set('ticket-custom', 'foo', 'text')
+        self.db = self.env.get_db_cnx()
+        self.created = datetime(2001, 1, 1, 1, 0, 0, 0, utc)
+        self._insert_ticket('Test ticket', self.created,
+                            owner='john', keywords='a, b, c', foo='initial')
+        self.t1 = self.created + timedelta(seconds=1)
+        self._modify_ticket('jack', 'Comment 1', self.t1, '1',
+                            foo='change 1')
+        self.t2 = self.created + timedelta(seconds=2)
+        self._modify_ticket('john', 'Comment 2', self.t2, '1.2',
+                            owner='jack', foo='change2')
+        self.t3 = self.created + timedelta(seconds=3)
+        self._modify_ticket('jim', 'Comment 3', self.t3, '3',
+                            keywords='a, b', foo='change3')
+        self.t4 = self.created + timedelta(seconds=4)
+        self._modify_ticket('joe', 'Comment 4', self.t4, '4',
+                            keywords='a', foo='change4')
+
+    def tearDown(self):
+        self.env.reset_db()
+
+    def test_delete_last_comment(self):
+        ticket = Ticket(self.env, self.id)
+        self.assertEqual('a', ticket['keywords'])
+        self.assertEqual('change4', ticket['foo'])
+        ticket.delete_change(4)
+        self.assertEqual('a, b', ticket['keywords'])
+        self.assertEqual('change3', ticket['foo'])
+        self.assertEqual(None, ticket.get_change(4))
+        self.assertNotEqual(None, ticket.get_change(3))
+        self.assertEqual(self.t3, ticket.time_changed)
+    
+    def test_delete_mid_comment(self):
+        ticket = Ticket(self.env, self.id)
+        self.assertChange(ticket, 4, self.t4, 'joe',
+            comment=dict(author='joe', old='4', new='Comment 4'),
+            keywords=dict(author='joe', old='a, b', new='a'),
+            foo=dict(author='joe', old='change3', new='change4'))
+        ticket.delete_change(3)
+        self.assertEqual(None, ticket.get_change(3))
+        self.assertEqual('a', ticket['keywords'])
+        self.assertChange(ticket, 4, self.t4, 'joe',
+            comment=dict(author='joe', old='4', new='Comment 4'),
+            keywords=dict(author='joe', old='a, b, c', new='a'),
+            foo=dict(author='joe', old='change2', new='change4'))
+        self.assertEqual(self.t4, ticket.time_changed)
+        
+    def test_delete_mid_comment_inconsistent(self):
+        # Make oldvalue on keywords for change 4 inconsistent. This should
+        # result in no change in oldvalue when deleting change 3. The
+        # oldvalue of foo should change normally.
+        cursor = self.db.cursor()
+        cursor.execute("UPDATE ticket_change SET oldvalue='1, 2' "
+                       "WHERE field='keywords' AND oldvalue='a, b'")
+        self.db.commit()
+
+        ticket = Ticket(self.env, self.id)
+        self.assertChange(ticket, 4, self.t4, 'joe',
+            comment=dict(author='joe', old='4', new='Comment 4'),
+            keywords=dict(author='joe', old='1, 2', new='a'),
+            foo=dict(author='joe', old='change3', new='change4'))
+        ticket.delete_change(3)
+        self.assertEqual(None, ticket.get_change(3))
+        self.assertEqual('a', ticket['keywords'])
+        self.assertChange(ticket, 4, self.t4, 'joe',
+            comment=dict(author='joe', old='4', new='Comment 4'),
+            keywords=dict(author='joe', old='1, 2', new='a'),
+            foo=dict(author='joe', old='change2', new='change4'))
+        
 
 class EnumTestCase(unittest.TestCase):
 
@@ -902,6 +979,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TicketTestCase, 'test'))
     suite.addTest(unittest.makeSuite(TicketCommentEditTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(TicketCommentDeleteTestCase, 'test'))
     suite.addTest(unittest.makeSuite(EnumTestCase, 'test'))
     suite.addTest(unittest.makeSuite(MilestoneTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ComponentTestCase, 'test'))
