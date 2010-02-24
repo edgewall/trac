@@ -1,10 +1,7 @@
 <!--! Template for generating rows corresponding to directory entries -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:py="http://genshi.edgewall.org/"
-    xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
-  <py:if test="xhr">
-    <xi:include href="macros.html" />
-  </py:if>
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
   <py:for each="idx, entry in enumerate(dir.entries)">
     <py:with vars="change = dir.changes[entry.rev];
                    chgset_context = change and context('changeset', change.rev, parent=repos.resource);
@@ -15,7 +12,7 @@
               href="${href.browser(reponame, entry.path, rev=stickyrev, 
                                    order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
         </td>
-        <td class="size">${sizeinfo(entry.content_length)}</td>
+        <td class="size"><span title="$entry.content_length bytes">${pretty_size(entry.content_length)}</span></td>
         <td class="rev">
           <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">$entry.rev</a>
           <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>

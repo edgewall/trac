@@ -1,0 +1,28 @@
+<!--!
+Display a div for visualizing a preview of a file content.
+
+Arguments:
+ - preview: a preview usually obtained from calling Mimeview.preview_data()
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
+  ${preview.rendered}
+  <py:choose>
+    <p py:when="preview.size == 0">
+      <strong>(The file is empty)</strong>
+    </p>
+    <p py:when="not preview.rendered">
+      <strong>HTML preview not available</strong>,
+      <py:choose>
+        <py:when test="preview.max_file_size_reached">
+          since the file size exceeds $preview.max_file_size bytes.
+        </py:when>
+        <py:otherwise>
+          since no preview renderer could handle it.
+        </py:otherwise>
+      </py:choose>
+      Try <a href="$preview.raw_href">downloading</a> the file instead.
+    </p>
+  </py:choose>
+</html>

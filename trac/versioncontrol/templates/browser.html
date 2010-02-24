@@ -6,7 +6,6 @@
     xmlns:xi="http://www.w3.org/2001/XInclude"
     xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
   <head>
     <title py:choose="len(path_links)">
       <py:when test="1">/</py:when>
@@ -107,7 +106,8 @@
       <table py:if="properties or file" id="info" summary="Revision info">
         <tr py:if="file">
           <th scope="col" i18n:msg="rev, size, author, date">
-            Revision <a href="${href.changeset(rev, reponame)}">$rev</a>, ${sizeinfo(file.size)}
+            Revision <a href="${href.changeset(rev, reponame)}">$rev</a>,
+            <span title="$file.size bytes">${pretty_size(file.size)}</span>
             checked in by ${authorinfo(file.changeset.author)}, ${dateinfo(file.changeset.date)} ago
             (<a href="${href.changeset(rev, reponame, created_path)}">diff</a>)
           </th>
@@ -156,7 +156,7 @@
       </py:if>
 
       <div py:if="file and file.preview" id="preview" class="searchable">
-        ${preview_file(file.preview)}
+        <xi:include href="preview_file.html" py:with="preview = file.preview"/>
       </div>
 
       <div id="help" i18n:msg="">

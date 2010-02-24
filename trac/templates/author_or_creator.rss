@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--!
+Generate an <author> or a <dc:creator> tag, based on the presence
+of an email or not in the author's information.
+
+Arguments:
+ - author: the author to be used
+ - email_map=None: a mapping from login to e-mail address
+-->
+<rss version="2.0"
+	 xmlns:py="http://genshi.edgewall.org/"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     py:with="email_map = value_of('email_map', None)" py:strip="">
+  <py:if test="author">
+    <!--! Try our best to retrieve an email address if wanted and possible -->
+    <py:with vars="author = show_email_addresses and email_map and '@' not in author and email_map[author] or author">
+      <py:choose>
+        <author py:when="show_email_addresses and '@' in author">${format_author(author)}</author>
+        <dc:creator py:otherwise="">${format_author(author)}</dc:creator>
+      </py:choose>
+    </py:with>
+  </py:if>
+</rss>

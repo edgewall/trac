@@ -6,7 +6,6 @@
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
   <head>
     <title py:if="title">$title</title>
     <meta py:if="version or page.author == 'trac'" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
@@ -67,7 +66,8 @@
         </py:otherwise>
       </div>
 
-      ${list_of_attachments(attachments, compact=True, foldable=True)}
+      <xi:include href="list_of_attachments.html"
+                  py:with="alist = attachments; compact = True; foldable = True"/>
 
       <py:with vars="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
                      delete_perm = 'WIKI_DELETE' in perm(page.resource);
@@ -98,7 +98,7 @@
                 </div>
               </form>
               <py:if test="page.exists">
-                ${attach_file_form(attachments)}
+                <xi:include href="attach_file_form.html" py:with="alist = attachments"/>
               </py:if>
             </py:if>
             <py:if test="page.exists and delete_perm">

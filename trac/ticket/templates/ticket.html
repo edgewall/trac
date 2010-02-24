@@ -7,7 +7,6 @@
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       py:with="preview_mode = 'preview' in req.args">
   <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
 
   <head>
     <title>
@@ -227,7 +226,8 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
       <py:if test="ticket.exists">
         <!--! do not show attachments for old versions of this ticket or for new tickets -->
         <py:if test="not version and version != 0 and ticket.exists">
-          ${list_of_attachments(attachments, foldable=True)}
+          <xi:include href="list_of_attachments.html"
+                      py:with="alist = attachments; foldable = True"/>
         </py:if>
 
         <div py:if="ticket.exists and changes">

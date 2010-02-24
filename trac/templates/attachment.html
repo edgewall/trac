@@ -7,7 +7,6 @@
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       py:with="parent = attachments and attachments.parent or attachment.resource.parent">
   <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
   <head>
     <title py:choose="mode">
       <py:when test="'new'">${name_of(parent)} &ndash; Attachment</py:when>
@@ -84,7 +83,8 @@
       <py:when test="'list'">
         <h1><a href="${url_of(parent)}">${name_of(parent)}</a></h1>
         <py:with vars="context = context(parent)">
-          ${list_of_attachments(attachments, add_button_title=_("Attach another file"))}
+          <xi:include href="list_of_attachments.html"
+                      py:with="alist = attachments; add_button_title = _('Attach another file')"/>
         </py:with>
       </py:when>
 
@@ -94,7 +94,8 @@
           <tbody>
             <tr>
               <th scope="col" i18n:msg="file,size,author,date">
-                File $attachment.filename, ${sizeinfo(attachment.size)}
+                File $attachment.filename,
+                <span title="$attachment.size bytes">${pretty_size(attachment.size)}</span>
                 (added by ${authorinfo(attachment.author)},  ${dateinfo(attachment.date)} ago)
               </th>
             </tr>
@@ -107,7 +108,7 @@
         </table>
 
         <div py:if="preview" id="preview" class="searchable">
-          ${preview_file(preview)}
+          <xi:include href="preview_file.html" py:with="preview = preview"/>
         </div>
 
         <py:if test="attachment and 'ATTACHMENT_DELETE' in perm(attachment.resource)">

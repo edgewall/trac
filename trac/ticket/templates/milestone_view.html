@@ -6,7 +6,6 @@
       xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
-  <xi:include href="macros.html" />
   <head>
     <title>Milestone ${milestone.name}</title>
     <script type="text/javascript">
@@ -44,7 +43,7 @@
             No date set
           </p>
         </py:choose>
-        <py:if test="stats.count">${progress_bar(stats, interval_hrefs, stats_href=stats_href)}</py:if>
+        <xi:include href="progress_bar.html" py:if="stats.count"/>
       </div>
 
       <form py:if="available_groups and stats.count" id="stats" action="">
@@ -72,11 +71,14 @@
                 <a py:otherwise="" href="${group.stats_href}">${group.name}</a>
               </th>
               <td>
-                ${progress_bar(group.stats, (group.interval_hrefs, None)
-                               [grouped_by in ['owner', 'reporter'] 
-                                  and group.name != format_author(group.name)],
-                               '%d / %d' % (group.stats.done_count, group.stats.count),
-                               legend=False, style="width: %d%%" % (group.percent_of_max_total * 0.8))}
+                <xi:include href="progress_bar.html"
+                            py:with="stats = group.stats;
+                                     interval_hrefs = (group.interval_hrefs, None)
+                                                      [grouped_by in ['owner', 'reporter']
+                                                       and group.name != format_author(group.name)];
+                                      percent = '%d / %d' % (group.stats.done_count, group.stats.count);
+                                      legend=False;
+                                      style='width: %d%%' % (group.percent_of_max_total * 0.8)"/>
               </td>
             </tr>
           </table>
@@ -87,7 +89,8 @@
         ${wiki_to_html(context, milestone.description)}
       </div>
 
-      ${list_of_attachments(attachments, compact=True, foldable=True)}
+      <xi:include href="list_of_attachments.html"
+                  py:with="alist = attachments; compact = True; foldable = True"/>
 
       <div py:if="'MILESTONE_MODIFY' in perm(milestone.resource) or
                   'MILESTONE_DELETE' in perm(milestone.resource) or
@@ -105,7 +108,7 @@
             <input type="submit" value="${_('Delete milestone')}" />
           </div>
         </form>
-        ${attach_file_form(attachments)}
+        <xi:include href="attach_file_form.html" py:with="alist = attachments"/>
       </div>
 
       <div id="help" i18n:msg=""><strong>Note:</strong> See

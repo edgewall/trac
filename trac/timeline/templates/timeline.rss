@@ -2,7 +2,6 @@
 <rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
                    xmlns:dc="http://purl.org/dc/elements/1.1/"
                    xmlns:xi="http://www.w3.org/2001/XInclude">
-  <xi:include href="macros.rss" />
   <channel>
     <title>${project.name}</title>
     <link>${abs_href.timeline()}</link>
@@ -22,7 +21,7 @@
         plaintext(event.render('summary', context) or 
                   event.render('title', context), keeplinebreaks=False)
       }</title>
-      ${author_or_creator(event.author, email_map)}
+      <xi:include href="author_or_creator.rss" py:with="author = event.author"/>
       <py:with vars="abs_url = event.render('url', context)">
         <pubDate>${http_date(event.date)}</pubDate>
         <link>${abs_url}</link>

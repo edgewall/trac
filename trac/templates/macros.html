@@ -1,5 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
      xmlns:py="http://genshi.edgewall.org/"
+     xmlns:xi="http://www.w3.org/2001/XInclude"
      xmlns:i18n="http://genshi.edgewall.org/i18n"
      py:strip="">
 
@@ -55,24 +56,7 @@
   -
   -->
   <py:def function="preview_file(preview)">
-    ${preview.rendered}
-    <py:choose>
-      <p py:when="preview.size == 0">
-        <strong>(The file is empty)</strong>
-      </p>
-      <p py:when="not preview.rendered">
-        <strong>HTML preview not available</strong>,
-        <py:choose>
-          <py:when test="preview.max_file_size_reached">
-            since the file size exceeds $preview.max_file_size bytes.
-          </py:when>
-          <py:otherwise>
-            since no preview renderer could handle it.
-          </py:otherwise>
-        </py:choose>
-        Try <a href="$preview.raw_href">downloading</a> the file instead.
-      </p>
-    </py:choose>
+    <xi:include href="preview_file.html"/>
   </py:def>
 
   <!--! Display a list of attachments
@@ -82,44 +66,7 @@
   -       the wiki view) and an expanded list (e.g. as used for the ticket view)
   -->
   <py:def function="list_of_attachments(alist, compact=False, add_button_title=None, foldable=False)">
-    <py:def function="show_one_attachment(attachment)">
-      <i18n:msg params="file, size, author, date">
-        <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
-        <a href="${url_of(attachment.resource, format='raw')}"
-           title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
-        (${sizeinfo(attachment.size)}) - added by <em>${authorinfo(attachment.author)}</em>
-        ${dateinfo(attachment.date)} ago.
-      </i18n:msg>
-    </py:def>
-    <py:if test="alist.attachments or alist.can_create">
-      <div id="attachments" py:choose="">
-        <py:when test="compact and alist.attachments">
-          <h3 class="${foldable and 'foldable' or None}">Attachments</h3>
-          <ul>
-            <py:for each="attachment in alist.attachments">
-              <li>
-                ${show_one_attachment(attachment)}
-                <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
-              </li>
-            </py:for>
-          </ul>
-        </py:when>
-        <py:when test="not compact">
-          <h2 class="${foldable and 'foldable' or None}">Attachments</h2>
-          <div py:if="alist.attachments or alist.can_create">
-            <dl py:if="alist.attachments" class="attachments">
-              <py:for each="attachment in alist.attachments">
-                <dt>${show_one_attachment(attachment)}</dt>
-                <dd py:if="attachment.description">
-                  ${wiki_to_oneliner(context, attachment.description)}
-                </dd>
-              </py:for>
-            </dl>
-            ${attach_file_form(alist, add_button_title)}
-          </div>
-        </py:when>
-      </div>
-    </py:if>
+    <xi:include href="list_of_attachments.html"/>
   </py:def>
 
   <!--! Conditionally render an ''Attach File'' button
@@ -127,12 +74,7 @@
   -     'alist' is an AttachmentList object (see attachment.py)
   -->
   <py:def function="attach_file_form(alist, add_button_title=None)">
-    <form py:if="alist.can_create" method="get" action="${alist.attach_href}" id="attachfile">
-      <div>
-        <input type="hidden" name="action" value="new" />
-        <input type="submit" name="attachfilebutton" value="${add_button_title or _('Attach file')}" />
-      </div>
-    </form>
+    <xi:include href="attach_file_form.html"/>
   </py:def>
 
   <!--!  Display a generic "progress bar", for use in roadmap and milestone.
@@ -141,39 +83,7 @@
   -       `interval_hrefs` are links to a query for each of the stats.intervals
   -->
   <py:def function="progress_bar(stats, interval_hrefs, percent=None, legend=True, style=None, stats_href=None)">
-    <table class="progress" style="$style">
-      <tr>
-        <td py:for="idx, interval in enumerate(stats.intervals)"
-            class="$interval.css_class" style="${interval.percent and 'width: %d%%' % interval.percent or 'display: none'}">
-            <a href="${interval_hrefs and interval_hrefs[idx] or None}"
-               title="${ngettext('%(num)s of %(total)s %(unit)s %(title)s',
-                                 '%(num)s of %(total)s %(units)s %(title)s', interval.count,
-                                 total=stats.count, unit=stats.unit, units=stats.units, title=interval.title)}"></a>
-        </td>
-      </tr>
-    </table>
-    <p class="percent">${percent is None and '%d%%' % stats.done_percent or percent}</p>
-    <dl py:if="legend">
-      <py:for each="idx, interval in enumerate(stats.intervals)">
-        <py:with vars="href = interval_hrefs and interval_hrefs[idx] or None">
-          <dt>
-            <a href="${href}">
-             ${ngettext('%(title)s %(unit)s:', '%(title)s %(units)s:', interval.count,
-                        title=interval.title.capitalize(),
-                        unit=stats.unit, units=stats.units)}</a>
-          </dt>
-          <dd><a href="${href}">${interval.count}</a></dd>
-        </py:with>
-      </py:for>
-      <py:with vars="num = sum([x.count for x in stats.intervals], 0)">
-        <dt>/
-          <a href="${stats_href}">
-            ${ngettext('Total %(unit)s:', 'Total %(units)s:', num,
-                       unit=stats.unit, units=stats.units)}</a>
-        </dt>
-        <dd><a href="${stats_href}">${num}</a></dd>
-      </py:with>
-    </dl>
+    <xi:include href="progress_bar.html"/>
   </py:def>
 
 </div>

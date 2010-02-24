@@ -76,8 +76,6 @@ class TicketConversionTestCase(unittest.TestCase):
             self.req, 'trac.ticket.Ticket', ticket, 'rss')
         self.assertEqual(("""<?xml version="1.0"?>
 <rss xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
-  
-
   <channel>
     <title>My Project: Ticket #1: Foo</title>
     <link>http://example.org/trac.cgi/ticket/1</link>

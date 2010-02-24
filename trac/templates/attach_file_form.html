@@ -1,0 +1,17 @@
+<!--!
+Conditionally render an ''Attach File'' button.
+
+Arguments:
+ - alist: the data for the list of attachments
+ - add_button_title=None: the title of the "Attach" button
+-->
+<form xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:if="alist.can_create" method="get" action="${alist.attach_href}" id="attachfile">
+  <div>
+    <input type="hidden" name="action" value="new" />
+    <input type="submit" name="attachfilebutton" value="${value_of('add_button_title', None) or _('Attach file')}" />
+  </div>
+</form>

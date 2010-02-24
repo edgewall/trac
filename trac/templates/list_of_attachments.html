@@ -1,0 +1,55 @@
+<!--!
+Display a list of attachments.
+
+Arguments:
+ - alist: the data for the list of attachments
+ - compact=False: if True, show the list in compact format (e.g. as used in the wiki view)
+ - add_button_title=None: the title of the "Attach" button
+ - foldable=False: if True, make the list of attachments foldable
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:with="compact = value_of('compact', False);
+               add_button_title = value_of('add_button_title', None);
+               foldable = value_of('foldable', False)" py:strip="">
+  <py:def function="show_one_attachment(attachment)">
+    <i18n:msg params="file, size, author, date">
+      <a href="${url_of(attachment.resource)}" title="View attachment">$attachment.filename</a>
+      <a href="${url_of(attachment.resource, format='raw')}"
+         title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
+      (<span title="$attachment.size bytes">${pretty_size(attachment.size)}</span>) -
+      added by <em>${authorinfo(attachment.author)}</em> ${dateinfo(attachment.date)} ago.
+    </i18n:msg>
+  </py:def>
+  <py:if test="alist.attachments or alist.can_create">
+    <div id="attachments" py:choose="">
+      <py:when test="compact and alist.attachments">
+        <h3 class="${foldable and 'foldable' or None}">Attachments</h3>
+        <ul>
+          <py:for each="attachment in alist.attachments">
+            <li>
+              ${show_one_attachment(attachment)}
+              <q py:if="compact and attachment.description">${wiki_to_oneliner(context, attachment.description)}</q>
+            </li>
+          </py:for>
+        </ul>
+      </py:when>
+      <py:when test="not compact">
+        <h2 class="${foldable and 'foldable' or None}">Attachments</h2>
+        <div py:if="alist.attachments or alist.can_create">
+          <dl py:if="alist.attachments" class="attachments">
+            <py:for each="attachment in alist.attachments">
+              <dt>${show_one_attachment(attachment)}</dt>
+              <dd py:if="attachment.description">
+                ${wiki_to_oneliner(context, attachment.description)}
+              </dd>
+            </py:for>
+          </dl>
+          <xi:include href="attach_file_form.html"/>
+        </div>
+      </py:when>
+    </div>
+  </py:if>
+</html>
