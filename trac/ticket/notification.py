@@ -291,7 +291,7 @@ class TicketNotifyEmail(NotifyEmail):
 
     def get_message_id(self, rcpt, modtime=None):
         """Generate a predictable, but sufficiently unique message ID."""
-        s = '%s.%08d.%d.%s' % (self.env.project_url,
+        s = '%s.%08d.%d.%s' % (self.env.project_url.encode('utf-8'),
                                int(self.ticket.id), to_utimestamp(modtime),
                                rcpt.encode('ascii', 'ignore'))
         dig = md5(s).hexdigest()

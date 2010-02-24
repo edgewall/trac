@@ -639,6 +639,17 @@ class NotificationTestCase(unittest.TestCase):
         current_fieldnames = set(ticket.values.keys())
         self.assertEqual(set(), current_fieldnames - valid_fieldnames)
 
+    def test_notification_get_message_id_unicode(self):
+        ticket = Ticket(self.env)
+        ticket['summary'] = 'My Summary'
+        ticket['description'] = 'Some description'
+        ticket.insert()
+        self.env.config.set('project', 'url', u"пиво Müller ")
+        tn = TicketNotifyEmail(self.env)
+        tn.ticket = ticket
+        tn.get_message_id('foo')
+        
+
 
 class NotificationTestSuite(unittest.TestSuite):
     """Thin test suite wrapper to start and stop the SMTP test server"""
