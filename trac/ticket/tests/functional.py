@@ -1339,6 +1339,19 @@ class RegressionTestTicket8861(FunctionalTwillTestCaseSetup):
         tc.find('Milestone: <em>%s</em>' % (name + '__'))
 
 
+class RegressionTestTicket9084(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Test for regression of http://trac.edgewall.org/ticket/9084"""
+        ticketid = self._tester.create_ticket()
+        self._tester.add_comment(ticketid)
+        self._tester.go_to_ticket(ticketid)
+        tc.formvalue('reply-to-comment-1', 'replyto', '1')
+        tc.submit('Reply')
+        tc.formvalue('propertyform', 'comment', random_sentence(3))
+        tc.submit('Submit changes')
+        tc.notfind('AssertionError')
+
+
 def functionalSuite(suite=None):
     if not suite:
         import trac.tests.functional.testcases
@@ -1425,6 +1438,7 @@ def functionalSuite(suite=None):
     suite.addTest(RegressionTestTicket6912b())
     suite.addTest(RegressionTestTicket8247())
     suite.addTest(RegressionTestTicket8861())
+    suite.addTest(RegressionTestTicket9084())
 
     return suite
 
