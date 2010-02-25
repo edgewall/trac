@@ -1002,6 +1002,7 @@ class Formatter(object):
     # > quotes
 
     def handle_quote_block(self, line):
+        self.close_paragraph()
         depth = line.find('>')
         # Close lists up to current level:
         #

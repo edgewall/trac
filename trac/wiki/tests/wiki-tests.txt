@@ -2048,15 +2048,16 @@ A comment on the above
 <blockquote class="citation">
 <p>
 This is the quoted text
+</p>
 <blockquote class="citation">
 <p>
 a nested quote
 </p>
 </blockquote>
-</p>
 </blockquote>
 <p>
 A comment on the above
+</p>
 <blockquote class="citation">
 <blockquote class="citation">
 <p>
@@ -2067,7 +2068,6 @@ start 2nd level
 first level
 </p>
 </blockquote>
-</p>
 ------------------------------
 &gt; This is the quoted text
 &gt;&gt; a nested quote
