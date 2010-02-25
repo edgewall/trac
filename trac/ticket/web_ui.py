@@ -285,26 +285,26 @@ class TicketModule(Component):
                            "      AND tc.time>=%s AND tc.time<=%s "
                            "ORDER BY tc.time"
                            % (ts_start, ts_stop))
-            previous_update = None
+            data = None
             for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
-                if not previous_update or (id,t,author) != previous_update[:3]:
-                    if previous_update:
-                        ev = produce_event(previous_update, status, fields,
-                                           comment, cid)
+                if not data or (id, t) != data[:2]:
+                    if data:
+                        ev = produce_event(data, status, fields, comment, cid)
                         if ev:
                             yield ev
                     status, fields, comment, cid = 'edit', {}, '', None
-                    previous_update = (id, t, author, type, summary, None)
+                    data = (id, t, author, type, summary, None)
                 if field == 'comment':
                     comment = newvalue
                     cid = oldvalue and oldvalue.split('.')[-1]
+                    # Always use the author from the comment field
+                    data = data[:2] + (author,) + data[3:]
                 elif field == 'status' and newvalue in ('reopened', 'closed'):
                     status = newvalue
                 elif field[0] != '_': # properties like _comment{n} are hidden
                     fields[field] = newvalue
-            if previous_update:
-                ev = produce_event(previous_update, status, fields,
-                                   comment, cid)
+            if data:
+                ev = produce_event(data, status, fields, comment, cid)
                 if ev:
                     yield ev
 
