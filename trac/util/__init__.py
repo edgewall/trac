@@ -160,6 +160,7 @@ class AtomicFile(object):
     the temporary file is removed.
     """
     def __init__(self, path, mode='w', bufsize=-1):
+        self._file = None
         self._path = path
         (dir, name) = os.path.split(path)
         (fd, self._temp) = tempfile.mkstemp(prefix=name + '-', dir=dir)
