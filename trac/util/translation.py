@@ -91,19 +91,20 @@ def domain_functions(domain, *symbols):
     return [_functions[s] for s in symbols]
 
 
+from gettext import NullTranslations
+
+class NullTranslationsBabel(NullTranslations):
+    """NullTranslations doesn't have the domain related methods."""
+
+    def dugettext(self, domain, string):
+        return self.ugettext(string)
+
+    def dungettext(self, domain, singular, plural, num):
+        return self.ungettext(singular, plural, num)
+
+
 try:
     from babel.support import LazyProxy, Translations
-    from gettext import NullTranslations
-
-    class NullTranslationsBabel(NullTranslations):
-        """NullTranslations doesn't have the domain related methods."""
-
-        def dugettext(self, domain, string):
-            return self.ugettext(string)
-
-        def dungettext(self, domain, singular, plural, num):
-            return self.ungettext(singular, plural, num)
-
 
     class TranslationsProxy(object):
         """Delegate Translations calls to the currently active Translations.
@@ -331,6 +332,8 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
     tngettext = tagn_ = tngettext_noop
     dtngettext = dtngettext_noop
 
+    translations = NullTranslationsBabel()
+    
     def activate(locale, env_path=None):
         pass
 
@@ -344,10 +347,7 @@ except ImportError: # fall back on 0.11 behavior, i18n functions are no-ops
         pass
 
     def get_translations():
-        # for correctness we should return a NullTranslations subclass,
-        # like the DummyTranslations one can find in genshi/filters/i18n.py, 
-        # but this works just as well for our current needs:
-        return gettext_noop 
+        return translations
 
     def get_available_locales():
         return []
