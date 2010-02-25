@@ -568,9 +568,11 @@ class BrowserModule(Component):
         entries = sorted(entries, key=browse_order, reverse=desc)
 
         # ''Zip Archive'' alternate link
-        patterns = self.downloadable_paths
-        if node.path and patterns and \
-               filter(None, [fnmatchcase(node.path, p) for p in patterns]):
+        path = node.path.strip('/')
+        if repos.reponame:
+            path = repos.reponame + '/' + path
+        if any(fnmatchcase(path, p.strip('/'))
+               for p in self.downloadable_paths):
             zip_href = req.href.changeset(rev or repos.youngest_rev, 
                                           repos.reponame or None, node.path,
                                           old=rev,
