@@ -59,7 +59,6 @@ if twill:
 
     # Setup XHTML validation for all retrieved pages
     try:
-        raise ImportError()
         from lxml import etree
     except ImportError:
         print "SKIP: validation of XHTML output in functional tests " \
