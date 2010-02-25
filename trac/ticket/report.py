@@ -31,7 +31,7 @@ from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import as_int
-from trac.util.datefmt import format_datetime, format_time
+from trac.util.datefmt import format_datetime, format_time, from_utimestamp
 from trac.util.presentation import Paginator
 from trac.util.text import to_unicode
 from trac.util.translation import _
@@ -699,10 +699,10 @@ class ReportModule(Component):
     def _send_csv(self, req, cols, rows, sep=',', mimetype='text/plain',
                   filename=None):
         def iso_time(t):
-            return format_time(t, 'iso8601')
+            return format_time(from_utimestamp(t), 'iso8601')
 
         def iso_datetime(dt):
-            return format_datetime(dt, 'iso8601')
+            return format_datetime(from_utimestamp(dt), 'iso8601')
 
         col_conversions = {
             'time': iso_time,
