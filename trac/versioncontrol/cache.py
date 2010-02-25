@@ -63,7 +63,7 @@ class CachedRepository(Repository):
         return self.repos.get_path_url(path, rev)
 
     def get_changeset(self, rev):
-        return CachedChangeset(self.repos, self.normalize_rev(rev), self.env)
+        return CachedChangeset(self, self.normalize_rev(rev), self.env)
 
     def get_changeset_uid(self, rev):
         return self.repos.get_changeset_uid(rev)
@@ -83,7 +83,7 @@ class CachedRepository(Repository):
 
     def sync_changeset(self, rev):
         cset = self.repos.get_changeset(rev)
-        srev = '%010d' % cset.rev
+        srev = self.db_rev(cset.rev)
         old_cset = [None]
 
         @with_transaction(self.env)
@@ -206,7 +206,7 @@ class CachedRepository(Repository):
 
             if next_youngest is None: # nothing to cache yet
                 return
-            srev = '%010d' % next_youngest
+            srev = self.db_rev(next_youngest)
 
             # 0. first check if there's no (obvious) resync in progress
             cursor.execute("""
@@ -225,7 +225,7 @@ class CachedRepository(Repository):
             actionmap = dict(zip(_actionmap.values(), _actionmap.keys()))
 
             while next_youngest is not None:
-                srev = '%010d' % next_youngest
+                srev = self.db_rev(next_youngest)
                 
                 # 1.1 Attempt to resync the 'revision' table
                 self.log.info("Trying to sync revision [%s]",
@@ -287,7 +287,7 @@ class CachedRepository(Repository):
         revisions.
         """
         last = self.normalize_rev(last)
-        slast = '%010d' % last
+        slast = self.db_rev(last)
         node = self.get_node(path, last)    # Check node existence
         db = self.env.get_db_cnx()
         cursor = db.cursor()
@@ -301,7 +301,7 @@ class CachedRepository(Repository):
             first = 0
             for row in cursor:
                 first = int(row[0])
-        sfirst = '%010d' % first
+        sfirst = self.db_rev(first)
         cursor.execute("SELECT DISTINCT rev FROM node_change "
                        "WHERE repos=%%s AND rev>=%%s AND rev<=%%s "
                        " AND (path=%%s OR path %s)" % db.like(),
@@ -331,7 +331,7 @@ class CachedRepository(Repository):
             return self.repos.next_rev(self.normalize_rev(rev), path)
 
     def _next_prev_rev(self, direction, rev, path=''):
-        srev = '%010d' % rev
+        srev = self.db_rev(rev)
         db = self.env.get_db_cnx()
         # the changeset revs are sequence of ints:
         sql = "SELECT rev FROM node_change WHERE repos=%s AND " + \
@@ -382,6 +382,10 @@ class CachedRepository(Repository):
                 pass
             raise NoSuchChangeset(rev)
 
+    def db_rev(self, rev):
+        """Convert a revision to its representation in the database."""
+        return str(rev)
+
     def get_changes(self, old_path, old_rev, new_path, new_rev, 
                     ignore_ancestry=1):
         return self.repos.get_changes(old_path, self.normalize_rev(old_rev),
@@ -397,7 +401,7 @@ class CachedChangeset(Changeset):
         cursor = db.cursor()
         cursor.execute("SELECT time,author,message FROM revision "
                        "WHERE repos=%s AND rev=%s",
-                       (repos.id, '%010d' % rev))
+                       (repos.id, repos.db_rev(rev)))
         row = cursor.fetchone()
         if row:
             _date, author, message = row
@@ -405,18 +409,19 @@ class CachedChangeset(Changeset):
             Changeset.__init__(self, repos, rev, message, author, date)
         else:
             raise NoSuchChangeset(rev)
-        self.scope = getattr(repos, 'scope', '')
+        self.scope = getattr(repos.repos, 'scope', '')
 
     def get_changes(self):
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT path,node_type,change_type,base_path,base_rev "
                        "FROM node_change WHERE repos=%s AND rev=%s "
-                       "ORDER BY path", (self.repos.id, '%010d' % self.rev))
+                       "ORDER BY path",
+                       (self.repos.id, self.repos.db_rev(self.rev)))
         for path, kind, change, base_path, base_rev in cursor:
             kind = _kindmap[kind]
             change = _actionmap[change]
             yield path, kind, change, base_path, base_rev
 
     def get_properties(self):
-        return self.repos.get_changeset(self.rev).get_properties()
+        return self.repos.repos.get_changeset(self.rev).get_properties()

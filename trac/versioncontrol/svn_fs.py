@@ -228,6 +228,14 @@ class Pool(object):
                 del self._weakref
 
 
+class SvnCachedRepository(CachedRepository):
+    """Subversion-specific cached repository, zero-pads revision numbers
+    in the cache tables.
+    """
+    def db_rev(self, rev):
+        return '%010d' % rev
+
+
 class SubversionConnector(Component):
 
     implements(ISystemInfoProvider, IRepositoryConnector)
@@ -293,7 +301,7 @@ class SubversionConnector(Component):
         if type == 'direct-svnfs':
             repos = fs_repos
         else:
-            repos = CachedRepository(self.env, fs_repos, self.log)
+            repos = SvnCachedRepository(self.env, fs_repos, self.log)
             repos.has_linear_changesets = True
         return repos
 
