@@ -149,11 +149,11 @@
           <br />
           <ul>
             <li py:for="idx,item in enumerate(changes)" py:choose="item.change">
-              <py:when test="'add'">${node_change(idx, item, 'add', 'added')}</py:when>
-              <py:when test="'delete'">${node_change(idx, item, 'rem', 'deleted')}</py:when>
-              <py:when test="'copy'">${node_change(idx, item, 'cp', 'copied')}</py:when>
-              <py:when test="'move'">${node_change(idx, item, 'mv', 'moved')}</py:when>
-              <py:when test="'edit'">${node_change(idx, item, 'mod', 'modified')}</py:when>
+              <py:when test="'add'">${node_change(idx, item, 'add', _('added'))}</py:when>
+              <py:when test="'delete'">${node_change(idx, item, 'rem', _('deleted'))}</py:when>
+              <py:when test="'copy'">${node_change(idx, item, 'cp', _('copied'))}</py:when>
+              <py:when test="'move'">${node_change(idx, item, 'mv', _('moved'))}</py:when>
+              <py:when test="'edit'">${node_change(idx, item, 'mod', _('modified'))}</py:when>
               <py:otherwise><!-- ignored change (maybe because of diff options or ignored prop.) --></py:otherwise>
             </li>
           </ul>
