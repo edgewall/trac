@@ -266,7 +266,7 @@ msgstr "TLS activé mais le serveur ne gère pas le TLS"
 #: trac/notification.py:303
 #, python-format
 msgid "Invalid email encoding setting: %s"
-msgstr "Réglage de l'encodage du courriel non valide : %s"
+msgstr "Règlage de l'encodage du courriel non valide : %s"
 
 #: trac/notification.py:329
 msgid "Header length is too short"
@@ -1376,7 +1376,7 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
-"Ce site permet l'utilisation de raccourcis clavier pour accèder plus\n"
+"Ce site permet l'utilisation de raccourcis clavier pour accéder plus\n"
 "      rapidement à certaines fonctions du site. Néanmoins comme ces\n"
 "      raccourcis peuvent dans certains cas engendrer des conflits avec "
 "les\n"
@@ -2612,7 +2612,7 @@ msgstr "Requête SQL"
 #: trac/ticket/report.py:570
 #, python-format
 msgid "The following arguments are missing: %(args)s"
-msgstr "Les paramétres suivants manquent : %(args)s"
+msgstr "Les paramètres suivants manquent : %(args)s"
 
 #: trac/ticket/report.py:584
 #, python-format
@@ -4904,7 +4904,7 @@ msgstr ""
 #: trac/wiki/web_ui.py:267
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
-msgstr "La version %(version)d de la page %(name)s à été supprimée."
+msgstr "La version %(version)d de la page %(name)s a été supprimée."
 
 #: trac/wiki/web_ui.py:293
 msgid "Page not modified, showing latest version."
