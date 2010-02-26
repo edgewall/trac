@@ -15,6 +15,7 @@
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
 from datetime import datetime
+import new
 import os.path
 import stat
 import shutil
@@ -83,15 +84,9 @@ class SubversionRepositoryTestSetup(TestSetup):
         shutil.rmtree(REPOS_PATH)
 
 
-class SubversionRepositoryTestCase(unittest.TestCase):
+# -- Re-usable test mixins
 
-    def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH,
-                                          {'name': 'repo', 'id': 1},
-                                          logger_factory('test'))
-
-    def tearDown(self):
-        self.repos = None
+class NormalTests(object):
 
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
@@ -535,15 +530,9 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(u'Chez moi ça marche\n', chgset.message)
         self.assertEqual(u'Jonas Borgström', chgset.author)
 
-class ScopedSubversionRepositoryTestCase(unittest.TestCase):
 
-    def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + u'/tête',
-                                          {'name': 'repo', 'id': 1},
-                                          logger_factory('test'))
 
-    def tearDown(self):
-        self.repos = None
+class ScopedTests(object):
 
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
@@ -798,15 +787,7 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertRaises(StopIteration, changes.next)
 
 
-class RecentPathScopedRepositoryTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + u'/tête/dir1',
-                                          {'name': 'repo', 'id': 1},
-                                          logger_factory('test'))
-
-    def tearDown(self):
-        self.repos = None
+class RecentPathScopedTests(object):
 
     def test_rev_navigation(self):
         self.assertEqual(False, self.repos.has_node('/', 1))
@@ -819,15 +800,7 @@ class RecentPathScopedRepositoryTestCase(unittest.TestCase):
         self.assertEqual(None, self.repos.previous_rev(4))
 
 
-class NonSelfContainedScopedTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + '/tags/v1',
-                                          {'name': 'repo', 'id': 1},
-                                          logger_factory('test'))
-
-    def tearDown(self):
-        self.repos = None
+class NonSelfContainedScopedTests(object):
 
     def test_mixed_changeset(self):
         chgset = self.repos.get_changeset(7)
@@ -838,15 +811,7 @@ class NonSelfContainedScopedTestCase(unittest.TestCase):
         self.assertRaises(TracError, lambda: self.repos.get_node(None, 6))
 
 
-class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.repos = SubversionRepository(REPOS_PATH + '/branches',
-                                          {'name': 'repo', 'id': 1},
-                                          logger_factory('test'))
-
-    def tearDown(self):
-        self.repos = None
+class AnotherNonSelfContainedScopedTests(object):
 
     def test_mixed_changeset_with_edit(self):
         chgset = self.repos.get_changeset(9)
@@ -857,19 +822,38 @@ class AnotherNonSelfContainedScopedTestCase(unittest.TestCase):
                          changes.next())
 
 
+# -- Test cases for SubversionRepository
+
+def get_direct_svn_fs_repository(path):
+    return SubversionRepository(path, {'name': 'repo', 'id': 1},
+                                logger_factory('test'))
+        
+
+class SubversionRepositoryTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        self.repos = get_direct_svn_fs_repository(self.path)
+
+    def tearDown(self):
+        self.repos = None
+
+
+
 def suite():
     suite = unittest.TestSuite()
     if has_svn:
-        suite.addTest(unittest.makeSuite(SubversionRepositoryTestCase,
-            'test', suiteClass=SubversionRepositoryTestSetup))
-        suite.addTest(unittest.makeSuite(ScopedSubversionRepositoryTestCase,
-            'test', suiteClass=SubversionRepositoryTestSetup))
-        suite.addTest(unittest.makeSuite(RecentPathScopedRepositoryTestCase,
-            'test', suiteClass=SubversionRepositoryTestSetup))
-        suite.addTest(unittest.makeSuite(NonSelfContainedScopedTestCase,
-            'test', suiteClass=SubversionRepositoryTestSetup))
-        suite.addTest(unittest.makeSuite(AnotherNonSelfContainedScopedTestCase,
-            'test', suiteClass=SubversionRepositoryTestSetup))
+        tests = [(NormalTests, ''),
+                 (ScopedTests, u'/tête'),
+                 (RecentPathScopedTests, u'/tête/dir1'),
+                 (NonSelfContainedScopedTests, '/tags/v1'),
+                 (AnotherNonSelfContainedScopedTests, '/branches'),
+                 ]
+        for test, scope in tests:
+            tc = new.classobj('SubversionRepository' + test.__name__,
+                              (SubversionRepositoryTestCase, test),
+                              {'path': REPOS_PATH + scope})
+            suite.addTest(unittest.makeSuite(
+                tc, 'test', suiteClass=SubversionRepositoryTestSetup))
     else:
         print "SKIP: versioncontrol/tests/svn_fs.py (no svn bindings)"
     return suite
