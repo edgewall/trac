@@ -45,8 +45,9 @@ from trac.versioncontrol.diff import get_diff_options, diff_blocks, \
                                      unified_diff
 from trac.versioncontrol.web_ui.browser import BrowserModule
 from trac.web import IRequestHandler, RequestDone
-from trac.web.chrome import add_ctxtnav, add_link, add_script, add_stylesheet, \
-                            prevnext_nav, INavigationContributor, Chrome
+from trac.web.chrome import Chrome, INavigationContributor, \
+                            add_ctxtnav, add_link, add_script, \
+                            add_stylesheet, prevnext_nav
 from trac.wiki import IWikiSyntaxProvider, WikiParser
 from trac.wiki.formatter import format_to
 
@@ -133,7 +134,8 @@ class ChangesetModule(Component):
 
     timeline_long_messages = BoolOption('timeline', 'changeset_long_messages',
                                         'false',
-        """Whether wiki-formatted changeset messages should be multiline or not.
+        """Whether wiki-formatted changeset messages should be multiline or
+        not.
 
         If this option is not specified or is false and `wiki_format_messages`
         is set to true, changeset messages will be single line only, losing
@@ -431,7 +433,8 @@ class ChangesetModule(Component):
                     if prev_rev:
                         prev_href = req.href.changeset(prev_rev, reponame)
                 if prev_rev:
-                    add_link(req, 'prev', prev_href, _changeset_title(prev_rev))
+                    add_link(req, 'prev', prev_href,
+                             _changeset_title(prev_rev))
             youngest_rev = repos.youngest_rev
             if str(chgset.rev) != str(youngest_rev):
                 if restricted:
@@ -450,8 +453,8 @@ class ChangesetModule(Component):
                     if next_rev:
                         next_href = req.href.changeset(next_rev, reponame)
                 if next_rev:
-                    add_link(req, 'next', next_href, _changeset_title(next_rev))
-
+                    add_link(req, 'next', next_href,
+                             _changeset_title(next_rev))
         else: # Diff Mode
             # -- getting the change summary from the Repository.get_changes
             def get_changes():
@@ -468,16 +471,14 @@ class ChangesetModule(Component):
             return
 
         def node_info(node, annotated):
-            return {'path': node.path,
-                    'rev': node.rev,
+            href = req.href.browser(
+                reponame, node.created_path, rev=node.created_rev,
+                annotate=annotated and 'blame' or None)
+            title = _('Show revision %(rev)s of this file in browser',
+                      rev=node.rev)
+            return {'path': node.path, 'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
-                    'href': req.href.browser(reponame,
-                                             node.created_path,
-                                             rev=node.created_rev,
-                                             annotate=annotated and 'blame' or \
-                                                      None),
-                    'title': (_('Show revision %(rev)s of this file in browser',
-                                rev=node.rev))}
+                    'href': href, 'title': title}
         # Reminder: node.path may not exist at node.rev
         #           as long as node.rev==node.created_rev
         #           ... and data['old_rev'] may have nothing to do
@@ -525,7 +526,8 @@ class ChangesetModule(Component):
             """Returns the list of differences.
 
             The list is empty when no differences between comparable files
-            are detected, but the return value is None for non-comparable files.
+            are detected, but the return value is None for non-comparable
+            files.
             """
             mview = Mimeview(self.env)
             if mview.is_binary(old_node.content_type, old_node.path):
@@ -629,8 +631,8 @@ class ChangesetModule(Component):
                             old_path=pathjoin(repos.reponame, 
                                               old_node.created_path))
                         title = _('Show the %(range)s differences restricted '
-                                  'to %(path)s',
-                                  range='r%s:%s' % (old_node.rev, new_node.rev),
+                                  'to %(path)s', range='r%s:%s' % (
+                                      old_node.rev, new_node.rev),
                                   path=new_node.path)
                     info['href'] = href
                     info['title'] = old_node and title
@@ -769,11 +771,13 @@ class ChangesetModule(Component):
         raise RequestDone
 
     def title_for_diff(self, data):
-        if data['new_path'] == data['old_path']: # ''diff between 2 revisions'' mode
+        if data['new_path'] == data['old_path']:
+            # ''diff between 2 revisions'' mode
             return 'Diff r%s:%s for %s' \
                    % (data['old_rev'] or 'latest', data['new_rev'] or 'latest',
                       data['new_path'] or '/')
-        else:                              # ''generalized diff'' mode
+        else:
+            # ''generalized diff'' mode
             return 'Diff from %s@%s to %s@%s' \
                    % (data['old_path'] or '/', data['old_rev'] or 'latest',
                       data['new_path'] or '/', data['new_rev'] or 'latest')
