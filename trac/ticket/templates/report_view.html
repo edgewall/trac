@@ -100,8 +100,7 @@
               <th py:for="header in header_group" py:if="not header.hidden" py:with="fullrow = header is header_group[-1]"
                 colspan="${fullrow and '100' or None}">
                 <a py:strip="not sorting_enabled"
-                   py:with="filtered_args = dict([(k,v) for k,v in args.items() if k not in ('sort', 'asc')])"
-                  href="${href.report(report.id, filtered_args, sort=header.col, asc=not header.asc and '1' or '0')}">
+                  href="${report_href(sort=header.col, asc=not header.asc)}">
                   $header.title
                 </a>
               </th>

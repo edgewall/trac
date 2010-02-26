@@ -321,12 +321,32 @@ class ReportModule(Component):
         limit = as_int(max, default_max, min=0) # explict max takes precedence
         offset = (page - 1) * limit
 
+        sort_col = req.args.get('sort', '')
+        asc = req.args.get('asc', 1)
+        asc = bool(int(asc)) # string '0' or '1' to int/boolean
+
+        def report_href(**kwargs):
+            """Generate links to this report preserving user variables, 
+            and sorting and paging variables.
+            """
+            params = args.copy()
+            if sort_col:
+                params['sort'] = sort_col
+            params['page'] = page
+            if max:
+                params['max'] = max
+            params.update(kwargs)
+            params['asc'] = params.get('asc', asc) and '1' or '0'            
+            return req.href.report(id, params)
+
         data = {'action': 'view',
                 'report': {'id': id, 'resource': report_resource},
                 'context': context,
                 'title': title, 'description': description,
                 'max': limit, 'args': args, 'show_args_form': False,
-                'message': None, 'paginator':None}
+                'message': None, 'paginator': None,
+                'report_href': report_href
+                }
 
         try:
             cols, results, num_items, missing_args = \
@@ -340,25 +360,6 @@ class ReportModule(Component):
             data['message'] = _('Report execution failed: %(error)s',
                                 error=to_unicode(e))
             return 'report_view.html', data, None
-
-        sort_col = req.args.get('sort', '')
-        asc = req.args.get('asc', 1)
-        asc = bool(int(asc)) # string '0' or '1' to int/boolean
-
-        def report_href(**kwargs):
-            """Generate links to this report preserving user variables, 
-            and sorting and paging variables.
-            """
-            params = args.copy()
-            if asc:
-                params['asc'] = asc and '1' or '0'
-            if sort_col:
-                params['sort'] = sort_col
-            params['page'] = page
-            if max:
-                params['max'] = max
-            params.update(kwargs)
-            return req.href.report(id, params)
 
         paginator = None
         if limit > 0:
