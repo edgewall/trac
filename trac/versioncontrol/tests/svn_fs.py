@@ -39,7 +39,8 @@ from trac.versioncontrol import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
 
-HEAD = 21
+HEAD = 22
+TETE = 21
 
 
 class SubversionRepositoryTestSetup(TestSetup):
@@ -132,7 +133,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         # ...
         self.assertEqual(None, self.repos.next_rev(HEAD, u'tête'))
         # test accentuated characters
-        self.assertEqual(None, self.repos.previous_rev(17, u'tête/R\xe9sum\xe9.txt'))
+        self.assertEqual(None,
+                         self.repos.previous_rev(17, u'tête/R\xe9sum\xe9.txt'))
         self.assertEqual(17, self.repos.next_rev(16, u'tête/R\xe9sum\xe9.txt'))
 
     def test_has_node(self):
@@ -145,7 +147,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(u'tête', node.name)
         self.assertEqual(u'/tête', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
-        self.assertEqual(HEAD, node.rev)
+        self.assertEqual(TETE, node.rev)
         self.assertEqual(datetime(2007, 4, 30, 17, 45, 26, 234375, utc),
                          node.last_modified)
         node = self.repos.get_node(u'/tête/README.txt')
@@ -153,7 +155,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(u'/tête/README.txt', node.path)
         self.assertEqual(Node.FILE, node.kind)
         self.assertEqual(3, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc),
+                         node.last_modified)
 
     def test_get_node_specific_rev(self):
         node = self.repos.get_node(u'/tête', 1)
@@ -161,13 +164,15 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(u'/tête', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
         self.assertEqual(1, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 10, 0, 52, 353248, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 10, 0, 52, 353248, utc),
+                         node.last_modified)
         node = self.repos.get_node(u'/tête/README.txt', 2)
         self.assertEqual('README.txt', node.name)
         self.assertEqual(u'/tête/README.txt', node.path)
         self.assertEqual(Node.FILE, node.kind)
         self.assertEqual(2, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 13, 12, 18, 216267, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 13, 12, 18, 216267, utc),
+                         node.last_modified)
 
     def test_get_dir_entries(self):
         node = self.repos.get_node(u'/tête')
@@ -325,7 +330,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(expected[2], (got[2], got[3]))
         
     def test_diff_file_different_revs(self):
-        diffs = self.repos.get_changes(u'tête/README.txt', 2, u'tête/README.txt', 3)
+        diffs = self.repos.get_changes(u'tête/README.txt', 2,
+                                       u'tête/README.txt', 3)
         self._cmp_diff(((u'tête/README.txt', 2),
                         (u'tête/README.txt', 3),
                         (Node.FILE, Changeset.EDIT)), diffs.next())
@@ -384,7 +390,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(0, chgset.rev)
         self.assertEqual('', chgset.message)
         self.assertEqual('', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 9, 57, 41, 312767, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 9, 57, 41, 312767, utc),
+                         chgset.date)
         self.assertRaises(StopIteration, chgset.get_changes().next)
 
     def test_changeset_added_dirs(self):
@@ -392,7 +399,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(1, chgset.rev)
         self.assertEqual('Initial directory layout.', chgset.message)
         self.assertEqual('john', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 10, 0, 52, 353248, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 10, 0, 52, 353248, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual(('branches', Node.DIRECTORY, Changeset.ADD, None, -1),
@@ -408,7 +416,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(3, chgset.rev)
         self.assertEqual('Fixed README.\n', chgset.message)
         self.assertEqual('kate', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual((u'tête/README.txt', Node.FILE, Changeset.EDIT,
@@ -420,7 +429,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(5, chgset.rev)
         self.assertEqual('Moved directories.', chgset.message)
         self.assertEqual('kate', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual((u'tête/dir1/dir2', Node.DIRECTORY, Changeset.MOVE,
@@ -434,7 +444,8 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(6, chgset.rev)
         self.assertEqual('More things to read', chgset.message)
         self.assertEqual('john', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 18, 56, 46, 985846, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 18, 56, 46, 985846, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual((u'tête/README2.txt', Node.FILE, Changeset.COPY,
@@ -525,10 +536,10 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('dir1', self.repos.normalize_path('/dir1/'))
 
     def test_repos_normalize_rev(self):
-        self.assertEqual(HEAD, self.repos.normalize_rev('latest'))
-        self.assertEqual(HEAD, self.repos.normalize_rev('head'))
-        self.assertEqual(HEAD, self.repos.normalize_rev(''))
-        self.assertEqual(HEAD, self.repos.normalize_rev(None))
+        self.assertEqual(TETE, self.repos.normalize_rev('latest'))
+        self.assertEqual(TETE, self.repos.normalize_rev('head'))
+        self.assertEqual(TETE, self.repos.normalize_rev(''))
+        self.assertEqual(TETE, self.repos.normalize_rev(None))
         self.assertEqual(5, self.repos.normalize_rev('5'))
         self.assertEqual(5, self.repos.normalize_rev(5))
 
@@ -536,11 +547,11 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(1, self.repos.oldest_rev)
         self.assertEqual(None, self.repos.previous_rev(0))
         self.assertEqual(1, self.repos.previous_rev(2))
-        self.assertEqual(HEAD, self.repos.youngest_rev)
+        self.assertEqual(TETE, self.repos.youngest_rev)
         self.assertEqual(2, self.repos.next_rev(1))
         self.assertEqual(3, self.repos.next_rev(2))
         # ...
-        self.assertEqual(None, self.repos.next_rev(HEAD))
+        self.assertEqual(None, self.repos.next_rev(TETE))
 
     def test_has_node(self):
         self.assertEqual(False, self.repos.has_node('/dir1', 3))
@@ -552,13 +563,15 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('/dir1', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
         self.assertEqual(5, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc),
+                         node.last_modified)
         node = self.repos.get_node('/README.txt')
         self.assertEqual('README.txt', node.name)
         self.assertEqual('/README.txt', node.path)
         self.assertEqual(Node.FILE, node.kind)
         self.assertEqual(3, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc),
+                         node.last_modified)
 
     def test_get_node_specific_rev(self):
         node = self.repos.get_node('/dir1', 4)
@@ -566,13 +579,15 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('/dir1', node.path)
         self.assertEqual(Node.DIRECTORY, node.kind)
         self.assertEqual(4, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 15, 42, 35, 450595, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 15, 42, 35, 450595, utc),
+                         node.last_modified)
         node = self.repos.get_node('/README.txt', 2)
         self.assertEqual('README.txt', node.name)
         self.assertEqual('/README.txt', node.path)
         self.assertEqual(Node.FILE, node.kind)
         self.assertEqual(2, node.rev)
-        self.assertEqual(datetime(2005, 4, 1, 13, 12, 18, 216267, utc), node.last_modified)
+        self.assertEqual(datetime(2005, 4, 1, 13, 12, 18, 216267, utc),
+                         node.last_modified)
 
     def test_get_dir_entries(self):
         node = self.repos.get_node('/')
@@ -677,7 +692,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(0, chgset.rev)
         self.assertEqual('', chgset.message)
         self.assertEqual('', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 9, 57, 41, 312767, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 9, 57, 41, 312767, utc),
+                         chgset.date)
         self.assertRaises(StopIteration, chgset.get_changes().next)
 
     def test_changeset_added_dirs(self):
@@ -685,7 +701,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(4, chgset.rev)
         self.assertEqual('More directories.', chgset.message)
         self.assertEqual('john', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 15, 42, 35, 450595, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 15, 42, 35, 450595, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual(('dir1', Node.DIRECTORY, 'add', None, -1),
@@ -701,7 +718,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(3, chgset.rev)
         self.assertEqual('Fixed README.\n', chgset.message)
         self.assertEqual('kate', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 13, 24, 58, 234643, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual(('README.txt', Node.FILE, Changeset.EDIT,
@@ -713,7 +731,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(5, chgset.rev)
         self.assertEqual('Moved directories.', chgset.message)
         self.assertEqual('kate', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 16, 25, 39, 658099, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual(('dir1/dir2', Node.DIRECTORY, Changeset.MOVE,
@@ -727,7 +746,8 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual(6, chgset.rev)
         self.assertEqual('More things to read', chgset.message)
         self.assertEqual('john', chgset.author)
-        self.assertEqual(datetime(2005, 4, 1, 18, 56, 46, 985846, utc), chgset.date)
+        self.assertEqual(datetime(2005, 4, 1, 18, 56, 46, 985846, utc),
+                         chgset.date)
 
         changes = chgset.get_changes()
         self.assertEqual(('README2.txt', Node.FILE, Changeset.COPY,

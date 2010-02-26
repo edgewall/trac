@@ -81,6 +81,7 @@ Node-action: add
 Prop-content-length: 10
 Text-content-length: 8
 Text-content-md5: a0691c0f61f52683bcb05da98fe028c8
+Text-content-sha1: 59ccaf31a075b2a2fe64f83ca05e2694d692d4fc
 Content-length: 18
 
 PROPS-END
@@ -112,6 +113,7 @@ Node-action: change
 Prop-content-length: 75
 Text-content-length: 8
 Text-content-md5: eaf1c95c78c9f848636d357788bd4a4c
+Text-content-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
 Content-length: 83
 
 K 13
@@ -234,6 +236,8 @@ Node-kind: file
 Node-action: add
 Node-copyfrom-rev: 3
 Node-copyfrom-path: tête/README.txt
+Text-copy-source-md5: eaf1c95c78c9f848636d357788bd4a4c
+Text-copy-source-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
 
 
 Revision-number: 7
@@ -309,6 +313,7 @@ Node-kind: file
 Node-action: change
 Text-content-length: 16
 Text-content-md5: 02bcabffffd16fe0fc250f08cad95e0c
+Text-content-sha1: 0828324174b10cc867b7255a84a8155cf89e1b8b
 Content-length: 16
 
 This is a test.
@@ -455,8 +460,11 @@ Node-kind: file
 Node-action: add
 Node-copyfrom-rev: 13
 Node-copyfrom-path: tête/README2.txt
+Text-copy-source-md5: eaf1c95c78c9f848636d357788bd4a4c
+Text-copy-source-sha1: 6aade8dde7d1b86b451b5d5f044a8ddcbab6b448
 Text-content-length: 42
 Text-content-md5: 211b820b566541dd49a1283d6476d89f
+Text-content-sha1: 7e9f46800519d6ae305f44cc07bd7568be3c9d5c
 Content-length: 42
 
 A test of svn move, followed by a change.
@@ -518,6 +526,7 @@ Node-kind: file
 Node-action: change
 Text-content-length: 47
 Text-content-md5: 9b7bad978c6ad159f939c3db2038cbb1
+Text-content-sha1: 4a475c10d832c28f9a9798477885c48146c0bc18
 Content-length: 47
 
 A test + local modifications after wc->wc copy
@@ -547,6 +556,7 @@ Node-action: add
 Prop-content-length: 10
 Text-content-length: 13
 Text-content-md5: 858e52306ecdfcb6f6eadb50d6f9086b
+Text-content-sha1: f4802e1b42e6256148438ce62d9b95ba671c23f8
 Content-length: 23
 
 PROPS-END
@@ -585,6 +595,7 @@ Node-action: add
 Prop-content-length: 10
 Text-content-length: 5
 Text-content-md5: 2debfdcf79f03e4a65a667d21ef9de14
+Text-content-sha1: 4c49b08e9b258e0e5867d76ce583c159597b6857
 Content-length: 15
 
 PROPS-END
@@ -659,6 +670,7 @@ Node-kind: file
 Node-action: change
 Text-content-length: 25
 Text-content-md5: c3744e0035c756a17fdf6dbbdd5719f0
+Text-content-sha1: f7453fe6bac18f7dc717295a30331297ff05ae14
 Content-length: 25
 
 En r�sum� ... �a marche.
@@ -689,11 +701,48 @@ Node-copyfrom-rev: 20
 Node-copyfrom-path: branches/v2
 
 
+Node-path: tête/v2/dir1
+Node-action: delete
+
+
 Node-path: tête/v2/README2.txt
 Node-action: delete
 
 
-Node-path: tête/v2/dir1
+Revision-number: 22
+Prop-content-length: 130
+Content-length: 130
+
+K 7
+svn:log
+V 30
+test delete after copy (#4900)
+K 10
+svn:author
+V 5
+cboos
+K 8
+svn:date
+V 27
+2010-02-26T14:48:19.377000Z
+PROPS-END
+
+Node-path: branches/v3
+Node-kind: dir
+Node-action: add
+Node-copyfrom-rev: 21
+Node-copyfrom-path: tête
+
+
+Node-path: branches/v3/v2
+Node-action: delete
+
+
+Node-path: branches/v3/dir1
+Node-action: delete
+
+
+Node-path: branches/v3/mpp_proc
 Node-action: delete
 
 
