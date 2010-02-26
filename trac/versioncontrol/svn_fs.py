@@ -235,6 +235,8 @@ class SvnCachedRepository(CachedRepository):
     def db_rev(self, rev):
         return '%010d' % rev
 
+    def rev_db(self, rev):
+        return int(rev or 0)
 
 class SubversionConnector(Component):
 

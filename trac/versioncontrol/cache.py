@@ -316,7 +316,7 @@ class CachedRepository(Repository):
         return self.repos.oldest_rev
 
     def get_youngest_rev(self):
-        return self.metadata.get().get(CACHE_YOUNGEST_REV)
+        return self.rev_db(self.metadata.get().get(CACHE_YOUNGEST_REV))
 
     def previous_rev(self, rev, path=''):
         if self.has_linear_changesets:
@@ -372,7 +372,7 @@ class CachedRepository(Repository):
     def normalize_rev(self, rev):
         if rev is None or isinstance(rev, basestring) and \
                rev.lower() in ('', 'head', 'latest', 'youngest'):
-            return self.youngest_rev or 0
+            return self.rev_db(self.youngest_rev or 0)
         else:
             try:
                 rev = int(rev)
@@ -385,6 +385,10 @@ class CachedRepository(Repository):
     def db_rev(self, rev):
         """Convert a revision to its representation in the database."""
         return str(rev)
+
+    def rev_db(self, rev):
+        """Convert a revision from its representation in the database."""
+        return rev
 
     def get_changes(self, old_path, old_rev, new_path, new_rev, 
                     ignore_ancestry=1):
@@ -406,7 +410,8 @@ class CachedChangeset(Changeset):
         if row:
             _date, author, message = row
             date = from_utimestamp(_date)
-            Changeset.__init__(self, repos, rev, message, author, date)
+            Changeset.__init__(self, repos, repos.rev_db(rev), message, author,
+                               date)
         else:
             raise NoSuchChangeset(rev)
         self.scope = getattr(repos.repos, 'scope', '')
@@ -421,7 +426,7 @@ class CachedChangeset(Changeset):
         for path, kind, change, base_path, base_rev in cursor:
             kind = _kindmap[kind]
             change = _actionmap[change]
-            yield path, kind, change, base_path, base_rev
+            yield path, kind, change, base_path, self.repos.rev_db(base_rev)
 
     def get_properties(self):
         return self.repos.repos.get_changeset(self.rev).get_properties()

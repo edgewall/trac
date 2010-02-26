@@ -31,11 +31,12 @@ except:
     has_svn = False
 
 from trac.log import logger_factory
-from trac.test import TestSetup
+from trac.test import EnvironmentStub, TestSetup
 from trac.core import TracError
 from trac.util.datefmt import utc
 from trac.versioncontrol import Changeset, Node, NoSuchChangeset
-from trac.versioncontrol.svn_fs import SubversionRepository
+from trac.versioncontrol.svn_fs import SvnCachedRepository, \
+                                       SubversionRepository
 from trac.versioncontrol import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
@@ -839,6 +840,28 @@ class SubversionRepositoryTestCase(unittest.TestCase):
 
 
 
+# -- Test cases for SvnCachedRepository
+
+def get_cached_repository(env, path):
+    fs_repos = get_direct_svn_fs_repository(path)
+    repos = SvnCachedRepository(env, fs_repos, fs_repos.log)
+    repos.has_linear_changesets = True
+    return repos
+
+
+class SvnCachedRepositoryTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        self.env = EnvironmentStub()
+        self.repos = get_cached_repository(self.env, self.path)
+        self.repos.sync()
+
+    def tearDown(self):
+        self.env.reset_db()
+        self.repos.close()
+        self.repos = None
+
+
 def suite():
     suite = unittest.TestSuite()
     if has_svn:
@@ -848,10 +871,26 @@ def suite():
                  (NonSelfContainedScopedTests, '/tags/v1'),
                  (AnotherNonSelfContainedScopedTests, '/branches'),
                  ]
+        skipped = {
+            'SvnCachedRepositoryNormalTests': [
+                'test_changeset_repos_creation',
+                ],
+            'SvnCachedRepositoryScopedTests': [
+                'test_changeset_repos_creation',
+                'test_rev_navigation',
+                ],
+            }
         for test, scope in tests:
             tc = new.classobj('SubversionRepository' + test.__name__,
                               (SubversionRepositoryTestCase, test),
                               {'path': REPOS_PATH + scope})
+            suite.addTest(unittest.makeSuite(
+                tc, 'test', suiteClass=SubversionRepositoryTestSetup))
+            tc = new.classobj('SvnCachedRepository' + test.__name__,
+                              (SvnCachedRepositoryTestCase, test),
+                              {'path': REPOS_PATH + scope})
+            for skip in skipped.get(tc.__name__, []):
+                setattr(tc, skip, lambda self: None) # no skip, so we cheat...
             suite.addTest(unittest.makeSuite(
                 tc, 'test', suiteClass=SubversionRepositoryTestSetup))
     else:
