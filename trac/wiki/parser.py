@@ -82,15 +82,16 @@ class WikiParser(Component):
         r"(?P<shrefbr>!?<(?P<snsbr>%s):(?P<stgtbr>[^>]+)>)" % LINK_SCHEME,
         # &, < and > to &amp;, &lt; and &gt;
         r"(?P<htmlescape>[&<>])",
-        # wiki:TracLinks
-        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s|%s(?:%s*%s)?)))" \
-        % (LINK_SCHEME, QUOTED_STRING,
+        # wiki:TracLinks or intertrac:wiki:TracLinks
+        r"(?P<shref>!?((?P<sns>%s):(?P<stgt>%s:(?:%s)|%s|%s(?:%s*%s)?)))" \
+        % (LINK_SCHEME, LINK_SCHEME, QUOTED_STRING, QUOTED_STRING,
            SHREF_TARGET_FIRST, SHREF_TARGET_MIDDLE, SHREF_TARGET_LAST),
         # [wiki:TracLinks with optional label] or [/relative label]
         (r"(?P<lhref>!?\[(?:"
          r"(?P<rel>%s)|" % LHREF_RELATIVE_TARGET + # ./... or /...
-         r"(?P<lns>%s):(?P<ltgt>%s|[^\]\s]*))" % \
-         (LINK_SCHEME, QUOTED_STRING) + # wiki:TracLinks or wiki:"trac links"
+         r"(?P<lns>%s):(?P<ltgt>%s:(?:%s)|%s|[^\]\s]*))" % \
+         (LINK_SCHEME, LINK_SCHEME, QUOTED_STRING, QUOTED_STRING) +
+         # wiki:TracLinks or wiki:"trac links" or intertrac:wiki:"trac links"
          r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # optional label
         # [=#anchor] creation
         (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +

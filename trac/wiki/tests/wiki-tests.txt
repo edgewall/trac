@@ -388,12 +388,30 @@ th:roadmap
 th:roadmap:
 [th:]
 [th: Trac Hacks]
+th:wiki:"my test spaced wiki1"
+th:"wiki:my test spaced wiki2"
+th:'wiki:"my test spaced wiki3"'
+[th:wiki:"my test spaced wiki4"]
+[th:'wiki:"my test spaced wiki5"']
+[th:"wiki:my test spaced wiki6"]
+[th:wiki:"my test spaced wiki7" My Test Spaced Wiki 7]
+[th:"wiki:my test spaced wiki8" My Test Spaced Wiki 8]
+[th:'wiki:"my test spaced wiki9"' My Test Spaced Wiki 9]
 ------------------------------
 <p>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"> </span>th:roadmap</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/roadmap" title="roadmap in Trac Hacks"><span class="icon"> </span>th:roadmap</a>:
 <a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>th</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>Trac Hacks</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki1%22" title="wiki:&#34;my test spaced wiki1&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki1"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki2" title="wiki:my test spaced wiki2 in Trac Hacks"><span class="icon"> </span>th:"wiki:my test spaced wiki2"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki3%22" title="wiki:&#34;my test spaced wiki3&#34; in Trac Hacks"><span class="icon"> </span>th:'wiki:"my test spaced wiki3"'</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki4%22" title="wiki:&#34;my test spaced wiki4&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki4"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki5%22" title="wiki:&#34;my test spaced wiki5&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki5"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki6" title="wiki:my test spaced wiki6 in Trac Hacks"><span class="icon"> </span>th:wiki:my test spaced wiki6</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki7%22" title="wiki:&#34;my test spaced wiki7&#34; in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 7</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki8" title="wiki:my test spaced wiki8 in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 8</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki9%22" title="wiki:&#34;my test spaced wiki9&#34; in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 9</a>
 </p>
 ------------------------------
 ============================== Another arbitrary protocol Link
