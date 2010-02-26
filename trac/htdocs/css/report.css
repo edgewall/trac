@@ -1,6 +1,15 @@
 @import url(code.css);
 
 #prefs .buttons { margin-top: 0 }
+#prefs fieldset { 
+ margin-left: 1em;
+ border: 1px dotted #dfdfdf;
+}
+#prefs fieldset legend {
+ margin: 0;
+ padding: 2px;
+}
+
 
 h1 .numrows, h2 .numrows {
  margin-left: 1em;
