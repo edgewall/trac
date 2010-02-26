@@ -394,6 +394,9 @@ class ChangesetModule(Component):
                         old_node = repos.get_node(opath, orev)
                     if change != Changeset.DELETE:
                         new_node = repos.get_node(npath, rev)
+                    else:
+                        # support showing paths deleted below a copy target
+                        old_node.path = npath
                     yield old_node, new_node, kind, change
 
             def _changeset_title(rev):

@@ -498,16 +498,35 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         chgset = self.repos.get_changeset(19)
         self.assertEqual(19, chgset.rev)
         changes = chgset.get_changes()
-        self.assertEqual((u'tête/Xprimary_proc/Xprimary_pkg.vhd', Node.FILE,
-                          Changeset.DELETE,
-                          u'tête/Xprimary_proc/Xprimary_pkg.vhd', 18),
-                         changes.next())
         self.assertEqual((u'tête/mpp_proc', Node.DIRECTORY,
                           Changeset.MOVE, u'tête/Xprimary_proc', 18),
+                         changes.next())
+        self.assertEqual((u'tête/mpp_proc/Xprimary_pkg.vhd',
+                          Node.FILE, Changeset.DELETE,
+                          u'tête/Xprimary_proc/Xprimary_pkg.vhd', 18),
                          changes.next())
         self.assertEqual((u'tête/mpp_proc/Xprimary_proc', Node.DIRECTORY,
                           Changeset.COPY, u'tête/Xprimary_proc', 18),
                          changes.next())
+        self.assertEqual((u'tête/mpp_proc/Xprimary_proc/Xprimary_pkg.vhd',
+                          Node.FILE, Changeset.DELETE,
+                          u'tête/Xprimary_proc/Xprimary_pkg.vhd', 18),
+                         changes.next())
+        self.assertRaises(StopIteration, changes.next)
+
+    def test_copy_with_deletions_below_copy(self):
+        """Regression test for #4900."""
+        chgset = self.repos.get_changeset(22)
+        self.assertEqual(22, chgset.rev)
+        changes = chgset.get_changes()
+        self.assertEqual((u'branches/v3', 'dir', 'copy',
+                          u'tête', 21), changes.next())
+        self.assertEqual((u'branches/v3/dir1', 'dir', 'delete',
+                          u'tête/dir1', 21), changes.next())
+        self.assertEqual((u'branches/v3/mpp_proc', 'dir', 'delete',
+                          u'tête/mpp_proc', 21), changes.next())
+        self.assertEqual((u'branches/v3/v2', 'dir', 'delete',
+                          u'tête/v2', 21), changes.next())
         self.assertRaises(StopIteration, changes.next)
 
     def test_changeset_utf_8(self):
@@ -770,8 +789,12 @@ class ScopedSubversionRepositoryTestCase(unittest.TestCase):
         self.assertEqual('copy from outside of the scope + delete',
                          chgset.message)
         changes = chgset.get_changes()
-        self.assertEqual(('v2', 'dir', Changeset.ADD, None, -1),
+        self.assertEqual(('v2', Node.DIRECTORY, Changeset.ADD, None, -1),
                          changes.next())
+        self.assertEqual(('v2/README2.txt', Node.FILE, Changeset.DELETE,
+                          None, -1), changes.next())
+        self.assertEqual(('v2/dir1', Node.DIRECTORY, Changeset.DELETE,
+                          None, -1), changes.next())
         self.assertRaises(StopIteration, changes.next)
 
 

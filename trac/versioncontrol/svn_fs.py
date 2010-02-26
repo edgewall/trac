@@ -885,10 +885,10 @@ class SubversionChangeset(Changeset):
         changes = []
         revroots = {}
         for path_utf8, change in editor.changes.items():
-            path = _from_svn(path_utf8)
+            new_path = _from_svn(path_utf8)
 
             # Filtering on `path`
-            if not _is_path_within_scope(self.scope, path):
+            if not _is_path_within_scope(self.scope, new_path):
                 continue
 
             path_utf8 = change.path
@@ -903,11 +903,9 @@ class SubversionChangeset(Changeset):
 
             # Determine the action
             if not path:                # deletion
-                if base_path:
-                    if base_path in deletions:
-                        continue # duplicates on base_path are possible (#3778)
+                if new_path:
                     action = Changeset.DELETE
-                    deletions[base_path] = idx
+                    deletions[new_path.lstrip('/')] = idx
                 elif self.scope == '/': # root property change
                     action = Changeset.EDIT
                 else:                   # deletion outside of scope, ignore
@@ -916,7 +914,7 @@ class SubversionChangeset(Changeset):
                 action = Changeset.ADD
                 if base_path and base_rev:
                     action = Changeset.COPY
-                    copies[base_path] = idx
+                    copies[base_path.lstrip('/')] = idx
             else:
                 action = Changeset.EDIT
                 # identify the most interesting base_path/base_rev
@@ -936,12 +934,14 @@ class SubversionChangeset(Changeset):
                     base_path, base_rev = cbase_path, cbase_rev
 
             kind = _kindmap[change.item_kind]
-            path = _path_within_scope(self.scope, path or base_path)
+            path = _path_within_scope(self.scope, new_path or base_path)
             base_path = _path_within_scope(self.scope, base_path)
             changes.append([path, kind, action, base_path, base_rev])
             idx += 1
 
         moves = []
+        # a MOVE is a COPY whose `base_path` corresponds to a `new_path`
+        # which has been deleted
         for k, v in copies.items():
             if k in deletions:
                 changes[v][2] = Changeset.MOVE
