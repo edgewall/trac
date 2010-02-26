@@ -35,8 +35,8 @@ import re
 #   2.23.3 (2233), 3.04.4 (3044)
 #
 # If you run this script on a version not listed here and it is successful,
-# please file a ticket at http://trac.edgewall.org/ and assign it to
-# jruigrok.
+# please file a ticket at http://trac.edgewall.org
+#
 BZ_VERSION = 3044
 
 # MySQL connection parameters for the Bugzilla database.  These can also
