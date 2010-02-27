@@ -45,7 +45,9 @@ class InterTracDispatcher(Component):
         link = req.args.get('link', '')
         parts = link.split(':', 1)
         if len(parts) > 1:
-            link = '%s:"%s"' % tuple(parts)
+            resolver, target = parts
+            if target and (target[0] not in '\'"' or target[0] != target[-1]):
+                link = '%s:"%s"' % (resolver, target)
         link_elt = extract_link(self.env, Context.from_request(req), link)
         if isinstance(link_elt, Element):
             href = link_elt.attrib.get('href')
