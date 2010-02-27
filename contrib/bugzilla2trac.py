@@ -912,12 +912,14 @@ def convert(_db, _host, _user, _password, _env, _force):
             trac.addAttachment(author, a)
 
     print "\n8. Importing users and passwords..."
-    if BZ_VERSION >= 2167:
+    if BZ_VERSION >= 2164:
         selectlogins = "SELECT login_name, cryptpassword FROM profiles";
         if IGNORE_DISABLED_USERS:
             selectlogins = selectlogins + " WHERE disabledtext=''"
         mysql_cur.execute(selectlogins)
         users = mysql_cur.fetchall()
+    else:
+        users = ()
     htpasswd = file("htpasswd", 'w')
     for user in users:
         if LOGIN_MAP.has_key(user['login_name']):
