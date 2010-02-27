@@ -48,6 +48,27 @@ def system_message(msg, text=None):
     return tag.div(tag.strong(msg), text and tag.pre(text),
                    class_="system-message")
 
+def split_url_into_path_query_fragment(target):
+    """Split a target along `?` and `#` in `(path, query, fragment)`.
+
+    >>> split_url_into_path_query_fragment('http://path?a=1&b=2#frag?ment')
+    ('http://path', '?a=1&b=2', '#frag?ment')
+    >>> split_url_into_path_query_fragment('http://path#frag?ment')
+    ('http://path', '', '#frag?ment')
+    >>> split_url_into_path_query_fragment('http://path?a=1&b=2')
+    ('http://path', '?a=1&b=2', '')
+    >>> split_url_into_path_query_fragment('http://path')
+    ('http://path', '', '')
+    """
+    query = fragment = ''
+    idx = target.find('#')
+    if idx >= 0:
+        target, fragment = target[:idx], target[idx:]
+    idx = target.find('?')
+    if idx >= 0:
+        target, query = target[:idx], target[idx:]
+    return (target, query, fragment)
+
 def _markup_to_unicode(markup):
     stream = None
     if isinstance(markup, Element):
@@ -337,15 +358,7 @@ class Formatter(object):
         self._open_tags = []
 
     def split_link(self, target):
-        """Split a target along "?" and "#" in `(path, query, fragment)`."""
-        query = fragment = ''
-        idx = target.find('#')
-        if idx >= 0:
-            target, fragment = target[:idx], target[idx:]
-        idx = target.find('?')
-        if idx >= 0:
-            target, query = target[:idx], target[idx:]
-        return (target, query, fragment)
+        return split_url_into_path_query_fragment(target)
 
     # -- Pre- IWikiSyntaxProvider rules (Font styles)
     
