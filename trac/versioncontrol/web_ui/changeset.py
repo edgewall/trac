@@ -999,7 +999,8 @@ class ChangesetModule(Component):
         if field == 'title':
             return title
         elif field == 'summary':
-            return '%s: %s' % (title, shorten_line(message))
+            return _("%(title)s: %(message)s",
+                     title=title, message=shorten_line(message))
         
     # IWikiSyntaxProvider methods
 
