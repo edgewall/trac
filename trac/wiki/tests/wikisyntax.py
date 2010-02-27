@@ -282,6 +282,20 @@ NoLink:ignored
 <a class="missing wiki" href="/wiki/NoLink" rel="nofollow">NoLink?</a>: ...
 </p>
 ------------------------------
+============================== InterWiki links with parameters and fragment
+See also MeatBall:InterMapTxt#there wiki page
+and MeatBall:InterMapTxt?format=txt#there wiki page.
+
+complex link complex:a:test?go#there with positional arguments
+------------------------------
+<p>
+See also <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt#there" title="InterMapTxt in MeatBall..."><span class="icon">\xa0</span>MeatBall:InterMapTxt#there</a> wiki page
+and <a class="ext-link" href="http://www.usemod.com/cgi-bin/mb.pl?InterMapTxt&amp;format=txt#there" title="InterMapTxt in MeatBall..."><span class="icon">\xa0</span>MeatBall:InterMapTxt?format=txt#there</a> wiki page.
+</p>
+<p>
+complex link <a class="ext-link" href="http://server/a/page/test?format=txt&amp;go#there" title="resource test in a"><span class="icon">\xa0</span>complex:a:test?go#there</a> with positional arguments
+</p>
+------------------------------
 """ #" Emacs likes it that way better
 
 

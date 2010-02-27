@@ -544,7 +544,7 @@ class Formatter(object):
 
     def _make_intertrac_link(self, ns, target, label):
         intertrac = self.env.config['intertrac']
-        url = intertrac.get(ns+'.url')
+        url = intertrac.get(ns + '.url')
         if not url and ns == 'trac':
             url = 'http://trac.edgewall.org'
         if url:
@@ -561,7 +561,7 @@ class Formatter(object):
             else:
                 url = '%s/intertrac/%s' % (url, unicode_quote(target))
             if target:
-                title = '%s in %s' % (target, name)
+                title = _('%(target)s in %(name)s', target=target, name=name)
             else:
                 title = name
             return self._make_ext_link(url, label, title)

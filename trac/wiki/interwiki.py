@@ -20,8 +20,10 @@ from genshi.builder import tag
 
 from trac.cache import cached_value
 from trac.core import *
-from trac.wiki.parser import WikiParser
+from trac.util.translation import _
 from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
+from trac.wiki.parser import WikiParser
+from trac.wiki.formatter import split_url_into_path_query_fragment
 
 
 class InterWikiMap(Component):
@@ -68,14 +70,23 @@ class InterWikiMap(Component):
         ns, url, title = self[ns]
         maxargnum = max([0]+[int(a[1:]) for a in
                              re.findall(InterWikiMap._argspec_re, url)])
+        target, query, fragment = split_url_into_path_query_fragment(target)
         if maxargnum > 0:
             args = target.split(':', (maxargnum - 1))
         else:
             args = [target]
-        expanded_url = self._expand_or_append(url, args)
+        url = self._expand_or_append(url, args)
+        ntarget, nquery, nfragment = split_url_into_path_query_fragment(url)
+        if query and nquery:
+            nquery = '%s&%s' % (nquery, query[1:]) 
+        else:
+            nquery = nquery or query
+        nfragment = fragment or nfragment # user provided takes precedence
+        expanded_url = ntarget + nquery + nfragment
         expanded_title = self._expand(title, args)
         if expanded_title == title:
-            expanded_title = target+' in '+title
+            expanded_title = _("%(target)s in %(name)s",
+                               target=target, name=title)
         return expanded_url, expanded_title
 
     # IWikiChangeListener methods
