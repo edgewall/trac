@@ -25,7 +25,7 @@ from genshi.core import Markup
 
 from trac.core import *
 from trac.resource import Resource, get_resource_url, get_resource_summary
-from trac.util.compat import rpartition
+from trac.util.compat import any, rpartition
 from trac.util.datefmt import format_date, from_utimestamp
 from trac.util.html import escape
 from trac.util.presentation import separated
