@@ -306,61 +306,69 @@ class Context(object):
 # Some common MIME types and their associated keywords and/or file extensions
 
 KNOWN_MIME_TYPES = {
-    'application/javascript': ['js'],
-    'application/pdf':        ['pdf'],
-    'application/postscript': ['ps'],
-    'application/rtf':        ['rtf'],
-    'application/x-sh':       ['sh'],
-    'application/x-csh':      ['csh'],
-    'application/x-troff':    ['nroff', 'roff', 'troff'],
-    'application/x-yaml':     ['yml', 'yaml'],
+    'application/javascript': 'js',
+    'application/pdf':        'pdf',
+    'application/postscript': 'ps',
+    'application/rtf':        'rtf',
+    'application/x-sh':       'sh',
+    'application/x-csh':      'csh',
+    'application/x-troff':    'nroff roff troff',
+    'application/x-yaml':     'yml yaml',
     
-    'application/rss+xml':    ['rss'],
-    'application/xsl+xml':    ['xsl'],
-    'application/xslt+xml':   ['xslt'],
+    'application/rss+xml':    'rss',
+    'application/xsl+xml':    'xsl',
+    'application/xslt+xml':   'xslt',
     
-    'image/x-icon':           ['ico'],
-    'image/svg+xml':          ['svg'],
+    'image/x-icon':           'ico',
+    'image/svg+xml':          'svg',
     
-    'model/vrml':             ['vrml', 'wrl'],
+    'model/vrml':             'vrml wrl',
     
-    'text/css':               ['css'],
-    'text/html':              ['html'],
-    'text/plain':             ['txt', 'TXT', 'text', 'README', 'INSTALL',
-                               'AUTHORS', 'COPYING', 'ChangeLog', 'RELEASE'],
-    'text/xml':               ['xml'],
-    'text/x-csrc':            ['c', 'xs'],
-    'text/x-chdr':            ['h'],
-    'text/x-c++src':          ['cc', 'CC', 'cpp', 'C'],
-    'text/x-c++hdr':          ['hh', 'HH', 'hpp', 'H'],
-    'text/x-csharp':          ['cs'],
-    'text/x-diff':            ['diff', 'patch'],
-    'text/x-eiffel':          ['e'],
-    'text/x-elisp':           ['el'],
-    'text/x-fortran':         ['f'],
-    'text/x-haskell':         ['hs'],
-    'text/x-ini':             ['ini', 'cfg'],
-    'text/x-objc':            ['m', 'mm'],
-    'text/x-ocaml':           ['ml', 'mli'],
-    'text/x-makefile':        ['make', 'mk',
-                               'Makefile', 'makefile', 'GNUMakefile'],
-    'text/x-pascal':          ['pas'],
-    'text/x-perl':            ['pl', 'pm', 'PL', 'perl'],
-    'text/x-php':             ['php', 'php3', 'php4'],
-    'text/x-python':          ['py', 'python'],
-    'text/x-pyrex':           ['pyx'],
-    'text/x-ruby':            ['rb', 'ruby'],
-    'text/x-scheme':          ['scm'],
-    'text/x-textile':         ['txtl', 'textile'],
-    'text/x-vba':             ['vb', 'vba', 'bas'],
-    'text/x-verilog':         ['v', 'verilog'],
-    'text/x-vhdl':            ['vhd'],
+    'text/css':               'css',
+    'text/html':              'html htm',
+    'text/plain':             'txt TXT text README INSTALL'
+                              'AUTHORS COPYING ChangeLog RELEASE',
+    'text/xml':               'xml',
+    
+    # see also TEXT_X_TYPES below
+    'text/x-csrc':            'c xs',
+    'text/x-chdr':            'h',
+    'text/x-c++src':          'cc CC cpp C c++ C++',
+    'text/x-c++hdr':          'hh HH hpp H',
+    'text/x-csharp':          'cs c# C#',
+    'text/x-diff':            'patch',
+    'text/x-eiffel':          'e',
+    'text/x-elisp':           'el',
+    'text/x-fortran':         'f',
+    'text/x-haskell':         'hs',
+    'text/x-ini':             'ini cfg',
+    'text/x-objc':            'm mm',
+    'text/x-ocaml':           'ml mli',
+    'text/x-makefile':        'make mk Makefile GNUMakefile',
+    'text/x-pascal':          'pas',
+    'text/x-perl':            'pl pm PL',
+    'text/x-php':             'php3 php4',
+    'text/x-python':          'py',
+    'text/x-pyrex':           'pyx',
+    'text/x-ruby':            'rb',
+    'text/x-scheme':          'scm',
+    'text/x-textile':         'txtl',
+    'text/x-vba':             'vb vba bas',
+    'text/x-verilog':         'v',
+    'text/x-vhdl':            'vhd',
 }
+for t in KNOWN_MIME_TYPES.keys():
+    types = KNOWN_MIME_TYPES[t].split()
+    if t.startswith('text/x-'):
+        types.append(t[len('text/x-'):])
+    KNOWN_MIME_TYPES[t] = types
 
 # extend the above with simple (text/x-<something>: <something>) mappings
 
-for x in ['ada', 'asm', 'asp', 'awk', 'idl', 'inf', 'java', 'ksh', 'lua',
-          'm4', 'mail', 'psp', 'rfc', 'rst', 'sql', 'tcl', 'tex', 'zsh']:
+TEXT_X_TYPES = """
+    ada asm asp awk idl inf java ksh lua m4 mail psp rfc rst sql tcl tex zsh
+"""
+for x in TEXT_X_TYPES.split():
     KNOWN_MIME_TYPES.setdefault('text/x-%s' % x, []).append(x)
 
 
