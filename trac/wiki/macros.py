@@ -30,7 +30,7 @@ from trac.util.datefmt import format_date, from_utimestamp
 from trac.util.html import escape
 from trac.util.presentation import separated
 from trac.util.text import unquote, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, ngettext
 from trac.wiki.api import IWikiMacroProvider, WikiSystem, parse_args
 from trac.wiki.formatter import format_to_html, format_to_oneliner, \
                                 extract_link, OutlineFormatter
@@ -570,6 +570,41 @@ class TracIniMacro(WikiMacroBase):
                                             key=lambda o: o.name)
                        if option.name.startswith(key_filter)])))
              for section in sorted(sections)])
+
+
+
+class KnownMimeTypesMacro(WikiMacroBase):
+    """List all known mime-types which can be used as WikiProcessors.
+
+    Can be given an optional argument which is interpreted as mime-type filter.
+    """
+
+    def expand_macro(self, formatter, name, args):
+        from trac.mimeview.api import Mimeview
+        mime_map = Mimeview(self.env).mime_map
+        mime_type_filter = ''
+        args, kw = parse_args(args)
+        if args:
+            mime_type_filter = args.pop(0).strip().rstrip('*')
+
+        mime_types = {}
+        for key, mime_type in mime_map.iteritems():
+            if (not mime_type_filter or
+                mime_type.startswith(mime_type_filter)) and key != mime_type:
+                mime_types.setdefault(mime_type, []).append(key)
+
+        return tag.div(class_='mimetypes')(
+            tag.table(class_='wiki')(
+                tag.thead(tag.th(_("MIME Types")), # always use plural
+                          tag.th(tag.a("WikiProcessors",
+                                       href=formatter.context.href.wiki(
+                                           'WikiProcessors')))),
+                tag.tbody(
+                    [tag.tr(tag.th(tag.tt(mime_type),
+                                   style="text-align: left"),
+                            tag.td(tag.code(
+                                ' '.join(sorted(mime_types[mime_type])))))
+                     for mime_type in sorted(mime_types.keys())])))
 
 
 

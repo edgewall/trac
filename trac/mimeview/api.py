@@ -873,6 +873,18 @@ class Mimeview(Component):
                 return utf
         return self.default_charset
 
+    @property
+    def mime_map(self):
+        # Extend default extension to MIME type mappings with configured ones
+        if not self._mime_map:
+            self._mime_map = MIME_MAP.copy()
+            for mapping in self.config['mimeviewer'].getlist('mime_map'):
+                if ':' in mapping:
+                    assocations = mapping.split(':')
+                    for keyword in assocations: # Note: [0] kept on purpose
+                        self._mime_map[keyword] = assocations[0]
+        return self._mime_map
+
     def get_mimetype(self, filename, content=None):
         """Infer the MIME type from the `filename` or the `content`.
 
@@ -882,16 +894,8 @@ class Mimeview(Component):
         charset information (i.e. "<mimetype>; charset=..."),
         or `None` if detection failed.
         """
-        # Extend default extension to MIME type mappings with configured ones
-        if not self._mime_map:
-            self._mime_map = MIME_MAP.copy()
-            for mapping in self.config['mimeviewer'].getlist('mime_map'):
-                if ':' in mapping:
-                    assocations = mapping.split(':')
-                    for keyword in assocations: # Note: [0] kept on purpose
-                        self._mime_map[keyword] = assocations[0]
 
-        mimetype = get_mimetype(filename, content, self._mime_map)
+        mimetype = get_mimetype(filename, content, self.mime_map)
         charset = None
         if mimetype:
             charset = self.get_charset(content, mimetype)
