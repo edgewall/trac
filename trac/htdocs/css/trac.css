@@ -368,13 +368,13 @@ blockquote.citation {
 .citation .citation .citation blockquote.citation { border-color: #c55; }
 
 table.wiki {
- border: 2px solid #ccc;
+ border: 1px solid #ccc;
  border-collapse: collapse;
  border-spacing: 0;
 }
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 table.wiki th {
- border: 2px solid #bbb;
+ border: 1px solid #bbb;
  padding: .1em .8em;
  background-color: #f7f7f7;
 }
