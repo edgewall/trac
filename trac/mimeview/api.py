@@ -68,7 +68,7 @@ from trac.core import *
 from trac.resource import Resource
 from trac.util import Ranges
 from trac.util.text import exception_to_unicode, to_utf8, to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 
 
 __all__ = ['get_mimetype', 'is_binary', 'detect_unicode', 'Mimeview',
@@ -381,12 +381,12 @@ for t, exts in KNOWN_MIME_TYPES.items():
         MIME_MAP[e] = t
 
 # Simple builtin autodetection from the content using a regexp
-MODE_RE = re.compile(
-    r"#!.+?env (\w+)|"                       # look for shebang with env
-    r"#!(?:[/\w.-_]+/)?(\w+)|"               # look for regular shebang
-    r"-\*-\s*(?:mode:\s*)?([\w+-]+)\s*-\*-|" # look for Emacs' -*- mode -*-
-    r"vim:.*?(?:syntax|filetype|ft)=(\w+)"   # look for VIM's syntax=<n>
-    )
+MODE_RE = re.compile(r"""
+      \#!.+?env\s+(\w+)                     # 1. look for shebang with env
+    | \#!(?:[/\w.-_]+/)?(\w+)               # 2. look for regular shebang
+    | -\*-\s*(?:mode:\s*)?([\w+-]+)\s*-\*-  # 3. look for Emacs' -*- mode -*-
+    | vim:.*?(?:syntax|filetype|ft)=(\w+)   # 4. look for VIM's syntax=<n>
+    """, re.VERBOSE)
 
 def get_mimetype(filename, content=None, mime_map=MIME_MAP):
     """Guess the most probable MIME type of a file with the given name.
@@ -436,7 +436,7 @@ def is_binary(data):
     return '\0' in data[:1000]
 
 def detect_unicode(data):
-    """Detect different unicode charsets by looking for BOMs (Byte Order Marks).
+    """Detect different unicode charsets by looking for BOMs (Byte Order Mark).
 
     Operate obviously only on `str` objects.
     """
@@ -668,8 +668,9 @@ class Mimeview(Component):
         candidates = list(self.get_supported_conversions(mimetype))
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
-            raise TracError(_('No available MIME conversions from %(old)s '
-                              'to %(new)s', old=mimetype, new=key))
+            raise TracError(
+                _("No available MIME conversions from %(old)s to %(new)s",
+                  old=mimetype, new=key))
 
         # First successful conversion wins
         for ck, name, ext, input_mimettype, output_mimetype, quality, \
@@ -678,8 +679,9 @@ class Mimeview(Component):
             if not output:
                 continue
             return (output[0], output[1], ext)
-        raise TracError(_('No available MIME conversions from %(old)s to '
-                          '%(new)s', old=mimetype, new=key))
+        raise TracError(
+            _("No available MIME conversions from %(old)s to %(new)s",
+              old=mimetype, new=key))
 
     def get_annotation_types(self):
         """Generator that returns all available annotation types."""
@@ -740,9 +742,9 @@ class Mimeview(Component):
                 content.reset()
             try:
                 ann_names = annotations and ', '.join(annotations) or \
-                           'No annotations'
-                self.log.debug('Trying to render HTML preview using %s [%s]'
-                               % (renderer.__class__.__name__, ann_names))
+                           'no annotations'
+                self.log.debug('Trying to render HTML preview using %s [%s]',
+                               renderer.__class__.__name__, ann_names)
 
                 # check if we need to perform a tab expansion
                 rendered_content = content
@@ -815,11 +817,10 @@ class Mimeview(Component):
             try:
                 data = (annotator, annotator.get_annotation_data(context))
             except TracError, e:
-                self.log.warning("Can't use annotator '%s': %s" %
-                                 (a, e.message))
-                add_warning(context.req, tag.strong("Can't use ", tag.em(a),
-                                               " annotator:") +
-                                    tag.pre(e.message))
+                self.log.warning("Can't use annotator '%s': %s", a, e.message)
+                add_warning(context.req, tag.strong(
+                    tag_("Can't use %(annotator)s annotator: %(error)s",
+                         annotator=tag.em(a), error=tag.pre(e.message))))
                 data = (None, None)
             annotator_datas.append(data)
 
@@ -938,7 +939,7 @@ class Mimeview(Component):
                 types[mimetype] = (mode, int(quality))
             except (TypeError, ValueError):
                 self.log.warning("Invalid mapping '%s' specified in '%s' "
-                                 "option." % (mapping, option))
+                                 "option.", mapping, option)
         return types
     
     def preview_data(self, context, content, length, mimetype, filename,
