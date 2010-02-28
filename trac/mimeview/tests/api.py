@@ -75,18 +75,12 @@ class GetMimeTypeTestCase(unittest.TestCase):
 class MimeviewTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.env = EnvironmentStub(default_data=True)
-
-        # Make sure we have no external components hanging around in the
-        # component registry
-        from trac.core import ComponentMeta
-        self.old_registry = ComponentMeta._registry
-        ComponentMeta._registry = {}
+        self.env = EnvironmentStub(default_data=False,
+            enable=['%s.%s' % (self.__module__, c)
+                    for c in ['Converter0', 'Converter1', 'Converter2']])
 
     def tearDown(self):
-        # Restore the original component registry
-        from trac.core import ComponentMeta
-        ComponentMeta._registry = self.old_registry
+        pass
 
     def test_get_supported_conversions(self):
         class Converter0(Component):
