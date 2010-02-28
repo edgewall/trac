@@ -106,9 +106,9 @@ class TitleIndexMacro(WikiMacroBase):
             omitprefix = lambda page: page
 
         wiki = formatter.wiki
-        pages = sorted([page for page in wiki.get_pages(prefix) \
-                        if (depth < 0 or depth >= page.count('/') - start) and
-                            'WIKI_VIEW' in formatter.perm('wiki', page)])
+        pages = sorted(page for page in wiki.get_pages(prefix) \
+                       if (depth < 0 or depth >= page.count('/') - start)
+                       and 'WIKI_VIEW' in formatter.perm('wiki', page))
 
         # the function definitions for the different format styles
 
@@ -127,23 +127,22 @@ class TitleIndexMacro(WikiMacroBase):
 
         # the different rendering formats
         def render_group(group, classattribute=None):
-            return tag.ul(
-                [tag.li(isinstance(elt, tuple) and 
-                        tag(tag.strong(elt[0]), render_group(elt[1])) or
-                        tag.a(wiki.format_page_name(elt),
-                              href=formatter.href.wiki(elt)))
-                 for elt in group],
-                class_=classattribute)
+            return tag.ul(class_=classattribute)(
+                tag.li(isinstance(elt, tuple) and 
+                       tag(tag.strong(elt[0]), render_group(elt[1])) or
+                       tag.a(wiki.format_page_name(elt),
+                             href=formatter.href.wiki(elt)))
+                for elt in group)
 
         def render_hierarchy(group, classattribute=None):
-            return tag.ul(
-                [tag.li(isinstance(elt, tuple) and 
-                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
-                            render_hierarchy(elt[1][0:])) or
-                        tag.a(rpartition(elt, '/')[2], 
-                              href=formatter.href.wiki(elt)))
-                 for elt in group],
-                class_=classattribute)
+            return tag.ul(class_=classattribute)(
+                tag.li(isinstance(elt, tuple) and 
+                       tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
+                           render_hierarchy(elt[1][0:])) or
+                       tag.a(rpartition(elt, '/')[2], 
+                             href=formatter.href.wiki(elt)))
+                for elt in group)
+
 
         # create the group hierarchy (same for group and hierarchy formats)
         def split_in_groups(group):
@@ -176,8 +175,8 @@ class TitleIndexMacro(WikiMacroBase):
                                  href=formatter.href.wiki(p)) for p in pages),
                           ', '))
         else:
-            return tag.ul(tag.li(tag.a(wiki.format_page_name(omitprefix(page)), 
-                                        href=formatter.href.wiki(page)))
+            return tag.ul(tag.li(tag.a(wiki.format_page_name(omitprefix(page)),
+                                       href=formatter.href.wiki(page)))
                           for page in pages)
 
 
@@ -236,19 +235,15 @@ class RecentChangesMacro(WikiMacroBase):
             page_name = formatter.wiki.format_page_name(name)
             entries_per_date[-1][1].append((page_name, name, version,
                                             diff_href))
-
-        return tag.div([tag.h3(date) +
-                        tag.ul([tag.li(tag.a(page_name,
-                                             href=formatter.href.wiki(name)),
-                                       ' ',
-                                       diff_href and 
-                                       tag.small('(', tag.a('diff',
-                                                            href=diff_href),
-                                                 ')') or
-                                       None)
-                                for page_name, name, version, diff_href
-                                in entries])
-                        for date, entries in entries_per_date])
+        return tag.div(
+            (tag.h3(date),
+             tag.ul(
+                 tag.li(tag.a(page, href=formatter.href.wiki(name)), ' ',
+                        diff_href and
+                        tag.small('(', tag.a('diff', href=diff_href), ')') or
+                        None)
+                 for page, name, version, diff_href in entries))
+            for date, entries in entries_per_date)
 
 
 class PageOutlineMacro(WikiMacroBase):
@@ -281,7 +276,8 @@ class PageOutlineMacro(WikiMacroBase):
             if len(argv) > 0:
                 depth = argv[0]
                 if '-' in depth:
-                    min_depth, max_depth = [int(d) for d in depth.split('-', 1)]
+                    min_depth, max_depth = [int(d)
+                                            for d in depth.split('-', 1)]
                 else:
                     min_depth = max_depth = int(depth)
                 if len(argv) > 1:
@@ -485,8 +481,8 @@ class ImageMacro(WikiMacroBase):
             if desc and not key in attr:
                 attr[key] = desc
         if style:
-            attr['style'] = '; '.join(['%s:%s' % (k, escape(v))
-                                       for k, v in style.iteritems()])
+            attr['style'] = '; '.join('%s:%s' % (k, escape(v))
+                                      for k, v in style.iteritems())
         result = tag.img(src=raw_url, **attr)
         if link is not None:
             result = tag.a(result, href=link or url,
@@ -510,11 +506,11 @@ class MacroListMacro(WikiMacroBase):
 
         def get_macro_descr():
             for macro_provider in formatter.wiki.macro_providers:
-                for macro_name in macro_provider.get_macros():
-                    if content and content != '*' and macro_name != content:
+                for name in macro_provider.get_macros():
+                    if content and content != '*' and name != content:
                         continue
                     try:
-                        descr = macro_provider.get_macro_description(macro_name)
+                        descr = macro_provider.get_macro_description(name)
                         descr = to_unicode(descr) or ''
                         if content == '*':
                             descr = format_to_oneliner(
@@ -524,15 +520,15 @@ class MacroListMacro(WikiMacroBase):
                             descr = format_to_html(
                                 self.env, formatter.context, descr)
                     except Exception, e:
-                        descr = system_message(_("Error: Can't get description "
-                                                 "for macro %(name)s",
-                                                 name=macro_name), e)
-                    yield (macro_name, descr)
+                        descr = system_message(
+                            _("Error: Can't get description for macro "
+                              "%(name)s", name=name), e)
+                    yield name, descr
 
         return tag.div(class_='trac-macrolist')(
-            [(tag.h3(tag.code('[[', macro_name, ']]'),
-                              id='%s-macro' % macro_name), description)
-             for macro_name, description in get_macro_descr()])
+            (tag.h3(tag.code('[[', name, ']]'), id='%s-macro' % name),
+             description)
+             for name, description in get_macro_descr())
 
 
 class TracIniMacro(WikiMacroBase):
@@ -560,16 +556,16 @@ class TracIniMacro(WikiMacroBase):
                 sections.setdefault(section, {})[key] = option
 
         return tag.div(class_='tracini')(
-            [(tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
-              tag.table(class_='wiki')(
-            tag.tbody([tag.tr(tag.td(tag.tt(option.name)),
-                              tag.td(format_to_oneliner(
-                                            self.env, formatter.context,
-                                            to_unicode(option.__doc__))))
-                       for option in sorted(sections[section].itervalues(),
-                                            key=lambda o: o.name)
-                       if option.name.startswith(key_filter)])))
-             for section in sorted(sections)])
+            (tag.h3(tag.code('[%s]' % section), id='%s-section' % section),
+             tag.table(class_='wiki')(
+                 tag.tbody(tag.tr(tag.td(tag.tt(option.name)),
+                                  tag.td(format_to_oneliner(
+                                      self.env, formatter.context,
+                                      to_unicode(option.__doc__))))
+                           for option in sorted(sections[section].itervalues(),
+                                                key=lambda o: o.name)
+                           if option.name.startswith(key_filter))))
+            for section in sorted(sections))
 
 
 
@@ -600,11 +596,11 @@ class KnownMimeTypesMacro(WikiMacroBase):
                                        href=formatter.context.href.wiki(
                                            'WikiProcessors')))),
                 tag.tbody(
-                    [tag.tr(tag.th(tag.tt(mime_type),
-                                   style="text-align: left"),
-                            tag.td(tag.code(
-                                ' '.join(sorted(mime_types[mime_type])))))
-                     for mime_type in sorted(mime_types.keys())])))
+                    tag.tr(tag.th(tag.tt(mime_type),
+                                  style="text-align: left"),
+                           tag.td(tag.code(
+                               ' '.join(sorted(mime_types[mime_type])))))
+                    for mime_type in sorted(mime_types.keys()))))
 
 
 
