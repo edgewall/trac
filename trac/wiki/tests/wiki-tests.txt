@@ -1295,7 +1295,7 @@ Paragraph
 </li></ol><p>
 <strong>Next steps</strong>
 </p>
-<ol class="loweralpha" start="f"><li>restarts at "f"
+<ol class="loweralpha" start="6"><li>restarts at "f"
 </li><li>follows with "g"
 ...
 </li><li>More steps
@@ -1327,7 +1327,7 @@ before the "."
 OTOH, the following is a roman numbered list:
 </p>
 </blockquote>
-<ol class="lowerroman" start="iii"><li>start
+<ol class="lowerroman"><li>start
 </li><li>maximal number in sequence
 </li></ol><p>
 Paragraph

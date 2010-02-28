@@ -698,15 +698,21 @@ class Formatter(object):
             type_ = 'ul'
         else:
             type_ = 'ol'
-            idx = '01iI'.find(listid)
+            lstart = fullmatch.group('lstart')
+            start = None
+            idx = '0iI'.find(listid)
             if idx > -1:
-                class_ = ('arabiczero', None, 'lowerroman', 'upperroman')[idx]
+                class_ = ('arabiczero', 'lowerroman', 'upperroman')[idx]
+            elif listid.isdigit():
+                start = lstart != '1' and int(lstart)
             elif listid.islower():
                 class_ = 'loweralpha'
+                if len(lstart) == 1 and lstart != 'a':
+                    start = ord(lstart) - ord('a') + 1
             elif listid.isupper():
                 class_ = 'upperalpha'
-            lstart = fullmatch.group('lstart')
-            start = (len(lstart) > 1 or listid not in '01iIaA') and lstart
+                if len(lstart) == 1 and lstart != 'A':
+                    start = ord(lstart) - ord('A') + 1
         self._set_list_depth(ldepth, type_, class_, start)
         return ''
         
