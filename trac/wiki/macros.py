@@ -126,20 +126,20 @@ class TitleIndexMacro(WikiMacroBase):
                     for page in pages]
 
         # the different rendering formats
-        def render_group(group, classattribute=None):
-            return tag.ul(class_=classattribute)(
+        def render_group(group):
+            return tag.ul(
                 tag.li(isinstance(elt, tuple) and 
                        tag(tag.strong(elt[0]), render_group(elt[1])) or
                        tag.a(wiki.format_page_name(elt),
                              href=formatter.href.wiki(elt)))
                 for elt in group)
 
-        def render_hierarchy(group, classattribute=None):
-            return tag.ul(class_=classattribute)(
+        def render_hierarchy(group):
+            return tag.ul(
                 tag.li(isinstance(elt, tuple) and 
                        tag(tag.a(elt[0], href=formatter.href.wiki(elt[0])),
                            render_hierarchy(elt[1][0:])) or
-                       tag.a(rpartition(elt, '/')[2], 
+                       tag.a(rpartition(elt, '/')[2],
                              href=formatter.href.wiki(elt)))
                 for elt in group)
 
@@ -162,22 +162,25 @@ class TitleIndexMacro(WikiMacroBase):
                         groups.append(elt[1])
             return groups
 
+        if format == 'compact':
+            return tag(
+                separated((tag.a(wiki.format_page_name(omitprefix(p)),
+                                 href=formatter.href.wiki(p)) for p in pages),
+                          ', '))
         splitter, renderer = {
             'group':     (split_pages_group,     render_group),
             'hierarchy': (split_pages_hierarchy, render_hierarchy),
             }.get(format, (None, None))
 
         if splitter and renderer:
-            return renderer(split_in_groups(splitter(pages)), "titleindex")
-        elif format == 'compact':
-            return tag(
-                separated((tag.a(wiki.format_page_name(omitprefix(p)),
-                                 href=formatter.href.wiki(p)) for p in pages),
-                          ', '))
+            titleindex = renderer(split_in_groups(splitter(pages)))
         else:
-            return tag.ul(tag.li(tag.a(wiki.format_page_name(omitprefix(page)),
-                                       href=formatter.href.wiki(page)))
-                          for page in pages)
+            titleindex = tag.ul(
+                tag.li(tag.a(wiki.format_page_name(omitprefix(page)),
+                             href=formatter.href.wiki(page)))
+                for page in pages)
+
+        return tag.div(titleindex, class_='titleindex')
 
 
 class RecentChangesMacro(WikiMacroBase):
@@ -296,7 +299,7 @@ class PageOutlineMacro(WikiMacroBase):
         if title:
             outline = tag.h4(title) + outline
         if not inline:
-            outline = tag.div(outline, class_="wiki-toc")
+            outline = tag.div(outline, class_='wiki-toc')
         return outline
 
 
@@ -652,7 +655,7 @@ class TracGuideTocMacro(WikiMacroBase):
             tag.h4(_('Table of Contents')),
             tag.ul([tag.li(tag.a(title, href=formatter.href.wiki(prefix+ref),
                                  class_=(not ws.has_page(prefix+ref) and
-                                         "missing")),
-                           class_=(prefix+ref == curpage and "active"))
+                                         'missing')),
+                           class_=(prefix+ref == curpage and 'active'))
                     for ref, title in self.TOC]),
-            class_="wiki-toc")
+            class_='wiki-toc')
