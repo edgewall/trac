@@ -76,6 +76,12 @@ italic
 multiline</i></strong>
 </p>
 ------------------------------
+------------------------------
+<p>
+<strong><i>bold<br />
+italic<br />
+multiline</i></strong><br />
+</p>
 ============================== Problematic multiline bold italic markup
 '''''bold
 italic
@@ -428,20 +434,31 @@ rfc-2396.compatible://link
 </p>
 ------------------------------
 ============================== Link resolver counter examples
-Test:[[BR]] There should be a line break
+Test:[[BR]] There should be a
+line break
 
 Other test:'''bold text''' should be bold
 ------------------------------
 <p>
-Test:<br /> There should be a line break
+Test:<br /> There should be a
+line break
 </p>
 <p>
 Other test:<strong>bold text</strong> should be bold
 </p>
 ------------------------------
-Test:  There should be a line break
+Test:  There should be a
+line break
 
 Other test:<strong>bold text</strong> should be bold
+------------------------------
+<p>
+Test:<br /> There should be a<br />
+line break<br />
+</p>
+<p>
+Other test:<strong>bold text</strong> should be bold<br />
+</p>
 ============================== Link resolver counter example
 '''Note:'''
 ------------------------------
@@ -1946,6 +1963,16 @@ Paragraph
  * Item 1
    * Item 2
 Another paragraph
+------------------------------
+<h1 id="Heading1">Heading 1</h1>
+<p>
+Paragraph<br />
+</p>
+<ul><li>Item 1
+<ul><li>Item 2
+</li></ul></li></ul><p>
+Another paragraph<br />
+</p>
 ============================== Heading, lists and table
 Paragraph
 ----
@@ -1976,6 +2003,20 @@ Paragraph
 ||Table||cell||
 ||Foo||Bar||Baz||
 <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a>
+------------------------------
+<p>
+Paragraph<br />
+</p>
+<hr />
+<ol><li>Item 1
+<ol start="2"><li>Item 2
+</li></ol></li></ol><table class="wiki">
+<tr><td>Table</td><td>cell
+</td></tr><tr><td>Foo</td><td>Bar</td><td>Baz
+</td></tr></table>
+<p>
+<a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>http://www.edgewall.com/</a><br />
+</p>
 ============================== Lists, indents and table
 
   * Bar
@@ -2061,6 +2102,7 @@ Paragraph.
 >> a nested quote
 A comment on the above
 >> start 2nd level
+>> continue 2nd level
 > first level
 ------------------------------
 <blockquote class="citation">
@@ -2080,6 +2122,7 @@ A comment on the above
 <blockquote class="citation">
 <p>
 start 2nd level
+continue 2nd level
 </p>
 </blockquote>
 <p>
@@ -2091,7 +2134,33 @@ first level
 &gt;&gt; a nested quote
 A comment on the above
 &gt;&gt; start 2nd level
+&gt;&gt; continue 2nd level
 &gt; first level
+------------------------------
+<blockquote class="citation">
+<p>
+This is the quoted text<br />
+</p>
+<blockquote class="citation">
+<p>
+a nested quote<br />
+</p>
+</blockquote>
+</blockquote>
+<p>
+A comment on the above<br />
+</p>
+<blockquote class="citation">
+<blockquote class="citation">
+<p>
+start 2nd level<br />
+continue 2nd level<br />
+</p>
+</blockquote>
+<p>
+first level<br />
+</p>
+</blockquote>
 ============================== Citations (reply to style, consistent space)
  A quote
 A paragraph

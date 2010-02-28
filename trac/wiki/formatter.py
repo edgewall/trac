@@ -1154,7 +1154,8 @@ class Formatter(object):
             if not(self.in_list_item or self.in_def_list or self.in_table):
                 if len(result):
                     self.open_paragraph()
-                if escape_newlines and not result.rstrip().endswith('<br />'):
+                if escape_newlines and self.paragraph_open and \
+                       not result.rstrip().endswith('<br />'):
                     sep = '<br />' + sep
             self.out.write(result + sep)
             self.close_table_row()
