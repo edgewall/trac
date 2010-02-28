@@ -608,10 +608,11 @@ class KnownMimeTypesMacro(WikiMacroBase):
 
         return tag.div(class_='mimetypes')(
             tag.table(class_='wiki')(
-                tag.thead(tag.th(_("MIME Types")), # always use plural
-                          tag.th(tag.a("WikiProcessors",
-                                       href=formatter.context.href.wiki(
-                                           'WikiProcessors')))),
+                tag.thead(tag.tr(
+                    tag.th(_("MIME Types")), # always use plural
+                    tag.th(tag.a("WikiProcessors",
+                                 href=formatter.context.href.wiki(
+                                     'WikiProcessors'))))),
                 tag.tbody(
                     tag.tr(tag.th(tag.tt(mime_type),
                                   style="text-align: left"),
