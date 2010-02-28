@@ -51,7 +51,8 @@ class WikiMacroBase(Component):
 
     def get_macro_description(self, name):
         """Return the subclass's docstring."""
-        return to_unicode(inspect.getdoc(self.__class__))
+        doc = inspect.getdoc(self.__class__)
+        return doc and to_unicode(doc) or ''
 
     def parse_macro(self, parser, name, content):
         raise NotImplementedError
@@ -507,31 +508,44 @@ class MacroListMacro(WikiMacroBase):
     def expand_macro(self, formatter, name, content):
         from trac.wiki.formatter import system_message
 
+        content = content and content.strip() or ''
+        name_filter = content.strip('*')
+
         def get_macro_descr():
             for macro_provider in formatter.wiki.macro_providers:
-                for name in macro_provider.get_macros():
-                    if content and content != '*' and name != content:
-                        continue
-                    try:
-                        descr = macro_provider.get_macro_description(name)
-                        descr = to_unicode(descr) or ''
-                        if content == '*':
-                            descr = format_to_oneliner(
-                                self.env, formatter.context, descr, 
-                                shorten=True)
-                        else:
-                            descr = format_to_html(
-                                self.env, formatter.context, descr)
-                    except Exception, e:
-                        descr = system_message(
-                            _("Error: Can't get description for macro "
-                              "%(name)s", name=name), e)
-                    yield name, descr
+                names = list(macro_provider.get_macros())
+                if name_filter and not any(name.startswith(name_filter)
+                                           for name in names):
+                    continue
+                try:
+                    name_descriptions = [
+                        (name, macro_provider.get_macro_description(name))
+                        for name in names]
+                except Exception, e:
+                    yield system_message(
+                        _("Error: Can't get description for macro %(name)s",
+                          name=names[0]), e), names
+                else:
+                    for descr, pairs in groupby(name_descriptions,
+                                                key=lambda p: p[1]):
+                        if descr:
+                            descr = to_unicode(descr) or ''
+                            if content == '*':
+                                descr = format_to_oneliner(
+                                    self.env, formatter.context, descr,
+                                    shorten=True)
+                            else:
+                                descr = format_to_html(
+                                    self.env, formatter.context, descr)
+                        yield descr, [name for name, descr in pairs]
 
         return tag.div(class_='trac-macrolist')(
-            (tag.h3(tag.code('[[', name, ']]'), id='%s-macro' % name),
-             description)
-             for name, description in get_macro_descr())
+            (tag.h3(tag.code('[[', names[0], ']]'), id='%s-macro' % names[0]),
+             len(names) > 1 and tag.p(tag.strong(_("Aliases:")),
+                                      [tag.code(' [[', alias, ']]')
+                                       for alias in names[1:]]) or None,
+             description or tag.em(_("Sorry, no documentation found")))
+            for description, names in list(get_macro_descr()))
 
 
 class TracIniMacro(WikiMacroBase):
