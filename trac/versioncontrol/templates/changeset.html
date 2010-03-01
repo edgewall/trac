@@ -33,16 +33,19 @@
             [$old_rev:$new_rev]</a><py:if test="reponame"> in $reponame</py:if>
         </h1>
         <h1 py:when="not changeset and not restricted" i18n:msg="reponame, old_path, old_rev, new_path, new_rev">
-            Changes<py:if test="reponame"> in $reponame</py:if>
-            from <a title="Show entry in browser" href="${href.browser(reponame, old_path, rev=old_rev)}">$old_path</a>
+          Changes<py:if test="reponame"> in $reponame</py:if>
+          from <a title="Show entry in browser" href="${href.browser(reponame, old_path, rev=old_rev)}">$old_path</a>
           at <a title="Show full changeset" href="${href.changeset(old_rev, reponame)}">r$old_rev</a>
           to <a title="Show entry in browser" href="${href.browser(reponame, new_path, rev=new_rev)}">$new_path</a>
           at <a title="Show full changeset" href="${href.changeset(new_rev, reponame)}">r$new_rev</a>
           </h1>
-          <h1 py:otherwise="" i18n:msg="new_rev, reponame">Changeset <a
-             py:strip="not annotated"
-             title="Show full changeset"
-             href="${href.changeset(new_rev, reponame)}">$new_rev</a><py:if test="reponame"> in $reponame</py:if></h1>
+        <h1 py:when="reponame" i18n:msg="new_rev, reponame">
+          Changeset <a py:strip="not annotated" href="${href.changeset(new_rev, reponame)}">$new_rev</a>
+          in $reponame
+        </h1>
+        <h1 py:otherwise="" i18n:msg="new_rev">
+          Changeset <a py:strip="not annotated" href="${href.changeset(new_rev)}">$new_rev</a>
+        </h1>
       </div>
 
       <form py:if="not xhr and (has_diffs or diff.options.ignoreblanklines or diff.options.ignorecase or
