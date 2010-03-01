@@ -194,17 +194,18 @@ class TicketModule(Component):
         sql2, args2 = search_to_sql(db, ['newvalue'], terms)
         sql3, args3 = search_to_sql(db, ['value'], terms)
         cursor = db.cursor()
-        cursor.execute("SELECT summary,description,reporter, "
-                       "       type,id,time,status,resolution "
-                       "FROM ticket "
-                       "WHERE id IN ("
-                       "    SELECT id FROM ticket WHERE %s "
-                       "  UNION "
-                       "    SELECT ticket FROM ticket_change "
-                       "    WHERE field='comment' AND %s "
-                       "  UNION "
-                       "    SELECT ticket FROM ticket_custom WHERE %s)" %
-                       (sql, sql2, sql3), args + args2 + args3)
+        cursor.execute("""
+            SELECT summary,description,reporter,type,id,time,status,resolution 
+            FROM ticket
+            WHERE id IN (
+                SELECT id FROM ticket WHERE %s
+              UNION
+                SELECT ticket FROM ticket_change
+                WHERE field='comment' AND %s
+              UNION
+                SELECT ticket FROM ticket_custom WHERE %s
+            )
+            """ % (sql, sql2, sql3), args + args2 + args3)
         ticketsystem = TicketSystem(self.env)
         for summary, desc, author, type, tid, ts, status, resolution in cursor:
             t = ticket_realm(id=tid)
@@ -278,13 +279,14 @@ class TicketModule(Component):
         if 'ticket' in filters or 'ticket_details' in filters:
             cursor = db.cursor()
 
-            cursor.execute("SELECT t.id,tc.time,tc.author,t.type,t.summary, "
-                           "       tc.field,tc.oldvalue,tc.newvalue "
-                           "  FROM ticket_change tc "
-                           "    INNER JOIN ticket t ON t.id = tc.ticket "
-                           "      AND tc.time>=%s AND tc.time<=%s "
-                           "ORDER BY tc.time"
-                           % (ts_start, ts_stop))
+            cursor.execute("""
+                SELECT t.id,tc.time,tc.author,t.type,t.summary, 
+                       tc.field,tc.oldvalue,tc.newvalue 
+                FROM ticket_change tc 
+                    INNER JOIN ticket t ON t.id = tc.ticket 
+                        AND tc.time>=%s AND tc.time<=%s 
+                ORDER BY tc.time
+                """ % (ts_start, ts_stop))
             data = None
             for id,t,author,type,summary,field,oldvalue,newvalue in cursor:
                 if not data or (id, t) != data[:2]:
@@ -310,10 +312,10 @@ class TicketModule(Component):
 
             # New tickets
             if 'ticket' in filters:
-                cursor.execute("SELECT id,time,reporter,type,summary,"
-                               "description"
-                               "  FROM ticket WHERE time>=%s AND time<=%s",
-                               (ts_start, ts_stop))
+                cursor.execute("""
+                    SELECT id,time,reporter,type,summary,description
+                    FROM ticket WHERE time>=%s AND time<=%s
+                    """, (ts_start, ts_stop))
                 for row in cursor:
                     ev = produce_event(row, 'new', {}, None, None)
                     if ev:
