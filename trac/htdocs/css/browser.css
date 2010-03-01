@@ -147,11 +147,8 @@ table.chglist { margin-top: 0 }
 }
 .chglist td.diff { padding: 1px }
 .chglist td.change .comment { display: none }
-.chglist td.age {
- font-size: 85%;
- padding-top: 0.55em;
-}
-.chglist td.author { font-size: 85%; }
+.chglist td.age { font-size: 85% }
+.chglist td.author { font-size: 85% }
 .chglist td.rev { 
  font-family: monospace;  
  letter-spacing: -0.08em;
