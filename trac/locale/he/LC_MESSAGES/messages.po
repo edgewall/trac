@@ -4204,7 +4204,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:42
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr "קבוצת שינויים [1:%(new_rev)s] ב%(repo)s"
+msgstr "קבוצת שינויים [1:%(new_rev)s] ב%(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:73
 msgid "Show entry in browser"
