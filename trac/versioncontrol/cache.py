@@ -423,7 +423,7 @@ class CachedChangeset(Changeset):
                        "FROM node_change WHERE repos=%s AND rev=%s "
                        "ORDER BY path",
                        (self.repos.id, self.repos.db_rev(self.rev)))
-        for path, kind, change, base_path, base_rev in cursor:
+        for path, kind, change, base_path, base_rev in sorted(cursor):
             kind = _kindmap[kind]
             change = _actionmap[change]
             yield path, kind, change, base_path, self.repos.rev_db(base_rev)
