@@ -39,7 +39,7 @@ def random_unique_camel():
 def random_sentence(word_count=None):
     if word_count == None:
         word_count = random.randint(1, 20)
-    words = [random.choice(all_words) for x in range(word_count)]
+    words = [random_word() for x in range(word_count)]
     return '%s.' % ' '.join(words)
 
 def random_paragraph(sentence_count=None):
