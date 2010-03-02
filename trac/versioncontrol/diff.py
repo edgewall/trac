@@ -230,8 +230,8 @@ def get_diff_options(req):
     
     def get_bool_option(name, default=0):
         pref = int(req.session.get('diff_' + name, default))
-        arg = int(req.args.has_key(name))
-        if req.args.has_key('update') and arg != pref:
+        arg = int(name in req.args)
+        if 'update' in req.args and arg != pref:
             req.session['diff_' + name] = arg
         else:
             arg = pref
@@ -239,19 +239,22 @@ def get_diff_options(req):
 
     pref = req.session.get('diff_style', 'inline')
     style = req.args.get('style', pref)
-    if req.args.has_key('update') and style != pref:
+    if 'update' in req.args and style != pref:
         req.session['diff_style'] = style
     data['style'] = style
 
     pref = int(req.session.get('diff_contextlines', 2))
     try:
-        arg = int(req.args.get('contextlines', pref))
+        context = int(req.args.get('contextlines', pref))
     except ValueError:
-        arg = -1
-    if req.args.has_key('update') and arg != pref:
-        req.session['diff_contextlines'] = arg
-    options = ['-U%d' % arg]
-    options_data['contextlines'] = arg
+        context = -1
+    if 'update' in req.args and context != pref:
+        req.session['diff_contextlines'] = context
+    options_data['contextlines'] = context
+    
+    arg = int(req.args.get('contextall', 0))
+    options_data['contextall'] = arg
+    options = ['-U%d' % (arg and -1 or context)]
 
     arg = get_bool_option('ignoreblanklines')
     if arg:

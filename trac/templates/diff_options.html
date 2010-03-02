@@ -14,10 +14,16 @@
             value="sidebyside">side by side</option>
   </select>
   <div class="field">
-    Show <input type="text" name="contextlines" id="contextlines" size="2"
-          maxlength="3" value="${diff.options.contextlines &lt; 0 and 
-                                 'all' or diff.options.contextlines}" />
-    <label for="contextlines">lines around each change</label>
+    <label><input type="radio" name="contextall" value="0"
+                  checked="${not diff.options.contextall or None}"/>
+           Show</label>
+    <label><input type="text" name="contextlines" id="contextlines" size="2"
+                  maxlength="3" value="${diff.options.contextlines &lt; 0 and 
+                                         'all' or diff.options.contextlines}"/>
+           lines around each change</label><br/>
+    <label><input type="radio" name="contextall" value="1"
+                  checked="${diff.options.contextall or None}"/>
+           Show the changes in full context</label>
   </div>
   <fieldset id="ignore" py:with="options = diff.options">
     <legend>Ignore:</legend>

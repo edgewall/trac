@@ -146,10 +146,12 @@ class WikiModule(Component):
             elif action == 'delete':
                 self._do_delete(req, versioned_page)
             elif action == 'diff':
-                get_diff_options(req)
+                style, options, diff_data = get_diff_options(req)
+                contextall = diff_data['options']['contextall']
                 req.redirect(req.href.wiki(versioned_page.name, action='diff',
                                            old_version=old_version,
-                                           version=version))
+                                           version=version,
+                                           contextall=contextall or None))
         elif action == 'delete':
             return self._render_confirm(req, versioned_page)
         elif action == 'edit':

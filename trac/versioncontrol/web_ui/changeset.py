@@ -264,6 +264,7 @@ class ChangesetModule(Component):
             old_path = old = None
 
         style, options, diff_data = get_diff_options(req)
+        diff_opts = diff_data['options']
 
         # -- setup the `chgset` and `restricted` flags, see docstring above.
         chgset = not old and not old_path
@@ -273,17 +274,21 @@ class ChangesetModule(Component):
             restricted = old_path == new_path # (same path or not)
 
         # -- redirect if changing the diff options or alias requested
-        if req.args.has_key('update') or reponame != repos.reponame:
+        if 'update' in req.args or reponame != repos.reponame:
+            contextall = diff_opts['contextall'] or None
             reponame = repos.reponame or None
             if chgset:
                 if restricted:
-                    req.redirect(req.href.changeset(new, reponame, new_path))
+                    req.redirect(req.href.changeset(new, reponame, new_path,
+                                                    contextall=contextall))
                 else:
-                    req.redirect(req.href.changeset(new, reponame))
+                    req.redirect(req.href.changeset(new, reponame,
+                                                    contextall=contextall))
             else:
                 req.redirect(req.href.changeset(new, reponame,
                                                 new_path, old=old,
-                                                old_path=full_old_path))
+                                                old_path=full_old_path,
+                                                contextall=contextall))
 
         # -- preparing the data
         if chgset:
@@ -314,6 +319,7 @@ class ChangesetModule(Component):
             # TODO: find a cheaper way to reimplement r2636
             req.check_modified(chgset.date, [
                 style, ''.join(options), repos.name,
+                diff_opts['contextlines'], diff_opts['contextall'],
                 repos.rev_older_than(new, repos.youngest_rev),
                 chgset.message, xhr,
                 pretty_timedelta(chgset.date, None, 3600)])
@@ -549,7 +555,7 @@ class ChangesetModule(Component):
 
             if old_content != new_content:
                 context = options.get('contextlines', 3)
-                if context < 0:
+                if context < 0 or options.get('contextall'):
                     context = None
                 tabwidth = self.config['diff'].getint('tab_width') or \
                            self.config['mimeviewer'].getint('tab_width', 8)
@@ -716,7 +722,7 @@ class ChangesetModule(Component):
             if old_content != new_content:
                 options = data['diff']['options']
                 context = options.get('contextlines', 3)
-                if context < 0:
+                if context < 0 or options.get('contextall'):
                     context = 3 # FIXME: unified_diff bugs with context=None
                 ignore_blank_lines = options.get('ignoreblanklines')
                 ignore_case = options.get('ignorecase')
