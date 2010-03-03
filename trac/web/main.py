@@ -18,6 +18,7 @@
 
 import cgi
 import dircache
+import fnmatch
 import gc
 import locale
 import os
@@ -44,8 +45,8 @@ from trac.env import open_environment
 from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
-from trac.util import get_frame_info, get_last_traceback, hex_entropy, arity, \
-                      translation
+from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
+                      read_file, translation
 from trac.util.compat import any, partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
@@ -56,16 +57,19 @@ from trac.web.clearsilver import HDFWrapper
 from trac.web.href import Href
 from trac.web.session import Session
 
+
 class FakeSession(dict):
     sid = None
     def save(self):
         pass
+
 
 class FakePerm(dict):
     def require(self, *args):
         return False
     def __call__(self, *args):
         return self
+
 
 def populate_hdf(hdf, env, req=None):
     """Populate the HDF data set with various information, such as common URLs,
@@ -484,6 +488,7 @@ def dispatch_request(environ, start_response):
             ##    del gc.garbage[:]
             ##    env.log.warn("%d uncollectable objects found.", uncollectable)
 
+
 def _dispatch_request(req, env, env_error):
     resp = []
 
@@ -588,6 +593,7 @@ def _dispatch_request(req, env, env_error):
             del exc_info
     return resp
 
+
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
     req = Request(environ, start_response)
@@ -643,6 +649,19 @@ def send_project_index(environ, start_response, parent_dir=None,
     except RequestDone:
         pass
 
+
+def get_tracignore_patterns(env_parent_dir):
+    """Return the list of patterns from env_parent_dir/.tracignore or a
+    default pattern of `".*"` if the file doesn't exist.
+    """
+    path = os.path.join(env_parent_dir, '.tracignore')
+    try:
+        lines = [line.strip() for line in read_file(path).splitlines()]
+    except IOError:
+        return ['.*']
+    return [line for line in lines if line and not line.startswith('#')]
+
+
 def get_environments(environ, warn=False):
     """Retrieve canonical environment name to path mapping.
 
@@ -655,9 +674,14 @@ def get_environments(environ, warn=False):
         env_parent_dir = os.path.normpath(env_parent_dir)
         paths = dircache.listdir(env_parent_dir)[:]
         dircache.annotate(env_parent_dir, paths)
-        env_paths += [os.path.join(env_parent_dir, project) \
-                      for project in paths 
-                      if project[-1] == '/' and project != '.egg-cache/']
+
+        # Filter paths that match the .tracignore patterns
+        ignore_patterns = get_tracignore_patterns(env_parent_dir)
+        paths = [path[:-1] for path in paths if path[-1] == '/'
+                 and not any(fnmatch.fnmatch(path[:-1], pattern)
+                             for pattern in ignore_patterns)]
+        env_paths.extend(os.path.join(env_parent_dir, project) \
+                         for project in paths)
     envs = {}
     for env_path in env_paths:
         env_path = os.path.normpath(env_path)
