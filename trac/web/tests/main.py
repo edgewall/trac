@@ -16,17 +16,20 @@ from trac.web.main import get_environments
 
 import tempfile
 import unittest
-import shutil
 import os.path
 
 
 class EnvironmentsTestCase(unittest.TestCase):
 
+    dirs = ('mydir1', 'mydir2', '.hidden_dir')
+    files = ('myfile1', 'myfile2', '.dot_file')
+
     def setUp(self):
         self.parent_dir = tempfile.mkdtemp(prefix='trac-')
-        for dname in ('mydir1', 'mydir2', '.hidden_dir'):
+        self.tracignore = os.path.join(self.parent_dir, '.tracignore')
+        for dname in self.dirs:
             os.mkdir(os.path.join(self.parent_dir, dname))
-        for fname in ('myfile1', 'myfile2', '.dot_file'):
+        for fname in self.files:
             create_file(os.path.join(self.parent_dir, fname))
         self.environ = {
            'trac.env_paths': [],
@@ -34,12 +37,14 @@ class EnvironmentsTestCase(unittest.TestCase):
         }
 
     def tearDown(self):
-        shutil.rmtree(self.parent_dir)
+        for fname in self.files:
+            os.unlink(os.path.join(self.parent_dir, fname))
+        for dname in self.dirs:
+            os.rmdir(os.path.join(self.parent_dir, dname))
+        if os.path.exists(self.tracignore):
+            os.unlink(self.tracignore)
+        os.rmdir(self.parent_dir)
 
-    def make_tracignore(self, patterns):
-        create_file(os.path.join(self.parent_dir, '.tracignore'),
-                    '\n'.join(patterns) + '\n')
-        
     def env_paths(self, projects):
         return dict((project, os.path.normpath(os.path.join(self.parent_dir,
                                                             project)))
@@ -50,21 +55,21 @@ class EnvironmentsTestCase(unittest.TestCase):
                           get_environments(self.environ))
 
     def test_empty_tracignore(self):
-        self.make_tracignore([])
+        create_file(self.tracignore)
         self.assertEquals(self.env_paths(['mydir1', 'mydir2', '.hidden_dir']),
                           get_environments(self.environ))
 
     def test_qmark_pattern_tracignore(self):
-        self.make_tracignore(['mydir?'])
+        create_file(self.tracignore, 'mydir?')
         self.assertEquals(self.env_paths(['.hidden_dir']),
                           get_environments(self.environ))
 
     def test_star_pattern_tracignore(self):
-        self.make_tracignore(['my*', '.hidden_dir'])
+        create_file(self.tracignore, 'my*\n.hidden_dir')
         self.assertEquals({}, get_environments(self.environ))
     
     def test_combined_tracignore(self):
-        self.make_tracignore(['my*i?1', '', '#mydir2'])
+        create_file(self.tracignore, 'my*i?1\n\n#mydir2')
         self.assertEquals(self.env_paths(['mydir2', '.hidden_dir']),
                           get_environments(self.environ))
 
