@@ -1,6 +1,18 @@
 Trac 0.11.7rc1 (February 23, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.7rc1
 
+Security fixes:
+ - Fixed a ticket validation issue that would allow unauthorized users to modify the status and resolution of a ticket (#8884)
+
+Performance improvements:
+ - Trac wiki had some trouble handling very long unicode words (#9025) [[comment(intentionally kept vague, we don't want to advertize a DOS, do we?)]]
+ - Full text search was very slow if lots of custom fields were used (#8935)
+
+Bug fixes:
+ - Fixed a race condition that could lead to the destruction of the trac.ini file (#8623)
+ - Fixed creation of new milestone which could have been a rename if performed after a name clash has been detected (#8816)
+ - Fixed display of value 0 in report cells (#7512)
+
 Trac 0.11.6 (November 28, 2009)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.6
 
