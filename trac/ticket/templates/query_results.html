@@ -32,8 +32,10 @@
         <tr>
           <th py:for="header in headers"
             class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
-            <a title="Sort by $header.label${query.order == header.name and not query.desc and ' (descending)' or ''}"
-              href="$header.href">${header.label}</a>
+            <a title="${_('Sort by %(col)s %(direction)s', col=header.label, 
+                          direction=(query.order == header.name and not query.desc and 
+                                     _('(descending)') or _('(ascending)')))}"
+               href="$header.href">${header.label}</a>
           </th>
         </tr>
       </thead>
@@ -54,7 +56,8 @@
                 'removed' in result and ' removed' or ''}">
                 <py:for each="idx, header in enumerate(headers)" py:choose="">
                   <py:with vars="name = header.name; value = result[name]">
-                    <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket" class="${classes(closed=result.status == 'closed')}">#$result.id</a></td>
+                    <td py:when="name == 'id'" class="id"><a href="$result.href" title="View ticket" 
+                        class="${classes(closed=result.status == 'closed')}">#$result.id</a></td>
                     <td py:otherwise="" class="$name" py:choose="">
                       <a py:when="name == 'summary'" href="$result.href" title="View ticket">$value</a>
                       <py:when test="isinstance(value, datetime)">${dateinfo(value)}</py:when>

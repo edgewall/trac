@@ -15,8 +15,9 @@
     xmlns:py="http://genshi.edgewall.org/"
     xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
   <th class="$class_${order == class_ and (desc and ' desc' or ' asc') or ''}">
-    <a title="Sort by $class_${order == class_ and not desc and
-                               ' (descending)' or ''}"
+    <a title="${_('Sort by %(col)s %(direction)s', col=class_, 
+                  direction=(order == class_ and not desc 
+                             and _('(descending)') or _('(ascending)')))}"
       href="${href.browser(reponame, path, rev=stickyrev, order=(class_ != 'name' and class_ or None),
       desc=(class_ == order and not desc and 1 or None))}">$title</a>
   </th>

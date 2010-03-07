@@ -42,9 +42,12 @@ ${(edited_comment, change.comment)[edited_comment is None]}</textarea>
       <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
     </div>
     <div class="buttons">
-      <input type="submit" name="preview_comment" value="${_('Preview')}" title="Preview changes to comment ${change.cnum}"/>
-      <input type="submit" name="edit_comment" value="${_('Submit changes')}" title="Submit changes to comment ${change.cnum}"/>
-      <input type="submit" name="cancel_comment" value="${_('Cancel')}" title="Cancel comment edit"/>
+      <input type="submit" name="preview_comment" value="${_('Preview')}"
+             title="${_('Preview changes to comment %(cnum)s', cnum=change.cnum)}"/>
+      <input type="submit" name="edit_comment" value="${_('Submit changes')}"
+             title="${_('Submit changes to comment %(cnum)s', cnum=change.cnum)}"/>
+      <input type="submit" name="cancel_comment" value="${_('Cancel')}"
+             title="Cancel comment edit"/>
     </div>
   </form>
   <py:choose>

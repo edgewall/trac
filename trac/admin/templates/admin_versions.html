@@ -26,8 +26,8 @@
             <label>Date:<br />
               <input type="text" name="time" size="${len(datetime_hint)}"
                      value="${format_datetime(version.time)}"
-                     title="Format: $datetime_hint" />
-              <em>Format: $datetime_hint</em>
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
+              <em i18n:msg="datehint">Format: $datetime_hint</em>
             </label>
           </div>
           <div class="field">
@@ -58,9 +58,9 @@ $version.description</textarea>
             <div class="field">
               <label>Released:<br />
                 <input type="text" name="time" size="${len(datetime_hint)}"
-                       title="Format: $datetime_hint"
+                       title="${_('Format: %(datehint)s', datehint=datetime_hint)}"
                        value="${format_datetime()}" /><br />
-                <em>Format: $datetime_hint</em>
+                <em i18n:msg="datehint">Format: $datetime_hint</em>
               </label>
             </div>
             <div class="buttons">

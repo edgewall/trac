@@ -24,9 +24,9 @@
           <div class="field">
             <label>Due:<br />
               <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                value="${milestone.due and format_date(milestone.due)}" title="Format: $date_hint"
-                readonly="${readonly}"/>
-              <em>Format: $date_hint</em>
+                     value="${milestone.due and format_date(milestone.due)}" readonly="${readonly}"
+                     title="${_('Format: %(datehint)s', datehint=date_hint)}"/>
+              <em i18n:msg="datehint">Format: $date_hint</em>
             </label>
           </div>
           <div class="field">
@@ -38,9 +38,9 @@
             <label>
               <input type="text" id="completeddate" name="completeddate"
                      size="${len(datetime_hint)}"
-                     value="${format_datetime(milestone.completed)}"
-                     title="Format: $datetime_hint" readonly="${readonly}"/>
-              <em>Format: $datetime_hint</em>
+                     value="${format_datetime(milestone.completed)}" readonly="${readonly}"
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}"/>
+              <em i18n:msg="datehint">Format: $datetime_hint</em>
             </label>
             <script type="text/javascript">
               jQuery(document).ready(function($) {
@@ -58,7 +58,8 @@
                 Description (you may use <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here):
               </label>
               <p>
-                <textarea id="description" name="description" class="wikitext trac-resizable" rows="6" cols="60" readonly="${readonly}">
+              <textarea id="description" name="description" class="wikitext trac-resizable"
+                        rows="6" cols="60" readonly="${readonly}">
 ${milestone.description}</textarea>
               </p>
             </fieldset>
@@ -84,8 +85,8 @@ ${milestone.description}</textarea>
               <label>
                 Due:<br />
                 <input type="text" name="duedate" size="${len(date_hint)}"
-                       title="Format: $date_hint" />
-                <em>Format: $date_hint</em>
+                       title="${_('Format: %(datehint)s', datehint=date_hint)}" />
+                <em i18n:msg="datehint">Format: $date_hint</em>
               </label>
             </div>
             <div class="buttons">

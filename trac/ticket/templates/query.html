@@ -233,14 +233,16 @@
 
       <xi:include href="query_results.html" />
 
-      <div class="buttons" py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);
-                     new = 'REPORT_CREATE' in perm;
-                     delete = report_resource and 'REPORT_DELETE' in perm(report_resource)">
+      <div class="buttons"
+           py:with="edit = report_resource and 'REPORT_MODIFY' in perm(report_resource);
+                    new = 'REPORT_CREATE' in perm;
+                    delete = report_resource and 'REPORT_DELETE' in perm(report_resource)">
         <form py:if="edit" method="get" action="${url_of(report_resource)}">
           <div>
             <input type="hidden" name="action" value="edit" />
-            <input type="submit" title="Edit report {$report_resource.id} corresponding to this query"
-            value="${_('Edit query')}" />
+            <input type="submit" 
+                   title="${_('Edit report {%(id)s} corresponding to this query', id=report_resource.id)}"
+                   value="${_('Edit query')}" />
           </div>
         </form>
         <form py:if="new or edit" method="get" action="${edit and url_of(report_resource) or href.report()}">
@@ -255,8 +257,9 @@
         <form py:if="delete" method="get" action="${url_of(report_resource)}">
           <div>
             <input type="hidden" name="action" value="delete" />
-            <input type="submit" title="Delete report {$report_resource.id} corresponding to this query"
-            value="${_('Delete query')}" />
+            <input type="submit"
+                   title="${_('Delete report {%(id)s} corresponding to this query', id=report_resource.id)}"
+                   value="${_('Delete query')}" />
           </div>
         </form>
       </div>

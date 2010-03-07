@@ -70,7 +70,8 @@
                        path = path and path[len(location):].strip('/')">
           <div class="$cl"> </div>
           <py:choose>
-            <a py:when="is_removal" title="Show what was removed (rev. $item.old.rev)" href="$item.old.href">
+          <a py:when="is_removal" href="$item.old.href"
+             title="${_('Show what was removed (content at revision %(old_rev)s)', old_rev=item.old.rev)}">
               $path
             </a>
             <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
@@ -80,8 +81,9 @@
           <span class="comment">($kind)</span>
           <py:if test="item.old and item.old.get('path') and item.change == 'copy' or item.change == 'move'">
             <small><em i18n:msg="kind, old_path">
-              ($kind from <a title="Show original file (rev. $item.old.rev)" href="$item.old.href">
-               $item.old.path</a>)
+              ($kind from <a href="$item.old.href"
+                             title="${_('Show original file (revision %(old_rev)s)', old_rev=item.old.rev)}">
+                $item.old.path</a>)
             </em></small>
           </py:if>
           <py:choose>

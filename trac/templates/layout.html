@@ -19,7 +19,8 @@
     </py:if>
     <py:if test="not defined('trac_error_rendering') and 'SEARCH_VIEW' in perm" id="search">
       <link type="application/opensearchdescription+xml" rel="search"
-            href="${href.search('opensearch')}" title="Search $project.name"/>
+            href="${href.search('opensearch')}" 
+            title="${_('Search %(project)s', project=project.name)}"/>
     </py:if>
     <script py:if="chrome.script_data" type="text/javascript">
       <py:for each="key, value in chrome.script_data.iteritems()">

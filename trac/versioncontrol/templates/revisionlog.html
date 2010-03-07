@@ -84,7 +84,7 @@
         <div class="buttons">
           <input type="hidden" name="reponame" value="$reponame" />
           <input type="submit" value="View changes"
-            title="${_('Diff from Old Revision to New Revision (as selected in the Diff column)')}" />
+            title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
         <table class="listing chglist">
           <thead>
@@ -122,25 +122,30 @@
                 <tr class="${classes(odd_even,verbose=verbose)}" py:choose="">
                   <td class="diff">
                     <input type="radio" name="old" value="${item.rev}@${item.path}"
-                           checked="${idx == (len(items) - 1) or None}" title="From r${item.rev}" />
+                           checked="${idx == (len(items) - 1) or None}" 
+                           title="${_('From r%(rev)s', rev=item.rev)}" />
                     <input type="radio" name="new" value="${item.rev}@${item.path}"
-                           checked="${idx == 0 or None}" title="To r${item.rev}" />
+                           checked="${idx == 0 or None}" 
+                           title="${_('To r%(rev)s', rev=item.rev)}" />
                   </td>
                   <py:when test="not is_separator">
                     <td class="change" style="padding-left: ${item.depth}em">
-                      <a title="View log starting at this revision" href="${href.log(reponame, item.path, rev=item.rev)}">
+                      <a href="${href.log(reponame, item.path, rev=item.rev)}"
+                         title="View log starting at this revision">
                         <span class="$item.change"></span>
                         <span class="comment">($item.change)</span>
                       </a>
                     </td>
                     <td class="rev">
-                      <a title="Browse at revision $item.existing_rev" href="${href.browser(reponame, item.path, rev=item.existing_rev)}">
+                      <a href="${href.browser(reponame, item.path, rev=item.existing_rev)}"
+                         title="${_('Browse at revision %(rev)s', rev=item.existing_rev)}">
                         @$item.existing_rev</a>
                       <py:choose test="item.change">
-                        <a py:when="'delete'" title="View removal changeset [$item.rev]" class="chgset"
-                          href="${href.changeset(item.rev)}">&nbsp;</a>
-                        <a py:otherwise="" title="View changeset [$item.rev] for $item.path" class="chgset"
-                          href="${href.changeset(item.rev, reponame, item.path)}">&nbsp;</a>
+                        <a py:when="'delete'" class="chgset" href="${href.changeset(item.rev)}"
+                           title="${_('View removal changeset [%(rev)s]', rev=item.rev)}">&nbsp;</a>
+                        <a py:otherwise="" class="chgset" href="${href.changeset(item.rev, reponame, item.path)}"
+                           title="${_('View changeset [%(rev)s] restricted to %(path)s',
+                                      rev=item.rev, path=item.path)}">&nbsp;</a>
                       </py:choose>
                     </td>
                     <td class="age" py:content="dateinfo(change.date)" />
@@ -173,7 +178,7 @@
 
         <div py:if="len(items) &gt; 10 and len(item_ranges) == 1" class="buttons">
           <input type="submit" value="${_('View changes')}"
-            title="${_('Diff from Old Revision to New Revision (as selected in the Diff column)')}" />
+            title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
       </form>
 

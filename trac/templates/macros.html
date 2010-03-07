@@ -16,7 +16,7 @@
   -
   -      We take care to not insert any extra space.
   -->
-  <py:def function="sizeinfo(size)"><span title="$size bytes">${
+  <py:def function="sizeinfo(size)"><span title="${_('%(size)s bytes', size=size)}">${
       pretty_size(size)
   }</span></py:def>
 

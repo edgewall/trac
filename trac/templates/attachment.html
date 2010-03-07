@@ -95,7 +95,7 @@
             <tr>
               <th scope="col" i18n:msg="file,size,author,date">
                 File $attachment.filename,
-                <span title="$attachment.size bytes">${pretty_size(attachment.size)}</span>
+                <span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>
                 (added by ${authorinfo(attachment.author)},  ${dateinfo(attachment.date)} ago)
               </th>
             </tr>

@@ -49,8 +49,9 @@
           <legend>Schedule</legend>
           <label>Due:<br />
             <input type="text" id="duedate" name="duedate" size="${len(date_hint)}"
-                   value="${milestone.due and format_date(milestone.due)}" title="Format: ${date_hint}" />
-            <em>Format: ${date_hint}</em>
+                   value="${milestone.due and format_date(milestone.due)}" 
+                   title="${_('Format: %(datehint)s', datehint=date_hint)}" />
+            <em i18n:msg="datehint">Format: ${date_hint}</em>
           </label>
           <div class="field">
             <label>
@@ -59,10 +60,10 @@
               Completed:<br />
             </label>
             <label>
-              <input type="text" id="completeddate" name="completeddate"
-                     size="${len(datetime_hint)}" title="Format: ${datetime_hint}"
-                     value="${format_datetime(milestone.completed)}" />
-              <em>Format: ${datetime_hint}</em>
+              <input type="text" id="completeddate" name="completeddate" size="${len(datetime_hint)}"
+                     value="${format_datetime(milestone.completed)}"
+                     title="${_('Format: %(datehint)s', datehint=datetime_hint)}" />
+              <em i18n:msg="datehint">Format: ${datetime_hint}</em>
             </label>
             <py:if test="milestone_groups">
               <br/>

@@ -26,7 +26,8 @@
             else if ($("#ticketchange ul.changes").length == 0)
               $("#ticketchange").hide();
         });
-        $("#trac-comment-editor textarea").autoPreview("${href.wiki_render()}", args, function(textarea, text, rendered) {
+        $("#trac-comment-editor textarea").autoPreview("${href.wiki_render()}", args,
+                                                       function(textarea, text, rendered) {
           var comment = $("#trac-comment-editor").next("div.comment");
           comment.html(rendered);
           if (rendered)
@@ -144,13 +145,14 @@
                   <form py:if="'cnum' in change and can_edit_comment" method="get" action="#comment:${change.cnum}">
                     <div class="inlinebuttons">
                       <input type="hidden" name="cnum_edit" value="${change.cnum}"/>
-                      <input type="submit" value="${_('Edit')}" title="Edit comment ${change.cnum}"/>
+                      <input type="submit" value="${_('Edit')}" title="${_('Edit comment %(cnum)s', cnum=change.cnum)}"/>
                     </div>
                   </form>
-                  <form py:if="'cnum' in change and can_append" id="reply-to-comment-${change.cnum}" method="get" action="#comment">
+                  <form py:if="'cnum' in change and can_append" id="reply-to-comment-${change.cnum}"
+                        method="get" action="#comment">
                     <div class="inlinebuttons">
                       <input type="hidden" name="replyto" value="${change.cnum}"/>
-                      <input type="submit" value="${_('Reply')}" title="Reply to comment ${change.cnum}"/>
+                      <input type="submit" value="${_('Reply')}" title="${_('Reply to comment %(cnum)s', cnum=change.cnum)}"/>
                     </div>
                   </form>
                 </py:if>
@@ -166,13 +168,16 @@
                       by ${authorinfo(change.comment_history[comment_version].author)}
                   </i18n:msg>
                   <py:if test="comment_version > 0">
-                    (<a href="${href.ticket(ticket.id, cnum_hist=change.cnum, cversion=comment_version - 1)}#comment:${change.cnum}">previous</a>)
+                    (<a href="${href.ticket(ticket.id, cnum_hist=change.cnum, cversion=comment_version - 1)
+                               }#comment:${change.cnum}">previous</a>)
                   </py:if>
                   <py:if test="comment_version &lt; max_version">
-                    (<a href="${href.ticket(ticket.id, cnum_hist=change.cnum, cversion=comment_version + 1)}#comment:${change.cnum}">next</a>)
+                    (<a href="${href.ticket(ticket.id, cnum_hist=change.cnum, cversion=comment_version + 1)
+                               }#comment:${change.cnum}">next</a>)
                   </py:if>
                   <py:if test="comment_version > 0">
-                    (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=change.cnum, version=comment_version)}">diff</a>)
+                    (<a href="${href.ticket(ticket.id, action='comment-diff', cnum=change.cnum, 
+                                            version=comment_version)}">diff</a>)
                   </py:if>
                 </div>
               </div>
@@ -252,7 +257,8 @@ ${comment}</textarea>
                         <label for="field-description" id="field-description-help" i18n:msg="">You may use
                           <a tabindex="42" href="${href.wiki('WikiFormatting')}">WikiFormatting</a> here.
                         </label>
-                        <textarea id="field-description" name="field_description" class="wikitext trac-resizable" rows="10" cols="68">
+                        <textarea id="field-description" name="field_description"
+                                  class="wikitext trac-resizable" rows="10" cols="68">
 ${ticket.description}</textarea>
                       </fieldset>
                     </td>
@@ -331,7 +337,8 @@ ${value}</textarea>
                 <fieldset py:when="can_append or can_modify" id="action">
                   <legend>Action</legend>
                   <div py:for="key, label, controls, hints in action_controls">
-                      <input type="radio" id="action_$key" name="action" value="$key" checked="${key == action or None}" />
+                      <input type="radio" id="action_$key" name="action" value="$key"
+                             checked="${key == action or None}" />
                       <label for="action_$key">$label</label>
                       $controls
                       <span class="hint" py:for="hint in hints">$hint</span>

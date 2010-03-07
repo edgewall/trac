@@ -8,11 +8,13 @@
                    chgset_view = change and change.can_view(perm)">
       <tr class="${idx % 2 and 'even' or 'odd'}">
         <td class="name">
-          <a class="$entry.kind" title="View ${entry.kind.capitalize()}"
-              href="${href.browser(reponame, entry.path, rev=stickyrev, 
-                                   order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
+          <a class="$entry.kind" title="${_('View %(path_kind)s', path_kind=entry.kind.capitalize())}"
+             href="${href.browser(reponame, entry.path, rev=stickyrev, 
+                                  order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
         </td>
-        <td class="size"><span title="$entry.content_length bytes">${pretty_size(entry.content_length)}</span></td>
+        <td class="size">
+          <span title="${_('%(size)s bytes', size=entry.content_length)}">${pretty_size(entry.content_length)}</span>
+        </td>
         <td class="rev">
           <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">$entry.rev</a>
           <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
