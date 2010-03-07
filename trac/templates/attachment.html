@@ -11,7 +11,7 @@
     <title py:choose="mode">
       <py:when test="'new'">${name_of(parent)} &ndash; Attachment</py:when>
       <py:when test="'list'">${name_of(parent)} &ndash; Attachments</py:when>
-      <py:otherwise i18n:msg="filename, parent">${attachment.filename} on ${name_of(parent)} &ndash; Attachment</py:otherwise>
+      <py:otherwise><i18n:msg params="filename, parent">${attachment.filename} on ${name_of(parent)} &ndash; Attachment</i18n:msg></py:otherwise>
     </title>
     <py:if test="preview">
       <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
