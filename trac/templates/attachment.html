@@ -11,13 +11,13 @@
     <title py:choose="mode">
       <py:when test="'new'">${name_of(parent)} &ndash; Attachment</py:when>
       <py:when test="'list'">${name_of(parent)} &ndash; Attachments</py:when>
-      <py:otherwise i18n:msg="">${attachment.filename} on ${name_of(parent)} &ndash; Attachment</py:otherwise>
+      <py:otherwise i18n:msg="filename, parent">${attachment.filename} on ${name_of(parent)} &ndash; Attachment</py:otherwise>
     </title>
     <py:if test="preview">
       <script type="text/javascript" src="${chrome.htdocs_location}js/folding.js"></script>
       <script type="text/javascript">
         jQuery(document).ready(function($) {
-          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content')); 
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
         });
       </script>
     </py:if>
