@@ -369,8 +369,7 @@ class BrowserModule(Component):
                                        _('Invalid changeset number'))
 
             context = context(repos.resource.child('source', path,
-                                                   version=node.created_rev))
-
+                                                   version=rev_or_latest))
         # Prepare template data
         path_links = get_path_links(req.href, reponame, path, rev,
                                     order, desc)
