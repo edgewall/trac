@@ -609,7 +609,7 @@ div.system-message p.system-message-title { font-weight: bold; }
 @media print {
  #header, #altlinks, #footer, #help { display: none }
  .nav, form, .buttons form, form .buttons, form .inlinebuttons,
- .noprint, .trac-rawlink {
+ .noprint, .trac-rawlink, .trac-nav, .trac-topnav {
    display: none;
  }
  form.printableform { display: block }
