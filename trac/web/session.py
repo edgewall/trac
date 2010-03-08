@@ -79,7 +79,6 @@ class DetachedSession(dict):
         authenticated = int(self.authenticated)
         now = int(time.time())
         db = self.env.get_db_cnx()
-        cursor = db.cursor()
 
         if self._new:
             self.last_visit = now
@@ -87,6 +86,7 @@ class DetachedSession(dict):
             # The session might already exist even if _new is True since
             # it could have been created by a concurrent request (#3563).
             try:
+                cursor = db.cursor()
                 cursor.execute("INSERT INTO session (sid,last_visit,authenticated)"
                                " VALUES(%s,%s,%s)",
                                (self.sid, self.last_visit, authenticated))
@@ -96,6 +96,7 @@ class DetachedSession(dict):
                                      (self.sid, e))
         if self._old != self:
             attrs = [(self.sid, authenticated, k, v) for k, v in self.items()]
+            cursor = db.cursor()
             cursor.execute("DELETE FROM session_attribute WHERE sid=%s",
                            (self.sid,))
             self._old = dict(self.items())
@@ -122,6 +123,7 @@ class DetachedSession(dict):
         if now - self.last_visit > UPDATE_INTERVAL:
             self.last_visit = now
             self.env.log.info("Refreshing session %s" % self.sid)
+            cursor = db.cursor()
             cursor.execute('UPDATE session SET last_visit=%s '
                            'WHERE sid=%s AND authenticated=%s',
                            (self.last_visit, self.sid, authenticated))
