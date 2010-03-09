@@ -1,3 +1,13 @@
+Trac 0.11.7 (March 10, 2010)
+http://svn.edgewall.org/repos/trac/tags/trac-0.11.7
+
+ Trac 0.11.7 is nearly identical to 0.11.7rc1 except for a few more fixes:
+  - avoid an infinite loop when using an AtomicFile in a read-only 
+    directory (#9081) 
+  - don't report client disconnects during writes as internal errors (#9103)
+  - don't reuse a closed cursor, which could happen in one specific case
+    for the pysqlite backend (#9104)
+
 Trac 0.11.7rc1 (February 23, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.7rc1
 
