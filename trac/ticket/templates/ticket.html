@@ -356,7 +356,7 @@ ${value}</textarea>
 
         <!--! Author or Reporter -->
         <div py:if="authname == 'anonymous'" class="field">
-          <fieldset choose="">
+          <fieldset py:choose="">
             <legend py:when="ticket.exists">Author</legend>
             <legend py:otherwise="">Reporter</legend>
             <table>
