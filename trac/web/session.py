@@ -99,8 +99,9 @@ class DetachedSession(dict):
                                    " VALUES (%s,%s,%s)",
                                    (self.sid, self.last_visit, authenticated))
                 except Exception:
-                    db.rollback()
                     self.env.log.warning('Session %s already exists', self.sid)
+                    db.rollback()
+                    return
             if self._old != self:
                 attrs = [(self.sid, authenticated, k, v) 
                          for k, v in self.items()]
@@ -108,16 +109,9 @@ class DetachedSession(dict):
                                (self.sid,))
                 self._old = dict(self.items())
                 if attrs:
-                    # The session variables might already have been updated
-                    # by a concurrent request.
-                    try:
-                        cursor.executemany("INSERT INTO session_attribute "
-                                           " (sid,authenticated,name,value) "
-                                           " VALUES (%s,%s,%s,%s)", attrs)
-                    except Exception:
-                        db.rollback()
-                        self.env.log.warning('Attributes for session %s '
-                                             'already updated', self.sid)
+                    cursor.executemany("INSERT INTO session_attribute "
+                                       " (sid,authenticated,name,value) "
+                                       " VALUES (%s,%s,%s,%s)", attrs)
                 elif not authenticated:
                     # No need to keep around empty unauthenticated sessions
                     cursor.execute("DELETE FROM session "

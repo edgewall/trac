@@ -340,7 +340,6 @@ class Request(object):
         self.send_header('Cache-Control', 'no-cache')
         self.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
         self.end_headers()
-
         raise RequestDone
 
     def display(self, template, content_type='text/html', status=200):
@@ -491,7 +490,12 @@ class Request(object):
             raise RuntimeError("No Content-Length header set")
         if isinstance(data, unicode):
             raise ValueError("Can't send unicode content")
-        self._write(data)
+        try:
+            self._write(data)
+        except (IOError, socket.error), e:
+            if e.args[0] in (errno.EPIPE, errno.ECONNRESET, 10053, 10054):
+                raise RequestDone
+            raise
 
     # Internal methods
 
