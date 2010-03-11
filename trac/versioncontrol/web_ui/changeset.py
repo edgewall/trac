@@ -1064,7 +1064,7 @@ class ChangesetModule(Component):
                     return tag.a(label, class_="changeset",
                                  title=shorten_line(changeset.message),
                                  href=href + params + fragment)
-                errmsg = _("No permission to view changset %(rev)s "
+                errmsg = _("No permission to view changeset %(rev)s "
                            "on %(repos)s", rev=rev,
                            repos=reponame or _('(default)'))
             except TracError, e:
