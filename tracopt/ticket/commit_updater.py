@@ -42,6 +42,7 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
+from trac.db.util import with_transaction
 from trac.perm import PermissionCache
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
@@ -198,21 +199,21 @@ In [%s]:
         
     def _update_tickets(self, tickets, changeset, comment, date):
         """Update the tickets with the given comment."""
-        db = self.env.get_db_cnx()
         perm = PermissionCache(self.env, changeset.author)
         for tkt_id, cmds in tickets.iteritems():
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
-                ticket = Ticket(self.env, tkt_id, db)
-                for cmd in cmds:
-                    cmd(ticket, changeset, perm(ticket.resource))
-                
-                ticket.save_changes(changeset.author, comment, date, db)
-                db.commit()
-                self._notify(ticket, date)
+                ticket = [None]
+                @with_transaction(self.env)
+                def do_update(db):
+                    ticket[0] = Ticket(self.env, tkt_id, db)
+                    for cmd in cmds:
+                        cmd(ticket[0], changeset, perm(ticket[0].resource))
+                    ticket[0].save_changes(changeset.author, comment, date, db)
+                self._notify(ticket[0], date)
             except Exception, e:
                 self.log.error("Unexpected error while processing ticket "
-                               "#%s: %s", ticket.id, exception_to_unicode(e))
+                               "#%s: %s", tkt_id, exception_to_unicode(e))
     
     def _notify(self, ticket, date):
         """Send a ticket update notification."""

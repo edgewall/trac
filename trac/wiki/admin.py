@@ -155,16 +155,17 @@ class WikiAdmin(Component):
 
     def load_pages(self, dir, db=None, ignore=[], create_only=[],
                    replace=False):
-        cons_charset = getattr(sys.stdout, 'encoding', None) or 'utf-8'
-        for page in os.listdir(dir):
-            if page in ignore:
-                continue
-            filename = os.path.join(dir, page)
-            page = unicode_unquote(page.encode('utf-8'))
-            if os.path.isfile(filename):
-                if self.import_page(filename, page, db, create_only, replace):
-                    printout(_("  %(page)s imported from %(filename)s",
-                               filename=filename, page=page))
+        @with_transaction(self.env, db)
+        def do_transaction(db):
+            for page in os.listdir(dir):
+                if page in ignore:
+                    continue
+                filename = os.path.join(dir, page)
+                page = unicode_unquote(page.encode('utf-8'))
+                if os.path.isfile(filename):
+                    if self.import_page(filename, page, db, create_only, replace):
+                        printout(_("  %(page)s imported from %(filename)s",
+                                   filename=filename, page=page))
     
     def _complete_remove(self, args):
         if len(args) == 1:
@@ -257,9 +258,7 @@ class WikiAdmin(Component):
         self._load_or_replace(paths, replace=True)
     
     def _do_upgrade(self):
-        @with_transaction(self.env)
-        def do_transaction(db):
-            self.load_pages(pkg_resources.resource_filename('trac.wiki',
-                                                            'default-pages'),
-                            db, ignore=['WikiStart', 'checkwiki.py'],
-                            create_only=['InterMapTxt'])
+        self.load_pages(pkg_resources.resource_filename('trac.wiki',
+                                                        'default-pages'),
+                        ignore=['WikiStart', 'checkwiki.py'],
+                        create_only=['InterMapTxt'])

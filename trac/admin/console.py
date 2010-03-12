@@ -413,11 +413,9 @@ in order to initialize and prepare the project database.
 
             # Add a few default wiki pages
             printout(_(" Installing default wiki pages"))
-            cnx = self.__env.get_db_cnx()
             pages_dir = pkg_resources.resource_filename('trac.wiki', 
                                                         'default-pages') 
-            WikiAdmin(self.__env).load_pages(pages_dir, cnx)
-            cnx.commit()
+            WikiAdmin(self.__env).load_pages(pages_dir)
 
             if repository_dir:
                 try:
