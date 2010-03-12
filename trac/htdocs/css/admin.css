@@ -74,6 +74,7 @@ form#addplug { width: 35% }
 .trac-component .trac-heading { padding-left: 2em }
 .trac-component > div { margin-left: 3em }
 .trac-summary { color: #888 }
+table.trac-pluglist td { padding-left: 1em }
 
 /* Perm Panel */
 #permlist div { float: left; min-width: 13em; max-width: 33%;

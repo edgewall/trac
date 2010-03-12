@@ -28,7 +28,7 @@ from trac.loader import get_plugin_info, get_plugins_dir
 from trac.perm import PermissionSystem, IPermissionRequestor
 from trac.util.compat import partial
 from trac.util.text import exception_to_unicode
-from trac.util.translation import _
+from trac.util.translation import _, ngettext
 from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             add_warning, Chrome, INavigationContributor, \
@@ -175,13 +175,16 @@ class AdminModule(Component):
         return panels, providers
 
 
-def _save_config(config, req, log):
+def _save_config(config, req, log, notices=None):
     """Try to save the config, and display either a success notice or a
     failure warning.
     """
     try:
         config.save()
-        add_notice(req, _('Your changes have been saved.'))
+        if notices is None:
+            notices = [_('Your changes have been saved.')]
+        for notice in notices:
+            add_notice(req, notice)
     except Exception, e:
         log.error('Error writing to trac.ini: %s', exception_to_unicode(e))
         add_warning(req, _('Error writing to trac.ini, make sure it is '
@@ -475,22 +478,47 @@ class PluginAdminPanel(Component):
         """Update component enablement."""
         components = req.args.getlist('component')
         enabled = req.args.getlist('enable')
-        changes = False
+        added, removed = [], []
 
         # FIXME: this needs to be more intelligent and minimize multiple
         # component names to prefix rules
 
         for component in components:
-            is_enabled = self.env.is_component_enabled(component)
-            if is_enabled != (component in enabled):
+            is_enabled = bool(self.env.is_component_enabled(component))
+            must_enable = component in enabled
+            if is_enabled != must_enable:
                 self.config.set('components', component,
                                 is_enabled and 'disabled' or 'enabled')
                 self.log.info('%sabling component %s',
                               is_enabled and 'Dis' or 'En', component)
-                changes = True
+                if must_enable:
+                    added.append(component)
+                else:
+                    removed.append(component)
 
-        if changes:
-            _save_config(self.config, req, self.log)
+        if added or removed:
+            def make_list(items):
+                parts = [item.rsplit('.', 1) for item in items]
+                return tag.table(tag.tbody(
+                    tag.tr(tag.td(c, class_='trac-name'),
+                           tag.td('(%s.*)' % m, class_='trac-name'))
+                    for m, c in parts), class_='trac-pluglist')
+
+            added.sort()
+            removed.sort()
+            notices = []
+            if removed:
+                msg = ngettext('The following component has been disabled:',
+                               'The following components have been disabled:',
+                               len(removed))
+                notices.append(tag(msg, make_list(removed)))
+            if added:
+                msg = ngettext('The following component has been enabled:',
+                               'The following components have been enabled:',
+                               len(added))
+                notices.append(tag(msg, make_list(added)))
+
+            _save_config(self.config, req, self.log, notices)
 
     def _render_view(self, req):
         plugins = get_plugin_info(self.env, include_core=True)

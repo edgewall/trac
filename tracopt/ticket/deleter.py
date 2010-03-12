@@ -33,8 +33,8 @@ class TicketDeleter(Component):
     requests deletion of the complete ticket, and the buttons in the change
     history request deletion of a single comment.
     
-    '''Comment and ticket deletion is an irreversible (and therefore
-    ''dangerous'') operation.''' For that reason, a confirmation step is
+    '''Comment and ticket deletion are irreversible (and therefore
+    ''dangerous'') operations.''' For that reason, a confirmation step is
     requested. The confirmation page shows the ticket box (in the case of a
     ticket deletion) or the ticket change (in the case of a comment deletion).
     """
