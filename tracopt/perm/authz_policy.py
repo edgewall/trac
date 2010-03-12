@@ -184,8 +184,12 @@ class AuthzPolicy(Component):
 
     def normalise_resource(self, resource):
         def flatten(resource):
-            if not resource or not (resource.realm or resource.id):
-                return []
+            if not resource:
+                return ['*:*@*']
+            if not (resource.realm or resource.id):
+                return ['%s:%s@%s' % (resource.realm or '*',
+                                      resource.id or '*',
+                                      resource.version or '*')]
             # XXX Due to the mixed functionality in resource we can end up with
             # ticket, ticket:1, ticket:1@10. This code naively collapses all
             # subsets of the parent resource into one. eg. ticket:1@10
@@ -205,9 +209,10 @@ class AuthzPolicy(Component):
     def authz_permissions(self, resource_key, username):
         # TODO: Handle permission negation in sections. eg. "if in this
         # ticket, remove TICKET_MODIFY"
-        valid_users = ['*', 'anonymous']
         if username and username != 'anonymous':
             valid_users = ['*', 'authenticated', username]
+        else:
+            valid_users = ['*', 'anonymous']
         for resource_section in [a for a in self.authz.sections
                                  if a != 'groups']:
             resource_glob = resource_section
