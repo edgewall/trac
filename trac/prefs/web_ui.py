@@ -126,14 +126,14 @@ class PreferencesModule(Component):
 
     def _do_save(self, req):
         for field in self._form_fields:
-            val = req.args.get(field)
+            val = req.args.get(field, '').strip()
             if val:
                 if field == 'tz' and 'tz' in req.session and \
                         val not in all_timezones:
                     del req.session['tz']
-                elif field == 'newsid' and val:
+                elif field == 'newsid':
                     req.session.change_sid(val)
-                elif field == 'accesskeys' and val:
+                elif field == 'accesskeys':
                     req.session[field] = '1'
                 else:
                     req.session[field] = val

@@ -60,7 +60,7 @@ class NotificationTestCase(unittest.TestCase):
     def test_recipients(self):
         """To/Cc recipients"""
         ticket = Ticket(self.env)
-        ticket['reporter'] = '"Joe User" <joe.user@example.org>'
+        ticket['reporter'] = '"Joe User" < joe.user@example.org >'
         ticket['owner']    = 'joe.user@example.net'
         ticket['cc']       = 'joe.user@example.com, joe.bar@example.org, ' \
                              'joe.bar@example.net'

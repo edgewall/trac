@@ -24,7 +24,7 @@ from trac.util import get_pkginfo
 from trac.util.datefmt import http_date, localtz
 from trac.util.translation import _
 from trac.web import IRequestHandler
-from trac.web.chrome import add_stylesheet
+from trac.web.chrome import add_notice, add_stylesheet
 
 from genshi import QName, Stream
 from genshi.core import Attrs, START, END, TEXT
@@ -132,6 +132,7 @@ class PygmentsRenderer(Component):
             style = req.args.get('style')
             if style and style in styles:
                 req.session['pygments_style'] = style
+                add_notice(req, _('Your preferences have been saved.'))
             req.redirect(req.href.prefs(panel or None))
 
         output = self._generate('html', self.EXAMPLE)

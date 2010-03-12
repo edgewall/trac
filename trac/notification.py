@@ -271,8 +271,8 @@ class NotifyEmail(Notify):
                                 admit_domains.replace('.','\.').split(',')])
             addrfmt = r'%s@(?:(?:%s)|%s)' % (addrfmt[:pos], addrfmt[pos+1:], 
                                               domains)
-        self.shortaddr_re = re.compile(r'%s$' % addrfmt)
-        self.longaddr_re = re.compile(r'^\s*(.*)\s+<(%s)>\s*$' % addrfmt)
+        self.shortaddr_re = re.compile(r'\s*(%s)\s*$' % addrfmt)
+        self.longaddr_re = re.compile(r'^\s*(.*)\s+<\s*(%s)\s*>\s*$' % addrfmt)
         self._init_pref_encoding()
         domains = self.env.config.get('notification', 'ignore_domains', '')
         self._ignore_domains = [x.strip() for x in domains.lower().split(',')]
@@ -370,7 +370,7 @@ class NotifyEmail(Notify):
 
         mo = self.shortaddr_re.search(address)
         if mo:
-            return mo.group(0)
+            return mo.group(1)
         mo = self.longaddr_re.search(address)
         if mo:
             return mo.group(2)
