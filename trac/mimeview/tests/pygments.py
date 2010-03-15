@@ -81,14 +81,6 @@ def hello():
         self.assertTrue(result)
         self._test('python_hello_mimeview', result)
 
-    def test_empty_content(self):
-        """
-        Simple test for direct rendering of empty content.
-        """
-        result = self.pygments.render(self.context, 'text/x-python', '')
-        self.assertTrue(result)
-        self._test('empty_content', result)
-
     def test_newline_content(self):
         """
         The behavior of Pygments changed post-Pygments 0.11.1, and now
