@@ -117,7 +117,7 @@ class AuthzSourcePolicy(Component):
     authz file.
     
     `CHANGESET_VIEW` permission is granted for changesets where `FILE_VIEW` is
-    granted on at least one modified file, as well as empty for changesets.
+    granted on at least one modified file, as well as for empty changesets.
     """
 
     implements(IPermissionPolicy)
