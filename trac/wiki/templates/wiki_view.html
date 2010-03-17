@@ -71,7 +71,8 @@
 
       <py:with vars="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
                      delete_perm = 'WIKI_DELETE' in perm(page.resource);
-                     admin_perm = 'WIKI_ADMIN' in perm(page.resource)">
+                     admin_perm = 'WIKI_ADMIN' in perm(page.resource);
+                     rename_perm = 'WIKI_RENAME' in perm(page.resource)">
         <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
           <div class="buttons">
             <py:if test="modify_perm">
@@ -101,6 +102,12 @@
                 <xi:include href="attach_file_form.html" py:with="alist = attachments"/>
               </py:if>
             </py:if>
+            <form method="get" action="${href.wiki(page.name)}" id="rename" py:if="page.exists and rename_perm"> 
+              <div> 
+                <input type="hidden" name="action" value="rename" /> 
+                <input type="submit" value="${_('Rename page')}" /> 
+              </div> 
+            </form> 
             <py:if test="page.exists and delete_perm">
               <form method="get" action="${href.wiki(page.name)}">
                 <div id="delete">

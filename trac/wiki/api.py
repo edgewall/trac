@@ -45,6 +45,9 @@ class IWikiChangeListener(Interface):
     def wiki_page_version_deleted(page):
         """Called when a version of a page has been deleted."""
 
+    def wiki_page_renamed(page, old_name): 
+        """Called when a page has been renamed.""" 
+
 
 class IWikiPageManipulator(Interface):
     """Extension point interface for components that need to do specific

@@ -93,7 +93,8 @@ class WikiModule(Component):
     # IPermissionRequestor methods
 
     def get_permission_actions(self):
-        actions = ['WIKI_CREATE', 'WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_VIEW']
+        actions = ['WIKI_CREATE', 'WIKI_DELETE', 'WIKI_MODIFY', 'WIKI_RENAME',
+                   'WIKI_VIEW']
         return actions + [('WIKI_ADMIN', actions)]
 
     # IRequestHandler methods
@@ -145,6 +146,8 @@ class WikiModule(Component):
                     return self._render_editor(req, page, action, has_collision)
             elif action == 'delete':
                 self._do_delete(req, versioned_page)
+            elif action == 'rename':
+                return self._do_rename(req, page)
             elif action == 'diff':
                 style, options, diff_data = get_diff_options(req)
                 contextall = diff_data['options']['contextall']
@@ -153,7 +156,9 @@ class WikiModule(Component):
                                            version=version,
                                            contextall=contextall or None))
         elif action == 'delete':
-            return self._render_confirm(req, versioned_page)
+            return self._render_confirm_delete(req, versioned_page)
+        elif action == 'rename':
+            return self._render_confirm_rename(req, page)
         elif action == 'edit':
             return self._render_editor(req, versioned_page)
         elif action == 'diff':
@@ -248,7 +253,7 @@ class WikiModule(Component):
         old_version = int(req.args.get('old_version', 0)) or version
 
         @with_transaction(self.env)
-        def do_transaction(db):
+        def do_delete(db):
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
                 for v in range(old_version, version):
@@ -271,6 +276,44 @@ class WikiModule(Component):
                                   '%(name)s has been deleted.',
                                   version=version, name=page.name))
             req.redirect(req.href.wiki(page.name))
+
+    def _do_rename(self, req, page):
+        if page.readonly:
+            req.perm(page.resource).require('WIKI_ADMIN')
+        else:
+            req.perm(page.resource).require('WIKI_RENAME')
+ 	 
+        if 'cancel' in req.args:
+            req.redirect(get_resource_url(self.env, page.resource, req.href))
+ 	 
+        old_name, old_version = page.name, page.version
+        new_name = req.args.get('new_name', '').rstrip('/')
+        redirect = req.args.get('redirect')
+ 	 
+        # verify input parameters
+        warn = None
+        if not new_name:
+            warn = _('A new name is mandatory for a rename.')
+        elif new_name == old_name:
+            warn = _('The new name must be different from the old name.')
+        elif WikiPage(self.env, new_name).exists:
+            warn = _('The page %(name)s already exists.', name=new_name)
+        if warn:
+            add_warning(req, warn)
+            return self._render_confirm_rename(req, page, new_name)
+
+        @with_transaction(self.env)
+        def do_rename(db):
+            page.rename(new_name, db=db)
+            if redirect:
+                redirection = WikiPage(self.env, old_name, db=db)
+                redirection.text = 'See [wiki:"%s"].' % new_name
+                author = get_reporter_id(req)
+                comment = '[wiki:"%s@%d" %s] was renamed to [wiki:"%s"].' % (
+                          new_name, old_version, old_name, new_name)
+                redirection.save(author, comment, req.remote_addr, db=db)
+        
+        req.redirect(req.href.wiki(redirect and old_name or new_name))
 
     def _do_save(self, req, page):
         if page.readonly:
@@ -296,7 +339,7 @@ class WikiModule(Component):
             add_warning(req, _("Page not modified, showing latest version."))
             return self._render_view(req, page)
 
-    def _render_confirm(self, req, page):
+    def _render_confirm_delete(self, req, page):
         if page.readonly:
             req.perm(page.resource).require('WIKI_ADMIN')
         else:
@@ -321,6 +364,17 @@ class WikiModule(Component):
         self._wiki_ctxtnav(req, page)
         return 'wiki_delete.html', data, None
 
+    def _render_confirm_rename(self, req, page, new_name=None):
+        if page.readonly:
+            req.perm(page.resource).require('WIKI_ADMIN')
+        else:
+            req.perm(page.resource).require('WIKI_RENAME')
+           
+        data = self._page_data(req, page, 'rename')
+        data['new_name'] = new_name is None and page.name or new_name
+        self._wiki_ctxtnav(req, page)
+        return 'wiki_rename.html', data, None
+        
     def _render_diff(self, req, page):
         if not page.exists:
             raise TracError(_('Version %(num)s of page "%(name)s" does not '

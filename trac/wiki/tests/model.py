@@ -1,6 +1,13 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime
+import os.path
+import shutil
+from StringIO import StringIO
+import tempfile
 import unittest
 
+from trac.attachment import Attachment
 from trac.core import *
 from trac.test import EnvironmentStub
 from trac.util.datefmt import utc, to_utimestamp
@@ -14,6 +21,7 @@ class TestWikiChangeListener(Component):
         self.changed = []
         self.deleted = []
         self.deleted_version = []
+        self.renamed = []
 
     def wiki_page_added(self, page):
         self.added.append(page)
@@ -27,14 +35,20 @@ class TestWikiChangeListener(Component):
     def wiki_page_version_deleted(self, page):
         self.deleted_version.append(page)
 
+    def wiki_page_renamed(self, page, old_name):
+        self.renamed.append((page, old_name))
+
 
 class WikiPageTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub()
+        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        os.mkdir(self.env.path)
         self.db = self.env.get_db_cnx()
 
     def tearDown(self):
+        shutil.rmtree(self.env.path)
         self.env.reset_db()
 
     def test_new_page(self):
@@ -193,6 +207,38 @@ class WikiPageTestCase(unittest.TestCase):
 
         listener = TestWikiChangeListener(self.env)
         self.assertEqual(page, listener.deleted[0])
+
+    def test_rename_page(self):
+        cursor = self.db.cursor()
+        data = (1, 42, 'joe', '::1', 'Bla bla', 'Testing', 0)
+        cursor.execute("INSERT INTO wiki VALUES(%s,%s,%s,%s,%s,%s,%s,%s)",
+                       ('TestPage',) + data)
+        attachment = Attachment(self.env, 'wiki', 'TestPage')
+        attachment.insert('foo.txt', StringIO(), 0, 1)
+        
+        page = WikiPage(self.env, 'TestPage')
+        page.rename('PageRenamed')
+        self.assertEqual('PageRenamed', page.name)
+        
+        cursor.execute("SELECT version,time,author,ipnr,text,comment,"
+                       "readonly FROM wiki WHERE name=%s", ('PageRenamed',))
+        self.assertEqual(data, cursor.fetchone())
+        self.assertEqual(None, cursor.fetchone())
+        
+        attachments = Attachment.select(self.env, 'wiki', 'PageRenamed')
+        self.assertEqual('foo.txt', attachments.next().filename)
+        self.assertRaises(StopIteration, attachments.next)
+        Attachment.delete_all(self.env, 'wiki', 'PageRenamed', self.db)
+
+        old_page = WikiPage(self.env, 'TestPage')
+        self.assertEqual(False, old_page.exists)
+        
+        cursor.execute("SELECT version,time,author,ipnr,text,comment,"
+                       "readonly FROM wiki WHERE name=%s", ('TestPage',))
+        self.assertEqual(None, cursor.fetchone())
+        
+        listener = TestWikiChangeListener(self.env)
+        self.assertEqual((page, 'TestPage'), listener.renamed[0])
 
 
 def suite():

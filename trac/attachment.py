@@ -63,6 +63,9 @@ class IAttachmentChangeListener(Interface):
     def attachment_deleted(attachment):
         """Called when an attachment is deleted."""
 
+    def attachment_reparented(attachment, old_parent_realm, old_parent_id):
+        """Called when an attachment is reparented."""
+
 
 class IAttachmentManipulator(Interface):
     """Extension point interface for components that need to manipulate
@@ -155,18 +158,20 @@ class Attachment(object):
         self.author = row[4]
         self.ipnr = row[5]
 
-    def _get_path(self):
-        path = os.path.join(self.env.path, 'attachments', self.parent_realm,
-                            unicode_quote(self.parent_id))
-        if self.filename:
-            path = os.path.join(path, unicode_quote(self.filename))
+    def _get_path(self, parent_realm, parent_id, filename):
+        path = os.path.join(self.env.path, 'attachments', parent_realm,
+                            unicode_quote(parent_id))
+        if filename:
+            path = os.path.join(path, unicode_quote(filename))
         return os.path.normpath(path)
-    path = property(_get_path)
+    
+    @property
+    def path(self):
+        return self._get_path(self.parent_realm, self.parent_id, self.filename)
 
-    def _get_title(self):
-        return '%s:%s: %s' % (self.parent_realm, 
-                              self.parent_id, self.filename)
-    title = property(_get_title)
+    @property
+    def title(self):
+        return '%s:%s: %s' % (self.parent_realm, self.parent_id, self.filename)
 
     def delete(self, db=None):
         assert self.filename, 'Cannot delete non-existent attachment'
@@ -192,6 +197,47 @@ class Attachment(object):
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_deleted(self)
 
+    def reparent(self, new_realm, new_id, db=None):
+        assert self.filename, 'Cannot reparent non-existent attachment'
+        new_id = unicode(new_id)
+        
+        @with_transaction(self.env, db)
+        def do_reparent(db):
+            cursor = db.cursor()
+            new_path = self._get_path(new_realm, new_id, self.filename)
+            if os.path.exists(new_path):
+                raise TracError(_('Cannot reparent attachment "%(att)s" as '
+                                  'it already exists in %(realm)s:%(id)s', 
+                                  att=self.filename, realm=new_realm,
+                                  id=new_id))
+            cursor.execute("""
+                UPDATE attachment SET type=%s, id=%s
+                WHERE type=%s AND id=%s AND filename=%s
+                """, (new_realm, new_id, self.parent_realm, self.parent_id,
+                      self.filename))
+            dirname = os.path.dirname(new_path)
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+            if os.path.isfile(self.path):
+                try:
+                    os.rename(self.path, new_path)
+                except OSError, e:
+                    self.env.log.error('Failed to move attachment file %s: %s',
+                                       self.path,
+                                       exception_to_unicode(e, traceback=True))
+                    raise TracError(_('Could not reparent attachment %(name)s',
+                                      name=self.filename))
+
+        old_realm, old_id = self.parent_realm, self.parent_id
+        self.parent_realm, self.parent_id = new_realm, new_id
+        self.resource = Resource(new_realm, new_id).child('attachment',
+                                                          self.filename)
+        
+        self.env.log.info('Attachment reparented: %s' % self.title)
+
+        for listener in AttachmentModule(self.env).change_listeners:
+            if hasattr(listener, 'attachment_reparented'):
+                listener.attachment_deleted(self, old_realm, old_id)
 
     def insert(self, filename, fileobj, size, t=None, db=None):
         self.size = size and int(size) or 0
@@ -268,6 +314,22 @@ class Attachment(object):
         for attachment in list(cls.select(env, parent_realm, parent_id, db)):
             attachment_dir = os.path.dirname(attachment.path)
             attachment.delete(db)
+        if attachment_dir:
+            try:
+                os.rmdir(attachment_dir)
+            except OSError, e:
+                env.log.error("Can't delete attachment directory %s: %s",
+                    attachment_dir, exception_to_unicode(e, traceback=True))
+
+    @classmethod
+    def reparent_all(cls, env, parent_realm, parent_id, new_realm, new_id,
+                     db=None):
+        """Reparent all attachments of a given resource to another resource.
+        """
+        attachment_dir = None
+        for attachment in list(cls.select(env, parent_realm, parent_id, db)):
+            attachment_dir = os.path.dirname(attachment.path)
+            attachment.reparent(new_realm, new_id, db)
         if attachment_dir:
             try:
                 os.rmdir(attachment_dir)

@@ -158,6 +158,37 @@ class WikiPage(object):
         self.old_readonly = self.readonly
         self.old_text = self.text
 
+    def rename(self, new_name, db=None):
+        """Rename wiki page in-place, keeping the history intact.
+        Renaming a page this way will eventually leave dangling references
+        to the old page - which litterally doesn't exist anymore.
+        """
+        assert self.exists, 'Cannot rename non-existent page'
+
+        old_name = self.name
+        
+        @with_transaction(self.env, db)
+        def do_rename(db):
+            cursor = db.cursor()
+            new_page = WikiPage(self.env, new_name, db=db)
+            if new_page.exists:
+                raise TracError(_("Can't rename to existing %(name)s page.",
+                                  name=new_name))
+
+            cursor.execute("UPDATE wiki SET name=%s WHERE name=%s",
+                           (new_name, old_name))
+            WikiSystem(self.env).pages.invalidate(db)
+            from trac.attachment import Attachment
+            Attachment.reparent_all(self.env, 'wiki', old_name,
+                                    'wiki', new_name, db)
+
+        self.name = new_name
+        self.env.log.info('Renamed page %s to %s', old_name, new_name)
+        
+        for listener in WikiSystem(self.env).change_listeners:
+            if hasattr(listener, 'wiki_page_renamed'):
+                listener.wiki_page_renamed(self, old_name)
+
     def get_history(self, db=None):
         if not db:
             db = self.env.get_db_cnx()

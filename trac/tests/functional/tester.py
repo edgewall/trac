@@ -176,6 +176,7 @@ class FunctionalTester(object):
             tc.formvalue('attachment', 'replace', True)
         tc.submit()
         tc.url(self.url + '/attachment/ticket/%s/$' % ticketid)
+        return tempfilename
 
     def clone_ticket(self, ticketid):
         """Create a clone of the given ticket id using the clone button."""
@@ -232,6 +233,7 @@ class FunctionalTester(object):
         tc.formvalue('attachment', 'description', random_sentence())
         tc.submit()
         tc.url(self.url + '/attachment/wiki/%s/$' % name)
+        return tempfilename
 
     def create_milestone(self, name=None, due=None):
         """Creates the specified milestone, with a random name if none is

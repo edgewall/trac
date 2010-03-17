@@ -1,0 +1,37 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
+  <xi:include href="layout.html" />
+  <head>
+    <title>$title</title>
+  </head>
+
+  <body>
+    <div id="content" class="wiki" py:with="current_href = href.wiki(page.name)">
+      <h1>Rename <a href="$current_href">$page.name</a></h1>
+      <form id="rename-form" action="$current_href" method="post">
+        <p>
+          <input type="hidden" name="action" value="rename"/>
+          <strong>Renaming the page will rename all existing versions of the page in place.</strong><br/>
+          The complete history of the page will be moved to the new location.
+        </p>
+        <div class="field">
+          <label>New name: <input type="text" name="new_name" size="40" value="$new_name"/></label>
+        </div>
+        <div class="field">
+          <label>
+            <input type="checkbox" id="redirect" name="redirect"/>
+            Leave a redirection page at the old location
+          </label>
+        </div>
+        <div class="buttons">
+          <input type="submit" name="cancel" value="${_('Cancel')}"/>
+          <input type="submit" name="submit" value="${_('Rename page')}"/>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

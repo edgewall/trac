@@ -42,7 +42,7 @@
 #changeinfo br { clear: left }
 #changeinfo .options { padding: 0 0 1em 1em }
 #changeinfo .options, #changeinfo .buttons { clear: left }
-#delete, #save { margin-left: 6em }
+#delete, #rename, #save { margin-left: 3em }
 #preview {
  background: #f4f4f4 url(../draft.png);
  margin: 1em 0 2em;
