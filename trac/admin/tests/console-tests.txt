@@ -77,6 +77,7 @@ wiki import          Import wiki page from file or stdin
 wiki list            List wiki pages
 wiki load            Import wiki pages from files
 wiki remove          Remove wiki page
+wiki rename          Rename wiki page
 wiki replace         Replace the content of wiki pages from files (DANGEROUS!)
 wiki upgrade         Upgrade default wiki pages to current version
 ===== test_attachment_list_empty =====

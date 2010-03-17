@@ -41,9 +41,12 @@ class WikiAdmin(Component):
         yield ('wiki list', '',
                'List wiki pages',
                None, self._do_list)
+        yield ('wiki rename', '<page> <new_name>',
+               'Rename wiki page',
+               self._complete_page, self._do_rename)
         yield ('wiki remove', '<page>',
                'Remove wiki page',
-               self._complete_remove, self._do_remove)
+               self._complete_page, self._do_remove)
         yield ('wiki export', '<page> [file]',
                'Export wiki page to file or stdout',
                self._complete_import_export, self._do_export)
@@ -167,7 +170,7 @@ class WikiAdmin(Component):
                         printout(_("  %(page)s imported from %(filename)s",
                                    filename=filename, page=page))
     
-    def _complete_remove(self, args):
+    def _complete_page(self, args):
         if len(args) == 1:
             return self.get_wiki_list()
     
@@ -198,6 +201,19 @@ class WikiAdmin(Component):
                      for r in cursor],
                     [_('Title'), _('Edits'), _('Modified')])
     
+    def _do_rename(self, name, new_name):
+        if new_name == name:
+            return
+        if not new_name:
+            raise AdminCommandError(_('A new name is mandatory for a rename'))
+        @with_transaction(self.env)
+        def do_rename(db):
+            if model.WikiPage(self.env, new_name, db=db).exists:
+                raise AdminCommandError(_('The page %(name)s already exists',
+                                          name=new_name))
+            page = model.WikiPage(self.env, name, db=db)
+            page.rename(new_name, db=db)
+
     def _do_remove(self, name):
         @with_transaction(self.env)        
         def do_transaction(db):
