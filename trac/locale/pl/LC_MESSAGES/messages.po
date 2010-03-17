@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-03-16 00:58+0100\n"
-"PO-Revision-Date: 2010-03-17 08:37+0100\n"
+"PO-Revision-Date: 2010-03-17 08:41+0100\n"
 "Last-Translator: Janusz Dusza <janusz@webduo.pl>\n"
 "Language-Team: pl_PL <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
@@ -788,7 +788,6 @@ msgid "Plugin %(name)s already installed"
 msgstr "Rozszerzenie %(name)s jest już zainstalowane"
 
 #: trac/admin/web_ui.py:513
-#, fuzzy
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
 msgstr[0] "Wyłączono następujący komponent:"
@@ -796,7 +795,6 @@ msgstr[1] "Wyłączono następujące komponenty:"
 msgstr[2] "Wyłączono następujące komponenty:"
 
 #: trac/admin/web_ui.py:518
-#, fuzzy
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
 msgstr[0] "Włączono następujący komponent:"
@@ -1116,7 +1114,6 @@ msgstr "Instalacja rozszerzenia:"
 
 #: trac/admin/templates/admin_plugins.html:47
 #: trac/versioncontrol/templates/changeset.html:142
-#, fuzzy
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] "Plik:"
@@ -2209,7 +2206,7 @@ msgid "the file instead."
 msgstr "ten plik."
 
 #: trac/templates/progress_bar.html:24
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)s of %(total)s %(unit)s %(title)s"
 msgid_plural "%(num)s of %(total)s %(units)s %(title)s"
 msgstr[0] "%(num)s z %(total)s %(unit)s %(title)s"
@@ -2217,7 +2214,7 @@ msgstr[1] "%(num)s z %(total)s %(units)s %(title)s"
 msgstr[2] "%(num)s z %(total)s %(units)s %(title)s"
 
 #: trac/templates/progress_bar.html:37
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s %(unit)s:"
 msgid_plural "%(title)s %(units)s:"
 msgstr[0] "%(title)s %(unit)s:"
@@ -2225,7 +2222,7 @@ msgstr[1] "%(title)s %(units)s:"
 msgstr[2] "%(title)s %(units)s:"
 
 #: trac/templates/progress_bar.html:47
-#, fuzzy, python-format
+#, python-format
 msgid "Total %(unit)s:"
 msgid_plural "Total %(units)s:"
 msgstr[0] "Suma %(unit)s:"
@@ -2848,7 +2845,7 @@ msgid "updated"
 msgstr "zaktualizowany"
 
 #: trac/ticket/web_ui.py:262
-#, fuzzy, python-format
+#, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s zmieniona"
@@ -3162,7 +3159,7 @@ msgstr "Edytuj etap"
 #: trac/ticket/templates/query.html:29
 #: trac/ticket/templates/query_results.html:28
 #: trac/ticket/templates/report_view.html:87
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
 msgstr[0] "%(num)s pasuje"
@@ -3370,7 +3367,7 @@ msgid "Create new report"
 msgstr "Utwórz nowy raport"
 
 #: trac/ticket/templates/report_view.html:21
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d match"
 msgid_plural "%(num)d matches"
 msgstr[0] "%(num)d pasuje"
@@ -3464,7 +3461,6 @@ msgid "in reply to:"
 msgstr "w odpowiedzi do:"
 
 #: trac/ticket/templates/ticket.html:133
-#, fuzzy
 msgid "follow-up:"
 msgid_plural "follow-ups:"
 msgstr[0] ", odpowiedź:"
@@ -3775,7 +3771,7 @@ msgstr ""
 "        w celu zdobycia informacji o widoku historii."
 
 #: trac/util/datefmt.py:79
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d rok"
@@ -3783,7 +3779,7 @@ msgstr[1] "%(num)d lata"
 msgstr[2] "%(num)d lat"
 
 #: trac/util/datefmt.py:80
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d miesiąc"
@@ -3791,7 +3787,7 @@ msgstr[1] "%(num)d miesiące"
 msgstr[2] "%(num)d miesięcy"
 
 #: trac/util/datefmt.py:81
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d tydzień"
@@ -3799,7 +3795,7 @@ msgstr[1] "%(num)d tygodnie"
 msgstr[2] "%(num)d tygodni"
 
 #: trac/util/datefmt.py:82
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d dzień"
@@ -3807,7 +3803,7 @@ msgstr[1] "%(num)d dni"
 msgstr[2] "%(num)d dni"
 
 #: trac/util/datefmt.py:83
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d godzinę"
@@ -3815,7 +3811,7 @@ msgstr[1] "%(num)d godziny"
 msgstr[2] "%(num)d godzin"
 
 #: trac/util/datefmt.py:84
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d minutę"
@@ -3823,7 +3819,7 @@ msgstr[1] "%(num)d minuty"
 msgstr[2] "%(num)d minut"
 
 #: trac/util/datefmt.py:103
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i sekndę"
@@ -3905,7 +3901,7 @@ msgid "Resyncing repository history for %(reponame)s... "
 msgstr "Synchronizowanie historii dla repozytorium %(reponame)s..."
 
 #: trac/versioncontrol/admin.py:140
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
 msgstr[0] "%(num)s wersja zachowana."
@@ -4418,7 +4414,7 @@ msgid "view diffs"
 msgstr "zobacz różnice"
 
 #: trac/versioncontrol/templates/changeset.html:94
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] "%(num)d różnica"
@@ -4426,7 +4422,7 @@ msgstr[1] "%(num)d różnice"
 msgstr[2] "%(num)d różnic"
 
 #: trac/versioncontrol/templates/changeset.html:97
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] "%(num)d właściwość"
@@ -4459,7 +4455,7 @@ msgid "(No files)"
 msgstr "(Brak plików)"
 
 #: trac/versioncontrol/templates/changeset.html:147
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
 msgstr[0] "%(num)d dodany"
@@ -4467,7 +4463,7 @@ msgstr[1] "%(num)d dodane"
 msgstr[2] "%(num)d dodanych"
 
 #: trac/versioncontrol/templates/changeset.html:148
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
 msgstr[0] "%(num)d usunięty"
@@ -4475,7 +4471,7 @@ msgstr[1] "%(num)d usunięte"
 msgstr[2] "%(num)d usuniętych"
 
 #: trac/versioncontrol/templates/changeset.html:149
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
 msgstr[0] "%(num)d edytowany"
@@ -4483,7 +4479,7 @@ msgstr[1] "%(num)d edytowane"
 msgstr[2] "%(num)d edytowanych"
 
 #: trac/versioncontrol/templates/changeset.html:150
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
 msgstr[0] "%(num)d skopiowany"
@@ -4491,7 +4487,7 @@ msgstr[1] "%(num)d skopiowane"
 msgstr[2] "%(num)d skopiowanych"
 
 #: trac/versioncontrol/templates/changeset.html:151
-#, fuzzy, python-format
+#, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d przeniesiony"
@@ -4891,7 +4887,7 @@ msgid "Repository changesets"
 msgstr "Zestawy zmian w repozytorium"
 
 #: trac/versioncontrol/web_ui/changeset.py:998
-#, fuzzy, python-format
+#, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "Zestaw zmian w %(repo)s "
@@ -4899,7 +4895,6 @@ msgstr[1] "Zestawy zmian w %(repo)s "
 msgstr[2] "Zestawów zmian w %(repo)s "
 
 #: trac/versioncontrol/web_ui/changeset.py:1000
-#, fuzzy
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Zestaw zmian "
