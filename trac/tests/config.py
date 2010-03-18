@@ -174,6 +174,23 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(['', 'bar', 'baz'],
                           config.getlist('a', 'option', keep_empty=True))
 
+    def test_read_and_choice(self):
+        self._write(['[a]', 'option = 2', 'invalid = d'])
+        config = self._read()
+
+        class Foo(object):
+            option = ChoiceOption('a', 'option', ['Item1', 2, '3'])
+            other = ChoiceOption('a', 'other', [1, 2, 3])
+            invalid = ChoiceOption('a', 'invalid', ['a', 'b', 'c'])
+        
+            def __init__(self):
+                self.config = config
+        
+        foo = Foo()
+        self.assertEquals('2', foo.option)
+        self.assertEquals('1', foo.other)
+        self.assertRaises(ConfigurationError, getattr, foo, 'invalid')
+
     def test_getpath(self):
         base = os.path.dirname(self.filename)
         config = self._read()

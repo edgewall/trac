@@ -23,7 +23,7 @@ from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'FloatOption',
-           'ListOption', 'PathOption', 'ExtensionOption',
+           'ListOption', 'ChoiceOption', 'PathOption', 'ExtensionOption',
            'OrderedExtensionsOption', 'ConfigurationError']
 
 _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
@@ -570,7 +570,8 @@ class FloatOption(Option):
 
 class ListOption(Option):
     """Descriptor for configuration options that contain multiple values
-    separated by a specific character."""
+    separated by a specific character.
+    """
 
     def __init__(self, section, name, default=None, sep=',', keep_empty=False,
                  doc=''):
@@ -581,6 +582,30 @@ class ListOption(Option):
     def accessor(self, section, name, default):
         return section.getlist(name, default, self.sep, self.keep_empty)
 
+
+class ChoiceOption(Option):
+    """Descriptor for configuration options providing a choice among a list
+    of items.
+    
+    The default value is the first choice in the list.
+    """
+    
+    def __init__(self, section, name, choices, doc=''):
+        Option.__init__(self, section, name, _to_utf8(choices[0]), doc)
+        self.choices = set(_to_utf8(choice).strip() for choice in choices)
+
+    def accessor(self, section, name, default):
+        value = section.get(name, default)
+        if value not in self.choices:
+            raise ConfigurationError(
+                    _('[%(section)s] %(entry)s: expected one of '
+                      '(%(choices)s), got %(value)s',
+                      section=section.name, entry=name, value=repr(value),
+                      choices=', '.join('"%s"' % c
+                                        for c in sorted(self.choices))))
+        return value
+            
+    
 class PathOption(Option):
     """Descriptor for file system path configuration options."""
     accessor = Section.getpath
