@@ -28,11 +28,11 @@
         href="${href.wiki(*parts[:idx + 1])}">${part}</a><span
         class="pathentry sep" py:if="idx != len(parts) - 1">/</span></py:for>
     </div>
-    <br style="clear: both" />
 
     <div id="content" class="wiki">
 
       <py:if test="version">
+        <br />
         <table id="info" summary="Revision info">
           <tbody>
             <tr><th scope="row" i18n:msg="version, author, date">
@@ -47,13 +47,14 @@
       </py:if>
 
       <div class="wikipage searchable" py:choose="" xml:space="preserve">
-        <py:when test="page.exists" xml:space="preserve">
-          ${wiki_to_html(context, page.text)}
+        <py:when test="page.exists">
           <div py:if="not version" class="trac-modifiedby" i18n:msg="author, datetime, reldate">
             <a href="${href.wiki(page.name, action='diff', version=page.version)}"
-               title="${page.comment}">Last modified</a>
-            by ${format_author(page.author)} on ${format_datetime(page.time)} (${dateinfo(page.time)} ago)
+               title="${_('Version %(version)s by %(author)s: %(comment)s',
+                          version=page.version, author=format_author(page.author), comment=page.comment)}">
+              Last modified</a> ${dateinfo(page.time)} ago
           </div>
+          <div id="wikipage" py:content="wiki_to_html(context, page.text)" />
         </py:when>
         <py:otherwise>
           <p>The page ${name_of(page.resource)} does not exist. You can create it here.</p>

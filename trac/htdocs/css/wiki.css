@@ -1,5 +1,8 @@
 @import url(code.css);
 
+#info { margin: 0 0 1em 0 }
+#wikipage { clear: both }
+
 /* Styles for the path of hierarchical pages */
 #pagepath { margin: -1.2em 0 0; padding: 0 0 1em; font-size: .75em; }
 #pagepath :link, #pagepath :visited { margin: 0 .2em }
@@ -76,11 +79,11 @@
 .wiki-toc .active { background: #ff9; position: relative; }
 
 div.trac-modifiedby {
- margin-top: 1em;
- margin-bottom: -1em;
+ margin: .3em .5em;
  color: #888;
  font-size: 80%;
  font-style: italic;
  text-align: right;
+ float: right;
 }
 div.trac-modifiedby :link, div.trac-modifiedby :visited { color: inherit }
