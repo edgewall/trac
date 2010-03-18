@@ -40,7 +40,7 @@ from trac.util.datefmt import format_datetime, from_utimestamp, \
                               to_datetime, to_utimestamp, utc
 from trac.util.text import exception_to_unicode, pretty_size, print_table, \
                            unicode_quote, unicode_unquote
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.web import HTTPBadRequest, IRequestHandler
 from trac.web.chrome import add_link, add_stylesheet, add_ctxtnav, \
                             INavigationContributor
@@ -524,8 +524,9 @@ class AttachmentModule(Component):
         elif field == 'title':
             name = get_resource_name(self.env, attachment.parent)
             title = get_resource_summary(self.env, attachment.parent)
-            return tag(tag.em(os.path.basename(attachment.id)),
-                       _(" attached to "), tag.em(name, title=title))
+            return tag_("%(attachment)s attached to %(resource)s",
+                        attachment=tag.em(os.path.basename(attachment.id)),
+                        resource=tag.em(name, title=title))
         elif field == 'description':
             return format_to(self.env, None, context(attachment.parent), descr)
    

@@ -3,6 +3,7 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       xmlns:py="http://genshi.edgewall.org/">
   <xi:include href="admin.html" />
   <head>
@@ -10,12 +11,12 @@
   </head>
 
   <body>
-    <h2>Manage $label_plural</h2>
+    <h2 i18n:msg="label_plural">Manage $label_plural</h2>
 
     <py:choose test="view">
       <form py:when="'detail'" class="mod" id="modenum" method="post" action="">
         <fieldset>
-          <legend>Modify $label_singular</legend>
+          <legend i18n:msg="label_singular">Modify $label_singular</legend>
           <div class="field">
             <label>Name: <input type="text" name="name" value="${enum.name}" /></label>
           </div>

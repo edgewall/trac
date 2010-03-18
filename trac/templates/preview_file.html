@@ -6,7 +6,9 @@ Arguments:
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude" py:strip="">
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
+      py:strip="">
   ${preview.rendered}
   <py:choose>
     <p py:when="preview.size == 0">
@@ -16,7 +18,9 @@ Arguments:
       <strong>HTML preview not available</strong>,
       <py:choose>
         <py:when test="preview.max_file_size_reached">
-          since the file size exceeds $preview.max_file_size bytes.
+          <i18n:msg params="size">
+            since the file size exceeds $preview.max_file_size bytes.
+          </i18n:msg>
         </py:when>
         <py:otherwise>
           since no preview renderer could handle it.

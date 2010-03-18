@@ -53,7 +53,7 @@
               <dt><a href="${result.href}" class="searchable">${result.title}</a></dt>
               <dd class="searchable">${result.excerpt}</dd>
               <dd>
-                <py:if test="result.author"><span class="author">By ${format_author(result.author)}</span> &mdash;</py:if>
+                <py:if test="result.author"><span class="author" i18n:msg="author">By ${format_author(result.author)}</span> &mdash;</py:if>
                 <span class="date">${result.date}</span>
               </dd>
             </py:for>

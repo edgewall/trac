@@ -323,7 +323,8 @@ def get_resource_description(env, resource, format='default', **kwargs):
     if not manager or not hasattr(manager, 'get_resource_description'):
         name = u'%s:%s' % (resource.realm, resource.id)
         if format == 'summary':
-            name += _(' at version %(version)s', version=resource.version)
+            name = _('%(name)s at version %(version)s',
+                     name=name, version=resource.version)
         return name
     else:
         return manager.get_resource_description(resource, format, **kwargs)
