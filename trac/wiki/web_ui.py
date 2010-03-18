@@ -121,10 +121,10 @@ class WikiModule(Component):
         req.perm(page.resource).require('WIKI_VIEW')
         req.perm(versioned_page.resource).require('WIKI_VIEW')
 
-        if version and versioned_page.version == 0 and \
-               page.version != 0:
-            raise TracError(_('No version "%(num)s" for Wiki page "%(name)s"',
-                              num=version, name=page.name))
+        if version and versioned_page.version != int(version):
+            raise ResourceNotFound(
+                _('No version "%(num)s" for Wiki page "%(name)s"',
+                  num=version, name=page.name))
 
         add_stylesheet(req, 'common/css/wiki.css')
 
