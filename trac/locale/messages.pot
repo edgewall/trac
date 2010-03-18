@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-03-17 08:34+0100\n"
+"POT-Creation-Date: 2010-03-17 13:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.4\n"
+"Generated-By: Babel 0.9.4dev-r490\n"
 
 #: tracopt/mimeview/php.py:97
 msgid ""
@@ -97,7 +97,7 @@ msgstr ""
 #: tracopt/ticket/templates/ticket_delete.html:38
 #: tracopt/ticket/templates/ticket_delete.html:68
 #: trac/admin/templates/admin_components.html:55
-#: trac/admin/templates/admin_enums.html:23
+#: trac/admin/templates/admin_enums.html:24
 #: trac/admin/templates/admin_milestones.html:68
 #: trac/admin/templates/admin_versions.html:45
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:76
@@ -127,7 +127,7 @@ msgstr ""
 msgid "Are you sure you want to delete this ticket comment?"
 msgstr ""
 
-#: trac/about.py:45 trac/templates/about.html:9 trac/templates/about.html:28
+#: trac/about.py:45 trac/templates/about.html:10 trac/templates/about.html:29
 msgid "About Trac"
 msgstr ""
 
@@ -158,49 +158,50 @@ msgstr ""
 msgid "Back to %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:466
-msgid " attached to "
+#: trac/attachment.py:467
+#, python-format
+msgid "%(attachment)s attached to %(resource)s"
 msgstr ""
 
-#: trac/attachment.py:527
+#: trac/attachment.py:528
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:530
+#: trac/attachment.py:531
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr ""
 
-#: trac/attachment.py:543 trac/attachment.py:566 trac/admin/web_ui.py:425
+#: trac/attachment.py:544 trac/attachment.py:567 trac/admin/web_ui.py:425
 #: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
 msgid "No file uploaded"
 msgstr ""
 
-#: trac/attachment.py:551
+#: trac/attachment.py:552
 msgid "Can't upload empty file"
 msgstr ""
 
-#: trac/attachment.py:556
+#: trac/attachment.py:557
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr ""
 
-#: trac/attachment.py:557
+#: trac/attachment.py:558
 msgid "Upload failed"
 msgstr ""
 
-#: trac/attachment.py:578
+#: trac/attachment.py:579
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr ""
 
-#: trac/attachment.py:582
+#: trac/attachment.py:583
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr ""
 
-#: trac/attachment.py:593
+#: trac/attachment.py:594
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -208,35 +209,35 @@ msgid ""
 " ATTACHMENT_DELETE permission."
 msgstr ""
 
-#: trac/attachment.py:625
+#: trac/attachment.py:626
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr ""
 
-#: trac/attachment.py:686 trac/versioncontrol/web_ui/browser.py:633
+#: trac/attachment.py:687 trac/versioncontrol/web_ui/browser.py:633
 #: trac/wiki/web_ui.py:69
 msgid "Plain Text"
 msgstr ""
 
-#: trac/attachment.py:692 trac/versioncontrol/web_ui/browser.py:639
+#: trac/attachment.py:693 trac/versioncontrol/web_ui/browser.py:639
 msgid "Original Format"
 msgstr ""
 
-#: trac/attachment.py:734 trac/attachment.py:740
+#: trac/attachment.py:735 trac/attachment.py:741
 #: trac/ticket/templates/ticket_change.html:21
 #: trac/ticket/templates/ticket_change.html:22
 msgid "Download"
 msgstr ""
 
-#: trac/attachment.py:834
+#: trac/attachment.py:835
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr ""
 
-#: trac/attachment.py:870 trac/admin/templates/admin_components.html:80
-#: trac/admin/templates/admin_enums.html:47
+#: trac/attachment.py:871 trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
-#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:83
+#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
 #: trac/templates/error.html:185 trac/ticket/admin.py:210
 #: trac/ticket/admin.py:401 trac/ticket/admin.py:560
 #: trac/versioncontrol/admin.py:108
@@ -245,26 +246,26 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: trac/attachment.py:870
+#: trac/attachment.py:871
 msgid "Size"
 msgstr ""
 
-#: trac/attachment.py:870 trac/templates/history_view.html:29
+#: trac/attachment.py:871 trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket.html:360
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Author"
 msgstr ""
 
-#: trac/attachment.py:870 trac/templates/history_view.html:28
+#: trac/attachment.py:871 trac/templates/history_view.html:28
 msgid "Date"
 msgstr ""
 
-#: trac/attachment.py:871 trac/templates/attachment.html:93
+#: trac/attachment.py:872 trac/templates/attachment.html:93
 #: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr ""
 
-#: trac/attachment.py:896 trac/wiki/admin.py:102
+#: trac/attachment.py:897 trac/wiki/admin.py:102
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr ""
@@ -408,7 +409,7 @@ msgstr ""
 
 #: trac/resource.py:326
 #, python-format
-msgid " at version %(version)s"
+msgid "%(name)s at version %(version)s"
 msgstr ""
 
 #: trac/admin/api.py:129
@@ -725,8 +726,8 @@ msgstr ""
 #: trac/admin/templates/admin_basics.html:19
 #: trac/admin/templates/admin_components.html:37
 #: trac/admin/templates/admin_components.html:66
-#: trac/admin/templates/admin_enums.html:20
-#: trac/admin/templates/admin_enums.html:34
+#: trac/admin/templates/admin_enums.html:21
+#: trac/admin/templates/admin_enums.html:35
 #: trac/admin/templates/admin_milestones.html:22
 #: trac/admin/templates/admin_milestones.html:80
 #: trac/admin/templates/admin_versions.html:21
@@ -749,7 +750,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_basics.html:36
 #: trac/admin/templates/admin_components.html:99
-#: trac/admin/templates/admin_enums.html:69
+#: trac/admin/templates/admin_enums.html:70
 #: trac/admin/templates/admin_logging.html:54
 #: trac/admin/templates/admin_milestones.html:129
 #: trac/admin/templates/admin_plugins.html:164
@@ -781,7 +782,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:56
-#: trac/admin/templates/admin_enums.html:24
+#: trac/admin/templates/admin_enums.html:25
 #: trac/admin/templates/admin_milestones.html:69
 #: trac/admin/templates/admin_versions.html:46
 #: trac/versioncontrol/templates/admin_repositories.html:84
@@ -793,8 +794,8 @@ msgid "Add Component:"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:70
-#: trac/admin/templates/admin_enums.html:32
-#: trac/admin/templates/admin_enums.html:37
+#: trac/admin/templates/admin_enums.html:33
+#: trac/admin/templates/admin_enums.html:38
 #: trac/admin/templates/admin_milestones.html:93
 #: trac/admin/templates/admin_perms.html:38
 #: trac/admin/templates/admin_perms.html:60
@@ -810,14 +811,14 @@ msgid "Owner"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:80
-#: trac/admin/templates/admin_enums.html:47
+#: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
 #: trac/admin/templates/admin_versions.html:77
 msgid "Default"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:98
-#: trac/admin/templates/admin_enums.html:68
+#: trac/admin/templates/admin_enums.html:69
 #: trac/admin/templates/admin_milestones.html:128
 #: trac/admin/templates/admin_perms.html:87
 #: trac/admin/templates/admin_versions.html:93
@@ -826,7 +827,7 @@ msgid "Remove selected items"
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:101
-#: trac/admin/templates/admin_enums.html:71
+#: trac/admin/templates/admin_enums.html:72
 #: trac/admin/templates/admin_milestones.html:131
 #: trac/admin/templates/admin_versions.html:96
 msgid ""
@@ -835,7 +836,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/templates/admin_components.html:107
-#: trac/admin/templates/admin_enums.html:77
+#: trac/admin/templates/admin_enums.html:78
 #: trac/admin/templates/admin_milestones.html:137
 #: trac/admin/templates/admin_versions.html:102
 msgid ""
@@ -843,20 +844,21 @@ msgid ""
 "            will remain completely hidden from the user interface."
 msgstr ""
 
-#: trac/admin/templates/admin_enums.html:13
-msgid "Manage"
+#: trac/admin/templates/admin_enums.html:14
+#, python-format
+msgid "Manage %(label_plural)s"
 msgstr ""
 
-#: trac/admin/templates/admin_enums.html:18
-#: trac/ticket/templates/ticket.html:80
-msgid "Modify"
+#: trac/admin/templates/admin_enums.html:19
+#, python-format
+msgid "Modify %(label_singular)s"
 msgstr ""
 
-#: trac/admin/templates/admin_enums.html:47
+#: trac/admin/templates/admin_enums.html:48
 msgid "Order"
 msgstr ""
 
-#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:78
+#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
 msgid "Configuration"
 msgstr ""
 
@@ -1417,7 +1419,8 @@ msgid "Quickjump to"
 msgstr ""
 
 #: trac/search/templates/search.html:56
-msgid "By"
+#, python-format
+msgid "By %(author)s"
 msgstr ""
 
 #: trac/search/templates/search.html:65
@@ -1431,11 +1434,11 @@ msgid ""
 "        for help on searching."
 msgstr ""
 
-#: trac/templates/about.html:25
+#: trac/templates/about.html:26
 msgid "Trac: Integrated SCM & Project Management"
 msgstr ""
 
-#: trac/templates/about.html:29
+#: trac/templates/about.html:30
 msgid ""
 "Trac is a web-based software project management and bug/issue\n"
 "        tracking system emphasizing ease of use and low ceremony.\n"
@@ -1445,60 +1448,44 @@ msgid ""
 "        and changes within a project."
 msgstr ""
 
-#: trac/templates/about.html:35
-msgid "Trac is distributed under the modified BSD License."
+#: trac/templates/about.html:36
+msgid ""
+"Trac is distributed under the modified BSD License.[1:]\n"
+"        The complete text of the license can be found\n"
+"        [2:online]\n"
+"        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
 
-#: trac/templates/about.html:35
-msgid "The complete text of the license can be found"
-msgstr ""
-
-#: trac/templates/about.html:37
-msgid "online"
-msgstr ""
-
-#: trac/templates/about.html:37
-msgid "as well as in the"
-msgstr ""
-
-#: trac/templates/about.html:38
-msgid "COPYING"
-msgstr ""
-
-#: trac/templates/about.html:38
-msgid "file included in the distribution."
-msgstr ""
-
-#: trac/templates/about.html:40
+#: trac/templates/about.html:41
 msgid "python powered"
 msgstr ""
 
-#: trac/templates/about.html:43
+#: trac/templates/about.html:44
 msgid "Please visit the Trac open source project:"
 msgstr ""
 
-#: trac/templates/about.html:44
+#: trac/templates/about.html:45
 msgid "http://trac.edgewall.org/"
 msgstr ""
 
-#: trac/templates/about.html:53
+#: trac/templates/about.html:54
 msgid "System Information"
 msgstr ""
 
-#: trac/templates/about.html:63
+#: trac/templates/about.html:64
 msgid "Installed Plugins"
 msgstr ""
 
-#: trac/templates/about.html:71 trac/templates/error.html:83
+#: trac/templates/about.html:72 trac/templates/error.html:83
 #: trac/templates/error.html:217
 msgid "N/A"
 msgstr ""
 
-#: trac/templates/about.html:82
+#: trac/templates/about.html:83
 msgid "Section"
 msgstr ""
 
-#: trac/templates/about.html:84 trac/templates/error.html:185
+#: trac/templates/about.html:85 trac/templates/error.html:185
 msgid "Value"
 msgstr ""
 
@@ -1975,35 +1962,32 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: trac/templates/preview_file.html:13
+#: trac/templates/preview_file.html:15
 msgid "(The file is empty)"
 msgstr ""
 
-#: trac/templates/preview_file.html:16
+#: trac/templates/preview_file.html:18
 msgid "HTML preview not available"
 msgstr ""
 
-#: trac/templates/preview_file.html:18
-msgid "since the file size exceeds"
-msgstr ""
-
-#: trac/templates/preview_file.html:19
-msgid "bytes."
-msgstr ""
-
 #: trac/templates/preview_file.html:21
+#, python-format
+msgid "since the file size exceeds %(size)s bytes."
+msgstr ""
+
+#: trac/templates/preview_file.html:25
 msgid "since no preview renderer could handle it."
 msgstr ""
 
-#: trac/templates/preview_file.html:24
+#: trac/templates/preview_file.html:28
 msgid "Try"
 msgstr ""
 
-#: trac/templates/preview_file.html:25
+#: trac/templates/preview_file.html:29
 msgid "downloading"
 msgstr ""
 
-#: trac/templates/preview_file.html:25
+#: trac/templates/preview_file.html:29
 msgid "the file instead."
 msgstr ""
 
@@ -3191,6 +3175,10 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:80
 msgid "Go to the ticket editor"
+msgstr ""
+
+#: trac/ticket/templates/ticket.html:80
+msgid "Modify"
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:90 trac/ticket/templates/ticket.html:93
