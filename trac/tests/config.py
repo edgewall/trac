@@ -68,7 +68,8 @@ class ConfigurationTestCase(unittest.TestCase):
 
     def test_default_int(self):
         config = self._read()
-        self.assertRaises(ConfigurationError, config.getint, 'a', 'option', 'b')
+        self.assertRaises(ConfigurationError,
+                          config.getint, 'a', 'option', 'b')
         self.assertEquals(0, config.getint('a', 'option'))
         self.assertEquals(1, config.getint('a', 'option', '1'))
         self.assertEquals(1, config.getint('a', 'option', 1))
@@ -77,6 +78,20 @@ class ConfigurationTestCase(unittest.TestCase):
             option_a = Option('a', 'option', '2')
 
         self.assertEquals(2, config.getint('a', 'option'))
+
+    def test_default_float(self):
+        config = self._read()
+        self.assertRaises(ConfigurationError,
+                          config.getfloat, 'a', 'option', 'b')
+        self.assertEquals(0.0, config.getfloat('a', 'option'))
+        self.assertEquals(1.2, config.getfloat('a', 'option', '1.2'))
+        self.assertEquals(1.2, config.getfloat('a', 'option', 1.2))
+        self.assertEquals(1.0, config.getfloat('a', 'option', 1))
+
+        class Foo(object):
+            option_a = Option('a', 'option', '2.5')
+
+        self.assertEquals(2.5, config.getfloat('a', 'option'))
 
     def test_default_path(self):
         config = self._read()
@@ -123,6 +138,16 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEquals(0, config.getint('b', 'option2'))
         self.assertEquals(25, config.getint('b', 'option2', 25))
         self.assertEquals(25, config.getint('b', 'option2', '25'))
+
+    def test_read_and_getfloat(self):
+        self._write(['[a]', 'option = 42.5'])
+        config = self._read()
+        self.assertEquals(42.5, config.getfloat('a', 'option'))
+        self.assertEquals(42.5, config.getfloat('a', 'option', 25.3))
+        self.assertEquals(0, config.getfloat('b', 'option2'))
+        self.assertEquals(25.3, config.getfloat('b', 'option2', 25.3))
+        self.assertEquals(25.0, config.getfloat('b', 'option2', 25))
+        self.assertEquals(25.3, config.getfloat('b', 'option2', '25.3'))
 
     def test_read_and_getlist(self):
         self._write(['[a]', 'option = foo, bar, baz'])

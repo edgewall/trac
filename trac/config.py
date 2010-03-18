@@ -22,9 +22,9 @@ from trac.util import AtomicFile
 from trac.util.text import printout, to_unicode, CRLF
 from trac.util.translation import _
 
-__all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'ListOption',
-           'PathOption', 'ExtensionOption', 'OrderedExtensionsOption',
-           'ConfigurationError']
+__all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'FloatOption',
+           'ListOption', 'PathOption', 'ExtensionOption',
+           'OrderedExtensionsOption', 'ConfigurationError']
 
 _TRUE_VALUES = ('yes', 'true', 'enabled', 'on', 'aye', '1', 1, True)
 
@@ -100,6 +100,18 @@ class Configuration(object):
         (since Trac 0.10)
         """
         return self[section].getint(key, default)
+
+    def getfloat(self, section, key, default=''):
+        """Return the value of the specified option as float.
+        
+        If the specified option can not be converted to a float, a
+        `ConfigurationError` exception is raised.
+        
+        Valid default input is a string, float or int. Returns a float.
+        
+        (since Trac 0.12)
+        """
+        return self[section].getfloat(key, default)
 
     def getlist(self, section, key, default='', sep=',', keep_empty=False):
         """Return a list of values that have been specified as a single
@@ -390,6 +402,24 @@ class Section(object):
                     _('[%(section)s] %(entry)s: expected integer, got %(value)s',
                       section=self.name, entry=key, value=repr(value)))
 
+    def getfloat(self, key, default=''):
+        """Return the value of the specified option as float.
+        
+        If the specified option can not be converted to a float, a
+        `ConfigurationError` exception is raised.
+        
+        Valid default input is a string, float or int. Returns a float.
+        """
+        value = self.get(key, default)
+        if not value:
+            return 0.0
+        try:
+            return float(value)
+        except ValueError:
+            raise ConfigurationError(
+                    _('[%(section)s] %(entry)s: expected float, got %(value)s',
+                      section=self.name, entry=key, value=repr(value)))
+
     def getlist(self, key, default='', sep=',', keep_empty=True):
         """Return a list of values that have been specified as a single
         comma-separated option.
@@ -531,6 +561,11 @@ class BoolOption(Option):
 class IntOption(Option):
     """Descriptor for integer configuration options."""
     accessor = Section.getint
+
+
+class FloatOption(Option):
+    """Descriptor for float configuration options."""
+    accessor = Section.getfloat
 
 
 class ListOption(Option):

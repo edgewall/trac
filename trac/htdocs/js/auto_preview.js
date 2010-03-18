@@ -10,7 +10,7 @@
   //              is called with the textarea, the text that was rendered and
   //              the rendered text.
   $.fn.autoPreview = function(href, args, update) {
-    if (!auto_preview_timeout)
+    if (auto_preview_timeout <= 0)
       return this;
     var timeout = auto_preview_timeout * 1000;
     return this.each(function() {
