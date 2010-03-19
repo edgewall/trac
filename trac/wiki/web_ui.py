@@ -307,9 +307,9 @@ class WikiModule(Component):
             page.rename(new_name, db=db)
             if redirect:
                 redirection = WikiPage(self.env, old_name, db=db)
-                redirection.text = 'See [wiki:"%s"].' % new_name
+                redirection.text = _('See [wiki:"%(name)s"].', name=new_name)
                 author = get_reporter_id(req)
-                comment = '[wiki:"%s@%d" %s] was renamed to [wiki:"%s"].' % (
+                comment = u'[wiki:"%s@%d" %s] \u2192 [wiki:"%s"].' % (
                           new_name, old_version, old_name, new_name)
                 redirection.save(author, comment, req.remote_addr, db=db)
         
@@ -329,9 +329,8 @@ class WikiModule(Component):
             page.readonly = int('readonly' in req.args)
 
         try:
-            page.save(get_reporter_id(req, 'author'),
-                            req.args.get('comment'),
-                            req.remote_addr)
+            page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
+                      req.remote_addr)
             add_notice(req, _('Your changes have been saved.'))
             req.redirect(get_resource_url(self.env, page.resource, req.href,
                                           version=None))
