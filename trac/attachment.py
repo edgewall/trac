@@ -237,7 +237,7 @@ class Attachment(object):
 
         for listener in AttachmentModule(self.env).change_listeners:
             if hasattr(listener, 'attachment_reparented'):
-                listener.attachment_deleted(self, old_realm, old_id)
+                listener.attachment_reparented(self, old_realm, old_id)
 
     def insert(self, filename, fileobj, size, t=None, db=None):
         self.size = size and int(size) or 0
