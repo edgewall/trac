@@ -47,7 +47,7 @@
 #changeinfo .options, #changeinfo .buttons { clear: left }
 #delete, #rename, #save { margin-left: 3em }
 #preview {
- background: #f4f4f4 url(../draft.png);
+ background: #f8f8f8 url(../draft.png);
  margin: 1em 0 2em;
  overflow: auto;
 }

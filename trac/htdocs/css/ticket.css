@@ -19,7 +19,7 @@
 }
 
 #ticket.ticketdraft {
- background: #f4f4f4 url(../draft.png);
+ background: #f8f8f8 url(../draft.png);
 }
 #ticketchange.ticketdraft {
  padding: 0 1em;
@@ -31,7 +31,7 @@
 .preview-notice { font-weight: bold; }
 
 .ticketdraft {
- background: #f4f4f4 url(../draft.png);
+ background: #f8f8f8 url(../draft.png);
  border: 1px outset #996;
  padding: 0 .2em;
 }
