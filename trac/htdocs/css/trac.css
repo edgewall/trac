@@ -137,7 +137,12 @@ label.disabled { color: #d7d7d7 }
 
 /* Navigation */
 .nav h2, .nav hr { display: none }
-.nav ul { font-size: 10px; list-style: none; margin: 0; text-align: right }
+.nav ul { 
+ font-size: 10px;
+ list-style: none;
+ margin: 0;
+ text-align: right;
+}
 .nav li {
  border-right: 1px solid #d7d7d7;
  display: inline;

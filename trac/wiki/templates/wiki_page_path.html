@@ -1,0 +1,12 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:py="http://genshi.edgewall.org/"
+     xmlns:i18n="http://genshi.edgewall.org/i18n"
+     xmlns:xi="http://www.w3.org/2001/XInclude"
+  id="pagepath" class="noprint" py:with="parts = page.name.split('/')">
+  <a class="pathentry first" title="View WikiStart" href="${href.wiki()}">wiki:</a><!--!
+ --><py:for each="idx, part in enumerate(parts)"><!--!
+   --><a class="pathentry" href="${href.wiki(*parts[:idx + 1])}"
+         title="${_('View %(path)s', path='/'.join(parts[:idx + 1]))}">${part}</a><!--!
+     --><span class="pathentry sep" py:if="idx != len(parts) - 1">/</span><!--!
+ --></py:for>
+</div>

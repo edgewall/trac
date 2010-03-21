@@ -33,6 +33,8 @@
     ${navigation('mainnav')}
 
     <div id="main">
+      <xi:include py:if="value_of(resourcepath_template)" href="${resourcepath_template}" />
+
       <div id="ctxtnav" class="nav">
         <h2>Context Navigation</h2>
           <ul py:if="chrome.ctxtnav">
@@ -41,6 +43,7 @@
           </ul>
         <hr />
       </div>
+
       <div id="warning" py:if="chrome.warnings" class="system-message">
         <py:choose test="len(chrome.warnings)">
           <strong>Warning:</strong>

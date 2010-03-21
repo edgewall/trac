@@ -4,7 +4,10 @@
 #wikipage { clear: both }
 
 /* Styles for the path of hierarchical pages */
-#pagepath { margin: -1.2em 0 0; padding: 0 0 1em; font-size: .75em; }
+#pagepath { 
+ font-size: 10px; /* same as .nav ul in trac.css */
+ float: left;
+}
 #pagepath :link, #pagepath :visited { margin: 0 .2em }
 #pagepath .first:link, #pagepath .first:visited { color: #998 }
 #pagepath .sep { color: #666; padding: 0 .1em }
