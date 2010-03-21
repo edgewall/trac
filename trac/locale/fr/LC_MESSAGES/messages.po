@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-03-18 06:41+0100\n"
+"PO-Revision-Date: 2010-03-21 11:19+0100\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -118,6 +118,7 @@ msgstr "Cette operation est irréversible."
 #: trac/wiki/templates/wiki_delete.html:36
 #: trac/wiki/templates/wiki_edit.html:80
 #: trac/wiki/templates/wiki_edit_form.html:77
+#: trac/wiki/templates/wiki_rename.html:31
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -139,77 +140,91 @@ msgstr "Voulez-vous réellement supprimer le commentaire ?"
 msgid "About Trac"
 msgstr "À propos de Trac"
 
-#: trac/attachment.py:149
+#: trac/attachment.py:152
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "La pièce jointe « %(title)s » n'existe pas"
 
-#: trac/attachment.py:150
+#: trac/attachment.py:153
 msgid "Invalid Attachment"
 msgstr "Pièce jointe non valide"
 
-#: trac/attachment.py:188
+#: trac/attachment.py:193
 msgid "Could not delete attachment"
 msgstr "Impossible de supprimer la pièce jointe"
 
-#: trac/attachment.py:283
+#: trac/attachment.py:209
+#, python-format
+msgid ""
+"Cannot reparent attachment \"%(att)s\" as it already exists in "
+"%(realm)s:%(id)s"
+msgstr ""
+"Impossible de réattacher la pièce jointe « %(att)s » car elle existe déjà"
+" dans %(realm)s:%(id)s"
+
+#: trac/attachment.py:228
+#, python-format
+msgid "Could not reparent attachment %(name)s"
+msgstr "Impossible de réattacher la pièce jointe %(name)s"
+
+#: trac/attachment.py:345
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "Pièce jointe « %(filename)s » introuvable"
 
-#: trac/attachment.py:357
+#: trac/attachment.py:419
 msgid "Bad request"
 msgstr "Requête non valide"
 
-#: trac/attachment.py:374
+#: trac/attachment.py:436
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "Retour à %(parent)s"
 
-#: trac/attachment.py:467
+#: trac/attachment.py:529
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "« %(attachment)s » attaché à « %(resource)s »"
 
-#: trac/attachment.py:528
+#: trac/attachment.py:590
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "Pièce jointe « %(id)s » de %(parent)s"
 
-#: trac/attachment.py:531
+#: trac/attachment.py:593
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "Pièces jointes à %(parent)s"
 
-#: trac/attachment.py:544 trac/attachment.py:567 trac/admin/web_ui.py:425
+#: trac/attachment.py:606 trac/attachment.py:629 trac/admin/web_ui.py:425
 #: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
 msgid "No file uploaded"
 msgstr "Aucun fichier envoyé"
 
-#: trac/attachment.py:552
+#: trac/attachment.py:614
 msgid "Can't upload empty file"
 msgstr "Impossible d'envoyer un fichier vide"
 
-#: trac/attachment.py:557
+#: trac/attachment.py:619
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "La taille maximale d'une pièce jointe est de %(num)s octets"
 
-#: trac/attachment.py:558
+#: trac/attachment.py:620
 msgid "Upload failed"
 msgstr "L'envoi a echoué"
 
-#: trac/attachment.py:579
+#: trac/attachment.py:641
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "Le champ %(field)s de la pièce jointe n'est pas valide : %(message)s"
 
-#: trac/attachment.py:583
+#: trac/attachment.py:645
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "Pièce jointe non valide : %(message)s"
 
-#: trac/attachment.py:594
+#: trac/attachment.py:656
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -221,32 +236,32 @@ msgstr ""
 "Remplacer celles d'autres utilisateurs nécessite la permission "
 "ATTACHMENT_DELETE."
 
-#: trac/attachment.py:626
+#: trac/attachment.py:688
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (suppression)"
 
-#: trac/attachment.py:687 trac/versioncontrol/web_ui/browser.py:633
+#: trac/attachment.py:749 trac/versioncontrol/web_ui/browser.py:633
 #: trac/wiki/web_ui.py:69
 msgid "Plain Text"
 msgstr "Texte brut"
 
-#: trac/attachment.py:693 trac/versioncontrol/web_ui/browser.py:639
+#: trac/attachment.py:755 trac/versioncontrol/web_ui/browser.py:639
 msgid "Original Format"
 msgstr "Format original"
 
-#: trac/attachment.py:735 trac/attachment.py:741
+#: trac/attachment.py:797 trac/attachment.py:803
 #: trac/ticket/templates/ticket_change.html:21
 #: trac/ticket/templates/ticket_change.html:22
 msgid "Download"
 msgstr "Télécharger"
 
-#: trac/attachment.py:835
+#: trac/attachment.py:897
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "Identifiant de resource non valide « %(id)s »"
 
-#: trac/attachment.py:871 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:933 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
@@ -258,35 +273,49 @@ msgstr "Identifiant de resource non valide « %(id)s »"
 msgid "Name"
 msgstr "Nom"
 
-#: trac/attachment.py:871
+#: trac/attachment.py:933
 msgid "Size"
 msgstr "Taille"
 
-#: trac/attachment.py:871 trac/templates/history_view.html:29
+#: trac/attachment.py:933 trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket.html:360
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Author"
 msgstr "Auteur"
 
-#: trac/attachment.py:871 trac/templates/history_view.html:28
+#: trac/attachment.py:933 trac/templates/history_view.html:28
 msgid "Date"
 msgstr "Date"
 
-#: trac/attachment.py:872 trac/templates/attachment.html:93
+#: trac/attachment.py:934 trac/templates/attachment.html:93
 #: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "Description"
 
-#: trac/attachment.py:897 trac/wiki/admin.py:102
+#: trac/attachment.py:959 trac/wiki/admin.py:105
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "Le fichier « %(name)s » existe déjà"
 
-#: trac/config.py:391
+#: trac/config.py:403
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
 msgstr ""
 "[%(section)s] %(entry)s : valeur numérique entière attendue, au lieu de "
+"%(value)s"
+
+#: trac/config.py:421
+#, python-format
+msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
+msgstr ""
+"[%(section)s] %(entry)s : valeur numérique réelle attendue, au lieu de "
+"%(value)s"
+
+#: trac/config.py:605
+#, python-format
+msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
+msgstr ""
+"[%(section)s] %(entry)s : valeur numérique décimale attendue, au lieu de "
 "%(value)s"
 
 #: trac/env.py:569
@@ -684,7 +713,7 @@ msgstr "Page d'administration inconnue"
 #: trac/ticket/admin.py:276 trac/ticket/admin.py:458 trac/ticket/admin.py:610
 #: trac/ticket/admin.py:698 trac/ticket/report.py:189
 #: trac/ticket/roadmap.py:689 trac/versioncontrol/admin.py:196
-#: trac/wiki/web_ui.py:292
+#: trac/wiki/web_ui.py:334
 msgid "Your changes have been saved."
 msgstr "Vos modifications ont été enregistrées."
 
@@ -1903,7 +1932,7 @@ msgstr "Supprimé"
 
 #: trac/templates/diff_view.html:64 trac/ticket/api.py:325
 #: trac/versioncontrol/templates/changeset.html:176
-#: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:199
+#: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:202
 msgid "Modified"
 msgstr "Modifié"
 
@@ -2925,8 +2954,8 @@ msgstr "Aucune différence à afficher"
 
 #: trac/ticket/web_ui.py:796 trac/ticket/web_ui.py:852
 #: trac/ticket/web_ui.py:860 trac/ticket/web_ui.py:931
-#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:975 trac/wiki/web_ui.py:378
-#: trac/wiki/web_ui.py:384 trac/wiki/web_ui.py:573 trac/wiki/web_ui.py:587
+#: trac/ticket/web_ui.py:968 trac/ticket/web_ui.py:975 trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
@@ -2936,12 +2965,12 @@ msgid "initial"
 msgstr "initial"
 
 #: trac/ticket/web_ui.py:862 trac/ticket/web_ui.py:977
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:397
+#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
 msgid "Previous Change"
 msgstr "Modification précédente"
 
 #: trac/ticket/web_ui.py:862 trac/ticket/web_ui.py:977
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:397
+#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
 msgid "Next Change"
 msgstr "Modification suivante"
 
@@ -3367,7 +3396,7 @@ msgstr "Liste des rapports disponibles"
 msgid "Report"
 msgstr "Rapport"
 
-#: trac/ticket/templates/report_list.html:26 trac/wiki/admin.py:199
+#: trac/ticket/templates/report_list.html:26 trac/wiki/admin.py:202
 msgid "Title"
 msgstr "Titre"
 
@@ -4991,6 +5020,16 @@ msgstr ""
 "Vous pouvez %(search)s dans le dépôt si un tel chemin a existé avant "
 "d'avoir été supprimé"
 
+#: trac/web/api.py:232
+#, python-format
+msgid "Invalid URL encoding (was %(path_info)r)"
+msgstr "Encodage de l'URL erroné (« %(path_info)r »)"
+
+#: trac/web/api.py:447
+#, python-format
+msgid "File %(path)s not found"
+msgstr "Le fichier « %(path)s » n'existe pas."
+
 #: trac/web/auth.py:104
 #, python-format
 msgid "logged in as %(user)s"
@@ -5009,16 +5048,16 @@ msgstr "Connexion"
 msgid "Already logged in as %(user)s."
 msgstr "Connecté en tant qu'utilisateur %(user)s"
 
-#: trac/web/chrome.py:578
+#: trac/web/chrome.py:580
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Erreur survenue dans le 'navigation contributor' \"%(name)s\""
 
-#: trac/web/chrome.py:873
+#: trac/web/chrome.py:875
 msgid "(unknown template location)"
 msgstr "(position indéterminée dans le template)"
 
-#: trac/web/chrome.py:874
+#: trac/web/chrome.py:876
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Erreur impliquant Genshi (%(error)s - %(location)s)"
@@ -5098,30 +5137,39 @@ msgstr "Identificateur de session %(sid)s introuvable"
 msgid "A datetime object must be specified"
 msgstr "Un objet datetime doit être spécifié"
 
-#: trac/wiki/admin.py:114
+#: trac/wiki/admin.py:117
 #, python-format
 msgid "'%(name)s' is not a file"
 msgstr "%(name)s n'est pas un fichier"
 
-#: trac/wiki/admin.py:167 trac/wiki/admin.py:251
+#: trac/wiki/admin.py:170 trac/wiki/admin.py:267
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
 msgstr " %(page)s importée depuis %(filename)s"
 
-#: trac/wiki/admin.py:199
+#: trac/wiki/admin.py:202
 msgid "Edits"
 msgstr "Versions"
 
-#: trac/wiki/admin.py:210
+#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:296
+msgid "A new name is mandatory for a rename."
+msgstr "Un nouveau nom est obligatoire pour pouvoir renommer."
+
+#: trac/wiki/admin.py:212 trac/wiki/web_ui.py:300
+#, python-format
+msgid "The page %(name)s already exists."
+msgstr "La page %(name)s existe déjà."
+
+#: trac/wiki/admin.py:226
 msgid "Deleted pages"
 msgstr "Supprimer la page"
 
-#: trac/wiki/admin.py:229
+#: trac/wiki/admin.py:245
 #, python-format
 msgid "'%(name)s' is not a directory"
 msgstr "« %(name)s » n'est pas un répertoire"
 
-#: trac/wiki/api.py:316
+#: trac/wiki/api.py:319
 msgid "no permission to view this wiki page"
 msgstr "pas le droit de voir cette page wiki"
 
@@ -5183,7 +5231,12 @@ msgstr "Table des matières"
 msgid "Page not modified"
 msgstr "Page non modifiée"
 
-#: trac/wiki/web_ui.py:88 trac/wiki/web_ui.py:665
+#: trac/wiki/model.py:175
+#, python-format
+msgid "Can't rename to existing %(name)s page."
+msgstr "Impossible de renommer vers la page existante %(name)s"
+
+#: trac/wiki/web_ui.py:88 trac/wiki/web_ui.py:718
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -5191,128 +5244,137 @@ msgstr "Wiki"
 msgid "Help/Guide"
 msgstr "Aide / Guide"
 
-#: trac/wiki/web_ui.py:125
+#: trac/wiki/web_ui.py:126
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
 msgstr "Aucune version « %(num)s » pour la page Wiki « %(name)s »"
 
-#: trac/wiki/web_ui.py:186
+#: trac/wiki/web_ui.py:191
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
 msgstr ""
 "La page wiki est trop longue (elle doit être inférieure\n"
 "à %(num)s caractères)"
 
-#: trac/wiki/web_ui.py:196
+#: trac/wiki/web_ui.py:201
 #, python-format
 msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
 msgstr "Le champ « %(field)s » de la page Wiki est n'est pas valide : %(message)s"
 
-#: trac/wiki/web_ui.py:200
+#: trac/wiki/web_ui.py:205
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
 msgstr "Page Wiki non valide : %(message)s"
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:227
+#: trac/wiki/web_ui.py:232
 msgid "currently edited"
 msgstr "actuellement modifiée"
 
-#: trac/wiki/web_ui.py:261
+#: trac/wiki/web_ui.py:266
 #, python-format
 msgid "The page %(name)s has been deleted."
 msgstr "Cette page %(name)s a été supprimée."
 
-#: trac/wiki/web_ui.py:266
+#: trac/wiki/web_ui.py:271
 #, python-format
 msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
 msgstr ""
 "Les versions allant de %(from_)d à %(to)d de la page %(name)s ont été "
 "supprimées."
 
-#: trac/wiki/web_ui.py:270
+#: trac/wiki/web_ui.py:275
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr "La version %(version)d de la page %(name)s a été supprimée."
 
-#: trac/wiki/web_ui.py:296
+#: trac/wiki/web_ui.py:298
+msgid "The new name must be different from the old name."
+msgstr "Le nouveau nom doit être différent de l'ancien nom."
+
+#: trac/wiki/web_ui.py:310
+#, python-format
+msgid "See [wiki:\"%(name)s\"]."
+msgstr "Voir [wiki:\"%(name)s\"]."
+
+#: trac/wiki/web_ui.py:338
 msgid "Page not modified, showing latest version."
 msgstr "Page inchangée, version précédente affichée."
 
-#: trac/wiki/web_ui.py:328
+#: trac/wiki/web_ui.py:381
 #, python-format
 msgid "Version %(num)s of page \"%(name)s\" does not exist"
 msgstr "La version %(num)s de la page « %(name)s » n'existe pas"
 
-#: trac/wiki/web_ui.py:380
+#: trac/wiki/web_ui.py:433
 msgid "Page history"
 msgstr "Historique de la page"
 
-#: trac/wiki/web_ui.py:398
+#: trac/wiki/web_ui.py:451
 msgid "Wiki History"
 msgstr "Historique de la page"
 
-#: trac/wiki/web_ui.py:484
+#: trac/wiki/web_ui.py:537
 #, python-format
 msgid "Page %(name)s does not exist"
 msgstr "La page %(name)s n'existe pas"
 
-#: trac/wiki/web_ui.py:498
+#: trac/wiki/web_ui.py:551
 #, python-format
 msgid "Back to %(wikipage)s"
 msgstr "Retour à la page %(wikipage)s"
 
-#: trac/wiki/web_ui.py:526
+#: trac/wiki/web_ui.py:579
 #, python-format
 msgid "Page %(name)s not found"
 msgstr "La page %(name)s est introuvable"
 
-#: trac/wiki/web_ui.py:578
+#: trac/wiki/web_ui.py:631
 msgid "View latest version"
 msgstr "Voir la dernière version"
 
-#: trac/wiki/web_ui.py:582
+#: trac/wiki/web_ui.py:635
 msgid "View parent page"
 msgstr "Voir la page parente"
 
-#: trac/wiki/web_ui.py:591
+#: trac/wiki/web_ui.py:644
 msgid "Previous Version"
 msgstr "Version précédente"
 
-#: trac/wiki/web_ui.py:591
+#: trac/wiki/web_ui.py:644
 msgid "Next Version"
 msgstr "Version suivante"
 
-#: trac/wiki/web_ui.py:592
+#: trac/wiki/web_ui.py:645
 msgid "View Latest Version"
 msgstr "Voir la dernière version"
 
-#: trac/wiki/web_ui.py:595
+#: trac/wiki/web_ui.py:648
 msgid "Up"
 msgstr "Remonter"
 
-#: trac/wiki/web_ui.py:612
+#: trac/wiki/web_ui.py:665
 msgid "Start Page"
 msgstr "Page d'accueil"
 
-#: trac/wiki/web_ui.py:613
+#: trac/wiki/web_ui.py:666
 msgid "Index"
 msgstr "Index"
 
-#: trac/wiki/web_ui.py:615
+#: trac/wiki/web_ui.py:668
 msgid "History"
 msgstr "Historique"
 
-#: trac/wiki/web_ui.py:622
+#: trac/wiki/web_ui.py:675
 msgid "Wiki changes"
 msgstr "Modifications des pages Wiki"
 
 #. TRANSLATOR: wiki page
-#: trac/wiki/web_ui.py:651
+#: trac/wiki/web_ui.py:704
 msgid " edited"
 msgstr " modifiée"
 
-#: trac/wiki/web_ui.py:651
+#: trac/wiki/web_ui.py:704
 msgid " created"
 msgstr ", page créée"
 
@@ -5478,6 +5540,33 @@ msgstr "Fusionner les modifications"
 msgid "Preview Page"
 msgstr "Afficher l'aperçu"
 
+#: trac/wiki/templates/wiki_rename.html:14
+msgid "Rename"
+msgstr "Renommez"
+
+#: trac/wiki/templates/wiki_rename.html:18
+msgid "Renaming the page will rename all existing versions of the page in place."
+msgstr ""
+"En renommant la page, toutes les versions existantes de la page seront "
+"renommées."
+
+#: trac/wiki/templates/wiki_rename.html:18
+msgid "The complete history of the page will be moved to the new location."
+msgstr "L'historique complet de la page sera deplacé au nouvel emplacement."
+
+#: trac/wiki/templates/wiki_rename.html:22
+msgid "New name:"
+msgstr "Nouveau nom :"
+
+#: trac/wiki/templates/wiki_rename.html:26
+msgid "Leave a redirection page at the old location"
+msgstr "Laisser une page de redirection à l'ancien emplacement"
+
+#: trac/wiki/templates/wiki_rename.html:32
+#: trac/wiki/templates/wiki_view.html:109
+msgid "Rename page"
+msgstr "Renommez la page"
+
 #: trac/wiki/templates/wiki_view.html:25
 msgid "View WikiStart"
 msgstr "Voir WikiStart (page principale)"
@@ -5501,54 +5590,52 @@ msgstr ""
 "Version %(version)s (modifié par %(author)s, il y a %(date)s)\n"
 "               ([1:différences])"
 
-#: trac/wiki/templates/wiki_view.html:52
+#: trac/wiki/templates/wiki_view.html:51
 #, python-format
 msgid ""
-"[1:Last modified]\n"
-"            by %(author)s on %(datetime)s (%(reldate)s ago)"
-msgstr ""
-"[1:Dernière modification]\n"
-"            par %(author)s, le %(datetime)s (il y a %(reldate)s)"
+"[1:\n"
+"              Last modified] %(reldate)s ago"
+msgstr "[1:Dernière modification] il y a %(reldate)s"
 
-#: trac/wiki/templates/wiki_view.html:59
+#: trac/wiki/templates/wiki_view.html:60
 msgid "The page"
 msgstr "La page"
 
-#: trac/wiki/templates/wiki_view.html:59
+#: trac/wiki/templates/wiki_view.html:60
 msgid "does not exist. You can create it here."
 msgstr "n'existe pas. Vous pouvez la créer ici."
 
-#: trac/wiki/templates/wiki_view.html:61
+#: trac/wiki/templates/wiki_view.html:62
 msgid "You could also create the same page higher in the hierarchy:"
 msgstr ""
 "Il vous est également possible de créer la page plus haut dans la "
 "hiérarchie :"
 
-#: trac/wiki/templates/wiki_view.html:83
+#: trac/wiki/templates/wiki_view.html:85
 msgid "Edit this page"
 msgstr "Modifier la page"
 
-#: trac/wiki/templates/wiki_view.html:86
+#: trac/wiki/templates/wiki_view.html:88
 msgid "Create this page"
 msgstr "Création de cette page"
 
-#: trac/wiki/templates/wiki_view.html:88
+#: trac/wiki/templates/wiki_view.html:90
 msgid "Using the template:"
 msgstr "En utilisant le modèle :"
 
-#: trac/wiki/templates/wiki_view.html:91
+#: trac/wiki/templates/wiki_view.html:93
 msgid "(blank page)"
 msgstr "(page vierge)"
 
-#: trac/wiki/templates/wiki_view.html:110
+#: trac/wiki/templates/wiki_view.html:118
 msgid "Delete this version"
 msgstr "Supprimer cette version"
 
-#: trac/wiki/templates/wiki_view.html:112
+#: trac/wiki/templates/wiki_view.html:120
 msgid "Delete page"
 msgstr "Supprimer la page"
 
-#: trac/wiki/templates/wiki_view.html:121
+#: trac/wiki/templates/wiki_view.html:129
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
 "Les pages qui suivent ont un nom similaire à cette page et sont \n"
