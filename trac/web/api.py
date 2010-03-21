@@ -219,8 +219,10 @@ class Request(object):
 
     # Public API
 
-    method = property(fget=lambda self: self.environ['REQUEST_METHOD'],
-                      doc='The HTTP method of the request')
+    @property
+    def method(self):
+        """The HTTP method of the request"""
+        return self.environ['REQUEST_METHOD']
 
     @property
     def path_info(self):
@@ -231,27 +233,44 @@ class Request(object):
         except UnicodeDecodeError:
             raise HTTPNotFound(_("Invalid URL encoding (was %(path_info)r)",
                                  path_info=path_info))
-    
-    query_string = property(fget=lambda self: self.environ.get('QUERY_STRING',
-                                                               ''),
-                            doc='Query part of the request')
-    remote_addr = property(fget=lambda self: self.environ.get('REMOTE_ADDR'),
-                           doc='IP address of the remote user')
-    remote_user = property(fget=lambda self: self.environ.get('REMOTE_USER'),
-                           doc='Name of the remote user, `None` if the user'
-                               'has not logged in using HTTP authentication')
-    scheme = property(fget=lambda self: self.environ['wsgi.url_scheme'],
-                      doc='The scheme of the request URL')
+
+    @property
+    def query_string(self):
+        """Query part of the request"""
+        return self.environ.get('QUERY_STRING', '')
+
+    @property
+    def remote_addr(self):
+        """IP address of the remote user"""
+        return self.environ.get('REMOTE_ADDR')
+
+    @property
+    def remote_user(self):
+        """ Name of the remote user.
+        
+        Will be `None` if the user has not logged in using HTTP authentication.
+        """
+        return self.environ.get('REMOTE_USER')
+
+    @property
+    def scheme(self):
+        """The scheme of the request URL"""        
+        return self.environ['wsgi.url_scheme']
 
     @property
     def base_path(self):
         """The root path of the application"""
         return self.environ.get('SCRIPT_NAME', '')
 
-    server_name = property(fget=lambda self: self.environ['SERVER_NAME'],
-                           doc='Name of the server')
-    server_port = property(fget=lambda self: int(self.environ['SERVER_PORT']),
-                           doc='Port number the server is bound to')
+    @property
+    def server_name(self):
+        """Name of the server"""
+        return self.environ['SERVER_NAME']
+
+    @property
+    def server_port(self):
+        """Port number the server is bound to"""
+        return int(self.environ['SERVER_PORT'])
 
     def add_redirect_listener(self, listener):
         """Add a callable to be called prior to executing a redirect.
@@ -289,8 +308,8 @@ class Request(object):
         self._outheaders.append((name, unicode(value).encode('utf-8')))
 
     def end_headers(self):
-        """Must be called after all headers have been sent and before the actual
-        content is written.
+        """Must be called after all headers have been sent and before the
+        actual content is written.
         """
         self._send_cookie_headers()
         self._write = self._start_response(self._status, self._outheaders)
@@ -326,8 +345,9 @@ class Request(object):
             raise RequestDone
 
     def redirect(self, url, permanent=False):
-        """Send a redirect to the client, forwarding to the specified URL. The
-        `url` may be relative or absolute, relative URLs will be translated
+        """Send a redirect to the client, forwarding to the specified URL.
+        
+        The `url` may be relative or absolute, relative URLs will be translated
         appropriately.
         """
         for listener in self.redirect_listeners:
@@ -359,10 +379,11 @@ class Request(object):
 
     def display(self, template, content_type='text/html', status=200):
         """Render the response using the ClearSilver template given by the
-        `template` parameter, which can be either the name of the template file,
-        or an already parsed `neo_cs.CS` object.
+        `template` parameter, which can be either the name of the template
+        file, or an already parsed `neo_cs.CS` object.
         """
-        assert self.hdf, 'HDF dataset not available. Check your clearsilver installation'
+        assert self.hdf, \
+               'HDF dataset not available. Check your clearsilver installation'
         if self.args.has_key('hdfdump'):
             # FIXME: the administrator should probably be able to disable HDF
             #        dumps
@@ -404,13 +425,13 @@ class Request(object):
                 if env:
                     from trac.web.chrome import Chrome
                     try:
-                        data = Chrome(env).render_template(self, template, data,
-                                                           'text/html')
+                        data = Chrome(env).render_template(self, template,
+                                                           data, 'text/html')
                     except Exception:
                         # second chance rendering, in "safe" mode
                         data['trac_error_rendering'] = True
-                        data = Chrome(env).render_template(self, template, data,
-                                                           'text/html')
+                        data = Chrome(env).render_template(self, template,
+                                                           data, 'text/html')
                 else:
                     content_type = 'text/plain'
                     data = '%s\n\n%s: %s' % (data.get('title'),
@@ -588,7 +609,8 @@ class Request(object):
             # Missing host header, so reconstruct the host from the
             # server name and port
             default_port = {'http': 80, 'https': 443}
-            if self.server_port and self.server_port != default_port[self.scheme]:
+            if self.server_port and self.server_port != \
+                   default_port[self.scheme]:
                 host = '%s:%d' % (self.server_name, self.server_port)
             else:
                 host = self.server_name
@@ -625,15 +647,18 @@ class IRequestHandler(Interface):
         """Return whether the handler wants to process the given request."""
 
     def process_request(req):
-        """Process the request. For ClearSilver, return a (template_name,
-        content_type) tuple, where `template` is the ClearSilver template to use
-        (either a `neo_cs.CS` object, or the file name of the template), and
-        `content_type` is the MIME type of the content. For Genshi, return a
-        (template_name, data, content_type) tuple, where `data` is a dictionary
-        of substitutions for the template.
+        """Process the request.
 
-        For both templating systems, "text/html" is assumed if `content_type` is
-        `None`.
+        For ClearSilver, return a `(template_name, content_type)` tuple,
+        where `template` is the ClearSilver template to use (either a
+        `neo_cs.CS` object, or the file name of the template), and
+        `content_type` is the MIME type of the content.
+
+        For Genshi, return a `(template_name, data, content_type)` tuple,
+        where `data` is a dictionary of substitutions for the template.
+
+        For either templating systems, "text/html" is assumed if `content_type`
+        is `None`.
 
         Note that if template processing should not occur, this method can
         simply send the response itself and not return anything.
