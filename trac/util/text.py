@@ -40,21 +40,16 @@ del Empty # shouldn't be used outside of Trac core
 # -- Unicode
 
 def to_unicode(text, charset=None):
-    """Convert a `str` object to an `unicode` object.
+    """Convert input to an `unicode` object.
 
-    If `charset` is given, we simply assume that encoding for the text,
-    but we'll use the "replace" mode so that the decoding will always
-    succeed.
-    If `charset` is ''not'' specified, we'll make some guesses, first
-    trying the UTF-8 encoding, then trying the locale preferred encoding,
-    in "replace" mode. This differs from the `unicode` builtin, which
-    by default uses the locale preferred encoding, in 'strict' mode,
-    and is therefore prompt to raise `UnicodeDecodeError`s.
+    For a `str` object, we'll first try to decode the bytes using the given
+    `charset` encoding (or UTF-8 if none is specified), then we fall back to
+    the latin1 encoding which might be correct or not, but at least preserves
+    the original byte sequence by mapping each byte to the corresponding
+    unicode code point in the range U+0000 to U+00FF.
 
-    Because of the "replace" mode, the original content might be altered.
-    If this is not what is wanted, one could map the original byte content
-    by using an encoding which maps each byte of the input to an unicode
-    character, e.g. by doing `unicode(text, 'iso-8859-1')`.
+    Otherwise, a simple `unicode()` conversion is attempted, with some special
+    care taken for `Exception` objects.
     """
     if not isinstance(text, str):
         if isinstance(text, Exception):
@@ -66,13 +61,10 @@ def to_unicode(text, charset=None):
                 # unicode arguments given to the exception (e.g. parse_date)
                 return ' '.join([to_unicode(arg) for arg in text.args])
         return unicode(text)
-    if charset:
-        return unicode(text, charset, 'replace')
-    else:
-        try:
-            return unicode(text, 'utf-8')
-        except UnicodeError:
-            return unicode(text, locale.getpreferredencoding(), 'replace')
+    try:
+        return unicode(text, charset or 'utf-8')
+    except UnicodeError:
+        return unicode(text, 'latin1')
 
 def exception_to_unicode(e, traceback=False):
     message = '%s: %s' % (e.__class__.__name__, to_unicode(e))

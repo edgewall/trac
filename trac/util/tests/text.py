@@ -16,7 +16,7 @@ class ToUnicodeTestCase(unittest.TestCase):
     def test_explicit_charset_with_replace(self):
         uc = to_unicode('\xc3', 'utf-8')
         assert isinstance(uc, unicode)
-        self.assertEquals(u'\ufffd', uc)
+        self.assertEquals(u'\xc3', uc)
 
     def test_implicit_charset(self):
         uc = to_unicode('\xc3\xa7')
