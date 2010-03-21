@@ -19,9 +19,11 @@
 from trac.core import *
 from trac.config import *
 from trac.notification import NotifyEmail
+from trac.ticket.api import TicketSystem
 from trac.util import md5
 from trac.util.datefmt import to_utimestamp
 from trac.util.text import CRLF, wrap, obfuscate_email_address
+from trac.util.translation import deactivate, reactivate
 
 from genshi.template.text import NewTextTemplate
 
@@ -65,6 +67,17 @@ class TicketNotifyEmail(NotifyEmail):
         self.prev_cc = []
 
     def notify(self, ticket, newticket=True, modtime=None):
+        """Send ticket change notification e-mail (untranslated)"""
+        t = deactivate()
+        translated_fields = ticket.fields
+        try:
+            ticket.fields = TicketSystem(self.env).get_ticket_fields()
+            self._notify(ticket, newticket, modtime)
+        finally:
+            ticket.fields = translated_fields
+            reactivate(t)
+
+    def _notify(self, ticket, newticket=True, modtime=None):
         self.ticket = ticket
         self.modtime = modtime
         self.newticket = newticket
@@ -171,8 +184,8 @@ class TicketNotifyEmail(NotifyEmail):
             if len(fval) > width[idx + 1]:
                 width[idx + 1] = len(fval)
             i += 1
-        format = ('%%%is:  %%-%is  |  ' % (width[0], width[1]),
-                  ' %%%is:  %%-%is%s' % (width[2], width[3], CRLF))
+        format = (u'%%%is:  %%-%is  |  ' % (width[0], width[1]),
+                  u' %%%is:  %%-%is%s' % (width[2], width[3], CRLF))
         l = (width[0] + width[1] + 5)
         sep = l * '-' + '+' + (self.COLS - l) * '-'
         txt = sep + CRLF
@@ -188,7 +201,9 @@ class TicketNotifyEmail(NotifyEmail):
             if f['type'] == 'textarea' or '\n' in unicode(fval):
                 big.append((f['label'], CRLF.join(fval.splitlines())))
             else:
-                txt += format[i % 2] % (f['label'], fval)
+                # Note: f['label'] is a Babel's LazyObject, make sure its
+                # __str__ method won't be called.
+                txt += format[i % 2] % (f['label'], unicode(fval))
                 i += 1
         if i % 2:
             txt += CRLF
