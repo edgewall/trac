@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-03-21 11:05+0100\n"
-"PO-Revision-Date: 2010-03-21 11:17+0100\n"
+"POT-Creation-Date: 2010-03-21 11:21+0100\n"
+"PO-Revision-Date: 2010-03-21 14:36+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: it_IT <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -4950,6 +4950,16 @@ msgstr ""
 "Puoi %(search)s nella storia del repository per vedere se quel percorso "
 "esisteva ma è stato successivamente rimosso"
 
+#: trac/web/api.py:232
+#, python-format
+msgid "Invalid URL encoding (was %(path_info)r)"
+msgstr "Codifica URL non valida (era %(path_info)r)"
+
+#: trac/web/api.py:447
+#, python-format
+msgid "File %(path)s not found"
+msgstr "File \"%(path)s\" non trovato"
+
 #: trac/web/auth.py:104
 #, python-format
 msgid "logged in as %(user)s"
@@ -5066,9 +5076,9 @@ msgstr " \"%(page)s\" importata da %(filename)s"
 msgid "Edits"
 msgstr "Modifiche"
 
-#: trac/wiki/admin.py:208
-msgid "A new name is mandatory for a rename"
-msgstr "È obbligatorio specificare un nuovo nome"
+#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:296
+msgid "A new name is mandatory for a rename."
+msgstr "Il nuovo nome è indispensabile per sostituire quello precedente."
 
 #: trac/wiki/admin.py:212 trac/wiki/web_ui.py:300
 #, python-format
@@ -5200,10 +5210,6 @@ msgstr ""
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
 msgstr "La versione %(version)d della pagina \"%(name)s\" è stata eliminata."
-
-#: trac/wiki/web_ui.py:296
-msgid "A new name is mandatory for a rename."
-msgstr "Il nuovo nome è indispensabile per sostituire quello precedente."
 
 #: trac/wiki/web_ui.py:298
 msgid "The new name must be different from the old name."
