@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-03-21 11:03+0100\n"
+"POT-Creation-Date: 2010-03-21 11:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4611,6 +4611,16 @@ msgid ""
 "but was later removed"
 msgstr ""
 
+#: trac/web/api.py:232
+#, python-format
+msgid "Invalid URL encoding (was %(path_info)r)"
+msgstr ""
+
+#: trac/web/api.py:447
+#, python-format
+msgid "File %(path)s not found"
+msgstr ""
+
 #: trac/web/auth.py:104
 #, python-format
 msgid "logged in as %(user)s"
@@ -4725,8 +4735,8 @@ msgstr ""
 msgid "Edits"
 msgstr ""
 
-#: trac/wiki/admin.py:208
-msgid "A new name is mandatory for a rename"
+#: trac/wiki/admin.py:208 trac/wiki/web_ui.py:296
+msgid "A new name is mandatory for a rename."
 msgstr ""
 
 #: trac/wiki/admin.py:212 trac/wiki/web_ui.py:300
@@ -4852,10 +4862,6 @@ msgstr ""
 #: trac/wiki/web_ui.py:275
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
-msgstr ""
-
-#: trac/wiki/web_ui.py:296
-msgid "A new name is mandatory for a rename."
 msgstr ""
 
 #: trac/wiki/web_ui.py:298

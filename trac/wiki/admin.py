@@ -205,7 +205,7 @@ class WikiAdmin(Component):
         if new_name == name:
             return
         if not new_name:
-            raise AdminCommandError(_('A new name is mandatory for a rename'))
+            raise AdminCommandError(_('A new name is mandatory for a rename.'))
         @with_transaction(self.env)
         def do_rename(db):
             if model.WikiPage(self.env, new_name, db=db).exists:
