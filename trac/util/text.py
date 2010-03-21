@@ -51,20 +51,20 @@ def to_unicode(text, charset=None):
     Otherwise, a simple `unicode()` conversion is attempted, with some special
     care taken for `Exception` objects.
     """
-    if not isinstance(text, str):
-        if isinstance(text, Exception):
-            # two possibilities for storing unicode strings in exception data:
-            try:
-                # custom __str__ method on the exception (e.g. PermissionError)
-                return unicode(text)
-            except UnicodeError:
-                # unicode arguments given to the exception (e.g. parse_date)
-                return ' '.join([to_unicode(arg) for arg in text.args])
-        return unicode(text)
-    try:
-        return unicode(text, charset or 'utf-8')
-    except UnicodeError:
-        return unicode(text, 'latin1')
+    if isinstance(text, str):
+        try:
+            return unicode(text, charset or 'utf-8')
+        except UnicodeDecodeError:
+            return unicode(text, 'latin1')
+    elif isinstance(text, Exception):
+        # two possibilities for storing unicode strings in exception data:
+        try:
+            # custom __str__ method on the exception (e.g. PermissionError)
+            return unicode(text)
+        except UnicodeError:
+            # unicode arguments given to the exception (e.g. parse_date)
+            return ' '.join([to_unicode(arg) for arg in text.args])
+    return unicode(text)
 
 def exception_to_unicode(e, traceback=False):
     message = '%s: %s' % (e.__class__.__name__, to_unicode(e))
