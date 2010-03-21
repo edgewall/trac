@@ -29,6 +29,7 @@ from trac.core import Interface, TracError
 from trac.util import get_last_traceback, md5, unquote
 from trac.util.datefmt import http_date, localtz
 from trac.util.text import empty
+from trac.util.translation import _
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
 
@@ -212,15 +213,25 @@ class Request(object):
         raise AttributeError(name)
 
     def __repr__(self):
+        path_info = self.environ.get('PATH_INFO', '')
         return '<%s "%s %r">' % (self.__class__.__name__, self.method,
-                                 self.path_info)
+                                 path_info)
 
     # Public API
 
     method = property(fget=lambda self: self.environ['REQUEST_METHOD'],
                       doc='The HTTP method of the request')
-    path_info = property(fget=lambda self: self.environ.get('PATH_INFO', '').decode('utf-8'),
-                         doc='Path inside the application')
+
+    @property
+    def path_info(self):
+        """Path inside the application"""
+        path_info = self.environ.get('PATH_INFO', '')
+        try:
+            return unicode(path_info, 'utf-8')
+        except UnicodeDecodeError:
+            raise HTTPNotFound(_("Invalid URL encoding (was %(path_info)r)",
+                                 path_info=path_info))
+    
     query_string = property(fget=lambda self: self.environ.get('QUERY_STRING',
                                                                ''),
                             doc='Query part of the request')
@@ -433,7 +444,7 @@ class Request(object):
         "304 Not Modified" response if it matches.
         """
         if not os.path.isfile(path):
-            raise HTTPNotFound("File %s not found" % path)
+            raise HTTPNotFound(_("File %(path)s not found", path=path))
 
         stat = os.stat(path)
         mtime = datetime.fromtimestamp(stat.st_mtime, localtz)

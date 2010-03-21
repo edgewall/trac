@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 #!/usr/bin/python
 import os
 from trac.tests.functional import *
@@ -160,6 +161,17 @@ class ErrorPageValidation(FunctionalTwillTestCaseSetup):
         tc.find('Trac detected an internal error:')
 
 
+class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
+    def runTest(self):
+        """Regression test for non-UTF-8 PATH_INFO (#3663)
+        
+        Verify that PATH_INFO not encoded using UTF-8 are reported as invalid.
+        """
+        self._tester.go_to_wiki(u'été'.encode('latin1'))
+        tc.code(404)
+        tc.find('Invalid URL encoding')
+
+
 def functionalSuite():
     suite = FunctionalTestSuite()
     return suite
@@ -175,6 +187,7 @@ def suite():
     suite.addTest(RegressionTestTicket5572())
     suite.addTest(RegressionTestTicket7209())
     suite.addTest(ErrorPageValidation())
+    suite.addTest(RegressionTestTicket3663())
 
     import trac.versioncontrol.tests
     trac.versioncontrol.tests.functionalSuite(suite)
