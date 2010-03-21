@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-03-21 10:46+0100\n"
+"POT-Creation-Date: 2010-03-21 11:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4729,9 +4729,9 @@ msgstr ""
 msgid "A new name is mandatory for a rename"
 msgstr ""
 
-#: trac/wiki/admin.py:212
+#: trac/wiki/admin.py:212 trac/wiki/web_ui.py:300
 #, python-format
-msgid "The page %(name)s already exists"
+msgid "The page %(name)s already exists."
 msgstr ""
 
 #: trac/wiki/admin.py:226
@@ -4860,11 +4860,6 @@ msgstr ""
 
 #: trac/wiki/web_ui.py:298
 msgid "The new name must be different from the old name."
-msgstr ""
-
-#: trac/wiki/web_ui.py:300
-#, python-format
-msgid "The page %(name)s already exists."
 msgstr ""
 
 #: trac/wiki/web_ui.py:310
@@ -5150,7 +5145,7 @@ msgstr ""
 #, python-format
 msgid ""
 "[1:\n"
-"              Last modified] %(author)s ago"
+"              Last modified] %(reldate)s ago"
 msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:60

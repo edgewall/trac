@@ -48,7 +48,7 @@
 
       <div class="wikipage searchable" py:choose="" xml:space="preserve">
         <py:when test="page.exists">
-          <div py:if="not version" class="trac-modifiedby" i18n:msg="author, datetime, reldate">
+          <div py:if="not version" class="trac-modifiedby" i18n:msg="reldate">
             <a href="${href.wiki(page.name, action='diff', version=page.version)}"
                title="${_('Version %(version)s by %(author)s: %(comment)s',
                           version=page.version, author=format_author(page.author), comment=page.comment)}">
@@ -103,12 +103,12 @@
                 <xi:include href="attach_file_form.html" py:with="alist = attachments"/>
               </py:if>
             </py:if>
-            <form method="get" action="${href.wiki(page.name)}" id="rename" py:if="page.exists and rename_perm"> 
-              <div> 
-                <input type="hidden" name="action" value="rename" /> 
-                <input type="submit" value="${_('Rename page')}" /> 
-              </div> 
-            </form> 
+            <form method="get" action="${href.wiki(page.name)}" id="rename" py:if="page.exists and rename_perm">
+              <div>
+                <input type="hidden" name="action" value="rename" />
+                <input type="submit" value="${_('Rename page')}" />
+              </div>
+            </form>
             <py:if test="page.exists and delete_perm">
               <form method="get" action="${href.wiki(page.name)}">
                 <div id="delete">

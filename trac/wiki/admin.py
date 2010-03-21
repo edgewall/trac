@@ -209,7 +209,7 @@ class WikiAdmin(Component):
         @with_transaction(self.env)
         def do_rename(db):
             if model.WikiPage(self.env, new_name, db=db).exists:
-                raise AdminCommandError(_('The page %(name)s already exists',
+                raise AdminCommandError(_('The page %(name)s already exists.',
                                           name=new_name))
             page = model.WikiPage(self.env, name, db=db)
             page.rename(new_name, db=db)
