@@ -242,8 +242,17 @@ class Request(object):
                                'has not logged in using HTTP authentication')
     scheme = property(fget=lambda self: self.environ['wsgi.url_scheme'],
                       doc='The scheme of the request URL')
-    base_path = property(fget=lambda self: self.environ.get('SCRIPT_NAME', ''),
-                         doc='The root path of the application')
+
+    @property
+    def base_path(self):
+        """The root path of the application"""
+        script_name = self.environ.get('SCRIPT_NAME', '')
+        try:
+            return unicode(script_name, 'utf-8')
+        except UnicodeDecodeError:
+            raise HTTPNotFound(_("Invalid URL encoding (was %(script_name)r)",
+                                 script_name=script_name))
+
     server_name = property(fget=lambda self: self.environ['SERVER_NAME'],
                            doc='Name of the server')
     server_port = property(fget=lambda self: int(self.environ['SERVER_PORT']),

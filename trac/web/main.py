@@ -414,19 +414,29 @@ def dispatch_request(environ, start_response):
                                    env_paths)
                 return []
 
+            errmsg = None
+            
             # To make the matching patterns of request handlers work, we append
             # the environment name to the `SCRIPT_NAME` variable, and keep only
             # the remaining path in the `PATH_INFO` variable.
-            environ['SCRIPT_NAME'] = Href(environ['SCRIPT_NAME'])(env_name)
-            environ['PATH_INFO'] = '/' + '/'.join(path_info)
+            script_name = environ.get('SCRIPT_NAME', '')
+            try:
+                script_name = unicode(script_name, 'utf-8')
+                # (as Href expects unicode parameters)
+                environ['SCRIPT_NAME'] = Href(script_name)(env_name)
+                environ['PATH_INFO'] = '/' + '/'.join(path_info)
 
-            if env_parent_dir:
-                env_path = os.path.join(env_parent_dir, env_name)
-            else:
-                env_path = get_environments(environ).get(env_name)
+                if env_parent_dir:
+                    env_path = os.path.join(env_parent_dir, env_name)
+                else:
+                    env_path = get_environments(environ).get(env_name)
 
-            if not env_path or not os.path.isdir(env_path):
-                errmsg = 'Environment not found'
+                if not env_path or not os.path.isdir(env_path):
+                    errmsg = 'Environment not found'
+            except UnicodeDecodeError:
+                errmsg = 'Invalid URL encoding (was %r)' % script_name
+
+            if errmsg:
                 start_response('404 Not Found', 
                                [('Content-Type', 'text/plain'),
                                 ('Content-Length', str(len(errmsg)))])

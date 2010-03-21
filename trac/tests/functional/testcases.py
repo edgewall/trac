@@ -165,9 +165,14 @@ class RegressionTestTicket3663(FunctionalTwillTestCaseSetup):
     def runTest(self):
         """Regression test for non-UTF-8 PATH_INFO (#3663)
         
-        Verify that PATH_INFO not encoded using UTF-8 are reported as invalid.
+        Verify that URLs not encoded with UTF-8 are reported as invalid.
         """
+        # invalid PATH_INFO
         self._tester.go_to_wiki(u'été'.encode('latin1'))
+        tc.code(404)
+        tc.find('Invalid URL encoding')
+        # invalid SCRIPT_NAME
+        tc.go(u'été'.encode('latin1'))
         tc.code(404)
         tc.find('Invalid URL encoding')
 
