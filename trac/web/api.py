@@ -246,12 +246,7 @@ class Request(object):
     @property
     def base_path(self):
         """The root path of the application"""
-        script_name = self.environ.get('SCRIPT_NAME', '')
-        try:
-            return unicode(script_name, 'utf-8')
-        except UnicodeDecodeError:
-            raise HTTPNotFound(_("Invalid URL encoding (was %(script_name)r)",
-                                 script_name=script_name))
+        return self.environ.get('SCRIPT_NAME', '')
 
     server_name = property(fget=lambda self: self.environ['SERVER_NAME'],
                            doc='Name of the server')
