@@ -58,15 +58,23 @@ class IWikiPageManipulator(Interface):
     """
 
     def prepare_wiki_page(req, page, fields):
-        """Not currently called, but should be provided for future
-        compatibility."""
+        """Validate a wiki page before rendering it.
+
+        `page` is the `WikiPage` being viewed.
+        `fields` is a dictionary which contains the wiki `text` of the page,
+        initially identical to `page.text` but it  can eventually be
+        transformed in place before being used as input to the formatter.
+        """
 
     def validate_wiki_page(req, page):
         """Validate a wiki page after it's been populated from user input.
+
+        `page` is the `WikiPage` being edited.
         
         Must return a list of `(field, message)` tuples, one for each problem
         detected. `field` can be `None` to indicate an overall problem with the
-        page. Therefore, a return value of `[]` means everything is OK."""
+        page. Therefore, a return value of `[]` means everything is OK.
+        """
 
 
 class IWikiMacroProvider(Interface):

@@ -46,7 +46,7 @@
                           version=page.version, author=format_author(page.author), comment=page.comment)}">
               Last modified</a> ${dateinfo(page.time)} ago
           </div>
-          <div id="wikipage" py:content="wiki_to_html(context, page.text)" />
+          <div id="wikipage" py:content="wiki_to_html(context, text)" />
         </py:when>
         <py:otherwise>
           <p>The page ${name_of(page.resource)} does not exist. You can create it here.</p>

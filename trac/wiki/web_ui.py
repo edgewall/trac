@@ -648,8 +648,15 @@ class WikiModule(Component):
                 add_ctxtnav(req, _('Up'), req.href.wiki(parent))
             self._wiki_ctxtnav(req, page)
 
+        # Plugin content validation
+        fields = {'text': page.text}
+        for manipulator in self.page_manipulators:
+            manipulator.prepare_wiki_page(req, page, fields)
+        text = fields.get('text', '')
+
         data.update({
             'context': context,
+            'text': text,
             'latest_version': latest_page.version,
             'attachments': AttachmentModule(self.env).attachment_data(context),
             'default_template': self.DEFAULT_PAGE_TEMPLATE,
