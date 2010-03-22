@@ -1159,11 +1159,12 @@ class AnyDiffModule(Component):
             def kind_order(entry):
                 return (not entry[0], embedded_numbers(entry[1]))
 
+            entries = []
             if repos:
-                entries = [(e.isdir, e.name, 
-                            '/' + pathjoin(repos.reponame, e.path))
-                           for e in repos.get_node(path).get_entries()
-                           if e.can_view(req.perm)]
+                entries.extend((e.isdir, e.name, 
+                                '/' + pathjoin(repos.reponame, e.path))
+                               for e in repos.get_node(path).get_entries()
+                               if e.can_view(req.perm))
             if not reponame:
                 entries.extend((True, repos.reponame, '/' + repos.reponame)
                                for repos in rm.get_real_repositories()
@@ -1185,19 +1186,23 @@ class AnyDiffModule(Component):
         old_path = req.args.get('old_path')
         old_rev = req.args.get('old_rev')
 
-        # -- normalize
+        # -- normalize and prepare rendering
         new_reponame, new_repos, new_path = \
             rm.get_repository_by_path(new_path)
         old_reponame, old_repos, old_path = \
             rm.get_repository_by_path(old_path)
-        new_rev = new_repos.normalize_rev(new_rev)
-        old_rev = old_repos.normalize_rev(old_rev)
-
-        # -- prepare rendering
-        data = {'new_path': '/' + pathjoin(new_repos.reponame, new_path),
-                'new_rev': new_rev,
-                'old_path': '/' + pathjoin(old_repos.reponame, old_path),
-                'old_rev': old_rev}
+        
+        data = {}
+        if new_repos:
+            data.update(new_path='/' + pathjoin(new_repos.reponame, new_path),
+                        new_rev=new_repos.normalize_rev(new_rev))
+        else:
+            data.update(new_path=req.args.get('new_path'), new_rev=new_rev)
+        if old_repos:
+            data.update(old_path='/' + pathjoin(old_repos.reponame, old_path),
+                        old_rev=old_repos.normalize_rev(old_rev))
+        else:
+            data.update(old_path=req.args.get('old_path'), old_rev=old_rev)
 
         add_script(req, 'common/js/suggest.js')
         return 'diff_form.html', data, None
