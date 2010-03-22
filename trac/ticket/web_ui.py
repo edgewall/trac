@@ -27,7 +27,7 @@ from trac.attachment import AttachmentModule
 from trac.config import BoolOption, Option, IntOption, _TRUE_VALUES
 from trac.core import *
 from trac.mimeview.api import Mimeview, IContentConverter, Context
-from trac.resource import Resource, get_resource_url, \
+from trac.resource import Resource, ResourceNotFound, get_resource_url, \
                          render_resource_link, get_resource_shortname
 from trac.search import ISearchSource, search_to_sql, shorten_result
 from trac.ticket.api import TicketSystem, ITicketManipulator
@@ -943,10 +943,18 @@ class TicketModule(Component):
         if diff_context < 0:
             diff_context = None
 
-        old_text = history[old_version]['value']
-        old_text = old_text and old_text.splitlines() or []
-        new_text = history[new_version]['value']
-        new_text = new_text and new_text.splitlines() or []
+        def get_text(version):
+            try:
+                text = history[version]['value']
+                return text and text.splitlines() or []
+            except KeyError:
+                raise ResourceNotFound(_('No version %(version)d for comment '
+                                         '%(cnum)d on ticket #%(ticket)s',
+                                         version=version, cnum=cnum,
+                                         ticket=ticket.id))
+        
+        old_text = get_text(old_version)
+        new_text = get_text(new_version)
         diffs = diff_blocks(old_text, new_text, context=diff_context,
                             ignore_blank_lines='-B' in diff_options,
                             ignore_case='-i' in diff_options,
