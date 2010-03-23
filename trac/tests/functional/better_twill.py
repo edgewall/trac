@@ -101,7 +101,12 @@ if twill:
                 return
             etree.clear_error_log()
             try:
-                etree.parse(StringIO(page), base_url=b.get_url())
+                # lxml will try to convert the URL to unicode by itself,
+                # this won't work for non-ascii URLs, so help him
+                url = b.get_url()
+                if isinstance(url, str):
+                    url = unicode(url, 'latin1')
+                etree.parse(StringIO(page), base_url=url)
             except etree.XMLSyntaxError, e:
                 raise twill.errors.TwillAssertionError(
                     _format_error_log(page, e.error_log))
