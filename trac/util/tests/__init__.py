@@ -64,7 +64,13 @@ class AtomicFileTestCase(unittest.TestCase):
                 rf.close()
             self.assertEqual('Replaced content', util.read_file(self.path))
     
-    def test_unicode_path(self):
+    # FIXME: It is currently not possible to make this test pass on all
+    # platforms and with all locales. Typically, it will fail on Linux with
+    # LC_ALL=C.
+    # Python 3 adds sys.setfilesystemencoding(), which could be used here
+    # to remove the dependency on the locale. So the test is disabled until
+    # we require Python 3.
+    def _test_unicode_path(self):
         self.path = os.path.join(tempfile.gettempdir(), u'träc-témpfilè')
         f = util.AtomicFile(self.path)
         try:
