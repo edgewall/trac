@@ -133,7 +133,7 @@ class Environment(Component, ComponentManager):
 
     project_url = Option('project', 'url', '',
         """URL of the main project web site, usually the website in which
-        the `base_url` resides.""")
+        the `base_url` resides. This is used in notification e-mails.""")
 
     project_admin = Option('project', 'admin', '',
         """E-Mail address of the project's administrator.""")
