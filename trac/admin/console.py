@@ -119,8 +119,9 @@ class TracAdmin(cmd.Cmd):
         except Exception, e:
             printerr(exception_to_unicode(e))
             rv = 2
-            self.env.log.error("Exception in trac-admin command: %s",
-                               exception_to_unicode(e, traceback=True))
+            if self.env_check():
+                self.env.log.error("Exception in trac-admin command: %s",
+                                   exception_to_unicode(e, traceback=True))
         if not self.interactive:
             return rv
 
@@ -145,11 +146,12 @@ Type:  '?' or 'help' for help on commands.
             self.__env = env
 
     def env_check(self):
-        try:
-            self.__env = Environment(self.envname)
-        except:
-            return 0
-        return 1
+        if not self.__env:
+            try:
+                self.__env = Environment(self.envname)
+            except:
+                return False
+        return True
 
     @property
     def env(self):
@@ -158,8 +160,8 @@ Type:  '?' or 'help' for help on commands.
                 self.__env = Environment(self.envname)
             return self.__env
         except Exception, e:
-            printerr(_("Failed to open environment."), e)
-            traceback.print_exc()
+            printerr(_("Failed to open environment: %(err)s",
+                       err=exception_to_unicode(e, traceback=True)))
             sys.exit(1)
 
     ##
@@ -222,15 +224,17 @@ Type:  '?' or 'help' for help on commands.
         args = self.arg_tokenize(line)
         if line and line[-1] == ' ':    # Space starts new argument
             args.append('')
-        cmd_mgr = AdminCommandManager(self.env)
-        try:
-            comp = cmd_mgr.complete_command(args, cmd_only)
-        except Exception, e:
-            printerr()
-            printerr(_('Completion error:'), exception_to_unicode(e))
-            self.env.log.error("trac-admin completion error: %s",
-                               exception_to_unicode(e, traceback=True))
-            return []
+        if self.env_check():
+            cmd_mgr = AdminCommandManager(self.env)
+            try:
+                comp = cmd_mgr.complete_command(args, cmd_only)
+            except Exception, e:
+                printerr()
+                printerr(_('Completion error: %(err)s',
+                           err=exception_to_unicode(e)))
+                self.env.log.error("trac-admin completion error: %s",
+                                   exception_to_unicode(e, traceback=True))
+                comp = []
         if len(args) == 1:
             comp.extend(name[3:] for name in self.get_names()
                         if name.startswith('do_'))
@@ -246,6 +250,8 @@ Type:  '?' or 'help' for help on commands.
         return self.complete_line(text, line)
         
     def default(self, line):
+        if not self.env_check():
+            raise AdminCommandError(_("Command not found"))
         args = self.arg_tokenize(line)
         cmd_mgr = AdminCommandManager(self.env)
         return cmd_mgr.execute_command(*args)
@@ -271,7 +277,7 @@ Type:  '?' or 'help' for help on commands.
         arg = self.arg_tokenize(line)
         if arg[0]:
             doc = getattr(self, "_help_" + arg[0], None)
-            if doc is None and self.envname is not None:
+            if doc is None and self.env_check():
                 cmd_mgr = AdminCommandManager(self.env)
                 doc = cmd_mgr.get_command_help(arg)
             if doc:
@@ -289,7 +295,7 @@ Type:  '?' or 'help' for help on commands.
                     )
                 printout(_("Invoking trac-admin without command starts "
                            "interactive mode.\n"))
-            env = (self.envname is not None) and self.env or None
+            env = self.env_check() and self.env or None
             self.print_doc(self.all_docs(env), short=True)
 
 
@@ -355,13 +361,13 @@ in order to initialize and prepare the project database.
     def do_initenv(self, line):
         def initenv_error(msg):
             printerr(_("Initenv for '%(env)s' failed.", env=self.envname),
-                     "\n", msg)
+                     "\n" + msg)
         if self.env_check():
-            initenv_error("Does an environment already exist?")
+            initenv_error(_("Does an environment already exist?"))
             return 2
 
         if os.path.exists(self.envname) and os.listdir(self.envname):
-            initenv_error("Directory exists and is not empty.")
+            initenv_error(_("Directory exists and is not empty."))
             return 2
 
         arg = self.arg_tokenize(line)
@@ -406,7 +412,7 @@ in order to initialize and prepare the project database.
                 self.__env = Environment(self.envname, create=True,
                                          options=options)
             except Exception, e:
-                initenv_error('Failed to create environment.')
+                initenv_error(_('Failed to create environment.'))
                 printerr(e)
                 traceback.print_exc()
                 sys.exit(1)
