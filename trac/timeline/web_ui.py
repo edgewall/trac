@@ -160,7 +160,7 @@ class TimelineModule(Component):
         include = set()
         exclude = set()
         for match in self._authors_pattern.finditer(authors):
-            name = match.group(2) or match.group(3) or match.group(4)
+            name = (match.group(2) or match.group(3) or match.group(4)).lower()
             if match.group(1):
                 exclude.add(name)
             else:
@@ -172,7 +172,8 @@ class TimelineModule(Component):
             try:
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters):
-                    author = event[len(event) < 6 and 2 or 4]   # 0.10 events
+                    # Check for 0.10 events
+                    author = event[len(event) < 6 and 2 or 4].lower()
                     if (not include or author in include) \
                        and not author in exclude:
                         events.append(self._event_data(provider, event))
