@@ -175,11 +175,21 @@ class AuthzPolicy(Component):
                            self.get_authz_file())
         self.authz = ConfigObj(self.get_authz_file())
         self.groups_by_user = {}
+        groups = {}
+        
+        def add_items(group, items):
+            for item in items:
+                if item.startswith('@'):
+                    add_items(group, groups[item])
+                else:
+                    self.groups_by_user.setdefault(item, set()).add(group)
+                    groups.setdefault(group, []).append(item)
+                    
         for group, users in self.authz.get('groups', {}).iteritems():
             if isinstance(users, basestring):
                 users = [users]
-            for user in users:
-                self.groups_by_user.setdefault(user, set()).add('@' + group)
+            add_items('@' + group, users)
+
         self.authz_mtime = os.path.getmtime(self.get_authz_file())
 
     def normalise_resource(self, resource):
