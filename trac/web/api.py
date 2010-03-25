@@ -18,9 +18,11 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 from Cookie import CookieError, BaseCookie, SimpleCookie
 import cgi
 from datetime import datetime
+import errno
 import new
 import mimetypes
 import os
+import socket
 from StringIO import StringIO
 import sys
 import urlparse
