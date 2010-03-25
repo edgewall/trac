@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-03-21 11:21+0100\n"
-"PO-Revision-Date: 2010-03-21 14:36+0100\n"
+"PO-Revision-Date: 2010-03-25 15:15+0100\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: it_IT <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1930,7 +1930,7 @@ msgstr ""
 
 #: trac/templates/error.html:90
 msgid "Create"
-msgstr "Crea"
+msgstr "Creare"
 
 #: trac/templates/error.html:105
 msgid "Oops…"
@@ -2040,7 +2040,7 @@ msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr ""
-"Altrimenti, %(create)s una nuova segnalazione\n"
+"Altrimenti, potresti %(create)s una nuova segnalazione\n"
 "                descrivendo il problema e spiegando come riprodurlo."
 
 #: trac/templates/error.html:160
@@ -2157,7 +2157,7 @@ msgid ""
 "      added by [5:%(author)s] %(date)s ago."
 msgstr ""
 "[1:%(file)s]\n"
-"      [2:[3]]\n"
+"      [2:[3:]]\n"
 "       ([4:%(size)s]) -\n"
 "       aggiunto da [5:%(author)s] %(date)s fa."
 
@@ -3321,7 +3321,7 @@ msgid ""
 "[2:TracQuery] expression)"
 msgstr ""
 "Query per il report: (può essere sia una istruzione SQL oppure, se inizia"
-" con [1:query], una espressione [2:TracQuery])"
+" con [1:query:], una espressione [2:TracQuery])"
 
 #: trac/ticket/templates/report_edit.html:41
 msgid "Save report"
