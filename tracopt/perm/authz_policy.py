@@ -174,20 +174,22 @@ class AuthzPolicy(Component):
         self.env.log.debug('Parsing authz security policy %s' %
                            self.get_authz_file())
         self.authz = ConfigObj(self.get_authz_file())
-        self.groups_by_user = {}
         groups = {}
+        for group, users in self.authz.get('groups', {}).iteritems():
+            if isinstance(users, basestring):
+                users = [users]
+            groups[group] = users
+        
+        self.groups_by_user = {}
         
         def add_items(group, items):
             for item in items:
                 if item.startswith('@'):
-                    add_items(group, groups[item])
+                    add_items(group, groups[item[1:]])
                 else:
                     self.groups_by_user.setdefault(item, set()).add(group)
-                    groups.setdefault(group, []).append(item)
                     
-        for group, users in self.authz.get('groups', {}).iteritems():
-            if isinstance(users, basestring):
-                users = [users]
+        for group, users in groups.iteritems():
             add_items('@' + group, users)
 
         self.authz_mtime = os.path.getmtime(self.get_authz_file())
