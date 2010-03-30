@@ -121,7 +121,9 @@ class MySQLConnector(Component):
             name = '`%s`' % c
             table_col = filter((lambda x: x.name == c), table.columns)
             if len(table_col) == 1 and table_col[0].type.lower() == 'text':
-                if name == '`rev`':
+                if table_col[0].key_size is not None:
+                    name += '(%d)' % table_col[0].key_size
+                elif name == '`rev`':
                     name += '(20)'
                 elif name == '`path`':
                     name += '(255)'

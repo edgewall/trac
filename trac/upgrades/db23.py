@@ -15,17 +15,17 @@ def do_upgrade(env, ver, cursor):
                 Column('value')],
               Table('revision', key=('repos', 'rev'))[
                 Column('repos'),
-                Column('rev'),
+                Column('rev', key_size=20),
                 Column('time', type='int'),
                 Column('author'),
                 Column('message'),
                 Index(['repos', 'time'])],
               Table('node_change', key=('repos', 'rev', 'path', 'change_type'))[
-                Column('repos'),
-                Column('rev'),
-                Column('path'),
+                Column('repos', key_size=56),
+                Column('rev', key_size=20),
+                Column('path', key_size=255),
                 Column('node_type', size=1),
-                Column('change_type', size=1),
+                Column('change_type', size=1, key_size=2),
                 Column('base_path'),
                 Column('base_rev'),
                 Index(['repos', 'rev'])]]

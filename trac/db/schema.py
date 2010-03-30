@@ -35,11 +35,12 @@ class Table(object):
 class Column(object):
     """Declare a table column in a database schema."""
 
-    def __init__(self, name, type='text', size=None, unique=False,
+    def __init__(self, name, type='text', size=None, key_size=None,
                  auto_increment=False):
         self.name = name
         self.type = type
         self.size = size
+        self.key_size = key_size
         self.auto_increment = auto_increment
 
 
