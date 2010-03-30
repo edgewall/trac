@@ -129,11 +129,11 @@ class VersionControlAdmin(Component):
             repositories = [repos]
         
         db = self.env.get_db_cnx()
-        cursor = db.cursor()
         for repos in sorted(repositories, key=lambda r: r.reponame):
             printout(_('Resyncing repository history for %(reponame)s... ',
                        reponame=repos.reponame or _('(default)')))
             repos.sync(self._sync_feedback, clean=clean)
+            cursor = db.cursor()
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
                            (repos.id,))
             for cnt, in cursor:
