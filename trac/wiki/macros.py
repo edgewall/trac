@@ -338,8 +338,8 @@ class ImageMacro(WikiMacroBase):
      * `key=value` style are interpreted as HTML attributes or CSS style
        indications for the image. Valid keys are:
         * align, valign, border, width, height, alt, title, longdesc, class, 
-          margin, id and usemap
-        * `border` and `margin` can only be a number
+          margin, margin-(left,right,top,bottom), id and usemap
+        * `border`, `margin`, and `margin-`* can only be a single number
         * `margin` is superseded by `center` which uses auto margins 
     
     Examples:
@@ -378,7 +378,8 @@ class ImageMacro(WikiMacroBase):
 
         # style information
         size_re = re.compile('[0-9]+(%|px)?$')
-        attr_re = re.compile('(align|valign|border|margin|width|height|alt'
+        attr_re = re.compile('(align|valign|border|width|height|alt'
+                             '|margin(?:-(?:left|right|top|bottom))?'
                              '|title|longdesc|class|id|usemap)=(.+)')
         quoted_re = re.compile("(?:[\"'])(.*)(?:[\"'])$")
         attr = {}
@@ -414,8 +415,11 @@ class ImageMacro(WikiMacroBase):
                         (key == 'valign' and \
                             val in ('top', 'middle', 'bottom')):
                         args.append(val)
-                    elif key == 'margin' and 'margin-left' not in style:
-                        style['margin'] = ' %dpx' % int(val)
+                    elif key in ('margin-top', 'margin-bottom'):
+                        style[key] = ' %dpx' % int(val)
+                    elif key in ('margin', 'margin-left', 'margin-right') \
+                             and 'display' not in style:
+                        style[key] = ' %dpx' % int(val)
                     elif key == 'border':
                         style['border'] = ' %dpx solid' % int(val)
                     else:
