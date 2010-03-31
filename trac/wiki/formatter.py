@@ -1153,7 +1153,7 @@ def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
     return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,
-                    absurls=False, max_depth=None, min_depth=None):
+                    absurls=False, max_depth=None, min_depth=None, req=None):
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
