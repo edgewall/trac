@@ -30,7 +30,7 @@ import urlparse
 from trac.core import Interface, TracError
 from trac.util import get_last_traceback, md5, unquote
 from trac.util.datefmt import http_date, localtz
-from trac.util.text import empty
+from trac.util.text import empty, to_unicode
 from trac.util.translation import _
 from trac.web.href import Href
 from trac.web.wsgi import _FileWrapper
@@ -628,7 +628,7 @@ class Request(object):
                            .replace(',', '%3C')
             self.outcookie[name]['path'] = path
 
-        cookies = self.outcookie.output(header='')
+        cookies = to_unicode(self.outcookie.output(header='')).encode('utf-8')
         for cookie in cookies.splitlines():
             self._outheaders.append(('Set-Cookie', cookie.strip()))
 
