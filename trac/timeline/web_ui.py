@@ -173,7 +173,7 @@ class TimelineModule(Component):
                 for event in provider.get_timeline_events(req, start, stop,
                                                           filters):
                     # Check for 0.10 events
-                    author = event[len(event) < 6 and 2 or 4].lower()
+                    author = (event[len(event) < 6 and 2 or 4] or '').lower()
                     if (not include or author in include) \
                        and not author in exclude:
                         events.append(self._event_data(provider, event))
