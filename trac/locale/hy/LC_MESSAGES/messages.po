@@ -1511,11 +1511,11 @@ msgstr "Այցելեք Trac բաց կոդով պրոյեկտ․"
 
 #: trac/templates/about.html:44
 msgid "http://trac.edgewall.org/"
-msgstr ""
+msgstr "http://trac.edgewall.org/"
 
 #: trac/templates/about.html:53
 msgid "System Information"
-msgstr "Համակարգային ինֆորմացիա"
+msgstr "Ինֆորմացիա համակարգի մասին"
 
 #: trac/templates/about.html:63
 msgid "Installed Plugins"
@@ -1658,7 +1658,7 @@ msgstr "%(date)s (%(duration)s առաջ)"
 
 #: trac/templates/diff_view.html:50
 msgid "(IP:"
-msgstr ""
+msgstr "(IP:"
 
 #: trac/templates/diff_view.html:52
 msgid "Comment:"
@@ -1727,7 +1727,7 @@ msgstr ""
 
 #: trac/templates/error.html:76
 msgid "==== System Information ===="
-msgstr "==== Համակարգի տեղեկություն ===="
+msgstr "==== Տեղեկություն ===="
 
 #: trac/templates/error.html:80
 msgid "==== Enabled Plugins ===="
@@ -2083,14 +2083,14 @@ msgstr[1] ""
 msgid "%(title)s %(unit)s:"
 msgid_plural "%(title)s %(units)s:"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(title)s %(units)s."
 
 #: trac/templates/macros.html:237
 #, python-format
 msgid "Total %(unit)s:"
 msgid_plural "Total %(units)s:"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%(units)s փոփոխվել են."
 
 #: trac/templates/theme.html:26
 msgid "Search:"
@@ -2305,7 +2305,7 @@ msgstr "Հիմնաբառեր"
 
 #: trac/ticket/api.py:317
 msgid "Cc"
-msgstr ""
+msgstr "ՊՃ"
 
 #: trac/ticket/api.py:321
 msgid "Created"
@@ -2405,7 +2405,7 @@ msgstr "Սխալ ուղենիշի անուն"
 
 #: trac/ticket/model.py:913
 msgid "Open (by due date)"
-msgstr ""
+msgstr "Բացված (ըստ կատարման ամսաթվի)"
 
 #: trac/ticket/model.py:914
 msgid "Open (no due date)"
@@ -2476,7 +2476,7 @@ msgstr "է"
 
 #: trac/ticket/query.py:662 trac/ticket/query.py:670 trac/ticket/query.py:674
 msgid "is not"
-msgstr "չէ"
+msgstr "ոչ"
 
 #: trac/ticket/query.py:704 trac/ticket/query.py:710
 msgid "Ticket"
@@ -2641,7 +2641,7 @@ msgstr "Ուղեցույց"
 
 #: trac/ticket/roadmap.py:361
 msgid "iCalendar"
-msgstr ""
+msgstr "iCalendar"
 
 #: trac/ticket/roadmap.py:442 trac/ticket/roadmap.py:843
 #, python-format
@@ -3970,7 +3970,7 @@ msgstr "պատճենված"
 
 #: trac/versioncontrol/templates/changeset.html:137
 msgid "moved"
-msgstr "հեռացված"
+msgstr "տեղափոխված"
 
 #: trac/versioncontrol/templates/changeset.html:169
 msgid ""
@@ -4028,7 +4028,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:17
 msgid "View Revision Log"
-msgstr "Տես Ռեվիզիայի Պատմությունը"
+msgstr "Դիտել Ռեվիզիայի Պատմությունը"
 
 #: trac/versioncontrol/templates/revisionlog.html:11
 msgid "(log)"
@@ -4048,7 +4048,7 @@ msgstr "Հետևեք պատճեններին"
 
 #: trac/versioncontrol/templates/revisionlog.html:40
 msgid "Show only adds and deletes"
-msgstr "Ցուցադրել միայն ավելացումները և ջնջումները"
+msgstr "Ցույց տալ միայն ավելացումները և ջնջումները"
 
 #: trac/versioncontrol/templates/revisionlog.html:45
 msgid "View log starting at"
@@ -4072,7 +4072,7 @@ msgstr "Ցույց տալ պատմության ամբողջական հաղորդ
 
 #: trac/versioncontrol/templates/revisionlog.html:79
 msgid "Copied or renamed"
-msgstr "Պատճենված է կամ անվանափոխված է"
+msgstr "Պատճենված է կամ անվանափոխված"
 
 #: trac/versioncontrol/templates/revisionlog.html:87
 msgid "Diff from Old Revision to New Revision (select them below)"
