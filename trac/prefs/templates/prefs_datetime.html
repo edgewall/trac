@@ -28,7 +28,7 @@
       <p class="hint" py:with="now = datetime.now(utc)">
         Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
         <br />
-        In ${session_tzname and 'your' or 'the Default'} time zone ${session_tzname and ' ' + selected_tz.tzname(None) or ''}, this would be displayed as
+        In ${session_tzname and 'your' or 'the Default'} time zone ${session_tzname and ' ' + selected_tz.tzname(datetime.now()) or ''}, this would be displayed as
         <strong>${format_time(now, 'iso8601', tzinfo=(session_tzname and selected_tz or localtz))}</strong>.
       </p>
 
