@@ -4608,9 +4608,9 @@ msgstr ""
 "l'utilisation des options de visualisation des différences."
 
 #: trac/versioncontrol/templates/dir_entries.html:11
-#, python-format
+#, fuzzy, python-format
 msgid "View %(path_kind)s"
-msgstr "Afficher le « %(path_kind)s »"
+msgstr "Voir le « %(path_kind)s »"
 
 #: trac/versioncontrol/templates/dir_entries.html:19
 #: trac/versioncontrol/templates/repository_index.html:23
@@ -5542,7 +5542,7 @@ msgstr "Afficher l'aperçu"
 
 #: trac/wiki/templates/wiki_rename.html:14
 msgid "Rename"
-msgstr "Renommez"
+msgstr "Renommer"
 
 #: trac/wiki/templates/wiki_rename.html:18
 msgid "Renaming the page will rename all existing versions of the page in place."
