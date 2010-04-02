@@ -955,6 +955,8 @@ msgid ""
 "Grant permission for an action to a subject, which can be either a user\n"
 "          or a group."
 msgstr ""
+"Rechten toekennen voor een actie op een onderwerp, welke zowel een\n"
+"          gebruiker of een groep kan zijn."
 
 #: trac/admin/templates/admin_perms.html:45
 msgid "Add Subject to Group:"
@@ -3501,7 +3503,7 @@ msgstr ""
 #: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:11
 #: trac/timeline/templates/timeline.html:17
 msgid "Timeline"
-msgstr "Tijdslijn"
+msgstr "Tijdlijn"
 
 #: trac/timeline/web_ui.py:227 trac/timeline/web_ui.py:235
 msgid "Previous Period"
@@ -3514,7 +3516,7 @@ msgstr "Volgende periode"
 #: trac/timeline/web_ui.py:295
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr "%(date)s in tijdslijn"
+msgstr "%(date)s in tijdlijn"
 
 #. TRANSLATOR: other_events
 #: trac/timeline/web_ui.py:343
@@ -3537,7 +3539,7 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"              U wilt wellicht de %(other_events)s van de tijdslijn zien "
+"              U wilt wellicht de %(other_events)s van de tijdlijn zien "
 "of \n"
 "              uw Trac-beheerder attenderen op de fout (gedetailleerde\n"
 "              informatie is naar log geschreven).\n"
@@ -3567,7 +3569,7 @@ msgid ""
 "        for information about the timeline view."
 msgstr ""
 "[1:Noot:] Zie [2:TracTimeline]\n"
-"        voor informatie over de tijdslijnweergave."
+"        voor informatie over de tijdlijnweergave."
 
 #: trac/util/datefmt.py:68
 #, python-format
@@ -4462,7 +4464,6 @@ msgid "View latest version"
 msgstr "Laatste versie weergeven"
 
 #: trac/wiki/web_ui.py:578
-#, fuzzy
 msgid "View parent page"
 msgstr "Ouderpagina weergeven"
 
