@@ -32,7 +32,7 @@
         <br />
         <py:when test="session_tzname">
           <i18n:msg params="tz, formatted">
-            In your time zone ${selected_tz.tzname(None)}, this would be displayed as
+            In your time zone ${selected_tz.tzname(now)}, this would be displayed as
             <strong>${format_time(now, 'iso8601', tzinfo=selected_tz)}</strong>.
           </i18n:msg>
         </py:when>
