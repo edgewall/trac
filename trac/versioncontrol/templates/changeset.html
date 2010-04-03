@@ -136,7 +136,7 @@
         </py:if>
         <py:if test="location">
           <dt class="property location">Location:</dt>
-          <dd class="searchable"><a href="${req.href.browser(reponame, location, rev=new_rev)}">$location</a></dd>
+          <dd class="searchable"><a href="${href.browser(reponame, location, rev=new_rev)}">$location</a></dd>
         </py:if>
         <dt class="property files">
           ${files and ngettext('File:', 'Files:', num=len(files)) or _('(No files)')}

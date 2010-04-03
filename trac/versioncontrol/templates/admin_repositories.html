@@ -43,7 +43,8 @@
           <legend py:when="info.editable">Modify Repository:</legend>
           <legend py:otherwise="">View Repository:</legend>
           <p py:if="not info.editable" class="hint" i18n:msg=""><strong>Note:</strong>
-            This repository is defined in <code><a href="${href.wiki('TracIni')}">trac.ini</a></code> and cannot be edited on this page.
+            This repository is defined in <code><a href="${href.wiki('TracIni')}">trac.ini</a></code>
+            and cannot be edited on this page.
           </p>
           <div class="field">
             <label>Name:<br/><input type="text" name="name" value="$info.name" readonly="$readonly"/></label>
