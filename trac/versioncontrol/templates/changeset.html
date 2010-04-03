@@ -29,48 +29,48 @@
           old_href = href.browser(reponame, old_path, rev=old_rev);
             ">
         <py:when test="reponame">
-          <h1 py:choose="">
-            <py:when test="changeset and restricted" i18n:msg="new_rev, reponame, new_path">
+          <py:choose>
+            <h1 py:when="changeset and restricted" i18n:msg="new_rev, reponame, new_path">
               Changeset <a title="Show full changeset" href="cset_href">$new_rev</a> in $reponame
               for <a title="Show entry in browser" href="$new_href">$new_path</a>
-            </py:when>
-            <py:when test="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev, reponame">
+            </h1>
+            <h1 py:when="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev, reponame">
               Changes in <a title="Show entry in browser" href="$new_href">$new_path</a>
               <a title="Show revision log" href="$log_href">[$old_rev:$new_rev]</a> in $reponame
-            </py:when>
-            <py:when test="not changeset and not restricted" i18n:msg="reponame, old_path, old_rev, new_path, new_rev">
+            </h1>
+            <h1 py:when="not changeset and not restricted" i18n:msg="reponame, old_path, old_rev, new_path, new_rev">
               Changes in $reponame
               from <a title="Show entry in browser" href="$old_href">$old_path</a>
               at <a title="Show full changeset" href="$old_cset_href">r$old_rev</a>
               to <a title="Show entry in browser" href="$new_href">$new_path</a>
               at <a title="Show full changeset" href="$cset_href">r$new_rev</a>
-            </py:when>
-            <py:otherwise i18n:msg="new_rev, reponame">
+            </h1>
+            <h1 py:otherwise="" i18n:msg="new_rev, reponame">
               Changeset <a py:strip="not annotated" href="$cset_href">$new_rev</a> in $reponame
-            </py:otherwise>
-          </h1>
+            </h1>
+          </py:choose>
         </py:when>
         <py:otherwise>
-          <h1 py:choose="">
-            <py:when test="changeset and restricted" i18n:msg="new_rev, new_path">
+          <py:choose>
+            <h1 py:when="changeset and restricted" i18n:msg="new_rev, new_path">
               Changeset <a title="Show full changeset" href="$cset_href">$new_rev</a>
               for <a title="Show entry in browser" href="$new_href">$new_path</a>
-            </py:when>
-            <py:when test="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev">
+            </h1>
+            <h1 py:when="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev">
               Changes in <a title="Show entry in browser" href="$new_href">$new_path</a>
               <a title="Show revision log" href="$log_href">[$old_rev:$new_rev]</a>
-            </py:when>
-            <py:when test="not changeset and not restricted" i18n:msg="old_path, old_rev, new_path, new_rev">
+            </h1>
+            <h1 py:when="not changeset and not restricted" i18n:msg="old_path, old_rev, new_path, new_rev">
               Changes
               from <a title="Show entry in browser" href="$old_href">$old_path</a>
               at <a title="Show full changeset" href="$old_cset_href">r$old_rev</a>
               to <a title="Show entry in browser" href="$new_href">$new_path</a>
               at <a title="Show full changeset" href="$cset_href">r$new_rev</a>
-            </py:when>
-            <py:otherwise i18n:msg="new_rev">
+            </h1>
+            <h1 py:otherwise="" i18n:msg="new_rev">
               Changeset <a py:strip="not annotated" href="$cset_href">$new_rev</a>
-            </py:otherwise>
-          </h1>
+            </h1>
+          </py:choose>
         </py:otherwise>
       </div>
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-03 17:56+0200\n"
+"POT-Creation-Date: 2010-04-03 18:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1594,8 +1594,6 @@ msgid "Property"
 msgstr ""
 
 #: trac/templates/diff_div.html:70 trac/ticket/templates/ticket_change.html:27
-#: trac/versioncontrol/templates/changeset.html:44
-#: trac/versioncontrol/templates/changeset.html:66
 msgid "to"
 msgstr ""
 
@@ -1679,7 +1677,6 @@ msgid "Initial Version"
 msgstr ""
 
 #: trac/templates/diff_view.html:24
-#: trac/versioncontrol/templates/changeset.html:42
 msgid "from"
 msgstr ""
 
@@ -3951,9 +3948,6 @@ msgid "Refresh"
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:13
-#: trac/versioncontrol/templates/changeset.html:34
-#: trac/versioncontrol/templates/changeset.html:39
-#: trac/versioncontrol/templates/changeset.html:49
 msgid "in"
 msgstr ""
 
@@ -4022,72 +4016,70 @@ msgid "Select paths and revs for Diff"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:33
-#: trac/versioncontrol/templates/changeset.html:48
-#: trac/versioncontrol/templates/changeset.html:55
-#: trac/versioncontrol/templates/changeset.html:70
-msgid "Changeset"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset.html:34
-#: trac/versioncontrol/templates/changeset.html:44
-#: trac/versioncontrol/templates/changeset.html:46
-#: trac/versioncontrol/templates/changeset.html:56
-#: trac/versioncontrol/templates/changeset.html:66
-#: trac/versioncontrol/templates/changeset.html:68
-msgid "Show full changeset"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset.html:34
-#: trac/versioncontrol/templates/changeset.html:56
-msgid "for"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset.html:35
-#: trac/versioncontrol/templates/changeset.html:38
-#: trac/versioncontrol/templates/changeset.html:43
-#: trac/versioncontrol/templates/changeset.html:45
-#: trac/versioncontrol/templates/changeset.html:57
-#: trac/versioncontrol/templates/changeset.html:60
-#: trac/versioncontrol/templates/changeset.html:65
-#: trac/versioncontrol/templates/changeset.html:67
-#: trac/versioncontrol/templates/changeset.html:103
-msgid "Show entry in browser"
+#, python-format
+msgid ""
+"Changeset [1:%(new_rev)s] in %(reponame)s\n"
+"              for [2:%(new_path)s]"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:37
+#, python-format
+msgid ""
+"Changes in [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
+msgstr ""
+
 #: trac/versioncontrol/templates/changeset.html:41
+#, python-format
+msgid ""
+"Changes in %(reponame)s\n"
+"              from [1:%(old_path)s]\n"
+"              at [2:r%(old_rev)s]\n"
+"              to [3:%(new_path)s]\n"
+"              at [4:r%(new_rev)s]"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:48
+#, python-format
+msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:55
+#, python-format
+msgid ""
+"Changeset [1:%(new_rev)s]\n"
+"              for [2:%(new_path)s]"
+msgstr ""
+
 #: trac/versioncontrol/templates/changeset.html:59
-msgid "Changes in"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset.html:39
-#: trac/versioncontrol/templates/changeset.html:61
-msgid "Show revision log"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset.html:43
-#: trac/versioncontrol/templates/changeset.html:45
-#: trac/versioncontrol/templates/changeset.html:65
-#: trac/versioncontrol/templates/changeset.html:67
-msgid "at"
-msgstr ""
-
-#: trac/versioncontrol/templates/changeset.html:44
-#: trac/versioncontrol/templates/changeset.html:46
-#: trac/versioncontrol/templates/changeset.html:66
-#: trac/versioncontrol/templates/changeset.html:68
-msgid "r"
+#, python-format
+msgid ""
+"Changes in [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:63
+#, python-format
 msgid ""
 "Changes\n"
-"              from"
+"              from [1:%(old_path)s]\n"
+"              at [2:r%(old_rev)s]\n"
+"              to [3:%(new_path)s]\n"
+"              at [4:r%(new_rev)s]"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:70
+#, python-format
+msgid "Changeset [1:%(new_rev)s]"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:99
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:103
+msgid "Show entry in browser"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:104
