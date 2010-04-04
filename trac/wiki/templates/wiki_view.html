@@ -4,12 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:i18n="http://genshi.edgewall.org/i18n"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      py:with="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
+               admin_perm = 'WIKI_ADMIN' in perm(page.resource)">
   <xi:include href="layout.html" />
   <head>
     <title py:if="title">$title</title>
     <meta py:if="version or page.author == 'trac'" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
-    <link py:if="'WIKI_MODIFY' in perm(page.resource)" rel="alternate" type="application/x-wiki"
+    <link py:if="admin_perm or (not page.readonly and modify_perm)" rel="alternate" type="application/x-wiki"
           title="Edit this page" href="${href.wiki(page.name, action='edit')}" />
     <script type="text/javascript">
       jQuery(document).ready(function($) {
@@ -64,9 +66,7 @@
       <xi:include href="list_of_attachments.html"
                   py:with="alist = attachments; compact = True; foldable = True"/>
 
-      <py:with vars="modify_perm = 'WIKI_MODIFY' in perm(page.resource);
-                     delete_perm = 'WIKI_DELETE' in perm(page.resource);
-                     admin_perm = 'WIKI_ADMIN' in perm(page.resource);
+      <py:with vars="delete_perm = 'WIKI_DELETE' in perm(page.resource);
                      rename_perm = 'WIKI_RENAME' in perm(page.resource)">
         <py:if test="admin_perm or (not page.readonly and (modify_perm or delete_perm))">
           <div class="buttons">
