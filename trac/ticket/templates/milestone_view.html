@@ -8,6 +8,8 @@
   <xi:include href="layout.html" />
   <head>
     <title>Milestone ${milestone.name}</title>
+    <link py:if="'MILESTONE_MODIFY' in perm(milestone.resource)" rel="alternate" type="application/x-wiki"
+          title="Edit this milestone" href="${href.milestone(milestone.name, action='edit')}" />
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");

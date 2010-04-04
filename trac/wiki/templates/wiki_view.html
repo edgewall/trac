@@ -9,6 +9,8 @@
   <head>
     <title py:if="title">$title</title>
     <meta py:if="version or page.author == 'trac'" name="ROBOTS" content="NOINDEX, NOFOLLOW" />
+    <link py:if="'WIKI_MODIFY' in perm(page.resource)" rel="alternate" type="application/x-wiki"
+          title="Edit this page" href="${href.wiki(page.name, action='edit')}" />
     <script type="text/javascript">
       jQuery(document).ready(function($) {
         $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
