@@ -408,9 +408,17 @@ class Formatter(object):
 
     def _bold_formatter(self, match, fullmatch):
         return self.simple_tag_handler(match, '<strong>', '</strong>')
+    # should be <b>
+
+    def _bold_wc_formatter(self, match, fullmatch):
+        return self.simple_tag_handler(match, '<b>', '</b>')
+    # should be <strong>
 
     def _italic_formatter(self, match, fullmatch):
         return self.simple_tag_handler(match, '<i>', '</i>')
+
+    def _italic_wc_formatter(self, match, fullmatch):
+        return self.simple_tag_handler(match, '<em>', '</em>')
 
     def _underline_formatter(self, match, fullmatch):
         return self.simple_tag_handler(match, '<span class="underline">',
@@ -432,6 +440,11 @@ class Formatter(object):
         return tag.tt(fullmatch.group('inline2'))
 
     # -- Post- IWikiSyntaxProvider rules
+
+    # WikiCreole line brekas
+
+    def _linebreak_wc_formatter(self, match, fullmatch):
+        return '<br />'
 
     # E-mails
 
@@ -473,6 +486,9 @@ class Formatter(object):
         ns = fullmatch.group('lns')
         target = self._unquote(fullmatch.group('ltgt'))
         label = fullmatch.group('label')
+        return self._make_lhref_link(match, fullmatch, rel, ns, target, label)
+
+    def _make_lhref_link(self, match, fullmatch, rel, ns, target, label):
         if not label: # e.g. `[http://target]` or `[wiki:target]`
             if target:
                 if target.startswith('//'):     # for `[http://target]`
@@ -512,7 +528,8 @@ class Formatter(object):
                     query = '&' + query.lstrip('?')
             return tag.a(label, href=path + query + fragment)
         else:
-            return self._make_link(ns, target, match, label, fullmatch)
+            return self._make_link(ns or 'wiki', target or '', match, label,
+                                   fullmatch)
 
     def _make_link(self, ns, target, match, label, fullmatch):
         # first check for an alias defined in trac.ini
@@ -610,19 +627,39 @@ class Formatter(object):
             label = format_to_oneliner(self.env, self.context, label)
         return '<span class="wikianchor" id="%s">%s</span>' % (anchor, label)
 
-    # WikiMacros
+    # WikiMacros or WikiCreole links
+
+    def _macrolink_formatter(self, match, fullmatch):
+        # check for a known [[macro]]
+        macro_or_link = match[2:-2]
+        fullmatch = WikiParser._macro_re.match(macro_or_link)
+        if fullmatch:
+            name = fullmatch.group('macroname')
+            args = fullmatch.group('macroargs')
+            macro = False # not a macro
+            macrolist = name[-1] == '?'
+            if name.lower() == 'br' or name == '?':
+                macro = None
+            else:
+                macro = WikiProcessor(self, (name, name[:-1])[macrolist])
+                if macro.error:
+                    macro = False
+            if macro is not False:
+                if macrolist:
+                    macro = WikiProcessor(self, 'MacroList')
+                return self._macro_formatter(match, fullmatch, macro)
+        fullmatch = WikiParser._creolelink_re.match(macro_or_link)
+        return self._lhref_formatter(match, fullmatch)
     
-    def _macro_formatter(self, match, fullmatch):
+    def _macro_formatter(self, match, fullmatch, macro=None):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
             return '<br />'
         if name and name[-1] == '?': # Macro?() shortcut for MacroList(Macro)
             args = name[:-1] or '*'
-            name = 'MacroList'
         else:
             args = fullmatch.group('macroargs')
         try:
-            macro = WikiProcessor(self, name)
             return macro.process(args, in_paragraph=True)
         except Exception, e:
             self.env.log.error('Macro %s(%s) failed: %s' % 
@@ -1202,7 +1239,10 @@ class OneLinerFormatter(Formatter):
     def _table_row_sep_formatter(self, match, fullmatch):
         return ''
 
-    def _macro_formatter(self, match, fullmatch):
+    def _linebreak_wc_formatter(self, match, fullmatch):
+        return ' '
+
+    def _macro_formatter(self, match, fullmatch, macro=None):
         name = fullmatch.group('macroname')
         if name.lower() == 'br':
             return ' '
@@ -1265,7 +1305,7 @@ class OutlineFormatter(Formatter):
 
     # Avoid the possible side-effects of rendering WikiProcessors
 
-    def _macro_formatter(self, match, fullmatch):
+    def _macro_formatter(self, match, fullmatch, macro=None):
         return ''
 
     def handle_code_block(self, line, startmatch=None):

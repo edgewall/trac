@@ -30,7 +30,9 @@ class WikiParser(Component):
 
     BOLDITALIC_TOKEN = "'''''"
     BOLD_TOKEN = "'''"
+    BOLD_TOKEN_WIKICREOLE = r"\*\*"
     ITALIC_TOKEN = "''"
+    ITALIC_TOKEN_WIKICREOLE = "//"
     UNDERLINE_TOKEN = "__"
     STRIKE_TOKEN = "~~"
     SUBSCRIPT_TOKEN = ",,"
@@ -63,7 +65,9 @@ class WikiParser(Component):
         # Font styles
         r"(?P<bolditalic>!?%s)" % BOLDITALIC_TOKEN,
         r"(?P<bold>!?%s)" % BOLD_TOKEN,
+        r"(?P<bold_wc>!?%s)" % BOLD_TOKEN_WIKICREOLE,        
         r"(?P<italic>!?%s)" % ITALIC_TOKEN,
+        r"(?P<italic_wc>!?%s)" % ITALIC_TOKEN_WIKICREOLE,        
         r"(?P<underline>!?%s)" % UNDERLINE_TOKEN,
         r"(?P<strike>!?%s)" % STRIKE_TOKEN,
         r"(?P<subscript>!?%s)" % SUBSCRIPT_TOKEN,
@@ -71,11 +75,14 @@ class WikiParser(Component):
         r"(?P<inlinecode>!?%s(?P<inline>.*?)%s)" \
         % (STARTBLOCK_TOKEN, ENDBLOCK_TOKEN),
         r"(?P<inlinecode2>!?%s(?P<inline2>.*?)%s)" \
-        % (INLINE_TOKEN, INLINE_TOKEN)]
+        % (INLINE_TOKEN, INLINE_TOKEN),
+        ]
 
     # Rules provided by IWikiSyntaxProviders will be inserted here
 
     _post_rules = [
+        # WikiCreole line breaks
+        r"(?P<linebreak_wc>!?\\\\)", 
         # e-mails
         r"(?P<email>!?%s)" % EMAIL_LOOKALIKE_PATTERN,
         # <wiki:Trac bracket links>
@@ -96,9 +103,8 @@ class WikiParser(Component):
         # [=#anchor] creation
         (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +
          "(?P<anchorlabel>\s+[^\]]*)?\])"),
-        # [[macro]] call
-        (r"(?P<macro>!?\[\[(?P<macroname>[\w/+-]+\??|\?)"
-         r"(\]\]|\((?P<macroargs>.*?)\)\]\]))"),
+        # [[macro]] call or [[WikiCreole link]]
+        (r"(?P<macrolink>!?\[\[(?:[^]]|][^]])*\]\])"),
         # == heading == #hanchor
         r"(?P<heading>^\s*(?P<hdepth>={1,6})\s(?P<htext>.*?)"
         r"(?P<hanchor>#%s)?\s*$)" % XML_NAME,
@@ -125,7 +131,28 @@ class WikiParser(Component):
     _startblock_re = re.compile(r"\s*%s(?:%s|\s*$)" %
                                 (STARTBLOCK, PROCESSOR))
     _processor_param_re = re.compile(PROCESSOR_PARAM)
-    _anchor_re = re.compile('[^\w:.-]+', re.UNICODE)
+    _anchor_re = re.compile(r'[^\w:.-]+', re.UNICODE)
+
+    _macro_re = re.compile(r'''
+        (?P<macroname> [\w/+-]+ \?? | \? )     # macro, macro? or ?
+          (?: \( (?P<macroargs> .*? ) \) )? $  # optional arguments within ()
+    ''', re.VERBOSE)
+
+    _creolelink_re = re.compile(r'''
+        (?:
+          (?P<rel> %(rel)s )                # rel is "./..." or "/..."
+        | (?: (?P<lns> %(scheme)s ) : )?    # lns is the optional "scheme:"
+            (?P<ltgt>                       # ltgt is the optional target
+              %(scheme)s : (?:%(quoted)s)   #   - "scheme:'...quoted..'"
+            | %(quoted)s                    #   - "'...quoted...'"
+            | [^|]+                         #   - anything but a '|'
+            )?
+        )
+        \s* (?: \| (?P<label> .* ) )?       # optional label after a '|'
+
+        ''' % {'rel': LHREF_RELATIVE_TARGET,
+               'scheme': LINK_SCHEME,
+               'quoted': QUOTED_STRING}, re.VERBOSE)
 
     def __init__(self):
         self._compiled_rules = None

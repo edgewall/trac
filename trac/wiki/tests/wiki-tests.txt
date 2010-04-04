@@ -9,6 +9,17 @@ This should be '''''bold and italic'''''
 This should be <strong><i>bold and italic</i></strong>
 </p>
 ------------------------------
+============================== Multiline bold italic markup (WikiCreole)
+**//bold
+italic (//not italic//)
+multiline//**
+------------------------------
+<p>
+<b><em>bold
+italic (</em>not italic<em>)
+multiline</em></b>
+</p>
+------------------------------
 ============================== Problematic markup: comma-separated list with a time + bold markup
 23:59,'''test''',123
 ------------------------------
@@ -431,6 +442,83 @@ rfc-2396.compatible://link
 <a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>rfc-2396.compatible://link</a>
 <a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
+</p>
+------------------------------
+============================== WikiCreole style for the above examples
+[[link:WikiStart| Foo]] [[http://www.edgewall.com/|Edgewall]]
+
+[[link:Foo Bar|Foo Bar]] [[link:Foo Bar#baz|Foo Bar]]
+
+[[Foo Bar]] [[Foo Bar|Fu Bar]] [[Foo Bar#baz|Foo Bar]]
+
+[[link:Argv|"*argv[] versus **argv"]]
+
+[[link:test|"test.txt", line 123]]
+
+[[link:pl/de|%de]]
+
+i.e. [[mailto:cboos@neuf.fr|me]]
+
+[[th:]]
+[[th:|Trac Hacks]]
+
+[[svn+ssh://secureserver.org|SVN link]]
+[[rfc-2396.compatible://link|RFC 2396]]
+------------------------------
+<p>
+<a class="text resolver" href="/stuff/WikiStart"> Foo</a> <a class="ext-link" href="http://www.edgewall.com/"><span class="icon"> </span>Edgewall</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Foo%20Bar">Foo Bar</a> <a class="text resolver" href="/stuff/Foo%20Bar%23baz">Foo Bar</a>
+</p>
+<p>
+<a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Foo Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar" rel="nofollow">Fu Bar?</a> <a class="missing wiki" href="/wiki/Foo%20Bar#baz" rel="nofollow">Foo Bar?</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Argv">*argv[] versus **argv</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/test">"test.txt", line 123</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/pl/de">%de</a>
+</p>
+<p>
+i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </span>me</a>
+</p>
+<p>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>th</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/" title="Trac Hacks"><span class="icon"> </span>Trac Hacks</a>
+</p>
+<p>
+<a class="ext-link" href="svn+ssh://secureserver.org"><span class="icon"> </span>SVN link</a>
+<a class="ext-link" href="rfc-2396.compatible://link"><span class="icon"> </span>RFC 2396</a>
+</p>
+------------------------------
+============================== More WikiCreole examples 
+[[coffeehouse setup|How to set up a coffee house]]
+
+[[link:Template]]
+[[link:Template|]]
+
+[[trac:wiki:Pipe (computing)|]]
+[[trac:wiki:Pipe (computing)|]]
+
+[[|b]] (might change to relative)
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/coffeehouse%20setup" rel="nofollow">How to set up a coffee house?</a>
+</p>
+<p>
+<a class="text resolver" href="/stuff/Template">Template</a>
+<a class="text resolver" href="/stuff/Template">Template</a>
+</p>
+<p>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>trac:wiki:Pipe (computing)</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>trac:wiki:Pipe (computing)</a>
+</p>
+<p>
+<a class="wiki" href="/wiki/WikiStart">b</a> (might change to relative)
 </p>
 ------------------------------
 ============================== Link resolver counter examples
@@ -862,14 +950,14 @@ Hello, Hello World, args = hej hopp
 </p>
 ------------------------------
 Hello, [[HelloWorld(...)]]
-============================== Bad macro call
+============================== Bad macro call, but valid WikiCreole link
 [[HelloWorld(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
 ------------------------------
 <p>
-[[<a class="missing wiki" href="/wiki/HelloWorld" rel="nofollow">HelloWorld?</a>(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/HelloWorld%28hej%20hopp%29%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
 </p>
 ------------------------------
-[[<a class="missing wiki" href="/wiki/HelloWorld" rel="nofollow">HelloWorld?</a>(hej hopp) ]] # This shouldnt executed as macro since it contain whitespace between ) and ]
+<a class="missing wiki" href="/wiki/HelloWorld%28hej%20hopp%29%20" rel="nofollow">HelloWorld(hej hopp) ?</a> # This shouldnt executed as macro since it contain whitespace between ) and ]
 ============================== Another bad macro call
 [[HelloWorld(hej hopp))]] # Extra right brace and still executed
 ------------------------------
@@ -961,6 +1049,14 @@ Inline <b> Test </b> text
 Inline [[html(...)]] text
 ============================== BR macro
 Line break [[BR]] another line[[br]]last line
+------------------------------
+<p>
+Line break <br /> another line<br />last line
+</p>
+------------------------------
+Line break   another line last line
+============================== WikiCreole line break
+Line break \\ another line\\last line
 ------------------------------
 <p>
 Line break <br /> another line<br />last line
