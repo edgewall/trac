@@ -1421,6 +1421,7 @@ def extract_link(env, context, wikidom):
 
 def wiki_to_html(wikitext, env, req, db=None,
                  absurls=False, escape_newlines=False):
+    """deprecated in favor of format_to_html (will be removed in 0.13)"""
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
@@ -1431,6 +1432,7 @@ def wiki_to_html(wikitext, env, req, db=None,
 
 def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
                      req=None):
+    """deprecated in favor of format_to_oneliner (will be removed in 0.13)"""
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
@@ -1441,6 +1443,7 @@ def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
 
 def wiki_to_outline(wikitext, env, db=None,
                     absurls=False, max_depth=None, min_depth=None):
+    """deprecated (will be removed in 0.13 and replaced by something else)"""
     if not wikitext:
         return Markup()
     abs_ref, href = (req or env).abs_href, (req or env).href
