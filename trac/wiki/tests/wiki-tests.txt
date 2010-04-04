@@ -6,7 +6,7 @@
 This should be '''''bold and italic'''''
 ------------------------------
 <p>
-This should be <strong><i>bold and italic</i></strong>
+This should be <strong><em>bold and italic</em></strong>
 </p>
 ------------------------------
 ============================== Multiline bold italic markup (WikiCreole)
@@ -15,9 +15,9 @@ italic (//not italic//)
 multiline//**
 ------------------------------
 <p>
-<b><em>bold
+<strong><em>bold
 italic (</em>not italic<em>)
-multiline</em></b>
+multiline</em></strong>
 </p>
 ------------------------------
 ============================== Problematic markup: comma-separated list with a time + bold markup
@@ -31,7 +31,7 @@ multiline</em></b>
 '''''one''''', '''''two''''', '''''three''''', '''''four'''''
 ------------------------------
 <p>
-<strong><i>one</i></strong>, <strong><i>two</i></strong>, <strong><i>three</i></strong>, <strong><i>four</i></strong>
+<strong><em>one</em></strong>, <strong><em>two</em></strong>, <strong><em>three</em></strong>, <strong><em>four</em></strong>
 </p>
 ------------------------------
 ============================== Underline + overstrike markup
@@ -59,21 +59,21 @@ __~~outoforderclosetags__~~
 '''''bolditalic''' # Open italic should be closed before paragraph end
 ------------------------------
 <p>
-<strong><i>bolditalic</i></strong><i> # Open italic should be closed before paragraph end
-</i></p>
+<strong><em>bolditalic</em></strong><em> # Open italic should be closed before paragraph end
+</em></p>
 ------------------------------
 ============================== Italic immediately followed by bold markup
 ''italic'''''bold'''
 ------------------------------
 <p>
-<i>italic</i><strong>bold</strong>
+<em>italic</em><strong>bold</strong>
 </p>
 ------------------------------
 ============================== Bold immediately followed by italic markup
 '''bold'''''italic''
 ------------------------------
 <p>
-<strong>bold</strong><i>italic</i>
+<strong>bold</strong><em>italic</em>
 </p>
 ------------------------------
 ============================== Multiline bold italic markup
@@ -82,16 +82,16 @@ italic
 multiline'''''
 ------------------------------
 <p>
-<strong><i>bold
+<strong><em>bold
 italic
-multiline</i></strong>
+multiline</em></strong>
 </p>
 ------------------------------
 ------------------------------
 <p>
-<strong><i>bold<br />
+<strong><em>bold<br />
 italic<br />
-multiline</i></strong><br />
+multiline</em></strong><br />
 </p>
 ============================== Problematic multiline bold italic markup
 '''''bold
@@ -100,11 +100,11 @@ multiline
 without endtags
 ------------------------------
 <p>
-<strong><i>bold
+<strong><em>bold
 italic
 multiline
 without endtags
-</i></strong></p>
+</em></strong></p>
 ------------------------------
 ============================== Super and subscript markup
 ^superscript^, ,,subscript,,, normal.
@@ -283,7 +283,7 @@ link:"Foo Bar" link:"Foo Bar#baz"
 '''link:1''', ''link:1'', ~~link:1~~, __link:1__
 ------------------------------
 <p>
-<strong><a class="odd resolver" href="/thing/1">link:1</a></strong>, <i><a class="odd resolver" href="/thing/1">link:1</a></i>, <del><a class="odd resolver" href="/thing/1">link:1</a></del>, <span class="underline"><a class="odd resolver" href="/thing/1">link:1</a></span>
+<strong><a class="odd resolver" href="/thing/1">link:1</a></strong>, <em><a class="odd resolver" href="/thing/1">link:1</a></em>, <del><a class="odd resolver" href="/thing/1">link:1</a></del>, <span class="underline"><a class="odd resolver" href="/thing/1">link:1</a></span>
 </p>
 ------------------------------
 ============================== Link resolver, quoting of target
@@ -353,7 +353,7 @@ Look for [=#extra ''additional explanations''] here.
 ------------------------------
 <p>
 This is the <span class="wikianchor" id="init"></span> initialization routine: ...
-Look for <span class="wikianchor" id="extra"><i>additional explanations</i></span> here.
+Look for <span class="wikianchor" id="extra"><em>additional explanations</em></span> here.
 </p>
 ------------------------------
 ==============================  Image links are now regular external links
@@ -368,7 +368,7 @@ http://example.com/img.png?foo=bar
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
+<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
 </p>
 ------------------------------
 ==============================  mailto: links and automatic e-mail detection
@@ -397,7 +397,7 @@ not@an.email.com
 ''RFCs von ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt''
 ------------------------------
 <p>
-<i>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></i>
+<em>RFCs von <a class="ext-link" href="ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt"><span class="icon"> </span>ftp://ftp.rfc-editor.org/in-notes/rfcXXXX.txt</a></em>
 </p>
 ------------------------------
 ============================== Generic InterTrac links
@@ -865,7 +865,7 @@ Go ahead, [[Span(''edit it freely'',class=important)]].
 Done.
 ------------------------------
 <div class="important"><p>
-Go ahead, <span class="important"><i>edit it freely</i></span>.
+Go ahead, <span class="important"><em>edit it freely</em></span>.
 </p>
 </div><p>
 Done.
@@ -883,7 +883,7 @@ This is a multiline span
 TODO: should be expanded in inline mode
 ------------------------------
 <span style="background: #ffd">This is a multiline span
- - only <i>inline</i> wiki formatting here, of course
+ - only <em>inline</em> wiki formatting here, of course
  - this is only a span after all!</span><p>
 TODO: should be expanded in inline mode
 </p>
@@ -1120,7 +1120,7 @@ Inline  comment
 ============================== Formatted heading
 == ''Formatted'' ~~Heading~~ ==
 ------------------------------
-<h2 id="FormattedHeading"><i>Formatted</i> <del>Heading</del></h2>
+<h2 id="FormattedHeading"><em>Formatted</em> <del>Heading</del></h2>
 ------------------------------
 == ''Formatted'' ~~Heading~~ ==
 ============================== Heading with link
@@ -1476,8 +1476,8 @@ No problems though as it resets. Lists won't though:
 This will be bold too as will the rest of the page.
 ------------------------------
 <p>
-This line <i>does not close italic.
-</i></p>
+This line <em>does not close italic.
+</em></p>
 <p>
 No problems though as it resets. Lists won't though:
 </p>
@@ -1487,13 +1487,13 @@ No problems though as it resets. Lists won't though:
 This will be bold too as will the rest of the page.
 </p>
 ------------------------------
-This line <i>does not close italic.
+This line <em>does not close italic.
 
 No problems though as it resets. Lists won't though:
  * <strong>Not closing bold...
  * Bold Continues here...
 
-This will be bold too as will the rest of the page.</strong></i>
+This will be bold too as will the rest of the page.</strong></em>
 ============================== Lists starting at beginning of line
 - item 1
 - item 2
@@ -1548,12 +1548,12 @@ term:: definition:: text
                  definition
 ------------------------------
 <dl class="wiki"><dt>complex topic</dt><dd>multiline
-<i>formatted</i>
+<em>formatted</em>
 definition
 </dd></dl>
 ------------------------------
 complex topic:: multiline
-                 <i>formatted</i>
+                 <em>formatted</em>
                  definition
 ============================== Definition list counter example
  term::definition

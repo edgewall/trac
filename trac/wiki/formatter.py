@@ -364,8 +364,8 @@ class Formatter(object):
 
     _indirect_tags = {
         'MM_BOLD': ('<strong>', '</strong>'),
-        'WC_BOLD': ('<b>', '</b>'),
-        'MM_ITALIC': ('<i>', '</i>'),
+        'WC_BOLD': ('<strong>', '</strong>'),
+        'MM_ITALIC': ('<em>', '</em>'),
         'WC_ITALIC': ('<em>', '</em>'),
         'MM_UNDERLINE': ('<span class="underline">', '</span>'),
         'MM_STRIKE': ('<del>', '</del>'),

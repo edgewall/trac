@@ -2,16 +2,11 @@
 
         Font styles for Creole 1.0
 
-============================== Bold (SKIP)
-**bold**
-------------------------------
-<strong>bold</strong>
-------------------------------
 ============================== Bold
 **bold**
 ------------------------------
 <p>
-<b>bold</b>
+<strong>bold</strong>
 </p>
 ------------------------------
 ============================== Italics
@@ -55,9 +50,9 @@ But, should <em>not be...
 //This is **also** good.//
 ------------------------------
 <p>
-<b><em>bold italics</em></b>
-<em><b>bold italics</b></em>
-<em>This is <b>also</b> good.</em>
+<strong><em>bold italics</em></strong>
+<em><strong>bold italics</strong></em>
+<em>This is <strong>also</strong> good.</em>
 </p>
 ------------------------------
 ============================== Bold Italics counter examples
@@ -65,8 +60,8 @@ But, should <em>not be...
 //**bold italics//**
 ------------------------------
 <p>
-<b><em>bold italics</em></b><em></em>
-<em><b>bold italics</b></em><b></b>
+<strong><em>bold italics</em></strong><em></em>
+<em><strong>bold italics</strong></em><strong></strong>
 </p>
 ------------------------------
 ============================== Headings (WONTFIX)
@@ -113,7 +108,7 @@ But, should <em>not be...
 <h3 id="Alsolevel3">Also level 3</h3>
 <h3 id="Alsolevel31">Also level 3 =</h3>
 <h3 id="Alsolevel32">Also level 3 ==</h3>
-<h3 id="notparsed"><b>not</b> <em>parsed</em></h3>
+<h3 id="notparsed"><strong>not</strong> <em>parsed</em></h3>
 ------------------------------
 ============================== Links - Internal, External and Interwiki (SKIP)
 [[link]]
@@ -242,10 +237,10 @@ Paragraph
 Paragraph
 </p>
 ============================== Nowiki (inline)
-Some examples of markup are: {{{** <i>this</i> ** }}}
+Some examples of markup are: {{{** <em>this</em> ** }}}
 ------------------------------
 <p>
-Some examples of markup are: <tt>** &lt;i&gt;this&lt;/i&gt; ** </tt>
+Some examples of markup are: <tt>** &lt;em&gt;this&lt;/em&gt; ** </tt>
 </p>
 ------------------------------
 ============================== Closing braces in nowiki (WONTFIX)
@@ -285,8 +280,8 @@ CamelCaseLink
 ------------------------------
 <p>
 <em><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">this link is italicized?</a></em>
-<b><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page?</a></b>
-<em><b><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page?</a></b></em>
+<strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page?</a></strong>
+<em><strong><a class="missing wiki" href="/wiki/Important%20page" rel="nofollow">Important page?</a></strong></em>
 </p>
 ------------------------------
 ============================== Bold, Italics, Links, Pre in Lists (SKIP)
