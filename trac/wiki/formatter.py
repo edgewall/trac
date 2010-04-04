@@ -361,83 +361,124 @@ class Formatter(object):
         return split_url_into_path_query_fragment(target)
 
     # -- Pre- IWikiSyntaxProvider rules (Font styles)
-    
+
+    _indirect_tags = {
+        'MM_BOLD': ('<strong>', '</strong>'),
+        'WC_BOLD': ('<b>', '</b>'),
+        'MM_ITALIC': ('<i>', '</i>'),
+        'WC_ITALIC': ('<em>', '</em>'),
+        'MM_UNDERLINE': ('<span class="underline">', '</span>'),
+        'MM_STRIKE': ('<del>', '</del>'),
+        'MM_SUBSCRIPT': ('<sub>', '</sub>'),
+        'MM_SUPERSCRIPT': ('<sup>', '</sup>'),
+        }
+
+    def _get_open_tag(self, tag):
+        """Retrieve opening tag for direct or indirect `tag`."""
+        if not isinstance(tag, tuple):
+            tag = self._indirect_tags[tag]            
+        return tag[0]
+
+    def _get_close_tag(self, tag):
+        """Retrieve closing tag for direct or indirect `tag`."""
+        if not isinstance(tag, tuple):
+            tag = self._indirect_tags[tag]            
+        return tag[1]
+
     def tag_open_p(self, tag):
         """Do we currently have any open tag with `tag` as end-tag?"""
         return tag in self._open_tags
 
-    def close_tag(self, tag):
+    def flush_tags(self):
+        while self._open_tags != []:
+            self.out.write(self._get_close_tag(self._open_tags.pop()))
+
+    def open_tag(self, tag_open, tag_close=None):
+        """Open an inline style tag.
+
+        If `tag_close` is not specified, `tag_open` is an indirect tag (0.12)
+        """
+        if tag_close:
+            self._open_tags.append((tag_open, tag_close))
+        else:
+            self._open_tags.append(tag_open)
+            tag_open = self._get_open_tag(tag_open)
+        return tag_open
+
+    def close_tag(self, open_tag, close_tag=None):
+        """Open a inline style tag.
+
+        If `close_tag` is not specified, it's an indirect tag (0.12)
+        """
         tmp =  ''
-        for i in xrange(len(self._open_tags)-1, -1, -1):
-            tmp += self._open_tags[i][1]
-            if self._open_tags[i][1] == tag:
+        for i in xrange(len(self._open_tags) - 1, -1, -1):
+            tag = self._open_tags[i]
+            tmp += self._get_close_tag(tag)
+            if (open_tag == tag,
+                (open_tag, close_tag) == tag)[bool(close_tag)]:
                 del self._open_tags[i]
                 for j in xrange(i, len(self._open_tags)):
-                    tmp += self._open_tags[j][0]
+                    tmp += self._get_open_tag(self._open_tags[j])
                 break
         return tmp
 
-    def flush_tags(self):
-        while self._open_tags != []:
-            self.out.write(self._open_tags.pop()[1])
-
-
-    def open_tag(self, open, close):
-        self._open_tags.append((open, close))
-
-    def simple_tag_handler(self, match, open_tag, close_tag):
-        """Generic handler for simple binary style tags"""
-        if self.tag_open_p((open_tag, close_tag)):
-            return self.close_tag(close_tag)
+    def _indirect_tag_handler(self, match, tag):
+        """Handle binary inline style tags (indirect way, 0.12)"""
+        if self.tag_open_p(tag):
+            return self.close_tag(tag)
         else:
-            self.open_tag(open_tag, close_tag)
-        return open_tag
+            return self.open_tag(tag)
 
     def _bolditalic_formatter(self, match, fullmatch):
-        italic = ('<i>', '</i>')
-        italic_open = self.tag_open_p(italic)
+        italic_open = self.tag_open_p('MM_ITALIC')
         tmp = ''
         if italic_open:
-            tmp += italic[1]
-            self.close_tag(italic[1])
+            tmp += self._get_close_tag('MM_ITALIC')
+            self.close_tag('MM_ITALIC')
         tmp += self._bold_formatter(match, fullmatch)
         if not italic_open:
-            tmp += italic[0]
-            self.open_tag(*italic)
+            tmp += self.open_tag('MM_ITALIC')
         return tmp
 
     def _bold_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<strong>', '</strong>')
-    # should be <b>
+        return self._indirect_tag_handler(match, 'MM_BOLD')
 
     def _bold_wc_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<b>', '</b>')
-    # should be <strong>
+        return self._indirect_tag_handler(match, 'WC_BOLD')
 
     def _italic_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<i>', '</i>')
+        return self._indirect_tag_handler(match, 'MM_ITALIC')
 
     def _italic_wc_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<em>', '</em>')
+        return self._indirect_tag_handler(match, 'WC_ITALIC')
 
     def _underline_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<span class="underline">',
-                                       '</span>')
+        return self._indirect_tag_handler(match, 'MM_UNDERLINE')
 
     def _strike_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<del>', '</del>')
+        return self._indirect_tag_handler(match, 'MM_STRIKE')
 
     def _subscript_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<sub>', '</sub>')
+        return self._indirect_tag_handler(match, 'MM_SUBSCRIPT')
 
     def _superscript_formatter(self, match, fullmatch):
-        return self.simple_tag_handler(match, '<sup>', '</sup>')
+        return self._indirect_tag_handler(match, 'MM_SUPERSCRIPT')
 
     def _inlinecode_formatter(self, match, fullmatch):
         return tag.tt(fullmatch.group('inline'))
 
     def _inlinecode2_formatter(self, match, fullmatch):
         return tag.tt(fullmatch.group('inline2'))
+
+    # pre-0.12 public API (no longer used by Trac itself but kept for plugins)
+
+    def simple_tag_handler(self, match, open_tag, close_tag):
+        """Generic handler for simple binary style tags"""
+        if self.tag_open_p((open_tag, close_tag)):
+            return self.close_tag(open_tag, close_tag)
+        else:
+            self.open_tag(open_tag, close_tag)
+        return open_tag
 
     # -- Post- IWikiSyntaxProvider rules
 
