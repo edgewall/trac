@@ -1,6 +1,7 @@
-import os
-import unittest
 import difflib
+import os
+import re
+import unittest
 from datetime import datetime
 
 from trac.core import *
@@ -101,12 +102,11 @@ class WikiTestCase(unittest.TestCase):
 
     generate_opts = {}
 
-    def __init__(self, input, correct, file, line, setup=None, teardown=None,
-                 context=None):
+    def __init__(self, title, input, correct, file, line, setup=None,
+                 teardown=None, context=None):
         unittest.TestCase.__init__(self, 'test')
-        self.title, self.input = input.split('\n', 1)
-        if self.title:
-            self.title = self.title.strip()
+        self.title = title
+        self.input = input
         self.correct = correct
         self.file = file
         self.line = line
@@ -166,7 +166,6 @@ class WikiTestCase(unittest.TestCase):
             self.assertEquals(self.correct, v)
         except AssertionError, e:
             msg = to_unicode(e)
-            import re
             match = re.match(r"u?'(.*)' != u?'(.*)'", msg)
             if match:
                 g1 = ["%s\n" % x for x in match.group(1).split(r'\n')]
@@ -209,36 +208,49 @@ class EscapeNewLinesTestCase(WikiTestCase):
 
 def suite(data=None, setup=None, file=__file__, teardown=None, context=None):
     suite = unittest.TestSuite()
-    if not data:
-        file = os.path.join(os.path.split(file)[0], 'wiki-tests.txt')
-        data = open(file, 'r').read().decode('utf-8')
-    tests = data.split('=' * 30)
-    next_line = 1
-    line = 0
-    for test in tests:
-        if line != next_line:
-            line = next_line
-        if not test or test == '\n':
-            continue
-        next_line += len(test.split('\n')) - 1
-        blocks = test.split('-' * 30 + '\n')
-        page_escape_nl = oneliner = None
-        if len(blocks) < 4:
-            blocks.extend([None,] * (4 - len(blocks)))
-        input, page, oneliner, page_escape_nl = blocks[:4]
-        if page:
-            page = WikiTestCase(input, page, file, line, setup, teardown,
-                                context)
-        if oneliner:
-            oneliner = OneLinerTestCase(input, oneliner[:-1], file, line,
-                                        setup, teardown, context)
-        if page_escape_nl:
-            page_escape_nl = EscapeNewLinesTestCase(input, page_escape_nl,
-                                                    file, line, setup,
-                                                    teardown, context)
-        for tc in [page, oneliner, page_escape_nl]:
-            if tc:
-                suite.addTest(tc)
+    def add_test_cases(data, filename):
+        tests = re.compile('^(%s.*)$' % ('=' * 30), re.MULTILINE).split(data)
+        next_line = 1
+        line = 0
+        for title, test in zip(tests[1::2], tests[2::2]):
+            title = title.lstrip('=').strip()            
+            if line != next_line:
+                line = next_line
+            if not test or test == '\n':
+                continue
+            next_line += len(test.split('\n')) - 1
+            if 'SKIP' in title or 'WONTFIX' in title:
+                continue
+            blocks = test.split('-' * 30 + '\n')
+            page_escape_nl = oneliner = None
+            if len(blocks) < 4:
+                blocks.extend([None,] * (4 - len(blocks)))
+            input, page, oneliner, page_escape_nl = blocks[:4]
+            if page:
+                page = WikiTestCase(
+                    title, input, page, filename, line, setup,
+                    teardown, context)
+            if oneliner:
+                oneliner = OneLinerTestCase(
+                    title, input, oneliner[:-1], filename, line, setup,
+                    teardown, context)
+            if page_escape_nl:
+                page_escape_nl = EscapeNewLinesTestCase(
+                    title, input, page_escape_nl, filename, line, setup,
+                    teardown, context)
+            for tc in [page, oneliner, page_escape_nl]:
+                if tc:
+                    suite.addTest(tc)
+    if data:
+        add_test_cases(data, file)
+    else:
+        for f in ('wiki-tests.txt', 'wikicreole-tests.txt'):
+            testfile = os.path.join(os.path.split(file)[0], f)
+            if os.path.exists(testfile):
+                data = open(testfile, 'r').read().decode('utf-8')
+                add_test_cases(data, testfile)
+            else:
+                print 'no ', testfile
     return suite
 
 if __name__ == '__main__':
