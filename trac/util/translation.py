@@ -138,7 +138,10 @@ try:
             self._current.args = (get_locale, env_path)
 
         def activate(self, locale, env_path=None):
-            locale_dir = pkg_resources.resource_filename('trac', 'locale')
+            try:
+                locale_dir = pkg_resources.resource_filename('trac', 'locale')
+            except pkg_resources.ExtractionError:
+                return # delay extraction
             t = Translations.load(locale_dir, locale or 'en_US')
             if not t or t.__class__ is NullTranslations:
                 t = self._null_translations
