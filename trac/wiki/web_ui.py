@@ -304,14 +304,14 @@ class WikiModule(Component):
 
         @with_transaction(self.env)
         def do_rename(db):
-            page.rename(new_name, db=db)
+            page.rename(new_name)
             if redirect:
                 redirection = WikiPage(self.env, old_name, db=db)
                 redirection.text = _('See [wiki:"%(name)s"].', name=new_name)
                 author = get_reporter_id(req)
                 comment = u'[wiki:"%s@%d" %s] \u2192 [wiki:"%s"].' % (
                           new_name, old_version, old_name, new_name)
-                redirection.save(author, comment, req.remote_addr, db=db)
+                redirection.save(author, comment, req.remote_addr)
         
         req.redirect(req.href.wiki(redirect and old_name or new_name))
 
@@ -589,7 +589,7 @@ class WikiModule(Component):
             else:
                 name = page.name
             name = name.lower()
-            related = [each for each in ws.pages() if name in each.lower()]
+            related = [each for each in ws.pages if name in each.lower()]
             related.sort()
             related = [ws._format_link(formatter, 'wiki', '/' + each, each,
                                        False)

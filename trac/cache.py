@@ -11,105 +11,81 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/.
 
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-
 from trac.core import Component
-from trac.db.util import with_transaction
-from trac.util.compat import partial
+from trac.db.util import get_read_db, with_transaction
+from trac.util import ThreadLocal, threading
 
-__all__ = ["CacheManager", "cached", "cached_value"]
+__all__ = ["CacheManager", "cached"]
 
 
-class cached_value(object):
+class CachedProperty(object):
+    """Cached property descriptor"""
+    
+    def __init__(self, retriever, id_attr=None):
+        self.retriever = retriever
+        self.id_attr = id_attr
+        self.__doc__ = retriever.__doc__
+        
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        if self.id_attr is not None:
+            id = getattr(instance, self.id_attr)
+        else:
+            id = owner.__module__ + '.' + owner.__name__ \
+                 + '.' + self.retriever.__name__
+        return CacheManager(instance.env).get(id, self.retriever, instance)
+        
+    def __delete__(self, instance):
+        if self.id_attr is not None:
+            id = getattr(instance, self.id_attr)
+        else:
+            id = instance.__class__.__module__ \
+                 + '.' + instance.__class__.__name__ \
+                 + '.' + self.retriever.__name__
+        CacheManager(instance.env).invalidate(id)
+
+
+def cached(fn_or_id=None):
     """Method decorator creating a cached attribute from a data retrieval
     method.
     
     Accessing the cached attribute gives back the cached value. The data
-    retrieval method will be called as needed by the CacheManager.
-    Invalidating the cache for this value is done by `del`eting the attribute.
+    retrieval method is called as needed by the CacheManager. Invalidating
+    the cache for this value is done by `del`eting the attribute.
     
     The data retrieval method is called with a single argument `db` containing
     a reference to a database connection. All data retrieval should be done
     through this connection.
     
     Note that the cache validity is maintained using a table in the database.
-    Most notably, a cache invalidation will trigger a commit, so don't do this
-    while another database operation is in progress.
+    Cache invalidation is performed within a transaction block, and can be
+    nested within another transaction block.
     
-    If more control over the transaction is needed, see the `cached` decorator.
-    
-    This decorator can only be used within `Component` subclasses. See
-    CacheProxy for caching attributes of other objects.
-    """
-    def __init__(self, retriever):
-        self.retriever = retriever
-        self.__doc__ = retriever.__doc__
-        
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        id = owner.__module__ + '.' + owner.__name__ \
-             + '.' + self.retriever.__name__
-        return CacheManager(instance.env).get(id,
-                partial(self.retriever, instance))
-        
-    def __delete__(self, instance):
-        id = instance.__class__.__module__ \
-             + '.' + instance.__class__.__name__ \
-             + '.' + self.retriever.__name__
-        CacheManager(instance.env).invalidate(id)
-
-
-class cached(cached_value):
-    """Method decorator creating a cached attribute from a data retrieval
-    method.
-    
-    In contrast with cached attributes created by the `cached_value` decorator,
-    accessing a cached attribute created with `cached` will not directly give 
-    back the cached value. Instead, this will return a proxy object with `get`
-    and `invalidate` methods, both accepting a `db` connection. After calling
-    `invalidate(db)`, doing a `commit` is the responsibility of the caller.
-    
-    This decorator can only be used within `Component` subclasses. See
-    CacheProxy for caching attributes of other objects.
-    """
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        id = owner.__module__ + '.' + owner.__name__ \
-             + '.' + self.retriever.__name__
-        return CacheProxy(id, partial(self.retriever, instance),
-                          instance.env)
-
-
-class CacheProxy(object):
-    """Cached attribute proxy.
-    
-    This is the class of the object returned when accessing an attribute
-    cached with the `cached` decorator.
-    
-    It can also be instantiated explicitly to cache attributes of
-    non-`Component` objects. In this case, the cache identifier `id` must be
-    provided, and the data retrieval function is a normal callable (not an
-    unbound method).
-    """
-    __slots__ = ["id", "retriever", "env"]
-    
-    def __init__(self, id, retriever, env):
-        self.id = id
-        self.retriever = retriever
+    The id used to identify the attribute in the database is constructed from
+    the names of the containing module, class and retriever method. If the
+    decorator is used in non-signleton (typically non-`Component`) objects,
+    an optional string specifying the name of the attribute containing the id
+    must be passed to the decorator call as follows:
+    {{{
+    def __init__(self, env, name):
         self.env = env
+        self._metadata_id = 'custom_id.' + name
     
-    def get(self, db=None):
-        return CacheManager(self.env).get(self.id, self.retriever, db)
+    @cached('_metadata_id')
+    def metadata(db):
+        ...
+    }}}
     
-    __call__ = get
-    
-    def invalidate(self, db=None):
-        CacheManager(self.env).invalidate(self.id, db)
+    This decorator requires that the object on which it is used has an `env`
+    attribute containing the application `Environment`.
+    """
+    if not hasattr(fn_or_id, '__call__'):
+        def decorator(fn):
+            return CachedProperty(fn, fn_or_id)
+        return decorator
+    else:
+        return CachedProperty(fn_or_id)
 
 
 class CacheManager(Component):
@@ -117,34 +93,30 @@ class CacheManager(Component):
     
     def __init__(self):
         self._cache = {}
-        self._local = threading.local()
+        self._local = ThreadLocal(meta=None, cache=None)
         self._lock = threading.RLock()
     
     # Public interface
     
     def reset_metadata(self):
         """Reset per-request cache metadata."""
-        try:
-            del self._local.meta
-            del self._local.cache
-        except AttributeError:
-            pass
+        self._local.meta = self._local.cache = None
 
-    def get(self, id, retriever, db=None):
+    def get(self, id, retriever, instance):
         """Get cached or fresh data for the given id."""
         # Get cache metadata
-        try:
-            local_meta = self._local.meta
-            local_cache = self._local.cache
-        except AttributeError:
+        local_meta = self._local.meta
+        local_cache = self._local.cache
+        if local_meta is None:
             # First cache usage in this request, retrieve cache metadata
             # from the database and make a thread-local copy of the cache
-            if db is None:
-                db = self.env.get_db_cnx()
+            db = get_read_db(self.env)
             cursor = db.cursor()
             cursor.execute("SELECT id,generation FROM cache")
             self._local.meta = local_meta = dict(cursor)
             self._local.cache = local_cache = self._cache.copy()
+        else:
+            db = None
         
         db_generation = local_meta.get(id, -1)
         
@@ -169,8 +141,8 @@ class CacheManager(Component):
             # Check if the process cache has the newest version, as it may
             # have been updated after the metadata retrieval
             if db is None:
-                db = self.env.get_db_cnx()
-            cursor = db.cursor()
+                db = get_read_db(self.env)
+                cursor = db.cursor()
             cursor.execute("SELECT generation FROM cache WHERE id=%s", (id,))
             row = cursor.fetchone()
             db_generation = not row and -1 or row[0]
@@ -178,14 +150,14 @@ class CacheManager(Component):
                 return data
             
             # Retrieve data from the database
-            data = retriever(db)
+            data = retriever(instance, db)
             local_cache[id] = self._cache[id] = (data, db_generation)
             local_meta[id] = db_generation
             return data
         finally:
             self._lock.release()
         
-    def invalidate(self, id, db=None):
+    def invalidate(self, id):
         """Invalidate cached data for the given id."""
         self._lock.acquire()
         try:
@@ -198,7 +170,7 @@ class CacheManager(Component):
             #  - If the row doesn't exist, the UPDATE does nothing, but starts
             #    a transaction. The SELECT then returns nothing, and we can
             #    safely INSERT a new row.
-            @with_transaction(self.env, db)
+            @with_transaction(self.env)
             def do_invalidate(db):
                 cursor = db.cursor()
                 cursor.execute("UPDATE cache SET generation=generation+1 "
@@ -215,7 +187,7 @@ class CacheManager(Component):
             # Invalidate in this thread
             try:
                 del self._local.cache[id]
-            except (AttributeError, KeyError):
+            except (KeyError, TypeError):
                 pass
         finally:
             self._lock.release()

@@ -104,7 +104,7 @@ class WikiPage(object):
 
             if not self.exists:
                 # Invalidate page name cache
-                WikiSystem(self.env).pages.invalidate(db)
+                del WikiSystem(self.env).pages
                 # Delete orphaned attachments
                 from trac.attachment import Attachment
                 Attachment.delete_all(self.env, 'wiki', self.name, db)
@@ -142,7 +142,7 @@ class WikiPage(object):
                                (self.readonly, self.name))
             if self.version == 1:
                 # Invalidate page name cache
-                WikiSystem(self.env).pages.invalidate(db)
+                del WikiSystem(self.env).pages
         
         self.author = author
         self.comment = comment
@@ -158,7 +158,7 @@ class WikiPage(object):
         self.old_readonly = self.readonly
         self.old_text = self.text
 
-    def rename(self, new_name, db=None):
+    def rename(self, new_name):
         """Rename wiki page in-place, keeping the history intact.
         Renaming a page this way will eventually leave dangling references
         to the old page - which litterally doesn't exist anymore.
@@ -167,7 +167,7 @@ class WikiPage(object):
 
         old_name = self.name
         
-        @with_transaction(self.env, db)
+        @with_transaction(self.env)
         def do_rename(db):
             cursor = db.cursor()
             new_page = WikiPage(self.env, new_name, db=db)
@@ -177,10 +177,12 @@ class WikiPage(object):
 
             cursor.execute("UPDATE wiki SET name=%s WHERE name=%s",
                            (new_name, old_name))
-            WikiSystem(self.env).pages.invalidate(db)
+            # Invalidate page name cache
+            del WikiSystem(self.env).pages
+            # Reparent attachments
             from trac.attachment import Attachment
-            Attachment.reparent_all(self.env, 'wiki', old_name,
-                                    'wiki', new_name, db)
+            Attachment.reparent_all(self.env, 'wiki', old_name, 'wiki',
+                                    new_name)
 
         self.name = new_name
         self.env.log.info('Renamed page %s to %s', old_name, new_name)

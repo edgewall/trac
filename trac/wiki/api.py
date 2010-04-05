@@ -226,13 +226,13 @@ class WikiSystem(Component):
         If the `prefix` parameter is given, only names that start with that
         prefix are included.
         """
-        for page in self.pages():
+        for page in self.pages:
             if not prefix or page.startswith(prefix):
                 yield page
 
     def has_page(self, pagename):
         """Whether a page with the specified name exists."""
-        return pagename.rstrip('/') in self.pages()
+        return pagename.rstrip('/') in self.pages
 
     # IWikiSyntaxProvider methods
 

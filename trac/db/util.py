@@ -15,30 +15,62 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
+from trac.util import ThreadLocal
+
+
+_transaction_local = ThreadLocal(db=None)
+
 def with_transaction(env, db=None):
     """Transaction decorator for simple use-once transactions.
-    Will be replaced by a context manager once python 2.4 support is dropped.
-
+    
     >>> def api_method(p1, p2):
     >>>     result[0] = value1
-    >>>     @with_transaction(env, db)
+    >>>     @with_transaction(env)
     >>>     def implementation_method(db):
     >>>         # implementation
     >>>         result[0] = value2
     >>>     return result[0]
+    
+    Nested transactions are supported, and a COMMIT will only be issued when
+    the outermost transaction block in a thread exits.
+    
+    This decorator will be replaced by a context manager once python 2.4
+    support is dropped.
+
+    The optional `db` argument is intended for legacy code and should not
+    be used in new code.
     """
     def transaction_wrapper(fn):
-        if db:
-            fn(db)
+        ldb = _transaction_local.db
+        if db is not None:
+            if ldb is None:
+                _transaction_local.db = db
+                try:
+                    fn(db)
+                finally:
+                    _transaction_local.db = None
+            else:
+                assert ldb is db, "Invalid transaction nesting"
+                fn(db)
+        elif ldb:
+            fn(ldb)
         else:
-            dbtmp = env.get_db_cnx()
+            ldb = _transaction_local.db = env.get_db_cnx()
             try:
-                fn(dbtmp)
-                dbtmp.commit()
+                fn(ldb)
+                ldb.commit()
+                _transaction_local.db = None
             except:
-                dbtmp.rollback()
+                _transaction_local.db = None
+                ldb.rollback()
+                ldb = None
                 raise
     return transaction_wrapper
+
+
+def get_read_db(env):
+    """Get a database connection for reading only."""
+    return _transaction_local.db or env.get_db_cnx()
 
 
 def sql_escape_percent(sql):

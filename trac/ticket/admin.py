@@ -130,7 +130,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                     def do_remove(db):
                         for name in sel:
                             comp = model.Component(self.env, name, db=db)
-                            comp.delete(db=db)
+                            comp.delete()
                     add_notice(req, _('The selected components have been '
                                       'removed.'))
                     req.redirect(req.href.admin(cat, page))
@@ -220,20 +220,20 @@ class ComponentAdminPanel(TicketAdminPanel):
         def do_rename(db):
             component = model.Component(self.env, name, db=db)
             component.name = newname
-            component.update(db=db)
+            component.update()
     
     def _do_remove(self, name):
         @with_transaction(self.env)
         def do_remove(db):
             component = model.Component(self.env, name, db=db)
-            component.delete(db=db)
+            component.delete()
     
     def _do_chown(self, name, owner):
         @with_transaction(self.env)
         def do_chown(db):
             component = model.Component(self.env, name, db=db)
             component.owner = owner
-            component.update(db=db)
+            component.update()
 
 
 class MilestoneAdminPanel(TicketAdminPanel):
@@ -318,7 +318,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                     def do_remove(db):
                         for name in sel:
                             mil = model.Milestone(self.env, name, db=db)
-                            mil.delete(db=db, author=req.authname)
+                            mil.delete(author=req.authname)
                     add_notice(req, _('The selected milestones have been '
                                       'removed.'))
                     req.redirect(req.href.admin(cat, page))
@@ -412,27 +412,27 @@ class MilestoneAdminPanel(TicketAdminPanel):
         def do_rename(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.name = newname
-            milestone.update(db=db)
+            milestone.update()
     
     def _do_due(self, name, due):
         @with_transaction(self.env)
         def do_due(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.due = due and parse_date(due)
-            milestone.update(db=db)
+            milestone.update()
     
     def _do_completed(self, name, completed):
         @with_transaction(self.env)
         def do_completed(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.completed = completed and parse_date(completed)
-            milestone.update(db=db)
+            milestone.update()
     
     def _do_remove(self, name):
         @with_transaction(self.env)
         def do_remove(db):
             milestone = model.Milestone(self.env, name, db=db)
-            milestone.delete(author=getuser(), db=db)
+            milestone.delete(author=getuser())
 
 
 class VersionAdminPanel(TicketAdminPanel):
@@ -498,7 +498,7 @@ class VersionAdminPanel(TicketAdminPanel):
                     def do_remove(db):
                         for name in sel:
                             ver = model.Version(self.env, name, db=db)
-                            ver.delete(db=db)
+                            ver.delete()
                     add_notice(req, _('The selected versions have been '
                                       'removed.'))
                     req.redirect(req.href.admin(cat, page))
@@ -571,20 +571,20 @@ class VersionAdminPanel(TicketAdminPanel):
         def do_rename(db):
             version = model.Version(self.env, name, db=db)
             version.name = newname
-            version.update(db=db)
+            version.update()
     
     def _do_time(self, name, time):
         @with_transaction(self.env)
         def do_time(db):
             version = model.Version(self.env, name, db=db)
             version.time = time and parse_date(time)
-            version.update(db=db)
+            version.update()
     
     def _do_remove(self, name):
         @with_transaction(self.env)
         def do_remove(db):
             version = model.Version(self.env, name, db=db)
-            version.delete(db=db)
+            version.delete()
 
 
 class AbstractEnumAdminPanel(TicketAdminPanel):
@@ -648,7 +648,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     def do_remove(db):
                         for name in sel:
                             enum = self._enum_cls(self.env, name, db=db)
-                            enum.delete(db=db)
+                            enum.delete()
                     add_notice(req, _('The selected %(fields)s have been '
                                       'removed.',
                                       fields=self._label[1].lower()))
@@ -691,7 +691,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                             new_value = order[enum.value]
                             if new_value != enum.value:
                                 enum.value = new_value
-                                enum.update(db=db)
+                                enum.update()
                                 changed[0] = True
 
                     if changed[0]:
@@ -758,13 +758,13 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
         def do_change(db):
             enum = self._enum_cls(self.env, name, db=db)
             enum.name = newname
-            enum.update(db=db)
+            enum.update()
     
     def _do_remove(self, value):
         @with_transaction(self.env)
         def do_remove(db):
             enum = self._enum_cls(self.env, value, db=db)
-            enum.delete(db=db)
+            enum.delete()
     
     def _do_order(self, name, up_down):
         if up_down not in ('up', 'down'):
@@ -782,9 +782,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
             return
         @with_transaction(self.env)
         def do_order(db):
-            enum1.update(db=db)
-            enum2.update(db=db)
-
+            enum1.update()
+            enum2.update()
 
 
 class PriorityAdminPanel(AbstractEnumAdminPanel):
@@ -840,6 +839,6 @@ class TicketAdmin(Component):
         @with_transaction(self.env)
         def do_remove(db):
             ticket = model.Ticket(self.env, number, db=db)
-            ticket.delete(db=db)
+            ticket.delete()
         printout(_('Ticket %(num)s and all associated data removed.',
                    num=number))

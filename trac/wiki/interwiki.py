@@ -18,7 +18,7 @@ import re
 
 from genshi.builder import tag
 
-from trac.cache import cached_value
+from trac.cache import cached
 from trac.core import *
 from trac.util.translation import _
 from trac.wiki.api import IWikiChangeListener, IWikiMacroProvider
@@ -107,7 +107,7 @@ class InterWikiMap(Component):
         if page.name == InterWikiMap._page_name:
             del self.interwiki_map
 
-    @cached_value
+    @cached
     def interwiki_map(self, db):
         """Map from upper-cased namespaces to (namespace, prefix, title) 
         values.

@@ -110,7 +110,7 @@ class WikiAdmin(Component):
             finally:
                 f.close()
     
-    def import_page(self, filename, title, db=None, create_only=[],
+    def import_page(self, filename, title, create_only=[],
                     replace=False):
         if filename:
             if not os.path.isfile(filename):
@@ -122,7 +122,7 @@ class WikiAdmin(Component):
         data = to_unicode(data, 'utf-8')
 
         result = [True]
-        @with_transaction(self.env, db)
+        @with_transaction(self.env)
         def do_import(db):
             cursor = db.cursor()
             # Make sure we don't insert the exact same page twice
@@ -153,20 +153,19 @@ class WikiAdmin(Component):
                                (title, to_utimestamp(datetime.now(utc)), data,
                                 title))
             if not old:
-                WikiSystem(self.env).pages.invalidate(db)
+                del WikiSystem(self.env).pages
         return result[0]
 
-    def load_pages(self, dir, db=None, ignore=[], create_only=[],
-                   replace=False):
-        @with_transaction(self.env, db)
-        def do_transaction(db):
+    def load_pages(self, dir, ignore=[], create_only=[], replace=False):
+        @with_transaction(self.env)
+        def do_load(db):
             for page in os.listdir(dir):
                 if page in ignore:
                     continue
                 filename = os.path.join(dir, page)
                 page = unicode_unquote(page.encode('utf-8'))
                 if os.path.isfile(filename):
-                    if self.import_page(filename, page, db, create_only, replace):
+                    if self.import_page(filename, page, create_only, replace):
                         printout(_("  %(page)s imported from %(filename)s",
                                    filename=filename, page=page))
     
@@ -212,7 +211,7 @@ class WikiAdmin(Component):
                 raise AdminCommandError(_('The page %(name)s already exists.',
                                           name=new_name))
             page = model.WikiPage(self.env, name, db=db)
-            page.rename(new_name, db=db)
+            page.rename(new_name)
 
     def _do_remove(self, name):
         @with_transaction(self.env)        
@@ -222,11 +221,11 @@ class WikiAdmin(Component):
                                                             or None))
                 for p in pages:
                     page = model.WikiPage(self.env, p, db=db)
-                    page.delete(db=db)
+                    page.delete()
                 print_table(((p,) for p in pages), [_('Deleted pages')])
             else:
                 page = model.WikiPage(self.env, name, db=db)
-                page.delete(db=db)
+                page.delete()
     
     def _do_export(self, page, filename=None):
         self.export_page(page, filename)
@@ -259,11 +258,11 @@ class WikiAdmin(Component):
         def do_transaction(db):
             for path in paths:
                 if os.path.isdir(path):
-                    self.load_pages(path, db, replace=replace)
+                    self.load_pages(path, replace=replace)
                 else:
                     page = os.path.basename(path)
                     page = unicode_unquote(page.encode('utf-8'))
-                    if self.import_page(path, page, db, replace=replace):
+                    if self.import_page(path, page, replace=replace):
                         printout(_("  %(page)s imported from %(filename)s",
                                    filename=path, page=page))
     

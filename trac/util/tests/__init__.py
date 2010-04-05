@@ -14,6 +14,7 @@
 import doctest
 import os.path
 import tempfile
+import threading
 import unittest
 
 from trac import util
@@ -80,6 +81,24 @@ class AtomicFileTestCase(unittest.TestCase):
         self.assertEqual('test content', util.read_file(self.path))
 
 
+class ThreadLocalTestCase(unittest.TestCase):
+
+    def test_thread_local(self):
+        local = util.ThreadLocal(a=1, b=2)
+        local.b = 3
+        local.c = 4
+        local_dict = [local.__dict__.copy()]
+        def f():
+            local.b = 5
+            local.d = 6
+            local_dict.append(local.__dict__.copy())
+        thread = threading.Thread(target=f)
+        thread.start()
+        thread.join()
+        self.assertEqual(dict(a=1, b=3, c=4), local_dict[0])
+        self.assertEqual(dict(a=1, b=5, d=6), local_dict[1])
+
+
 class ContentDispositionTestCase(unittest.TestCase):
 
     def test_filename(self):
@@ -96,6 +115,7 @@ class ContentDispositionTestCase(unittest.TestCase):
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(AtomicFileTestCase, 'test'))
+    suite.addTest(unittest.makeSuite(ThreadLocalTestCase, 'test'))
     suite.addTest(unittest.makeSuite(ContentDispositionTestCase, 'test'))
     suite.addTest(datefmt.suite())
     suite.addTest(presentation.suite())

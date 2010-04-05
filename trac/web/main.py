@@ -24,10 +24,6 @@ import locale
 import os
 import pkg_resources
 import sys
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
 
 try:
     from babel import Locale
@@ -46,7 +42,7 @@ from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
-                      read_file, translation
+                      read_file, threading, translation
 from trac.util.compat import any, partial
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode

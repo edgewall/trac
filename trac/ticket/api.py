@@ -19,7 +19,7 @@ import re
 
 from genshi.builder import tag
 
-from trac.cache import cached, cached_value
+from trac.cache import cached
 from trac.config import *
 from trac.core import *
 from trac.perm import IPermissionRequestor, PermissionCache, PermissionSystem
@@ -255,15 +255,15 @@ class TicketSystem(Component):
         It may in addition contain the 'custom' key, the 'optional' and the
         'options' keys. When present 'custom' and 'optional' are always `True`.
         """
-        fields = copy.deepcopy(self.fields())
+        fields = copy.deepcopy(self.fields)
         label = 'label' # workaround gettext extraction bug
         for f in fields:
             f[label] = gettext(f[label])
         return fields
 
-    def reset_ticket_fields(self, db=None):
+    def reset_ticket_fields(self):
         """Invalidate ticket field cache."""
-        self.fields.invalidate(db)
+        del self.fields
 
     @cached
     def fields(self, db):
@@ -349,7 +349,7 @@ class TicketSystem(Component):
     def get_custom_fields(self):
         return copy.deepcopy(self.custom_fields)
 
-    @cached_value
+    @cached
     def custom_fields(self, db):
         """Return the list of custom ticket fields available for tickets."""
         fields = []

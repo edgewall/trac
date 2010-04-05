@@ -231,7 +231,6 @@ class DefaultPermissionStore(Component):
 
     def revoke_permission(self, username, action):
         """Revokes a users' permission to perform the specified action."""
-        db = self.env.get_db_cnx()
         @with_transaction(self.env)
         def do_revoke(db):
             cursor = db.cursor()

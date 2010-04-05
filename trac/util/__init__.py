@@ -27,21 +27,17 @@ import random
 import re
 import shutil
 import sys
-import time
 import tempfile
+try:
+    import threading
+except ImportError:
+    import dummy_threading as threading
+    threading._get_ident = lambda: 0
+import time
 from urllib import quote, unquote, urlencode
 
-# Imports for backward compatibility
-from trac.core import TracError
-from trac.util.compat import any, md5, reversed, sha1, sorted
-from trac.util.html import escape, unescape, Markup, Deuglifier
-from trac.util.text import CRLF, to_utf8, to_unicode, shorten_line, \
-                           wrap, pretty_size
-from trac.util.datefmt import pretty_timedelta, format_datetime, \
-                              format_date, format_time, \
-                              get_date_format_hint, \
-                              get_datetime_format_hint, http_date, \
-                              parse_date
+from trac.util.compat import any, md5, sha1, sorted
+from trac.util.text import to_unicode
 
 # -- req/session utils
 
@@ -351,6 +347,14 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
 
 
 # -- sys utils
+
+class ThreadLocal(threading.local):
+    """A thread-local storage allowing to set default values on construction.
+    """
+    def __init__(self, **kwargs):
+        threading.local.__init__(self)
+        self.__dict__.update(kwargs)
+
 
 def arity(f):
     return f.func_code.co_argcount
@@ -875,3 +879,16 @@ def as_int(s, default, min=None, max=None):
 def pathjoin(*args):
     """Strip `/` from the arguments and join them with a single `/`."""
     return '/'.join(filter(None, (each.strip('/') for each in args if each)))
+
+
+# Imports for backward compatibility (at bottom to avoid circular dependencies)
+from trac.core import TracError
+from trac.util.compat import reversed
+from trac.util.html import escape, unescape, Markup, Deuglifier
+from trac.util.text import CRLF, to_utf8, shorten_line, wrap, pretty_size
+from trac.util.datefmt import pretty_timedelta, format_datetime, \
+                              format_date, format_time, \
+                              get_date_format_hint, \
+                              get_datetime_format_hint, http_date, \
+                              parse_date
+

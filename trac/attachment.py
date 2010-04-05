@@ -197,11 +197,11 @@ class Attachment(object):
         for listener in AttachmentModule(self.env).change_listeners:
             listener.attachment_deleted(self)
 
-    def reparent(self, new_realm, new_id, db=None):
+    def reparent(self, new_realm, new_id):
         assert self.filename, 'Cannot reparent non-existent attachment'
         new_id = unicode(new_id)
         
-        @with_transaction(self.env, db)
+        @with_transaction(self.env)
         def do_reparent(db):
             cursor = db.cursor()
             new_path = self._get_path(new_realm, new_id, self.filename)
@@ -304,38 +304,38 @@ class Attachment(object):
             yield attachment
 
     @classmethod
-    def delete_all(cls, env, parent_realm, parent_id, db):
-        """Delete all attachments of a given resource.
-
-        As this is usually done while deleting the parent resource,
-        the `db` argument is ''not'' optional here.
-        """
-        attachment_dir = None
-        for attachment in list(cls.select(env, parent_realm, parent_id, db)):
-            attachment_dir = os.path.dirname(attachment.path)
-            attachment.delete(db)
-        if attachment_dir:
+    def delete_all(cls, env, parent_realm, parent_id, db=None):
+        """Delete all attachments of a given resource."""
+        attachment_dir = [None]
+        @with_transaction(env, db)
+        def do_delete(db):
+            for attachment in list(cls.select(env, parent_realm, parent_id,
+                                              db)):
+                attachment_dir[0] = os.path.dirname(attachment.path)
+                attachment.delete()
+        if attachment_dir[0]:
             try:
-                os.rmdir(attachment_dir)
+                os.rmdir(attachment_dir[0])
             except OSError, e:
                 env.log.error("Can't delete attachment directory %s: %s",
-                    attachment_dir, exception_to_unicode(e, traceback=True))
+                    attachment_dir[0], exception_to_unicode(e, traceback=True))
 
     @classmethod
-    def reparent_all(cls, env, parent_realm, parent_id, new_realm, new_id,
-                     db=None):
-        """Reparent all attachments of a given resource to another resource.
-        """
-        attachment_dir = None
-        for attachment in list(cls.select(env, parent_realm, parent_id, db)):
-            attachment_dir = os.path.dirname(attachment.path)
-            attachment.reparent(new_realm, new_id, db)
-        if attachment_dir:
+    def reparent_all(cls, env, parent_realm, parent_id, new_realm, new_id):
+        """Reparent all attachments of a given resource to another resource."""
+        attachment_dir = [None]
+        @with_transaction(env)
+        def do_reparent(db):
+            for attachment in list(cls.select(env, parent_realm, parent_id,
+                                              db)):
+                attachment_dir = os.path.dirname(attachment.path)
+                attachment.reparent(new_realm, new_id)
+        if attachment_dir[0]:
             try:
-                os.rmdir(attachment_dir)
+                os.rmdir(attachment_dir[0])
             except OSError, e:
                 env.log.error("Can't delete attachment directory %s: %s",
-                    attachment_dir, exception_to_unicode(e, traceback=True))
+                    attachment_dir[0], exception_to_unicode(e, traceback=True))
             
     def open(self):
         self.env.log.debug('Trying to open attachment at %s', self.path)

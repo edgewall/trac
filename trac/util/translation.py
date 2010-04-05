@@ -13,15 +13,12 @@
 
 """Utilities for text translation with gettext."""
 
-import re
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-
 import pkg_resources
+import re
 
 from genshi.builder import tag
+
+from trac.util import ThreadLocal, threading
 
 
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop', 
@@ -118,7 +115,7 @@ try:
         """
 
         def __init__(self):
-            self._current = threading.local()
+            self._current = ThreadLocal(args=None, translations=None)
             self._null_translations = NullTranslationsBabel()
             self._plugin_domains = {}
             self._plugin_domains_lock = threading.RLock()
@@ -156,12 +153,8 @@ try:
             self._current.translations = t
          
         def deactivate(self):
-            t = None
-            if hasattr(self._current, 'args'):
-                del self._current.args
-            if hasattr(self._current, 'translations'):
-                t = self._current.translations
-                del self._current.translations
+            self._current.args = None
+            t, self._current.translations = self._current.translations, None
             return t
          
         def reactivate(self, t):
@@ -170,16 +163,15 @@ try:
     
         @property
         def active(self):
-            return getattr(self._current, 'translations', 
-                           self._null_translations)
+            return self._current.translations or self._null_translations
 
         @property
         def isactive(self):
-            if hasattr(self._current, 'args'):
+            if self._current.args is not None:
                 get_locale, env_path = self._current.args
-                del self._current.args
+                self._current.args = None
                 self.activate(get_locale(), env_path)
-            return hasattr(self._current, 'translations')
+            return self._current.translations is not None
 
         # Delegated methods
 

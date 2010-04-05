@@ -18,10 +18,6 @@ try:
     from base64 import b64decode
 except ImportError:
     from base64 import decodestring as b64decode
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
 import os
 import re
 import sys
@@ -35,7 +31,7 @@ from trac.core import *
 from trac.db.util import with_transaction
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import hex_entropy, md5, md5crypt
+from trac.util import hex_entropy, md5, md5crypt, threading
 from trac.util.translation import _
 
 

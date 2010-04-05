@@ -173,7 +173,10 @@ class Ticket(object):
                 self[name[9:]] = '0'
 
     def insert(self, when=None, db=None):
-        """Add ticket to database"""
+        """Add ticket to database.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert not self.exists, 'Cannot insert an existing ticket'
 
         # Add a timestamp
@@ -238,6 +241,8 @@ class Ticket(object):
         Store ticket changes in the database. The ticket must already exist in
         the database.  Returns False if there were no changes to save, True
         otherwise.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
         """
         assert self.exists, 'Cannot update a new ticket'
 
@@ -392,7 +397,10 @@ class Ticket(object):
         return log
 
     def delete(self, db=None):
-        """Delete the ticket."""
+        """Delete the ticket.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         @with_transaction(self.env, db)
         def do_delete(db):
             Attachment.delete_all(self.env, 'ticket', self.id, db)
@@ -424,9 +432,9 @@ class Ticket(object):
                 fields[field] = {'author': author, 'old': old, 'new': new}
             return change
 
-    def delete_change(self, cnum, db=None):
+    def delete_change(self, cnum):
         """Delete a ticket change."""
-        @with_transaction(self.env, db)
+        @with_transaction(self.env)
         def do_delete(db):
             cursor = db.cursor()
             row = self._find_change(cnum, db)
@@ -487,7 +495,7 @@ class Ticket(object):
         
         self._fetch_ticket(self.id)
 
-    def modify_comment(self, cdate, author, comment, when=None, db=None):
+    def modify_comment(self, cdate, author, comment, when=None):
         """Modify a ticket comment specified by its date, while keeping a
         history of edits.
         """
@@ -496,7 +504,7 @@ class Ticket(object):
             when = datetime.now(utc)
         when_ts = to_utimestamp(when)
 
-        @with_transaction(self.env, db)
+        @with_transaction(self.env)
         def do_modify(db):
             cursor = db.cursor()
             # Find the current value of the comment
@@ -659,6 +667,10 @@ class AbstractEnum(object):
     exists = property(fget=lambda self: self._old_value is not None)
 
     def delete(self, db=None):
+        """Delete the enum value.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert self.exists, 'Cannot delete non-existent %s' % self.type
 
         @with_transaction(self.env, db)
@@ -673,14 +685,18 @@ class AbstractEnum(object):
                 try:
                     if int(enum.value) > int(self._old_value):
                         enum.value = unicode(int(enum.value) - 1)
-                        enum.update(db=db)
+                        enum.update()
                 except ValueError:
                     pass # Ignore cast error for this non-essential operation
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
         self.value = self._old_value = None
         self.name = self._old_name = None
 
     def insert(self, db=None):
+        """Add a new enum value.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert not self.exists, 'Cannot insert existing %s' % self.type
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -698,12 +714,16 @@ class AbstractEnum(object):
             cursor.execute("INSERT INTO enum (type,name,value) "
                            "VALUES (%s,%s,%s)",
                            (self.type, self.name, self.value))
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
         self._old_name = self.name
         self._old_value = self.value
 
     def update(self, db=None):
+        """Update the enum value.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert self.exists, 'Cannot update non-existent %s' % self.type
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -722,7 +742,7 @@ class AbstractEnum(object):
                 cursor.execute("UPDATE ticket SET %s=%%s WHERE %s=%%s" %
                                (self.ticket_col, self.ticket_col),
                                (self.name, self._old_name))
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
         self._old_name = self.name
         self._old_value = self.value
@@ -799,6 +819,10 @@ class Component(object):
     exists = property(fget=lambda self: self._old_name is not None)
 
     def delete(self, db=None):
+        """Delete the component.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert self.exists, 'Cannot delete non-existent component'
 
         @with_transaction(self.env, db)
@@ -807,9 +831,13 @@ class Component(object):
             self.env.log.info('Deleting component %s' % self.name)
             cursor.execute("DELETE FROM component WHERE name=%s", (self.name,))
             self.name = self._old_name = None
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
+        """Insert a new component.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert not self.exists, 'Cannot insert existing component'
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -824,9 +852,13 @@ class Component(object):
                 VALUES (%s,%s,%s)
                 """, (self.name, self.owner, self.description))
             self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
+        """Update the component.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert self.exists, 'Cannot update non-existent component'
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -846,7 +878,7 @@ class Component(object):
                     UPDATE ticket SET component=%s WHERE component=%s
                     """, (self.name, self._old_name))
                 self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):
@@ -914,6 +946,10 @@ class Milestone(object):
                      'description': self.description}
 
     def delete(self, retarget_to=None, author=None, db=None):
+        """Delete the milestone.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         @with_transaction(self.env, db)
         def do_delete(db):
             cursor = db.cursor()
@@ -929,14 +965,18 @@ class Milestone(object):
                 ticket = Ticket(self.env, tkt_id, db)
                 ticket['milestone'] = retarget_to
                 ticket.save_changes(author, 'Milestone %s deleted' % self.name,
-                                    now, db=db)
+                                    now)
             self._old['name'] = None
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_deleted(self)
 
     def insert(self, db=None):
+        """Insert a new milestone.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         self.name = simplify_whitespace(self.name)
         if not self.name:
             raise TracError(_('Invalid milestone name.'))
@@ -951,12 +991,16 @@ class Milestone(object):
                 """, (self.name, to_utimestamp(self.due),
                       to_utimestamp(self.completed), self.description))
             self._to_old()
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
         for listener in TicketSystem(self.env).milestone_change_listeners:
             listener.milestone_created(self)
 
     def update(self, db=None):
+        """Update the milestone.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         self.name = simplify_whitespace(self.name)
         if not self.name:
             raise TracError(_('Invalid milestone name.'))
@@ -975,7 +1019,7 @@ class Milestone(object):
                               'associated with milestone "%s"' % self.name)
             cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
                            (self.name, self._old['name']))
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
         old_values = dict((k, v) for k, v in self._old.iteritems()
                           if getattr(self, k) != v)
@@ -1048,6 +1092,10 @@ class Version(object):
     exists = property(fget=lambda self: self._old_name is not None)
 
     def delete(self, db=None):
+        """Delete the version.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert self.exists, 'Cannot delete non-existent version'
 
         @with_transaction(self.env, db)
@@ -1056,9 +1104,13 @@ class Version(object):
             self.env.log.info('Deleting version %s' % self.name)
             cursor.execute("DELETE FROM version WHERE name=%s", (self.name,))
             self.name = self._old_name = None
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
     def insert(self, db=None):
+        """Insert a new version.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert not self.exists, 'Cannot insert existing version'
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -1072,9 +1124,13 @@ class Version(object):
                 INSERT INTO version (name,time,description) VALUES (%s,%s,%s)
                 """, (self.name, to_utimestamp(self.time), self.description))
             self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
     def update(self, db=None):
+        """Update the version.
+        
+        The `db` argument is deprecated in favor of `with_transaction()`.
+        """
         assert self.exists, 'Cannot update non-existent version'
         self.name = simplify_whitespace(self.name)
         if not self.name:
@@ -1093,7 +1149,7 @@ class Version(object):
                 cursor.execute("UPDATE ticket SET version=%s WHERE version=%s",
                                (self.name, self._old_name))
                 self._old_name = self.name
-            TicketSystem(self.env).reset_ticket_fields(db)
+            TicketSystem(self.env).reset_ticket_fields()
 
     @classmethod
     def select(cls, env, db=None):

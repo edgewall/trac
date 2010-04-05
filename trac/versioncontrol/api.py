@@ -17,17 +17,12 @@
 import os.path
 import time
 
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-    threading._get_ident = lambda: 0
-
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ListOption, Option
 from trac.core import *
 from trac.db.util import with_transaction
 from trac.resource import IResourceManager, Resource, ResourceNotFound
+from trac.util import threading
 from trac.util.text import printout, to_unicode
 from trac.util.translation import _
 from trac.web.api import IRequestFilter
@@ -209,7 +204,7 @@ class DbRepositoryProvider(Component):
                               "supported", type=type_))
         @with_transaction(self.env)
         def do_add(db):
-            id = rm.get_repository_id(reponame, db)
+            id = rm.get_repository_id(reponame)
             cursor = db.cursor()
             cursor.executemany("INSERT INTO repository (id, name, value) "
                                "VALUES (%s, %s, %s)",
@@ -226,7 +221,7 @@ class DbRepositoryProvider(Component):
         rm = RepositoryManager(self.env)
         @with_transaction(self.env)
         def do_add(db):
-            id = rm.get_repository_id(reponame, db)
+            id = rm.get_repository_id(reponame)
             cursor = db.cursor()
             cursor.executemany("INSERT INTO repository (id, name, value) "
                                "VALUES (%s, %s, %s)",
@@ -241,7 +236,7 @@ class DbRepositoryProvider(Component):
         rm = RepositoryManager(self.env)
         @with_transaction(self.env)
         def do_remove(db):
-            id = rm.get_repository_id(reponame, db)
+            id = rm.get_repository_id(reponame)
             cursor = db.cursor()
             cursor.execute("DELETE FROM repository WHERE id=%s", (id,))
             cursor.execute("DELETE FROM revision WHERE repos=%s", (id,))
@@ -256,7 +251,7 @@ class DbRepositoryProvider(Component):
         @with_transaction(self.env)
         def do_modify(db):
             cursor = db.cursor()
-            id = rm.get_repository_id(reponame, db)
+            id = rm.get_repository_id(reponame)
             for (k, v) in changes.iteritems():
                 if k not in self.repository_attrs:
                     continue
@@ -446,10 +441,10 @@ class RepositoryManager(Component):
                         repositories.append(repos)
         return repositories
 
-    def get_repository_id(self, reponame, db=None):
+    def get_repository_id(self, reponame):
         """Return a unique id for the given repository name."""
         repo_id = [None]
-        @with_transaction(self.env, db)
+        @with_transaction(self.env)
         def do_get(db):
             cursor = db.cursor()
             cursor.execute("SELECT id FROM repository "

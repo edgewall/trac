@@ -14,15 +14,11 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-    threading._get_ident = lambda: 0
 import os
 import time
 
 from trac.db.util import ConnectionWrapper
+from trac.util import threading
 from trac.util.translation import _
 
 
