@@ -12,7 +12,6 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 from trac.core import Component
-from trac.db.util import get_read_db, with_transaction
 from trac.util import ThreadLocal, threading
 
 __all__ = ["CacheManager", "cached"]
@@ -111,7 +110,7 @@ class CacheManager(Component):
         if local_meta is None:
             # First cache usage in this request, retrieve cache metadata
             # from the database and make a thread-local copy of the cache
-            db = get_read_db(self.env)
+            db = self.env.get_read_db()
             cursor = db.cursor()
             cursor.execute("SELECT id,generation FROM cache")
             self._local.meta = local_meta = dict(cursor)
@@ -130,7 +129,7 @@ class CacheManager(Component):
             pass
         
         if db is None:
-            db = get_read_db(self.env)
+            db = self.env.get_read_db()
         self._lock.acquire()
         try:
             # Get data from the process cache
@@ -160,7 +159,7 @@ class CacheManager(Component):
         
     def invalidate(self, id):
         """Invalidate cached data for the given id."""
-        db = get_read_db(self.env) # prevent deadlock
+        db = self.env.get_read_db() # prevent deadlock
         self._lock.acquire()
         try:
             # Invalidate in other processes
@@ -172,7 +171,7 @@ class CacheManager(Component):
             #  - If the row doesn't exist, the UPDATE does nothing, but starts
             #    a transaction. The SELECT then returns nothing, and we can
             #    safely INSERT a new row.
-            @with_transaction(self.env)
+            @self.env.with_transaction()
             def do_invalidate(db):
                 cursor = db.cursor()
                 cursor.execute("""

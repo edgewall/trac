@@ -24,7 +24,6 @@ from genshi.builder import tag
 from trac.attachment import AttachmentModule
 from trac.config import IntOption
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
@@ -252,7 +251,7 @@ class WikiModule(Component):
         version = int(req.args.get('version', 0)) or None
         old_version = int(req.args.get('old_version', 0)) or version
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_delete(db):
             if version and old_version and version > old_version:
                 # delete from `old_version` exclusive to `version` inclusive:
@@ -302,7 +301,7 @@ class WikiModule(Component):
             add_warning(req, warn)
             return self._render_confirm_rename(req, page, new_name)
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_rename(db):
             page.rename(new_name)
             if redirect:

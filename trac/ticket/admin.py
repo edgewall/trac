@@ -15,7 +15,6 @@ from datetime import datetime
 
 from trac.admin import *
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.perm import PermissionSystem
 from trac.resource import ResourceNotFound
 from trac.ticket import model
@@ -126,7 +125,7 @@ class ComponentAdminPanel(TicketAdminPanel):
                         raise TracError(_('No component selected'))
                     if not isinstance(sel, list):
                         sel = [sel]
-                    @with_transaction(self.env)
+                    @self.env.with_transaction()
                     def do_remove(db):
                         for name in sel:
                             comp = model.Component(self.env, name, db=db)
@@ -216,20 +215,20 @@ class ComponentAdminPanel(TicketAdminPanel):
         component.insert()
     
     def _do_rename(self, name, newname):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_rename(db):
             component = model.Component(self.env, name, db=db)
             component.name = newname
             component.update()
     
     def _do_remove(self, name):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_remove(db):
             component = model.Component(self.env, name, db=db)
             component.delete()
     
     def _do_chown(self, name, owner):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_chown(db):
             component = model.Component(self.env, name, db=db)
             component.owner = owner
@@ -314,7 +313,7 @@ class MilestoneAdminPanel(TicketAdminPanel):
                         raise TracError(_('No milestone selected'))
                     if not isinstance(sel, list):
                         sel = [sel]
-                    @with_transaction(self.env)
+                    @self.env.with_transaction()
                     def do_remove(db):
                         for name in sel:
                             mil = model.Milestone(self.env, name, db=db)
@@ -408,28 +407,28 @@ class MilestoneAdminPanel(TicketAdminPanel):
         milestone.insert()
     
     def _do_rename(self, name, newname):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_rename(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.name = newname
             milestone.update()
     
     def _do_due(self, name, due):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_due(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.due = due and parse_date(due)
             milestone.update()
     
     def _do_completed(self, name, completed):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_completed(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.completed = completed and parse_date(completed)
             milestone.update()
     
     def _do_remove(self, name):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_remove(db):
             milestone = model.Milestone(self.env, name, db=db)
             milestone.delete(author=getuser())
@@ -494,7 +493,7 @@ class VersionAdminPanel(TicketAdminPanel):
                         raise TracError(_('No version selected'))
                     if not isinstance(sel, list):
                         sel = [sel]
-                    @with_transaction(self.env)
+                    @self.env.with_transaction()
                     def do_remove(db):
                         for name in sel:
                             ver = model.Version(self.env, name, db=db)
@@ -567,21 +566,21 @@ class VersionAdminPanel(TicketAdminPanel):
         version.insert()
     
     def _do_rename(self, name, newname):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_rename(db):
             version = model.Version(self.env, name, db=db)
             version.name = newname
             version.update()
     
     def _do_time(self, name, time):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_time(db):
             version = model.Version(self.env, name, db=db)
             version.time = time and parse_date(time)
             version.update()
     
     def _do_remove(self, name):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_remove(db):
             version = model.Version(self.env, name, db=db)
             version.delete()
@@ -644,7 +643,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         raise TracError(_('No %s selected') % self._type)
                     if not isinstance(sel, list):
                         sel = [sel]
-                    @with_transaction(self.env)
+                    @self.env.with_transaction()
                     def do_remove(db):
                         for name in sel:
                             enum = self._enum_cls(self.env, name, db=db)
@@ -685,7 +684,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                     values = dict([(val, True) for val in order.values()])
                     if len(order) != len(values):
                         raise TracError(_('Order numbers must be unique'))
-                    @with_transaction(self.env)
+                    @self.env.with_transaction()
                     def do_change(db):
                         for enum in self._enum_cls.select(self.env, db=db):
                             new_value = order[enum.value]
@@ -754,14 +753,14 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
         enum.insert()
     
     def _do_change(self, name, newname):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_change(db):
             enum = self._enum_cls(self.env, name, db=db)
             enum.name = newname
             enum.update()
     
     def _do_remove(self, value):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_remove(db):
             enum = self._enum_cls(self.env, value, db=db)
             enum.delete()
@@ -780,7 +779,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                 break
         else:
             return
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_order(db):
             enum1.update()
             enum2.update()
@@ -836,7 +835,7 @@ class TicketAdmin(Component):
             number = int(number)
         except ValueError:
             raise AdminCommandError(_('<number> must be a number'))
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_remove(db):
             ticket = model.Ticket(self.env, number, db=db)
             ticket.delete()

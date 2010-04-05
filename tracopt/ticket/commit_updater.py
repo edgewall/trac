@@ -42,7 +42,6 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, Option
 from trac.core import Component, implements
-from trac.db.util import with_transaction
 from trac.perm import PermissionCache
 from trac.ticket import Ticket
 from trac.ticket.notification import TicketNotifyEmail
@@ -204,7 +203,7 @@ In [%s]:
             try:
                 self.log.debug("Updating ticket #%d", tkt_id)
                 ticket = [None]
-                @with_transaction(self.env)
+                @self.env.with_transaction()
                 def do_update(db):
                     ticket[0] = Ticket(self.env, tkt_id, db)
                     for cmd in cmds:

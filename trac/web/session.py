@@ -22,7 +22,6 @@ import time
 from datetime import date
 
 from trac.core import TracError, Component, implements
-from trac.db.util import with_transaction
 from trac.util import hex_entropy
 from trac.util.text import print_table, printout
 from trac.util.translation import _
@@ -86,7 +85,7 @@ class DetachedSession(dict):
         authenticated = int(self.authenticated)
         now = int(time.time())
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def delete_session_cookie(db):
             cursor = db.cursor()
             if self._new:
@@ -195,7 +194,7 @@ class Session(DetachedSession):
         assert new_sid, 'Session ID cannot be empty'
         if new_sid == self.sid:
             return
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def update_session_id(db):
             cursor = db.cursor()
             cursor.execute("SELECT sid FROM session WHERE sid=%s", (new_sid,))
@@ -223,7 +222,7 @@ class Session(DetachedSession):
         assert self.req.authname != 'anonymous', \
                'Cannot promote session of anonymous user'
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def update_session_id(db):
             cursor = db.cursor()
             cursor.execute("""
@@ -398,7 +397,7 @@ class SessionAdmin(Component):
             yield (sid, name, email)
 
     def _add_session(self, sid, name=None, email=None):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def add_session(db):
             cursor = db.cursor()
             cursor.execute("INSERT INTO session VALUES (%s, 1, %s)",
@@ -413,7 +412,7 @@ class SessionAdmin(Component):
                     """, (sid, email))
 
     def _set_attr(self, sid, attr, val):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def set_attr(db):
             cursor = db.cursor()
             cursor.execute("""
@@ -439,7 +438,7 @@ class SessionAdmin(Component):
                 raise TracError(_("Session id %(sid)s not found", sid=sid))
 
     def _delete_session(self, sid):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def delete_session(db):
             cursor = db.cursor()
             if sid.lower() == 'anonymous':
@@ -474,7 +473,7 @@ class SessionAdmin(Component):
         elif age:
             raise TracError(_('A datetime object must be specified'))
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def purge_session(db):
             cursor = db.cursor()
             if age:

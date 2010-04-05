@@ -22,7 +22,6 @@ from datetime import date, datetime
 
 from trac.attachment import Attachment
 from trac.core import TracError
-from trac.db.util import with_transaction
 from trac.resource import Resource, ResourceNotFound
 from trac.ticket.api import TicketSystem
 from trac.util import embedded_numbers, partition
@@ -212,7 +211,7 @@ class Ticket(object):
                     std_fields.append(fname)
 
         tkt_id = [None]
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_insert(db):
             cursor = db.cursor()
             cursor.execute("INSERT INTO ticket (%s) VALUES (%s)"
@@ -280,7 +279,7 @@ class Ticket(object):
                     cclist.append(cc)
             self.values['cc'] = ', '.join(cclist)
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_save(db):
             cursor = db.cursor()
 
@@ -401,7 +400,7 @@ class Ticket(object):
         
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             Attachment.delete_all(self.env, 'ticket', self.id, db)
             cursor = db.cursor()
@@ -434,7 +433,7 @@ class Ticket(object):
 
     def delete_change(self, cnum):
         """Delete a ticket change."""
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_delete(db):
             cursor = db.cursor()
             row = self._find_change(cnum, db)
@@ -504,7 +503,7 @@ class Ticket(object):
             when = datetime.now(utc)
         when_ts = to_utimestamp(when)
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_modify(db):
             cursor = db.cursor()
             # Find the current value of the comment
@@ -673,7 +672,7 @@ class AbstractEnum(object):
         """
         assert self.exists, 'Cannot delete non-existent %s' % self.type
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
             self.env.log.info('Deleting %s %s' % (self.type, self.name))
@@ -702,7 +701,7 @@ class AbstractEnum(object):
         if not self.name:
             raise TracError(_('Invalid %(type)s name.', type=self.type))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_insert(db):
             cursor = db.cursor()
             self.env.log.debug("Creating new %s '%s'" % (self.type, self.name))
@@ -729,7 +728,7 @@ class AbstractEnum(object):
         if not self.name:
             raise TracError(_('Invalid %(type)s name.', type=self.type))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_update(db):
             cursor = db.cursor()
             self.env.log.info('Updating %s "%s"' % (self.type, self.name))
@@ -825,7 +824,7 @@ class Component(object):
         """
         assert self.exists, 'Cannot delete non-existent component'
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
             self.env.log.info('Deleting component %s' % self.name)
@@ -843,7 +842,7 @@ class Component(object):
         if not self.name:
             raise TracError(_('Invalid component name.'))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_insert(db):
             cursor = db.cursor()
             self.env.log.debug("Creating new component '%s'" % self.name)
@@ -864,7 +863,7 @@ class Component(object):
         if not self.name:
             raise TracError(_('Invalid component name.'))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_update(db):
             cursor = db.cursor()
             self.env.log.info('Updating component "%s"' % self.name)
@@ -950,7 +949,7 @@ class Milestone(object):
         
         The `db` argument is deprecated in favor of `with_transaction()`.
         """
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
             self.env.log.info('Deleting milestone %s' % self.name)
@@ -981,7 +980,7 @@ class Milestone(object):
         if not self.name:
             raise TracError(_('Invalid milestone name.'))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_insert(db):
             cursor = db.cursor()
             self.env.log.debug("Creating new milestone '%s'" % self.name)
@@ -1005,7 +1004,7 @@ class Milestone(object):
         if not self.name:
             raise TracError(_('Invalid milestone name.'))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_update(db):
             cursor = db.cursor()
             self.env.log.info('Updating milestone "%s"' % self.name)
@@ -1098,7 +1097,7 @@ class Version(object):
         """
         assert self.exists, 'Cannot delete non-existent version'
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
             self.env.log.info('Deleting version %s' % self.name)
@@ -1116,7 +1115,7 @@ class Version(object):
         if not self.name:
             raise TracError(_('Invalid version name.'))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_insert(db):
             cursor = db.cursor()
             self.env.log.debug("Creating new version '%s'" % self.name)
@@ -1136,7 +1135,7 @@ class Version(object):
         if not self.name:
             raise TracError(_('Invalid version name.'))
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_update(db):
             cursor = db.cursor()
             self.env.log.info('Updating version "%s"' % self.name)

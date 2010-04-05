@@ -18,7 +18,6 @@ import os
 
 from trac.cache import cached
 from trac.core import TracError
-from trac.db.util import get_read_db, with_transaction
 from trac.util.datefmt import from_utimestamp, to_utimestamp
 from trac.util.translation import _
 from trac.versioncontrol import Changeset, Node, Repository, NoSuchChangeset
@@ -85,7 +84,7 @@ class CachedRepository(Repository):
         srev = self.db_rev(cset.rev)
         old_cset = [None]
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_sync(db):
             cursor = db.cursor()
             cursor.execute("""
@@ -115,7 +114,7 @@ class CachedRepository(Repository):
     def sync(self, feedback=None, clean=False):
         if clean:
             self.log.info('Cleaning cache')
-            @with_transaction(self.env)
+            @self.env.with_transaction()
             def do_clean(db):
                 cursor = db.cursor()
                 cursor.execute("DELETE FROM revision WHERE repos=%s",
@@ -132,7 +131,7 @@ class CachedRepository(Repository):
 
         metadata = self.metadata
         
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_transaction(db):
             cursor = db.cursor()
             invalidate = False
@@ -217,7 +216,7 @@ class CachedRepository(Repository):
             srev = self.db_rev(next_youngest)
 
             # 0. first check if there's no (obvious) resync in progress
-            db = get_read_db(self.env)
+            db = self.env.get_read_db()
             cursor = db.cursor()
             cursor.execute("""
                SELECT rev FROM revision WHERE repos=%s AND rev=%s
@@ -238,7 +237,7 @@ class CachedRepository(Repository):
                 srev = self.db_rev(next_youngest)
                 exit = [False]
                 
-                @with_transaction(self.env)
+                @self.env.with_transaction()
                 def do_transaction(db):
                     cursor = db.cursor()
                     

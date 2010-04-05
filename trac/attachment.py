@@ -29,7 +29,6 @@ from trac.admin import AdminCommandError, IAdminCommandProvider, PrefixList, \
                        console_datetime_format, get_dir_list
 from trac.config import BoolOption, IntOption
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.env import IEnvironmentSetupParticipant
 from trac.mimeview import *
 from trac.perm import PermissionError, IPermissionPolicy
@@ -176,7 +175,7 @@ class Attachment(object):
     def delete(self, db=None):
         assert self.filename, 'Cannot delete non-existent attachment'
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
             cursor.execute("DELETE FROM attachment WHERE type=%s AND id=%s "
@@ -201,7 +200,7 @@ class Attachment(object):
         assert self.filename, 'Cannot reparent non-existent attachment'
         new_id = unicode(new_id)
         
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_reparent(db):
             cursor = db.cursor()
             new_path = self._get_path(new_realm, new_id, self.filename)
@@ -265,7 +264,7 @@ class Attachment(object):
             basename = os.path.basename(path).encode('ascii')
             filename = unicode_unquote(basename)
 
-            @with_transaction(self.env, db)
+            @self.env.with_transaction(db)
             def do_insert(db):
                 cursor = db.cursor()
                 cursor.execute("INSERT INTO attachment "
@@ -307,7 +306,7 @@ class Attachment(object):
     def delete_all(cls, env, parent_realm, parent_id, db=None):
         """Delete all attachments of a given resource."""
         attachment_dir = [None]
-        @with_transaction(env, db)
+        @env.with_transaction(db)
         def do_delete(db):
             for attachment in list(cls.select(env, parent_realm, parent_id,
                                               db)):
@@ -324,7 +323,7 @@ class Attachment(object):
     def reparent_all(cls, env, parent_realm, parent_id, new_realm, new_id):
         """Reparent all attachments of a given resource to another resource."""
         attachment_dir = [None]
-        @with_transaction(env)
+        @env.with_transaction()
         def do_reparent(db):
             for attachment in list(cls.select(env, parent_realm, parent_id,
                                               db)):

@@ -21,7 +21,6 @@ from time import time
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ExtensionOption, OrderedExtensionsOption
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.resource import Resource, get_resource_name
 from trac.util.text import print_table, printout, wrap
 from trac.util.translation import _
@@ -222,7 +221,7 @@ class DefaultPermissionStore(Component):
 
     def grant_permission(self, username, action):
         """Grants a user the permission to perform the specified action."""
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_grant(db):
             cursor = db.cursor()
             cursor.execute("INSERT INTO permission VALUES (%s, %s)",
@@ -231,7 +230,7 @@ class DefaultPermissionStore(Component):
 
     def revoke_permission(self, username, action):
         """Revokes a users' permission to perform the specified action."""
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_revoke(db):
             cursor = db.cursor()
             cursor.execute("DELETE FROM permission WHERE username=%s "

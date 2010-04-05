@@ -18,7 +18,6 @@ import sys
 
 from trac.admin import *
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.wiki import model
 from trac.wiki.api import WikiSystem
 from trac.util import read_file
@@ -122,7 +121,7 @@ class WikiAdmin(Component):
         data = to_unicode(data, 'utf-8')
 
         result = [True]
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_import(db):
             cursor = db.cursor()
             # Make sure we don't insert the exact same page twice
@@ -157,7 +156,7 @@ class WikiAdmin(Component):
         return result[0]
 
     def load_pages(self, dir, ignore=[], create_only=[], replace=False):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_load(db):
             for page in os.listdir(dir):
                 if page in ignore:
@@ -205,7 +204,7 @@ class WikiAdmin(Component):
             return
         if not new_name:
             raise AdminCommandError(_('A new name is mandatory for a rename.'))
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_rename(db):
             if model.WikiPage(self.env, new_name, db=db).exists:
                 raise AdminCommandError(_('The page %(name)s already exists.',
@@ -214,7 +213,7 @@ class WikiAdmin(Component):
             page.rename(new_name)
 
     def _do_remove(self, name):
-        @with_transaction(self.env)        
+        @self.env.with_transaction()        
         def do_transaction(db):
             if name.endswith('*'):
                 pages = list(WikiSystem(self.env).get_pages(name.rstrip('*')
@@ -254,7 +253,7 @@ class WikiAdmin(Component):
                 self.export_page(p, dst, cursor)
     
     def _load_or_replace(self, paths, replace):
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_transaction(db):
             for path in paths:
                 if os.path.isdir(path):

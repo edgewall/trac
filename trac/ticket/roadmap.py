@@ -25,7 +25,6 @@ from trac import __version__
 from trac.attachment import AttachmentModule
 from trac.config import ExtensionOption
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import *
@@ -675,7 +674,7 @@ class MilestoneModule(Component):
             milestone.update()
             # eventually retarget opened tickets associated with the milestone
             if 'retarget' in req.args and completed:
-                @with_transaction(self.env)
+                @self.env.with_transaction()
                 def retarget(db):
                     cursor = db.cursor()
                     cursor.execute("UPDATE ticket SET milestone=%s WHERE "

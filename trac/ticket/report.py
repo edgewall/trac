@@ -25,7 +25,6 @@ from genshi.builder import tag
 from trac.config import IntOption
 from trac.core import *
 from trac.db import get_column_names
-from trac.db.util import with_transaction
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.resource import Resource, ResourceNotFound
@@ -150,7 +149,7 @@ class ReportModule(Component):
         query = req.args.get('query', '')
         description = req.args.get('description', '')
         report_id = [ None ]
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_create(db):
             cursor = db.cursor()
             cursor.execute("INSERT INTO report (title,query,description) "
@@ -165,7 +164,7 @@ class ReportModule(Component):
         if 'cancel' in req.args:
             req.redirect(req.href.report(id))
 
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_delete(db):
             cursor = db.cursor()
             cursor.execute("DELETE FROM report WHERE id=%s", (id,))
@@ -180,7 +179,7 @@ class ReportModule(Component):
             title = req.args.get('title', '')
             query = req.args.get('query', '')
             description = req.args.get('description', '')
-            @with_transaction(self.env)
+            @self.env.with_transaction()
             def do_save(db):
                 cursor = db.cursor()
                 cursor.execute("UPDATE report "

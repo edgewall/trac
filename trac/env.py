@@ -26,7 +26,7 @@ from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
-from trac.db.util import with_transaction
+from trac.db.util import get_read_db, with_transaction
 from trac.util import copytree, create_file, get_pkginfo, makedirs, threading
 from trac.util.compat import any
 from trac.util.text import exception_to_unicode, printerr, printout
@@ -321,8 +321,24 @@ class Environment(Component, ComponentManager):
             fd.close()
 
     def get_db_cnx(self):
-        """Return a database connection from the connection pool."""
+        """Return a database connection from the connection pool (deprecated)
+
+        Use `with_transaction` for obtaining a writable database connection
+        and `get_read_db` for anything else.
+        """
         return DatabaseManager(self).get_connection()
+
+    def with_transaction(self, db=None):
+        """Decorator for transaction functions.
+
+        See `trac.db.util.with_transaction` for detailed documentation."""
+        return with_transaction(self, db)
+
+    def get_read_db(self):
+        """Return a database connection for read purposes.
+
+        See `trac.db.util.get_read_db` for detailed documentation."""
+        return get_read_db(self)
 
     def shutdown(self, tid=None, except_logging=False):
         """Close the environment."""
@@ -547,7 +563,7 @@ class EnvironmentSetup(Component):
 
     def environment_created(self):
         """Insert default data into the database."""
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_db_populate(db):
             cursor = db.cursor()
             for table, cols, vals in db_default.get_data(db):

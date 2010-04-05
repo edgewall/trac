@@ -19,7 +19,6 @@
 from datetime import datetime
 
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.resource import Resource
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
 from trac.util.translation import _
@@ -85,7 +84,7 @@ class WikiPage(object):
     def delete(self, version=None, db=None):
         assert self.exists, 'Cannot delete non-existent page'
         
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_delete(db):
             cursor = db.cursor()
             if version is None:
@@ -124,7 +123,7 @@ class WikiPage(object):
             raise TracError(_('Page not modified'))
         t = t or datetime.now(utc)
 
-        @with_transaction(self.env, db)
+        @self.env.with_transaction(db)
         def do_save(db):
             cursor = db.cursor()
             if new_text:
@@ -167,7 +166,7 @@ class WikiPage(object):
 
         old_name = self.name
         
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_rename(db):
             cursor = db.cursor()
             new_page = WikiPage(self.env, new_name, db=db)

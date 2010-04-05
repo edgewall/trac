@@ -20,7 +20,6 @@ import time
 from trac.admin import AdminCommandError, IAdminCommandProvider
 from trac.config import ListOption, Option
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.resource import IResourceManager, Resource, ResourceNotFound
 from trac.util import threading
 from trac.util.text import printout, to_unicode
@@ -202,7 +201,7 @@ class DbRepositoryProvider(Component):
         if type_ and type_ not in rm.get_supported_types():
             raise TracError(_("The repository type '%(type)s' is not "
                               "supported", type=type_))
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_add(db):
             id = rm.get_repository_id(reponame)
             cursor = db.cursor()
@@ -219,7 +218,7 @@ class DbRepositoryProvider(Component):
         if is_default(target):
             target = ''
         rm = RepositoryManager(self.env)
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_add(db):
             id = rm.get_repository_id(reponame)
             cursor = db.cursor()
@@ -234,7 +233,7 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_remove(db):
             id = rm.get_repository_id(reponame)
             cursor = db.cursor()
@@ -248,7 +247,7 @@ class DbRepositoryProvider(Component):
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_modify(db):
             cursor = db.cursor()
             id = rm.get_repository_id(reponame)
@@ -444,7 +443,7 @@ class RepositoryManager(Component):
     def get_repository_id(self, reponame):
         """Return a unique id for the given repository name."""
         repo_id = [None]
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def do_get(db):
             cursor = db.cursor()
             cursor.execute("SELECT id FROM repository "

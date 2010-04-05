@@ -28,7 +28,6 @@ from genshi.builder import tag
 
 from trac.config import BoolOption, IntOption, Option
 from trac.core import *
-from trac.db.util import with_transaction
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5, md5crypt, threading
@@ -148,7 +147,7 @@ class LoginModule(Component):
                _('Already logged in as %(user)s.', user=req.authname)
 
         cookie = hex_entropy()
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def store_session_cookie(db):
             cursor = db.cursor()
             cursor.execute("INSERT INTO auth_cookie (cookie,name,ipnr,time) "
@@ -175,7 +174,7 @@ class LoginModule(Component):
 
         # While deleting this cookie we also take the opportunity to delete
         # cookies older than 10 days
-        @with_transaction(self.env)
+        @self.env.with_transaction()
         def delete_session_cookie(db):
             cursor = db.cursor()
             cursor.execute("DELETE FROM auth_cookie "
