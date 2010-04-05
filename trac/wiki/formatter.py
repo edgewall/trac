@@ -1523,7 +1523,7 @@ def wiki_to_oneliner(wikitext, env, db=None, shorten=False, absurls=False,
     return Markup(out.getvalue())
 
 def wiki_to_outline(wikitext, env, db=None,
-                    absurls=False, max_depth=None, min_depth=None):
+                    absurls=False, max_depth=None, min_depth=None, req=None):
     """deprecated (will be removed in 0.13 and replaced by something else)"""
     if not wikitext:
         return Markup()
