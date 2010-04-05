@@ -27,6 +27,6 @@ $change.comment
 {% end %}\
 
 -- 
-Ticket URL: <$ticket.link> for #$ticket.id
+Ticket URL: <$ticket.link>
 $project.name <${project.url or abs_href()}>
 $project.descr
