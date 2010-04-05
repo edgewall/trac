@@ -146,6 +146,7 @@ class TicketNotifyEmail(NotifyEmail):
                         change_data[field] = {'oldvalue': old, 'newvalue': new}
         
         ticket_values = ticket.values.copy()
+        ticket_values['id'] = ticket.id
         ticket_values['description'] = wrap(
             ticket_values.get('description', ''), self.COLS,
             initial_indent=' ', subsequent_indent=' ', linesep=CRLF)
