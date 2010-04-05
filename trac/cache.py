@@ -129,6 +129,8 @@ class CacheManager(Component):
         except KeyError:
             pass
         
+        if db is None:
+            db = get_read_db(self.env)
         self._lock.acquire()
         try:
             # Get data from the process cache
@@ -141,9 +143,7 @@ class CacheManager(Component):
             
             # Check if the process cache has the newest version, as it may
             # have been updated after the metadata retrieval
-            if db is None:
-                db = get_read_db(self.env)
-                cursor = db.cursor()
+            cursor = db.cursor()
             cursor.execute("SELECT generation FROM cache WHERE id=%s", (id,))
             row = cursor.fetchone()
             db_generation = not row and -1 or row[0]
@@ -160,6 +160,7 @@ class CacheManager(Component):
         
     def invalidate(self, id):
         """Invalidate cached data for the given id."""
+        db = get_read_db(self.env) # prevent deadlock
         self._lock.acquire()
         try:
             # Invalidate in other processes
