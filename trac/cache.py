@@ -32,17 +32,18 @@ class CachedProperty(object):
         if self.id_attr is not None:
             id = getattr(instance, self.id_attr)
         else:
-            id = owner.__module__ + '.' + owner.__name__ \
-                 + '.' + self.retriever.__name__
+            id = "%s.%s.%s" % (owner.__module__,
+                               owner.__name__,
+                               self.retriever.__name__)
         return CacheManager(instance.env).get(id, self.retriever, instance)
         
     def __delete__(self, instance):
         if self.id_attr is not None:
             id = getattr(instance, self.id_attr)
         else:
-            id = instance.__class__.__module__ \
-                 + '.' + instance.__class__.__name__ \
-                 + '.' + self.retriever.__name__
+            id = '%s.%s.%s' % (instance.__class__.__module__,
+                               instance.__class__.__name__,
+                               self.retriever.__name__)
         CacheManager(instance.env).invalidate(id)
 
 
@@ -173,8 +174,9 @@ class CacheManager(Component):
             @with_transaction(self.env)
             def do_invalidate(db):
                 cursor = db.cursor()
-                cursor.execute("UPDATE cache SET generation=generation+1 "
-                               "WHERE id=%s", (id,))
+                cursor.execute("""
+                    UPDATE cache SET generation=generation+1 WHERE id=%s
+                    """, (id,))
                 cursor.execute("SELECT generation FROM cache WHERE id=%s",
                                (id,))
                 if not cursor.fetchone():
