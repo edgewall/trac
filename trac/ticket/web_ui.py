@@ -489,12 +489,14 @@ class TicketModule(Component):
                 ticket.modify_comment(change['date'], req.authname, comment)
                 req.redirect(req.href.ticket(ticket.id) + '#comment:%d' % cnum)
 
+            valid = True
+
             # Do any action on the ticket?
-            actions = TicketSystem(self.env).get_available_actions(
-                req, ticket)
+            actions = TicketSystem(self.env).get_available_actions(req, ticket)
             if action not in actions:
-                raise TracError(_('Invalid action "%(name)s"', name=action))
-                # (this should never happen in normal situations)
+                valid = False
+                add_warning(req, _('The action "%(name)s" is not available.',
+                                   name=action))
 
             # We have a bit of a problem.  There are two sources of changes to
             # the ticket: the user, and the workflow.  We need to show all the
@@ -510,13 +512,16 @@ class TicketModule(Component):
             field_changes, problems = self.get_ticket_changes(req, ticket,
                                                               action)
             if problems:
+                valid = False
                 for problem in problems:
                     add_warning(req, problem)
                 add_warning(req,
-                            tag(tag.p('Please review your configuration, '
-                                      'probably starting with'),
-                                tag.pre('[trac]\nworkflow = ...\n'),
-                                tag.p('in your ', tag.tt('trac.ini'), '.')))
+                            tag_('Please review your configuration, '
+                                 'probably starting with %(section)s '
+                                 'in your %(tracini)s.',
+                                 section = tag.pre('[ticket]', tag.br(),
+                                                   'workflow = ...'),
+                                 tracini = tag.tt('trac.ini')))
 
             # Apply changes made by the workflow
             self._apply_ticket_changes(ticket, field_changes)
@@ -524,7 +529,7 @@ class TicketModule(Component):
             # information any and all problems.  But it's only valid if it
             # validates and there were no problems with the workflow side of
             # things.
-            valid = self._validate_ticket(req, ticket) and not problems
+            valid = self._validate_ticket(req, ticket, not valid) and valid
             if 'preview' not in req.args:
                 if valid:
                     # redirected if successful
@@ -1063,7 +1068,7 @@ class TicketModule(Component):
 
     # Ticket validation and changes
     
-    def _validate_ticket(self, req, ticket):
+    def _validate_ticket(self, req, ticket, force_collision_check=False):
         valid = True
         resource = ticket.resource
 
@@ -1098,7 +1103,7 @@ class TicketModule(Component):
                 valid = False
 
         # Mid air collision?
-        if ticket.exists and (ticket._old or comment):
+        if ticket.exists and (ticket._old or comment or force_collision_check):
             if req.args.get('ts') != str(ticket['changetime']):
                 add_warning(req, _("Sorry, can not save your changes. "
                               "This ticket has been modified by someone else "
