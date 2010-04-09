@@ -673,6 +673,10 @@ class Formatter(object):
     def _macrolink_formatter(self, match, fullmatch):
         # check for a known [[macro]]
         macro_or_link = match[2:-2]
+        if macro_or_link.startswith('=#'):
+            fullmatch = WikiParser._set_anchor_wc_re.match(macro_or_link)
+            if fullmatch:
+                return self._anchor_formatter(macro_or_link, fullmatch)
         fullmatch = WikiParser._macro_re.match(macro_or_link)
         if fullmatch:
             name = fullmatch.group('macroname')

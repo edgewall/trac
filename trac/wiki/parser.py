@@ -62,6 +62,10 @@ class WikiParser(Component):
     PROCESSOR = r"(\s*)#\!([\w+-][\w+-/]*)"
     PROCESSOR_PARAM = r'''(?P<proc_pname>\w+)=(?P<proc_pval>".*?"|'.*?'|\w+)'''
 
+    def _set_anchor(name, sep):
+        return r'=#(?P<anchorname>%s)(?:%s(?P<anchorlabel>[^\]]*))?' % \
+               (name, sep)
+
     # Sequence of regexps used by the engine
 
     _pre_rules = [
@@ -104,8 +108,7 @@ class WikiParser(Component):
          # wiki:TracLinks or wiki:"trac links" or intertrac:wiki:"trac links"
          r"(?:\s+(?P<label>%s|[^\]]+))?\])" % QUOTED_STRING), # optional label
         # [=#anchor] creation
-        (r"(?P<anchor>!?\[=#(?P<anchorname>%s)" % XML_NAME +
-         "(?P<anchorlabel>\s+[^\]]*)?\])"),
+        r"(?P<anchor>!?\[%s\])" % _set_anchor(XML_NAME, r'\s+'),
         # [[macro]] call or [[WikiCreole link]]
         (r"(?P<macrolink>!?\[\[(?:[^]]|][^]])*\]\])"),
         # == heading == #hanchor
@@ -156,6 +159,8 @@ class WikiParser(Component):
         ''' % {'rel': _lhref_relative_target(r'|'),
                'scheme': LINK_SCHEME,
                'quoted': QUOTED_STRING}, re.VERBOSE)
+
+    _set_anchor_wc_re = re.compile(_set_anchor(XML_NAME, r'\|\s*') + r'$')
 
     def __init__(self):
         self._compiled_rules = None

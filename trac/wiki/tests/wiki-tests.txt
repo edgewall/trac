@@ -383,6 +383,15 @@ This is the <span class="wikianchor" id="init"></span> initialization routine: .
 Look for <span class="wikianchor" id="extra"><em>additional explanations</em></span> here.
 </p>
 ------------------------------
+==============================  Wiki anchors (WikiCreole style)
+This is the [[=#init]] initialization routine: ...
+Look for [[=#extra|''additional explanations'']] here.
+------------------------------
+<p>
+This is the <span class="wikianchor" id="init"></span> initialization routine: ...
+Look for <span class="wikianchor" id="extra"><em>additional explanations</em></span> here.
+</p>
+------------------------------
 ==============================  Image links are now regular external links
 http://example.com/img.png?foo=bar
 ------------------------------
