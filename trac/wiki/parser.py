@@ -52,10 +52,10 @@ class WikiParser(Component):
     SHREF_TARGET_MIDDLE = r"(?:\|(?=[^|\s])|[^|<>\s])"
     SHREF_TARGET_LAST = r"[\w/=](?<!_)" # we don't want "_"
 
-    def lhref_relative_target(sep):
+    def _lhref_relative_target(sep):
         return r"[/#][^%s\]]*|\.\.?(?:[/#][^%s\]]*)?" % (sep, sep)
 
-    LHREF_RELATIVE_TARGET = lhref_relative_target(r'\s')
+    LHREF_RELATIVE_TARGET = _lhref_relative_target(r'\s')
     
     XML_NAME = r"[\w:](?<!\d)[\w:.-]*?" # See http://www.w3.org/TR/REC-xml/#id 
 
@@ -153,7 +153,7 @@ class WikiParser(Component):
         )
         \s* (?: \| (?P<label> .* ) )?       # optional label after a '|'
         $
-        ''' % {'rel': lhref_relative_target(r'|'),
+        ''' % {'rel': _lhref_relative_target(r'|'),
                'scheme': LINK_SCHEME,
                'quoted': QUOTED_STRING}, re.VERBOSE)
 
