@@ -303,7 +303,7 @@ class WikiSystem(Component):
             referrer = formatter.resource.id
         if pagename.startswith('/'):
             pagename = pagename.lstrip('/')
-        elif pagename.startswith('.'):
+        elif pagename.startswith('.'): # FIXME only . and .., not for ... 
             pagename = self._resolve_relative_name(pagename, referrer)
         else:
             pagename = self._resolve_scoped_name(pagename, referrer)
