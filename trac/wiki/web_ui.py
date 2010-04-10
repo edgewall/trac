@@ -471,7 +471,7 @@ class WikiModule(Component):
             if template_page and template_page.exists and \
                    'WIKI_VIEW' in req.perm(template_page.resource):
                 page.text = template_page.text
-        if action == 'preview':
+        if action in ('preview', 'diff'):
             page.readonly = 'readonly' in req.args
 
         author = get_reporter_id(req, 'author')
