@@ -44,13 +44,16 @@
 
       <div class="wikipage searchable" py:choose="" xml:space="preserve">
         <py:when test="page.exists">
+          <?python
+            last_modification = (page.comment and 
+                 _('Version %(version)s by %(author)s: %(comment)s',
+                   version=page.version, author=format_author(page.author), comment=page.comment) or
+                 _('Version %(version)s by %(author)s',
+                   version=page.version, author=format_author(page.author)))
+          ?>
           <div py:if="not version" class="trac-modifiedby" i18n:msg="reldate">
             <a href="${href.wiki(page.name, action='diff', version=page.version)}"
-               title="${page.comment and _('Version %(version)s by %(author)s: %(comment)s',
-                                           version=page.version, author=format_author(page.author), comment=page.comment)
-                                     or _('Version %(version)s by %(author)s',
-                                          version=page.version, author=format_author(page.author))}">
-              Last modified</a> ${dateinfo(page.time)} ago
+               title="$last_modification">Last modified</a> ${dateinfo(page.time)} ago
           </div>
           <div id="wikipage" py:content="wiki_to_html(context, text)" />
         </py:when>

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-10 19:44+0200\n"
+"POT-Creation-Date: 2010-04-10 22:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5167,11 +5167,11 @@ msgid "Leave a redirection page at the old location"
 msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:32
-#: trac/wiki/templates/wiki_view.html:105
+#: trac/wiki/templates/wiki_view.html:108
 msgid "Rename page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:81
+#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
 msgid "Edit this page"
 msgstr ""
 
@@ -5184,44 +5184,52 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
-msgid ""
-"[1:\n"
-"              Last modified] %(reldate)s ago"
+msgid "Version %(version)s by %(author)s: %(comment)s"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:58
+#: trac/wiki/templates/wiki_view.html:47
+#, python-format
+msgid "Version %(version)s by %(author)s"
+msgstr ""
+
+#: trac/wiki/templates/wiki_view.html:54
+#, python-format
+msgid "[1:Last modified] %(reldate)s ago"
+msgstr ""
+
+#: trac/wiki/templates/wiki_view.html:61
 msgid "The page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:58
+#: trac/wiki/templates/wiki_view.html:61
 msgid "does not exist. You can create it here."
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:60
+#: trac/wiki/templates/wiki_view.html:63
 msgid "You could also create the same page higher in the hierarchy:"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:84
+#: trac/wiki/templates/wiki_view.html:87
 msgid "Create this page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:86
+#: trac/wiki/templates/wiki_view.html:89
 msgid "Using the template:"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:89
+#: trac/wiki/templates/wiki_view.html:92
 msgid "(blank page)"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:114
+#: trac/wiki/templates/wiki_view.html:117
 msgid "Delete this version"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:116
+#: trac/wiki/templates/wiki_view.html:119
 msgid "Delete page"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:125
+#: trac/wiki/templates/wiki_view.html:128
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
 
