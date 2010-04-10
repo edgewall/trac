@@ -19,6 +19,7 @@ Here you will find information such as:
  * Timestamp -- When the changeset was commited
  * Author -- Who commited the changeset
  * Message -- A brief description from the author (the commit log message)
+ * Location -- Parent directory of all files affected by this changeset
  * Files -- A list of files affected by this changeset
 
 If more than one revision is involved in the set of changes being

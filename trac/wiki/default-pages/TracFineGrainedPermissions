@@ -4,6 +4,8 @@ Before Trac 0.11, it was only possible to define fine-grained permissions checks
 
 Since 0.11, there's a general mechanism in place that allows custom permission policy plugins to grant or deny any action on any kind of Trac resources, even at the level of specific versions of such resources.
 
+Note that for Trac 0.12, `authz_policy` has been integrated in trunk branch as `tracopt.perm.authz_policy.*`
+
 == Permission Policies ==
 
 === !AuthzPolicy ===
@@ -96,13 +98,23 @@ To activate fine grained permissions you __must__ specify the {{{authz_file}}} o
 authz_file = /path/to/svnaccessfile
 }}}
 
-if you want to support the use of the `[`''modulename''`:/`''some''`/`''path''`]` syntax within the `authz_file`, add 
+If you want to support the use of the `[`''modulename''`:/`''some''`/`''path''`]` syntax within the `authz_file`, add 
 
 {{{
 authz_module_name = modulename
 }}}
 
-where ''modulename'' refers to the same repository indicated by the `repository_dir` entry in the `[trac]` section.
+where ''modulename'' refers to the same repository indicated by the `repository_dir` entry in the `[trac]` section. As an example, if the `repository_dir` entry in the `[trac]` section is {{{/srv/active/svn/blahblah}}}, that would yield the following:
+
+{{{ 
+[trac]
+authz_file = /path/to/svnaccessfile
+authz_module_name = blahblah
+...
+repository_dir = /srv/active/svn/blahblah 
+}}}
+
+where the svn access file, {{{/path/to/svnaccessfile}}}, contains entries such as {{{[blahblah:/some/path]}}}.
 
 '''Note:''' Usernames inside the Authz file __must__ be the same as those used inside trac. 
 

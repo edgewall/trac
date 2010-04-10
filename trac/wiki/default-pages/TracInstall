@@ -19,7 +19,8 @@ What follows are generic instructions for installing and setting up Trac and its
 === Mandatory Dependencies
 To install Trac, the following software packages must be installed:
 
- * [http://www.python.org/ Python], version >= 2.4 (we dropped the support for Python 2.3 in this release)
+ * [http://www.python.org/ Python], version >= 2.4 and < 3.0
+   (note that we dropped the support for Python 2.3 in this release)
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
  * [http://genshi.edgewall.org/wiki/Download Genshi], [genshi:source:trunk trunk], from svn, minimum required revision is [G1072], current [G1092] works fine as well.
 

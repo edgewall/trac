@@ -94,7 +94,7 @@ The following variables are available in the template:
 
 === Customizing the e-mail content ===
 
-The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  The default looks like this:
+The notification e-mail content is generated based on `ticket_notify_email.txt` in `trac/ticket/templates`.  You can add your own version of this template by adding a `ticket_notify_email.txt` to the templates directory of your environment. The default looks like this:
 
 {{{
 $ticket_body_hdr

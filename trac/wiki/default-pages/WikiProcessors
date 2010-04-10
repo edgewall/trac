@@ -57,11 +57,9 @@ this extra indentation will be ignored when processing the content.
 |-----------------------------------------------------------------
 {{{#!td style="border: none"
 {{{
-#!html
-<pre class="wiki">{{{
-#!html
-&lt;h1 style="color: grey"&gt;This is raw HTML&lt;/h1&gt;
-}}}</pre>
+{{{
+<h1 style="color: grey">This is raw HTML</h1>
+}}}
 }}}
 }}}
 {{{#!td valign=top style="border: none; padding-left: 2em"
@@ -104,8 +102,52 @@ this extra indentation will be ignored when processing the content.
 
   }}}
 }}}
+|-----------------------------------------------------------------
+{{{#!td colspan=2 align=center style="border: none"
 
-
+     __Example 3__: Searching tickets from a wiki page, by keywords.
+}}}
+|-----------------------------------------------------------------
+{{{#!td style="border: none"
+  {{{
+  {{{
+  #!html
+  <form action="/query" method="get">
+  <input type="text" name="keywords" value="~" size="30">
+  <input type="submit" value="Search by Keywords">
+  <!-- To control what fields show up use hidden fields
+  <input type="hidden" name="col" value="id">
+  <input type="hidden" name="col" value="summary">
+  <input type="hidden" name="col" value="status">
+  <input type="hidden" name="col" value="milestone">
+  <input type="hidden" name="col" value="version">
+  <input type="hidden" name="col" value="owner">
+  <input type="hidden" name="col" value="priority">
+  <input type="hidden" name="col" value="component">
+  -->
+  </form>
+  }}}
+  }}}
+}}}
+{{{#!td valign=top style="border: none; padding: 1em"
+  {{{
+  #!html
+  <form action="/query" method="get">
+  <input type="text" name="keywords" value="~" size="30">
+  <input type="submit" value="Search by Keywords">
+  <!-- To control what fields show up use hidden fields
+  <input type="hidden" name="col" value="id">
+  <input type="hidden" name="col" value="summary">
+  <input type="hidden" name="col" value="status">
+  <input type="hidden" name="col" value="milestone">
+  <input type="hidden" name="col" value="version">
+  <input type="hidden" name="col" value="owner">
+  <input type="hidden" name="col" value="priority">
+  <input type="hidden" name="col" value="component">
+  -->
+  </form>
+  }}}
+}}}
 == Available Processors ==
 
 The following processors are included in the Trac distribution:
@@ -173,9 +215,9 @@ The result will be syntax highlighted HTML code:
 <h1>text</h1>
 }}}
 
-The same is valid for all other mime types supported.
+The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime types supported].
 
-=== Additional Processors ===
+
 For more processor macros developed and/or contributed by users, visit: 
  * [trac:ProcessorBazaar]
  * [trac:MacroBazaar]
@@ -188,3 +230,4 @@ See WikiMacros#DevelopingCustomMacros for more information.
 
 ----
 See also: WikiMacros, WikiHtml, WikiRestructuredText, TracSyntaxColoring, WikiFormatting, TracGuide
+

@@ -1,7 +1,7 @@
 = Trac Plugins =
 [[TracGuideToc]]
 
-Since version 0.9, Trac supports [trac:PluginList plugins] that extend the built-in functionality. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture].
+Since version 0.9, Trac supports [trac:PluginList plugins] that extend the built-in functionality. The plugin functionality is based on the [trac:TracDev/ComponentArchitecture component architecture]. Plugins can be installed globally (in this case they should be explicitly enabled in [TracIni#components-section trac.ini]) or locally for specific TracEnvironment.
 
 == Requirements ==
 
@@ -66,7 +66,7 @@ Trac also searches for globally installed plugins ''(since 0.10)'', see TracIni#
 
 `easy_install` makes installing from source a snap. Just give it the URL to either a Subversion repository or a tarball/zip of the source:
 {{{
-easy_install http://svn.edgewall.com/repos/trac/sandbox/spam-filter
+easy_install http://svn.edgewall.com/repos/trac/plugins/0.11/spam-filter
 }}}
 
 ==== Enabling the plugin ====

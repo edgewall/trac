@@ -5,7 +5,7 @@ The roadmap provides a view on the [wiki:TracTickets ticket system] that helps p
 
 == The Roadmap View ==
 
-Basically, the roadmap is just a list of future milestones, ordered by their due dates. For each milestone the name, due date, progress bar and description shown.
+Basically, the roadmap is just a list of future milestones. You can add a description to milestones (using WikiFormatting) describing main objectives, for example. In addition, tickets targeted for a milestone are aggregated, and the ratio between active and resolved tickets is displayed as a milestone progress bar.  It is possible to further [trac:TracRoadmapCustomGroups customise the ticket grouping] and have multiple ticket statuses shown on the progress bar.
 
 The roadmap can be filtered to show or hide ''completed milestones'' and ''milestones with no due date''. In the case that both ''show completed milestones'' and ''hide milestones with no due date'' are selected, ''completed'' milestones with no due date __will__ be shown.
 

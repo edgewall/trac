@@ -44,12 +44,12 @@ ScriptAlias /trac /path/to/www/trac/cgi-bin/trac.fcgi/
 }}}
 
 To setup Trac environment for `mod_fcgid` it is necessary to use
-`FCGIDDefaultInitEnv` directive. It cannot be used in `Directory` or
+`DefaultInitEnv` directive. It cannot be used in `Directory` or
 `Location` context, so if you need to support multiple projects, try
 alternative environment setup below.
 
 {{{
-FCGIDDefaultInitEnv TRAC_ENV /path/to/env/trac/
+DefaultInitEnv TRAC_ENV /path/to/env/trac/
 }}}
 
 ==== alternative environment setup ====
@@ -121,6 +121,8 @@ fastcgi.server = ("/trac" =>
 Note that you will need to add a new entry to `fastcgi.server` for each separate Trac instance that you wish to run. Alternatively, you may use the `TRAC_ENV_PARENT_DIR` variable instead of `TRAC_ENV` as described above,
 and you may set one of the two in `trac.fcgi` instead of in `lighttpd.conf`
 using `bin-environment` (as in the section above on Apache configuration).
+
+Note that lighttpd has a bug related to 'SCRIPT_NAME' and 'PATH_INFO' when the uri of fastcgi.server is '/' instead of '/trac' in this example, see #Trac2418. This should be fixed since lighttpd 1.4.23, and you may need to add `"fix-root-scriptname" => "enable"` as parameter of fastcgi.server.
 
 For using two projects with lighttpd add the following to your `lighttpd.conf`:
 {{{
@@ -274,7 +276,7 @@ Relaunch lighttpd, and browse to `http://yourhost.example.org/trac` to access Tr
 
 Note about running lighttpd with reduced permissions:
 
-  If nothing else helps and trac.fcgi doesn't start with lighttpd settings __server.username = "www-data"__, __server.groupname = "www-data"__, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
+  If nothing else helps and trac.fcgi doesn't start with lighttpd settings `server.username = "www-data"`, `server.groupname = "www-data"`, then in the `bin-environment` section set `PYTHON_EGG_CACHE` to the home directory of `www-data` or some other directory accessible to this account for writing.
 
 
 == Simple !LiteSpeed Configuration ==
@@ -283,17 +285,17 @@ The FastCGI front-end was developed primarily for use with alternative webserver
 
 !LiteSpeed web server is an event-driven asynchronous Apache replacement designed from the ground-up to be secure, scalable, and operate with minimal resources. !LiteSpeed can operate directly from an Apache config file and is targeted for business-critical environments.
 
-Setup
+=== Setup ===
 
-1) Please make sure you have first have a working install of a Trac project. Test install with “tracd” first.
+ 1. Please make sure you have first have a working install of a Trac project. Test install with “tracd” first.
 
-2) Create a Virtual Host for this setup. From now on we will refer to this vhost as TracVhost. For this tutorial we will be assuming that your trac project will be accessible via:
+ 2. Create a Virtual Host for this setup. From now on we will refer to this vhost as !TracVhost. For this tutorial we will be assuming that your trac project will be accessible via:
 
 {{{
 http://yourdomain.com/trac/
 }}}
 
-3) Go “TracVhost → External Apps” tab and create a new “External Application”.
+ 3. Go “!TracVhost → External Apps” tab and create a new “External Application”.
 
 {{{
 Name: MyTracFCGI	
@@ -311,7 +313,7 @@ Back Log: 50
 Instances: 10
 }}}
 
-4) Optional. If you need to use htpasswd based authentication. Go to “TracVhost → Security” tab and create a new security “Realm”.
+ 4. Optional. If you need to use htpasswd based authentication. Go to “!TracVhost → Security” tab and create a new security “Realm”.
 
 {{{
 DB Type: Password File
@@ -321,7 +323,7 @@ User DB Location: /fullpathto/htpasswd <--- path to your htpasswd file
 
 If you don’t have a htpasswd file or don’t know how to create the entries within one, go to http://sherylcanter.com/encrypt.php, to generate the user:password combos.
 
-5) Go to “PythonVhost → Contexts” and create a new “FCGI Context”.
+ 5. Go to “!PythonVhost → Contexts” and create a new “FCGI Context”.
 
 {{{
 URI: /trac/                              <--- URI path to bind to python fcgi app we created	
@@ -329,7 +331,7 @@ Fast CGI App: [VHost Level] MyTractFCGI  <--- select the trac fcgi extapp we jus
 Realm: TracUserDB                        <--- only if (4) is set. select realm created in (4)
 }}}
 
-6) Modify /fullpathto/mytracproject/conf/trac.ini
+ 6. Modify `/fullpathto/mytracproject/conf/trac.ini`
 
 {{{
 #find/set base_rul, url, and link variables
@@ -338,15 +340,15 @@ url = http://yourdomain.com/trac/      <--- link of project
 link = http://yourdomain.com/trac/     <--- link of graphic logo
 }}}
 
-7) Restart !LiteSpeed, “lswsctrl restart”, and access your new Trac project at: 
+ 7. Restart !LiteSpeed, “lswsctrl restart”, and access your new Trac project at: 
 
 {{{
 http://yourdomain.com/trac/
 }}}
 
-=== Simple Nginx Configuration ===
+== Simple Nginx Configuration ==
 
-1) Nginx configuration snippet - confirmed to work on 0.6.32
+ 1. Nginx configuration snippet - confirmed to work on 0.6.32
 {{{
     server {
         listen       10.9.8.7:443;
@@ -393,6 +395,7 @@ http://yourdomain.com/trac/
             fastcgi_param  SERVER_NAME        $server_name;
             fastcgi_param  SERVER_PORT        $server_port;
             fastcgi_param  SERVER_PROTOCOL    $server_protocol;
+            fastcgi_param  QUERY_STRING     $query_string;
 
             # for authentication to work
             fastcgi_param  AUTH_USER          $remote_user;
@@ -401,7 +404,7 @@ http://yourdomain.com/trac/
     }
 }}}
 
-2) Modified trac.fcgi:
+ 2. Modified trac.fcgi:
 
 {{{
 #!/usr/bin/env python
@@ -435,7 +438,7 @@ except Exception, e:
 
 }}}
 
-3) reload nginx and launch trac.fcgi like that:
+ 3. reload nginx and launch trac.fcgi like that:
 
 {{{
 trac@trac.example ~ $ ./trac-standalone-fcgi.py 
@@ -443,10 +446,10 @@ trac@trac.example ~ $ ./trac-standalone-fcgi.py
 
 The above assumes that:
  * There is a user named 'trac' for running trac instances and keeping trac environments in its home directory.
- * /home/trac/instance contains a trac environment
- * /home/trac/htpasswd contains authentication information
- * /home/trac/run is owned by the same group the nginx runs under
-  * and if your system is Linux the /home/trac/run has setgid bit set (chmod g+s run)
+ * `/home/trac/instance` contains a trac environment
+ * `/home/trac/htpasswd` contains authentication information
+ * `/home/trac/run` is owned by the same group the nginx runs under
+  * and if your system is Linux the `/home/trac/run` has setgid bit set (`chmod g+s run`)
   * and patch from ticket #T7239 is applied, or you'll have to fix the socket file permissions every time
 
 Unfortunately nginx does not support variable expansion in fastcgi_pass directive. 

@@ -63,9 +63,11 @@ Out of the box, Trac will pass static resources such as style sheets or images t
 
 Web servers such as [http://httpd.apache.org/ Apache] allow you to create “Aliases” to resources, giving them a virtual URL that doesn't necessarily reflect the layout of the servers file system. We already used this capability by defining a `ScriptAlias` for the CGI script. We also can map requests for static resources directly to the directory on the file system, avoiding processing these requests by CGI script.
 
+There are two primary URL paths for static resources - `/chrome/common` and `/chrome/site`. Plugins can add their own resources usually accessible by `/chrome/plugin` path, so its important to override only known paths and not try to make universal `/chrome` alias for everything.
+
 Add the following snippet to Apache configuration '''before''' the `ScriptAlias` for the CGI script, changing paths to match your deployment:
 {{{
-Alias /trac/chrome/common /path/to/www/trac/htdocs
+Alias /trac/chrome/common /path/to/trac/htdocs
 <Directory "/path/to/www/trac/htdocs">
   Order allow,deny
   Allow from all

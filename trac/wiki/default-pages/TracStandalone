@@ -42,6 +42,7 @@ To exit the server on Windows, be sure to use {{{CTRL-BREAK}}} -- using {{{CTRL-
 
 == Installing as a Windows Service ==
 
+=== Option 1 ===
 To install as a Windows service, get the [http://www.google.com/search?q=srvany.exe SRVANY] utility and run:
 {{{
  C:\path\to\instsrv.exe tracd C:\path\to\srvany.exe
@@ -57,6 +58,17 @@ If you want tracd to start automatically when you boot Windows, do:
 }}}
 
 The spacing here is important.
+
+For Windows 7 User, srvany.exe may not be an option, so you can use [http://www.google.com/search?q=winserv.exe WINSERV] utility and run:
+{{{
+"C:\path\to\winserv.exe" install tracd -displayname "tracd" -start auto "C:\path\to\python.exe" c:\path\to\python\scripts\tracd-script.py <your tracd parameters>"
+
+net start tracd
+}}}
+
+=== Option 2 ===
+
+Use [http://trac-hacks.org/wiki/WindowsServiceScript WindowsServiceScript], available at [http://trac-hacks.org/ Trac Hacks]. Installs, removes, starts, stops, etc. your Trac service.
 
 == Using Authentication ==
 
@@ -82,49 +94,78 @@ Tracd provides support for both Basic and Digest authentication. The default is 
 
   ''Support for Basic authentication was added in version 0.9.''
 
-The general format for using authentication is (on windows skip the "=" after --auth):
+The general format for using authentication is (replace `--auth` with `--basic-auth` if you want to use Basic auth):
 
 {{{
- $ tracd -p port --auth=base_project_dir,password_file_path,realm project_path
+ $ tracd -p port --auth="base_project_dir,password_file_path,realm" project_path
 }}}
 
 where:
 
- * '''base_project_dir''' is the base directory of the project; note: this doesn't refer to the project name, and it is case-sensitive even for windows environments
- * '''password_file_path''' path of the password file
- * '''realm''' realm
- * '''project_path''' path of the project
+ * '''base_project_dir''': the base directory of the project specified as follows:
+   * when serving multiple projects: ''relative'' to the `project_bath`
+   * when serving only a single project (`-s`): the name of the project directory
+ Don't use an absolute path here as this won't work. ''Note:'' This parameter is case-sensitive even for environments on Windows.
+ * '''password_file_path''': path to the password file
+ * '''realm''': the realm name (can be anything)
+ * '''project_path''': path of the project
 
-Example (on windows skip the "=" after --auth):
+Examples:
 
 {{{
  $ tracd -p 8080 \
-   --auth=project1,/path/to/users.htdigest,mycompany.com /path/to/project1
+   --auth="project1,/path/to/passwordfile,mycompany.com" /path/to/project1
 }}}
-Of course, the digest file can be be shared so that it is used for more than one project:
+
+Of course, the password file can be be shared so that it is used for more than one project:
 {{{
  $ tracd -p 8080 \
-   --auth=project1,/path/to/users.htdigest,mycompany.com \
-   --auth=project2,/path/to/users.htdigest,mycompany.com \
+   --auth="project1,/path/to/passwordfile,mycompany.com" \
+   --auth="project2,/path/to/passwordfile,mycompany.com" \
    /path/to/project1 /path/to/project2
 }}}
 
-Another way to share the digest file is to specify "*"
-for the project name:
+Another way to share the password file is to specify "*" for the project name:
 {{{
  $ tracd -p 8080 \
-   --auth="*",/path/to/users.htdigest,mycompany.com \
+   --auth="*,/path/to/users.htdigest,mycompany.com" \
    /path/to/project1 /path/to/project2
 }}}
-If using the `-s` parameter for serving a Trac environment from the root of a domain, one must use `*` for the project name
 
-== How to set up an htdigest password file ==
+=== Using a htpasswd password file ===
+This section describes how to use `tracd` with Apache .htpasswd files.
+
+To create a .htpasswd file use Apache's `htpasswd` command (see [#GeneratingPasswordsWithoutApache below] for a method to create these files without using Apache):
+
+{{{
+ $ sudo htpasswd -c /path/to/env/.htpasswd username
+}}}
+then for additional users:
+{{{
+ $ sudo htpasswd /path/to/env/.htpasswd username2
+}}}
+
+Then to start `tracd` run something like this:
+
+{{{
+ $ tracd -p 8080 --basic-auth="projectdirname,/fullpath/environmentname/.htpasswd,realmname" /fullpath/environmentname
+}}}
+
+For example:
+
+{{{
+ $ tracd -p 8080 --basic-auth="testenv,/srv/tracenv/testenv/.htpasswd,My Test Env" /srv/tracenv/testenv
+}}}
+
+''Note:'' You might need to pass "-m" as a parameter to htpasswd on some platforms (OpenBSD).
+
+=== Using a htdigest password file ===
 
 If you have Apache available, you can use the htdigest command to generate the password file. Type 'htdigest' to get some usage instructions, or read [http://httpd.apache.org/docs/2.0/programs/htdigest.html this page] from the Apache manual to get precise instructions.  You'll be prompted for a password to enter for each user that you create.  For the name of the password file, you can use whatever you like, but if you use something like `users.htdigest` it will remind you what the file contains. As a suggestion, put it in your <projectname>/conf folder along with the [TracIni trac.ini] file.
 
 Note that you can start tracd without the --auth argument, but if you click on the ''Login'' link you will get an error.
 
-== Generating Passwords Without Apache ==
+=== Generating Passwords Without Apache ===
 
 If you don't have Apache available, you can use this simple Python script to generate your passwords:
 
