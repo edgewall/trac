@@ -89,6 +89,7 @@ class PostgreSQLConnector(Component):
             self._version = get_pkginfo(psycopg).get('version',
                                                      psycopg.__version__)
             self.env.systeminfo.append(('psycopg2', self._version))
+            self.required = True
         return cnx
 
     def init_db(self, path, log=None, user=None, password=None, host=None,

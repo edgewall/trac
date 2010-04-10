@@ -27,18 +27,6 @@ from trac.util.text import exception_to_unicode, to_unicode
 
 __all__ = ['load_components']
 
-# Ideally, this wouldn't be hard-coded like this
-required_components = (
-    'trac.about.AboutModule',
-    'trac.cache.CacheManager',
-    'trac.env.Environment',
-    'trac.env.EnvironmentSetup',
-    'trac.mimeview.api.Mimeview',
-    'trac.perm.DefaultPermissionGroupProvider',
-    'trac.perm.PermissionSystem',
-    'trac.web.chrome.Chrome',
-    'trac.web.main.RequestDispatcher',
-)
 
 def _enable_plugin(env, module):
     """Enable the given plugin module if it wasn't disabled explicitly."""
@@ -211,11 +199,18 @@ def get_plugin_info(env, include_core=False):
             }
         full_name = module.__name__ + '.' + component.__name__
         summary, description = get_doc(component)
+        try:
+            c = component
+            if c in env and not issubclass(c, env.__class__):
+                c = component(env)
+            required = c.required
+        except AttributeError:
+            required = False
         modules[module.__name__]['components'][component.__name__] = {
             'full_name': full_name,
             'summary': summary, 'description': description,
             'enabled': env.is_component_enabled(component),
-            'required': full_name in required_components,
+            'required': required,
         }
     if not include_core:
         for name in plugins.keys():

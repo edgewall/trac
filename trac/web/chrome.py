@@ -266,6 +266,8 @@ class Chrome(Component):
     
     Chrome is everything that is not actual page content.
     """
+    required = True
+    
     implements(ISystemInfoProvider, IEnvironmentSetupParticipant,
                IRequestHandler, ITemplateProvider, IWikiSyntaxProvider)
 

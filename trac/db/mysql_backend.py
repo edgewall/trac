@@ -92,6 +92,7 @@ class MySQLConnector(Component):
                           MySQLdb.thread_safe())
             self.env.systeminfo.extend([('MySQL', mysql_info),
                                         ('MySQLdb', self._version)])
+            self.required = True
         return cnx
     
     def init_db(self, path, log=None, user=None, password=None, host=None,

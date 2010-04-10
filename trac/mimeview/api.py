@@ -602,6 +602,8 @@ class Content(object):
 class Mimeview(Component):
     """Generic HTML renderer for data, typically source code."""
 
+    required = True
+
     renderers = ExtensionPoint(IHTMLPreviewRenderer)
     annotators = ExtensionPoint(IHTMLPreviewAnnotator)
     converters = ExtensionPoint(IContentConverter)

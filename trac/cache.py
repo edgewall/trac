@@ -90,6 +90,8 @@ def cached(fn_or_id=None):
 
 class CacheManager(Component):
     """Cache manager."""
+
+    required = True
     
     def __init__(self):
         self._cache = {}

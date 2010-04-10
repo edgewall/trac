@@ -33,6 +33,8 @@ class AboutModule(Component):
     """"About Trac" page provider, showing version information from
     third-party packages, as well as configuration information."""
 
+    required = True
+
     implements(INavigationContributor, IPermissionRequestor, IRequestHandler)
 
     # INavigationContributor methods

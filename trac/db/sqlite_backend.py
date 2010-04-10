@@ -163,8 +163,9 @@ class SQLiteConnector(Component):
                 'version', '%d.%d.%s' % sqlite.version_info)
             self.env.systeminfo.extend([('SQLite', sqlite_version_string),
                                         ('pysqlite', self._version)])
+            self.required = True
         # construct list of sqlite extension libraries
-        if not self._extensions:
+        if self._extensions is None:
             self._extensions = []
             for extpath in self.extensions:
                 if not os.path.isabs(extpath):

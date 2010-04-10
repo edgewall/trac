@@ -150,7 +150,7 @@ class IPermissionPolicy(Interface):
 
 
 class DefaultPermissionStore(Component):
-    """Default implementation of permission storage and simple group management.
+    """Default implementation of permission storage and group management.
     
     This component uses the `permission` table in the database to store both
     permissions and groups.
@@ -243,6 +243,8 @@ class DefaultPermissionGroupProvider(Component):
     """Permission group provider providing the basic builtin permission groups
     'anonymous' and 'authenticated'."""
 
+    required = True
+
     implements(IPermissionGroupProvider)
 
     def get_permission_groups(self, username):
@@ -290,6 +292,8 @@ class DefaultPermissionPolicy(Component):
 
 class PermissionSystem(Component):
     """Permission management sub-system."""
+
+    required = True
 
     implements(IPermissionRequestor)
 

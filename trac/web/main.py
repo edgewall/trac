@@ -127,11 +127,13 @@ class RequestDispatcher(Component):
     
     This component dispatches incoming requests to registered handlers.
     """
+    required = True
 
     authenticators = ExtensionPoint(IAuthenticator)
     handlers = ExtensionPoint(IRequestHandler)
 
-    filters = OrderedExtensionsOption('trac', 'request_filters', IRequestFilter,
+    filters = OrderedExtensionsOption('trac', 'request_filters',
+                                      IRequestFilter,
         doc="""Ordered list of filters to apply to all requests
             (''since 0.10'').""")
 

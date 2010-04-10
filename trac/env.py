@@ -82,6 +82,8 @@ class Environment(Component, ComponentManager):
      * wiki and ticket attachments
     """
     implements(ISystemInfoProvider)
+
+    required = True
     
     system_info_providers = ExtensionPoint(ISystemInfoProvider)
     setup_participants = ExtensionPoint(IEnvironmentSetupParticipant)
@@ -557,6 +559,10 @@ class Environment(Component, ComponentManager):
 
 
 class EnvironmentSetup(Component):
+    """Manage automatic environment upgrades."""
+    
+    required = True
+
     implements(IEnvironmentSetupParticipant)
 
     # IEnvironmentSetupParticipant methods
