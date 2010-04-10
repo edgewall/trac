@@ -43,9 +43,11 @@ For more details on the available options, see the configuration section at the 
 
 Ticket data can be imported from Sourceforge using the [http://trac.edgewall.org/browser/trunk/contrib/sourceforge2trac.py sourceforge2trac.py] script, available in the contrib/ directory of the Trac distribution.
 
+See #Trac3521 for an updated sourceforge2trac script.
+
 == Mantis ==
 
-NB! The mantis2trac script now lives at http://trac-hacks.org/wiki/MantisImportScript . You can always get the latest version from http://trac-hacks.org/changeset/latest/mantisimportscript?old_path=/&filename=mantisimportscript&format=zip
+The mantis2trac script now lives at http://trac-hacks.org/wiki/MantisImportScript. You can always get the latest version from http://trac-hacks.org/changeset/latest/mantisimportscript?old_path=/&filename=mantisimportscript&format=zip
 
 Mantis bugs can be imported using the attached script.
 
@@ -74,6 +76,16 @@ Available Options:
 
 Additional configuration options can be defined directly in the script.
 }}} 
+
+== Jira ==
+
+The [http://trac-hacks.org/wiki/JiraToTracIntegration Jira2Trac plugin] provides you with tools to import Atlassian Jira backup files into Trac.
+
+The plugin consists of a Python 3.1 commandline tool that:
+
+ - Parses the Jira backup XML file
+ - Sends the imported Jira data and attachments to Trac using the [http://trac-hacks.org/wiki/XmlRpcPlugin XmlRpcPlugin]
+ - Generates a htpasswd file containing the imported Jira users and their SHA-512 base64 encoded passwords
 
 == Other ==
 

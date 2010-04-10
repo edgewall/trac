@@ -1,6 +1,6 @@
 = Using Search =
 
-Trac has a built-in search engine to allow finding occurrences of keywords and substrings in wiki pages, tickets and changeset descriptions.
+Trac has a built-in search engine to allow finding occurrences of keywords and substrings in wiki pages, tickets and changeset properties (author, revision and log message).
 
 Using the Trac search facility is straightforward and its interface should be familiar to most users.
 

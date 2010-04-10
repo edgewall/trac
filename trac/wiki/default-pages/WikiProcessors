@@ -12,11 +12,10 @@ To use a processor on a block of text, use a Wiki code block, selecting a proces
 '''Example 1''' (''inserting raw HTML in a wiki text''):
 
 {{{
+{{{
 #!html
-<pre class="wiki">{{{
-#!html
-&lt;h1 style="color: orange"&gt;This is raw HTML&lt;/h1&gt;
-}}}</pre>
+<h1 style="color: orange">This is raw HTML</h1>
+}}}
 }}}
 
 '''Results in:'''
@@ -32,15 +31,14 @@ Note that since 0.11, such blocks of HTML have to be self-contained, i.e. you ca
 '''Example 2''' (''inserting Restructured Text in wiki text''):
 
 {{{
-#!html
-<pre class="wiki">{{{
+{{{
 #!rst
 A header
 --------
 This is some **text** with a footnote [*]_.
 
 .. [*] This is the footnote.
-}}}</pre>
+}}}
 }}}
 
 '''Results in:'''
@@ -56,15 +54,14 @@ This is some **text** with a footnote [*]_.
 '''Example 3''' (''inserting a block of C source code in wiki text''):
 
 {{{
-#!html
-<pre class="wiki">{{{
+{{{
 #!c
 int main(int argc, char *argv[])
 {
   printf("Hello World\n");
   return 0;
 }
-}}}</pre>
+}}}
 }}}
 
 '''Results in:'''
@@ -78,6 +75,48 @@ int main(int argc, char *argv[])
 }}}
 
 ----
+'''Example 4''' (''Searching from a wiki page by custom field. Allows user to reuse most common searches on a wiki page''):
+
+{{{
+{{{
+#!html
+<form action="/query" method="get">
+<input type="text" name="keywords" value="~" size="30"> <input type="submit" value="Search by Keywords#">
+<!-- To control what fields show up use hidden fields
+<input type="hidden" name="col" value="id">
+<input type="hidden" name="col" value="summary">
+<input type="hidden" name="col" value="status">
+<input type="hidden" name="col" value="milestone">
+<input type="hidden" name="col" value="version">
+<input type="hidden" name="col" value="owner">
+<input type="hidden" name="col" value="priority">
+<input type="hidden" name="col" value="component">
+-->
+</form>
+}}}
+}}}
+
+
+''' Result:'''
+{{{
+#!html
+<form action="/query" method="get">
+<input type="text" name="keywords" value="~" size="30"> <input type="submit" value="Search by Keywords#">
+<!-- To control what fields show up use hidden fields
+<input type="hidden" name="col" value="id">
+<input type="hidden" name="col" value="summary">
+<input type="hidden" name="col" value="status">
+<input type="hidden" name="col" value="milestone">
+<input type="hidden" name="col" value="version">
+<input type="hidden" name="col" value="owner">
+<input type="hidden" name="col" value="priority">
+<input type="hidden" name="col" value="component">
+-->
+</form>
+}}}
+
+
+----
 
 == Available Processors ==
 The following processors are included in the Trac distribution:
@@ -86,14 +125,14 @@ The following processors are included in the Trac distribution:
  * '''span''' -- Wrap an arbitrary Wiki content in a <span> element (''since 0.11''). See also WikiHtml.
  * '''rst''' -- Trac support for Restructured Text. See WikiRestructuredText.
  * '''textile''' -- Supported if [http://cheeseshop.python.org/pypi/textile Textile] is installed. See [http://www.textism.com/tools/textile/ a Textile reference].
- * '''comment''' -- Do not process the text in this section (i.e. contents exist only in the plain text - not in the rendered page).
+ * '''comment''' -- Do not process the text in this section (i.e. contents exist only in the plain text that can be viewed when editing the wiki page content - not in the rendered page).
  * '''diff''' -- Pretty print patches and diffs.
 
 === Code Highlighting Support ===
 Trac includes processors to provide inline [wiki:TracSyntaxColoring syntax highlighting] for the following languages:
  * '''c''' -- C
  * '''cpp''' -- C++
- * '''csharp''' --- C# (''use #!text/x-csharp'')
+ * '''csharp''' --- C#
  * '''python''' -- Python
  * '''perl''' -- Perl
  * '''ruby''' -- Ruby
@@ -121,7 +160,7 @@ The result will be syntax highlighted HTML code:
 <h1>text</h1>
 }}}
 
-The same is valid for all other mime types supported.
+The same is valid for all other [TracSyntaxColoring#SyntaxColoringSupport mime types supported].
 
 
 For more processor macros developed and/or contributed by users, visit: 

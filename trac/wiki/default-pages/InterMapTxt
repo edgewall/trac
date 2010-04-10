@@ -48,6 +48,7 @@ trac-dev http://thread.gmane.org/gmane.comp.version-control.subversion.trac.deve
 Mercurial http://www.selenic.com/mercurial/wiki/index.cgi/ # the wiki for the Mercurial distributed SCM
 RFC       http://tools.ietf.org/html/rfc$1 # IETF's RFC $1
 ISO       http://en.wikipedia.org/wiki/ISO_ # ISO Standard $1 in Wikipedia
+kb        http://support.microsoft.com/kb/$1/en-us/ # Article $1 in Microsoft's Knowledge Base
 
 CheeseShop  http://cheeseshop.python.org/pypi/  # Python Package $1 from the Cheese Shop
 SQLite      http://www.sqlite.org/cvstrac/wiki?p= 
@@ -72,7 +73,7 @@ JargonFile       http://downlode.org/perl/jargon-redirect.cgi?term=
 MeatBall         http://www.usemod.com/cgi-bin/mb.pl?
 MetaWiki         http://sunir.org/apps/meta.pl?
 MetaWikiPedia    http://meta.wikipedia.org/wiki/
-MoinMoin         http://moinmoin.wikiwikiweb.de/
+MoinMoin         http://moinmo.in/
 WhoIs            http://www.whois.sc/
 Why              http://clublet.com/c/c/why?
 c2Wiki           http://c2.com/cgi/wiki?

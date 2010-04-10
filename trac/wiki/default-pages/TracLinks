@@ -26,8 +26,7 @@ Some examples:
  * Wiki pages: '''!CamelCase''' or '''!wiki:CamelCase'''
  * Parent page: '''![..]'''
  * Milestones: '''!milestone:1.0'''
- * Attachment: '''!attachment:example.tgz''' (for current page attachment), '''!attachment:attachment.1073.diff:ticket:944''' 
-(absolute path)
+ * Attachment: '''!attachment:example.tgz''' (for current page attachment), '''!attachment:attachment.1073.diff:ticket:944''' (absolute path)
  * Files: '''!source:trunk/COPYING'''
  * A specific file revision: '''!source:/trunk/COPYING@200'''
  * A particular line of a specific file revision: '''!source:/trunk/COPYING@200#L25'''
@@ -41,8 +40,7 @@ Display:
  * Wiki pages: CamelCase or wiki:CamelCase
  * Parent page: [..]
  * Milestones: milestone:1.0
- * Attachment: attachment:example.tgz (for current page attachment), attachment:attachment.1073.diff:ticket:944 
-(absolute path)
+ * Attachment: attachment:example.tgz (for current page attachment), attachment:attachment.1073.diff:ticket:944 (absolute path)
  * Files: source:trunk/COPYING
  * A specific file revision: source:/trunk/COPYING@200
  * A particular line of a specific file revision: source:/trunk/COPYING@200#L25
@@ -200,9 +198,13 @@ See also [#export:links].
 === comment: links ===
 
 When you're inside a given tickets, you can simply write e.g. !comment:3 to link to the third change comment.
-It's also possible to link to a comment of a specific ticket from anywhere using one of the following syntax:
+It is possible to link to a comment of a specific ticket from anywhere using one of the following syntax:
  - !comment:3:ticket:123 
  - !ticket:123#comment:3 (note that you can't write !#123#!comment:3!)
+It is also possible to link to the ticket's description using one of the following syntax:
+ - !comment:description
+ - !comment:description:ticket:123
+ - !ticket:123#comment:description
 
 === query: links ===
 

@@ -62,7 +62,7 @@ It's very likely that the list below is outdated because the list of supported p
 || m4       ||   || X || ||
 || Makefile ||   || X || X ||
 || Mako || || || X ||
-|| Matlab   ||   || X (5) || ||
+|| Matlab   ||   || X (5) || X (5) ||
 || Mygthy || || || X ||
 || Objective-C|| || X ||X ||
 || OCaml    ||   ||   || X ||

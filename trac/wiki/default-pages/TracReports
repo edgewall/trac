@@ -104,7 +104,7 @@ See TracTickets for a detailed description of the column fields.
 '''Example:''' ''All active tickets, sorted by priority and time''
 {{{
 SELECT id AS ticket, status, severity, priority, owner, 
-       time as created, summary FROM ticket 
+       time AS created, summary FROM ticket 
   WHERE status IN ('new', 'assigned', 'reopened')
   ORDER BY priority, time
 }}}
@@ -173,7 +173,7 @@ final report.
 
 '''Example:'''
 {{{
-SELECT id as ticket, created, status, summary FROM ticket 
+SELECT id AS ticket, created, status, summary FROM ticket 
 }}}
 
 Those columns can also be defined but marked as hidden, see [#column-syntax below].

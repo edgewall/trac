@@ -92,8 +92,10 @@ header and footer. Save the following content as 'site.html' inside your project
 
 Those who are familiar with XSLT may notice that Genshi templates bear some similarities. However, there are some Trac specific features - for example '''${href.chrome('site/style.css')}''' attribute references template placed into environment's ''htdocs/''  In a similar fashion '''${chrome.htdocs_location}''' is used to specify common ''htdocs/'' directory from Trac installation.
 
-site.html is one file to contain all your modifications. It usually works by the py:match (element of attribute), and it allows you to modify the page as it renders - the matches hook onto specific sections depending on what it tries to find
-and modify them. A site.html can contain any number of such py:match sections for whatever you need to modify. This is all [http://genshi.edgewall.org/ Genshi], so the docs on the exact syntax can be found there. 
+`site.html` is one file to contain all your modifications. It usually works by the py:match (element or attribute), and it allows you to modify the page as it renders - the matches hook onto specific sections depending on what it tries to find
+and modify them.
+See [http://groups.google.com/group/trac-users/browse_thread/thread/70487fb2c406c937/ this thread] for a detailed explanation of the above example `site.html`.
+A site.html can contain any number of such py:match sections for whatever you need to modify. This is all [http://genshi.edgewall.org/ Genshi], so the docs on the exact syntax can be found there.
 
 
 Example snippet of adding introduction text to the new ticket form (hide when preview):
@@ -109,6 +111,10 @@ Example snippet of adding introduction text to the new ticket form (hide when pr
 }}}
 
 This example illustrates a technique of using '''`req.environ['PATH_INFO']`''' to limit scope of changes to one view only. For instance, to make changes in site.html only for timeline and avoid modifying other sections - use  ''`req.environ['PATH_INFO'] == '/timeline'`'' condition in <py:if> test.
+
+More examples snippets for `site.html` can be found at [trac:wiki:CookBook/SiteHtml CookBook/SiteHtml].
+
+Example snippets for `style.css` can be found at [trac:wiki:CookBook/SiteStyleCss CookBook/SiteStyleCss].
 
 If the environment is upgraded from 0.10 and a `site_newticket.cs` file already exists, it can actually be loaded by using a workaround - providing it contains no ClearSilver processing. In addition, as only one element can be imported, the content needs some sort of wrapper such as a `<div>` block or other similar parent container. The XInclude namespace must be specified to allow includes, but that can be moved to document root along with the others:
 {{{

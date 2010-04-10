@@ -114,11 +114,12 @@ Or add all privileges:
 
 == Permission Groups ==
 
-There are two built-in groups, "authenticated" and "anonymous".[[BR]]
-Any user who has not logged in is automatically in the "anonymous" group.[[BR]]
-Any user who has logged in is also in the "authenticated" group.[[BR]]
-The "authenticated" group inherits permissions from the "anonymous" group.[[BR]]
-eg. if the "anonymous" group has permission WIKI_MODIFY, it's not necessary to add the WIKI_MODIFY permisison to the "authenticated" group as well.
+There are two built-in groups, "authenticated" and "anonymous".
+Any user who has not logged in is automatically in the "anonymous" group.
+Any user who has logged in is also in the "authenticated" group.
+The "authenticated" group inherits permissions from the "anonymous" group.
+For example, if the "anonymous" group has permission WIKI_MODIFY, 
+it is not necessary to add the WIKI_MODIFY permission to the "authenticated" group as well.
 
 Custom groups may be defined that inherit permissions from the two built-in groups.
 
