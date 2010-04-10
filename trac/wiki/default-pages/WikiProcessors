@@ -135,7 +135,7 @@ i.e. you can't start an HTML element in one block and close it later in a second
        either for specifying row attributes of better visual grouping
        (''since 0.12'')
 
-See WikiHtml for more details about these processors.
+See WikiHtml for example usage and more details about these processors.
 
 === Other Markups ===
 
@@ -151,7 +151,7 @@ Trac includes processors to provide inline syntax highlighting:
  `#!c` (C), `#!cpp` (C++), `#!python` (Python), `#!perl` (Perl), 
  `#!ruby` (Ruby), `#!php` (PHP), `#!asp` (ASP), `#!java` (Java), 
  `#!js` (Javascript), `#!sql (SQL)`, `#!xml` (XML or HTML),
- `#!sh` (Bourne/Bash shell), etc.
+ `#!sh` (!Bourne/Bash shell), etc.
 
 Trac relies on external software packages for syntax coloring,
 like [http://pygments.org Pygments]. 

@@ -12,12 +12,12 @@ $ trac-admin /path/to/myproject initenv
 [wiki:TracAdmin trac-admin] will ask you for the name of the project and the
 database connection string (explained below).
 
-''Note: The web server user will require file system write permission to 
+''Note: The user under which the web server runs will require file system write permission to 
 the environment directory and all the files inside. Please remember to set
-the appropriate permissions. The same applies to the Subversion repository 
-Trac is eventually using, although Trac will only require read access as long 
-as you're not using the BDB file system. Also, it seems that project names
-with spaces can be problematic for authentication (see [trac:#7163]).''
+the appropriate permissions. The same applies to the source code repository, 
+although the user under which Trac runs will only require write access to a Subversion repository created with the BDB file system
+; for other repository types, check the corresponding plugin's documentation. 
+Also, it seems that project names with spaces can be problematic for authentication (see [trac:#7163]).''
 
 ''Note: "initenv" when using svn repository does not imply that trac-admin will perform "svnadmin create" for the specified repository path. You need to perform the "svnadmin create" prior to trac-admin initenv if you're creating a new svn repository altogether with a new trac environment, otherwise you will see a message "Warning: couldn't index the repository" when initializing the environment.''
 
@@ -30,11 +30,12 @@ to use SQLite, which is probably sufficient for most projects. The database
 file is then stored in the environment directory, and can easily be 
 [wiki:TracBackup backed up] together with the rest of the environment.
 
-=== Embedded SQLite Connection String ===
-The connection string for an embedded SQLite database is:
+=== SQLite Connection String ===
+The connection string for an SQLite database is:
 {{{
 sqlite:db/trac.db
 }}}
+where `db/trac.db` is the path to the database file within the Trac environment.
 
 === PostgreSQL Connection String ===
 If you want to use PostgreSQL or MySQL instead, you'll have to use a
@@ -95,16 +96,16 @@ mysql://johndoe:letmein@localhost:3306/trac
 
 == Source Code Repository ==
 
-Since version 0.12, one Trac environment can be tied to more than one repository. There are many different ways to add repositories to an environment, see TracRepositoryAdmin. This page also details the various attributes that can be set on a repository (like `type`, `url`, `description`).
+Since version 0.12, a single Trac environment can be connected to more than one repository. There are many different ways to connect repositories to an environment, see TracRepositoryAdmin. This page also details the various attributes that can be set for a repository (like `type`, `url`, `description`).
 
-If you don't want to use Trac with any source code repository, at creation time simply leave the ''path'' empty
-(the ''type'' information doesn't matter in this case). Then you also need to disable the `trac.versioncontrol.*` components:
+In Trac 0.12 `trac-admin` no longer asks questions related to repositories. Therefore, by default Trac is not connected to any source code repository, and the ''Browse Source'' toolbar item will not be displayed.
+You can also explicitly disable the `trac.versioncontrol.*` components (which are otherwise still loaded)
 {{{
 [components]
 trac.versioncontrol.* = disabled
 }}}
 
-For some systems, it is possible to specify not only the path to the repository,
+For some version control systems, it is possible to specify not only the path to the repository,
 but also a ''scope'' within the repository. Trac will then only show information
 related to the files and changesets below that scope. The Subversion backend for
 Trac supports this; for other types, check the corresponding plugin's documentation.
@@ -140,7 +141,7 @@ An environment directory will usually consist of the following files and directo
  * `templates` - Custom Genshi environment-specific templates. '''''(since 0.11)'''''
    * `site.html` - method to customize header, footer, and style, described in TracInterfaceCustomization#SiteAppearance
 
-'''Caveat:''' ''don't confuse a Trac environment directory with the source code repository directory.''
+'''Caveat:''' ''don't confuse a Trac environment directory with the source code repository directory.'' 
 
 This is a common beginners' mistake.
 It happens that the structure for a Trac environment is loosely modelled after the Subversion repository directory 

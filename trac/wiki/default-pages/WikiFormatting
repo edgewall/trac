@@ -7,10 +7,230 @@ Trac has a built in small and powerful wiki rendering engine. This wiki engine i
 especially [http://moinmo.in/ MoinMoin] and [trac:WikiCreole].
 
 
-This page demonstrates the formatting syntax available anywhere WikiFormatting is allowed.
+This page will give you an in-depth explanation of the wiki markup available anywhere WikiFormatting is allowed.
+
+The ''Cheat sheet'' below gives you a quick overview for the most common syntax, each link in the ''Category'' column will lead you to the more detailed explanation later in this page.
+
+A few other wiki pages present the advanced features of the Trac wiki markup in more depth: 
+ - TracLinks covers all the possible ways to refer precisely to any Trac resource or parts thereof,
+ - WikiPageNames talks about the various names a wiki page can take, CamelCase or not
+ - WikiMacros lists the macros available for generating dynamic content,
+ - WikiProcessors and WikiHtml details how parts of the wiki text can be processed in special ways
 
 
-[[PageOutline(2,Markup Categories,inline)]]
+== Cheatsheet ==
+
+||= '''Category''' =||= '''Wiki Markup''' =||= '''Display''' =||
+|-----------------------------------------------------------
+{{{#!th rowspan=3
+[#FontStyles Font Styles]
+}}}
+|| `'''bold'''`, `''italic''`, `'''''Wikipedia style'''''` || \
+|| '''bold''', ''italic'', '''''Wikipedia style''''' ||
+|| {{{`monospaced and ''nowiki''`}}} || \
+|| `monospaced and nowiki` ||
+|| `**bold**`, `//italic//`, `**//!WikiCreole style//**` || \
+|| **bold**, //italic//, **//!WikiCreole style//** ||
+|-----------------------------------------------------------
+||= [#Headings Headings] =||\
+{{{#!td 
+ {{{
+ == Level 2 ==
+ === Level 3 ^([#hn note])^
+ }}}
+}}}
+{{{#!td style="padding-left: 2em"
+== Level 2
+=== Level 3 ^([#hn note])^
+}}}
+|-----------------------------------------------------------
+||= [#Paragraphs Paragraphs]  =||\
+{{{#!td
+ {{{
+ First paragraph
+ on multiple lines.
+
+ Second paragraph.
+ }}}
+}}}
+{{{#!td
+First paragraph
+on multiple lines.
+
+Second paragraph.
+}}}
+|-----------------------------------------------------------
+||= [#Lists Lists] =||\
+{{{#!td
+ {{{
+ * bullets list
+   on multiple paragraphs
+   1. nested list
+     a. different numbering 
+        styles
+ }}}
+}}}
+{{{#!td
+* bullets list
+  on multiple paragraphs
+  1. nested list
+    a. different numbering
+       styles
+}}}
+|-----------------------------------------------------------
+{{{#!th
+[#DefinitionLists Definition Lists]
+}}}
+{{{#!td
+ {{{
+  term:: definition on
+         multiple paragraphs
+ }}}
+}}}
+{{{#!td
+ term:: definition on
+        multiple paragraphs
+}}}
+|-----------------------------------------------------------
+||= [#PreformattedText Preformatted Text] =||\
+{{{#!td
+ {{{
+ {{{
+ multiple lines, ''no wiki''
+       white space respected
+ }}}
+ }}}
+}}}
+{{{#!td
+ {{{
+ multiple lines, ''no wiki''
+       white space respected
+ }}}
+}}}
+|-----------------------------------------------------------
+||= [#Blockquotes Blockquotes] =||\
+{{{#!td
+ {{{
+   if there's some leading
+   space the text is quoted
+ }}}
+}}}
+{{{#!td
+ if there's some leading
+ space the text is quoted
+}}}
+|-----------------------------------------------------------
+||= [#DiscussionCitations Discussion Citations] =||\
+{{{#!td
+ {{{
+ >> ... (I said)
+ > (he replied)
+ }}}
+}}}
+{{{#!td
+>>... (I said)
+> (he replied)
+}}}
+|-----------------------------------------------------------
+||= [#Tables Tables] =||\
+{{{#!td
+ {{{
+ ||= Table Header =|| Cell ||
+ ||||  (details below)  ||
+ }}}
+}}}
+{{{#!td
+||= Table Header =|| Cell ||
+||||  (details below)  ||
+}}}
+|-----------------------------------------------------------
+{{{#!th rowspan=2
+[#Links Links]
+}}}
+|| `http://trac.edgewall.org` ||\
+|| http://trac.edgewall.org ||
+|| `WikiFormatting (CamelCase)` ||\
+|| WikiFormatting (CamelCase) ||
+|-----------------------------------------------------------
+{{{#!th rowspan=5
+[#TracLinks TracLinks]
+}}}
+|| `wiki:WikiFormatting`, `wiki:"WikiFormatting"` ||\
+|| wiki:WikiFormatting, wiki:"WikiFormatting" ||
+|| `#1 (ticket)`, `[1] (changeset)`, `{1} (report)` ||\
+|| #1 (ticket), [1] (changeset), {1} (report) ||
+|| `ticket:1, ticket:1#comment:1` ||\
+|| ticket:1, ticket:1#comment:1 ||
+|| `Ticket [ticket:1]`, `[ticket:1 ticket one]` ||\
+|| Ticket [ticket:1], [ticket:1 ticket one] ||
+|| `Ticket [[ticket:1]]`, `[[ticket:1|ticket one]]` ||\
+|| Ticket [[ticket:1]], [[ticket:1|ticket one]] ||
+|-----------------------------------------------------------
+{{{#!th rowspan=2
+[#EscapingLinksandWikiPageNames Escaping Markup]
+}}}
+|| `!'' doubled quotes` ||\
+|| !'' doubled quotes ||
+|| `!wiki:WikiFormatting`, `!WikiFormatting` ||\
+|| !wiki:WikiFormatting, !WikiFormatting ||
+|-----------------------------------------------------------
+||= [#Images Images] =|| `[[Image(`''link''`)]]` || [[Image(htdocs:../common/trac_logo_mini.png)]] ||
+|-----------------------------------------------------------
+{{{#!th rowspan=2
+[#Macros Macros]
+}}}
+|| `[[MacroList(*)]]` ||  ''(short list of all available macros)''  ||
+|| `[[Image?]]` ||  ''(help for the Image macro)''  ||
+|-----------------------------------------------------------
+||= [#Processors Processors] =||\
+{{{#!td
+ {{{
+ {{{
+ #!div style="font-size: 80%"
+ Code highlighting:
+   {{{#!python
+   hello = lambda: "world"
+   }}}
+ }}}
+ }}}
+}}}
+{{{#!td style="padding-left: 2em"
+ {{{
+ #!div style="font-size: 80%"
+ Code highlighting:
+   {{{#!python 
+   hello = lambda: "world"
+   }}}
+ }}}
+}}}
+|-----------------------------------------------------------
+||= [#Comments Comments] =||\
+{{{#!td
+ {{{
+ {{{#!comment
+ Note to Editors: ...
+ }}}
+ }}}
+}}}
+{{{#!td style="padding-left: 2em"
+ {{{#!comment
+ Note to Editors: ...
+ }}}
+}}}
+|-----------------------------------------------------------
+||= [#Miscellaneous Miscellaneous] =||\
+{{{#!td
+ {{{
+ Line [[br]] break 
+ Line \\ break
+ ----
+ }}}
+}}}
+{{{#!td style="padding-left: 2em"
+Line [[br]] break
+Line \\ break
+----
+}}}
 
 
 == Font Styles ==
@@ -31,6 +251,8 @@ The Trac wiki supports the following font styles:
    * ~~strike-through~~
    * ^superscript^ 
    * ,,subscript,,
+   * **also bold**, //italic as well//, 
+     and **'' bold italic **'' //(since 0.12)//
   }}}
 }}}
 {{{#!td
@@ -46,20 +268,26 @@ The Trac wiki supports the following font styles:
  * ~~strike-through~~
  * ^superscript^ 
  * ,,subscript,,
+ * **also bold**, //italic as well//, 
+   and **'' bold italic **'' //(since 0.12)//
 }}}
 
 Notes:
  * `{{{...}}}` and {{{`...`}}} commands not only select a monospace font, but also treat their content as verbatim text, meaning that no further wiki processing is done on this text.
  * {{{ ! }}} tells wiki parser to not take the following characters as wiki format, so pay attention to put a space after !, e.g. when ending bold.
  * all the font styles marks have to be used in opening/closing pairs, 
-   and they must nest properly
+   and they must nest properly (in particular, an `''` italic can't be paired 
+   with a `//` one, and `'''` can't be paired with `**`)
+
 
 == Headings ==
 
 You can create heading by starting a line with one up to six ''equal'' characters ("=")
-followed by a single space and the headline text. The headline text can be 
-followed by the same number of ''='' characters, but this is no longer mandatory.
-The heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
+followed by a single space and the headline text. 
+
+[=#hn] The headline text can be followed by the same number of "=" characters, but this is no longer mandatory.
+
+Finally, the heading might optionally be followed by an explicit id. If not, an implicit but nevertheless readable id will be generated.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
@@ -360,21 +588,53 @@ Hyperlinks are automatically created for WikiPageNames and URLs. !WikiPageLinks 
 TitleIndex, http://www.edgewall.com/, !NotAlink
 }}}
 
-Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets.  If the descriptive title is omitted, then the explicit prefix is discarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
+Links can be given a more descriptive title by writing the link followed by a space and a title and all this inside square brackets. 
+If the descriptive title is omitted, then the explicit prefix is discarded, unless the link is an external link. This can be useful for wiki pages not adhering to the WikiPageNames convention.
 
 ||= Wiki Markup =||= Display =||
 {{{#!td
   {{{
-   * [http://www.edgewall.com/ Edgewall Software]
-   * [wiki:TitleIndex Title Index]
+   * [http://www.edgewall.com Edgewall Software]
+   * [wiki:TitleIndex Title Index] 
+   * [wiki:TitleIndex] 
    * [wiki:ISO9000]
   }}}
 }}}
 {{{#!td
- * [http://www.edgewall.com/ Edgewall Software]
- * [wiki:TitleIndex Title Index]
- * [wiki:ISO9000]
+   * [http://www.edgewall.com Edgewall Software]
+   * [wiki:TitleIndex Title Index] 
+   * [wiki:TitleIndex] 
+   * [wiki:ISO9000]
 }}}
+
+Following the [trac:WikiCreole] trend, the descriptive title can also be specified by writing the link followed by a pipe ('|') and a title and all this inside //double// square brackets. 
+
+{{{#!td
+  {{{
+   * [[http://www.edgewall.com|Edgewall Software]]
+   * [[wiki:TitleIndex|Title Index]]
+     or even [[TitleIndex|Title Index]]
+   * [[wiki:TitleIndex]]
+     ''' but not ![[TitleIndex]]! '''
+   * [[ISO9000]]
+  }}}
+}}}
+{{{#!td
+   * [[http://www.edgewall.com|Edgewall Software]]
+   * [[wiki:TitleIndex|Title Index]]
+     or even [[TitleIndex|Title Index]]
+   * [[wiki:TitleIndex]]
+     ''' but not ![[TitleIndex]]! '''
+   * [[ISO9000]]
+}}}
+
+'''Note''': the [trac:WikiCreole] style for links is quick to type and
+certainly looks familiar as it's the one used on Wikipedia and in many
+other wikis. Unfortunately it conflicts with the syntax for [#Macros macros].
+So in the rare case when you need to refer to a page which is named after
+a macro (typical examples being TitleIndex, InterTrac and InterWiki), 
+by writing `[[TitleIndex]]` you will actually call the macro instead of linking
+to the page.
 
 == Trac Links ==
 
@@ -387,6 +647,10 @@ Wiki pages can link directly to other parts of the Trac system. Pages can refer 
    * Reports: {1} or report:1
    * Changesets: r1, [1] or changeset:1
    * ...
+   * targeting other Trac instances, 
+     so called InterTrac links:
+     - Tickets: #Trac1 or Trac:ticket:1
+     - Changesets: [Trac1] or Trac:changeset:1
   }}}
 }}}
 {{{#!td
@@ -394,9 +658,13 @@ Wiki pages can link directly to other parts of the Trac system. Pages can refer 
  * Reports: {1} or report:1
  * Changesets: r1, [1] or changeset:1
  * ... 
+ * targeting other Trac instances, 
+   so called InterTrac links:
+   - Tickets: #Trac1 or Trac:ticket:1
+   - Changesets: [Trac1] or Trac:changeset:1
 }}}
 
-There are many more flavors of Trac links, see TracLinks for more in-depth information.
+There are many more flavors of Trac links, see TracLinks for more in-depth information and a reference for all the default link resolvers.
 
 
 == Escaping Links and WikiPageNames ==
@@ -639,18 +907,32 @@ An horizontal line can be used to separated different parts of your page:
 {{{#!td
   {{{
   Four or more dashes will be replaced 
-  by a horizontal line (<HR>)
+  by an horizontal line (<HR>)
   ----
   See?
   }}}
 }}}
 {{{#!td
 Four or more dashes will be replaced
-by a horizontal line (<HR>)
+by an horizontal line (<HR>)
 ----
 See?
 }}}
-
-
-----
-See also: TracLinks, TracGuide, WikiHtml, WikiMacros, WikiProcessors, TracSyntaxColoring.
+|----------------------------------
+{{{#!td
+  {{{
+  "macro" style [[br]] line break
+  }}}
+}}}
+{{{#!td
+"macro" style [[br]] line break
+}}}
+|----------------------------------
+{{{#!td
+  {{{
+  !WikiCreole style \\ line\\break
+  }}}
+}}}
+{{{#!td
+!WikiCreole style \\ line\\break
+}}}

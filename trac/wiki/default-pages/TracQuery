@@ -6,7 +6,13 @@ In addition to [wiki:TracReports reports], Trac provides support for ''custom ti
 To configure and execute a custom query, switch to the ''View Tickets'' module from the navigation bar, and select the ''Custom Query'' link.
 
 == Filters ==
-When you first go to the query page the default filters will display all open tickets, or if you're logged in it will display open tickets assigned to you.  Current filters can be removed by clicking the button to the right with the minus sign on the label.  New filters are added from the pulldown list in the bottom-right corner of the filters box.  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''or'' of the criteria.
+
+When you first go to the query page the default filter will display tickets relevant to you:
+ * If logged in then all open tickets it will display open tickets assigned to you.
+ * If not logged in but you have specified a name or email address in the preferences then it will display all open tickets where your email (or name if email not defined) is in the CC list.
+ * If not logged and no name/email defined in the preferences then all open issues are displayed.
+
+Current filters can be removed by clicking the button to the right with the minus sign on the label.  New filters are added from the pulldown lists at the bottom corners of the filters box ('And' conditions on the left, 'Or' conditions on the right).  Filters with either a text box or a pulldown menu of options can be added multiple times to perform an ''or'' of the criteria.
 
 You can use the fields just below the filters box to group the results based on a field, or display the full description for each ticket.
 
@@ -15,13 +21,16 @@ Once you've edited your filters click the ''Update'' button to refresh your resu
 == Navigating Tickets ==
 Clicking on one of the query results will take you to that ticket.  You can navigate through the results by clicking the ''Next Ticket'' or ''Previous Ticket'' links just below the main menu bar, or click the ''Back to Query'' link to return to the query page.  
 
-You can safely edit any of the tickets and continue to navigate through the results using the ''Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which were edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
+You can safely edit any of the tickets and continue to navigate through the results using the ''!Next/Previous/Back to Query'' links after saving your results.  When you return to the query ''any tickets which were edited'' will be displayed with italicized text.  If one of the tickets was edited such that [[html(<span style="color: grey">it no longer matches the query criteria </span>)]] the text will also be greyed. Lastly, if '''a new ticket matching the query criteria has been created''', it will be shown in bold. 
 
 The query results can be refreshed and cleared of these status indicators by clicking the ''Update'' button again.
 
 == Saving Queries ==
 
-While Trac does not yet allow saving a named query and somehow making it available in a navigable list, you can save references to queries in Wiki content, as described below.
+Trac allows you to save the query as a named query accessible from the reports module. To save a query ensure that you have ''Updated'' the view and then click the ''Save query'' button displayed beneath the results.
+You can also save references to queries in Wiki content, as described below.
+
+''Note:'' one way to easily build queries like the ones below, you can build and test the queries in the Custom report module and when ready - click ''Save query''. This will build the query string for you. All you need to do is remove the extra line breaks.
 
 === Using TracLinks ===
 

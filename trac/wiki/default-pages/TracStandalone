@@ -73,8 +73,10 @@ then for additional users:
 }}}
 then for starting the tracd (on windows skip the "=" after --basic-auth):
 {{{
- $ tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
+tracd -p 8080 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
 }}}
+
+ `environmentname` is the directory name of the Trac project folder, as opposed to `/fullpath/environmentname` which is the full path to the Trac project folder. See below for another example.
 
 Tracd provides support for both Basic and Digest authentication. The default is to use Digest; to use Basic authentication, replace `--auth` with `--basic-auth` in the examples below. (You must still specify a dialogic "realm", which can be an empty string by trailing the BASICAUTH with a comma.)
 
@@ -165,7 +167,8 @@ Note: If you use the above script you must use the --auth option to tracd, not -
  $ tracd --port 8000 --auth=proj_name,c:\digest.txt,trac c:\path\to\proj_name
 }}}
 
-Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). When using on Windows make sure to use -m option for it (did not tested it on *nix, so not sure if that is the case there).  If you do not have Apache, [trac:source:/tags/trac-0.11b2/contrib/htpasswd.py htpasswd.py] may help.  (Note that it requires a `crypt` or `fcrypt` module; see the source comments for details.)
+
+Note: If you would like to use --basic-auth you need to use htpasswd tool from apache server to generate .htpasswd file. The remaining part is similar but make sure to use empty realm (i.e. coma after path). Make sure to use -m option for it.  If you do not have Apache, [trac:source:/tags/trac-0.11/contrib/htpasswd.py htpasswd.py] may help.  (Note that it requires a `crypt` or `fcrypt` module; see the source comments for details.)
 
 It is possible to use md5sum utility to generate digest-password file using such method:
 {{{
@@ -177,7 +180,7 @@ and manually delete " -" from the end and add "${user}:trac:" to the start of li
 
 === Serving static content ===
 
-If `tracd` is the only webserver used for the project, 
+If `tracd` is the only web server used for the project, 
 it can also be used to distribute static content 
 (tarballs, Doxygen documentation, etc.)
 
@@ -186,12 +189,9 @@ and is accessed by URLs like `<project_URL>/chrome/site/...`.
 
 Example: given a `$TRAC_ENV/htdocs/software-0.1.tar.gz` file,
 the corresponding relative URL would be `/<project_name>/chrome/site/software-0.1.tar.gz`, 
-which in turn can be written using the relative link syntax
-in the Wiki: `[/<project_name>/chrome/site/software-0.1.tar.gz]` 
+which in turn can be written as `htdocs:software-0.1.tar.gz` (TracLinks syntax) or `[/<project_name>/chrome/site/software-0.1.tar.gz]` (relative link syntax). 
 
-Since 0.10, Trac supports a new `htdocs:` TracLinks 
-syntax for the above. With this, the example link above can be written simply 
-`htdocs:software-0.1.tar.gz`. 
+ ''Support for `htdocs:` TracLinks syntax was added in version 0.10''
 
 === Using apache rewrite rules ===
 In some situations when you choose to use tracd behind apache, you might experience issues with redirects, like being redirected to URLs with the wrong host or protocol. In this case (and only in this case), setting the `[trac] use_base_url_for_redirect` to `true` can help, as this will force Trac to use the value of `[trac] base_url` for doing the redirects.

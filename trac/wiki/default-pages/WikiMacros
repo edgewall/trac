@@ -133,9 +133,7 @@ class HelloWorldMacro(WikiMacroBase):
 
 }}}
 
-Note that `expand_macro` optionally takes a 4^th^ parameter ''`args`''. When the macro is called as a [WikiProcessors WikiProcessor], it's also possible to pass `key=value` [WikiProcessors#UsingProcessors processor parameters]. If given, those are stored in a dictionary and passed in this extra `args` parameter (''since 0.12'').
-
-'''FIXME''' when called as a macro, `args` should be `None`.
+Note that `expand_macro` optionally takes a 4^th^ parameter ''`args`''. When the macro is called as a [WikiProcessors WikiProcessor], it's also possible to pass `key=value` [WikiProcessors#UsingProcessors processor parameters]. If given, those are stored in a dictionary and passed in this extra `args` parameter. On the contrary, when called as a macro, `args` is  `None`. (''since 0.12'').
 
 For example, when writing:
 {{{

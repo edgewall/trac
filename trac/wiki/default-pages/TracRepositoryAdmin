@@ -13,7 +13,7 @@ Starting with 0.12, Trac can handle more than one repository per environment. Th
 
 It is also possible to define aliases of repositories, that act as "pointers" to real repositories. This can be useful when renaming a repository, to avoid breaking all the links to the old name.
 
-A number of attributes can be associated with each repository, and define the location of the repository, its type, name and how it is displayed in the source browser. The following attributes are supported:
+A number of attributes can be associated with each repository, which define the repository's location, type, name and how it is displayed in the source browser. The following attributes are supported:
 
 ||='''Attribute''' =||='''Description''' =||
 ||`alias` ||\
@@ -80,7 +80,9 @@ Note that the default repository has an empty name, so it will likely need to be
 
 
 == Repository synchronization == #Synchronization
-Prior to 0.12, Trac synchronized its cache with the repository on every request. This approach is not practical anymore with multiple repositories. For this reason, explicit synchronization through post-commit hooks was added. This also provides new functionality in the form of a repository listener extension point that is called when a changeset is added or modified, and can be used by plugins to perform actions on commit.
+Prior to 0.12, Trac synchronized its cache with the repository on every HTTP request. This approach is not very efficient and not practical anymore with multiple repositories. For this reason, explicit synchronization through post-commit hooks was added. 
+
+There is also new functionality in the form of a repository listener extension point ''(IRepositoryChangeListener)'' that is triggered by the post-commit hook when a changeset is added or modified, and can be used by plugins to perform actions on commit.
 
 === Explicit synchronization === #ExplicitSync
 This is the preferred method of repository synchronization. It requires setting the `[trac]  repository_sync_per_request` option in [wiki:TracIni#trac-section trac.ini] to an empty value, and adding a call to `trac-admin` in the post-commit hook of each repository. Additionally, if a repository allows changing revision metadata, a call to `trac-admin` must be added to the post-revprop-change hook as well.
@@ -117,6 +119,8 @@ On Windows (`post-revprop-change.cmd`):
 @C:\Python26\Scripts\trac-admin.exe C:\path\to\env changeset modified "%1" "%2"
 }}}
 
+Note that calling `trac-admin` in your Subversion hooks can slow down the commit and log editing operations on the client side. You might want to use the [trac:source:trunk/contrib/trac-svn-hook contrib/trac-svn-hook] script which starts `trac-admin` in an asynchronous way. The script also comes with a number of safety checks and usage advices which should make it easier to set up and test your hooks. There's no equivalent `trac-svn-hook.bat` for Windows yet, but the script can be run by Cygwin's bash.
+
 See the [http://svnbook.red-bean.com/en/1.5/svn.reposadmin.create.html#svn.reposadmin.create.hooks section about hooks] in the Subversion book for more information. Other repository types will require different hook setups. Please see the plugin documentation for specific instructions.
 
 === Per-request synchronization === #PerRequestSync
@@ -135,3 +139,8 @@ The following procedure illustrates a typical migration from a single-repository
  1. Add a hidden alias to the main repository as the default repository. This ensures that all links predating the migration still resolve to the main repository.
  1. Repeat steps 2, 3 and 4 to add other (named) repositories as needed.
 
+== Troubleshooting ==
+
+=== My trac-post-commit-hook doesn't work anymore === #trac-post-commit-hook
+
+You must now use the optional components from `tracopt.ticket.commit_updater.*`, which you can activate through the Plugins panel in the Administrative part of the web interface, or by directly modifying the [TracIni#components-section "[components]"] section in the trac.ini. Be sure to use [#ExplicitSync explicit synchronization] as explained above.

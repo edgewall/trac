@@ -1,9 +1,7 @@
 = Email Notification of Ticket Changes =
 [[TracGuideToc]]
 
-[[PageOutline]]
-
-Trac supports notification about ticket changes via email. 
+Trac supports notification of ticket changes via email. 
 
 Email notification is useful to keep users up-to-date on tickets/issues of interest, and also provides a convenient way to post all ticket changes to a dedicated mailing list. For example, this is how the [http://lists.edgewall.com/archive/trac-tickets/ Trac-tickets] mailing list is set up.
 
