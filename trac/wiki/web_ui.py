@@ -330,7 +330,8 @@ class WikiModule(Component):
         try:
             page.save(get_reporter_id(req, 'author'), req.args.get('comment'),
                       req.remote_addr)
-            add_notice(req, _('Your changes have been saved.'))
+            add_notice(req, _('Your changes have been saved in version '
+                              '%(version)s.', version=page.version))
             req.redirect(get_resource_url(self.env, page.resource, req.href,
                                           version=None))
         except TracError:
