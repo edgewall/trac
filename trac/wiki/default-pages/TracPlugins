@@ -31,7 +31,7 @@ $ python setup.py bdist_egg
 
 Then you will have a *.egg file. Examine the output of running python to find where this was created.
 
-Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg.
+Once you have the plugin archive, you need to copy it into the `plugins` directory of the [wiki:TracEnvironment project environment]. Also, make sure that the web server has sufficient permissions to read the plugin egg. Then, restart the web server (this requirement was not previously mentioned in this document, but in my tests it began working only after I did so).
 
 To uninstall a plugin installed this way, remove the egg from `plugins` directory and restart web server.
 

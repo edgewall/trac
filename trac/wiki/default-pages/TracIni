@@ -22,10 +22,6 @@ Note that you can also specify a global option file when creating a new project,
 
 This is a brief reference of available configuration options.
 
- ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
-
- ''Note that the [bitten], [spam-filter] and [vote] sections below are added by plugins enabled on this Trac, and therefore won't be part of a default installation.''
-
 [[TracIni]]
 
 == Reference for special sections

@@ -130,7 +130,7 @@ if __name__ == '__main__':
         print "\t-p prefix -- When downloading, prepend 'prefix/' to the page."
         sys.exit()
     get_page = get_page_from_file
-    prefix = None
+    prefix = ''
     check = True
     for o,a in opts:
         if o == '-d':
