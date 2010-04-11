@@ -564,6 +564,8 @@ class AttachmentModule(Component):
         A `format` keyword argument equal to `'raw'` will be converted
         to the raw-attachment prefix.
         """
+        if not resource.parent:
+            return None
         format = kwargs.get('format')
         prefix = 'attachment'
         if format == 'raw':
@@ -579,6 +581,8 @@ class AttachmentModule(Component):
             return href(prefix, parent_href, resource.id, **kwargs)
 
     def get_resource_description(self, resource, format=None, **kwargs):
+        if not resource.parent:
+            return _("Unparented attachment %(id)s", id=resource.id)
         if format == 'compact':
             return '%s (%s)' % (resource.id,
                     get_resource_name(self.env, resource.parent))

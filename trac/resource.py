@@ -283,12 +283,11 @@ def get_resource_url(env, resource, href, **kwargs):
     
     """
     manager = ResourceSystem(env).get_resource_manager(resource.realm)
-    if not manager or not hasattr(manager, 'get_resource_url'):
-        args = {'version': resource.version}
-        args.update(kwargs)
-        return href(resource.realm, resource.id, **args)
-    else:
+    if manager and hasattr(manager, 'get_resource_url'):
         return manager.get_resource_url(resource, href, **kwargs)
+    args = {'version': resource.version}
+    args.update(kwargs)
+    return href(resource.realm, resource.id, **args)
 
 def get_resource_description(env, resource, format='default', **kwargs):
     """Retrieve a standardized description for the given resource.
@@ -320,14 +319,13 @@ def get_resource_description(env, resource, format='default', **kwargs):
     
     """
     manager = ResourceSystem(env).get_resource_manager(resource.realm)
-    if not manager or not hasattr(manager, 'get_resource_description'):
-        name = u'%s:%s' % (resource.realm, resource.id)
-        if format == 'summary':
-            name = _('%(name)s at version %(version)s',
-                     name=name, version=resource.version)
-        return name
-    else:
+    if manager and hasattr(manager, 'get_resource_description'):
         return manager.get_resource_description(resource, format, **kwargs)
+    name = u'%s:%s' % (resource.realm, resource.id)
+    if format == 'summary':
+        name = _('%(name)s at version %(version)s',
+                 name=name, version=resource.version)
+    return name
 
 def get_resource_name(env, resource):
     return get_resource_description(env, resource)
