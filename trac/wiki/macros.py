@@ -24,7 +24,8 @@ from genshi.builder import Element, tag
 from genshi.core import Markup
 
 from trac.core import *
-from trac.resource import Resource, get_resource_url, get_resource_summary
+from trac.resource import Resource, ResourceNotFound, get_resource_name, \
+                          get_resource_summary, get_resource_url
 from trac.util.compat import any, rpartition
 from trac.util.datefmt import format_date, from_utimestamp
 from trac.util.html import escape
@@ -484,7 +485,13 @@ class ImageMacro(WikiMacroBase):
             url = get_resource_url(self.env, attachment, formatter.href)
             raw_url = get_resource_url(self.env, attachment, formatter.href,
                                        format='raw')
-            desc = get_resource_summary(self.env, attachment)
+            try:
+                desc = get_resource_summary(self.env, attachment)
+            except ResourceNotFound, e:
+                raw_url = formatter.href.chrome('common/attachment.png')
+                desc = _('No image "%(id)s" attached to %(parent)s',
+                         id=attachment.id,
+                         parent=get_resource_name(self.env, attachment.parent))
         for key in ('title', 'alt'):
             if desc and not key in attr:
                 attr[key] = desc
