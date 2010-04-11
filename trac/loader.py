@@ -199,18 +199,14 @@ def get_plugin_info(env, include_core=False):
             }
         full_name = module.__name__ + '.' + component.__name__
         summary, description = get_doc(component)
-        try:
-            c = component
-            if c in env and not issubclass(c, env.__class__):
-                c = component(env)
-            required = c.required
-        except AttributeError:
-            required = False
+        c = component
+        if c in env and not issubclass(c, env.__class__):
+            c = component(env)
         modules[module.__name__]['components'][component.__name__] = {
             'full_name': full_name,
             'summary': summary, 'description': description,
             'enabled': env.is_component_enabled(component),
-            'required': required,
+            'required': getattr(c, 'required', False),
         }
     if not include_core:
         for name in plugins.keys():
