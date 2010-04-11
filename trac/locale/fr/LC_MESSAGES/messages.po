@@ -5609,7 +5609,7 @@ msgstr "Laisser une page de redirection à l'ancien emplacement"
 #: trac/wiki/templates/wiki_rename.html:32
 #: trac/wiki/templates/wiki_view.html:108
 msgid "Rename page"
-msgstr "Renommez la page"
+msgstr "Renommer la page"
 
 #: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
 msgid "Edit this page"
