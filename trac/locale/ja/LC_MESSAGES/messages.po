@@ -2960,16 +2960,15 @@ msgstr "チケット %(ticketref)s は作成されましたが、参照する権
 
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1227
-#, fuzzy
 msgid "change"
-msgstr "更新内容"
+msgstr "変更内容"
 
 #: trac/ticket/web_ui.py:1233
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
-msgstr "(%(change)s) チケットは変更しましたが、通知処理中にエラーが発生しました: %(message)s"
+msgstr "%(change)sは保存されましたが、通知処理中にエラーが発生しました: %(message)s"
 
 #: trac/ticket/web_ui.py:1367
 msgid "Add to Cc"
