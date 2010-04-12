@@ -920,9 +920,10 @@ class ChangesetModule(Component):
     def render_timeline_event(self, context, field, event):
         changesets, show_location, show_files = event[3]
         cset, cset_resource, repos_for_uid = changesets[0]
+        older_cset = changesets[-1][0]
         message = cset.message or ''
         reponame = cset_resource.parent.id
-        rev_b, rev_a = cset.rev, cset.rev #? FIXME
+        rev_b, rev_a = cset.rev, older_cset.rev
 
         if field == 'url':
             if rev_a == rev_b:
