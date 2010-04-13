@@ -23,6 +23,11 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-dot -T png -o "$png" "$dot"
-dot -T ps -o "$ps" "$dot" && ps2pdf "$ps" "$pdf" || exit 1
-kpdf "$pdf"
+cat "$dot"
+if [ "$OSTYPE" = cygwin ]; then
+    dot -T png -o "$png" "$dot"
+    cmd /c start $png
+else
+    dot -T ps -o "$ps" "$dot" && ps2pdf "$ps" "$pdf" || exit 1
+    kpdf "$pdf"
+fi

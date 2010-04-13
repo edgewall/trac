@@ -9,7 +9,7 @@ pkg_resources.require('Trac')
 from trac.config import Configuration
 from trac.ticket.default_workflow import parse_workflow_config
 
-_debug = True
+_debug = False
 def debug(s):
     if _debug:
         sys.stderr.write(s)
@@ -46,7 +46,13 @@ def actions2graphviz(actions, show_ops=False, show_perms=False):
     """Returns a list of lines to be fed to graphviz."""
     # The size value makes it easier to create a useful printout.
     color_scheme = ColorScheme()
-    digraph_lines = ['digraph G {\ncenter=1\nsize="10,8"\n']
+    digraph_lines = ["""
+digraph G {
+  center=1
+  size="10,8"
+  { rank=source; new [ shape=invtrapezium ] }
+  { rank=sink; closed [ shape=trapezium ] }
+    """]
     for action, attributes in actions.items():
         label = [attributes['name'], ]
         if show_ops:
@@ -58,10 +64,10 @@ def actions2graphviz(actions, show_ops=False, show_perms=False):
         for oldstate in attributes['oldstates']:
             color = color_scheme.get_color(attributes['name'])
             digraph_lines.append(
-                '"%s" -> "%s" [label="%s" color=%s fontcolor=%s]\n' % \
+                '  "%s" -> "%s" [label="%s" color=%s fontcolor=%s]' % \
                 (oldstate, attributes['newstate'], '\\n'.join(label), color,
                  color))
-    digraph_lines.append('}\n')
+    digraph_lines.append('}')
     return digraph_lines
 
 def main(filename, show_ops=False, show_perms=False):
@@ -75,7 +81,7 @@ def main(filename, show_ops=False, show_perms=False):
     digraph_lines = actions2graphviz(actions, show_ops, show_perms)
 
     # And output
-    sys.stdout.write(''.join(digraph_lines))
+    sys.stdout.write('\n'.join(digraph_lines))
 
 def usage(output):
     output.write('workflow_parser [options] configfile.ini\n'
