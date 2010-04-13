@@ -315,8 +315,7 @@ msgstr ""
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
-"[%(section)s] %(entry)s : valeur numérique décimale attendue, au lieu de "
-"%(value)s"
+"[%(section)s] %(entry)s : %(value)s au lieu d'une valeur parmi (%(choices)s)"
 
 #: trac/env.py:581
 msgid "Database newer than Trac version"
@@ -3094,7 +3093,7 @@ msgstr ""
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1227
 msgid "change"
-msgstr "modification"
+msgstr "modifications"
 
 #: trac/ticket/web_ui.py:1233
 #, python-format
@@ -3102,7 +3101,7 @@ msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
-"Les modifications ont été sauvegardées, mais une erreur est survenue lors"
+"Les %(change)s ont été sauvegardées, mais une erreur est survenue lors"
 " de l'envoi des notifications : %(message)s"
 
 #: trac/ticket/web_ui.py:1367
