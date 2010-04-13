@@ -1,30 +1,46 @@
 # Makefile for testing Trac (see doc/dev/testing.rst)
 # ----------------------------------------------------------------------------
-
-# copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment.
--include Makefile.cfg
-
+#
+# Note that this is a GNU Makefile.
+# nmake and other abominations are not supported.
+#
 # ----------------------------------------------------------------------------
-ifeq "$(OS)" "Windows_NT"
-    SEP = ;
-else
-    SEP = :
-endif
-
-export TRAC_TEST_DB_URI = $($(db).uri)
-export PATH := $(python.$(if $(python),$(python),$($(db).python))):$(PATH)
-export PYTHONPATH := .$(SEP)$(PYTHONPATH)
-# ----------------------------------------------------------------------------
-
 
 .PHONY: all
 ifdef test
 all: status
 	python $(test)
 else
-all:
-	@echo "make test|unit-test|functional-test|test=... [db=...] [python=...]"
+all: help
 endif
+
+.PHONY: help
+help:
+	@echo
+	@echo "Please use \`make <target>' where <target> is one of:"
+	@echo
+	@echo "  clean               delete all compiled python files"
+	@echo "  status              which Python and which test db used"
+	@echo
+	@echo "  [python=...]        select Python version"
+	@echo 
+	@echo "                  Testing tasks"
+	@echo 
+	@echo "  unit-test           run unit tests"
+	@echo "  functional-test     run functional tests"
+	@echo "  test                run all tests"
+	@echo
+	@echo "  [db=...]            database backend to use for tests"
+	@echo "  [test=...]          file to test (all if not specified)"
+	@echo 
+	@echo "                  L10N tasks"
+	@echo 
+	@echo "  extract             update the messages.pot file"
+	@echo "  update              update the messages.po file(s)"
+	@echo "  compile             compile the messages.po files"
+	@echo 
+	@echo "  [locale=..]             operate on this locale only"
+	@echo 
 
 .PHONY: status
 status:
@@ -37,7 +53,23 @@ clean:
 	find -name \*.py[co] | xargs -d"\n" --no-run-if-empty rm -f
 	rm -rf .figleaf* html
 
+# L10N related tasks
+
+.PHONY: extract update compile
+
+extract:
+	python setup.py extract_messages
+
+update:
+	python setup.py update_catalog $(if $(locale),-l $(locale))
+
+compile:
+	python setup.py compile_catalog $(if $(locale),-l $(locale))
+
+# Testing related tasks
+
 .PHONY: test unit-test functional-test
+
 test: unit-test functional-test
 
 unit-test: Trac.egg-info
@@ -64,3 +96,20 @@ html/index.html: .figleaf.functional .figleaf.unittests
 Trac.egg-info: status
 	python setup.py egg_info
 
+# ----------------------------------------------------------------------------
+
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment.
+
+-include Makefile.cfg
+
+# ----------------------------------------------------------------------------
+ifeq "$(OS)" "Windows_NT"
+    SEP = ;
+else
+    SEP = :
+endif
+
+export TRAC_TEST_DB_URI = $($(db).uri)
+export PATH := $(python.$(if $(python),$(python),$($(db).python))):$(PATH)
+export PYTHONPATH := .$(SEP)$(PYTHONPATH)
+# ----------------------------------------------------------------------------
