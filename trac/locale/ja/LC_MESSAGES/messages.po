@@ -588,7 +588,6 @@ msgid " Indexing default repository"
 msgstr " リポジトリのインデックス作成"
 
 #: trac/admin/console.py:433
-#, fuzzy
 msgid ""
 "\n"
 "---------------------------------------------------------------------\n"
@@ -3608,7 +3607,7 @@ msgid ""
 "Ticket URL: <"
 msgstr ""
 "-- \n"
-"チケットのURL: "
+"チケットのURL: <"
 
 #: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
@@ -3631,12 +3630,12 @@ msgstr "タイムラインの %(date)s"
 #. TRANSLATOR: other_events
 #: trac/timeline/web_ui.py:343
 msgid "other kind of events"
-msgstr ""
+msgstr "他の履歴"
 
 #: trac/timeline/web_ui.py:348
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
-msgstr ""
+msgstr "フィルタ %(kinds)s でイベントプロバイダ %(name)s が失敗しました: "
 
 #: trac/timeline/web_ui.py:354
 #, python-format
@@ -3648,6 +3647,8 @@ msgid ""
 "              informations were written to the log).\n"
 "            "
 msgstr ""
+"\n"
+"タイムラインから%(other_events)sを参照してみるか、エラーをTrac管理者に連絡してください(エラーの詳細はログに出力されます)。"
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -3967,7 +3968,6 @@ msgid "No such node"
 msgstr "ノードが存在しません"
 
 #: trac/versioncontrol/cache.py:149
-#, fuzzy
 msgid ""
 "The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
 "operation is needed."
@@ -4020,15 +4020,15 @@ msgstr "trac.iniにsvn:externalsの設定がありません"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "merged"
-msgstr "マージ"
+msgstr "merged"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "blocked"
-msgstr "ブロック"
+msgstr "blocked"
 
 #: trac/versioncontrol/svn_prop.py:192
 msgid "eligible"
-msgstr ""
+msgstr "eligible"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
@@ -4036,11 +4036,11 @@ msgstr "(削除したブランチに切り替える)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
-msgstr ""
+msgstr "マージ元を見る"
 
 #: trac/versioncontrol/svn_prop.py:245
 msgid "No revisions"
-msgstr ""
+msgstr "リビジョンがありません"
 
 #: trac/versioncontrol/svn_prop.py:281
 msgid "merged: "
@@ -4052,11 +4052,11 @@ msgstr "ブロック: "
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "reverse-merged: "
-msgstr ""
+msgstr "逆マージ: "
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "un-blocked: "
-msgstr ""
+msgstr "反ブロック: "
 
 #: trac/versioncontrol/svn_prop.py:293
 msgid " (added)"
@@ -4068,7 +4068,7 @@ msgstr "削除"
 
 #: trac/versioncontrol/svn_prop.py:324
 msgid " (with no actual effect on merging)"
-msgstr ""
+msgstr " (マージには影響しません)"
 
 #: trac/versioncontrol/svn_prop.py:325
 #, python-format
@@ -4136,7 +4136,7 @@ msgstr "再読み込み"
 
 #: trac/versioncontrol/templates/browser.html:13
 msgid "in"
-msgstr ""
+msgstr ":"
 
 #: trac/versioncontrol/templates/browser.html:54
 msgid "Default Repository"
@@ -4212,6 +4212,7 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"チェンジセット [1:%(new_rev)s] (%(reponame)s)：[2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:37
 #, python-format
@@ -4219,6 +4220,7 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
+"[1:%(new_path)s] [2:\\[%(old_rev)s:%(new_rev)s\\]] (%(reponame)s) における更新"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #, python-format
@@ -4229,11 +4231,7 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
-"変更内容 (%(reponame)s)\n"
-"              from [1:%(old_path)s]\n"
-"              at [2:r%(old_rev)s]\n"
-"              to [3:%(new_path)s]\n"
-"              at [4:r%(new_rev)s]"
+"%(reponame)s [1:%(old_path)s] [2:r%(old_rev)s] から [3:%(new_path)s] [4:r%(new_rev)s] における更新"
 
 #: trac/versioncontrol/templates/changeset.html:48
 #, python-format
@@ -4246,6 +4244,7 @@ msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"チェンジセット [1:%(new_rev)s]：[2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:59
 #, python-format
@@ -4253,8 +4252,7 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
-"更新内容: [1:%(new_path)s]\n"
-"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
+"[1:%(new_path)s] [2:\\[%(old_rev)s:%(new_rev)s\\]] における更新"
 
 #: trac/versioncontrol/templates/changeset.html:63
 #, python-format
@@ -4265,11 +4263,7 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
-"更新内容\n"
-"              from [1:%(old_path)s]\n"
-"              at [2:r%(old_rev)s]\n"
-"              to [3:%(new_path)s]\n"
-"              at [4:r%(new_rev)s]"
+"[1:%(old_path)s] [2:r%(old_rev)s] から [3:%(new_path)s] [4:r%(new_rev)s] における更新"
 
 #: trac/versioncontrol/templates/changeset.html:70
 #, python-format
@@ -4287,7 +4281,7 @@ msgstr "ブラウザで表示する"
 
 #: trac/versioncontrol/templates/changeset.html:104
 msgid "(root)"
-msgstr ""
+msgstr "(ルート)"
 
 #: trac/versioncontrol/templates/changeset.html:109
 #, python-format
@@ -4295,6 +4289,7 @@ msgid ""
 "(%(kind)s from [1:\n"
 "                %(old_path)s])"
 msgstr ""
+"([1:%(old_path)s] から%(kind)s)"
 
 #: trac/versioncontrol/templates/changeset.html:117
 #: trac/versioncontrol/templates/changeset.html:120
@@ -4435,7 +4430,7 @@ msgstr ""
 #: trac/versioncontrol/templates/dir_entries.html:11
 #, python-format
 msgid "View %(path_kind)s"
-msgstr ""
+msgstr "%(path_kind)sを見る"
 
 #: trac/versioncontrol/templates/dir_entries.html:19
 #: trac/versioncontrol/templates/repository_index.html:23
