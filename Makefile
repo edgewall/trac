@@ -38,8 +38,10 @@ help:
 	@echo "  extract             update the messages.pot file"
 	@echo "  update              update the messages.po file(s)"
 	@echo "  compile             compile the messages.po files"
+	@echo "  check               verify the messages.po files"
+	@echo "  stats               translation statistics"
 	@echo 
-	@echo "  [locale=..]             operate on this locale only"
+	@echo "  [locale=..]         operate on this locale only"
 	@echo 
 
 .PHONY: status
@@ -55,7 +57,15 @@ clean:
 
 # L10N related tasks
 
-.PHONY: extract update compile
+ifdef locale
+    locales = $(locale)
+else
+    locales = $(wildcard trac/locale/*/LC_MESSAGES/messages.po)
+    locales := $(subst trac/locale/,,$(locales))
+    locales := $(subst /LC_MESSAGES/messages.po,,$(locales))
+endif
+
+.PHONY: extract update compile check stats
 
 extract:
 	python setup.py extract_messages
@@ -65,6 +75,32 @@ update:
 
 compile:
 	python setup.py compile_catalog $(if $(locale),-l $(locale))
+
+check: pre-check $(addprefix check-,$(locales))
+	@echo "all catalogs OK"
+	# except if `make -k` was used, of course...
+
+pre-check:
+	@echo "checking catalogs for $(locales)..."
+
+check-%:
+	@echo -n "$(@): "
+	@msgfmt --check trac/locale/$(@:check-%=%)/LC_MESSAGES/messages.po && \
+	    echo OK
+
+stats: pre-stats $(addprefix stats-,$(locales))
+
+pre-stats: stats-pot
+	@echo "translation statistics for $(locales)..."
+
+stats-pot:
+	@echo "translation statistics for messages.pot: "
+	@echo -n "$(@): "
+	@msgfmt --statistics trac/locale/messages.pot
+
+stats-%:
+	@echo -n "$(@): "
+	@msgfmt --statistics trac/locale/$(@:stats-%=%)/LC_MESSAGES/messages.po
 
 # Testing related tasks
 
