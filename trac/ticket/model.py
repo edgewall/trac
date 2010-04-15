@@ -235,7 +235,7 @@ class Ticket(object):
 
         return self.id
 
-    def save_changes(self, author, comment, when=None, db=None, cnum=''):
+    def save_changes(self, author, comment=None, when=None, db=None, cnum=''):
         """
         Store ticket changes in the database. The ticket must already exist in
         the database.  Returns False if there were no changes to save, True

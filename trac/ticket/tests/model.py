@@ -125,6 +125,19 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual(ticket_id, ticket.id)
         self.assertEqual(ticket.resource.id, ticket_id)
 
+    def test_can_save_ticket_without_explicit_comment(self):
+        ticket = Ticket(self.env)
+        ticket.insert()
+        
+        ticket['summary'] = 'another summary'
+        ticket.save_changes('foo')
+        
+        changes = ticket.get_changelog()
+        comment_change = [c for c in changes if c[2] == 'comment'][0]
+        self.assertEqual('1', comment_change[3])
+        self.assertEqual('', comment_change[4])
+
+
     def test_ticket_default_values(self):
         """
         Verify that a ticket uses default values specified in the configuration
