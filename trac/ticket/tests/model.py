@@ -137,6 +137,15 @@ class TicketTestCase(unittest.TestCase):
         self.assertEqual('1', comment_change[3])
         self.assertEqual('', comment_change[4])
 
+    def test_can_save_ticket_without_explicit_username(self):
+        ticket = Ticket(self.env)
+        ticket.insert()
+        
+        ticket['summary'] = 'another summary'
+        ticket.save_changes()
+        
+        for change in ticket.get_changelog():
+            self.assertEqual(None, change[1])
 
     def test_ticket_default_values(self):
         """
