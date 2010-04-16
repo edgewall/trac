@@ -31,7 +31,7 @@ from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
 from trac.util import hex_entropy, md5, md5crypt, threading
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 
 
 class LoginModule(Component):
@@ -133,12 +133,14 @@ class LoginModule(Component):
         case sensitive regarding user names and domain names
         """
         if not req.remote_user:
-            raise TracError(tag("Authentication information not available. "
-                                "Please refer to the ",
-                                tag.a('installation documentation',
-                                      title="Configuring Authentication",
-                                      href=req.href.wiki('TracInstall') +
-                                      "#ConfiguringAuthentication"), "."))
+            # TRANSLATOR: ... refer to the 'installation documentation'. (link)
+            raise TracError(
+                tag_("Authentication information not available. Please refer "
+                     "to the %(inst_doc)s.",
+                     inst_doc=tag.a(_('installation documentation'),
+                                    title=_("Configuring Authentication"),
+                                    href=req.href.wiki('TracInstall') +
+                                         "#ConfiguringAuthentication")))
         remote_user = req.remote_user
         if self.ignore_case:
             remote_user = remote_user.lower()

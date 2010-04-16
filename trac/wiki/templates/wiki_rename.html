@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
@@ -11,7 +12,7 @@
 
   <body>
     <div id="content" class="wiki" py:with="current_href = href.wiki(page.name)">
-      <h1>Rename <a href="$current_href">$page.name</a></h1>
+      <h1 i18n:msg="name">Rename <a href="$current_href">$page.name</a></h1>
       <form id="rename-form" action="$current_href" method="post">
         <p>
           <input type="hidden" name="action" value="rename"/>

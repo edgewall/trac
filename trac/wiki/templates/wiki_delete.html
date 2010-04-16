@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+      xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="layout.html" />
   <head>
     <title>$title</title>
@@ -11,19 +12,32 @@
 
   <body>
     <div id="content" class="wiki"
-      py:with="
-      current_href = href.wiki(page.name);
-      what, range = (new_version and old_version and new_version - old_version &gt; 1) and
-      ('those versions', 'versions %d to %d of ' % (old_version+1, new_version)) or
-      new_version and
-      ('this version', 'version %d of ' % new_version) or
-      ('page', '')
-      ">
-      <h1>Delete $range <a href="$current_href">$page.name</a></h1>
+      py:with="current_href = href.wiki(page.name);
+               what = (new_version and old_version and new_version - old_version &gt; 1) and 'multiple'
+                      or new_version and 'single' or 'page'">
+      <h1 py:choose="what">
+        <py:when test="'multiple'"><i18n:msg params="from, to, name">
+          Delete versions ${old_version + 1} to $new_version of <a href="$current_href">$page.name</a>
+        </i18n:msg></py:when>
+        <py:when test="'single'"><i18n:msg params="version, name">
+          Delete version $new_version of <a href="$current_href">$page.name</a>
+        </i18n:msg></py:when>
+        <py:otherwise><i18n:msg params="name">
+          Delete <a href="$current_href">$page.name</a>
+        </i18n:msg></py:otherwise>
+      </h1>
       <form action="$current_href" method="post">
         <p>
           <input type="hidden" name="action" value="delete" />
-          <strong>Are you sure you want to ${not range and 'completely' or ''} delete $range this page?</strong>
+          <strong py:choose="what">
+            <py:when test="'multiple'"><i18n:msg params="from, to">
+              Are you sure you want to delete versions ${old_version + 1} to $new_version of this page?
+            </i18n:msg></py:when>
+            <py:when test="'single'"><i18n:msg params="version">
+              Are you sure you want to delete version $new_version of this page?
+            </i18n:msg></py:when>
+            <py:otherwise>Are you sure you want to completely delete this page?</py:otherwise>
+          </strong>
           <br />
           <py:if test="num_versions == 1">
             This is the only version the page, so the page will be removed completely!
@@ -34,7 +48,9 @@
         </p>
         <div class="buttons">
           <input type="submit" name="cancel" value="${_('Cancel')}" />
-          <input type="submit" value="Delete $what" />
+          <input type="submit" value="${what == 'multiple' and _('Delete those versions')
+                                        or what == 'single' and _('Delete this version')
+                                        or _('Delete page')}" />
         </div>
       </form>
     </div>

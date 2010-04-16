@@ -69,22 +69,16 @@
                            name_attrs = one.rendered and one.rendered.name_attributes;
                            name = one.rendered and one.rendered.name or prop.name">
               <li py:when="one" py:choose="">
-                <py:when test="both">
-                  <i18n:msg params="name, old, new">
-                    Property ${prop_name(name, name_attrs)}
-                    changed from ${render_property(prop.old)} to ${render_property(prop.new)}
-                  </i18n:msg>
-                </py:when>
-                <py:when test="not prop.old">
-                  <i18n:msg params="name, value">
-                    Property ${prop_name(name, name_attrs)} set to ${render_property(prop.new)}
-                  </i18n:msg>
-                </py:when>
-                <py:otherwise>
-                  <i18n:msg params="name">
-                    Property ${prop_name(name, name_attrs)} deleted
-                  </i18n:msg>
-                </py:otherwise>
+                <py:when test="both"><i18n:msg params="name, old, new">
+                  Property ${prop_name(name, name_attrs)}
+                  changed from ${render_property(prop.old)} to ${render_property(prop.new)}
+                </i18n:msg></py:when>
+                <py:when test="not prop.old"><i18n:msg params="name, value">
+                  Property ${prop_name(name, name_attrs)} set to ${render_property(prop.new)}
+                </i18n:msg></py:when>
+                <py:otherwise><i18n:msg params="name">
+                  Property ${prop_name(name, name_attrs)} deleted
+                </i18n:msg></py:otherwise>
               </li>
             </py:with>
           </py:for>
