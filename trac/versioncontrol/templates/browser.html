@@ -124,6 +124,12 @@
         <tr py:if="properties">
           <td colspan="2">
             <ul class="props">
+              <py:def function="prop_value(prop)">
+                <py:choose>
+                  <py:when test="istext(prop.value)"><em><code>$prop.value</code></em></py:when>
+                  <py:otherwise>$prop.value</py:otherwise>
+                </py:choose>
+              </py:def>
               <li py:for="prop in properties" py:choose="">
                 <py:when test="prop.rendered">
                    <span py:if="prop.rendered.name"
@@ -131,11 +137,7 @@
                    <div py:attrs="prop.rendered.content_attributes" py:content="prop.rendered.content" />
                 </py:when>
                 <py:otherwise>
-                  Property <strong>$prop.name</strong> set to
-                  <py:choose>
-                    <em py:when="istext(prop.value)"><code>$prop.value</code></em>
-                    <py:otherwise>$prop.value</py:otherwise>
-                  </py:choose>
+                  <i18n:msg params="name, value">Property <strong>$prop.name</strong> set to ${prop_value(prop)}</i18n:msg>
                 </py:otherwise>
               </li>
             </ul>

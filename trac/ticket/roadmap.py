@@ -33,7 +33,7 @@ from trac.util.datefmt import parse_date, utc, to_utimestamp, \
                               get_date_format_hint, get_datetime_format_hint, \
                               format_date, format_datetime, from_utimestamp
 from trac.util.text import CRLF
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.ticket import Milestone, Ticket, TicketSystem, group_milestones
 from trac.ticket.query import QueryModule
 from trac.timeline.api import ITimelineEventProvider
@@ -551,7 +551,8 @@ class MilestoneModule(Component):
         if field == 'url':
             return context.href.milestone(milestone.id)
         elif field == 'title':
-            return tag('Milestone ', tag.em(milestone.id), ' completed')
+            return tag_('Milestone %(name)s completed',
+                        name=tag.em(milestone.id))
         elif field == 'description':
             return format_to(self.env, None, context(resource=milestone),
                              description)

@@ -38,6 +38,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
       xmlns:xi="http://www.w3.org/2001/XInclude"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       class="diff">
 
   <ul py:if="any([item.diffs or item.props for item in changes])" class="entries">
@@ -51,23 +52,39 @@
         </h2>
         <pre py:if="comments">$comments</pre>
         <ul py:if="item.props" class="props">
+          <py:def function="prop_name(name, attrs)">
+            <strong py:attrs="attrs">$name</strong>
+          </py:def>
+          <py:def function="render_property(prop)">
+            <py:choose>
+              <py:when test="prop.rendered">$prop.rendered.content</py:when>
+              <em py:when="istext(prop.value)"><tt>$prop.value</tt></em>
+              <py:otherwise>$prop.value</py:otherwise>
+            </py:choose>
+          </py:def>
           <py:for each="prop in item.props" py:choose="">
             <py:when test="prop.diff">$prop.diff</py:when>
             <py:with vars="one = prop.old or prop.new;
                            both = prop.old and prop.new;
-                           action = both and 'changed from ' or not prop.old and 'set' or 'deleted'">
-              <li py:when="one">
-                Property <strong py:attrs="one.rendered and one.rendered.name_attributes">
-                  ${one.rendered and one.rendered.name or prop.name}</strong> $action
-                <py:def function="render_property(prop)">
-                  <py:choose>
-                    <py:when test="prop.rendered">$prop.rendered.content</py:when>
-                    <em py:when="istext(prop.value)"><tt>$prop.value</tt></em>
-                    <py:otherwise>$prop.value</py:otherwise>
-                  </py:choose>
-                </py:def>
-                <py:if test="prop.old and prop.new">${render_property(prop.old)}</py:if>
-                <py:if test="prop.new"> to ${render_property(prop.new)}</py:if>
+                           name_attrs = one.rendered and one.rendered.name_attributes;
+                           name = one.rendered and one.rendered.name or prop.name">
+              <li py:when="one" py:choose="">
+                <py:when test="both">
+                  <i18n:msg params="name, old, new">
+                    Property ${prop_name(name, name_attrs)}
+                    changed from ${render_property(prop.old)} to ${render_property(prop.new)}
+                  </i18n:msg>
+                </py:when>
+                <py:when test="not prop.old">
+                  <i18n:msg params="name, value">
+                    Property ${prop_name(name, name_attrs)} set to ${render_property(prop.new)}
+                  </i18n:msg>
+                </py:when>
+                <py:otherwise>
+                  <i18n:msg params="name">
+                    Property ${prop_name(name, name_attrs)} deleted
+                  </i18n:msg>
+                </py:otherwise>
               </li>
             </py:with>
           </py:for>

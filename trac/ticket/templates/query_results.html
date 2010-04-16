@@ -86,7 +86,7 @@
                     </td>
                   </tr>
                   <tr py:otherwise="" py:for="r in result_rows" class="fullrow">
-                    <th class="meta">$r</th>
+                    <th class="meta">${fields.get(r, {'label': r or 'none'}).label}</th>
                     <td colspan="${len(headers)-1}" xml:space="preserve">
                       ${wiki_to_html(ticket_context, result[r])}
                     </td>
