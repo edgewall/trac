@@ -111,8 +111,9 @@ class ReportModule(Component):
             template = 'report_delete.html'
             data = self._render_confirm_delete(req, id)
         elif id == -1:
-            template = 'report_list.html'
-            data = self._render_list(req)
+            template, data, content_type = self._render_list(req)
+            if content_type: # i.e. alternate format
+                return template, data, content_type
         else:
             template, data, content_type = self._render_view(req, id)
             if content_type: # i.e. alternate format
@@ -243,17 +244,44 @@ class ReportModule(Component):
         """Render the list of available reports."""
         sort = req.args.get('sort', 'report')
         asc = bool(int(req.args.get('asc', 1)))
+        format = req.args.get('format')
         
         db = self.env.get_db_cnx()
         cursor = db.cursor()
         cursor.execute("SELECT id, title FROM report ORDER BY %s%s"
                        % (sort == 'title' and 'title' or 'id',
                           not asc and ' DESC' or ''))
+        rows = list(cursor)
+        
+        if format == 'rss':
+            data = {'rows': rows}
+            return 'report_list.rss', data, 'application/rss+xml'
+        elif format == 'csv':
+            self._send_csv(req, ['report', 'title'], rows, mimetype='text/csv',
+                           filename='reports.csv')
+        elif format == 'tab':
+            self._send_csv(req, ['report', 'title'], rows, '\t',
+                           mimetype='text/tab-separated-values',
+                           filename='reports.tsv')
+
+        def report_href(**kwargs):
+            return req.href.report(sort=req.args.get('sort'),
+                                   asc=asc and '1' or '0', **kwargs)
+
+        add_link(req, 'alternate', 
+                 report_href(format='rss'),
+                 _('RSS Feed'), 'application/rss+xml', 'rss')
+        add_link(req, 'alternate', report_href(format='csv'),
+                 _('Comma-delimited Text'), 'text/plain')
+        add_link(req, 'alternate', report_href(format='tab'),
+                 _('Tab-delimited Text'), 'text/plain')
+        
         reports = [(id, title, 'REPORT_MODIFY' in req.perm('report', id),
                     'REPORT_DELETE' in req.perm('report', id))
-                   for id, title in cursor]
-        
-        return {'reports': reports, 'sort': sort, 'asc': asc}
+                   for id, title in rows]
+        data = {'reports': reports, 'sort': sort, 'asc': asc}
+
+        return 'report_list.html', data, None
 
     def _render_view(self, req, id):
         """Retrieve the report results and pre-process them for rendering."""

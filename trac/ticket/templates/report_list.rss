@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<rss version="2.0" xmlns:py="http://genshi.edgewall.org/"
+                   xmlns:dc="http://purl.org/dc/elements/1.1/"
+                   xmlns:xi="http://www.w3.org/2001/XInclude">
+  <channel>
+    <title>$project.name: Available Reports</title>
+    <link>${abs_href.report()}</link>
+    <description>List of available reports</description>
+    <language>en-us</language>
+    <image py:if="chrome.logo.src_abs">
+      <title>$project.name</title>
+      <url>$chrome.logo.src_abs</url>
+      <link>${abs_href.report()}</link>
+    </image>
+    <generator>Trac v${trac.version}</generator>
+
+    <item py:for="report, title in rows">
+      <title>{$report}: $title</title>
+      <link>${abs_href.report(report)}</link>
+      <guid isPermaLink="false">${abs_href.report(report)}</guid>
+      <category>Report</category>
+    </item>
+  </channel>
+</rss>
