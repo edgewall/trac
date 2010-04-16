@@ -26,7 +26,7 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 
 # -- Utilities for the ConfigurableTicketWorkflow
 
@@ -241,13 +241,13 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
             if owners == None:
                 owner = req.args.get(id, req.authname)
-                control.append(tag(['to ', tag.input(type='text', id=id,
+                control.append(tag([_('to '), tag.input(type='text', id=id,
                                                      name=id, value=owner)]))
                 hints.append(_("The owner will be changed from "
                                "%(current_owner)s",
                                current_owner=current_owner))
             elif len(owners) == 1:
-                control.append(tag('to %s ' % owners[0]))
+                control.append(tag_('to %(owner)s ', owner=owners[0]))
                 if ticket['owner'] != owners[0]:
                     hints.append(_("The owner will be changed from "
                                    "%(current_owner)s to %(selected_owner)s",
@@ -278,14 +278,15 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                   "but none is defined (configuration issue, "
                                   "please contact your Trac admin)."))
             if len(resolutions) == 1:
-                control.append(tag('as %s' % resolutions[0]))
+                control.append(tag_('as %(resolution)s',
+                                    resolution=resolutions[0]))
                 hints.append(_("The resolution will be set to %(name)s",
                                name=resolutions[0]))
             else:
                 id = 'action_%s_resolve_resolution' % action
                 selected_option = req.args.get(id, 
                         TicketSystem(self.env).default_resolution)
-                control.append(tag(['as ', tag.select(
+                control.append(tag([_('as '), tag.select(
                     [tag.option(x, value=x,
                                 selected=(x == selected_option or None))
                      for x in resolutions],
@@ -294,8 +295,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
         if 'leave_status' in operations:
-            control.append('as %s ' % ticket._old.get('status', 
-                                                      ticket['status']))
+            control.append(_('as %(status)s ',
+                             status= ticket._old.get('status',
+                                                     ticket['status'])))
         else:
             if status != '*':
                 hints.append(_("Next status will be '%(name)s'", name=status))

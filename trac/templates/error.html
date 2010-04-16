@@ -135,9 +135,9 @@ ${to_unicode(traceback)}
               <p>If you think this should work and you can reproduce the problem,
               you should consider creating a bug report.</p>
               <p py:if="faulty_plugins" py:choose="len(faulty_plugins)">
-                <py:when test="1">
+                <py:when test="1"><i18n:msg params="name">
                   Note that the ${faulty_plugins[0].name} plugin seems to be involved.
-                </py:when>
+                </i18n:msg></py:when>
                 <py:otherwise>
                   Note that the following plugins seem to be involved:
                   ${', '.join([p.name for p in faulty_plugins])}
