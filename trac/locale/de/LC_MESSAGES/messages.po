@@ -22,7 +22,7 @@ msgid ""
 "You appear to be using the PHP CGI binary. Trac requires the CLI version "
 "for syntax highlighting."
 msgstr ""
-"Es scheint, daß Sie die ausführbare PHP-CGI-Datei verwenden. Trac "
+"Es scheint, dass Sie die ausführbare PHP-CGI-Datei verwenden. Trac "
 "benötigt die CLI-Version für Syntaxhervorhebung."
 
 #: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
@@ -326,7 +326,7 @@ msgid ""
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
-"Die Trac-Projektumgebung muß aktualisiert werden.\n"
+"Die Trac-Projektumgebung muss aktualisiert werden.\n"
 "\n"
 "Führen Sie \"trac-admin %(path)s upgrade\" aus"
 
@@ -560,7 +560,6 @@ msgid "Initenv for '%(env)s' failed."
 msgstr "Initenv für '%(env)s' fehlgeschlagen."
 
 #: trac/admin/console.py:366
-#, python-format
 msgid "Does an environment already exist?"
 msgstr ""
 
@@ -610,7 +609,7 @@ msgstr ""
 "\n"
 "Sie können trotzdem damit beginnen, Ihre Trac-Projektumgebung zu "
 "benutzen,\n"
-"aber es ist notwendig, daß Sie noch einmal die Datei trac.ini\n"
+"aber es ist notwendig, dass Sie noch einmal die Datei trac.ini\n"
 "und die Einstellungen [trac] repository_type und repository_path prüfen.\n"
 
 #: trac/admin/console.py:476
@@ -1117,7 +1116,7 @@ msgstr "Subjekten"
 
 #: trac/admin/templates/admin_perms.html:91
 msgid "Note that"
-msgstr "Beachten Sie, daß die Namen von"
+msgstr "Beachten Sie, dass die Namen von"
 
 #: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:73
 msgid "or"
@@ -1395,7 +1394,7 @@ msgstr ""
 "Der Sitzungsschlüssel wird verwendet, um gespeicherte benutzerdefinierte\n"
 "      Einstellungen und Sitzungsdaten auf dem Server zu identifizieren.\n"
 "      Obwohl er normalerweise automatisch generiert wird, können Sie ihn\n"
-"      jederzeit so abändern, daß Sie sich später leichter daran erinnern "
+"      jederzeit so abändern, dass Sie sich später leichter daran erinnern "
 "können,\n"
 "      wenn Sie Ihre Einstellungen in einem anderen Web-Browser laden "
 "möchten."
@@ -1539,7 +1538,7 @@ msgid ""
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
 msgstr ""
-"Wenn Sie für sich eine Sprache einstellen, hat das zur Folge, daß für "
+"Wenn Sie für sich eine Sprache einstellen, hat das zur Folge, dass für "
 "alle\n"
 "      von diesem System angezeigten Texte diese Sprache verwendet wird\n"
 "      anstatt der des Servers."
@@ -2136,6 +2135,7 @@ msgid "Error"
 msgstr "Fehler"
 
 #: trac/templates/layout.html:21
+#, python-format
 msgid "Search %(project)s"
 msgstr ""
 
@@ -2290,7 +2290,7 @@ msgstr "Ungültiger Meilensteinname."
 #: trac/ticket/admin.py:305
 #, python-format
 msgid "Milestone %(name)s already exists."
-msgstr "Es gibt bereits einen Meileinstein %(name)s."
+msgstr "Es gibt bereits einen Meilenstein %(name)s."
 
 #: trac/ticket/admin.py:313
 msgid "No milestone selected"
@@ -2306,7 +2306,6 @@ msgid "The version \"%(name)s\" has been added."
 msgstr "Die Version \"%(name)s\" wurde hinzugefügt."
 
 #: trac/ticket/admin.py:485 trac/ticket/model.py:1116 trac/ticket/model.py:1136
-#, python-format
 msgid "Invalid version name."
 msgstr "Ungültiger Versionsname."
 
@@ -2406,7 +2405,7 @@ msgstr "Tickettypen"
 
 #: trac/ticket/admin.py:837
 msgid "<number> must be a number"
-msgstr "<number> muß eine Zahl sein"
+msgstr "<number> muss eine Zahl sein"
 
 #: trac/ticket/admin.py:842
 #, python-format
@@ -2576,7 +2575,7 @@ msgstr "Obergrenze %(max)s der Abfrage ist ungültig."
 #: trac/ticket/query.py:159
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr ""
-"Es ist für den Abfragefilter notwendig, daß Feld und Bedingungen durch "
+"Es ist für den Abfragefilter notwendig, dass Feld und Bedingungen durch "
 "ein \"=\" getrennt werden"
 
 #: trac/ticket/query.py:172
@@ -2974,12 +2973,12 @@ msgstr "Tickets müssen eine Kurzbeschreibung enthalten."
 #: trac/ticket/web_ui.py:1138
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
-msgstr "Ticketbeschreibung ist zu lang (muß kürzer als %(num)s Zeichen sein)"
+msgstr "Ticketbeschreibung ist zu lang (muss kürzer als %(num)s Zeichen sein)"
 
 #: trac/ticket/web_ui.py:1145
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
-msgstr "Ticketbeschreibung ist zu lang (muß kürzer als %(num)s Zeichen sein)"
+msgstr "Ticketbeschreibung ist zu lang (muss kürzer als %(num)s Zeichen sein)"
 
 #: trac/ticket/web_ui.py:1160
 msgid "Invalid comment threading identifier"
@@ -3416,7 +3415,7 @@ msgstr ""
 msgid "Modify"
 msgstr "Ändern"
 
-#. TRANSLATOR: — at Version X
+#. TRANSLATOR: "— at Version X"
 #: trac/ticket/templates/ticket.html:90 trac/ticket/templates/ticket.html:93
 msgid "— at"
 msgstr "— in"
@@ -3495,6 +3494,7 @@ msgid "Add a comment"
 msgstr "Kommentar hinzufügen"
 
 #: trac/ticket/templates/ticket.html:203
+msgid ""
 "You may use\n"
 "              [1:WikiFormatting]\n"
 "              here."
@@ -3757,22 +3757,22 @@ msgstr[1] ""
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] "%(num)s Tag"
-msgstr[1] "%(num)s Tage"
+msgstr[0] "%(num)d Tag"
+msgstr[1] "%(num)d Tage"
 
 #: trac/util/datefmt.py:83
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] "%(num)s Stunde"
-msgstr[1] "%(num)s Stunden"
+msgstr[0] "%(num)d Stunde"
+msgstr[1] "%(num)d Stunden"
 
 #: trac/util/datefmt.py:84
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
-msgstr[0] "%(num)s Minute"
-msgstr[1] "%(num)s Minuten"
+msgstr[0] "%(num)d Minute"
+msgstr[1] "%(num)d Minuten"
 
 #: trac/util/datefmt.py:103
 #, python-format
@@ -4049,7 +4049,7 @@ msgstr "Subversion >= 1.0 benötigt, aber %(version)s vorhanden"
 #: trac/versioncontrol/svn_fs.py:330
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
-msgstr "Es scheint, daß %(path)s kein Subversion-Repository ist."
+msgstr "Es scheint, dass %(path)s kein Subversion-Repository ist."
 
 #: trac/versioncontrol/svn_fs.py:337
 #, python-format
@@ -4430,7 +4430,7 @@ msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
 msgstr ""
-"[1:Hinweis:] Hilfe zur Verwendung der Changeset-Ansicht finden Sie unter"
+"[1:Hinweis:] Hilfe zur Verwendung der Changeset-Ansicht finden Sie unter "
 "[2:TracChangeset]."
 
 #: trac/versioncontrol/templates/diff_form.html:10
@@ -4797,7 +4797,6 @@ msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "Änderungen %(range)s anzeigen, begrenzt auf %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:859
-#, python-format
 msgid "Changesets in all repositories"
 msgstr "Changesets in allen Repositorys"
 
@@ -4827,7 +4826,7 @@ msgstr ""
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
-"Unzureichende Berechtigungen vorhanden, um Changeset %(id)s in %(repos)s"
+"Unzureichende Berechtigungen vorhanden, um Changeset %(rev)s in %(repos)s "
 "anzusehen"
 
 #: trac/versioncontrol/web_ui/changeset.py:1073
@@ -5081,7 +5080,6 @@ msgid "Aliases:"
 msgstr ""
 
 #: trac/wiki/macros.py:551
-#, python-format
 msgid "Sorry, no documentation found"
 msgstr "Sorry, keine Dokumentation gefunden"
 
@@ -5118,7 +5116,7 @@ msgstr "Version \"%(num)s\" der Wiki-Seite \"%(name)s\" nicht vorhanden"
 #: trac/wiki/web_ui.py:190
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
-msgstr "Wiki.Seite ist zu lang (muß kürzer als %(num)s Zeichen sein)"
+msgstr "Wiki-Seite ist zu lang (muss kürzer als %(num)s Zeichen sein)"
 
 #: trac/wiki/web_ui.py:200
 #, python-format
@@ -5138,7 +5136,7 @@ msgstr "zur Zeit in Bearbeitung"
 #: trac/wiki/web_ui.py:265
 #, python-format
 msgid "The page %(name)s has been deleted."
-msgstr "Die Seite %(page)s wurde gelöscht."
+msgstr "Die Seite %(name)s wurde gelöscht."
 
 #: trac/wiki/web_ui.py:270
 #, python-format
