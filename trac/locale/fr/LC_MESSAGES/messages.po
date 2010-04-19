@@ -3450,7 +3450,7 @@ msgstr "Aucun rapport disponible"
 
 #: trac/ticket/templates/report_list.html:49
 msgid "Create new report"
-msgstr "Créer d'un nouveau rapport"
+msgstr "Créer un nouveau rapport"
 
 #: trac/ticket/templates/report_view.html:21
 #, python-format
