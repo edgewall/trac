@@ -665,11 +665,16 @@ class NoSuchChangeset(ResourceNotFound):
                                     rev=rev),
                                   _('No such changeset'))
 
+
 class NoSuchNode(ResourceNotFound):
     def __init__(self, path, rev, msg=None):
-        ResourceNotFound.__init__(self, "%sNo node %s at revision %s" %
-                                  ((msg and '%s: ' % msg) or '', path, rev),
-                                  _('No such node'))
+        if msg is None:
+            msg = _("No node %(path)s at revision %(rev)s", path=path, rev=rev)
+        else:
+            msg = _("%(msg)s: No node %(path)s at revision %(rev)s",
+                    msg=msg, path=path, rev=rev)
+        ResourceNotFound.__init__(self, msg, _('No such node'))
+
 
 class Repository(object):
     """Base class for a repository provided by a version control system."""
