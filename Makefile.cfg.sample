@@ -28,3 +28,19 @@ postgres.uri = postgres://tracuser:tracpassword@localhost:5432/trac?schema=tract
 # default Python versions to use when `db` is specified
 mysql.python = 25
 postgres.python = 26
+
+# ----------------------------------------------------------------------------
+# Custom rules 
+
+.PHONY: bigtest
+
+bigtest:
+	make python=24 test
+	make db=postgres test
+	make db=mysql test
+
+.PHONY: frup frcomp
+
+frup: stats-pot extraction update-fr stats-fr
+
+frcomp: check-fr compile-fr stats-fr stats-pot
