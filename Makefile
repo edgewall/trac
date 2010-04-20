@@ -13,7 +13,7 @@ define HELP
  Please use `make <target>' where <target> is one of: 
 
   clean               delete all compiled python files 
-  status              which Python and which test db used 
+  status              show which Python is used and other infos
 
   [python=...]        variable for selecting Python version
 
@@ -28,13 +28,22 @@ define HELP
 
                   L10N tasks
 
-  extraction          update the messages.pot file
-  update              update the messages.po file(s)
-  compile             compile the messages.po files
-  check               verify the messages.po files
-  stats               translation statistics
+  extraction          regenerate the messages.pot template file
 
-  [locale=..]         variable for selecting the locale
+  update              update all the messages.po file(s)
+  update-xy           update the catalog for the xy locale only
+
+  compile             compile all the messages.po files
+  compile-xy          compile the catalog for the xy locale only
+
+  check               verify all the messages.po files
+  check-xy            verify the catalog for the xy locale only
+
+  stats               translation statistics for all catalogs
+  stats-pot           statistics for the messages.pot template file
+  stats-xy            statistics for the xy locale only
+
+  [locale=...]        variable for selecting a set of locales
 
 endef
 export HELP
@@ -80,11 +89,25 @@ endif
 extract extraction:
 	python setup.py extract_messages
 
-update:
-	python setup.py update_catalog $(if $(locale),-l $(locale))
+update-%:
+	python setup.py update_catalog -l $(@:update-%=%)
 
+ifdef locale
+update: $(addprefix update-,$(locale))
+else
+update:
+	python setup.py update_catalog
+endif
+
+compile-%:
+	python setup.py compile_catalog -l $(@:compile-%=%)
+
+ifdef locale
+compile: $(addprefix compile-,$(locale))
+else
 compile:
-	python setup.py compile_catalog $(if $(locale),-l $(locale))
+	python setup.py compile_catalog
+endif
 
 check: pre-check $(addprefix check-,$(locales))
 ifeq "$(findstring -k,$(MAKEFLAGS))" ""
