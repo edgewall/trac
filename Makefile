@@ -28,7 +28,7 @@ define HELP
 
                   L10N tasks
 
-  extract             update the messages.pot file
+  extraction          update the messages.pot file
   update              update the messages.po file(s)
   compile             compile the messages.po files
   check               verify the messages.po files
@@ -75,9 +75,9 @@ else
     locales := $(subst /LC_MESSAGES/messages.po,,$(locales))
 endif
 
-.PHONY: extract update compile check stats
+.PHONY: extract extraction update compile check stats
 
-extract:
+extract extraction:
 	python setup.py extract_messages
 
 update:
