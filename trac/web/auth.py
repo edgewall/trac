@@ -134,13 +134,13 @@ class LoginModule(Component):
         """
         if not req.remote_user:
             # TRANSLATOR: ... refer to the 'installation documentation'. (link)
-            raise TracError(
-                tag_("Authentication information not available. Please refer "
-                     "to the %(inst_doc)s.",
-                     inst_doc=tag.a(_('installation documentation'),
-                                    title=_("Configuring Authentication"),
-                                    href=req.href.wiki('TracInstall') +
-                                         "#ConfiguringAuthentication")))
+            inst_doc = tag.a(_('installation documentation'),
+                             title=_("Configuring Authentication"),
+                             href=req.href.wiki('TracInstall')
+                                  + "#ConfiguringAuthentication")
+            raise TracError(tag_("Authentication information not available. "
+                                 "Please refer to the %(inst_doc)s.",
+                                 inst_doc=inst_doc))
         remote_user = req.remote_user
         if self.ignore_case:
             remote_user = remote_user.lower()
