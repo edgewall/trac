@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-20 20:55+0200\n"
+"POT-Creation-Date: 2010-04-20 20:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -618,7 +618,7 @@ msgstr ""
 #: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
 #: trac/ticket/admin.py:697 trac/ticket/report.py:189
-#: trac/ticket/roadmap.py:689 trac/versioncontrol/admin.py:196
+#: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:196
 msgid "Your changes have been saved."
 msgstr ""
 
@@ -923,7 +923,7 @@ msgid ""
 msgstr ""
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
-#: trac/ticket/roadmap.py:857
+#: trac/ticket/roadmap.py:855
 msgid "Milestones"
 msgstr ""
 
@@ -2038,26 +2038,29 @@ msgstr ""
 msgid "the file instead."
 msgstr ""
 
-#: trac/templates/progress_bar.html:24
+#: trac/templates/progress_bar.html:26
 #, python-format
-msgid "%(num)s of %(total)s %(unit)s %(title)s"
-msgid_plural "%(num)s of %(total)s %(units)s %(title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgid "%(count)s/%(total)s %(title)s"
+msgstr ""
 
-#: trac/templates/progress_bar.html:37
+#: trac/templates/progress_bar.html:36
 #, python-format
-msgid "%(title)s %(unit)s:"
-msgid_plural "%(title)s %(units)s:"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Number of %(unit)s:"
+msgstr ""
+
+#: trac/templates/progress_bar.html:40
+#, python-format
+msgid ""
+"[1:[2:%(title)s:]]\n"
+"          [3:[4:%(count)s]]"
+msgstr ""
 
 #: trac/templates/progress_bar.html:47
 #, python-format
-msgid "Total %(unit)s:"
-msgid_plural "Total %(units)s:"
-msgstr[0] ""
-msgstr[1] ""
+msgid ""
+"[1:[2:Total:]]\n"
+"      [3:[4:%(count)s]]"
+msgstr ""
 
 #: trac/templates/theme.html:26
 msgid "Search:"
@@ -2107,7 +2110,7 @@ msgstr ""
 msgid "Milestone"
 msgstr ""
 
-#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:665
+#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
 msgid "Completion date may not be in the future"
 msgstr ""
 
@@ -2590,72 +2593,68 @@ msgstr ""
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
 msgstr ""
 
-#: trac/ticket/roadmap.py:207
+#: trac/ticket/roadmap.py:205
 msgid "ticket status"
 msgstr ""
 
-#: trac/ticket/roadmap.py:207
-msgid "ticket"
-msgstr ""
-
-#: trac/ticket/roadmap.py:207
+#: trac/ticket/roadmap.py:205
 msgid "tickets"
 msgstr ""
 
-#: trac/ticket/roadmap.py:217
+#: trac/ticket/roadmap.py:215
 #, python-format
 msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:233
+#: trac/ticket/roadmap.py:231
 #, python-format
 msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
 
-#: trac/ticket/roadmap.py:316 trac/ticket/roadmap.py:438
-#: trac/ticket/roadmap.py:573 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
+#: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
 msgstr ""
 
-#: trac/ticket/roadmap.py:366
+#: trac/ticket/roadmap.py:364
 msgid "iCalendar"
 msgstr ""
 
-#: trac/ticket/roadmap.py:447 trac/ticket/roadmap.py:847
+#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:845
 #, python-format
 msgid "Milestone %(name)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:466
+#: trac/ticket/roadmap.py:464
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
 msgstr ""
 
-#: trac/ticket/roadmap.py:527
+#: trac/ticket/roadmap.py:525
 msgid "Milestones reached"
 msgstr ""
 
-#: trac/ticket/roadmap.py:555
+#: trac/ticket/roadmap.py:553
 #, python-format
 msgid "Milestone %(name)s completed"
 msgstr ""
 
-#: trac/ticket/roadmap.py:615
+#: trac/ticket/roadmap.py:613
 #, python-format
 msgid "The milestone \"%(name)s\" has been deleted."
 msgstr ""
 
-#: trac/ticket/roadmap.py:654
+#: trac/ticket/roadmap.py:652
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name."
 msgstr ""
 
-#: trac/ticket/roadmap.py:657
+#: trac/ticket/roadmap.py:655
 msgid "You must provide a name for the milestone."
 msgstr ""
 
