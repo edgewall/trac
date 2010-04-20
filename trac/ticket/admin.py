@@ -596,8 +596,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
     # TicketAdminPanel methods
 
     def _render_admin_panel(self, req, cat, page, path_info):
-        data = {'label_singular': gettext(self._label[0]),
-                'label_plural': gettext(self._label[1])}
+        label = [gettext(each) for each in self._label]
+        data = {'label_singular': label[0], 'label_plural': label[1]}
 
         # Detail view?
         if path_info:
@@ -626,15 +626,15 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         enum.insert()
                         add_notice(req, _('The %(field)s "%(name)s" has been '
                                           'added.',
-                                          field=self._label[0].lower(),
+                                          field=label[0].lower(),
                                           name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
                         if enum.name is None:
                             raise TracError(_('Invalid %(type)s name.',
-                                              type=self._label[0].lower()))
+                                              type=label[0].lower()))
                         raise TracError(_('%(type)s %(name)s already exists',
-                                          type=self._type.title(), name=name))
+                                          type=label[0], name=name))
                          
                 # Remove enums
                 elif req.args.get('remove'):
@@ -650,7 +650,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                             enum.delete()
                     add_notice(req, _('The selected %(fields)s have been '
                                       'removed.',
-                                      fields=self._label[1].lower()))
+                                      fields=label[1].lower()))
                     req.redirect(req.href.admin(cat, page))
 
                 # Apply changes
