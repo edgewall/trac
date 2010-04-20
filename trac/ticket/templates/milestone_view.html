@@ -48,7 +48,7 @@
       <form py:if="available_groups and stats.count" id="stats" action="">
         <fieldset>
           <legend>
-            <label for="by">${stats.title.capitalize()} by</label>
+            <label for="by" i18n:msg="stat_title">${stats.title.capitalize()} by</label>
             <select id="by" name="by" onchange="this.form.submit()">
               <option py:for="group in available_groups"
                       value="${group.name}" py:content="group.label"
