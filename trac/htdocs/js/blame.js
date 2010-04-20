@@ -17,13 +17,16 @@
       if ( href ) {
         a.removeAttr("href");
         href = href.slice(href.indexOf("changeset/") + 10);
-        if (reponame)
-            href = href.substr(reponame.length);
         var sep = href.indexOf("/");
-        if ( sep > 0 )
+        if ( sep > 0 ) {
           path = href.slice(sep+1);
-        else
+          if (reponame)
+            path = path.substr(reponame.length);
+          if (!path)
+            path = original_path;
+        } else {
           path = original_path;
+        }
       }
 
       // determine rev from th class, which is of the form "blame r123"
@@ -35,7 +38,7 @@
         var row = this.parentNode;
         var message_is_visible = message && message.css("display") == "block";
         var highlight_rev = null;
-        var annotate_path = path;
+        var annotate_path = decodeURI(path);
   
         function show() {
           /* Display commit message for the selected revision */
