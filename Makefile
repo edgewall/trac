@@ -87,8 +87,11 @@ compile:
 	python setup.py compile_catalog $(if $(locale),-l $(locale))
 
 check: pre-check $(addprefix check-,$(locales))
+ifeq "$(findstring -k,$(MAKEFLAGS))" ""
+	@echo "-k specified, check the results manually"
+else
 	@echo "all catalogs OK"
-	# except if `make -k` was used, of course...
+endif
 
 pre-check:
 	@echo "checking catalogs for $(locales)..."
