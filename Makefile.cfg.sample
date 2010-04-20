@@ -1,4 +1,4 @@
-# Makefile configuration file sample 
+# -*- Makefile -*- configuration file sample 
 #
 # Adapt to your local setting and copy to Makefile.cfg
 #

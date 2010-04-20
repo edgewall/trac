@@ -1,4 +1,6 @@
 # Makefile for testing Trac (see doc/dev/testing.rst)
+#
+# Some i18n tasks are also supported, see HELP below.
 # ----------------------------------------------------------------------------
 #
 # Note that this is a GNU Makefile.
@@ -6,7 +8,43 @@
 #
 # ----------------------------------------------------------------------------
 
-.PHONY: all
+define HELP
+
+ Please use `make <target>' where <target> is one of: 
+
+  clean               delete all compiled python files 
+  status              which Python and which test db used 
+
+  [python=...]        variable for selecting Python version
+
+                  Testing tasks
+
+  unit-test           run unit tests
+  functional-test     run functional tests
+  test                run all tests
+
+  [db=...]            variable for selecting database backend
+  [test=...]          variable for selecting a single test file
+
+                  L10N tasks
+
+  extract             update the messages.pot file
+  update              update the messages.po file(s)
+  compile             compile the messages.po files
+  check               verify the messages.po files
+  stats               translation statistics
+
+  [locale=..]         variable for selecting the locale
+
+endef
+export HELP
+
+# ` (keep emacs font-lock happy)
+
+# ----------------------------------------------------------------------------
+
+.PHONY: all help status clean
+
 ifdef test
 all: status
 	python $(test)
@@ -14,43 +52,15 @@ else
 all: help
 endif
 
-.PHONY: help
-help:
-	@echo
-	@echo "Please use \`make <target>' where <target> is one of:"
-	@echo
-	@echo "  clean               delete all compiled python files"
-	@echo "  status              which Python and which test db used"
-	@echo
-	@echo "  [python=...]        select Python version"
-	@echo 
-	@echo "                  Testing tasks"
-	@echo 
-	@echo "  unit-test           run unit tests"
-	@echo "  functional-test     run functional tests"
-	@echo "  test                run all tests"
-	@echo
-	@echo "  [db=...]            database backend to use for tests"
-	@echo "  [test=...]          file to test (all if not specified)"
-	@echo 
-	@echo "                  L10N tasks"
-	@echo 
-	@echo "  extract             update the messages.pot file"
-	@echo "  update              update the messages.po file(s)"
-	@echo "  compile             compile the messages.po files"
-	@echo "  check               verify the messages.po files"
-	@echo "  stats               translation statistics"
-	@echo 
-	@echo "  [locale=..]         operate on this locale only"
-	@echo 
 
-.PHONY: status
+help:
+	@echo "$$HELP"
+
 status:
 	@python -V
 	@echo PYTHONPATH=$$PYTHONPATH
 	@echo TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI
 
-.PHONY: clean
 clean:
 	find -name \*.py[co] | xargs -d"\n" --no-run-if-empty rm -f
 	rm -rf .figleaf* html
