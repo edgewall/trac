@@ -2,12 +2,12 @@
 Display a list of attachments.
 
 Arguments:
- - stats: 
- - interval_hrefs: 
- - percent=None: 
- - legend=True: 
- - style=None: 
- - stats_href=None: 
+ - stats: an instance of trac.ticket.roadmap.TicketGroupStats
+ - interval_hrefs: link associated to each interval in stats.intervals
+ - percent=None: show that value as percentage, instead of stats.done_percent
+ - legend=True: show a legend of label and count for each interval
+ - style=None: explicit styling for the table.progress
+ - stats_href=None: link associated to the total
 -->
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:py="http://genshi.edgewall.org/"
@@ -17,37 +17,37 @@ Arguments:
                legend = value_of('legend', True);
                style = value_of('style', None);
                stats_href = value_of('stats_href', None)" py:strip="">
+
   <table class="progress" style="$style">
     <tr>
       <td py:for="idx, interval in enumerate(stats.intervals)"
-          class="$interval.css_class" style="${interval.percent and 'width: %d%%' % interval.percent or 'display: none'}">
-          <a href="${interval_hrefs and interval_hrefs[idx] or None}"
-             title="${ngettext('%(num)s of %(total)s %(unit)s %(title)s',
-                               '%(num)s of %(total)s %(units)s %(title)s', interval.count,
-                               total=stats.count, unit=stats.unit, units=stats.units, title=interval.title)}"></a>
+          class="$interval.css_class"
+          style="${interval.percent and 'width: %d%%' % interval.percent or 'display: none'}">
+        <a href="${interval_hrefs and interval_hrefs[idx] or None}"
+           title="${_('%(count)s/%(total)s %(title)s',
+                      count=interval.count, total=stats.count, title=interval.title)}"></a>
       </td>
     </tr>
   </table>
+
   <p class="percent">${percent is None and '%d%%' % stats.done_percent or percent}</p>
+
   <dl py:if="legend">
+    <dt i18n:msg="unit">Number of ${stats.unit}:</dt><dd />
+
     <py:for each="idx, interval in enumerate(stats.intervals)">
       <py:with vars="href = interval_hrefs and interval_hrefs[idx] or None">
-        <dt>
-          <a href="${href}">
-           ${ngettext('%(title)s %(unit)s:', '%(title)s %(units)s:', interval.count,
-                      title=interval.title.capitalize(),
-                      unit=stats.unit, units=stats.units)}</a>
-        </dt>
-        <dd><a href="${href}">${interval.count}</a></dd>
+        <i18n:msg params="title, count">
+          <dt><a href="${href}">${interval.title}:</a></dt>
+          <dd><a href="${href}">${interval.count}</a></dd>
+        </i18n:msg>
       </py:with>
     </py:for>
-    <py:with vars="num = sum([x.count for x in stats.intervals], 0)">
-      <dt>/
-        <a href="${stats_href}">
-          ${ngettext('Total %(unit)s:', 'Total %(units)s:', num,
-                     unit=stats.unit, units=stats.units)}</a>
-      </dt>
-      <dd><a href="${stats_href}">${num}</a></dd>
-    </py:with>
+
+    <i18n:msg params="count">
+      <dt><a href="${stats_href}" i18n:msg="num">Total:</a></dt>
+      <dd><a href="${stats_href}">${stats.count}</a></dd>
+    </i18n:msg>
+
   </dl>
 </html>

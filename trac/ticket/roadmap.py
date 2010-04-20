@@ -54,17 +54,15 @@ class ITicketGroupStatsProvider(Interface):
 class TicketGroupStats(object):
     """Encapsulates statistics on a group of tickets."""
 
-    def __init__(self, title, unit, units=None):
+    def __init__(self, title, unit):
         """Creates a new TicketGroupStats object.
         
         `title` is the display name of this group of stats (e.g.
           'ticket status').
-        `unit` and `units` are used to display the units for these stats 
-        (e.g. 'hour' and 'hours').
+        `unit` is the units for these stats in plural form, e.g. _('hours')
         """
         self.title = title
         self.unit = unit
-        self.units = units or unit
         self.count = 0
         self.qry_args = {}
         self.intervals = []
@@ -204,7 +202,7 @@ class DefaultTicketGroupStatsProvider(Component):
             for s, cnt in cursor:
                 status_cnt[s] = cnt
 
-        stat = TicketGroupStats(_('ticket status'), _('ticket'), _('tickets'))
+        stat = TicketGroupStats(_('ticket status'), _('tickets'))
         remaining_statuses = set(all_statuses)
         groups =  self._get_ticket_groups()
         catch_all_group = None

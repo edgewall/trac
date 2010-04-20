@@ -7,11 +7,11 @@ import unittest
 class TicketGroupStatsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.stats = TicketGroupStats('title', 'unit', 'units')
+        self.stats = TicketGroupStats('title', 'units')
 
     def test_init(self):
         self.assertEquals('title', self.stats.title, 'title incorrect')
-        self.assertEquals('unit', self.stats.unit, 'unit incorrect')
+        self.assertEquals('units', self.stats.unit, 'unit incorrect')
         self.assertEquals(0, self.stats.count, 'count not zero')
         self.assertEquals(0, len(self.stats.intervals), 'intervals not empty')
 
@@ -97,7 +97,7 @@ class DefaultTicketGroupStatsProviderTestCase(unittest.TestCase):
 
     def test_stats(self):
         self.assertEquals(self.stats.title, 'ticket status', 'title incorrect')
-        self.assertEquals(self.stats.unit, 'ticket', 'unit incorrect')
+        self.assertEquals(self.stats.unit, 'tickets', 'unit incorrect')
         self.assertEquals(2, len(self.stats.intervals), 'more than 2 intervals')
 
     def test_closed_interval(self):
