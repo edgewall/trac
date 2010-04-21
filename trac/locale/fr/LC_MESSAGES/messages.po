@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-04-20 20:58+0200\n"
+"PO-Revision-Date: 2010-04-21 21:02+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -729,7 +729,7 @@ msgstr "Page d'administration inconnue"
 
 #: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
-#: trac/ticket/admin.py:697 trac/ticket/report.py:189
+#: trac/ticket/admin.py:695 trac/ticket/report.py:189
 #: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:196
 msgid "Your changes have been saved."
 msgstr "Vos modifications ont été enregistrées."
@@ -2438,32 +2438,32 @@ msgstr "Les versions sélectionnées ont été supprimées."
 msgid "Time"
 msgstr "Date"
 
-#: trac/ticket/admin.py:629
+#: trac/ticket/admin.py:627
 #, python-format
-msgid "The %(field)s \"%(name)s\" has been added."
+msgid "The %(field)s value \"%(name)s\" has been added."
 msgstr "La valeur « %(name)s » pour la propriété %(field)s a été ajoutée."
 
-#: trac/ticket/admin.py:635 trac/ticket/model.py:702 trac/ticket/model.py:729
+#: trac/ticket/admin.py:633
 #, python-format
-msgid "Invalid %(type)s name."
-msgstr "Nom incorrect pour la propriété %(type)s."
+msgid "Invalid %(type)s value."
+msgstr "Valeur incorrecte pour la propriété %(type)s."
 
-#: trac/ticket/admin.py:637
+#: trac/ticket/admin.py:635
 #, python-format
-msgid "%(type)s %(name)s already exists"
+msgid "%(type)s value \"%(name)s\" already exists"
 msgstr "%(type)s %(name)s existe déjà"
 
-#: trac/ticket/admin.py:643
+#: trac/ticket/admin.py:642
 #, python-format
 msgid "No %s selected"
 msgstr "Aucun %s sélectionné"
 
-#: trac/ticket/admin.py:653
+#: trac/ticket/admin.py:650
 #, python-format
-msgid "The selected %(fields)s have been removed."
-msgstr "Les %(fields)s sélectionnés ont été supprimés."
+msgid "The selected %(field)s values have been removed."
+msgstr "Les valeurs sélectionnées de la propriété %(field)s ont été supprimées."
 
-#: trac/ticket/admin.py:674
+#: trac/ticket/admin.py:672
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
@@ -2472,56 +2472,56 @@ msgstr ""
 " Web dispose des droits en écriture. La valeur par défaut n'a pas été "
 "enregistrée."
 
-#: trac/ticket/admin.py:686
+#: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
 msgstr "Les numéros doivent être uniques"
 
-#: trac/ticket/admin.py:748
+#: trac/ticket/admin.py:746
 msgid "Possible Values"
 msgstr "Valeurs possibles"
 
-#: trac/ticket/admin.py:770
+#: trac/ticket/admin.py:768
 #, python-format
 msgid "Invalid up/down value: %(value)s"
 msgstr "Valeur non valide pour haut/bas : %(value)s"
 
-#: trac/ticket/admin.py:791 trac/ticket/api.py:294
+#: trac/ticket/admin.py:789 trac/ticket/api.py:294
 msgid "Priority"
 msgstr "Priorité"
 
-#: trac/ticket/admin.py:791
+#: trac/ticket/admin.py:789
 msgid "Priorities"
 msgstr "Priorités"
 
-#: trac/ticket/admin.py:797 trac/ticket/api.py:299
+#: trac/ticket/admin.py:795 trac/ticket/api.py:299
 msgid "Resolution"
 msgstr "Résolution"
 
-#: trac/ticket/admin.py:797
+#: trac/ticket/admin.py:795
 msgid "Resolutions"
 msgstr "Résolutions"
 
-#: trac/ticket/admin.py:803 trac/ticket/api.py:298
+#: trac/ticket/admin.py:801 trac/ticket/api.py:298
 msgid "Severity"
 msgstr "Sévérité"
 
-#: trac/ticket/admin.py:803
+#: trac/ticket/admin.py:801
 msgid "Severities"
 msgstr "Sévérités"
 
-#: trac/ticket/admin.py:809
+#: trac/ticket/admin.py:807
 msgid "Ticket Type"
 msgstr "Type de ticket"
 
-#: trac/ticket/admin.py:809
+#: trac/ticket/admin.py:807
 msgid "Ticket Types"
 msgstr "Types de tickets"
 
-#: trac/ticket/admin.py:837
+#: trac/ticket/admin.py:835
 msgid "<number> must be a number"
 msgstr "<number> doit être un numéro"
 
-#: trac/ticket/admin.py:842
+#: trac/ticket/admin.py:840
 #, python-format
 msgid "Ticket %(num)s and all associated data removed."
 msgstr "Le ticket %(num)s et les données associées ont été supprimés."
@@ -2573,31 +2573,32 @@ msgstr "L'état actuel n'existe plus"
 msgid "The ticket will be disowned"
 msgstr "Le ticket perdra son propriétaire"
 
-#: trac/ticket/default_workflow.py:244 trac/ticket/default_workflow.py:257
-msgid "to "
-msgstr "à "
+#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#, python-format
+msgid "to %(owner)s"
+msgstr "à %(owner)s"
 
-#: trac/ticket/default_workflow.py:246 trac/ticket/default_workflow.py:262
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "Le propriétaire changera de %(current_owner)s"
 
-#: trac/ticket/default_workflow.py:250
+#: trac/ticket/default_workflow.py:251
 #, python-format
 msgid "to %(owner)s "
 msgstr "pour %(owner)s"
 
-#: trac/ticket/default_workflow.py:252
+#: trac/ticket/default_workflow.py:253
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Le propriétaire changera de %(current_owner)s à %(selected_owner)s"
 
-#: trac/ticket/default_workflow.py:267
+#: trac/ticket/default_workflow.py:268
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "Le propriétaire changera de %(current_owner)s à %(authname)s"
 
-#: trac/ticket/default_workflow.py:277
+#: trac/ticket/default_workflow.py:278
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -2606,34 +2607,30 @@ msgstr ""
 "définie (problème de configuration, contactez votre administrateur(ice) "
 "Trac)."
 
-#: trac/ticket/default_workflow.py:281
+#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
 #, python-format
 msgid "as %(resolution)s"
 msgstr "avec la résolution « %(resolution)s »"
 
-#: trac/ticket/default_workflow.py:283
+#: trac/ticket/default_workflow.py:284
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "La résolution sera définie à %(name)s"
 
-#: trac/ticket/default_workflow.py:289
-msgid "as "
-msgstr ""
-
-#: trac/ticket/default_workflow.py:294
+#: trac/ticket/default_workflow.py:296
 msgid "The resolution will be set"
 msgstr "La résolution sera définie"
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:298
 msgid "The resolution will be deleted"
 msgstr "La résolution sera supprimée"
 
-#: trac/ticket/default_workflow.py:299
+#: trac/ticket/default_workflow.py:301
 #, python-format
 msgid "as %(status)s "
 msgstr "statut « %(status)s »"
 
-#: trac/ticket/default_workflow.py:303
+#: trac/ticket/default_workflow.py:305
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Le prochain statut sera « %(name)s »"
@@ -2655,6 +2652,11 @@ msgstr "Champs à valeurs multiples non supportés"
 #, python-format
 msgid "%(type)s %(name)s does not exist."
 msgstr "La valeur %(name)s de la propriété %(type)s n'existe pas"
+
+#: trac/ticket/model.py:702 trac/ticket/model.py:729
+#, python-format
+msgid "Invalid %(type)s name."
+msgstr "Nom incorrect pour la propriété %(type)s."
 
 #: trac/ticket/model.py:808
 #, python-format
@@ -3292,9 +3294,9 @@ msgid "No date set"
 msgstr "Aucune date d'échéance"
 
 #: trac/ticket/templates/milestone_view.html:51
-#: trac/timeline/templates/timeline.html:43
-msgid "by"
-msgstr "par"
+#, python-format
+msgid "%(stat_title)s by"
+msgstr "%(stat_title)s par"
 
 #: trac/ticket/templates/milestone_view.html:65
 msgid "(none)"
@@ -3894,7 +3896,16 @@ msgstr "Aujourd'hui"
 msgid "Yesterday"
 msgstr "Hier"
 
-#: trac/timeline/templates/timeline.html:53
+#: trac/timeline/templates/timeline.html:42
+#, python-format
+msgid ""
+"[1:%(time)s] %(title)s\n"
+"                  by [2:%(author)s]"
+msgstr ""
+"[1:%(time)s] %(title)s\n"
+"                  par [2:%(author)s]"
+
+#: trac/timeline/templates/timeline.html:58
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
@@ -5151,14 +5162,23 @@ msgstr "Déconnexion"
 msgid "Login"
 msgstr "Connexion"
 
-#: trac/web/auth.py:142
+#. TRANSLATOR: ... refer to the 'installation documentation'. (link)
+#: trac/web/auth.py:137
+msgid "installation documentation"
+msgstr "documentation d'installation"
+
+#: trac/web/auth.py:138
+msgid "Configuring Authentication"
+msgstr "Configuration de l'Identification"
+
+#: trac/web/auth.py:141
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
 msgstr ""
 "Les données permettant l'identification ne sont pas disponibles. "
-"Consultez la page %(inst_doc)s."
+"Consultez la %(inst_doc)s."
 
 #: trac/web/auth.py:149
 #, python-format
