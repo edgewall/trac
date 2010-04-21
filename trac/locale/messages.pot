@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-21 20:47+0200\n"
+"POT-Creation-Date: 2010-04-21 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4313,8 +4313,11 @@ msgid ""
 msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:11
-#, python-format
-msgid "View %(path_kind)s"
+msgid "View Directory"
+msgstr ""
+
+#: trac/versioncontrol/templates/dir_entries.html:11
+msgid "View File"
 msgstr ""
 
 #: trac/versioncontrol/templates/dir_entries.html:19
@@ -4832,10 +4835,6 @@ msgstr ""
 #: trac/web/session.py:438
 #, python-format
 msgid "Session id %(sid)s not found"
-msgstr ""
-
-#: trac/web/session.py:474
-msgid "A datetime object must be specified"
 msgstr ""
 
 #: trac/wiki/admin.py:116

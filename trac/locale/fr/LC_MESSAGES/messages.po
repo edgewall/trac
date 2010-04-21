@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-04-21 21:02+0200\n"
+"PO-Revision-Date: 2010-04-21 21:33+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -4726,9 +4726,12 @@ msgstr ""
 "l'utilisation des options de visualisation des différences."
 
 #: trac/versioncontrol/templates/dir_entries.html:11
-#, fuzzy, python-format
-msgid "View %(path_kind)s"
-msgstr "Voir le « %(path_kind)s »"
+msgid "View Directory"
+msgstr "Voir le répertoire"
+
+#: trac/versioncontrol/templates/dir_entries.html:11
+msgid "View File"
+msgstr "Voir le fichier"
 
 #: trac/versioncontrol/templates/dir_entries.html:19
 #: trac/versioncontrol/templates/repository_index.html:23
@@ -5268,11 +5271,6 @@ msgstr ""
 #, python-format
 msgid "Session id %(sid)s not found"
 msgstr "Identificateur de session %(sid)s introuvable"
-
-#: trac/web/session.py:474
-#, fuzzy
-msgid "A datetime object must be specified"
-msgstr "Un objet datetime doit être spécifié"
 
 #: trac/wiki/admin.py:116
 #, python-format
