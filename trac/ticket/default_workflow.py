@@ -241,8 +241,9 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
 
             if owners == None:
                 owner = req.args.get(id, req.authname)
-                control.append(tag([_('to '), tag.input(type='text', id=id,
-                                                     name=id, value=owner)]))
+                control.append(tag_('to %(owner)s',
+                                     owners=tag.input(type='text', id=id,
+                                                      name=id, value=owner)))
                 hints.append(_("The owner will be changed from "
                                "%(current_owner)s",
                                current_owner=current_owner))
@@ -254,11 +255,11 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                    current_owner=current_owner,
                                    selected_owner=owners[0]))
             else:
-                control.append(tag([_("to "), tag.select(
+                control.append(tag_('to %(owner)s', owner=tag.select(
                     [tag.option(x, value=x,
                                 selected=(x == selected_owner or None))
                      for x in owners],
-                    id=id, name=id)]))
+                    id=id, name=id)))
                 hints.append(_("The owner will be changed from "
                                "%(current_owner)s",
                                current_owner=current_owner))
@@ -286,11 +287,12 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 id = 'action_%s_resolve_resolution' % action
                 selected_option = req.args.get(id, 
                         TicketSystem(self.env).default_resolution)
-                control.append(tag([_('as '), tag.select(
+                control.append(tag_('as %(resolution)s',
+                                    resolution=tag.select(
                     [tag.option(x, value=x,
                                 selected=(x == selected_option or None))
                      for x in resolutions],
-                    id=id, name=id)]))
+                    id=id, name=id)))
                 hints.append(_("The resolution will be set"))
         if 'del_resolution' in operations:
             hints.append(_("The resolution will be deleted"))
