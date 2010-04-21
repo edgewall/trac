@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-20 20:56+0200\n"
+"POT-Creation-Date: 2010-04-21 20:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -617,7 +617,7 @@ msgstr ""
 
 #: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
 #: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
-#: trac/ticket/admin.py:697 trac/ticket/report.py:189
+#: trac/ticket/admin.py:695 trac/ticket/report.py:189
 #: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:196
 msgid "Your changes have been saved."
 msgstr ""
@@ -2166,87 +2166,87 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
-#: trac/ticket/admin.py:629
+#: trac/ticket/admin.py:627
 #, python-format
-msgid "The %(field)s \"%(name)s\" has been added."
+msgid "The %(field)s value \"%(name)s\" has been added."
 msgstr ""
 
-#: trac/ticket/admin.py:635 trac/ticket/model.py:702 trac/ticket/model.py:729
+#: trac/ticket/admin.py:633
 #, python-format
-msgid "Invalid %(type)s name."
+msgid "Invalid %(type)s value."
 msgstr ""
 
-#: trac/ticket/admin.py:637
+#: trac/ticket/admin.py:635
 #, python-format
-msgid "%(type)s %(name)s already exists"
+msgid "%(type)s value \"%(name)s\" already exists"
 msgstr ""
 
-#: trac/ticket/admin.py:643
+#: trac/ticket/admin.py:642
 #, python-format
 msgid "No %s selected"
 msgstr ""
 
-#: trac/ticket/admin.py:653
+#: trac/ticket/admin.py:650
 #, python-format
-msgid "The selected %(fields)s have been removed."
+msgid "The selected %(field)s values have been removed."
 msgstr ""
 
-#: trac/ticket/admin.py:674
+#: trac/ticket/admin.py:672
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
 
-#: trac/ticket/admin.py:686
+#: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
 msgstr ""
 
-#: trac/ticket/admin.py:748
+#: trac/ticket/admin.py:746
 msgid "Possible Values"
 msgstr ""
 
-#: trac/ticket/admin.py:770
+#: trac/ticket/admin.py:768
 #, python-format
 msgid "Invalid up/down value: %(value)s"
 msgstr ""
 
-#: trac/ticket/admin.py:791 trac/ticket/api.py:294
+#: trac/ticket/admin.py:789 trac/ticket/api.py:294
 msgid "Priority"
 msgstr ""
 
-#: trac/ticket/admin.py:791
+#: trac/ticket/admin.py:789
 msgid "Priorities"
 msgstr ""
 
-#: trac/ticket/admin.py:797 trac/ticket/api.py:299
+#: trac/ticket/admin.py:795 trac/ticket/api.py:299
 msgid "Resolution"
 msgstr ""
 
-#: trac/ticket/admin.py:797
+#: trac/ticket/admin.py:795
 msgid "Resolutions"
 msgstr ""
 
-#: trac/ticket/admin.py:803 trac/ticket/api.py:298
+#: trac/ticket/admin.py:801 trac/ticket/api.py:298
 msgid "Severity"
 msgstr ""
 
-#: trac/ticket/admin.py:803
+#: trac/ticket/admin.py:801
 msgid "Severities"
 msgstr ""
 
-#: trac/ticket/admin.py:809
+#: trac/ticket/admin.py:807
 msgid "Ticket Type"
 msgstr ""
 
-#: trac/ticket/admin.py:809
+#: trac/ticket/admin.py:807
 msgid "Ticket Types"
 msgstr ""
 
-#: trac/ticket/admin.py:837
+#: trac/ticket/admin.py:835
 msgid "<number> must be a number"
 msgstr ""
 
-#: trac/ticket/admin.py:842
+#: trac/ticket/admin.py:840
 #, python-format
 msgid "Ticket %(num)s and all associated data removed."
 msgstr ""
@@ -2298,64 +2298,61 @@ msgstr ""
 msgid "The ticket will be disowned"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:244 trac/ticket/default_workflow.py:257
-msgid "to "
+#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#, python-format
+msgid "to %(owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:246 trac/ticket/default_workflow.py:262
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:250
+#: trac/ticket/default_workflow.py:251
 #, python-format
 msgid "to %(owner)s "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:252
+#: trac/ticket/default_workflow.py:253
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:267
+#: trac/ticket/default_workflow.py:268
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:277
+#: trac/ticket/default_workflow.py:278
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
 
-#: trac/ticket/default_workflow.py:281
+#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
 #, python-format
 msgid "as %(resolution)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:283
+#: trac/ticket/default_workflow.py:284
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:289
-msgid "as "
-msgstr ""
-
-#: trac/ticket/default_workflow.py:294
+#: trac/ticket/default_workflow.py:296
 msgid "The resolution will be set"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:298
 msgid "The resolution will be deleted"
 msgstr ""
 
-#: trac/ticket/default_workflow.py:299
+#: trac/ticket/default_workflow.py:301
 #, python-format
 msgid "as %(status)s "
 msgstr ""
 
-#: trac/ticket/default_workflow.py:303
+#: trac/ticket/default_workflow.py:305
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr ""
@@ -2376,6 +2373,11 @@ msgstr ""
 #: trac/ticket/model.py:658
 #, python-format
 msgid "%(type)s %(name)s does not exist."
+msgstr ""
+
+#: trac/ticket/model.py:702 trac/ticket/model.py:729
+#, python-format
+msgid "Invalid %(type)s name."
 msgstr ""
 
 #: trac/ticket/model.py:808
@@ -2986,8 +2988,8 @@ msgid "No date set"
 msgstr ""
 
 #: trac/ticket/templates/milestone_view.html:51
-#: trac/timeline/templates/timeline.html:43
-msgid "by"
+#, python-format
+msgid "%(stat_title)s by"
 msgstr ""
 
 #: trac/ticket/templates/milestone_view.html:65
@@ -3553,7 +3555,14 @@ msgstr ""
 msgid "Yesterday"
 msgstr ""
 
-#: trac/timeline/templates/timeline.html:53
+#: trac/timeline/templates/timeline.html:42
+#, python-format
+msgid ""
+"[1:%(time)s] %(title)s\n"
+"                  by [2:%(author)s]"
+msgstr ""
+
+#: trac/timeline/templates/timeline.html:58
 msgid ""
 "[1:Note:] See [2:TracTimeline]\n"
 "        for information about the timeline view."
@@ -4726,7 +4735,16 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
-#: trac/web/auth.py:142
+#. TRANSLATOR: ... refer to the 'installation documentation'. (link)
+#: trac/web/auth.py:137
+msgid "installation documentation"
+msgstr ""
+
+#: trac/web/auth.py:138
+msgid "Configuring Authentication"
+msgstr ""
+
+#: trac/web/auth.py:141
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
