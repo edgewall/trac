@@ -8,7 +8,7 @@
                    chgset_view = change and change.can_view(perm)">
       <tr class="${idx % 2 and 'even' or 'odd'}">
         <td class="name">
-          <a class="$entry.kind" title="${_('View %(path_kind)s', path_kind=entry.kind.capitalize())}"
+          <a class="$entry.kind" title="${entry.kind == 'dir' and _('View Directory') or _('View File')}"
              href="${href.browser(reponame, entry.path, rev=stickyrev, 
                                   order=(order != 'name' and order or None), desc=desc)}">$entry.name</a>
         </td>
