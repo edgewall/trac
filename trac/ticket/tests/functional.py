@@ -685,7 +685,7 @@ class TestAdminResolutionDuplicates(FunctionalTwillTestCaseSetup):
         name = "DuplicateResolution"
         self._tester.create_resolution(name)
         self._tester.create_resolution(name)
-        tc.find('Resolution %s already exists' % name)
+        tc.find('Resolution value "%s" already exists' % name)
 
 
 class TestAdminSeverity(FunctionalTwillTestCaseSetup):
@@ -700,7 +700,7 @@ class TestAdminSeverityDuplicates(FunctionalTwillTestCaseSetup):
         name = "DuplicateSeverity"
         self._tester.create_severity(name)
         self._tester.create_severity(name)
-        tc.find('Severity %s already exists' % name)
+        tc.find('Severity value "%s" already exists' % name)
 
 
 class TestAdminType(FunctionalTwillTestCaseSetup):
@@ -715,7 +715,7 @@ class TestAdminTypeDuplicates(FunctionalTwillTestCaseSetup):
         name = "DuplicateType"
         self._tester.create_type(name)
         self._tester.create_type(name)
-        tc.find('Type %s already exists' % name)
+        tc.find('Type value "%s" already exists' % name)
 
 
 class TestAdminVersion(FunctionalTwillTestCaseSetup):

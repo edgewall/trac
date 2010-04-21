@@ -624,18 +624,17 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         enum = self._enum_cls(self.env)
                         enum.name = name
                         enum.insert()
-                        add_notice(req, _('The %(field)s "%(name)s" has been '
-                                          'added.',
-                                          field=label[0].lower(),
-                                          name=name))
+                        add_notice(req, _('The %(field)s value "%(name)s" has '
+                                          'been added.',
+                                          field=label[0], name=name))
                         req.redirect(req.href.admin(cat, page))
                     else:
                         if enum.name is None:
-                            raise TracError(_('Invalid %(type)s name.',
-                                              type=label[0].lower()))
-                        raise TracError(_('%(type)s %(name)s already exists',
-                                          type=label[0], name=name))
-                         
+                            raise TracError(_('Invalid %(type)s value.',
+                                              type=label[0]))
+                        raise TracError(_('%(type)s value "%(name)s" already '
+                                          'exists', type=label[0], name=name))
+
                 # Remove enums
                 elif req.args.get('remove'):
                     sel = req.args.get('sel')
@@ -648,9 +647,8 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                         for name in sel:
                             enum = self._enum_cls(self.env, name, db=db)
                             enum.delete()
-                    add_notice(req, _('The selected %(fields)s have been '
-                                      'removed.',
-                                      fields=label[1].lower()))
+                    add_notice(req, _('The selected %(field)s values have '
+                                      'been removed.', fields=label[0]))
                     req.redirect(req.href.admin(cat, page))
 
                 # Apply changes
