@@ -302,8 +302,8 @@ class SessionAdmin(Component):
         yield ('session purge', '<age>',
                """Purge all anonymous sessions older than the given age
 
-               Age may be specified in seconds since the epoch, or in YYYYMMDD
-               format.""",
+               Age may be specified as a relative time like "90 days ago", or
+               in YYYYMMDD format.""",
                None, self._do_purge)
 
     def _do_list(self, *sids):
@@ -468,15 +468,11 @@ class SessionAdmin(Component):
 
         If `age` is None, then purge all anonymous sessions.
         """
-        if isinstance(age, date):
-            ts = to_timestamp(age)
-        elif age:
-            raise TracError(_('A datetime object must be specified'))
-
         @self.env.with_transaction()
         def purge_session(db):
             cursor = db.cursor()
             if age:
+                ts = to_timestamp(age)
                 cursor.execute("""
                     DELETE FROM session_attribute
                     WHERE authenticated=0
