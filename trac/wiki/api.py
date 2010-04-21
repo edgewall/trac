@@ -280,8 +280,15 @@ class WikiSystem(Component):
 
         # MoinMoin's ["internal free link"] 
         def internal_free_link(fmt, m, fullmatch): 
-            return self._format_link(fmt, 'wiki', m[2:-2], m[2:-2].lstrip('/'),
-                                     False) 
+            target = m[2:-2]
+            components = target.split('/')
+            for i, comp in enumerate(components):
+                if comp not in ('', '.', '..'):
+                    label = '/'.join(components[i:])
+                    break
+            else:
+                label = target
+            return self._format_link(fmt, 'wiki', target, label, False) 
         yield (r"!?\[(?:%s)\]" % WikiParser.QUOTED_STRING, internal_free_link) 
 
     def get_link_resolvers(self):
@@ -303,7 +310,8 @@ class WikiSystem(Component):
             referrer = formatter.resource.id
         if pagename.startswith('/'):
             pagename = pagename.lstrip('/')
-        elif pagename.startswith('.'): # FIXME only . and .., not for ... 
+        elif pagename.startswith('./') or pagename.startswith('../') \
+                                                or pagename in ('.', '..'):
             pagename = self._resolve_relative_name(pagename, referrer)
         else:
             pagename = self._resolve_scoped_name(pagename, referrer)

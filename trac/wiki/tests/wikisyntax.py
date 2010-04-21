@@ -358,10 +358,10 @@ RELATIVE_LINKS_TESTS = u"""
 <a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
 <a class="missing wiki" href="/wiki/Other" rel="nofollow">.././../Other?</a>
 <a class="wiki" href="/wiki/Main/Sub">.</a>
-<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
 <a class="missing wiki" href="/wiki/Main" rel="nofollow">..?</a>
-<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">../Other?</a>
-<a class="missing wiki" href="/wiki/Other" rel="nofollow">.././../Other?</a>
+<a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other?</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
 </p>
 ------------------------------
 ============================== Relative to the current page with anchors
