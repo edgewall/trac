@@ -1,6 +1,6 @@
-# Makefile for testing Trac (see doc/dev/testing.rst)
+#          Makefile for testing Trac (see doc/dev/testing.rst)
 #
-# Some i18n tasks are also supported, see HELP below.
+#          Some i18n tasks are also supported, see HELP below.
 # ----------------------------------------------------------------------------
 #
 # Note that this is a GNU Makefile.
@@ -17,7 +17,7 @@ define HELP
 
   [python=...]        variable for selecting Python version
 
-                  Testing tasks
+ ---------------- Testing tasks
 
   unit-test           run unit tests
   functional-test     run functional tests
@@ -26,7 +26,16 @@ define HELP
   [db=...]            variable for selecting database backend
   [test=...]          variable for selecting a single test file
 
-                  L10N tasks
+ ---------------- Standalone test server
+
+  server              start tracd
+
+  [port=...]          variable for selecting the port
+  [auth=...]          variable for specifying authentication
+  [env=...]           variable for the trac environment or parent dir
+  [tracdopts=...]     variable containing extra options
+
+ ---------------- L10N tasks
 
   extraction          regenerate the messages.pot template file
 
@@ -61,18 +70,27 @@ else
 all: help
 endif
 
-
 help:
 	@echo "$$HELP"
 
 status:
+	@echo -n "Python version: "
 	@python -V
-	@echo PYTHONPATH=$$PYTHONPATH
-	@echo TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI
+	@echo "PYTHONPATH=$$PYTHONPATH"
+	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
+	@echo "server-options=$(server-options)"
 
 clean:
 	find -name \*.py[co] | xargs -d"\n" --no-run-if-empty rm -f
 	rm -rf .figleaf* html
+
+# ----------------------------------------------------------------------------
+
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment.
+
+-include Makefile.cfg
+
+# ----------------------------------------------------------------------------
 
 # L10N related tasks
 
@@ -168,11 +186,24 @@ html/index.html: .figleaf.functional .figleaf.unittests
 Trac.egg-info: status
 	python setup.py egg_info
 
-# ----------------------------------------------------------------------------
+# Tracd related tasks
 
-# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment.
+port ?= 8000
+tracdopts ?= -r
 
--include Makefile.cfg
+define server-options
+ $(if $(port),-p $(port))\
+ $(if $(auth),-a '$(auth)')\
+ $(tracdopts)\
+ $(if $(wildcard $(env)/VERSION),$(env),-e $(env))
+endef
+
+server:
+ifdef env
+	python trac/web/standalone.py $(server-options)
+else
+	@echo "\`env' variable was not specified. See \`make help'."
+endif
 
 # ----------------------------------------------------------------------------
 ifeq "$(OS)" "Windows_NT"

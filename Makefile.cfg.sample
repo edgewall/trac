@@ -30,6 +30,12 @@ mysql.python = 25
 postgres.python = 26
 
 # ----------------------------------------------------------------------------
+# Settings for the test server
+
+env = ~/tracenvs
+auth = *,~/tracenvs/htdigest.realm,realm
+
+# ----------------------------------------------------------------------------
 # Custom rules 
 
 .PHONY: bigtest
