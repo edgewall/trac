@@ -1,0 +1,5760 @@
+# Esperanto translations for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Wolfram Diestel <diestel@steloj.de>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 0.12\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2010-04-21 21:32+0200\n"
+"PO-Revision-Date: 2010-04-19 16:30+0200\n"
+"Last-Translator: Wolfram Diestel <diestel@steloj.de>\n"
+"Language-Team: eo <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 1.0dev-r540\n"
+
+#: tracopt/mimeview/php.py:97
+msgid ""
+"You appear to be using the PHP CGI binary. Trac requires the CLI version "
+"for syntax highlighting."
+msgstr ""
+"Supozeble vi uzas la CGI-variaĵon de PHP. Trac postulas la CLI-variaĵon "
+"por sintakskolorigo."
+
+#: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
+#: tracopt/ticket/templates/ticket_delete.html:19
+#: trac/ticket/templates/report_list.html:35
+msgid "Delete"
+msgstr "Forigu"
+
+#: tracopt/ticket/deleter.py:70 tracopt/ticket/templates/ticket_delete.html:39
+msgid "Delete ticket"
+msgstr "Forigu avizon"
+
+#: tracopt/ticket/deleter.py:83
+#, python-format
+msgid "Delete comment %(num)s"
+msgstr "Forigu rimarkon %(num)s"
+
+#: tracopt/ticket/deleter.py:130
+#, python-format
+msgid "The ticket #%(id)s has been deleted."
+msgstr "La avizo #%(id)s estas forigita."
+
+#: tracopt/ticket/deleter.py:137
+#, python-format
+msgid "The ticket comment %(num)s on ticket #%(id)s has been deleted."
+msgstr "La rimarko %(num)s de la avizo #%(id)s estas forigita."
+
+#: tracopt/ticket/deleter.py:156
+#, python-format
+msgid "Comment %(num)s not found"
+msgstr "Rimarko %(num)s ne troviĝis"
+
+#: tracopt/ticket/templates/ticket_delete.html:11
+msgid "Delete Ticket #"
+msgstr "Forigu avizon #"
+
+#: tracopt/ticket/templates/ticket_delete.html:12
+#: tracopt/ticket/templates/ticket_delete.html:45
+#: tracopt/ticket/templates/ticket_delete.html:69
+msgid "Delete comment"
+msgstr "Forigu rimarkon"
+
+#: tracopt/ticket/templates/ticket_delete.html:12
+#: tracopt/ticket/templates/ticket_delete.html:45
+msgid "on Ticket #"
+msgstr "de la avizo #"
+
+#: tracopt/ticket/templates/ticket_delete.html:20
+#: trac/ticket/templates/ticket.html:84
+msgid "Ticket #"
+msgstr "Avizo #"
+
+#: tracopt/ticket/templates/ticket_delete.html:32
+msgid "Are you sure you want to delete this ticket?"
+msgstr "Ĉu vere forigi la avizon?"
+
+#: tracopt/ticket/templates/ticket_delete.html:32
+msgid "(comments:"
+msgstr "(Rimarkoj:"
+
+#: tracopt/ticket/templates/ticket_delete.html:33
+msgid ""
+",\n"
+"                attachments:"
+msgstr ""
+",\n"
+"                alpendaĵoj:"
+
+#: tracopt/ticket/templates/ticket_delete.html:34
+#: tracopt/ticket/templates/ticket_delete.html:64
+#: trac/templates/attachment.html:70 trac/wiki/templates/wiki_delete.html:46
+msgid "This is an irreversible operation."
+msgstr "Tio estas neinversigebla ago."
+
+#: tracopt/ticket/templates/ticket_delete.html:38
+#: tracopt/ticket/templates/ticket_delete.html:68
+#: trac/admin/templates/admin_components.html:55
+#: trac/admin/templates/admin_enums.html:24
+#: trac/admin/templates/admin_milestones.html:68
+#: trac/admin/templates/admin_versions.html:45
+#: trac/templates/attachment.html:63 trac/templates/attachment.html:76
+#: trac/ticket/templates/milestone_delete.html:40
+#: trac/ticket/templates/milestone_edit.html:94
+#: trac/ticket/templates/report_delete.html:21
+#: trac/ticket/templates/report_edit.html:44
+#: trac/ticket/templates/ticket_change.html:49
+#: trac/versioncontrol/templates/admin_repositories.html:84
+#: trac/wiki/templates/wiki_delete.html:50
+#: trac/wiki/templates/wiki_edit.html:80
+#: trac/wiki/templates/wiki_edit_form.html:77
+#: trac/wiki/templates/wiki_rename.html:32
+msgid "Cancel"
+msgstr "Rezignu"
+
+#: tracopt/ticket/templates/ticket_delete.html:52
+msgid "comment:"
+msgstr "rimarko:"
+
+#: tracopt/ticket/templates/ticket_delete.html:54
+#: trac/ticket/templates/ticket.html:142
+#, python-format
+msgid "Changed %(date)s ago by %(author)s"
+msgstr "Ŝanĝita antaŭ %(date)s de %(author)s"
+
+#: tracopt/ticket/templates/ticket_delete.html:64
+msgid "Are you sure you want to delete this ticket comment?"
+msgstr "Ĉu vere forigi tiun avizrimarkon?"
+
+#: trac/about.py:47 trac/templates/about.html:10 trac/templates/about.html:29
+msgid "About Trac"
+msgstr "Pri Trac"
+
+#: trac/attachment.py:151
+#, python-format
+msgid "Attachment '%(title)s' does not exist."
+msgstr "Alpendaĵo '%(title)s' ne ekzistas."
+
+#: trac/attachment.py:152
+msgid "Invalid Attachment"
+msgstr "Nevalida alpendaĵo"
+
+#: trac/attachment.py:192
+msgid "Could not delete attachment"
+msgstr "Alpendaĵo ne estis forigebla"
+
+#: trac/attachment.py:208
+#, python-format
+msgid ""
+"Cannot reparent attachment \"%(att)s\" as it already exists in "
+"%(realm)s:%(id)s"
+msgstr ""
+"La alpendaĵo \"%(att)s\" ne estas ligebla al alia avizo, ĉar ĝi jam "
+"ekzistas en %(realm)s:%(id)s"
+
+#: trac/attachment.py:227
+#, python-format
+msgid "Could not reparent attachment %(name)s"
+msgstr "Ne povis aliordigi alpendaĵon %(name)s"
+
+#: trac/attachment.py:344
+#, python-format
+msgid "Attachment '%(filename)s' not found"
+msgstr "Alpendaĵo '%(filename)s' ne troviĝis"
+
+#: trac/attachment.py:418
+msgid "Bad request"
+msgstr "Malbona peto"
+
+#: trac/attachment.py:435
+#, python-format
+msgid "Back to %(parent)s"
+msgstr "Reen al %(parent)s"
+
+#: trac/attachment.py:528
+#, python-format
+msgid "%(attachment)s attached to %(resource)s"
+msgstr "%(attachment)s ligita al %(resource)s"
+
+#: trac/attachment.py:585
+#, python-format
+msgid "Unparented attachment %(id)s"
+msgstr "Alpendaĵon sen patro %(id)s"
+
+#: trac/attachment.py:593
+#, python-format
+msgid "Attachment '%(id)s' in %(parent)s"
+msgstr "Alpendaĵo '%(id)s' ĉe %(parent)s"
+
+#: trac/attachment.py:596
+#, python-format
+msgid "Attachments of %(parent)s"
+msgstr "Alpendaĵoj de %(parent)s"
+
+#: trac/attachment.py:609 trac/attachment.py:632 trac/admin/web_ui.py:425
+#: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
+msgid "No file uploaded"
+msgstr "Neniu dosiero alŝutita"
+
+#: trac/attachment.py:617
+msgid "Can't upload empty file"
+msgstr "Malplena dosiero ne estas alŝutebla"
+
+#: trac/attachment.py:622
+#, python-format
+msgid "Maximum attachment size: %(num)s bytes"
+msgstr "Maksimuma grandeco de alpendaĵo: %(num)s bitokoj"
+
+#: trac/attachment.py:623
+msgid "Upload failed"
+msgstr "Alŝuto malsukcesis"
+
+#: trac/attachment.py:644
+#, python-format
+msgid "Attachment field %(field)s is invalid: %(message)s"
+msgstr "Alpendaĵa indiko %(field)s ne estas valida: %(message)s"
+
+#: trac/attachment.py:648
+#, python-format
+msgid "Invalid attachment: %(message)s"
+msgstr "Nevalida alpendaĵo: %(message)s"
+
+#: trac/attachment.py:659
+#, python-format
+msgid ""
+"You don't have permission to replace the attachment %(name)s. You can "
+"only replace your own attachments. Replacing other's attachments requires"
+" ATTACHMENT_DELETE permission."
+msgstr ""
+"Vi ne rajtas anstataŭigi la alpendaĵon %(name)s. Vi povas anstataŭigi nur"
+" viajn proprajn aldonaĵojn. Anstataŭigo de aliaj alpendaĵoj postulas la "
+"permeson ATTACHMENT_DELETE."
+
+#: trac/attachment.py:691
+#, python-format
+msgid "%(attachment)s (delete)"
+msgstr "%(attachment)s (forigo)"
+
+#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:633
+#: trac/wiki/web_ui.py:68
+msgid "Plain Text"
+msgstr "Pura teksto"
+
+#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:639
+msgid "Original Format"
+msgstr "Origina aranĝo"
+
+#: trac/attachment.py:800 trac/attachment.py:806
+#: trac/ticket/templates/ticket_change.html:21
+#: trac/ticket/templates/ticket_change.html:22
+msgid "Download"
+msgstr "Elŝuto"
+
+#: trac/attachment.py:900
+#, python-format
+msgid "Invalid resource identifier '%(id)s'"
+msgstr "Nevalida rimedidentigilo '%(id)s'"
+
+#: trac/attachment.py:936 trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_enums.html:48
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
+#: trac/templates/error.html:185 trac/ticket/admin.py:209
+#: trac/ticket/admin.py:400 trac/ticket/admin.py:559
+#: trac/versioncontrol/admin.py:108
+#: trac/versioncontrol/templates/admin_repositories.html:125
+#: trac/web/session.py:314
+msgid "Name"
+msgstr "Nomo"
+
+#: trac/attachment.py:936
+msgid "Size"
+msgstr "Grandeco"
+
+#: trac/attachment.py:936 trac/templates/history_view.html:29
+#: trac/ticket/templates/ticket.html:360
+#: trac/versioncontrol/templates/revisionlog.html:96
+msgid "Author"
+msgstr "Aŭtoro"
+
+#: trac/attachment.py:936 trac/templates/history_view.html:28
+msgid "Date"
+msgstr "Dato"
+
+#: trac/attachment.py:937 trac/templates/attachment.html:93
+#: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
+msgid "Description"
+msgstr "Priskribo"
+
+#: trac/attachment.py:962 trac/wiki/admin.py:104
+#, python-format
+msgid "File '%(name)s' exists"
+msgstr "Dosiero '%(name)s' ekzistas"
+
+#: trac/config.py:403
+#, python-format
+msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
+msgstr "[%(section)s] %(entry)s: atendis entjeron, sed ricevis %(value)s"
+
+#: trac/config.py:421
+#, python-format
+msgid "[%(section)s] %(entry)s: expected float, got %(value)s"
+msgstr "[%(section)s] %(entry)s: atendis reelon, sed ricevis %(value)s"
+
+#: trac/config.py:605
+#, python-format
+msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
+msgstr ""
+"[%(section)s] %(entry)s: atendis unu el (%(choices)s), sed ricevis "
+"%(value)s"
+
+#: trac/env.py:587
+msgid "Database newer than Trac version"
+msgstr "La datumbazo estas pli nova ol la versio de Trac"
+
+#: trac/env.py:601
+#, python-format
+msgid "No upgrade module for version %(num)i (%(version)s.py)"
+msgstr "Ne troviĝis aktualiga modulo por versio %(num)i (%(version)s.py)"
+
+#: trac/env.py:646
+msgid ""
+"Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
+" point to a valid Trac environment."
+msgstr ""
+"Mankas la mediovariablo \"TRAC_ENV\". Trac bezonas tiun variablon por "
+"trovi validan Trac-medion."
+
+#: trac/env.py:678
+#, python-format
+msgid ""
+"The Trac Environment needs to be upgraded.\n"
+"\n"
+"Run \"trac-admin %(path)s upgrade\""
+msgstr ""
+"La Trac-medio bezonas akutaligon.\n"
+"\n"
+"Lanĉu \"trac-admin %(path)s upgrade\""
+
+#: trac/env.py:712
+msgid "Copying resources from:"
+msgstr "Kopiante rimedojn de:"
+
+#: trac/env.py:728
+msgid "Creating scripts."
+msgstr "Kreante programetojn"
+
+#: trac/env.py:743
+#, python-format
+msgid "hotcopy can't overwrite existing '%(dest)s'"
+msgstr "Varma kopio ne povis anstataŭigi ekzistantan '%(dest)s'"
+
+#: trac/env.py:753
+#, python-format
+msgid "Hotcopying %(src)s to %(dst)s ..."
+msgstr "Varmkopiante %(src)s al %(dst)s ..."
+
+#: trac/env.py:768
+msgid "The following errors happened while copying the environment:"
+msgstr "La sekvantaj eraroj okazis dum kopiado de la medio:"
+
+#: trac/env.py:779
+msgid "Hotcopy done."
+msgstr "Varmkopio preta."
+
+#: trac/env.py:784 trac/admin/api.py:125
+msgid "Invalid arguments"
+msgstr "Nevalidaj argumentoj"
+
+#: trac/env.py:787
+msgid "Database is up to date, no upgrade necessary."
+msgstr "La datumbazo estas aktuala, ne necesas aktualigo."
+
+#: trac/env.py:795
+#, python-format
+msgid ""
+"Backup failed with '%(msg)s'.\n"
+"Use '--no-backup' to upgrade without doing a backup."
+msgstr ""
+"Sekurkopiado malsukcesis pro '%(msg)s'.\n"
+"Uzu '--no-backup' por aktualigi sen sekurkopio."
+
+#: trac/env.py:809
+msgid ""
+"Warning: the wiki-macros directory in the environment is non-empty, but "
+"Trac\n"
+"doesn't load plugins from there anymore. Please remove it by hand."
+msgstr ""
+"Averto: la dosierujo wiki-macros en la medio estas nemalplena, sed Trac\n"
+"ne plu ŝargas kromprogramojn de tie. bonvolu forigi la dosierujon mem."
+
+#: trac/env.py:820
+#, python-format
+msgid ""
+"Error while removing wiki-macros: %(err)s\n"
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
+"hand."
+msgstr ""
+"Okazis eraro dum forigo de la dosierujo wiki-macros: %(err)s\n"
+"Trac ne plu ŝargas kromprogramojn de wiki-macros. Bonvolu forigi ghin mem."
+
+#: trac/env.py:822
+msgid "Upgrade done."
+msgstr "Aktualigo preta."
+
+#: trac/notification.py:155
+msgid "TLS enabled but server does not support TLS"
+msgstr "TLS estas ŝaltita, sed la servilo ne subtenas ĝin"
+
+#: trac/notification.py:303
+#, python-format
+msgid "Invalid email encoding setting: %s"
+msgstr "Nevalida agordo de la retpoŝto-kodigo: %s"
+
+#: trac/notification.py:329
+msgid "Header length is too short"
+msgstr "Kaplongeco estas tro malgranda"
+
+#: trac/perm.py:48
+#, python-format
+msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
+msgstr "La privilegioj %(perm)s estas bezonataj por tiu ago pri %(resource)s"
+
+#: trac/perm.py:50
+#, python-format
+msgid "%(perm)s privileges are required to perform this operation"
+msgstr "La privilegioj %(perm)s estas bezonataj por tiu ago"
+
+#: trac/perm.py:55
+msgid "Insufficient privileges to perform this operation."
+msgstr "Mankas privilegioj por tiu ago."
+
+#: trac/perm.py:333
+#, python-format
+msgid "%(name)s is not a valid action."
+msgstr "%(name)s ne estas valida ago."
+
+#: trac/perm.py:642
+msgid "User"
+msgstr "Uzanto"
+
+#: trac/perm.py:642 trac/admin/templates/admin_perms.html:69
+#: trac/ticket/templates/ticket.html:338
+msgid "Action"
+msgstr "Ago"
+
+#: trac/perm.py:644
+msgid "Available actions:"
+msgstr "Uzeblaj agoj:"
+
+#: trac/perm.py:657
+msgid "Group names must be in lower case and actions in upper case"
+msgstr "Grupnomoj devas esti minusklaj kaj agoj majusklaj"
+
+#: trac/resource.py:326
+#, python-format
+msgid "%(name)s at version %(version)s"
+msgstr "%(name)s ĉe versio %(version)s"
+
+#: trac/admin/api.py:129 trac/admin/console.py:254
+msgid "Command not found"
+msgstr "Komando ne troviĝis"
+
+#: trac/admin/console.py:111 trac/ticket/templates/report_edit.html:34
+msgid "Error:"
+msgstr "Eraro:"
+
+#: trac/admin/console.py:130
+#, python-format
+msgid ""
+"Welcome to trac-admin %(version)s\n"
+"Interactive Trac administration console.\n"
+"Copyright (c) 2003-2009 Edgewall Software\n"
+"\n"
+"Type:  '?' or 'help' for help on commands.\n"
+"        "
+msgstr ""
+"Bonvenon ĉe trac-admin %(version)s\n"
+"Interaga administra konzolo de Trac.\n"
+"Kopirajto (c) 2003-2009 Edgewall Software\n"
+"\n"
+"Tajpu:  '?' aŭ 'help' por ricevi helpon pri komandoj.\n"
+"        "
+
+#: trac/admin/console.py:164
+#, python-format
+msgid "Failed to open environment: %(err)s"
+msgstr "Malsukcesis malfermi medion: %(err)s"
+
+#: trac/admin/console.py:234
+#, python-format
+msgid "Completion error: %(err)s"
+msgstr "Kompletigoeraro: %(err)s"
+
+#: trac/admin/console.py:287
+#, python-format
+msgid "No documentation found for '%(cmd)s'"
+msgstr "Ne troviĝis dokumentaĵo pri '%(cmd)s'"
+
+#: trac/admin/console.py:289
+#, python-format
+msgid "trac-admin - The Trac Administration Console %(version)s"
+msgstr "trac-admin - La administra konzolo de Trac %(version)s"
+
+#: trac/admin/console.py:293
+msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
+msgstr "Uzo: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
+
+#: trac/admin/console.py:296
+msgid "Invoking trac-admin without command starts interactive mode.\n"
+msgstr "Vokante trac-admin sen komando lanĉas la interagan reĝimon.\n"
+
+#: trac/admin/console.py:336
+#, python-format
+msgid "Creating a new Trac environment at %(envname)s"
+msgstr "Kreante novan trac-medion ĉe %(envname)s"
+
+#: trac/admin/console.py:338
+msgid ""
+"\n"
+"Trac will first ask a few questions about your environment \n"
+"in order to initialize and prepare the project database.\n"
+"\n"
+" Please enter the name of your project.\n"
+" This name will be used in page titles and descriptions.\n"
+msgstr ""
+"\n"
+"Trac unue faros kelkajn demandojn pri via medio \n"
+"por prepari la datumbazon de la projekto.\n"
+"\n"
+" Bonvolu doni la nomon de via projekto.\n"
+" Tiu nomo estos uzata en paĝotitoloj kaj priskriboj.\n"
+
+#: trac/admin/console.py:346
+#, python-format
+msgid "Project Name [%(default)s]> "
+msgstr "Nomo de la projekto [%(default)s]> "
+
+#: trac/admin/console.py:348
+msgid ""
+" \n"
+" Please specify the connection string for the database to use.\n"
+" By default, a local SQLite database is created in the environment\n"
+" directory. It is also possible to use an already existing\n"
+" PostgreSQL database (check the Trac documentation for the exact\n"
+" connection string syntax).\n"
+msgstr ""
+" \n"
+" Bonvolu doni la uzotan konekt-frazon por la datumbazon.\n"
+" Ordinare loka SQLite-datumbazo estos kreata en la media dosierujo.\n"
+" Vi ankaŭ povas uzi jam ekzistantan PostgreSQL-datumbazon\n"
+" (Rigardu en la Trac-dokumentaro pri la ĝusta sintakso de la\n"
+" konekto-frazo).\n"
+
+#: trac/admin/console.py:356
+#, python-format
+msgid "Database connection string [%(default)s]> "
+msgstr "Konektofrazo de la datumbazo [%(default)s]> "
+
+#: trac/admin/console.py:363
+#, python-format
+msgid "Initenv for '%(env)s' failed."
+msgstr "Mediopreparo (initenv) malsukcesis por '%(env)s'."
+
+#: trac/admin/console.py:366
+msgid "Does an environment already exist?"
+msgstr "Ĉu jam ekzistas medio?"
+
+#: trac/admin/console.py:370
+msgid "Directory exists and is not empty."
+msgstr "La dosierujo ekzistas kaj ne estas malplena."
+
+#: trac/admin/console.py:398
+msgid "Creating and Initializing Project"
+msgstr "Kreante kaj preparante la projekton"
+
+#: trac/admin/console.py:415
+msgid "Failed to create environment."
+msgstr "La kreado de la medio malsukcesis."
+
+#: trac/admin/console.py:421
+msgid " Installing default wiki pages"
+msgstr " Instalante la ordinarajn viki-paĝojn"
+
+#: trac/admin/console.py:430
+msgid " Indexing default repository"
+msgstr " indeksante la ordinaran deponejon"
+
+#: trac/admin/console.py:433
+msgid ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Warning: couldn't index the default repository.\n"
+"\n"
+"This can happen for a variety of reasons: wrong repository type, \n"
+"no appropriate third party library for this repository type,\n"
+"no actual repository at the specified repository path...\n"
+"\n"
+"You can nevertheless start using your Trac environment, but \n"
+"you'll need to check again your trac.ini file and the [trac] \n"
+"repository_type and repository_path settings.\n"
+msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Averto: ne eblis indeksi la ordinaran deponejon.\n"
+"\n"
+"Tio povas okazi pro diversaj kaŭzoj: malĝusta speco de la deponejo, \n"
+"malĝusta funkciaro (biblioteko) de alia firmao por tiu speco de deponejo,"
+"\n"
+"la deponejo ne estas en la donita loko...\n"
+"\n"
+"Tamen vi povas lanĉi la Trac-medion, sed \n"
+"vi rekontrolu en via dosieron trac.ini kaj la alineon [trac] \n"
+"pri la valoroj de repository_type kaj repository_path.\n"
+
+#: trac/admin/console.py:476
+#, python-format
+msgid ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Project environment for '%(project_name)s' created.\n"
+"\n"
+"You may now configure the environment by editing the file:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"If you'd like to take this new project environment for a test drive,\n"
+"try running the Trac standalone web server `tracd`:\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Then point your browser to http://localhost:8000/%(project_dir)s.\n"
+"There you can also browse the documentation for your installed\n"
+"version of Trac, including information on further setup (such as\n"
+"deploying Trac to a real web server).\n"
+"\n"
+"The latest documentation can also always be found on the project\n"
+"website:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"Congratulations!\n"
+msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Medio de la projekto '%(project_name)s' estas kreita.\n"
+"\n"
+"Vi povas agordi nun la medion redaktante la dosieron:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"Se vi volas elprovi la novan projektmedion,\n"
+"lanĉu la memstaran Trac-retservilon `tracd`:\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Poste direktu vian retumilon al http://localhost:8000/%(project_dir)s.\n"
+"Tie vi povas trarigardi la dokumentaron de la instalita\n"
+"Trac-versio, inklude de informoj pri la plua agordo (ekzemple\n"
+"ligi Trac kun klasika retservilo).\n"
+"\n"
+"La plej aktuala dokumentaro ankaŭ troviĝas ĉe la retejo de Trac:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"Gratulon!\n"
+
+#: trac/admin/console.py:536
+#, python-format
+msgid "non-ascii environment path '%(path)s' not supported."
+msgstr "La medio-pado ne enhavu ne-askiajn signojn: '%(path)s'."
+
+#: trac/admin/web_ui.py:64
+msgid "Admin"
+msgstr "Agordo"
+
+#: trac/admin/web_ui.py:65 trac/admin/templates/admin.html:16
+msgid "Administration"
+msgstr "Agordado"
+
+#: trac/admin/web_ui.py:81
+msgid "No administration panels available"
+msgstr "Agordaj paneloj ne estas disponeblaj"
+
+#: trac/admin/web_ui.py:107 trac/admin/web_ui.py:111
+msgid "Unknown administration panel"
+msgstr "Nekonata agorda panelo"
+
+#: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
+#: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
+#: trac/ticket/admin.py:695 trac/ticket/report.py:189
+#: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:196
+msgid "Your changes have been saved."
+msgstr "Viaj ŝanĝoj konserviĝis."
+
+#: trac/admin/web_ui.py:190 trac/ticket/admin.py:68
+msgid ""
+"Error writing to trac.ini, make sure it is writable by the web server. "
+"Your changes have not been saved."
+msgstr ""
+"Okazis eraro dum skribado de trac.ini, certigu ke la retservilo havas "
+"skribpermesojn por la dosiero. Viaj ŝanĝoj ne konserviĝis."
+
+#: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
+#: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
+#: trac/prefs/templates/prefs_general.html:9
+msgid "General"
+msgstr "Ĝenerale"
+
+#: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
+msgid "Basic Settings"
+msgstr "Baza agordo"
+
+#: trac/admin/web_ui.py:231 trac/admin/templates/admin_logging.html:10
+#: trac/admin/templates/admin_logging.html:22
+msgid "Logging"
+msgstr "Protokolado"
+
+#: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
+#: trac/ticket/templates/milestone_edit.html:73
+msgid "None"
+msgstr "Neniu"
+
+#: trac/admin/web_ui.py:241
+msgid "Console"
+msgstr "Konzolo"
+
+#: trac/admin/web_ui.py:243 trac/templates/attachment.html:32
+msgid "File"
+msgstr "Dosiero"
+
+#: trac/admin/web_ui.py:245
+msgid "Syslog"
+msgstr "Sistemprotokolo"
+
+#: trac/admin/web_ui.py:247
+msgid "Windows event log"
+msgstr "Eventoprotokolo de Vindozo"
+
+#: trac/admin/web_ui.py:260
+#, python-format
+msgid "Unknown log type %(type)s"
+msgstr "Nekonata protokoltipo %(type)s"
+
+#: trac/admin/web_ui.py:261
+msgid "Invalid log type"
+msgstr "Nevalida protokoltipo"
+
+#: trac/admin/web_ui.py:275
+#, python-format
+msgid "Unknown log level %(level)s"
+msgstr "Nekonata protokolnivelo  %(level)s"
+
+#: trac/admin/web_ui.py:276
+msgid "Invalid log level"
+msgstr "Nevalida protokolnivelo"
+
+#: trac/admin/web_ui.py:289
+msgid "You must specify a log file"
+msgstr "Vi donu protokoldosieron"
+
+#: trac/admin/web_ui.py:290
+msgid "Missing field"
+msgstr "Mankas indiko"
+
+#: trac/admin/web_ui.py:319 trac/admin/templates/admin_perms.html:9
+msgid "Permissions"
+msgstr "Permesoj"
+
+#: trac/admin/web_ui.py:333
+msgid "All upper-cased tokens are reserved for permission names"
+msgstr "Ĉiuj majusklaj nomoj estas rezervitaj kiel permesoj"
+
+#: trac/admin/web_ui.py:340
+msgid "Unknown action"
+msgstr "Nekonata ago"
+
+#: trac/admin/web_ui.py:344
+#, python-format
+msgid "The subject %(subject)s has been granted the permission %(action)s."
+msgstr "La subjekto %(subject)s ricevis la permeson %(action)s."
+
+#: trac/admin/web_ui.py:349
+#, python-format
+msgid "The permission %(action)s was already granted to %(subject)s."
+msgstr "La subjekto %(subject)s jam havas la permeson %(action)s."
+
+#: trac/admin/web_ui.py:365
+#, python-format
+msgid "The subject %(subject)s has been added to the group %(group)s."
+msgstr "La subjekto %(subject)s aldoniĝis al la grupo %(group)s."
+
+#: trac/admin/web_ui.py:370
+#, python-format
+msgid "The subject %(subject)s was already added to the group %(group)s."
+msgstr "La subjekto %(subject)s jam estas ano de la grupo %(group)s."
+
+#: trac/admin/web_ui.py:383
+msgid "The selected permissions have been revoked."
+msgstr "La elektitaj permesoj repreniĝis."
+
+#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:9
+msgid "Plugins"
+msgstr "Kromprogramoj"
+
+#: trac/admin/web_ui.py:435
+msgid "Uploaded file is not a Python source file or egg"
+msgstr "La alŝutita dosiero ne estas Python-programo aŭ Egg-dosiero"
+
+#: trac/admin/web_ui.py:440
+#, python-format
+msgid "Plugin %(name)s already installed"
+msgstr "La kromprogramo %(name)s estas jam isntalita"
+
+#: trac/admin/web_ui.py:513
+msgid "The following component has been disabled:"
+msgid_plural "The following components have been disabled:"
+msgstr[0] "La sekva situo malŝaltiĝis:"
+msgstr[1] "La sekvaj situoj malŝaltiĝis:"
+
+#: trac/admin/web_ui.py:518
+msgid "The following component has been enabled:"
+msgid_plural "The following components have been enabled:"
+msgstr[0] "La sekva situo ŝaltiĝis:"
+msgstr[1] "La sekvaj situoj ŝaltiĝis:"
+
+#: trac/admin/templates/admin.html:10
+msgid "Administration:"
+msgstr "Agordado:"
+
+#: trac/admin/templates/admin_basics.html:9
+msgid "Basics"
+msgstr "Baza"
+
+#: trac/admin/templates/admin_basics.html:17
+msgid "Project"
+msgstr "Projekto"
+
+#: trac/admin/templates/admin_basics.html:19
+#: trac/admin/templates/admin_components.html:37
+#: trac/admin/templates/admin_components.html:66
+#: trac/admin/templates/admin_enums.html:21
+#: trac/admin/templates/admin_enums.html:35
+#: trac/admin/templates/admin_milestones.html:22
+#: trac/admin/templates/admin_milestones.html:80
+#: trac/admin/templates/admin_versions.html:21
+#: trac/admin/templates/admin_versions.html:56
+#: trac/versioncontrol/templates/admin_repositories.html:50
+#: trac/versioncontrol/templates/admin_repositories.html:95
+#: trac/versioncontrol/templates/admin_repositories.html:112
+msgid "Name:"
+msgstr "Nomo:"
+
+#: trac/admin/templates/admin_basics.html:24
+#: trac/versioncontrol/templates/admin_repositories.html:62
+msgid "URL:"
+msgstr "Retadreso:"
+
+#: trac/admin/templates/admin_basics.html:29
+#: trac/ticket/templates/ticket.html:254
+msgid "Description:"
+msgstr "Priskribo:"
+
+#: trac/admin/templates/admin_basics.html:36
+#: trac/admin/templates/admin_components.html:99
+#: trac/admin/templates/admin_enums.html:70
+#: trac/admin/templates/admin_logging.html:54
+#: trac/admin/templates/admin_milestones.html:129
+#: trac/admin/templates/admin_plugins.html:164
+#: trac/admin/templates/admin_versions.html:94
+msgid "Apply changes"
+msgstr "Apliku ŝanĝojn"
+
+#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:76
+msgid "Components"
+msgstr "Situoj"
+
+#: trac/admin/templates/admin_components.html:14
+msgid "Manage Components"
+msgstr "Agordo de situoj"
+
+#: trac/admin/templates/admin_components.html:18
+msgid "Owner:"
+msgstr "Havanto:"
+
+#: trac/admin/templates/admin_components.html:35
+msgid "Modify Component:"
+msgstr "Ŝanĝo de situo:"
+
+#: trac/admin/templates/admin_components.html:42
+msgid ""
+"Description (you may use\n"
+"                [1:WikiFormatting]\n"
+"                here):"
+msgstr ""
+"Priskribo (vi povas uzi\n"
+"                [1:WikiFormatting]\n"
+"                tie ĉi):"
+
+#: trac/admin/templates/admin_components.html:56
+#: trac/admin/templates/admin_enums.html:25
+#: trac/admin/templates/admin_milestones.html:69
+#: trac/admin/templates/admin_versions.html:46
+#: trac/versioncontrol/templates/admin_repositories.html:85
+msgid "Save"
+msgstr "Konservu"
+
+#: trac/admin/templates/admin_components.html:64
+msgid "Add Component:"
+msgstr "Aldonu situon:"
+
+#: trac/admin/templates/admin_components.html:70
+#: trac/admin/templates/admin_enums.html:33
+#: trac/admin/templates/admin_enums.html:38
+#: trac/admin/templates/admin_milestones.html:93
+#: trac/admin/templates/admin_perms.html:38
+#: trac/admin/templates/admin_perms.html:60
+#: trac/admin/templates/admin_versions.html:67
+#: trac/versioncontrol/templates/admin_repositories.html:102
+#: trac/versioncontrol/templates/admin_repositories.html:116
+msgid "Add"
+msgstr "Aldonu"
+
+#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
+#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1337
+msgid "Owner"
+msgstr "Havanto"
+
+#: trac/admin/templates/admin_components.html:80
+#: trac/admin/templates/admin_enums.html:48
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/admin/templates/admin_versions.html:77
+msgid "Default"
+msgstr "Antaŭelektita"
+
+#: trac/admin/templates/admin_components.html:98
+#: trac/admin/templates/admin_enums.html:69
+#: trac/admin/templates/admin_milestones.html:128
+#: trac/admin/templates/admin_perms.html:87
+#: trac/admin/templates/admin_versions.html:93
+#: trac/versioncontrol/templates/admin_repositories.html:145
+msgid "Remove selected items"
+msgstr "Forigu elektitajn erojn"
+
+#: trac/admin/templates/admin_components.html:101
+#: trac/admin/templates/admin_enums.html:72
+#: trac/admin/templates/admin_milestones.html:131
+#: trac/admin/templates/admin_versions.html:96
+msgid ""
+"You can remove all items from this list to completely hide this\n"
+"              field from the user interface."
+msgstr ""
+"Vi povas forigi ĉiuj erojn el la listo por kaŝi tiun\n"
+"              indikon de la uzanto."
+
+#: trac/admin/templates/admin_components.html:107
+#: trac/admin/templates/admin_enums.html:78
+#: trac/admin/templates/admin_milestones.html:137
+#: trac/admin/templates/admin_versions.html:102
+msgid ""
+"As long as you don't add any items to the list, this field\n"
+"            will remain completely hidden from the user interface."
+msgstr ""
+"Se vi ne aldonas iujn erojn al la listo, tiu ĉi indiko\n"
+"            restas kaŝita de la uzanto."
+
+#: trac/admin/templates/admin_enums.html:14
+#, python-format
+msgid "Manage %(label_plural)s"
+msgstr "Agordo de %(label_plural)s"
+
+#: trac/admin/templates/admin_enums.html:19
+#, python-format
+msgid "Modify %(label_singular)s"
+msgstr "Ŝanĝo de %(label_singular)s"
+
+#: trac/admin/templates/admin_enums.html:48
+msgid "Order"
+msgstr "Ordo"
+
+#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
+msgid "Configuration"
+msgstr "Agordo"
+
+#: trac/admin/templates/admin_logging.html:28
+#: trac/versioncontrol/templates/admin_repositories.html:18
+msgid "Type:"
+msgstr "Speco:"
+
+#: trac/admin/templates/admin_logging.html:37
+msgid "Log level:"
+msgstr "Protokolnivelo:"
+
+#: trac/admin/templates/admin_logging.html:45
+msgid "Log file:"
+msgstr "Protokoldosiero:"
+
+#: trac/admin/templates/admin_logging.html:48
+#, python-format
+msgid ""
+"If you specify a relative path, the log file will be stored inside the\n"
+"            [1:log] directory of the project environment ([2:%(dir)s])."
+msgstr ""
+"Se vi donas relativan padon, la protokoldosiero estos metata en la\n"
+"            dosierujo [1:log] de la projektomedio ([2:%(dir)s])."
+
+#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
+#: trac/ticket/roadmap.py:855
+msgid "Milestones"
+msgstr "Rikoltoj"
+
+#: trac/admin/templates/admin_milestones.html:14
+msgid "Manage Milestones"
+msgstr "Agordo de rikoltoj"
+
+#: trac/admin/templates/admin_milestones.html:20
+msgid "Modify Milestone:"
+msgstr "Ŝanĝo de rikoltoj:"
+
+#: trac/admin/templates/admin_milestones.html:25
+#: trac/admin/templates/admin_milestones.html:85
+#: trac/ticket/templates/milestone_edit.html:50
+msgid "Due:"
+msgstr "Ĝis:"
+
+#: trac/admin/templates/admin_milestones.html:26
+#: trac/admin/templates/admin_milestones.html:29
+#: trac/admin/templates/admin_milestones.html:39
+#: trac/admin/templates/admin_milestones.html:43
+#: trac/admin/templates/admin_milestones.html:87
+#: trac/admin/templates/admin_milestones.html:89
+#: trac/admin/templates/admin_versions.html:27
+#: trac/admin/templates/admin_versions.html:30
+#: trac/admin/templates/admin_versions.html:60
+#: trac/admin/templates/admin_versions.html:63
+#: trac/ticket/templates/milestone_edit.html:51
+#: trac/ticket/templates/milestone_edit.html:54
+#: trac/ticket/templates/milestone_edit.html:63
+#: trac/ticket/templates/milestone_edit.html:66
+#, python-format
+msgid "Format: %(datehint)s"
+msgstr "Formato: %(datehint)s"
+
+#: trac/admin/templates/admin_milestones.html:35
+#: trac/ticket/templates/milestone_edit.html:59
+msgid "Completed:"
+msgstr "Preta:"
+
+#: trac/admin/templates/admin_milestones.html:57
+#: trac/admin/templates/admin_versions.html:35
+#: trac/ticket/templates/milestone_edit.html:85
+#: trac/versioncontrol/templates/admin_repositories.html:73
+msgid "Description (you may use [1:WikiFormatting] here):"
+msgstr "Priskribo (vi povas uzi [1:WikiFormatting] tie ĉi):"
+
+#: trac/admin/templates/admin_milestones.html:78
+msgid "Add Milestone:"
+msgstr "Aldonu rikolton:"
+
+#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+msgid "Due"
+msgstr "Ĝis"
+
+#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+msgid "Completed"
+msgstr "Preta"
+
+#: trac/admin/templates/admin_milestones.html:104 trac/ticket/web_ui.py:184
+msgid "Tickets"
+msgstr "Avizoj"
+
+#: trac/admin/templates/admin_perms.html:13
+msgid "Manage Permissions"
+msgstr "Agordo de permesoj"
+
+#: trac/admin/templates/admin_perms.html:18
+msgid "Grant Permission:"
+msgstr "Donu permeson:"
+
+#: trac/admin/templates/admin_perms.html:21
+#: trac/admin/templates/admin_perms.html:48
+msgid "Subject:"
+msgstr "Subjekto:"
+
+#: trac/admin/templates/admin_perms.html:25
+msgid "Action:"
+msgstr "Permeso:"
+
+#: trac/admin/templates/admin_perms.html:33
+msgid ""
+"Grant permission for an action to a subject, which can be either a user\n"
+"          or a group."
+msgstr "Donu permeson pri io al subjekto (aŭ uzanto aŭ grupo)."
+
+#: trac/admin/templates/admin_perms.html:45
+msgid "Add Subject to Group:"
+msgstr "Anigu subjekton al grupo:"
+
+#: trac/admin/templates/admin_perms.html:52
+msgid "Group:"
+msgstr "Grupo:"
+
+#: trac/admin/templates/admin_perms.html:56
+msgid "Add a user or group to an existing permission group."
+msgstr "Anigu uzanton aŭ grupon al jam ekzistanta grupo."
+
+#: trac/admin/templates/admin_perms.html:69
+#: trac/admin/templates/admin_perms.html:92
+msgid "Subject"
+msgstr "Subjekto"
+
+#: trac/admin/templates/admin_perms.html:91
+msgid "Note that"
+msgstr "Notu, ke nomoj de"
+
+#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:73
+msgid "or"
+msgstr "aŭ"
+
+#: trac/admin/templates/admin_perms.html:92
+msgid "Group"
+msgstr "Grupo"
+
+#: trac/admin/templates/admin_perms.html:92
+msgid ""
+"names can't be all upper-case,\n"
+"      as that is reserved for permission names."
+msgstr ""
+"ne estu komplete majusklaj,\n"
+"      ĉar komplete majusklaj nomoj estas rezervitaj por permesoj."
+
+#: trac/admin/templates/admin_plugins.html:41
+msgid "Manage Plugins"
+msgstr "Agordo de kromprogramoj"
+
+#: trac/admin/templates/admin_plugins.html:45
+msgid "Install Plugin:"
+msgstr "Instalu kromprogramojn:"
+
+#: trac/admin/templates/admin_plugins.html:47
+#: trac/versioncontrol/templates/changeset.html:168
+msgid "File:"
+msgid_plural "Files:"
+msgstr[0] "Dosiero:"
+msgstr[1] "Dosieroj:"
+
+#: trac/admin/templates/admin_plugins.html:52
+msgid ""
+"The web server does not have sufficient permissions to store files in\n"
+"            the environment plugins directory."
+msgstr ""
+"La retservilo ne havas la bezonataj permsojn por konservi dosierojn en\n"
+"            la dosierujo por kromprogramoj de la medio."
+
+#: trac/admin/templates/admin_plugins.html:56
+msgid "Upload a plugin packaged as Python egg."
+msgstr "Alŝuti kromprogramon pakitan kiel Python-Egg-dosiero"
+
+#: trac/admin/templates/admin_plugins.html:61
+msgid "Install"
+msgstr "Instali"
+
+#: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:51
+#: trac/versioncontrol/templates/changeset.html:140
+msgid "Author:"
+msgstr "Aŭtoro:"
+
+#: trac/admin/templates/admin_plugins.html:93
+msgid "Home page:"
+msgstr "Hejmpaĝo:"
+
+#: trac/admin/templates/admin_plugins.html:100
+msgid "License:"
+msgstr "Licenco:"
+
+#: trac/admin/templates/admin_plugins.html:110
+msgid "Show all descriptions"
+msgstr "Montru ĉiuj priskribojn"
+
+#: trac/admin/templates/admin_plugins.html:112
+msgid "Hide all descriptions"
+msgstr "Kaŝu ĉiujn priskribojn"
+
+#: trac/admin/templates/admin_plugins.html:114 trac/ticket/admin.py:76
+#: trac/ticket/api.py:296
+msgid "Component"
+msgstr "Situo"
+
+#: trac/admin/templates/admin_plugins.html:117
+msgid "Enabled"
+msgstr "Ŝaltita"
+
+#: trac/admin/templates/admin_plugins.html:126
+msgid "Toggle the module description"
+msgstr "Komutu la priskribon de la modulo"
+
+#: trac/admin/templates/admin_plugins.html:142
+msgid "Toggle the component description"
+msgstr "Komutu la priskribon de la situo"
+
+#: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
+msgid "Versions"
+msgstr "Versioj"
+
+#: trac/admin/templates/admin_versions.html:14
+msgid "Manage Versions"
+msgstr "Agordo de versioj"
+
+#: trac/admin/templates/admin_versions.html:19
+msgid "Modify Version:"
+msgstr "Versioŝanĝoj:"
+
+#: trac/admin/templates/admin_versions.html:26
+msgid "Date:"
+msgstr "Dato:"
+
+#: trac/admin/templates/admin_versions.html:54
+msgid "Add Version:"
+msgstr "Aldoni version:"
+
+#: trac/admin/templates/admin_versions.html:59
+msgid "Released:"
+msgstr "Eldonita:"
+
+#: trac/admin/templates/admin_versions.html:77
+msgid "Released"
+msgstr "Eldonita"
+
+#: trac/db/api.py:132
+#, python-format
+msgid "Unsupported database type \"%(scheme)s\""
+msgstr "Nesubtenita speco de datumbazo \"%(scheme)s\""
+
+#: trac/db/api.py:162
+#, python-format
+msgid ""
+"Unknown scheme \"%(scheme)s\"; database connection string must start with"
+" {scheme}:/"
+msgstr ""
+"Nekonata skemo \"%(scheme)s\"; la kontektofrazo de la datumbazo devas "
+"komenciĝi je {scheme}:/"
+
+#: trac/db/mysql_backend.py:80
+msgid "Cannot load Python bindings for MySQL"
+msgstr "Ŝargi la Python-adaptilon por MySQL malsukcesis"
+
+#: trac/db/pool.py:118
+#, python-format
+msgid "Unable to get database connection within %(time)d seconds"
+msgstr "Ne povis konektiĝi kun la datumbazo ene de %(time)d sekundoj"
+
+#: trac/db/postgres_backend.py:81
+msgid "Cannot load Python bindings for PostgreSQL"
+msgstr "Ŝargi la Python-adaptilon por PostgreSQL malsukcesis"
+
+#: trac/db/sqlite_backend.py:153
+msgid "Cannot load Python bindings for SQLite"
+msgstr "Ŝargi la Python-adaptilon por SQLite malsukcesis"
+
+#: trac/db/sqlite_backend.py:157
+msgid "Need at least PySqlite 2.0.7 or higher"
+msgstr "Necesas almenaŭ PySqlite 2.0.7 aŭ pli aktuala"
+
+#: trac/db/sqlite_backend.py:181
+#, python-format
+msgid "Database already exists at %(path)s"
+msgstr "Datumbazo jam ekzistas ĉe %(path)s"
+
+#: trac/db/sqlite_backend.py:241
+#, python-format
+msgid "Database \"%(path)s\" not found."
+msgstr "Datumbazo \"%(path)s\" ne troviĝis"
+
+#: trac/db/sqlite_backend.py:250
+#, python-format
+msgid ""
+"The user %(user)s requires read _and_ write permissions to the database "
+"file %(path)s and the directory it is located in."
+msgstr ""
+"La uzanto %(user)s bezonas lego- _kaj_ skribo-permesojn al la datumbaza "
+"dosiero %(path)s kaj al la dosierujo, en kiu ĝi troviĝas."
+
+#: trac/mimeview/api.py:674 trac/mimeview/api.py:685
+#, python-format
+msgid "No available MIME conversions from %(old)s to %(new)s"
+msgstr "Ne troviĝis MIME-konvertebleco de %(old)s al %(new)s"
+
+#: trac/mimeview/api.py:793
+#, python-format
+msgid "HTML preview using %(renderer)s failed (%(err)s)"
+msgstr "Antaŭrigardo por HTML uzante %(renderer)s malsukcesis (%(err)s)"
+
+#: trac/mimeview/api.py:825
+#, python-format
+msgid "Can't use %(annotator)s annotator: %(error)s"
+msgstr "Ne eblas uzi rimarkanton %(annotator)s: %(error)s"
+
+#: trac/mimeview/patch.py:53
+msgid "Invalid unified diff content"
+msgstr "Nevalida enhavo en unueca diferenco-fliko"
+
+#: trac/mimeview/patch.py:163
+#, python-format
+msgid "new file %(new)s"
+msgstr "nova dosiero %(new)s"
+
+#: trac/mimeview/patch.py:167
+#, python-format
+msgid "deleted file %(deleted)s"
+msgstr "forigita dosiero %(deleted)s"
+
+#: trac/mimeview/patch.py:239
+msgid "this hunk was shorter than expected"
+msgstr "tiu ŝanĝ-alineo estas pli mallonga ol atendite"
+
+#: trac/mimeview/pygments.py:126 trac/prefs/templates/prefs_pygments.html:9
+msgid "Syntax Highlighting"
+msgstr "Sintaksemfazo"
+
+#: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:143
+msgid "Your preferences have been saved."
+msgstr "Viaj preferoj konserviĝis."
+
+#: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
+#: trac/ticket/templates/ticket.html:374
+#: trac/wiki/templates/wiki_edit_form.html:50
+msgid "Preferences"
+msgstr "Preferoj"
+
+#: trac/prefs/web_ui.py:75
+msgid "Unknown preference panel"
+msgstr "Nekonata prefero-panelo"
+
+#: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_datetime.html:10
+msgid "Date & Time"
+msgstr "Dato kaj tempo"
+
+#: trac/prefs/web_ui.py:88 trac/prefs/templates/prefs_keybindings.html:10
+msgid "Keyboard Shortcuts"
+msgstr "Klavokombinoj"
+
+#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_language.html:9
+msgid "Language"
+msgstr "Lingvo"
+
+#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_advanced.html:9
+msgid "Advanced"
+msgstr "Pli"
+
+#: trac/prefs/templates/prefs.html:10
+msgid "Preferences:"
+msgstr "Preferoj:"
+
+#: trac/prefs/templates/prefs.html:17
+msgid ""
+"This page lets you customize your personal settings for this site.\n"
+"      These settings are stored on the server and are identified by a "
+"session\n"
+"      key stored in a browser cookie. That cookie allows your settings to"
+" be\n"
+"      restored on subsequent visits."
+msgstr ""
+"Tiu ĉi paĝo permesas al vi agordi viajn personajn preferojn por tiu ĉi "
+"ejo.\n"
+"      Tiu ĉi agordo estos konservita en la servilo kaj identigita de "
+"seanco-ŝlosilo,\n"
+"      kiu metiĝos en kuketon de la retumilo. Tiu ŝlosilo-kuketo permesas "
+"restarigi vian\n"
+"      agordon la sekvajn fojojn."
+
+#: trac/prefs/templates/prefs.html:33
+msgid "Save changes"
+msgstr "Konservu ŝanĝojn"
+
+#: trac/prefs/templates/prefs_advanced.html:14
+msgid "Session key:"
+msgstr "Seancoŝlosilo:"
+
+#: trac/prefs/templates/prefs_advanced.html:18
+msgid ""
+"The session key is used to identify stored custom\n"
+"      settings and session data on the server. Although it is\n"
+"      automatically generated by default, you may change it to something\n"
+"      easier to remember at any time if you wish to load your settings\n"
+"      in a different web browser."
+msgstr ""
+"Tiu seancoŝlosilo estas uzata por identigi la konservitan personan "
+"agordon\n"
+"      kaj seancodatumojn en la servilo. Kvankam ĝi ordinare estas "
+"aŭtomate\n"
+"      kreita, vi povas adapti ĝin al pli facile memorigebla nomo, se vi "
+"volas\n"
+"      uzi ĝin kun diversaj retumiloj."
+
+#: trac/prefs/templates/prefs_advanced.html:26
+msgid "Restore session:"
+msgstr "Restarigu seancon:"
+
+#: trac/prefs/templates/prefs_advanced.html:29
+msgid "Load"
+msgstr "argu"
+
+#: trac/prefs/templates/prefs_advanced.html:30
+msgid ""
+"You may load a previously created session by entering the\n"
+"      corresponding session key below. This lets you share settings "
+"between\n"
+"      multiple computers and web browsers."
+msgstr ""
+"Vi povas restarigi antaŭe kreitan seancon donante la koncernan\n"
+"      seancoŝlosilon sube. Tiel vi povas uzi vian agordon en\n"
+"      pluraj komputiloj kaj retumiloj."
+
+#: trac/prefs/templates/prefs_datetime.html:16
+msgid "Time zone:"
+msgstr "Tempozono:"
+
+#: trac/prefs/templates/prefs_datetime.html:18
+msgid "Default time zone"
+msgstr "Ordinara tempozono"
+
+#: trac/prefs/templates/prefs_datetime.html:25
+msgid ""
+"Configuring your time zone will result in all\n"
+"      dates and times displayed on this site to use your time zone\n"
+"      instead of that of the server."
+msgstr ""
+"Agordante vian tempozonon montros ĉiuj datojn kaj tempojn en tiu ejo\n"
+"      laŭ via tempozono anstataŭ laŭ tiu de la servilo."
+
+#: trac/prefs/templates/prefs_datetime.html:30
+msgid "Example: The current time is"
+msgstr "Ekzemplo: La nuna tempo estas"
+
+#: trac/prefs/templates/prefs_datetime.html:31
+msgid "(UTC)."
+msgstr "(UTC)."
+
+#: trac/prefs/templates/prefs_datetime.html:34
+#, python-format
+msgid ""
+"In your time zone %(tz)s, this would be displayed as\n"
+"            [1:%(formatted)s]."
+msgstr ""
+"en via tempozono %(tz)s, tio montriĝos kiel\n"
+"            [1:%(formatted)s]."
+
+#: trac/prefs/templates/prefs_datetime.html:40
+#, python-format
+msgid ""
+"In the default time zone, this would be displayed as\n"
+"            [1:%(formatted)s]."
+msgstr ""
+"En la antaŭelektita tempozono, tio montriĝos kiel\n"
+"            [1:%(formatted)s]."
+
+#: trac/prefs/templates/prefs_datetime.html:47
+msgid ""
+"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
+"Time (GMT)."
+msgstr ""
+
+#: trac/prefs/templates/prefs_datetime.html:48
+msgid ""
+"A positive offset is used to indicate a timezone at the east of "
+"Greenwich, i.e. ahead of Universal Time."
+msgstr ""
+"Positiva deŝovo indikas tempozonon oriente de Grenviĉo, t.e. antaŭanta la"
+" universalan tempon."
+
+#: trac/prefs/templates/prefs_general.html:15
+msgid "Full name:"
+msgstr "Plena nomo:"
+
+#: trac/prefs/templates/prefs_general.html:20
+msgid "Email address:"
+msgstr "Retpoŝta adreso"
+
+#: trac/prefs/templates/prefs_general.html:26
+msgid ""
+"This information is used to automatically populate some forms\n"
+"        on this site with your contact details."
+msgstr ""
+"Tiu informo uziĝas por aŭtomate antaŭplenigi formularojn\n"
+"        en tiu ĉi ejo kun la detaloj kiel kontakti vin."
+
+#: trac/prefs/templates/prefs_general.html:30
+msgid ""
+"This information is used to associate your login name with your\n"
+"        email address and full name, which is used for email\n"
+"        notification and RSS feeds, for example."
+msgstr ""
+"tiu informo uziĝas por kunligi vian salutnomon kun\n"
+"        via retpoŝtadreso kaj plena nomo, uzataj por retpoŝtaj atentigoj\n"
+"        kaj RSS-anoncoj, ekzemple."
+
+#: trac/prefs/templates/prefs_keybindings.html:18
+msgid "Enable access keys"
+msgstr "Ŝaltu klavokombinojn"
+
+#: trac/prefs/templates/prefs_keybindings.html:21
+msgid ""
+"This site provides keyboard shortcuts for\n"
+"      faster access to certain functions of this site. As these shortcuts"
+" can\n"
+"      cause conflicts with shortcuts provided by the desktop system or\n"
+"      web browser, they are disabled by default. See\n"
+"      [1:TracAccessibility]\n"
+"      for more information on access keys."
+msgstr ""
+"Tiu ĉi ejo provizas klavokombinojn por rapidigi\n"
+"      kelkajn funkciojn de la ejo. Ĉar tiuj klavokombinoj povas\n"
+"      konflikti kun klavokombinoj de via operaciumo aŭ\n"
+"      retumilo, ili ordinare estas malŝaltitaj. Vidu paĝon\n"
+"      [1:TracAccessibility]\n"
+"      por ricevi pliajn informojn pri klavokombinoj."
+
+#: trac/prefs/templates/prefs_language.html:14
+msgid "Language:"
+msgstr "Lingvo:"
+
+#: trac/prefs/templates/prefs_language.html:16
+msgid "default language"
+msgstr "retumila lingvo"
+
+#: trac/prefs/templates/prefs_language.html:21
+msgid ""
+"Configuring your language will result in all text\n"
+"      displayed on this site to use your language instead of that of the\n"
+"      server."
+msgstr ""
+"Donante vian preferatan lingvon vi vidos la paĝojn de tiu ĉi ejo\n"
+"      prezentataj en tiu lingvo anstataŭ en la ordinara lingvo de la "
+"servo."
+
+#: trac/prefs/templates/prefs_language.html:25
+msgid ""
+"The 'default language' option uses the browser's\n"
+"        language negotiation feature to select the appropriate language."
+msgstr ""
+"La ebleco 'retumila lingvo' uzos la lingvoindikon de la retumilo\n"
+"        por elekti konvenan lingvon."
+
+#: trac/prefs/templates/prefs_pygments.html:36
+msgid ""
+"The Pygments syntax highlighter can be used with\n"
+"      different coloring styles."
+msgstr ""
+"La sintakskolorigilo Pygments estas uzebla kun\n"
+"      diversaj kolorstiloj."
+
+#: trac/prefs/templates/prefs_pygments.html:38
+msgid "Style:"
+msgstr "Stilo:"
+
+#: trac/prefs/templates/prefs_pygments.html:43
+msgid "Preview:"
+msgstr "Antaŭrigardo:"
+
+#: trac/search/web_ui.py:63 trac/search/templates/search.html:10
+#: trac/search/templates/search.html:23 trac/search/templates/search.html:28
+#: trac/templates/theme.html:28
+msgid "Search"
+msgstr "Serĉo"
+
+#: trac/search/web_ui.py:153
+#, python-format
+msgid "Browse repository path %(path)s"
+msgstr "Rigardu deponejon je %(path)s"
+
+#: trac/search/web_ui.py:193
+#, python-format
+msgid "Search query too short. Query must be at least %(num)s characters long."
+msgstr "La serĉofrazo estas tro mallonga. Ĝi devas havi almenaŭ %(num)s signojn."
+
+#: trac/search/web_ui.py:231 trac/ticket/query.py:763 trac/ticket/report.py:397
+msgid "Next Page"
+msgstr "Sekva paĝo"
+
+#: trac/search/web_ui.py:237 trac/ticket/query.py:768 trac/ticket/report.py:400
+msgid "Previous Page"
+msgstr "Antaŭa paĝo"
+
+#: trac/search/templates/search.html:10 trac/search/templates/search.html:40
+#: trac/ticket/templates/query_results.html:20
+#: trac/ticket/templates/report_view.html:79
+msgid "Results"
+msgstr "Rezultoj"
+
+#: trac/search/templates/search.html:48
+msgid "Quickjump to"
+msgstr "Saltu al"
+
+#: trac/search/templates/search.html:56
+#, python-format
+msgid "By %(author)s"
+msgstr "De %(author)s"
+
+#: trac/search/templates/search.html:65
+#: trac/ticket/templates/report_view.html:193
+msgid "No matches found."
+msgstr "Neniuj trovoj."
+
+#: trac/search/templates/search.html:69
+msgid ""
+"[1:Note:] See [2:TracSearch]\n"
+"        for help on searching."
+msgstr ""
+"[1:Noto:] Vidu paĝon [2:TracSearch]\n"
+"        je helpo pri la serĉado."
+
+#: trac/templates/about.html:26
+msgid "Trac: Integrated SCM & Project Management"
+msgstr "Trac: Integrita Fonto- kaj Projektadministrado"
+
+#: trac/templates/about.html:30
+msgid ""
+"Trac is a web-based software project management and bug/issue\n"
+"        tracking system emphasizing ease of use and low ceremony.\n"
+"        It provides an integrated Wiki, an interface to version control\n"
+"        systems, and a number of convenient ways to stay on top of events"
+"\n"
+"        and changes within a project."
+msgstr ""
+"Trac estas retbazita sistemo por programara projektadministrado kaj\n"
+"        erarospurado kun emfazo sur simpla neformala uzo.\n"
+"        Ĝi provizas vikion, interfacon al versikontrolilo,\n"
+"        kaj plurajn konvenajn eblecojn por informiĝi pri aktuala stato\n"
+"        kaj ŝanĝoj en la projekto."
+
+#: trac/templates/about.html:36
+msgid ""
+"Trac is distributed under the modified BSD License.[1:]\n"
+"        The complete text of the license can be found\n"
+"        [2:online]\n"
+"        as well as in the [3:COPYING] file included in the distribution."
+msgstr ""
+"Trac estas eldonita sub adaptita BSD-licenco.[1:]\n"
+"        La kompleta teksto de la licenco troviĝas\n"
+"        [2:rete]\n"
+"        sed ankaŭ en la dosiero [3:COPYING] de la distribuo."
+
+#: trac/templates/about.html:41
+msgid "python powered"
+msgstr "movata per Python"
+
+#: trac/templates/about.html:44
+msgid "Please visit the Trac open source project:"
+msgstr "Bonvolu viziti la malfermfontan projekton Trac ĉe:"
+
+#: trac/templates/about.html:45
+msgid "http://trac.edgewall.org/"
+msgstr "http://trac.edgewall.org/"
+
+#: trac/templates/about.html:54
+msgid "System Information"
+msgstr "Sisteminformo"
+
+#: trac/templates/about.html:64
+msgid "Installed Plugins"
+msgstr "Instalitaj kromprogramoj"
+
+#: trac/templates/about.html:72 trac/templates/error.html:83
+#: trac/templates/error.html:217
+msgid "N/A"
+msgstr "n/a"
+
+#: trac/templates/about.html:83
+msgid "Section"
+msgstr "Sekcio"
+
+#: trac/templates/about.html:85 trac/templates/error.html:185
+msgid "Value"
+msgstr "Valoro"
+
+#: trac/templates/attach_file_form.html:15
+msgid "Attach file"
+msgstr "Alpendigu dosieron"
+
+#: trac/templates/attachment.html:12
+msgid "– Attachment"
+msgstr "- Alpendaĵo"
+
+#: trac/templates/attachment.html:13
+msgid "– Attachments"
+msgstr "- Alpendaĵoj"
+
+#: trac/templates/attachment.html:14
+#, python-format
+msgid "%(filename)s on %(parent)s – Attachment"
+msgstr "%(filename)s ĉe %(parent)s – Alpendaĵo"
+
+#: trac/templates/attachment.html:29
+msgid "Add Attachment to"
+msgstr "Aldonu alpendaĵon al"
+
+#: trac/templates/attachment.html:32
+msgid "(size limit"
+msgstr "(grandeclimo"
+
+#: trac/templates/attachment.html:37
+msgid "Attachment Info"
+msgstr "Pri alpendaĵo"
+
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:365
+#: trac/wiki/templates/wiki_edit_form.html:46
+msgid "Your email or username:"
+msgstr "Via retadreso aŭ salutnomo:"
+
+#: trac/templates/attachment.html:46
+msgid "Description of the file (optional):"
+msgstr "Priskribo de la dosiero (malnepra):"
+
+#: trac/templates/attachment.html:52
+msgid "Replace existing attachment of the same name"
+msgstr "Anstataŭigu ekzistantan samnoman alpendaĵon"
+
+#: trac/templates/attachment.html:62
+msgid "Add attachment"
+msgstr "Aldonu alpendaĵon"
+
+#: trac/templates/attachment.html:70
+msgid "Are you sure you want to delete this attachment?"
+msgstr "Ĉu vere forigi tiun ĉi alpenadĵon?"
+
+#: trac/templates/attachment.html:77 trac/templates/attachment.html:119
+msgid "Delete attachment"
+msgstr "Forigu alpendaĵon"
+
+#: trac/templates/attachment.html:86
+msgid "Attach another file"
+msgstr "Alpendigu alian dosieron"
+
+#: trac/templates/attachment.html:96
+#, python-format
+msgid ""
+"File %(file)s,\n"
+"                [1:%(size)s]\n"
+"                (added by %(author)s,  %(date)s ago)"
+msgstr ""
+"Dosiero %(file)s,\n"
+"                [1:%(size)s]\n"
+"                (aldonita de %(author)s,  antaŭ %(date)s)"
+
+#: trac/templates/diff_div.html:72
+#, python-format
+msgid ""
+"Property %(name)s\n"
+"                  changed from %(old)s to %(new)s"
+msgstr ""
+
+#: trac/templates/diff_div.html:76
+#, python-format
+msgid "Property %(name)s set to %(value)s"
+msgstr ""
+
+#: trac/templates/diff_div.html:79
+#, python-format
+msgid "Property %(name)s deleted"
+msgstr "Eco %(name)s forigita"
+
+#: trac/templates/diff_div.html:86
+msgid "Differences"
+msgstr "Diferencoj"
+
+#: trac/templates/diff_options.html:9
+msgid "View differences"
+msgstr "Montru diferencojn"
+
+#: trac/templates/diff_options.html:12
+msgid "inline"
+msgstr "enteksta"
+
+#: trac/templates/diff_options.html:14
+msgid "side by side"
+msgstr "unu apud alia"
+
+#: trac/templates/diff_options.html:18
+msgid "Show"
+msgstr "Montru"
+
+#: trac/templates/diff_options.html:22
+msgid "lines around each change"
+msgstr "linioj ĉirkaŭ ĉiu ŝanĝo"
+
+#: trac/templates/diff_options.html:25
+msgid "Show the changes in full context"
+msgstr "Montru la ŝanĝojn kun plena kunteksto"
+
+#: trac/templates/diff_options.html:29
+msgid "Ignore:"
+msgstr "Ignoru:"
+
+#: trac/templates/diff_options.html:33
+msgid "Blank lines"
+msgstr "Malplenajn liniojn"
+
+#: trac/templates/diff_options.html:38
+msgid "Case changes"
+msgstr "Usklecodiferencojn"
+
+#: trac/templates/diff_options.html:43
+msgid "White space changes"
+msgstr "Diferencojn de spacsignoj"
+
+#: trac/templates/diff_options.html:47
+#: trac/ticket/templates/milestone_view.html:57
+#: trac/ticket/templates/query.html:207
+#: trac/ticket/templates/report_view.html:49
+#: trac/ticket/templates/roadmap.html:29
+#: trac/timeline/templates/timeline.html:31
+#: trac/versioncontrol/templates/revisionlog.html:65
+msgid "Update"
+msgstr "Aktualigu"
+
+#: trac/templates/diff_view.html:18
+#, python-format
+msgid ""
+"Changes between\n"
+"          [1:Version %(old)s] and\n"
+"          [2:Version %(new)s] of\n"
+"          [3:%(name)s]"
+msgstr ""
+
+#: trac/templates/diff_view.html:23
+#, python-format
+msgid ""
+"Changes between\n"
+"          [1:Initial Version] and\n"
+"          [2:Version %(new)s] of\n"
+"          [3:%(name)s]"
+msgstr ""
+
+#: trac/templates/diff_view.html:28
+#, python-format
+msgid ""
+"Changes from\n"
+"          [1:Version %(new)s] of\n"
+"          [2:%(name)s]"
+msgstr ""
+
+#: trac/templates/diff_view.html:43
+#: trac/versioncontrol/templates/changeset.html:134
+msgid "Timestamp:"
+msgstr "Tempo:"
+
+#: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
+#: trac/templates/diff_view.html:59
+msgid "(multiple changes)"
+msgstr "(pluraj ŝanĝoj)"
+
+#: trac/templates/diff_view.html:47
+#, python-format
+msgid "%(date)s (%(duration)s ago)"
+msgstr "%(date)s antaŭ (%(duration)s)"
+
+#: trac/templates/diff_view.html:55
+msgid "(IP:"
+msgstr "(IP:"
+
+#: trac/templates/diff_view.html:57
+msgid "Comment:"
+msgstr "Komento:"
+
+#: trac/templates/diff_view.html:65
+#: trac/versioncontrol/templates/changeset.html:196
+#: trac/versioncontrol/templates/revisionlog.html:71
+msgid "Legend:"
+msgstr "Legendo:"
+
+#: trac/templates/diff_view.html:67
+#: trac/versioncontrol/templates/changeset.html:198
+msgid "Unmodified"
+msgstr "Neŝanĝita"
+
+#: trac/templates/diff_view.html:68
+#: trac/versioncontrol/templates/changeset.html:199
+#: trac/versioncontrol/templates/revisionlog.html:73
+msgid "Added"
+msgstr "Aldonita"
+
+#: trac/templates/diff_view.html:69
+#: trac/versioncontrol/templates/changeset.html:200
+#: trac/versioncontrol/templates/revisionlog.html:75
+msgid "Removed"
+msgstr "Forigita"
+
+#: trac/templates/diff_view.html:70 trac/ticket/api.py:325
+#: trac/versioncontrol/templates/changeset.html:202
+#: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:200
+msgid "Modified"
+msgstr "Ŝanĝita"
+
+#: trac/templates/error.html:64
+msgid ""
+"==== How to Reproduce ====\n"
+"\n"
+"While doing a"
+msgstr ""
+"==== Kiel reprodukti ====\n"
+"\n"
+"Dum"
+
+#: trac/templates/error.html:67
+msgid "operation on `"
+msgstr "ago sur `"
+
+#: trac/templates/error.html:67
+msgid ""
+"`, Trac issued an internal error.\n"
+"\n"
+"''(please provide additional details here)''"
+msgstr ""
+"`, Trac anoncis internan eraron.\n"
+"\n"
+"''(bonvolu provizi aldonajn detalojn tie ĉi)''"
+
+#: trac/templates/error.html:71
+msgid ""
+"Request parameters:\n"
+"{{{"
+msgstr ""
+"Parametroj de la peto:\n"
+"{{{"
+
+#: trac/templates/error.html:76
+msgid "==== System Information ===="
+msgstr "==== Sisteminformo ===="
+
+#: trac/templates/error.html:80
+msgid "==== Enabled Plugins ===="
+msgstr "==== Aktivaj kromprogramoj ===="
+
+#: trac/templates/error.html:83
+msgid ""
+"==== Python Traceback ====\n"
+"{{{"
+msgstr ""
+"==== Respuraĵo de Python ====\n"
+"{{{"
+
+#: trac/templates/error.html:90
+msgid "Create"
+msgstr "Kreu"
+
+#: trac/templates/error.html:105
+msgid "Oops…"
+msgstr "Ho ve…"
+
+#: trac/templates/error.html:107
+msgid "Trac detected an internal error:"
+msgstr "Trac konstatis internan eraron:"
+
+#: trac/templates/error.html:112
+msgid ""
+"There was an internal error in Trac.\n"
+"                It is recommended that you notify your local\n"
+"                [1:\n"
+"                    Trac administrator] with the information needed to\n"
+"                reproduce the issue."
+msgstr ""
+"Okazis interna eraro en Trac.\n"
+"                Ni rekomendas, ke vi informu vian lokan\n"
+"                [1:\n"
+"                    sistemadministranton] kun la informoj bezonataj\n"
+"                por repordukti la eraron."
+
+#: trac/templates/error.html:120
+msgid "To that end, you could"
+msgstr "Por tio vi povus"
+
+#: trac/templates/error.html:120
+msgid "a ticket."
+msgstr "avizon."
+
+#: trac/templates/error.html:122
+msgid "The action that triggered the error was:"
+msgstr "La ago, kiu kaŭzis la eraron estis:"
+
+#: trac/templates/error.html:127
+msgid "This is probably a local installation issue."
+msgstr "Tio verŝajne estas problemo kun la loka instalaĵo."
+
+#: trac/templates/error.html:128
+msgid "You should"
+msgstr "Bonvolu"
+
+#: trac/templates/error.html:129
+msgid ""
+"a ticket at the admin Trac to report\n"
+"                    the issue."
+msgstr ""
+"avizon al la administranto de Trac por raporti\n"
+"                    tiun problemon."
+
+#: trac/templates/error.html:134
+msgid "Found a bug in Trac?"
+msgstr "Ĉu vi trovis eraron en Trac?"
+
+#: trac/templates/error.html:135
+msgid ""
+"If you think this should work and you can reproduce the problem,\n"
+"              you should consider creating a bug report."
+msgstr ""
+"Se vi pensas, tio povus funkcii kaj vi povas reprodukti la problemon,\n"
+"              vi konsideru skribi eraroraporton."
+
+#: trac/templates/error.html:138
+#, python-format
+msgid "Note that the %(name)s plugin seems to be involved."
+msgstr "Notu, ke la kromprogramo %(name)s kunefikis."
+
+#: trac/templates/error.html:141
+msgid "Note that the following plugins seem to be involved:"
+msgstr "Notu, ke la sekva kromprogramo kunefikis:"
+
+#: trac/templates/error.html:145
+msgid "Please report this issue to the plugin maintainer."
+msgstr "Bonvolu raporti tiun problemon al la zorganto de la kromprogramo."
+
+#: trac/templates/error.html:147
+msgid ""
+"Before you do that, though, please first try\n"
+"                [1:[2:searching]\n"
+"                for similar issues], as it is quite likely that this "
+"problem\n"
+"                has been reported before. For questions about "
+"installation\n"
+"                and configuration of Trac or its plugins, please try the\n"
+"                [3:mailing list]\n"
+"                instead of creating a ticket."
+msgstr ""
+"Antaŭe bonvolu unue provi\n"
+"                [1:[2:serĉi]\n"
+"                pri similaj problemoj], ĉar estas verŝajne, ke tiu "
+"problemo\n"
+"                jam antaŭe raportiĝis. Pri demandoj rilate al la "
+"instalaĵo\n"
+"                kaj agordo de Trac aŭ la kromprogramoj, bonvolu turni vin"
+" al la\n"
+"                [3:retpoŝtforumo]\n"
+"                anstataŭ krei eraroavizon."
+
+#: trac/templates/error.html:156
+#, python-format
+msgid ""
+"Otherwise, please %(create)s a new bug report\n"
+"                describing the problem and explain how to reproduce it."
+msgstr ""
+"Aliokaze bonvolu %(create)s novan eraroraporton\n"
+"                priskribante la problemon kaj klarigante kiel reprodukti "
+"ĝin."
+
+#: trac/templates/error.html:160
+msgid "Python Traceback"
+msgstr "Respuraĵo de Python"
+
+#: trac/templates/error.html:161
+msgid "Most recent call last:"
+msgstr "Ple lasta ordono ĉe la fino:"
+
+#: trac/templates/error.html:166 trac/templates/error.html:197
+msgid "File \""
+msgstr "Dosiero \""
+
+#: trac/templates/error.html:166
+msgid ""
+"\",\n"
+"                        line"
+msgstr ""
+"\",\n"
+"                        linio"
+
+#: trac/templates/error.html:167 trac/templates/error.html:197
+msgid ", in"
+msgstr ", en"
+
+#: trac/templates/error.html:171
+msgid "Code fragment:"
+msgstr "Kodfragmento:"
+
+#: trac/templates/error.html:173
+msgid "Line"
+msgstr "Linio"
+
+#: trac/templates/error.html:183
+msgid "Local variables:"
+msgstr "Lokaj variabloj:"
+
+#: trac/templates/error.html:197
+msgid "\", line"
+msgstr "\", linio"
+
+#: trac/templates/error.html:200
+msgid "Switch to plain text view"
+msgstr "Ŝaltu al plenteksta rigardo"
+
+#: trac/templates/error.html:203
+msgid "System Information:"
+msgstr "Sisteminformo:"
+
+#: trac/templates/error.html:211
+msgid "Enabled Plugins:"
+msgstr "Ŝaltitaj kromprogramoj:"
+
+#: trac/templates/error.html:227
+msgid "TracGuide"
+msgstr "Gvidlibro"
+
+#: trac/templates/error.html:227
+msgid "— The Trac User and Administration Guide"
+msgstr "— La gvidlibro por uzantoj kaj adminsitrantoj de Trac"
+
+#: trac/templates/history_view.html:15
+msgid "Change History for"
+msgstr "Ŝangkroniko por"
+
+#: trac/templates/history_view.html:21 trac/templates/history_view.html:54
+#: trac/versioncontrol/templates/diff_form.html:58
+#: trac/versioncontrol/templates/revisionlog.html:180
+msgid "View changes"
+msgstr "Montru ŝanĝojn"
+
+#: trac/templates/history_view.html:23
+msgid "Change history"
+msgstr "Ŝangkroniko"
+
+#: trac/templates/history_view.html:27 trac/ticket/admin.py:440
+#: trac/ticket/api.py:297 trac/ticket/templates/ticket.html:94
+msgid "Version"
+msgstr "Versio"
+
+#: trac/templates/history_view.html:30
+#: trac/ticket/templates/ticket_notify_email.txt:21
+msgid "Comment"
+msgstr "Komento"
+
+#: trac/templates/history_view.html:42
+msgid "View this version"
+msgstr "Montru tiun version"
+
+#: trac/templates/history_view.html:45
+#, python-format
+msgid "IP-Address: %(ipnr)s"
+msgstr "IP-Adreso: %(ipnr)s"
+
+#: trac/templates/index.html:8 trac/templates/index.html:12
+msgid "Available Projects"
+msgstr "Disponeblaj projektoj"
+
+#: trac/templates/index.html:18
+msgid "Error"
+msgstr "Eraro"
+
+#: trac/templates/layout.html:21
+#, python-format
+msgid "Search %(project)s"
+msgstr "Serĉu %(project)s"
+
+#: trac/templates/layout.html:50
+msgid "Download in other formats:"
+msgstr "Elŝutu en aliaj formatoj:"
+
+#: trac/templates/list_of_attachments.html:18
+#, python-format
+msgid ""
+"[1:%(file)s]\n"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      added by [5:%(author)s] %(date)s ago."
+msgstr ""
+"[1:%(file)s]\n"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      aldonita de [5:%(author)s] antaŭ %(date)s."
+
+#: trac/templates/list_of_attachments.html:29
+#: trac/templates/list_of_attachments.html:40
+#: trac/ticket/templates/ticket.html:388
+msgid "Attachments"
+msgstr "Alpendaĵoj"
+
+#: trac/templates/macros.html:19
+#: trac/versioncontrol/templates/dir_entries.html:16
+#, python-format
+msgid "%(size)s bytes"
+msgstr "%(size)s bitokoj"
+
+#: trac/templates/macros.html:37 trac/templates/macros.html:38
+msgid "Previous"
+msgstr "Antaŭa"
+
+#: trac/templates/macros.html:47 trac/templates/macros.html:48
+msgid "Next"
+msgstr "Sekva"
+
+#: trac/templates/preview_file.html:15
+msgid "(The file is empty)"
+msgstr "(La dosiero estas malplena)"
+
+#: trac/templates/preview_file.html:18
+msgid "HTML preview not available"
+msgstr "Antaŭrigardo de HTML estas disponebla"
+
+#: trac/templates/preview_file.html:21
+#, python-format
+msgid "since the file size exceeds %(size)s bytes."
+msgstr "ĉar la dosiergrandeco superas %(size)s bitokojn."
+
+#: trac/templates/preview_file.html:25
+msgid "since no preview renderer could handle it."
+msgstr "ĉar neniu antaŭrigardilo povis trakti ĝin."
+
+#: trac/templates/preview_file.html:28
+msgid "Try"
+msgstr "Provu"
+
+#: trac/templates/preview_file.html:29
+msgid "downloading"
+msgstr "elŝuti"
+
+#: trac/templates/preview_file.html:29
+msgid "the file instead."
+msgstr "la dosieron anstataŭe."
+
+#: trac/templates/progress_bar.html:26
+#, python-format
+msgid "%(count)s/%(total)s %(title)s"
+msgstr "%(count)s/%(total)s %(title)s"
+
+#: trac/templates/progress_bar.html:36
+#, python-format
+msgid "Number of %(unit)s:"
+msgstr "Nombro da %(unit)s:"
+
+#: trac/templates/progress_bar.html:40
+#, python-format
+msgid ""
+"[1:[2:%(title)s:]]\n"
+"          [3:[4:%(count)s]]"
+msgstr ""
+
+#: trac/templates/progress_bar.html:47
+#, python-format
+msgid ""
+"[1:[2:Total:]]\n"
+"      [3:[4:%(count)s]]"
+msgstr ""
+
+#: trac/templates/theme.html:26
+msgid "Search:"
+msgstr "Serĉu:"
+
+#: trac/templates/theme.html:39
+msgid "Context Navigation"
+msgstr "Kuntekstnavigado"
+
+#: trac/templates/theme.html:49
+msgid "Warning:"
+msgstr "Averto:"
+
+#: trac/ticket/admin.py:36
+msgid "(Undefined)"
+msgstr "(Nedifinita)"
+
+#: trac/ticket/admin.py:47
+msgid "Ticket System"
+msgstr "Avizosistemo"
+
+#: trac/ticket/admin.py:112
+#, python-format
+msgid "The component \"%(name)s\" has been added."
+msgstr "La situo \"%(name)s\" aldoniĝis."
+
+#: trac/ticket/admin.py:117 trac/ticket/model.py:843 trac/ticket/model.py:864
+msgid "Invalid component name."
+msgstr "Nevalida situonomo."
+
+#: trac/ticket/admin.py:118
+#, python-format
+msgid "Component %(name)s already exists."
+msgstr "Situo %(name)s jam ekzistas."
+
+#: trac/ticket/admin.py:125
+msgid "No component selected"
+msgstr "Neniu situo elektita"
+
+#: trac/ticket/admin.py:133
+msgid "The selected components have been removed."
+msgstr "La elektitaj situoj foriĝis."
+
+#: trac/ticket/admin.py:241 trac/ticket/api.py:295
+#: trac/ticket/templates/milestone_view.html:10
+#: trac/ticket/templates/milestone_view.html:23
+msgid "Milestone"
+msgstr "Rikolto"
+
+#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
+msgid "Completion date may not be in the future"
+msgstr "Kompletigodato ne povas esti estonta"
+
+#: trac/ticket/admin.py:272
+msgid "Invalid Completion Date"
+msgstr "Nevalida kompletigodato"
+
+#: trac/ticket/admin.py:299
+#, python-format
+msgid "The milestone \"%(name)s\" has been added."
+msgstr "La rikolot \"%(name)s\" aldoniĝis."
+
+#: trac/ticket/admin.py:304 trac/ticket/model.py:981 trac/ticket/model.py:1005
+msgid "Invalid milestone name."
+msgstr "Nevalida rikoltonomo."
+
+#: trac/ticket/admin.py:305
+#, python-format
+msgid "Milestone %(name)s already exists."
+msgstr "Rikolto %(name)s jam ekzistas."
+
+#: trac/ticket/admin.py:313
+msgid "No milestone selected"
+msgstr "Neniu rikolto elektita"
+
+#: trac/ticket/admin.py:321
+msgid "The selected milestones have been removed."
+msgstr "La elektitaj rikoltoj foriĝis."
+
+#: trac/ticket/admin.py:480
+#, python-format
+msgid "The version \"%(name)s\" has been added."
+msgstr "La versio \"%(name)s\" aldoniĝis."
+
+#: trac/ticket/admin.py:485 trac/ticket/model.py:1116 trac/ticket/model.py:1136
+msgid "Invalid version name."
+msgstr "Nevalida versionomo."
+
+#: trac/ticket/admin.py:486
+#, python-format
+msgid "Version %(name)s already exists."
+msgstr "Versio %(name)s jam ekzistas."
+
+#: trac/ticket/admin.py:493
+msgid "No version selected"
+msgstr "Neniu versio elektita"
+
+#: trac/ticket/admin.py:501
+msgid "The selected versions have been removed."
+msgstr "La elektitaj versioj foriĝis."
+
+#: trac/ticket/admin.py:559
+msgid "Time"
+msgstr "Tempo"
+
+#: trac/ticket/admin.py:627
+#, python-format
+msgid "The %(field)s value \"%(name)s\" has been added."
+msgstr "La valoro \"%(name)s\" aldoniĝis al %(field)s."
+
+#: trac/ticket/admin.py:633
+#, python-format
+msgid "Invalid %(type)s value."
+msgstr "Ne valida valoro por %(type)s."
+
+#: trac/ticket/admin.py:635
+#, python-format
+msgid "%(type)s value \"%(name)s\" already exists"
+msgstr "La valoro \"%(name)s\" jam ekzistas por %(type)s"
+
+#: trac/ticket/admin.py:642
+#, python-format
+msgid "No %s selected"
+msgstr "Neniu %s elektita"
+
+#: trac/ticket/admin.py:650
+#, python-format
+msgid "The selected %(field)s values have been removed."
+msgstr "La valoroj de la elektita indiko %(field)s foriĝis."
+
+#: trac/ticket/admin.py:672
+msgid ""
+"Error writing to trac.ini, make sure it is writable by the web server. "
+"The default value has not been saved."
+msgstr ""
+"Eraro dum skribado al trac.ini, certigu, ke ĝi estas skribebla de la "
+"retserva sistemuzanto. La normvaloro ne konserviĝis."
+
+#: trac/ticket/admin.py:684
+msgid "Order numbers must be unique"
+msgstr "Ordonombroj devas esti unikaj"
+
+#: trac/ticket/admin.py:746
+msgid "Possible Values"
+msgstr "Eblaj valoroj"
+
+#: trac/ticket/admin.py:768
+#, python-format
+msgid "Invalid up/down value: %(value)s"
+msgstr "Nevalida supren/malsupren-valoro: %(value)s"
+
+#: trac/ticket/admin.py:789 trac/ticket/api.py:294
+msgid "Priority"
+msgstr "Prioritato"
+
+#: trac/ticket/admin.py:789
+msgid "Priorities"
+msgstr "Prioritatoj"
+
+#: trac/ticket/admin.py:795 trac/ticket/api.py:299
+msgid "Resolution"
+msgstr "Solvo"
+
+#: trac/ticket/admin.py:795
+msgid "Resolutions"
+msgstr "Solvoj"
+
+#: trac/ticket/admin.py:801 trac/ticket/api.py:298
+msgid "Severity"
+msgstr "Graveco"
+
+#: trac/ticket/admin.py:801
+msgid "Severities"
+msgstr "Gravecoj"
+
+#: trac/ticket/admin.py:807
+msgid "Ticket Type"
+msgstr "Avizospeco"
+
+#: trac/ticket/admin.py:807
+msgid "Ticket Types"
+msgstr "Avizospecoj"
+
+#: trac/ticket/admin.py:835
+msgid "<number> must be a number"
+msgstr "<number> estu nombro"
+
+#: trac/ticket/admin.py:840
+#, python-format
+msgid "Ticket %(num)s and all associated data removed."
+msgstr "Avizo %(num)s kaj ĉiuj ligitaj datumoj foriĝis."
+
+#: trac/ticket/api.py:277
+msgid "Summary"
+msgstr "Resumo"
+
+#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:361
+msgid "Reporter"
+msgstr "Avizanto"
+
+#: trac/ticket/api.py:292 trac/versioncontrol/admin.py:108
+#: trac/versioncontrol/templates/admin_repositories.html:125
+msgid "Type"
+msgstr "Speco"
+
+#: trac/ticket/api.py:293
+msgid "Status"
+msgstr "Stato"
+
+#: trac/ticket/api.py:318
+msgid "Keywords"
+msgstr "Ŝlosilvortoj"
+
+#: trac/ticket/api.py:319
+msgid "Cc"
+msgstr "Kopio al"
+
+#: trac/ticket/api.py:323
+msgid "Created"
+msgstr "Kreita de"
+
+#: trac/ticket/api.py:483
+#, python-format
+msgid "Comment %(cnum)s for Ticket #%(id)s"
+msgstr "Komento %(cnum)s por avizo #%(id)s"
+
+#: trac/ticket/api.py:504
+#, python-format
+msgid "Ticket #%(shortname)s"
+msgstr "Avizo #%(shortname)s"
+
+#: trac/ticket/default_workflow.py:225
+msgid "Current state no longer exists"
+msgstr "Nuna stato ne plu ekzistas"
+
+#: trac/ticket/default_workflow.py:227
+msgid "The ticket will be disowned"
+msgstr "La avizo perdos havanton"
+
+#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#, python-format
+msgid "to %(owner)s"
+msgstr "al %(owner)s"
+
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
+#, python-format
+msgid "The owner will be changed from %(current_owner)s"
+msgstr "Transdoni la avizon de %(current_owner)s al la maldekstre tajpita uzanto"
+
+#: trac/ticket/default_workflow.py:251
+#, python-format
+msgid "to %(owner)s "
+msgstr "al %(owner)s "
+
+#: trac/ticket/default_workflow.py:253
+#, python-format
+msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
+msgstr "Transdoni la avizon de %(current_owner)s al %(selected_owner)s"
+
+#: trac/ticket/default_workflow.py:268
+#, python-format
+msgid "The owner will be changed from %(current_owner)s to %(authname)s"
+msgstr "La havanto ŝanĝiĝos de %(current_owner)s al %(authname)s"
+
+#: trac/ticket/default_workflow.py:278
+msgid ""
+"Your workflow attempts to set a resolution but none is defined "
+"(configuration issue, please contact your Trac admin)."
+msgstr ""
+"Via laborfluo provas meti solvon, sed neniu estas difinita (jen "
+"agordproblemo, bonvolu kontakti la administranton de Trac)."
+
+#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
+#, python-format
+msgid "as %(resolution)s"
+msgstr "kiel %(resolution)s"
+
+#: trac/ticket/default_workflow.py:284
+#, python-format
+msgid "The resolution will be set to %(name)s"
+msgstr "La avizo solviĝas kiel %(name)s"
+
+#: trac/ticket/default_workflow.py:296
+msgid "The resolution will be set"
+msgstr "La donita solvo konserviĝos"
+
+#: trac/ticket/default_workflow.py:298
+msgid "The resolution will be deleted"
+msgstr "La solvo foriĝos"
+
+#: trac/ticket/default_workflow.py:301
+#, python-format
+msgid "as %(status)s "
+msgstr ""
+
+#: trac/ticket/default_workflow.py:305
+#, python-format
+msgid "Next status will be '%(name)s'"
+msgstr "Sekva stato estos '%(name)s'"
+
+#: trac/ticket/model.py:105
+#, python-format
+msgid "Ticket %(id)s does not exist."
+msgstr "Avizo %(id)s ne ekzistas."
+
+#: trac/ticket/model.py:106
+msgid "Invalid ticket number"
+msgstr "Nevalida avizonumero"
+
+#: trac/ticket/model.py:143
+msgid "Multi-values fields not supported yet"
+msgstr "Plurvaloraj indikoj ankoraŭ ne estas subtenataj"
+
+#: trac/ticket/model.py:658
+#, python-format
+msgid "%(type)s %(name)s does not exist."
+msgstr "%(type)s %(name)s ne ekzistas."
+
+#: trac/ticket/model.py:702 trac/ticket/model.py:729
+#, python-format
+msgid "Invalid %(type)s name."
+msgstr "Ne valida nomo %(type)s."
+
+#: trac/ticket/model.py:808
+#, python-format
+msgid "Component %(name)s does not exist."
+msgstr "Situo %(name)s ne ekzistas."
+
+#: trac/ticket/model.py:925
+#, python-format
+msgid "Milestone %(name)s does not exist."
+msgstr "Rikolto %(name)s ne ekzistas."
+
+#: trac/ticket/model.py:926
+msgid "Invalid milestone name"
+msgstr "Nevalida rikoltonomo"
+
+#: trac/ticket/model.py:1059
+msgid "Open (by due date)"
+msgstr "Nefinita (laŭ limdato)"
+
+#: trac/ticket/model.py:1060
+msgid "Open (no due date)"
+msgstr "Nefinita (sen limdato)"
+
+#: trac/ticket/model.py:1063
+msgid "Closed"
+msgstr "Finita"
+
+#: trac/ticket/model.py:1081
+#, python-format
+msgid "Version %(name)s does not exist."
+msgstr "Versio %(name)s ne ekzistas."
+
+#: trac/ticket/query.py:54
+msgid "Invalid query constraint value"
+msgstr "Nevalida valoro por serĉfraza kondiĉo"
+
+#: trac/ticket/query.py:88
+#, python-format
+msgid "Query page %(page)s is invalid."
+msgstr "Serĉpaĝo %(page)s ne estas valida."
+
+#: trac/ticket/query.py:103
+#, python-format
+msgid "Query max %(max)s is invalid."
+msgstr "Trovmaksimumo %(max)s ne estas valida."
+
+#: trac/ticket/query.py:159
+msgid "Query filter requires field and constraints separated by a \"=\""
+msgstr "En la serĉfiltrilo necesas dividi indikon kaj kondiĉojn per \"=\""
+
+#: trac/ticket/query.py:172
+msgid "Query filter requires field name"
+msgstr "La serĉfiltrilo bezonas indiko-nomon"
+
+#: trac/ticket/query.py:305
+#, python-format
+msgid "Page %(page)s is beyond the number of pages in the query"
+msgstr "Paĝo %(page)s superas la nombron de paĝoj en la serĉo"
+
+#: trac/ticket/query.py:562
+#, python-format
+msgid "Invalid ticket id list: %(value)s"
+msgstr "Nevalida avizo-listo: %(value)s"
+
+#: trac/ticket/query.py:662 trac/ticket/query.py:670
+msgid "contains"
+msgstr "enhavas"
+
+#: trac/ticket/query.py:663 trac/ticket/query.py:671
+msgid "doesn't contain"
+msgstr "ne enhavas"
+
+#: trac/ticket/query.py:664
+msgid "begins with"
+msgstr "komenciĝas je"
+
+#: trac/ticket/query.py:665
+msgid "ends with"
+msgstr "finiĝas je"
+
+#: trac/ticket/query.py:666 trac/ticket/query.py:674 trac/ticket/query.py:678
+msgid "is"
+msgstr "estas"
+
+#: trac/ticket/query.py:667 trac/ticket/query.py:675 trac/ticket/query.py:679
+msgid "is not"
+msgstr "ne estas"
+
+#: trac/ticket/query.py:709 trac/ticket/query.py:715
+msgid "Ticket"
+msgstr "Avizo"
+
+#: trac/ticket/query.py:776 trac/ticket/report.py:406
+#, python-format
+msgid "Page %(num)d"
+msgstr "Paĝo %(num)d"
+
+#: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
+#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:216
+#: trac/versioncontrol/web_ui/log.py:303
+msgid "RSS Feed"
+msgstr "RSS-anoncoj"
+
+#: trac/ticket/query.py:827 trac/ticket/report.py:275 trac/ticket/report.py:568
+#: trac/ticket/web_ui.py:126
+msgid "Comma-delimited Text"
+msgstr "Kome disigita teksto"
+
+#: trac/ticket/query.py:829 trac/ticket/report.py:277 trac/ticket/report.py:570
+#: trac/ticket/web_ui.py:128
+msgid "Tab-delimited Text"
+msgstr "Tabulsigne disigita teksto"
+
+#: trac/ticket/query.py:851 trac/ticket/report.py:72
+msgid "View Tickets"
+msgstr "Avizoj"
+
+#: trac/ticket/query.py:1058 trac/ticket/query.py:1069
+#: trac/ticket/report.py:133
+msgid "Custom Query"
+msgstr "Detala serĉo"
+
+#: trac/ticket/query.py:1068 trac/ticket/report.py:123
+#: trac/ticket/report.py:124 trac/ticket/report.py:126
+#: trac/ticket/templates/report_list.html:10
+#: trac/ticket/templates/report_list.html:15
+msgid "Available Reports"
+msgstr "Disponeblaj raportoj"
+
+#: trac/ticket/query.py:1151
+#, python-format
+msgid "[Error: %(error)s]"
+msgstr "[Eraro: %(error)s]"
+
+#: trac/ticket/query.py:1285
+msgid "No results"
+msgstr "Neniuj trovoj"
+
+#: trac/ticket/query.py:1303
+#, python-format
+msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
+msgstr "%(groupvalue)s %(groupname)s avizoj konvene al %(query)s"
+
+#: trac/ticket/query.py:1326
+#, python-format
+msgid "%(groupvalue)s %(groupname)s tickets:"
+msgstr "%(groupvalue)s %(groupname)s avizoj:"
+
+#: trac/ticket/report.py:159
+msgid "The report has been created."
+msgstr "La raporto kreiĝis."
+
+#: trac/ticket/report.py:172
+#, python-format
+msgid "The report {%(id)d} has been deleted."
+msgstr "La raporto {%(id)d} foriĝis."
+
+#: trac/ticket/report.py:199
+#, python-format
+msgid "Delete Report {%(num)s} %(title)s"
+msgstr "Forigu raporton {%(num)s} %(title)s"
+
+#: trac/ticket/report.py:204 trac/ticket/report.py:217
+#: trac/ticket/report.py:296
+#, python-format
+msgid "Report {%(num)s} does not exist."
+msgstr "Raporto {%(num)s} ne ekzistas."
+
+#: trac/ticket/report.py:205 trac/ticket/report.py:218
+#: trac/ticket/report.py:297
+msgid "Invalid Report Number"
+msgstr "Nevalida raporto numero"
+
+#: trac/ticket/report.py:230
+msgid "Create New Report"
+msgstr "Kreŭ novan raporton"
+
+#: trac/ticket/report.py:234
+#, python-format
+msgid "Edit Report {%(num)d} %(title)s"
+msgstr "Redaktu raporton {%(num)d} %(title)s"
+
+#: trac/ticket/report.py:302
+#, python-format
+msgid "Report failed: %(error)s"
+msgstr "Raporto malsukcesis: %(error)s"
+
+#: trac/ticket/report.py:317
+#, python-format
+msgid "When specified, the report number should be \"%(num)s\"."
+msgstr "Se donita, la raportonumero estu \"%(num)s\"."
+
+#: trac/ticket/report.py:388
+#, python-format
+msgid "Report execution failed: %(error)s"
+msgstr "Raportado malsukcesis: %(error)s"
+
+#: trac/ticket/report.py:574
+msgid "SQL Query"
+msgstr "SQL-formulon"
+
+#: trac/ticket/report.py:598
+#, python-format
+msgid "The following arguments are missing: %(args)s"
+msgstr "La sekvaj argumentoj mankas: %(args)s"
+
+#: trac/ticket/report.py:612
+#, python-format
+msgid "Report {%(num)s} has no SQL query."
+msgstr "Raporto {%(num)s} ne havas SQL-formulon."
+
+#: trac/ticket/report.py:642
+#, python-format
+msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
+msgstr "Serĉoparametro \"sort=%(sort_col)s\"  ne estas valida"
+
+#: trac/ticket/roadmap.py:205
+msgid "ticket status"
+msgstr "avizostato"
+
+#: trac/ticket/roadmap.py:205
+msgid "tickets"
+msgstr "avizoj"
+
+#: trac/ticket/roadmap.py:215
+#, python-format
+msgid ""
+"'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
+"\"catch-all\" groups. Please check your configuration."
+msgstr ""
+"La rikoltogrupoj '%(group1)s' kaj  '%(group2)s' estas deklaritaj kiel "
+"\"catch-all\"-grupoj. bonvolu kontroli vian agordon."
+
+#: trac/ticket/roadmap.py:231
+#, python-format
+msgid ""
+"'%(groupname)s' milestone group reused status '%(status)s' already taken "
+"by other groups. Please check your configuration."
+msgstr ""
+"La reŭzata stato '%(status)s' de la rikoltogrupo '%(groupname)s'  jam "
+"uziĝas de aliaj grupoj. Bonvolu kontroli vian agordon."
+
+#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
+#: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/templates/roadmap.html:15
+msgid "Roadmap"
+msgstr "Rikoltoplano"
+
+#: trac/ticket/roadmap.py:364
+msgid "iCalendar"
+msgstr "iKalendaro"
+
+#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:845
+#, python-format
+msgid "Milestone %(name)s"
+msgstr "Rikolto %(name)s"
+
+#: trac/ticket/roadmap.py:464
+#, python-format
+msgid "Ticket #%(num)s: %(summary)s"
+msgstr "Avizo #%(num)s: %(summary)s"
+
+#: trac/ticket/roadmap.py:525
+msgid "Milestones reached"
+msgstr "Faritaj rikoltoj"
+
+#: trac/ticket/roadmap.py:553
+#, python-format
+msgid "Milestone %(name)s completed"
+msgstr "Rikolto %(name)s pretiĝis"
+
+#: trac/ticket/roadmap.py:613
+#, python-format
+msgid "The milestone \"%(name)s\" has been deleted."
+msgstr "La rikolto \"%(name)s\" foriĝis."
+
+#: trac/ticket/roadmap.py:652
+#, python-format
+msgid "Milestone \"%(name)s\" already exists, please choose another name."
+msgstr "Rikolto \"%(name)s\" jam ekzistas, bonvolu elekti alian nomon."
+
+#: trac/ticket/roadmap.py:655
+msgid "You must provide a name for the milestone."
+msgstr "Vi donu nomon al la rikolto."
+
+#: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
+msgid "New Ticket"
+msgstr "Nova avizo"
+
+#: trac/ticket/web_ui.py:168
+msgid "id can't be set for a new ticket request."
+msgstr "Idenditgilo ne metebla por nova avizopeto."
+
+#: trac/ticket/web_ui.py:231
+msgid "Opened and closed tickets"
+msgstr "Malfermitaj kaj fermitaj avizoj"
+
+#: trac/ticket/web_ui.py:233
+msgid "Ticket updates"
+msgstr "Avizoŝanĝoj"
+
+#: trac/ticket/web_ui.py:239
+msgid "created"
+msgstr "kreita"
+
+#: trac/ticket/web_ui.py:240
+msgid "reopened"
+msgstr "remalfermita"
+
+#: trac/ticket/web_ui.py:241
+msgid "closed"
+msgstr "fermita"
+
+#: trac/ticket/web_ui.py:242
+msgid "updated"
+msgstr "ŝanĝita"
+
+#: trac/ticket/web_ui.py:262
+#, python-format
+msgid "%(labels)s changed"
+msgid_plural "%(labels)s changed"
+msgstr[0] "%(labels)s ŝanĝita"
+msgstr[1] "%(labels)s ŝanĝitaj"
+
+#: trac/ticket/web_ui.py:343
+#, python-format
+msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
+msgstr "Avizo %(ticketref)s (%(summary)s) %(verb)s"
+
+#: trac/ticket/web_ui.py:498
+#, python-format
+msgid "The action \"%(name)s\" is not available."
+msgstr "La ago \"%(name)s\" ne estas disponebla."
+
+#: trac/ticket/web_ui.py:524
+#, python-format
+msgid ""
+"Please review your configuration, probably starting with %(section)s in "
+"your %(tracini)s."
+msgstr ""
+"Bonvolu revizii la agordon, verŝajne komenciĝante ĉe la sekcio "
+"%(section)s en la dosiero %(tracini)s."
+
+#: trac/ticket/web_ui.py:629
+msgid "Previous Ticket"
+msgstr "Antaŭa avizo"
+
+#: trac/ticket/web_ui.py:629
+msgid "Next Ticket"
+msgstr "Sekva avizo"
+
+#: trac/ticket/web_ui.py:630
+msgid "Back to Query"
+msgstr "Reen al la serĉpeto"
+
+#: trac/ticket/web_ui.py:712 trac/ticket/web_ui.py:860
+#: trac/ticket/web_ui.py:868
+msgid "Ticket History"
+msgstr "Avizokroniko"
+
+#: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:915
+#, python-format
+msgid "Back to Ticket #%(num)s"
+msgstr "Reen al avizo #%(num)s"
+
+#: trac/ticket/web_ui.py:758
+msgid "No differences to show"
+msgstr "Neniu diferencoj"
+
+#: trac/ticket/web_ui.py:801 trac/ticket/web_ui.py:857
+#: trac/ticket/web_ui.py:865 trac/ticket/web_ui.py:936
+#: trac/ticket/web_ui.py:981 trac/ticket/web_ui.py:988 trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
+#, python-format
+msgid "Version %(num)s"
+msgstr "Versio %(num)s"
+
+#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+#: trac/ticket/templates/ticket.html:91
+msgid "Initial Version"
+msgstr "Origina versio"
+
+#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+msgid "initial"
+msgstr "origina"
+
+#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
+#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+msgid "Previous Change"
+msgstr "Antaŭa ŝanĝo"
+
+#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
+#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+msgid "Next Change"
+msgstr "Sekva ŝanĝo"
+
+#: trac/ticket/web_ui.py:873
+msgid "Ticket Diff"
+msgstr "Avizodiferencoj"
+
+#: trac/ticket/web_ui.py:907 trac/ticket/web_ui.py:984
+#: trac/ticket/web_ui.py:991
+msgid "Ticket Comment History"
+msgstr "Avizkomenta kroniko"
+
+#: trac/ticket/web_ui.py:909 trac/ticket/web_ui.py:933
+#: trac/ticket/web_ui.py:998
+#, python-format
+msgid "Ticket #%(num)s, comment %(cnum)d"
+msgstr "Avizo #%(num)s, komento %(cnum)d"
+
+#: trac/ticket/web_ui.py:956
+#, python-format
+msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
+msgstr "Neniu versio %(version)d por komento %(cnum)d de avizo #%(ticket)s"
+
+#: trac/ticket/web_ui.py:996
+msgid "Ticket Comment Diff"
+msgstr "Diferencoj de avizokomentoj"
+
+#: trac/ticket/web_ui.py:1082
+msgid "No permission to edit the ticket description."
+msgstr "Mankas permeso redakti la priskribon de la avizo."
+
+#: trac/ticket/web_ui.py:1088
+msgid "No permission to change the ticket reporter."
+msgstr "Mankas permeso por ŝanĝi la avizinton."
+
+#: trac/ticket/web_ui.py:1093
+msgid "No permission to change ticket fields."
+msgstr "Mankas permeso por ŝanĝi avizoindikojn."
+
+#: trac/ticket/web_ui.py:1102
+msgid "No permissions to add a comment."
+msgstr "Mankas permeso por aldoni komenton."
+
+#: trac/ticket/web_ui.py:1108
+msgid ""
+"Sorry, can not save your changes. This ticket has been modified by "
+"someone else since you started"
+msgstr ""
+"Pardonu, ne eblas konservi viajn ŝanĝojn. La avizo estas intertempe "
+"ŝanĝita de iu alia"
+
+#: trac/ticket/web_ui.py:1115
+msgid "Tickets must contain a summary."
+msgstr "Avizoj nepre habu resumon."
+
+#: trac/ticket/web_ui.py:1138
+#, python-format
+msgid "Ticket description is too long (must be less than %(num)s characters)"
+msgstr "La priskribo de la avizo estas tro longa (maksimume %(num)s signoj)"
+
+#: trac/ticket/web_ui.py:1145
+#, python-format
+msgid "Ticket comment is too long (must be less than %(num)s characters)"
+msgstr "La komento de la avizo estas tro longa (maksimume %(num)s signoj)"
+
+#: trac/ticket/web_ui.py:1160
+msgid "Invalid comment threading identifier"
+msgstr "Nevalida identigilo por la fadenigo de komentoj"
+
+#: trac/ticket/web_ui.py:1167
+#, python-format
+msgid "The ticket field '%(field)s' is invalid: %(message)s"
+msgstr "La indiko '%(field)s' ne estas valida: %(message)s"
+
+#: trac/ticket/web_ui.py:1186
+#, python-format
+msgid ""
+"The ticket has been created, but an error occurred while sending "
+"notifications: %(message)s"
+msgstr "La avizo kreiĝis, sed okazis eraro dum sendado de anoncoj: %(message)s"
+
+#: trac/ticket/web_ui.py:1196
+#, python-format
+msgid ""
+"Your ticket %(ticketref)s has been created, but you don't have permission"
+" to view it."
+msgstr "Via avizo %(ticketref)s kreiĝis, sed mankas al vi la permeso rigardi ĝin."
+
+#. TRANSLATOR: The 'change' has been saved... (link)
+#: trac/ticket/web_ui.py:1227
+msgid "change"
+msgstr "ŝanĝo"
+
+#: trac/ticket/web_ui.py:1233
+#, python-format
+msgid ""
+"The %(change)s has been saved, but an error occurred while sending "
+"notifications: %(message)s"
+msgstr ""
+"La ŝanĝo %(change)s konserviĝis, sed okazis eraro dum sendado de anoncoj:"
+" %(message)s"
+
+#: trac/ticket/web_ui.py:1367
+msgid "Add to Cc"
+msgstr "Aldonu al kopioj"
+
+#: trac/ticket/web_ui.py:1368
+msgid "Remove from Cc"
+msgstr "Forigu de kopioj"
+
+#: trac/ticket/web_ui.py:1369
+msgid "Add/Remove from Cc"
+msgstr "Aldonu/forigu je kopioj"
+
+#: trac/ticket/web_ui.py:1370
+msgid "<Author field>"
+msgstr "<Indiko de aŭtoro>"
+
+#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:102
+msgid "yes"
+msgstr "jes"
+
+#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:105
+msgid "no"
+msgstr "ne"
+
+#: trac/ticket/web_ui.py:1580 trac/versioncontrol/templates/changeset.html:187
+msgid "modified"
+msgstr "ŝanĝita"
+
+#: trac/ticket/templates/milestone_delete.html:10
+#: trac/ticket/templates/milestone_delete.html:22
+msgid "Delete Milestone"
+msgstr "Forigu rikolton"
+
+#: trac/ticket/templates/milestone_delete.html:27
+msgid "Are you sure you want to delete this milestone?"
+msgstr "Ĉu vere forigi tiun ĉi rikolton?"
+
+#: trac/ticket/templates/milestone_delete.html:29
+msgid "Retarget associated tickets to milestone"
+msgstr "Aliordigu alligitajn avizojn al rikolto"
+
+#: trac/ticket/templates/milestone_delete.html:41
+#: trac/ticket/templates/milestone_view.html:107
+msgid "Delete milestone"
+msgstr "Forigu rikolton"
+
+#: trac/ticket/templates/milestone_delete.html:45
+msgid ""
+"[1:Note:] See\n"
+"      [2:TracRoadmap] for help on using\n"
+"      the roadmap."
+msgstr ""
+"[1:Noto:] Vidu paĝon\n"
+"      [2:TracRoadmap] je helpo pri uzado\n"
+"      de la rikoltoplano."
+
+#: trac/ticket/templates/milestone_edit.html:11
+#: trac/ticket/templates/milestone_edit.html:36
+msgid "Edit Milestone"
+msgstr "Redaktu rikolton"
+
+#: trac/ticket/templates/milestone_edit.html:12
+#: trac/ticket/templates/milestone_edit.html:37
+msgid "New Milestone"
+msgstr "Nova rikolot"
+
+#: trac/ticket/templates/milestone_edit.html:44
+msgid "Name of the milestone:"
+msgstr "Nomo de la rikolot:"
+
+#: trac/ticket/templates/milestone_edit.html:49
+msgid "Schedule"
+msgstr "Plano"
+
+#: trac/ticket/templates/milestone_edit.html:71
+msgid "Retarget associated open tickets to milestone:"
+msgstr "Aliordigu alligitajn malfermitajn avizojn al rikolto:"
+
+#: trac/ticket/templates/milestone_edit.html:92
+#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket_change.html:47
+#: trac/wiki/templates/wiki_edit_form.html:70
+#: trac/wiki/templates/wiki_edit_form.html:75
+msgid "Submit changes"
+msgstr "Konfirmu ŝanĝojn"
+
+#: trac/ticket/templates/milestone_edit.html:93
+msgid "Add milestone"
+msgstr "Aldonu rikolton"
+
+#: trac/ticket/templates/milestone_edit.html:98
+#: trac/ticket/templates/milestone_view.html:113
+#: trac/ticket/templates/roadmap.html:79
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracRoadmap] for help on using\n"
+"        the roadmap."
+msgstr ""
+"[1:Noto:] Vidu paĝon\n"
+"        [2:TracRoadmap] je helpo pri uzado\n"
+"        de la rikoltoplano."
+
+#: trac/ticket/templates/milestone_view.html:11
+msgid "Edit this milestone"
+msgstr "Redaktu tiun ĉi rikolton"
+
+#: trac/ticket/templates/milestone_view.html:27
+#: trac/ticket/templates/roadmap.html:42
+#, python-format
+msgid "Completed %(duration)s ago (%(date)s)"
+msgstr "Finita antaŭ %(duration)s (%(date)s)"
+
+#: trac/ticket/templates/milestone_view.html:32
+#: trac/ticket/templates/roadmap.html:47
+#, python-format
+msgid "[1:%(duration)s late] (%(date)s)"
+msgstr "[1:%(duration)s da prokrasto] (%(date)s)"
+
+#: trac/ticket/templates/milestone_view.html:37
+#: trac/ticket/templates/roadmap.html:52
+#, python-format
+msgid "Due in %(duration)s (%(date)s)"
+msgstr "Fino post %(duration)s (%(date)s)"
+
+#: trac/ticket/templates/milestone_view.html:41
+#: trac/ticket/templates/roadmap.html:56
+msgid "No date set"
+msgstr "Neniu limdato donita"
+
+#: trac/ticket/templates/milestone_view.html:51
+#, python-format
+msgid "%(stat_title)s by"
+msgstr "%(stat_title)s de"
+
+#: trac/ticket/templates/milestone_view.html:65
+msgid "(none)"
+msgstr "(neniu)"
+
+#: trac/ticket/templates/milestone_view.html:101
+msgid "Edit milestone"
+msgstr "Redaktu rikolton"
+
+#: trac/ticket/templates/query.html:29
+#: trac/ticket/templates/query_results.html:28
+#: trac/ticket/templates/report_view.html:87
+#, python-format
+msgid "%(num)s match"
+msgid_plural "%(num)s matches"
+msgstr[0] "%(num)s trovo"
+msgstr[1] "%(num)s trovoj"
+
+#: trac/ticket/templates/query.html:38
+msgid "Filters"
+msgstr "Filtrilo"
+
+#: trac/ticket/templates/query.html:39
+msgid "Query filters"
+msgstr "Serĉfiltriloj"
+
+#: trac/ticket/templates/query.html:45 trac/ticket/templates/query.html:141
+msgid "Or"
+msgstr "Aŭ"
+
+#: trac/ticket/templates/query.html:115
+msgid "between"
+msgstr "inter"
+
+#: trac/ticket/templates/query.html:117
+msgid "and"
+msgstr "kaj"
+
+#: trac/ticket/templates/query.html:127
+msgid "And"
+msgstr "Kaj"
+
+#: trac/ticket/templates/query.html:160
+msgid "Columns"
+msgstr "Kolumnoj"
+
+#: trac/ticket/templates/query.html:174
+msgid "Group results by"
+msgstr "Grupigu rezultojn per"
+
+#: trac/ticket/templates/query.html:185
+msgid "descending"
+msgstr "malkreske"
+
+#: trac/ticket/templates/query.html:189
+msgid "Show under each result:"
+msgstr "Montru sub ĉiu trovo:"
+
+#: trac/ticket/templates/query.html:199
+#: trac/ticket/templates/report_view.html:27
+msgid "Max items per page"
+msgstr "Maksimuma nombro sur unu paĝo"
+
+#: trac/ticket/templates/query.html:243
+#, python-format
+msgid "Edit report {%(id)s} corresponding to this query"
+msgstr "Redaktu raporton {%(id)s} konvene al tiu ĉi serĉo"
+
+#: trac/ticket/templates/query.html:243
+msgid "Edit query"
+msgstr "Redaktu serĉon"
+
+#: trac/ticket/templates/query.html:252
+msgid "Save query"
+msgstr "Konservu serĉon"
+
+#: trac/ticket/templates/query.html:252
+#, python-format
+msgid "Save updated query in report {%(id)s}"
+msgstr "Konservu aktualigitan serĉon en raporto {%(id)s}"
+
+#: trac/ticket/templates/query.html:252
+msgid "Create new report from current query"
+msgstr "Kreu novan raporton de la aktuala serĉo"
+
+#: trac/ticket/templates/query.html:260
+#, python-format
+msgid "Delete report {%(id)s} corresponding to this query"
+msgstr "Forigu raporton {%(id)s} konvene al tiu serĉo"
+
+#: trac/ticket/templates/query.html:260
+msgid "Delete query"
+msgstr "Forigu serĉon"
+
+#: trac/ticket/templates/query.html:267
+msgid ""
+"[1:Note:] See [2:TracQuery]\n"
+"        for help on using queries."
+msgstr ""
+"[1:Noto:] Vidu paĝon [2:TracQuery]\n"
+"        je helpo pri uzado de la serĉon."
+
+#: trac/ticket/templates/query_results.html:35
+#: trac/versioncontrol/templates/sortable_th.html:18
+#, python-format
+msgid "Sort by %(col)s %(direction)s"
+msgstr "Ordigu je %(col)s %(direction)s"
+
+#: trac/ticket/templates/query_results.html:45
+msgid "No tickets found"
+msgstr "Neniu avizo trovita"
+
+#: trac/ticket/templates/query_results.html:59
+#: trac/ticket/templates/query_results.html:62
+msgid "View ticket"
+msgstr "Montru avizon"
+
+#: trac/ticket/templates/query_results.html:67
+#: trac/ticket/templates/report_view.html:170
+msgid "View milestone"
+msgstr "Montru rikolton"
+
+#: trac/ticket/templates/query_results.html:78
+#, python-format
+msgid ""
+"Reported by [1:%(author)s],\n"
+"                      %(date)s ago."
+msgstr ""
+"Avizita de [1:%(author)s],\n"
+"                      antaŭ %(date)s."
+
+#: trac/ticket/templates/query_results.html:85
+msgid "(this ticket)"
+msgstr "(tiu ĉi avizo)"
+
+#: trac/ticket/templates/query_results.html:101
+msgid "(more results for this group on next page)"
+msgstr "(pliaj rezultoj el tiu grupo sur sekva paĝo)"
+
+#: trac/ticket/templates/report_delete.html:17
+msgid "Are you sure you want to delete this report?"
+msgstr "Ĉu vere forigi tiun ĉi raporton?"
+
+#: trac/ticket/templates/report_delete.html:22
+#: trac/ticket/templates/report_list.html:34
+#: trac/ticket/templates/report_view.html:75
+msgid "Delete report"
+msgstr "Forigu raporton"
+
+#: trac/ticket/templates/report_delete.html:26
+#: trac/ticket/templates/report_edit.html:49
+#: trac/ticket/templates/report_list.html:52
+#: trac/ticket/templates/report_view.html:195
+msgid ""
+"[1:Note:]\n"
+"        See [2:TracReports] for help on using and creating reports."
+msgstr ""
+"[1:Noto:]\n"
+"        Vidu paĝon [2:TracReports] je helpo pri uzado kaj kreado de "
+"raportoj."
+
+#: trac/ticket/templates/report_edit.html:16
+msgid "New Report"
+msgstr "Nova raporto"
+
+#: trac/ticket/templates/report_edit.html:21
+msgid "Report Title:"
+msgstr "Titolo de la raporto:"
+
+#: trac/ticket/templates/report_edit.html:25
+msgid "Description: (you may use [1:WikiFormatting] here)"
+msgstr "Priskribo: (vi povas aranĝi laŭ [1:WikiFormatting] tie ĉi)"
+
+#: trac/ticket/templates/report_edit.html:36
+msgid ""
+"Query for Report: (can be either SQL or, if starting with [1:query:],\n"
+"              a [2:TracQuery] expression)"
+msgstr ""
+"Serĉformulo de la raporto: (povas esti aŭ SQL aŭ komenciĝante je "
+"[1:query:],\n"
+"              esprimo laŭ la paĝo [2:TracQuery])"
+
+#: trac/ticket/templates/report_edit.html:43
+msgid "Save report"
+msgstr "Konservu raporton"
+
+#: trac/ticket/templates/report_list.html:23
+msgid "Report"
+msgstr "Raporto"
+
+#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
+msgid "Title"
+msgstr "Titolo"
+
+#: trac/ticket/templates/report_list.html:25
+#: trac/wiki/templates/wiki_edit.html:68 trac/wiki/templates/wiki_edit.html:141
+msgid "Actions"
+msgstr "Agoj"
+
+#: trac/ticket/templates/report_list.html:30
+#: trac/ticket/templates/report_list.html:31
+#: trac/ticket/templates/report_view.html:121
+msgid "View report"
+msgstr "Montru raporton"
+
+#: trac/ticket/templates/report_list.html:32
+#: trac/ticket/templates/report_view.html:63
+msgid "Edit report"
+msgstr "Redaktu raporton"
+
+#: trac/ticket/templates/report_list.html:33
+#: trac/ticket/templates/ticket.html:148 trac/wiki/templates/wiki_edit.html:124
+msgid "Edit"
+msgstr "Redaktu"
+
+#: trac/ticket/templates/report_list.html:38
+msgid "No reports available."
+msgstr "Neniuj raportoj disponeblaj"
+
+#: trac/ticket/templates/report_list.html:47
+msgid "Create new report"
+msgstr "Kreu novan raporton"
+
+#: trac/ticket/templates/report_view.html:21
+#, python-format
+msgid "%(num)d match"
+msgid_plural "%(num)d matches"
+msgstr[0] "%(num)d trovo"
+msgstr[1] "%(num)d trovoj"
+
+#: trac/ticket/templates/report_view.html:32
+msgid "Arguments"
+msgstr "Argumentoj"
+
+#: trac/ticket/templates/report_view.html:33
+msgid "Report arguments"
+msgstr "Raportargumentoj"
+
+#: trac/ticket/templates/report_view.html:69
+msgid "Copy report"
+msgstr "Kopiu raporton"
+
+#: trac/ticket/templates/report_view.html:87
+msgid "No matches"
+msgstr "Neniuj trovoj"
+
+#: trac/ticket/templates/report_view.html:128
+#: trac/ticket/templates/report_view.html:136
+#, python-format
+msgid "View %(realm)s"
+msgstr "Rigardu %(realm)s"
+
+#: trac/ticket/templates/roadmap.html:21
+msgid "Show completed milestones"
+msgstr "Montru finitajn rikoltojn"
+
+#: trac/ticket/templates/roadmap.html:26
+msgid "Hide milestones with no due date"
+msgstr "Kaŝu rikoltojn sen limdato"
+
+#: trac/ticket/templates/roadmap.html:37
+msgid "Milestone:"
+msgstr "Rikolto:"
+
+#: trac/ticket/templates/roadmap.html:75
+msgid "Add new milestone"
+msgstr "Aldonu novan rikolton"
+
+#: trac/ticket/templates/ticket.html:80
+msgid "Go to the ticket editor"
+msgstr "Saltu al la avizoredaktilo"
+
+#: trac/ticket/templates/ticket.html:80
+msgid "Modify"
+msgstr "Redaktilo"
+
+#: trac/ticket/templates/ticket.html:90 trac/ticket/templates/ticket.html:93
+msgid "— at"
+msgstr "— ĉe"
+
+#: trac/ticket/templates/ticket.html:98
+msgid "Create New Ticket"
+msgstr "Kreu novan avizon"
+
+#: trac/ticket/templates/ticket.html:113
+msgid "Change History"
+msgstr "Ŝanĝu kronikon"
+
+#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:216
+msgid "in reply to:"
+msgstr "responde al:"
+
+#: trac/ticket/templates/ticket.html:133
+msgid "follow-up:"
+msgid_plural "follow-ups:"
+msgstr[0] "sekva:"
+msgstr[1] "sekvaj:"
+
+#: trac/ticket/templates/ticket.html:148
+#, python-format
+msgid "Edit comment %(cnum)s"
+msgstr "Redaktu komenton %(cnum)s"
+
+#: trac/ticket/templates/ticket.html:155
+#: trac/ticket/templates/ticket_box.html:73
+msgid "Reply"
+msgstr "Respondu"
+
+#: trac/ticket/templates/ticket.html:155
+#, python-format
+msgid "Reply to comment %(cnum)s"
+msgstr "Respondu al komento %(cnum)s"
+
+#: trac/ticket/templates/ticket.html:162
+#, python-format
+msgid ""
+"Version %(version)s, edited %(date)s ago\n"
+"                      by %(author)s"
+msgstr ""
+"Versio %(version)s, redaktita antaŭ %(date)s\n"
+"                      de %(author)s"
+
+#: trac/ticket/templates/ticket.html:166
+#, python-format
+msgid ""
+"Last edited %(date)s ago\n"
+"                      by %(author)s"
+msgstr ""
+"Laste redaktita antaŭ %(date)s\n"
+"                      de %(author)s"
+
+#: trac/ticket/templates/ticket.html:172
+#: trac/versioncontrol/templates/changeset.html:127
+msgid "previous"
+msgstr "antaŭa"
+
+#: trac/ticket/templates/ticket.html:176
+msgid "next"
+msgstr "sekva"
+
+#: trac/ticket/templates/ticket.html:180
+#: trac/ticket/templates/ticket_box.html:64
+msgid "diff"
+msgstr "diferencoj"
+
+#: trac/ticket/templates/ticket.html:196
+msgid "View ticket fields and description"
+msgstr "Saltu al avizindikoj"
+
+#: trac/ticket/templates/ticket.html:196
+msgid "View"
+msgstr "Avizindikoj"
+
+#: trac/ticket/templates/ticket.html:199
+msgid "Add a comment"
+msgstr "Aldonu komenton"
+
+#: trac/ticket/templates/ticket.html:203
+msgid ""
+"You may use\n"
+"              [1:WikiFormatting]\n"
+"              here."
+msgstr ""
+"Vi povas aranĝi laŭ\n"
+"              [1:WikiFormatting]\n"
+"              tie ĉi."
+
+#: trac/ticket/templates/ticket.html:210
+msgid "The ticket validation has [1:failed]."
+msgstr "La validigo de la avizo [1:malsukcesis]."
+
+#: trac/ticket/templates/ticket.html:218
+msgid "Changed by"
+msgstr "Ŝanĝita de"
+
+#: trac/ticket/templates/ticket.html:226
+msgid "Modify Ticket"
+msgstr "Ŝanĝu avizon"
+
+#: trac/ticket/templates/ticket.html:232
+msgid "Change Properties"
+msgstr "Ŝanĝoj de indikoj"
+
+#: trac/ticket/templates/ticket.html:233
+msgid "Properties"
+msgstr "Ecoj"
+
+#: trac/ticket/templates/ticket.html:237
+msgid "Summary:"
+msgstr "Resumo:"
+
+#: trac/ticket/templates/ticket.html:245
+msgid "Reporter:"
+msgstr "Avizanto:"
+
+#: trac/ticket/templates/ticket.html:257
+msgid ""
+"You may use\n"
+"                          [1:WikiFormatting] here."
+msgstr ""
+"Vi povas aranĝi laŭ\n"
+"                          [1:WikiFormatting] tie ĉi."
+
+#: trac/ticket/templates/ticket.html:273
+#: trac/ticket/templates/ticket_box.html:43
+#, python-format
+msgid "%(field)s:"
+msgstr "%(field)s:"
+
+#: trac/ticket/templates/ticket.html:312
+msgid "This checkbox allows you to add or remove yourself from the CC list."
+msgstr "Tiu ĉi elekto permesas aldoni aŭ forigi vin mem de la kopio-listo"
+
+#: trac/ticket/templates/ticket.html:318
+msgid "Space or comma delimited email addresses and usernames are accepted."
+msgstr ""
+"Retadresoj kaj salutnomoj disigitaj per spacsignoj aŭ komoj estas "
+"akceptataj."
+
+#: trac/ticket/templates/ticket.html:373
+#: trac/wiki/templates/wiki_edit_form.html:49
+msgid "E-mail address and user name can be saved in the"
+msgstr "Retadreso kaj salutnomo povas konserviĝi en la"
+
+#: trac/ticket/templates/ticket.html:382
+msgid "I have files to attach to this ticket"
+msgstr "Mi volas alpendigi dosierojn al tiu ĉi avizo"
+
+#: trac/ticket/templates/ticket.html:388
+msgid "Go to the list of attachments"
+msgstr "Saltu al la listo de alpendaĵoj"
+
+#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket_change.html:45
+#: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
+#: trac/wiki/templates/wiki_edit_form.html:39
+#: trac/wiki/templates/wiki_edit_form.html:68
+msgid "Preview"
+msgstr "Antaŭrigardo"
+
+#: trac/ticket/templates/ticket.html:397
+msgid "Create ticket"
+msgstr "Kreu avizon"
+
+#: trac/ticket/templates/ticket.html:402
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracTickets] for help on using\n"
+"        tickets."
+msgstr ""
+"[1:Noto:] Vidu paĝon\n"
+"        [2:TracTickets] je helpo pri uzado\n"
+"        de avizoj."
+
+#: trac/ticket/templates/ticket_box.html:19
+#, python-format
+msgid "Opened %(created)s ago"
+msgstr "Malfermita antaŭ %(created)s"
+
+#: trac/ticket/templates/ticket_box.html:20
+#, python-format
+msgid "Last modified %(modified)s ago"
+msgstr "Laste ŝanĝita antaŭ %(modified)s"
+
+#: trac/ticket/templates/ticket_box.html:21
+msgid "(ticket not yet created)"
+msgstr "(avizo ankoraŭ ne kreita)"
+
+#: trac/ticket/templates/ticket_box.html:29
+msgid "Reported by:"
+msgstr "Avizita de:"
+
+#: trac/ticket/templates/ticket_box.html:33
+msgid "Owned by:"
+msgstr "Havata de:"
+
+#: trac/ticket/templates/ticket_box.html:62
+msgid "(last modified by"
+msgstr "(laste ŝanĝita de"
+
+#: trac/ticket/templates/ticket_box.html:73
+msgid "Reply, quoting this description"
+msgstr "Respondu citante tiun ĉi priskribon"
+
+#: trac/ticket/templates/ticket_change.html:22
+#: trac/versioncontrol/templates/changeset.html:183
+msgid "added"
+msgstr "aldonita"
+
+#: trac/ticket/templates/ticket_change.html:26
+msgid "changed from"
+msgstr "ŝanĝita de"
+
+#: trac/ticket/templates/ticket_change.html:27
+msgid "to"
+msgstr "al"
+
+#: trac/ticket/templates/ticket_change.html:29
+msgid "set to"
+msgstr "metu al"
+
+#: trac/ticket/templates/ticket_change.html:33
+#: trac/versioncontrol/templates/changeset.html:184
+msgid "deleted"
+msgstr "forigita"
+
+#: trac/ticket/templates/ticket_change.html:45
+#, python-format
+msgid "Preview changes to comment %(cnum)s"
+msgstr "Antaŭrigarud ŝanĝojn de la komento %(cnum)s"
+
+#: trac/ticket/templates/ticket_change.html:47
+#, python-format
+msgid "Submit changes to comment %(cnum)s"
+msgstr "Konfirmu ŝanĝojn de la komento %(cnum)s"
+
+#: trac/ticket/templates/ticket_change.html:49
+msgid "Cancel comment edit"
+msgstr "Rezignu pri komentredakto"
+
+#: trac/ticket/templates/ticket_notify_email.txt:9
+msgid "Changes (by"
+msgstr "Ŝanĝoj (de"
+
+#: trac/ticket/templates/ticket_notify_email.txt:15
+msgid "Description changed by"
+msgstr "Priskribo ŝanĝita de"
+
+#: trac/ticket/templates/ticket_notify_email.txt:28
+msgid ""
+"-- \n"
+"Ticket URL: <"
+msgstr ""
+"-- \n"
+"Avizadreso: <"
+
+#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
+#: trac/timeline/templates/timeline.html:16
+msgid "Timeline"
+msgstr "Kroniko"
+
+#: trac/timeline/web_ui.py:229 trac/timeline/web_ui.py:237
+msgid "Previous Period"
+msgstr "Antaŭa periodo"
+
+#: trac/timeline/web_ui.py:236 trac/timeline/web_ui.py:237
+msgid "Next Period"
+msgstr "Sekva periodo"
+
+#: trac/timeline/web_ui.py:297
+#, python-format
+msgid "%(date)s in Timeline"
+msgstr "%(date)s en la kroniko"
+
+#. TRANSLATOR: other_events
+#: trac/timeline/web_ui.py:343
+msgid "other kind of events"
+msgstr "alia eventospeco"
+
+#: trac/timeline/web_ui.py:348
+#, python-format
+msgid "Event provider %(name)s failed for filters %(kinds)s: "
+msgstr "Eventoprovizanto %(name)s malsukcesis per filtriloj %(kinds)s: "
+
+#: trac/timeline/web_ui.py:354
+#, python-format
+msgid ""
+"\n"
+"              You may want to see the %(other_events)s from the Timeline "
+"or \n"
+"              notify your Trac administrator about the error (detailed\n"
+"              informations were written to the log).\n"
+"            "
+msgstr ""
+"\n"
+"              Vi povas rigardi la eventojn %(other_events)s de la kroniko"
+" or \n"
+"              Bonvolu informi vian adminsitranton de Trac administrator "
+"pri la eraro\n"
+"              (detalaj informoj protokoliĝis).\n"
+"            "
+
+#: trac/timeline/templates/timeline.html:19
+msgid ""
+"[1:View changes from [2:]] [3:]\n"
+"        and [4:[5:] days back][6:]\n"
+"        [7:done by [8:]]"
+msgstr ""
+"[1:Rigardu ŝanĝojn de lastaj [2:]] [3:]\n"
+"        kaj [4:[5:] tagoj][6:]\n"
+"        [7:faritaj de [8:]]"
+
+#: trac/timeline/templates/timeline.html:36
+msgid "Today"
+msgstr "Hodiaŭ"
+
+#: trac/timeline/templates/timeline.html:36
+msgid "Yesterday"
+msgstr "Hieraŭ"
+
+#: trac/timeline/templates/timeline.html:42
+#, python-format
+msgid ""
+"[1:%(time)s] %(title)s\n"
+"                  by [2:%(author)s]"
+msgstr ""
+"[1:%(time)s] %(title)s\n"
+"                  de [2:%(author)s]"
+
+#: trac/timeline/templates/timeline.html:58
+msgid ""
+"[1:Note:] See [2:TracTimeline]\n"
+"        for information about the timeline view."
+msgstr ""
+"[1:Noto:] Vidu paĝon [2:TracTimeline]\n"
+"        je informoj pri la kroniko."
+
+#: trac/util/datefmt.py:79
+#, python-format
+msgid "%(num)d year"
+msgid_plural "%(num)d years"
+msgstr[0] "%(num)d jaro"
+msgstr[1] "%(num)d jaroj"
+
+#: trac/util/datefmt.py:80
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d monato"
+msgstr[1] "%(num)d monatoj"
+
+#: trac/util/datefmt.py:81
+#, python-format
+msgid "%(num)d week"
+msgid_plural "%(num)d weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: trac/util/datefmt.py:82
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] "%(num)d tago"
+msgstr[1] "%(num)d tagoj"
+
+#: trac/util/datefmt.py:83
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] "%(num)d horo"
+msgstr[1] "%(num)d horoj"
+
+#: trac/util/datefmt.py:84
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] "%(num)d minuto"
+msgstr[1] "%(num)d minutoj"
+
+#: trac/util/datefmt.py:103
+#, python-format
+msgid "%(num)i second"
+msgid_plural "%(num)i seconds"
+msgstr[0] "%(num)i sekundo"
+msgstr[1] "%(num)i sekundoj"
+
+#: trac/util/datefmt.py:247
+#, python-format
+msgid ""
+"\"%(date)s\" is an invalid date, or the date format is not known. Try "
+"\"%(hint)s\" instead."
+msgstr ""
+"\"%(date)s\" estas nevalida dato aŭ la datformato ne estas konata. Provu "
+"\"%(hint)s\" anstataŭe."
+
+#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+msgid "Invalid Date"
+msgstr "Nevalida dato"
+
+#: trac/util/datefmt.py:255
+#, python-format
+msgid ""
+"The date \"%(date)s\" is outside valid range. Try a date closer to "
+"present time."
+msgstr ""
+"La dato \"%(date)s\" estas ekster valida intervalo. Provu daton pli "
+"proksiman al la nuna tempo."
+
+#: trac/util/presentation.py:254
+#, python-format
+msgid "%(last)d of %(total)d"
+msgstr "%(last)d el %(total)d"
+
+#: trac/util/presentation.py:256
+#, python-format
+msgid "%(start)d - %(stop)d of %(total)d"
+msgstr "%(start)d - %(stop)d el %(total)d"
+
+#: trac/versioncontrol/admin.py:80 trac/versioncontrol/admin.py:105
+#: trac/versioncontrol/admin.py:106 trac/versioncontrol/admin.py:296
+#: trac/versioncontrol/api.py:32 trac/versioncontrol/api.py:149
+#: trac/versioncontrol/api.py:186
+#: trac/versioncontrol/templates/admin_repositories.html:20
+#: trac/versioncontrol/templates/admin_repositories.html:33
+#: trac/versioncontrol/templates/admin_repositories.html:132
+#: trac/versioncontrol/templates/admin_repositories.html:134
+#: trac/versioncontrol/web_ui/browser.py:809
+#: trac/versioncontrol/web_ui/changeset.py:853
+#: trac/versioncontrol/web_ui/changeset.py:995
+msgid "(default)"
+msgstr "(ordinara)"
+
+#: trac/versioncontrol/admin.py:108
+msgid "Alias"
+msgstr "Alinomo"
+
+#: trac/versioncontrol/admin.py:108
+#: trac/versioncontrol/templates/admin_repositories.html:125
+msgid "Directory"
+msgstr "Dosierujo"
+
+#: trac/versioncontrol/admin.py:114
+msgid "Cannot synchronize a single revision on multiple repositories"
+msgstr "Ne eblas sinkronigi unuopan revizion en pluraj deponejoj"
+
+#: trac/versioncontrol/admin.py:123
+#, python-format
+msgid "Unknown repository '%(reponame)s'"
+msgstr "Nekonata deponejo '%(reponame)s'"
+
+#: trac/versioncontrol/admin.py:127
+#, python-format
+msgid "%(rev)s resynced on %(reponame)s."
+msgstr "%(rev)s resinkronigita en %(reponame)s."
+
+#: trac/versioncontrol/admin.py:134
+#, python-format
+msgid "Resyncing repository history for %(reponame)s... "
+msgstr "Resinkronigante deponejokronikon por %(reponame)s... "
+
+#: trac/versioncontrol/admin.py:140
+#, python-format
+msgid "%(num)s revision cached."
+msgid_plural "%(num)s revisions cached."
+msgstr[0] "%(num)s revizio bufrita."
+msgstr[1] "%(num)s revizioj bufritaj."
+
+#: trac/versioncontrol/admin.py:142
+msgid "Done."
+msgstr "Preta."
+
+#: trac/versioncontrol/admin.py:164
+msgid "Version Control"
+msgstr "Versiokontrolo"
+
+#: trac/versioncontrol/admin.py:165
+#: trac/versioncontrol/templates/admin_repositories.html:10
+msgid "Repositories"
+msgstr "Deponejoj"
+
+#: trac/versioncontrol/admin.py:180
+#, python-format
+msgid "Repository %(name)s does not exist."
+msgstr "Deponejo %(name)s ne ekzistas."
+
+#: trac/versioncontrol/admin.py:199 trac/versioncontrol/admin.py:235
+#, python-format
+msgid ""
+"You should now run \"trac-admin $ENV repository resync %(name)s\" to "
+"synchronize Trac with the repository."
+msgstr ""
+"Nun lanĉu \"trac-admin $ENV repository resync %(name)s\" por sinkronigi "
+"Trac kun la deponejo."
+
+#: trac/versioncontrol/admin.py:204
+#, python-format
+msgid ""
+"You may have to run \"trac-admin $ENV repository resync %(name)s\" to "
+"synchronize Trac with the repository."
+msgstr ""
+"Vi povus lanĉi \"trac-admin $ENV repository resync %(name)s\" por "
+"sinkronigi Trac kun la deponejo."
+
+#: trac/versioncontrol/admin.py:209
+msgid ""
+"You will need to update your post-commit hook to call \"trac-admin $ENV "
+"changeset added\" with the new repository name."
+msgstr ""
+"Necesas, ke vi aktualigu vian postdemetan hokon (post-commit hook) por "
+"povi ruli la komandon \"trac-admin $ENV changeset added\" kun la nova "
+"nomo de la deponejo."
+
+#: trac/versioncontrol/admin.py:230
+#, python-format
+msgid "The repository \"%(name)s\" has been added."
+msgstr "La deponejo \"%(name)s\" aldoniĝis"
+
+#: trac/versioncontrol/admin.py:237
+#, python-format
+msgid ""
+"You should also set up a post-commit hook on the repository to call "
+"\"trac-admin $ENV changeset added %(name)s $REV\" for each committed "
+"changeset."
+msgstr ""
+"Vi ankaŭ agordu postdemetan hokon (post-commit hook) ĉe la deponejo por "
+"povi ruli la komandon \"trac-admin $ENV changeset added %(name)s $REV\" "
+"por ĉiu demetata ŝanĝaro."
+
+#: trac/versioncontrol/admin.py:243
+msgid "Missing arguments to add a repository."
+msgstr "Mankas argumentoj por aldoni deponejon."
+
+#: trac/versioncontrol/admin.py:252
+#, python-format
+msgid "The alias \"%(name)s\" has been added."
+msgstr "La alinomo \"%(name)s\" aldoniĝis."
+
+#: trac/versioncontrol/admin.py:255
+msgid "Missing arguments to add an alias."
+msgstr "Mankas argumentoj por aldoni alinomon."
+
+#: trac/versioncontrol/admin.py:268
+msgid "The selected repositories have been removed."
+msgstr "La elektitaj deponejoj foriĝis."
+
+#: trac/versioncontrol/admin.py:271
+msgid "No repositories were selected."
+msgstr "Neniuj deponejoj estas elektitaj."
+
+#: trac/versioncontrol/api.py:183
+#, python-format
+msgid "Invalid key \"%(key)s\""
+msgstr "Nevalida ŝlosilo \"%(key)s\""
+
+#: trac/versioncontrol/api.py:188
+#, python-format
+msgid "You should now run \"repository resync %(name)s\"."
+msgstr "Vi lanĉu nun \"repository resync %(name)s\"."
+
+#: trac/versioncontrol/api.py:191
+#, python-format
+msgid "You may have to run \"repository resync %(name)s\"."
+msgstr "Vi povus lanĉi nun \"repository resync %(name)s\"."
+
+#: trac/versioncontrol/api.py:202
+#, python-format
+msgid "The repository type '%(type)s' is not supported"
+msgstr "La deponejospeco '%(type)s' ne estas subtenata"
+
+#: trac/versioncontrol/api.py:331
+#, python-format
+msgid ""
+"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
+"Trac log for more information."
+msgstr ""
+"Ne eblis sinkroniĝi kun la deponejo \"%(name)s\" (%(error)s). Rigardu en "
+"la Trac-protokolon pri detaloj."
+
+#: trac/versioncontrol/api.py:350
+#, python-format
+msgid "Changeset %(rev)s in %(repo)s"
+msgstr "Ŝanĝaro %(rev)s en %(repo)s"
+
+#: trac/versioncontrol/api.py:352
+#, python-format
+msgid "Changeset %(rev)s"
+msgstr "Ŝanĝaro %(rev)s"
+
+#: trac/versioncontrol/api.py:360
+msgid "directory"
+msgstr "dosierujo"
+
+#: trac/versioncontrol/api.py:362
+msgid "file"
+msgstr "dosiero"
+
+#: trac/versioncontrol/api.py:364
+#, python-format
+msgid "at version %(rev)s"
+msgstr "ĉe versio %(rev)s"
+
+#: trac/versioncontrol/api.py:366
+msgid "path"
+msgstr "pado"
+
+#: trac/versioncontrol/api.py:369
+#, python-format
+msgid " in %(repo)s"
+msgstr " en %(repo)s"
+
+#: trac/versioncontrol/api.py:372
+#, python-format
+msgid "Repository %(repo)s"
+msgstr "Deponejo %(repo)s"
+
+#: trac/versioncontrol/api.py:653
+#, python-format
+msgid "Unsupported version control system \"%(name)s\": %(error)s"
+msgstr "Ne subtenaata versikontrolilo \"%(name)s\": %(error)s"
+
+#: trac/versioncontrol/api.py:656
+#, python-format
+msgid ""
+"Unsupported version control system \"%(name)s\": Can't find an "
+"appropriate component, maybe the corresponding plugin was not enabled? "
+msgstr ""
+"Ne subtenata versikontrolilo \"%(name)s\": Ne troviĝis konvena adaptilo, "
+"eble la koncerna kromprogramo ne estas ŝaltita? "
+
+#: trac/versioncontrol/api.py:664
+#, python-format
+msgid "No changeset %(rev)s in the repository"
+msgstr "La ŝanĝaro %(rev)s ne troviĝas en la deponejo"
+
+#: trac/versioncontrol/api.py:666
+msgid "No such changeset"
+msgstr "Ŝanĝaro ne troviĝis"
+
+#: trac/versioncontrol/api.py:672
+#, python-format
+msgid "No node %(path)s at revision %(rev)s"
+msgstr "Nodo %(path)s ne troviĝis ĉe la revizio %(rev)s"
+
+#: trac/versioncontrol/api.py:674
+#, python-format
+msgid "%(msg)s: No node %(path)s at revision %(rev)s"
+msgstr "%(msg)s: Nodo %(path)s ne troviĝis ĉe la revizio %(rev)s"
+
+#: trac/versioncontrol/api.py:676
+msgid "No such node"
+msgstr "Nodo ne troviĝis"
+
+#: trac/versioncontrol/cache.py:149
+msgid ""
+"The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
+"operation is needed."
+msgstr ""
+"La dosierujo 'repository_dir' ŝanĝiĝis, necesas lanĉi la komandon 'trac-"
+"admin $ENV repository resync'."
+
+#: trac/versioncontrol/svn_authz.py:73
+#, python-format
+msgid "Line %(lineno)d: Entry before first section header"
+msgstr "Linio %(lineno)d: Ero antaŭ una alineokapo"
+
+#: trac/versioncontrol/svn_authz.py:77
+#, python-format
+msgid "Line %(lineno)d: Invalid entry"
+msgstr "Linio %(lineno)d: Nevalida ero"
+
+#: trac/versioncontrol/svn_fs.py:275
+#, python-format
+msgid "Subversion >= 1.0 required, found %(version)s"
+msgstr "Subversion >= 1.0 estas bezonata, sed troviĝis la versio %(version)s"
+
+#: trac/versioncontrol/svn_fs.py:330
+#, python-format
+msgid "%(path)s does not appear to be a Subversion repository."
+msgstr "Ĉe la pado %(path)s ŝajne ne troviĝas deponejo de 'Subversion'."
+
+#: trac/versioncontrol/svn_fs.py:337
+#, python-format
+msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
+msgstr "Ne eblis malfermi la dponejon de 'Subversion' ĉe %(path)s: %(svn_error)s"
+
+#: trac/versioncontrol/svn_fs.py:617
+#, python-format
+msgid ""
+"Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
+" and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
+msgstr ""
+"Diferenckonfuzo: La bazo estas %(oldnode)s (%(oldpath)s en la revizio "
+"%(oldrev)s) kaj la celo estas %(newnode)s (%(newpath)s en la revizio "
+"%(newrev)s)."
+
+#: trac/versioncontrol/svn_fs.py:766
+#, python-format
+msgid "svn blame failed on %(path)s: %(error)s"
+msgstr "komando 'svn blame' malsukcesis ĉe %(path)s: %(error)s"
+
+#: trac/versioncontrol/svn_prop.py:111
+msgid "No svn:externals configured in trac.ini"
+msgstr "svn:externals ne estas agordita en trac.ini"
+
+#: trac/versioncontrol/svn_prop.py:148
+msgid "merged"
+msgstr "kunfandita"
+
+#: trac/versioncontrol/svn_prop.py:148
+msgid "blocked"
+msgstr "barita"
+
+#: trac/versioncontrol/svn_prop.py:192
+msgid "eligible"
+msgstr "elektebla"
+
+#: trac/versioncontrol/svn_prop.py:206
+msgid "(toggle deleted branches)"
+msgstr "(komutu forigitajn branĉojn)"
+
+#: trac/versioncontrol/svn_prop.py:234
+msgid "View merge source"
+msgstr "Montru kunfandan fonton"
+
+#: trac/versioncontrol/svn_prop.py:245
+msgid "No revisions"
+msgstr "Neniu revizioj"
+
+#: trac/versioncontrol/svn_prop.py:281
+msgid "merged: "
+msgstr "kunfandita: "
+
+#: trac/versioncontrol/svn_prop.py:281
+msgid "blocked: "
+msgstr "barita:"
+
+#: trac/versioncontrol/svn_prop.py:282
+msgid "reverse-merged: "
+msgstr "inverse-kunfandita:"
+
+#: trac/versioncontrol/svn_prop.py:282
+msgid "un-blocked: "
+msgstr "mal-barita: "
+
+#: trac/versioncontrol/svn_prop.py:293
+msgid " (added)"
+msgstr " (aldonita)"
+
+#: trac/versioncontrol/svn_prop.py:321
+msgid "removed"
+msgstr "forigita"
+
+#: trac/versioncontrol/svn_prop.py:324
+msgid " (with no actual effect on merging)"
+msgstr " (sen fakta efiko de kunfandado)"
+
+#: trac/versioncontrol/svn_prop.py:325
+#, python-format
+msgid "Property %(prop)s changed"
+msgstr "Eco %(prop)s ŝanĝita"
+
+#: trac/versioncontrol/templates/admin_repositories.html:14
+msgid "Manage Repositories"
+msgstr "Administru deponejojn"
+
+#: trac/versioncontrol/templates/admin_repositories.html:24
+msgid "Default:"
+msgstr "Ordinare:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:30
+msgid "Repository:"
+msgstr "Deponejo:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:43
+msgid "Modify Repository:"
+msgstr "Ŝanĝu deponejon:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:44
+msgid "View Repository:"
+msgstr "Montru deponejon:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:45
+msgid ""
+"[1:Note:]\n"
+"            This repository is defined in [2:[3:trac.ini]]\n"
+"            and cannot be edited on this page."
+msgstr ""
+"[1:Noto:]\n"
+"            La deponejo estas difinita en [2:[3:trac.ini]]\n"
+"            kaj ne povas redaktiĝi sur tiu ĉi paĝo."
+
+#: trac/versioncontrol/templates/admin_repositories.html:59
+#: trac/versioncontrol/templates/admin_repositories.html:99
+msgid "Directory:"
+msgstr "Dosierujo:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:67
+msgid "Hide from repository index"
+msgstr "Kaŝu de la deponejo-indekso"
+
+#: trac/versioncontrol/templates/admin_repositories.html:93
+msgid "Add Repository:"
+msgstr "Aldonu deponejon:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:110
+msgid "Add Alias:"
+msgstr "Aldonu alinomon:"
+
+#: trac/versioncontrol/templates/admin_repositories.html:125
+msgid "Revision"
+msgstr "Revizio"
+
+#: trac/versioncontrol/templates/admin_repositories.html:137
+msgid "Alias of"
+msgstr "Alinomo de"
+
+#: trac/versioncontrol/templates/admin_repositories.html:144
+msgid "Refresh"
+msgstr "Refreŝigu"
+
+#: trac/versioncontrol/templates/browser.html:13
+#, python-format
+msgid "%(basename)s in %(dirname)s"
+msgstr "%(basename)s en %(dirname)s"
+
+#: trac/versioncontrol/templates/browser.html:54
+msgid "Default Repository"
+msgstr "Ordinara deponejo"
+
+#: trac/versioncontrol/templates/browser.html:61
+msgid "Hint: clear the field to view latest revision"
+msgstr "Noto: malpelnigu la indikon por vidi la lastan revizion"
+
+#: trac/versioncontrol/templates/browser.html:61
+msgid "View revision:"
+msgstr "Montru revizion:"
+
+#: trac/versioncontrol/templates/browser.html:71
+msgid "Visit:"
+msgstr "Vizitu:"
+
+#: trac/versioncontrol/templates/browser.html:79
+msgid "Go!"
+msgstr "Ek!"
+
+#: trac/versioncontrol/templates/browser.html:79
+msgid "Jump to the chosen preselected path"
+msgstr "Saltu al la antaŭelektita pado"
+
+#: trac/versioncontrol/templates/browser.html:92
+msgid "Parent Directory"
+msgstr "Patra dosierujo"
+
+#: trac/versioncontrol/templates/browser.html:98
+msgid "No files found"
+msgstr "Neniuj dosieroj troviĝis"
+
+#: trac/versioncontrol/templates/browser.html:106
+#: trac/wiki/templates/wiki_edit.html:112 trac/wiki/templates/wiki_view.html:32
+msgid "Revision info"
+msgstr "Revizi-informo"
+
+#: trac/versioncontrol/templates/browser.html:108
+#, python-format
+msgid ""
+"Revision [1:%(rev)s],\n"
+"            [2:%(size)s]\n"
+"            checked in by %(author)s, %(date)s ago\n"
+"            ([3:diff])"
+msgstr ""
+"Revizio [1:%(rev)s],\n"
+"            [2:%(size)s]\n"
+"            demetita de %(author)s, antaŭ %(date)s\n"
+"            ([3:diff])"
+
+#: trac/versioncontrol/templates/browser.html:140
+#, python-format
+msgid "Property [1:%(name)s] set to %(value)s"
+msgstr ""
+
+#: trac/versioncontrol/templates/browser.html:154
+msgid "Repository Index"
+msgstr "Deponejoindekso"
+
+#: trac/versioncontrol/templates/browser.html:164
+msgid ""
+"[1:Note:] See [2:TracBrowser]\n"
+"        for help on using the repository browser."
+msgstr ""
+"[1:Noto:] vidu la paĝon [2:TracBrowser]\n"
+"        je helpo pri la uzado de la deponejumilo."
+
+#: trac/versioncontrol/templates/browser.html:176
+msgid "View changes..."
+msgstr "Montru ŝanĝojn..."
+
+#: trac/versioncontrol/templates/browser.html:176
+msgid "Select paths and revs for Diff"
+msgstr "Elektu padon kaj reviziojn por diferencigo"
+
+#: trac/versioncontrol/templates/changeset.html:33
+#, python-format
+msgid ""
+"Changeset [1:%(new_rev)s] in %(reponame)s\n"
+"              for [2:%(new_path)s]"
+msgstr ""
+"Ŝanĝaro [1:%(new_rev)s] en %(reponame)s\n"
+"              por [2:%(new_path)s]"
+
+#: trac/versioncontrol/templates/changeset.html:37
+#, python-format
+msgid ""
+"Changes in [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
+msgstr ""
+"Ŝanĝoj en [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] en %(reponame)s"
+
+#: trac/versioncontrol/templates/changeset.html:41
+#, python-format
+msgid ""
+"Changes in %(reponame)s\n"
+"              from [1:%(old_path)s]\n"
+"              at [2:r%(old_rev)s]\n"
+"              to [3:%(new_path)s]\n"
+"              at [4:r%(new_rev)s]"
+msgstr ""
+"Ŝanĝoj en %(reponame)s\n"
+"              de [1:%(old_path)s]\n"
+"              ĉe [2:r%(old_rev)s]\n"
+"              al [3:%(new_path)s]\n"
+"              ĉe [4:r%(new_rev)s]"
+
+#: trac/versioncontrol/templates/changeset.html:48
+#, python-format
+msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
+msgstr "Ŝanĝaro [1:%(new_rev)s] en %(reponame)s"
+
+#: trac/versioncontrol/templates/changeset.html:55
+#, python-format
+msgid ""
+"Changeset [1:%(new_rev)s]\n"
+"              for [2:%(new_path)s]"
+msgstr ""
+"Ŝanĝaro [1:%(new_rev)s]\n"
+"              por [2:%(new_path)s]"
+
+#: trac/versioncontrol/templates/changeset.html:59
+#, python-format
+msgid ""
+"Changes in [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
+msgstr ""
+"Ŝanĝaro en [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
+
+#: trac/versioncontrol/templates/changeset.html:63
+#, python-format
+msgid ""
+"Changes\n"
+"              from [1:%(old_path)s]\n"
+"              at [2:r%(old_rev)s]\n"
+"              to [3:%(new_path)s]\n"
+"              at [4:r%(new_rev)s]"
+msgstr ""
+"Ŝanĝaro\n"
+"              de [1:%(old_path)s]\n"
+"              ĉe [2:r%(old_rev)s]\n"
+"              al [3:%(new_path)s]\n"
+"              ĉe [4:r%(new_rev)s]"
+
+#: trac/versioncontrol/templates/changeset.html:70
+#, python-format
+msgid "Changeset [1:%(new_rev)s]"
+msgstr "Ŝanĝaro [1:%(new_rev)s]"
+
+#: trac/versioncontrol/templates/changeset.html:99
+#, python-format
+msgid "Show what was removed (content at revision %(old_rev)s)"
+msgstr "Montru, kio foriĝis (enhavo ĉe %(old_rev)s revizio)"
+
+#: trac/versioncontrol/templates/changeset.html:103
+msgid "Show entry in browser"
+msgstr "Montru la eron en rigardilo"
+
+#: trac/versioncontrol/templates/changeset.html:104
+msgid "(root)"
+msgstr "(radiko)"
+
+#: trac/versioncontrol/templates/changeset.html:109
+#, python-format
+msgid ""
+"(%(kind)s from [1:\n"
+"                %(old_path)s])"
+msgstr ""
+"(%(kind)s de [1:\n"
+"                %(old_path)s])"
+
+#: trac/versioncontrol/templates/changeset.html:117
+#: trac/versioncontrol/templates/changeset.html:120
+msgid "Show differences"
+msgstr "Montru diferencojn"
+
+#: trac/versioncontrol/templates/changeset.html:117
+msgid "view diffs"
+msgstr "montru diferencojn"
+
+#: trac/versioncontrol/templates/changeset.html:120
+#, python-format
+msgid "%(num)d diff"
+msgid_plural "%(num)d diffs"
+msgstr[0] "%(num)d diferenco"
+msgstr[1] "%(num)d diferencoj"
+
+#: trac/versioncontrol/templates/changeset.html:123
+#, python-format
+msgid "%(num)d prop"
+msgid_plural "%(num)d props"
+msgstr[0] "%(num)d eco"
+msgstr[1] "%(num)d ecoj"
+
+#: trac/versioncontrol/templates/changeset.html:127
+msgid "Show previous version in browser"
+msgstr "Montru antaŭan version en la rigardilo"
+
+#: trac/versioncontrol/templates/changeset.html:137
+msgid "(less than one hour ago)"
+msgstr "(antaŭ malpli ol horo)"
+
+#: trac/versioncontrol/templates/changeset.html:138
+#, python-format
+msgid "(%(age)s ago)"
+msgstr "(antaŭ %(age)s)"
+
+#: trac/versioncontrol/templates/changeset.html:152
+msgid "Message:"
+msgstr "Mesaĝo:"
+
+#: trac/versioncontrol/templates/changeset.html:164
+msgid "Location:"
+msgstr "Loko:"
+
+#: trac/versioncontrol/templates/changeset.html:168
+msgid "(No files)"
+msgstr "(Neniuj dosieroj)"
+
+#: trac/versioncontrol/templates/changeset.html:173
+#, python-format
+msgid "%(num)d added"
+msgid_plural "%(num)d added"
+msgstr[0] "%(num)d aldonita"
+msgstr[1] "%(num)d aldonitaj"
+
+#: trac/versioncontrol/templates/changeset.html:174
+#, python-format
+msgid "%(num)d deleted"
+msgid_plural "%(num)d deleted"
+msgstr[0] "%(num)d forigita"
+msgstr[1] "%(num)d forigitaj"
+
+#: trac/versioncontrol/templates/changeset.html:175
+#, python-format
+msgid "%(num)d edited"
+msgid_plural "%(num)d edited"
+msgstr[0] "%(num)d redaktita"
+msgstr[1] "%(num)d redaktitaj"
+
+#: trac/versioncontrol/templates/changeset.html:176
+#, python-format
+msgid "%(num)d copied"
+msgid_plural "%(num)d copied"
+msgstr[0] "%(num)d kopiita"
+msgstr[1] "%(num)d kopiitaj"
+
+#: trac/versioncontrol/templates/changeset.html:177
+#, python-format
+msgid "%(num)d moved"
+msgid_plural "%(num)d moved"
+msgstr[0] "%(num)d ŝovita"
+msgstr[1] "%(num)d ŝovitaj"
+
+#: trac/versioncontrol/templates/changeset.html:185
+msgid "copied"
+msgstr "kopiita"
+
+#: trac/versioncontrol/templates/changeset.html:186
+msgid "moved"
+msgstr "ŝovita"
+
+#: trac/versioncontrol/templates/changeset.html:209
+msgid ""
+"[1:Note:] See [2:TracChangeset]\n"
+"          for help on using the changeset viewer."
+msgstr ""
+"[1:Noto:] Vidu paĝon [2:TracChangeset]\n"
+"          he helpo pri la uzado de la ŝanĝaro-rigardilo."
+
+#: trac/versioncontrol/templates/diff_form.html:10
+#: trac/versioncontrol/templates/diff_form.html:21
+msgid "Prepare Diff"
+msgstr "Preparu diferencaĵon"
+
+#: trac/versioncontrol/templates/diff_form.html:27
+msgid "Select the base and the target for the diff:"
+msgstr "Elektu la bazon kaj la celon por la direncaĵo:"
+
+#: trac/versioncontrol/templates/diff_form.html:30
+msgid "From:"
+msgstr "De:"
+
+#: trac/versioncontrol/templates/diff_form.html:34
+#: trac/versioncontrol/templates/diff_form.html:44
+msgid "at revision:"
+msgstr "ĉe revizio:"
+
+#: trac/versioncontrol/templates/diff_form.html:40
+msgid "To:"
+msgstr "Al:"
+
+#: trac/versioncontrol/templates/diff_form.html:50
+msgid ""
+"For either path, you can start typing the path and will be\n"
+"              presented a list of existing directories and files to "
+"select\n"
+"              from. Select an entry by clicking on it, or by using the\n"
+"              up/down cursor keys and hitting tab."
+msgstr ""
+"Por ĉiu el la padoj vi povas tajpi la komencon kaj \n"
+"              ricevos liston de ekzistantaj dosierujoj kaj dosieroj.\n"
+"              Elektu eron musklakante sur ĝin, aŭ uzu la sagoklavojn\n"
+"              kaj poste premu la tabulklavon."
+
+#: trac/versioncontrol/templates/diff_form.html:62
+msgid ""
+"[1:Note:] See\n"
+"        [2:TracChangeset]\n"
+"        for help on using the diff feature."
+msgstr ""
+"[1:Noto:] Vidu paĝon\n"
+"        [2:TracChangeset]\n"
+"        je helpo pri la uzado de la diferencilo."
+
+#: trac/versioncontrol/templates/dir_entries.html:11
+#,
+msgid "View Directory"
+msgstr "Montru dosierujon"
+
+#: trac/versioncontrol/templates/dir_entries.html:11
+#, 
+msgid "View File"
+msgstr "Montru dosieron"
+
+#: trac/versioncontrol/templates/dir_entries.html:19
+#: trac/versioncontrol/templates/repository_index.html:23
+msgid "View Revision Log"
+msgstr "Montru revizio-protokolon"
+
+#: trac/versioncontrol/templates/dir_entries.html:20
+#: trac/versioncontrol/templates/repository_index.html:24
+msgid "View Changeset"
+msgstr "Montru ŝanĝaron"
+
+#: trac/versioncontrol/templates/dirlist_thead.html:9
+#: trac/versioncontrol/templates/revisionlog.html:94
+#: trac/versioncontrol/web_ui/browser.py:753
+msgid "Rev"
+msgstr "Rev."
+
+#: trac/versioncontrol/templates/dirlist_thead.html:12
+#: trac/versioncontrol/web_ui/browser.py:441
+msgid "Last Change"
+msgstr "Lasta ŝanĝo"
+
+#: trac/versioncontrol/templates/path_links.html:16
+msgid "Go to repository root"
+msgstr "Saltu al la deponejo-radiko"
+
+#: trac/versioncontrol/templates/path_links.html:16
+msgid "Go to repository index"
+msgstr "Saltu al la deponejo-indekso"
+
+#: trac/versioncontrol/templates/path_links.html:26
+#, python-format
+msgid "View %(name)s"
+msgstr "Montru %(name)s"
+
+#: trac/versioncontrol/templates/path_links.html:32
+#, python-format
+msgid "View changeset %(rev)s"
+msgstr "Montru ŝanĝaron %(rev)s"
+
+#: trac/versioncontrol/templates/repository_index.html:15
+msgid "View Root Directory"
+msgstr "Montru radikodosierujon"
+
+#: trac/versioncontrol/templates/revisionlog.html:10
+msgid "(log)"
+msgstr "(protokolo)"
+
+#: trac/versioncontrol/templates/revisionlog.html:23
+msgid "Revision Log Mode:"
+msgstr "Revizia protokolo:"
+
+#: trac/versioncontrol/templates/revisionlog.html:27
+msgid "Stop on copy"
+msgstr "Haltu ĉe kopio"
+
+#: trac/versioncontrol/templates/revisionlog.html:33
+msgid "Follow copies"
+msgstr "Sekvu kopiojn"
+
+#: trac/versioncontrol/templates/revisionlog.html:39
+msgid "Show only adds and deletes"
+msgstr "Montru nur aldonojn kaj forigojn"
+
+#: trac/versioncontrol/templates/revisionlog.html:44
+msgid "View log starting at"
+msgstr "Montru protokolon ek de"
+
+#: trac/versioncontrol/templates/revisionlog.html:48
+msgid "and back to"
+msgstr "kaj reen ĝis"
+
+#: trac/versioncontrol/templates/revisionlog.html:53
+msgid "Show at most"
+msgstr "Montru maksimume"
+
+#: trac/versioncontrol/templates/revisionlog.html:55
+msgid "revisions per page."
+msgstr "sur paĝo"
+
+#: trac/versioncontrol/templates/revisionlog.html:60
+msgid "Show full log messages"
+msgstr "Montru la tutajn protokolmesaĝojn"
+
+#: trac/versioncontrol/templates/revisionlog.html:78
+msgid "Copied or renamed"
+msgstr "Kopiitajn aŭ alinomitajn"
+
+#: trac/versioncontrol/templates/revisionlog.html:86
+#: trac/versioncontrol/templates/revisionlog.html:180
+msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
+msgstr ""
+"Diferenco de malnova al nova revizio (kiel elektita en la "
+"diferencokolumno)"
+
+#: trac/versioncontrol/templates/revisionlog.html:92
+msgid "Old / New"
+msgstr "Malnova / Nova"
+
+#: trac/versioncontrol/templates/revisionlog.html:92
+msgid "Diff"
+msgstr "Diferenco"
+
+#: trac/versioncontrol/templates/revisionlog.html:95
+msgid "Age"
+msgstr "Aĝo"
+
+#: trac/versioncontrol/templates/revisionlog.html:97
+msgid "Log Message"
+msgstr "Mesaĝo"
+
+#: trac/versioncontrol/templates/revisionlog.html:104
+msgid "No revisions found"
+msgstr "Neniuj revizioj troviĝis"
+
+#: trac/versioncontrol/templates/revisionlog.html:117
+msgid "copied from"
+msgstr "kopiita de"
+
+#: trac/versioncontrol/templates/revisionlog.html:124
+#, python-format
+msgid "From r%(rev)s"
+msgstr "De r%(rev)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:127
+#, python-format
+msgid "To r%(rev)s"
+msgstr "Al r%(rev)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:133
+msgid "View log starting at this revision"
+msgstr "Montru protokolon komencante ĉe la revizio"
+
+#: trac/versioncontrol/templates/revisionlog.html:140
+#, python-format
+msgid "Browse at revision %(rev)s"
+msgstr "Montru ĉe la revizio %(rev)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:144
+#, python-format
+msgid "View removal changeset [%(rev)s]"
+msgstr "Montru forigan ŝanĝaron [%(rev)s]"
+
+#: trac/versioncontrol/templates/revisionlog.html:146
+#, python-format
+msgid "View changeset [%(rev)s] restricted to %(path)s"
+msgstr "Montru el ŝanĝaro [%(rev)s] eltiron laŭ %(path)s"
+
+#: trac/versioncontrol/templates/revisionlog.html:185
+msgid ""
+"[1:Note:] See [2:TracRevisionLog]\n"
+"        for help on using the revision log."
+msgstr ""
+"[1:Noto:] vidu paĝon [2:TracRevisionLog]\n"
+"        je helpo pri la uzado de la revizioprotokolo."
+
+#: trac/versioncontrol/templates/revisionlog.txt:1
+msgid ""
+"#\n"
+"# ChangeLog for"
+msgstr ""
+"#\n"
+"# Ŝanĝprotokolo por"
+
+#: trac/versioncontrol/templates/revisionlog.txt:2
+#, python-format
+msgid " in %(reponame)s"
+msgstr " en %(reponame)s"
+
+#: trac/versioncontrol/templates/revisionlog.txt:2
+msgid ""
+"# \n"
+"# Generated by Trac"
+msgstr ""
+"# \n"
+"# Generita de Trac"
+
+#: trac/versioncontrol/web_ui/browser.py:298
+msgid "Browse Source"
+msgstr "Montru fonton"
+
+#: trac/versioncontrol/web_ui/browser.py:347
+#: trac/versioncontrol/web_ui/log.py:87
+#, python-format
+msgid "No repository '%(repo)s' found"
+msgstr "Neniu deponejo '%(repo)s' troviĝis"
+
+#: trac/versioncontrol/web_ui/browser.py:369
+msgid "Invalid changeset number"
+msgstr "Nevalida ŝanĝaro-numero"
+
+#: trac/versioncontrol/web_ui/browser.py:424
+#: trac/versioncontrol/web_ui/browser.py:434
+#, python-format
+msgid "Revision %(num)s"
+msgstr "Revizio %(num)s"
+
+#: trac/versioncontrol/web_ui/browser.py:435
+msgid "Previous Revision"
+msgstr "Antaŭa revizio"
+
+#: trac/versioncontrol/web_ui/browser.py:435
+msgid "Next Revision"
+msgstr "Sekva revizio"
+
+#: trac/versioncontrol/web_ui/browser.py:436
+msgid "Latest Revision"
+msgstr "Lasta revizio"
+
+#: trac/versioncontrol/web_ui/browser.py:440
+#: trac/versioncontrol/web_ui/log.py:299
+msgid "Parent directory"
+msgstr "Patra dosierujo"
+
+#: trac/versioncontrol/web_ui/browser.py:446
+msgid "Normal"
+msgstr "Normale"
+
+#: trac/versioncontrol/web_ui/browser.py:447
+msgid "View file without annotations"
+msgstr "Montru dosieron sen komentoj"
+
+#: trac/versioncontrol/web_ui/browser.py:452
+msgid "Annotate"
+msgstr "Komentu"
+
+#: trac/versioncontrol/web_ui/browser.py:453
+msgid ""
+"Annotate each line with the last changed revision (this can be time "
+"consuming...)"
+msgstr ""
+"Komentu ĉiun linion per la lasta revizio, kiu ŝanĝis ĝin (tio povas daŭri"
+" longe...)"
+
+#: trac/versioncontrol/web_ui/browser.py:460
+msgid "Revision Log"
+msgstr "Revizioprotokolo"
+
+#: trac/versioncontrol/web_ui/browser.py:466
+msgid "Repository URL"
+msgstr "Deponejadreso"
+
+#: trac/versioncontrol/web_ui/browser.py:580
+#: trac/versioncontrol/web_ui/changeset.py:362
+msgid "Zip Archive"
+msgstr "Zip-arĥivo"
+
+#: trac/versioncontrol/web_ui/browser.py:753
+msgid "Revision in which the line changed"
+msgstr "Revizio en kiu la linio ŝanĝiĝis"
+
+#: trac/versioncontrol/web_ui/browser.py:811
+#, python-format
+msgid "View repository %(repo)s"
+msgstr "Montru deponejon %(repo)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:240
+#, python-format
+msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
+msgstr "Ne eblas kompari trans diversaj deponejoj: %(old)s kun %(new)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:247
+#, python-format
+msgid "No repository found for '%(reponame)s'"
+msgstr "Neniuj deponejoj troviĝis por '%(reponame)s'"
+
+#: trac/versioncontrol/web_ui/changeset.py:249
+msgid "No repository specified and no default repository configured."
+msgstr "Neniu deponejo donita kaj neniu antaŭelektita deponejo agordita."
+
+#: trac/versioncontrol/web_ui/changeset.py:261
+msgid "Invalid Changeset Number"
+msgstr "Nevalida ŝanĝaro-numero"
+
+#: trac/versioncontrol/web_ui/changeset.py:360
+msgid "Unified Diff"
+msgstr "Unueca diferencaĵo"
+
+#: trac/versioncontrol/web_ui/changeset.py:371
+msgid "Previous Changeset"
+msgstr "Antaŭa ŝanĝaro"
+
+#: trac/versioncontrol/web_ui/changeset.py:371
+msgid "Next Changeset"
+msgstr "Sekva ŝanĝaro"
+
+#: trac/versioncontrol/web_ui/changeset.py:375
+msgid "Reverse Diff"
+msgstr "Inversa diferencaĵo"
+
+#: trac/versioncontrol/web_ui/changeset.py:410
+#, python-format
+msgid "Changeset %(id)s for %(path)s"
+msgstr "Ŝanĝaro %(id)s por %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:413
+#: trac/versioncontrol/web_ui/changeset.py:439
+#: trac/versioncontrol/web_ui/changeset.py:460
+#, python-format
+msgid "Changeset %(id)s"
+msgstr "Ŝanĝaro %(id)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:486
+#, python-format
+msgid "Show revision %(rev)s of this file in browser"
+msgstr "Montru revizion %(rev)s de tiu dosiero en la rigardilo"
+
+#: trac/versioncontrol/web_ui/changeset.py:632
+#, python-format
+msgid "Show the changeset %(id)s restricted to %(path)s"
+msgstr "Montru eltiron de la ŝanĝaro %(id)s ene de %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:643
+#, python-format
+msgid "Show the %(range)s differences restricted to %(path)s"
+msgstr "Montru eltiron de la diferencoj %(range)s ene de %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:859
+msgid "Changesets in all repositories"
+msgstr "Ŝanĝaroj en ĉiuj deponejoj"
+
+#: trac/versioncontrol/web_ui/changeset.py:861
+msgid "Repository changesets"
+msgstr "Deponejo-ŝanĝaroj"
+
+#: trac/versioncontrol/web_ui/changeset.py:999
+#, python-format
+msgid "Changeset in %(repo)s "
+msgid_plural "Changesets in %(repo)s "
+msgstr[0] "Ŝanĝaro en %(repo)s "
+msgstr[1] "Ŝanĝaroj en %(repo)s "
+
+#: trac/versioncontrol/web_ui/changeset.py:1001
+msgid "Changeset "
+msgid_plural "Changesets "
+msgstr[0] "Ŝanĝaro "
+msgstr[1] "Ŝanĝaroj "
+
+#: trac/versioncontrol/web_ui/changeset.py:1010
+#, python-format
+msgid "%(title)s: %(message)s"
+msgstr "%(title)s: %(message)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:1070
+#, python-format
+msgid "No permission to view changeset %(rev)s on %(repos)s"
+msgstr "Mankas permeso por rigardi la ŝanĝaron %(rev)s en %(repos)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:1074
+#: trac/versioncontrol/web_ui/log.py:393
+#, python-format
+msgid "Repository %(repos)s not found"
+msgstr "Deponejo %(repos)s ne troviĝis"
+
+#: trac/versioncontrol/web_ui/changeset.py:1076
+#: trac/versioncontrol/web_ui/log.py:395
+msgid "No default repository defined"
+msgstr "Neniu antuaelektita deponejo agordita"
+
+#: trac/versioncontrol/web_ui/changeset.py:1115
+msgid "Changesets"
+msgstr "Ŝanĝaroj"
+
+#: trac/versioncontrol/web_ui/log.py:196
+#, python-format
+msgid ""
+"The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
+"any previous revision."
+msgstr ""
+"La dosiero aŭ dosierujo '%(path)s' ne enestas en la revizio %(rev)s aŭ en"
+" iu antaŭ revizio."
+
+#: trac/versioncontrol/web_ui/log.py:198
+msgid "Nonexistent path"
+msgstr "Neekzista pado"
+
+#: trac/versioncontrol/web_ui/log.py:225
+#, python-format
+msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
+msgstr "Revizioprotokolo (rekomencante ĉe %(path)s, rev. %(rev)s)"
+
+#: trac/versioncontrol/web_ui/log.py:307
+msgid "ChangeLog"
+msgstr "Ŝanĝoprotokolo"
+
+#: trac/versioncontrol/web_ui/log.py:309
+msgid "View Latest Revision"
+msgstr "Montru lastan revizion"
+
+#: trac/versioncontrol/web_ui/log.py:313
+msgid "Older Revisions"
+msgstr "Pli malnovaj revizioj"
+
+#: trac/versioncontrol/web_ui/log.py:391
+msgid "No permission to view change log"
+msgstr "Mankas permeso por rigardi la ŝanĝoprotokolon"
+
+#: trac/versioncontrol/web_ui/util.py:64
+msgid "search"
+msgstr "serĉo"
+
+#: trac/versioncontrol/web_ui/util.py:68
+#, python-format
+msgid ""
+"You can %(search)s in the repository history to see if that path existed "
+"but was later removed"
+msgstr ""
+"Vi povas %(search)s en la deponeja kroniko por kontroli ĉu tiu pado "
+"ekzistis iam, sed poste foriĝis"
+
+#: trac/web/api.py:236
+#, python-format
+msgid "Invalid URL encoding (was %(path_info)r)"
+msgstr "Neĝuste kodita retadreso (estis %(path_info)r)"
+
+#: trac/web/api.py:474
+#, python-format
+msgid "File %(path)s not found"
+msgstr "Dosiero %(path)s ne troviĝis"
+
+#: trac/web/auth.py:99
+#, python-format
+msgid "logged in as %(user)s"
+msgstr "salutinta kiel %(user)s"
+
+#: trac/web/auth.py:102
+msgid "Logout"
+msgstr "Adiaŭo"
+
+#: trac/web/auth.py:105
+msgid "Login"
+msgstr "Saluto"
+
+#. TRANSLATOR: ... refer to the 'installation documentation'. (link)
+#: trac/web/auth.py:137
+msgid "installation documentation"
+msgstr ""
+
+#: trac/web/auth.py:138
+#, 
+msgid "Configuring Authentication"
+msgstr "Agordo de salutado"
+
+#: trac/web/auth.py:141
+#, python-format
+msgid ""
+"Authentication information not available. Please refer to the "
+"%(inst_doc)s."
+msgstr ""
+
+#: trac/web/auth.py:149
+#, python-format
+msgid "Already logged in as %(user)s."
+msgstr "Jam salutis kiel %(user)s."
+
+#: trac/web/chrome.py:582
+#, python-format
+msgid "Error with navigation contributor \"%(name)s\""
+msgstr "Eraro ĉe navigoprovizanto \"%(name)s\""
+
+#: trac/web/chrome.py:877
+msgid "(unknown template location)"
+msgstr "(nekonata ŝablonloko)"
+
+#: trac/web/chrome.py:878
+#, python-format
+msgid "Genshi %(error)s error while rendering template %(location)s"
+msgstr "Genshi %(error)s eraro dum kompilado el la ŝablono %(location)s"
+
+#: trac/web/main.py:225
+msgid "Secure cookies are enabled, you must use https to submit forms."
+msgstr ""
+"Sekuraj kuketoj estas ŝaltitaj, vi devas uzi https por konfirmi "
+"formularojn."
+
+#: trac/web/main.py:228
+msgid "Do you have cookies enabled?"
+msgstr "Ĉu vi ŝaltis kuketojn en la retumilo?"
+
+#: trac/web/main.py:229
+#, python-format
+msgid "Missing or invalid form token. %(msg)s"
+msgstr "Mankanta aŭ nevalida formularo-etikedo. %(msg)s"
+
+#: trac/web/main.py:527
+#, python-format
+msgid "Error: %(message)s"
+msgstr "Eraro: %(message)s"
+
+#. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
+#: trac/web/main.py:541
+msgid "do so"
+msgstr "fari nun"
+
+#: trac/web/main.py:543
+#, python-format
+msgid "You are currently not logged in. You may want to %(do_so)s now."
+msgstr "Vi ne salutis ĝis nun. vi povas %(do_so)s."
+
+#: trac/web/session.py:203
+#, python-format
+msgid ""
+"Session '%(id)s' already exists.<br />Please choose a different session "
+"ID."
+msgstr ""
+"Seanco '%(id)s' jam ekzistas.<br />Bonvolu elekti alian seanco-"
+"Identigilon."
+
+#: trac/web/session.py:205
+msgid "Error renaming session"
+msgstr "Eraro dum alinomado de seanco"
+
+#: trac/web/session.py:312
+msgid "No SID found"
+msgstr "Neniu Seancoidentigilo (SID) troviĝis"
+
+#: trac/web/session.py:314
+msgid "SID"
+msgstr "SID"
+
+#: trac/web/session.py:314
+msgid "Email"
+msgstr "Retpoŝto"
+
+#: trac/web/session.py:318
+msgid "Session alread exists. Unable to add a duplicate session."
+msgstr "Seanco jam ekzistas. Ne eblas duobligi seancon."
+
+#: trac/web/session.py:325
+msgid "Unable to set session attribute on a non-existent SID"
+msgstr "Ne eblas difini seancoatributon per neekzistanta Seancoidentigilo (SID)"
+
+#: trac/web/session.py:438
+#, python-format
+msgid "Session id %(sid)s not found"
+msgstr "Seanco id %(sid)s ne troviĝis"
+
+#: trac/wiki/admin.py:116
+#, python-format
+msgid "'%(name)s' is not a file"
+msgstr "'%(name)s' ne estas dosiero"
+
+#: trac/wiki/admin.py:168 trac/wiki/admin.py:265
+#, python-format
+msgid "  %(page)s imported from %(filename)s"
+msgstr "  %(page)s importita de %(filename)s"
+
+#: trac/wiki/admin.py:200
+msgid "Edits"
+msgstr "Redaktoj"
+
+#: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
+msgid "A new name is mandatory for a rename."
+msgstr "Nova nomo estas deviga por alinomado."
+
+#: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
+#, python-format
+msgid "The page %(name)s already exists."
+msgstr "La paĝo %(name)s jam ekzsitas."
+
+#: trac/wiki/admin.py:224
+msgid "Deleted pages"
+msgstr "forigitaj paĝoj"
+
+#: trac/wiki/admin.py:243
+#, python-format
+msgid "'%(name)s' is not a directory"
+msgstr "'%(name)s' ne estas dosierujo"
+
+#: trac/wiki/api.py:327
+msgid "no permission to view this wiki page"
+msgstr "mankas permeso por rigardi tiun paĝon"
+
+#: trac/wiki/formatter.py:169
+#, python-format
+msgid "HTML parsing error: %(message)s"
+msgstr "Eraro dum HTML-analizo: %(message)s"
+
+#: trac/wiki/formatter.py:173
+msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
+msgstr "Eraro: Malpermesita signovico \"--\" en html-komenta vikia kodalineo"
+
+#: trac/wiki/formatter.py:247
+#, python-format
+msgid "!#%(name)s must contain at most one table"
+msgstr "!#%(name)s enhavu maksimume une tabelon"
+
+#: trac/wiki/formatter.py:251
+#, python-format
+msgid "!#%(name)s must contain at least one table cell (and table cells only)"
+msgstr "!#%(name)s enhavu almenaŭ unu tabelĉelon (kaj nur tabelĉelojn)"
+
+#: trac/wiki/formatter.py:622 trac/wiki/interwiki.py:88
+#, python-format
+msgid "%(target)s in %(name)s"
+msgstr "%(target)s en %(name)s"
+
+#: trac/wiki/intertrac.py:55
+#, python-format
+msgid "Can't view %(link)s:"
+msgstr "Ne eblas montri %(link)s:"
+
+#: trac/wiki/macros.py:494
+#, python-format
+msgid "No image \"%(id)s\" attached to %(parent)s"
+msgstr ""
+
+#: trac/wiki/macros.py:537
+#, python-format
+msgid "Error: Can't get description for macro %(name)s"
+msgstr "Eraro: Ne eblas ricevi priskribon de la makroo %(name)s"
+
+#: trac/wiki/macros.py:555
+msgid "Aliases:"
+msgstr "Alinomoj:"
+
+#: trac/wiki/macros.py:558
+msgid "Sorry, no documentation found"
+msgstr "Pardonu, neniu dokumentaĵo troviĝis"
+
+#: trac/wiki/macros.py:623
+msgid "MIME Types"
+msgstr "MIME-specoj"
+
+#: trac/wiki/macros.py:681
+msgid "Table of Contents"
+msgstr "Enhavtabelo"
+
+#: trac/wiki/model.py:123
+msgid "Page not modified"
+msgstr "Paĝo ne ŝanĝiĝis"
+
+#: trac/wiki/model.py:174
+#, python-format
+msgid "Can't rename to existing %(name)s page."
+msgstr "Ne eblas alinomi laŭ nomo de jam ekzistanta paĝo %(name)s "
+
+#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:726
+msgid "Wiki"
+msgstr "Enirpaĝo"
+
+#: trac/wiki/web_ui.py:89
+msgid "Help/Guide"
+msgstr "Helpo kaj Gvido"
+
+#: trac/wiki/web_ui.py:125
+#, python-format
+msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
+msgstr "Mankas versio \"%(num)s\" de la vikipaĝo \"%(name)s\""
+
+#: trac/wiki/web_ui.py:190
+#, python-format
+msgid "The wiki page is too long (must be less than %(num)s characters)"
+msgstr "La vikipaĝo estas tro longa (ĝi havu malpli ol %(num)s signojn)"
+
+#: trac/wiki/web_ui.py:200
+#, python-format
+msgid "The Wiki page field '%(field)s' is invalid: %(message)s"
+msgstr "La indiko '%(field)s' de la vikipaĝo estas nevalida: %(message)s"
+
+#: trac/wiki/web_ui.py:204
+#, python-format
+msgid "Invalid Wiki page: %(message)s"
+msgstr "Nevalida vikipaĝo: %(message)s"
+
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:231
+msgid "currently edited"
+msgstr "momente redaktata"
+
+#: trac/wiki/web_ui.py:265
+#, python-format
+msgid "The page %(name)s has been deleted."
+msgstr "La paĝo %(name)s estas forigita."
+
+#: trac/wiki/web_ui.py:270
+#, python-format
+msgid "The versions %(from_)d to %(to)d of the page %(name)s have been deleted."
+msgstr "La versioj %(from_)d ĝis %(to)d de la paĝo %(name)s foriĝis."
+
+#: trac/wiki/web_ui.py:274
+#, python-format
+msgid "The version %(version)d of the page %(name)s has been deleted."
+msgstr "La versio %(version)d de la paĝo %(name)s foriĝis."
+
+#: trac/wiki/web_ui.py:297
+msgid "The new name must be different from the old name."
+msgstr "La nova nomo devas esti alia ol la malnova, fakte."
+
+#: trac/wiki/web_ui.py:309
+#, python-format
+msgid "See [wiki:\"%(name)s\"]."
+msgstr "Vidu paĝon [wiki:\"%(name)s\"]."
+
+#: trac/wiki/web_ui.py:333
+#, python-format
+msgid "Your changes have been saved in version %(version)s."
+msgstr "Viaj ŝanĝoj konserviĝis en la versio  %(version)s."
+
+#: trac/wiki/web_ui.py:338
+msgid "Page not modified, showing latest version."
+msgstr "La paĝo ne ŝanĝiĝis, montriĝas la lasta versio."
+
+#: trac/wiki/web_ui.py:381
+#, python-format
+msgid "Version %(num)s of page \"%(name)s\" does not exist"
+msgstr "Versio %(num)s de la paĝo \"%(name)s\" ne ekzistas"
+
+#: trac/wiki/web_ui.py:433
+msgid "Page history"
+msgstr "Paĝokroniko"
+
+#: trac/wiki/web_ui.py:451
+msgid "Wiki History"
+msgstr "Vikikroniko"
+
+#: trac/wiki/web_ui.py:537
+#, python-format
+msgid "Page %(name)s does not exist"
+msgstr "Paĝo %(name)s ne ekzistas"
+
+#: trac/wiki/web_ui.py:551
+#, python-format
+msgid "Back to %(wikipage)s"
+msgstr "Reen al %(wikipage)s"
+
+#: trac/wiki/web_ui.py:579
+#, python-format
+msgid "Page %(name)s not found"
+msgstr "Paĝo %(name)s ne troviĝis"
+
+#: trac/wiki/web_ui.py:631
+msgid "View latest version"
+msgstr "Montru la lastan version"
+
+#: trac/wiki/web_ui.py:635
+msgid "View parent page"
+msgstr "Montru la patran paĝon"
+
+#: trac/wiki/web_ui.py:644
+msgid "Previous Version"
+msgstr "Antaŭa versio"
+
+#: trac/wiki/web_ui.py:644
+msgid "Next Version"
+msgstr "Sekva versio"
+
+#: trac/wiki/web_ui.py:645
+msgid "View Latest Version"
+msgstr "Montru la lastan version"
+
+#: trac/wiki/web_ui.py:648
+msgid "Up"
+msgstr "Supren"
+
+#: trac/wiki/web_ui.py:673
+msgid "Start Page"
+msgstr "Enirpaĝo"
+
+#: trac/wiki/web_ui.py:674
+msgid "Index"
+msgstr "Indekso"
+
+#: trac/wiki/web_ui.py:676
+msgid "History"
+msgstr "Kroniko"
+
+#: trac/wiki/web_ui.py:683
+msgid "Wiki changes"
+msgstr "Vikiŝanĝoj"
+
+#. TRANSLATOR: wiki page
+#: trac/wiki/web_ui.py:712
+msgid " edited"
+msgstr " redaktita"
+
+#: trac/wiki/web_ui.py:712
+msgid " created"
+msgstr " kreita"
+
+#: trac/wiki/templates/wiki_delete.html:19
+msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
+msgstr "Forigu la versiojn %(from)s ĝis %(to)s de [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_delete.html:22
+msgid "Delete version %(version)s of [1:%(name)s]"
+msgstr "Forigu version %(version)s de [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_delete.html:25
+msgid "Delete [1:%(name)s]"
+msgstr "Forigu [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_delete.html:33
+msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
+msgstr "Ĉu vere forigi la versiojn %(from)s ĝis %(to)s de tiu ĉi paĝo?"
+
+#: trac/wiki/templates/wiki_delete.html:36
+msgid "Are you sure you want to delete version %(version)s of this page?"
+msgstr "Ĉu vere forigi la version %(version)s de tiu ĉi paĝo?"
+
+#: trac/wiki/templates/wiki_delete.html:39
+msgid "Are you sure you want to completely delete this page?"
+msgstr "Ĉu vere forigi komplete tiun ĉi paĝon?"
+
+#: trac/wiki/templates/wiki_delete.html:42
+msgid "This is the only version the page, so the page will be removed completely!"
+msgstr "Tio estas la sola versio de la paĝo, tial la paĝo foriĝos komplete!"
+
+#: trac/wiki/templates/wiki_delete.html:51
+msgid "Delete those versions"
+msgstr "Forigu tiujn versiojn"
+
+#: trac/wiki/templates/wiki_delete.html:51
+#: trac/wiki/templates/wiki_view.html:117
+msgid "Delete this version"
+msgstr "Forigu tiun ĉi version"
+
+#: trac/wiki/templates/wiki_delete.html:51
+#: trac/wiki/templates/wiki_view.html:119
+msgid "Delete page"
+msgstr "Forigu la paĝon"
+
+#: trac/wiki/templates/wiki_diff.html:17
+#, python-format
+msgid "Delete version %(old_version)d to version %(version)d"
+msgstr "Forigu versiojn %(old_version)d ĝis %(version)d"
+
+#: trac/wiki/templates/wiki_diff.html:18
+#, python-format
+msgid "Delete version %(version)d"
+msgstr "Forigu version %(version)d"
+
+#: trac/wiki/templates/wiki_edit.html:67 trac/wiki/templates/wiki_edit.html:140
+msgid "Go to Save, Preview, Review or Cancel buttons"
+msgstr "Saltu al la butonoj"
+
+#: trac/wiki/templates/wiki_edit.html:69
+msgid "See the diffs"
+msgstr "Montru la diferencojn"
+
+#: trac/wiki/templates/wiki_edit.html:69
+#: trac/wiki/templates/wiki_edit_form.html:38
+msgid "Review"
+msgstr "Kontrolu"
+
+#: trac/wiki/templates/wiki_edit.html:70
+msgid "See the preview"
+msgstr "Saltu al la antaŭrigardo"
+
+#: trac/wiki/templates/wiki_edit.html:73
+msgid "Editing"
+msgstr "Redaktante"
+
+#: trac/wiki/templates/wiki_edit.html:75
+msgid "Someone else has modified that page since you started your edits."
+msgstr "Iu alia intertempe ŝanĝis tiun ĉi paĝon."
+
+#: trac/wiki/templates/wiki_edit.html:76
+msgid "If you save right away, you risk to revert those changes"
+msgstr "Se vi nun konservas ĝin, vi forigos ties ŝanĝojn"
+
+#: trac/wiki/templates/wiki_edit.html:76
+msgid "(highlighted below as deletions)."
+msgstr "(emfazitaj malsupre kiel forigoj)."
+
+#: trac/wiki/templates/wiki_edit.html:78
+msgid ""
+"Please review all those changes and manually merge them with your\n"
+"        own changes."
+msgstr ""
+"Bonvolu kontroli ĉiujn tiujn ŝanĝojn kaj mane kunfandu ilin\n"
+"        kun la viaj."
+
+#: trac/wiki/templates/wiki_edit.html:79
+msgid "If you're unsure about what you're doing, please press"
+msgstr "Se vi ne estas certa kion fari, bonvolu premi"
+
+#: trac/wiki/templates/wiki_edit.html:80
+msgid ""
+"(losing your changes) and start editing the latest version of the page\n"
+"        again."
+msgstr ""
+"(perdante viajn proprajn ŝanĝojn) kaj rekomencu redaktadon de la lasta "
+"versio de\n"
+"        la paĝo."
+
+#: trac/wiki/templates/wiki_edit.html:114
+msgid "Change information for future version"
+msgstr "Ŝanĝkomento pri estonta versio"
+
+#: trac/wiki/templates/wiki_edit.html:115
+msgid "(modified by"
+msgstr "(ŝanĝita de"
+
+#: trac/wiki/templates/wiki_edit.html:124
+msgid "Go to the editor"
+msgstr "Saltu al la redaktilo"
+
+#: trac/wiki/templates/wiki_edit.html:127
+#: trac/wiki/templates/wiki_edit_form.html:74
+msgid "Review Changes"
+msgstr "Kontrolo de la ŝanĝoj"
+
+#: trac/wiki/templates/wiki_edit.html:129
+msgid "No changes"
+msgstr "Neniuj ŝanĝoj"
+
+#: trac/wiki/templates/wiki_edit.html:146
+msgid ""
+"Sorry, this page has been modified by somebody else since you started\n"
+"            editing. Your changes cannot be saved."
+msgstr ""
+"Pardonu, tiu ĉi paĝo estas intertempe ŝanĝita de iu alia.\n"
+"            Viaj ŝanĝoj ne povas konserviĝi."
+
+#: trac/wiki/templates/wiki_edit_form.html:16
+msgid "Adjust edit area height:"
+msgstr "Adaptu la altecon de la redaktilo:"
+
+#: trac/wiki/templates/wiki_edit_form.html:24
+msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
+msgstr ""
+"Elektante kaj premante 'Antaŭrigardo' montros dukolumnan aranĝon: "
+"[redakti|antaŭrigardi]"
+
+#: trac/wiki/templates/wiki_edit_form.html:24
+msgid "Edit side-by-side"
+msgstr "Redaktu unu apud alia"
+
+#: trac/wiki/templates/wiki_edit_form.html:32
+msgid ""
+"[1:Note:] See [2:WikiFormatting] and\n"
+"        [3:TracWiki] for help on editing wiki content."
+msgstr ""
+"[1:Noto:] vidu paĝojn [2:WikiFormatting] kaj\n"
+"        [3:TracWiki] je helpo pri redaktado de vikipaĝoj."
+
+#: trac/wiki/templates/wiki_edit_form.html:38
+msgid "See the start of the diffs"
+msgstr "Saltu al la komenco de la diferencoj"
+
+#: trac/wiki/templates/wiki_edit_form.html:39
+msgid "See the start of the preview"
+msgstr "Saltu al la komenco de la antaŭrigardo"
+
+#: trac/wiki/templates/wiki_edit_form.html:43
+msgid "Change information"
+msgstr "Ŝanĝkomento"
+
+#: trac/wiki/templates/wiki_edit_form.html:54
+msgid "Comment about this change (optional):"
+msgstr "Komentu tiun ĉi ŝanĝon (malnepre):"
+
+#: trac/wiki/templates/wiki_edit_form.html:61
+msgid "Page is read-only"
+msgstr "La paĝo estu nurlega"
+
+#: trac/wiki/templates/wiki_edit_form.html:69
+msgid "Merge changes"
+msgstr "Kunfandu ŝanĝojn"
+
+#: trac/wiki/templates/wiki_edit_form.html:73
+msgid "Preview Page"
+msgstr "Antaŭrigardu paĝon"
+
+#: trac/wiki/templates/wiki_page_path.html:6
+msgid "View WikiStart"
+msgstr "Montru enirpaĝon"
+
+#: trac/wiki/templates/wiki_page_path.html:6
+msgid "wiki:"
+msgstr "paĝo:"
+
+#: trac/wiki/templates/wiki_page_path.html:8
+#, python-format
+msgid "View %(path)s"
+msgstr "Montru %(path)s"
+
+#: trac/wiki/templates/wiki_rename.html:15
+#, python-format
+msgid "Rename [1:%(name)s]"
+msgstr "Alinomu [1:%(name)s]"
+
+#: trac/wiki/templates/wiki_rename.html:19
+msgid "Renaming the page will rename all existing versions of the page in place."
+msgstr "Alinomante la paĝon ĉiuj ekzistantaj versioj alinomiĝos samtempe."
+
+#: trac/wiki/templates/wiki_rename.html:19
+msgid "The complete history of the page will be moved to the new location."
+msgstr "La kompleta kroniko de la paĝo ŝoviĝos al la nova loko."
+
+#: trac/wiki/templates/wiki_rename.html:23
+msgid "New name:"
+msgstr "Nova nomo:"
+
+#: trac/wiki/templates/wiki_rename.html:27
+msgid "Leave a redirection page at the old location"
+msgstr "Lasu redirektan paĝon ĉe la malnova loko"
+
+#: trac/wiki/templates/wiki_rename.html:33
+#: trac/wiki/templates/wiki_view.html:108
+msgid "Rename page"
+msgstr "Alinomu la paĝon"
+
+#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
+msgid "Edit this page"
+msgstr "Redaktu la paĝon"
+
+#: trac/wiki/templates/wiki_view.html:34
+#, python-format
+msgid ""
+"Version %(version)s (modified by %(author)s, %(date)s ago)\n"
+"               ([1:diff])"
+msgstr ""
+"Versio %(version)s (ŝanĝita de %(author)s, antaŭ %(date)s)\n"
+"               ([1:diferencoj])"
+
+#: trac/wiki/templates/wiki_view.html:47
+#, python-format
+msgid "Version %(version)s by %(author)s: %(comment)s"
+msgstr "Versio %(version)s de %(author)s: %(comment)s"
+
+#: trac/wiki/templates/wiki_view.html:47
+#, python-format
+msgid "Version %(version)s by %(author)s"
+msgstr "Versio %(version)s de %(author)s"
+
+#: trac/wiki/templates/wiki_view.html:54
+#, python-format
+msgid "[1:Last modified] %(reldate)s ago"
+msgstr "[1:Laste ŝanĝita] antaŭ %(reldate)s"
+
+#: trac/wiki/templates/wiki_view.html:61
+msgid "The page"
+msgstr "La paĝo"
+
+#: trac/wiki/templates/wiki_view.html:61
+msgid "does not exist. You can create it here."
+msgstr "ne ekzistas. Vi povus krei ĝin nun"
+
+#: trac/wiki/templates/wiki_view.html:63
+msgid "You could also create the same page higher in the hierarchy:"
+msgstr "Vi povus krei la paĝon ankaŭ pli alte en la hierarĥio:"
+
+#: trac/wiki/templates/wiki_view.html:87
+msgid "Create this page"
+msgstr "Kreu la paĝon"
+
+#: trac/wiki/templates/wiki_view.html:89
+msgid "Using the template:"
+msgstr "Uzante la ŝablonon:"
+
+#: trac/wiki/templates/wiki_view.html:92
+msgid "(blank page)"
+msgstr "(malplena paĝo)"
+
+#: trac/wiki/templates/wiki_view.html:128
+msgid "The following pages have a name similar to this page, and may be related:"
+msgstr "La jenaj paĝoj havas nomon similan al tiu ĉi paĝo kaj eble rilatas al ĝi:"
+
+#~ msgid ""
+#~ "En la ordinara tempozono, tio montriĝas kiel\n"
+#~ "            [1:%(formatted)s]."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Noto: Universala kunordigita tempo (UTC) "
+#~ "ankaŭ estas konata kiel Ĉefa Grenviĉa"
+#~ " Tempo (GMT)."
+#~ msgstr ""
+
+#~ msgid "Property"
+#~ msgstr "Eco"
+
+#~ msgid "Changes"
+#~ msgstr "Ŝanĝoj"
+
+#~ msgid "from"
+#~ msgstr "de"
+
+#~ msgid "of"
+#~ msgstr "de"
+
+#~ msgid "Note that the"
+#~ msgstr "Notu, ke"
+
+#~ msgid "plugin seems to be involved."
+#~ msgstr "kromprogramoj kunefikas."
+
+#~ msgid "%(title)s %(unit)s:"
+#~ msgid_plural "%(title)s %(units)s:"
+#~ msgstr[0] "%(title)s %(unit)s:"
+#~ msgstr[1] "%(title)s %(units)s:"
+
+#~ msgid "to "
+#~ msgstr "al "
+
+#~ msgid "ticket"
+#~ msgstr "avizo"
+
+#~ msgid "by"
+#~ msgstr "de"
+
+#~ msgid "This is a list of available reports."
+#~ msgstr "Tio ĉi estas listo de disponeblaj raportoj"
+
+#~ msgid "in"
+#~ msgstr "en"
+
+#~ msgid "View %(path_kind)s"
+#~ msgstr "Montru %(path_kind)s"
+
+#~ msgid "A datetime object must be specified"
+#~ msgstr "Vi donu datumtempo-objekton"
+
+#~ msgid "Are you sure you want to"
+#~ msgstr "Ĉu vere vi volas"
+
+#~ msgid "delete"
+#~ msgstr "forigi"
+
+#~ msgid "this page?"
+#~ msgstr "tiun ĉi paĝon?"
+
+#~ msgid "Rename"
+#~ msgstr "Alinomu"
+
