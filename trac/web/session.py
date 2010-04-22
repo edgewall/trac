@@ -315,7 +315,7 @@ class SessionAdmin(Component):
         
     def _do_add(self, sid, *args):
         if list(self._get_list(sid)):
-            raise AdminCommandError(_("Session alread exists. Unable to add "
+            raise AdminCommandError(_("Session already exists. Unable to add "
                                       "a duplicate session."))
         self._add_session(sid, *args)
 
