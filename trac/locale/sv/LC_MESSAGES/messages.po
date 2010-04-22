@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-22 13:47+0200\n"
+"PO-Revision-Date: 2010-04-23 01:26+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -953,8 +953,8 @@ msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
 msgstr ""
-"Du kan ta bort alla element från denna lista för att helt dölja detta "
-"fält från användargränssnittet."
+"Ta bort alla element från denna lista för att helt dölja detta fält från "
+"användargränssnittet."
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:78
@@ -2210,7 +2210,7 @@ msgstr "%(count)s/%(total)s %(title)s"
 #: trac/templates/progress_bar.html:36
 #, python-format
 msgid "Number of %(unit)s:"
-msgstr "Totalt %(unit)s:"
+msgstr "Antal %(unit)s:"
 
 #: trac/templates/progress_bar.html:40
 #, python-format
@@ -3096,7 +3096,7 @@ msgid ""
 "[1:Note:] See\n"
 "      [2:TracRoadmap] for help on using\n"
 "      the roadmap."
-msgstr "[1:Tips:] Se [2:TracRoadmap] för att få hjälp med tidsplanen."
+msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidsplanen."
 
 #: trac/ticket/templates/milestone_edit.html:11
 #: trac/ticket/templates/milestone_edit.html:36
@@ -3139,7 +3139,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
-msgstr "[1:Tips:] Se [2:TracRoadmap] för att få hjälp med tidsplanen."
+msgstr "[1:Tips:] Se [2:TracRoadmap] för hjälp med tidsplanen."
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -3324,7 +3324,7 @@ msgstr "Ta bort rapport"
 msgid ""
 "[1:Note:]\n"
 "        See [2:TracReports] for help on using and creating reports."
-msgstr "[1:Tips:] Se [2:TracReports] för att få hjälp med rapporter."
+msgstr "[1:Tips:] Se [2:TracReports] för hjälp med rapporter."
 
 #: trac/ticket/templates/report_edit.html:16
 msgid "New Report"
@@ -3604,7 +3604,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
 "        tickets."
-msgstr "[1:Tips:] Se [2:TracTickets] för att få hjälp med ärenden."
+msgstr "[1:Tips:] Se [2:TracTickets] för hjälp med ärenden."
 
 #: trac/ticket/templates/ticket_box.html:19
 #, python-format
@@ -4311,7 +4311,7 @@ msgstr "Förrådsindex"
 msgid ""
 "[1:Note:] See [2:TracBrowser]\n"
 "        for help on using the repository browser."
-msgstr "[1:Tips:] Se [2:TracBrowser] för att få hjälp med förrådsbläddraren."
+msgstr "[1:Tips:] Se [2:TracBrowser] för hjälp med förrådsbläddraren."
 
 #: trac/versioncontrol/templates/browser.html:176
 msgid "View changes..."
