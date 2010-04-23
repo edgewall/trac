@@ -7,4 +7,4 @@
 genshi/
 pygments/
 .*.html
-/tests/
+\\lib\\

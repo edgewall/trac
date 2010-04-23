@@ -22,6 +22,7 @@ define HELP
   unit-test           run unit tests
   functional-test     run functional tests
   test                run all tests
+  coverage            run all tests, under figleaf
 
   [db=...]            variable for selecting database backend
   [test=...]          variable for selecting a single test file
@@ -60,8 +61,10 @@ export HELP
 # ` (keep emacs font-lock happy)
 
 # ----------------------------------------------------------------------------
+#
+# Main targets
 
-.PHONY: all help status clean
+.PHONY: all help status clean clean-bytecode
 
 ifdef test
 all: status
@@ -76,22 +79,35 @@ help:
 status:
 	@echo -n "Python version: "
 	@python -V
+	@echo -n "figleaf: "
+	@-which figleaf 2>/dev/null || echo 
 	@echo "PYTHONPATH=$$PYTHONPATH"
 	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "server-options=$(server-options)"
 
-clean:
-	find -name \*.py[co] | xargs -d"\n" --no-run-if-empty rm -f
-	rm -rf .figleaf* html
+Trac.egg-info: status
+	python setup.py egg_info
+
+clean: clean-bytecode clean-coverage
+
+clean-bytecode:
+	find -name \*.py[co] -exec rm {} \;
+
+Makefile Makefile.cfg: ;
 
 # ----------------------------------------------------------------------------
-
-# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment.
-
+#
+# Copy Makefile.cfg.sample to Makefile.cfg and adapt to your local environment,
+# no customizations to the present Makefile should be necessary.
+#
+#
 -include Makefile.cfg
-
+#
 # ----------------------------------------------------------------------------
 
+
+# ----------------------------------------------------------------------------
+#
 # L10N related tasks
 
 ifdef locale
@@ -152,6 +168,8 @@ stats-%:
 	@echo -n "$(@): "
 	@msgfmt --statistics trac/locale/$(@:stats-%=%)/LC_MESSAGES/messages.po
 
+# ----------------------------------------------------------------------------
+#
 # Testing related tasks
 
 .PHONY: test unit-test functional-test
@@ -164,24 +182,50 @@ unit-test: Trac.egg-info
 functional-test: Trac.egg-info
 	python trac/tests/functional/__init__.py -v
 
-.PHONY: coverage
-coverage: html/index.html
 
-html/index.html: .figleaf.functional .figleaf.unittests
-	figleaf2html --exclude-patterns=trac/tests/figleaf-exclude .figleaf.functional .figleaf.unittests
+# ----------------------------------------------------------------------------
+#
+# Coverage related tasks
 
-.figleaf.functional: Trac.egg-info
-	FIGLEAF=figleaf python trac/tests/functional/__init__.py -v
-	mv .figleaf .figleaf.functional
+.PHONY: coverage clean-coverage show-coverage
 
-.figleaf.unittests: Trac.egg-info
-	rm -f .figleaf .figleaf.unittests
-	figleaf ./trac/test.py --skip-functional-tests
-	mv .figleaf .figleaf.unittests
+coverage: clean-coverage test-figleaf figleaf/index.html
 
-Trac.egg-info: status
-	python setup.py egg_info
+clean-coverage:
+	rm -f .figleaf* *.figleaf
+	rm -fr figleaf
 
+show-coverage: figleaf/index.html
+
+figleaf/index.html: $(wildcard *.figleaf)
+	figleaf2html \
+	    --output-directory=figleaf \
+	    --exclude-patterns=trac/tests/figleaf-exclude \
+	    *.figleaf
+
+
+.PHONY: test-figleaf  unit-test-figleaf functional-test-figleaf
+
+test-figleaf: unit-test-figleaf functional-test-figleaf
+
+unit-test-figleaf: unit-test.figleaf
+
+functional-test-figleaf: functional-test.figleaf
+
+
+functional-test.figleaf: Trac.egg-info
+	rm -f .figleaf
+	FIGLEAF=figleaf python trac/tests/functional/testcases.py -v
+	@mv .figleaf $(@)
+
+unit-test.figleaf: Trac.egg-info
+	rm -f .figleaf
+	figleaf trac/test.py --skip-functional-tests
+	@mv .figleaf $(@)
+
+
+# ----------------------------------------------------------------------------
+#
 # Tracd related tasks
 
 port ?= 8000
@@ -194,7 +238,7 @@ define server-options
  $(if $(wildcard $(env)/VERSION),$(env),-e $(env))
 endef
 
-server:
+server: Trac.egg-info
 ifdef env
 	python trac/web/standalone.py $(server-options)
 else
@@ -202,13 +246,23 @@ else
 endif
 
 # ----------------------------------------------------------------------------
+#
+# Setup environment variables
+
+python-home := $(python.$(if $(python),$(python),$($(db).python)))
+ifndef python-home
+    python-home = $(subst /bin,,$(dir $(shell which python)))
+endif
+
 ifeq "$(OS)" "Windows_NT"
     SEP = ;
+    python-bin = $(python-home):$(python-home)/Scripts
 else
     SEP = :
+    python-bin = $(python-home)/bin
 endif
 
 export TRAC_TEST_DB_URI = $($(db).uri)
-export PATH := $(python.$(if $(python),$(python),$($(db).python))):$(PATH)
+export PATH := $(python-bin):$(PATH)
 export PYTHONPATH := .$(SEP)$(PYTHONPATH)
 # ----------------------------------------------------------------------------

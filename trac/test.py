@@ -17,6 +17,7 @@
 # Author: Jonas Borgström <jonas@edgewall.com>
 #         Christopher Lenz <cmlenz@gmx.de>
 
+import doctest
 import os
 import unittest
 import sys
@@ -415,19 +416,11 @@ def suite():
     suite.addTest(trac.web.tests.suite())
     suite.addTest(trac.wiki.tests.suite())
     suite.addTest(tracopt.mimeview.tests.suite())
+    suite.addTest(doctest.DocTestSuite(sys.modules[__name__]))
 
     return suite
 
 if __name__ == '__main__':
-    import doctest
-    doctest.testmod(sys.modules[__name__])
-
-    # Clean up after doctest or spambayes gets unhappy
-    try:
-        del __builtins__._
-    except NameError:
-        pass
-
     #FIXME: this is a bit inelegant
     if '--skip-functional-tests' in sys.argv:
         sys.argv.remove('--skip-functional-tests')
