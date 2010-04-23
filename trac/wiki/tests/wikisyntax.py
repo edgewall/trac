@@ -453,6 +453,59 @@ RELATIVE_LINKS_TESTS = u"""
 ------------------------------
 """ # "
 
+
+SPLIT_PAGE_NAMES_TESTS = u"""
+============================== Splitting relative links
+[//WikiPage]
+[/WikiPage]
+[./WikiPage]
+[../WikiPage]
+[//WikiPage?param=1#fragment]
+[/WikiPage?param=1#fragment]
+[./WikiPage?param=1#fragment]
+[../WikiPage?param=1#fragment]
+But not [./wiki_page]
+And not [../WikiPage WikiPage]
+------------------------------
+<p>
+<a href="/WikiPage">Wiki Page</a>
+<a href="/WikiPage">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a href="/WikiPage?param=1#fragment">Wiki Page</a>
+<a href="/WikiPage?param=1#fragment">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>
+And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage?</a>
+</p>
+------------------------------
+============================== Splitting internal free links
+["WikiPage"]
+["./WikiPage"]
+["../WikiPage"]
+["./.././WikiPage"]
+["WikiPage?param=1#fragment"]
+["./WikiPage?param=1#fragment"]
+["../WikiPage?param=1#fragment"]
+But not ["./wiki_page"]
+And not ["../WikiPage" WikiPage]
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>
+And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage?</a>
+</p>
+------------------------------
+""" # "
+
+
 SCOPED_LINKS_TESTS = u"""
 ============================== Scoped links for hierarchical pages
 ThirdLevel
@@ -506,6 +559,7 @@ MissingFirstLevel/MissingPage
 </p>
 ------------------------------
 """ # "
+
 
 def wiki_setup(tc):
     now = datetime.now(utc)
@@ -566,8 +620,14 @@ nolink          http://noweb
     w.text = '--'
     w.save('joe', 'other third level of hierarchy', '::1', now)
 
+
 def wiki_teardown(tc):
     tc.env.reset_db()
+
+
+def wiki_setup_split(tc):
+    tc.env.config.set('wiki', 'split_page_names', 'true')
+    wiki_setup(tc)
 
 
 def suite():
@@ -576,6 +636,9 @@ def suite():
                                   wiki_teardown))
     suite.addTest(formatter.suite(RELATIVE_LINKS_TESTS, wiki_setup, __file__,
                                   wiki_teardown,
+                                  context=('wiki', 'Main/Sub')))
+    suite.addTest(formatter.suite(SPLIT_PAGE_NAMES_TESTS, wiki_setup_split,
+                                  __file__, wiki_teardown,
                                   context=('wiki', 'Main/Sub')))
     suite.addTest(formatter.suite(SCOPED_LINKS_TESTS, wiki_setup, __file__,
                                   wiki_teardown,

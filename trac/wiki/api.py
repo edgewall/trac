@@ -185,23 +185,6 @@ def parse_args(args, strict=True):
     return largs, kwargs
 
 
-def make_label_from_target(target):
-    """Create a label from a wiki target.
-    
-    A trailing fragment and query string is stripped. Then, leading `./`, `../`
-    and '/' elements are stripped, except when this would lead to an empty
-    label.
-    """
-    label = target.split('#', 1)[0].split('?', 1)[0]
-    if not label:
-        return target
-    components = label.split('/')
-    for i, comp in enumerate(components):
-        if comp not in ('', '.', '..'):
-            return '/'.join(components[i:])
-    return label
-
-
 class WikiSystem(Component):
     """Wiki system manager."""
 
@@ -266,6 +249,24 @@ class WikiSystem(Component):
             return self.PAGE_SPLIT_RE.sub(r"\1 \2", page)
         return page
 
+    def make_label_from_target(self, target):
+        """Create a label from a wiki target.
+        
+        A trailing fragment and query string is stripped. Then, leading `./`,
+        `../` and '/' elements are stripped, except when this would lead to an
+        empty label. Finally, if `[wiki] split_page_names` is true, the label
+        is split accordingly.
+        """
+        label = target.split('#', 1)[0].split('?', 1)[0]
+        if not label:
+            return target
+        components = label.split('/')
+        for i, comp in enumerate(components):
+            if comp not in ('', '.', '..'):
+                label = '/'.join(components[i:])
+                break
+        return self.format_page_name(label)
+
     def get_wiki_syntax(self):
         wiki_page_name = (
             r"(?:[%(upper)s](?:[%(lower)s])+/?){2,}" # wiki words
@@ -299,7 +300,7 @@ class WikiSystem(Component):
             page = fullmatch.group('ifl_page')[1:-1]
             label = fullmatch.group('ifl_label')
             if label is None:
-                label = make_label_from_target(page)
+                label = self.make_label_from_target(page)
             return self._format_link(fmt, 'wiki', page, label.strip(), False)
         yield (r"!?\[(?P<ifl_page>%s)(?:\s+(?P<ifl_label>%s|[^\]]+))?\]"
                % (WikiParser.QUOTED_STRING, WikiParser.QUOTED_STRING),

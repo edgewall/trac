@@ -31,7 +31,7 @@ from genshi.util import plaintext
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
-from trac.wiki.api import WikiSystem, make_label_from_target, parse_args
+from trac.wiki.api import WikiSystem, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util import arity
 from trac.util.compat import all
@@ -547,7 +547,7 @@ class Formatter(object):
             label = self._unquote(label)
         if rel:
             if not label:
-                label = make_label_from_target(rel)
+                label = self.wiki.make_label_from_target(rel)
             path, query, fragment = self.split_link(rel)
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')
