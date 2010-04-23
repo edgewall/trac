@@ -166,6 +166,14 @@ Second paragraph.
 || `Ticket [[ticket:1]]`, `[[ticket:1|ticket one]]` ||\
 || Ticket [[ticket:1]], [[ticket:1|ticket one]] ||
 |-----------------------------------------------------------
+{{{#!th rowspan=2 
+[#SettingAnchors Setting Anchors]
+}}}
+|| `[=#point1 (1)] First...` ||\
+|| [=#point1 (1)] First... ||
+|| `see [#point1 (1)]` ||\
+|| see [#point1 (1)] ||
+|-----------------------------------------------------------
 {{{#!th rowspan=2
 [#EscapingLinksandWikiPageNames Escaping Markup]
 }}}
@@ -665,6 +673,51 @@ Wiki pages can link directly to other parts of the Trac system. Pages can refer 
 }}}
 
 There are many more flavors of Trac links, see TracLinks for more in-depth information and a reference for all the default link resolvers.
+
+
+== Setting Anchors ==
+
+An anchor, or more correctly speaking, an [http://www.w3.org/TR/REC-html40/struct/links.html#h-12.2.1 anchor name] can be added explicitly at any place in the Wiki page, in order to uniquely identify a position in the document:
+
+{{{
+[=#point1]
+}}}
+
+This sytax was chosen to match the format for explicitly naming the header id [#Headings documented above]. For example:
+{{{
+== Long title == #title
+}}}
+
+It's also very close to the syntax for the corresponding link to that anchor:
+{{{
+[#point1]
+}}}
+
+Optionally, a label can be given to the anchor:
+{{{
+[[=#point1 '''Point 1''']]
+}}}
+
+||= Wiki Markup =||= Display =||
+|----------------------------------
+{{{#!td
+  {{{
+  [#point2 jump to the second point]
+
+  ...
+
+  Point2:  [=#point2] Jump here
+  }}}
+}}}
+{{{#!td
+  [#point2 jump to the second point]
+
+  ...
+
+  Point2:  [=#point2] Jump here
+}}}
+
+For more complex anchors (e.g. when a custom title is wanted), one can use the Span macro, e.g. `[[span(id=point2, class=wikianchor, title=Point 2, ^(2)^)]]`.
 
 
 == Escaping Links and WikiPageNames ==

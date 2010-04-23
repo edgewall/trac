@@ -1,9 +1,9 @@
-= Trac Installation Guide for 0.12dev = 
 {{{
 #!div style="margin-top: .5em; padding: 0 1em; background-color: #ffd; border:1px outset #ddc;"
 
   '''NOTE: this page is for 0.12dev (trunk), the version currently in development. For installing previous Trac versions, please refer to [[0.11/TracInstall]]'''
 }}}
+= Trac Installation Guide for 0.12dev = 
 [[TracGuideToc]]
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
@@ -14,6 +14,7 @@ If you're interested in contributing new translations for other languages or enh
 
 What follows are generic instructions for installing and setting up Trac and its requirements. While you may find instructions for installing Trac on specific systems at TracInstallPlatforms on the main Trac site, please be sure to '''first read through these general instructions''' to get a good understanding of the tasks involved.
 
+[[PageOutline(2-3,Installation Steps,inline)]]
 
 == Dependencies ==
 === Mandatory Dependencies
@@ -123,17 +124,31 @@ One way to install Trac is using `setuptools`.
 With setuptools you can install Trac from the subversion repository; for example,
 to install release version 0.12dev do:
 {{{
-easy_install http://svn.edgewall.org/repos/trac/trunk
+easy_install Trac==dev
 }}}
 
-But of course the python-typical setup at the top of the source directory also works:
+Note that as long as [Genshi:milestone:0.6 Genshi 0.6] is not released, you'll need to do:
 {{{
+easy_install Genshi==dev
+}}}
+before, otherwise you'll get the following error:
+{{{
+No local packages or download links found for Genshi>=0.6dev-r1072
+error: Could not find suitable distribution for Requirement.parse('Genshi>=0.6dev-r1072')
+}}}
+
+
+Of course, using the python-typical setup at the top of the source directory also works:
+{{{
+$ svn checkout http://svn.edgewall.org/repos/trac/trunk
+$ cd trunk
+
 $ python ./setup.py install
 }}}
 See SubversionRepository for details about getting the source.
 
 ''Note 1: you'll need root permissions or equivalent for this step.'' [[br]]
-''Note 2: installing from source is the preferred method if you want to have a localized version of Trac'' [[br]]
+''Note 2: installing from source is the preferred method if you want to have a localized version of Trac'' ** FIXME ** [[br]]
 
 This will byte-compile the python source code and install it as an .egg file or folder in the `site-packages` directory
 of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as htdocs and templates.

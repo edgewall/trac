@@ -6,7 +6,7 @@ The new `[mainnav]` and `[metanav]` configuration sections can now be used to cu
 
 `[mainnav]` corresponds to the '''main navigation bar''', the one containing entries such as ''Wiki'', ''Timeline'', ''Roadmap'', ''Browse Source'' and so on. This navigation bar is meant to access the default page of the main modules enabled in Trac and accessible for the current user.
 
-`[metanav]` corresponds to the '''meta navigation bar''', by default positioned above the main navigation bar and below the ''Search'' box. It contains the ''Log in'', ''Logout'', ''Help/Guide'' etc. entries. This navigation bar is meant to access some global information about the Trac project and the current user.
+`[metanav]` corresponds to the '''meta navigation bar''', by default positioned above the main navigation bar and below the ''Search'' box. It contains the ''Log in'', ''Logout'', ''!Help/Guide'' etc. entries. This navigation bar is meant to access some global information about the Trac project and the current user.
 
 There is one special entry in the  `[metanav]` section: `logout.redirect` is the page the user sees after hitting the logout button. 
 
@@ -15,13 +15,13 @@ Possible URL formats:
 || `wiki/Logout` || `/projects/env/wiki/Logout` ||
 || `http://hostname/` || `http://hostname/` ||
 || `/projects` || `/projects` ||
-[[comment(see also  #Trac38008)]]
+[[comment(see also #Trac3808)]]
 
 Note that it is still not possible to customize the '''contextual navigation bar''', i.e. the one usually placed below the main navigation bar.
 
 === Example ===
 
-In the following example, we rename the link to the Wiki start "Home", and hide the "Help/Guide" link. 
+In the following example, we rename the link to the Wiki start "Home", and hide the "!Help/Guide" link. 
 We also make the "View Tickets" entry link to a specific report.
 
 Relevant excerpt from the TracIni:

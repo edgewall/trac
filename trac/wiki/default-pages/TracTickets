@@ -14,22 +14,22 @@ All tickets can be edited, annotated, assigned, prioritized and discussed at any
 
 A  ticket contains the following information attributes:
  
- * '''Reporter''' - The author of the ticket.
- * '''Type''' - The nature of the ticket (for example, defect or enhancement request)
+ * '''Reporter''' — The author of the ticket.
+ * '''Type''' — The nature of the ticket (for example, defect or enhancement request)
 
- * '''Component''' - The project module or subsystem this ticket concerns.
- * '''Version''' - Version of the project that this ticket pertains to.
- * '''Keywords''' - Keywords that a ticket is marked with.  Useful for searching and report generation.
+ * '''Component''' — The project module or subsystem this ticket concerns.
+ * '''Version''' — Version of the project that this ticket pertains to.
+ * '''Keywords''' — Keywords that a ticket is marked with.  Useful for searching and report generation.
 
- * '''Priority''' - The importance of this issue, ranging from ''trivial'' to ''blocker''.
- * '''Milestone''' - When this issue should be resolved at the latest.
- * '''Assigned to/Owner''' - Principal person responsible for handling the issue.
- * '''Cc''' - A comma-separated list of other users or E-Mail addresses to notify. ''Note that this does not imply responsiblity or any other policy.''
+ * '''Priority''' — The importance of this issue, ranging from ''trivial'' to ''blocker''.
+ * '''Milestone''' — When this issue should be resolved at the latest.
+ * '''Assigned to/Owner''' — Principal person responsible for handling the issue.
+ * '''Cc''' — A comma-separated list of other users or E-Mail addresses to notify. ''Note that this does not imply responsiblity or any other policy.''
  
- * '''Resolution''' - Reason for why a ticket was closed. One of {{{fixed}}}, {{{invalid}}}, {{{wontfix}}}, {{{duplicate}}}, {{{worksforme}}}.
- * '''Status''' - What is the current status? One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.
- * '''Summary''' - A brief description summarizing the problem or issue.
- * '''Description''' - The body of the ticket. A good description should be specific, descriptive and to the point.
+ * '''Resolution''' — Reason for why a ticket was closed. One of {{{fixed}}}, {{{invalid}}}, {{{wontfix}}}, {{{duplicate}}}, {{{worksforme}}}.
+ * '''Status''' — What is the current status? One of {{{new}}}, {{{assigned}}}, {{{closed}}}, {{{reopened}}}.
+ * '''Summary''' — A brief description summarizing the problem or issue.
+ * '''Description''' — The body of the ticket. A good description should be specific, descriptive and to the point.
 
 '''Note:''' Versions of Trac prior to 0.9 did not have the ''type'' field, but instead provided a ''severity'' field and different default values for the ''priority'' field. This change was done to simplify the ticket model by removing the somewhat blurry distinction between ''priority'' and ''severity''. However, the old model is still available if you prefer it: just add/modify the default values of the ''priority'' and ''severity'', and optionally hide the ''type'' field by removing all the possible values through [wiki:TracAdmin trac-admin].
 
@@ -98,18 +98,18 @@ To create a link to the new-ticket form filled with preset values, you need to c
 
 Possible variables are :
 
- * '''type''' - The type droplist
- * '''reporter''' - Name or email of the reporter
- * '''summary''' - Summary line for the ticket
- * '''description''' - Long description of the ticket
- * '''component''' - The component droplist
- * '''version''' - The version droplist
- * '''severity''' - The severity droplist
- * '''keywords''' - The keywords 
- * '''priority''' - The priority droplist
- * '''milestone''' - The milestone droplist
- * '''owner''' - The person responsible for the ticket
- * '''cc''' - The list of emails for notifying about the ticket change
+ * '''type''' — The type droplist
+ * '''reporter''' — Name or email of the reporter
+ * '''summary''' — Summary line for the ticket
+ * '''description''' — Long description of the ticket
+ * '''component''' — The component droplist
+ * '''version''' — The version droplist
+ * '''severity''' — The severity droplist
+ * '''keywords''' — The keywords 
+ * '''priority''' — The priority droplist
+ * '''milestone''' — The milestone droplist
+ * '''owner''' — The person responsible for the ticket
+ * '''cc''' — The list of emails for notifying about the ticket change
 
 '''Example:''' ''/trac/newticket?summary=Compile%20Error&version=1.0&component=gui''[[BR]]
 

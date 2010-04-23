@@ -80,6 +80,8 @@ In addition to supporting multiple repositories, a new more efficient method for
 
 While you can keep the same synchronization as in 0.11 adding the post-commit hook as outlined in TracRepositoryAdmin#Synchronization and TracRepositoryAdmin#ExplicitSync will allow more efficient synchronization and is more or less required for multiple repositories.
 
+Note that if you were using the `trac-post-commit-hook`, ''you're strongly advised to upgrade it'' to the new hook documented in the above references, as the old hook will not work with anything else than the default repository and even for this case, it won't trigger the appropriate notifications.
+
 ==== Upgrading from Trac 0.10 to Trac 0.11 ====
 ===== Site Templates and Styles =====
 The templating engine has changed in 0.11 to Genshi, please look at TracInterfaceCustomization for more information.

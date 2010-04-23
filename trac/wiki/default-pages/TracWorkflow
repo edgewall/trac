@@ -115,6 +115,16 @@ pass.operations = set_resolution
 pass.set_resolution = fixed
 }}}
 
+=== How to combine the `tracopt.ticket.commit_updater` with the testing workflow ===
+
+The [[source:trunk/tracopt/ticket/commit_updater.py|tracopt.ticket.commit_updater]] is the optional component that [[TracRepositoryAdmin#trac-post-commit-hook|replaces the old trac-post-commit-hook]], in Trac 0.12.
+
+By default it reacts on some keywords found in changeset message logs like ''close'', ''fix'' etc. and performs the corresponding workflow action.
+
+If you have a more complex workflow, like the testing stage described above and you want the ''closes'' keyword to move the ticket to the ''testing'' status instead of the ''closed'' status, you need to adapt the code a bit. 
+
+Have a look at the [[0.11/TracWorkflow#How-ToCombineSVNtrac-post-commit-hookWithTestWorkflow|Trac 0.11 recipe]] for the `trac-post-commit-hook`, this will give you some ideas about how to modify the component.
+
 == Example: Add simple optional generic review state ==
 
 Sometimes Trac is used in situations where "testing" can mean different things to different people so you may want to create an optional workflow state that is between the default workflow's `assigned` and `closed` states, but does not impose implementation-specific details. The only new state you need to add for this is a `reviewing` state. A ticket may then be "submitted for review" from any state that it can be reassigned. If a review passes, you can re-use the `resolve` action to close the ticket, and if it fails you can re-use the `reassign` action to push it back into the normal workflow.

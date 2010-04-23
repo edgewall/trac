@@ -18,11 +18,11 @@ Rather than have its own report definition format, TracReports relies on standar
 
 
 A report consists of these basic parts:
- * '''ID''' -- Unique (sequential) identifier 
- * '''Title'''  -- Descriptive title
- * '''Description'''  -- A brief description of the report, in WikiFormatting text.
- * '''Report Body''' -- List of results from report query, formatted according to the methods described below.
- * '''Footer''' -- Links to alternative download formats for this report.
+ * '''ID''' — Unique (sequential) identifier 
+ * '''Title''' — Descriptive title
+ * '''Description''' — A brief description of the report, in WikiFormatting text.
+ * '''Report Body''' — List of results from report query, formatted according to the methods described below.
+ * '''Footer''' — Links to alternative download formats for this report.
 
 == Changing Sort Order ==
 Simple reports - ungrouped reports to be specific - can be changed to be sorted by any column simply by clicking the column header. 
@@ -139,7 +139,7 @@ Example:
 === !Special/Constant Variables ===
 There is one dynamic variable whose value is set automatically (the URL does not have to be changed) to allow practical reports. 
 
- * $USER -- Username of logged in user.
+ * $USER — Username of logged in user.
 
 Example (''List all tickets assigned to me''):
 {{{
@@ -161,11 +161,11 @@ result. These 'magic' names are processed and affect the layout and style of the
 final report.
 
 === Automatically formatted columns ===
- * '''ticket''' -- Ticket ID number. Becomes a hyperlink to that ticket. 
- * '''id''' -- same as '''ticket''' above when '''realm''' is not set
- * '''realm''' -- together with '''id''', can be used to create links to other resources than tickets (e.g. a realm of ''wiki'' and an ''id'' to a page name will create a link to that wiki page)
- * '''created, modified, date, time''' -- Format cell as a date and/or time.
- * '''description''' -- Ticket description field, parsed through the wiki engine.
+ * '''ticket''' — Ticket ID number. Becomes a hyperlink to that ticket. 
+ * '''id''' — same as '''ticket''' above when '''realm''' is not set
+ * '''realm''' — together with '''id''', can be used to create links to other resources than tickets (e.g. a realm of ''wiki'' and an ''id'' to a page name will create a link to that wiki page)
+ * '''created, modified, date, time''' — Format cell as a date and/or time.
+ * '''description''' — Ticket description field, parsed through the wiki engine.
 
 '''Example:'''
 {{{
@@ -180,9 +180,9 @@ See trac:wiki/CookBook/Configuration/Reports for some example of creating report
 Columns whose names begin and end with 2 underscores (Example: '''`__color__`''') are
 assumed to be ''formatting hints'', affecting the appearance of the row.
  
- * '''`__group__`''' -- Group results based on values in this column. Each group will have its own header and table.
- * '''`__grouplink__`''' -- Make the header of each group a link to the specified URL. The URL is taken from the first row of each group.
- * '''`__color__`''' -- Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
+ * '''`__group__`''' — Group results based on values in this column. Each group will have its own header and table.
+ * '''`__grouplink__`''' — Make the header of each group a link to the specified URL. The URL is taken from the first row of each group.
+ * '''`__color__`''' — Should be a numeric value ranging from 1 to 5 to select a pre-defined row color. Typically used to color rows by issue priority.
 {{{
 #!html
 <div style="margin-left:7.5em">Defaults: 
@@ -193,7 +193,7 @@ assumed to be ''formatting hints'', affecting the appearance of the row.
 <span style="border: none; color: #333; background: transparent;  font-size: 85%; background: #e7eeff; border-color: #cde; color: #469">Color 5</span>
 </div>
 }}}
- * '''`__style__`''' -- A custom CSS style expression to use for the current row. 
+ * '''`__style__`''' — A custom CSS style expression to use for the current row. 
 
 '''Example:''' ''List active tickets, grouped by milestone, group header linked to milestone page, colored by priority''
 {{{
@@ -216,11 +216,11 @@ By default, all columns on each row are display on a single row in the HTML
 report, possibly formatted according to the descriptions above. However, it's
 also possible to create multi-line report entries.
 
- * '''`column_`''' -- ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be be continued on a second line.
+ * '''`column_`''' — ''Break row after this''. By appending an underscore ('_') to the column name, the remaining columns will be be continued on a second line.
 
- * '''`_column_`''' -- ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
+ * '''`_column_`''' — ''Full row''. By adding an underscore ('_') both at the beginning and the end of a column name, the data will be shown on a separate row.
 
- * '''`_column`'''  --  ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
+ * '''`_column`''' — ''Hide data''. Prepending an underscore ('_') to a column name instructs Trac to hide the contents from the HTML output. This is useful for information to be visible only if downloaded in other formats (like CSV or RSS/XML).
    This can be used to hide any kind of column, even important ones required for identifying the resource, e.g. `id as _id` will hide the '''Id''' column but the link to the ticket will be present.
 
 '''Example:''' ''List active tickets, grouped by milestone, colored by priority, with  description and multi-line layout''
