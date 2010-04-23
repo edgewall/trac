@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-23 01:26+0200\n"
+"PO-Revision-Date: 2010-04-23 13:31+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -177,7 +177,7 @@ msgstr "Tillbaka till %(parent)s"
 #: trac/attachment.py:528
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
-msgstr "%(attachment)s tillagd till %(resource)s"
+msgstr "%(attachment)s bifogad till %(resource)s"
 
 #: trac/attachment.py:585
 #, python-format
@@ -248,6 +248,8 @@ msgid "Original Format"
 msgstr "Orginalformat"
 
 #: trac/attachment.py:800 trac/attachment.py:806
+#: trac/templates/list_of_attachments.html:20
+#: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
 #: trac/ticket/templates/ticket_change.html:22
 msgid "Download"
@@ -1721,13 +1723,20 @@ msgstr "Ta bort bilaga"
 msgid "Attach another file"
 msgstr "Bifoga ytterligare en bilaga"
 
+#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
+#: trac/templates/macros.html:19 trac/versioncontrol/templates/browser.html:110
+#: trac/versioncontrol/templates/dir_entries.html:16
+#, python-format
+msgid "%(size)s bytes"
+msgstr "%(size)s bytes"
+
 #: trac/templates/attachment.html:96
 #, python-format
 msgid ""
 "File %(file)s,\n"
 "                [1:%(size)s]\n"
 "                (added by %(author)s,  %(date)s ago)"
-msgstr "Bilaga %(file)s, [1:%(size)s] (tillagd av %(author)s, för %(date)s sedan)"
+msgstr "Bilaga %(file)s, [1:%(size)s] (bifogad av %(author)s, för %(date)s sedan)"
 
 #: trac/templates/diff_div.html:72
 #, python-format
@@ -2142,6 +2151,10 @@ msgstr "Sök %(project)s"
 msgid "Download in other formats:"
 msgstr "Ladda ner i andra format:"
 
+#: trac/templates/list_of_attachments.html:19
+msgid "View attachment"
+msgstr "Visa bilaga"
+
 #: trac/templates/list_of_attachments.html:18
 #, python-format
 msgid ""
@@ -2150,7 +2163,7 @@ msgid ""
 "       ([4:%(size)s]) -\n"
 "      added by [5:%(author)s] %(date)s ago."
 msgstr ""
-"[1:%(file)s] [2:[3:]] ([4:%(size)s]) - tillagd av [5:%(author)s] för "
+"[1:%(file)s] [2:[3:]] ([4:%(size)s]) - bifogad av [5:%(author)s] för "
 "%(date)s sedan."
 
 #: trac/templates/list_of_attachments.html:29
@@ -2158,12 +2171,6 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:388
 msgid "Attachments"
 msgstr "Bilagor"
-
-#: trac/templates/macros.html:19
-#: trac/versioncontrol/templates/dir_entries.html:16
-#, python-format
-msgid "%(size)s bytes"
-msgstr "%(size)s bytes"
 
 #: trac/templates/macros.html:37 trac/templates/macros.html:38
 msgid "Previous"
@@ -2462,7 +2469,7 @@ msgstr "Nuvarande status finns inte längre"
 
 #: trac/ticket/default_workflow.py:227
 msgid "The ticket will be disowned"
-msgstr "Ärendet kommer sakna ägare"
+msgstr "Ärendet blir ägarlöst"
 
 #: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
 #, python-format
@@ -2510,11 +2517,11 @@ msgstr "Lösning kommer sättas till %(name)s"
 
 #: trac/ticket/default_workflow.py:296
 msgid "The resolution will be set"
-msgstr "Lösning kommer att fastställas"
+msgstr "Lösning fastställs"
 
 #: trac/ticket/default_workflow.py:298
 msgid "The resolution will be deleted"
-msgstr "Lösning kommer att tas bort"
+msgstr "Lösning tas bort"
 
 #: trac/ticket/default_workflow.py:301
 #, python-format
@@ -2524,7 +2531,7 @@ msgstr "som %(status)s "
 #: trac/ticket/default_workflow.py:305
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr "Nästa status kommer att bli \"%(name)s\""
+msgstr "Status blir \"%(name)s\""
 
 #: trac/ticket/model.py:105
 #, python-format
@@ -3220,7 +3227,7 @@ msgstr "Kolumner"
 
 #: trac/ticket/templates/query.html:174
 msgid "Group results by"
-msgstr "Gruppera resultat för"
+msgstr "Gruppera resultat efter"
 
 #: trac/ticket/templates/query.html:185
 msgid "descending"
@@ -4321,12 +4328,38 @@ msgstr "Visa ändringar..."
 msgid "Select paths and revs for Diff"
 msgstr "Välj sökvägar och revisioner för presentation av skillnader"
 
+#: trac/versioncontrol/templates/changeset.html:34
+#: trac/versioncontrol/templates/changeset.html:44
+#: trac/versioncontrol/templates/changeset.html:46
+#: trac/versioncontrol/templates/changeset.html:56
+#: trac/versioncontrol/templates/changeset.html:66
+#: trac/versioncontrol/templates/changeset.html:68
+msgid "Show full changeset"
+msgstr "Visa alla ändringar"
+
+#: trac/versioncontrol/templates/changeset.html:35
+#: trac/versioncontrol/templates/changeset.html:38
+#: trac/versioncontrol/templates/changeset.html:43
+#: trac/versioncontrol/templates/changeset.html:45
+#: trac/versioncontrol/templates/changeset.html:57
+#: trac/versioncontrol/templates/changeset.html:60
+#: trac/versioncontrol/templates/changeset.html:65
+#: trac/versioncontrol/templates/changeset.html:67
+#: trac/versioncontrol/templates/changeset.html:103
+msgid "Show entry in browser"
+msgstr "Visa post i webbläsaren"
+
 #: trac/versioncontrol/templates/changeset.html:33
 #, python-format
 msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr "Ändring [1:%(new_rev)s] av [2:%(new_path)s] i %(reponame)s"
+
+#: trac/versioncontrol/templates/changeset.html:39
+#: trac/versioncontrol/templates/changeset.html:61
+msgid "Show revision log"
+msgstr "Visa revisionsloggen"
 
 #: trac/versioncontrol/templates/changeset.html:37
 #, python-format
@@ -4390,13 +4423,14 @@ msgstr "Ändring [1:%(new_rev)s]"
 msgid "Show what was removed (content at revision %(old_rev)s)"
 msgstr "Visa vad som tagits bort (innehåll för revision %(old_rev)s)"
 
-#: trac/versioncontrol/templates/changeset.html:103
-msgid "Show entry in browser"
-msgstr "Visa post i webbläsaren"
-
 #: trac/versioncontrol/templates/changeset.html:104
 msgid "(root)"
 msgstr "(rot)"
+
+#: trac/versioncontrol/templates/changeset.html:110
+#, python-format
+msgid "Show original file (revision %(old_rev)s)"
+msgstr "Visa orginalfilen (revision %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:109
 #, python-format
@@ -5068,7 +5102,7 @@ msgid "Email"
 msgstr "E-post"
 
 #: trac/web/session.py:318
-msgid "Session alread exists. Unable to add a duplicate session."
+msgid "Session already exists. Unable to add a duplicate session."
 msgstr "Sessionen existerar redan. Kan inte duplicera sessionen."
 
 #: trac/web/session.py:325
@@ -5112,7 +5146,7 @@ msgstr "Borttagna sidor"
 msgid "'%(name)s' is not a directory"
 msgstr "\"%(name)s\" är inte en katalog"
 
-#: trac/wiki/api.py:327
+#: trac/wiki/api.py:335
 msgid "no permission to view this wiki page"
 msgstr "inte behörig att se denna wikisida"
 
@@ -5150,7 +5184,7 @@ msgstr "Kan inte visa %(link)s:"
 #: trac/wiki/macros.py:494
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
-msgstr "Ingen bild \"%(id)s\" tillagd till %(parent)s"
+msgstr "Ingen bild \"%(id)s\" bifogad till %(parent)s"
 
 #: trac/wiki/macros.py:537
 #, python-format
