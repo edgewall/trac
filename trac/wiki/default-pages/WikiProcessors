@@ -198,7 +198,7 @@ Trac includes processors to provide inline syntax highlighting:
 Trac relies on external software packages for syntax coloring,
 like [http://pygments.org Pygments]. 
 
-See TracSyntaxColoring for informations about which languages
+See TracSyntaxColoring for information about which languages
 are supported and how to enable support for more languages.
 
 Note also that by using the MIME type as processor, it is possible to syntax-highlight the same languages that are supported when browsing source code. For example, you can write:

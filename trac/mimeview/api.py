@@ -113,7 +113,7 @@ class Context(object):
         :type resource: `Resource`
         :param href: an `Href` object suitable for creating URLs
         :param perm: a `PermissionCache` object used for restricting the
-                     generated output to "authorized" informations only.
+                     generated output to "authorized" information only.
 
         The actual `.perm` attribute of the rendering context will be bound
         to the given `resource` so that fine-grained permission checks will

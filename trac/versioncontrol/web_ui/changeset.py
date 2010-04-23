@@ -109,7 +109,7 @@ class ChangesetModule(Component):
     differences.
 
     If the differences shown are coming from a specific changeset,
-    then that changeset informations can be shown too.
+    then that changeset information can be shown too.
 
     In addition, it is possible to show only a subset of the changeset:
     Only the changes affecting a given path will be shown. This is called

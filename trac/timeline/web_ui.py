@@ -350,5 +350,5 @@ class TimelineModule(Component):
             tag.p(tag_("""
               You may want to see the %(other_events)s from the Timeline or 
               notify your Trac administrator about the error (detailed
-              informations were written to the log).
+              information were written to the log).
             """, other_events=tag.a(other_events, href=href)))))
