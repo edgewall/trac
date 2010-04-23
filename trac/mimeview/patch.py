@@ -21,6 +21,7 @@ import os.path
 from trac.core import *
 from trac.mimeview.api import content_to_unicode, IHTMLPreviewRenderer, \
                               Mimeview
+from trac.util.compat import any
 from trac.util.html import escape, Markup
 from trac.util.text import expandtabs
 from trac.util.translation import _
@@ -104,20 +105,27 @@ class PatchRenderer(Component):
                 # consume preample, storing free lines in comments
                 # (also detect the special case of git binary patches)
                 if not line.startswith('--- '):
-                    if not line.startswith('Index: ') and line != '='*67:
+                    if not line.startswith('Index: ') and line != '=' * 67:
                         comments.append(line)
                     if line == "GIT binary patch":
                         binary = True
-                        line = lines.next()
-                        while line and line != '':
-                            line = lines.next()
-                            comments.append(line)
                         diffcmd_line = comments[0] # diff --git a/... b/,,,
                         oldpath, newpath = diffcmd_line.split()[-2:]
-                        index_line = comments[1] # index 8f****78..1e****5c
-                        oldrev, newrev = index_line.split()[-1].split('..')
-                        oldinfo = ['', oldpath, oldrev]
-                        newinfo = ['', newpath, newrev]
+                        if any(c.startswith('new file') for c in comments):
+                            oldpath = '/dev/null'
+                        if any(c.startswith('deleted file') for c in comments):
+                            newpath = '/dev/null'
+                        oldinfo = ['', oldpath]
+                        newinfo = ['', newpath]
+                        index = [c for c in comments if c.startswith('index ')]
+                        if index: # index 8f****78..1e****5c
+                            oldrev, newrev = index[0].split()[-1].split('..')
+                            oldinfo.append(oldrev)
+                            newinfo.append(newrev)
+                        line = lines.next()
+                        while line:
+                            comments.append(line)
+                            line = lines.next()
                     else:
                         line = lines.next()
                         continue
@@ -133,7 +141,7 @@ class PatchRenderer(Component):
                     # Changed filename/version from '+++ <file> [rev]'
                     line = lines.next()
                     if not line.startswith('+++ '):
-                        self.log.debug('expected +++ after ---, got '+line)
+                        self.log.debug('expected +++ after ---, got ' + line)
                         return None
 
                     newinfo = line.split(None, 2)
