@@ -22,10 +22,12 @@ define HELP
   unit-test           run unit tests
   functional-test     run functional tests
   test                run all tests
-  coverage            run all tests, under figleaf
+  coverage            run all tests, under coverage
+  figleaf             run all tests, under figleaf
 
   [db=...]            variable for selecting database backend
   [test=...]          variable for selecting a single test file
+  [coverageopts=...]  variable containing extra optios for coverage
 
  ---------------- Standalone test server
 
@@ -34,7 +36,7 @@ define HELP
   [port=...]          variable for selecting the port
   [auth=...]          variable for specifying authentication
   [env=...]           variable for the trac environment or parent dir
-  [tracdopts=...]     variable containing extra options
+  [tracdopts=...]     variable containing extra options for tracd
 
  ---------------- L10N tasks
 
@@ -81,6 +83,8 @@ status:
 	@python -V
 	@echo -n "figleaf: "
 	@-which figleaf 2>/dev/null || echo 
+	@echo -n "coverage: "
+	@-which coverage 2>/dev/null || echo 
 	@echo "PYTHONPATH=$$PYTHONPATH"
 	@echo "TRAC_TEST_DB_URI=$$TRAC_TEST_DB_URI"
 	@echo "server-options=$(server-options)"
@@ -88,7 +92,7 @@ status:
 Trac.egg-info: status
 	python setup.py egg_info
 
-clean: clean-bytecode clean-coverage
+clean: clean-bytecode clean-figleaf clean-coverage
 
 clean-bytecode:
 	find -name \*.py[co] -exec rm {} \;
@@ -186,16 +190,52 @@ functional-test: Trac.egg-info
 # ----------------------------------------------------------------------------
 #
 # Coverage related tasks
+#
+# (see http://nedbatchelder.com/code/coverage/)
 
 .PHONY: coverage clean-coverage show-coverage
 
-coverage: clean-coverage test-figleaf figleaf/index.html
+coverage: clean-coverage test-coverage show-coverage
 
 clean-coverage:
+	coverage erase
+	@rm -fr htmlcov
+
+test-coverage: 
+	FIGLEAF=coverage coverage trac/test.py
+
+unit-test-coverage:
+	coverage run -a $(coverageopts) trac/test.py --skip-functional-tests
+
+functional-test-coverage:
+	FIGLEAF='coverage run -a $(coverageopts)' python \
+	    trac/tests/functional/testcases.py -v
+
+show-coverage: htmlcov/index.html
+	coverage report
+
+htmlcov/index.html:
+	coverage html
+
+# ----------------------------------------------------------------------------
+#
+# Figleaf based coverage tasks 
+#
+# (see http://darcs.idyll.org/~t/projects/figleaf/doc/)
+#
+# ** NOTE: there are still several issues with this **
+#  - as soon as a DocTestSuite is run, figleaf gets confused
+#  - functional-test-figleaf is broken (no .figleaf generated)
+
+.PHONY: figleaf clean-figleaf show-figleaf
+
+figleaf: clean-figleaf test-figleaf show-figleaf
+
+clean-figleaf:
 	rm -f .figleaf* *.figleaf
 	rm -fr figleaf
 
-show-coverage: figleaf/index.html
+show-figleaf: figleaf/index.html
 
 figleaf/index.html: $(wildcard *.figleaf)
 	figleaf2html \

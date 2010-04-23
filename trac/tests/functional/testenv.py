@@ -20,16 +20,19 @@ from trac.tests.functional import logfile
 from trac.tests.functional.better_twill import tc, ConnectError
 from trac.util.compat import close_fds
 
-# TODO: refactor to support testing multiple frontends, backends (and maybe
-# repositories and authentication).
-# Frontends:
-# tracd, ap2+mod_python, ap2+mod_wsgi, ap2+mod_fastcgi, ap2+cgi,
-# lighty+fastcgi, lighty+cgi, cherrypy+wsgi
-# Backends:
-# sqlite2+pysqlite, sqlite3+pysqlite2, postgres python bindings #1,
-# postgres python bindings #2, mysql with server v4, mysql with server v5
-# (those need to test search escaping, among many other things like long
-# paths in browser and unicode chars being allowed/translating...)
+# TODO: refactor to support testing multiple frontends, backends
+#       (and maybe repositories and authentication).
+#
+#     Frontends::
+#       tracd, ap2+mod_python, ap2+mod_wsgi, ap2+mod_fastcgi, ap2+cgi,
+#       lighty+fastcgi, lighty+cgi, cherrypy+wsgi
+#
+#     Backends::
+#       sqlite2+pysqlite, sqlite3+pysqlite2, postgres python bindings #1,
+#       postgres python bindings #2, mysql with server v4, mysql with server v5
+#       (those need to test search escaping, among many other things like long
+#       paths in browser and unicode chars being allowed/translating...)
+
 class FunctionalTestEnvironment(object):
     """Common location for convenience functions that work with the test
     environment on Trac.  Subclass this and override some methods if you are
@@ -152,14 +155,19 @@ class FunctionalTestEnvironment(object):
         """Starts the webserver, and waits for it to come up."""
         if 'FIGLEAF' in os.environ:
             exe = os.environ['FIGLEAF']
+            if ' ' in exe: # e.g. 'coverage run'                
+                args = exe.split()
+            else:
+                args = [exe]
         else:
-            exe = sys.executable
+            args = [sys.executable]
         options = ["--port=%s" % self.port, "-s", "--hostname=127.0.0.1",
                    "--basic-auth=trac,%s," % self.htpasswd]
         if 'TRAC_TEST_TRACD_OPTIONS' in os.environ:
             options += os.environ['TRAC_TEST_TRACD_OPTIONS'].split()
-        server = Popen([exe, os.path.join(self.trac_src, 'trac', 'web',
-                       'standalone.py')] + options + [self.tracdir],
+        args.append(os.path.join(self.trac_src, 'trac', 'web',
+                                 'standalone.py'))
+        server = Popen(args + options + [self.tracdir],
                        stdout=logfile, stderr=logfile,
                        close_fds=close_fds,
                        cwd=self.command_cwd,
@@ -179,11 +187,14 @@ class FunctionalTestEnvironment(object):
         tc.url(self.url)
 
     def stop(self):
-        """Stops the webserver, if running"""
+        """Stops the webserver, if running
+
+        FIXME: probably needs a nicer way to exit for coverage to work
+        """
         if self.pid:
             if os.name == 'nt':
                 # Untested
-                call(["taskkill", "/f", "/pid", str(self.pid)],
+                res = call(["taskkill", "/f", "/pid", str(self.pid)],
                      stdin=PIPE, stdout=PIPE, stderr=PIPE)
             else:
                 os.kill(self.pid, signal.SIGINT)
