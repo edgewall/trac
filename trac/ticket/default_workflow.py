@@ -242,8 +242,8 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             if owners == None:
                 owner = req.args.get(id, req.authname)
                 control.append(tag_('to %(owner)s',
-                                     owners=tag.input(type='text', id=id,
-                                                      name=id, value=owner)))
+                                    owner=tag.input(type='text', id=id,
+                                                    name=id, value=owner)))
                 hints.append(_("The owner will be changed from "
                                "%(current_owner)s",
                                current_owner=current_owner))
