@@ -185,9 +185,13 @@ neither should AbAbÅ nor AbAbÅÅb
 [ሀሁሂሃሄህሆለሉሊላሌልሎሏሐሑሒሓሔሕሖመሙሚማሜምሞሟሠሡሢሣሤሥሦረሩሪራሬርሮሯሰሱሲሳሴስሶሷሸሹሺሻሼሽሾሿቀቁቂቃቄቅቆቈቊቋቌቍቐቑቒቓቔቕቖቘቚቛቜቝበቡቢባቤብቦቧቨቩቪቫቬቭቮቯተቱቲታቴትቶቷቸቹቺቻቼችቾቿኀኁኂኃኄኅኆኈኊኋኌኍነኑኒናኔንኖኗኘኙኚኛኜኝኞኟአኡኢኣኤእኦኧከኩኪካኬክኮኰኲኳኴኵኸኹኺኻኼኽኾወዉዊዋዌውዎዐዑዒዓዔዕዖዘዙዚዛዜዝዞዟዠዡዢዣዤዥዦዧየዩዪያዬይዮደዱዲዳዴድዶዷጀጁጂጃጄጅጆጇገጉጊጋጌግጎጐጒጓጔጕጠጡጢጣጤጥጦጧጨጩጪጫጬጭጮጯጰጱጲጳጴጵጶጷጸጹጺጻጼጽጾጿፀፁፂፃፄፅፆፈፉፊፋፌፍፎፏፐፑፒፓፔፕፖፗፘፙፚ፩፪፫፬፭፮፯፰፱፲፳፴፵፶፷፸፹፺፻]
 ============================== MoinMoin style forced links
 This is a ["Wiki"] page link.
+This is a ["Wiki" wiki page] link with label.
+This is a ["Wiki?param=1#fragment"] page link with query and fragment.
 ------------------------------
 <p>
 This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">Wiki?</a> page link.
+This is a <a class="missing wiki" href="/wiki/Wiki" rel="nofollow">wiki page?</a> link with label.
+This is a <a class="missing wiki" href="/wiki/Wiki?param=1#fragment" rel="nofollow">Wiki?</a> page link with query and fragment.
 </p>
 ------------------------------
 ============================== Wiki links with @version
@@ -302,23 +306,51 @@ complex link <a class="ext-link" href="http://server/a/page/test?format=txt&amp;
 RELATIVE_LINKS_TESTS = u"""
 ============================== Relative to the project url
 [//docs Documentation]
+[//docs?param=1#fragment Documentation]
+[//docs]
+[//docs //docs]
+[//docs?param=1#fragment]
 [// Home]
+[//]
+[//?param=1#fragment]
 ------------------------------
 <p>
 <a href="/docs">Documentation</a>
+<a href="/docs?param=1#fragment">Documentation</a>
+<a href="/docs">docs</a>
+<a href="/docs">//docs</a>
+<a href="/docs?param=1#fragment">docs</a>
 <a href="/">Home</a>
+<a href="/">//</a>
+<a href="/?param=1#fragment">//</a>
 </p>
 ------------------------------
 ============================== Relative to the base url
-[/newticket?priority=high bug]
+[/newticket?priority=high#fragment bug]
+[/newticket?priority=high#fragment]
+[/newticket]
+[/newticket /newticket]
 [/ Project]
+[/]
+[/?param=1#fragment]
 ------------------------------
 <p>
-<a href="/newticket?priority=high">bug</a>
+<a href="/newticket?priority=high#fragment">bug</a>
+<a href="/newticket?priority=high#fragment">newticket</a>
+<a href="/newticket">newticket</a>
+<a href="/newticket">/newticket</a>
 <a href="/">Project</a>
+<a href="/">/</a>
+<a href="/?param=1#fragment">/</a>
 </p>
 ------------------------------
 ============================== Relative to the current page
+[.]
+[./]
+[..]
+[../]
+[./../.]
+[. this page]
 [./Detail see detail]
 [./Detail]
 [./Detail ./Detail]
@@ -329,6 +361,12 @@ RELATIVE_LINKS_TESTS = u"""
 [.././../Other]
 ------------------------------
 <p>
+<a class="wiki" href="/wiki/Main/Sub">.</a>
+<a class="wiki" href="/wiki/Main/Sub">./</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">..?</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">../?</a>
+<a class="missing wiki" href="/wiki/Main" rel="nofollow">./../.?</a>
+<a class="wiki" href="/wiki/Main/Sub">this page</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
@@ -346,9 +384,13 @@ RELATIVE_LINKS_TESTS = u"""
 [wiki:../Other see other]
 [wiki:.././../Other]
 ["."]
+[".?param=1#fragment"]
 ["./Detail"]
+["./Detail?param=1#fragment"]
 [".."]
+["..?param=1#fragment"]
 ["../Other"]
+["../Other?param=1#fragment"]
 [".././../Other"]
 ------------------------------
 <p>
@@ -358,31 +400,55 @@ RELATIVE_LINKS_TESTS = u"""
 <a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
 <a class="missing wiki" href="/wiki/Other" rel="nofollow">.././../Other?</a>
 <a class="wiki" href="/wiki/Main/Sub">.</a>
+<a class="wiki" href="/wiki/Main/Sub?param=1#fragment">.</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#fragment" rel="nofollow">Detail?</a>
 <a class="missing wiki" href="/wiki/Main" rel="nofollow">..?</a>
+<a class="missing wiki" href="/wiki/Main?param=1#fragment" rel="nofollow">..?</a>
 <a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">Other?</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#fragment" rel="nofollow">Other?</a>
 <a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
 </p>
 ------------------------------
-============================== Relative to the current page with anchors
+============================== Relative to the current page with query strings and fragments
 [#topic see topic]
+[?param=1#topic see topic]
 [.#topic see topic]
+[.?param=1#topic see topic]
 [./#topic see topic]
+[./?param=1#topic see topic]
 [./Detail#topic see detail]
+[./Detail?param=1#topic see detail]
+[./Detail?param=1#topic]
 [..#topic see parent]
+[..?param=1#topic see parent]
 [../#topic see parent]
+[../?param=1#topic see parent]
 [../Other#topic see other]
+[../Other?param=1#topic see other]
+[../Other?param=1#topic]
 [../Other/#topic see other]
+[../Other/?param=1#topic see other]
 ------------------------------
 <p>
 <a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
+<a class="wiki" href="/wiki/Main/Sub?param=1#topic">see topic</a>
 <a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
+<a class="wiki" href="/wiki/Main/Sub?param=1#topic">see topic</a>
 <a class="wiki" href="/wiki/Main/Sub#topic">see topic</a>
+<a class="wiki" href="/wiki/Main/Sub?param=1#topic">see topic</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail#topic" rel="nofollow">see detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#topic" rel="nofollow">see detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail?param=1#topic" rel="nofollow">Detail?</a>
 <a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent?</a>
+<a class="missing wiki" href="/wiki/Main?param=1#topic" rel="nofollow">see parent?</a>
 <a class="missing wiki" href="/wiki/Main#topic" rel="nofollow">see parent?</a>
+<a class="missing wiki" href="/wiki/Main?param=1#topic" rel="nofollow">see parent?</a>
 <a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">Other?</a>
 <a class="missing wiki" href="/wiki/Main/Other#topic" rel="nofollow">see other?</a>
+<a class="missing wiki" href="/wiki/Main/Other?param=1#topic" rel="nofollow">see other?</a>
 </p>
 ------------------------------
 """ # "

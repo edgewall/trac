@@ -53,7 +53,7 @@ class WikiParser(Component):
     SHREF_TARGET_LAST = r"[\w/=](?<!_)" # we don't want "_"
 
     def _lhref_relative_target(sep):
-        return r"[/#][^%s\]]*|\.\.?(?:[/#][^%s\]]*)?" % (sep, sep)
+        return r"[/\?#][^%s\]]*|\.\.?(?:[/\?#][^%s\]]*)?" % (sep, sep)
 
     LHREF_RELATIVE_TARGET = _lhref_relative_target(r'\s')
     

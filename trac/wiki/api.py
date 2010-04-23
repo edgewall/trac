@@ -185,6 +185,22 @@ def parse_args(args, strict=True):
     return largs, kwargs
 
 
+def make_label_from_target(target):
+    """Create a label from a wiki target.
+    
+    A trailing fragment and query string is stripped. Then, leading `./`, `../`
+    and '/' elements are stripped, except when this would lead to an empty
+    label.
+    """
+    label = target.split('#', 1)[0].split('?', 1)[0]
+    if not label:
+        return target
+    components = label.split('/')
+    for i, comp in enumerate(components):
+        if comp not in ('', '.', '..'):
+            return '/'.join(components[i:])
+    return label
+
 
 class WikiSystem(Component):
     """Wiki system manager."""
@@ -278,18 +294,16 @@ class WikiSystem(Component):
                % (wiki_page_name, WikiParser.QUOTED_STRING),
                wikipagename_with_label_link)
 
-        # MoinMoin's ["internal free link"] 
+        # MoinMoin's ["internal free link"] and ["free link" with label]
         def internal_free_link(fmt, m, fullmatch): 
-            target = m[2:-2]
-            components = target.split('/')
-            for i, comp in enumerate(components):
-                if comp not in ('', '.', '..'):
-                    label = '/'.join(components[i:])
-                    break
-            else:
-                label = target
-            return self._format_link(fmt, 'wiki', target, label, False) 
-        yield (r"!?\[(?:%s)\]" % WikiParser.QUOTED_STRING, internal_free_link) 
+            page = fullmatch.group('ifl_page')[1:-1]
+            label = fullmatch.group('ifl_label')
+            if label is None:
+                label = make_label_from_target(page)
+            return self._format_link(fmt, 'wiki', page, label.strip(), False)
+        yield (r"!?\[(?P<ifl_page>%s)(?:\s+(?P<ifl_label>%s|[^\]]+))?\]"
+               % (WikiParser.QUOTED_STRING, WikiParser.QUOTED_STRING),
+               internal_free_link)
 
     def get_link_resolvers(self):
         def link_resolver(formatter, ns, target, label):

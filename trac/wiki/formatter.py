@@ -31,7 +31,7 @@ from genshi.util import plaintext
 from trac.core import *
 from trac.mimeview import *
 from trac.resource import get_relative_resource, get_resource_url
-from trac.wiki.api import WikiSystem, parse_args
+from trac.wiki.api import WikiSystem, make_label_from_target, parse_args
 from trac.wiki.parser import WikiParser
 from trac.util import arity
 from trac.util.compat import all
@@ -44,9 +44,11 @@ __all__ = ['wiki_to_html', 'wiki_to_oneliner', 'wiki_to_outline',
            'Formatter', 'format_to', 'format_to_html', 'format_to_oneliner',
            'extract_link']
 
+
 def system_message(msg, text=None):
     return tag.div(tag.strong(msg), text and tag.pre(text),
                    class_="system-message")
+
 
 def split_url_into_path_query_fragment(target):
     """Split a target along `?` and `#` in `(path, query, fragment)`.
@@ -69,6 +71,7 @@ def split_url_into_path_query_fragment(target):
         target, query = target[:idx], target[idx:]
     return (target, query, fragment)
 
+
 def _markup_to_unicode(markup):
     stream = None
     if isinstance(markup, Element):
@@ -79,8 +82,10 @@ def _markup_to_unicode(markup):
         markup = stream.render('xhtml', encoding=None, strip_whitespace=False)
     return to_unicode(markup)
 
+
 class ProcessorError(TracError):
     pass
+
 
 class WikiProcessor(object):
 
@@ -542,9 +547,7 @@ class Formatter(object):
             label = self._unquote(label)
         if rel:
             if not label:
-                label = rel
-                while label.startswith('./') or label.startswith('../'):
-                    label = label.split('/', 1)[1]
+                label = make_label_from_target(rel)
             path, query, fragment = self.split_link(rel)
             if path.startswith('//'):
                 path = '/' + path.lstrip('/')

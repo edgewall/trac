@@ -341,7 +341,7 @@ Relative links are supported:
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="/">/</a>
-<a href="/?param=value#anchor">/?param=value#anchor</a>
+<a href="/?param=value#anchor">/</a>
 <a href="/newticket?component=test">new ticket</a>
 <a class="wiki" href="/wiki/WikiStart#title">#title</a>
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
@@ -368,7 +368,7 @@ Relative links are supported:
 <a href="/docs">See documentation</a>
 <a href="/images/logo.png">Our logo</a>
 <a href="/">/</a>
-<a href="/?param=value#anchor">/?param=value#anchor</a>
+<a href="/?param=value#anchor">/</a>
 <a href="/newticket?component=test">new ticket</a>
 <a class="wiki" href="/wiki/WikiStart#title">#title</a>
 <a class="wiki" href="/wiki/WikiStart#title">see Title</a>
