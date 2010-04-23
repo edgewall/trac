@@ -128,11 +128,7 @@ compile:
 endif
 
 check: pre-check $(addprefix check-,$(locales))
-ifeq "$(findstring -k,$(MAKEFLAGS))" "-k"
-	@echo "-k specified, check the results manually"
-else
-	@echo "all catalogs OK"
-endif
+	@echo "All catalogs checked are OK"
 
 pre-check:
 	@echo "checking catalogs for $(locales)..."
