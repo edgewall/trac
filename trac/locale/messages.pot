@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-21 21:32+0200\n"
+"POT-Creation-Date: 2010-04-23 11:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -241,6 +241,8 @@ msgid "Original Format"
 msgstr ""
 
 #: trac/attachment.py:800 trac/attachment.py:806
+#: trac/templates/list_of_attachments.html:20
+#: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
 #: trac/ticket/templates/ticket_change.html:22
 msgid "Download"
@@ -1587,6 +1589,13 @@ msgstr ""
 msgid "Attach another file"
 msgstr ""
 
+#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
+#: trac/templates/macros.html:19 trac/versioncontrol/templates/browser.html:110
+#: trac/versioncontrol/templates/dir_entries.html:16
+#, python-format
+msgid "%(size)s bytes"
+msgstr ""
+
 #: trac/templates/attachment.html:96
 #, python-format
 msgid ""
@@ -1980,6 +1989,10 @@ msgstr ""
 msgid "Download in other formats:"
 msgstr ""
 
+#: trac/templates/list_of_attachments.html:19
+msgid "View attachment"
+msgstr ""
+
 #: trac/templates/list_of_attachments.html:18
 #, python-format
 msgid ""
@@ -1993,12 +2006,6 @@ msgstr ""
 #: trac/templates/list_of_attachments.html:40
 #: trac/ticket/templates/ticket.html:388
 msgid "Attachments"
-msgstr ""
-
-#: trac/templates/macros.html:19
-#: trac/versioncontrol/templates/dir_entries.html:16
-#, python-format
-msgid "%(size)s bytes"
 msgstr ""
 
 #: trac/templates/macros.html:37 trac/templates/macros.html:38
@@ -4099,11 +4106,37 @@ msgstr ""
 msgid "Select paths and revs for Diff"
 msgstr ""
 
+#: trac/versioncontrol/templates/changeset.html:34
+#: trac/versioncontrol/templates/changeset.html:44
+#: trac/versioncontrol/templates/changeset.html:46
+#: trac/versioncontrol/templates/changeset.html:56
+#: trac/versioncontrol/templates/changeset.html:66
+#: trac/versioncontrol/templates/changeset.html:68
+msgid "Show full changeset"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:35
+#: trac/versioncontrol/templates/changeset.html:38
+#: trac/versioncontrol/templates/changeset.html:43
+#: trac/versioncontrol/templates/changeset.html:45
+#: trac/versioncontrol/templates/changeset.html:57
+#: trac/versioncontrol/templates/changeset.html:60
+#: trac/versioncontrol/templates/changeset.html:65
+#: trac/versioncontrol/templates/changeset.html:67
+#: trac/versioncontrol/templates/changeset.html:103
+msgid "Show entry in browser"
+msgstr ""
+
 #: trac/versioncontrol/templates/changeset.html:33
 #, python-format
 msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:39
+#: trac/versioncontrol/templates/changeset.html:61
+msgid "Show revision log"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:37
@@ -4162,12 +4195,13 @@ msgstr ""
 msgid "Show what was removed (content at revision %(old_rev)s)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:103
-msgid "Show entry in browser"
-msgstr ""
-
 #: trac/versioncontrol/templates/changeset.html:104
 msgid "(root)"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:110
+#, python-format
+msgid "Show original file (revision %(old_rev)s)"
 msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:109
@@ -4825,7 +4859,7 @@ msgid "Email"
 msgstr ""
 
 #: trac/web/session.py:318
-msgid "Session alread exists. Unable to add a duplicate session."
+msgid "Session already exists. Unable to add a duplicate session."
 msgstr ""
 
 #: trac/web/session.py:325
@@ -4869,7 +4903,7 @@ msgstr ""
 msgid "'%(name)s' is not a directory"
 msgstr ""
 
-#: trac/wiki/api.py:327
+#: trac/wiki/api.py:335
 msgid "no permission to view this wiki page"
 msgstr ""
 
