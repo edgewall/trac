@@ -250,19 +250,22 @@ endif
 # Setup environment variables
 
 python-home := $(python.$(if $(python),$(python),$($(db).python)))
-ifndef python-home
-    python-home = $(subst /bin,,$(dir $(shell which python)))
-endif
 
 ifeq "$(OS)" "Windows_NT"
+    ifndef python-home
+        # Detect location of current python 
+        python-exe := $(shell python -c 'import sys; print sys.executable')
+        python-home := $(subst \python.exe,,$(python-exe))
+    endif
     SEP = ;
-    python-bin = $(python-home):$(python-home)/Scripts
+    python-bin = $(python-home)$(SEP)$(python-home)/Scripts
 else
     SEP = :
-    python-bin = $(python-home)/bin
 endif
 
-export TRAC_TEST_DB_URI = $($(db).uri)
-export PATH := $(python-bin):$(PATH)
+ifdef python-bin
+    export PATH := $(python-bin)$(SEP)$(PATH)
+endif
 export PYTHONPATH := .$(SEP)$(PYTHONPATH)
+export TRAC_TEST_DB_URI = $($(db).uri)
 # ----------------------------------------------------------------------------
