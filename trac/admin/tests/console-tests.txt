@@ -725,7 +725,7 @@ session add <sid> [name] [email]
     authenticated.
 
 ===== test_session_add_duplicate_sid =====
-Error: Session alread exists. Unable to add a duplicate session.
+Error: Session already exists. Unable to add a duplicate session.
 ===== test_session_add_sid_all =====
 
 SID   Name  Email
