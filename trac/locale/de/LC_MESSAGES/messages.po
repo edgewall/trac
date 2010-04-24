@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-18 17:12+0200\n"
+"PO-Revision-Date: 2010-04-19 22:25+0200\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -44,17 +44,17 @@ msgstr "Lösche Kommentar %(num)s"
 #: tracopt/ticket/deleter.py:130
 #, python-format
 msgid "The ticket #%(id)s has been deleted."
-msgstr ""
+msgstr "Das Ticket #%(id)s wurde gelöscht."
 
 #: tracopt/ticket/deleter.py:137
 #, python-format
 msgid "The ticket comment %(num)s on ticket #%(id)s has been deleted."
-msgstr ""
+msgstr "Der Kommentar %(num)s zum Ticket #%(id)s wurde gelöscht."
 
 #: tracopt/ticket/deleter.py:156
 #, python-format
 msgid "Comment %(num)s not found"
-msgstr ""
+msgstr "Kommentar %(num)s nicht gefunden"
 
 #: tracopt/ticket/templates/ticket_delete.html:11
 msgid "Delete Ticket #"
@@ -126,7 +126,7 @@ msgstr "Kommentar:"
 #: trac/ticket/templates/ticket.html:142
 #, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr ""
+msgstr "Vor %(date)s geändert durch %(author)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:64
 msgid "Are you sure you want to delete this ticket comment?"
@@ -249,7 +249,7 @@ msgstr "Download"
 #: trac/attachment.py:896
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
-msgstr ""
+msgstr "Ungültige Dokumenten-ID '%(id)s'"
 
 #: trac/attachment.py:932 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
@@ -265,7 +265,7 @@ msgstr "Name"
 
 #: trac/attachment.py:932
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #: trac/attachment.py:932 trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket.html:360
@@ -449,7 +449,7 @@ msgstr "Die Namen von Gruppen müssen klein- und Aktionen großgeschrieben werde
 #: trac/resource.py:326
 #, python-format
 msgid "%(name)s at version %(version)s"
-msgstr "%(name)s  in Version %(version)s"
+msgstr "%(name)s in Version %(version)s"
 
 #: trac/admin/api.py:129 trac/admin/console.py:254
 msgid "Command not found"
@@ -484,7 +484,7 @@ msgstr "Fehler beim Öffnen der Projektumgebung."
 #: trac/admin/console.py:234
 #, python-format
 msgid "Completion error: %(err)s"
-msgstr "Vervollständigungs-Fehler:"
+msgstr "Vervollständigungs-Fehler: %(err)s"
 
 #: trac/admin/console.py:287
 #, python-format
@@ -561,11 +561,11 @@ msgstr "Initenv für '%(env)s' fehlgeschlagen."
 
 #: trac/admin/console.py:366
 msgid "Does an environment already exist?"
-msgstr ""
+msgstr "Existiert schon eine Projektumgebung?"
 
 #: trac/admin/console.py:370
 msgid "Directory exists and is not empty."
-msgstr ""
+msgstr "Das Verzeichnis existiert bereits und ist nicht leer."
 
 #: trac/admin/console.py:398
 msgid "Creating and Initializing Project"
@@ -694,13 +694,15 @@ msgstr "Unbekannte Administrations-Seite"
 #: trac/ticket/admin.py:697 trac/ticket/report.py:188
 #: trac/ticket/roadmap.py:688 trac/versioncontrol/admin.py:196
 msgid "Your changes have been saved."
-msgstr ""
+msgstr "Ihre Änderungen wurden gespeichert."
 
 #: trac/admin/web_ui.py:190 trac/ticket/admin.py:68
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
-msgstr ""
+msgstr "Fehler beim Schreiben von trac.ini. Stellen Sie sicher, dass der "
+"Webserver Schreibrechte für diese Datei hat. Ihre Änderungen wurden nicht "
+"gespeichert."
 
 #: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
@@ -720,7 +722,7 @@ msgstr "Protokollierung"
 #: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
-msgstr "Kein"
+msgstr "Keine"
 
 #: trac/admin/web_ui.py:241
 msgid "Console"
@@ -781,26 +783,26 @@ msgstr "Unbekannte Aktion"
 #: trac/admin/web_ui.py:344
 #, python-format
 msgid "The subject %(subject)s has been granted the permission %(action)s."
-msgstr ""
+msgstr "%(subject)s hat die Berechtigung %(action)s erhalten."
 
 #: trac/admin/web_ui.py:349
 #, python-format
 msgid "The permission %(action)s was already granted to %(subject)s."
-msgstr "Berechtigung %(action)s wurde %(subject)s bereits verliehen"
+msgstr "Berechtigung %(action)s wurde %(subject)s bereits verliehen."
 
 #: trac/admin/web_ui.py:365
 #, python-format
 msgid "The subject %(subject)s has been added to the group %(group)s."
-msgstr "%(subject)s wurde zur Gruppe %(group)s hinzugefügt"
+msgstr "%(subject)s wurde zur Gruppe %(group)s hinzugefügt."
 
 #: trac/admin/web_ui.py:370
 #, python-format
 msgid "The subject %(subject)s was already added to the group %(group)s."
-msgstr "%(subject)s wurde bereits zu Gruppe %(group)s hinzugefügt"
+msgstr "%(subject)s wurde bereits zu Gruppe %(group)s hinzugefügt."
 
 #: trac/admin/web_ui.py:383
 msgid "The selected permissions have been revoked."
-msgstr ""
+msgstr "Die ausgewählten Berechtigungen wurden entzogen."
 
 #: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:9
 msgid "Plugins"
@@ -820,14 +822,14 @@ msgstr "Das Plugin %(name)s ist bereits installiert"
 #: trac/admin/web_ui.py:513
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Die folgende Komponente wurde deaktiviert:"
+msgstr[1] "Die folgenden Komponenten wurden deaktiviert:"
 
 #: trac/admin/web_ui.py:518
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Die folgende Komponente wurde aktiviert:"
+msgstr[1] "Die folgenden Komponenten wurden aktiviert:"
 
 #: trac/admin/templates/admin.html:10
 msgid "Administration:"
@@ -969,12 +971,12 @@ msgstr ""
 #: trac/admin/templates/admin_enums.html:14
 #, python-format
 msgid "Manage %(label_plural)s"
-msgstr ""
+msgstr "Labels verwalten"
 
 #: trac/admin/templates/admin_enums.html:19
 #, python-format
 msgid "Modify %(label_singular)s"
-msgstr ""
+msgstr "Label bearbeiten"
 
 #: trac/admin/templates/admin_enums.html:48
 msgid "Order"
@@ -1004,7 +1006,8 @@ msgid ""
 "            [1:log] directory of the project environment ([2:%(dir)s])."
 msgstr ""
 "Wenn Sie einen relativen Pfad angeben, wird die Protokolldatei in dem \n"
-"            [1:log] Verzeichnis der Projektumgebung ([2:%(dir)s]) gespeichert."
+"            [1:log] Verzeichnis der Projektumgebung ([2:%(dir)s]) "
+"gespeichert."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
 #: trac/ticket/roadmap.py:856
@@ -1197,11 +1200,11 @@ msgstr "aktiviert"
 
 #: trac/admin/templates/admin_plugins.html:126
 msgid "Toggle the module description"
-msgstr ""
+msgstr "Modulbeschreibung an/aus"
 
 #: trac/admin/templates/admin_plugins.html:142
 msgid "Toggle the component description"
-msgstr ""
+msgstr "Komponentenbeschreibung an/aus"
 
 #: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
 msgid "Versions"
@@ -1225,11 +1228,11 @@ msgstr "Version hinzufügen:"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Released:"
-msgstr "Freigegeben:"
+msgstr "Veröffentlicht:"
 
 #: trac/admin/templates/admin_versions.html:77
 msgid "Released"
-msgstr "Freigegeben"
+msgstr "Veröffentlicht"
 
 #: trac/db/api.py:132
 #, python-format
@@ -1241,12 +1244,13 @@ msgstr "Nicht unterstützter Datenbanktyp \"%(scheme)s\""
 msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
 " {scheme}:/"
-msgstr "Unbekanntes Schema \"%(scheme)s\"; Datenbankverbindungsstring muss "
-"mit {scheme}:/ beginnen"
+msgstr ""
+"Unbekanntes Schema \"%(scheme)s\"; Datenbankverbindungsstring muss \"\n"
+"\"mit {scheme}:/ beginnen"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
-msgstr ""
+msgstr "Kann Pythonanbindung für MySQL nicht laden"
 
 #: trac/db/pool.py:118
 #, python-format
@@ -1255,15 +1259,15 @@ msgstr "Konnte nicht innerhalb von %(time)d Sekunden mit der Datenbank verbinden
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
-msgstr ""
+msgstr "Kann Pythonanbindung für PostgreSQL nicht laden"
 
 #: trac/db/sqlite_backend.py:153
 msgid "Cannot load Python bindings for SQLite"
-msgstr ""
+msgstr "Kann Pythonanbindung für SQLite nicht laden"
 
 #: trac/db/sqlite_backend.py:157
 msgid "Need at least PySqlite 2.0.7 or higher"
-msgstr ""
+msgstr "PySqlite 2.0.7 oder höher benötigt"
 
 #: trac/db/sqlite_backend.py:180
 #, python-format
@@ -1282,8 +1286,8 @@ msgid ""
 "file %(path)s and the directory it is located in."
 msgstr ""
 "Der Benutzer %(user)s benötigt Lese- UND Schreibzugriff auf die "
-"Datenbankdatei %(path)s und auf das Verzeichnis, in welchem diese "
-"sich befindet."
+"Datenbankdatei %(path)s und auf das Verzeichnis, in welchem diese sich "
+"befindet."
 
 #: trac/mimeview/api.py:672 trac/mimeview/api.py:683
 #, python-format
@@ -1324,7 +1328,7 @@ msgstr ""
 
 #: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:143
 msgid "Your preferences have been saved."
-msgstr ""
+msgstr "Ihre Einstellungen wurden gespeichert."
 
 #: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
 #: trac/ticket/templates/ticket.html:374
@@ -1338,7 +1342,7 @@ msgstr "Unbekannte Einstellungs-Seite"
 
 #: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_datetime.html:10
 msgid "Date & Time"
-msgstr "Datum & Zeit"
+msgstr "Datum und Zeit"
 
 #: trac/prefs/web_ui.py:88 trac/prefs/templates/prefs_keybindings.html:10
 msgid "Keyboard Shortcuts"
@@ -1394,8 +1398,8 @@ msgstr ""
 "Der Sitzungsschlüssel wird verwendet, um gespeicherte benutzerdefinierte\n"
 "      Einstellungen und Sitzungsdaten auf dem Server zu identifizieren.\n"
 "      Obwohl er normalerweise automatisch generiert wird, können Sie ihn\n"
-"      jederzeit so abändern, dass Sie sich später leichter daran erinnern "
-"können,\n"
+"      jederzeit so abändern, dass Sie sich später leichter daran erinnern"
+" können,\n"
 "      wenn Sie Ihre Einstellungen in einem anderen Web-Browser laden "
 "möchten."
 
@@ -1451,14 +1455,14 @@ msgstr "(UTC)."
 msgid ""
 "In your time zone %(tz)s, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr ""
+msgstr "Darstellung in Ihrer Zeitzone %(tz)s: [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:40
 #, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr ""
+msgstr "Darstellung in der Standard-Zeitzone: [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:47
 msgid ""
@@ -1563,7 +1567,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_pygments.html:38
 msgid "Style:"
-msgstr ""
+msgstr "Stil:"
 
 #: trac/prefs/templates/prefs_pygments.html:43
 msgid "Preview:"
@@ -1608,7 +1612,7 @@ msgstr "Schnellsprung zu"
 #: trac/search/templates/search.html:56
 #, python-format
 msgid "By %(author)s"
-msgstr ""
+msgstr "von %(author)s"
 
 #: trac/search/templates/search.html:65
 #: trac/ticket/templates/report_view.html:193
@@ -1619,11 +1623,11 @@ msgstr "Nichts passendes gefunden."
 msgid ""
 "[1:Note:] See [2:TracSearch]\n"
 "        for help on searching."
-msgstr ""
+msgstr "[1:Hinweis:] Hilfe zur Suche in [2:TracSearch]\n"
 
 #: trac/templates/about.html:26
 msgid "Trac: Integrated SCM & Project Management"
-msgstr "Trac: Integriertes SCM & Projektmanagement"
+msgstr "Trac: Integriertes SCM und Projektmanagement"
 
 #: trac/templates/about.html:30
 msgid ""
@@ -1779,7 +1783,7 @@ msgstr "Zeilen um jede Änderung herum an"
 
 #: trac/templates/diff_options.html:25
 msgid "Show the changes in full context"
-msgstr ""
+msgstr "gesamte Datei mit Änderungen zeigen"
 
 #: trac/templates/diff_options.html:29
 msgid "Ignore:"
@@ -1853,7 +1857,7 @@ msgstr "(mehrere Änderungen)"
 #: trac/templates/diff_view.html:42
 #, python-format
 msgid "%(date)s (%(duration)s ago)"
-msgstr ""
+msgstr "%(date)s (vor %(duration)s)"
 
 #: trac/templates/diff_view.html:50
 msgid "(IP:"
@@ -2035,7 +2039,8 @@ msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
 msgstr ""
-"Ansonsten, %(create)s Sie bitte einen neuen Fehlerbericht, der das Problem\n"
+"Ansonsten, %(create)s Sie bitte einen neuen Fehlerbericht, der das "
+"Problem\n"
 "beschreibt und erklärt, wie es zu reproduzieren ist."
 
 #: trac/templates/error.html:160
@@ -2124,7 +2129,7 @@ msgstr "Diese Version anzeigen"
 #: trac/templates/history_view.html:45
 #, python-format
 msgid "IP-Address: %(ipnr)s"
-msgstr ""
+msgstr "IP-Addresse: %(ipnr)s"
 
 #: trac/templates/index.html:8 trac/templates/index.html:12
 msgid "Available Projects"
@@ -2151,6 +2156,10 @@ msgid ""
 "       ([4:%(size)s]) -\n"
 "      added by [5:%(author)s] %(date)s ago."
 msgstr ""
+"[1:%(file)s]\n"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      hinzugefügt von [5:%(author)s] vor %(date)s."
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
@@ -2162,7 +2171,7 @@ msgstr "Anhänge"
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
-msgstr ""
+msgstr "%(size)s Byte"
 
 #: trac/templates/macros.html:37 trac/templates/macros.html:38
 msgid "Previous"
@@ -2183,7 +2192,7 @@ msgstr "HTML-Vorschau nicht verfügbar,"
 #: trac/templates/preview_file.html:21
 #, python-format
 msgid "since the file size exceeds %(size)s bytes."
-msgstr "da die Datei größer ist als %(size)s bytes."
+msgstr "da die Datei größer ist als %(size)s Byte."
 
 #: trac/templates/preview_file.html:25
 msgid "since no preview renderer could handle it."
@@ -2205,8 +2214,8 @@ msgstr "."
 #, python-format
 msgid "%(num)s of %(total)s %(unit)s %(title)s"
 msgid_plural "%(num)s of %(total)s %(units)s %(title)s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)s von %(total)s %(unit)s %(title)s"
+msgstr[1] "%(num)s von %(total)s %(unit)s %(title)s"
 
 #: trac/templates/progress_bar.html:37
 #, python-format
@@ -2249,7 +2258,7 @@ msgstr "Die Komponente \"%(name)s\" wurde hinzugefügt."
 
 #: trac/ticket/admin.py:117 trac/ticket/model.py:843 trac/ticket/model.py:864
 msgid "Invalid component name."
-msgstr "Ungültige Komponenten-Name"
+msgstr "Ungültiger Komponentenname"
 
 #: trac/ticket/admin.py:118
 #, python-format
@@ -2262,7 +2271,7 @@ msgstr "Keine Komponente ausgewählt"
 
 #: trac/ticket/admin.py:133
 msgid "The selected components have been removed."
-msgstr ""
+msgstr "Die ausgewählten Komponenten wurden entfernt."
 
 #: trac/ticket/admin.py:241 trac/ticket/api.py:295
 #: trac/ticket/templates/milestone_view.html:10
@@ -2281,7 +2290,7 @@ msgstr "Ungültiges Fertigstellungsdatum"
 #: trac/ticket/admin.py:299
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
-msgstr ""
+msgstr "Der Meileinstein '%(name)s' wurde hinzugefügt."
 
 #: trac/ticket/admin.py:304 trac/ticket/model.py:981 trac/ticket/model.py:1005
 msgid "Invalid milestone name."
@@ -2298,7 +2307,7 @@ msgstr "Kein Meilenstein ausgewählt"
 
 #: trac/ticket/admin.py:321
 msgid "The selected milestones have been removed."
-msgstr ""
+msgstr "Der ausgewählte Meilenstein wurde entfernt."
 
 #: trac/ticket/admin.py:480
 #, python-format
@@ -2320,7 +2329,7 @@ msgstr "Keine Version ausgewählt"
 
 #: trac/ticket/admin.py:501
 msgid "The selected versions have been removed."
-msgstr ""
+msgstr "Die ausgewählte Version wurde entfernt."
 
 #: trac/ticket/admin.py:559
 msgid "Time"
@@ -2329,12 +2338,12 @@ msgstr "Zeit"
 #: trac/ticket/admin.py:629
 #, python-format
 msgid "The %(field)s \"%(name)s\" has been added."
-msgstr ""
+msgstr "%(field)s \"%(name)s\" hinzugefügt."
 
 #: trac/ticket/admin.py:635 trac/ticket/model.py:702 trac/ticket/model.py:729
 #, python-format
 msgid "Invalid %(type)s name."
-msgstr ""
+msgstr "Ungültiger Name von %(type)s."
 
 #: trac/ticket/admin.py:637
 #, python-format
@@ -2380,19 +2389,19 @@ msgstr "Prioritäten"
 
 #: trac/ticket/admin.py:797 trac/ticket/api.py:299
 msgid "Resolution"
-msgstr ""
+msgstr "Lösung"
 
 #: trac/ticket/admin.py:797
 msgid "Resolutions"
-msgstr ""
+msgstr "Lösungen"
 
 #: trac/ticket/admin.py:803 trac/ticket/api.py:298
 msgid "Severity"
-msgstr ""
+msgstr "Schweregrad"
 
 #: trac/ticket/admin.py:803
 msgid "Severities"
-msgstr ""
+msgstr "Schweregrade"
 
 #: trac/ticket/admin.py:809
 #, fuzzy
@@ -2431,7 +2440,7 @@ msgstr ""
 
 #: trac/ticket/api.py:318
 msgid "Keywords"
-msgstr ""
+msgstr "Stichworte"
 
 #: trac/ticket/api.py:319
 msgid "Cc"
@@ -2675,12 +2684,12 @@ msgstr "%(groupvalue)s %(groupname)s Tickets:"
 
 #: trac/ticket/report.py:158
 msgid "The report has been created."
-msgstr ""
+msgstr "Der Bericht wurde erstellt."
 
 #: trac/ticket/report.py:171
 #, python-format
 msgid "The report {%(id)d} has been deleted."
-msgstr ""
+msgstr "Bericht {%(id)d} wurde gelöscht."
 
 #: trac/ticket/report.py:198
 #, python-format
@@ -2824,7 +2833,7 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:231
 msgid "Opened and closed tickets"
-msgstr ""
+msgstr "Offene und geschlossene Tickets"
 
 #: trac/ticket/web_ui.py:233
 msgid "Ticket updates"
@@ -2890,7 +2899,7 @@ msgstr "Ticket-Historie"
 #: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:915
 #, python-format
 msgid "Back to Ticket #%(num)s"
-msgstr ""
+msgstr "Zurück zu Ticket #%(num)s"
 
 #: trac/ticket/web_ui.py:758
 msgid "No differences to show"
@@ -3125,19 +3134,19 @@ msgstr "Diesen Meilenstein bearbeiten"
 #: trac/ticket/templates/roadmap.html:42
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
-msgstr ""
+msgstr "erreicht vor %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:32
 #: trac/ticket/templates/roadmap.html:47
 #, python-format
 msgid "[1:%(duration)s late] (%(date)s)"
-msgstr ""
+msgstr "[1:%(duration)s überfällig] (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:52
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
-msgstr ""
+msgstr "Fällig in %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:41
 #: trac/ticket/templates/roadmap.html:56
@@ -3314,8 +3323,9 @@ msgstr "Beschreibung: (hier kann [1:Wiki-Formatierung] verwendet werden)"
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
-msgstr "Abfrage für Bericht: (kann entweder SQL sein, oder - wenn sie anfängt "
-" mit [1:query:] ein [2:TracQuery] Ausdruck)"
+msgstr ""
+"Abfrage für Bericht: (kann entweder SQL sein, oder - wenn sie anfängt \"\n"
+"\" mit [1:query:] ein [2:TracQuery] Ausdruck)"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3415,7 +3425,6 @@ msgstr ""
 msgid "Modify"
 msgstr "Ändern"
 
-#. TRANSLATOR: "— at Version X"
 #: trac/ticket/templates/ticket.html:90 trac/ticket/templates/ticket.html:93
 msgid "— at"
 msgstr "— in"
@@ -3595,7 +3604,7 @@ msgstr ""
 #: trac/ticket/templates/ticket_box.html:20
 #, python-format
 msgid "Last modified %(modified)s ago"
-msgstr ""
+msgstr "zuletzt geändert vor %(modified)s"
 
 #: trac/ticket/templates/ticket_box.html:21
 msgid "(ticket not yet created)"
@@ -3750,8 +3759,8 @@ msgstr[1] "%(num)d Monate"
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d Woche"
+msgstr[1] "%(num)d Wochen"
 
 #: trac/util/datefmt.py:82
 #, python-format
@@ -3778,8 +3787,8 @@ msgstr[1] "%(num)d Minuten"
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)i Sekunde"
+msgstr[1] "%(num)i Sekunden"
 
 #: trac/util/datefmt.py:247
 #, python-format
@@ -3956,8 +3965,8 @@ msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
-"Kann nicht mit Repository \"%(name)s\" synchronisieren (%(error)s). Schauen "
-"Sie im Trac-Protokoll nach, um weitere Informationen zu erhalten."
+"Kann nicht mit Repository \"%(name)s\" synchronisieren (%(error)s). "
+"Schauen Sie im Trac-Protokoll nach, um weitere Informationen zu erhalten."
 
 #: trac/versioncontrol/api.py:350
 #, python-format
@@ -4572,8 +4581,9 @@ msgstr "Kopiert oder umbenannt"
 #: trac/versioncontrol/templates/revisionlog.html:86
 #: trac/versioncontrol/templates/revisionlog.html:180
 msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
-msgstr "Unterschied zwischen alter und neuer Revision (wie in der Diff-Spalte "
-"ausgewählt)"
+msgstr ""
+"Unterschied zwischen alter und neuer Revision (wie in der Diff-Spalte \"\n"
+"\"ausgewählt)"
 
 #: trac/versioncontrol/templates/revisionlog.html:92
 msgid "Old / New"
@@ -4826,8 +4836,8 @@ msgstr ""
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
-"Unzureichende Berechtigungen vorhanden, um Changeset %(rev)s in %(repos)s "
-"anzusehen"
+"Unzureichende Berechtigungen vorhanden, um Changeset %(rev)s in %(repos)s"
+" anzusehen"
 
 #: trac/versioncontrol/web_ui/changeset.py:1073
 #: trac/versioncontrol/web_ui/log.py:393
@@ -5469,7 +5479,7 @@ msgstr "Version %(version)s von %(author)s"
 #: trac/wiki/templates/wiki_view.html:54
 #, python-format
 msgid "[1:Last modified] %(reldate)s ago"
-msgstr ""
+msgstr "[1:zuletzt geändert] vor %(reldate)s"
 
 #: trac/wiki/templates/wiki_view.html:61
 msgid "The page"
@@ -5477,7 +5487,7 @@ msgstr "Die Seite"
 
 #: trac/wiki/templates/wiki_view.html:61
 msgid "does not exist. You can create it here."
-msgstr ""
+msgstr "existiert nicht. Sie können sie hier erstellen."
 
 #: trac/wiki/templates/wiki_view.html:63
 msgid "You could also create the same page higher in the hierarchy:"
@@ -5508,361 +5518,4 @@ msgstr "Wiki-Seite löschen"
 #: trac/wiki/templates/wiki_view.html:128
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr ""
-
-#~ msgid " attached to "
-#~ msgstr " angehängt an "
-
-#~ msgid "Can only backup sqlite databases"
-#~ msgstr "Es können nur SQLite-Datenbanken gesichert werden"
-
-#~ msgid "Ticket contains non-ASCII chars. Please change encoding setting"
-#~ msgstr ""
-#~ "Ticket enthält nicht-ASCII-Zeichen. "
-#~ "Bitte ändern Sie Ihre Kodierungs-"
-#~ "Einstellungen"
-
-#~ msgid "Command failed:"
-#~ msgstr "Kommando fehlgeschlagen:"
-
-#~ msgid ""
-#~ " \n"
-#~ " Please specify the type of version control system,\n"
-#~ " By default, it will be svn.\n"
-#~ "\n"
-#~ " If you don't want to use Trac with version control integration,\n"
-#~ " choose the default here and don't specify a repository directory.\n"
-#~ " in the next question.\n"
-#~ msgstr ""
-#~ " \n"
-#~ " Bitte geben Sie an, von welchem Typ die Versionsverwaltung ist.\n"
-#~ " Der Standard hierfür ist svn.\n"
-#~ "\n"
-#~ " Falls Sie Trac nicht mit integrierter Versionsverwaltung einsetzen\n"
-#~ " möchten, wählen Sie hier den Standard, aber geben Sie in der\n"
-#~ " nächsten Frage kein Verzeichnis für das Repository an.\n"
-
-#~ msgid "Repository type [%(default)s]> "
-#~ msgstr "Typ des Repositorys [%(default)s]> "
-
-#~ msgid ""
-#~ "\n"
-#~ " Please specify the absolute path to the version control\n"
-#~ " repository, or leave it blank to use Trac without a repository.\n"
-#~ " You can also set the repository location later.\n"
-#~ msgstr ""
-#~ "\n"
-#~ " Bitte geben Sie den absoluten Pfad des Repositorys der\n"
-#~ " Versionsverwaltung an, oder lassen Sie ihn leer, falls Sie Trac\n"
-#~ " ohne ein Repository einsetzen möchten.\n"
-#~ " Sie können den Pfad des Repositorys auch später einstellen.\n"
-
-#~ msgid "Path to repository [/path/to/repos]> "
-#~ msgstr "Pfad zum Repository [/pfad/zum/repository]> "
-
-#~ msgid "Manage"
-#~ msgstr "Verwalten"
-
-#~ msgid "log"
-#~ msgstr "log"
-
-#~ msgid "directory of the project environment ("
-#~ msgstr "der Projektumgebung gespeichert ("
-
-#~ msgid "Format:"
-#~ msgstr "Format:"
-
-#~ msgid "Docutils not found"
-#~ msgstr "Docutils nicht gefunden"
-
-#~ msgid "Docutils version >= %(version)s required, %(found)s found"
-#~ msgstr "Docutils Version >= %(version)s benötigt, jedoch %(found)s gefunden"
-
-#~ msgid "In"
-#~ msgstr "In"
-
-#~ msgid "time zone"
-#~ msgstr "Zeitzone"
-
-#~ msgid ", this would be displayed as"
-#~ msgstr " würde dies angezeigt werden als"
-
-#~ msgid "TracAccessibility"
-#~ msgstr "TracAccessibility"
-
-#~ msgid "for more information on access keys."
-#~ msgstr "hält nähere Informationen dazu bereit."
-
-#~ msgid "Pygments Theme"
-#~ msgstr "Pygments-Farbschema"
-
-#~ msgid "Theme:"
-#~ msgstr "Farbschema:"
-
-#~ msgid "Search Error"
-#~ msgstr "Fehler bei Suche"
-
-#~ msgid "By"
-#~ msgstr "Von"
-
-#~ msgid "Note:"
-#~ msgstr "Hinweis:"
-
-#~ msgid "See"
-#~ msgstr "Siehe"
-
-#~ msgid "TracSearch"
-#~ msgstr "TracSearch"
-
-#~ msgid "for help on searching."
-#~ msgstr "für Hilfe zum Suchen."
-
-#~ msgid "Trac is distributed under the modified BSD License."
-#~ msgstr "Trac wird unter der modifizierten BSD-Lizenz zur Verfügung gestellt."
-
-#~ msgid "The complete text of the license can be found"
-#~ msgstr "Der komplette Text der Lizenz kann"
-
-#~ msgid "as well as in the"
-#~ msgstr "sowie in der Datei"
-
-#~ msgid "COPYING"
-#~ msgstr "COPYING"
-
-#~ msgid "file included in the distribution."
-#~ msgstr "gefunden werden, die in dieser Distribution enthalten ist."
-
-#~ msgid "Attachment"
-#~ msgstr "Anhang"
-
-#~ msgid "(added by"
-#~ msgstr "(hinzugefügt von"
-
-#~ msgid "ago)"
-#~ msgstr "zurückliegend)"
-
-#~ msgid ""
-#~ "There was an internal error in Trac. It is recommended\n"
-#~ "              that you inform your local"
-#~ msgstr ""
-#~ "Es ist ein interner Fehler in Trac aufgetreten. Es wird empfohlen,\n"
-#~ "              dass Sie den zuständigen"
-
-#~ msgid ""
-#~ "Trac\n"
-#~ "              administrator"
-#~ msgstr "Trac-Administrator"
-
-#~ msgid ""
-#~ "and give him all the information he needs to\n"
-#~ "              reproduce the issue."
-#~ msgstr ""
-#~ "informieren und ihm alle Informationen geben, die er zum\n"
-#~ "              Reproduzieren des Problems benötigt."
-
-#~ msgid ""
-#~ "Before you do that, though, please first try\n"
-#~ "                [1:searching]\n"
-#~ "                for similar issues, as "
-#~ "it is quite likely that this "
-#~ "problem\n"
-#~ "                has been reported before. "
-#~ "For questions about installation\n"
-#~ "                and configuration of Trac, please try the\n"
-#~ "                [2:mailing list]\n"
-#~ "                instead of filing a ticket."
-#~ msgstr ""
-#~ "Bevor Sie dies tun, versuchen Sie jedoch bitte zuerst, nach ähnlichen\n"
-#~ "                Problemen zu [1:suchen], da"
-#~ " es recht wahrscheinlich ist,\n"
-#~ "                daß dieses Problem schon zuvor berichtet worden ist.\n"
-#~ "                Bei Fragen zur Installation"
-#~ " und Konfiguration von Trac\n"
-#~ "                suchen Sie bitte die "
-#~ "[2:Mailingliste] auf, anstatt ein\n"
-#~ "                Ticket zu erstellen."
-
-#~ msgid "Otherwise, please"
-#~ msgstr "Andernfalls können Sie ein neues Ticket beim Trac-Projekt"
-
-#~ msgid "anonymous"
-#~ msgstr "Anonymus"
-
-#~ msgid "bytes."
-#~ msgstr "Bytes ist."
-
-#~ msgid ""
-#~ ".\n"
-#~ "          To view,"
-#~ msgstr ""
-#~ ".\n"
-#~ "          Datei "
-
-#~ msgid "the file."
-#~ msgstr "um sie anzuzeigen."
-
-#~ msgid "found:"
-#~ msgstr "(Probleme) gefunden:"
-
-#~ msgid "View attachment"
-#~ msgstr "Anhang anzeigen"
-
-#~ msgid ") - added by"
-#~ msgstr ") - hinzugefügt von"
-
-#~ msgid "ago."
-#~ msgstr "zurückliegend."
-
-#~ msgid "s:"
-#~ msgstr "s:"
-
-#~ msgid "Total"
-#~ msgstr "Summe"
-
-#~ msgid "Warnings:"
-#~ msgstr "Warnungen:"
-
-#~ msgid "Notice:"
-#~ msgstr "Hinweis:"
-
-#~ msgid "Notices:"
-#~ msgstr "Hinweise:"
-
-#~ msgid "No permissions to change ticket fields."
-#~ msgstr "Keine Berechtigung, Ticketfelder zu ändern."
-
-#~ msgid "Assign to"
-#~ msgstr "Zuweisen an"
-
-#~ msgid "TracRoadmap"
-#~ msgstr "TracRoadmap"
-
-#~ msgid ""
-#~ "ago\n"
-#~ "            ("
-#~ msgstr ""
-#~ "zurückliegend\n"
-#~ "            ("
-
-#~ msgid "late"
-#~ msgstr "überfällig"
-
-#~ msgid "Due in"
-#~ msgstr "Fällig in"
-
-#~ msgid "Add filter"
-#~ msgstr "Filter hinzufügen"
-
-#~ msgid "TracQuery"
-#~ msgstr "TracQuery"
-
-#~ msgid "for help on using queries."
-#~ msgstr "für Hilfe zur Verwendung von Abfragen."
-
-#~ msgid "Reported by"
-#~ msgstr "Erstellt von"
-
-#~ msgid "TracReports"
-#~ msgstr "TracReports"
-
-#~ msgid "query:"
-#~ msgstr "\"query:\""
-
-#~ msgid ", a"
-#~ msgstr "- ein"
-
-#~ msgid "expression)"
-#~ msgstr "Ausdruck)"
-
-#~ msgid "match"
-#~ msgstr "Ergebnis(se)/Match"
-
-#~ msgid "Preview ("
-#~ msgstr "Vorschau ("
-
-#~ msgid "skip"
-#~ msgstr "überspringen"
-
-#~ msgid "Opened"
-#~ msgstr "Erstellt"
-
-#~ msgid "Last modified"
-#~ msgstr "Zuletzt geändert"
-
-#~ msgid "Changed"
-#~ msgstr "Geändert"
-
-#~ msgid "ago by"
-#~ msgstr "zurückliegend von"
-
-#~ msgid "Add/Change #"
-#~ msgstr "Ergänzung/Änderung für #"
-
-#~ msgid "TracTickets"
-#~ msgstr "TracTickets"
-
-#~ msgid "TracTimeline"
-#~ msgstr "TracTimeline"
-
-#~ msgid "Insufficient permissions to access %(path)s"
-#~ msgstr "Unzureichende Berechtigungen vorhanden, um auf %(path)s zuzugreifen"
-
-#~ msgid "Missing \"youngest_rev\" in cache metadata"
-#~ msgstr "\"youngest_rev\" nicht in Cache-Metadaten vorhanden"
-
-#~ msgid "(checked in by"
-#~ msgstr "(eingecheckt von"
-
-#~ msgid "TracBrowser"
-#~ msgstr "TracBrowser"
-
-#~ msgid "for help on using the browser."
-#~ msgstr "für Hilfe zur Benutzung des Quellcode-Browsers."
-
-#~ msgid "Show full changeset"
-#~ msgstr "Changeset vollständig anzeigen"
-
-#~ msgid "for"
-#~ msgstr "für"
-
-#~ msgid "Changes in"
-#~ msgstr "Änderungen in"
-
-#~ msgid "Show revision log"
-#~ msgstr "Änderungshistorie anzeigen"
-
-#~ msgid "Changes from"
-#~ msgstr "Änderungen von"
-
-#~ msgid "at"
-#~ msgstr "in"
-
-#~ msgid "r"
-#~ msgstr "r"
-
-#~ msgid "TracChangeset"
-#~ msgstr "TracChangeset"
-
-#~ msgid "for help on using the diff feature."
-#~ msgstr "für Hilfe zur Benutzung der Diff-Funktion"
-
-#~ msgid "Chgset"
-#~ msgstr "Chgset"
-
-#~ msgid "Diff from Old Revision to New Revision (select them above)"
-#~ msgstr "Diff zwischen alter und neuer Revision (wählen Sie diese oben aus)"
-
-#~ msgid "TracRevisionLog"
-#~ msgstr "TracRevisionLog"
-
-#~ msgid "Previous %(label)s"
-#~ msgstr "Vorige(r/s) %(label)s"
-
-#~ msgid "Next %(label)s"
-#~ msgstr "Nächste(r/s) %(label)s"
-
-#~ msgid "Describe"
-#~ msgstr "Beschreibung für"
-
-#~ msgid "here."
-#~ msgstr " "
 
