@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-24 14:50+0200\n"
+"PO-Revision-Date: 2010-04-24 21:08+0200\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -613,7 +613,8 @@ msgstr ""
 "kein tatsächliches Repository im angegebenen Pfad vorhanden ...\n"
 "\n"
 "Sie können trotzdem damit beginnen, Ihre Trac-Projektumgebung zu "
-"benutzen, aber es ist notwendig, dass Sie noch einmal die Datei trac.ini\n"
+"benutzen, aber es ist notwendig, dass Sie noch einmal die Datei trac.ini"
+"\n"
 "und die Einstellungen [trac] repository_type und repository_path prüfen.\n"
 
 #: trac/admin/console.py:476
@@ -705,9 +706,9 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr ""
-"Fehler beim Schreiben von trac.ini. Stellen Sie sicher, dass der"
-" Webserver Schreibrechte für diese Datei hat. Ihre Änderungen wurden "
-"nicht gespeichert."
+"Fehler beim Schreiben von trac.ini. Stellen Sie sicher, dass der "
+"Webserver Schreibrechte für diese Datei hat. Ihre Änderungen wurden nicht"
+" gespeichert."
 
 #: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
@@ -1250,8 +1251,8 @@ msgid ""
 "Unknown scheme \"%(scheme)s\"; database connection string must start with"
 " {scheme}:/"
 msgstr ""
-"Unbekanntes Schema \"%(scheme)s\"; Datenbankverbindungsstring muss "
-"mit {scheme}:/ beginnen"
+"Unbekanntes Schema \"%(scheme)s\"; Datenbankverbindungsstring muss mit "
+"{scheme}:/ beginnen"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
@@ -1865,8 +1866,7 @@ msgid ""
 "Changes from\n"
 "          [1:Version %(new)s] of\n"
 "          [2:%(name)s]"
-msgstr ""
-"Änderungen von [2:%(name)s] ab [1:Version %(new)s]"
+msgstr "Änderungen von [2:%(name)s] ab [1:Version %(new)s]"
 
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:134
@@ -4770,8 +4770,8 @@ msgstr ""
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
-msgid " in %(repo)s"
-msgstr "in %(repo)s"
+msgid " in %(reponame)s"
+msgstr "in %(reponame)s"
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 msgid ""
@@ -5128,10 +5128,8 @@ msgid "Email"
 msgstr ""
 
 #: trac/web/session.py:318
-#, python-format
 msgid "Session already exists. Unable to add a duplicate session."
-msgstr ""
-"Die Sitzung existiert bereits. Kann keine duplizierte Sitzung anlegen."
+msgstr "Die Sitzung existiert bereits. Kann keine duplizierte Sitzung anlegen."
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
@@ -5405,13 +5403,16 @@ msgstr "Lösche [1:%(name)s]"
 #: trac/wiki/templates/wiki_delete.html:33
 #, python-format
 msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
-msgstr "Sind Sie sicher, dass Sie die Versionen %(from)s bis %(to)s dieser"
-" Seite löschen möchten?"
+msgstr ""
+"Sind Sie sicher, dass Sie die Versionen %(from)s bis %(to)s dieser Seite "
+"löschen möchten?"
 
 #: trac/wiki/templates/wiki_delete.html:36
 #, python-format
 msgid "Are you sure you want to delete version %(version)s of this page?"
-msgstr "Sind Sie sicher, dass Sie Version %(version)S dieser Seite löschen möchten?"
+msgstr ""
+"Sind Sie sicher, dass Sie Version %(version)s dieser Seite löschen "
+"möchten?"
 
 #: trac/wiki/templates/wiki_delete.html:39
 msgid "Are you sure you want to completely delete this page?"
