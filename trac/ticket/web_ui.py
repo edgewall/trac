@@ -1574,14 +1574,16 @@ class TicketModule(Component):
                 type_ = f['type']
                 break
         if type_ == 'checkbox':
-            rendered = new == '1' and "set" or "unset"
+            rendered = new == '1' and _('set') or _('unset')
         elif type_ == 'textarea':
             if not resource_new:
                 rendered = _('modified')
             else:
                 href = get_resource_url(self.env, resource_new, req.href,
                                         action='diff')
-                rendered = tag('modified (', tag.a('diff', href=href), ')')
+                # TRANSLATOR: modified ('diff') (link)
+                diff = tag.a(_('diff'), href=href)
+                rendered = tag_('modified (%(diff)s)', diff=diff)
 
         # per name special rendering of diffs
         old_list, new_list = None, None
@@ -1601,8 +1603,10 @@ class TicketModule(Component):
                      if x not in old_list]
             remvd = [tag.em(render_elt(x)) for x in old_list
                      if x not in new_list]
-            added = added and tag(separated(added, sep), " added")
-            remvd = remvd and tag(separated(remvd, sep), " removed")
+            added = added and tagn_('%(items)s added', '%(items)s added',
+                                    len(added), items=separated(added, sep))
+            remvd = remvd and tagn_('%(items)s removed', '%(items)s removed',
+                                    len(remvd), items=separated(remvd, sep))
             if added or remvd:
                 rendered = tag(added, added and remvd and '; ', remvd)
         if field in ('reporter', 'owner'):
@@ -1611,12 +1615,12 @@ class TicketModule(Component):
                 old = obfuscate_email_address(old)
                 new = obfuscate_email_address(new)
             if old and not new:
-                rendered = tag(tag.em(old), " deleted")
+                rendered = tag_('%(value)s deleted', value=tag.em(old))
             elif new and not old:
-                rendered = tag("set to ", tag.em(new))
+                rendered = tag_('set to %(value)s', value=tag.em(new))
             elif old and new:
-                rendered = tag("changed from ", tag.em(old),
-                               " to ", tag.em(new))
+                rendered = tag_('changed from %(old)s to %(new)s',
+                                old=tag.em(old), new=tag.em(new))
         return rendered
 
     def grouped_changelog_entries(self, ticket, db, when=None):

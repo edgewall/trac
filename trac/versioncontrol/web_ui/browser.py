@@ -344,8 +344,8 @@ class BrowserModule(Component):
                 repos = None
 
         if not repos and reponame:
-            raise ResourceNotFound(_("No repository '%(repo)s' found",
-                                   repo=reponame))
+            raise ResourceNotFound(_("Repository '%(repo)s' not found",
+                                     repo=reponame))
 
         if reponame and reponame != repos.reponame: # Redirect alias
             qs = req.query_string

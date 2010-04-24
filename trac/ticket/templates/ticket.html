@@ -88,10 +88,10 @@
           <py:choose test="">
             <py:when test="version is None" />
             <py:when test="version == 0">
-              &mdash; at <a href="#comment:description">Initial Version</a>
+              &mdash; <i18n:msg>at <a href="#comment:description">Initial Version</a></i18n:msg>
             </py:when>
             <py:otherwise>
-              &mdash; at <a href="#comment:$version">Version $version</a>
+              &mdash; <i18n:msg params="version">at <a href="#comment:$version">Version $version</a></i18n:msg>
             </py:otherwise>
           </py:choose>
         </py:when>

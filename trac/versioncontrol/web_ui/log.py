@@ -84,7 +84,7 @@ class LogModule(Component):
         reponame, repos, path = rm.get_repository_by_path(path)
         
         if not repos:
-            raise ResourceNotFound(_("No repository '%(repo)s' found",
+            raise ResourceNotFound(_("Repository '%(repo)s' not found",
                                    repo=reponame))
 
         if reponame != repos.reponame:  # Redirect alias
@@ -390,7 +390,7 @@ class LogModule(Component):
                              href=href + query + fragment)
             errmsg = _("No permission to view change log")
         elif reponame:
-            errmsg = _("Repository %(repos)s not found", repos=reponame)
+            errmsg = _("Repository '%(repo)s' not found", repo=reponame)
         else:
             errmsg = _("No default repository defined")
         return tag.a(label, class_='missing source', title=errmsg)

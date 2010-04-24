@@ -13,13 +13,15 @@
 
 import sys
 
+from genshi.builder import tag
+
 from trac.admin import IAdminCommandProvider, IAdminPanelProvider
 from trac.config import _TRUE_VALUES
 from trac.core import *
 from trac.perm import IPermissionRequestor
 from trac.util.text import breakable_path, normalize_whitespace, print_table, \
                            printout
-from trac.util.translation import _, ngettext
+from trac.util.translation import _, ngettext, tag_
 from trac.versioncontrol import DbRepositoryProvider, RepositoryManager, \
                                 is_default
 from trac.web.chrome import Chrome, add_notice, add_warning
@@ -77,7 +79,7 @@ class VersionControlAdmin(Component):
     
     def get_reponames(self):
         rm = RepositoryManager(self.env)
-        return [reponame or _('(default)') for reponame
+        return [reponame or '(default)' for reponame
                 in rm.get_all_repositories()]
     
     def _complete_repos(self, args):
@@ -102,8 +104,8 @@ class VersionControlAdmin(Component):
         for (reponame, info) in sorted(rm.get_all_repositories().iteritems()):
             alias = ''
             if 'alias' in info:
-                alias = info['alias'] or _('(default)')
-            values.append((reponame or _('(default)'), info.get('type', ''),
+                alias = info['alias'] or '(default)'
+            values.append((reponame or '(default)', info.get('type', ''),
                            alias, info.get('dir', '')))
         print_table(values, [_('Name'), _('Type'), _('Alias'), _('Directory')])
     
@@ -119,19 +121,19 @@ class VersionControlAdmin(Component):
                 reponame = ''
             repos = rm.get_repository(reponame)
             if repos is None:
-                raise TracError(_("Unknown repository '%(reponame)s'",
-                                  reponame=reponame or _('(default)')))
+                raise TracError(_("Repository '%(repo)s' not found",
+                                  repo=reponame or '(default)'))
             if rev is not None:
                 repos.sync_changeset(rev)
                 printout(_('%(rev)s resynced on %(reponame)s.', rev=rev,
-                           reponame=repos.reponame or _('(default)')))
+                           reponame=repos.reponame or '(default)'))
                 return
             repositories = [repos]
         
         db = self.env.get_db_cnx()
         for repos in sorted(repositories, key=lambda r: r.reponame):
             printout(_('Resyncing repository history for %(reponame)s... ',
-                       reponame=repos.reponame or _('(default)')))
+                       reponame=repos.reponame or '(default)'))
             repos.sync(self._sync_feedback, clean=clean)
             cursor = db.cursor()
             cursor.execute("SELECT count(rev) FROM revision WHERE repos=%s",
@@ -177,8 +179,8 @@ class VersionControlAdmin(Component):
             reponame = not is_default(path_info) and path_info or ''
             info = all_repos.get(reponame)
             if info is None:
-                raise TracError(_('Repository %(name)s does not exist.',
-                                  name=path_info))
+                raise TracError(_("Repository '%(repo)s' not found",
+                                  repo=path_info))
             if req.method == 'POST':
                 if req.args.get('cancel'):
                     req.redirect(req.href.admin(category, page))
@@ -195,20 +197,25 @@ class VersionControlAdmin(Component):
                         db_provider.modify_repository(reponame, changes)
                         add_notice(req, _('Your changes have been saved.'))
                     name = req.args.get('name')
+                    resync = tag.tt('trac-admin $ENV repository resync "%s"'
+                                    % (name or '(default)'))
                     if 'dir' in changes:
-                        msg = _('You should now run "trac-admin $ENV '
-                                'repository resync %(name)s" to synchronize '
-                                'Trac with the repository.', name=name)
+                        msg = tag_('You should now run %(resync)s to '
+                                   'synchronize Trac with the repository.',
+                                   resync=resync)
                         add_notice(req, msg)
                     elif 'type' in changes:
-                        msg = _('You may have to run "trac-admin $ENV '
-                                'repository resync %(name)s" to synchronize '
-                                'Trac with the repository.', name=name)
+                        msg = tag_('You may have to run %(resync)s to '
+                                   'synchronize Trac with the repository.',
+                                   resync=resync)
                         add_notice(req, msg)
                     if name and name != path_info and not 'alias' in info:
-                        msg = _('You will need to update your post-commit '
-                                'hook to call "trac-admin $ENV changeset '
-                                'added" with the new repository name.')
+                        cset_added = tag.tt('trac-admin $ENV changeset '
+                                            'added "%s" $REV'
+                                            % (name or '(default)'))
+                        msg = tag_('You will need to update your post-commit '
+                                   'hook to call %(cset_added)s with the new '
+                                   'repository name.', cset_added=cset_added)
                         add_notice(req, msg)
                     req.redirect(req.href.admin(category, page))
             
@@ -227,17 +234,21 @@ class VersionControlAdmin(Component):
                         # Avoid errors when copy/pasting paths
                         dir = normalize_whitespace(dir)
                         db_provider.add_repository(name, dir, type_)
+                        name = name or '(default)'
                         add_notice(req, _('The repository "%(name)s" has been '
                                           'added.', name=name))
-                        msg = _('You should now run "trac-admin $ENV '
-                                'repository resync %(name)s" to synchronize '
-                                'Trac with the repository.',
-                                name=name or _('(default)'))
+                        resync = tag.tt('trac-admin $ENV repository resync '
+                                        '"%s"' % name)
+                        msg = tag_('You should now run %(resync)s to '
+                                   'synchronize Trac with the repository.',
+                                   resync=resync)
                         add_notice(req, msg)
-                        msg = _('You should also set up a post-commit hook '
-                                'on the repository to call "trac-admin $ENV '
-                                'changeset added %(name)s $REV" for each '
-                                'committed changeset.', name=name)
+                        cset_added = tag.tt('trac-admin $ENV changeset '
+                                            'added "%s" $REV' % name)
+                        msg = tag_('You should also set up a post-commit hook '
+                                   'on the repository to call %(cset_added)s '
+                                   'for each committed changeset.',
+                                   cset_added=cset_added)
                         add_notice(req, msg)
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _('Missing arguments to add a '
@@ -250,7 +261,7 @@ class VersionControlAdmin(Component):
                     if name is not None and alias is not None:
                         db_provider.add_alias(name, alias)
                         add_notice(req, _('The alias "%(name)s" has been '
-                                          'added.', name=name))
+                                          'added.', name=name or '(default)'))
                         req.redirect(req.href.admin(category, page))
                     add_warning(req, _('Missing arguments to add an '
                                        'alias.'))
@@ -292,8 +303,6 @@ class VersionControlAdmin(Component):
         info['name'] = reponame
         if info.get('dir') is not None:
             info['prettydir'] = breakable_path(info['dir']) or ''
-        if info.get('alias') == '':
-            info['alias'] = _('(default)')
         info['hidden'] = info.get('hidden') in _TRUE_VALUES
         info['editable'] = editable
         if not info.get('alias'):

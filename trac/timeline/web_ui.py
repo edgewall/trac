@@ -338,17 +338,17 @@ class TimelineModule(Component):
             other_filters = set(all_filters) -  ep_filters
         args = [(a, req.args.get(a)) for a in ('from', 'format', 'max',
                                                'daysback')]
-        href = req.href.timeline(args+[(f, 'on') for f in other_filters])
-        # TRANSLATOR: other_events
-        other_events = _('other kind of events') # help extraction
+        href = req.href.timeline(args + [(f, 'on') for f in other_filters])
+        # TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
+        other_events = tag.a(_('other kinds of events'), href=href)
         raise TracError(tag(
-            tag.p(tag_("Event provider %(name)s failed for filters %(kinds)s: ",
-                       kinds=', '.join(ep_kinds[f] for f in 
-                                       current_filters & ep_filters),
-                       name=tag.tt(ep.__class__.__name__)),
+            tag.p(tag_("Event provider %(name)s failed for filters "
+                       "%(kinds)s: ",
+                       name=tag.tt(ep.__class__.__name__),
+                       kinds=', '.join('"%s"' % ep_kinds[f] for f in 
+                                       current_filters & ep_filters)),
                   tag.b(exception_to_unicode(exc)), class_='message'),
-            tag.p(tag_("""
-              You may want to see the %(other_events)s from the Timeline or 
-              notify your Trac administrator about the error (detailed
-              information were written to the log).
-            """, other_events=tag.a(other_events, href=href)))))
+            tag.p(tag_("You may want to see the %(other_events)s from the "
+                       "Timeline or notify your Trac administrator about the "
+                       "error (detailed information was written to the log).",
+                       other_events=other_events))))

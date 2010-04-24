@@ -146,7 +146,7 @@ class DbRepositoryProvider(Component):
     
     def get_reponames(self):
         rm = RepositoryManager(self.env)
-        return [reponame or _('(default)') for reponame
+        return [reponame or '(default)' for reponame
                 in rm.get_all_repositories()]
     
     def _complete_add(self, args):
@@ -183,7 +183,7 @@ class DbRepositoryProvider(Component):
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
         self.modify_repository(reponame, {key: value})
         if not reponame:
-            reponame = _('(default)')
+            reponame = '(default)'
         if key == 'dir':
             printout(_('You should now run "repository resync %(name)s".',
                        name=reponame))
@@ -327,7 +327,7 @@ class RepositoryManager(Component):
                     add_warning(req,
                         _("Can't synchronize with repository \"%(name)s\" "
                           "(%(error)s). Look in the Trac log for more "
-                          "information.", name=reponame or _('(default)'),
+                          "information.", name=reponame or '(default)',
                           error=to_unicode(e.message)))
                 self.log.info("Synchronized '%s' repository in %0.2f seconds",
                               reponame, time.time() - start)

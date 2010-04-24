@@ -243,8 +243,8 @@ class ChangesetModule(Component):
 
         if not repos:
             if reponame or (new_path and new_path != '/'):
-                raise TracError(_("No repository found for '%(reponame)s'",
-                                  reponame=reponame or new_path.strip('/')))
+                raise TracError(_("Repository '%(repo)s' not found",
+                                  repo=reponame or new_path.strip('/')))
             else:
                 raise TracError(_("No repository specified and no default "
                                   "repository configured."))
@@ -1071,7 +1071,7 @@ class ChangesetModule(Component):
             except TracError, e:
                 errmsg = to_unicode(e)
         elif reponame:
-            errmsg = _("Repository %(repos)s not found", repos=reponame)
+            errmsg = _("Repository '%(repo)s' not found", repo=reponame)
         else:
             errmsg = _("No default repository defined")
         return tag.a(label, class_="missing changeset", title=errmsg)

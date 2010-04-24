@@ -16,22 +16,22 @@ Arguments:
     <li py:for="field_name, field in change.fields.items()">
       <strong>${field.label}</strong>
       <py:choose>
-        <py:when test="field_name == 'attachment'">
+        <py:when test="field_name == 'attachment'"><i18n:msg params="name">
           <a href="${href.attachment('ticket', ticket.id, field.new)}"><em>${field.new}</em></a>
           <a href="${href('raw-attachment', 'ticket', ticket.id, field.new)}"
              title="Download" class="trac-rawlink"><img src="${chrome.htdocs_location}download.png" alt="Download"/></a>
           added
-        </py:when>
+        </i18n:msg></py:when>
         <py:when test="'rendered' in field">${field.rendered}</py:when>
-        <py:when test="field.old and field.new">
+        <py:when test="field.old and field.new"><i18n:msg params="old, new">
           changed from <em>${field.old}</em> to <em>${field.new}</em>
-        </py:when>
-        <py:when test="not field.old and field.new">
+        </i18n:msg></py:when>
+        <py:when test="not field.old and field.new"><i18n:msg params="value">
           set to <em>${field.new}</em>
-        </py:when>
-        <py:otherwise>
+        </i18n:msg></py:when>
+        <py:otherwise><i18n:msg params="value">
           <em>${field.old}</em> deleted
-        </py:otherwise>
+        </i18n:msg></py:otherwise>
       </py:choose>
     </li>
   </ul>
