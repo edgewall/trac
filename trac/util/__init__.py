@@ -357,7 +357,10 @@ class ThreadLocal(threading.local):
 
 
 def arity(f):
-    return f.func_code.co_argcount
+    """Return the number of arguments expected by the given function, unbound
+    or bound method.
+    """
+    return f.func_code.co_argcount - bool(getattr(f, 'im_self', False))
 
 def get_last_traceback():
     import traceback

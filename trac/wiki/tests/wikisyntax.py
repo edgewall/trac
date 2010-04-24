@@ -379,6 +379,9 @@ RELATIVE_LINKS_TESTS = u"""
 ------------------------------
 ============================== Relative to the current page, in wiki realm
 [wiki:. this page]
+[wiki:./Detail]
+[wiki:"./Detail"]
+[wiki:./Detail ./Detail]
 [wiki:./Detail see detail]
 [wiki:.. see parent]
 [wiki:../Other see other]
@@ -395,10 +398,13 @@ RELATIVE_LINKS_TESTS = u"""
 ------------------------------
 <p>
 <a class="wiki" href="/wiki/Main/Sub">this page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">./Detail?</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">see detail?</a>
 <a class="missing wiki" href="/wiki/Main" rel="nofollow">see parent?</a>
 <a class="missing wiki" href="/wiki/Main/Other" rel="nofollow">see other?</a>
-<a class="missing wiki" href="/wiki/Other" rel="nofollow">.././../Other?</a>
+<a class="missing wiki" href="/wiki/Other" rel="nofollow">Other?</a>
 <a class="wiki" href="/wiki/Main/Sub">.</a>
 <a class="wiki" href="/wiki/Main/Sub?param=1#fragment">.</a>
 <a class="missing wiki" href="/wiki/Main/Sub/Detail" rel="nofollow">Detail?</a>
@@ -474,6 +480,31 @@ And not [../WikiPage WikiPage]
 <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
 <a href="/WikiPage?param=1#fragment">Wiki Page</a>
 <a href="/WikiPage?param=1#fragment">Wiki Page</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
+But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>
+And not <a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">WikiPage?</a>
+</p>
+------------------------------
+============================== Splitting scoped links
+[wiki:WikiPage]
+[wiki:./WikiPage]
+[wiki:../WikiPage]
+[wiki:./.././WikiPage]
+[wiki:"./.././WikiPage"]
+[wiki:WikiPage?param=1#fragment]
+[wiki:./WikiPage?param=1#fragment]
+[wiki:../WikiPage?param=1#fragment]
+But not [wiki:./wiki_page]
+And not [wiki:../WikiPage WikiPage]
+------------------------------
+<p>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/Sub/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage" rel="nofollow">Wiki Page?</a>
+<a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
 <a class="missing wiki" href="/wiki/Main/Sub/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
 <a class="missing wiki" href="/wiki/Main/WikiPage?param=1#fragment" rel="nofollow">Wiki Page?</a>
 But not <a class="missing wiki" href="/wiki/Main/Sub/wiki_page" rel="nofollow">wiki_page?</a>

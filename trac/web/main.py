@@ -353,7 +353,7 @@ class RequestDispatcher(Component):
             # Trac 0.10, only filters with same arity gets passed real values.
             # Errors will call all filters with None arguments,
             # and results will not be not saved.
-            extra_arg_count = arity(f.post_process_request) - 2
+            extra_arg_count = arity(f.post_process_request) - 1
             if extra_arg_count == nbargs:
                 resp = f.post_process_request(req, *resp)
             elif nbargs == 0:

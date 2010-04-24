@@ -283,7 +283,7 @@ class WikiProcessor(object):
     def _macro_processor(self, text):
         self.env.log.debug('Executing Wiki macro %s by provider %s'
                            % (self.name, self.macro_provider))
-        if arity(self.macro_provider.expand_macro) == 5:
+        if arity(self.macro_provider.expand_macro) == 4:
             return self.macro_provider.expand_macro(self.formatter, self.name,
                                                     text, self.args)
         else:
@@ -538,7 +538,7 @@ class Formatter(object):
         if not label: # e.g. `[http://target]` or `[wiki:target]`
             if target:
                 if target.startswith('//'):     # for `[http://target]`
-                    label = ns+':'+target       #  use `http://target`
+                    label = ns + ':' + target   #  use `http://target`
                 else:                           # for `wiki:target`
                     label = target.lstrip('/')  #  use only `target`
             else: # e.g. `[search:]` 
@@ -579,8 +579,12 @@ class Formatter(object):
         # first check for an alias defined in trac.ini
         ns = self.env.config['intertrac'].get(ns, ns)
         if ns in self.wikiparser.link_resolvers:
-            return self.wikiparser.link_resolvers[ns](self, ns, target,
-                                                      escape(label, False))
+            resolver = self.wikiparser.link_resolvers[ns]
+            if arity(resolver) == 5:
+                return resolver(self, ns, target, escape(label, False),
+                                fullmatch)
+            else:
+                return resolver(self, ns, target, escape(label, False))
         elif target.startswith('//'):
             return self._make_ext_link(ns+':'+target, label)
         elif ns == "mailto":
