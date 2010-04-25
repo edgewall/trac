@@ -21,6 +21,7 @@ define HELP
 
   unit-test           run unit tests
   functional-test     run functional tests
+  test-wiki           shortcut for running all wiki unit tests
   test                run all tests
   coverage            run all tests, under coverage
   figleaf             run all tests, under figleaf
@@ -176,7 +177,7 @@ stats-%:
 #
 # Testing related tasks
 
-.PHONY: test unit-test functional-test
+.PHONY: test unit-test functional-test test-wiki
 
 test: unit-test functional-test
 
@@ -186,6 +187,8 @@ unit-test: Trac.egg-info
 functional-test: Trac.egg-info
 	python trac/tests/functional/__init__.py -v
 
+test-wiki:
+	python trac/tests/allwiki.py
 
 # ----------------------------------------------------------------------------
 #
