@@ -1631,8 +1631,7 @@ msgid ""
 "        for help on searching."
 msgstr ""
 "[1:Hinweis:] Hilfe zur Suche\n"
-"\"\n"
-"\"        in [2:TracSearch]."
+"        in [2:TracSearch]."
 
 #: trac/templates/about.html:26
 msgid "Trac: Integrated SCM & Project Management"
@@ -3742,11 +3741,14 @@ msgid ""
 "          [3:[4:]]\n"
 "          added"
 msgstr ""
+"[1:[2:%(name)s]]\n"
+"          [3:[4:]]\n"
+"          hinzugefügt"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
 msgid "changed from [1:%(old)s] to [2:%(new)s]"
-msgstr ""
+msgstr "von [1:%(old)s] nach [2:%(new)s] geändert"
 
 #: trac/ticket/templates/ticket_change.html:29
 #, python-format
