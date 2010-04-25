@@ -5492,7 +5492,7 @@ msgstr " ստեղծված"
 #: trac/wiki/templates/wiki_delete.html:19
 #, fuzzy, python-format
 msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
-msgstr "%(name)s էջի %(from)s-ից %(to)s տարբերակները ջնջվել են։"
+msgstr "[1:%(name)s] էջի %(from)s-ից %(to)s տարբերակները ջնջվել են։"
 
 #: trac/wiki/templates/wiki_delete.html:22
 #, fuzzy, python-format
