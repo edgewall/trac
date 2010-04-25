@@ -635,14 +635,13 @@ class Formatter(object):
 
     def shorthand_intertrac_helper(self, ns, target, label, fullmatch):
         if fullmatch: # short form
-            it_group = fullmatch.group('it_%s' % ns)
+            it_group = fullmatch.groupdict().get('it_' + ns)
             if it_group:
                 alias = it_group.strip()
                 intertrac = self.env.config['intertrac']
                 target = '%s:%s' % (ns, target[len(it_group):])
                 return self._make_intertrac_link(intertrac.get(alias, alias),
                                                  target, label) or label
-        return None
 
     def _make_interwiki_link(self, ns, target, label):
         from trac.wiki.interwiki import InterWikiMap        
@@ -650,8 +649,6 @@ class Formatter(object):
         if ns in interwiki:
             url, title = interwiki.url(ns, target)
             return self._make_ext_link(url, label, title)
-        else:
-            return None
 
     def _make_ext_link(self, url, text, title=''):
         local_url = self.env.project_url or \

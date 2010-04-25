@@ -338,9 +338,10 @@ class LogModule(Component):
 
     def _format_link(self, formatter, ns, match, label, fullmatch=None):
         if ns == 'log1':
-            it_log = fullmatch.group('it_log')
-            revs = fullmatch.group('log_revs')
-            path = fullmatch.group('log_path') or '/'
+            groups = fullmatch.groupdict()
+            it_log = groups.get('it_log')
+            revs = groups.get('log_revs')
+            path = groups.get('log_path') or '/'
             target = '%s%s@%s' % (it_log, path, revs)
             # prepending it_log is needed, as the helper expects it there
             intertrac = formatter.shorthand_intertrac_helper(
