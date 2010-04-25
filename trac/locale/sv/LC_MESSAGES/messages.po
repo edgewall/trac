@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-23 13:31+0200\n"
+"PO-Revision-Date: 2010-04-25 12:19+0100\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -18,20 +18,18 @@ msgstr ""
 "Generated-By: Babel 0.9.5\n"
 
 #: tracopt/mimeview/php.py:97
-msgid ""
-"You appear to be using the PHP CGI binary. Trac requires the CLI version "
-"for syntax highlighting."
-msgstr ""
-"Du verkar använda PHP-CGI-biblioteket. Trac kräver CLI-versionen för "
-"syntax-känslig presentation."
+msgid "You appear to be using the PHP CGI binary. Trac requires the CLI version for syntax highlighting."
+msgstr "Du verkar använda PHP-CGI-biblioteket. Trac kräver CLI-versionen för syntax-känslig presentation."
 
-#: tracopt/ticket/deleter.py:69 tracopt/ticket/deleter.py:82
+#: tracopt/ticket/deleter.py:69
+#: tracopt/ticket/deleter.py:82
 #: tracopt/ticket/templates/ticket_delete.html:19
 #: trac/ticket/templates/report_list.html:35
 msgid "Delete"
 msgstr "Radera"
 
-#: tracopt/ticket/deleter.py:70 tracopt/ticket/templates/ticket_delete.html:39
+#: tracopt/ticket/deleter.py:70
+#: tracopt/ticket/templates/ticket_delete.html:39
 msgid "Delete ticket"
 msgstr "Ta bort ärende"
 
@@ -91,7 +89,8 @@ msgstr ", bilagor:"
 
 #: tracopt/ticket/templates/ticket_delete.html:34
 #: tracopt/ticket/templates/ticket_delete.html:64
-#: trac/templates/attachment.html:70 trac/wiki/templates/wiki_delete.html:46
+#: trac/templates/attachment.html:70
+#: trac/wiki/templates/wiki_delete.html:46
 msgid "This is an irreversible operation."
 msgstr "Detta är en oåterkallelig operation."
 
@@ -101,7 +100,8 @@ msgstr "Detta är en oåterkallelig operation."
 #: trac/admin/templates/admin_enums.html:24
 #: trac/admin/templates/admin_milestones.html:68
 #: trac/admin/templates/admin_versions.html:45
-#: trac/templates/attachment.html:63 trac/templates/attachment.html:76
+#: trac/templates/attachment.html:63
+#: trac/templates/attachment.html:76
 #: trac/ticket/templates/milestone_delete.html:40
 #: trac/ticket/templates/milestone_edit.html:94
 #: trac/ticket/templates/report_delete.html:21
@@ -129,7 +129,9 @@ msgstr "Ändrad för %(date)s sedan av %(author)s"
 msgid "Are you sure you want to delete this ticket comment?"
 msgstr "Är du säker på att du vill ta bort kommentaren?"
 
-#: trac/about.py:47 trac/templates/about.html:10 trac/templates/about.html:29
+#: trac/about.py:47
+#: trac/templates/about.html:10
+#: trac/templates/about.html:29
 msgid "About Trac"
 msgstr "Om Trac"
 
@@ -148,12 +150,8 @@ msgstr "Kunde inte ta bort bilaga"
 
 #: trac/attachment.py:208
 #, python-format
-msgid ""
-"Cannot reparent attachment \"%(att)s\" as it already exists in "
-"%(realm)s:%(id)s"
-msgstr ""
-"Kan inte koppla bilagan \"%(att)s\" eftersom den redan existerar i "
-"%(realm)s:%(id)s"
+msgid "Cannot reparent attachment \"%(att)s\" as it already exists in %(realm)s:%(id)s"
+msgstr "Kan inte koppla bilagan \"%(att)s\" eftersom den redan existerar i %(realm)s:%(id)s"
 
 #: trac/attachment.py:227
 #, python-format
@@ -194,8 +192,11 @@ msgstr "Bilagan \"%(id)s\" i %(parent)s"
 msgid "Attachments of %(parent)s"
 msgstr "Bilagor till %(parent)s"
 
-#: trac/attachment.py:609 trac/attachment.py:632 trac/admin/web_ui.py:425
-#: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
+#: trac/attachment.py:609
+#: trac/attachment.py:632
+#: trac/admin/web_ui.py:425
+#: trac/admin/web_ui.py:428
+#: trac/admin/web_ui.py:432
 msgid "No file uploaded"
 msgstr "Ingen fil uppladdad"
 
@@ -224,30 +225,27 @@ msgstr "Ogiltig bilaga: %(message)s"
 
 #: trac/attachment.py:659
 #, python-format
-msgid ""
-"You don't have permission to replace the attachment %(name)s. You can "
-"only replace your own attachments. Replacing other's attachments requires"
-" ATTACHMENT_DELETE permission."
-msgstr ""
-"Du har inte behörighet att ersätta bilagan %(name)s, du kan bara ersätta "
-"dina egna bilagor. För att ersätta andras bilagor krävs behörigheten "
-"ATTACHMENT_DELETE."
+msgid "You don't have permission to replace the attachment %(name)s. You can only replace your own attachments. Replacing other's attachments requires ATTACHMENT_DELETE permission."
+msgstr "Du har inte behörighet att ersätta bilagan %(name)s, du kan bara ersätta dina egna bilagor. För att ersätta andras bilagor krävs behörigheten ATTACHMENT_DELETE."
 
 #: trac/attachment.py:691
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (radera)"
 
-#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:633
+#: trac/attachment.py:752
+#: trac/versioncontrol/web_ui/browser.py:633
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Endast text"
 
-#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:639
+#: trac/attachment.py:758
+#: trac/versioncontrol/web_ui/browser.py:639
 msgid "Original Format"
 msgstr "Orginalformat"
 
-#: trac/attachment.py:800 trac/attachment.py:806
+#: trac/attachment.py:800
+#: trac/attachment.py:806
 #: trac/templates/list_of_attachments.html:20
 #: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
@@ -260,13 +258,17 @@ msgstr "Ladda ner"
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "Ogiltig resursidentifierare \"%(id)s\""
 
-#: trac/attachment.py:936 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:936
+#: trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
-#: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
-#: trac/templates/error.html:185 trac/ticket/admin.py:209
-#: trac/ticket/admin.py:400 trac/ticket/admin.py:559
-#: trac/versioncontrol/admin.py:108
+#: trac/admin/templates/admin_versions.html:77
+#: trac/templates/about.html:84
+#: trac/templates/error.html:185
+#: trac/ticket/admin.py:209
+#: trac/ticket/admin.py:400
+#: trac/ticket/admin.py:559
+#: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
 #: trac/web/session.py:314
 msgid "Name"
@@ -276,22 +278,27 @@ msgstr "Namn"
 msgid "Size"
 msgstr "Storlek"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:29
+#: trac/attachment.py:936
+#: trac/templates/history_view.html:29
 #: trac/ticket/templates/ticket.html:360
 #: trac/versioncontrol/templates/revisionlog.html:96
 msgid "Author"
 msgstr "Författare"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:28
+#: trac/attachment.py:936
+#: trac/templates/history_view.html:28
 msgid "Date"
 msgstr "Datum"
 
-#: trac/attachment.py:937 trac/templates/attachment.html:93
-#: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
+#: trac/attachment.py:937
+#: trac/templates/attachment.html:93
+#: trac/ticket/api.py:289
+#: trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "Beskrivning"
 
-#: trac/attachment.py:962 trac/wiki/admin.py:104
+#: trac/attachment.py:962
+#: trac/wiki/admin.py:104
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "Filen \"%(name)s\" finns"
@@ -309,9 +316,7 @@ msgstr "[%(section)s] %(entry)s: förväntade flyttal, erhöll %(value)s"
 #: trac/config.py:605
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
-msgstr ""
-"[%(section)s] %(entry)s: förväntade något av (%(choices)s), erhöll "
-"%(value)s"
+msgstr "[%(section)s] %(entry)s: förväntade något av (%(choices)s), erhöll %(value)s"
 
 #: trac/env.py:587
 msgid "Database newer than Trac version"
@@ -323,12 +328,8 @@ msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Ingen uppgraderingsmodul för version %(num)i (%(version)s.py)"
 
 #: trac/env.py:646
-msgid ""
-"Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
-" point to a valid Trac environment."
-msgstr ""
-"Saknar miljövariabeln \"TRAC_ENV \". Denna variabel måste ange sökväg "
-"till en giltig Trac-miljö."
+msgid "Missing environment variable \"TRAC_ENV\". Trac requires this variable to point to a valid Trac environment."
+msgstr "Saknar miljövariabeln \"TRAC_ENV \". Denna variabel måste ange sökväg till en giltig Trac-miljö."
 
 #: trac/env.py:678
 #, python-format
@@ -367,7 +368,8 @@ msgstr "Följande fel inträffade vid kopiering av miljön:"
 msgid "Hotcopy done."
 msgstr "Säkerhetskopiering klart."
 
-#: trac/env.py:784 trac/admin/api.py:125
+#: trac/env.py:784
+#: trac/admin/api.py:125
 msgid "Invalid arguments"
 msgstr "Felaktiga argument"
 
@@ -386,8 +388,7 @@ msgstr ""
 
 #: trac/env.py:809
 msgid ""
-"Warning: the wiki-macros directory in the environment is non-empty, but "
-"Trac\n"
+"Warning: the wiki-macros directory in the environment is non-empty, but Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
 "Varning: Katalogen \"wiki-macros\" är inte tom för denna Trac-miljö,\n"
@@ -398,8 +399,7 @@ msgstr ""
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
-"Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
-"hand."
+"Trac doesn't load plugins from wiki-macros anymore. Please remove it by hand."
 msgstr ""
 "Ett fel inträffade vid borttagning av wiki-makron: %(err)s\n"
 "Trac laddar inte längre tillägg från katalogen \"wiki-macros\".\n"
@@ -445,7 +445,8 @@ msgstr "%(name)s är inte en giltig åtgärd."
 msgid "User"
 msgstr "Användare"
 
-#: trac/perm.py:642 trac/admin/templates/admin_perms.html:69
+#: trac/perm.py:642
+#: trac/admin/templates/admin_perms.html:69
 #: trac/ticket/templates/ticket.html:338
 msgid "Action"
 msgstr "Åtgärd"
@@ -463,11 +464,13 @@ msgstr "Gruppnamn måste anges med små bokstäver och funktioner med stora boks
 msgid "%(name)s at version %(version)s"
 msgstr "%(name)s i version %(version)s"
 
-#: trac/admin/api.py:129 trac/admin/console.py:254
+#: trac/admin/api.py:129
+#: trac/admin/console.py:254
 msgid "Command not found"
 msgstr "Kommandot hittades inte"
 
-#: trac/admin/console.py:111 trac/ticket/templates/report_edit.html:34
+#: trac/admin/console.py:111
+#: trac/ticket/templates/report_edit.html:34
 msgid "Error:"
 msgstr "Fel:"
 
@@ -510,9 +513,7 @@ msgstr "trac-admin - Trac's administrationskonsoll %(version)s"
 
 #: trac/admin/console.py:293
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
-msgstr ""
-"Användning: trac-admin </sökväg/till/miljö> [kommando [underkommando] "
-"[alternativ ...]]\n"
+msgstr "Användning: trac-admin </sökväg/till/miljö> [kommando [underkommando] [alternativ ...]]\n"
 
 #: trac/admin/console.py:296
 msgid "Invoking trac-admin without command starts interactive mode.\n"
@@ -682,7 +683,8 @@ msgstr "tecken utanför ASCII-området i miljöns sökväg \"%(path)s\" stöds i
 msgid "Admin"
 msgstr "Admin"
 
-#: trac/admin/web_ui.py:65 trac/admin/templates/admin.html:16
+#: trac/admin/web_ui.py:65
+#: trac/admin/templates/admin.html:16
 msgid "Administration"
 msgstr "Administration"
 
@@ -690,41 +692,51 @@ msgstr "Administration"
 msgid "No administration panels available"
 msgstr "Inga administrationspaneler är tillgängliga"
 
-#: trac/admin/web_ui.py:107 trac/admin/web_ui.py:111
+#: trac/admin/web_ui.py:107
+#: trac/admin/web_ui.py:111
 msgid "Unknown administration panel"
 msgstr "Okänd administrationspanel"
 
-#: trac/admin/web_ui.py:185 trac/ticket/admin.py:65 trac/ticket/admin.py:90
-#: trac/ticket/admin.py:275 trac/ticket/admin.py:457 trac/ticket/admin.py:609
-#: trac/ticket/admin.py:695 trac/ticket/report.py:189
-#: trac/ticket/roadmap.py:687 trac/versioncontrol/admin.py:196
+#: trac/admin/web_ui.py:185
+#: trac/ticket/admin.py:65
+#: trac/ticket/admin.py:90
+#: trac/ticket/admin.py:275
+#: trac/ticket/admin.py:457
+#: trac/ticket/admin.py:609
+#: trac/ticket/admin.py:695
+#: trac/ticket/report.py:189
+#: trac/ticket/roadmap.py:687
+#: trac/versioncontrol/admin.py:198
 msgid "Your changes have been saved."
 msgstr "Dina ändringar har blivit sparade."
 
-#: trac/admin/web_ui.py:190 trac/ticket/admin.py:68
-msgid ""
-"Error writing to trac.ini, make sure it is writable by the web server. "
-"Your changes have not been saved."
-msgstr ""
-"Fel vid skrivning av \"trac.ini\", kontrollera att den är skrivbar av "
-"webbservern. Dina ändringar har inte blivit sparade."
+#: trac/admin/web_ui.py:190
+#: trac/ticket/admin.py:68
+msgid "Error writing to trac.ini, make sure it is writable by the web server. Your changes have not been saved."
+msgstr "Fel vid skrivning av \"trac.ini\", kontrollera att den är skrivbar av webbservern. Dina ändringar har inte blivit sparade."
 
-#: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
-#: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
+#: trac/admin/web_ui.py:203
+#: trac/admin/web_ui.py:231
+#: trac/admin/web_ui.py:319
+#: trac/admin/web_ui.py:401
+#: trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
 msgstr "Allmänt"
 
-#: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
+#: trac/admin/web_ui.py:203
+#: trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
 msgstr "Allmänna inställningar"
 
-#: trac/admin/web_ui.py:231 trac/admin/templates/admin_logging.html:10
+#: trac/admin/web_ui.py:231
+#: trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
 msgid "Logging"
 msgstr "Loggning"
 
-#: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
+#: trac/admin/web_ui.py:240
+#: trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
 msgstr "Ingen"
@@ -733,7 +745,8 @@ msgstr "Ingen"
 msgid "Console"
 msgstr "Konsoll"
 
-#: trac/admin/web_ui.py:243 trac/templates/attachment.html:32
+#: trac/admin/web_ui.py:243
+#: trac/templates/attachment.html:32
 msgid "File"
 msgstr "Fil"
 
@@ -771,7 +784,8 @@ msgstr "Du måste ange en loggfil"
 msgid "Missing field"
 msgstr "Saknat fält"
 
-#: trac/admin/web_ui.py:319 trac/admin/templates/admin_perms.html:9
+#: trac/admin/web_ui.py:319
+#: trac/admin/templates/admin_perms.html:9
 msgid "Permissions"
 msgstr "Behörigheter"
 
@@ -807,7 +821,8 @@ msgstr "Gruppen %(group)s innehåller redan %(subject)s."
 msgid "The selected permissions have been revoked."
 msgstr "Valda behörigheter har blivit hävda."
 
-#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:9
+#: trac/admin/web_ui.py:401
+#: trac/admin/templates/admin_plugins.html:9
 msgid "Plugins"
 msgstr "Tillägg"
 
@@ -879,7 +894,8 @@ msgstr "Beskrivning:"
 msgid "Apply changes"
 msgstr "Spara ändringar"
 
-#: trac/admin/templates/admin_components.html:10 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_components.html:10
+#: trac/ticket/admin.py:76
 msgid "Components"
 msgstr "Komponenter"
 
@@ -926,8 +942,10 @@ msgstr "Lägg till komponent:"
 msgid "Add"
 msgstr "Lägg till"
 
-#: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
-#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1337
+#: trac/admin/templates/admin_components.html:80
+#: trac/ticket/admin.py:209
+#: trac/ticket/api.py:283
+#: trac/ticket/web_ui.py:1337
 msgid "Owner"
 msgstr "Ägare"
 
@@ -954,9 +972,7 @@ msgstr "Ta bort markerade element"
 msgid ""
 "You can remove all items from this list to completely hide this\n"
 "              field from the user interface."
-msgstr ""
-"Ta bort alla element från denna lista för att helt dölja detta fält från "
-"användargränssnittet."
+msgstr "Ta bort alla element från denna lista för att helt dölja detta fält från användargränssnittet."
 
 #: trac/admin/templates/admin_components.html:107
 #: trac/admin/templates/admin_enums.html:78
@@ -965,9 +981,7 @@ msgstr ""
 msgid ""
 "As long as you don't add any items to the list, this field\n"
 "            will remain completely hidden from the user interface."
-msgstr ""
-"Så länge du inte lägger till några element i listan, kommer det här "
-"fältet att förbli helt dolt från användargränssnittet."
+msgstr "Så länge du inte lägger till några element i listan, kommer det här fältet att förbli helt dolt från användargränssnittet."
 
 #: trac/admin/templates/admin_enums.html:14
 #, python-format
@@ -983,7 +997,8 @@ msgstr "Ändra %(label_singular)s"
 msgid "Order"
 msgstr "Ordning"
 
-#: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
+#: trac/admin/templates/admin_logging.html:26
+#: trac/templates/about.html:79
 msgid "Configuration"
 msgstr "Konfiguration"
 
@@ -1005,11 +1020,10 @@ msgstr "Loggfil:"
 msgid ""
 "If you specify a relative path, the log file will be stored inside the\n"
 "            [1:log] directory of the project environment ([2:%(dir)s])."
-msgstr ""
-"Om du anger en relativ sökväg så kommer loggfilen lagras i katalogen "
-"[1:log] i projektmiljön ([2:%(dir)s])."
+msgstr "Om du anger en relativ sökväg så kommer loggfilen lagras i katalogen [1:log] i projektmiljön ([2:%(dir)s])."
 
-#: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
+#: trac/admin/templates/admin_milestones.html:10
+#: trac/ticket/admin.py:241
 #: trac/ticket/roadmap.py:855
 msgid "Milestones"
 msgstr "Milstolpar"
@@ -1062,15 +1076,18 @@ msgstr "Beskrivning (du kan använda [1:WikiFormatting] här):"
 msgid "Add Milestone:"
 msgstr "Lägg till milstolpe:"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/ticket/admin.py:400
 msgid "Due"
 msgstr "Förfallodatum"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/ticket/admin.py:400
 msgid "Completed"
 msgstr "Avklarad"
 
-#: trac/admin/templates/admin_milestones.html:104 trac/ticket/web_ui.py:184
+#: trac/admin/templates/admin_milestones.html:104
+#: trac/ticket/web_ui.py:184
 msgid "Tickets"
 msgstr "Ärenden"
 
@@ -1118,7 +1135,8 @@ msgstr "Vem/vad"
 msgid "Note that"
 msgstr "Observera att"
 
-#: trac/admin/templates/admin_perms.html:92 trac/ticket/templates/query.html:73
+#: trac/admin/templates/admin_perms.html:92
+#: trac/ticket/templates/query.html:73
 msgid "or"
 msgstr "eller"
 
@@ -1130,9 +1148,7 @@ msgstr "Grupp"
 msgid ""
 "names can't be all upper-case,\n"
 "      as that is reserved for permission names."
-msgstr ""
-"får ej innehålla versaler endast, då detta reserverats åt namn på "
-"behörigheter."
+msgstr "får ej innehålla versaler endast, då detta reserverats åt namn på behörigheter."
 
 #: trac/admin/templates/admin_plugins.html:41
 msgid "Manage Plugins"
@@ -1153,9 +1169,7 @@ msgstr[1] "Filer:"
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
-msgstr ""
-"Webbservern inte har tillräckliga behörigheter för att lagra filer i "
-"Trac-miljöns tilläggskatalog."
+msgstr "Webbservern inte har tillräckliga behörigheter för att lagra filer i Trac-miljöns tilläggskatalog."
 
 #: trac/admin/templates/admin_plugins.html:56
 msgid "Upload a plugin packaged as Python egg."
@@ -1165,7 +1179,8 @@ msgstr "Ladda upp ett tillägg förpackat som Pythonägg."
 msgid "Install"
 msgstr "Installera"
 
-#: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:51
+#: trac/admin/templates/admin_plugins.html:84
+#: trac/templates/diff_view.html:51
 #: trac/versioncontrol/templates/changeset.html:140
 msgid "Author:"
 msgstr "Författare:"
@@ -1186,7 +1201,8 @@ msgstr "Visa alla beskrivningar"
 msgid "Hide all descriptions"
 msgstr "Dölj alla beskrivningar"
 
-#: trac/admin/templates/admin_plugins.html:114 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_plugins.html:114
+#: trac/ticket/admin.py:76
 #: trac/ticket/api.py:296
 msgid "Component"
 msgstr "Komponent"
@@ -1203,7 +1219,8 @@ msgstr "Dölj/visa modulbeskrivning"
 msgid "Toggle the component description"
 msgstr "Dölj/visa komponentbeskrivning"
 
-#: trac/admin/templates/admin_versions.html:10 trac/ticket/admin.py:440
+#: trac/admin/templates/admin_versions.html:10
+#: trac/ticket/admin.py:440
 msgid "Versions"
 msgstr "Versioner"
 
@@ -1238,12 +1255,8 @@ msgstr "Databastypen \"%(scheme)s\" stöds ej"
 
 #: trac/db/api.py:162
 #, python-format
-msgid ""
-"Unknown scheme \"%(scheme)s\"; database connection string must start with"
-" {scheme}:/"
-msgstr ""
-"Okänt schema \"%(scheme)s\"; databasens anslutningssträng måste inledas "
-"med {scheme}:/"
+msgid "Unknown scheme \"%(scheme)s\"; database connection string must start with {scheme}:/"
+msgstr "Okänt schema \"%(scheme)s\"; databasens anslutningssträng måste inledas med {scheme}:/"
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
@@ -1278,14 +1291,11 @@ msgstr "Databasen \"%(path)s\" hittades inte."
 
 #: trac/db/sqlite_backend.py:250
 #, python-format
-msgid ""
-"The user %(user)s requires read _and_ write permissions to the database "
-"file %(path)s and the directory it is located in."
-msgstr ""
-"Användaren %(user)s kräver läs- _och_ skrivrättigheter till databasfilen "
-"%(path)s och katalogen den ligger i."
+msgid "The user %(user)s requires read _and_ write permissions to the database file %(path)s and the directory it is located in."
+msgstr "Användaren %(user)s kräver läs- _och_ skrivrättigheter till databasfilen %(path)s och katalogen den ligger i."
 
-#: trac/mimeview/api.py:674 trac/mimeview/api.py:685
+#: trac/mimeview/api.py:674
+#: trac/mimeview/api.py:685
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "Ingen tillgänglig MIME-omvandling från %(old)s till %(new)s"
@@ -1300,33 +1310,36 @@ msgstr "Förhandsvising av HTML med %(renderer)s misslyckades (%(err)s)"
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "Kan inte använda %(annotator)s som antecknare: %(error)s"
 
-#: trac/mimeview/patch.py:53
+#: trac/mimeview/patch.py:54
 msgid "Invalid unified diff content"
 msgstr "Ogiltigt innehåll för att vara \"unified diff\""
 
-#: trac/mimeview/patch.py:163
+#: trac/mimeview/patch.py:171
 #, python-format
 msgid "new file %(new)s"
 msgstr "ny fil %(new)s"
 
-#: trac/mimeview/patch.py:167
+#: trac/mimeview/patch.py:175
 #, python-format
 msgid "deleted file %(deleted)s"
 msgstr "tagit bort fil %(deleted)s"
 
-#: trac/mimeview/patch.py:239
+#: trac/mimeview/patch.py:247
 msgid "this hunk was shorter than expected"
 msgstr "denna del var kortare än förväntat"
 
-#: trac/mimeview/pygments.py:126 trac/prefs/templates/prefs_pygments.html:9
+#: trac/mimeview/pygments.py:126
+#: trac/prefs/templates/prefs_pygments.html:9
 msgid "Syntax Highlighting"
 msgstr "Syntax-färgläggning"
 
-#: trac/mimeview/pygments.py:135 trac/prefs/web_ui.py:143
+#: trac/mimeview/pygments.py:135
+#: trac/prefs/web_ui.py:143
 msgid "Your preferences have been saved."
 msgstr "Dina inställningar har blivit sparade"
 
-#: trac/prefs/web_ui.py:52 trac/prefs/templates/prefs.html:16
+#: trac/prefs/web_ui.py:52
+#: trac/prefs/templates/prefs.html:16
 #: trac/ticket/templates/ticket.html:374
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "Preferences"
@@ -1336,19 +1349,23 @@ msgstr "Inställningar"
 msgid "Unknown preference panel"
 msgstr "Okänd inställningssida"
 
-#: trac/prefs/web_ui.py:87 trac/prefs/templates/prefs_datetime.html:10
+#: trac/prefs/web_ui.py:87
+#: trac/prefs/templates/prefs_datetime.html:10
 msgid "Date & Time"
 msgstr "Datum & tid"
 
-#: trac/prefs/web_ui.py:88 trac/prefs/templates/prefs_keybindings.html:10
+#: trac/prefs/web_ui.py:88
+#: trac/prefs/templates/prefs_keybindings.html:10
 msgid "Keyboard Shortcuts"
 msgstr "Kortkommandon"
 
-#: trac/prefs/web_ui.py:90 trac/prefs/templates/prefs_language.html:9
+#: trac/prefs/web_ui.py:90
+#: trac/prefs/templates/prefs_language.html:9
 msgid "Language"
 msgstr "Språk"
 
-#: trac/prefs/web_ui.py:92 trac/prefs/templates/prefs_advanced.html:9
+#: trac/prefs/web_ui.py:92
+#: trac/prefs/templates/prefs_advanced.html:9
 msgid "Advanced"
 msgstr "Avancerat"
 
@@ -1359,16 +1376,10 @@ msgstr "Inställningar:"
 #: trac/prefs/templates/prefs.html:17
 msgid ""
 "This page lets you customize your personal settings for this site.\n"
-"      These settings are stored on the server and are identified by a "
-"session\n"
-"      key stored in a browser cookie. That cookie allows your settings to"
-" be\n"
+"      These settings are stored on the server and are identified by a session\n"
+"      key stored in a browser cookie. That cookie allows your settings to be\n"
 "      restored on subsequent visits."
-msgstr ""
-"Här kan du ange personliga inställningar för denna webbplats. Dessa "
-"lagras på servern, identiferad av en sessionsnyckel som lagras i en "
-"cookie av webbläsaren, vilket gör det möjligt att återhämta dem för "
-"framtida återbesök."
+msgstr "Här kan du ange personliga inställningar för denna webbplats. Dessa lagras på servern, identiferad av en sessionsnyckel som lagras i en cookie av webbläsaren, vilket gör det möjligt att återhämta dem för framtida återbesök."
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
@@ -1385,11 +1396,7 @@ msgid ""
 "      automatically generated by default, you may change it to something\n"
 "      easier to remember at any time if you wish to load your settings\n"
 "      in a different web browser."
-msgstr ""
-"Sessionsnyckeln används för att identifiera lagrade inställningar och "
-"sessionsdata som lagras på servern. Även om denna är automatiskt "
-"genererad så kan du ändra den till något som är enklare att komma ihåg "
-"ifall du vill hämta dina inställningar från en annan webbläsare."
+msgstr "Sessionsnyckeln används för att identifiera lagrade inställningar och sessionsdata som lagras på servern. Även om denna är automatiskt genererad så kan du ändra den till något som är enklare att komma ihåg ifall du vill hämta dina inställningar från en annan webbläsare."
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -1402,13 +1409,9 @@ msgstr "Ladda"
 #: trac/prefs/templates/prefs_advanced.html:30
 msgid ""
 "You may load a previously created session by entering the\n"
-"      corresponding session key below. This lets you share settings "
-"between\n"
+"      corresponding session key below. This lets you share settings between\n"
 "      multiple computers and web browsers."
-msgstr ""
-"Du kan läsa in en befintlig session genom att ange tillhörande "
-"sessionsnyckel nedan. Detta gör det möjligt att dela "
-"sessionsinställingarna mellan flera datorer och webbläsare."
+msgstr "Du kan läsa in en befintlig session genom att ange tillhörande sessionsnyckel nedan. Detta gör det möjligt att dela sessionsinställingarna mellan flera datorer och webbläsare."
 
 #: trac/prefs/templates/prefs_datetime.html:16
 msgid "Time zone:"
@@ -1423,10 +1426,7 @@ msgid ""
 "Configuring your time zone will result in all\n"
 "      dates and times displayed on this site to use your time zone\n"
 "      instead of that of the server."
-msgstr ""
-"Konfigurering av tidszon resulterar i att datum och tider som visas på "
-"denna webbplats använder den valda tidszonen istället för den som används"
-" av servern."
+msgstr "Konfigurering av tidszon resulterar i att datum och tider som visas på denna webbplats använder den valda tidszonen istället för den som används av servern."
 
 #: trac/prefs/templates/prefs_datetime.html:30
 msgid "Example: The current time is"
@@ -1451,20 +1451,12 @@ msgid ""
 msgstr "För standardtidszonen skulle detta visas som [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:47
-msgid ""
-"Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
-"Time (GMT)."
-msgstr ""
-"Anmärkning: Universal Co-ordinated Time (UTC) är även känd som Greenwich "
-"Mean Time (GMT)."
+msgid "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT)."
+msgstr "Anmärkning: Universal Co-ordinated Time (UTC) är även känd som Greenwich Mean Time (GMT)."
 
 #: trac/prefs/templates/prefs_datetime.html:48
-msgid ""
-"A positive offset is used to indicate a timezone at the east of "
-"Greenwich, i.e. ahead of Universal Time."
-msgstr ""
-"En positiv offset används för att ange en tidszon till öster om "
-"Greenwich, det vill säga före Universal Time."
+msgid "A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time."
+msgstr "En positiv offset används för att ange en tidszon till öster om Greenwich, det vill säga före Universal Time."
 
 #: trac/prefs/templates/prefs_general.html:15
 msgid "Full name:"
@@ -1478,19 +1470,14 @@ msgstr "E-postadress:"
 msgid ""
 "This information is used to automatically populate some forms\n"
 "        on this site with your contact details."
-msgstr ""
-"Denna information används för automatisk ifyllning av vissa formulär på "
-"denna webbplats med din kontaktinformation."
+msgstr "Denna information används för automatisk ifyllning av vissa formulär på denna webbplats med din kontaktinformation."
 
 #: trac/prefs/templates/prefs_general.html:30
 msgid ""
 "This information is used to associate your login name with your\n"
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
-msgstr ""
-"Denna information används för att associera ditt användarnamn med din "
-"e-postadress och ditt fullständiga namn, vilket bland annat används för "
-"e-postaviseringar och RSS-strömmar."
+msgstr "Denna information används för att associera ditt användarnamn med din e-postadress och ditt fullständiga namn, vilket bland annat används för e-postaviseringar och RSS-strömmar."
 
 #: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
@@ -1499,18 +1486,12 @@ msgstr "Aktivera kortkommandon"
 #: trac/prefs/templates/prefs_keybindings.html:21
 msgid ""
 "This site provides keyboard shortcuts for\n"
-"      faster access to certain functions of this site. As these shortcuts"
-" can\n"
+"      faster access to certain functions of this site. As these shortcuts can\n"
 "      cause conflicts with shortcuts provided by the desktop system or\n"
 "      web browser, they are disabled by default. See\n"
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
-msgstr ""
-"Denna webbplats erbjuder kortkommandon för snabbare tillgång till vissa "
-"funktioner här. Eftersom dessa kortkommandon kan orsaka konflikter med "
-"existerande kortkommandon för skrivbordet, eller webbläsaren, är de "
-"inaktiverade som standard. Se [1:TracAccessibility] för mer information "
-"om kortkommandon."
+msgstr "Denna webbplats erbjuder kortkommandon för snabbare tillgång till vissa funktioner här. Eftersom dessa kortkommandon kan orsaka konflikter med existerande kortkommandon för skrivbordet, eller webbläsaren, är de inaktiverade som standard. Se [1:TracAccessibility] för mer information om kortkommandon."
 
 #: trac/prefs/templates/prefs_language.html:14
 msgid "Language:"
@@ -1525,17 +1506,13 @@ msgid ""
 "Configuring your language will result in all text\n"
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
-msgstr ""
-"Konfigurering av språk resulterar i att text som visas på denna webbplats"
-" använder ditt valda språk istället för det som är inställt på servern."
+msgstr "Konfigurering av språk resulterar i att text som visas på denna webbplats använder ditt valda språk istället för det som är inställt på servern."
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid ""
 "The 'default language' option uses the browser's\n"
 "        language negotiation feature to select the appropriate language."
-msgstr ""
-"Alternativet \"Standardspråk\" överlämnar avgörandet av lämpligt språk åt"
-" din webbläsare och servern."
+msgstr "Alternativet \"Standardspråk\" överlämnar avgörandet av lämpligt språk åt din webbläsare och servern."
 
 #: trac/prefs/templates/prefs_pygments.html:36
 msgid ""
@@ -1551,8 +1528,10 @@ msgstr "Utseende:"
 msgid "Preview:"
 msgstr "Förhandsgranskning:"
 
-#: trac/search/web_ui.py:63 trac/search/templates/search.html:10
-#: trac/search/templates/search.html:23 trac/search/templates/search.html:28
+#: trac/search/web_ui.py:63
+#: trac/search/templates/search.html:10
+#: trac/search/templates/search.html:23
+#: trac/search/templates/search.html:28
 #: trac/templates/theme.html:28
 msgid "Search"
 msgstr "Sök"
@@ -1567,15 +1546,20 @@ msgstr "Bläddra i förrådets sökväg %(path)s"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "Sökfrågan är för kort. Ange minst %(num)s tecken."
 
-#: trac/search/web_ui.py:231 trac/ticket/query.py:763 trac/ticket/report.py:397
+#: trac/search/web_ui.py:231
+#: trac/ticket/query.py:763
+#: trac/ticket/report.py:397
 msgid "Next Page"
 msgstr "Nästa sida"
 
-#: trac/search/web_ui.py:237 trac/ticket/query.py:768 trac/ticket/report.py:400
+#: trac/search/web_ui.py:237
+#: trac/ticket/query.py:768
+#: trac/ticket/report.py:400
 msgid "Previous Page"
 msgstr "Föregående sida"
 
-#: trac/search/templates/search.html:10 trac/search/templates/search.html:40
+#: trac/search/templates/search.html:10
+#: trac/search/templates/search.html:40
 #: trac/ticket/templates/query_results.html:20
 #: trac/ticket/templates/report_view.html:79
 msgid "Results"
@@ -1610,16 +1594,9 @@ msgid ""
 "Trac is a web-based software project management and bug/issue\n"
 "        tracking system emphasizing ease of use and low ceremony.\n"
 "        It provides an integrated Wiki, an interface to version control\n"
-"        systems, and a number of convenient ways to stay on top of events"
-"\n"
+"        systems, and a number of convenient ways to stay on top of events\n"
 "        and changes within a project."
-msgstr ""
-"Trac är ett webbaserat verktyg för projekthantering — inklusive spårning "
-"och uppföljning av ärenden såsom problemrapporter och uppgifter med mera "
-"— som lägger stor vikt på användarvänlighet med låga krav på formalitet. "
-"Trac har en integrerad wiki, gränssnitt till ett eller flera "
-"versionshanteringssystem och ett antal lättanvända funktioner för att "
-"hålla reda på beslut, händelser och förändringar inom ett projekt."
+msgstr "Trac är ett webbaserat verktyg för projekthantering — inklusive spårning och uppföljning av ärenden såsom problemrapporter och uppgifter med mera — som lägger stor vikt på användarvänlighet med låga krav på formalitet. Trac har en integrerad wiki, gränssnitt till ett eller flera versionshanteringssystem och ett antal lättanvända funktioner för att hålla reda på beslut, händelser och förändringar inom ett projekt."
 
 #: trac/templates/about.html:36
 msgid ""
@@ -1627,10 +1604,7 @@ msgid ""
 "        The complete text of the license can be found\n"
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
-msgstr ""
-"Trac distribueras enligt villkoren i den modifierade BSD-licensen.[1:] "
-"Fullständig information om licensvillkoren finns [2:här] och i filen "
-"[3:COPYING] som ingår i denna distribution."
+msgstr "Trac distribueras enligt villkoren i den modifierade BSD-licensen.[1:] Fullständig information om licensvillkoren finns [2:här] och i filen [3:COPYING] som ingår i denna distribution."
 
 #: trac/templates/about.html:41
 msgid "python powered"
@@ -1652,7 +1626,8 @@ msgstr "Systeminformation"
 msgid "Installed Plugins"
 msgstr "Installerade tillägg:"
 
-#: trac/templates/about.html:72 trac/templates/error.html:83
+#: trac/templates/about.html:72
+#: trac/templates/error.html:83
 #: trac/templates/error.html:217
 msgid "N/A"
 msgstr "Ej tillämpligt"
@@ -1661,7 +1636,8 @@ msgstr "Ej tillämpligt"
 msgid "Section"
 msgstr "Sektion"
 
-#: trac/templates/about.html:85 trac/templates/error.html:185
+#: trac/templates/about.html:85
+#: trac/templates/error.html:185
 msgid "Value"
 msgstr "Värde"
 
@@ -1694,7 +1670,8 @@ msgstr "(storleksgräns"
 msgid "Attachment Info"
 msgstr "Om bilaga"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:365
+#: trac/templates/attachment.html:40
+#: trac/ticket/templates/ticket.html:365
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr "Din e-postadress eller användarnamn:"
@@ -1715,7 +1692,8 @@ msgstr "Lägg till bilaga"
 msgid "Are you sure you want to delete this attachment?"
 msgstr "Är du säker på att du vill ta bort denna bilaga?"
 
-#: trac/templates/attachment.html:77 trac/templates/attachment.html:119
+#: trac/templates/attachment.html:77
+#: trac/templates/attachment.html:119
 msgid "Delete attachment"
 msgstr "Ta bort bilaga"
 
@@ -1723,8 +1701,10 @@ msgstr "Ta bort bilaga"
 msgid "Attach another file"
 msgstr "Bifoga ytterligare en bilaga"
 
-#: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
-#: trac/templates/macros.html:19 trac/versioncontrol/templates/browser.html:110
+#: trac/templates/attachment.html:98
+#: trac/templates/list_of_attachments.html:22
+#: trac/templates/macros.html:19
+#: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
@@ -1816,9 +1796,7 @@ msgid ""
 "          [1:Version %(old)s] and\n"
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
-msgstr ""
-"Ändringar mellan [1:version %(old)s] och [2:version %(new)s] av "
-"[3:%(name)s]"
+msgstr "Ändringar mellan [1:version %(old)s] och [2:version %(new)s] av [3:%(name)s]"
 
 #: trac/templates/diff_view.html:23
 #, python-format
@@ -1827,9 +1805,7 @@ msgid ""
 "          [1:Initial Version] and\n"
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
-msgstr ""
-"Ändringar mellan [1:initial version] och [2:version %(new)s] av "
-"[3:%(name)s]"
+msgstr "Ändringar mellan [1:initial version] och [2:version %(new)s] av [3:%(name)s]"
 
 #: trac/templates/diff_view.html:28
 #, python-format
@@ -1844,7 +1820,8 @@ msgstr "Ändringar från [1:version %(new)s] av [2:%(name)s]"
 msgid "Timestamp:"
 msgstr "Tidsstämpel:"
 
-#: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
+#: trac/templates/diff_view.html:45
+#: trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
 msgid "(multiple changes)"
 msgstr "(flera ändringar)"
@@ -1885,9 +1862,11 @@ msgstr "Tillagd"
 msgid "Removed"
 msgstr "Borttagen"
 
-#: trac/templates/diff_view.html:70 trac/ticket/api.py:325
+#: trac/templates/diff_view.html:70
+#: trac/ticket/api.py:325
 #: trac/versioncontrol/templates/changeset.html:202
-#: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:200
+#: trac/versioncontrol/templates/revisionlog.html:77
+#: trac/wiki/admin.py:200
 msgid "Modified"
 msgstr "Ändrad"
 
@@ -1897,9 +1876,9 @@ msgid ""
 "\n"
 "While doing a"
 msgstr ""
-"==== Hur man kan återskapa felet ====\n"
+"==== Hur felet kan återskapas ====\n"
 "\n"
-"Medans"
+"När"
 
 #: trac/templates/error.html:67
 msgid "operation on `"
@@ -1958,10 +1937,7 @@ msgid ""
 "                [1:\n"
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
-msgstr ""
-"Det uppstod ett internt fel i Trac. Du rekommenderas meddela din lokala "
-"[1:Trac-administratör] den information som behövs för att återskapa detta"
-" problem."
+msgstr "Det uppstod ett internt fel i Trac. Du rekommenderas meddela din lokala [1:Trac-administratör] den information som behövs för att återskapa detta problem."
 
 #: trac/templates/error.html:120
 msgid "To that end, you could"
@@ -1997,9 +1973,7 @@ msgstr "Hittat en bugg i Trac?"
 msgid ""
 "If you think this should work and you can reproduce the problem,\n"
 "              you should consider creating a bug report."
-msgstr ""
-"Om du tror att detta bör fungera, och du kan återskapa problemet, överväg"
-" då att rapportera detta till Trac-projektets utvecklingsteam."
+msgstr "Om du tror att detta bör fungera, och du kan återskapa problemet, överväg då att rapportera detta till Trac-projektets utvecklingsteam."
 
 #: trac/templates/error.html:138
 #, python-format
@@ -2012,36 +1986,25 @@ msgstr "Observera att följande tillägg kan vara involverade:"
 
 #: trac/templates/error.html:145
 msgid "Please report this issue to the plugin maintainer."
-msgstr ""
-"Var vänlig och rapportera problemet till den som utvecklar och "
-"underhåller tillägget."
+msgstr "Var vänlig och rapportera problemet till den som utvecklar och underhåller tillägget."
 
 #: trac/templates/error.html:147
 msgid ""
 "Before you do that, though, please first try\n"
 "                [1:[2:searching]\n"
-"                for similar issues], as it is quite likely that this "
-"problem\n"
-"                has been reported before. For questions about "
-"installation\n"
+"                for similar issues], as it is quite likely that this problem\n"
+"                has been reported before. For questions about installation\n"
 "                and configuration of Trac or its plugins, please try the\n"
 "                [3:mailing list]\n"
 "                instead of creating a ticket."
-msgstr ""
-"Innan du gör det, försök först med att [1:[2:söka] efter liknande fall då"
-" det är mycket troligt att detta problem har rapporterats tidigare. För "
-"frågor om installation och konfiguration av Trac kan du prova med denna "
-"[3:e-postlista] i stället för att rapportera ett problem på Trac-"
-"projektets webbplats."
+msgstr "Innan du gör det, försök först med att [1:[2:söka] efter liknande fall då det är mycket troligt att detta problem har rapporterats tidigare. För frågor om installation och konfiguration av Trac kan du prova med denna [3:e-postlista] i stället för att rapportera ett problem på Trac-projektets webbplats."
 
 #: trac/templates/error.html:156
 #, python-format
 msgid ""
 "Otherwise, please %(create)s a new bug report\n"
 "                describing the problem and explain how to reproduce it."
-msgstr ""
-"Annars, %(create)s gärna ett nytt ärende på Trac-projektets webbplats, "
-"där du kan beskriva problemet och förklara hur man återskapar det."
+msgstr "Annars, %(create)s gärna ett nytt ärende på Trac-projektets webbplats, där du kan beskriva problemet och förklara hur man återskapar det."
 
 #: trac/templates/error.html:160
 msgid "Python Traceback"
@@ -2051,7 +2014,8 @@ msgstr "Python Traceback"
 msgid "Most recent call last:"
 msgstr "Senaste anrop sist:"
 
-#: trac/templates/error.html:166 trac/templates/error.html:197
+#: trac/templates/error.html:166
+#: trac/templates/error.html:197
 msgid "File \""
 msgstr "Fil \""
 
@@ -2061,7 +2025,8 @@ msgid ""
 "                        line"
 msgstr "\", rad"
 
-#: trac/templates/error.html:167 trac/templates/error.html:197
+#: trac/templates/error.html:167
+#: trac/templates/error.html:197
 msgid ", in"
 msgstr ", i"
 
@@ -2105,7 +2070,8 @@ msgstr "— Guide för användare och administratörer av Trac"
 msgid "Change History for"
 msgstr "Ändringshistorik för"
 
-#: trac/templates/history_view.html:21 trac/templates/history_view.html:54
+#: trac/templates/history_view.html:21
+#: trac/templates/history_view.html:54
 #: trac/versioncontrol/templates/diff_form.html:58
 #: trac/versioncontrol/templates/revisionlog.html:180
 msgid "View changes"
@@ -2115,8 +2081,9 @@ msgstr "Visa ändringar"
 msgid "Change history"
 msgstr "Ändringshistorik"
 
-#: trac/templates/history_view.html:27 trac/ticket/admin.py:440
-#: trac/ticket/api.py:297 trac/ticket/templates/ticket.html:94
+#: trac/templates/history_view.html:27
+#: trac/ticket/admin.py:440
+#: trac/ticket/api.py:297
 msgid "Version"
 msgstr "Version"
 
@@ -2134,7 +2101,8 @@ msgstr "Visa denna version"
 msgid "IP-Address: %(ipnr)s"
 msgstr "IP-adress: %(ipnr)s"
 
-#: trac/templates/index.html:8 trac/templates/index.html:12
+#: trac/templates/index.html:8
+#: trac/templates/index.html:12
 msgid "Available Projects"
 msgstr "Tillgängliga projekt"
 
@@ -2162,9 +2130,7 @@ msgid ""
 "      [2:[3:]]\n"
 "       ([4:%(size)s]) -\n"
 "      added by [5:%(author)s] %(date)s ago."
-msgstr ""
-"[1:%(file)s] [2:[3:]] ([4:%(size)s]) - bifogad av [5:%(author)s] för "
-"%(date)s sedan."
+msgstr "[1:%(file)s] [2:[3:]] ([4:%(size)s]) - bifogad av [5:%(author)s] för %(date)s sedan."
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
@@ -2172,11 +2138,13 @@ msgstr ""
 msgid "Attachments"
 msgstr "Bilagor"
 
-#: trac/templates/macros.html:37 trac/templates/macros.html:38
+#: trac/templates/macros.html:37
+#: trac/templates/macros.html:38
 msgid "Previous"
 msgstr "Föregående"
 
-#: trac/templates/macros.html:47 trac/templates/macros.html:48
+#: trac/templates/macros.html:47
+#: trac/templates/macros.html:48
 msgid "Next"
 msgstr "Nästa"
 
@@ -2258,7 +2226,9 @@ msgstr "Ärendehantering"
 msgid "The component \"%(name)s\" has been added."
 msgstr "Komponenten \"%(name)s\" har lagts till."
 
-#: trac/ticket/admin.py:117 trac/ticket/model.py:843 trac/ticket/model.py:864
+#: trac/ticket/admin.py:117
+#: trac/ticket/model.py:843
+#: trac/ticket/model.py:864
 msgid "Invalid component name."
 msgstr "Ogiltigt komponentnamn."
 
@@ -2275,13 +2245,15 @@ msgstr "Komponent ej vald"
 msgid "The selected components have been removed."
 msgstr "Valda komponenter har tagits bort."
 
-#: trac/ticket/admin.py:241 trac/ticket/api.py:295
+#: trac/ticket/admin.py:241
+#: trac/ticket/api.py:295
 #: trac/ticket/templates/milestone_view.html:10
 #: trac/ticket/templates/milestone_view.html:23
 msgid "Milestone"
 msgstr "Milstolpe"
 
-#: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
+#: trac/ticket/admin.py:270
+#: trac/ticket/roadmap.py:663
 msgid "Completion date may not be in the future"
 msgstr "Slutdatum får inte vara i framtiden"
 
@@ -2294,7 +2266,9 @@ msgstr "Ogiltigt slutdatum"
 msgid "The milestone \"%(name)s\" has been added."
 msgstr "Milstolpen \"%(name)s\" har lagts till."
 
-#: trac/ticket/admin.py:304 trac/ticket/model.py:981 trac/ticket/model.py:1005
+#: trac/ticket/admin.py:304
+#: trac/ticket/model.py:981
+#: trac/ticket/model.py:1005
 msgid "Invalid milestone name."
 msgstr "Ogiltigt namn på milstolpe."
 
@@ -2316,7 +2290,9 @@ msgstr "Valda milstolpar har tagits bort."
 msgid "The version \"%(name)s\" has been added."
 msgstr "Version \"%(name)s\" har lagts till."
 
-#: trac/ticket/admin.py:485 trac/ticket/model.py:1116 trac/ticket/model.py:1136
+#: trac/ticket/admin.py:485
+#: trac/ticket/model.py:1116
+#: trac/ticket/model.py:1136
 msgid "Invalid version name."
 msgstr "Ogiltigt versionsnamn."
 
@@ -2363,12 +2339,8 @@ msgid "The selected %(field)s values have been removed."
 msgstr "Valda värden för %(field)s har tagits bort."
 
 #: trac/ticket/admin.py:672
-msgid ""
-"Error writing to trac.ini, make sure it is writable by the web server. "
-"The default value has not been saved."
-msgstr ""
-"Fel, kan inte skriva till \"trac.ini\", kontrollera att den är skrivbar "
-"av webbservern. Förvalda värden har inte blivit sparade."
+msgid "Error writing to trac.ini, make sure it is writable by the web server. The default value has not been saved."
+msgstr "Fel, kan inte skriva till \"trac.ini\", kontrollera att den är skrivbar av webbservern. Förvalda värden har inte blivit sparade."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -2383,7 +2355,8 @@ msgstr "Möjliga värden"
 msgid "Invalid up/down value: %(value)s"
 msgstr "Ogiltigt upp/ned värde: %(value)s"
 
-#: trac/ticket/admin.py:789 trac/ticket/api.py:294
+#: trac/ticket/admin.py:789
+#: trac/ticket/api.py:294
 msgid "Priority"
 msgstr "Prioritet"
 
@@ -2391,7 +2364,8 @@ msgstr "Prioritet"
 msgid "Priorities"
 msgstr "Prioriteter"
 
-#: trac/ticket/admin.py:795 trac/ticket/api.py:299
+#: trac/ticket/admin.py:795
+#: trac/ticket/api.py:299
 msgid "Resolution"
 msgstr "Lösning"
 
@@ -2399,7 +2373,8 @@ msgstr "Lösning"
 msgid "Resolutions"
 msgstr "Lösningar"
 
-#: trac/ticket/admin.py:801 trac/ticket/api.py:298
+#: trac/ticket/admin.py:801
+#: trac/ticket/api.py:298
 msgid "Severity"
 msgstr "Allvarsgrad"
 
@@ -2428,11 +2403,13 @@ msgstr "Ärende %(num)s och alla tillhörande data har tagits bort."
 msgid "Summary"
 msgstr "Sammanfattning"
 
-#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:361
+#: trac/ticket/api.py:279
+#: trac/ticket/templates/ticket.html:361
 msgid "Reporter"
 msgstr "Reporter"
 
-#: trac/ticket/api.py:292 trac/versioncontrol/admin.py:108
+#: trac/ticket/api.py:292
+#: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Type"
 msgstr "Typ"
@@ -2471,12 +2448,14 @@ msgstr "Nuvarande status finns inte längre"
 msgid "The ticket will be disowned"
 msgstr "Ärendet blir ägarlöst"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:245
+#: trac/ticket/default_workflow.py:260
 #, python-format
 msgid "to %(owner)s"
 msgstr "till %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:247
+#: trac/ticket/default_workflow.py:263
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "Ägarbyte från %(current_owner)s"
@@ -2497,15 +2476,11 @@ msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "Ägarbyte från %(current_owner)s till %(authname)s"
 
 #: trac/ticket/default_workflow.py:278
-msgid ""
-"Your workflow attempts to set a resolution but none is defined "
-"(configuration issue, please contact your Trac admin)."
-msgstr ""
-"Ditt arbetsflöde försöker att ange en lösning men ingen sådan är "
-"definierad (detta är ett lokalt konfigurationsproblem, kontakta din Trac-"
-"administratör)."
+msgid "Your workflow attempts to set a resolution but none is defined (configuration issue, please contact your Trac admin)."
+msgstr "Ditt arbetsflöde försöker att ange en lösning men ingen sådan är definierad (detta är ett lokalt konfigurationsproblem, kontakta din Trac-administratör)."
 
-#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
+#: trac/ticket/default_workflow.py:282
+#: trac/ticket/default_workflow.py:293
 #, python-format
 msgid "as %(resolution)s"
 msgstr "som %(resolution)s"
@@ -2551,7 +2526,8 @@ msgstr "Multivärdesfält stöds inte ännu"
 msgid "%(type)s %(name)s does not exist."
 msgstr "%(type)s %(name)s finns inte."
 
-#: trac/ticket/model.py:702 trac/ticket/model.py:729
+#: trac/ticket/model.py:702
+#: trac/ticket/model.py:729
 #, python-format
 msgid "Invalid %(type)s name."
 msgstr "Ogiltligt %(type)s namn."
@@ -2619,11 +2595,13 @@ msgstr "Sidan %(page)s är högre än antalet sidor i sökningen"
 msgid "Invalid ticket id list: %(value)s"
 msgstr "Ogiltiga ärendenummer i listan: %(value)s"
 
-#: trac/ticket/query.py:662 trac/ticket/query.py:670
+#: trac/ticket/query.py:662
+#: trac/ticket/query.py:670
 msgid "contains"
 msgstr "innehåller"
 
-#: trac/ticket/query.py:663 trac/ticket/query.py:671
+#: trac/ticket/query.py:663
+#: trac/ticket/query.py:671
 msgid "doesn't contain"
 msgstr "innehåller inte"
 
@@ -2635,50 +2613,67 @@ msgstr "börjar med"
 msgid "ends with"
 msgstr "slutar med"
 
-#: trac/ticket/query.py:666 trac/ticket/query.py:674 trac/ticket/query.py:678
+#: trac/ticket/query.py:666
+#: trac/ticket/query.py:674
+#: trac/ticket/query.py:678
 msgid "is"
 msgstr "är"
 
-#: trac/ticket/query.py:667 trac/ticket/query.py:675 trac/ticket/query.py:679
+#: trac/ticket/query.py:667
+#: trac/ticket/query.py:675
+#: trac/ticket/query.py:679
 msgid "is not"
 msgstr "är inte"
 
-#: trac/ticket/query.py:709 trac/ticket/query.py:715
+#: trac/ticket/query.py:709
+#: trac/ticket/query.py:715
 msgid "Ticket"
 msgstr "Ärende"
 
-#: trac/ticket/query.py:776 trac/ticket/report.py:406
+#: trac/ticket/query.py:776
+#: trac/ticket/report.py:406
 #, python-format
 msgid "Page %(num)d"
 msgstr "Sida %(num)d"
 
-#: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
-#: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:216
+#: trac/ticket/query.py:825
+#: trac/ticket/report.py:273
+#: trac/ticket/report.py:566
+#: trac/ticket/web_ui.py:130
+#: trac/timeline/web_ui.py:216
 #: trac/versioncontrol/web_ui/log.py:303
 msgid "RSS Feed"
 msgstr "RSS-ström"
 
-#: trac/ticket/query.py:827 trac/ticket/report.py:275 trac/ticket/report.py:568
+#: trac/ticket/query.py:827
+#: trac/ticket/report.py:275
+#: trac/ticket/report.py:568
 #: trac/ticket/web_ui.py:126
 msgid "Comma-delimited Text"
 msgstr "Komma-separerad text"
 
-#: trac/ticket/query.py:829 trac/ticket/report.py:277 trac/ticket/report.py:570
+#: trac/ticket/query.py:829
+#: trac/ticket/report.py:277
+#: trac/ticket/report.py:570
 #: trac/ticket/web_ui.py:128
 msgid "Tab-delimited Text"
 msgstr "Tabb-separerad text"
 
-#: trac/ticket/query.py:851 trac/ticket/report.py:72
+#: trac/ticket/query.py:851
+#: trac/ticket/report.py:72
 msgid "View Tickets"
 msgstr "Visa ärenden"
 
-#: trac/ticket/query.py:1058 trac/ticket/query.py:1069
+#: trac/ticket/query.py:1058
+#: trac/ticket/query.py:1069
 #: trac/ticket/report.py:133
 msgid "Custom Query"
 msgstr "Anpassad sökning"
 
-#: trac/ticket/query.py:1068 trac/ticket/report.py:123
-#: trac/ticket/report.py:124 trac/ticket/report.py:126
+#: trac/ticket/query.py:1068
+#: trac/ticket/report.py:123
+#: trac/ticket/report.py:124
+#: trac/ticket/report.py:126
 #: trac/ticket/templates/report_list.html:10
 #: trac/ticket/templates/report_list.html:15
 msgid "Available Reports"
@@ -2717,13 +2712,15 @@ msgstr "Rapporten {%(id)d} har tagits bort."
 msgid "Delete Report {%(num)s} %(title)s"
 msgstr "Ta bort rapport (%(num)s) %(title)s"
 
-#: trac/ticket/report.py:204 trac/ticket/report.py:217
+#: trac/ticket/report.py:204
+#: trac/ticket/report.py:217
 #: trac/ticket/report.py:296
 #, python-format
 msgid "Report {%(num)s} does not exist."
 msgstr "Rapport %(num)s finns inte."
 
-#: trac/ticket/report.py:205 trac/ticket/report.py:218
+#: trac/ticket/report.py:205
+#: trac/ticket/report.py:218
 #: trac/ticket/report.py:297
 msgid "Invalid Report Number"
 msgstr "Ogiltigt rapportnummer"
@@ -2781,24 +2778,18 @@ msgstr "ärenden"
 
 #: trac/ticket/roadmap.py:215
 #, python-format
-msgid ""
-"'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
-"\"catch-all\" groups. Please check your configuration."
-msgstr ""
-"Båda milstolpegrupperna \"%(group1)s\" och \"%(group2)s\" är angivna att "
-"vara \"catch-all\" grupper. Kontrollera dina inställningar."
+msgid "'%(group1)s' and '%(group2)s' milestone groups both are declared to be \"catch-all\" groups. Please check your configuration."
+msgstr "Båda milstolpegrupperna \"%(group1)s\" och \"%(group2)s\" är angivna att vara \"catch-all\" grupper. Kontrollera dina inställningar."
 
 #: trac/ticket/roadmap.py:231
 #, python-format
-msgid ""
-"'%(groupname)s' milestone group reused status '%(status)s' already taken "
-"by other groups. Please check your configuration."
-msgstr ""
-"Milstolpegruppens \"%(groupname)s\" återanvända status \"%(status)s\" har"
-" redan tagits av andra grupper. Kontrollera dina inställningar."
+msgid "'%(groupname)s' milestone group reused status '%(status)s' already taken by other groups. Please check your configuration."
+msgstr "Milstolpegruppens \"%(groupname)s\" återanvända status \"%(status)s\" har redan tagits av andra grupper. Kontrollera dina inställningar."
 
-#: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
-#: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
+#: trac/ticket/roadmap.py:314
+#: trac/ticket/roadmap.py:436
+#: trac/ticket/roadmap.py:571
+#: trac/ticket/templates/roadmap.html:10
 #: trac/ticket/templates/roadmap.html:15
 msgid "Roadmap"
 msgstr "Tidsplan"
@@ -2807,7 +2798,8 @@ msgstr "Tidsplan"
 msgid "iCalendar"
 msgstr "iCalendar"
 
-#: trac/ticket/roadmap.py:445 trac/ticket/roadmap.py:845
+#: trac/ticket/roadmap.py:445
+#: trac/ticket/roadmap.py:845
 #, python-format
 msgid "Milestone %(name)s"
 msgstr "Milstolpe %(name)s"
@@ -2840,7 +2832,8 @@ msgstr "Milstolpen \"%(name)s\" finns redan, välj ett annat namn."
 msgid "You must provide a name for the milestone."
 msgstr "Du måste ange ett namn för milstolpen."
 
-#: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
+#: trac/ticket/web_ui.py:152
+#: trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
 msgstr "Nytt ärende"
 
@@ -2891,12 +2884,8 @@ msgstr "Åtgärden \"%(name)s\" är inte möjlig."
 
 #: trac/ticket/web_ui.py:524
 #, python-format
-msgid ""
-"Please review your configuration, probably starting with %(section)s in "
-"your %(tracini)s."
-msgstr ""
-"Var vänlig kontrollera dina inställningar, förmodligen vid %(section)s i "
-"%(tracini)s."
+msgid "Please review your configuration, probably starting with %(section)s in your %(tracini)s."
+msgstr "Var vänlig kontrollera dina inställningar, förmodligen vid %(section)s i %(tracini)s."
 
 #: trac/ticket/web_ui.py:629
 msgid "Previous Ticket"
@@ -2910,12 +2899,14 @@ msgstr "Nästa ärende"
 msgid "Back to Query"
 msgstr "Tillbaka till sökning"
 
-#: trac/ticket/web_ui.py:712 trac/ticket/web_ui.py:860
+#: trac/ticket/web_ui.py:712
+#: trac/ticket/web_ui.py:860
 #: trac/ticket/web_ui.py:868
 msgid "Ticket History"
 msgstr "Ärendehistorik"
 
-#: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:915
+#: trac/ticket/web_ui.py:716
+#: trac/ticket/web_ui.py:915
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "Tillbaka till ärende #%(num)s"
@@ -2924,30 +2915,41 @@ msgstr "Tillbaka till ärende #%(num)s"
 msgid "No differences to show"
 msgstr "Inga skillnader att påvisa"
 
-#: trac/ticket/web_ui.py:801 trac/ticket/web_ui.py:857
-#: trac/ticket/web_ui.py:865 trac/ticket/web_ui.py:936
-#: trac/ticket/web_ui.py:981 trac/ticket/web_ui.py:988 trac/wiki/web_ui.py:431
-#: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
+#: trac/ticket/web_ui.py:801
+#: trac/ticket/web_ui.py:857
+#: trac/ticket/web_ui.py:865
+#: trac/ticket/web_ui.py:936
+#: trac/ticket/web_ui.py:981
+#: trac/ticket/web_ui.py:988
+#: trac/wiki/web_ui.py:431
+#: trac/wiki/web_ui.py:437
+#: trac/wiki/web_ui.py:626
+#: trac/wiki/web_ui.py:640
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
 
-#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
-#: trac/ticket/templates/ticket.html:91
+#: trac/ticket/web_ui.py:804
+#: trac/ticket/web_ui.py:939
 msgid "Initial Version"
 msgstr "Ursprunglig version"
 
-#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:804
+#: trac/ticket/web_ui.py:939
 msgid "initial"
 msgstr "initial"
 
-#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+#: trac/ticket/web_ui.py:867
+#: trac/ticket/web_ui.py:990
+#: trac/versioncontrol/web_ui/changeset.py:369
+#: trac/wiki/web_ui.py:450
 msgid "Previous Change"
 msgstr "Föregående ändring"
 
-#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+#: trac/ticket/web_ui.py:867
+#: trac/ticket/web_ui.py:990
+#: trac/versioncontrol/web_ui/changeset.py:369
+#: trac/wiki/web_ui.py:450
 msgid "Next Change"
 msgstr "Nästa ändring"
 
@@ -2955,12 +2957,14 @@ msgstr "Nästa ändring"
 msgid "Ticket Diff"
 msgstr "Ärendeskillnad"
 
-#: trac/ticket/web_ui.py:907 trac/ticket/web_ui.py:984
+#: trac/ticket/web_ui.py:907
+#: trac/ticket/web_ui.py:984
 #: trac/ticket/web_ui.py:991
 msgid "Ticket Comment History"
 msgstr "Kommentarshistorik för ärende"
 
-#: trac/ticket/web_ui.py:909 trac/ticket/web_ui.py:933
+#: trac/ticket/web_ui.py:909
+#: trac/ticket/web_ui.py:933
 #: trac/ticket/web_ui.py:998
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
@@ -2992,12 +2996,8 @@ msgid "No permissions to add a comment."
 msgstr "Inte behörig att lägga till en kommentar."
 
 #: trac/ticket/web_ui.py:1108
-msgid ""
-"Sorry, can not save your changes. This ticket has been modified by "
-"someone else since you started"
-msgstr ""
-"Tyvärr, kan inte spara ändringarna. Detta ärende har ändrats av någon "
-"annan efter att du påbörjade redigeringen"
+msgid "Sorry, can not save your changes. This ticket has been modified by someone else since you started"
+msgstr "Tyvärr, kan inte spara ändringarna. Detta ärende har ändrats av någon annan efter att du påbörjade redigeringen"
 
 #: trac/ticket/web_ui.py:1115
 msgid "Tickets must contain a summary."
@@ -3024,18 +3024,12 @@ msgstr "Ärendefältet \"%(field)s\" är ogiltigt: %(message)s"
 
 #: trac/ticket/web_ui.py:1186
 #, python-format
-msgid ""
-"The ticket has been created, but an error occurred while sending "
-"notifications: %(message)s"
-msgstr ""
-"Ärendet har skapats, men fel uppstod när aviseringar skickades: "
-"%(message)s"
+msgid "The ticket has been created, but an error occurred while sending notifications: %(message)s"
+msgstr "Ärendet har skapats, men fel uppstod när aviseringar skickades: %(message)s"
 
 #: trac/ticket/web_ui.py:1196
 #, python-format
-msgid ""
-"Your ticket %(ticketref)s has been created, but you don't have permission"
-" to view it."
+msgid "Your ticket %(ticketref)s has been created, but you don't have permission to view it."
 msgstr "Ditt ärende %(ticketref)s har skapats, men du är inte behörig att se det."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
@@ -3045,12 +3039,8 @@ msgstr "ändringen"
 
 #: trac/ticket/web_ui.py:1233
 #, python-format
-msgid ""
-"The %(change)s has been saved, but an error occurred while sending "
-"notifications: %(message)s"
-msgstr ""
-"%(change)s har sparats, men fel uppstod när aviseringar skickades: "
-"%(message)s"
+msgid "The %(change)s has been saved, but an error occurred while sending notifications: %(message)s"
+msgstr "%(change)s har sparats, men fel uppstod när aviseringar skickades: %(message)s"
 
 #: trac/ticket/web_ui.py:1367
 msgid "Add to Cc"
@@ -3068,17 +3058,69 @@ msgstr "Lägg till/ta bort från Cc"
 msgid "<Author field>"
 msgstr "<Reporterfält>"
 
-#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:102
+#: trac/ticket/web_ui.py:1391
+#: trac/ticket/templates/query.html:102
 msgid "yes"
 msgstr "ja"
 
-#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:105
+#: trac/ticket/web_ui.py:1391
+#: trac/ticket/templates/query.html:105
 msgid "no"
 msgstr "nej"
 
-#: trac/ticket/web_ui.py:1580 trac/versioncontrol/templates/changeset.html:187
+#: trac/ticket/web_ui.py:1577
+msgid "set"
+msgstr "påslagen"
+
+#: trac/ticket/web_ui.py:1577
+msgid "unset"
+msgstr "avslagen"
+
+#: trac/ticket/web_ui.py:1580
+#: trac/versioncontrol/templates/changeset.html:187
 msgid "modified"
 msgstr "ändrad"
+
+#. TRANSLATOR: modified ('diff') (link)
+#: trac/ticket/web_ui.py:1585
+#: trac/ticket/templates/ticket.html:180
+#: trac/ticket/templates/ticket_box.html:64
+msgid "diff"
+msgstr "skillnad"
+
+#: trac/ticket/web_ui.py:1586
+#, python-format
+msgid "modified (%(diff)s)"
+msgstr "ändrad (%(diff)s)"
+
+#: trac/ticket/web_ui.py:1607
+#, python-format
+msgid "%(items)s added"
+msgid_plural "%(items)s added"
+msgstr[0] "%(items)s tillagd"
+msgstr[1] "%(items)s tillagda"
+
+#: trac/ticket/web_ui.py:1609
+#, python-format
+msgid "%(items)s removed"
+msgid_plural "%(items)s removed"
+msgstr[0] "%(items)s borttagen"
+msgstr[1] "%(items)s borttagna"
+
+#: trac/ticket/web_ui.py:1618
+#, python-format
+msgid "%(value)s deleted"
+msgstr "%(value)s borttagen"
+
+#: trac/ticket/web_ui.py:1620
+#, python-format
+msgid "set to %(value)s"
+msgstr "satt till %(value)s"
+
+#: trac/ticket/web_ui.py:1623
+#, python-format
+msgid "changed from %(old)s to %(new)s"
+msgstr "ändrad från %(old)s till %(new)s"
 
 #: trac/ticket/templates/milestone_delete.html:10
 #: trac/ticket/templates/milestone_delete.html:22
@@ -3205,7 +3247,8 @@ msgstr "Filter"
 msgid "Query filters"
 msgstr "Sökfilter"
 
-#: trac/ticket/templates/query.html:45 trac/ticket/templates/query.html:141
+#: trac/ticket/templates/query.html:45
+#: trac/ticket/templates/query.html:141
 msgid "Or"
 msgstr "eller"
 
@@ -3349,9 +3392,7 @@ msgstr "Beskrivning: (du kan använda [1:WikiFormatting] här)"
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
-msgstr ""
-"Sökfråga för rapport: (kan antingen vara ett SQL-uttryck, eller ett "
-"[2:TracQuery]-uttryck om den börjar med [1:query:])"
+msgstr "Sökfråga för rapport: (kan antingen vara ett SQL-uttryck, eller ett [2:TracQuery]-uttryck om den börjar med [1:query:])"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3361,12 +3402,14 @@ msgstr "Spara rapport"
 msgid "Report"
 msgstr "Rapport"
 
-#: trac/ticket/templates/report_list.html:24 trac/wiki/admin.py:200
+#: trac/ticket/templates/report_list.html:24
+#: trac/wiki/admin.py:200
 msgid "Title"
 msgstr "Titel"
 
 #: trac/ticket/templates/report_list.html:25
-#: trac/wiki/templates/wiki_edit.html:68 trac/wiki/templates/wiki_edit.html:141
+#: trac/wiki/templates/wiki_edit.html:68
+#: trac/wiki/templates/wiki_edit.html:141
 msgid "Actions"
 msgstr "Åtgärder"
 
@@ -3382,7 +3425,8 @@ msgid "Edit report"
 msgstr "Redigera rapport"
 
 #: trac/ticket/templates/report_list.html:33
-#: trac/ticket/templates/ticket.html:148 trac/wiki/templates/wiki_edit.html:124
+#: trac/ticket/templates/ticket.html:148
+#: trac/wiki/templates/wiki_edit.html:124
 msgid "Edit"
 msgstr "Ändra"
 
@@ -3447,9 +3491,14 @@ msgstr "Gå till ärende-redigeraren"
 msgid "Modify"
 msgstr "Ändra"
 
-#: trac/ticket/templates/ticket.html:90 trac/ticket/templates/ticket.html:93
-msgid "— at"
-msgstr "— vid"
+#: trac/ticket/templates/ticket.html:91
+msgid "at [1:Initial Version]"
+msgstr "i [1:initial version]"
+
+#: trac/ticket/templates/ticket.html:94
+#, python-format
+msgid "at [1:Version %(version)s]"
+msgstr "at [1:version %(version)s]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
@@ -3459,7 +3508,8 @@ msgstr "Skapa nytt ärende"
 msgid "Change History"
 msgstr "Ändringshistorik"
 
-#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:128
+#: trac/ticket/templates/ticket.html:216
 msgid "in reply to:"
 msgstr "som svar på:"
 
@@ -3506,11 +3556,6 @@ msgstr "föregående"
 #: trac/ticket/templates/ticket.html:176
 msgid "next"
 msgstr "nästa"
-
-#: trac/ticket/templates/ticket.html:180
-#: trac/ticket/templates/ticket_box.html:64
-msgid "diff"
-msgstr "skillnad"
 
 #: trac/ticket/templates/ticket.html:196
 msgid "View ticket fields and description"
@@ -3577,9 +3622,7 @@ msgstr "Lägg till eller ta bort dig från Cc-listan."
 
 #: trac/ticket/templates/ticket.html:318
 msgid "Space or comma delimited email addresses and usernames are accepted."
-msgstr ""
-"E-postadresser och användarnamn, separerade med mellanslag och/eller "
-"kommatecken, är tillåtna."
+msgstr "E-postadresser och användarnamn, separerade med mellanslag och/eller kommatecken, är tillåtna."
 
 #: trac/ticket/templates/ticket.html:373
 #: trac/wiki/templates/wiki_edit_form.html:49
@@ -3596,7 +3639,8 @@ msgstr "Gå till listan över bilagor"
 
 #: trac/ticket/templates/ticket.html:396
 #: trac/ticket/templates/ticket_change.html:45
-#: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
+#: trac/wiki/templates/wiki_edit.html:70
+#: trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
 #: trac/wiki/templates/wiki_edit_form.html:68
 msgid "Preview"
@@ -3643,27 +3687,28 @@ msgstr "(senast ändrad av"
 msgid "Reply, quoting this description"
 msgstr "Svara och citera denna beskrivning"
 
-#: trac/ticket/templates/ticket_change.html:22
-#: trac/versioncontrol/templates/changeset.html:183
-msgid "added"
-msgstr "tillagd"
+#: trac/ticket/templates/ticket_change.html:19
+#, python-format
+msgid ""
+"[1:[2:%(name)s]]\n"
+"          [3:[4:]]\n"
+"          added"
+msgstr "[1:[2:%(name)s]] [3:[4:]] tillagd"
 
 #: trac/ticket/templates/ticket_change.html:26
-msgid "changed from"
-msgstr "ändrad från"
-
-#: trac/ticket/templates/ticket_change.html:27
-msgid "to"
-msgstr "till"
+#, python-format
+msgid "changed from [1:%(old)s] to [2:%(new)s]"
+msgstr "ändrad från [1:%(old)s] till [2:%(new)s]"
 
 #: trac/ticket/templates/ticket_change.html:29
-msgid "set to"
-msgstr "satt till"
+#, python-format
+msgid "set to [1:%(value)s]"
+msgstr "satt till [1:%(value)s]"
 
-#: trac/ticket/templates/ticket_change.html:33
-#: trac/versioncontrol/templates/changeset.html:184
-msgid "deleted"
-msgstr "raderad"
+#: trac/ticket/templates/ticket_change.html:32
+#, python-format
+msgid "[1:%(value)s] deleted"
+msgstr "[1:%(value)s] borttagen"
 
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
@@ -3695,16 +3740,19 @@ msgstr ""
 "-- \n"
 "Ärende URL: <"
 
-#: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
+#: trac/timeline/web_ui.py:75
+#: trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
 msgstr "Händelser"
 
-#: trac/timeline/web_ui.py:229 trac/timeline/web_ui.py:237
+#: trac/timeline/web_ui.py:229
+#: trac/timeline/web_ui.py:237
 msgid "Previous Period"
 msgstr "Föregående period"
 
-#: trac/timeline/web_ui.py:236 trac/timeline/web_ui.py:237
+#: trac/timeline/web_ui.py:236
+#: trac/timeline/web_ui.py:237
 msgid "Next Period"
 msgstr "Nästa period"
 
@@ -3713,9 +3761,9 @@ msgstr "Nästa period"
 msgid "%(date)s in Timeline"
 msgstr "%(date)s bland händelser"
 
-#. TRANSLATOR: other_events
+#. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:343
-msgid "other kind of events"
+msgid "other kinds of events"
 msgstr "andra sorts händelser"
 
 #: trac/timeline/web_ui.py:348
@@ -3723,30 +3771,17 @@ msgstr "andra sorts händelser"
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "Händelserutinen %(name)s misslyckades för filtret %(kinds)s: "
 
-#: trac/timeline/web_ui.py:354
+#: trac/timeline/web_ui.py:351
 #, python-format
-msgid ""
-"\n"
-"              You may want to see the %(other_events)s from the Timeline "
-"or \n"
-"              notify your Trac administrator about the error (detailed\n"
-"              informations were written to the log).\n"
-"            "
-msgstr ""
-"\n"
-"Du vill kanske se %(other_events)s bland visade händelser eller meddela "
-"din Trac-administratör om felet (detaljerad information har skrivits i "
-"loggfilen).\n"
-" "
+msgid "You may want to see the %(other_events)s from the Timeline or notify your Trac administrator about the error (detailed information was written to the log)."
+msgstr "Du vill kanske se %(other_events)s bland visade händelser eller meddela din Trac-administratör om felet (detaljerad information har skrivits i loggfilen)."
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
 "[1:View changes from [2:]] [3:]\n"
 "        and [4:[5:] days back][6:]\n"
 "        [7:done by [8:]]"
-msgstr ""
-"[1: Visa ändringar från [2:]] [3:] och [4:[5:] dagar tillbaka] [6:] "
-"[7:utförda av [8:]]"
+msgstr "[1: Visa ändringar från [2:]] [3:] och [4:[5:] dagar tillbaka] [6:] [7:utförda av [8:]]"
 
 #: trac/timeline/templates/timeline.html:36
 msgid "Today"
@@ -3820,25 +3855,18 @@ msgstr[1] "%(num)i sekunder"
 
 #: trac/util/datefmt.py:247
 #, python-format
-msgid ""
-"\"%(date)s\" is an invalid date, or the date format is not known. Try "
-"\"%(hint)s\" instead."
-msgstr ""
-"\"%(date)s\" är ett ogiltigt datum, eller av okänt datumformat. Försök "
-"med \"%(hint)s\" istället."
+msgid "\"%(date)s\" is an invalid date, or the date format is not known. Try \"%(hint)s\" instead."
+msgstr "\"%(date)s\" är ett ogiltigt datum, eller av okänt datumformat. Försök med \"%(hint)s\" istället."
 
-#: trac/util/datefmt.py:249 trac/util/datefmt.py:257
+#: trac/util/datefmt.py:249
+#: trac/util/datefmt.py:257
 msgid "Invalid Date"
 msgstr "Ogiltigt datum"
 
 #: trac/util/datefmt.py:255
 #, python-format
-msgid ""
-"The date \"%(date)s\" is outside valid range. Try a date closer to "
-"present time."
-msgstr ""
-"Datumet \"%(date)s\" är utanför giltigt tidsintervall. Försök med ett "
-"datum som är närmare nutid."
+msgid "The date \"%(date)s\" is outside valid range. Try a date closer to present time."
+msgstr "Datumet \"%(date)s\" är utanför giltigt tidsintervall. Försök med ett datum som är närmare nutid."
 
 #: trac/util/presentation.py:254
 #, python-format
@@ -3850,137 +3878,115 @@ msgstr "%(last)d av %(total)d"
 msgid "%(start)d - %(stop)d of %(total)d"
 msgstr "%(start)d - %(stop)d av %(total)d"
 
-#: trac/versioncontrol/admin.py:80 trac/versioncontrol/admin.py:105
-#: trac/versioncontrol/admin.py:106 trac/versioncontrol/admin.py:296
-#: trac/versioncontrol/api.py:32 trac/versioncontrol/api.py:149
-#: trac/versioncontrol/api.py:186
-#: trac/versioncontrol/templates/admin_repositories.html:20
-#: trac/versioncontrol/templates/admin_repositories.html:33
-#: trac/versioncontrol/templates/admin_repositories.html:132
-#: trac/versioncontrol/templates/admin_repositories.html:134
-#: trac/versioncontrol/web_ui/browser.py:809
-#: trac/versioncontrol/web_ui/changeset.py:853
-#: trac/versioncontrol/web_ui/changeset.py:995
-msgid "(default)"
-msgstr "(standard)"
-
-#: trac/versioncontrol/admin.py:108
+#: trac/versioncontrol/admin.py:110
 msgid "Alias"
 msgstr "Alias"
 
-#: trac/versioncontrol/admin.py:108
+#: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Directory"
 msgstr "Katalog"
 
-#: trac/versioncontrol/admin.py:114
+#: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr "Kan ej synkronisera en enstaka revision för flera förråd"
 
-#: trac/versioncontrol/admin.py:123
+#: trac/versioncontrol/admin.py:124
+#: trac/versioncontrol/admin.py:182
+#: trac/versioncontrol/web_ui/browser.py:347
+#: trac/versioncontrol/web_ui/changeset.py:247
+#: trac/versioncontrol/web_ui/changeset.py:1074
+#: trac/versioncontrol/web_ui/log.py:87
+#: trac/versioncontrol/web_ui/log.py:393
 #, python-format
-msgid "Unknown repository '%(reponame)s'"
-msgstr "Okänt förråd \"%(reponame)s\""
+msgid "Repository '%(repo)s' not found"
+msgstr "Förrådet \"%(repo)s\" hittades inte"
 
-#: trac/versioncontrol/admin.py:127
+#: trac/versioncontrol/admin.py:128
 #, python-format
 msgid "%(rev)s resynced on %(reponame)s."
 msgstr "%(rev)s återsynkroniserat för %(reponame)s."
 
-#: trac/versioncontrol/admin.py:134
+#: trac/versioncontrol/admin.py:135
 #, python-format
 msgid "Resyncing repository history for %(reponame)s... "
 msgstr "Återsynkroniserar historik för förrådet %(reponame)s... "
 
-#: trac/versioncontrol/admin.py:140
+#: trac/versioncontrol/admin.py:142
 #, python-format
 msgid "%(num)s revision cached."
 msgid_plural "%(num)s revisions cached."
 msgstr[0] "%(num)s revision lagrad."
 msgstr[1] "%(num)s revisioner lagrade."
 
-#: trac/versioncontrol/admin.py:142
+#: trac/versioncontrol/admin.py:144
 msgid "Done."
 msgstr "Klar."
 
-#: trac/versioncontrol/admin.py:164
+#: trac/versioncontrol/admin.py:166
 msgid "Version Control"
 msgstr "Versionshantering"
 
-#: trac/versioncontrol/admin.py:165
+#: trac/versioncontrol/admin.py:167
 #: trac/versioncontrol/templates/admin_repositories.html:10
 msgid "Repositories"
 msgstr "Förråd"
 
-#: trac/versioncontrol/admin.py:180
+#: trac/versioncontrol/admin.py:203
+#: trac/versioncontrol/admin.py:242
 #, python-format
-msgid "Repository %(name)s does not exist."
-msgstr "Förrådet \"%(name)s\" finns inte."
+msgid "You should now run %(resync)s to synchronize Trac with the repository."
+msgstr "Du bör nu köra %(resync)s för att synkronisera Trac med förrådet."
 
-#: trac/versioncontrol/admin.py:199 trac/versioncontrol/admin.py:235
+#: trac/versioncontrol/admin.py:208
 #, python-format
-msgid ""
-"You should now run \"trac-admin $ENV repository resync %(name)s\" to "
-"synchronize Trac with the repository."
-msgstr ""
-"Du måste nu köra \"trac-admin $ENV repository resync %(name)s\" för att "
-"synkronisera Trac med förrådet."
+msgid "You may have to run %(resync)s to synchronize Trac with the repository."
+msgstr "Du måste eventuellt köra %(resync)s för att synkronisera Trac med förrådet."
 
-#: trac/versioncontrol/admin.py:204
+#: trac/versioncontrol/admin.py:216
 #, python-format
-msgid ""
-"You may have to run \"trac-admin $ENV repository resync %(name)s\" to "
-"synchronize Trac with the repository."
-msgstr ""
-"Du måste eventuellt köra \"trac-admin $ENV repository resync %(name)s\" "
-"för att synkronisera Trac med förrådet."
+msgid "You will need to update your post-commit hook to call %(cset_added)s with the new repository name."
+msgstr "Du måste uppdatera förrådets \"post-commit hook\"-skript till att anropa %(cset_added)s med det nya namnet på förrådet."
 
-#: trac/versioncontrol/admin.py:209
-msgid ""
-"You will need to update your post-commit hook to call \"trac-admin $ENV "
-"changeset added\" with the new repository name."
-msgstr ""
-"Du måste uppdatera skriptet som genomför förrådets \"post-commit hook\" "
-"till att anropa \"trac-admin $ENV changeset added\" med det nya namnet på"
-" förrådet."
-
-#: trac/versioncontrol/admin.py:230
+#: trac/versioncontrol/admin.py:238
 #, python-format
 msgid "The repository \"%(name)s\" has been added."
 msgstr "Förrådet \"%(name)s\" har lagts till."
 
-#: trac/versioncontrol/admin.py:237
+#: trac/versioncontrol/admin.py:248
 #, python-format
-msgid ""
-"You should also set up a post-commit hook on the repository to call "
-"\"trac-admin $ENV changeset added %(name)s $REV\" for each committed "
-"changeset."
-msgstr ""
-"Du bör även skapa ett skript för förrådet som körs efter varje förändring"
-" av det (\"post-commit hook\"). Skriptet ska anropa \"\"trac-admin $ENV "
-"changeset added %(name)s $REV\" efter varje ändring av förrådets "
-"innehåll."
+msgid "You should also set up a post-commit hook on the repository to call %(cset_added)s for each committed changeset."
+msgstr "Du bör även skapa ett skript för förrådet som körs efter varje förändring av det (\"post-commit hook\"). Skriptet ska anropa %(cset_added)s efter varje ändring av förrådets innehåll."
 
-#: trac/versioncontrol/admin.py:243
+#: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
 msgstr "Saknar argument för att lägga till ett förråd"
 
-#: trac/versioncontrol/admin.py:252
+#: trac/versioncontrol/admin.py:263
 #, python-format
 msgid "The alias \"%(name)s\" has been added."
 msgstr "Aliaset \"%(name)s\" har lagts till."
 
-#: trac/versioncontrol/admin.py:255
+#: trac/versioncontrol/admin.py:266
 msgid "Missing arguments to add an alias."
 msgstr "Saknar argument för att lägga till ett alias"
 
-#: trac/versioncontrol/admin.py:268
+#: trac/versioncontrol/admin.py:279
 msgid "The selected repositories have been removed."
 msgstr "Valda förråd har tagits bort."
 
-#: trac/versioncontrol/admin.py:271
+#: trac/versioncontrol/admin.py:282
 msgid "No repositories were selected."
 msgstr "Inga förråd valdes."
+
+#: trac/versioncontrol/api.py:32
+#: trac/versioncontrol/templates/admin_repositories.html:20
+#: trac/versioncontrol/templates/admin_repositories.html:134
+#: trac/versioncontrol/web_ui/browser.py:809
+#: trac/versioncontrol/web_ui/changeset.py:853
+#: trac/versioncontrol/web_ui/changeset.py:995
+msgid "(default)"
+msgstr "(standard)"
 
 #: trac/versioncontrol/api.py:183
 #, python-format
@@ -4004,12 +4010,8 @@ msgstr "Förrådstypen \"%(type)s\" stöds ej"
 
 #: trac/versioncontrol/api.py:331
 #, python-format
-msgid ""
-"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
-"Trac log for more information."
-msgstr ""
-"Kunde inte att synkronisera med förrådet \"%(name)s\" (%(error)s). Se "
-"loggfilen för mer information."
+msgid "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the Trac log for more information."
+msgstr "Kunde inte att synkronisera med förrådet \"%(name)s\" (%(error)s). Se loggfilen för mer information."
 
 #: trac/versioncontrol/api.py:350
 #, python-format
@@ -4055,12 +4057,8 @@ msgstr "Versionshanteringssystemet \"%(name)s\" stödjs inte: %(error)s"
 
 #: trac/versioncontrol/api.py:656
 #, python-format
-msgid ""
-"Unsupported version control system \"%(name)s\": Can't find an "
-"appropriate component, maybe the corresponding plugin was not enabled? "
-msgstr ""
-"Versionshanteringssystemet \"%(name)s\": Det går inte att hitta en "
-"lämplig komponent, har motsvarande tillägg aktiverats? "
+msgid "Unsupported version control system \"%(name)s\": Can't find an appropriate component, maybe the corresponding plugin was not enabled? "
+msgstr "Versionshanteringssystemet \"%(name)s\": Det går inte att hitta en lämplig komponent, har motsvarande tillägg aktiverats? "
 
 #: trac/versioncontrol/api.py:664
 #, python-format
@@ -4086,12 +4084,8 @@ msgid "No such node"
 msgstr "Nod saknas"
 
 #: trac/versioncontrol/cache.py:149
-msgid ""
-"The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' "
-"operation is needed."
-msgstr ""
-"Sökvägen \"repository_dir\" till förrådet har ändrats, utför kommandot "
-"\"trac-admin $ENV repository resync\"."
+msgid "The 'repository_dir' has changed, a 'trac-admin $ENV repository resync' operation is needed."
+msgstr "Sökvägen \"repository_dir\" till förrådet har ändrats, utför kommandot \"trac-admin $ENV repository resync\"."
 
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
@@ -4120,13 +4114,8 @@ msgstr "Kunde inte öppna Subversion-förrådet %(path)s: %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
-msgid ""
-"Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
-" and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
-msgstr ""
-"Misspassning av skillnad: Källan är en %(oldnode)s (%(oldpath)s i "
-"revision %(oldrev)s) och målet är en %(newnode)s (%(newpath)s i revision "
-"%(newrev)s)."
+msgid "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s) and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
+msgstr "Misspassning av skillnad: Källan är en %(oldnode)s (%(oldpath)s i revision %(oldrev)s) och målet är en %(newnode)s (%(newpath)s i revision %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
@@ -4219,9 +4208,7 @@ msgid ""
 "[1:Note:]\n"
 "            This repository is defined in [2:[3:trac.ini]]\n"
 "            and cannot be edited on this page."
-msgstr ""
-"[1:Obs:] Detta förråd är definierat i [2:[3:trac.ini]] och kan ej "
-"redigeras här."
+msgstr "[1:Obs:] Detta förråd är definierat i [2:[3:trac.ini]] och kan ej redigeras här."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -4290,7 +4277,8 @@ msgid "No files found"
 msgstr "Inga filer hittades"
 
 #: trac/versioncontrol/templates/browser.html:106
-#: trac/wiki/templates/wiki_edit.html:112 trac/wiki/templates/wiki_view.html:32
+#: trac/wiki/templates/wiki_edit.html:112
+#: trac/wiki/templates/wiki_view.html:32
 msgid "Revision info"
 msgstr "Revisionsinfo"
 
@@ -4301,9 +4289,7 @@ msgid ""
 "            [2:%(size)s]\n"
 "            checked in by %(author)s, %(date)s ago\n"
 "            ([3:diff])"
-msgstr ""
-"Revision [1:%(rev)s], [2:%(size)s] incheckad av %(author)s, för %(date)s "
-"sedan ([3:skillnad])"
+msgstr "Revision [1:%(rev)s], [2:%(size)s] incheckad av %(author)s, för %(date)s sedan ([3:skillnad])"
 
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
@@ -4366,9 +4352,7 @@ msgstr "Visa revisionsloggen"
 msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
-msgstr ""
-"Ändringar av [1:%(new_path)s] [2:\\[%(old_rev)s:%(new_rev)s\\]] i "
-"%(reponame)s"
+msgstr "Ändringar av [1:%(new_path)s] [2:\\[%(old_rev)s:%(new_rev)s\\]] i %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #, python-format
@@ -4378,9 +4362,7 @@ msgid ""
 "              at [2:r%(old_rev)s]\n"
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
-msgstr ""
-"Ändringar i %(reponame)s från [1:%(old_path)s] i [2:r%(old_rev)s] till "
-"[3:%(new_path)s] i [4:r%(new_rev)s]"
+msgstr "Ändringar i %(reponame)s från [1:%(old_path)s] i [2:r%(old_rev)s] till [3:%(new_path)s] i [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:48
 #, python-format
@@ -4409,9 +4391,7 @@ msgid ""
 "              at [2:r%(old_rev)s]\n"
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
-msgstr ""
-"Ändringar från [1:%(old_path)s] i [2:r%(old_rev)s] till [3:%(new_path)s] "
-"i [4:r%(new_rev)s]"
+msgstr "Ändringar från [1:%(old_path)s] i [2:r%(old_rev)s] till [3:%(new_path)s] i [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:70
 #, python-format
@@ -4522,6 +4502,14 @@ msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d flyttad"
 msgstr[1] "%(num)d flyttade"
 
+#: trac/versioncontrol/templates/changeset.html:183
+msgid "added"
+msgstr "tillagd"
+
+#: trac/versioncontrol/templates/changeset.html:184
+msgid "deleted"
+msgstr "raderad"
+
 #: trac/versioncontrol/templates/changeset.html:185
 msgid "copied"
 msgstr "kopierad"
@@ -4561,14 +4549,10 @@ msgstr "Till:"
 #: trac/versioncontrol/templates/diff_form.html:50
 msgid ""
 "For either path, you can start typing the path and will be\n"
-"              presented a list of existing directories and files to "
-"select\n"
+"              presented a list of existing directories and files to select\n"
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
-msgstr ""
-"Vid varje sökväg kan du påbörja skrivning för att erhålla en lista av "
-"befintliga kataloger och filer. Välj en post genom att klicka i listan, "
-"eller genom att använda tangenterna uppåtpil, nedåtpil och tabb."
+msgstr "Vid varje sökväg kan du påbörja skrivning för att erhålla en lista av befintliga kataloger och filer. Välj en post genom att klicka i listan, eller genom att använda tangenterna uppåtpil, nedåtpil och tabb."
 
 #: trac/versioncontrol/templates/diff_form.html:62
 msgid ""
@@ -4761,12 +4745,6 @@ msgstr ""
 msgid "Browse Source"
 msgstr "Förråd"
 
-#: trac/versioncontrol/web_ui/browser.py:347
-#: trac/versioncontrol/web_ui/log.py:87
-#, python-format
-msgid "No repository '%(repo)s' found"
-msgstr "Förrådet \"%(repo)s\" hittades ej"
-
 #: trac/versioncontrol/web_ui/browser.py:369
 msgid "Invalid changeset number"
 msgstr "Ogiltigt ändringsnummer"
@@ -4807,12 +4785,8 @@ msgid "Annotate"
 msgstr "Kommentera"
 
 #: trac/versioncontrol/web_ui/browser.py:453
-msgid ""
-"Annotate each line with the last changed revision (this can be time "
-"consuming...)"
-msgstr ""
-"Kommentera varje rad med dess senaste revision (detta kan vara "
-"tidskrävande...)"
+msgid "Annotate each line with the last changed revision (this can be time consuming...)"
+msgstr "Kommentera varje rad med dess senaste revision (detta kan vara tidskrävande...)"
 
 #: trac/versioncontrol/web_ui/browser.py:460
 msgid "Revision Log"
@@ -4840,11 +4814,6 @@ msgstr "Visa förrådet %(repo)s"
 #, python-format
 msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
 msgstr "Kan ej jämföra mellan olika förråd: %(old)s jfr. %(new)s"
-
-#: trac/versioncontrol/web_ui/changeset.py:247
-#, python-format
-msgid "No repository found for '%(reponame)s'"
-msgstr "Inget förråd hittades för \"%(reponame)s\""
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
@@ -4928,12 +4897,6 @@ msgstr "%(title)s: %(message)s"
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "Inte behörig att visa ändring %(rev)s i %(repos)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1074
-#: trac/versioncontrol/web_ui/log.py:393
-#, python-format
-msgid "Repository %(repos)s not found"
-msgstr "Förrådet %(repos)s hittades inte"
-
 #: trac/versioncontrol/web_ui/changeset.py:1076
 #: trac/versioncontrol/web_ui/log.py:395
 msgid "No default repository defined"
@@ -4945,12 +4908,8 @@ msgstr "Ändringar"
 
 #: trac/versioncontrol/web_ui/log.py:196
 #, python-format
-msgid ""
-"The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
-"any previous revision."
-msgstr ""
-"Filen eller katalogen \"%(path)s\" existerar inte i revision %(rev)s, ej "
-"eller i någon tidigare revision."
+msgid "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at any previous revision."
+msgstr "Filen eller katalogen \"%(path)s\" existerar inte i revision %(rev)s, ej eller i någon tidigare revision."
 
 #: trac/versioncontrol/web_ui/log.py:198
 msgid "Nonexistent path"
@@ -4983,12 +4942,8 @@ msgstr "sök"
 
 #: trac/versioncontrol/web_ui/util.py:68
 #, python-format
-msgid ""
-"You can %(search)s in the repository history to see if that path existed "
-"but was later removed"
-msgstr ""
-"Du kan %(search)s i förrådets historik för att se om sökvägen någonsin "
-"existerat men blivit borttagen"
+msgid "You can %(search)s in the repository history to see if that path existed but was later removed"
+msgstr "Du kan %(search)s i förrådets historik för att se om sökvägen någonsin existerat men blivit borttagen"
 
 #: trac/web/api.py:236
 #, python-format
@@ -5024,9 +4979,7 @@ msgstr "Konfigurera autentisering"
 
 #: trac/web/auth.py:141
 #, python-format
-msgid ""
-"Authentication information not available. Please refer to the "
-"%(inst_doc)s."
+msgid "Authentication information not available. Please refer to the %(inst_doc)s."
 msgstr "Autentiseringsinformation ej tillgänglig. Vänligen se %(inst_doc)s."
 
 #: trac/web/auth.py:149
@@ -5078,12 +5031,8 @@ msgstr "Du är för närvarande inte inloggad. Du kanske vill %(do_so)s nu."
 
 #: trac/web/session.py:203
 #, python-format
-msgid ""
-"Session '%(id)s' already exists.<br />Please choose a different session "
-"ID."
-msgstr ""
-"Sessionen \"%(id)s\" existerar redan.<br />Var vänlig ange annan "
-"identitet på sessionen."
+msgid "Session '%(id)s' already exists.<br />Please choose a different session ID."
+msgstr "Sessionen \"%(id)s\" existerar redan.<br />Var vänlig ange annan identitet på sessionen."
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
@@ -5119,7 +5068,8 @@ msgstr "Sessionsidentitet %(sid)s hittades ej"
 msgid "'%(name)s' is not a file"
 msgstr "\"%(name)s\" är inte en fil"
 
-#: trac/wiki/admin.py:168 trac/wiki/admin.py:265
+#: trac/wiki/admin.py:168
+#: trac/wiki/admin.py:265
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
 msgstr "  %(page)s importerad från %(filename)s"
@@ -5128,11 +5078,13 @@ msgstr "  %(page)s importerad från %(filename)s"
 msgid "Edits"
 msgstr "Redigeringar"
 
-#: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
+#: trac/wiki/admin.py:206
+#: trac/wiki/web_ui.py:295
 msgid "A new name is mandatory for a rename."
 msgstr "Ett nytt namn krävs vid namnändring"
 
-#: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
+#: trac/wiki/admin.py:210
+#: trac/wiki/web_ui.py:299
 #, python-format
 msgid "The page %(name)s already exists."
 msgstr "Sidan \"%(name)s\" finns redan."
@@ -5146,32 +5098,31 @@ msgstr "Borttagna sidor"
 msgid "'%(name)s' is not a directory"
 msgstr "\"%(name)s\" är inte en katalog"
 
-#: trac/wiki/api.py:335
+#: trac/wiki/api.py:360
 msgid "no permission to view this wiki page"
 msgstr "inte behörig att se denna wikisida"
 
-#: trac/wiki/formatter.py:169
+#: trac/wiki/formatter.py:174
 #, python-format
 msgid "HTML parsing error: %(message)s"
 msgstr "Fel vid tolkning av HTML: %(message)s"
 
-#: trac/wiki/formatter.py:173
+#: trac/wiki/formatter.py:178
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
 msgstr "Fel: Förbjuden teckensekvens \"--\" i wiki-kodblocket htmlcomment"
 
-#: trac/wiki/formatter.py:247
+#: trac/wiki/formatter.py:252
 #, python-format
 msgid "!#%(name)s must contain at most one table"
 msgstr "!#%(name)s får inte innehålla mer än en tabell"
 
-#: trac/wiki/formatter.py:251
+#: trac/wiki/formatter.py:256
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
-msgstr ""
-"!#%(name)s måste innehålla åtminstone en tabellcell (och inget annat än "
-"endast tabellceller)"
+msgstr "!#%(name)s måste innehålla åtminstone en tabellcell (och inget annat än endast tabellceller)"
 
-#: trac/wiki/formatter.py:622 trac/wiki/interwiki.py:88
+#: trac/wiki/formatter.py:629
+#: trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(target)s i %(name)s"
@@ -5216,7 +5167,8 @@ msgstr "Sidan ej ändrad"
 msgid "Can't rename to existing %(name)s page."
 msgstr "Kan inte ändra namn till samma som den existerande sidan %(name)s."
 
-#: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:726
+#: trac/wiki/web_ui.py:87
+#: trac/wiki/web_ui.py:726
 msgid "Wiki"
 msgstr "Wiki"
 
@@ -5377,9 +5329,7 @@ msgstr "Ta bort [1:%(name)s]"
 #: trac/wiki/templates/wiki_delete.html:33
 #, python-format
 msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
-msgstr ""
-"Är du säker på att du vill ta bort versionerna %(from)s till %(to)s av "
-"denna sida?"
+msgstr "Är du säker på att du vill ta bort versionerna %(from)s till %(to)s av denna sida?"
 
 #: trac/wiki/templates/wiki_delete.html:36
 #, python-format
@@ -5418,7 +5368,8 @@ msgstr "Ta bort version %(old_version)d till version %(version)d"
 msgid "Delete version %(version)d"
 msgstr "Ta bort version %(version)d"
 
-#: trac/wiki/templates/wiki_edit.html:67 trac/wiki/templates/wiki_edit.html:140
+#: trac/wiki/templates/wiki_edit.html:67
+#: trac/wiki/templates/wiki_edit.html:140
 msgid "Go to Save, Preview, Review or Cancel buttons"
 msgstr "Gå till knapparna Spara, Förhandsgranska eller Ångra"
 
@@ -5455,9 +5406,7 @@ msgstr "(nedan uppmärkta som borttagningar)."
 msgid ""
 "Please review all those changes and manually merge them with your\n"
 "        own changes."
-msgstr ""
-"Var vänlig granska alla dessa ändringar och slå samman dem manuellt med "
-"dina egna ändringar."
+msgstr "Var vänlig granska alla dessa ändringar och slå samman dem manuellt med dina egna ändringar."
 
 #: trac/wiki/templates/wiki_edit.html:79
 msgid "If you're unsure about what you're doing, please press"
@@ -5467,9 +5416,7 @@ msgstr "Om du är osäker på vad du gör, tryck på"
 msgid ""
 "(losing your changes) and start editing the latest version of the page\n"
 "        again."
-msgstr ""
-"(förlora dina ändringar) och börja redigera den senaste versionen av "
-"sidan igen."
+msgstr "(förlora dina ändringar) och börja redigera den senaste versionen av sidan igen."
 
 #: trac/wiki/templates/wiki_edit.html:114
 msgid "Change information for future version"
@@ -5496,9 +5443,7 @@ msgstr "Inga ändringar"
 msgid ""
 "Sorry, this page has been modified by somebody else since you started\n"
 "            editing. Your changes cannot be saved."
-msgstr ""
-"Den här sidan har ändrats av någon annan efter att du påbörjade din "
-"redigering. Dina ändringar kan inte sparas."
+msgstr "Den här sidan har ändrats av någon annan efter att du påbörjade din redigering. Dina ändringar kan inte sparas."
 
 #: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
@@ -5506,9 +5451,7 @@ msgstr "Justera redigeringsområdets höjd:"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
-msgstr ""
-"Välj \"Förhandsgranska\" för att visa två-kolumnsläge "
-"[redigering|förhandsgranskning]"
+msgstr "Välj \"Förhandsgranska\" för att visa två-kolumnsläge [redigering|förhandsgranskning]"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
@@ -5518,9 +5461,7 @@ msgstr "Redigera sida-vid-sida"
 msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "        [3:TracWiki] for help on editing wiki content."
-msgstr ""
-"[1:Tips:] Se [2:WikiFormatting] och [3:TracWiki] för hjälp med redigering"
-" av wikisidor."
+msgstr "[1:Tips:] Se [2:WikiFormatting] och [3:TracWiki] för hjälp med redigering av wikisidor."
 
 #: trac/wiki/templates/wiki_edit_form.html:38
 msgid "See the start of the diffs"
@@ -5570,9 +5511,7 @@ msgstr "Byt namn på [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
-msgstr ""
-"Ändring av sidans namn medför namnändring av alla tidigare versioner av "
-"sidan"
+msgstr "Ändring av sidans namn medför namnändring av alla tidigare versioner av sidan"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "The complete history of the page will be moved to the new location."
@@ -5591,7 +5530,8 @@ msgstr "Skapa en omdirigeringssida på den gamla platsen"
 msgid "Rename page"
 msgstr "Byt namn"
 
-#: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
+#: trac/wiki/templates/wiki_view.html:14
+#: trac/wiki/templates/wiki_view.html:84
 msgid "Edit this page"
 msgstr "Redigera denna sida"
 
@@ -5600,9 +5540,7 @@ msgstr "Redigera denna sida"
 msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"
-msgstr ""
-"Version %(version)s (ändrad av %(author)s, för %(date)s sedan) "
-"([1:skillnader])"
+msgstr "Version %(version)s (ändrad av %(author)s, för %(date)s sedan) ([1:skillnader])"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
@@ -5647,3 +5585,23 @@ msgstr "(tom sida)"
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "Följande sidor har namn som liknar denna sida, de är kanske relaterade:"
 
+#~ msgid "— at"
+#~ msgstr "— vid"
+
+#~ msgid "changed from"
+#~ msgstr "ändrad från"
+
+#~ msgid "to"
+#~ msgstr "till"
+
+#~ msgid "Unknown repository '%(reponame)s'"
+#~ msgstr "Okänt förråd \"%(reponame)s\""
+
+#~ msgid "Repository %(name)s does not exist."
+#~ msgstr "Förrådet \"%(name)s\" finns inte."
+
+#~ msgid "No repository '%(repo)s' found"
+#~ msgstr "Förrådet \"%(repo)s\" hittades ej"
+
+#~ msgid "No repository found for '%(reponame)s'"
+#~ msgstr "Inget förråd hittades för \"%(reponame)s\""
