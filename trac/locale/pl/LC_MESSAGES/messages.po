@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-03-16 00:58+0100\n"
-"PO-Revision-Date: 2010-04-25 14:27+0200\n"
+"PO-Revision-Date: 2010-04-25 15:28+0200\n"
 "Last-Translator: Janusz Dusza <janusz@webduo.pl>\n"
 "Language-Team: pl_PL <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
@@ -5541,7 +5541,7 @@ msgstr " utworzona"
 #: trac/wiki/templates/wiki_delete.html:19
 #, fuzzy, python-format
 msgid "Delete versions %(from)s to %(to)s of [1:%(name)s]"
-msgstr "Wersje %(from)s do %(to)s strony %(name)s zostały usunięte."
+msgstr "Wersje %(from)s do %(to)s strony [1:%(name)s] zostały usunięte."
 
 #: trac/wiki/templates/wiki_delete.html:22
 #, fuzzy, python-format
@@ -5551,7 +5551,7 @@ msgstr "Usuń wersję %(version)s [1:%(name)s]"
 #: trac/wiki/templates/wiki_delete.html:25
 #, fuzzy, python-format
 msgid "Delete [1:%(name)s]"
-msgstr "Etap %(name)s"
+msgstr "Etap [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_delete.html:33
 #, fuzzy, python-format
@@ -5751,7 +5751,7 @@ msgstr "Zobacz %(path)s"
 #: trac/wiki/templates/wiki_rename.html:15
 #, fuzzy, python-format
 msgid "Rename [1:%(name)s]"
-msgstr "Etap %(name)s"
+msgstr "Etap [1:%(name)s]"
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "Renaming the page will rename all existing versions of the page in place."
