@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-21 21:32+0200\n"
-"PO-Revision-Date: 2010-04-26 14:31+0200\n"
+"PO-Revision-Date: 2010-04-26 19:02+0200\n"
 "Last-Translator: Wolfram Diestel <diestel@steloj.de>\n"
 "Language-Team: eo <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2551,7 +2551,7 @@ msgstr "La solvo foriĝos"
 #: trac/ticket/default_workflow.py:301
 #, python-format
 msgid "as %(status)s "
-msgstr ""
+msgstr "kiel %(status)s "
 
 #: trac/ticket/default_workflow.py:305
 #, python-format
@@ -3831,8 +3831,8 @@ msgid ""
 " Trac administrator about the error (detailed information was written to "
 "the log)."
 msgstr ""
-"Vi povas rigardi la eventojn %(other_events)s en la kroniko aŭ"
-"informi vian Trac-administranton pri la eraro (detalaj informoj protokoliĝis)."
+"Vi povas rigardi la eventojn %(other_events)s en la kroniko aŭinformi "
+"vian Trac-administranton pri la eraro (detalaj informoj protokoliĝis)."
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -4005,8 +4005,7 @@ msgstr "Deponejoj"
 #: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
-msgstr ""
-"Nun lanĉu %(resync)s por sinkronigi Trac kun la deponejo."
+msgstr "Nun lanĉu %(resync)s por sinkronigi Trac kun la deponejo."
 
 #: trac/versioncontrol/admin.py:208
 #, python-format
@@ -5769,25 +5768,4 @@ msgstr "(malplena paĝo)"
 #: trac/wiki/templates/wiki_view.html:128
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "La jenaj paĝoj havas nomon similan al tiu ĉi paĝo kaj eble rilatas al ĝi:"
-
-#~ msgid "— at"
-#~ msgstr "— ĉe"
-
-#~ msgid "changed from"
-#~ msgstr "ŝanĝita de"
-
-#~ msgid "to"
-#~ msgstr "al"
-
-#~ msgid "Unknown repository '%(reponame)s'"
-#~ msgstr "Nekonata deponejo '%(reponame)s'"
-
-#~ msgid "Repository %(name)s does not exist."
-#~ msgstr "Deponejo %(name)s ne ekzistas."
-
-#~ msgid "No repository '%(repo)s' found"
-#~ msgstr "Neniu deponejo '%(repo)s' troviĝis"
-
-#~ msgid "No repository found for '%(reponame)s'"
-#~ msgstr "Neniuj deponejoj troviĝis por '%(reponame)s'"
 
