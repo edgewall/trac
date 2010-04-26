@@ -887,7 +887,7 @@ msgstr "Agordo de situoj"
 
 #: trac/admin/templates/admin_components.html:18
 msgid "Owner:"
-msgstr "Havanto:"
+msgstr "Antaŭelektita havanto:"
 
 #: trac/admin/templates/admin_components.html:35
 msgid "Modify Component:"
@@ -2126,7 +2126,7 @@ msgstr "— La gvidlibro por uzantoj kaj adminsitrantoj de Trac"
 
 #: trac/templates/history_view.html:15
 msgid "Change History for"
-msgstr "Ŝangkroniko por"
+msgstr "Paĝokroniko por"
 
 #: trac/templates/history_view.html:21 trac/templates/history_view.html:54
 #: trac/versioncontrol/templates/diff_form.html:58
@@ -2505,7 +2505,7 @@ msgstr "al %(owner)s"
 #: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
-msgstr "Transdoni la avizon de %(current_owner)s al la maldekstre tajpita uzanto"
+msgstr "Transdoni la avizon de %(current_owner)s al la maldekstra uzanto"
 
 #: trac/ticket/default_workflow.py:251
 #, python-format
@@ -5419,7 +5419,7 @@ msgstr "Paĝokroniko"
 
 #: trac/wiki/web_ui.py:451
 msgid "Wiki History"
-msgstr "Vikikroniko"
+msgstr "Paĝokroniko"
 
 #: trac/wiki/web_ui.py:537
 #, python-format
@@ -5470,7 +5470,7 @@ msgstr "Indekso"
 
 #: trac/wiki/web_ui.py:676
 msgid "History"
-msgstr "Kroniko"
+msgstr "Paĝokroniko"
 
 #: trac/wiki/web_ui.py:683
 msgid "Wiki changes"
@@ -5748,7 +5748,7 @@ msgstr "La paĝo"
 
 #: trac/wiki/templates/wiki_view.html:61
 msgid "does not exist. You can create it here."
-msgstr "ne ekzistas. Vi povus krei ĝin nun"
+msgstr "ne ekzistas. Vi povus krei ĝin nun."
 
 #: trac/wiki/templates/wiki_view.html:63
 msgid "You could also create the same page higher in the hierarchy:"
@@ -5760,7 +5760,7 @@ msgstr "Kreu la paĝon"
 
 #: trac/wiki/templates/wiki_view.html:89
 msgid "Using the template:"
-msgstr "Uzante la ŝablonon:"
+msgstr "uzante la ŝablonon:"
 
 #: trac/wiki/templates/wiki_view.html:92
 msgid "(blank page)"
