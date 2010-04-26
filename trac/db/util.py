@@ -122,21 +122,25 @@ class IterableCursor(object):
             return self.cursor.execute(sql_escape_percent(sql), args)
         return self.cursor.execute(sql)
 
-    def executemany(self, sql, args=None):
+    def executemany(self, sql, args):
         if self.log:
             self.log.debug('SQL: %r', sql)
+            self.log.debug('args: %r', args)
+            if not args:
+                return
             try:
-                if args:
-                    self.log.debug('args: %r', args)
+                if args[0]:
                     return self.cursor.executemany(sql_escape_percent(sql),
                                                    args)
-                return self.cursor.execute(sql)
+                return self.cursor.executemany(sql, args)
             except Exception, e:
                 self.log.debug('executemany exception: %r', e)
                 raise
-        if args:
+        if not args:
+            return
+        if args[0]:
             return self.cursor.executemany(sql_escape_percent(sql), args)
-        return self.cursor.executemany(sql)
+        return self.cursor.executemany(sql, args)
 
 
 class ConnectionWrapper(object):

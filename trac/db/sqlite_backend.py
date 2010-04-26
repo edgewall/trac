@@ -54,11 +54,12 @@ if have_pysqlite == 2:
                 sql = sql % (('?',) * len(args))
             return self._rollback_on_error(sqlite.Cursor.execute, sql,
                                            args or [])
-        def executemany(self, sql, args=None):
-            if args:
-                sql = sql % (('?',) * len(args[0]))
+        def executemany(self, sql, args):
+            if not args:
+                return
+            sql = sql % (('?',) * len(args[0]))
             return self._rollback_on_error(sqlite.Cursor.executemany, sql,
-                                           args or [])
+                                           args)
 
     # EagerCursor taken from the example in pysqlite's repository:
     #
