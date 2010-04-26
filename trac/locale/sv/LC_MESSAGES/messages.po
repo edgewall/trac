@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-25 13:39+0200\n"
+"PO-Revision-Date: 2010-04-26 11:31+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1748,7 +1748,7 @@ msgstr "Egenskapen %(name)s ändrad från %(old)s till %(new)s"
 #: trac/templates/diff_div.html:76
 #, python-format
 msgid "Property %(name)s set to %(value)s"
-msgstr "Egenskapen %(name)s sattes till %(value)s"
+msgstr "Egenskapen %(name)s är satt till %(value)s"
 
 #: trac/templates/diff_div.html:79
 #, python-format
@@ -4180,7 +4180,7 @@ msgstr "valbar"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
-msgstr "(växla borttagna grenar)"
+msgstr "(visa/dölj borttagna grenar)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
@@ -4337,7 +4337,7 @@ msgstr ""
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
 msgid "Property [1:%(name)s] set to %(value)s"
-msgstr "Egenskapen [1:%(name)s] sattes till %(value)s"
+msgstr "Egenskapen [1:%(name)s] är satt till %(value)s"
 
 #: trac/versioncontrol/templates/browser.html:154
 msgid "Repository Index"
