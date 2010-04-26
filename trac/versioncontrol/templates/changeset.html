@@ -27,48 +27,50 @@
           log_href = href.log(reponame, new_path, rev=new_rev, stop_rev=old_rev);
           new_href = href.browser(reponame, new_path, rev=new_rev);
           old_href = href.browser(reponame, old_path, rev=old_rev);
+          old_drev = display_rev(old_rev);
+          new_drev = display_rev(new_rev);
             ">
         <py:when test="reponame">
           <py:choose>
             <h1 py:when="changeset and restricted" i18n:msg="new_rev, reponame, new_path">
-              Changeset <a title="Show full changeset" href="cset_href">$new_rev</a> in $reponame
+              Changeset <a title="Show full changeset" href="$cset_href">$new_drev</a> in $reponame
               for <a title="Show entry in browser" href="$new_href">$new_path</a>
             </h1>
             <h1 py:when="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev, reponame">
               Changes in <a title="Show entry in browser" href="$new_href">$new_path</a>
-              <a title="Show revision log" href="$log_href">[$old_rev:$new_rev]</a> in $reponame
+              <a title="Show revision log" href="$log_href">[$old_drev:$new_drev]</a> in $reponame
             </h1>
             <h1 py:when="not changeset and not restricted" i18n:msg="reponame, old_path, old_rev, new_path, new_rev">
               Changes in $reponame
               from <a title="Show entry in browser" href="$old_href">$old_path</a>
-              at <a title="Show full changeset" href="$old_cset_href">r$old_rev</a>
+              at <a title="Show full changeset" href="$old_cset_href">r$old_drev</a>
               to <a title="Show entry in browser" href="$new_href">$new_path</a>
-              at <a title="Show full changeset" href="$cset_href">r$new_rev</a>
+              at <a title="Show full changeset" href="$cset_href">r$new_drev</a>
             </h1>
             <h1 py:otherwise="" i18n:msg="new_rev, reponame">
-              Changeset <a py:strip="not annotated" href="$cset_href">$new_rev</a> in $reponame
+              Changeset <a py:strip="not annotated" href="$cset_href">$new_drev</a> in $reponame
             </h1>
           </py:choose>
         </py:when>
         <py:otherwise>
           <py:choose>
             <h1 py:when="changeset and restricted" i18n:msg="new_rev, new_path">
-              Changeset <a title="Show full changeset" href="$cset_href">$new_rev</a>
+              Changeset <a title="Show full changeset" href="$cset_href">$new_drev</a>
               for <a title="Show entry in browser" href="$new_href">$new_path</a>
             </h1>
             <h1 py:when="not changeset and restricted" i18n:msg="new_path, old_rev, new_rev">
               Changes in <a title="Show entry in browser" href="$new_href">$new_path</a>
-              <a title="Show revision log" href="$log_href">[$old_rev:$new_rev]</a>
+              <a title="Show revision log" href="$log_href">[$old_drev:$new_drev]</a>
             </h1>
             <h1 py:when="not changeset and not restricted" i18n:msg="old_path, old_rev, new_path, new_rev">
               Changes
               from <a title="Show entry in browser" href="$old_href">$old_path</a>
-              at <a title="Show full changeset" href="$old_cset_href">r$old_rev</a>
+              at <a title="Show full changeset" href="$old_cset_href">r$old_drev</a>
               to <a title="Show entry in browser" href="$new_href">$new_path</a>
-              at <a title="Show full changeset" href="$cset_href">r$new_rev</a>
+              at <a title="Show full changeset" href="$cset_href">r$new_drev</a>
             </h1>
             <h1 py:otherwise="" i18n:msg="new_rev">
-              Changeset <a py:strip="not annotated" href="$cset_href">$new_rev</a>
+              Changeset <a py:strip="not annotated" href="$cset_href">$new_drev</a>
             </h1>
           </py:choose>
         </py:otherwise>
@@ -97,7 +99,7 @@
           <div class="$cl"> </div>
           <py:choose>
           <a py:when="is_removal" href="$item.old.href"
-             title="${_('Show what was removed (content at revision %(old_rev)s)', old_rev=item.old.rev)}">
+             title="${_('Show what was removed (content at revision %(old_rev)s)', old_rev=display_rev(item.old.rev))}">
               $path
             </a>
             <a py:otherwise="" title="Show entry in browser" href="$item.new.href">
@@ -108,7 +110,7 @@
           <py:if test="item.old and item.old.get('path') and item.change == 'copy' or item.change == 'move'">
             <small><em i18n:msg="kind, old_path">
               ($kind from <a href="$item.old.href"
-                             title="${_('Show original file (revision %(old_rev)s)', old_rev=item.old.rev)}">
+                             title="${_('Show original file (revision %(old_rev)s)', old_rev=display_rev(item.old.rev))}">
                 $item.old.path</a>)
             </em></small>
           </py:if>

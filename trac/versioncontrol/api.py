@@ -856,7 +856,7 @@ class Repository(object):
         raise NotImplementedError
 
     def normalize_rev(self, rev):
-        """Return a canonical representation of a revision.
+        """Return a (unique) canonical representation of a revision.
 
         It's up to the backend to decide which string values of `rev` 
         (usually provided by the user) should be accepted, and how they 
@@ -870,6 +870,15 @@ class Repository(object):
 
     def short_rev(self, rev):
         """Return a compact representation of a revision in the repos."""
+        return self.normalize_rev(rev)
+
+    def display_rev(self, rev):
+        """Return a representation of a revision in the repos for displaying to
+        the user.
+        
+        This can be a shortened revision string, e.g. for repositories using
+        long hashes.
+        """
         return self.normalize_rev(rev)
         
     def get_changes(self, old_path, old_rev, new_path, new_rev,

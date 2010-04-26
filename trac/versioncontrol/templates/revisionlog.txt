@@ -6,7 +6,7 @@
  
 {% for item in items %}\
 {%   with change = changes[item.rev]; extra = extra_changes[item.rev] %}\
-${http_date(change.date)} ${format_author(change.author)} [$item.rev]
+${http_date(change.date)} ${format_author(change.author)} [${display_rev(item.rev)}]
 {%     for idx, file in enumerate(extra.files) %}\
 {%       if 'FILE_VIEW' in perm(repos.resource.child('source', file, version=change.rev)) %}\
 	* $file (${dict(edit='modified', add='added', delete='deleted',

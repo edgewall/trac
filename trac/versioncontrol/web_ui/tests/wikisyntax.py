@@ -231,8 +231,8 @@ diff:@12:23
 <p>
 <a class="changeset" href="/changeset?new_path=branch&amp;old_path=trunk" title="Diff from trunk@latest to branch@latest">diff:trunk//branch</a>
 <a class="changeset" href="/changeset?new=23&amp;new_path=branch&amp;old=12&amp;old_path=trunk" title="Diff from trunk@12 to branch@23">diff:trunk@12//branch@23</a>
-<a class="changeset" href="/changeset?new=23&amp;new_path=trunk&amp;old=12&amp;old_path=trunk" title="Diff r12:23 for trunk">diff:trunk@12:23</a>
-<a class="changeset" href="/changeset?new=23&amp;old=12" title="Diff r12:23 for /">diff:@12:23</a>
+<a class="changeset" href="/changeset?new=23&amp;new_path=trunk&amp;old=12&amp;old_path=trunk" title="Diff [12:23] for trunk">diff:trunk@12:23</a>
+<a class="changeset" href="/changeset?new=23&amp;old=12" title="Diff [12:23] for /">diff:@12:23</a>
 </p>
 ------------------------------
 ============================== diff: link resolver + query
@@ -246,7 +246,7 @@ diff:trunk//branch?format=diff
 diff://
 ------------------------------
 <p>
-<a class="changeset" title="Diff rlatest:latest for /">diff://</a>
+<a class="changeset" title="Diff [latest:latest] for /">diff://</a>
 </p>
 ------------------------------
 """

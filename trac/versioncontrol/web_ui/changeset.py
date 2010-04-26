@@ -331,17 +331,17 @@ class ChangesetModule(Component):
             rpath = new_path.replace('/','_')
             if chgset:
                 if restricted:
-                    filename = 'changeset_%s_r%s' % (rpath, new)
+                    filename = 'changeset_%s_%s' % (rpath, new)
                 else:
-                    filename = 'changeset_r%s' % new
+                    filename = 'changeset_%s' % new
             else:
                 if restricted:
-                    filename = 'diff-%s-from-r%s-to-r%s' \
+                    filename = 'diff-%s-from-%s-to-%s' \
                                   % (rpath, old, new)
                 elif old_path == '/': # special case for download (#238)
-                    filename = '%s-r%s' % (rpath, old)
+                    filename = '%s-%s' % (rpath, old)
                 else:
-                    filename = 'diff-from-%s-r%s-to-%s-r%s' \
+                    filename = 'diff-from-%s-%s-to-%s-%s' \
                                % (old_path.replace('/','_'), old, rpath, new)
             if format == 'diff':
                 self._render_diff(req, filename, repos, data)
@@ -381,6 +381,8 @@ class ChangesetModule(Component):
     def _render_html(self, req, repos, chgset, restricted, xhr, data):
         """HTML version"""
         data['restricted'] = restricted
+        display_rev = repos.display_rev
+        data['display_rev'] = display_rev
         browser = BrowserModule(self.env)
         reponame = repos.reponame or None
 
@@ -406,6 +408,7 @@ class ChangesetModule(Component):
                     yield old_node, new_node, kind, change
 
             def _changeset_title(rev):
+                rev = display_rev(rev)
                 if restricted:
                     return _('Changeset %(id)s for %(path)s', id=rev,
                              path=path)
@@ -436,7 +439,7 @@ class ChangesetModule(Component):
                 else:
                     add_link(req, 'first', 
                              req.href.changeset(oldest_rev, reponame),
-                             _('Changeset %(id)s', id=oldest_rev))
+                             _('Changeset %(id)s', id=display_rev(oldest_rev)))
                     prev_path = data['old_path']
                     prev_rev = repos.previous_rev(chgset.rev)
                     if prev_rev:
@@ -457,7 +460,8 @@ class ChangesetModule(Component):
                 else:
                     add_link(req, 'last', 
                              req.href.changeset(youngest_rev, reponame),
-                             _('Changeset %(id)s', id=youngest_rev))
+                             _('Changeset %(id)s',
+                               id=display_rev(youngest_rev)))
                     next_rev = repos.next_rev(chgset.rev)
                     if next_rev:
                         next_href = req.href.changeset(next_rev, reponame)
@@ -484,7 +488,7 @@ class ChangesetModule(Component):
                 reponame, node.created_path, rev=node.created_rev,
                 annotate=annotated and 'blame' or None)
             title = _('Show revision %(rev)s of this file in browser',
-                      rev=node.rev)
+                      rev=display_rev(node.rev))
             return {'path': node.path, 'rev': node.rev,
                     'shortrev': repos.short_rev(node.rev),
                     'href': href, 'title': title}
@@ -630,7 +634,7 @@ class ChangesetModule(Component):
                         href = req.href.changeset(new_node.rev, reponame,
                                                   new_node.path)
                         title = _('Show the changeset %(id)s restricted to '
-                                  '%(path)s', id=new_node.rev,
+                                  '%(path)s', id=display_rev(new_node.rev),
                                   path=new_node.path)
                     else:
                         href = req.href.changeset(
@@ -640,8 +644,9 @@ class ChangesetModule(Component):
                             old_path=pathjoin(repos.reponame, 
                                               old_node.created_path))
                         title = _('Show the %(range)s differences restricted '
-                                  'to %(path)s', range='r%s:%s' % (
-                                      old_node.rev, new_node.rev),
+                                  'to %(path)s', range='[%s:%s]' % (
+                                      display_rev(old_node.rev),
+                                      display_rev(new_node.rev)),
                                   path=new_node.path)
                     info['href'] = href
                     info['title'] = old_node and title
@@ -780,16 +785,22 @@ class ChangesetModule(Component):
         raise RequestDone
 
     def title_for_diff(self, data):
+        # TRANSLATOR: 'latest' (revision)
+        latest = _('latest')
         if data['new_path'] == data['old_path']:
             # ''diff between 2 revisions'' mode
-            return 'Diff r%s:%s for %s' \
-                   % (data['old_rev'] or 'latest', data['new_rev'] or 'latest',
-                      data['new_path'] or '/')
+            return _('Diff [%(old_rev)s:%(new_rev)s] for %(path)s',
+                     old_rev=data['old_rev'] or latest,
+                     new_rev=data['new_rev'] or latest,
+                     path=data['new_path'] or '/')
         else:
             # ''generalized diff'' mode
-            return 'Diff from %s@%s to %s@%s' \
-                   % (data['old_path'] or '/', data['old_rev'] or 'latest',
-                      data['new_path'] or '/', data['new_rev'] or 'latest')
+            return _('Diff from %(old_path)s@%(old_rev)s to %(new_path)s@'
+                     '%(new_rev)s',
+                     old_path=data['old_path'] or '/',
+                     old_rev=data['old_rev'] or latest,
+                     new_path=data['new_path'] or '/',
+                     new_rev=data['new_rev'] or latest)
 
     def render_property_diff(self, name, old_node, old_props,
                              new_node, new_props, options):
@@ -999,10 +1010,12 @@ class ChangesetModule(Component):
                              single and 1 or 2, repo=', '.join(repos_for_uid))
         else:
             title = ngettext('Changeset ', 'Changesets ', single and 1 or 2)
+        drev_a = older_cset.repos.display_rev(rev_a)
         if single:
-            title = tag(title, tag.em('[%s]' % rev_a))
+            title = tag(title, tag.em('[%s]' % drev_a))
         else:
-            title = tag(title, tag.em('[%s-%s]' % (rev_a, rev_b)))
+            drev_b = cset.repos.display_rev(rev_b)
+            title = tag(title, tag.em('[%s-%s]' % (drev_a, drev_b)))
         if field == 'title':
             return title
         elif field == 'summary':

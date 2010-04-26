@@ -20,7 +20,7 @@
           <td class="size" />
           <td class="rev">
             <py:if test="not err">
-              <a title="View Revision Log" href="${href.log(repos.reponame)}">$change.rev</a>
+              <a title="View Revision Log" href="${href.log(repos.reponame)}">${repos.display_rev(change.rev)}</a>
               <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, repos.reponame)}">&nbsp;</a>
             </py:if>
           </td>

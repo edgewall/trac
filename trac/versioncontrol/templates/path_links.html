@@ -28,9 +28,9 @@
       >$part.name</a><py:if test="not last"
         ><span class="pathentry sep">/</span></py:if></py:with></py:for>
 <!--! @ revision        (FIXME check the data, this can sometimes be wrong) -->
-<py:if test="rev"><span class="pathentry sep">@</span>
+<py:if test="rev" py:with="drev = display_rev(rev)"><span class="pathentry sep">@</span>
   <a class="pathentry" href="${href.changeset(rev, reponame)}" 
-     title="${_('View changeset %(rev)s', rev=rev)}">$rev</a>
+     title="${_('View changeset %(rev)s', rev=drev)}">$drev</a>
 </py:if>
 <br style="clear: both" />
 

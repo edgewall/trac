@@ -308,7 +308,9 @@ class VersionControlAdmin(Component):
         if not info.get('alias'):
             try:
                 repos = RepositoryManager(self.env).get_repository(reponame)
-                info['rev'] = repos.get_youngest_rev()
+                youngest_rev = repos.get_youngest_rev()
+                info['rev'] = youngest_rev
+                info['display_rev'] = repos.display_rev(youngest_rev)
             except Exception:
                 pass
         return info

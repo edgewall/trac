@@ -16,7 +16,7 @@
           <span title="${_('%(size)s bytes', size=entry.content_length)}">${pretty_size(entry.content_length)}</span>
         </td>
         <td class="rev">
-          <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">$entry.rev</a>
+          <a title="View Revision Log" href="${href.log(reponame, entry.path, rev=rev)}">${display_rev(entry.rev)}</a>
           <a title="View Changeset" class="chgset" href="${href.changeset(change.rev, reponame)}">&nbsp;</a>
         </td>
         <td class="age" style="${chgset_view and dir.timerange and 'border-color: rgb(%s,%s,%s)' %

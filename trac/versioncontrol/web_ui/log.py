@@ -104,7 +104,8 @@ class LogModule(Component):
                 rev = revranges.b
             except ValueError:
                 pass
-        rev = unicode(repos.normalize_rev(rev))    
+        rev = unicode(repos.normalize_rev(rev))
+        display_rev = repos.display_rev
 
         # The `history()` method depends on the mode:
         #  * for ''stop on copy'' and ''follow copies'', it's `Node.history()`
@@ -195,7 +196,7 @@ class LogModule(Component):
                 # FIXME: we should send a 404 error here
                 raise TracError(_("The file or directory '%(path)s' doesn't "
                     "exist at revision %(rev)s or at any previous revision.", 
-                    path=path, rev=rev), _('Nonexistent path'))
+                    path=path, rev=display_rev(rev)), _('Nonexistent path'))
 
         def make_log_href(path, **args):
             link_rev = rev
@@ -223,7 +224,7 @@ class LogModule(Component):
                                                      revs=next_revranges)
                 add_link(req, 'next', older_revisions_href,
                     _('Revision Log (restarting at %(path)s, rev. %(rev)s)',
-                    path=next_path, rev=next_rev))
+                    path=next_path, rev=display_rev(next_rev)))
             # only show fully 'limit' results, use `change == None` as a marker
             info[-1]['change'] = None
         
@@ -258,8 +259,8 @@ class LogModule(Component):
             'context': Context.from_request(req, 'source', path,
                                             parent=repos.resource),
             'reponame': repos.reponame or None, 'repos': repos,
-            'path': path, 'rev': rev, 'stop_rev': stop_rev, 
-            'revranges': revranges,
+            'path': path, 'rev': rev, 'stop_rev': stop_rev,
+            'display_rev': display_rev, 'revranges': revranges,
             'mode': mode, 'verbose': verbose, 'limit' : limit,
             'items': info, 'changes': changes,
             'email_map': email_map, 'extra_changes': extra_changes,

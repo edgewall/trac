@@ -356,6 +356,7 @@ class BrowserModule(Component):
         # Find node for the requested path/rev
         context = Context.from_request(req)
         node = None
+        display_rev = lambda rev: rev
         if repos:
             try:
                 if rev:
@@ -370,6 +371,8 @@ class BrowserModule(Component):
 
             context = context(repos.resource.child('source', path,
                                                    version=rev_or_latest))
+            display_rev = repos.display_rev
+
         # Prepare template data
         path_links = get_path_links(req.href, reponame, path, rev,
                                     order, desc)
@@ -394,6 +397,7 @@ class BrowserModule(Component):
             'context': context, 'reponame': reponame, 'repos': repos,
             'repoinfo': repoinfo,
             'path': path, 'rev': node and node.rev, 'stickyrev': rev,
+            'display_rev': display_rev,
             'created_path': node and node.created_path,
             'created_rev': node and node.created_rev,
             'properties': properties_data,
@@ -421,7 +425,7 @@ class BrowserModule(Component):
                     href = req.href.browser(reponame,
                                             node.created_path, rev=prev_rev)
                     add_link(req, 'prev', href,
-                             _('Revision %(num)s', num=prev_rev))
+                             _('Revision %(num)s', num=display_rev(prev_rev)))
                 if rev is not None:
                     add_link(req, 'up', req.href.browser(reponame,
                                                          node.created_path))
@@ -431,7 +435,7 @@ class BrowserModule(Component):
                     href = req.href.browser(reponame, node.created_path,
                                             rev=next_rev)
                     add_link(req, 'next', href,
-                             _('Revision %(num)s', num=next_rev))
+                             _('Revision %(num)s', num=display_rev(next_rev)))
                 prevnext_nav(req, _('Previous Revision'), _('Next Revision'),
                              _('Latest Revision'))
             else:
