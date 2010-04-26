@@ -65,9 +65,13 @@ class IEnvironmentSetupParticipant(Interface):
     def upgrade_environment(db):
         """Actually perform an environment upgrade.
         
-        Implementations of this method should not commit any database
-        transactions. This is done implicitly after all participants have
-        performed the upgrades they need without an error being raised.
+        Implementations of this method don't need to commit any database
+        transactions. This is done implicitly for each participant
+        if the upgrade succeeds without an error being raised.
+
+        However, if the `upgrade_environment` consists of small, restartable,
+        steps of upgrade, it can decide to commit on its own after each
+        successful step.
         """
 
 
@@ -509,35 +513,27 @@ class Environment(Component, ComponentManager):
     def upgrade(self, backup=False, backup_dest=None):
         """Upgrade database.
         
-        Each db version should have its own upgrade module, named
-        upgrades/dbN.py, where 'N' is the version number (int).
-
         @param backup: whether or not to backup before upgrading
         @param backup_dest: name of the backup file
         @return: whether the upgrade was performed
         """
         upgraders = []
-        
-        @with_transaction(self)
-        def do_upgrade(db):
-            for participant in self.setup_participants:
-                if participant.environment_needs_upgrade(db):
-                    upgraders.append(participant)
-            if not upgraders:
-                return
-    
-            if backup:
-                self.backup(backup_dest)
-
-            for participant in upgraders:
-                participant.upgrade_environment(db)
-
+        db = self.get_read_db()
+        for participant in self.setup_participants:
+            if participant.environment_needs_upgrade(db):
+                upgraders.append(participant)
         if not upgraders:
-            return False
+            return
 
-        # Database schema may have changed, so close all connections
-        self.shutdown(except_logging=True)
+        if backup:
+            self.backup(backup_dest)
 
+        for participant in upgraders:
+            self.log.info("%s.%s upgrading...", participant.__module__,
+                          participant.__class__.__name__)
+            with_transaction(self)(participant.upgrade_environment)
+            # Database schema may have changed, so close all connections
+            self.shutdown(except_logging=True)
         return True
 
     def _get_href(self):
@@ -590,6 +586,9 @@ class EnvironmentSetup(Component):
         return True
 
     def upgrade_environment(self, db):
+        """Each db version should have its own upgrade module, named
+        upgrades/dbN.py, where 'N' is the version number (int).
+        """
         cursor = db.cursor()
         dbver = self.env.get_version()
         for i in range(dbver + 1, db_default.db_version + 1):
@@ -601,10 +600,11 @@ class EnvironmentSetup(Component):
                 raise TracError(_('No upgrade module for version %(num)i '
                                   '(%(version)s.py)', num=i, version=name))
             script.do_upgrade(self.env, i, cursor)
-        cursor.execute("UPDATE system SET value=%s WHERE "
-                       "name='database_version'", (db_default.db_version,))
-        self.log.info('Upgraded database version from %d to %d',
-                      dbver, db_default.db_version)
+            cursor.execute("""
+                UPDATE system SET value=%s WHERE name='database_version'
+                """, (i,))
+            self.log.info('Upgraded database version from %d to %d', i - 1, i)
+            db.commit()
         self._update_sample_config()
 
     # Internal methods
