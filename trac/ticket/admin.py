@@ -648,7 +648,7 @@ class AbstractEnumAdminPanel(TicketAdminPanel):
                             enum = self._enum_cls(self.env, name, db=db)
                             enum.delete()
                     add_notice(req, _('The selected %(field)s values have '
-                                      'been removed.', fields=label[0]))
+                                      'been removed.', field=label[0]))
                     req.redirect(req.href.admin(cat, page))
 
                 # Apply changes
