@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-25 01:49+0200\n"
-"PO-Revision-Date: 2010-04-27 00:11+0300\n"
+"PO-Revision-Date: 2010-04-28 01:11+0300\n"
 "Last-Translator: Elnur Abdurrakhimov <elnur.home@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -874,8 +874,8 @@ msgid ""
 "                [1:WikiFormatting]\n"
 "                here):"
 msgstr ""
-"Описание (здесь вы \n"
-"                можете использовать\n"
+"Описание (здесь можно \n"
+"                использовать\n"
 "                [1:WikiFormatting]):"
 
 #: trac/admin/templates/admin_components.html:56
@@ -1377,7 +1377,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
-msgstr "Восстановить сессию:"
+msgstr "Восстановить сеанс:"
 
 #: trac/prefs/templates/prefs_advanced.html:29
 msgid "Load"
@@ -1477,6 +1477,9 @@ msgid ""
 "        email address and full name, which is used for email\n"
 "        notification and RSS feeds, for example."
 msgstr ""
+"Эта информация используется чтобы привязать вашему имени пользователя "
+"адрес электронной почты и полное имя, которые нужны, например, для "
+"уведомлений по почте и RSS каналов."
 
 #: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
@@ -2103,7 +2106,7 @@ msgstr "Комментарий"
 
 #: trac/templates/history_view.html:42
 msgid "View this version"
-msgstr "Текущая версия"
+msgstr "Просмотр этой версии"
 
 #: trac/templates/history_view.html:45
 #, python-format
@@ -2752,7 +2755,7 @@ msgstr "Параметр запроса \"sort=%(sort_col)s\" неверен"
 
 #: trac/ticket/roadmap.py:205
 msgid "ticket status"
-msgstr "статус карточки"
+msgstr "состояние карточек"
 
 #: trac/ticket/roadmap.py:205
 msgid "tickets"
@@ -2837,15 +2840,15 @@ msgstr "создана"
 
 #: trac/ticket/web_ui.py:240
 msgid "reopened"
-msgstr "снова открыт"
+msgstr "снова открыта"
 
 #: trac/ticket/web_ui.py:241
 msgid "closed"
-msgstr "закрыт"
+msgstr "закрыта"
 
 #: trac/ticket/web_ui.py:242
 msgid "updated"
-msgstr "обновлён"
+msgstr "обновлена"
 
 #: trac/ticket/web_ui.py:262
 #, python-format
@@ -2871,6 +2874,8 @@ msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr ""
+"Пожалуйста, проверьте конфигурацию, возможно следует начать с %(section)s"
+" в %(tracini)s."
 
 #: trac/ticket/web_ui.py:629
 msgid "Previous Ticket"
@@ -3209,7 +3214,7 @@ msgstr "Дата не установлена"
 #: trac/ticket/templates/milestone_view.html:51
 #, python-format
 msgid "%(stat_title)s by"
-msgstr ""
+msgstr "%(stat_title)s по"
 
 #: trac/ticket/templates/milestone_view.html:65
 msgid "(none)"
@@ -3810,7 +3815,7 @@ msgid ""
 "                  by [2:%(author)s]"
 msgstr ""
 "[1:%(time)s] %(title)s\n"
-"                  пользователя [2:%(author)s]"
+"                  пользователем [2:%(author)s]"
 
 #: trac/timeline/templates/timeline.html:58
 msgid ""
@@ -4050,6 +4055,8 @@ msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
+"Не удалось синхронизироваться с хранилищем \"%(name)s\" (%(error)s). "
+"Дополнительную информацию ищите в журнале Trac-а."
 
 #: trac/versioncontrol/api.py:350
 #, python-format
@@ -4255,6 +4262,9 @@ msgid ""
 "            This repository is defined in [2:[3:trac.ini]]\n"
 "            and cannot be edited on this page."
 msgstr ""
+"[1:Примечание:]\n"
+"            Этот репозиторий определен в [2:[3:trac.ini]]\n"
+"            и не может быть изменен на этой странице."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -4320,7 +4330,7 @@ msgstr "Родительская директория"
 
 #: trac/versioncontrol/templates/browser.html:98
 msgid "No files found"
-msgstr "Нет совпадений."
+msgstr "Файлы не найдены"
 
 #: trac/versioncontrol/templates/browser.html:106
 #: trac/wiki/templates/wiki_edit.html:112 trac/wiki/templates/wiki_view.html:32
@@ -4641,12 +4651,12 @@ msgstr "Просмотр файла"
 #: trac/versioncontrol/templates/dir_entries.html:19
 #: trac/versioncontrol/templates/repository_index.html:23
 msgid "View Revision Log"
-msgstr "Смотреть журнал ревизий"
+msgstr "Просмотр журнала ревизий"
 
 #: trac/versioncontrol/templates/dir_entries.html:20
 #: trac/versioncontrol/templates/repository_index.html:24
 msgid "View Changeset"
-msgstr "Просмотреть изменения"
+msgstr "Просмотр набора изменений"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:94
@@ -5112,7 +5122,7 @@ msgstr "Включены ли у вас cookies?"
 #: trac/web/main.py:229
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
-msgstr ""
+msgstr "Маркер формы отсутствует или неверен. %(msg)s"
 
 #: trac/web/main.py:527
 #, python-format
@@ -5134,11 +5144,11 @@ msgstr "На данный момент вы не вошли в систему. �
 msgid ""
 "Session '%(id)s' already exists.<br />Please choose a different session "
 "ID."
-msgstr ""
+msgstr "Сеанс '%(id)s' уже существует.<br />Выберите другой идентификатор сенаса. "
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
-msgstr "Ошибка при переименовании сессии"
+msgstr "Ошибка при переименовании сеанса"
 
 #: trac/web/session.py:312
 msgid "No SID found"
@@ -5154,7 +5164,7 @@ msgstr "Email"
 
 #: trac/web/session.py:318
 msgid "Session already exists. Unable to add a duplicate session."
-msgstr "Сессия уже существует. Невозможно добавить дубликат сессии."
+msgstr "Сеанс уже существует. Невозможно добавить дубликат сеанса."
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
@@ -5163,7 +5173,7 @@ msgstr ""
 #: trac/web/session.py:438
 #, python-format
 msgid "Session id %(sid)s not found"
-msgstr "Id сессии %(sid)s не найден"
+msgstr "Идентификатор сеанса %(sid)s не найден"
 
 #: trac/wiki/admin.py:116
 #, python-format
@@ -5361,7 +5371,7 @@ msgstr "Страница не найдена: %(name)s"
 
 #: trac/wiki/web_ui.py:631
 msgid "View latest version"
-msgstr "Текущая версия"
+msgstr "Просмотр последней версии"
 
 #: trac/wiki/web_ui.py:635
 msgid "View parent page"
@@ -5377,7 +5387,7 @@ msgstr "Следующая версия"
 
 #: trac/wiki/web_ui.py:645
 msgid "View Latest Version"
-msgstr "Просмотреть последнюю версию"
+msgstr "Просмотр последней версии"
 
 #: trac/wiki/web_ui.py:648
 msgid "Up"
