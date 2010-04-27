@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-25 02:05+0200\n"
+"PO-Revision-Date: 2010-04-27 19:37+0200\n"
 "Last-Translator: Felix Schwarz <felix.schwarz@oss.schwarz.eu>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -229,18 +229,21 @@ msgid ""
 "only replace your own attachments. Replacing other's attachments requires"
 " ATTACHMENT_DELETE permission."
 msgstr ""
+"Sie sind nicht berechtigt, den Anhang %(name)s zu ersetzen. Sie "
+"dürfen nur Ihre eigenen Anhänge ersetzen. Um Anhänge zu ersetzen, "
+"benötigen Sie die Berechtigung ATTACHMENT_DELETE."
 
 #: trac/attachment.py:691
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (löschen)"
 
-#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:633
+#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:637
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Reiner Text"
 
-#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:639
+#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:643
 msgid "Original Format"
 msgstr "Ursprüngliches Format"
 
@@ -1152,7 +1155,7 @@ msgid "Install Plugin:"
 msgstr "Plugin installieren:"
 
 #: trac/admin/templates/admin_plugins.html:47
-#: trac/versioncontrol/templates/changeset.html:168
+#: trac/versioncontrol/templates/changeset.html:170
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] "Datei:"
@@ -1175,7 +1178,7 @@ msgid "Install"
 msgstr "Installieren"
 
 #: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:51
-#: trac/versioncontrol/templates/changeset.html:140
+#: trac/versioncontrol/templates/changeset.html:142
 msgid "Author:"
 msgstr "Autor:"
 
@@ -1871,7 +1874,7 @@ msgid ""
 msgstr "Änderungen von [2:%(name)s] ab [1:Version %(new)s]"
 
 #: trac/templates/diff_view.html:43
-#: trac/versioncontrol/templates/changeset.html:134
+#: trac/versioncontrol/templates/changeset.html:136
 msgid "Timestamp:"
 msgstr "Zeitstempel:"
 
@@ -1894,30 +1897,30 @@ msgid "Comment:"
 msgstr "Kommentar:"
 
 #: trac/templates/diff_view.html:65
-#: trac/versioncontrol/templates/changeset.html:196
+#: trac/versioncontrol/templates/changeset.html:198
 #: trac/versioncontrol/templates/revisionlog.html:71
 msgid "Legend:"
 msgstr "Legende:"
 
 #: trac/templates/diff_view.html:67
-#: trac/versioncontrol/templates/changeset.html:198
+#: trac/versioncontrol/templates/changeset.html:200
 msgid "Unmodified"
 msgstr "Unverändert"
 
 #: trac/templates/diff_view.html:68
-#: trac/versioncontrol/templates/changeset.html:199
+#: trac/versioncontrol/templates/changeset.html:201
 #: trac/versioncontrol/templates/revisionlog.html:73
 msgid "Added"
 msgstr "Hinzugefügt"
 
 #: trac/templates/diff_view.html:69
-#: trac/versioncontrol/templates/changeset.html:200
+#: trac/versioncontrol/templates/changeset.html:202
 #: trac/versioncontrol/templates/revisionlog.html:75
 msgid "Removed"
 msgstr "Entfernt"
 
 #: trac/templates/diff_view.html:70 trac/ticket/api.py:325
-#: trac/versioncontrol/templates/changeset.html:202
+#: trac/versioncontrol/templates/changeset.html:204
 #: trac/versioncontrol/templates/revisionlog.html:77 trac/wiki/admin.py:200
 msgid "Modified"
 msgstr "Geändert"
@@ -2685,7 +2688,7 @@ msgstr "Seite %(num)d"
 
 #: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:216
-#: trac/versioncontrol/web_ui/log.py:303
+#: trac/versioncontrol/web_ui/log.py:304
 msgid "RSS Feed"
 msgstr "RSS-Feed"
 
@@ -3113,7 +3116,7 @@ msgstr "gesetzt"
 msgid "unset"
 msgstr "gelöscht"
 
-#: trac/ticket/web_ui.py:1580 trac/versioncontrol/templates/changeset.html:187
+#: trac/ticket/web_ui.py:1580 trac/versioncontrol/templates/changeset.html:189
 msgid "modified"
 msgstr "geändert"
 
@@ -3590,7 +3593,7 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:172
-#: trac/versioncontrol/templates/changeset.html:127
+#: trac/versioncontrol/templates/changeset.html:129
 msgid "previous"
 msgstr "vorher"
 
@@ -3952,8 +3955,8 @@ msgstr ""
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:347
 #: trac/versioncontrol/web_ui/changeset.py:247
-#: trac/versioncontrol/web_ui/changeset.py:1074
-#: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:393
+#: trac/versioncontrol/web_ui/changeset.py:1087
+#: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
 #, python-format
 msgid "Repository '%(repo)s' not found"
 msgstr "Repository %(repo)s nicht gefunden"
@@ -4041,9 +4044,9 @@ msgstr ""
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
 #: trac/versioncontrol/templates/admin_repositories.html:134
-#: trac/versioncontrol/web_ui/browser.py:809
-#: trac/versioncontrol/web_ui/changeset.py:853
-#: trac/versioncontrol/web_ui/changeset.py:995
+#: trac/versioncontrol/web_ui/browser.py:813
+#: trac/versioncontrol/web_ui/changeset.py:864
+#: trac/versioncontrol/web_ui/changeset.py:1006
 msgid "(default)"
 msgstr "(Standard)"
 
@@ -4389,47 +4392,47 @@ msgstr "Änderungen anzeigen..."
 msgid "Select paths and revs for Diff"
 msgstr "Pfade und Revisions für Diff auswählen"
 
-#: trac/versioncontrol/templates/changeset.html:34
-#: trac/versioncontrol/templates/changeset.html:44
+#: trac/versioncontrol/templates/changeset.html:36
 #: trac/versioncontrol/templates/changeset.html:46
-#: trac/versioncontrol/templates/changeset.html:56
-#: trac/versioncontrol/templates/changeset.html:66
+#: trac/versioncontrol/templates/changeset.html:48
+#: trac/versioncontrol/templates/changeset.html:58
 #: trac/versioncontrol/templates/changeset.html:68
+#: trac/versioncontrol/templates/changeset.html:70
 msgid "Show full changeset"
 msgstr "vollständiges Changeset anzeigen"
 
-#: trac/versioncontrol/templates/changeset.html:35
-#: trac/versioncontrol/templates/changeset.html:38
-#: trac/versioncontrol/templates/changeset.html:43
+#: trac/versioncontrol/templates/changeset.html:37
+#: trac/versioncontrol/templates/changeset.html:40
 #: trac/versioncontrol/templates/changeset.html:45
-#: trac/versioncontrol/templates/changeset.html:57
-#: trac/versioncontrol/templates/changeset.html:60
-#: trac/versioncontrol/templates/changeset.html:65
+#: trac/versioncontrol/templates/changeset.html:47
+#: trac/versioncontrol/templates/changeset.html:59
+#: trac/versioncontrol/templates/changeset.html:62
 #: trac/versioncontrol/templates/changeset.html:67
-#: trac/versioncontrol/templates/changeset.html:103
+#: trac/versioncontrol/templates/changeset.html:69
+#: trac/versioncontrol/templates/changeset.html:105
 msgid "Show entry in browser"
 msgstr "Eintrag im Quellcode-Browser anzeigen"
 
-#: trac/versioncontrol/templates/changeset.html:33
+#: trac/versioncontrol/templates/changeset.html:35
 #, python-format
 msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:39
-#: trac/versioncontrol/templates/changeset.html:61
+#: trac/versioncontrol/templates/changeset.html:41
+#: trac/versioncontrol/templates/changeset.html:63
 msgid "Show revision log"
 msgstr "Änderungshistorie anzeigen"
 
-#: trac/versioncontrol/templates/changeset.html:37
+#: trac/versioncontrol/templates/changeset.html:39
 #, python-format
 msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:41
+#: trac/versioncontrol/templates/changeset.html:43
 #, python-format
 msgid ""
 "Changes in %(reponame)s\n"
@@ -4439,26 +4442,26 @@ msgid ""
 "              at [4:r%(new_rev)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:48
+#: trac/versioncontrol/templates/changeset.html:50
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
 msgstr "Changeset [1:%(new_rev)s] in %(reponame)s"
 
-#: trac/versioncontrol/templates/changeset.html:55
+#: trac/versioncontrol/templates/changeset.html:57
 #, python-format
 msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:59
+#: trac/versioncontrol/templates/changeset.html:61
 #, python-format
 msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:63
+#: trac/versioncontrol/templates/changeset.html:65
 #, python-format
 msgid ""
 "Changes\n"
@@ -4468,132 +4471,132 @@ msgid ""
 "              at [4:r%(new_rev)s]"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:70
+#: trac/versioncontrol/templates/changeset.html:72
 #, python-format
 msgid "Changeset [1:%(new_rev)s]"
 msgstr "Changeset [1:%(new_rev)s]"
 
-#: trac/versioncontrol/templates/changeset.html:99
+#: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:104
+#: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:110
+#: trac/versioncontrol/templates/changeset.html:112
 #, python-format
 msgid "Show original file (revision %(old_rev)s)"
 msgstr "Ursprüngliche Datei anzeigen (Revision %(old_rev)s)"
 
-#: trac/versioncontrol/templates/changeset.html:109
+#: trac/versioncontrol/templates/changeset.html:111
 #, python-format
 msgid ""
 "(%(kind)s from [1:\n"
 "                %(old_path)s])"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:117
-#: trac/versioncontrol/templates/changeset.html:120
+#: trac/versioncontrol/templates/changeset.html:119
+#: trac/versioncontrol/templates/changeset.html:122
 msgid "Show differences"
 msgstr "Unterschiede anzeigen"
 
-#: trac/versioncontrol/templates/changeset.html:117
+#: trac/versioncontrol/templates/changeset.html:119
 msgid "view diffs"
 msgstr "Diffs anzeigen"
 
-#: trac/versioncontrol/templates/changeset.html:120
+#: trac/versioncontrol/templates/changeset.html:122
 #, python-format
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/templates/changeset.html:123
+#: trac/versioncontrol/templates/changeset.html:125
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/templates/changeset.html:127
+#: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
 msgstr "Vorherige Version im Quellcode-Browser anzeigen"
 
-#: trac/versioncontrol/templates/changeset.html:137
+#: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:138
+#: trac/versioncontrol/templates/changeset.html:140
 #, python-format
 msgid "(%(age)s ago)"
 msgstr ""
 
-#: trac/versioncontrol/templates/changeset.html:152
+#: trac/versioncontrol/templates/changeset.html:154
 msgid "Message:"
 msgstr "Nachricht:"
 
-#: trac/versioncontrol/templates/changeset.html:164
+#: trac/versioncontrol/templates/changeset.html:166
 msgid "Location:"
 msgstr "Ort:"
 
-#: trac/versioncontrol/templates/changeset.html:168
+#: trac/versioncontrol/templates/changeset.html:170
 msgid "(No files)"
 msgstr "(keine Dateien)"
 
-#: trac/versioncontrol/templates/changeset.html:173
+#: trac/versioncontrol/templates/changeset.html:175
 #, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
 msgstr[0] "%(num)d hinzugefügt"
 msgstr[1] "%(num)d hinzugefügt"
 
-#: trac/versioncontrol/templates/changeset.html:174
+#: trac/versioncontrol/templates/changeset.html:176
 #, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
 msgstr[0] "%(num)d gelöscht"
 msgstr[1] "%(num)d gelöscht"
 
-#: trac/versioncontrol/templates/changeset.html:175
+#: trac/versioncontrol/templates/changeset.html:177
 #, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
 msgstr[0] "%(num)d bearbeitet"
 msgstr[1] "%(num)d bearbeitet"
 
-#: trac/versioncontrol/templates/changeset.html:176
+#: trac/versioncontrol/templates/changeset.html:178
 #, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
 msgstr[0] "%(num)d kopiert"
 msgstr[1] "%(num)d kopiert"
 
-#: trac/versioncontrol/templates/changeset.html:177
+#: trac/versioncontrol/templates/changeset.html:179
 #, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
 msgstr[0] "%(num)d verschoben"
 msgstr[1] "%(num)d verschoben"
 
-#: trac/versioncontrol/templates/changeset.html:183
+#: trac/versioncontrol/templates/changeset.html:185
 msgid "added"
 msgstr "hinzugefügt"
 
-#: trac/versioncontrol/templates/changeset.html:184
+#: trac/versioncontrol/templates/changeset.html:186
 msgid "deleted"
 msgstr "gelöscht"
 
-#: trac/versioncontrol/templates/changeset.html:185
+#: trac/versioncontrol/templates/changeset.html:187
 msgid "copied"
 msgstr "kopiert"
 
-#: trac/versioncontrol/templates/changeset.html:186
+#: trac/versioncontrol/templates/changeset.html:188
 msgid "moved"
 msgstr "verschoben"
 
-#: trac/versioncontrol/templates/changeset.html:209
+#: trac/versioncontrol/templates/changeset.html:211
 msgid ""
 "[1:Note:] See [2:TracChangeset]\n"
 "          for help on using the changeset viewer."
@@ -4665,12 +4668,12 @@ msgstr "Changeset anzeigen"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:94
-#: trac/versioncontrol/web_ui/browser.py:753
+#: trac/versioncontrol/web_ui/browser.py:757
 msgid "Rev"
 msgstr "Rev"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:12
-#: trac/versioncontrol/web_ui/browser.py:441
+#: trac/versioncontrol/web_ui/browser.py:445
 msgid "Last Change"
 msgstr "Letzte Änderung"
 
@@ -4773,13 +4776,13 @@ msgstr "kopiert von"
 
 #: trac/versioncontrol/templates/revisionlog.html:124
 #, python-format
-msgid "From r%(rev)s"
-msgstr ""
+msgid "From [%(rev)s]"
+msgstr "Von r%(rev)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:127
 #, python-format
-msgid "To r%(rev)s"
-msgstr "Zu r%(rev)s"
+msgid "To [%(rev)s]"
+msgstr "bis r%(rev)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:133
 msgid "View log starting at this revision"
@@ -4833,46 +4836,46 @@ msgstr ""
 msgid "Browse Source"
 msgstr "Quellen durchsehen"
 
-#: trac/versioncontrol/web_ui/browser.py:369
+#: trac/versioncontrol/web_ui/browser.py:370
 msgid "Invalid changeset number"
 msgstr "Ungültige Changeset-Nummer"
 
-#: trac/versioncontrol/web_ui/browser.py:424
-#: trac/versioncontrol/web_ui/browser.py:434
+#: trac/versioncontrol/web_ui/browser.py:428
+#: trac/versioncontrol/web_ui/browser.py:438
 #, python-format
 msgid "Revision %(num)s"
 msgstr "Revision %(num)s"
 
-#: trac/versioncontrol/web_ui/browser.py:435
+#: trac/versioncontrol/web_ui/browser.py:439
 msgid "Previous Revision"
 msgstr "Vorige Revision"
 
-#: trac/versioncontrol/web_ui/browser.py:435
+#: trac/versioncontrol/web_ui/browser.py:439
 msgid "Next Revision"
 msgstr "Nächste Revision"
 
-#: trac/versioncontrol/web_ui/browser.py:436
+#: trac/versioncontrol/web_ui/browser.py:440
 msgid "Latest Revision"
 msgstr "Letzte Revision"
 
-#: trac/versioncontrol/web_ui/browser.py:440
-#: trac/versioncontrol/web_ui/log.py:299
+#: trac/versioncontrol/web_ui/browser.py:444
+#: trac/versioncontrol/web_ui/log.py:300
 msgid "Parent directory"
 msgstr "Übergeordnetes Verzeichnis"
 
-#: trac/versioncontrol/web_ui/browser.py:446
+#: trac/versioncontrol/web_ui/browser.py:450
 msgid "Normal"
 msgstr "Normal"
 
-#: trac/versioncontrol/web_ui/browser.py:447
+#: trac/versioncontrol/web_ui/browser.py:451
 msgid "View file without annotations"
 msgstr "Datei ohne Markierungen anzeigen"
 
-#: trac/versioncontrol/web_ui/browser.py:452
+#: trac/versioncontrol/web_ui/browser.py:456
 msgid "Annotate"
 msgstr "Markieren"
 
-#: trac/versioncontrol/web_ui/browser.py:453
+#: trac/versioncontrol/web_ui/browser.py:457
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
@@ -4880,24 +4883,24 @@ msgstr ""
 "Jede Zeile mit der Revision der letzten Änderung markieren (dies kann "
 "lange dauern)"
 
-#: trac/versioncontrol/web_ui/browser.py:460
+#: trac/versioncontrol/web_ui/browser.py:464
 msgid "Revision Log"
 msgstr "Änderungshistorie"
 
-#: trac/versioncontrol/web_ui/browser.py:466
+#: trac/versioncontrol/web_ui/browser.py:470
 msgid "Repository URL"
 msgstr "Repository-URL"
 
-#: trac/versioncontrol/web_ui/browser.py:580
+#: trac/versioncontrol/web_ui/browser.py:584
 #: trac/versioncontrol/web_ui/changeset.py:362
 msgid "Zip Archive"
 msgstr "Zip-Archiv"
 
-#: trac/versioncontrol/web_ui/browser.py:753
+#: trac/versioncontrol/web_ui/browser.py:757
 msgid "Revision in which the line changed"
 msgstr "Version, in der die Zeile geändert wurde"
 
-#: trac/versioncontrol/web_ui/browser.py:811
+#: trac/versioncontrol/web_ui/browser.py:815
 #, python-format
 msgid "View repository %(repo)s"
 msgstr "Repository %(repo)s ansehen"
@@ -4931,76 +4934,91 @@ msgstr "Nächstes Changeset"
 msgid "Reverse Diff"
 msgstr "Umgekehrtes Diff"
 
-#: trac/versioncontrol/web_ui/changeset.py:410
+#: trac/versioncontrol/web_ui/changeset.py:413
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
 msgstr "Changeset %(id)s für %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:413
-#: trac/versioncontrol/web_ui/changeset.py:439
-#: trac/versioncontrol/web_ui/changeset.py:460
+#: trac/versioncontrol/web_ui/changeset.py:416
+#: trac/versioncontrol/web_ui/changeset.py:442
+#: trac/versioncontrol/web_ui/changeset.py:464
 #, python-format
 msgid "Changeset %(id)s"
 msgstr "Changeset %(id)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:486
+#: trac/versioncontrol/web_ui/changeset.py:491
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
 msgstr "Revision %(rev)s dieser Datei im Quellcode-Browser anzeigen"
 
-#: trac/versioncontrol/web_ui/changeset.py:632
+#: trac/versioncontrol/web_ui/changeset.py:637
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr "Changeset %(id)s anzeigen, begrenzt auf %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:643
+#: trac/versioncontrol/web_ui/changeset.py:649
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "Änderungen %(range)s anzeigen, begrenzt auf %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:859
+#. TRANSLATOR: 'latest' (revision)
+#: trac/versioncontrol/web_ui/changeset.py:789
+msgid "latest"
+msgstr "neueste"
+
+#: trac/versioncontrol/web_ui/changeset.py:792
+#, python-format
+msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
+msgstr "Diff [%(old_rev)s:%(new_rev)s] für %(path)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:798
+#, python-format
+msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
+msgstr "Diff von %(old_path)s@%(old_rev)s zu %(new_path)s@%(new_rev)s"
+
+#: trac/versioncontrol/web_ui/changeset.py:870
 msgid "Changesets in all repositories"
 msgstr "Changesets in allen Repositorys"
 
-#: trac/versioncontrol/web_ui/changeset.py:861
+#: trac/versioncontrol/web_ui/changeset.py:872
 msgid "Repository changesets"
 msgstr "Repository-Changesets"
 
-#: trac/versioncontrol/web_ui/changeset.py:999
+#: trac/versioncontrol/web_ui/changeset.py:1010
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "Changeset in %(repo)s "
 msgstr[1] "Changesets in %(repo)s "
 
-#: trac/versioncontrol/web_ui/changeset.py:1001
+#: trac/versioncontrol/web_ui/changeset.py:1012
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Changeset"
 msgstr[1] "Changesets"
 
-#: trac/versioncontrol/web_ui/changeset.py:1010
+#: trac/versioncontrol/web_ui/changeset.py:1023
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1070
+#: trac/versioncontrol/web_ui/changeset.py:1083
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 "Unzureichende Berechtigungen vorhanden, um Changeset %(rev)s in %(repos)s"
 " anzusehen"
 
-#: trac/versioncontrol/web_ui/changeset.py:1076
-#: trac/versioncontrol/web_ui/log.py:395
+#: trac/versioncontrol/web_ui/changeset.py:1089
+#: trac/versioncontrol/web_ui/log.py:397
 msgid "No default repository defined"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1115
+#: trac/versioncontrol/web_ui/changeset.py:1128
 msgid "Changesets"
 msgstr "Changesets"
 
-#: trac/versioncontrol/web_ui/log.py:196
+#: trac/versioncontrol/web_ui/log.py:199
 #, python-format
 msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
@@ -5009,28 +5027,28 @@ msgstr ""
 "Die Datei oder das Verzeichnis '%(path)s' existiert nicht in Revision "
 "%(rev)s oder in früheren Revisions."
 
-#: trac/versioncontrol/web_ui/log.py:198
+#: trac/versioncontrol/web_ui/log.py:199
 msgid "Nonexistent path"
 msgstr "Nicht existenter Pfad"
 
-#: trac/versioncontrol/web_ui/log.py:225
+#: trac/versioncontrol/web_ui/log.py:227
 #, python-format
 msgid "Revision Log (restarting at %(path)s, rev. %(rev)s)"
 msgstr "Änderungshistorie (Neustart bei %(path)s, Revision %(rev)s)"
 
-#: trac/versioncontrol/web_ui/log.py:307
+#: trac/versioncontrol/web_ui/log.py:308
 msgid "ChangeLog"
 msgstr "ChangeLog"
 
-#: trac/versioncontrol/web_ui/log.py:309
+#: trac/versioncontrol/web_ui/log.py:310
 msgid "View Latest Revision"
 msgstr "Neueste Revision anzeigen"
 
-#: trac/versioncontrol/web_ui/log.py:313
+#: trac/versioncontrol/web_ui/log.py:314
 msgid "Older Revisions"
 msgstr "Ältere Revisions"
 
-#: trac/versioncontrol/web_ui/log.py:391
+#: trac/versioncontrol/web_ui/log.py:393
 msgid "No permission to view change log"
 msgstr "Keine Berechtigung, die Änderungshistorie anzuzeigen"
 
@@ -5203,7 +5221,7 @@ msgstr "Gelöschte Wiki-Seiten"
 msgid "'%(name)s' is not a directory"
 msgstr "'%(name)s' ist kein Verzeichnis"
 
-#: trac/wiki/api.py:360
+#: trac/wiki/api.py:361
 msgid "no permission to view this wiki page"
 msgstr "keine Berechtigung, diese Wiki-Seite anzuzeigen"
 
