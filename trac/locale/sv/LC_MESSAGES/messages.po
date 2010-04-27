@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-26 21:01+0200\n"
+"PO-Revision-Date: 2010-04-27 20:36+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2203,7 +2203,7 @@ msgstr "Försök"
 
 #: trac/templates/preview_file.html:29
 msgid "downloading"
-msgstr "laddar ner"
+msgstr "ladda ner"
 
 #: trac/templates/preview_file.html:29
 msgid "the file instead."
