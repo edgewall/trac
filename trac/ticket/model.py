@@ -646,7 +646,6 @@ class AbstractEnum(object):
         if not self.ticket_col:
             self.ticket_col = self.type
         self.env = env
-        name = simplify_whitespace(name)
         if name:
             if not db:
                 db = self.env.get_db_cnx()
@@ -795,7 +794,6 @@ class Component(object):
 
     def __init__(self, env, name=None, db=None):
         self.env = env
-        name = simplify_whitespace(name)
         if name:
             if not db:
                 db = self.env.get_db_cnx()
@@ -899,7 +897,6 @@ class Milestone(object):
 
     def __init__(self, env, name=None, db=None):
         self.env = env
-        name = simplify_whitespace(name)
         if name:
             self._fetch(name, db)
         else:
@@ -1068,7 +1065,6 @@ class Version(object):
 
     def __init__(self, env, name=None, db=None):
         self.env = env
-        name = simplify_whitespace(name)
         if name:
             if not db:
                 db = self.env.get_db_cnx()
