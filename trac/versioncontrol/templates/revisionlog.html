@@ -83,7 +83,7 @@
       <form py:for="items in item_ranges" class="printableform" action="${href.changeset()}" method="get">
         <div class="buttons">
           <input type="hidden" name="reponame" value="$reponame" />
-          <input type="submit" value="View changes"
+          <input type="submit" value="${_('View changes')}"
             title="Diff from Old Revision to New Revision (as selected in the Diff column)" />
         </div>
         <table class="listing chglist">

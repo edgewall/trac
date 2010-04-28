@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-04-26 09:50+0200\n"
+"POT-Creation-Date: 2010-04-28 08:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -304,11 +304,11 @@ msgstr ""
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr ""
 
-#: trac/env.py:587
+#: trac/env.py:583
 msgid "Database newer than Trac version"
 msgstr ""
 
-#: trac/env.py:601
+#: trac/env.py:600
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr ""
@@ -1167,25 +1167,25 @@ msgstr ""
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:153
+#: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:157
+#: trac/db/sqlite_backend.py:158
 msgid "Need at least PySqlite 2.0.7 or higher"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:181
+#: trac/db/sqlite_backend.py:182
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr ""
 
-#: trac/db/sqlite_backend.py:241
+#: trac/db/sqlite_backend.py:242
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr ""
 
-#: trac/db/sqlite_backend.py:250
+#: trac/db/sqlite_backend.py:251
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1945,6 +1945,7 @@ msgstr ""
 
 #: trac/templates/history_view.html:21 trac/templates/history_view.html:54
 #: trac/versioncontrol/templates/diff_form.html:58
+#: trac/versioncontrol/templates/revisionlog.html:86
 #: trac/versioncontrol/templates/revisionlog.html:180
 msgid "View changes"
 msgstr ""
