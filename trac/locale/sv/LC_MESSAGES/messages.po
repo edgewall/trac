@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-28 12:49+0200\n"
+"PO-Revision-Date: 2010-04-28 22:25+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -81,7 +81,7 @@ msgstr "Är du säker på att du vill ta bort detta ärende?"
 
 #: tracopt/ticket/templates/ticket_delete.html:32
 msgid "(comments:"
-msgstr "(kommentar:"
+msgstr "(kommentarer:"
 
 #: tracopt/ticket/templates/ticket_delete.html:33
 msgid ""
@@ -144,7 +144,7 @@ msgstr "Felaktig bilaga"
 
 #: trac/attachment.py:192
 msgid "Could not delete attachment"
-msgstr "Kunde inte ta bort bilaga"
+msgstr "Kunde ej ta bort bilaga"
 
 #: trac/attachment.py:208
 #, python-format
@@ -158,7 +158,7 @@ msgstr ""
 #: trac/attachment.py:227
 #, python-format
 msgid "Could not reparent attachment %(name)s"
-msgstr "Kunde inte koppla bilagan %(name)s"
+msgstr "Kunde ej koppla bilagan %(name)s"
 
 #: trac/attachment.py:344
 #, python-format
@@ -201,7 +201,7 @@ msgstr "Ingen fil uppladdad"
 
 #: trac/attachment.py:617
 msgid "Can't upload empty file"
-msgstr "Går ej att ladda upp en tom fil"
+msgstr "Tom fil kan ej laddas upp"
 
 #: trac/attachment.py:622
 #, python-format
@@ -465,7 +465,7 @@ msgstr "%(name)s i version %(version)s"
 
 #: trac/admin/api.py:129 trac/admin/console.py:254
 msgid "Command not found"
-msgstr "Kommandot hittades inte"
+msgstr "Kommandot hittades ej"
 
 #: trac/admin/console.py:111 trac/ticket/templates/report_edit.html:34
 msgid "Error:"
@@ -491,7 +491,7 @@ msgstr ""
 #: trac/admin/console.py:164
 #, python-format
 msgid "Failed to open environment: %(err)s"
-msgstr "Det gick inte att öppna miljön: %(err)s"
+msgstr "Trac-miljön kunde inte öppnas: %(err)s"
 
 #: trac/admin/console.py:234
 #, python-format
@@ -610,7 +610,7 @@ msgid ""
 msgstr ""
 "\n"
 "---------------------------------------------------------------------\n"
-"Varning: kunde inte indexera standardförrådet.\n"
+"Varning: kunde ej indexera standardförrådet.\n"
 "\n"
 "Detta kan hända av olika skäl: fel typ av förråd, \n"
 "inget lämpligt tredjepartstillägg för denna typ av förråd,\n"
@@ -676,7 +676,7 @@ msgstr ""
 #: trac/admin/console.py:536
 #, python-format
 msgid "non-ascii environment path '%(path)s' not supported."
-msgstr "tecken utanför ASCII-området i miljöns sökväg \"%(path)s\" stöds inte."
+msgstr "tecken utanför ASCII-området i miljöns sökväg \"%(path)s\" stöds ej."
 
 #: trac/admin/web_ui.py:64
 msgid "Admin"
@@ -707,7 +707,7 @@ msgid ""
 "Your changes have not been saved."
 msgstr ""
 "Fel vid skrivning av \"trac.ini\", kontrollera att den är skrivbar av "
-"webbservern. Dina ändringar har inte blivit sparade."
+"webbservern. Dina ändringar har ej blivit sparade."
 
 #: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
@@ -1131,7 +1131,7 @@ msgid ""
 "names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"får ej innehålla versaler endast, då detta reserverats åt namn på "
+"får ej bestå av enbart versaler, då detta reserverats åt namn på "
 "behörigheter."
 
 #: trac/admin/templates/admin_plugins.html:41
@@ -1153,9 +1153,7 @@ msgstr[1] "Filer:"
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
-msgstr ""
-"Webbservern inte har tillräckliga behörigheter för att lagra filer i "
-"Trac-miljöns tilläggskatalog."
+msgstr "Webbservern är ej behörig att lagra filer i Trac-miljöns tilläggskatalog."
 
 #: trac/admin/templates/admin_plugins.html:56
 msgid "Upload a plugin packaged as Python egg."
@@ -1247,20 +1245,20 @@ msgstr ""
 
 #: trac/db/mysql_backend.py:80
 msgid "Cannot load Python bindings for MySQL"
-msgstr "Kan ej ladda Pythonbindningar för MySQL"
+msgstr "Kunde inte ladda Pythonbindningar för MySQL"
 
 #: trac/db/pool.py:118
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr "Fick ej kontakt med databasen inom %(time)d sekunder"
+msgstr "Fick ingen kontakt med databasen inom %(time)d sekunder"
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
-msgstr "Kan ej ladda Pythonbindningar för PostgreSQL"
+msgstr "Kunde inte ladda Pythonbindningar för PostgreSQL"
 
 #: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
-msgstr "Kan ej ladda Pythonbindningar för SQLite"
+msgstr "Kunde inte ladda Pythonbindningar för SQLite"
 
 #: trac/db/sqlite_backend.py:158
 msgid "Need at least PySqlite 2.0.7 or higher"
@@ -1274,7 +1272,7 @@ msgstr "En databas finns redan i %(path)s"
 #: trac/db/sqlite_backend.py:242
 #, python-format
 msgid "Database \"%(path)s\" not found."
-msgstr "Databasen \"%(path)s\" hittades inte."
+msgstr "Databasen \"%(path)s\" hittades ej."
 
 #: trac/db/sqlite_backend.py:251
 #, python-format
@@ -2284,11 +2282,11 @@ msgstr "Milstolpe"
 
 #: trac/ticket/admin.py:270 trac/ticket/roadmap.py:663
 msgid "Completion date may not be in the future"
-msgstr "Slutdatum får inte vara i framtiden"
+msgstr "Avklarat datum får ej vara framtida"
 
 #: trac/ticket/admin.py:272
 msgid "Invalid Completion Date"
-msgstr "Ogiltigt slutdatum"
+msgstr "Ogiltigt datum"
 
 #: trac/ticket/admin.py:299
 #, python-format
@@ -2356,7 +2354,7 @@ msgstr "%(type)s med värdet \"%(name)s\" finns redan"
 #: trac/ticket/admin.py:642
 #, python-format
 msgid "No %s selected"
-msgstr "%s ej vald/valt"
+msgstr "Ingen %s vald/valt"
 
 #: trac/ticket/admin.py:650
 #, python-format
@@ -2368,8 +2366,8 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
-"Fel, kan inte skriva till \"trac.ini\", kontrollera att den är skrivbar "
-"av webbservern. Förvalda värden har inte blivit sparade."
+"Fel, kunde inte skriva till \"trac.ini\", kontrollera att den är skrivbar"
+" av webbservern. Förvalda värden har ej blivit sparade."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -2466,7 +2464,7 @@ msgstr "Ärende #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:225
 msgid "Current state no longer exists"
-msgstr "Nuvarande status finns inte längre"
+msgstr "Nuvarande status existerar ej längre"
 
 #: trac/ticket/default_workflow.py:227
 msgid "The ticket will be disowned"
@@ -2537,7 +2535,7 @@ msgstr "Status blir \"%(name)s\""
 #: trac/ticket/model.py:105
 #, python-format
 msgid "Ticket %(id)s does not exist."
-msgstr "Ärendet %(id)s finns inte."
+msgstr "Ärende %(id)s existerar ej."
 
 #: trac/ticket/model.py:106
 msgid "Invalid ticket number"
@@ -2545,12 +2543,12 @@ msgstr "Ogiltigt ärendenummer"
 
 #: trac/ticket/model.py:143
 msgid "Multi-values fields not supported yet"
-msgstr "Multivärdesfält stöds inte ännu"
+msgstr "Multivärdesfält stöds ej ännu"
 
 #: trac/ticket/model.py:658
 #, python-format
 msgid "%(type)s %(name)s does not exist."
-msgstr "%(type)s %(name)s finns inte."
+msgstr "%(type)s %(name)s existerar ej."
 
 #: trac/ticket/model.py:702 trac/ticket/model.py:729
 #, python-format
@@ -2560,12 +2558,12 @@ msgstr "Ogiltligt %(type)s namn."
 #: trac/ticket/model.py:808
 #, python-format
 msgid "Component %(name)s does not exist."
-msgstr "Komponent %(name)s finns inte."
+msgstr "Komponent %(name)s existerar ej."
 
 #: trac/ticket/model.py:925
 #, python-format
 msgid "Milestone %(name)s does not exist."
-msgstr "Milstolpen %(name)s finns inte."
+msgstr "Milstolpen %(name)s existerar ej."
 
 #: trac/ticket/model.py:926
 msgid "Invalid milestone name"
@@ -2586,7 +2584,7 @@ msgstr "Stängd"
 #: trac/ticket/model.py:1081
 #, python-format
 msgid "Version %(name)s does not exist."
-msgstr "Version %(name)s finns inte."
+msgstr "Version %(name)s existerar ej."
 
 #: trac/ticket/query.py:54
 msgid "Invalid query constraint value"
@@ -2626,7 +2624,7 @@ msgstr "innehåller"
 
 #: trac/ticket/query.py:663 trac/ticket/query.py:671
 msgid "doesn't contain"
-msgstr "innehåller inte"
+msgstr "innehåller ej"
 
 #: trac/ticket/query.py:664
 msgid "begins with"
@@ -2722,7 +2720,7 @@ msgstr "Ta bort rapport (%(num)s) %(title)s"
 #: trac/ticket/report.py:296
 #, python-format
 msgid "Report {%(num)s} does not exist."
-msgstr "Rapport %(num)s finns inte."
+msgstr "Rapport %(num)s existerar ej."
 
 #: trac/ticket/report.py:205 trac/ticket/report.py:218
 #: trac/ticket/report.py:297
@@ -2847,7 +2845,7 @@ msgstr "Nytt ärende"
 
 #: trac/ticket/web_ui.py:168
 msgid "id can't be set for a new ticket request."
-msgstr "id kan inte sättas för en ny ärendebegäran."
+msgstr "id kan ej sättas för ett nytt ärende."
 
 #: trac/ticket/web_ui.py:231
 msgid "Opened and closed tickets"
@@ -2989,7 +2987,7 @@ msgstr "Inte behörig att ändra ärendefält."
 
 #: trac/ticket/web_ui.py:1102
 msgid "No permissions to add a comment."
-msgstr "Inte behörig att lägga till en kommentar."
+msgstr "Ej behörig att lägga till en kommentar."
 
 #: trac/ticket/web_ui.py:1108
 msgid ""
@@ -4038,8 +4036,8 @@ msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
-"Kunde inte att synkronisera med förrådet \"%(name)s\" (%(error)s). Se "
-"loggfilen för mer information."
+"Kunde ej synkronisera med förrådet \"%(name)s\" (%(error)s). Se loggfilen"
+" för mer information."
 
 #: trac/versioncontrol/api.py:350
 #, python-format
@@ -4089,8 +4087,8 @@ msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
-"Versionshanteringssystemet \"%(name)s\": Det går inte att hitta en "
-"lämplig komponent, har motsvarande tillägg aktiverats? "
+"Versionshanteringssystemet \"%(name)s\" stöds ej: Det går inte att hitta "
+"en lämplig komponent, har motsvarande tillägg aktiverats? "
 
 #: trac/versioncontrol/api.py:664
 #, python-format
@@ -4146,7 +4144,7 @@ msgstr "%(path)s verkar inte vara ett Subversion-förråd."
 #: trac/versioncontrol/svn_fs.py:337
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
-msgstr "Kunde inte öppna Subversion-förrådet %(path)s: %(svn_error)s"
+msgstr "Kunde ej öppna Subversion-förrådet %(path)s: %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
@@ -4169,7 +4167,7 @@ msgstr "Inga svn:externals konfigurerade i trac.ini"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "merged"
-msgstr "hopslagen"
+msgstr "sammanslagna"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "blocked"
@@ -4177,7 +4175,7 @@ msgstr "blockerad"
 
 #: trac/versioncontrol/svn_prop.py:192
 msgid "eligible"
-msgstr "valbar"
+msgstr "kvalificerad"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
@@ -4185,7 +4183,7 @@ msgstr "(visa/dölj borttagna grenar)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
-msgstr "Visa hopslagna grenar"
+msgstr "Visa sammanslagna grenar"
 
 #: trac/versioncontrol/svn_prop.py:245
 msgid "No revisions"
@@ -4193,7 +4191,7 @@ msgstr "Inga revisioner"
 
 #: trac/versioncontrol/svn_prop.py:281
 msgid "merged: "
-msgstr "hopslagning:"
+msgstr "sammanslagen:"
 
 #: trac/versioncontrol/svn_prop.py:281
 msgid "blocked: "
@@ -4201,7 +4199,7 @@ msgstr "blockerad: "
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "reverse-merged: "
-msgstr "reverserad hopslagning: "
+msgstr "omvänt sammanslagen: "
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "un-blocked: "
@@ -4217,7 +4215,7 @@ msgstr "borttagen"
 
 #: trac/versioncontrol/svn_prop.py:324
 msgid " (with no actual effect on merging)"
-msgstr " (utan effekt vid hopslagning)"
+msgstr " (utan effekt vid sammanslagning)"
 
 #: trac/versioncontrol/svn_prop.py:325
 #, python-format
@@ -4832,19 +4830,17 @@ msgstr "Normal"
 
 #: trac/versioncontrol/web_ui/browser.py:451
 msgid "View file without annotations"
-msgstr "Visa fil utan kommentering"
+msgstr "Visa fil utan radvis revisionsmärkning"
 
 #: trac/versioncontrol/web_ui/browser.py:456
 msgid "Annotate"
-msgstr "Kommentera"
+msgstr "Radvis revisionsmärkning"
 
 #: trac/versioncontrol/web_ui/browser.py:457
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
-msgstr ""
-"Kommentera varje rad med dess senaste revision (detta kan vara "
-"tidskrävande...)"
+msgstr "Visa senaste revision för varje rad (detta kan vara tidskrävande...)"
 
 #: trac/versioncontrol/web_ui/browser.py:464
 msgid "Revision Log"
@@ -4871,7 +4867,7 @@ msgstr "Visa förrådet %(repo)s"
 #: trac/versioncontrol/web_ui/changeset.py:240
 #, python-format
 msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
-msgstr "Kan ej jämföra mellan olika förråd: %(old)s jfr. %(new)s"
+msgstr "Jämförelser ej möjliga mellan olika förråd: %(old)s jfr. %(new)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
@@ -4985,8 +4981,8 @@ msgid ""
 "The file or directory '%(path)s' doesn't exist at revision %(rev)s or at "
 "any previous revision."
 msgstr ""
-"Filen eller katalogen \"%(path)s\" existerar inte i revision %(rev)s, ej "
-"eller i någon tidigare revision."
+"Filen eller katalogen \"%(path)s\" existerar ej i revision %(rev)s eller "
+"i någon tidigare revision."
 
 #: trac/versioncontrol/web_ui/log.py:199
 msgid "Nonexistent path"
@@ -5139,11 +5135,11 @@ msgstr "E-post"
 
 #: trac/web/session.py:318
 msgid "Session already exists. Unable to add a duplicate session."
-msgstr "Sessionen existerar redan. Kan inte duplicera sessionen."
+msgstr "Sessionen existerar redan, kan ej duplicera den."
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
-msgstr "Kan ej sätta sessionsattribut för icke-existerade SID"
+msgstr "Kan ej sätta sessionsattribut för ett icke-existerade SID"
 
 #: trac/web/session.py:438
 #, python-format
@@ -5534,7 +5530,7 @@ msgid ""
 "            editing. Your changes cannot be saved."
 msgstr ""
 "Den här sidan har ändrats av någon annan efter att du påbörjade din "
-"redigering. Dina ändringar kan inte sparas."
+"redigering. Dina ändringar kan ej sparas."
 
 #: trac/wiki/templates/wiki_edit_form.html:16
 msgid "Adjust edit area height:"
