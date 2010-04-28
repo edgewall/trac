@@ -326,7 +326,9 @@ class BrowserModule(Component):
             req.redirect(go_to_preselected)
 
         path = req.args.get('path', '/')
-        rev = req.args.get('rev', None)
+        rev = req.args.get('rev', '')
+        if rev in ('', 'HEAD'):
+            rev = None
         order = req.args.get('order', 'name').lower()
         desc = req.args.has_key('desc')
         xhr = req.get_header('X-Requested-With') == 'XMLHttpRequest'
@@ -613,6 +615,10 @@ class BrowserModule(Component):
                             format == 'txt' and 'text/plain' or mime_type)
             req.send_header('Content-Length', node.content_length)
             req.send_header('Last-Modified', http_date(node.last_modified))
+            if rev is None:
+                req.send_header('Pragma', 'no-cache')
+                req.send_header('Cache-Control', 'no-cache')
+                req.send_header('Expires', 'Fri, 01 Jan 1999 00:00:00 GMT')
             if not self.render_unsafe_content:
                 # Force browser to download files instead of rendering
                 # them, since they might contain malicious code enabling 
@@ -732,7 +738,7 @@ class BrowserModule(Component):
         elif '@' in export:
             path, rev = export.split('@', 1)
         else:
-            rev, path = '', export
+            rev, path = 'HEAD', export
         return tag.a(label, class_='export',
                      href=formatter.href.export(rev, path) + fragment)
 

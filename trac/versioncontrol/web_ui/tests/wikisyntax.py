@@ -306,7 +306,7 @@ export:123:/foo/pict.gif
 export:/foo/pict.gif@123
 ------------------------------
 <p>
-<a class="export" href="/export//foo/bar.html">export:/foo/bar.html</a>
+<a class="export" href="/export/HEAD/foo/bar.html">export:/foo/bar.html</a>
 <a class="export" href="/export/123/foo/pict.gif">export:123:/foo/pict.gif</a>
 <a class="export" href="/export/123/foo/pict.gif">export:/foo/pict.gif@123</a>
 </p>
@@ -315,7 +315,7 @@ export:/foo/pict.gif@123
 export:/foo/bar.html#header
 ------------------------------
 <p>
-<a class="export" href="/export//foo/bar.html#header">export:/foo/bar.html#header</a>
+<a class="export" href="/export/HEAD/foo/bar.html#header">export:/foo/bar.html#header</a>
 </p>
 ------------------------------
 """ # " (be Emacs friendly...)
