@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-04-27 20:36+0200\n"
+"PO-Revision-Date: 2010-04-28 12:49+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -313,11 +313,11 @@ msgstr ""
 "[%(section)s] %(entry)s: förväntade något av (%(choices)s), erhöll "
 "%(value)s"
 
-#: trac/env.py:587
+#: trac/env.py:583
 msgid "Database newer than Trac version"
 msgstr "Databasen är nyare än Trac's version"
 
-#: trac/env.py:601
+#: trac/env.py:600
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Ingen uppgraderingsmodul för version %(num)i (%(version)s.py)"
@@ -1258,25 +1258,25 @@ msgstr "Fick ej kontakt med databasen inom %(time)d sekunder"
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "Kan ej ladda Pythonbindningar för PostgreSQL"
 
-#: trac/db/sqlite_backend.py:153
+#: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
 msgstr "Kan ej ladda Pythonbindningar för SQLite"
 
-#: trac/db/sqlite_backend.py:157
+#: trac/db/sqlite_backend.py:158
 msgid "Need at least PySqlite 2.0.7 or higher"
 msgstr "PySqlite 2.0.7 eller nyare krävs"
 
-#: trac/db/sqlite_backend.py:181
+#: trac/db/sqlite_backend.py:182
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "En databas finns redan i %(path)s"
 
-#: trac/db/sqlite_backend.py:241
+#: trac/db/sqlite_backend.py:242
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "Databasen \"%(path)s\" hittades inte."
 
-#: trac/db/sqlite_backend.py:250
+#: trac/db/sqlite_backend.py:251
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -2107,6 +2107,7 @@ msgstr "Ändringshistorik för"
 
 #: trac/templates/history_view.html:21 trac/templates/history_view.html:54
 #: trac/versioncontrol/templates/diff_form.html:58
+#: trac/versioncontrol/templates/revisionlog.html:86
 #: trac/versioncontrol/templates/revisionlog.html:180
 msgid "View changes"
 msgstr "Visa ändringar"
