@@ -23,7 +23,7 @@ To install Trac, the following software packages must be installed:
  * [http://www.python.org/ Python], version >= 2.4 and < 3.0
    (note that we dropped the support for Python 2.3 in this release)
  * [http://peak.telecommunity.com/DevCenter/setuptools setuptools], version >= 0.6
- * [http://genshi.edgewall.org/wiki/Download Genshi], [genshi:source:trunk trunk], from svn, minimum required revision is [G1072], current [G1092] works fine as well.
+ * [http://genshi.edgewall.org/wiki/Download Genshi], version >= 0.6
 
 You also need a database system and the corresponding python bindings.
 The database can be either SQLite, PostgreSQL or MySQL.
@@ -119,43 +119,41 @@ Please refer to the documentation of these packages to find out how they are bes
 
 
 == Installing Trac ==
-
+=== Using `easy_install`
 One way to install Trac is using `setuptools`.
-With setuptools you can install Trac from the subversion repository; for example,
-to install release version 0.12dev do:
-{{{
-easy_install Trac==dev
-}}}
+With setuptools you can install Trac from the subversion repository; 
 
-Note that as long as [Genshi:milestone:0.6 Genshi 0.6] is not released, you'll need to do:
-{{{
-easy_install Genshi==dev
-}}}
-before, otherwise you'll get the following error:
-{{{
-No local packages or download links found for Genshi>=0.6dev-r1072
-error: Could not find suitable distribution for Requirement.parse('Genshi>=0.6dev-r1072')
-}}}
+A few examples:
 
+ - install Trac 0.12 beta1::
+   {{{
+   easy_install Trac==0.12b1
+   }}}
 
-Of course, using the python-typical setup at the top of the source directory also works:
+ - install latest development version 0.12dev
+   {{{
+   easy_install Trac==dev
+   }}}
+   Note that in this case you won't have the possibility to run a localized version of Trac;
+   either use a released version or install from source 
+
+=== From source
+Of course, using the python-typical setup at the top of the source directory also works.
+
+You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12b1.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
+
 {{{
-$ svn checkout http://svn.edgewall.org/repos/trac/trunk
-$ cd trunk
-
 $ python ./setup.py install
 }}}
-See SubversionRepository for details about getting the source.
 
-''Note 1: you'll need root permissions or equivalent for this step.'' [[br]]
-''Note 2: installing from source is the preferred method if you want to have a localized version of Trac'' ** FIXME ** [[br]]
+''You'll need root permissions or equivalent for this step.''
 
 This will byte-compile the python source code and install it as an .egg file or folder in the `site-packages` directory
 of your Python installation. The .egg will also contain all other resources needed by standard Trac, such as htdocs and templates.
 
 The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
 
-If you want to make Trac available in other languages, make sure you have installed Babel and then run this additional step before doing the `install` (or simply redo the `install` afterwards):
+If you install from source and want to make Trac available in other languages, make sure you have installed Babel and then run this additional step before doing the `install` (or simply redo the `install` afterwards):
 {{{
 $ python ./setup.py compile_catalog -f
 }}}
