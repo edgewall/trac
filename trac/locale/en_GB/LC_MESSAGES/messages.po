@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-06-28 15:16+0200\n"
-"PO-Revision-Date: 2010-04-27 22:46+0200\n"
+"PO-Revision-Date: 2010-04-28 13:03+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: en_GB <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -311,11 +311,11 @@ msgstr "[%(section)s] %(entry)s: expected float, got %(value)s"
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 
-#: trac/env.py:587
+#: trac/env.py:583
 msgid "Database newer than Trac version"
 msgstr "Database newer than Trac version"
 
-#: trac/env.py:601
+#: trac/env.py:600
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "No upgrade module for version %(num)i (%(version)s.py)"
@@ -576,7 +576,7 @@ msgstr "Directory exists and is not empty."
 
 #: trac/admin/console.py:398
 msgid "Creating and Initializing Project"
-msgstr "Creating and Initializing Project"
+msgstr "Creating and Initialising Project"
 
 #: trac/admin/console.py:415
 msgid "Failed to create environment."
@@ -1254,25 +1254,25 @@ msgstr "Unable to get database connection within %(time)d seconds"
 msgid "Cannot load Python bindings for PostgreSQL"
 msgstr "Cannot load Python bindings for PostgreSQL"
 
-#: trac/db/sqlite_backend.py:153
+#: trac/db/sqlite_backend.py:154
 msgid "Cannot load Python bindings for SQLite"
 msgstr "Cannot load Python bindings for SQLite"
 
-#: trac/db/sqlite_backend.py:157
+#: trac/db/sqlite_backend.py:158
 msgid "Need at least PySqlite 2.0.7 or higher"
 msgstr "Need at least PySqlite 2.0.7 or higher"
 
-#: trac/db/sqlite_backend.py:181
+#: trac/db/sqlite_backend.py:182
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "Database already exists at %(path)s"
 
-#: trac/db/sqlite_backend.py:241
+#: trac/db/sqlite_backend.py:242
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "Database \"%(path)s\" not found."
 
-#: trac/db/sqlite_backend.py:250
+#: trac/db/sqlite_backend.py:251
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -2099,6 +2099,7 @@ msgstr "Change History for"
 
 #: trac/templates/history_view.html:21 trac/templates/history_view.html:54
 #: trac/versioncontrol/templates/diff_form.html:58
+#: trac/versioncontrol/templates/revisionlog.html:86
 #: trac/versioncontrol/templates/revisionlog.html:180
 msgid "View changes"
 msgstr "View changes"
@@ -3895,7 +3896,7 @@ msgstr "Directory"
 
 #: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
-msgstr "Cannot synchronize a single revision on multiple repositories"
+msgstr "Cannot synchronise a single revision on multiple repositories"
 
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:347
@@ -3939,12 +3940,12 @@ msgstr "Repositories"
 #: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
-msgstr "You should now run %(resync)s to synchronize Trac with the repository."
+msgstr "You should now run %(resync)s to synchronise Trac with the repository."
 
 #: trac/versioncontrol/admin.py:208
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
-msgstr "You may have to run %(resync)s to synchronize Trac with the repository."
+msgstr "You may have to run %(resync)s to synchronise Trac with the repository."
 
 #: trac/versioncontrol/admin.py:216
 #, python-format
@@ -4025,7 +4026,7 @@ msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 msgstr ""
-"Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
+"Can't synchronise with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
 
 #: trac/versioncontrol/api.py:350
