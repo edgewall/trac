@@ -63,7 +63,7 @@ class Ticket(object):
         self._old = {}
 
     def _get_db(self, db):
-        return db or self.env.get_db_cnx()
+        return db or self.env.get_read_db()
 
     exists = property(fget=lambda self: self.id is not None)
 
@@ -648,7 +648,7 @@ class AbstractEnum(object):
         self.env = env
         if name:
             if not db:
-                db = self.env.get_db_cnx()
+                db = self.env.get_read_db()
             cursor = db.cursor()
             cursor.execute("SELECT value FROM enum WHERE type=%s AND name=%s",
                            (self.type, name))
@@ -748,7 +748,7 @@ class AbstractEnum(object):
     @classmethod
     def select(cls, env, db=None):
         if not db:
-            db = env.get_db_cnx()
+            db = env.get_read_db()
         cursor = db.cursor()
         cursor.execute("""
             SELECT name,value FROM enum WHERE type=%s 
@@ -796,7 +796,7 @@ class Component(object):
         self.env = env
         if name:
             if not db:
-                db = self.env.get_db_cnx()
+                db = self.env.get_read_db()
             cursor = db.cursor()
             cursor.execute("""
                 SELECT owner,description FROM component WHERE name=%s
@@ -880,7 +880,7 @@ class Component(object):
     @classmethod
     def select(cls, env, db=None):
         if not db:
-            db = env.get_db_cnx()
+            db = env.get_read_db()
         cursor = db.cursor()
         cursor.execute("""
             SELECT name,owner,description FROM component ORDER BY name
@@ -911,7 +911,7 @@ class Milestone(object):
 
     def _fetch(self, name, db=None):
         if not db:
-            db = self.env.get_db_cnx()
+            db = self.env.get_read_db()
         cursor = db.cursor()
         cursor.execute("""
             SELECT name,due,completed,description 
@@ -1026,7 +1026,7 @@ class Milestone(object):
     @classmethod
     def select(cls, env, include_completed=True, db=None):
         if not db:
-            db = env.get_db_cnx()
+            db = env.get_read_db()
         sql = "SELECT name,due,completed,description FROM milestone "
         if not include_completed:
             sql += "WHERE COALESCE(completed,0)=0 "
@@ -1067,7 +1067,7 @@ class Version(object):
         self.env = env
         if name:
             if not db:
-                db = self.env.get_db_cnx()
+                db = self.env.get_read_db()
             cursor = db.cursor()
             cursor.execute("""
                 SELECT time,description FROM version WHERE name=%s
@@ -1149,7 +1149,7 @@ class Version(object):
     @classmethod
     def select(cls, env, db=None):
         if not db:
-            db = env.get_db_cnx()
+            db = env.get_read_db()
         cursor = db.cursor()
         cursor.execute("SELECT name,time,description FROM version")
         versions = []
