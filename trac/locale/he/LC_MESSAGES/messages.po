@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-28 08:54+0200\n"
-"PO-Revision-Date: 2010-04-28 12:39+0200\n"
+"PO-Revision-Date: 2010-04-28 20:56+0200\n"
 "Last-Translator: Itamar Ostricher <itamarost<at>gmail<dot>com>\n"
 "Language-Team: he <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -4378,7 +4378,7 @@ msgstr "הצג מהדורה:"
 
 #: trac/versioncontrol/templates/browser.html:71
 msgid "Visit:"
-msgstr "בקר:"
+msgstr "קפוץ ל:"
 
 #: trac/versioncontrol/templates/browser.html:79
 msgid "Go!"
