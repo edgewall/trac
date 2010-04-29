@@ -5,6 +5,8 @@ from trac.util.datefmt import utc
 from trac.wiki.model import WikiPage
 from trac.wiki.tests import formatter
 
+# == [[Image]]
+
 IMAGE_MACRO_TEST_CASES = u"""
 ============================== source: Image, no other arguments
 [[Image(source:test.png)]]
@@ -71,6 +73,22 @@ IMAGE_MACRO_TEST_CASES = u"""
 </p>
 ------------------------------
 """
+
+
+# == [[TitleIndex]]
+
+def add_pages(tc, names):
+    now = datetime.now(utc)
+    for name in names:
+        w = WikiPage(tc.env)
+        w.name = name
+        w.text = '--'
+        w.save('joe', 'the page ' + name, '::1', now)
+
+def titleindex_teardown(tc):
+    tc.env.reset_db()
+
+
 
 TITLEINDEX1_MACRO_TEST_CASES = u"""
 ============================== TitleIndex, default format
@@ -143,13 +161,7 @@ TITLEINDEX2_MACRO_TEST_CASES = u"""
 """
 
 def titleindex2_setup(tc):
-    w = WikiPage(tc.env)
-    w.name = 'WikiEnd'
-    w.text = '--'
-    w.save('joe', 'the second page', '::1', datetime.now(utc))
-
-def titleindex2_teardown(tc):
-    tc.env.reset_db()
+    add_pages(tc, ['WikiEnd'])
 
 
 TITLEINDEX3_MACRO_TEST_CASES = u"""
@@ -184,20 +196,13 @@ TITLEINDEX3_MACRO_TEST_CASES = u"""
 """
 
 def titleindex3_setup(tc):
-    now = datetime.now(utc)
-    def add_page(name):
-        w = WikiPage(tc.env)
-        w.name = name
-        w.text = '--'
-        w.save('joe', 'the page ' + name, '::1', now)
-    add_page('WikiStart/First')
-    add_page('WikiStart/Second')
-    add_page('WikiStart/Third')
-    add_page('WikiEnd/First')
-    add_page('WikiEnd/Second')
-
-def titleindex3_teardown(tc):
-    tc.env.reset_db()
+    add_pages(tc, [
+        'WikiStart/First',
+        'WikiStart/Second',
+        'WikiStart/Third',
+        'WikiEnd/First',
+        'WikiEnd/Second',
+        ])
 
 
 TITLEINDEX4_MACRO_TEST_CASES = u"""
@@ -211,28 +216,22 @@ TITLEINDEX4_MACRO_TEST_CASES = u"""
 """
 
 def titleindex4_setup(tc):
-    now = datetime.now(utc)
-    def add_page(name):
-        w = WikiPage(tc.env)
-        w.name = name
-        w.text = '--'
-        w.save('joe', 'the page ' + name, '::1', now)
-    add_page('TestTest')
-    add_page('TestThing')
-    add_page('Test2')
-    add_page('Test0.11Abc')
-    add_page('Test0.11/Abc')
-    add_page('Test0.12Def')
-    add_page('Test0.12Ijk')
-    add_page('Test0.13alpha')
-    add_page('Test0.13beta')
-    add_page('Test0.131')
-    add_page('0.11/Test')
-    add_page('0.11/GroupOne')
-    add_page('0.11/GroupTwo')
+    add_pages(tc, [
+        'TestTest',
+        'TestThing',
+        'Test2',
+        'Test0.11Abc',
+        'Test0.11/Abc',
+        'Test0.12Def',
+        'Test0.12Ijk',
+        'Test0.13alpha',
+        'Test0.13beta',
+        'Test0.131',
+        '0.11/Test',
+        '0.11/GroupOne',
+        '0.11/GroupTwo',
+        ])
 
-def titleindex4_teardown(tc):
-    tc.env.reset_db()
 
 
 def suite():
@@ -241,13 +240,13 @@ def suite():
     suite.addTest(formatter.suite(TITLEINDEX1_MACRO_TEST_CASES, file=__file__))
     suite.addTest(formatter.suite(TITLEINDEX2_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex2_setup,
-                                  teardown=titleindex2_teardown))
+                                  teardown=titleindex_teardown))
     suite.addTest(formatter.suite(TITLEINDEX3_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex3_setup,
-                                  teardown=titleindex3_teardown))
+                                  teardown=titleindex_teardown))
     suite.addTest(formatter.suite(TITLEINDEX4_MACRO_TEST_CASES, file=__file__,
                                   setup=titleindex4_setup,
-                                  teardown=titleindex4_teardown))
+                                  teardown=titleindex_teardown))
     return suite
 
 if __name__ == '__main__':
