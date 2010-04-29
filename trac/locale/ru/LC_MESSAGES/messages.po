@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-25 01:49+0200\n"
-"PO-Revision-Date: 2010-04-29 00:51+0300\n"
+"PO-Revision-Date: 2010-04-30 00:48+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -1144,7 +1144,7 @@ msgid ""
 "names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"не могут быть полностью в верхнем регистре,\n"
+"имена не могут быть полностью в верхнем регистре,\n"
 "      так как он зарезервирован под названия прав."
 
 #: trac/admin/templates/admin_plugins.html:41
@@ -1978,6 +1978,8 @@ msgid ""
 "==== Python Traceback ====\n"
 "{{{"
 msgstr ""
+"==== Стек вызовов Python ====\n"
+"{{{"
 
 #: trac/templates/error.html:90
 msgid "Create"
@@ -1999,6 +2001,12 @@ msgid ""
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
 msgstr ""
+"Произошла внутренняя ошибка Trac-а.\n"
+"                Рекомендуется оповестить локального \n"
+"                [1:\n"
+"                    администратора Trac-а] и сообщить ему информацию, "
+"необходимую\n"
+"                для ее воспроизведения."
 
 #: trac/templates/error.html:120
 msgid "To that end, you could"
@@ -2066,6 +2074,14 @@ msgid ""
 "                [3:mailing list]\n"
 "                instead of creating a ticket."
 msgstr ""
+"Но прежде чем сделать это, пожалуйста, попробуйте сначала\n"
+"                [1:[2:поискать]\n"
+"                похожие проблемы], так как возможно, что об этой проблеме"
+"\n"
+"                уже сообщили раньше. По вопросами  установки\n"
+"                и настройки Trac-а или его плагинов, обращайтесь в\n"
+"                [3:список рассылки],\n"
+"                а не создавайте карточку."
 
 #: trac/templates/error.html:156
 #, python-format
@@ -2078,11 +2094,11 @@ msgstr ""
 
 #: trac/templates/error.html:160
 msgid "Python Traceback"
-msgstr ""
+msgstr "Стек вызовов Python"
 
 #: trac/templates/error.html:161
 msgid "Most recent call last:"
-msgstr ""
+msgstr "Самые последние вызовы:"
 
 #: trac/templates/error.html:166 trac/templates/error.html:197
 msgid "File \""
@@ -2281,7 +2297,7 @@ msgstr "Поиск:"
 
 #: trac/templates/theme.html:39
 msgid "Context Navigation"
-msgstr ""
+msgstr "Контекстная Навигация"
 
 #: trac/templates/theme.html:49
 msgid "Warning:"
@@ -2423,7 +2439,7 @@ msgstr "Возможные значения"
 #: trac/ticket/admin.py:768
 #, python-format
 msgid "Invalid up/down value: %(value)s"
-msgstr ""
+msgstr "Неправильное up/down значение: %(value)s"
 
 #: trac/ticket/admin.py:789 trac/ticket/api.py:294
 msgid "Priority"
@@ -2543,6 +2559,8 @@ msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
+"Рабочий поток пытается задать решение, но они не определены (ошибка "
+"конфигурации, сообщите администратору Trac-а)."
 
 #: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
 #, python-format
@@ -2824,6 +2842,8 @@ msgid ""
 "'%(group1)s' and '%(group2)s' milestone groups both are declared to be "
 "\"catch-all\" groups. Please check your configuration."
 msgstr ""
+"Группы этапов '%(group1)s' и '%(group2)s' определены как \"catch-all\" "
+"группы. Проверьте конфигурацию."
 
 #: trac/ticket/roadmap.py:231
 #, python-format
@@ -2831,6 +2851,8 @@ msgid ""
 "'%(groupname)s' milestone group reused status '%(status)s' already taken "
 "by other groups. Please check your configuration."
 msgstr ""
+"Группа этапа '%(groupname)s' повторно использует статус '%(status)s', уже"
+" занятый другой группой. Проверьте конфигурацию."
 
 #: trac/ticket/roadmap.py:314 trac/ticket/roadmap.py:436
 #: trac/ticket/roadmap.py:571 trac/ticket/templates/roadmap.html:10
@@ -3401,6 +3423,8 @@ msgid ""
 "Reported by [1:%(author)s],\n"
 "                      %(date)s ago."
 msgstr ""
+"Сообщил [1:%(author)s],\n"
+"                      %(date)s назад."
 
 #: trac/ticket/templates/query_results.html:85
 msgid "(this ticket)"
@@ -3549,12 +3573,12 @@ msgstr "Изменить"
 
 #: trac/ticket/templates/ticket.html:91
 msgid "at [1:Initial Version]"
-msgstr ""
+msgstr "[1:Первоначальная версия]"
 
 #: trac/ticket/templates/ticket.html:94
 #, python-format
 msgid "at [1:Version %(version)s]"
-msgstr ""
+msgstr "[1:Версия %(version)s]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
@@ -3664,7 +3688,7 @@ msgstr "Краткое описание:"
 
 #: trac/ticket/templates/ticket.html:245
 msgid "Reporter:"
-msgstr ""
+msgstr "Сообщил:"
 
 #: trac/ticket/templates/ticket.html:257
 msgid ""
@@ -3837,7 +3861,7 @@ msgstr "другие виды событий"
 #: trac/timeline/web_ui.py:348
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
-msgstr ""
+msgstr "Сбой поставщика событий %(name)s на фильтрах %(kinds)s: "
 
 #: trac/timeline/web_ui.py:351
 #, python-format
@@ -3846,6 +3870,9 @@ msgid ""
 " Trac administrator about the error (detailed information was written to "
 "the log)."
 msgstr ""
+"Вы можете просмотреть %(other_events)s Хронологии или сообщить "
+"администратору Trac-а о этой ошибке (подробная информация записана в "
+"журнал)."
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -3981,7 +4008,7 @@ msgstr "Директория"
 
 #: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
-msgstr ""
+msgstr "Не удалось синхронизировать одну ревизию в нескольких репозиториях"
 
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:347
@@ -3995,12 +4022,12 @@ msgstr "Не найден репозиторий '%(repo)s'"
 #: trac/versioncontrol/admin.py:128
 #, python-format
 msgid "%(rev)s resynced on %(reponame)s."
-msgstr ""
+msgstr "%(rev)s пересинхронизирована с %(reponame)s."
 
 #: trac/versioncontrol/admin.py:135
 #, python-format
 msgid "Resyncing repository history for %(reponame)s... "
-msgstr ""
+msgstr "Пересинхронизация журнала репозитория %(reponame)s... "
 
 #: trac/versioncontrol/admin.py:142
 #, python-format
@@ -4043,6 +4070,8 @@ msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr ""
+"Вам нужно обновить post-commit hook для вызова %(cset_added)s с новым "
+"именем репозитория."
 
 #: trac/versioncontrol/admin.py:238
 #, python-format
@@ -4055,6 +4084,8 @@ msgid ""
 "You should also set up a post-commit hook on the repository to call "
 "%(cset_added)s for each committed changeset."
 msgstr ""
+"Вы должны также установить в репозитории post-commit hook для вызова "
+"%(cset_added)s для каждого зафиксированного набора изменений."
 
 #: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
@@ -4136,7 +4167,7 @@ msgstr "файл"
 #: trac/versioncontrol/api.py:364
 #, python-format
 msgid "at version %(rev)s"
-msgstr ""
+msgstr "версии %(rev)s"
 
 #: trac/versioncontrol/api.py:366
 msgid "path"
@@ -4163,6 +4194,9 @@ msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
+"Система контроля версий \"%(name)s\" не поддерживается: не удалось найти "
+"соответствующий компонент, возможно соответствующий плагин не был "
+"включен? "
 
 #: trac/versioncontrol/api.py:664
 #, python-format
@@ -4176,7 +4210,7 @@ msgstr "Нет такого набора изменений"
 #: trac/versioncontrol/api.py:672
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "Нет узла %(path)s в ревизии %(rev)s"
 
 #: trac/versioncontrol/api.py:674
 #, python-format
@@ -4198,7 +4232,7 @@ msgstr ""
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
 msgid "Line %(lineno)d: Entry before first section header"
-msgstr ""
+msgstr "Строка %(lineno)d: Вход перед первым заголовком секции"
 
 #: trac/versioncontrol/svn_authz.py:77
 #, python-format
@@ -4226,11 +4260,13 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
+"Несоответствие Diff-а: База %(oldnode)s (%(oldpath)s ревизии %(oldrev)s) "
+"и Цель %(newnode)s (%(newpath)s ревизии %(newrev)s)."
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
 msgid "svn blame failed on %(path)s: %(error)s"
-msgstr ""
+msgstr "сбой svn blame на %(path)s: %(error)s"
 
 #: trac/versioncontrol/svn_prop.py:111
 msgid "No svn:externals configured in trac.ini"
@@ -4246,15 +4282,15 @@ msgstr "заблокирован"
 
 #: trac/versioncontrol/svn_prop.py:192
 msgid "eligible"
-msgstr ""
+msgstr "годный"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
-msgstr ""
+msgstr "(переключить удаленные ветви)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
-msgstr ""
+msgstr "Просмотр источника слияния"
 
 #: trac/versioncontrol/svn_prop.py:245
 msgid "No revisions"
@@ -4262,19 +4298,19 @@ msgstr "Нет ревизий"
 
 #: trac/versioncontrol/svn_prop.py:281
 msgid "merged: "
-msgstr ""
+msgstr "объединен: "
 
 #: trac/versioncontrol/svn_prop.py:281
 msgid "blocked: "
-msgstr ""
+msgstr "заблокирован: "
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "reverse-merged: "
-msgstr ""
+msgstr "обратно-объединен: "
 
 #: trac/versioncontrol/svn_prop.py:282
 msgid "un-blocked: "
-msgstr ""
+msgstr "разблокирован: "
 
 #: trac/versioncontrol/svn_prop.py:293
 msgid " (added)"
@@ -4286,7 +4322,7 @@ msgstr "удален"
 
 #: trac/versioncontrol/svn_prop.py:324
 msgid " (with no actual effect on merging)"
-msgstr ""
+msgstr " (без фактического влияния слияния)"
 
 #: trac/versioncontrol/svn_prop.py:325
 #, python-format
@@ -4414,13 +4450,15 @@ msgstr "Свойство [1:%(name)s] установлено в %(value)s"
 
 #: trac/versioncontrol/templates/browser.html:154
 msgid "Repository Index"
-msgstr ""
+msgstr "Индекс репозиториев"
 
 #: trac/versioncontrol/templates/browser.html:164
 msgid ""
 "[1:Note:] See [2:TracBrowser]\n"
 "        for help on using the repository browser."
 msgstr ""
+"[1:Примечание:] Справку по использованию \n"
+"        браузера репозитория смотрите в [2:TracBrowser]."
 
 #: trac/versioncontrol/templates/browser.html:176
 msgid "View changes..."
@@ -4437,7 +4475,7 @@ msgstr "Выберите пути и ревизии для поиска отли
 #: trac/versioncontrol/templates/changeset.html:68
 #: trac/versioncontrol/templates/changeset.html:70
 msgid "Show full changeset"
-msgstr ""
+msgstr "Показать полный набор изменений"
 
 #: trac/versioncontrol/templates/changeset.html:37
 #: trac/versioncontrol/templates/changeset.html:40
@@ -4483,6 +4521,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Изменения в %(reponame)s\n"
+"              от [1:%(old_path)s]\n"
+"              ревизии [2:r%(old_rev)s]\n"
+"              до [3:%(new_path)s]\n"
+"              ревизии [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
@@ -4495,6 +4538,8 @@ msgid ""
 "Changeset [1:%(new_rev)s]\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Набор изменений [1:%(new_rev)s]\n"
+"              для [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:61
 #, python-format
@@ -4514,6 +4559,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Изменения\n"
+"              от [1:%(old_path)s]\n"
+"              ревизии [2:r%(old_rev)s]\n"
+"              до [3:%(new_path)s]\n"
+"              ревизии [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
@@ -4523,7 +4573,7 @@ msgstr "Набор изменений [1:%(new_rev)s]"
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
-msgstr ""
+msgstr "Показать удаленное (содержимое в ревизии %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
@@ -4540,6 +4590,8 @@ msgid ""
 "(%(kind)s from [1:\n"
 "                %(old_path)s])"
 msgstr ""
+"(%(kind)s для [1:\n"
+"                %(old_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:119
 #: trac/versioncontrol/templates/changeset.html:122
@@ -4696,6 +4748,9 @@ msgid ""
 "        [2:TracChangeset]\n"
 "        for help on using the diff feature."
 msgstr ""
+"[1:Примечание:] Справку по использованию\n"
+"        инструмента сравнения (diff) смотрите в\n"
+"        [2:TracChangeset]."
 
 #: trac/versioncontrol/templates/dir_entries.html:11
 msgid "View Directory"
@@ -4732,7 +4787,7 @@ msgstr "Перейти в корень репозитория"
 
 #: trac/versioncontrol/templates/path_links.html:16
 msgid "Go to repository index"
-msgstr ""
+msgstr "Перейти к индексу репозиториев"
 
 #: trac/versioncontrol/templates/path_links.html:26
 #, python-format
@@ -4838,23 +4893,25 @@ msgstr "Смотреть журнал начиная с этой ревизии"
 #: trac/versioncontrol/templates/revisionlog.html:140
 #, python-format
 msgid "Browse at revision %(rev)s"
-msgstr ""
+msgstr "Обзор для ревизии %(rev)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:144
 #, python-format
 msgid "View removal changeset [%(rev)s]"
-msgstr ""
+msgstr "Просмотр удаления набора изменений [%(rev)s]"
 
 #: trac/versioncontrol/templates/revisionlog.html:146
 #, python-format
 msgid "View changeset [%(rev)s] restricted to %(path)s"
-msgstr ""
+msgstr "Просмотр набора изменений [%(rev)s] ограничен %(path)s"
 
 #: trac/versioncontrol/templates/revisionlog.html:185
 msgid ""
 "[1:Note:] See [2:TracRevisionLog]\n"
 "        for help on using the revision log."
 msgstr ""
+"[1:Примечание:] Справку по использованию \n"
+"        журнала ревизий смотрите в [2:TracRevisionLog]."
 
 #: trac/versioncontrol/templates/revisionlog.txt:1
 msgid ""
@@ -4953,7 +5010,7 @@ msgstr "Просмотр репозитория %(repo)s"
 #: trac/versioncontrol/web_ui/changeset.py:240
 #, python-format
 msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
-msgstr ""
+msgstr "Сравнение между различными репозиториями невозможно: %(old)s vs. %(new)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
@@ -5014,7 +5071,7 @@ msgstr "последняя"
 #: trac/versioncontrol/web_ui/changeset.py:792
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
-msgstr ""
+msgstr "Diff [%(old_rev)s:%(new_rev)s] для %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:798
 #, python-format
@@ -5107,11 +5164,13 @@ msgid ""
 "You can %(search)s in the repository history to see if that path existed "
 "but was later removed"
 msgstr ""
+"Вы можете провести %(search)s по истории репозитория, чтобы узнать "
+"существовал ли этот путь раньше, но позже был удален"
 
 #: trac/web/api.py:236
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
-msgstr ""
+msgstr "Неверная кодировка URL (была %(path_info)r)"
 
 #: trac/web/api.py:474
 #, python-format
@@ -5138,14 +5197,14 @@ msgstr "документации по установке"
 
 #: trac/web/auth.py:138
 msgid "Configuring Authentication"
-msgstr ""
+msgstr "Настройка аутентификации"
 
 #: trac/web/auth.py:141
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
-msgstr ""
+msgstr "Информация о аутентификации не доступна. Обратитесь к %(inst_doc)s."
 
 #: trac/web/auth.py:149
 #, python-format
@@ -5155,7 +5214,7 @@ msgstr "Вы уже вошли как %(user)s."
 #: trac/web/chrome.py:582
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
-msgstr ""
+msgstr "Ошибка с навигацией участника \"%(name)s\""
 
 #: trac/web/chrome.py:877
 msgid "(unknown template location)"
@@ -5225,7 +5284,7 @@ msgstr "Сеанс уже существует. Невозможно добав�
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
-msgstr ""
+msgstr "Невозможно установить атрибут сеанса несуществующего SID"
 
 #: trac/web/session.py:438
 #, python-format
@@ -5244,11 +5303,11 @@ msgstr "  %(page)s импортирована из %(filename)s"
 
 #: trac/wiki/admin.py:200
 msgid "Edits"
-msgstr ""
+msgstr "Правки"
 
 #: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
 msgid "A new name is mandatory for a rename."
-msgstr ""
+msgstr "Новое имя является обязательным для переименования."
 
 #: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
 #, python-format
@@ -5276,31 +5335,35 @@ msgstr "Ошибка разбора HTML: %(message)s"
 #: trac/wiki/formatter.py:178
 msgid "Error: Forbidden character sequence \"--\" in htmlcomment wiki code block"
 msgstr ""
+"Ошибка: Запрещенная последовательность символов \"--\" в блоке вики-кода "
+"htmlcomment"
 
 #: trac/wiki/formatter.py:252
 #, python-format
 msgid "!#%(name)s must contain at most one table"
-msgstr ""
+msgstr "!#%(name)s должен содержать не более одной таблицы"
 
 #: trac/wiki/formatter.py:256
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr ""
+"!#%(name)s должен содержать минимум одну ячейку таблицы (и только ячейки "
+"таблицы)"
 
 #: trac/wiki/formatter.py:629 trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
-msgstr ""
+msgstr "%(target)s в %(name)s"
 
 #: trac/wiki/intertrac.py:55
 #, python-format
 msgid "Can't view %(link)s:"
-msgstr ""
+msgstr "Невозможно просмотреть %(link)s:"
 
 #: trac/wiki/macros.py:494
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
-msgstr ""
+msgstr "Нет изображения \"%(id)s\" прикрепленного к %(parent)s"
 
 #: trac/wiki/macros.py:537
 #, python-format
@@ -5330,7 +5393,7 @@ msgstr "Страница не менялась"
 #: trac/wiki/model.py:174
 #, python-format
 msgid "Can't rename to existing %(name)s page."
-msgstr ""
+msgstr "Невозможно переименовать в существующую страницу %(name)s."
 
 #: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:726
 msgid "Wiki"
@@ -5363,7 +5426,7 @@ msgstr "Недопустимая страница Вики: %(message)s"
 #. TRANSLATOR: wiki page
 #: trac/wiki/web_ui.py:231
 msgid "currently edited"
-msgstr ""
+msgstr "сейчас редактируется"
 
 #: trac/wiki/web_ui.py:265
 #, python-format
@@ -5493,12 +5556,12 @@ msgstr "Удалить [1:%(name)s]"
 #: trac/wiki/templates/wiki_delete.html:33
 #, python-format
 msgid "Are you sure you want to delete versions %(from)s to %(to)s of this page?"
-msgstr ""
+msgstr "Вы действительно хотите удалить версии этой страницы с %(from)s до %(to)s?"
 
 #: trac/wiki/templates/wiki_delete.html:36
 #, python-format
 msgid "Are you sure you want to delete version %(version)s of this page?"
-msgstr "Вы уверены, что хотите удалить версия %(version)s с этой страницы?"
+msgstr "Вы уверены, что хотите удалить версию %(version)s этой страницы?"
 
 #: trac/wiki/templates/wiki_delete.html:39
 msgid "Are you sure you want to completely delete this page?"
@@ -5590,7 +5653,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:114
 msgid "Change information for future version"
-msgstr ""
+msgstr "Изменить информацию для будущей версии"
 
 #: trac/wiki/templates/wiki_edit.html:115
 msgid "(modified by"
@@ -5722,12 +5785,12 @@ msgstr ""
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
 msgid "Version %(version)s by %(author)s: %(comment)s"
-msgstr ""
+msgstr "Версия %(version)s пользователя %(author)s: %(comment)s"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
 msgid "Version %(version)s by %(author)s"
-msgstr ""
+msgstr "Версия %(version)s пользователя %(author)s"
 
 #: trac/wiki/templates/wiki_view.html:54
 #, python-format
