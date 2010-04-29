@@ -108,14 +108,25 @@ class TitleIndexMacro(WikiMacroBase):
             omitprefix = lambda page: page
 
         wiki = formatter.wiki
+
         pages = sorted(page for page in wiki.get_pages(prefix) \
                        if (depth < 0 or depth >= page.count('/') - start)
                        and 'WIKI_VIEW' in formatter.perm('wiki', page))
+
+        if format == 'compact':
+            return tag(
+                separated((tag.a(wiki.format_page_name(omitprefix(p)),
+                                 href=formatter.href.wiki(p)) for p in pages),
+                          ', '))
 
         # the function definitions for the different format styles
 
         # the different page split formats, each corresponding to its rendering
         def split_pages_group(pages):
+            """Return a list of (path elements, page_name) pairs,
+            where path elements correspond to the page name (without prefix)
+            splitted at Camel Case word boundaries, numbers and '/'.
+            """
             page_paths = []
             for page in pages:
                 path = [elt.rstrip('/').strip() for elt in self.SPLIT_RE.split(
@@ -124,8 +135,46 @@ class TitleIndexMacro(WikiMacroBase):
             return page_paths
 
         def split_pages_hierarchy(pages):
+            """Return a list of (path elements, page_name) pairs,
+            where path elements correspond to the page name (without prefix)
+            splitted according to the '/' hierarchy.
+            """
             return [(wiki.format_page_name(omitprefix(page)).split("/"), page)
                     for page in pages]
+
+        # create the group hierarchy (same for group and hierarchy formats)
+        def split_in_groups(entries):
+            """Transform a flat list of entries into a tree structure.
+            
+            `entries` is a list of `(path_elements, page_name)` pairs
+            
+            Return a list organized in a tree structure, in which:
+              - a leaf is a page name
+              - a node is a `(key, nodes)` pairs, where:
+                - `key` is the leftmost of the path elements, common to the
+                  grouped (path element, page_name) entries
+                - `nodes` is a list of nodes or leaves
+            """
+            groups = []
+
+            for key, grouper in groupby(entries, lambda (elts, name):
+                                                elts and elts[0] or ''):
+                # remove key from path_elements in grouped entries for further
+                # grouping
+                grouped_entries = [(path_elements[1:], page_name)
+                                   for path_elements, page_name in grouper]
+                if key and len(grouped_entries) >= minsize:
+                    subnodes = split_in_groups(sorted(grouped_entries))
+                    if len(subnodes) == 1:
+                        subkey, subnodes = subnodes[0]
+                        node = (key + subkey, subnodes) # FIXME
+                    else:
+                        node = (key, subnodes)
+                    groups.append(node)
+                else:
+                    for path_elements, page_name in grouped_entries:
+                        groups.append(page_name)
+            return groups
 
         # the different rendering formats
         def render_group(group):
@@ -144,31 +193,7 @@ class TitleIndexMacro(WikiMacroBase):
                        tag.a(rpartition(elt, '/')[2],
                              href=formatter.href.wiki(elt)))
                 for elt in group)
-
-
-        # create the group hierarchy (same for group and hierarchy formats)
-        def split_in_groups(group):
-            """Return list of pagename or (key, sublist) elements"""
-            groups = []
-            for key, subgrp in groupby(group, lambda (k, p): k and k[0] or ''):
-                subgrp = [(k[1:], p) for k, p in subgrp]
-                if key and len(subgrp) >= minsize:
-                    sublist = split_in_groups(sorted(subgrp))
-                    if len(sublist) == 1:
-                        elt = (key+sublist[0][0], sublist[0][1])
-                    else:
-                        elt = (key, sublist)
-                    groups.append(elt)
-                else:
-                    for elt in subgrp:
-                        groups.append(elt[1])
-            return groups
-
-        if format == 'compact':
-            return tag(
-                separated((tag.a(wiki.format_page_name(omitprefix(p)),
-                                 href=formatter.href.wiki(p)) for p in pages),
-                          ', '))
+        
         splitter, renderer = {
             'group':     (split_pages_group,     render_group),
             'hierarchy': (split_pages_hierarchy, render_hierarchy),
