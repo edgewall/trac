@@ -69,6 +69,11 @@ server (note this is not necessary for CGI).
 The following sections discuss any extra actions that may need to be taken
 to upgrade to specific versions of Trac.
 
+From 0.11.x to 0.12.x
+---------------------
+
+Really, go read trac/wiki/default-pages/TracUpgrade ...
+
 From 0.10.x to 0.11.x
 ---------------------
 

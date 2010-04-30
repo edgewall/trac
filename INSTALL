@@ -19,7 +19,7 @@ To install Trac, the following software packages must be installed:
 
  * Python, version >= 2.4.
  * setuptools, version >= 0.6
- * Genshi, version >= 0.5
+ * Genshi, version >= 0.6
  * Optionally, Subversion, version >= 1.1.x and the Subversion SWIG Python 
    bindings (not PySVN, that's something different).
  * One of the following Python bindings, depending on the database used:
@@ -39,7 +39,7 @@ which itself can be installed using the following bootstrap script:
 
 After that, you can do for example: easy_install Genshi
 
-If you're using Python 2.3 or 2.4 and need pysqlite, you can download from
+If you're using Python 2.4 and need pysqlite, you can download from
 http://code.google.com/p/pysqlite/downloads/list the Windows installers or the
 tar.gz archive for building from source:
 
@@ -138,8 +138,8 @@ Enjoy!
 
 /The Trac Team
 
-Please also consider joining the mailing list at
-<http://lists.edgewall.com/mailman/listinfo/trac/>.
+Please also consider joining the mailing lists at
+<http://groups.google.com/group/trac-users>
 
 
 Visit the Trac open source project at <http://trac.edgewall.org/>

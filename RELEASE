@@ -1,28 +1,24 @@
 Release Notes for Trac 0.12 Babel Release
 =========================================
-''Month'' ''DD'', YYYY
+May 1, 2010
 
 Highlights
 ----------
- * Internationalization support and available translations in more than twenty languages 
- * ...
+ * Translation of Trac in your language using Babel (http://babel.edgewall.org)
+ * Multiple Repository Support per environment
+ * Improved Wiki, more powerful syntax and nicer user interface with 
+   automatic preview in side-by-side editing mode
+ * Improved Ticket user interface, with editable comments and 
+   automatic preview
 
 Detailed User Visible Changes
-=============================
+-----------------------------
 
-User Preferences
-----------------
-A new panel for selecting the prefered language has been added.
-
-Lots of other minor improvements
-
- * ...
-
-Caveats
--------
+A detailed view of the API changes since 0.11.x can be found in 
+TracDev/ReleaseNotes/0.12.
 
 Developer-visible changes
-=========================
+-------------------------
 
 A detailed view of the API changes since 0.11.x can be found in 
 TracDev/ApiChanges/0.12.
