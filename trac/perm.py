@@ -651,11 +651,9 @@ class PermissionAdmin(Component):
     
     def _do_add(self, user, *actions):
         permsys = PermissionSystem(self.env)
-        # Check all actions before perform any modifications
-        for action in actions:
-            if not action.islower() and not action.isupper():
-                raise AdminCommandError(_('Group names must be in lower case '
-                                          'and actions in upper case'))
+        if user.isupper():
+            raise AdminCommandError(_('All upper-cased tokens are reserved '
+                                      'for permission names'))
         for action in actions:
             permsys.grant_permission(user, action)
     
