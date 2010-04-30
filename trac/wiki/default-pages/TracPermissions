@@ -132,7 +132,7 @@ Permissions can be grouped together to form roles such as ''developer'', ''admin
   $ trac-admin /path/to/projenv permission add john developer
 }}}
 
-Group membership can be checked by doing a {{{permission list}}} with no further arguments; the resulting output will include group memberships. '''Use lowercase for group names, as uppercase is reserved for permissions'''.
+Group membership can be checked by doing a {{{permission list}}} with no further arguments; the resulting output will include group memberships. '''Use at least one lowercase character in group names, as all-uppercase names are reserved for permissions'''.
 
 == Adding a New Group and Permissions ==
 Permission groups can be created by assigning a user to a group you wish to create, then assign permissions to that group.

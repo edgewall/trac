@@ -182,7 +182,7 @@ or a relative link from the URL of the current page (''Changed in 0.11''):
 Display: [/newticket Create a new ticket] or [[//newticket|Create a new ticket]]
 [/ home] or [[/|home]]
 
-To link to another location on the server (outside the project), use the '//location' link syntax (''Changed in 0.11''):
+To link to another location on the server (possibly outside the project but on the same host), use the `//` prefix (''Changed in 0.11''):
 
 {{{
 [//register Register Here] or [[//register|Register Here]]
@@ -225,6 +225,7 @@ Trac links can support an arbitrary set of parameters, written in the same way a
  - `wiki:WikiStart?format=txt`
  - `ticket:1?version=1`
  - `[/newticket?component=module1 create a ticket for module1]`
+ - `[/newticket?summary=Add+short+description+here create a ticket with URL with spaces]`
 
 
 == TracLinks Reference ==
