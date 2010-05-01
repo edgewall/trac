@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-25 01:49+0200\n"
-"PO-Revision-Date: 2010-04-30 00:48+0300\n"
+"PO-Revision-Date: 2010-05-01 12:19+0300\n"
 "Last-Translator: Alexandr Prudnikov <al.prudnikov@gmail.com>\n"
 "Language-Team: ru_RU <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -4286,7 +4286,7 @@ msgstr "годный"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
-msgstr "(переключить удаленные ветви)"
+msgstr "(показать/скрыть удаленные ветви)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
@@ -4403,11 +4403,11 @@ msgstr "Совет: очистите поле чтобы просмотреть 
 
 #: trac/versioncontrol/templates/browser.html:61
 msgid "View revision:"
-msgstr "Посмотреть ревизию:"
+msgstr "Просмотр ревизии:"
 
 #: trac/versioncontrol/templates/browser.html:71
 msgid "Visit:"
-msgstr "Посетите:"
+msgstr "Перейти к:"
 
 #: trac/versioncontrol/templates/browser.html:79
 msgid "Go!"
@@ -4462,7 +4462,7 @@ msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:176
 msgid "View changes..."
-msgstr "Просмотреть изменения..."
+msgstr "Просмотр изменений..."
 
 #: trac/versioncontrol/templates/browser.html:176
 msgid "Select paths and revs for Diff"
@@ -4637,7 +4637,7 @@ msgstr "Сообщение:"
 
 #: trac/versioncontrol/templates/changeset.html:166
 msgid "Location:"
-msgstr "Расположение:"
+msgstr "Размещение:"
 
 #: trac/versioncontrol/templates/changeset.html:170
 msgid "(No files)"
@@ -4710,11 +4710,11 @@ msgstr ""
 #: trac/versioncontrol/templates/diff_form.html:10
 #: trac/versioncontrol/templates/diff_form.html:21
 msgid "Prepare Diff"
-msgstr "Подготовить различия"
+msgstr "Подготовка сравнения"
 
 #: trac/versioncontrol/templates/diff_form.html:27
 msgid "Select the base and the target for the diff:"
-msgstr "Выберите базу и цель для вычисления различий:"
+msgstr "Выберите базу и цель для сравнения:"
 
 #: trac/versioncontrol/templates/diff_form.html:30
 msgid "From:"
@@ -4723,7 +4723,7 @@ msgstr "От:"
 #: trac/versioncontrol/templates/diff_form.html:34
 #: trac/versioncontrol/templates/diff_form.html:44
 msgid "at revision:"
-msgstr "на ревизиии:"
+msgstr "ревизиии:"
 
 #: trac/versioncontrol/templates/diff_form.html:40
 msgid "To:"
@@ -4737,10 +4737,10 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
-"Для каждого пути вы можете набрать его первые символы и выбрать из "
-"открывшегося списка\"\n"
-"\"существующих файлов и директорий при помощи мышки или стрелок и клавиши"
-" Tab."
+"Для каждого пути после начала набора будет показан список\n"
+"              существующих каталогов и файлов.\n"
+"              Выбрать элемент из него можно щелчком мыши, или выделив\n"
+"              клавишами вверх/вниз и нажав Tab."
 
 #: trac/versioncontrol/templates/diff_form.html:62
 msgid ""
