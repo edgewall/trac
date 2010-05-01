@@ -4590,7 +4590,7 @@ msgid ""
 "(%(kind)s from [1:\n"
 "                %(old_path)s])"
 msgstr ""
-"(%(kind)s для [1:\n"
+"(%(kind)s из [1:\n"
 "                %(old_path)s])"
 
 #: trac/versioncontrol/templates/changeset.html:119
@@ -4936,7 +4936,7 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/browser.py:298
 msgid "Browse Source"
-msgstr "Репозиторий"
+msgstr "Исходный код"
 
 #: trac/versioncontrol/web_ui/browser.py:370
 msgid "Invalid changeset number"
