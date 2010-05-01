@@ -28,7 +28,7 @@
 
       <!-- This currently crashes Genshi's extractor if you add i18n:msg -->
       <p class="hint" py:with="now = datetime.now(utc)" py:choose="">
-        Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).
+        <i18n:msg params="time">Example: The current time is <strong>${format_time(now, 'iso8601', tzinfo=utc)}</strong> (UTC).</i18n:msg>
         <br />
         <py:when test="session_tzname">
           <i18n:msg params="tz, formatted">
@@ -44,8 +44,8 @@
         </py:otherwise>
       </p>
 
-      <p class="hint">
-        Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT). <br />
+      <p class="hint" i18n:msg="">
+        Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean Time (GMT).<br />
         A positive offset is used to indicate a timezone at the east of Greenwich, i.e. ahead of Universal Time.
       </p>
 

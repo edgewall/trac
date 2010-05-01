@@ -837,5 +837,5 @@ class TicketAdmin(Component):
         def do_remove(db):
             ticket = model.Ticket(self.env, number, db=db)
             ticket.delete()
-        printout(_('Ticket %(num)s and all associated data removed.',
+        printout(_('Ticket #%(num)s and all associated data removed.',
                    num=number))

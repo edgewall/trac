@@ -300,7 +300,8 @@ class NotifyEmail(Notify):
             self._charset.header_encoding = SHORTEST
             self._charset.body_encoding = None
         else:
-            raise TracError(_('Invalid email encoding setting: %s' % pref))
+            raise TracError(_('Invalid email encoding setting: %(pref)s',
+                              pref=pref))
 
     def notify(self, resid, subject):
         self.subject = subject
@@ -312,12 +313,13 @@ class NotifyEmail(Notify):
         self.replyto_email = self.config['notification'].get('smtp_replyto')
         self.from_email = self.from_email or self.replyto_email
         if not self.from_email and not self.replyto_email:
-            raise TracError(tag(tag.p('Unable to send email due to identity '
-                                        'crisis.'),
-                                  tag.p('Neither ', tag.b('notification.from'),
-                                        ' nor ', tag.b('notification.reply_to'),
-                                        'are specified in the configuration.')),
-                              'SMTP Notification Error')
+            raise TracError(tag(
+                    tag.p(_('Unable to send email due to identity crisis.')),
+                    tag.p(_('Neither %(from_)s nor %(reply_to)s are specified '
+                            'in the configuration.',
+                            from_=tag.b('notification.from'),
+                            reply_to=tag.b('notification.reply_to')))),
+                _('SMTP Notification Error'))
 
         Notify.notify(self, resid)
 

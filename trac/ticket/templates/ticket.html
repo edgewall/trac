@@ -216,7 +216,7 @@ ${comment}</textarea>
               <span class="threading" py:if="'replyto' in change_preview">
                 in reply to: ${commentref('&uarr;&nbsp;', change_preview.replyto)}
               </span>
-              Changed by ${authorinfo(change_preview.author)}
+              <i18n:msg params="author">Changed by ${authorinfo(change_preview.author)}</i18n:msg>
             </h3>
             <xi:include href="ticket_change.html" py:with="change = change_preview"/>
           </div>
@@ -371,7 +371,7 @@ ${value}</textarea>
               </tr>
             </table>
             <p py:if="author_id == 'anonymous'" class="hint">
-              E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.
+              <i18n:msg>E-mail address and user name can be saved in the <a href="${href.prefs()}">Preferences</a>.</i18n:msg>
             </p>
           </fieldset>
         </div>

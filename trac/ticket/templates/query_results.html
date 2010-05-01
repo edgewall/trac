@@ -32,9 +32,9 @@
         <tr>
           <th py:for="header in headers"
             class="$header.name${query.order == header.name and (query.desc and ' desc' or ' asc') or ''}">
+            <?python asc = _('(ascending)'); desc = _('(descending)') ?>
             <a title="${_('Sort by %(col)s %(direction)s', col=header.label, 
-                          direction=(query.order == header.name and not query.desc and 
-                                     _('(descending)') or _('(ascending)')))}"
+                          direction=(query.order == header.name and not query.desc and desc or asc))}"
                href="$header.href">${header.label}</a>
           </th>
         </tr>

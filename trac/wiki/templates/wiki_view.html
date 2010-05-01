@@ -58,7 +58,7 @@
           <div id="wikipage" py:content="wiki_to_html(context, text)" />
         </py:when>
         <py:otherwise>
-          <p>The page ${name_of(page.resource)} does not exist. You can create it here.</p>
+          <p i18n:msg="name">The page ${name_of(page.resource)} does not exist. You can create it here.</p>
           <py:if test="higher">
             <p>You could also create the same page higher in the hierarchy:</p>
             <ul>

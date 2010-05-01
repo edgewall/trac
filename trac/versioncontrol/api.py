@@ -361,13 +361,15 @@ class RepositoryManager(Component):
                 elif node.isfile:
                     kind = _("file")
                 if resource.version:
-                    version = _("at version %(rev)s", rev=resource.version)
+                    version = _(" at version %(rev)s", rev=resource.version)
             else:
                 kind = _("path")
                 if resource.version:
                     version = '@%s' % resource.version
             in_repo = reponame and _(" in %(repo)s", repo=reponame) or ''
-            return ''.join([kind, ' ', id, version, in_repo])
+            # TRANSLATOR: file /trunk/setup.py at version 13 in trac
+            return _('%(kind)s %(id)%(at_version)s%(in_repo)s',
+                     kind=kind, id=id, at_version=version, in_repo=in_repo)
         elif resource.realm == 'repository':
             return _("Repository %(repo)s", repo=resource.id)
 

@@ -52,7 +52,7 @@
         <dd class="author" py:choose="">
           <em py:when="multi" class="multi">(multiple changes)</em>
           <py:otherwise>${authorinfo(change.author)}
-            <span py:if="show_ip_addresses and 'ipnr' in change" class="ipnr">(IP: $change.ipnr)</span></py:otherwise>
+            <span py:if="show_ip_addresses and 'ipnr' in change" class="ipnr"><i18n:msg params="ipnr">(IP: $change.ipnr)</i18n:msg></span></py:otherwise>
         </dd>
         <dt class="property message">Comment:</dt>
         <dd class="message" py:choose="" xml:space="preserve">

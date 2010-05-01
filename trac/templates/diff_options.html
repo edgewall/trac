@@ -5,6 +5,7 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
     xmlns:py="http://genshi.edgewall.org/"
     xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:i18n="http://genshi.edgewall.org/i18n"
     py:strip="">
   <label for="style">View differences</label>
   <select id="style" name="style">
@@ -14,13 +15,15 @@
             value="sidebyside">side by side</option>
   </select>
   <div class="field">
-    <label><input type="radio" name="contextall" value="0"
-                  checked="${not diff.options.contextall or None}"/>
-           Show</label>
-    <label><input type="text" name="contextlines" id="contextlines" size="2"
-                  maxlength="3" value="${diff.options.contextlines &lt; 0 and 
-                                         'all' or diff.options.contextlines}"/>
-           lines around each change</label><br/>
+    <i18n:msg>
+      <label><input type="radio" name="contextall" value="0"
+                    checked="${not diff.options.contextall or None}"/>
+             Show</label>
+      <label><input type="text" name="contextlines" id="contextlines" size="2"
+                    maxlength="3" value="${diff.options.contextlines &lt; 0 and 
+                                           'all' or diff.options.contextlines}"/>
+             lines around each change</label>
+    </i18n:msg><br/>
     <label><input type="radio" name="contextall" value="1"
                   checked="${diff.options.contextall or None}"/>
            Show the changes in full context</label>

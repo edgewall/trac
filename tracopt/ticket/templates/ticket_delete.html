@@ -8,8 +8,8 @@
   <xi:include href="layout.html" />
   <head>
     <title py:choose="action">
-      <py:when test="'delete'">Delete Ticket #$ticket.id</py:when>
-      <py:otherwise>Delete comment $del_cnum on Ticket #$ticket.id</py:otherwise>
+      <py:when test="'delete'"><i18n:msg params="id">Delete Ticket #$ticket.id</i18n:msg></py:when>
+      <py:otherwise><i18n:msg params="num, id">Delete comment $del_cnum on Ticket #$ticket.id</i18n:msg></py:otherwise>
     </title>
   </head>
 
@@ -17,7 +17,7 @@
     <div id="content" class="ticket" py:choose="action">
       <py:when test="'delete'">
         <h1 id="trac-ticket-title">
-          Delete <a href="${href.ticket(ticket.id)}">Ticket #$ticket.id</a>
+          <i18n:msg params="id">Delete <a href="${href.ticket(ticket.id)}">Ticket #$ticket.id</a></i18n:msg>
           <span class="status">($ticket.status<py:if
               test="ticket.type"> $ticket.type</py:if><py:if
               test="ticket.resolution">: $ticket.resolution</py:if>)</span>
@@ -29,10 +29,14 @@
         <form id="edit" action="" method="post">
           <div>
             <input type="hidden" name="action" value="delete"/>
-            <p><strong>Are you sure you want to delete this ticket?</strong>
-               (comments: ${sum(1 for change in changes if 'cnum' in change)},
-                attachments: ${sum(1 for change in changes if 'cnum' not in change)})<br/>
-               This is an irreversible operation.</p>
+            <p>
+              <strong>Are you sure you want to delete this ticket?</strong>
+              <i18n:msg params="comments, attachments">
+                (comments: ${sum(1 for change in changes if 'cnum' in change)},
+                 attachments: ${sum(1 for change in changes if 'cnum' not in change)})
+              </i18n:msg><br/>
+              This is an irreversible operation.
+            </p>
           </div>
           <div class="buttons">
             <input type="submit" name="cancel" value="${_('Cancel')}"/>
@@ -42,7 +46,7 @@
       </py:when>
 
       <py:otherwise>
-        <h1>Delete comment $del_cnum on Ticket #$ticket.id</h1>
+        <h1 i18n:msg="num, id">Delete comment $del_cnum on Ticket #$ticket.id</h1>
         
         <div id="changelog">
           <div class="change">

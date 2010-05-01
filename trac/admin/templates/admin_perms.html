@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="admin.html" />
   <head>
     <title>Permissions</title>
@@ -88,7 +89,7 @@
       </div>
     </form>
 
-    <p class="help">
+    <p class="help" i18n:msg="">
       Note that <em>Subject</em> or <em>Group</em> names can't be all upper-case,
       as that is reserved for permission names.
     </p>

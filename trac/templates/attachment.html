@@ -26,11 +26,11 @@
   <body>
     <div py:choose="mode" id="content" class="attachment">
       <py:when test="'new'">
-        <h1>Add Attachment to <a href="${url_of(parent)}">${name_of(parent)}</a></h1>
+        <h1 i18n:msg="parent">Add Attachment to <a href="${url_of(parent)}">${name_of(parent)}</a></h1>
         <form id="attachment" method="post" enctype="multipart/form-data" action="">
           <div class="field">
-            <label>File<py:if test="max_size >= 0"> (size limit
-                  ${pretty_size(max_size)})</py:if>:<br />
+            <label>File<py:if test="max_size >= 0">
+              <i18n:msg params="value">(size limit ${pretty_size(max_size)})</i18n:msg></py:if>:<br />
               <input type="file" name="attachment" /></label>
           </div>
           <fieldset>
@@ -96,7 +96,7 @@
               <th scope="col" i18n:msg="file,size,author,date">
                 File $attachment.filename,
                 <span title="${_('%(size)s bytes', size=attachment.size)}">${pretty_size(attachment.size)}</span>
-                (added by ${authorinfo(attachment.author)},  ${dateinfo(attachment.date)} ago)
+                (added by ${authorinfo(attachment.author)}, ${dateinfo(attachment.date)} ago)
               </th>
             </tr>
             <tr>

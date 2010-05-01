@@ -32,7 +32,7 @@ from trac.timeline.api import ITimelineEventProvider
 from trac.util import get_reporter_id
 from trac.util.datefmt import from_utimestamp, to_utimestamp
 from trac.util.text import shorten_line
-from trac.util.translation import _
+from trac.util.translation import _, tag_
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web.chrome import add_ctxtnav, add_link, add_notice, add_script, \
                             add_stylesheet, add_warning, prevnext_nav, \
@@ -707,16 +707,19 @@ class WikiModule(Component):
         if field == 'url':
             return context.href.wiki(wiki_page.id, version=wiki_page.version)
         elif field == 'title':
-            return tag(tag.em(get_resource_name(self.env, wiki_page)),
-                       # TRANSLATOR: wiki page
-                       wiki_page.version > 1 and _(' edited') or _(' created'))
+            name = tag.em(get_resource_name(self.env, wiki_page))
+            if wiki_page.version > 1:
+                return tag_('%(page)s edited', page=name)
+            else:
+                return tag_('%(page)s created', page=name)
         elif field == 'description':
             markup = format_to(self.env, None, context(resource=wiki_page),
                                comment)
             if wiki_page.version > 1:
                 diff_href = context.href.wiki(
                     wiki_page.id, version=wiki_page.version, action='diff')
-                markup = tag(markup, ' ', tag.a('(diff)', href=diff_href))
+                markup = tag(markup,
+                             ' (', tag.a(_('diff'), href=diff_href), ')')
             return markup
 
     # ISearchSource methods

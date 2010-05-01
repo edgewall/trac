@@ -6,20 +6,20 @@ $ticket.description
 {%   end %}\
 {%   otherwise %}\
 {%     if changes_body %}\
-Changes (by $change.author):
+${_('Changes (by %(author)s):', author=change.author)}
 
 $changes_body
 {%     end %}\
 {%     if changes_descr %}\
 {%       if not changes_body and not change.comment and change.author %}\
-Description changed by $change.author:
+${_('Description changed by %(author)s:', author=change.author)}
 {%       end %}\
 $changes_descr
 --
 {%     end %}\
 {%     if change.comment %}\
 
-Comment${not changes_body and ' (by %s)' % change.author or ''}:
+${changes_body and _('Comment:') or _('Comment (by %(author)s):', author=change.author)}
 
 $change.comment
 {%     end %}\
@@ -27,6 +27,6 @@ $change.comment
 {% end %}\
 
 -- 
-Ticket URL: <$ticket.link>
+${_('Ticket URL: <%(link)s>', link=ticket.link)}
 $project.name <${project.url or abs_href()}>
 $project.descr

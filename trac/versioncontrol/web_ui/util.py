@@ -61,6 +61,7 @@ def get_existing_node(req, repos, path, rev):
     try: 
         return repos.get_node(path, rev) 
     except NoSuchNode, e:
+        # TRANSLATOR: You can 'search' in the repository history... (link)
         search_a = tag.a(_("search"), 
                          href=req.href.log(path, rev=rev, mode='path_history'))
         raise ResourceNotFound(tag(

@@ -41,21 +41,23 @@
               </label>
             </fieldset>
           </div>
-          <label>
-            View log starting at
-            <input type="text" id="rev" name="rev" value="$rev" size="5" />
-          </label>
-          <label>
-            and back to
-            <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" />
-          </label>
-          <br />
-          <label>
-            Show at most
-            <input type="text" id="limit" name="limit" value="$limit" size="3" maxlength="3" />
-            revisions per page.
-          </label>
-          <br />
+          <i18n:msg>
+            <label>
+              View log starting at
+              <input type="text" id="rev" name="rev" value="$rev" size="5" />
+            </label>
+            <label>
+              and back to
+              <input type="text" id="stop_rev" name="stop_rev" value="$stop_rev" size="5" />
+            </label>
+          </i18n:msg><br />
+          <i18n:msg>
+            <label>
+              Show at most
+              <input type="text" id="limit" name="limit" value="$limit" size="3" maxlength="3" />
+              revisions per page.
+            </label>
+          </i18n:msg><br />
           <label>
             <input type="checkbox" id="verbose" name="verbose" checked="${verbose and 'checked' or None}" />
             Show full log messages
@@ -115,7 +117,7 @@
                 <tr py:if="not is_separator and item.get('copyfrom_path')" class="$odd_even">
                   <td />
                   <td class="copyfrom_path" colspan="6" style="padding-left: ${item.depth - 1}em">
-                    copied from <a href="${href.browser(reponame, item.path, rev=item.rev)}">$item.copyfrom_path</a>:
+                    <i18n:msg params="path">copied from <a href="${href.browser(reponame, item.path, rev=item.rev)}">$item.copyfrom_path</a>:</i18n:msg>
                   </td>
                 </tr>
 

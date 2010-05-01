@@ -533,7 +533,7 @@ def run(args=None):
             try:
                 unicode(env_path, 'ascii')
             except UnicodeDecodeError:
-                printerr(_("non-ascii environment path '%(path)s' not "
+                printerr(_("Non-ascii environment path '%(path)s' not "
                            "supported.", path=env_path))
                 sys.exit(2)
             admin.env_set(env_path)

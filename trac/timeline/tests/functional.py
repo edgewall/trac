@@ -15,7 +15,7 @@ class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
         self._tester.create_wiki_page(pagename)
         self._tester.go_to_timeline()
         tc.find(pagename)
-        tc.notfind(pagename + '.*\\(diff\\)')
+        tc.notfind(pagename + '.*diff</a>\\)')
         self._tester.go_to_wiki(pagename)
         tc.formvalue('modifypage', 'action', 'edit')
         tc.submit()
@@ -24,7 +24,7 @@ class RegressionTestRev5883(FunctionalTwillTestCaseSetup):
         tc.formvalue('edit', 'comment', random_sentence())
         tc.submit('save')
         self._tester.go_to_timeline()
-        tc.find(pagename + '.*\\(diff\\)')
+        tc.find(pagename + '.*diff</a>\\)')
 
 
 def functionalSuite(suite=None):

@@ -18,7 +18,7 @@
   <body>
     <div id="content" class="report">
       <h1>$title
-        <span py:if="numrows" class="numrows">(${ngettext('%(num)d match', '%(num)d matches', numrows)})</span>
+        <span py:if="numrows" class="numrows">(${ngettext('%(num)s match', '%(num)s matches', numrows)})</span>
       </h1>
 
       <form method="get" action="">
@@ -84,7 +84,7 @@
         <h2 class="report-result" py:if="value_for_group">
           <a py:strip="'__grouplink__' not in row_group[0]" href="${row_group[0]['__grouplink__']}">$value_for_group</a>
           <span class="numrows" py:with="cnt = len(row_group)">
-            (${cnt and ngettext('%(num)s match', '%(num)s matches', cnt) or _('No matches')})
+            (${cnt and ngettext('%(num)s match', '%(num)s matches', cnt) or _('No matches found.')})
           </span>
         </h2>
         <table class="listing tickets">

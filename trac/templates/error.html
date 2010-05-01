@@ -63,10 +63,11 @@
     <textarea name="description" rows="3" cols="10">
 ==== How to Reproduce ====
 
+<i18n:msg params="request, path">
 While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
 
 ''(please provide additional details here)''
-
+</i18n:msg>
 <py:if test="req.args">
 Request parameters:
 {{{
@@ -117,7 +118,7 @@ ${to_unicode(traceback)}
               </p>
               <form py:if="project.admin_href"
                     class="newticket" method="get" action="${project.admin_href.newticket()}#">
-                <p>To that end, you could ${create_ticket()} a ticket.</p>
+                <p i18n:msg="create">To that end, you could ${create_ticket()} a ticket.</p>
               </form>
               <p>The action that triggered the error was:</p>
               <pre>${req.method}: ${req.path_info}</pre>
@@ -125,10 +126,10 @@ ${to_unicode(traceback)}
             <py:otherwise>
               <form class="newticket" method="get" action="${project.admin_href.newticket()}#">
                 <p>This is probably a local installation issue.
-                  <py:if test="project.admin_href and project.admin_trac_url != '.'">
+                  <py:if test="project.admin_href and project.admin_trac_url != '.'"><i18n:msg params="create">
                     You should ${create_ticket()} a ticket at the admin Trac to report
                     the issue.
-                  </py:if>
+                  </i18n:msg></py:if>
                 </p>
               </form>
               <h2>Found a bug in Trac?</h2>
@@ -163,7 +164,7 @@ ${to_unicode(traceback)}
                   <ul py:if="frames" style="display: none">
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
                       <a href="#frame${idx}" id="frame${idx}">
-                        <span class="file">File "${frame.filename}",
+                        <span class="file" i18n:msg="file, line, function">File "${frame.filename}",
                         line <b>${frame.lineno + 1}</b>, in</span>
                         <var>${frame.function}</var>
                       </a>
@@ -194,7 +195,7 @@ ${to_unicode(traceback)}
                       </div>
                     </li>
                   </ul>
-                  <pre><py:for each="frame in frames">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}<py:if test="frame.line">
+                  <pre><py:for each="frame in frames"><i18n:msg params="file, line, function">File "${frame.filename}", line ${frame.lineno + 1}, in ${frame.function}</i18n:msg><py:if test="frame.line">
   ${frame.line.lstrip()}
 </py:if></py:for><py:if test="not frames">${traceback}</py:if></pre>
                   <p style="display: none"><input type="button" id="tbtoggle" value="${_('Switch to plain text view')}" /></p>

@@ -112,10 +112,12 @@
                         <py:when test="field.type == 'time'"
                                  py:with="(start, end) = ';' in constraint_value and constraint_value.split(';', 1)
                                                          or (constraint_value, '')">
-                          <label>between</label>
-                          <input type="text" name="${n_field_name}" value="$start" size="14" />
-                          <label>and</label>
-                          <input type="text" name="${n_field_name}_end" value="$end" size="14" />
+                          <i18n:msg>
+                            <label>between</label>
+                            <input type="text" name="${n_field_name}" value="$start" size="14" />
+                            <label>and</label>
+                            <input type="text" name="${n_field_name}_end" value="$end" size="14" />
+                          </i18n:msg>
                         </py:when>
                       </td>
                     </tr>
