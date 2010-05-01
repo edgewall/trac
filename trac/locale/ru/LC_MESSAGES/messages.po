@@ -4825,7 +4825,7 @@ msgstr "Показывать только добавления и удалени
 
 #: trac/versioncontrol/templates/revisionlog.html:44
 msgid "View log starting at"
-msgstr "Смотреть журнал начиная с"
+msgstr "Просмотр журнала начиная с"
 
 #: trac/versioncontrol/templates/revisionlog.html:48
 msgid "and back to"
@@ -4841,20 +4841,20 @@ msgstr "ревизий на страницу"
 
 #: trac/versioncontrol/templates/revisionlog.html:60
 msgid "Show full log messages"
-msgstr "Показывать комментарии целиком"
+msgstr "Сообщения журнала целиком"
 
 #: trac/versioncontrol/templates/revisionlog.html:78
 msgid "Copied or renamed"
-msgstr "Копировано или переименовано"
+msgstr "Скопировано или переименовано"
 
 #: trac/versioncontrol/templates/revisionlog.html:86
 #: trac/versioncontrol/templates/revisionlog.html:180
 msgid "Diff from Old Revision to New Revision (as selected in the Diff column)"
-msgstr "Различия между старой и новой ревизией (выберите из указанных)"
+msgstr "Различия между старой и новой ревизией (выбираются в поле Diff)"
 
 #: trac/versioncontrol/templates/revisionlog.html:92
 msgid "Old / New"
-msgstr "Старый / Новый"
+msgstr "Старая / Новая"
 
 #: trac/versioncontrol/templates/revisionlog.html:92
 msgid "Diff"
