@@ -136,7 +136,7 @@ $info.description</textarea>
                   <py:when test="info.dir">$info.prettydir</py:when>
                   <em py:otherwise="" i18n:msg="repo">Alias of ${info.alias or '(default)'}</em>
                 </td>
-                <td><a py:if="info.rev" href="${href.changeset(info.rev, reponame) or None}">$info.display_rev</a></td>
+                <td><a py:if="info.rev" href="${href.changeset(info.rev, reponame) or None}">[$info.display_rev]</a></td>
               </tr>
             </tbody>
           </table>
