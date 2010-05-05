@@ -812,7 +812,7 @@ class TicketModule(Component):
                 old, new = old_ticket[k], new_ticket[k]
                 if old != new:
                     label = field_labels.get(k, k.capitalize())
-                    prop = {'name': label,
+                    prop = {'name': label, 'field': k,
                             'old': {'name': label, 'value': old},
                             'new': {'name': label, 'value': new}}
                     rendered = self._render_property_diff(req, ticket, k,
@@ -845,7 +845,7 @@ class TicketModule(Component):
                                 ignore_case='-i' in diff_options,
                                 ignore_space_changes='-b' in diff_options)
 
-            changes.append({'diffs': diffs, 'props': [],
+            changes.append({'diffs': diffs, 'props': [], 'field': field,
                             'new': version_info(tnew, field),
                             'old': version_info(told, field)})
 
