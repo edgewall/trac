@@ -66,7 +66,7 @@ msgstr "A #%(id)s jegy %(num)s megjegyzésének törlése"
 #: tracopt/ticket/templates/ticket_delete.html:20
 #, python-format
 msgid "Delete [1:Ticket #%(id)s]"
-msgstr "A [1:Ticket #%(id)s] törlése"
+msgstr "A [1:#%(id)s jegy] törlése"
 
 #: tracopt/ticket/templates/ticket_delete.html:33
 msgid "Are you sure you want to delete this ticket?"
@@ -650,6 +650,8 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr ""
+"Hiba történt a trac.ini írása közben, ellenőrizze, hogy a fájl írható "
+"a webkiszolgáló által. A módosítások nem lettek mentve."
 
 #: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
@@ -996,7 +998,7 @@ msgstr "Teljesítve:"
 #: trac/ticket/templates/milestone_edit.html:85
 #: trac/versioncontrol/templates/admin_repositories.html:73
 msgid "Description (you may use [1:WikiFormatting] here):"
-msgstr "Leírás (használhatja a [1:WikiFormatting]): "
+msgstr "Leírás (itt használható a [1:WikiFormatting]): "
 
 #: trac/admin/templates/admin_milestones.html:78
 msgid "Add Milestone:"
@@ -1059,7 +1061,7 @@ msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"A [1:Subject] vagy [2:Group] nevek nem állhatnak csup nagy betűkből,\n"
+"A [1:Subject] vagy [2:Group] nevek nem állhatnak csupa nagy betűkből,\n"
 "      azok fenntartottak a jogosultság nevek számára."
 
 #: trac/admin/templates/admin_plugins.html:41
@@ -1364,14 +1366,14 @@ msgstr "Példa: Ha a pontos idő [1:%(time)s] (UTC)."
 msgid ""
 "In your time zone %(tz)s, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr "Az Ön időzónájában ami %(tz)s, így jelenik meg: [1:%(formatted)s]"
+msgstr "Az Ön időzónájában amely %(tz)s, így jelenik meg: [1:%(formatted)s]"
 
 #: trac/prefs/templates/prefs_datetime.html:40
 #, python-format
 msgid ""
 "In the default time zone, this would be displayed as\n"
 "            [1:%(formatted)s]."
-msgstr "Az alapértelmezett időzónában így jelenik meg [1:%(formatted)s]."
+msgstr "Az alapértelmezett időzónában így jelenik meg: [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:47
 msgid ""
@@ -1382,7 +1384,7 @@ msgid ""
 msgstr ""
 "Megjegyzés: Az univerzális idő (UTC) ismertebb neve Greenwich idő "
 "(GMT).[1:]\n"
-"Pozitív eltérés jelzi, hogy az időzóna Greenwich-től északra található, "
+"Pozitív eltérés jelzi, hogy az időzóna Greenwichtől északra található, "
 "azaz az univerzális idő előtt jár."
 
 #: trac/prefs/templates/prefs_general.html:15
@@ -1425,10 +1427,10 @@ msgid ""
 "      [1:TracAccessibility]\n"
 "      for more information on access keys."
 msgstr ""
-"A gyorsbillentyűk engedélyezésével bizonyos funkciók billentyűzet "
-"segítségével is könnyen elérhetővé válnak. Azonban ezek a gyorbillentyűk "
-"ütközhetnek az asztali rendszer alapértelmezett beállításaival ezért "
-"alapesetben nincsenek engedélyezve. Bővebb információ a "
+"A gyorsbillentyűk engedélyezésével bizonyos funkciók billentyűzet\n"
+"segítségével is könnyen elérhetővé válnak. Azonban ezek a gyorbillentyűk\n"
+"ütközhetnek az asztali rendszer alapértelmezett beállításaival ezért\n"
+"alapesetben nincsenek engedélyezve. Bővebb információt a\n"
 "[1:TracAccessibility] oldalon talál"
 
 #: trac/prefs/templates/prefs_language.html:14
@@ -1551,12 +1553,16 @@ msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
 msgstr ""
+"Kérjük látogassa meg a nyílt forráskódú Trac projekt honlapját:\n"
+"        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
 msgid ""
 "Copyright © 2003-2010\n"
 "        [1:Edgewall Software]"
 msgstr ""
+"Copyright © 2003-2010\n"
+"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -1599,7 +1605,7 @@ msgstr "a %(parent)s melléklete %(filename)s"
 #: trac/templates/attachment.html:29
 #, python-format
 msgid "Add Attachment to [1:%(parent)s]"
-msgstr "Mellékletes hozzáadása [1:%(parent)s]-hoz"
+msgstr "Melléklet hozzáadása ehhez: [1:%(parent)s]"
 
 #: trac/templates/attachment.html:33
 #, python-format
@@ -1654,7 +1660,7 @@ msgid ""
 "                (added by %(author)s, %(date)s ago)"
 msgstr ""
 "Fájl %(file)s, %(size)s\n"
-"                (csatolta %(author)s,  %(date)s ezelőtt)"
+"                (csatolta %(author)s, %(date)s ezelőtt)"
 
 #: trac/templates/diff_div.html:72
 #, python-format
@@ -1685,7 +1691,7 @@ msgstr "Eltérések megtekintése"
 
 #: trac/templates/diff_options.html:13
 msgid "inline"
-msgstr "beágyazott"
+msgstr "beágyazva"
 
 #: trac/templates/diff_options.html:15
 msgid "side by side"
@@ -1741,9 +1747,9 @@ msgid ""
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
 msgstr ""
-"[3:%(name)s] változások \n"
-"          [1:Változat %(old)s] és\n"
-"          [2:Változat %(new)s] között"
+"[3:%(name)s] változásai \n"
+"          [1:Változat %(old)s] és a\n"
+"          [2:%(new)s. változat] között"
 
 #: trac/templates/diff_view.html:23
 #, python-format
@@ -1753,9 +1759,9 @@ msgid ""
 "          [2:Version %(new)s] of\n"
 "          [3:%(name)s]"
 msgstr ""
-"[3:%(name)s] változások \n"
-"          [1:Első változat] és\n"
-"          [2:Változat %(new)s] között"
+"[3:%(name)s] változásai \n"
+"          [1:Első változat] és a\n"
+"          [2:%(new)s. változat] között"
 
 #: trac/templates/diff_view.html:28
 #, python-format
@@ -1764,9 +1770,8 @@ msgid ""
 "          [1:Version %(new)s] of\n"
 "          [2:%(name)s]"
 msgstr ""
-"Változások\n"
-"          [1:Változat %(new)s] ehhez\n"
-"          [2:%(name)s]"
+"A [2:%(name)s] eltérése a \n"
+"          [1:%(new)s. változathoz]"
 
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
@@ -1786,7 +1791,7 @@ msgstr "%(date)s (%(duration)s ezelőtt)"
 #: trac/templates/diff_view.html:55
 #, python-format
 msgid "(IP: %(ipnr)s)"
-msgstr ""
+msgstr "(IP: %(ipnr)s)"
 
 #: trac/templates/diff_view.html:57
 #: trac/ticket/templates/ticket_notify_email.txt:21
@@ -1949,11 +1954,11 @@ msgstr ""
 
 #: trac/templates/error.html:161
 msgid "Python Traceback"
-msgstr "Python Traceback"
+msgstr ""
 
 #: trac/templates/error.html:162
 msgid "Most recent call last:"
-msgstr "Legfrissebb hívás:"
+msgstr ""
 
 #: trac/templates/error.html:167
 #, python-format
@@ -1961,25 +1966,23 @@ msgid ""
 "File \"%(file)s\",\n"
 "                        line [1:%(line)s], in"
 msgstr ""
-"Fájl \"%(file)s\",\n"
-"                        sor [1:%(line)s], ebben"
 
 #: trac/templates/error.html:172
 msgid "Code fragment:"
-msgstr "Forráskód-részlet:"
+msgstr ""
 
 #: trac/templates/error.html:174
 msgid "Line"
-msgstr "Sor"
+msgstr ""
 
 #: trac/templates/error.html:184
 msgid "Local variables:"
-msgstr "Helyi változók:"
+msgstr ""
 
 #: trac/templates/error.html:198
 #, python-format
 msgid "File \"%(file)s\", line %(line)s, in %(function)s"
-msgstr "Fájl \"%(file)s\", sor %(line)s, ebben %(function)s"
+msgstr ""
 
 #: trac/templates/error.html:201
 msgid "Switch to plain text view"
@@ -1987,15 +1990,15 @@ msgstr "Egyszerű szöveges nézetre váltás"
 
 #: trac/templates/error.html:204
 msgid "System Information:"
-msgstr "Rendszer információ:"
+msgstr ""
 
 #: trac/templates/error.html:212
 msgid "Enabled Plugins:"
-msgstr "Engedélyezett Bővítmények:"
+msgstr ""
 
 #: trac/templates/error.html:228
 msgid "TracGuide"
-msgstr "TracGuide"
+msgstr ""
 
 #: trac/templates/error.html:228
 msgid "— The Trac User and Administration Guide"
@@ -2107,7 +2110,7 @@ msgstr "Próbálja ezt [1:downloading] a fájl helyett."
 #: trac/templates/progress_bar.html:26
 #, python-format
 msgid "%(count)s/%(total)s %(title)s"
-msgstr ""
+msgstr "%(title)s %(count)s/%(total)s"
 
 #: trac/templates/progress_bar.html:36
 #, python-format
@@ -2129,7 +2132,7 @@ msgid ""
 "[1:[2:Total:]]\n"
 "      [3:[4:%(count)s]]"
 msgstr ""
-"[1:[2:Total:]]\n"
+"[1:[2:Teljes:]]\n"
 "      [3:[4:%(count)s]]"
 
 #: trac/templates/theme.html:26
@@ -2266,6 +2269,8 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
+"Hiba történt a trac.ini írása közben. Ellenőrizze, hogy írható "
+"a webszerver által. Az alapérték mentése nem történt meg."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -2497,7 +2502,7 @@ msgstr "A maximum lekérdezés %(max)s érvénytelen."
 
 #: trac/ticket/query.py:159
 msgid "Query filter requires field and constraints separated by a \"=\""
-msgstr ""
+msgstr "A lekérdezés szűrőben a mezőt és a záradékot \"=\" jellel kell elválasztani."
 
 #: trac/ticket/query.py:172
 msgid "Query filter requires field name"
@@ -3084,7 +3089,7 @@ msgid ""
 "[1:Note:] See\n"
 "        [2:TracRoadmap] for help on using\n"
 "        the roadmap."
-msgstr "[1:Megjegyés:] Segítségeta [2:TracRoadmap] oldalon talál."
+msgstr "[1:Megjegyés:] Segítséget a [2:TracRoadmap] oldalon talál."
 
 #: trac/ticket/templates/milestone_view.html:11
 msgid "Edit this milestone"
@@ -3100,7 +3105,7 @@ msgstr "Elkészült %(duration)s ezelőtt (%(date)s)"
 #: trac/ticket/templates/roadmap.html:47
 #, python-format
 msgid "[1:%(duration)s late] (%(date)s)"
-msgstr "[1:%(duration)s késik] (%(date)s)"
+msgstr "[1:késik %(duration)s] (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:52
@@ -3159,6 +3164,9 @@ msgid ""
 "                            [3:and]\n"
 "                            [4:]"
 msgstr ""
+"                            [2:]\n"
+"                            [3:és]\n"
+"                            [4:] [1:között]"
 
 #: trac/ticket/templates/query.html:129
 msgid "And"
@@ -3303,8 +3311,8 @@ msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
 msgstr ""
-"Lekérdezés a jelentéshez: (lehet akár SQL vagy [1:query:]-vel kezdve egy "
-"[2:TracQuery] kifejezés is)"
+"Lekérdezés a jelentéshez: (lehet akár SQL vagy ha [1:query:] szöveggel\n"
+"kezdődik akkor [2:TracQuery] kifejezés is)"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3395,12 +3403,12 @@ msgstr "Jegy #"
 
 #: trac/ticket/templates/ticket.html:91
 msgid "at [1:Initial Version]"
-msgstr "[1:Initial Version]"
+msgstr "[1:Első verziónál]"
 
 #: trac/ticket/templates/ticket.html:94
 #, python-format
 msgid "at [1:Version %(version)s]"
-msgstr "[1:Version %(version)s]"
+msgstr "[1:%(version)s. verziónál]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
@@ -3483,7 +3491,7 @@ msgstr "Segítséget a [1:WikiFormatting] odalon talál."
 
 #: trac/ticket/templates/ticket.html:210
 msgid "The ticket validation has [1:failed]."
-msgstr "A jegy ellenőrzése [1:failed]."
+msgstr "A jegy ellenőrzése [1:nem sikerült]."
 
 #: trac/ticket/templates/ticket.html:219
 #, python-format
@@ -3520,7 +3528,7 @@ msgstr "Segítséget a [1:WikiFormatting] oldalon talál."
 #: trac/ticket/templates/ticket_box.html:43
 #, python-format
 msgid "%(field)s:"
-msgstr ""
+msgstr "%(field)s:"
 
 #: trac/ticket/templates/ticket.html:312
 msgid "This checkbox allows you to add or remove yourself from the CC list."
@@ -3535,7 +3543,7 @@ msgstr ""
 #: trac/ticket/templates/ticket.html:374
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
-msgstr "E-mail cím és felhasználónév mentése itt [1:Preferences]."
+msgstr "Beállíthatja az e-mail címét és felhasználónevét a [1:beállításokban]."
 
 #: trac/ticket/templates/ticket.html:382
 msgid "I have files to attach to this ticket"
@@ -3614,7 +3622,7 @@ msgstr "változott erről [1:%(old)s] erre [2:%(new)s]"
 #: trac/ticket/templates/ticket_change.html:29
 #, python-format
 msgid "set to [1:%(value)s]"
-msgstr "beállítva [1:%(value)s]"
+msgstr "[1:%(value)s] beállítva"
 
 #: trac/ticket/templates/ticket_change.html:32
 #, python-format
@@ -3697,7 +3705,7 @@ msgid ""
 "        and [4:[5:] days back][6:]\n"
 "        [7:done by [8:]]"
 msgstr ""
-"[1:Változtatások innen [2:]] [3:]\n"
+"[1:Változások innen [2:]] [3:]\n"
 "        és [4:[5:] napra visszamenőleg][6:]\n"
 "        [7: [8:] által]"
 
@@ -3801,7 +3809,7 @@ msgstr "%(last)d of %(total)d"
 #: trac/util/presentation.py:256
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr ""
+msgstr "%(start)d - %(stop)d a %(total)d-ból"
 
 #: trac/versioncontrol/admin.py:110
 msgid "Alias"
@@ -3886,7 +3894,7 @@ msgstr ""
 
 #: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
-msgstr ""
+msgstr "A tároló hozzáadásához nincs minden paraméter megadva."
 
 #: trac/versioncontrol/admin.py:263
 #, python-format
@@ -3932,7 +3940,7 @@ msgstr ""
 #: trac/versioncontrol/api.py:202
 #, python-format
 msgid "The repository type '%(type)s' is not supported"
-msgstr ""
+msgstr "A '%(type)s' típusú tároló nem támogatott."
 
 #: trac/versioncontrol/api.py:331
 #, python-format
@@ -4064,7 +4072,7 @@ msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:111
 msgid "No svn:externals configured in trac.ini"
-msgstr ""
+msgstr "Nincs svn:externals konfigurálva a trac.ini fájlban"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "merged"
@@ -4080,11 +4088,11 @@ msgstr "megfelelő"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
-msgstr ""
+msgstr "(váltás a törölt ágak között)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
-msgstr ""
+msgstr "Összefűzött forráskód megtekintése"
 
 #: trac/versioncontrol/svn_prop.py:245
 msgid "No revisions"
@@ -4149,9 +4157,9 @@ msgid ""
 "            This repository is defined in [2:[3:trac.ini]]\n"
 "            and cannot be edited on this page."
 msgstr ""
-"[1:Note:]\n"
-"            Ez a tároló a [2:[3:trac.ini]] fájlban definiált\n"
-"            ezért nem módosítható ezen a lapon."
+"[1:Megjegyzés:]\n"
+"            Ez a tároló a [2:[3:trac.ini]] fájlban került\n"
+"            konfigurálásra, ezért ezen a lapon nem módosítható."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -4186,7 +4194,7 @@ msgstr "Frissítés"
 #: trac/versioncontrol/templates/browser.html:13
 #, python-format
 msgid "%(basename)s in %(dirname)s"
-msgstr ""
+msgstr "%(basename)s a %(dirname)s könyvtárban"
 
 #: trac/versioncontrol/templates/browser.html:54
 msgid "Default Repository"
@@ -4289,7 +4297,7 @@ msgid ""
 "              for [2:%(new_path)s]"
 msgstr ""
 "Változtatások [1:%(new_rev)s] a %(reponame)s tárolóban\n"
-"              [2:%(new_path)s] útvonalhoz"
+"              az [2:%(new_path)s] útvonalhoz"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4598,7 +4606,7 @@ msgstr "Változatnapló mód:"
 
 #: trac/versioncontrol/templates/revisionlog.html:27
 msgid "Stop on copy"
-msgstr ""
+msgstr "Elágazásnál megáll"
 
 #: trac/versioncontrol/templates/revisionlog.html:33
 msgid "Follow copies"
@@ -4620,13 +4628,10 @@ msgid ""
 "            ]"
 msgstr ""
 "[1:\n"
-"              Napló megtekintése kezdve\n"
-"              [2:]\n"
+"              Napló megtekintése\n"
+"              [2:] és\n"
 "            ]\n"
-"            [3:\n"
-"              és visszamenőleg\n"
-"              [4:]\n"
-"            ]"
+"            [3:[4:] változatok között]"
 
 #: trac/versioncontrol/templates/revisionlog.html:54
 msgid ""
@@ -4680,7 +4685,7 @@ msgstr "Nincs változat."
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, python-format
 msgid "copied from [1:%(path)s]:"
-msgstr "innen másolva [1:%(path)s]:"
+msgstr "másolás innen [1:%(path)s]:"
 
 #: trac/versioncontrol/templates/revisionlog.html:126
 #, python-format
@@ -4807,7 +4812,7 @@ msgstr ""
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
-msgstr ""
+msgstr "Nincs tároló konfigurálva."
 
 #: trac/versioncontrol/web_ui/changeset.py:261
 msgid "Invalid Changeset Number"
@@ -4989,11 +4994,11 @@ msgstr "Bejelentkezés"
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
 #: trac/web/auth.py:137
 msgid "installation documentation"
-msgstr ""
+msgstr "telepítési útmutató"
 
 #: trac/web/auth.py:138
 msgid "Configuring Authentication"
-msgstr ""
+msgstr "Azonosítás konfigurálása"
 
 #: trac/web/auth.py:141
 #, python-format
@@ -5001,6 +5006,8 @@ msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
 msgstr ""
+"A azonosítási információk nem elérhetőek. Kérjük olvassa "
+"el a %(inst_doc)s. leírást."
 
 #: trac/web/auth.py:149
 #, python-format
@@ -5103,7 +5110,7 @@ msgstr "Szerkesztő"
 
 #: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
 msgid "A new name is mandatory for a rename."
-msgstr ""
+msgstr "Az átnevezéshez új név megadása kötelező."
 
 #: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
 #, python-format
@@ -5137,12 +5144,12 @@ msgstr ""
 #: trac/wiki/formatter.py:252
 #, python-format
 msgid "!#%(name)s must contain at most one table"
-msgstr ""
+msgstr "A !#%(name)s legalább egy táblázatot kell tartalmazzon."
 
 #: trac/wiki/formatter.py:256
 #, python-format
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
-msgstr ""
+msgstr "A !#%(name)s legalább egy tába cellát kell tartalmazzon (csak tábla cellákat)"
 
 #: trac/wiki/formatter.py:629 trac/wiki/interwiki.py:88
 #, python-format
@@ -5157,7 +5164,7 @@ msgstr "Nem lehet megtekinteni a %(link)s hivatkozást:"
 #: trac/wiki/macros.py:519
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
-msgstr ""
+msgstr "A \"%(id)s\" kép nincs a %(parent)s mellékletei között"
 
 #: trac/wiki/macros.py:562
 #, python-format
@@ -5174,7 +5181,7 @@ msgstr "Elnézést, a dokumentáció nem található"
 
 #: trac/wiki/macros.py:648
 msgid "MIME Types"
-msgstr ""
+msgstr "MIME Típusok"
 
 #: trac/wiki/macros.py:706
 msgid "Table of Contents"
@@ -5321,7 +5328,7 @@ msgstr "Előzmények"
 
 #: trac/wiki/web_ui.py:683
 msgid "Wiki changes"
-msgstr "Wiki változtatások"
+msgstr "Változások a wikiben"
 
 #: trac/wiki/web_ui.py:712
 #, python-format
@@ -5447,6 +5454,8 @@ msgid ""
 "Change information for future version %(version)s (modified by "
 "%(author)s):"
 msgstr ""
+"Változás információ a jövőbeni %(version)s verzióhoz "
+"(módosította %(author)s):"
 
 #: trac/wiki/templates/wiki_edit.html:124
 msgid "Go to the editor"
@@ -5455,7 +5464,7 @@ msgstr "Ugrás a szerkesztőmezőhöz"
 #: trac/wiki/templates/wiki_edit.html:127
 #: trac/wiki/templates/wiki_edit_form.html:74
 msgid "Review Changes"
-msgstr "Változtatások megtekintése"
+msgstr "Változások áttekintése"
 
 #: trac/wiki/templates/wiki_edit.html:129
 msgid "No changes"
@@ -5569,14 +5578,13 @@ msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"
 msgstr ""
-"Verzió %(version)s (módosította %(author)s, %(date)s ezelőtt)\n"
-"\"\n"
-"\"               ([1:diff])"
+"A %(version)s. verzió (módosította %(author)s, %(date)s ezelőtt)\n"
+"               ([1:eltérések])"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
 msgid "Version %(version)s by %(author)s: %(comment)s"
-msgstr "Verzió %(version)s módosította %(author)s: %(comment)s"
+msgstr "A %(version)s. verzió, módosította %(author)s: %(comment)s"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
