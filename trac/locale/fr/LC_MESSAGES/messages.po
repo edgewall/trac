@@ -1994,7 +1994,7 @@ msgstr ""
 "En exécutant une opération %(request)s sur `%(path)s`, Trac a levé une "
 "erreur interne.\n"
 "\n"
-"''(merci de fournir de plus amples details ici)''"
+"''(merci de fournir de plus amples détails ici)''"
 
 #: trac/templates/error.html:72
 msgid ""
@@ -5739,7 +5739,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:124
 msgid "Go to the editor"
-msgstr "Éditer le ticket"
+msgstr "Éditer la page"
 
 #: trac/wiki/templates/wiki_edit.html:127
 #: trac/wiki/templates/wiki_edit_form.html:74
