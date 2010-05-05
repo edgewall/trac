@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-05-02 01:11+0200\n"
+"PO-Revision-Date: 2010-05-05 15:36+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2291,7 +2291,7 @@ msgstr "Ogiltigt versionsnamn."
 #: trac/ticket/admin.py:486
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr "Versionen \"%(name)s\" finns redan."
+msgstr "Version \"%(name)s\" finns redan."
 
 #: trac/ticket/admin.py:493
 msgid "No version selected"
@@ -5333,7 +5333,7 @@ msgstr "Sida %(name)s hittades inte"
 
 #: trac/wiki/web_ui.py:631
 msgid "View latest version"
-msgstr "Visa senaste versionen"
+msgstr "Visa senaste version"
 
 #: trac/wiki/web_ui.py:635
 msgid "View parent page"
@@ -5349,7 +5349,7 @@ msgstr "Nästa version"
 
 #: trac/wiki/web_ui.py:645
 msgid "View Latest Version"
-msgstr "Visa senaste versionen"
+msgstr "Visa senaste version"
 
 #: trac/wiki/web_ui.py:648
 msgid "Up"
