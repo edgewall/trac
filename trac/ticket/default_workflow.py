@@ -248,7 +248,10 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                                "%(current_owner)s",
                                current_owner=current_owner))
             elif len(owners) == 1:
-                control.append(tag_('to %(owner)s ', owner=owners[0]))
+                owner = tag.input(type='hidden', id=id, name=id,
+                                  value=owners[0])
+                control.append(tag_('to %(owner)s ',
+                                    owner=tag(owners[0], owner)))
                 if ticket['owner'] != owners[0]:
                     hints.append(_("The owner will be changed from "
                                    "%(current_owner)s to %(selected_owner)s",
