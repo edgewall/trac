@@ -326,7 +326,7 @@ KNOWN_MIME_TYPES = {
     
     'text/css':               'css',
     'text/html':              'html htm',
-    'text/plain':             'txt TXT text README INSTALL'
+    'text/plain':             'txt TXT text README INSTALL '
                               'AUTHORS COPYING ChangeLog RELEASE',
     'text/xml':               'xml',
     
