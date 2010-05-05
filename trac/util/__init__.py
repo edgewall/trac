@@ -879,6 +879,13 @@ def as_int(s, default, min=None, max=None):
         value = max
     return value
 
+def as_bool(s):
+    """Convert s to a `bool`."""
+    try:
+        return bool(int(s))
+    except (TypeError, ValueError):
+        return s.lower() in ('true', 'yes', 'on')
+
 def pathjoin(*args):
     """Strip `/` from the arguments and join them with a single `/`."""
     return '/'.join(filter(None, (each.strip('/') for each in args if each)))

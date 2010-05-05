@@ -30,7 +30,7 @@ from trac.db import get_column_names
 from trac.mimeview.api import Mimeview, IContentConverter, Context
 from trac.resource import Resource
 from trac.ticket.api import TicketSystem
-from trac.util import Ranges
+from trac.util import Ranges, as_bool
 from trac.util.datefmt import format_datetime, from_utimestamp, parse_date, \
                               to_timestamp, to_utimestamp, utc
 from trac.util.presentation import Paginator
@@ -179,7 +179,7 @@ class Query(object):
             elif field in kw_arys:
                 kw.setdefault(as_str(field), []).extend(processed_values)
             elif field in kw_bools:
-                kw[as_str(field)] = True
+                kw[as_str(field)] = as_bool(processed_values[0])
             elif field == 'col':
                 cols.extend(synonyms.get(value, value)
                             for value in processed_values)
