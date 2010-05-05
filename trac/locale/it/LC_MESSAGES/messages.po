@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-01 19:16+0200\n"
-"PO-Revision-Date: 2010-05-02 09:53+0200\n"
+"PO-Revision-Date: 2010-05-06 01:08+0200\n"
 "Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
 "Language-Team: it_IT <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2829,7 +2829,7 @@ msgstr "Segnalazione #%(num)s: %(summary)s"
 
 #: trac/ticket/roadmap.py:525
 msgid "Milestones reached"
-msgstr "Obbiettivo raggiunto"
+msgstr "Obbiettivi raggiunti"
 
 #: trac/ticket/roadmap.py:553
 #, python-format
