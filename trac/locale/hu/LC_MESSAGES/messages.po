@@ -137,7 +137,7 @@ msgstr "A(z) '%(title)s' melléklet nem létezik."
 
 #: trac/attachment.py:152
 msgid "Invalid Attachment"
-msgstr "Érvénytelen Melléklet"
+msgstr "Érvénytelen melléklet"
 
 #: trac/attachment.py:192
 msgid "Could not delete attachment"
@@ -242,7 +242,7 @@ msgstr "Egyszerű szöveg"
 
 #: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:649
 msgid "Original Format"
-msgstr "Eredeti Formátum"
+msgstr "Eredeti formátum"
 
 #: trac/attachment.py:800 trac/attachment.py:806
 #: trac/templates/list_of_attachments.html:20
@@ -727,7 +727,7 @@ msgstr "Általános"
 
 #: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
-msgstr "Alap Bállítások"
+msgstr "Alap bállítások"
 
 #: trac/admin/web_ui.py:231 trac/admin/templates/admin_logging.html:10
 #: trac/admin/templates/admin_logging.html:22
@@ -891,7 +891,7 @@ msgstr "Komponensek"
 
 #: trac/admin/templates/admin_components.html:14
 msgid "Manage Components"
-msgstr "Komponensek Kezelése"
+msgstr "Komponensek kezelése"
 
 #: trac/admin/templates/admin_components.html:18
 msgid "Owner:"
@@ -932,7 +932,7 @@ msgstr "Komponens hozzáadása:"
 #: trac/versioncontrol/templates/admin_repositories.html:102
 #: trac/versioncontrol/templates/admin_repositories.html:116
 msgid "Add"
-msgstr "Hozzáadás"
+msgstr "Hozzáad"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
 #: trac/ticket/api.py:283 trac/ticket/web_ui.py:1337
@@ -1024,11 +1024,11 @@ msgstr "Mérföldkövek"
 
 #: trac/admin/templates/admin_milestones.html:14
 msgid "Manage Milestones"
-msgstr "Mérföldkövek Kezelése"
+msgstr "Mérföldkövek kezelése"
 
 #: trac/admin/templates/admin_milestones.html:20
 msgid "Modify Milestone:"
-msgstr "Mérföldkő Módosítása:"
+msgstr "Mérföldkő módosítása:"
 
 #: trac/admin/templates/admin_milestones.html:25
 #: trac/admin/templates/admin_milestones.html:85
@@ -1068,7 +1068,7 @@ msgstr "Leírás (itt használható a [1:WikiFormatting]): "
 
 #: trac/admin/templates/admin_milestones.html:78
 msgid "Add Milestone:"
-msgstr "Mérföldkő Hozzáadása:"
+msgstr "Mérföldkő hozzáadása:"
 
 #: trac/admin/templates/admin_milestones.html:104 trac/ticket/admin.py:400
 msgid "Due"
@@ -1084,11 +1084,11 @@ msgstr "Jegyek"
 
 #: trac/admin/templates/admin_perms.html:14
 msgid "Manage Permissions"
-msgstr "Engedélyek Kezelése"
+msgstr "Engedélyek kezelése"
 
 #: trac/admin/templates/admin_perms.html:19
 msgid "Grant Permission:"
-msgstr "Engedély Megadása:"
+msgstr "Engedély megadása:"
 
 #: trac/admin/templates/admin_perms.html:22
 #: trac/admin/templates/admin_perms.html:49
@@ -1108,7 +1108,7 @@ msgstr ""
 
 #: trac/admin/templates/admin_perms.html:46
 msgid "Add Subject to Group:"
-msgstr "Alany hozzáadása a Csoporthoz:"
+msgstr "Alany hozzáadása a csoporthoz:"
 
 #: trac/admin/templates/admin_perms.html:53
 msgid "Group:"
@@ -1116,7 +1116,7 @@ msgstr "Csoport:"
 
 #: trac/admin/templates/admin_perms.html:57
 msgid "Add a user or group to an existing permission group."
-msgstr "Felhasználó vagy csoport hozzáadása egy meglévő jogosultsági csoporthoz."
+msgstr "Felhasználó vagy csoport hozzáadása egy már létező csoporthoz."
 
 #: trac/admin/templates/admin_perms.html:70
 msgid "Subject"
@@ -1127,12 +1127,12 @@ msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
 msgstr ""
-"A [1:Subject] vagy [2:Group] nevek nem állhatnak csupa nagy betűkből,\n"
+"A [1:tárgy] vagy [2:csoport] nevek nem állhatnak csupa nagy betűkből,\n"
 "      azok fenntartottak a jogosultság nevek számára."
 
 #: trac/admin/templates/admin_plugins.html:41
 msgid "Manage Plugins"
-msgstr "Bővítmények Kezelése"
+msgstr "Bővítmények kezelése"
 
 #: trac/admin/templates/admin_plugins.html:45
 msgid "Install Plugin:"
@@ -1205,11 +1205,11 @@ msgstr "Verziók"
 
 #: trac/admin/templates/admin_versions.html:14
 msgid "Manage Versions"
-msgstr "Verziók Kezelése"
+msgstr "Verziók kezelése"
 
 #: trac/admin/templates/admin_versions.html:19
 msgid "Modify Version:"
-msgstr "Verzió Módosítása"
+msgstr "Verzió módosítása"
 
 #: trac/admin/templates/admin_versions.html:26
 msgid "Date:"
@@ -1217,7 +1217,7 @@ msgstr "Dátum:"
 
 #: trac/admin/templates/admin_versions.html:54
 msgid "Add Version:"
-msgstr "Verzió Hozzáadása"
+msgstr "Verzió hozzáadása"
 
 #: trac/admin/templates/admin_versions.html:59
 msgid "Released:"
@@ -1468,7 +1468,7 @@ msgid ""
 "This information is used to automatically populate some forms\n"
 "        on this site with your contact details."
 msgstr ""
-"Ezek az adatok automatikusan megjelennek egyes ürlapokon,\n"
+"Ezek az adatok automatikusan megjelennek egyes űrlapokon,\n"
 "        ezen a weboldalon."
 
 #: trac/prefs/templates/prefs_general.html:30
@@ -1648,7 +1648,7 @@ msgstr "Rendszer Információ"
 
 #: trac/templates/about.html:64
 msgid "Installed Plugins"
-msgstr "Telepített Bővítmények"
+msgstr "Telepített bővítmények"
 
 #: trac/templates/about.html:72 trac/templates/error.html:84
 #: trac/templates/error.html:218
@@ -1665,7 +1665,7 @@ msgstr "Érték"
 
 #: trac/templates/attach_file_form.html:15
 msgid "Attach file"
-msgstr "Állomány csatolása"
+msgstr "Fájl csatolása"
 
 #: trac/templates/attachment.html:12
 msgid "– Attachment"
@@ -1692,7 +1692,7 @@ msgstr "(a méretkorlát %(value)s)"
 
 #: trac/templates/attachment.html:37
 msgid "Attachment Info"
-msgstr "Melléklet Adatai"
+msgstr "Melléklet adatai"
 
 #: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:365
 #: trac/wiki/templates/wiki_edit_form.html:46
@@ -1919,7 +1919,7 @@ msgid ""
 msgstr ""
 "A %(request)s kérés `%(path)s` erőforráson történő végrehajtása közben "
 "belső rendszerhiba történt.\n"
-"''(kérjük írjon le további részletek a hiba bekövetkezésének "
+"''(kérjük írjon le további részleteket a hiba bekövetkezésének "
 "körülményeiről)''"
 
 #: trac/templates/error.html:72
@@ -2136,7 +2136,7 @@ msgstr "IP-cím: %(ipnr)s"
 
 #: trac/templates/index.html:8 trac/templates/index.html:12
 msgid "Available Projects"
-msgstr "Elérhető Projektek"
+msgstr "Elérhető projektek"
 
 #: trac/templates/index.html:18
 msgid "Error"
@@ -2897,20 +2897,20 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:629
 msgid "Previous Ticket"
-msgstr "Előző Jegy"
+msgstr "Előző jegy"
 
 #: trac/ticket/web_ui.py:629
 msgid "Next Ticket"
-msgstr "Következő Jegy"
+msgstr "Következő jegy"
 
 #: trac/ticket/web_ui.py:630
 msgid "Back to Query"
-msgstr "Vissza a Lekérdezésekhez"
+msgstr "Vissza a lekérdezésekhez"
 
 #: trac/ticket/web_ui.py:712 trac/ticket/web_ui.py:860
 #: trac/ticket/web_ui.py:868
 msgid "Ticket History"
-msgstr "Jegy Történet"
+msgstr "Jegy történet"
 
 #: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:915
 #, python-format
@@ -2949,7 +2949,7 @@ msgstr "Következő változás"
 
 #: trac/ticket/web_ui.py:873
 msgid "Ticket Diff"
-msgstr "Jegy Öszehasonlítás"
+msgstr "Jegy öszehasonlítás"
 
 #: trac/ticket/web_ui.py:907 trac/ticket/web_ui.py:984
 #: trac/ticket/web_ui.py:991
@@ -3516,11 +3516,11 @@ msgstr "[1:%(version)s. verziónál]"
 
 #: trac/ticket/templates/ticket.html:98
 msgid "Create New Ticket"
-msgstr "Új Jegy Létrehozása"
+msgstr "Új jegy létrehozása"
 
 #: trac/ticket/templates/ticket.html:113
 msgid "Change History"
-msgstr "Változás Napló"
+msgstr "Változás napló"
 
 #: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:216
 msgid "in reply to:"
@@ -3667,7 +3667,7 @@ msgstr "Előnézet"
 
 #: trac/ticket/templates/ticket.html:397
 msgid "Create ticket"
-msgstr "Új Jegy létrehozása"
+msgstr "Új jegy létrehozása"
 
 #: trac/ticket/templates/ticket.html:402
 msgid ""
@@ -3783,7 +3783,7 @@ msgstr "Következő időszak"
 #: trac/timeline/web_ui.py:297
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr "%(date)s az Idővonalban"
+msgstr "%(date)s az idővonalban"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:343
@@ -4250,7 +4250,7 @@ msgstr "A %(prop)s jellemző módosítva"
 
 #: trac/versioncontrol/templates/admin_repositories.html:14
 msgid "Manage Repositories"
-msgstr "Tárolók Kezelése"
+msgstr "Tárolók kezelése"
 
 #: trac/versioncontrol/templates/admin_repositories.html:24
 msgid "Default:"
@@ -4262,7 +4262,7 @@ msgstr "Tároló:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:43
 msgid "Modify Repository:"
-msgstr "Tároló Módosítása:"
+msgstr "Tároló módosítása:"
 
 #: trac/versioncontrol/templates/admin_repositories.html:44
 msgid "View Repository:"
@@ -4370,7 +4370,7 @@ msgstr "A [1:%(name)s] jellemző értéke %(value)s"
 
 #: trac/versioncontrol/templates/browser.html:154
 msgid "Repository Index"
-msgstr "Tároló Index"
+msgstr "Tároló lista"
 
 #: trac/versioncontrol/templates/browser.html:164
 msgid ""
@@ -5147,7 +5147,7 @@ msgstr "A Genshi %(error)s hibát jelzett a %(location)s sablon összeállítás
 
 #: trac/web/main.py:225
 msgid "Secure cookies are enabled, you must use https to submit forms."
-msgstr "Biztonságos sütemények engedélyezve vannak, az ürlap elküldéséhez https-t kell használnia."
+msgstr "Biztonságos sütemények engedélyezve vannak, az űrlap elküldéséhez https-t kell használnia."
 
 #: trac/web/main.py:228
 msgid "Do you have cookies enabled?"
@@ -5390,7 +5390,7 @@ msgstr "Laptörténet"
 
 #: trac/wiki/web_ui.py:451
 msgid "Wiki History"
-msgstr "Wiki Előzmények"
+msgstr "Wiki előzmények"
 
 #: trac/wiki/web_ui.py:537
 #, python-format
@@ -5564,7 +5564,7 @@ msgstr ""
 "Kérem tekintse át az összes változtatást és kézzel fűzze össze a "
 "saját módosításaival. [1:]\n"
 " Ha nem biztos abban, hogy mit csinál, akkor kérem válassza a [2:Mégsem] "
-"(összes módosítás elvesztése) parancsot majd kezdje elölről az oldal legutolsó "
+"(összes módosítás elvesztése) parancsot, majd kezdje elölről az oldal legutolsó "
 "verzójának a szerkesztését."
 
 #: trac/wiki/templates/wiki_edit.html:114
