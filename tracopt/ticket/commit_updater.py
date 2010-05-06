@@ -105,8 +105,7 @@ class CommitTicketUpdater(Component):
         """Require commands to be enclosed in an envelope.
         
         Must be empty or contain two characters. For example, if set to "[]",
-        then commands must be in the form of [closes #4].
-        """)
+        then commands must be in the form of [closes #4].""")
     
     commands_close = Option('ticket', 'commit_ticket_update_commands.close',
         'close closed closes fix fixed fixes',
@@ -119,6 +118,14 @@ class CommitTicketUpdater(Component):
         If set to the special value <ALL>, all tickets referenced by the
         message will get a reference to the changeset.""")
     
+    check_perms = BoolOption('ticket', 'commit_ticket_update_check_perms',
+        'true',
+        """Check that the committer has permission to perform the requested
+        operations on the referenced tickets.
+        
+        This requires that the user names be the same for Trac and repository
+        operations.""")
+
     notify = BoolOption('ticket', 'commit_ticket_update_notify', 'true',
         """Send ticket change notification when updating a ticket.""")
     
@@ -238,7 +245,7 @@ In [%s]:
         return functions
     
     def cmd_close(self, ticket, changeset, perm):
-        if 'TICKET_MODIFY' in perm:
+        if not self.check_perms or 'TICKET_MODIFY' in perm:
             ticket['status'] = 'closed'
             ticket['resolution'] = 'fixed'
             if not ticket['owner']:
