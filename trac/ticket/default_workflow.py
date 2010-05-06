@@ -281,13 +281,16 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
                 raise TracError(_("Your workflow attempts to set a resolution "
                                   "but none is defined (configuration issue, "
                                   "please contact your Trac admin)."))
+            id = 'action_%s_resolve_resolution' % action
             if len(resolutions) == 1:
+                resolution = tag.input(type='hidden', id=id, name=id,
+                                       value=resolutions[0])
                 control.append(tag_('as %(resolution)s',
-                                    resolution=resolutions[0]))
+                                    resolution=tag(resolutions[0],
+                                                   resolution)))
                 hints.append(_("The resolution will be set to %(name)s",
                                name=resolutions[0]))
             else:
-                id = 'action_%s_resolve_resolution' % action
                 selected_option = req.args.get(id, 
                         TicketSystem(self.env).default_resolution)
                 control.append(tag_('as %(resolution)s',
