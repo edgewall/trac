@@ -208,7 +208,8 @@
 ${comment}</textarea>
           </fieldset>
           <div py:if="preview_mode and chrome.warnings" i18n:msg="" class="warning system-message">
-            The ticket validation has <a href="#warning">failed</a>.
+            Warnings are shown at the <a href="#warning">top of the page</a>. The ticket validation
+            may have failed.
           </div>
           <!--! Preview of ticket changes -->
           <div id="ticketchange" class="ticketdraft" style="${not show_comment_preview and 'display: none' or None}">

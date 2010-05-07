@@ -703,6 +703,10 @@ class Mimeview(Component):
         content.
 
         Return a string containing the XHTML text.
+        
+        When rendering with an `IHTMLPreviewRenderer` fails, a warning is added
+        to the request associated with the context (if any), unless the
+        `disable_warnings` hint is set to `True`.
         """
         if not content:
             return ''
@@ -785,14 +789,15 @@ class Mimeview(Component):
                     return tag.div(class_='code')(tag.pre(result)).generate()
 
             except Exception, e:
-                if context.req:
+                self.log.warning('HTML preview using %s failed: %s',
+                                 renderer.__class__.__name__,
+                                 exception_to_unicode(e, traceback=True))
+                if context.req and not context.get_hint('disable_warnings'):
                     from trac.web.chrome import add_warning
                     add_warning(context.req,
                         _("HTML preview using %(renderer)s failed (%(err)s)",
                           renderer=renderer.__class__.__name__,
                           err=exception_to_unicode(e)))
-                self.log.warning('HTML preview using %s failed (%s)',
-                        renderer, exception_to_unicode(e,traceback=True))
 
     def _render_source(self, context, stream, annotations, marks=None):
         from trac.web.chrome import add_warning

@@ -351,7 +351,8 @@ class Formatter(object):
     def __init__(self, env, context):
         """Note: `req` is still temporarily used."""
         self.env = env
-        self.context = context
+        self.context = context()
+        self.context.set_hints(disable_warnings=True)
         self.req = context.req
         self.href = context.href
         self.resource = context.resource
