@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-05-01 19:18+0200\n"
+"PO-Revision-Date: 2010-05-07 10:54+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -2137,14 +2137,16 @@ msgstr "Pile d'appel Python"
 msgid "Most recent call last:"
 msgstr "L'appel le plus récent apparaît en dernier :"
 
-#: trac/templates/error.html:167
+#: trac/templates/error.html:166
 #, python-format
 msgid ""
-"File \"%(file)s\",\n"
-"                        line [1:%(line)s], in"
+"[1:File \"%(file)s\",\n"
+"                        line [2:%(line)s], in]\n"
+"                        [3:%(function)s]"
 msgstr ""
-"Fichier « %(file)s »,\n"
-"                        ligne [1:%(line)s], dans"
+"[1:Fichier « %(file)s »,\n"
+"                        ligne [2:%(line)s], dans]\n"
+"                        [3:%(function)s]"
 
 #: trac/templates/error.html:172
 msgid "Code fragment:"
@@ -2556,32 +2558,32 @@ msgstr "L'état actuel n'existe plus"
 msgid "The ticket will be disowned"
 msgstr "Le ticket perdra son propriétaire"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:263
 #, python-format
 msgid "to %(owner)s"
 msgstr "à %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:266
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "Le propriétaire changera de %(current_owner)s"
 
-#: trac/ticket/default_workflow.py:251
+#: trac/ticket/default_workflow.py:254
 #, python-format
 msgid "to %(owner)s "
 msgstr "pour %(owner)s"
 
-#: trac/ticket/default_workflow.py:253
+#: trac/ticket/default_workflow.py:256
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Le propriétaire changera de %(current_owner)s à %(selected_owner)s"
 
-#: trac/ticket/default_workflow.py:268
+#: trac/ticket/default_workflow.py:271
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "Le propriétaire changera de %(current_owner)s à %(authname)s"
 
-#: trac/ticket/default_workflow.py:278
+#: trac/ticket/default_workflow.py:281
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -2590,30 +2592,30 @@ msgstr ""
 "définie (problème de configuration, contactez votre administrateur(ice) "
 "Trac)."
 
-#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
+#: trac/ticket/default_workflow.py:289 trac/ticket/default_workflow.py:299
 #, python-format
 msgid "as %(resolution)s"
 msgstr "avec la résolution « %(resolution)s »"
 
-#: trac/ticket/default_workflow.py:284
+#: trac/ticket/default_workflow.py:291
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "La résolution sera définie à %(name)s"
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:302
 msgid "The resolution will be set"
 msgstr "La résolution sera définie"
 
-#: trac/ticket/default_workflow.py:298
+#: trac/ticket/default_workflow.py:304
 msgid "The resolution will be deleted"
 msgstr "La résolution sera supprimée"
 
-#: trac/ticket/default_workflow.py:301
+#: trac/ticket/default_workflow.py:307
 #, python-format
 msgid "as %(status)s "
 msgstr "statut « %(status)s »"
 
-#: trac/ticket/default_workflow.py:305
+#: trac/ticket/default_workflow.py:311
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Le prochain statut sera « %(name)s »"
