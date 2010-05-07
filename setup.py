@@ -74,7 +74,7 @@ facilities.
     package_data = {
         '': ['templates/*'],
         'trac': ['htdocs/*.*', 'htdocs/README', 'htdocs/js/*', 'htdocs/css/*',
-                 'htdocs/guide/*', 'locale/*.*', 'locale/*/LC_MESSAGES/*.mo'],
+                 'htdocs/guide/*', 'locale/*/LC_MESSAGES/*.mo'],
         'trac.wiki': ['default-pages/*'],
         'trac.ticket': ['workflows/*.ini'],
     },
