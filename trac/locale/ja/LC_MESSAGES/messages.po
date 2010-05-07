@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-26 09:50+0200\n"
-"PO-Revision-Date: 2010-05-03 03:25+0900\n"
+"PO-Revision-Date: 2010-05-07 18:01+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -2012,14 +2012,16 @@ msgstr "Python トレースバック"
 msgid "Most recent call last:"
 msgstr "後方のものほど最近の呼出となります:"
 
-#: trac/templates/error.html:167
+#: trac/templates/error.html:166
 #, python-format
 msgid ""
-"File \"%(file)s\",\n"
-"                        line [1:%(line)s], in"
+"[1:File \"%(file)s\",\n"
+"                        line [2:%(line)s], in]\n"
+"                        [3:%(function)s]"
 msgstr ""
-"ファイル \"%(file)s\",\n"
-"                        行 [1:%(line)s], 関数"
+"[1:ファイル \"%(file)s\",\n"
+"                        行 [2:%(line)s], 関数]\n"
+"                        [3:%(function)s]"
 
 #: trac/templates/error.html:172
 msgid "Code fragment:"
@@ -2419,61 +2421,61 @@ msgstr "現在のステータスは破棄されます"
 msgid "The ticket will be disowned"
 msgstr "担当を外します"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:263
 #, python-format
 msgid "to %(owner)s"
 msgstr "to %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:266
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "担当者を %(current_owner)s から変更します"
 
-#: trac/ticket/default_workflow.py:251
+#: trac/ticket/default_workflow.py:254
 #, python-format
 msgid "to %(owner)s "
 msgstr "to %(owner)s "
 
-#: trac/ticket/default_workflow.py:253
+#: trac/ticket/default_workflow.py:256
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "担当者を %(current_owner)s から %(selected_owner)s に変更します"
 
-#: trac/ticket/default_workflow.py:268
+#: trac/ticket/default_workflow.py:271
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "担当者を %(current_owner)s から %(authname)s に変更します"
 
-#: trac/ticket/default_workflow.py:278
+#: trac/ticket/default_workflow.py:281
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr "ワークフローによる解決の種類が、ただしく定められていません。(設定に関する問題なので、Trac管理者へお問い合わせください)"
 
-#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
+#: trac/ticket/default_workflow.py:289 trac/ticket/default_workflow.py:299
 #, python-format
 msgid "as %(resolution)s"
 msgstr "as %(resolution)s"
 
-#: trac/ticket/default_workflow.py:284
+#: trac/ticket/default_workflow.py:291
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "解決方法を %(name)s に設定します"
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:302
 msgid "The resolution will be set"
 msgstr "解決方法が設定されます"
 
-#: trac/ticket/default_workflow.py:298
+#: trac/ticket/default_workflow.py:304
 msgid "The resolution will be deleted"
 msgstr "解決方法は抹消されます"
 
-#: trac/ticket/default_workflow.py:301
+#: trac/ticket/default_workflow.py:307
 #, python-format
 msgid "as %(status)s "
 msgstr "as %(status)s "
 
-#: trac/ticket/default_workflow.py:305
+#: trac/ticket/default_workflow.py:311
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "次のステータスは '%(name)s' です"
