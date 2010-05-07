@@ -163,10 +163,10 @@ ${to_unicode(traceback)}
                   Most recent call last:
                   <ul py:if="frames" style="display: none">
                     <li class="frame" py:for="idx, frame in enumerate(frames)">
-                      <a href="#frame${idx}" id="frame${idx}">
-                        <span class="file" i18n:msg="file, line, function">File "${frame.filename}",
+                      <a href="#frame${idx}" id="frame${idx}"><span i18n:msg="file, line, function" py:strip="">
+                        <span class="file">File "${frame.filename}",
                         line <b>${frame.lineno + 1}</b>, in</span>
-                        <var>${frame.function}</var>
+                        <var>${frame.function}</var></span>
                       </a>
                       <div py:if="frame.line" class="source" style="display: none">
                         <h3>Code fragment:</h3>
