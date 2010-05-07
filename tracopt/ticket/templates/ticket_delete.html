@@ -17,7 +17,7 @@
     <div id="content" class="ticket" py:choose="action">
       <py:when test="'delete'">
         <h1 id="trac-ticket-title">
-          <i18n:msg params="id">Delete <a href="${href.ticket(ticket.id)}">Ticket #$ticket.id</a></i18n:msg>
+          <span i18n:msg="id">Delete <a href="${href.ticket(ticket.id)}">Ticket #$ticket.id</a></span>
           <span class="status">($ticket.status<py:if
               test="ticket.type"> $ticket.type</py:if><py:if
               test="ticket.resolution">: $ticket.resolution</py:if>)</span>
