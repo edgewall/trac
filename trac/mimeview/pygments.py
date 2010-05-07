@@ -186,6 +186,13 @@ class PygmentsRenderer(Component):
             name = aliases and aliases[0] or lexname
             for mimetype in mimetypes:
                 self._types[mimetype] = (name, self.QUALITY_RATIO)
+
+        # Pygments currently doesn't know application/javascript
+        if 'application/javascript' not in self._types:
+            js_entry = self._types.get('text/javascript')
+            if js_entry:
+                self._types['application/javascript'] = js_entry
+
         self._types.update(
             Mimeview(self.env).configured_modes_mapping('pygments')
         )
