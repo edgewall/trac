@@ -110,7 +110,7 @@
                         </py:when>
                         
                         <py:when test="field.type == 'time'"
-                                 py:with="(start, end) = ';' in constraint_value and constraint_value.split(';', 1)
+                                 py:with="(start, end) = '..' in constraint_value and constraint_value.split('..', 1)
                                                          or (constraint_value, '')">
                           <i18n:msg>
                             <label>between</label>

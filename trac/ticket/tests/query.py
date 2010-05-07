@@ -354,7 +354,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""")
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range(self):
-        query = Query.from_string(self.env, 'created=2008-08-01;2008-09-01', order='id')
+        query = Query.from_string(self.env, 'created=2008-08-01..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
@@ -367,7 +367,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_exclusion(self):
-        query = Query.from_string(self.env, 'created!=2008-08-01;2008-09-01', order='id')
+        query = Query.from_string(self.env, 'created!=2008-08-01..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
@@ -380,7 +380,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_open_right(self):
-        query = Query.from_string(self.env, 'created=2008-08-01;', order='id')
+        query = Query.from_string(self.env, 'created=2008-08-01..', order='id')
         sql, args = query.get_sql(self.req)
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
@@ -393,7 +393,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_open_left(self):
-        query = Query.from_string(self.env, 'created=;2008-09-01', order='id')
+        query = Query.from_string(self.env, 'created=..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.time AS time,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.changetime AS changetime,priority.value AS priority_value
@@ -406,7 +406,7 @@ ORDER BY COALESCE(t.id,0)=0,t.id""" % {
         tickets = query.execute(self.req)
 
     def test_constrained_by_time_range_modified(self):
-        query = Query.from_string(self.env, 'modified=2008-08-01;2008-09-01', order='id')
+        query = Query.from_string(self.env, 'modified=2008-08-01..2008-09-01', order='id')
         sql, args = query.get_sql(self.req)
         self.assertEqualSQL(sql,
 """SELECT t.id AS id,t.summary AS summary,t.changetime AS changetime,t.owner AS owner,t.type AS type,t.status AS status,t.priority AS priority,t.time AS time,priority.value AS priority_value

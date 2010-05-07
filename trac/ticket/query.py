@@ -482,9 +482,9 @@ class Query(object):
             value = value[len(mode) + neg:]
 
             if name in self.time_fields:
-                if ';' in value:
+                if '..' in value:
                     (start, end) = [each.strip() for each in 
-                                    value.split(';', 1)]
+                                    value.split('..', 1)]
                 else:
                     (start, end) = (value.strip(), '')
                 col_cast = db.cast(col, 'int64')
@@ -984,7 +984,7 @@ class QueryModule(Component):
                     if fields[field]['type'] == 'time':
                         ends = req.args.getlist(k + '_end')
                         if ends:
-                            vals = [start + ';' + end 
+                            vals = [start + '..' + end 
                                     for (start, end) in zip(vals, ends)]
                     if k in remove_constraints:
                         idx = remove_constraints[k]
