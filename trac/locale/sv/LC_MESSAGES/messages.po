@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-05-05 15:36+0200\n"
+"PO-Revision-Date: 2010-05-08 12:26+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2030,12 +2030,13 @@ msgstr "Python Traceback"
 msgid "Most recent call last:"
 msgstr "Senaste anrop sist:"
 
-#: trac/templates/error.html:167
+#: trac/templates/error.html:166
 #, python-format
 msgid ""
-"File \"%(file)s\",\n"
-"                        line [1:%(line)s], in"
-msgstr "Fil \"%(file)s\", rad [1:%(line)s], i"
+"[1:File \"%(file)s\",\n"
+"                        line [2:%(line)s], in]\n"
+"                        [3:%(function)s]"
+msgstr "[1:Fil \"%(file)s\", rad [2:%(line)s], i] [3:%(function)s]"
 
 #: trac/templates/error.html:172
 msgid "Code fragment:"
@@ -2439,32 +2440,32 @@ msgstr "Nuvarande status existerar ej längre"
 msgid "The ticket will be disowned"
 msgstr "Ärendet blir ägarlöst"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:260
+#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:263
 #, python-format
 msgid "to %(owner)s"
 msgstr "till %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:266
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "Ägarbyte från %(current_owner)s"
 
-#: trac/ticket/default_workflow.py:251
+#: trac/ticket/default_workflow.py:254
 #, python-format
 msgid "to %(owner)s "
 msgstr "till %(owner)s "
 
-#: trac/ticket/default_workflow.py:253
+#: trac/ticket/default_workflow.py:256
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Ägarbyte från %(current_owner)s till %(selected_owner)s"
 
-#: trac/ticket/default_workflow.py:268
+#: trac/ticket/default_workflow.py:271
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "Ägarbyte från %(current_owner)s till %(authname)s"
 
-#: trac/ticket/default_workflow.py:278
+#: trac/ticket/default_workflow.py:281
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -2473,30 +2474,30 @@ msgstr ""
 "definierad (detta är ett lokalt konfigurationsproblem, kontakta din Trac-"
 "administratör)."
 
-#: trac/ticket/default_workflow.py:282 trac/ticket/default_workflow.py:293
+#: trac/ticket/default_workflow.py:289 trac/ticket/default_workflow.py:299
 #, python-format
 msgid "as %(resolution)s"
 msgstr "som %(resolution)s"
 
-#: trac/ticket/default_workflow.py:284
+#: trac/ticket/default_workflow.py:291
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "Lösning kommer sättas till %(name)s"
 
-#: trac/ticket/default_workflow.py:296
+#: trac/ticket/default_workflow.py:302
 msgid "The resolution will be set"
 msgstr "Lösning fastställs"
 
-#: trac/ticket/default_workflow.py:298
+#: trac/ticket/default_workflow.py:304
 msgid "The resolution will be deleted"
 msgstr "Lösning tas bort"
 
-#: trac/ticket/default_workflow.py:301
+#: trac/ticket/default_workflow.py:307
 #, python-format
 msgid "as %(status)s "
 msgstr "som %(status)s "
 
-#: trac/ticket/default_workflow.py:305
+#: trac/ticket/default_workflow.py:311
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Status blir \"%(name)s\""
