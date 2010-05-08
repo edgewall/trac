@@ -116,7 +116,7 @@ msgstr "megjegyzés:"
 #: trac/ticket/templates/ticket.html:142
 #, python-format
 msgid "Changed %(date)s ago by %(author)s"
-msgstr "Módosította %(author)s, %(date)s ezelőtt "
+msgstr "Módosította %(author)s, %(date)s "
 
 #: tracopt/ticket/templates/ticket_delete.html:68
 msgid "Are you sure you want to delete this ticket comment?"
@@ -1744,7 +1744,7 @@ msgid ""
 "                (added by %(author)s, %(date)s ago)"
 msgstr ""
 "Fájl %(file)s, %(size)s\n"
-"                (csatolta %(author)s, %(date)s ezelőtt)"
+"                (csatolta %(author)s, %(date)s)"
 
 #: trac/templates/diff_div.html:72
 #, python-format
@@ -1758,12 +1758,12 @@ msgstr ""
 #: trac/templates/diff_div.html:76
 #, python-format
 msgid "Property %(name)s set to %(value)s"
-msgstr "A %(name)s jellemző értéke %(value)s"
+msgstr "A(z) %(name)s jellemző értéke %(value)s"
 
 #: trac/templates/diff_div.html:79
 #, python-format
 msgid "Property %(name)s deleted"
-msgstr "A %(name)s jellemző törölve"
+msgstr "A(z) %(name)s jellemző törölve"
 
 #: trac/templates/diff_div.html:86
 msgid "Differences"
@@ -1870,7 +1870,7 @@ msgstr "(többszörös változtatás)"
 #: trac/templates/diff_view.html:47
 #, python-format
 msgid "%(date)s (%(duration)s ago)"
-msgstr "%(date)s (%(duration)s ezelőtt)"
+msgstr "%(date)s (%(duration)s)"
 
 #: trac/templates/diff_view.html:55
 #, python-format
@@ -2175,7 +2175,7 @@ msgstr ""
 "[1:%(file)s]\n"
 "      [2:[3:]]\n"
 "       ([4:%(size)s]) -\n"
-"      hozzáadta [5:%(author)s] %(date)s ezelőtt."
+"      hozzáadta [5:%(author)s] %(date)s."
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
@@ -3216,7 +3216,7 @@ msgstr "Mérföldkő szerkesztése"
 #: trac/ticket/templates/roadmap.html:42
 #, python-format
 msgid "Completed %(duration)s ago (%(date)s)"
-msgstr "Elkészült %(duration)s ezelőtt (%(date)s)"
+msgstr "Elkészült %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:32
 #: trac/ticket/templates/roadmap.html:47
@@ -3382,7 +3382,7 @@ msgid ""
 "                      %(date)s ago."
 msgstr ""
 "Beküldte [1:%(author)s],\n"
-"                      %(date)s ezelőtt."
+"                      %(date)s."
 
 #: trac/ticket/templates/query_results.html:85
 msgid "(this ticket)"
@@ -3567,7 +3567,7 @@ msgid ""
 "                      by %(author)s"
 msgstr ""
 "%(version)s. verzió, módosította %(author)s,\n"
-"                     %(date)s ezelőtt"
+"                     %(date)s"
 
 #: trac/ticket/templates/ticket.html:166
 #, python-format
@@ -3576,7 +3576,7 @@ msgid ""
 "                      by %(author)s"
 msgstr ""
 "Utoljára szerkesztette %(author)s,\n"
-"                     %(date)s ezelőtt"
+"                     %(date)s"
 
 #: trac/ticket/templates/ticket.html:172
 #: trac/versioncontrol/templates/changeset.html:129
@@ -3692,12 +3692,12 @@ msgstr "[1:Megjegyés:] Segítséget a [2:TracTickets] oldalon talál."
 #: trac/ticket/templates/ticket_box.html:19
 #, python-format
 msgid "Opened %(created)s ago"
-msgstr "Megnyitva %(created)s ezelőtt"
+msgstr "Megnyitva %(created)s"
 
 #: trac/ticket/templates/ticket_box.html:20
 #, python-format
 msgid "Last modified %(modified)s ago"
-msgstr "Utolsó módosítás %(modified)s ezelőtt"
+msgstr "Utolsó módosítás %(modified)s"
 
 #: trac/ticket/templates/ticket_box.html:21
 msgid "(ticket not yet created)"
@@ -3857,49 +3857,49 @@ msgstr "[1:Megjegyés:] Segítséget [2:TracTimeline] oldalon talál."
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
 msgstr[0] "%(num)d éve"
-msgstr[1] "%(num)d évvel"
+msgstr[1] "%(num)d éve"
 
 #: trac/util/datefmt.py:80
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
 msgstr[0] "%(num)d hónapja"
-msgstr[1] "%(num)d hónappal"
+msgstr[1] "%(num)d hónapja"
 
 #: trac/util/datefmt.py:81
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
 msgstr[0] "%(num)d hete"
-msgstr[1] "%(num)d héttel"
+msgstr[1] "%(num)d hete"
 
 #: trac/util/datefmt.py:82
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d napja"
-msgstr[1] "%(num)d nappal"
+msgstr[1] "%(num)d napja"
 
 #: trac/util/datefmt.py:83
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d órája"
-msgstr[1] "%(num)d órával"
+msgstr[1] "%(num)d órája"
 
 #: trac/util/datefmt.py:84
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d perce"
-msgstr[1] "%(num)d perccel"
+msgstr[1] "%(num)d perce"
 
 #: trac/util/datefmt.py:103
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
 msgstr[0] "%(num)i másodperce"
-msgstr[1] "%(num)i másodperccel"
+msgstr[1] "%(num)i másodperce"
 
 #: trac/util/datefmt.py:247
 #, python-format
@@ -3951,17 +3951,17 @@ msgstr "Nem lehetséges egy revízió szinkronizálása több tárolóban"
 #: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
 #, python-format
 msgid "Repository '%(repo)s' not found"
-msgstr "A '%(repo)s' tároló nem található"
+msgstr "A(z) '%(repo)s' tároló nem található"
 
 #: trac/versioncontrol/admin.py:128
 #, python-format
 msgid "%(rev)s resynced on %(reponame)s."
-msgstr "A %(rev)s szinkronizálva a %(reponame)s tárolóban."
+msgstr "A(z) %(rev)s. szinkronizálva a %(reponame)s tárolóban."
 
 #: trac/versioncontrol/admin.py:135
 #, python-format
 msgid "Resyncing repository history for %(reponame)s... "
-msgstr "A %(reponame)s tároló történet szinkronizálása... "
+msgstr "A(z) %(reponame)s tároló szinkronizálása... "
 
 #: trac/versioncontrol/admin.py:142
 #, python-format
@@ -4078,12 +4078,12 @@ msgstr ""
 #: trac/versioncontrol/api.py:350
 #, python-format
 msgid "Changeset %(rev)s in %(repo)s"
-msgstr "Változtatások %(rev)s a %(repo)s tárolóban"
+msgstr "A(z) %(rev)s. változat a %(repo)s tárolóban"
 
 #: trac/versioncontrol/api.py:352
 #, python-format
 msgid "Changeset %(rev)s"
-msgstr "A %(rev)s. változtatás"
+msgstr "A(z) %(rev)s. változtatás"
 
 #: trac/versioncontrol/api.py:360
 msgid "directory"
@@ -4373,9 +4373,9 @@ msgid ""
 "            checked in by %(author)s, %(date)s ago\n"
 "            ([3:diff])"
 msgstr ""
-"Változat [1:%(rev)s],\n"
+"A(z) [1:%(rev)s]. változat,\n"
 "            [2:%(size)s]\n"
-"            beküldte %(author)s, %(date)s ezelőtt\n"
+"            beküldte %(author)s, %(date)s\n"
 "            ([3:diff])"
 
 #: trac/versioncontrol/templates/browser.html:140
@@ -4463,7 +4463,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
 msgid "Changeset [1:%(new_rev)s] in %(reponame)s"
-msgstr "Változtatások [1:%(new_rev)s] a %(reponame)s tárolóban"
+msgstr "A(z) [1:%(new_rev)s]. változtatás a %(reponame)s tárolóban"
 
 #: trac/versioncontrol/templates/changeset.html:57
 #, python-format
@@ -4501,7 +4501,7 @@ msgstr ""
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
 msgid "Changeset [1:%(new_rev)s]"
-msgstr "Változtatások [1:%(new_rev)s]"
+msgstr "A(z) [1:%(new_rev)s]. változtatás"
 
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
@@ -4555,12 +4555,12 @@ msgstr "Előző verzió megjelenítése böngészőben"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
-msgstr "(kevesebb mint egy órával ezelőtt)"
+msgstr "(kevesebb mint egy órája)"
 
 #: trac/versioncontrol/templates/changeset.html:140
 #, python-format
 msgid "(%(age)s ago)"
-msgstr "(%(age)s ezelőtt)"
+msgstr "(%(age)s)"
 
 #: trac/versioncontrol/templates/changeset.html:154
 msgid "Message:"
@@ -4665,7 +4665,7 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
-"Bármely utvonaltól kezdve, beíráskor egy lista jelenik meg,\n"
+"Bármely útvonaltól kezdve, beíráskor egy lista jelenik meg,\n"
 "              a létező és kiválaszható könyvtárakkal és fájlokkal\n"
 "              A listáról kattintással vagy a fel/le nyíl billentyűkkel\n"
 "              és a tab megnyomásával választhat."
@@ -4905,7 +4905,7 @@ msgstr "Fájl megtekintése jegyzetek nélkül"
 
 #: trac/versioncontrol/web_ui/browser.py:458
 msgid "Annotate"
-msgstr "Jegyzet készítése"
+msgstr "Változatszámok soronként"
 
 #: trac/versioncontrol/web_ui/browser.py:459
 msgid ""
@@ -5489,7 +5489,7 @@ msgstr "A [1:%(name)s] oldal %(version)s. változatának törlése"
 #: trac/wiki/templates/wiki_delete.html:25
 #, python-format
 msgid "Delete [1:%(name)s]"
-msgstr "A [1:%(name)s] törlése"
+msgstr "A [1:%(name)s] oldal törlése"
 
 #: trac/wiki/templates/wiki_delete.html:33
 #, python-format
@@ -5716,7 +5716,7 @@ msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"
 msgstr ""
-"A(z) %(version)s. változat (módosította %(author)s, %(date)s ezelőtt)\n"
+"A(z) %(version)s. változat (módosította %(author)s, %(date)s)\n"
 "               ([1:eltérések])"
 
 #: trac/wiki/templates/wiki_view.html:47
@@ -5732,7 +5732,7 @@ msgstr "A(z) %(version)s. változat, módosította %(author)s"
 #: trac/wiki/templates/wiki_view.html:54
 #, python-format
 msgid "[1:Last modified] %(reldate)s ago"
-msgstr "[1:Utoljára módosítva] %(reldate)s ezelőtt"
+msgstr "[1:Utoljára módosítva] %(reldate)s"
 
 #: trac/wiki/templates/wiki_view.html:61
 #, python-format
