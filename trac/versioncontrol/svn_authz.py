@@ -78,6 +78,8 @@ class RealSubversionAuthorizer(Authorizer):
     def __init__(self, repos, auth_name, module_name, cfg_file, cfg_fp=None):
         self.repos = repos
         self.auth_name = auth_name
+        if isinstance(module_name, unicode):
+            module_name = module_name.encode('utf-8')
         self.module_name = module_name
                                 
         from ConfigParser import ConfigParser
@@ -92,6 +94,9 @@ class RealSubversionAuthorizer(Authorizer):
     def has_permission(self, path):
         if path is None:
             return 1
+
+        if isinstance(path, unicode):
+            path = path.encode('utf-8')
 
         for p in parent_iter(path):
             if self.module_name:

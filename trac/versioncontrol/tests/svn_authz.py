@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from trac.versioncontrol import svn_authz
 
 import unittest
@@ -17,7 +19,9 @@ def tests():
   >>> from trac.versioncontrol.svn_authz import RealSubversionAuthorizer
   >>> from StringIO import StringIO
   >>> make_auth = lambda mod, cfg: RealSubversionAuthorizer(None,
-  ...                   'user', mod, None, StringIO(cfg))
+  ...                   u'user', mod, None,
+  ...                   StringIO(isinstance(cfg, unicode) and 
+  ...                            cfg.encode('utf-8') or cfg))
   
   
   Simple operation
@@ -33,7 +37,7 @@ def tests():
   Read and Write Permissions
   ----------------------
   Trac is only concerned about read permissions.
-      >>> a = make_auth('', '''
+      >>> a = make_auth('', u'''
       ... [/readonly]
       ... user = r
       ... [/writeonly]
@@ -42,12 +46,16 @@ def tests():
       ... user = rw
       ... [/empty]
       ... user = 
+      ... [/résumé]
+      ... user = rw
       ... ''')
   
   Permissions of 'r' or 'rw' will allow access:
       >>> int(a.has_permission('/readonly'))
       1
       >>> int(a.has_permission('/readwrite'))
+      1
+      >>> int(a.has_permission(u'/résumé')) # passes unicode string
       1
   
   If only 'w' permission is given, Trac does not allow access:
@@ -81,27 +89,31 @@ def tests():
   Module Usage
   ------------
   If a module name is specified, the rules used are specific to the module.
-      >>> a = make_auth('module', '''
+      >>> a = make_auth(u'module', u'''
       ... [module:/a]
+      ... user = r
+      ... [module:/c/résumé]
       ... user = r
       ... [other:/b]
       ... user = r
       ... ''')
       >>> int(a.has_permission('/a'))
       1
+      >>> int(a.has_permission(u'/c/résumé'))
+      1
       >>> int(a.has_permission('/b'))
       0
   
   If a module is specified, but the configuration contains a non-module
   path, the non-module path can still apply:
-      >>> int(make_auth('module', '''
+      >>> int(make_auth(u'module', '''
       ... [/a]
       ... user = r
       ... ''').has_permission('/a'))
       1
   
   However, the module-specific rule will take precedence if both exist:
-      >>> int(make_auth('module', '''
+      >>> int(make_auth(u'module', '''
       ... [module:/a]
       ... user = 
       ... [/a]
