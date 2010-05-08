@@ -872,6 +872,8 @@ class ChangesetModule(Component):
                 changeset_label = _('Repository changesets')
             filters.insert(0, ('changeset', changeset_label))
             return filters
+        else:
+            return []
 
     def get_timeline_events(self, req, start, stop, filters):
         all_repos = 'changeset' in filters
