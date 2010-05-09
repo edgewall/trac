@@ -74,6 +74,8 @@ def add_domain(domain, env_path, locale_dir):
     pass
 
 def domain_functions(domain, *symbols):
+    if symbols and not isinstance(symbols[0], basestring):
+        symbols = symbols[0]
     _functions = {
       'gettext': gettext_noop,
       '_': gettext_noop,
@@ -253,6 +255,16 @@ try:
     translations = TranslationsProxy()
 
     def domain_functions(domain, *symbols):
+        """Prepare partial instantiations of domain translation functions.
+
+        :param domain: domain used for partial instantiation
+        :param symbols: remaining parameters are the name of commonly used
+                        translation function which will be bound to the domain
+                        
+        Note: the symbols can also be given as an iterable in the 2nd argument.
+        """
+        if symbols and not isinstance(symbols[0], basestring):
+            symbols = symbols[0]
         _functions = {
           'gettext': translations.dgettext,
           '_': translations.dgettext,
