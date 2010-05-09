@@ -380,7 +380,7 @@ table.wiki {
 table.wiki td { border: 1px solid #ccc;  padding: .1em .25em; }
 table.wiki th {
  border: 1px solid #bbb;
- padding: .1em .8em;
+ padding: .1em .25em;
  background-color: #f7f7f7;
 }
 
