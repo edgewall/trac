@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-07 10:54+0200\n"
+"POT-Creation-Date: 2010-05-09 14:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -265,7 +265,7 @@ msgid "Size"
 msgstr ""
 
 #: trac/attachment.py:936 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:361
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr ""
@@ -297,6 +297,12 @@ msgstr ""
 #: trac/config.py:605
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
+msgstr ""
+
+#: trac/env.py:152
+msgid ""
+"Visit the Trac open source project at<br /><a "
+"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
 
 #: trac/env.py:583
@@ -379,7 +385,13 @@ msgid ""
 msgstr ""
 
 #: trac/env.py:822
-msgid "Upgrade done."
+#, python-format
+msgid ""
+"Upgrade done.\n"
+"\n"
+"You may want to upgrade the Trac documentation now by running:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
 msgstr ""
 
 #: trac/notification.py:155
@@ -432,7 +444,7 @@ msgid "User"
 msgstr ""
 
 #: trac/perm.py:642 trac/admin/templates/admin_perms.html:70
-#: trac/ticket/templates/ticket.html:338
+#: trac/ticket/templates/ticket.html:339
 msgid "Action"
 msgstr ""
 
@@ -790,7 +802,7 @@ msgid "URL:"
 msgstr ""
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:254
+#: trac/ticket/templates/ticket.html:255
 msgid "Description:"
 msgstr ""
 
@@ -1188,12 +1200,12 @@ msgstr ""
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr ""
 
-#: trac/mimeview/api.py:793
+#: trac/mimeview/api.py:800
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr ""
 
-#: trac/mimeview/api.py:825
+#: trac/mimeview/api.py:830
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr ""
@@ -1410,7 +1422,7 @@ msgstr ""
 
 #: trac/search/web_ui.py:63 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
-#: trac/templates/theme.html:28
+#: trac/templates/theme.html:29
 msgid "Search"
 msgstr ""
 
@@ -1550,7 +1562,7 @@ msgstr ""
 msgid "Attachment Info"
 msgstr ""
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:365
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:366
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr ""
@@ -1981,7 +1993,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:389
 msgid "Attachments"
 msgstr ""
 
@@ -2036,16 +2048,23 @@ msgid ""
 "      [3:[4:%(count)s]]"
 msgstr ""
 
-#: trac/templates/theme.html:26
+#: trac/templates/theme.html:27
 msgid "Search:"
 msgstr ""
 
-#: trac/templates/theme.html:39
+#: trac/templates/theme.html:40
 msgid "Context Navigation"
 msgstr ""
 
-#: trac/templates/theme.html:49
+#: trac/templates/theme.html:50
 msgid "Warning:"
+msgstr ""
+
+#: trac/templates/theme.html:69
+#, python-format
+msgid ""
+"Powered by [1:[2:Trac %(version)s]][3:]\n"
+"        By [4:Edgewall Software]."
 msgstr ""
 
 #: trac/ticket/admin.py:36
@@ -2229,7 +2248,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:361
+#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:362
 msgid "Reporter"
 msgstr ""
 
@@ -2962,7 +2981,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr ""
 
 #: trac/ticket/templates/milestone_edit.html:92
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket.html:398
 #: trac/ticket/templates/ticket_change.html:47
 #: trac/wiki/templates/wiki_edit_form.html:70
 #: trac/wiki/templates/wiki_edit_form.html:75
@@ -3302,7 +3321,7 @@ msgstr ""
 msgid "Change History"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:217
 msgid "in reply to:"
 msgstr ""
 
@@ -3370,68 +3389,70 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/templates/ticket.html:210
-msgid "The ticket validation has [1:failed]."
+msgid ""
+"Warnings are shown at the [1:top of the page]. The ticket validation\n"
+"            may have failed."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:219
+#: trac/ticket/templates/ticket.html:220
 #, python-format
 msgid "Changed by %(author)s"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:226
+#: trac/ticket/templates/ticket.html:227
 msgid "Modify Ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:232
+#: trac/ticket/templates/ticket.html:233
 msgid "Change Properties"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:234
 msgid "Properties"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:237
+#: trac/ticket/templates/ticket.html:238
 msgid "Summary:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:245
+#: trac/ticket/templates/ticket.html:246
 msgid "Reporter:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:257
+#: trac/ticket/templates/ticket.html:258
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:273
+#: trac/ticket/templates/ticket.html:274
 #: trac/ticket/templates/ticket_box.html:43
 #, python-format
 msgid "%(field)s:"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:312
+#: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:318
+#: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:383
 msgid "I have files to attach to this ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:389
 msgid "Go to the list of attachments"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:397
 #: trac/ticket/templates/ticket_change.html:45
 #: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
@@ -3439,11 +3460,11 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket.html:398
 msgid "Create ticket"
 msgstr ""
 
-#: trac/ticket/templates/ticket.html:402
+#: trac/ticket/templates/ticket.html:403
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -3695,7 +3716,7 @@ msgstr ""
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:349
 #: trac/versioncontrol/web_ui/changeset.py:247
-#: trac/versioncontrol/web_ui/changeset.py:1087
+#: trac/versioncontrol/web_ui/changeset.py:1089
 #: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -3786,7 +3807,7 @@ msgstr ""
 #: trac/versioncontrol/templates/admin_repositories.html:134
 #: trac/versioncontrol/web_ui/browser.py:819
 #: trac/versioncontrol/web_ui/changeset.py:864
-#: trac/versioncontrol/web_ui/changeset.py:1006
+#: trac/versioncontrol/web_ui/changeset.py:1008
 msgid "(default)"
 msgstr ""
 
@@ -4707,35 +4728,35 @@ msgstr ""
 msgid "Repository changesets"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1010
+#: trac/versioncontrol/web_ui/changeset.py:1012
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1012
+#: trac/versioncontrol/web_ui/changeset.py:1014
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] ""
 msgstr[1] ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1023
+#: trac/versioncontrol/web_ui/changeset.py:1025
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1083
+#: trac/versioncontrol/web_ui/changeset.py:1085
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1089
+#: trac/versioncontrol/web_ui/changeset.py:1091
 #: trac/versioncontrol/web_ui/log.py:397
 msgid "No default repository defined"
 msgstr ""
 
-#: trac/versioncontrol/web_ui/changeset.py:1128
+#: trac/versioncontrol/web_ui/changeset.py:1130
 msgid "Changesets"
 msgstr ""
 
@@ -4960,7 +4981,7 @@ msgstr ""
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr ""
 
-#: trac/wiki/formatter.py:629 trac/wiki/interwiki.py:88
+#: trac/wiki/formatter.py:630 trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr ""
