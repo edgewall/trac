@@ -4,6 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
       xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n"
       py:strip="">
 
   <div py:def="navigation(category)" id="${category}" class="nav">
@@ -65,7 +66,7 @@
       <a id="tracpowered" href="http://trac.edgewall.org/"><img
         src="${chrome.htdocs_location}trac_logo_mini.png" height="30"
         width="107" alt="Trac Powered"/></a>
-      <p class="left">
+      <p class="left" i18n:msg="version">
         Powered by <a href="${href.about()}"><strong>Trac ${trac.version}</strong></a><br />
         By <a href="http://www.edgewall.org/">Edgewall Software</a>.
       </p>
