@@ -114,13 +114,14 @@ label.disabled { color: #d7d7d7 }
 
 /* Header */
 #header hr { display: none }
-#header h1 { margin: 1.5em 0 -1.5em; }
+#header h1 { margin: 1.5em 0 -1.5em; padding: 0 }
 #header img { border: none; margin: 0 0 -3em }
 #header :link, #header :visited, #header :link:hover, #header :visited:hover {
  background: transparent;
  color: #555;
  margin-bottom: 2px;
  border: none;
+ padding: 0;
 }
 #header h1 :link:hover, #header h1 :visited:hover { color: #000 }
 
