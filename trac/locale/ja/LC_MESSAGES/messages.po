@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-26 09:50+0200\n"
-"PO-Revision-Date: 2010-05-07 18:01+0900\n"
+"PO-Revision-Date: 2010-05-09 23:41+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -273,7 +273,7 @@ msgid "Size"
 msgstr "サイズ"
 
 #: trac/attachment.py:936 trac/templates/history_view.html:30
-#: trac/ticket/templates/ticket.html:360
+#: trac/ticket/templates/ticket.html:361
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr "更新者"
@@ -306,6 +306,13 @@ msgstr "[%(section)s] %(entry)s: %(value)s は浮動小数点を入力してく�
 #, python-format
 msgid "[%(section)s] %(entry)s: expected one of (%(choices)s), got %(value)s"
 msgstr "[%(section)s] %(entry)s: %(value)s は %(choices)s のどれかを入力してください。"
+
+#: trac/env.py:152
+msgid ""
+"Visit the Trac open source project at<br /><a "
+"href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
+msgstr ""
+"Tracオープンソースプロジェクトのページに移動する<br /><a href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
 #: trac/env.py:583
 msgid "Database newer than Trac version"
@@ -397,8 +404,19 @@ msgstr ""
 "してください。"
 
 #: trac/env.py:822
-msgid "Upgrade done."
-msgstr "アップグレードが終了しました。"
+#, python-format
+msgid ""
+"Upgrade done.\n"
+"\n"
+"You may want to upgrade the Trac documentation now by running:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
+msgstr ""
+"アップグレードが終了しました。\n"
+"\n"
+"次のコマンドを実行するとTracのドキュメントをアップグレードできます:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
 
 #: trac/notification.py:155
 msgid "TLS enabled but server does not support TLS"
@@ -450,7 +468,7 @@ msgid "User"
 msgstr "ユーザ"
 
 #: trac/perm.py:642 trac/admin/templates/admin_perms.html:70
-#: trac/ticket/templates/ticket.html:338
+#: trac/ticket/templates/ticket.html:339
 msgid "Action"
 msgstr "アクション"
 
@@ -858,7 +876,7 @@ msgid "URL:"
 msgstr "URL:"
 
 #: trac/admin/templates/admin_basics.html:29
-#: trac/ticket/templates/ticket.html:254
+#: trac/ticket/templates/ticket.html:255
 msgid "Description:"
 msgstr "詳細:"
 
@@ -1263,12 +1281,12 @@ msgstr "ファイル %(path)s と、そのディレクトリに %(user)s ユー�
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "%(old)s から %(new)s への MIME変換は、利用可能ではありません"
 
-#: trac/mimeview/api.py:793
+#: trac/mimeview/api.py:800
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "(%(err)s) のため、%(renderer)sを使ったHTMLプレビューに失敗しました"
 
-#: trac/mimeview/api.py:825
+#: trac/mimeview/api.py:830
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "%(annotator)s が使えません: %(error)s"
@@ -1511,7 +1529,7 @@ msgstr "表示例:"
 
 #: trac/search/web_ui.py:63 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
-#: trac/templates/theme.html:28
+#: trac/templates/theme.html:29
 msgid "Search"
 msgstr "検索"
 
@@ -1665,7 +1683,7 @@ msgstr "(サイズの上限 %(value)s)"
 msgid "Attachment Info"
 msgstr "添付ファイル情報"
 
-#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:365
+#: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:366
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
 msgstr "メールアドレスまたはユーザ名:"
@@ -2130,7 +2148,7 @@ msgstr ""
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:389
 msgid "Attachments"
 msgstr "添付ファイル"
 
@@ -2185,17 +2203,26 @@ msgid ""
 "      [3:[4:%(count)s]]"
 msgstr "[1:[2:合計:]] [3:[4:%(count)s]]"
 
-#: trac/templates/theme.html:26
+#: trac/templates/theme.html:27
 msgid "Search:"
 msgstr "検索:"
 
-#: trac/templates/theme.html:39
+#: trac/templates/theme.html:40
 msgid "Context Navigation"
 msgstr "Context Navigation"
 
-#: trac/templates/theme.html:49
+#: trac/templates/theme.html:50
 msgid "Warning:"
 msgstr "警告:"
+
+#: trac/templates/theme.html:69
+#, python-format
+msgid ""
+"Powered by [1:[2:Trac %(version)s]][3:]\n"
+"        By [4:Edgewall Software]."
+msgstr ""
+"Powered by [1:[2:Trac %(version)s]][3:]\n"
+"        By [4:Edgewall Software]."
 
 #: trac/ticket/admin.py:36
 msgid "(Undefined)"
@@ -2378,7 +2405,7 @@ msgstr "チケット #%(num)s とそれに関するデータを削除しまし�
 msgid "Summary"
 msgstr "概要"
 
-#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:361
+#: trac/ticket/api.py:279 trac/ticket/templates/ticket.html:362
 msgid "Reporter"
 msgstr "報告者"
 
@@ -3116,7 +3143,7 @@ msgid "Retarget associated open tickets to milestone:"
 msgstr "このマイルストーンに属するクローズされていないチケットを次のものに割り当てる:"
 
 #: trac/ticket/templates/milestone_edit.html:92
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket.html:398
 #: trac/ticket/templates/ticket_change.html:47
 #: trac/wiki/templates/wiki_edit_form.html:70
 #: trac/wiki/templates/wiki_edit_form.html:75
@@ -3461,7 +3488,7 @@ msgstr "チケットの新規作成"
 msgid "Change History"
 msgstr "更新履歴"
 
-#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:216
+#: trac/ticket/templates/ticket.html:128 trac/ticket/templates/ticket.html:217
 msgid "in reply to:"
 msgstr "親コメント:"
 
@@ -3530,68 +3557,71 @@ msgid ""
 msgstr "[1:WikiFormatting] が使用可能"
 
 #: trac/ticket/templates/ticket.html:210
-msgid "The ticket validation has [1:failed]."
-msgstr "チケットの内容に[1:問題]があります。"
+msgid ""
+"Warnings are shown at the [1:top of the page]. The ticket validation\n"
+"            may have failed."
+msgstr ""
+"[1:ページトップ]に警告を表示しています。チケットのデータチェックが失敗した可能性があります。"
 
-#: trac/ticket/templates/ticket.html:219
+#: trac/ticket/templates/ticket.html:220
 #, python-format
 msgid "Changed by %(author)s"
 msgstr "更新者: %(author)s"
 
-#: trac/ticket/templates/ticket.html:226
+#: trac/ticket/templates/ticket.html:227
 msgid "Modify Ticket"
 msgstr "チケットの変更"
 
-#: trac/ticket/templates/ticket.html:232
+#: trac/ticket/templates/ticket.html:233
 msgid "Change Properties"
 msgstr "属性変更"
 
-#: trac/ticket/templates/ticket.html:233
+#: trac/ticket/templates/ticket.html:234
 msgid "Properties"
 msgstr "属性"
 
-#: trac/ticket/templates/ticket.html:237
+#: trac/ticket/templates/ticket.html:238
 msgid "Summary:"
 msgstr "概要:"
 
-#: trac/ticket/templates/ticket.html:245
+#: trac/ticket/templates/ticket.html:246
 msgid "Reporter:"
 msgstr "報告者:"
 
-#: trac/ticket/templates/ticket.html:257
+#: trac/ticket/templates/ticket.html:258
 msgid ""
 "You may use\n"
 "                          [1:WikiFormatting] here."
 msgstr "[1:WikiFormatting] が使用可能"
 
-#: trac/ticket/templates/ticket.html:273
+#: trac/ticket/templates/ticket.html:274
 #: trac/ticket/templates/ticket_box.html:43
 #, python-format
 msgid "%(field)s:"
 msgstr "%(field)s:"
 
-#: trac/ticket/templates/ticket.html:312
+#: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
 msgstr "自分自身の登録か削除を行えます"
 
-#: trac/ticket/templates/ticket.html:318
+#: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
 msgstr "空白かカンマ区切りで、メールアドレスかユーザ名を設定できます。"
 
-#: trac/ticket/templates/ticket.html:374
+#: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "メールアドレスとユーザ名は[1:個人設定]で保存できます。"
 
-#: trac/ticket/templates/ticket.html:382
+#: trac/ticket/templates/ticket.html:383
 msgid "I have files to attach to this ticket"
 msgstr "このチケットにファイルを添付します"
 
-#: trac/ticket/templates/ticket.html:388
+#: trac/ticket/templates/ticket.html:389
 msgid "Go to the list of attachments"
 msgstr "添付ファイルの一覧に移動"
 
-#: trac/ticket/templates/ticket.html:396
+#: trac/ticket/templates/ticket.html:397
 #: trac/ticket/templates/ticket_change.html:45
 #: trac/wiki/templates/wiki_edit.html:70 trac/wiki/templates/wiki_edit.html:128
 #: trac/wiki/templates/wiki_edit_form.html:39
@@ -3599,11 +3629,11 @@ msgstr "添付ファイルの一覧に移動"
 msgid "Preview"
 msgstr "プレビュー"
 
-#: trac/ticket/templates/ticket.html:397
+#: trac/ticket/templates/ticket.html:398
 msgid "Create ticket"
 msgstr "チケットの新規作成"
 
-#: trac/ticket/templates/ticket.html:402
+#: trac/ticket/templates/ticket.html:403
 msgid ""
 "[1:Note:] See\n"
 "        [2:TracTickets] for help on using\n"
@@ -3851,7 +3881,7 @@ msgstr "複数のリポジトリのリビジョンに同期できません"
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:349
 #: trac/versioncontrol/web_ui/changeset.py:247
-#: trac/versioncontrol/web_ui/changeset.py:1087
+#: trac/versioncontrol/web_ui/changeset.py:1089
 #: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -3941,7 +3971,7 @@ msgstr "リポジトリが選択されていません。"
 #: trac/versioncontrol/templates/admin_repositories.html:134
 #: trac/versioncontrol/web_ui/browser.py:819
 #: trac/versioncontrol/web_ui/changeset.py:864
-#: trac/versioncontrol/web_ui/changeset.py:1006
+#: trac/versioncontrol/web_ui/changeset.py:1008
 msgid "(default)"
 msgstr "(デフォルト)"
 
@@ -4877,33 +4907,33 @@ msgstr "すべてのリポジトリのチェンジセット"
 msgid "Repository changesets"
 msgstr "リポジトリのチェンジセット"
 
-#: trac/versioncontrol/web_ui/changeset.py:1010
+#: trac/versioncontrol/web_ui/changeset.py:1012
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "チェンジセット (%(repo)s)"
 
-#: trac/versioncontrol/web_ui/changeset.py:1012
+#: trac/versioncontrol/web_ui/changeset.py:1014
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "チェンジセット"
 
-#: trac/versioncontrol/web_ui/changeset.py:1023
+#: trac/versioncontrol/web_ui/changeset.py:1025
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr "%(title)s: %(message)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1083
+#: trac/versioncontrol/web_ui/changeset.py:1085
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "%(repos)s の チェンジセット %(rev)s にアクセスする権限が不足しています"
 
-#: trac/versioncontrol/web_ui/changeset.py:1089
+#: trac/versioncontrol/web_ui/changeset.py:1091
 #: trac/versioncontrol/web_ui/log.py:397
 msgid "No default repository defined"
 msgstr "規定のリポジトリが定義されていません"
 
-#: trac/versioncontrol/web_ui/changeset.py:1128
+#: trac/versioncontrol/web_ui/changeset.py:1130
 msgid "Changesets"
 msgstr "チェンジセット"
 
@@ -5130,7 +5160,7 @@ msgstr "!#%(name)s には2つ以上のテーブルを含められません"
 msgid "!#%(name)s must contain at least one table cell (and table cells only)"
 msgstr "!#%(name)s には少なくとも1つテーブルのセルがないといけません"
 
-#: trac/wiki/formatter.py:629 trac/wiki/interwiki.py:88
+#: trac/wiki/formatter.py:630 trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(name)s の %(target)s"
@@ -5585,4 +5615,10 @@ msgstr "(空のページ)"
 #: trac/wiki/templates/wiki_view.html:128
 msgid "The following pages have a name similar to this page, and may be related:"
 msgstr "以下のページはこのページの名前に似ているので、関係があるかもしれません："
+
+#~ msgid "Upgrade done."
+#~ msgstr "アップグレードが終了しました。"
+
+#~ msgid "The ticket validation has [1:failed]."
+#~ msgstr "チケットの内容に[1:問題]があります。"
 
