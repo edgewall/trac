@@ -20,7 +20,7 @@ from trac.admin import IAdminCommandProvider
 from trac.core import *
 from trac.util import AtomicFile
 from trac.util.text import printout, to_unicode, CRLF
-from trac.util.translation import _
+from trac.util.translation import _, N_
 
 __all__ = ['Configuration', 'Option', 'BoolOption', 'IntOption', 'FloatOption',
            'ListOption', 'ChoiceOption', 'PathOption', 'ExtensionOption',
@@ -36,7 +36,7 @@ def _to_utf8(basestr):
 
 class ConfigurationError(TracError):
     """Exception raised when a value in the configuration file is not valid."""
-    title = 'Configuration Error'
+    title = N_('Configuration Error')
 
 
 class Configuration(object):

@@ -52,7 +52,7 @@ from trac.wiki.formatter import format_to, format_to_html, format_to_oneliner
 
 class InvalidTicket(TracError):
     """Exception raised when a ticket fails validation."""
-    title = "Invalid Ticket"
+    title = N_("Invalid Ticket")
 
 
 class TicketModule(Component):

@@ -20,10 +20,17 @@ __all__ = ['Component', 'ExtensionPoint', 'implements', 'Interface',
            'TracError']
 
 
+def N_(string):
+    """No-op translation marker, inlined here to avoid importing from
+    `trac.util`.
+    """
+    return string
+
+
 class TracError(Exception):
     """Exception base class for errors in Trac."""
 
-    title = 'Trac Error'
+    title = N_('Trac Error')
     
     def __init__(self, message, title=None, show_traceback=False):
         """If message is a genshi.builder.tag object, everything up to the
@@ -32,10 +39,10 @@ class TracError(Exception):
         If title is given, it will be displayed as the large header above the
         error message.
         """
+        from trac.util.translation import gettext
         Exception.__init__(self, message)
         self._message = message
-        if title:
-            self.title = title
+        self.title = title or gettext(self.title)
         self.show_traceback = show_traceback
 
     message = property(lambda self: self._message, 
@@ -43,6 +50,7 @@ class TracError(Exception):
 
     def __unicode__(self):
         return unicode(self.message)
+
 
 class Interface(object):
     """Marker base class for extension point interfaces."""

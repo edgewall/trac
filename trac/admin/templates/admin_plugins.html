@@ -3,7 +3,8 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:xi="http://www.w3.org/2001/XInclude"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:i18n="http://genshi.edgewall.org/i18n">
   <xi:include href="admin.html" />
   <head>
     <title>Plugins</title>
@@ -44,7 +45,7 @@
       <fieldset>
         <legend>Install Plugin:</legend>
         <div class="field">
-          <label>
+          <label i18n:msg="">
             File: <input type="file" name="plugin_file" disabled="${readonly or None}" />
           </label>
         </div>
