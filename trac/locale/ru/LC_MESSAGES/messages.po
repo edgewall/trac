@@ -726,7 +726,7 @@ msgstr ""
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
 #: trac/prefs/templates/prefs_general.html:9
 msgid "General"
-msgstr "Общее"
+msgstr "Общие"
 
 #: trac/admin/web_ui.py:203 trac/admin/templates/admin_basics.html:13
 msgid "Basic Settings"
@@ -740,7 +740,7 @@ msgstr "Ведение журнала"
 #: trac/admin/web_ui.py:240 trac/ticket/templates/milestone_delete.html:31
 #: trac/ticket/templates/milestone_edit.html:73
 msgid "None"
-msgstr "Не установлено"
+msgstr "Нет"
 
 #: trac/admin/web_ui.py:241
 msgid "Console"
@@ -2153,7 +2153,7 @@ msgstr "История изменений"
 #: trac/templates/history_view.html:28 trac/ticket/admin.py:440
 #: trac/ticket/api.py:297
 msgid "Version"
-msgstr "Версией"
+msgstr "Версия"
 
 #: trac/templates/history_view.html:31
 msgid "Comment"
@@ -3996,7 +3996,7 @@ msgstr "Псевдоним"
 #: trac/versioncontrol/admin.py:110
 #: trac/versioncontrol/templates/admin_repositories.html:125
 msgid "Directory"
-msgstr "Директория"
+msgstr "Каталог"
 
 #: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
