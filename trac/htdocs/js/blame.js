@@ -6,27 +6,25 @@
     var message_rev = null;
   
     /* for each blame cell... */
-    var path = null;
     $("table.code th.blame").each(function() {
       // determine path from the changeset link
       var a = $(this).find("a");
       var href = a.attr("href");
-      if ( ! (href || path) )
+      if (!href)
         return; // was "Rev" column title
       
-      if ( href ) {
+      var path = original_path;
+      if (href) {
         a.removeAttr("href");
         href = href.slice(href.indexOf("changeset/") + 10);
         var sep = href.indexOf("/");
-        if ( sep > 0 ) {
+        if (sep > 0) {
           path = href.slice(sep+1);
           if (reponame)
             path = path.substr(reponame.length);
           if (!path)
             path = original_path;
-        } else {
-          path = original_path;
-        }
+        } 
       }
 
       // determine rev from th class, which is of the form "blame r123"
