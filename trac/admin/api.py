@@ -81,7 +81,7 @@ class AdminCommandManager(Component):
         """Return help information for a set of commands."""
         commands = []
         for provider in self.providers:
-            for cmd in provider.get_admin_commands():
+            for cmd in provider.get_admin_commands() or []:
                 parts = cmd[0].split()
                 if parts[:len(args)] == args:
                     commands.append(cmd[:3])
@@ -92,7 +92,7 @@ class AdminCommandManager(Component):
         """Perform auto-completion on the given arguments."""
         comp = []
         for provider in self.providers:
-            for cmd in provider.get_admin_commands():
+            for cmd in provider.get_admin_commands() or []:
                 parts = cmd[0].split()
                 plen = min(len(parts), len(args) - 1)
                 if args[:plen] != parts[:plen]:         # Prefix doesn't match
@@ -109,7 +109,7 @@ class AdminCommandManager(Component):
         """Execute a command given by a list of arguments."""
         args = list(args)
         for provider in self.providers:
-            for cmd in provider.get_admin_commands():
+            for cmd in provider.get_admin_commands() or []:
                 parts = cmd[0].split()
                 if args[:len(parts)] == parts:
                     f = cmd[4]

@@ -191,7 +191,7 @@ class WikiParser(Component):
             syntax = self._pre_rules[:]
             i = 0
             for resolver in WikiSystem(self.env).syntax_providers:
-                for regexp, handler in resolver.get_wiki_syntax():
+                for regexp, handler in resolver.get_wiki_syntax() or []:
                     handlers['i' + str(i)] = handler
                     syntax.append('(?P<i%d>%s)' % (i, regexp))
                     i += 1
@@ -209,7 +209,7 @@ class WikiParser(Component):
             from trac.wiki.api import WikiSystem
             resolvers = {}
             for resolver in WikiSystem(self.env).syntax_providers:
-                for namespace, handler in resolver.get_link_resolvers():
+                for namespace, handler in resolver.get_link_resolvers() or []:
                     resolvers[namespace] = handler
             self._link_resolvers = resolvers
         return self._link_resolvers

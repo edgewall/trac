@@ -549,7 +549,7 @@ class MacroListMacro(WikiMacroBase):
 
         def get_macro_descr():
             for macro_provider in formatter.wiki.macro_providers:
-                names = list(macro_provider.get_macros())
+                names = list(macro_provider.get_macros() or [])
                 if name_filter and not any(name.startswith(name_filter)
                                            for name in names):
                     continue

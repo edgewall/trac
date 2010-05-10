@@ -159,7 +159,7 @@ class AdminModule(Component):
         providers = {}
 
         for provider in self.panel_providers:
-            p = list(provider.get_admin_panels(req))
+            p = list(provider.get_admin_panels(req) or [])
             for panel in p:
                 providers[(panel[0], panel[2])] = provider
             panels += p

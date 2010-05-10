@@ -170,7 +170,7 @@ class DefaultPermissionStore(Component):
         """
         subjects = set([username])
         for provider in self.group_providers:
-            subjects.update(provider.get_permission_groups(username))
+            subjects.update(provider.get_permission_groups(username) or [])
 
         actions = set([])
         db = self.env.get_db_cnx()
@@ -341,7 +341,7 @@ class PermissionSystem(Component):
     def get_actions(self):
         actions = []
         for requestor in self.requestors:
-            for action in requestor.get_permission_actions():
+            for action in requestor.get_permission_actions() or []:
                 if isinstance(action, tuple):
                     actions.append(action[0])
                 else:
@@ -356,7 +356,7 @@ class PermissionSystem(Component):
         means the permission is denied."""
         actions = []
         for requestor in self.requestors:
-            actions += list(requestor.get_permission_actions())
+            actions += list(requestor.get_permission_actions() or [])
         permissions = {}
         if username:
             # Return all permissions that the given user has
@@ -369,7 +369,7 @@ class PermissionSystem(Component):
                 permissions[action] = True
                 if meta.has_key(action):
                     [_expand_meta(perm) for perm in meta[action]]
-            for perm in self.store.get_user_permissions(username):
+            for perm in self.store.get_user_permissions(username) or []:
                 _expand_meta(perm)
         else:
             # Return all permissions available in the system
@@ -385,7 +385,7 @@ class PermissionSystem(Component):
 
         The permissions are returned as a list of (subject, action)
         formatted tuples."""
-        return self.store.get_all_permissions()
+        return self.store.get_all_permissions() or []
 
     def get_users_with_permission(self, permission):
         """Return all users that have the specified permission.
@@ -405,7 +405,7 @@ class PermissionSystem(Component):
 
         parent_map = {}
         for requestor in self.requestors:
-            for action in requestor.get_permission_actions():
+            for action in requestor.get_permission_actions() or []:
                 for child in action[1]:
                     parent_map.setdefault(child, []).append(action[0])
 
@@ -419,6 +419,7 @@ class PermissionSystem(Component):
         _append_with_parents(permission)
 
         perms = self.store.get_users_with_permissions(satisfying_perms.keys())
+        perms = perms or []
         self.permission_cache[permission] = (now, perms)
 
         return perms
@@ -428,7 +429,7 @@ class PermissionSystem(Component):
         actions = list(actions)     # Consume actions if it is an iterator
         meta = {}
         for requestor in self.requestors:
-            for m in requestor.get_permission_actions():
+            for m in requestor.get_permission_actions() or []:
                 if isinstance(m, tuple):
                     meta[m[0]] = m[1]
         expanded_actions = set(actions)
@@ -472,7 +473,7 @@ class PermissionSystem(Component):
         """
         actions = ['EMAIL_VIEW']
         for requestor in [r for r in self.requestors if r is not self]:
-            for action in requestor.get_permission_actions():
+            for action in requestor.get_permission_actions() or []:
                 if isinstance(action, tuple):
                     actions.append(action[0])
                 else:

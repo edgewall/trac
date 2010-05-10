@@ -66,7 +66,7 @@ class PreferencesModule(Component):
         chosen_provider = None
 
         for provider in self.panel_providers:
-            for name, label in provider.get_preference_panels(req):
+            for name, label in provider.get_preference_panels(req) or []:
                 if name == panel_id or None:
                     chosen_provider = provider
                 panels.append((name, label))

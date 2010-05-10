@@ -232,7 +232,7 @@ class Environment(Component, ComponentManager):
         """
         info = self.systeminfo[:]
         for provider in self.system_info_providers:
-            info.extend(provider.get_system_info())
+            info.extend(provider.get_system_info() or [])
         info.sort(key=lambda (name, version): (name != 'Trac', name.lower()))
         return info
 

@@ -128,7 +128,7 @@ class WikiProcessor(object):
         if not self.processor:
             # Find a matching wiki macro
             for macro_provider in WikiSystem(self.env).macro_providers:
-                for macro_name in macro_provider.get_macros():
+                for macro_name in macro_provider.get_macros() or []:
                     if self.name == macro_name:
                         if hasattr(macro_provider, 'expand_macro'):
                             self.processor = self._macro_processor

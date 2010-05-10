@@ -132,7 +132,7 @@ class TimelineModule(Component):
 
         available_filters = []
         for event_provider in self.event_providers:
-            available_filters += event_provider.get_timeline_filters(req)
+            available_filters += event_provider.get_timeline_filters(req) or []
 
         filters = []
         # check the request or session for enabled filters, or use default
@@ -171,7 +171,7 @@ class TimelineModule(Component):
         for provider in self.event_providers:
             try:
                 for event in provider.get_timeline_events(req, start, stop,
-                                                          filters):
+                                                          filters) or []:
                     # Check for 0.10 events
                     author = (event[len(event) < 6 and 2 or 4] or '').lower()
                     if (not include or author in include) \
@@ -330,7 +330,8 @@ class TimelineModule(Component):
         self.log.error('Timeline event provider failed: %s', 
                        exception_to_unicode(exc, traceback=True))
 
-        ep_kinds = dict((f[0], f[1]) for f in ep.get_timeline_filters(req))
+        ep_kinds = dict((f[0], f[1])
+                        for f in ep.get_timeline_filters(req) or [])
         ep_filters = set(ep_kinds.keys())
         current_filters = set(current_filters)
         other_filters = set(current_filters) - ep_filters

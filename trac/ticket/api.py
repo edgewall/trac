@@ -224,7 +224,7 @@ class TicketSystem(Component):
         # The list should not have duplicates.
         actions = {}
         for controller in self.action_controllers:
-            weighted_actions = controller.get_ticket_actions(req, ticket)
+            weighted_actions = controller.get_ticket_actions(req, ticket) or []
             for weight, action in weighted_actions:
                 if action in actions:
                     actions[action] = max(actions[action], weight)
@@ -239,7 +239,7 @@ class TicketSystem(Component):
         controllers know about."""
         valid_states = set()
         for controller in self.action_controllers:
-            valid_states.update(controller.get_all_status())
+            valid_states.update(controller.get_all_status() or [])
         return sorted(valid_states)
 
     def get_ticket_field_labels(self):

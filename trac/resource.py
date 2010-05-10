@@ -232,7 +232,7 @@ class ResourceSystem(Component):
         if not self._resource_managers_map:
             map = {}
             for manager in self.resource_managers:
-                for manager_realm in manager.get_resource_realms():
+                for manager_realm in manager.get_resource_realms() or []:
                     map[manager_realm] = manager
             self._resource_managers_map = map
         return self._resource_managers_map.get(realm)
@@ -241,7 +241,7 @@ class ResourceSystem(Component):
         """Return a list of all the realm names of resource managers."""
         realms = []
         for manager in self.resource_managers:
-            for realm in manager.get_resource_realms():
+            for realm in manager.get_resource_realms() or []:
                 realms.append(realm)
         return realms
 

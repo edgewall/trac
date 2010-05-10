@@ -420,7 +420,7 @@ class RepositoryManager(Component):
     def get_supported_types(self):
         """Return the list of supported repository types."""
         types = set(type_ for connector in self.connectors
-                    for (type_, prio) in connector.get_supported_types()
+                    for (type_, prio) in connector.get_supported_types() or []
                     if prio >= 0)
         return list(types)
     
@@ -538,7 +538,7 @@ class RepositoryManager(Component):
         if not self._all_repositories:
             self._all_repositories = {}
             for provider in self.providers:
-                for reponame, info in provider.get_repositories():
+                for reponame, info in provider.get_repositories() or []:
                     if reponame in self._all_repositories:
                         self.log.warn("Discarding duplicate repository '%s'",
                                       reponame)
@@ -637,7 +637,7 @@ class RepositoryManager(Component):
             # build an environment-level cache for the preferred connectors
             self._connectors = {}
             for connector in self.connectors:
-                for type_, prio in connector.get_supported_types():
+                for type_, prio in connector.get_supported_types() or []:
                     keep = (connector, prio)
                     if type_ in self._connectors and \
                             prio <= self._connectors[type_][1]:

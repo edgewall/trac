@@ -641,7 +641,8 @@ class Mimeview(Component):
         component appended. Output is ordered from best to worst quality."""
         converters = []
         for converter in self.converters:
-            for k, n, e, im, om, q in converter.get_supported_conversions():
+            conversions = converter.get_supported_conversions() or []
+            for k, n, e, im, om, q in conversions:
                 if im == mimetype and q > 0:
                     converters.append((k, n, e, im, om, q, converter))
         converters = sorted(converters, key=lambda i: i[-2], reverse=True)
@@ -667,7 +668,7 @@ class Mimeview(Component):
             mimetype = full_mimetype = 'text/plain' # fallback if not binary
 
         # Choose best converter
-        candidates = list(self.get_supported_conversions(mimetype))
+        candidates = list(self.get_supported_conversions(mimetype) or [])
         candidates = [c for c in candidates if key in (c[0], c[4])]
         if not candidates:
             raise TracError(

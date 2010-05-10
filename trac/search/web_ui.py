@@ -82,7 +82,7 @@ class SearchModule(Component):
         query = req.args.get('q')
         available_filters = []
         for source in self.search_sources:
-            available_filters += source.get_search_filters(req)
+            available_filters.extend(source.get_search_filters(req) or [])
         
         filters = self._get_selected_filters(req, available_filters)
         data = self._prepare_data(req, query, available_filters, filters)
@@ -197,7 +197,8 @@ class SearchModule(Component):
     def _do_search(self, req, terms, filters):
         results = []
         for source in self.search_sources:
-            results += list(source.get_search_results(req, terms, filters))
+            results.extend(source.get_search_results(req, terms, filters)
+                           or [])
         return sorted(results, key=lambda x: x[2], reverse=True)
 
     def _prepare_results(self, req, filters, results):
