@@ -26,7 +26,9 @@ from trac.env import IEnvironmentSetupParticipant
 from trac.config import Configuration
 from trac.ticket.api import ITicketActionController, TicketSystem
 from trac.ticket.model import Resolution
+from trac.util.text import obfuscate_email_address
 from trac.util.translation import _, tag_
+from trac.web.chrome import Chrome
 
 # -- Utilities for the ConfigurableTicketWorkflow
 
@@ -217,6 +219,12 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
         status = this_action['newstate']        
         operations = this_action['operations']
         current_owner = ticket._old.get('owner', ticket['owner'] or '(none)')
+        if not (Chrome(self.env).show_email_addresses
+                or 'EMAIL_VIEW' in req.perm(ticket.resource)):
+            format_user = obfuscate_email_address
+        else:
+            format_user = lambda address: address
+        current_owner = format_user(current_owner)
 
         control = [] # default to nothing
         hints = []
@@ -250,16 +258,17 @@ Read TracWorkflow for more information (don't forget to 'wiki upgrade' as well)
             elif len(owners) == 1:
                 owner = tag.input(type='hidden', id=id, name=id,
                                   value=owners[0])
+                formatted_owner = format_user(owners[0])
                 control.append(tag_('to %(owner)s ',
-                                    owner=tag(owners[0], owner)))
+                                    owner=tag(formatted_owner, owner)))
                 if ticket['owner'] != owners[0]:
                     hints.append(_("The owner will be changed from "
                                    "%(current_owner)s to %(selected_owner)s",
                                    current_owner=current_owner,
-                                   selected_owner=owners[0]))
+                                   selected_owner=formatted_owner))
             else:
                 control.append(tag_('to %(owner)s', owner=tag.select(
-                    [tag.option(x, value=x,
+                    [tag.option(format_user(x), value=x,
                                 selected=(x == selected_owner or None))
                      for x in owners],
                     id=id, name=id)))
