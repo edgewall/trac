@@ -522,7 +522,7 @@ def _dispatch_request(req, env, env_error):
             env.log.warn(exception_to_unicode(e))
         title = _('Error')
         if e.reason:
-            if 'error' in e.reason.lower():
+            if title.lower() in e.reason.lower():
                 title = e.reason
             else:
                 title = _('Error: %(message)s', message=e.reason)
