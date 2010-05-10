@@ -18,7 +18,7 @@ import re
 
 from genshi.builder import tag
 
-from trac.util import ThreadLocal, threading
+from trac.util.concurrency import ThreadLocal, threading
 
 
 __all__ = ['gettext', 'ngettext', 'gettext_noop', 'ngettext_noop', 

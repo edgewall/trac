@@ -27,8 +27,9 @@ from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
 from trac.db import DatabaseManager
 from trac.db.util import get_read_db, with_transaction
-from trac.util import copytree, create_file, get_pkginfo, makedirs, threading
+from trac.util import copytree, create_file, get_pkginfo, makedirs
 from trac.util.compat import any
+from trac.util.concurrency import threading
 from trac.util.text import exception_to_unicode, printerr, printout
 from trac.util.translation import _, N_
 from trac.versioncontrol import RepositoryManager

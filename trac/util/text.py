@@ -25,6 +25,8 @@ import re
 import sys
 from urllib import quote, quote_plus, unquote, urlencode
 
+from trac.util.translation import _
+
 
 CRLF = '\r\n'
 
@@ -272,7 +274,7 @@ def pretty_size(size, format='%.1f'):
 
     jump = 1024
     if size < jump:
-        return '%d bytes' % size
+        return _('%(size)s bytes', size=size)
 
     units = ['KB', 'MB', 'GB', 'TB']
     i = 0

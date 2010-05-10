@@ -42,8 +42,9 @@ from trac.loader import get_plugin_info, match_plugins_to_frames
 from trac.perm import PermissionCache, PermissionError
 from trac.resource import ResourceNotFound
 from trac.util import arity, get_frame_info, get_last_traceback, hex_entropy, \
-                      read_file, threading, translation
+                      read_file, translation
 from trac.util.compat import any, partial
+from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
 from trac.util.translation import tag_, _

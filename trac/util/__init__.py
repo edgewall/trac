@@ -28,11 +28,6 @@ import re
 import shutil
 import sys
 import tempfile
-try:
-    import threading
-except ImportError:
-    import dummy_threading as threading
-    threading._get_ident = lambda: 0
 import time
 from urllib import quote, unquote, urlencode
 
@@ -347,14 +342,6 @@ def copytree(src, dst, symlinks=False, skip=[], overwrite=False):
 
 
 # -- sys utils
-
-class ThreadLocal(threading.local):
-    """A thread-local storage allowing to set default values on construction.
-    """
-    def __init__(self, **kwargs):
-        threading.local.__init__(self)
-        self.__dict__.update(kwargs)
-
 
 def arity(f):
     """Return the number of arguments expected by the given function, unbound

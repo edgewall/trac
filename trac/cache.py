@@ -12,7 +12,7 @@
 # history and logs, available at http://trac.edgewall.org/.
 
 from trac.core import Component
-from trac.util import ThreadLocal, threading
+from trac.util.concurrency import ThreadLocal, threading
 
 __all__ = ["CacheManager", "cached"]
 

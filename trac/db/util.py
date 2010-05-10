@@ -15,7 +15,7 @@
 #
 # Author: Christopher Lenz <cmlenz@gmx.de>
 
-from trac.util import ThreadLocal
+from trac.util.concurrency import ThreadLocal
 
 
 _transaction_local = ThreadLocal(db=None)

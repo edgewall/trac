@@ -30,7 +30,8 @@ from trac.config import BoolOption, IntOption, Option
 from trac.core import *
 from trac.web.api import IAuthenticator, IRequestHandler
 from trac.web.chrome import INavigationContributor
-from trac.util import hex_entropy, md5, md5crypt, threading
+from trac.util import hex_entropy, md5, md5crypt
+from trac.util.concurrency import threading
 from trac.util.translation import _, tag_
 
 

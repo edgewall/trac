@@ -1077,7 +1077,7 @@ class LineNumberAnnotator(Component):
     # ITextAnnotator methods
 
     def get_annotation_type(self):
-        return 'lineno', 'Line', 'Line numbers'
+        return 'lineno', _('Line'), _('Line numbers')
 
     def get_annotation_data(self, context):
         return None
