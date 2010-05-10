@@ -30,7 +30,7 @@
         <label>Repository:<br/>
           <select size="1" id="trac-repository" name="alias" disabled="${not editable or None}">
             <option py:for="(reponame, info) in sorted(repositories.iteritems())" py:if="not info.alias"
-                    value="$info.name" selected="${info.name == selected or None}">${info.name or '(default)'}</option>
+                    value="$info.name" selected="${info.name == selected or None}">${info.name or _('(default)')}</option>
             <option py:if="selected is not None and selected not in repositories" selected="selected">$selected</option>
           </select>
         </label>
@@ -129,12 +129,12 @@ $info.description</textarea>
               <tr py:for="(reponame, info) in sorted(repositories.iteritems())">
                 <td class="sel"><input py:if="info.editable" type="checkbox" name="sel" value="$info.name"/></td>
                 <td class="name">
-                  <a href="${panel_href(info.name or '(default)')}">${info.name or '(default)'}</a>
+                  <a href="${panel_href(info.name or '(default)')}">${info.name or _('(default)')}</a>
                 </td>
                 <td>${not info.alias and (info.type or _('(default)')) or None}</td>
                 <td py:choose="">
                   <py:when test="info.dir">$info.prettydir</py:when>
-                  <em py:otherwise="" i18n:msg="repo">Alias of ${info.alias or '(default)'}</em>
+                  <em py:otherwise="" i18n:msg="repo">Alias of ${info.alias or _('(default)')}</em>
                 </td>
                 <td><a py:if="info.rev" href="${href.changeset(info.rev, reponame) or None}">[$info.display_rev]</a></td>
               </tr>
