@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-05-09 14:49+0200\n"
+"PO-Revision-Date: 2010-05-11 01:46+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -298,6 +298,10 @@ msgstr "Description"
 msgid "File '%(name)s' exists"
 msgstr "Le fichier « %(name)s » existe déjà"
 
+#: trac/config.py:39
+msgid "Configuration Error"
+msgstr "Erreur de configuration"
+
 #: trac/config.py:403
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
@@ -319,7 +323,11 @@ msgstr ""
 "[%(section)s] %(entry)s : %(value)s au lieu d'une valeur parmi "
 "(%(choices)s)"
 
-#: trac/env.py:152
+#: trac/core.py:33
+msgid "Trac Error"
+msgstr "Erreur Trac"
+
+#: trac/env.py:153
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
@@ -327,18 +335,18 @@ msgstr ""
 "En savoir plus sur le projet Trac :<br /> <a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:583
+#: trac/env.py:584
 msgid "Database newer than Trac version"
 msgstr ""
 "La version de la base de données est plus récente que la version de Trac "
 "utilisée"
 
-#: trac/env.py:600
+#: trac/env.py:601
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Pas de module de mise à jour pour la version %(num)i (%(version)s.py)"
 
-#: trac/env.py:646
+#: trac/env.py:647
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -346,7 +354,7 @@ msgstr ""
 "La variable d'environnement « TRAC_ENV » est manquante. Trac a besoin de "
 "cette variable pour pointer sur un environnement Trac valide."
 
-#: trac/env.py:678
+#: trac/env.py:679
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -357,43 +365,43 @@ msgstr ""
 "\n"
 "Exécutez la commande « trac-admin %(path)s upgrade »"
 
-#: trac/env.py:712
+#: trac/env.py:713
 msgid "Copying resources from:"
 msgstr "Copie des resources depuis :"
 
-#: trac/env.py:728
+#: trac/env.py:729
 msgid "Creating scripts."
 msgstr "Création des scripts."
 
-#: trac/env.py:743
+#: trac/env.py:744
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "la copie à chaud ne peut pas écraser la précédente « %(dest)s »"
 
-#: trac/env.py:753
+#: trac/env.py:754
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Copie à chaud the %(src)s vers %(dst)s ..."
 
-#: trac/env.py:768
+#: trac/env.py:769
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 "Les erreurs suivantes sont survenues au cours de la copie de \n"
 "l'environnement :"
 
-#: trac/env.py:779
+#: trac/env.py:780
 msgid "Hotcopy done."
 msgstr "Copie à chaud terminée."
 
-#: trac/env.py:784 trac/admin/api.py:125
+#: trac/env.py:785 trac/admin/api.py:125
 msgid "Invalid arguments"
 msgstr "Paramètres non valides"
 
-#: trac/env.py:787
+#: trac/env.py:788
 msgid "Database is up to date, no upgrade necessary."
 msgstr "La base de données est à jour (aucune mise à jour nécessaire)."
 
-#: trac/env.py:795
+#: trac/env.py:796
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
@@ -403,7 +411,7 @@ msgstr ""
 "Utilisez « --no-backup » pour effectuer une mise à jour sans faire de "
 "copie de sauvegarde."
 
-#: trac/env.py:809
+#: trac/env.py:810
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -414,7 +422,7 @@ msgstr ""
 "ne prends plus en comple les extensions qui s'y trouvent. Vous pouvez "
 "supprimer ce répertoire manuellement."
 
-#: trac/env.py:820
+#: trac/env.py:821
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -426,7 +434,7 @@ msgstr ""
 "Trac ne prends plus en comple les extensions qui s'y trouvent. Vous "
 "pouvez supprimer ce répertoire manuellement."
 
-#: trac/env.py:822
+#: trac/env.py:823
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -488,20 +496,20 @@ msgstr "Droits insuffisants pour effectuer cette opération."
 msgid "%(name)s is not a valid action."
 msgstr "%(name)s n'est pas une action valide"
 
-#: trac/perm.py:642
+#: trac/perm.py:643
 msgid "User"
 msgstr "Utilisateur"
 
-#: trac/perm.py:642 trac/admin/templates/admin_perms.html:70
+#: trac/perm.py:643 trac/admin/templates/admin_perms.html:70
 #: trac/ticket/templates/ticket.html:339
 msgid "Action"
 msgstr "Action"
 
-#: trac/perm.py:644
+#: trac/perm.py:645
 msgid "Available actions:"
 msgstr "Actions disponibles :"
 
-#: trac/perm.py:655 trac/admin/web_ui.py:333
+#: trac/perm.py:656 trac/admin/web_ui.py:333
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Les caractères majuscules sont réservés aux noms de permissions"
 
@@ -864,7 +872,7 @@ msgstr "Le sujet %(subject)s a déjà été ajouté au groupe %(group)s."
 msgid "The selected permissions have been revoked."
 msgstr "Les permissions sélectionnées ont été révoquées."
 
-#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:9
+#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "Extensions"
 
@@ -933,7 +941,7 @@ msgstr "Description :"
 #: trac/admin/templates/admin_enums.html:70
 #: trac/admin/templates/admin_logging.html:54
 #: trac/admin/templates/admin_milestones.html:129
-#: trac/admin/templates/admin_plugins.html:164
+#: trac/admin/templates/admin_plugins.html:165
 #: trac/admin/templates/admin_versions.html:94
 msgid "Apply changes"
 msgstr "Enregistrer les changements"
@@ -977,7 +985,6 @@ msgid "Add Component:"
 msgstr "Ajouter un composant :"
 
 #: trac/admin/templates/admin_components.html:70
-#: trac/admin/templates/admin_enums.html:33
 #: trac/admin/templates/admin_enums.html:38
 #: trac/admin/templates/admin_milestones.html:93
 #: trac/admin/templates/admin_perms.html:39
@@ -1039,7 +1046,12 @@ msgstr "Gestion des %(label_plural)s"
 #: trac/admin/templates/admin_enums.html:19
 #, python-format
 msgid "Modify %(label_singular)s"
-msgstr "%(label_singular)s à modifier"
+msgstr "Modifier %(label_singular)s"
+
+#: trac/admin/templates/admin_enums.html:33
+#, python-format
+msgid "Add %(label_singular)s"
+msgstr "Ajouter %(label_singular)s"
 
 #: trac/admin/templates/admin_enums.html:48
 msgid "Order"
@@ -1187,22 +1199,19 @@ msgstr ""
 "entièrement en majuscules\n"
 "      car il sont réservés aux noms de permissions."
 
-#: trac/admin/templates/admin_plugins.html:41
+#: trac/admin/templates/admin_plugins.html:42
 msgid "Manage Plugins"
 msgstr "Gestion des extensions"
 
-#: trac/admin/templates/admin_plugins.html:45
+#: trac/admin/templates/admin_plugins.html:46
 msgid "Install Plugin:"
 msgstr "Ajouter une extension :"
 
-#: trac/admin/templates/admin_plugins.html:47
-#: trac/versioncontrol/templates/changeset.html:170
-msgid "File:"
-msgid_plural "Files:"
-msgstr[0] "Fichier :"
-msgstr[1] "Fichiers :"
+#: trac/admin/templates/admin_plugins.html:48
+msgid "File: [1:]"
+msgstr "Fichier : [1:]"
 
-#: trac/admin/templates/admin_plugins.html:52
+#: trac/admin/templates/admin_plugins.html:53
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
@@ -1211,49 +1220,49 @@ msgstr ""
 "dans\n"
 "            le répertoire des extensions du projet."
 
-#: trac/admin/templates/admin_plugins.html:56
+#: trac/admin/templates/admin_plugins.html:57
 msgid "Upload a plugin packaged as Python egg."
 msgstr "Envoi d'une extension au format Python egg."
 
-#: trac/admin/templates/admin_plugins.html:61
+#: trac/admin/templates/admin_plugins.html:62
 msgid "Install"
 msgstr "Installer"
 
-#: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:51
+#: trac/admin/templates/admin_plugins.html:85 trac/templates/diff_view.html:51
 #: trac/versioncontrol/templates/changeset.html:142
 msgid "Author:"
 msgstr "Auteur :"
 
-#: trac/admin/templates/admin_plugins.html:93
+#: trac/admin/templates/admin_plugins.html:94
 msgid "Home page:"
 msgstr "Page d'accueil :"
 
-#: trac/admin/templates/admin_plugins.html:100
+#: trac/admin/templates/admin_plugins.html:101
 msgid "License:"
 msgstr "Licence :"
 
-#: trac/admin/templates/admin_plugins.html:110
+#: trac/admin/templates/admin_plugins.html:111
 msgid "Show all descriptions"
 msgstr "Montrer toutes les descriptions"
 
-#: trac/admin/templates/admin_plugins.html:112
+#: trac/admin/templates/admin_plugins.html:113
 msgid "Hide all descriptions"
 msgstr "Cacher toutes les descriptions"
 
-#: trac/admin/templates/admin_plugins.html:114 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_plugins.html:115 trac/ticket/admin.py:76
 #: trac/ticket/api.py:296
 msgid "Component"
 msgstr "Composant"
 
-#: trac/admin/templates/admin_plugins.html:117
+#: trac/admin/templates/admin_plugins.html:118
 msgid "Enabled"
 msgstr "Activé"
 
-#: trac/admin/templates/admin_plugins.html:126
+#: trac/admin/templates/admin_plugins.html:127
 msgid "Toggle the module description"
 msgstr "Description du module"
 
-#: trac/admin/templates/admin_plugins.html:142
+#: trac/admin/templates/admin_plugins.html:143
 msgid "Toggle the component description"
 msgstr "Description du componsant"
 
@@ -1342,20 +1351,28 @@ msgstr ""
 "L'utilisateur %(user)s a besoin de la permission de lire et d'écrire dans"
 " la base de données %(path)s et dans le répertoire où elle se situe."
 
-#: trac/mimeview/api.py:674 trac/mimeview/api.py:685
+#: trac/mimeview/api.py:675 trac/mimeview/api.py:686
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "Pas de conversion MIME disponible de %(old)s à %(new)s"
 
-#: trac/mimeview/api.py:800
+#: trac/mimeview/api.py:801
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "L'aperçu HTML avec %(renderer)s a échoué (%(err)s)"
 
-#: trac/mimeview/api.py:830
+#: trac/mimeview/api.py:831
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "Impossible d'annoter avec %(annotator)s : %(error)s"
+
+#: trac/mimeview/api.py:1080 trac/templates/error.html:174
+msgid "Line"
+msgstr "Ligne"
+
+#: trac/mimeview/api.py:1080
+msgid "Line numbers"
+msgstr "Numéros de lignes"
 
 #: trac/mimeview/patch.py:54
 msgid "Invalid unified diff content"
@@ -1637,11 +1654,11 @@ msgstr ""
 "La requête de recherche est trop courte. Elle doit contenir au moins\n"
 "%(num)s caractères."
 
-#: trac/search/web_ui.py:231 trac/ticket/query.py:763 trac/ticket/report.py:397
+#: trac/search/web_ui.py:232 trac/ticket/query.py:763 trac/ticket/report.py:397
 msgid "Next Page"
 msgstr "Page suivante"
 
-#: trac/search/web_ui.py:237 trac/ticket/query.py:768 trac/ticket/report.py:400
+#: trac/search/web_ui.py:238 trac/ticket/query.py:768 trac/ticket/report.py:400
 msgid "Previous Page"
 msgstr "Page précédente"
 
@@ -1813,7 +1830,8 @@ msgid "Attach another file"
 msgstr "Joindre un autre fichier"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
-#: trac/templates/macros.html:19 trac/versioncontrol/templates/browser.html:110
+#: trac/templates/macros.html:19 trac/util/text.py:277
+#: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
@@ -2171,10 +2189,6 @@ msgstr ""
 msgid "Code fragment:"
 msgstr "Fragment du code :"
 
-#: trac/templates/error.html:174
-msgid "Line"
-msgstr "Ligne"
-
 #: trac/templates/error.html:184
 msgid "Local variables:"
 msgstr "Variables locales :"
@@ -2242,7 +2256,7 @@ msgstr "Addresse IP : %(ipnr)s"
 msgid "Available Projects"
 msgstr "Projets accessibles"
 
-#: trac/templates/index.html:18
+#: trac/templates/index.html:18 trac/web/main.py:523
 msgid "Error"
 msgstr "Erreur"
 
@@ -2578,40 +2592,40 @@ msgstr "Commentaire %(cnum)s pour le ticket #%(id)s"
 msgid "Ticket #%(shortname)s"
 msgstr "Ticket #%(shortname)s"
 
-#: trac/ticket/default_workflow.py:225
+#: trac/ticket/default_workflow.py:233
 msgid "Current state no longer exists"
 msgstr "L'état actuel n'existe plus"
 
-#: trac/ticket/default_workflow.py:227
+#: trac/ticket/default_workflow.py:235
 msgid "The ticket will be disowned"
 msgstr "Le ticket perdra son propriétaire"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:272
 #, python-format
 msgid "to %(owner)s"
 msgstr "à %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:266
+#: trac/ticket/default_workflow.py:255 trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "Le propriétaire changera de %(current_owner)s"
 
-#: trac/ticket/default_workflow.py:254
+#: trac/ticket/default_workflow.py:263
 #, python-format
 msgid "to %(owner)s "
 msgstr "pour %(owner)s"
 
-#: trac/ticket/default_workflow.py:256
+#: trac/ticket/default_workflow.py:265
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Le propriétaire changera de %(current_owner)s à %(selected_owner)s"
 
-#: trac/ticket/default_workflow.py:271
+#: trac/ticket/default_workflow.py:280
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "Le propriétaire changera de %(current_owner)s à %(authname)s"
 
-#: trac/ticket/default_workflow.py:281
+#: trac/ticket/default_workflow.py:290
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -2620,30 +2634,30 @@ msgstr ""
 "définie (problème de configuration, contactez votre administrateur(ice) "
 "Trac)."
 
-#: trac/ticket/default_workflow.py:289 trac/ticket/default_workflow.py:299
+#: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
 msgid "as %(resolution)s"
 msgstr "avec la résolution « %(resolution)s »"
 
-#: trac/ticket/default_workflow.py:291
+#: trac/ticket/default_workflow.py:300
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "La résolution sera définie à %(name)s"
 
-#: trac/ticket/default_workflow.py:302
+#: trac/ticket/default_workflow.py:311
 msgid "The resolution will be set"
 msgstr "La résolution sera définie"
 
-#: trac/ticket/default_workflow.py:304
+#: trac/ticket/default_workflow.py:313
 msgid "The resolution will be deleted"
 msgstr "La résolution sera supprimée"
 
-#: trac/ticket/default_workflow.py:307
+#: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "as %(status)s "
 msgstr "statut « %(status)s »"
 
-#: trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:320
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Le prochain statut sera « %(name)s »"
@@ -2958,6 +2972,10 @@ msgstr "Le jalon « %(name)s » existe déjà, veuillez choisir un nom différ
 #: trac/ticket/roadmap.py:655
 msgid "You must provide a name for the milestone."
 msgstr "Aucun nom n'a été défini pour ce jalon."
+
+#: trac/ticket/web_ui.py:55
+msgid "Invalid Ticket"
+msgstr "Ticket non valide"
 
 #: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
@@ -3939,16 +3957,16 @@ msgid "%(date)s in Timeline"
 msgstr "%(date)s dans « Activité »"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:343
+#: trac/timeline/web_ui.py:344
 msgid "other kinds of events"
 msgstr "autres types d'évènements"
 
-#: trac/timeline/web_ui.py:348
+#: trac/timeline/web_ui.py:349
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "La source d'évènement %(name)s a échoué pour les filtres %(kinds)s : "
 
-#: trac/timeline/web_ui.py:351
+#: trac/timeline/web_ui.py:352
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -4187,6 +4205,8 @@ msgstr "Aucun dépôt selectionné."
 
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
+#: trac/versioncontrol/templates/admin_repositories.html:33
+#: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
 #: trac/versioncontrol/web_ui/browser.py:819
 #: trac/versioncontrol/web_ui/changeset.py:864
@@ -4724,6 +4744,12 @@ msgstr "Message :"
 #: trac/versioncontrol/templates/changeset.html:166
 msgid "Location:"
 msgstr "Chemin :"
+
+#: trac/versioncontrol/templates/changeset.html:170
+msgid "File:"
+msgid_plural "Files:"
+msgstr[0] "Fichier :"
+msgstr[1] "Fichiers :"
 
 #: trac/versioncontrol/templates/changeset.html:170
 msgid "(No files)"
@@ -5275,29 +5301,29 @@ msgstr "Encodage de l'URL erroné (« %(path_info)r »)"
 msgid "File %(path)s not found"
 msgstr "Le fichier « %(path)s » n'existe pas."
 
-#: trac/web/auth.py:99
+#: trac/web/auth.py:100
 #, python-format
 msgid "logged in as %(user)s"
 msgstr "Connecté en tant qu'utilisateur %(user)s"
 
-#: trac/web/auth.py:102
+#: trac/web/auth.py:103
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: trac/web/auth.py:105
+#: trac/web/auth.py:106
 msgid "Login"
 msgstr "Connexion"
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
-#: trac/web/auth.py:137
+#: trac/web/auth.py:138
 msgid "installation documentation"
 msgstr "documentation d'installation"
 
-#: trac/web/auth.py:138
+#: trac/web/auth.py:139
 msgid "Configuring Authentication"
 msgstr "Configuration de l'Identification"
 
-#: trac/web/auth.py:141
+#: trac/web/auth.py:142
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
@@ -5306,7 +5332,7 @@ msgstr ""
 "Les données permettant l'identification ne sont pas disponibles. "
 "Consultez la %(inst_doc)s."
 
-#: trac/web/auth.py:149
+#: trac/web/auth.py:150
 #, python-format
 msgid "Already logged in as %(user)s."
 msgstr "Connecté en tant qu'utilisateur %(user)s"
@@ -5325,32 +5351,32 @@ msgstr "(position indéterminée dans le template)"
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Erreur impliquant Genshi (%(error)s - %(location)s)"
 
-#: trac/web/main.py:225
+#: trac/web/main.py:226
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
 "Les cookies sécurisés sont activés, vous devez utiliser https pour\"\n"
 "\"soumettre des formulaires."
 
-#: trac/web/main.py:228
+#: trac/web/main.py:229
 msgid "Do you have cookies enabled?"
 msgstr "Avez-vous autorisé les cookies ?"
 
-#: trac/web/main.py:229
+#: trac/web/main.py:230
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr "Formulaire invalide (jeton manquant: %(msg)s)"
 
-#: trac/web/main.py:527
+#: trac/web/main.py:528
 #, python-format
 msgid "Error: %(message)s"
 msgstr "Erreur : %(message)s"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:541
+#: trac/web/main.py:542
 msgid "do so"
 msgstr "le faire"
 
-#: trac/web/main.py:543
+#: trac/web/main.py:544
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "Vous n'êtes pas connecté actuellement. Vous pouvez %(do_so)s maintenant."
