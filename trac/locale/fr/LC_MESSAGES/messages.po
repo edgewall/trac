@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-05-11 01:46+0200\n"
+"PO-Revision-Date: 2010-05-11 07:16+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -84,8 +84,8 @@ msgid ""
 "(comments: %(comments)s,\n"
 "                 attachments: %(attachments)s)"
 msgstr ""
-"(commentaires : %(comments)s,\n"
-"                 pièces jointes : %(attachments)s)"
+"(commentaires : %(comments)s,\n"
+"                 pièces jointes : %(attachments)s)"
 
 #: tracopt/ticket/templates/ticket_delete.html:37
 #: tracopt/ticket/templates/ticket_delete.html:68
@@ -3921,22 +3921,22 @@ msgstr "Annuler"
 #: trac/ticket/templates/ticket_notify_email.txt:9
 #, python-format
 msgid "Changes (by %(author)s):"
-msgstr "Modifié (par %(author)s) :"
+msgstr "Modifié (par %(author)s) :"
 
 #: trac/ticket/templates/ticket_notify_email.txt:15
 #, python-format
 msgid "Description changed by %(author)s:"
-msgstr "Description modifiée par %(author)s :"
+msgstr "Description modifiée par %(author)s :"
 
 #: trac/ticket/templates/ticket_notify_email.txt:21
 #, python-format
 msgid "Comment (by %(author)s):"
-msgstr "Commentaire (par %(author)s) :"
+msgstr "Commentaire (par %(author)s) :"
 
 #: trac/ticket/templates/ticket_notify_email.txt:29
 #, python-format
 msgid "Ticket URL: <%(link)s>"
-msgstr "URL du ticket : <%(link)s>"
+msgstr "URL du ticket : <%(link)s>"
 
 #: trac/timeline/web_ui.py:75 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
@@ -5010,7 +5010,7 @@ msgstr "Aucune révision trouvée"
 #: trac/versioncontrol/templates/revisionlog.html:120
 #, python-format
 msgid "copied from [1:%(path)s]:"
-msgstr "copié de [1:%(path)s] :"
+msgstr "copié de [1:%(path)s] :"
 
 #: trac/versioncontrol/templates/revisionlog.html:126
 #, python-format
@@ -5795,7 +5795,7 @@ msgid ""
 "%(author)s):"
 msgstr ""
 "Commentaire concernant la future version %(version)s (modifiée par "
-"%(author)s) :"
+"%(author)s) :"
 
 #: trac/wiki/templates/wiki_edit.html:124
 msgid "Go to the editor"
