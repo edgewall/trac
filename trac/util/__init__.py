@@ -472,7 +472,7 @@ def get_sources(path):
             sources.update((src, dist) for src in files
                            if any(src.startswith(toplevel)
                                   for toplevel in toplevels))
-        except KeyError:
+        except (KeyError, IOError):
             pass    # Metadata not found
     return sources
 
