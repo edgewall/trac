@@ -4800,11 +4800,11 @@ msgstr "Elágazásnál megáll"
 
 #: trac/versioncontrol/templates/revisionlog.html:33
 msgid "Follow copies"
-msgstr "Másolatok követése"
+msgstr "Elágazások követése"
 
 #: trac/versioncontrol/templates/revisionlog.html:39
 msgid "Show only adds and deletes"
-msgstr "Csak az újak és töröltek mutatása"
+msgstr "Csak az újak és a töröltek"
 
 #: trac/versioncontrol/templates/revisionlog.html:44
 msgid ""
