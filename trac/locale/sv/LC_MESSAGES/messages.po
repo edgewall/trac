@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-05-09 23:09+0200\n"
+"PO-Revision-Date: 2010-05-11 16:44+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -291,6 +291,10 @@ msgstr "Beskrivning"
 msgid "File '%(name)s' exists"
 msgstr "Filen \"%(name)s\" finns"
 
+#: trac/config.py:39
+msgid "Configuration Error"
+msgstr "Konfigurationsfel"
+
 #: trac/config.py:403
 #, python-format
 msgid "[%(section)s] %(entry)s: expected integer, got %(value)s"
@@ -308,7 +312,11 @@ msgstr ""
 "[%(section)s] %(entry)s: förväntade något av (%(choices)s), erhöll "
 "%(value)s"
 
-#: trac/env.py:152
+#: trac/core.py:33
+msgid "Trac Error"
+msgstr "Trac: Fel"
+
+#: trac/env.py:153
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
@@ -316,16 +324,16 @@ msgstr ""
 "Besök Trac's öppna källkodsprojekt på<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:583
+#: trac/env.py:584
 msgid "Database newer than Trac version"
 msgstr "Databasen är nyare än Trac's version"
 
-#: trac/env.py:600
+#: trac/env.py:601
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Ingen uppgraderingsmodul för version %(num)i (%(version)s.py)"
 
-#: trac/env.py:646
+#: trac/env.py:647
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -333,7 +341,7 @@ msgstr ""
 "Saknar miljövariabeln \"TRAC_ENV \". Denna variabel måste ange sökväg "
 "till en giltig Trac-miljö."
 
-#: trac/env.py:678
+#: trac/env.py:679
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -344,41 +352,41 @@ msgstr ""
 "\n"
 "Kör \"trac-admin %(path)s upgrade\""
 
-#: trac/env.py:712
+#: trac/env.py:713
 msgid "Copying resources from:"
 msgstr "Kopierar resurser från:"
 
-#: trac/env.py:728
+#: trac/env.py:729
 msgid "Creating scripts."
 msgstr "Skapar skript."
 
-#: trac/env.py:743
+#: trac/env.py:744
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "Säkerhetskopiering kan inte skriva över existerande \"%(dest)s\""
 
-#: trac/env.py:753
+#: trac/env.py:754
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Utför säkerhetskopiering från %(src)s till %(dst)s ..."
 
-#: trac/env.py:768
+#: trac/env.py:769
 msgid "The following errors happened while copying the environment:"
 msgstr "Följande fel inträffade vid kopiering av miljön:"
 
-#: trac/env.py:779
+#: trac/env.py:780
 msgid "Hotcopy done."
 msgstr "Säkerhetskopiering klart."
 
-#: trac/env.py:784 trac/admin/api.py:125
+#: trac/env.py:785 trac/admin/api.py:125
 msgid "Invalid arguments"
 msgstr "Felaktiga argument"
 
-#: trac/env.py:787
+#: trac/env.py:788
 msgid "Database is up to date, no upgrade necessary."
 msgstr "Databasen behöver inte uppgraderas."
 
-#: trac/env.py:795
+#: trac/env.py:796
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
@@ -387,7 +395,7 @@ msgstr ""
 "Säkerhetskopieringen misslyckades med \"%(msg)s\".\n"
 "Använd \"--no-backup\" för att uppgradera utan att göra en säkerhetskopia."
 
-#: trac/env.py:809
+#: trac/env.py:810
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -397,7 +405,7 @@ msgstr ""
 "men Trac använder inte längre denna katalog för inladdning av tillägg.\n"
 "Var vänlig töm katalogen, eller flytta dess innehåll, manuellt."
 
-#: trac/env.py:820
+#: trac/env.py:821
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -408,7 +416,7 @@ msgstr ""
 "Trac laddar inte längre tillägg från katalogen \"wiki-macros\".\n"
 "Var vänlig töm katalogen, eller flytta dess innehåll, manuellt."
 
-#: trac/env.py:822
+#: trac/env.py:823
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -468,20 +476,20 @@ msgstr "Otillräckliga behörigheter för att utföra detta."
 msgid "%(name)s is not a valid action."
 msgstr "%(name)s är inte en giltig åtgärd."
 
-#: trac/perm.py:642
+#: trac/perm.py:643
 msgid "User"
 msgstr "Användare"
 
-#: trac/perm.py:642 trac/admin/templates/admin_perms.html:70
+#: trac/perm.py:643 trac/admin/templates/admin_perms.html:70
 #: trac/ticket/templates/ticket.html:339
 msgid "Action"
 msgstr "Åtgärd"
 
-#: trac/perm.py:644
+#: trac/perm.py:645
 msgid "Available actions:"
 msgstr "Tillgängliga funktioner:"
 
-#: trac/perm.py:655 trac/admin/web_ui.py:333
+#: trac/perm.py:656 trac/admin/web_ui.py:333
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Namn bestående av enbart versaler är reserverade åt namn på behörigheter"
 
@@ -832,7 +840,7 @@ msgstr "Gruppen %(group)s innehåller redan %(subject)s."
 msgid "The selected permissions have been revoked."
 msgstr "Valda behörigheter har blivit hävda."
 
-#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:9
+#: trac/admin/web_ui.py:401 trac/admin/templates/admin_plugins.html:10
 msgid "Plugins"
 msgstr "Tillägg"
 
@@ -899,7 +907,7 @@ msgstr "Beskrivning:"
 #: trac/admin/templates/admin_enums.html:70
 #: trac/admin/templates/admin_logging.html:54
 #: trac/admin/templates/admin_milestones.html:129
-#: trac/admin/templates/admin_plugins.html:164
+#: trac/admin/templates/admin_plugins.html:165
 #: trac/admin/templates/admin_versions.html:94
 msgid "Apply changes"
 msgstr "Spara ändringar"
@@ -940,7 +948,6 @@ msgid "Add Component:"
 msgstr "Lägg till komponent:"
 
 #: trac/admin/templates/admin_components.html:70
-#: trac/admin/templates/admin_enums.html:33
 #: trac/admin/templates/admin_enums.html:38
 #: trac/admin/templates/admin_milestones.html:93
 #: trac/admin/templates/admin_perms.html:39
@@ -1003,6 +1010,11 @@ msgstr "Hantera %(label_plural)s"
 #, python-format
 msgid "Modify %(label_singular)s"
 msgstr "Ändra %(label_singular)s"
+
+#: trac/admin/templates/admin_enums.html:33
+#, python-format
+msgid "Add %(label_singular)s"
+msgstr "Lägg till %(label_singular)s"
 
 #: trac/admin/templates/admin_enums.html:48
 msgid "Order"
@@ -1146,70 +1158,67 @@ msgstr ""
 "Observera att namn på [1:Vem/vad] eller [2:Grupp] ej får bestå av enbart "
 "versaler, då detta reserverats åt namn på behörigheter."
 
-#: trac/admin/templates/admin_plugins.html:41
+#: trac/admin/templates/admin_plugins.html:42
 msgid "Manage Plugins"
 msgstr "Hantera tillägg"
 
-#: trac/admin/templates/admin_plugins.html:45
+#: trac/admin/templates/admin_plugins.html:46
 msgid "Install Plugin:"
 msgstr "Installera tillägg:"
 
-#: trac/admin/templates/admin_plugins.html:47
-#: trac/versioncontrol/templates/changeset.html:170
-msgid "File:"
-msgid_plural "Files:"
-msgstr[0] "Fil:"
-msgstr[1] "Filer:"
+#: trac/admin/templates/admin_plugins.html:48
+msgid "File: [1:]"
+msgstr "Fil: [1:]"
 
-#: trac/admin/templates/admin_plugins.html:52
+#: trac/admin/templates/admin_plugins.html:53
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
 msgstr "Webbservern är ej behörig att lagra filer i Trac-miljöns tilläggskatalog."
 
-#: trac/admin/templates/admin_plugins.html:56
+#: trac/admin/templates/admin_plugins.html:57
 msgid "Upload a plugin packaged as Python egg."
 msgstr "Ladda upp ett tillägg förpackat som Pythonägg."
 
-#: trac/admin/templates/admin_plugins.html:61
+#: trac/admin/templates/admin_plugins.html:62
 msgid "Install"
 msgstr "Installera"
 
-#: trac/admin/templates/admin_plugins.html:84 trac/templates/diff_view.html:51
+#: trac/admin/templates/admin_plugins.html:85 trac/templates/diff_view.html:51
 #: trac/versioncontrol/templates/changeset.html:142
 msgid "Author:"
 msgstr "Författare:"
 
-#: trac/admin/templates/admin_plugins.html:93
+#: trac/admin/templates/admin_plugins.html:94
 msgid "Home page:"
 msgstr "Hemsida:"
 
-#: trac/admin/templates/admin_plugins.html:100
+#: trac/admin/templates/admin_plugins.html:101
 msgid "License:"
 msgstr "Licens:"
 
-#: trac/admin/templates/admin_plugins.html:110
+#: trac/admin/templates/admin_plugins.html:111
 msgid "Show all descriptions"
 msgstr "Visa alla beskrivningar"
 
-#: trac/admin/templates/admin_plugins.html:112
+#: trac/admin/templates/admin_plugins.html:113
 msgid "Hide all descriptions"
 msgstr "Dölj alla beskrivningar"
 
-#: trac/admin/templates/admin_plugins.html:114 trac/ticket/admin.py:76
+#: trac/admin/templates/admin_plugins.html:115 trac/ticket/admin.py:76
 #: trac/ticket/api.py:296
 msgid "Component"
 msgstr "Komponent"
 
-#: trac/admin/templates/admin_plugins.html:117
+#: trac/admin/templates/admin_plugins.html:118
 msgid "Enabled"
 msgstr "Aktiverad"
 
-#: trac/admin/templates/admin_plugins.html:126
+#: trac/admin/templates/admin_plugins.html:127
 msgid "Toggle the module description"
 msgstr "Dölj/visa modulbeskrivning"
 
-#: trac/admin/templates/admin_plugins.html:142
+#: trac/admin/templates/admin_plugins.html:143
 msgid "Toggle the component description"
 msgstr "Dölj/visa komponentbeskrivning"
 
@@ -1295,20 +1304,28 @@ msgstr ""
 "Användaren %(user)s kräver läs- _och_ skrivrättigheter till databasfilen "
 "%(path)s och katalogen den ligger i."
 
-#: trac/mimeview/api.py:674 trac/mimeview/api.py:685
+#: trac/mimeview/api.py:675 trac/mimeview/api.py:686
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
 msgstr "Ingen tillgänglig MIME-omvandling från %(old)s till %(new)s"
 
-#: trac/mimeview/api.py:800
+#: trac/mimeview/api.py:801
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
 msgstr "Förhandsvising av HTML med %(renderer)s misslyckades (%(err)s)"
 
-#: trac/mimeview/api.py:830
+#: trac/mimeview/api.py:831
 #, python-format
 msgid "Can't use %(annotator)s annotator: %(error)s"
 msgstr "Kan inte använda %(annotator)s som antecknare: %(error)s"
+
+#: trac/mimeview/api.py:1080 trac/templates/error.html:174
+msgid "Line"
+msgstr "Rad"
+
+#: trac/mimeview/api.py:1080
+msgid "Line numbers"
+msgstr "Radnummer"
 
 #: trac/mimeview/patch.py:54
 msgid "Invalid unified diff content"
@@ -1567,11 +1584,11 @@ msgstr "Bläddra i förrådets sökväg %(path)s"
 msgid "Search query too short. Query must be at least %(num)s characters long."
 msgstr "Sökfrågan är för kort. Ange minst %(num)s tecken."
 
-#: trac/search/web_ui.py:231 trac/ticket/query.py:763 trac/ticket/report.py:397
+#: trac/search/web_ui.py:232 trac/ticket/query.py:763 trac/ticket/report.py:397
 msgid "Next Page"
 msgstr "Nästa sida"
 
-#: trac/search/web_ui.py:237 trac/ticket/query.py:768 trac/ticket/report.py:400
+#: trac/search/web_ui.py:238 trac/ticket/query.py:768 trac/ticket/report.py:400
 msgid "Previous Page"
 msgstr "Föregående sida"
 
@@ -1732,7 +1749,8 @@ msgid "Attach another file"
 msgstr "Bifoga ytterligare en bilaga"
 
 #: trac/templates/attachment.html:98 trac/templates/list_of_attachments.html:22
-#: trac/templates/macros.html:19 trac/versioncontrol/templates/browser.html:110
+#: trac/templates/macros.html:19 trac/util/text.py:277
+#: trac/versioncontrol/templates/browser.html:110
 #: trac/versioncontrol/templates/dir_entries.html:16
 #, python-format
 msgid "%(size)s bytes"
@@ -2061,10 +2079,6 @@ msgstr "[1:Fil \"%(file)s\", rad [2:%(line)s], i] [3:%(function)s]"
 msgid "Code fragment:"
 msgstr "Kodfragment:"
 
-#: trac/templates/error.html:174
-msgid "Line"
-msgstr "Rad"
-
 #: trac/templates/error.html:184
 msgid "Local variables:"
 msgstr "Lokala variabler:"
@@ -2132,7 +2146,7 @@ msgstr "IP-adress: %(ipnr)s"
 msgid "Available Projects"
 msgstr "Tillgängliga projekt"
 
-#: trac/templates/index.html:18
+#: trac/templates/index.html:18 trac/web/main.py:523
 msgid "Error"
 msgstr "Fel"
 
@@ -2458,40 +2472,40 @@ msgstr "Kommentar %(cnum)s för ärende #%(id)s"
 msgid "Ticket #%(shortname)s"
 msgstr "Ärende #%(shortname)s"
 
-#: trac/ticket/default_workflow.py:225
+#: trac/ticket/default_workflow.py:233
 msgid "Current state no longer exists"
 msgstr "Nuvarande status existerar ej längre"
 
-#: trac/ticket/default_workflow.py:227
+#: trac/ticket/default_workflow.py:235
 msgid "The ticket will be disowned"
 msgstr "Ärendet blir ägarlöst"
 
-#: trac/ticket/default_workflow.py:245 trac/ticket/default_workflow.py:263
+#: trac/ticket/default_workflow.py:253 trac/ticket/default_workflow.py:272
 #, python-format
 msgid "to %(owner)s"
 msgstr "till %(owner)s"
 
-#: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:266
+#: trac/ticket/default_workflow.py:255 trac/ticket/default_workflow.py:275
 #, python-format
 msgid "The owner will be changed from %(current_owner)s"
 msgstr "Ägarbyte från %(current_owner)s"
 
-#: trac/ticket/default_workflow.py:254
+#: trac/ticket/default_workflow.py:263
 #, python-format
 msgid "to %(owner)s "
 msgstr "till %(owner)s "
 
-#: trac/ticket/default_workflow.py:256
+#: trac/ticket/default_workflow.py:265
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
 msgstr "Ägarbyte från %(current_owner)s till %(selected_owner)s"
 
-#: trac/ticket/default_workflow.py:271
+#: trac/ticket/default_workflow.py:280
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
 msgstr "Ägarbyte från %(current_owner)s till %(authname)s"
 
-#: trac/ticket/default_workflow.py:281
+#: trac/ticket/default_workflow.py:290
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
@@ -2500,30 +2514,30 @@ msgstr ""
 "definierad (detta är ett lokalt konfigurationsproblem, kontakta din Trac-"
 "administratör)."
 
-#: trac/ticket/default_workflow.py:289 trac/ticket/default_workflow.py:299
+#: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
 msgid "as %(resolution)s"
 msgstr "som %(resolution)s"
 
-#: trac/ticket/default_workflow.py:291
+#: trac/ticket/default_workflow.py:300
 #, python-format
 msgid "The resolution will be set to %(name)s"
 msgstr "Lösning kommer sättas till %(name)s"
 
-#: trac/ticket/default_workflow.py:302
+#: trac/ticket/default_workflow.py:311
 msgid "The resolution will be set"
 msgstr "Lösning fastställs"
 
-#: trac/ticket/default_workflow.py:304
+#: trac/ticket/default_workflow.py:313
 msgid "The resolution will be deleted"
 msgstr "Lösning tas bort"
 
-#: trac/ticket/default_workflow.py:307
+#: trac/ticket/default_workflow.py:316
 #, python-format
 msgid "as %(status)s "
 msgstr "som %(status)s "
 
-#: trac/ticket/default_workflow.py:311
+#: trac/ticket/default_workflow.py:320
 #, python-format
 msgid "Next status will be '%(name)s'"
 msgstr "Status blir \"%(name)s\""
@@ -2834,6 +2848,10 @@ msgstr "Milstolpen \"%(name)s\" finns redan, välj ett annat namn."
 #: trac/ticket/roadmap.py:655
 msgid "You must provide a name for the milestone."
 msgstr "Du måste ange ett namn för milstolpen."
+
+#: trac/ticket/web_ui.py:55
+msgid "Invalid Ticket"
+msgstr "Ogiltigt ärende"
 
 #: trac/ticket/web_ui.py:152 trac/ticket/templates/ticket.html:14
 msgid "New Ticket"
@@ -3774,16 +3792,16 @@ msgid "%(date)s in Timeline"
 msgstr "%(date)s bland händelser"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
-#: trac/timeline/web_ui.py:343
+#: trac/timeline/web_ui.py:344
 msgid "other kinds of events"
 msgstr "andra sorts händelser"
 
-#: trac/timeline/web_ui.py:348
+#: trac/timeline/web_ui.py:349
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
 msgstr "Händelserutinen %(name)s misslyckades för filtret %(kinds)s: "
 
-#: trac/timeline/web_ui.py:351
+#: trac/timeline/web_ui.py:352
 #, python-format
 msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
@@ -4016,6 +4034,8 @@ msgstr "Inga förråd valdes."
 
 #: trac/versioncontrol/api.py:32
 #: trac/versioncontrol/templates/admin_repositories.html:20
+#: trac/versioncontrol/templates/admin_repositories.html:33
+#: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
 #: trac/versioncontrol/web_ui/browser.py:819
 #: trac/versioncontrol/web_ui/changeset.py:864
@@ -4530,6 +4550,12 @@ msgstr "Meddelande:"
 #: trac/versioncontrol/templates/changeset.html:166
 msgid "Location:"
 msgstr "Plats:"
+
+#: trac/versioncontrol/templates/changeset.html:170
+msgid "File:"
+msgid_plural "Files:"
+msgstr[0] "Fil:"
+msgstr[1] "Filer:"
 
 #: trac/versioncontrol/templates/changeset.html:170
 msgid "(No files)"
@@ -5052,36 +5078,36 @@ msgstr "Ogiltig URL-kodning (var %(path_info)r)"
 msgid "File %(path)s not found"
 msgstr "Filen %(path)s hittades inte"
 
-#: trac/web/auth.py:99
+#: trac/web/auth.py:100
 #, python-format
 msgid "logged in as %(user)s"
 msgstr "Inloggad som %(user)s"
 
-#: trac/web/auth.py:102
+#: trac/web/auth.py:103
 msgid "Logout"
 msgstr "Logga ut"
 
-#: trac/web/auth.py:105
+#: trac/web/auth.py:106
 msgid "Login"
 msgstr "Logga in"
 
 #. TRANSLATOR: ... refer to the 'installation documentation'. (link)
-#: trac/web/auth.py:137
+#: trac/web/auth.py:138
 msgid "installation documentation"
 msgstr "dokumentation över installationen"
 
-#: trac/web/auth.py:138
+#: trac/web/auth.py:139
 msgid "Configuring Authentication"
 msgstr "Konfigurera autentisering"
 
-#: trac/web/auth.py:141
+#: trac/web/auth.py:142
 #, python-format
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
 msgstr "Autentiseringsinformation ej tillgänglig. Vänligen se %(inst_doc)s."
 
-#: trac/web/auth.py:149
+#: trac/web/auth.py:150
 #, python-format
 msgid "Already logged in as %(user)s."
 msgstr "Redan inloggad som %(user)s."
@@ -5100,30 +5126,30 @@ msgstr "(okänd plats för mall)"
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi-fel %(error)s vid rendering av mallen %(location)s"
 
-#: trac/web/main.py:225
+#: trac/web/main.py:226
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr "Säkra cookies används, du måste använda https för att skicka formulär."
 
-#: trac/web/main.py:228
+#: trac/web/main.py:229
 msgid "Do you have cookies enabled?"
 msgstr "Har du tillåtit användning av cookies?"
 
-#: trac/web/main.py:229
+#: trac/web/main.py:230
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
 msgstr "Formulärdata saknas eller är ogiltiga. %(msg)s"
 
-#: trac/web/main.py:527
+#: trac/web/main.py:528
 #, python-format
 msgid "Error: %(message)s"
 msgstr "Fel: %(message)s"
 
 #. TRANSLATOR: ... not logged in, you may want to 'do so' now (link)
-#: trac/web/main.py:541
+#: trac/web/main.py:542
 msgid "do so"
 msgstr "logga in"
 
-#: trac/web/main.py:543
+#: trac/web/main.py:544
 #, python-format
 msgid "You are currently not logged in. You may want to %(do_so)s now."
 msgstr "Du är för närvarande inte inloggad. Du kanske vill %(do_so)s nu."
