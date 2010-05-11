@@ -173,15 +173,18 @@ class TicketNotifyEmail(NotifyEmail):
                   if f['name'] not in ('summary', 'cc', 'time', 'changetime')]
         width = [0, 0, 0, 0]
         i = 0
-        for f in [f['name'] for f in fields if f['type'] != 'textarea']:
-            if not tkt.values.has_key(f):
+        for f in fields:
+            if f['type'] == 'textarea':
                 continue
-            fval = tkt[f] or ''
+            fname = f['name']
+            if not fname in tkt.values:
+                continue
+            fval = tkt[fname] or ''
             if fval.find('\n') != -1:
                 continue
             idx = 2 * (i % 2)
-            if len(f) > width[idx]:
-                width[idx] = len(f)
+            if len(f['label']) > width[idx]:
+                width[idx] = len(f['label'])
             if len(fval) > width[idx + 1]:
                 width[idx + 1] = len(fval)
             i += 1
