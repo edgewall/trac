@@ -95,8 +95,11 @@ class TimelineModule(Component):
         fromdate = today = datetime.now(req.tz)
         precisedate = precision = None
         if 'from' in req.args:
-            precisedate = parse_date(req.args.get('from'), req.tz)
-            fromdate = precisedate
+            # Acquire from date only from non-blank input
+            reqfromdate = req.args['from'].strip()
+            if reqfromdate:
+                precisedate = parse_date(reqfromdate, req.tz)
+                fromdate = precisedate
             precision = req.args.get('precision', '')
             if precision.startswith('second'):
                 precision = timedelta(seconds=1)
