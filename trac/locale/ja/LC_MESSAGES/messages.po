@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-26 09:50+0200\n"
-"PO-Revision-Date: 2010-05-11 10:54+0900\n"
+"PO-Revision-Date: 2010-05-11 20:00+0900\n"
 "Last-Translator: Jun Omae <jun66j5@gmail.com>\n"
 "Language-Team: ja <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -313,30 +313,30 @@ msgstr "[%(section)s] %(entry)s: %(value)s は %(choices)s のどれかを入力
 
 #: trac/core.py:33
 msgid "Trac Error"
-msgstr "Tracエラー"
+msgstr "Trac エラー"
 
 #: trac/env.py:153
 msgid ""
 "Visit the Trac open source project at<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 msgstr ""
-"Tracオープンソースプロジェクトのページに移動する<br /><a "
+"Trac オープンソースプロジェクトのページに移動する<br /><a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
 #: trac/env.py:584
 msgid "Database newer than Trac version"
-msgstr "Tracのバージョンよりもデータベースのバージョンの方が新しいです。"
+msgstr "Trac のバージョンよりもデータベースのバージョンの方が新しいです。"
 
 #: trac/env.py:601
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
-msgstr "(%(version)s.py)のバージョン %(num)i に対応するアップグレードモジュールはありません"
+msgstr "バージョン %(num)i (%(version)s.py) に対応するアップグレードモジュールはありません"
 
 #: trac/env.py:647
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
-msgstr "環境変数\"TRAC_ENV\"が見つかりません。Tracではこの変数を設定する必要があります。"
+msgstr "環境変数 \"TRAC_ENV\" が見つかりません。Trac ではこの変数を設定する必要があります。"
 
 #: trac/env.py:679
 #, python-format
@@ -345,9 +345,9 @@ msgid ""
 "\n"
 "Run \"trac-admin %(path)s upgrade\""
 msgstr ""
-"このTrac Environmentはアップグレードをする必要があります\n"
+"この Trac Environment はアップグレードを行う必要があります。\n"
 "\n"
-"\"trac-admin %(path)s upgrade\"を実行してください"
+"\"trac-admin %(path)s upgrade\" を実行してください"
 
 #: trac/env.py:713
 msgid "Copying resources from:"
@@ -360,12 +360,12 @@ msgstr "スクリプトを作成しています。"
 #: trac/env.py:744
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
-msgstr "'%(dest)s'が存在するため上書きできません"
+msgstr "'%(dest)s' が存在するため上書きできません"
 
 #: trac/env.py:754
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
-msgstr "%(src)s から %(dst)s へ、ホットコピーを実施しています"
+msgstr "%(src)s から %(dst)s へホットコピーを実施しています..."
 
 #: trac/env.py:769
 msgid "The following errors happened while copying the environment:"
@@ -381,7 +381,7 @@ msgstr "不正な引数"
 
 #: trac/env.py:788
 msgid "Database is up to date, no upgrade necessary."
-msgstr "データベースは最新です、更新の必要はありません。"
+msgstr "データベースは最新であり更新の必要はありません。"
 
 #: trac/env.py:796
 #, python-format
@@ -390,7 +390,7 @@ msgid ""
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
 "'%(msg)s' によりバックアップが失敗しました。\n"
-"'--no-backup' を付けて、バックアップをせずにアップグレードしてください"
+"'--no-backup' を付けて、バックアップをせずにアップグレードしてください。"
 
 #: trac/env.py:810
 msgid ""
@@ -423,18 +423,18 @@ msgid ""
 msgstr ""
 "アップグレードが終了しました。\n"
 "\n"
-"次のコマンドを実行するとTracのドキュメントをアップグレードできます:\n"
+"次のコマンドを実行すると Trac のドキュメントをアップグレードできます:\n"
 "\n"
 "  trac-admin %(path)s wiki upgrade"
 
 #: trac/notification.py:155
 msgid "TLS enabled but server does not support TLS"
-msgstr "TLSが有効になっていますが、サーバーがTLSをサポートしていません"
+msgstr "TLS が有効になっていますが、サーバは TLS をサポートしていません"
 
 #: trac/notification.py:303
 #, python-format
 msgid "Invalid email encoding setting: %(pref)s"
-msgstr "emailのエンコーディング設定が不正です: %(pref)s"
+msgstr "メールのエンコーディング設定が不正です: %(pref)s"
 
 #: trac/notification.py:317
 msgid "Unable to send email due to identity crisis."
@@ -456,7 +456,7 @@ msgstr "ヘッダー長が短すぎます"
 #: trac/perm.py:48
 #, python-format
 msgid "%(perm)s privileges are required to perform this operation on %(resource)s"
-msgstr "%(resource)s の操作を行うには %(perm)s の権限が必要です。"
+msgstr "%(resource)s の操作を行うには %(perm)s 権限が必要です。"
 
 #: trac/perm.py:50
 #, python-format
@@ -513,7 +513,7 @@ msgid ""
 "        "
 msgstr ""
 "trac-admin %(version)s へようこそ\n"
-"インタラクティブなTrac管理コンソールです。\n"
+"Trac 管理コンソール(対話モード)です。\n"
 "Copyright (c) 2003-2009 Edgewall Software\n"
 "\n"
 "'?' コマンドか 'help' コマンドでヘルプを表示します。\n"
@@ -532,12 +532,12 @@ msgstr "補完エラー: %(err)s"
 #: trac/admin/console.py:287
 #, python-format
 msgid "No documentation found for '%(cmd)s'"
-msgstr "'%(cmd)s'のドキュメントは見つかりません"
+msgstr "'%(cmd)s' のドキュメントは見つかりません"
 
 #: trac/admin/console.py:289
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
-msgstr "trac-admin - Trac管理コンソール %(version)s"
+msgstr "trac-admin - Trac 管理コンソール %(version)s"
 
 #: trac/admin/console.py:293
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
@@ -550,7 +550,7 @@ msgstr "コマンドを省略して trac-admin を実行すると、対話モー
 #: trac/admin/console.py:336
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
-msgstr "新規Trac Environment %(envname)s の生成"
+msgstr "新規 Trac Environment %(envname)s の生成"
 
 #: trac/admin/console.py:338
 msgid ""
@@ -584,10 +584,10 @@ msgid ""
 msgstr ""
 " \n"
 " 使用するデータベースへの接続文字列を指定してください。\n"
-" デフォルトでは、localにSQLiteデータベースを作成します。\n"
-" 既に存在するPostgreSQLデータベースを使うこともできます。\n"
-" (Tracでは、接続文字列は厳密に表記する必要があります。\n"
-" 詳細はTracのドキュメントを参照してください)\n"
+" デフォルトではローカルに SQLite データベースを作成します。\n"
+" 既に存在する PostgreSQL データベースを使うこともできます。\n"
+" (Trac では、接続文字列は厳密に表記する必要があります。\n"
+" 詳細は Trac のドキュメントを参照してください)\n"
 
 #: trac/admin/console.py:356
 #, python-format
@@ -597,11 +597,11 @@ msgstr "データベース接続文字列 [%(default)s]> "
 #: trac/admin/console.py:363
 #, python-format
 msgid "Initenv for '%(env)s' failed."
-msgstr "Initenv失敗: '%(env)s'"
+msgstr "initenv 失敗: '%(env)s'"
 
 #: trac/admin/console.py:366
 msgid "Does an environment already exist?"
-msgstr "tracenv がすでに存在していませんか?"
+msgstr "tracenv がすでに存在していませんか？"
 
 #: trac/admin/console.py:370
 msgid "Directory exists and is not empty."
@@ -617,7 +617,7 @@ msgstr "tracenv が作成できません。"
 
 #: trac/admin/console.py:421
 msgid " Installing default wiki pages"
-msgstr " デフォルトのWikiページのインストール"
+msgstr " デフォルトの Wiki ページのインストール"
 
 #: trac/admin/console.py:430
 msgid " Indexing default repository"
@@ -645,9 +645,9 @@ msgstr ""
 "このリポジトリのためのライブラリが用意されていない、\n"
 "指定したリポジトリのパスに実際のリポジトリがない…\n"
 "\n"
-"現状でもTracを使い始める事はできますが、\n"
+"現状でも Trac を使い始める事はできますが、\n"
 "リポジトリブラウザを有効にするために、\n"
-"trac.iniファイルの[trac]repository_typeとrepository_pathの\n"
+"trac.ini ファイルの [trac] repository_type と repository_path の\n"
 "設定を再度確認する必要があります。\n"
 
 #: trac/admin/console.py:476
@@ -704,7 +704,7 @@ msgstr ""
 #: trac/admin/console.py:536
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
-msgstr "非ASCII文字のパス '%(path)s' はサポートしていません。"
+msgstr "非 ASCII 文字のパス '%(path)s' はサポートしていません。"
 
 #: trac/admin/web_ui.py:64
 msgid "Admin"
@@ -733,7 +733,7 @@ msgstr "変更が保存されました。"
 msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
-msgstr "trac.ini の書き込みエラー。ウェブサーバによる書き込みができるか確認してください。変更は保存されませんでした。"
+msgstr "trac.ini の書き込みエラー。ウェブサーバによる書き込みができるか確認してください。変更は保存されていません。"
 
 #: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
@@ -769,7 +769,7 @@ msgstr "Syslog"
 
 #: trac/admin/web_ui.py:247
 msgid "Windows event log"
-msgstr "Windowsイベントログ"
+msgstr "Windows イベントログ"
 
 #: trac/admin/web_ui.py:260
 #, python-format
@@ -835,7 +835,7 @@ msgstr "プラグイン"
 
 #: trac/admin/web_ui.py:435
 msgid "Uploaded file is not a Python source file or egg"
-msgstr "アップロードされたファイルはPythonソースファイルでもeggファイルでもありません"
+msgstr "アップロードされたファイルは Python ソースファイルでも egg ファイルでもありません"
 
 #: trac/admin/web_ui.py:440
 #, python-format
@@ -1161,7 +1161,7 @@ msgstr "ファイル: [1:]"
 msgid ""
 "The web server does not have sufficient permissions to store files in\n"
 "            the environment plugins directory."
-msgstr "WEBサーバはプラグインディレクトリにファイルを作成する権限を持っていません。"
+msgstr "ウェブサーバはプラグインディレクトリにファイルを作成する権限を持っていません。"
 
 #: trac/admin/templates/admin_plugins.html:57
 msgid "Upload a plugin packaged as Python egg."
@@ -1256,7 +1256,7 @@ msgstr "MySQL 向け Python バインディングをロードできません"
 #: trac/db/pool.py:118
 #, python-format
 msgid "Unable to get database connection within %(time)d seconds"
-msgstr "%(time)d 秒内にデータベースに接続できませんでした"
+msgstr "%(time)d秒内にデータベースに接続できませんでした"
 
 #: trac/db/postgres_backend.py:81
 msgid "Cannot load Python bindings for PostgreSQL"
@@ -1290,12 +1290,12 @@ msgstr "ファイル %(path)s と、そのディレクトリに %(user)s ユー�
 #: trac/mimeview/api.py:675 trac/mimeview/api.py:686
 #, python-format
 msgid "No available MIME conversions from %(old)s to %(new)s"
-msgstr "%(old)s から %(new)s への MIME変換は、利用可能ではありません"
+msgstr "%(old)s から %(new)s への MIME 変換は、利用可能ではありません"
 
 #: trac/mimeview/api.py:801
 #, python-format
 msgid "HTML preview using %(renderer)s failed (%(err)s)"
-msgstr "(%(err)s) のため、%(renderer)sを使ったHTMLプレビューに失敗しました"
+msgstr "(%(err)s) のため、%(renderer)s を使った HTML プレビューに失敗しました"
 
 #: trac/mimeview/api.py:831
 #, python-format
@@ -1312,7 +1312,7 @@ msgstr "行番号"
 
 #: trac/mimeview/patch.py:54
 msgid "Invalid unified diff content"
-msgstr "diff内容が不正です"
+msgstr "diff 内容が不正です"
 
 #: trac/mimeview/patch.py:171
 #, python-format
@@ -1486,7 +1486,7 @@ msgid ""
 "        notification and RSS feeds, for example."
 msgstr ""
 "この情報はあなたのログイン名とメールアドレスやフルネームを対応させる\n"
-"ためのもので、メールによる通知やRSSフィードなどに使用されます。"
+"ためのもので、メールによる通知や RSS フィードなどに使用されます。"
 
 #: trac/prefs/templates/prefs_keybindings.html:18
 msgid "Enable access keys"
@@ -1613,11 +1613,10 @@ msgid ""
 "\n"
 "        and changes within a project."
 msgstr ""
-"Tracはソフトウェアプロジェクトの管理およびバグや案件のトラッキングを\n"
-"行うためのWEBベースのソフトウェアであり、使いやすく形式張らないことに\n"
+"Trac はソフトウェアプロジェクトの管理およびバグや案件のトラッキングを\n"
+"行うためのウェブベースのソフトウェアであり、使いやすく形式張らないことに\n"
 "重点を置いています。\n"
-"Wiki機能を備え、バージョン管理システムへのインターフェースを持ち、\n"
-"\n"
+"Wiki 機能を備え、バージョン管理システムへのインターフェースを持ち、\n"
 "プロジェクト内での出来事や変更を把握するのに役立つたくさんの方法を提供します。"
 
 #: trac/templates/about.html:36
@@ -1627,7 +1626,7 @@ msgid ""
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
-"Trac はBSDライセンスのもとで配布されています。[1:]\n"
+"Trac は BSD ライセンスのもとで配布されています。[1:]\n"
 "このライセンスの全文は、配布ファイルに含まれている [3:COPYING] ファイルと同じものが[2:オンライン]で参照できます。"
 
 #: trac/templates/about.html:41
@@ -1639,7 +1638,7 @@ msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
 msgstr ""
-"Tracオープンソースプロジェクトのページを訪れてみてください:\n"
+"Trac オープンソースプロジェクトのページを訪れてみてください:\n"
 "        [1:http://trac.edgewall.org/]"
 
 #: trac/templates/about.html:46
@@ -1989,11 +1988,11 @@ msgstr "おそらくローカルインストールに問題があります。"
 msgid ""
 "You should %(create)s a ticket at the admin Trac to report\n"
 "                    the issue."
-msgstr "Tracプロジェクトページでこの問題のチケットを %(create)s してください。"
+msgstr "Trac プロジェクトページでこの問題のチケットを %(create)s してください。"
 
 #: trac/templates/error.html:135
 msgid "Found a bug in Trac?"
-msgstr "Tracのバグを見つけましたか?"
+msgstr "Trac のバグを見つけましたか？"
 
 #: trac/templates/error.html:136
 msgid ""
@@ -2001,7 +2000,7 @@ msgid ""
 "              you should consider creating a bug report."
 msgstr ""
 "この不具合が再現可能でありきちんと動作すべきものであるようならば、\n"
-"Tracチームに報告することを検討してください。"
+"Trac チームに報告することを検討してください。"
 
 #: trac/templates/error.html:139
 #, python-format
@@ -2030,7 +2029,7 @@ msgid ""
 msgstr ""
 "実際に報告を行なう前に、\n"
 "既に[1:同じような不具合が報告されていないか[2:検索]]してください。\n"
-"またTracのインストールや設定に関する質問は、\n"
+"また Trac のインストールや設定に関する質問は、\n"
 "チケットを作成するのではなく[3:メーリングリスト]に投稿するのがよいでしょう。"
 
 #: trac/templates/error.html:157
@@ -2088,11 +2087,11 @@ msgstr "有効にしているプラグイン:"
 
 #: trac/templates/error.html:228
 msgid "TracGuide"
-msgstr "ヘルプ/ガイド"
+msgstr "TracGuide"
 
 #: trac/templates/error.html:228
 msgid "— The Trac User and Administration Guide"
-msgstr "— Tracユーザ/管理者ガイド"
+msgstr "— Trac ユーザ/管理者ガイド"
 
 #: trac/templates/history_view.html:16
 #, python-format
@@ -2126,7 +2125,7 @@ msgstr "このバージョンを表示"
 #: trac/templates/history_view.html:46
 #, python-format
 msgid "IP-Address: %(ipnr)s"
-msgstr "IPアドレス: %(ipnr)s"
+msgstr "IP アドレス: %(ipnr)s"
 
 #: trac/templates/index.html:8 trac/templates/index.html:12
 msgid "Available Projects"
@@ -2185,11 +2184,11 @@ msgstr "(ファイルは空です)"
 msgid ""
 "[1:HTML preview not available], since the file size exceeds %(size)s "
 "bytes."
-msgstr "ファイルサイズが %(size)s バイトを超えているため、[1:HTMLプレビューは表示しません]。"
+msgstr "ファイルサイズが %(size)s バイトを超えているため、[1:HTML プレビューは表示しません]。"
 
 #: trac/templates/preview_file.html:22
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
-msgstr "このファイルのプレビュー方法が不明なため、[1:HTMLプレビューは表示できません。]"
+msgstr "このファイルのプレビュー方法が不明なため、[1:HTML プレビューは表示できません。]"
 
 #: trac/templates/preview_file.html:26
 msgid "Try [1:downloading] the file instead."
@@ -2493,7 +2492,7 @@ msgstr "担当者を %(current_owner)s から %(authname)s に変更します"
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
-msgstr "ワークフローによる解決の種類が、ただしく定められていません。(設定に関する問題なので、Trac管理者へお問い合わせください)"
+msgstr "ワークフローによる解決の種類が、ただしく定められていません。(設定の問題なので Trac 管理者へお問い合わせください)"
 
 #: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
@@ -2640,13 +2639,13 @@ msgstr "チケット"
 #: trac/ticket/query.py:776 trac/ticket/report.py:406
 #, python-format
 msgid "Page %(num)d"
-msgstr "ページ %(num)d"
+msgstr "ページ%(num)d"
 
 #: trac/ticket/query.py:825 trac/ticket/report.py:273 trac/ticket/report.py:566
 #: trac/ticket/web_ui.py:130 trac/timeline/web_ui.py:216
 #: trac/versioncontrol/web_ui/log.py:304
 msgid "RSS Feed"
-msgstr "RSSフィード"
+msgstr "RSS フィード"
 
 #: trac/ticket/query.py:827 trac/ticket/report.py:275 trac/ticket/report.py:568
 #: trac/ticket/web_ui.py:126
@@ -2744,7 +2743,7 @@ msgstr "レポートの実行に失敗しました: %(error)s"
 
 #: trac/ticket/report.py:574
 msgid "SQL Query"
-msgstr "SQLクエリ"
+msgstr "SQL クエリ"
 
 #: trac/ticket/report.py:598
 #, python-format
@@ -2754,7 +2753,7 @@ msgstr "以下の引数が見つかりません: %(args)s"
 #: trac/ticket/report.py:612
 #, python-format
 msgid "Report {%(num)s} has no SQL query."
-msgstr "レポート %(num)s はSQLクエリが定義されていません。"
+msgstr "レポート %(num)s は SQL クエリが定義されていません。"
 
 #: trac/ticket/report.py:642
 #, python-format
@@ -3199,7 +3198,7 @@ msgstr "%(duration)s前に完了 (%(date)s)"
 #: trac/ticket/templates/roadmap.html:47
 #, python-format
 msgid "[1:%(duration)s late] (%(date)s)"
-msgstr "[1:%(duration)s 遅延] (%(date)s)"
+msgstr "[1:%(duration)s遅延] (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:52
@@ -3402,7 +3401,7 @@ msgstr "詳細 ([1:WikiFormatting] が使用可能)"
 msgid ""
 "Query for Report: (can be either SQL or, if starting with [1:query:],\n"
 "              a [2:TracQuery] expression)"
-msgstr "レポートのクエリ: (SQL文または [1:query:] で始まる [2:TracQuery] が使用可能)"
+msgstr "レポートのクエリ: (SQL 文または [1:query:] で始まる [2:TracQuery] が使用可能)"
 
 #: trac/ticket/templates/report_edit.html:43
 msgid "Save report"
@@ -3781,7 +3780,7 @@ msgid ""
 "You may want to see the %(other_events)s from the Timeline or notify your"
 " Trac administrator about the error (detailed information was written to "
 "the log)."
-msgstr "タイムラインから%(other_events)sを参照してみるか、エラーをTrac管理者に連絡してください(エラーの詳細はログに出力されます)。"
+msgstr "タイムラインから%(other_events)sを参照してみるか、エラーを Trac 管理者に連絡してください(エラーの詳細はログに出力されます)。"
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -3818,43 +3817,43 @@ msgstr "[1:※] 詳しい使い方は [2:TracTimeline] を参照してくださ�
 #, python-format
 msgid "%(num)d year"
 msgid_plural "%(num)d years"
-msgstr[0] "%(num)d 年"
+msgstr[0] "%(num)d年"
 
 #: trac/util/datefmt.py:80
 #, python-format
 msgid "%(num)d month"
 msgid_plural "%(num)d months"
-msgstr[0] "%(num)d ヵ月"
+msgstr[0] "%(num)dヵ月"
 
 #: trac/util/datefmt.py:81
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
-msgstr[0] "%(num)d 週"
+msgstr[0] "%(num)d週"
 
 #: trac/util/datefmt.py:82
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] "%(num)d 日"
+msgstr[0] "%(num)d日"
 
 #: trac/util/datefmt.py:83
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] "%(num)d 時間"
+msgstr[0] "%(num)d時間"
 
 #: trac/util/datefmt.py:84
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
-msgstr[0] "%(num)d 分"
+msgstr[0] "%(num)d分"
 
 #: trac/util/datefmt.py:103
 #, python-format
 msgid "%(num)i second"
 msgid_plural "%(num)i seconds"
-msgstr[0] "%(num)i 秒"
+msgstr[0] "%(num)i秒"
 
 #: trac/util/datefmt.py:247
 #, python-format
@@ -3877,12 +3876,12 @@ msgstr "日付 \"%(date)s\" は正常な範囲にありません。存在する�
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr "%(total)d 件中 %(last)d 件目"
+msgstr "%(total)d件中%(last)d件目"
 
 #: trac/util/presentation.py:256
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr "%(total)d 件中 %(start)d - %(stop)d 件目"
+msgstr "%(total)d件中%(start)d件目～%(stop)d件目"
 
 #: trac/versioncontrol/admin.py:110
 msgid "Alias"
@@ -4021,7 +4020,7 @@ msgstr "リポジトリ '%(type)s' はサポートしていません"
 msgid ""
 "Can't synchronize with repository \"%(name)s\" (%(error)s). Look in the "
 "Trac log for more information."
-msgstr "リポジトリ \"%(name)s\" との同期ができません (%(error)s)。詳細は Trac log を参照してください"
+msgstr "リポジトリ \"%(name)s\" との同期ができません (%(error)s)。詳細は Trac のログを参照してください"
 
 #: trac/versioncontrol/api.py:350
 #, python-format
@@ -4077,8 +4076,8 @@ msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
-"サポートされていないバージョン管理システム "
-"\"%(name)s\":適切なコンポーネントを見つけることができません。対応するプラグインは、有効になっていますか？"
+"サポートされていないバージョン管理システム \"%(name)s\": "
+"適切なコンポーネントを見つけることができません。対応するプラグインは、有効になっていますか？ "
 
 #: trac/versioncontrol/api.py:666
 #, python-format
@@ -4112,27 +4111,27 @@ msgstr "'repository_dir' が変更されました。'trac-admin $ENV repository 
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
 msgid "Line %(lineno)d: Entry before first section header"
-msgstr "行%(lineno)d: 最初のセクションヘッダの前のエントリ"
+msgstr "行 %(lineno)d: 最初のセクションヘッダの前のエントリ"
 
 #: trac/versioncontrol/svn_authz.py:77
 #, python-format
 msgid "Line %(lineno)d: Invalid entry"
-msgstr "行%(lineno)d: 不正なエントリ"
+msgstr "行 %(lineno)d: 不正なエントリ"
 
 #: trac/versioncontrol/svn_fs.py:275
 #, python-format
 msgid "Subversion >= 1.0 required, found %(version)s"
-msgstr "Subversion 1.0以上が必要: Found %(version)s"
+msgstr "Subversion 1.0 以上が必要ですが、%(version)s を見つけました"
 
 #: trac/versioncontrol/svn_fs.py:330
 #, python-format
 msgid "%(path)s does not appear to be a Subversion repository."
-msgstr "%(path)s はSubversionのリポジトリではないみたいです。"
+msgstr "%(path)s は Subversion のリポジトリではないみたいです。"
 
 #: trac/versioncontrol/svn_fs.py:337
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
-msgstr "Subversionのリポジトリ %(path)s が開けません: %(svn_error)s"
+msgstr "Subversion のリポジトリ %(path)s が開けません: %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
@@ -4140,8 +4139,8 @@ msgid ""
 "Diff mismatch: Base is a %(oldnode)s (%(oldpath)s in revision %(oldrev)s)"
 " and Target is a %(newnode)s (%(newpath)s in revision %(newrev)s)."
 msgstr ""
-"不一致: 元の %(oldnode)s (%(oldpath)s リビジョン:%(oldrev)s)と対象の %(newnode)s "
-"(%(newpath)s リビジョン:%(newrev)s)."
+"不一致: 元の %(oldnode)s (%(oldpath)s リビジョン %(oldrev)s) と対象の %(newnode)s "
+"(%(newpath)s リビジョン %(newrev)s)。"
 
 #: trac/versioncontrol/svn_fs.py:766
 #, python-format
@@ -4150,7 +4149,7 @@ msgstr "svn blame の実行に失敗しました %(path)s: %(error)s"
 
 #: trac/versioncontrol/svn_prop.py:111
 msgid "No svn:externals configured in trac.ini"
-msgstr "trac.iniにsvn:externalsの設定がありません"
+msgstr "trac.ini に svn:externals の設定がありません"
 
 #: trac/versioncontrol/svn_prop.py:148
 msgid "merged"
@@ -4468,13 +4467,13 @@ msgstr "差分を表示する"
 #, python-format
 msgid "%(num)d diff"
 msgid_plural "%(num)d diffs"
-msgstr[0] "%(num)d 個の差分"
+msgstr[0] "%(num)d個の差分"
 
 #: trac/versioncontrol/templates/changeset.html:125
 #, python-format
 msgid "%(num)d prop"
 msgid_plural "%(num)d props"
-msgstr[0] "%(num)d 個のプロパティ"
+msgstr[0] "%(num)d個のプロパティ"
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
@@ -4482,7 +4481,7 @@ msgstr "前のバージョンをブラウザで表示する"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
-msgstr "1時間未満"
+msgstr "(1時間未満)"
 
 #: trac/versioncontrol/templates/changeset.html:140
 #, python-format
@@ -4510,31 +4509,31 @@ msgstr "(ファイルなし)"
 #, python-format
 msgid "%(num)d added"
 msgid_plural "%(num)d added"
-msgstr[0] "追加 %(num)d"
+msgstr[0] "%(num)d個の追加"
 
 #: trac/versioncontrol/templates/changeset.html:176
 #, python-format
 msgid "%(num)d deleted"
 msgid_plural "%(num)d deleted"
-msgstr[0] "削除 %(num)d"
+msgstr[0] "%(num)d個の削除"
 
 #: trac/versioncontrol/templates/changeset.html:177
 #, python-format
 msgid "%(num)d edited"
 msgid_plural "%(num)d edited"
-msgstr[0] "更新 %(num)d"
+msgstr[0] "%(num)d個の更新"
 
 #: trac/versioncontrol/templates/changeset.html:178
 #, python-format
 msgid "%(num)d copied"
 msgid_plural "%(num)d copied"
-msgstr[0] "コピー %(num)d"
+msgstr[0] "%(num)d個のコピー"
 
 #: trac/versioncontrol/templates/changeset.html:179
 #, python-format
 msgid "%(num)d moved"
 msgid_plural "%(num)d moved"
-msgstr[0] "移動 %(num)d"
+msgstr[0] "%(num)d個の移動"
 
 #: trac/versioncontrol/templates/changeset.html:185
 #: trac/versioncontrol/templates/revisionlog.txt:12
@@ -4838,12 +4837,12 @@ msgstr "更新履歴"
 
 #: trac/versioncontrol/web_ui/browser.py:472
 msgid "Repository URL"
-msgstr "リポジトリURL"
+msgstr "リポジトリ URL"
 
 #: trac/versioncontrol/web_ui/browser.py:586
 #: trac/versioncontrol/web_ui/changeset.py:362
 msgid "Zip Archive"
-msgstr "Zip書庫"
+msgstr "Zip 書庫"
 
 #: trac/versioncontrol/web_ui/browser.py:763
 msgid "Revision in which the line changed"
@@ -5007,12 +5006,12 @@ msgstr "検索"
 msgid ""
 "You can %(search)s in the repository history to see if that path existed "
 "but was later removed"
-msgstr "削除されたパスがあれば、 リポジトリの履歴から %(search)s して閲覧する事ができます。"
+msgstr "削除されたパスがあれば、リポジトリの履歴から %(search)s して閲覧する事ができます。"
 
 #: trac/web/api.py:236
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
-msgstr "不正なURLエンコーディング (%(path_info)r)"
+msgstr "不正な URL エンコーディング (%(path_info)r)"
 
 #: trac/web/api.py:474
 #, python-format
@@ -5073,7 +5072,7 @@ msgstr "Cookie のセキュリティ強化が有効になっています。フ�
 
 #: trac/web/main.py:229
 msgid "Do you have cookies enabled?"
-msgstr "Cookie は有効になっていますか?"
+msgstr "Cookie は有効になっていますか？"
 
 #: trac/web/main.py:230
 #, python-format
@@ -5100,7 +5099,7 @@ msgstr "現在ログインしていません。%(do_so)sからログインして
 msgid ""
 "Session '%(id)s' already exists.<br />Please choose a different session "
 "ID."
-msgstr "セッション '%(id)s' はすでに存在します。<br />別のセッションIDを入力してください。"
+msgstr "セッション '%(id)s' はすでに存在します。<br />別のセッション ID を入力してください。"
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
@@ -5108,7 +5107,7 @@ msgstr "セッション変更中のエラー:"
 
 #: trac/web/session.py:312
 msgid "No SID found"
-msgstr "SIDが見つかりません"
+msgstr "SID が見つかりません"
 
 #: trac/web/session.py:314
 msgid "SID"
@@ -5124,12 +5123,12 @@ msgstr "セッションはすでに存在します。セッションを重複さ
 
 #: trac/web/session.py:325
 msgid "Unable to set session attribute on a non-existent SID"
-msgstr "存在しないSIDに属性を設定することはできません"
+msgstr "存在しない SID に属性を設定することはできません"
 
 #: trac/web/session.py:438
 #, python-format
 msgid "Session id %(sid)s not found"
-msgstr "セッションID %(sid)s が見つかりません"
+msgstr "セッション ID %(sid)s が見つかりません"
 
 #: trac/wiki/admin.py:116
 #, python-format
@@ -5242,12 +5241,12 @@ msgstr "ヘルプ/ガイド"
 #: trac/wiki/web_ui.py:125
 #, python-format
 msgid "No version \"%(num)s\" for Wiki page \"%(name)s\""
-msgstr "Wikiページ \"%(name)s\" のバージョン \"%(num)s\" はありません"
+msgstr "Wiki ページ \"%(name)s\" のバージョン \"%(num)s\" はありません"
 
 #: trac/wiki/web_ui.py:190
 #, python-format
 msgid "The wiki page is too long (must be less than %(num)s characters)"
-msgstr "チケットの説明が大きすぎます (%(num)s 文字以下である必要があります)"
+msgstr "チケットの説明が大きすぎます (%(num)s文字以下である必要があります)"
 
 #: trac/wiki/web_ui.py:200
 #, python-format
@@ -5257,7 +5256,7 @@ msgstr "Wiki ページのフィールド '%(field)s' が不正です: %(message)
 #: trac/wiki/web_ui.py:204
 #, python-format
 msgid "Invalid Wiki page: %(message)s"
-msgstr "不正なWikiページです: %(message)s"
+msgstr "不正な Wiki ページです: %(message)s"
 
 #. TRANSLATOR: wiki page
 #: trac/wiki/web_ui.py:231
@@ -5363,7 +5362,7 @@ msgstr "このページの履歴"
 
 #: trac/wiki/web_ui.py:683
 msgid "Wiki changes"
-msgstr "Wikiページの更新"
+msgstr "Wiki ページの更新"
 
 #: trac/wiki/web_ui.py:712
 #, python-format
@@ -5519,7 +5518,7 @@ msgid ""
 "[1:Note:] See [2:WikiFormatting] and\n"
 "        [3:TracWiki] for help on editing wiki content."
 msgstr ""
-"[1:※] Wikiページの編集方法については [2:WikiFormatting] および\n"
+"[1:※] Wiki ページの編集方法については [2:WikiFormatting] および\n"
 "          [3:TracWiki] を参照して下さい。"
 
 #: trac/wiki/templates/wiki_edit_form.html:38
