@@ -520,12 +520,17 @@ def _dispatch_request(req, env, env_error):
         # See trac/web/api.py for the definition of HTTPException subclasses.
         if env:
             env.log.warn(exception_to_unicode(e))
-        title = _('Error')
-        if e.reason:
-            if title.lower() in e.reason.lower():
-                title = e.reason
-            else:
-                title = _('Error: %(message)s', message=e.reason)
+        try:
+            # We try to get localized error messages here, 
+            # but we should ignore secondary errors
+            title = _('Error')
+            if e.reason:
+                if title.lower() in e.reason.lower():
+                    title = e.reason
+                else:
+                    title = _('Error: %(message)s', message=e.reason)
+        except:
+            title = 'Error'
         # The message is based on the e.detail, which can be an Exception
         # object, but not a TracError one: when creating HTTPException,
         # a TracError.message is directly assigned to e.detail
