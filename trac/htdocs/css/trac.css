@@ -333,6 +333,7 @@ fieldset > legend.foldable :link, fieldset > legend.foldable :visited {
 /* Wiki */
 .wikipage { padding-left: 18px }
 .wikipage h1, .wikipage h2, .wikipage h3 { margin-left: -18px }
+.wikipage table h1, .wikipage table h2, .wikipage table h3 { margin-left: 0px }
 div.compact > p:first-child { margin-top: 0 }
 div.compact > p:last-child { margin-bottom: 0 }
 
