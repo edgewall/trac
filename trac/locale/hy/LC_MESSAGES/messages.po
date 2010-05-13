@@ -860,14 +860,14 @@ msgstr "%(name)s փլագինն արդեն տեղադրված է"
 #: trac/admin/web_ui.py:513
 msgid "The following component has been disabled:"
 msgid_plural "The following components have been disabled:"
-msgstr[0] "\"%(name)s\" բաղադրիչն ավելացված է։"
-msgstr[1] ""
+msgstr[0] "Հետևյալ բաղադրիչն ցույց է տրվել․"
+msgstr[1] "Հետևյալ բաղադրիչները ցույց են տրվել․"
 
 #: trac/admin/web_ui.py:518
 msgid "The following component has been enabled:"
 msgid_plural "The following components have been enabled:"
-msgstr[0] "Ընտրված բաղադրիչները ջնջված են։"
-msgstr[1] ""
+msgstr[0] "Հետևյալ բաղադրիչը ակտիվացված է․"
+msgstr[1] "Հետևյալ բաղադրիչները ակտիվացված են․"
 
 #: trac/admin/templates/admin.html:10
 msgid "Administration:"
@@ -1019,6 +1019,7 @@ msgid "Modify %(label_singular)s"
 msgstr "Փոփոխել %(label_singular)s"
 
 #: trac/admin/templates/admin_enums.html:33
+#, python-format
 msgid "Add %(label_singular)s"
 msgstr "Ավելացնել %(label_singular)s"
 
@@ -3615,8 +3616,8 @@ msgstr "ի պատասխան․"
 #: trac/ticket/templates/ticket.html:133
 msgid "follow-up:"
 msgid_plural "follow-ups:"
-msgstr[0] "հետևեք"
-msgstr[1] ""
+msgstr[0] "աշխատանք"
+msgstr[1] "աշխատանքներ"
 
 #: trac/ticket/templates/ticket.html:148
 #, python-format
@@ -4671,7 +4672,7 @@ msgstr "Տեղակայում․"
 msgid "File:"
 msgid_plural "Files:"
 msgstr[0] "Ֆայլ․"
-msgstr[1] ""
+msgstr[1] "Ֆայլեր․"
 
 #: trac/versioncontrol/templates/changeset.html:170
 msgid "(No files)"
