@@ -129,7 +129,7 @@ extract extraction:
 	python setup.py extract_messages
 
 update-%:
-	python setup.py update_catalog -l $(@:update-%=%)
+	python setup.py update_catalog -l $(*)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
@@ -139,7 +139,7 @@ update:
 endif
 
 compile-%:
-	python setup.py compile_catalog -l $(@:compile-%=%)
+	python setup.py compile_catalog -l $(*)
 
 ifdef locale
 compile: $(addprefix compile-,$(locale))
@@ -156,8 +156,7 @@ pre-check:
 
 check-%:
 	@echo -n "$(@): "
-	@msgfmt --check trac/locale/$(@:check-%=%)/LC_MESSAGES/messages.po && \
-	    echo OK
+	@msgfmt --check trac/locale/$(*)/LC_MESSAGES/messages.po && echo OK
 
 stats: pre-stats $(addprefix stats-,$(locales))
 
@@ -171,7 +170,7 @@ stats-pot:
 
 stats-%:
 	@echo -n "$(@): "
-	@msgfmt --statistics trac/locale/$(@:stats-%=%)/LC_MESSAGES/messages.po
+	@msgfmt --statistics trac/locale/$(*)/LC_MESSAGES/messages.po
 
 # ----------------------------------------------------------------------------
 #
