@@ -56,6 +56,9 @@ define HELP
   stats-pot           statistics for the messages.pot template file
   stats-xy            statistics for the xy locale only
 
+  summary-xy          display a summary for the xy locale xy
+                      (suitable for a commit message)
+
   [locale=...]        variable for selecting a set of locales
 
 endef
@@ -171,6 +174,19 @@ stats-pot:
 stats-%:
 	@echo -n "$(@): "
 	@msgfmt --statistics trac/locale/$(*)/LC_MESSAGES/messages.po
+
+summary-%:
+	@total=$$(LC_ALL=C \
+	    msgfmt --statistics trac/locale/messages.pot 2>&1 \
+            | tail -1 \
+            | sed -e 's/0 translated messages, \([0-9]*\) un.*/\1/'); \
+	trans=$$(LC_ALL=C \
+	    msgfmt --statistics trac/locale/$(*)/LC_MESSAGES/messages.po 2>&1 \
+	    | tail -1 \
+	    | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'); \
+	python -c "print 'l10n/$(*): translations updated (%0.0f%%)' \
+	           % ($${trans} * 100.0 / $${total})"
+
 
 # ----------------------------------------------------------------------------
 #
