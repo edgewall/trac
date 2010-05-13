@@ -1,13 +1,18 @@
+from datetime import datetime, timedelta
+import os.path
+from StringIO import StringIO
+import tempfile
+import shutil
+import unittest
+
 from trac import core
+from trac.attachment import Attachment
 from trac.core import TracError, implements
 from trac.resource import ResourceNotFound
 from trac.ticket.model import Ticket, Component, Milestone, Priority, Type, Version
 from trac.ticket.api import IMilestoneChangeListener, ITicketChangeListener
 from trac.test import EnvironmentStub
 from trac.util.datefmt import from_utimestamp, to_utimestamp, utc
-
-from datetime import datetime, timedelta
-import unittest
 
 
 class TestTicketChangeListener(core.Component):
@@ -726,9 +731,12 @@ class MilestoneTestCase(unittest.TestCase):
 
     def setUp(self):
         self.env = EnvironmentStub(default_data=True)
+        self.env.path = os.path.join(tempfile.gettempdir(), 'trac-tempenv')
+        os.mkdir(self.env.path)
         self.db = self.env.get_db_cnx()
 
     def tearDown(self):
+        shutil.rmtree(self.env.path)
         self.env.reset_db()
 
     def _create_milestone(self, **values):
@@ -869,6 +877,27 @@ class MilestoneTestCase(unittest.TestCase):
         self.assertEqual('Testing', Ticket(self.env, tkt1.id)['milestone'])
         self.assertEqual('Testing', Ticket(self.env, tkt2.id)['milestone'])
 
+    def test_rename_milestone(self):
+        milestone = Milestone(self.env)
+        milestone.name = 'OldName'
+        milestone.insert()
+        
+        attachment = Attachment(self.env, 'milestone', 'OldName')
+        attachment.insert('foo.txt', StringIO(), 0, 1)
+        
+        milestone = Milestone(self.env, 'OldName')
+        milestone.name = 'NewName'
+        milestone.update()
+        
+        self.assertRaises(ResourceNotFound, Milestone, self.env, 'OldName')
+        self.assertEqual('NewName', Milestone(self.env, 'NewName').name)
+
+        attachments = Attachment.select(self.env, 'milestone', 'OldName')
+        self.assertRaises(StopIteration, attachments.next)
+        attachments = Attachment.select(self.env, 'milestone', 'NewName')
+        self.assertEqual('foo.txt', attachments.next().filename)
+        self.assertRaises(StopIteration, attachments.next)
+        
     def test_select_milestones(self):
         cursor = self.db.cursor()
         cursor.executemany("INSERT INTO milestone (name) VALUES (%s)",

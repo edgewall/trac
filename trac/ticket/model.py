@@ -1004,18 +1004,27 @@ class Milestone(object):
         @self.env.with_transaction(db)
         def do_update(db):
             cursor = db.cursor()
+            old_name = self._old['name']
             self.env.log.info('Updating milestone "%s"' % self.name)
             cursor.execute("""
                 UPDATE milestone
-                SET name=%s,due=%s, completed=%s,description=%s WHERE name=%s
+                SET name=%s,due=%s,completed=%s,description=%s WHERE name=%s
                 """, (self.name, to_utimestamp(self.due),
                       to_utimestamp(self.completed),
-                      self.description, self._old['name']))
-            self.env.log.info('Updating milestone field of all tickets '
-                              'associated with milestone "%s"' % self.name)
-            cursor.execute("UPDATE ticket SET milestone=%s WHERE milestone=%s",
-                           (self.name, self._old['name']))
-            TicketSystem(self.env).reset_ticket_fields()
+                      self.description, old_name))
+
+            if self.name != old_name:
+                # Update milestone field in tickets
+                self.env.log.info('Updating milestone field of all tickets '
+                                  'associated with milestone "%s"' % self.name)
+                cursor.execute("""
+                    UPDATE ticket SET milestone=%s WHERE milestone=%s
+                    """, (self.name, old_name))
+                TicketSystem(self.env).reset_ticket_fields()
+
+                # Reparent attachments
+                Attachment.reparent_all(self.env, 'milestone', old_name,
+                                        'milestone', self.name)
 
         old_values = dict((k, v) for k, v in self._old.iteritems()
                           if getattr(self, k) != v)
