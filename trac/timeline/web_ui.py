@@ -28,6 +28,7 @@ from trac.core import *
 from trac.mimeview import Context
 from trac.perm import IPermissionRequestor
 from trac.timeline.api import ITimelineEventProvider
+from trac.util import as_int
 from trac.util.datefmt import format_date, format_datetime, parse_date, \
                               to_utimestamp, utc, pretty_timedelta
 from trac.util.text import exception_to_unicode, to_unicode
@@ -88,7 +89,7 @@ class TimelineModule(Component):
         req.perm.assert_permission('TIMELINE_VIEW')
 
         format = req.args.get('format')
-        maxrows = int(req.args.get('max', 0))
+        maxrows = int(req.args.get('max', format == 'rss' and 50 or 0))
 
         # Parse the from date and adjust the timestamp to the last second of
         # the day
@@ -111,19 +112,21 @@ class TimelineModule(Component):
                 precision = None
         fromdate = fromdate.replace(hour=23, minute=59, second=59,
                                     microsecond=999999)
-        try:
-            daysback = int(req.args.get('daysback', ''))
-        except ValueError:
-            try:
-                daysback = int(req.session.get('timeline.daysback', ''))
-            except ValueError:
-                daysback = self.default_daysback
+
+        daysback = as_int(req.args.get('daysback'),
+                          format == 'rss' and 90 or None)
+        if daysback is None:
+            daysback = as_int(req.session.get('timeline.daysback'), None)
+        if daysback is None:
+            daysback = self.default_daysback
         daysback = max(0, daysback)
         if self.max_daysback >= 0:
             daysback = min(self.max_daysback, daysback)
-        authors = req.args.get('authors',
-                               req.session.get('timeline.authors', ''))
-        authors = authors.strip()
+
+        authors = req.args.get('authors')
+        if authors is None and format != 'rss':
+            authors = req.session.get('timeline.authors')
+        authors = (authors or '').strip()
 
         data = {'fromdate': fromdate, 'daysback': daysback,
                 'authors': authors,
@@ -137,15 +140,13 @@ class TimelineModule(Component):
         for event_provider in self.event_providers:
             available_filters += event_provider.get_timeline_filters(req) or []
 
-        filters = []
         # check the request or session for enabled filters, or use default
-        for test in (lambda f: f[0] in req.args,
-                     lambda f: req.session.get('timeline.filter.%s' % f[0],
-                                               '') == '1',
-                     lambda f: len(f) == 2 or f[2]):
-            if filters:
-                break
-            filters = [f[0] for f in available_filters if test(f)]
+        filters = [f[0] for f in available_filters if f[0] in req.args]
+        if not filters and format != 'rss':
+            filters = [f[0] for f in available_filters
+                       if req.session.get('timeline.filter.' + f[0]) == '1']
+        if not filters:
+            filters = [f[0] for f in available_filters if len(f) == 2 or f[2]]
 
         # save the results of submitting the timeline form to the session
         if 'update' in req.args:
