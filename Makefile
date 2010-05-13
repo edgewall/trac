@@ -52,11 +52,12 @@ define HELP
   check               verify all the messages.po files
   check-xy            verify the catalog for the xy locale only
 
-  stats               translation statistics for all catalogs
-  stats-pot           statistics for the messages.pot template file
-  stats-xy            statistics for the xy locale only
+  stats               detailed translation statistics for all catalogs
+  stats-pot           total messages in the messages.pot template file
+  stats-xy            translated, fuzzy, untranslated for the xy locale only
 
-  summary-xy          display a summary for the xy locale xy
+  summary             display percent translated for all catalogs
+  summary-xy          display percent translated for the xy locale only
                       (suitable for a commit message)
 
   [locale=...]        variable for selecting a set of locales
@@ -126,7 +127,10 @@ else
     locales := $(subst /LC_MESSAGES/messages.po,,$(locales))
 endif
 
-.PHONY: extract extraction update compile check stats
+messages.po = trac/locale/$(*)/LC_MESSAGES/messages.po
+messages.pot = trac/locale/messages.pot
+
+.PHONY: extract extraction update compile check stats summary total-messages
 
 extract extraction:
 	python setup.py extract_messages
@@ -169,23 +173,27 @@ pre-stats: stats-pot
 stats-pot:
 	@echo "translation statistics for messages.pot: "
 	@echo -n "$(@): "
-	@msgfmt --statistics trac/locale/messages.pot
+	@msgfmt --statistics $(messages.pot)
 
 stats-%:
 	@echo -n "$(@): "
-	@msgfmt --statistics trac/locale/$(*)/LC_MESSAGES/messages.po
+	@msgfmt --statistics $(messages.po)
 
-summary-%:
-	@total=$$(LC_ALL=C \
-	    msgfmt --statistics trac/locale/messages.pot 2>&1 \
+summary: total-messages $(addprefix summary-,$(locales))
+
+total-messages:
+	$(eval MESSAGES_TOTAL := $(shell LC_ALL=C \
+	    msgfmt --statistics $(messages.pot) 2>&1 \
             | tail -1 \
-            | sed -e 's/0 translated messages, \([0-9]*\) un.*/\1/'); \
-	trans=$$(LC_ALL=C \
-	    msgfmt --statistics trac/locale/$(*)/LC_MESSAGES/messages.po 2>&1 \
+            | sed -e 's/0 translated messages, \([0-9]*\) un.*/\1/'))
+
+summary-%: total-messages
+	@trans=$$(LC_ALL=C \
+	    msgfmt --statistics $(messages.po) 2>&1 \
 	    | tail -1 \
 	    | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'); \
 	python -c "print 'l10n/$(*): translations updated (%0.0f%%)' \
-	           % ($${trans} * 100.0 / $${total})"
+	           % ($${trans} * 100.0 / $(MESSAGES_TOTAL))"
 
 
 # ----------------------------------------------------------------------------
