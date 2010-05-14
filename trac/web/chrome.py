@@ -455,7 +455,8 @@ class Chrome(Component):
         dirs = []
         for provider in self.template_providers:
             for dir in [os.path.normpath(dir[1]) for dir
-                        in provider.get_htdocs_dirs() if dir[0] == prefix]:
+                        in provider.get_htdocs_dirs() or []
+                        if dir[0] == prefix]:
                 dirs.append(dir)
                 path = os.path.normpath(os.path.join(dir, filename))
                 assert os.path.commonprefix([dir, path]) == dir
@@ -497,7 +498,7 @@ class Chrome(Component):
         """Return a list of the names of all known templates directories."""
         dirs = []
         for provider in self.template_providers:
-            dirs += provider.get_templates_dirs()
+            dirs.extend(provider.get_templates_dirs() or [])
         return dirs
 
     def prepare_request(self, req, handler=None):
@@ -546,7 +547,7 @@ class Chrome(Component):
         for contributor in self.navigation_contributors:
             try:
                 for category, name, text in \
-                        contributor.get_navigation_items(req):
+                        contributor.get_navigation_items(req) or []:
                     category_section = self.config[category]
                     if category_section.getbool(name, True):
                         # the navigation item is enabled (this is the default)

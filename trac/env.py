@@ -712,7 +712,7 @@ class EnvironmentAdmin(Component):
         from trac.web.chrome import Chrome
         printout(_("Copying resources from:"))
         for provider in Chrome(self.env).template_providers:
-            paths = list(provider.get_htdocs_dirs())
+            paths = list(provider.get_htdocs_dirs() or [])
             if not len(paths):
                 continue
             printout('  %s.%s' % (provider.__module__, 
