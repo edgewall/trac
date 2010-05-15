@@ -21,18 +21,28 @@ from trac.util.concurrency import ThreadLocal
 _transaction_local = ThreadLocal(db=None)
 
 def with_transaction(env, db=None):
-    """Transaction decorator for simple use-once transactions.
+    """Function decorator to emulate a context manager for database
+    transactions.
     
     >>> def api_method(p1, p2):
     >>>     result[0] = value1
     >>>     @with_transaction(env)
-    >>>     def implementation_method(db):
+    >>>     def implementation(db):
     >>>         # implementation
     >>>         result[0] = value2
     >>>     return result[0]
     
-    Nested transactions are supported, and a COMMIT will only be issued when
-    the outermost transaction block in a thread exits.
+    In this example, the `implementation()` function is called automatically
+    right after its definition, with a database connection as an argument.
+    If the function completes, a COMMIT is issued on the connection. If the
+    function raises an exception, a ROLLBACK is issued and the exception is
+    re-raised. Nested transactions are supported, and a COMMIT will only be
+    issued when the outermost transaction block in a thread exits.
+    
+    This mechanism is intended to replace the current practice of getting a
+    database connection with `env.get_db_cnx()` and issuing an explicit commit
+    or rollback, for mutating database accesses. Its automatic handling of
+    commit, rollback and nesting makes it much more robust.
     
     This decorator will be replaced by a context manager once python 2.4
     support is dropped.
