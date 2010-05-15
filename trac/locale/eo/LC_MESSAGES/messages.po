@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-21 21:32+0200\n"
-"PO-Revision-Date: 2010-05-15 08:00+0200\n"
-"Last-Translator: Wolfram Diestel <diestel@steloj.de>\n"
+"PO-Revision-Date: 2010-05-15 17:55+0200\n"
+"Last-Translator: Wolfram DIESTEL <diestel@steloj.de>\n"
 "Language-Team: eo <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
@@ -294,7 +294,6 @@ msgid "File '%(name)s' exists"
 msgstr "Dosiero '%(name)s' ekzistas"
 
 #: trac/config.py:39
-#, 
 msgid "Configuration Error"
 msgstr "Agordoeraro"
 
@@ -381,7 +380,7 @@ msgstr "La sekvantaj eraroj okazis dum kopiado de la medio:"
 msgid "Hotcopy done."
 msgstr "Varmkopio preta."
 
-#: trac/env.py:785 trac/admin/api.py:125
+#: trac/env.py:785 trac/admin/api.py:130
 msgid "Invalid arguments"
 msgstr "Nevalidaj argumentoj"
 
@@ -499,7 +498,7 @@ msgstr "Ĉiuj majusklaj nomoj estas rezervitaj kiel permesoj"
 msgid "%(name)s at version %(version)s"
 msgstr "%(name)s ĉe versio %(version)s"
 
-#: trac/admin/api.py:129 trac/admin/console.py:254
+#: trac/admin/api.py:134 trac/admin/console.py:254
 msgid "Command not found"
 msgstr "Komando ne troviĝis"
 
@@ -1151,7 +1150,6 @@ msgid "Subject"
 msgstr "Subjekto"
 
 #: trac/admin/templates/admin_perms.html:92
-#, 
 msgid ""
 "Note that [1:Subject] or [2:Group] names can't be all upper-case,\n"
 "      as that is reserved for permission names."
@@ -1327,7 +1325,6 @@ msgid "Line"
 msgstr "Linio"
 
 #: trac/mimeview/api.py:1080
-#, 
 msgid "Line numbers"
 msgstr "Lininumeroj"
 
@@ -1486,7 +1483,6 @@ msgstr ""
 "            [1:%(formatted)s]."
 
 #: trac/prefs/templates/prefs_datetime.html:47
-#, 
 msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT).[1:]\n"
@@ -1677,7 +1673,6 @@ msgid "python powered"
 msgstr "movata per Python"
 
 #: trac/templates/about.html:44
-#, 
 msgid ""
 "Please visit the Trac open source project:\n"
 "        [1:http://trac.edgewall.org/]"
@@ -1962,7 +1957,6 @@ msgid "Modified"
 msgstr "Ŝanĝita"
 
 #: trac/templates/error.html:64
-#, 
 msgid "==== How to Reproduce ===="
 msgstr "==== Kiel reprodukti ===="
 
@@ -2213,7 +2207,6 @@ msgid "Download in other formats:"
 msgstr "Elŝutu en aliaj formatoj:"
 
 #: trac/templates/list_of_attachments.html:19
-#, 
 msgid "View attachment"
 msgstr "Montru alpendaĵon"
 
@@ -2258,14 +2251,12 @@ msgstr ""
 "%(size)s bitokojn."
 
 #: trac/templates/preview_file.html:22
-#, 
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
 msgstr ""
 "[1:HTML-antaŭrigardo ne estas disponebla], ĉar neniu antaŭrigardilo povis"
 " trakti ĝin."
 
 #: trac/templates/preview_file.html:26
-#, 
 msgid "Try [1:downloading] the file instead."
 msgstr "Provu [1:elŝuti] la dosieron anstataŭe."
 
@@ -2913,7 +2904,6 @@ msgid "You must provide a name for the milestone."
 msgstr "Vi donu nomon al la rikolto."
 
 #: trac/ticket/web_ui.py:55
-#, 
 msgid "Invalid Ticket"
 msgstr "Nevalida avizo"
 
@@ -3151,12 +3141,10 @@ msgid "no"
 msgstr "ne"
 
 #: trac/ticket/web_ui.py:1577
-#, 
 msgid "set"
 msgstr "metu"
 
 #: trac/ticket/web_ui.py:1577
-#, 
 msgid "unset"
 msgstr "malmetu"
 
@@ -3422,12 +3410,10 @@ msgstr ""
 "        je helpo pri uzado de la serĉon."
 
 #: trac/ticket/templates/query_results.html:35
-#, 
 msgid "(ascending)"
 msgstr "(kreske)"
 
 #: trac/ticket/templates/query_results.html:35
-#, 
 msgid "(descending)"
 msgstr "(malkreske)"
 
@@ -3599,7 +3585,6 @@ msgid "Ticket #"
 msgstr "Avizo #"
 
 #: trac/ticket/templates/ticket.html:91
-#, 
 msgid "at [1:Initial Version]"
 msgstr "je [1:Origina versio]"
 
@@ -3749,7 +3734,6 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
-#, 
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr "Retadreso kaj salutnomo povas konserviĝi en la [1:preferoj]."
 
@@ -3894,7 +3878,6 @@ msgstr "%(date)s en la kroniko"
 
 #. TRANSLATOR: ...want to see the 'other kinds of events' from... (link)
 #: trac/timeline/web_ui.py:348
-#, 
 msgid "other kinds of events"
 msgstr "aliaj eventospecoj"
 
@@ -3966,8 +3949,8 @@ msgstr[1] "%(num)d monatoj"
 #, python-format
 msgid "%(num)d week"
 msgid_plural "%(num)d weeks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)d semajno"
+msgstr[1] "%(num)d semajnoj"
 
 #: trac/util/datefmt.py:82
 #, python-format
@@ -4510,7 +4493,6 @@ msgstr "Elektu padon kaj reviziojn por diferencigo"
 #: trac/versioncontrol/templates/changeset.html:58
 #: trac/versioncontrol/templates/changeset.html:68
 #: trac/versioncontrol/templates/changeset.html:70
-#, 
 msgid "Show full changeset"
 msgstr "Montru kompletan ŝanĝaron"
 
@@ -4537,7 +4519,6 @@ msgstr ""
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
-#, 
 msgid "Show revision log"
 msgstr "Montru revizio-protokolon"
 
@@ -4794,12 +4775,10 @@ msgstr ""
 "        je helpo pri la uzado de la diferencilo."
 
 #: trac/versioncontrol/templates/dir_entries.html:11
-#, 
 msgid "View Directory"
 msgstr "Montru dosierujon"
 
 #: trac/versioncontrol/templates/dir_entries.html:11
-#, 
 msgid "View File"
 msgstr "Montru dosieron"
 
@@ -5118,7 +5097,6 @@ msgstr "Montru eltiron de la diferencoj %(range)s ene de %(path)s"
 
 #. TRANSLATOR: 'latest' (revision)
 #: trac/versioncontrol/web_ui/changeset.py:789
-#, 
 msgid "latest"
 msgstr "lasta"
 
@@ -5249,7 +5227,6 @@ msgid "installation documentation"
 msgstr "instaldokumentaro"
 
 #: trac/web/auth.py:139
-#, 
 msgid "Configuring Authentication"
 msgstr "Agordo de salutado"
 
@@ -5258,9 +5235,7 @@ msgstr "Agordo de salutado"
 msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
-msgstr ""
-"Salutadoinformoj ne estas disponeblaj. Rigardu la dokumenton "
-"%(inst_doc)s."
+msgstr "Salutadoinformoj ne estas disponeblaj. Rigardu la dokumenton %(inst_doc)s."
 
 #: trac/web/auth.py:150
 #, python-format
@@ -5337,7 +5312,6 @@ msgid "Email"
 msgstr "Retpoŝto"
 
 #: trac/web/session.py:318
-#, 
 msgid "Session already exists. Unable to add a duplicate session."
 msgstr "Seanco jam ekzistas. Ne eblas duobligi seancon."
 
@@ -5677,7 +5651,6 @@ msgid "Someone else has modified that page since you started your edits."
 msgstr "Iu alia intertempe ŝanĝis tiun ĉi paĝon."
 
 #: trac/wiki/templates/wiki_edit.html:76
-#, 
 msgid ""
 "[1:If you save right away, you risk to revert those changes]\n"
 "        (highlighted below as deletions)."
