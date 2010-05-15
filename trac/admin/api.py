@@ -62,13 +62,18 @@ class IAdminCommandProvider(Interface):
         """Return a list of available admin commands.
         
         The items returned by this function must be tuples of the form
-        `(command, params, help, complete, execute)`, where `command` is the
-        command and sub-command name, `params` is a string describing the
-        command parameters and `help` is the help text.
+        `(command, args, help, complete, execute)`, where `command` contains
+        the space-separated command and sub-command names, `args` is a string
+        describing the command arguments and `help` is the help text. The
+        first paragraph of the help text is taken as a short help, shown in the
+        list of commands.
         
-        `complete` is called to auto-complete the command arguments, and
-        `execute` is called for executing the command. The latter is called
-        with positional arguments consisting of the command parameters.
+        `complete` is called to auto-complete the command arguments, with the
+        current list of arguments as its only argument. It should return a list
+        of relevant values for the last argument in the list.
+        
+        `execute` is called to execute the command, with the command arguments
+        passed as positional arguments.
         """
 
 
