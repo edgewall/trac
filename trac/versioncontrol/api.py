@@ -170,7 +170,7 @@ class DbRepositoryProvider(Component):
             return self.repository_attrs
             
     def _do_add(self, reponame, dir, type_=None):
-        self.add_repository(reponame, dir, type_)
+        self.add_repository(reponame, os.path.abspath(dir), type_)
     
     def _do_alias(self, reponame, target):
         self.add_alias(reponame, target)
@@ -181,6 +181,8 @@ class DbRepositoryProvider(Component):
     def _do_set(self, reponame, key, value):
         if key not in self.repository_attrs:
             raise AdminCommandError(_('Invalid key "%(key)s"', key=key))
+        if key == 'dir':
+            value = os.path.abspath(value)
         self.modify_repository(reponame, {key: value})
         if not reponame:
             reponame = '(default)'
@@ -195,6 +197,8 @@ class DbRepositoryProvider(Component):
     
     def add_repository(self, reponame, dir, type_=None):
         """Add a repository."""
+        if not os.path.isabs(dir):
+            raise TracError(_("The repository directory must be absolute"))
         if is_default(reponame):
             reponame = ''
         rm = RepositoryManager(self.env)
@@ -256,6 +260,9 @@ class DbRepositoryProvider(Component):
                     continue
                 if k in ('alias', 'name') and is_default(v):
                     v = ''
+                if k == 'dir' and not os.path.isabs(v):
+                    raise TracError(_("The repository directory must be "
+                                      "absolute"))
                 cursor.execute("UPDATE repository SET value=%s "
                                "WHERE id=%s AND name=%s", (v, id, k))
                 cursor.execute("SELECT value FROM repository "
@@ -588,7 +595,8 @@ class RepositoryManager(Component):
         if repos:
             base = repos.get_base()
         else:
-            repositories = self.get_repositories_by_dir(reponame)
+            dir = os.path.abspath(reponame)
+            repositories = self.get_repositories_by_dir(dir)
             if repositories:
                 base = None
             else:
