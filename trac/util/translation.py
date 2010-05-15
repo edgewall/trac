@@ -39,7 +39,7 @@ def gettext_noop(string, **kwargs):
 def dgettext_noop(domain, string, **kwargs):
     return gettext_noop(string, **kwargs)
 
-N_ = gettext_noop
+N_ = _noop = lambda string: string
 
 def ngettext_noop(singular, plural, num, **kwargs):
     string = (plural, singular)[num == 1]
@@ -79,7 +79,7 @@ def domain_functions(domain, *symbols):
     _functions = {
       'gettext': gettext_noop,
       '_': gettext_noop,
-      'N_': gettext_noop,
+      'N_': _noop,
       'ngettext': ngettext_noop,
       'tgettext': tgettext_noop,
       'tag_': tgettext_noop,
@@ -277,7 +277,7 @@ try:
           }
         def wrapdomain(symbol):
             if symbol == 'N_':
-                return gettext_noop
+                return _noop
             return lambda *args, **kw: _functions[symbol](domain, *args, **kw)
         return [wrapdomain(s) for s in symbols]
 
