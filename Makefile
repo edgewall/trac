@@ -125,12 +125,13 @@ else
     locales = $(wildcard trac/locale/*/LC_MESSAGES/messages.po)
     locales := $(subst trac/locale/,,$(locales))
     locales := $(subst /LC_MESSAGES/messages.po,,$(locales))
+    locales := $(sort $(locales))
 endif
 
 messages.po = trac/locale/$(*)/LC_MESSAGES/messages.po
 messages.pot = trac/locale/messages.pot
 
-.PHONY: extract extraction update compile check stats summary total-messages
+.PHONY: extract extraction update compile check stats summary
 
 extract extraction:
 	python setup.py extract_messages
@@ -179,21 +180,28 @@ stats-%:
 	@echo -n "$(@): "
 	@msgfmt --statistics $(messages.po)
 
-summary: total-messages $(addprefix summary-,$(locales))
+summary: $(addprefix summary-,$(locales))
 
-total-messages:
-	$(eval MESSAGES_TOTAL := $(shell LC_ALL=C \
-	    msgfmt --statistics $(messages.pot) 2>&1 \
-            | tail -1 \
-            | sed -e 's/0 translated messages, \([0-9]*\) un.*/\1/'))
+define untranslated-sh
+LC_ALL=C msgfmt --statistics $(1) 2>&1 \
+  | tail -1 \
+  | sed -e 's/0 translated messages, \([0-9]*\) un.*/\1/'
+endef
 
-summary-%: total-messages
-	@trans=$$(LC_ALL=C \
-	    msgfmt --statistics $(messages.po) 2>&1 \
-	    | tail -1 \
-	    | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'); \
-	python -c "print 'l10n/$(*): translations updated (%0.0f%%)' \
-	           % ($${trans} * 100.0 / $(MESSAGES_TOTAL))"
+define translated-sh
+LC_ALL=C msgfmt --statistics $(1) 2>&1 \
+    | tail -1 \
+    | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'
+endef
+
+MESSAGES_TOTAL = \
+    $(eval MESSAGES_TOTAL := $(shell $(call untranslated-sh,$(messages.pot))))\
+    $(MESSAGES_TOTAL)
+
+summary-%:
+	@python -c "print 'l10n/$(*): translations updated (%0.0f%%)' \
+	    % ($(shell $(call translated-sh,$(messages.po))) * 100.0 \
+	       / $(MESSAGES_TOTAL))"
 
 
 # ----------------------------------------------------------------------------
