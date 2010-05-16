@@ -235,8 +235,12 @@ clean-coverage:
 	coverage erase
 	@rm -fr htmlcov
 
-test-coverage: 
-	FIGLEAF=coverage coverage trac/test.py
+ifdef test
+test-coverage:
+	coverage run $(test)
+else
+test-coverage: unit-test-coverage functional-test-coverage
+endif
 
 unit-test-coverage:
 	coverage run -a $(coverageopts) trac/test.py --skip-functional-tests
