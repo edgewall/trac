@@ -7,7 +7,7 @@
       xmlns:xi="http://www.w3.org/2001/XInclude">
   <xi:include href="layout.html" />
   <head>
-    <title>${title or 'Error'}</title>
+    <title>${title or _('Error')}</title>
     <link rel="stylesheet" type="text/css" href="${chrome.htdocs_location}css/code.css"/>
     <script py:if="frames" type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
@@ -45,12 +45,11 @@
     /*]]>*/</script>
     <script type="text/javascript">/*<![CDATA[*/
       jQuery(document).ready(function($) {
-        var desc = $("form.newticket textarea");
-        desc.text(desc.eq(0).text()
-                  .replace(/==== System Information ====\s+/m,
-                           "User Agent was: `" + navigator.userAgent + "`\n\n$&")
-                  .replace(/\|\|\s+==== Enabled Plugins ====/m,
-                           "||\n|| '''`jQuery`''' || `" + $().jquery + "` $&"));
+        $("form.newticket textarea").each(function() {
+          $(this).text($(this).text()
+                         .replace(/#USER_AGENT#/m, navigator.userAgent)
+                         .replace(/#JQUERY#/m, $().jquery));
+        });
       });
     /*]]>*/</script>
   </head>
@@ -58,35 +57,10 @@
   <py:def function="create_ticket(url=None)">
     <input type="hidden" name="reporter" value="${get_reporter_id(req)}" />
     <input py:if="url == trac.homepage.strip('/')" type="hidden" name="version"
-           value="${'dev' in trac.version and 'devel' or trac.version}" />
+           value="${'dev' in trac.version and trac.version.split('-', 1)[0] or trac.version}" />
     <input type="hidden" name="summary" value="$message" />
     <textarea name="description" rows="3" cols="10">
-==== How to Reproduce ====
-
-<i18n:msg params="request, path">
-While doing a $req.method operation on `$req.path_info`, Trac issued an internal error.
-
-''(please provide additional details here)''
-</i18n:msg>
-<py:if test="req.args">
-Request parameters:
-{{{
-${pprint(req.args)}
-}}}
-</py:if>
-
-==== System Information ====
-<py:for each="k, v in get_systeminfo()">
-|| '''`$k`''' || ${'`%s`' % (v and v.replace('\n', '` [[br]] `'))} ||</py:for>
-
-==== Enabled Plugins ====
-<py:for each="plugin in plugins">
-|| '''`$plugin.name`''' || `${plugin.version or _('N/A')}` ||</py:for>
-
-==== Python Traceback ====
-{{{
-${to_unicode(traceback)}
-}}}</textarea>
+${url and description_en or description}</textarea>
     <span class="inlinebuttons">
       <input type="submit" name="create" value="${_('Create')}" />
     </span>

@@ -23,6 +23,7 @@ import gc
 import locale
 import os
 import pkg_resources
+from pprint import pformat, pprint
 import sys
 
 try:
@@ -47,7 +48,7 @@ from trac.util.compat import any, partial
 from trac.util.concurrency import threading
 from trac.util.datefmt import format_datetime, http_date, localtz, timezone
 from trac.util.text import exception_to_unicode, shorten_line, to_unicode
-from trac.util.translation import tag_, _
+from trac.util.translation import safefmt, tag_, _
 from trac.web.api import *
 from trac.web.chrome import Chrome
 from trac.web.clearsilver import HDFWrapper
@@ -246,7 +247,6 @@ class RequestDispatcher(Component):
                         if 'hdfdump' in req.args:
                             req.perm.require('TRAC_ADMIN')
                             # debugging helper - no need to render first
-                            from pprint import pprint
                             out = StringIO()
                             pprint(data, out)
                             req.send(out.getvalue(), 'text/plain')
@@ -554,60 +554,104 @@ def _dispatch_request(req, env, env_error):
             pass
 
     except Exception, e:
-        if env:
-            env.log.error("Internal Server Error: %s", 
-                          exception_to_unicode(e, traceback=True))
+        send_internal_error(env, req, sys.exc_info())
 
-        exc_info = sys.exc_info()
-        try:
-            message = "%s: %s" % (e.__class__.__name__, to_unicode(e))
-            traceback = get_last_traceback()
-
-            frames, plugins, faulty_plugins = [], [], []
-            tracker = 'http://trac.edgewall.org'
-            th = 'http://trac-hacks.org'
-            has_admin = False
-            try:
-                has_admin = 'TRAC_ADMIN' in req.perm
-            except Exception, e:
-                pass
-            if has_admin and not isinstance(e, MemoryError):
-                # Collect frame and plugin information
-                frames = get_frame_info(exc_info[2])
-                if env:
-                    plugins = [p for p in get_plugin_info(env)
-                               if any(c['enabled']
-                                      for m in p['modules'].itervalues()
-                                      for c in m['components'].itervalues())]
-                    match_plugins_to_frames(plugins, frames)
-                
-                    # Identify the tracker where the bug should be reported
-                    faulty_plugins = [p for p in plugins if 'frame_idx' in p]
-                    faulty_plugins.sort(key=lambda p: p['frame_idx'])
-                    if faulty_plugins:
-                        info = faulty_plugins[0]['info']
-                        if 'trac' in info:
-                            tracker = info['trac']
-                        elif info.get('home_page', '').startswith(th):
-                            tracker = th
-
-            data = {'title': 'Internal Error',
-                    'type': 'internal', 'message': message,
-                    'traceback': traceback, 'frames': frames,
-                    'shorten_line': shorten_line,
-                    'plugins': plugins, 'faulty_plugins': faulty_plugins,
-                    'tracker': tracker}
-
-            try:
-                req.send_error(exc_info, status=500, env=env, data=data)
-            except RequestDone:
-                pass
-
-        finally:
-            del exc_info
     return resp
 
 
+def send_internal_error(env, req, exc_info):
+    if env:
+        env.log.error("Internal Server Error: %s", 
+                      exception_to_unicode(exc_info[1], traceback=True))
+    message = exception_to_unicode(exc_info[1])
+    traceback = get_last_traceback()
+
+    frames, plugins, faulty_plugins = [], [], []
+    tracker = 'http://trac.edgewall.org'
+    th = 'http://trac-hacks.org'
+    has_admin = False
+    try:
+        has_admin = 'TRAC_ADMIN' in req.perm
+    except Exception:
+        pass
+    if has_admin and not isinstance(exc_info[1], MemoryError):
+        # Collect frame and plugin information
+        frames = get_frame_info(exc_info[2])
+        if env:
+            plugins = [p for p in get_plugin_info(env)
+                       if any(c['enabled']
+                              for m in p['modules'].itervalues()
+                              for c in m['components'].itervalues())]
+            match_plugins_to_frames(plugins, frames)
+        
+            # Identify the tracker where the bug should be reported
+            faulty_plugins = [p for p in plugins if 'frame_idx' in p]
+            faulty_plugins.sort(key=lambda p: p['frame_idx'])
+            if faulty_plugins:
+                info = faulty_plugins[0]['info']
+                if 'trac' in info:
+                    tracker = info['trac']
+                elif info.get('home_page', '').startswith(th):
+                    tracker = th
+
+    def get_description(_):
+        if env and has_admin:
+            sys_info = "".join("|| '''`%s`''' || `%s` ||\n"
+                               % (k, v.replace('\n', '` [[br]] `'))
+                               for k, v in env.get_systeminfo())
+            sys_info += "|| '''`jQuery`''' || `#JQUERY#` ||\n"
+            enabled_plugins = "".join("|| '''`%s`''' || `%s` ||\n"
+                                      % (p['name'], p['version'] or _('N/A'))
+                                      for p in plugins)
+        else:
+            sys_info = _("''System information not available''\n")
+            enabled_plugins = _("''Plugin information not available''\n")
+        return _("""\
+==== How to Reproduce ====
+
+While doing a %(method)s operation on `%(path_info)s`, Trac issued an internal error.
+
+''(please provide additional details here)''
+
+Request parameters:
+{{{
+%(req_args)s
+}}}
+
+User agent: `#USER_AGENT#`
+
+==== System Information ====
+%(sys_info)s
+==== Enabled Plugins ====
+%(enabled_plugins)s
+==== Python Traceback ====
+{{{
+%(traceback)s}}}""",
+            method=req.method, path_info=req.path_info,
+            req_args=pformat(req.args), sys_info=sys_info,
+            enabled_plugins=enabled_plugins, traceback=to_unicode(traceback))
+
+    # Generate the description once in English, once in the current locale
+    description_en = get_description(lambda s, **kw: safefmt(s, kw))
+    try:
+        description = get_description(_)
+    except Exception:
+        description = description_en
+
+    data = {'title': 'Internal Error',
+            'type': 'internal', 'message': message,
+            'traceback': traceback, 'frames': frames,
+            'shorten_line': shorten_line,
+            'plugins': plugins, 'faulty_plugins': faulty_plugins,
+            'tracker': tracker,
+            'description': description, 'description_en': description_en}
+
+    try:
+        req.send_error(exc_info, status=500, env=env, data=data)
+    except RequestDone:
+        pass
+
+    
 def send_project_index(environ, start_response, parent_dir=None,
                        env_paths=None):
     req = Request(environ, start_response)
