@@ -21,6 +21,7 @@ import os
 from trac.core import *
 from trac.config import Option
 from trac.perm import PermissionSystem, IPermissionPolicy
+from trac.util.text import to_unicode
 
 ConfigObj = None
 try:
@@ -228,7 +229,7 @@ class AuthzPolicy(Component):
             valid_users = ['*', 'anonymous']
         for resource_section in [a for a in self.authz.sections
                                  if a != 'groups']:
-            resource_glob = resource_section
+            resource_glob = to_unicode(resource_section)
             if '@' not in resource_glob:
                 resource_glob += '@*'
 
