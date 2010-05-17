@@ -354,8 +354,9 @@ class ChangesetModule(Component):
         if chgset:
             diff_params = 'new=%s' % new
         else:
-            diff_params = unicode_urlencode({'new_path': new_path, 'new': new,
-                                             'old_path': old_path, 'old': old})
+            diff_params = unicode_urlencode({
+                'new_path': full_new_path, 'new': new,
+                'old_path': full_old_path, 'old': old})
         add_link(req, 'alternate', '?format=diff&' + diff_params,
                  _('Unified Diff'), 'text/plain', 'diff')
         add_link(req, 'alternate', '?format=zip&' + diff_params,
