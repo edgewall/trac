@@ -19,8 +19,8 @@ import logging
 import logging.handlers
 import sys
 
-def logger_factory(logtype='syslog', logfile=None, level='WARNING',
-                   logid='Trac', format=None):
+def logger_handler_factory(logtype='syslog', logfile=None, level='WARNING',
+                           logid='Trac', format=None):
     logger = logging.getLogger(logid)
     logtype = logtype.lower()
     if logtype == 'file':
@@ -63,4 +63,8 @@ def logger_factory(logtype='syslog', logfile=None, level='WARNING',
     # Remember our handler so that we can remove it later
     logger._trac_handler = hdlr 
 
-    return logger
+    return logger, hdlr
+
+def logger_factory(logtype='syslog', logfile=None, level='WARNING',
+                   logid='Trac', format=None):
+    return logger_handler_factory(logtype, logfile, level, logid, format)[0]

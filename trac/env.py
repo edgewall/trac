@@ -351,12 +351,11 @@ class Environment(Component, ComponentManager):
         """Close the environment."""
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
-        if tid is None and hasattr(self.log, '_trac_handler'):
-            hdlr = self.log._trac_handler
-            self.log.removeHandler(hdlr)
-            hdlr.flush()
-            hdlr.close()
-            del self.log._trac_handler
+        if tid is None:
+            self.log.removeHandler(self._log_handler)
+            self._log_handler.flush()
+            self._log_handler.close()
+            del self._log_handler
 
     def get_repository(self, reponame=None, authname=None):
         """Return the version control repository with the given name, or the
@@ -454,7 +453,7 @@ class Environment(Component, ComponentManager):
 
     def setup_log(self):
         """Initialize the logging sub-system."""
-        from trac.log import logger_factory
+        from trac.log import logger_handler_factory
         logtype = self.log_type
         logfile = self.log_file
         if logtype == 'file' and not os.path.isabs(logfile):
@@ -465,8 +464,8 @@ class Environment(Component, ComponentManager):
                      .replace('%(path)s', self.path) \
                      .replace('%(basename)s', os.path.basename(self.path)) \
                      .replace('%(project)s', self.project_name)
-        self.log = logger_factory(logtype, logfile, self.log_level, self.path,
-                                  format=format)
+        self.log, self._log_handler = logger_handler_factory(
+            logtype, logfile, self.log_level, self.path, format=format)
 
     def get_known_users(self, cnx=None):
         """Generator that yields information about all known users, i.e. users
