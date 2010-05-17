@@ -171,8 +171,8 @@ class AuthzPolicy(Component):
         return os.path.isabs(f) and f or os.path.join(self.env.path, f)
 
     def parse_authz(self):
-        self.env.log.debug('Parsing authz security policy %s' %
-                           self.get_authz_file())
+        self.log.debug('Parsing authz security policy %s',
+                       self.get_authz_file())
         self.authz = ConfigObj(self.get_authz_file())
         groups = {}
         for group, users in self.authz.get('groups', {}).iteritems():
@@ -206,8 +206,9 @@ class AuthzPolicy(Component):
             # ticket, ticket:1, ticket:1@10. This code naively collapses all
             # subsets of the parent resource into one. eg. ticket:1@10
             parent = resource.parent
-            while parent and (resource.realm == parent.realm or \
-                    (resource.realm == parent.realm and resource.id == parent.id)):
+            while parent and (resource.realm == parent.realm or
+                              (resource.realm == parent.realm and
+                               resource.id == parent.id)):
                 parent = parent.parent
             if parent:
                 parent = flatten(parent)
@@ -236,8 +237,8 @@ class AuthzPolicy(Component):
                 for who, permissions in section.iteritems():
                     if who in valid_users or \
                             who in self.groups_by_user.get(username, []):
-                        self.env.log.debug('%s matched section %s for user %s'
-                                % (resource_key, resource_glob, username))
+                        self.log.debug('%s matched section %s for user %s',
+                                       resource_key, resource_glob, username)
                         if isinstance(permissions, basestring):
                             return [permissions]
                         else:
