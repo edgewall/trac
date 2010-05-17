@@ -601,9 +601,6 @@ class Formatter(object):
             else:
                 return olabel or otarget
         else:
-            if label == target and not fullmatch.group('label'):
-                # add ns for Inter* links when nothing is set
-                label = ns+':'+label
             return self._make_intertrac_link(ns, target, label) or \
                    self._make_interwiki_link(ns, target, label) or \
                    escape(match)

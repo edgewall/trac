@@ -459,9 +459,9 @@ th:'wiki:"my test spaced wiki3"'
 <a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki1%22" title="wiki:&#34;my test spaced wiki1&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki1"</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki2" title="wiki:my test spaced wiki2 in Trac Hacks"><span class="icon"> </span>th:"wiki:my test spaced wiki2"</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki3%22" title="wiki:&#34;my test spaced wiki3&#34; in Trac Hacks"><span class="icon"> </span>th:'wiki:"my test spaced wiki3"'</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki4%22" title="wiki:&#34;my test spaced wiki4&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki4"</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki5%22" title="wiki:&#34;my test spaced wiki5&#34; in Trac Hacks"><span class="icon"> </span>th:wiki:"my test spaced wiki5"</a>
-<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki6" title="wiki:my test spaced wiki6 in Trac Hacks"><span class="icon"> </span>th:wiki:my test spaced wiki6</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki4%22" title="wiki:&#34;my test spaced wiki4&#34; in Trac Hacks"><span class="icon"> </span>wiki:"my test spaced wiki4"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki5%22" title="wiki:&#34;my test spaced wiki5&#34; in Trac Hacks"><span class="icon"> </span>wiki:"my test spaced wiki5"</a>
+<a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki6" title="wiki:my test spaced wiki6 in Trac Hacks"><span class="icon"> </span>wiki:my test spaced wiki6</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki7%22" title="wiki:&#34;my test spaced wiki7&#34; in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 7</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3Amy%20test%20spaced%20wiki8" title="wiki:my test spaced wiki8 in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 8</a>
 <a class="ext-link" href="http://trac-hacks.org/intertrac/wiki%3A%22my%20test%20spaced%20wiki9%22" title="wiki:&#34;my test spaced wiki9&#34; in Trac Hacks"><span class="icon"> </span>My Test Spaced Wiki 9</a>
@@ -550,8 +550,8 @@ i.e. <a class="mail-link" href="mailto:cboos@neuf.fr"><span class="icon"> </spa
 <a class="text resolver" href="/stuff/Template">Template</a>
 </p>
 <p>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>trac:wiki:Pipe (computing)</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>trac:wiki:Pipe (computing)</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>wiki:Pipe (computing)</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/wiki%3APipe%20%28computing%29" title="wiki:Pipe (computing) in Trac's Trac"><span class="icon"> </span>wiki:Pipe (computing)</a>
 </p>
 <p>
 <a class="wiki" href="/wiki/WikiStart">b</a> (might change to relative)

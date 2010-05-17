@@ -143,7 +143,7 @@ http://www.rawlink.org/, http://www.another.rawlink.org
 <a class="ext-link" href="http://www.rawlink.org/"><span class="icon"> </span>http://www.rawlink.org/</a>, <a class="ext-link" href="http://www.another.rawlink.org"><span class="icon"> </span>http://www.another.rawlink.org</a>
 <a class="ext-link" href="http://www.wikicreole.org/"><span class="icon"> </span>Visit the WikiCreole website</a>
 <a class="missing wiki" href="/wiki/Weird%20Stuff" rel="nofollow">**Weird** //Stuff//?</a>
-<a class="ext-link" href="http://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in Trac's Trac"><span class="icon"> </span>Trac:WikiFamily</a>
+<a class="ext-link" href="http://trac.edgewall.org/intertrac/WikiFamily" title="WikiFamily in Trac's Trac"><span class="icon"> </span>WikiFamily</a>
 </p>
 ============================================================
 
