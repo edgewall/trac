@@ -50,8 +50,9 @@ class PatchRenderer(Component):
         content = content_to_unicode(self.env, content, mimetype)
         changes = self._diff_to_hdf(content.splitlines(),
                                     Mimeview(self.env).tab_width)
-        if not changes:
-            raise TracError(_('Invalid unified diff content'))
+        if not changes or not any(c['diffs'] for c in changes):
+            self.log.warning('Invalid unified diff content')
+            return
         data = {'diff': {'style': 'inline'}, 'no_id': True,
                 'changes': changes, 'longcol': 'File', 'shortcol': ''}
 
