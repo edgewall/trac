@@ -347,12 +347,11 @@ class Environment(Component, ComponentManager):
         See `trac.db.util.get_read_db` for detailed documentation."""
         return get_read_db(self)
 
-    def shutdown(self, tid=None, except_logging=False):
+    def shutdown(self, tid=None):
         """Close the environment."""
         RepositoryManager(self).shutdown(tid)
         DatabaseManager(self).shutdown(tid)
-        if tid is None and not except_logging and \
-                hasattr(self.log, '_trac_handler'):
+        if tid is None and hasattr(self.log, '_trac_handler'):
             hdlr = self.log._trac_handler
             self.log.removeHandler(hdlr)
             hdlr.flush()
@@ -534,7 +533,7 @@ class Environment(Component, ComponentManager):
                           participant.__class__.__name__)
             with_transaction(self)(participant.upgrade_environment)
             # Database schema may have changed, so close all connections
-            self.shutdown(except_logging=True)
+            DatabaseManager(self).shutdown()
         return True
 
     def _get_href(self):
