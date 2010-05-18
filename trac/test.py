@@ -257,8 +257,8 @@ class EnvironmentStub(Environment):
             self.config.set('components', config_key, 'enabled')
 
         # -- logging
-        from trac.log import logger_factory
-        self.log = logger_factory('test')
+        from trac.log import logger_handler_factory
+        self.log, self._log_handler = logger_handler_factory('test')
 
         # -- database
         self.dburi = get_dburi()
