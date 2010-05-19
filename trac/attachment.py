@@ -140,16 +140,18 @@ class Attachment(object):
         if not db:
             db = self.env.get_db_cnx()
         cursor = db.cursor()
-        cursor.execute("SELECT filename,description,size,time,author,ipnr "
-                       "FROM attachment WHERE type=%s AND id=%s "
-                       "AND filename=%s ORDER BY time",
-                       (self.parent_realm, unicode(self.parent_id), filename))
+        cursor.execute("""
+            SELECT filename,description,size,time,author,ipnr FROM attachment
+            WHERE type=%s AND id=%s AND filename=%s
+            ORDER BY time
+            """, (self.parent_realm, unicode(self.parent_id), filename))
         row = cursor.fetchone()
         cursor.close()
         if not row:
             self.filename = filename
             raise ResourceNotFound(_("Attachment '%(title)s' does not exist.",
-                                     title=self.title), _('Invalid Attachment'))
+                                     title=self.title),
+                                   _('Invalid Attachment'))
         self.filename = row[0]
         self.description = row[1]
         self.size = row[2] and int(row[2]) or 0
@@ -652,12 +654,12 @@ class AttachmentModule(Component):
             for field, message in manipulator.validate_attachment(req,
                                                                   attachment):
                 if field:
-                    raise InvalidAttachment(_('Attachment field %(field)s is '
-                                              'invalid: %(message)s',
-                                              field=field, message=message))
+                    raise InvalidAttachment(
+                        _('Attachment field %(field)s is invalid: %(message)s',
+                          field=field, message=message))
                 else:
-                    raise InvalidAttachment(_('Invalid attachment: %(message)s',
-                                              message=message))
+                    raise InvalidAttachment(
+                        _('Invalid attachment: %(message)s', message=message))
 
         if req.args.get('replace'):
             try:
@@ -886,7 +888,8 @@ class AttachmentAdmin(Component):
                """Attach a file to a resource
                
                The resource is identified by its realm and identifier. The
-               attachment will be named according to the base name of the file.""",
+               attachment will be named according to the base name of the file.
+               """,
                self._complete_add, self._do_add)
         yield ('attachment remove', '<realm:id> <name>',
                """Remove an attachment from a resource
