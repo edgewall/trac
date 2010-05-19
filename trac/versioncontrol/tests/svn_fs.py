@@ -33,13 +33,17 @@ except:
 from trac.log import logger_factory
 from trac.test import EnvironmentStub, TestSetup
 from trac.core import TracError
+from trac.resource import Resource, resource_exists
+from trac.util.concurrency import get_thread_id
 from trac.util.datefmt import utc
-from trac.versioncontrol import Changeset, Node, NoSuchChangeset
+from trac.versioncontrol import DbRepositoryProvider, Changeset, Node, \
+                                NoSuchChangeset
 from trac.versioncontrol.svn_fs import SvnCachedRepository, \
                                        SubversionRepository
 from trac.versioncontrol import svn_fs
 
 REPOS_PATH = os.path.join(tempfile.gettempdir(), 'trac-svnrepos')
+REPOS_NAME = 'repo'
 
 HEAD = 22
 TETE = 21
@@ -89,6 +93,17 @@ class SubversionRepositoryTestSetup(TestSetup):
 
 class NormalTests(object):
 
+    def test_resource_exists(self):
+        repos = Resource('repository', REPOS_NAME)
+        self.assertEqual(True, resource_exists(self.env, repos))
+        self.assertEqual(False, resource_exists(self.env, repos(id='xxx')))
+        node = repos.child('source', u'tête')
+        self.assertEqual(True, resource_exists(self.env, node))
+        self.assertEqual(False, resource_exists(self.env, node(id='xxx')))
+        cset = repos.child('changeset', HEAD)
+        self.assertEqual(True, resource_exists(self.env, cset))
+        self.assertEqual(False, resource_exists(self.env, cset(id=123456)))
+                         
     def test_repos_normalize_path(self):
         self.assertEqual('/', self.repos.normalize_path('/'))
         self.assertEqual('/', self.repos.normalize_path(''))
@@ -825,35 +840,30 @@ class AnotherNonSelfContainedScopedTests(object):
 
 # -- Test cases for SubversionRepository
 
-def get_direct_svn_fs_repository(path):
-    return SubversionRepository(path, {'name': 'repo', 'id': 1},
-                                logger_factory('test'))
-        
-
 class SubversionRepositoryTestCase(unittest.TestCase):
     
     def setUp(self):
-        self.repos = get_direct_svn_fs_repository(self.path)
+        self.env = EnvironmentStub()
+        repositories = self.env.config['repositories']
+        DbRepositoryProvider(self.env).add_repository(REPOS_NAME, self.path,
+                                                      'direct-svnfs')
+        self.repos = self.env.get_repository(REPOS_NAME)
 
     def tearDown(self):
-        self.repos = None
-
+        # needed to avoid issue with 'WindowsError: The process cannot access
+        # the file ... being used by another process: ...\rep-cache.db'
+        self.env.shutdown(get_thread_id())
 
 
 # -- Test cases for SvnCachedRepository
-
-def get_cached_repository(env, path):
-    fs_repos = get_direct_svn_fs_repository(path)
-    repos = SvnCachedRepository(env, fs_repos, fs_repos.log)
-    repos.has_linear_changesets = True
-    return repos
-
 
 class SvnCachedRepositoryTestCase(unittest.TestCase):
     
     def setUp(self):
         self.env = EnvironmentStub()
-        self.repos = get_cached_repository(self.env, self.path)
+        DbRepositoryProvider(self.env).add_repository(REPOS_NAME, self.path,
+                                                      'svn')
+        self.repos = self.env.get_repository(REPOS_NAME)
         self.repos.sync()
 
     def tearDown(self):

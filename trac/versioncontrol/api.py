@@ -388,6 +388,29 @@ class RepositoryManager(Component):
         elif resource.realm == 'repository':
             return href.source(resource.id or None)
 
+    def resource_exists(self, resource):
+        if resource.realm == 'repository':
+            reponame = resource.id
+        else:
+            reponame = resource.parent.id
+        repos = self.env.get_repository(reponame)
+        if not repos:
+            return False
+        if resource.realm == 'changeset':
+            try:
+                repos.get_changeset(resource.id)
+                return True
+            except NoSuchChangeset:
+                return False
+        elif resource.realm == 'source':
+            try:
+                repos.get_node(resource.id, resource.version)
+                return True
+            except NoSuchNode:
+                return False
+        elif resource.realm == 'repository':
+            return True
+
     # IRepositoryProvider methods
 
     def get_repositories(self):

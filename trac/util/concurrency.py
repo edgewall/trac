@@ -24,3 +24,6 @@ class ThreadLocal(threading.local):
     def __init__(self, **kwargs):
         threading.local.__init__(self)
         self.__dict__.update(kwargs)
+
+def get_thread_id():
+    return threading._get_ident()
