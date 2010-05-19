@@ -192,7 +192,7 @@ msgstr "Bilagor till %(parent)s"
 #: trac/attachment.py:615
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
-msgstr "%(parent)s existerar inte, bilagan kan ej bigogas"
+msgstr "%(parent)s existerar inte, bilagan kan ej bifogas"
 
 #: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:425
 #: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
