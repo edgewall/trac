@@ -595,6 +595,13 @@ class AttachmentModule(Component):
             return _("Attachments of %(parent)s",
                      parent=get_resource_name(self.env, resource.parent))
 
+    def resource_exists(self, resource):
+        try:
+            attachment = Attachment(self.env, resource)
+            return os.path.exists(attachment.path)
+        except ResourceNotFound:
+            return False
+
     # Internal methods
 
     def _do_save(self, req, attachment):
@@ -976,3 +983,4 @@ class AttachmentAdmin(Component):
                     output.close()
         finally:
             input.close()
+
