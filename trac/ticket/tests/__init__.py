@@ -18,6 +18,7 @@ def suite():
     suite.addTest(roadmap.suite())
     suite.addTest(doctest.DocTestSuite(trac.ticket.api))
     suite.addTest(doctest.DocTestSuite(trac.ticket.report))
+    suite.addTest(doctest.DocTestSuite(trac.ticket.roadmap))
     return suite
 
 if __name__ == '__main__':

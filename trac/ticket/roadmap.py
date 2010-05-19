@@ -848,6 +848,26 @@ class MilestoneModule(Component):
         else:
             return desc
 
+    def resource_exists(self, resource):
+        """
+        >>> from trac.test import EnvironmentStub
+        >>> env = EnvironmentStub()
+        
+        >>> m1 = Milestone(env)
+        >>> m1.name = 'M1'
+        >>> m1.insert()
+        
+        >>> MilestoneModule(env).resource_exists(Resource('milestone', 'M1'))
+        True
+        >>> MilestoneModule(env).resource_exists(Resource('milestone', 'M2'))
+        False
+        """
+        db = self.env.get_read_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT name FROM milestone WHERE name=%s",
+                       (resource.id,))
+        return bool(cursor.fetchall())
+
     # ISearchSource methods
 
     def get_search_filters(self, req):
