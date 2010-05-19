@@ -169,8 +169,8 @@ class SQLiteConnector(Component):
         if not have_pysqlite:
             self.error = _("Cannot load Python bindings for SQLite")
         elif sqlite_version >= 30303:
-            if sqlite.version_info < (1, 0, 7):
-                self.error = _("Need at least PySqlite 1.0.7 or higher")
+            if sqlite.version_info < (1, 1, 7):
+                self.error = _("Need at least PySqlite 1.1.7 or higher")
             elif sqlite.version_info[0] == 2 and \
                     sqlite.version_info < (2, 0, 7):
                 self.error = _("Need at least PySqlite 2.0.7 or higher")
