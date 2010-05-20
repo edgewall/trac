@@ -310,8 +310,11 @@ class BrowserModule(Component):
             mode, path = match.groups()
             if mode == 'export':
                 if path and '/' in path:
-                    _, rev, path = path.split('/', 2)
-                    req.args['rev'] = rev
+                    path_elts = path.split('/', 2)
+                    if len(path_elts) != 3:
+                        return False
+                    path = path_elts[2]
+                    req.args['rev'] = path_elts[1]
                     req.args['format'] = 'raw'
             elif mode == 'file':
                 req.redirect(req.href.browser(path, rev=req.args.get('rev'),
