@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-15 09:47+0200\n"
-"PO-Revision-Date: 2010-05-16 13:31+0200\n"
+"PO-Revision-Date: 2010-05-20 10:33+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr_FR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -134,20 +134,20 @@ msgstr "Supprimer le commentaire"
 msgid "About Trac"
 msgstr "À propos de Trac"
 
-#: trac/attachment.py:151
+#: trac/attachment.py:152
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "La pièce jointe « %(title)s » n'existe pas"
 
-#: trac/attachment.py:152
+#: trac/attachment.py:154
 msgid "Invalid Attachment"
 msgstr "Pièce jointe non valide"
 
-#: trac/attachment.py:192
+#: trac/attachment.py:194
 msgid "Could not delete attachment"
 msgstr "Impossible de supprimer la pièce jointe"
 
-#: trac/attachment.py:208
+#: trac/attachment.py:210
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
@@ -156,74 +156,79 @@ msgstr ""
 "Impossible de réattacher la pièce jointe « %(att)s » car elle existe déjà"
 " dans %(realm)s:%(id)s"
 
-#: trac/attachment.py:227
+#: trac/attachment.py:229
 #, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr "Impossible de réattacher la pièce jointe %(name)s"
 
-#: trac/attachment.py:344
+#: trac/attachment.py:346
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "Pièce jointe « %(filename)s » introuvable"
 
-#: trac/attachment.py:418
+#: trac/attachment.py:420
 msgid "Bad request"
 msgstr "Requête non valide"
 
-#: trac/attachment.py:435
+#: trac/attachment.py:437
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "Retour à %(parent)s"
 
-#: trac/attachment.py:528
+#: trac/attachment.py:530
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "« %(attachment)s » attaché à « %(resource)s »"
 
-#: trac/attachment.py:585
+#: trac/attachment.py:587
 #, python-format
 msgid "Unparented attachment %(id)s"
 msgstr "La pièce jointe %(id)s n'a pas de point d'attache"
 
-#: trac/attachment.py:593
+#: trac/attachment.py:595
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "Pièce jointe « %(id)s » de %(parent)s"
 
-#: trac/attachment.py:596
+#: trac/attachment.py:598
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "Pièces jointes à %(parent)s"
 
-#: trac/attachment.py:609 trac/attachment.py:632 trac/admin/web_ui.py:425
+#: trac/attachment.py:615
+#, python-format
+msgid "%(parent)s doesn't exist, can't create attachment"
+msgstr "%(parent)s n'existe pas, vous ne pouvez y joindre une pièce."
+
+#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:425
 #: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
 msgid "No file uploaded"
 msgstr "Aucun fichier envoyé"
 
-#: trac/attachment.py:617
+#: trac/attachment.py:630
 msgid "Can't upload empty file"
 msgstr "Impossible d'envoyer un fichier vide"
 
-#: trac/attachment.py:622
+#: trac/attachment.py:635
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "La taille maximale d'une pièce jointe est de %(num)s octets"
 
-#: trac/attachment.py:623
+#: trac/attachment.py:636
 msgid "Upload failed"
 msgstr "L'envoi a echoué"
 
-#: trac/attachment.py:644
+#: trac/attachment.py:658
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "Le champ %(field)s de la pièce jointe n'est pas valide : %(message)s"
 
-#: trac/attachment.py:648
+#: trac/attachment.py:662
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "Pièce jointe non valide : %(message)s"
 
-#: trac/attachment.py:659
+#: trac/attachment.py:672
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -235,21 +240,21 @@ msgstr ""
 "Remplacer celles d'autres utilisateurs nécessite la permission "
 "ATTACHMENT_DELETE."
 
-#: trac/attachment.py:691
+#: trac/attachment.py:704
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (suppression)"
 
-#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:643
+#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:643
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Texte brut"
 
-#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:649
+#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:649
 msgid "Original Format"
 msgstr "Format original"
 
-#: trac/attachment.py:800 trac/attachment.py:806
+#: trac/attachment.py:813 trac/attachment.py:819
 #: trac/templates/list_of_attachments.html:20
 #: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
@@ -257,12 +262,12 @@ msgstr "Format original"
 msgid "Download"
 msgstr "Télécharger"
 
-#: trac/attachment.py:900
+#: trac/attachment.py:914
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "Identifiant de resource non valide « %(id)s »"
 
-#: trac/attachment.py:936 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:950 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
@@ -274,26 +279,26 @@ msgstr "Identifiant de resource non valide « %(id)s »"
 msgid "Name"
 msgstr "Nom"
 
-#: trac/attachment.py:936
+#: trac/attachment.py:950
 msgid "Size"
 msgstr "Taille"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:30
+#: trac/attachment.py:950 trac/templates/history_view.html:30
 #: trac/ticket/templates/ticket.html:361
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr "Auteur"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:29
+#: trac/attachment.py:950 trac/templates/history_view.html:29
 msgid "Date"
 msgstr "Date"
 
-#: trac/attachment.py:937 trac/templates/attachment.html:93
+#: trac/attachment.py:951 trac/templates/attachment.html:93
 #: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "Description"
 
-#: trac/attachment.py:962 trac/wiki/admin.py:104
+#: trac/attachment.py:976 trac/wiki/admin.py:104
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "Le fichier « %(name)s » existe déjà"
@@ -335,18 +340,18 @@ msgstr ""
 "En savoir plus sur le projet Trac :<br /> <a "
 "href=\"http://trac.edgewall.org/\">http://trac.edgewall.org/</a>"
 
-#: trac/env.py:584
+#: trac/env.py:582
 msgid "Database newer than Trac version"
 msgstr ""
 "La version de la base de données est plus récente que la version de Trac "
 "utilisée"
 
-#: trac/env.py:601
+#: trac/env.py:599
 #, python-format
 msgid "No upgrade module for version %(num)i (%(version)s.py)"
 msgstr "Pas de module de mise à jour pour la version %(num)i (%(version)s.py)"
 
-#: trac/env.py:647
+#: trac/env.py:645
 msgid ""
 "Missing environment variable \"TRAC_ENV\". Trac requires this variable to"
 " point to a valid Trac environment."
@@ -354,7 +359,7 @@ msgstr ""
 "La variable d'environnement « TRAC_ENV » est manquante. Trac a besoin de "
 "cette variable pour pointer sur un environnement Trac valide."
 
-#: trac/env.py:679
+#: trac/env.py:677
 #, python-format
 msgid ""
 "The Trac Environment needs to be upgraded.\n"
@@ -365,43 +370,43 @@ msgstr ""
 "\n"
 "Exécutez la commande « trac-admin %(path)s upgrade »"
 
-#: trac/env.py:713
+#: trac/env.py:711
 msgid "Copying resources from:"
 msgstr "Copie des resources depuis :"
 
-#: trac/env.py:729
+#: trac/env.py:727
 msgid "Creating scripts."
 msgstr "Création des scripts."
 
-#: trac/env.py:744
+#: trac/env.py:742
 #, python-format
 msgid "hotcopy can't overwrite existing '%(dest)s'"
 msgstr "la copie à chaud ne peut pas écraser la précédente « %(dest)s »"
 
-#: trac/env.py:754
+#: trac/env.py:752
 #, python-format
 msgid "Hotcopying %(src)s to %(dst)s ..."
 msgstr "Copie à chaud the %(src)s vers %(dst)s ..."
 
-#: trac/env.py:769
+#: trac/env.py:767
 msgid "The following errors happened while copying the environment:"
 msgstr ""
 "Les erreurs suivantes sont survenues au cours de la copie de \n"
 "l'environnement :"
 
-#: trac/env.py:780
+#: trac/env.py:778
 msgid "Hotcopy done."
 msgstr "Copie à chaud terminée."
 
-#: trac/env.py:785 trac/admin/api.py:130
+#: trac/env.py:783 trac/admin/api.py:130
 msgid "Invalid arguments"
 msgstr "Paramètres non valides"
 
-#: trac/env.py:788
+#: trac/env.py:786
 msgid "Database is up to date, no upgrade necessary."
 msgstr "La base de données est à jour (aucune mise à jour nécessaire)."
 
-#: trac/env.py:796
+#: trac/env.py:794
 #, python-format
 msgid ""
 "Backup failed with '%(msg)s'.\n"
@@ -411,7 +416,7 @@ msgstr ""
 "Utilisez « --no-backup » pour effectuer une mise à jour sans faire de "
 "copie de sauvegarde."
 
-#: trac/env.py:810
+#: trac/env.py:808
 msgid ""
 "Warning: the wiki-macros directory in the environment is non-empty, but "
 "Trac\n"
@@ -422,7 +427,7 @@ msgstr ""
 "ne prends plus en comple les extensions qui s'y trouvent. Vous pouvez "
 "supprimer ce répertoire manuellement."
 
-#: trac/env.py:821
+#: trac/env.py:819
 #, python-format
 msgid ""
 "Error while removing wiki-macros: %(err)s\n"
@@ -434,7 +439,7 @@ msgstr ""
 "Trac ne prends plus en comple les extensions qui s'y trouvent. Vous "
 "pouvez supprimer ce répertoire manuellement."
 
-#: trac/env.py:823
+#: trac/env.py:821
 #, python-format
 msgid ""
 "Upgrade done.\n"
@@ -513,7 +518,7 @@ msgstr "Actions disponibles :"
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Les caractères majuscules sont réservés aux noms de permissions"
 
-#: trac/resource.py:326
+#: trac/resource.py:336
 #, python-format
 msgid "%(name)s at version %(version)s"
 msgstr "%(name)s à la version %(version)s"
@@ -1084,7 +1089,7 @@ msgstr ""
 " [1:log] sous-répertoire du projet ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
-#: trac/ticket/roadmap.py:855
+#: trac/ticket/roadmap.py:875
 msgid "Milestones"
 msgstr "Jalons"
 
@@ -1328,21 +1333,22 @@ msgstr "Impossible de charger les bindings Python pour PostgreSQL"
 msgid "Cannot load Python bindings for SQLite"
 msgstr "Impossible de charger les bindings Python pour SQLite"
 
-#: trac/db/sqlite_backend.py:158
-msgid "Need at least PySqlite 2.0.7 or higher"
-msgstr "La version 2.0.7 ou plus récente de PySqlite est requise"
+#: trac/db/sqlite_backend.py:157 trac/db/sqlite_backend.py:161
+#, python-format
+msgid "Need at least PySqlite %(version)s or higher"
+msgstr "La version %(version)s ou plus récente de PySqlite est requise"
 
-#: trac/db/sqlite_backend.py:182
+#: trac/db/sqlite_backend.py:186
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "Base de données déjà existante au chemin %(path)s"
 
-#: trac/db/sqlite_backend.py:242
+#: trac/db/sqlite_backend.py:246
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "Le base de données « %(path)s » n'existe pas."
 
-#: trac/db/sqlite_backend.py:251
+#: trac/db/sqlite_backend.py:255
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -1374,21 +1380,17 @@ msgstr "Ligne"
 msgid "Line numbers"
 msgstr "Numéros de lignes"
 
-#: trac/mimeview/patch.py:54
-msgid "Invalid unified diff content"
-msgstr "Le contenu n'est pas conforme au format diff unifié"
-
-#: trac/mimeview/patch.py:171
+#: trac/mimeview/patch.py:172
 #, python-format
 msgid "new file %(new)s"
 msgstr "nouveau fichier %(new)s"
 
-#: trac/mimeview/patch.py:175
+#: trac/mimeview/patch.py:176
 #, python-format
 msgid "deleted file %(deleted)s"
 msgstr "ancien fichier %(deleted)s"
 
-#: trac/mimeview/patch.py:247
+#: trac/mimeview/patch.py:248
 msgid "this hunk was shorter than expected"
 msgstr "le fragment est plus court qu'attendu"
 
@@ -3038,12 +3040,12 @@ msgid "initial"
 msgstr "initial"
 
 #: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
 msgid "Previous Change"
 msgstr "Modification précédente"
 
 #: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
-#: trac/versioncontrol/web_ui/changeset.py:369 trac/wiki/web_ui.py:450
+#: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
 msgid "Next Change"
 msgstr "Modification suivante"
 
@@ -4069,7 +4071,7 @@ msgstr "Impossible de synchroniser sur une révision unique pour plusieurs dép�
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:349
 #: trac/versioncontrol/web_ui/changeset.py:247
-#: trac/versioncontrol/web_ui/changeset.py:1089
+#: trac/versioncontrol/web_ui/changeset.py:1090
 #: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
 #, python-format
 msgid "Repository '%(repo)s' not found"
@@ -4169,8 +4171,8 @@ msgstr "Aucun dépôt selectionné."
 #: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
 #: trac/versioncontrol/web_ui/browser.py:819
-#: trac/versioncontrol/web_ui/changeset.py:864
-#: trac/versioncontrol/web_ui/changeset.py:1008
+#: trac/versioncontrol/web_ui/changeset.py:865
+#: trac/versioncontrol/web_ui/changeset.py:1009
 msgid "(default)"
 msgstr "(défaut)"
 
@@ -4250,14 +4252,14 @@ msgstr "%(kind)s %(id)%(at_version)s%(in_repo)s"
 msgid "Repository %(repo)s"
 msgstr "Dépôt %(repo)s"
 
-#: trac/versioncontrol/api.py:663
+#: trac/versioncontrol/api.py:686
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr ""
 "Le système de gestion de versions « %(name)s » n'est pas pris en charge :"
 " %(error)s "
 
-#: trac/versioncontrol/api.py:666
+#: trac/versioncontrol/api.py:689
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -4266,26 +4268,26 @@ msgstr ""
 "Système de gestion de versions « %(name)s » non pris en charge : pas de \n"
 "module approprié. Est-ce que le plugin correspondant est activé ?"
 
-#: trac/versioncontrol/api.py:674
+#: trac/versioncontrol/api.py:697
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Aucune révision %(rev)s dans ce dépôt"
 
-#: trac/versioncontrol/api.py:676
+#: trac/versioncontrol/api.py:699
 msgid "No such changeset"
 msgstr "Révision inconnue"
 
-#: trac/versioncontrol/api.py:682
+#: trac/versioncontrol/api.py:705
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Pas de chemin %(path)s à la version %(rev)s"
 
-#: trac/versioncontrol/api.py:684
+#: trac/versioncontrol/api.py:707
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s : pas de chemin %(path)s à la version %(rev)s"
 
-#: trac/versioncontrol/api.py:686
+#: trac/versioncontrol/api.py:709
 msgid "No such node"
 msgstr "Chemin inconnu"
 
@@ -5083,7 +5085,7 @@ msgid "Repository URL"
 msgstr "URL du dépôt"
 
 #: trac/versioncontrol/web_ui/browser.py:586
-#: trac/versioncontrol/web_ui/changeset.py:362
+#: trac/versioncontrol/web_ui/changeset.py:363
 msgid "Zip Archive"
 msgstr "Archive zip"
 
@@ -5109,101 +5111,101 @@ msgstr "Aucun dépôt indiqué et aucun dépôt par défaut n'a été défini."
 msgid "Invalid Changeset Number"
 msgstr "Numéro de révision non valide"
 
-#: trac/versioncontrol/web_ui/changeset.py:360
+#: trac/versioncontrol/web_ui/changeset.py:361
 msgid "Unified Diff"
 msgstr "Diff unifié"
 
-#: trac/versioncontrol/web_ui/changeset.py:371
+#: trac/versioncontrol/web_ui/changeset.py:372
 msgid "Previous Changeset"
 msgstr "Révision précédente"
 
-#: trac/versioncontrol/web_ui/changeset.py:371
+#: trac/versioncontrol/web_ui/changeset.py:372
 msgid "Next Changeset"
 msgstr "Révision suivante"
 
-#: trac/versioncontrol/web_ui/changeset.py:375
+#: trac/versioncontrol/web_ui/changeset.py:376
 msgid "Reverse Diff"
 msgstr "Diff inversé"
 
-#: trac/versioncontrol/web_ui/changeset.py:413
+#: trac/versioncontrol/web_ui/changeset.py:414
 #, python-format
 msgid "Changeset %(id)s for %(path)s"
 msgstr "Révision %(id)s pour %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:416
-#: trac/versioncontrol/web_ui/changeset.py:442
-#: trac/versioncontrol/web_ui/changeset.py:464
+#: trac/versioncontrol/web_ui/changeset.py:417
+#: trac/versioncontrol/web_ui/changeset.py:443
+#: trac/versioncontrol/web_ui/changeset.py:465
 #, python-format
 msgid "Changeset %(id)s"
 msgstr "Révision %(id)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:491
+#: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
 msgstr "Afficher la révision %(rev)s de ce fichier dans l'explorateur"
 
-#: trac/versioncontrol/web_ui/changeset.py:637
+#: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
 msgid "Show the changeset %(id)s restricted to %(path)s"
 msgstr "Afficher la révision %(id)s restreinte à %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:649
+#: trac/versioncontrol/web_ui/changeset.py:650
 #, python-format
 msgid "Show the %(range)s differences restricted to %(path)s"
 msgstr "Afficher les %(range)s différences restreintes à %(path)s"
 
 #. TRANSLATOR: 'latest' (revision)
-#: trac/versioncontrol/web_ui/changeset.py:789
+#: trac/versioncontrol/web_ui/changeset.py:790
 msgid "latest"
 msgstr "dernière"
 
-#: trac/versioncontrol/web_ui/changeset.py:792
+#: trac/versioncontrol/web_ui/changeset.py:793
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
 msgstr "Différences [%(old_rev)s:%(new_rev)s] pour %(path)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:798
+#: trac/versioncontrol/web_ui/changeset.py:799
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
 msgstr "Différences de %(old_path)s@%(old_rev)s à %(new_path)s@%(new_rev)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:870
+#: trac/versioncontrol/web_ui/changeset.py:871
 msgid "Changesets in all repositories"
 msgstr "Révisions de tous les dépôts"
 
-#: trac/versioncontrol/web_ui/changeset.py:872
+#: trac/versioncontrol/web_ui/changeset.py:873
 msgid "Repository changesets"
 msgstr "Révisions du dépôt"
 
-#: trac/versioncontrol/web_ui/changeset.py:1012
+#: trac/versioncontrol/web_ui/changeset.py:1013
 #, python-format
 msgid "Changeset in %(repo)s "
 msgid_plural "Changesets in %(repo)s "
 msgstr[0] "Révision du dépôt %(repo)s "
 msgstr[1] "Révisions du dépôt %(repo)s "
 
-#: trac/versioncontrol/web_ui/changeset.py:1014
+#: trac/versioncontrol/web_ui/changeset.py:1015
 msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Révision "
 msgstr[1] "Révisions "
 
-#: trac/versioncontrol/web_ui/changeset.py:1025
+#: trac/versioncontrol/web_ui/changeset.py:1026
 #, python-format
 msgid "%(title)s: %(message)s"
 msgstr "%(title)s : %(message)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1085
+#: trac/versioncontrol/web_ui/changeset.py:1086
 #, python-format
 msgid "No permission to view changeset %(rev)s on %(repos)s"
 msgstr "Pas de droits pour voir la révision %(rev)s dans %(repos)s"
 
-#: trac/versioncontrol/web_ui/changeset.py:1091
+#: trac/versioncontrol/web_ui/changeset.py:1092
 #: trac/versioncontrol/web_ui/log.py:397
 msgid "No default repository defined"
 msgstr "Le dépôt par défaut n'est pas défini"
 
-#: trac/versioncontrol/web_ui/changeset.py:1130
+#: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
 msgstr "Révisions"
 
@@ -5499,7 +5501,7 @@ msgstr ""
 "!#%(name)s doit contenir au moins une cellule de tableau (et uniquement "
 "des cellules de tableau)"
 
-#: trac/wiki/formatter.py:630 trac/wiki/interwiki.py:88
+#: trac/wiki/formatter.py:627 trac/wiki/interwiki.py:88
 #, python-format
 msgid "%(target)s in %(name)s"
 msgstr "%(target)s dans %(name)s."
