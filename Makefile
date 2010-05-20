@@ -60,6 +60,9 @@ define HELP
   summary-xy          display percent translated for the xy locale only
                       (suitable for a commit message)
 
+  diff                show relevant changes after an update for all catalogs
+  diff-xy             show relevant changes after an update for the xy locale
+
   [locale=...]        variable for selecting a set of locales
 
 endef
@@ -131,7 +134,7 @@ endif
 messages.po = trac/locale/$(*)/LC_MESSAGES/messages.po
 messages.pot = trac/locale/messages.pot
 
-.PHONY: extract extraction update compile check stats summary
+.PHONY: extract extraction update compile check stats summary diff
 
 extract extraction:
 	python setup.py extract_messages
@@ -203,6 +206,13 @@ summary-%:
 	    % ($(shell $(call translated-sh,$(messages.po))) * 100.0 \
 	       / $(MESSAGES_TOTAL))"
 
+diff: $(addprefix diff-,$(locales))
+
+
+diff-%:
+	@svn diff trac/locale/$(*) \
+	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
+	
 
 # ----------------------------------------------------------------------------
 #
