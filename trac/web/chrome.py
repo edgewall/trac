@@ -27,27 +27,8 @@ except ImportError:
 
 from genshi import Markup
 from genshi.builder import tag, Element
-
-# FIXME Genshi's advanced-i18n is now required if one wants to use 0.12 + i18n
-#       Genshi 0.5.1 can still be used with Trac 0.12 without i18n support.
-#
-# Once advanced-i18n is in the required Genshi version (0.6?), uncomment the
-# following:
-#
-# from genshi.filters import Translator
-#
-# and remove the rest:
-from genshi.filters import Translator
-try:
-    from genshi.filters import setup_i18n
-except ImportError:
-    def setup_i18n(template, translator):
-        # another compatibility hack for Genshi trunk, we need a FunctionType
-        def gettext(*args, **kwargs):
-            return translation.gettext(*args, **kwargs)
-        template.filters.insert(0, Translator(gettext))
-
 from genshi.core import Attrs, START
+from genshi.filters import Translator
 from genshi.output import DocType
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 
@@ -781,17 +762,12 @@ class Chrome(Component):
         `MarkupTemplate`.
         """
         if not self.templates:
-            def _template_loaded(template):
-                translator = Translator(translation.get_translations())
-                if hasattr(translator, 'setup'):
-                    translator.setup(template)
-                else: # pre-[G1003], remove once advanced-i18n hits trunk
-                    setup_i18n(template, translator)
-
             self.templates = TemplateLoader(
                 self.get_all_templates_dirs(), auto_reload=self.auto_reload,
                 max_cache_size=self.genshi_cache_size,
-                variable_lookup='lenient', callback=_template_loaded)
+                variable_lookup='lenient', callback=lambda template:
+                Translator(translation.get_translations()).setup(template))
+
         if method == 'text':
             cls = NewTextTemplate
         else:
