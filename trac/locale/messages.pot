@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-23 16:42+0200\n"
+"POT-Creation-Date: 2010-05-23 16:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4860,6 +4860,10 @@ msgstr ""
 #: trac/web/chrome.py:855
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
+msgstr ""
+
+#: trac/web/chrome.py:891 trac/web/chrome.py:899
+msgid "anonymous"
 msgstr ""
 
 #: trac/web/main.py:227

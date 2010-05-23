@@ -880,29 +880,26 @@ class Chrome(Component):
         return sep.join(all_cc)
     
     def authorinfo(self, req, author, email_map=None):
-        if author:
-            return self.format_author(req, 
-                    email_map and '@' not in author and
-                    email_map.get(author) or author)
-        else:
-            return 'anonymous'
+        return self.format_author(req, 
+                                  email_map and '@' not in author and
+                                  email_map.get(author) or author)
 
     _long_author_re = re.compile(r'.*<([^@]+)@[^@]+>\s*|([^@]+)@[^@]+')
     
     def authorinfo_short(self, author):
-        if author:
-            match = self._long_author_re.match(author)
-            if match:
-                return match.group(1) or match.group(2)
-            return author
-        else:
-            return 'anonymous'
+        if not author or author == 'anonymous':
+            return _("anonymous")
+        match = self._long_author_re.match(author)
+        if match:
+            return match.group(1) or match.group(2)
+        return author
 
     def format_author(self, req, author):
+        if not author or author == 'anonymous':
+            return _("anonymous")
         if self.show_email_addresses or not req or 'EMAIL_VIEW' in req.perm:
             return author
-        else:
-            return obfuscate_email_address(author)
+        return obfuscate_email_address(author)
 
     # Element modifiers
 
