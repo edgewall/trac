@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-17 23:44-0300\n"
-"PO-Revision-Date: 2010-05-17 23:44-0300\n"
+"POT-Creation-Date: 2010-05-23 00:48-0300\n"
+"PO-Revision-Date: 2010-05-23 00:47-0300\n"
 "Last-Translator: Leslie Harlley Watter <leslie@watter.org>\n"
 "Language-Team: pt_BR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -130,20 +130,20 @@ msgstr "Remover comentário"
 msgid "About Trac"
 msgstr "Sobre o Trac"
 
-#: trac/attachment.py:151
+#: trac/attachment.py:152
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
 msgstr "Anexo '%(title)s' não existe."
 
-#: trac/attachment.py:152
+#: trac/attachment.py:154
 msgid "Invalid Attachment"
 msgstr "Anexo Inválido"
 
-#: trac/attachment.py:192
+#: trac/attachment.py:194
 msgid "Could not delete attachment"
 msgstr "Não foi possível remover o anexo"
 
-#: trac/attachment.py:208
+#: trac/attachment.py:210
 #, python-format
 msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
@@ -152,74 +152,79 @@ msgstr ""
 "Não foi possível reatribuir a localização do anexo \"%(att)s\" uma vez "
 "que ele já existe em %(realm)s:%(id)s"
 
-#: trac/attachment.py:227
+#: trac/attachment.py:229
 #, python-format
 msgid "Could not reparent attachment %(name)s"
 msgstr "Não foi possível reatribuir a localização do anexo %(name)s"
 
-#: trac/attachment.py:344
+#: trac/attachment.py:346
 #, python-format
 msgid "Attachment '%(filename)s' not found"
 msgstr "Anexo '%(filename)s' não encontrado"
 
-#: trac/attachment.py:418
+#: trac/attachment.py:420
 msgid "Bad request"
 msgstr "Requisição mal-formada"
 
-#: trac/attachment.py:435
+#: trac/attachment.py:437
 #, python-format
 msgid "Back to %(parent)s"
 msgstr "De volta para %(parent)s"
 
-#: trac/attachment.py:528
+#: trac/attachment.py:530
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
 msgstr "%(attachment)s anexado a %(resource)s"
 
-#: trac/attachment.py:585
+#: trac/attachment.py:587
 #, python-format
 msgid "Unparented attachment %(id)s"
 msgstr "Anexo sem pai %(id)s"
 
-#: trac/attachment.py:593
+#: trac/attachment.py:595
 #, python-format
 msgid "Attachment '%(id)s' in %(parent)s"
 msgstr "Anexo '%(id)s' em %(parent)s"
 
-#: trac/attachment.py:596
+#: trac/attachment.py:598
 #, python-format
 msgid "Attachments of %(parent)s"
 msgstr "Anexos de %(parent)s"
 
-#: trac/attachment.py:609 trac/attachment.py:632 trac/admin/web_ui.py:425
+#: trac/attachment.py:615
+#, python-format
+msgid "%(parent)s doesn't exist, can't create attachment"
+msgstr "%(parent)s não existe, não foi possível criar o anexo"
+
+#: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:425
 #: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
 msgid "No file uploaded"
 msgstr "Nenhum arquivo enviado"
 
-#: trac/attachment.py:617
+#: trac/attachment.py:630
 msgid "Can't upload empty file"
 msgstr "Não é possível enviar um arquivo vazio"
 
-#: trac/attachment.py:622
+#: trac/attachment.py:635
 #, python-format
 msgid "Maximum attachment size: %(num)s bytes"
 msgstr "Tamanho máximo de anexo: %(num)s bytes"
 
-#: trac/attachment.py:623
+#: trac/attachment.py:636
 msgid "Upload failed"
 msgstr "Upload/Envio falhou"
 
-#: trac/attachment.py:644
+#: trac/attachment.py:658
 #, python-format
 msgid "Attachment field %(field)s is invalid: %(message)s"
 msgstr "Campo do anexo %(field)s é inválido: %(message)s"
 
-#: trac/attachment.py:648
+#: trac/attachment.py:662
 #, python-format
 msgid "Invalid attachment: %(message)s"
 msgstr "Anexo inválido: %(message)s"
 
-#: trac/attachment.py:659
+#: trac/attachment.py:672
 #, python-format
 msgid ""
 "You don't have permission to replace the attachment %(name)s. You can "
@@ -230,21 +235,21 @@ msgstr ""
 "substituir seus próprios anexos. Substituir os anexos de outros só é "
 "possível tendo a permissão ATTACHMENT_DELETE."
 
-#: trac/attachment.py:691
+#: trac/attachment.py:704
 #, python-format
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (apagar)"
 
-#: trac/attachment.py:752 trac/versioncontrol/web_ui/browser.py:643
+#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:646
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Texto Puro"
 
-#: trac/attachment.py:758 trac/versioncontrol/web_ui/browser.py:649
+#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:652
 msgid "Original Format"
 msgstr "Formato Original"
 
-#: trac/attachment.py:800 trac/attachment.py:806
+#: trac/attachment.py:813 trac/attachment.py:819
 #: trac/templates/list_of_attachments.html:20
 #: trac/templates/list_of_attachments.html:21
 #: trac/ticket/templates/ticket_change.html:21
@@ -252,12 +257,12 @@ msgstr "Formato Original"
 msgid "Download"
 msgstr "Download"
 
-#: trac/attachment.py:900
+#: trac/attachment.py:914
 #, python-format
 msgid "Invalid resource identifier '%(id)s'"
 msgstr "Identificador de recurso inválido '%(id)s'"
 
-#: trac/attachment.py:936 trac/admin/templates/admin_components.html:80
+#: trac/attachment.py:950 trac/admin/templates/admin_components.html:80
 #: trac/admin/templates/admin_enums.html:48
 #: trac/admin/templates/admin_milestones.html:104
 #: trac/admin/templates/admin_versions.html:77 trac/templates/about.html:84
@@ -269,26 +274,26 @@ msgstr "Identificador de recurso inválido '%(id)s'"
 msgid "Name"
 msgstr "Nome"
 
-#: trac/attachment.py:936
+#: trac/attachment.py:950
 msgid "Size"
 msgstr "Tamanho"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:30
+#: trac/attachment.py:950 trac/templates/history_view.html:30
 #: trac/ticket/templates/ticket.html:361
 #: trac/versioncontrol/templates/revisionlog.html:98
 msgid "Author"
 msgstr "Autor"
 
-#: trac/attachment.py:936 trac/templates/history_view.html:29
+#: trac/attachment.py:950 trac/templates/history_view.html:29
 msgid "Date"
 msgstr "Data"
 
-#: trac/attachment.py:937 trac/templates/attachment.html:93
+#: trac/attachment.py:951 trac/templates/attachment.html:93
 #: trac/ticket/api.py:289 trac/ticket/templates/ticket_box.html:60
 msgid "Description"
 msgstr "Descrição"
 
-#: trac/attachment.py:962 trac/wiki/admin.py:104
+#: trac/attachment.py:976 trac/wiki/admin.py:104
 #, python-format
 msgid "File '%(name)s' exists"
 msgstr "Arquivo %(name)s já existente."
@@ -500,7 +505,7 @@ msgstr "Ações disponíveis:"
 msgid "All upper-cased tokens are reserved for permission names"
 msgstr "Todos os tokens em caixa alta são reservados para nomes de permissões"
 
-#: trac/resource.py:326
+#: trac/resource.py:336
 #, python-format
 msgid "%(name)s at version %(version)s"
 msgstr "%(name)s na versão %(version)s"
@@ -1061,7 +1066,7 @@ msgstr ""
 "            diretório [1:log] do ambiente do projeto ([2:%(dir)s])."
 
 #: trac/admin/templates/admin_milestones.html:10 trac/ticket/admin.py:241
-#: trac/ticket/roadmap.py:855
+#: trac/ticket/roadmap.py:875
 msgid "Milestones"
 msgstr "Marcos"
 
@@ -1301,21 +1306,22 @@ msgstr "Não foi possível carregar os bindings Python para o PostgreSQL"
 msgid "Cannot load Python bindings for SQLite"
 msgstr "Não foi possível carregar os bindings Python para o SQLite"
 
-#: trac/db/sqlite_backend.py:158
-msgid "Need at least PySqlite 2.0.7 or higher"
-msgstr "É necessário ao menos o PySqlite versão 2.0.7 ou superior"
+#: trac/db/sqlite_backend.py:157 trac/db/sqlite_backend.py:161
+#, python-format
+msgid "Need at least PySqlite %(version)s or higher"
+msgstr "É necessário ao menos o PySqlite versão %(version)s ou superior"
 
-#: trac/db/sqlite_backend.py:182
+#: trac/db/sqlite_backend.py:186
 #, python-format
 msgid "Database already exists at %(path)s"
 msgstr "Banco de Dados já existente em %(path)s"
 
-#: trac/db/sqlite_backend.py:242
+#: trac/db/sqlite_backend.py:246
 #, python-format
 msgid "Database \"%(path)s\" not found."
 msgstr "Banco de Dados \"%(path)s\" não encontrado."
 
-#: trac/db/sqlite_backend.py:251
+#: trac/db/sqlite_backend.py:255
 #, python-format
 msgid ""
 "The user %(user)s requires read _and_ write permissions to the database "
@@ -4030,7 +4036,7 @@ msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr "Não é possível sincronizar uma única revisão em vários repositórios"
 
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
-#: trac/versioncontrol/web_ui/browser.py:349
+#: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:247
 #: trac/versioncontrol/web_ui/changeset.py:1090
 #: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
@@ -4131,7 +4137,7 @@ msgstr "Nenhum repositório foi selecionado."
 #: trac/versioncontrol/templates/admin_repositories.html:33
 #: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
-#: trac/versioncontrol/web_ui/browser.py:819
+#: trac/versioncontrol/web_ui/browser.py:822
 #: trac/versioncontrol/web_ui/changeset.py:865
 #: trac/versioncontrol/web_ui/changeset.py:1009
 msgid "(default)"
@@ -4213,12 +4219,12 @@ msgstr "%(kind)s %(id)%(at_version)s%(in_repo)s"
 msgid "Repository %(repo)s"
 msgstr "Repositório %(repo)s"
 
-#: trac/versioncontrol/api.py:663
+#: trac/versioncontrol/api.py:686
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
 msgstr "Sistema de Controle de Versão não suportado \"%(name)s\": %(error)s "
 
-#: trac/versioncontrol/api.py:666
+#: trac/versioncontrol/api.py:689
 #, python-format
 msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
@@ -4229,26 +4235,26 @@ msgstr ""
 " um componente apropriado, será que o plugin correspondente não foi "
 "habilitado? "
 
-#: trac/versioncontrol/api.py:674
+#: trac/versioncontrol/api.py:697
 #, python-format
 msgid "No changeset %(rev)s in the repository"
 msgstr "Nenhum conjunto de mudanças %(rev)s no repositório"
 
-#: trac/versioncontrol/api.py:676
+#: trac/versioncontrol/api.py:699
 msgid "No such changeset"
 msgstr "Nenhum conjunto de mudanças"
 
-#: trac/versioncontrol/api.py:682
+#: trac/versioncontrol/api.py:705
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
 msgstr "Nenhum nodo %(path)s na revisão %(rev)s"
 
-#: trac/versioncontrol/api.py:684
+#: trac/versioncontrol/api.py:707
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
 msgstr "%(msg)s: Nenhum nodo %(path)s na revisão %(rev)s"
 
-#: trac/versioncontrol/api.py:686
+#: trac/versioncontrol/api.py:709
 msgid "No such node"
 msgstr "Nenhum nodo "
 
@@ -4812,12 +4818,12 @@ msgstr "Visualizar Conjunto de Mudanças"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:96
-#: trac/versioncontrol/web_ui/browser.py:763
+#: trac/versioncontrol/web_ui/browser.py:766
 msgid "Rev"
 msgstr "Rev"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:12
-#: trac/versioncontrol/web_ui/browser.py:447
+#: trac/versioncontrol/web_ui/browser.py:450
 msgid "Last Change"
 msgstr "Última Alteração"
 
@@ -4988,46 +4994,46 @@ msgstr "Gerado pelo Trac %(version)s"
 msgid "Browse Source"
 msgstr "Ver Código"
 
-#: trac/versioncontrol/web_ui/browser.py:372
+#: trac/versioncontrol/web_ui/browser.py:375
 msgid "Invalid changeset number"
 msgstr "Número de Conjunto de Mudanças Inválido"
 
-#: trac/versioncontrol/web_ui/browser.py:430
-#: trac/versioncontrol/web_ui/browser.py:440
+#: trac/versioncontrol/web_ui/browser.py:433
+#: trac/versioncontrol/web_ui/browser.py:443
 #, python-format
 msgid "Revision %(num)s"
 msgstr "Revisão %(num)s"
 
-#: trac/versioncontrol/web_ui/browser.py:441
+#: trac/versioncontrol/web_ui/browser.py:444
 msgid "Previous Revision"
 msgstr "Revisão Anterior"
 
-#: trac/versioncontrol/web_ui/browser.py:441
+#: trac/versioncontrol/web_ui/browser.py:444
 msgid "Next Revision"
 msgstr "Próxima Revisão"
 
-#: trac/versioncontrol/web_ui/browser.py:442
+#: trac/versioncontrol/web_ui/browser.py:445
 msgid "Latest Revision"
 msgstr "Última Revisão"
 
-#: trac/versioncontrol/web_ui/browser.py:446
+#: trac/versioncontrol/web_ui/browser.py:449
 #: trac/versioncontrol/web_ui/log.py:300
 msgid "Parent directory"
 msgstr "Diretório pai"
 
-#: trac/versioncontrol/web_ui/browser.py:452
+#: trac/versioncontrol/web_ui/browser.py:455
 msgid "Normal"
 msgstr "Normal"
 
-#: trac/versioncontrol/web_ui/browser.py:453
+#: trac/versioncontrol/web_ui/browser.py:456
 msgid "View file without annotations"
 msgstr "Visualizar arquivo sem anotações"
 
-#: trac/versioncontrol/web_ui/browser.py:458
+#: trac/versioncontrol/web_ui/browser.py:461
 msgid "Annotate"
 msgstr "Anotar"
 
-#: trac/versioncontrol/web_ui/browser.py:459
+#: trac/versioncontrol/web_ui/browser.py:462
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
@@ -5035,24 +5041,24 @@ msgstr ""
 "Anotar cada linha com a última revisão de mudança (isso pode consumir "
 "bastante tempo...)"
 
-#: trac/versioncontrol/web_ui/browser.py:466
+#: trac/versioncontrol/web_ui/browser.py:469
 msgid "Revision Log"
 msgstr "Log de Revisão"
 
-#: trac/versioncontrol/web_ui/browser.py:472
+#: trac/versioncontrol/web_ui/browser.py:475
 msgid "Repository URL"
 msgstr "URL do Repositório"
 
-#: trac/versioncontrol/web_ui/browser.py:586
+#: trac/versioncontrol/web_ui/browser.py:589
 #: trac/versioncontrol/web_ui/changeset.py:363
 msgid "Zip Archive"
 msgstr "Arquivo Zip"
 
-#: trac/versioncontrol/web_ui/browser.py:763
+#: trac/versioncontrol/web_ui/browser.py:766
 msgid "Revision in which the line changed"
 msgstr "Revisão na qual a linha mudou"
 
-#: trac/versioncontrol/web_ui/browser.py:821
+#: trac/versioncontrol/web_ui/browser.py:824
 #, python-format
 msgid "View repository %(repo)s"
 msgstr "Visualizar Repositorio %(repo)s"
