@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Trac project.
 # Jeroen Ruigrok van der Werven <asmodai@in-nomine.org>, 2007.
 #
-#, fuzzy
+#, 
 msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
@@ -25,7 +25,7 @@ msgstr "Acerca de Trac"
 #: trac/attachment.py:144
 #, python-format
 msgid "Attachment '%(title)s' does not exist."
-msgstr ""
+msgstr "El adjunto '%(title)s' no existe"
 
 #: trac/attachment.py:145
 msgid "Invalid Attachment"
@@ -482,7 +482,6 @@ msgid "If you specify a relative path, the log file will be stored inside the"
 msgstr "Si especificas un path relativo, el archivo de log será guardado dentro de"
 
 #: trac/admin/templates/admin_logging.html:49
-#, fuzzy
 msgid "log"
 msgstr "registro"
 
@@ -526,7 +525,6 @@ msgstr "Completado:"
 #: trac/admin/templates/admin_milestones.html:55
 #: trac/admin/templates/admin_versions.html:35
 #: trac/ticket/templates/milestone_edit.html:82
-#, fuzzy
 msgid "Description (you may use [1:WikiFormatting] here):"
 msgstr "Descripción (puedes utilizar [1:WikiFormatting] aqui):"
 
@@ -767,7 +765,6 @@ msgid "Keyboard Shortcuts"
 msgstr "Métodos abreviados de teclado"
 
 #: trac/prefs/web_ui.py:93 trac/prefs/templates/prefs_language.html:9
-#, fuzzy
 msgid "Language"
 msgstr "Idioma"
 
@@ -791,7 +788,7 @@ msgstr ""
 
 #: trac/prefs/templates/prefs.html:33
 msgid "Save changes"
-msgstr ""
+msgstr "Salvar los cambios"
 
 #: trac/prefs/templates/prefs_advanced.html:14
 msgid "Session key:"
@@ -812,7 +809,7 @@ msgstr "Restaurar el sesión:"
 
 #: trac/prefs/templates/prefs_advanced.html:29
 msgid "Load"
-msgstr ""
+msgstr "Cargar"
 
 #: trac/prefs/templates/prefs_advanced.html:30
 msgid ""
@@ -847,7 +844,7 @@ msgstr "(hora UTC)."
 
 #: trac/prefs/templates/prefs_datetime.html:30
 msgid "In"
-msgstr ""
+msgstr "En"
 
 #: trac/prefs/templates/prefs_datetime.html:31
 msgid "time zone"
@@ -862,6 +859,8 @@ msgid ""
 "Note: Universal Co-ordinated Time (UTC) is also known as Greenwich Mean "
 "Time (GMT)."
 msgstr ""
+"Nota: Tiempo Universal Coordinado (UTC) es también conocido como Hora en el "
+"meridiano Greenwich (GMT)."
 
 #: trac/prefs/templates/prefs_datetime.html:36
 msgid ""
@@ -908,16 +907,15 @@ msgstr "TracAccessibility"
 
 #: trac/prefs/templates/prefs_keybindings.html:24
 msgid "for more information on access keys."
-msgstr ""
+msgstr "para mas información de las teclas de acceso"
 
 #: trac/prefs/templates/prefs_language.html:14
-#, fuzzy
 msgid "Language:"
 msgstr "Manejar"
 
 #: trac/prefs/templates/prefs_language.html:16
 msgid "default language"
-msgstr ""
+msgstr "lenguaje por defecto"
 
 #: trac/prefs/templates/prefs_language.html:21
 msgid ""
@@ -925,6 +923,8 @@ msgid ""
 "      displayed on this site to use your language instead of that of the\n"
 "      server."
 msgstr ""
+"Configurando su lenguaje va a ver todo\n"
+"      el texto del sitio"
 
 #: trac/prefs/templates/prefs_language.html:25
 msgid ""
@@ -948,7 +948,7 @@ msgstr "Tema:"
 
 #: trac/prefs/templates/prefs_pygments.html:43
 msgid "Preview:"
-msgstr ""
+msgstr "Vista previa"
 
 #: trac/search/web_ui.py:58 trac/search/templates/search.html:10
 #: trac/search/templates/search.html:23 trac/search/templates/search.html:28
@@ -959,24 +959,24 @@ msgstr "Buscar"
 #: trac/search/web_ui.py:100
 #, python-format
 msgid "Search query too short. Query must be at least %(num)s characters long."
-msgstr ""
+msgstr "La busqueda es muy corta, debe tener al menos %(num)s caracteres"
 
 #: trac/search/web_ui.py:102
 msgid "Search Error"
-msgstr ""
+msgstr "Error en la busqueda"
 
 #: trac/search/web_ui.py:137 trac/ticket/query.py:659 trac/ticket/report.py:316
 msgid "Next Page"
-msgstr ""
+msgstr "Siguiente pagina"
 
 #: trac/search/web_ui.py:143 trac/ticket/query.py:664 trac/ticket/report.py:320
 msgid "Previous Page"
-msgstr ""
+msgstr "Pagina anterior"
 
 #: trac/search/web_ui.py:185
 #, python-format
 msgid "Browse repository path %(path)s"
-msgstr ""
+msgstr "Buscar en la carpeta %(path)s del repositorio"
 
 #: trac/search/templates/search.html:10 trac/search/templates/search.html:40
 #: trac/ticket/templates/query_results.html:21
@@ -986,16 +986,16 @@ msgstr "Resultados"
 
 #: trac/search/templates/search.html:48
 msgid "Quickjump to"
-msgstr ""
+msgstr "Salto rapido a"
 
 #: trac/search/templates/search.html:56
 msgid "By"
-msgstr ""
+msgstr "Por"
 
 #: trac/search/templates/search.html:65
 #: trac/ticket/templates/report_view.html:166
 msgid "No matches found."
-msgstr ""
+msgstr "No se encontro"
 
 #: trac/search/templates/search.html:70
 #: trac/ticket/templates/milestone_delete.html:38
@@ -1035,11 +1035,11 @@ msgstr "TracSearch"
 
 #: trac/search/templates/search.html:70
 msgid "for help on searching."
-msgstr ""
+msgstr "para ayuda en la busqueda"
 
 #: trac/templates/about.html:23
 msgid "Trac: Integrated SCM & Project Management"
-msgstr ""
+msgstr "Trac: Administrador de proyectos y SCM integrado"
 
 #: trac/templates/about.html:27
 msgid ""
@@ -1061,7 +1061,7 @@ msgstr ""
 
 #: trac/templates/about.html:35
 msgid "online"
-msgstr ""
+msgstr "en linea"
 
 #: trac/templates/about.html:35
 msgid "as well as in the"
@@ -1109,7 +1109,7 @@ msgstr "Agregar de dato adjunto"
 
 #: trac/templates/attachment.html:20
 msgid "(size limit"
-msgstr ""
+msgstr "(limite de tamaño"
 
 #: trac/templates/attachment.html:25
 msgid "Attachment Info"
@@ -1118,7 +1118,7 @@ msgstr "Información de dato adjunto"
 #: trac/templates/attachment.html:28 trac/ticket/templates/ticket.html:246
 #: trac/wiki/templates/wiki_edit.html:105
 msgid "Your email or username:"
-msgstr ""
+msgstr "Su correo o usuario"
 
 #: trac/templates/attachment.html:34
 msgid "Description of the file (optional):"
@@ -1126,24 +1126,23 @@ msgstr "Descripción de archivo (opcional):"
 
 #: trac/templates/attachment.html:39
 msgid "Replace existing attachment of the same name"
-msgstr ""
+msgstr "Remplazar el adjunto con el mismo nombre"
 
 #: trac/templates/attachment.html:48
-#, fuzzy
 msgid "Add attachment"
-msgstr "Agregar de dato adjunto"
+msgstr "Agregar archivo adjunto"
 
 #: trac/templates/attachment.html:56
 msgid "Are you sure you want to delete this attachment?"
-msgstr ""
+msgstr "Esta usted seguro de borrar el archivo adjunto"
 
 #: trac/templates/attachment.html:56 trac/wiki/templates/wiki_delete.html:32
 msgid "This is an irreversible operation."
-msgstr ""
+msgstr "Esta es una operación irreversible"
 
 #: trac/templates/attachment.html:63 trac/templates/attachment.html:103
 msgid "Delete attachment"
-msgstr ""
+msgstr "Borrar adjunto"
 
 #: trac/templates/attachment.html:78 trac/ticket/api.py:212
 #: trac/ticket/templates/ticket.html:165
@@ -1152,14 +1151,14 @@ msgstr "Descripción"
 
 #: trac/templates/attachment.html:82
 msgid "(added by"
-msgstr ""
+msgstr "(agregado por"
 
 #: trac/templates/attachment.html:83 trac/templates/diff_view.html:40
 #: trac/versioncontrol/templates/browser.html:104
 #: trac/versioncontrol/templates/changeset.html:96
 #: trac/wiki/templates/wiki_view.html:26
 msgid "ago)"
-msgstr ""
+msgstr " viejo)"
 
 #: trac/templates/diff_div.html:53
 #: trac/versioncontrol/templates/browser.html:124
@@ -1169,7 +1168,7 @@ msgstr "Propiedad"
 #: trac/templates/diff_div.html:64 trac/ticket/templates/ticket.html:61
 #: trac/versioncontrol/templates/changeset.html:32
 msgid "to"
-msgstr ""
+msgstr "a"
 
 #: trac/templates/diff_div.html:69
 msgid "Differences"
@@ -1177,7 +1176,7 @@ msgstr "Diferencias"
 
 #: trac/templates/diff_view.html:17
 msgid "Changes"
-msgstr ""
+msgstr "Cambios"
 
 #: trac/templates/diff_view.html:18 trac/templates/diff_view.html:21
 msgid "between"
@@ -1192,7 +1191,7 @@ msgstr "Versión"
 #: trac/templates/diff_view.html:19 trac/templates/diff_view.html:22
 #: trac/timeline/templates/timeline.html:20
 msgid "and"
-msgstr ""
+msgstr "y"
 
 #: trac/templates/diff_view.html:22 trac/ticket/web_ui.py:716
 #: trac/ticket/templates/ticket.html:95
@@ -1202,11 +1201,11 @@ msgstr "Versión inicial"
 #: trac/templates/diff_view.html:24
 #: trac/versioncontrol/templates/changeset.html:71
 msgid "from"
-msgstr ""
+msgstr "desde"
 
 #: trac/templates/diff_view.html:25
 msgid "of"
-msgstr ""
+msgstr "de"
 
 #: trac/templates/diff_view.html:37
 #: trac/versioncontrol/templates/changeset.html:94
@@ -1216,7 +1215,7 @@ msgstr "Marca de tiempo:"
 #: trac/templates/diff_view.html:39 trac/templates/diff_view.html:45
 #: trac/templates/diff_view.html:50
 msgid "(multiple changes)"
-msgstr ""
+msgstr "(multiples cambios)"
 
 #: trac/templates/diff_view.html:46
 msgid "(IP:"
@@ -1261,10 +1260,13 @@ msgid ""
 "\n"
 "While doing a"
 msgstr ""
+"==== Como reproducir el error ====\n"
+"\n"
+"Mientras estaba haciendo"
 
 #: trac/templates/error.html:64
 msgid "operation on `"
-msgstr ""
+msgstr "operación en `"
 
 #: trac/templates/error.html:64
 msgid ""
@@ -1272,16 +1274,21 @@ msgid ""
 "\n"
 "''(please provide additional details here)''"
 msgstr ""
+"`, Un error interno en el trac.\n"
+"\n"
+"''(Por favor coloque detalles adicionales aca)''"
 
 #: trac/templates/error.html:68
 msgid ""
 "Request parameters:\n"
 "{{{"
 msgstr ""
+"Parametros solicitados:\n"
+"{{{"
 
 #: trac/templates/error.html:73
 msgid "==== System Information ===="
-msgstr ""
+msgstr "==== Información del sistema ===="
 
 #: trac/templates/error.html:76
 msgid ""
@@ -1290,7 +1297,6 @@ msgid ""
 msgstr ""
 
 #: trac/templates/error.html:84
-#, fuzzy
 msgid "Create"
 msgstr "Fecha"
 
@@ -1300,7 +1306,7 @@ msgstr ""
 
 #: trac/templates/error.html:101
 msgid "Trac detected an internal error:"
-msgstr ""
+msgstr "Trac detecto un error interno:"
 
 #: trac/templates/error.html:106
 msgid ""
@@ -1423,7 +1429,6 @@ msgstr "Historia de cambio para"
 #: trac/versioncontrol/templates/diff_form.html:57
 #: trac/versioncontrol/templates/revisionlog.html:84
 #: trac/versioncontrol/templates/revisionlog.html:162
-#, fuzzy
 msgid "View changes"
 msgstr "Cambios de"
 
@@ -1472,7 +1477,7 @@ msgstr "Anterior"
 
 #: trac/templates/macros.html:83 trac/templates/macros.html:84
 msgid "Next"
-msgstr ""
+msgstr "Siguiente"
 
 #: trac/templates/macros.html:94
 msgid "View differences"
@@ -1480,7 +1485,7 @@ msgstr "Ver diferencias"
 
 #: trac/templates/macros.html:97
 msgid "inline"
-msgstr ""
+msgstr "en lineas"
 
 #: trac/templates/macros.html:99
 msgid "side by side"
@@ -1488,11 +1493,11 @@ msgstr "en paralelo"
 
 #: trac/templates/macros.html:101
 msgid "Show"
-msgstr ""
+msgstr "Mostrar"
 
 #: trac/templates/macros.html:104
 msgid "lines around each change"
-msgstr ""
+msgstr "lineas cerca al cambio"
 
 #: trac/templates/macros.html:107
 msgid "Ignore:"
@@ -1514,17 +1519,16 @@ msgstr "Cambios del espacio blanco"
 #: trac/ticket/templates/query.html:179 trac/ticket/templates/roadmap.html:26
 #: trac/timeline/templates/timeline.html:30
 #: trac/versioncontrol/templates/revisionlog.html:64
-#, fuzzy
 msgid "Update"
 msgstr "Fecha"
 
 #: trac/templates/macros.html:138 trac/templates/macros.html:151
 msgid "HTML preview not available"
-msgstr ""
+msgstr "Previsualización html no disponible"
 
 #: trac/templates/macros.html:140
 msgid "since the file size exceeds"
-msgstr ""
+msgstr "el archivo excede el tamaño desde"
 
 #: trac/templates/macros.html:141
 msgid "bytes."
@@ -1532,19 +1536,19 @@ msgstr "bytes."
 
 #: trac/templates/macros.html:143
 msgid "since no preview renderer could handle it."
-msgstr ""
+msgstr "ya que no se puede mostrar"
 
 #: trac/templates/macros.html:146
 msgid "Try"
-msgstr ""
+msgstr "Intentar"
 
 #: trac/templates/macros.html:147
 msgid "downloading"
-msgstr ""
+msgstr "descargar"
 
 #: trac/templates/macros.html:147
 msgid "the file instead."
-msgstr ""
+msgstr "el archivo en el lugar"
 
 #: trac/templates/macros.html:151
 msgid ""
@@ -1554,43 +1558,43 @@ msgstr ""
 
 #: trac/templates/macros.html:152
 msgid "download"
-msgstr ""
+msgstr "descargar"
 
 #: trac/templates/macros.html:152
 msgid "the file."
-msgstr ""
+msgstr "el archivo."
 
 #: trac/templates/macros.html:154
 msgid "found:"
-msgstr ""
+msgstr "encontrado:"
 
 #: trac/templates/macros.html:171
 msgid "View attachment"
-msgstr ""
+msgstr "Ver adjunto"
 
 #: trac/templates/macros.html:172
 msgid ") - added by"
-msgstr ""
+msgstr ") - agregado por"
 
 #: trac/templates/macros.html:173 trac/ticket/templates/query_results.html:70
 msgid "ago."
-msgstr ""
+msgstr " viejo"
 
 #: trac/templates/macros.html:178 trac/templates/macros.html:189
 msgid "Attachments"
-msgstr ""
+msgstr "Adjuntos"
 
 #: trac/templates/macros.html:214
 msgid "Attach file"
-msgstr ""
+msgstr "Adjuntar archivo"
 
 #: trac/templates/macros.html:238 trac/templates/macros.html:242
 msgid "s:"
-msgstr ""
+msgstr "s:"
 
 #: trac/templates/macros.html:242
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #: trac/templates/theme.html:26
 msgid "Search:"
@@ -1598,7 +1602,7 @@ msgstr "Buscar:"
 
 #: trac/templates/theme.html:37
 msgid "Context Navigation"
-msgstr ""
+msgstr "Navegación Contextual"
 
 #: trac/templates/theme.html:46
 msgid "Warning:"
@@ -1609,188 +1613,185 @@ msgid "Warnings:"
 msgstr "Advertencias:"
 
 #: trac/templates/theme.html:57
-#, fuzzy
 msgid "Notice:"
 msgstr "Nota:"
 
 #: trac/templates/theme.html:60
-#, fuzzy
 msgid "Notices:"
 msgstr "Licencia:"
 
 #: trac/ticket/admin.py:87
 #, python-format
 msgid "Component %(name)s already exists."
-msgstr ""
+msgstr "El component %(name)s ya existe."
 
 #: trac/ticket/admin.py:94
 msgid "No component selected"
-msgstr ""
+msgstr "No tiene un componente seleccionado"
 
 #: trac/ticket/admin.py:157 trac/ticket/roadmap.py:632
 msgid "Completion date may not be in the future"
-msgstr ""
+msgstr "La fecha para terminar no puede estar en el futuro"
 
 #: trac/ticket/admin.py:159
 msgid "Invalid Completion Date"
-msgstr ""
+msgstr "Fecha para terminar invalida"
 
 #: trac/ticket/admin.py:185
 #, python-format
 msgid "Milestone %(name)s already exists."
-msgstr ""
+msgstr "El Hito %(name)s ya existe"
 
 #: trac/ticket/admin.py:192
 msgid "No milestone selected"
-msgstr ""
+msgstr "No tiene Hito seleccionado"
 
 #: trac/ticket/admin.py:267
 #, python-format
 msgid "Version %(name)s already exists."
-msgstr ""
+msgstr "La versión %(name)s ya existe."
 
 #: trac/ticket/admin.py:274
 msgid "No version selected"
-msgstr ""
+msgstr "No tiene versión seleccionada"
 
 #: trac/ticket/admin.py:348
 #, python-format
 msgid "%(type)s %(name)s already exists"
-msgstr ""
+msgstr "%(type)s %(name)s ya existe"
 
 #: trac/ticket/admin.py:354
 #, python-format
 msgid "No %s selected"
-msgstr ""
+msgstr "No tiene %s seleccionada"
 
 #: trac/ticket/admin.py:383
 msgid "Order numbers must be unique"
-msgstr ""
+msgstr "Los numeros deben tener un orden unico"
 
 #: trac/ticket/api.py:362
 #, python-format
 msgid "Comment %(cnum)s for Ticket #%(id)s"
-msgstr ""
+msgstr "Comentario %(cnum)s para la incidencia #%(id)s"
 
 #: trac/ticket/api.py:383
 #, python-format
 msgid "Ticket #%(shortname)s"
-msgstr ""
+msgstr "Insidencia #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:226
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "El estado actua no existe mas"
 
 #: trac/ticket/default_workflow.py:228
 msgid "The ticket will be disowned"
-msgstr ""
+msgstr "La incidencia va a perder su dueño"
 
 #: trac/ticket/default_workflow.py:247 trac/ticket/default_workflow.py:258
 msgid "The owner will change"
-msgstr ""
+msgstr "El dueño ha cambiado"
 
 #: trac/ticket/default_workflow.py:251 trac/ticket/default_workflow.py:261
 #, python-format
 msgid "The owner will change to %(name)s"
-msgstr ""
+msgstr "El dueño va a cambiar a %(name)s"
 
 #: trac/ticket/default_workflow.py:254
 msgid "to "
-msgstr ""
+msgstr "a "
 
 #: trac/ticket/default_workflow.py:273
 #, python-format
 msgid "The resolution will be set to %(name)s"
-msgstr ""
+msgstr "Se va a resolver como %(name)s"
 
 #: trac/ticket/default_workflow.py:283
 msgid "The resolution will be set"
-msgstr ""
+msgstr "Se va a resolver"
 
 #: trac/ticket/default_workflow.py:288
 #, python-format
 msgid "Next status will be '%(name)s'"
-msgstr ""
+msgstr "El proximo estado va a ser %(name)s"
 
 #: trac/ticket/model.py:128
 msgid "Multi-values fields not supported yet"
-msgstr ""
+msgstr "No se soportan multiples valores"
 
 #: trac/ticket/model.py:363
 #, python-format
 msgid "%(type)s %(name)s does not exist."
-msgstr ""
+msgstr "el %(type)s %(name)s no existe"
 
 #: trac/ticket/model.py:507
 #, python-format
 msgid "Component %(name)s does not exist."
-msgstr ""
+msgstr "El componenet %(name)s no existe"
 
 #: trac/ticket/model.py:737
 #, python-format
 msgid "Version %(name)s does not exist."
-msgstr ""
+msgstr "La versión %(name)s no existe"
 
 #: trac/ticket/query.py:72
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "La pagina de consulta %(page)s es invalida"
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "La consulta max %(max)s es invalida"
 
 #: trac/ticket/query.py:135
 msgid "Query filter requires field and constraints separated by a \"=\""
-msgstr ""
+msgstr "El filtro de la consulta requiere campos y constantes separadas por \"=\""
 
 #: trac/ticket/query.py:139
 msgid "Query filter requires field name"
-msgstr ""
+msgstr "El filtro de la consulta requiere un nombre"
 
 #: trac/ticket/query.py:271
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
-msgstr ""
+msgstr "La pagina %(page)s es mayor que el numero de paginas en la consulta"
 
 #: trac/ticket/query.py:589
 msgid "Created"
-msgstr ""
+msgstr "Creado"
 
 #: trac/ticket/query.py:592 trac/ticket/web_ui.py:548
-#, fuzzy
 msgid "Ticket"
 msgstr "Incidencia"
 
 #: trac/ticket/query.py:608
 msgid "contains"
-msgstr ""
+msgstr "contiene"
 
 #: trac/ticket/query.py:609
 msgid "doesn't contain"
-msgstr ""
+msgstr "no contiene"
 
 #: trac/ticket/query.py:610
 msgid "begins with"
-msgstr ""
+msgstr "empieza con"
 
 #: trac/ticket/query.py:611
 msgid "ends with"
-msgstr ""
+msgstr "finaliza con"
 
 #: trac/ticket/query.py:612 trac/ticket/query.py:616
 msgid "is"
-msgstr ""
+msgstr "es"
 
 #: trac/ticket/query.py:613 trac/ticket/query.py:617
 msgid "is not"
-msgstr ""
+msgstr "no es"
 
 #: trac/ticket/query.py:672 trac/ticket/report.py:327
 #, python-format
 msgid "Page %(num)d"
-msgstr ""
+msgstr "Pagina %(num)d"
 
 #: trac/ticket/query.py:713 trac/ticket/report.py:511 trac/ticket/web_ui.py:113
 #: trac/timeline/web_ui.py:190 trac/versioncontrol/web_ui/log.py:241
@@ -1799,11 +1800,11 @@ msgstr ""
 
 #: trac/ticket/query.py:715 trac/ticket/report.py:514 trac/ticket/web_ui.py:109
 msgid "Comma-delimited Text"
-msgstr ""
+msgstr "CSV Archivo separado por comas"
 
 #: trac/ticket/query.py:717 trac/ticket/report.py:516 trac/ticket/web_ui.py:111
 msgid "Tab-delimited Text"
-msgstr ""
+msgstr "Archivo delimitado por Tabs"
 
 #: trac/ticket/query.py:739 trac/ticket/report.py:62
 msgid "View Tickets"
@@ -1821,79 +1822,79 @@ msgstr "Informes disponibles"
 #: trac/ticket/query.py:987
 #, python-format
 msgid "[Error: %(error)s]"
-msgstr ""
+msgstr "[Error: %(error)s]"
 
 #: trac/ticket/query.py:1076
 msgid "No results"
-msgstr ""
+msgstr "Sin resultados"
 
 #: trac/ticket/query.py:1114
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr ""
+msgstr "Incidencias de %(groupvalue)s %(groupname)s:"
 
 #: trac/ticket/report.py:177
 #, python-format
 msgid "Delete Report {%(num)s} %(title)s"
-msgstr ""
+msgstr "Borrar reporte {%(num)s %(title)s}"
 
 #: trac/ticket/report.py:182 trac/ticket/report.py:194
 #: trac/ticket/report.py:242
 #, python-format
 msgid "Report %(num)s does not exist."
-msgstr ""
+msgstr "El reporte %(num)s no existe"
 
 #: trac/ticket/report.py:183 trac/ticket/report.py:195
 #: trac/ticket/report.py:243
 msgid "Invalid Report Number"
-msgstr ""
+msgstr "Numero invalido del reporte"
 
 #: trac/ticket/report.py:207
 msgid "Create New Report"
-msgstr ""
+msgstr "Crear un nuevo reporte"
 
 #: trac/ticket/report.py:211
 #, python-format
 msgid "Edit Report {%(num)d} %(title)s"
-msgstr ""
+msgstr "Editar el reporte {%(num)d} %(title)s"
 
 #: trac/ticket/report.py:225
 #, python-format
 msgid "Report failed: %(error)s"
-msgstr ""
+msgstr "Fallo el reporte: %(error)s"
 
 #: trac/ticket/report.py:233
 msgid "This is a list of available reports."
-msgstr ""
+msgstr "Esta es la lista de los reportes disponibles"
 
 #: trac/ticket/report.py:258
 #, python-format
 msgid "When specified, the report number should be \"%(num)s\"."
-msgstr ""
+msgstr "Cuando se especifica, el numero del reporte debe ser \"%(num)s\""
 
 #: trac/ticket/report.py:305
 #, python-format
 msgid "Report execution failed: %(error)s"
-msgstr ""
+msgstr "La ejecución del reporte fallo: %(error)s"
 
 #: trac/ticket/report.py:518
 msgid "SQL Query"
-msgstr ""
+msgstr "Consulta SQL"
 
 #: trac/ticket/report.py:532
 #, python-format
 msgid "Report %(num)s has no SQL query."
-msgstr ""
+msgstr "El reporte %(num)s no tiene consulta SQL"
 
 #: trac/ticket/report.py:562
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "El parametro en la consulta \"ordenar=%(sort_col)s es invalido"
 
 #: trac/ticket/report.py:605
 #, python-format
 msgid "Dynamic variable '%(name)s' not defined."
-msgstr ""
+msgstr "La variable dinamica '%(name)s' no fue definida"
 
 #: trac/ticket/roadmap.py:213
 #, python-format
@@ -1922,21 +1923,21 @@ msgstr ""
 #: trac/ticket/roadmap.py:428 trac/ticket/roadmap.py:801
 #, python-format
 msgid "Milestone %(name)s"
-msgstr ""
+msgstr "Hito %(name)s"
 
 #: trac/ticket/roadmap.py:447
 #, python-format
 msgid "Ticket #%(num)s: %(summary)s"
-msgstr ""
+msgstr "Insidencia #%(num)s: %(summary)s"
 
 #: trac/ticket/roadmap.py:621
 #, python-format
 msgid "Milestone \"%(name)s\" already exists, please choose another name"
-msgstr ""
+msgstr "El hito '%(name)s' ya existe, por favor seleccione otro nombre"
 
 #: trac/ticket/roadmap.py:626
 msgid "You must provide a name for the milestone."
-msgstr ""
+msgstr "Usted debe dar un nombre para el hito"
 
 #: trac/ticket/web_ui.py:135 trac/ticket/templates/ticket.html:17
 msgid "New Ticket"
@@ -1947,31 +1948,26 @@ msgid "id can't be set for a new ticket request."
 msgstr ""
 
 #: trac/ticket/web_ui.py:202
-#, fuzzy
 msgid "Ticket changes"
 msgstr "Cambios de"
 
 #: trac/ticket/web_ui.py:204
 msgid "Ticket details"
-msgstr ""
+msgstr "Detalles de"
 
 #: trac/ticket/web_ui.py:210
-#, fuzzy
 msgid "created"
 msgstr "Fecha"
 
 #: trac/ticket/web_ui.py:211
-#, fuzzy
 msgid "reopened"
 msgstr "Abierto"
 
 #: trac/ticket/web_ui.py:212
-#, fuzzy
 msgid "closed"
 msgstr "copiado"
 
 #: trac/ticket/web_ui.py:213
-#, fuzzy
 msgid "updated"
 msgstr "Fecha"
 
@@ -1987,15 +1983,13 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:548
 msgid "Back to Query"
-msgstr ""
+msgstr "Volver a la consulta"
 
 #: trac/ticket/web_ui.py:628 trac/ticket/web_ui.py:778
-#, fuzzy
 msgid "Ticket History"
 msgstr "Historia"
 
 #: trac/ticket/web_ui.py:673
-#, fuzzy
 msgid "No differences to show"
 msgstr "Ver las diferencias"
 
@@ -2008,29 +2002,28 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:716
 msgid "initial"
-msgstr ""
+msgstr "inicial"
 
 #: trac/ticket/web_ui.py:778 trac/versioncontrol/web_ui/changeset.py:342
 #: trac/wiki/web_ui.py:374
-#, fuzzy
 msgid "Change"
 msgstr "Modificado"
 
 #: trac/ticket/web_ui.py:783
 msgid "Ticket Diff"
-msgstr ""
+msgstr "Cambios en la Insidencia"
 
 #: trac/ticket/web_ui.py:851
 msgid "No permission to change ticket fields."
-msgstr ""
+msgstr "No tiene permiso para cambiar los campos de la insidencia"
 
 #: trac/ticket/web_ui.py:859
 msgid "No permissions to change ticket fields."
-msgstr ""
+msgstr "No tiene permisos para cambiar los campos de la insidencia"
 
 #: trac/ticket/web_ui.py:868
 msgid "No permissions to add a comment."
-msgstr ""
+msgstr "No tiene permisos para agregar comentarios"
 
 #: trac/ticket/web_ui.py:874
 msgid ""
@@ -2040,12 +2033,12 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:881
 msgid "Tickets must contain a summary."
-msgstr ""
+msgstr "La insidencia debe tener un resumen"
 
 #: trac/ticket/web_ui.py:904
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
-msgstr ""
+msgstr "La descripción de la incidencia es muy larga (debe ser menor a %(num)s caracteres)"
 
 #: trac/ticket/web_ui.py:919
 msgid "Invalid comment threading identifier"
@@ -2058,27 +2051,27 @@ msgstr ""
 
 #: trac/ticket/web_ui.py:1043
 msgid "Assign to"
-msgstr ""
+msgstr "Asignado a"
 
 #: trac/ticket/web_ui.py:1059
 msgid "Open"
-msgstr ""
+msgstr "Abierto"
 
 #: trac/ticket/web_ui.py:1060
 msgid "Closed"
-msgstr ""
+msgstr "Cerrado"
 
 #: trac/ticket/web_ui.py:1075
 msgid "Add to Cc"
-msgstr ""
+msgstr "Agregar copia correo Cc"
 
 #: trac/ticket/web_ui.py:1076
 msgid "Remove from Cc"
-msgstr ""
+msgstr "Remover de la copia correo Cc"
 
 #: trac/ticket/web_ui.py:1077
 msgid "Add/Remove from Cc"
-msgstr ""
+msgstr "Agregar/Remober de copia correo C"
 
 #: trac/ticket/web_ui.py:1078
 msgid "<Author field>"
@@ -2103,7 +2096,7 @@ msgstr "Borrar hito"
 
 #: trac/ticket/templates/milestone_delete.html:25
 msgid "Are you sure you want to delete this milestone?"
-msgstr ""
+msgstr "Esta usted seguro de borrar el hito"
 
 #: trac/ticket/templates/milestone_delete.html:27
 msgid "Retarget associated tickets to milestone"
@@ -2111,7 +2104,6 @@ msgstr ""
 
 #: trac/ticket/templates/milestone_delete.html:34
 #: trac/ticket/templates/milestone_view.html:91
-#, fuzzy
 msgid "Delete milestone"
 msgstr "Borrar hito"
 
@@ -2144,7 +2136,7 @@ msgstr "Nombre de hito"
 
 #: trac/ticket/templates/milestone_edit.html:50
 msgid "Schedule"
-msgstr ""
+msgstr "Programación"
 
 #: trac/ticket/templates/milestone_edit.html:71
 msgid "Retarget associated open tickets to milestone:"
@@ -2153,12 +2145,10 @@ msgstr ""
 #: trac/ticket/templates/milestone_edit.html:89
 #: trac/wiki/templates/wiki_edit.html:126
 #: trac/wiki/templates/wiki_edit.html:131
-#, fuzzy
 msgid "Submit changes"
 msgstr "Cambios de"
 
 #: trac/ticket/templates/milestone_edit.html:90
-#, fuzzy
 msgid "Add milestone"
 msgstr "Agregar el hito:"
 
@@ -2184,30 +2174,28 @@ msgstr ""
 #: trac/ticket/templates/milestone_view.html:30
 #: trac/ticket/templates/roadmap.html:43
 msgid "late"
-msgstr ""
+msgstr "tarde"
 
 #: trac/ticket/templates/milestone_view.html:33
 #: trac/ticket/templates/roadmap.html:46
 msgid "Due in"
-msgstr ""
+msgstr "Debió ser"
 
 #: trac/ticket/templates/milestone_view.html:37
 #: trac/ticket/templates/roadmap.html:50
 msgid "No date set"
-msgstr ""
+msgstr "No tiene fecha seleccionada"
 
 #: trac/ticket/templates/milestone_view.html:47
 #: trac/timeline/templates/timeline.html:42
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: trac/ticket/templates/milestone_view.html:58
-#, fuzzy
 msgid "(none)"
 msgstr "Ningunos"
 
 #: trac/ticket/templates/milestone_view.html:87
-#, fuzzy
 msgid "Edit milestone"
 msgstr "Editar este hito"
 
@@ -2216,8 +2204,8 @@ msgstr "Editar este hito"
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)s encontrado"
+msgstr[1] "%(num)s encontrados"
 
 #: trac/ticket/templates/query.html:37
 msgid "Filters"
@@ -2237,7 +2225,7 @@ msgstr "Columnas"
 
 #: trac/ticket/templates/query.html:147
 msgid "Group results by"
-msgstr ""
+msgstr "Agrupar resultados por"
 
 #: trac/ticket/templates/query.html:157
 msgid "descending"
@@ -2249,27 +2237,26 @@ msgstr "Demonstrar bajo cada resultado:"
 
 #: trac/ticket/templates/query.html:171
 msgid "Max items per page"
-msgstr ""
+msgstr "Elementos por pagina"
 
 #: trac/ticket/templates/query.html:214
 msgid "Edit query"
-msgstr ""
+msgstr "Editar consulta"
 
 #: trac/ticket/templates/query.html:222
 msgid "Save query"
-msgstr ""
+msgstr "Salvar consulta"
 
 #: trac/ticket/templates/query.html:222
 #, python-format
 msgid "Save updated query in report {%(id)s}"
-msgstr ""
+msgstr "Salvar consulta actualizada en el reporte %(id)s"
 
 #: trac/ticket/templates/query.html:222
 msgid "Create new report from current query"
-msgstr ""
+msgstr "Crear un nuevo reporte desde la consulta actual"
 
 #: trac/ticket/templates/query.html:231
-#, fuzzy
 msgid "Delete query"
 msgstr "borrar"
 
@@ -2280,33 +2267,31 @@ msgstr "TracQuery"
 
 #: trac/ticket/templates/query.html:238
 msgid "for help on using queries."
-msgstr ""
+msgstr "para ayuda usando consultas."
 
 #: trac/ticket/templates/query_results.html:53
 #: trac/ticket/templates/query_results.html:55
-#, fuzzy
 msgid "View ticket"
 msgstr "Ver incidencia"
 
 #: trac/ticket/templates/query_results.html:69
 msgid "Reported by"
-msgstr ""
+msgstr "Reportado por"
 
 #: trac/ticket/templates/query_results.html:76
 msgid "(this ticket)"
-msgstr ""
+msgstr "(este ticket)"
 
 #: trac/ticket/templates/query_results.html:92
 msgid "(more results for this group on next page)"
-msgstr ""
+msgstr "(mas resultados de este grupo en la siguiente pagina)"
 
 #: trac/ticket/templates/report_delete.html:18
 msgid "Are you sure you want to delete this report?"
-msgstr ""
+msgstr "Esta usted seguro que quiere borrar este reporte?"
 
 #: trac/ticket/templates/report_delete.html:21
 #: trac/ticket/templates/report_view.html:39
-#, fuzzy
 msgid "Delete report"
 msgstr "Ver informe"
 
@@ -2340,38 +2325,35 @@ msgstr ""
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "query:"
-msgstr ""
+msgstr "consulta:"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid ", a"
-msgstr ""
+msgstr ", un(a)"
 
 #: trac/ticket/templates/report_edit.html:36
 msgid "expression)"
-msgstr ""
+msgstr "expresión)"
 
 #: trac/ticket/templates/report_edit.html:41
-#, fuzzy
 msgid "Save report"
 msgstr "Ver informe"
 
 #: trac/ticket/templates/report_view.html:16
 msgid "matches)"
-msgstr ""
+msgstr "encuentros)"
 
 #: trac/ticket/templates/report_view.html:27
-#, fuzzy
 msgid "Edit report"
 msgstr "Ver informe"
 
 #: trac/ticket/templates/report_view.html:33
-#, fuzzy
 msgid "Copy report"
 msgstr "Ver informe"
 
 #: trac/ticket/templates/report_view.html:51
 msgid "match"
-msgstr ""
+msgstr "encuentro"
 
 #: trac/ticket/templates/report_view.html:85
 #: trac/ticket/templates/report_view.html:92
@@ -2379,7 +2361,6 @@ msgid "View report"
 msgstr "Ver informe"
 
 #: trac/ticket/templates/report_view.html:160
-#, fuzzy
 msgid "Create new report"
 msgstr "Ver informe"
 
@@ -2398,7 +2379,6 @@ msgid ""
 msgstr ""
 
 #: trac/ticket/templates/roadmap.html:67
-#, fuzzy
 msgid "Add new milestone"
 msgstr "Hito nuevo"
 
@@ -2409,7 +2389,7 @@ msgstr "agregado"
 
 #: trac/ticket/templates/ticket.html:60
 msgid "changed from"
-msgstr ""
+msgstr "cambiado desde"
 
 #: trac/ticket/templates/ticket.html:63
 #: trac/versioncontrol/templates/browser.html:125
@@ -2422,11 +2402,11 @@ msgstr "borrado"
 
 #: trac/ticket/templates/ticket.html:79
 msgid "Ticket #"
-msgstr ""
+msgstr "Incidencia #"
 
 #: trac/ticket/templates/ticket.html:83
 msgid "Create New Ticket"
-msgstr ""
+msgstr "Crear una nueva Incidencia"
 
 #: trac/ticket/templates/ticket.html:94 trac/ticket/templates/ticket.html:97
 msgid "— at"
@@ -2438,11 +2418,11 @@ msgstr "Inspección previo ("
 
 #: trac/ticket/templates/ticket.html:108 trac/wiki/templates/wiki_edit.html:62
 msgid "skip"
-msgstr ""
+msgstr "saltar"
 
 #: trac/ticket/templates/ticket.html:113 trac/ticket/templates/ticket.html:209
 msgid "in reply to:"
-msgstr ""
+msgstr "en respuesta a:"
 
 #: trac/ticket/templates/ticket.html:115
 msgid "Changed by"
@@ -2466,15 +2446,15 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:137
 msgid "Reported by:"
-msgstr ""
+msgstr "Reportado por:"
 
 #: trac/ticket/templates/ticket.html:139
 msgid "Owned by:"
-msgstr ""
+msgstr "Dueño:"
 
 #: trac/ticket/templates/ticket.html:168
 msgid "(last modified by"
-msgstr ""
+msgstr "(ultima modificación por"
 
 #: trac/ticket/templates/ticket.html:170
 msgid "diff"
@@ -2482,11 +2462,11 @@ msgstr "diff"
 
 #: trac/ticket/templates/ticket.html:181 trac/ticket/templates/ticket.html:223
 msgid "Reply"
-msgstr ""
+msgstr "Responder"
 
 #: trac/ticket/templates/ticket.html:181
 msgid "Reply, quoting this description"
-msgstr ""
+msgstr "Responder, citando esta descripción"
 
 #: trac/ticket/templates/ticket.html:200
 msgid "Change History"
@@ -2494,7 +2474,7 @@ msgstr "Historia de cambio"
 
 #: trac/ticket/templates/ticket.html:213
 msgid "follow-up"
-msgstr ""
+msgstr "seguir"
 
 #: trac/ticket/templates/ticket.html:218
 msgid "Changed"
@@ -2506,7 +2486,7 @@ msgstr "hace cerca"
 
 #: trac/ticket/templates/ticket.html:238
 msgid "Add/Change #"
-msgstr ""
+msgstr "Agregar/Cambiar #"
 
 #: trac/ticket/templates/ticket.html:258
 msgid ""
@@ -2514,6 +2494,9 @@ msgid ""
 "              [1:WikiFormatting]\n"
 "              here):"
 msgstr ""
+"Comentario (debe usar\n"
+"              [1:WikiFormatting Formato Wiki]"
+"              aca):"
 
 #: trac/ticket/templates/ticket.html:271
 msgid "Properties"
@@ -2525,7 +2508,7 @@ msgstr "Descripción:"
 
 #: trac/ticket/templates/ticket.html:282
 msgid "Reporter:"
-msgstr ""
+msgstr "Reportero:"
 
 #: trac/ticket/templates/ticket.html:339
 msgid "This checkbox allows you to add or remove yourself from the CC list."
@@ -2537,10 +2520,9 @@ msgstr ""
 
 #: trac/ticket/templates/ticket.html:377
 msgid "I have files to attach to this ticket"
-msgstr ""
+msgstr "Tiene adjuntos para esta incidencia"
 
 #: trac/ticket/templates/ticket.html:388 trac/wiki/templates/wiki_edit.html:124
-#, fuzzy
 msgid "Preview"
 msgstr "Inspección previo ("
 
@@ -2571,51 +2553,51 @@ msgstr ""
 #: trac/timeline/web_ui.py:76 trac/timeline/templates/timeline.html:10
 #: trac/timeline/templates/timeline.html:16
 msgid "Timeline"
-msgstr ""
+msgstr "Linea de tiempo"
 
 #: trac/timeline/web_ui.py:202
 msgid "Previous period"
-msgstr ""
+msgstr "Periodo anterior"
 
 #: trac/timeline/web_ui.py:208
 msgid "Next period"
-msgstr ""
+msgstr "Proximo periodo"
 
 #: trac/timeline/web_ui.py:269
 #, python-format
 msgid "%(date)s in Timeline"
-msgstr ""
+msgstr "%(date)s en Linea de tiempo"
 
 #: trac/timeline/templates/timeline.html:20
 msgid "View changes from"
-msgstr ""
+msgstr "Ver cambios desde"
 
 #: trac/timeline/templates/timeline.html:21
 msgid "days back"
-msgstr ""
+msgstr "dias atras"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "TracTimeline"
-msgstr ""
+msgstr "Linea de tiempo del Trac"
 
 #: trac/timeline/templates/timeline.html:53
 msgid "for information about the timeline view."
-msgstr ""
+msgstr "para información acerca de la linea de tiempo vea."
 
 #: trac/util/presentation.py:254
 #, python-format
 msgid "%(last)d of %(total)d"
-msgstr ""
+msgstr "%(last)d de %(total)d"
 
 #: trac/util/presentation.py:256
 #, python-format
 msgid "%(start)d - %(stop)d of %(total)d"
-msgstr ""
+msgstr "%(start)d - %(stop)d de %(total)d"
 
 #: trac/versioncontrol/api.py:81
 #, python-format
 msgid "Can't synchronize with the repository (%(error)s)"
-msgstr ""
+msgstr "No se puede sincronizar con el repositorio (%(error)s)"
 
 #: trac/versioncontrol/api.py:96
 #, fuzzy, python-format
@@ -2623,18 +2605,17 @@ msgid "Changeset %(rev)s"
 msgstr "Conjunto de cambio %(rev)s"
 
 #: trac/versioncontrol/api.py:103
-#, fuzzy
 msgid "Directory"
 msgstr "Directorio"
 
 #: trac/versioncontrol/api.py:107
 #, python-format
 msgid "at version %(rev)s"
-msgstr ""
+msgstr "de versión %(rev)s"
 
 #: trac/versioncontrol/api.py:109
 msgid "Path"
-msgstr ""
+msgstr "Carpeta"
 
 #: trac/versioncontrol/api.py:131
 #, python-format
@@ -2646,16 +2627,15 @@ msgstr ""
 #: trac/versioncontrol/api.py:163
 #, python-format
 msgid "No changeset %(rev)s in the repository"
-msgstr ""
+msgstr "No se tiene el cambio %(rev)s en el repositorio"
 
 #: trac/versioncontrol/api.py:165
-#, fuzzy
 msgid "No such changeset"
 msgstr "No conjunto de cambio"
 
 #: trac/versioncontrol/api.py:171
 msgid "No such node"
-msgstr ""
+msgstr "No conjunto de nodos"
 
 #: trac/versioncontrol/api.py:509
 #, python-format
@@ -2712,7 +2692,6 @@ msgid "Visit:"
 msgstr "Visitar:"
 
 #: trac/versioncontrol/templates/browser.html:63
-#, fuzzy
 msgid "Go!"
 msgstr "hace"
 
@@ -2758,7 +2737,6 @@ msgid "for help on using the browser."
 msgstr ""
 
 #: trac/versioncontrol/templates/browser.html:153
-#, fuzzy
 msgid "View changes..."
 msgstr "Cambios de"
 
@@ -2776,7 +2754,6 @@ msgstr "Conjunto de cambio"
 #: trac/versioncontrol/templates/changeset.html:32
 #: trac/versioncontrol/templates/changeset.html:34
 #: trac/versioncontrol/templates/changeset.html:36
-#, fuzzy
 msgid "Show full changeset"
 msgstr "Ver mensajes de archivo completo"
 
@@ -2801,7 +2778,6 @@ msgid "Show revision log"
 msgstr "Ver registro de revisión"
 
 #: trac/versioncontrol/templates/changeset.html:30
-#, fuzzy
 msgid "Changes from"
 msgstr "Modificar información"
 
@@ -3104,22 +3080,20 @@ msgstr "Más viejas revisiones"
 #: trac/web/auth.py:89
 #, python-format
 msgid "logged in as %(user)s"
-msgstr ""
+msgstr "Ingreso como %(user)s"
 
 #: trac/web/auth.py:92
-#, fuzzy
 msgid "Logout"
 msgstr "archivo"
 
 #: trac/web/auth.py:95
-#, fuzzy
 msgid "Login"
 msgstr "archivo"
 
 #: trac/web/auth.py:137
 #, python-format
 msgid "Already logged in as %(user)s."
-msgstr ""
+msgstr "Ingreso como %(user)s"
 
 #: trac/web/chrome.py:160 trac/web/chrome.py:168
 #, fuzzy, python-format
@@ -3129,7 +3103,7 @@ msgstr "Anterior %(label)s"
 #: trac/web/chrome.py:180 trac/web/chrome.py:187
 #, python-format
 msgid "Next %(label)s"
-msgstr ""
+msgstr "Siguiente %(label)s"
 
 #: trac/wiki/api.py:325
 msgid "no permission to view this wiki page"
@@ -3143,7 +3117,7 @@ msgstr ""
 #: trac/wiki/intertrac.py:51
 #, python-format
 msgid "Can't view %(link)s:"
-msgstr ""
+msgstr "No se puede ver %(link)s"
 
 #: trac/wiki/macros.py:467
 #, python-format
@@ -3152,11 +3126,11 @@ msgstr ""
 
 #: trac/wiki/macros.py:550
 msgid "Table of Contents"
-msgstr ""
+msgstr "Tabla de Contenidos"
 
 #: trac/wiki/model.py:146
 msgid "Page not modified"
-msgstr ""
+msgstr "Pagina no modificada"
 
 #: trac/wiki/web_ui.py:85 trac/wiki/web_ui.py:596
 msgid "Wiki"
@@ -3214,7 +3188,7 @@ msgstr ""
 
 #: trac/wiki/web_ui.py:539
 msgid "Start Page"
-msgstr ""
+msgstr "Inicio"
 
 #: trac/wiki/web_ui.py:540
 msgid "Index"
@@ -3234,7 +3208,7 @@ msgstr "Borrar"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "Are you sure you want to"
-msgstr ""
+msgstr "Esta seguro que quiere"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "delete"
@@ -3242,7 +3216,7 @@ msgstr "borrar"
 
 #: trac/wiki/templates/wiki_delete.html:26
 msgid "this page?"
-msgstr ""
+msgstr "esta pagina?"
 
 #: trac/wiki/templates/wiki_delete.html:28
 msgid "This is the only version the page, so the page will be removed completely!"
@@ -3260,7 +3234,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:28
 msgid "Editing"
-msgstr ""
+msgstr "Editando"
 
 #: trac/wiki/templates/wiki_edit.html:30
 msgid "Someone else has modified that page since you started your edits."
@@ -3300,7 +3274,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:54 trac/wiki/templates/wiki_view.html:26
 msgid "(modified by"
-msgstr ""
+msgstr "(modificado por"
 
 #: trac/wiki/templates/wiki_edit.html:72
 msgid ""
@@ -3328,20 +3302,17 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:117
 msgid "Page is read-only"
-msgstr ""
+msgstr "Esta pagina es solo lectura"
 
 #: trac/wiki/templates/wiki_edit.html:125
-#, fuzzy
 msgid "Merge changes"
 msgstr "Cambios de"
 
 #: trac/wiki/templates/wiki_edit.html:129
-#, fuzzy
 msgid "Preview Page"
 msgstr "Inspección previo ("
 
 #: trac/wiki/templates/wiki_edit.html:130
-#, fuzzy
 msgid "Review Changes"
 msgstr "Cambios de"
 
@@ -3355,15 +3326,15 @@ msgstr "aquí."
 
 #: trac/wiki/templates/wiki_view.html:57
 msgid "Edit this page"
-msgstr ""
+msgstr "Editar esta pagina"
 
 #: trac/wiki/templates/wiki_view.html:60
 msgid "Create this page"
-msgstr ""
+msgstr "Crear esta pagina"
 
 #: trac/wiki/templates/wiki_view.html:62
 msgid "Using the template:"
-msgstr ""
+msgstr "Usando la plantilla"
 
 #: trac/wiki/templates/wiki_view.html:65
 msgid "(blank page)"
@@ -3371,9 +3342,9 @@ msgstr "(página en blanco)"
 
 #: trac/wiki/templates/wiki_view.html:84
 msgid "Delete this version"
-msgstr ""
+msgstr "Borrar esta versión"
 
 #: trac/wiki/templates/wiki_view.html:86
 msgid "Delete page"
-msgstr ""
+msgstr "Borrar pagina"
 
