@@ -41,7 +41,7 @@ from trac.util.datefmt import format_datetime, from_utimestamp, \
 from trac.util.text import exception_to_unicode, obfuscate_email_address,  \
                            shorten_line, to_unicode
 from trac.util.presentation import separated
-from trac.util.translation import _, tag_, tagn_, N_, gettext
+from trac.util.translation import _, tag_, tagn_, N_, gettext, ngettext
 from trac.versioncontrol.diff import get_diff_options, diff_blocks
 from trac.web import arg_list_to_args, parse_arg_list, IRequestHandler
 from trac.web.chrome import add_link, add_notice, add_script, add_stylesheet, \
@@ -107,8 +107,8 @@ class TicketModule(Component):
         """
         if name.startswith('default_'):
             if name not in self._warn_for_default_attr:
-                self.log.warning('%s option should be accessed via '
-                                 'TicketSystem component', name)
+                self.log.warning("%s option should be accessed via "
+                                 "TicketSystem component", name)
                 self._warn_for_default_attr.add(name)
             return getattr(TicketSystem(self.env), name)
         raise AttributeError("TicketModule has no attribute '%s'" % name)
@@ -123,11 +123,11 @@ class TicketModule(Component):
     # IContentConverter methods
 
     def get_supported_conversions(self):
-        yield ('csv', _('Comma-delimited Text'), 'csv',
+        yield ('csv', _("Comma-delimited Text"), 'csv',
                'trac.ticket.Ticket', 'text/csv', 8)
-        yield ('tab', _('Tab-delimited Text'), 'tsv',
+        yield ('tab', _("Tab-delimited Text"), 'tsv',
                'trac.ticket.Ticket', 'text/tab-separated-values', 8)
-        yield ('rss', _('RSS Feed'), 'xml',
+        yield ('rss', _("RSS Feed"), 'xml',
                'trac.ticket.Ticket', 'application/rss+xml', 8)
 
     def convert_content(self, req, mimetype, ticket, key):
@@ -149,7 +149,7 @@ class TicketModule(Component):
     def get_navigation_items(self, req):
         if 'TICKET_CREATE' in req.perm:
             yield ('mainnav', 'newticket', 
-                   tag.a(_('New Ticket'), href=req.href.newticket(),
+                   tag.a(_("New Ticket"), href=req.href.newticket(),
                          accesskey=7))
 
     # IRequestHandler methods
@@ -181,7 +181,7 @@ class TicketModule(Component):
 
     def get_search_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', _('Tickets'))
+            yield ('ticket', _("Tickets"))
 
     def get_search_results(self, req, terms, filters):
         if not 'ticket' in filters:
@@ -211,11 +211,11 @@ class TicketModule(Component):
             t = ticket_realm(id=tid)
             if 'TICKET_VIEW' in req.perm(t):
                 yield (req.href.ticket(tid),
-                       tag(tag.span(get_resource_shortname(self.env, t),
-                                    class_=status),
-                           ': ',
-                           ticketsystem.format_summary(summary, status,
-                                                       resolution, type)),
+                       tag_("%(title)s: %(message)s",
+                            title=tag.span(get_resource_shortname(self.env, t),
+                                           class_=status),
+                            message=ticketsystem.format_summary(
+                                summary, status, resolution, type)),
                        from_utimestamp(ts), author,
                        shorten_result(desc, terms))
         
@@ -228,18 +228,18 @@ class TicketModule(Component):
 
     def get_timeline_filters(self, req):
         if 'TICKET_VIEW' in req.perm:
-            yield ('ticket', _('Opened and closed tickets'))
+            yield ('ticket', _("Opened and closed tickets"))
             if self.timeline_details:
-                yield ('ticket_details', _('Ticket updates'), False)
+                yield ('ticket_details', _("Ticket updates"), False)
 
     def get_timeline_events(self, req, start, stop, filters):
         ts_start = to_utimestamp(start)
         ts_stop = to_utimestamp(stop)
 
-        status_map = {'new': ('newticket', N_('created')),
-                      'reopened': ('reopenedticket', N_('reopened')),
-                      'closed': ('closedticket', N_('closed')),
-                      'edit': ('editedticket', N_('updated'))}
+        status_map = {'new': ('newticket', N_("created")),
+                      'reopened': ('reopenedticket', N_("reopened")),
+                      'closed': ('closedticket', N_("closed")),
+                      'edit': ('editedticket', N_("updated"))}
 
         ticket_realm = Resource('ticket')
 
@@ -257,16 +257,18 @@ class TicketModule(Component):
                     if len(fields) > 0:
                         labels = [tag.i(field_labels.get(k, k.capitalize()))
                                   for k in fields.keys()]
-                        info = tagn_('%(labels)s changed',
-                                     '%(labels)s changed', len(labels),
-                                    labels=separated(labels, ', ')) + tag.br()
+                        info = tagn_("%(labels)s changed",
+                                     "%(labels)s changed", len(labels),
+                                     labels=separated(labels, ', ')) + tag.br()
                 else:
                     return None
             elif 'ticket' in filters:
                 if status == 'closed' and resolution:
-                    info = resolution
-                    if info and comment:
-                        info += ': '
+                    if resolution and comment:
+                        info = _("%(title)s: %(message)s", title=resolution,
+                                 message='') # typographical translation (fr)
+                    else:
+                        info = resolution
             else:
                 return None
             kind, verb = status_map[status]
@@ -338,7 +340,7 @@ class TicketModule(Component):
         elif field == 'title':
             title = TicketSystem(self.env).format_summary(summary, status,
                                                           resolution, type)
-            return tag_('Ticket %(ticketref)s (%(summary)s) %(verb)s', 
+            return tag_("Ticket %(ticketref)s (%(summary)s) %(verb)s",
                         ticketref=tag.em('#', ticket.id, title=title),
                         summary=shorten_line(summary), verb=gettext(verb))
         elif field == 'description':
@@ -516,12 +518,12 @@ class TicketModule(Component):
                 for problem in problems:
                     add_warning(req, problem)
                 add_warning(req,
-                            tag_('Please review your configuration, '
-                                 'probably starting with %(section)s '
-                                 'in your %(tracini)s.',
-                                 section = tag.pre('[ticket]', tag.br(),
-                                                   'workflow = ...'),
-                                 tracini = tag.tt('trac.ini')))
+                            tag_("Please review your configuration, "
+                                 "probably starting with %(section)s "
+                                 "in your %(tracini)s.",
+                                 section=tag.pre('[ticket]', tag.br(),
+                                                 'workflow = ...'),
+                                 tracini=tag.tt('trac.ini')))
 
             # Apply changes made by the workflow
             self._apply_ticket_changes(ticket, field_changes)
@@ -575,7 +577,7 @@ class TicketModule(Component):
             t = ticket.resource(id=id, version=None)
             if t:
                 add_link(req, css_class, req.href.ticket(id),
-                         'Ticket #%s' % id)
+                         _("Ticket #%(id)s", id=id))
 
         global_sequence = True
         # If the ticket is being shown in the context of a query, add
@@ -626,8 +628,8 @@ class TicketModule(Component):
             add_link(req, 'alternate', conversion_href, conversion[1],
                      conversion[4], format)
                      
-        prevnext_nav(req, _('Previous Ticket'), _('Next Ticket'), 
-                     _('Back to Query'))
+        prevnext_nav(req, _("Previous Ticket"), _("Next Ticket"), 
+                     _("Back to Query"))
 
         return 'ticket.html', data, None
 
@@ -709,11 +711,11 @@ class TicketModule(Component):
                         'date': ticket['time'],
                         'author': ticket['reporter'] # not 100% accurate...
                         })
-        data.update({'title': _('Ticket History'),
+        data.update({'title': _("Ticket History"),
                      'resource': ticket.resource,
                      'history': history})
 
-        add_ctxtnav(req, _('Back to Ticket #%(num)s', num=ticket.id),
+        add_ctxtnav(req, _("Back to Ticket #%(num)s", num=ticket.id),
                            req.href.ticket(ticket.id))
         return 'history_view.html', data, None
 
@@ -755,7 +757,7 @@ class TicketModule(Component):
         if new_idx >= 0:
             new_version, new_change = descriptions[new_idx]
         else:
-            raise TracError(_('No differences to show'))
+            raise TracError(_("No differences to show"))
 
         tnew = ticket.resource(version=new_version)
         told = ticket.resource(version=old_version)
@@ -792,16 +794,16 @@ class TicketModule(Component):
         changes = []
 
         def version_info(t, field=None):
-            path = 'Ticket #%s' % ticket.id
+            path = _("Ticket #%(id)s", id=ticket.id)
             # TODO: field info should probably be part of the Resource as well
             if field:
                 path = tag(path, Markup(' &ndash; '),
                            field_labels.get(field, field.capitalize()))
             if t.version:
-                rev = _('Version %(num)s', num=t.version)
+                rev = _("Version %(num)s", num=t.version)
                 shortrev = 'v%d' % t.version
             else:
-                rev, shortrev = _('Initial Version'), _('initial')
+                rev, shortrev = _("Initial Version"), _("initial")
             return {'path':  path, 'rev': rev, 'shortrev': shortrev,
                     'href': get_resource_url(self.env, t, req.href)}
 
@@ -818,8 +820,9 @@ class TicketModule(Component):
                     rendered = self._render_property_diff(req, ticket, k,
                                                           old, new, tnew)
                     if rendered:
-                        prop['diff'] = tag.li('Property ', tag.strong(label),
-                                                   ' ', rendered)
+                        prop['diff'] = tag.li(
+                            tag_("Property %(label)s %(rendered)s",
+                                 label=tag.strong(label), rendered=rendered))
                     props.append(prop)
         changes.append({'props': props, 'diffs': [],
                         'new': version_info(tnew),
@@ -854,23 +857,23 @@ class TicketModule(Component):
             add_link(req, 'prev', get_resource_url(self.env, ticket.resource,
                                                    req.href, action='diff',
                                                    version=prev_version),
-                     _('Version %(num)s', num=prev_version))
+                     _("Version %(num)s", num=prev_version))
         add_link(req, 'up', get_resource_url(self.env, ticket.resource,
                                              req.href, action='history'),
-                 _('Ticket History'))
+                 _("Ticket History"))
         if next_version:
             add_link(req, 'next', get_resource_url(self.env, ticket.resource,
                                                    req.href, action='diff',
                                                    version=next_version),
-                     _('Version %(num)s', num=next_version))
+                     _("Version %(num)s", num=next_version))
 
-        prevnext_nav(req, _('Previous Change'), _('Next Change'), 
-                     _('Ticket History'))
+        prevnext_nav(req, _("Previous Change"), _("Next Change"), 
+                     _("Ticket History"))
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
 
         data.update({
-            'title': _('Ticket Diff'),
+            'title': _("Ticket Diff"),
             'resource': ticket.resource,
             'old_version': old_version, 'new_version': new_version,
             'changes': changes, 'diff': diff_data,
@@ -891,7 +894,7 @@ class TicketModule(Component):
         for version, date, author, comment in ticket.get_comment_history(cnum):
             history.append({
                 'version': version, 'date': date, 'author': author,
-                'comment': version == 0 and "''Initial version''" or '',
+                'comment': version == 0 and _("''Initial version''") or '',
                 'value': comment,
                 'url': self._make_comment_url(req, ticket, cnum, version)
             })
@@ -904,15 +907,15 @@ class TicketModule(Component):
         history.reverse()
         url = self._make_comment_url(req, ticket, cnum)
         data.update({
-            'title': _('Ticket Comment History'),
+            'title': _("Ticket Comment History"),
             'resource': ticket.resource,
-            'name': _('Ticket #%(num)s, comment %(cnum)d',
+            'name': _("Ticket #%(num)s, comment %(cnum)d",
                       num=ticket.id, cnum=cnum),
             'url': url,
             'diff_action': 'comment-diff', 'diff_args': [('cnum', cnum)],
             'history': history,
         })
-        add_ctxtnav(req, _('Back to Ticket #%(num)s', num=ticket.id), url)
+        add_ctxtnav(req, _("Back to Ticket #%(num)s", num=ticket.id), url)
         return 'history_view.html', data, None
 
     def _render_comment_diff(self, req, ticket, data, cnum):
@@ -930,13 +933,13 @@ class TicketModule(Component):
             history[change['version']] = change
 
         def version_info(version):
-            path = _('Ticket #%(num)s, comment %(cnum)d',
+            path = _("Ticket #%(num)s, comment %(cnum)d",
                      num=ticket.id, cnum=cnum)
             if version:
-                rev = _('Version %(num)s', num=version)
+                rev = _("Version %(num)s", num=version)
                 shortrev = 'v%d' % version
             else:
-                rev, shortrev = _('Initial Version'), _('initial')
+                rev, shortrev = _("Initial Version"), _("initial")
             return {'path':  path, 'rev': rev, 'shortrev': shortrev}
 
         diff_style, diff_options, diff_data = get_diff_options(req)
@@ -953,8 +956,8 @@ class TicketModule(Component):
                 text = history[version]['value']
                 return text and text.splitlines() or []
             except KeyError:
-                raise ResourceNotFound(_('No version %(version)d for comment '
-                                         '%(cnum)d on ticket #%(ticket)s',
+                raise ResourceNotFound(_("No version %(version)d for comment "
+                                         "%(cnum)d on ticket #%(ticket)s",
                                          version=version, cnum=cnum,
                                          ticket=ticket.id))
         
@@ -978,24 +981,24 @@ class TicketModule(Component):
         if prev_version:
             url = req.href.ticket(ticket.id, cnum=cnum, action='comment-diff',
                                   version=prev_version)
-            add_link(req, 'prev', url, _('Version %(num)s', num=prev_version))
+            add_link(req, 'prev', url, _("Version %(num)s", num=prev_version))
         add_link(req, 'up', req.href.ticket(ticket.id, cnum=cnum,
                                             action='comment-history'),
-                 _('Ticket Comment History'))
+                 _("Ticket Comment History"))
         if next_version:
             url = req.href.ticket(ticket.id, cnum=cnum, action='comment-diff',
                                   version=next_version)
-            add_link(req, 'next', url, _('Version %(num)s', num=next_version))
+            add_link(req, 'next', url, _("Version %(num)s", num=next_version))
 
-        prevnext_nav(req, _('Previous Change'), _('Next Change'),
-                     _('Ticket Comment History'))
+        prevnext_nav(req, _("Previous Change"), _("Next Change"),
+                     _("Ticket Comment History"))
         add_stylesheet(req, 'common/css/diff.css')
         add_script(req, 'common/js/diff.js')
 
         data.update({
-            'title': _('Ticket Comment Diff'),
+            'title': _("Ticket Comment Diff"),
             'resource': ticket.resource,
-            'name': _('Ticket #%(num)s, comment %(cnum)d',
+            'name': _("Ticket #%(num)s, comment %(cnum)d",
                       num=ticket.id, cnum=cnum),
             'url': self._make_comment_url(req, ticket, cnum),
             'old_url': self._make_comment_url(req, ticket, cnum, old_version),
@@ -1057,8 +1060,19 @@ class TicketModule(Component):
                     elif not values['new']:
                         chg = 'deleted'
                     change_summary.setdefault(chg, []).append(field)
-            change['title'] = '; '.join(['%s %s' % (', '.join(v), k) for k, v \
-                                         in change_summary.iteritems()])
+            c = change_summary.get('changed')
+            if c:
+                c = ngettext("%(labels)s changed", "%(labels)s changed",
+                             len(c), labels=', '.join(c))
+            s = change_summary.get('set')
+            if s:
+                s = ngettext("%(labels)s set", "%(labels)s set",
+                             len(s), labels=', '.join(s))
+            d = change_summary.get('deleted')
+            if d:
+                d = ngettext("%(labels)s deleted", "%(labels)s deleted",
+                             len(d), labels=', '.join(d))
+            change['title'] = _("; ").join(g for g in [c, s, d] if g)
 
         data = self._prepare_data(req, ticket, absurls=True)
         data['changes'] = changes
@@ -1112,7 +1126,7 @@ class TicketModule(Component):
 
         # Always require a summary
         if not ticket['summary']:
-            add_warning(req, _('Tickets must contain a summary.'))
+            add_warning(req, _("Tickets must contain a summary."))
             valid = False
             
         # Always validate for known values
@@ -1130,20 +1144,21 @@ class TicketModule(Component):
                                     'the %s field.' % (value, name))
                         valid = False
                 elif not field.get('optional', False):
-                    add_warning(req, 'field %s must be set' % name)
+                    add_warning(req, _("field %(name)s must be set",
+                                       name=name))
                     valid = False
 
         # Validate description length
         if len(ticket['description'] or '') > self.max_description_size:
-            add_warning(req, _('Ticket description is too long (must be less '
-                          'than %(num)s characters)',
-                          num=self.max_description_size))
+            add_warning(req, _("Ticket description is too long (must be less "
+                               "than %(num)s characters)",
+                               num=self.max_description_size))
             valid = False
 
         # Validate comment length
         if len(comment or '') > self.max_comment_size:
-            add_warning(req, _('Ticket comment is too long (must be less '
-                               'than %(num)s characters)',
+            add_warning(req, _("Ticket comment is too long (must be less "
+                               "than %(num)s characters)",
                                num=self.max_comment_size))
             valid = False
 
@@ -1157,7 +1172,7 @@ class TicketModule(Component):
                 int(replyto or 0)
         except ValueError:
             # Shouldn't happen in "normal" circumstances, hence not a warning
-            raise InvalidTicket(_('Invalid comment threading identifier'))
+            raise InvalidTicket(_("Invalid comment threading identifier"))
 
         # Custom validation rules
         for manipulator in self.ticket_manipulators:
@@ -1165,8 +1180,8 @@ class TicketModule(Component):
                 valid = False
                 if field:
                     add_warning(req, _("The ticket field '%(field)s' is "
-                                  "invalid: %(message)s",
-                                  field=field, message=message))
+                                       "invalid: %(message)s",
+                                       field=field, message=message))
                 else:
                     add_warning(req, message)
         return valid
@@ -1181,9 +1196,9 @@ class TicketModule(Component):
         except Exception, e:
             self.log.error("Failure sending notification on creation of "
                     "ticket #%s: %s", ticket.id, exception_to_unicode(e))
-            add_warning(req, _('The ticket has been created, but an error '
-                               'occurred while sending notifications: '
-                               '%(message)s', message=to_unicode(e)))
+            add_warning(req, _("The ticket has been created, but an error "
+                               "occurred while sending notifications: "
+                               "%(message)s", message=to_unicode(e)))
 
         # Redirect the user to the newly created ticket or add attachment
         if 'attachment' in req.args:
@@ -1227,15 +1242,15 @@ class TicketModule(Component):
                 change = _('change')
                 if fragment:
                     change = tag.a(change, href=fragment)
-                add_warning(req, tag_('The %(change)s has been saved, but an '
-                                      'error occurred while sending '
-                                      'notifications: %(message)s',
+                add_warning(req, tag_("The %(change)s has been saved, but an "
+                                      "error occurred while sending "
+                                      "notifications: %(message)s",
                                       change=change, message=to_unicode(e)))
                 fragment = ''
 
         # After saving the changes, apply the side-effects.
         for controller in controllers:
-            self.env.log.debug('Side effect for %s' %
+            self.env.log.debug("Side effect for %s" %
                                controller.__class__.__name__)
             controller.apply_action_side_effects(req, ticket, action)
 
@@ -1334,7 +1349,7 @@ class TicketModule(Component):
                 type_ = field['type']
                 field['skip'] = True
                 if not ticket.exists:
-                    field['label'] = _('Owner')
+                    field['label'] = _("Owner")
                     if 'TICKET_MODIFY' in req.perm(ticket.resource):
                         field['skip'] = False
                         owner_field = field
@@ -1388,7 +1403,7 @@ class TicketModule(Component):
                 value = ticket.values.get(name)
                 if value in ('1', '0'):
                     field['rendered'] = self._query_link(req, name, value,
-                                value == '1' and _('yes') or _('no'))
+                                value == '1' and _("yes") or _("no"))
             elif type_ == 'text':
                 if field.get('format') == 'wiki':
                     field['rendered'] = format_to_oneliner(self.env, context,
@@ -1429,9 +1444,9 @@ class TicketModule(Component):
         def quote_original(author, original, link):
             if 'comment' not in req.args: # i.e. the comment was not yet edited
                 data['comment'] = '\n'.join(
-                    ['Replying to [%s %s]:' % (link,
+                    ["Replying to [%s %s]:" % (link,
                                         obfuscate_email_address(author))] +
-                    ['> %s' % line for line in original.splitlines()] + [''])
+                    ["> %s" % line for line in original.splitlines()] + [''])
 
         if replyto == 'description':
             quote_original(ticket['reporter'], ticket['description'],
@@ -1574,16 +1589,16 @@ class TicketModule(Component):
                 type_ = f['type']
                 break
         if type_ == 'checkbox':
-            rendered = new == '1' and _('set') or _('unset')
+            rendered = new == '1' and _("set") or _("unset")
         elif type_ == 'textarea':
             if not resource_new:
-                rendered = _('modified')
+                rendered = _("modified")
             else:
                 href = get_resource_url(self.env, resource_new, req.href,
                                         action='diff')
                 # TRANSLATOR: modified ('diff') (link)
-                diff = tag.a(_('diff'), href=href)
-                rendered = tag_('modified (%(diff)s)', diff=diff)
+                diff = tag.a(_("diff"), href=href)
+                rendered = tag_("modified (%(diff)s)", diff=diff)
 
         # per name special rendering of diffs
         old_list, new_list = None, None
@@ -1603,23 +1618,23 @@ class TicketModule(Component):
                      if x not in old_list]
             remvd = [tag.em(render_elt(x)) for x in old_list
                      if x not in new_list]
-            added = added and tagn_('%(items)s added', '%(items)s added',
+            added = added and tagn_("%(items)s added", "%(items)s added",
                                     len(added), items=separated(added, sep))
-            remvd = remvd and tagn_('%(items)s removed', '%(items)s removed',
+            remvd = remvd and tagn_("%(items)s removed", "%(items)s removed",
                                     len(remvd), items=separated(remvd, sep))
             if added or remvd:
-                rendered = tag(added, added and remvd and '; ', remvd)
+                rendered = tag(added, added and remvd and _("; "), remvd)
         if field in ('reporter', 'owner'):
             if not (Chrome(self.env).show_email_addresses or 
                     'EMAIL_VIEW' in req.perm(resource_new or ticket.resource)):
                 old = obfuscate_email_address(old)
                 new = obfuscate_email_address(new)
             if old and not new:
-                rendered = tag_('%(value)s deleted', value=tag.em(old))
+                rendered = tag_("%(value)s deleted", value=tag.em(old))
             elif new and not old:
-                rendered = tag_('set to %(value)s', value=tag.em(new))
+                rendered = tag_("set to %(value)s", value=tag.em(new))
             elif old and new:
-                rendered = tag_('changed from %(old)s to %(new)s',
+                rendered = tag_("changed from %(old)s to %(new)s",
                                 old=tag.em(old), new=tag.em(new))
         return rendered
 
