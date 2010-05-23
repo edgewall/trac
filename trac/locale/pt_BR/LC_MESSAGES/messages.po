@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-23 00:48-0300\n"
-"PO-Revision-Date: 2010-05-23 00:47-0300\n"
+"POT-Creation-Date: 2010-05-23 12:38-0300\n"
+"PO-Revision-Date: 2010-05-23 12:36-0300\n"
 "Last-Translator: Leslie Harlley Watter <leslie@watter.org>\n"
 "Language-Team: pt_BR <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -5268,19 +5268,23 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr "Já registrado como %(user)s."
 
-#: trac/web/chrome.py:583
+#: trac/web/chrome.py:564
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Erro com a navegação \"%(name)s\""
 
-#: trac/web/chrome.py:878
+#: trac/web/chrome.py:854
 msgid "(unknown template location)"
 msgstr "(localização de template desconhecida)"
 
-#: trac/web/chrome.py:879
+#: trac/web/chrome.py:855
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Erro no Genshi %(error)s ao renderizar o template %(location)s"
+
+#: trac/web/chrome.py:891 trac/web/chrome.py:899
+msgid "anonymous"
+msgstr "anônimo"
 
 #: trac/web/main.py:227
 msgid "Secure cookies are enabled, you must use https to submit forms."
