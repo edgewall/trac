@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-06-23 15:38+0200\n"
-"PO-Revision-Date: 2010-05-23 18:29+0200\n"
+"PO-Revision-Date: 2010-05-25 00:29+0200\n"
 "Last-Translator: Mikael Relbe <mikael@relbe.se>\n"
 "Language-Team: sv_SE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -5117,21 +5117,21 @@ msgstr "Autentiseringsinformation ej tillgänglig. Vänligen se %(inst_doc)s."
 msgid "Already logged in as %(user)s."
 msgstr "Redan inloggad som %(user)s."
 
-#: trac/web/chrome.py:564
+#: trac/web/chrome.py:567
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Internt fel (fel i \"navigation contributor %(name)s\")"
 
-#: trac/web/chrome.py:854
+#: trac/web/chrome.py:857
 msgid "(unknown template location)"
 msgstr "(okänd plats för mall)"
 
-#: trac/web/chrome.py:855
+#: trac/web/chrome.py:858
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi-fel %(error)s vid rendering av mallen %(location)s"
 
-#: trac/web/chrome.py:891 trac/web/chrome.py:899
+#: trac/web/chrome.py:894 trac/web/chrome.py:902
 msgid "anonymous"
 msgstr "anonym"
 
