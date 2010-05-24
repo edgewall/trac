@@ -39,7 +39,7 @@
   
         // add the expander icon
         var expander = $('<span class="expander">&nbsp;</span>')
-          .attr("title", "Expand sub-directory in place")
+          .attr("title", _("Expand sub-directory in place"))
           .click(function() { toggleDir($(this), qargs); })
         a.wrap('<div></div>').before(expander);
         if (autoexpand && a.text() == autoexpand[0])
@@ -68,7 +68,7 @@
         tr.addClass("collapsed");
         tr.siblings("tr."+folderid).hide();
       }
-      expander.attr("title", "Re-expand directory");
+      expander.attr("title", _("Re-expand directory"));
       return;
     }
 
@@ -139,19 +139,23 @@
             loading_row.remove();
           } else {
             loading_row.find("span.loading")
-              .text("").append("<i>(empty)</i>").removeClass("loading");
+              .text("")
+              .append("<i>" + _("(empty)") + "</i>")
+              .removeClass("loading");
             enableExpandDir(tr, loading_row, qargs); // make it collapsible
           }
         },
         error: function(req, err, exc) {
           loading_row.find("span.loading")
-            .text("").append("<i>(error)</i>").removeClass("loading");
+            .text("")
+            .append("<i>" + _("(error)") + "</i>")
+            .removeClass("loading");
           loading_row.addClass("error");
           enableExpandDir(tr, loading_row, qargs); // make it collapsible
         }
       });
     }
-    expander.attr("title", "Fold directory");
+    expander.attr("title", _("Fold directory"));
   }
 
 })(jQuery);

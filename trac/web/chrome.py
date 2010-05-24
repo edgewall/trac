@@ -504,6 +504,13 @@ class Chrome(Component):
         add_link(req, 'help', req.href.wiki('TracGuide'))
         add_stylesheet(req, 'common/css/trac.css')
         add_script(req, 'common/js/jquery.js')
+        try:
+            import babel
+        except ImportError:
+            babel = None
+        if babel is not None:
+            add_script(req, 'common/js/babel.js')
+            add_script(req, 'common/js/messages/%s.js' % (str(req.locale),))
         # Only activate noConflict mode if requested to by the handler
         if handler is not None and \
            getattr(handler.__class__, 'jquery_noconflict', False):

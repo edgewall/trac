@@ -80,10 +80,12 @@
             if (message)
               message.remove();
             // create new message panel
+            if (!data)
+              data = "<strong>" + _("(no changeset information)") + "</strong>";
             message = $('<div class="message">').css("position", "absolute")
                 .append($('<div class="inlinebuttons">')
                   .append($('<input value="Close" type="button">').click(hide)))
-                .append($('<div>').html(data || "<strong>(no changeset information)</strong>"))
+                .append($('<div>').html(data))
               .appendTo("body");
 
             // workaround non-clickable "Close" issue in Firefox
