@@ -103,7 +103,7 @@ try:
                 log.info('generating messages javascript %r to %r',
                          mo_file, js_file)
 
-                infile = open(mo_file, 'r')
+                infile = open(mo_file, 'rb')
                 try:
                     t = Translations(infile, self.domain)
                     catalog = t._catalog
