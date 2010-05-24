@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-24 22:48+0200\n"
+"POT-Creation-Date: 2010-05-24 23:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,7 +92,7 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: trac/htdocs/js/trac.js:13
+#: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr ""
 
@@ -132,8 +132,12 @@ msgstr ""
 msgid "Image: [[Image()]]"
 msgstr ""
 
-#: trac/wiki/templates/wiki_view.html:3
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
+msgstr ""
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
 msgstr ""
 
 #: trac/wiki/templates/wiki_view.html:5

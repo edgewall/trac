@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-21 02:09+0200\n"
-"PO-Revision-Date: 2010-05-24 22:56+0200\n"
+"PO-Revision-Date: 2010-05-24 23:56+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -92,7 +92,7 @@ msgstr "entre"
 msgid "and"
 msgstr "et"
 
-#: trac/htdocs/js/trac.js:13
+#: trac/htdocs/js/trac.js:7
 msgid "Link here"
 msgstr "Signet"
 
@@ -132,9 +132,14 @@ msgstr "Saut de ligne : [[BR]]"
 msgid "Image: [[Image()]]"
 msgstr "Image : [[Image()]]"
 
-#: trac/wiki/templates/wiki_view.html:3
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
 msgstr "Lien vers cette section"
+
+#: trac/versioncontrol/templates/changeset.html:7
+#, fuzzy
+msgid "Link to this diff"
+msgstr "Lien vers cette différence"
 
 #: trac/wiki/templates/wiki_view.html:5
 #, python-format
