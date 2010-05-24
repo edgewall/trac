@@ -84,7 +84,7 @@
               data = "<strong>" + _("(no changeset information)") + "</strong>";
             message = $('<div class="message">').css("position", "absolute")
                 .append($('<div class="inlinebuttons">')
-                  .append($('<input value="Close" type="button">').click(hide)))
+                .append($('<input value="' + _("Close") + '" type="button">').click(hide)))
                 .append($('<div>').html(data))
               .appendTo("body");
 

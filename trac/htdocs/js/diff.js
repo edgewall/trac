@@ -116,13 +116,13 @@
       var table = $(this).siblings("table").get(0);
       if (! table) return;
       var pre = $('<pre class="diff">').hide().insertAfter(table);
-      $("<span>Tabular</span>").click(function() {
+      $("<span>" + _("Tabular") + "</span>").click(function() {
         $(pre).hide();
         $(table).show();
         $(this).addClass("active").siblings("span").removeClass("active");
         return false;
       }).addClass("active").appendTo(switcher);
-      $("<span>Unified</span>").click(function() {
+      $("<span>" + _("Unified") + "</span>").click(function() {
         $(table).hide();
         if (!pre.get(0).firstChild) convertDiff(name, table, pre);
         $(pre).fadeIn("fast")

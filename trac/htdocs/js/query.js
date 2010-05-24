@@ -116,7 +116,7 @@
 
       if (this.options[this.selectedIndex].disabled) {
         // IE doesn't support disabled options
-        alert("A filter already exists for that property");
+        alert(_("A filter already exists for that property"));
         this.selectedIndex = 0;
         return;
       }
@@ -143,7 +143,7 @@
                     .attr("id", "label_" + propertyName));
       } else {
         th.attr("colSpan", property.type == "time"? 1: 2)
-          .append(createLabel("or"))
+          .append(createLabel(_("or")))
       }
       tr.append(th);
       
@@ -162,15 +162,15 @@
           }
         } else if (property.type == "checkbox") {
           td.append(createRadio(propertyName, "1", propertyName + "_on"))
-            .append(" ").append(createLabel("yes", propertyName + "_on"))
+            .append(" ").append(createLabel(_("yes"), propertyName + "_on"))
             .append(" ")
             .append(createRadio(propertyName, "0", propertyName + "_off"))
-            .append(" ").append(createLabel("no", propertyName + "_off"));
+            .append(" ").append(createLabel(_("no"), propertyName + "_off"));
         } else if (property.type == "time") {
           focusElement = createText(propertyName, 14)
-          td.append(createLabel("between")).append(" ")
+          td.append(createLabel(_("between"))).append(" ")
             .append(focusElement).append(" ")
-            .append(createLabel("and")).append(" ")
+            .append(createLabel(_("and"))).append(" ")
             .append(createText(propertyName + "_end", 14));
         }
         tr.append(td);

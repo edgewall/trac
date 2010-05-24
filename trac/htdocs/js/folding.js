@@ -71,7 +71,8 @@
         };
         $(this).click(hide)
           .css('cursor', 'pointer')
-          .attr('title', babel.format(_("%(title)s (click to hide column)"), {title: $(this).attr('title')}));
+          .attr('title', babel.format(_("%(title)s (click to hide column)"),
+                                      {title: $(this).attr('title')}));
       });
   }
 
