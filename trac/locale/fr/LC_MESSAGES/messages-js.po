@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-21 02:09+0200\n"
-"PO-Revision-Date: 2010-05-21 02:11+0200\n"
+"PO-Revision-Date: 2010-05-24 22:56+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -21,6 +21,18 @@ msgstr ""
 msgid "(no changeset information)"
 msgstr "(pas d'information sur la révision)"
 
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Fermer"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Table"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Diff unifié"
+
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
 msgstr "Ouvrir le sous-répertoire"
@@ -28,6 +40,11 @@ msgstr "Ouvrir le sous-répertoire"
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
 msgstr "Réouvrir le sous-répertoire"
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Chargement de %(entry)s ..."
 
 #: trac/htdocs/js/expand_dir.js:143
 msgid "(empty)"
@@ -51,7 +68,31 @@ msgstr "Voir %(title)s"
 msgid "%(title)s (click to hide column)"
 msgstr "%(title)s (cliquer pour cacher la colonne)"
 
-#: trac/htdocs/js/trac.js:4
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr "Un filtre existe déjà pour cette propriété"
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr "ou"
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr "oui"
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr "non"
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr "entre"
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr "et"
+
+#: trac/htdocs/js/trac.js:13
 msgid "Link here"
 msgstr "Signet"
 
@@ -90,4 +131,13 @@ msgstr "Saut de ligne : [[BR]]"
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
 msgstr "Image : [[Image()]]"
+
+#: trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Lien vers cette section"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Lien vers #%(id)s"
 
