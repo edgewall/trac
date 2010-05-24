@@ -15,7 +15,7 @@
     </title>
     <script type="text/javascript" py:choose="">
       jQuery(document).ready(function($) {
-        $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
+        $("div.description").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
         $(".foldable").enableFolding(false, true);
       <py:when test="ticket.exists">
         var args = {realm: "ticket", id: ${ticket.id}, escape_newlines: ${int(preserve_newlines)}}

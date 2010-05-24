@@ -15,9 +15,9 @@
           title="Edit this page" href="${href.wiki(page.name, action='edit')}" />
     <script type="text/javascript">
       jQuery(document).ready(function($) {
-        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor(_("Link to this section"));
         $("#content").find(".wikianchor").each(function() {
-          $(this).addAnchor("Link to #"+$(this).attr('id'))
+          $(this).addAnchor(babel.format(_("Link to #%(id)s"), {id: $(this).attr('id')}));
         });
         $(".foldable").enableFolding(true, true);
       });
@@ -45,7 +45,7 @@
       <div class="wikipage searchable" py:choose="" xml:space="preserve">
         <py:when test="page.exists">
           <?python
-            last_modification = (page.comment and 
+            last_modification = (page.comment and
                  _('Version %(version)s by %(author)s: %(comment)s',
                    version=page.version, author=format_author(page.author), comment=page.comment) or
                  _('Version %(version)s by %(author)s',

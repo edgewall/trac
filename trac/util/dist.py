@@ -19,6 +19,7 @@ we also modify the standard `distutils.command.build` and
 for compiling catalogs are issued upon install.
 """
 
+from StringIO import StringIO
 import os
 import re
 
@@ -28,12 +29,29 @@ from distutils.command.build import build as _build
 from distutils.errors import DistutilsOptionError
 from setuptools.command.install_lib import install_lib as _install_lib
 
+from genshi.core import Stream
+from genshi.input import XMLParser
+
 from trac.util.presentation import to_json
 
 try:
+    from babel.messages.extract import extract_javascript
     from babel.messages.frontend import extract_messages, init_catalog, \
                                         compile_catalog, update_catalog
     from babel.support import Translations
+
+
+    def extract_javascript_script(fileobj, keywords, comment_tags, options):
+        """Extract messages from Javascript embedding in <script> tags.
+
+        Select <script type="javascript/text"> tags and delegate to
+        `extract_javascript`.
+        """
+        out = StringIO()
+        stream = Stream(XMLParser(fileobj))
+        stream.select('//script[@type="text/javascript"]').render(out=out)
+        out.seek(0)
+        return extract_javascript(out, keywords, comment_tags, options)
 
 
     class generate_messages_js(Command):

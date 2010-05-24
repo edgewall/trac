@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-23 17:45+0200\n"
+"POT-Creation-Date: 2010-05-24 22:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4886,21 +4886,21 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr ""
 
-#: trac/web/chrome.py:564
+#: trac/web/chrome.py:567
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:854
+#: trac/web/chrome.py:857
 msgid "(unknown template location)"
 msgstr ""
 
-#: trac/web/chrome.py:855
+#: trac/web/chrome.py:858
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:891 trac/web/chrome.py:899
+#: trac/web/chrome.py:894 trac/web/chrome.py:902
 msgid "anonymous"
 msgstr ""
 

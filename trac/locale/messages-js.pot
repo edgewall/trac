@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-20 21:20+0900\n"
+"POT-Creation-Date: 2010-05-24 22:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,12 +21,29 @@ msgstr ""
 msgid "(no changeset information)"
 msgstr ""
 
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr ""
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr ""
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr ""
+
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
 msgstr ""
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
+msgstr ""
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
 msgstr ""
 
 #: trac/htdocs/js/expand_dir.js:143
@@ -51,7 +68,31 @@ msgstr ""
 msgid "%(title)s (click to hide column)"
 msgstr ""
 
-#: trac/htdocs/js/trac.js:4
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr ""
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr ""
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr ""
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr ""
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr ""
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr ""
+
+#: trac/htdocs/js/trac.js:13
 msgid "Link here"
 msgstr ""
 
@@ -89,5 +130,14 @@ msgstr ""
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
+msgstr ""
+
+#: trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr ""
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
 msgstr ""
 
