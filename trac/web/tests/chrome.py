@@ -1,11 +1,17 @@
 from trac.core import Component, implements
-from trac.test import EnvironmentStub, Mock
+from trac.test import EnvironmentStub
 from trac.web.chrome import add_link, add_meta, add_script, add_script_data, \
                             add_stylesheet, Chrome, INavigationContributor
 from trac.web.href import Href
 
 import unittest
 
+class Request(object):
+    locale = None
+    def __init__(self, **kwargs):
+        self.chrome = {}
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
 class ChromeTestCase(unittest.TestCase):
 
@@ -20,7 +26,7 @@ class ChromeTestCase(unittest.TestCase):
         ComponentMeta._registry = self._old_registry
 
     def test_add_meta(self):
-        req = Mock(chrome={}, href=Href('/trac.cgi'))
+        req = Request(href=Href('/trac.cgi'))
         add_meta(req, 'Jim Smith', name='Author', scheme='test', lang='en-us')
         add_meta(req, 'Tue, 20 Aug 1996 14:25:27 GMT', http_equiv='Expires')
         metas = req.chrome['metas']
@@ -36,13 +42,13 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('Expires', meta['http-equiv'])
 
     def test_add_link_simple(self):
-        req = Mock(chrome={}, href=Href('/trac.cgi'))
+        req = Request(href=Href('/trac.cgi'))
         add_link(req, 'start', '/trac/wiki')
         self.assertEqual('/trac/wiki',
                          req.chrome['links']['start'][0]['href'])
 
     def test_add_link_advanced(self):
-        req = Mock(chrome={}, href=Href('/trac.cgi'))
+        req = Request(href=Href('/trac.cgi'))
         add_link(req, 'start', '/trac/wiki', 'Start page', 'text/html', 'home')
         link = req.chrome['links']['start'][0]
         self.assertEqual('/trac/wiki', link['href'])
@@ -51,7 +57,7 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('home', link['class'])
 
     def test_add_script(self):
-        req = Mock(base_path='/trac.cgi', chrome={}, href=Href('/trac.cgi'))
+        req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))
         add_script(req, 'common/js/trac.js')
         add_script(req, 'common/js/trac.js')
         scripts = req.chrome['scripts']
@@ -61,14 +67,14 @@ class ChromeTestCase(unittest.TestCase):
                          scripts[0]['href'])
 
     def test_add_script_data(self):
-        req = Mock(chrome={}, href=Href('/trac.cgi'))
+        req = Request(href=Href('/trac.cgi'))
         add_script_data(req, {'var1': 1, 'var2': 'Testing'})
         add_script_data(req, {'var2': 'More testing', 'var3': 3})
         self.assertEqual({'var1': 1, 'var2': 'More testing', 'var3': 3},
                          req.chrome['script_data'])
 
     def test_add_stylesheet(self):
-        req = Mock(base_path='/trac.cgi', chrome={}, href=Href('/trac.cgi'))
+        req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))
         add_stylesheet(req, 'common/css/trac.css')
         add_stylesheet(req, 'common/css/trac.css')
         links = req.chrome['links']['stylesheet']
@@ -78,23 +84,25 @@ class ChromeTestCase(unittest.TestCase):
                          links[0]['href'])
 
     def test_add_stylesheet_media(self):
-        req = Mock(base_path='/trac.cgi', chrome={}, href=Href('/trac.cgi'))
+        req = Request(base_path='/trac.cgi', href=Href('/trac.cgi'))
         add_stylesheet(req, 'foo.css', media='print')
         links = req.chrome['links']['stylesheet']
         self.assertEqual(1, len(links))
         self.assertEqual('print', links[0]['media'])
 
     def test_htdocs_location(self):
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='',
+                      add_redirect_listener=lambda listener: None)
         info = Chrome(self.env).prepare_request(req)
         self.assertEqual('/trac.cgi/chrome/common/', info['htdocs_location'])
 
     def test_logo(self):
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='',
+                      add_redirect_listener=lambda listener: None)
 
         # Verify that no logo data is put in the HDF if no logo is configured
         self.env.config.set('header_logo', 'src', '')
@@ -130,9 +138,10 @@ class ChromeTestCase(unittest.TestCase):
         self.assertEqual('http://www.example.org/foo.png', info['logo']['src_abs'])
 
     def test_default_links(self):
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi',
+                      path_info='',
+                      add_redirect_listener=lambda listener: None)
         links = Chrome(self.env).prepare_request(req)['links']
         self.assertEqual('/trac.cgi/wiki', links['start'][0]['href'])
         self.assertEqual('/trac.cgi/search', links['search'][0]['href'])
@@ -141,9 +150,10 @@ class ChromeTestCase(unittest.TestCase):
                          links['stylesheet'][0]['href'])
 
     def test_icon_links(self):
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi', 
+                      path_info='',
+                      add_redirect_listener=lambda listener: None)
         chrome = Chrome(self.env)
 
         # No icon set in config, so no icon links
@@ -181,9 +191,10 @@ class ChromeTestCase(unittest.TestCase):
                 return None
             def get_navigation_items(self, req):
                 yield 'metanav', 'test', 'Test'
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), path_info='/', 
+                      base_path='/trac.cgi',
+                      add_redirect_listener=lambda listener: None)
         nav = Chrome(self.env).prepare_request(req)['nav']
         self.assertEqual({'name': 'test', 'label': 'Test', 'active': False},
                          nav['metanav'][0])
@@ -195,9 +206,10 @@ class ChromeTestCase(unittest.TestCase):
                 return 'test'
             def get_navigation_items(self, req):
                 yield 'metanav', 'test', 'Test'
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), path_info='/', base_path='/trac.cgi',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), path_info='/', 
+                      base_path='/trac.cgi',
+                      add_redirect_listener=lambda listener: None)
         handler = TestNavigationContributor(self.env)
         nav = Chrome(self.env).prepare_request(req, handler)['nav']
         self.assertEqual({'name': 'test', 'label': 'Test', 'active': True},
@@ -216,9 +228,10 @@ class ChromeTestCase(unittest.TestCase):
                 return None
             def get_navigation_items(self, req):
                 yield 'metanav', 'test2', 'Test 2'
-        req = Mock(chrome={}, abs_href=Href('http://example.org/trac.cgi'),
-                   href=Href('/trac.cgi'), base_path='/trac.cgi', path_info='/',
-                   add_redirect_listener=lambda listener: None)
+        req = Request(abs_href=Href('http://example.org/trac.cgi'),
+                      href=Href('/trac.cgi'), base_path='/trac.cgi', 
+                      path_info='/',
+                      add_redirect_listener=lambda listener: None)
         chrome = Chrome(self.env)
 
         # Test with both items set in the order option

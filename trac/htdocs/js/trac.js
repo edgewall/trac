@@ -1,5 +1,8 @@
 (function($){
-  
+
+  if (typeof _ == 'undefined')
+    babel.Translations.load({}).install();
+
   $.fn.addAnchor = function(title) {
     title = title || _("Link here");
     return this.filter("*[id]").each(function() {
@@ -85,7 +88,7 @@
     $(textarea).height("");
     textarea.rows = rows;
   }
-  
+
   // The following are defined for backwards compatibility with releases prior
   // to Trac 0.11
   
