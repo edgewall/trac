@@ -12,189 +12,13 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-import os
-import re
-
 from setuptools import setup, find_packages
 
 extra = {}
 
 try:
     import babel
-
-    from distutils import log
-    from distutils.cmd import Command
-    from distutils.errors import DistutilsOptionError
-    from babel.support import Translations
-    class generate_messages_js(Command):
-        """Generating message javascripts command for use ``setup.py`` scripts.
-        """
-
-        description = 'generate message javascript files from binary MO files'
-        user_options = [
-            ('domain=', 'D',
-             "domain of PO file (default 'messages')"),
-            ('input-dir=', 'I',
-             'path to base directory containing the catalogs'),
-            ('input-file=', 'i',
-             'name of the input file'),
-            ('output-dir=', 'O',
-             "name of the output directory"),
-            ('output-file=', 'o',
-             "name of the output file (default "
-             "'<output_dir>/<locale>.js')"),
-            ('locale=', 'l',
-             'locale of the catalog to compile'),
-        ]
-
-        def initialize_options(self):
-            self.domain = 'messages'
-            self.input_dir = None
-            self.input_file = None
-            self.output_dir = None
-            self.output_file = None
-            self.locale = None
-
-        def finalize_options(self):
-            if not self.input_file and not self.input_dir:
-                raise DistutilsOptionError('you must specify either the input '
-                                           'file or directory')
-            if not self.output_file and not self.output_dir:
-                raise DistutilsOptionError('you must specify either the '
-                                           'output file or directory')
-
-        def run(self):
-            mo_files = []
-            js_files = []
-
-            def js_path(dir, locale):
-                return os.path.join(dir, locale + '.js')
-
-            if not self.input_file:
-                if self.locale:
-                    mo_files.append((self.locale,
-                                     os.path.join(self.input_dir, self.locale,
-                                                  'LC_MESSAGES',
-                                                  self.domain + '.mo')))
-                    js_files.append(js_path(self.output_dir, self.locale))
-                else:
-                    for locale in os.listdir(self.input_dir):
-                        mo_file = os.path.join(self.input_dir, locale,
-                                               'LC_MESSAGES',
-                                               self.domain + '.mo')
-                        if os.path.exists(mo_file):
-                            mo_files.append((locale, mo_file))
-                            js_files.append(js_path(self.output_dir, locale))
-            else:
-                mo_files.append((self.locale, self.input_file))
-                if self.output_file:
-                    js_files.append(self.output_file)
-                else:
-                    js_files.append(js_path(self.output_dir, locale))
-
-            if not mo_files:
-                raise DistutilsOptionError('no compiled catalogs found')
-
-            if not os.path.isdir(self.output_dir):
-                os.mkdir(self.output_dir)
-
-            for idx, (locale, mo_file) in enumerate(mo_files):
-                js_file = js_files[idx]
-                log.info('generating messages javascript %r to %r',
-                         mo_file, js_file)
-
-                infile = open(mo_file, 'rb')
-                try:
-                    t = Translations(infile, self.domain)
-                    catalog = t._catalog
-                finally:
-                    infile.close()
-
-                outfile = open(js_file, 'w')
-                try:
-                    write_js(outfile, catalog, self.domain, locale)
-                finally:
-                    outfile.close()
-
-    def write_js(fileobj, catalog, domain, locale):
-        data = {'domain': domain, 'locale': locale}
-
-        messages = {}
-        for msgid, msgstr in catalog.iteritems():
-            if isinstance(msgid, (list, tuple)):
-                messages.setdefault(msgid[0], {})
-                messages[msgid[0]][msgid[1]] = msgstr
-            elif msgid:
-                messages[msgid] = msgstr
-            else:
-                for line in msgstr.splitlines():
-                    line = line.strip()
-                    if not line:
-                        continue
-                    if ':' not in line:
-                        continue
-                    name, val = line.split(':', 1)
-                    name = name.strip().lower()
-                    if name == 'plural-forms':
-                        data['plural_expr'] = pluralexpr(val)
-                        break
-        data['messages'] = messages
-
-        fileobj.write('// Generated messages javascript file '
-                      'from compiled MO file\n')
-        fileobj.write('babel.Translations.load(')
-        fileobj.write(to_json(data))
-        fileobj.write(').install();\n')
-
-    def pluralexpr(forms):
-        match = re.search(r'\bplural\s*=\s*([^;]+)', forms)
-        if not match:
-            raise ValueError('Failed to parse plural_forms %r' % (forms,))
-        return match.group(1)
-
-    def to_json_compat(val, **kwargs):
-        if isinstance(val, basestring):
-            return _escape_string(val)
-        if val is None:
-            return 'null'
-        if val is True:
-            return 'true'
-        if val is False:
-            return 'false'
-        if isinstance(val, (int, long)):
-            return str(val)
-        if isinstance(val, float):
-            return repr(val)
-        if isinstance(val, (list, tuple)):
-            return '[%s]' % ', '.join([to_json_compat(v) for v in val])
-        if isinstance(val, dict):
-            return '{%s}' % ', '.join(['%s: %s' % (to_json_compat(k),
-                                                   to_json_compat(v))
-                                       for k, v in val.iteritems()])
-
-    _json_escape = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
-                    '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
-    _json_pattern = re.compile(r'[^\x20-\x7f]')
-
-    def _escape_string(val):
-        def replace(match):
-            ch = match.group(0)
-            if ch in _json_escape:
-                return _json_escape[ch]
-            return r'\u%04x' % ord(ch)
-        return _json_pattern.sub(replace, val)
-
-    try:
-        from json import dumps as to_json
-    except ImportError:
-        try:
-            from simplejson.json import dumps as to_json
-        except:
-            to_json = to_json_compat
-
-    from babel.messages.frontend \
-            import extract_messages, init_catalog, compile_catalog, \
-                   update_catalog
+    
     extractors = [
         ('**.py',                'python', None),
         ('**/templates/**.html', 'genshi', None),
@@ -205,32 +29,11 @@ try:
         'trac': extractors,
         'tracopt': extractors,
     }
-    cmdclass = {
-        'extract_messages_js': extract_messages,
-        'init_catalog_js': init_catalog,
-        'compile_catalog_js': compile_catalog,
-        'update_catalog_js': update_catalog,
-        'generate_messages_js': generate_messages_js,
-    }
-    extra['cmdclass'] = cmdclass
 
-    # 'bdist_wininst' runs a 'build', so make the latter 
-    # run a 'compile_catalog' before 'build_py'
-    from distutils.command.build import build
-    build.sub_commands.insert(0, ('generate_messages_js', lambda x: True))
-    build.sub_commands.insert(0, ('compile_catalog_js', lambda x: True))
-    build.sub_commands.insert(0, ('compile_catalog', lambda x: True))
+    from trac.util.dist import get_l10n_js_cmdclass
+    extra['cmdclass'] = get_l10n_js_cmdclass()
 
-    # 'bdist_egg' isn't that nice, all it does is an 'install_lib'
-    from setuptools.command.install_lib import install_lib as _install_lib
-    class install_lib(_install_lib): # playing setuptools' own tricks ;-)
-        def run(self):
-            self.run_command('compile_catalog')
-            self.run_command('compile_catalog_js')
-            self.run_command('generate_messages_js')
-            _install_lib.run(self)
-    cmdclass['install_lib'] = install_lib
-except ImportError:
+except ImportError, e:
     pass
 
 setup(
