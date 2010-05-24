@@ -1,7 +1,7 @@
 # French translations for Trac.
 # Copyright (C) 2010 Edgewall Software
 # This file is distributed under the same license as the Trac project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Christian Boos <cboos@neuf.fr>, 2010.
 #
 msgid ""
 msgstr ""
@@ -9,8 +9,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-21 02:09+0200\n"
 "PO-Revision-Date: 2010-05-21 02:11+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: fr <LL@li.org>\n"
+"Last-Translator: Christian Boos <cboos@neuf.fr>\n"
+"Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -19,75 +19,75 @@ msgstr ""
 
 #: trac/htdocs/js/blame.js:84
 msgid "(no changeset information)"
-msgstr ""
+msgstr "(pas d'information sur la révision)"
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr ""
+msgstr "Ouvrir le sous-répertoire"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr ""
+msgstr "Réouvrir le sous-répertoire"
 
 #: trac/htdocs/js/expand_dir.js:143
 msgid "(empty)"
-msgstr ""
+msgstr "(vide)"
 
 #: trac/htdocs/js/expand_dir.js:151
 msgid "(error)"
-msgstr ""
+msgstr "(erreur)"
 
 #: trac/htdocs/js/expand_dir.js:158
 msgid "Fold directory"
-msgstr ""
+msgstr "Fermer le répertoire"
 
 #: trac/htdocs/js/folding.js:59
 #, python-format
 msgid "Show %(title)s"
-msgstr ""
+msgstr "Voir %(title)s"
 
 #: trac/htdocs/js/folding.js:74
 #, python-format
 msgid "%(title)s (click to hide column)"
-msgstr ""
+msgstr "%(title)s (cliquer pour cacher la colonne)"
 
 #: trac/htdocs/js/trac.js:4
 msgid "Link here"
-msgstr ""
+msgstr "Signet"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
-msgstr ""
+msgstr "Texte en gras : '''Exemple'''"
 
 #: trac/htdocs/js/wikitoolbar.js:59
 msgid "Italic text: ''Example''"
-msgstr ""
+msgstr "Texte en italique : ''Exemple''"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Heading: == Example =="
-msgstr ""
+msgstr "Titre : == Exemple =="
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Link: [http://www.example.com/ Example]"
-msgstr ""
+msgstr "Lien : [http://www.exemple.com/ Exemple]"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Code block: {{{ example }}}"
-msgstr ""
+msgstr "Bloc de code : {{{ exemple }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
-msgstr ""
+msgstr "Filet horizontal : ----"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"
-msgstr ""
+msgstr "Nouveau paragraphe"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "Line break: [[BR]]"
-msgstr ""
+msgstr "Saut de ligne : [[BR]]"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
-msgstr ""
+msgstr "Image : [[Image()]]"
 
