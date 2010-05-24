@@ -41,19 +41,21 @@ define HELP
 
  ---------------- L10N tasks
 
-  extraction          regenerate the messages.pot template file
+  init-xy             create catalogs for given xy locale
 
-  update              update all the messages.po file(s)
-  update-xy           update the catalog for the xy locale only
+  extraction          regenerate the catalog templates
 
-  compile             compile all the messages.po files
-  compile-xy          compile the catalog for the xy locale only
+  update              update all the catalog files from the templates
+  update-xy           update the catalogs for the xy locale only
 
-  check               verify all the messages.po files
-  check-xy            verify the catalog for the xy locale only
+  compile             compile all the catalog files
+  compile-xy          compile the catalogs for the xy locale only
+
+  check               verify all the catalog files
+  check-xy            verify the catalogs for the xy locale only
 
   stats               detailed translation statistics for all catalogs
-  stats-pot           total messages in the messages.pot template file
+  stats-pot           total messages in the catalog templates
   stats-xy            translated, fuzzy, untranslated for the xy locale only
 
   summary             display percent translated for all catalogs
@@ -132,31 +134,42 @@ else
 endif
 
 messages.po = trac/locale/$(*)/LC_MESSAGES/messages.po
+messages-js.po = trac/locale/$(*)/LC_MESSAGES/messages-js.po
 messages.pot = trac/locale/messages.pot
+messages-js.pot = trac/locale/messages-js.pot
 
 .PHONY: extract extraction update compile check stats summary diff
 
+init-%:
+	@[ -e $(messages.po) ] \
+	 && echo "$(messages.po) already exists" \
+	 || python setup.py init_catalog -l $(*)
+	@[ -e $(messages-js.po) ] \
+	 && echo "$(messages-js.po) already exists" \
+	 || python setup.py init_catalog_js -l $(*)
+
 extract extraction:
-	python setup.py extract_messages
+	python setup.py extract_messages extract_messages_js
 
 update-%:
-	python setup.py update_catalog -l $(*)
+	python setup.py update_catalog -l $(*) update_catalog_js -l $(*)
 
 ifdef locale
 update: $(addprefix update-,$(locale))
 else
 update:
-	python setup.py update_catalog
+	python setup.py update_catalog update_catalog_js
 endif
 
 compile-%:
-	python setup.py compile_catalog -l $(*)
+	python setup.py compile_catalog -l $(*) \
+	    compile_catalog_js -l $(*) generate_messages_js -l $(*)
 
 ifdef locale
 compile: $(addprefix compile-,$(locale))
 else
 compile:
-	python setup.py compile_catalog
+	python setup.py compile_catalog compile_catalog_js
 endif
 
 check: pre-check $(addprefix check-,$(locales))
@@ -167,7 +180,8 @@ pre-check:
 
 check-%:
 	@echo -n "$(@): "
-	@msgfmt --check trac/locale/$(*)/LC_MESSAGES/messages.po && echo OK
+	@msgfmt --check $(messages.po) && msgfmt --check $(messages-js.po) \
+	 && echo OK
 
 stats: pre-stats $(addprefix stats-,$(locales))
 
@@ -175,13 +189,15 @@ pre-stats: stats-pot
 	@echo "translation statistics for $(locales)..."
 
 stats-pot:
-	@echo "translation statistics for messages.pot: "
-	@echo -n "$(@): "
-	@msgfmt --statistics $(messages.pot)
+	@echo "translation statistics for catalog templates:"
+	@echo -n "messages.pot: "; msgfmt --statistics $(messages.pot)
+	@echo -n "messages-js.pot: "; msgfmt --statistics $(messages-js.pot) 
 
 stats-%:
-	@echo -n "$(@): "
-	@msgfmt --statistics $(messages.po)
+	@echo -n "messages.po: "; msgfmt --statistics $(messages.po)
+	@[ -e $(messages-js.po) ] \
+	 && echo -n "messages-js.po: "; msgfmt --statistics $(messages-js.po) \
+	 || echo "$(messages-js.po) doesn't exist (make init-$(*))"
 
 summary: $(addprefix summary-,$(locales))
 
@@ -198,12 +214,15 @@ LC_ALL=C msgfmt --statistics $(1) 2>&1 \
 endef
 
 MESSAGES_TOTAL = \
-    $(eval MESSAGES_TOTAL := $(shell $(call untranslated-sh,$(messages.pot))))\
+    $(eval MESSAGES_TOTAL := ( \
+        $(shell $(call untranslated-sh,$(messages.pot))) + \
+        $(shell $(call untranslated-sh,$(messages-js.pot)))))\
     $(MESSAGES_TOTAL)
 
 summary-%:
 	@python -c "print 'l10n/$(*): translations updated (%0.0f%%)' \
-	    % ($(shell $(call translated-sh,$(messages.po))) * 100.0 \
+	    % (($(shell $(call translated-sh,$(messages.po))) + \
+	        $(shell $(call translated-sh,$(messages-js.po)))) * 100.0 \
 	       / $(MESSAGES_TOTAL))"
 
 diff: $(addprefix diff-,$(locales))
@@ -212,7 +231,7 @@ diff: $(addprefix diff-,$(locales))
 diff-%:
 	@svn diff trac/locale/$(*) \
 	    | grep -Ev '^([-+]#:|[@ ])' | grep -E '^[-+@]' || true
-	
+
 
 # ----------------------------------------------------------------------------
 #
