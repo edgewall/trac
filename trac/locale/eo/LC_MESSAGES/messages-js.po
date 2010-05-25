@@ -1,0 +1,147 @@
+# Translations template for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Wolfram DIESTEL <diestel@steloj.de>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 0.12\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"PO-Revision-Date: 2010-05-25 20:53+0100\n"
+"Last-Translator: Wolfram DIESTEL <diestel@steloj.de>\n"
+"Language-Team: eo <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(neniu ŝanĝaro-informo)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Fermu"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Tabula"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Unuecigita"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Etendu subdosierujon ĉeloke"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Reetendu dosierujon"
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Ŝargante %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:143
+msgid "(empty)"
+msgstr "(malplena)"
+
+#: trac/htdocs/js/expand_dir.js:151
+msgid "(error)"
+msgstr "(eraro)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "Fold directory"
+msgstr "Maletendu dosierujon"
+
+#: trac/htdocs/js/folding.js:59
+#, python-format
+msgid "Show %(title)s"
+msgstr "Montru %(title)sn"
+
+#: trac/htdocs/js/folding.js:74
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (klaku por kaŝi kolumnon)"
+
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr "Jam ekzistas filtrilo por tiu eco"
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr "aŭ"
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr "jes"
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr "ne"
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr "inter"
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr "kaj"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Ligu tie ĉi"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Grasa teksto: '''Ekzemplo'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Kursiva teksto: ''Ekzemplo''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Titolo: == Ekzemplo =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Referenco: [http://www.example.com/ Ekzemplo]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Kodalineo: {{{ ekzemplo }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Horizontala streko: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Nova alineo"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "Linirompo: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Bildo: [[Image()]]"
+
+#: trac/ticket/templates/ticket.html:3
+#: trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Referenco al tiu sekcio"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Referenco al tiu diferencaĵo"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Referenco al  #%(id)s"
+
