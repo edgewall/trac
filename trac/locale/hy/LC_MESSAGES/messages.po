@@ -2980,7 +2980,7 @@ msgstr "սկզբնական"
 
 #: trac/ticket/web_ui.py:825
 msgid "Property %(label)s %(rendered)s"
-msgstr "Հատկություն %(name)s %(rendered)s"
+msgstr "Հատկություն %(label)s %(rendered)s"
 
 #: trac/ticket/web_ui.py:870
 #: trac/ticket/web_ui.py:993
