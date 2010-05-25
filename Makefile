@@ -220,7 +220,7 @@ MESSAGES_TOTAL = \
     $(MESSAGES_TOTAL)
 
 summary-%:
-	@python -c "print 'l10n/$(*): translations updated (%0.0f%%)' \
+	@python -c "print 'l10n/$(*): translations updated (%d%%)' \
 	    % (($(shell $(call translated-sh,$(messages.po))) + \
 	        $(shell $(call translated-sh,$(messages-js.po)))) * 100.0 \
 	       / $(MESSAGES_TOTAL))"

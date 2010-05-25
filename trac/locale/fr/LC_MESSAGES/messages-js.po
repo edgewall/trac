@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-21 02:09+0200\n"
-"PO-Revision-Date: 2010-05-24 23:56+0200\n"
+"PO-Revision-Date: 2010-05-25 08:51+0200\n"
 "Last-Translator: Christian Boos <cboos@neuf.fr>\n"
 "Language-Team: fr <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
@@ -137,7 +137,6 @@ msgid "Link to this section"
 msgstr "Lien vers cette section"
 
 #: trac/versioncontrol/templates/changeset.html:7
-#, fuzzy
 msgid "Link to this diff"
 msgstr "Lien vers cette différence"
 
