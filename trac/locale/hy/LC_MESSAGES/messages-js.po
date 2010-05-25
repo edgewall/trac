@@ -1,0 +1,145 @@
+# Armenian (Republic of Armenia) translations for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Instigate Training Center: Narine Martirosyan <training@instigate.am>, 2010
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 0.12\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"PO-Revision-Date: 2010-05-25 15:36+0400\n"
+"Last-Translator: Narine Martirosyan <training@instigate.am>\n"
+"Language-Team: hy_AM <trac-dev@googlegroups.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(բացակայում է փոփոխությունների մասին ինֆորմացիան)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Փակել"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Աղյուսակային"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Միասնական"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Բացել ենթակատալոգը տեղում"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Կրկին անգամ բացել կատալոգը"
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Բեռնվում է %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:143
+msgid "(empty)"
+msgstr "(դատարկ)"
+
+#: trac/htdocs/js/expand_dir.js:151
+msgid "(error)"
+msgstr "(սխալ)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "Fold directory"
+msgstr "Փակել կատալոգը"
+
+#: trac/htdocs/js/folding.js:59
+#, python-format
+msgid "Show %(title)s"
+msgstr "Ցույց տալ %(title)s"
+
+#: trac/htdocs/js/folding.js:74
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (կտտացնել սյունը թաքցնելու համար)"
+
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr "Այդ հատկության համար արդեն գոյություն ունի Ֆիլտր"
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr "կամ"
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr "այո"
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr "ոչ"
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr "միջև"
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr "և"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Հղել այստեղ"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Մուք տառերով տեքս․ '''Example'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Շեղատառ տեքս․ ''Example''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Վերնագիր․ == Example =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Հղում․ [http://www.example.com/ Example]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Կոդի բլոկ․ {{{ example }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Հորիզոնական գծաքանոն․ ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Նոր պարբերություն"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "Տողի անցում: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Նկար: [[Image()]]"
+
+#: trac/ticket/templates/ticket.html:3
+#: trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Հղում այս բաժնի վրա"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Հղում այս տարբերության վրա"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Հղում #%(id)s վրա"
