@@ -33,6 +33,7 @@ from trac.web import HTTPNotFound, IRequestHandler
 from trac.web.chrome import add_notice, add_stylesheet, \
                             add_warning, Chrome, INavigationContributor, \
                             ITemplateProvider
+from trac.wiki.formatter import format_to_html
 
 try:
     from webadmin import IAdminPageProvider
@@ -522,9 +523,19 @@ class PluginAdminPanel(Component):
 
     def _render_view(self, req):
         plugins = get_plugin_info(self.env, include_core=True)
+
+        def safe_wiki_to_html(context, text):
+            try:
+                return format_to_html(self.env, context, text)
+            except Exception, e:
+                self.log.error('Unable to render component documentation: %s',
+                               exception_to_unicode(e, traceback=True))
+                return tag.pre(text)
+
         data = {
             'plugins': plugins, 'show': req.args.get('show'),
             'readonly': not os.access(get_plugins_dir(self.env),
                                       os.F_OK + os.W_OK),
+            'safe_wiki_to_html': safe_wiki_to_html,
         }
         return 'admin_plugins.html', data

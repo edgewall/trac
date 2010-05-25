@@ -131,7 +131,7 @@
                   <span class="trac-name">${module_name}.*</span>
                   <span py:if="module.summary" class="trac-summary"> &mdash; ${module.summary}</span>
                 </p>
-                <div py:if="module.description" xml:space="preserve">${wiki_to_html(context, module.description)}</div>
+                <div py:if="module.description" xml:space="preserve">${safe_wiki_to_html(context, module.description)}</div>
               </td>
               <td class="sel"></td>
             </tr>
@@ -147,7 +147,7 @@
                   <span class="trac-name">${component_name}</span>
                   <span py:if="component.summary" class="trac-summary"> &mdash; ${component.summary}</span>
                 </p>
-                <div py:if="component.description" xml:space="preserve">${wiki_to_html(context, component.description)}</div>
+                <div py:if="component.description" xml:space="preserve">${safe_wiki_to_html(context, component.description)}</div>
               </td>
               <td class="sel">
                 <input py:if="not component.required" type="hidden" name="component"
