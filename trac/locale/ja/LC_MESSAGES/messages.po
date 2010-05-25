@@ -1749,7 +1749,7 @@ msgid ""
 msgstr ""
 "ファイル %(file)s,\n"
 "                [1:%(size)s]\n"
-"                (%(author)s により %(date)s前に追加)"
+"                (%(author)s が%(date)s前に追加)"
 
 #: trac/templates/diff_div.html:72
 #, python-format
@@ -2120,9 +2120,9 @@ msgid ""
 "      added by [5:%(author)s] %(date)s ago."
 msgstr ""
 "[1:%(file)s]\n"
-"        [2:[3:]]\n"
-"        (%(size)s) - [4:%(author)s] により\n"
-"        %(date)s前に追加。"
+"      [2:[3:]]\n"
+"       ([4:%(size)s]) -\n"
+"      [5:%(author)s] が%(date)s前に追加。"
 
 #: trac/templates/list_of_attachments.html:29
 #: trac/templates/list_of_attachments.html:40
@@ -3259,7 +3259,7 @@ msgid ""
 "                            [2:]\n"
 "                            [3:and]\n"
 "                            [4:]"
-msgstr "[2:] [3:と] [4:] [1:との間]"
+msgstr "[1:][2:] [3:から] [4:]"
 
 #: trac/ticket/templates/query.html:129
 msgid "And"
