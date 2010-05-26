@@ -62,6 +62,19 @@ class DateFormatTestCase(unittest.TestCase):
         self.assertEqual(datefmt.to_datetime(23), expected)
         self.assertEqual(datefmt.to_datetime(23L), expected)
         self.assertEqual(datefmt.to_datetime(23.0), expected)
+
+    def test_to_datetime_microsecond_timestamps(self):
+        expected = datetime.datetime.fromtimestamp(2345.678912,
+                                                   datefmt.localtz)
+        self.assertEqual(datefmt.to_datetime(2345678912), expected)
+        self.assertEqual(datefmt.to_datetime(2345678912L), expected)
+        self.assertEqual(datefmt.to_datetime(2345678912.0), expected)
+
+        expected = datetime.datetime.fromtimestamp(-2345.678912,
+                                                   datefmt.localtz)
+        self.assertEqual(datefmt.to_datetime(-2345678912), expected)
+        self.assertEqual(datefmt.to_datetime(-2345678912L), expected)
+        self.assertEqual(datefmt.to_datetime(-2345678912.0), expected)
     
     def test_to_datetime_can_convert_dates(self):
         expected = datetime.datetime(2009, 5, 2, tzinfo=datefmt.localtz)
