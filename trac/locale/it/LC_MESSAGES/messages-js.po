@@ -1,0 +1,147 @@
+# Italian translations for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Lele Gaifax <lele@metapensiero.it>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 0.12\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"PO-Revision-Date: 2010-05-26 09:45+0200\n"
+"Last-Translator: Lele Gaifax <lele@metapensiero.it>\n"
+"Language-Team: it_IT <trac-dev@googlegroups.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(nessuna informazione sul changeset)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Chiudi"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Tabellare"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Unificato"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Espandi sotto-directory"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Ri-espandi la directory"
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Caricamento di %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:143
+msgid "(empty)"
+msgstr "(vuoto)"
+
+#: trac/htdocs/js/expand_dir.js:151
+msgid "(error)"
+msgstr "(errore)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "Fold directory"
+msgstr "Collassa directory"
+
+#: trac/htdocs/js/folding.js:59
+#, python-format
+msgid "Show %(title)s"
+msgstr "Mostra %(title)s"
+
+#: trac/htdocs/js/folding.js:74
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (clicca per nascondere la colonna)"
+
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr "Esiste già un filtro su quella proprietà"
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr "oppure"
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr "sì"
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr "no"
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr "tra"
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr "e"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Collega qui"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Testo in grassetto: '''Esempio'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Testo in italico: ''Esempio''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Intestazione: == Esempio =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Collegamento: [http://www.esempio.it/ Esempio]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Blocco di codice: {{{ esempio }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Riga orizzontale: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Nuovo paragrafo"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "A capo: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Immagine: [[Image()]]"
+
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Collegamento a questa sezione"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Collegamento a questo confronto"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Collegamento a #%(id)s"
+
