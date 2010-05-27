@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-05-25 10:44-0300\n"
+"PO-Revision-Date: 2010-05-27 20:39-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -5109,21 +5109,21 @@ msgstr ""
 msgid "Already logged in as %(user)s."
 msgstr "Ya identificado como %(user)s."
 
-#: trac/web/chrome.py:564
+#: trac/web/chrome.py:567
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr ""
 
-#: trac/web/chrome.py:854
+#: trac/web/chrome.py:857
 msgid "(unknown template location)"
 msgstr "(ubicacin de plantilla desconocida)"
 
-#: trac/web/chrome.py:855
+#: trac/web/chrome.py:858
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr ""
 
-#: trac/web/chrome.py:891 trac/web/chrome.py:899
+#: trac/web/chrome.py:894 trac/web/chrome.py:902
 msgid "anonymous"
 msgstr ""
 
@@ -5693,7 +5693,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_rename.html:19
 msgid "The complete history of the page will be moved to the new location."
-msgstr "Se moverá a la nueva ubicación la historia compñeta de la página."
+msgstr "Se moverá a la nueva ubicación la historia completa de la página."
 
 #: trac/wiki/templates/wiki_rename.html:23
 msgid "New name:"
