@@ -51,7 +51,7 @@ def to_datetime(t, tzinfo=None):
     elif isinstance(t, (int, long, float)):
         if not (_min_ts <= t <= _max_ts):
             # Handle microsecond timestamps for 0.11 compatibility
-            t = t / 1000000.0
+            t = t * 0.000001
         return datetime.fromtimestamp(t, tzinfo or localtz)
     raise TypeError('expecting datetime, int, long, float, or None; got %s' %
                     type(t))
