@@ -249,7 +249,7 @@ msgstr "Platte tekst"
 
 #: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:652
 msgid "Original Format"
-msgstr "Originele formaat"
+msgstr "Originele indeling"
 
 #: trac/attachment.py:813 trac/attachment.py:819
 #: trac/templates/list_of_attachments.html:20
@@ -1761,7 +1761,7 @@ msgstr "Bijlageinformatie"
 #: trac/templates/attachment.html:40 trac/ticket/templates/ticket.html:366
 #: trac/wiki/templates/wiki_edit_form.html:46
 msgid "Your email or username:"
-msgstr "Uw e-mail- of gebruikersnaam:"
+msgstr "Uw e-mail of gebruikersnaam:"
 
 #: trac/templates/attachment.html:46
 msgid "Description of the file (optional):"
@@ -1923,7 +1923,7 @@ msgstr ""
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
 msgid "Timestamp:"
-msgstr "Timestamp"
+msgstr "Datum:"
 
 #: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
@@ -2183,7 +2183,7 @@ msgstr "Zoeken in %(project)s"
 
 #: trac/templates/layout.html:50
 msgid "Download in other formats:"
-msgstr "In andere formaten downloaden:"
+msgstr "In andere indeling downloaden:"
 
 #: trac/templates/list_of_attachments.html:19
 msgid "View attachment"
@@ -3938,7 +3938,7 @@ msgid ""
 "        [7:done by [8:]]"
 msgstr ""
 "[1:Wijzigingen weergeven van [2:]] [3:]\n"
-"        en [4:[5:] dagen terug][6:]\n"
+"        tot [4:[5:] dagen terug][6:]\n"
 "        [7:gedaan door [8:]]"
 
 #: trac/timeline/templates/timeline.html:36
@@ -4501,7 +4501,7 @@ msgid ""
 msgstr ""
 "Revisie [1:%(rev)s],\n"
 "            [2:%(size)s]\n"
-"            ingechecked door %(author)s, %(date)s geleden\n"
+"            ingecheckt door %(author)s, %(date)s geleden\n"
 "            ([3:diff])"
 
 #: trac/versioncontrol/templates/browser.html:140
@@ -4903,7 +4903,7 @@ msgstr ""
 "              [2:]\n"
 "            ]\n"
 "            [3:\n"
-"              terug naar\n"
+"              terug tot\n"
 "              [4:]\n"
 "            weergeven]"
 
@@ -5145,12 +5145,12 @@ msgstr "nieuwste"
 #: trac/versioncontrol/web_ui/changeset.py:793
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
-msgstr "Verschillen [%(old_rev)s:%(new_rev)s] voor %(path)s"
+msgstr "Diff [%(old_rev)s:%(new_rev)s] voor %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:799
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
-msgstr "Verschillen van %(old_path)s@%(old_rev)s tot %(new_path)s@%(new_rev)s"
+msgstr "Diff van %(old_path)s@%(old_rev)s tot %(new_path)s@%(new_rev)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:871
 msgid "Changesets in all repositories"
@@ -5650,7 +5650,7 @@ msgstr "Geschiedenis"
 
 #: trac/wiki/web_ui.py:683
 msgid "Wiki changes"
-msgstr "Wikiwijzigingen"
+msgstr "Wiki-wijzigingen"
 
 #: trac/wiki/web_ui.py:712
 #, python-format
