@@ -171,7 +171,7 @@ def prevnext_nav(req, prev_label, next_label, up_label=None):
                           class_='prev')
         
     add_ctxtnav(req, tag.span(Markup('&larr; '), prev_link or prev_label,
-                              class_=prev_link or 'missing'))
+                              class_=not prev_link and 'missing' or None))
 
     if up_label and 'up' in links:
         up = links['up'][0]
@@ -183,7 +183,7 @@ def prevnext_nav(req, prev_label, next_label, up_label=None):
                           class_='next')
 
     add_ctxtnav(req, tag.span(next_link or next_label, Markup(' &rarr;'),
-                              class_=next_link or 'missing'))
+                              class_=not next_link and 'missing' or None))
 
 
 def _save_messages(req, url, permanent):
