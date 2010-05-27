@@ -1,0 +1,148 @@
+# Dutch translations for Trac.
+# Copyright (C) 2010 Edgewall Software
+# This file is distributed under the same license as the Trac project.
+# Laurens Holst <laurens.nospam@grauw.nl>, 2010.
+# Bas van Oostveen <trbs@trbs.net>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Trac 0.12\n"
+"Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
+"POT-Creation-Date: 2010-05-24 23:55+0200\n"
+"PO-Revision-Date: 2010-05-25 14:08+0200\n"
+"Last-Translator: Trbs <trbs@trbs.net>\n"
+"Language-Team: nl <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.5\n"
+
+#: trac/htdocs/js/blame.js:84
+msgid "(no changeset information)"
+msgstr "(geen wijzigingsinformatie)"
+
+#: trac/htdocs/js/blame.js:87
+msgid "Close"
+msgstr "Sluiten"
+
+#: trac/htdocs/js/diff.js:119
+msgid "Tabular"
+msgstr "Tabulair"
+
+#: trac/htdocs/js/diff.js:125
+msgid "Unified"
+msgstr "Unified"
+
+#: trac/htdocs/js/expand_dir.js:42
+msgid "Expand sub-directory in place"
+msgstr "Map uitklappen"
+
+#: trac/htdocs/js/expand_dir.js:71
+msgid "Re-expand directory"
+msgstr "Map overnieuw uitklappen"
+
+#: trac/htdocs/js/expand_dir.js:115
+#, python-format
+msgid "Loading %(entry)s..."
+msgstr "Bezig met laden van %(entry)s..."
+
+#: trac/htdocs/js/expand_dir.js:143
+msgid "(empty)"
+msgstr "(leeg)"
+
+#: trac/htdocs/js/expand_dir.js:151
+msgid "(error)"
+msgstr "(fout)"
+
+#: trac/htdocs/js/expand_dir.js:158
+msgid "Fold directory"
+msgstr "Map inklappen"
+
+#: trac/htdocs/js/folding.js:59
+#, python-format
+msgid "Show %(title)s"
+msgstr "%(title)s weergeven"
+
+#: trac/htdocs/js/folding.js:74
+#, python-format
+msgid "%(title)s (click to hide column)"
+msgstr "%(title)s (klik om kolom te verbergen)"
+
+#: trac/htdocs/js/query.js:119
+msgid "A filter already exists for that property"
+msgstr "Een filter bestaat al voor die eigenschap"
+
+#: trac/htdocs/js/query.js:146
+msgid "or"
+msgstr "of"
+
+#: trac/htdocs/js/query.js:165
+msgid "yes"
+msgstr "ja"
+
+#: trac/htdocs/js/query.js:168
+msgid "no"
+msgstr "nee"
+
+#: trac/htdocs/js/query.js:171
+msgid "between"
+msgstr "tussen"
+
+#: trac/htdocs/js/query.js:173
+msgid "and"
+msgstr "en"
+
+#: trac/htdocs/js/trac.js:7
+msgid "Link here"
+msgstr "Link hier"
+
+#: trac/htdocs/js/wikitoolbar.js:56
+msgid "Bold text: '''Example'''"
+msgstr "Vet gedrukt: '''Voorbeeld'''"
+
+#: trac/htdocs/js/wikitoolbar.js:59
+msgid "Italic text: ''Example''"
+msgstr "Cursief gedrukt: ''Voorbeeld''"
+
+#: trac/htdocs/js/wikitoolbar.js:62
+msgid "Heading: == Example =="
+msgstr "Kop: == Voorbeeld =="
+
+#: trac/htdocs/js/wikitoolbar.js:65
+msgid "Link: [http://www.example.com/ Example]"
+msgstr "Link: [http://www.voorbeeld.nl/ Voorbeeld]"
+
+#: trac/htdocs/js/wikitoolbar.js:68
+msgid "Code block: {{{ example }}}"
+msgstr "Codeblok: {{{ voorbeeld }}}"
+
+#: trac/htdocs/js/wikitoolbar.js:71
+msgid "Horizontal rule: ----"
+msgstr "Horizontale lijn: ----"
+
+#: trac/htdocs/js/wikitoolbar.js:74
+msgid "New paragraph"
+msgstr "Nieuwe paragraaf"
+
+#: trac/htdocs/js/wikitoolbar.js:77
+msgid "Line break: [[BR]]"
+msgstr "Regelafbreking: [[BR]]"
+
+#: trac/htdocs/js/wikitoolbar.js:80
+msgid "Image: [[Image()]]"
+msgstr "Afbeelding: [[Image()]]"
+
+#: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
+msgid "Link to this section"
+msgstr "Link naar deze sectie"
+
+#: trac/versioncontrol/templates/changeset.html:7
+msgid "Link to this diff"
+msgstr "Link naar deze diff"
+
+#: trac/wiki/templates/wiki_view.html:5
+#, python-format
+msgid "Link to #%(id)s"
+msgstr "Link naar #%(id)s"
+
