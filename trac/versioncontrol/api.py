@@ -566,17 +566,18 @@ class RepositoryManager(Component):
     def get_all_repositories(self):
         """Return a dictionary of repository information, indexed by name."""
         if not self._all_repositories:
-            self._all_repositories = {}
+            all_repositories = {}
             for provider in self.providers:
                 for reponame, info in provider.get_repositories() or []:
-                    if reponame in self._all_repositories:
+                    if reponame in all_repositories:
                         self.log.warn("Discarding duplicate repository '%s'",
                                       reponame)
                     else:
                         info['name'] = reponame
                         if 'id' not in info:
                             info['id'] = self.get_repository_id(reponame)
-                        self._all_repositories[reponame] = info
+                        all_repositories[reponame] = info
+            self._all_repositories = all_repositories
         return self._all_repositories
     
     def get_real_repositories(self):
