@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-04-21 21:32+0200\n"
-"PO-Revision-Date: 2010-05-25 20:38+0100\n"
+"PO-Revision-Date: 2010-05-29 20:44+0100\n"
 "Last-Translator: Wolfram DIESTEL <diestel@steloj.de>\n"
 "Language-Team: eo <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -16,6 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.5\n"
+"X-Poedit-Basepath: /home/beto/svn.trac\n"
 
 #: tracopt/mimeview/php.py:97
 msgid "You appear to be using the PHP CGI binary. Trac requires the CLI version for syntax highlighting."
@@ -3661,7 +3662,7 @@ msgstr "Kreu novan avizon"
 
 #: trac/ticket/templates/ticket.html:113
 msgid "Change History"
-msgstr "Ŝanĝu kronikon"
+msgstr "Ŝanĝokronikon"
 
 #: trac/ticket/templates/ticket.html:128
 #: trac/ticket/templates/ticket.html:217
@@ -3962,8 +3963,8 @@ msgid ""
 "        and [4:[5:] days back][6:]\n"
 "        [7:done by [8:]]"
 msgstr ""
-"[1:Rigardu ŝanĝojn de lastaj [2:]] [3:]\n"
-"        kaj [4:[5:] tagoj][6:]\n"
+"[1:Rigardu ŝanĝojn de [2:]] [3:]\n"
+"        kaj antaŭaj [4:[5:] tagoj][6:]\n"
 "        [7:faritaj de [8:]]"
 
 #: trac/timeline/templates/timeline.html:36
