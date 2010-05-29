@@ -130,8 +130,9 @@ class TimelineModule(Component):
 
         data = {'fromdate': fromdate, 'daysback': daysback,
                 'authors': authors,
-                'today': format_date(today),
-                'yesterday': format_date(today - timedelta(days=1)),
+                'today': format_date(today, tzinfo=req.tz),
+                'yesterday': format_date(today - timedelta(days=1),
+                                         tzinfo=req.tz),
                 'precisedate': precisedate, 'precision': precision,
                 'events': [], 'filters': [],
                 'abbreviated_messages': self.abbreviated_messages}
