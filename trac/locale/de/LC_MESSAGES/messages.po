@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
-"POT-Creation-Date: 2010-05-19 22:44+0200\n"
-"PO-Revision-Date: 2010-05-19 23:52+0200\n"
+"POT-Creation-Date: 2010-05-23 17:45+0200\n"
+"PO-Revision-Date: 2010-05-25 00:46+0200\n"
 "Last-Translator: Daniel Musketa <daniel@musketa.de>\n"
 "Language-Team: de_DE <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -243,12 +243,12 @@ msgstr ""
 msgid "%(attachment)s (delete)"
 msgstr "%(attachment)s (löschen)"
 
-#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:643
+#: trac/attachment.py:765 trac/versioncontrol/web_ui/browser.py:646
 #: trac/wiki/web_ui.py:68
 msgid "Plain Text"
 msgstr "Reiner Text"
 
-#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:649
+#: trac/attachment.py:771 trac/versioncontrol/web_ui/browser.py:652
 msgid "Original Format"
 msgstr "Ursprüngliches Format"
 
@@ -983,7 +983,7 @@ msgid "Add"
 msgstr "Hinzufügen"
 
 #: trac/admin/templates/admin_components.html:80 trac/ticket/admin.py:209
-#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1337
+#: trac/ticket/api.py:283 trac/ticket/web_ui.py:1352
 msgid "Owner"
 msgstr "Verantwortlicher"
 
@@ -2912,6 +2912,12 @@ msgstr ""
 "Beim Anlegen eines neuen Tickets kann der Parameter \"id\" nicht gesetzt "
 "werden."
 
+#: trac/ticket/web_ui.py:217 trac/ticket/web_ui.py:268
+#: trac/versioncontrol/web_ui/changeset.py:1026
+#, python-format
+msgid "%(title)s: %(message)s"
+msgstr "%(title)s: %(message)s"
+
 #: trac/ticket/web_ui.py:231
 msgid "Opened and closed tickets"
 msgstr "Offene und geschlossene Tickets"
@@ -2936,24 +2942,24 @@ msgstr "geschlossen"
 msgid "updated"
 msgstr "aktualisiert"
 
-#: trac/ticket/web_ui.py:262
+#: trac/ticket/web_ui.py:262 trac/ticket/web_ui.py:1066
 #, python-format
 msgid "%(labels)s changed"
 msgid_plural "%(labels)s changed"
 msgstr[0] "%(labels)s geändert"
 msgstr[1] "%(labels)s geändert"
 
-#: trac/ticket/web_ui.py:343
+#: trac/ticket/web_ui.py:345
 #, python-format
 msgid "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 msgstr "Ticket %(ticketref)s (%(summary)s) %(verb)s"
 
-#: trac/ticket/web_ui.py:498
+#: trac/ticket/web_ui.py:500
 #, python-format
 msgid "The action \"%(name)s\" is not available."
 msgstr "Die Aktion \"%(name)s\" ist nicht verfügbar."
 
-#: trac/ticket/web_ui.py:524
+#: trac/ticket/web_ui.py:526
 #, python-format
 msgid ""
 "Please review your configuration, probably starting with %(section)s in "
@@ -2962,101 +2968,133 @@ msgstr ""
 "Bitte überprüfen Sie Ihre Konfiguration, wahrscheinlich beginnend bei "
 "%(section)s in Ihrer %(tracini)s."
 
-#: trac/ticket/web_ui.py:629
+#: trac/ticket/web_ui.py:580 trac/ticket/web_ui.py:797
+#, python-format
+msgid "Ticket #%(id)s"
+msgstr "Ticket #%(id)s"
+
+#: trac/ticket/web_ui.py:631
 msgid "Previous Ticket"
 msgstr "vorheriges Ticket"
 
-#: trac/ticket/web_ui.py:629
+#: trac/ticket/web_ui.py:631
 msgid "Next Ticket"
 msgstr "nächstes Ticket"
 
-#: trac/ticket/web_ui.py:630
+#: trac/ticket/web_ui.py:632
 msgid "Back to Query"
 msgstr "Zurück zur Abfrage"
 
-#: trac/ticket/web_ui.py:712 trac/ticket/web_ui.py:860
-#: trac/ticket/web_ui.py:868
+#: trac/ticket/web_ui.py:714 trac/ticket/web_ui.py:863
+#: trac/ticket/web_ui.py:871
 msgid "Ticket History"
 msgstr "Ticket-Historie"
 
-#: trac/ticket/web_ui.py:716 trac/ticket/web_ui.py:915
+#: trac/ticket/web_ui.py:718 trac/ticket/web_ui.py:918
 #, python-format
 msgid "Back to Ticket #%(num)s"
 msgstr "Zurück zu Ticket #%(num)s"
 
-#: trac/ticket/web_ui.py:758
+#: trac/ticket/web_ui.py:760
 msgid "No differences to show"
 msgstr "Keine Unterschiede vorhanden"
 
-#: trac/ticket/web_ui.py:801 trac/ticket/web_ui.py:857
-#: trac/ticket/web_ui.py:865 trac/ticket/web_ui.py:936
-#: trac/ticket/web_ui.py:981 trac/ticket/web_ui.py:988 trac/wiki/web_ui.py:431
+#: trac/ticket/web_ui.py:803 trac/ticket/web_ui.py:860
+#: trac/ticket/web_ui.py:868 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:984 trac/ticket/web_ui.py:991 trac/wiki/web_ui.py:431
 #: trac/wiki/web_ui.py:437 trac/wiki/web_ui.py:626 trac/wiki/web_ui.py:640
 #, python-format
 msgid "Version %(num)s"
 msgstr "Version %(num)s"
 
-#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:942
 msgid "Initial Version"
 msgstr "Ursprungs-Version"
 
-#: trac/ticket/web_ui.py:804 trac/ticket/web_ui.py:939
+#: trac/ticket/web_ui.py:806 trac/ticket/web_ui.py:942
 msgid "initial"
 msgstr "initial"
 
-#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
+#: trac/ticket/web_ui.py:825
+#, python-format
+msgid "Property %(label)s %(rendered)s"
+msgstr "Eigenschaft %(label)s %(rendered)s"
+
+#: trac/ticket/web_ui.py:870 trac/ticket/web_ui.py:993
 #: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
 msgid "Previous Change"
 msgstr "Vorige Änderung"
 
-#: trac/ticket/web_ui.py:867 trac/ticket/web_ui.py:990
+#: trac/ticket/web_ui.py:870 trac/ticket/web_ui.py:993
 #: trac/versioncontrol/web_ui/changeset.py:370 trac/wiki/web_ui.py:450
 msgid "Next Change"
 msgstr "Nächste Änderung"
 
-#: trac/ticket/web_ui.py:873
+#: trac/ticket/web_ui.py:876
 msgid "Ticket Diff"
 msgstr "Ticket-Diff"
 
-#: trac/ticket/web_ui.py:907 trac/ticket/web_ui.py:984
-#: trac/ticket/web_ui.py:991
+#: trac/ticket/web_ui.py:897
+msgid "''Initial version''"
+msgstr "''Ursprungsversion''"
+
+#: trac/ticket/web_ui.py:910 trac/ticket/web_ui.py:987
+#: trac/ticket/web_ui.py:994
 msgid "Ticket Comment History"
 msgstr "Ticket-Kommentar-Historie"
 
-#: trac/ticket/web_ui.py:909 trac/ticket/web_ui.py:933
-#: trac/ticket/web_ui.py:998
+#: trac/ticket/web_ui.py:912 trac/ticket/web_ui.py:936
+#: trac/ticket/web_ui.py:1001
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
 msgstr "Ticket #%(num)s, Kommentar %(cnum)d"
 
-#: trac/ticket/web_ui.py:956
+#: trac/ticket/web_ui.py:959
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr ""
 "Version %(version)d von Kommentar %(cnum)d zu Ticket #%(ticket)s "
 "existiert nicht"
 
-#: trac/ticket/web_ui.py:996
+#: trac/ticket/web_ui.py:999
 msgid "Ticket Comment Diff"
 msgstr "Ticket-Kommentar-Diff"
 
-#: trac/ticket/web_ui.py:1082
+#: trac/ticket/web_ui.py:1070
+#, python-format
+msgid "%(labels)s set"
+msgid_plural "%(labels)s set"
+msgstr[0] "%(labels)s gesetzt"
+msgstr[1] "%(labels)s gesetzt"
+
+#: trac/ticket/web_ui.py:1074
+#, python-format
+msgid "%(labels)s deleted"
+msgid_plural "%(labels)s deleted"
+msgstr[0] "%(labels)s gelöscht"
+msgstr[1] "%(labels)s gelöscht"
+
+#: trac/ticket/web_ui.py:1075 trac/ticket/web_ui.py:1626
+msgid "; "
+msgstr "; "
+
+#: trac/ticket/web_ui.py:1096
 msgid "No permission to edit the ticket description."
 msgstr "Keine Berechtigung, die Ticketbeschreibung zu ändern."
 
-#: trac/ticket/web_ui.py:1088
+#: trac/ticket/web_ui.py:1102
 msgid "No permission to change the ticket reporter."
 msgstr "Keine Berechtigung, den Ticket-Ersteller zu ändern."
 
-#: trac/ticket/web_ui.py:1093
+#: trac/ticket/web_ui.py:1107
 msgid "No permission to change ticket fields."
 msgstr "Keine Berechtigung, Ticketfelder zu ändern."
 
-#: trac/ticket/web_ui.py:1102
+#: trac/ticket/web_ui.py:1116
 msgid "No permissions to add a comment."
 msgstr "Keine Berechtigung, einen Kommentar hinzuzufügen."
 
-#: trac/ticket/web_ui.py:1108
+#: trac/ticket/web_ui.py:1122
 msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
@@ -3064,30 +3102,35 @@ msgstr ""
 "Ihre Änderungen können leider nicht gespeichert werden. Dieses Ticket ist"
 " von jemand anderem geändert worden, seit Sie begonnen haben"
 
-#: trac/ticket/web_ui.py:1115
+#: trac/ticket/web_ui.py:1129
 msgid "Tickets must contain a summary."
 msgstr "Tickets müssen eine Kurzbeschreibung enthalten."
 
-#: trac/ticket/web_ui.py:1138
+#: trac/ticket/web_ui.py:1147
+#, python-format
+msgid "field %(name)s must be set"
+msgstr "Feld %(name)s muss gesetzt sein"
+
+#: trac/ticket/web_ui.py:1153
 #, python-format
 msgid "Ticket description is too long (must be less than %(num)s characters)"
 msgstr "Ticketbeschreibung ist zu lang (muss kürzer als %(num)s Zeichen sein)"
 
-#: trac/ticket/web_ui.py:1145
+#: trac/ticket/web_ui.py:1160
 #, python-format
 msgid "Ticket comment is too long (must be less than %(num)s characters)"
 msgstr "Kommentar zum Ticket ist zu lang (muss kürzer als %(num)s Zeichen sein)"
 
-#: trac/ticket/web_ui.py:1160
+#: trac/ticket/web_ui.py:1175
 msgid "Invalid comment threading identifier"
 msgstr "Ungültige Kommentarverknüpfungs-Kennung"
 
-#: trac/ticket/web_ui.py:1167
+#: trac/ticket/web_ui.py:1182
 #, python-format
 msgid "The ticket field '%(field)s' is invalid: %(message)s"
 msgstr "Das Ticketfeld '%(field)s' ist ungültig: %(message)s"
 
-#: trac/ticket/web_ui.py:1186
+#: trac/ticket/web_ui.py:1201
 #, python-format
 msgid ""
 "The ticket has been created, but an error occurred while sending "
@@ -3096,7 +3139,7 @@ msgstr ""
 "Das Ticket wurde erstellt, aber beim Versenden von Benachrichtigungen "
 "trat ein Fehler auf: %(message)s"
 
-#: trac/ticket/web_ui.py:1196
+#: trac/ticket/web_ui.py:1211
 #, python-format
 msgid ""
 "Your ticket %(ticketref)s has been created, but you don't have permission"
@@ -3106,11 +3149,11 @@ msgstr ""
 "Berechtigung es anzusehen."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
-#: trac/ticket/web_ui.py:1227
+#: trac/ticket/web_ui.py:1242
 msgid "change"
 msgstr "Änderung"
 
-#: trac/ticket/web_ui.py:1233
+#: trac/ticket/web_ui.py:1248
 #, python-format
 msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
@@ -3119,79 +3162,79 @@ msgstr ""
 "Die Änderung %(change)s wurde gespeichert, aber es trat ein Fehler beim "
 "Senden von Benachrichtigungen auf: %(message)s"
 
-#: trac/ticket/web_ui.py:1367
+#: trac/ticket/web_ui.py:1382
 msgid "Add to Cc"
 msgstr "Zur CC-Liste hinzufügen"
 
-#: trac/ticket/web_ui.py:1368
+#: trac/ticket/web_ui.py:1383
 msgid "Remove from Cc"
 msgstr "Aus der CC-Liste entfernen"
 
-#: trac/ticket/web_ui.py:1369
+#: trac/ticket/web_ui.py:1384
 msgid "Add/Remove from Cc"
 msgstr "Zur CC-Liste hinzufügen/entfernen"
 
-#: trac/ticket/web_ui.py:1370
+#: trac/ticket/web_ui.py:1385
 msgid "<Author field>"
 msgstr "<Autor-Feld>"
 
-#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:102
+#: trac/ticket/web_ui.py:1406 trac/ticket/templates/query.html:102
 msgid "yes"
 msgstr "ja"
 
-#: trac/ticket/web_ui.py:1391 trac/ticket/templates/query.html:105
+#: trac/ticket/web_ui.py:1406 trac/ticket/templates/query.html:105
 msgid "no"
 msgstr "nein"
 
-#: trac/ticket/web_ui.py:1577
+#: trac/ticket/web_ui.py:1592
 msgid "set"
 msgstr "gesetzt"
 
-#: trac/ticket/web_ui.py:1577
+#: trac/ticket/web_ui.py:1592
 msgid "unset"
 msgstr "gelöscht"
 
-#: trac/ticket/web_ui.py:1580 trac/versioncontrol/templates/changeset.html:189
+#: trac/ticket/web_ui.py:1595 trac/versioncontrol/templates/changeset.html:189
 #: trac/versioncontrol/templates/revisionlog.txt:12
 msgid "modified"
 msgstr "geändert"
 
 #. TRANSLATOR: modified ('diff') (link)
-#: trac/ticket/web_ui.py:1585 trac/ticket/templates/ticket.html:180
+#: trac/ticket/web_ui.py:1600 trac/ticket/templates/ticket.html:180
 #: trac/ticket/templates/ticket_box.html:64 trac/wiki/web_ui.py:722
 msgid "diff"
 msgstr "Diff"
 
-#: trac/ticket/web_ui.py:1586
+#: trac/ticket/web_ui.py:1601
 #, python-format
 msgid "modified (%(diff)s)"
 msgstr "geändert (%(diff)s)"
 
-#: trac/ticket/web_ui.py:1607
+#: trac/ticket/web_ui.py:1622
 #, python-format
 msgid "%(items)s added"
 msgid_plural "%(items)s added"
 msgstr[0] "%(items)s hinzugefügt"
 msgstr[1] "%(items)s hinzugefügt"
 
-#: trac/ticket/web_ui.py:1609
+#: trac/ticket/web_ui.py:1624
 #, python-format
 msgid "%(items)s removed"
 msgid_plural "%(items)s removed"
 msgstr[0] "%(items)s gelöscht"
 msgstr[1] "%(items)s gelöscht"
 
-#: trac/ticket/web_ui.py:1618
+#: trac/ticket/web_ui.py:1633
 #, python-format
 msgid "%(value)s deleted"
 msgstr "%(value)s gelöscht"
 
-#: trac/ticket/web_ui.py:1620
+#: trac/ticket/web_ui.py:1635
 #, python-format
 msgid "set to %(value)s"
 msgstr "auf %(value)s gesetzt"
 
-#: trac/ticket/web_ui.py:1623
+#: trac/ticket/web_ui.py:1638
 #, python-format
 msgid "changed from %(old)s to %(new)s"
 msgstr "von %(old)s nach %(new)s geändert"
@@ -3750,7 +3793,7 @@ msgstr "Vorschau"
 
 #: trac/ticket/templates/ticket.html:398
 msgid "Create ticket"
-msgstr "Neues Ticket erstellen"
+msgstr "Ticket erstellen"
 
 #: trac/ticket/templates/ticket.html:403
 msgid ""
@@ -4021,7 +4064,7 @@ msgid "Cannot synchronize a single revision on multiple repositories"
 msgstr "Kann eine einzelne Revision nicht mit mehreren Repositorys abgleichen"
 
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
-#: trac/versioncontrol/web_ui/browser.py:349
+#: trac/versioncontrol/web_ui/browser.py:352
 #: trac/versioncontrol/web_ui/changeset.py:247
 #: trac/versioncontrol/web_ui/changeset.py:1090
 #: trac/versioncontrol/web_ui/log.py:87 trac/versioncontrol/web_ui/log.py:395
@@ -4122,7 +4165,7 @@ msgstr "Keine Repositorys ausgewählt."
 #: trac/versioncontrol/templates/admin_repositories.html:33
 #: trac/versioncontrol/templates/admin_repositories.html:132
 #: trac/versioncontrol/templates/admin_repositories.html:134
-#: trac/versioncontrol/web_ui/browser.py:819
+#: trac/versioncontrol/web_ui/browser.py:822
 #: trac/versioncontrol/web_ui/changeset.py:865
 #: trac/versioncontrol/web_ui/changeset.py:1009
 msgid "(default)"
@@ -4796,12 +4839,12 @@ msgstr "Changeset anzeigen"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:9
 #: trac/versioncontrol/templates/revisionlog.html:96
-#: trac/versioncontrol/web_ui/browser.py:763
+#: trac/versioncontrol/web_ui/browser.py:766
 msgid "Rev"
 msgstr "Rev"
 
 #: trac/versioncontrol/templates/dirlist_thead.html:12
-#: trac/versioncontrol/web_ui/browser.py:447
+#: trac/versioncontrol/web_ui/browser.py:450
 msgid "Last Change"
 msgstr "Letzte Änderung"
 
@@ -4970,46 +5013,46 @@ msgstr "Von Trac %(version)s generiert"
 msgid "Browse Source"
 msgstr "Quellen durchsehen"
 
-#: trac/versioncontrol/web_ui/browser.py:372
+#: trac/versioncontrol/web_ui/browser.py:375
 msgid "Invalid changeset number"
 msgstr "Ungültige Changeset-Nummer"
 
-#: trac/versioncontrol/web_ui/browser.py:430
-#: trac/versioncontrol/web_ui/browser.py:440
+#: trac/versioncontrol/web_ui/browser.py:433
+#: trac/versioncontrol/web_ui/browser.py:443
 #, python-format
 msgid "Revision %(num)s"
 msgstr "Revision %(num)s"
 
-#: trac/versioncontrol/web_ui/browser.py:441
+#: trac/versioncontrol/web_ui/browser.py:444
 msgid "Previous Revision"
 msgstr "Vorige Revision"
 
-#: trac/versioncontrol/web_ui/browser.py:441
+#: trac/versioncontrol/web_ui/browser.py:444
 msgid "Next Revision"
 msgstr "Nächste Revision"
 
-#: trac/versioncontrol/web_ui/browser.py:442
+#: trac/versioncontrol/web_ui/browser.py:445
 msgid "Latest Revision"
 msgstr "Letzte Revision"
 
-#: trac/versioncontrol/web_ui/browser.py:446
+#: trac/versioncontrol/web_ui/browser.py:449
 #: trac/versioncontrol/web_ui/log.py:300
 msgid "Parent directory"
 msgstr "Übergeordnetes Verzeichnis"
 
-#: trac/versioncontrol/web_ui/browser.py:452
+#: trac/versioncontrol/web_ui/browser.py:455
 msgid "Normal"
 msgstr "Normal"
 
-#: trac/versioncontrol/web_ui/browser.py:453
+#: trac/versioncontrol/web_ui/browser.py:456
 msgid "View file without annotations"
 msgstr "Datei ohne Markierungen anzeigen"
 
-#: trac/versioncontrol/web_ui/browser.py:458
+#: trac/versioncontrol/web_ui/browser.py:461
 msgid "Annotate"
 msgstr "Markieren"
 
-#: trac/versioncontrol/web_ui/browser.py:459
+#: trac/versioncontrol/web_ui/browser.py:462
 msgid ""
 "Annotate each line with the last changed revision (this can be time "
 "consuming...)"
@@ -5017,24 +5060,24 @@ msgstr ""
 "Jede Zeile mit der Revision der letzten Änderung markieren (dies kann "
 "lange dauern)"
 
-#: trac/versioncontrol/web_ui/browser.py:466
+#: trac/versioncontrol/web_ui/browser.py:469
 msgid "Revision Log"
 msgstr "Änderungshistorie"
 
-#: trac/versioncontrol/web_ui/browser.py:472
+#: trac/versioncontrol/web_ui/browser.py:475
 msgid "Repository URL"
 msgstr "Repository-URL"
 
-#: trac/versioncontrol/web_ui/browser.py:586
+#: trac/versioncontrol/web_ui/browser.py:589
 #: trac/versioncontrol/web_ui/changeset.py:363
 msgid "Zip Archive"
 msgstr "Zip-Archiv"
 
-#: trac/versioncontrol/web_ui/browser.py:763
+#: trac/versioncontrol/web_ui/browser.py:766
 msgid "Revision in which the line changed"
 msgstr "Version, in der die Zeile geändert wurde"
 
-#: trac/versioncontrol/web_ui/browser.py:821
+#: trac/versioncontrol/web_ui/browser.py:824
 #, python-format
 msgid "View repository %(repo)s"
 msgstr "Repository %(repo)s ansehen"
@@ -5132,11 +5175,6 @@ msgid "Changeset "
 msgid_plural "Changesets "
 msgstr[0] "Changeset"
 msgstr[1] "Changesets"
-
-#: trac/versioncontrol/web_ui/changeset.py:1026
-#, python-format
-msgid "%(title)s: %(message)s"
-msgstr "%(title)s: %(message)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:1086
 #, python-format
@@ -5246,19 +5284,23 @@ msgstr "Keine Authentifikationsdaten vorhanden. Bitte lesen Sie %(inst_doc)s."
 msgid "Already logged in as %(user)s."
 msgstr "Bereits als %(user)s angemeldet."
 
-#: trac/web/chrome.py:583
+#: trac/web/chrome.py:567
 #, python-format
 msgid "Error with navigation contributor \"%(name)s\""
 msgstr "Fehler beim Navigations-Bereitsteller \"%(name)s\""
 
-#: trac/web/chrome.py:878
+#: trac/web/chrome.py:857
 msgid "(unknown template location)"
 msgstr "(unbekannter Template-Ort)"
 
-#: trac/web/chrome.py:879
+#: trac/web/chrome.py:858
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
 msgstr "Genshi: Fehler %(error)s bei der Darstellung des Templates %(location)s"
+
+#: trac/web/chrome.py:894 trac/web/chrome.py:902
+msgid "anonymous"
+msgstr "anonym"
 
 #: trac/web/main.py:227
 msgid "Secure cookies are enabled, you must use https to submit forms."
