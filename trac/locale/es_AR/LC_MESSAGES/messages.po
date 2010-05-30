@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-05-27 20:39-0300\n"
+"PO-Revision-Date: 2010-05-30 13:11-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -685,7 +685,7 @@ msgid ""
 msgstr ""
 "Se produjo un error cuando se trataba de grabar cambios en trac.ini, "
 "asegúrese de que sea posible escribir en dicho archivo desde el servidor "
-"web. Los cambios que realizó no han sido grabado."
+"web. Los cambios que realizó no han sido grabados."
 
 #: trac/admin/web_ui.py:203 trac/admin/web_ui.py:231 trac/admin/web_ui.py:319
 #: trac/admin/web_ui.py:401 trac/prefs/web_ui.py:86
@@ -1638,6 +1638,8 @@ msgid ""
 "Copyright © 2003-2010\n"
 "        [1:Edgewall Software]"
 msgstr ""
+"Copyright © 2003-2010\n"
+"        [1:Edgewall Software]"
 
 #: trac/templates/about.html:54
 msgid "System Information"
@@ -2151,6 +2153,8 @@ msgid ""
 "[1:HTML preview not available], since the file size exceeds %(size)s "
 "bytes."
 msgstr ""
+"[1:iVista previa HTML no disponible] debido a que el tamaño del archivo "
+"es mayor a %(size)s bytes."
 
 #: trac/templates/preview_file.html:22
 msgid "[1:HTML preview not available], since no preview renderer could handle it."
@@ -2178,6 +2182,8 @@ msgid ""
 "[1:[2:%(title)s:]]\n"
 "          [3:[4:%(count)s]]"
 msgstr ""
+"[1:[2:%(title)s:]]\n"
+"          [3:[4:%(count)s]]"
 
 #: trac/templates/progress_bar.html:47
 #, python-format
@@ -2185,6 +2191,8 @@ msgid ""
 "[1:[2:Total:]]\n"
 "      [3:[4:%(count)s]]"
 msgstr ""
+"[1:[2:Total:]]\n"
+"      [3:[4:%(count)s]]"
 
 #: trac/templates/theme.html:27
 msgid "Search:"
@@ -2233,7 +2241,7 @@ msgstr "No hay ningún componente seleccionado"
 
 #: trac/ticket/admin.py:133
 msgid "The selected components have been removed."
-msgstr ""
+msgstr "Se removieron los componenes seleccionados."
 
 #: trac/ticket/admin.py:241 trac/ticket/api.py:295
 #: trac/ticket/templates/milestone_view.html:10
@@ -2252,7 +2260,7 @@ msgstr "Fecha de finalización inválida"
 #: trac/ticket/admin.py:299
 #, python-format
 msgid "The milestone \"%(name)s\" has been added."
-msgstr ""
+msgstr "Se ha agregado el hito \"%(name)s\"."
 
 #: trac/ticket/admin.py:304 trac/ticket/model.py:978 trac/ticket/model.py:1002
 msgid "Invalid milestone name."
@@ -2269,7 +2277,7 @@ msgstr "No hay ningún hito seleccionado"
 
 #: trac/ticket/admin.py:321
 msgid "The selected milestones have been removed."
-msgstr ""
+msgstr "Se han removido los hitos seleccionados."
 
 #: trac/ticket/admin.py:480
 #, python-format
@@ -2291,7 +2299,7 @@ msgstr "No hay ninguna versión seleccionada"
 
 #: trac/ticket/admin.py:501
 msgid "The selected versions have been removed."
-msgstr ""
+msgstr "Se han removido las versiones seleccionadas."
 
 #: trac/ticket/admin.py:559
 msgid "Time"
@@ -2327,6 +2335,9 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
+"Se ha encontrado un error mientras se intentaba grabar cambios en el "
+"archivo trac.ini, asegúrese de que sea posible escribir en dicho archivo "
+"desde el servidor web. Los valores por omisión no han sido grabados."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -2339,7 +2350,7 @@ msgstr "Valores posibles"
 #: trac/ticket/admin.py:768
 #, python-format
 msgid "Invalid up/down value: %(value)s"
-msgstr ""
+msgstr "Valor arriba/abajo no válido: %(value)s"
 
 #: trac/ticket/admin.py:789 trac/ticket/api.py:294
 msgid "Priority"
@@ -2380,7 +2391,7 @@ msgstr "<number> debe ser único"
 #: trac/ticket/admin.py:840
 #, python-format
 msgid "Ticket #%(num)s and all associated data removed."
-msgstr ""
+msgstr "Se han removido el ticket #%(num)s is todos los datos asociados al mismo."
 
 #: trac/ticket/api.py:277
 msgid "Summary"
@@ -2423,7 +2434,7 @@ msgstr " Ticket #%(shortname)s"
 
 #: trac/ticket/default_workflow.py:233
 msgid "Current state no longer exists"
-msgstr ""
+msgstr "El estado actual no existe mas"
 
 #: trac/ticket/default_workflow.py:235
 msgid "The ticket will be disowned"
@@ -2447,18 +2458,21 @@ msgstr "para %(owner)s "
 #: trac/ticket/default_workflow.py:265
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(selected_owner)s"
-msgstr ""
+msgstr "Se cambiará el dueño de %(current_owner)s a %(selected_owner)s"
 
 #: trac/ticket/default_workflow.py:280
 #, python-format
 msgid "The owner will be changed from %(current_owner)s to %(authname)s"
-msgstr ""
+msgstr "Se cambiará el dueño de %(current_owner)s a %(authname)s"
 
 #: trac/ticket/default_workflow.py:290
 msgid ""
 "Your workflow attempts to set a resolution but none is defined "
 "(configuration issue, please contact your Trac admin)."
 msgstr ""
+"Su flujo de trabajo intenta establecer una resolución pero no se ha "
+"definido ninguna (se trata de un problema de configuración, por favor "
+"póngase en contacto con el administrador de Trac)."
 
 #: trac/ticket/default_workflow.py:298 trac/ticket/default_workflow.py:308
 #, python-format
@@ -2499,7 +2513,7 @@ msgstr "Número de ticket invalido"
 
 #: trac/ticket/model.py:143
 msgid "Multi-values fields not supported yet"
-msgstr ""
+msgstr "Todavía no se aceptan campos de tipo multi-valor"
 
 #: trac/ticket/model.py:657
 #, python-format
@@ -2509,7 +2523,7 @@ msgstr "No existe el elemento del tipo %(type)s con nombre %(name)s."
 #: trac/ticket/model.py:701 trac/ticket/model.py:728
 #, python-format
 msgid "Invalid %(type)s name."
-msgstr ""
+msgstr "Nombre de %(type)s inválido."
 
 #: trac/ticket/model.py:806
 #, python-format
@@ -2527,11 +2541,11 @@ msgstr "Nombre de hito invalido"
 
 #: trac/ticket/model.py:1065
 msgid "Open (by due date)"
-msgstr ""
+msgstr "Abierto (por plazo)"
 
 #: trac/ticket/model.py:1066
 msgid "Open (no due date)"
-msgstr ""
+msgstr "Abierto (sin plazo)"
 
 #: trac/ticket/model.py:1069
 msgid "Closed"
@@ -2544,35 +2558,39 @@ msgstr "La versión %(name)s no existe."
 
 #: trac/ticket/query.py:54
 msgid "Invalid query constraint value"
-msgstr ""
+msgstr "Valor de condición de consulta inválido"
 
 #: trac/ticket/query.py:88
 #, python-format
 msgid "Query page %(page)s is invalid."
-msgstr ""
+msgstr "La página de consulta %(page)s es inválida"
 
 #: trac/ticket/query.py:103
 #, python-format
 msgid "Query max %(max)s is invalid."
-msgstr ""
+msgstr "Máximo de consulta %(max)s es inválido"
 
 #: trac/ticket/query.py:159
 msgid "Query filter requires field and constraints separated by a \"=\""
 msgstr ""
+"En necesario que el campo y la condición del filtro de consulta se "
+"encuentren separados por un \"=\""
 
 #: trac/ticket/query.py:172
 msgid "Query filter requires field name"
-msgstr ""
+msgstr "Es necesario un nombre de campo en el filtro de consulta"
 
 #: trac/ticket/query.py:305
 #, python-format
 msgid "Page %(page)s is beyond the number of pages in the query"
 msgstr ""
+"La página %(page)s se encuentra mas allá del nro. de páginas disponibles "
+"para la consulta"
 
 #: trac/ticket/query.py:562
 #, python-format
 msgid "Invalid ticket id list: %(value)s"
-msgstr ""
+msgstr "Lista de ids de ticket inválida: %(value)s"
 
 #: trac/ticket/query.py:662 trac/ticket/query.py:670
 msgid "contains"
@@ -2651,21 +2669,21 @@ msgstr "Sin resultados"
 #: trac/ticket/query.py:1303
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets matching %(query)s"
-msgstr ""
+msgstr "%(groupvalue)s %(groupname)s tickets seleccionados por %(query)s"
 
 #: trac/ticket/query.py:1326
 #, python-format
 msgid "%(groupvalue)s %(groupname)s tickets:"
-msgstr ""
+msgstr "%(groupvalue)s %(groupname)s tickets:"
 
 #: trac/ticket/report.py:159
 msgid "The report has been created."
-msgstr ""
+msgstr "Se ha creado el reporte."
 
 #: trac/ticket/report.py:172
 #, python-format
 msgid "The report {%(id)d} has been deleted."
-msgstr ""
+msgstr "Se ha eliminado el reporte {%(id)d}."
 
 #: trac/ticket/report.py:199
 #, python-format
@@ -2714,7 +2732,7 @@ msgstr "Consulta SQL"
 #: trac/ticket/report.py:598
 #, python-format
 msgid "The following arguments are missing: %(args)s"
-msgstr ""
+msgstr "Faltan los siguientes argumentos: %(args)s"
 
 #: trac/ticket/report.py:612
 #, python-format
@@ -2724,7 +2742,7 @@ msgstr "El reporte {%(num)s} no tiene una consulta SQL."
 #: trac/ticket/report.py:642
 #, python-format
 msgid "Query parameter \"sort=%(sort_col)s\"  is invalid"
-msgstr ""
+msgstr "El parámetro \"sort=%(sort_col)s\"  de la consulta es inválido"
 
 #: trac/ticket/roadmap.py:205
 msgid "ticket status"
@@ -2990,8 +3008,8 @@ msgid ""
 "Sorry, can not save your changes. This ticket has been modified by "
 "someone else since you started"
 msgstr ""
-"Disculpe, no puedo grabar los cambios que ha  realizado. Este ticket ha "
-"sido modificado por alguien  mas desde que Ud. comenzó "
+"Disculpe, no puedo grabar los cambios que ha realizado. Este ticket ha "
+"sido modificado por alguien mas desde que Ud. comenzó "
 
 #: trac/ticket/web_ui.py:1129
 msgid "Tickets must contain a summary."
@@ -3914,6 +3932,8 @@ msgid ""
 "The date \"%(date)s\" is outside valid range. Try a date closer to "
 "present time."
 msgstr ""
+"La fecha \"%(date)s\" está fuera del rango válido. Pruebe una fecha mas "
+"cercana a la fecha actual."
 
 #: trac/util/presentation.py:254
 #, python-format
@@ -3936,7 +3956,7 @@ msgstr "Directorio"
 
 #: trac/versioncontrol/admin.py:116
 msgid "Cannot synchronize a single revision on multiple repositories"
-msgstr ""
+msgstr "No se puede sincronizar una única revisión en múltiples repositorios"
 
 #: trac/versioncontrol/admin.py:124 trac/versioncontrol/admin.py:182
 #: trac/versioncontrol/web_ui/browser.py:352
@@ -3950,12 +3970,12 @@ msgstr "No se encontró el repositorio '%(repo)s'"
 #: trac/versioncontrol/admin.py:128
 #, python-format
 msgid "%(rev)s resynced on %(reponame)s."
-msgstr ""
+msgstr "%(rev)s resincronizada en %(reponame)s."
 
 #: trac/versioncontrol/admin.py:135
 #, python-format
 msgid "Resyncing repository history for %(reponame)s... "
-msgstr ""
+msgstr "Resincronizando historia de repositorio de %(reponame)s... "
 
 #: trac/versioncontrol/admin.py:142
 #, python-format
@@ -4005,10 +4025,13 @@ msgid ""
 "You should also set up a post-commit hook on the repository to call "
 "%(cset_added)s for each committed changeset."
 msgstr ""
+"Debe configurar también un hook post-commit en el repositorio para que "
+"ejecute%(cset_added)s para cada conjunto de cambios que se almacene en el"
+" repositorio."
 
 #: trac/versioncontrol/admin.py:254
 msgid "Missing arguments to add a repository."
-msgstr ""
+msgstr "Faltan argumentos para agregar un repositorio."
 
 #: trac/versioncontrol/admin.py:263
 #, python-format
@@ -4017,11 +4040,11 @@ msgstr "Se ha agregado el alias \"%(name)s\"."
 
 #: trac/versioncontrol/admin.py:266
 msgid "Missing arguments to add an alias."
-msgstr ""
+msgstr "Faltan argumentos para agregar un alias."
 
 #: trac/versioncontrol/admin.py:279
 msgid "The selected repositories have been removed."
-msgstr ""
+msgstr "Se han eliminado los repositorios seleccionados."
 
 #: trac/versioncontrol/admin.py:282
 msgid "No repositories were selected."
@@ -4046,12 +4069,12 @@ msgstr "Clave \"%(key)s\" inválida"
 #: trac/versioncontrol/api.py:190
 #, python-format
 msgid "You should now run \"repository resync %(name)s\"."
-msgstr ""
+msgstr "Debe ejecutar ahora \"repository resync %(name)s\"."
 
 #: trac/versioncontrol/api.py:193
 #, python-format
 msgid "You may have to run \"repository resync %(name)s\"."
-msgstr ""
+msgstr "Es posible que deba ejecutar \"repository resync %(name)s\"."
 
 #: trac/versioncontrol/api.py:201 trac/versioncontrol/api.py:264
 msgid "The repository directory must be absolute"
@@ -4107,7 +4130,7 @@ msgstr "en %(repo)s"
 #: trac/versioncontrol/api.py:378
 #, python-format
 msgid "%(kind)s %(id)%(at_version)s%(in_repo)s"
-msgstr ""
+msgstr "%(kind)s %(id)%(at_version)s%(in_repo)s"
 
 #: trac/versioncontrol/api.py:381
 #, python-format
@@ -4117,7 +4140,7 @@ msgstr "Repositorio %(repo)s"
 #: trac/versioncontrol/api.py:686
 #, python-format
 msgid "Unsupported version control system \"%(name)s\": %(error)s"
-msgstr ""
+msgstr "Sistema de control de versiones \"%(name)s\" no soportado: %(error)s"
 
 #: trac/versioncontrol/api.py:689
 #, python-format
@@ -4125,6 +4148,9 @@ msgid ""
 "Unsupported version control system \"%(name)s\": Can't find an "
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
+"Sistema de control de versiones \"%(name)s\" no soportado: No se ha "
+"podido encontrrar el componente apropiado. ¿Quizá no se ha activado el "
+"plugin correspondiente)? "
 
 #: trac/versioncontrol/api.py:697
 #, python-format
@@ -4138,12 +4164,12 @@ msgstr "No existe tal conjunto de cambios"
 #: trac/versioncontrol/api.py:705
 #, python-format
 msgid "No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "No existe nodo %(path)s en la revisión %(rev)s"
 
 #: trac/versioncontrol/api.py:707
 #, python-format
 msgid "%(msg)s: No node %(path)s at revision %(rev)s"
-msgstr ""
+msgstr "%(msg)s: No existe nodo %(path)s en la revisión %(rev)s"
 
 #: trac/versioncontrol/api.py:709
 msgid "No such node"
@@ -4160,7 +4186,7 @@ msgstr ""
 #: trac/versioncontrol/svn_authz.py:73
 #, python-format
 msgid "Line %(lineno)d: Entry before first section header"
-msgstr ""
+msgstr "Línea %(lineno)d: Entrada antes del primer encabezado de sección"
 
 #: trac/versioncontrol/svn_authz.py:77
 #, python-format
@@ -4180,7 +4206,7 @@ msgstr "%(path)s no parece ser un repositorio Subversion."
 #: trac/versioncontrol/svn_fs.py:337
 #, python-format
 msgid "Couldn't open Subversion repository %(path)s: %(svn_error)s"
-msgstr ""
+msgstr "No se ha podido abrir el repositorio Subversion %(path)s: %(svn_error)s"
 
 #: trac/versioncontrol/svn_fs.py:617
 #, python-format
@@ -4215,7 +4241,7 @@ msgstr ""
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
-msgstr ""
+msgstr "(conmutar branches eliminados)"
 
 #: trac/versioncontrol/svn_prop.py:234
 msgid "View merge source"
@@ -4284,6 +4310,9 @@ msgid ""
 "            This repository is defined in [2:[3:trac.ini]]\n"
 "            and cannot be edited on this page."
 msgstr ""
+"[1:Nota:]\n"
+"            Este repositorio está definido en [2:[3:trac.ini]]\n"
+"            y no puede modificarse en esta página."
 
 #: trac/versioncontrol/templates/admin_repositories.html:59
 #: trac/versioncontrol/templates/admin_repositories.html:99
@@ -4365,6 +4394,10 @@ msgid ""
 "            checked in by %(author)s, %(date)s ago\n"
 "            ([3:diff])"
 msgstr ""
+"Revisión [1:%(rev)s],\n"
+"            [2:%(size)s]\n"
+"            por %(author)s, hace %(date)s\n"
+"            ([3:diff])"
 
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
@@ -4418,6 +4451,8 @@ msgid ""
 "Changeset [1:%(new_rev)s] in %(reponame)s\n"
 "              for [2:%(new_path)s]"
 msgstr ""
+"Conjunto de cambios [1:%(new_rev)s] en %(reponame)s\n"
+"              para [2:%(new_path)s]"
 
 #: trac/versioncontrol/templates/changeset.html:41
 #: trac/versioncontrol/templates/changeset.html:63
@@ -4430,6 +4465,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]] in %(reponame)s"
 msgstr ""
+"Cambios en [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]] en %(reponame)s"
 
 #: trac/versioncontrol/templates/changeset.html:43
 #, python-format
@@ -4440,6 +4477,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Cambios en %(reponame)s\n"
+"              de [1:%(old_path)s]\n"
+"              en [2:r%(old_rev)s]\n"
+"              a [3:%(new_path)s]\n"
+"              en [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:50
 #, python-format
@@ -4461,6 +4503,8 @@ msgid ""
 "Changes in [1:%(new_path)s]\n"
 "              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 msgstr ""
+"Cambios en [1:%(new_path)s]\n"
+"              [2:\\[%(old_rev)s:%(new_rev)s\\]]"
 
 #: trac/versioncontrol/templates/changeset.html:65
 #, python-format
@@ -4471,6 +4515,11 @@ msgid ""
 "              to [3:%(new_path)s]\n"
 "              at [4:r%(new_rev)s]"
 msgstr ""
+"Cambios\n"
+"              de [1:%(old_path)s]\n"
+"              en [2:r%(old_rev)s]\n"
+"              a [3:%(new_path)s]\n"
+"              en [4:r%(new_rev)s]"
 
 #: trac/versioncontrol/templates/changeset.html:72
 #, python-format
@@ -4648,10 +4697,12 @@ msgid ""
 "              from. Select an entry by clicking on it, or by using the\n"
 "              up/down cursor keys and hitting tab."
 msgstr ""
-"Para ambas rutas, puede comenzar a tipear la ruta  se le presentará una "
-"lista de directorios existentes y de archivos para seleccionar. "
-"Seleccione una entrada haciendo click en la misma, o usando las teclas de"
-" cursor arriba/abajo y luego la tecla tab."
+"Para ambas rutas, puede comenzar a tipear la ruta y se le\n"
+"              presentará una lista de directorios y de archivos para "
+"seleccionar.\n"
+"              Seleccione una entrada haciendo click en la misma, o\n"
+"              usando las teclas de cursor arriba/abajo y luego la tecla "
+"tab."
 
 #: trac/versioncontrol/templates/diff_form.html:62
 msgid ""
@@ -4659,6 +4710,10 @@ msgid ""
 "        [2:TracChangeset]\n"
 "        for help on using the diff feature."
 msgstr ""
+"[1:Nota:] Vea\n"
+"        [2:TracChangeset]\n"
+"        para obtener ayuda en lo referente al uso de la característica "
+"diff."
 
 #: trac/versioncontrol/templates/dir_entries.html:11
 msgid "View Directory"
@@ -4742,6 +4797,14 @@ msgid ""
 "              [4:]\n"
 "            ]"
 msgstr ""
+"[1:\n"
+"              Ver log comenzando en\n"
+"              [2:]\n"
+"            ]\n"
+"            [3:\n"
+"              y hasta\n"
+"              [4:]\n"
+"            ]"
 
 #: trac/versioncontrol/templates/revisionlog.html:54
 msgid ""
@@ -4751,6 +4814,11 @@ msgid ""
 "              revisions per page.\n"
 "            ]"
 msgstr ""
+"[1:\n"
+"              Mostrat como máximo\n"
+"              [2:]\n"
+"              revisiones por página.\n"
+"            ]"
 
 #: trac/versioncontrol/templates/revisionlog.html:62
 msgid "Show full log messages"
@@ -4827,8 +4895,7 @@ msgid ""
 "        for help on using the revision log."
 msgstr ""
 "[1:Nota:] vea [2:TracRevisionLog]\n"
-"        para obtener ayuda acerca de cómo usar         el histórico de "
-"revisiones."
+"        para obtener ayuda acerca de cómo usar el histórico de revisiones."
 
 #: trac/versioncontrol/templates/revisionlog.txt:2
 #, python-format
@@ -4917,10 +4984,14 @@ msgstr "Ver repositorio %(repo)s"
 #, python-format
 msgid "Can't compare across different repositories: %(old)s vs. %(new)s"
 msgstr ""
+"No es posible realizar comparaciones entre diferentes repositorios: "
+"%(old)s vs. %(new)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:249
 msgid "No repository specified and no default repository configured."
 msgstr ""
+"No se ha especificado un repositorio y no hay configurado un repositorio "
+"por omisión"
 
 #: trac/versioncontrol/web_ui/changeset.py:261
 msgid "Invalid Changeset Number"
@@ -4977,12 +5048,12 @@ msgstr "más actual"
 #: trac/versioncontrol/web_ui/changeset.py:793
 #, python-format
 msgid "Diff [%(old_rev)s:%(new_rev)s] for %(path)s"
-msgstr ""
+msgstr "Diff [%(old_rev)s:%(new_rev)s] de %(path)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:799
 #, python-format
 msgid "Diff from %(old_path)s@%(old_rev)s to %(new_path)s@%(new_rev)s"
-msgstr ""
+msgstr "Diff de %(old_path)s@%(old_rev)s a %(new_path)s@%(new_rev)s"
 
 #: trac/versioncontrol/web_ui/changeset.py:871
 msgid "Changesets in all repositories"
@@ -5013,7 +5084,7 @@ msgstr "Sin permiso para ver conjunto de cambios %(rev)s en %(repos)s"
 #: trac/versioncontrol/web_ui/changeset.py:1092
 #: trac/versioncontrol/web_ui/log.py:397
 msgid "No default repository defined"
-msgstr ""
+msgstr "No hay definido un resopitorio por omisión"
 
 #: trac/versioncontrol/web_ui/changeset.py:1131
 msgid "Changesets"
@@ -5064,11 +5135,13 @@ msgid ""
 "You can %(search)s in the repository history to see if that path existed "
 "but was later removed"
 msgstr ""
+"Puede %(search)s en la historia del repositorio para ver si esa ruta "
+"exisitióen algún momento y fué eliminada"
 
 #: trac/web/api.py:236
 #, python-format
 msgid "Invalid URL encoding (was %(path_info)r)"
-msgstr ""
+msgstr "Encoding de URL inválido (%(path_info)r)"
 
 #: trac/web/api.py:474
 #, python-format
@@ -5103,6 +5176,8 @@ msgid ""
 "Authentication information not available. Please refer to the "
 "%(inst_doc)s."
 msgstr ""
+"Información de autenticación no disponible. Por favor consulte los "
+"%(inst_doc)s."
 
 #: trac/web/auth.py:150
 #, python-format
@@ -5110,9 +5185,9 @@ msgid "Already logged in as %(user)s."
 msgstr "Ya identificado como %(user)s."
 
 #: trac/web/chrome.py:567
-#, python-format
+#, fuzzy, python-format
 msgid "Error with navigation contributor \"%(name)s\""
-msgstr ""
+msgstr "Error con 'navigation contributor' \"%(name)s\""
 
 #: trac/web/chrome.py:857
 msgid "(unknown template location)"
@@ -5121,24 +5196,26 @@ msgstr "(ubicacin de plantilla desconocida)"
 #: trac/web/chrome.py:858
 #, python-format
 msgid "Genshi %(error)s error while rendering template %(location)s"
-msgstr ""
+msgstr "Error de Genshi %(error)s cuando se renderizaba la plantilla %(location)s"
 
 #: trac/web/chrome.py:894 trac/web/chrome.py:902
 msgid "anonymous"
-msgstr ""
+msgstr "anónimo"
 
 #: trac/web/main.py:227
 msgid "Secure cookies are enabled, you must use https to submit forms."
 msgstr ""
+"Están activas las cookies seguras, debe usar https para enviar "
+"formularios."
 
 #: trac/web/main.py:230
 msgid "Do you have cookies enabled?"
-msgstr ""
+msgstr "¿Tiene las cookies activas?"
 
 #: trac/web/main.py:231
 #, python-format
 msgid "Missing or invalid form token. %(msg)s"
-msgstr ""
+msgstr "Token de formulario faltante o inválido. %(msg)s"
 
 #: trac/web/main.py:531
 #, python-format
@@ -5200,7 +5277,7 @@ msgstr ""
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
-msgstr ""
+msgstr "Se ha producido un error mientra se cambiaba el nombre de la sesión"
 
 #: trac/web/session.py:312
 msgid "No SID found"
@@ -5235,7 +5312,7 @@ msgstr "'%(name)s' no es un archivo"
 #: trac/wiki/admin.py:168 trac/wiki/admin.py:265
 #, python-format
 msgid "  %(page)s imported from %(filename)s"
-msgstr ""
+msgstr "  %(page)s importada desde %(filename)s"
 
 #: trac/wiki/admin.py:200
 msgid "Edits"
@@ -5243,7 +5320,7 @@ msgstr "Modificaciones"
 
 #: trac/wiki/admin.py:206 trac/wiki/web_ui.py:295
 msgid "A new name is mandatory for a rename."
-msgstr ""
+msgstr "Es obligatorio especificar un nuevo nombre."
 
 #: trac/wiki/admin.py:210 trac/wiki/web_ui.py:299
 #, python-format
@@ -5330,6 +5407,8 @@ msgstr "No se ha modificado la página "
 #, python-format
 msgid "Can't rename to existing %(name)s page."
 msgstr ""
+"Al cambiar un nombre no se puede usar el nombre de una página ya "
+"existente %(name)s."
 
 #: trac/wiki/web_ui.py:87 trac/wiki/web_ui.py:729
 msgid "Wiki"
@@ -5379,7 +5458,7 @@ msgstr "Se han eliminado las versiones %(from_)d a %(to)d de la página %(name)s
 #: trac/wiki/web_ui.py:274
 #, python-format
 msgid "The version %(version)d of the page %(name)s has been deleted."
-msgstr ""
+msgstr "Se ha eliminado la versión %(version)d de la página %(name)s."
 
 #: trac/wiki/web_ui.py:297
 msgid "The new name must be different from the old name."
@@ -5533,7 +5612,7 @@ msgstr "Eliminar página"
 #: trac/wiki/templates/wiki_diff.html:17
 #, python-format
 msgid "Delete version %(old_version)d to version %(version)d"
-msgstr ""
+msgstr "Eliminar desde versión %(old_version)d a versión %(version)d"
 
 #: trac/wiki/templates/wiki_diff.html:18
 #, python-format
@@ -5542,7 +5621,7 @@ msgstr "Eliminar la versión %(version)d"
 
 #: trac/wiki/templates/wiki_edit.html:67 trac/wiki/templates/wiki_edit.html:140
 msgid "Go to Save, Preview, Review or Cancel buttons"
-msgstr ""
+msgstr "Ir a los botones Grabar, Vista previa, Revisar o Cancelar"
 
 #: trac/wiki/templates/wiki_edit.html:69
 msgid "See the diffs"
@@ -5596,7 +5675,7 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit.html:124
 msgid "Go to the editor"
-msgstr ""
+msgstr "Ir al editor"
 
 #: trac/wiki/templates/wiki_edit.html:127
 #: trac/wiki/templates/wiki_edit_form.html:74
@@ -5623,8 +5702,8 @@ msgstr "Ajustar la altura del área de edición:"
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Selecting and pressing 'Preview' enters a two-column [edit|preview] mode"
 msgstr ""
-"El seleccionar y presiona 'Preview' lleva a un modo de modificación|vista"
-" previa en dos columnas"
+"Seleccionar y presionar 'Preview' lleva a un modo de modificación|vista "
+"previa en dos columnas"
 
 #: trac/wiki/templates/wiki_edit_form.html:24
 msgid "Edit side-by-side"
@@ -5641,11 +5720,11 @@ msgstr ""
 
 #: trac/wiki/templates/wiki_edit_form.html:38
 msgid "See the start of the diffs"
-msgstr "Seleccionar el inicio de los diffs"
+msgstr "Ver el inicio de los diffs"
 
 #: trac/wiki/templates/wiki_edit_form.html:39
 msgid "See the start of the preview"
-msgstr ""
+msgstr "Ver el principio de la vista previa"
 
 #: trac/wiki/templates/wiki_edit_form.html:43
 msgid "Change information"
