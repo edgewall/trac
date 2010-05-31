@@ -486,7 +486,7 @@ msgstr "Nincs megfelelő jogosultsága ezen művelet végrehajtására."
 #: trac/perm.py:333
 #, python-format
 msgid "%(name)s is not a valid action."
-msgstr "a %(name)s egy érvénytelen művelet."
+msgstr "A(z) %(name)s egy érvénytelen művelet."
 
 #: trac/perm.py:643
 msgid "User"
@@ -508,7 +508,7 @@ msgstr "Minden nagybetűs kifejezés foglalt a jogosultság neveknek"
 #: trac/resource.py:336
 #, python-format
 msgid "%(name)s at version %(version)s"
-msgstr "a %(name)s  %(version)s. verziója"
+msgstr "A(z) %(name)s  %(version)s. verziója"
 
 #: trac/admin/api.py:134 trac/admin/console.py:254
 msgid "Command not found"
@@ -5353,7 +5353,7 @@ msgstr "A %(sid)s munkamenet azonosító nem található"
 #: trac/wiki/admin.py:116
 #, python-format
 msgid "'%(name)s' is not a file"
-msgstr "a %(name)s nem fájl"
+msgstr "A(z) %(name)s nem fájl"
 
 #: trac/wiki/admin.py:168 trac/wiki/admin.py:265
 #, python-format
@@ -5380,7 +5380,7 @@ msgstr "Törölt oldalak"
 #: trac/wiki/admin.py:243
 #, python-format
 msgid "'%(name)s' is not a directory"
-msgstr "a %(name)s nem könyvtár"
+msgstr "A(z) %(name)s nem könyvtár"
 
 #: trac/wiki/api.py:361
 msgid "no permission to view this wiki page"
@@ -5657,7 +5657,7 @@ msgstr "A(z) %(old_version)d. és %(version)d. közötti változatok törlése"
 #: trac/wiki/templates/wiki_diff.html:18
 #, python-format
 msgid "Delete version %(version)d"
-msgstr "A %(version)d. változat törlése"
+msgstr "A(z) %(version)d. változat törlése"
 
 #: trac/wiki/templates/wiki_edit.html:67 trac/wiki/templates/wiki_edit.html:140
 msgid "Go to Save, Preview, Review or Cancel buttons"
