@@ -11,4 +11,9 @@
 # individuals. For the exact contribution history, see the revision
 # history and logs, available at http://trac.edgewall.org/log/.
 
-__version__ = __import__('pkg_resources').get_distribution('Trac').version
+from pkg_resources import DistributionNotFound, get_distribution
+
+try:
+    __version__ = get_distribution('Trac').version
+except DistributionNotFound:
+    __version__ = '0.12dev'
