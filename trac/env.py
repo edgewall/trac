@@ -25,8 +25,7 @@ from trac.cache import CacheManager
 from trac.config import *
 from trac.core import Component, ComponentManager, implements, Interface, \
                       ExtensionPoint, TracError
-from trac.db import DatabaseManager
-from trac.db.util import get_read_db, with_transaction
+from trac.db.api import DatabaseManager, get_read_db, with_transaction
 from trac.util import copytree, create_file, get_pkginfo, makedirs
 from trac.util.compat import any
 from trac.util.concurrency import threading
@@ -338,13 +337,13 @@ class Environment(Component, ComponentManager):
     def with_transaction(self, db=None):
         """Decorator for transaction functions.
 
-        See `trac.db.util.with_transaction` for detailed documentation."""
+        See `trac.db.api.with_transaction` for detailed documentation."""
         return with_transaction(self, db)
 
     def get_read_db(self):
         """Return a database connection for read purposes.
 
-        See `trac.db.util.get_read_db` for detailed documentation."""
+        See `trac.db.api.get_read_db` for detailed documentation."""
         return get_read_db(self)
 
     def shutdown(self, tid=None):
