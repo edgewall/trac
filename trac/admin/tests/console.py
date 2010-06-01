@@ -62,6 +62,9 @@ class InMemoryEnvironment(Environment):
     A subclass of Environment that keeps its DB in memory.
     """
 
+    def get_read_db(self):
+        return self.get_db_cnx()
+
     def get_db_cnx(self):
         if not hasattr(self, '_db'):
             self._db = InMemoryDatabase()
@@ -122,6 +125,9 @@ class TracadminTestCase(unittest.TestCase):
             value = out.getvalue()
             if isinstance(value, str): # reverse what print_listing did
                 value = value.decode('utf-8')
+            # DEBUG: uncomment in case of `AssertionError: 0 != 2` in tests
+            #if retval != 0:
+            #    print>>_err, value
             if strip_trailing_space:
                 return retval, STRIP_TRAILING_SPACE.sub('', value)
             else:

@@ -80,7 +80,8 @@ def with_transaction(env, db=None):
 
 def get_read_db(env):
     """Get a database connection for reading only."""
-    return _transaction_local.db or env.get_db_cnx()
+    from trac.db.api import DatabaseManager
+    return _transaction_local.db or DatabaseManager(env).get_connection()
 
 
 def sql_escape_percent(sql):

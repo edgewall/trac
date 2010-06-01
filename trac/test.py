@@ -275,6 +275,9 @@ class EnvironmentStub(Environment):
         self.known_users = []
         translation.activate(Locale and Locale('en', 'US'))
 
+    def get_read_db(self):
+        return self.get_db_cnx()
+    
     def get_db_cnx(self, destroying=False):
         if self.db:
             return self.db # in-memory SQLite

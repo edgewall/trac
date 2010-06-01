@@ -333,7 +333,7 @@ class Environment(Component, ComponentManager):
         Use `with_transaction` for obtaining a writable database connection
         and `get_read_db` for anything else.
         """
-        return DatabaseManager(self).get_connection()
+        return get_read_db(self)
 
     def with_transaction(self, db=None):
         """Decorator for transaction functions.
