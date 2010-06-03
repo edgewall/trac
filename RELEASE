@@ -1,6 +1,6 @@
 Release Notes for Trac 0.12 Babel Release
 =========================================
-May 1, 2010
+June 3, 2010
 
 Highlights
 ----------
@@ -28,8 +28,8 @@ Acknowledgements
 Many thanks to the growing number of people who have, and continue to,
 support the project. Also our thanks to all people providing feedback and
 bug reports that helps us making Trac better, easier to use and more
-effective.
-
+effective. Starting with the 0.12 release, special thanks go to our
+many translators.
 Without your invaluable help, Trac would not evolve. Thank you all.
 
 Finally, we offer hope that Trac will prove itself useful to like-minded

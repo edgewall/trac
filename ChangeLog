@@ -1,3 +1,24 @@
+Trac 0.12rc1 'Babel' (June 03, 2010)
+http://svn.edgewall.org/repos/trac/tags/trac-0.12rc1
+
+Trac 0.12 is a major release introducing i18n and multiple repository support as the most visible changes.
+
+The following list contains only a few highlights:
+ - The user interface is translated in a dozen of languages, provided the
+   [Babel:] package is installed
+ - Multiple repositories can be associated to a single Trac environment; the
+   repositories can be of heterogeneous types (svn, hg, git, darcs...)
+ - Usability improvements for the Wiki, with a nice side-by-side edit mode with
+   automatic preview
+ - Richer Wiki syntax, with much improved support for tables, partial
+   WikiCreole compatibility and numerous smaller improvements
+ - Usability improvements for the Ticket module, with automatic preview of
+   comments while you type and possibility to edit or remove them later
+ - Improved Custom Queries (time fields, multiple disjoint conditions,
+   a.k.a. OR queries)
+ - Timeline filtering by user
+ - ... and numerous smaller features added and bugs fixed since 0.11!
+
 Trac 0.11.7 (March 10, 2010)
 http://svn.edgewall.org/repos/trac/tags/trac-0.11.7
 
