@@ -1,7 +1,8 @@
 {{{
-#!div style="margin-top: .5em; padding: 0 1em; background-color: #ffd; border:1px outset #ddc;"
+#!div style="margin-top: .5em; padding: 0 1em; background-color: #ffd; border:1px outset #ddc; text-align: center"
 
-  '''NOTE: this page is for 0.12dev (trunk), the version currently in development. For installing previous Trac versions, please refer to [[0.11/TracInstall]]'''
+  '''NOTE: this page is for 0.12dev (trunk), the version soon to be released. \\
+  For installing previous Trac versions, please refer to [[0.11/TracInstall]]'''
 }}}
 = Trac Installation Guide for 0.12dev = 
 [[TracGuideToc]]
@@ -94,8 +95,8 @@ Alternatively you configure Trac to run in any of the following environments.
  * a [http://www.fastcgi.com/ FastCGI]-capable web server (see TracFastCgi)
  * an [http://tomcat.apache.org/connectors-doc/ajp/ajpv13a.html AJP]-capable web
    server (see [trac:TracOnWindowsIisAjp TracOnWindowsIisAjp])
- * A CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
-   is highly discouraged''', better use one of the following options, 
+ * a CGI-capable web server (see TracCgi), '''but usage of Trac as a cgi script 
+   is highly discouraged''', better use one of the previous options. 
    
 
 ==== Other Python Packages ====
@@ -137,6 +138,32 @@ A few examples:
    Note that in this case you won't have the possibility to run a localized version of Trac;
    either use a released version or install from source 
 
+=== Using `pip`
+'pip' is an easy_install replacement that is very useful to quickly install python packages.
+To get a trac installation up and running in less than 5 minutes:
+
+Assuming you want to have your entire pip installation in /opt/user/trac
+
+ - 
+{{{
+pip -E /opt/user/trac install trac psycopg2 
+}}}
+or
+ - 
+{{{
+pip -E /opt/user/trac install trac mysql-python 
+}}}
+
+Make sure your OS specific headers are available for pip to automatically build PostgreSQL (libpq-dev) or MySQL (libmysqlclient-dev) bindings.
+
+pip will automatically resolve all dependencies (like Genshi, pygments, etc.) and download the latest packages on pypi.python.org and create a self contained installation in /opt/user/trac 
+
+All commands (tracd, trac-admin) are available in /opt/user/trac/bin . This can also be leveraged for mod_python (using PythonHandler directive) and mod_wsgi (using WSGIDaemonProcess directive)
+
+Additionally, you can install several trac plugins (listed [http://pypi.python.org/pypi?:action=search&term=trac&submit=search here]) through pip.
+
+
+
 === From source
 Of course, using the python-typical setup at the top of the source directory also works.
 
@@ -153,12 +180,11 @@ of your Python installation. The .egg will also contain all other resources need
 
 The script will also install the [wiki:TracAdmin trac-admin] command-line tool, used to create and maintain [wiki:TracEnvironment project environments], as well as the [wiki:TracStandalone tracd] standalone server.
 
-If you install from source and want to make Trac available in other languages, make sure you have installed Babel and then run this additional step before doing the `install` (or simply redo the `install` afterwards):
+If you install from source and want to make Trac available in other languages, make sure  Babel is installed. Only then, perform the `install` (or simply redo the `install` once again afterwards if you realize Babel was not yet installed):
 {{{
-$ python ./setup.py compile_catalog -f
+$ python ./setup.py install
 }}}
-(the `-f` flag is needed as long as some translations are marked ''fuzzy'', i.e. incomplete, which will most probably be the case during the whole development period, as  strings are continuously added or modified)
-
+Alternatively, you can do a `bdist_egg` and copy the .egg from dist/ to the place of your choice, or you can create a Windows installer (`bdist_wininst`).
 
 === Advanced Options ===
 

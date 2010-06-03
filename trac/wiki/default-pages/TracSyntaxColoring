@@ -94,7 +94,7 @@ This list is only indicative.
 
 ''[=#a2 (2)] since Silvercity 0.9.7 released on 2006-11-23
 
-''[=#a3 (3)] By default `.m` files are considered Objective-C files. In order to treat `.m` files as MATLAB files, add "text/x-matlab:m" to the "mime_map" setting in the [wiki:TracIni#mimeviewer-section "[mimeviewer] section of trac.ini"].
+''[=#a3 (3)] By default `.m` files are considered Objective-C files. In order to treat `.m` files as MATLAB files, add "text/matlab:m" to the "mime_map" setting in the [wiki:TracIni#mimeviewer-section "[mimeviewer] section of trac.ini"].
 
 == Extra Software ==
  * GNU Enscript -- http://directory.fsf.org/GNU/enscript.html

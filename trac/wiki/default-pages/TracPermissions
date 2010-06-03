@@ -45,6 +45,7 @@ Otherwise, individual privileges can be assigned to users for the various differ
 || `TICKET_MODIFY` || Includes both `TICKET_APPEND` and `TICKET_CHGPROP`, and in addition allows resolving [wiki:TracTickets tickets]. Tickets can be assigned to users through a [TracTickets#Assign-toasDrop-DownList drop-down list] when the list of possible owners has been restricted. ||
 || `TICKET_EDIT_CC` || Full modify cc field ||
 || `TICKET_EDIT_DESCRIPTION` || Modify description field ||
+|| `TICKET_EDIT_COMMENT` || Modify comments ||
 || `TICKET_ADMIN` || All `TICKET_*` permissions, plus the deletion of ticket attachments and modification of the reporter and description fields. It also allows managing ticket properties in the WebAdmin panel. ||
 
 Attention: the "view tickets" button appears with the `REPORT_VIEW` permission.

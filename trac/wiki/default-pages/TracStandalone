@@ -77,11 +77,11 @@ Using tracd with Apache .htpasswd files:
 To create a .htpasswd file using htpasswd:
 
 {{{
- $ sudo htpasswd -c /path/to/env/.htpasswd username
+ $ htpasswd -c /path/to/env/.htpasswd username
 }}}
 then for additional users:
 {{{
- $ sudo htpasswd /path/to/env/.htpasswd username2
+ $ htpasswd /path/to/env/.htpasswd username2
 }}}
 then for starting the tracd (on windows skip the "=" after --basic-auth):
 {{{
@@ -103,7 +103,7 @@ The general format for using authentication is (replace `--auth` with `--basic-a
 where:
 
  * '''base_project_dir''': the base directory of the project specified as follows:
-   * when serving multiple projects: ''relative'' to the `project_bath`
+   * when serving multiple projects: ''relative'' to the `project_path`
    * when serving only a single project (`-s`): the name of the project directory
  Don't use an absolute path here as this won't work. ''Note:'' This parameter is case-sensitive even for environments on Windows.
  * '''password_file_path''': path to the password file

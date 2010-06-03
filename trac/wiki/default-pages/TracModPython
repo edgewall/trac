@@ -280,6 +280,14 @@ If the <Location /> directive is used, setting the `DocumentRoot` may result in 
 
 Using <Location /> together with `SetHandler` resulted in having everything handled by mod_python, which leads to not being able download any CSS or images/icons. I used <Location /trac> `SetHandler None` </Location> to circumvent the problem, though I do not know if this is the most elegant solution.
 
+=== Problem with zipped egg ===
+
+It's possible that your version of mod_python will not import modules from zipped eggs. If you encounter an `ImportError: No module named trac` in your Apache logs but you think everything is where it should be, this might be your problem. Look in your site-packages directory; if the Trac module appears as a ''file'' rather than a ''directory'', then this might be your problem. To rectify, try installing Trac using the `--always-unzip` option, like this:
+
+{{{
+easy_install --always-unzip Trac-0.12b1.zip
+}}}
+
 === Using .htaccess ===
 
 Although it may seem trivial to rewrite the above configuration as a directory in your document root with a `.htaccess` file, this does not work. Apache will append a "/" to any Trac URLs, which interferes with its correct operation.

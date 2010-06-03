@@ -15,7 +15,7 @@ An example policy based on an Authz-style system has been added. See
 
  - Install [http://www.voidspace.org.uk/python/configobj.html ConfigObj] (required).
  - Copy authz_policy.py into your plugins directory.
- - Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere (preferably on a secured location on the server, not readable for others than the webuser.
+ - Put a [http://swapoff.org/files/authzpolicy.conf authzpolicy.conf] file somewhere, preferably on a secured location on the server, not readable for others than the webuser. If the  file contains non-ASCII characters, the UTF-8 encoding should be used.
  - Update your `trac.ini`:
    1. modify the [TracIni#trac-section permission_policies] entry in the `[trac]` section
 {{{
@@ -138,5 +138,5 @@ For information about how to restrict access to entire projects in a multiple pr
 Don't forget to restart Trac engine to apply new configuration if you are running tracd standalone server.
 
 ----
-See also: TracPermissions
-http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin for a simple editor plugin.
+See also: TracPermissions,
+[http://trac-hacks.org/wiki/FineGrainedPageAuthzEditorPlugin TracHacks:FineGrainedPageAuthzEditorPlugin] for a simple editor plugin.

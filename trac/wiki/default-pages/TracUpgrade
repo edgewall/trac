@@ -3,7 +3,7 @@
 
 == Instructions ==
 
-Typically, there are five steps involved in upgrading to a newer version of Trac:
+Typically, there are seven steps involved in upgrading to a newer version of Trac:
 
 === 1. Update the Trac Code === #UpdatetheTracCode
 
@@ -12,7 +12,7 @@ Get the new version as described in TracInstall, or your operating system specif
 If you already have a 0.11 version of Trac installed via `easy_install`, it might be the easiest to use it also to upgrade you Trac installation.
 
 {{{
-# easy_install --upgrade Trac=0.12beta1
+# easy_install --upgrade Trac==0.12b1
 }}}
 (once beta1 is released, that is)
 
@@ -59,10 +59,18 @@ Note that this procedure will of course leave your `WikiStart` page intact.
 Each [TracEnvironment Trac environment] must be resynchronized against the source code repository in order to avoid errors such as "[http://trac.edgewall.org/ticket/6120 No changeset ??? in the repository]" while browsing the source through the Trac interface:
 
 {{{
-trac-admin /path/to/projenv resync
+trac-admin /path/to/projenv repository resync '*'
 }}}
 
-=== 5. Steps specific to a given Trac version  ===
+=== 5. Refresh static resources ===
+
+If you've setup web server to give out static resources directly (accessed using /chrome/ URL) then you need to refresh them using the same command:
+{{{
+trac-admin /path/to/env deploy /deploy/path
+}}}
+this will extract static resources and CGI scripts (trac.wsgi, etc) from new Trac version and its plugins into `/deploy/path`.
+
+=== 6. Steps specific to a given Trac version  ===
 ==== Upgrading from Trac 0.11 to Trac 0.12 ====
 ===== Python 2.3 no longer supported =====
 The minimum supported version of python is now 2.4
@@ -102,7 +110,7 @@ This will create a deploy directory with the following two subdirectories: `cgi-
 ===== Web Admin plugin integrated =====
 If you had the webadmin plugin installed, you can uninstall it as it is part of the Trac code base since 0.11.
 
-=== 6. Restart the Web Server === #RestarttheWebServer
+=== 7. Restart the Web Server === #RestarttheWebServer
 
 If you are not running [wiki:TracCgi CGI], reload the new Trac code by restarting your web server.
 

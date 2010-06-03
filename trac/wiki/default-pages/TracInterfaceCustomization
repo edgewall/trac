@@ -39,6 +39,13 @@ Note though that this icon is ignored by Internet Explorer, which only accepts a
 icon = /favicon.ico
 }}}
 
+Should your browser have issues with your favicon showing up in the address bar, you may put a "?" (less the quotation marks) after your favicon file extension. 
+
+{{{
+[project]
+icon = /favicon.ico?
+}}}
+
 == Custom Navigation Entries ==
 The new [mainnav] and [metanav] can now be used to customize the text and link used for the navigation items, or even to disable them (but not for adding new ones).
 
