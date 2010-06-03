@@ -91,7 +91,7 @@
     // Convenience function for creating an <input type="radio">
     function createRadio(name, value, id) {
       // Workaround for IE, otherwise the radio buttons are not selectable
-      return $($.template('<input type="radio" id="$1" name="$2" value"$3">',
+      return $($.template('<input type="radio" id="$1" name="$2" value="$3">',
                           id, name, value));
     }
     

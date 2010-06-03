@@ -230,8 +230,8 @@ In [%s]:
             tn.notify(ticket, newticket=False, modtime=date)
         except Exception, e:
             self.log.error("Failure sending notification on change to "
-                    "ticket #%s: %s", ticket.id,
-                    exception_to_unicode(e))
+                           "ticket #%s: %s", ticket.id,
+                           exception_to_unicode(e))
     
     def _get_functions(self):
         """Create a mapping from commands to command functions."""
