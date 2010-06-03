@@ -208,7 +208,7 @@ LC_ALL=C msgfmt --statistics $(1) 2>&1 \
 endef
 
 define translated-sh
-LC_ALL=C msgfmt --statistics $(1) 2>&1 \
+{ LC_ALL=C msgfmt --statistics $(1) 2>&1 || echo 0; } \
     | tail -1 \
     | sed -e 's/[^0-9]*\([0-9]*\) translated.*/\1/'
 endef
