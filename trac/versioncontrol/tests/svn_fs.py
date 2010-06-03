@@ -850,6 +850,7 @@ class SubversionRepositoryTestCase(unittest.TestCase):
         self.repos = self.env.get_repository(REPOS_NAME)
 
     def tearDown(self):
+        self.env.reset_db()
         # needed to avoid issue with 'WindowsError: The process cannot access
         # the file ... being used by another process: ...\rep-cache.db'
         self.env.shutdown(get_thread_id())
