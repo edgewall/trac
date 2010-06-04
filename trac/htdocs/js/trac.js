@@ -71,16 +71,39 @@
     });
   }
   
-  $.template = function(str) { 
-    var args = arguments, kwargs = arguments[arguments.length-1];
-    return str.replace(/\${?(\w+)}?/g, function(_, k) {
-      if (k.length == 1 && k >= '0' && k <= '9')
-        return args[k-'0'];
-      else
-        return kwargs[k];
-    }); 
+  // Escape special HTML characters (&<>")
+  var quote = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"};
+
+  $.htmlEscape = function(value) {
+    if (typeof value != "string")
+      return value;
+    return value.replace(/[&<>"]/g, function(c) { return quote[c]; });
   }
   
+  function format(str, args, escape) {
+    var kwargs = args[args.length - 1];
+    return str.replace(/\${?(\w+)}?/g, function(_, k) {
+      var result;
+      if (k.length == 1 && k >= '0' && k <= '9')
+        result = args[k - '0'];
+      else
+        result = kwargs[k];
+      return escape ? escape(result) : result;
+    }); 
+  }
+
+  // Expand positional ($1 .. $9) and keyword ($name) arguments in a string.
+  // The htmlFormat() version HTML-escapes arguments prior to substitution.
+  $.format = function(str) {
+    return format(str, arguments);
+  }
+
+  $.htmlFormat = function(str) {
+    return format(str, arguments, $.htmlEscape);
+  }
+
+  $.template = $.format;    // For backward compatibility
+
   // Used for dynamically updating the height of a textarea
   window.resizeTextArea = function (id, rows) {
     var textarea = $("#" + id).get(0);

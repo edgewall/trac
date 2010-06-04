@@ -60,7 +60,7 @@
         idx = this.name.length;
       var propertyName = this.name.substring(10, idx);
       $(this).replaceWith(
-        $($.template('<input type="button" value="$1">', this.value))
+        $($.htmlFormat('<input type="button" value="$1">', this.value))
           .click(function() { 
                    removeRow(this, propertyName);
                    return false;
@@ -69,7 +69,7 @@
     
     // Convenience function for creating a <label>
     function createLabel(text, htmlFor) {
-      var label = $("<label>" + text + "</label>");
+      var label = $($.htmlFormat("<label>$1</label>", text));
       if (htmlFor)
         label.attr("for", htmlFor).addClass("control");
       return label;
@@ -77,34 +77,33 @@
     
     // Convenience function for creating an <input type="text">
     function createText(name, size) {
-      return $($.template('<input type="text" name="$1" size="$2">', 
-                          name, size));
+      return $($.htmlFormat('<input type="text" name="$1" size="$2">', 
+                            name, size));
     }
     
     // Convenience function for creating an <input type="checkbox">
     function createCheckbox(name, value, id) {
-      return $($.template('<input type="checkbox"'+
-                          '  id="$1" name="$2" value="$3">',
-                          id, name, value));
+      return $($.htmlFormat('<input type="checkbox" id="$1" name="$2"' +
+                            ' value="$3">', id, name, value));
     }
     
     // Convenience function for creating an <input type="radio">
     function createRadio(name, value, id) {
       // Workaround for IE, otherwise the radio buttons are not selectable
-      return $($.template('<input type="radio" id="$1" name="$2" value="$3">',
-                          id, name, value));
+      return $($.htmlFormat('<input type="radio" id="$1" name="$2"' +
+                            ' value="$3">', id, name, value));
     }
     
     // Convenience function for creating a <select>
     function createSelect(name, options, optional) {
-      var e = $($.template('<select name="$1">', name));
+      var e = $($.htmlFormat('<select name="$1">', name));
       if (optional)
         $("<option>").appendTo(e);
       for (var i = 0; i < options.length; i++) {
         var opt = options[i], v = opt, t = opt;
         if (typeof opt == "object") 
           v = opt.value, t = opt.text;
-        $($.template('<option value="$1">$2</option>', v, t)).appendTo(e);
+        $($.htmlFormat('<option value="$1">$2</option>', v, t)).appendTo(e);
       }
       return e;
     }

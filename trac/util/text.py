@@ -78,9 +78,9 @@ def exception_to_unicode(e, traceback=False):
 
 _js_quote = {'\\': '\\\\', '"': '\\"', '\b': '\\b', '\f': '\\f',
              '\n': '\\n', '\r': '\\r', '\t': '\\t', "'": "\\'"}
-for i in range(0x20):
+for i in range(0x20) + [ord(c) for c in '&<>']:
     _js_quote.setdefault(chr(i), '\\u%04x' % i)
-_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\']')
+_js_quote_re = re.compile(r'[\x00-\x1f\\"\b\f\n\r\t\'&<>]')
 
 def javascript_quote(text):
     """Quote strings for inclusion in javascript"""

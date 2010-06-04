@@ -17,6 +17,7 @@ tasks such as grouping or pagination.
 """
 
 from math import ceil
+import re
 
 __all__ = ['classes', 'first_last', 'group', 'istext', 'prepared_paginate', 
            'paginate', 'Paginator']
@@ -281,10 +282,16 @@ def separated(items, sep=','):
 
 try:
     from json import dumps
+
+    _js_quote = dict((c, '\\u%04x' % ord(c)) for c in '&<>')
+    _js_quote_re = re.compile('[' + ''.join(_js_quote) + ']')
     
     def to_json(value):
         """Encode `value` to JSON."""
-        return dumps(value, sort_keys=True, separators=(',', ':'))
+        def replace(match):
+            return _js_quote[match.group(0)]
+        text = dumps(value, sort_keys=True, separators=(',', ':'))
+        return _js_quote_re.sub(replace, text)
 
 except ImportError:
     from trac.util.text import javascript_quote

@@ -58,6 +58,8 @@ class JavascriptQuoteTestCase(unittest.TestCase):
                          javascript_quote('\\"\b\f\n\r\t\''))
         self.assertEqual(r'\u0002\u001e',
                          javascript_quote('\x02\x1e'))
+        self.assertEqual(r'\u0026\u003c\u003e',
+                         javascript_quote('&<>'))
 
 
 class WhitespaceTestCase(unittest.TestCase):

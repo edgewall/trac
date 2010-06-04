@@ -102,17 +102,17 @@
   
       tr.addClass("expanded");
       // insert "Loading ..." row
-      var loading_row = $($.template(
+      var loading_row = $($.htmlFormat(
         '<tr>'+
-        ' <td class="$td_class" colspan="$colspan" '+
-        '     style="padding-left: ${depth}px">'+
-        '  <span class="loading">${loading}</span>'+
-        ' </td>'+
+        ' <td class="$td_class" colspan="$colspan" ' +
+        '     style="padding-left: ${depth}px">' +
+        '  <span class="loading">${loading}</span>' +
+        ' </td>' +
         '</tr>', {
         td_class: td_class, 
         colspan: tr.children("td").length, 
         depth: depth, 
-        loading: babel.format(_("Loading %(entry)s..."), {entry: a.text()})
+        loading: babel.format(_("Loading %(entry)s..."), {entry: a.text()}),
       }));
       tr.after(loading_row);
   
