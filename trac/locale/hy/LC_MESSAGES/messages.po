@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-05-25 15:05+0400\n"
-"Last-Translator: Narine Martirosyan <training@instigate.am>\n"
+"PO-Revision-Date: 2010-06-04 10:09+0400\n"
+"Last-Translator: \n"
 "Language-Team: hy_AM <trac-dev@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -29,12 +29,12 @@ msgstr "Ջնջել"
 #: tracopt/ticket/deleter.py:70
 #: tracopt/ticket/templates/ticket_delete.html:43
 msgid "Delete ticket"
-msgstr "Ստեղծել խնդիր"
+msgstr "Ստեղծել խնդիրը"
 
 #: tracopt/ticket/deleter.py:83
 #, python-format
 msgid "Delete comment %(num)s"
-msgstr "Խնդիր #%(num)s, մեկնաբանություն"
+msgstr "Ջնջել #%(num)s մեկնաբանությունը"
 
 #: tracopt/ticket/deleter.py:130
 #, python-format
@@ -44,23 +44,23 @@ msgstr "#%(id)s զեկույցը ջնջված է։"
 #: tracopt/ticket/deleter.py:137
 #, python-format
 msgid "The ticket comment %(num)s on ticket #%(id)s has been deleted."
-msgstr "%(num)s #%(id)s էջը ջնջված է։"
+msgstr "Խնդրի %(num)s մեկնաբանությունը #%(id)s խնդրի համար ջնջված է։"
 
 #: tracopt/ticket/deleter.py:156
 #, python-format
 msgid "Comment %(num)s not found"
-msgstr "%(num)s էջը գոյություն չունի"
+msgstr "%(num)s մեկնաբանությունը չի գտնվել"
 
 #: tracopt/ticket/templates/ticket_delete.html:11
 #, python-format
 msgid "Delete Ticket #%(id)s"
-msgstr "Ստեղծել խնդիր #%(id)s"
+msgstr "Ջնջել խնդիր #%(id)s"
 
 #: tracopt/ticket/templates/ticket_delete.html:12
 #: tracopt/ticket/templates/ticket_delete.html:49
 #, python-format
 msgid "Delete comment %(num)s on Ticket #%(id)s"
-msgstr "Ջնջել %(num)s մեկնաբանություն #%(id)s խնդրի համար"
+msgstr "Ջնջել %(num)s մեկնաբանությունը #%(id)s խնդրի համար"
 
 #: tracopt/ticket/templates/ticket_delete.html:20
 #, python-format
@@ -69,7 +69,7 @@ msgstr "Ջնջել [1:Ticket #%(id)s]"
 
 #: tracopt/ticket/templates/ticket_delete.html:33
 msgid "Are you sure you want to delete this ticket?"
-msgstr "Դուք վստա՞հ եք, որ ցանկանում եք ջնջել այս կցվող նյութը։"
+msgstr "Դուք վստա՞հ եք, որ ցանկանում եք ջնջել այս խնդիրը։"
 
 #: tracopt/ticket/templates/ticket_delete.html:34
 #, python-format
@@ -78,7 +78,7 @@ msgid ""
 "                 attachments: %(attachments)s)"
 msgstr ""
 "(comments: %(comments)s,\n"
-"                 կցված նյութեր: %(attachments)s)"
+"                 կցված նյութերը: %(attachments)s)"
 
 #: tracopt/ticket/templates/ticket_delete.html:37
 #: tracopt/ticket/templates/ticket_delete.html:68
@@ -119,11 +119,11 @@ msgstr "Փոփոխված է %(date)s առաջ %(author)s-ի կողմից"
 
 #: tracopt/ticket/templates/ticket_delete.html:68
 msgid "Are you sure you want to delete this ticket comment?"
-msgstr "Դուք վստա՞հ եք, որ ցանկանում եք ջնջել այս կցվող նյութը։"
+msgstr "Դուք վստա՞հ եք, որ ցանկանում եք ջնջել այս խնդրի մեկնաբանությունը։"
 
 #: tracopt/ticket/templates/ticket_delete.html:73
 msgid "Delete comment"
-msgstr "Ջնջել կցված նյութը"
+msgstr "Ջնջել մեկնաբանությունը"
 
 #: trac/about.py:47
 #: trac/templates/about.html:10
@@ -444,7 +444,7 @@ msgstr "Հնարավոր չէ ուղարկել նամակը իդենտիֆիկա
 #: trac/notification.py:321
 #, python-format
 msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
-msgstr "Կարգավորման մեւ նշված չէ ոչ %(from_)s ոչ էլ %(reply_to)s։"
+msgstr "Կարգավորման մեջ նշված չէ ոչ %(from_)s ոչ էլ %(reply_to)s։"
 
 #: trac/notification.py:322
 msgid "SMTP Notification Error"
@@ -2801,7 +2801,7 @@ msgstr "խնդիրներ"
 #: trac/ticket/roadmap.py:215
 #, python-format
 msgid "'%(group1)s' and '%(group2)s' milestone groups both are declared to be \"catch-all\" groups. Please check your configuration."
-msgstr "%(group1)s' և '%(group2)s' ուղենիշների խմբերը հայտարարված են որպես \"catch-all\" խմբեր։ Խնդրում ենք ստուգել Ձեր կարգավորումները։"
+msgstr "%(group1)s' և '%(group2)s' ուղենիշերի խմբերը հայտարարված են որպես \"catch-all\" խմբեր։ Խնդրում ենք ստուգել Ձեր կարգավորումները։"
 
 #: trac/ticket/roadmap.py:231
 #, python-format
@@ -3618,7 +3618,7 @@ msgstr[1] "աշխատանքներ"
 #: trac/ticket/templates/ticket.html:148
 #, python-format
 msgid "Edit comment %(cnum)s"
-msgstr "Տարբերակ %(cnum)s"
+msgstr "Խմբագրել %(cnum)s մեկնաբանությունը"
 
 #: trac/ticket/templates/ticket.html:155
 #: trac/ticket/templates/ticket_box.html:73
@@ -3628,7 +3628,7 @@ msgstr "Պատասխան"
 #: trac/ticket/templates/ticket.html:155
 #, python-format
 msgid "Reply to comment %(cnum)s"
-msgstr "Վերադառնալ %(cnum)s Խնդրին"
+msgstr "Պատասխանել %(cnum)s մեկնաբանությանը"
 
 #: trac/ticket/templates/ticket.html:162
 #, python-format
