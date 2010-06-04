@@ -1,10 +1,4 @@
-{{{
-#!div style="margin-top: .5em; padding: 0 1em; background-color: #ffd; border:1px outset #ddc; text-align: center"
-
-  '''NOTE: this page is for 0.12dev (trunk), the version soon to be released. \\
-  For installing previous Trac versions, please refer to [[0.11/TracInstall]]'''
-}}}
-= Trac Installation Guide for 0.12dev = 
+= Trac Installation Guide for 0.12 = 
 [[TracGuideToc]]
 
 Trac is written in the Python programming language and needs a database, [http://sqlite.org/ SQLite], [http://www.postgresql.org/ PostgreSQL], or [http://mysql.com/ MySQL]. For HTML rendering, Trac uses the [http://genshi.edgewall.org Genshi] templating system.
@@ -126,9 +120,9 @@ With setuptools you can install Trac from the subversion repository;
 
 A few examples:
 
- - install Trac 0.12 beta1::
+ - install Trac 0.12 rc1::
    {{{
-   easy_install Trac==0.12b1
+   easy_install Trac==0.12rc1
    }}}
 
  - install latest development version 0.12dev
@@ -167,7 +161,7 @@ Additionally, you can install several trac plugins (listed [http://pypi.python.o
 === From source
 Of course, using the python-typical setup at the top of the source directory also works.
 
-You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12b1.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
+You can obtain the source for a .tar.gz or .zip file corresponding to a release (e.g. Trac-0.12rc1.tar.gz), or you can get the source directly from the repository (see Trac:SubversionRepository for details).
 
 {{{
 $ python ./setup.py install
