@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-05-30 13:11-0300\n"
+"PO-Revision-Date: 2010-06-03 21:59-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -81,7 +81,7 @@ msgid ""
 "                 attachments: %(attachments)s)"
 msgstr ""
 "(comentarios: %(comments)s,\n"
-"                 archivos anexos: %(attachments)s)"
+"                 archivos adjuntos: %(attachments)s)"
 
 #: tracopt/ticket/templates/ticket_delete.html:37
 #: tracopt/ticket/templates/ticket_delete.html:68
@@ -149,6 +149,8 @@ msgid ""
 "Cannot reparent attachment \"%(att)s\" as it already exists in "
 "%(realm)s:%(id)s"
 msgstr ""
+"No se puede cambiar el padre del archivo adjunto \"%(att)s\" debido a que"
+" el mismo ya existe en %(realm)s:%(id)s"
 
 #: trac/attachment.py:229
 #, python-format
@@ -172,7 +174,7 @@ msgstr "Volver a %(parent)s"
 #: trac/attachment.py:530
 #, python-format
 msgid "%(attachment)s attached to %(resource)s"
-msgstr "%(attachment)s anexado a %(resource)s"
+msgstr "%(attachment)s adjuntado a %(resource)s"
 
 #: trac/attachment.py:587
 #, python-format
@@ -192,7 +194,7 @@ msgstr "Archivo adjunto de %(parent)s"
 #: trac/attachment.py:615
 #, python-format
 msgid "%(parent)s doesn't exist, can't create attachment"
-msgstr "No existe %(parent)s, no se puede crear anexo"
+msgstr "No existe %(parent)s, no se puede crear adjunto"
 
 #: trac/attachment.py:622 trac/attachment.py:645 trac/admin/web_ui.py:425
 #: trac/admin/web_ui.py:428 trac/admin/web_ui.py:432
@@ -229,6 +231,10 @@ msgid ""
 "only replace your own attachments. Replacing other's attachments requires"
 " ATTACHMENT_DELETE permission."
 msgstr ""
+"No posee los permisos necesarios para reemplazar el archivo adjunto "
+"%(name)s. Solo puede reemplazar sus propios archivos adjuntos. Para "
+"reemplazar archivos adjuntos de otros debe poseer el permiso "
+"ATTACHMENT_DELETE."
 
 #: trac/attachment.py:704
 #, python-format
@@ -378,7 +384,7 @@ msgstr "Copiando e caliente (hotcopying) %(src)s a %(dst)s ..."
 
 #: trac/env.py:767
 msgid "The following errors happened while copying the environment:"
-msgstr ""
+msgstr "Han ocurrido los siguientes errores mientras se copiaba el entorno:"
 
 #: trac/env.py:778
 msgid "Hotcopy done."
@@ -390,7 +396,7 @@ msgstr "Airgumentos inválidos"
 
 #: trac/env.py:786
 msgid "Database is up to date, no upgrade necessary."
-msgstr ""
+msgstr "La base de datos está al día, no es necesario actualizarla."
 
 #: trac/env.py:794
 #, python-format
@@ -440,7 +446,7 @@ msgstr "No se pudo enviar email debido a una crisis de identidad."
 #: trac/notification.py:321
 #, python-format
 msgid "Neither %(from_)s nor %(reply_to)s are specified in the configuration."
-msgstr ""
+msgstr "Ni %(from_)s ni %(reply_to)s se han especificado en la configuración."
 
 #: trac/notification.py:322
 msgid "SMTP Notification Error"
@@ -1620,6 +1626,10 @@ msgid ""
 "        [2:online]\n"
 "        as well as in the [3:COPYING] file included in the distribution."
 msgstr ""
+"Trac se distribuye bajo la licencia BSD modificada.[1:]\n"
+"        El texto completo de la licencia puede encontrarse\n"
+"        [2:online]\n"
+"        asi como en el archivo [3:COPYING] incluído en la distrbución."
 
 #: trac/templates/about.html:41
 msgid "python powered"
@@ -2878,6 +2888,8 @@ msgid ""
 "Please review your configuration, probably starting with %(section)s in "
 "your %(tracini)s."
 msgstr ""
+"Por favor revise su configuración, probablemente comenzando en "
+"%(section)s en si %(tracini)s."
 
 #: trac/ticket/web_ui.py:580 trac/ticket/web_ui.py:797
 #, python-format
@@ -2904,7 +2916,7 @@ msgstr "Historial del ticket"
 #: trac/ticket/web_ui.py:718 trac/ticket/web_ui.py:918
 #, python-format
 msgid "Back to Ticket #%(num)s"
-msgstr ""
+msgstr "Volver a Ticket #%(num)s"
 
 #: trac/ticket/web_ui.py:760
 msgid "No differences to show"
@@ -2958,12 +2970,14 @@ msgstr "Historial de comentarios del ticket"
 #: trac/ticket/web_ui.py:1001
 #, python-format
 msgid "Ticket #%(num)s, comment %(cnum)d"
-msgstr ""
+msgstr "Ticket #%(num)s, comentario %(cnum)d"
 
 #: trac/ticket/web_ui.py:959
 #, python-format
 msgid "No version %(version)d for comment %(cnum)d on ticket #%(ticket)s"
 msgstr ""
+"No existe una versión %(version)d del comentario %(cnum)d en el ticket "
+"#%(ticket)s"
 
 #: trac/ticket/web_ui.py:999
 msgid "Ticket Comment Diff"
@@ -2985,7 +2999,7 @@ msgstr[1] "%(labels)s eliminados"
 
 #: trac/ticket/web_ui.py:1075 trac/ticket/web_ui.py:1626
 msgid "; "
-msgstr ""
+msgstr "; "
 
 #: trac/ticket/web_ui.py:1096
 msgid "No permission to edit the ticket description."
@@ -3049,6 +3063,8 @@ msgid ""
 "The ticket has been created, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
+"Se ha creado el ticket, pero ha ocurrido un error mientras se enviaban "
+"notificaciones: %(message)s"
 
 #: trac/ticket/web_ui.py:1211
 #, python-format
@@ -3240,7 +3256,7 @@ msgstr "[1:%(duration)s atrasado] (%(date)s)"
 #: trac/ticket/templates/roadmap.html:52
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
-msgstr ""
+msgstr "Planificado para %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:41
 #: trac/ticket/templates/roadmap.html:56
@@ -3293,6 +3309,10 @@ msgid ""
 "                            [3:and]\n"
 "                            [4:]"
 msgstr ""
+"[1:entre]\n"
+"                            [2:]\n"
+"                            [3:y]\n"
+"                            [4:]"
 
 #: trac/ticket/templates/query.html:129
 msgid "And"
@@ -3317,12 +3337,12 @@ msgstr "Mostrar debajo de cada resultado:"
 #: trac/ticket/templates/query.html:201
 #: trac/ticket/templates/report_view.html:27
 msgid "Max items per page"
-msgstr ""
+msgstr "Cantidad máxima de items por página"
 
 #: trac/ticket/templates/query.html:245
 #, python-format
 msgid "Edit report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "Modificar reporte {%(id)s} correspondiente a esta consulta"
 
 #: trac/ticket/templates/query.html:245
 msgid "Edit query"
@@ -3344,7 +3364,7 @@ msgstr "Crear nuevo reporte a partir de la consulta actual"
 #: trac/ticket/templates/query.html:262
 #, python-format
 msgid "Delete report {%(id)s} corresponding to this query"
-msgstr ""
+msgstr "Eliminar reporte {%(id)s} correspondiente a esta consulta"
 
 #: trac/ticket/templates/query.html:262
 msgid "Delete query"
@@ -3355,6 +3375,8 @@ msgid ""
 "[1:Note:] See [2:TracQuery]\n"
 "        for help on using queries."
 msgstr ""
+"[1:Nota:] Vea [2:TracQuery]\n"
+"        para mas información relacionada con el uso de consultas."
 
 #: trac/ticket/templates/query_results.html:35
 msgid "(ascending)"
@@ -3368,7 +3390,7 @@ msgstr "(descendente)"
 #: trac/versioncontrol/templates/sortable_th.html:18
 #, python-format
 msgid "Sort by %(col)s %(direction)s"
-msgstr ""
+msgstr "Ordenar por %(col)s %(direction)s"
 
 #: trac/ticket/templates/query_results.html:45
 msgid "No tickets found"
@@ -3399,7 +3421,7 @@ msgstr "(este ticket)"
 
 #: trac/ticket/templates/query_results.html:101
 msgid "(more results for this group on next page)"
-msgstr ""
+msgstr "(mas resultados para este grupo en la próxima página)"
 
 #: trac/ticket/templates/report_delete.html:17
 msgid "Are you sure you want to delete this report?"
@@ -3578,6 +3600,8 @@ msgid ""
 "Version %(version)s, edited %(date)s ago\n"
 "                      by %(author)s"
 msgstr ""
+"Versión %(version)s, modificada hace %(date)s\n"
+"                      por %(author)s"
 
 #: trac/ticket/templates/ticket.html:166
 #, python-format
@@ -3749,12 +3773,12 @@ msgstr ""
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
 msgid "changed from [1:%(old)s] to [2:%(new)s]"
-msgstr ""
+msgstr "cambiado de [1:%(old)s] a [2:%(new)s]"
 
 #: trac/ticket/templates/ticket_change.html:29
 #, python-format
 msgid "set to [1:%(value)s]"
-msgstr ""
+msgstr "establecido a [1:%(value)s]"
 
 #: trac/ticket/templates/ticket_change.html:32
 #, python-format
@@ -3764,16 +3788,16 @@ msgstr "eliminado [1:%(value)s]"
 #: trac/ticket/templates/ticket_change.html:45
 #, python-format
 msgid "Preview changes to comment %(cnum)s"
-msgstr ""
+msgstr "Vista previa de cambios al comentario %(cnum)s"
 
 #: trac/ticket/templates/ticket_change.html:47
 #, python-format
 msgid "Submit changes to comment %(cnum)s"
-msgstr ""
+msgstr "Enviar cambios a comentario %(cnum)s"
 
 #: trac/ticket/templates/ticket_change.html:49
 msgid "Cancel comment edit"
-msgstr ""
+msgstr "Cancelar modificación del ticket"
 
 #: trac/ticket/templates/ticket_notify_email.txt:9
 #, python-format
@@ -3788,7 +3812,7 @@ msgstr "Descripción cambiada por %(author)s:"
 #: trac/ticket/templates/ticket_notify_email.txt:21
 #, python-format
 msgid "Comment (by %(author)s):"
-msgstr ""
+msgstr "Comentario (por %(author)s):"
 
 #: trac/ticket/templates/ticket_notify_email.txt:29
 #, python-format
@@ -3821,7 +3845,7 @@ msgstr "otros tipos de evento"
 #: trac/timeline/web_ui.py:353
 #, python-format
 msgid "Event provider %(name)s failed for filters %(kinds)s: "
-msgstr ""
+msgstr "Proveedor de eventos %(name)s falló para filtros %(kinds)s: "
 
 #: trac/timeline/web_ui.py:356
 #, python-format
@@ -4149,8 +4173,8 @@ msgid ""
 "appropriate component, maybe the corresponding plugin was not enabled? "
 msgstr ""
 "Sistema de control de versiones \"%(name)s\" no soportado: No se ha "
-"podido encontrrar el componente apropiado. ¿Quizá no se ha activado el "
-"plugin correspondiente)? "
+"podido encontrar el componente apropiado. ¿Quizá no se ha activado el "
+"plugin correspondiente? "
 
 #: trac/versioncontrol/api.py:697
 #, python-format
@@ -4237,7 +4261,7 @@ msgstr "bloqueado"
 
 #: trac/versioncontrol/svn_prop.py:192
 msgid "eligible"
-msgstr ""
+msgstr "candidato"
 
 #: trac/versioncontrol/svn_prop.py:206
 msgid "(toggle deleted branches)"
@@ -4402,7 +4426,7 @@ msgstr ""
 #: trac/versioncontrol/templates/browser.html:140
 #, python-format
 msgid "Property [1:%(name)s] set to %(value)s"
-msgstr ""
+msgstr "Propiedad [1:%(name)s] establecida a %(value)s"
 
 #: trac/versioncontrol/templates/browser.html:154
 msgid "Repository Index"
@@ -5376,7 +5400,7 @@ msgstr "No puede ver %(link)s:"
 #: trac/wiki/macros.py:519
 #, python-format
 msgid "No image \"%(id)s\" attached to %(parent)s"
-msgstr "No existe imagen \"%(id)s\" anexada a %(parent)s"
+msgstr "No existe imagen \"%(id)s\" adjunta a %(parent)s"
 
 #: trac/wiki/macros.py:562
 #, python-format
@@ -5801,7 +5825,7 @@ msgstr ""
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
 msgid "Version %(version)s by %(author)s: %(comment)s"
-msgstr ""
+msgstr "Versión %(version)s por %(author)s: %(comment)s"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
@@ -5820,7 +5844,7 @@ msgstr "No existe la página %(name)s. Puede crearla aquí."
 
 #: trac/wiki/templates/wiki_view.html:63
 msgid "You could also create the same page higher in the hierarchy:"
-msgstr ""
+msgstr "Tambien puede crear la misma página en un nivel mas alto en la jerarquía"
 
 #: trac/wiki/templates/wiki_view.html:87
 msgid "Create this page"
