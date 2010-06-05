@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-06-05 12:05-0300\n"
+"PO-Revision-Date: 2010-06-05 13:18-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -523,7 +523,7 @@ msgstr ""
 #: trac/admin/console.py:164
 #, python-format
 msgid "Failed to open environment: %(err)s"
-msgstr "ha ocurrido un error al abrir el entorno %(err)s"
+msgstr "Ha ocurrido un error al abrir el entorno %(err)s"
 
 #: trac/admin/console.py:234
 #, python-format
@@ -689,7 +689,7 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "Your changes have not been saved."
 msgstr ""
-"Se produjo un error cuando se trataba de grabar cambios en trac.ini, "
+"Ha ocurrido un error cuando se trataba de grabar cambios en trac.ini, "
 "asegúrese de que sea posible escribir en dicho archivo desde el servidor "
 "web. Los cambios que realizó no han sido grabados."
 
@@ -1349,7 +1349,7 @@ msgstr ""
 "Esta página permite personalizar sus preferencias para este sitio.\n"
 "      Estas configuraciones son grabadas en el servidor y son "
 "identificadas por una clave\n"
-"      de sesión almacenada en una cookie del navegador. Esta cookie  "
+"      de sesión almacenada en una cookie del browser. Esta cookie  "
 "permite que sus preferencias sean \n"
 "      recordadas en visitas posteriores."
 
@@ -1375,7 +1375,7 @@ msgstr ""
 "       automáticamente generada por omisión, puede ser cambiada a algo\n"
 "      más fácil de recordar cada vez que desee cargar sus configuraciones"
 "\n"
-"      en otro navegador web."
+"      en otro browser web."
 
 #: trac/prefs/templates/prefs_advanced.html:26
 msgid "Restore session:"
@@ -1395,7 +1395,7 @@ msgstr ""
 "Puede cargar una sesión previamente creada introduciendo la\n"
 "      clave de sesión correspondiente abajo. Esto le deja compartir la "
 "configuración entre\n"
-"      multiple computadoras y navegadores web."
+"      multiple computadoras y browsers web."
 
 #: trac/prefs/templates/prefs_datetime.html:16
 msgid "Time zone:"
@@ -1497,7 +1497,7 @@ msgstr ""
 "pueden\n"
 "      estar en conflicto con los atajos que provee su sistema de "
 "escritorio o\n"
-"      su navegador web, están deshabilitados por omisión. Vea      "
+"      su browser web, están deshabilitados por omisión. Vea      "
 "[1:TracAccessibility]\n"
 "      para más información sobre atajos de teclado."
 
@@ -1868,7 +1868,7 @@ msgstr ""
 #: trac/templates/diff_view.html:43
 #: trac/versioncontrol/templates/changeset.html:136
 msgid "Timestamp:"
-msgstr "Marca de tiempo:"
+msgstr "Cuando:"
 
 #: trac/templates/diff_view.html:45 trac/templates/diff_view.html:53
 #: trac/templates/diff_view.html:59
@@ -1944,6 +1944,10 @@ msgid ""
 "                    Trac administrator] with the information needed to\n"
 "                reproduce the issue."
 msgstr ""
+"Ha ocurrido un error interno en Trac.\n"
+"                Se recomienda que notifique a su [1:administrador]\n"
+"                local de Trac y le provea la información necesaria para\n"
+"                reproducir la incidencia."
 
 #: trac/templates/error.html:95
 #, python-format
@@ -2217,12 +2221,12 @@ msgid "Warning:"
 msgstr "Advertencia:"
 
 #: trac/templates/theme.html:69
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Powered by [1:[2:Trac %(version)s]][3:]\n"
 "        By [4:Edgewall Software]."
 msgstr ""
-"Powered por [1:[2:Trac %(version)s]][3:]\n"
+"Powered by [1:[2:Trac %(version)s]][3:]\n"
 "        por [4:Edgewall Software]."
 
 #: trac/ticket/admin.py:36
@@ -2347,9 +2351,9 @@ msgid ""
 "Error writing to trac.ini, make sure it is writable by the web server. "
 "The default value has not been saved."
 msgstr ""
-"Se ha encontrado un error mientras se intentaba grabar cambios en el "
-"archivo trac.ini, asegúrese de que sea posible escribir en dicho archivo "
-"desde el servidor web. Los valores por omisión no han sido grabados."
+"Ha ocurrido un error mientras se intentaba grabar cambios en el archivo "
+"trac.ini, asegúrese de que sea posible escribir en dicho archivo desde el"
+" servidor web. Los valores por omisión no han sido grabados."
 
 #: trac/ticket/admin.py:684
 msgid "Order numbers must be unique"
@@ -3289,8 +3293,8 @@ msgstr "Modificar hito"
 #, python-format
 msgid "%(num)s match"
 msgid_plural "%(num)s matches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(num)s resultado"
+msgstr[1] "%(num)s resultados"
 
 #: trac/ticket/templates/query.html:38
 msgid "Filters"
@@ -3532,7 +3536,7 @@ msgstr "Ver %(realm)s"
 
 #: trac/ticket/templates/roadmap.html:21
 msgid "Show completed milestones"
-msgstr "Mostrar hitos ya completados"
+msgstr "Mostrar hitos completados"
 
 #: trac/ticket/templates/roadmap.html:26
 msgid "Hide milestones with no due date"
@@ -4620,7 +4624,7 @@ msgstr[1] ""
 
 #: trac/versioncontrol/templates/changeset.html:129
 msgid "Show previous version in browser"
-msgstr "Ver versión anterior en el navegador"
+msgstr "Ver versión anterior en el browser"
 
 #: trac/versioncontrol/templates/changeset.html:139
 msgid "(less than one hour ago)"
@@ -5074,7 +5078,7 @@ msgstr "Conjunto de cambios %(id)s"
 #: trac/versioncontrol/web_ui/changeset.py:492
 #, python-format
 msgid "Show revision %(rev)s of this file in browser"
-msgstr "Mostrar revisión %(rev)s de este archivo en el navegador"
+msgstr "Mostrar revisión %(rev)s de este archivo en el browser"
 
 #: trac/versioncontrol/web_ui/changeset.py:638
 #, python-format
@@ -5231,9 +5235,9 @@ msgid "Already logged in as %(user)s."
 msgstr "Ya identificado como %(user)s."
 
 #: trac/web/chrome.py:567
-#, fuzzy, python-format
+#, python-format
 msgid "Error with navigation contributor \"%(name)s\""
-msgstr "Error con 'navigation contributor' \"%(name)s\""
+msgstr "Error con el 'navigation contributor' \"%(name)s\""
 
 #: trac/web/chrome.py:857
 msgid "(unknown template location)"
@@ -5311,6 +5315,27 @@ msgid ""
 "{{{\n"
 "%(traceback)s}}}"
 msgstr ""
+"==== Como Reproducir ====\n"
+"\n"
+"Trac generó un error interno mientras realizaba una operación %(method)s "
+"en `%(path_info)s`.\n"
+"\n"
+"''(por favor provea aquí detalles adicionales)''\n"
+"\n"
+"Parámetros del rquerimiento:\n"
+"{{{\n"
+"%(req_args)s\n"
+"}}}\n"
+"\n"
+"Agente de usuario: `#USER_AGENT#`\n"
+"\n"
+"==== Información de Sistema ====\n"
+"%(sys_info)s\n"
+"==== Plugins activos ====\n"
+"%(enabled_plugins)s\n"
+"==== Traceback Python ====\n"
+"{{{\n"
+"%(traceback)s}}}"
 
 #: trac/web/session.py:203
 #, python-format
@@ -5323,7 +5348,7 @@ msgstr ""
 
 #: trac/web/session.py:205
 msgid "Error renaming session"
-msgstr "Se ha producido un error mientra se cambiaba el nombre de la sesión"
+msgstr "Ha ocurrido un error mientra se cambiaba el nombre de la sesión"
 
 #: trac/web/session.py:312
 msgid "No SID found"
