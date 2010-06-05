@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-06-03 21:59-0300\n"
+"PO-Revision-Date: 2010-06-05 12:05-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -2217,11 +2217,13 @@ msgid "Warning:"
 msgstr "Advertencia:"
 
 #: trac/templates/theme.html:69
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "Powered by [1:[2:Trac %(version)s]][3:]\n"
 "        By [4:Edgewall Software]."
 msgstr ""
+"Powered por [1:[2:Trac %(version)s]][3:]\n"
+"        por [4:Edgewall Software]."
 
 #: trac/ticket/admin.py:36
 msgid "(Undefined)"
@@ -3072,6 +3074,8 @@ msgid ""
 "Your ticket %(ticketref)s has been created, but you don't have permission"
 " to view it."
 msgstr ""
+"Se ha creado su ticket %(ticketref)s pero Ud. no tiene los permisos "
+"necesarios para ver el mismo."
 
 #. TRANSLATOR: The 'change' has been saved... (link)
 #: trac/ticket/web_ui.py:1242
@@ -3084,6 +3088,8 @@ msgid ""
 "The %(change)s has been saved, but an error occurred while sending "
 "notifications: %(message)s"
 msgstr ""
+"Se ha grabado el %(change)s pero ha ocurrido un error pero ha ocurrido un"
+" error mientras se enviaban notificaciones: %(message)s"
 
 #: trac/ticket/web_ui.py:1382
 msgid "Add to Cc"
@@ -3648,6 +3654,8 @@ msgid ""
 "Warnings are shown at the [1:top of the page]. The ticket validation\n"
 "            may have failed."
 msgstr ""
+"Puede ver las advertencias en la [1:parte superior de la página]. Es\n"
+"            probable que haya fallado la validación de ticket."
 
 #: trac/ticket/templates/ticket.html:220
 #, python-format
@@ -3690,16 +3698,18 @@ msgstr "%(field)s:"
 
 #: trac/ticket/templates/ticket.html:313
 msgid "This checkbox allows you to add or remove yourself from the CC list."
-msgstr ""
+msgstr "Este checkbox le permite agregarse o quitarse de la lista CC."
 
 #: trac/ticket/templates/ticket.html:319
 msgid "Space or comma delimited email addresses and usernames are accepted."
-msgstr ""
+msgstr "Se permiten direcciones de email separadas por espacios o comas."
 
 #: trac/ticket/templates/ticket.html:375
 #: trac/wiki/templates/wiki_edit_form.html:50
 msgid "E-mail address and user name can be saved in the [1:Preferences]."
 msgstr ""
+"La direccción de email y el nombre de usuario pueden granarse en "
+"[1:Preferencias]."
 
 #: trac/ticket/templates/ticket.html:383
 msgid "I have files to attach to this ticket"
@@ -3769,6 +3779,9 @@ msgid ""
 "          [3:[4:]]\n"
 "          added"
 msgstr ""
+"[1:[2:%(name)s]]\n"
+"          [3:[4:]]\n"
+"          agregado"
 
 #: trac/ticket/templates/ticket_change.html:26
 #, python-format
@@ -3854,6 +3867,9 @@ msgid ""
 " Trac administrator about the error (detailed information was written to "
 "the log)."
 msgstr ""
+"Es posible que desee ver %(other_events)s en la Línea de tiempo o "
+"notificar a su administrador de Trac acerca del error (se ha grabado "
+"información detallada en el log)."
 
 #: trac/timeline/templates/timeline.html:19
 msgid ""
@@ -3945,6 +3961,8 @@ msgid ""
 "\"%(date)s\" is an invalid date, or the date format is not known. Try "
 "\"%(hint)s\" instead."
 msgstr ""
+"\"%(date)s\" es una fecha inválida o no es posible reconocer el formato "
+"de la misma. Intente \"%(hint)s\"."
 
 #: trac/util/datefmt.py:249 trac/util/datefmt.py:257
 msgid "Invalid Date"
@@ -4024,12 +4042,14 @@ msgstr "Repositorios"
 #: trac/versioncontrol/admin.py:203 trac/versioncontrol/admin.py:242
 #, python-format
 msgid "You should now run %(resync)s to synchronize Trac with the repository."
-msgstr ""
+msgstr "Ahora debe ejecutar %(resync)s para sincronizar Trac con el repositorio."
 
 #: trac/versioncontrol/admin.py:208
 #, python-format
 msgid "You may have to run %(resync)s to synchronize Trac with the repository."
 msgstr ""
+"Es posible que deba ejecutar %(resync)s para sincronizar Trac con el "
+"repositorio."
 
 #: trac/versioncontrol/admin.py:216
 #, python-format
@@ -4037,6 +4057,8 @@ msgid ""
 "You will need to update your post-commit hook to call %(cset_added)s with"
 " the new repository name."
 msgstr ""
+"En necesario que actalice su hook post-commit para llamar a "
+"%(cset_added)s con el nuevo nombre de repositorio."
 
 #: trac/versioncontrol/admin.py:238
 #, python-format
@@ -4553,7 +4575,7 @@ msgstr "Conjunto de cambios [1:%(new_rev)s]"
 #: trac/versioncontrol/templates/changeset.html:101
 #, python-format
 msgid "Show what was removed (content at revision %(old_rev)s)"
-msgstr ""
+msgstr "Mostrar qué se ha eliminado (contenido en revisión %(old_rev)s)"
 
 #: trac/versioncontrol/templates/changeset.html:106
 msgid "(root)"
@@ -5687,6 +5709,12 @@ msgid ""
 " page\n"
 "        again."
 msgstr ""
+"Por favor revise todos esos cambios y fusione manualmente los mismos\n"
+"        con sus cambios. [1:]\n"
+"        Si no está seguro acerca de lo que está haciando por favor "
+"presione [2:Cancelar]\n"
+"        (se perderán los cambios que realizó) y comience nuevamente a\n"
+"        modificar la versión mas actual de la página."
 
 #: trac/wiki/templates/wiki_edit.html:114
 #, python-format
@@ -5821,6 +5849,8 @@ msgid ""
 "Version %(version)s (modified by %(author)s, %(date)s ago)\n"
 "               ([1:diff])"
 msgstr ""
+"Versión %(version)s (modificada por %(author)s, hace %(date)s)\n"
+"               ([1:diff])"
 
 #: trac/wiki/templates/wiki_view.html:47
 #, python-format
