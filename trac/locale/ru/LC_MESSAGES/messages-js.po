@@ -28,19 +28,19 @@ msgstr "Закрыть"
 
 #: trac/htdocs/js/diff.js:119
 msgid "Tabular"
-msgstr ""
+msgstr "Табличный"
 
 #: trac/htdocs/js/diff.js:125
 msgid "Unified"
-msgstr ""
+msgstr "Стандартный"
 
 #: trac/htdocs/js/expand_dir.js:42
 msgid "Expand sub-directory in place"
-msgstr ""
+msgstr "Развернуть подкаталог на месте"
 
 #: trac/htdocs/js/expand_dir.js:71
 msgid "Re-expand directory"
-msgstr ""
+msgstr "Повторно развернуть каталог"
 
 #: trac/htdocs/js/expand_dir.js:115
 #, python-format
@@ -57,12 +57,12 @@ msgstr "(ошибка)"
 
 #: trac/htdocs/js/expand_dir.js:158
 msgid "Fold directory"
-msgstr ""
+msgstr "Свернуть каталог"
 
 #: trac/htdocs/js/folding.js:59
 #, python-format
 msgid "Show %(title)s"
-msgstr ""
+msgstr "Показать %(title)s"
 
 #: trac/htdocs/js/folding.js:74
 #, python-format
@@ -71,7 +71,7 @@ msgstr "%(title)s (Щелкните чтобы скрыть колонку)"
 
 #: trac/htdocs/js/query.js:119
 msgid "A filter already exists for that property"
-msgstr ""
+msgstr "Фильтр по этому свойству уже существует"
 
 #: trac/htdocs/js/query.js:146
 msgid "or"
@@ -95,7 +95,7 @@ msgstr "и"
 
 #: trac/htdocs/js/trac.js:7
 msgid "Link here"
-msgstr ""
+msgstr "Ссылка сюда"
 
 #: trac/htdocs/js/wikitoolbar.js:56
 msgid "Bold text: '''Example'''"
@@ -107,27 +107,27 @@ msgstr "Курсивный текст: ''Пример''"
 
 #: trac/htdocs/js/wikitoolbar.js:62
 msgid "Heading: == Example =="
-msgstr ""
+msgstr "Заголовок: == Пример =="
 
 #: trac/htdocs/js/wikitoolbar.js:65
 msgid "Link: [http://www.example.com/ Example]"
-msgstr ""
+msgstr "Ссылка: [http://www.example.com/ Пример]"
 
 #: trac/htdocs/js/wikitoolbar.js:68
 msgid "Code block: {{{ example }}}"
-msgstr ""
+msgstr "Блок кода: {{{ пример }}}"
 
 #: trac/htdocs/js/wikitoolbar.js:71
 msgid "Horizontal rule: ----"
-msgstr ""
+msgstr "Горизонтальная линия: ----"
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"
-msgstr ""
+msgstr "Новый абзац"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "Line break: [[BR]]"
-msgstr ""
+msgstr "Перенос сроки: [[BR]]"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
@@ -135,14 +135,14 @@ msgstr "Изображение: [[Image()]]"
 
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
-msgstr ""
+msgstr "Ссылка на эту секцию"
 
 #: trac/versioncontrol/templates/changeset.html:7
 msgid "Link to this diff"
-msgstr ""
+msgstr "Ссылка на этот diff"
 
 #: trac/wiki/templates/wiki_view.html:5
 #, python-format
 msgid "Link to #%(id)s"
-msgstr ""
+msgstr "Ссылка на #%(id)s"
 
