@@ -5717,7 +5717,7 @@ msgstr "Удалить эти версии"
 #: trac/wiki/templates/wiki_delete.html:51
 #: trac/wiki/templates/wiki_view.html:117
 msgid "Delete this version"
-msgstr "Удалить данную версию"
+msgstr "Удалить эту версию"
 
 #: trac/wiki/templates/wiki_delete.html:51
 #: trac/wiki/templates/wiki_view.html:119
@@ -5791,7 +5791,7 @@ msgid ""
 "Change information for future version %(version)s (modified by "
 "%(author)s):"
 msgstr ""
-"Изменить информацию для будущей версии %(version)s (изменена "
+"Информация об изменении для будущей версии %(version)s (изменена "
 "пользователем %(author)s):"
 
 #: trac/wiki/templates/wiki_edit.html:124
@@ -5843,7 +5843,7 @@ msgstr "Выберите базу и цель для вычисления раз
 
 #: trac/wiki/templates/wiki_edit_form.html:39
 msgid "See the start of the preview"
-msgstr "Просмотреть начало предварительного просмотра"
+msgstr "Посмотреть начало предварительного просмотра"
 
 #: trac/wiki/templates/wiki_edit_form.html:43
 msgid "Change information"
@@ -5867,7 +5867,7 @@ msgstr "Предварительный просмотр страницы"
 
 #: trac/wiki/templates/wiki_page_path.html:6
 msgid "View WikiStart"
-msgstr "Прсмотреть WikiStart"
+msgstr "Просмотреть WikiStart"
 
 #: trac/wiki/templates/wiki_page_path.html:6
 msgid "wiki:"
@@ -5906,7 +5906,7 @@ msgstr "Переименовать страницу"
 
 #: trac/wiki/templates/wiki_view.html:14 trac/wiki/templates/wiki_view.html:84
 msgid "Edit this page"
-msgstr "Редактировать данную страницу"
+msgstr "Редактировать эту страницу"
 
 #: trac/wiki/templates/wiki_view.html:34
 #, python-format
