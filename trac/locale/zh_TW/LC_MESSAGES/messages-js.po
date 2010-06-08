@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2010-05-24 23:55+0200\n"
-"PO-Revision-Date: 2010-06-04 14:00+0800\n"
+"PO-Revision-Date: 2010-06-07 10:15+0800\n"
 "Last-Translator: Chi-Chung Lin <zclin.csie92g@gmail.com>\n"
 "Language-Team: zh_TW <trac-dev@googlegroups.com>\n"
 "Plural-Forms: nplurals=1; plural=0\n"
@@ -122,7 +122,7 @@ msgstr ""
 
 #: trac/htdocs/js/wikitoolbar.js:74
 msgid "New paragraph"
-msgstr ""
+msgstr "新增段落"
 
 #: trac/htdocs/js/wikitoolbar.js:77
 msgid "Line break: [[BR]]"
@@ -130,7 +130,7 @@ msgstr "換行: [[BR]]"
 
 #: trac/htdocs/js/wikitoolbar.js:80
 msgid "Image: [[Image()]]"
-msgstr ""
+msgstr "圖片: [[Image()]]"
 
 #: trac/ticket/templates/ticket.html:3 trac/wiki/templates/wiki_view.html:3
 msgid "Link to this section"
