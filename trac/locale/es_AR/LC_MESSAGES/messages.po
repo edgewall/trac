@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-06-05 13:18-0300\n"
+"PO-Revision-Date: 2010-06-08 09:22-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -1629,7 +1629,7 @@ msgstr ""
 "Trac se distribuye bajo la licencia BSD modificada.[1:]\n"
 "        El texto completo de la licencia puede encontrarse\n"
 "        [2:online]\n"
-"        asi como en el archivo [3:COPYING] incluído en la distrbución."
+"        asi como en el archivo [3:COPYING] incluído en la distribución."
 
 #: trac/templates/about.html:41
 msgid "python powered"
@@ -3266,7 +3266,7 @@ msgstr "[1:%(duration)s atrasado] (%(date)s)"
 #: trac/ticket/templates/roadmap.html:52
 #, python-format
 msgid "Due in %(duration)s (%(date)s)"
-msgstr "Planificado para %(duration)s (%(date)s)"
+msgstr "Planificado para dentro de %(duration)s (%(date)s)"
 
 #: trac/ticket/templates/milestone_view.html:41
 #: trac/ticket/templates/roadmap.html:56
