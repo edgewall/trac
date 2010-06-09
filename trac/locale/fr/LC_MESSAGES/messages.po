@@ -5092,7 +5092,7 @@ msgstr "Révision suivante"
 
 #: trac/versioncontrol/web_ui/browser.py:445
 msgid "Latest Revision"
-msgstr "Dernière révision :"
+msgstr "Dernière révision"
 
 #: trac/versioncontrol/web_ui/browser.py:449
 #: trac/versioncontrol/web_ui/log.py:300
