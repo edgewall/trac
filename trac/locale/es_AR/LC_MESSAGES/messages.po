@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Trac 0.12\n"
 "Report-Msgid-Bugs-To: trac-dev@googlegroups.com\n"
 "POT-Creation-Date: 2008-01-30 09:20+0100\n"
-"PO-Revision-Date: 2010-06-09 23:31-0300\n"
+"PO-Revision-Date: 2010-06-10 19:16-0300\n"
 "Last-Translator: Ramiro Morales <cramm0@gmail.com>\n"
 "Language-Team: es_AR <LL@li.org>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
@@ -404,6 +404,8 @@ msgid ""
 "Backup failed with '%(msg)s'.\n"
 "Use '--no-backup' to upgrade without doing a backup."
 msgstr ""
+"Falló la copia de seguridad con '%(msg)s'.\n"
+"Utilice '--no-backup' para actualizar sin realizar una copia de seguridad."
 
 #: trac/env.py:808
 msgid ""
@@ -411,6 +413,8 @@ msgid ""
 "Trac\n"
 "doesn't load plugins from there anymore. Please remove it by hand."
 msgstr ""
+"Aviso: el directorio wiki-macros del entorno no está vacío, pero Trac\n"
+"ya no carga los plugins desde allí. Por favor, elimínelo a mano."
 
 #: trac/env.py:819
 #, python-format
@@ -419,6 +423,9 @@ msgid ""
 "Trac doesn't load plugins from wiki-macros anymore. Please remove it by "
 "hand."
 msgstr ""
+"Error eliminando wiki-macros: %(err)s\n"
+"Trac ya no carga los plugins desde wiki-macros. Por favor, elimínelo a "
+"mano."
 
 #: trac/env.py:821
 #, python-format
@@ -429,6 +436,11 @@ msgid ""
 "\n"
 "  trac-admin %(path)s wiki upgrade"
 msgstr ""
+"Actualización realizada.\n"
+"\n"
+"Puede querer actualizar la documentación de Trac ahora ejecutando:\n"
+"\n"
+"  trac-admin %(path)s wiki upgrade"
 
 #: trac/notification.py:155
 msgid "TLS enabled but server does not support TLS"
@@ -519,6 +531,12 @@ msgid ""
 "Type:  '?' or 'help' for help on commands.\n"
 "        "
 msgstr ""
+"Bienvenido a trac-admin %(version)s\n"
+"Consola de administración de Trac.\n"
+"Copyright (c) 2003-2009 Edgewall Software\n"
+"\n"
+"Escriba:  '?' o 'help' para obtener ayuda sobre órdenes.\n"
+"        "
 
 #: trac/admin/console.py:164
 #, python-format
@@ -538,20 +556,22 @@ msgstr "No se encontró documentación aceca de '%(cmd)s'"
 #: trac/admin/console.py:289
 #, python-format
 msgid "trac-admin - The Trac Administration Console %(version)s"
-msgstr ""
+msgstr "trac-admin - La consola de administración de Trac %(version)s"
 
 #: trac/admin/console.py:293
 msgid "Usage: trac-admin </path/to/projenv> [command [subcommand] [option ...]]\n"
 msgstr ""
+"Uso: trac-admin </ruta/al/entorno/del/proyecto> [orden [suborden] [opción"
+" ...]]\n"
 
 #: trac/admin/console.py:296
 msgid "Invoking trac-admin without command starts interactive mode.\n"
-msgstr ""
+msgstr "Si invoca trac-admin sin una orden inicia el mismo en modo interactivo.\n"
 
 #: trac/admin/console.py:336
 #, python-format
 msgid "Creating a new Trac environment at %(envname)s"
-msgstr ""
+msgstr "Creando un nuevo entorno Trac en %(envname)s"
 
 #: trac/admin/console.py:338
 msgid ""
@@ -562,6 +582,12 @@ msgid ""
 " Please enter the name of your project.\n"
 " This name will be used in page titles and descriptions.\n"
 msgstr ""
+"\n"
+"Trac le solicitará primero unas respuestas sobre su entorno\n"
+"para inicializar y preparar la base de datos del proyecto.\n"
+"\n"
+" Por favor, introduzca el nombre de su proyecto.\n"
+" Este nombre será usado en los títulos y descripciones de las páginas.\n"
 
 #: trac/admin/console.py:346
 #, python-format
@@ -577,6 +603,13 @@ msgid ""
 " PostgreSQL database (check the Trac documentation for the exact\n"
 " connection string syntax).\n"
 msgstr ""
+" Por favor, especifique la cadena de conexión a la base de datos a usar.\n"
+" En forma predeterminada, se creará una base de datos SQLite local en el "
+"directorio\n"
+" del entorno. También es posible usar una base de datos PostgreSQL "
+"existente\n"
+" (lea la documentación de Trac para conocer la sintaxis exacta de\n"
+" la cadena de conexión).\n"
 
 #: trac/admin/console.py:356
 #, python-format
@@ -586,7 +619,7 @@ msgstr "Cadena de conexión a la base de datos [%(default)s]> "
 #: trac/admin/console.py:363
 #, python-format
 msgid "Initenv for '%(env)s' failed."
-msgstr ""
+msgstr "Falló la inicialización del entorno '%(env)s'."
 
 #: trac/admin/console.py:366
 msgid "Does an environment already exist?"
@@ -594,23 +627,23 @@ msgstr "¿Es posible que ya exista un entorno?"
 
 #: trac/admin/console.py:370
 msgid "Directory exists and is not empty."
-msgstr ""
+msgstr "El directorio existe y no está vacío."
 
 #: trac/admin/console.py:398
 msgid "Creating and Initializing Project"
-msgstr ""
+msgstr "Creando e inicializando el proyecto"
 
 #: trac/admin/console.py:415
 msgid "Failed to create environment."
-msgstr ""
+msgstr "Fallo al crear el entorno."
 
 #: trac/admin/console.py:421
 msgid " Installing default wiki pages"
-msgstr ""
+msgstr " Instalando las páginas wiki predeterminadas"
 
 #: trac/admin/console.py:430
 msgid " Indexing default repository"
-msgstr ""
+msgstr " Indexando el repositorio predeterminado"
 
 #: trac/admin/console.py:433
 msgid ""
@@ -626,6 +659,18 @@ msgid ""
 "you'll need to check again your trac.ini file and the [trac] \n"
 "repository_type and repository_path settings.\n"
 msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"Aviso: no se pudo indexar el repositorio por defecto.\n"
+"\n"
+"Esto puede ocurrir por varias razones: un tipo de repositorio equivocado,"
+" \n"
+"una librería de terceros inapropiada para el tipo de repositorio,\n"
+"no existencia de un repositorio real en la ruta especificada...\n"
+"\n"
+"Puede, sin embargo, intentar arrancar usando el entorno de Trac, pero \n"
+"necesitará verificar de nuevo su fichero trac.ini y los valores \n"
+"repository_type and repository_path en la sección [trac].\n"
 
 #: trac/admin/console.py:476
 #, python-format
@@ -655,11 +700,35 @@ msgid ""
 "\n"
 "Congratulations!\n"
 msgstr ""
+"\n"
+"---------------------------------------------------------------------\n"
+"El entorno del proyecto para '%(project_name)s' se creó con éxito.\n"
+"\n"
+"Ahora puede configurar el entorno editando el archivo:\n"
+"\n"
+"  %(config_path)s\n"
+"\n"
+"Si desea hacer pruebas del entorno del proyecto,\n"
+"pruebe a ejecutar el servidor de web independiente de Trac, `tracd`:\n"
+"\n"
+"  tracd --port 8000 %(project_path)s\n"
+"\n"
+"Apunte su navegador a http://localhost:8000/%(project_dir)s.\n"
+"Allí también podrá hojear la documentación de su versión instalada\n"
+"de Trac, incluyendo información de instalación más amplia (como\n"
+"el despliegue de Trac en un servidor real).\n"
+"\n"
+"La documentación más actual también puede ser encontrada en el sitio\n"
+"web del proyecto:\n"
+"\n"
+"  http://trac.edgewall.org/\n"
+"\n"
+"¡Enhorabuena!\n"
 
 #: trac/admin/console.py:536
 #, python-format
 msgid "Non-ascii environment path '%(path)s' not supported."
-msgstr ""
+msgstr "No está soportada la ruta '%(path)s' con caracteres no ASCII."
 
 #: trac/admin/web_ui.py:64
 msgid "Admin"
@@ -968,9 +1037,8 @@ msgid "Add %(label_singular)s"
 msgstr "Agregar %(label_singular)s"
 
 #: trac/admin/templates/admin_enums.html:48
-#, fuzzy
 msgid "Order"
-msgstr "Ordenar"
+msgstr "Orden"
 
 #: trac/admin/templates/admin_logging.html:26 trac/templates/about.html:79
 msgid "Configuration"
